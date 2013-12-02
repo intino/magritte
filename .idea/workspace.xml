@@ -1,0 +1,1091 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" name="Default" comment="" />
+    <ignored path="MonetMetamodelPlugin.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <file path="/MonetMetamodelLanguage.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385111749108" ignored="false" />
+    <file path="/TaraFileType.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385112403363" ignored="false" />
+    <file path="/TaraFileFactory.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385112597987" ignored="false" />
+    <file path="/plugin.xml" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385981095319" ignored="false" />
+    <file path="/TaraTokenType.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385112770003" ignored="false" />
+    <file path="/TaraElementType.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385112940050" ignored="false" />
+    <file path="/Tara.bnf" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385992636083" ignored="false" />
+    <file path="/Tara.flex" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385992521621" ignored="false" />
+    <file path="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraEntityAssignImpl.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385381896629" ignored="false" />
+    <file path="/TaraParser.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385117629128" ignored="false" />
+    <file path="/GeneratedParserUtilBase.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385117649366" ignored="false" />
+    <file path="/a.dummy" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385117822891" ignored="false" />
+    <file path="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraImplementStateImpl.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385381896630" ignored="false" />
+    <file path="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraEntityPropertiesImpl.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385381896629" ignored="false" />
+    <file path="/TaraFile.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385120526537" ignored="false" />
+    <file path="/TaraParserDefinition.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385120617947" ignored="false" />
+    <file path="/TaraSyntaxHighlighter.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385986514816" ignored="false" />
+    <file path="/TaraSytaxHighlighterFactory.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385122526749" ignored="false" />
+    <file path="/TaraColorSettingPage.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385986507848" ignored="false" />
+    <file path="/TaraPsiImplUtil.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385539081579" ignored="false" />
+    <file path="/TaraAnnotator.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385552387020" ignored="false" />
+    <file path="/TaraLineMarkerProvider.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385552437550" ignored="false" />
+    <file path="/TaraCompletionContributor.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385474040996" ignored="false" />
+    <file path="/TaraFindUsagesProvider.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385978047431" ignored="false" />
+    <file path="/TaraFoldingBuilder.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385976725452" ignored="false" />
+    <file path="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraCommentariesImpl.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385381896629" ignored="false" />
+    <file path="/TaraLexer.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385989247837" ignored="false" />
+    <file path="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraChildrenImpl.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385388395317" ignored="false" />
+    <file path="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraReferencesImpl.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385388395317" ignored="false" />
+    <file path="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraPropertiesImpl.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385388395317" ignored="false" />
+    <file path="/TaraReferencesBodyImpl.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385467108225" ignored="false" />
+    <file path="/TaraUtil.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385475277372" ignored="false" />
+    <file path="/CompletionContributor.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385472668339" ignored="false" />
+    <file path="/TaraElementFactory.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385475541908" ignored="false" />
+    <file path="/TaraReference.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385476209444" ignored="false" />
+    <file path="/TaraReferenceContributor.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385735206519" ignored="false" />
+    <file path="/TaraConceptDefinitionImpl.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385476834381" ignored="false" />
+    <file path="/SimpleRefactoringSupportProvider.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385477975349" ignored="false" />
+    <file path="/fragment.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385986155655" ignored="false" />
+    <file path="/PsiLiteral.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385542748907" ignored="false" />
+    <file path="/TaraStructureViewFactory.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385553869825" ignored="false" />
+    <file path="/TaraStructureViewModel.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385554045622" ignored="false" />
+    <file path="/TaraStructureViewElement.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385554239460" ignored="false" />
+    <file path="$USER_HOME$/Dropbox/siani/Proyecto tara/AlphaCore/test/core/ModelTest.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385626506576" ignored="false" />
+    <file path="/a.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385980491369" ignored="false" />
+    <file path="/Tara.bnf.preview" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385718641131" ignored="false" />
+    <file path="/TokenType.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385739122892" ignored="false" />
+    <file path="/sample.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385971508733" ignored="false" />
+    <file path="/TaraConceptDefinition.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385977801605" ignored="false" />
+    <file path="/TaraMetamodelApplication.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385981122926" ignored="false" />
+    <file path="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/TaraTypes.java" changelist="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" time="1385992297286" ignored="false" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CloverPlugin" class="com.cenqua.clover.idea.config.IdeaCloverConfig">
+    <loadPerTestData>true</loadPerTestData>
+    <projectRebuild class="com.cenqua.clover.idea.config.ProjectRebuild">ASK</projectRebuild>
+    <filteredHighlight>-4144960</filteredHighlight>
+    <relativeInitString>false</relativeInitString>
+    <buildWithClover>true</buildWithClover>
+    <lastProjectConfigTabSelected>0</lastProjectConfigTabSelected>
+    <periodicRefresh>false</periodicRefresh>
+    <notCoveredStripe>-65536</notCoveredStripe>
+    <flushPolicy>0</flushPolicy>
+    <viewIncludeAnnotation>true</viewIncludeAnnotation>
+    <alwaysExpandTestClasses>false</alwaysExpandTestClasses>
+    <languageLevel>1.8 - lambda functions, virtual extension methods.</languageLevel>
+    <manualInitString null="true" />
+    <autoRefreshInterval>2000</autoRefreshInterval>
+    <flushInterval>5000</flushInterval>
+    <showInline>true</showInline>
+    <showSummaryInToolwindow>true</showSummaryInToolwindow>
+    <autoRefresh>true</autoRefresh>
+    <coveredHighlight>-3605816</coveredHighlight>
+    <enabled>false</enabled>
+    <alwaysCollapseTestClasses>false</alwaysCollapseTestClasses>
+    <excludes null="true" />
+    <filteredStripe>-12566464</filteredStripe>
+    <instrumentTests>true</instrumentTests>
+    <calculateTestCoverage>true</calculateTestCoverage>
+    <outOfDateHighlight>-32</outOfDateHighlight>
+    <notCoveredHighlight>-341816</notCoveredHighlight>
+    <hideFullyCovered>false</hideFullyCovered>
+    <cloudReportIncludeSubpkgs>false</cloudReportIncludeSubpkgs>
+    <includes null="true" />
+    <includePassedTestCoverageOnly>true</includePassedTestCoverageOnly>
+    <testViewScope class="com.cenqua.clover.idea.config.TestViewScope">GLOBAL</testViewScope>
+    <testCaseLayout class="com.cenqua.clover.idea.config.TestCaseLayout">TEST_CASES</testCaseLayout>
+    <contextFilterSpec />
+    <viewCoverage>true</viewCoverage>
+    <coveredStripe>-16711936</coveredStripe>
+    <autoViewInCloudReport>true</autoViewInCloudReport>
+    <autoScroll>true</autoScroll>
+    <useGeneratedInitString>true</useGeneratedInitString>
+    <showGutter>true</showGutter>
+    <dumpInstrumentedSources>false</dumpInstrumentedSources>
+    <failedCoveredStripe>-14336</failedCoveredStripe>
+    <regexpContexts class="java.util.ArrayList" />
+    <flattenPackages>false</flattenPackages>
+    <autoScrollFromSource>false</autoScrollFromSource>
+    <showErrorMarks>true</showErrorMarks>
+    <showTooltips>true</showTooltips>
+    <showSummaryInToolbar>true</showSummaryInToolbar>
+    <span>0</span>
+    <generatedInitString>$PROJECT_DIR$/.clover/coverage.db</generatedInitString>
+    <modelScope class="com.cenqua.clover.idea.config.ModelScope">APP_CLASSES_ONLY</modelScope>
+    <outOfDateStripe>-256</outOfDateStripe>
+    <failedCoveredHighlight>-3920</failedCoveredHighlight>
+    <highlightCovered>true</highlightCovered>
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="USE_COMPILE_SERVER" value="false" />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="DebuggerManager">
+    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true">
+      <breakpoint url="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraFindUsagesProvider.java" line="18" class="monet.tara.metamodelplugin.TaraFindUsagesProvider" package="monet.tara.metamodelplugin">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+    </line_breakpoints>
+    <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
+      <breakpoint>
+        <option name="NOTIFY_CAUGHT" value="true" />
+        <option name="NOTIFY_UNCAUGHT" value="true" />
+        <option name="ENABLED" value="false" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint>
+        <option name="NOTIFY_CAUGHT" value="true" />
+        <option name="NOTIFY_UNCAUGHT" value="true" />
+        <option name="ENABLED" value="false" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+    </breakpoint_any>
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
+    <breakpoint_rules />
+    <ui_properties />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="MonetMetamodelPlugin" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="Tara.bnf" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/Tara.bnf">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="24" column="0" selection-start="1064" selection-end="1064" vertical-scroll-proportion="0.7453626">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Tara.flex" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/Tara.flex">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="197" column="0" selection-start="4104" selection-end="4104" vertical-scroll-proportion="0.0">
+              <folding>
+                <marker date="1385993399941" expanded="false" signature="44:224" placeholder="..." />
+                <marker date="1385993399941" expanded="false" signature="381:400" placeholder="&lt;~&gt;" />
+                <marker date="1385993399941" expanded="true" signature="405:426" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="450:490" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="516:544" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="588:775" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="831:1046" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="2697:2739" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="2770:2851" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="2882:2922" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="2953:2999" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="3033:3082" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="3116:3165" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="3199:3244" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="3278:3318" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="3364:3393" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="3425:3447" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="3479:3506" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="3538:3567" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="3599:3629" placeholder="{...}" />
+                <marker date="1385993399941" expanded="false" signature="3661:3687" placeholder="{...}" />
+                <marker date="1385993399941" expanded="false" signature="3719:3746" placeholder="{...}" />
+                <marker date="1385993399941" expanded="false" signature="3778:3805" placeholder="{...}" />
+                <marker date="1385993399941" expanded="false" signature="3837:3861" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="3893:3920" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="3952:3979" placeholder="{...}" />
+                <marker date="1385993399941" expanded="false" signature="4011:4041" placeholder="{...}" />
+                <marker date="1385993399941" expanded="false" signature="4073:4101" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="4137:4192" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="4230:4274" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="4310:4341" placeholder="{...}" />
+                <marker date="1385993399941" expanded="true" signature="4376:4408" placeholder="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="false" />
+    </FindUsagesManager>
+  </component>
+  <component name="GotoFileConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="ARCHIVE" />
+      <filtered-out-file-type name="ActionScript" />
+      <filtered-out-file-type name="C#" />
+      <filtered-out-file-type name="C++" />
+      <filtered-out-file-type name="CLASS" />
+      <filtered-out-file-type name="CSS" />
+      <filtered-out-file-type name="Cucumber" />
+      <filtered-out-file-type name="DATASOURCE_STORAGE" />
+      <filtered-out-file-type name="DTD" />
+      <filtered-out-file-type name="Database Element" />
+      <filtered-out-file-type name="EJB" />
+      <filtered-out-file-type name="EJB QL" />
+      <filtered-out-file-type name="Eclipse" />
+      <filtered-out-file-type name="Enforced Plain Text" />
+      <filtered-out-file-type name="Erlang files" />
+      <filtered-out-file-type name="GSP" />
+      <filtered-out-file-type name="HTML" />
+      <filtered-out-file-type name="Haskell" />
+      <filtered-out-file-type name="Hibernate QL" />
+      <filtered-out-file-type name="IDEA_MODULE" />
+      <filtered-out-file-type name="IDEA_PROJECT" />
+      <filtered-out-file-type name="IDEA_WORKSPACE" />
+      <filtered-out-file-type name="IDL" />
+      <filtered-out-file-type name="Images" />
+      <filtered-out-file-type name="J2EEModule" />
+      <filtered-out-file-type name="JPA QL" />
+      <filtered-out-file-type name="JSHint" />
+      <filtered-out-file-type name="JSON" />
+      <filtered-out-file-type name="JSP" />
+      <filtered-out-file-type name="JSPX" />
+      <filtered-out-file-type name="JavaFX" />
+      <filtered-out-file-type name="JavaScript" />
+      <filtered-out-file-type name="Native" />
+      <filtered-out-file-type name="PATCH" />
+      <filtered-out-file-type name="PHP files" />
+      <filtered-out-file-type name="PLAIN_TEXT" />
+      <filtered-out-file-type name="PeristenceUnit" />
+      <filtered-out-file-type name="Perl" />
+      <filtered-out-file-type name="Properties" />
+      <filtered-out-file-type name="RNG Compact" />
+      <filtered-out-file-type name="RegExp" />
+      <filtered-out-file-type name="ResourceBundle" />
+      <filtered-out-file-type name="SQL files" />
+      <filtered-out-file-type name="Servlet" />
+      <filtered-out-file-type name="TypeScript" />
+      <filtered-out-file-type name="UML" />
+      <filtered-out-file-type name="UNKNOWN" />
+      <filtered-out-file-type name="VTL" />
+      <filtered-out-file-type name="XHTML" />
+      <filtered-out-file-type name="XML" />
+    </file-type-list>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraStructureViewFactory.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraStructureViewModel.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraStructureViewElement.java" />
+        <option value="/Tara.bnf.preview" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraReferenceContributor.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraFoldingBuilder.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraFindUsagesProvider.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraMetamodelProject.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/project/TaraMetamodelProject.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/project/TaraMetamodelApplication.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraLexer.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/highlighting/TaraSyntaxHighlighter.java" />
+        <option value="$PROJECT_DIR$/META-INF/plugin.xml" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraSyntaxHighlighter.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/Tara.bnf" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/Tara.flex" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="64" />
+    <option name="y" value="-4" />
+    <option name="width" value="1617" />
+    <option name="height" value="1055" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>CSS</id>
+          </State>
+          <State>
+            <id>Class structure</id>
+          </State>
+          <State>
+            <id>Control FlowGroovy</id>
+          </State>
+          <State>
+            <id>Declaration redundancy</id>
+          </State>
+          <State>
+            <id>General</id>
+          </State>
+          <State>
+            <id>Groovy</id>
+          </State>
+          <State>
+            <id>IntelliJ IDEA Platform Inspections</id>
+          </State>
+          <State>
+            <id>Internationalization issues</id>
+          </State>
+          <State>
+            <id>Java language level migration aids</id>
+          </State>
+          <State>
+            <id>Method MetricsGroovy</id>
+          </State>
+          <State>
+            <id>Numeric issues</id>
+          </State>
+          <State>
+            <id>Plugin DevKit</id>
+          </State>
+          <State>
+            <id>Portability issues</id>
+          </State>
+          <State>
+            <id>Potentially confusing code constructsGroovy</id>
+          </State>
+          <State>
+            <id>Probable bugs</id>
+          </State>
+          <State>
+            <id>Properties Files</id>
+          </State>
+          <State>
+            <id>Threading issuesGroovy</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>Class structure</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraMetamodelPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraMetamodelPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraMetamodelPlugin" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraMetamodelPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraMetamodelPlugin" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="metamodelplugin" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraMetamodelPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraMetamodelPlugin" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="metamodelplugin" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraMetamodelPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraMetamodelPlugin" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="metamodelplugin" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="highlighting" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraMetamodelPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraMetamodelPlugin" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="META-INF" />
+              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="GoToFile.includeJavaFiles" value="false" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
+    <property name="OverrideImplement.combined" value="true" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="recentsLimit" value="5" />
+    <property name="options.lastSelected" value="preferences.sourceCode.Java" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Applications/ideaSources" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="GoToClass.includeJavaFiles" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.includeInheritedMembers" value="false" />
+    <property name="restartRequiresConfirmation" value="true" />
+    <property name="MemberChooser.showClasses" value="true" />
+    <property name="GoToClass.includeLibraries" value="false" />
+    <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="dynamic.classpath" value="false" />
+  </component>
+  <component name="PsiViewer.ProjectComponent">
+    <option name="HIGHLIGHT" value="false" />
+    <option name="FILTER_WHITESPACE" value="false" />
+    <option name="SHOW_PROPERTIES" value="true" />
+    <option name="SPLIT_DIVIDER_POSITION" value="300" />
+    <option name="AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="AUTOSCROLL_FROM_SOURCE" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="monet.tara.metamodelplugin" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="monet.tara.metamodelplugin" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Plugin.Tara plugin">
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="TaraMetamodelPlugin" />
+      <option name="VM_PARAMETERS" value="-Xms128m&#10;-Xmx750m&#10;-XX:MaxPermSize=350m&#10;-XX:ReservedCodeCacheSize=96m&#10;-XX:+UseCodeCacheFlushing&#10;-ea&#10;-Dsun.io.useCanonCaches=false&#10;-Djava.net.preferIPv4Stack=true" />
+      <option name="PROGRAM_PARAMETERS" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="false" name="Tara plugin" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="TaraMetamodelPlugin" />
+      <option name="VM_PARAMETERS" value="-Xms128m -Xmx750m -XX:MaxPermSize=350m -XX:ReservedCodeCacheSize=96m -XX:+UseCodeCacheFlushing -ea -Dsun.io.useCanonCaches=false -Djava.net.preferIPv4Stack=true" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <log_file path="$USER_HOME$/.IdeaIC12/system/plugins-sandbox/system/log/idea.log" checked="false" skipped="true" show_all="false" alias="IDEA LOG" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="Plugin.Tara plugin" />
+    </list>
+    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
+      <Host>localhost</Host>
+      <Port>5050</Port>
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="TodoView" selected-index="0">
+    <todo-panel id="selected-file">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="default-changelist">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="64" y="-4" width="1617" height="1055" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32852387" sideWeight="0.49968052" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39844617" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32852387" sideWeight="0.5003195" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32721382" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Cloverage" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32963374" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24984026" sideWeight="0.60044396" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25634676" sideWeight="0.6727862" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32721382" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Test Runs" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Pomodoro" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32963374" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="PsiViewer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32971245" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="CHECK_NEW_TODO" value="true" />
+    <option name="myTodoPanelSettings">
+      <value>
+        <are-packages-shown value="false" />
+        <are-modules-shown value="false" />
+        <flatten-packages value="false" />
+        <is-autoscroll-to-source value="false" />
+      </value>
+    </option>
+    <option name="PERFORM_UPDATE_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_COMMIT_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_EDIT_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_CHECKOUT_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_ROLLBACK_IN_BACKGROUND" value="false" />
+    <option name="CHECK_LOCALLY_CHANGED_CONFLICTS_IN_BACKGROUND" value="false" />
+    <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
+    <option name="SHOW_ONLY_CHANGED_IN_SELECTION_DIFF" value="true" />
+    <option name="CHECK_COMMIT_MESSAGE_SPELLING" value="true" />
+    <option name="DEFAULT_PATCH_EXTENSION" value="patch" />
+    <option name="SHORT_DIFF_HORIZONTALLY" value="true" />
+    <option name="SHORT_DIFF_EXTRA_LINES" value="2" />
+    <option name="SOFT_WRAPS_IN_SHORT_DIFF" value="true" />
+    <option name="INCLUDE_TEXT_INTO_PATCH" value="false" />
+    <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
+    <option name="SHOW_FILE_HISTORY_DETAILS" value="true" />
+    <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
+    <option name="SHOW_DIRTY_RECURSIVELY" value="false" />
+    <option name="LIMIT_HISTORY" value="true" />
+    <option name="MAXIMUM_HISTORY_ROWS" value="1000" />
+    <option name="UPDATE_FILTER_SCOPE_NAME" />
+    <option name="USE_COMMIT_MESSAGE_MARGIN" value="false" />
+    <option name="COMMIT_MESSAGE_MARGIN_SIZE" value="72" />
+    <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
+    <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
+    <option name="LAST_COMMIT_MESSAGE" />
+    <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
+    <option name="FILE_HISTORY_DIALOG_COMMENTS_SPLITTER_PROPORTION" value="0.8" />
+    <option name="FILE_HISTORY_DIALOG_SPLITTER_PROPORTION" value="0.5" />
+    <option name="ACTIVE_VCS_NAME" />
+    <option name="UPDATE_GROUP_BY_PACKAGES" value="false" />
+    <option name="UPDATE_GROUP_BY_CHANGELIST" value="false" />
+    <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
+    <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
+    <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraFindUsagesProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="25" selection-start="1547" selection-end="1547" vertical-scroll-proportion="0.40234375">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#canFindUsagesFor#0;class#TaraFindUsagesProvider#0" expanded="true" />
+            <element signature="method#getHelpId#0;class#TaraFindUsagesProvider#0" expanded="true" />
+            <element signature="method#getType#0;class#TaraFindUsagesProvider#0" expanded="true" />
+            <element signature="method#getNodeText#0;class#TaraFindUsagesProvider#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/structureview/TaraStructureViewModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="35" selection-start="35" selection-end="35" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#TaraStructureViewModel#0;class#TaraStructureViewModel#0" expanded="true" />
+            <element signature="method#getSorters#0;class#TaraStructureViewModel#0" expanded="true" />
+            <element signature="method#isAlwaysShowsPlus#0;class#TaraStructureViewModel#0" expanded="true" />
+            <element signature="method#isAlwaysLeaf#0;class#TaraStructureViewModel#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/structureview/TaraStructureViewElement.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="13" selection-start="573" selection-end="573" vertical-scroll-proportion="0.078071184">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/structureview/TaraStructureViewFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="5" selection-start="760" selection-end="760" vertical-scroll-proportion="0.29276693">
+          <folding>
+            <element signature="method#getStructureViewBuilder#0;class#TaraStructureViewFactory#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/core-impl/src/com/intellij/openapi/editor/ex/util/SegmentArray.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="118" column="0" selection-start="3667" selection-end="3667" vertical-scroll-proportion="0.21631205">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/project/TaraMetamodelProject.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="31" selection-start="334" selection-end="334" vertical-scroll-proportion="0.1607565">
+          <folding>
+            <element signature="method#initComponent#0;class#TaraMetamodelProject#0" expanded="true" />
+            <element signature="method#disposeComponent#0;class#TaraMetamodelProject#0" expanded="true" />
+            <element signature="method#getComponentName#0;class#TaraMetamodelProject#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/highlighting/TaraColorSettingPage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="83" selection-start="1368" selection-end="1368" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraSyntaxHighlighter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="11" selection-start="2194" selection-end="2194" vertical-scroll-proportion="0.938294">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#getHighlightingLexer#0;class#TaraSyntaxHighlighter#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraFoldingBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="140" selection-start="1807" selection-end="1807" vertical-scroll-proportion="0.671875">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1001#1020#0" expanded="true" />
+            <element signature="method#getPlaceholderText#0;class#1512:1948" expanded="true" />
+            <element signature="method#getPlaceholderText#0;class#TaraFoldingBuilder#0" expanded="true" />
+            <element signature="method#isCollapsedByDefault#0;class#TaraFoldingBuilder#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/META-INF/plugin.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="25" selection-start="2151" selection-end="2151" vertical-scroll-proportion="0.6877153">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/project/TaraMetamodelApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="0" selection-start="437" selection-end="437" vertical-scroll-proportion="0.30357143">
+          <folding>
+            <element signature="method#initComponent#0;class#TaraMetamodelApplication#0" expanded="true" />
+            <element signature="method#disposeComponent#0;class#TaraMetamodelApplication#0" expanded="true" />
+            <element signature="method#getComponentName#0;class#TaraMetamodelApplication#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraLexer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="407" column="23" selection-start="15912" selection-end="15912" vertical-scroll-proportion="0.47554806">
+          <folding>
+            <element signature="docComment;field#ZZ_BUFFERSIZE#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#YYINITIAL#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#ZZ_LEXSTATE#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#ZZ_CMAP_PACKED#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#ZZ_CMAP#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#ZZ_ACTION#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#zzUnpackAction#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#zzUnpackAction#1;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#ZZ_ROWMAP#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#zzUnpackRowMap#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#zzUnpackRowMap#1;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#ZZ_TRANS#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#zzUnpackTrans#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#zzUnpackTrans#1;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#ZZ_ATTRIBUTE#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#zzUnpackAttribute#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#zzUnpackAttribute#1;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#zzState#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#zzLexicalState#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#zzBuffer#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#zzBufferArray#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#zzMarkedPos#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#zzPushbackPos#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#zzCurrentPos#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#zzStartRead#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#zzEndRead#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#zzAtBOL#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#zzAtEOF#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;field#zzEOFDone#0;class#TaraLexer#0" expanded="true" />
+            <element signature="initializer##0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#indent#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#deindent#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#getLevel#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#indentDeindent#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;method#TaraLexer#1;class#TaraLexer#0" expanded="true" />
+            <element signature="method#TaraLexer#1;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;method#zzUnpackCMap#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#zzUnpackCMap#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#getTokenEnd#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#reset#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;method#zzRefill#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#zzRefill#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;method#yystate#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#yystate#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;method#yybegin#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#yybegin#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;method#yytext#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#yytext#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;method#yycharat#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#yycharat#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;method#yylength#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#yylength#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;method#zzScanError#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#zzScanError#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;method#yypushback#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#yypushback#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;method#zzDoEOF#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#zzDoEOF#0;class#TaraLexer#0" expanded="true" />
+            <element signature="docComment;method#advance#0;class#TaraLexer#0" expanded="true" />
+            <element signature="method#advance#0;class#TaraLexer#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/psi/impl/TaraPsiImplUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="0" selection-start="535" selection-end="535" vertical-scroll-proportion="0.3153457">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/Tara.flex">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="197" column="0" selection-start="4104" selection-end="4104" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1385993399941" expanded="false" signature="44:224" placeholder="..." />
+            <marker date="1385993399941" expanded="false" signature="381:400" placeholder="&lt;~&gt;" />
+            <marker date="1385993399941" expanded="true" signature="405:426" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="450:490" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="516:544" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="588:775" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="831:1046" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="2697:2739" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="2770:2851" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="2882:2922" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="2953:2999" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="3033:3082" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="3116:3165" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="3199:3244" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="3278:3318" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="3364:3393" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="3425:3447" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="3479:3506" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="3538:3567" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="3599:3629" placeholder="{...}" />
+            <marker date="1385993399941" expanded="false" signature="3661:3687" placeholder="{...}" />
+            <marker date="1385993399941" expanded="false" signature="3719:3746" placeholder="{...}" />
+            <marker date="1385993399941" expanded="false" signature="3778:3805" placeholder="{...}" />
+            <marker date="1385993399941" expanded="false" signature="3837:3861" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="3893:3920" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="3952:3979" placeholder="{...}" />
+            <marker date="1385993399941" expanded="false" signature="4011:4041" placeholder="{...}" />
+            <marker date="1385993399941" expanded="false" signature="4073:4101" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="4137:4192" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="4230:4274" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="4310:4341" placeholder="{...}" />
+            <marker date="1385993399941" expanded="true" signature="4376:4408" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodelplugin/Tara.bnf">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="0" selection-start="1064" selection-end="1064" vertical-scroll-proportion="0.7453626">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>groovy-2.1.9</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>IDEA IC-129.1359</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>TaraMetamodelPlugin</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.5" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
+

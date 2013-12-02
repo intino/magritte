@@ -1,0 +1,39 @@
+{
+  parserClass='monet.tara.metamodelplugin.TaraParser'
+  stubParserClass='monet.tara.metamodelplugin.parser.GeneratedParserUtilBase'
+
+  extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
+
+  psiClassPrefix='Tara'
+  psiImplClassSuffix='Impl'
+  psiPackage='monet.tara.metamodelplugin.psi'
+  psiImplPackage='monet.tara.metamodelplugin.psi.impl'
+
+  elementTypeHolderClass='monet.tara.metamodelplugin.psi.TaraTypes'
+  elementTypeClass='monet.tara.metamodelplugin.psi.TaraElementType'
+  tokenTypeClass='monet.tara.metamodelplugin.psi.TaraTokenType'
+
+  psiImplUtilClass='monet.tara.metamodelplugin.psi.impl.TaraPsiImplUtil'
+}
+
+root::=(COMMENT|conceptDefinition|CRLF)*
+
+
+conceptDefinition ::= DEINDENT* CONCEPT MODIFIERS? IDENTIFIER (IS IDENTIFIER)? ANNOTATION* ((NEW_LINE_INDENT conceptBody) | CRLF) {mixin='monet.tara.metamodelplugin.psi.impl.TaraNamedElementImpl' implements='monet.tara.metamodelplugin.psi.TaraNamedElement' methods=[getIdentifier getName setName getNameIdentifier]}
+
+conceptBody::=  (propertiesBody|childrenBody|referencesBody) CRLF attrSiblings*
+
+attrSiblings ::= INLINE (propertiesBody|childrenBody|referencesBody) CRLF
+
+propertiesBody::=PRIMITIVE_TYPE IDENTIFIER (ASSIGN PRIMITIVE)?
+
+childrenBody::=HAS IDENTIFIER
+
+referencesBody::=REF IDENTIFIER {methods=[getIdentifier]}
+
+PRIMITIVE_TYPE ::=  ID_TYPE|INT_TYPE|STRING_TYPE|DOUBLE_TYPE
+
+PRIMITIVE ::=  INT|DOUBLE|STRING
+
+ANNOTATION ::= NAMEABLE|AT_ROOT|EXTENSIBLE|ACTION
+
