@@ -16,7 +16,6 @@ import com.intellij.psi.TokenType;
 %eof{
 	if(stack.size() > 0) {
 		stack.pop();
-//          return(TaraTypes.DEDENT);
 		return;
 	}
 
@@ -25,7 +24,7 @@ import com.intellij.psi.TokenType;
 
 %{
 
-	static Stack<Integer> stack = new Stack<java.lang.Integer>();
+	static Stack<Integer> stack = new Stack<>();
 
 	private int transformToSpaces(CharSequence chain){
 		int value = 0;
@@ -42,12 +41,8 @@ import com.intellij.psi.TokenType;
                 yypushback(yylength());
             return TaraTypes.DEDENT;
         }
-        return TaraTypes.END_CONCEPT;
+            return null;
     }
-
-	private boolean isWhiteLine(int i){
-		return i == 1;
-	}
 
 	private boolean isTextIndented(int textLength){
 		if (!stack.empty())
@@ -78,14 +73,14 @@ import com.intellij.psi.TokenType;
                 yypushback(yylength());
             return TaraTypes.DEDENT;
 		} else if (isTextSibling(textLength)){
+        	return null;
+        } else {
 			return null;
-        } else
-            return TaraTypes.END_CONCEPT;
+        }
 	}
 %}
 
-WHITE_LINE=[^][\n]
-EOL=![^][\n]
+EOL=[\n] | ([^][ ]+[\n])
 INDENTED_LINE=[^][ ]+
 WS = [\ ]+ | [\t]+
 END_OF_LINE_COMMENT =("#"|"!")[^\r\n]*
@@ -190,11 +185,17 @@ ALPHANUMERIC= [:jletterdigit:]*
 <YYINITIAL> {
 
 	{CONCEPT}                   {  return TaraTypes.CONCEPT; }
+
 	{HAS}                       {  return TaraTypes.HAS;}
+
 	{INT_TYPE}                  {  return TaraTypes.INT_TYPE; }
+
     {STRING_TYPE}               {  return TaraTypes.STRING_TYPE; }
+
     {DOUBLE_TYPE}               {  return TaraTypes.DOUBLE_TYPE; }
+
     {ID_TYPE}                   {  return TaraTypes.ID_TYPE; }
+
     {REF}                       {  return TaraTypes.REF;}
 
 	{MODIFIERS}                 {  return TaraTypes.MODIFIERS;}
@@ -221,13 +222,11 @@ ALPHANUMERIC= [:jletterdigit:]*
 
 	{END_OF_LINE_COMMENT}       {  return TaraTypes.COMMENT; }
 
-	{INDENTED_LINE}             {IElementType elementType;if((elementType = calculateIndentationToken()) != null) return elementType;}
+	{INDENTED_LINE}             {  IElementType elementType; if((elementType = calculateIndentationToken()) != null) return elementType;}
 
-	{WHITE_LINE}                {}
+	{EOL}                       {  IElementType elementType; if((elementType = cleanStack()) != null) return elementType;}
 
-	{EOL}                       {  return cleanStack();}
-
-	{WS}                        {return TokenType.WHITE_SPACE;}
+	{WS}                        {  return TokenType.WHITE_SPACE;}
 }
 
-	.                          {  return TokenType.BAD_CHARACTER;}
+	.                           { return TokenType.BAD_CHARACTER;}

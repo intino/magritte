@@ -18,7 +18,7 @@
 
 root ::=(COMMENT|conceptDefinition)+
 
-conceptDefinition ::= conceptSignature conceptBody? END_CONCEPT {mixin='monet.tara.metamodel.psi.impl.TaraNamedElementImpl' implements='monet.tara.metamodel.psi.TaraNamedElement' methods=[getIdentifier getName setName getNameIdentifier]}
+conceptDefinition ::= conceptSignature conceptBody?  {mixin='monet.tara.metamodel.psi.impl.TaraNamedElementImpl' implements='monet.tara.metamodel.psi.TaraNamedElement' methods=[getIdentifier getName setName getNameIdentifier]}
 
 conceptSignature ::= CONCEPT MODIFIERS? IDENTIFIER (IS IDENTIFIER)? annotation*
 
