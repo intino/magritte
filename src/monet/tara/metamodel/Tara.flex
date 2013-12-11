@@ -1,9 +1,9 @@
-package monet.tara.metamodelplugin;
+package monet.tara.metamodel;
 
 import com.intellij.lexer.FlexLexer;
 import java.util.Stack;
 import com.intellij.psi.tree.IElementType;
-import monet.tara.metamodelplugin.psi.TaraTypes;
+import monet.tara.metamodel.psi.TaraTypes;
 import com.intellij.psi.TokenType;
 
 %%
@@ -69,7 +69,6 @@ import com.intellij.psi.TokenType;
 
 	private IElementType calculateIndentationToken() {
 		int textLength = transformToSpaces(yytext());
-
         if (stack.empty() || isTextIndented(textLength)){
             stack.push(textLength);
             return TaraTypes.INDENT;
@@ -85,7 +84,8 @@ import com.intellij.psi.TokenType;
 	}
 %}
 
-EOL=[\n]
+WHITE_LINE=[^][\n]
+EOL=![^][\n]
 INDENTED_LINE=[^][ ]+
 WS = [\ ]+ | [\t]+
 END_OF_LINE_COMMENT =("#"|"!")[^\r\n]*
@@ -148,7 +148,7 @@ ASSIGN = "="
 NAMEABLE ="@nameable"
 ROOT   = "@root"
 EXTENSIBLE  = "@extensible"
-ACTION = "@action=java"
+ACTION = "@action:java"
 
 ANNOTATIONS = {NAMEABLE} | {ROOT} |{EXTENSIBLE} | {ACTION}
 
@@ -189,43 +189,45 @@ ALPHANUMERIC= [:jletterdigit:]*
 %%
 <YYINITIAL> {
 
-	{CONCEPT}                  {  return TaraTypes.CONCEPT; }
-	{HAS}                      {  return TaraTypes.HAS;}
-	{INT_TYPE}                 {  return TaraTypes.INT_TYPE; }
-    {STRING_TYPE}              {  return TaraTypes.STRING_TYPE; }
-    {DOUBLE_TYPE}              {  return TaraTypes.DOUBLE_TYPE; }
-    {ID_TYPE}                  {  return TaraTypes.ID_TYPE; }
-    {REF}                      {  return TaraTypes.REF;}
+	{CONCEPT}                   {  return TaraTypes.CONCEPT; }
+	{HAS}                       {  return TaraTypes.HAS;}
+	{INT_TYPE}                  {  return TaraTypes.INT_TYPE; }
+    {STRING_TYPE}               {  return TaraTypes.STRING_TYPE; }
+    {DOUBLE_TYPE}               {  return TaraTypes.DOUBLE_TYPE; }
+    {ID_TYPE}                   {  return TaraTypes.ID_TYPE; }
+    {REF}                       {  return TaraTypes.REF;}
 
-	{MODIFIERS}                {  return TaraTypes.MODIFIERS;}
+	{MODIFIERS}                 {  return TaraTypes.MODIFIERS;}
 
-	{IS}                       {  return TaraTypes.IS;}
+	{IS}                        {  return TaraTypes.IS;}
 
-	{ROOT}                     {  return TaraTypes.AT_ROOT;}
+	{ROOT}                      {  return TaraTypes.AT_ROOT;}
 
-	{NAMEABLE}                 {  return TaraTypes.NAMEABLE;}
+	{NAMEABLE}                  {  return TaraTypes.NAMEABLE;}
 
-	{EXTENSIBLE}               {  return TaraTypes.EXTENSIBLE;}
+	{EXTENSIBLE}                {  return TaraTypes.EXTENSIBLE;}
 
-	{ACTION}                   {  return TaraTypes.ACTION;}
+	{ACTION}                    {  return TaraTypes.ACTION;}
 
-	{ASSIGN}                   {  return TaraTypes.ASSIGN; }
+	{ASSIGN}                    {  return TaraTypes.ASSIGN; }
 
-	{STRING}                   {  return TaraTypes.STRING; }
+	{STRING}                    {  return TaraTypes.STRING; }
 
-	{INT}                      {  return TaraTypes.INT; }
+	{INT}                       {  return TaraTypes.INT; }
 
-	{DOUBLE}                   {  return TaraTypes.DOUBLE; }
+	{DOUBLE}                    {  return TaraTypes.DOUBLE; }
 
-	{IDENTIFIER}               {  return TaraTypes.IDENTIFIER;}
+	{IDENTIFIER}                {  return TaraTypes.IDENTIFIER;}
 
-	{END_OF_LINE_COMMENT}      {  return TaraTypes.COMMENT; }
+	{END_OF_LINE_COMMENT}       {  return TaraTypes.COMMENT; }
 
-	{INDENTED_LINE}            {IElementType elementType;if((elementType = calculateIndentationToken()) != null) return elementType;}
+	{INDENTED_LINE}             {IElementType elementType;if((elementType = calculateIndentationToken()) != null) return elementType;}
 
-	{EOL}                      {  return cleanStack();}
+	{WHITE_LINE}                {}
 
-	{WS}                       {return TokenType.WHITE_SPACE;}
+	{EOL}                       {  return cleanStack();}
+
+	{WS}                        {return TokenType.WHITE_SPACE;}
 }
 
 	.                          {  return TokenType.BAD_CHARACTER;}

@@ -9,7 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
 import monet.tara.metamodel.file.TaraFile;
 import monet.tara.metamodel.file.TaraFileType;
-import monet.tara.metamodelplugin.psi.TaraConceptDefinition;
+import monet.tara.metamodel.psi.TaraConceptDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;

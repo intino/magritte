@@ -7,7 +7,7 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
-import monet.tara.metamodelplugin.psi.TaraTypes;
+import monet.tara.metamodel.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -31,7 +31,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 	public static final TextAttributesKey COMMENT = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
 	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.CONSTANT);
 	public static final TextAttributesKey ANNOTATION =
-			createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
+	createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
 	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER", new TextAttributes(JBColor.RED, null, null, null, Font.BOLD));
 

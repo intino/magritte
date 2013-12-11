@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import monet.tara.metamodel.file.TaraFile;
-import monet.tara.metamodelplugin.psi.TaraConceptDefinition;
+import monet.tara.metamodel.psi.TaraConceptDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +37,13 @@ public class TaraStructureViewElement implements StructureViewTreeElement, Sorta
 	@Override
 	public boolean canNavigate() {
 		return element instanceof NavigationItem &&
-				       ((NavigationItem)element).canNavigate();
+		       ((NavigationItem) element).canNavigate();
 	}
 
 	@Override
 	public boolean canNavigateToSource() {
 		return element instanceof NavigationItem &&
-				       ((NavigationItem)element).canNavigateToSource();
+		       ((NavigationItem) element).canNavigateToSource();
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class TaraStructureViewElement implements StructureViewTreeElement, Sorta
 	@Override
 	public ItemPresentation getPresentation() {
 		return element instanceof NavigationItem ?
-				       ((NavigationItem) element).getPresentation() : null;
+		       ((NavigationItem) element).getPresentation() : null;
 	}
 
 	@Override

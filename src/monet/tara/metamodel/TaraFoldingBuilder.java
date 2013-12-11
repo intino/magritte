@@ -9,7 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.util.PsiTreeUtil;
 import monet.tara.metamodel.psi.impl.TaraUtil;
-import monet.tara.metamodelplugin.psi.TaraConceptDefinition;
+import monet.tara.metamodel.psi.TaraConceptDefinition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

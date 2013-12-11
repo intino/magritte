@@ -25,34 +25,34 @@
     -->
 
     <application-components>
-        <component>
-            <implementation-class>monet.tara.metamodelplugin.project.TaraMetamodelApplication</implementation-class>
-        </component>
+        <!--<component>-->
+            <!--<implementation-class>TaraMetamodelApplication</implementation-class>-->
+        <!--</component>-->
+        <!--<component>-->
+            <!--<implementation-class>ProjectWizardStep</implementation-class>-->
+        <!--</component>-->
     </application-components>
 
     <project-components>
-        <component>
-            <implementation-class>monet.tara.metamodelplugin.project.TaraMetamodelProject</implementation-class>
-        </component>
+        <!--<component>-->
+            <!--<implementation-class>TaraMetamodelProject</implementation-class>-->
+        <!--</component>-->
     </project-components>
 
-    <actions>
-    </actions>
-
     <extensions defaultExtensionNs="com.intellij">
-        <fileTypeFactory implementation="monet.tara.metamodelplugin.file.TaraFileTypeFactory"/>
-        <lang.parserDefinition language="Tara" implementationClass="monet.tara.metamodelplugin.TaraParserDefinition"/>
-        <lang.syntaxHighlighterFactory key="Tara" implementationClass="monet.tara.metamodelplugin.highlighting.TaraSyntaxHighlighterFactory"/>
-        <colorSettingsPage implementation="monet.tara.metamodelplugin.highlighting.TaraColorSettingPage"/>
-        <annotator language="JAVA" implementationClass="monet.tara.metamodelplugin.TaraAnnotator"/>
-        <annotator language="GROOVY" implementationClass="monet.tara.metamodelplugin.TaraAnnotator"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="monet.tara.metamodelplugin.TaraLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="GROOVY" implementationClass="monet.tara.metamodelplugin.TaraLineMarkerProvider"/>
-        <completion.contributor language="Tara" implementationClass="monet.tara.metamodelplugin.TaraCompletionContributor"/>
-        <psi.referenceContributor implementation="monet.tara.metamodelplugin.TaraReferenceContributor"/>
-        <lang.refactoringSupport language="Tara" implementationClass="monet.tara.metamodelplugin.TaraRefactoringSupportProvider"/>
-        <lang.findUsagesProvider language="Tara" implementationClass="monet.tara.metamodelplugin.TaraFindUsagesProvider"/>
-        <lang.foldingBuilder language="Tara" implementationClass="monet.tara.metamodelplugin.TaraFoldingBuilder"/>
-        <lang.psiStructureViewFactory language="Tara" implementationClass="monet.tara.metamodelplugin.structureview.TaraStructureViewFactory"/>
+        <fileTypeFactory implementation="monet.tara.metamodel.file.TaraFileTypeFactory"/>
+        <lang.parserDefinition language="Tara" implementationClass="monet.tara.metamodel.TaraParserDefinition"/>
+        <lang.syntaxHighlighterFactory key="Tara" implementationClass="monet.tara.metamodel.highlighting.TaraSyntaxHighlighterFactory"/>
+        <!--<colorSettingsPage implementation="monet.tara.metamodel.highlighting.TaraColorSettingPage"/>-->
+        <!--<annotator language="JAVA" implementationClass="monet.tara.metamodel.TaraAnnotator"/>-->
+        <!--<annotator language="GROOVY" implementationClass="monet.tara.metamodel.TaraAnnotator"/>-->
+        <!--<codeInsight.lineMarkerProvider language="JAVA" implementationClass="TaraLineMarkerProvider"/>-->
+        <!--<codeInsight.lineMarkerProvider language="GROOVY" implementationClass="TaraLineMarkerProvider"/>-->
+        <!--<completion.contributor language="Tara" implementationClass="TaraCompletionContributor"/>-->
+        <!--<psi.referenceContributor implementation="TaraReferenceContributor"/>-->
+        <!--<lang.refactoringSupport language="Tara" implementationClass="TaraRefactoringSupportProvider"/>-->
+        <!--<lang.findUsagesProvider language="Tara" implementationClass="TaraFindUsagesProvider"/>-->
+        <!--<lang.foldingBuilder language="Tara" implementationClass="TaraFoldingBuilder"/>-->
+        <!--<lang.psiStructureViewFactory language="Tara" implementationClass="TaraStructureViewFactory"/>-->
     </extensions>
 </idea-plugin>

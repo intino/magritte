@@ -4,11 +4,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFileFactory;
 import monet.tara.metamodel.file.TaraFile;
 import monet.tara.metamodel.file.TaraFileType;
-import monet.tara.metamodelplugin.psi.TaraConceptDefinition;
+import monet.tara.metamodel.psi.TaraConceptDefinition;
 
 
 public class TaraElementFactory {
-	public static TaraConceptDefinition createCpncept(Project project, String name) {
+	public static TaraConceptDefinition createConcept(Project project, String name) {
 		final TaraFile file = createFile(project, name);
 		return (TaraConceptDefinition) file.getFirstChild();
 	}

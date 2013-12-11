@@ -2,7 +2,7 @@ package monet.tara.metamodel;
 
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;
-import monet.tara.metamodelplugin.psi.TaraConceptDefinition;
+import monet.tara.metamodel.psi.TaraConceptDefinition;
 
 public class TaraRefactoringSupportProvider extends RefactoringSupportProvider {
 	@Override

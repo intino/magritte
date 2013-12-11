@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiExpressionStatement;
 import com.intellij.psi.PsiIdentifier;
 import monet.tara.metamodel.psi.impl.TaraUtil;
-import monet.tara.metamodelplugin.psi.TaraConceptDefinition;
+import monet.tara.metamodel.psi.TaraConceptDefinition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

@@ -10,9 +10,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import monet.tara.metamodelplugin.TaraParser;
 import monet.tara.metamodel.file.TaraFile;
-import monet.tara.metamodelplugin.psi.TaraTypes;
+import monet.tara.metamodel.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Reader;
