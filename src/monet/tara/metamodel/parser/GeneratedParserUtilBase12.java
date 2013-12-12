@@ -33,7 +33,7 @@ import java.util.LinkedList;
  * @author gregsh
  */
 @SuppressWarnings("StringEquality")
-public class GeneratedParserUtilBase {
+public class GeneratedParserUtilBase12 {
 
 	private static final Logger LOG = Logger.getInstance("org.intellij.grammar.parser.GeneratedParserUtilBase");
 
