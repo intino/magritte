@@ -14,7 +14,7 @@ public class TaraPsiImplUtil {
 		else return null;
 	}
 
-	public static String getIdentifier(TaraReferencesBodyImpl element) {
+	public static String getIdentifier(TaraReferenceImpl element) {
 		ASTNode valueNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER);
 		if (valueNode != null) return valueNode.getText();
 		else return null;

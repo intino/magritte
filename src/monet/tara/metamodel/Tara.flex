@@ -82,7 +82,7 @@ import com.intellij.psi.TokenType;
 
 EOL=[\n] | ([^][ ]+[\n])
 INDENTED_LINE=[^][ ]+
-WS = [\ ]+ | [\t]+
+WS = [ ]+ | [\t]+
 END_OF_LINE_COMMENT =("#"|"!")[^\r\n]*
 
 //=====================
@@ -94,6 +94,7 @@ REF      = "ref"
 CONCEPT  = "concept"
 NAMESPACE= "namespace"
 INCLUDE  = "include"
+USE      = "use"
 
 //=====================
 //Concept modifiers
@@ -108,13 +109,18 @@ EXTENDS = {IS} {WS} {IDENTIFIER}
 //=====================
 //Range
 
-RANGE = {LEFT_BRACKET} {INT_NUMBER} {DOTS} {INT_NUMBER} {RIGHT_BRACKET}
+RANGE = {LEFT_BRACKET} {INT} {DOTS} ({INT} | "n") {RIGHT_BRACKET}
+
+PARAMETER = "(" {IDENTIFIER}* ")"
 
 //=====================
 //Brackets
 
-LEFT_BRACKET = "\["
+LEFT_BRACKET = "["
 RIGHT_BRACKET= "]"
+
+LEFT_PARENTH = "("
+RIGHT_PARENTH= ")"
 
 //=====================
 // Types
@@ -129,13 +135,14 @@ DOUBLE_TYPE  ="double"
 
 COMMA       = ","
 DOT         = "."
-DOTS        =".."
+DOTS        = ".."
+COLON       = ":" | ": "
 DOUBLE_COMMA = "\""
 
 //=====================
 // Relations
 
-ASSIGN = "="
+ASSIGN = "=" | "= "
 
 //=====================
 // Annotations
@@ -144,11 +151,10 @@ NAMEABLE ="@nameable"
 ROOT   = "@root"
 EXTENSIBLE  = "@extensible"
 ACTION = "@action:java"
+ANONYMOUS = "@anonymous"
 
-ANNOTATIONS = {NAMEABLE} | {ROOT} |{EXTENSIBLE} | {ACTION}
+ANNOTATION = {NAMEABLE} | {ROOT} | {EXTENSIBLE} | {ACTION}
 
-//=====================
-//"String"
 
 STRING= {DOUBLE_COMMA} {ALPHANUMERIC}* {DOUBLE_COMMA}
 
@@ -198,17 +204,15 @@ ALPHANUMERIC= [:jletterdigit:]*
 
     {REF}                       {  return TaraTypes.REF;}
 
+    {USE}                       {  return TaraTypes.USE;}
+
 	{MODIFIERS}                 {  return TaraTypes.MODIFIERS;}
 
 	{IS}                        {  return TaraTypes.IS;}
 
-	{ROOT}                      {  return TaraTypes.AT_ROOT;}
+	{ANNOTATION}                {  return TaraTypes.ANNOTATION;}
 
-	{NAMEABLE}                  {  return TaraTypes.NAMEABLE;}
-
-	{EXTENSIBLE}                {  return TaraTypes.EXTENSIBLE;}
-
-	{ACTION}                    {  return TaraTypes.ACTION;}
+	{ANONYMOUS}                 {  return TaraTypes.ANONYMOUS;}
 
 	{ASSIGN}                    {  return TaraTypes.ASSIGN; }
 
@@ -219,6 +223,12 @@ ALPHANUMERIC= [:jletterdigit:]*
 	{DOUBLE}                    {  return TaraTypes.DOUBLE; }
 
 	{IDENTIFIER}                {  return TaraTypes.IDENTIFIER;}
+
+	{RANGE}                     {  return TaraTypes.RANGE;}
+
+	{PARAMETER}                 {  return TaraTypes.PARAMETER;}
+
+	{COLON}                     {  return TaraTypes.COLON;}
 
 	{END_OF_LINE_COMMENT}       {  return TaraTypes.COMMENT; }
 

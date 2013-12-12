@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import monet.tara.metamodel.psi.TaraConceptDefinition;
 import monet.tara.metamodel.psi.TaraTypes;
-import monet.tara.metamodel.psi.impl.TaraReferencesBodyImpl;
+import monet.tara.metamodel.psi.impl.TaraReferenceImpl;
 import monet.tara.model.psi.TaraElementFactory;
 
 public class TaraPsiImplUtil {
@@ -15,7 +15,7 @@ public class TaraPsiImplUtil {
 		else return null;
 	}
 
-	public static String getIdentifier(TaraReferencesBodyImpl element) {
+	public static String getIdentifier(TaraReferenceImpl element) {
 		ASTNode valueNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER);
 		if (valueNode != null) return valueNode.getText();
 		else return null;

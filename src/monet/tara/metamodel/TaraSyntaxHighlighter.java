@@ -19,10 +19,9 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 
 	static final IElementType[] KEYWORD_LIST = { TaraTypes.CONCEPT, TaraTypes.IS, TaraTypes.HAS, TaraTypes.REF, TaraTypes.IS };
 
-	static final IElementType[] ANNOTATION_LIST = { TaraTypes.NAMEABLE, TaraTypes.AT_ROOT, TaraTypes.EXTENSIBLE, TaraTypes.ACTION };
+	static final IElementType[] ANNOTATION_LIST = { TaraTypes.ANNOTATION };
 
 	static final IElementType[] PRIMITIVE_TYPE_LIST = { TaraTypes.DOUBLE_TYPE, TaraTypes.INT_TYPE, TaraTypes.STRING_TYPE, TaraTypes.ID_TYPE };
-
 
 	public static final TextAttributesKey SEPARATOR = createTextAttributesKey("Tara_SEPARATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN);
 	public static final TextAttributesKey KEYWORD = createTextAttributesKey("Tara_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
@@ -70,11 +69,11 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 			return STRING_KEYS;
 		} else if (tokenType.equals(TaraTypes.ASSIGN)) {
 			return IDENTIFIERS_KEYS;
-		} else //(tokenType.equals(TaraTypes.IDENTIFIER)) {
+		} else if (tokenType.equals(TaraTypes.IDENTIFIER)) {
 			return IDENTIFIERS_KEYS;
-//		} else {
-//			return BAD_CHAR_KEYS;
-//		}
+		} else {
+			return BAD_CHAR_KEYS;
+		}
 	}
 
 
