@@ -17,20 +17,18 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
 
 public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 
-	static final IElementType[] KEYWORD_LIST = { TaraTypes.CONCEPT, TaraTypes.IS, TaraTypes.HAS, TaraTypes.REF, TaraTypes.IS };
-
-	static final IElementType[] ANNOTATION_LIST = { TaraTypes.ANNOTATION };
-
+	static final IElementType[] KEYWORD_LIST = { TaraTypes.CONCEPT, TaraTypes.IS, TaraTypes.HAS, TaraTypes.REF, TaraTypes.USE };
+	static final IElementType[] ANNOTATION_LIST = { TaraTypes.ANNOTATION, TaraTypes.ANONYMOUS };
+	static final IElementType[] OPERATORS = { TaraTypes.ASSIGN, TaraTypes.COLON, TaraTypes.RANGE };
 	static final IElementType[] PRIMITIVE_TYPE_LIST = { TaraTypes.DOUBLE_TYPE, TaraTypes.INT_TYPE, TaraTypes.STRING_TYPE, TaraTypes.ID_TYPE };
 
-	public static final TextAttributesKey SEPARATOR = createTextAttributesKey("Tara_SEPARATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN);
 	public static final TextAttributesKey KEYWORD = createTextAttributesKey("Tara_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+	public static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.CONSTANT);
 	public static final TextAttributesKey MODIFIERS = createTextAttributesKey("Tara_MODIFIERS", DefaultLanguageHighlighterColors.STATIC_FIELD);
 	public static final TextAttributesKey STRING = createTextAttributesKey("Tara_STRING", DefaultLanguageHighlighterColors.STRING);
 	public static final TextAttributesKey COMMENT = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
 	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.CONSTANT);
-	public static final TextAttributesKey ANNOTATION =
-	createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
+	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
 	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER", new TextAttributes(JBColor.RED, null, null, null, Font.BOLD));
 
@@ -42,6 +40,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 	private static final TextAttributesKey[] ANNOTATION_KEY = new TextAttributesKey[]{ ANNOTATION };
 	private static final TextAttributesKey[] NUMBERS_KEY = new TextAttributesKey[]{ NUMBERS };
 	private static final TextAttributesKey[] PRIMITIVE_KEY = new TextAttributesKey[]{ PRIMITIVE };
+	private static final TextAttributesKey[] OPERATORS_KEY = new TextAttributesKey[]{ OPERATOR };
 	private static final TextAttributesKey[] IDENTIFIERS_KEYS = new TextAttributesKey[0];
 
 	@NotNull
@@ -67,15 +66,14 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 			return MODIFIERS_KEYS;
 		} else if (tokenType.equals(TaraTypes.STRING)) {
 			return STRING_KEYS;
-		} else if (tokenType.equals(TaraTypes.ASSIGN)) {
-			return IDENTIFIERS_KEYS;
-		} else if (tokenType.equals(TaraTypes.IDENTIFIER)) {
+		} else if (isOperator(tokenType)) {
+			return OPERATORS_KEY;
+		} else if (tokenType.equals(TaraTypes.IDENTIFIER) || tokenType.equals(TaraTypes.LEFT_P) || tokenType.equals(TaraTypes.RIGHT_P)) {
 			return IDENTIFIERS_KEYS;
 		} else {
 			return BAD_CHAR_KEYS;
 		}
 	}
-
 
 	private boolean isKeyword(IElementType tokenType) {
 		for (IElementType elementType : KEYWORD_LIST)
@@ -91,6 +89,12 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 
 	private boolean isPrimitiveType(IElementType tokenType) {
 		for (IElementType elementType : PRIMITIVE_TYPE_LIST)
+			if (tokenType.equals(elementType)) return true;
+		return false;
+	}
+
+	private boolean isOperator(IElementType tokenType) {
+		for (IElementType elementType : OPERATORS)
 			if (tokenType.equals(elementType)) return true;
 		return false;
 	}

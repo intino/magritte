@@ -1,4 +1,4 @@
 package monet.tara.metamodel.parser;
 
-public class TaraParserUtil extends GeneratedParserUtilBase13 {
+public class TaraParserUtil extends GeneratedParserUtilBase {
 }

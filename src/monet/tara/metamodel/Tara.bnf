@@ -1,5 +1,5 @@
 {
-  parserClass='monet.tara.metamodel.TaraParser'
+  parserClass='monet.tara.metamodel.parser.TaraParser'
   parserUtilClass="monet.tara.metamodel.parser.TaraParserUtil"
 
   extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
@@ -32,7 +32,7 @@ child::=HAS IDENTIFIER RANGE? ANNOTATION* conceptBody*
 
 reference::=REF IDENTIFIER IDENTIFIER {methods=[getIdentifier]}
 
-intention::=USE IDENTIFIER COLON IDENTIFIER PARAMETER?
+intention::=USE IDENTIFIER COLON IDENTIFIER (LEFT_P IDENTIFIER RIGHT_P)?
 
 primitive_type ::=  ID_TYPE|INT_TYPE|STRING_TYPE|DOUBLE_TYPE
 

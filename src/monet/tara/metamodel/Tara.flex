@@ -16,7 +16,6 @@ import com.intellij.psi.TokenType;
 %eof{
 	if(stack.size() > 0) {
 		stack.pop();
-		return;
 	}
 
 %eof}
@@ -41,7 +40,7 @@ import com.intellij.psi.TokenType;
                 yypushback(yylength());
             return TaraTypes.DEDENT;
         }
-            return null;
+            return TokenType.WHITE_SPACE;
     }
 
 	private boolean isTextIndented(int textLength){
@@ -72,16 +71,13 @@ import com.intellij.psi.TokenType;
             if (isTextDedented(textLength))
                 yypushback(yylength());
             return TaraTypes.DEDENT;
-		} else if (isTextSibling(textLength)){
-        	return null;
-        } else {
-			return null;
-        }
+		} else
+            return TokenType.WHITE_SPACE;
 	}
 %}
 
 EOL=[\n] | ([^][ ]+[\n])
-INDENTED_LINE=[^][ ]+
+INDENT=[^][ ]+
 WS = [ ]+ | [\t]+
 END_OF_LINE_COMMENT =("#"|"!")[^\r\n]*
 
@@ -226,17 +222,20 @@ ALPHANUMERIC= [:jletterdigit:]*
 
 	{RANGE}                     {  return TaraTypes.RANGE;}
 
-	{PARAMETER}                 {  return TaraTypes.PARAMETER;}
+	{LEFT_PARENTH}              {  return TaraTypes.LEFT_P;}
+
+	{RIGHT_PARENTH}             {  return TaraTypes.RIGHT_P;}
+
 
 	{COLON}                     {  return TaraTypes.COLON;}
 
 	{END_OF_LINE_COMMENT}       {  return TaraTypes.COMMENT; }
 
-	{INDENTED_LINE}             {  IElementType elementType; if((elementType = calculateIndentationToken()) != null) return elementType;}
+	{INDENT}                    {  return calculateIndentationToken();}
 
-	{EOL}                       {  IElementType elementType; if((elementType = cleanStack()) != null) return elementType;}
+	{EOL}                       {  return cleanStack();}
 
 	{WS}                        {  return TokenType.WHITE_SPACE;}
 }
 
-	.                           { return TokenType.BAD_CHARACTER;}
+	.                           {  return TokenType.BAD_CHARACTER;}
