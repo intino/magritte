@@ -1,4 +1,4 @@
-package monet.tara.metamodelplugin;
+package monet.tara.metamodel;
 
 public class TaraAnnotatorTest {
 //	myFixture.configureByFiles("ReferenceTestData.java", "DefaultTestData.simple");
