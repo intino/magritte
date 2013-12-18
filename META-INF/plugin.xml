@@ -1,5 +1,5 @@
 <idea-plugin version="1">
-    <id>com.yourcompany.unique.plugin.id</id>
+    <id>siani.dev</id>
     <name>Tara Plugin</name>
     <version>1.0</version>
     <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
@@ -43,16 +43,15 @@
         <fileTypeFactory implementation="monet.tara.metamodel.file.TaraFileTypeFactory"/>
         <lang.parserDefinition language="Tara" implementationClass="monet.tara.metamodel.TaraParserDefinition"/>
         <lang.syntaxHighlighterFactory key="Tara" implementationClass="monet.tara.metamodel.highlighting.TaraSyntaxHighlighterFactory"/>
-        <!--<colorSettingsPage implementation="monet.tara.metamodel.highlighting.TaraColorSettingPage"/>-->
+        <colorSettingsPage implementation="monet.tara.metamodel.highlighting.TaraColorSettingPage"/>
         <!--<annotator language="JAVA" implementationClass="monet.tara.metamodel.TaraAnnotator"/>-->
-        <!--<annotator language="GROOVY" implementationClass="monet.tara.metamodel.TaraAnnotator"/>-->
         <!--<codeInsight.lineMarkerProvider language="JAVA" implementationClass="TaraLineMarkerProvider"/>-->
-        <!--<codeInsight.lineMarkerProvider language="GROOVY" implementationClass="TaraLineMarkerProvider"/>-->
-        <!--<completion.contributor language="Tara" implementationClass="TaraCompletionContributor"/>-->
-        <!--<psi.referenceContributor implementation="TaraReferenceContributor"/>-->
-        <!--<lang.refactoringSupport language="Tara" implementationClass="TaraRefactoringSupportProvider"/>-->
-        <!--<lang.findUsagesProvider language="Tara" implementationClass="TaraFindUsagesProvider"/>-->
-        <!--<lang.foldingBuilder language="Tara" implementationClass="TaraFoldingBuilder"/>-->
+        <completion.contributor language="Tara" implementationClass="monet.tara.metamodel.TaraCompletionContributor"/>
+        <!--<psi.referenceContributor language="Tara" implementation="monet.tara.metamodel.TaraReferenceContributor"/>-->
+        <lang.refactoringSupport language="Tara"
+                                 implementationClass="monet.tara.metamodel.TaraRefactoringSupportProvider"/>
+        <lang.findUsagesProvider language="Tara" implementationClass="monet.tara.metamodel.TaraFindUsagesProvider"/>
+        <lang.foldingBuilder language="Tara" implementationClass="monet.tara.metamodel.TaraFoldingBuilder"/>
         <!--<lang.psiStructureViewFactory language="Tara" implementationClass="TaraStructureViewFactory"/>-->
     </extensions>
 </idea-plugin>
