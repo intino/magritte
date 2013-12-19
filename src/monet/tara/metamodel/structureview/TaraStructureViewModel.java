@@ -8,15 +8,15 @@ import com.intellij.psi.PsiFile;
 import monet.tara.metamodel.file.TaraFile;
 import org.jetbrains.annotations.NotNull;
 
-public class TaraStructureViewModel extends StructureViewModelBase implements
-		StructureViewModel.ElementInfoProvider {
+public class TaraStructureViewModel extends StructureViewModelBase implements StructureViewModel.ElementInfoProvider {
+
 	public TaraStructureViewModel(PsiFile psiFile) {
 		super(psiFile, new TaraStructureViewElement(psiFile));
 	}
 
 	@NotNull
 	public Sorter[] getSorters() {
-		return new Sorter[] { Sorter.ALPHA_SORTER};
+		return new Sorter[]{ Sorter.ALPHA_SORTER };
 	}
 
 

@@ -29,21 +29,19 @@ public class TaraStructureViewElement implements StructureViewTreeElement, Sorta
 
 	@Override
 	public void navigate(boolean requestFocus) {
-		if (element instanceof NavigationItem) {
+		if (element instanceof NavigationItem)
 			((NavigationItem) element).navigate(requestFocus);
-		}
 	}
 
 	@Override
 	public boolean canNavigate() {
 		return element instanceof NavigationItem &&
-		       ((NavigationItem) element).canNavigate();
+				((NavigationItem) element).canNavigate();
 	}
 
 	@Override
 	public boolean canNavigateToSource() {
-		return element instanceof NavigationItem &&
-		       ((NavigationItem) element).canNavigateToSource();
+		return element instanceof NavigationItem && ((NavigationItem) element).canNavigateToSource();
 	}
 
 	@Override
@@ -53,21 +51,18 @@ public class TaraStructureViewElement implements StructureViewTreeElement, Sorta
 
 	@Override
 	public ItemPresentation getPresentation() {
-		return element instanceof NavigationItem ?
-		       ((NavigationItem) element).getPresentation() : null;
+		return element instanceof NavigationItem ? ((NavigationItem) element).getPresentation() : null;
 	}
 
 	@Override
 	public TreeElement[] getChildren() {
 		if (element instanceof TaraFile) {
 			TaraConceptDefinition[] concepts = PsiTreeUtil.getChildrenOfType(element, TaraConceptDefinition.class);
-			List<TreeElement> treeElements = new ArrayList<TreeElement>(concepts.length);
-			for (TaraConceptDefinition concept : concepts) {
+			List<TreeElement> treeElements = new ArrayList<>(concepts.length);
+			for (TaraConceptDefinition concept : concepts)
 				treeElements.add(new TaraStructureViewElement(concept));
-			}
 			return treeElements.toArray(new TreeElement[treeElements.size()]);
-		} else {
-			return EMPTY_ARRAY;
 		}
+		return EMPTY_ARRAY;
 	}
 }

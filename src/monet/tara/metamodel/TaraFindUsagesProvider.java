@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
 import monet.tara.metamodel.psi.TaraConceptDefinition;
+import monet.tara.metamodel.psi.TaraIdentifier;
 import monet.tara.metamodel.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +18,7 @@ import java.io.Reader;
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	private static final DefaultWordsScanner WORDS_SCANNER =
 			new DefaultWordsScanner(new FlexAdapter(new TaraLexer((Reader) null)),
-					                       TokenSet.create(TaraTypes.IDENTIFIER), TokenSet.create(TaraTypes.COMMENT), TokenSet.EMPTY);
+					TokenSet.create(TaraTypes.IDENTIFIER), TokenSet.create(TaraTypes.COMMENT), TokenSet.EMPTY);
 
 	@Nullable
 	@Override
@@ -49,18 +50,18 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	@NotNull
 	@Override
 	public String getDescriptiveName(@NotNull PsiElement element) {
-		if (element instanceof TaraConceptDefinition) {
-			return ((TaraConceptDefinition) element).getIdentifier();
+		if (element instanceof TaraIdentifier) {
+			return ((TaraIdentifier) element).getIdentifier();
 		} else {
-			return "";
+			return "Error, no text";
 		}
 	}
 
 	@NotNull
 	@Override
 	public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
-		if (element instanceof TaraConceptDefinition )
-			return ((TaraConceptDefinition) element).getIdentifier();
-		else return "";
+		if (element instanceof TaraIdentifier)
+			return ((TaraIdentifier) element).getIdentifier();
+		else return "Error, no text";
 	}
 }

@@ -6,9 +6,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
-import monet.tara.metamodel.psi.impl.TaraUtil;
 import monet.tara.metamodel.psi.TaraConceptDefinition;
 import monet.tara.metamodel.psi.TaraTypes;
+import monet.tara.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -18,17 +18,17 @@ public class TaraCompletionContributor extends CompletionContributor {
 
 	public TaraCompletionContributor() {
 		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.IDENTIFIER).withLanguage(TaraLanguage.INSTANCE),
-				      new CompletionProvider<CompletionParameters>() {
-					      public void addCompletions(@NotNull CompletionParameters parameters,
-					                                 ProcessingContext context,
-					                                 @NotNull CompletionResultSet resultSet) {
-						      PsiElement psiElement = parameters.getOriginalPosition();
-						      Project project = psiElement.getProject();
-						      List<TaraConceptDefinition> concepts = TaraUtil.getConcepts(project);
-						      for (TaraConceptDefinition concept : concepts)
-							      resultSet.addElement(LookupElementBuilder.create(concept.getIdentifier()));
-					      }
-				      }
+				new CompletionProvider<CompletionParameters>() {
+					public void addCompletions(@NotNull CompletionParameters parameters,
+					                           ProcessingContext context,
+					                           @NotNull CompletionResultSet resultSet) {
+						PsiElement psiElement = parameters.getOriginalPosition();
+						Project project = psiElement.getProject();
+						List<TaraConceptDefinition> concepts = TaraUtil.getConcepts(project);
+						for (TaraConceptDefinition concept : concepts)
+							resultSet.addElement(LookupElementBuilder.create(concept.getName()));
+					}
+				}
 		);
 	}
 }

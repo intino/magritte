@@ -5,11 +5,11 @@ import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import monet.tara.metamodel.psi.impl.TaraUtil;
 import monet.tara.metamodel.psi.TaraConceptDefinition;
+import monet.tara.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,33 +21,39 @@ public class TaraFoldingBuilder extends FoldingBuilderEx {
 
 	@NotNull
 	@Override
-	public FoldingDescriptor[] buildFoldRegions(@NotNull com.intellij.psi.PsiElement root, @NotNull Document document, boolean quick) {
+	public FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
 		FoldingGroup group = FoldingGroup.newGroup("tara");
-		List<FoldingDescriptor> descriptors = new ArrayList<FoldingDescriptor>();
+		List<FoldingDescriptor> descriptors = new ArrayList<>();
 		Collection<TaraConceptDefinition> concepts = PsiTreeUtil.findChildrenOfType(root, TaraConceptDefinition.class);
-		for (final TaraConceptDefinition concept : concepts) {
-			String value = concept.getText();
-			if (value != null && value.startsWith("concept ")) {
-				Project project = concept.getProject();
-				final List<TaraConceptDefinition> conceptDefinitions = TaraUtil.findConcept(project, concept.getIdentifier());
-				if (conceptDefinitions.size() == 1)
-					descriptors.add(new FoldingDescriptor(conceptDefinitions.get(0).getNode(),
-					                                     new TextRange(conceptDefinitions.get(0).getTextRange().getStartOffset(),
-					                                                  conceptDefinitions.get(0).getTextRange().getEndOffset() - 1), group) {
-						@Nullable @Override
+		for (final TaraConceptDefinition concept : concepts)
+			if (concept.getText() != null && concept.getText().startsWith("concept ")) {
+				final List<TaraConceptDefinition> conceptDefinitions = TaraUtil.findConcept(concept.getProject(), concept.getName());
+				if (conceptDefinitions.size() == 1 && conceptDefinitions.get(0).getConceptBody() != null)
+					descriptors.add(new FoldingDescriptor(conceptDefinitions.get(0).getConceptBody().getNode(),
+							getRange(conceptDefinitions.get(0))) {
+						@Nullable
+						@Override
 						public String getPlaceholderText() {
-							return conceptDefinitions.get(0).getIdentifier();
+							return getHolderText(conceptDefinitions.get(0));
 						}
 					});
 			}
-		}
 		return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
+	}
+
+	private String getHolderText(TaraConceptDefinition conceptDefinition) {
+		return conceptDefinition.getConceptSignature().getText() + " {...}";
+	}
+
+	private TextRange getRange(TaraConceptDefinition conceptDefinition) {
+		return new TextRange(conceptDefinition.getTextRange().getStartOffset(),
+				conceptDefinition.getTextRange().getEndOffset() - 1);
 	}
 
 	@Nullable
 	@Override
 	public String getPlaceholderText(@NotNull ASTNode node) {
-		return "...";
+		return ((TaraConceptDefinition) node.getPsi()).getConceptSignature() + " {...}";
 	}
 
 	@Override

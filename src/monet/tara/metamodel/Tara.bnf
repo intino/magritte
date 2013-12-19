@@ -18,21 +18,23 @@
 
 root ::=(COMMENT|conceptDefinition)+
 
-conceptDefinition ::= conceptSignature conceptBody?  {mixin='monet.tara.metamodel.psi.impl.TaraNamedElementImpl' implements='monet.tara.metamodel.psi.TaraNamedElement' methods=[getIdentifier getName setName getNameIdentifier]}
+conceptDefinition ::= conceptSignature conceptBody? {mixin='monet.tara.metamodel.psi.impl.TaraNamedElementImpl' implements='monet.tara.metamodel.psi.TaraNamedElement' methods=[getName setName getNameIdentifier]}
 
-conceptSignature ::= CONCEPT MODIFIERS? IDENTIFIER (IS IDENTIFIER)? ANNOTATION*
+conceptSignature ::= CONCEPT MODIFIERS? identifier (IS identifier)? ANNOTATION*
 
-private conceptBody::= INDENT statement+ DEDENT
+conceptBody::= INDENT statement+ DEDENT
 
-private statement::= property | child | reference | intention
+statement::= property | child | referenceStatement | intention
 
-property::=primitive_type IDENTIFIER (ASSIGN  primitive)? ANONYMOUS?
+property::=primitive_type identifier (ASSIGN  primitive)? ANONYMOUS?
 
-child::=HAS IDENTIFIER RANGE? ANNOTATION* conceptBody*
+child::=HAS identifier RANGE? ANNOTATION* conceptBody*
 
-reference::=REF IDENTIFIER IDENTIFIER {methods=[getIdentifier]}
+identifier ::= IDENTIFIER_KEY {methods=[getIdentifier]}
 
-intention::=USE IDENTIFIER COLON IDENTIFIER (LEFT_P IDENTIFIER RIGHT_P)?
+referenceStatement::=REF identifier IDENTIFIER_KEY
+
+intention::=USE identifier COLON identifier (LEFT_P identifier RIGHT_P)?
 
 primitive_type ::=  ID_TYPE|INT_TYPE|STRING_TYPE|DOUBLE_TYPE
 

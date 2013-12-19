@@ -22,7 +22,6 @@ import com.intellij.psi.TokenType;
 
 
 %{
-
 	static Stack<Integer> stack = new Stack<>();
 
 	private int transformToSpaces(CharSequence chain){
@@ -100,14 +99,14 @@ ABSTRACT = "abstract"
 
 MODIFIERS = {FINAL} | {ABSTRACT}
 
-EXTENDS = {IS} {WS} {IDENTIFIER}
+EXTENDS = {IS} {WS} {IDENTIFIER_KEY}
 
 //=====================
 //Range
 
 RANGE = {LEFT_BRACKET} {INT} {DOTS} ({INT} | "n") {RIGHT_BRACKET}
 
-PARAMETER = "(" {IDENTIFIER}* ")"
+PARAMETER = "(" {IDENTIFIER_KEY}* ")"
 
 //=====================
 //Brackets
@@ -152,7 +151,7 @@ ANONYMOUS = "@anonymous"
 ANNOTATION = {NAMEABLE} | {ROOT} | {EXTENSIBLE} | {ACTION}
 
 
-STRING= {DOUBLE_COMMA} {ALPHANUMERIC}* {DOUBLE_COMMA}
+STRING= {DOUBLE_COMMA} ([ ] | {ALPHANUMERIC})* {DOUBLE_COMMA}
 
 //=====================
 //Tabs
@@ -169,7 +168,7 @@ DIGIT=[:digit:]
 
 //=====================
 //Identifier
-IDENTIFIER = [:jletter:] [:jletterdigit:]*
+IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 //=====================
 //Letters
@@ -181,7 +180,6 @@ LETTER= [:jletter:]
 //Alphanumeric
 
 ALPHANUMERIC= [:jletterdigit:]*
-
 
 %%
 <YYINITIAL> {
@@ -218,14 +216,13 @@ ALPHANUMERIC= [:jletterdigit:]*
 
 	{DOUBLE}                    {  return TaraTypes.DOUBLE; }
 
-	{IDENTIFIER}                {  return TaraTypes.IDENTIFIER;}
+	{IDENTIFIER_KEY}            {  return TaraTypes.IDENTIFIER_KEY;}
 
 	{RANGE}                     {  return TaraTypes.RANGE;}
 
 	{LEFT_PARENTH}              {  return TaraTypes.LEFT_P;}
 
 	{RIGHT_PARENTH}             {  return TaraTypes.RIGHT_P;}
-
 
 	{COLON}                     {  return TaraTypes.COLON;}
 

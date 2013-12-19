@@ -9,8 +9,8 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiExpressionStatement;
 import com.intellij.psi.PsiIdentifier;
-import monet.tara.metamodel.psi.impl.TaraUtil;
 import monet.tara.metamodel.psi.TaraConceptDefinition;
+import monet.tara.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -32,11 +32,11 @@ public class TaraAnnotator implements Annotator {
 				List<TaraConceptDefinition> concepts = TaraUtil.findConcept(project, identifier.getText().replace(";", ""));
 				if (concepts.size() == 1) {
 					TextRange range = new TextRange(element.getTextRange().getStartOffset(), identifier.getTextRange().getEndOffset());
-					Annotation annotation = holder.createInfoAnnotation(range, "Concept " + concepts.get(0).getIdentifier());
+					Annotation annotation = holder.createInfoAnnotation(range, "Concept " + concepts.get(0).getName());
 					annotation.setTextAttributes(DefaultLanguageHighlighterColors.LINE_COMMENT);
 				} else if (concepts.size() == 0) {
 					TextRange range = new TextRange(element.getTextRange().getStartOffset() + 6,
-							                               element.getTextRange().getEndOffset());
+							element.getTextRange().getEndOffset());
 					holder.createErrorAnnotation(range, "Unresolved concept");
 				}
 			}

@@ -5,8 +5,8 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
-import monet.tara.metamodel.psi.impl.TaraUtil;
 import monet.tara.metamodel.psi.TaraConceptDefinition;
+import monet.tara.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,9 +45,10 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 		Project project = myElement.getProject();
 		List<TaraConceptDefinition> concepts = TaraUtil.findProperties(project);
 		List<LookupElement> variants = new ArrayList<LookupElement>();
-		for (final TaraConceptDefinition concept : concepts)
-			if (concept.getIdentifier() != null && concept.getIdentifier().length() > 0)
-				variants.add(LookupElementBuilder.create(concept).withIcon(TaraIcons.FILE).withTypeText(concept.getContainingFile().getName()));
+		for (final TaraConceptDefinition concept : concepts) {
+			if (concept.getName() != null && concept.getName().length() > 0)
+				variants.add(LookupElementBuilder.create(concept).withIcon(TaraIcons.ICON).withTypeText(concept.getContainingFile().getName()));
+		}
 		return variants.toArray();
 	}
 }

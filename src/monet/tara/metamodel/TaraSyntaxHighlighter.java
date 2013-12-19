@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
 import monet.tara.metamodel.psi.TaraTypes;
@@ -42,6 +43,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 	private static final TextAttributesKey[] PRIMITIVE_KEY = new TextAttributesKey[]{ PRIMITIVE };
 	private static final TextAttributesKey[] OPERATORS_KEY = new TextAttributesKey[]{ OPERATOR };
 	private static final TextAttributesKey[] IDENTIFIERS_KEYS = new TextAttributesKey[0];
+	private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
 	@NotNull
 	@Override
@@ -68,10 +70,14 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 			return STRING_KEYS;
 		} else if (isOperator(tokenType)) {
 			return OPERATORS_KEY;
-		} else if (tokenType.equals(TaraTypes.IDENTIFIER) || tokenType.equals(TaraTypes.LEFT_P) || tokenType.equals(TaraTypes.RIGHT_P)) {
+		} else if (tokenType.equals(TokenType.WHITE_SPACE)) {
+			return EMPTY_KEYS;
+		} else if (tokenType.equals(TaraTypes.IDENTIFIER_KEY) || tokenType.equals(TaraTypes.LEFT_P) || tokenType.equals(TaraTypes.RIGHT_P)) {
 			return IDENTIFIERS_KEYS;
-		} else {
+		} else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
 			return BAD_CHAR_KEYS;
+		} else {
+			return EMPTY_KEYS;
 		}
 	}
 
