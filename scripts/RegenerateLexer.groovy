@@ -1,4 +1,4 @@
 File file = new File('src/monet/tara/metamodel/TaraLexer.java')
 fileText = file.text;
-fileText = fileText.replace('zzBufferL[zzCurrentPosL++]', 'zzBufferL.charAt(zzCurrentPosL++)')
-file.write fileText;
+file.write fileText.replace('zzBufferL[zzCurrentPosL++]', 'zzBufferL.charAt(zzCurrentPosL++)');
+println "Lexer regenerated"
