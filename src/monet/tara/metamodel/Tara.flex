@@ -78,7 +78,7 @@ import com.intellij.psi.TokenType;
 EOL=[\n] | ([^][ ]+[\n])
 INDENT=[^][ ]+
 WS = [ ]+ | [\t]+
-END_OF_LINE_COMMENT =("#"|"!")[^\r\n]*
+END_OF_LINE_COMMENT = ("#"|"!")[^\r\n]*
 
 //=====================
 //Reserved words
