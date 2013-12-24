@@ -16,9 +16,6 @@ import org.jetbrains.annotations.NotNull;
 public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory {
 	@NonNls
 	public static final String[] TEMPLATES = { TaraTemplates.METAMODEL_UNIT };
-	@NonNls
-	static final String NAME_TEMPLATE_PROPERTY = "NAME";
-	static final String LOW_CASE_NAME_TEMPLATE_PROPERTY = "lowCaseName";
 
 	private static class TaraTemplatesFactoryHolder {
 		private static final TaraTemplatesFactory myInstance = new TaraTemplatesFactory();
