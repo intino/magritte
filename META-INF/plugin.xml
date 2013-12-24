@@ -2,7 +2,7 @@
     <id>siani.dev</id>
     <name>Tafat Plugin</name>
     <version>1.0</version>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <vendor email="oroncal@siani.es" url="http://www.monet.org">YourCompany</vendor>
 
     <description><![CDATA[
       Enter short description for your plugin here.<br>
@@ -34,11 +34,24 @@
     </application-components>
 
     <project-components>
+        <component>
+            <implementation-class>monet.tara.compiler.TaraCompilerLoader</implementation-class>
+        </component>
     </project-components>
 
     <extensions defaultExtensionNs="com.intellij">
         <internalFileTemplate name="Metamodel Unit"/>
         <moduleType id="TARA_MODULE" implementationClass="monet.tara.project.module.TaraModuleType"/>
+
+        <projectConfigurable instance="monet.tara.compiler.TaraCompilerConfigurable" id="Tara compiler"
+                             displayName="Tara Compiler" parentId="project.propCompiler"/>
+
+        <projectService serviceInterface="monet.tara.compiler.TaraCompilerWorkspaceConfiguration"
+                        serviceImplementation="monet.tara.compiler.TaraCompilerWorkspaceConfiguration"/>
+        <projectService serviceInterface="monet.tara.compiler.TaraCompilerConfiguration"
+                        serviceImplementation="monet.tara.compiler.TaraCompilerConfiguration"/>
+        <configurationType implementation="monet.tara.project.runner.TaraRunConfigurationType"/>
+
         <fileTemplateGroup implementation="monet.tara.project.TaraTemplatesFactory"/>
         <fileTypeFactory implementation="monet.tara.metamodel.file.TaraFileTypeFactory"/>
         <lang.parserDefinition language="Tara" implementationClass="monet.tara.metamodel.TaraParserDefinition"/>
