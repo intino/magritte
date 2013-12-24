@@ -16,7 +16,7 @@
   psiImplUtilClass='monet.tara.metamodel.psi.impl.TaraPsiImplUtil'
 }
 
-root ::=(COMMENT|conceptDefinition)+
+root ::= (COMMENT|conceptDefinition)+
 
 conceptDefinition ::= conceptSignature conceptBody? {mixin='monet.tara.metamodel.psi.impl.TaraNamedElementImpl' implements='monet.tara.metamodel.psi.TaraNamedElement' methods=[getName setName getNameIdentifier]}
 
