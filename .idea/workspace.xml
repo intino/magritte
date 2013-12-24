@@ -1,82 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/plugin/project/ProjectWizardStep.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/Tara.bnf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/psi/TaraElementFactory.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/model/psi/TaraElementType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/model/file/TaraFile.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/model/file/TaraFileType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/model/file/TaraFileTypeFactory.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/model/psi/TaraNamedElement.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/model/psi/impl/TaraNamedElementImpl.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/psi/impl/TaraPsiImplUtil.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/model/psi/TaraTokenType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/model/psi/impl/TaraUtil.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/TaraParser.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/TaraANNOTATION.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/TaraAttrSiblings.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/TaraChildrenBody.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/TaraConceptBody.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/TaraConceptDefinition.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/TaraPRIMITIVE.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/TaraPRIMITIVETYPE.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/TaraPropertiesBody.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/TaraReferencesBody.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/TaraTypes.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/TaraVisitor.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraANNOTATIONImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraAttrSiblingsImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraChildrenBodyImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraConceptBodyImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraConceptDefinitionImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraPRIMITIVEImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraPRIMITIVETYPEImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraPropertiesBodyImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/psi/impl/TaraReferencesBodyImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/Tara.bnf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraLexer.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/TaraMetamodelPlugin.iml" afterPath="$PROJECT_DIR$/TaraPlugin.iml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/Tara.flex" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/Tara.flex" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraAnnotator.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/TaraAnnotator.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraCompletionContributor.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/TaraCompletionContributor.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraFindUsagesProvider.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/TaraFindUsagesProvider.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraFoldingBuilder.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/TaraFoldingBuilder.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraIcons.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/TaraIcons.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraLanguage.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/TaraLanguage.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraLineMarkerProvider.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/TaraLineMarkerProvider.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraParserDefinition.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/TaraParserDefinition.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraRefactoringSupportProvider.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/TaraRefactoringSupportProvider.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraReference.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/TaraReference.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraReferenceContributor.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/TaraReferenceContributor.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraSyntaxHighlighter.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/TaraSyntaxHighlighter.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/file/TaraFile.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/file/TaraFile.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/file/TaraFileType.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/file/TaraFileType.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/file/TaraFileTypeFactory.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/file/TaraFileTypeFactory.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/highlighting/TaraColorSettingPage.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/highlighting/TaraColorSettingPage.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/highlighting/TaraSyntaxHighlighterFactory.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/highlighting/TaraSyntaxHighlighterFactory.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/icons/monet-hrz.png" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/icons/monet-hrz.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/icons/monet-title.png" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/icons/monet-title.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/icons/monet.png" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/icons/monet.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/parser/GeneratedParserUtilBase.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/parser/GeneratedParserUtilBase.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/project/TaraMetamodelApplication.java" afterPath="$PROJECT_DIR$/src/monet/tara/plugin/project/TaraMetamodelApplication.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/project/TaraMetamodelProject.java" afterPath="$PROJECT_DIR$/src/monet/tara/plugin/project/TaraMetamodelProject.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/psi/TaraElementFactory.java" afterPath="$PROJECT_DIR$/src/monet/tara/model/psi/TaraElementFactory.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/psi/TaraElementType.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/psi/TaraElementType.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/psi/TaraNamedElement.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/psi/TaraNamedElement.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/psi/TaraTokenType.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/psi/TaraTokenType.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/psi/impl/TaraNamedElementImpl.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/psi/impl/TaraNamedElementImpl.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/psi/impl/TaraPsiImplUtil.java" afterPath="$PROJECT_DIR$/src/monet/tara/model/psi/impl/TaraPsiImplUtil.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/psi/impl/TaraUtil.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/psi/impl/TaraUtil.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/structureview/TaraStructureViewElement.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/structureview/TaraStructureViewElement.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/structureview/TaraStructureViewFactory.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/structureview/TaraStructureViewFactory.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/monet/tara/metamodelplugin/structureview/TaraStructureViewModel.java" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/structureview/TaraStructureViewModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="$PROJECT_DIR$/.idea/.name" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+    <list default="true" id="8b9fd905-5f87-4fab-84d7-6a6f88a061f9" name="Default" comment="manifest&#10;">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/project/runner/DefaultTaraRunner.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/compiler/jps/JpsTaraSettings.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompiler.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerBase.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerConfigurable.form" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerConfigurable.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerConfiguration.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerLoader.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerWorkspaceConfiguration.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunConfiguration.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunConfigurationEditor.form" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunConfigurationEditor.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunConfigurationType.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunner.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunnerUtil.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/monet/tara/compiler/generator/TaracStubGenerator.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/monet/tara/metamodel/Tara.bnf" afterPath="$PROJECT_DIR$/src/monet/tara/metamodel/Tara.bnf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/monet/tara/project/TaraTemplatesFactory.java" afterPath="$PROJECT_DIR$/src/monet/tara/project/TaraTemplatesFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" afterPath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/META-INF/plugin.xml" afterPath="$PROJECT_DIR$/META-INF/plugin.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/watcherTasks.xml" afterPath="$PROJECT_DIR$/.idea/watcherTasks.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="MonetMetamodelPlugin.iws" />
@@ -153,7 +100,7 @@
   <component name="DebuggerManager">
     <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true">
-      <breakpoint url="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraFindUsagesProvider.java" line="18" class="monet.tara.metamodel.TaraFindUsagesProvider" package="monet.tara.metamodel">
+      <breakpoint url="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraAnnotator.java" line="31" class="monet.tara.metamodel.TaraAnnotator" package="monet.tara.metamodel">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -168,7 +115,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraLexer.java" line="717" class="monet.tara.metamodel.TaraLexer" package="monet.tara.metamodel">
+      <breakpoint url="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerBase.java" line="49" class="monet.tara.compiler.TaraCompilerBase" package="monet.tara.compiler">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -183,7 +130,52 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraLexer.java" line="395" class="monet.tara.metamodel.TaraLexer" package="monet.tara.metamodel">
+      <breakpoint url="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerLoader.java" line="28" class="monet.tara.compiler.TaraCompilerLoader" package="monet.tara.compiler">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/monet/tara/compiler/generator/TaracStubGenerator.java" line="60" class="monet.tara.compiler.generator.TaracStubGenerator" package="monet.tara.compiler.generator">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompiler.java" line="30" class="monet.tara.compiler.TaraCompiler" package="monet.tara.compiler">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerBase.java" line="290" class="monet.tara.compiler.TaraCompilerBase" package="monet.tara.compiler">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -244,75 +236,57 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Tara.bnf" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/Tara.bnf">
+      <file leaf-file-name="plugin.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/META-INF/plugin.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="14" selection-start="195" selection-end="195" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="799">
+            <state line="37" column="66" selection-start="1320" selection-end="1320" vertical-scroll-proportion="0.0" vertical-offset="374" max-vertical-offset="1309">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Tara.flex" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/Tara.flex">
+      <file leaf-file-name="TaraCompilerLoader.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerLoader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="82" column="41" selection-start="1959" selection-end="1959" vertical-scroll-proportion="0.9444444" vertical-offset="476" max-vertical-offset="3978">
-              <folding>
-                <marker date="1386757191770" expanded="false" signature="38:212" placeholder="..." />
-                <marker date="1386757191770" expanded="true" signature="331:398" placeholder="{...}" />
-                <marker date="1386757191770" expanded="false" signature="452:471" placeholder="&lt;~&gt;" />
-                <marker date="1386757191770" expanded="true" signature="526:671" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="707:967" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="1004:1025" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="1074:1153" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="1202:1287" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="1335:1418" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="1470:1962" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="3547:3575" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="3607:3630" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="3662:3691" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="3726:3758" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="3793:3825" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="3860:3888" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="3923:3946" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="3979:4008" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4041:4063" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4096:4123" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4156:4184" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4217:4247" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4280:4306" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4339:4366" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4399:4426" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4459:4483" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4516:4543" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4576:4606" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4639:4667" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4700:4800" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4866:4888" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4921:4950" placeholder="{...}" />
-                <marker date="1386757191770" expanded="true" signature="4984:5017" placeholder="{...}" />
-              </folding>
+            <state line="54" column="0" selection-start="2327" selection-end="2327" vertical-scroll-proportion="0.0" vertical-offset="609" max-vertical-offset="1547">
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TaraLexer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraLexer.java">
+      <file leaf-file-name="TaracStubGenerator.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/generator/TaracStubGenerator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="597" column="3" selection-start="21161" selection-end="21161" vertical-scroll-proportion="0.0" vertical-offset="8569" max-vertical-offset="12308">
+            <state line="52" column="49" selection-start="2293" selection-end="2293" vertical-scroll-proportion="0.019428572" vertical-offset="867" max-vertical-offset="4369">
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="docComment;class#TaraLexer#0" expanded="true" />
-                <element signature="docComment;method#zzDoEOF#0;class#TaraLexer#0" expanded="true" />
+                <element signature="e#2620#2677#1" expanded="true" />
+                <element signature="e#2731#2915#0" expanded="true" />
+                <element signature="e#2910#2911#0" expanded="true" />
+                <element signature="e#4109#4347#0" expanded="true" />
+                <element signature="e#4341#4342#0" expanded="true" />
+                <element signature="e#6759#7348#0" expanded="true" />
+                <element signature="e#6909#7290#0" expanded="true" />
+                <element signature="e#7282#7283#0" expanded="true" />
+                <element signature="e#7343#7344#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TaraSyntaxHighlighterFactory.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/highlighting/TaraSyntaxHighlighterFactory.java">
+      <file leaf-file-name="TaraCompilerBase.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerBase.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="0" selection-start="512" selection-end="512" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="272">
+            <state line="316" column="37" selection-start="14177" selection-end="14177" vertical-scroll-proportion="0.0" vertical-offset="5372" max-vertical-offset="6256">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TaraCompiler.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompiler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="33" column="60" selection-start="1214" selection-end="1214" vertical-scroll-proportion="0.0" vertical-offset="561" max-vertical-offset="2210">
               <folding />
             </state>
           </provider>
@@ -390,53 +364,57 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="/Tara.bnf.preview" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraReferenceContributor.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraFoldingBuilder.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraFindUsagesProvider.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraMetamodelProject.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/project/TaraMetamodelApplication.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/highlighting/TaraSyntaxHighlighter.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraSyntaxHighlighter.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraAnnotator.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraCompletionContributor.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/ProjectWizardStep.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/project/TaraMetamodelProject.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/Tara.bnf" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/TaraLexer.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodelplugin/Tara.flex" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/highlighting/TaraColorSettingPage.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/file/TaraFileType.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/model/file/TaraFileType.java" />
-        <option value="$PROJECT_DIR$/gen/monet/tara/metamodelplugin/TaraParser.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/model/psi/TaraElementFactory.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/TaraReference.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/TaraRefactoringSupportProvider.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/TaraAnnotator.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/TaraCompletionContributor.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/TaraLineMarkerProvider.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/TaraFindUsagesProvider.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/TaraFoldingBuilder.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/TaraParserDefinition.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/psi/TaraElementFactory.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/psi/impl/TaraPsiImplUtil.java" />
         <option value="$PROJECT_DIR$/src/monet/tara/metamodel/structureview/TaraStructureViewElement.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/psi/impl/TaraUtil.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/model/psi/impl/TaraPsiImplUtil.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/model/psi/impl/TaraUtil.java" />
-        <option value="$PROJECT_DIR$/gen/monet/tara/metamodel/psi/TaraAnnotation.java" />
-        <option value="$PROJECT_DIR$/gen/monet/tara/metamodel/psi/TaraChildrenBody.java" />
-        <option value="$USER_HOME$/Applications/ideaSources/platform/core-api/src/com/intellij/lang/PsiParser.java" />
-        <option value="$PROJECT_DIR$/gen/monet/tara/metamodel/psi/impl/TaraChildrenBodyImpl.java" />
-        <option value="$PROJECT_DIR$/gen/monet/tara/metamodel/psi/impl/TaraAnnotationImpl.java" />
-        <option value="$PROJECT_DIR$/gen/monet/tara/metamodel/psi/impl/TaraConceptBlockImpl.java" />
-        <option value="$PROJECT_DIR$/gen/monet/tara/metamodel/TaraParser.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/parser/GeneratedParserUtilBase.java" />
-        <option value="$PROJECT_DIR$/META-INF/plugin.xml" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/TaraSyntaxHighlighter.java" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/Tara.bnf" />
-        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/TaraLexer.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/TaraFormatter/TaraBlock.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/formatter/TaraFormattingModelBuilder.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/formatter/TaraBlock.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/TaraGriffonModuleBuilder.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/TaraModuleBuilder.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/TaraIcons.java" />
         <option value="$PROJECT_DIR$/src/monet/tara/metamodel/Tara.flex" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/TafatModuleBuilder.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/ExtendedModuleBuilder.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/TaraModuleType.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/TaraModuleTypeManager.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/ModuleBuilderBase.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/TaraModuleTypeBase.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/moduletype/TaraModuleType.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/moduletype/TaraModuleTypeBase.java" />
+        <option value="$USER_HOME$/Applications/ideaSources/java/java-impl/src/com/intellij/openapi/module/JavaModuleType.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/TaraModuleServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/module/TaraModuleService.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/module/TaraModuleServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/TaraModuleBuilderBase.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/TaraModuleBuilder.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/module/TaraModuleTypeBase.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/plugin/project/file/CreateTaraFileAction.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/actions/NewTaraActionBase.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/project/TaraTemplates.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/actions/CreateTaraFileAction.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/project/TaraTemplatesFactory.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/project/run/TaraConfigurationType.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/compiler/jps/TaraJpsSettings.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerWorkspaceConfiguration.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerConfiguration.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/compiler/jps/JpsTaraSettings.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerConfigurable.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/project/run/TaraRunConfigurationEditor" />
+        <option value="$PROJECT_DIR$/src/monet/tara/project/runner/TaraConfigurationType.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunConfigurationType.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/metamodel/Tara.bnf" />
+        <option value="$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunnerUtil.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunConfigurationEditor.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunConfigurationEditor.form" />
+        <option value="$PROJECT_DIR$/src/monet/tara/project/runner/DefaultTaraRunner.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunConfiguration.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerConfigurable.form" />
+        <option value="$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunner.java" />
+        <option value="$PROJECT_DIR$/scripts/RegenerateLexer.groovy" />
+        <option value="$PROJECT_DIR$/META-INF/plugin.xml" />
+        <option value="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompiler.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerLoader.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerBase.java" />
+        <option value="$PROJECT_DIR$/src/monet/tara/compiler/generator/TaracStubGenerator.java" />
       </list>
     </option>
   </component>
@@ -449,9 +427,9 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="64" />
-    <option name="y" value="-4" />
-    <option name="width" value="1617" />
-    <option name="height" value="1055" />
+    <option name="y" value="24" />
+    <option name="width" value="1615" />
+    <option name="height" value="1054" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -531,7 +509,7 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectReloadState">
-    <option name="STATE" value="2" />
+    <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
@@ -539,13 +517,14 @@
       <showMembers />
       <showModules />
       <showLibraryContents />
-      <hideEmptyPackages />
+      <hideEmptyPackages ProjectPane="false" />
       <abbreviatePackageNames />
       <autoscrollToSource />
       <autoscrollFromSource />
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -561,7 +540,7 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="TaraPlugin" />
-              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -571,15 +550,19 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="TaraPlugin" />
-              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="monet" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="tara" />
-              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -589,53 +572,178 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="TaraPlugin" />
-              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="monet" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="tara" />
-              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="metamodel" />
-              <option name="myItemType" value="com.cenqua.clover.idea.projectview.PsiDirectoryNodeWrapper" />
+              <option name="myItemId" value="compiler" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraCompilerConfigurable" />
+              <option name="myItemType" value="com.intellij.uiDesigner.projectView.FormNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="monet" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tara" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="compiler" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="monet" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tara" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="compiler" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="generator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scripts" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fileTemplates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TaraPlugin" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="META-INF" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="project.structure.last.edited" value="Global Libraries" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="recentsLimit" value="5" />
-    <property name="options.lastSelected" value="editor.preferences.folding" />
+    <property name="options.lastSelected" value="Groovy compiler" />
     <property name="MemberChooser.sorted" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../sumus" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.includeJavaFiles" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.includeInheritedMembers" value="false" />
-    <property name="restartRequiresConfirmation" value="true" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
     <property name="FullScreen" value="false" />
-    <property name="SearchEverywhereHistory" value="metamodelplugin" />
+    <property name="SearchEverywhereHistory" value="&#10;metamodelplugin" />
     <property name="OverrideImplement.overriding.sorted" value="false" />
+    <property name="extract.method.default.visibility" value="private" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/src/monet/tara" />
   </component>
   <component name="PsiViewer.ProjectComponent">
     <option name="HIGHLIGHT" value="false" />
@@ -663,96 +771,48 @@
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="monet.tara.metamodelplugin" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/monet/tara/" />
+      <recent name="$PROJECT_DIR$/src/monet/tara/plugin/project/" />
+      <recent name="$PROJECT_DIR$/src/monet/tara/model/" />
+    </key>
   </component>
   <component name="RunManager" selected="Plugin.Tara plugin">
+    <configuration default="true" type="GroovyScriptRunConfiguration" factoryName="Groovy">
+      <module name="" />
+      <setting name="path" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="file://$PROJECT_DIR$" />
+      <setting name="debug" value="false" />
+      <method />
+    </configuration>
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin" singleton="true">
       <module name="TaraPlugin" />
       <option name="VM_PARAMETERS" value="-Xms128m&#10;-Xmx750m&#10;-XX:MaxPermSize=350m&#10;-XX:ReservedCodeCacheSize=96m&#10;-XX:+UseCodeCacheFlushing&#10;-ea&#10;-Dsun.io.useCanonCaches=false&#10;-Djava.net.preferIPv4Stack=true" />
       <option name="PROGRAM_PARAMETERS" />
       <method />
     </configuration>
-    <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TaraMetamodelPlugin" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="TARGET" value="" />
-      <option name="SETTINGS_FILE" value="" />
-      <option name="CUSTOM_SETTINGS" value="false" />
-      <option name="USE_OPTIONS" value="false" />
-      <option name="OPTIONS" value="" />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="py.test">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TaraMetamodelPlugin" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="testToRun" value="" />
-      <option name="keywords" value="" />
-      <option name="params" value="" />
-      <option name="USE_PARAM" value="false" />
-      <option name="USE_KEYWORD" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Nosetests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TaraMetamodelPlugin" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TaraMetamodelPlugin" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
+    <configuration default="true" type="MavenRunConfiguration" factoryName="Maven">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list />
+            </option>
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
       <method />
     </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
@@ -761,29 +821,6 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Unittests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TaraMetamodelPlugin" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
@@ -814,26 +851,6 @@
       <envs />
       <method />
     </configuration>
-    <configuration default="true" type="tests" factoryName="Doctests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TaraMetamodelPlugin" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <method />
-    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="" />
@@ -853,26 +870,6 @@
       </option>
       <envs />
       <patterns />
-      <method />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Attests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TaraMetamodelPlugin" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
       <method />
     </configuration>
     <configuration default="false" name="Tara plugin" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin" singleton="true">
@@ -920,36 +917,37 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-4" width="1617" height="1055" extended-state="6" />
-    <editor active="false" />
+    <frame x="64" y="24" width="1615" height="1054" extended-state="7" />
+    <editor active="true" />
     <layout>
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33978495" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32473117" sideWeight="0.50031865" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21341853" sideWeight="0.42619312" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32473117" sideWeight="0.4996904" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Cloverage" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32950923" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32963374" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24984026" sideWeight="0.60044396" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21924792" sideWeight="0.43362832" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21924792" sideWeight="0.6736959" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32473117" sideWeight="0.49968132" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Test Runs" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Pomodoro" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32963374" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="PsiViewer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32971245" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21924792" sideWeight="0.5663717" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33738938" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24856597" sideWeight="0.414823" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32411504" sideWeight="0.50031865" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37831858" sideWeight="0.49968132" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32950923" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cloverage" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Pomodoro" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32963374" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Test Runs" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="PsiViewer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32971245" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32795697" sideWeight="0.49968052" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32743362" sideWeight="0.49968052" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32411504" sideWeight="0.4996904" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -963,9 +961,18 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <MESSAGE value="java generated parser" />
+    <MESSAGE value="manifest" />
+    <MESSAGE value="lexer regenerator refactor&#10;" />
+    <MESSAGE value="reformatter and structure view (NOT FINISHED)" />
+    <option name="LAST_COMMIT_MESSAGE" value="reformatter and structure view (NOT FINISHED)" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -979,372 +986,297 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraLexer.java">
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/lang-impl/src/com/intellij/ide/actions/CreateFileFromTemplateAction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="676" column="32" selection-start="23192" selection-end="23192" vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="12376">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#TaraLexer#0" expanded="true" />
-            <element signature="docComment;method#zzDoEOF#0;class#TaraLexer#0" expanded="true" />
-          </folding>
-        </state>
+        <state line="41" column="28" selection-start="1611" selection-end="1611" vertical-scroll-proportion="0.36192715" vertical-offset="355" max-vertical-offset="1632" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraParserDefinition.java">
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/project/module/TaraModuleBuilderBase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="32" selection-start="1417" selection-end="1417" vertical-scroll-proportion="0.0" vertical-offset="799" max-vertical-offset="1241">
-          <folding />
-        </state>
+        <state line="63" column="35" selection-start="2059" selection-end="2059" vertical-scroll-proportion="0.7862857" vertical-offset="179" max-vertical-offset="1054" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraSyntaxHighlighter.java">
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/lang-api/src/com/intellij/ide/fileTemplates/FileTemplateGroupDescriptor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="0" selection-start="3436" selection-end="3436" vertical-scroll-proportion="0.0" vertical-offset="952" max-vertical-offset="1751">
-          <folding />
-        </state>
+        <state line="35" column="9" selection-start="1247" selection-end="1247" vertical-scroll-proportion="0.42068157" vertical-offset="152" max-vertical-offset="1003" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/highlighting/TaraSyntaxHighlighterFactory.java">
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/project/module/TaraModuleBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="1" selection-start="554" selection-end="554" vertical-scroll-proportion="0.0" vertical-offset="238" max-vertical-offset="340">
-          <folding />
-        </state>
+        <state line="16" column="0" selection-start="533" selection-end="533" vertical-scroll-proportion="0.31085715" vertical-offset="0" max-vertical-offset="875" />
       </provider>
     </entry>
-    <entry file="jar:///usr/lib/jvm/java-7-oracle/src.zip!/java/net/PlainSocketImpl.java">
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/core-api/src/com/intellij/openapi/project/DumbAware.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="16" selection-start="1048" selection-end="1048" vertical-scroll-proportion="0.33333334" vertical-offset="0" max-vertical-offset="0" />
+        <state line="41" column="17" selection-start="1927" selection-end="1927" vertical-scroll-proportion="0.34971428" vertical-offset="0" max-vertical-offset="875" />
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/platform-impl/src/com/intellij/openapi/application/impl/ApplicationImpl.java">
+    <entry file="jar:///usr/lib/jvm/java-7-oracle/src.zip!/java/lang/Override.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1184" column="0" selection-start="37208" selection-end="37208" vertical-scroll-proportion="0.3173759" vertical-offset="0" max-vertical-offset="0" />
+        <state line="50" column="18" selection-start="971" selection-end="971" vertical-scroll-proportion="0.60228574" vertical-offset="0" max-vertical-offset="875" />
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/lang-impl/src/com/intellij/codeInsight/daemon/impl/PassExecutorService.java">
+    <entry file="file://$USER_HOME$/Applications/ideaSources/java/java-impl/src/com/intellij/ide/fileTemplates/JavaTemplateUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="374" column="0" selection-start="16079" selection-end="16079" vertical-scroll-proportion="0.32486388" vertical-offset="0" max-vertical-offset="0" />
+        <state line="60" column="21" selection-start="2741" selection-end="2741" vertical-scroll-proportion="0.8057143" vertical-offset="213" max-vertical-offset="1088" />
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/analysis-impl/src/com/intellij/codeInsight/daemon/impl/GeneralHighlightingPass.java">
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/lang-impl/src/com/intellij/codeInsight/actions/ReformatCodeProcessor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="286" column="0" selection-start="13141" selection-end="13141" vertical-scroll-proportion="1.0816697" vertical-offset="0" max-vertical-offset="0" />
+        <state line="57" column="9" selection-start="2391" selection-end="2391" vertical-scroll-proportion="0.33333334" vertical-offset="578" max-vertical-offset="1581" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraIcons.java">
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/actions/NewTaraActionBase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="13" selection-start="113" selection-end="113" vertical-scroll-proportion="0.075555556" vertical-offset="0" max-vertical-offset="900">
-          <folding />
-        </state>
+        <state line="41" column="0" selection-start="1338" selection-end="1338" vertical-scroll-proportion="0.33076924" vertical-offset="441" max-vertical-offset="799" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraLanguage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="1" selection-start="225" selection-end="225" vertical-scroll-proportion="0.18888889" vertical-offset="0" max-vertical-offset="900">
-          <folding>
-            <element signature="method#TaraLanguage#0;class#TaraLanguage#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/highlighting/TaraColorSettingPage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="13" selection-start="504" selection-end="504" vertical-scroll-proportion="0.24555555" vertical-offset="0" max-vertical-offset="1411" />
+        <state line="5" column="37" selection-start="146" selection-end="146" vertical-scroll-proportion="0.28076923" vertical-offset="12" max-vertical-offset="272" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/file/TaraFileType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="18" selection-start="676" selection-end="676" vertical-scroll-proportion="0.56666666" vertical-offset="0" max-vertical-offset="900" />
+        <state line="9" column="67" selection-start="376" selection-end="376" vertical-scroll-proportion="-0.26153848" vertical-offset="153" max-vertical-offset="578" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/file/TaraFileTypeFactory.java">
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/lang-api/src/com/intellij/ide/fileTemplates/FileTemplateGroupDescriptorFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="13" selection-start="147" selection-end="147" vertical-scroll-proportion="0.094444446" vertical-offset="0" max-vertical-offset="900" />
+        <state line="25" column="30" selection-start="983" selection-end="983" vertical-scroll-proportion="0.7232558" vertical-offset="80" max-vertical-offset="510" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/model/file/TaraFileTypeFactory.java">
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/project/TaraTemplates.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="13" selection-start="143" selection-end="143" vertical-scroll-proportion="0.14214046" vertical-offset="0" max-vertical-offset="598" />
+        <state line="7" column="11" selection-start="122" selection-end="122" vertical-scroll-proportion="0.29166666" vertical-offset="0" max-vertical-offset="408" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/model/file/TaraFileType.java">
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/platform-api/src/com/intellij/openapi/fileTypes/FileTypeManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="13" selection-start="268" selection-end="268" vertical-scroll-proportion="0.06187291" vertical-offset="99" max-vertical-offset="748" />
+        <state line="36" column="22" selection-start="1346" selection-end="1346" vertical-scroll-proportion="-5.227106" vertical-offset="1784" max-vertical-offset="2057" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/file/TaraFile.java">
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/lang-impl/src/com/intellij/ide/fileTemplates/FileTemplateManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="1" selection-start="641" selection-end="641" vertical-scroll-proportion="0.82441473" vertical-offset="0" max-vertical-offset="598">
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#TaraFile#0;class#TaraFile#0" expanded="false" />
-            <element signature="e#458#459#0" expanded="false" />
-            <element signature="e#493#494#0" expanded="false" />
-            <element signature="method#toString#0;class#TaraFile#0" expanded="false" />
-            <element signature="method#getIcon#0;class#TaraFile#0" expanded="false" />
-          </folding>
-        </state>
+        <state line="85" column="31" selection-start="2978" selection-end="2978" vertical-scroll-proportion="0.0" vertical-offset="707" max-vertical-offset="1479" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/model/psi/TaraTokenType.java">
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/core-api/src/com/intellij/psi/PsiElement.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="13" selection-start="213" selection-end="213" vertical-scroll-proportion="0.20877193" vertical-offset="0" max-vertical-offset="570" />
+        <state line="106" column="13" selection-start="3294" selection-end="3294" vertical-scroll-proportion="0.33333334" vertical-offset="714" max-vertical-offset="3485" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/model/psi/TaraNamedElement.java">
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/lang-impl/src/com/intellij/ide/fileTemplates/impl/FileTemplateManagerImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="17" selection-start="98" selection-end="98" vertical-scroll-proportion="0.14285715" vertical-offset="0" max-vertical-offset="595" />
+        <state line="332" column="57" selection-start="14083" selection-end="14083" vertical-scroll-proportion="1.3794286" vertical-offset="3825" max-vertical-offset="8211" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/model/psi/TaraElementType.java">
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/actions/CreateTaraFileAction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="13" selection-start="213" selection-end="213" vertical-scroll-proportion="0.2" vertical-offset="0" max-vertical-offset="595" />
+        <state line="50" column="42" selection-start="1463" selection-end="1463" vertical-scroll-proportion="0.6891429" vertical-offset="60" max-vertical-offset="935" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/model/file/TaraFile.java">
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/project/TaraTemplatesFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="13" selection-start="245" selection-end="245" vertical-scroll-proportion="0.25714287" vertical-offset="0" max-vertical-offset="595" />
+        <state line="49" column="45" selection-start="2369" selection-end="2369" vertical-scroll-proportion="0.69942856" vertical-offset="0" max-vertical-offset="875" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/model/psi/TaraElementFactory.java">
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/jps/JpsTaraSettings.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="5" selection-start="698" selection-end="698" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="425" />
+        <state line="40" column="5" selection-start="1608" selection-end="1608" vertical-scroll-proportion="0.7771429" vertical-offset="0" max-vertical-offset="1156" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraReference.java">
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/lang-api/src/com/intellij/execution/configurations/LocatableConfigurationBase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="0" selection-start="449" selection-end="449" vertical-scroll-proportion="0.32807016" vertical-offset="0" max-vertical-offset="986">
-          <folding>
-            <element signature="method#TaraReference#0;class#TaraReference#0" expanded="true" />
-            <element signature="method#multiResolve#0;class#TaraReference#0" expanded="true" />
-            <element signature="e#1079#1094#0" expanded="true" />
-            <element signature="method#resolve#0;class#TaraReference#0" expanded="true" />
-            <element signature="method#getVariants#0;class#TaraReference#0" expanded="true" />
-            <element signature="e#1675#1690#0" expanded="true" />
-          </folding>
-        </state>
+        <state line="77" column="14" selection-start="2572" selection-end="2572" vertical-scroll-proportion="0.66039956" vertical-offset="543" max-vertical-offset="1394" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraRefactoringSupportProvider.java">
+    <entry file="file://$PROJECT_DIR$/gen/monet/tara/metamodel/psi/TaraConceptBody.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="27" selection-start="159" selection-end="159" vertical-scroll-proportion="0.11929824" vertical-offset="0" max-vertical-offset="570">
-          <folding>
-            <element signature="method#isMemberInplaceRenameAvailable#0;class#TaraRefactoringSupportProvider#0" expanded="true" />
-          </folding>
-        </state>
+        <state line="8" column="17" selection-start="217" selection-end="217" vertical-scroll-proportion="0.09988249" vertical-offset="0" max-vertical-offset="851" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraAnnotator.java">
+    <entry file="file://$PROJECT_DIR$/gen/monet/tara/metamodel/psi/TaraChild.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="27" selection-start="535" selection-end="535" vertical-scroll-proportion="0.15263158" vertical-offset="117" max-vertical-offset="850">
-          <folding>
-            <element signature="method#annotate#0;class#TaraAnnotator#0" expanded="true" />
-          </folding>
-        </state>
+        <state line="8" column="17" selection-start="217" selection-end="217" vertical-scroll-proportion="0.09988249" vertical-offset="0" max-vertical-offset="851" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraCompletionContributor.java">
+    <entry file="file://$USER_HOME$/Applications/ideaSources/java/java-psi-api/src/com/intellij/psi/PsiClass.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="27" selection-start="439" selection-end="439" vertical-scroll-proportion="0.2982456" vertical-offset="0" max-vertical-offset="663">
-          <folding>
-            <element signature="method#TaraCompletionContributor#0;class#TaraCompletionContributor#0" expanded="true" />
-            <element signature="e#881#1534#0" expanded="true" />
-            <element signature="e#1521#1522#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraFindUsagesProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="27" selection-start="421" selection-end="421" vertical-scroll-proportion="0.08571429" vertical-offset="119" max-vertical-offset="833">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraFoldingBuilder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="27" selection-start="467" selection-end="467" vertical-scroll-proportion="0.31428573" vertical-offset="0" max-vertical-offset="629">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraLineMarkerProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="27" selection-start="481" selection-end="481" vertical-scroll-proportion="0.2857143" vertical-offset="0" max-vertical-offset="748">
-          <folding>
-            <element signature="method#collectNavigationMarkers#0;class#TaraLineMarkerProvider#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/monet/tara/metamodelplugin/TaraAnnotatorTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="0" selection-start="367" selection-end="367" vertical-scroll-proportion="0.2" vertical-offset="0" max-vertical-offset="595" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/model/psi/impl/TaraUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="27" selection-start="467" selection-end="467" vertical-scroll-proportion="0.3140351" vertical-offset="8" max-vertical-offset="578" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/model/psi/impl/TaraPsiImplUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="27" selection-start="231" selection-end="231" vertical-scroll-proportion="0.17142858" vertical-offset="0" max-vertical-offset="595" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/structureview/TaraStructureViewElement.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="27" selection-start="524" selection-end="524" vertical-scroll-proportion="-0.03888889" vertical-offset="208" max-vertical-offset="833" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/psi/impl/TaraPsiImplUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="41" selection-start="258" selection-end="258" vertical-scroll-proportion="0.17142858" vertical-offset="0" max-vertical-offset="595" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/psi/TaraElementFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="48" selection-start="291" selection-end="291" vertical-scroll-proportion="0.25714287" vertical-offset="0" max-vertical-offset="595" />
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/core-api/src/com/intellij/lang/PsiParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="2" selection-start="845" selection-end="845" vertical-scroll-proportion="0.31772575" vertical-offset="218" max-vertical-offset="816" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/psi/impl/TaraUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="27" selection-start="527" selection-end="527" vertical-scroll-proportion="0.36956522" vertical-offset="0" max-vertical-offset="1462" />
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/core-api/src/com/intellij/lang/PsiBuilder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="22" selection-start="1220" selection-end="1220" vertical-scroll-proportion="0.37142858" vertical-offset="0" max-vertical-offset="1564" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/parser/GeneratedParserUtilBase.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="763" column="25" selection-start="28014" selection-end="28024" vertical-scroll-proportion="7.189916" vertical-offset="8710" max-vertical-offset="16847" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/META-INF/plugin.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="25" selection-start="1485" selection-end="1485" vertical-scroll-proportion="0.5622857" vertical-offset="171" max-vertical-offset="1071">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraParserDefinition.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="32" selection-start="1417" selection-end="1417" vertical-scroll-proportion="0.51" vertical-offset="0" max-vertical-offset="900">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraSyntaxHighlighter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="0" selection-start="3436" selection-end="3436" vertical-scroll-proportion="0.13555555" vertical-offset="643" max-vertical-offset="1564">
-          <folding />
-        </state>
+        <state line="33" column="17" selection-start="1087" selection-end="1087" vertical-scroll-proportion="0.33254993" vertical-offset="57" max-vertical-offset="2805" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/Tara.bnf">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="14" selection-start="195" selection-end="195" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="799">
-          <folding />
-        </state>
+        <state line="28" column="26" selection-start="1038" selection-end="1038" vertical-scroll-proportion="0.57931846" vertical-offset="0" max-vertical-offset="851" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/highlighting/TaraSyntaxHighlighterFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="0" selection-start="512" selection-end="512" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="272">
-          <folding />
-        </state>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunConfigurationEditor.form">
+      <provider editor-type-id="text-editor">
+        <state line="29" column="131" selection-start="1768" selection-end="1768" vertical-scroll-proportion="0.72121215" vertical-offset="0" max-vertical-offset="2210" />
       </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/core-api/src/com/intellij/lexer/FlexAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="12" selection-start="1529" selection-end="1529" vertical-scroll-proportion="0.33273703" vertical-offset="426" max-vertical-offset="1462">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/core-impl/src/com/intellij/lang/impl/PsiBuilderImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="207" column="0" selection-start="7907" selection-end="7907" vertical-scroll-proportion="0.33273703" vertical-offset="2279" max-vertical-offset="27880">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/core-impl/src/com/intellij/openapi/editor/impl/DocumentImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="595" column="0" selection-start="21662" selection-end="21662" vertical-scroll-proportion="0.31849316" vertical-offset="8450" max-vertical-offset="13719">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/editor-ui-ex/src/com/intellij/openapi/editor/ex/util/LexerEditorHighlighter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="211" column="0" selection-start="7311" selection-end="7311" vertical-scroll-proportion="0.3321918" vertical-offset="3087" max-vertical-offset="6630">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/TaraLexer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="597" column="3" selection-start="21161" selection-end="21161" vertical-scroll-proportion="0.0" vertical-offset="8569" max-vertical-offset="12308">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#TaraLexer#0" expanded="true" />
-            <element signature="docComment;method#zzDoEOF#0;class#TaraLexer#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/monet/tara/metamodel/Tara.flex">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="41" selection-start="1959" selection-end="1959" vertical-scroll-proportion="0.9444444" vertical-offset="476" max-vertical-offset="3978">
-          <folding>
-            <marker date="1386757191770" expanded="false" signature="38:212" placeholder="..." />
-            <marker date="1386757191770" expanded="true" signature="331:398" placeholder="{...}" />
-            <marker date="1386757191770" expanded="false" signature="452:471" placeholder="&lt;~&gt;" />
-            <marker date="1386757191770" expanded="true" signature="526:671" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="707:967" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="1004:1025" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="1074:1153" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="1202:1287" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="1335:1418" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="1470:1962" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="3547:3575" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="3607:3630" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="3662:3691" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="3726:3758" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="3793:3825" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="3860:3888" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="3923:3946" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="3979:4008" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4041:4063" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4096:4123" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4156:4184" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4217:4247" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4280:4306" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4339:4366" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4399:4426" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4459:4483" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4516:4543" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4576:4606" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4639:4667" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4700:4800" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4866:4888" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4921:4950" placeholder="{...}" />
-            <marker date="1386757191770" expanded="true" signature="4984:5017" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+      <provider selected="true" editor-type-id="ui-designer">
         <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunnerUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="33" selection-start="1050" selection-end="1050" vertical-scroll-proportion="0.5245714" vertical-offset="0" max-vertical-offset="1360" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunConfigurationEditor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="44" selection-start="1329" selection-end="1329" vertical-scroll-proportion="-1.0575793" vertical-offset="1444" max-vertical-offset="2295" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Applications/ideaSources/java/execution/openapi/src/com/intellij/execution/configurations/JavaCommandLineState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="36" selection-start="1658" selection-end="1658" vertical-scroll-proportion="0.66039956" vertical-offset="169" max-vertical-offset="1020" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/lang-api/src/com/intellij/execution/CantRunException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="9" selection-start="834" selection-end="834" vertical-scroll-proportion="0.041128084" vertical-offset="305" max-vertical-offset="1156" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/lang-api/src/com/intellij/execution/configurations/RunProfile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="18" selection-start="1682" selection-end="1682" vertical-scroll-proportion="0.58894646" vertical-offset="50" max-vertical-offset="629" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/lang-api/src/com/intellij/execution/configurations/ModuleBasedConfiguration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="76" column="5" selection-start="2873" selection-end="2907" vertical-scroll-proportion="0.66306305" vertical-offset="584" max-vertical-offset="2125" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/util/src/com/intellij/openapi/util/io/FileUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="13" selection-start="1593" selection-end="1593" vertical-scroll-proportion="0.33257142" vertical-offset="49" max-vertical-offset="23273">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunConfigurationType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="0" selection-start="891" selection-end="891" vertical-scroll-proportion="0.3977143" vertical-offset="145" max-vertical-offset="1020" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunConfiguration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="146" column="39" selection-start="5764" selection-end="5784" vertical-scroll-proportion="1.024" vertical-offset="1518" max-vertical-offset="6018" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/project/runner/DefaultTaraRunner.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="27" selection-start="813" selection-end="813" vertical-scroll-proportion="0.44685715" vertical-offset="0" max-vertical-offset="875" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/project/runner/TaraRunner.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="0" selection-start="619" selection-end="620" vertical-scroll-proportion="0.29142857" vertical-offset="0" max-vertical-offset="875" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/RegenerateLexer.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="27" selection-start="209" selection-end="209" vertical-scroll-proportion="0.06174334" vertical-offset="0" max-vertical-offset="826" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerConfigurable.form">
+      <provider editor-type-id="text-editor">
+        <state line="16" column="29" selection-start="1051" selection-end="1051" vertical-scroll-proportion="0.5019255" vertical-offset="0" max-vertical-offset="1496" />
+      </provider>
+      <provider selected="true" editor-type-id="ui-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerConfigurable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="10" selection-start="2260" selection-end="2260" vertical-scroll-proportion="0.5245714" vertical-offset="0" max-vertical-offset="1479">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/indexing-impl/src/com/intellij/psi/search/FilenameIndex.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="86" column="40" selection-start="2537" selection-end="2537" vertical-scroll-proportion="0.33333334" vertical-offset="818" max-vertical-offset="2873" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/META-INF/plugin.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="66" selection-start="1320" selection-end="1320" vertical-scroll-proportion="0.0" vertical-offset="374" max-vertical-offset="1309">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Applications/ideaSources/java/compiler/openapi/src/com/intellij/openapi/compiler/TranslatingCompiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="79" column="7" selection-start="3010" selection-end="3010" vertical-scroll-proportion="0.8317422" vertical-offset="0" max-vertical-offset="838" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerWorkspaceConfiguration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="13" selection-start="572" selection-end="572" vertical-scroll-proportion="0.09988249" vertical-offset="0" max-vertical-offset="851">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerConfiguration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="50" selection-start="718" selection-end="718" vertical-scroll-proportion="0.32902467" vertical-offset="26" max-vertical-offset="1326">
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#324#563#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/platform-impl/src/com/intellij/openapi/project/impl/ProjectImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="76" column="0" selection-start="3546" selection-end="3546" vertical-scroll-proportion="0.33333334" vertical-offset="133" max-vertical-offset="8874" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="54" column="0" selection-start="2327" selection-end="2327" vertical-scroll-proportion="0.0" vertical-offset="609" max-vertical-offset="1547">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Applications/ideaSources/platform/lang-impl/src/com/intellij/ide/fileTemplates/impl/FTManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="60" column="0" selection-start="2473" selection-end="2473" vertical-scroll-proportion="0.8701754" vertical-offset="201" max-vertical-offset="4845" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="33" column="60" selection-start="1214" selection-end="1214" vertical-scroll-proportion="0.0" vertical-offset="196" max-vertical-offset="969">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/TaraCompilerBase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="316" column="37" selection-start="14177" selection-end="14177" vertical-scroll-proportion="0.0" vertical-offset="1461" max-vertical-offset="2703">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/monet/tara/compiler/generator/TaracStubGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="52" column="49" selection-start="2293" selection-end="2293" vertical-scroll-proportion="0.019428572" vertical-offset="867" max-vertical-offset="4369">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2620#2677#1" expanded="true" />
+            <element signature="e#2731#2915#0" expanded="true" />
+            <element signature="e#2910#2911#0" expanded="true" />
+            <element signature="e#4109#4347#0" expanded="true" />
+            <element signature="e#4341#4342#0" expanded="true" />
+            <element signature="e#6759#7348#0" expanded="true" />
+            <element signature="e#6909#7290#0" expanded="true" />
+            <element signature="e#7282#7283#0" expanded="true" />
+            <element signature="e#7343#7344#0" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
   </component>
@@ -1376,7 +1308,7 @@
       </state>
       <state key="GlobalLibrariesConfigurable.UI">
         <settings>
-          <last-edited>junit-4.10</last-edited>
+          <last-edited>groovy-2.2.1</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
