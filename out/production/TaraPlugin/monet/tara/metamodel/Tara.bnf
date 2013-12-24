@@ -1,6 +1,6 @@
 {
-  parserClass='monet.tara.metamodel.TaraParser'
-  stubParserClass='monet.tara.metamodel.parser.GeneratedParserUtilBase'
+  parserClass='monet.tara.metamodel.parser.TaraParser'
+  parserUtilClass="monet.tara.metamodel.parser.TaraParserUtil"
 
   extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
 
@@ -16,25 +16,26 @@
   psiImplUtilClass='monet.tara.metamodel.psi.impl.TaraPsiImplUtil'
 }
 
-root ::=(COMMENT|conceptDefinition)+
+root ::= (COMMENT|conceptDefinition)+
 
-conceptDefinition ::= conceptSignature conceptBody? END_CONCEPT {mixin='monet.tara.metamodel.psi.impl.TaraNamedElementImpl' implements='monet.tara.metamodel.psi.TaraNamedElement' methods=[getIdentifier getName setName getNameIdentifier]}
+conceptDefinition ::= conceptSignature conceptBody? {mixin='monet.tara.metamodel.psi.impl.TaraNamedElementImpl' implements='monet.tara.metamodel.psi.TaraNamedElement' methods=[getName setName getNameIdentifier]}
 
-conceptSignature ::= CONCEPT MODIFIERS? IDENTIFIER (IS IDENTIFIER)? annotation*
+conceptSignature ::= CONCEPT MODIFIERS? identifier (IS identifier)? ANNOTATION*
 
 conceptBody::= INDENT statement+ DEDENT
 
-statement::= propertiesBody | childrenBody | referencesBody
+statement::= property | child | referenceStatement | intention
 
-propertiesBody::=primitive_type IDENTIFIER (ASSIGN primitive)?
+property::=primitive_type identifier (ASSIGN  primitive)? ANONYMOUS?
 
-childrenBody::=HAS IDENTIFIER annotation* conceptBody*
+child::=HAS identifier RANGE? ANNOTATION* conceptBody*
 
-referencesBody::=REF IDENTIFIER {methods=[getIdentifier]}
+identifier ::= IDENTIFIER_KEY {methods=[getIdentifier]}
+
+referenceStatement::=REF identifier IDENTIFIER_KEY
+
+intention::=USE identifier COLON identifier (LEFT_P identifier RIGHT_P)?
 
 primitive_type ::=  ID_TYPE|INT_TYPE|STRING_TYPE|DOUBLE_TYPE
 
 primitive ::=  INT|DOUBLE|STRING
-
-annotation ::= NAMEABLE|AT_ROOT|EXTENSIBLE|ACTION
-
