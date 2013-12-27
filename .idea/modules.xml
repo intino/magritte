@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TaraPlugin.iml" filepath="$PROJECT_DIR$/TaraPlugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rt-constants/rt-constants.iml" filepath="$PROJECT_DIR$/rt-constants/rt-constants.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jps-plugin/tara-jps-plugin.iml" filepath="$PROJECT_DIR$/jps-plugin/tara-jps-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rt/tara_rt.iml" filepath="$PROJECT_DIR$/rt/tara_rt.iml" />
     </modules>
   </component>
 </project>

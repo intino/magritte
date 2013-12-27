@@ -30,17 +30,17 @@ public class TaraCompilerLoader extends AbstractProjectComponent {
 		compilerManager.addCompilableFileType(TaraFileType.INSTANCE);
 
 		compilerManager.addTranslatingCompiler(new TaracStubGenerator(myProject),
-				new HashSet<FileType>(Arrays.asList(StdFileTypes.JAVA, TaraFileType.INSTANCE)),
-				new HashSet<FileType>(Arrays.asList(StdFileTypes.JAVA)));
+			new HashSet<FileType>(Arrays.asList(TaraFileType.INSTANCE)),
+			new HashSet<FileType>(Arrays.asList(StdFileTypes.JAVA)));
 
-		compilerManager.addTranslatingCompiler(new TaraCompiler(myProject),
-				new HashSet<>(Arrays.asList(TaraFileType.INSTANCE, StdFileTypes.CLASS)),
-				new HashSet<>(Arrays.asList(StdFileTypes.CLASS)));
+//		compilerManager.addTranslatingCompiler(new TaraCompiler(myProject),
+//				new HashSet<>(Arrays.asList(TaraFileType.INSTANCE, StdFileTypes.CLASS)),
+//				new HashSet<>(Arrays.asList(StdFileTypes.CLASS)));
 
 		myProject.getMessageBus().connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerAdapter() {
 			@Override
 			public void fileOpened(@NotNull FileEditorManager source, @NotNull final VirtualFile file) {
-				if (file.getName().endsWith(".m2") && file.getPath().contains(TaracStubGenerator.TARA_STUBS)) {
+				if (file.getName().endsWith(".java") && file.getPath().contains(TaracStubGenerator.TARA_STUBS)) {
 					final PsiClass psiClass = TaracStubGenerator.findClassByStub(myProject, file);
 					if (psiClass != null) {
 						final FileEditorManager fileEditorManager = FileEditorManager.getInstance(myProject);

@@ -48,7 +48,7 @@ import java.util.Map;
 
 public class TaracStubGenerator extends TaraCompilerBase {
 
-	private static Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.compiler.generator.GroovycStubGenerator");
+	private static Logger LOG = Logger.getInstance("monet.tara.compiler.generator.TaracStubGenerator");
 
 	public static final String TARA_STUBS = "taraStubs";
 
@@ -60,7 +60,8 @@ public class TaracStubGenerator extends TaraCompilerBase {
 	public void compile(CompileContext compileContext, Chunk<Module> moduleChunk, VirtualFile[] virtualFiles, OutputSink sink) {
 		final ExcludedEntriesConfiguration excluded = TaraCompilerConfiguration.getExcludeConfiguration(myProject);
 
-		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection") FactoryMap<Pair<Module, Boolean>, Boolean> hasJava = new FactoryMap<Pair<Module, Boolean>, Boolean>() {
+		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+		FactoryMap<Pair<Module, Boolean>, Boolean> hasJava = new FactoryMap<Pair<Module, Boolean>, Boolean>() {
 			@Override
 			protected Boolean create(Pair<Module, Boolean> key) {
 				return containsJavaSources(key.first, key.second);
@@ -114,8 +115,8 @@ public class TaracStubGenerator extends TaraCompilerBase {
 	                            final List<VirtualFile> toCompile,
 	                            OutputSink sink,
 	                            boolean tests) {
-//		final File outDir = getStubOutput(module, tests);
-//		outDir.mkdirs();
+		final File outDir = getStubOutput(module, tests);
+		outDir.mkdirs();
 //
 //		final VirtualFile tempOutput = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(outDir);
 //		assert tempOutput != null;
@@ -173,16 +174,14 @@ public class TaracStubGenerator extends TaraCompilerBase {
 								TranslatingCompilerFilesMonitor.removeSourceInfo(virtualFile);
 								try {
 									virtualFile.delete(this);
-								}
-								catch (IOException e) {
+								} catch (IOException e) {
 									LOG.info(e);
 								}
 							}
 							return true;
 						}
 					});
-				}
-				finally {
+				} finally {
 					token.finish();
 				}
 			}
@@ -197,7 +196,7 @@ public class TaracStubGenerator extends TaraCompilerBase {
 
 	@NotNull
 	public String getDescription() {
-		return "Groovy to java source code generator";
+		return "Tara to java source code generator";
 	}
 
 	public boolean validateConfiguration(CompileScope scope) {
@@ -237,8 +236,7 @@ public class TaracStubGenerator extends TaraCompilerBase {
 			FileUtil.createIfDoesntExist(stubFile);
 			try {
 				FileUtil.writeToFile(stubFile, output.get(relativePath).toString().getBytes(src.getCharset()));
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				LOG.error(e);
 			}
 			CompilerUtil.refreshIOFile(stubFile);

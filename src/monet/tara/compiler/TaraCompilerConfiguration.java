@@ -5,14 +5,14 @@ import com.intellij.openapi.compiler.options.ExcludedEntriesConfiguration;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
-import monet.tara.compiler.jps.JpsTaraSettings;
+import monet.tara.jps.incremental.tara.JpsTaraSettings;
 
 @State(
-		name = "TaraCompilerProjectConfiguration",
-		storages = {
-				@Storage(file = StoragePathMacros.PROJECT_FILE),
-				@Storage(file = StoragePathMacros.PROJECT_CONFIG_DIR + "/tarac.xml", scheme = StorageScheme.DIRECTORY_BASED)
-		}
+	name = "TaraCompilerProjectConfiguration",
+	storages = {
+		@Storage(file = StoragePathMacros.PROJECT_FILE),
+		@Storage(file = StoragePathMacros.PROJECT_CONFIG_DIR + "/tarac.xml", scheme = StorageScheme.DIRECTORY_BASED)
+	}
 )
 
 public class TaraCompilerConfiguration implements PersistentStateComponent<JpsTaraSettings>, Disposable {

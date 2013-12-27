@@ -1,4 +1,4 @@
-package monet.tara.compiler.jps;
+package monet.tara.jps.incremental.tara;
 
 import com.intellij.util.xmlb.annotations.Tag;
 import org.jdom.Element;
@@ -22,7 +22,8 @@ public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 	public String heapSize = DEFAULT_HEAP_SIZE;
 	public boolean invokeDynamic = DEFAULT_INVOKE_DYNAMIC;
 
-	@Tag("excludes") public Element excludes = new Element("aaa");
+	@Tag("excludes")
+	public Element excludes = new Element("aaa");
 
 	public boolean transformsOk = DEFAULT_TRANSFORMS_OK;
 	private JpsCompilerExcludes myExcludeFromStubGeneration;

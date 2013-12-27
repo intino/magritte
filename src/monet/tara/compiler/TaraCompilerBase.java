@@ -12,6 +12,8 @@ import com.intellij.openapi.compiler.CompilerPaths;
 import com.intellij.openapi.compiler.TranslatingCompiler;
 import com.intellij.openapi.compiler.ex.CompileContextEx;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ContentIterator;
@@ -20,6 +22,7 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.Chunk;
 import com.intellij.util.PathsList;
@@ -35,7 +38,7 @@ import java.io.File;
 import java.util.*;
 
 public abstract class TaraCompilerBase implements TranslatingCompiler {
-	private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.compiler.GroovyCompilerBase");
+	private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.tara.compiler.GroovyCompilerBase");
 	protected final Project myProject;
 
 	public TaraCompilerBase(Project project) {
@@ -140,7 +143,7 @@ public abstract class TaraCompilerBase implements TranslatingCompiler {
 //		final File fileWithParameters;
 //		try {
 //			fileWithParameters = GroovycOSProcessHandler
-//					.fillFileWithGroovycParameters(outputDir.getPath(), paths2Compile, FileUtil.toSystemDependentName(finalOutputDir.getPath()),
+//					.fillFileWithTaracParameters(outputDir.getPath(), paths2Compile, FileUtil.toSystemDependentName(finalOutputDir.getPath()),
 //							class2Src, encoding, patchers);
 //		} catch (IOException e) {
 //			LOG.info(e);
@@ -232,7 +235,7 @@ public abstract class TaraCompilerBase implements TranslatingCompiler {
 		ModuleRootManager.getInstance(module).getFileIndex().iterateContent(new ContentIterator() {
 			public boolean processFile(final VirtualFile vfile) {
 				if (!vfile.isDirectory() &&
-						TaraFileType.INSTANCE.equals(vfile.getFileType())) {
+					TaraFileType.INSTANCE.equals(vfile.getFileType())) {
 
 					AccessToken accessToken = ApplicationManager.getApplication().acquireReadActionLock();
 
@@ -258,7 +261,7 @@ public abstract class TaraCompilerBase implements TranslatingCompiler {
 			final VirtualFile file = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(stub);
 			ContainerUtil.addIfNotNull(file, stubFiles);
 		}
-		((CompileContextEx) compileContext).addScope(new FileSetCompileScope(stubFiles, new Module[]{ module }));
+		((CompileContextEx) compileContext).addScope(new FileSetCompileScope(stubFiles, new Module[]{module}));
 	}
 
 	@Nullable
@@ -325,29 +328,19 @@ public abstract class TaraCompilerBase implements TranslatingCompiler {
 
 	}
 
-//	private static boolean shouldCompile(final VirtualFile file, CompilerConfiguration configuration, final PsiManager manager) {
-//		if (configuration.isResourceFile(file)) {
-//			return false;
-//		}
-//
-//		final FileType fileType = file.getFileType();
-//		if (fileType == GroovyFileType.GROOVY_FILE_TYPE) {
-//			AccessToken accessToken = ApplicationManager.getApplication().acquireReadActionLock();
-//
-//			try {
-//				PsiFile psiFile = manager.findFile(file);
-//				if (psiFile instanceof GroovyFile && ((GroovyFile) psiFile).isScript()) {
-//					final GroovyScriptType scriptType = GroovyScriptTypeDetector.getScriptType((GroovyFile) psiFile);
-//					return scriptType.shouldBeCompiled((GroovyFile) psiFile);
-//				}
-//				return true;
-//			} finally {
-//				accessToken.finish();
-//			}
-//		}
-//
-//		return fileType == StdFileTypes.JAVA;
-//	}
+	private static boolean shouldCompile(final VirtualFile file, CompilerConfiguration configuration, final PsiManager manager) {
+		if (configuration.isResourceFile(file)) {
+			return false;
+		}
+
+		final FileType fileType = file.getFileType();
+		if (fileType == TaraFileType.INSTANCE) {
+			PsiFile psiFile = manager.findFile(file);
+			if (psiFile instanceof TaraFile)
+				return true;
+		}
+		return fileType == StdFileTypes.JAVA;
+	}
 
 	protected abstract void compileFiles(CompileContext compileContext, Module module,
 	                                     List<VirtualFile> toCompile, OutputSink sink, boolean tests);
