@@ -1,4 +1,4 @@
-package monet.tara.jps.incremental.tara;
+package monet.tara.jps.incremental;
 
 import org.jetbrains.jps.builders.java.JavaBuilderExtension;
 

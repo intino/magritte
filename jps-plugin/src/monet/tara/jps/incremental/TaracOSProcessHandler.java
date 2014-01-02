@@ -1,4 +1,4 @@
-package monet.tara.jps.incremental.tara;
+package monet.tara.jps.incremental;
 
 import com.intellij.execution.process.BaseOSProcessHandler;
 import com.intellij.execution.process.ProcessOutputTypes;
@@ -29,7 +29,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	private final Set<File> toRecompileFiles = new HashSet<>();
 	private final List<CompilerMessage> compilerMessages = new ArrayList<>();
 	private final StringBuffer stdErr = new StringBuffer();
-	private static final Logger LOG = Logger.getInstance("#monet.tara.jps.incremental.tara.TaracOSProcessHandler");
+	private static final Logger LOG = Logger.getInstance("#monet.tara.jps.incremental.TaracOSProcessHandler");
 	private final Consumer<String> myStatusUpdater;
 
 	public TaracOSProcessHandler(Process process, Consumer<String> statusUpdater) {

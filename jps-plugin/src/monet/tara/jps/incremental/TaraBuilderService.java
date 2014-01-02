@@ -1,4 +1,4 @@
-package monet.tara.jps.incremental.tara;
+package monet.tara.jps.incremental;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.incremental.BuilderService;

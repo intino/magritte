@@ -11,12 +11,12 @@ public class TaracRunner {
 	}
 
 	public static void main(String[] args) {
+
 		if (args.length != 2) {
 			if (args.length != 3 || !"--indy".equals(args[2])) {
 				System.err.println("There is no arguments for tara compiler");
 				System.exit(1);
 			}
-			System.setProperty("tara.target.indy", "true");
 		}
 
 		final boolean forStubs = "stubs".equals(args[0]);

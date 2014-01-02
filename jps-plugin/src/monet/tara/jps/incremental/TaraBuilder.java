@@ -1,4 +1,4 @@
-package monet.tara.jps.incremental.tara;
+package monet.tara.jps.incremental;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
 public class TaraBuilder extends ModuleLevelBuilder {
-	private static final Logger LOG = Logger.getInstance("#monet.tara.jps.incremental.tara.TaraBuilder");
+	private static final Logger LOG = Logger.getInstance("#monet.tara.jps.incremental.TaraBuilder");
 	private static final Key<Boolean> CHUNK_REBUILD_ORDERED = Key.create("CHUNK_REBUILD_ORDERED");
 	private static final Key<Map<String, String>> STUB_TO_SRC = Key.create("STUB_TO_SRC");
 	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
@@ -91,6 +91,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
 			final File tempFile = TaracOSProcessHandler.fillFileWithTaracParameters(
 				compilerOutput, toCompilePaths, finalOutput, class2Src, encoding);
+
 			final TaracOSProcessHandler handler = runTarac(context, chunk, tempFile, settings);
 
 			Map<ModuleBuildTarget, Collection<TaracOSProcessHandler.OutputItem>>
@@ -156,10 +157,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		String grapeRoot = System.getProperty(TaracOSProcessHandler.GRAPE_ROOT);
 		if (grapeRoot != null)
 			vmParams.add("-D" + TaracOSProcessHandler.GRAPE_ROOT + "=" + grapeRoot);
-
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
-			getJavaExecutable(chunk),
-			"monet.tara.compiler.rt.TaraRunner",
+			getJavaExecutable(chunk), "monet.tara.compiler.rt.TaracRunner",
 			Collections.<String>emptyList(), classpath,
 			vmParams, programParams);
 
@@ -359,9 +358,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		// IMPORTANT! must be the first in classpath
 		cp.add(getTaraRtRoot().getPath());
 
-		for (File file : ProjectPaths.getCompilationClasspathFiles(chunk, chunk.containsTests(), false, false)) {
+		for (File file : ProjectPaths.getCompilationClasspathFiles(chunk, chunk.containsTests(), false, false))
 			cp.add(FileUtil.toCanonicalPath(file.getPath()));
-		}
 
 		for (TaraBuilderExtension extension : JpsServiceManager.getInstance().getExtensions(TaraBuilderExtension.class)) {
 			cp.addAll(extension.getCompilationClassPath(context, chunk));
@@ -375,7 +373,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		if (root.isFile()) {
 			return new File(root.getParentFile(), "tara_rt.jar");
 		}
-		return new File(root.getParentFile(), "tara_rt");
+		return root;
 	}
 
 	public static boolean isTaraFile(String path) {

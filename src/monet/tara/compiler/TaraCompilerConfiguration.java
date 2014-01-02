@@ -5,7 +5,7 @@ import com.intellij.openapi.compiler.options.ExcludedEntriesConfiguration;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
-import monet.tara.jps.incremental.tara.JpsTaraSettings;
+import monet.tara.jps.incremental.JpsTaraSettings;
 
 @State(
 	name = "TaraCompilerProjectConfiguration",

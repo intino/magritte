@@ -466,6 +466,12 @@ class TaraLexer implements FlexLexer {
 		return false;
 	}
 
+	private boolean isTextSibling(int textLength) {
+		if (!stack.empty())
+			return textLength == stack.peek();
+		return false;
+	}
+
 	private IElementType calculateIndentationToken() {
 		int textLength = transformToSpaces(yytext());
 		if (stack.empty() || isTextIndented(textLength)) {
