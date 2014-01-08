@@ -26,7 +26,7 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
 		Project project = myElement.getProject();
 		final List<TaraConceptDefinition> concepts = TaraUtil.findConcept(project, key);
-		List<ResolveResult> results = new ArrayList<ResolveResult>();
+		List<ResolveResult> results = new ArrayList<>();
 		for (TaraConceptDefinition concept : concepts)
 			results.add(new PsiElementResolveResult(concept));
 		return results.toArray(new ResolveResult[results.size()]);
@@ -44,11 +44,10 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	public Object[] getVariants() {
 		Project project = myElement.getProject();
 		List<TaraConceptDefinition> concepts = TaraUtil.findProperties(project);
-		List<LookupElement> variants = new ArrayList<LookupElement>();
-		for (final TaraConceptDefinition concept : concepts) {
+		List<LookupElement> variants = new ArrayList<>();
+		for (final TaraConceptDefinition concept : concepts)
 			if (concept.getName() != null && concept.getName().length() > 0)
 				variants.add(LookupElementBuilder.create(concept).withIcon(TaraIcons.ICON).withTypeText(concept.getContainingFile().getName()));
-		}
 		return variants.toArray();
 	}
 }

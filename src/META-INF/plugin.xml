@@ -40,6 +40,8 @@
   </project-components>
 
   <extensions defaultExtensionNs="com.intellij">
+    <projectService serviceInterface="monet.tara.metamodel.psi.TaraElementFactory"
+                    serviceImplementation="monet.tara.metamodel.psi.impl.TaraElementFactoryImpl"/>
     <internalFileTemplate name="Metamodel Unit"/>
     <moduleType id="TARA_MODULE" implementationClass="monet.tara.project.module.TaraModuleType"/>
 
@@ -63,9 +65,13 @@
     <!--<annotator language="JAVA" implementationClass="monet.tara.metamodel.TaraAnnotator"/>-->
     <!--<codeInsight.lineMarkerProvider language="JAVA" implementationClass="TaraLineMarkerProvider"/>-->
     <completion.contributor language="Tara" implementationClass="monet.tara.metamodel.TaraCompletionContributor"/>
-    <psi.referenceContributor language="Tafat" implementation="monet.tara.metamodel.TaraReferenceContributor"/>
+    <psi.referenceContributor language="Tara" implementation="monet.tara.metamodel.TaraReferenceContributor"/>
+    <nameSuggestionProvider implementation="monet.tara.metamodel.refactoring.TaraNameSuggestionProvider"/>
+    <lang.elementManipulator forClass="monet.tara.metamodel.psi.TaraIdentifier"
+                             implementationClass="monet.tara.metamodel.psi.impl.TaraConceptIdentifierManipulator"/>
     <lang.refactoringSupport language="Tara"
                              implementationClass="monet.tara.metamodel.TaraRefactoringSupportProvider"/>
+    <!--<renameHandler implementation="monet.tara.metamodel.refactoring.TaraRenameHandler"/>-->
     <lang.findUsagesProvider language="Tara" implementationClass="monet.tara.metamodel.TaraFindUsagesProvider"/>
     <lang.foldingBuilder language="Tara" implementationClass="monet.tara.metamodel.TaraFoldingBuilder"/>
     <!--<lang.psiStructureViewFactory language="Tara" implementationClass="monet.tara.metamodel.structureview.TaraStructureViewFactory"/>-->

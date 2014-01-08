@@ -2,7 +2,10 @@ package monet.tara.metamodel.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import monet.tara.metamodel.psi.*;
+import monet.tara.metamodel.psi.TaraConceptDefinition;
+import monet.tara.metamodel.psi.TaraConceptSignature;
+import monet.tara.metamodel.psi.TaraIdentifier;
+import monet.tara.metamodel.psi.TaraTypes;
 
 public class TaraPsiImplUtil {
 
@@ -26,8 +29,8 @@ public class TaraPsiImplUtil {
 	public static PsiElement setName(TaraConceptSignature element, String newName) {
 		ASTNode keyNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER);
 		if (keyNode != null) {
-			TaraConceptDefinition concept = TaraElementFactory.createConcept(element.getProject(), newName);
-			ASTNode newKeyNode = concept.getFirstChild().getNode();
+			TaraConceptDefinition concept = TaraElementFactoryImpl.getInstance(element.getProject()).createConcept(newName);
+			ASTNode newKeyNode = concept.getFirstChild().getChildren()[0].getNode();
 			element.getNode().replaceChild(keyNode, newKeyNode);
 		}
 		return element;

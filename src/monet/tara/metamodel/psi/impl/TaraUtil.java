@@ -23,8 +23,8 @@ public class TaraUtil {
 	public static List<TaraConceptDefinition> findConcept(Project project, String key) {
 		List<TaraConceptDefinition> result = null;
 		Collection<VirtualFile> virtualFiles =
-				FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE,
-						GlobalSearchScope.allScope(project));
+			FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE,
+				GlobalSearchScope.allScope(project));
 		for (VirtualFile virtualFile : virtualFiles) {
 			TaraFile taraFile = (TaraFile) PsiManager.getInstance(project).findFile(virtualFile);
 			if (taraFile != null) {
@@ -47,8 +47,8 @@ public class TaraUtil {
 	public static List<TaraConceptDefinition> getConcepts(Project project) {
 		List<TaraConceptDefinition> result = null;
 		Collection<VirtualFile> virtualFiles =
-				FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE,
-						GlobalSearchScope.allScope(project));
+			FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE,
+				GlobalSearchScope.allScope(project));
 		for (VirtualFile virtualFile : virtualFiles) {
 			TaraFile taraFile = (TaraFile) PsiManager.getInstance(project).findFile(virtualFile);
 			if (taraFile != null) {
@@ -69,11 +69,11 @@ public class TaraUtil {
 	public static List<TaraConceptDefinition> findProperties(Project project) {
 		List<TaraConceptDefinition> result = new ArrayList<>();
 		Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().
-				getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.allScope(project));
+			getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.allScope(project));
 		for (VirtualFile virtualFile : virtualFiles) {
-			TaraFile simpleFile = (TaraFile) PsiManager.getInstance(project).findFile(virtualFile);
-			if (simpleFile != null) {
-				TaraConceptDefinition[] properties = PsiTreeUtil.getChildrenOfType(simpleFile, TaraConceptDefinition.class);
+			TaraFile taraFile = (TaraFile) PsiManager.getInstance(project).findFile(virtualFile);
+			if (taraFile != null) {
+				TaraConceptDefinition[] properties = PsiTreeUtil.getChildrenOfType(taraFile, TaraConceptDefinition.class);
 				if (properties != null)
 					Collections.addAll(result, properties);
 			}
