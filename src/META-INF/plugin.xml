@@ -40,6 +40,8 @@
   </project-components>
 
   <extensions defaultExtensionNs="com.intellij">
+    <lang.namesValidator language="Python"
+                         implementationClass="monet.tara.metamodel.refactoring.rename.TaraNamesValidator"/>
     <projectService serviceInterface="monet.tara.metamodel.psi.TaraElementFactory"
                     serviceImplementation="monet.tara.metamodel.psi.impl.TaraElementFactoryImpl"/>
     <internalFileTemplate name="Metamodel Unit"/>
@@ -62,7 +64,19 @@
     <lang.syntaxHighlighterFactory key="Tara"
                                    implementationClass="monet.tara.metamodel.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="monet.tara.metamodel.highlighting.TaraColorSettingPage"/>
-    <!--<annotator language="JAVA" implementationClass="monet.tara.metamodel.TaraAnnotator"/>-->
+    <annotator language="Tara" implementationClass="monet.tara.metamodel.TaraAnnotator"/>
+    <!--<localInspection language="Tara" shortName="UnusedAbstractConcept" bundle="messages.TaraBundle"-->
+    <!--key="unused.abstract.concept.inspection.display.name"-->
+    <!--groupKey="tara.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"-->
+    <!--implementationClass="monet.tara.metamodel.codeinspection.UnusedAbstractConceptInspection"/>-->
+    <globalInspection shortName="DuplicateConceptInspection" bundle="messages.TaraBundle"
+                      key="duplicate.concept.display.name"
+                      groupKey="group.names.tara.files" enabledByDefault="false" level="WARNING"
+                      implementationClass="monet.tara.metamodel.codeinspection.DuplicateConceptInspection"/>
+    <!--<localInspection language="Tara" shortName="TrailingSpacesInProperty" bundle="messages.TaraBundle"-->
+    <!--key="trail.spaces.concept.inspection.display.name" groupKey="tara.files.inspection.group.display.name"-->
+    <!--enabledByDefault="true" level="WARNING"-->
+    <!--implementationClass="monet.tara.metamodel.codeinspection.TrailingSpacesInPropertyInspection"/>-->
     <!--<codeInsight.lineMarkerProvider language="JAVA" implementationClass="TaraLineMarkerProvider"/>-->
     <completion.contributor language="Tara" implementationClass="monet.tara.metamodel.TaraCompletionContributor"/>
     <psi.referenceContributor language="Tara" implementation="monet.tara.metamodel.TaraReferenceContributor"/>

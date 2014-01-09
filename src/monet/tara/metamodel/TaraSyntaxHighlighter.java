@@ -1,29 +1,33 @@
 package monet.tara.metamodel;
 
+import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.FlexAdapter;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
+import com.intellij.openapi.options.OptionsBundle;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
+import gnu.trove.THashMap;
 import monet.tara.metamodel.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.Reader;
+import java.util.Map;
 
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 
-public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 
-	static final IElementType[] KEYWORD_LIST = { TaraTypes.CONCEPT, TaraTypes.IS, TaraTypes.HAS, TaraTypes.REF, TaraTypes.USE };
-	static final IElementType[] ANNOTATION_LIST = { TaraTypes.ANNOTATION, TaraTypes.ANONYMOUS };
-	static final IElementType[] OPERATORS = { TaraTypes.ASSIGN, TaraTypes.COLON, TaraTypes.RANGE };
-	static final IElementType[] PRIMITIVE_TYPE_LIST = { TaraTypes.DOUBLE_TYPE, TaraTypes.INT_TYPE, TaraTypes.STRING_TYPE, TaraTypes.ID_TYPE };
+public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
+	private static final Map<IElementType, TextAttributesKey> keys1;
+	private static final Map<IElementType, TextAttributesKey> keys2;
 
 	public static final TextAttributesKey KEYWORD = createTextAttributesKey("Tara_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+	public static final TextAttributesKey IDENTIFIER = createTextAttributesKey("Tara_IDENTIFIER", DefaultLanguageHighlighterColors.CLASS_NAME);
 	public static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.CONSTANT);
 	public static final TextAttributesKey MODIFIERS = createTextAttributesKey("Tara_MODIFIERS", DefaultLanguageHighlighterColors.STATIC_FIELD);
 	public static final TextAttributesKey STRING = createTextAttributesKey("Tara_STRING", DefaultLanguageHighlighterColors.STRING);
@@ -33,17 +37,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER", new TextAttributes(JBColor.RED, null, null, null, Font.BOLD));
 
-	private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{ BAD_CHARACTER };
-	private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{ KEYWORD };
-	private static final TextAttributesKey[] MODIFIERS_KEYS = new TextAttributesKey[]{ MODIFIERS };
-	private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{ STRING };
-	private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{ COMMENT };
-	private static final TextAttributesKey[] ANNOTATION_KEY = new TextAttributesKey[]{ ANNOTATION };
-	private static final TextAttributesKey[] NUMBERS_KEY = new TextAttributesKey[]{ NUMBERS };
-	private static final TextAttributesKey[] PRIMITIVE_KEY = new TextAttributesKey[]{ PRIMITIVE };
-	private static final TextAttributesKey[] OPERATORS_KEY = new TextAttributesKey[]{ OPERATOR };
-	private static final TextAttributesKey[] IDENTIFIERS_KEYS = new TextAttributesKey[0];
-	private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
 	@NotNull
 	@Override
@@ -51,57 +44,49 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 		return new FlexAdapter(new TaraLexer((Reader) null));
 	}
 
+	static {
+		keys1 = new THashMap<>();
+		keys2 = new THashMap<>();
+
+		keys1.put(TaraTypes.COMMENT, COMMENT);
+		keys1.put(TokenType.WHITE_SPACE, null);
+		keys1.put(TaraTypes.IDENTIFIER_KEY, IDENTIFIER);
+		keys1.put(TaraTypes.LEFT_P, IDENTIFIER);
+		keys1.put(TaraTypes.RIGHT_P, IDENTIFIER);
+		keys1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
+		keys1.put(TaraTypes.IS, KEYWORD);
+		keys1.put(TaraTypes.HAS, KEYWORD);
+		keys1.put(TaraTypes.REF, KEYWORD);
+		keys1.put(TaraTypes.USE, KEYWORD);
+		keys1.put(TaraTypes.STRING, STRING);
+		keys1.put(TaraTypes.ANNOTATION, ANNOTATION);
+		keys1.put(TaraTypes.ASSIGN, OPERATOR);
+		keys1.put(TaraTypes.COLON, OPERATOR);
+		keys1.put(TaraTypes.RANGE, OPERATOR);
+		keys1.put(TaraTypes.DOUBLE_TYPE, PRIMITIVE);
+		keys1.put(TaraTypes.INT_TYPE, PRIMITIVE);
+		keys1.put(TaraTypes.STRING_TYPE, PRIMITIVE);
+		keys1.put(TaraTypes.ID_TYPE, PRIMITIVE);
+		keys1.put(TaraTypes.MODIFIERS, MODIFIERS);
+		keys1.put(TaraTypes.DOUBLE, NUMBERS);
+		keys1.put(TaraTypes.INT, NUMBERS);
+	}
+
+
 	@NotNull
 	@Override
 	public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-		if (isAnnotation(tokenType)) {
-			return ANNOTATION_KEY;
-		} else if (tokenType.equals(TaraTypes.DOUBLE) || tokenType.equals(TaraTypes.INT)) {
-			return NUMBERS_KEY;
-		} else if (tokenType.equals(TaraTypes.COMMENT)) {
-			return COMMENT_KEYS;
-		} else if (isPrimitiveType(tokenType)) {
-			return PRIMITIVE_KEY;
-		} else if (isKeyword(tokenType)) {
-			return KEYWORD_KEYS;
-		} else if (tokenType.equals(TaraTypes.MODIFIERS)) {
-			return MODIFIERS_KEYS;
-		} else if (tokenType.equals(TaraTypes.STRING)) {
-			return STRING_KEYS;
-		} else if (isOperator(tokenType)) {
-			return OPERATORS_KEY;
-		} else if (tokenType.equals(TokenType.WHITE_SPACE)) {
-			return EMPTY_KEYS;
-		} else if (tokenType.equals(TaraTypes.IDENTIFIER_KEY) || tokenType.equals(TaraTypes.LEFT_P) || tokenType.equals(TaraTypes.RIGHT_P)) {
-			return IDENTIFIERS_KEYS;
-		} else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
-			return BAD_CHAR_KEYS;
-		} else {
-			return EMPTY_KEYS;
-		}
+		return pack(keys1.get(tokenType), keys2.get(tokenType));
 	}
 
-	private boolean isKeyword(IElementType tokenType) {
-		for (IElementType elementType : KEYWORD_LIST)
-			if (tokenType.equals(elementType)) return true;
-		return false;
-	}
+	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>(6);
 
-	private boolean isAnnotation(IElementType tokenType) {
-		for (IElementType elementType : ANNOTATION_LIST)
-			if (tokenType.equals(elementType)) return true;
-		return false;
-	}
-
-	private boolean isPrimitiveType(IElementType tokenType) {
-		for (IElementType elementType : PRIMITIVE_TYPE_LIST)
-			if (tokenType.equals(elementType)) return true;
-		return false;
-	}
-
-	private boolean isOperator(IElementType tokenType) {
-		for (IElementType elementType : OPERATORS)
-			if (tokenType.equals(elementType)) return true;
-		return false;
+	static {
+		DISPLAY_NAMES.put(IDENTIFIER, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.identifier"), null));
+		DISPLAY_NAMES.put(MODIFIERS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.modifier"), null));
+		DISPLAY_NAMES.put(OPERATOR, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.key.value.separator"), null));
+		DISPLAY_NAMES.put(ANNOTATION, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.annotation"), null));
+		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<String, HighlightSeverity>(TaraBundle.message("invalid.tara.concept.character"), null));
+//		DISPLAY_NAMES.put(PROPERTIES_INVALID_STRING_ESCAPE, new Pair<>(OptionsBundle.message("options.properties.attribute.descriptor.invalid.string.escape"), HighlightSeverity.WARNING));
 	}
 }

@@ -47,7 +47,11 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 		List<LookupElement> variants = new ArrayList<>();
 		for (final TaraConceptDefinition concept : concepts)
 			if (concept.getName() != null && concept.getName().length() > 0)
-				variants.add(LookupElementBuilder.create(concept).withIcon(TaraIcons.ICON).withTypeText(concept.getContainingFile().getName()));
+				variants.add(LookupElementBuilder.create(concept).withIcon(TaraIcons.ICON).withTypeText(getFileName(concept)));
 		return variants.toArray();
+	}
+
+	private String getFileName(TaraConceptDefinition concept) {
+		return concept.getContainingFile().getName().split("\\.")[0];
 	}
 }
