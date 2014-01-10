@@ -157,7 +157,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		if (grapeRoot != null)
 			vmParams.add("-D" + TaracOSProcessHandler.GRAPE_ROOT + "=" + grapeRoot);
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
-			getJavaExecutable(chunk), "monet.tara.compiler.rt.TaracRunner",
+			getJavaExecutable(chunk), "monet.tara.intellij.compiler.rt.TaracRunner",
 			Collections.<String>emptyList(), classpath,
 			vmParams, programParams);
 

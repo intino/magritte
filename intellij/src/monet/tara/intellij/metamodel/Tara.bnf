@@ -1,5 +1,5 @@
 {
-  parserClass='monet.tara.intellij.metamodel.parser.TaraParser'
+  parserClass='monet.tara.intellij.parser.TaraParser'
   parserUtilClass="monet.tara.intellij.parser.TaraParserUtil"
 
   extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
@@ -7,9 +7,9 @@
   psiClassPrefix='Tara'
   psiImplClassSuffix='Impl'
   psiPackage='monet.tara.intellij.metamodel.psi'
-  psiImplPackage='monet.tara.intellij.metamodel.psi.impl'
+  psiImplPackage='monet.tara.intellij.psi.impl'
 
-  elementTypeHolderClass='monet.tara.intellij.metamodel.psi.TaraTypes'
+  elementTypeHolderClass='monet.tara.intellij.psi.TaraTypes'
   elementTypeClass='monet.tara.intellij.psi.TaraElementType'
   tokenTypeClass='monet.tara.intellij.psi.TaraTokenType'
 

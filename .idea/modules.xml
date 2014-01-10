@@ -4,9 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/intellij/intellij.iml" filepath="$PROJECT_DIR$/intellij/intellij.iml" />
       <module fileurl="file://$PROJECT_DIR$/processor_manager/processor_manager.iml" filepath="$PROJECT_DIR$/processor_manager/processor_manager.iml" />
-      <module fileurl="file://$PROJECT_DIR$/runtime_constants/runtime_constants.iml" filepath="$PROJECT_DIR$/runtime_constants/runtime_constants.iml" />
       <module fileurl="file://$PROJECT_DIR$/tara.iml" filepath="$PROJECT_DIR$/tara.iml" />
       <module fileurl="file://$PROJECT_DIR$/tara_runtime/tara_runtime.iml" filepath="$PROJECT_DIR$/tara_runtime/tara_runtime.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tara_runtime_constants/tara_runtime_constants.iml" filepath="$PROJECT_DIR$/tara_runtime_constants/tara_runtime_constants.iml" />
     </modules>
   </component>
 </project>

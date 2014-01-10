@@ -5,9 +5,9 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.util.PsiTreeUtil;
 import monet.tara.intellij.metamodel.file.TaraFile;
 import monet.tara.intellij.metamodel.file.TaraFileType;
-import monet.tara.intellij.metamodel.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConceptDefinition;
 import monet.tara.intellij.psi.TaraElementFactory;
-import monet.tara.intellij.metamodel.psi.TaraIdentifier;
+import monet.tara.intellij.psi.TaraIdentifier;
 
 public class TaraElementFactoryImpl extends TaraElementFactory {
 

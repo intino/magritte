@@ -2,11 +2,10 @@ package monet.tara.intellij.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import monet.tara.intellij.metamodel.psi.TaraConceptDefinition;
-import monet.tara.intellij.metamodel.psi.TaraConceptSignature;
-import monet.tara.intellij.metamodel.psi.TaraIdentifier;
-import monet.tara.intellij.metamodel.psi.TaraTypes;
-import monet.tara.intellij.metamodel.psi.impl.TaraReferenceStatementImpl;
+import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConceptSignature;
+import monet.tara.intellij.psi.TaraIdentifier;
+import monet.tara.intellij.psi.TaraTypes;
 
 public class TaraPsiImplUtil {
 

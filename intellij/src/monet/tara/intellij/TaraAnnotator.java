@@ -21,7 +21,7 @@ import com.intellij.psi.tree.IElementType;
 import monet.tara.intellij.codeinspection.fix.RemoveConceptFix;
 import monet.tara.intellij.metamodel.TaraBundle;
 import monet.tara.intellij.metamodel.TaraSyntaxHighlighter;
-import monet.tara.intellij.metamodel.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConceptDefinition;
 import monet.tara.intellij.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 

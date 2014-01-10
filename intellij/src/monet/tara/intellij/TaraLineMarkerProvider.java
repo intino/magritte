@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiExpressionStatement;
 import com.intellij.psi.PsiIdentifier;
 import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConceptDefinition;
 import monet.tara.intellij.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 

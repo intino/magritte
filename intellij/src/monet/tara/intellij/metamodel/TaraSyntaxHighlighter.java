@@ -12,7 +12,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
 import gnu.trove.THashMap;
-import monet.tara.intellij.metamodel.psi.TaraTypes;
+import monet.tara.intellij.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

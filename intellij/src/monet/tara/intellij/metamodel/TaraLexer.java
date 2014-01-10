@@ -5,7 +5,7 @@ package monet.tara.intellij.metamodel;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import monet.tara.intellij.metamodel.psi.TaraTypes;
+import monet.tara.intellij.psi.TaraTypes;
 
 import java.util.Stack;
 

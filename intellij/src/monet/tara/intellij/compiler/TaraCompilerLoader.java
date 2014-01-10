@@ -13,7 +13,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.ui.EditorNotificationPanel;
 import monet.tara.intellij.compiler.generator.TaracStubGenerator;
-import monet.tara.metamodel.file.TaraFileType;
+import monet.tara.intellij.metamodel.file.TaraFileType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;

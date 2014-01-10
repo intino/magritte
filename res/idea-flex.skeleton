@@ -59,7 +59,7 @@
 
 --- user class code
 
---- constructor declaration
+--- public constructor declaration
 
   public final int getTokenStart(){
     return zzStartRead;

@@ -6,9 +6,9 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import monet.tara.metamodel.file.TaraFileType;
-import monet.tara.project.TaraTemplates;
-import monet.tara.project.TaraTemplatesFactory;
+import monet.tara.intellij.metamodel.file.TaraFileType;
+import monet.tara.intellij.project.TaraTemplates;
+import monet.tara.intellij.project.TaraTemplatesFactory;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 

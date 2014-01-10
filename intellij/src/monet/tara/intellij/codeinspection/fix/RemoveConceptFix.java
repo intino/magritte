@@ -6,8 +6,8 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import monet.tara.metamodel.TaraBundle;
-import monet.tara.metamodel.psi.TaraConceptDefinition;
+import monet.tara.intellij.metamodel.TaraBundle;
+import monet.tara.intellij.psi.TaraConceptDefinition;
 import org.jetbrains.annotations.NotNull;
 
 /**

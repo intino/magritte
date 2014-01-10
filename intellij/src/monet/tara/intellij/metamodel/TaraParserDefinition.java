@@ -11,8 +11,8 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import monet.tara.intellij.metamodel.file.TaraFile;
-import monet.tara.intellij.metamodel.parser.TaraParser;
-import monet.tara.intellij.metamodel.psi.TaraTypes;
+import monet.tara.intellij.parser.TaraParser;
+import monet.tara.intellij.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Reader;

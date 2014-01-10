@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import monet.tara.intellij.metamodel.file.TaraFile;
-import monet.tara.intellij.metamodel.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConceptDefinition;
 
 import java.util.ArrayList;
 import java.util.List;

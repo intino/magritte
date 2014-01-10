@@ -3,8 +3,6 @@ package monet.tara.intellij.psi;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import monet.tara.intellij.metamodel.file.TaraFile;
-import monet.tara.intellij.metamodel.psi.TaraConceptDefinition;
-import monet.tara.intellij.metamodel.psi.TaraIdentifier;
 
 public abstract class TaraElementFactory {
 

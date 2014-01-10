@@ -7,9 +7,9 @@ import com.intellij.lexer.FlexAdapter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
-import monet.tara.intellij.metamodel.psi.TaraConceptDefinition;
-import monet.tara.intellij.metamodel.psi.TaraIdentifier;
-import monet.tara.intellij.metamodel.psi.TaraTypes;
+import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraIdentifier;
+import monet.tara.intellij.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

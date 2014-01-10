@@ -3,7 +3,7 @@ package monet.tara.intellij.highlighting;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import monet.tara.metamodel.TaraSyntaxHighlighter;
+import monet.tara.intellij.metamodel.TaraSyntaxHighlighter;
 import org.jetbrains.annotations.NotNull;
 
 public class TaraSyntaxHighlighterFactory extends SyntaxHighlighterFactory {

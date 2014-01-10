@@ -23,10 +23,10 @@ import com.intellij.util.CommonProcessors;
 import com.intellij.util.Processor;
 import com.intellij.util.text.CharArrayUtil;
 import gnu.trove.THashSet;
-import monet.tara.metamodel.TaraBundle;
-import monet.tara.metamodel.file.TaraFile;
-import monet.tara.metamodel.psi.TaraConceptDefinition;
-import monet.tara.psi.impl.TaraUtil;
+import monet.tara.intellij.metamodel.TaraBundle;
+import monet.tara.intellij.metamodel.file.TaraFile;
+import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

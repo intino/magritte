@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="runtime_constants" />
+    <orderEntry type="module" module-name="tara_runtime_constants" />
   </component>
 </module>
 
