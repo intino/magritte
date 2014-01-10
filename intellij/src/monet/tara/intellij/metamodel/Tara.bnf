@@ -1,0 +1,42 @@
+{
+  parserClass='monet.tara.intellij.metamodel.parser.TaraParser'
+  parserUtilClass="monet.tara.intellij.parser.TaraParserUtil"
+
+  extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
+
+  psiClassPrefix='Tara'
+  psiImplClassSuffix='Impl'
+  psiPackage='monet.tara.intellij.metamodel.psi'
+  psiImplPackage='monet.tara.intellij.metamodel.psi.impl'
+
+  elementTypeHolderClass='monet.tara.intellij.metamodel.psi.TaraTypes'
+  elementTypeClass='monet.tara.intellij.psi.TaraElementType'
+  tokenTypeClass='monet.tara.intellij.psi.TaraTokenType'
+
+  psiImplUtilClass='monet.tara.intellij.psi.impl.TaraPsiImplUtil'
+}
+
+root ::= (COMMENT|conceptDefinition)+
+
+conceptDefinition ::= conceptSignature conceptBody? {mixin='monet.tara.intellij.psi.impl.TaraNamedElementImpl'
+implements='monet.tara.intellij.psi.TaraNamedElement' methods=[getName setName getNameIdentifier]}
+
+conceptSignature ::= CONCEPT MODIFIERS? identifier (IS identifier)? ANNOTATION*
+
+conceptBody::= INDENT statement+ DEDENT
+
+statement::= property | child | referenceStatement | intention
+
+property::=primitive_type identifier (ASSIGN  primitive)? ANONYMOUS?
+
+child::=HAS identifier RANGE? ANNOTATION* conceptBody*
+
+identifier ::= IDENTIFIER_KEY {methods=[getIdentifier]}
+
+referenceStatement::=REF identifier IDENTIFIER_KEY
+
+intention::=USE identifier COLON identifier (LEFT_P identifier RIGHT_P)?
+
+primitive_type ::=  ID_TYPE|INT_TYPE|STRING_TYPE|DOUBLE_TYPE
+
+primitive ::=  INT|DOUBLE|STRING
