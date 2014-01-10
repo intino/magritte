@@ -37,12 +37,11 @@ public class TaraRenameHandler extends PsiElementRenameHandler {
 			return resolveResults.length > 0 ? resolveResults[0].getElement() : null;
 		} else if (reference instanceof PsiMultiReference) {
 			final PsiReference[] references = ((PsiMultiReference) reference).getReferences();
-			for (PsiReference psiReference : references) {
+			for (PsiReference psiReference : references)
 				if (psiReference instanceof TaraReference) {
 					final ResolveResult[] resolveResults = ((TaraReference) psiReference).multiResolve(false);
 					if (resolveResults.length > 0) return resolveResults[0].getElement();
 				}
-			}
 		}
 		return null;
 	}

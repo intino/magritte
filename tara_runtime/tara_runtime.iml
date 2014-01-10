@@ -8,7 +8,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="rt-constants" exported="" />
+    <orderEntry type="module" module-name="runtime_constants" exported="" />
     <orderEntry type="library" exported="" name="antlr-4.1-complete" level="project" />
   </component>
 </module>

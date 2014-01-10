@@ -16,13 +16,23 @@ import java.util.List;
  * Created by oroncal on 03/01/14.
  */
 public class TaraCodeInsightTest extends LightCodeInsightFixtureTestCase {
+	private static final String ANNOTATION = "annotation";
+	private static final String COMPLETION = "completion";
+	private static final String FIND_USAGES = "findUsages";
+	private static final String FOLDING = "folding";
+	private static final String REFERENCE = "reference";
+	private static final String RENAME = "rename";
+
+
+	private final String SEPARATOR = System.getProperty("path.separator");
+
 	@Override
 	protected String getTestDataPath() {
-		return "testData";
+		return "res_test" + SEPARATOR;
 	}
 
 	public void testCompletion() {
-		myFixture.configureByFiles("completion/CompletionTestData.m2");
+		myFixture.configureByFiles(COMPLETION + SEPARATOR + "CompletionTestData.m2");
 		myFixture.complete(CompletionType.BASIC, 1);
 		List<String> strings = myFixture.getLookupElementStrings();
 		assert strings != null;
@@ -31,30 +41,30 @@ public class TaraCodeInsightTest extends LightCodeInsightFixtureTestCase {
 	}
 
 	public void testFindUsages() {
-		Collection<UsageInfo> usageInfos = myFixture.testFindUsages("/findUsages/FindUsagesTestData.m2");
+		Collection<UsageInfo> usageInfos = myFixture.testFindUsages(FIND_USAGES + SEPARATOR + "FindUsagesTestData.m2");
 		assertEquals(2, usageInfos.size());
 	}
 
 	public void testFolding() {
-		myFixture.testFolding(getTestDataPath() + "/folding/FoldingTest.m2");
+		myFixture.testFolding(getTestDataPath() + FOLDING + SEPARATOR + "FoldingTest.m2");
 	}
 
 	public void testReference() {
-		myFixture.configureByFiles("/reference/ReferenceTestData.m2");
+		myFixture.configureByFiles(REFERENCE + SEPARATOR + "ReferenceTestData.m2");
 		PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
 		String radiator = ((TaraConceptDefinition) element.getReferences()[0].resolve()).getName();
 		assertEquals("Radiator", radiator);
 	}
 
 	public void testAnnotator() {
-		myFixture.configureByFiles("/annotator/AnnotatorTestData.m2");
+		myFixture.configureByFiles(ANNOTATION + SEPARATOR + "AnnotatorTestData.m2");
 		myFixture.checkHighlighting(true, true, true);
 	}
 
 	public void testRename() {
-		myFixture.configureByFiles("/rename/RenameTestData.m2");
+		myFixture.configureByFiles(RENAME + SEPARATOR + "RenameTestData.m2");
 		myFixture.renameElementAtCaret("RadiatorRenamed");
-		myFixture.checkResultByFile("/rename/RenameTestData.m2", "/rename/RenameTestDataAfter.m2", true);
+		myFixture.checkResultByFile(RENAME + SEPARATOR + "RenameTestData.m2", RENAME + SEPARATOR + "RenameTestDataAfter.m2", true);
 	}
 
 	public void testCommenter() {

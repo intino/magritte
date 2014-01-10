@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TaraPlugin.iml" filepath="$PROJECT_DIR$/TaraPlugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rt-constants/rt-constants.iml" filepath="$PROJECT_DIR$/rt-constants/rt-constants.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jps-plugin/tara-jps-plugin.iml" filepath="$PROJECT_DIR$/jps-plugin/tara-jps-plugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/tara-rt/tara_rt.iml" filepath="$PROJECT_DIR$/tara-rt/tara_rt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/intellij/intellij.iml" filepath="$PROJECT_DIR$/intellij/intellij.iml" />
+      <module fileurl="file://$PROJECT_DIR$/processor_manager/processor_manager.iml" filepath="$PROJECT_DIR$/processor_manager/processor_manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/runtime_constants/runtime_constants.iml" filepath="$PROJECT_DIR$/runtime_constants/runtime_constants.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tara.iml" filepath="$PROJECT_DIR$/tara.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tara_runtime/tara_runtime.iml" filepath="$PROJECT_DIR$/tara_runtime/tara_runtime.iml" />
     </modules>
   </component>
 </project>
