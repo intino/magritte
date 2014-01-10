@@ -46,6 +46,11 @@ public class TaraCodeInsightTest extends LightCodeInsightFixtureTestCase {
 		assertEquals("Radiator", radiator);
 	}
 
+	public void testAnnotator() {
+		myFixture.configureByFiles("/annotator/AnnotatorTestData.m2");
+		myFixture.checkHighlighting(true, true, true);
+	}
+
 	public void testRename() {
 		myFixture.configureByFiles("/rename/RenameTestData.m2");
 		myFixture.renameElementAtCaret("RadiatorRenamed");

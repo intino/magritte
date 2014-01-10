@@ -56,7 +56,7 @@
     <projectService serviceInterface="monet.tara.compiler.TaraCompilerConfiguration"
                     serviceImplementation="monet.tara.compiler.TaraCompilerConfiguration"/>
     <configurationType implementation="monet.tara.project.runner.TaraRunConfigurationType"/>
-
+    <lang.commenter language="Tara" implementationClass="monet.tara.metamodel.TaraCommenter"/>
 
     <fileTemplateGroup implementation="monet.tara.project.TaraTemplatesFactory"/>
     <fileTypeFactory implementation="monet.tara.metamodel.file.TaraFileTypeFactory"/>
@@ -73,11 +73,6 @@
                       key="duplicate.concept.display.name"
                       groupKey="group.names.tara.files" enabledByDefault="false" level="WARNING"
                       implementationClass="monet.tara.metamodel.codeinspection.DuplicateConceptInspection"/>
-    <!--<localInspection language="Tara" shortName="TrailingSpacesInProperty" bundle="messages.TaraBundle"-->
-    <!--key="trail.spaces.concept.inspection.display.name" groupKey="tara.files.inspection.group.display.name"-->
-    <!--enabledByDefault="true" level="WARNING"-->
-    <!--implementationClass="monet.tara.metamodel.codeinspection.TrailingSpacesInPropertyInspection"/>-->
-    <!--<codeInsight.lineMarkerProvider language="JAVA" implementationClass="TaraLineMarkerProvider"/>-->
     <completion.contributor language="Tara" implementationClass="monet.tara.metamodel.TaraCompletionContributor"/>
     <psi.referenceContributor language="Tara" implementation="monet.tara.metamodel.TaraReferenceContributor"/>
     <nameSuggestionProvider implementation="monet.tara.metamodel.refactoring.TaraNameSuggestionProvider"/>

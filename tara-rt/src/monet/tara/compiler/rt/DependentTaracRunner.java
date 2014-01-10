@@ -1,20 +1,31 @@
 package monet.tara.compiler.rt;
 
 import monet.tara.parser.TaraGrammar;
+import monet.tara.parser.TaraLexer;
+import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BailErrorStrategy;
-import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.misc.TestRig;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Created by oroncal on 27/12/13.
  */
 public class DependentTaracRunner {
 	static boolean runTarac(boolean forStubs, File argsFile) {
-		System.out.println("runtarac ole");
-		TaraGrammar parser = grammarInitialize("IsDouble");
-		Assert.assertTrue(grammarTest(parser.dataStoreFeaturesType()));
-
+		try {
+			TaraGrammar parser = grammarInitialize("IsDouble");
+			grammarTest(new String(Files.readAllBytes(Paths.get(argsFile.getAbsolutePath())), StandardCharsets.UTF_8));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 //		final List<File> srcFiles = new ArrayList<>();
 //		final Map<String, File> class2File = new HashMap<>();
@@ -53,28 +64,39 @@ public class DependentTaracRunner {
 		return false;
 	}
 
-	public TaraM1Grammar grammarInitialize(String query) {
+	private static TaraGrammar grammarInitialize(String query) {
 
 		CharStream stream = new ANTLRInputStream(query);
-		TaraM1Lexer lexer = new TaraM1Lexer(stream);
+		TaraLexer lexer = new TaraLexer(stream);
 		lexer.reset();
 
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-		TaraM1Grammar parser = new TaraM1Grammar(tokens);
+		TaraGrammar parser = new TaraGrammar(tokens);
 		parser.setErrorHandler(new BailErrorStrategy());
 
 		return parser;
 	}
 
-	public boolean grammarTest(ParserRuleContext parser) {
+	private static boolean grammarTest(String query) {
+		CharStream stream = new ANTLRInputStream(query);
+		TaraLexer lexer = new TaraLexer(stream);
+		lexer.reset();
+
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+		TaraGrammar parser = new TaraGrammar(tokens);
+		parser.setErrorHandler(new BailErrorStrategy());
+
 		try {
-			ParseTree tree = parser;
+			ParseTree tree = parser.root();
+			TestRig.main(new String[]{"TaraParser", "r", "-tree"});
 /*            System.out.println(tree.toStringTree(parser));
             System.out.println("-----------------");*/
 		} catch (Exception error) {
 			return false;
 		}
+
 		return true;
 	}
 //

@@ -4,6 +4,8 @@ package monet.tara.metamodel.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.TokenType;
+import com.intellij.util.IncorrectOperationException;
 import monet.tara.metamodel.psi.TaraConceptBody;
 import monet.tara.metamodel.psi.TaraConceptDefinition;
 import monet.tara.metamodel.psi.TaraConceptSignature;
@@ -47,6 +49,20 @@ public class TaraConceptDefinitionImpl extends TaraNamedElementImpl implements T
 	@NotNull
 	public PsiElement getNameIdentifier() {
 		return TaraPsiImplUtil.getIdentifier(this.getConceptSignature());
+	}
+
+	public void delete() throws IncorrectOperationException {
+		final ASTNode parentNode = getParent().getNode();
+		assert parentNode != null;
+
+		ASTNode node = getNode();
+		ASTNode prev = node.getTreePrev();
+		ASTNode next = node.getTreeNext();
+		parentNode.removeChild(node);
+		if ((prev == null || prev.getElementType() == TokenType.WHITE_SPACE) && next != null &&
+			next.getElementType() == TokenType.WHITE_SPACE) {
+			parentNode.removeChild(next);
+		}
 	}
 
 }

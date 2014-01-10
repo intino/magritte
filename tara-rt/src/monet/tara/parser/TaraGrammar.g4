@@ -1,7 +1,8 @@
 parser grammar TaraGrammar;
 options { tokenVocab=TaraLexer; }
+
 @header{
-   package monet.tara.parser;
+    package monet.tara.parser;
 }
 
 //grammar TaraGrammar;
@@ -47,7 +48,7 @@ doubleProperty :  DOUBLE_TYPE IDENTIFIER assignDoubleValue? ;
 naturalProperty: NATURAL_TYPE IDENTIFIER assignNaturalValue?;
 stringProperty :  STRING_TYPE IDENTIFIER assignStringValue? ;
 booleanProperty: BOOLEAN_TYPE IDENTIFIER assignBooleanValue?;
-dateProperty   :    DATE_TYPE IDENTIFIER assignDateValue?;
+dateProperty   :    DATE_TYPE IDENTIFIER assignDateValue?   ;
 
 reference      : REF IDENTIFIER RANGE? IDENTIFIER;
 child          : HAS IDENTIFIER RANGE? extend? annotations* include? body?;
@@ -57,7 +58,7 @@ assignBooleanValue: ASSIGN (TRUE | FALSE);
 assignIntValue    : ASSIGN SIGN? NUMBER;
 assignDoubleValue : ASSIGN SIGN? (NUMBER | DOUBLE_NUMBER);
 assignNaturalValue: ASSIGN NUMBER;
-assignDateValue   : ASSIGN DATE;
+assignDateValue   : ASSIGN DATE  ;
 
 include  : INCLUDE IDENTIFIER;
 intention: USE IDENTIFIER intentionBody?;

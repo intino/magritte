@@ -127,9 +127,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private static Set<String> getPathsToCompile(List<File> toCompile) {
 		final Set<String> toCompilePaths = new LinkedHashSet<>();
 		for (File file : toCompile) {
-			if (LOG.isDebugEnabled()) {
+			if (LOG.isDebugEnabled())
 				LOG.debug("Path to compile: " + file.getPath());
-			}
 			toCompilePaths.add(FileUtil.toSystemIndependentName(file.getPath()));
 		}
 		return toCompilePaths;
@@ -332,9 +331,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		final Mappings delta = context.getProjectDescriptor().dataManager.getMappings().createDelta();
 		final List<File> successfullyCompiledFiles = new ArrayList<>();
 		if (!successfullyCompiled.isEmpty()) {
-
 			final Callbacks.Backend callback = delta.getCallback();
-
 			for (Map.Entry<ModuleBuildTarget, Collection<TaracOSProcessHandler.OutputItem>> entry : successfullyCompiled.entrySet()) {
 				final ModuleBuildTarget target = entry.getKey();
 				final Collection<TaracOSProcessHandler.OutputItem> compiled = entry.getValue();
@@ -353,19 +350,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 	private static Collection<String> generateClasspath(CompileContext context, ModuleChunk chunk) {
-		final Set<String> cp = new LinkedHashSet<>();
-		//groovy_rt.jar
-		// IMPORTANT! must be the first in classpath
-		cp.add(getTaraRtRoot().getPath());
-
+		final Set<String> clashPath = new LinkedHashSet<>();
+		clashPath.add(getTaraRtRoot().getPath());
+		clashPath.add(getAntlrLib().getPath());
 		for (File file : ProjectPaths.getCompilationClasspathFiles(chunk, chunk.containsTests(), false, false))
-			cp.add(FileUtil.toCanonicalPath(file.getPath()));
-
-		for (TaraBuilderExtension extension : JpsServiceManager.getInstance().getExtensions(TaraBuilderExtension.class)) {
-			cp.addAll(extension.getCompilationClassPath(context, chunk));
-		}
-
-		return cp;
+			clashPath.add(FileUtil.toCanonicalPath(file.getPath()));
+		for (TaraBuilderExtension extension : JpsServiceManager.getInstance().getExtensions(TaraBuilderExtension.class))
+			clashPath.addAll(extension.getCompilationClassPath(context, chunk));
+		return clashPath;
 	}
 
 	private static File getTaraRtRoot() {
@@ -374,6 +366,11 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			return new File(root.getParentFile(), "tara_rt.jar");
 		}
 		return root;
+	}
+
+	private static File getAntlrLib() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		return new File(root.getParentFile().getAbsolutePath(), "/lib/antlr-4.1-complete.jar");
 	}
 
 	public static boolean isTaraFile(String path) {
