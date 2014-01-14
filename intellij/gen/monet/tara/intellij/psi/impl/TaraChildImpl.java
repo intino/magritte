@@ -5,11 +5,9 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import monet.tara.intellij.psi.TaraChild;
-import monet.tara.intellij.psi.TaraConceptBody;
-import monet.tara.intellij.psi.TaraIdentifier;
-import monet.tara.intellij.psi.TaraVisitor;
+import monet.tara.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -25,15 +23,33 @@ public class TaraChildImpl extends ASTWrapperPsiElement implements TaraChild {
 	}
 
 	@Override
-	@NotNull
-	public List<TaraConceptBody> getConceptBodyList() {
-		return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraConceptBody.class);
+	@Nullable
+	public TaraChildAnnotation getChildAnnotation() {
+		return findChildByClass(TaraChildAnnotation.class);
+	}
+
+	@Override
+	@Nullable
+	public TaraConceptBody getConceptBody() {
+		return findChildByClass(TaraConceptBody.class);
+	}
+
+	@Override
+	@Nullable
+	public TaraDoc getDoc() {
+		return findChildByClass(TaraDoc.class);
 	}
 
 	@Override
 	@NotNull
-	public TaraIdentifier getIdentifier() {
-		return findNotNullChildByClass(TaraIdentifier.class);
+	public List<TaraIdentifier> getIdentifierList() {
+		return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifier.class);
+	}
+
+	@Override
+	@Nullable
+	public TaraModifier getModifier() {
+		return findChildByClass(TaraModifier.class);
 	}
 
 }

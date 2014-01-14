@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiExpressionStatement;
 import com.intellij.psi.PsiIdentifier;
 import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 import monet.tara.intellij.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,11 +24,11 @@ public class TaraLineMarkerProvider extends RelatedItemLineMarkerProvider {
 				PsiExpressionStatement identifier = (PsiExpressionStatement) psiIdentifier.getNextSibling().getNextSibling();
 				String value = identifier.getText();
 				Project project = element.getProject();
-				final List<TaraConceptDefinition> properties = TaraUtil.findConcept(project, value.replace(";", ""));
+				final List<TaraConcept> properties = TaraUtil.findConcept(project, value.replace(";", ""));
 				if (properties.size() > 0) {
 					NavigationGutterIconBuilder<PsiElement> psiElementNavigationGutterIconBuilder = NavigationGutterIconBuilder.create(TaraIcons.ICON).setTargets(properties);
 					NavigationGutterIconBuilder<PsiElement> builder =
-							psiElementNavigationGutterIconBuilder.setTooltipText("Navigate to the concept");
+						psiElementNavigationGutterIconBuilder.setTooltipText("Navigate to the concept");
 					result.add(builder.createLineMarkerInfo(element));
 				}
 			}

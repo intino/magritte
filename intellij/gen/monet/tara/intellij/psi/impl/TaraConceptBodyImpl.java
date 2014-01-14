@@ -6,7 +6,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import monet.tara.intellij.psi.TaraConceptBody;
-import monet.tara.intellij.psi.TaraStatement;
+import monet.tara.intellij.psi.TaraConceptConstituents;
 import monet.tara.intellij.psi.TaraVisitor;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,8 +25,8 @@ public class TaraConceptBodyImpl extends ASTWrapperPsiElement implements TaraCon
 
 	@Override
 	@NotNull
-	public List<TaraStatement> getStatementList() {
-		return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraStatement.class);
+	public List<TaraConceptConstituents> getConceptConstituentsList() {
+		return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraConceptConstituents.class);
 	}
 
 }

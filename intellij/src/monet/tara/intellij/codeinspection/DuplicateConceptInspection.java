@@ -25,7 +25,7 @@ import com.intellij.util.text.CharArrayUtil;
 import gnu.trove.THashSet;
 import monet.tara.intellij.metamodel.TaraBundle;
 import monet.tara.intellij.metamodel.file.TaraFile;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 import monet.tara.intellij.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -115,7 +115,7 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 		if (!context.isToCheckFile(file, this)) return;
 		final PsiSearchHelper searchHelper = PsiSearchHelper.SERVICE.getInstance(file.getProject());
 		final TaraFile taraFile = (TaraFile) file;
-		final List<TaraConceptDefinition> concepts = TaraUtil.getConcepts(taraFile.getProject());
+		final List<TaraConcept> concepts = TaraUtil.getConcepts(taraFile.getProject());
 		Module module = ModuleUtil.findModuleForPsiElement(file);
 		if (module == null) return;
 		final GlobalSearchScope scope = CURRENT_FILE
@@ -130,9 +130,9 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 		ProgressManager.getInstance().runProcess(new Runnable() {
 			@Override
 			public void run() {
-				if (!JobLauncher.getInstance().invokeConcurrentlyUnderProgress(concepts, progress, false, new Processor<TaraConceptDefinition>() {
+				if (!JobLauncher.getInstance().invokeConcurrentlyUnderProgress(concepts, progress, false, new Processor<TaraConcept>() {
 					@Override
-					public boolean process(final TaraConceptDefinition concept) {
+					public boolean process(final TaraConcept concept) {
 						if (original != null) {
 							if (original.isCanceled()) return false;
 							original.setText2(TaraBundle.message("searching.for.concept.key.progress.text", concept.getName()));
@@ -190,8 +190,8 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 			for (PsiFile file : psiFilesWithDuplicates) {
 				if (!(file instanceof TaraFile)) continue;
 				TaraFile taraFile = (TaraFile) file;
-				final List<TaraConceptDefinition> propertiesByKey = TaraUtil.findConcept(taraFile.getProject(), key);
-				for (TaraConceptDefinition concept : propertiesByKey) {
+				final List<TaraConcept> propertiesByKey = TaraUtil.findConcept(taraFile.getProject(), key);
+				for (TaraConcept concept : propertiesByKey) {
 					if (duplicatesCount == 0)
 						message.append(InspectionsBundle.message("duplicate.property.key.problem.descriptor", key));
 					surroundWithHref(message, concept.getFirstChild(), false);

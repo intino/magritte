@@ -6,7 +6,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import monet.tara.intellij.metamodel.file.TaraFile;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 import org.jetbrains.annotations.Nullable;
 
 public class TaraRunnerUtil {
@@ -35,13 +35,13 @@ public class TaraRunnerUtil {
 	public static boolean isRunnable(@Nullable final PsiClass psiClass) {
 		if (psiClass == null) return false;
 		final PsiClass runnable =
-				JavaPsiFacade.getInstance(psiClass.getProject()).findClass(CommonClassNames.JAVA_LANG_RUNNABLE, psiClass.getResolveScope());
+			JavaPsiFacade.getInstance(psiClass.getProject()).findClass(CommonClassNames.JAVA_LANG_RUNNABLE, psiClass.getResolveScope());
 		if (runnable == null) return false;
 
-		return psiClass instanceof TaraConceptDefinition && //TODO
-				!(psiClass instanceof PsiAnonymousClass) &&
-				!psiClass.isInterface() &&
-				psiClass.isInheritor(runnable, true);
+		return psiClass instanceof TaraConcept && //TODO
+			!(psiClass instanceof PsiAnonymousClass) &&
+			!psiClass.isInterface() &&
+			psiClass.isInheritor(runnable, true);
 	}
 
 	public static boolean canBeRunByTara(final PsiClass psiClass) {
@@ -59,11 +59,10 @@ public class TaraRunnerUtil {
 		}
 
 		PsiClass psiClass =
-				JavaPsiFacade.getInstance(project).findClass(qualifiedName.replace('$', '.'), GlobalSearchScope.projectScope(project));
+			JavaPsiFacade.getInstance(project).findClass(qualifiedName.replace('$', '.'), GlobalSearchScope.projectScope(project));
 		if (psiClass != null) {
 			return psiClass.getName();
-		}
-		else {
+		} else {
 			int lastDot = qualifiedName.lastIndexOf('.');
 			if (lastDot == -1 || lastDot == qualifiedName.length() - 1) {
 				return qualifiedName;

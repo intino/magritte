@@ -47,29 +47,40 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 		keys1 = new THashMap<>();
 		keys2 = new THashMap<>();
 
-		keys1.put(TaraTypes.COMMENT, COMMENT);
 		keys1.put(TokenType.WHITE_SPACE, null);
 		keys1.put(TaraTypes.IDENTIFIER_KEY, IDENTIFIER);
-		keys1.put(TaraTypes.LEFT_P, IDENTIFIER);
-		keys1.put(TaraTypes.RIGHT_P, IDENTIFIER);
-		keys1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
-		keys1.put(TaraTypes.CONCEPT, KEYWORD);
-		keys1.put(TaraTypes.IS, KEYWORD);
-		keys1.put(TaraTypes.HAS, KEYWORD);
-		keys1.put(TaraTypes.REF, KEYWORD);
-		keys1.put(TaraTypes.USE, KEYWORD);
-		keys1.put(TaraTypes.STRING, STRING);
-		keys1.put(TaraTypes.ANNOTATION, ANNOTATION);
-		keys1.put(TaraTypes.ASSIGN, OPERATOR);
-		keys1.put(TaraTypes.COLON, OPERATOR);
+
+		keys1.put(TaraTypes.CONCEPT_KEY, KEYWORD);
+		keys1.put(TaraTypes.AS, KEYWORD);
+		keys1.put(TaraTypes.FROM_KEY, KEYWORD);
+		keys1.put(TaraTypes.OPEN_AN, KEYWORD);
+		keys1.put(TaraTypes.CLOSE_AN, KEYWORD);
+		keys1.put(TaraTypes.VAR, KEYWORD);
 		keys1.put(TaraTypes.RANGE, OPERATOR);
+
+		keys1.put(TaraTypes.ANNOTATION, ANNOTATION);
+
+		keys1.put(TaraTypes.ASSIGN, OPERATOR);
+		keys1.put(TaraTypes.LEFT_BRACKET, OPERATOR);
+		keys1.put(TaraTypes.RIGHT_BRACKET, OPERATOR);
+		keys1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
+
+		keys1.put(TaraTypes.STRING_TYPE, STRING);
 		keys1.put(TaraTypes.DOUBLE_TYPE, PRIMITIVE);
 		keys1.put(TaraTypes.INT_TYPE, PRIMITIVE);
 		keys1.put(TaraTypes.STRING_TYPE, PRIMITIVE);
-		keys1.put(TaraTypes.ID_TYPE, PRIMITIVE);
-		keys1.put(TaraTypes.MODIFIERS, MODIFIERS);
-		keys1.put(TaraTypes.DOUBLE, NUMBERS);
-		keys1.put(TaraTypes.INT, NUMBERS);
+		keys1.put(TaraTypes.UID_TYPE, PRIMITIVE);
+
+		keys1.put(TaraTypes.ABSTRACT, MODIFIERS);
+		keys1.put(TaraTypes.FINAL, MODIFIERS);
+
+		keys1.put(TaraTypes.DOUBLE_VALUE, NUMBERS);
+		keys1.put(TaraTypes.NATURAL_VALUE, NUMBERS);
+		keys1.put(TaraTypes.INTEGER_VALUE, NUMBERS);
+		keys1.put(TaraTypes.DOUBLE_VALUE, NUMBERS);
+		keys1.put(TaraTypes.BOOLEAN_VALUE, NUMBERS);
+
+		keys1.put(TaraTypes.DOC, COMMENT);
 	}
 
 	@NotNull

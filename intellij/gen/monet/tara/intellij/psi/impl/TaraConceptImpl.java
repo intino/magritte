@@ -6,21 +6,21 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.TokenType;
 import com.intellij.util.IncorrectOperationException;
+import monet.tara.intellij.psi.TaraConcept;
 import monet.tara.intellij.psi.TaraConceptBody;
-import monet.tara.intellij.psi.TaraConceptDefinition;
 import monet.tara.intellij.psi.TaraConceptSignature;
 import monet.tara.intellij.psi.TaraVisitor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TaraConceptDefinitionImpl extends TaraNamedElementImpl implements TaraConceptDefinition {
+public class TaraConceptImpl extends TaraNamedElementImpl implements TaraConcept {
 
-	public TaraConceptDefinitionImpl(ASTNode node) {
+	public TaraConceptImpl(ASTNode node) {
 		super(node);
 	}
 
 	public void accept(@NotNull PsiElementVisitor visitor) {
-		if (visitor instanceof TaraVisitor) ((TaraVisitor) visitor).visitConceptDefinition(this);
+		if (visitor instanceof TaraVisitor) ((TaraVisitor) visitor).visitConcept(this);
 		else super.accept(visitor);
 	}
 
@@ -64,5 +64,4 @@ public class TaraConceptDefinitionImpl extends TaraNamedElementImpl implements T
 			parentNode.removeChild(next);
 		}
 	}
-
 }

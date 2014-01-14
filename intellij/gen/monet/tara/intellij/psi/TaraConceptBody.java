@@ -9,6 +9,6 @@ import java.util.List;
 public interface TaraConceptBody extends PsiElement {
 
 	@NotNull
-	List<TaraStatement> getStatementList();
+	List<TaraConceptConstituents> getConceptConstituentsList();
 
 }

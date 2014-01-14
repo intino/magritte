@@ -9,7 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
 import monet.tara.intellij.metamodel.file.TaraFile;
 import monet.tara.intellij.metamodel.file.TaraFileType;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -20,17 +20,17 @@ import java.util.List;
 public class TaraUtil {
 
 	@NotNull
-	public static List<TaraConceptDefinition> findConcept(Project project, String key) {
-		List<TaraConceptDefinition> result = null;
+	public static List<TaraConcept> findConcept(Project project, String key) {
+		List<TaraConcept> result = null;
 		Collection<VirtualFile> virtualFiles =
 			FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE,
 				GlobalSearchScope.allScope(project));
 		for (VirtualFile virtualFile : virtualFiles) {
 			TaraFile taraFile = (TaraFile) PsiManager.getInstance(project).findFile(virtualFile);
 			if (taraFile != null) {
-				TaraConceptDefinition[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, TaraConceptDefinition.class);
+				TaraConcept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, TaraConcept.class);
 				if (concepts != null) {
-					for (TaraConceptDefinition concept : concepts) {
+					for (TaraConcept concept : concepts) {
 						if (key.equals(concept.getNameIdentifier().getText())) {
 							if (result == null)
 								result = new ArrayList<>();
@@ -40,21 +40,21 @@ public class TaraUtil {
 				}
 			}
 		}
-		return result != null ? result : Collections.<TaraConceptDefinition>emptyList();
+		return result != null ? result : Collections.<TaraConcept>emptyList();
 	}
 
 	@NotNull
-	public static List<TaraConceptDefinition> getConcepts(Project project) {
-		List<TaraConceptDefinition> result = null;
+	public static List<TaraConcept> getConcepts(Project project) {
+		List<TaraConcept> result = null;
 		Collection<VirtualFile> virtualFiles =
 			FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE,
 				GlobalSearchScope.allScope(project));
 		for (VirtualFile virtualFile : virtualFiles) {
 			TaraFile taraFile = (TaraFile) PsiManager.getInstance(project).findFile(virtualFile);
 			if (taraFile != null) {
-				TaraConceptDefinition[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, TaraConceptDefinition.class);
+				TaraConcept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, TaraConcept.class);
 				if (concepts != null)
-					for (TaraConceptDefinition concept : concepts) {
+					for (TaraConcept concept : concepts) {
 						if (result == null)
 							result = new ArrayList<>();
 						result.add(concept);
@@ -62,18 +62,18 @@ public class TaraUtil {
 
 			}
 		}
-		return result != null ? result : Collections.<TaraConceptDefinition>emptyList();
+		return result != null ? result : Collections.<TaraConcept>emptyList();
 	}
 
 	@NotNull
-	public static List<TaraConceptDefinition> findProperties(Project project) {
-		List<TaraConceptDefinition> result = new ArrayList<>();
+	public static List<TaraConcept> findProperties(Project project) {
+		List<TaraConcept> result = new ArrayList<>();
 		Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().
 			getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.allScope(project));
 		for (VirtualFile virtualFile : virtualFiles) {
 			TaraFile taraFile = (TaraFile) PsiManager.getInstance(project).findFile(virtualFile);
 			if (taraFile != null) {
-				TaraConceptDefinition[] properties = PsiTreeUtil.getChildrenOfType(taraFile, TaraConceptDefinition.class);
+				TaraConcept[] properties = PsiTreeUtil.getChildrenOfType(taraFile, TaraConcept.class);
 				if (properties != null)
 					Collections.addAll(result, properties);
 			}

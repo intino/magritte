@@ -8,4 +8,5 @@ public interface TaraReferenceStatement extends PsiElement {
 
 	@NotNull
 	TaraIdentifier getIdentifier();
+
 }

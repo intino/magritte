@@ -2,17 +2,17 @@ package monet.tara.intellij;
 
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 import org.jetbrains.annotations.NotNull;
 
 public class TaraRefactoringSupportProvider extends RefactoringSupportProvider {
 	@Override
 	public boolean isMemberInplaceRenameAvailable(PsiElement element, PsiElement context) {
-		return element instanceof TaraConceptDefinition;
+		return element instanceof TaraConcept;
 	}
 
 	@Override
 	public boolean isSafeDeleteAvailable(@NotNull PsiElement element) {
-		return element instanceof TaraConceptDefinition;
+		return element instanceof TaraConcept;
 	}
 }

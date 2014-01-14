@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import monet.tara.intellij.metamodel.file.TaraFile;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class TaraStructureViewElement implements StructureViewTreeElement, Sorta
 	@Override
 	public boolean canNavigate() {
 		return element instanceof NavigationItem &&
-				((NavigationItem) element).canNavigate();
+			((NavigationItem) element).canNavigate();
 	}
 
 	@Override
@@ -57,9 +57,9 @@ public class TaraStructureViewElement implements StructureViewTreeElement, Sorta
 	@Override
 	public TreeElement[] getChildren() {
 		if (element instanceof TaraFile) {
-			TaraConceptDefinition[] concepts = PsiTreeUtil.getChildrenOfType(element, TaraConceptDefinition.class);
+			TaraConcept[] concepts = PsiTreeUtil.getChildrenOfType(element, TaraConcept.class);
 			List<TreeElement> treeElements = new ArrayList<>(concepts.length);
-			for (TaraConceptDefinition concept : concepts)
+			for (TaraConcept concept : concepts)
 				treeElements.add(new TaraStructureViewElement(concept));
 			return treeElements.toArray(new TreeElement[treeElements.size()]);
 		}

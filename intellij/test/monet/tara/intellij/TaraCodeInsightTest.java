@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import com.intellij.usageView.UsageInfo;
 import monet.tara.intellij.metamodel.file.TaraFileType;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,7 +52,7 @@ public class TaraCodeInsightTest extends LightCodeInsightFixtureTestCase {
 	public void testReference() {
 		myFixture.configureByFiles(REFERENCE + SEPARATOR + "ReferenceTestData.m2");
 		PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
-		String radiator = ((TaraConceptDefinition) element.getReferences()[0].resolve()).getName();
+		String radiator = ((TaraConcept) element.getReferences()[0].resolve()).getName();
 		assertEquals("Radiator", radiator);
 	}
 

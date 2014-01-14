@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class TaraCompletionContributor extends CompletionContributor {
 
 	public TaraCompletionContributor() {
-		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.CONCEPT_DEFINITION).withLanguage(TaraLanguage.INSTANCE),
+		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.CONCEPT).withLanguage(TaraLanguage.INSTANCE),
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,

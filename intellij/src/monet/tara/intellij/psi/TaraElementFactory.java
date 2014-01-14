@@ -10,7 +10,7 @@ public abstract class TaraElementFactory {
 		return ServiceManager.getService(project, TaraElementFactory.class);
 	}
 
-	public abstract TaraConceptDefinition createConcept(String name);
+	public abstract TaraConcept createConcept(String name);
 
 	public abstract TaraFile createDummyFile(String text);
 

@@ -5,7 +5,7 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.util.PsiTreeUtil;
 import monet.tara.intellij.metamodel.file.TaraFile;
 import monet.tara.intellij.metamodel.file.TaraFileType;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 import monet.tara.intellij.psi.TaraElementFactory;
 import monet.tara.intellij.psi.TaraIdentifier;
 
@@ -17,9 +17,9 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		this.project = project;
 	}
 
-	public TaraConceptDefinition createConcept(String name) {
+	public TaraConcept createConcept(String name) {
 		final TaraFile file = createDummyFile("concept " + name + " @root");
-		return (TaraConceptDefinition) file.getFirstChild();
+		return (TaraConcept) file.getFirstChild();
 	}
 
 	public TaraFile createDummyFile(String text) {

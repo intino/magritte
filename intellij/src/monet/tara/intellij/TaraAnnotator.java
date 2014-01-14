@@ -21,7 +21,7 @@ import com.intellij.psi.tree.IElementType;
 import monet.tara.intellij.codeinspection.fix.RemoveConceptFix;
 import monet.tara.intellij.metamodel.TaraBundle;
 import monet.tara.intellij.metamodel.TaraSyntaxHighlighter;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 import monet.tara.intellij.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,9 +31,9 @@ public class TaraAnnotator implements Annotator {
 
 	@Override
 	public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
-		if (element instanceof TaraConceptDefinition) {
-			final TaraConceptDefinition concept = (TaraConceptDefinition) element;
-			List<TaraConceptDefinition> others = TaraUtil.findConcept(concept.getProject(), concept.getNameIdentifier().getText());
+		if (element instanceof TaraConcept) {
+			final TaraConcept concept = (TaraConcept) element;
+			List<TaraConcept> others = TaraUtil.findConcept(concept.getProject(), concept.getNameIdentifier().getText());
 			ASTNode identifierNode = concept.getNameIdentifier().getNode();
 			if (others.size() != 1) {
 				Annotation annotation = holder.createErrorAnnotation(identifierNode, TaraBundle.message("duplicate.concept.key.error.message"));
@@ -44,7 +44,7 @@ public class TaraAnnotator implements Annotator {
 	}
 
 
-	private static void highlightTokens(final TaraConceptDefinition concept, final ASTNode node, final AnnotationHolder holder, TaraSyntaxHighlighter highlighter) {
+	private static void highlightTokens(final TaraConcept concept, final ASTNode node, final AnnotationHolder holder, TaraSyntaxHighlighter highlighter) {
 		Lexer lexer = highlighter.getHighlightingLexer();
 		final String s = node.getText();
 		lexer.start(s);

@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 import monet.tara.intellij.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,9 +26,9 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
 		Project project = myElement.getProject();
-		final List<TaraConceptDefinition> concepts = TaraUtil.findConcept(project, key);
+		final List<TaraConcept> concepts = TaraUtil.findConcept(project, key);
 		List<ResolveResult> results = new ArrayList<>();
-		for (TaraConceptDefinition concept : concepts)
+		for (TaraConcept concept : concepts)
 			results.add(new PsiElementResolveResult(concept));
 		return results.toArray(new ResolveResult[results.size()]);
 	}
@@ -44,15 +44,15 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	@Override
 	public Object[] getVariants() {
 		Project project = myElement.getProject();
-		List<TaraConceptDefinition> concepts = TaraUtil.findProperties(project);
+		List<TaraConcept> concepts = TaraUtil.findProperties(project);
 		List<LookupElement> variants = new ArrayList<>();
-		for (final TaraConceptDefinition concept : concepts)
+		for (final TaraConcept concept : concepts)
 			if (concept.getName() != null && concept.getName().length() > 0)
 				variants.add(LookupElementBuilder.create(concept).withIcon(TaraIcons.ICON).withTypeText(getFileName(concept)));
 		return variants.toArray();
 	}
 
-	private String getFileName(TaraConceptDefinition concept) {
+	private String getFileName(TaraConcept concept) {
 		return concept.getContainingFile().getName().split("\\.")[0];
 	}
 }

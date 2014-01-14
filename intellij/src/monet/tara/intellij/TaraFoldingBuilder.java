@@ -7,7 +7,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 import monet.tara.intellij.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,10 +22,10 @@ public class TaraFoldingBuilder extends FoldingBuilderEx {
 	@Override
 	public FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
 		List<FoldingDescriptor> descriptors = new ArrayList<>();
-		Collection<TaraConceptDefinition> concepts = PsiTreeUtil.findChildrenOfType(root, TaraConceptDefinition.class);
-		for (final TaraConceptDefinition concept : concepts)
+		Collection<TaraConcept> concepts = PsiTreeUtil.findChildrenOfType(root, TaraConcept.class);
+		for (final TaraConcept concept : concepts)
 			if (concept.getText() != null && concept.getText().startsWith("concept ")) {
-				final List<TaraConceptDefinition> conceptDefinitions = TaraUtil.findConcept(concept.getProject(), concept.getName());
+				final List<TaraConcept> conceptDefinitions = TaraUtil.findConcept(concept.getProject(), concept.getName());
 				if (conceptDefinitions.size() == 1 && conceptDefinitions.get(0).getConceptBody() != null)
 					descriptors.add(new FoldingDescriptor(conceptDefinitions.get(0).getConceptBody().getNode(),
 						getRange(conceptDefinitions.get(0))) {
@@ -39,11 +39,11 @@ public class TaraFoldingBuilder extends FoldingBuilderEx {
 		return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
 	}
 
-	private String getHolderText(TaraConceptDefinition conceptDefinition) {
+	private String getHolderText(TaraConcept conceptDefinition) {
 		return conceptDefinition.getConceptSignature().getText() + " {...}";
 	}
 
-	private TextRange getRange(TaraConceptDefinition conceptDefinition) {
+	private TextRange getRange(TaraConcept conceptDefinition) {
 		return new TextRange(conceptDefinition.getTextRange().getStartOffset(),
 			conceptDefinition.getTextRange().getEndOffset() - 1);
 	}
@@ -51,7 +51,7 @@ public class TaraFoldingBuilder extends FoldingBuilderEx {
 	@Nullable
 	@Override
 	public String getPlaceholderText(@NotNull ASTNode node) {
-		return ((TaraConceptDefinition) node.getPsi()).getConceptSignature() + " {...}";
+		return ((TaraConcept) node.getPsi()).getConceptSignature() + " {...}";
 	}
 
 	@Override

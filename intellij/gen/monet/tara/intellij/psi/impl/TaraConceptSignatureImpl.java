@@ -5,10 +5,9 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import monet.tara.intellij.psi.TaraConceptSignature;
-import monet.tara.intellij.psi.TaraIdentifier;
-import monet.tara.intellij.psi.TaraVisitor;
+import monet.tara.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -24,9 +23,21 @@ public class TaraConceptSignatureImpl extends ASTWrapperPsiElement implements Ta
 	}
 
 	@Override
+	@Nullable
+	public TaraConceptAnnotation getConceptAnnotation() {
+		return findChildByClass(TaraConceptAnnotation.class);
+	}
+
+	@Override
 	@NotNull
 	public List<TaraIdentifier> getIdentifierList() {
 		return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifier.class);
+	}
+
+	@Override
+	@Nullable
+	public TaraModifier getModifier() {
+		return findChildByClass(TaraModifier.class);
 	}
 
 }

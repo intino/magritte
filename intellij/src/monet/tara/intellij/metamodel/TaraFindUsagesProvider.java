@@ -7,7 +7,7 @@ import com.intellij.lexer.FlexAdapter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 import monet.tara.intellij.psi.TaraIdentifier;
 import monet.tara.intellij.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +17,8 @@ import java.io.Reader;
 
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	private static final DefaultWordsScanner WORDS_SCANNER =
-			new DefaultWordsScanner(new FlexAdapter(new TaraLexer((Reader) null)),
-					TokenSet.create(TaraTypes.IDENTIFIER), TokenSet.create(TaraTypes.COMMENT), TokenSet.EMPTY);
+		new DefaultWordsScanner(new FlexAdapter(new TaraLexer((Reader) null)),
+			TokenSet.create(TaraTypes.IDENTIFIER), TokenSet.create(TaraTypes.DOC), TokenSet.EMPTY);
 
 	@Nullable
 	@Override
@@ -40,7 +40,7 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	@NotNull
 	@Override
 	public String getType(@NotNull PsiElement element) {
-		if (element instanceof TaraConceptDefinition) {
+		if (element instanceof TaraConcept) {
 			return "Tara Concept";
 		} else {
 			return "";

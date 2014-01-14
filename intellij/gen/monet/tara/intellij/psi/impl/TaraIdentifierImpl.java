@@ -30,14 +30,13 @@ public class TaraIdentifierImpl extends ASTWrapperPsiElement implements TaraIden
 	@NotNull
 	@Override
 	public PsiReference[] getReferences() {
-		return new PsiReference[]{ new TaraReference(this, new TextRange(0, getIdentifier().length())) };
+		return new PsiReference[]{new TaraReference(this, new TextRange(0, getIdentifier().length()))};
 	}
 
 	@Nullable
 	@Override
 	public PsiReference getReference() {
-		PsiReference[] references = new PsiReference[]{ new TaraReference(this, new TextRange(0, getIdentifier().length())) };
+		PsiReference[] references = new PsiReference[]{new TaraReference(this, new TextRange(0, getIdentifier().length()))};
 		return references.length == 0 ? null : references[0];
 	}
-
 }

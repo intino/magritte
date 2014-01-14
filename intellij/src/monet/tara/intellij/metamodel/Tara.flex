@@ -11,13 +11,13 @@ import com.intellij.psi.TokenType;
 %class TaraLexer
 %implements FlexLexer
 %unicode
+%column
 %function advance
 %type IElementType
 %eof{
 	if(stack.size() > 0) {
 		stack.pop();
 	}
-
 %eof}
 
 
@@ -26,16 +26,18 @@ import com.intellij.psi.TokenType;
 
 	private int transformToSpaces(CharSequence chain){
 		int value = 0;
-		for(int i = 0; i < chain.length(); i++)
+		for(int i = 0; i < chain.length(); i++){
+			if (chain.charAt(i) == ('\n')) continue;
 			if (chain.charAt(i) == ('\t')) value += 4;
 			else value += 1;
+		}
 		return value;
 	}
 
 	private IElementType cleanStack(){
 		if (!stack.empty()) {
             stack.pop();
-            if (!stack.empty() && isTextIndented(transformToSpaces(yytext())))
+            if (!stack.empty() && isTextDedented(transformToSpaces(yytext())))
                 yypushback(yylength());
             return TaraTypes.DEDENT;
         }
@@ -43,21 +45,19 @@ import com.intellij.psi.TokenType;
     }
 
 	private boolean isTextIndented(int textLength){
-		if (!stack.empty())
-			return textLength > stack.peek();
-		return false;
+		synchronized (stack) {
+			if (!stack.empty())
+				return textLength > stack.peek();
+			return false;
+		}
 	}
 
 	private boolean isTextDedented(int textLength){
-		if (!stack.empty())
-    		return textLength < stack.peek();
-		return false;
-    }
-
-	private boolean isTextSibling(int textLength){
-		if (!stack.empty())
-			return textLength == stack.peek();
-		return false;
+		synchronized (stack) {
+			if (!stack.empty())
+    		    return textLength < stack.peek();
+			return false;
+		}
     }
 
 	private IElementType calculateIndentationToken() {
@@ -74,107 +74,72 @@ import com.intellij.psi.TokenType;
             return TokenType.WHITE_SPACE;
 	}
 %}
+WS = ([ ]+ | [\t]+)
+EOL=([\r\n] | [\n])
+INDENT=[\n]+ ([ ]+ | [\t]+)
 
-EOL=[\n] | ([^][ ]+[\n])
-INDENT=[^][ ]+
-WS = [ ]+ | [\t]+
-END_OF_LINE_COMMENT = ("#"|"!")[^\r\n]*
 
 //=====================
 //Reserved words
 
-IS       = "is"
-HAS      = "has"
-REF      = "ref"
-CONCEPT  = "concept"
-NAMESPACE= "namespace"
-INCLUDE  = "include"
-USE      = "use"
-
-//=====================
-//Concept modifiers
-
-FINAL    = "final"
-ABSTRACT = "abstract"
-
-MODIFIERS = {FINAL} | {ABSTRACT}
-
-EXTENDS = {IS} {WS} {IDENTIFIER_KEY}
-
-//=====================
-//Range
-
-RANGE = {LEFT_BRACKET} {INT} {DOTS} ({INT} | "n") {RIGHT_BRACKET}
-
-PARAMETER = "(" {IDENTIFIER_KEY}* ")"
-
-//=====================
-//Brackets
-
-LEFT_BRACKET = "["
-RIGHT_BRACKET= "]"
-
-LEFT_PARENTH = "("
-RIGHT_PARENTH= ")"
-
-//=====================
-// Types
-
-ID_TYPE      ="id"
-INT_TYPE     ="int"
-STRING_TYPE  ="string"
-DOUBLE_TYPE  ="double"
-
-//=====================
-// Punctuation
-
-COMMA       = ","
-DOT         = "."
-DOTS        = ".."
-COLON       = ":" | ": "
-DOUBLE_COMMA = "\""
-
-//=====================
-// Relations
-
-ASSIGN = "=" | "= "
-
-//=====================
-// Annotations
-
-NAMEABLE ="@nameable"
-ROOT   = "@root"
-EXTENSIBLE  = "@extensible"
-ACTION = "@action:java"
-ANONYMOUS = "@anonymous"
-
-ANNOTATION = {NAMEABLE} | {ROOT} | {EXTENSIBLE} | {ACTION}
+CONCEPT   = "Concept"
+FROM_KEY  = "from"
+AS        = "as"
+FINAL     = "final"
+ABSTRACT  = "abstract"
+MULTIPLE  = "multiple"
+OPTIONAL  = "optional"
+HAS_CODE  = "has-code"
+EXTENSIBLE = "extensible"
+WORD      = "Word"
+VAR       = "var"
+DEDENT    = "}"
 
 
-STRING= {DOUBLE_COMMA} ([ ] | {ALPHANUMERIC})* {DOUBLE_COMMA}
+LIST = LEFT_BRACKET RIGHT_BRACKET
+LEFT_BRACKET  = "["
+RIGHT_BRACKET = "]"
+DOT           = "."
+ASSIGN        = ":"
+DOUBLE_COMMAS = "\""
+OPEN_AN  = "<"
+CLOSE_AN = ">"
+POSITIVE = "+"
+NEGATIVE = "-"
+
+UID_TYPE     = "Uid"
+INT_TYPE     = "Int"
+NATURAL_TYPE = "Natural"
+DOUBLE_TYPE  = "Double"
+STRING_TYPE  = "String"
+BOOLEAN_TYPE = "Boolean"
+
+BOOLEAN_VALUE  = "True" | "False"
+
+NATURAL_VALUE  = {POSITIVE}? {DIGIT}+
+NEGATIVE_VALUE = {NEGATIVE} {DIGIT}+
+DOUBLE_VALUE   = ({POSITIVE} | {NEGATIVE})? {DIGIT}+ {DOT} {DIGIT}+
+STRING_VALUE   = {DOUBLE_COMMAS} {ALPHANUMERIC} {DOUBLE_COMMAS}
+
+DOC_CONTENT    = [^\?\/]*
+OPEN_DOC_BLOCK = "\/\?"
+CLOSE_DOC_BLOCK = "\?\/"
+DOC_BLOCK = {OPEN_DOC_BLOCK} {DOC_CONTENT} {CLOSE_DOC_BLOCK}[\n]
+DOC_LINE = "??" .*? [\n]
+
+STRING_VALUE= {DOUBLE_COMMAS} ([ ] | {ALPHANUMERIC})* {DOUBLE_COMMAS}
 
 //=====================
 //Tabs
 
-TAB= "\t"| "\r"
-
 //=====================
 //Digits
-
-INT= {DIGIT}+
-DOUBLE = {INT} {DOT} {INT}
 
 DIGIT=[:digit:]
 
 //=====================
 //Identifier
 IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
-
-//=====================
-//Letters
-
-LETTER= [:jletter:]
-
 
 //=====================
 //Alphanumeric
@@ -184,55 +149,64 @@ ALPHANUMERIC= [:jletterdigit:]*
 %%
 <YYINITIAL> {
 
-	{CONCEPT}                   {  return TaraTypes.CONCEPT; }
+	{CONCEPT}                   {  return TaraTypes.CONCEPT_KEY; }
 
-	{HAS}                       {  return TaraTypes.HAS;}
+	{ABSTRACT}                  {  return TaraTypes.ABSTRACT; }
 
-	{INT_TYPE}                  {  return TaraTypes.INT_TYPE; }
+	{FINAL}                     {  return TaraTypes.FINAL; }
 
-    {STRING_TYPE}               {  return TaraTypes.STRING_TYPE; }
-
-    {DOUBLE_TYPE}               {  return TaraTypes.DOUBLE_TYPE; }
-
-    {ID_TYPE}                   {  return TaraTypes.ID_TYPE; }
-
-    {REF}                       {  return TaraTypes.REF;}
-
-    {USE}                       {  return TaraTypes.USE;}
-
-	{MODIFIERS}                 {  return TaraTypes.MODIFIERS;}
-
-	{IS}                        {  return TaraTypes.IS;}
-
-	{ANNOTATION}                {  return TaraTypes.ANNOTATION;}
-
-	{ANONYMOUS}                 {  return TaraTypes.ANONYMOUS;}
+	{AS}                        {  return TaraTypes.AS; }
 
 	{ASSIGN}                    {  return TaraTypes.ASSIGN; }
 
-	{STRING}                    {  return TaraTypes.STRING; }
+	{VAR}                       {  return TaraTypes.VAR; }
 
-	{INT}                       {  return TaraTypes.INT; }
+	{LIST}                      {  return TaraTypes.LIST; }
 
-	{DOUBLE}                    {  return TaraTypes.DOUBLE; }
+	{FROM_KEY}                  {  return TaraTypes.FROM_KEY; }
+
+	{OPEN_AN}                   {  return TaraTypes.OPEN_AN; }
+	{CLOSE_AN}                  {  return TaraTypes.CLOSE_AN; }
+
+	{OPTIONAL}                  {  return TaraTypes.OPTIONAL; }
+	{MULTIPLE}                  {  return TaraTypes.MULTIPLE; }
+
+	{HAS_CODE}                  {  return TaraTypes.HAS_CODE; }
+	{EXTENSIBLE}                {  return TaraTypes.EXTENSIBLE; }
+
+	{DOC_LINE}                  {  return TaraTypes.DOC_LINE; }
+
+	//{OPEN_DOC_BLOCK}            { yybegin(IN_COMMENT); }
+
+	{DOC_BLOCK}                 {  return TaraTypes.DOC_BLOCK; }
+
+	{STRING_VALUE}              {  return TaraTypes.STRING_VALUE; }
+	{BOOLEAN_VALUE}             {  return TaraTypes.BOOLEAN_VALUE; }
+	{DOUBLE_VALUE}              {  return TaraTypes.DOUBLE_VALUE; }
+	{NEGATIVE_VALUE}            {  return TaraTypes.NEGATIVE_VALUE; }
+	{NATURAL_VALUE}             {  return TaraTypes.NATURAL_VALUE; }
+
+	{LEFT_BRACKET}              {  return TaraTypes.LEFT_BRACKET; }
+	{RIGHT_BRACKET}             {  return TaraTypes.RIGHT_BRACKET; }
+
+	{WORD}                      {  return TaraTypes.WORD; }
+
+	{UID_TYPE}                  {  return TaraTypes.UID_TYPE; }
+	{INT_TYPE}                  {  return TaraTypes.INT_TYPE; }
+	{BOOLEAN_TYPE}              {  return TaraTypes.BOOLEAN_TYPE; }
+	{NATURAL_TYPE}              {  return TaraTypes.NATURAL_TYPE; }
+    {STRING_TYPE}               {  return TaraTypes.STRING_TYPE; }
+    {DOUBLE_TYPE}               {  return TaraTypes.DOUBLE_TYPE; }
 
 	{IDENTIFIER_KEY}            {  return TaraTypes.IDENTIFIER_KEY;}
 
-	{RANGE}                     {  return TaraTypes.RANGE;}
-
-	{LEFT_PARENTH}              {  return TaraTypes.LEFT_P;}
-
-	{RIGHT_PARENTH}             {  return TaraTypes.RIGHT_P;}
-
-	{COLON}                     {  return TaraTypes.COLON;}
-
-	{END_OF_LINE_COMMENT}       {  return TaraTypes.COMMENT; }
-
 	{INDENT}                    {  return calculateIndentationToken();}
+	{DEDENT}                    {  return TaraTypes.DEDENT; }
 
 	{EOL}                       {  return cleanStack();}
 
 	{WS}                        {  return TokenType.WHITE_SPACE;}
+
 }
 
-	.                           {  return TokenType.BAD_CHARACTER;}
+.                           {  return TokenType.BAD_CHARACTER;}

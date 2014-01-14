@@ -7,16 +7,16 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.metamodel.TaraBundle;
-import monet.tara.intellij.psi.TaraConceptDefinition;
+import monet.tara.intellij.psi.TaraConcept;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by oroncal on 09/01/14.
  */
 public class RemoveConceptFix implements IntentionAction {
-	private final TaraConceptDefinition myConcept;
+	private final TaraConcept myConcept;
 
-	public RemoveConceptFix(@NotNull final TaraConceptDefinition origConcept) {
+	public RemoveConceptFix(@NotNull final TaraConcept origConcept) {
 		myConcept = origConcept;
 	}
 

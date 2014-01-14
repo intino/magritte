@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ProjectTasksOptions">
-    <TaskOptions isEnabled="true">
-      <option name="arguments" value="--skel res/idea-flex.skeleton $FilePath$" />
+    <TaskOptions isEnabled="false">
+      <option name="arguments" value="--skel /Applications/ideaSources/tools/lexer/idea-flex.skeleton $FilePath$" />
       <option name="checkSyntaxErrors" value="false" />
       <option name="description" value="jflex" />
       <option name="exitCodeBehavior" value="ALWAYS" />
       <option name="fileExtension" value="flex" />
       <option name="immediateSync" value="true" />
       <option name="name" value="jflex" />
-      <option name="output" value="" />
+      <option name="output" value="$FileDir$" />
       <option name="outputFilters">
         <array />
       </option>
       <option name="outputFromStdout" value="false" />
       <option name="passParentEnvs" value="true" />
-      <option name="program" value="$USER_HOME$/Applications/ideaSources/tools/lexer/jflex-1.4/bin/jflex" />
+      <option name="program" value="/Applications/ideaSources/tools/lexer/jflex-1.4/bin/jflex" />
       <option name="scopeName" value="Project Files" />
       <option name="trackOnlyRoot" value="false" />
       <option name="workingDir" value="$ProjectFileDir$" />
       <envs />
     </TaskOptions>
-    <TaskOptions isEnabled="true">
-      <option name="arguments" value="scripts/RegenerateLexer" />
+    <TaskOptions isEnabled="false">
+      <option name="arguments" value="res/scripts/RegenerateLexer" />
       <option name="checkSyntaxErrors" value="true" />
       <option name="description" value="" />
       <option name="exitCodeBehavior" value="ERROR" />
@@ -35,7 +35,7 @@
       </option>
       <option name="outputFromStdout" value="false" />
       <option name="passParentEnvs" value="true" />
-      <option name="program" value="$USER_HOME$/Applications/groovy-2.2.1/bin/groovy" />
+      <option name="program" value="/Applications/groovy-2.2.1/bin/groovy" />
       <option name="scopeName" value="Project Files" />
       <option name="trackOnlyRoot" value="false" />
       <option name="workingDir" value="$ProjectFileDir$" />
