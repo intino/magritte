@@ -23,7 +23,7 @@ implements='monet.tara.intellij.psi.TaraNamedElement' methods=[getName setName g
 
 conceptSignature ::=  (CONCEPT_KEY | identifier) modifier? AS identifier conceptAnnotation?
 
-child  ::=  doc? (CONCEPT_KEY | identifier) modifier? (AS identifier)? childAnnotation? conceptBody?
+child  ::=  doc? (CONCEPT_KEY | identifier(DOT identifier)?) modifier? (AS identifier)? childAnnotation? conceptBody?
 
 identifier  ::=  IDENTIFIER_KEY {methods=[getIdentifier]}
 
@@ -66,10 +66,10 @@ integerListAssign  ::= ASSIGN LEFT_BRACKET integerValue+ RIGHT_BRACKET
 doubleListAssign   ::= ASSIGN LEFT_BRACKET (integerValue | DOUBLE_VALUE)+ RIGHT_BRACKET
 naturalListAssign  ::= ASSIGN LEFT_BRACKET NATURAL_VALUE+ RIGHT_BRACKET
 
-from::= FROM_KEY identifier rangeAnnotation?
+from::= FROM_KEY rangeAnnotation?
     | rangeAnnotation? fromBody
 
-fromBody::= INDENT child DEDENT
+fromBody::= INDENT child+ DEDENT
 
 conceptAnnotation::= OPEN_AN annotation+ CLOSE_AN
 childAnnotation  ::= OPEN_AN (range | annotation)+ CLOSE_AN

@@ -11,9 +11,6 @@ public interface TaraFrom extends PsiElement {
   TaraFromBody getFromBody();
 
   @Nullable
-  TaraIdentifier getIdentifier();
-
-  @Nullable
   TaraRangeAnnotation getRangeAnnotation();
 
 }

@@ -14,15 +14,11 @@ import com.intellij.psi.TokenType;
 %column
 %function advance
 %type IElementType
-%eof{
-	if(stack.size() > 0) {
-		stack.pop();
-	}
-%eof}
 
 
 %{
-	static Stack<Integer> stack = new Stack<>();
+
+	private Stack<Integer> stack = new Stack<>();
 
 	private int transformToSpaces(CharSequence chain){
 		int value = 0;
@@ -34,7 +30,17 @@ import com.intellij.psi.TokenType;
 		return value;
 	}
 
-	private IElementType cleanStack(){
+	private IElementType eof(){
+    		if (!stack.empty()) {
+                stack.pop();
+                if (!stack.empty())
+                    yypushback(yylength());
+                return TaraTypes.DEDENT;
+            }
+                return TokenType.WHITE_SPACE;
+        }
+
+	private IElementType cleanstack(){
 		if (!stack.empty()) {
             stack.pop();
             if (!stack.empty() && isTextDedented(transformToSpaces(yytext())))
@@ -45,19 +51,15 @@ import com.intellij.psi.TokenType;
     }
 
 	private boolean isTextIndented(int textLength){
-		synchronized (stack) {
-			if (!stack.empty())
-				return textLength > stack.peek();
-			return false;
-		}
+		if (!stack.empty())
+			return textLength > (int)stack.peek();
+		return false;
 	}
 
 	private boolean isTextDedented(int textLength){
-		synchronized (stack) {
-			if (!stack.empty())
-    		    return textLength < stack.peek();
-			return false;
-		}
+		if (!stack.empty())
+            return textLength < (int)stack.peek();
+		return false;
     }
 
 	private IElementType calculateIndentationToken() {
@@ -96,7 +98,7 @@ VAR       = "var"
 DEDENT    = "}"
 
 
-LIST = LEFT_BRACKET RIGHT_BRACKET
+LIST = {LEFT_BRACKET}{RIGHT_BRACKET}
 LEFT_BRACKET  = "["
 RIGHT_BRACKET = "]"
 DOT           = "."
@@ -124,8 +126,8 @@ STRING_VALUE   = {DOUBLE_COMMAS} {ALPHANUMERIC} {DOUBLE_COMMAS}
 DOC_CONTENT    = [^\?\/]*
 OPEN_DOC_BLOCK = "\/\?"
 CLOSE_DOC_BLOCK = "\?\/"
-DOC_BLOCK = {OPEN_DOC_BLOCK} {DOC_CONTENT} {CLOSE_DOC_BLOCK}[\n]
-DOC_LINE = "??" .*? [\n]
+DOC_BLOCK = {OPEN_DOC_BLOCK} ~ {CLOSE_DOC_BLOCK}
+DOC_LINE = "??" ~[\n]
 
 STRING_VALUE= {DOUBLE_COMMAS} ([ ] | {ALPHANUMERIC})* {DOUBLE_COMMAS}
 
@@ -176,8 +178,6 @@ ALPHANUMERIC= [:jletterdigit:]*
 
 	{DOC_LINE}                  {  return TaraTypes.DOC_LINE; }
 
-	//{OPEN_DOC_BLOCK}            { yybegin(IN_COMMENT); }
-
 	{DOC_BLOCK}                 {  return TaraTypes.DOC_BLOCK; }
 
 	{STRING_VALUE}              {  return TaraTypes.STRING_VALUE; }
@@ -191,6 +191,8 @@ ALPHANUMERIC= [:jletterdigit:]*
 
 	{WORD}                      {  return TaraTypes.WORD; }
 
+	{DOT}                       {  return TaraTypes.DOT; }
+
 	{UID_TYPE}                  {  return TaraTypes.UID_TYPE; }
 	{INT_TYPE}                  {  return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}              {  return TaraTypes.BOOLEAN_TYPE; }
@@ -203,10 +205,11 @@ ALPHANUMERIC= [:jletterdigit:]*
 	{INDENT}                    {  return calculateIndentationToken();}
 	{DEDENT}                    {  return TaraTypes.DEDENT; }
 
-	{EOL}                       {  return cleanStack();}
+	{EOL}                       {  return cleanstack();}
 
 	{WS}                        {  return TokenType.WHITE_SPACE;}
 
+	<<EOF>>                     {  return eof();}
 }
 
-.                           {  return TokenType.BAD_CHARACTER;}
+.                               {  return TokenType.BAD_CHARACTER;}

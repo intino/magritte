@@ -30,12 +30,6 @@ public class TaraFromImpl extends ASTWrapperPsiElement implements TaraFrom {
 
   @Override
   @Nullable
-  public TaraIdentifier getIdentifier() {
-    return findChildByClass(TaraIdentifier.class);
-  }
-
-  @Override
-  @Nullable
   public TaraRangeAnnotation getRangeAnnotation() {
     return findChildByClass(TaraRangeAnnotation.class);
   }

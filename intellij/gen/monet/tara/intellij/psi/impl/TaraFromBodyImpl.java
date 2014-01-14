@@ -24,8 +24,8 @@ public class TaraFromBodyImpl extends ASTWrapperPsiElement implements TaraFromBo
 
   @Override
   @NotNull
-  public TaraChild getChild() {
-    return findNotNullChildByClass(TaraChild.class);
+  public List<TaraChild> getChildList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraChild.class);
   }
 
 }

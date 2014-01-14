@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TaraFromBody extends PsiElement {
 
   @NotNull
-  TaraChild getChild();
+  List<TaraChild> getChildList();
 
 }

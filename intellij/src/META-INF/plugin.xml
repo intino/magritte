@@ -64,15 +64,15 @@
     <lang.syntaxHighlighterFactory key="Tara"
                                    implementationClass="monet.tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="monet.tara.intellij.highlighting.TaraColorSettingPage"/>
-    <annotator language="Tara" implementationClass="monet.tara.intellij.TaraAnnotator"/>
+    <!--<annotator language="Tara" implementationClass="monet.tara.intellij.TaraAnnotator"/>-->
     <!--<localInspection language="Tara" shortName="UnusedAbstractConcept" bundle="messages.TaraBundle"-->
     <!--key="unused.abstract.concept.inspection.display.name"-->
     <!--groupKey="tara.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"-->
     <!--implementationClass="monet.tara.intellij.metamodel.codeinspection.UnusedAbstractConceptInspection"/>-->
-    <globalInspection shortName="DuplicateConceptInspection" bundle="messages.TaraBundle"
-                      key="duplicate.concept.display.name"
-                      groupKey="group.names.tara.files" enabledByDefault="false" level="WARNING"
-                      implementationClass="monet.tara.intellij.codeinspection.DuplicateConceptInspection"/>
+    <!--<globalInspection shortName="DuplicateConceptInspection" bundle="messages.TaraBundle"-->
+                      <!--key="duplicate.concept.display.name"-->
+                      <!--groupKey="group.names.tara.files" enabledByDefault="false" level="WARNING"-->
+                      <!--implementationClass="monet.tara.intellij.codeinspection.DuplicateConceptInspection"/>-->
     <completion.contributor language="Tara" implementationClass="monet.tara.intellij.TaraCompletionContributor"/>
     <psi.referenceContributor language="Tara" implementation="monet.tara.intellij.TaraReferenceContributor"/>
     <nameSuggestionProvider implementation="monet.tara.intellij.refactoring.TaraNameSuggestionProvider"/>

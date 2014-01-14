@@ -5,6 +5,6 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraIdentifier extends PsiElement {
 
-	String getIdentifier();
+  String getIdentifier();
 
 }

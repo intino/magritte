@@ -1,12 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.intellij.psi;
 
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 
 public interface TaraReferenceStatement extends PsiElement {
 
-	@NotNull
-	TaraIdentifier getIdentifier();
+  @NotNull
+  TaraIdentifier getIdentifier();
 
 }

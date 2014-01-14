@@ -31,7 +31,8 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 	public static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.CONSTANT);
 	public static final TextAttributesKey MODIFIERS = createTextAttributesKey("Tara_MODIFIERS", DefaultLanguageHighlighterColors.STATIC_FIELD);
 	public static final TextAttributesKey STRING = createTextAttributesKey("Tara_STRING", DefaultLanguageHighlighterColors.STRING);
-	public static final TextAttributesKey COMMENT = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+	public static final TextAttributesKey DOC_COMMENT = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+	public static final TextAttributesKey COMMENT = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.DOC_COMMENT);
 	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.CONSTANT);
 	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
 	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
@@ -56,14 +57,14 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 		keys1.put(TaraTypes.OPEN_AN, KEYWORD);
 		keys1.put(TaraTypes.CLOSE_AN, KEYWORD);
 		keys1.put(TaraTypes.VAR, KEYWORD);
-		keys1.put(TaraTypes.RANGE, OPERATOR);
+		keys1.put(TaraTypes.OPTIONAL, OPERATOR);
+		keys1.put(TaraTypes.MULTIPLE, OPERATOR);
 
 		keys1.put(TaraTypes.ANNOTATION, ANNOTATION);
 
 		keys1.put(TaraTypes.ASSIGN, OPERATOR);
 		keys1.put(TaraTypes.LEFT_BRACKET, OPERATOR);
 		keys1.put(TaraTypes.RIGHT_BRACKET, OPERATOR);
-		keys1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 
 		keys1.put(TaraTypes.STRING_TYPE, STRING);
 		keys1.put(TaraTypes.DOUBLE_TYPE, PRIMITIVE);
@@ -74,13 +75,16 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 		keys1.put(TaraTypes.ABSTRACT, MODIFIERS);
 		keys1.put(TaraTypes.FINAL, MODIFIERS);
 
+		keys1.put(TaraTypes.DOC_LINE, DOC_COMMENT);
+		keys1.put(TaraTypes.DOC_BLOCK, DOC_COMMENT);
+
 		keys1.put(TaraTypes.DOUBLE_VALUE, NUMBERS);
 		keys1.put(TaraTypes.NATURAL_VALUE, NUMBERS);
 		keys1.put(TaraTypes.INTEGER_VALUE, NUMBERS);
 		keys1.put(TaraTypes.DOUBLE_VALUE, NUMBERS);
 		keys1.put(TaraTypes.BOOLEAN_VALUE, NUMBERS);
 
-		keys1.put(TaraTypes.DOC, COMMENT);
+		keys1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 	}
 
 	@NotNull
