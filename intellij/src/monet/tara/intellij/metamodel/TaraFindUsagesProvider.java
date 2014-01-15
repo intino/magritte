@@ -3,7 +3,6 @@ package monet.tara.intellij.metamodel;
 import com.intellij.find.impl.HelpID;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
-import com.intellij.lexer.FlexAdapter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
@@ -13,11 +12,9 @@ import monet.tara.intellij.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.Reader;
-
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	private static final DefaultWordsScanner WORDS_SCANNER =
-		new DefaultWordsScanner(new FlexAdapter(new TaraLexer((Reader) null)),
+		new DefaultWordsScanner(new TaraLexerAdapter(),
 			TokenSet.create(TaraTypes.IDENTIFIER), TokenSet.create(TaraTypes.DOC), TokenSet.EMPTY);
 
 	@Nullable

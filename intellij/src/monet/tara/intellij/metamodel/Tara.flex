@@ -15,7 +15,6 @@ import com.intellij.psi.TokenType;
 %function advance
 %type IElementType
 
-
 %{
 
 	private Stack<Integer> stack = new Stack<>();
@@ -210,6 +209,6 @@ ALPHANUMERIC= [:jletterdigit:]*
 	{WS}                        {  return TokenType.WHITE_SPACE;}
 
 	<<EOF>>                     {  return eof();}
-}
 
 .                               {  return TokenType.BAD_CHARACTER;}
+}

@@ -1,7 +1,6 @@
 package monet.tara.intellij.metamodel;
 
 import com.intellij.lang.annotation.HighlightSeverity;
-import com.intellij.lexer.FlexAdapter;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
@@ -16,7 +15,6 @@ import monet.tara.intellij.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.io.Reader;
 import java.util.Map;
 
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
@@ -41,7 +39,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 	@NotNull
 	@Override
 	public com.intellij.lexer.Lexer getHighlightingLexer() {
-		return new FlexAdapter(new TaraLexer((Reader) null));
+		return new TaraLexerAdapter();
 	}
 
 	static {

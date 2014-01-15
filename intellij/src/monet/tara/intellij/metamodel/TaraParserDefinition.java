@@ -3,7 +3,6 @@ package monet.tara.intellij.metamodel;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
-import com.intellij.lexer.FlexAdapter;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiFile;
@@ -15,8 +14,6 @@ import monet.tara.intellij.parser.TaraParser;
 import monet.tara.intellij.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Reader;
-
 public class TaraParserDefinition implements ParserDefinition {
 	public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
 	public static final TokenSet COMMENTS = TokenSet.create(TaraTypes.DOC);
@@ -26,7 +23,7 @@ public class TaraParserDefinition implements ParserDefinition {
 	@NotNull
 	@Override
 	public com.intellij.lexer.Lexer createLexer(Project project) {
-		return new FlexAdapter(new TaraLexer((Reader) null));
+		return new TaraLexerAdapter();
 	}
 
 	@NotNull
