@@ -1,8 +1,8 @@
 <idea-plugin version="1">
-  <id>siani.dev</id>
+  <id>siani.dev.tara</id>
   <name>Tara Plugin</name>
   <version>1.0</version>
-  <vendor email="oroncal@siani.es" url="http://www.monet.org">YourCompany</vendor>
+  <vendor email="oroncal@siani.es" url="http://www.monet.org">Siani</vendor>
 
   <description><![CDATA[
       Enter short description for your plugin here.<br>
@@ -28,6 +28,9 @@
     <action id="NewMetamodelUnit" class="monet.tara.intellij.actions.CreateTaraFileAction">
       <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewGroup1"/>
     </action>
+    <action id="plugin.Generate" class="org.intellij.grammar.actions.GenerateAction" text="Generate Plugin">
+      <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>
+    </action>
   </actions>
 
   <application-components>
@@ -40,7 +43,7 @@
   </project-components>
 
   <extensions defaultExtensionNs="com.intellij">
-    <lang.namesValidator language="Python"
+    <lang.namesValidator language="Tara"
                          implementationClass="monet.tara.intellij.refactoring.rename.TaraNamesValidator"/>
     <projectService serviceInterface="monet.tara.intellij.psi.TaraElementFactory"
                     serviceImplementation="monet.tara.intellij.psi.impl.TaraElementFactoryImpl"/>

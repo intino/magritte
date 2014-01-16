@@ -8,8 +8,8 @@ import java.io.File;
 public class DependentTaracRunner {
 	static boolean runTarac(boolean forStubs, File argsFile) {
 //		try {
-//			TaraGrammar parser = grammarInitialize("IsDouble");
-//			grammarTest(new String(Files.readAllBytes(Paths.get(argsFile.getAbsolutePath())), StandardCharsets.UTF_8));
+////			TaraGrammar parser = grammarInitialize("IsDouble");
+////			grammarTest(new String(Files.readAllBytes(Paths.get(argsFile.getAbsolutePath())), StandardCharsets.UTF_8));
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}

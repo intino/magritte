@@ -29,15 +29,13 @@ public class TaraUtil {
 			TaraFile taraFile = (TaraFile) PsiManager.getInstance(project).findFile(virtualFile);
 			if (taraFile != null) {
 				TaraConcept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, TaraConcept.class);
-				if (concepts != null) {
-					for (TaraConcept concept : concepts) {
+				if (concepts != null)
+					for (TaraConcept concept : concepts)
 						if (key.equals(concept.getNameIdentifier().getText())) {
 							if (result == null)
 								result = new ArrayList<>();
 							result.add(concept);
 						}
-					}
-				}
 			}
 		}
 		return result != null ? result : Collections.<TaraConcept>emptyList();
