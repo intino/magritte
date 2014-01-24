@@ -1,5 +1,7 @@
 package monet.tara;
 
+import monet.tara.compiler.rt.TaraRtConstants;
+
 import java.io.File;
 
 /**
@@ -7,7 +9,9 @@ import java.io.File;
  */
 public class TaracRunner {
 
+	public static String TEMP_PATH = "";
 	private TaracRunner() {
+
 	}
 
 	public static void main(String[] args) {
@@ -18,14 +22,26 @@ public class TaracRunner {
 				System.exit(1);
 			}
 		}
-		final boolean forStubs = "stubs".equals(args[0]);
-		final File argsFile = new File(args[1]);
-		if (!argsFile.exists()) {
+		final boolean transpile = "stubs".equals(args[0]);
+		final String outputPath = args[1];
+		final File path = new File(args[2]);
+		if (!path.exists()) {
 			System.err.println("Arguments file for Tara compiler not found");
 			System.exit(1);
 		}
+
 		try {
-//			DependentTaracRunner.runTarac(forStubs, argsFile);
+			Class.forName("monet.tara.core.TranspilationUnit");
+		} catch (Throwable e) {
+			System.err.println(TaraRtConstants.NO_TARA);
+			System.exit(1);
+		}
+		try {
+			if (transpile){
+				TaraTranspilerRunner.runTaraTranspiler(path, TEMP_PATH);
+			} else {
+				TaraCompilerRunner.runTaraCompiler(TEMP_PATH, outputPath);
+			}
 		} catch (Throwable e) {
 			e.printStackTrace();
 			System.exit(1);

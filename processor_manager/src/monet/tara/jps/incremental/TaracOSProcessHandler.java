@@ -18,12 +18,8 @@ import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import java.io.*;
 import java.util.*;
 
-/**
- * Created by oroncal on 26/12/13.
- */
-
 public class TaracOSProcessHandler extends BaseOSProcessHandler {
-	public static final String GROOVY_COMPILER_IN_OPERATION = "Tara compiler in operation...";
+	public static final String TARA_COMPILER_IN_OPERATION = "Tara compiler in operation...";
 	public static final String GRAPE_ROOT = "grape.root";
 	private final List<OutputItem> myCompiledItems = new ArrayList<>();
 	private final Set<File> toRecompileFiles = new HashSet<>();
@@ -58,7 +54,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	private final StringBuffer outputBuffer = new StringBuffer();
 
 	protected void updateStatus(@Nullable String status) {
-		myStatusUpdater.consume(status == null ? GROOVY_COMPILER_IN_OPERATION : status);
+			myStatusUpdater.consume(status == null ? TARA_COMPILER_IN_OPERATION : status);
 	}
 
 	private void parseOutput(String text) {

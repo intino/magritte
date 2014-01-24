@@ -1,7 +1,7 @@
 lexer grammar TaraLexer;
 
 @header{
-    package monet.tara.intellij.parser;
+    package monet.tara.transpiler.intellij.parser;
 }
 
 @lexer::members{

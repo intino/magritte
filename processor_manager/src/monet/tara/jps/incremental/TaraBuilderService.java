@@ -14,5 +14,4 @@ public class TaraBuilderService extends BuilderService {
 	public List<? extends ModuleLevelBuilder> createModuleLevelBuilders() {
 		return Arrays.asList(new TaraBuilder(true), new TaraBuilder(false));
 	}
-
 }

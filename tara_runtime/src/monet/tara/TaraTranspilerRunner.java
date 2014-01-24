@@ -1,10 +1,9 @@
 package monet.tara;
 
+import monet.tara.compiler.rt.TaraCompilerMessageCategories;
 import monet.tara.compiler.rt.TaraRtConstants;
-import monet.tara.transpiler.TranspilationUnit;
-import monet.tara.transpiler.TranspilerConfiguration;
-import monet.tara.transpiler.TranspilerMessage;
-import org.codehaus.groovy.control.SourceUnit;
+import monet.tara.transpiler.TaraTranspiler;
+import monet.tara.transpiler.core.*;
 
 import java.io.*;
 import java.util.*;
@@ -13,39 +12,34 @@ import java.util.*;
  * Created by oroncal on 27/12/13.
  */
 public class TaraTranspilerRunner {
-	static boolean runTaraTranspile(File argsFile, String outputPath) {
+	static boolean runTaraTranspiler(File argsFile, String outputPath) {
 		final TranspilerConfiguration config = new TranspilerConfiguration();
-		try {
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		final List<TranspilerMessage> transpilerMessages = new ArrayList<>();
 		final List<File> srcFiles = new ArrayList<>();
 		final Map<String, File> class2File = new HashMap<>();
 
 		final String[] finalOutput = new String[1];
-		fillFromArgsFile(argsFile, srcFiles, class2File, finalOutput);
+		fillFromArgsFile(argsFile, config, transpilerMessages, srcFiles, class2File, finalOutput);
 		if (srcFiles.isEmpty()) return true;
-			Map<String, Object> options = new HashMap<>();
-			options.put("keepStubs", Boolean.TRUE);
+		Map<String, Object> options = new HashMap<>();
+		options.put("keepStubs", Boolean.TRUE);
 
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarat: loading sources...");
-		final AstAwareResourceLoader resourceLoader = new AstAwareResourceLoader(class2File);
-		final TranspilationUnit unit = createTranspilationUnit(config, finalOutput[0], buildClassLoaderFor(config, resourceLoader));
-//		unit.addPhaseOperation(new CompilationUnit.SourceUnitOperation() {
-//			public void call(SourceUnit source) throws CompilationFailedException {
-//				File file = new File(source.getName());
-//				for (ClassNode aClass : source.getAST().getClasses())
-//					resourceLoader.myClass2File.put(aClass.getName(), file);
-//			}
-//		}, Phases.CONVERSION);
-//
-//		addSources(forStubs, srcFiles, unit);
-//		runPatchers(patchers, compilerMessages, unit, resourceLoader, srcFiles);
-//
-//		System.out.println("Tarac: compiling...");
-//		final List<GroovyCompilerWrapper.OutputItem> compiledFiles = new GroovyCompilerWrapper(compilerMessages, forStubs).compile(unit);
+
+
+		final TranspilationUnit unit = createTranspilationUnit(config, finalOutput[0]);
+		unit.addPhaseOperation(new TranspilationUnit.SourceUnitOperation() {
+			@Override
+			public void call(monet.tara.transpiler.core.SourceUnit unit) throws TranspilationFailedException {
+				return;//operaciones de conversion
+			}
+		}, Phases.CONVERSION);
+
+		addSources(srcFiles, unit);
+		runSemanticChecker(transpilerMessages, unit, srcFiles);
+
+		System.out.println("Tarat: Transpiling...");
+		final List<TaraTranspiler.OutputItem> compiledFiles = new TaraTranspiler(transpilerMessages).compile(unit);
 
 		System.out.println();
 		reportCompiledItems(compiledFiles);
@@ -57,71 +51,14 @@ public class TaraTranspilerRunner {
 		return false;
 	}
 
-	private static String fillFromArgsFile(File argsFile, List<File> srcFiles, Map<String, File> class2File, String[] finalOutput) {
-		String moduleClasspath = null;
+	private static TranspilationUnit createTranspilationUnit(TranspilerConfiguration config, String s) {
+		return null;
+	}
 
-		BufferedReader reader = null;
-		FileInputStream stream;
-
-		try {
-			stream = new FileInputStream(argsFile);
-			reader = new BufferedReader(new InputStreamReader(stream));
-
-			String line;
-
-			while ((line = reader.readLine()) != null) {
-				if (!TaraRtConstants.SRC_FILE.equals(line)) {
-					break;
-				}
-
-				final File file = new File(reader.readLine());
-				srcFiles.add(file);
-			}
-
-			while (line != null) {
-				if (line.equals("class2src")) {
-					while (!TaraRtConstants.END.equals(line = reader.readLine())) {
-						class2File.put(line, new File(reader.readLine()));
-					}
-				} else if (line.startsWith(TaraRtConstants.PATCHERS)) {
-					String s;
-					while (!TaraRtConstants.END.equals(s = reader.readLine())) {
-						try {
-							final CompilationUnitPatcher patcher = (CompilationUnitPatcher) Class.forName(s).newInstance();
-							patchers.add(patcher);
-						} catch (InstantiationException e) {
-							addExceptionInfo(compilerMessages, e, "Couldn't instantiate " + s);
-						} catch (IllegalAccessException e) {
-							addExceptionInfo(compilerMessages, e, "Couldn't instantiate " + s);
-						} catch (ClassNotFoundException e) {
-							addExceptionInfo(compilerMessages, e, "Couldn't instantiate " + s);
-						}
-					}
-				} else if (line.startsWith(TaraRtConstants.ENCODING)) {
-					compilerConfiguration.setSourceEncoding(reader.readLine());
-				} else if (line.startsWith(TaraRtConstants.OUTPUTPATH)) {
-					compilerConfiguration.setTargetDirectory(reader.readLine());
-				} else if (line.startsWith(TaraRtConstants.FINAL_OUTPUTPATH)) {
-					finalOutput[0] = reader.readLine();
-				}
-
-				line = reader.readLine();
-			}
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				argsFile.delete();
-			}
-		}
-		return moduleClasspath;
+	private static String fillFromArgsFile(File argsFile, TranspilerConfiguration compilerConfiguration,
+	                                       List<TranspilerMessage> transpilerMessages, List<File> srcFiles,
+	                                       Map<String, File> class2File, String[] finalOutput) {
+		return null;
 	}
 
 
@@ -130,20 +67,11 @@ public class TaraTranspilerRunner {
 			if (!file.getName().endsWith(".m2"))
 				continue;
 
-			unit.addSource(new SourceUnit(file, unit.getConfiguration(), unit.getClassLoader(), unit.getErrorCollector()));
+			unit.addSource(new SourceUnit(file, unit.getConfiguration(), unit.getErrorCollector()));
 		}
 	}
 
-	private static void runPatchers(List<CompilationUnitPatcher> patchers, List<CompilerMessage> compilerMessages, CompilationUnit unit, final AstAwareResourceLoader loader, List<File> srcFiles) {
-		if (!patchers.isEmpty()) {
-			for (CompilationUnitPatcher patcher : patchers) {
-				try {
-					patcher.patchCompilationUnit(unit, loader, srcFiles.toArray(new File[srcFiles.size()]));
-				} catch (LinkageError e) {
-					addExceptionInfo(compilerMessages, e, "Couldn't run " + patcher.getClass().getName());
-				}
-			}
-		}
+	private static void runSemanticChecker(List<TranspilerMessage> compilerMessages, TranspilationUnit unit, List<File> srcFiles) {
 	}
 
 	private static void printMessage(TranspilerMessage message) {
@@ -162,10 +90,10 @@ public class TaraTranspilerRunner {
 		System.out.println();
 	}
 
-	private static void reportCompiledItems(List<TaraCompilerWrapper.OutputItem> compiledFiles) {
-		for (TaraCompilerWrapper.OutputItem compiledFile : compiledFiles) {
+	private static void reportCompiledItems(List<TaraTranspiler.OutputItem> compiledFiles) {
+		for (TaraTranspiler.OutputItem compiledFile : compiledFiles) {
 	  /*
-      * output path
+	  * output path
       * source file
       * output root directory
       */
@@ -185,5 +113,11 @@ public class TaraTranspilerRunner {
 			System.out.print(TaraRtConstants.TO_RECOMPILE_END);
 			System.out.println();
 		}
+	}
+
+	private static void addExceptionInfo(List<TranspilerMessage> compilerMessages, Throwable e, String message) {
+		final StringWriter writer = new StringWriter();
+		e.printStackTrace(new PrintWriter(writer));
+		compilerMessages.add(new TranspilerMessage(TaraCompilerMessageCategories.WARNING, message + ":\n" + writer, "<exception>", -1, -1));
 	}
 }

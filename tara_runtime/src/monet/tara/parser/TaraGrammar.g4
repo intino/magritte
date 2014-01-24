@@ -2,7 +2,7 @@ parser grammar TaraGrammar;
 options { tokenVocab=TaraLexer; }
 
 @header{
-    package monet.tara.intellij.parser;
+    package monet.tara.transpiler.intellij.parser;
 }
 
 //grammar TaraGrammar;

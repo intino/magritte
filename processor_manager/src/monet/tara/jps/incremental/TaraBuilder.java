@@ -50,12 +50,12 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
 	private static final String TARA_EXTENSION = "m2";
 	private final boolean myForStubs;
-	private final String myBuilderName;
+	private final String builderName;
 
 	public TaraBuilder(boolean forStubs) {
 		super(forStubs ? BuilderCategory.SOURCE_GENERATOR : BuilderCategory.OVERWRITING_TRANSLATOR);
 		myForStubs = forStubs;
-		myBuilderName = "Tara " + (forStubs ? "stub generator" : "compiler");
+		builderName = "Tara " + (forStubs ? "stub generator" : "compiler");
 	}
 
 	static {
@@ -68,7 +68,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	                                         OutputConsumer outputConsumer) throws ProjectBuildException {
 		try {
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(context.getProjectDescriptor().getProject());
-			final List<File> toCompile = collectChangedFiles(context, dirtyFilesHolder);
+			final List<File> toCompile = collectFiles(context, dirtyFilesHolder);
 			if (toCompile.isEmpty())
 				return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.NOTHING_DONE;
 
@@ -91,6 +91,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
 			final File tempFile = TaracOSProcessHandler.fillFileWithTaracParameters(
 				compilerOutput, toCompilePaths, finalOutput, class2Src, encoding);
+
 
 			final TaracOSProcessHandler handler = runTarac(context, chunk, tempFile, settings);
 
@@ -157,7 +158,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		if (grapeRoot != null)
 			vmParams.add("-D" + TaracOSProcessHandler.GRAPE_ROOT + "=" + grapeRoot);
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
-			getJavaExecutable(chunk), "monet.tara.intellij.compiler.rt.TaracRunner",
+			getJavaExecutable(chunk), "monet.tara.compiler.rt.TaracRunner",
 			Collections.<String>emptyList(), classpath,
 			vmParams, programParams);
 
@@ -269,7 +270,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		for (ModuleBuildTarget target : chunk.getTargets()) {
 			File moduleOutputDir = target.getOutputDir();
 			if (moduleOutputDir == null) {
-				context.processMessage(new CompilerMessage(myBuilderName, BuildMessage.Kind.ERROR,
+				context.processMessage(new CompilerMessage(builderName, BuildMessage.Kind.ERROR,
 					"Output directory not specified for module " + target.getModule().getName()));
 				return null;
 			}
@@ -306,8 +307,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return SystemProperties.getJavaHome() + "/bin/java";
 	}
 
-	private List<File> collectChangedFiles(CompileContext context,
-	                                       DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
+	private List<File> collectFiles(CompileContext context,
+	                                DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
 		final JpsJavaCompilerConfiguration configuration = JpsJavaExtensionService.getInstance().
 			getCompilerConfiguration(context.getProjectDescriptor().getProject());
 		assert configuration != null;
@@ -410,12 +411,12 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	@Override
 	public String toString() {
-		return myBuilderName;
+		return builderName;
 	}
 
 	@NotNull
 	public String getPresentableName() {
-		return myBuilderName;
+		return builderName;
 	}
 
 	private static class RecompileStubSources implements ClassPostProcessor {

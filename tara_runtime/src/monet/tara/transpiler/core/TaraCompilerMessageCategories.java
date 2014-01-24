@@ -1,7 +1,8 @@
 package monet.tara.transpiler.core;
 
-/**
- * Created by oroncal on 24/01/14.
- */
-public class TaraCompilerMessageCategories {
+	public class TaraCompilerMessageCategories {
+		public static final String ERROR = "error";
+		public static final String WARNING = "warning";
+		public static final String INFORMATION = "information";
+		public static final String STATISTICS = "statistic";
 }

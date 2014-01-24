@@ -1,28 +1,37 @@
 package monet.tara.transpiler.core;
 
-/**
- * Created by oroncal on 24/01/14.
- */
 public class TranspilerMessage {
-	private String columnNum;
+	private final String category;
+	private final String message;
+	private final String url;
+	private final int lineNum;
+	private final int columnNum;
+
+	public TranspilerMessage(String category, String message, String url, int lineNum, int columnNum) {
+		this.category = category;
+		this.message = message;
+		this.url = url;
+		this.lineNum = lineNum;
+		this.columnNum = columnNum;
+	}
 
 	public String getCategory() {
-		return null;
+		return category;
 	}
 
 	public String getMessage() {
-		return null;
+		return message;
 	}
 
 	public String getUrl() {
-		return null;
+		return url;
 	}
 
-	public String getLineNum() {
-		return null;
+	public int getLineNum() {
+		return lineNum;
 	}
 
-	public String getColumnNum() {
+	public int getColumnNum() {
 		return columnNum;
 	}
 }

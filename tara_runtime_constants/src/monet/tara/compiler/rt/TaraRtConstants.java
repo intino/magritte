@@ -4,7 +4,6 @@ package monet.tara.compiler.rt;
  * Created by oroncal on 26/12/13.
  */
 public class TaraRtConstants {
-	public static final String PATCHERS = "patchers";
 	public static final String ENCODING = "encoding";
 	public static final String OUTPUTPATH = "outputpath";
 	public static final String FINAL_OUTPUTPATH = "final_outputpath";

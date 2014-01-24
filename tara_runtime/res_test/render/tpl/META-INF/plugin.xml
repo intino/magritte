@@ -1,0 +1,83 @@
+<idea-plugin version="1">
+  <id>siani.dev</id>
+  <name>Tafat Plugin</name>
+  <version>1.0</version>
+  <vendor email="oroncal@siani.es" url="http://www.monet.org">YourCompany</vendor>
+
+  <description><![CDATA[
+      Enter short description for your plugin here.<br>
+      <small>most HTML tags may be used</small>
+      ]]></description>
+
+  <change-notes><![CDATA[
+      Add change notes here.<br>
+      <small>most HTML tags may be used</small>
+      ]]>
+  </change-notes>
+
+  <idea-version since-build="107.105"/>
+
+  <actions>
+    <action id="NewMetamodelUnit" class="monet.tafat.intellij.actions.CreateTafatFileAction">
+      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewGroup1"/>
+    </action>
+  </actions>
+
+  <application-components>
+  </application-components>
+
+  <project-components>
+    <component>
+      <implementation-class>monet.tafat.intellij.compiler.TafatCompilerLoader</implementation-class>
+    </component>
+  </project-components>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <lang.namesValidator language="Python"
+                         implementationClass="monet.tafat.intellij.refactoring.rename.TafatNamesValidator"/>
+    <projectService serviceInterface="monet.tafat.intellij.psi.TafatElementFactory"
+                    serviceImplementation="monet.tafat.intellij.psi.impl.TafatElementFactoryImpl"/>
+    <internalFileTemplate name="Metamodel Unit"/>
+    <moduleType id="Tafat_MODULE" implementationClass="monet.tafat.intellij.project.module.TafatModuleType"/>
+
+    <projectConfigurable instance="monet.tafat.intellij.compiler.TafatCompilerConfigurable" id="Tafat compiler"
+                         displayName="Tafat Compiler" parentId="project.propCompiler"/>
+
+    <compileServer.plugin classpath="tafat-jps-plugin.jar"/>
+    <projectService serviceInterface="monet.tafat.intellij.compiler.TafatCompilerWorkspaceConfiguration"
+                    serviceImplementation="monet.tafat.intellij.compiler.TafatCompilerWorkspaceConfiguration"/>
+    <projectService serviceInterface="monet.tafat.intellij.compiler.TafatCompilerConfiguration"
+                    serviceImplementation="monet.tafat.intellij.compiler.TafatCompilerConfiguration"/>
+    <configurationType implementation="monet.tafat.intellij.project.runner.TafatRunConfigurationType"/>
+    <lang.commenter language="Tafat" implementationClass="monet.tafat.intellij.TafatCommenter"/>
+
+    <fileTemplateGroup implementation="monet.tafat.intellij.project.TafatTemplatesFactory"/>
+    <fileTypeFactory implementation="monet.tafat.intellij.metamodel.file.TafatFileTypeFactory"/>
+    <lang.parserDefinition language="Tafat" implementationClass="monet.tafat.intellij.metamodel.TafatParserDefinition"/>
+    <lang.syntaxHighlighterFactory key="Tafat"
+                                   implementationClass="monet.tafat.intellij.highlighting.TafatSyntaxHighlighterFactory"/>
+    <colorSettingsPage implementation="monet.tafat.intellij.highlighting.TafatColorSettingPage"/>
+    <!--<annotator language="Tafat" implementationClass="monet.tafat.intellij.TafatAnnotator"/>-->
+    <!--<localInspection language="Tafat" shortName="UnusedAbstractDefinition" bundle="messages.TafatBundle"-->
+    <!--key="unused.abstract.definition.inspection.display.name"-->
+    <!--groupKey="tafat.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"-->
+    <!--implementationClass="monet.tafat.intellij.metamodel.codeinspection.UnusedAbstractDefinitionInspection"/>-->
+    <!--<globalInspection shortName="DuplicateDefinitionInspection" bundle="messages.TafatBundle"-->
+    <!--key="duplicate.definition.display.name"-->
+    <!--groupKey="group.names.tafat.files" enabledByDefault="false" level="WARNING"-->
+    <!--implementationClass="monet.tafat.intellij.codeinspection.DuplicateDefinitionInspection"/>-->
+    <completion.contributor language="Tafat" implementationClass="monet.tafat.intellij.TafatCompletionContributor"/>
+    <psi.referenceContributor language="Tafat" implementation="monet.tafat.intellij.TafatReferenceContributor"/>
+    <nameSuggestionProvider implementation="monet.tafat.intellij.refactoring.TafatNameSuggestionProvider"/>
+    <lang.elementManipulator forClass="monet.tafat.intellij.psi.TafatIdentifier"
+                             implementationClass="monet.tafat.intellij.psi.impl.TafatDefinitionIdentifierManipulator"/>
+    <lang.refactoringSupport language="Tafat"
+                             implementationClass="monet.tafat.intellij.TafatRefactoringSupportProvider"/>
+    <!--<renameHandler implementation="TafatRenameHandler"/>-->
+    <lang.findUsagesProvider language="Tafat"
+                             implementationClass="monet.tafat.intellij.metamodel.TafatFindUsagesProvider"/>
+    <lang.foldingBuilder language="Tafat" implementationClass="monet.tafat.intellij.TafatFoldingBuilder"/>
+    <!--<lang.psiStructureViewFactory language="Tafat" implementationClass="TafatStructureViewFactory"/>-->
+    <!--<lang.formatter language="Tafat" implementationClass="TafatFormattingModelBuilder"/>-->
+  </extensions>
+</idea-plugin>
