@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="templation">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/intellij_plugin_builder/res/templation.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
