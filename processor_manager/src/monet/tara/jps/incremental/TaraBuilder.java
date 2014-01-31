@@ -8,6 +8,7 @@ import com.intellij.util.Consumer;
 import com.intellij.util.SystemProperties;
 import com.intellij.util.containers.ContainerUtilRt;
 import gnu.trove.THashMap;
+import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.asm4.ClassReader;
@@ -20,7 +21,6 @@ import org.jetbrains.jps.builders.java.JavaBuilderUtil;
 import org.jetbrains.jps.builders.java.JavaSourceRootDescriptor;
 import org.jetbrains.jps.builders.java.dependencyView.Callbacks;
 import org.jetbrains.jps.builders.java.dependencyView.Mappings;
-import org.jetbrains.jps.builders.storage.SourceToOutputMapping;
 import org.jetbrains.jps.cmdline.ClasspathBootstrap;
 import org.jetbrains.jps.cmdline.ProjectDescriptor;
 import org.jetbrains.jps.incremental.*;
@@ -49,13 +49,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private static final Key<Map<String, String>> STUB_TO_SRC = Key.create("STUB_TO_SRC");
 	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
 	private static final String TARA_EXTENSION = "m2";
-	private final boolean myForStubs;
+	private final boolean pluginGeneration;
 	private final String builderName;
 
-	public TaraBuilder(boolean forStubs) {
-		super(forStubs ? BuilderCategory.SOURCE_GENERATOR : BuilderCategory.OVERWRITING_TRANSLATOR);
-		myForStubs = forStubs;
-		builderName = "Tara " + (forStubs ? "stub generator" : "compiler");
+	public TaraBuilder(boolean pluginGeneration) {
+		super(pluginGeneration ? BuilderCategory.SOURCE_GENERATOR : BuilderCategory.OVERWRITING_TRANSLATOR);
+		this.pluginGeneration = pluginGeneration;
+		LOG.setLevel(Level.ALL);
+		builderName = "Tara " + (pluginGeneration ? "plugin generator" : "compiler");
 	}
 
 	static {
@@ -72,26 +73,19 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			if (toCompile.isEmpty())
 				return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.NOTHING_DONE;
 
-			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled())
-				LOG.info("forStubs=" + myForStubs);
+			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("plugin-generation=" + pluginGeneration);
 
 			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
-			if (finalOutputs == null)
-				return ExitCode.ABORT;
+			if (finalOutputs == null) return ExitCode.ABORT;
 
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
-
-			Map<String, String> class2Src = buildClassToSourceMap(chunk, context, toCompilePaths, finalOutputs);
-
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
-
-			Map<ModuleBuildTarget, String> generationOutputs = myForStubs ? getStubGenerationOutputs(chunk, context) : finalOutputs;
+			Map<ModuleBuildTarget, String> generationOutputs = pluginGeneration ? getStubGenerationOutputs(chunk, context) : finalOutputs;
 			String compilerOutput = generationOutputs.get(chunk.representativeTarget());
 
 			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
-			final File tempFile = TaracOSProcessHandler.fillFileWithTaracParameters(
-				compilerOutput, toCompilePaths, finalOutput, class2Src, encoding);
-
+			final File tempFile =
+				TaracOSProcessHandler.fillFileWithTaracParameters(compilerOutput, toCompilePaths, finalOutput, encoding);
 
 			final TaracOSProcessHandler handler = runTarac(context, chunk, tempFile, settings);
 
@@ -101,28 +95,28 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			if (checkChunkRebuildNeeded(context, handler))
 				return ExitCode.CHUNK_REBUILD_REQUIRED;
 
-			if (myForStubs) {
-				addStubRootsToJavacSourcePath(context, generationOutputs);
-				rememberStubSources(context, compiled);
-			}
+//			if (pluginGeneration) {
+//				//addStubRootsToJavacSourcePath(context, generationOutputs);
+//				//rememberStubSources(context, compiled);
+//			}
 
 			for (CompilerMessage message : handler.getCompilerMessages(chunk.representativeTarget().getModule().getName()))
 				context.processMessage(message);
 
-			if (!myForStubs && updateDependencies(context, chunk, dirtyFilesHolder, toCompile, compiled, outputConsumer))
+			if (!pluginGeneration && updateDependencies(context, chunk, dirtyFilesHolder, toCompile, compiled, outputConsumer))
 				return ExitCode.ADDITIONAL_PASS_REQUIRED;
 			return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.OK;
 		} catch (Exception e) {
 			throw new ProjectBuildException(e);
 		} finally {
-			if (!myForStubs) {
+			if (!pluginGeneration) {
 				FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, null);
 			}
 		}
 	}
 
 	private Boolean hasFilesToCompileForNextRound(CompileContext context) {
-		return !myForStubs && FILES_MARKED_DIRTY_FOR_NEXT_ROUND.get(context, Boolean.FALSE);
+		return !pluginGeneration && FILES_MARKED_DIRTY_FOR_NEXT_ROUND.get(context, Boolean.FALSE);
 	}
 
 	private static Set<String> getPathsToCompile(List<File> toCompile) {
@@ -144,24 +138,17 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			LOG.debug("Tarac classpath: " + classpath);
 		}
 
-		List<String> programParams = ContainerUtilRt.newArrayList(myForStubs ? "stubs" : "tarac", tempFile.getPath());
-		if (settings.invokeDynamic) {
-			programParams.add("--indy");
-		}
-
+		List<String> programParams = ContainerUtilRt.newArrayList(!pluginGeneration ? "--gen-plugin" : "tarac", tempFile.getPath());
 		List<String> vmParams = ContainerUtilRt.newArrayList();
 		vmParams.add("-Xmx" + settings.heapSize + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
-		//vmParams.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5239");
-
 		String grapeRoot = System.getProperty(TaracOSProcessHandler.GRAPE_ROOT);
 		if (grapeRoot != null)
 			vmParams.add("-D" + TaracOSProcessHandler.GRAPE_ROOT + "=" + grapeRoot);
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
-			getJavaExecutable(chunk), "monet.tara.compiler.rt.TaracRunner",
+			getJavaExecutable(chunk), "monet.tara.TaracRunner",
 			Collections.<String>emptyList(), classpath,
 			vmParams, programParams);
-
 		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
 		final Consumer<String> updater = new Consumer<String>() {
 			public void consume(String s) {
@@ -383,32 +370,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return Arrays.asList(TARA_EXTENSION);
 	}
 
-	private static Map<String, String> buildClassToSourceMap(ModuleChunk chunk, CompileContext context, Set<String> toCompilePaths,
-	                                                         Map<ModuleBuildTarget, String> finalOutputs) throws IOException {
-		final Map<String, String> class2Src = new HashMap<>();
-		JpsJavaCompilerConfiguration configuration = JpsJavaExtensionService.getInstance().getOrCreateCompilerConfiguration(
-			context.getProjectDescriptor().getProject());
-		for (ModuleBuildTarget target : chunk.getTargets()) {
-			String moduleOutputPath = finalOutputs.get(target);
-			final SourceToOutputMapping srcToOut = context.getProjectDescriptor().dataManager.getSourceToOutputMap(target);
-			for (String src : srcToOut.getSources()) {
-				if (!toCompilePaths.contains(src) && isTaraFile(src) && !configuration.getCompilerExcludes().isExcluded(new File(src))) {
-					final Collection<String> outs = srcToOut.getOutputs(src);
-					if (outs != null) {
-						for (String out : outs) {
-							if (out.endsWith(".class") && out.startsWith(moduleOutputPath)) {
-								final String className = out.substring(moduleOutputPath.length(),
-									out.length() - ".class".length()).replace('/', '.');
-								class2Src.put(className, src);
-							}
-						}
-					}
-				}
-			}
-		}
-		return class2Src;
-	}
-
 	@Override
 	public String toString() {
 		return builderName;
@@ -430,14 +391,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			if (src == null) {
 				return;
 			}
-			String groovy = stubToSrc.get(FileUtil.toSystemIndependentName(src.getPath()));
-			if (groovy == null) {
+			String tara = stubToSrc.get(FileUtil.toSystemIndependentName(src.getPath()));
+			if (tara == null) {
 				return;
 			}
 			try {
-				final File groovyFile = new File(groovy);
-				if (!FSOperations.isMarkedDirty(context, groovyFile)) {
-					FSOperations.markDirty(context, groovyFile);
+				final File taraFile = new File(tara);
+				if (!FSOperations.isMarkedDirty(context, taraFile)) {
+					FSOperations.markDirty(context, taraFile);
 					FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, Boolean.TRUE);
 				}
 			} catch (IOException e) {

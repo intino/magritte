@@ -11,6 +11,7 @@ import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import monet.tara.compiler.rt.TaraCompilerMessageCategories;
 import monet.tara.compiler.rt.TaraRtConstants;
+import org.apache.log4j.Level;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
@@ -21,28 +22,62 @@ import java.util.*;
 public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	public static final String TARA_COMPILER_IN_OPERATION = "Tara compiler in operation...";
 	public static final String GRAPE_ROOT = "grape.root";
+	private static final Logger LOG = Logger.getInstance(TaracOSProcessHandler.class);
 	private final List<OutputItem> myCompiledItems = new ArrayList<>();
-	private final Set<File> toRecompileFiles = new HashSet<>();
 	private final List<CompilerMessage> compilerMessages = new ArrayList<>();
 	private final StringBuffer stdErr = new StringBuffer();
-	private static final Logger LOG = Logger.getInstance("#monet.tara.jps.incremental.TaracOSProcessHandler");
 	private final Consumer<String> myStatusUpdater;
+	private final StringBuffer outputBuffer = new StringBuffer();
 
 	public TaracOSProcessHandler(Process process, Consumer<String> statusUpdater) {
 		super(process, null, null);
+		LOG.setLevel(Level.ALL);
 		myStatusUpdater = statusUpdater;
+	}
+
+	private static List<String> splitAndTrim(String compiled) {
+		return ContainerUtil.map(StringUtil.split(compiled, TaraRtConstants.SEPARATOR), new Function<String, String>() {
+			public String fun(String s) {
+				return s.trim();
+			}
+		});
+	}
+
+	public static File fillFileWithTaracParameters(final String outputDir,
+	                                               final Collection<String> changedSources,
+	                                               String finalOutput, @Nullable final String encoding) throws IOException {
+		File tempFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
+
+		final Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile)));
+		try {
+			writer.write(TaraRtConstants.SRC_FILE + "\n");
+			for (String file : changedSources) {
+				writer.write(file);
+				writer.write("\n");
+			}
+			if (encoding != null) {
+				writer.write(TaraRtConstants.ENCODING + "\n");
+				writer.write(encoding + "\n");
+			}
+			writer.write(TaraRtConstants.OUTPUTPATH + "\n");
+			writer.write(outputDir);
+			writer.write("\n");
+			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n");
+			writer.write(finalOutput);
+			writer.write("\n");
+		} finally {
+			writer.close();
+		}
+		return tempFile;
 	}
 
 	public void notifyTextAvailable(final String text, final Key outputType) {
 		super.notifyTextAvailable(text, outputType);
-
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Received from tarac: " + text);
 		}
 
-		if (outputType == ProcessOutputTypes.SYSTEM) {
-			return;
-		}
+		if (outputType == ProcessOutputTypes.SYSTEM) return;
 
 		if (outputType == ProcessOutputTypes.STDERR) {
 			stdErr.append(StringUtil.convertLineSeparators(text));
@@ -51,10 +86,8 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		parseOutput(text);
 	}
 
-	private final StringBuffer outputBuffer = new StringBuffer();
-
 	protected void updateStatus(@Nullable String status) {
-			myStatusUpdater.consume(status == null ? TARA_COMPILER_IN_OPERATION : status);
+		myStatusUpdater.consume(status == null ? TARA_COMPILER_IN_OPERATION : status);
 	}
 
 	private void parseOutput(String text) {
@@ -76,9 +109,8 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 
 			//compiled start marker have to be in the beginning on each string
 			if (outputBuffer.indexOf(TaraRtConstants.COMPILED_START) != -1) {
-				if (outputBuffer.indexOf(TaraRtConstants.COMPILED_END) == -1) {
+				if (outputBuffer.indexOf(TaraRtConstants.COMPILED_END) == -1)
 					return;
-				}
 
 				final String compiled = handleOutputBuffer(TaraRtConstants.COMPILED_START, TaraRtConstants.COMPILED_END);
 				final List<String> list = splitAndTrim(compiled);
@@ -86,20 +118,11 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 				String sourceFile = list.get(1);
 
 				OutputItem item = new OutputItem(outputPath, sourceFile);
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Output: " + item);
-				}
+				if (LOG.isDebugEnabled()) LOG.debug("Output: " + item);
 				myCompiledItems.add(item);
 
-			} else if (outputBuffer.indexOf(TaraRtConstants.TO_RECOMPILE_START) != -1) {
-				if (outputBuffer.indexOf(TaraRtConstants.TO_RECOMPILE_END) != -1) {
-					String url = handleOutputBuffer(TaraRtConstants.TO_RECOMPILE_START, TaraRtConstants.TO_RECOMPILE_END);
-					toRecompileFiles.add(new File(url));
-				}
 			} else if (outputBuffer.indexOf(TaraRtConstants.MESSAGES_START) != -1) {
-				if (outputBuffer.indexOf(TaraRtConstants.MESSAGES_END) == -1) {
-					return;
-				}
+				if (outputBuffer.indexOf(TaraRtConstants.MESSAGES_END) == -1) return;
 
 				text = handleOutputBuffer(TaraRtConstants.MESSAGES_START, TaraRtConstants.MESSAGES_END);
 
@@ -131,9 +154,8 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 					: BuildMessage.Kind.INFO;
 
 				CompilerMessage compilerMessage = new CompilerMessage("Tarac", kind, message, url, -1, -1, -1, lineInt, columnInt);
-				if (LOG.isDebugEnabled()) {
+				if (LOG.isDebugEnabled())
 					LOG.debug("Message: " + compilerMessage);
-				}
 				compilerMessages.add(compilerMessage);
 			}
 		}
@@ -153,20 +175,8 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		return text.trim();
 	}
 
-	private static List<String> splitAndTrim(String compiled) {
-		return ContainerUtil.map(StringUtil.split(compiled, TaraRtConstants.SEPARATOR), new Function<String, String>() {
-			public String fun(String s) {
-				return s.trim();
-			}
-		});
-	}
-
 	public List<OutputItem> getSuccessfullyCompiled() {
 		return myCompiledItems;
-	}
-
-	public Set<File> getToRecompileFiles() {
-		return toRecompileFiles;
 	}
 
 	public boolean shouldRetry() {
@@ -213,51 +223,6 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		return stdErr;
 	}
 
-	public static File fillFileWithTaracParameters(final String outputDir,
-	                                               final Collection<String> changedSources,
-	                                               String finalOutput,
-	                                               Map<String, String> class2Src, @Nullable final String encoding) throws IOException {
-		File tempFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
-
-		final Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile)));
-		try {
-			for (String file : changedSources) {
-				writer.write(TaraRtConstants.SRC_FILE + "\n");
-				writer.write(file);
-				writer.write("\n");
-			}
-
-			writer.write("class2src\n");
-			for (Map.Entry<String, String> entry : class2Src.entrySet()) {
-				writer.write(entry.getKey() + "\n");
-				writer.write(entry.getValue() + "\n");
-			}
-			writer.write(TaraRtConstants.END + "\n");
-
-			if (encoding != null) {
-				writer.write(TaraRtConstants.ENCODING + "\n");
-				writer.write(encoding + "\n");
-			}
-			writer.write(TaraRtConstants.OUTPUTPATH + "\n");
-			writer.write(outputDir);
-			writer.write("\n");
-			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n");
-			writer.write(finalOutput);
-			writer.write("\n");
-		} finally {
-			writer.close();
-		}
-		return tempFile;
-	}
-
-	public static TaracOSProcessHandler runTarac(Process process, Consumer<String> updater) {
-		TaracOSProcessHandler processHandler = new TaracOSProcessHandler(process, updater);
-
-		processHandler.startNotify();
-		processHandler.waitFor();
-		return processHandler;
-	}
-
 	public static class OutputItem {
 		public final String outputPath;
 		public final String sourcePath;
@@ -269,10 +234,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 
 		@Override
 		public String toString() {
-			return "OutputItem{" +
-				"outputPath='" + outputPath + '\'' +
-				", sourcePath='" + sourcePath + '\'' +
-				'}';
+			return "OutputItem{" + "outputPath='" + outputPath + '\'' + ", sourcePath='" + sourcePath + '\'' + '}';
 		}
 	}
 

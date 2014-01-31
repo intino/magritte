@@ -1,0 +1,9 @@
+src_file
+/Users/oroncal/workspace/sandbox/Test/src/monet.m2
+/Users/oroncal/workspace/sandbox/Test/src/prueba.m2
+encoding
+UTF-8
+outputpath
+/Users/oroncal/workspace/sandbox/system/compile-server/test_2e78763/taraStubs/Test/java-production
+final_outputpath
+/Users/oroncal/workspace/sandbox/Test/out/production/Test/

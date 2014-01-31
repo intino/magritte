@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="templation">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/intellij_plugin_builder/res/templation.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tara_runtime/res/templation.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

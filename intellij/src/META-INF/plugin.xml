@@ -25,73 +25,69 @@
   -->
 
   <actions>
-    <action id="NewMetamodelUnit" class="monet.tara.transpiler.intellij.actions.CreateTaraFileAction">
+    <action id="NewMetamodelUnit" class="monet.tara.compiler.intellij.actions.CreateTaraFileAction">
       <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewGroup1"/>
     </action>
     <!--<group id="tara.file.group" popup="false">-->
-      <!--<action id="tara.Generate" class="monet.tara.transpiler.intellij.actions.GenerateAction" text="Generate Plugin">-->
-        <!--<keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>-->
-      <!--</action>-->
-      <!--<add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>-->
-      <!--<add-to-group group-id="EditorPopupMenu" anchor="last"/>-->
-      <!--<add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>-->
+    <!--<action id="tara.Generate" class="monet.tara.compilerntellij.actions.GenerateAction" text="Generate Plugin">-->
+    <!--<keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>-->
+    <!--</action>-->
+    <!--<add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>-->
+    <!--<add-to-group group-id="EditorPopupMenu" anchor="last"/>-->
+    <!--<add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>-->
     <!--</group>-->
   </actions>
 
   <application-components>
   </application-components>
 
-  <project-components>
-    <component>
-      <implementation-class>monet.tara.transpiler.intellij.compiler.TaraCompilerLoader</implementation-class>
-    </component>
-  </project-components>
-
   <extensions defaultExtensionNs="com.intellij">
     <lang.namesValidator language="Tara"
-                         implementationClass="monet.tara.transpiler.intellij.refactoring.rename.TaraNamesValidator"/>
-    <projectService serviceInterface="monet.tara.transpiler.intellij.psi.TaraElementFactory"
-                    serviceImplementation="monet.tara.transpiler.intellij.psi.impl.TaraElementFactoryImpl"/>
+                         implementationClass="monet.tara.compiler.intellij.refactoring.rename.TaraNamesValidator"/>
+    <projectService serviceInterface="monet.tara.compiler.intellij.psi.TaraElementFactory"
+                    serviceImplementation="monet.tara.compiler.intellij.psi.impl.TaraElementFactoryImpl"/>
     <internalFileTemplate name="Metamodel Unit"/>
-    <moduleType id="TARA_MODULE" implementationClass="monet.tara.transpiler.intellij.project.module.TaraModuleType"/>
+    <moduleType id="TARA_MODULE" implementationClass="monet.tara.compiler.intellij.project.module.TaraModuleType"/>
 
-    <projectConfigurable instance="monet.tara.transpiler.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
+    <projectConfigurable instance="monet.tara.compiler.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
                          displayName="Tara Compiler" parentId="project.propCompiler"/>
 
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
-    <projectService serviceInterface="monet.tara.transpiler.intellij.compiler.TaraCompilerWorkspaceConfiguration"
-                    serviceImplementation="monet.tara.transpiler.intellij.compiler.TaraCompilerWorkspaceConfiguration"/>
-    <projectService serviceInterface="monet.tara.transpiler.intellij.compiler.TaraCompilerConfiguration"
-                    serviceImplementation="monet.tara.transpiler.intellij.compiler.TaraCompilerConfiguration"/>
-    <configurationType implementation="monet.tara.transpiler.intellij.project.runner.TaraRunConfigurationType"/>
-    <lang.commenter language="Tara" implementationClass="monet.tara.transpiler.intellij.TaraCommenter"/>
+    <projectService serviceInterface="monet.tara.compiler.intellij.compiler.TaraCompilerWorkspaceConfiguration"
+                    serviceImplementation="monet.tara.compiler.intellij.compiler.TaraCompilerWorkspaceConfiguration"/>
+    <projectService serviceInterface="monet.tara.compiler.intellij.compiler.TaraCompilerConfiguration"
+                    serviceImplementation="monet.tara.compiler.intellij.compiler.TaraCompilerConfiguration"/>
+    <configurationType implementation="monet.tara.compiler.intellij.project.runner.TaraRunConfigurationType"/>
+    <lang.commenter language="Tara" implementationClass="monet.tara.compiler.intellij.TaraCommenter"/>
 
-    <fileTemplateGroup implementation="monet.tara.transpiler.intellij.project.TaraTemplatesFactory"/>
-    <fileTypeFactory implementation="monet.tara.transpiler.intellij.metamodel.file.TaraFileTypeFactory"/>
-    <lang.parserDefinition language="Tara" implementationClass="monet.tara.transpiler.intellij.metamodel.TaraParserDefinition"/>
+    <fileTemplateGroup implementation="monet.tara.compiler.intellij.project.TaraTemplatesFactory"/>
+    <fileTypeFactory implementation="monet.tara.compiler.intellij.metamodel.file.TaraFileTypeFactory"/>
+    <lang.parserDefinition language="Tara"
+                           implementationClass="monet.tara.compiler.intellij.metamodel.TaraParserDefinition"/>
     <lang.syntaxHighlighterFactory key="Tara"
-                                   implementationClass="monet.tara.transpiler.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
-    <colorSettingsPage implementation="monet.tara.transpiler.intellij.highlighting.TaraColorSettingPage"/>
-    <!--<annotator language="Tara" implementationClass="monet.tara.transpiler.intellij.TaraAnnotator"/>-->
+                                   implementationClass="monet.tara.compiler.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
+    <colorSettingsPage implementation="monet.tara.compiler.intellij.highlighting.TaraColorSettingPage"/>
+    <!--<annotator language="Tara" implementationClass="monet.tara.compilerntellij.TaraAnnotator"/>-->
     <!--<localInspection language="Tara" shortName="UnusedAbstractConcept" bundle="messages.TaraBundle"-->
     <!--key="unused.abstract.concept.inspection.display.name"-->
     <!--groupKey="tara.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"-->
-    <!--implementationClass="monet.tara.transpiler.intellij.metamodel.codeinspection.UnusedAbstractConceptInspection"/>-->
+    <!--implementationClass="monet.tara.compilerntellij.metamodel.codeinspection.UnusedAbstractConceptInspection"/>-->
     <!--<globalInspection shortName="DuplicateConceptInspection" bundle="messages.TaraBundle"-->
     <!--key="duplicate.concept.display.name"-->
     <!--groupKey="group.names.tara.files" enabledByDefault="false" level="WARNING"-->
-    <!--implementationClass="monet.tara.transpiler.intellij.codeinspection.DuplicateConceptInspection"/>-->
-    <completion.contributor language="Tara" implementationClass="monet.tara.transpiler.intellij.TaraCompletionContributor"/>
-    <psi.referenceContributor language="Tara" implementation="monet.tara.transpiler.intellij.TaraReferenceContributor"/>
-    <nameSuggestionProvider implementation="monet.tara.transpiler.intellij.refactoring.TaraNameSuggestionProvider"/>
-    <lang.elementManipulator forClass="monet.tara.transpiler.intellij.psi.TaraIdentifier"
-                             implementationClass="monet.tara.transpiler.intellij.psi.impl.TaraConceptIdentifierManipulator"/>
+    <!--implementationClass="monet.tara.compilerntellij.codeinspection.DuplicateConceptInspection"/>-->
+    <completion.contributor language="Tara"
+                            implementationClass="monet.tara.compiler.intellij.TaraCompletionContributor"/>
+    <psi.referenceContributor language="Tara" implementation="monet.tara.compiler.intellij.TaraReferenceContributor"/>
+    <nameSuggestionProvider implementation="monet.tara.compiler.intellij.refactoring.TaraNameSuggestionProvider"/>
+    <lang.elementManipulator forClass="monet.tara.compiler.intellij.psi.TaraIdentifier"
+                             implementationClass="monet.tara.compiler.intellij.psi.impl.TaraConceptIdentifierManipulator"/>
     <lang.refactoringSupport language="Tara"
-                             implementationClass="monet.tara.transpiler.intellij.TaraRefactoringSupportProvider"/>
+                             implementationClass="monet.tara.compiler.intellij.TaraRefactoringSupportProvider"/>
     <!--<renameHandler implementation="TaraRenameHandler"/>-->
     <lang.findUsagesProvider language="Tara"
-                             implementationClass="monet.tara.transpiler.intellij.metamodel.TaraFindUsagesProvider"/>
-    <lang.foldingBuilder language="Tara" implementationClass="monet.tara.transpiler.intellij.TaraFoldingBuilder"/>
+                             implementationClass="monet.tara.compiler.intellij.metamodel.TaraFindUsagesProvider"/>
+    <lang.foldingBuilder language="Tara" implementationClass="monet.tara.compiler.intellij.TaraFoldingBuilder"/>
     <!--<lang.psiStructureViewFactory language="Tara" implementationClass="TaraStructureViewFactory"/>-->
     <!--<lang.formatter language="Tara" implementationClass="TaraFormattingModelBuilder"/>-->
   </extensions>

@@ -18,5 +18,5 @@ public class TaraRtConstants {
 	public static final String SEPARATOR = "#%%#%%%#%%%%%%%%%#";
 	public static final String PRESENTABLE_MESSAGE = "@#$%@# Presentable:";
 	public static final String CLEAR_PRESENTABLE = "$@#$%^ CLEAR_PRESENTABLE";
-	public static final String NO_TARA = "Cannot compile Tara files: no Tara generator is defined";
+	public static final String NO_TARA = "Cannot compile Tara files: No Tara generator is defined";
 }

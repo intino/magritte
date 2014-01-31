@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="grammar-kit">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/intellij_plugin_builder/res/grammar-kit.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tara_runtime/res/grammar-kit.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

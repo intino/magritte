@@ -12,6 +12,6 @@ public class TaraBuilderService extends BuilderService {
 	@NotNull
 	@Override
 	public List<? extends ModuleLevelBuilder> createModuleLevelBuilders() {
-		return Arrays.asList(new TaraBuilder(true), new TaraBuilder(false));
+		return Arrays.asList(new TaraBuilder(true));
 	}
 }

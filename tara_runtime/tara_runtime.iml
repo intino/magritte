@@ -10,8 +10,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="tara_runtime_constants" exported="" />
-    <orderEntry type="library" exported="" name="antlr-4.1-complete" level="project" />
+    <orderEntry type="module" module-name="tara_runtime_constants" />
+    <orderEntry type="library" name="antlr-4.1-complete" level="project" />
+    <orderEntry type="library" name="grammar-kit" level="project" />
+    <orderEntry type="library" name="templation" level="project" />
+    <orderEntry type="library" scope="TEST" name="junit-4.10" level="application" />
   </component>
 </module>
 

@@ -1,0 +1,91 @@
+{
+  parserClass='monet.tara.compiler.intellij.parser.TaraParser'
+  parserUtilClass="monet.tara.compiler.intellij.parser.TaraParserUtil"
+
+  extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
+
+  psiClassPrefix='Tara'
+  psiImplClassSuffix='Impl'
+  psiPackage='monet.tara.compiler.intellij.psi'
+  psiImplPackage='monet.tara.compiler.intellij.psi.impl'
+
+  elementTypeHolderClass='monet.tara.compiler.intellij.psi.TaraTypes'
+  elementTypeClass='monet.tara.compiler.intellij.psi.TaraElementType'
+  tokenTypeClass='monet.tara.compiler.intellij.psi.TaraTokenType'
+
+  psiImplUtilClass='monet.tara.compiler.intellij.psi.impl.TaraPsiImplUtil'
+}
+
+root ::= (concept)*
+
+concept ::=  doc? conceptSignature conceptBody? {mixin='monet.tara.compiler.intellij.psi.impl.TaraNamedElementImpl'
+implements='monet.tara.compiler.intellij.psi.TaraNamedElement' methods=[getName setName getNameIdentifier]}
+
+conceptSignature ::=  (CONCEPT_KEY | identifier) modifier? AS identifier conceptAnnotation?
+
+child  ::=  doc? (CONCEPT_KEY | identifier(DOT identifier)?) modifier? (AS identifier)? childAnnotation? conceptBody?
+
+identifier  ::=  IDENTIFIER_KEY {methods=[getIdentifier]}
+
+conceptBody ::= INDENT conceptConstituents+ DEDENT
+
+conceptConstituents ::= attribute
+                      | attributeList
+                      | referenceStatement
+                      | referenceStatementList
+                      | from
+                      | child
+
+referenceStatement     ::= VAR identifier IDENTIFIER_KEY
+referenceStatementList ::= VAR identifier LIST IDENTIFIER_KEY
+
+attribute::= VAR     UID_TYPE IDENTIFIER_KEY stringAssign?
+           | VAR     INT_TYPE IDENTIFIER_KEY integerAssign?
+           | VAR  DOUBLE_TYPE IDENTIFIER_KEY doubleAssign?
+           | VAR NATURAL_TYPE IDENTIFIER_KEY naturalAssign?
+           | VAR BOOLEAN_TYPE IDENTIFIER_KEY booleanAssign?
+           | VAR  STRING_TYPE IDENTIFIER_KEY stringAssign?
+           | VAR WORD IDENTIFIER_KEY wordBody
+wordBody::= INDENT IDENTIFIER_KEY+ DEDENT
+
+attributeList::= VAR     INT_TYPE LIST IDENTIFIER_KEY integerListAssign?
+               | VAR  DOUBLE_TYPE LIST IDENTIFIER_KEY doubleListAssign?
+               | VAR NATURAL_TYPE LIST IDENTIFIER_KEY naturalListAssign?
+               | VAR BOOLEAN_TYPE LIST IDENTIFIER_KEY booleanListAssign?
+               | VAR  STRING_TYPE LIST IDENTIFIER_KEY stringListAssign?
+
+stringAssign   ::= ASSIGN STRING_VALUE
+booleanAssign  ::= ASSIGN BOOLEAN_VALUE
+integerAssign  ::= ASSIGN integerValue
+doubleAssign   ::= ASSIGN (integerValue | DOUBLE_VALUE)
+naturalAssign  ::= ASSIGN NATURAL_VALUE
+
+stringListAssign   ::= ASSIGN LEFT_BRACKET STRING_VALUE+ RIGHT_BRACKET
+booleanListAssign  ::= ASSIGN LEFT_BRACKET BOOLEAN_VALUE+ RIGHT_BRACKET
+integerListAssign  ::= ASSIGN LEFT_BRACKET integerValue+ RIGHT_BRACKET
+doubleListAssign   ::= ASSIGN LEFT_BRACKET (integerValue | DOUBLE_VALUE)+ RIGHT_BRACKET
+naturalListAssign  ::= ASSIGN LEFT_BRACKET NATURAL_VALUE+ RIGHT_BRACKET
+
+from::= FROM_KEY rangeAnnotation?
+    | rangeAnnotation? fromBody
+
+fromBody::= INDENT child+ DEDENT
+
+conceptAnnotation::= OPEN_AN annotation+ CLOSE_AN
+childAnnotation  ::= OPEN_AN (range | annotation)+ CLOSE_AN
+rangeAnnotation  ::= OPEN_AN range+ CLOSE_AN
+
+range::= OPTIONAL
+       | MULTIPLE
+
+annotation::= HAS_CODE
+            | EXTENSIBLE
+
+integerValue::= NATURAL_VALUE
+              | NEGATIVE_VALUE
+
+modifier::= ABSTRACT
+          | FINAL
+
+doc::= DOC_LINE
+     | DOC_BLOCK
