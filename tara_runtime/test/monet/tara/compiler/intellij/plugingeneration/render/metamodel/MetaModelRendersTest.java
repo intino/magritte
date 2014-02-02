@@ -1,7 +1,7 @@
 package monet.tara.compiler.intellij.plugingeneration.render.metamodel;
 
-import monet.tara.compiler.core.render.DefaultRender;
-import monet.tara.compiler.core.render.RendersFactory;
+import monet.tara.compiler.code_generation.render.DefaultRender;
+import monet.tara.compiler.code_generation.render.RendersFactory;
 import monet.tara.intellij.plugingeneration.render.LexerRender;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +30,6 @@ public class MetaModelRendersTest {
 
 	@Test
 	public void grammarRenderTest() throws Exception {
-
 		DefaultRender defaultRender = RendersFactory.getRender("grammar", projectName, null);
 		assertEquals(new String(Files.readAllBytes(
 			Paths.get(TLP_PATH + "metamodel/grammar.bnf")), UTF_8), defaultRender.getOutput());

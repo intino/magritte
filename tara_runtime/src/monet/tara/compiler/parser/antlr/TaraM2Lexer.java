@@ -2,14 +2,15 @@
 
     package monet.tara.compiler.parser.antlr;
 
-import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNSimulator;
+import org.antlr.v4.runtime.atn.LexerATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class TaraM2Lexer extends Lexer {
@@ -44,7 +45,7 @@ public class TaraM2Lexer extends Lexer {
 	};
 	public static final String[] ruleNames = {
 		"CONCEPT", "FROM", "AS", "FINAL", "ABSTRACT", "MULTIPLE", "OPTIONAL", 
-		"HAS_CODE", "EXTENSIBLE", "WORD", "VAR", "ROOT", "SINGLETON", "LIST", 
+		"HAS_CODE", "EXTENSIBLE", "WORD", "VAR", "ROOT", "SINGLETON", "LIST",
 		"LEFT_BRACKET", "RIGHT_BRACKET", "INDENT", "DEDENT", "OPEN_BRACKET", "CLOSE_BRACKET", 
 		"OPEN_AN", "CLOSE_AN", "COMMA", "DOT", "ASSIGN", "DOUBLE_COMMAS", "SEMICOLON", 
 		"POSITIVE", "NEGATIVE", "UID_TYPE", "INT_TYPE", "NATURAL_TYPE", "DOUBLE_TYPE", 

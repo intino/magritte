@@ -37,6 +37,13 @@ public class ASTNode {
 		return 0;
 	}
 
+	public boolean hasCode() {
+		for (AnnotationType annotation : annotations)
+			if (annotation.name().endsWith(AnnotationType.HasCode.name()))
+				return true;
+		return false;
+	}
+
 	public String getIdentifier() {
 		return identifier;
 	}
@@ -45,20 +52,20 @@ public class ASTNode {
 		this.identifier = identifier;
 	}
 
-	public ArrayList<Attribute> getAttributes() {
-		return attributes;
+	public Attribute[] getAttributes() {
+		return attributes.toArray(new Attribute[attributes.size()]);
 	}
 
-	public ArrayList<AnnotationType> getAnnotations() {
-		return annotations;
+	public AnnotationType[] getAnnotations() {
+		return annotations.toArray(new AnnotationType[annotations.size()]);
 	}
 
 	public HashMap<String, String> getReferences() {
 		return references;
 	}
 
-	public ArrayList<ASTNode> getChildren() {
-		return children;
+	public ASTNode[] getChildren() {
+		return children.toArray(new ASTNode[children.size()]);
 	}
 
 	public String getParent() {
@@ -77,12 +84,24 @@ public class ASTNode {
 		this.doc = doc;
 	}
 
+	public SubModel[] getSubModels() {
+		return subModels.toArray(new SubModel[subModels.size()]);
+	}
+
+	public Word[] getWords() {
+		return words.toArray(new Word[words.size()]);
+	}
+
 	public boolean isFinal() {
 		return finalModifier;
 	}
 
 	public boolean isAbstract() {
 		return abstractModifier;
+	}
+
+	public String getModifier() {
+		return abstractModifier ? "abstract" : !finalModifier ? "" : "final";
 	}
 
 	public void setModifier(String modifier) {
@@ -111,12 +130,12 @@ public class ASTNode {
 		subModels.add(submodel);
 	}
 
-	public void add(String key, String identifier) {
-		references.put(key,identifier);
+	public void addReference(String type, String identifier) {
+		references.put(identifier, type);
 	}
 
 	public enum AnnotationType {
-		EXTENSIBLE, HASCODE, ROOT, SINGLETON, MULTIPLE, OPTIONAL;
+		Extensible, HasCode, Root, Singleton, Multiple, Optional
 	}
 
 	public static class Attribute {
@@ -126,6 +145,14 @@ public class ASTNode {
 		public Attribute(String type, String name) {
 			this.type = type;
 			this.name = name;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public String getName() {
+			return name;
 		}
 	}
 
@@ -146,12 +173,12 @@ public class ASTNode {
 			nodes.add(node);
 		}
 
-		public ArrayList<ASTNode> getNodes() {
-			return nodes;
+		public ASTNode[] getNodes() {
+			return nodes.toArray(new ASTNode[nodes.size()]);
 		}
 
-		public ArrayList<AnnotationType> getAnnotations() {
-			return annotations;
+		public AnnotationType[] getAnnotations() {
+			return annotations.toArray(new AnnotationType[annotations.size()]);
 		}
 	}
 

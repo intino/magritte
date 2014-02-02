@@ -1,6 +1,6 @@
 package monet.tara.intellij.plugingeneration.render;
 
-import monet.tara.compiler.core.render.DefaultRender;
+import monet.tara.compiler.code_generation.render.DefaultRender;
 
 import java.util.HashMap;
 

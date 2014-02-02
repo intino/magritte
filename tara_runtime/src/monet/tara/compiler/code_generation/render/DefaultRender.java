@@ -1,4 +1,4 @@
-package monet.tara.compiler.core.render;
+package monet.tara.compiler.code_generation.render;
 
 import org.monet.templation.CanvasLogger;
 import org.monet.templation.Render;

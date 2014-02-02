@@ -1,5 +1,6 @@
-package monet.tara.compiler.core.render;
+package monet.tara.compiler.code_generation.render;
 
+import monet.tara.compiler.code_generation.DefinitionRender;
 import monet.tara.intellij.plugingeneration.render.LexerRender;
 
 import java.lang.reflect.Constructor;
@@ -13,6 +14,7 @@ public class RendersFactory {
 
 	static {
 		renders.put("Lexer", LexerRender.class);
+		renders.put("Definition", DefinitionRender.class);
 	}
 
 

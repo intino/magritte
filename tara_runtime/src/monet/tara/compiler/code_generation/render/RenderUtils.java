@@ -1,4 +1,4 @@
-package monet.tara.compiler.core.render;
+package monet.tara.compiler.code_generation.render;
 
 public class RenderUtils {
 
@@ -12,7 +12,6 @@ public class RenderUtils {
 	}
 
 	public static String toProperCase(String s) {
-		return s.substring(0, 1).toUpperCase() +
-			s.substring(1);
+		return s.substring(0, 1).toUpperCase() + s.substring(1);
 	}
 }

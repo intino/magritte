@@ -69,16 +69,16 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void enterFromAnnotations(@NotNull FromAnnotationsContext ctx) {
 		ASTNode.SubModel node = subModelStack.peek();
-		if (!ctx.OPTIONAL().isEmpty()) node.add(ASTNode.AnnotationType.OPTIONAL);
-		if (!ctx.MULTIPLE().isEmpty()) node.add(ASTNode.AnnotationType.MULTIPLE);
+		if (!ctx.OPTIONAL().isEmpty()) node.add(ASTNode.AnnotationType.Optional);
+		if (!ctx.MULTIPLE().isEmpty()) node.add(ASTNode.AnnotationType.Multiple);
 	}
 
 	@Override
 	public void enterFromConceptAnnotations(@NotNull FromConceptAnnotationsContext ctx) {
 		ASTNode node = conceptStack.peek();
-		if (!ctx.HAS_CODE().isEmpty()) node.add(ASTNode.AnnotationType.HASCODE);
-		if (!ctx.EXTENSIBLE().isEmpty()) node.add(ASTNode.AnnotationType.EXTENSIBLE);
-		if (!ctx.SINGLETON().isEmpty()) node.add(ASTNode.AnnotationType.SINGLETON);
+		if (!ctx.HAS_CODE().isEmpty()) node.add(ASTNode.AnnotationType.HasCode);
+		if (!ctx.EXTENSIBLE().isEmpty()) node.add(ASTNode.AnnotationType.Extensible);
+		if (!ctx.SINGLETON().isEmpty()) node.add(ASTNode.AnnotationType.Singleton);
 	}
 
 	@Override
@@ -110,20 +110,20 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void enterConceptAnnotations(@NotNull ConceptAnnotationsContext ctx) {
 		ASTNode node = conceptStack.peek();
-		if (!ctx.ROOT().isEmpty()) node.add(ASTNode.AnnotationType.ROOT);
-		if (!ctx.HAS_CODE().isEmpty()) node.add(ASTNode.AnnotationType.HASCODE);
-		if (!ctx.EXTENSIBLE().isEmpty()) node.add(ASTNode.AnnotationType.EXTENSIBLE);
-		if (!ctx.SINGLETON().isEmpty()) node.add(ASTNode.AnnotationType.SINGLETON);
+		if (!ctx.ROOT().isEmpty()) node.add(ASTNode.AnnotationType.Root);
+		if (!ctx.HAS_CODE().isEmpty()) node.add(ASTNode.AnnotationType.HasCode);
+		if (!ctx.EXTENSIBLE().isEmpty()) node.add(ASTNode.AnnotationType.Extensible);
+		if (!ctx.SINGLETON().isEmpty()) node.add(ASTNode.AnnotationType.Singleton);
 	}
 
 	@Override
 	public void enterComponentAnnotations(@NotNull ComponentAnnotationsContext ctx) {
 		ASTNode node = conceptStack.peek();
-		if (!ctx.HAS_CODE().isEmpty()) node.add(ASTNode.AnnotationType.HASCODE);
-		if (!ctx.EXTENSIBLE().isEmpty()) node.add(ASTNode.AnnotationType.EXTENSIBLE);
-		if (!ctx.SINGLETON().isEmpty()) node.add(ASTNode.AnnotationType.SINGLETON);
-		if (!ctx.MULTIPLE().isEmpty()) node.add(ASTNode.AnnotationType.MULTIPLE);
-		if (!ctx.OPTIONAL().isEmpty()) node.add(ASTNode.AnnotationType.OPTIONAL);
+		if (!ctx.HAS_CODE().isEmpty()) node.add(ASTNode.AnnotationType.HasCode);
+		if (!ctx.EXTENSIBLE().isEmpty()) node.add(ASTNode.AnnotationType.Extensible);
+		if (!ctx.SINGLETON().isEmpty()) node.add(ASTNode.AnnotationType.Singleton);
+		if (!ctx.MULTIPLE().isEmpty()) node.add(ASTNode.AnnotationType.Multiple);
+		if (!ctx.OPTIONAL().isEmpty()) node.add(ASTNode.AnnotationType.Optional);
 	}
 
 
@@ -158,7 +158,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		String parent = "";
 		for (int i = 0; i < ctx.IDENTIFIER().size() - 1; i++)
 			parent += ctx.IDENTIFIER(i).getText() + ".";
-		conceptStack.peek().add(parent.substring(0, parent.length() - 1) +
-			((ctx.LIST() != null) ? "[]" : ""), ctx.IDENTIFIER(ctx.IDENTIFIER().size()-1).getText());
+		conceptStack.peek().addReference(parent.substring(0, parent.length() - 1) +
+				                                 ((ctx.LIST() != null) ? "[]" : ""), ctx.IDENTIFIER(ctx.IDENTIFIER().size() - 1).getText());
 	}
 }
