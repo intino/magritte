@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class ParserTest1 {
+public class ParserTest {
 
 
 	@Test

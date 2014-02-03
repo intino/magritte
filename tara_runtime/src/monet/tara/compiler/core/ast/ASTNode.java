@@ -3,7 +3,7 @@ package monet.tara.compiler.core.ast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AST1Node {
+public class ASTNode {
 
 	private String doc;
 	private boolean abstractModifier;
@@ -18,13 +18,13 @@ public class AST1Node {
 
 	private String identifier = "";
 
-	public AST1Node(String identifier) {
+	public ASTNode(String identifier) {
 		this.identifier = identifier;
 		abstractModifier = false;
 		finalModifier = false;
 	}
 
-	public AST1Node() {
+	public ASTNode() {
 		abstractModifier = false;
 		finalModifier = false;
 	}
