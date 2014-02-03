@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class ParserTest {
+public class ParserTest1 {
 
 
 	@Test
@@ -18,8 +18,7 @@ public class ParserTest {
 		String projectName = "goros";
 		Parser parser = new Parser(new File("tara_runtime/res_test/monet.m2"));
 		AST ast = parser.parse();
-		Render render =
-				RendersFactory.getRender("Definition", projectName, ast.get("Entity"));
+		Render render = RendersFactory.getRender("Definition", projectName, ast.get("Entity"));
 		FileWriter writer = new FileWriter(new File("tara_runtime/res_test/RenderOutTest.java"));
 		writer.write(render.getOutput());
 		writer.close();
