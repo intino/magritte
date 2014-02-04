@@ -1,8 +1,8 @@
 package monet.tara.compiler.code_generation;
 
-import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.code_generation.render.DefaultRender;
 import monet.tara.compiler.code_generation.render.RenderUtils;
+import monet.tara.compiler.core.ast.ASTNode;
 
 import java.util.HashMap;
 
@@ -20,14 +20,16 @@ public class DefinitionRender extends DefaultRender {
 	@Override
 	protected void init() {
 		super.init();
+		if (rootNode.hasCode())
+			addMark("id", "true");
 		addMark("root", addDefinition(rootNode, 0));
 	}
 
 	private String addDefinition(ASTNode node, int level) {
 		HashMap<String, Object> map = new HashMap<>();
 		StringBuilder definition = new StringBuilder();
-		map.put("modifier", node.getModifier());
-		map.put("DefinitionName", node.getIdentifier());
+		setClassModifiers(node, map, level);
+		map.put("DefinitionName", (node.getIdentifier().length() > 0) ? node.getIdentifier() : "_");
 		map.put("implements", getAnnotationsString(node));
 		map.put("attributes", addAttributes(node));
 		map.put("references", addReferences(node));
@@ -44,12 +46,20 @@ public class DefinitionRender extends DefaultRender {
 		return result.replaceAll("\n[\t]*[ ]*\n[\t]*[ ]*\n", "\n\n");
 	}
 
+	private void setClassModifiers(ASTNode node, HashMap<String, Object> map, int level) {
+		StringBuilder modifiers = new StringBuilder();
+		if (level > 0)
+			modifiers.append("static ");
+		modifiers.append(node.getModifier()).append((node.getModifier().length() > 0) ? " " : "");
+		map.put("modifier", modifiers.toString());
+	}
+
 	private String addAttributes(ASTNode node) {
 		StringBuilder attributes = new StringBuilder();
 		for (ASTNode.Attribute attribute : node.getAttributes()) {
 			HashMap<String, Object> map = new HashMap<>();
 			map.put("name", attribute.getName());
-			map.put("type", attribute.getType());
+			map.put("type", attribute.getType().toUpperCase());
 			attributes.append(block("attribute", map));
 		}
 		return attributes.toString();
@@ -71,7 +81,8 @@ public class DefinitionRender extends DefaultRender {
 			StringBuilder annotations = new StringBuilder();
 			annotations.append("implements ");
 			for (ASTNode.AnnotationType annotationType : node.getAnnotations())
-				annotations.append(annotationType.name()).append(" ");
+				annotations.append("Metamodel." + annotationType.name()).append(", ");
+			annotations.replace(annotations.lastIndexOf(","), annotations.lastIndexOf(",") + 1, "");
 			return annotations.toString();
 		}
 		return "";
@@ -81,9 +92,18 @@ public class DefinitionRender extends DefaultRender {
 		StringBuilder childGetters = new StringBuilder();
 		for (ASTNode child : node.getChildren()) {
 			HashMap<String, Object> map = new HashMap<>();
-			String childIdentifier =
-					RenderUtils.toProperCase((child.getIdentifier().length() > 0) ? child.getIdentifier() : child.getParent());
-			if (childIdentifier.contains("[]")) map.put("plural", "plural");
+			final String childIdentifier =
+				RenderUtils.toProperCase((child.getIdentifier().length() > 0) ? child.getIdentifier() : child.getParent());
+			map.put("childGetter", "getChild");
+			if (childIdentifier.contains("[]")) {
+				map.put("listSuffix", "true");
+				map.put("childGetter", "getChildren");
+				map.put("listCast", block("multipleCastBlock", new HashMap<String, Object>() {{
+					put("childType", childIdentifier);
+				}}));
+
+			}
+
 			map.put("childType", childIdentifier);
 			childGetters.append(block("childGetter", map)).append("\t");
 		}

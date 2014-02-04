@@ -1,16 +1,18 @@
 package monet.tara;
 
+import monet.tara.compiler.TaraCompiler;
 import monet.tara.compiler.core.CompilationUnit;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.CompilerMessage;
 import monet.tara.compiler.core.SourceUnit;
 import monet.tara.compiler.rt.TaraCompilerMessageCategories;
 import monet.tara.compiler.rt.TaraRtConstants;
-import monet.tara.compiler.TaraCompiler;
 import org.codehaus.groovy.control.messages.WarningMessage;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class TaraCompilerRunner {
 
@@ -21,10 +23,7 @@ public class TaraCompilerRunner {
 
 		final List<CompilerMessage> compilerMessages = new ArrayList<>();
 		final List<File> srcFiles = new ArrayList<>();
-
-		final String finalOutput = "";
-		fillFromArgsFile(argsFile, config, srcFiles, finalOutput);
-
+		fillFromArgsFile(argsFile, config, srcFiles);
 		if (srcFiles.isEmpty()) return true;
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 
@@ -50,8 +49,7 @@ public class TaraCompilerRunner {
 	}
 
 
-	private static void fillFromArgsFile(File argsFile, CompilerConfiguration compilerConfiguration, List<File> srcFiles,
-	                                     String finalOutput) {
+	private static void fillFromArgsFile(File argsFile, CompilerConfiguration compilerConfiguration, List<File> srcFiles) {
 		BufferedReader reader = null;
 		FileInputStream stream;
 		try {
@@ -67,9 +65,11 @@ public class TaraCompilerRunner {
 				if (line.startsWith(TaraRtConstants.ENCODING))
 					compilerConfiguration.setSourceEncoding(reader.readLine());
 				else if (line.startsWith(TaraRtConstants.OUTPUTPATH))
-					compilerConfiguration.setTargetDirectory(reader.readLine());
+					compilerConfiguration.setTempDirectory(reader.readLine());
 				else if (line.startsWith(TaraRtConstants.FINAL_OUTPUTPATH))
-					finalOutput = reader.readLine();
+					compilerConfiguration.setTargetDirectory(reader.readLine());
+				else if (line.startsWith(TaraRtConstants.PROJECT))
+					compilerConfiguration.setProject(reader.readLine());
 				line = reader.readLine();
 			}
 		} catch (IOException e) {
@@ -81,7 +81,7 @@ public class TaraCompilerRunner {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				argsFile.delete();
+				//argsFile.delete();
 			}
 		}
 	}

@@ -1,15 +1,14 @@
 package monet.::projectName::.definitions;
 
 import monet.tara.core.Definition;
-import monet.tara.core.Id;
-import monet.tara.core.Metamodel.HasId;
-import monet.tara.core.Metamodel.Root;
+import monet.tara.core.Metamodel;
+::id|import monet.tara.core.Id;::
 
 ::root::
 
 @definition
 ::doc::
-public ::modifier:: class ::DefinitionName::Definition extends Definition ::implements::{
+public ::modifier|*::class ::DefinitionName::Definition extends Definition ::implements::{
 
     public static final Type TYPE = new Type(Definition.TYPE);
 	::words::
@@ -21,7 +20,6 @@ public ::modifier:: class ::DefinitionName::Definition extends Definition ::impl
     }
 
 	::childrenGetters::
-
 	\@Override
     public Type getType() {
         return TYPE;
@@ -39,7 +37,10 @@ add(new Attribute("::name::", Definition.Attribute.Primitives.::type::));
 @reference
 add(new Reference("::name::", ::type::Definition.TYPE));
 @childGetter
-	public ::childType:: get::childType::::plural|List::() {
-		return getChild::plural|ren::(::childType::.TYPE).toArray(new ::childType::[0]);
+	public ::childType::Definition get::childType::::listSuffix|List::() {
+		return (::childType::Definition) ::childGetter::(::childType::Definition.TYPE)::listCast|*::;
 	}
+
+@multipleCastBlock
+.toArray(new ::childType::Definition[0])
 

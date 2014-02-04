@@ -196,9 +196,9 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 
 	public List<CompilerMessage> getCompilerMessages(String moduleName) {
 		ArrayList<CompilerMessage> messages = new ArrayList<>(compilerMessages);
-		final StringBuffer unparsedBuffer = getStdErr();
-		if (unparsedBuffer.length() != 0) {
-			String msg = unparsedBuffer.toString();
+		final StringBuffer unParsedBuffer = getStdErr();
+		if (unParsedBuffer.length() != 0) {
+			String msg = unParsedBuffer.toString();
 			if (msg.contains(TaraRtConstants.NO_TARA)) {
 				msg = "Cannot compile Tara files: no Tara library is defined for module '" + moduleName + "'";
 			}

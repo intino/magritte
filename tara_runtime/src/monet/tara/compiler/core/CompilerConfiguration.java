@@ -7,13 +7,15 @@ import java.io.Writer;
 public class CompilerConfiguration {
 	private int warningLevel;
 	private String sourceEncoding;
+	private String project;
 	private PrintWriter output;
+	private File tempDirectory;
 	private File targetDirectory;
 	private boolean debug;
 
 	public CompilerConfiguration() {
 		setWarningLevel(1);
-		setTargetDirectory((File) null);
+		setTempDirectory((File) null);
 		setDebug(false);
 		String encoding = null;
 		try {
@@ -62,19 +64,19 @@ public class CompilerConfiguration {
 			this.output = output;
 	}
 
-	public File getTargetDirectory() {
-		return this.targetDirectory;
+	public File getTempDirectory() {
+		return this.tempDirectory;
 	}
 
-	public void setTargetDirectory(String directory) {
+	public void setTempDirectory(File directory) {
+		this.tempDirectory = directory;
+	}
+
+	public void setTempDirectory(String directory) {
 		if ((directory != null) && (directory.length() > 0))
-			this.targetDirectory = new File(directory);
+			this.tempDirectory = new File(directory);
 		else
-			this.targetDirectory = null;
-	}
-
-	public void setTargetDirectory(File directory) {
-		this.targetDirectory = directory;
+			this.tempDirectory = null;
 	}
 
 	public boolean getDebug() {
@@ -85,4 +87,39 @@ public class CompilerConfiguration {
 		this.debug = debug;
 	}
 
+	public File getTargetDirectory() {
+		return targetDirectory;
+	}
+
+	public void setTargetDirectory(File targetDirectory) {
+		this.targetDirectory = targetDirectory;
+	}
+
+	public void setTargetDirectory(String directory) {
+		if ((directory != null) && (directory.length() > 0))
+			this.targetDirectory = new File(directory);
+		else
+			this.tempDirectory = null;
+	}
+
+	public String getProject() {
+		return project;
+	}
+
+	public void setProject(String project) {
+		this.project = project;
+	}
+
+
+	public void cleanTemp() {
+		cleanTemp(tempDirectory);
+	}
+
+	private void cleanTemp(File folder) {
+		File[] files = folder.listFiles();
+		if (files != null)
+			for (File f : files)
+				if (f.isDirectory()) cleanTemp(f);
+				else f.delete();
+	}
 }

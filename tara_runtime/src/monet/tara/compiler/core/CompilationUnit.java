@@ -1,9 +1,10 @@
 package monet.tara.compiler.core;
 
+import monet.tara.compiler.code_generation.ClassGenerator;
 import monet.tara.compiler.core.error_collection.CompilationFailedException;
 import monet.tara.compiler.core.error_collection.ErrorCollector;
+import monet.tara.compiler.core.error_collection.TaraException;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -12,8 +13,8 @@ import java.util.Map;
 public class CompilationUnit extends ProcessingUnit {
 
 	protected Map<String, SourceUnit> sources;
-	private LinkedList[] phaseOperations;
 	protected ProgressCallback progressCallback;
+	private LinkedList[] phaseOperations;
 
 	private SourceUnitOperation parsing = new SourceUnitOperation() {
 		public void call(SourceUnit source) throws CompilationFailedException {
@@ -22,7 +23,7 @@ public class CompilationUnit extends ProcessingUnit {
 	};
 	private ModuleUnitOperation semantic = new ModuleUnitOperation() {
 		public void call(SourceUnit[] source) throws CompilationFailedException {
-			//source.convert();
+			//source.analyze();
 //			CompilationUnit.this.AST.addModule(source.getAST());
 //			if (CompilationUnit.this.progressCallback != null)
 //				CompilationUnit.this.progressCallback.call(source, CompilationUnit.this.phase);
@@ -31,45 +32,74 @@ public class CompilationUnit extends ProcessingUnit {
 
 	private SourceUnitOperation convert = new SourceUnitOperation() {
 		public void call(SourceUnit source) throws CompilationFailedException {
-			source.convert();
-//			CompilationUnit.this.AST.addModule(source.getAST());
-//			if (CompilationUnit.this.progressCallback != null)
-//				CompilationUnit.this.progressCallback.call(source, CompilationUnit.this.phase);
+			try {
+				source.convert();
+			} catch (TaraException ignored) {
+				System.err.print("Error during conversion");
+			}
 		}
 	};
 
+	private SrcToClassOperation classGeneration = new SrcToClassOperation() {
+		@Override
+		public void call() throws CompilationFailedException {
+			ClassGenerator generator = new ClassGenerator(configuration);
+			generator.generate();
+		}
+	};
+
+	private ModuleUnitOperation pluginGenerationOperation = new ModuleUnitOperation() {
+		@Override
+		public void call(SourceUnit[] units) throws CompilationFailedException {
+
+		}
+	};
+
+	private SourceUnitOperation output = new SourceUnitOperation() {
+		public void call(SourceUnit taraClass) throws CompilationFailedException {
+
+		}
+	};
 
 	private SourceUnitOperation mark = new SourceUnitOperation() {
 		public void call(SourceUnit source) throws CompilationFailedException {
 			if (source.phase < CompilationUnit.this.phase)
 				source.gotoPhase(CompilationUnit.this.phase);
-			if ((source.phase == CompilationUnit.this.phase) && (CompilationUnit.this.phaseComplete) && (!source.phaseComplete)) {
+			if ((source.phase == CompilationUnit.this.phase) && (CompilationUnit.this.phaseComplete) && (!source.phaseComplete))
 				source.completePhase();
-			}
-		}
-	};
-
-	private SourceUnitOperation output = new SourceUnitOperation() {
-		public void call(SourceUnit taraclass) throws CompilationFailedException {
-
-
 		}
 	};
 
 	public CompilationUnit(boolean pluginGeneration, CompilerConfiguration configuration, ErrorCollector errorCollector) {
 		super(configuration, errorCollector);
-		this.sources = new HashMap();
-
+		this.sources = new HashMap<>();
 		this.phaseOperations = new LinkedList[10];
 		for (int i = 0; i < this.phaseOperations.length; i++)
 			this.phaseOperations[i] = new LinkedList();
 		addPhaseOperation(parsing, Phases.PARSING);
+		addPhaseOperation(semantic, Phases.SEMANTIC_ANALYSIS);
+		addPhaseOperation(convert, Phases.CONVERSION);
+		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
+		if (pluginGeneration) addPhaseOperation(pluginGenerationOperation, Phases.PLUGIN_GENERATION);
+		addPhaseOperation(output, Phases.OUTPUT);
+
 	}
 
 	public void addPhaseOperation(SourceUnitOperation sourceUnitOperation, int phase) {
 		if ((phase < 0) || (phase > 9)) throw new IllegalArgumentException("phase " + phase + " is unknown");
 		this.phaseOperations[phase].add(sourceUnitOperation);
 	}
+
+	public void addPhaseOperation(ModuleUnitOperation moduleUnitOperation, int phase) {
+		if ((phase < 0) || (phase > 9)) throw new IllegalArgumentException("phase " + phase + " is unknown");
+		this.phaseOperations[phase].add(moduleUnitOperation);
+	}
+
+	public void addPhaseOperation(SrcToClassOperation srcToClassOperation, int phase) {
+		if ((phase < 0) || (phase > 9)) throw new IllegalArgumentException("phase " + phase + " is unknown");
+		this.phaseOperations[phase].add(srcToClassOperation);
+	}
+
 
 	public SourceUnit addSource(SourceUnit source) {
 		String name = source.getName();
@@ -79,26 +109,12 @@ public class CompilationUnit extends ProcessingUnit {
 		return source;
 	}
 
-	public void addSources(String[] paths) {
-		for (String path : paths)
-			addSource(new File(path));
-	}
-
-	public void addSources(File[] files) {
-		for (File file : files)
-			addSource(file);
-	}
-
-	public SourceUnit addSource(File file) {
-		return addSource(new SourceUnit(file, this.configuration, getErrorCollector()));
-	}
-
 
 	public String getPhaseDescription() {
 		return Phases.getDescription(this.phase);
 	}
 
-	public Iterator<SourceUnit> iterator() {
+	public Iterator iterator() {
 		return new Iterator() {
 			Iterator<String> nameIterator = CompilationUnit.this.sources.keySet().iterator();
 
@@ -107,8 +123,8 @@ public class CompilationUnit extends ProcessingUnit {
 			}
 
 			public SourceUnit next() {
-				String name = (String) this.nameIterator.next();
-				return (SourceUnit) CompilationUnit.this.sources.get(name);
+				String name = this.nameIterator.next();
+				return CompilationUnit.this.sources.get(name);
 			}
 
 			public void remove() {
@@ -145,18 +161,17 @@ public class CompilationUnit extends ProcessingUnit {
 	private void doPhaseOperation(Object operation) {
 		if ((operation instanceof SourceUnitOperation))
 			applyToSourceUnits((SourceUnitOperation) operation);
+		if ((operation instanceof SrcToClassOperation))
+			((SrcToClassOperation) operation).call();
 	}
 
 	public void applyToSourceUnits(SourceUnitOperation body) throws CompilationFailedException {
 		SourceUnit source;
 		for (String name : this.sources.keySet()) {
 			source = this.sources.get(name);
-			if ((source.phase < this.phase) || ((source.phase == this.phase) && (!source.phaseComplete)))
-				try {
-					body.call(source);
-				} catch (CompilationFailedException e) {
-					throw e;
-				}
+			if ((source.phase < this.phase) || ((source.phase == this.phase) && (!source.phaseComplete))) {
+				body.call(source);
+			}
 		}
 		getErrorCollector().failIfErrors();
 	}
@@ -170,7 +185,12 @@ public class CompilationUnit extends ProcessingUnit {
 		public abstract void call(SourceUnit unit) throws CompilationFailedException;
 	}
 
+
 	public static abstract class ModuleUnitOperation {
 		public abstract void call(SourceUnit[] units) throws CompilationFailedException;
+	}
+
+	public static abstract class SrcToClassOperation {
+		public abstract void call() throws CompilationFailedException;
 	}
 }

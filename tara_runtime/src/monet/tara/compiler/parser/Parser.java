@@ -15,6 +15,7 @@ import java.io.IOException;
 public class Parser {
 
 	TaraM2Grammar parser;
+	TaraM2Grammar.ConceptDefinitionContext conceptDefinitionContext;
 
 	public Parser(File file) {
 		try {
@@ -29,10 +30,9 @@ public class Parser {
 		}
 	}
 
-	public AST parse() throws SyntaxException {
+	public AST convert() throws SyntaxException {
 		try {
 			AST ast = new AST();
-			TaraM2Grammar.ConceptDefinitionContext conceptDefinitionContext = parser.conceptDefinition();
 			ParseTreeWalker walker = new ParseTreeWalker();
 			TaraASTGeneratorListener extractor = new TaraASTGeneratorListener(ast);
 			walker.walk(extractor, conceptDefinitionContext); // initiate walk of tree with listener
@@ -41,5 +41,9 @@ public class Parser {
 			Token token = ((org.antlr.v4.runtime.Parser) e.getRecognizer()).getCurrentToken();
 			throw new SyntaxException("Syntax error in " + token.getText(), token.getLine(), token.getStartIndex());
 		}
+	}
+
+	public void parse() throws Exception {
+		conceptDefinitionContext = parser.conceptDefinition();
 	}
 }

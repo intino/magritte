@@ -6,6 +6,7 @@ package monet.tara.compiler.rt;
 public class TaraRtConstants {
 	public static final String ENCODING = "encoding";
 	public static final String OUTPUTPATH = "outputpath";
+	public static final String PROJECT = "project";
 	public static final String FINAL_OUTPUTPATH = "final_outputpath";
 	public static final String END = "end";
 	public static final String SRC_FILE = "src_file";

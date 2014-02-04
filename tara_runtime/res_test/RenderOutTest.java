@@ -8,12 +8,12 @@ import monet.tara.core.Metamodel.Root;
 
 public abstract class EntityDefinition extends Definition implements HasCode {
 
-	public static final Type TYPE = new Type(Definition.TYPE);
+    public static final Type TYPE = new Type(Definition.TYPE);
 
-	public EntityDefinition(Id id) {
-		super(id);
+    public EntityDefinition(Id id) {
+        super(id);
 
-	}
+    }
 
 	public Description getDescription() {
 		return getChild(Description.TYPE).toArray(new Description[0]);
@@ -33,81 +33,81 @@ public abstract class EntityDefinition extends Definition implements HasCode {
 
 
 	@Override
-	public Type getType() {
-		return TYPE;
-	}
-
+    public Type getType() {
+        return TYPE;
+    }
+	
 	public class DescriptionDefinition extends Definition implements Optional {
+	
+	    public static final Type TYPE = new Type(Definition.TYPE);
 
-		public static final Type TYPE = new Type(Definition.TYPE);
+	    public DescriptionDefinition() {
+	        super();
+	        add(new Attribute("description", Definition.Attribute.Primitives.String));
 
-		public DescriptionDefinition() {
-			super();
-			add(new Attribute("description", Definition.Attribute.Primitives.String));
+	    }
 
-		}
-
-
+	
 		@Override
-		public Type getType() {
-			return TYPE;
-		}
-
+	    public Type getType() {
+	        return TYPE;
+	    }
+		
 	}
-
+	
 	public class HelpDefinition extends Definition implements Optional {
+	
+	    public static final Type TYPE = new Type(Definition.TYPE);
 
-		public static final Type TYPE = new Type(Definition.TYPE);
+	    public HelpDefinition() {
+	        super();
+	        add(new Attribute("resource", Definition.Attribute.Primitives.String));
 
-		public HelpDefinition() {
-			super();
-			add(new Attribute("resource", Definition.Attribute.Primitives.String));
+	    }
 
-		}
-
-
+	
 		@Override
-		public Type getType() {
-			return TYPE;
-		}
-
+	    public Type getType() {
+	        return TYPE;
+	    }
+		
 	}
-
+	
 	public class OperationDefinition extends Definition {
+	
+	    public static final Type TYPE = new Type(Definition.TYPE);
 
-		public static final Type TYPE = new Type(Definition.TYPE);
+	    public OperationDefinition() {
+	        super();
+	        add(new Attribute("label", Definition.Attribute.Primitives.String));
 
-		public OperationDefinition() {
-			super();
-			add(new Attribute("label", Definition.Attribute.Primitives.String));
+	    }
 
-		}
-
-
+	
 		@Override
-		public Type getType() {
-			return TYPE;
-		}
-
+	    public Type getType() {
+	        return TYPE;
+	    }
+		
 	}
-
+	
 	public abstract class ViewDefinition extends Definition {
+	
+	    public static final Type TYPE = new Type(Definition.TYPE);
 
-		public static final Type TYPE = new Type(Definition.TYPE);
+	    public ViewDefinition() {
+	        super();
 
-		public ViewDefinition() {
-			super();
+	    }
 
-		}
-
-
+	
 		@Override
-		public Type getType() {
-			return TYPE;
-		}
-
+	    public Type getType() {
+	        return TYPE;
+	    }
+		
 	}
-
+	
 }
 
 

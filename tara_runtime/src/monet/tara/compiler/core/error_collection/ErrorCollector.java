@@ -46,16 +46,14 @@ public class ErrorCollector {
 		this.errors.add(message);
 	}
 
-	public void addError(Message message)
-		throws CompilationFailedException {
+	public void addError(Message message) throws CompilationFailedException {
 		addErrorAndContinue(message);
 
 		if (this.errors != null)
 			failIfErrors();
 	}
 
-	public void addError(Message message, boolean fatal)
-		throws CompilationFailedException {
+	public void addError(Message message, boolean fatal) throws CompilationFailedException {
 		if (fatal) {
 			addFatalError(message);
 		} else

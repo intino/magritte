@@ -23,6 +23,12 @@ public class TaraCompiler {
 		this.pluginGeneration = pluginGeneration;
 	}
 
+	private static void addCompiledFiles(CompilationUnit compilationUnit, final List<OutputItem> compiledFiles) throws IOException {
+		File targetDirectory = compilationUnit.getConfiguration().getTempDirectory();
+		final String outputPath = targetDirectory.getCanonicalPath().replace(File.separatorChar, '/');
+		//TODO
+	}
+
 	public List<OutputItem> compile(CompilationUnit unit) {
 		List<OutputItem> compiledFiles = new ArrayList<>();
 		try {
@@ -34,12 +40,6 @@ public class TaraCompiler {
 			processException(e, "");
 		}
 		return compiledFiles;
-	}
-
-	private static void addCompiledFiles(CompilationUnit compilationUnit, final List<OutputItem> compiledFiles) throws IOException {
-		File targetDirectory = compilationUnit.getConfiguration().getTargetDirectory();
-		final String outputPath = targetDirectory.getCanonicalPath().replace(File.separatorChar, '/');
-		//TODO
 	}
 
 	private void processCompilationException(Exception exception) {
