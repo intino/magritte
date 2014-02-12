@@ -16,34 +16,41 @@ public class ClassGenerator {
 
 	public int generate() {
 		Runtime rt = Runtime.getRuntime();
-		StreamWrapper error, output;
-		try {
 
+		try {
 			Process compileProcess = rt.exec(makeCompileCommand(getSourceFiles("java")));
 			if (compileProcess.waitFor() == -1) return -1;
-			//Process jarProcess = rt.exec(makeJarCommand(getSourceFiles("class")));
-			error = StreamWrapper.getStreamWrapper(compileProcess.getErrorStream(), "ERROR");
-			output = StreamWrapper.getStreamWrapper(compileProcess.getInputStream(), "OUTPUT");
-			error.start();
-			output.start();
-			error.join(3000);
-			output.join(3000);
-			System.err.println("Output: " + output.message + "\nError: " + error.message);
-			return compileProcess.waitFor();
+			printResult(compileProcess);
+			Process jarProcess = rt.exec(makeJarCommand(configuration.getProject()), null, getOutPath());
+			printResult(jarProcess);
+			return jarProcess.waitFor();
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 			return -1;
 		}
 	}
 
-	private String makeJarCommand(File[] sourceFiles) {
-		ArrayList<String> cmd = new ArrayList<>();
-		cmd.add(JavaCHelper.getJarExecutable());
+	private void printResult(Process process) throws InterruptedException {
+		StreamWrapper error, output;
+		error = StreamWrapper.getStreamWrapper(process.getErrorStream(), "ERROR");
+		output = StreamWrapper.getStreamWrapper(process.getInputStream(), "OUTPUT");
+		error.start();
+		output.start();
+		error.join(3000);
+		output.join(3000);
+		if (!output.message.equals(""))
+			System.err.println("Output: " + output.message);
+		if (!error.message.equals(""))
+			System.err.println("Error: " + error.message);
+	}
+
+	private String makeJarCommand(String name) {
+		ArrayList<String> cmd = JavaCHelper.buildJarCommandLine(configuration.getTempDirectory().getAbsolutePath(), name, new String[]{});
 		return JavaCHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 
 	private File getTaraCoreFile() {
-		return new File(getClass().getResource(File.separator+"tara_code"+File.separator+"tara_core.jar").getPath());
+		return new File(getClass().getResource(File.separator + "tara_code" + File.separator + "tara_core.jar").getPath());
 	}
 
 	private String makeCompileCommand(File[] sources) {
@@ -59,12 +66,24 @@ public class ClassGenerator {
 		return javaFiles.toArray(new File[javaFiles.size()]);
 	}
 
+	private File[] getClassFiles() {
+		File path = new File(configuration.getTempDirectory() + File.separator + "build" + File.separator);
+		return path.listFiles();
+	}
+
 	private void getSourceFiles(File path, ArrayList<File> javaFiles, String extension) {
 		for (File file : path.listFiles())
 			if (file.isDirectory())
 				getSourceFiles(file, javaFiles, extension);
-			else if (file.getName().endsWith("."+ extension))
+			else if (file.getName().endsWith("." + extension))
 				javaFiles.add(file);
+	}
+
+	public File getOutPath() {
+		String outPath = configuration.getTempDirectory() + File.separator + "out" + File.separator;
+		File file = new File(outPath);
+		file.mkdirs();
+		return file;
 	}
 
 }

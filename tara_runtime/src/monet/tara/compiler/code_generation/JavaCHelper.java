@@ -18,7 +18,9 @@ public class JavaCHelper {
 			Collections.addAll(cmdLine, vmParams);
 		if (sources.length != 0) {
 			ArrayList<String> sourceParam = new ArrayList<>();
-			cmdLine.add("-d " + tempDirectory + File.separator + "build" + File.separator);
+			File buildPath = new File(tempDirectory + File.separator + "build" + File.separator);
+			buildPath.mkdirs();
+			cmdLine.add("-d " + buildPath.getAbsolutePath());
 			cmdLine.add("-classpath");
 			cmdLine.add(join(classpath, File.pathSeparator));
 			for (File source : sources)
@@ -28,23 +30,26 @@ public class JavaCHelper {
 		return cmdLine;
 	}
 
-	public static ArrayList<String> buildJarCommandLine(String tempPath, String[] libraries) {
+	public static ArrayList<String> buildJarCommandLine(String tempPath, String name, String[] libraries) {
 		final ArrayList<String> cmdLine = new ArrayList<>();
 		cmdLine.add(getJarExecutable());
-		cmdLine.add(join(libraries, File.pathSeparator));
-		cmdLine.add(tempPath + "*.class");
-
+		cmdLine.add("cf");
+		cmdLine.add(name + ".jar");
+		cmdLine.add(join(libraries, " "));
+		cmdLine.add("-C");
+		cmdLine.add(tempPath + File.separator + "build" + File.separator);
+		cmdLine.add(".");
 		return cmdLine;
 	}
 
 	public static String getJavacExecutable() {
 		String javaPath = System.getProperty("java.home");
-		return javaPath.substring(0, javaPath.lastIndexOf(File.separator)) + "/bin/javac";
+		return javaPath.substring(0, javaPath.lastIndexOf(File.separator)) + File.separator +"bin"+File.separator+"javac";
 	}
 
 	public static String getJarExecutable() {
 		String javaPath = System.getProperty("java.home");
-		return javaPath.substring(0, javaPath.lastIndexOf(File.separator)) + "/bin/jar";
+		return javaPath.substring(0, javaPath.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator +"jar";
 	}
 
 
