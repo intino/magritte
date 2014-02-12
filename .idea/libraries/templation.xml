@@ -4,8 +4,6 @@
       <root url="jar://$PROJECT_DIR$/tara_runtime/res/templation.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="file://$PROJECT_DIR$/../templation/src" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

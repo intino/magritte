@@ -1,6 +1,5 @@
 package monet.tara.compiler.code_generation;
 
-import com.intellij.openapi.util.text.StringUtil;
 import monet.tara.compiler.core.CompilerConfiguration;
 
 import java.io.File;
@@ -19,44 +18,52 @@ public class ClassGenerator {
 		Runtime rt = Runtime.getRuntime();
 		StreamWrapper error, output;
 		try {
-			Process proccess = rt.exec(makeCommand(getSourceFiles()));
-			error = StreamWrapper.getStreamWrapper(proccess.getErrorStream(), "ERROR");
-			output = StreamWrapper.getStreamWrapper(proccess.getInputStream(), "OUTPUT");
+
+			Process compileProcess = rt.exec(makeCompileCommand(getSourceFiles("java")));
+			if (compileProcess.waitFor() == -1) return -1;
+			//Process jarProcess = rt.exec(makeJarCommand(getSourceFiles("class")));
+			error = StreamWrapper.getStreamWrapper(compileProcess.getErrorStream(), "ERROR");
+			output = StreamWrapper.getStreamWrapper(compileProcess.getInputStream(), "OUTPUT");
 			error.start();
 			output.start();
 			error.join(3000);
 			output.join(3000);
-			System.out.println("Output: " + output.message + "\nError: " + error.message);
-			return proccess.waitFor();
+			System.err.println("Output: " + output.message + "\nError: " + error.message);
+			return compileProcess.waitFor();
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 			return -1;
 		}
 	}
 
+	private String makeJarCommand(File[] sourceFiles) {
+		ArrayList<String> cmd = new ArrayList<>();
+		cmd.add(JavaCHelper.getJarExecutable());
+		return JavaCHelper.join(cmd.toArray(new String[cmd.size()]), " ");
+	}
+
 	private File getTaraCoreFile() {
-		File file = new File(getClass().getResource(File.separator+"tara_code"+File.separator+"tara_core.jar").getPath());
-		return file;
+		return new File(getClass().getResource(File.separator+"tara_code"+File.separator+"tara_core.jar").getPath());
 	}
 
-	private String makeCommand(File[] sources) {
-		ArrayList<String> cmd = JavaCHelper.buildJavaCommandLine(sources, new String[] {getTaraCoreFile().getAbsolutePath()},
+	private String makeCompileCommand(File[] sources) {
+		ArrayList<String> cmd = JavaCHelper.buildJavaCompileCommandLine(sources, new String[]{getTaraCoreFile().getAbsolutePath()},
 			null, configuration.getTempDirectory().getAbsolutePath());
-		return StringUtil.join(cmd, " ");
+		return JavaCHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 
-	private File[] getSourceFiles() {
+	private File[] getSourceFiles(String type) {
 		File path = new File(configuration.getTempDirectory() + File.separator + configuration.getProject());
 		ArrayList<File> javaFiles = new ArrayList<>();
-		getSourceFiles(path, javaFiles);
+		getSourceFiles(path, javaFiles, type);
 		return javaFiles.toArray(new File[javaFiles.size()]);
 	}
 
-	private void getSourceFiles(File path, ArrayList<File> javaFiles) {
+	private void getSourceFiles(File path, ArrayList<File> javaFiles, String extension) {
 		for (File file : path.listFiles())
 			if (file.isDirectory())
-				getSourceFiles(file, javaFiles);
-			else if (file.getName().endsWith(".java"))
+				getSourceFiles(file, javaFiles, extension);
+			else if (file.getName().endsWith("."+ extension))
 				javaFiles.add(file);
 	}
 
