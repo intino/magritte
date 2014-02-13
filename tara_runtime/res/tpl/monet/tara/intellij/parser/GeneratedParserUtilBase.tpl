@@ -304,12 +304,12 @@ public class GeneratedParserUtilBase {
 		}
 		else if (diff < 0) {
 			for (int i=-1; ; i--) {
-				IElementType type = builder_.rawLookup(i);
+				IElementType node = builder_.rawLookup(i);
 				int tokenStart = builder_.rawTokenTypeStart(i);
-				if (((PsiBuilderImpl)((Builder)builder_).getDelegate()).whitespaceOrComment(type)) {
+				if (((PsiBuilderImpl)((Builder)builder_).getDelegate()).whitespaceOrComment(node)) {
 					diff = completionState.offset - tokenStart;
 				}
-				else if (type != null && tokenStart < completionState.offset) {
+				else if (node != null && tokenStart < completionState.offset) {
 					CharSequence fragment = builder_.getOriginalText().subSequence(tokenStart, completionState.offset);
 					if (StringUtil.startsWithIgnoreCase(text, fragment.toString())) {
 						diff = completionState.offset - tokenStart;

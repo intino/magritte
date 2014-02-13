@@ -59,7 +59,7 @@ public class DefinitionRender extends DefaultRender {
 		for (ASTNode.Attribute attribute : node.getAttributes()) {
 			HashMap<String, Object> map = new HashMap<>();
 			map.put("name", attribute.getName());
-			map.put("type", attribute.getType().toUpperCase());
+			map.put("type", attribute.getPrimitiveType().toUpperCase());
 			attributes.append(block("attribute", map));
 		}
 		return attributes.toString();
@@ -67,10 +67,10 @@ public class DefinitionRender extends DefaultRender {
 
 	private String addReferences(ASTNode node) {
 		StringBuilder references = new StringBuilder();
-		for (String reference : node.getReferences().keySet()) {
+		for (ASTNode.Reference reference : node.getReferences()) {
 			HashMap<String, Object> map = new HashMap<>();
-			map.put("type", node.getReferences().get(reference));
-			map.put("name", reference);
+			map.put("type", reference.getNode());
+			map.put("name", reference.getName());
 			references.append(block("reference", map));
 		}
 		return references.toString();
@@ -93,7 +93,7 @@ public class DefinitionRender extends DefaultRender {
 		for (ASTNode child : node.getChildren()) {
 			HashMap<String, Object> map = new HashMap<>();
 			final String childIdentifier =
-				RenderUtils.toProperCase((child.getIdentifier().length() > 0) ? child.getIdentifier() : child.getParent());
+				RenderUtils.toProperCase((child.getIdentifier().length() > 0) ? child.getIdentifier() : child.getExtendFrom());
 			map.put("childGetter", "getChild");
 			if (childIdentifier.contains("[]")) {
 				map.put("listSuffix", "true");

@@ -12,7 +12,7 @@ import com.intellij.psi.TokenType;
 %unicode
 %column
 %function advance
-%type IElementType
+%node IElementType
 
 %{
 

@@ -44,12 +44,12 @@ public class JavaCHelper {
 
 	public static String getJavacExecutable() {
 		String javaPath = System.getProperty("java.home");
-		return javaPath.substring(0, javaPath.lastIndexOf(File.separator)) + File.separator +"bin"+File.separator+"javac";
+		return javaPath.substring(0, javaPath.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator + "javac";
 	}
 
 	public static String getJarExecutable() {
 		String javaPath = System.getProperty("java.home");
-		return javaPath.substring(0, javaPath.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator +"jar";
+		return javaPath.substring(0, javaPath.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator + "jar";
 	}
 
 

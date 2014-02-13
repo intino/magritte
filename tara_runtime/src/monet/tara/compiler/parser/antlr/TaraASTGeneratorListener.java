@@ -21,7 +21,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterConcept(@NotNull ConceptContext ctx) {
-		ASTNode node = new ASTNode(ctx.IDENTIFIER().getText());
+		ASTNode node = new ASTNode(ctx.IDENTIFIER().getText(), null);
 		ast.put(ctx.IDENTIFIER().getText(), node);
 		conceptStack.push(node);
 	}
@@ -31,14 +31,14 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		String identifierName = "";
 		for (TerminalNode identifier : ctx.IDENTIFIER())
 			identifierName += identifier + ".";
-		conceptStack.peek().setParent(identifierName.substring(0, identifierName.length() - 1));
+		conceptStack.peek().setExtendFrom(identifierName.substring(0, identifierName.length() - 1));
 	}
 
 	@Override
 	public void enterComponent(@NotNull ComponentContext ctx) {
 		ASTNode componentNode;
 		if (ctx.IDENTIFIER() != null)
-			componentNode = new ASTNode(ctx.IDENTIFIER().getText());
+			componentNode = new ASTNode(ctx.IDENTIFIER().getText(), conceptStack.peek());
 		else
 			componentNode = new ASTNode();
 		conceptStack.peek().add(componentNode);
@@ -47,9 +47,9 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterFrom(@NotNull FromContext ctx) {
-		ASTNode.SubModel submodel = new ASTNode.SubModel();
-		conceptStack.peek().add(submodel);
-		subModelStack.push(submodel);
+		ASTNode.SubModel subModel = new ASTNode.SubModel();
+		conceptStack.peek().add(subModel);
+		subModelStack.push(subModel);
 	}
 
 	@Override
@@ -62,6 +62,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		ASTNode componentNode = new ASTNode();
 		if (ctx.IDENTIFIER() != null)
 			componentNode.setIdentifier(ctx.IDENTIFIER().getText());
+		componentNode.setParent(conceptStack.peek());
 		subModelStack.peek().add(componentNode);
 		conceptStack.push(componentNode);
 	}
@@ -159,6 +160,6 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		for (int i = 0; i < ctx.IDENTIFIER().size() - 1; i++)
 			parent += ctx.IDENTIFIER(i).getText() + ".";
 		conceptStack.peek().addReference(parent.substring(0, parent.length() - 1) +
-				                                 ((ctx.LIST() != null) ? "[]" : ""), ctx.IDENTIFIER(ctx.IDENTIFIER().size() - 1).getText());
+			((ctx.LIST() != null) ? "[]" : ""), ctx.IDENTIFIER(ctx.IDENTIFIER().size() - 1).getText());
 	}
 }

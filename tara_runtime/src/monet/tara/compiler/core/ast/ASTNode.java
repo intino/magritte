@@ -1,27 +1,26 @@
 package monet.tara.compiler.core.ast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 public class ASTNode {
 
 	private String doc;
 	private boolean abstractModifier;
 	private boolean finalModifier;
-	private String parent;
+	private String extendFrom;
+	private ASTNode parent;
 	private ArrayList<AnnotationType> annotations = new ArrayList<>();
-	private ArrayList<Attribute> attributes = new ArrayList<>();
-	private ArrayList<Word> words = new ArrayList<>();
 	private ArrayList<ASTNode> children = new ArrayList<>();
 	private ArrayList<SubModel> subModels = new ArrayList<>();
-	private HashMap<String, String> references = new HashMap<>();
-
+	private ArrayList<Variable> variables = new ArrayList<>();
 	private String identifier = "";
 
-	public ASTNode(String identifier) {
+	public ASTNode(String identifier, ASTNode parent) {
 		this.identifier = identifier;
 		abstractModifier = false;
 		finalModifier = false;
+		this.parent = parent;
 	}
 
 	public ASTNode() {
@@ -53,27 +52,36 @@ public class ASTNode {
 	}
 
 	public Attribute[] getAttributes() {
-		return attributes.toArray(new Attribute[attributes.size()]);
+		List<Attribute> result = extractElements(variables, Attribute.class);
+		return result.toArray(new Attribute[result.size()]);
 	}
 
 	public AnnotationType[] getAnnotations() {
 		return annotations.toArray(new AnnotationType[annotations.size()]);
 	}
 
-	public HashMap<String, String> getReferences() {
-		return references;
+	public Reference[] getReferences() {
+		List<Reference> result = extractElements(variables, Reference.class);
+		return result.toArray(new Reference[result.size()]);
 	}
 
 	public ASTNode[] getChildren() {
 		return children.toArray(new ASTNode[children.size()]);
 	}
 
-	public String getParent() {
-		return parent;
+	public ASTNode getChildByName(String name) {
+		for (ASTNode child : getChildren())
+			if (child.getIdentifier().equals(name))
+				return child;
+		return null;
 	}
 
-	public void setParent(String parent) {
-		this.parent = parent;
+	public String getExtendFrom() {
+		return extendFrom;
+	}
+
+	public void setExtendFrom(String extendFrom) {
+		this.extendFrom = extendFrom;
 	}
 
 	public String getDoc() {
@@ -89,7 +97,8 @@ public class ASTNode {
 	}
 
 	public Word[] getWords() {
-		return words.toArray(new Word[words.size()]);
+		List<Word> result = extractElements(variables, Word.class);
+		return result.toArray(new Word[result.size()]);
 	}
 
 	public boolean isFinal() {
@@ -115,11 +124,11 @@ public class ASTNode {
 	}
 
 	public void add(Attribute attribute) {
-		attributes.add(attribute);
+		variables.add(attribute);
 	}
 
 	public void add(Word word) {
-		words.add(word);
+		variables.add(word);
 	}
 
 	public void add(ASTNode child) {
@@ -131,29 +140,64 @@ public class ASTNode {
 	}
 
 	public void addReference(String type, String identifier) {
-		references.put(identifier, type);
+		variables.add(new Reference(type, identifier));
+	}
+
+	private <T> List<T> extractElements(List items, Class<T> type) {
+		List<T> result = new ArrayList<>();
+		for (Object e : items)
+			if (type.isAssignableFrom(e.getClass()))
+				result.add((T) e);
+		return result;
+	}
+
+	public void setParent(ASTNode parent) {
+		this.parent = parent;
+	}
+
+	public String getAbsolutePath() {
+		return (parent != null) ? parent.getAbsolutePath() + "." + getIdentifier() : getIdentifier();
 	}
 
 	public enum AnnotationType {
-		Extensible, HasCode, Root, Singleton, Multiple, Optional
+		Extensible, HasCode, Root, Singleton, Multiple, Optional;
 	}
 
-	public static class Attribute {
-		String type;
+	public static class Attribute extends Variable {
+		String primitiveType;
 		String name;
 
 		public Attribute(String type, String name) {
-			this.type = type;
+			this.primitiveType = type;
 			this.name = name;
 		}
 
-		public String getType() {
-			return type;
+		public String getPrimitiveType() {
+			return primitiveType;
 		}
 
 		public String getName() {
 			return name;
 		}
+	}
+
+	public static class Reference extends Variable {
+		String node;
+		String name;
+
+		public Reference(String node, String name) {
+			this.node = node;
+			this.name = name;
+		}
+
+		public String getNode() {
+			return node;
+		}
+
+		public String getName() {
+			return name;
+		}
+
 	}
 
 	public static class SubModel {
@@ -182,7 +226,7 @@ public class ASTNode {
 		}
 	}
 
-	public static class Word {
+	public static class Word extends Variable {
 		ArrayList<String> wordTypes;
 		private String identifier;
 
@@ -204,4 +248,6 @@ public class ASTNode {
 		}
 	}
 
+	private static class Variable {
+	}
 }

@@ -88,7 +88,6 @@
     <lang.findUsagesProvider language="Tara"
                              implementationClass="monet.tara.compiler.intellij.metamodel.TaraFindUsagesProvider"/>
     <lang.foldingBuilder language="Tara" implementationClass="monet.tara.compiler.intellij.TaraFoldingBuilder"/>
-    <!--<lang.psiStructureViewFactory language="Tara" implementationClass="TaraStructureViewFactory"/>-->
     <!--<lang.formatter language="Tara" implementationClass="TaraFormattingModelBuilder"/>-->
   </extensions>
 </idea-plugin>

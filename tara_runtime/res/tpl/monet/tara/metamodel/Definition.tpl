@@ -33,9 +33,9 @@ public enum ::name:: {
 @submodel
 
 @attribute
-add(new Attribute("::name::", Definition.Attribute.Primitives.::type::));
+add(new Attribute("::name::", Definition.Attribute.Primitives.::node::));
 @reference
-add(new Reference("::name::", ::type::Definition.TYPE));
+add(new Reference("::name::", ::node::Definition.TYPE));
 @childGetter
 	public ::childType::Definition get::childType::::listSuffix|List::() {
 		return (::childType::Definition) ::childGetter::(::childType::Definition.TYPE)::listCast|*::;

@@ -1,12 +1,11 @@
 package monet.goros.definitions;
 
 import monet.tara.core.Definition;
+import monet.tara.core.Metamodel;
 import monet.tara.core.Id;
-import monet.tara.core.Metamodel.HasId;
-import monet.tara.core.Metamodel.Root;
 
 
-public abstract class EntityDefinition extends Definition implements HasCode {
+public abstract class EntityDefinition extends Definition implements Metamodel.HasCode {
 
     public static final Type TYPE = new Type(Definition.TYPE);
 
@@ -15,39 +14,37 @@ public abstract class EntityDefinition extends Definition implements HasCode {
 
     }
 
-	public Description getDescription() {
-		return getChild(Description.TYPE).toArray(new Description[0]);
+	public DescriptionDefinition getDescription() {
+		return (DescriptionDefinition) getChild(DescriptionDefinition.TYPE);
 	}
 
-	public Help getHelp() {
-		return getChild(Help.TYPE).toArray(new Help[0]);
+	public HelpDefinition getHelp() {
+		return (HelpDefinition) getChild(HelpDefinition.TYPE);
 	}
 
-	public Operation getOperation() {
-		return getChild(Operation.TYPE).toArray(new Operation[0]);
+	public OperationDefinition getOperation() {
+		return (OperationDefinition) getChild(OperationDefinition.TYPE);
 	}
 
-	public View getView() {
-		return getChild(View.TYPE).toArray(new View[0]);
+	public ViewDefinition getView() {
+		return (ViewDefinition) getChild(ViewDefinition.TYPE);
 	}
-
 
 	@Override
     public Type getType() {
         return TYPE;
     }
 	
-	public class DescriptionDefinition extends Definition implements Optional {
+	public static class DescriptionDefinition extends Definition implements Metamodel.Optional {
 	
 	    public static final Type TYPE = new Type(Definition.TYPE);
 
 	    public DescriptionDefinition() {
 	        super();
-	        add(new Attribute("description", Definition.Attribute.Primitives.String));
+	        add(new Attribute("description", Definition.Attribute.Primitives.));
 
 	    }
 
-	
 		@Override
 	    public Type getType() {
 	        return TYPE;
@@ -55,17 +52,16 @@ public abstract class EntityDefinition extends Definition implements HasCode {
 		
 	}
 	
-	public class HelpDefinition extends Definition implements Optional {
+	public static class HelpDefinition extends Definition implements Metamodel.Optional {
 	
 	    public static final Type TYPE = new Type(Definition.TYPE);
 
 	    public HelpDefinition() {
 	        super();
-	        add(new Attribute("resource", Definition.Attribute.Primitives.String));
+	        add(new Attribute("resource", Definition.Attribute.Primitives.));
 
 	    }
 
-	
 		@Override
 	    public Type getType() {
 	        return TYPE;
@@ -73,17 +69,16 @@ public abstract class EntityDefinition extends Definition implements HasCode {
 		
 	}
 	
-	public class OperationDefinition extends Definition {
+	public static class OperationDefinition extends Definition {
 	
 	    public static final Type TYPE = new Type(Definition.TYPE);
 
 	    public OperationDefinition() {
 	        super();
-	        add(new Attribute("label", Definition.Attribute.Primitives.String));
+	        add(new Attribute("label", Definition.Attribute.Primitives.));
 
 	    }
 
-	
 		@Override
 	    public Type getType() {
 	        return TYPE;
@@ -91,7 +86,7 @@ public abstract class EntityDefinition extends Definition implements HasCode {
 		
 	}
 	
-	public abstract class ViewDefinition extends Definition {
+	public static abstract class ViewDefinition extends Definition {
 	
 	    public static final Type TYPE = new Type(Definition.TYPE);
 
@@ -100,7 +95,6 @@ public abstract class EntityDefinition extends Definition implements HasCode {
 
 	    }
 
-	
 		@Override
 	    public Type getType() {
 	        return TYPE;
