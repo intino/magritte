@@ -10,21 +10,15 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.compiler.intellij.psi.TaraTypes.*;
 import monet.tara.compiler.intellij.psi.*;
 
-public class TaraConceptImpl extends TaraConceptMixin implements TaraConcept {
+public class TaraFromComponentImpl extends TaraFromComponentMixin implements TaraFromComponent {
 
-  public TaraConceptImpl(ASTNode node) {
+  public TaraFromComponentImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitConcept(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitFromComponent(this);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public TaraConceptAnnotations getConceptAnnotations() {
-    return findChildByClass(TaraConceptAnnotations.class);
   }
 
   @Override
@@ -34,9 +28,9 @@ public class TaraConceptImpl extends TaraConceptMixin implements TaraConcept {
   }
 
   @Override
-  @NotNull
+  @Nullable
   public TaraConceptSignature getConceptSignature() {
-    return findNotNullChildByClass(TaraConceptSignature.class);
+    return findChildByClass(TaraConceptSignature.class);
   }
 
   @Override
@@ -45,12 +39,20 @@ public class TaraConceptImpl extends TaraConceptMixin implements TaraConcept {
     return findChildByClass(TaraDoc.class);
   }
 
-  public String getIdentifier() {
-    return TaraPsiImplUtil.getIdentifier(this);
+  @Override
+  @Nullable
+  public TaraExtendedConcept getExtendedConcept() {
+    return findChildByClass(TaraExtendedConcept.class);
   }
 
-  public PsiElement getIdentifierNode() {
-    return TaraPsiImplUtil.getIdentifierNode(this);
+  @Override
+  @Nullable
+  public TaraFromConceptAnnotations getFromConceptAnnotations() {
+    return findChildByClass(TaraFromConceptAnnotations.class);
+  }
+
+  public String getIdentifier() {
+    return TaraPsiImplUtil.getIdentifier(this);
   }
 
 }

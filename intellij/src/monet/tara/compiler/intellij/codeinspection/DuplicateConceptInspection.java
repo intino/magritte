@@ -25,6 +25,7 @@ import com.intellij.util.text.CharArrayUtil;
 import gnu.trove.THashSet;
 import monet.tara.compiler.intellij.metamodel.TaraBundle;
 import monet.tara.compiler.intellij.metamodel.file.TaraFile;
+import monet.tara.compiler.intellij.psi.IConcept;
 import monet.tara.compiler.intellij.psi.TaraConcept;
 import monet.tara.compiler.intellij.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
@@ -190,8 +191,8 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 			for (PsiFile file : psiFilesWithDuplicates) {
 				if (!(file instanceof TaraFile)) continue;
 				TaraFile taraFile = (TaraFile) file;
-				final List<TaraConcept> propertiesByKey = TaraUtil.findConcept(taraFile.getProject(), key);
-				for (TaraConcept concept : propertiesByKey) {
+				final List<IConcept> conceptsByName = TaraUtil.findConcept(taraFile.getProject(), key);
+				for (IConcept concept : conceptsByName) {
 					if (duplicatesCount == 0)
 						message.append(InspectionsBundle.message("duplicate.property.key.problem.descriptor", key));
 					surroundWithHref(message, concept.getFirstChild(), false);

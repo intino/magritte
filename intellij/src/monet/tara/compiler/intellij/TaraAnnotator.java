@@ -21,6 +21,7 @@ import com.intellij.psi.tree.IElementType;
 import monet.tara.compiler.intellij.codeinspection.fix.RemoveConceptFix;
 import monet.tara.compiler.intellij.metamodel.TaraBundle;
 import monet.tara.compiler.intellij.metamodel.TaraSyntaxHighlighter;
+import monet.tara.compiler.intellij.psi.IConcept;
 import monet.tara.compiler.intellij.psi.TaraConcept;
 import monet.tara.compiler.intellij.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
@@ -33,8 +34,8 @@ public class TaraAnnotator implements Annotator {
 	public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
 		if (element instanceof TaraConcept) {
 			final TaraConcept concept = (TaraConcept) element;
-			List<TaraConcept> others = TaraUtil.findConcept(concept.getProject(), concept.getNameIdentifier().getText());
-			ASTNode identifierNode = concept.getNameIdentifier().getNode();
+			List<IConcept> others = TaraUtil.findConcept(concept.getProject(), concept.getIdentifierNode().getText());
+			ASTNode identifierNode = concept.getIdentifierNode().getNode();
 			if (others.size() != 1) {
 				Annotation annotation = holder.createErrorAnnotation(identifierNode, TaraBundle.message("duplicate.concept.key.error.message"));
 				annotation.registerFix(new RemoveConceptFix(concept));

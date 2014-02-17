@@ -58,7 +58,10 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 		keys1.put(TaraTypes.OPTIONAL, OPERATOR);
 		keys1.put(TaraTypes.MULTIPLE, OPERATOR);
 
-		keys1.put(TaraTypes.ANNOTATION, ANNOTATION);
+		keys1.put(TaraTypes.EXTENSIBLE, ANNOTATION);
+		keys1.put(TaraTypes.HAS_CODE, ANNOTATION);
+		keys1.put(TaraTypes.SINGLETON, ANNOTATION);
+		keys1.put(TaraTypes.ROOT, ANNOTATION);
 
 		keys1.put(TaraTypes.ASSIGN, OPERATOR);
 		keys1.put(TaraTypes.LEFT_BRACKET, OPERATOR);

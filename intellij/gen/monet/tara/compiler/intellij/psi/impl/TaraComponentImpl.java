@@ -10,21 +10,21 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.compiler.intellij.psi.TaraTypes.*;
 import monet.tara.compiler.intellij.psi.*;
 
-public class TaraConceptImpl extends TaraConceptMixin implements TaraConcept {
+public class TaraComponentImpl extends TaraComponentMixin implements TaraComponent {
 
-  public TaraConceptImpl(ASTNode node) {
+  public TaraComponentImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitConcept(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitComponent(this);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
-  public TaraConceptAnnotations getConceptAnnotations() {
-    return findChildByClass(TaraConceptAnnotations.class);
+  public TaraComponentAnnotations getComponentAnnotations() {
+    return findChildByClass(TaraComponentAnnotations.class);
   }
 
   @Override
@@ -47,10 +47,6 @@ public class TaraConceptImpl extends TaraConceptMixin implements TaraConcept {
 
   public String getIdentifier() {
     return TaraPsiImplUtil.getIdentifier(this);
-  }
-
-  public PsiElement getIdentifierNode() {
-    return TaraPsiImplUtil.getIdentifierNode(this);
   }
 
 }

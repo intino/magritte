@@ -8,23 +8,26 @@ import monet.tara.compiler.intellij.psi.impl.*;
 
 public interface TaraTypes {
 
-  IElementType ANNOTATION = new TaraElementType("ANNOTATION");
   IElementType ATTRIBUTE = new TaraElementType("ATTRIBUTE");
   IElementType ATTRIBUTE_LIST = new TaraElementType("ATTRIBUTE_LIST");
   IElementType BOOLEAN_ASSIGN = new TaraElementType("BOOLEAN_ASSIGN");
   IElementType BOOLEAN_LIST_ASSIGN = new TaraElementType("BOOLEAN_LIST_ASSIGN");
-  IElementType CHILD = new TaraElementType("CHILD");
-  IElementType CHILD_ANNOTATION = new TaraElementType("CHILD_ANNOTATION");
+  IElementType COMPONENT = new TaraElementType("COMPONENT");
+  IElementType COMPONENT_ANNOTATIONS = new TaraElementType("COMPONENT_ANNOTATIONS");
   IElementType CONCEPT = new TaraElementType("CONCEPT");
-  IElementType CONCEPT_ANNOTATION = new TaraElementType("CONCEPT_ANNOTATION");
+  IElementType CONCEPT_ANNOTATIONS = new TaraElementType("CONCEPT_ANNOTATIONS");
   IElementType CONCEPT_BODY = new TaraElementType("CONCEPT_BODY");
   IElementType CONCEPT_CONSTITUENTS = new TaraElementType("CONCEPT_CONSTITUENTS");
   IElementType CONCEPT_SIGNATURE = new TaraElementType("CONCEPT_SIGNATURE");
   IElementType DOC = new TaraElementType("DOC");
   IElementType DOUBLE_ASSIGN = new TaraElementType("DOUBLE_ASSIGN");
   IElementType DOUBLE_LIST_ASSIGN = new TaraElementType("DOUBLE_LIST_ASSIGN");
+  IElementType EXTENDED_CONCEPT = new TaraElementType("EXTENDED_CONCEPT");
   IElementType FROM = new TaraElementType("FROM");
+  IElementType FROM_ANNOTATIONS = new TaraElementType("FROM_ANNOTATIONS");
   IElementType FROM_BODY = new TaraElementType("FROM_BODY");
+  IElementType FROM_COMPONENT = new TaraElementType("FROM_COMPONENT");
+  IElementType FROM_CONCEPT_ANNOTATIONS = new TaraElementType("FROM_CONCEPT_ANNOTATIONS");
   IElementType IDENTIFIER = new TaraElementType("IDENTIFIER");
   IElementType INTEGER_ASSIGN = new TaraElementType("INTEGER_ASSIGN");
   IElementType INTEGER_LIST_ASSIGN = new TaraElementType("INTEGER_LIST_ASSIGN");
@@ -32,8 +35,6 @@ public interface TaraTypes {
   IElementType MODIFIER = new TaraElementType("MODIFIER");
   IElementType NATURAL_ASSIGN = new TaraElementType("NATURAL_ASSIGN");
   IElementType NATURAL_LIST_ASSIGN = new TaraElementType("NATURAL_LIST_ASSIGN");
-  IElementType RANGE = new TaraElementType("RANGE");
-  IElementType RANGE_ANNOTATION = new TaraElementType("RANGE_ANNOTATION");
   IElementType REFERENCE_STATEMENT = new TaraElementType("REFERENCE_STATEMENT");
   IElementType REFERENCE_STATEMENT_LIST = new TaraElementType("REFERENCE_STATEMENT_LIST");
   IElementType STRING_ASSIGN = new TaraElementType("STRING_ASSIGN");
@@ -69,6 +70,8 @@ public interface TaraTypes {
   IElementType OPEN_AN = new TaraTokenType("OPEN_AN");
   IElementType OPTIONAL = new TaraTokenType("OPTIONAL");
   IElementType RIGHT_BRACKET = new TaraTokenType("RIGHT_BRACKET");
+  IElementType ROOT = new TaraTokenType("ROOT");
+  IElementType SINGLETON = new TaraTokenType("SINGLETON");
   IElementType STRING_TYPE = new TaraTokenType("STRING_TYPE");
   IElementType STRING_VALUE = new TaraTokenType("STRING_VALUE");
   IElementType UID_TYPE = new TaraTokenType("UID_TYPE");
@@ -78,10 +81,7 @@ public interface TaraTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == ANNOTATION) {
-        return new TaraAnnotationImpl(node);
-      }
-      else if (type == ATTRIBUTE) {
+       if (type == ATTRIBUTE) {
         return new TaraAttributeImpl(node);
       }
       else if (type == ATTRIBUTE_LIST) {
@@ -93,17 +93,17 @@ public interface TaraTypes {
       else if (type == BOOLEAN_LIST_ASSIGN) {
         return new TaraBooleanListAssignImpl(node);
       }
-      else if (type == CHILD) {
-        return new TaraChildImpl(node);
+      else if (type == COMPONENT) {
+        return new TaraComponentImpl(node);
       }
-      else if (type == CHILD_ANNOTATION) {
-        return new TaraChildAnnotationImpl(node);
+      else if (type == COMPONENT_ANNOTATIONS) {
+        return new TaraComponentAnnotationsImpl(node);
       }
       else if (type == CONCEPT) {
         return new TaraConceptImpl(node);
       }
-      else if (type == CONCEPT_ANNOTATION) {
-        return new TaraConceptAnnotationImpl(node);
+      else if (type == CONCEPT_ANNOTATIONS) {
+        return new TaraConceptAnnotationsImpl(node);
       }
       else if (type == CONCEPT_BODY) {
         return new TaraConceptBodyImpl(node);
@@ -123,11 +123,23 @@ public interface TaraTypes {
       else if (type == DOUBLE_LIST_ASSIGN) {
         return new TaraDoubleListAssignImpl(node);
       }
+      else if (type == EXTENDED_CONCEPT) {
+        return new TaraExtendedConceptImpl(node);
+      }
       else if (type == FROM) {
         return new TaraFromImpl(node);
       }
+      else if (type == FROM_ANNOTATIONS) {
+        return new TaraFromAnnotationsImpl(node);
+      }
       else if (type == FROM_BODY) {
         return new TaraFromBodyImpl(node);
+      }
+      else if (type == FROM_COMPONENT) {
+        return new TaraFromComponentImpl(node);
+      }
+      else if (type == FROM_CONCEPT_ANNOTATIONS) {
+        return new TaraFromConceptAnnotationsImpl(node);
       }
       else if (type == IDENTIFIER) {
         return new TaraIdentifierImpl(node);
@@ -149,12 +161,6 @@ public interface TaraTypes {
       }
       else if (type == NATURAL_LIST_ASSIGN) {
         return new TaraNaturalListAssignImpl(node);
-      }
-      else if (type == RANGE) {
-        return new TaraRangeImpl(node);
-      }
-      else if (type == RANGE_ANNOTATION) {
-        return new TaraRangeAnnotationImpl(node);
       }
       else if (type == REFERENCE_STATEMENT) {
         return new TaraReferenceStatementImpl(node);

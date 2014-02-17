@@ -7,10 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public class TaraVisitor extends PsiElementVisitor {
 
-  public void visitAnnotation(@NotNull TaraAnnotation o) {
-    visitPsiElement(o);
-  }
-
   public void visitAttribute(@NotNull TaraAttribute o) {
     visitPsiElement(o);
   }
@@ -27,19 +23,19 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitChild(@NotNull TaraChild o) {
-    visitPsiElement(o);
+  public void visitComponent(@NotNull TaraComponent o) {
+    visitIConcept(o);
   }
 
-  public void visitChildAnnotation(@NotNull TaraChildAnnotation o) {
+  public void visitComponentAnnotations(@NotNull TaraComponentAnnotations o) {
     visitPsiElement(o);
   }
 
   public void visitConcept(@NotNull TaraConcept o) {
-    visitNamedElement(o);
+    visitIConcept(o);
   }
 
-  public void visitConceptAnnotation(@NotNull TaraConceptAnnotation o) {
+  public void visitConceptAnnotations(@NotNull TaraConceptAnnotations o) {
     visitPsiElement(o);
   }
 
@@ -67,11 +63,27 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitExtendedConcept(@NotNull TaraExtendedConcept o) {
+    visitPsiElement(o);
+  }
+
   public void visitFrom(@NotNull TaraFrom o) {
     visitPsiElement(o);
   }
 
+  public void visitFromAnnotations(@NotNull TaraFromAnnotations o) {
+    visitPsiElement(o);
+  }
+
   public void visitFromBody(@NotNull TaraFromBody o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFromComponent(@NotNull TaraFromComponent o) {
+    visitIConcept(o);
+  }
+
+  public void visitFromConceptAnnotations(@NotNull TaraFromConceptAnnotations o) {
     visitPsiElement(o);
   }
 
@@ -103,14 +115,6 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitRange(@NotNull TaraRange o) {
-    visitPsiElement(o);
-  }
-
-  public void visitRangeAnnotation(@NotNull TaraRangeAnnotation o) {
-    visitPsiElement(o);
-  }
-
   public void visitReferenceStatement(@NotNull TaraReferenceStatement o) {
     visitPsiElement(o);
   }
@@ -131,8 +135,8 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitNamedElement(@NotNull TaraNamedElement o) {
-    visitPsiElement(o);
+  public void visitIConcept(@NotNull IConcept o) {
+    visitElement(o);
   }
 
   public void visitPsiElement(@NotNull PsiElement o) {

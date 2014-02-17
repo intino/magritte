@@ -5,22 +5,23 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraConcept extends IConcept {
-
-  @Nullable
-  TaraConceptAnnotations getConceptAnnotations();
+public interface TaraFromComponent extends IConcept {
 
   @Nullable
   TaraConceptBody getConceptBody();
 
-  @NotNull
+  @Nullable
   TaraConceptSignature getConceptSignature();
 
   @Nullable
   TaraDoc getDoc();
 
-  String getIdentifier();
+  @Nullable
+  TaraExtendedConcept getExtendedConcept();
 
-  PsiElement getIdentifierNode();
+  @Nullable
+  TaraFromConceptAnnotations getFromConceptAnnotations();
+
+  String getIdentifier();
 
 }

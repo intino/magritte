@@ -2,24 +2,30 @@ parser grammar TaraM2Grammar;
 options { tokenVocab=TaraM2Lexer; }
 
 @header{
-    package m2LexerGrammar;
+    package AntlrM2;
 }
 
-conceptDefinition: (concept* NEWLINE? | NEWLINE*) EOF;
+root: (concept | NEWLINE)* EOF;
 
 extendedConcept: IDENTIFIER (DOT IDENTIFIER)*;
 
-concept: doc? (CONCEPT| extendedConcept) modifier? AS IDENTIFIER conceptAnnotations? NEWLINE conceptBody?;
+concept: doc? (CONCEPT| extendedConcept) modifier? AS IDENTIFIER conceptAnnotations? conceptBody?;
 
-conceptBody: INDENT conceptConstituent+ DEDENT;
-conceptConstituent: word
-                   | attribute NEWLINE
-                   | reference NEWLINE
-                   | from
-                   | component;
+conceptBody: NEWLINE INDENT (conceptConstituent NEWLINE+)+ DEDENT;
+conceptConstituent: attribute
+                  | reference
+                  | word
+                  | from
+                  | component;
 
-component: doc? (CONCEPT| extendedConcept) modifier? AS IDENTIFIER componentAnnotations? NEWLINE conceptBody?
-         | extendedConcept componentAnnotations? NEWLINE;
+component: doc? (CONCEPT| extendedConcept) modifier? AS IDENTIFIER componentAnnotations? conceptBody?
+         | extendedConcept componentAnnotations?;
+
+from: FROM fromAnnotations? fromBody;
+fromBody: NEWLINE INDENT (fromComponent NEWLINE+)+ DEDENT;
+
+fromComponent: doc? (CONCEPT| extendedConcept) modifier? AS IDENTIFIER fromConceptAnnotations? conceptBody?
+             | extendedConcept fromConceptAnnotations?;
 
 attribute: VAR     UID_TYPE IDENTIFIER stringAssign?
          | VAR     INT_TYPE (IDENTIFIER integerAssign? | LIST IDENTIFIER integerListAssign?)
@@ -28,33 +34,27 @@ attribute: VAR     UID_TYPE IDENTIFIER stringAssign?
          | VAR BOOLEAN_TYPE (IDENTIFIER booleanAssign? | LIST IDENTIFIER booleanListAssign?)
          | VAR  STRING_TYPE (IDENTIFIER stringAssign?  | LIST IDENTIFIER stringListAssign?);
 
-word: VAR WORD IDENTIFIER NEWLINE INDENT (IDENTIFIER NEWLINE)+ DEDENT;
-
 reference: VAR IDENTIFIER (DOT IDENTIFIER)* IDENTIFIER
          | VAR IDENTIFIER (DOT IDENTIFIER)* LIST IDENTIFIER;
 
-stringAssign   : ASSIGN STRING_VALUE;
-booleanAssign  : ASSIGN BOOLEAN_VALUE;
-integerAssign  : ASSIGN (POSITIVE_VALUE | NEGATIVE_VALUE);
-doubleAssign   : ASSIGN (POSITIVE_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE);
-naturalAssign  : ASSIGN POSITIVE_VALUE;
+word: VAR WORD IDENTIFIER NEWLINE INDENT (IDENTIFIER NEWLINE)+ DEDENT;
 
-stringListAssign   : ASSIGN LEFT_BRACKET STRING_VALUE+ RIGHT_BRACKET;
-booleanListAssign  : ASSIGN LEFT_BRACKET BOOLEAN_VALUE+ RIGHT_BRACKET;
-integerListAssign  : ASSIGN LEFT_BRACKET (POSITIVE_VALUE | NEGATIVE_VALUE)+ RIGHT_BRACKET;
-doubleListAssign   : ASSIGN LEFT_BRACKET (POSITIVE_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE)+ RIGHT_BRACKET;
-naturalListAssign  : ASSIGN LEFT_BRACKET POSITIVE_VALUE+ RIGHT_BRACKET;
+stringAssign : ASSIGN STRING_VALUE;
+booleanAssign: ASSIGN BOOLEAN_VALUE;
+integerAssign: ASSIGN (POSITIVE_VALUE | NEGATIVE_VALUE);
+doubleAssign : ASSIGN (POSITIVE_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE);
+naturalAssign: ASSIGN POSITIVE_VALUE;
 
-from: FROM fromAnnotations? NEWLINE fromBody;
-fromBody:  INDENT fromComponent+ DEDENT;
+stringListAssign : ASSIGN LEFT_BRACKET STRING_VALUE+ RIGHT_BRACKET;
+booleanListAssign: ASSIGN LEFT_BRACKET BOOLEAN_VALUE+ RIGHT_BRACKET;
+integerListAssign: ASSIGN LEFT_BRACKET (POSITIVE_VALUE | NEGATIVE_VALUE)+ RIGHT_BRACKET;
+doubleListAssign : ASSIGN LEFT_BRACKET (POSITIVE_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE)+ RIGHT_BRACKET;
+naturalListAssign: ASSIGN LEFT_BRACKET POSITIVE_VALUE+ RIGHT_BRACKET;
 
-fromComponent: doc? (CONCEPT| extendedConcept) modifier? AS IDENTIFIER fromConceptAnnotations? NEWLINE conceptBody?
-             | extendedConcept fromConceptAnnotations? NEWLINE;
-
-fromConceptAnnotations : OPEN_AN (HAS_CODE | EXTENSIBLE | SINGLETON)+ CLOSE_AN;
-conceptAnnotations      : OPEN_AN (ROOT | HAS_CODE | EXTENSIBLE | SINGLETON)+ CLOSE_AN;
-componentAnnotations    : OPEN_AN (MULTIPLE | OPTIONAL | HAS_CODE | EXTENSIBLE| SINGLETON)+ CLOSE_AN;
-fromAnnotations         : OPEN_AN (OPTIONAL | MULTIPLE)+ CLOSE_AN;
+conceptAnnotations    : OPEN_AN ( ROOT | HAS_CODE | EXTENSIBLE | SINGLETON )+ CLOSE_AN;
+componentAnnotations  : OPEN_AN ( MULTIPLE | OPTIONAL | HAS_CODE | EXTENSIBLE| SINGLETON )+ CLOSE_AN;
+fromAnnotations       : OPEN_AN ( OPTIONAL | MULTIPLE )+ CLOSE_AN;
+fromConceptAnnotations: OPEN_AN ( HAS_CODE | EXTENSIBLE | SINGLETON )+ CLOSE_AN;
 
 modifier: ABSTRACT
         | FINAL;

@@ -4,8 +4,8 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.SuggestedNameInfo;
 import com.intellij.refactoring.rename.NameSuggestionProvider;
+import monet.tara.compiler.intellij.psi.IConcept;
 import monet.tara.compiler.intellij.psi.TaraIdentifier;
-import monet.tara.compiler.intellij.psi.TaraNamedElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,8 +19,8 @@ public class TaraNameSuggestionProvider implements NameSuggestionProvider {
 	@Nullable
 	@Override
 	public SuggestedNameInfo getSuggestedNames(PsiElement element, @Nullable PsiElement nameSuggestionContext, Set<String> result) {
-		if (!(element instanceof TaraNamedElement)) return null;
-		final String name = ((TaraNamedElement) element).getName();
+		if (!(element instanceof IConcept)) return null;
+		final String name = ((IConcept) element).getName();
 		if (name == null) return null;
 		if (element instanceof TaraIdentifier)
 			result.add(toCamelCase(name, true));

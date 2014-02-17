@@ -59,7 +59,8 @@
                     serviceImplementation="monet.tara.compiler.intellij.compiler.TaraCompilerConfiguration"/>
     <configurationType implementation="monet.tara.compiler.intellij.project.runner.TaraRunConfigurationType"/>
     <lang.commenter language="Tara" implementationClass="monet.tara.compiler.intellij.TaraCommenter"/>
-
+    <lang.documentationProvider language="Tara"
+                                implementationClass="monet.tara.compiler.intellij.documentation.TaraDocumentationProvider"/>
     <fileTemplateGroup implementation="monet.tara.compiler.intellij.project.TaraTemplatesFactory"/>
     <fileTypeFactory implementation="monet.tara.compiler.intellij.metamodel.file.TaraFileTypeFactory"/>
     <lang.parserDefinition language="Tara"

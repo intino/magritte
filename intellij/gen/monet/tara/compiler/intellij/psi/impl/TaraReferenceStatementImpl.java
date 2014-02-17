@@ -1,9 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.compiler.intellij.psi.impl;
 
+import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static monet.tara.compiler.intellij.psi.TaraTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import monet.tara.compiler.intellij.psi.*;
 
@@ -20,8 +24,8 @@ public class TaraReferenceStatementImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @NotNull
-  public TaraIdentifier getIdentifier() {
-    return findNotNullChildByClass(TaraIdentifier.class);
+  public TaraExtendedConcept getExtendedConcept() {
+    return findNotNullChildByClass(TaraExtendedConcept.class);
   }
 
 }

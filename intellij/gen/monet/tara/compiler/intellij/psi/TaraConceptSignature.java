@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 public interface TaraConceptSignature extends PsiElement {
 
   @Nullable
-  TaraConceptAnnotation getConceptAnnotation();
+  TaraExtendedConcept getExtendedConcept();
 
   @NotNull
-  List<TaraIdentifier> getIdentifierList();
+  TaraIdentifier getIdentifier();
 
   @Nullable
   TaraModifier getModifier();

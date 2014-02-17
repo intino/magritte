@@ -5,12 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraChildAnnotation extends PsiElement {
-
-  @NotNull
-  List<TaraAnnotation> getAnnotationList();
-
-  @NotNull
-  List<TaraRange> getRangeList();
+public interface TaraComponentAnnotations extends PsiElement {
 
 }

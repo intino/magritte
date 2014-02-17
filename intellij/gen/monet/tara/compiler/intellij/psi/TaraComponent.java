@@ -5,21 +5,20 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraChild extends PsiElement {
+public interface TaraComponent extends IConcept {
 
   @Nullable
-  TaraChildAnnotation getChildAnnotation();
+  TaraComponentAnnotations getComponentAnnotations();
 
   @Nullable
   TaraConceptBody getConceptBody();
 
+  @NotNull
+  TaraConceptSignature getConceptSignature();
+
   @Nullable
   TaraDoc getDoc();
 
-  @NotNull
-  List<TaraIdentifier> getIdentifierList();
-
-  @Nullable
-  TaraModifier getModifier();
+  String getIdentifier();
 
 }

@@ -8,18 +8,21 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.compiler.intellij.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import monet.tara.compiler.intellij.psi.*;
 
-public class TaraBooleanAssignImpl extends ASTWrapperPsiElement implements TaraBooleanAssign {
+public class TaraExtendedConceptImpl extends TaraExtendedConceptMixin implements TaraExtendedConcept {
 
-  public TaraBooleanAssignImpl(ASTNode node) {
+  public TaraExtendedConceptImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitBooleanAssign(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitExtendedConcept(this);
     else super.accept(visitor);
+  }
+
+  public String getIdentifier() {
+    return TaraPsiImplUtil.getIdentifier(this);
   }
 
 }

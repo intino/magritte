@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import monet.tara.compiler.intellij.psi.IConcept;
 import monet.tara.compiler.intellij.psi.TaraConcept;
 import monet.tara.compiler.intellij.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
@@ -25,14 +26,16 @@ public class TaraFoldingBuilder extends FoldingBuilderEx {
 		Collection<TaraConcept> concepts = PsiTreeUtil.findChildrenOfType(root, TaraConcept.class);
 		for (final TaraConcept concept : concepts)
 			if (concept.getText() != null && concept.getText().startsWith("concept ")) {
-				final List<TaraConcept> conceptDefinitions = TaraUtil.findConcept(concept.getProject(), concept.getName());
-				if (conceptDefinitions.size() == 1 && conceptDefinitions.get(0).getConceptBody() != null)
-					descriptors.add(new FoldingDescriptor(conceptDefinitions.get(0).getConceptBody().getNode(),
-						getRange(conceptDefinitions.get(0))) {
+				final List<IConcept> conceptList = TaraUtil.findConcept(concept.getProject(), concept.getName());
+
+				final TaraConcept taraConcept = (TaraConcept) conceptList.get(0);
+				if (conceptList.size() == 1 && taraConcept.getConceptBody() != null)
+					descriptors.add(new FoldingDescriptor(taraConcept.getConceptBody().getNode(),
+						getRange(taraConcept)) {
 						@Nullable
 						@Override
 						public String getPlaceholderText() {
-							return getHolderText(conceptDefinitions.get(0));
+							return getHolderText(taraConcept);
 						}
 					});
 			}

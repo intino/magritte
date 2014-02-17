@@ -1,32 +1,23 @@
 lexer grammar TaraM2Lexer;
 
 @header{
-    package m2LexerGrammar;
+    package AntlrM2;
 }
 
 @lexer::members{
-    private static java.util.Queue<Token>   queue = new java.util.LinkedList<Token>();
-    private static java.util.Stack<Integer> stack = new java.util.Stack<java.lang.Integer>();
-    private static int brackets = 0;
-
-/*
-    @Override
-    public void recover(final LexerNoViableAltException error) {
-        throw new RuntimeException(error);
-    }
-*/
+    BlockManager blockManager = new BlockManager();
+    private static java.util.Queue<Token> queue = new java.util.LinkedList<>();
 
     @Override
     public void reset(){
         super.reset();
         queue.clear();
-        stack.clear();
-        brackets=0;
+        blockManager.reset();
     }
 
     @Override
     public void emit(Token token) {
-        if (token.getType() == EOF) endReached();
+        if (token.getType() == EOF) EOF();
         queue.offer(token);
         setToken(token);
     }
@@ -34,7 +25,7 @@ lexer grammar TaraM2Lexer;
     @Override
     public Token nextToken() {
         super.nextToken();
-        return queue.isEmpty() ? emitEOF() : queue.poll();
+        return queue.isEmpty()? emitEOF() : queue.poll();
     }
 
     private void emitToken(int ttype) {
@@ -42,101 +33,48 @@ lexer grammar TaraM2Lexer;
         emit();
     }
 
-    private int getTextLength(String text){
-        int value = 0;
-        for(int i = 0; i < text.length(); i++)
-            if (text.charAt(i) == ('\t')) value += 4;
-            else value += 1;
-        return value;
+    private String getTextSpaces(String text){
+        int index = (text.indexOf(' ') == -1)? text.indexOf('\t') : text.indexOf(' ');
+        return (index == -1)? "" : text.substring(index);
     }
 
-    private boolean isTextIndented(int textLength){
-        if (!stack.empty())
-            return textLength > stack.peek();
-        return false;
-    }
-
-    private boolean isTextDedented(int textLength){
-        if (!stack.empty())
-            return textLength < stack.peek();
-        return false;
-    }
-
-    private void calculateIndentationToken(String text) {
-        int textLength = getTextLength(text);
-        if (stack.empty() || isTextIndented(textLength)){
-            stack.push(textLength);
-            emitToken(INDENT);
-        } else {
-            while(isTextDedented(textLength)) {
-                stack.pop();
-                emitToken(DEDENT);
-            }
-        }
-    }
-
-    private boolean nextCharEqualTo(char character) {
-        char nextCharacter = (char) _input.LA(1);
-        return (nextCharacter == character)? true : false;
-    }
-
-    private boolean firstTokenInLine() {
-       return (_tokenStartCharPositionInLine==0);
-    }
-
-    private void endReached() {
-        if (brackets>0) emitToken(UNKNOWN_TOKEN);
-        else emitToken(NEWLINE);
-        while (!stack.empty()) {
-            stack.pop();
-            emitToken(DEDENT);
-        }
-    }
-
-    private void evaluateSpaces() {
-        if (firstTokenInLine() && !nextCharEqualTo('\n'))
-            calculateIndentationToken(getText());
-        setChannel(HIDDEN);
-    }
-
-    private void evaluateNewline() {
-        if (brackets>0) emitToken(UNKNOWN_TOKEN);
-        else{
-            if (!nextCharEqualTo(' ') && !nextCharEqualTo('\t'))
-                endReached();
-        }
+    private void newlinesAndSpaces() {
+        blockManager.spaces(getTextSpaces(getText()));
+        sendTokens();
     }
 
     private void openBracket() {
-        brackets++;
-        emitToken(NEWLINE);
-        emitToken(INDENT);
+        blockManager.openBracket();
+        sendTokens();
     }
 
     private void closeBracket() {
-        if (brackets<=0) emitToken(UNKNOWN_TOKEN);
-        else{
-            brackets--;
-            emitToken(DEDENT);
-        }
+        blockManager.closeBracket();
+        sendTokens();
     }
 
     private void semicolon(){
-        if (brackets>0)
-            emitToken(NEWLINE);
-        else
-            emitToken(UNKNOWN_TOKEN);
+        blockManager.addSemicolon(getText().length());
+        sendTokens();
     }
 
-/*
-    private void calculateIndentationTokenInline(int indentSpaces) {
-        int textLength = (stack.empty())? indentSpaces : stack.peek()+indentSpaces;
-        textLength = (textLength<0)? 0 : textLength;
-        calculateIndentationToken(textLength);
+    private void EOF(){
+        blockManager.spaces("");
+        sendTokens();
     }
-*/
 
+    private void sendTokens(){
+        blockManager.actions();
+        for (BlockManager.Token token : blockManager.actions())
+            emitToken(translate(token));
+    }
 
+    private int translate (BlockManager.Token token){
+        if (token.toString() == "NEWLINE") return NEWLINE;
+        if (token.toString() == "DEDENT") return DEDENT;
+        if (token.toString() == "INDENT") return INDENT;
+        return UNKNOWN_TOKEN;
+    }
 }
 
 CONCEPT   : 'Concept';
@@ -157,11 +95,8 @@ LIST: LEFT_BRACKET RIGHT_BRACKET;
 LEFT_BRACKET : '[';
 RIGHT_BRACKET: ']';
 
-INDENT: '(';
-DEDENT: ')';
-
-OPEN_BRACKET : '{' { openBracket(); };
-CLOSE_BRACKET: '}' NEWLINE? { closeBracket(); };
+OPEN_BRACKET : '{' {  openBracket(); };
+CLOSE_BRACKET: '}' { closeBracket(); };
 
 OPEN_AN : '<';
 CLOSE_AN: '>';
@@ -170,7 +105,7 @@ COMMA        : ',';
 DOT          : '.';
 ASSIGN       : ':';
 DOUBLE_COMMAS: '"';
-SEMICOLON    : ';' { semicolon(); };
+SEMICOLON    : ';'+ { semicolon(); };
 
 POSITIVE: '+';
 NEGATIVE: '-';
@@ -186,8 +121,7 @@ BOOLEAN_VALUE : 'true' | 'false';
 POSITIVE_VALUE: POSITIVE? DIGIT+;
 NEGATIVE_VALUE: NEGATIVE DIGIT+ ;
 DOUBLE_VALUE  : (POSITIVE | NEGATIVE)? DIGIT+ DOT DIGIT+;
-STRING_VALUE  : DOUBLE_COMMAS (DIGIT | LETTER | ACCENTED_LETTER | UNKNOWN_TOKEN)+ DOUBLE_COMMAS;
-
+STRING_VALUE  : DOUBLE_COMMAS (~'"')* DOUBLE_COMMAS;
 
 IDENTIFIER: LETTER (DIGIT | LETTER)*;
 
@@ -197,22 +131,19 @@ LETTER: 'a'..'z'
       | 'A'..'Z'
       ;
 
-ACCENTED_LETTER: 'Á' | 'á'
-               | 'É' | 'é'
-               | 'Í' | 'í'
-               | 'Ó' | 'ó'
-               | 'Ú' | 'ú';
+WHITE_LINE: NL+ SP+ (NL+|EOF) -> channel(HIDDEN);
 
-WHITE_LINE: SP+ EOF -> channel(HIDDEN);
+NEWLINE: NL+ SP* { newlinesAndSpaces(); };
 
-SPACES: SP+ { evaluateSpaces(); };
-
-NEWLINE: NL+ { evaluateNewline(); };
+SPACES: SP+ EOF? -> channel(HIDDEN);
 
 DOC_BLOCK: '/?' .*? '?/' NL?;
 DOC_LINE : '??' .*? (NL|EOF);
 
 SP: (' ' | '\t');
 NL: ('\r'? '\n' | '\n');
+
+INDENT: '(';
+DEDENT: ')';
 
 UNKNOWN_TOKEN: . ;
