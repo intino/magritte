@@ -10,7 +10,7 @@ import java.util.Queue;
 
 %%
 
-%class TaraLexer
+%class TaraHighlighterLex
 %implements FlexLexer
 %unicode
 %column
@@ -18,80 +18,7 @@ import java.util.Queue;
 %type IElementType
 
 %{
-	private BlockManager blockManager = new BlockManager();
-	private Queue<IElementType> queue = new LinkedList<>();
-	private boolean end = false;
-
-	private IElementType sendToken() {
-		IElementType token = (end)? null:TokenType.WHITE_SPACE;
-		if (!queue.isEmpty())
-			token = queue.poll();
-		if (!queue.isEmpty())
-			yypushback(yylength());
-		return token;
-	}
-
-	private IElementType eof(){
-		if (queue.isEmpty() && !end) {
-            blockManager.eof();
-            storeTokens();
-            end = true;
-        }
-        return sendToken();
-    }
-
-	private String getTextSpaces(String text){
-        int index = (text.indexOf(' ') == -1)? text.indexOf('\t') : text.indexOf(' ');
-        return (index == -1)? "" : text.substring(index);
-    }
-
-	private boolean isWhiteLineOrEOF() {
-		return (zzMarkedPos >= zzBuffer.length()) || (zzMarkedPos < zzBuffer.length() && zzBuffer.charAt(zzMarkedPos) == '\n');
-	}
-
-    private IElementType newlineIndent() {
-		if (isWhiteLineOrEOF()) return TokenType.WHITE_SPACE;
-        if (queue.isEmpty()) {
-            String spaces = getTextSpaces(yytext().toString());
-            blockManager.spaces(spaces);
-            storeTokens();
-        }
-        return sendToken();
-    }
-
-    private IElementType openBracket() {
-        blockManager.openBracket(yytext().length());
-        storeTokens();
-        return sendToken();
-    }
-
-    private IElementType closeBracket() {
-       if (queue.isEmpty()) {
-            blockManager.closeBracket(yytext().length());
-            storeTokens();
-        }
-        return sendToken();
-    }
-
-	private IElementType semicolon(){
-        blockManager.semicolon(yytext().length());
-        storeTokens();
-        return sendToken();
-    }
-
-    private void storeTokens(){
-        blockManager.actions();
-        for (IElementType token : blockManager.actions())
-            queue.offer(token);
-    }
 %}
-
-SP = ([ ]+ | [\t]+)
-SPACES= {SP}+
-NEWLINE= [\n]+ ([ ]+ | [\t]+)?
-
-//=====================
-//Reserved words
 
 CONCEPT   = "Concept"
 FROM_KEY  = "from"
@@ -117,16 +44,13 @@ CLOSE_BRACKET = "}"
 
 DOT           = "."
 ASSIGN        = ":"
-SEMICOLON     = ";"+
+SEMICOLON     = ";"
 DOUBLE_COMMAS = "\""
 OPEN_AN  = "<"
 CLOSE_AN = ">"
 POSITIVE = "+"
 NEGATIVE = "-"
-TERM = "Term"
-CONCEPT_TERM=""
-CONCEPT_TERM_VAR_TERM= "term"
-CONCEPT_TERM_VAR_TERM2="term2"
+
 UID_TYPE     = "Uid"
 INT_TYPE     = "Int"
 NATURAL_TYPE = "Natural"
@@ -143,12 +67,15 @@ STRING_VALUE= {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
 
 OPEN_DOC_BLOCK  = "\/\?"
 CLOSE_DOC_BLOCK = "\?\/"
-DOC_BLOCK = {OPEN_DOC_BLOCK} ~ {CLOSE_DOC_BLOCK} [\n]
+DOC_BLOCK = {OPEN_DOC_BLOCK} ~ {CLOSE_DOC_BLOCK}
 DOC_LINE = "??" ~[\n]
 
 DIGIT=[:digit:]
-
 IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
+
+SP = ([ ]+ | [\t]+)
+SPACES= {SP}+
+NEWLINE= [\n]+
 
 %%
 <YYINITIAL> {
@@ -193,7 +120,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{LEFT_SQUARE}               {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}              {   return TaraTypes.RIGHT_SQUARE; }
 
-	{WORD}                      {   return TaraTypes.WORD_KEY; }
+	{WORD}                      {   return TaraTypes.WORD; }
 
 	{DOT}                       {   return TaraTypes.DOT; }
 
@@ -204,23 +131,21 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
     {STRING_TYPE}               {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}               {   return TaraTypes.DOUBLE_TYPE; }
 
-	{IDENTIFIER_KEY}            {   return TaraTypes.IDENTIFIER_KEY;}
+	{IDENTIFIER_KEY}            {   return TaraTypes.IDENTIFIER_KEY; }
 
-	{SEMICOLON}                 {   return semicolon(); }
+	{SEMICOLON}                 {   return TaraTypes.LEFT_SQUARE;  }
 
-	{OPEN_BRACKET}              {   return openBracket(); }
+	{OPEN_BRACKET}              {   return TaraTypes.LEFT_SQUARE; }
 
-	{CLOSE_BRACKET}             {   return closeBracket(); }
-
-	{NEWLINE}                   {   return newlineIndent();}
+	{CLOSE_BRACKET}             {   return TaraTypes.LEFT_SQUARE; }
 
 	{SPACES}                    {   return TokenType.WHITE_SPACE; }
 
-	{SP}                        {   return TokenType.WHITE_SPACE; }
+    {SP}                        {   return TokenType.WHITE_SPACE; }
 
-	<<EOF>>                     {
-                                    return eof();
-                                }
+    {NEWLINE}                   {   return TokenType.WHITE_SPACE; }
+
+    .                           {   return TokenType.BAD_CHARACTER; }
 }
 
-.                               {  return TokenType.BAD_CHARACTER;}
+.                               {  return TokenType.BAD_CHARACTER; }

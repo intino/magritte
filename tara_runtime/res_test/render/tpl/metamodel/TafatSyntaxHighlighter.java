@@ -61,6 +61,7 @@ public class TafatSyntaxHighlighter extends SyntaxHighlighterBase {
 		keys1.put(TafatTypes.MULTIPLE, OPERATOR);
 
 		keys1.put(TafatTypes.ANNOTATION, ANNOTATION);
+		keys1.put(TafatTypes.ANNOTATION, ANNOTATION);
 
 		keys1.put(TafatTypes.ASSIGN, OPERATOR);
 		keys1.put(TafatTypes.LEFT_BRACKET, OPERATOR);

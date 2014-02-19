@@ -1,24 +1,25 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.compiler.intellij.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.Nullable;
 
 public interface TaraComponent extends IConcept {
 
-  @Nullable
-  TaraComponentAnnotations getComponentAnnotations();
+	@Nullable
+	TaraComponentAnnotations getComponentAnnotations();
 
-  @Nullable
-  TaraConceptBody getConceptBody();
+	@Nullable
+	TaraConceptBody getConceptBody();
 
-  @NotNull
-  TaraConceptSignature getConceptSignature();
+	@Nullable
+	TaraConceptSignature getConceptSignature();
 
-  @Nullable
-  TaraDoc getDoc();
+	@Nullable
+	TaraDoc getDoc();
 
-  String getIdentifier();
+	@Nullable
+	TaraExtendedConcept getExtendedConcept();
+
+	String getIdentifier();
 
 }

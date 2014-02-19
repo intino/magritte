@@ -1,103 +1,115 @@
 package monet.tara.compiler.intellij.metamodel;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.intellij.psi.TokenType;
+import com.intellij.psi.tree.IElementType;
+import monet.tara.compiler.intellij.psi.TaraTypes;
 
 public class BlockManager {
 
-    private int level;
+	private int level;
 	private int tabSize;
-    private int brackets;
-	private Token[] tokens;
+	private int brackets;
+	private IElementType[] tokens;
 
 	public BlockManager() {
-		this.tokens = new Token[] {};
-        this.level = 0;
-        this.brackets = 0;
-        this.tabSize = 4;
-	}
-    public BlockManager(int tabulationSize) {
-        this.tokens = new Token[] {};
-        this.level = 0;
-        this.brackets = 0;
-        this.tabSize = (tabulationSize < 0) ? 1 : tabulationSize;
+		this.tokens = new IElementType[]{};
+		this.level = 0;
+		this.brackets = 0;
+		this.tabSize = 4;
 	}
 
-    public void reset(){
-        this.tokens = new Token[] {};
-        this.level = 0;
-        this.brackets = 0;
-    }
+	public BlockManager(int tabulationSize) {
+		this.tokens = new IElementType[]{};
+		this.level = 0;
+		this.brackets = 0;
+		this.tabSize = (tabulationSize < 0) ? 1 : tabulationSize;
+	}
+
+	public void reset() {
+		this.tokens = new IElementType[]{};
+		this.level = 0;
+		this.brackets = 0;
+	}
 
 	public void spaces(String text) {
-        if (bracketsMode())
-            this.tokens = create(Token.ERROR);
-        else{
-            int newLevel = (length(text) / this.tabSize);
-            List<Token> result = getIndentationTokens(newLevel - level);
-            if (newLevel-level < 0) result.add(Token.NEWLINE);
-            this.tokens = result.toArray(new Token [result.size()]);
-            this.level = newLevel;
-        }
+		if (!bracketsMode()) {
+			int newLevel = (spacesLength(text) / this.tabSize);
+			this.tokens = spacesIndentTokens(newLevel - level);
+			this.level = newLevel;
+		} else
+			this.tokens = create(TokenType.BAD_CHARACTER);
 	}
 
-    private int length(String text){
-        int value = 0;
-        for(int i = 0; i < text.length(); i++)
-            value += (text.charAt(i) == ('\t')) ? this.tabSize : 1;
-        return value;
-    }
-
-    private List<Token> getIndentationTokens(int size) {
-        List<Token> result = new ArrayList<>();
-        Token indentToken = (size > 0) ? Token.INDENT : Token.DEDENT;
-        for (int i=0; i < Math.abs(size*2); i++)
-            result.add( (i % 2 == 0)? Token.NEWLINE : indentToken);
-        return result;
-    }
-
-    private Token[] create(Token token) {
-		return new Token[]{token};
+	private int spacesLength(String text) {
+		int value = 0;
+		for (int i = 0; i < text.length(); i++)
+			value += (text.charAt(i) == ('\t')) ? this.tabSize : 1;
+		return value;
 	}
 
-    public boolean bracketsMode(){
-        return (brackets > 0);
-    }
+	private IElementType[] spacesIndentTokens(int size) {
+		int length = (size > 0) ? size : Math.abs(size * 2) + 1;
+		IElementType[] actions = new IElementType[length];
+		if (size > 0) return new IElementType[]{TokenType.NEW_LINE_INDENT};
+		else
+			for (int i = 0; i < actions.length; i++)
+				actions[i] = (i % 2 == 0) ? TaraTypes.NEWLINE : TaraTypes.DEDENT;
+		return actions;
+	}
 
-    public int getLevel() {
-        return level;
-    }
+	private IElementType[] indentTokens(int size) {
+		IElementType[] actions = new IElementType[Math.abs(size * 2)];
+		if (size > 0) return new IElementType[]{TokenType.NEW_LINE_INDENT};
+		else
+			for (int i = 0; i < actions.length; i++)
+				actions[i] = (i % 2 == 0) ? TaraTypes.NEWLINE : TaraTypes.DEDENT;
+		return actions;
+	}
 
-	public Token[] actions() {
+	private IElementType[] create(IElementType token) {
+		return new IElementType[]{token};
+	}
+
+	public boolean bracketsMode() {
+		return (brackets > 0);
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public IElementType[] actions() {
 		return tokens;
 	}
 
-	public void openBracket() {
-        List<Token> result = getIndentationTokens(1);
-        this.tokens = result.toArray(new Token [result.size()]);
-        this.level++;
-        this.brackets++;
+	public void openBracket(int size) {
+		this.tokens = indentTokens(size);
+		this.level += size;
+		this.brackets += size;
 	}
 
-	public void closeBracket() {
-        if (!bracketsMode())
-            this.tokens = create(Token.ERROR);
-        else{
-            List<Token> result = getIndentationTokens(-1);
-            this.tokens = result.toArray(new Token[result.size()]);
-            this.level--;
-            this.brackets--;
-        }
+	public void semicolon(int size) {
+		if (bracketsMode() && size == 1)
+			this.tokens = create(TaraTypes.NEWLINE);
+		else
+			this.tokens = create(TokenType.BAD_CHARACTER);
 	}
 
-	public void addSemicolon(int size) {
-        if (bracketsMode() && size==1)
-            this.tokens = create(Token.NEWLINE);
-        else
-            this.tokens = create(Token.ERROR);
+	public void closeBracket(int size) {
+		if (bracketsMode() && (brackets - size >= 0)) {
+			this.tokens = indentTokens(-size);
+			this.level -= size;
+			this.brackets -= size;
+		} else
+			this.tokens = create(TokenType.BAD_CHARACTER);
 	}
 
-    public enum Token{
-        INDENT, DEDENT, NEWLINE, ERROR
-    }
+	public void eof() {
+		if (!bracketsMode()) {
+			this.tokens = indentTokens(-level);
+			this.level -= level;
+		} else
+			this.tokens = create(TokenType.BAD_CHARACTER);
+	}
+
 }

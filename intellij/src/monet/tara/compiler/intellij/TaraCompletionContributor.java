@@ -49,7 +49,7 @@ public class TaraCompletionContributor extends CompletionContributor {
 			}
 		);
 
-		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.FROM_CONCEPT_ANNOTATIONS).withLanguage(TaraLanguage.INSTANCE),
+		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.FROM_COMPONENT_ANNOTATIONS).withLanguage(TaraLanguage.INSTANCE),
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,

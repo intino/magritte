@@ -16,28 +16,37 @@
   psiImplUtilClass='monet.tara.compiler.intellij.psi.impl.TaraPsiImplUtil'
 }
 
-root ::= (concept)*
+root ::= (concept | NEWLINE)*
 
-concept ::=  doc? conceptSignature conceptBody? {mixin='monet.tara.compiler.intellij.psi.impl.TaraNamedElementImpl'
-implements='monet.tara.compiler.intellij.psi.TaraNamedElement' methods=[getName setName getNameIdentifier]}
+concept ::=  doc? conceptSignature conceptAnnotations? conceptBody?
+{ mixin= 'monet.tara.compiler.intellij.psi.impl.TaraConceptMixin'
+implements='monet.tara.compiler.intellij.psi.IConcept'
+methods=[getIdentifier getIdentifierNode]
+}
 
-conceptSignature ::=  (CONCEPT_KEY | identifier) modifier? AS identifier conceptAnnotation?
+conceptSignature ::=  (CONCEPT_KEY | extendedConcept) modifier? AS identifier
 
-child  ::=  doc? (CONCEPT_KEY | identifier(DOT identifier)?) modifier? (AS identifier)? childAnnotation? conceptBody?
+extendedConcept::= IDENTIFIER_KEY (DOT IDENTIFIER_KEY)*
+{mixin= 'monet.tara.compiler.intellij.psi.impl.TaraExtendedConceptMixin' methods=[getIdentifier]}
 
-identifier  ::=  IDENTIFIER_KEY {methods=[getIdentifier]}
+component ::= doc? conceptSignature componentAnnotations? conceptBody?
+                | extendedConcept componentAnnotations?
+{ mixin= 'monet.tara.compiler.intellij.psi.impl.TaraComponentMixin'
+implements='monet.tara.compiler.intellij.psi.IConcept'
+methods=[getIdentifier]
+}
+identifier  ::=  IDENTIFIER_KEY {mixin= 'monet.tara.compiler.intellij.psi.impl.TaraIdentifierMixin' methods=[getIdentifier]}
 
-conceptBody ::= INDENT conceptConstituents+ DEDENT
+conceptBody ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT
 
 conceptConstituents ::= attribute
                       | attributeList
                       | referenceStatement
-                      | referenceStatementList
+                      | word
                       | from
-                      | child
+                      | component
 
-referenceStatement     ::= VAR identifier IDENTIFIER_KEY
-referenceStatementList ::= VAR identifier LIST IDENTIFIER_KEY
+referenceStatement ::= VAR extendedConcept LIST? IDENTIFIER_KEY
 
 attribute::= VAR     UID_TYPE IDENTIFIER_KEY stringAssign?
            | VAR     INT_TYPE IDENTIFIER_KEY integerAssign?
@@ -45,8 +54,8 @@ attribute::= VAR     UID_TYPE IDENTIFIER_KEY stringAssign?
            | VAR NATURAL_TYPE IDENTIFIER_KEY naturalAssign?
            | VAR BOOLEAN_TYPE IDENTIFIER_KEY booleanAssign?
            | VAR  STRING_TYPE IDENTIFIER_KEY stringAssign?
-           | VAR WORD IDENTIFIER_KEY wordBody
-wordBody::= INDENT IDENTIFIER_KEY+ DEDENT
+
+word::= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE+)+ DEDENT;
 
 attributeList::= VAR     INT_TYPE LIST IDENTIFIER_KEY integerListAssign?
                | VAR  DOUBLE_TYPE LIST IDENTIFIER_KEY doubleListAssign?
@@ -60,26 +69,25 @@ integerAssign  ::= ASSIGN integerValue
 doubleAssign   ::= ASSIGN (integerValue | DOUBLE_VALUE)
 naturalAssign  ::= ASSIGN NATURAL_VALUE
 
-stringListAssign   ::= ASSIGN LEFT_BRACKET STRING_VALUE+ RIGHT_BRACKET
-booleanListAssign  ::= ASSIGN LEFT_BRACKET BOOLEAN_VALUE+ RIGHT_BRACKET
-integerListAssign  ::= ASSIGN LEFT_BRACKET integerValue+ RIGHT_BRACKET
-doubleListAssign   ::= ASSIGN LEFT_BRACKET (integerValue | DOUBLE_VALUE)+ RIGHT_BRACKET
-naturalListAssign  ::= ASSIGN LEFT_BRACKET NATURAL_VALUE+ RIGHT_BRACKET
+stringListAssign   ::= ASSIGN LEFT_SQUARE STRING_VALUE+ RIGHT_SQUARE
+booleanListAssign  ::= ASSIGN LEFT_SQUARE BOOLEAN_VALUE+ RIGHT_SQUARE
+integerListAssign  ::= ASSIGN LEFT_SQUARE integerValue+ RIGHT_SQUARE
+doubleListAssign   ::= ASSIGN LEFT_SQUARE (integerValue | DOUBLE_VALUE)+ RIGHT_SQUARE
+naturalListAssign  ::= ASSIGN LEFT_SQUARE NATURAL_VALUE+ RIGHT_SQUARE
 
-from::= FROM_KEY rangeAnnotation?
-    | rangeAnnotation? fromBody
+from::= FROM_KEY fromAnnotations? fromBody
 
-fromBody::= INDENT child+ DEDENT
+fromBody::= NEW_LINE_INDENT (fromComponent NEWLINE+)+ DEDENT
 
-conceptAnnotation::= OPEN_AN annotation+ CLOSE_AN
-childAnnotation  ::= OPEN_AN (range | annotation)+ CLOSE_AN
-rangeAnnotation  ::= OPEN_AN range+ CLOSE_AN
-
-range::= OPTIONAL
-       | MULTIPLE
-
-annotation::= HAS_CODE
-            | EXTENSIBLE
+fromComponent::= (doc? conceptSignature fromComponentAnnotations? conceptBody?) | (extendedConcept fromComponentAnnotations?)
+{ mixin= 'monet.tara.compiler.intellij.psi.impl.TaraFromComponentMixin'
+implements='monet.tara.compiler.intellij.psi.IConcept'
+methods=[getIdentifier]
+}
+fromComponentAnnotations ::= OPEN_AN (HAS_CODE | EXTENSIBLE | SINGLETON)+ CLOSE_AN
+conceptAnnotations     ::= OPEN_AN (ROOT | HAS_CODE | EXTENSIBLE | SINGLETON)+ CLOSE_AN
+componentAnnotations   ::= OPEN_AN (MULTIPLE | OPTIONAL | HAS_CODE | EXTENSIBLE| SINGLETON)+ CLOSE_AN
+fromAnnotations        ::= OPEN_AN (OPTIONAL | MULTIPLE)+ CLOSE_AN
 
 integerValue::= NATURAL_VALUE
               | NEGATIVE_VALUE

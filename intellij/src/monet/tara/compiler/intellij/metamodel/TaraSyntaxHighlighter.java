@@ -39,7 +39,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 	@NotNull
 	@Override
 	public com.intellij.lexer.Lexer getHighlightingLexer() {
-		return new TaraLexerAdapter();
+		return new TaraHighlighterLexAdapter();
 	}
 
 	static {
@@ -64,8 +64,8 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 		keys1.put(TaraTypes.ROOT, ANNOTATION);
 
 		keys1.put(TaraTypes.ASSIGN, OPERATOR);
-		keys1.put(TaraTypes.LEFT_BRACKET, OPERATOR);
-		keys1.put(TaraTypes.RIGHT_BRACKET, OPERATOR);
+		keys1.put(TaraTypes.LEFT_SQUARE, OPERATOR);
+		keys1.put(TaraTypes.RIGHT_SQUARE, OPERATOR);
 
 		keys1.put(TaraTypes.STRING_TYPE, STRING);
 		keys1.put(TaraTypes.DOUBLE_TYPE, PRIMITIVE);
