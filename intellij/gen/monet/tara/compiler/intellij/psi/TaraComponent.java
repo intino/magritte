@@ -5,21 +5,21 @@ import org.jetbrains.annotations.Nullable;
 
 public interface TaraComponent extends IConcept {
 
-	@Nullable
-	TaraComponentAnnotations getComponentAnnotations();
+  @Nullable
+  TaraComponentAnnotations getComponentAnnotations();
 
-	@Nullable
-	TaraConceptBody getConceptBody();
+  @Nullable
+  TaraConceptBody getConceptBody();
 
-	@Nullable
-	TaraConceptSignature getConceptSignature();
+  @Nullable
+  TaraConceptSignature getConceptSignature();
 
-	@Nullable
-	TaraDoc getDoc();
+  @Nullable
+  TaraDoc getDoc();
 
-	@Nullable
-	TaraExtendedConcept getExtendedConcept();
+  @Nullable
+  TaraExtendedConcept getExtendedConcept();
 
-	String getIdentifier();
+  String getIdentifier();
 
 }

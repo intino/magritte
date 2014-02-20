@@ -18,11 +18,12 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
+import monet.tara.compiler.intellij.codeinspection.fix.RemoveAttributeFix;
 import monet.tara.compiler.intellij.codeinspection.fix.RemoveConceptFix;
 import monet.tara.compiler.intellij.metamodel.TaraBundle;
 import monet.tara.compiler.intellij.metamodel.TaraSyntaxHighlighter;
 import monet.tara.compiler.intellij.psi.IConcept;
-import monet.tara.compiler.intellij.psi.TaraConcept;
+import monet.tara.compiler.intellij.psi.TaraAttribute;
 import monet.tara.compiler.intellij.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,26 +31,10 @@ import java.util.List;
 
 public class TaraAnnotator implements Annotator {
 
-	@Override
-	public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
-		if (element instanceof TaraConcept) {
-			final TaraConcept concept = (TaraConcept) element;
-			List<IConcept> others = TaraUtil.findConcept(concept.getProject(), concept.getIdentifierNode().getText());
-			ASTNode identifierNode = concept.getIdentifierNode().getNode();
-			if (others.size() != 1) {
-				Annotation annotation = holder.createErrorAnnotation(identifierNode, TaraBundle.message("duplicate.concept.key.error.message"));
-				annotation.registerFix(new RemoveConceptFix(concept));
-			}
-			highlightTokens(concept, identifierNode, holder, new TaraSyntaxHighlighter());
-		}
-	}
-
-
-	private static void highlightTokens(final TaraConcept concept, final ASTNode node, final AnnotationHolder holder, TaraSyntaxHighlighter highlighter) {
+	private static void highlightTokens(final PsiElement element, final ASTNode node, final AnnotationHolder holder, TaraSyntaxHighlighter highlighter) {
 		Lexer lexer = highlighter.getHighlightingLexer();
 		final String s = node.getText();
 		lexer.start(s);
-
 		while (lexer.getTokenType() != null) {
 			IElementType elementType = lexer.getTokenType();
 			TextAttributesKey[] keys = highlighter.getTokenHighlights(elementType);
@@ -84,9 +69,9 @@ public class TaraAnnotator implements Annotator {
 							}
 
 							public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-								if (!concept.isValid() || !concept.getManager().isInProject(concept)) return false;
+								if (!element.isValid() || !element.getManager().isInProject(element)) return false;
 
-								String text = concept.getContainingFile().getText();
+								String text = element.getContainingFile().getText();
 								int startOffset = annotation.getStartOffset();
 								return text.length() > startOffset && text.charAt(startOffset) == '\\';
 							}
@@ -94,7 +79,7 @@ public class TaraAnnotator implements Annotator {
 							public void invoke(@NotNull Project project, Editor editor, PsiFile file) {
 								if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
 								int offset = annotation.getStartOffset();
-								if (concept.getContainingFile().getText().charAt(offset) == '\\') {
+								if (element.getContainingFile().getText().charAt(offset) == '\\') {
 									editor.getDocument().deleteString(offset, offset + 1);
 								}
 							}
@@ -107,6 +92,33 @@ public class TaraAnnotator implements Annotator {
 				}
 			}
 			lexer.advance();
+		}
+	}
+
+	@Override
+	public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
+		if (element instanceof IConcept) {
+			final IConcept concept = (IConcept) element;
+			if (concept.getIdentifierNode() != null) {
+				List<IConcept> existenceOfConcept = TaraUtil.findDuplicates(concept.getProject(), concept);
+				ASTNode identifierNode = concept.getIdentifierNode().getNode();
+				if (existenceOfConcept.size() > 1) {
+					Annotation annotation = holder.createErrorAnnotation(identifierNode, TaraBundle.message("duplicate.concept.key.error.message"));
+					annotation.registerFix(new RemoveConceptFix(concept));
+				}
+				highlightTokens(concept, identifierNode, holder, new TaraSyntaxHighlighter());
+			}
+		}
+
+		if (element instanceof TaraAttribute) {
+			final TaraAttribute attribute = (TaraAttribute) element;
+			List<TaraAttribute> existenceOfAttribute = TaraUtil.findAttributeDuplicates(attribute);
+			ASTNode attrNode = attribute.getNode();
+			if (existenceOfAttribute.size() != 1) {
+				Annotation annotation = holder.createErrorAnnotation(attrNode, TaraBundle.message("duplicate.attribute.key.error.message"));
+				annotation.registerFix(new RemoveAttributeFix(attribute));
+			}
+			highlightTokens(attribute, attrNode, holder, new TaraSyntaxHighlighter());
 		}
 	}
 }

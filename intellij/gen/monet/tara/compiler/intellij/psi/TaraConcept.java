@@ -1,9 +1,8 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.compiler.intellij.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface TaraConcept extends IConcept {
 
@@ -20,7 +19,5 @@ public interface TaraConcept extends IConcept {
   TaraDoc getDoc();
 
   String getIdentifier();
-
-  PsiElement getIdentifierNode();
 
 }

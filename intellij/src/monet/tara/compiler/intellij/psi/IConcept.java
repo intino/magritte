@@ -16,5 +16,7 @@ public interface IConcept extends Navigatable, Iconable, PsiNamedElement {
 	String getDocCommentText();
 
 	PsiElement getPsiElement();
+
+	PsiElement getIdentifierNode();
 }
 

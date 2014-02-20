@@ -102,15 +102,6 @@ public class TaraCompletionContributor extends CompletionContributor {
 			}
 		);
 
-		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.IDENTIFIER_KEY).withLanguage(TaraLanguage.INSTANCE),
-			//.withSuperParent(2, PlatformPatterns.psiElement(TaraIdentifier.class).withName(ManifestConstants.Directives.NO_IMPORT)),
-			new CompletionProvider<CompletionParameters>() {
-				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("var"));
-				}
-			}
-		);
+
 	}
 }

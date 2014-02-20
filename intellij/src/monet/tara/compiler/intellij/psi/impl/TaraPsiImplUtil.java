@@ -15,15 +15,20 @@ public class TaraPsiImplUtil {
 	}
 
 	public static String getIdentifier(IConcept element) {
-		ASTNode valueNode = element.getNode().findChildByType(TaraTypes.CONCEPT_SIGNATURE).findChildByType(TaraTypes.IDENTIFIER);
-		if (valueNode != null) return valueNode.getText();
-		else return null;
+		ASTNode valueNode;
+		if (element.getNode().findChildByType(TaraTypes.CONCEPT_SIGNATURE) != null) {
+			valueNode = element.getNode().findChildByType(TaraTypes.CONCEPT_SIGNATURE).findChildByType(TaraTypes.IDENTIFIER);
+			if (valueNode != null) return valueNode.getText();
+		}
+		return null;
 	}
 
 	public static PsiElement getIdentifierNode(IConcept element) {
-		ASTNode valueNode = element.getNode().findChildByType(TaraTypes.CONCEPT_SIGNATURE).findChildByType(TaraTypes.IDENTIFIER);
-		if (valueNode != null) return valueNode.getPsi();
-		else return null;
+		if (element.getNode().findChildByType(TaraTypes.CONCEPT_SIGNATURE) != null) {
+			ASTNode valueNode = element.getNode().findChildByType(TaraTypes.CONCEPT_SIGNATURE).findChildByType(TaraTypes.IDENTIFIER);
+			if (valueNode != null) return valueNode.getPsi();
+		}
+		return null;
 	}
 
 	public static String getIdentifier(TaraExtendedConcept element) {
@@ -82,7 +87,20 @@ public class TaraPsiImplUtil {
 					result.add((TaraComponent) constituent);
 			return result;
 		} catch (NullPointerException e) {
-			conceptBody.getConceptConstituentsList();
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static List<TaraAttribute> getAttributesInBody(TaraConceptBody conceptBody) {
+		List<TaraAttribute> result = new ArrayList<>();
+		try {
+			for (TaraConceptConstituents constituent : conceptBody.getConceptConstituentsList())
+				if (constituent.getFirstChild() instanceof TaraAttribute)
+					result.add((TaraAttribute) constituent.getFirstChild());
+			return result;
+		} catch (NullPointerException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

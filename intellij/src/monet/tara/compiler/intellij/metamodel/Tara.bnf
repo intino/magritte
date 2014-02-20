@@ -21,13 +21,17 @@ root ::= (concept | NEWLINE)*
 concept ::=  doc? conceptSignature conceptAnnotations? conceptBody?
 { mixin= 'monet.tara.compiler.intellij.psi.impl.TaraConceptMixin'
 implements='monet.tara.compiler.intellij.psi.IConcept'
-methods=[getIdentifier getIdentifierNode]
+methods=[getIdentifier]
 }
 
 conceptSignature ::=  (CONCEPT_KEY | extendedConcept) modifier? AS identifier
+conceptBody ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT
 
 extendedConcept::= IDENTIFIER_KEY (DOT IDENTIFIER_KEY)*
 {mixin= 'monet.tara.compiler.intellij.psi.impl.TaraExtendedConceptMixin' methods=[getIdentifier]}
+
+identifier  ::=  IDENTIFIER_KEY
+{mixin= 'monet.tara.compiler.intellij.psi.impl.TaraIdentifierMixin' methods=[getIdentifier]}
 
 component ::= doc? conceptSignature componentAnnotations? conceptBody?
                 | extendedConcept componentAnnotations?
@@ -35,12 +39,8 @@ component ::= doc? conceptSignature componentAnnotations? conceptBody?
 implements='monet.tara.compiler.intellij.psi.IConcept'
 methods=[getIdentifier]
 }
-identifier  ::=  IDENTIFIER_KEY {mixin= 'monet.tara.compiler.intellij.psi.impl.TaraIdentifierMixin' methods=[getIdentifier]}
-
-conceptBody ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT
 
 conceptConstituents ::= attribute
-                      | attributeList
                       | referenceStatement
                       | word
                       | from
@@ -48,20 +48,14 @@ conceptConstituents ::= attribute
 
 referenceStatement ::= VAR extendedConcept LIST? IDENTIFIER_KEY
 
-attribute::= VAR     UID_TYPE IDENTIFIER_KEY stringAssign?
-           | VAR     INT_TYPE IDENTIFIER_KEY integerAssign?
-           | VAR  DOUBLE_TYPE IDENTIFIER_KEY doubleAssign?
-           | VAR NATURAL_TYPE IDENTIFIER_KEY naturalAssign?
-           | VAR BOOLEAN_TYPE IDENTIFIER_KEY booleanAssign?
-           | VAR  STRING_TYPE IDENTIFIER_KEY stringAssign?
+attribute::= VAR    UID_TYPE IDENTIFIER_KEY stringAssign?
+           | VAR     INT_TYPE (IDENTIFIER_KEY integerAssign? | LIST IDENTIFIER_KEY integerListAssign?)
+           | VAR  DOUBLE_TYPE (IDENTIFIER_KEY doubleAssign?  | LIST IDENTIFIER_KEY doubleListAssign?)
+           | VAR NATURAL_TYPE (IDENTIFIER_KEY naturalAssign? | LIST IDENTIFIER_KEY naturalListAssign?)
+           | VAR BOOLEAN_TYPE (IDENTIFIER_KEY booleanAssign? | LIST IDENTIFIER_KEY booleanListAssign?)
+           | VAR  STRING_TYPE (IDENTIFIER_KEY stringAssign?  | LIST IDENTIFIER_KEY stringListAssign?)
 
-word::= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE+)+ DEDENT;
-
-attributeList::= VAR     INT_TYPE LIST IDENTIFIER_KEY integerListAssign?
-               | VAR  DOUBLE_TYPE LIST IDENTIFIER_KEY doubleListAssign?
-               | VAR NATURAL_TYPE LIST IDENTIFIER_KEY naturalListAssign?
-               | VAR BOOLEAN_TYPE LIST IDENTIFIER_KEY booleanListAssign?
-               | VAR  STRING_TYPE LIST IDENTIFIER_KEY stringListAssign?
+word::= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE+)+ DEDENT
 
 stringAssign   ::= ASSIGN STRING_VALUE
 booleanAssign  ::= ASSIGN BOOLEAN_VALUE

@@ -21,9 +21,6 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
 
 
 public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
-	private static final Map<IElementType, TextAttributesKey> keys1;
-	private static final Map<IElementType, TextAttributesKey> keys2;
-
 	public static final TextAttributesKey KEYWORD = createTextAttributesKey("Tara_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
 	public static final TextAttributesKey IDENTIFIER = createTextAttributesKey("Tara_IDENTIFIER", DefaultLanguageHighlighterColors.CLASS_NAME);
 	public static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.CONSTANT);
@@ -35,6 +32,23 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
 	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER", new TextAttributes(JBColor.RED, null, null, null, Font.BOLD));
+	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>(6);
+
+	static {
+		DISPLAY_NAMES.put(IDENTIFIER, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.identifier"), null));
+		DISPLAY_NAMES.put(KEYWORD, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.keyword"), null));
+		DISPLAY_NAMES.put(PRIMITIVE, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.primitive"), null));
+		DISPLAY_NAMES.put(STRING, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.types.string"), null));
+		DISPLAY_NAMES.put(COMMENT, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.comment"), null));
+		DISPLAY_NAMES.put(MODIFIERS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.modifier"), null));
+		DISPLAY_NAMES.put(OPERATOR, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.key.value.separator"), null));
+		DISPLAY_NAMES.put(ANNOTATION, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.annotation"), null));
+		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<String, HighlightSeverity>(TaraBundle.message("invalid.tara.concept.character"), null));
+//		DISPLAY_NAMES.put(PROPERTIES_INVALID_STRING_ESCAPE, new Pair<>(OptionsBundle.message("options.properties.attribute.descriptor.invalid.string.escape"), HighlightSeverity.WARNING));
+	}
+
+	private static final Map<IElementType, TextAttributesKey> keys1;
+	private static final Map<IElementType, TextAttributesKey> keys2;
 
 	@NotNull
 	@Override
@@ -92,16 +106,5 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 	@Override
 	public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
 		return pack(keys1.get(tokenType), keys2.get(tokenType));
-	}
-
-	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>(6);
-
-	static {
-		DISPLAY_NAMES.put(IDENTIFIER, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.identifier"), null));
-		DISPLAY_NAMES.put(MODIFIERS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.modifier"), null));
-		DISPLAY_NAMES.put(OPERATOR, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.key.value.separator"), null));
-		DISPLAY_NAMES.put(ANNOTATION, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.annotation"), null));
-		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<String, HighlightSeverity>(TaraBundle.message("invalid.tara.concept.character"), null));
-//		DISPLAY_NAMES.put(PROPERTIES_INVALID_STRING_ESCAPE, new Pair<>(OptionsBundle.message("options.properties.attribute.descriptor.invalid.string.escape"), HighlightSeverity.WARNING));
 	}
 }

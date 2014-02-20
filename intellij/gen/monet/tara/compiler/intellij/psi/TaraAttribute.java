@@ -1,24 +1,40 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.compiler.intellij.psi;
 
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
 
 public interface TaraAttribute extends PsiElement {
 
-	@Nullable
-	TaraBooleanAssign getBooleanAssign();
+  @Nullable
+  TaraBooleanAssign getBooleanAssign();
 
-	@Nullable
-	TaraDoubleAssign getDoubleAssign();
+  @Nullable
+  TaraBooleanListAssign getBooleanListAssign();
 
-	@Nullable
-	TaraIntegerAssign getIntegerAssign();
+  @Nullable
+  TaraDoubleAssign getDoubleAssign();
 
-	@Nullable
-	TaraNaturalAssign getNaturalAssign();
+  @Nullable
+  TaraDoubleListAssign getDoubleListAssign();
 
-	@Nullable
-	TaraStringAssign getStringAssign();
+  @Nullable
+  TaraIntegerAssign getIntegerAssign();
+
+  @Nullable
+  TaraIntegerListAssign getIntegerListAssign();
+
+  @Nullable
+  TaraNaturalAssign getNaturalAssign();
+
+  @Nullable
+  TaraNaturalListAssign getNaturalListAssign();
+
+  @Nullable
+  TaraStringAssign getStringAssign();
+
+  @Nullable
+  TaraStringListAssign getStringListAssign();
 
 }

@@ -94,7 +94,7 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 			final VirtualFile vFile = file.getVirtualFile();
 			if (vFile != null) {
 				Document doc = FileDocumentManager.getInstance().getDocument(vFile);
-				final int lineNumber = doc.getLineNumber(psiElement.getTextOffset()) + 1;
+				final int lineNumber = (doc != null ? doc.getLineNumber(psiElement.getTextOffset()) : 0) + 1;
 				lineAnchor.append(" ").append(InspectionsBundle.message("inspection.export.results.at.line")).append(" ");
 				lineAnchor.append("<a HREF=\"");
 				try {
@@ -112,8 +112,7 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 	}
 
 	private void checkFile(final PsiFile file, final InspectionManager manager, GlobalInspectionContextImpl context, final RefManager refManager, final ProblemDescriptionsProcessor processor) {
-		if (!(file instanceof TaraFile)) return;
-		if (!context.isToCheckFile(file, this)) return;
+		if (!(file instanceof TaraFile) || !context.isToCheckFile(file, this)) return;
 		final PsiSearchHelper searchHelper = PsiSearchHelper.SERVICE.getInstance(file.getProject());
 		final TaraFile taraFile = (TaraFile) file;
 		final List<TaraConcept> concepts = TaraUtil.getConcepts(taraFile.getProject());
@@ -182,7 +181,7 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 	                                        final ProgressIndicator progress) {
 		for (String key : keyToFiles.keySet()) {
 			if (progress != null) {
-				progress.setText2(InspectionsBundle.message("duplicate.property.key.progress.indicator.text", key));
+				progress.setText2(TaraBundle.message("duplicate.concept.key.progress.indicator.text", key));
 				if (progress.isCanceled()) throw new ProcessCanceledException();
 			}
 			final StringBuffer message = new StringBuffer();
@@ -194,7 +193,7 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 				final List<IConcept> conceptsByName = TaraUtil.findConcept(taraFile.getProject(), key);
 				for (IConcept concept : conceptsByName) {
 					if (duplicatesCount == 0)
-						message.append(InspectionsBundle.message("duplicate.property.key.problem.descriptor", key));
+						message.append(TaraBundle.message("duplicate.concept.display.name", key));
 					surroundWithHref(message, concept.getFirstChild(), false);
 					duplicatesCount++;
 				}
@@ -222,11 +221,10 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 		for (String word : words) {
 			final Set<PsiFile> files = new THashSet<>();
 			searchHelper.processAllFilesWithWord(word, scope, new CommonProcessors.CollectProcessor<>(files), true);
-			if (resultFiles.isEmpty()) {
+			if (resultFiles.isEmpty())
 				resultFiles.addAll(files);
-			} else {
+			else
 				resultFiles.retainAll(files);
-			}
 			if (resultFiles.isEmpty()) return;
 		}
 	}

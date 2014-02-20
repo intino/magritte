@@ -68,24 +68,24 @@
     <lang.syntaxHighlighterFactory key="Tara"
                                    implementationClass="monet.tara.compiler.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="monet.tara.compiler.intellij.highlighting.TaraColorSettingPage"/>
-    <!--<annotator language="Tara" implementationClass="monet.tara.compilerntellij.TaraAnnotator"/>-->
-    <!--<localInspection language="Tara" shortName="UnusedAbstractConcept" bundle="messages.TaraBundle"-->
-    <!--key="unused.abstract.concept.inspection.display.name"-->
-    <!--groupKey="tara.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"-->
-    <!--implementationClass="monet.tara.compilerntellij.metamodel.codeinspection.UnusedAbstractConceptInspection"/>-->
+    <annotator language="Tara" implementationClass="monet.tara.compiler.intellij.TaraAnnotator"/>
+    <globalInspection language="Tara" shortName="UnusedConcept" bundle="messages.TaraBundle"
+                      key="unused.concept.inspection.display.name"
+                      groupKey="tara.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"
+                      implementationClass="monet.tara.compiler.intellij.codeinspection.UnusedAbstractConceptInspection"/>
     <!--<globalInspection shortName="DuplicateConceptInspection" bundle="messages.TaraBundle"-->
     <!--key="duplicate.concept.display.name"-->
     <!--groupKey="group.names.tara.files" enabledByDefault="false" level="WARNING"-->
-    <!--implementationClass="monet.tara.compilerntellij.codeinspection.DuplicateConceptInspection"/>-->
-    <completion.contributor language="Tara"
-                            implementationClass="monet.tara.compiler.intellij.TaraCompletionContributor"/>
+    <!--implementationClass="monet.tara.compiler.intellij.codeinspection.DuplicateConceptInspection"/>-->
+    <!--<completion.contributor language="Tara"-->
+    <!--implementationClass="monet.tara.compiler.intellij.TaraCompletionContributor"/>-->
     <psi.referenceContributor language="Tara" implementation="monet.tara.compiler.intellij.TaraReferenceContributor"/>
     <nameSuggestionProvider implementation="monet.tara.compiler.intellij.refactoring.TaraNameSuggestionProvider"/>
     <lang.elementManipulator forClass="monet.tara.compiler.intellij.psi.TaraIdentifier"
                              implementationClass="monet.tara.compiler.intellij.psi.impl.TaraConceptIdentifierManipulator"/>
     <lang.refactoringSupport language="Tara"
                              implementationClass="monet.tara.compiler.intellij.TaraRefactoringSupportProvider"/>
-    <!--<renameHandler implementation="TaraRenameHandler"/>-->
+    <renameHandler implementation="monet.tara.compiler.intellij.refactoring.TaraRenameHandler"/>
     <lang.findUsagesProvider language="Tara"
                              implementationClass="monet.tara.compiler.intellij.metamodel.TaraFindUsagesProvider"/>
     <lang.foldingBuilder language="Tara" implementationClass="monet.tara.compiler.intellij.TaraFoldingBuilder"/>

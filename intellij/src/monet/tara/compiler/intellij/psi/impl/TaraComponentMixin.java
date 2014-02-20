@@ -10,6 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.compiler.intellij.metamodel.file.TaraFile;
+import monet.tara.compiler.intellij.psi.IConcept;
 import monet.tara.compiler.intellij.psi.TaraComponent;
 import monet.tara.compiler.intellij.psi.TaraDoc;
 import org.jetbrains.annotations.NotNull;
@@ -75,4 +76,7 @@ public class TaraComponentMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.setName(((TaraComponent) this).getConceptSignature(), newName);
 	}
 
+	public PsiElement getIdentifierNode() {
+		return TaraPsiImplUtil.getIdentifierNode((IConcept) this);
+	}
 }

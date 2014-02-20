@@ -10,10 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
 import monet.tara.compiler.intellij.metamodel.file.TaraFile;
 import monet.tara.compiler.intellij.metamodel.file.TaraFileType;
-import monet.tara.compiler.intellij.psi.IConcept;
-import monet.tara.compiler.intellij.psi.TaraComponent;
-import monet.tara.compiler.intellij.psi.TaraConcept;
-import monet.tara.compiler.intellij.psi.TaraExtendedConcept;
+import monet.tara.compiler.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -97,6 +94,44 @@ public class TaraUtil {
 	}
 
 	@NotNull
+	public static List<IConcept> findDuplicates(Project project, IConcept concept) {
+		if (concept instanceof TaraConcept)
+			return findConcept(project, concept.getIdentifierNode().getText());
+		if (concept instanceof TaraComponent)
+			return findDuplicatesInComponent((TaraComponent) concept);
+		return findDuplicatesInFromComponent((TaraFromComponent) concept);
+	}
+
+	private static List<IConcept> findDuplicatesInFromComponent(TaraFromComponent component) {
+		List<IConcept> result = new ArrayList<>();
+		List<TaraFromComponent> components = ((TaraFromBody) component.getParent()).getFromComponentList();
+		for (TaraFromComponent taraFromComponent : components)
+			if (taraFromComponent.getIdentifier().equals(component.getName()))
+				result.add(taraFromComponent);
+		return result;
+	}
+
+	private static List<IConcept> findDuplicatesInComponent(TaraComponent component) {
+		List<IConcept> result = new ArrayList<>();
+		List<TaraComponent> components = TaraPsiImplUtil.getChildrenInBody((TaraConceptBody) component.getParent().getParent());
+		for (TaraComponent taraComponent : components)
+			if (taraComponent.getIdentifier().equals(component.getName()))
+				result.add(taraComponent);
+		return result;
+	}
+
+
+	@NotNull
+	public static List<TaraAttribute> findAttributeDuplicates(TaraAttribute attribute) {
+		List<TaraAttribute> result = new ArrayList<>();
+		List<TaraAttribute> attributes = TaraPsiImplUtil.getAttributesInBody((TaraConceptBody) attribute.getParent().getParent());
+		for (TaraAttribute taraAttribute : attributes)
+			if (getAttributeName(taraAttribute).equals(getAttributeName(attribute)))
+				result.add(taraAttribute);
+		return result;
+	}
+
+	@NotNull
 	public static List<IConcept> findConcepts(Project project) {
 		List<IConcept> result = new ArrayList<>();
 		Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().
@@ -115,5 +150,7 @@ public class TaraUtil {
 		return result;
 	}
 
-
+	public static String getAttributeName(TaraAttribute attribute) {
+		return attribute.getText().split(" ")[2];
+	}
 }
