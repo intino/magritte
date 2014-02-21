@@ -5,7 +5,7 @@ import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import com.intellij.usageView.UsageInfo;
-import monet.tara.compiler.intellij.metamodel.file.TaraFileType;
+import monet.tara.intellij.metamodel.file.TaraFileType;
 import monet.tara.compiler.intellij.psi.TaraConcept;
 
 import java.util.Arrays;

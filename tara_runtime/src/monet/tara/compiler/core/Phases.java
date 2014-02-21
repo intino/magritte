@@ -14,7 +14,16 @@ public class Phases {
 	public static final int OUTPUT = 7;
 	public static final int FINALIZATION = 8;
 	public static final int ALL = 9;
-	public static String[] descriptions = {"startup", "initialization", "parsing", "conversion", "semantic analysis", "canonicalization", "instruction selection", "class generation", "output", "cleanup"};
+	public static String[] descriptions = {
+		"startup",
+		"initialization",
+		"parsing",
+		"semantic analysis",
+		"conversion",
+		"canonization",
+		"class generation",
+		"output",
+		"cleanup"};
 
 	public static String getDescription(int phase) {
 		return descriptions[phase];

@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.compiler.intellij.psi.TaraTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import monet.tara.compiler.intellij.psi.*;
+import monet.tara.intellij.psi.impl.TaraPsiImplUtil;
 
 public class TaraStringAssignImpl extends ASTWrapperPsiElement implements TaraStringAssign {
 
