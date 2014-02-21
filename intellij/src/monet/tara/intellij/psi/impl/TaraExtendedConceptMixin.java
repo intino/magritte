@@ -4,8 +4,8 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
-import monet.tara.intellij.TaraReference;
 import monet.tara.compiler.intellij.psi.TaraExtendedConcept;
+import monet.tara.intellij.TaraReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

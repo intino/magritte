@@ -2,6 +2,7 @@ package monet.tara.intellij.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.TokenType;
@@ -14,8 +15,6 @@ import monet.tara.intellij.metamodel.file.TaraFile;
 import monet.tara.intellij.psi.IConcept;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class TaraComponentMixin extends ASTWrapperPsiElement {
 
@@ -54,24 +53,16 @@ public class TaraComponentMixin extends ASTWrapperPsiElement {
 	@Nullable
 	public String getDocCommentText() {
 		StringBuilder text = new StringBuilder();
-//		TaraDoc doc = ((TaraComponent) this).getDoc();
-//		String comment;
-//
-//		if (doc != null) {
-//			comment = doc.getText();
-//			String trimmed = StringUtil.trimStart(StringUtil.trimStart(comment, "#"), "!");
-//			text.insert(0, trimmed.trim());
-//			if (text.length() == 0) return null;
-//		} else
-//			text.append(this.getText());
-		return text.toString();
-	}
+		TaraDoc doc = ((TaraComponent) this).getDoc();
+		String comment;
 
-	private String extractDoc(List<TaraDoc> doc) {
-		StringBuilder text = new StringBuilder();
-		for (TaraDoc taraDoc : doc) {
-			text.append((taraDoc.getText()!= null)? taraDoc.getText(): ""  +"\n");
-		}
+		if (doc != null) {
+			comment = doc.getText();
+			String trimmed = StringUtil.trimStart(StringUtil.trimStart(comment, "#"), "!");
+			text.insert(0, trimmed.trim());
+			if (text.length() == 0) return null;
+		} else
+			text.append(this.getText());
 		return text.toString();
 	}
 

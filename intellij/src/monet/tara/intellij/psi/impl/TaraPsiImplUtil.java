@@ -59,7 +59,7 @@ public class TaraPsiImplUtil {
 	public static PsiElement setName(TaraConceptSignature element, String newName) {
 		ASTNode keyNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER);
 		if (keyNode != null) {
-			TaraConcept concept = TaraElementFactoryImpl.getInstance(element.getProject()).createConcept(newName);
+			IConcept concept = TaraElementFactoryImpl.getInstance(element.getProject()).createConcept(newName);
 			ASTNode newKeyNode = concept.getFirstChild().getChildren()[0].getNode();
 			element.getNode().replaceChild(keyNode, newKeyNode);
 		}
@@ -72,7 +72,8 @@ public class TaraPsiImplUtil {
 		else return null;
 	}
 
-	public static List<IConcept> getChildren(TaraExtendedConcept extendedConcept) {
+	@NotNull
+	public static List<IConcept> getChildren(TaraIdentifier extendedConcept) {
 		List<IConcept> result = new ArrayList<>();
 		if (extendedConcept.getParent() instanceof TaraConceptSignature) {
 			if (extendedConcept.getParent().getParent() instanceof TaraConcept) {
@@ -125,18 +126,4 @@ public class TaraPsiImplUtil {
 		return result;
 	}
 
-
-	@NotNull
-	private static String join(@NotNull final String[] strings, @NotNull final String separator) {
-		return join(strings, 0, strings.length, separator);
-	}
-
-	private static String join(@NotNull final String[] strings, int startIndex, int endIndex, @NotNull final String separator) {
-		final StringBuilder result = new StringBuilder();
-		for (int i = startIndex; i < endIndex; i++) {
-			if (i > startIndex) result.append(separator);
-			result.append(strings[i]);
-		}
-		return result.toString();
-	}
 }
