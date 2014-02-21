@@ -139,8 +139,8 @@ public class ASTNode {
 		subModels.add(submodel);
 	}
 
-	public void addReference(String type, String identifier) {
-		variables.add(new Reference(type, identifier));
+	public void addReference(String type, String identifier, boolean isList) {
+		variables.add(new Reference(type, identifier, isList));
 	}
 
 	private <T> List<T> extractElements(List items, Class<T> type) {
@@ -166,10 +166,12 @@ public class ASTNode {
 	public static class Attribute extends Variable {
 		String primitiveType;
 		String name;
+		boolean isList;
 
-		public Attribute(String type, String name) {
+		public Attribute(String type, String name, boolean isList) {
 			this.primitiveType = type;
 			this.name = name;
+			this.isList = isList;
 		}
 
 		public String getPrimitiveType() {
@@ -184,10 +186,12 @@ public class ASTNode {
 	public static class Reference extends Variable {
 		String node;
 		String name;
+		boolean isList;
 
-		public Reference(String node, String name) {
+		public Reference(String node, String name, boolean isList) {
 			this.node = node;
 			this.name = name;
+			this.isList = isList;
 		}
 
 		public String getNode() {

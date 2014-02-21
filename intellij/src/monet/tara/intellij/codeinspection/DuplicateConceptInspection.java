@@ -115,7 +115,7 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 		if (!(file instanceof TaraFile) || !context.isToCheckFile(file, this)) return;
 		final PsiSearchHelper searchHelper = PsiSearchHelper.SERVICE.getInstance(file.getProject());
 		final TaraFile taraFile = (TaraFile) file;
-		final List<TaraConcept> concepts = TaraUtil.getConcepts(taraFile.getProject());
+		final List<TaraConcept> concepts = TaraUtil.getRootConcepts(taraFile.getProject());
 		Module module = ModuleUtil.findModuleForPsiElement(file);
 		if (module == null) return;
 		final GlobalSearchScope scope = CURRENT_FILE
@@ -190,7 +190,7 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 			for (PsiFile file : psiFilesWithDuplicates) {
 				if (!(file instanceof TaraFile)) continue;
 				TaraFile taraFile = (TaraFile) file;
-				final List<IConcept> conceptsByName = TaraUtil.findConcept(taraFile.getProject(), key);
+				final List<IConcept> conceptsByName = TaraUtil.findRootConcept(taraFile.getProject(), key);
 				for (IConcept concept : conceptsByName) {
 					if (duplicatesCount == 0)
 						message.append(TaraBundle.message("duplicate.concept.display.name", key));

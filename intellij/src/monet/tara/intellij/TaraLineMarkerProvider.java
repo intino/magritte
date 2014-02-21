@@ -24,7 +24,7 @@ public class TaraLineMarkerProvider extends RelatedItemLineMarkerProvider {
 				PsiExpressionStatement identifier = (PsiExpressionStatement) psiIdentifier.getNextSibling().getNextSibling();
 				String value = identifier.getText();
 				Project project = element.getProject();
-				final List<IConcept> conceptList = TaraUtil.findConcept(project, value.replace(";", ""));
+				final List<IConcept> conceptList = TaraUtil.findRootConcept(project, value.replace(";", ""));
 				if (conceptList.size() > 0) {
 					NavigationGutterIconBuilder<PsiElement> psiElementNavigationGutterIconBuilder = NavigationGutterIconBuilder.create(TaraIcons.ICON).setTargets(conceptList);
 					NavigationGutterIconBuilder<PsiElement> builder =

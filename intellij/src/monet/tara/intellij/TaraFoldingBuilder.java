@@ -26,7 +26,7 @@ public class TaraFoldingBuilder extends FoldingBuilderEx {
 		Collection<IConcept> concepts = PsiTreeUtil.findChildrenOfType(root, IConcept.class);
 		for (final IConcept concept : concepts)
 			if (concept.getText() != null && concept.getText().startsWith("concept ")) {
-				final List<IConcept> conceptList = TaraUtil.findConcept(concept.getProject(), concept.getName());
+				final List<IConcept> conceptList = TaraUtil.findRootConcept(concept.getProject(), concept.getName());
 
 				final TaraConcept taraConcept = (TaraConcept) conceptList.get(0);
 				if (conceptList.size() == 1 && taraConcept.getConceptBody() != null)

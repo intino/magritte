@@ -4,12 +4,13 @@ package monet.tara.compiler.intellij.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import monet.tara.intellij.psi.IAttribute;
 import monet.tara.intellij.psi.IConcept;
 
 public class TaraVisitor extends PsiElementVisitor {
 
   public void visitAttribute(@NotNull TaraAttribute o) {
-    visitPsiElement(o);
+    visitIAttribute(o);
   }
 
   public void visitBooleanAssign(@NotNull TaraBooleanAssign o) {
@@ -126,6 +127,10 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitWord(@NotNull TaraWord o) {
     visitPsiElement(o);
+  }
+
+  public void visitIAttribute(@NotNull IAttribute o) {
+    visitElement(o);
   }
 
   public void visitIConcept(@NotNull IConcept o) {

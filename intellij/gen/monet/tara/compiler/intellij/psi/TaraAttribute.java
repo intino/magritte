@@ -4,8 +4,9 @@ package monet.tara.compiler.intellij.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import monet.tara.intellij.psi.IAttribute;
 
-public interface TaraAttribute extends PsiElement {
+public interface TaraAttribute extends IAttribute {
 
   @Nullable
   TaraBooleanAssign getBooleanAssign();

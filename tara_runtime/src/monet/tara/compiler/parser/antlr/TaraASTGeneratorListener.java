@@ -99,7 +99,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterDoc(@NotNull DocContext ctx) {
-		conceptStack.peek().setDoc((ctx.DOC_BLOCK() != null) ? ctx.DOC_BLOCK().getText() : ctx.DOC_LINE().getText());
+		conceptStack.peek().setDoc(ctx.DOC().getText());
 	}
 
 	@Override
@@ -132,17 +132,17 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	public void enterAttribute(@NotNull AttributeContext ctx) {
 		ASTNode.Attribute attribute;
 		if (ctx.UID_TYPE() != null)
-			attribute = new ASTNode.Attribute(ctx.UID_TYPE().getText(), ctx.IDENTIFIER().getText());
+			attribute = new ASTNode.Attribute(ctx.UID_TYPE().getText(), ctx.IDENTIFIER().getText(), false);
 		else if (ctx.INT_TYPE() != null)
-			attribute = new ASTNode.Attribute(ctx.INT_TYPE().getText() + ((ctx.LIST() != null) ? "[]" : ""), ctx.IDENTIFIER().getText());
+			attribute = new ASTNode.Attribute(ctx.INT_TYPE().getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
 		else if (ctx.DOUBLE_TYPE() != null)
-			attribute = new ASTNode.Attribute(ctx.DOUBLE_TYPE().getText() + ((ctx.LIST() != null) ? "[]" : ""), ctx.IDENTIFIER().getText());
+			attribute = new ASTNode.Attribute(ctx.DOUBLE_TYPE().getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
 		else if (ctx.NATURAL_TYPE() != null)
-			attribute = new ASTNode.Attribute(ctx.NATURAL_TYPE().getText() + ((ctx.LIST() != null) ? "[]" : ""), ctx.IDENTIFIER().getText());
+			attribute = new ASTNode.Attribute(ctx.NATURAL_TYPE().getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
 		else if (ctx.BOOLEAN_TYPE() != null)
-			attribute = new ASTNode.Attribute(ctx.BOOLEAN_TYPE().getText() + ((ctx.LIST() != null) ? "[]" : ""), ctx.IDENTIFIER().getText());
+			attribute = new ASTNode.Attribute(ctx.BOOLEAN_TYPE().getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
 		else
-			attribute = new ASTNode.Attribute(ctx.STRING_TYPE().getText() + ((ctx.LIST() != null) ? "[]" : ""), ctx.IDENTIFIER().getText());
+			attribute = new ASTNode.Attribute(ctx.STRING_TYPE().getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
 		conceptStack.peek().add(attribute);
 	}
 
@@ -159,7 +159,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		String parent = "";
 		for (int i = 0; i < ctx.IDENTIFIER().size() - 1; i++)
 			parent += ctx.IDENTIFIER(i).getText() + ".";
-		conceptStack.peek().addReference(parent.substring(0, parent.length() - 1) +
-			((ctx.LIST() != null) ? "[]" : ""), ctx.IDENTIFIER(ctx.IDENTIFIER().size() - 1).getText());
+		conceptStack.peek().addReference(parent.substring(0, parent.length() - 1),
+			ctx.IDENTIFIER(ctx.IDENTIFIER().size() - 1).getText(), (ctx.LIST() != null));
 	}
 }

@@ -494,11 +494,10 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // conceptSignature componentAnnotations? doc? conceptBody?
-  //                 | NEW extendedConcept componentAnnotations?
+  // doc? conceptSignature componentAnnotations? conceptBody?
+  //             | NEW extendedConcept componentAnnotations?
   public static boolean component(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "component")) return false;
-    if (!nextTokenIs(builder_, "<component>", CONCEPT_KEY, NEW)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<component>");
     result_ = component_0(builder_, level_ + 1);
@@ -507,30 +506,30 @@ public class TaraParser implements PsiParser {
     return result_;
   }
 
-  // conceptSignature componentAnnotations? doc? conceptBody?
+  // doc? conceptSignature componentAnnotations? conceptBody?
   private static boolean component_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "component_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = conceptSignature(builder_, level_ + 1);
-    result_ = result_ && component_0_1(builder_, level_ + 1);
+    result_ = component_0_0(builder_, level_ + 1);
+    result_ = result_ && conceptSignature(builder_, level_ + 1);
     result_ = result_ && component_0_2(builder_, level_ + 1);
     result_ = result_ && component_0_3(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // componentAnnotations?
-  private static boolean component_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "component_0_1")) return false;
-    componentAnnotations(builder_, level_ + 1);
+  // doc?
+  private static boolean component_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "component_0_0")) return false;
+    doc(builder_, level_ + 1);
     return true;
   }
 
-  // doc?
+  // componentAnnotations?
   private static boolean component_0_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "component_0_2")) return false;
-    doc(builder_, level_ + 1);
+    componentAnnotations(builder_, level_ + 1);
     return true;
   }
 
@@ -605,31 +604,31 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // conceptSignature conceptAnnotations? doc? conceptBody?
+  // doc? conceptSignature conceptAnnotations? conceptBody?
   public static boolean concept(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "concept")) return false;
-    if (!nextTokenIs(builder_, CONCEPT_KEY)) return false;
+    if (!nextTokenIs(builder_, "<concept>", CONCEPT_KEY, DOC_LINE)) return false;
     boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = conceptSignature(builder_, level_ + 1);
-    result_ = result_ && concept_1(builder_, level_ + 1);
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<concept>");
+    result_ = concept_0(builder_, level_ + 1);
+    result_ = result_ && conceptSignature(builder_, level_ + 1);
     result_ = result_ && concept_2(builder_, level_ + 1);
     result_ = result_ && concept_3(builder_, level_ + 1);
-    exit_section_(builder_, marker_, CONCEPT, result_);
+    exit_section_(builder_, level_, marker_, CONCEPT, result_, false, null);
     return result_;
   }
 
-  // conceptAnnotations?
-  private static boolean concept_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "concept_1")) return false;
-    conceptAnnotations(builder_, level_ + 1);
+  // doc?
+  private static boolean concept_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "concept_0")) return false;
+    doc(builder_, level_ + 1);
     return true;
   }
 
-  // doc?
+  // conceptAnnotations?
   private static boolean concept_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "concept_2")) return false;
-    doc(builder_, level_ + 1);
+    conceptAnnotations(builder_, level_ + 1);
     return true;
   }
 
@@ -1028,10 +1027,9 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (conceptSignature fromComponentAnnotations? doc? conceptBody?) | ( NEW extendedConcept fromComponentAnnotations?)
+  // (doc? conceptSignature fromComponentAnnotations? conceptBody?) | ( NEW extendedConcept fromComponentAnnotations?)
   public static boolean fromComponent(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fromComponent")) return false;
-    if (!nextTokenIs(builder_, "<from component>", CONCEPT_KEY, NEW)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<from component>");
     result_ = fromComponent_0(builder_, level_ + 1);
@@ -1040,30 +1038,30 @@ public class TaraParser implements PsiParser {
     return result_;
   }
 
-  // conceptSignature fromComponentAnnotations? doc? conceptBody?
+  // doc? conceptSignature fromComponentAnnotations? conceptBody?
   private static boolean fromComponent_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fromComponent_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = conceptSignature(builder_, level_ + 1);
-    result_ = result_ && fromComponent_0_1(builder_, level_ + 1);
+    result_ = fromComponent_0_0(builder_, level_ + 1);
+    result_ = result_ && conceptSignature(builder_, level_ + 1);
     result_ = result_ && fromComponent_0_2(builder_, level_ + 1);
     result_ = result_ && fromComponent_0_3(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // fromComponentAnnotations?
-  private static boolean fromComponent_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "fromComponent_0_1")) return false;
-    fromComponentAnnotations(builder_, level_ + 1);
+  // doc?
+  private static boolean fromComponent_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "fromComponent_0_0")) return false;
+    doc(builder_, level_ + 1);
     return true;
   }
 
-  // doc?
+  // fromComponentAnnotations?
   private static boolean fromComponent_0_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fromComponent_0_2")) return false;
-    doc(builder_, level_ + 1);
+    fromComponentAnnotations(builder_, level_ + 1);
     return true;
   }
 

@@ -10,6 +10,4 @@ public interface TaraExtendedConcept extends PsiElement {
   @NotNull
   List<TaraIdentifier> getIdentifierList();
 
-  String getIdentifier();
-
 }

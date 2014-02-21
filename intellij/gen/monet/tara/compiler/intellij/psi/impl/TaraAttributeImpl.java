@@ -8,11 +8,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.compiler.intellij.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import monet.tara.intellij.psi.impl.TaraAttributeMixin;
 import monet.tara.compiler.intellij.psi.*;
 import monet.tara.intellij.psi.impl.TaraPsiImplUtil;
 
-public class TaraAttributeImpl extends ASTWrapperPsiElement implements TaraAttribute {
+public class TaraAttributeImpl extends TaraAttributeMixin implements TaraAttribute {
 
   public TaraAttributeImpl(ASTNode node) {
     super(node);
