@@ -139,8 +139,7 @@ NEGATIVE_VALUE = {NEGATIVE} {DIGIT}+
 DOUBLE_VALUE   = ({POSITIVE} | {NEGATIVE})? {DIGIT}+ {DOT} {DIGIT}+
 STRING_VALUE= {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
 
-DOC_LINE = [\n] ([ ]+ | [\t]+)? "'" ~[\n]
-
+DOC_LINE = "'" ~[\n]
 DIGIT=[:digit:]
 
 IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
@@ -177,8 +176,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{ROOT}                      {   return TaraTypes.ROOT; }
 	{SINGLETON}                 {   return TaraTypes.SINGLETON; }
 
-	{DOC_LINE}                  {   yypushback(1);
-									return TaraTypes.DOC_LINE; }
+	{DOC_LINE}                  {   return TaraTypes.DOC_LINE; }
 
 	{STRING_VALUE}              {   return TaraTypes.STRING_VALUE; }
 	{BOOLEAN_VALUE}             {   return TaraTypes.BOOLEAN_VALUE; }

@@ -18,7 +18,7 @@
 
 root ::= (concept | NEWLINE)*
 
-concept ::= conceptSignature conceptAnnotations? doc? conceptBody?
+concept ::= doc? conceptSignature conceptAnnotations? conceptBody?
 { mixin= 'monet.tara.intellij.psi.impl.TaraConceptMixin'
 implements='monet.tara.intellij.psi.IConcept'
 methods=[getIdentifier]
@@ -28,13 +28,13 @@ conceptSignature ::= CONCEPT_KEY extendedConcept? modifier? AS identifier
 conceptBody ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT
 
 extendedConcept::= identifier (DOT identifier)*
-{mixin= 'monet.tara.intellij.psi.impl.TaraExtendedConceptMixin' methods=[getIdentifier]}
+//{mixin= 'monet.tara.intellij.psi.impl.TaraExtendedConceptMixin' methods=[getIdentifier]}
 
 identifier  ::=  IDENTIFIER_KEY
 {mixin= 'monet.tara.intellij.psi.impl.TaraIdentifierMixin' methods=[getIdentifier]}
 
-component ::= conceptSignature componentAnnotations? doc? conceptBody?
-                | NEW extendedConcept componentAnnotations?
+component ::= doc? conceptSignature componentAnnotations? conceptBody?
+            | NEW extendedConcept componentAnnotations?
 { mixin= 'monet.tara.intellij.psi.impl.TaraComponentMixin'
 implements='monet.tara.intellij.psi.IConcept'
 methods=[getIdentifier]
@@ -54,6 +54,8 @@ attribute::= VAR    UID_TYPE IDENTIFIER_KEY stringAssign?
            | VAR NATURAL_TYPE (IDENTIFIER_KEY naturalAssign? | LIST IDENTIFIER_KEY naturalListAssign?)
            | VAR BOOLEAN_TYPE (IDENTIFIER_KEY booleanAssign? | LIST IDENTIFIER_KEY booleanListAssign?)
            | VAR  STRING_TYPE (IDENTIFIER_KEY stringAssign?  | LIST IDENTIFIER_KEY stringListAssign?)
+{mixin= 'monet.tara.intellij.psi.impl.TaraAttributeMixin'
+implements='monet.tara.intellij.psi.IAttribute'}
 
 word::= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE+)+ DEDENT
 
@@ -73,7 +75,7 @@ from::= FROM_KEY fromAnnotations? fromBody
 
 fromBody::= NEW_LINE_INDENT (fromComponent NEWLINE+)+ DEDENT
 
-fromComponent::= (conceptSignature fromComponentAnnotations? doc? conceptBody?) | ( NEW extendedConcept fromComponentAnnotations?)
+fromComponent::= (doc? conceptSignature fromComponentAnnotations? conceptBody?) | ( NEW extendedConcept fromComponentAnnotations?)
 { mixin= 'monet.tara.intellij.psi.impl.TaraFromComponentMixin'
 implements='monet.tara.intellij.psi.IConcept'
 methods=[getIdentifier]
