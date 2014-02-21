@@ -7,6 +7,9 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraExtendedConcept extends PsiElement {
 
+  @NotNull
+  List<TaraIdentifier> getIdentifierList();
+
   String getIdentifier();
 
 }

@@ -6,6 +6,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import monet.tara.compiler.intellij.psi.impl.*;
+import monet.tara.intellij.psi.TaraElementType;
+import monet.tara.intellij.psi.TaraTokenType;
 
 public interface TaraTypes {
 
@@ -48,7 +50,6 @@ public interface TaraTypes {
 	IElementType CLOSE_AN = new TaraTokenType("CLOSE_AN");
 	IElementType CONCEPT_KEY = new TaraTokenType("CONCEPT_KEY");
 	IElementType DEDENT = new TaraTokenType("DEDENT");
-	IElementType DOC_BLOCK = new TaraTokenType("DOC_BLOCK");
 	IElementType DOC_LINE = new TaraTokenType("DOC_LINE");
 	IElementType DOT = new TaraTokenType("DOT");
 	IElementType DOUBLE_TYPE = new TaraTokenType("DOUBLE_TYPE");
@@ -65,6 +66,7 @@ public interface TaraTypes {
 	IElementType NATURAL_TYPE = new TaraTokenType("NATURAL_TYPE");
 	IElementType NATURAL_VALUE = new TaraTokenType("NATURAL_VALUE");
 	IElementType NEGATIVE_VALUE = new TaraTokenType("NEGATIVE_VALUE");
+	IElementType NEW = new TaraTokenType("NEW");
 	IElementType NEWLINE = new TaraTokenType("NEWLINE");
 	IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
 	IElementType OPEN_AN = new TaraTokenType("OPEN_AN");

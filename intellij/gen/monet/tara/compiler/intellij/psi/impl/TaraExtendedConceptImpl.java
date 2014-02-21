@@ -8,7 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.compiler.intellij.psi.TaraTypes.*;
+import monet.tara.intellij.psi.impl.TaraExtendedConceptMixin;
 import monet.tara.compiler.intellij.psi.*;
+import monet.tara.intellij.psi.impl.TaraPsiImplUtil;
 
 public class TaraExtendedConceptImpl extends TaraExtendedConceptMixin implements TaraExtendedConcept {
 
@@ -19,6 +21,12 @@ public class TaraExtendedConceptImpl extends TaraExtendedConceptMixin implements
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitExtendedConcept(this);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<TaraIdentifier> getIdentifierList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifier.class);
   }
 
   public String getIdentifier() {

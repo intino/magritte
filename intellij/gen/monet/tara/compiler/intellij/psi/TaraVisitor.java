@@ -4,6 +4,7 @@ package monet.tara.compiler.intellij.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import monet.tara.intellij.psi.IConcept;
 
 public class TaraVisitor extends PsiElementVisitor {
 

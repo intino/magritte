@@ -4,6 +4,7 @@ package monet.tara.compiler.intellij.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import monet.tara.intellij.psi.IConcept;
 
 public interface TaraFromComponent extends IConcept {
 
