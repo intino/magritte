@@ -1,4 +1,4 @@
-package monet.tara.intellij.metamodel;
+package monet.tara.intellij;
 
 import com.intellij.find.impl.HelpID;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
@@ -9,6 +9,7 @@ import com.intellij.psi.tree.TokenSet;
 import monet.tara.compiler.intellij.psi.TaraConcept;
 import monet.tara.compiler.intellij.psi.TaraIdentifier;
 import monet.tara.compiler.intellij.psi.TaraTypes;
+import monet.tara.intellij.metamodel.TaraLexerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

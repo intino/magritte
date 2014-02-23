@@ -1,4 +1,4 @@
-package monet.tara.intellij.metamodel;
+package monet.tara.intellij.highlighting;
 
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
@@ -12,6 +12,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
 import gnu.trove.THashMap;
 import monet.tara.compiler.intellij.psi.TaraTypes;
+import monet.tara.intellij.metamodel.TaraBundle;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

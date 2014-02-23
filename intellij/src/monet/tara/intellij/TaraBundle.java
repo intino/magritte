@@ -1,4 +1,4 @@
-package monet.tara.intellij.metamodel;
+package monet.tara.intellij;
 
 import com.intellij.CommonBundle;
 import org.jetbrains.annotations.NonNls;

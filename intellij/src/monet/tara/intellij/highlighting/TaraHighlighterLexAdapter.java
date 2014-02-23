@@ -1,4 +1,4 @@
-package monet.tara.intellij.metamodel;
+package monet.tara.intellij.highlighting;
 
 import com.intellij.lexer.FlexAdapter;
 
