@@ -5,7 +5,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.util.ProcessingContext;
 import monet.tara.intellij.metamodel.TaraLanguage;
-import monet.tara.compiler.intellij.psi.TaraTypes;
+import monet.tara.intellij.metamodel.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
 

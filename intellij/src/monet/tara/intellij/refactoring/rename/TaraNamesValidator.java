@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project;
 /**
  * Created by oroncal on 08/01/14.
  */
-public class TaraNamesValidator implements NamesValidator {
+public class TaraNamesValidator implements NamesValidator { //TODO
 	public boolean isKeyword(final String name, final Project project) {
 		return false;
 	}

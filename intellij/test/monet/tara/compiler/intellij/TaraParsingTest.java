@@ -1,7 +1,7 @@
 package monet.tara.compiler.intellij;
 
 import com.intellij.testFramework.ParsingTestCase;
-import monet.tara.intellij.metamodel.TaraParserDefinition;
+import monet.tara.intellij.metamodel.parser.TaraParserDefinition;
 
 /**
  * Created by oroncal on 03/01/14.

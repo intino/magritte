@@ -8,7 +8,7 @@ import com.intellij.lang.Commenter;
 public class TaraCommenter implements Commenter {
 
 	public String getLineCommentPrefix() {
-		return "#";
+		return "'";
 	}
 
 	public String getBlockCommentPrefix() {

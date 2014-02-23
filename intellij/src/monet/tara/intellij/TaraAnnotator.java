@@ -21,9 +21,9 @@ import com.intellij.psi.tree.IElementType;
 import monet.tara.intellij.codeinspection.fix.RemoveAttributeFix;
 import monet.tara.intellij.codeinspection.fix.RemoveConceptFix;
 import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import monet.tara.intellij.psi.IConcept;
-import monet.tara.compiler.intellij.psi.TaraAttribute;
-import monet.tara.intellij.psi.impl.TaraUtil;
+import monet.tara.intellij.metamodel.psi.IConcept;
+import monet.tara.intellij.metamodel.psi.TaraAttribute;
+import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -46,76 +46,78 @@ public class TaraAnnotator implements Annotator {
 					int end = lexer.getTokenEnd() + node.getTextRange().getStartOffset();
 					TextRange textRange = new TextRange(start, end);
 					final Annotation annotation;
-					if (severity == HighlightSeverity.WARNING) {
+					if (severity == HighlightSeverity.WARNING)
 						annotation = holder.createWarningAnnotation(textRange, displayName);
-					} else if (severity == HighlightSeverity.ERROR) {
+					else if (severity == HighlightSeverity.ERROR)
 						annotation = holder.createErrorAnnotation(textRange, displayName);
-					} else {
-						annotation = holder.createInfoAnnotation(textRange, displayName);
-					}
+					else annotation = holder.createInfoAnnotation(textRange, displayName);
 					TextAttributes attributes = EditorColorsManager.getInstance().getGlobalScheme().getAttributes(key);
 					annotation.setEnforcedTextAttributes(attributes);
-					if (key == TaraSyntaxHighlighter.BAD_CHARACTER) {
-						annotation.registerFix(new IntentionAction() {
-							@NotNull
-							public String getText() {
-								return TaraBundle.message("unescape");
-							}
-
-							@NotNull
-							public String getFamilyName() {
-								return getText();
-							}
-
-							public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-								if (!element.isValid() || !element.getManager().isInProject(element)) return false;
-
-								String text = element.getContainingFile().getText();
-								int startOffset = annotation.getStartOffset();
-								return text.length() > startOffset && text.charAt(startOffset) == '\\';
-							}
-
-							public void invoke(@NotNull Project project, Editor editor, PsiFile file) {
-								if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-								int offset = annotation.getStartOffset();
-								if (element.getContainingFile().getText().charAt(offset) == '\\') {
-									editor.getDocument().deleteString(offset, offset + 1);
-								}
-							}
-
-							public boolean startInWriteAction() {
-								return true;
-							}
-						});
-					}
+					if (key == TaraSyntaxHighlighter.BAD_CHARACTER)
+						annotation.registerFix(getIntention(element, annotation));
 				}
 			}
 			lexer.advance();
 		}
 	}
 
+	private static IntentionAction getIntention(final PsiElement element, final Annotation annotation) {
+		return new IntentionAction() {
+			@NotNull
+			public String getText() {
+				return TaraBundle.message("unescape");
+			}
+
+			@NotNull
+			public String getFamilyName() {
+				return getText();
+			}
+
+			public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
+				if (!element.isValid() || !element.getManager().isInProject(element)) return false;
+				String text = element.getContainingFile().getText();
+				int startOffset = annotation.getStartOffset();
+				return text.length() > startOffset && text.charAt(startOffset) == '\\';
+			}
+
+			public void invoke(@NotNull Project project, Editor editor, PsiFile file) {
+				if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
+				int offset = annotation.getStartOffset();
+				if (element.getContainingFile().getText().charAt(offset) == '\\')
+					editor.getDocument().deleteString(offset, offset + 1);
+			}
+
+			public boolean startInWriteAction() {
+				return true;
+			}
+		};
+	}
+
 	@Override
 	public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
-		if (element instanceof IConcept) {
-			final IConcept concept = (IConcept) element;
-			if (concept.getIdentifierNode() != null) {
-				List<IConcept> existenceOfConcept = TaraUtil.findDuplicates(concept.getProject(), concept);
-				ASTNode identifierNode = concept.getIdentifierNode().getNode();
-				if (existenceOfConcept.size() != 1) {
-					Annotation annotation = holder.createErrorAnnotation(identifierNode, TaraBundle.message("duplicate.concept.key.error.message"));
-					annotation.registerFix(new RemoveConceptFix(concept));
-					highlightTokens(concept, identifierNode, holder, new TaraSyntaxHighlighter());
-				}
+		if (element instanceof IConcept)
+			checkDuplicatedConcept((IConcept) element, holder);
+		if (element instanceof TaraAttribute)
+			checkDuplicatedAttribute((TaraAttribute) element, holder);
+	}
+
+	private void checkDuplicatedConcept(IConcept concept, AnnotationHolder holder) {
+		if (concept.getIdentifierNode() != null) {
+			List<IConcept> existenceOfConcept = TaraUtil.findDuplicates(concept.getProject(), concept);
+			ASTNode identifierNode = concept.getIdentifierNode().getNode();
+			if (existenceOfConcept.size() != 1) {
+				Annotation annotation = holder.createErrorAnnotation(identifierNode, TaraBundle.message("duplicate.concept.key.error.message"));
+				annotation.registerFix(new RemoveConceptFix(concept));
+				highlightTokens(concept, identifierNode, holder, new TaraSyntaxHighlighter());
 			}
 		}
+	}
 
-		if (element instanceof TaraAttribute) {
-			final TaraAttribute attribute = (TaraAttribute) element;
-			List<TaraAttribute> existenceOfAttribute = TaraUtil.findAttributeDuplicates(attribute);
-			ASTNode attrNode = attribute.getNode();
-			if (existenceOfAttribute.size() != 1) {
-				annotateAttribute(holder, attribute, attrNode);
-			}
+	private void checkDuplicatedAttribute(TaraAttribute attribute, AnnotationHolder holder) {
+		List<TaraAttribute> existenceOfAttribute = TaraUtil.findAttributeDuplicates(attribute);
+		ASTNode attrNode = attribute.getNode();
+		if (existenceOfAttribute.size() != 1) {
+			annotateAttribute(holder, attribute, attrNode);
 		}
 	}
 

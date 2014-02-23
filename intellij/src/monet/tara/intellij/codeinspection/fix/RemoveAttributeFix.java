@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.TaraBundle;
-import monet.tara.compiler.intellij.psi.TaraAttribute;
+import monet.tara.intellij.metamodel.psi.TaraAttribute;
 import org.jetbrains.annotations.NotNull;
 
 /**

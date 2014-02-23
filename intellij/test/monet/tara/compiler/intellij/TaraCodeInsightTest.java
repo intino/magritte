@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import com.intellij.usageView.UsageInfo;
 import monet.tara.intellij.metamodel.file.TaraFileType;
-import monet.tara.compiler.intellij.psi.TaraConcept;
+import monet.tara.intellij.metamodel.psi.TaraConcept;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -63,7 +63,7 @@ public class TaraCodeInsightTest extends LightCodeInsightFixtureTestCase {
 
 	public void testRename() {
 		myFixture.configureByFiles(RENAME + SEPARATOR + "RenameTestData.m2");
-		myFixture.renameElementAtCaret("RadiatorRenamed");
+		myFixture.renameElementAtCaret("TermRenamed");
 		myFixture.checkResultByFile(RENAME + SEPARATOR + "RenameTestData.m2", RENAME + SEPARATOR + "RenameTestDataAfter.m2", true);
 	}
 

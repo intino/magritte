@@ -1,68 +1,78 @@
 package monet.tara.intellij.structureview;
 
 import com.intellij.ide.structureView.StructureViewTreeElement;
-import com.intellij.ide.util.treeView.smartTree.SortableTreeElement;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.NavigationItem;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import monet.tara.intellij.metamodel.file.TaraFile;
-import monet.tara.compiler.intellij.psi.TaraConcept;
+import monet.tara.intellij.metamodel.psi.IConcept;
+import monet.tara.intellij.metamodel.psi.TaraComponent;
+import monet.tara.intellij.metamodel.psi.TaraConcept;
+import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
+import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaraStructureViewElement implements StructureViewTreeElement, SortableTreeElement {
+public class TaraStructureViewElement implements StructureViewTreeElement {
 
-	private PsiElement element;
+	private final IConcept concept;
+	private String myPresentableName;
 
-	public TaraStructureViewElement(PsiElement element) {
-		this.element = element;
+	public TaraStructureViewElement(IConcept taraConcept) {
+		this.concept = taraConcept;
 	}
 
 	@Override
 	public Object getValue() {
-		return element;
+		return concept;
 	}
 
-	@Override
 	public void navigate(boolean requestFocus) {
-		if (element instanceof NavigationItem)
-			((NavigationItem) element).navigate(requestFocus);
+		concept.navigate(requestFocus);
 	}
 
-	@Override
 	public boolean canNavigate() {
-		return element instanceof NavigationItem &&
-			((NavigationItem) element).canNavigate();
+		return concept.canNavigate();
 	}
 
-	@Override
 	public boolean canNavigateToSource() {
-		return element instanceof NavigationItem && ((NavigationItem) element).canNavigateToSource();
+		return concept.canNavigateToSource();
 	}
 
-	@Override
-	public String getAlphaSortKey() {
-		return element instanceof PsiNamedElement ? ((PsiNamedElement) element).getName() : null;
-	}
-
-	@Override
-	public ItemPresentation getPresentation() {
-		return element instanceof NavigationItem ? ((NavigationItem) element).getPresentation() : null;
-	}
 
 	@Override
 	public TreeElement[] getChildren() {
-		if (element instanceof TaraFile) {
-			TaraConcept[] concepts = PsiTreeUtil.getChildrenOfType(element, TaraConcept.class);
-			List<TreeElement> treeElements = new ArrayList<>(concepts.length);
-			for (TaraConcept concept : concepts)
-				treeElements.add(new TaraStructureViewElement(concept));
-			return treeElements.toArray(new TreeElement[treeElements.size()]);
+		if (concept instanceof TaraConcept) {
+			List<TaraComponent> components = TaraUtil.getChildrenOf(concept);
+			if (components!= null && !components.isEmpty()) {
+				List<TreeElement> treeElements = new ArrayList<>(components.size());
+				for (IConcept component : components)
+					treeElements.add(new TaraStructureViewElement(component));
+				return treeElements.toArray(new TreeElement[treeElements.size()]);
+			}
 		}
 		return EMPTY_ARRAY;
+	}
+
+	@NotNull
+	public ItemPresentation getPresentation() {
+		return new ItemPresentation() {
+			public String getPresentableText() {
+				if (myPresentableName == null) return (concept.getName() == null ? "Anonymous" : concept.getName());
+				else return myPresentableName;
+			}
+
+			public String getLocationString() {
+				return null;
+			}
+
+			public Icon getIcon(boolean open) {
+				return concept.getIcon(0);
+			}
+		};
+	}
+
+	public void setPresentableName(final String presentableName) {
+		myPresentableName = presentableName;
 	}
 }

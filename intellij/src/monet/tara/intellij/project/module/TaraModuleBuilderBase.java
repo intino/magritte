@@ -18,11 +18,6 @@ public class TaraModuleBuilderBase extends ModuleBuilder {
 
 	private final DirectoryProjectGenerator myGenerator;
 
-
-	public TaraModuleBuilderBase(DirectoryProjectGenerator generator) {
-		myGenerator = generator;
-	}
-
 	public TaraModuleBuilderBase() {
 		myGenerator = null;
 	}

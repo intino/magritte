@@ -18,25 +18,27 @@ public class TaraCompilerRunner {
 
 	static boolean runTaraCompiler(File argsFile, boolean pluginGeneration) {
 		final CompilerConfiguration config = new CompilerConfiguration();
-		config.setOutput(new PrintWriter(System.err));
-		config.setWarningLevel(WarningMessage.PARANOIA);
-
-		final List<CompilerMessage> compilerMessages = new ArrayList<>();
 		final List<File> srcFiles = new ArrayList<>();
-		fillFromArgsFile(argsFile, config, srcFiles);
-		if (srcFiles.isEmpty()) return true;
-		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
+		final List<CompilerMessage> compilerMessages = new ArrayList<>();
+		getInfoFromArgsFile(argsFile, config, srcFiles);
 
+		if (srcFiles.isEmpty()) return true;
+
+		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 		final CompilationUnit unit = new CompilationUnit(pluginGeneration, config, null);
 		addSources(srcFiles, unit);
 
 		System.out.println("Tarac: compiling...");
 		final List<TaraCompiler.OutputItem> compiledFiles = new TaraCompiler(pluginGeneration, compilerMessages).compile(unit);
-
-		System.out.println();
-		reportCompiledItems(compiledFiles);
 		System.out.println();
 		if (compiledFiles.isEmpty()) reportNotCompiledItems(srcFiles);
+		else reportCompiledItems(compiledFiles);
+		System.out.println();
+		processErrors(compilerMessages);
+		return false;
+	}
+
+	private static void processErrors(List<CompilerMessage> compilerMessages) {
 		int errorCount = 0;
 		for (CompilerMessage message : compilerMessages) {
 			if (message.getCategory().equals(TaraCompilerMessageCategories.ERROR)) {
@@ -45,13 +47,14 @@ public class TaraCompilerRunner {
 			}
 			printMessage(message);
 		}
-		return false;
 	}
 
 
-	private static void fillFromArgsFile(File argsFile, CompilerConfiguration compilerConfiguration, List<File> srcFiles) {
+	private static void getInfoFromArgsFile(File argsFile, CompilerConfiguration configuration, List<File> srcFiles) {
 		BufferedReader reader = null;
 		FileInputStream stream;
+		configuration.setOutput(new PrintWriter(System.err));
+		configuration.setWarningLevel(WarningMessage.PARANOIA);
 		try {
 			stream = new FileInputStream(argsFile);
 			reader = new BufferedReader(new InputStreamReader(stream));
@@ -63,13 +66,13 @@ public class TaraCompilerRunner {
 			}
 			while (line != null) {
 				if (line.startsWith(TaraRtConstants.ENCODING))
-					compilerConfiguration.setSourceEncoding(reader.readLine());
+					configuration.setSourceEncoding(reader.readLine());
 				else if (line.startsWith(TaraRtConstants.OUTPUTPATH))
-					compilerConfiguration.setTempDirectory(reader.readLine());
+					configuration.setTempDirectory(reader.readLine());
 				else if (line.startsWith(TaraRtConstants.FINAL_OUTPUTPATH))
-					compilerConfiguration.setTargetDirectory(reader.readLine());
+					configuration.setTargetDirectory(reader.readLine());
 				else if (line.startsWith(TaraRtConstants.PROJECT))
-					compilerConfiguration.setProject(reader.readLine());
+					configuration.setProject(reader.readLine());
 				line = reader.readLine();
 			}
 		} catch (IOException e) {

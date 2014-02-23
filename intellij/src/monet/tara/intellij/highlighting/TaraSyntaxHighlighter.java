@@ -11,7 +11,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
 import gnu.trove.THashMap;
-import monet.tara.compiler.intellij.psi.TaraTypes;
+import monet.tara.intellij.metamodel.psi.TaraTypes;
 import monet.tara.intellij.TaraBundle;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,15 +35,15 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>(6);
 
 	static {
-		DISPLAY_NAMES.put(IDENTIFIER, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.identifier"), null));
-		DISPLAY_NAMES.put(KEYWORD, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.keyword"), null));
+		DISPLAY_NAMES.put(IDENTIFIER, new Pair<>(TaraBundle.message("options.tara.concept.identifier"), HighlightSeverity.ERROR));
+		DISPLAY_NAMES.put(KEYWORD, new Pair<>(TaraBundle.message("options.tara.concept.keyword"), HighlightSeverity.ERROR));
 		DISPLAY_NAMES.put(PRIMITIVE, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.primitive"), null));
 		DISPLAY_NAMES.put(STRING, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.types.string"), null));
 		DISPLAY_NAMES.put(DOCUMENTATION, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.comment"), null));
 		DISPLAY_NAMES.put(MODIFIERS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.modifier"), null));
 		DISPLAY_NAMES.put(OPERATOR, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.key.value.separator"), null));
 		DISPLAY_NAMES.put(ANNOTATION, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.annotation"), null));
-		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<String, HighlightSeverity>(TaraBundle.message("invalid.tara.concept.character"), null));
+		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<>(TaraBundle.message("invalid.tara.concept.character"), HighlightSeverity.ERROR));
 	}
 
 	private static final Map<IElementType, TextAttributesKey> keys1;

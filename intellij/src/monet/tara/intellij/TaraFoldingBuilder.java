@@ -7,9 +7,9 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import monet.tara.intellij.psi.IConcept;
-import monet.tara.compiler.intellij.psi.TaraConcept;
-import monet.tara.intellij.psi.impl.TaraUtil;
+import monet.tara.intellij.metamodel.psi.IConcept;
+import monet.tara.intellij.metamodel.psi.TaraConcept;
+import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

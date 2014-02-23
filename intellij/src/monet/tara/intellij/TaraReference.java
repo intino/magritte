@@ -6,8 +6,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.psi.IConcept;
-import monet.tara.intellij.psi.impl.TaraUtil;
+import monet.tara.intellij.metamodel.psi.IConcept;
+import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +25,7 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	@NotNull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
-		Project project = myElement.getProject();
+		Project project = myElement.getProject();//TODO
 		//final List<IConcept> concepts = TaraUtil.resolveReferences(project, key, myElement);
 		final List<IConcept> concepts = TaraUtil.findConceptWithContext(project, key, myElement);
 		List<ResolveResult> results = new ArrayList<>();

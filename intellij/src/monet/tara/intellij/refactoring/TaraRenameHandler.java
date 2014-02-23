@@ -21,14 +21,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class TaraRenameHandler extends PsiElementRenameHandler {
 
-	public boolean isAvailableOnDataContext(final DataContext dataContext) {
-		final Editor editor = LangDataKeys.EDITOR.getData(dataContext);
-		if (editor != null) {
-			if (getPsiElement(editor) != null) return true;
-		}
-		return false;
-	}
-
 	@Nullable
 	private static PsiElement getPsiElement(final Editor editor) {
 		final PsiReference reference = TargetElementUtilBase.findReference(editor);
@@ -44,6 +36,14 @@ public class TaraRenameHandler extends PsiElementRenameHandler {
 				}
 		}
 		return null;
+	}
+
+	public boolean isAvailableOnDataContext(final DataContext dataContext) {
+		final Editor editor = LangDataKeys.EDITOR.getData(dataContext);
+		if (editor != null) {
+			if (getPsiElement(editor) != null) return true;
+		}
+		return false;
 	}
 
 	@Override

@@ -5,8 +5,8 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.formatter.common.AbstractBlock;
-import monet.tara.compiler.intellij.psi.TaraConcept;
-import monet.tara.compiler.intellij.psi.TaraTypes;
+import monet.tara.intellij.metamodel.psi.TaraConcept;
+import monet.tara.intellij.metamodel.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

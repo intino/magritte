@@ -3,7 +3,7 @@ package monet.tara.intellij;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.*;
-import monet.tara.compiler.intellij.psi.TaraTypes;
+import monet.tara.intellij.metamodel.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class TaraReferenceContributor extends PsiReferenceContributor {

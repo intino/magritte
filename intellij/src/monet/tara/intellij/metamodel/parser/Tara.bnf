@@ -1,0 +1,94 @@
+{
+  parserClass='monet.tara.intellij.metamodel.parser.TaraParser'
+  parserUtilClass="monet.tara.intellij.metamodel.parser.TaraParserUtil"
+
+  extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
+
+  psiClassPrefix='Tara'
+  psiImplClassSuffix='Impl'
+  psiPackage='monet.tara.intellij.metamodel.psi'
+  psiImplPackage='monet.tara.intellij.metamodel.psi.impl'
+
+  elementTypeHolderClass='monet.tara.intellij.metamodel.psi.TaraTypes'
+  elementTypeClass='monet.tara.intellij.metamodel.psi.TaraElementType'
+  tokenTypeClass='monet.tara.intellij.metamodel.psi.TaraTokenType'
+
+  psiImplUtilClass='monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil'
+}
+
+root ::= (concept | NEWLINE)*
+
+concept ::= doc? conceptSignature conceptAnnotations? conceptBody?
+{ mixin= 'monet.tara.intellij.metamodel.psi.impl.TaraConceptMixin'
+implements='monet.tara.intellij.metamodel.psi.IConcept'
+methods=[getIdentifier]
+}
+
+conceptSignature ::= CONCEPT_KEY extendedConcept? modifier? AS identifier
+conceptBody ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT
+
+extendedConcept::= identifier (DOT identifier)*
+//{mixin= 'TaraExtendedConceptMixin' methods=[getIdentifier]}
+
+identifier  ::=  IDENTIFIER_KEY
+{mixin= 'monet.tara.intellij.metamodel.psi.impl.TaraIdentifierMixin' methods=[getIdentifier]}
+
+component ::= doc? conceptSignature componentAnnotations? conceptBody?
+            | NEW extendedConcept componentAnnotations?
+{ mixin= 'monet.tara.intellij.metamodel.psi.impl.TaraComponentMixin'
+implements='monet.tara.intellij.metamodel.psi.IConcept'
+methods=[getIdentifier]
+}
+
+conceptConstituents ::= attribute
+                      | referenceStatement
+                      | word
+                      | from
+                      | component
+
+referenceStatement ::= VAR extendedConcept LIST? IDENTIFIER_KEY
+
+attribute::= VAR    UID_TYPE IDENTIFIER_KEY stringAssign?
+           | VAR     INT_TYPE (IDENTIFIER_KEY integerAssign? | LIST IDENTIFIER_KEY integerListAssign?)
+           | VAR  DOUBLE_TYPE (IDENTIFIER_KEY doubleAssign?  | LIST IDENTIFIER_KEY doubleListAssign?)
+           | VAR NATURAL_TYPE (IDENTIFIER_KEY naturalAssign? | LIST IDENTIFIER_KEY naturalListAssign?)
+           | VAR BOOLEAN_TYPE (IDENTIFIER_KEY booleanAssign? | LIST IDENTIFIER_KEY booleanListAssign?)
+           | VAR  STRING_TYPE (IDENTIFIER_KEY stringAssign?  | LIST IDENTIFIER_KEY stringListAssign?)
+{mixin= 'monet.tara.intellij.metamodel.psi.impl.TaraAttributeMixin'
+implements='monet.tara.intellij.metamodel.psi.IAttribute'}
+
+word::= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE+)+ DEDENT
+
+stringAssign   ::= ASSIGN STRING_VALUE
+booleanAssign  ::= ASSIGN BOOLEAN_VALUE
+integerAssign  ::= ASSIGN integerValue
+doubleAssign   ::= ASSIGN (integerValue | DOUBLE_VALUE)
+naturalAssign  ::= ASSIGN NATURAL_VALUE
+
+stringListAssign   ::= ASSIGN LEFT_SQUARE STRING_VALUE+ RIGHT_SQUARE
+booleanListAssign  ::= ASSIGN LEFT_SQUARE BOOLEAN_VALUE+ RIGHT_SQUARE
+integerListAssign  ::= ASSIGN LEFT_SQUARE integerValue+ RIGHT_SQUARE
+doubleListAssign   ::= ASSIGN LEFT_SQUARE (integerValue | DOUBLE_VALUE)+ RIGHT_SQUARE
+naturalListAssign  ::= ASSIGN LEFT_SQUARE NATURAL_VALUE+ RIGHT_SQUARE
+
+from::= FROM_KEY fromAnnotations? fromBody
+
+fromBody::= NEW_LINE_INDENT (fromComponent NEWLINE+)+ DEDENT
+
+fromComponent::= (doc? conceptSignature fromComponentAnnotations? conceptBody?) | ( NEW extendedConcept fromComponentAnnotations?)
+{ mixin= 'monet.tara.intellij.metamodel.psi.impl.TaraFromComponentMixin'
+implements='monet.tara.intellij.metamodel.psi.IConcept'
+methods=[getIdentifier]
+}
+fromComponentAnnotations ::= OPEN_AN (HAS_CODE | EXTENSIBLE | SINGLETON)+ CLOSE_AN
+conceptAnnotations     ::= OPEN_AN (ROOT | HAS_CODE | EXTENSIBLE | SINGLETON)+ CLOSE_AN
+componentAnnotations   ::= OPEN_AN (MULTIPLE | OPTIONAL | HAS_CODE | EXTENSIBLE| SINGLETON)+ CLOSE_AN
+fromAnnotations        ::= OPEN_AN (OPTIONAL | MULTIPLE)+ CLOSE_AN
+
+integerValue::= NATURAL_VALUE
+              | NEGATIVE_VALUE
+
+modifier::= ABSTRACT
+          | FINAL
+
+doc::= DOC_LINE+

@@ -3,7 +3,7 @@ package monet.tara.intellij.metamodel;
 import com.intellij.lexer.FlexLexer;
 import java.util.Stack;
 import com.intellij.psi.tree.IElementType;
-import monet.tara.compiler.intellij.psi.TaraTypes;
+import TaraTypes;
 import com.intellij.psi.TokenType;
 import java.util.LinkedList;
 import java.util.Queue;

@@ -5,8 +5,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
-import monet.tara.intellij.metamodel.file.TaraFile;
-import monet.tara.compiler.intellij.psi.TaraConcept;
+import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
+import monet.tara.intellij.metamodel.psi.TaraConcept;
 import org.jetbrains.annotations.Nullable;
 
 public class TaraRunnerUtil {
@@ -15,7 +15,7 @@ public class TaraRunnerUtil {
 		if (element == null) return null;
 
 		final PsiFile file = element.getContainingFile();
-		if (!(file instanceof TaraFile)) return null;
+		if (!(file instanceof TaraFileImpl)) return null;
 
 		for (PsiClass clazz = PsiTreeUtil.getParentOfType(element, PsiClass.class);
 		     clazz != null;
@@ -23,8 +23,8 @@ public class TaraRunnerUtil {
 			if (canBeRunByTara(clazz)) return clazz;
 		}
 
-//		if (((TaraFile)file).isScript()) return ((TaraFile)file).getScriptClass();
-//		final PsiClass[] classes = ((TaraFile)file).getClasses();
+//		if (((TaraFileImpl)file).isScript()) return ((TaraFileImpl)file).getScriptClass();
+//		final PsiClass[] classes = ((TaraFileImpl)file).getClasses();
 //		if (classes.length > 0) {
 //			return classes[0];
 //		}

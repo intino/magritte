@@ -1,86 +1,31 @@
-concept abstract Aspect @nameable @root
+Concept as TermRenamed
+    var String code: "code"
+    var String label
+    new TermRenamed <multiple optional>
 
-concept abstract Feature @nameable
+Concept abstract as Source <has-code root>
+    Concept as Ontology <optional>
+        var Uid uid
 
-concept abstract MeasureUnit @nameable
-    string label
-    string pluralLabel
-    string abbreviation
+Concept Source as Thesaurus
+    new TermRenamed <multiple>
 
-concept abstract Entity @nameable
-    ref Location location
+Concept as Operation
+    var String label
 
-concept abstract AreaMeasureUnit is MeasureUnit
+' Una entidad es un objeto en la unidad de negocio que representa un contenido
+Concept abstract as Entity  <has-code>
 
-concept abstract PowerMeasureUnit is MeasureUnit
+    ' Añadir para ofrecer al usuario información más detallada de la entidad
+    Concept as Description <optional>
+        var String description
 
-concept abstract TemperatureMeasureUnit is MeasureUnit
+    ' Añadir para ofrecer al usuario una ayuda
+    ' - **resource**. Nombre del fichero incluido en la distribución
+    Concept as Help <optional>
+        var String resource
 
-concept abstract Invariable is Feature
+    Concept as Operation
+        var String label
 
-concept abstract Variable is Feature
-
-concept abstract Stock is Feature
-
-concept abstract Stock2 is Feature
-
-concept JavaMethod @action:java
-
-concept abstract Behavior
-    ref Aspect powerAspect
-    has onCalculate
-
-concept final SquareMeter is AreaMeasureUnit
-
-concept final Gram is WeightMeasureUnit
-    string label ="Gram"
-    string pluralLabel = "Grams"
-    string abbreviation = "g"
-
-concept Area is Invariable
-    double value @anonymous
-    has AreaMeasureUnit
-
-concept Weight is Feature
-    double value
-    has WeightMeasureUnit
-
-concept Building is Entity
-    has RadiatorRenamed[0..n]
-    has Refrigerator[0..n]
-    has Refrigerator[0..n]
-
-concept RadiatorRenamed is Entity
-    use Power : PowerRadiator
-    use Thermal :ThermalStorage
-
-concept final Watt is PowerMeasureUnit
-
-concept abstract Power is Invariable
-    double value @anonymous
-    double value @anonymous
-    has PowerMeasureUnit
-
-concept final NominalPower is Power
-
-concept final StandbyPower is Power
-
-concept abstract ConsumingPower is Variable
-    double value @anonymous
-    has PowerMeasureUnit
-
-concept final ActivePower is ConsumingPower
-
-concept final ReactivePower is ConsumingPower
-
-concept abstract Variable is Feature @nameable
-
-concept PowerRadiator is Aspect
-    has StandbyPower[1..n]
-    has NominalPower
-    has ActivePower
-    has ReactivePower
-    has PowerRadiatiorBehavior
-    ref Temperature temperature
-    use Behavior : onCalculate(paramenter)
-
+    Concept abstract as View

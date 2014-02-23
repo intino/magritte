@@ -26,7 +26,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import monet.tara.intellij.metamodel.file.TaraFile;
+import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -49,7 +49,7 @@ public class GenerateAction extends AnAction implements DumbAware {
 			PsiManager manager = PsiManager.getInstance(project);
 			for (VirtualFile virtualFile : files) {
 				PsiFile psiFile = manager.findFile(virtualFile);
-				metaModelFound = psiFile instanceof TaraFile;
+				metaModelFound = psiFile instanceof TaraFileImpl;
 				if (metaModelFound) break;
 			}
 		}
@@ -67,7 +67,7 @@ public class GenerateAction extends AnAction implements DumbAware {
 		if (module == null) return;
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
 		FileDocumentManager.getInstance().saveAllDocuments();
-		final TaraFile[] taraFiles = filterFiles(ModuleRootManager.getInstance(module).getSourceRoots(), project);
+		final TaraFileImpl[] taraFiles = filterFiles(ModuleRootManager.getInstance(module).getSourceRoots(), project);
 		createGenPath(project,taraFiles[0]);
 		ProgressManager.getInstance().run(new Task.Backgroundable(project, "Plugin Generation", true, new BackgroundFromStartOption()) {
 			@Override
@@ -109,22 +109,22 @@ public class GenerateAction extends AnAction implements DumbAware {
 		});
 	}
 
-	private TaraFile[] filterFiles(VirtualFile[] sourceRoots, Project project) {
+	private TaraFileImpl[] filterFiles(VirtualFile[] sourceRoots, Project project) {
 		PsiManager psiManager = PsiManager.getInstance(project);
-		List<TaraFile> filteredFiles = new ArrayList<>();
+		List<TaraFileImpl> filteredFiles = new ArrayList<>();
 		for (VirtualFile sourceRoot : sourceRoots)
 			for (VirtualFile file : sourceRoot.getChildren()) {
 				PsiFile taraFile = psiManager.findFile(file);
-				if ((taraFile instanceof TaraFile)) filteredFiles.add((TaraFile) taraFile);
+				if ((taraFile instanceof TaraFileImpl)) filteredFiles.add((TaraFileImpl) taraFile);
 			}
-		return filteredFiles.toArray(new TaraFile[filteredFiles.size()]);
+		return filteredFiles.toArray(new TaraFileImpl[filteredFiles.size()]);
 	}
 
 	private static void refreshFiles(Set<File> pathsToRefresh) {
 		LocalFileSystem.getInstance().refreshIoFiles(pathsToRefresh, true, true, null);
 	}
 
-	private static void createGenPath(Project project, TaraFile taraFile){
+	private static void createGenPath(Project project, TaraFileImpl taraFile){
 		final Module module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(taraFile.getVirtualFile());
 		assert module != null;
 		ApplicationManager.getApplication().runWriteAction(new Runnable() {

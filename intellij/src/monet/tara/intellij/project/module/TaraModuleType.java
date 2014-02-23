@@ -17,6 +17,13 @@ import java.util.List;
 
 public class TaraModuleType extends TaraModuleTypeBase<TaraModuleBuilderBase> {
 
+	private static Project getProject(final WizardContext context) {
+		Project project = context.getProject();
+		if (project == null)
+			project = ProjectManager.getInstance().getDefaultProject();
+		return project;
+	}
+
 	@NotNull
 	@Override
 	public ModuleWizardStep[] createWizardSteps(@NotNull final WizardContext wizardContext,
@@ -26,19 +33,10 @@ public class TaraModuleType extends TaraModuleTypeBase<TaraModuleBuilderBase> {
 		final Project project = getProject(wizardContext);
 		if (!wizardContext.isNewWizard()) {
 			final List<FrameworkSupportInModuleProvider> providers = FrameworkSupportUtil.getProviders(getInstance(), DefaultFacetsProvider.INSTANCE);
-			if (!providers.isEmpty()) {
+			if (!providers.isEmpty())
 				steps.add(new SupportForFrameworksStep(wizardContext, moduleBuilder, LibrariesContainerFactory.createContainer(project)));
-			}
 		}
 		return steps.toArray(new ModuleWizardStep[steps.size()]);
-	}
-
-
-	private static Project getProject(final WizardContext context) {
-		Project project = context.getProject();
-		if (project == null)
-			project = ProjectManager.getInstance().getDefaultProject();
-		return project;
 	}
 
 	@NotNull

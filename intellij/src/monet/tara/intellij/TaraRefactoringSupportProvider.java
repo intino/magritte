@@ -2,7 +2,7 @@ package monet.tara.intellij;
 
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;
-import monet.tara.compiler.intellij.psi.TaraConcept;
+import monet.tara.intellij.metamodel.psi.TaraConcept;
 import org.jetbrains.annotations.NotNull;
 
 public class TaraRefactoringSupportProvider extends RefactoringSupportProvider {

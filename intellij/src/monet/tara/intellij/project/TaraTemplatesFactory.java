@@ -15,24 +15,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory {
 	@NonNls
-	public static final String[] TEMPLATES = { TaraTemplates.CONCEPT};
-
-	private static class TaraTemplatesFactoryHolder {
-		private static final TaraTemplatesFactory myInstance = new TaraTemplatesFactory();
-	}
+	public static final String[] TEMPLATES = {TaraTemplates.CONCEPT};
 
 	public static TaraTemplatesFactory getInstance() {
 		return TaraTemplatesFactoryHolder.myInstance;
 	}
-
-	public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
-		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor("Tara", TaraIcons.ICON_13);
-		final FileTypeManager fileTypeManager = FileTypeManager.getInstance();
-		for (String template : TEMPLATES)
-			group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template).getIcon()));
-		return group;
-	}
-
 
 	public static PsiFile createFromTemplate(@NotNull final PsiDirectory directory,
 	                                         @NotNull String fileName,
@@ -47,6 +34,18 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 		if (file != null && allowReformatting && template.isReformatCode())
 			new ReformatCodeProcessor(project, file, null, false).run();
 		return file;
+	}
+
+	public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
+		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor("Tara", TaraIcons.ICON_13);
+		final FileTypeManager fileTypeManager = FileTypeManager.getInstance();
+		for (String template : TEMPLATES)
+			group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template).getIcon()));
+		return group;
+	}
+
+	private static class TaraTemplatesFactoryHolder {
+		private static final TaraTemplatesFactory myInstance = new TaraTemplatesFactory();
 	}
 
 }
