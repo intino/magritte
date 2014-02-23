@@ -18,7 +18,7 @@ public class TaraParserDefinition implements ParserDefinition {
 	public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
 	public static final TokenSet COMMENTS = TokenSet.create(TaraTypes.DOC);
 
-	public static final IFileElementType FILE = new IFileElementType(Language.<TaraLanguage>findInstance(TaraLanguage.class));
+	public static final IFileElementType FILE = new IFileElementType(Language.findInstance(TaraLanguage.class));
 
 	@NotNull
 	@Override

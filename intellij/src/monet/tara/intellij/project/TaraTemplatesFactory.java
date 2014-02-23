@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory {
 	@NonNls
-	public static final String[] TEMPLATES = { TaraTemplates.METAMODEL_UNIT };
+	public static final String[] TEMPLATES = { TaraTemplates.CONCEPT};
 
 	private static class TaraTemplatesFactoryHolder {
 		private static final TaraTemplatesFactory myInstance = new TaraTemplatesFactory();
@@ -26,7 +26,7 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 	}
 
 	public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
-		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor("Tara", TaraIcons.ICON);
+		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor("Tara", TaraIcons.ICON_13);
 		final FileTypeManager fileTypeManager = FileTypeManager.getInstance();
 		for (String template : TEMPLATES)
 			group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template).getIcon()));
@@ -35,18 +35,14 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 
 
 	public static PsiFile createFromTemplate(@NotNull final PsiDirectory directory,
-	                                         @NotNull final String name,
 	                                         @NotNull String fileName,
 	                                         @NotNull String templateName,
-	                                         boolean allowReformatting,
-	                                         @NonNls String... parameters) throws IncorrectOperationException {
+	                                         boolean allowReformatting) throws IncorrectOperationException {
 		final FileTemplate template = FileTemplateManager.getInstance().getInternalTemplate(templateName);
 		Project project = directory.getProject();
 		template.setExtension(TaraFileType.INSTANCE.getDefaultExtension());
-		String text = template.getText();
 		assert template.isTemplateOfType(TaraFileType.INSTANCE);
-		final PsiFileFactory factory = PsiFileFactory.getInstance(project);
-		PsiFile file = factory.createFileFromText(fileName, TaraFileType.INSTANCE, text);
+		PsiFile file = PsiFileFactory.getInstance(project).createFileFromText(fileName, TaraFileType.INSTANCE, template.getText());
 		file = (PsiFile) directory.add(file);
 		if (file != null && allowReformatting && template.isReformatCode())
 			new ReformatCodeProcessor(project, file, null, false).run();

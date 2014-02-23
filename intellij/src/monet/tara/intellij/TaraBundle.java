@@ -11,15 +11,15 @@ import java.util.ResourceBundle;
 
 public class TaraBundle {
 
-	public static String message(@NotNull @PropertyKey(resourceBundle = PATH_TO_BUNDLE) String key, @NotNull Object... params) {
-		return CommonBundle.message(getBundle(), key, params);
-	}
-
-	private static Reference<ResourceBundle> ourBundle;
 	@NonNls
 	protected static final String PATH_TO_BUNDLE = "messages.TaraBundle";
+	private static Reference<ResourceBundle> ourBundle;
 
 	private TaraBundle() {
+	}
+
+	public static String message(@NotNull @PropertyKey(resourceBundle = PATH_TO_BUNDLE) String key, @NotNull Object... params) {
+		return CommonBundle.message(getBundle(), key, params);
 	}
 
 	private static ResourceBundle getBundle() {

@@ -23,7 +23,7 @@ import com.intellij.util.CommonProcessors;
 import com.intellij.util.Processor;
 import com.intellij.util.text.CharArrayUtil;
 import gnu.trove.THashSet;
-import monet.tara.intellij.metamodel.TaraBundle;
+import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.metamodel.file.TaraFile;
 import monet.tara.intellij.psi.IConcept;
 import monet.tara.compiler.intellij.psi.TaraConcept;
@@ -98,6 +98,7 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 				lineAnchor.append(" ").append(InspectionsBundle.message("inspection.export.results.at.line")).append(" ");
 				lineAnchor.append("<a HREF=\"");
 				try {
+					assert doc != null;
 					int offset = doc.getLineStartOffset(lineNumber - 1);
 					offset = CharArrayUtil.shiftForward(doc.getCharsSequence(), offset, " \t");
 					lineAnchor.append(new URL(vFile.getUrl() + "#" + offset));

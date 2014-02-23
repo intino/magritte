@@ -34,10 +34,10 @@ public abstract class TaraModuleTypeBase<T extends ModuleBuilder> extends Module
 	}
 
 	public Icon getNodeIcon(final boolean isOpened) {
-		return TaraIcons.ICON;
+		return TaraIcons.ICON_13;
 	}
 
 	public Icon getBigIcon() {
-		return TaraIcons.ICON;
+		return TaraIcons.ICON_13;
 	}
 }

@@ -87,7 +87,7 @@
                              implementationClass="monet.tara.intellij.TaraRefactoringSupportProvider"/>
     <renameHandler implementation="monet.tara.intellij.refactoring.TaraRenameHandler"/>
     <lang.findUsagesProvider language="Tara"
-                             implementationClass="monet.tara.intellij.metamodel.TaraFindUsagesProvider"/>
+                             implementationClass="monet.tara.intellij.TaraFindUsagesProvider"/>
     <lang.foldingBuilder language="Tara" implementationClass="monet.tara.intellij.TaraFoldingBuilder"/>
     <!--<lang.formatter language="Tara" implementationClass="monet.tara.intellij.TaraFormattingModelBuilder"/>-->
   </extensions>

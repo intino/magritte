@@ -15,12 +15,12 @@ import org.jetbrains.annotations.NotNull;
 public class CreateTaraFileAction extends NewTaraActionBase implements DumbAware {
 
 	public CreateTaraFileAction() {
-		super("Metamodel Unit", "Creates a Metamodel file", TaraFileType.INSTANCE.getIcon());
+		super("Concept", "Creates Concept file", TaraFileType.INSTANCE.getIcon());
 	}
 
 	@Override
 	protected String getCommandName() {
-		return "Create Metamodel Unit";
+		return "Create Concept";
 	}
 
 	@Override
@@ -30,12 +30,12 @@ public class CreateTaraFileAction extends NewTaraActionBase implements DumbAware
 
 	@Override
 	protected String getDialogPrompt() {
-		return "New Metamodel Unit";
+		return "New Concept";
 	}
 
 	@Override
 	protected String getDialogTitle() {
-		return "Create a Metamodel Unit";
+		return "Create a Concept";
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class CreateTaraFileAction extends NewTaraActionBase implements DumbAware
 	@NotNull
 	@Override
 	protected PsiElement[] doCreate(String newName, PsiDirectory directory) throws Exception {
-		PsiFile file = createTaraFromTemplate(directory, newName, TaraTemplates.METAMODEL_UNIT);
+		PsiFile file = createTaraFromTemplate(directory, newName, TaraTemplates.CONCEPT);
 		PsiElement child = null;
 		if (file.getChildren().length > 0)
 			child = file.getLastChild();
@@ -55,7 +55,7 @@ public class CreateTaraFileAction extends NewTaraActionBase implements DumbAware
 
 	private static PsiFile createTaraFromTemplate(final PsiDirectory directory, String className, String templateName,
 	                                              @NonNls String... parameters) throws IncorrectOperationException {
-		return TaraTemplatesFactory.createFromTemplate(directory, className,
-			className + "." + TaraFileType.INSTANCE.getDefaultExtension(), templateName, true, parameters);
+		return TaraTemplatesFactory.createFromTemplate(directory,
+			className + "." + TaraFileType.INSTANCE.getDefaultExtension(), templateName, true);
 	}
 }

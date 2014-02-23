@@ -7,15 +7,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NonNls;
+import monet.tara.intellij.metamodel.TaraIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
 public abstract class NewTaraActionBase extends CreateElementActionBase {
-
-	@NonNls
-	public static final String TARA_EXTENSION = ".m2";
 
 	public NewTaraActionBase(String text, String description, Icon icon) {
 		super(text, description, icon);
@@ -24,7 +21,7 @@ public abstract class NewTaraActionBase extends CreateElementActionBase {
 	@NotNull
 	protected final PsiElement[] invokeDialog(final Project project, final PsiDirectory directory) {
 		MyInputValidator validator = new MyInputValidator(project, directory);
-		Messages.showInputDialog(project, getDialogPrompt(), getDialogTitle(), Messages.getQuestionIcon(), "", validator);
+		Messages.showInputDialog(project, getDialogPrompt(), getDialogTitle(), TaraIcons.ICON_100, "", validator);
 		return validator.getCreatedElements();
 	}
 

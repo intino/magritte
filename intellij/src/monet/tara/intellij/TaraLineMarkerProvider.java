@@ -26,7 +26,7 @@ public class TaraLineMarkerProvider extends RelatedItemLineMarkerProvider {
 				Project project = element.getProject();
 				final List<IConcept> conceptList = TaraUtil.findRootConcept(project, value.replace(";", ""));
 				if (conceptList.size() > 0) {
-					NavigationGutterIconBuilder<PsiElement> psiElementNavigationGutterIconBuilder = NavigationGutterIconBuilder.create(TaraIcons.ICON).setTargets(conceptList);
+					NavigationGutterIconBuilder<PsiElement> psiElementNavigationGutterIconBuilder = NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTargets(conceptList);
 					NavigationGutterIconBuilder<PsiElement> builder =
 						psiElementNavigationGutterIconBuilder.setTooltipText("Navigate to the concept");
 					result.add(builder.createLineMarkerInfo(element));

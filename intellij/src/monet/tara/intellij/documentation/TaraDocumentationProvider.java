@@ -7,7 +7,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.ui.GuiUtils;
-import monet.tara.intellij.metamodel.TaraSyntaxHighlighter;
+import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import monet.tara.intellij.psi.IConcept;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -39,27 +39,31 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		return null;
 	}
 
+	@NonNls
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
 		if (element instanceof IConcept) {
 			IConcept concept = (IConcept) element;
 			String text = concept.getDocCommentText();
 			assert text != null;
-			text = text.replaceAll("\\?", "");
-			text = text.replaceAll("\\*", "");
-			@NonNls String info = "";
-			if (text != null) {
-				TextAttributes attributes = EditorColorsManager.getInstance().getGlobalScheme().getAttributes(TaraSyntaxHighlighter.DOC_COMMENT).clone();
-				Color background = attributes.getBackgroundColor();
-				if (background != null)
-					info += "<div bgcolor=#" + GuiUtils.colorToHex(background) + ">";
-				String doc = StringUtil.join(StringUtil.split(text, "\n"), "<br>");
-				info += "<font color=#" + GuiUtils.colorToHex(attributes.getForegroundColor()) + ">" + doc + "</font>\n<br>";
-				if (background != null)
-					info += "</div>";
-			}
-			info += "<b>"+ getLocationString(element) + "</b>";
-			return info;
+			return markDown2Html(element, text);
 		}
 		return renderConceptValue((IConcept) element);
+	}
+
+	private String markDown2Html(PsiElement element, String text) { //TODO
+		text = text.replaceAll("\\?", "").replaceAll("\\*", "");
+		@NonNls String info = "";
+		if (text != null) {
+			TextAttributes attributes = EditorColorsManager.getInstance().getGlobalScheme().getAttributes(TaraSyntaxHighlighter.DOCUMENTATION).clone();
+			Color background = attributes.getBackgroundColor();
+			if (background != null)
+				info += "<div bgcolor=#" + GuiUtils.colorToHex(background) + ">";
+			String doc = StringUtil.join(StringUtil.split(text, "\n"), "<br>");
+			info += "<font color=#" + GuiUtils.colorToHex(attributes.getForegroundColor()) + ">" + doc + "</font>\n<br>";
+			if (background != null)
+				info += "</div>";
+		}
+		info += "<b>" + getLocationString(element) + "</b>";
+		return info;
 	}
 }
