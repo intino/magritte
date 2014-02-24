@@ -4,17 +4,14 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.SuggestedNameInfo;
 import com.intellij.refactoring.rename.NameSuggestionProvider;
-import monet.tara.intellij.psi.IConcept;
-import monet.tara.compiler.intellij.psi.TaraIdentifier;
+import monet.tara.intellij.metamodel.psi.IConcept;
+import monet.tara.intellij.metamodel.psi.TaraIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by oroncal on 08/01/14.
- */
 public class TaraNameSuggestionProvider implements NameSuggestionProvider {
 	@Nullable
 	@Override

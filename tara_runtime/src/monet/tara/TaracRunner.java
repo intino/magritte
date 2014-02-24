@@ -1,7 +1,5 @@
 package monet.tara;
 
-import monet.tara.compiler.rt.TaraRtConstants;
-
 import java.io.File;
 
 public class TaracRunner {
@@ -12,27 +10,32 @@ public class TaracRunner {
 
 	public static void main(String[] args) {
 
-		if (args.length != 2) {
-			System.err.println("There is no arguments for tara compiler");
+		checkArgumentsNumber(args);
+		final File argsFile = checkConfigurationFile(args[1]);
+		try {
+			TaraCompilerRunner.runTaraCompiler(argsFile, isPluginGeneration(args[0]));
+		} catch (Throwable e) {
+			e.printStackTrace();
 			System.exit(1);
 		}
-		final boolean pluginGeneration = "--gen-plugin".equals(args[0]);
-		final File argsFile = new File(args[1]);
+	}
+
+	private static File checkConfigurationFile(String arg) {
+		final File argsFile = new File(arg);
 		if (!argsFile.exists()) {
 			System.err.println("Arguments file for Tara compiler not found");
 			System.exit(1);
 		}
+		return argsFile;
+	}
 
-		try {
-			Class.forName("monet.tara.compiler.core.CompilationUnit");
-		} catch (Throwable e) {
-			System.err.println(TaraRtConstants.NO_TARA);
-			System.exit(1);
-		}
-		try {
-			TaraCompilerRunner.runTaraCompiler(argsFile, pluginGeneration);
-		} catch (Throwable e) {
-			e.printStackTrace();
+	private static boolean isPluginGeneration(String arg) {
+		return "--gen-plugin".equals(arg);
+	}
+
+	private static void checkArgumentsNumber(String[] args) {
+		if (args.length != 2) {
+			System.err.println("There is no arguments for tara compiler");
 			System.exit(1);
 		}
 	}

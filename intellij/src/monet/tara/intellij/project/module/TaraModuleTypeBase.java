@@ -15,12 +15,12 @@ public abstract class TaraModuleTypeBase<T extends ModuleBuilder> extends Module
 	public static final String TARA_MODULE = "TARA_MODULE";
 
 
-	public static ModuleType getInstance() {
-		return ModuleTypeManager.getInstance().findByID(TARA_MODULE);
-	}
-
 	protected TaraModuleTypeBase() {
 		super(TARA_MODULE);
+	}
+
+	public static ModuleType getInstance() {
+		return ModuleTypeManager.getInstance().findByID(TARA_MODULE);
 	}
 
 	@NotNull
@@ -34,10 +34,10 @@ public abstract class TaraModuleTypeBase<T extends ModuleBuilder> extends Module
 	}
 
 	public Icon getNodeIcon(final boolean isOpened) {
-		return TaraIcons.ICON;
+		return TaraIcons.ICON_13;
 	}
 
 	public Icon getBigIcon() {
-		return TaraIcons.ICON;
+		return TaraIcons.ICON_13;
 	}
 }

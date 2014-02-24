@@ -27,7 +27,7 @@ public class TaraRunConfigurationType implements ConfigurationType {
 	}
 
 	public Icon getIcon() {
-		return TaraIcons.ICON;
+		return TaraIcons.ICON_13;
 	}
 
 	@NonNls

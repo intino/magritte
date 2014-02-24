@@ -35,7 +35,7 @@ import com.intellij.refactoring.listeners.RefactoringElementListener;
 import com.intellij.util.PathUtil;
 import com.intellij.util.SystemProperties;
 import com.intellij.util.containers.hash.LinkedHashMap;
-import monet.tara.intellij.metamodel.file.TaraFile;
+import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -95,7 +95,7 @@ public class TaraRunConfiguration extends ModuleBasedConfiguration<RunConfigurat
 		if (scriptFile == null)
 			return null;
 		final PsiFile psiFile = PsiManager.getInstance(getProject()).findFile(scriptFile);
-		if (!(psiFile instanceof TaraFile))
+		if (!(psiFile instanceof TaraFileImpl))
 			return null;
 		return new DefaultTaraRunner();
 	}
@@ -184,12 +184,12 @@ public class TaraRunConfiguration extends ModuleBasedConfiguration<RunConfigurat
 
 		final PsiClass classToRun = TaraRunnerUtil.getRunningClass(element);
 
-		if (element instanceof TaraFile) {
+		if (element instanceof TaraFileImpl) {
 			return new RefactoringElementAdapter() {
 				@Override
 				protected void elementRenamedOrMoved(@NotNull PsiElement newElement) {
-					if (newElement instanceof TaraFile) {
-						TaraFile file = (TaraFile) newElement;
+					if (newElement instanceof TaraFileImpl) {
+						TaraFileImpl file = (TaraFileImpl) newElement;
 						setScriptPath(file.getVirtualFile().getPath());
 					}
 				}

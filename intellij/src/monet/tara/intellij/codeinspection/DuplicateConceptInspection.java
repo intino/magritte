@@ -23,11 +23,10 @@ import com.intellij.util.CommonProcessors;
 import com.intellij.util.Processor;
 import com.intellij.util.text.CharArrayUtil;
 import gnu.trove.THashSet;
-import monet.tara.intellij.metamodel.TaraBundle;
-import monet.tara.intellij.metamodel.file.TaraFile;
-import monet.tara.intellij.psi.IConcept;
-import monet.tara.compiler.intellij.psi.TaraConcept;
-import monet.tara.intellij.psi.impl.TaraUtil;
+import monet.tara.intellij.TaraBundle;
+import monet.tara.intellij.metamodel.psi.IConcept;
+import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
+import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -98,6 +97,7 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 				lineAnchor.append(" ").append(InspectionsBundle.message("inspection.export.results.at.line")).append(" ");
 				lineAnchor.append("<a HREF=\"");
 				try {
+					assert doc != null;
 					int offset = doc.getLineStartOffset(lineNumber - 1);
 					offset = CharArrayUtil.shiftForward(doc.getCharsSequence(), offset, " \t");
 					lineAnchor.append(new URL(vFile.getUrl() + "#" + offset));
@@ -112,10 +112,10 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 	}
 
 	private void checkFile(final PsiFile file, final InspectionManager manager, GlobalInspectionContextImpl context, final RefManager refManager, final ProblemDescriptionsProcessor processor) {
-		if (!(file instanceof TaraFile) || !context.isToCheckFile(file, this)) return;
+		if (!(file instanceof TaraFileImpl) || !context.isToCheckFile(file, this)) return;
 		final PsiSearchHelper searchHelper = PsiSearchHelper.SERVICE.getInstance(file.getProject());
-		final TaraFile taraFile = (TaraFile) file;
-		final List<TaraConcept> concepts = TaraUtil.getRootConcepts(taraFile.getProject());
+		final TaraFileImpl taraFile = (TaraFileImpl) file;
+		final List<IConcept> concepts = TaraUtil.getRootConcepts(taraFile.getProject());
 		Module module = ModuleUtil.findModuleForPsiElement(file);
 		if (module == null) return;
 		final GlobalSearchScope scope = CURRENT_FILE
@@ -130,9 +130,9 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 		ProgressManager.getInstance().runProcess(new Runnable() {
 			@Override
 			public void run() {
-				if (!JobLauncher.getInstance().invokeConcurrentlyUnderProgress(concepts, progress, false, new Processor<TaraConcept>() {
+				if (!JobLauncher.getInstance().invokeConcurrentlyUnderProgress(concepts, progress, false, new Processor<IConcept>() {
 					@Override
-					public boolean process(final TaraConcept concept) {
+					public boolean process(final IConcept concept) {
 						if (original != null) {
 							if (original.isCanceled()) return false;
 							original.setText2(TaraBundle.message("searching.for.concept.key.progress.text", concept.getName()));
@@ -188,8 +188,8 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 			int duplicatesCount = 0;
 			Set<PsiFile> psiFilesWithDuplicates = keyToFiles.get(key);
 			for (PsiFile file : psiFilesWithDuplicates) {
-				if (!(file instanceof TaraFile)) continue;
-				TaraFile taraFile = (TaraFile) file;
+				if (!(file instanceof TaraFileImpl)) continue;
+				TaraFileImpl taraFile = (TaraFileImpl) file;
 				final List<IConcept> conceptsByName = TaraUtil.findRootConcept(taraFile.getProject(), key);
 				for (IConcept concept : conceptsByName) {
 					if (duplicatesCount == 0)

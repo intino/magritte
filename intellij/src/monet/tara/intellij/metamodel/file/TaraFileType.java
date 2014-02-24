@@ -34,6 +34,6 @@ public class TaraFileType extends LanguageFileType {
 	@Nullable
 	@Override
 	public javax.swing.Icon getIcon() {
-		return TaraIcons.ICON;
+		return TaraIcons.ICON_13;
 	}
 }

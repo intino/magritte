@@ -5,7 +5,6 @@ import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
 import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.TaraSyntaxHighlighter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,21 +12,21 @@ import java.util.Map;
 
 public class TaraColorSettingPage implements ColorSettingsPage { //TODO
 	private static final AttributesDescriptor[] DESCRIPTORS =
-			new AttributesDescriptor[]{
-					new AttributesDescriptor("Keyword", TaraSyntaxHighlighter.KEYWORD),
-					new AttributesDescriptor("Modifiers", TaraSyntaxHighlighter.MODIFIERS),
-					new AttributesDescriptor("String", TaraSyntaxHighlighter.STRING),
-					new AttributesDescriptor("Comment", TaraSyntaxHighlighter.COMMENT),
-					new AttributesDescriptor("Primitive", TaraSyntaxHighlighter.PRIMITIVE),
-					new AttributesDescriptor("Annotation", TaraSyntaxHighlighter.ANNOTATION),
-					new AttributesDescriptor("Numbers", TaraSyntaxHighlighter.NUMBERS),
-					new AttributesDescriptor("Bad Characters", TaraSyntaxHighlighter.BAD_CHARACTER)
-			};
+		new AttributesDescriptor[]{
+			new AttributesDescriptor("Keyword", TaraSyntaxHighlighter.KEYWORD),
+			new AttributesDescriptor("Modifiers", TaraSyntaxHighlighter.MODIFIERS),
+			new AttributesDescriptor("String", TaraSyntaxHighlighter.STRING),
+			new AttributesDescriptor("Documentation", TaraSyntaxHighlighter.DOCUMENTATION),
+			new AttributesDescriptor("Primitive", TaraSyntaxHighlighter.PRIMITIVE),
+			new AttributesDescriptor("Annotation", TaraSyntaxHighlighter.ANNOTATION),
+			new AttributesDescriptor("Numbers", TaraSyntaxHighlighter.NUMBERS),
+			new AttributesDescriptor("Bad Characters", TaraSyntaxHighlighter.BAD_CHARACTER)
+		};
 
 	@Nullable
 	@Override
 	public javax.swing.Icon getIcon() {
-		return TaraIcons.ICON;
+		return TaraIcons.ICON_13;
 	}
 
 	@NotNull
@@ -39,17 +38,29 @@ public class TaraColorSettingPage implements ColorSettingsPage { //TODO
 	@NotNull
 	@Override
 	public String getDemoText() {
-		return "#comentaries about it\n" +
+		return
+			"Concept abstract as Source <has-code root> \n" +
+				"\tConcept as Ontology<optional>" + "\n" +
+				"\t\tvar Uid uid" +
 				"\n" +
-				"concept abstract Building is Entity @root\n" +
-				"\tstring children = \"asdasd\"\n" +
+				"Concept Source as Thesaurus" + "\n" +
+				"\tnew Term<multiple>" + "\n" +
 				"\n" +
-				"concept Radiator is Entity @nameable\n" +
-				"\thas children\n" +
-				"\tref RadiatorReference\n" +
+				"Concept as Operation" + "\n" +
+				"\tvar String label" + "\n" +
+
+				"\' Una entidad es un objeto en la unidad de negocio que representa un contenido" + "\n" +
+				"Concept abstract as Entity<has-code>" + "\n" +
+
+				"\t\' Añadir para ofrecer al usuario información más detallada de la entidad" + "\n" +
+				"\tConcept as Description<optional>" + "\n" +
+				"\t\tvar String description" + "\n" +
 				"\n" +
-				"\n" +
-				"{{{{{{{Bad_Character}}}}}}";
+				"\t\' Añadir para ofrecer al usuario una ayuda" + "\n" +
+				"\t\' - **resource**. Nombre del fichero incluido en la distribución" + "\n" +
+				"\tConcept as Help<optional>" + "\n" +
+				"\t\tvar String resource" + "\n" +
+				"\n" + "====B@d_Ch@r@cter====";
 	}
 
 	@Nullable

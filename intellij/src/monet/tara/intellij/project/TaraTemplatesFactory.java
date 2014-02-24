@@ -15,42 +15,37 @@ import org.jetbrains.annotations.NotNull;
 
 public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory {
 	@NonNls
-	public static final String[] TEMPLATES = { TaraTemplates.METAMODEL_UNIT };
-
-	private static class TaraTemplatesFactoryHolder {
-		private static final TaraTemplatesFactory myInstance = new TaraTemplatesFactory();
-	}
+	public static final String[] TEMPLATES = {TaraTemplates.CONCEPT};
 
 	public static TaraTemplatesFactory getInstance() {
 		return TaraTemplatesFactoryHolder.myInstance;
 	}
 
+	public static PsiFile createFromTemplate(@NotNull final PsiDirectory directory,
+	                                         @NotNull String fileName,
+	                                         @NotNull String templateName,
+	                                         boolean allowReformatting) throws IncorrectOperationException {
+		final FileTemplate template = FileTemplateManager.getInstance().getInternalTemplate(templateName);
+		Project project = directory.getProject();
+		template.setExtension(TaraFileType.INSTANCE.getDefaultExtension());
+		assert template.isTemplateOfType(TaraFileType.INSTANCE);
+		PsiFile file = PsiFileFactory.getInstance(project).createFileFromText(fileName, TaraFileType.INSTANCE, template.getText());
+		file = (PsiFile) directory.add(file);
+		if (file != null && allowReformatting && template.isReformatCode())
+			new ReformatCodeProcessor(project, file, null, false).run();
+		return file;
+	}
+
 	public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
-		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor("Tara", TaraIcons.ICON);
+		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor("Tara", TaraIcons.ICON_13);
 		final FileTypeManager fileTypeManager = FileTypeManager.getInstance();
 		for (String template : TEMPLATES)
 			group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template).getIcon()));
 		return group;
 	}
 
-
-	public static PsiFile createFromTemplate(@NotNull final PsiDirectory directory,
-	                                         @NotNull final String name,
-	                                         @NotNull String fileName,
-	                                         @NotNull String templateName,
-	                                         boolean allowReformatting,
-	                                         @NonNls String... parameters) throws IncorrectOperationException {
-		final FileTemplate template = FileTemplateManager.getInstance().getInternalTemplate(templateName);
-		Project project = directory.getProject();
-		template.setExtension(TaraFileType.INSTANCE.getDefaultExtension());
-		String text = template.getText();
-		assert template.isTemplateOfType(TaraFileType.INSTANCE);
-		final PsiFileFactory factory = PsiFileFactory.getInstance(project);
-		PsiFile file = factory.createFileFromText(fileName, TaraFileType.INSTANCE, text);
-		file = (PsiFile) directory.add(file);
-		if (file != null && allowReformatting && template.isReformatCode())
-			new ReformatCodeProcessor(project, file, null, false).run();
-		return file;
+	private static class TaraTemplatesFactoryHolder {
+		private static final TaraTemplatesFactory myInstance = new TaraTemplatesFactory();
 	}
 
 }

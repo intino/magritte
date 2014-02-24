@@ -44,8 +44,8 @@
   <extensions defaultExtensionNs="com.intellij">
     <lang.namesValidator language="Tara"
                          implementationClass="monet.tara.intellij.refactoring.rename.TaraNamesValidator"/>
-    <projectService serviceInterface="monet.tara.intellij.psi.TaraElementFactory"
-                    serviceImplementation="monet.tara.intellij.psi.impl.TaraElementFactoryImpl"/>
+    <projectService serviceInterface="monet.tara.intellij.metamodel.psi.TaraElementFactory"
+                    serviceImplementation="monet.tara.intellij.metamodel.psi.impl.TaraElementFactoryImpl"/>
     <internalFileTemplate name="Metamodel Unit"/>
     <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.TaraModuleType"/>
 
@@ -64,7 +64,7 @@
     <fileTemplateGroup implementation="monet.tara.intellij.project.TaraTemplatesFactory"/>
     <fileTypeFactory implementation="monet.tara.intellij.metamodel.file.TaraFileTypeFactory"/>
     <lang.parserDefinition language="Tara"
-                           implementationClass="monet.tara.intellij.metamodel.TaraParserDefinition"/>
+                           implementationClass="monet.tara.intellij.metamodel.parser.TaraParserDefinition"/>
     <lang.syntaxHighlighterFactory key="Tara"
                                    implementationClass="monet.tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="monet.tara.intellij.highlighting.TaraColorSettingPage"/>
@@ -79,15 +79,17 @@
     <!--implementationClass="DuplicateConceptInspection"/>-->
     <!--<completion.contributor language="Tara"-->
     <!--implementationClass="TaraCompletionContributor"/>-->
+    <lang.psiStructureViewFactory language="Tara"
+                                  implementationClass="monet.tara.intellij.structureview.TaraStructureViewFactory"/>
     <psi.referenceContributor language="Tara" implementation="monet.tara.intellij.TaraReferenceContributor"/>
     <nameSuggestionProvider implementation="monet.tara.intellij.refactoring.TaraNameSuggestionProvider"/>
-    <lang.elementManipulator forClass="monet.tara.compiler.intellij.psi.TaraIdentifier"
-                             implementationClass="monet.tara.intellij.psi.impl.TaraConceptIdentifierManipulator"/>
+    <lang.elementManipulator forClass="monet.tara.intellij.metamodel.psi.TaraIdentifier"
+                             implementationClass="monet.tara.intellij.metamodel.psi.impl.TaraConceptIdentifierManipulator"/>
     <lang.refactoringSupport language="Tara"
                              implementationClass="monet.tara.intellij.TaraRefactoringSupportProvider"/>
     <renameHandler implementation="monet.tara.intellij.refactoring.TaraRenameHandler"/>
     <lang.findUsagesProvider language="Tara"
-                             implementationClass="monet.tara.intellij.metamodel.TaraFindUsagesProvider"/>
+                             implementationClass="monet.tara.intellij.TaraFindUsagesProvider"/>
     <lang.foldingBuilder language="Tara" implementationClass="monet.tara.intellij.TaraFoldingBuilder"/>
     <!--<lang.formatter language="Tara" implementationClass="monet.tara.intellij.TaraFormattingModelBuilder"/>-->
   </extensions>

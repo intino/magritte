@@ -37,7 +37,7 @@ public class TaraModuleBuilder extends TaraModuleBuilderBase {
 
 	@Override
 	public Icon getNodeIcon() {
-		return TaraIcons.ICON;
+		return TaraIcons.ICON_13;
 	}
 
 }
