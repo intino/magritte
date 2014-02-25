@@ -57,7 +57,6 @@ public class TaraFromComponentMixin extends ASTWrapperPsiElement {
 		StringBuilder text = new StringBuilder();
 		TaraDoc doc = ((TaraFromComponent) this).getDoc();
 		String comment;
-
 		if (doc != null) {
 			comment = doc.getText();
 			String trimmed = StringUtil.trimStart(StringUtil.trimStart(comment, "#"), "!");

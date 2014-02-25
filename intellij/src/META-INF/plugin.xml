@@ -46,12 +46,10 @@
                          implementationClass="monet.tara.intellij.refactoring.rename.TaraNamesValidator"/>
     <projectService serviceInterface="monet.tara.intellij.metamodel.psi.TaraElementFactory"
                     serviceImplementation="monet.tara.intellij.metamodel.psi.impl.TaraElementFactoryImpl"/>
-    <internalFileTemplate name="Metamodel Unit"/>
-    <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.TaraModuleType"/>
 
+    <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.TaraModuleType"/>
     <projectConfigurable instance="monet.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
                          displayName="Tara Compiler" parentId="project.propCompiler"/>
-
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
     <projectService serviceInterface="monet.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
                     serviceImplementation="monet.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"/>
@@ -61,7 +59,6 @@
     <lang.commenter language="Tara" implementationClass="monet.tara.intellij.TaraCommenter"/>
     <lang.documentationProvider language="Tara"
                                 implementationClass="monet.tara.intellij.documentation.TaraDocumentationProvider"/>
-    <fileTemplateGroup implementation="monet.tara.intellij.project.TaraTemplatesFactory"/>
     <fileTypeFactory implementation="monet.tara.intellij.metamodel.file.TaraFileTypeFactory"/>
     <lang.parserDefinition language="Tara"
                            implementationClass="monet.tara.intellij.metamodel.parser.TaraParserDefinition"/>

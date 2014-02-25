@@ -12,6 +12,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="processor_manager" />
+    <orderEntry type="library" name="markdown4j-2.2" level="project" />
   </component>
 </module>
 

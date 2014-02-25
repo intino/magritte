@@ -10,9 +10,9 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.metamodel.TaraIcons;
+import monet.tara.intellij.metamodel.psi.IConcept;
 import monet.tara.intellij.metamodel.psi.TaraComponent;
 import monet.tara.intellij.metamodel.psi.TaraDoc;
-import monet.tara.intellij.metamodel.psi.IConcept;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

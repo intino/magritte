@@ -6,6 +6,7 @@ import monet.tara.intellij.metamodel.psi.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TaraPsiImplUtil {
@@ -128,7 +129,7 @@ public class TaraPsiImplUtil {
 		TaraConceptBody body;
 		if ((body = concept.getConceptBody()) != null)
 			return getChildrenInBody(body);
-		return null;
+		return Collections.EMPTY_LIST;
 	}
 
 }

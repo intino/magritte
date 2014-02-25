@@ -142,9 +142,11 @@ public class TaraUtil {
 	public static List<IConcept> findAllConceptsOfFile(TaraFileImpl taraFile) {
 		List<IConcept> result = new ArrayList<>();
 		TaraConcept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, TaraConcept.class);
-		if (concepts != null) Collections.addAll(result, concepts);
-		for (TaraConcept concept : concepts)
-			result.addAll(TaraPsiImplUtil.getChildrenOf(concept));
+		if (concepts != null) {
+			Collections.addAll(result, concepts);
+			for (TaraConcept concept : concepts)
+				result.addAll(TaraPsiImplUtil.getChildrenOf(concept));
+		}
 		return result;
 
 	}
