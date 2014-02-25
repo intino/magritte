@@ -22,7 +22,7 @@ public class TaraNameSuggestionProvider implements NameSuggestionProvider {
 		if (element instanceof TaraIdentifier)
 			result.add(toCamelCase(name, true));
 		else
-			result.add(name.toLowerCase());
+			result.add(toCamelCase(name, true));
 		return SuggestedNameInfo.NULL_INFO;
 	}
 

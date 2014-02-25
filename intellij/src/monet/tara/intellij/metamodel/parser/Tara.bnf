@@ -28,7 +28,6 @@ conceptSignature ::= CONCEPT_KEY extendedConcept? modifier? AS identifier
 conceptBody ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT
 
 extendedConcept::= identifier (DOT identifier)*
-//{mixin= 'TaraExtendedConceptMixin' methods=[getIdentifier]}
 
 identifier  ::=  IDENTIFIER_KEY
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.TaraIdentifierMixin' methods=[getIdentifier]}

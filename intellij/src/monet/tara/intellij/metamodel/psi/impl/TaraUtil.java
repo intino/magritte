@@ -23,7 +23,7 @@ public class TaraUtil {
 	public static List<IConcept> findRootConcept(Project project, String identifier) {
 		List<IConcept> result = new ArrayList<>();
 		for (TaraFileImpl taraFile : getProjectFiles(project))
-			getConceptsOfFileByName(taraFile, identifier);
+			result.addAll(getConceptsOfFileByName(taraFile, identifier));
 		return result;
 	}
 
@@ -43,7 +43,7 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static List<IConcept> findConceptWithContext(Project project, String identifier, PsiElement ctx) {
+	public static List<IConcept> findConceptInContext(Project project, String identifier, PsiElement ctx) {
 		List<IConcept> result = new ArrayList<>();
 		for (TaraFileImpl taraFile : getProjectFiles(project)) {
 			IConcept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, TaraConcept.class);
@@ -133,15 +133,21 @@ public class TaraUtil {
 	@NotNull
 	public static List<IConcept> findAllConcepts(Project project) {
 		List<IConcept> result = new ArrayList<>();
-		for (TaraFileImpl taraFile : getProjectFiles(project)) {
-			TaraConcept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, TaraConcept.class);
-			TaraComponent[] components = PsiTreeUtil.getChildrenOfType(taraFile, TaraComponent.class);
-			if (concepts != null) Collections.addAll(result, concepts);
-			if (components != null) Collections.addAll(result, components);
-		}
+		for (TaraFileImpl taraFile : getProjectFiles(project))
+			result.addAll(findAllConceptsOfFile(taraFile));
 		return result;
 	}
 
+	@NotNull
+	public static List<IConcept> findAllConceptsOfFile(TaraFileImpl taraFile) {
+		List<IConcept> result = new ArrayList<>();
+		TaraConcept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, TaraConcept.class);
+		if (concepts != null) Collections.addAll(result, concepts);
+		for (TaraConcept concept : concepts)
+			result.addAll(TaraPsiImplUtil.getChildrenOf(concept));
+		return result;
+
+	}
 
 	public static List<IConcept> resolveReferences(Project project, String key, PsiElement myElement) {
 		return null;

@@ -58,7 +58,7 @@ public class TaraPsiImplUtil {
 		ASTNode keyNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER);
 		if (keyNode != null) {
 			IConcept concept = TaraElementFactoryImpl.getInstance(element.getProject()).createConcept(newName);
-			ASTNode newKeyNode = concept.getFirstChild().getChildren()[0].getNode();
+			ASTNode newKeyNode = concept.getIdentifierNode().getNode();
 			element.getNode().replaceChild(keyNode, newKeyNode);
 		}
 		return element;
