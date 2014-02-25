@@ -37,7 +37,7 @@
                          implementationClass="monet.tafat.intellij.refactoring.rename.TafatNamesValidator"/>
     <projectService serviceInterface="monet.tafat.intellij.psi.TafatElementFactory"
                     serviceImplementation="monet.tafat.intellij.psi.impl.TafatElementFactoryImpl"/>
-    <internalFileTemplate name="Metamodel Unit"/>
+    <internalFileTemplate name="Concept"/>
     <moduleType id="Tafat_MODULE" implementationClass="monet.tafat.intellij.project.module.TafatModuleType"/>
 
     <projectConfigurable instance="monet.tafat.intellij.compiler.TafatCompilerConfigurable" id="Tafat compiler"

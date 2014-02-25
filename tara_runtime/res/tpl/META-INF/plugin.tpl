@@ -37,7 +37,7 @@
                          implementationClass="monet.::projectName::.intellij.refactoring.rename.::projectProperName::NamesValidator"/>
     <projectService serviceInterface="monet.::projectName::.intellij.psi.::projectProperName::ElementFactory"
                     serviceImplementation="monet.::projectName::.intellij.psi.impl.::projectProperName::ElementFactoryImpl"/>
-    <internalFileTemplate name="Metamodel Unit"/>
+    <internalFileTemplate name="Concept"/>
     <moduleType id="::projectProperName::_MODULE" implementationClass="monet.::projectName::.intellij.project.module.::projectProperName::ModuleType"/>
 
     <projectConfigurable instance="monet.::projectName::.intellij.compiler.::projectProperName::CompilerConfigurable" id="::projectProperName:: compiler"

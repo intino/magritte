@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory {
+
 	@NonNls
 	public static final String[] TEMPLATES = {TaraTemplates.CONCEPT};
 
@@ -25,6 +26,8 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 	                                         @NotNull String fileName,
 	                                         @NotNull String templateName,
 	                                         boolean allowReformatting) throws IncorrectOperationException {
+		FileTemplateManager.getInstance().addInternal(TaraTemplates.CONCEPT, TaraFileType.INSTANCE.getDefaultExtension());
+		FileTemplateManager.getInstance().getInternalTemplate("Concept").setText(TaraTemplates.CONCEPT_TF);
 		final FileTemplate template = FileTemplateManager.getInstance().getInternalTemplate(templateName);
 		Project project = directory.getProject();
 		template.setExtension(TaraFileType.INSTANCE.getDefaultExtension());
