@@ -7,8 +7,16 @@ import com.intellij.psi.PsiElement;
 
 public class TaraVisitor extends PsiElementVisitor {
 
+  public void visitAnnotations(@NotNull TaraAnnotations o) {
+    visitPsiElement(o);
+  }
+
   public void visitAttribute(@NotNull TaraAttribute o) {
-    visitIAttribute(o);
+    visitAttribute(o);
+  }
+
+  public void visitBody(@NotNull TaraBody o) {
+    visitBody(o);
   }
 
   public void visitBooleanAssign(@NotNull TaraBooleanAssign o) {
@@ -19,31 +27,11 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitComponent(@NotNull TaraComponent o) {
-    visitIConcept(o);
-  }
-
-  public void visitComponentAnnotations(@NotNull TaraComponentAnnotations o) {
-    visitPsiElement(o);
-  }
-
   public void visitConcept(@NotNull TaraConcept o) {
-    visitIConcept(o);
+    visitConcept(o);
   }
 
-  public void visitConceptAnnotations(@NotNull TaraConceptAnnotations o) {
-    visitPsiElement(o);
-  }
-
-  public void visitConceptBody(@NotNull TaraConceptBody o) {
-    visitPsiElement(o);
-  }
-
-  public void visitConceptConstituents(@NotNull TaraConceptConstituents o) {
-    visitPsiElement(o);
-  }
-
-  public void visitConceptSignature(@NotNull TaraConceptSignature o) {
+  public void visitConceptInjection(@NotNull TaraConceptInjection o) {
     visitPsiElement(o);
   }
 
@@ -63,26 +51,6 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitFrom(@NotNull TaraFrom o) {
-    visitPsiElement(o);
-  }
-
-  public void visitFromAnnotations(@NotNull TaraFromAnnotations o) {
-    visitPsiElement(o);
-  }
-
-  public void visitFromBody(@NotNull TaraFromBody o) {
-    visitPsiElement(o);
-  }
-
-  public void visitFromComponent(@NotNull TaraFromComponent o) {
-    visitIConcept(o);
-  }
-
-  public void visitFromComponentAnnotations(@NotNull TaraFromComponentAnnotations o) {
-    visitPsiElement(o);
-  }
-
   public void visitIdentifier(@NotNull TaraIdentifier o) {
     visitPsiElement(o);
   }
@@ -95,11 +63,11 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitIntegerValue(@NotNull TaraIntegerValue o) {
+  public void visitModifier(@NotNull TaraModifier o) {
     visitPsiElement(o);
   }
 
-  public void visitModifier(@NotNull TaraModifier o) {
+  public void visitMorph(@NotNull TaraMorph o) {
     visitPsiElement(o);
   }
 
@@ -111,8 +79,16 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitPolymorphic(@NotNull TaraPolymorphic o) {
+    visitPsiElement(o);
+  }
+
   public void visitReferenceStatement(@NotNull TaraReferenceStatement o) {
     visitPsiElement(o);
+  }
+
+  public void visitSignature(@NotNull TaraSignature o) {
+    visitSignature(o);
   }
 
   public void visitStringAssign(@NotNull TaraStringAssign o) {
@@ -125,14 +101,6 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitWord(@NotNull TaraWord o) {
     visitPsiElement(o);
-  }
-
-  public void visitIAttribute(@NotNull IAttribute o) {
-    visitElement(o);
-  }
-
-  public void visitIConcept(@NotNull IConcept o) {
-    visitElement(o);
   }
 
   public void visitPsiElement(@NotNull PsiElement o) {

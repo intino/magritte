@@ -5,9 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraConceptBody extends PsiElement {
-
-  @NotNull
-  List<TaraConceptConstituents> getConceptConstituentsList();
+public interface TaraMorph extends PsiElement {
 
 }

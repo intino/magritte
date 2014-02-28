@@ -10,11 +10,11 @@ public abstract class TaraElementFactory {
 		return ServiceManager.getService(project, TaraElementFactory.class);
 	}
 
-	public abstract IConcept createConcept(String name);
+	public abstract Concept createConcept(String name);
 
 	public abstract TaraFileImpl createDummyFile(String text);
 
 	public abstract TaraIdentifier createNameIdentifier(String name);
 
-	public abstract IAttribute createAttribute(String name, String type);
+	public abstract Attribute createAttribute(String name, String type);
 }

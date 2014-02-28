@@ -15,7 +15,7 @@ import java.io.IOException;
 public class Parser {
 
 	TaraM2Grammar parser;
-	TaraM2Grammar.ConceptDefinitionContext conceptDefinitionContext;
+	TaraM2Grammar.ConceptContext conceptDefinitionContext;
 
 	public Parser(File file) {
 		try {
@@ -44,6 +44,6 @@ public class Parser {
 	}
 
 	public void parse() throws Exception {
-		conceptDefinitionContext = parser.conceptDefinition();
+		conceptDefinitionContext = parser.concept();
 	}
 }

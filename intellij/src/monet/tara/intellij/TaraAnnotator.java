@@ -1,129 +1,119 @@
 package monet.tara.intellij;
 
-import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
-import com.intellij.lang.annotation.HighlightSeverity;
-import com.intellij.lexer.Lexer;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.editor.markup.TextAttributes;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.IElementType;
 import monet.tara.intellij.codeinspection.fix.RemoveAttributeFix;
 import monet.tara.intellij.codeinspection.fix.RemoveConceptFix;
-import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import monet.tara.intellij.metamodel.psi.IConcept;
-import monet.tara.intellij.metamodel.psi.TaraAttribute;
+import monet.tara.intellij.metamodel.psi.*;
+import monet.tara.intellij.metamodel.psi.impl.TaraAnnotationsImpl;
+import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaraAnnotator implements Annotator {
 
-	private static void highlightTokens(final PsiElement element, final ASTNode node, final AnnotationHolder holder, TaraSyntaxHighlighter highlighter) {
-		Lexer lexer = highlighter.getHighlightingLexer();
-		final String s = node.getText();
-		lexer.start(s);
-		while (lexer.getTokenType() != null) {
-			IElementType elementType = lexer.getTokenType();
-			TextAttributesKey[] keys = highlighter.getTokenHighlights(elementType);
-			for (TextAttributesKey key : keys) {
-				Pair<String, HighlightSeverity> pair = TaraSyntaxHighlighter.DISPLAY_NAMES.get(key);
-				String displayName = pair.getFirst();
-				HighlightSeverity severity = pair.getSecond();
-				if (severity != null) {
-					int start = lexer.getTokenStart() + node.getTextRange().getStartOffset();
-					int end = lexer.getTokenEnd() + node.getTextRange().getStartOffset();
-					TextRange textRange = new TextRange(start, end);
-					final Annotation annotation;
-					if (severity == HighlightSeverity.WARNING)
-						annotation = holder.createWarningAnnotation(textRange, displayName);
-					else if (severity == HighlightSeverity.ERROR)
-						annotation = holder.createErrorAnnotation(textRange, displayName);
-					else annotation = holder.createInfoAnnotation(textRange, displayName);
-					TextAttributes attributes = EditorColorsManager.getInstance().getGlobalScheme().getAttributes(key);
-					annotation.setEnforcedTextAttributes(attributes);
-					if (key == TaraSyntaxHighlighter.BAD_CHARACTER)
-						annotation.registerFix(getIntention(element, annotation));
-				}
-			}
-			lexer.advance();
-		}
-	}
-
-	private static IntentionAction getIntention(final PsiElement element, final Annotation annotation) {
-		return new IntentionAction() {
-			@NotNull
-			public String getText() {
-				return TaraBundle.message("unescape");
-			}
-
-			@NotNull
-			public String getFamilyName() {
-				return getText();
-			}
-
-			public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-				if (!element.isValid() || !element.getManager().isInProject(element)) return false;
-				String text = element.getContainingFile().getText();
-				int startOffset = annotation.getStartOffset();
-				return text.length() > startOffset && text.charAt(startOffset) == '\\';
-			}
-
-			public void invoke(@NotNull Project project, Editor editor, PsiFile file) {
-				if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-				int offset = annotation.getStartOffset();
-				if (element.getContainingFile().getText().charAt(offset) == '\\')
-					editor.getDocument().deleteString(offset, offset + 1);
-			}
-
-			public boolean startInWriteAction() {
-				return true;
-			}
-		};
-	}
+	AnnotationHolder holder = null;
 
 	@Override
 	public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
-		if (element instanceof IConcept)
-			checkDuplicatedConcept((IConcept) element, holder);
-		if (element instanceof TaraAttribute)
-			checkDuplicatedAttribute((TaraAttribute) element, holder);
+		this.holder = holder;
+		if (element instanceof Concept)
+			checkDuplicated((Concept) element);
+		else if (element instanceof TaraAttribute)
+			checkDuplicated((TaraAttribute) element);
+		else if (element instanceof TaraIdentifier)
+			checkExistence((TaraIdentifier) element);
+		else if (element instanceof TaraMorph)
+			checkMorph((TaraMorph) element);
+		else if (element instanceof TaraPolymorphic)
+			checkPolymorphic((TaraPolymorphic) element);
+		else if (element instanceof TaraAnnotations)
+			checkAnnotations((TaraAnnotations) element);
 	}
 
-	private void checkDuplicatedConcept(IConcept concept, AnnotationHolder holder) {
-		if (concept.getIdentifierNode() != null) {
-			List<IConcept> existenceOfConcept = TaraUtil.findDuplicates(concept.getProject(), concept);
-			ASTNode identifierNode = concept.getIdentifierNode().getNode();
-			if (existenceOfConcept.size() != 1) {
-				Annotation annotation = holder.createErrorAnnotation(identifierNode, TaraBundle.message("duplicate.concept.key.error.message"));
-				annotation.registerFix(new RemoveConceptFix(concept));
-				highlightTokens(concept, identifierNode, holder, new TaraSyntaxHighlighter());
-			}
-		}
+	private void checkAnnotations(TaraAnnotations element) {
+		PsiElement[] psiElements;
+		if (element.getPrevSibling() instanceof TaraExtendedConcept)
+			psiElements = checkConceptInjectionAnnotation(element);
+		else
+			psiElements = checkCorrectAnnotation(TaraPsiImplUtil.getContextOf(element), element.getAnnotations());
+		for (PsiElement psiElement : psiElements)
+			holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
+
 	}
 
-	private void checkDuplicatedAttribute(TaraAttribute attribute, AnnotationHolder holder) {
-		List<TaraAttribute> existenceOfAttribute = TaraUtil.findAttributeDuplicates(attribute);
-		ASTNode attrNode = attribute.getNode();
-		if (existenceOfAttribute.size() != 1) {
-			annotateAttribute(holder, attribute, attrNode);
-		}
+	private PsiElement[] checkConceptInjectionAnnotation(TaraAnnotations element) {
+
+		return new PsiElement[0];
 	}
 
-	private void annotateAttribute(AnnotationHolder holder, TaraAttribute attribute, ASTNode attrNode) {
-		Annotation annotation = holder.createErrorAnnotation(attrNode, TaraBundle.message("duplicate.attribute.key.error.message"));
-		annotation.registerFix(new RemoveAttributeFix(attribute));
-		highlightTokens(attribute, attrNode, holder, new TaraSyntaxHighlighter());
+
+	private PsiElement[] checkCorrectAnnotation(TaraConcept concept, PsiElement[] annotations) {
+		List<PsiElement> incorrectAnnotations;
+		if (concept.getParent() instanceof TaraFile)
+			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotationsImpl.ROOT_ANNOTATIONS);
+		else if (concept.isMorph())
+			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotationsImpl.MORPH_ANNOTATIONS);
+		else
+			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotationsImpl.CHILD_ANNOTATIONS);
+		return incorrectAnnotations.toArray(new PsiElement[incorrectAnnotations.size()]);
+	}
+
+	private List<PsiElement> checkAnnotationList(PsiElement[] annotations, String[] correctAnnotation) {
+		List<PsiElement> incorrectAnnotations = new ArrayList<>();
+		for (PsiElement annotation : annotations)
+			if (!isIn(correctAnnotation, annotation.getText()))
+				incorrectAnnotations.add(annotation);
+		return incorrectAnnotations;
+	}
+
+	private boolean isIn(String[] correctAnnotation, String text) {
+		for (String s : correctAnnotation)
+			if (s.equals(text)) return true;
+		return false;
+	}
+
+	private void checkPolymorphic(TaraPolymorphic element) {
+		if (!hasMorphs(TaraPsiImplUtil.getContextOf(element)))
+			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("morph.non-existent.in.polymorphic.error.message"));
+	}
+
+	private boolean hasMorphs(TaraConcept context) {
+		if (context.getBody() != null)
+			for (Concept concept : context.getBody().getConceptList())
+				if (concept.isMorph()) return true;
+		return false;
+	}
+
+	private void checkMorph(TaraMorph element) {
+		Concept concept = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(element));
+		if (!concept.isPolymorphic())
+			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("morph.not.in.polymorphic.error.message"));
+	}
+
+	private void checkExistence(TaraIdentifier element) {
+		Concept concept = TaraUtil.resolveReferences(element.getProject(), element);
+		if (concept == null && element.getParent() instanceof TaraExtendedConcept)
+			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("reference.concept.key.error.message"));
+	}
+
+	private void checkDuplicated(Concept concept) {
+		if (concept.getIdentifierNode() != null)
+			if (TaraUtil.findDuplicates(concept.getProject(), concept) != 1)
+				annotateAndFix(concept.getIdentifierNode(), new RemoveConceptFix(concept), TaraBundle.message("duplicate.concept.key.error.message"));
+	}
+
+	private void checkDuplicated(TaraAttribute attribute) {
+		if (TaraUtil.findAttributeDuplicates(attribute).length != 1)
+			annotateAndFix(attribute, new RemoveAttributeFix(attribute), TaraBundle.message("duplicate.attribute.key.error.message"));
+	}
+
+	private void annotateAndFix(PsiElement element, IntentionAction fix, String message) {
+		holder.createErrorAnnotation(element.getNode(), message).registerFix(fix);
 	}
 }

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface IConcept extends Navigatable, Iconable, PsiNamedElement {
+public interface Concept extends Navigatable, Iconable, PsiNamedElement {
 
 	TaraFileImpl getFile() throws PsiInvalidElementAccessException;
 
@@ -21,7 +21,11 @@ public interface IConcept extends Navigatable, Iconable, PsiNamedElement {
 
 	PsiElement getIdentifierNode();
 
-	TaraConceptBody getConceptBody();
+	TaraBody getBody();
+
+	boolean isPolymorphic();
+
+	boolean isMorph();
 
 	@Override
 	Icon getIcon(@IconFlags int i);

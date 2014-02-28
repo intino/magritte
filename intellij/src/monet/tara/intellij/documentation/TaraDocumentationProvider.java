@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.ui.GuiUtils;
 import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import monet.tara.intellij.metamodel.psi.IConcept;
+import monet.tara.intellij.metamodel.psi.Concept;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +25,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	}
 
 	@NotNull
-	private static String renderConceptValue(IConcept concept) {
+	private static String renderConceptValue(Concept concept) {
 		String raw = concept.getText();
 		if (raw == null) {
 			return "<i>empty</i>";
@@ -35,7 +35,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 
 	@Nullable
 	public String getQuickNavigateInfo(PsiElement element, PsiElement originalElement) {
-		if (element instanceof IConcept) {
+		if (element instanceof Concept) {
 			return generateDoc(element, originalElement);
 		}
 		return null;
@@ -43,9 +43,9 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 
 	@NonNls
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
-		if (element instanceof IConcept)
-			return doc2Html(element, ((IConcept) element).getDocCommentText());
-		return renderConceptValue((IConcept) element);
+		if (element instanceof Concept)
+			return doc2Html(element, ((Concept) element).getDocCommentText());
+		return renderConceptValue((Concept) element);
 	}
 
 	private String doc2Html(PsiElement element, String text) {

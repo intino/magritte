@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.formatter.common.AbstractBlock;
-import monet.tara.intellij.metamodel.psi.TaraConcept;
+import monet.tara.intellij.metamodel.psi.Concept;
 import monet.tara.intellij.metamodel.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,9 +26,9 @@ public class TaraBlock extends AbstractBlock {
 	protected List<Block> buildChildren() {
 		List<Block> blocks = new ArrayList<>();
 		for (ASTNode child : getNode().getChildren(null)) {
-			if (child.getElementType() == TaraTypes.CONCEPT)
+			if (child.getElementType() == TaraTypes.CONCEPT_KEY)
 				blocks.add(new TaraBlock(child, Wrap.createWrap(WrapType.ALWAYS, false), Alignment.createAlignment()));
-			else if (child.getElementType() == TaraTypes.CONCEPT_CONSTITUENTS)
+			else if (child.getElementType() == TaraTypes.BODY)
 				blocks.add(new TaraBlock(child, Wrap.createWrap(WrapType.ALWAYS, false), Alignment.createAlignment()));
 
 		}
@@ -47,7 +47,7 @@ public class TaraBlock extends AbstractBlock {
 		TaraBlock rightBlock = (TaraBlock) child2;
 		if (child1 == null) return null;
 		PsiElement rightPsi = rightBlock.getNode().getPsi();
-		if (rightPsi instanceof TaraConcept) return ONE_LINE_BREAK_SPACING;
+		if (rightPsi instanceof Concept) return ONE_LINE_BREAK_SPACING;
 		else if (leftBlock.getNode().getElementType() == TaraTypes.ASSIGN)
 			return MIN_SPACE;
 		else if (rightBlock.getNode().getElementType() == TaraTypes.ASSIGN)

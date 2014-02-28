@@ -11,21 +11,27 @@ import static monet.tara.intellij.metamodel.psi.TaraTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import monet.tara.intellij.metamodel.psi.*;
 
-public class TaraConceptBodyImpl extends ASTWrapperPsiElement implements TaraConceptBody {
+public class TaraConceptInjectionImpl extends ASTWrapperPsiElement implements TaraConceptInjection {
 
-  public TaraConceptBodyImpl(ASTNode node) {
+  public TaraConceptInjectionImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitConceptBody(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitConceptInjection(this);
     else super.accept(visitor);
   }
 
   @Override
+  @Nullable
+  public TaraAnnotations getAnnotations() {
+    return findChildByClass(TaraAnnotations.class);
+  }
+
+  @Override
   @NotNull
-  public List<TaraConceptConstituents> getConceptConstituentsList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraConceptConstituents.class);
+  public TaraExtendedConcept getExtendedConcept() {
+    return findNotNullChildByClass(TaraExtendedConcept.class);
   }
 
 }

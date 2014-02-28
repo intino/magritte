@@ -10,23 +10,24 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.psi.IConcept;
-import monet.tara.intellij.metamodel.psi.TaraComponent;
+import monet.tara.intellij.metamodel.psi.Concept;
+import monet.tara.intellij.metamodel.psi.TaraConcept;
 import monet.tara.intellij.metamodel.psi.TaraDoc;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class TaraComponentMixin extends ASTWrapperPsiElement {
+public class SignatureMixin extends ASTWrapperPsiElement {
 
-	public TaraComponentMixin(@NotNull ASTNode node) {
+	public SignatureMixin(@NotNull ASTNode node) {
 		super(node);
 	}
 
 	@NotNull
 	public SearchScope getUseScope() {
 		// concept ref can occur in any file
+
 		return GlobalSearchScope.allScope(getProject());
 	}
 
@@ -45,7 +46,7 @@ public class TaraComponentMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String getName() {
-		return TaraPsiImplUtil.getIdentifier((TaraComponent) this);
+		return TaraPsiImplUtil.getIdentifier((TaraConcept) this);
 	}
 
 	public TaraFileImpl getFile() throws PsiInvalidElementAccessException {
@@ -55,7 +56,7 @@ public class TaraComponentMixin extends ASTWrapperPsiElement {
 	@Nullable
 	public String getDocCommentText() {
 		StringBuilder text = new StringBuilder();
-		TaraDoc doc = ((TaraComponent) this).getDoc();
+		TaraDoc doc = ((TaraConcept) this).getDoc();
 		String comment;
 
 		if (doc != null) {
@@ -72,13 +73,9 @@ public class TaraComponentMixin extends ASTWrapperPsiElement {
 		return this;
 	}
 
-	@NotNull
-	public PsiElement setName(String newName) {
-		return TaraPsiImplUtil.setName(((TaraComponent) this).getConceptSignature(), newName);
-	}
 
 	public PsiElement getIdentifierNode() {
-		return TaraPsiImplUtil.getIdentifierNode((IConcept) this);
+		return TaraPsiImplUtil.getIdentifierNode((Concept) this);
 	}
 
 	@Override

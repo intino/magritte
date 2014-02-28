@@ -17,14 +17,14 @@ public interface TaraFile {
 	PsiFile getContainingFile();
 
 	@NotNull
-	List<IConcept> getConcepts();
+	List<Concept> getConcepts();
 
-	IConcept findConceptByKey(@NotNull @NonNls String key);
+	Concept findConceptByKey(@NotNull @NonNls String key);
 
 	@NotNull
-	PsiElement addConcept(@NotNull IConcept concept) throws IncorrectOperationException;
+	PsiElement addConcept(@NotNull Concept concept) throws IncorrectOperationException;
 
-	IConcept addConcept(String identifier);
+	Concept addConcept(String identifier);
 
 	String getName();
 

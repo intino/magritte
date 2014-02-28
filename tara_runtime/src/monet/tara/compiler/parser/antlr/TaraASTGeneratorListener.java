@@ -21,8 +21,8 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterConcept(@NotNull ConceptContext ctx) {
-		ASTNode node = new ASTNode(ctx.IDENTIFIER().getText(), null);
-		ast.put(ctx.IDENTIFIER().getText(), node);
+		ASTNode node = new ASTNode(ctx.conceptSignature().IDENTIFIER().getText(), null);
+		ast.put(ctx.conceptSignature().IDENTIFIER().getText(), node);
 		conceptStack.push(node);
 	}
 
@@ -37,8 +37,8 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void enterComponent(@NotNull ComponentContext ctx) {
 		ASTNode componentNode;
-		if (ctx.IDENTIFIER() != null)
-			componentNode = new ASTNode(ctx.IDENTIFIER().getText(), conceptStack.peek());
+		if (ctx.conceptSignature().IDENTIFIER() != null)
+			componentNode = new ASTNode(ctx.conceptSignature().IDENTIFIER().getText(), conceptStack.peek());
 		else
 			componentNode = new ASTNode();
 		conceptStack.peek().add(componentNode);
@@ -60,8 +60,8 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void enterFromComponent(@NotNull FromComponentContext ctx) {
 		ASTNode componentNode = new ASTNode();
-		if (ctx.IDENTIFIER() != null)
-			componentNode.setIdentifier(ctx.IDENTIFIER().getText());
+		if (ctx.conceptSignature().IDENTIFIER() != null)
+			componentNode.setIdentifier(ctx.conceptSignature().IDENTIFIER().getText());
 		componentNode.setParent(conceptStack.peek());
 		subModelStack.peek().add(componentNode);
 		conceptStack.push(componentNode);
@@ -74,8 +74,8 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		if (!ctx.MULTIPLE().isEmpty()) node.add(ASTNode.AnnotationType.Multiple);
 	}
 
-	@Override
-	public void enterFromConceptAnnotations(@NotNull FromConceptAnnotationsContext ctx) {
+
+	public void enterFromComponentAnnotations(@NotNull FromComponentAnnotationsContext ctx) {
 		ASTNode node = conceptStack.peek();
 		if (!ctx.HAS_CODE().isEmpty()) node.add(ASTNode.AnnotationType.HasCode);
 		if (!ctx.EXTENSIBLE().isEmpty()) node.add(ASTNode.AnnotationType.Extensible);
@@ -99,7 +99,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterDoc(@NotNull DocContext ctx) {
-		conceptStack.peek().setDoc(ctx.DOC().getText());
+		conceptStack.peek().setDoc(ctx.getText());
 	}
 
 	@Override

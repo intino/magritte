@@ -3,8 +3,8 @@ package monet.tara.intellij.metamodel.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import monet.tara.intellij.metamodel.psi.Attribute;
 import monet.tara.intellij.metamodel.psi.TaraTypes;
-import monet.tara.intellij.metamodel.psi.IAttribute;
 import org.jetbrains.annotations.NotNull;
 
 public class TaraAttributeMixin extends ASTWrapperPsiElement {
@@ -18,7 +18,7 @@ public class TaraAttributeMixin extends ASTWrapperPsiElement {
 	public PsiElement setName(String newName) {
 		ASTNode keyNode = getNode().findChildByType(TaraTypes.IDENTIFIER_KEY);
 		if (keyNode != null) {
-			IAttribute attribute = TaraElementFactoryImpl.getInstance(this.getProject()).createAttribute(newName, getType());
+			Attribute attribute = TaraElementFactoryImpl.getInstance(this.getProject()).createAttribute(newName, getType());
 			ASTNode newKeyNode = attribute.getFirstChild().getChildren()[0].getNode();
 			this.getNode().replaceChild(keyNode, newKeyNode);
 		}

@@ -10,17 +10,15 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.psi.IConcept;
-import monet.tara.intellij.metamodel.psi.TaraConcept;
-import monet.tara.intellij.metamodel.psi.TaraDoc;
+import monet.tara.intellij.metamodel.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class TaraConceptMixin extends ASTWrapperPsiElement {
+public class ConceptMixin extends ASTWrapperPsiElement {
 
-	public TaraConceptMixin(@NotNull ASTNode node) {
+	public ConceptMixin(@NotNull ASTNode node) {
 		super(node);
 	}
 
@@ -79,11 +77,23 @@ public class TaraConceptMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public PsiElement setName(String newName) {
-		return TaraPsiImplUtil.setName(((TaraConcept) this).getConceptSignature(), newName);
+		return TaraPsiImplUtil.setName(((TaraConcept) this).getSignature(), newName);
 	}
 
 	public PsiElement getIdentifierNode() {
-		return TaraPsiImplUtil.getIdentifierNode((IConcept) this);
+		return TaraPsiImplUtil.getIdentifierNode((Concept) this);
 	}
 
+
+	public Body getBody() {
+		return findChildByClass(TaraBody.class);
+	}
+
+	public boolean isPolymorphic(){
+		return ((TaraConcept) this).getSignature().getPolymorphic() != null;
+	}
+
+	public boolean isMorph() {
+		return ((TaraConcept) this).getSignature().getMorph() != null;
+	}
 }

@@ -5,21 +5,21 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraConceptConstituents extends PsiElement {
+public interface TaraSignature extends Signature {
 
   @Nullable
-  TaraAttribute getAttribute();
+  TaraExtendedConcept getExtendedConcept();
+
+  @NotNull
+  TaraIdentifier getIdentifier();
 
   @Nullable
-  TaraComponent getComponent();
+  TaraModifier getModifier();
 
   @Nullable
-  TaraFrom getFrom();
+  TaraMorph getMorph();
 
   @Nullable
-  TaraReferenceStatement getReferenceStatement();
-
-  @Nullable
-  TaraWord getWord();
+  TaraPolymorphic getPolymorphic();
 
 }

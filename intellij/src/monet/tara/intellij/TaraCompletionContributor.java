@@ -22,7 +22,21 @@ public class TaraCompletionContributor extends CompletionContributor {
 			}
 		);
 
-		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.COMPONENT_ANNOTATIONS).withLanguage(TaraLanguage.INSTANCE),
+		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.ANNOTATIONS).withLanguage(TaraLanguage.INSTANCE),
+		new CompletionProvider<CompletionParameters>() {
+			public void addCompletions(@NotNull CompletionParameters parameters,
+			                           ProcessingContext context,
+			                           @NotNull CompletionResultSet resultSet) {
+				resultSet.addElement(LookupElementBuilder.create("multiple"));
+				resultSet.addElement(LookupElementBuilder.create("optional"));
+				resultSet.addElement(LookupElementBuilder.create("has-code"));
+				resultSet.addElement(LookupElementBuilder.create("extensible"));
+				resultSet.addElement(LookupElementBuilder.create("singleton"));
+			}
+		}
+		);
+
+		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.OPTIONAL).withLanguage(TaraLanguage.INSTANCE),
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
@@ -32,42 +46,6 @@ public class TaraCompletionContributor extends CompletionContributor {
 					resultSet.addElement(LookupElementBuilder.create("has-code"));
 					resultSet.addElement(LookupElementBuilder.create("extensible"));
 					resultSet.addElement(LookupElementBuilder.create("singleton"));
-				}
-			}
-		);
-
-		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.CONCEPT_ANNOTATIONS).withLanguage(TaraLanguage.INSTANCE),
-			new CompletionProvider<CompletionParameters>() {
-				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("root"));
-					resultSet.addElement(LookupElementBuilder.create("has-code"));
-					resultSet.addElement(LookupElementBuilder.create("extensible"));
-					resultSet.addElement(LookupElementBuilder.create("singleton"));
-				}
-			}
-		);
-
-		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.FROM_COMPONENT_ANNOTATIONS).withLanguage(TaraLanguage.INSTANCE),
-			new CompletionProvider<CompletionParameters>() {
-				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("has-code"));
-					resultSet.addElement(LookupElementBuilder.create("extensible"));
-					resultSet.addElement(LookupElementBuilder.create("singleton"));
-				}
-			}
-		);
-
-		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.FROM_ANNOTATIONS).withLanguage(TaraLanguage.INSTANCE),
-			new CompletionProvider<CompletionParameters>() {
-				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("multiple"));
-					resultSet.addElement(LookupElementBuilder.create("optional"));
 				}
 			}
 		);
@@ -82,15 +60,6 @@ public class TaraCompletionContributor extends CompletionContributor {
 			}
 		);
 
-		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.FROM).withLanguage(TaraLanguage.INSTANCE),
-			new CompletionProvider<CompletionParameters>() {
-				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("from"));
-				}
-			}
-		);
 
 		extend(CompletionType.BASIC, PlatformPatterns.psiElement(TaraTypes.VAR).withLanguage(TaraLanguage.INSTANCE),
 			new CompletionProvider<CompletionParameters>() {
@@ -101,7 +70,15 @@ public class TaraCompletionContributor extends CompletionContributor {
 				}
 			}
 		);
-
-
 	}
+
+//	public void fillCompletionVariants(CompletionParameters parameters, final CompletionResultSet result) {
+//		if (parameters.isExtendedCompletion()) {
+//			CompletionService.getCompletionService().getVariantsFromContributors(parameters.delegateToClassName(), null, new Consumer<CompletionResult>() {
+//				public void consume(final CompletionResult completionResult) {
+//					result.passResult(completionResult);
+//				}
+//			});
+//		}
+//	}
 }

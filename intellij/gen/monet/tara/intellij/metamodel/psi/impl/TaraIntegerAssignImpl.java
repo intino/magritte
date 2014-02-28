@@ -22,10 +22,4 @@ public class TaraIntegerAssignImpl extends ASTWrapperPsiElement implements TaraI
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public TaraIntegerValue getIntegerValue() {
-    return findNotNullChildByClass(TaraIntegerValue.class);
-  }
-
 }

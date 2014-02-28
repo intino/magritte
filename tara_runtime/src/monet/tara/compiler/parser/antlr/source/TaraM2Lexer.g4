@@ -17,7 +17,7 @@ lexer grammar TaraM2Lexer;
 
     @Override
     public void emit(Token token) {
-        if (token.getType() == EOF) EOF();
+        if (token.getType() == EOF) eof();
         queue.offer(token);
         setToken(token);
     }
@@ -33,33 +33,42 @@ lexer grammar TaraM2Lexer;
         emit();
     }
 
+    private boolean isWhiteLineOrEOF() {
+        int character = _input.LA(1);
+        return (character == -1 || (char) character == '\n');
+    }
+
     private String getTextSpaces(String text){
         int index = (text.indexOf(' ') == -1)? text.indexOf('\t') : text.indexOf(' ');
         return (index == -1)? "" : text.substring(index);
     }
 
     private void newlinesAndSpaces() {
-        blockManager.spaces(getTextSpaces(getText()));
-        sendTokens();
+        if (!isWhiteLineOrEOF()){
+            blockManager.newlineAndSpaces(getTextSpaces(getText()));
+            sendTokens();
+        }
+        else
+            skip();
     }
 
     private void openBracket() {
-        blockManager.openBracket();
+        blockManager.openBracket(getText().length());
         sendTokens();
     }
 
     private void closeBracket() {
-        blockManager.closeBracket();
+        blockManager.closeBracket(getText().length());
         sendTokens();
     }
 
     private void semicolon(){
-        blockManager.addSemicolon(getText().length());
+        blockManager.semicolon(getText().length());
         sendTokens();
     }
 
-    private void EOF(){
-        blockManager.spaces("");
+    private void eof(){
+        blockManager.eof();
         sendTokens();
     }
 
@@ -70,9 +79,9 @@ lexer grammar TaraM2Lexer;
     }
 
     private int translate (BlockManager.Token token){
-        if (token.toString() == "NEWLINE") return NEWLINE;
-        if (token.toString() == "DEDENT") return DEDENT;
-        if (token.toString() == "INDENT") return INDENT;
+        if (token.toString().equals("NEWLINE")) return NEWLINE;
+        if (token.toString().equals("DEDENT")) return DEDENT;
+        if (token.toString().equals("NEWLINE_INDENT")) return NEWLINE_INDENT;
         return UNKNOWN_TOKEN;
     }
 }
@@ -90,10 +99,11 @@ WORD      : 'Word';
 VAR       : 'var';
 ROOT      : 'root';
 SINGLETON : 'singleton';
+NEW       : 'new';
 
-LIST: LEFT_BRACKET RIGHT_BRACKET;
-LEFT_BRACKET : '[';
-RIGHT_BRACKET: ']';
+LIST: LEFT_SQUARE RIGHT_SQUARE;
+LEFT_SQUARE : '[';
+RIGHT_SQUARE: ']';
 
 OPEN_BRACKET : '{' {  openBracket(); };
 CLOSE_BRACKET: '}' { closeBracket(); };
@@ -131,19 +141,16 @@ LETTER: 'a'..'z'
       | 'A'..'Z'
       ;
 
-WHITE_LINE: NL+ SP+ (NL+|EOF) -> channel(HIDDEN);
-
 NEWLINE: NL+ SP* { newlinesAndSpaces(); };
 
 SPACES: SP+ EOF? -> channel(HIDDEN);
 
-DOC_BLOCK: '/?' .*? '?/' NL?;
-DOC_LINE : '??' .*? (NL|EOF);
+DOC : '\'' .*? NL;
 
 SP: (' ' | '\t');
 NL: ('\r'? '\n' | '\n');
 
-INDENT: '(';
-DEDENT: ')';
+NEWLINE_INDENT: 'indent';
+DEDENT        : 'dedent';
 
 UNKNOWN_TOKEN: . ;

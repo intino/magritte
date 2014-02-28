@@ -11,8 +11,8 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
 import gnu.trove.THashMap;
-import monet.tara.intellij.metamodel.psi.TaraTypes;
 import monet.tara.intellij.TaraBundle;
+import monet.tara.intellij.metamodel.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -64,7 +64,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 
 		keys1.put(TaraTypes.CONCEPT_KEY, KEYWORD);
 		keys1.put(TaraTypes.AS, KEYWORD);
-		keys1.put(TaraTypes.FROM_KEY, KEYWORD);
 		keys1.put(TaraTypes.OPEN_AN, KEYWORD);
 		keys1.put(TaraTypes.CLOSE_AN, KEYWORD);
 		keys1.put(TaraTypes.NEW, KEYWORD);
@@ -88,13 +87,14 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 
 		keys1.put(TaraTypes.ABSTRACT, MODIFIERS);
 		keys1.put(TaraTypes.FINAL, MODIFIERS);
+		keys1.put(TaraTypes.MORPH_KEY, MODIFIERS);
+		keys1.put(TaraTypes.POLYMORPHIC_KEY, MODIFIERS);
 
 		keys1.put(TaraTypes.DOC_LINE, DOCUMENTATION);
 
 		keys1.put(TaraTypes.DOUBLE_VALUE, NUMBERS);
 		keys1.put(TaraTypes.NATURAL_VALUE, NUMBERS);
-		keys1.put(TaraTypes.INTEGER_VALUE, NUMBERS);
-		keys1.put(TaraTypes.DOUBLE_VALUE, NUMBERS);
+		keys1.put(TaraTypes.NEGATIVE_VALUE, NUMBERS);
 		keys1.put(TaraTypes.BOOLEAN_VALUE, NUMBERS);
 		keys1.put(TaraTypes.STRING_VALUE, STRING);
 

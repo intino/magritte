@@ -6,7 +6,7 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import monet.tara.intellij.metamodel.psi.IConcept;
+import monet.tara.intellij.metamodel.psi.Concept;
 import monet.tara.intellij.metamodel.psi.TaraFile;
 import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
@@ -21,10 +21,10 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	                                        @NotNull PsiElement root,
 	                                        @NotNull Document document,
 	                                        boolean quick) {
-		List<IConcept> concepts = TaraUtil.findAllConceptsOfFile((TaraFileImpl) root);
-		for (final IConcept concept : concepts)
-			if (concept.getText() != null && concept.getConceptBody() != null)
-				descriptors.add(new FoldingDescriptor(concept.getConceptBody().getNode(), getRange(concept)) {
+		List<Concept> concepts = TaraUtil.findAllConceptsOfFile((TaraFileImpl) root);
+		for (final Concept concept : concepts)
+			if (concept.getText() != null && concept.getBody() != null)
+				descriptors.add(new FoldingDescriptor(concept.getBody().getNode(), getRange(concept)) {
 					@Nullable
 					@Override
 					public String getPlaceholderText() {
@@ -53,7 +53,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		return " ...";
 	}
 
-	private TextRange getRange(IConcept concept) {
-		return new TextRange(concept.getConceptBody().getTextRange().getStartOffset(), concept.getTextRange().getEndOffset());
+	private TextRange getRange(Concept concept) {
+		return new TextRange(concept.getBody().getTextRange().getStartOffset(), concept.getTextRange().getEndOffset());
 	}
 }

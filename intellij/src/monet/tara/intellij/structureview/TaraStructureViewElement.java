@@ -3,9 +3,7 @@ package monet.tara.intellij.structureview;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;
 import com.intellij.navigation.ItemPresentation;
-import monet.tara.intellij.metamodel.psi.IConcept;
-import monet.tara.intellij.metamodel.psi.TaraComponent;
-import monet.tara.intellij.metamodel.psi.TaraConcept;
+import monet.tara.intellij.metamodel.psi.Concept;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,10 +13,10 @@ import java.util.List;
 
 public class TaraStructureViewElement implements StructureViewTreeElement {
 
-	private final IConcept concept;
+	private final Concept concept;
 	private String myPresentableName;
 
-	public TaraStructureViewElement(IConcept taraConcept) {
+	public TaraStructureViewElement(Concept taraConcept) {
 		this.concept = taraConcept;
 	}
 
@@ -42,12 +40,12 @@ public class TaraStructureViewElement implements StructureViewTreeElement {
 
 	@Override
 	public TreeElement[] getChildren() {
-		if (concept instanceof TaraConcept) {
-			List<TaraComponent> components = TaraUtil.getChildrenOf(concept);
-			if (components!= null && !components.isEmpty()) {
-				List<TreeElement> treeElements = new ArrayList<>(components.size());
-				for (IConcept component : components)
-					treeElements.add(new TaraStructureViewElement(component));
+		if (concept != null) {
+			Concept[] concepts = TaraUtil.getChildrenOf(concept);
+			if (concepts != null && !(concepts.length == 0)) {
+				List<TreeElement> treeElements = new ArrayList<>(concepts.length);
+				for (Concept concept : concepts)
+					treeElements.add(new TaraStructureViewElement(concept));
 				return treeElements.toArray(new TreeElement[treeElements.size()]);
 			}
 		}

@@ -8,17 +8,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.intellij.metamodel.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import monet.tara.intellij.metamodel.psi.*;
 
-public class TaraConceptSignatureImpl extends ASTWrapperPsiElement implements TaraConceptSignature {
+public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
 
-  public TaraConceptSignatureImpl(ASTNode node) {
+  public TaraSignatureImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitConceptSignature(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitSignature(this);
     else super.accept(visitor);
   }
 
@@ -38,6 +37,18 @@ public class TaraConceptSignatureImpl extends ASTWrapperPsiElement implements Ta
   @Nullable
   public TaraModifier getModifier() {
     return findChildByClass(TaraModifier.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraMorph getMorph() {
+    return findChildByClass(TaraMorph.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraPolymorphic getPolymorphic() {
+    return findChildByClass(TaraPolymorphic.class);
   }
 
 }

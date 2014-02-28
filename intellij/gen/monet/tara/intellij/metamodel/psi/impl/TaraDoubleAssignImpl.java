@@ -22,10 +22,4 @@ public class TaraDoubleAssignImpl extends ASTWrapperPsiElement implements TaraDo
     else super.accept(visitor);
   }
 
-  @Override
-  @Nullable
-  public TaraIntegerValue getIntegerValue() {
-    return findChildByClass(TaraIntegerValue.class);
-  }
-
 }
