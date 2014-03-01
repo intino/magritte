@@ -5,8 +5,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import monet.tara.intellij.metamodel.psi.Concept;
 import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
-import monet.tara.intellij.metamodel.psi.TaraConcept;
 import org.jetbrains.annotations.Nullable;
 
 public class TaraRunnerUtil {
@@ -38,7 +38,7 @@ public class TaraRunnerUtil {
 			JavaPsiFacade.getInstance(psiClass.getProject()).findClass(CommonClassNames.JAVA_LANG_RUNNABLE, psiClass.getResolveScope());
 		if (runnable == null) return false;
 
-		return psiClass instanceof TaraConcept && //TODO
+		return psiClass instanceof Concept && //TODO
 			!(psiClass instanceof PsiAnonymousClass) &&
 			!psiClass.isInterface() &&
 			psiClass.isInheritor(runnable, true);

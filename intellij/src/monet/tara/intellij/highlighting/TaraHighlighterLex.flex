@@ -1,19 +1,15 @@
-package monet.tara.intellij.metamodel;
+package monet.tara.intellij.highlighting;
 
 import com.intellij.lexer.FlexLexer;
-import java.util.Stack;
-import com.intellij.psi.tree.IElementType;
-import TaraTypes;
 import com.intellij.psi.TokenType;
-import java.util.LinkedList;
-import java.util.Queue;
+import com.intellij.psi.tree.IElementType;
+import monet.tara.intellij.metamodel.psi.TaraTypes;
 
 %%
 
 %class TaraHighlighterLex
 %implements FlexLexer
 %unicode
-%column
 %function advance
 %type IElementType
 
@@ -21,11 +17,12 @@ import java.util.Queue;
 %}
 
 CONCEPT   = "Concept"
-FROM_KEY  = "from"
+MORPH_KEY  = "morph"
+POLYMORPHIC_KEY = "polymorphic"
 AS        = "as"
 FINAL     = "final"
 ABSTRACT  = "abstract"
-MULTIPLE  = "monet.tara.intellij.metamodel"
+MULTIPLE  = "multiple"
 OPTIONAL  = "optional"
 HAS_CODE  = "has-code"
 SINGLETON = "singleton"
@@ -94,7 +91,9 @@ NEWLINE= [\n]+
 
 	{LIST}                      {   return TaraTypes.LIST; }
 
-	{FROM_KEY}                  {   return TaraTypes.FROM_KEY; }
+	{POLYMORPHIC_KEY}           {   return TaraTypes.POLYMORPHIC_KEY; }
+
+	{MORPH_KEY}                 {   return TaraTypes.MORPH_KEY; }
 
 	{OPEN_AN}                   {   return TaraTypes.OPEN_AN; }
 	{CLOSE_AN}                  {   return TaraTypes.CLOSE_AN; }

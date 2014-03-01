@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraAttribute extends IAttribute {
+public interface TaraAttribute extends Attribute {
 
   @Nullable
   TaraBooleanAssign getBooleanAssign();

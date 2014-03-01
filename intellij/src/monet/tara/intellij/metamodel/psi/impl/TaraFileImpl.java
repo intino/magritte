@@ -10,7 +10,7 @@ import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.metamodel.TaraLanguage;
 import monet.tara.intellij.metamodel.file.TaraFileType;
-import monet.tara.intellij.metamodel.psi.IConcept;
+import monet.tara.intellij.metamodel.psi.Concept;
 import monet.tara.intellij.metamodel.psi.TaraElementFactory;
 import monet.tara.intellij.metamodel.psi.TaraFile;
 import org.jetbrains.annotations.NonNls;
@@ -42,12 +42,12 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 
 	@NotNull
 	@Override
-	public List<IConcept> getConcepts() {
+	public List<Concept> getConcepts() {
 		return TaraUtil.getConceptsOfFile(this);
 	}
 
 	@Override
-	public IConcept findConceptByKey(@NotNull @NonNls String key) {
+	public Concept findConceptByKey(@NotNull @NonNls String key) {
 		return TaraUtil.getConceptsOfFileByName(this, key).get(0);
 	}
 
@@ -67,7 +67,7 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 
 	@Override
 	@NotNull
-	public PsiElement addConcept(@NotNull IConcept concept) throws IncorrectOperationException {
+	public PsiElement addConcept(@NotNull Concept concept) throws IncorrectOperationException {
 		if (haveToAddNewLine()) {
 			insertLineBreakBefore(null);
 		}
@@ -77,7 +77,7 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	}
 
 	@Override
-	public IConcept addConcept(String identifier) {
-		return (IConcept) addConcept(TaraElementFactory.getInstance(getProject()).createConcept(identifier));
+	public Concept addConcept(String identifier) {
+		return (Concept) addConcept(TaraElementFactory.getInstance(getProject()).createConcept(identifier));
 	}
 }

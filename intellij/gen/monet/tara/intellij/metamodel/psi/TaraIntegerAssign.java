@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraIntegerAssign extends PsiElement {
 
-  @NotNull
-  TaraIntegerValue getIntegerValue();
-
 }

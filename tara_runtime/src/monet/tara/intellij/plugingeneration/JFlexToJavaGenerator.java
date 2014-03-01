@@ -118,8 +118,8 @@ public class JFlexToJavaGenerator {
 
 	private static List<File> getJLexerFiles() {
 		ArrayList<File> files = new ArrayList<>();
-		files.add(new File(files.getClass().getResource("jflex/JFlex.jar").getPath()));
-		files.add(new File(files.getClass().getResource("jflex/idea-flex.skeleton").getPath()));
+		files.add(new File(files.getClass().getResource("flex/JFlex.jar").getPath()));
+		files.add(new File(files.getClass().getResource("flex/idea-flex.skeleton").getPath()));
 		return files;
 	}
 }

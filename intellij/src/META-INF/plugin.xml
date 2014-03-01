@@ -36,22 +36,27 @@
     <!--<add-to-group group-id="EditorPopupMenu" anchor="last"/>-->
     <!--<add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>-->
     <!--</group>-->
+    <action id="BashErrorReporter.TriggerException"
+            class="monet.tara.intellij.actions.TriggerExceptionAction"
+            text="Trigger Exception"
+            description="Triggers an exception">
+      <add-to-group group-id="ToolsMenu" anchor="last"/>
+    </action>
   </actions>
 
   <application-components>
   </application-components>
 
   <extensions defaultExtensionNs="com.intellij">
+    <errorHandler implementation="monet.tara.intellij.diagnostic.error_reporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
                          implementationClass="monet.tara.intellij.refactoring.rename.TaraNamesValidator"/>
     <projectService serviceInterface="monet.tara.intellij.metamodel.psi.TaraElementFactory"
                     serviceImplementation="monet.tara.intellij.metamodel.psi.impl.TaraElementFactoryImpl"/>
-    <internalFileTemplate name="Metamodel Unit"/>
-    <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.TaraModuleType"/>
 
+    <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.TaraModuleType"/>
     <projectConfigurable instance="monet.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
                          displayName="Tara Compiler" parentId="project.propCompiler"/>
-
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
     <projectService serviceInterface="monet.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
                     serviceImplementation="monet.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"/>
@@ -61,24 +66,23 @@
     <lang.commenter language="Tara" implementationClass="monet.tara.intellij.TaraCommenter"/>
     <lang.documentationProvider language="Tara"
                                 implementationClass="monet.tara.intellij.documentation.TaraDocumentationProvider"/>
-    <fileTemplateGroup implementation="monet.tara.intellij.project.TaraTemplatesFactory"/>
     <fileTypeFactory implementation="monet.tara.intellij.metamodel.file.TaraFileTypeFactory"/>
     <lang.parserDefinition language="Tara"
                            implementationClass="monet.tara.intellij.metamodel.parser.TaraParserDefinition"/>
     <lang.syntaxHighlighterFactory key="Tara"
                                    implementationClass="monet.tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="monet.tara.intellij.highlighting.TaraColorSettingPage"/>
+    <lang.braceMatcher language="Tara" implementationClass="monet.tara.intellij.highlighting.TaraBraceMatcher"/>
     <annotator language="Tara" implementationClass="monet.tara.intellij.TaraAnnotator"/>
     <globalInspection language="Tara" shortName="UnusedConcept" bundle="messages.TaraBundle"
                       key="unused.concept.inspection.display.name"
                       groupKey="tara.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"
                       implementationClass="monet.tara.intellij.codeinspection.UnusedAbstractConceptInspection"/>
-    <!--<globalInspection shortName="DuplicateConceptInspection" bundle="messages.TaraBundle"-->
+    <!--<globalInspection shortName="UnusedAbstractConceptInspection" bundle="messages.TaraBundle"-->
     <!--key="duplicate.concept.display.name"-->
     <!--groupKey="group.names.tara.files" enabledByDefault="false" level="WARNING"-->
     <!--implementationClass="DuplicateConceptInspection"/>-->
-    <!--<completion.contributor language="Tara"-->
-    <!--implementationClass="TaraCompletionContributor"/>-->
+    <completion.contributor language="Tara" implementationClass="monet.tara.intellij.TaraCompletionContributor"/>
     <lang.psiStructureViewFactory language="Tara"
                                   implementationClass="monet.tara.intellij.structureview.TaraStructureViewFactory"/>
     <psi.referenceContributor language="Tara" implementation="monet.tara.intellij.TaraReferenceContributor"/>

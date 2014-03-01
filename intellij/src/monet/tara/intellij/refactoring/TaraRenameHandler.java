@@ -16,9 +16,6 @@ import monet.tara.intellij.TaraReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created by oroncal on 07/01/14.
- */
 public class TaraRenameHandler extends PsiElementRenameHandler {
 
 	@Nullable
@@ -40,10 +37,7 @@ public class TaraRenameHandler extends PsiElementRenameHandler {
 
 	public boolean isAvailableOnDataContext(final DataContext dataContext) {
 		final Editor editor = LangDataKeys.EDITOR.getData(dataContext);
-		if (editor != null) {
-			if (getPsiElement(editor) != null) return true;
-		}
-		return false;
+		return editor != null && getPsiElement(editor) != null;
 	}
 
 	@Override

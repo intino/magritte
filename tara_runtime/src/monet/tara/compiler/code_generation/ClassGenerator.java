@@ -50,7 +50,7 @@ public class ClassGenerator {
 	}
 
 	private File getTaraCoreFile() {
-		return new File(getClass().getResource(File.separator + "tara_code" + File.separator + "tara_core.jar").getPath());
+		return new File(getClass().getResource(File.separator + "tara_core" + File.separator + "tara_core.jar").getPath());
 	}
 
 	private String makeCompileCommand(File[] sources) {

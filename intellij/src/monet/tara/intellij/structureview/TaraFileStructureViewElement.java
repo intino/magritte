@@ -3,8 +3,7 @@ package monet.tara.intellij.structureview;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
 import com.intellij.navigation.ItemPresentation;
-import monet.tara.intellij.metamodel.psi.IConcept;
-import monet.tara.intellij.metamodel.psi.TaraConcept;
+import monet.tara.intellij.metamodel.psi.Concept;
 import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,10 +20,10 @@ public class TaraFileStructureViewElement extends PsiTreeElementBase<TaraFileImp
 
 	@NotNull
 	public Collection<StructureViewTreeElement> getChildrenBase() {
-		List<? extends IConcept> concepts = getElement().getConcepts();
+		List<? extends Concept> concepts = getElement().getConcepts();
 		Collection<StructureViewTreeElement> elements = new ArrayList<>(concepts.size());
-		for (IConcept concept : concepts)
-			elements.add(new TaraStructureViewElement((TaraConcept) concept));
+		for (Concept concept : concepts)
+			elements.add(new TaraStructureViewElement(concept));
 		return elements;
 	}
 

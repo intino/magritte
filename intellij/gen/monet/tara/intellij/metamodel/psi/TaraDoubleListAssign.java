@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraDoubleListAssign extends PsiElement {
 
-  @NotNull
-  List<TaraIntegerValue> getIntegerValueList();
-
 }

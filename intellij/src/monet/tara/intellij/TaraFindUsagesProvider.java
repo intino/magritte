@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
 import monet.tara.intellij.metamodel.lexer.TaraLexerAdapter;
-import monet.tara.intellij.metamodel.psi.IConcept;
+import monet.tara.intellij.metamodel.psi.Concept;
 import monet.tara.intellij.metamodel.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,15 +37,15 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	@NotNull
 	@Override
 	public String getType(@NotNull PsiElement element) {
-		if (element instanceof IConcept) return "Tara Concept";
+		if (element instanceof Concept) return "Tara Concept";
 		else return "";
 	}
 
 	@NotNull
 	@Override
 	public String getDescriptiveName(@NotNull PsiElement element) {
-		if (element instanceof IConcept) {
-			String name = ((IConcept) element).getName();
+		if (element instanceof Concept) {
+			String name = ((Concept) element).getName();
 			return name == null ? "Anonymous" : name;
 		} else return "Error";
 	}
@@ -53,8 +53,8 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	@NotNull
 	@Override
 	public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
-		if (element instanceof IConcept) {
-			String name = ((IConcept) element).getName();
+		if (element instanceof Concept) {
+			String name = ((Concept) element).getName();
 			return name == null ? "Anonymous" : name;
 		} else return "Error";
 	}

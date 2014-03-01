@@ -1,13 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.intellij.metamodel.psi.impl;
 
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static monet.tara.intellij.metamodel.psi.TaraTypes.*;
 import monet.tara.intellij.metamodel.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class TaraConceptImpl extends TaraConceptMixin implements TaraConcept {
+public class TaraConceptImpl extends ConceptMixin implements TaraConcept {
 
   public TaraConceptImpl(ASTNode node) {
     super(node);
@@ -20,20 +23,14 @@ public class TaraConceptImpl extends TaraConceptMixin implements TaraConcept {
 
   @Override
   @Nullable
-  public TaraConceptAnnotations getConceptAnnotations() {
-    return findChildByClass(TaraConceptAnnotations.class);
+  public TaraAnnotations getAnnotations() {
+    return findChildByClass(TaraAnnotations.class);
   }
 
   @Override
   @Nullable
-  public TaraConceptBody getConceptBody() {
-    return findChildByClass(TaraConceptBody.class);
-  }
-
-  @Override
-  @NotNull
-  public TaraConceptSignature getConceptSignature() {
-    return findNotNullChildByClass(TaraConceptSignature.class);
+  public TaraBody getBody() {
+    return findChildByClass(TaraBody.class);
   }
 
   @Override
@@ -42,8 +39,10 @@ public class TaraConceptImpl extends TaraConceptMixin implements TaraConcept {
     return findChildByClass(TaraDoc.class);
   }
 
-  public String getIdentifier() {
-    return TaraPsiImplUtil.getIdentifier(this);
+  @Override
+  @NotNull
+  public TaraSignature getSignature() {
+    return findNotNullChildByClass(TaraSignature.class);
   }
 
 }

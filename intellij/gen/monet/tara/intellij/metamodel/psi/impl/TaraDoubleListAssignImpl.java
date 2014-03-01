@@ -22,10 +22,4 @@ public class TaraDoubleListAssignImpl extends ASTWrapperPsiElement implements Ta
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public List<TaraIntegerValue> getIntegerValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIntegerValue.class);
-  }
-
 }

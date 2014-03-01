@@ -13,7 +13,6 @@ import java.util.Queue;
 %class TaraLexer
 %implements FlexLexer
 %unicode
-%column
 %function advance
 %type IElementType
 
@@ -94,7 +93,8 @@ NEWLINE= [\n]+ ([ ] | [\t])*
 //Reserved words
 
 CONCEPT   = "Concept"
-FROM_KEY  = "from"
+MORPH_KEY  = "morph"
+POLYMORPHIC_KEY = "polymorphic"
 AS        = "as"
 FINAL     = "final"
 ABSTRACT  = "abstract"
@@ -126,7 +126,7 @@ POSITIVE = "+"
 NEGATIVE = "-"
 
 UID_TYPE     = "Uid"
-INT_TYPE     = "Int"
+INT_TYPE     = "Integer"
 NATURAL_TYPE = "Natural"
 DOUBLE_TYPE  = "Double"
 STRING_TYPE  = "String"
@@ -163,7 +163,8 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{LIST}                      {   return TaraTypes.LIST; }
 
-	{FROM_KEY}                  {   return TaraTypes.FROM_KEY; }
+	{POLYMORPHIC_KEY}            {   return TaraTypes.POLYMORPHIC_KEY; }
+	{MORPH_KEY}                  {   return TaraTypes.MORPH_KEY; }
 
 	{OPEN_AN}                   {   return TaraTypes.OPEN_AN; }
 	{CLOSE_AN}                  {   return TaraTypes.CLOSE_AN; }

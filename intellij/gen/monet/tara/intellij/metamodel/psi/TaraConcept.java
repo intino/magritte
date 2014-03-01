@@ -1,23 +1,22 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.intellij.metamodel.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
 
-public interface TaraConcept extends IConcept {
-
-  @Nullable
-  TaraConceptAnnotations getConceptAnnotations();
+public interface TaraConcept extends Concept {
 
   @Nullable
-  TaraConceptBody getConceptBody();
+  TaraAnnotations getAnnotations();
 
-  @NotNull
-  TaraConceptSignature getConceptSignature();
+  @Nullable
+  TaraBody getBody();
 
   @Nullable
   TaraDoc getDoc();
 
-  String getIdentifier();
+  @NotNull
+  TaraSignature getSignature();
 
 }
