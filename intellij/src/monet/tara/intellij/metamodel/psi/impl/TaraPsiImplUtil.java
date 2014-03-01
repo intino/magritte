@@ -86,10 +86,15 @@ public class TaraPsiImplUtil {
 	}
 
 	public static TaraConcept getContextOf(PsiElement element1) {
-		PsiElement element = element1;
-		while (!(element.getParent() instanceof TaraFile) && !(element.getParent() instanceof Concept))
-			element = element.getParent();
-		return (element.getParent() instanceof TaraFile) ? null : (TaraConcept) element.getParent();
+		try {
+			PsiElement element = element1;
+			while ((element.getParent() != null) && !(element.getParent() instanceof TaraFile) && !(element.getParent() instanceof Concept))
+				element = element.getParent();
+			return (element.getParent() instanceof TaraConcept) ? (TaraConcept) element.getParent() : null;
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public static PsiElement[] getAnnotations(TaraAnnotations annotations) {

@@ -27,7 +27,7 @@ public class TaraAnnotator implements Annotator {
 		else if (element instanceof TaraAttribute)
 			checkDuplicated((TaraAttribute) element);
 		else if (element instanceof TaraIdentifier)
-			checkExistence((TaraIdentifier) element);
+			checkWellReferenced((TaraIdentifier) element);
 		else if (element instanceof TaraMorph)
 			checkMorph((TaraMorph) element);
 		else if (element instanceof TaraPolymorphic)
@@ -38,8 +38,8 @@ public class TaraAnnotator implements Annotator {
 
 	private void checkAnnotations(TaraAnnotations element) {
 		PsiElement[] psiElements;
-		if (element.getPrevSibling() instanceof TaraExtendedConcept)
-			psiElements = checkConceptInjectionAnnotation(element);
+		if (element.getParent() instanceof TaraConceptInjection)
+			psiElements = checkConceptInjectionAnnotation(element.getAnnotations());
 		else
 			psiElements = checkCorrectAnnotation(TaraPsiImplUtil.getContextOf(element), element.getAnnotations());
 		for (PsiElement psiElement : psiElements)
@@ -47,17 +47,18 @@ public class TaraAnnotator implements Annotator {
 
 	}
 
-	private PsiElement[] checkConceptInjectionAnnotation(TaraAnnotations element) {
-
-		return new PsiElement[0];
+	private PsiElement[] checkConceptInjectionAnnotation(PsiElement[] annotations) {
+		List<PsiElement> incorrectAnnotations;
+		incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotationsImpl.CHILD_ANNOTATIONS);
+		return incorrectAnnotations.toArray(new PsiElement[incorrectAnnotations.size()]);
 	}
 
 
 	private PsiElement[] checkCorrectAnnotation(TaraConcept concept, PsiElement[] annotations) {
 		List<PsiElement> incorrectAnnotations;
-		if (concept.getParent() instanceof TaraFile)
+		if ((concept != null) && concept.getParent() instanceof TaraFile)
 			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotationsImpl.ROOT_ANNOTATIONS);
-		else if (concept.isMorph())
+		else if ((concept != null) &&concept.isMorph())
 			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotationsImpl.MORPH_ANNOTATIONS);
 		else
 			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotationsImpl.CHILD_ANNOTATIONS);
@@ -96,7 +97,7 @@ public class TaraAnnotator implements Annotator {
 			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("morph.not.in.polymorphic.error.message"));
 	}
 
-	private void checkExistence(TaraIdentifier element) {
+	private void checkWellReferenced(TaraIdentifier element) {
 		Concept concept = TaraUtil.resolveReferences(element.getProject(), element);
 		if (concept == null && element.getParent() instanceof TaraExtendedConcept)
 			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("reference.concept.key.error.message"));

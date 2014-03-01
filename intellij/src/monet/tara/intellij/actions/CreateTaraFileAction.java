@@ -12,15 +12,14 @@ public class CreateTaraFileAction extends CreateFileFromTemplateAction implement
 
 	public CreateTaraFileAction() {
 		super("Concept", "Creates Concept file", TaraFileType.INSTANCE.getIcon());
-		FileTemplateManager.getInstance().removeTemplate(FileTemplateManager.getInstance().getInternalTemplate("Concept"));
+		if (FileTemplateManager.getInstance().getInternalTemplate("Concept") != null)
+			FileTemplateManager.getInstance().removeTemplate(FileTemplateManager.getInstance().getInternalTemplate("Concept"));
 		FileTemplateManager.getInstance().addTemplate("Concept", "m2").setText(getConceptTemplate());
 	}
 
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
-		builder
-			.setTitle("New Tara file")
-			.addKind("Tara Concept", TaraFileType.INSTANCE.getIcon(), "Concept");
+		builder.setTitle("New Tara file").addKind("Tara Concept", TaraFileType.INSTANCE.getIcon(), "Concept");
 	}
 
 	@Override
@@ -29,7 +28,7 @@ public class CreateTaraFileAction extends CreateFileFromTemplateAction implement
 	}
 
 
-	public String getConceptTemplate(){
+	public String getConceptTemplate() {
 		return "' ${DATE}. Documentation of the concept\n" +
 			"Concept as ${NAME}\n";
 	}

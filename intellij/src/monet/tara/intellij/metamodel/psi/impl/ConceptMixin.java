@@ -72,6 +72,9 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public Icon getIcon(@IconFlags int i) {
+		if (this.isMorph())
+		return TaraIcons.MORPH_13;
+		if (this.isPolymorphic()) return TaraIcons.POLYMORPHIC_13;
 		return TaraIcons.CONCEPT_13;
 	}
 
