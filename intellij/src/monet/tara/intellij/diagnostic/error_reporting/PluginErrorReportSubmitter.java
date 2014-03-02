@@ -32,6 +32,8 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 	@NonNls
 	private static final String EMAIL_TO_PROPERTY_KEY = "tara.mail.admin.to";
 
+	final LoggingEventSubmitter.SubmitException[] ex = new LoggingEventSubmitter.SubmitException[]{null};
+
 	public String getReportActionText() {
 		return PluginErrorReportSubmitterBundle.message("report.error.to.plugin.vendor");
 	}
@@ -43,10 +45,13 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 		LOGGER.debug("Properties read from plugin descriptor: " + reportingProperties);
 		queryPropertiesFile(pluginDescriptor, reportingProperties);
 		LOGGER.debug("Final properties to be applied: " + reportingProperties);
-		final LoggingEventSubmitter.SubmitException[] ex = new LoggingEventSubmitter.SubmitException[]{null};
 		Runnable runnable = getRunnable(events, reportingProperties);
 		ProgressManager progressManager = ProgressManager.getInstance();
 		progressManager.runProcessWithProgressSynchronously(runnable, PluginErrorReportSubmitterBundle.message("progress.dialog.title"), false, null);
+		return reportExceptions(parentComponent);
+	}
+
+	private SubmittedReportInfo reportExceptions(Component parentComponent) {
 		if (processExceptions(parentComponent, ex[0]))
 			return new SubmittedReportInfo(null, null, SubmittedReportInfo.SubmissionStatus.FAILED);
 		LOGGER.info("Error submission successful");
@@ -73,7 +78,11 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 				indicator.setIndeterminate(true);
 				String eventsProcessed = processEvents(events);
 				LoggingEventSubmitter submitter = new LoggingEventSubmitter(reportingProperties, "Tara Plugin Error", eventsProcessed);
-				submitter.submit();
+				try {
+					submitter.submit();
+				} catch (LoggingEventSubmitter.SubmitException e) {
+					ex[0] = e;
+				}
 			}
 		};
 	}
@@ -119,7 +128,6 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 			}
 		}
 	}
-
 
 
 }

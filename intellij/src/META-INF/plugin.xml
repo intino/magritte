@@ -25,9 +25,6 @@
   -->
 
   <actions>
-    <action id="NewMetamodelUnit" class="monet.tara.intellij.actions.CreateTaraFileAction">
-      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewGroup1"/>
-    </action>
     <!--<group id="tara.file.group" popup="false">-->
     <!--<action id="tara.Generate" class="monet.tara.compilerntellij.actions.GenerateAction" text="Generate Plugin">-->
     <!--<keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>-->
@@ -41,6 +38,13 @@
             text="Trigger Exception"
             description="Triggers an exception">
       <add-to-group group-id="ToolsMenu" anchor="last"/>
+    </action>
+    <action id="NewConcept" class="monet.tara.intellij.actions.CreateTaraFileAction">
+      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+    </action>
+    <action id="NewTaraPackage" class="monet.tara.intellij.actions.CreateTaraPackageAction" text="Package"
+            description="Create a new package" icon="com.intellij.icons.AllIcons.Nodes.Package">
+      <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewConcept"/>
     </action>
   </actions>
 
