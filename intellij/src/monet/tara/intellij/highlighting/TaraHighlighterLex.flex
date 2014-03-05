@@ -107,11 +107,11 @@ NEWLINE= [\n]+
 
 	{DOC_LINE}                  {   return TaraTypes.DOC_LINE; }
 
-	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE; }
-	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE; }
-	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE; }
-	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE; }
-	{NATURAL_VALUE_KEY}            {   return TaraTypes.NATURAL_VALUE; }
+	{STRING_VALUE_KEY}          {   return TaraTypes.STRING_VALUE_KEY; }
+	{BOOLEAN_VALUE_KEY}         {   return TaraTypes.BOOLEAN_VALUE_KEY; }
+	{DOUBLE_VALUE_KEY}          {   return TaraTypes.DOUBLE_VALUE_KEY; }
+	{NEGATIVE_VALUE_KEY}        {   return TaraTypes.NEGATIVE_VALUE_KEY; }
+	{NATURAL_VALUE_KEY}         {   return TaraTypes.NATURAL_VALUE_KEY; }
 
 	{LEFT_SQUARE}               {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}              {   return TaraTypes.RIGHT_SQUARE; }

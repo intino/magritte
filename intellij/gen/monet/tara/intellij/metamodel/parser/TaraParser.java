@@ -153,11 +153,11 @@ public class TaraParser implements PsiParser {
 
   /* ********************************************************** */
   // VAR     UID_TYPE IDENTIFIER_KEY (ASSIGN stringValue)?
-  //            | VAR     INT_TYPE (variableNames (ASSIGN integerValue)? | LIST variableNames ASSIGN integerList?)
-  //            | VAR  DOUBLE_TYPE (variableNames (ASSIGN doubleValue)?  | LIST variableNames ASSIGN doubleList?)
-  //            | VAR NATURAL_TYPE (variableNames (ASSIGN naturalValue)? | LIST variableNames ASSIGN naturalList?)
-  //            | VAR BOOLEAN_TYPE (variableNames (ASSIGN booleanValue)? | LIST variableNames ASSIGN booleanList?)
-  //            | VAR  STRING_TYPE (variableNames (ASSIGN stringValue)?  | LIST variableNames ASSIGN stringList?)
+  //            | VAR     INT_TYPE (variableNames | IDENTIFIER_KEY ASSIGN integerValue | LIST IDENTIFIER_KEY (ASSIGN integerList)?)
+  //            | VAR  DOUBLE_TYPE (variableNames | IDENTIFIER_KEY ASSIGN doubleValue | LIST IDENTIFIER_KEY (ASSIGN doubleList)?)
+  //            | VAR NATURAL_TYPE (variableNames | IDENTIFIER_KEY ASSIGN naturalValue | LIST IDENTIFIER_KEY (ASSIGN naturalList)?)
+  //            | VAR BOOLEAN_TYPE (variableNames | IDENTIFIER_KEY ASSIGN booleanValue | LIST IDENTIFIER_KEY (ASSIGN booleanList)?)
+  //            | VAR  STRING_TYPE (variableNames | IDENTIFIER_KEY ASSIGN stringValue | LIST IDENTIFIER_KEY (ASSIGN stringList)?)
   public static boolean attribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute")) return false;
     if (!nextTokenIs(builder_, VAR)) return false;
@@ -202,7 +202,7 @@ public class TaraParser implements PsiParser {
     return result_;
   }
 
-  // VAR     INT_TYPE (variableNames (ASSIGN integerValue)? | LIST variableNames ASSIGN integerList?)
+  // VAR     INT_TYPE (variableNames | IDENTIFIER_KEY ASSIGN integerValue | LIST IDENTIFIER_KEY (ASSIGN integerList)?)
   private static boolean attribute_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_1")) return false;
     boolean result_ = false;
@@ -213,67 +213,59 @@ public class TaraParser implements PsiParser {
     return result_;
   }
 
-  // variableNames (ASSIGN integerValue)? | LIST variableNames ASSIGN integerList?
+  // variableNames | IDENTIFIER_KEY ASSIGN integerValue | LIST IDENTIFIER_KEY (ASSIGN integerList)?
   private static boolean attribute_1_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_1_2")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = attribute_1_2_0(builder_, level_ + 1);
-    if (!result_) result_ = attribute_1_2_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // variableNames (ASSIGN integerValue)?
-  private static boolean attribute_1_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_1_2_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
     result_ = variableNames(builder_, level_ + 1);
-    result_ = result_ && attribute_1_2_0_1(builder_, level_ + 1);
+    if (!result_) result_ = attribute_1_2_1(builder_, level_ + 1);
+    if (!result_) result_ = attribute_1_2_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // (ASSIGN integerValue)?
-  private static boolean attribute_1_2_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_1_2_0_1")) return false;
-    attribute_1_2_0_1_0(builder_, level_ + 1);
-    return true;
-  }
-
-  // ASSIGN integerValue
-  private static boolean attribute_1_2_0_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_1_2_0_1_0")) return false;
+  // IDENTIFIER_KEY ASSIGN integerValue
+  private static boolean attribute_1_2_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_1_2_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, ASSIGN);
+    result_ = consumeTokens(builder_, 0, IDENTIFIER_KEY, ASSIGN);
     result_ = result_ && integerValue(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // LIST variableNames ASSIGN integerList?
-  private static boolean attribute_1_2_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_1_2_1")) return false;
+  // LIST IDENTIFIER_KEY (ASSIGN integerList)?
+  private static boolean attribute_1_2_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_1_2_2")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, LIST);
-    result_ = result_ && variableNames(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, ASSIGN);
-    result_ = result_ && attribute_1_2_1_3(builder_, level_ + 1);
+    result_ = consumeTokens(builder_, 0, LIST, IDENTIFIER_KEY);
+    result_ = result_ && attribute_1_2_2_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // integerList?
-  private static boolean attribute_1_2_1_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_1_2_1_3")) return false;
-    integerList(builder_, level_ + 1);
+  // (ASSIGN integerList)?
+  private static boolean attribute_1_2_2_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_1_2_2_2")) return false;
+    attribute_1_2_2_2_0(builder_, level_ + 1);
     return true;
   }
 
-  // VAR  DOUBLE_TYPE (variableNames (ASSIGN doubleValue)?  | LIST variableNames ASSIGN doubleList?)
+  // ASSIGN integerList
+  private static boolean attribute_1_2_2_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_1_2_2_2_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, ASSIGN);
+    result_ = result_ && integerList(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // VAR  DOUBLE_TYPE (variableNames | IDENTIFIER_KEY ASSIGN doubleValue | LIST IDENTIFIER_KEY (ASSIGN doubleList)?)
   private static boolean attribute_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_2")) return false;
     boolean result_ = false;
@@ -284,67 +276,59 @@ public class TaraParser implements PsiParser {
     return result_;
   }
 
-  // variableNames (ASSIGN doubleValue)?  | LIST variableNames ASSIGN doubleList?
+  // variableNames | IDENTIFIER_KEY ASSIGN doubleValue | LIST IDENTIFIER_KEY (ASSIGN doubleList)?
   private static boolean attribute_2_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_2_2")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = attribute_2_2_0(builder_, level_ + 1);
-    if (!result_) result_ = attribute_2_2_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // variableNames (ASSIGN doubleValue)?
-  private static boolean attribute_2_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_2_2_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
     result_ = variableNames(builder_, level_ + 1);
-    result_ = result_ && attribute_2_2_0_1(builder_, level_ + 1);
+    if (!result_) result_ = attribute_2_2_1(builder_, level_ + 1);
+    if (!result_) result_ = attribute_2_2_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // (ASSIGN doubleValue)?
-  private static boolean attribute_2_2_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_2_2_0_1")) return false;
-    attribute_2_2_0_1_0(builder_, level_ + 1);
-    return true;
-  }
-
-  // ASSIGN doubleValue
-  private static boolean attribute_2_2_0_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_2_2_0_1_0")) return false;
+  // IDENTIFIER_KEY ASSIGN doubleValue
+  private static boolean attribute_2_2_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_2_2_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, ASSIGN);
+    result_ = consumeTokens(builder_, 0, IDENTIFIER_KEY, ASSIGN);
     result_ = result_ && doubleValue(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // LIST variableNames ASSIGN doubleList?
-  private static boolean attribute_2_2_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_2_2_1")) return false;
+  // LIST IDENTIFIER_KEY (ASSIGN doubleList)?
+  private static boolean attribute_2_2_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_2_2_2")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, LIST);
-    result_ = result_ && variableNames(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, ASSIGN);
-    result_ = result_ && attribute_2_2_1_3(builder_, level_ + 1);
+    result_ = consumeTokens(builder_, 0, LIST, IDENTIFIER_KEY);
+    result_ = result_ && attribute_2_2_2_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // doubleList?
-  private static boolean attribute_2_2_1_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_2_2_1_3")) return false;
-    doubleList(builder_, level_ + 1);
+  // (ASSIGN doubleList)?
+  private static boolean attribute_2_2_2_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_2_2_2_2")) return false;
+    attribute_2_2_2_2_0(builder_, level_ + 1);
     return true;
   }
 
-  // VAR NATURAL_TYPE (variableNames (ASSIGN naturalValue)? | LIST variableNames ASSIGN naturalList?)
+  // ASSIGN doubleList
+  private static boolean attribute_2_2_2_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_2_2_2_2_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, ASSIGN);
+    result_ = result_ && doubleList(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // VAR NATURAL_TYPE (variableNames | IDENTIFIER_KEY ASSIGN naturalValue | LIST IDENTIFIER_KEY (ASSIGN naturalList)?)
   private static boolean attribute_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_3")) return false;
     boolean result_ = false;
@@ -355,67 +339,59 @@ public class TaraParser implements PsiParser {
     return result_;
   }
 
-  // variableNames (ASSIGN naturalValue)? | LIST variableNames ASSIGN naturalList?
+  // variableNames | IDENTIFIER_KEY ASSIGN naturalValue | LIST IDENTIFIER_KEY (ASSIGN naturalList)?
   private static boolean attribute_3_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_3_2")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = attribute_3_2_0(builder_, level_ + 1);
-    if (!result_) result_ = attribute_3_2_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // variableNames (ASSIGN naturalValue)?
-  private static boolean attribute_3_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_3_2_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
     result_ = variableNames(builder_, level_ + 1);
-    result_ = result_ && attribute_3_2_0_1(builder_, level_ + 1);
+    if (!result_) result_ = attribute_3_2_1(builder_, level_ + 1);
+    if (!result_) result_ = attribute_3_2_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // (ASSIGN naturalValue)?
-  private static boolean attribute_3_2_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_3_2_0_1")) return false;
-    attribute_3_2_0_1_0(builder_, level_ + 1);
-    return true;
-  }
-
-  // ASSIGN naturalValue
-  private static boolean attribute_3_2_0_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_3_2_0_1_0")) return false;
+  // IDENTIFIER_KEY ASSIGN naturalValue
+  private static boolean attribute_3_2_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_3_2_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, ASSIGN);
+    result_ = consumeTokens(builder_, 0, IDENTIFIER_KEY, ASSIGN);
     result_ = result_ && naturalValue(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // LIST variableNames ASSIGN naturalList?
-  private static boolean attribute_3_2_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_3_2_1")) return false;
+  // LIST IDENTIFIER_KEY (ASSIGN naturalList)?
+  private static boolean attribute_3_2_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_3_2_2")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, LIST);
-    result_ = result_ && variableNames(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, ASSIGN);
-    result_ = result_ && attribute_3_2_1_3(builder_, level_ + 1);
+    result_ = consumeTokens(builder_, 0, LIST, IDENTIFIER_KEY);
+    result_ = result_ && attribute_3_2_2_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // naturalList?
-  private static boolean attribute_3_2_1_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_3_2_1_3")) return false;
-    naturalList(builder_, level_ + 1);
+  // (ASSIGN naturalList)?
+  private static boolean attribute_3_2_2_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_3_2_2_2")) return false;
+    attribute_3_2_2_2_0(builder_, level_ + 1);
     return true;
   }
 
-  // VAR BOOLEAN_TYPE (variableNames (ASSIGN booleanValue)? | LIST variableNames ASSIGN booleanList?)
+  // ASSIGN naturalList
+  private static boolean attribute_3_2_2_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_3_2_2_2_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, ASSIGN);
+    result_ = result_ && naturalList(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // VAR BOOLEAN_TYPE (variableNames | IDENTIFIER_KEY ASSIGN booleanValue | LIST IDENTIFIER_KEY (ASSIGN booleanList)?)
   private static boolean attribute_4(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_4")) return false;
     boolean result_ = false;
@@ -426,67 +402,59 @@ public class TaraParser implements PsiParser {
     return result_;
   }
 
-  // variableNames (ASSIGN booleanValue)? | LIST variableNames ASSIGN booleanList?
+  // variableNames | IDENTIFIER_KEY ASSIGN booleanValue | LIST IDENTIFIER_KEY (ASSIGN booleanList)?
   private static boolean attribute_4_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_4_2")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = attribute_4_2_0(builder_, level_ + 1);
-    if (!result_) result_ = attribute_4_2_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // variableNames (ASSIGN booleanValue)?
-  private static boolean attribute_4_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_4_2_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
     result_ = variableNames(builder_, level_ + 1);
-    result_ = result_ && attribute_4_2_0_1(builder_, level_ + 1);
+    if (!result_) result_ = attribute_4_2_1(builder_, level_ + 1);
+    if (!result_) result_ = attribute_4_2_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // (ASSIGN booleanValue)?
-  private static boolean attribute_4_2_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_4_2_0_1")) return false;
-    attribute_4_2_0_1_0(builder_, level_ + 1);
-    return true;
-  }
-
-  // ASSIGN booleanValue
-  private static boolean attribute_4_2_0_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_4_2_0_1_0")) return false;
+  // IDENTIFIER_KEY ASSIGN booleanValue
+  private static boolean attribute_4_2_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_4_2_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, ASSIGN);
+    result_ = consumeTokens(builder_, 0, IDENTIFIER_KEY, ASSIGN);
     result_ = result_ && booleanValue(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // LIST variableNames ASSIGN booleanList?
-  private static boolean attribute_4_2_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_4_2_1")) return false;
+  // LIST IDENTIFIER_KEY (ASSIGN booleanList)?
+  private static boolean attribute_4_2_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_4_2_2")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, LIST);
-    result_ = result_ && variableNames(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, ASSIGN);
-    result_ = result_ && attribute_4_2_1_3(builder_, level_ + 1);
+    result_ = consumeTokens(builder_, 0, LIST, IDENTIFIER_KEY);
+    result_ = result_ && attribute_4_2_2_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // booleanList?
-  private static boolean attribute_4_2_1_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_4_2_1_3")) return false;
-    booleanList(builder_, level_ + 1);
+  // (ASSIGN booleanList)?
+  private static boolean attribute_4_2_2_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_4_2_2_2")) return false;
+    attribute_4_2_2_2_0(builder_, level_ + 1);
     return true;
   }
 
-  // VAR  STRING_TYPE (variableNames (ASSIGN stringValue)?  | LIST variableNames ASSIGN stringList?)
+  // ASSIGN booleanList
+  private static boolean attribute_4_2_2_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_4_2_2_2_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, ASSIGN);
+    result_ = result_ && booleanList(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // VAR  STRING_TYPE (variableNames | IDENTIFIER_KEY ASSIGN stringValue | LIST IDENTIFIER_KEY (ASSIGN stringList)?)
   private static boolean attribute_5(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_5")) return false;
     boolean result_ = false;
@@ -497,64 +465,56 @@ public class TaraParser implements PsiParser {
     return result_;
   }
 
-  // variableNames (ASSIGN stringValue)?  | LIST variableNames ASSIGN stringList?
+  // variableNames | IDENTIFIER_KEY ASSIGN stringValue | LIST IDENTIFIER_KEY (ASSIGN stringList)?
   private static boolean attribute_5_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_5_2")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = attribute_5_2_0(builder_, level_ + 1);
-    if (!result_) result_ = attribute_5_2_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // variableNames (ASSIGN stringValue)?
-  private static boolean attribute_5_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_5_2_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
     result_ = variableNames(builder_, level_ + 1);
-    result_ = result_ && attribute_5_2_0_1(builder_, level_ + 1);
+    if (!result_) result_ = attribute_5_2_1(builder_, level_ + 1);
+    if (!result_) result_ = attribute_5_2_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // (ASSIGN stringValue)?
-  private static boolean attribute_5_2_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_5_2_0_1")) return false;
-    attribute_5_2_0_1_0(builder_, level_ + 1);
-    return true;
-  }
-
-  // ASSIGN stringValue
-  private static boolean attribute_5_2_0_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_5_2_0_1_0")) return false;
+  // IDENTIFIER_KEY ASSIGN stringValue
+  private static boolean attribute_5_2_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_5_2_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, ASSIGN);
+    result_ = consumeTokens(builder_, 0, IDENTIFIER_KEY, ASSIGN);
     result_ = result_ && stringValue(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // LIST variableNames ASSIGN stringList?
-  private static boolean attribute_5_2_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_5_2_1")) return false;
+  // LIST IDENTIFIER_KEY (ASSIGN stringList)?
+  private static boolean attribute_5_2_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_5_2_2")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, LIST);
-    result_ = result_ && variableNames(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, ASSIGN);
-    result_ = result_ && attribute_5_2_1_3(builder_, level_ + 1);
+    result_ = consumeTokens(builder_, 0, LIST, IDENTIFIER_KEY);
+    result_ = result_ && attribute_5_2_2_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // stringList?
-  private static boolean attribute_5_2_1_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "attribute_5_2_1_3")) return false;
-    stringList(builder_, level_ + 1);
+  // (ASSIGN stringList)?
+  private static boolean attribute_5_2_2_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_5_2_2_2")) return false;
+    attribute_5_2_2_2_0(builder_, level_ + 1);
     return true;
+  }
+
+  // ASSIGN stringList
+  private static boolean attribute_5_2_2_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "attribute_5_2_2_2_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, ASSIGN);
+    result_ = result_ && stringList(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   /* ********************************************************** */

@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElement;
 import monet.tara.intellij.codeinspection.fix.RemoveAttributeFix;
 import monet.tara.intellij.codeinspection.fix.RemoveConceptFix;
 import monet.tara.intellij.metamodel.psi.*;
-import monet.tara.intellij.metamodel.psi.impl.TaraAnnotationsImpl;
 import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +16,9 @@ import java.util.List;
 
 public class TaraAnnotator implements Annotator {
 
+	public static final String[] ROOT_ANNOTATIONS = new String[]{"root", "extensible", "singleton", "has-code"};
+	public static final String[] CHILD_ANNOTATIONS = new String[]{"extensible", "singleton", "has-code", "optional", "multiple"};
+	public static final String[] MORPH_ANNOTATIONS = new String[]{"extensible", "singleton", "has-code"};
 	AnnotationHolder holder = null;
 
 	@Override
@@ -44,12 +46,11 @@ public class TaraAnnotator implements Annotator {
 			psiElements = checkCorrectAnnotation(TaraPsiImplUtil.getContextOf(element), element.getAnnotations());
 		for (PsiElement psiElement : psiElements)
 			holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
-
 	}
 
 	private PsiElement[] checkConceptInjectionAnnotation(PsiElement[] annotations) {
 		List<PsiElement> incorrectAnnotations;
-		incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotationsImpl.CHILD_ANNOTATIONS);
+		incorrectAnnotations = checkAnnotationList(annotations, CHILD_ANNOTATIONS);
 		return incorrectAnnotations.toArray(new PsiElement[incorrectAnnotations.size()]);
 	}
 
@@ -57,11 +58,11 @@ public class TaraAnnotator implements Annotator {
 	private PsiElement[] checkCorrectAnnotation(TaraConcept concept, PsiElement[] annotations) {
 		List<PsiElement> incorrectAnnotations;
 		if ((concept != null) && concept.getParent() instanceof TaraFile)
-			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotationsImpl.ROOT_ANNOTATIONS);
-		else if ((concept != null) &&concept.isMorph())
-			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotationsImpl.MORPH_ANNOTATIONS);
+			incorrectAnnotations = checkAnnotationList(annotations, ROOT_ANNOTATIONS);
+		else if ((concept != null) && concept.isMorph())
+			incorrectAnnotations = checkAnnotationList(annotations, MORPH_ANNOTATIONS);
 		else
-			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotationsImpl.CHILD_ANNOTATIONS);
+			incorrectAnnotations = checkAnnotationList(annotations, CHILD_ANNOTATIONS);
 		return incorrectAnnotations.toArray(new PsiElement[incorrectAnnotations.size()]);
 	}
 

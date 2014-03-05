@@ -94,7 +94,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 
 		keys1.put(TaraTypes.DOUBLE_VALUE, NUMBERS);
 		keys1.put(TaraTypes.NATURAL_VALUE, NUMBERS);
-		keys1.put(TaraTypes.NEGATIVE_VALUE, NUMBERS);
+		keys1.put(TaraTypes.NEGATIVE_VALUE_KEY, NUMBERS);
 		keys1.put(TaraTypes.BOOLEAN_VALUE, NUMBERS);
 		keys1.put(TaraTypes.STRING_VALUE, STRING);
 

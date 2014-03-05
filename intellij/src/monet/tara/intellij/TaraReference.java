@@ -7,11 +7,15 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import monet.tara.intellij.metamodel.TaraIcons;
 import monet.tara.intellij.metamodel.psi.Concept;
+import monet.tara.intellij.metamodel.psi.TaraConcept;
+import monet.tara.intellij.metamodel.psi.TaraIdentifier;
+import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
@@ -41,13 +45,30 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	@NotNull
 	@Override
 	public Object[] getVariants() {
-		Project project = myElement.getProject();
-		List<Concept> concepts = TaraUtil.findAllConcepts(project);
+		List<Concept> concepts = new ArrayList<>();
+		if (myElement.getPrevSibling() == null)
+			refer((TaraIdentifier) myElement, concepts);
+		else getChildrenVariants((TaraIdentifier) myElement.getPrevSibling().getPrevSibling(), concepts);
+		return fillVariants(concepts);
+	}
+
+	private Object[] fillVariants(List<Concept> concepts) {
 		List<LookupElement> variants = new ArrayList<>();
 		for (final Concept concept : concepts)
 			if (concept.getName() != null && concept.getName().length() > 0)
 				variants.add(LookupElementBuilder.create(concept).withIcon(TaraIcons.ICON_13).withTypeText(getFileName(concept)));
 		return variants.toArray();
+	}
+
+	private void refer(TaraIdentifier parent, List<Concept> concepts) {
+		concepts.addAll(TaraUtil.getRootConcepts(parent.getProject()));
+		TaraConcept context = TaraPsiImplUtil.getContextOf(parent);
+		concepts.addAll(TaraUtil.getSiblings(context));
+	}
+
+	private void getChildrenVariants(TaraIdentifier parent, List<Concept> concepts) {
+		Concept concept = TaraUtil.resolveReferences(parent.getProject(), parent);
+		Collections.addAll(concepts, TaraUtil.getChildrenOf(concept));
 	}
 
 	private String getFileName(Concept concept) {

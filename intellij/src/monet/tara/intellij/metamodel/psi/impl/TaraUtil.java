@@ -154,7 +154,7 @@ public class TaraUtil {
 		return reference;
 	}
 
-	private static TaraConcept findSibling(Concept context, String identifier) {
+	public static TaraConcept findSibling(Concept context, String identifier) {
 		PsiElement element = context;
 		List<TaraConcept> childrenInBody;
 		while (element != null && !(element instanceof TaraBody))
@@ -164,6 +164,15 @@ public class TaraUtil {
 			return findChildIn(childrenInBody, identifier);
 		}
 		return null;
+	}
+
+	public static List<TaraConcept> getSiblings(Concept context) {
+		PsiElement element = context;
+		while ((element != null) && !(element instanceof TaraFile) && !(element instanceof TaraBody))
+			element = element.getParent();
+		if (element != null && !(element instanceof TaraFile))
+			return TaraPsiImplUtil.getChildrenInBody((TaraBody) element);
+		return Collections.EMPTY_LIST;
 	}
 
 	private static TaraConcept findChildIn(List<TaraConcept> list, String identifier) {

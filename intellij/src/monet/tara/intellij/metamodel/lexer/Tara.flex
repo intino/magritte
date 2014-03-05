@@ -136,7 +136,7 @@ BOOLEAN_VALUE_KEY  = "true" | "false"
 POSITIVE_VALUE_KEY = {POSITIVE}? {DIGIT}+
 NEGATIVE_VALUE_KEY = {NEGATIVE} {DIGIT}+
 DOUBLE_VALUE_KEY   = ({POSITIVE} | {NEGATIVE})? {DIGIT}+ {DOT} {DIGIT}+
-STRING_VALUE_KEY= {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
+STRING_VALUE_KEY   = {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
 
 DOC_LINE = "'" ~[\n]
 DIGIT=[:digit:]
@@ -178,11 +178,11 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{DOC_LINE}                  {   return TaraTypes.DOC_LINE; }
 
-	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE; }
-	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE; }
-	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE; }
-	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE; }
-	{POSITIVE_VALUE_KEY}            {   return TaraTypes.NATURAL_VALUE; }
+	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE_KEY; }
+	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
+	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }
+	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE_KEY; }
+	{POSITIVE_VALUE_KEY}            {   return TaraTypes.NATURAL_VALUE_KEY; }
 
 	{LEFT_SQUARE}               {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}              {   return TaraTypes.RIGHT_SQUARE; }
