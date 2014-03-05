@@ -1,7 +1,5 @@
 package monet.tara.compiler.parser.antlr;
 
-import java.util.Arrays;
-
 public class BlockManager {
 
     private int level;
@@ -28,10 +26,10 @@ public class BlockManager {
         this.brackets = 0;
     }
 
-	public void spaces(String text) {
+	public void newlineAndSpaces(String text) {
         if (!bracketsMode()) {
             int newLevel = (spacesLength(text) / this.tabSize);
-            this.tokens = spacesIndentTokens(newLevel - level);
+            this.tokens = indentationTokens(newLevel - level, true);
             this.level = newLevel;
         }
         else
@@ -45,21 +43,20 @@ public class BlockManager {
         return value;
     }
 
-    private Token[] spacesIndentTokens(int size) {
-        int length = (size > 0) ? size*2 : Math.abs(size*2)+1;
-        Token[] actions = new Token [length];
-        Arrays.fill(actions, 0, actions.length, (size > 0) ? Token.INDENT : Token.DEDENT);
-        for (int i=0; i < actions.length; i+=2)
-            actions[i] = Token.NEWLINE;
-        return actions;
+    private Token[] indentationTokens(int size, boolean addLastNewline) {
+        if (size > 0)
+            return create(Token.NEWLINE_INDENT);
+        else {
+            int length = (!addLastNewline)? Math.abs(size * 2) : Math.abs(size * 2) + 1;
+            return createDedents(length);
+        }
     }
 
-    private Token[] indentTokens(int size) {
-        Token[] actions = new Token [Math.abs(size*2)];
-        Arrays.fill(actions, 0, actions.length, (size > 0) ? Token.INDENT : Token.DEDENT);
-        for (int i=0; i < actions.length; i+=2)
-            actions[i] = Token.NEWLINE;
-        return actions;
+    private Token[] createDedents(int size){
+        Token[] actions = new Token[size];
+        for (int i = 0; i < actions.length; i++)
+            actions[i] = (i % 2 == 0)? Token.NEWLINE : Token.DEDENT;
+        return  actions;
     }
 
     private Token[] create(Token token) {
@@ -79,14 +76,21 @@ public class BlockManager {
 	}
 
 	public void openBracket(int size) {
-        this.tokens = indentTokens(size);
+        this.tokens = indentationTokens(size, false);
         this.level+= size;
         this.brackets+= size;
 	}
 
+    public void semicolon(int size) {
+        if (bracketsMode() && size == 1)
+            this.tokens = create(Token.NEWLINE);
+        else
+            this.tokens = create(Token.ERROR);
+    }
+
 	public void closeBracket(int size) {
         if (bracketsMode() && (brackets-size >= 0)){
-            this.tokens = indentTokens(-size);
+            this.tokens = indentationTokens(-size, false);
             this.level-= size;
             this.brackets-= size;
         }
@@ -96,21 +100,14 @@ public class BlockManager {
 
     public void eof() {
         if (!bracketsMode()){
-            this.tokens = indentTokens(-level);
+            this.tokens = indentationTokens(-level, false);
             this.level-= level;
         }
         else
             this.tokens = create(Token.ERROR);
     }
 
-	public void addSemicolon(int size) {
-        if (bracketsMode() && size == 1)
-            this.tokens = create(Token.NEWLINE);
-        else
-            this.tokens = create(Token.ERROR);
-	}
-
     public enum Token{
-        INDENT, DEDENT, NEWLINE, ERROR
+        NEWLINE_INDENT, DEDENT, NEWLINE, ERROR
     }
 }

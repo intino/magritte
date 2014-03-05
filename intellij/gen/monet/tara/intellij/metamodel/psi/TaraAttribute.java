@@ -8,33 +8,36 @@ import com.intellij.psi.PsiElement;
 public interface TaraAttribute extends Attribute {
 
   @Nullable
-  TaraBooleanAssign getBooleanAssign();
+  TaraBooleanList getBooleanList();
 
   @Nullable
-  TaraBooleanListAssign getBooleanListAssign();
+  TaraBooleanValue getBooleanValue();
 
   @Nullable
-  TaraDoubleAssign getDoubleAssign();
+  TaraDoubleList getDoubleList();
 
   @Nullable
-  TaraDoubleListAssign getDoubleListAssign();
+  TaraDoubleValue getDoubleValue();
 
   @Nullable
-  TaraIntegerAssign getIntegerAssign();
+  TaraIntegerList getIntegerList();
 
   @Nullable
-  TaraIntegerListAssign getIntegerListAssign();
+  TaraIntegerValue getIntegerValue();
 
   @Nullable
-  TaraNaturalAssign getNaturalAssign();
+  TaraNaturalList getNaturalList();
 
   @Nullable
-  TaraNaturalListAssign getNaturalListAssign();
+  TaraNaturalValue getNaturalValue();
 
   @Nullable
-  TaraStringAssign getStringAssign();
+  TaraStringList getStringList();
 
   @Nullable
-  TaraStringListAssign getStringListAssign();
+  TaraStringValue getStringValue();
+
+  @Nullable
+  TaraVariableNames getVariableNames();
 
 }

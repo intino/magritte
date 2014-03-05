@@ -19,6 +19,30 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterNaturalList(@NotNull TaraM2Grammar.NaturalListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitNaturalList(@NotNull TaraM2Grammar.NaturalListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterBody(@NotNull TaraM2Grammar.BodyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitBody(@NotNull TaraM2Grammar.BodyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterConcept(@NotNull TaraM2Grammar.ConceptContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -31,13 +55,25 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterStringAssign(@NotNull TaraM2Grammar.StringAssignContext ctx) { }
+	@Override public void enterNaturalValue(@NotNull TaraM2Grammar.NaturalValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitStringAssign(@NotNull TaraM2Grammar.StringAssignContext ctx) { }
+	@Override public void exitNaturalValue(@NotNull TaraM2Grammar.NaturalValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterBooleanList(@NotNull TaraM2Grammar.BooleanListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitBooleanList(@NotNull TaraM2Grammar.BooleanListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
@@ -55,6 +91,18 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterIntegerList(@NotNull TaraM2Grammar.IntegerListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitIntegerList(@NotNull TaraM2Grammar.IntegerListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterAttribute(@NotNull TaraM2Grammar.AttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -67,25 +115,25 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterBooleanListAssign(@NotNull TaraM2Grammar.BooleanListAssignContext ctx) { }
+	@Override public void enterStringValue(@NotNull TaraM2Grammar.StringValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitBooleanListAssign(@NotNull TaraM2Grammar.BooleanListAssignContext ctx) { }
+	@Override public void exitStringValue(@NotNull TaraM2Grammar.StringValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterFrom(@NotNull TaraM2Grammar.FromContext ctx) { }
+	@Override public void enterDoubleValue(@NotNull TaraM2Grammar.DoubleValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitFrom(@NotNull TaraM2Grammar.FromContext ctx) { }
+	@Override public void exitDoubleValue(@NotNull TaraM2Grammar.DoubleValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
@@ -103,174 +151,6 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterBooleanAssign(@NotNull TaraM2Grammar.BooleanAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitBooleanAssign(@NotNull TaraM2Grammar.BooleanAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterStringListAssign(@NotNull TaraM2Grammar.StringListAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitStringListAssign(@NotNull TaraM2Grammar.StringListAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterDoubleAssign(@NotNull TaraM2Grammar.DoubleAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitDoubleAssign(@NotNull TaraM2Grammar.DoubleAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterFromComponent(@NotNull TaraM2Grammar.FromComponentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitFromComponent(@NotNull TaraM2Grammar.FromComponentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterFromBody(@NotNull TaraM2Grammar.FromBodyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitFromBody(@NotNull TaraM2Grammar.FromBodyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterComponent(@NotNull TaraM2Grammar.ComponentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitComponent(@NotNull TaraM2Grammar.ComponentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterConceptSignature(@NotNull TaraM2Grammar.ConceptSignatureContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitConceptSignature(@NotNull TaraM2Grammar.ConceptSignatureContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterIntegerListAssign(@NotNull TaraM2Grammar.IntegerListAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitIntegerListAssign(@NotNull TaraM2Grammar.IntegerListAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterConceptBody(@NotNull TaraM2Grammar.ConceptBodyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitConceptBody(@NotNull TaraM2Grammar.ConceptBodyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterNaturalAssign(@NotNull TaraM2Grammar.NaturalAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitNaturalAssign(@NotNull TaraM2Grammar.NaturalAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterConceptConstituent(@NotNull TaraM2Grammar.ConceptConstituentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitConceptConstituent(@NotNull TaraM2Grammar.ConceptConstituentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterIntegerAssign(@NotNull TaraM2Grammar.IntegerAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitIntegerAssign(@NotNull TaraM2Grammar.IntegerAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterDoubleListAssign(@NotNull TaraM2Grammar.DoubleListAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitDoubleListAssign(@NotNull TaraM2Grammar.DoubleListAssignContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterComponentAnnotations(@NotNull TaraM2Grammar.ComponentAnnotationsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitComponentAnnotations(@NotNull TaraM2Grammar.ComponentAnnotationsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterReference(@NotNull TaraM2Grammar.ReferenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -283,13 +163,13 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterConceptAnnotations(@NotNull TaraM2Grammar.ConceptAnnotationsContext ctx) { }
+	@Override public void enterBooleanValue(@NotNull TaraM2Grammar.BooleanValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitConceptAnnotations(@NotNull TaraM2Grammar.ConceptAnnotationsContext ctx) { }
+	@Override public void exitBooleanValue(@NotNull TaraM2Grammar.BooleanValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
@@ -307,6 +187,18 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterConceptConstituents(@NotNull TaraM2Grammar.ConceptConstituentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitConceptConstituents(@NotNull TaraM2Grammar.ConceptConstituentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterDoc(@NotNull TaraM2Grammar.DocContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -319,25 +211,25 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterNaturalListAssign(@NotNull TaraM2Grammar.NaturalListAssignContext ctx) { }
+	@Override public void enterIntegerValue(@NotNull TaraM2Grammar.IntegerValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitNaturalListAssign(@NotNull TaraM2Grammar.NaturalListAssignContext ctx) { }
+	@Override public void exitIntegerValue(@NotNull TaraM2Grammar.IntegerValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterFromAnnotations(@NotNull TaraM2Grammar.FromAnnotationsContext ctx) { }
+	@Override public void enterStringList(@NotNull TaraM2Grammar.StringListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitFromAnnotations(@NotNull TaraM2Grammar.FromAnnotationsContext ctx) { }
+	@Override public void exitStringList(@NotNull TaraM2Grammar.StringListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
@@ -355,13 +247,61 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterFromComponentAnnotations(@NotNull TaraM2Grammar.FromComponentAnnotationsContext ctx) { }
+	@Override public void enterAnnotations(@NotNull TaraM2Grammar.AnnotationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitFromComponentAnnotations(@NotNull TaraM2Grammar.FromComponentAnnotationsContext ctx) { }
+	@Override public void exitAnnotations(@NotNull TaraM2Grammar.AnnotationsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterDoubleList(@NotNull TaraM2Grammar.DoubleListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitDoubleList(@NotNull TaraM2Grammar.DoubleListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterVariableNames(@NotNull TaraM2Grammar.VariableNamesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitVariableNames(@NotNull TaraM2Grammar.VariableNamesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterSignature(@NotNull TaraM2Grammar.SignatureContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitSignature(@NotNull TaraM2Grammar.SignatureContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterConceptInjection(@NotNull TaraM2Grammar.ConceptInjectionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitConceptInjection(@NotNull TaraM2Grammar.ConceptInjectionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

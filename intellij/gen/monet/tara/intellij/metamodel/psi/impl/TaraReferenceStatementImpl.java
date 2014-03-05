@@ -28,4 +28,10 @@ public class TaraReferenceStatementImpl extends ASTWrapperPsiElement implements 
     return findNotNullChildByClass(TaraExtendedConcept.class);
   }
 
+  @Override
+  @NotNull
+  public TaraVariableNames getVariableNames() {
+    return findNotNullChildByClass(TaraVariableNames.class);
+  }
+
 }

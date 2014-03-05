@@ -81,25 +81,26 @@ lexer grammar TaraM2Lexer;
     private int translate (BlockManager.Token token){
         if (token.toString().equals("NEWLINE")) return NEWLINE;
         if (token.toString().equals("DEDENT")) return DEDENT;
-        if (token.toString().equals("NEWLINE_INDENT")) return NEWLINE_INDENT;
+        if (token.toString().equals("NEWLINE_INDENT")) return NEW_LINE_INDENT;
         return UNKNOWN_TOKEN;
     }
 }
 
-CONCEPT   : 'Concept';
-FROM      : 'from';
-AS        : 'as';
-FINAL     : 'final';
-ABSTRACT  : 'abstract';
-MULTIPLE  : 'multiple';
-OPTIONAL  : 'optional';
-HAS_CODE  : 'has-code';
-EXTENSIBLE: 'extensible';
-WORD      : 'Word';
-VAR       : 'var';
-ROOT      : 'root';
-SINGLETON : 'singleton';
-NEW       : 'new';
+CONCEPT    : 'Concept';
+AS         : 'as';
+FINAL      : 'final';
+ABSTRACT   : 'abstract';
+MULTIPLE   : 'multiple';
+OPTIONAL   : 'optional';
+HAS_CODE   : 'has-code';
+EXTENSIBLE : 'extensible';
+VAR        : 'var';
+ROOT       : 'root';
+SINGLETON  : 'singleton';
+NEW        : 'new';
+POLYMORPHIC: 'polymorphic';
+MORPH      : 'morph';
+WORD       : 'Word';
 
 LIST: LEFT_SQUARE RIGHT_SQUARE;
 LEFT_SQUARE : '[';
@@ -113,7 +114,7 @@ CLOSE_AN: '>';
 
 COMMA        : ',';
 DOT          : '.';
-ASSIGN       : ':';
+ASSIGN       : '=';
 DOUBLE_COMMAS: '"';
 SEMICOLON    : ';'+ { semicolon(); };
 
@@ -121,7 +122,7 @@ POSITIVE: '+';
 NEGATIVE: '-';
 
 UID_TYPE    : 'Uid';
-INT_TYPE    : 'Int';
+INT_TYPE    : 'Integer';
 NATURAL_TYPE: 'Natural';
 DOUBLE_TYPE : 'Double';
 STRING_TYPE : 'String';
@@ -150,7 +151,7 @@ DOC : '\'' .*? NL;
 SP: (' ' | '\t');
 NL: ('\r'? '\n' | '\n');
 
-NEWLINE_INDENT: 'indent';
-DEDENT        : 'dedent';
+NEW_LINE_INDENT: 'indent';
+DEDENT         : 'dedent';
 
 UNKNOWN_TOKEN: . ;

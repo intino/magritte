@@ -11,6 +11,26 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface TaraM2GrammarListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link TaraM2Grammar#naturalList}.
+	 * @param ctx the parse tree
+	 */
+	void enterNaturalList(@NotNull TaraM2Grammar.NaturalListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraM2Grammar#naturalList}.
+	 * @param ctx the parse tree
+	 */
+	void exitNaturalList(@NotNull TaraM2Grammar.NaturalListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraM2Grammar#body}.
+	 * @param ctx the parse tree
+	 */
+	void enterBody(@NotNull TaraM2Grammar.BodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraM2Grammar#body}.
+	 * @param ctx the parse tree
+	 */
+	void exitBody(@NotNull TaraM2Grammar.BodyContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#concept}.
 	 * @param ctx the parse tree
 	 */
@@ -21,15 +41,25 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 */
 	void exitConcept(@NotNull TaraM2Grammar.ConceptContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#stringAssign}.
+	 * Enter a parse tree produced by {@link TaraM2Grammar#naturalValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterStringAssign(@NotNull TaraM2Grammar.StringAssignContext ctx);
+	void enterNaturalValue(@NotNull TaraM2Grammar.NaturalValueContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#stringAssign}.
+	 * Exit a parse tree produced by {@link TaraM2Grammar#naturalValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitStringAssign(@NotNull TaraM2Grammar.StringAssignContext ctx);
+	void exitNaturalValue(@NotNull TaraM2Grammar.NaturalValueContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraM2Grammar#booleanList}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleanList(@NotNull TaraM2Grammar.BooleanListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraM2Grammar#booleanList}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleanList(@NotNull TaraM2Grammar.BooleanListContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#root}.
 	 * @param ctx the parse tree
@@ -41,6 +71,16 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 */
 	void exitRoot(@NotNull TaraM2Grammar.RootContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TaraM2Grammar#integerList}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntegerList(@NotNull TaraM2Grammar.IntegerListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraM2Grammar#integerList}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntegerList(@NotNull TaraM2Grammar.IntegerListContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#attribute}.
 	 * @param ctx the parse tree
 	 */
@@ -51,25 +91,25 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 */
 	void exitAttribute(@NotNull TaraM2Grammar.AttributeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#booleanListAssign}.
+	 * Enter a parse tree produced by {@link TaraM2Grammar#stringValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterBooleanListAssign(@NotNull TaraM2Grammar.BooleanListAssignContext ctx);
+	void enterStringValue(@NotNull TaraM2Grammar.StringValueContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#booleanListAssign}.
+	 * Exit a parse tree produced by {@link TaraM2Grammar#stringValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitBooleanListAssign(@NotNull TaraM2Grammar.BooleanListAssignContext ctx);
+	void exitStringValue(@NotNull TaraM2Grammar.StringValueContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#from}.
+	 * Enter a parse tree produced by {@link TaraM2Grammar#doubleValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterFrom(@NotNull TaraM2Grammar.FromContext ctx);
+	void enterDoubleValue(@NotNull TaraM2Grammar.DoubleValueContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#from}.
+	 * Exit a parse tree produced by {@link TaraM2Grammar#doubleValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitFrom(@NotNull TaraM2Grammar.FromContext ctx);
+	void exitDoubleValue(@NotNull TaraM2Grammar.DoubleValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#extendedConcept}.
 	 * @param ctx the parse tree
@@ -81,146 +121,6 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 */
 	void exitExtendedConcept(@NotNull TaraM2Grammar.ExtendedConceptContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#booleanAssign}.
-	 * @param ctx the parse tree
-	 */
-	void enterBooleanAssign(@NotNull TaraM2Grammar.BooleanAssignContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#booleanAssign}.
-	 * @param ctx the parse tree
-	 */
-	void exitBooleanAssign(@NotNull TaraM2Grammar.BooleanAssignContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#stringListAssign}.
-	 * @param ctx the parse tree
-	 */
-	void enterStringListAssign(@NotNull TaraM2Grammar.StringListAssignContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#stringListAssign}.
-	 * @param ctx the parse tree
-	 */
-	void exitStringListAssign(@NotNull TaraM2Grammar.StringListAssignContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#doubleAssign}.
-	 * @param ctx the parse tree
-	 */
-	void enterDoubleAssign(@NotNull TaraM2Grammar.DoubleAssignContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#doubleAssign}.
-	 * @param ctx the parse tree
-	 */
-	void exitDoubleAssign(@NotNull TaraM2Grammar.DoubleAssignContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#fromComponent}.
-	 * @param ctx the parse tree
-	 */
-	void enterFromComponent(@NotNull TaraM2Grammar.FromComponentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#fromComponent}.
-	 * @param ctx the parse tree
-	 */
-	void exitFromComponent(@NotNull TaraM2Grammar.FromComponentContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#fromBody}.
-	 * @param ctx the parse tree
-	 */
-	void enterFromBody(@NotNull TaraM2Grammar.FromBodyContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#fromBody}.
-	 * @param ctx the parse tree
-	 */
-	void exitFromBody(@NotNull TaraM2Grammar.FromBodyContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#component}.
-	 * @param ctx the parse tree
-	 */
-	void enterComponent(@NotNull TaraM2Grammar.ComponentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#component}.
-	 * @param ctx the parse tree
-	 */
-	void exitComponent(@NotNull TaraM2Grammar.ComponentContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#conceptSignature}.
-	 * @param ctx the parse tree
-	 */
-	void enterConceptSignature(@NotNull TaraM2Grammar.ConceptSignatureContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#conceptSignature}.
-	 * @param ctx the parse tree
-	 */
-	void exitConceptSignature(@NotNull TaraM2Grammar.ConceptSignatureContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#integerListAssign}.
-	 * @param ctx the parse tree
-	 */
-	void enterIntegerListAssign(@NotNull TaraM2Grammar.IntegerListAssignContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#integerListAssign}.
-	 * @param ctx the parse tree
-	 */
-	void exitIntegerListAssign(@NotNull TaraM2Grammar.IntegerListAssignContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#conceptBody}.
-	 * @param ctx the parse tree
-	 */
-	void enterConceptBody(@NotNull TaraM2Grammar.ConceptBodyContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#conceptBody}.
-	 * @param ctx the parse tree
-	 */
-	void exitConceptBody(@NotNull TaraM2Grammar.ConceptBodyContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#naturalAssign}.
-	 * @param ctx the parse tree
-	 */
-	void enterNaturalAssign(@NotNull TaraM2Grammar.NaturalAssignContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#naturalAssign}.
-	 * @param ctx the parse tree
-	 */
-	void exitNaturalAssign(@NotNull TaraM2Grammar.NaturalAssignContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#conceptConstituent}.
-	 * @param ctx the parse tree
-	 */
-	void enterConceptConstituent(@NotNull TaraM2Grammar.ConceptConstituentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#conceptConstituent}.
-	 * @param ctx the parse tree
-	 */
-	void exitConceptConstituent(@NotNull TaraM2Grammar.ConceptConstituentContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#integerAssign}.
-	 * @param ctx the parse tree
-	 */
-	void enterIntegerAssign(@NotNull TaraM2Grammar.IntegerAssignContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#integerAssign}.
-	 * @param ctx the parse tree
-	 */
-	void exitIntegerAssign(@NotNull TaraM2Grammar.IntegerAssignContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#doubleListAssign}.
-	 * @param ctx the parse tree
-	 */
-	void enterDoubleListAssign(@NotNull TaraM2Grammar.DoubleListAssignContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#doubleListAssign}.
-	 * @param ctx the parse tree
-	 */
-	void exitDoubleListAssign(@NotNull TaraM2Grammar.DoubleListAssignContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#componentAnnotations}.
-	 * @param ctx the parse tree
-	 */
-	void enterComponentAnnotations(@NotNull TaraM2Grammar.ComponentAnnotationsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#componentAnnotations}.
-	 * @param ctx the parse tree
-	 */
-	void exitComponentAnnotations(@NotNull TaraM2Grammar.ComponentAnnotationsContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#reference}.
 	 * @param ctx the parse tree
 	 */
@@ -231,15 +131,15 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 */
 	void exitReference(@NotNull TaraM2Grammar.ReferenceContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#conceptAnnotations}.
+	 * Enter a parse tree produced by {@link TaraM2Grammar#booleanValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterConceptAnnotations(@NotNull TaraM2Grammar.ConceptAnnotationsContext ctx);
+	void enterBooleanValue(@NotNull TaraM2Grammar.BooleanValueContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#conceptAnnotations}.
+	 * Exit a parse tree produced by {@link TaraM2Grammar#booleanValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitConceptAnnotations(@NotNull TaraM2Grammar.ConceptAnnotationsContext ctx);
+	void exitBooleanValue(@NotNull TaraM2Grammar.BooleanValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#modifier}.
 	 * @param ctx the parse tree
@@ -251,6 +151,16 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 */
 	void exitModifier(@NotNull TaraM2Grammar.ModifierContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TaraM2Grammar#conceptConstituents}.
+	 * @param ctx the parse tree
+	 */
+	void enterConceptConstituents(@NotNull TaraM2Grammar.ConceptConstituentsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraM2Grammar#conceptConstituents}.
+	 * @param ctx the parse tree
+	 */
+	void exitConceptConstituents(@NotNull TaraM2Grammar.ConceptConstituentsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#doc}.
 	 * @param ctx the parse tree
 	 */
@@ -261,25 +171,25 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 */
 	void exitDoc(@NotNull TaraM2Grammar.DocContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#naturalListAssign}.
+	 * Enter a parse tree produced by {@link TaraM2Grammar#integerValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterNaturalListAssign(@NotNull TaraM2Grammar.NaturalListAssignContext ctx);
+	void enterIntegerValue(@NotNull TaraM2Grammar.IntegerValueContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#naturalListAssign}.
+	 * Exit a parse tree produced by {@link TaraM2Grammar#integerValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitNaturalListAssign(@NotNull TaraM2Grammar.NaturalListAssignContext ctx);
+	void exitIntegerValue(@NotNull TaraM2Grammar.IntegerValueContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#fromAnnotations}.
+	 * Enter a parse tree produced by {@link TaraM2Grammar#stringList}.
 	 * @param ctx the parse tree
 	 */
-	void enterFromAnnotations(@NotNull TaraM2Grammar.FromAnnotationsContext ctx);
+	void enterStringList(@NotNull TaraM2Grammar.StringListContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#fromAnnotations}.
+	 * Exit a parse tree produced by {@link TaraM2Grammar#stringList}.
 	 * @param ctx the parse tree
 	 */
-	void exitFromAnnotations(@NotNull TaraM2Grammar.FromAnnotationsContext ctx);
+	void exitStringList(@NotNull TaraM2Grammar.StringListContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#word}.
 	 * @param ctx the parse tree
@@ -291,13 +201,53 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 */
 	void exitWord(@NotNull TaraM2Grammar.WordContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#fromComponentAnnotations}.
+	 * Enter a parse tree produced by {@link TaraM2Grammar#annotations}.
 	 * @param ctx the parse tree
 	 */
-	void enterFromComponentAnnotations(@NotNull TaraM2Grammar.FromComponentAnnotationsContext ctx);
+	void enterAnnotations(@NotNull TaraM2Grammar.AnnotationsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#fromComponentAnnotations}.
+	 * Exit a parse tree produced by {@link TaraM2Grammar#annotations}.
 	 * @param ctx the parse tree
 	 */
-	void exitFromComponentAnnotations(@NotNull TaraM2Grammar.FromComponentAnnotationsContext ctx);
+	void exitAnnotations(@NotNull TaraM2Grammar.AnnotationsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraM2Grammar#doubleList}.
+	 * @param ctx the parse tree
+	 */
+	void enterDoubleList(@NotNull TaraM2Grammar.DoubleListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraM2Grammar#doubleList}.
+	 * @param ctx the parse tree
+	 */
+	void exitDoubleList(@NotNull TaraM2Grammar.DoubleListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraM2Grammar#variableNames}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableNames(@NotNull TaraM2Grammar.VariableNamesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraM2Grammar#variableNames}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableNames(@NotNull TaraM2Grammar.VariableNamesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraM2Grammar#signature}.
+	 * @param ctx the parse tree
+	 */
+	void enterSignature(@NotNull TaraM2Grammar.SignatureContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraM2Grammar#signature}.
+	 * @param ctx the parse tree
+	 */
+	void exitSignature(@NotNull TaraM2Grammar.SignatureContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraM2Grammar#conceptInjection}.
+	 * @param ctx the parse tree
+	 */
+	void enterConceptInjection(@NotNull TaraM2Grammar.ConceptInjectionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraM2Grammar#conceptInjection}.
+	 * @param ctx the parse tree
+	 */
+	void exitConceptInjection(@NotNull TaraM2Grammar.ConceptInjectionContext ctx);
 }

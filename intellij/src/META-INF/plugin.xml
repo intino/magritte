@@ -86,7 +86,7 @@
     <!--key="duplicate.concept.display.name"-->
     <!--groupKey="group.names.tara.files" enabledByDefault="false" level="WARNING"-->
     <!--implementationClass="DuplicateConceptInspection"/>-->
-    <completion.contributor language="Tara" implementationClass="monet.tara.intellij.TaraCompletionContributor"/>
+    <completion.contributor language="Tara" implementationClass="monet.tara.intellij.codeInsight.completion.TaraKeywordCompletionContributor"/>
     <lang.psiStructureViewFactory language="Tara"
                                   implementationClass="monet.tara.intellij.structureview.TaraStructureViewFactory"/>
     <psi.referenceContributor language="Tara" implementation="monet.tara.intellij.TaraReferenceContributor"/>

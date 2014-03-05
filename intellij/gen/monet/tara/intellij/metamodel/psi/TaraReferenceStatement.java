@@ -10,4 +10,7 @@ public interface TaraReferenceStatement extends PsiElement {
   @NotNull
   TaraExtendedConcept getExtendedConcept();
 
+  @NotNull
+  TaraVariableNames getVariableNames();
+
 }

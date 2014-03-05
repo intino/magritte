@@ -23,62 +23,68 @@ public class TaraAttributeImpl extends TaraAttributeMixin implements TaraAttribu
 
   @Override
   @Nullable
-  public TaraBooleanAssign getBooleanAssign() {
-    return findChildByClass(TaraBooleanAssign.class);
+  public TaraBooleanList getBooleanList() {
+    return findChildByClass(TaraBooleanList.class);
   }
 
   @Override
   @Nullable
-  public TaraBooleanListAssign getBooleanListAssign() {
-    return findChildByClass(TaraBooleanListAssign.class);
+  public TaraBooleanValue getBooleanValue() {
+    return findChildByClass(TaraBooleanValue.class);
   }
 
   @Override
   @Nullable
-  public TaraDoubleAssign getDoubleAssign() {
-    return findChildByClass(TaraDoubleAssign.class);
+  public TaraDoubleList getDoubleList() {
+    return findChildByClass(TaraDoubleList.class);
   }
 
   @Override
   @Nullable
-  public TaraDoubleListAssign getDoubleListAssign() {
-    return findChildByClass(TaraDoubleListAssign.class);
+  public TaraDoubleValue getDoubleValue() {
+    return findChildByClass(TaraDoubleValue.class);
   }
 
   @Override
   @Nullable
-  public TaraIntegerAssign getIntegerAssign() {
-    return findChildByClass(TaraIntegerAssign.class);
+  public TaraIntegerList getIntegerList() {
+    return findChildByClass(TaraIntegerList.class);
   }
 
   @Override
   @Nullable
-  public TaraIntegerListAssign getIntegerListAssign() {
-    return findChildByClass(TaraIntegerListAssign.class);
+  public TaraIntegerValue getIntegerValue() {
+    return findChildByClass(TaraIntegerValue.class);
   }
 
   @Override
   @Nullable
-  public TaraNaturalAssign getNaturalAssign() {
-    return findChildByClass(TaraNaturalAssign.class);
+  public TaraNaturalList getNaturalList() {
+    return findChildByClass(TaraNaturalList.class);
   }
 
   @Override
   @Nullable
-  public TaraNaturalListAssign getNaturalListAssign() {
-    return findChildByClass(TaraNaturalListAssign.class);
+  public TaraNaturalValue getNaturalValue() {
+    return findChildByClass(TaraNaturalValue.class);
   }
 
   @Override
   @Nullable
-  public TaraStringAssign getStringAssign() {
-    return findChildByClass(TaraStringAssign.class);
+  public TaraStringList getStringList() {
+    return findChildByClass(TaraStringList.class);
   }
 
   @Override
   @Nullable
-  public TaraStringListAssign getStringListAssign() {
-    return findChildByClass(TaraStringListAssign.class);
+  public TaraStringValue getStringValue() {
+    return findChildByClass(TaraStringValue.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraVariableNames getVariableNames() {
+    return findChildByClass(TaraVariableNames.class);
   }
 
 }

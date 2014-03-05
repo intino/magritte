@@ -56,12 +56,11 @@ DOUBLE_TYPE  = "Double"
 STRING_TYPE  = "String"
 BOOLEAN_TYPE = "Boolean"
 
-BOOLEAN_VALUE  = "true" | "false"
-
-POSITIVE_VALUE = {POSITIVE}? {DIGIT}+
-NEGATIVE_VALUE = {NEGATIVE} {DIGIT}+
-DOUBLE_VALUE   = ({POSITIVE} | {NEGATIVE})? {DIGIT}+ {DOT} {DIGIT}+
-STRING_VALUE= {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
+BOOLEAN_VALUE_KEY  = "true" | "false"
+NATURAL_VALUE_KEY = {POSITIVE}? {DIGIT}+
+NEGATIVE_VALUE_KEY = {NEGATIVE} {DIGIT}+
+DOUBLE_VALUE_KEY   = ({POSITIVE} | {NEGATIVE})? {DIGIT}+ {DOT} {DIGIT}+
+STRING_VALUE_KEY= {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
 
 DOC_LINE = "'" ~[\n]
 
@@ -108,11 +107,11 @@ NEWLINE= [\n]+
 
 	{DOC_LINE}                  {   return TaraTypes.DOC_LINE; }
 
-	{STRING_VALUE}              {   return TaraTypes.STRING_VALUE; }
-	{BOOLEAN_VALUE}             {   return TaraTypes.BOOLEAN_VALUE; }
-	{DOUBLE_VALUE}              {   return TaraTypes.DOUBLE_VALUE; }
-	{NEGATIVE_VALUE}            {   return TaraTypes.NEGATIVE_VALUE; }
-	{POSITIVE_VALUE}            {   return TaraTypes.NATURAL_VALUE; }
+	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE; }
+	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE; }
+	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE; }
+	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE; }
+	{NATURAL_VALUE_KEY}            {   return TaraTypes.NATURAL_VALUE; }
 
 	{LEFT_SQUARE}               {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}              {   return TaraTypes.RIGHT_SQUARE; }

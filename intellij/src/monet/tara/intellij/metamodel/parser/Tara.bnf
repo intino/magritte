@@ -39,35 +39,34 @@ private conceptConstituents ::= attribute
 		                      | concept
 		                      | conceptInjection
 
-referenceStatement::= VAR extendedConcept LIST? IDENTIFIER_KEY
+referenceStatement::= VAR extendedConcept LIST? variableNames
 conceptInjection::= NEW extendedConcept annotations?
-attribute::= VAR     UID_TYPE IDENTIFIER_KEY stringAssign?
-           | VAR     INT_TYPE (IDENTIFIER_KEY integerAssign? | LIST IDENTIFIER_KEY integerListAssign?)
-           | VAR  DOUBLE_TYPE (IDENTIFIER_KEY doubleAssign?  | LIST IDENTIFIER_KEY doubleListAssign?)
-           | VAR NATURAL_TYPE (IDENTIFIER_KEY naturalAssign? | LIST IDENTIFIER_KEY naturalListAssign?)
-           | VAR BOOLEAN_TYPE (IDENTIFIER_KEY booleanAssign? | LIST IDENTIFIER_KEY booleanListAssign?)
-           | VAR  STRING_TYPE (IDENTIFIER_KEY stringAssign?  | LIST IDENTIFIER_KEY stringListAssign?)
+attribute::= VAR     UID_TYPE IDENTIFIER_KEY (ASSIGN stringValue)?
+           | VAR     INT_TYPE (variableNames | IDENTIFIER_KEY ASSIGN integerValue | LIST IDENTIFIER_KEY (ASSIGN integerList)?)
+           | VAR  DOUBLE_TYPE (variableNames | IDENTIFIER_KEY ASSIGN doubleValue | LIST IDENTIFIER_KEY (ASSIGN doubleList)?)
+           | VAR NATURAL_TYPE (variableNames | IDENTIFIER_KEY ASSIGN naturalValue | LIST IDENTIFIER_KEY (ASSIGN naturalList)?)
+           | VAR BOOLEAN_TYPE (variableNames | IDENTIFIER_KEY ASSIGN booleanValue | LIST IDENTIFIER_KEY (ASSIGN booleanList)?)
+           | VAR  STRING_TYPE (variableNames | IDENTIFIER_KEY ASSIGN stringValue | LIST IDENTIFIER_KEY (ASSIGN stringList)?)
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.TaraAttributeMixin'
 implements='monet.tara.intellij.metamodel.psi.Attribute'}
 
 word::= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT
 
-stringAssign   ::= ASSIGN STRING_VALUE
-booleanAssign  ::= ASSIGN BOOLEAN_VALUE
-integerAssign  ::= ASSIGN integerValue
-doubleAssign   ::= ASSIGN (integerValue | DOUBLE_VALUE)
-naturalAssign  ::= ASSIGN NATURAL_VALUE
+stringValue  ::= STRING_VALUE_KEY
+booleanValue ::= BOOLEAN_VALUE_KEY
+integerValue ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
+doubleValue  ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
+naturalValue ::= NATURAL_VALUE_KEY
 
-stringListAssign   ::= ASSIGN LEFT_SQUARE STRING_VALUE+ RIGHT_SQUARE
-booleanListAssign  ::= ASSIGN LEFT_SQUARE BOOLEAN_VALUE+ RIGHT_SQUARE
-integerListAssign  ::= ASSIGN LEFT_SQUARE integerValue+ RIGHT_SQUARE
-doubleListAssign   ::= ASSIGN LEFT_SQUARE (integerValue | DOUBLE_VALUE)+ RIGHT_SQUARE
-naturalListAssign  ::= ASSIGN LEFT_SQUARE NATURAL_VALUE+ RIGHT_SQUARE
+stringList ::= LEFT_SQUARE STRING_VALUE_KEY+ RIGHT_SQUARE;
+booleanList::= LEFT_SQUARE BOOLEAN_VALUE_KEY+ RIGHT_SQUARE;
+integerList::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUARE;
+doubleList ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE;
+naturalList::= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
 
 annotations ::= OPEN_AN (MULTIPLE | OPTIONAL | HAS_CODE | EXTENSIBLE| SINGLETON | ROOT)+ CLOSE_AN {methods=[getAnnotations]}
 
-private integerValue::= NATURAL_VALUE
-              | NEGATIVE_VALUE
+variableNames::= IDENTIFIER_KEY (COMMA IDENTIFIER_KEY)*;
 
 modifier::= ABSTRACT
           | FINAL

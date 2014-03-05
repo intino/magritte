@@ -19,11 +19,11 @@ public class TaraVisitor extends PsiElementVisitor {
     visitBody(o);
   }
 
-  public void visitBooleanAssign(@NotNull TaraBooleanAssign o) {
+  public void visitBooleanList(@NotNull TaraBooleanList o) {
     visitPsiElement(o);
   }
 
-  public void visitBooleanListAssign(@NotNull TaraBooleanListAssign o) {
+  public void visitBooleanValue(@NotNull TaraBooleanValue o) {
     visitPsiElement(o);
   }
 
@@ -39,11 +39,11 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitDoubleAssign(@NotNull TaraDoubleAssign o) {
+  public void visitDoubleList(@NotNull TaraDoubleList o) {
     visitPsiElement(o);
   }
 
-  public void visitDoubleListAssign(@NotNull TaraDoubleListAssign o) {
+  public void visitDoubleValue(@NotNull TaraDoubleValue o) {
     visitPsiElement(o);
   }
 
@@ -55,11 +55,11 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitIntegerAssign(@NotNull TaraIntegerAssign o) {
+  public void visitIntegerList(@NotNull TaraIntegerList o) {
     visitPsiElement(o);
   }
 
-  public void visitIntegerListAssign(@NotNull TaraIntegerListAssign o) {
+  public void visitIntegerValue(@NotNull TaraIntegerValue o) {
     visitPsiElement(o);
   }
 
@@ -71,11 +71,11 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitNaturalAssign(@NotNull TaraNaturalAssign o) {
+  public void visitNaturalList(@NotNull TaraNaturalList o) {
     visitPsiElement(o);
   }
 
-  public void visitNaturalListAssign(@NotNull TaraNaturalListAssign o) {
+  public void visitNaturalValue(@NotNull TaraNaturalValue o) {
     visitPsiElement(o);
   }
 
@@ -91,11 +91,15 @@ public class TaraVisitor extends PsiElementVisitor {
     visitSignature(o);
   }
 
-  public void visitStringAssign(@NotNull TaraStringAssign o) {
+  public void visitStringList(@NotNull TaraStringList o) {
     visitPsiElement(o);
   }
 
-  public void visitStringListAssign(@NotNull TaraStringListAssign o) {
+  public void visitStringValue(@NotNull TaraStringValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitVariableNames(@NotNull TaraVariableNames o) {
     visitPsiElement(o);
   }
 

@@ -2,9 +2,12 @@ package monet.tara.compiler.parser.antlr;
 
 import monet.tara.compiler.core.ast.AST;
 import monet.tara.compiler.core.ast.ASTNode;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import static monet.tara.compiler.parser.antlr.TaraM2Grammar.*;
@@ -13,7 +16,6 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	AST ast;
 	Stack<ASTNode> conceptStack = new Stack<>();
-	Stack<ASTNode.SubModel> subModelStack = new Stack<>();
 
 	public TaraASTGeneratorListener(AST ast) {
 		this.ast = ast;
@@ -21,70 +23,27 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterConcept(@NotNull ConceptContext ctx) {
-		ASTNode node = new ASTNode(ctx.conceptSignature().IDENTIFIER().getText(), null);
-		ast.put(ctx.conceptSignature().IDENTIFIER().getText(), node);
+		ASTNode parent = null;
+		if (!conceptStack.empty()) parent = conceptStack.peek();
+		ASTNode node = new ASTNode(ctx.signature().IDENTIFIER().getText(), parent);
+		if (parent != null) parent.add(node);
+		else ast.put(ctx.signature().IDENTIFIER().getText(), node);
 		conceptStack.push(node);
+	}
+
+	@Override
+	public void enterSignature(@NotNull SignatureContext ctx) {
+		if (ctx.MORPH() != null) conceptStack.peek().setMorph(true);
+		if (ctx.POLYMORPHIC() != null) conceptStack.peek().setPolymorphic(true);
 	}
 
 	@Override
 	public void enterExtendedConcept(@NotNull ExtendedConceptContext ctx) {
 		String identifierName = "";
 		for (TerminalNode identifier : ctx.IDENTIFIER())
-			identifierName += identifier + ".";
-		conceptStack.peek().setExtendFrom(identifierName.substring(0, identifierName.length() - 1));
-	}
-
-	@Override
-	public void enterComponent(@NotNull ComponentContext ctx) {
-		ASTNode componentNode;
-		if (ctx.conceptSignature().IDENTIFIER() != null)
-			componentNode = new ASTNode(ctx.conceptSignature().IDENTIFIER().getText(), conceptStack.peek());
-		else
-			componentNode = new ASTNode();
-		conceptStack.peek().add(componentNode);
-		conceptStack.push(componentNode);
-	}
-
-	@Override
-	public void enterFrom(@NotNull FromContext ctx) {
-		ASTNode.SubModel subModel = new ASTNode.SubModel();
-		conceptStack.peek().add(subModel);
-		subModelStack.push(subModel);
-	}
-
-	@Override
-	public void exitFrom(@NotNull FromContext ctx) {
-		subModelStack.pop();
-	}
-
-	@Override
-	public void enterFromComponent(@NotNull FromComponentContext ctx) {
-		ASTNode componentNode = new ASTNode();
-		if (ctx.conceptSignature().IDENTIFIER() != null)
-			componentNode.setIdentifier(ctx.conceptSignature().IDENTIFIER().getText());
-		componentNode.setParent(conceptStack.peek());
-		subModelStack.peek().add(componentNode);
-		conceptStack.push(componentNode);
-	}
-
-	@Override
-	public void enterFromAnnotations(@NotNull FromAnnotationsContext ctx) {
-		ASTNode.SubModel node = subModelStack.peek();
-		if (!ctx.OPTIONAL().isEmpty()) node.add(ASTNode.AnnotationType.Optional);
-		if (!ctx.MULTIPLE().isEmpty()) node.add(ASTNode.AnnotationType.Multiple);
-	}
-
-
-	public void enterFromComponentAnnotations(@NotNull FromComponentAnnotationsContext ctx) {
-		ASTNode node = conceptStack.peek();
-		if (!ctx.HAS_CODE().isEmpty()) node.add(ASTNode.AnnotationType.HasCode);
-		if (!ctx.EXTENSIBLE().isEmpty()) node.add(ASTNode.AnnotationType.Extensible);
-		if (!ctx.SINGLETON().isEmpty()) node.add(ASTNode.AnnotationType.Singleton);
-	}
-
-	@Override
-	public void exitFromComponent(@NotNull FromComponentContext ctx) {
-		conceptStack.pop();
+			identifierName += "." + identifier;
+		if (!(ctx.getParent() instanceof ReferenceContext))
+			conceptStack.peek().setExtendFrom(identifierName.substring(1));
 	}
 
 	@Override
@@ -93,13 +52,11 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	}
 
 	@Override
-	public void exitComponent(@NotNull ComponentContext ctx) {
-		conceptStack.pop();
-	}
-
-	@Override
 	public void enterDoc(@NotNull DocContext ctx) {
-		conceptStack.peek().setDoc(ctx.getText());
+		StringBuilder builder = new StringBuilder();
+		for (TerminalNode doc : ctx.DOC())
+			builder.append(doc.getText().substring(1));
+		conceptStack.peek().setDoc(builder.toString().trim());
 	}
 
 	@Override
@@ -108,42 +65,40 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		node.setModifier((ctx.ABSTRACT() != null) ? ctx.ABSTRACT().getText() : ctx.FINAL().getText());
 	}
 
-	@Override
-	public void enterConceptAnnotations(@NotNull ConceptAnnotationsContext ctx) {
-		ASTNode node = conceptStack.peek();
-		if (!ctx.ROOT().isEmpty()) node.add(ASTNode.AnnotationType.Root);
-		if (!ctx.HAS_CODE().isEmpty()) node.add(ASTNode.AnnotationType.HasCode);
-		if (!ctx.EXTENSIBLE().isEmpty()) node.add(ASTNode.AnnotationType.Extensible);
-		if (!ctx.SINGLETON().isEmpty()) node.add(ASTNode.AnnotationType.Singleton);
-	}
-
-	@Override
-	public void enterComponentAnnotations(@NotNull ComponentAnnotationsContext ctx) {
-		ASTNode node = conceptStack.peek();
-		if (!ctx.HAS_CODE().isEmpty()) node.add(ASTNode.AnnotationType.HasCode);
-		if (!ctx.EXTENSIBLE().isEmpty()) node.add(ASTNode.AnnotationType.Extensible);
-		if (!ctx.SINGLETON().isEmpty()) node.add(ASTNode.AnnotationType.Singleton);
-		if (!ctx.MULTIPLE().isEmpty()) node.add(ASTNode.AnnotationType.Multiple);
-		if (!ctx.OPTIONAL().isEmpty()) node.add(ASTNode.AnnotationType.Optional);
-	}
-
 
 	@Override
 	public void enterAttribute(@NotNull AttributeContext ctx) {
-		ASTNode.Attribute attribute;
 		if (ctx.UID_TYPE() != null)
-			attribute = new ASTNode.Attribute(ctx.UID_TYPE().getText(), ctx.IDENTIFIER().getText(), false);
+			conceptStack.peek().add(new ASTNode.Attribute(ctx.UID_TYPE().getText(), ctx.IDENTIFIER().getText(), false));
 		else if (ctx.INT_TYPE() != null)
-			attribute = new ASTNode.Attribute(ctx.INT_TYPE().getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
+			addAttribute(ctx, ctx.INT_TYPE(), (ctx.integerValue() != null) ? ctx.integerValue() : ctx.integerList());
 		else if (ctx.DOUBLE_TYPE() != null)
-			attribute = new ASTNode.Attribute(ctx.DOUBLE_TYPE().getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
+			addAttribute(ctx, ctx.DOUBLE_TYPE(), (ctx.doubleValue() != null) ? ctx.doubleValue() : ctx.doubleList());
 		else if (ctx.NATURAL_TYPE() != null)
-			attribute = new ASTNode.Attribute(ctx.NATURAL_TYPE().getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
+			addAttribute(ctx, ctx.NATURAL_TYPE(), (ctx.naturalValue() != null) ? ctx.naturalValue() : ctx.naturalList());
 		else if (ctx.BOOLEAN_TYPE() != null)
-			attribute = new ASTNode.Attribute(ctx.BOOLEAN_TYPE().getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
+			addAttribute(ctx, ctx.BOOLEAN_TYPE(), (ctx.booleanValue() != null) ? ctx.booleanValue() : ctx.booleanList());
 		else
-			attribute = new ASTNode.Attribute(ctx.STRING_TYPE().getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
-		conceptStack.peek().add(attribute);
+			addAttribute(ctx, ctx.STRING_TYPE(), (ctx.stringValue() != null) ? ctx.stringValue() : ctx.stringList());
+	}
+
+	private void addAttribute(AttributeContext ctx, TerminalNode type, ParserRuleContext value) {
+		if (ctx.ASSIGN() == null) {
+			if (ctx.variableNames() != null)
+				for (TerminalNode node : ctx.variableNames().IDENTIFIER())
+					conceptStack.peek().add(new ASTNode.Attribute(type.getText(), node.getText(), false));
+			else
+				conceptStack.peek().add(new ASTNode.Attribute(type.getText(), ctx.IDENTIFIER().getText(), true));
+		} else {
+			ASTNode.Attribute attribute = new ASTNode.Attribute(type.getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
+			String valueFormatted;
+			if (ctx.LIST() != null)
+				valueFormatted = value.toStringTree().split("\\[ | \\]")[1];
+			else
+				valueFormatted = value.getText();
+			attribute.setValue(valueFormatted);
+			conceptStack.peek().add(attribute);
+		}
 	}
 
 	@Override
@@ -155,11 +110,54 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	}
 
 	@Override
-	public void enterReference(@NotNull ReferenceContext ctx) {
-		String parent = "";
-		for (int i = 0; i < ctx.IDENTIFIER().size() - 1; i++)
-			parent += ctx.IDENTIFIER(i).getText() + ".";
-		conceptStack.peek().addReference(parent.substring(0, parent.length() - 1),
-			ctx.IDENTIFIER(ctx.IDENTIFIER().size() - 1).getText(), (ctx.LIST() != null));
+	public void enterConceptInjection(@NotNull ConceptInjectionContext ctx) {
+		ASTNode componentNode = new ASTNode();
+		conceptStack.peek().add(componentNode);
+		componentNode.setParent(conceptStack.peek());
+		conceptStack.push(componentNode);
 	}
+
+	@Override
+	public void exitConceptInjection(@NotNull ConceptInjectionContext ctx) {
+		conceptStack.pop();
+	}
+
+	@Override
+	public void enterReference(@NotNull ReferenceContext ctx) {
+		String parent = getExtendedConceptString(ctx.extendedConcept());
+		String[] identifiers = getIdentifiers(ctx.variableNames());
+		for (String identifier : identifiers)
+			conceptStack.peek().addReference(parent, identifier, (ctx.LIST() != null));
+	}
+
+	private String getExtendedConceptString(ExtendedConceptContext extendedConceptContext) {
+		String extendedConcept = "";
+		for (TerminalNode node : extendedConceptContext.IDENTIFIER())
+			extendedConcept += "." + node.getText();
+		return extendedConcept.substring(1);
+	}
+
+	@Override
+	public void enterAnnotations(@NotNull AnnotationsContext ctx) {
+		for (int i = 0; i < ctx.OPTIONAL().size(); i++)
+			conceptStack.peek().add(ASTNode.AnnotationType.Optional);
+		for (int i = 0; i < ctx.MULTIPLE().size(); i++)
+			conceptStack.peek().add(ASTNode.AnnotationType.Multiple);
+		for (int i = 0; i < ctx.EXTENSIBLE().size(); i++)
+			conceptStack.peek().add(ASTNode.AnnotationType.Extensible);
+		for (int i = 0; i < ctx.HAS_CODE().size(); i++)
+			conceptStack.peek().add(ASTNode.AnnotationType.HasCode);
+		for (int i = 0; i < ctx.SINGLETON().size(); i++)
+			conceptStack.peek().add(ASTNode.AnnotationType.Singleton);
+		for (int i = 0; i < ctx.ROOT().size(); i++)
+			conceptStack.peek().add(ASTNode.AnnotationType.Root);
+	}
+
+	private String[] getIdentifiers(VariableNamesContext namesContext) {
+		List<String> list = new ArrayList<>();
+		for (TerminalNode terminalNode : namesContext.IDENTIFIER())
+			list.add(terminalNode.getText());
+		return list.toArray(new String[list.size()]);
+	}
+
 }
