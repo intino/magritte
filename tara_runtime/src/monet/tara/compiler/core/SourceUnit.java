@@ -2,6 +2,7 @@ package monet.tara.compiler.core;
 
 import monet.tara.compiler.code_generation.render.RendersFactory;
 import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.error_collection.ErrorCollector;
 import monet.tara.compiler.core.error_collection.TaraException;
 import monet.tara.compiler.core.error_collection.message.SimpleMessage;
@@ -59,11 +60,11 @@ public class SourceUnit extends ProcessingUnit {
 
 	private void writeJavaSource() throws TaraException {
 		String path = getDefinitionsPath();
-		for (String concept : ast.keySet()) {
+		for (ASTNode node : ast.getAstRootNodes()) {
 			try {
-				File file = new File(path, ast.get(concept).getIdentifier() + "Definition" + ".java");
+				File file = new File(path, node.getIdentifier() + "Definition" + ".java");
 				file.createNewFile();
-				Render render = RendersFactory.getRender("Definition", configuration.getProject(), ast.get(concept));
+				Render render = RendersFactory.getRender("Definition", configuration.getProject(), node);
 				FileWriter writer;
 				writer = new FileWriter(file);
 				writer.write(render.getOutput());

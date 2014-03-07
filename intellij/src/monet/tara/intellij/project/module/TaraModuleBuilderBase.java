@@ -22,6 +22,10 @@ public class TaraModuleBuilderBase extends ModuleBuilder {
 		myGenerator = null;
 	}
 
+	public TaraModuleBuilderBase(DirectoryProjectGenerator generator) {
+		myGenerator = generator;
+	}
+
 	@Override
 	public String getGroupName() {
 		return "Tara";
@@ -53,9 +57,8 @@ public class TaraModuleBuilderBase extends ModuleBuilder {
 			ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
 			VirtualFile[] contentRoots = moduleRootManager.getContentRoots();
 			VirtualFile dir = module.getProject().getBaseDir();
-			if (contentRoots.length > 0 && contentRoots[0] != null) {
+			if (contentRoots.length > 0 && contentRoots[0] != null)
 				dir = contentRoots[0];
-			}
 			myGenerator.generateProject(project, dir, null, module);
 		}
 		return module;

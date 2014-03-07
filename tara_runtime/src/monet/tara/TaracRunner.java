@@ -9,7 +9,6 @@ public class TaracRunner {
 	}
 
 	public static void main(String[] args) {
-
 		checkArgumentsNumber(args);
 		final File argsFile = checkConfigurationFile(args[1]);
 		try {

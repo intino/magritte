@@ -43,7 +43,7 @@
       <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
     </action>
     <action id="NewTaraPackage" class="monet.tara.intellij.actions.CreateTaraPackageAction" text="Package"
-            description="Create a new package" icon="com.intellij.icons.AllIcons.Nodes.Package">
+            description="Create a new package" icon="AllIcons.Nodes.Package">
       <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewConcept"/>
     </action>
   </actions>
@@ -51,13 +51,15 @@
   <application-components>
   </application-components>
 
+  <module value="com.intellij.modules.tara"/>
   <extensions defaultExtensionNs="com.intellij">
     <errorHandler implementation="monet.tara.intellij.diagnostic.error_reporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
                          implementationClass="monet.tara.intellij.refactoring.rename.TaraNamesValidator"/>
     <projectService serviceInterface="monet.tara.intellij.metamodel.psi.TaraElementFactory"
                     serviceImplementation="monet.tara.intellij.metamodel.psi.impl.TaraElementFactoryImpl"/>
-
+    <applicationService serviceInterface="com.jetbrains.python.module.PyModuleService"
+                        serviceImplementation="com.jetbrains.python.module.PyModuleServiceImpl"/>
     <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.TaraModuleType"/>
     <projectConfigurable instance="monet.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
                          displayName="Tara Compiler" parentId="project.propCompiler"/>

@@ -1,7 +1,7 @@
 package monet.tara.compiler.code_generation.render;
 
 import monet.tara.compiler.code_generation.DefinitionRender;
-import monet.tara.intellij.plugingeneration.render.LexerRender;
+import monet.tara.intellij.plugin_generation.render.LexerRender;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

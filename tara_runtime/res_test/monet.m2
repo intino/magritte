@@ -1,8 +1,6 @@
 Concept as Term
-    var Integer[] entero = [-345671 345671 2345]
-    var String code, code2
-    var String label = "prueba asdasd "
-    var Integer entero = -345671
+    var String code
+    var String label
     new Term <multiple optional>
 
 Concept abstract as Source <has-code root>
@@ -11,9 +9,6 @@ Concept abstract as Source <has-code root>
 
 Concept Source as Thesaurus
     new Term <multiple>
-
-Concept as Operation
-    var String label
 
 ' Una entidad es un objeto en la unidad de negocio que representa un contenido
 Concept abstract as Entity  <has-code>
@@ -38,7 +33,7 @@ Concept Entity as Form <has-code extensible>
         var String label
         ' Añadir para ofrecer al usuario información más detallada del campo
         Concept as Description <optional>
-            var String description
+            var  String description
 
         ' Añadir para indicar que el campo es obligatorio
         Concept as Required <optional>
@@ -120,8 +115,8 @@ Concept Entity as Form <has-code extensible>
                 Concept as ShowKey
                 Concept as Embedded
 
-        Concept morph as CompositeField
-            new Form.Field <multiple>
+        Concept Form.Field as CompositeField
+            new Form.Field  <multiple>
             Concept as View <optional>
                 Concept as Table <optional>
                     var Form.Field[] fields

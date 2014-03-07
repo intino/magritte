@@ -1,6 +1,8 @@
 package monet.tara.compiler.code_generation;
 
 import monet.tara.compiler.core.CompilerConfiguration;
+import monet.tara.compiler.core.JavaCommandHelper;
+import monet.tara.compiler.core.error_collection.StreamWrapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +18,6 @@ public class ClassGenerator {
 
 	public int generate() {
 		Runtime rt = Runtime.getRuntime();
-
 		try {
 			Process compileProcess = rt.exec(makeCompileCommand(getSourceFiles("java")));
 			if (compileProcess.waitFor() == -1) return -1;
@@ -38,15 +39,15 @@ public class ClassGenerator {
 		output.start();
 		error.join(3000);
 		output.join(3000);
-		if (!output.message.equals(""))
-			System.err.println("Output: " + output.message);
-		if (!error.message.equals(""))
-			System.err.println("Error: " + error.message);
+		if (!output.getMessage().equals(""))
+			System.err.println("Output: " + output.getMessage());
+		if (!error.getMessage().equals(""))
+			System.err.println("Error: " + error.getMessage());
 	}
 
 	private String makeJarCommand(String name) {
-		ArrayList<String> cmd = JavaCHelper.buildJarCommandLine(configuration.getTempDirectory().getAbsolutePath(), name, new String[]{});
-		return JavaCHelper.join(cmd.toArray(new String[cmd.size()]), " ");
+		ArrayList<String> cmd = JavaCommandHelper.buildJarCommandLine(configuration.getTempDirectory().getAbsolutePath(), name, new String[]{});
+		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 
 	private File getTaraCoreFile() {
@@ -54,9 +55,9 @@ public class ClassGenerator {
 	}
 
 	private String makeCompileCommand(File[] sources) {
-		ArrayList<String> cmd = JavaCHelper.buildJavaCompileCommandLine(sources, new String[]{getTaraCoreFile().getAbsolutePath()},
+		ArrayList<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources, new String[]{getTaraCoreFile().getAbsolutePath()},
 			null, configuration.getTempDirectory().getAbsolutePath());
-		return JavaCHelper.join(cmd.toArray(new String[cmd.size()]), " ");
+		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 
 	private File[] getSourceFiles(String type) {

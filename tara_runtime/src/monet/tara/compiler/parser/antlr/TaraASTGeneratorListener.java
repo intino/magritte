@@ -27,7 +27,9 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		if (!conceptStack.empty()) parent = conceptStack.peek();
 		ASTNode node = new ASTNode(ctx.signature().IDENTIFIER().getText(), parent);
 		if (parent != null) parent.add(node);
-		else ast.put(ctx.signature().IDENTIFIER().getText(), node);
+		else ast.add(node);
+		ast.addIdentifier(node.getIdentifier(), "CONCEPT");
+		ast.add(node.getIdentifier(), node);
 		conceptStack.push(node);
 	}
 
@@ -68,9 +70,11 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterAttribute(@NotNull AttributeContext ctx) {
-		if (ctx.UID_TYPE() != null)
+
+		if (ctx.UID_TYPE() != null) {
 			conceptStack.peek().add(new ASTNode.Attribute(ctx.UID_TYPE().getText(), ctx.IDENTIFIER().getText(), false));
-		else if (ctx.INT_TYPE() != null)
+			ast.addIdentifier(ctx.IDENTIFIER().getText(), "ATTRIBUTE");
+		} else if (ctx.INT_TYPE() != null)
 			addAttribute(ctx, ctx.INT_TYPE(), (ctx.integerValue() != null) ? ctx.integerValue() : ctx.integerList());
 		else if (ctx.DOUBLE_TYPE() != null)
 			addAttribute(ctx, ctx.DOUBLE_TYPE(), (ctx.doubleValue() != null) ? ctx.doubleValue() : ctx.doubleList());
@@ -85,8 +89,10 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	private void addAttribute(AttributeContext ctx, TerminalNode type, ParserRuleContext value) {
 		if (ctx.ASSIGN() == null) {
 			if (ctx.variableNames() != null)
-				for (TerminalNode node : ctx.variableNames().IDENTIFIER())
+				for (TerminalNode node : ctx.variableNames().IDENTIFIER()) {
 					conceptStack.peek().add(new ASTNode.Attribute(type.getText(), node.getText(), false));
+					ast.addIdentifier(node.getText(), "ATTRIBUTE");
+				}
 			else
 				conceptStack.peek().add(new ASTNode.Attribute(type.getText(), ctx.IDENTIFIER().getText(), true));
 		} else {
@@ -104,8 +110,11 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void enterWord(@NotNull WordContext ctx) {
 		ASTNode.Word word = new ASTNode.Word(ctx.IDENTIFIER(0).getText());
-		for (TerminalNode wordTypes : ctx.IDENTIFIER().subList(1, ctx.IDENTIFIER().size()))
+		ast.addIdentifier(word.getIdentifier(), "ATTRIBUTE");
+		for (TerminalNode wordTypes : ctx.IDENTIFIER().subList(1, ctx.IDENTIFIER().size())) {
 			word.add(wordTypes.getText());
+			ast.addIdentifier(wordTypes.getText(), "WORD");
+		}
 		conceptStack.peek().add(word);
 	}
 
@@ -126,8 +135,10 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	public void enterReference(@NotNull ReferenceContext ctx) {
 		String parent = getExtendedConceptString(ctx.extendedConcept());
 		String[] identifiers = getIdentifiers(ctx.variableNames());
-		for (String identifier : identifiers)
+		for (String identifier : identifiers) {
 			conceptStack.peek().addReference(parent, identifier, (ctx.LIST() != null));
+			ast.addIdentifier(identifier, "ATTRIBUTE");
+		}
 	}
 
 	private String getExtendedConceptString(ExtendedConceptContext extendedConceptContext) {

@@ -1,6 +1,7 @@
 package monet.tara.intellij.project.module;
 
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
+import com.intellij.ide.util.projectWizard.SourcePathsBuilder;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.util.Pair;
@@ -11,7 +12,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaraModuleBuilder extends TaraModuleBuilderBase {
+public class TaraModuleBuilder extends TaraModuleBuilderBase implements SourcePathsBuilder {
 
 	private List<Pair<String, String>> mySourcePaths;
 
@@ -24,9 +25,7 @@ public class TaraModuleBuilder extends TaraModuleBuilderBase {
 	}
 
 	public void addSourcePath(final Pair<String, String> sourcePathInfo) {
-		if (mySourcePaths == null) {
-			mySourcePaths = new ArrayList<>();
-		}
+		if (mySourcePaths == null) mySourcePaths = new ArrayList<>();
 		mySourcePaths.add(sourcePathInfo);
 	}
 

@@ -28,10 +28,10 @@ public class CreateTaraPackageAction extends DumbAwareAction {
 	@Override
 	public void actionPerformed(AnActionEvent e) {
 		final IdeView view = e.getData(LangDataKeys.IDE_VIEW);
+		e.getData(LangDataKeys.CONTEXT_COMPONENT).setVisible(true);
 		if (view == null) return;
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		final PsiDirectory directory = DirectoryChooserUtil.getOrChooseDirectory(view);
-
 		if (directory == null) return;
 		CreateDirectoryOrPackageHandler validator = new CreateDirectoryOrPackageHandler(project, directory, false, ".") {
 			@Override

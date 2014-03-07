@@ -173,12 +173,21 @@ public class ASTNode {
 		return result;
 	}
 
+	public ASTNode getParent() {
+		return parent;
+	}
+
 	public void setParent(ASTNode parent) {
 		this.parent = parent;
 	}
 
+	public ArrayList<Variable> getVariables() {
+		return variables;
+	}
+
 	public String getAbsolutePath() {
-		return (parent != null) ? parent.getAbsolutePath() + "." + getIdentifier() : getIdentifier();
+		return (parent != null) ? parent.getAbsolutePath() +
+			((!getIdentifier().equals("")) ? "." + getIdentifier() : "") : getIdentifier();
 	}
 
 	public enum AnnotationType {
@@ -211,6 +220,10 @@ public class ASTNode {
 
 		public void setValue(String value) {
 			this.value = value;
+		}
+
+		public boolean isList() {
+			return isList;
 		}
 	}
 

@@ -2,7 +2,7 @@ package monet.tara.compiler.intellij.plugingeneration.render.metamodel;
 
 import monet.tara.compiler.code_generation.render.DefaultRender;
 import monet.tara.compiler.code_generation.render.RendersFactory;
-import monet.tara.intellij.plugingeneration.render.LexerRender;
+import monet.tara.intellij.plugin_generation.render.LexerRender;
 import org.junit.Before;
 import org.junit.Test;
 

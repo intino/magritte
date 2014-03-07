@@ -4,6 +4,11 @@ import monet.tara.compiler.code_generation.ClassGenerator;
 import monet.tara.compiler.core.error_collection.CompilationFailedException;
 import monet.tara.compiler.core.error_collection.ErrorCollector;
 import monet.tara.compiler.core.error_collection.TaraException;
+import monet.tara.compiler.core.operation.ModuleUnitOperation;
+import monet.tara.compiler.core.operation.Operation;
+import monet.tara.compiler.core.operation.SourceUnitOperation;
+import monet.tara.compiler.core.operation.SrcToClassOperation;
+import monet.tara.intellij.plugin_generation.PluginGenerator;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,6 +41,7 @@ public class CompilationUnit extends ProcessingUnit {
 				source.convert();
 			} catch (TaraException ignored) {
 				System.err.print("Error during conversion");
+				throw new CompilationFailedException(phase, CompilationUnit.this);
 			}
 		}
 	};
@@ -51,7 +57,13 @@ public class CompilationUnit extends ProcessingUnit {
 	private ModuleUnitOperation pluginGenerationOperation = new ModuleUnitOperation() {
 		@Override
 		public void call(SourceUnit[] units) throws CompilationFailedException {
-
+			try {
+				PluginGenerator generator = new PluginGenerator(configuration);
+				generator.generate(units);
+			} catch (TaraException ignored) {
+				System.err.print("Error during conversion");
+				throw new CompilationFailedException(phase, CompilationUnit.this);
+			}
 		}
 	};
 
@@ -85,19 +97,9 @@ public class CompilationUnit extends ProcessingUnit {
 
 	}
 
-	public void addPhaseOperation(SourceUnitOperation sourceUnitOperation, int phase) {
+	public void addPhaseOperation(Operation operation, int phase) {
 		if ((phase < 0) || (phase > 9)) throw new IllegalArgumentException("phase " + phase + " is unknown");
-		this.phaseOperations[phase].add(sourceUnitOperation);
-	}
-
-	public void addPhaseOperation(ModuleUnitOperation moduleUnitOperation, int phase) {
-		if ((phase < 0) || (phase > 9)) throw new IllegalArgumentException("phase " + phase + " is unknown");
-		this.phaseOperations[phase].add(moduleUnitOperation);
-	}
-
-	public void addPhaseOperation(SrcToClassOperation srcToClassOperation, int phase) {
-		if ((phase < 0) || (phase > 9)) throw new IllegalArgumentException("phase " + phase + " is unknown");
-		this.phaseOperations[phase].add(srcToClassOperation);
+		this.phaseOperations[phase].add(operation);
 	}
 
 
@@ -169,9 +171,8 @@ public class CompilationUnit extends ProcessingUnit {
 		SourceUnit source;
 		for (String name : this.sources.keySet()) {
 			source = this.sources.get(name);
-			if ((source.phase < this.phase) || ((source.phase == this.phase) && (!source.phaseComplete))) {
+			if ((source.phase < this.phase) || ((source.phase == this.phase) && (!source.phaseComplete)))
 				body.call(source);
-			}
 		}
 		getErrorCollector().failIfErrors();
 	}
@@ -179,18 +180,5 @@ public class CompilationUnit extends ProcessingUnit {
 	public static abstract class ProgressCallback {
 		public abstract void call(ProcessingUnit paramProcessingUnit, int paramInt)
 			throws CompilationFailedException;
-	}
-
-	public static abstract class SourceUnitOperation {
-		public abstract void call(SourceUnit unit) throws CompilationFailedException;
-	}
-
-
-	public static abstract class ModuleUnitOperation {
-		public abstract void call(SourceUnit[] units) throws CompilationFailedException;
-	}
-
-	public static abstract class SrcToClassOperation {
-		public abstract void call() throws CompilationFailedException;
 	}
 }

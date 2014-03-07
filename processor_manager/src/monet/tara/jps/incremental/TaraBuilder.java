@@ -63,62 +63,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
 	}
 
-	public ModuleLevelBuilder.ExitCode build(final CompileContext context,
-	                                         ModuleChunk chunk,
-	                                         DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder,
-	                                         OutputConsumer outputConsumer) throws ProjectBuildException {
-		try {
-			JpsTaraSettings settings = JpsTaraSettings.getSettings(context.getProjectDescriptor().getProject());
-			final List<File> toCompile = collectFiles(context, dirtyFilesHolder);
-			if (toCompile.isEmpty())
-				return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.NOTHING_DONE;
-
-			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("plugin-generation=" + pluginGeneration);
-
-			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
-			if (finalOutputs == null) return ExitCode.ABORT;
-
-			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
-			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
-			Map<ModuleBuildTarget, String> generationOutputs = pluginGeneration ? getStubGenerationOutputs(chunk, context) : finalOutputs;
-			String compilerOutput = generationOutputs.get(chunk.representativeTarget());
-
-			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
-			final File tempFile =
-				TaracOSProcessHandler.fillFileWithTaracParameters(compilerOutput, toCompilePaths, finalOutput, encoding);
-
-			final TaracOSProcessHandler handler = runTarac(context, chunk, tempFile, settings);
-
-			Map<ModuleBuildTarget, Collection<TaracOSProcessHandler.OutputItem>>
-				compiled = processCompiledFiles(context, chunk, generationOutputs, compilerOutput, handler);
-
-			if (checkChunkRebuildNeeded(context, handler))
-				return ExitCode.CHUNK_REBUILD_REQUIRED;
-
-//			if (pluginGeneration) {
-//				//addStubRootsToJavacSourcePath(context, generationOutputs);
-//				//rememberStubSources(context, compiled);
-//			}
-
-			for (CompilerMessage message : handler.getCompilerMessages(chunk.representativeTarget().getModule().getName()))
-				context.processMessage(message);
-
-			if (!pluginGeneration && updateDependencies(context, chunk, dirtyFilesHolder, toCompile, compiled, outputConsumer))
-				return ExitCode.ADDITIONAL_PASS_REQUIRED;
-			return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.OK;
-		} catch (Exception e) {
-			throw new ProjectBuildException(e);
-		} finally {
-			if (!pluginGeneration) {
-				FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, null);
-			}
-		}
-	}
-
-	private Boolean hasFilesToCompileForNextRound(CompileContext context) {
-		return !pluginGeneration && FILES_MARKED_DIRTY_FOR_NEXT_ROUND.get(context, Boolean.FALSE);
-	}
-
 	private static Set<String> getPathsToCompile(List<File> toCompile) {
 		final Set<String> toCompilePaths = new LinkedHashSet<>();
 		for (File file : toCompile) {
@@ -127,43 +71,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			toCompilePaths.add(FileUtil.toSystemIndependentName(file.getPath()));
 		}
 		return toCompilePaths;
-	}
-
-	private TaracOSProcessHandler runTarac(final CompileContext context,
-	                                       ModuleChunk chunk,
-	                                       File tempFile,
-	                                       final JpsTaraSettings settings) throws IOException {
-		ArrayList<String> classpath = new ArrayList<>(generateClasspath(context, chunk));
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Tarac classpath: " + classpath);
-		}
-
-		List<String> programParams = ContainerUtilRt.newArrayList(!pluginGeneration ? "--gen-plugin" : "tarac", tempFile.getPath());
-		List<String> vmParams = ContainerUtilRt.newArrayList();
-		vmParams.add("-Xmx" + settings.heapSize + "m");
-		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
-		String grapeRoot = System.getProperty(TaracOSProcessHandler.GRAPE_ROOT);
-		if (grapeRoot != null)
-			vmParams.add("-D" + TaracOSProcessHandler.GRAPE_ROOT + "=" + grapeRoot);
-		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
-			getJavaExecutable(chunk), "monet.tara.TaracRunner",
-			Collections.<String>emptyList(), classpath,
-			vmParams, programParams);
-		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
-		final Consumer<String> updater = new Consumer<String>() {
-			public void consume(String s) {
-				context.processMessage(new ProgressMessage(s));
-			}
-		};
-		final TaracOSProcessHandler handler = new TaracOSProcessHandler(process, updater) {
-			@Override
-			protected Future<?> executeOnPooledThread(Runnable task) {
-				return SharedThreadPool.getInstance().executeOnPooledThread(task);
-			}
-		};
-		handler.startNotify();
-		handler.waitFor();
-		return handler;
 	}
 
 	private static boolean checkChunkRebuildNeeded(CompileContext context, TaracOSProcessHandler handler) {
@@ -229,12 +136,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return compiled;
 	}
 
-	@Override
-	public void chunkBuildFinished(CompileContext context, ModuleChunk chunk) {
-		JavaBuilderUtil.cleanupChunkResources(context);
-		STUB_TO_SRC.set(context, null);
-	}
-
 	private static Map<ModuleBuildTarget, String> getStubGenerationOutputs(ModuleChunk chunk, CompileContext context) throws IOException {
 		Map<ModuleBuildTarget, String> generationOutputs = new HashMap<>();
 		File commonRoot = new File(context.getProjectDescriptor().dataManager.getDataPaths().getDataStorageRoot(), "taraStubs");
@@ -249,23 +150,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			generationOutputs.put(target, targetRoot.getPath());
 		}
 		return generationOutputs;
-	}
-
-	@Nullable
-	private Map<ModuleBuildTarget, String> getCanonicalModuleOutputs(CompileContext context, ModuleChunk chunk) {
-		Map<ModuleBuildTarget, String> finalOutputs = new HashMap<>();
-		for (ModuleBuildTarget target : chunk.getTargets()) {
-			File moduleOutputDir = target.getOutputDir();
-			if (moduleOutputDir == null) {
-				context.processMessage(new CompilerMessage(builderName, BuildMessage.Kind.ERROR,
-					"Output directory not specified for module " + target.getModule().getName()));
-				return null;
-			}
-			String moduleOutputPath = FileUtil.toCanonicalPath(moduleOutputDir.getPath());
-			assert moduleOutputPath != null;
-			finalOutputs.put(target, moduleOutputPath.endsWith("/") ? moduleOutputPath : moduleOutputPath + "/");
-		}
-		return finalOutputs;
 	}
 
 	private static String ensureCorrectOutput(ModuleChunk chunk,
@@ -292,22 +176,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			return JpsJavaSdkType.getJavaExecutable(sdk);
 		}
 		return SystemProperties.getJavaHome() + "/bin/java";
-	}
-
-	private List<File> collectFiles(CompileContext context,
-	                                DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
-		final JpsJavaCompilerConfiguration configuration = JpsJavaExtensionService.getInstance().
-			getCompilerConfiguration(context.getProjectDescriptor().getProject());
-		assert configuration != null;
-		final List<File> toCompile = new ArrayList<>();
-		dirtyFilesHolder.processDirtyFiles(new FileProcessor<JavaSourceRootDescriptor, ModuleBuildTarget>() {
-			public boolean apply(ModuleBuildTarget target, File file, JavaSourceRootDescriptor sourceRoot) throws IOException {
-				if (isTaraFile(file.getPath()))
-					toCompile.add(file);
-				return true;
-			}
-		});
-		return toCompile;
 	}
 
 	private static boolean updateDependencies(CompileContext context,
@@ -363,6 +231,136 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	public static boolean isTaraFile(String path) {
 		return path.endsWith("." + TARA_EXTENSION);
+	}
+
+	public ModuleLevelBuilder.ExitCode build(final CompileContext context,
+	                                         ModuleChunk chunk,
+	                                         DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder,
+	                                         OutputConsumer outputConsumer) throws ProjectBuildException {
+		try {
+			JpsTaraSettings settings = JpsTaraSettings.getSettings(context.getProjectDescriptor().getProject());
+			final List<File> toCompile = collectFiles(context, dirtyFilesHolder);
+			if (toCompile.isEmpty())
+				return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.NOTHING_DONE;
+			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("plugin-generation=" + pluginGeneration);
+			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
+			if (finalOutputs == null) return ExitCode.ABORT;
+
+			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
+			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
+			Map<ModuleBuildTarget, String> generationOutputs = pluginGeneration ? getStubGenerationOutputs(chunk, context) : finalOutputs;
+			String compilerOutput = generationOutputs.get(chunk.representativeTarget());
+
+			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
+			final File tempFile =
+				TaracOSProcessHandler.fillFileWithTaracParameters(compilerOutput, toCompilePaths, finalOutput, encoding);
+
+			final TaracOSProcessHandler handler = runTarac(context, chunk, tempFile, settings);
+
+			Map<ModuleBuildTarget, Collection<TaracOSProcessHandler.OutputItem>>
+				compiled = processCompiledFiles(context, chunk, generationOutputs, compilerOutput, handler);
+
+			if (checkChunkRebuildNeeded(context, handler))
+				return ExitCode.CHUNK_REBUILD_REQUIRED;
+
+//			if (pluginGeneration) {
+//				//addStubRootsToJavacSourcePath(context, generationOutputs);
+//				//rememberStubSources(context, compiled);
+//			}
+
+			for (CompilerMessage message : handler.getCompilerMessages(chunk.representativeTarget().getModule().getName()))
+				context.processMessage(message);
+
+			if (!pluginGeneration && updateDependencies(context, chunk, dirtyFilesHolder, toCompile, compiled, outputConsumer))
+				return ExitCode.ADDITIONAL_PASS_REQUIRED;
+			return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.OK;
+		} catch (Exception e) {
+			throw new ProjectBuildException(e);
+		} finally {
+			if (!pluginGeneration) {
+				FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, null);
+			}
+		}
+	}
+
+	private Boolean hasFilesToCompileForNextRound(CompileContext context) {
+		return !pluginGeneration && FILES_MARKED_DIRTY_FOR_NEXT_ROUND.get(context, Boolean.FALSE);
+	}
+
+	private TaracOSProcessHandler runTarac(final CompileContext context,
+	                                       ModuleChunk chunk,
+	                                       File tempFile,
+	                                       final JpsTaraSettings settings) throws IOException {
+		ArrayList<String> classpath = new ArrayList<>(generateClasspath(context, chunk));
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Tarac classpath: " + classpath);
+		}
+
+		List<String> programParams = ContainerUtilRt.newArrayList(!pluginGeneration ? "--gen-plugin" : "tarac", tempFile.getPath());
+		List<String> vmParams = ContainerUtilRt.newArrayList();
+		vmParams.add("-Xmx" + settings.heapSize + "m");
+		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
+		String grapeRoot = System.getProperty(TaracOSProcessHandler.GRAPE_ROOT);
+		if (grapeRoot != null)
+			vmParams.add("-D" + TaracOSProcessHandler.GRAPE_ROOT + "=" + grapeRoot);
+		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
+			getJavaExecutable(chunk), "monet.tara.TaracRunner",
+			Collections.<String>emptyList(), classpath,
+			vmParams, programParams);
+		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
+		final Consumer<String> updater = new Consumer<String>() {
+			public void consume(String s) {
+				context.processMessage(new ProgressMessage(s));
+			}
+		};
+		final TaracOSProcessHandler handler = new TaracOSProcessHandler(process, updater) {
+			@Override
+			protected Future<?> executeOnPooledThread(Runnable task) {
+				return SharedThreadPool.getInstance().executeOnPooledThread(task);
+			}
+		};
+		handler.startNotify();
+		handler.waitFor();
+		return handler;
+	}
+
+	@Override
+	public void chunkBuildFinished(CompileContext context, ModuleChunk chunk) {
+		JavaBuilderUtil.cleanupChunkResources(context);
+		STUB_TO_SRC.set(context, null);
+	}
+
+	@Nullable
+	private Map<ModuleBuildTarget, String> getCanonicalModuleOutputs(CompileContext context, ModuleChunk chunk) {
+		Map<ModuleBuildTarget, String> finalOutputs = new HashMap<>();
+		for (ModuleBuildTarget target : chunk.getTargets()) {
+			File moduleOutputDir = target.getOutputDir();
+			if (moduleOutputDir == null) {
+				context.processMessage(new CompilerMessage(builderName, BuildMessage.Kind.ERROR,
+					"Output directory not specified for module " + target.getModule().getName()));
+				return null;
+			}
+			String moduleOutputPath = FileUtil.toCanonicalPath(moduleOutputDir.getPath());
+			assert moduleOutputPath != null;
+			finalOutputs.put(target, moduleOutputPath.endsWith("/") ? moduleOutputPath : moduleOutputPath + "/");
+		}
+		return finalOutputs;
+	}
+
+	private List<File> collectFiles(CompileContext context,
+	                                DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
+		final JpsJavaCompilerConfiguration configuration = JpsJavaExtensionService.getInstance().
+			getCompilerConfiguration(context.getProjectDescriptor().getProject());
+		assert configuration != null;
+		final List<File> toCompile = new ArrayList<>();
+		dirtyFilesHolder.processDirtyFiles(new FileProcessor<JavaSourceRootDescriptor, ModuleBuildTarget>() {
+			public boolean apply(ModuleBuildTarget target, File file, JavaSourceRootDescriptor sourceRoot) throws IOException {
+				if (isTaraFile(file.getPath()))
+					toCompile.add(file);
+				return true;
+			}
+		});
+		return toCompile;
 	}
 
 	@Override
