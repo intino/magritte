@@ -44,7 +44,7 @@
   </application-components>
 
   <extensions defaultExtensionNs="com.intellij">
-    <moduleConfigurable instance="monet.tara.intellij.project.module.ModuleSettings" id="ModuleSettings"
+    <projectConfigurable instance="monet.tara.intellij.project.module.ModuleSettings" id="ModuleSettings"
                          displayName="Tara"
                          order="last"/>
     <errorHandler implementation="monet.tara.intellij.diagnostic.error_reporting.PluginErrorReportSubmitter"/>
