@@ -1,4 +1,4 @@
-package monet.tara.jps.incremental;
+package org.jetbrains.jps.tara.compiler;
 
 import com.intellij.util.xmlb.annotations.Tag;
 import org.jdom.Element;

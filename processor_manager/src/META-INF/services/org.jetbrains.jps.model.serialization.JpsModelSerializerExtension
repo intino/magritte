@@ -1,1 +1,1 @@
-monet.tara.jps.incremental.TaraModelSerializerExtension
+org.jetbrains.jps.tara.model.TaraModelSerializationExtension

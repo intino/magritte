@@ -7,7 +7,7 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.openapi.util.Disposer;
-import monet.tara.jps.incremental.JpsTaraSettings;
+import org.jetbrains.jps.tara.compiler.JpsTaraSettings;
 
 @State(name = "TaraCompilerConfiguration", storages = @Storage(file = StoragePathMacros.WORKSPACE_FILE))
 public class TaraCompilerWorkspaceConfiguration implements PersistentStateComponent<JpsTaraSettings>, Disposable {
