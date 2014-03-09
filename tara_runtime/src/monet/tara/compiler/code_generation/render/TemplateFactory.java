@@ -31,11 +31,13 @@ public class TemplateFactory {
 		TEMPLATES.put("CompilerConfigurable.form", IDE + PROJECT_PATH + "compiler/-CompilerConfigurable.form");
 		TEMPLATES.put("CompilerConfigurable.java", IDE + PROJECT_PATH + "compiler/-CompilerConfigurable.java");
 		TEMPLATES.put("CompilerConfiguration.java", IDE + PROJECT_PATH + "compiler/-CompilerConfiguration.java");
-		TEMPLATES.put("CompilerWorkspaceConfiguration.java", IDE + PROJECT_PATH + "compiler/CompilerWorkspaceConfiguration.java");
+		TEMPLATES.put("CompilerWorkspaceConfiguration.java", IDE + PROJECT_PATH + "compiler/-CompilerWorkspaceConfiguration.java");
 
 		TEMPLATES.put("LoggingEventSubmitter.java", IDE + PROJECT_PATH + "diagnostic/errorreporting/LoggingEventSubmitter.java");
-		TEMPLATES.put("PluginErrorSubmitter.java", IDE + PROJECT_PATH + "diagnostic/errorreporting/PluginErrorSubmitter.java");
-		TEMPLATES.put("DocumentationProvider.java", IDE + PROJECT_PATH + "diagnostic/errorreporting/PluginErrorSubmitterBundle.java");
+		TEMPLATES.put("PluginErrorReportSubmitter.java", IDE + PROJECT_PATH + "diagnostic/errorreporting/PluginErrorReportSubmitter.java");
+		TEMPLATES.put("PluginErrorReportSubmitterBundle.java", IDE + PROJECT_PATH + "diagnostic/errorreporting/PluginErrorReportSubmitterBundle.java");
+
+		TEMPLATES.put("DocumentationProvider.java", IDE + PROJECT_PATH + "documentation/-DocumentationProvider.java");
 
 		TEMPLATES.put("Block.java", IDE + PROJECT_PATH + "formatter/-block.java");
 		TEMPLATES.put("FormattingModelBuilder.java", IDE + PROJECT_PATH + "formatter/-FormattingModelBuilder.java");
@@ -44,18 +46,15 @@ public class TemplateFactory {
 		TEMPLATES.put("ColorSettingPage.java", IDE + PROJECT_PATH + "highlighting/-ColorSettingPage.java");
 		TEMPLATES.put("HighlighterLexAdapter.java", IDE + PROJECT_PATH + "highlighting/-HighlighterLexAdapter.java");
 		TEMPLATES.put("SyntaxHighlighter.java", IDE + PROJECT_PATH + "highlighting/-SyntaxHighlighter.java");
-		TEMPLATES.put("SyntaxHighlighterLex.flex", IDE + PROJECT_PATH + "highlighting/-SyntaxHighlighterLex.flex");
 		TEMPLATES.put("SyntaxHighlighterFactory.java", IDE + PROJECT_PATH + "highlighting/-SyntaxHighlighterFactory.java");
 
 		TEMPLATES.put("FileType.java", IDE + PROJECT_PATH + "metamodel/file/-FileType.java");
 		TEMPLATES.put("FileTypeFactory.java", IDE + PROJECT_PATH + "metamodel/file/-FileTypeFactory.java");
-		TEMPLATES.put(".flex", IDE + PROJECT_PATH + "metamodel/lexer/-.flex");
+		TEMPLATES.put("LexerAdapter.java", IDE + PROJECT_PATH + "metamodel/lexer/-LexerAdapter.java");
 		TEMPLATES.put("BlockManager.java", IDE + PROJECT_PATH + "metamodel/lexer/BlockManager.java");
-		TEMPLATES.put("LexerAdapter.java", IDE + PROJECT_PATH + "metamodel/lexer/LexerAdapter.java");
 		TEMPLATES.put("GeneratedParserUtilBase.java", IDE + PROJECT_PATH + "metamodel/parser/GeneratedParserUtilBase.java");
 		TEMPLATES.put("ParserDefinition.java", IDE + PROJECT_PATH + "metamodel/parser/-ParserDefinition.java");
 		TEMPLATES.put("ParserUtil.java", IDE + PROJECT_PATH + "metamodel/parser/-ParserUtil.java");
-		TEMPLATES.put(".bnf", IDE + PROJECT_PATH + "metamodel/parser/-.bnf");
 		TEMPLATES.put("Icons.java", IDE + PROJECT_PATH + "metamodel/-Icons.java");
 		TEMPLATES.put("Language.java", IDE + PROJECT_PATH + "metamodel/-Language.java");
 		TEMPLATES.put("Attribute.java", IDE + PROJECT_PATH + "metamodel/psi/Attribute.java");
@@ -72,11 +71,11 @@ public class TemplateFactory {
 		TEMPLATES.put("IdentifierMixin.java", IDE + PROJECT_PATH + "metamodel/psi/impl/IdentifierMixin.java");
 		TEMPLATES.put("ReferenceStatementMixin.java", IDE + PROJECT_PATH + "metamodel/psi/impl/-ReferenceStatementMixin.java");
 		TEMPLATES.put("_Mixin.java", IDE + PROJECT_PATH + "metamodel/psi/impl/_Mixin.java");
-		TEMPLATES.put("IdentifierManipulator.java", IDE + PROJECT_PATH + "metamodel/psi/IdentifierManipulator.java");
-		TEMPLATES.put("ElementFactoryImpl.java", IDE + PROJECT_PATH + "metamodel/psi/-ElementFactoryImpl.java");
+		TEMPLATES.put("IdentifierManipulator.java", IDE + PROJECT_PATH + "metamodel/psi/impl/IdentifierManipulator.java");
+		TEMPLATES.put("ElementFactoryImpl.java", IDE + PROJECT_PATH + "metamodel/psi/impl/-ElementFactoryImpl.java");
 		TEMPLATES.put("FileImpl.java", IDE + PROJECT_PATH + "metamodel/psi/impl/-FileImpl.java");
-		TEMPLATES.put("PsiImplUtil.java", IDE + PROJECT_PATH + "psi/impl/-PsiImplUtil.java");
-		TEMPLATES.put("Util.java", IDE + PROJECT_PATH + "psi/impl/-Util.java");
+		TEMPLATES.put("PsiImplUtil.java", IDE + PROJECT_PATH + "metamodel/psi/impl/-PsiImplUtil.java");
+		TEMPLATES.put("Util.java", IDE + PROJECT_PATH + "metamodel/psi/impl/-Util.java");
 
 		TEMPLATES.put("ModuleSettings.java", IDE + PROJECT_PATH + "project/module/ModuleSettings.java");
 		TEMPLATES.put("ModuleBuilder.java", IDE + PROJECT_PATH + "project/module/ModuleBuilder.java");
@@ -106,10 +105,10 @@ public class TemplateFactory {
 		TEMPLATES.put("Reference.java", IDE + PROJECT_PATH + "-Reference.java");
 		TEMPLATES.put("ReferenceContributor.java", IDE + PROJECT_PATH + "-ReferenceContributor.java");
 
-		TEMPLATES.put("plugin.xml", "META-INF/plugin.xml");
+		TEMPLATES.put("plugin.xml", IDE + "META-INF/plugin.xml");
 
-		TEMPLATES.put("Definition", "metamodel/Definition");
-		TEMPLATES.put("Metamodel", "metamodel/Metamodel");
+//		TEMPLATES.put("Definition", "metamodel/Definition");
+//		TEMPLATES.put("Metamodel", "metamodel/Metamodel");
 	}
 
 	private static final String RES = "res/";

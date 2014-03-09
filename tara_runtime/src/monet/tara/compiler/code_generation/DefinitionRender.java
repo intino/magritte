@@ -9,7 +9,6 @@ import java.util.HashMap;
 public class DefinitionRender extends DefaultRender {
 
 	ASTNode rootNode;
-	int recursionLevel = 0;
 
 	public DefinitionRender(String tplName, String projectName, Object node) {
 		super(tplName, projectName);

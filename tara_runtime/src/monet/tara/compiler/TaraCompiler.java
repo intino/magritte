@@ -36,6 +36,7 @@ public class TaraCompiler {
 		} catch (CompilationFailedException e) {
 			processCompilationException(e);
 		} catch (Exception e) {
+			e.printStackTrace();
 			processException(e, "");
 		}
 		return compiledFiles;

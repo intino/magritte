@@ -1,4 +1,4 @@
-package monet.tara.intellij.metamodel.parser;
+package monet.::projectName::.intellij.metamodel.parser;
 
 import com.intellij.lang.*;
 import com.intellij.lang.impl.PsiBuilderAdapter;
@@ -31,13 +31,13 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 /**
- * @author gregsh
+ * \@author gregsh
  */
 public class GeneratedParserUtilBase {
 
 	public static final IElementType DUMMY_BLOCK = new DummyBlockElementType();
 	public static final Parser TOKEN_ADVANCER = new Parser() {
-		@Override
+		\@Override
 		public boolean parse(PsiBuilder builder, int level) {
 			if (builder.eof()) return false;
 			builder.advanceLexer();
@@ -45,7 +45,7 @@ public class GeneratedParserUtilBase {
 		}
 	};
 	public static final Parser TRUE_CONDITION = new Parser() {
-		@Override
+		\@Override
 		public boolean parse(PsiBuilder builder, int level) {
 			return true;
 		}
@@ -83,7 +83,7 @@ public class GeneratedParserUtilBase {
 		return true;
 	}
 
-	@Deprecated
+	\@Deprecated
 	public static void empty_element_parsed_guard_(PsiBuilder builder_, int offset_, String funcName_) {
 		builder_.error("Empty element parsed in '" + funcName_ + "' at offset " + offset_);
 	}
@@ -267,7 +267,7 @@ public class GeneratedParserUtilBase {
 		return false;
 	}
 
-	private static void addCompletionVariant(@NotNull PsiBuilder builder_, @NotNull CompletionState completionState, Object o) {
+	private static void addCompletionVariant(\@NotNull PsiBuilder builder_, \@NotNull CompletionState completionState, Object o) {
 		int offset = builder_.getCurrentOffset();
 		if (!builder_.eof() && offset == builder_.rawTokenTypeStart(1)) return; // suppress for zero-length tokens
 
@@ -311,19 +311,19 @@ public class GeneratedParserUtilBase {
 
 	public static void exit_section_(PsiBuilder builder_,
 	                                 PsiBuilder.Marker marker,
-	                                 @Nullable IElementType elementType,
+	                                 \@Nullable IElementType elementType,
 	                                 boolean result) {
 		close_marker_impl_(ErrorState.get(builder_).frameStack.peekLast(), marker, elementType, result);
 	}
 
 	// complex enter/exit methods pair with frame object
-	public static PsiBuilder.Marker enter_section_(PsiBuilder builder_, int level, int modifiers, @Nullable String frameName) {
+	public static PsiBuilder.Marker enter_section_(PsiBuilder builder_, int level, int modifiers, \@Nullable String frameName) {
 		PsiBuilder.Marker marker = builder_.mark();
 		enter_section_impl_(builder_, level, modifiers, frameName);
 		return marker;
 	}
 
-	private static void enter_section_impl_(PsiBuilder builder_, int level, int modifiers, @Nullable String frameName) {
+	private static void enter_section_impl_(PsiBuilder builder_, int level, int modifiers, \@Nullable String frameName) {
 		ErrorState state = ErrorState.get(builder_);
 		Frame frame = state.FRAMES.alloc().init(builder_, state, level, modifiers, frameName);
 		if (((frame.modifiers & _LEFT_) | (frame.modifiers & _LEFT_INNER_)) != 0) {
@@ -351,10 +351,10 @@ public class GeneratedParserUtilBase {
 	public static void exit_section_(PsiBuilder builder_,
 	                                 int level,
 	                                 PsiBuilder.Marker marker,
-	                                 @Nullable IElementType elementType,
+	                                 \@Nullable IElementType elementType,
 	                                 boolean result,
 	                                 boolean pinned,
-	                                 @Nullable Parser eatMore) {
+	                                 \@Nullable Parser eatMore) {
 		ErrorState state = ErrorState.get(builder_);
 
 		Frame frame = state.frameStack.pollLast();
@@ -573,7 +573,7 @@ public class GeneratedParserUtilBase {
 		PsiBuilder.Marker marker = null;
 
 		final Runnable checkSiblingsRunnable = new Runnable() {
-			@Override
+			\@Override
 			public void run() {
 				main:
 				while (!siblingList.isEmpty()) {
@@ -675,12 +675,12 @@ public class GeneratedParserUtilBase {
 			offset = offset_;
 		}
 
-		@Nullable
+		\@Nullable
 		public String convertItem(Object o) {
 			return o instanceof Object[] ? StringUtil.join((Object[]) o, this, " ") : o.toString();
 		}
 
-		@Override
+		\@Override
 		public String fun(Object o) {
 			return o.toString();
 		}
@@ -743,12 +743,12 @@ public class GeneratedParserUtilBase {
 		}
 
 		final LimitedPool<Variant> VARIANTS = new LimitedPool<Variant>(VARIANTS_POOL_SIZE, new LimitedPool.ObjectFactory<Variant>() {
-			@Override
+			\@Override
 			public Variant create() {
 				return new Variant();
 			}
 
-			@Override
+			\@Override
 			public void cleanup(final Variant o) {
 			}
 		});
@@ -796,12 +796,12 @@ public class GeneratedParserUtilBase {
 		}
 
 		final LimitedPool<Frame> FRAMES = new LimitedPool<Frame>(FRAMES_POOL_SIZE, new LimitedPool.ObjectFactory<Frame>() {
-			@Override
+			\@Override
 			public Frame create() {
 				return new Frame();
 			}
 
-			@Override
+			\@Override
 			public void cleanup(final Frame o) {
 			}
 		});
@@ -857,7 +857,7 @@ public class GeneratedParserUtilBase {
 			return this;
 		}
 
-		@Override
+		\@Override
 		public String toString() {
 			String mod = modifiers == _NONE_ ? "_NONE_, " :
 				((modifiers & _COLLAPSE_) != 0 ? "_CAN_COLLAPSE_, " : "") +
@@ -879,12 +879,12 @@ public class GeneratedParserUtilBase {
 			return this;
 		}
 
-		@Override
+		\@Override
 		public String toString() {
 			return "<" + position + ", " + object + ">";
 		}
 
-		@Override
+		\@Override
 		public boolean equals(Object o) {
 			if (this == o) return true;
 			if (o == null || getClass() != o.getClass()) return false;
@@ -897,7 +897,7 @@ public class GeneratedParserUtilBase {
 			return true;
 		}
 
-		@Override
+		\@Override
 		public int hashCode() {
 			int result = position;
 			result = 31 * result + object.hashCode();
@@ -910,8 +910,8 @@ public class GeneratedParserUtilBase {
 			super("DUMMY_BLOCK", Language.ANY);
 		}
 
-		@NotNull
-		@Override
+		\@NotNull
+		\@Override
 		public ASTNode createCompositeNode() {
 			return new DummyBlock();
 		}
@@ -922,14 +922,14 @@ public class GeneratedParserUtilBase {
 			super(DUMMY_BLOCK);
 		}
 
-		@NotNull
-		@Override
+		\@NotNull
+		\@Override
 		public PsiReference[] getReferences() {
 			return PsiReference.EMPTY_ARRAY;
 		}
 
-		@NotNull
-		@Override
+		\@NotNull
+		\@Override
 		public Language getLanguage() {
 			return getParent().getLanguage();
 		}
@@ -944,7 +944,7 @@ public class GeneratedParserUtilBase {
 			removeRange(fromIndex, size());
 		}
 
-		@Override
+		\@Override
 		public boolean add(E e) {
 			int size = size();
 			if (size >= MAX_VARIANTS_SIZE) {

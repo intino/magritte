@@ -15,17 +15,19 @@ private void createTpls(String TPL_PATH, File[] files) {
             file.mkdirs()
             createTpls(TPL_PATH, it.listFiles())
         } else {
-            if (it.getName().endsWith("java") || it.getName().endsWith("xml")
-                    || it.getName().endsWith("bnf") || it.getName().endsWith("flex") || it.getName().endsWith("form")) {
-                String text = it.text.replaceAll("tara", "::projectName::")
+            if ((it.getName().endsWith("java") || it.getName().endsWith("xml") || it.getName().endsWith("form")) && !(it.text.startsWith("/*"))) {
+                String text = it.text.replaceAll("::", "\\\\::")
+                text = text.replaceAll("@", "\\\\@")
+                text = text.replaceAll("tara", "::projectName::")
                 text = text.replaceAll("Tara", "::projectProperName::").replaceAll("Concept", "Definition")
                 text = text.replaceAll("concept", "definition")
                 File newFile = new File(TPL_PATH + "/" + it.parent, it.getName().replaceAll("Tara", "-").replace("Concept", "_") + ".tpl")
                 newFile.write(text)
-            } else {
-                File newFile = new File(TPL_PATH + "/" + it.parent, it.getName())
-                newFile.write(it.text);
             }
+//            else {
+//                File newFile = new File(TPL_PATH + "/" + it.parent, it.getName())
+//                newFile.write(it.text);
+//            }
         }
     }
 

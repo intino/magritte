@@ -31,10 +31,10 @@
             description="Triggers an exception">
       <add-to-group group-id="ToolsMenu" anchor="last"/>
     </action>
-    <action id="NewConcept" class="monet.tara.intellij.actions.CreateTaraFileAction">
+    <action id="NewConcept" class="monet.tara.intellij.actions.CreateFileAction">
       <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
     </action>
-    <action id="NewTaraPackage" class="monet.tara.intellij.actions.CreateTaraPackageAction" text="Package"
+    <action id="NewTaraPackage" class="monet.tara.intellij.actions.CreatePackageAction" text="Package"
             description="Create a new package" icon="AllIcons.Nodes.Package">
       <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewConcept"/>
     </action>
