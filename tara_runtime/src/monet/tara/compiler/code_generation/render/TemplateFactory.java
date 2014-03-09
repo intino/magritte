@@ -6,47 +6,113 @@ import java.util.Map;
 public class TemplateFactory {
 
 	private static final Map<String, String> TEMPLATES = new HashMap<>();
-	private static final String PROJECT_PATH = "monet/tara/";
 	private static final String IDE = "intellij/";
+	private static final String PROJECT_PATH = "monet/tara/" + IDE;
 
+	public static final String CONCEPT_KEY = "_";
+	public static final String PROJECT_KEY = "-";
 
 	static {
-		TEMPLATES.put("lexer", PROJECT_PATH + IDE + "metamodel/lexer");
-		TEMPLATES.put("grammar", PROJECT_PATH + IDE + "metamodel/grammar");
-		TEMPLATES.put("LexerAdapter", PROJECT_PATH + IDE + "metamodel/LexerAdapter");
-		TEMPLATES.put("ParserDefinition", PROJECT_PATH + IDE + "metamodel/ParserDefinition");
-		TEMPLATES.put("SyntaxHighlighter", PROJECT_PATH + IDE + "metamodel/SyntaxHighlighter");
-		TEMPLATES.put("Language", PROJECT_PATH + IDE + "metamodel/Language");
-		TEMPLATES.put("Icons", PROJECT_PATH + IDE + "metamodel/Icons");
-		TEMPLATES.put("Bundle", PROJECT_PATH + IDE + "metamodel/Bundle");
-		TEMPLATES.put("FindUsagesProvider", PROJECT_PATH + IDE + "metamodel/FindUsagesProvider");
+		TEMPLATES.put("CreateFileAction.java", IDE + PROJECT_PATH + "actions/CreateFileAction.java");
+		TEMPLATES.put("CreatePackageAction.java", IDE + PROJECT_PATH + "actions/CreatePackageAction.java");
 
-		TEMPLATES.put("NamedElement", PROJECT_PATH + IDE + "psi/NamedElement");
-		TEMPLATES.put("ElementFactory", PROJECT_PATH + IDE + "psi/ElementFactory");
-		TEMPLATES.put("ElementType", PROJECT_PATH + IDE + "psi/ElementType");
-		TEMPLATES.put("TokenType", PROJECT_PATH + IDE + "psi/TokenType");
+		TEMPLATES.put("InSignatureFitFilter.java", IDE + PROJECT_PATH + "codeInsight/completion/InSignatureFitFilter.java");
+		TEMPLATES.put("AnnotationsCompletionContributor.java", IDE + PROJECT_PATH + "codeInsight/completion/-AnnotationsCompletionContributor.java");
+		TEMPLATES.put("PrimitivesCompletionContributor.java", IDE + PROJECT_PATH + "codeInsight/completion/-PrimitivesCompletionContributor.java");
+		TEMPLATES.put("SignatureCompletionContributor.java", IDE + PROJECT_PATH + "codeInsight/completion/-SignatureCompletionContributor.java");
+		TEMPLATES.put("InSignatureFitFilter.java", IDE + PROJECT_PATH + "codeInsight/completion/InSignatureFitFilter.java");
 
-		TEMPLATES.put("NamedElementImpl", PROJECT_PATH + IDE + "psi/impl/NamedElementImpl");
-		TEMPLATES.put("DefinitionIdentifierManipulator", PROJECT_PATH + IDE + "psi/impl/DefinitionIdentifierManipulator");
-		TEMPLATES.put("ElementFactoryImpl", PROJECT_PATH + IDE + "psi/impl/ElementFactoryImpl");
-		TEMPLATES.put("Util", PROJECT_PATH + IDE + "psi/impl/Util");
-		TEMPLATES.put("PsiImplUtil", PROJECT_PATH + IDE + "psi/impl/PsiImplUtil");
+		TEMPLATES.put("DuplicateInspection.java", IDE + PROJECT_PATH + "codeinspection/Duplicate_Inspection.java");
+		TEMPLATES.put("DuplicateInspection.form", IDE + PROJECT_PATH + "codeinspection/Duplicate_Inspection.form");
+		TEMPLATES.put("UnusedAbstractInspection.java", IDE + PROJECT_PATH + "codeinspection/UnusedAbstract_Inspection.java");
+		TEMPLATES.put("RemoveAttributeFix.java", IDE + PROJECT_PATH + "codeinspection/fix/RemoveAttributeFix.java");
+		TEMPLATES.put("RemoveFix.java", IDE + PROJECT_PATH + "codeinspection/fix/Remove_fix.java");
 
-		TEMPLATES.put("File", PROJECT_PATH + IDE + "metamodel/file/File");
-		TEMPLATES.put("FileType", PROJECT_PATH + "metamodel/file/FileType");
-		TEMPLATES.put("FileTypeFactory", PROJECT_PATH + IDE + "metamodel/file/FileTypeFactory");
+		TEMPLATES.put("CompilerConfigurable.form", IDE + PROJECT_PATH + "compiler/-CompilerConfigurable.form");
+		TEMPLATES.put("CompilerConfigurable.java", IDE + PROJECT_PATH + "compiler/-CompilerConfigurable.java");
+		TEMPLATES.put("CompilerConfiguration.java", IDE + PROJECT_PATH + "compiler/-CompilerConfiguration.java");
+		TEMPLATES.put("CompilerWorkspaceConfiguration.java", IDE + PROJECT_PATH + "compiler/CompilerWorkspaceConfiguration.java");
 
-		TEMPLATES.put("ParserUtil", PROJECT_PATH + "parser/ParserUtil");
-		TEMPLATES.put("GeneratedParserUtilBase", PROJECT_PATH + IDE + "parser/GeneratedParserUtilBase");
+		TEMPLATES.put("LoggingEventSubmitter.java", IDE + PROJECT_PATH + "diagnostic/errorreporting/LoggingEventSubmitter.java");
+		TEMPLATES.put("PluginErrorSubmitter.java", IDE + PROJECT_PATH + "diagnostic/errorreporting/PluginErrorSubmitter.java");
+		TEMPLATES.put("DocumentationProvider.java", IDE + PROJECT_PATH + "diagnostic/errorreporting/PluginErrorSubmitterBundle.java");
 
-		TEMPLATES.put("SyntaxHighlighterFactory", PROJECT_PATH + IDE + "highlighting/SyntaxHighlighterFactory");
+		TEMPLATES.put("Block.java", IDE + PROJECT_PATH + "formatter/-block.java");
+		TEMPLATES.put("FormattingModelBuilder.java", IDE + PROJECT_PATH + "formatter/-FormattingModelBuilder.java");
 
-		TEMPLATES.put("plugin", "META-INF/plugin");
+		TEMPLATES.put("BraceMatcher.java", IDE + PROJECT_PATH + "highlighting/-BraceMatcher.java");
+		TEMPLATES.put("ColorSettingPage.java", IDE + PROJECT_PATH + "highlighting/-ColorSettingPage.java");
+		TEMPLATES.put("HighlighterLexAdapter.java", IDE + PROJECT_PATH + "highlighting/-HighlighterLexAdapter.java");
+		TEMPLATES.put("SyntaxHighlighter.java", IDE + PROJECT_PATH + "highlighting/-SyntaxHighlighter.java");
+		TEMPLATES.put("SyntaxHighlighterLex.flex", IDE + PROJECT_PATH + "highlighting/-SyntaxHighlighterLex.flex");
+		TEMPLATES.put("SyntaxHighlighterFactory.java", IDE + PROJECT_PATH + "highlighting/-SyntaxHighlighterFactory.java");
 
-		TEMPLATES.put("Definition", PROJECT_PATH + "metamodel/Definition");
-		TEMPLATES.put("Metamodel", PROJECT_PATH + "metamodel/Metamodel");
+		TEMPLATES.put("FileType.java", IDE + PROJECT_PATH + "metamodel/file/-FileType.java");
+		TEMPLATES.put("FileTypeFactory.java", IDE + PROJECT_PATH + "metamodel/file/-FileTypeFactory.java");
+		TEMPLATES.put(".flex", IDE + PROJECT_PATH + "metamodel/lexer/-.flex");
+		TEMPLATES.put("BlockManager.java", IDE + PROJECT_PATH + "metamodel/lexer/BlockManager.java");
+		TEMPLATES.put("LexerAdapter.java", IDE + PROJECT_PATH + "metamodel/lexer/LexerAdapter.java");
+		TEMPLATES.put("GeneratedParserUtilBase.java", IDE + PROJECT_PATH + "metamodel/parser/GeneratedParserUtilBase.java");
+		TEMPLATES.put("ParserDefinition.java", IDE + PROJECT_PATH + "metamodel/parser/-ParserDefinition.java");
+		TEMPLATES.put("ParserUtil.java", IDE + PROJECT_PATH + "metamodel/parser/-ParserUtil.java");
+		TEMPLATES.put(".bnf", IDE + PROJECT_PATH + "metamodel/parser/-.bnf");
+		TEMPLATES.put("Icons.java", IDE + PROJECT_PATH + "metamodel/-Icons.java");
+		TEMPLATES.put("Language.java", IDE + PROJECT_PATH + "metamodel/-Language.java");
+		TEMPLATES.put("Attribute.java", IDE + PROJECT_PATH + "metamodel/psi/Attribute.java");
+		TEMPLATES.put("File.java", IDE + PROJECT_PATH + "metamodel/psi/-File.java");
+		TEMPLATES.put("_.java", IDE + PROJECT_PATH + "metamodel/psi/_.java");
+		TEMPLATES.put("Signature.java", IDE + PROJECT_PATH + "metamodel/psi/Signature.java");
+		TEMPLATES.put("Body.java", IDE + PROJECT_PATH + "metamodel/psi/Body.java");
+		TEMPLATES.put("ElementFactory.java", IDE + PROJECT_PATH + "metamodel/psi/-ElementFactory.java");
+		TEMPLATES.put("ElementType.java", IDE + PROJECT_PATH + "metamodel/psi/-ElementType.java");
+		TEMPLATES.put("TokenType.java", IDE + PROJECT_PATH + "metamodel/psi/-TokenType.java");
+		TEMPLATES.put("BodyMixin.java", IDE + PROJECT_PATH + "metamodel/psi/impl/BodyMixin.java");
+		TEMPLATES.put("AttributeMixin.java", IDE + PROJECT_PATH + "metamodel/psi/impl/AttributeMixin.java");
+		TEMPLATES.put("SignatureMixin.java", IDE + PROJECT_PATH + "metamodel/psi/impl/SignatureMixin.java");
+		TEMPLATES.put("IdentifierMixin.java", IDE + PROJECT_PATH + "metamodel/psi/impl/IdentifierMixin.java");
+		TEMPLATES.put("ReferenceStatementMixin.java", IDE + PROJECT_PATH + "metamodel/psi/impl/-ReferenceStatementMixin.java");
+		TEMPLATES.put("_Mixin.java", IDE + PROJECT_PATH + "metamodel/psi/impl/_Mixin.java");
+		TEMPLATES.put("IdentifierManipulator.java", IDE + PROJECT_PATH + "metamodel/psi/IdentifierManipulator.java");
+		TEMPLATES.put("ElementFactoryImpl.java", IDE + PROJECT_PATH + "metamodel/psi/-ElementFactoryImpl.java");
+		TEMPLATES.put("FileImpl.java", IDE + PROJECT_PATH + "metamodel/psi/impl/-FileImpl.java");
+		TEMPLATES.put("PsiImplUtil.java", IDE + PROJECT_PATH + "psi/impl/-PsiImplUtil.java");
+		TEMPLATES.put("Util.java", IDE + PROJECT_PATH + "psi/impl/-Util.java");
 
+		TEMPLATES.put("ModuleSettings.java", IDE + PROJECT_PATH + "project/module/ModuleSettings.java");
+		TEMPLATES.put("ModuleBuilder.java", IDE + PROJECT_PATH + "project/module/ModuleBuilder.java");
+		TEMPLATES.put("ModuleType.java", IDE + PROJECT_PATH + "project/module/ModuleType.java");
+		TEMPLATES.put("DefaultRunner.java", IDE + PROJECT_PATH + "project/runner/DefaultRunner.java");
+		TEMPLATES.put("Runner.java", IDE + PROJECT_PATH + "project/runner/Runner.java");
+		TEMPLATES.put("RunConfiguration.java", IDE + PROJECT_PATH + "project/runner/RunConfiguration.java");
+		TEMPLATES.put("RunConfigurationType.java", IDE + PROJECT_PATH + "project/runner/RunConfigurationType.java");
+		TEMPLATES.put("RunnerUtil.java", IDE + PROJECT_PATH + "project/runner/RunnerUtil.java");
+		TEMPLATES.put("RunConfigurationEditor.java", IDE + PROJECT_PATH + "project/runner/RunConfigurationEditor.java");
+		TEMPLATES.put("RunConfigurationEditor.form", IDE + PROJECT_PATH + "project/runner/RunConfigurationEditor.form");
+
+		TEMPLATES.put("NamesValidator.java", IDE + PROJECT_PATH + "refactoring/rename/NamesValidator.java");
+		TEMPLATES.put("NameSuggestionProvider.java", IDE + PROJECT_PATH + "refactoring/NameSuggestionProvider.java");
+		TEMPLATES.put("RenameHandler.java", IDE + PROJECT_PATH + "refactoring/rename/RenameHandler.java");
+
+		TEMPLATES.put("FileStructureViewElement.java", IDE + PROJECT_PATH + "structureView/FileStructureViewElement.java");
+		TEMPLATES.put("StructureViewElement.java", IDE + PROJECT_PATH + "structureView/StructureViewElement.java");
+		TEMPLATES.put("StructureViewFactory.java", IDE + PROJECT_PATH + "structureView/StructureViewFactory.java");
+		TEMPLATES.put("StructureViewModel.java", IDE + PROJECT_PATH + "structureView/StructureViewModel.java");
+
+		TEMPLATES.put("Annotator.java", IDE + PROJECT_PATH + "-Annotator.java");
+		TEMPLATES.put("Bundle.java", IDE + PROJECT_PATH + "-Bundle.java");
+		TEMPLATES.put("FindUsagesProvider.java", IDE + PROJECT_PATH + "-FindUsagesProvider.java");
+		TEMPLATES.put("FoldingBuilder.java", IDE + PROJECT_PATH + "-FoldingBuilder.java");
+		TEMPLATES.put("RefactoringSupportProvider.java", IDE + PROJECT_PATH + "-RefactoringSupportProvider.java");
+		TEMPLATES.put("Reference.java", IDE + PROJECT_PATH + "-Reference.java");
+		TEMPLATES.put("ReferenceContributor.java", IDE + PROJECT_PATH + "-ReferenceContributor.java");
+
+		TEMPLATES.put("plugin.xml", "META-INF/plugin.xml");
+
+		TEMPLATES.put("Definition", "metamodel/Definition");
+		TEMPLATES.put("Metamodel", "metamodel/Metamodel");
 	}
+
+	private static final String RES = "res/";
 
 	public static Map<String, String> getTemplates() {
 		return TEMPLATES;

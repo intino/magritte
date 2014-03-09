@@ -1,6 +1,5 @@
 package monet.tara.intellij.structureview;
 
-import com.intellij.ide.structureView.StructureViewModel;
 import com.intellij.ide.structureView.TreeBasedStructureViewBuilder;
 import com.intellij.lang.PsiStructureViewFactory;
 import com.intellij.openapi.editor.Editor;
@@ -15,8 +14,8 @@ public class StructureViewFactory implements PsiStructureViewFactory {
 	public com.intellij.ide.structureView.StructureViewBuilder getStructureViewBuilder(final PsiFile psiFile) {
 		return new TreeBasedStructureViewBuilder() {
 			@NotNull
-			public StructureViewModel createStructureViewModel(Editor editor) {
-				return new TaraStructureViewModel((TaraFileImpl) psiFile);
+			public com.intellij.ide.structureView.StructureViewModel createStructureViewModel(Editor editor) {
+				return new StructureViewModel((TaraFileImpl) psiFile);
 			}
 		};
 	}

@@ -15,15 +15,13 @@ public class Phases {
 	public static final int FINALIZATION = 8;
 	public static final int ALL = 9;
 	public static String[] descriptions = {
-		"startup",
 		"initialization",
 		"parsing",
 		"semantic analysis",
 		"conversion",
-		"canonization",
 		"class generation",
 		"output",
-		"cleanup"};
+		"finalization"};
 
 	public static String getDescription(int phase) {
 		return descriptions[phase];

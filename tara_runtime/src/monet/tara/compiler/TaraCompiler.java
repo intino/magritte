@@ -2,7 +2,6 @@ package monet.tara.compiler;
 
 import monet.tara.compiler.core.CompilationUnit;
 import monet.tara.compiler.core.CompilerMessage;
-import monet.tara.compiler.core.Phases;
 import monet.tara.compiler.core.error_collection.*;
 import monet.tara.compiler.core.error_collection.message.*;
 import monet.tara.compiler.rt.TaraCompilerMessageCategories;
@@ -32,7 +31,7 @@ public class TaraCompiler {
 	public List<OutputItem> compile(CompilationUnit unit) {
 		List<OutputItem> compiledFiles = new ArrayList<>();
 		try {
-			unit.compile(Phases.ALL);
+			unit.compile();
 			addCompiledFiles(unit, compiledFiles);
 		} catch (CompilationFailedException e) {
 			processCompilationException(e);

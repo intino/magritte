@@ -1,14 +1,9 @@
 package scripts
 
-String TPL_PATH = "tara_runtime/res/tpl/monet/tara";
-String SRC_PATH = "intellij";
+String TPL_PATH = "tara_runtime/res/tpl";
+String SRC_PATH = "intellij/src";
 
-File[] files = new File(SRC_PATH).listFiles(new FileFilter() {
-    @Override
-    boolean accept(File pathname) {
-        return !pathname.getName().toLowerCase().contains("test");
-    }
-})
+File[] files = new File(SRC_PATH).listFiles()
 
 createTpls(TPL_PATH, files)
 
@@ -20,11 +15,12 @@ private void createTpls(String TPL_PATH, File[] files) {
             file.mkdirs()
             createTpls(TPL_PATH, it.listFiles())
         } else {
-            if (it.getName().endsWith("java") || it.getName().endsWith("xml")) {
+            if (it.getName().endsWith("java") || it.getName().endsWith("xml")
+                    || it.getName().endsWith("bnf") || it.getName().endsWith("flex") || it.getName().endsWith("form")) {
                 String text = it.text.replaceAll("tara", "::projectName::")
                 text = text.replaceAll("Tara", "::projectProperName::").replaceAll("Concept", "Definition")
                 text = text.replaceAll("concept", "definition")
-                File newFile = new File(TPL_PATH + "/" + it.parent, it.getName().replaceAll("Tara", "").replace("java", "tpl"))
+                File newFile = new File(TPL_PATH + "/" + it.parent, it.getName().replaceAll("Tara", "-").replace("Concept", "_") + ".tpl")
                 newFile.write(text)
             } else {
                 File newFile = new File(TPL_PATH + "/" + it.parent, it.getName())

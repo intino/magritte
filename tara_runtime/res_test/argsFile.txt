@@ -1,10 +1,10 @@
 src_file
-/Users/oroncal/workspace/sandbox/Test/src/monet.m2
+/Users/octavio/workspace/tara/tara_runtime/res_test/monet.m2
 encoding
 UTF-8
 outputpath
-/Users/oroncal/workspace/sandbox/system/compile-server/test_2e78763/taraStubs/Test/java-production
+/Users/octavio/workspace/sandbox/system/compile-server/test_2e78763/taraStubs/Test/java-production/
 final_outputpath
-/Users/oroncal/workspace/sandbox/Test/out/production/Test/
+/Users/octavio/workspace/sandbox/Test/out/production/Test/
 project
 goros

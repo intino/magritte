@@ -1,12 +1,10 @@
 package monet.tara.intellij.project.module;
 
-import com.intellij.ide.util.projectWizard.ModuleBuilder;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.SourcePathsBuilder;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.CompilerModuleExtension;
@@ -124,8 +122,8 @@ public class ModuleBuilder extends com.intellij.ide.util.projectWizard.ModuleBui
 	}
 
 	@Override
-	public ModuleType getModuleType() {
-		return TaraModuleType.getInstance();
+	public com.intellij.openapi.module.ModuleType getModuleType() {
+		return ModuleType.getInstance();
 	}
 
 	@Override

@@ -47,7 +47,7 @@ attribute::= VAR     UID_TYPE IDENTIFIER_KEY (ASSIGN stringValue)?
            | VAR NATURAL_TYPE (variableNames | IDENTIFIER_KEY ASSIGN naturalValue | LIST IDENTIFIER_KEY (ASSIGN naturalList)?)
            | VAR BOOLEAN_TYPE (variableNames | IDENTIFIER_KEY ASSIGN booleanValue | LIST IDENTIFIER_KEY (ASSIGN booleanList)?)
            | VAR  STRING_TYPE (variableNames | IDENTIFIER_KEY ASSIGN stringValue | LIST IDENTIFIER_KEY (ASSIGN stringList)?)
-{mixin= 'monet.tara.intellij.metamodel.psi.impl.TaraAttributeMixin'
+{mixin= 'monet.tara.intellij.metamodel.psi.impl.AttributeMixin'
 implements='monet.tara.intellij.metamodel.psi.Attribute'}
 
 word::= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT
@@ -79,4 +79,4 @@ doc::= DOC_LINE+
 extendedConcept::= identifier (DOT identifier)*
 
 identifier::=  IDENTIFIER_KEY
-{mixin= 'monet.tara.intellij.metamodel.psi.impl.TaraIdentifierMixin' methods=[getIdentifier]}
+{mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierMixin' methods=[getIdentifier]}

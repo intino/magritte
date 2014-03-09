@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.builders.BuildOutputConsumer;
 import org.jetbrains.jps.builders.BuildRootDescriptor;
 import org.jetbrains.jps.builders.DirtyFilesHolder;
-import org.jetbrains.jps.builders.FileProcessor;
 import org.jetbrains.jps.cmdline.ClasspathBootstrap;
 import org.jetbrains.jps.cmdline.ProjectDescriptor;
 import org.jetbrains.jps.incremental.*;
@@ -24,8 +23,11 @@ import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import org.jetbrains.jps.incremental.messages.ProgressMessage;
 import org.jetbrains.jps.javac.OutputFileObject;
+import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import org.jetbrains.jps.model.java.compiler.JpsJavaCompilerConfiguration;
+import org.jetbrains.jps.model.module.JpsModule;
+import org.jetbrains.jps.model.module.JpsModuleSourceRoot;
 import org.jetbrains.jps.service.SharedThreadPool;
 import org.jetbrains.jps.tara.model.impl.TaraRootDescriptor;
 import org.jetbrains.jps.tara.model.impl.TaraTarget;
@@ -68,7 +70,8 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 	private static Map<TaraTarget, Collection<TaracOSProcessHandler.OutputItem>> processCompiledFiles(CompileContext context,
 	                                                                                                  TaraTarget target,
 	                                                                                                  Map<TaraTarget, String> generationOutputs,
-	                                                                                                  String compilerOutput, TaracOSProcessHandler handler)
+	                                                                                                  String compilerOutput,
+	                                                                                                  TaracOSProcessHandler handler)
 		throws IOException {
 		ProjectDescriptor pd = context.getProjectDescriptor();
 		final Map<TaraTarget, Collection<TaracOSProcessHandler.OutputItem>> compiled = new THashMap<>();
@@ -193,14 +196,14 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 			getCompilerConfiguration(context.getProjectDescriptor().getProject());
 		assert configuration != null;
 		final List<File> toCompile = new ArrayList<>();
-		dirtyFilesHolder.processDirtyFiles(new FileProcessor<TaraRootDescriptor, TaraTarget>() {
-			@Override
-			public boolean apply(TaraTarget taraTarget, File file, TaraRootDescriptor taraRootDescriptor) throws IOException {
-				if (isTaraFile(file.getPath()))
-					toCompile.add(file);
-				return true;
-			}
-		});
+//		dirtyFilesHolder.processDirtyFiles(new FileProcessor<TaraRootDescriptor, TaraTarget>() {
+//			@Override
+//			public boolean apply(TaraTarget taraTarget, File file, TaraRootDescriptor taraRootDescriptor) throws IOException {
+//				if (isTaraFile(file.getPath()))
+//					toCompile.add(file);
+//				return true;
+//			}
+//		});
 		return toCompile;
 	}
 
@@ -221,7 +224,7 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 	                  @NotNull CompileContext context) throws ProjectBuildException, IOException {
 		try {
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(context.getProjectDescriptor().getProject());
-			final List<File> toCompile = collectFiles(context, dirtyFilesHolder);
+			final List<File> toCompile = collectFiles(context.getProjectDescriptor().getProject());
 			if (toCompile.isEmpty()) return;
 			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("plugin-generation=" + pluginGeneration);
 			Map<TaraTarget, String> finalOutputs = getCanonicalModuleOutputs(context, target);
@@ -257,6 +260,28 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 				FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, null);
 			}
 		}
+	}
+
+	private List<File> collectFiles(JpsProject project) {
+		final JpsJavaCompilerConfiguration configuration = JpsJavaExtensionService.getInstance().getCompilerConfiguration(project);
+		assert configuration != null;
+		final List<File> toCompile = new ArrayList<>();
+		for (JpsModule module : project.getModules()) {
+			for (JpsModuleSourceRoot root : module.getSourceRoots()) {
+				toCompile.addAll(getTaraFilesFromRoot(root.getFile()));
+			}
+		}
+		return toCompile;
+	}
+
+	private List<File> getTaraFilesFromRoot(@NotNull File root) {
+		ArrayList<File> list = new ArrayList<>();
+		for (File file : root.listFiles())
+			if (file.isDirectory())
+				list.addAll(getTaraFilesFromRoot(file));
+			else if (isTaraFile(file.getPath()))
+				list.add(file);
+		return list;
 	}
 
 

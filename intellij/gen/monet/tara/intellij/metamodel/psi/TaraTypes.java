@@ -82,7 +82,7 @@ public interface TaraTypes {
         return new TaraAnnotationsImpl(node);
       }
       else if (type == ATTRIBUTE) {
-        return new TaraAttributeImpl(node);
+        return new AttributeImpl(node);
       }
       else if (type == BODY) {
         return new TaraBodyImpl(node);
@@ -112,7 +112,7 @@ public interface TaraTypes {
         return new TaraExtendedConceptImpl(node);
       }
       else if (type == IDENTIFIER) {
-        return new TaraIdentifierImpl(node);
+        return new IdentifierImpl(node);
       }
       else if (type == INTEGER_LIST) {
         return new TaraIntegerListImpl(node);

@@ -1,6 +1,5 @@
 package monet.tara.intellij.project.module;
 
-import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleTypeManager;
 import monet.tara.intellij.metamodel.TaraIcons;
 import org.jetbrains.annotations.NonNls;

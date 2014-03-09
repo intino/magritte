@@ -20,8 +20,7 @@ public class TaraToJavaGenerator {
 	public void toJava(CompilerConfiguration configuration) throws TaraException {
 		this.configuration = configuration;
 		for (String template : TemplateFactory.getTemplates().keySet()) {
-			String templatePath = TemplateFactory.getTemplate(template).replace("tara", configuration.getProject().toLowerCase());
-			openGeneratedFileOutput(new File(getPath(templatePath)));
+			openGeneratedFileOutput(template, new File(getPath(TemplateFactory.getTemplate(template))));
 			writeTemplateBasedFile(template, null);
 			closeOutFile();
 		}
@@ -35,7 +34,7 @@ public class TaraToJavaGenerator {
 
 
 	private String getPath(String templatePath) {
-		String path = configuration.getTempDirectory().getAbsolutePath();
+		String path = configuration.getTempDirectory().getAbsolutePath() + File.separator;
 		if (templatePath.equals("META-INF/plugin"))
 			return path + templatePath + ".xml";
 		else if (templatePath.endsWith("grammar"))
@@ -45,7 +44,7 @@ public class TaraToJavaGenerator {
 		else return path + templatePath + ".java";
 	}
 
-	private void openGeneratedFileOutput(File file) throws TaraException {
+	private void openGeneratedFileOutput(String template, File file) throws TaraException {
 		try {
 			file.getParentFile().mkdirs();
 			file.createNewFile();

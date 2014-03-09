@@ -12,7 +12,6 @@ public class DefaultRunner extends Runner {
 
 	@Override
 	public boolean isValidModule(@NotNull Module module) {
-//		return LibrariesUtil.hasGroovySdk(module);
 		return true;
 	}
 

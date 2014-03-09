@@ -1,6 +1,5 @@
 package monet.tara.intellij.refactoring.rename;
 
-import com.intellij.lang.refactoring.NamesValidator;
 import com.intellij.openapi.project.Project;
 
 /**

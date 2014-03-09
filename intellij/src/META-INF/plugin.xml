@@ -47,12 +47,12 @@
     <projectConfigurable instance="monet.tara.intellij.project.module.ModuleSettings" id="ModuleSettings"
                          displayName="Tara"
                          order="last"/>
-    <errorHandler implementation="monet.tara.intellij.diagnostic.error_reporting.PluginErrorReportSubmitter"/>
+    <errorHandler implementation="monet.tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
-                         implementationClass="monet.tara.intellij.refactoring.rename.TaraNamesValidator"/>
+                         implementationClass="monet.tara.intellij.refactoring.rename.NamesValidator"/>
     <projectService serviceInterface="monet.tara.intellij.metamodel.psi.TaraElementFactory"
                     serviceImplementation="monet.tara.intellij.metamodel.psi.impl.TaraElementFactoryImpl"/>
-    <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.TaraModuleType"/>
+    <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.ModuleType"/>
 
     <projectConfigurable instance="monet.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
                          displayName="Tara Compiler" parentId="project.propCompiler"/>
@@ -63,7 +63,7 @@
     <projectService serviceInterface="monet.tara.intellij.compiler.TaraCompilerConfiguration"
                     serviceImplementation="monet.tara.intellij.compiler.TaraCompilerConfiguration"/>
 
-    <configurationType implementation="monet.tara.intellij.project.runner.TaraRunConfigurationType"/>
+    <configurationType implementation="monet.tara.intellij.project.runner.RunConfigurationType"/>
     <lang.commenter language="Tara" implementationClass="monet.tara.intellij.TaraCommenter"/>
     <lang.documentationProvider language="Tara"
                                 implementationClass="monet.tara.intellij.documentation.TaraDocumentationProvider"/>
@@ -86,17 +86,17 @@
     <completion.contributor language="Tara"
                             implementationClass="monet.tara.intellij.codeInsight.completion.TaraAnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="Tara"
-                                  implementationClass="monet.tara.intellij.structureview.TaraStructureViewFactory"/>
+                                  implementationClass="monet.tara.intellij.structureview.StructureViewFactory"/>
     <psi.referenceContributor language="Tara" implementation="monet.tara.intellij.TaraReferenceContributor"/>
-    <nameSuggestionProvider implementation="monet.tara.intellij.refactoring.TaraNameSuggestionProvider"/>
+    <nameSuggestionProvider implementation="monet.tara.intellij.refactoring.NameSuggestionProvider"/>
     <lang.elementManipulator forClass="monet.tara.intellij.metamodel.psi.TaraIdentifier"
-                             implementationClass="monet.tara.intellij.metamodel.psi.impl.TaraConceptIdentifierManipulator"/>
+                             implementationClass="monet.tara.intellij.metamodel.psi.impl.IdentifierManipulator"/>
     <lang.refactoringSupport language="Tara"
                              implementationClass="monet.tara.intellij.TaraRefactoringSupportProvider"/>
-    <renameHandler implementation="monet.tara.intellij.refactoring.TaraRenameHandler"/>
+    <renameHandler implementation="monet.tara.intellij.refactoring.rename.RenameHandler"/>
     <lang.findUsagesProvider language="Tara"
                              implementationClass="monet.tara.intellij.TaraFindUsagesProvider"/>
     <lang.foldingBuilder language="Tara" implementationClass="monet.tara.intellij.TaraFoldingBuilder"/>
-    <!--<lang.formatter language="Tara" implementationClass="monet.tara.intellij.TaraFormattingModelBuilder"/>-->
+    <!--<lang.formatter language="Tara" implementationClass="monet.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
   </extensions>
 </idea-plugin>

@@ -23,7 +23,7 @@ public class FileStructureViewElement extends PsiTreeElementBase<TaraFileImpl> {
 		List<? extends Concept> concepts = getElement().getConcepts();
 		Collection<StructureViewTreeElement> elements = new ArrayList<>(concepts.size());
 		for (Concept concept : concepts)
-			elements.add(new TaraStructureViewElement(concept));
+			elements.add(new StructureViewElement(concept));
 		return elements;
 	}
 

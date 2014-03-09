@@ -3,7 +3,6 @@ package monet.tara.intellij.refactoring;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.SuggestedNameInfo;
-import com.intellij.refactoring.rename.NameSuggestionProvider;
 import monet.tara.intellij.metamodel.psi.Concept;
 import monet.tara.intellij.metamodel.psi.TaraIdentifier;
 import org.jetbrains.annotations.NotNull;

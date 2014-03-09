@@ -101,7 +101,7 @@ public class RunConfiguration extends ModuleBasedConfiguration<RunConfigurationM
 
 	@Override
 	public RefactoringElementListener getRefactoringElementListener(PsiElement element) {
-		final PsiClass classToRun = TaraRunnerUtil.getRunningClass(element);
+		final PsiClass classToRun = RunnerUtil.getRunningClass(element);
 
 		if (element instanceof TaraFileImpl) {
 			return new RefactoringElementAdapter() {
@@ -133,7 +133,7 @@ public class RunConfiguration extends ModuleBasedConfiguration<RunConfigurationM
 
 	@NotNull
 	public SettingsEditor<? extends com.intellij.execution.configurations.RunConfiguration> getConfigurationEditor() {
-		return new TaraRunConfigurationEditor();
+		return new RunConfigurationEditor();
 	}
 
 

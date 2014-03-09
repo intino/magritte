@@ -2,7 +2,6 @@ package monet.tara.compiler.intellij.plugingeneration.render.metamodel;
 
 import monet.tara.compiler.code_generation.render.DefaultRender;
 import monet.tara.compiler.code_generation.render.RendersFactory;
-import monet.tara.intellij.plugin_generation.render.LexerRender;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,14 +32,6 @@ public class MetaModelRendersTest {
 		DefaultRender defaultRender = RendersFactory.getRender("grammar", projectName, null);
 		assertEquals(new String(Files.readAllBytes(
 			Paths.get(TLP_PATH + "metamodel/grammar.bnf")), UTF_8), defaultRender.getOutput());
-	}
-
-	@Test
-	public void lexerRenderTest() throws Exception {
-		LexerRender lexerRender = (LexerRender) RendersFactory.getRender("lexer", projectName, keywordList);
-		lexerRender.setKeywords(keywordList);
-		assertEquals(new String(Files.readAllBytes(
-			Paths.get(TLP_PATH + "metamodel/lexer.flex")), UTF_8), lexerRender.getOutput());
 	}
 
 	@Test
