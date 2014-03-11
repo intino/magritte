@@ -1,4 +1,4 @@
-package monet.tara.intellij.plugin_generation;
+package monet.tara.compiler.code_generation.intellij.plugin_generation;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.SimpleJavaParameters;

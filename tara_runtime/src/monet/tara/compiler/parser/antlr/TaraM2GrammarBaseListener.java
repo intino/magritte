@@ -139,18 +139,6 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterExtendedConcept(@NotNull TaraM2Grammar.ExtendedConceptContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitExtendedConcept(@NotNull TaraM2Grammar.ExtendedConceptContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterReference(@NotNull TaraM2Grammar.ReferenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -194,6 +182,18 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitConceptConstituents(@NotNull TaraM2Grammar.ConceptConstituentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterReferenceIdentifier(@NotNull TaraM2Grammar.ReferenceIdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitReferenceIdentifier(@NotNull TaraM2Grammar.ReferenceIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>

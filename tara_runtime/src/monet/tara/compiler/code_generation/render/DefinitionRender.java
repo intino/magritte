@@ -1,4 +1,4 @@
-package monet.tara.compiler.code_generation;
+package monet.tara.compiler.code_generation.render;
 
 import monet.tara.compiler.code_generation.render.DefaultRender;
 import monet.tara.compiler.code_generation.render.RenderUtils;

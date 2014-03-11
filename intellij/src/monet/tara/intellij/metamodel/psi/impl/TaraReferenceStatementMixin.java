@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
 import monet.tara.intellij.TaraReference;
-import monet.tara.intellij.metamodel.psi.TaraExtendedConcept;
+import monet.tara.intellij.metamodel.psi.TaraReferenceIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +19,7 @@ public class TaraReferenceStatementMixin extends ASTWrapperPsiElement {
 	}
 
 	public String getIdentifier() {
-		return TaraPsiImplUtil.getIdentifier((TaraExtendedConcept) this);
+		return TaraPsiImplUtil.getIdentifier((TaraReferenceIdentifier) this);
 	}
 
 	@NotNull

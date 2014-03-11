@@ -1,7 +1,5 @@
 package monet.tara.compiler.code_generation.render;
 
-import monet.tara.compiler.code_generation.DefinitionRender;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;

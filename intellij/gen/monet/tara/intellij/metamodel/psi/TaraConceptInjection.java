@@ -1,9 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.intellij.metamodel.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface TaraConceptInjection extends PsiElement {
 
@@ -11,6 +11,6 @@ public interface TaraConceptInjection extends PsiElement {
   TaraAnnotations getAnnotations();
 
   @NotNull
-  TaraExtendedConcept getExtendedConcept();
+  TaraReferenceIdentifier getReferenceIdentifier();
 
 }

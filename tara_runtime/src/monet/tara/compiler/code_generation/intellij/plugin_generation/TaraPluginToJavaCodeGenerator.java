@@ -1,4 +1,4 @@
-package monet.tara.intellij.plugin_generation;
+package monet.tara.compiler.code_generation.intellij.plugin_generation;
 
 import monet.tara.compiler.code_generation.render.DefaultRender;
 import monet.tara.compiler.code_generation.render.RenderUtils;
@@ -8,12 +8,10 @@ import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.error_collection.TaraException;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
-public class TaraToJavaGenerator {
+public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 
 	CompilerConfiguration configuration;
 	private PrintWriter writer;
@@ -21,7 +19,7 @@ public class TaraToJavaGenerator {
 	public void toJava(CompilerConfiguration configuration) throws TaraException {
 		this.configuration = configuration;
 		for (String template : TemplateFactory.getTemplates().keySet()) {
-			openGeneratedFileOutput(new File(getPath(TemplateFactory.getTemplate(template))));
+			writer = getOutWriter(new File(this.getPath(TemplateFactory.getTemplate(template))));
 			writeTemplateBasedFile(template, null);
 			closeOutFile();
 		}
@@ -39,23 +37,8 @@ public class TaraToJavaGenerator {
 		return configuration.getTempDirectory().getAbsolutePath() + File.separator + "src" + File.separator + templateRefactored;
 	}
 
-	private void openGeneratedFileOutput(File file) throws TaraException {
-		try {
-			file.getParentFile().mkdirs();
-			file.createNewFile();
-			out("// ---- " + file.getName() + "\n");
-			writer = new PrintWriter(new FileOutputStream(file));
-		} catch (IOException e) {
-			throw new TaraException("Error during plugin generation");
-		}
-	}
-
 	private void closeOutFile() {
 		writer.close();
-	}
-
-	public void out(String s) {
-		System.out.print(s);
 	}
 
 }

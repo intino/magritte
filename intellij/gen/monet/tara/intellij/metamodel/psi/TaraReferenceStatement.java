@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface TaraReferenceStatement extends PsiElement {
 
   @NotNull
-  TaraExtendedConcept getExtendedConcept();
+  TaraReferenceIdentifier getReferenceIdentifier();
 
   @NotNull
   TaraVariableNames getVariableNames();

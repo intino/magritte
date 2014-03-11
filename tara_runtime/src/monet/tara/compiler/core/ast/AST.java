@@ -1,6 +1,9 @@
 package monet.tara.compiler.core.ast;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AST {
 
@@ -17,6 +20,14 @@ public class AST {
 			identifierMap.put(identifier.toUpperCase() + "_" + context, identifier);
 	}
 
+	public HashMap<String, String> getIdentifiers() {
+		return identifierMap;
+	}
+
+	public HashMap<String, ArrayList<ASTNode>> getLookUpTable() {
+		return lookUpTable;
+	}
+
 	private boolean isNoName(String text) {
 		return text.isEmpty();
 	}
@@ -27,6 +38,14 @@ public class AST {
 
 	public boolean add(ASTNode astNode) {
 		return astRootNodes.add(astNode);
+	}
+
+	public void putAllIdentifiers(Map<? extends String, ? extends String> m) {
+		identifierMap.putAll(m);
+	}
+
+	public void putAllLookupTable(Map<? extends String, ? extends ArrayList<ASTNode>> m) {
+		lookUpTable.putAll(m);
 	}
 
 	public boolean add(String name, ASTNode astNode) {

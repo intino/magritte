@@ -33,7 +33,7 @@ public class TaraPsiImplUtil {
 		return null;
 	}
 
-	public static String getIdentifier(TaraExtendedConcept element) {
+	public static String getIdentifier(TaraReferenceIdentifier element) {
 		ASTNode valueNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER_KEY);
 		if (valueNode != null) return valueNode.getText();
 		else return null;
@@ -78,7 +78,7 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	public static TaraConcept resolveContextOfRef(TaraExtendedConcept identifier) {
+	public static TaraConcept resolveContextOfRef(TaraReferenceIdentifier identifier) {
 		PsiElement element = identifier;
 		while (!(element.getParent() instanceof Concept))
 			element = element.getParent();

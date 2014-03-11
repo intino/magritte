@@ -14,22 +14,22 @@ import java.util.HashMap;
 public class BnfRender extends Render {
 	private String tplName;
 	private String projectName;
-	private AST root;
+	private AST ast;
 	private ArrayList<ASTNode> rootList = new ArrayList<>();
 
-	public BnfRender(String projectName, String tplName, String path, AST root) {
+	public BnfRender(String projectName, String tplName, String path, AST ast) {
 		super(new Logger(), path);
 		this.tplName = tplName;
 		this.projectName = projectName;
-		this.root = root;
+		this.ast = ast;
 	}
 
 	@Override
-	public void init() {
+	protected void init() {
 		loadCanvas(tplName, true);
 		addMark("projectNameFile", projectName);
 		addMark("projectName", projectName.substring(0, 1).toLowerCase() + projectName.substring(1));
-		for (ASTNode node : root.getAstRootNodes()) goOver(node);
+		for (ASTNode node : ast.getAstRootNodes()) goOver(node);
 		generateListOfRootConcepts();
 	}
 
@@ -62,9 +62,9 @@ public class BnfRender extends Render {
 		HashMap<String, Object> localMap = new HashMap<>();
 		putMainComponentsToHashMap(node, localMap);
 		putAttributesComponentsToHashMap(localMap,
-			(new ImplicitAttributes(node, root)).getAttributesString(),
-			(new ExplicitAttributes(node, root)).getAttributesString());
-		putConstituentsToHashMap(localMap, (new Constituents(root, node)).getConstituentString());
+			(new ImplicitAttributes(node, ast)).getAttributesString(),
+			(new ExplicitAttributes(node, ast)).getAttributesString());
+		putConstituentsToHashMap(localMap, (new Constituents(ast, node)).getConstituentString());
 		concepts.append(block("ruleConcept", localMap));
 		addMark("rules", concepts.toString());
 	}
@@ -79,7 +79,7 @@ public class BnfRender extends Render {
 		if (node != null) {
 			if (containsRoot(node.getAnnotations())) return true;
 			if (node.getParent() != null && node.isMorph()) return isExtendedRoot(node.getParent());
-			if (root.searchAncestry(node) != null) return isExtendedRoot(root.searchAncestry(node));
+			if (ast.searchAncestry(node) != null) return isExtendedRoot(ast.searchAncestry(node));
 		}
 		return false;
 	}
@@ -88,7 +88,7 @@ public class BnfRender extends Render {
 		if (node != null) {
 			if (node.hasCode()) return true;
 			if (node.getParent() != null && node.isMorph()) return hasExtendedCode(node.getParent());
-			if (root.searchAncestry(node) != null) return hasExtendedCode(root.searchAncestry(node));
+			if (ast.searchAncestry(node) != null) return hasExtendedCode(ast.searchAncestry(node));
 		}
 		return false;
 	}
@@ -112,7 +112,7 @@ public class BnfRender extends Render {
 		localMap.put("identifier", getTransformedAbsolutePath(advance));
 		localMap.put("code", hasExtendedCode(advance) ? "CODE" : "");
 		localMap.put("projectName", projectName);
-		localMap.put("lexicoIdentifier", root.getKeys(advance.getIdentifier()).get(0));
+		localMap.put("lexicoIdentifier", ast.getKeys(advance.getIdentifier()).get(0));
 	}
 
 	private static class Logger implements CanvasLogger {

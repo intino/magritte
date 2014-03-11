@@ -111,16 +111,6 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 */
 	void exitDoubleValue(@NotNull TaraM2Grammar.DoubleValueContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#extendedConcept}.
-	 * @param ctx the parse tree
-	 */
-	void enterExtendedConcept(@NotNull TaraM2Grammar.ExtendedConceptContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#extendedConcept}.
-	 * @param ctx the parse tree
-	 */
-	void exitExtendedConcept(@NotNull TaraM2Grammar.ExtendedConceptContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#reference}.
 	 * @param ctx the parse tree
 	 */
@@ -160,6 +150,16 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitConceptConstituents(@NotNull TaraM2Grammar.ConceptConstituentsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraM2Grammar#referenceIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterReferenceIdentifier(@NotNull TaraM2Grammar.ReferenceIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraM2Grammar#referenceIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitReferenceIdentifier(@NotNull TaraM2Grammar.ReferenceIdentifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#doc}.
 	 * @param ctx the parse tree

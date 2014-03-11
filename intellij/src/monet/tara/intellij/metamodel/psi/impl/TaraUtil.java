@@ -118,10 +118,10 @@ public class TaraUtil {
 
 	public static Concept resolveReferences(Project project, PsiElement identifier) {
 		Concept reference;
-		if (identifier.getParent() instanceof TaraExtendedConcept) {
-			List<TaraIdentifier> route = ((TaraExtendedConcept) (identifier.getParent())).getIdentifierList();
+		if (identifier.getParent() instanceof TaraReferenceIdentifier) {
+			List<TaraIdentifier> route = ((TaraReferenceIdentifier) (identifier.getParent())).getIdentifierList();
 			route = route.subList(0, route.indexOf(identifier) + 1);
-			if (!isRootConcept(TaraPsiImplUtil.resolveContextOfRef((TaraExtendedConcept) identifier.getParent())) &&
+			if (!isRootConcept(TaraPsiImplUtil.resolveContextOfRef((TaraReferenceIdentifier) identifier.getParent())) &&
 				(reference = resolveRelativeReference(route, (TaraIdentifier) identifier)) != null) return reference;
 			else return resolveAbsoluteReference(project, route);
 		}
@@ -133,7 +133,7 @@ public class TaraUtil {
 	}
 
 	private static Concept resolveRelativeReference(List<TaraIdentifier> route, TaraIdentifier element) {
-		Concept context = TaraPsiImplUtil.resolveContextOfRef((TaraExtendedConcept) element.getParent());
+		Concept context = TaraPsiImplUtil.resolveContextOfRef((TaraReferenceIdentifier) element.getParent());
 		Concept concept = TaraPsiImplUtil.getContextOf(context);
 		for (TaraIdentifier identifier : route)
 			if ((concept = findChildOf(concept, identifier.getIdentifier())) == null) break;
@@ -195,7 +195,7 @@ public class TaraUtil {
 	}
 
 	public static TaraIdentifier[] getAbsoluteReference(TaraIdentifier reference) {
-		TaraExtendedConcept extendedConcept = (TaraExtendedConcept) reference.getParent();
+		TaraReferenceIdentifier extendedConcept = (TaraReferenceIdentifier) reference.getParent();
 		List<TaraIdentifier> identifiers = extendedConcept.getIdentifierList();
 		identifiers = identifiers.subList(0, identifiers.indexOf(reference) + 1);
 		return identifiers.toArray(new TaraIdentifier[identifiers.size()]);

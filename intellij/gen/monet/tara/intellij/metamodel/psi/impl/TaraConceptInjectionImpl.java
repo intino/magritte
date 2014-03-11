@@ -30,8 +30,8 @@ public class TaraConceptInjectionImpl extends ASTWrapperPsiElement implements Ta
 
   @Override
   @NotNull
-  public TaraExtendedConcept getExtendedConcept() {
-    return findNotNullChildByClass(TaraExtendedConcept.class);
+  public TaraReferenceIdentifier getReferenceIdentifier() {
+    return findNotNullChildByClass(TaraReferenceIdentifier.class);
   }
 
 }

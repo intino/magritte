@@ -1,7 +1,6 @@
 package monet.tara.compiler.code_generation;
 
 import monet.tara.compiler.core.CompilerConfiguration;
-import monet.tara.compiler.core.JavaCommandHelper;
 import monet.tara.compiler.core.error_collection.StreamWrapper;
 
 import java.io.File;

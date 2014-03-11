@@ -24,8 +24,8 @@ public class TaraReferenceStatementImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @NotNull
-  public TaraExtendedConcept getExtendedConcept() {
-    return findNotNullChildByClass(TaraExtendedConcept.class);
+  public TaraReferenceIdentifier getReferenceIdentifier() {
+    return findNotNullChildByClass(TaraReferenceIdentifier.class);
   }
 
   @Override

@@ -28,7 +28,6 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		ASTNode node = new ASTNode(ctx.signature().IDENTIFIER().getText(), parent);
 		if (parent != null) parent.add(node);
 		else ast.add(node);
-		ast.addIdentifier(node.getIdentifier(), "CONCEPT");
 		ast.add(node.getIdentifier(), node);
 		conceptStack.push(node);
 	}
@@ -37,10 +36,11 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	public void enterSignature(@NotNull SignatureContext ctx) {
 		if (ctx.MORPH() != null) conceptStack.peek().setMorph(true);
 		if (ctx.POLYMORPHIC() != null) conceptStack.peek().setPolymorphic(true);
+
 	}
 
 	@Override
-	public void enterExtendedConcept(@NotNull ExtendedConceptContext ctx) {
+	public void enterReferenceIdentifier(@NotNull ReferenceIdentifierContext ctx) {
 		String identifierName = "";
 		for (TerminalNode identifier : ctx.IDENTIFIER())
 			identifierName += "." + identifier;
@@ -50,6 +50,10 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void exitConcept(@NotNull ConceptContext ctx) {
+		ASTNode node = conceptStack.peek();
+		if (ctx.signature().modifier() == null ||
+			(ctx.signature().modifier() != null && ctx.signature().modifier().ABSTRACT() == null))
+			ast.addIdentifier(node.getIdentifier(), "CONCEPT");
 		conceptStack.pop();
 	}
 
@@ -133,7 +137,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterReference(@NotNull ReferenceContext ctx) {
-		String parent = getExtendedConceptString(ctx.extendedConcept());
+		String parent = getExtendedConceptString(ctx.referenceIdentifier());
 		String[] identifiers = getIdentifiers(ctx.variableNames());
 		for (String identifier : identifiers) {
 			conceptStack.peek().addReference(parent, identifier, (ctx.LIST() != null));
@@ -141,7 +145,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		}
 	}
 
-	private String getExtendedConceptString(ExtendedConceptContext extendedConceptContext) {
+	private String getExtendedConceptString(ReferenceIdentifierContext extendedConceptContext) {
 		String extendedConcept = "";
 		for (TerminalNode node : extendedConceptContext.IDENTIFIER())
 			extendedConcept += "." + node.getText();

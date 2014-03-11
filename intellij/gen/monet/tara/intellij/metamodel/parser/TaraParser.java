@@ -50,9 +50,6 @@ public class TaraParser implements PsiParser {
     else if (root_ == DOUBLE_VALUE) {
       result_ = doubleValue(builder_, 0);
     }
-    else if (root_ == EXTENDED_CONCEPT) {
-      result_ = extendedConcept(builder_, 0);
-    }
     else if (root_ == IDENTIFIER) {
       result_ = identifier(builder_, 0);
     }
@@ -76,6 +73,9 @@ public class TaraParser implements PsiParser {
     }
     else if (root_ == POLYMORPHIC) {
       result_ = polymorphic(builder_, 0);
+    }
+    else if (root_ == REFERENCE_IDENTIFIER) {
+      result_ = referenceIdentifier(builder_, 0);
     }
     else if (root_ == REFERENCE_STATEMENT) {
       result_ = referenceStatement(builder_, 0);
@@ -672,14 +672,14 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // NEW extendedConcept annotations?
+  // NEW referenceIdentifier annotations?
   public static boolean conceptInjection(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "conceptInjection")) return false;
     if (!nextTokenIs(builder_, NEW)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, NEW);
-    result_ = result_ && extendedConcept(builder_, level_ + 1);
+    result_ = result_ && referenceIdentifier(builder_, level_ + 1);
     result_ = result_ && conceptInjection_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, CONCEPT_INJECTION, result_);
     return result_;
@@ -762,42 +762,6 @@ public class TaraParser implements PsiParser {
     if (!result_) result_ = consumeToken(builder_, NEGATIVE_VALUE_KEY);
     if (!result_) result_ = consumeToken(builder_, DOUBLE_VALUE_KEY);
     exit_section_(builder_, level_, marker_, DOUBLE_VALUE, result_, false, null);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // identifier (DOT identifier)*
-  public static boolean extendedConcept(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "extendedConcept")) return false;
-    if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = identifier(builder_, level_ + 1);
-    result_ = result_ && extendedConcept_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, EXTENDED_CONCEPT, result_);
-    return result_;
-  }
-
-  // (DOT identifier)*
-  private static boolean extendedConcept_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "extendedConcept_1")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!extendedConcept_1_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "extendedConcept_1", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  // DOT identifier
-  private static boolean extendedConcept_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "extendedConcept_1_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, DOT);
-    result_ = result_ && identifier(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
@@ -948,14 +912,50 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // VAR extendedConcept LIST? variableNames
+  // identifier (DOT identifier)*
+  public static boolean referenceIdentifier(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "referenceIdentifier")) return false;
+    if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = identifier(builder_, level_ + 1);
+    result_ = result_ && referenceIdentifier_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, REFERENCE_IDENTIFIER, result_);
+    return result_;
+  }
+
+  // (DOT identifier)*
+  private static boolean referenceIdentifier_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "referenceIdentifier_1")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!referenceIdentifier_1_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "referenceIdentifier_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // DOT identifier
+  private static boolean referenceIdentifier_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "referenceIdentifier_1_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, DOT);
+    result_ = result_ && identifier(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // VAR referenceIdentifier LIST? variableNames
   public static boolean referenceStatement(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "referenceStatement")) return false;
     if (!nextTokenIs(builder_, VAR)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, VAR);
-    result_ = result_ && extendedConcept(builder_, level_ + 1);
+    result_ = result_ && referenceIdentifier(builder_, level_ + 1);
     result_ = result_ && referenceStatement_2(builder_, level_ + 1);
     result_ = result_ && variableNames(builder_, level_ + 1);
     exit_section_(builder_, marker_, REFERENCE_STATEMENT, result_);
@@ -994,7 +994,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // CONCEPT_KEY extendedConcept?  (polymorphic | modifier? morph?)  AS identifier
+  // CONCEPT_KEY referenceIdentifier?  (polymorphic | modifier? morph?)  AS identifier
   public static boolean signature(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "signature")) return false;
     if (!nextTokenIs(builder_, CONCEPT_KEY)) return false;
@@ -1009,10 +1009,10 @@ public class TaraParser implements PsiParser {
     return result_;
   }
 
-  // extendedConcept?
+  // referenceIdentifier?
   private static boolean signature_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "signature_1")) return false;
-    extendedConcept(builder_, level_ + 1);
+    referenceIdentifier(builder_, level_ + 1);
     return true;
   }
 

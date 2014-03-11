@@ -8,7 +8,7 @@ import monet.tara.compiler.core.operation.ModuleUnitOperation;
 import monet.tara.compiler.core.operation.Operation;
 import monet.tara.compiler.core.operation.SourceUnitOperation;
 import monet.tara.compiler.core.operation.SrcToClassOperation;
-import monet.tara.intellij.plugin_generation.PluginGenerator;
+import monet.tara.compiler.code_generation.intellij.plugin_generation.PluginGenerator;
 
 import java.util.Collection;
 import java.util.HashMap;

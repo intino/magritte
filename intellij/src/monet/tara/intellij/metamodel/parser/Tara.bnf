@@ -23,7 +23,7 @@ concept ::= doc? signature annotations? body?
 implements='monet.tara.intellij.metamodel.psi.Concept'
 }
 
-signature ::= CONCEPT_KEY composedIdentifier?  (polymorphic | modifier? morph?)  AS identifier
+signature ::= CONCEPT_KEY referenceIdentifier?  (polymorphic | modifier? morph?)  AS identifier
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.SignatureMixin'
 implements='monet.tara.intellij.metamodel.psi.Signature'
 }
@@ -39,8 +39,8 @@ private conceptConstituents ::= attribute
 		                      | concept
 		                      | conceptInjection
 
-referenceStatement::= VAR composedIdentifier LIST? variableNames
-conceptInjection::= NEW composedIdentifier annotations?
+referenceStatement::= VAR referenceIdentifier LIST? variableNames
+conceptInjection::= NEW referenceIdentifier annotations?
 attribute::= VAR     UID_TYPE IDENTIFIER_KEY (ASSIGN stringValue)?
            | VAR     INT_TYPE (variableNames | IDENTIFIER_KEY ASSIGN integerValue | LIST IDENTIFIER_KEY (ASSIGN integerList)?)
            | VAR  DOUBLE_TYPE (variableNames | IDENTIFIER_KEY ASSIGN doubleValue | LIST IDENTIFIER_KEY (ASSIGN doubleList)?)
@@ -76,7 +76,7 @@ morph::= MORPH_KEY
 
 doc::= DOC_LINE+
 
-composedIdentifier::= identifier (DOT identifier)*
+referenceIdentifier::= identifier (DOT identifier)*
 
 identifier::=  IDENTIFIER_KEY
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierMixin' methods=[getIdentifier]}

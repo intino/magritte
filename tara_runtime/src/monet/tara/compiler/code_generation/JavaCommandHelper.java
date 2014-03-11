@@ -1,4 +1,4 @@
-package monet.tara.compiler.core;
+package monet.tara.compiler.code_generation;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,20 +30,14 @@ public class JavaCommandHelper {
 		return cmdLine;
 	}
 
-	public static ArrayList<String> buildJavaJarExecuteCommandLine(File[] sources,
-	                                                               String jar,
+	public static ArrayList<String> buildJavaJarExecuteCommandLine(String jar,
 	                                                               String[] vmParams,
-	                                                               String[] args,
-	                                                               String tempDirectory) {
+	                                                               String[] args) {
 		final ArrayList<String> cmdLine = new ArrayList<>();
 		cmdLine.add(getJavaExecutable());
 		if (vmParams != null) Collections.addAll(cmdLine, vmParams);
-		if (sources.length != 0) {
-			File buildPath = new File(tempDirectory + File.separator + "src" + File.separator);
-			buildPath.mkdirs();
-			cmdLine.add("-jar " + jar + " ");
-			cmdLine.add(join(args, " "));
-		}
+		cmdLine.add("-jar " + jar + " ");
+		cmdLine.add(join(args, " "));
 		return cmdLine;
 	}
 

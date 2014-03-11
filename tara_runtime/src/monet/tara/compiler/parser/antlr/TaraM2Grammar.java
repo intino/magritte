@@ -42,14 +42,14 @@ public class TaraM2Grammar extends Parser {
 		RULE_stringValue = 9, RULE_booleanValue = 10, RULE_integerValue = 11, 
 		RULE_doubleValue = 12, RULE_naturalValue = 13, RULE_stringList = 14, RULE_booleanList = 15, 
 		RULE_integerList = 16, RULE_doubleList = 17, RULE_naturalList = 18, RULE_annotations = 19, 
-		RULE_variableNames = 20, RULE_extendedConcept = 21, RULE_modifier = 22, 
+		RULE_variableNames = 20, RULE_referenceIdentifier = 21, RULE_modifier = 22, 
 		RULE_doc = 23;
 	public static final String[] ruleNames = {
 		"root", "concept", "signature", "body", "conceptConstituents", "reference", 
 		"word", "conceptInjection", "attribute", "stringValue", "booleanValue", 
 		"integerValue", "doubleValue", "naturalValue", "stringList", "booleanList", 
 		"integerList", "doubleList", "naturalList", "annotations", "variableNames", 
-		"extendedConcept", "modifier", "doc"
+		"referenceIdentifier", "modifier", "doc"
 	};
 
 	@Override
@@ -218,10 +218,10 @@ public class TaraM2Grammar extends Parser {
 
 	public static class SignatureContext extends ParserRuleContext {
 		public TerminalNode AS() { return getToken(TaraM2Grammar.AS, 0); }
-		public ExtendedConceptContext extendedConcept() {
-			return getRuleContext(ExtendedConceptContext.class,0);
-		}
 		public TerminalNode MORPH() { return getToken(TaraM2Grammar.MORPH, 0); }
+		public ReferenceIdentifierContext referenceIdentifier() {
+			return getRuleContext(ReferenceIdentifierContext.class,0);
+		}
 		public TerminalNode IDENTIFIER() { return getToken(TaraM2Grammar.IDENTIFIER, 0); }
 		public ModifierContext modifier() {
 			return getRuleContext(ModifierContext.class,0);
@@ -254,7 +254,7 @@ public class TaraM2Grammar extends Parser {
 			_la = _input.LA(1);
 			if (_la==IDENTIFIER) {
 				{
-				setState(68); extendedConcept();
+				setState(68); referenceIdentifier();
 				}
 			}
 
@@ -464,8 +464,8 @@ public class TaraM2Grammar extends Parser {
 		public VariableNamesContext variableNames() {
 			return getRuleContext(VariableNamesContext.class,0);
 		}
-		public ExtendedConceptContext extendedConcept() {
-			return getRuleContext(ExtendedConceptContext.class,0);
+		public ReferenceIdentifierContext referenceIdentifier() {
+			return getRuleContext(ReferenceIdentifierContext.class,0);
 		}
 		public TerminalNode VAR() { return getToken(TaraM2Grammar.VAR, 0); }
 		public TerminalNode LIST() { return getToken(TaraM2Grammar.LIST, 0); }
@@ -491,7 +491,7 @@ public class TaraM2Grammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(103); match(VAR);
-			setState(104); extendedConcept();
+			setState(104); referenceIdentifier();
 			setState(106);
 			_la = _input.LA(1);
 			if (_la==LIST) {
@@ -581,10 +581,10 @@ public class TaraM2Grammar extends Parser {
 	}
 
 	public static class ConceptInjectionContext extends ParserRuleContext {
-		public ExtendedConceptContext extendedConcept() {
-			return getRuleContext(ExtendedConceptContext.class,0);
-		}
 		public TerminalNode NEW() { return getToken(TaraM2Grammar.NEW, 0); }
+		public ReferenceIdentifierContext referenceIdentifier() {
+			return getRuleContext(ReferenceIdentifierContext.class,0);
+		}
 		public AnnotationsContext annotations() {
 			return getRuleContext(AnnotationsContext.class,0);
 		}
@@ -610,7 +610,7 @@ public class TaraM2Grammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(122); match(NEW);
-			setState(123); extendedConcept();
+			setState(123); referenceIdentifier();
 			setState(125);
 			_la = _input.LA(1);
 			if (_la==OPEN_AN) {
@@ -1548,7 +1548,7 @@ public class TaraM2Grammar extends Parser {
 		return _localctx;
 	}
 
-	public static class ExtendedConceptContext extends ParserRuleContext {
+	public static class ReferenceIdentifierContext extends ParserRuleContext {
 		public List<TerminalNode> DOT() { return getTokens(TaraM2Grammar.DOT); }
 		public TerminalNode IDENTIFIER(int i) {
 			return getToken(TaraM2Grammar.IDENTIFIER, i);
@@ -1557,23 +1557,23 @@ public class TaraM2Grammar extends Parser {
 		public TerminalNode DOT(int i) {
 			return getToken(TaraM2Grammar.DOT, i);
 		}
-		public ExtendedConceptContext(ParserRuleContext parent, int invokingState) {
+		public ReferenceIdentifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_extendedConcept; }
+		@Override public int getRuleIndex() { return RULE_referenceIdentifier; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof TaraM2GrammarListener ) ((TaraM2GrammarListener)listener).enterExtendedConcept(this);
+			if ( listener instanceof TaraM2GrammarListener ) ((TaraM2GrammarListener)listener).enterReferenceIdentifier(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof TaraM2GrammarListener ) ((TaraM2GrammarListener)listener).exitExtendedConcept(this);
+			if ( listener instanceof TaraM2GrammarListener ) ((TaraM2GrammarListener)listener).exitReferenceIdentifier(this);
 		}
 	}
 
-	public final ExtendedConceptContext extendedConcept() throws RecognitionException {
-		ExtendedConceptContext _localctx = new ExtendedConceptContext(_ctx, getState());
-		enterRule(_localctx, 42, RULE_extendedConcept);
+	public final ReferenceIdentifierContext referenceIdentifier() throws RecognitionException {
+		ReferenceIdentifierContext _localctx = new ReferenceIdentifierContext(_ctx, getState());
+		enterRule(_localctx, 42, RULE_referenceIdentifier);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);

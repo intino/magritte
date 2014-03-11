@@ -100,7 +100,7 @@ public class TaraAnnotator implements Annotator {
 
 	private void checkWellReferenced(TaraIdentifier element) {
 		Concept concept = TaraUtil.resolveReferences(element.getProject(), element);
-		if (concept == null && element.getParent() instanceof TaraExtendedConcept)
+		if (concept == null && element.getParent() instanceof TaraReferenceIdentifier)
 			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("reference.concept.key.error.message"));
 	}
 

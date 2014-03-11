@@ -47,10 +47,6 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitExtendedConcept(@NotNull TaraExtendedConcept o) {
-    visitPsiElement(o);
-  }
-
   public void visitIdentifier(@NotNull TaraIdentifier o) {
     visitPsiElement(o);
   }
@@ -80,6 +76,10 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitPolymorphic(@NotNull TaraPolymorphic o) {
+    visitPsiElement(o);
+  }
+
+  public void visitReferenceIdentifier(@NotNull TaraReferenceIdentifier o) {
     visitPsiElement(o);
   }
 

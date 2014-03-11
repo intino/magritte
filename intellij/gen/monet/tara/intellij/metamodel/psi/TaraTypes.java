@@ -19,7 +19,6 @@ public interface TaraTypes {
 	IElementType DOC = new TaraElementType("DOC");
 	IElementType DOUBLE_LIST = new TaraElementType("DOUBLE_LIST");
 	IElementType DOUBLE_VALUE = new TaraElementType("DOUBLE_VALUE");
-	IElementType EXTENDED_CONCEPT = new TaraElementType("EXTENDED_CONCEPT");
 	IElementType IDENTIFIER = new TaraElementType("IDENTIFIER");
 	IElementType INTEGER_LIST = new TaraElementType("INTEGER_LIST");
 	IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
@@ -28,6 +27,7 @@ public interface TaraTypes {
 	IElementType NATURAL_LIST = new TaraElementType("NATURAL_LIST");
 	IElementType NATURAL_VALUE = new TaraElementType("NATURAL_VALUE");
 	IElementType POLYMORPHIC = new TaraElementType("POLYMORPHIC");
+	IElementType REFERENCE_IDENTIFIER = new TaraElementType("REFERENCE_IDENTIFIER");
 	IElementType REFERENCE_STATEMENT = new TaraElementType("REFERENCE_STATEMENT");
 	IElementType SIGNATURE = new TaraElementType("SIGNATURE");
 	IElementType STRING_LIST = new TaraElementType("STRING_LIST");
@@ -81,7 +81,7 @@ public interface TaraTypes {
 			if (type == ANNOTATIONS) {
 				return new TaraAnnotationsImpl(node);
 			} else if (type == ATTRIBUTE) {
-				return new AttributeImpl(node);
+				return new TaraAttributeImpl(node);
 			} else if (type == BODY) {
 				return new TaraBodyImpl(node);
 			} else if (type == BOOLEAN_LIST) {
@@ -98,10 +98,8 @@ public interface TaraTypes {
 				return new TaraDoubleListImpl(node);
 			} else if (type == DOUBLE_VALUE) {
 				return new TaraDoubleValueImpl(node);
-			} else if (type == EXTENDED_CONCEPT) {
-				return new TaraExtendedConceptImpl(node);
 			} else if (type == IDENTIFIER) {
-				return new IdentifierImpl(node);
+				return new TaraIdentifierImpl(node);
 			} else if (type == INTEGER_LIST) {
 				return new TaraIntegerListImpl(node);
 			} else if (type == INTEGER_VALUE) {
@@ -116,6 +114,8 @@ public interface TaraTypes {
 				return new TaraNaturalValueImpl(node);
 			} else if (type == POLYMORPHIC) {
 				return new TaraPolymorphicImpl(node);
+			} else if (type == REFERENCE_IDENTIFIER) {
+				return new TaraReferenceIdentifierImpl(node);
 			} else if (type == REFERENCE_STATEMENT) {
 				return new TaraReferenceStatementImpl(node);
 			} else if (type == SIGNATURE) {

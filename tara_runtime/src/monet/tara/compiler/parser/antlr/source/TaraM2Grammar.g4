@@ -9,7 +9,7 @@ root: (concept | NEWLINE)* EOF;
 
 concept: doc? signature annotations? body?;
 
-signature: CONCEPT extendedConcept? (POLYMORPHIC | modifier? MORPH?) AS IDENTIFIER;
+signature: CONCEPT referenceIdentifier? (POLYMORPHIC | modifier? MORPH?) AS IDENTIFIER;
 
 body: NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT;
 
@@ -19,11 +19,11 @@ conceptConstituents: attribute
                    | concept
                    | conceptInjection;
 
-reference: VAR extendedConcept LIST? variableNames;
+reference: VAR referenceIdentifier LIST? variableNames;
 
 word: VAR WORD IDENTIFIER NEW_LINE_INDENT (IDENTIFIER NEWLINE)+ DEDENT;
 
-conceptInjection: NEW extendedConcept annotations?;
+conceptInjection: NEW referenceIdentifier annotations?;
 
 attribute: VAR     UID_TYPE  IDENTIFIER (ASSIGN stringValue)?
          | VAR     INT_TYPE (variableNames | IDENTIFIER ASSIGN integerValue | LIST IDENTIFIER (ASSIGN integerList)?)
@@ -48,7 +48,7 @@ annotations: OPEN_AN (MULTIPLE | OPTIONAL | HAS_CODE | EXTENSIBLE| SINGLETON | R
 
 variableNames: IDENTIFIER (COMMA IDENTIFIER)*;
 
-extendedConcept: IDENTIFIER (DOT IDENTIFIER)*;
+referenceIdentifier: IDENTIFIER (DOT IDENTIFIER)*;
 
 modifier: ABSTRACT
         | FINAL;
