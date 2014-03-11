@@ -1,5 +1,6 @@
 package monet.tara.intellij.project.module;
 
+import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.ModuleTypeManager;
 import monet.tara.intellij.metamodel.TaraIcons;
 import org.jetbrains.annotations.NonNls;
@@ -8,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 
-public class ModuleType extends com.intellij.openapi.module.ModuleType<ModuleBuilder> {
+public class ModuleType extends JavaModuleType {
 
 	@NonNls
 	public static final String TARA_MODULE = "TARA_MODULE";

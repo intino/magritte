@@ -3,11 +3,14 @@ package monet.tara.intellij.metamodel.psi.impl;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.ASTFactory;
 import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.ChangeUtil;
 import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.util.IncorrectOperationException;
+import monet.tara.intellij.metamodel.TaraIcons;
 import monet.tara.intellij.metamodel.TaraLanguage;
 import monet.tara.intellij.metamodel.file.TaraFileType;
 import monet.tara.intellij.metamodel.psi.Concept;
@@ -38,6 +41,34 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	@Override
 	public Icon getIcon(int flags) {
 		return super.getIcon(flags);
+	}
+
+	public String getPresentableName(){
+		return getName().substring(0, getName().lastIndexOf("."));
+	}
+
+	@Override
+	public ItemPresentation getPresentation() {
+		return new ItemPresentation() {
+			@Override
+			public String getPresentableText() {
+				return getName().substring(0, getName().lastIndexOf("."));
+			}
+
+			@Override
+			public String getLocationString() {
+				final PsiDirectory psiDirectory = getParent();
+				if (psiDirectory != null) {
+					return psiDirectory.getVirtualFile().getPresentableUrl();
+				}
+				return null;
+			}
+
+			@Override
+			public Icon getIcon(final boolean open) {
+				return TaraIcons.CONCEPT_13;
+			}
+		};
 	}
 
 	@NotNull

@@ -16,31 +16,36 @@ import org.jetbrains.jps.tara.compiler.JpsTaraSettings;
 )
 
 public class TaraCompilerConfiguration implements PersistentStateComponent<JpsTaraSettings>, Disposable {
-	private String myHeapSize = JpsTaraSettings.DEFAULT_HEAP_SIZE;
-	private boolean myInvokeDynamic = JpsTaraSettings.DEFAULT_INVOKE_DYNAMIC;
-	public boolean transformsOk = JpsTaraSettings.DEFAULT_TRANSFORMS_OK;
 	private final ExcludedEntriesConfiguration myExcludeFromStubGeneration = new ExcludedEntriesConfiguration();
+	private String myHeapSize = JpsTaraSettings.DEFAULT_HEAP_SIZE;
+	private boolean pluginGeneration = JpsTaraSettings.PLUGIN_GENERATION;
+	private String version = "0.1";
+	private String commentaries = "";
 
 	public TaraCompilerConfiguration(Project project) {
 		TaraCompilerWorkspaceConfiguration workspaceConfiguration = ServiceManager.getService(project, TaraCompilerWorkspaceConfiguration.class);
 		loadState(workspaceConfiguration.getState());
 		workspaceConfiguration.myHeapSize = JpsTaraSettings.DEFAULT_HEAP_SIZE;
-		workspaceConfiguration.transformsOk = JpsTaraSettings.DEFAULT_TRANSFORMS_OK;
-		workspaceConfiguration.myInvokeDynamic = JpsTaraSettings.DEFAULT_INVOKE_DYNAMIC;
+		workspaceConfiguration.pluginGeneration = JpsTaraSettings.PLUGIN_GENERATION;
 		workspaceConfiguration.myExcludeFromStubGeneration.removeAllExcludeEntryDescriptions();
-	}
-
-	public JpsTaraSettings getState() {
-		final JpsTaraSettings bean = new JpsTaraSettings();
-		bean.heapSize = myHeapSize;
-		bean.invokeDynamic = myInvokeDynamic;
-		bean.transformsOk = transformsOk;
-		myExcludeFromStubGeneration.writeExternal(bean.excludes);
-		return bean;
 	}
 
 	public static ExcludedEntriesConfiguration getExcludeConfiguration(Project project) {
 		return getInstance(project).myExcludeFromStubGeneration;
+	}
+
+	public static TaraCompilerConfiguration getInstance(Project project) {
+		return ServiceManager.getService(project, TaraCompilerConfiguration.class);
+	}
+
+	public JpsTaraSettings getState() {
+		final JpsTaraSettings jpsSettings = new JpsTaraSettings();
+		jpsSettings.heapSize = myHeapSize;
+		jpsSettings.pluginGeneration = pluginGeneration;
+		jpsSettings.version = version;
+		jpsSettings.commentaries = commentaries;
+		myExcludeFromStubGeneration.writeExternal(jpsSettings.excludes);
+		return jpsSettings;
 	}
 
 	public ExcludedEntriesConfiguration getExcludeFromStubGeneration() {
@@ -49,29 +54,42 @@ public class TaraCompilerConfiguration implements PersistentStateComponent<JpsTa
 
 	public void loadState(JpsTaraSettings state) {
 		myHeapSize = state.heapSize;
-		myInvokeDynamic = state.invokeDynamic;
-		transformsOk = state.transformsOk;
+		pluginGeneration = state.pluginGeneration;
+		commentaries = state.commentaries;
+		version = state.version;
 		myExcludeFromStubGeneration.readExternal(state.excludes);
-	}
-
-	public static TaraCompilerConfiguration getInstance(Project project) {
-		return ServiceManager.getService(project, TaraCompilerConfiguration.class);
 	}
 
 	public String getHeapSize() {
 		return myHeapSize;
 	}
 
-	public boolean isInvokeDynamic() {
-		return myInvokeDynamic;
-	}
-
 	public void setHeapSize(String heapSize) {
 		myHeapSize = heapSize;
 	}
 
-	public void setInvokeDynamic(boolean invokeDynamic) {
-		myInvokeDynamic = invokeDynamic;
+	public boolean IsPluginGeneration() {
+		return pluginGeneration;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getCommentaries() {
+		return commentaries;
+	}
+
+	public void setCommentaries(String commentaries) {
+		this.commentaries = commentaries;
+	}
+
+	public void setPluginGeneration(boolean generation) {
+		pluginGeneration = generation;
 	}
 
 	public void dispose() {

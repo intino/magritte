@@ -32,11 +32,10 @@
       <add-to-group group-id="ToolsMenu" anchor="last"/>
     </action>
     <action id="NewConcept" class="monet.tara.intellij.actions.CreateFileAction">
-      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+      <add-to-group group-id="NewGroup" anchor="first"/>
     </action>
-    <action id="NewTaraPackage" class="monet.tara.intellij.actions.CreatePackageAction" text="Package"
+    <action id="NewPackage" class="monet.tara.intellij.actions.CreatePackageAction" text="Package"
             description="Create a new package" icon="AllIcons.Nodes.Package">
-      <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewConcept"/>
     </action>
   </actions>
 
@@ -44,18 +43,15 @@
   </application-components>
 
   <extensions defaultExtensionNs="com.intellij">
-    <projectConfigurable instance="monet.tara.intellij.project.module.ModuleSettings" id="ModuleSettings"
-                         displayName="Tara"
-                         order="last"/>
     <errorHandler implementation="monet.tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
                          implementationClass="monet.tara.intellij.refactoring.rename.NamesValidator"/>
     <projectService serviceInterface="monet.tara.intellij.metamodel.psi.TaraElementFactory"
                     serviceImplementation="monet.tara.intellij.metamodel.psi.impl.TaraElementFactoryImpl"/>
     <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.ModuleType"/>
-
     <projectConfigurable instance="monet.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
                          displayName="Tara Compiler" parentId="project.propCompiler"/>
+    <treeStructureProvider implementation="monet.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
 
     <projectService serviceInterface="monet.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
@@ -98,5 +94,7 @@
                              implementationClass="monet.tara.intellij.TaraFindUsagesProvider"/>
     <lang.foldingBuilder language="Tara" implementationClass="monet.tara.intellij.TaraFoldingBuilder"/>
     <!--<lang.formatter language="Tara" implementationClass="monet.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
+    <!--<refactoring.moveHandler implementation="com.intellij.uiDesigner.projectView.FormMoveProvider"/>-->
+
   </extensions>
 </idea-plugin>

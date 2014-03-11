@@ -14,7 +14,6 @@ import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.components.JBCheckBox;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.Nls;
@@ -25,16 +24,18 @@ import javax.swing.*;
 import java.util.List;
 
 public class TaraCompilerConfigurable implements SearchableConfigurable, Configurable.NoScroll {
+	private final ExcludedEntriesConfigurable myExcludes;
+	private final TaraCompilerConfiguration compilerConfiguration;
 	private JTextField myHeapSize;
 	private JPanel myMainPanel;
-	private JPanel myExcludesPanel;
-	private JBCheckBox myInvokeDynamicSupportCB;
-
-	private final ExcludedEntriesConfigurable myExcludes;
-	private final TaraCompilerConfiguration myConfig;
+	private JCheckBox pluginGenerationCheckBox;
+	private JTextField textField2;
+	private JTextArea commentaries;
+	private JTextField version;
+	private JList excludedStubs;
 
 	public TaraCompilerConfigurable(Project project) {
-		myConfig = TaraCompilerConfiguration.getInstance(project);
+		compilerConfiguration = TaraCompilerConfiguration.getInstance(project);
 		myExcludes = createExcludedConfigurable(project);
 	}
 
@@ -43,7 +44,7 @@ public class TaraCompilerConfigurable implements SearchableConfigurable, Configu
 	}
 
 	private ExcludedEntriesConfigurable createExcludedConfigurable(final Project project) {
-		final ExcludedEntriesConfiguration configuration = myConfig.getExcludeFromStubGeneration();
+		final ExcludedEntriesConfiguration configuration = compilerConfiguration.getExcludeFromStubGeneration();
 		final ProjectFileIndex index = ProjectRootManager.getInstance(project).getFileIndex();
 		final FileChooserDescriptor descriptor = new FileChooserDescriptor(true, true, false, false, false, true) {
 			public boolean isFileVisible(VirtualFile file, boolean showHiddenFiles) {
@@ -51,12 +52,12 @@ public class TaraCompilerConfigurable implements SearchableConfigurable, Configu
 			}
 		};
 		descriptor.setRoots(ContainerUtil.concat(
-				ContainerUtil.map(ModuleManager.getInstance(project).getModules(), new Function<Module, List<VirtualFile>>() {
-					@Override
-					public List<VirtualFile> fun(final Module module) {
-						return ModuleRootManager.getInstance(module).getSourceRoots(JavaModuleSourceRootTypes.SOURCES);
-					}
-				})));
+			ContainerUtil.map(ModuleManager.getInstance(project).getModules(), new Function<Module, List<VirtualFile>>() {
+				@Override
+				public List<VirtualFile> fun(final Module module) {
+					return ModuleRootManager.getInstance(module).getSourceRoots(JavaModuleSourceRootTypes.SOURCES);
+				}
+			})));
 		return new ExcludedEntriesConfigurable(project, descriptor, configuration);
 	}
 
@@ -80,25 +81,31 @@ public class TaraCompilerConfigurable implements SearchableConfigurable, Configu
 	}
 
 	public JComponent createComponent() {
-		myExcludesPanel.add(myExcludes.createComponent());
+		excludedStubs.add(myExcludes.createComponent());
 		return myMainPanel;
 	}
 
 	public boolean isModified() {
-		return !Comparing.equal(myConfig.getHeapSize(), myHeapSize.getText()) ||
-				myInvokeDynamicSupportCB.isSelected() != myConfig.isInvokeDynamic() ||
-				myExcludes.isModified();
+		return !Comparing.equal(compilerConfiguration.getHeapSize(), myHeapSize.getText()) ||
+			pluginGenerationCheckBox.isSelected() != compilerConfiguration.IsPluginGeneration() ||
+			myExcludes.isModified() ||
+			!version.getText().equals(compilerConfiguration.getVersion()) ||
+			!commentaries.getText().equals(compilerConfiguration.getCommentaries());
 	}
 
 	public void apply() throws ConfigurationException {
 		myExcludes.apply();
-		myConfig.setHeapSize(myHeapSize.getText());
-		myConfig.setInvokeDynamic(myInvokeDynamicSupportCB.isSelected());
+		compilerConfiguration.setHeapSize(myHeapSize.getText());
+		compilerConfiguration.setPluginGeneration(pluginGenerationCheckBox.isSelected());
+		compilerConfiguration.setVersion(version.getText());
+		compilerConfiguration.setCommentaries(commentaries.getText());
 	}
 
 	public void reset() {
-		myHeapSize.setText(myConfig.getHeapSize());
-		myInvokeDynamicSupportCB.setSelected(myConfig.isInvokeDynamic());
+		myHeapSize.setText(compilerConfiguration.getHeapSize());
+		pluginGenerationCheckBox.setSelected(compilerConfiguration.IsPluginGeneration());
+		version.setText(compilerConfiguration.getVersion());
+		commentaries.setText(compilerConfiguration.getCommentaries());
 		myExcludes.reset();
 	}
 

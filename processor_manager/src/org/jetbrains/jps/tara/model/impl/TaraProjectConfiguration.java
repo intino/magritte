@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TaraProjectConfiguration {
-	public static final String CONFIGURATION_FILE_RELATIVE_PATH = "tara/configuration.xml";
+	public static final String CONFIGURATION_FILE_RELATIVE_PATH = "tara/tarac.xml";
 	public static final Set<String> DEFAULT_FILTERING_EXCLUDED_EXTENSIONS;
 
 	static {
@@ -29,7 +29,7 @@ public class TaraProjectConfiguration {
 	private static volatile Map<String, String> ourPropertiesFromMvnOpts;
 	private static volatile Properties ourSystemProperties;
 	@Tag("resource-processing")
-	@MapAnnotation(surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false, entryTagName = "maven-module", keyAttributeName = "name")
+	@MapAnnotation(surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false, entryTagName = "tara-module", keyAttributeName = "name")
 	public Map<String, TaraModuleConfiguration> moduleConfigurations = new THashMap<>();
 	@Transient
 	private volatile Map<TaraIdBean, TaraModuleConfiguration> myIdToModuleMap;
@@ -38,10 +38,10 @@ public class TaraProjectConfiguration {
 	private static Map<String, String> getTaraOptsProperties() {
 		Map<String, String> res = ourPropertiesFromMvnOpts;
 		if (res == null) {
-			String mavenOpts = System.getenv("MAVEN_OPTS");
-			if (mavenOpts != null) {
+			String tara_opts = System.getenv("TARA_OPTS");
+			if (tara_opts != null) {
 				res = new HashMap<>();
-				final String[] split = ParametersListUtil.parseToArray(mavenOpts);
+				final String[] split = ParametersListUtil.parseToArray(tara_opts);
 				for (String parameter : split) {
 					final Matcher matcher = PROPERTY_PATTERN.matcher(parameter);
 					if (matcher.matches()) {
