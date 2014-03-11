@@ -55,7 +55,7 @@ public class SourceUnit extends ProcessingUnit {
 
 	public void convert() throws TaraException {
 		ast = parser.convert();
-		writeJavaSource();
+//		writeJavaSource();
 	}
 
 	private void writeJavaSource() throws TaraException {

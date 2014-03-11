@@ -1,8 +1,6 @@
 package monet.tara.compiler.core.ast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class AST {
 
@@ -36,6 +34,10 @@ public class AST {
 		list.add(astNode);
 		lookUpTable.put(name, list);
 		return true;
+	}
+
+	public boolean addAll(ASTNode[] c) {
+		return Collections.addAll(astRootNodes, c);
 	}
 
 	public ASTNode searchAncestry(ASTNode node) {

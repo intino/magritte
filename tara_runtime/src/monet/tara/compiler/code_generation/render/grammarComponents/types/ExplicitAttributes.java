@@ -1,7 +1,9 @@
 package monet.tara.compiler.code_generation.render.grammarComponents.types;
 
-import AST.*;
-import m1Generation.grammarComponents.Attributes;
+
+import monet.tara.compiler.code_generation.render.grammarComponents.Attributes;
+import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTNode;
 
 public class ExplicitAttributes extends Attributes {
 

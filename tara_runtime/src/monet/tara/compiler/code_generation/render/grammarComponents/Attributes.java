@@ -1,6 +1,9 @@
 package monet.tara.compiler.code_generation.render.grammarComponents;
 
-import AST.*;
+
+import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTNode;
+
 import java.util.ArrayList;
 
 public abstract class Attributes {

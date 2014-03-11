@@ -105,6 +105,9 @@ public class TemplateFactory {
 		TEMPLATES.put("Reference.java", IDE + PROJECT_PATH + "-Reference.java");
 		TEMPLATES.put("ReferenceContributor.java", IDE + PROJECT_PATH + "-ReferenceContributor.java");
 
+		TEMPLATES.put("grammar", IDE + PROJECT_PATH + "metamodel/lexer/-.flex");
+		TEMPLATES.put("lexer", IDE + PROJECT_PATH + "metamodel/parser/-.bnf");
+
 		TEMPLATES.put("plugin.xml", IDE + "META-INF/plugin.xml");
 
 //		TEMPLATES.put("Definition", "metamodel/Definition");

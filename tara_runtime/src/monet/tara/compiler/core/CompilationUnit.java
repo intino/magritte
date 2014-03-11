@@ -18,9 +18,18 @@ import java.util.Map;
 public class CompilationUnit extends ProcessingUnit {
 
 	protected Map<String, SourceUnit> sources;
+	private SourceUnitOperation convert = new SourceUnitOperation() {
+		public void call(SourceUnit source) throws CompilationFailedException {
+			try {
+				source.convert();
+			} catch (TaraException ignored) {
+				System.err.print("Error during conversion");
+				throw new CompilationFailedException(phase, CompilationUnit.this);
+			}
+		}
+	};
 	protected ProgressCallback progressCallback;
 	private LinkedList<Operation>[] phaseOperations;
-
 	private SourceUnitOperation parsing = new SourceUnitOperation() {
 		public void call(SourceUnit source) throws CompilationFailedException {
 			source.parse();
@@ -35,18 +44,6 @@ public class CompilationUnit extends ProcessingUnit {
 //				CompilationUnit.this.progressCallback.call(source, CompilationUnit.this.phase);
 		}
 	};
-
-	private SourceUnitOperation convert = new SourceUnitOperation() {
-		public void call(SourceUnit source) throws CompilationFailedException {
-			try {
-				source.convert();
-			} catch (TaraException ignored) {
-				System.err.print("Error during conversion");
-				throw new CompilationFailedException(phase, CompilationUnit.this);
-			}
-		}
-	};
-
 	private SrcToClassOperation classGeneration = new SrcToClassOperation() {
 		@Override
 		public void call() throws CompilationFailedException {
@@ -60,7 +57,7 @@ public class CompilationUnit extends ProcessingUnit {
 		public void call(Collection<SourceUnit> units) throws CompilationFailedException {
 			try {
 				PluginGenerator generator = new PluginGenerator(configuration);
-				generator.generate(units.toArray(new SourceUnit[units.size()]));
+				generator.generate(units);
 			} catch (TaraException e) {
 				e.printStackTrace();
 				System.err.print("Error during plugin generation");
@@ -91,8 +88,8 @@ public class CompilationUnit extends ProcessingUnit {
 			this.phaseOperations[i] = new LinkedList();
 		addPhaseOperation(parsing, Phases.PARSING);
 		addPhaseOperation(semantic, Phases.SEMANTIC_ANALYSIS);
-//		addPhaseOperation(convert, Phases.CONVERSION);
-//		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
+		addPhaseOperation(convert, Phases.CONVERSION);
+		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
 		if (pluginGeneration) addPhaseOperation(pluginGenerationOperation, Phases.PLUGIN_GENERATION);
 		addPhaseOperation(output, Phases.OUTPUT);
 

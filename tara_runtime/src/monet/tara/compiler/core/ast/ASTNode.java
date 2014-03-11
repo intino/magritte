@@ -246,6 +246,9 @@ public class ASTNode {
 			return name;
 		}
 
+		public boolean isList() {
+			return isList;
+		}
 	}
 
 	public static class Word extends Variable {

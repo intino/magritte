@@ -7,7 +7,7 @@ public class TaraCRunnerTest {
 
 	@Test
 	public void compilerTest(){
-		String[] args = new String[]{"--gen-plugin","/Users/octavio/workspace/tara/tara_runtime/res_test/argsFile.txt" };
+		String[] args = new String[]{"--gen-plugin","/Users/oroncal/workspace/tara/tara_runtime/res_test/argsFile.txt" };
 		TaracRunner.main(args);
 	}
 

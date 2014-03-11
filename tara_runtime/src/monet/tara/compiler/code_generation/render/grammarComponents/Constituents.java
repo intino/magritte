@@ -1,6 +1,8 @@
 package monet.tara.compiler.code_generation.render.grammarComponents;
 
-import AST.*;
+
+import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTNode;
 
 public class Constituents {
     private AST root;
