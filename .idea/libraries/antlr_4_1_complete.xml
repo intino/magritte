@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="antlr-4.1-complete">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/tara_runtime/res/antlr-4.2-complete.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
