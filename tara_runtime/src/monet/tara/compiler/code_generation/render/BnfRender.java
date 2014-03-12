@@ -27,8 +27,8 @@ public class BnfRender extends Render {
 	@Override
 	protected void init() {
 		loadCanvas(tplName, true);
-		addMark("projectNameFile", projectName);
-		addMark("projectName", projectName.substring(0, 1).toLowerCase() + projectName.substring(1));
+		addMark("projectNameFile", RenderUtils.toProperCase(projectName));
+		addMark("projectName", projectName.toLowerCase());
 		for (ASTNode node : ast.getAstRootNodes()) goOver(node);
 		generateListOfRootConcepts();
 	}

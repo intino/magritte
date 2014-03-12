@@ -57,8 +57,6 @@
   /** zzAtEOF == true <=> the scanner is at the EOF */
   private boolean zzAtEOF;
 
-  private int yycolumn;
-
 --- user class code
 
 --- constructor declaration

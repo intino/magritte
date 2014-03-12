@@ -48,7 +48,7 @@ public class CompilationUnit extends ProcessingUnit {
 		@Override
 		public void call() throws CompilationFailedException {
 			ClassGenerator generator = new ClassGenerator(configuration);
-			generator.generate();
+			//generator.generate();
 		}
 	};
 
@@ -107,11 +107,6 @@ public class CompilationUnit extends ProcessingUnit {
 			if (name.equals(su.getName())) return su;
 		this.sources.put(name, source);
 		return source;
-	}
-
-
-	public String getPhaseDescription() {
-		return Phases.getDescription(this.phase);
 	}
 
 	public void compile() throws CompilationFailedException {

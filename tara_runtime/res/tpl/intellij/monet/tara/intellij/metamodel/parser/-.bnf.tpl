@@ -1,19 +1,19 @@
 {
-  parserClass='monet.::projectName::.compiler.intellij.parser.::projectNameFile::Parser'
-  parserUtilClass="monet.::projectName::.compiler.intellij.parser.::projectNameFile::ParserUtil"
+  parserClass='monet.::projectName::.intellij.metamodel.parser.::projectNameFile::Parser'
+  parserUtilClass="monet.::projectName::.intellij.metamodel.parser.::projectNameFile::ParserUtil"
 
   extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
 
   psiClassPrefix='::projectNameFile::'
   psiImplClassSuffix='Impl'
-  psiPackage='monet.::projectName::.compiler.intellij.psi'
-  psiImplPackage='monet.::projectName::.compiler.intellij.psi.impl'
+  psiPackage='monet.::projectName::.intellij.metamodel.psi'
+  psiImplPackage='monet.::projectName::.intellij.metamodel.psi.impl'
 
-  elementTypeHolderClass='monet.::projectName::.compiler.intellij.psi.::projectNameFile::Types'
-  elementTypeClass='monet.::projectName::.compiler.intellij.psi.::projectNameFile::ElementType'
-  tokenTypeClass='monet.::projectName::.compiler.intellij.psi.::projectNameFile::TokenType'
+  elementTypeHolderClass='monet.::projectName::.intellij.metamodel.psi.::projectNameFile::Types'
+  elementTypeClass='monet.::projectName::.intellij.metamodel.psi.::projectNameFile::ElementType'
+  tokenTypeClass='monet.::projectName::.intellij.metamodel.psi.::projectNameFile::TokenType'
 
-  psiImplUtilClass='monet.::projectName::.compiler.intellij.psi.impl.::projectNameFile::PsiImplUtil'
+  psiImplUtilClass='monet.::projectName::.intellij.metamodel.psi.impl.TaraPsiImplUtil'
 }
 
 root \:\:= (definition | NEWLINE)*

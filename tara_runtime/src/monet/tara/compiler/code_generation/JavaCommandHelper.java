@@ -36,6 +36,7 @@ public class JavaCommandHelper {
 		final ArrayList<String> cmdLine = new ArrayList<>();
 		cmdLine.add(getJavaExecutable());
 		if (vmParams != null) Collections.addAll(cmdLine, vmParams);
+
 		cmdLine.add("-jar " + jar + " ");
 		cmdLine.add(join(args, " "));
 		return cmdLine;

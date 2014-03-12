@@ -25,8 +25,8 @@ public class PluginGenerator {
 		String tplPath = this.getClass().getResource(SEP + "tpl").getPath();
 		new TaraPluginToJavaCodeGenerator().toJava(configuration);
 		File grammarFile = TaraToBnfCodeGenerator.toBnf(configuration, tplPath, ast);
-		File lexFile = TaraToJFlexCodeGenerator.toJFlex(configuration, tplPath, ast);
 		BnfToJavaCodeGenerator.bnfToJava(configuration, grammarFile);
+		File lexFile = TaraToJFlexCodeGenerator.toJFlex(configuration, tplPath, ast);
 		JFlexToJavaGenerator.jFlexToJava(configuration, lexFile);
 	}
 

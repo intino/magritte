@@ -6,7 +6,9 @@ import java.util.Map;
 public class TemplateFactory {
 
 	private static final Map<String, String> TEMPLATES = new HashMap<>();
-	private static final String IDE = "intellij/";
+	public static final String IDE = "intellij/";
+	public static final String SRC = "src";
+	public static final String BUILD = "build";
 	private static final String PROJECT_PATH = "monet/tara/" + IDE;
 
 	public static final String CONCEPT_KEY = "_";
@@ -125,6 +127,6 @@ public class TemplateFactory {
 		if ((template = TEMPLATES.get(className)) != null)
 			return template;
 		else
-			throw new RuntimeException("Template not defined");
+			throw new RuntimeException("Template not defined "+ className);
 	}
 }

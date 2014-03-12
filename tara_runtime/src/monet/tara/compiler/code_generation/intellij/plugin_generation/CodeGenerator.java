@@ -1,5 +1,6 @@
 package monet.tara.compiler.code_generation.intellij.plugin_generation;
 
+import monet.tara.compiler.core.error_collection.StreamWrapper;
 import monet.tara.compiler.core.error_collection.TaraException;
 
 import java.io.File;
@@ -19,6 +20,20 @@ public abstract class CodeGenerator {
 		} catch (IOException e) {
 			throw new TaraException("Error during plugin generation");
 		}
+	}
+
+	protected static void printResult(Process process) throws InterruptedException {
+		StreamWrapper error, output;
+		error = StreamWrapper.getStreamWrapper(process.getErrorStream(), "ERROR");
+		output = StreamWrapper.getStreamWrapper(process.getInputStream(), "OUTPUT");
+		error.start();
+		output.start();
+		error.join(3000);
+		output.join(3000);
+		if (!output.getMessage().equals(""))
+			System.out.println("Output:\n" + output.getMessage());
+		if (!error.getMessage().equals(""))
+			System.err.println("Error: " + error.getMessage());
 	}
 
 

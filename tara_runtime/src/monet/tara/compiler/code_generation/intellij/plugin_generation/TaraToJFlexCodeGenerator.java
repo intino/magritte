@@ -1,6 +1,7 @@
 package monet.tara.compiler.code_generation.intellij.plugin_generation;
 
 import monet.tara.compiler.code_generation.render.BnfRender;
+import monet.tara.compiler.code_generation.render.RenderUtils;
 import monet.tara.compiler.code_generation.render.TemplateFactory;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.ast.AST;
@@ -16,8 +17,8 @@ public class TaraToJFlexCodeGenerator extends CodeGenerator {
 	public static File toJFlex(CompilerConfiguration configuration, String tplPath, AST ast) throws TaraException {
 		String template = TemplateFactory.getTemplate(LEXER_TPL);
 		String outPath = configuration.getTempDirectory().getAbsolutePath() +
-			File.separator + "src" + File.separator +
-			newTemplate(configuration.getProject(), template);
+			File.separator + TemplateFactory.SRC + File.separator +
+			newTemplate(RenderUtils.toProperCase(configuration.getProject()), template);
 		BnfRender render = new BnfRender(configuration.getProject(), template, tplPath, ast);
 		File file = new File(outPath);
 		PrintWriter outWriter = getOutWriter(file);

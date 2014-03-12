@@ -23,8 +23,7 @@ public class TaraCompiler {
 	}
 
 	private static void addCompiledFiles(CompilationUnit compilationUnit, final List<OutputItem> compiledFiles) throws IOException {
-		File targetDirectory = compilationUnit.getConfiguration().getTempDirectory();
-		final String outputPath = targetDirectory.getCanonicalPath().replace(File.separatorChar, '/');
+		File targetDirectory = compilationUnit.getConfiguration().getTargetDirectory();
 		//TODO
 	}
 
