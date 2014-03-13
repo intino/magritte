@@ -1,7 +1,6 @@
 package monet.tara.compiler.code_generation.intellij.plugin_generation;
 
 import monet.tara.compiler.code_generation.JavaCommandHelper;
-import monet.tara.compiler.code_generation.render.TemplateFactory;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.error_collection.TaraException;
 
@@ -24,7 +23,7 @@ public class BnfToJavaCodeGenerator extends CodeGenerator {
 
 	private static String makeJavaCommand(String directory, File source) {
 		String grammarKit = BnfToJavaCodeGenerator.class.getResource("/grammar-kit/grammar-kit.jar").getPath();
-		String destiny = directory + File.separator + TemplateFactory.SRC + File.separator + TemplateFactory.IDE;
+		String destiny = directory + SEP + SRC + SEP + IDE;
 		String[] vParams = new String[]{"-DUser.dir=" + destiny};
 		ArrayList<String> cmd = JavaCommandHelper.buildJavaJarExecuteCommandLine(grammarKit,
 			vParams, new String[]{destiny, source.getAbsolutePath()});

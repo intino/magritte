@@ -1,8 +1,5 @@
 package monet.tara.compiler.rt;
 
-/**
- * Created by oroncal on 26/12/13.
- */
 public class TaraCompilerMessageCategories {
 
 	public static final String ERROR = "error";

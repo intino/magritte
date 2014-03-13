@@ -3,9 +3,6 @@ package monet.tara.intellij;
 import com.intellij.testFramework.ParsingTestCase;
 import monet.tara.intellij.metamodel.parser.TaraParserDefinition;
 
-/**
- * Created by oroncal on 03/01/14.
- */
 public class TaraParsingTest extends ParsingTestCase {
 	public TaraParsingTest() {
 		super("", "m2", new TaraParserDefinition());
@@ -17,7 +14,7 @@ public class TaraParsingTest extends ParsingTestCase {
 
 	@Override
 	protected String getTestDataPath() {
-		return "./testData/parsing/";
+		return "./res_test/parsing/";
 	}
 
 	@Override

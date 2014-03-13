@@ -10,6 +10,11 @@ import java.io.PrintWriter;
 
 public abstract class CodeGenerator {
 
+	public static final String IDE = "intellij/";
+	public static final String SRC = "src";
+	public static final String BUILD = "build";
+	public static final String PROJECT_PATH = "monet/tara/" + IDE;
+	public static final String SEP = File.separator;
 
 	protected static PrintWriter getOutWriter(File file) throws TaraException {
 		try {
