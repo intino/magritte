@@ -136,17 +136,17 @@ public class TaraUtil {
 		Concept context = TaraPsiImplUtil.resolveContextOfRef((TaraReferenceIdentifier) element.getParent());
 		Concept concept = TaraPsiImplUtil.getContextOf(context);
 		for (TaraIdentifier identifier : route)
-			if ((concept = findChildOf(concept, ((IdentifierImpl)identifier).getIdentifier())) == null) break;
+			if ((concept = findChildOf(concept, ((TaraIdentifierImpl) identifier).getIdentifier())) == null) break;
 		return concept;
 	}
 
 	private static Concept resolveAbsoluteReference(Project project, List<TaraIdentifier> identifiers) {
-		List<Concept> rootConcepts = findRootConcept(project, ((IdentifierImpl)identifiers.get(0)).getIdentifier());
+		List<Concept> rootConcepts = findRootConcept(project, ((TaraIdentifierImpl) identifiers.get(0)).getIdentifier());
 		Concept reference = null;
 		for (Concept rootConcept : rootConcepts) {
 			Concept internRef = rootConcept;
 			for (int i = 1; i < identifiers.size(); i++) {
-				internRef = findChildOf(internRef, ((IdentifierImpl)identifiers.get(i)).getIdentifier());
+				internRef = findChildOf(internRef, ((TaraIdentifierImpl)identifiers.get(i)).getIdentifier());
 				if (internRef == null) break;
 			}
 			reference = internRef;

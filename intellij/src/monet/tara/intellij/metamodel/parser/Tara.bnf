@@ -79,4 +79,4 @@ doc::= DOC_LINE+
 referenceIdentifier::= identifier (DOT identifier)*
 
 identifier::=  IDENTIFIER_KEY
-{mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierMixin' methods=[getIdentifier]}
+{mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierMixin'}
