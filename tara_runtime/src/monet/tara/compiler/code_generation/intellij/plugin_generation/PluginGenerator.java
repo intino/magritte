@@ -28,6 +28,7 @@ public class PluginGenerator {
 		BnfToJavaCodeGenerator.bnfToJava(configuration, grammarFile);
 		File lexFile = TaraToJFlexCodeGenerator.toJFlex(configuration, tplPath, ast);
 		JFlexToJavaGenerator.jFlexToJava(configuration, lexFile);
+		PluginPackager.doPackage(configuration);
 	}
 
 	private AST mergeAST(Collection<SourceUnit> units) {

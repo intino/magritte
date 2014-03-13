@@ -1,6 +1,7 @@
 package monet.tara.compiler.core;
 
 import monet.tara.compiler.code_generation.ClassGenerator;
+import monet.tara.compiler.code_generation.intellij.plugin_generation.PluginGenerator;
 import monet.tara.compiler.core.error_collection.CompilationFailedException;
 import monet.tara.compiler.core.error_collection.ErrorCollector;
 import monet.tara.compiler.core.error_collection.TaraException;
@@ -8,7 +9,6 @@ import monet.tara.compiler.core.operation.ModuleUnitOperation;
 import monet.tara.compiler.core.operation.Operation;
 import monet.tara.compiler.core.operation.SourceUnitOperation;
 import monet.tara.compiler.core.operation.SrcToClassOperation;
-import monet.tara.compiler.code_generation.intellij.plugin_generation.PluginGenerator;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,6 +18,7 @@ import java.util.Map;
 public class CompilationUnit extends ProcessingUnit {
 
 	protected Map<String, SourceUnit> sources;
+	protected ProgressCallback progressCallback;
 	private SourceUnitOperation convert = new SourceUnitOperation() {
 		public void call(SourceUnit source) throws CompilationFailedException {
 			try {
@@ -28,7 +29,6 @@ public class CompilationUnit extends ProcessingUnit {
 			}
 		}
 	};
-	protected ProgressCallback progressCallback;
 	private LinkedList<Operation>[] phaseOperations;
 	private SourceUnitOperation parsing = new SourceUnitOperation() {
 		public void call(SourceUnit source) throws CompilationFailedException {
@@ -38,7 +38,6 @@ public class CompilationUnit extends ProcessingUnit {
 	private ModuleUnitOperation semantic = new ModuleUnitOperation() {
 		public void call(Collection<SourceUnit> source) throws CompilationFailedException {
 			System.out.println("analyze");
-//			source.analyze();
 //			CompilationUnit.this.AST.addModule(source.getAST());
 //			if (CompilationUnit.this.progressCallback != null)
 //				CompilationUnit.this.progressCallback.call(source, CompilationUnit.this.phase);

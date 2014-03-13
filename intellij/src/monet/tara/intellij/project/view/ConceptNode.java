@@ -1,6 +1,5 @@
 package monet.tara.intellij.project.view;
 
-import com.intellij.ide.IdeBundle;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ViewSettings;
@@ -35,10 +34,6 @@ public class ConceptNode extends ProjectViewNode<ConceptTreeView> {
 	@NotNull
 	public Collection<BasePsiNode<? extends PsiElement>> getChildren() {
 		return myChildren;
-	}
-
-	public String getTestPresentation() {
-		return "Concept:" + getValue().getName();
 	}
 
 	public boolean contains(@NotNull VirtualFile file) {
@@ -76,10 +71,6 @@ public class ConceptNode extends ProjectViewNode<ConceptTreeView> {
 	public boolean canNavigateToSource() {
 		final ConceptTreeView value = getValue();
 		return value != null && value.canNavigateToSource();
-	}
-
-	public String getToolTip() {
-		return IdeBundle.message("tooltip.ui.designer.form");
 	}
 
 	@Override
