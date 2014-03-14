@@ -27,18 +27,18 @@ public class ::projectProperName::Annotator implements Annotator {
 		if (element instanceof Definition)
 			checkDuplicated((Definition) element);
 		else if (element instanceof ::projectProperName::Attribute)
-			checkDuplicated((::projectProperName::Attribute) element);
-		else if (element instanceof ::projectProperName::Identifier)
-			checkWellReferenced((::projectProperName::Identifier) element);
+			checkDuplicated((Attribute) element);
+		else if (element instanceof Identifier)
+			checkWellReferenced((Identifier) element);
 		else if (element instanceof ::projectProperName::Morph)
 			checkMorph((::projectProperName::Morph) element);
 		else if (element instanceof ::projectProperName::Polymorphic)
 			checkPolymorphic((::projectProperName::Polymorphic) element);
-		else if (element instanceof ::projectProperName::Annotations)
-			checkAnnotations((::projectProperName::Annotations) element);
+		else if (element instanceof Annotations)
+			checkAnnotations((Annotations) element);
 	}
 
-	private void checkAnnotations(::projectProperName::Annotations element) {
+	private void checkAnnotations(Annotations element) {
 		PsiElement[] psiElements;
 		if (element.getParent() instanceof ::projectProperName::DefinitionInjection)
 			psiElements = checkDefinitionInjectionAnnotation(element.getAnnotations());
@@ -55,7 +55,7 @@ public class ::projectProperName::Annotator implements Annotator {
 	}
 
 
-	private PsiElement[] checkCorrectAnnotation(::projectProperName::Definition definition, PsiElement[] annotations) {
+	private PsiElement[] checkCorrectAnnotation(Definition definition, PsiElement[] annotations) {
 		List<PsiElement> incorrectAnnotations;
 		if ((definition != null) && definition.getParent() instanceof ::projectProperName::File)
 			incorrectAnnotations = checkAnnotationList(annotations, ROOT_ANNOTATIONS);
@@ -85,7 +85,7 @@ public class ::projectProperName::Annotator implements Annotator {
 			holder.createErrorAnnotation(element.getNode(), ::projectProperName::Bundle.message("morph.non-existent.in.polymorphic.error.message"));
 	}
 
-	private boolean hasMorphs(::projectProperName::Definition context) {
+	private boolean hasMorphs(Definition context) {
 		if (context.getBody() != null)
 			for (Definition definition : context.getBody().getDefinitionList())
 				if (definition.isMorph()) return true;
@@ -98,9 +98,9 @@ public class ::projectProperName::Annotator implements Annotator {
 			holder.createErrorAnnotation(element.getNode(), ::projectProperName::Bundle.message("morph.not.in.polymorphic.error.message"));
 	}
 
-	private void checkWellReferenced(::projectProperName::Identifier element) {
+	private void checkWellReferenced(Identifier element) {
 		Definition definition = ::projectProperName::Util.resolveReferences(element.getProject(), element);
-		if (definition == null && element.getParent() instanceof ::projectProperName::ExtendedDefinition)
+		if (definition == null && element.getParent() instanceof ::projectProperName::ReferenceIdentifier)
 			holder.createErrorAnnotation(element.getNode(), ::projectProperName::Bundle.message("reference.definition.key.error.message"));
 	}
 
@@ -110,7 +110,7 @@ public class ::projectProperName::Annotator implements Annotator {
 				annotateAndFix(definition.getIdentifierNode(), new RemoveDefinitionFix(definition), ::projectProperName::Bundle.message("duplicate.definition.key.error.message"));
 	}
 
-	private void checkDuplicated(::projectProperName::Attribute attribute) {
+	private void checkDuplicated(Attribute attribute) {
 		if (::projectProperName::Util.findAttributeDuplicates(attribute).length != 1)
 			annotateAndFix(attribute, new RemoveAttributeFix(attribute), ::projectProperName::Bundle.message("duplicate.attribute.key.error.message"));
 	}

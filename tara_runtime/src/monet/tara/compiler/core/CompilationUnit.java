@@ -1,7 +1,7 @@
 package monet.tara.compiler.core;
 
 import monet.tara.compiler.code_generation.ClassGenerator;
-import monet.tara.compiler.code_generation.intellij.plugin_generation.PluginGenerator;
+import monet.tara.compiler.code_generation.intellij.PluginGenerator;
 import monet.tara.compiler.core.error_collection.CompilationFailedException;
 import monet.tara.compiler.core.error_collection.ErrorCollector;
 import monet.tara.compiler.core.error_collection.TaraException;
@@ -22,6 +22,7 @@ public class CompilationUnit extends ProcessingUnit {
 	private SourceUnitOperation convert = new SourceUnitOperation() {
 		public void call(SourceUnit source) throws CompilationFailedException {
 			try {
+				System.out.println("Converting");
 				source.convert();
 			} catch (TaraException ignored) {
 				System.err.print("Error during conversion");
@@ -32,6 +33,7 @@ public class CompilationUnit extends ProcessingUnit {
 	private LinkedList<Operation>[] phaseOperations;
 	private SourceUnitOperation parsing = new SourceUnitOperation() {
 		public void call(SourceUnit source) throws CompilationFailedException {
+			System.out.println("Parsing");
 			source.parse();
 		}
 	};

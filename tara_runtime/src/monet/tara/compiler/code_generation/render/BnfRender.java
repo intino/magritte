@@ -28,7 +28,7 @@ public class BnfRender extends Render {
 	protected void init() {
 		loadCanvas(tplName, true);
 		addMark("projectNameFile", RenderUtils.toProperCase(projectName));
-		addMark("projectName", projectName.toLowerCase());
+		addMark("projectName", projectName.substring(0, 1).toLowerCase() + projectName.substring(1));
 		for (ASTNode node : ast.getAstRootNodes()) goOver(node);
 		generateListOfRootConcepts();
 	}
@@ -38,9 +38,9 @@ public class BnfRender extends Render {
 	}
 
 	private void goOver(ASTNode node) {
-		if (!node.isAbstract()) {
+		if (!node.isAbstract() && !node.isPolymorphic()) {
 			generateMainRulesForConcepts(node);
-			if (!node.isPolymorphic() && isExtendedRoot(node)) rootList.add(node);
+			if (isExtendedRoot(node)) rootList.add(node);
 		}
 		for (ASTNode child : node.getChildren())
 			if (!child.getIdentifier().equals("")) goOver(child);
@@ -99,10 +99,10 @@ public class BnfRender extends Render {
 	}
 
 	private void putAttributesComponentsToHashMap(HashMap<String, Object> localMap, String attributesImplicit, String attributesExplicit) {
-		localMap.put("assignAttributeHeader", (!attributesImplicit.equals("")) ? localMap.get("identifier") + "AttributesImplicit" : "");
+		localMap.put("assignAttributeHeader", (!attributesImplicit.equals("")) ? "(ASSIGN " + localMap.get("identifier") + "AttributesImplicit)?" : "");
 		localMap.put("typeValues", attributesImplicit);
 		localMap.put("typeKey-Value", attributesExplicit);
-		String attributeImplicitForm = localMap.get("identifier") + "AttributesImplicit ::= ASSIGN " + localMap.get("typeValues") + "\n";
+		String attributeImplicitForm = localMap.get("identifier") + "AttributesImplicit ::= " + localMap.get("typeValues") + "\n";
 		String attributeExplicit = localMap.get("identifier") + "AttributesExplicit ::= " + localMap.get("typeKey-Value");
 		localMap.put("attributeRule", (!localMap.get("assignAttributeHeader").equals("")) ? attributeExplicit + "\n" + attributeImplicitForm : "");
 		localMap.put("identifierExplicitAttribute", (!localMap.get("assignAttributeHeader").equals("")) ? "| " + localMap.get("identifier") + "AttributesExplicit" : "");

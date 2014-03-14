@@ -5,7 +5,7 @@ options { tokenVocab=TaraM2Lexer; }
     package AntlrM2;
 }
 
-root: (concept | NEWLINE)* EOF;
+ast: (concept | NEWLINE)* EOF;
 
 concept: doc? signature annotations? body?;
 

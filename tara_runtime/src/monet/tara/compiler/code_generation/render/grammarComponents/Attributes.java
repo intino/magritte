@@ -1,6 +1,5 @@
 package monet.tara.compiler.code_generation.render.grammarComponents;
 
-
 import monet.tara.compiler.core.ast.AST;
 import monet.tara.compiler.core.ast.ASTNode;
 

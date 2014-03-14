@@ -31,7 +31,7 @@ public class MetaModelRendersTest {
 	public void grammarRenderTest() throws Exception {
 		DefaultRender defaultRender = RendersFactory.getRender("grammar", projectName, null);
 		assertEquals(new String(Files.readAllBytes(
-			Paths.get(TLP_PATH + "metamodel/grammar.bnf")), UTF_8), defaultRender.getOutput());
+			Paths.get(TLP_PATH + "metamodel/grammar_test.bnf")), UTF_8), defaultRender.getOutput());
 	}
 
 	@Test

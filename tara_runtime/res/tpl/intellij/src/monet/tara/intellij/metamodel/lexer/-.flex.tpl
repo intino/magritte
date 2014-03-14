@@ -1,7 +1,6 @@
 package monet.::projectName::.intellij.metamodel;
 
 import com.intellij.lexer.FlexLexer;
-import java.util.Stack;
 import com.intellij.psi.tree.IElementType;
 import monet.::projectName::.compiler.intellij.psi.::projectNameFile::Types;
 import com.intellij.psi.TokenType;
@@ -13,7 +12,6 @@ import java.util.Queue;
 %class ::projectNameFile::Lexer
 %implements FlexLexer
 %unicode
-%column
 %function advance
 %type IElementType
 
@@ -92,9 +90,10 @@ NEWLINE= [\\n]+ ([ ] | [\\t])*
 
 //=====================
 //Reserved words
-POLYMORPH = "Polymorph"
-MORPH     = "Morph"
-FROM_KEY  = "from"
+SYNTHETIZE= "synthetize"
+MORPH_KEY = "Morph"
+POLYMORPHIC_KEY = "Polymorphic"
+MORPH_KEY     = "Morph"
 AS        = "as"
 FINAL     = "final"
 ABSTRACT  = "abstract"
@@ -116,11 +115,10 @@ RIGHT_SQUARE = "]"
 OPEN_BRACKET  = "{"
 CLOSE_BRACKET = "}"
 
-EQUAL         = "="
 DOT           = "."
 COMMA         = ","
 ASSIGN        = ":"
-SEMICOLON     = ";"+
+SEMICOLON     = ";"
 DOUBLE_COMMAS = "\\""
 OPEN_AN  = "<"
 CLOSE_AN = ">"
@@ -143,8 +141,8 @@ BOOLEAN_VALUE  = "true" | "false"
 POSITIVE_VALUE = {POSITIVE}? {DIGIT}+
 NEGATIVE_VALUE = {NEGATIVE} {DIGIT}+
 DOUBLE_VALUE   = ({POSITIVE} | {NEGATIVE})? {DIGIT}+ {DOT} {DIGIT}+
-STRING_VALUE= {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
-
+STRING_VALUE   = {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
+CODE           = "\#" {DIGIT}+
 DOC = "'" ~[\\n]
 
 DIGIT=[:digit:]
@@ -156,9 +154,11 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 %%
 <YYINITIAL> {
 
-    {POLYMORPH}                 {   return ::projectNameFile::Types.POLYMORPH; }
+    {SYNTHETIZE}                    {   return ::projectNameFile::Types.SYNTHETIZE; }
 
-	{MORPH}                     {   return ::projectNameFile::Types.MORPH; }
+    {POLYMORPHIC_KEY}                 {   return ::projectNameFile::Types.POLYMORPHIC_KEY; }
+
+	{MORPH_KEY}                     {   return ::projectNameFile::Types.MORPH_KEY; }
 
 	{ABSTRACT}                  {   return ::projectNameFile::Types.ABSTRACT; }
 
@@ -174,8 +174,6 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{LIST}                      {   return ::projectNameFile::Types.LIST; }
 
-	{FROM_KEY}                  {   return ::projectNameFile::Types.FROM_KEY; }
-
 	{OPEN_AN}                   {   return ::projectNameFile::Types.OPEN_AN; }
 	{CLOSE_AN}                  {   return ::projectNameFile::Types.CLOSE_AN; }
 
@@ -189,11 +187,12 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{DOC}                       {   return ::projectNameFile::Types.DOC; }
 
-	{STRING_VALUE}              {   return ::projectNameFile::Types.STRING_VALUE; }
-	{BOOLEAN_VALUE}             {   return ::projectNameFile::Types.BOOLEAN_VALUE; }
-	{DOUBLE_VALUE}              {   return ::projectNameFile::Types.DOUBLE_VALUE; }
-	{NEGATIVE_VALUE}            {   return ::projectNameFile::Types.NEGATIVE_VALUE; }
-	{POSITIVE_VALUE}            {   return ::projectNameFile::Types.NATURAL_VALUE; }
+	{STRING_VALUE}              {   return ::projectNameFile::Types.STRING_VALUE_KEY; }
+	{CODE}                      {   return ::projectNameFile::Types.CODE;}
+	{BOOLEAN_VALUE}             {   return ::projectNameFile::Types.BOOLEAN_VALUE_KEY; }
+	{DOUBLE_VALUE}              {   return ::projectNameFile::Types.DOUBLE_VALUE_KEY; }
+	{NEGATIVE_VALUE}            {   return ::projectNameFile::Types.NEGATIVE_VALUE_KEY; }
+	{POSITIVE_VALUE}            {   return ::projectNameFile::Types.NATURAL_VALUE_KEY; }
 
 	{LEFT_SQUARE}               {   return ::projectNameFile::Types.LEFT_SQUARE; }
 	{RIGHT_SQUARE}              {   return ::projectNameFile::Types.RIGHT_SQUARE; }
@@ -201,8 +200,6 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{WORD}                      {   return ::projectNameFile::Types.WORD_KEY; }
 
 	{DOT}                       {   return ::projectNameFile::Types.DOT; }
-
-    {EQUAL}                     {   return ::projectNameFile::Types.EQUAL; }
 
 
 	{UID_TYPE}                  {   return ::projectNameFile::Types.UID_TYPE; }
@@ -212,11 +209,9 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
     {STRING_TYPE}               {   return ::projectNameFile::Types.STRING_TYPE; }
     {DOUBLE_TYPE}               {   return ::projectNameFile::Types.DOUBLE_TYPE; }
 
-	{IDENTIFIER_KEY}            {   return ::projectNameFile::Types.IDENTIFIER_KEY;}
-
 	{SEMICOLON}                 {   return semicolon(); }
 
-	{COMMA}                     {   return ::projectNameFile::Types.COMMA();     }
+	{COMMA}                     {   return ::projectNameFile::Types.COMMA;     }
 
 	{OPEN_BRACKET}              {   return openBracket(); }
 
@@ -232,6 +227,8 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
                                     return eof();
                                 }
 ::conceptsToBNF::
+
+{IDENTIFIER_KEY}            {   return ::projectNameFile::Types.IDENTIFIER_KEY;}
 }
 
 .                               {  return TokenType.BAD_CHARACTER;}
@@ -241,4 +238,4 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 @concepts
 ::conceptKey::= "::conceptValue::"
 @conceptsToBNF
-    {::conceptKey::}                {  return TokenType.::conceptKey::;  }
+    {::conceptKey::}                {  return ::projectNameFile::Types.::conceptKey::;  }

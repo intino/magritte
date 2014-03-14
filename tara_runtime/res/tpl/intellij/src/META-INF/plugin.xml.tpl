@@ -25,18 +25,17 @@
   -->
 
   <actions>
-    <action id="BashErrorReporter.TriggerException"
-            class="monet.::projectName::.intellij.actions.TriggerExceptionAction"
-            text="Trigger Exception"
-            description="Triggers an exception">
-      <add-to-group group-id="ToolsMenu" anchor="last"/>
-    </action>
+    <!--<action id="BashErrorReporter.TriggerException"-->
+            <!--class="monet.::projectName::.intellij.actions.TriggerExceptionAction"-->
+            <!--text="Trigger Exception"-->
+            <!--description="Triggers an exception">-->
+      <!--<add-to-group group-id="ToolsMenu" anchor="last"/>-->
+    <!--</action>-->
     <action id="NewDefinition" class="monet.::projectName::.intellij.actions.CreateFileAction">
-      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+      <add-to-group group-id="NewGroup" anchor="first"/>
     </action>
-    <action id="New::projectProperName::Package" class="monet.::projectName::.intellij.actions.CreatePackageAction" text="Package"
+    <action id="NewPackage" class="monet.::projectName::.intellij.actions.CreatePackageAction" text="Package"
             description="Create a new package" icon="AllIcons.Nodes.Package">
-      <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDefinition"/>
     </action>
   </actions>
 
@@ -44,18 +43,15 @@
   </application-components>
 
   <extensions defaultExtensionNs="com.intellij">
-    <projectConfigurable instance="monet.::projectName::.intellij.project.module.ModuleSettings" id="ModuleSettings"
-                         displayName="::projectProperName::"
-                         order="last"/>
     <errorHandler implementation="monet.::projectName::.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="::projectProperName::"
                          implementationClass="monet.::projectName::.intellij.refactoring.rename.NamesValidator"/>
     <projectService serviceInterface="monet.::projectName::.intellij.metamodel.psi.::projectProperName::ElementFactory"
                     serviceImplementation="monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::ElementFactoryImpl"/>
     <moduleType id="TARA_MODULE" implementationClass="monet.::projectName::.intellij.project.module.ModuleType"/>
-
     <projectConfigurable instance="monet.::projectName::.intellij.compiler.::projectProperName::CompilerConfigurable" id="::projectProperName:: compiler"
                          displayName="::projectProperName:: Compiler" parentId="project.propCompiler"/>
+    <treeStructureProvider implementation="monet.::projectName::.intellij.project.view.MergerTreeStructureProvider"/>
     <compileServer.plugin classpath="::projectName::-jps-plugin.jar"/>
 
     <projectService serviceInterface="monet.::projectName::.intellij.compiler.::projectProperName::CompilerWorkspaceConfiguration"
@@ -98,5 +94,7 @@
                              implementationClass="monet.::projectName::.intellij.::projectProperName::FindUsagesProvider"/>
     <lang.foldingBuilder language="::projectProperName::" implementationClass="monet.::projectName::.intellij.::projectProperName::FoldingBuilder"/>
     <!--<lang.formatter language="::projectProperName::" implementationClass="monet.::projectName::.intellij.formatter.::projectProperName::FormattingModelBuilder"/>-->
+    <!--<refactoring.moveHandler implementation="com.intellij.uiDesigner.projectView.FormMoveProvider"/>-->
+
   </extensions>
 </idea-plugin>

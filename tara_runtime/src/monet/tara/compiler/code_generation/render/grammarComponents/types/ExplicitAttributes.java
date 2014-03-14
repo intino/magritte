@@ -27,6 +27,13 @@ public class ExplicitAttributes extends Attributes {
             for (int index=0;index<extendNode.getVariables().size();index++)
                 attributes+= stringByEvaluationParentType(node, extendNode, index);
         }
+        if (node.isMorph()){
+            extendNode = node.getParent();
+            if (extendNode!=null){
+                for (int index=0;index<extendNode.getVariables().size();index++)
+                    attributes+= stringByEvaluationParentType(node, extendNode, index);
+            }
+        }
         return attributes;
     }
 
@@ -71,7 +78,7 @@ public class ExplicitAttributes extends Attributes {
             else
                 return setReferenceStringWithEndingToken(attribute, "| ");
         }
-        if (elementType.getVariables().get(index) instanceof ASTNode.Word ){
+        if (extendType.getVariables().get(index) instanceof ASTNode.Word ){
             ASTNode.Word attribute = (ASTNode.Word)extendType.getVariables().get(index);
             if (elementType.getVariables().size()==0 && extendType.getVariables().size() -1 == index)
                 return setWordStringWithEndingToken(attribute, "");
@@ -83,14 +90,14 @@ public class ExplicitAttributes extends Attributes {
 
 
     private String setAttributeStringWithEndingToken(ASTNode.Attribute attribute, String token){
-        if (attribute.isList()) return attribute.getName().toUpperCase()+ "_ATTRIBUTE EQUAL LEFT_SQUARE " + attribute.getPrimitiveType().toUpperCase()+"_VALUE (COMMA "+attribute.getPrimitiveType().toUpperCase()+"_VALUE)* RIGHT_SQUARE" + token;
-        else return attribute.getName().toUpperCase()+ "_ATTRIBUTE EQUAL "+ attribute.getPrimitiveType().toUpperCase()+"_VALUE" + token;
+        if (attribute.isList()) return attribute.getName().toUpperCase()+ "_ATTRIBUTE ASSIGN " + attribute.getPrimitiveType().toLowerCase()+"List"+ token;
+        else return attribute.getName().toUpperCase()+ "_ATTRIBUTE ASSIGN "+ attribute.getPrimitiveType().toUpperCase()+"_VALUE_KEY" + token;
     }
     private String setReferenceStringWithEndingToken(ASTNode.Reference attribute, String token){
-        if (attribute.isList()) return attribute.getName().toUpperCase()+ "_ATTRIBUTE EQUAL LEFT_SQUARE identifier(COMMA identifier)* RIGHT_SQUARE" + token;
-        else return attribute.getName().toUpperCase()+ "_ATTRIBUTE EQUAL IDENTIFIER" + token;
+        if (attribute.isList()) return attribute.getName().toUpperCase()+ "_ATTRIBUTE ASSIGN LEFT_SQUARE identifier+ RIGHT_SQUARE" + token;
+        else return attribute.getName().toUpperCase()+ "_ATTRIBUTE ASSIGN IDENTIFIER_KEY" + token;
     }
     private String setWordStringWithEndingToken(ASTNode.Word attribute, String token){
-        return attribute.getIdentifier().toUpperCase()+ "_ATTRIBUTE EQUAL "+ getStringOfWordList(attribute.getWordTypes()) + token;
+        return attribute.getIdentifier().toUpperCase()+ "_ATTRIBUTE ASSIGN "+ getStringOfWordList(attribute.getWordTypes()) + token;
     }
 }

@@ -1,12 +1,9 @@
 package monet.::projectName::.intellij.project.module;
 
+import com.intellij.ide.util.projectWizard.JavaModuleBuilder;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
-import com.intellij.ide.util.projectWizard.SourcePathsBuilder;
 import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.openapi.module.ModifiableModuleModel;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -20,9 +17,7 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
@@ -30,8 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModuleBuilder extends com.intellij.ide.util.projectWizard.ModuleBuilder implements SourcePathsBuilder {
-	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<Pair<String, String>>();
+public class ModuleBuilder extends JavaModuleBuilder {
+	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
 	private String myCompilerOutputPath;
 	private List<Pair<String, String>> mySourcePaths;
 
@@ -39,24 +34,10 @@ public class ModuleBuilder extends com.intellij.ide.util.projectWizard.ModuleBui
 		return VfsUtil.getUrlForLibraryRoot(new File(path));
 	}
 
-	public List<Pair<String, String>> getSourcePaths() {
-		if (mySourcePaths == null) {
-			final List<Pair<String, String>> paths = new ArrayList<>();
-			\@NonNls final String path = getContentEntryPath() + File.separator + "src";
-			new File(path).mkdirs();
-			paths.add(Pair.create(path, ""));
-			return paths;
-		}
-		return mySourcePaths;
-	}
-
 	public void setSourcePaths(final List<Pair<String, String>> sourcePaths) {
 		mySourcePaths = sourcePaths != null ? new ArrayList<>(sourcePaths) : null;
 	}
 
-	public final void setCompilerOutputPath(String compilerOutputPath) {
-		myCompilerOutputPath = acceptParameter(compilerOutputPath);
-	}
 
 	public void addSourcePath(final Pair<String, String> sourcePathInfo) {
 		if (mySourcePaths == null) mySourcePaths = new ArrayList<>();
@@ -85,6 +66,12 @@ public class ModuleBuilder extends com.intellij.ide.util.projectWizard.ModuleBui
 						.refreshAndFindFileByPath(FileUtil.toSystemIndependentName(first));
 					if (sourceRoot != null) {
 						contentEntry.addSourceFolder(sourceRoot, false, sourcePath.second);
+						try {
+							VfsUtil.createDirectories(sourceRoot.getParent().getPath() + "res/tpl");
+							VfsUtil.createDirectories(sourceRoot.getParent().getPath() + "res/logos");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -114,12 +101,8 @@ public class ModuleBuilder extends com.intellij.ide.util.projectWizard.ModuleBui
 			}
 			modifiableModel.commit();
 		}
-
 	}
 
-	public void addModuleLibrary(String moduleLibraryPath, String sourcePath) {
-		myModuleLibraries.add(Pair.create(moduleLibraryPath, sourcePath));
-	}
 
 	\@Override
 	public com.intellij.openapi.module.ModuleType getModuleType() {
@@ -144,12 +127,5 @@ public class ModuleBuilder extends com.intellij.ide.util.projectWizard.ModuleBui
 	\@Override
 	public String getPresentableName() {
 		return "::projectProperName::";
-	}
-
-	\@Nullable
-	\@Override
-	public Module commitModule(\@NotNull Project project, \@Nullable ModifiableModuleModel model) {
-		return super.commitModule(project, model);
-
 	}
 }

@@ -1,13 +1,13 @@
 package monet.tara.compiler.code_generation;
 
+import monet.tara.compiler.code_generation.intellij.CodeGenerator;
 import monet.tara.compiler.core.CompilerConfiguration;
-import monet.tara.compiler.core.error_collection.StreamWrapper;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ClassGenerator {
+public class ClassGenerator extends CodeGenerator {
 
 	CompilerConfiguration configuration;
 
@@ -15,33 +15,17 @@ public class ClassGenerator {
 		this.configuration = configuration;
 	}
 
-	public int generate() {
+	public void generate(CompilerConfiguration configuration) {
 		Runtime rt = Runtime.getRuntime();
 		try {
 			Process compileProcess = rt.exec(makeCompileCommand(getSourceFiles("java")));
-			if (compileProcess.waitFor() == -1) return -1;
+			if (compileProcess.waitFor() == -1) return;
 			printResult(compileProcess);
 			Process jarProcess = rt.exec(makeJarCommand(configuration.getProject()), null, getOutPath());
 			printResult(jarProcess);
-			return jarProcess.waitFor();
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
-			return -1;
 		}
-	}
-
-	private void printResult(Process process) throws InterruptedException {
-		StreamWrapper error, output;
-		error = StreamWrapper.getStreamWrapper(process.getErrorStream(), "ERROR");
-		output = StreamWrapper.getStreamWrapper(process.getInputStream(), "OUTPUT");
-		error.start();
-		output.start();
-		error.join(3000);
-		output.join(3000);
-		if (!output.getMessage().equals(""))
-			System.err.println("Output: " + output.getMessage());
-		if (!error.getMessage().equals(""))
-			System.err.println("Error: " + error.getMessage());
 	}
 
 	private String makeJarCommand(String name) {
@@ -50,24 +34,25 @@ public class ClassGenerator {
 	}
 
 	private File getTaraCoreFile() {
-		return new File(getClass().getResource(File.separator + "tara_core" + File.separator + "tara_core.jar").getPath());
+		return new File(getClass().getResource(SEP + "tara_core" + SEP + "tara_core.jar").getPath());
 	}
 
 	private String makeCompileCommand(File[] sources) {
-		ArrayList<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources, new String[]{getTaraCoreFile().getAbsolutePath()},
+		ArrayList<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources,
+			new String[]{getTaraCoreFile().getAbsolutePath() + SEP + "build" + SEP},
 			null, configuration.getTempDirectory().getAbsolutePath());
 		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 
 	private File[] getSourceFiles(String type) {
-		File path = new File(configuration.getTempDirectory() + File.separator + configuration.getProject());
+		File path = new File(configuration.getTempDirectory() + SEP + configuration.getProject());
 		ArrayList<File> javaFiles = new ArrayList<>();
 		getSourceFiles(path, javaFiles, type);
 		return javaFiles.toArray(new File[javaFiles.size()]);
 	}
 
 	private File[] getClassFiles() {
-		File path = new File(configuration.getTempDirectory() + File.separator + "build" + File.separator);
+		File path = new File(configuration.getTempDirectory() + SEP + "build" + SEP);
 		return path.listFiles();
 	}
 
@@ -80,7 +65,7 @@ public class ClassGenerator {
 	}
 
 	public File getOutPath() {
-		String outPath = configuration.getTempDirectory() + File.separator + "out" + File.separator;
+		String outPath = configuration.getTempDirectory() + SEP + "out" + SEP;
 		File file = new File(outPath);
 		file.mkdirs();
 		return file;
