@@ -22,7 +22,7 @@ import java.util.Properties;
 public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 	private static final Logger LOGGER = Logger.getInstance(LoggingEventSubmitter.class.getName());
 	@NonNls
-	private static final String ERROR_SUBMITTER_PROPERTIES_PATH = "error_reporting" + File.separator + "errorReporter.properties";
+	private static final String ERROR_SUBMITTER_PROPERTIES_PATH = "errorreporting" + File.separator + "errorReporter.properties";
 	@NonNls
 	private static final String PLUGIN_ID_PROPERTY_KEY = "plugin.id";
 	@NonNls

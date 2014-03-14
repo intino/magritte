@@ -25,12 +25,12 @@
   -->
 
   <actions>
-    <action id="BashErrorReporter.TriggerException"
-            class="monet.tara.intellij.actions.TriggerExceptionAction"
-            text="Trigger Exception"
-            description="Triggers an exception">
-      <add-to-group group-id="ToolsMenu" anchor="last"/>
-    </action>
+    <!--<action id="BashErrorReporter.TriggerException"-->
+            <!--class="monet.tara.intellij.actions.TriggerExceptionAction"-->
+            <!--text="Trigger Exception"-->
+            <!--description="Triggers an exception">-->
+      <!--<add-to-group group-id="ToolsMenu" anchor="last"/>-->
+    <!--</action>-->
     <action id="NewConcept" class="monet.tara.intellij.actions.CreateFileAction">
       <add-to-group group-id="NewGroup" anchor="first"/>
     </action>

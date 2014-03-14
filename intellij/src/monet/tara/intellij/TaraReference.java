@@ -7,7 +7,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import monet.tara.intellij.metamodel.TaraIcons;
 import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.TaraConcept;
 import monet.tara.intellij.metamodel.psi.TaraIdentifier;
 import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
@@ -62,7 +61,7 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 
 	private void refer(TaraIdentifier parent, List<Concept> concepts) {
 		concepts.addAll(TaraUtil.getRootConcepts(parent.getProject()));
-		TaraConcept context = TaraPsiImplUtil.getContextOf(parent);
+		Concept context = TaraPsiImplUtil.getContextOf(parent);
 		concepts.addAll(TaraUtil.getSiblings(context));
 	}
 

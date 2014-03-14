@@ -7,16 +7,13 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.TaraBundle;
-import monet.tara.intellij.metamodel.psi.TaraAttribute;
+import monet.tara.intellij.metamodel.psi.Attribute;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by oroncal on 09/01/14.
- */
 public class RemoveAttributeFix implements IntentionAction {
-	private final TaraAttribute attribute;
+	private final Attribute attribute;
 
-	public RemoveAttributeFix(@NotNull final TaraAttribute attribute) {
+	public RemoveAttributeFix(@NotNull final Attribute attribute) {
 		this.attribute = attribute;
 	}
 

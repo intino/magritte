@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.intellij.metamodel.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import monet.tara.intellij.metamodel.psi.*;
 
-public class TaraWordImpl extends ASTWrapperPsiElement implements TaraWord {
+public class TaraWordImpl extends WordMixin implements TaraWord {
 
   public TaraWordImpl(ASTNode node) {
     super(node);

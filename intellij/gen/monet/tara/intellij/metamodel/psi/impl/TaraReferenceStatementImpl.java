@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.intellij.metamodel.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import monet.tara.intellij.metamodel.psi.*;
 
-public class TaraReferenceStatementImpl extends ASTWrapperPsiElement implements TaraReferenceStatement {
+public class TaraReferenceStatementImpl extends ReferenceStatementMixin implements TaraReferenceStatement {
 
   public TaraReferenceStatementImpl(ASTNode node) {
     super(node);

@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public class TaraVisitor extends PsiElementVisitor {
 
   public void visitAnnotations(@NotNull TaraAnnotations o) {
-    visitPsiElement(o);
+    visitAnnotations(o);
   }
 
   public void visitAttribute(@NotNull TaraAttribute o) {
@@ -32,7 +32,7 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitConceptInjection(@NotNull TaraConceptInjection o) {
-    visitPsiElement(o);
+    visitConceptInjection(o);
   }
 
   public void visitDoc(@NotNull TaraDoc o) {
@@ -48,7 +48,7 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitIdentifier(@NotNull TaraIdentifier o) {
-    visitPsiElement(o);
+    visitIdentifier(o);
   }
 
   public void visitIntegerList(@NotNull TaraIntegerList o) {
@@ -80,11 +80,11 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitReferenceIdentifier(@NotNull TaraReferenceIdentifier o) {
-    visitPsiElement(o);
+    visitReferenceIdentifier(o);
   }
 
   public void visitReferenceStatement(@NotNull TaraReferenceStatement o) {
-    visitPsiElement(o);
+    visitReferenceStatement(o);
   }
 
   public void visitSignature(@NotNull TaraSignature o) {
@@ -104,7 +104,7 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitWord(@NotNull TaraWord o) {
-    visitPsiElement(o);
+    visitWord(o);
   }
 
   public void visitPsiElement(@NotNull PsiElement o) {

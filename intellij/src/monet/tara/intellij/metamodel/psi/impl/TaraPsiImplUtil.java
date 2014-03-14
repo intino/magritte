@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TaraPsiImplUtil {
 
-	public static String getIdentifier(TaraIdentifier keyNode) {
+	public static String getIdentifier(Identifier keyNode) {
 		if (keyNode != null) return keyNode.getText();
 		else return null;
 
@@ -62,30 +62,30 @@ public class TaraPsiImplUtil {
 	}
 
 
-	public static List<TaraConcept> getChildrenInBody(TaraBody body) {
-		return body.getConceptList();
+	public static List<Concept> getChildrenInBody(Body body) {
+		return (List<Concept>) body.getConceptList();
 	}
 
-	public static List<TaraAttribute> getAttributesInBody(TaraBody body) {
-		return body.getAttributeList();
+	public static List<Attribute> getAttributesInBody(Body body) {
+		return (List<Attribute>) body.getAttributeList();
 	}
 
 
-	public static List<TaraConcept> getChildrenOf(Concept concept) {
-		TaraBody body;
+	public static List<Concept> getChildrenOf(Concept concept) {
+		Body body;
 		if ((body = concept.getBody()) != null)
 			return getChildrenInBody(body);
 		return Collections.EMPTY_LIST;
 	}
 
-	public static TaraConcept resolveContextOfRef(TaraReferenceIdentifier identifier) {
+	public static Concept resolveContextOfRef(ReferenceIdentifier identifier) {
 		PsiElement element = identifier;
 		while (!(element.getParent() instanceof Concept))
 			element = element.getParent();
-		return (TaraConcept) element.getParent();
+		return (Concept) element.getParent();
 	}
 
-	public static TaraConcept getContextOf(PsiElement element1) {
+	public static Concept getContextOf(PsiElement element1) {
 		try {
 			PsiElement element = element1;
 			while ((element.getParent() != null) && !(element.getParent() instanceof TaraFile) && !(element.getParent() instanceof Concept))
@@ -97,7 +97,7 @@ public class TaraPsiImplUtil {
 		}
 	}
 
-	public static PsiElement[] getAnnotations(TaraAnnotations annotations) {
+	public static PsiElement[] getAnnotations(Annotations annotations) {
 		PsiElement child = annotations.getFirstChild();
 		List<PsiElement> annotationList = new ArrayList<>();
 		while (child.getNextSibling().getNextSibling() != null) {

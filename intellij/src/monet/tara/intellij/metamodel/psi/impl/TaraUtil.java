@@ -71,25 +71,25 @@ public class TaraUtil {
 	}
 
 	public static int findDuplicates(Project project, Concept concept) {
-		TaraConcept parent = TaraPsiImplUtil.getContextOf(concept);
+		Concept parent = TaraPsiImplUtil.getContextOf(concept);
 		if (parent != null)
 			return checkChildDuplicates(concept, parent);
 		return findRootConcept(project, concept.getIdentifierNode().getText()).size();
 	}
 
-	private static int checkChildDuplicates(Concept concept, TaraConcept parent) {
+	private static int checkChildDuplicates(Concept concept, Concept parent) {
 		int duplicates = 0;
-		for (TaraConcept taraConcept : TaraPsiImplUtil.getChildrenOf(parent))
+		for (Concept taraConcept : TaraPsiImplUtil.getChildrenOf(parent))
 			if (taraConcept.getName() != null && concept.getName() != null && taraConcept.getName().equals(concept.getName()))
 				duplicates++;
 		return duplicates;
 	}
 
 	@NotNull
-	public static TaraAttribute[] findAttributeDuplicates(TaraAttribute attribute) {
-		List<TaraAttribute> result = new ArrayList<>();
-		List<TaraAttribute> attributes = TaraPsiImplUtil.getAttributesInBody((TaraBody) attribute.getParent());
-		for (TaraAttribute taraAttribute : attributes)
+	public static Attribute[] findAttributeDuplicates(Attribute attribute) {
+		List<Attribute> result = new ArrayList<>();
+		List<Attribute> attributes = TaraPsiImplUtil.getAttributesInBody((Body) attribute.getParent());
+		for (Attribute taraAttribute : attributes)
 			if (taraAttribute.getName() != null && taraAttribute.getName().equals(attribute.getName()))
 				result.add(taraAttribute);
 		return result.toArray(new TaraAttribute[result.size()]);
@@ -119,7 +119,7 @@ public class TaraUtil {
 	public static Concept resolveReferences(Project project, PsiElement identifier) {
 		Concept reference;
 		if (identifier.getParent() instanceof TaraReferenceIdentifier) {
-			List<TaraIdentifier> route = ((TaraReferenceIdentifier) (identifier.getParent())).getIdentifierList();
+			List<Identifier> route = (List<Identifier>) ((ReferenceIdentifier) (identifier.getParent())).getIdentifierList();
 			route = route.subList(0, route.indexOf(identifier) + 1);
 			if (!isRootConcept(TaraPsiImplUtil.resolveContextOfRef((TaraReferenceIdentifier) identifier.getParent())) &&
 				(reference = resolveRelativeReference(route, (TaraIdentifier) identifier)) != null) return reference;
@@ -132,21 +132,21 @@ public class TaraUtil {
 		return TaraPsiImplUtil.getContextOf(concept) == null;
 	}
 
-	private static Concept resolveRelativeReference(List<TaraIdentifier> route, TaraIdentifier element) {
+	private static Concept resolveRelativeReference(List<Identifier> route, Identifier element) {
 		Concept context = TaraPsiImplUtil.resolveContextOfRef((TaraReferenceIdentifier) element.getParent());
 		Concept concept = TaraPsiImplUtil.getContextOf(context);
-		for (TaraIdentifier identifier : route)
+		for (Identifier identifier : route)
 			if ((concept = findChildOf(concept, ((TaraIdentifierImpl) identifier).getIdentifier())) == null) break;
 		return concept;
 	}
 
-	private static Concept resolveAbsoluteReference(Project project, List<TaraIdentifier> identifiers) {
+	private static Concept resolveAbsoluteReference(Project project, List<Identifier> identifiers) {
 		List<Concept> rootConcepts = findRootConcept(project, ((TaraIdentifierImpl) identifiers.get(0)).getIdentifier());
 		Concept reference = null;
 		for (Concept rootConcept : rootConcepts) {
 			Concept internRef = rootConcept;
 			for (int i = 1; i < identifiers.size(); i++) {
-				internRef = findChildOf(internRef, ((TaraIdentifierImpl)identifiers.get(i)).getIdentifier());
+				internRef = findChildOf(internRef, ((TaraIdentifierImpl) identifiers.get(i)).getIdentifier());
 				if (internRef == null) break;
 			}
 			reference = internRef;
@@ -154,40 +154,40 @@ public class TaraUtil {
 		return reference;
 	}
 
-	public static TaraConcept findSibling(Concept context, String identifier) {
+	public static Concept findSibling(Concept context, String identifier) {
 		PsiElement element = context;
-		List<TaraConcept> childrenInBody;
+		List<Concept> childrenInBody;
 		while (element != null && !(element instanceof TaraBody))
 			element = element.getParent();
 		if (element != null) {
-			childrenInBody = TaraPsiImplUtil.getChildrenInBody((TaraBody) element);
+			childrenInBody = TaraPsiImplUtil.getChildrenInBody((Body) element);
 			return findChildIn(childrenInBody, identifier);
 		}
 		return null;
 	}
 
-	public static List<TaraConcept> getSiblings(Concept context) {
+	public static List<Concept> getSiblings(Concept context) {
 		PsiElement element = context;
 		while ((element != null) && !(element instanceof TaraFile) && !(element instanceof TaraBody))
 			element = element.getParent();
 		if (element != null && !(element instanceof TaraFile))
-			return TaraPsiImplUtil.getChildrenInBody((TaraBody) element);
+			return TaraPsiImplUtil.getChildrenInBody((Body) element);
 		return Collections.EMPTY_LIST;
 	}
 
-	private static TaraConcept findChildIn(List<TaraConcept> list, String identifier) {
-		for (TaraConcept concept : list)
+	private static Concept findChildIn(List<Concept> list, String identifier) {
+		for (Concept concept : list)
 			if (concept.getName() != null && concept.getName().equals(identifier)) return concept;
 		return null;
 	}
 
-	public static TaraConcept[] getChildrenOf(Concept concept) {
-		List<TaraConcept> childrenOf = TaraPsiImplUtil.getChildrenOf(concept);
-		return childrenOf.toArray(new TaraConcept[childrenOf.size()]);
+	public static Concept[] getChildrenOf(Concept concept) {
+		List<Concept> childrenOf = TaraPsiImplUtil.getChildrenOf(concept);
+		return childrenOf.toArray(new Concept[childrenOf.size()]);
 	}
 
 	public static Concept findChildOf(Concept concept, String name) {
-		List<TaraConcept> children = TaraPsiImplUtil.getChildrenOf(concept);
+		List<Concept> children = TaraPsiImplUtil.getChildrenOf(concept);
 		for (Concept child : children)
 			if (child.getName() != null && child.getName().equals(name))
 				return child;

@@ -27,18 +27,18 @@ public class TaraAnnotator implements Annotator {
 		if (element instanceof Concept)
 			checkDuplicated((Concept) element);
 		else if (element instanceof TaraAttribute)
-			checkDuplicated((TaraAttribute) element);
-		else if (element instanceof TaraIdentifier)
-			checkWellReferenced((TaraIdentifier) element);
+			checkDuplicated((Attribute) element);
+		else if (element instanceof Identifier)
+			checkWellReferenced((Identifier) element);
 		else if (element instanceof TaraMorph)
 			checkMorph((TaraMorph) element);
 		else if (element instanceof TaraPolymorphic)
 			checkPolymorphic((TaraPolymorphic) element);
-		else if (element instanceof TaraAnnotations)
-			checkAnnotations((TaraAnnotations) element);
+		else if (element instanceof Annotations)
+			checkAnnotations((Annotations) element);
 	}
 
-	private void checkAnnotations(TaraAnnotations element) {
+	private void checkAnnotations(Annotations element) {
 		PsiElement[] psiElements;
 		if (element.getParent() instanceof TaraConceptInjection)
 			psiElements = checkConceptInjectionAnnotation(element.getAnnotations());
@@ -55,7 +55,7 @@ public class TaraAnnotator implements Annotator {
 	}
 
 
-	private PsiElement[] checkCorrectAnnotation(TaraConcept concept, PsiElement[] annotations) {
+	private PsiElement[] checkCorrectAnnotation(Concept concept, PsiElement[] annotations) {
 		List<PsiElement> incorrectAnnotations;
 		if ((concept != null) && concept.getParent() instanceof TaraFile)
 			incorrectAnnotations = checkAnnotationList(annotations, ROOT_ANNOTATIONS);
@@ -85,7 +85,7 @@ public class TaraAnnotator implements Annotator {
 			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("morph.non-existent.in.polymorphic.error.message"));
 	}
 
-	private boolean hasMorphs(TaraConcept context) {
+	private boolean hasMorphs(Concept context) {
 		if (context.getBody() != null)
 			for (Concept concept : context.getBody().getConceptList())
 				if (concept.isMorph()) return true;
@@ -98,7 +98,7 @@ public class TaraAnnotator implements Annotator {
 			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("morph.not.in.polymorphic.error.message"));
 	}
 
-	private void checkWellReferenced(TaraIdentifier element) {
+	private void checkWellReferenced(Identifier element) {
 		Concept concept = TaraUtil.resolveReferences(element.getProject(), element);
 		if (concept == null && element.getParent() instanceof TaraReferenceIdentifier)
 			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("reference.concept.key.error.message"));
@@ -110,7 +110,7 @@ public class TaraAnnotator implements Annotator {
 				annotateAndFix(concept.getIdentifierNode(), new RemoveConceptFix(concept), TaraBundle.message("duplicate.concept.key.error.message"));
 	}
 
-	private void checkDuplicated(TaraAttribute attribute) {
+	private void checkDuplicated(Attribute attribute) {
 		if (TaraUtil.findAttributeDuplicates(attribute).length != 1)
 			annotateAndFix(attribute, new RemoveAttributeFix(attribute), TaraBundle.message("duplicate.attribute.key.error.message"));
 	}

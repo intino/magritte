@@ -5,8 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraAnnotations extends PsiElement {
-
-  PsiElement[] getAnnotations();
+public interface TaraAnnotations extends Annotations {
 
 }

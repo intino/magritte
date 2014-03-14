@@ -40,7 +40,12 @@ private conceptConstituents ::= attribute
 		                      | conceptInjection
 
 referenceStatement::= VAR referenceIdentifier LIST? variableNames
+{mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceStatementMixin'
+implements='monet.tara.intellij.metamodel.psi.ReferenceStatement'}
 conceptInjection::= NEW referenceIdentifier annotations?
+{mixin= 'monet.tara.intellij.metamodel.psi.impl.ConceptInjectionMixin'
+implements='monet.tara.intellij.metamodel.psi.ConceptInjection'}
+
 attribute::= VAR     UID_TYPE IDENTIFIER_KEY (ASSIGN stringValue)?
            | VAR     INT_TYPE (variableNames | IDENTIFIER_KEY ASSIGN integerValue | LIST IDENTIFIER_KEY (ASSIGN integerList)?)
            | VAR  DOUBLE_TYPE (variableNames | IDENTIFIER_KEY ASSIGN doubleValue | LIST IDENTIFIER_KEY (ASSIGN doubleList)?)
@@ -51,6 +56,9 @@ attribute::= VAR     UID_TYPE IDENTIFIER_KEY (ASSIGN stringValue)?
 implements='monet.tara.intellij.metamodel.psi.Attribute'}
 
 word::= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT
+{ mixin= 'monet.tara.intellij.metamodel.psi.impl.WordMixin'
+implements='monet.tara.intellij.metamodel.psi.Word'
+}
 
 stringValue  ::= STRING_VALUE_KEY
 booleanValue ::= BOOLEAN_VALUE_KEY
@@ -64,7 +72,9 @@ integerList::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUAR
 doubleList ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE;
 naturalList::= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
 
-annotations ::= OPEN_AN (MULTIPLE | OPTIONAL | HAS_CODE | EXTENSIBLE| SINGLETON | ROOT)+ CLOSE_AN {methods=[getAnnotations]}
+annotations ::= OPEN_AN (MULTIPLE | OPTIONAL | HAS_CODE | EXTENSIBLE| SINGLETON | ROOT)+ CLOSE_AN
+{mixin= 'monet.tara.intellij.metamodel.psi.impl.AnnotationsMixin'
+implements='monet.tara.intellij.metamodel.psi.Annotations'}
 
 variableNames::= IDENTIFIER_KEY (COMMA IDENTIFIER_KEY)*;
 
@@ -77,6 +87,9 @@ morph::= MORPH_KEY
 doc::= DOC_LINE+
 
 referenceIdentifier::= identifier (DOT identifier)*
+{mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
+implements='monet.tara.intellij.metamodel.psi.ReferenceIdentifier'}
 
 identifier::=  IDENTIFIER_KEY
-{mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierMixin'}
+{mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierMixin'
+implements='monet.tara.intellij.metamodel.psi.Identifier'}

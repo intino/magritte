@@ -18,7 +18,7 @@ public class TaraColorSettingPage implements ColorSettingsPage { //TODO
 			new AttributesDescriptor("String", TaraSyntaxHighlighter.STRING),
 			new AttributesDescriptor("Documentation", TaraSyntaxHighlighter.DOCUMENTATION),
 			new AttributesDescriptor("Primitive", TaraSyntaxHighlighter.PRIMITIVE),
-			new AttributesDescriptor("Annotation", TaraSyntaxHighlighter.ANNOTATION),
+			new AttributesDescriptor("Annotations", TaraSyntaxHighlighter.ANNOTATION),
 			new AttributesDescriptor("Numbers", TaraSyntaxHighlighter.NUMBERS),
 			new AttributesDescriptor("Bad Characters", TaraSyntaxHighlighter.BAD_CHARACTER)
 		};
