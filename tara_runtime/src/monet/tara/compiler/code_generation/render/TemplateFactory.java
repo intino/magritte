@@ -117,7 +117,7 @@ public class TemplateFactory {
 
 		TEMPLATES.put("plugin.xml", IDE + SRC+ "META-INF/plugin.xml");
 
-		TEMPLATES.put("errorReporter.properties", IDE + RES+ "errorreporting/errorReporter.properties.xml");
+		TEMPLATES.put("errorReporter.properties", IDE + RES+ "errorreporting/errorReporter.properties");
 		TEMPLATES.put("PluginErrorReportSubmitterBundle.properties", IDE + RES+ "errorreporting/PluginErrorReportSubmitterBundle.properties");
 		TEMPLATES.put("Bundle.properties", IDE + RES+ "messages/-Bundle.properties");
 

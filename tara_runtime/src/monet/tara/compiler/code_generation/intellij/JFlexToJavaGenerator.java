@@ -1,6 +1,7 @@
 package monet.tara.compiler.code_generation.intellij;
 
 import monet.tara.compiler.code_generation.JavaCommandHelper;
+import monet.tara.compiler.code_generation.render.RenderUtils;
 import monet.tara.compiler.code_generation.render.TemplateFactory;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.error_collection.TaraException;
@@ -47,7 +48,8 @@ public class JFlexToJavaGenerator extends CodeGenerator {
 
 	public static void fixTypes(File tempPath, String project) {
 		try {
-			String typesFile = tempPath.getAbsolutePath() + SRC + TemplateFactory.getTemplate("Types");
+			String typesFile = tempPath.getAbsolutePath() + SEP + SRC + SEP +
+				TemplateFactory.getTemplate("Types.java").replace("-", RenderUtils.toProperCase(project));
 			String fileContent = FileSystemUtils.readFile(typesFile);
 			fileContent.replace("new " + project + "TokenType(\"NEW_LINE_INDENT\");", "TokenType.NEW_LINE_INDENT;");
 

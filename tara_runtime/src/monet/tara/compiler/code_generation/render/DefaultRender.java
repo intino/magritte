@@ -20,8 +20,8 @@ public class DefaultRender extends Render {
 	protected void init() {
 		try {
 			render();
-		} catch (TaraException e) {
-			e.printStackTrace();
+		} catch (TaraException ignored) {
+			System.err.println("Template not found: " + tplName);
 		}
 	}
 

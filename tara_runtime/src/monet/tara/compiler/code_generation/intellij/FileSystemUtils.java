@@ -286,14 +286,12 @@ public class FileSystemUtils {
 		try {
 			oInputStreamReader = new InputStreamReader(new FileInputStream(sFilename), "UTF-8");
 			oBufferedReader = new BufferedReader(oInputStreamReader);
-			while ((sLine = oBufferedReader.readLine()) != null) {
+			while ((sLine = oBufferedReader.readLine()) != null)
 				oContent.append(sLine).append("\n");
-			}
 			oInputStreamReader.close();
 		} catch (IOException oException) {
 			throw new FileSystemException("Could not read file", sFilename, oException.getMessage());
 		}
-
 		return oContent.toString();
 	}
 
