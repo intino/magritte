@@ -35,7 +35,7 @@ public class Parser {
 			AST ast = new AST();
 			ParseTreeWalker walker = new ParseTreeWalker();
 			TaraASTGeneratorListener extractor = new TaraASTGeneratorListener(ast);
-			walker.walk(extractor, rootContext); // initiate walk of tree with listener
+			walker.walk(extractor, rootContext);
 			return ast;
 		} catch (RecognitionException e) {
 			Token token = ((org.antlr.v4.runtime.Parser) e.getRecognizer()).getCurrentToken();

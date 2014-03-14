@@ -95,7 +95,7 @@ OPTIONAL   : 'optional';
 HAS_CODE   : 'has-code';
 EXTENSIBLE : 'extensible';
 VAR        : 'var';
-ROOT       : 'root';
+ROOT       : 'ast';
 SINGLETON  : 'singleton';
 NEW        : 'new';
 POLYMORPHIC: 'polymorphic';

@@ -1,15 +1,14 @@
-// Generated from /home/bycor/Projects/Tara/src/AntlrM2/src/TaraM2Lexer.g4 by ANTLR 4.x
+package monet.tara.compiler.parser.antlr;
 
-    package monet.tara.compiler.parser.antlr;
-
-import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.LexerATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class TaraM2Lexer extends Lexer {
@@ -17,14 +16,14 @@ public class TaraM2Lexer extends Lexer {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		CONCEPT=1, AS=2, FINAL=3, ABSTRACT=4, MULTIPLE=5, OPTIONAL=6, HAS_CODE=7, 
-		EXTENSIBLE=8, VAR=9, ROOT=10, SINGLETON=11, NEW=12, POLYMORPHIC=13, MORPH=14, 
-		WORD=15, LIST=16, LEFT_SQUARE=17, RIGHT_SQUARE=18, OPEN_BRACKET=19, CLOSE_BRACKET=20, 
-		OPEN_AN=21, CLOSE_AN=22, COMMA=23, DOT=24, ASSIGN=25, DOUBLE_COMMAS=26, 
-		SEMICOLON=27, POSITIVE=28, NEGATIVE=29, UID_TYPE=30, INT_TYPE=31, NATURAL_TYPE=32, 
-		DOUBLE_TYPE=33, STRING_TYPE=34, BOOLEAN_TYPE=35, BOOLEAN_VALUE=36, POSITIVE_VALUE=37, 
-		NEGATIVE_VALUE=38, DOUBLE_VALUE=39, STRING_VALUE=40, IDENTIFIER=41, DIGIT=42, 
-		LETTER=43, NEWLINE=44, SPACES=45, DOC=46, SP=47, NL=48, NEW_LINE_INDENT=49, 
+		CONCEPT=1, AS=2, FINAL=3, ABSTRACT=4, MULTIPLE=5, OPTIONAL=6, HAS_CODE=7,
+		EXTENSIBLE=8, VAR=9, ROOT=10, SINGLETON=11, NEW=12, POLYMORPHIC=13, MORPH=14,
+		WORD=15, LIST=16, LEFT_SQUARE=17, RIGHT_SQUARE=18, OPEN_BRACKET=19, CLOSE_BRACKET=20,
+		OPEN_AN=21, CLOSE_AN=22, COMMA=23, DOT=24, ASSIGN=25, DOUBLE_COMMAS=26,
+		SEMICOLON=27, POSITIVE=28, NEGATIVE=29, UID_TYPE=30, INT_TYPE=31, NATURAL_TYPE=32,
+		DOUBLE_TYPE=33, STRING_TYPE=34, BOOLEAN_TYPE=35, BOOLEAN_VALUE=36, POSITIVE_VALUE=37,
+		NEGATIVE_VALUE=38, DOUBLE_VALUE=39, STRING_VALUE=40, IDENTIFIER=41, DIGIT=42,
+		LETTER=43, NEWLINE=44, SPACES=45, DOC=46, SP=47, NL=48, NEW_LINE_INDENT=49,
 		DEDENT=50, UNKNOWN_TOKEN=51;
 	public static String[] modeNames = {
 		"DEFAULT_MODE"
@@ -32,23 +31,23 @@ public class TaraM2Lexer extends Lexer {
 
 	public static final String[] tokenNames = {
 		"<INVALID>",
-		"'Concept'", "'as'", "'final'", "'abstract'", "'multiple'", "'optional'", 
-		"'has-code'", "'extensible'", "'var'", "'root'", "'singleton'", "'new'", 
-		"'polymorphic'", "'morph'", "'Word'", "LIST", "'['", "']'", "'{'", "'}'", 
-		"'<'", "'>'", "','", "'.'", "'='", "'\"'", "SEMICOLON", "'+'", "'-'", 
-		"'Uid'", "'Integer'", "'Natural'", "'Double'", "'String'", "'Boolean'", 
-		"BOOLEAN_VALUE", "POSITIVE_VALUE", "NEGATIVE_VALUE", "DOUBLE_VALUE", "STRING_VALUE", 
-		"IDENTIFIER", "DIGIT", "LETTER", "NEWLINE", "SPACES", "DOC", "SP", "NL", 
+		"'Concept'", "'as'", "'final'", "'abstract'", "'multiple'", "'optional'",
+		"'has-code'", "'extensible'", "'var'", "'root'", "'singleton'", "'new'",
+		"'polymorphic'", "'morph'", "'Word'", "LIST", "'['", "']'", "'{'", "'}'",
+		"'<'", "'>'", "','", "'.'", "'='", "'\"'", "SEMICOLON", "'+'", "'-'",
+		"'Uid'", "'Integer'", "'Natural'", "'Double'", "'String'", "'Boolean'",
+		"BOOLEAN_VALUE", "POSITIVE_VALUE", "NEGATIVE_VALUE", "DOUBLE_VALUE", "STRING_VALUE",
+		"IDENTIFIER", "DIGIT", "LETTER", "NEWLINE", "SPACES", "DOC", "SP", "NL",
 		"'indent'", "'dedent'", "UNKNOWN_TOKEN"
 	};
 	public static final String[] ruleNames = {
-		"CONCEPT", "AS", "FINAL", "ABSTRACT", "MULTIPLE", "OPTIONAL", "HAS_CODE", 
-		"EXTENSIBLE", "VAR", "ROOT", "SINGLETON", "NEW", "POLYMORPHIC", "MORPH", 
-		"WORD", "LIST", "LEFT_SQUARE", "RIGHT_SQUARE", "OPEN_BRACKET", "CLOSE_BRACKET", 
-		"OPEN_AN", "CLOSE_AN", "COMMA", "DOT", "ASSIGN", "DOUBLE_COMMAS", "SEMICOLON", 
-		"POSITIVE", "NEGATIVE", "UID_TYPE", "INT_TYPE", "NATURAL_TYPE", "DOUBLE_TYPE", 
-		"STRING_TYPE", "BOOLEAN_TYPE", "BOOLEAN_VALUE", "POSITIVE_VALUE", "NEGATIVE_VALUE", 
-		"DOUBLE_VALUE", "STRING_VALUE", "IDENTIFIER", "DIGIT", "LETTER", "NEWLINE", 
+		"CONCEPT", "AS", "FINAL", "ABSTRACT", "MULTIPLE", "OPTIONAL", "HAS_CODE",
+		"EXTENSIBLE", "VAR", "ROOT", "SINGLETON", "NEW", "POLYMORPHIC", "MORPH",
+		"WORD", "LIST", "LEFT_SQUARE", "RIGHT_SQUARE", "OPEN_BRACKET", "CLOSE_BRACKET",
+		"OPEN_AN", "CLOSE_AN", "COMMA", "DOT", "ASSIGN", "DOUBLE_COMMAS", "SEMICOLON",
+		"POSITIVE", "NEGATIVE", "UID_TYPE", "INT_TYPE", "NATURAL_TYPE", "DOUBLE_TYPE",
+		"STRING_TYPE", "BOOLEAN_TYPE", "BOOLEAN_VALUE", "POSITIVE_VALUE", "NEGATIVE_VALUE",
+		"DOUBLE_VALUE", "STRING_VALUE", "IDENTIFIER", "DIGIT", "LETTER", "NEWLINE",
 		"SPACES", "DOC", "SP", "NL", "NEW_LINE_INDENT", "DEDENT", "UNKNOWN_TOKEN"
 	};
 

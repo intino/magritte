@@ -15,12 +15,21 @@ public class Constituents {
 
     public String getConstituentString(){
         String constituent = getStringConstituents(root.searchAncestry(node), "");
+        if (node.isMorph()) constituent = getStringConstituentsPolymorphfic(node.getParent(), constituent);
         constituent =  getStringConstituents(node, constituent);
         return constituent.substring(constituent.indexOf("|") + 1);
     }
 
     private String getTransformedAbsolutePath(ASTNode node){
         return node.getAbsolutePath().toLowerCase().replaceAll("\\.","_");
+    }
+
+    private String getStringConstituentsPolymorphfic(ASTNode node, String constituents){
+        if (node != null){
+            for (ASTNode child : node.getChildren())
+                if (!child.isAbstract() && !child.isMorph() || contains(this.node.getChildren(),node)) constituents = evaluateStringFormatConstituent(child, constituents);
+        }
+        return constituents;
     }
 
     private String getStringConstituents(ASTNode node, String constituents){
@@ -31,20 +40,30 @@ public class Constituents {
         return constituents;
     }
 
-    private String evaluateStringFormatConstituent(ASTNode child, String constituents) {
-        if (child.isPolymorphic()){
-            for (ASTNode morphChild : child.getMorphs())
-                if (! morphChild.isAbstract()) constituents = polymorphicEvaluatorFormat(morphChild, constituents);
+    private String evaluateStringFormatConstituent(ASTNode node, String constituents) {
+        if (node.isPolymorphic()){
+            for (ASTNode morphChild : node.getMorphs())
+                if (! morphChild.isAbstract()) constituents = evaluateFormat(morphChild, constituents);
         }
-        else constituents = polymorphicEvaluatorFormat(child, constituents);
+        else constituents = evaluateFormat(node, constituents);
         return constituents;
     }
 
-    private String polymorphicEvaluatorFormat(ASTNode morphChild, String constituents) {
-        if (root.searchAncestry(morphChild) != null)constituents += " | " + ((!morphChild.getIdentifier().equals(""))?
-                getTransformedAbsolutePath(morphChild) : getTransformedAbsolutePath(root.searchAncestry(morphChild)));
-        else constituents += (morphChild.getIdentifier().equals(""))?
-                "" : " | " + getTransformedAbsolutePath(morphChild) ;
+    private String evaluateFormat(ASTNode node, String constituents) {
+        ASTNode nodeAncestry = root.searchAncestry(node);
+        if (nodeAncestry != null && !nodeAncestry.isPolymorphic())
+            constituents += " | " + ((!node.getIdentifier().equals(""))?
+                getTransformedAbsolutePath(node) : getTransformedAbsolutePath(nodeAncestry));
+        else constituents += (node.getIdentifier().equals(""))?
+                 "" : " | " + getTransformedAbsolutePath(node) ;
         return constituents;
+    }
+
+    private boolean contains(ASTNode[]nodes,ASTNode node){
+        for (ASTNode child : nodes){
+            ASTNode trulyNode = (child.getIdentifier().equals(""))? root.searchAncestry(child) : child;
+            if (trulyNode == node) return true;
+        }
+        return false;
     }
 }

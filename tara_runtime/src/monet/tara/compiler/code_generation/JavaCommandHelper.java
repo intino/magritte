@@ -11,18 +11,20 @@ public class JavaCommandHelper {
 	public static ArrayList<String> buildJavaCompileCommandLine(File[] sources,
 	                                                            String[] classpath,
 	                                                            String[] vmParams,
-	                                                            String tempDirectory) {
+	                                                            String buildDirectory) {
 		final ArrayList<String> cmdLine = new ArrayList<>();
 		cmdLine.add(getJavacExecutable());
 		if (vmParams != null)
 			Collections.addAll(cmdLine, vmParams);
 		if (sources.length != 0) {
 			ArrayList<String> sourceParam = new ArrayList<>();
-			File buildPath = new File(tempDirectory + File.separator + "build" + File.separator);
+			File buildPath = new File(buildDirectory);
 			buildPath.mkdirs();
 			cmdLine.add("-d " + buildPath.getAbsolutePath());
-			cmdLine.add("-classpath");
-			cmdLine.add(join(classpath, File.pathSeparator));
+			if (classpath != null && classpath.length > 0) {
+				cmdLine.add("-classpath");
+				cmdLine.add(join(classpath, File.pathSeparator));
+			}
 			for (File source : sources)
 				sourceParam.add(source.getAbsolutePath());
 			cmdLine.add(join(sourceParam.toArray(new String[sourceParam.size()]), " "));
@@ -43,11 +45,11 @@ public class JavaCommandHelper {
 	}
 
 
-	public static ArrayList<String> buildJarCommandLine(String tempPath, String name, String[] libraries) {
+	public static ArrayList<String> buildJarCommandLine(String tempPath, String destinyName, String[] libraries) {
 		final ArrayList<String> cmdLine = new ArrayList<>();
 		cmdLine.add(getJarExecutable());
 		cmdLine.add("cf");
-		cmdLine.add(name + ".jar");
+		cmdLine.add(destinyName + ".jar");
 		cmdLine.add(join(libraries, " "));
 		cmdLine.add("-C");
 		cmdLine.add(tempPath + File.separator + "build" + File.separator);

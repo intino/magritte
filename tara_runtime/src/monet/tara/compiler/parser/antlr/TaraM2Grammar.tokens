@@ -81,6 +81,6 @@ CLOSE_BRACKET=20
 'Natural'=32
 ','=23
 'Word'=15
-'root'=10
+'ast'=10
 ']'=18
 'morph'=14
