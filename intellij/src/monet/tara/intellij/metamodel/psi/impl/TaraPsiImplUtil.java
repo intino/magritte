@@ -17,29 +17,28 @@ public class TaraPsiImplUtil {
 	}
 
 	public static String getIdentifier(Concept element) {
-		ASTNode valueNode;
-		if (element.getNode().findChildByType(TaraTypes.SIGNATURE) != null) {
-			valueNode = element.getNode().findChildByType(TaraTypes.SIGNATURE).findChildByType(TaraTypes.IDENTIFIER);
+		if (element.getSignature().getIdentifier() != null) {
+			ASTNode valueNode = element.getSignature().getIdentifier().getNode();
 			if (valueNode != null) return valueNode.getText();
 		}
 		return null;
 	}
 
 	public static PsiElement getIdentifierNode(Concept element) {
-		if (element.getNode().findChildByType(TaraTypes.SIGNATURE) != null) {
-			ASTNode valueNode = element.getNode().findChildByType(TaraTypes.SIGNATURE).findChildByType(TaraTypes.IDENTIFIER);
+		if (element.getSignature().getIdentifier() != null) {
+			ASTNode valueNode = element.getSignature().getIdentifier().getNode();
 			if (valueNode != null) return valueNode.getPsi();
 		}
 		return null;
 	}
 
-	public static String getIdentifier(TaraReferenceIdentifier element) {
+	public static String getIdentifier(ReferenceIdentifier element) {
 		ASTNode valueNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER_KEY);
 		if (valueNode != null) return valueNode.getText();
 		else return null;
 	}
 
-	public static String getIdentifier(TaraReferenceStatementImpl element) {
+	public static String getIdentifier(ReferenceStatement element) {
 		ASTNode valueNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER_KEY);
 		if (valueNode != null) return valueNode.getText();
 		else return null;
@@ -55,7 +54,7 @@ public class TaraPsiImplUtil {
 		return element;
 	}
 
-	public static PsiElement getIdentifier(TaraSignature element) {
+	public static PsiElement getIdentifier(Signature element) {
 		ASTNode keyNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER);
 		if (keyNode != null) return keyNode.getPsi();
 		else return null;
@@ -90,7 +89,7 @@ public class TaraPsiImplUtil {
 			PsiElement element = element1;
 			while ((element.getParent() != null) && !(element.getParent() instanceof TaraFile) && !(element.getParent() instanceof Concept))
 				element = element.getParent();
-			return (element.getParent() instanceof TaraConcept) ? (TaraConcept) element.getParent() : null;
+			return (element.getParent() instanceof Concept) ? (Concept) element.getParent() : null;
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 			return null;

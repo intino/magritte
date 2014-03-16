@@ -19,13 +19,13 @@ import java.io.IOException;
 
 
 public class TaraDocumentationProvider extends AbstractDocumentationProvider {
-	private static String getLocationString(PsiElement element) {
+	private String getLocationString(PsiElement element) {
 		PsiFile file = element.getContainingFile();
 		return file != null ? " [" + file.getName().split("\\.")[0] + "]" : "";
 	}
 
 	@NotNull
-	private static String renderConceptValue(Concept concept) {
+	private String renderConceptValue(Concept concept) {
 		String raw = concept.getText();
 		if (raw == null) {
 			return "<i>empty</i>";
@@ -63,7 +63,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	private String markdownToHtml(String text) {
 		String html = "";
 		try {
-			html = new Markdown4jProcessor().process(text.replace("'",""));
+			html = new Markdown4jProcessor().process(text.replace("'", ""));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -2,7 +2,7 @@
   <id>siani.dev.::projectName::</id>
   <name>::projectProperName:: Plugin</name>
   <version>1.0</version>
-  <vendor email="octavioroncal\@siani.es" url="http://www.monet.org">Siani</vendor>
+  <vendor email="octavioroncal\@siani.es" url="http\://www.monet.org">Siani</vendor>
 
   <description><![CDATA[
       Enter short description for your plugin here.<br>
@@ -15,10 +15,10 @@
       ]]>
   </change-notes>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+  <!-- please see http\://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
   <idea-version since-build="133.331"/>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+  <!-- please see http\://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
   <!-- uncomment to enable plugin in all products
   <depends>com.intellij.modules.lang</depends>
@@ -48,16 +48,19 @@
                          implementationClass="monet.::projectName::.intellij.refactoring.rename.NamesValidator"/>
     <projectService serviceInterface="monet.::projectName::.intellij.metamodel.psi.::projectProperName::ElementFactory"
                     serviceImplementation="monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::ElementFactoryImpl"/>
-    <moduleType id="TARA_MODULE" implementationClass="monet.::projectName::.intellij.project.module.ModuleType"/>
+    <moduleType id="::projectUpperName::_MODULE" implementationClass="monet.::projectName::.intellij.project.module.ModuleType"/>
+    <treeStructureProvider implementation="monet.::projectName::.intellij.project.view.MergerTreeStructureProvider"/>
+
+    <!--compiler-->
+    <compileServer.plugin classpath="::projectName::-jps-plugin.jar"/>
     <projectConfigurable instance="monet.::projectName::.intellij.compiler.::projectProperName::CompilerConfigurable" id="::projectProperName:: compiler"
                          displayName="::projectProperName:: Compiler" parentId="project.propCompiler"/>
-    <treeStructureProvider implementation="monet.::projectName::.intellij.project.view.MergerTreeStructureProvider"/>
-    <compileServer.plugin classpath="::projectName::-jps-plugin.jar"/>
 
     <projectService serviceInterface="monet.::projectName::.intellij.compiler.::projectProperName::CompilerWorkspaceConfiguration"
                     serviceImplementation="monet.::projectName::.intellij.compiler.::projectProperName::CompilerWorkspaceConfiguration"/>
     <projectService serviceInterface="monet.::projectName::.intellij.compiler.::projectProperName::CompilerConfiguration"
                     serviceImplementation="monet.::projectName::.intellij.compiler.::projectProperName::CompilerConfiguration"/>
+    <!--end_compiler-->
 
     <configurationType implementation="monet.::projectName::.intellij.project.runner.RunConfigurationType"/>
     <lang.commenter language="::projectProperName::" implementationClass="monet.::projectName::.intellij.::projectProperName::Commenter"/>

@@ -1,8 +1,8 @@
-package monet.::projectName::.intellij.metamodel;
+package monet.::projectName::.intellij.metamodel.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import monet.::projectName::.compiler.intellij.psi.::projectNameFile::Types;
+import monet.::projectName::.intellij.metamodel.psi.::projectNameFile::Types;
 import com.intellij.psi.TokenType;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -143,7 +143,7 @@ NEGATIVE_VALUE = {NEGATIVE} {DIGIT}+
 DOUBLE_VALUE   = ({POSITIVE} | {NEGATIVE})? {DIGIT}+ {DOT} {DIGIT}+
 STRING_VALUE   = {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
 CODE           = "\#" {DIGIT}+
-DOC = "'" ~[\\n]
+DOC_LINE = "'" ~[\\n]
 
 DIGIT=[:digit:]
 
@@ -185,7 +185,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{ROOT}                      {   return ::projectNameFile::Types.ROOT; }
 	{SINGLETON}                 {   return ::projectNameFile::Types.SINGLETON; }
 
-	{DOC}                       {   return ::projectNameFile::Types.DOC; }
+	{DOC_LINE}                       {   return ::projectNameFile::Types.DOC_LINE; }
 
 	{STRING_VALUE}              {   return ::projectNameFile::Types.STRING_VALUE_KEY; }
 	{CODE}                      {   return ::projectNameFile::Types.CODE;}

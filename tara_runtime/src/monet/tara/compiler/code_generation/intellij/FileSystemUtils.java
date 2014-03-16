@@ -59,11 +59,11 @@ public class FileSystemUtils {
 	public static Boolean removeDir(File oFile) {
 		if (oFile.exists()) {
 			File[] aFiles = oFile.listFiles();
-			for (int iPos = 0; iPos < aFiles.length; iPos++) {
-				if (aFiles[iPos].isDirectory()) {
-					removeDir(aFiles[iPos].getAbsolutePath());
+			for (File aFile : aFiles) {
+				if (aFile.isDirectory()) {
+					removeDir(aFile.getAbsolutePath());
 				} else {
-					aFiles[iPos].delete();
+					aFile.delete();
 				}
 			}
 		} else {
@@ -96,8 +96,6 @@ public class FileSystemUtils {
 
 					InputStream in = new FileInputStream(oSource);
 					OutputStream out = new FileOutputStream(oDestination);
-
-					// Copy the bits from instream to outstream
 					byte[] buf = new byte[1024];
 					int len;
 					while ((len = in.read(buf)) > 0) {

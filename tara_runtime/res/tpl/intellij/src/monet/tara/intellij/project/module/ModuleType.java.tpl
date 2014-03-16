@@ -12,14 +12,14 @@ import javax.swing.*;
 public class ModuleType extends JavaModuleType {
 
 	\@NonNls
-	public static final String TARA_MODULE = "TARA_MODULE";
+	public static final String ::projectUpperName::_MODULE = "::projectUpperName::_MODULE";
 
 	public ModuleType() {
-		super(TARA_MODULE);
+		super(::projectUpperName::_MODULE);
 	}
 
 	public static com.intellij.openapi.module.ModuleType getInstance() {
-		return ModuleTypeManager.getInstance().findByID(TARA_MODULE);
+		return ModuleTypeManager.getInstance().findByID(::projectUpperName::_MODULE);
 	}
 
 

@@ -23,10 +23,10 @@ public class RenameHandler extends PsiElementRenameHandler {
 		final PsiReference reference = TargetElementUtilBase.findReference(editor);
 		if (reference instanceof ::projectProperName::Reference) {
 			final ResolveResult[] resolveResults = ((::projectProperName::Reference) reference).multiResolve(false);
-			return resolveResults.length > 0 ? resolveResults[0].getElement() : null;
+			return resolveResults.length > 0 ? resolveResults[0].getElement() \: null;
 		} else if (reference instanceof PsiMultiReference) {
 			final PsiReference[] references = ((PsiMultiReference) reference).getReferences();
-			for (PsiReference psiReference : references)
+			for (PsiReference psiReference \: references)
 				if (psiReference instanceof ::projectProperName::Reference) {
 					final ResolveResult[] resolveResults = ((::projectProperName::Reference) psiReference).multiResolve(false);
 					if (resolveResults.length > 0) return resolveResults[0].getElement();

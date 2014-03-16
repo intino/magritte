@@ -3,7 +3,7 @@ package monet.tara.intellij.metamodel.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import monet.tara.intellij.metamodel.psi.TaraAnnotations;
+import monet.tara.intellij.metamodel.psi.Annotations;
 import org.jetbrains.annotations.NotNull;
 
 public class AnnotationsMixin extends ASTWrapperPsiElement {
@@ -12,7 +12,7 @@ public class AnnotationsMixin extends ASTWrapperPsiElement {
 	}
 
 	public PsiElement[] getAnnotations() {
-		return TaraPsiImplUtil.getAnnotations((TaraAnnotations)this);
+		return TaraPsiImplUtil.getAnnotations((Annotations)this);
 	}
 
 }

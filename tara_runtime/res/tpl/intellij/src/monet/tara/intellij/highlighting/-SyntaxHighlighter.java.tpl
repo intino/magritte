@@ -62,7 +62,8 @@ public class ::projectProperName::SyntaxHighlighter extends SyntaxHighlighterBas
 		keys1.put(TokenType.WHITE_SPACE, null);
 		keys1.put(::projectProperName::Types.IDENTIFIER_KEY, IDENTIFIER);
 
-		keys1.put(::projectProperName::Types.CONCEPT_KEY, KEYWORD);
+		::highlightKeys::
+
 		keys1.put(::projectProperName::Types.AS, KEYWORD);
 		keys1.put(::projectProperName::Types.OPEN_AN, KEYWORD);
 		keys1.put(::projectProperName::Types.CLOSE_AN, KEYWORD);

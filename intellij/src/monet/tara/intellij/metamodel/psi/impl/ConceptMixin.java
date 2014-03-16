@@ -24,7 +24,6 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public SearchScope getUseScope() {
-		// concept ref can occur in any file
 		return GlobalSearchScope.allScope(getProject());
 	}
 
@@ -43,7 +42,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String getName() {
-		return TaraPsiImplUtil.getIdentifier((TaraConcept) this);
+		return TaraPsiImplUtil.getIdentifier((Concept) this);
 	}
 
 	public TaraFileImpl getFile() throws PsiInvalidElementAccessException {
@@ -53,9 +52,8 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	@Nullable
 	public String getDocCommentText() {
 		StringBuilder text = new StringBuilder();
-		TaraDoc doc = ((TaraConcept) this).getDoc();
+		Doc doc = ((Concept) this).getDoc();
 		String comment;
-
 		if (doc != null) {
 			comment = doc.getText();
 			String trimmed = StringUtil.trimStart(StringUtil.trimStart(comment, "#"), "!");
@@ -80,7 +78,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public PsiElement setName(String newName) {
-		return TaraPsiImplUtil.setName(((TaraConcept) this).getSignature(), newName);
+		return TaraPsiImplUtil.setName(((Concept) this).getSignature(), newName);
 	}
 
 	public PsiElement getIdentifierNode() {
@@ -89,14 +87,24 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 
 	public Body getBody() {
-		return findChildByClass(TaraBody.class);
+		return findChildByClass(Body.class);
 	}
 
 	public boolean isPolymorphic(){
-		return ((TaraConcept) this).getSignature().getPolymorphic() != null;
+		return ((Concept) this).getSignature().getPolymorphic() != null;
 	}
 
 	public boolean isMorph() {
-		return ((TaraConcept) this).getSignature().getMorph() != null;
+		return ((Concept) this).getSignature().getMorph() != null;
+	}
+
+	@NotNull
+	public Signature getSignature() {
+		return findNotNullChildByClass(Signature.class);
+	}
+
+	@Nullable
+	public Annotations getAnnotations() {
+		return findChildByClass(Annotations.class);
 	}
 }

@@ -62,7 +62,9 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 		keys1.put(TokenType.WHITE_SPACE, null);
 		keys1.put(TaraTypes.IDENTIFIER_KEY, IDENTIFIER);
 
+//gen %highlightKey%
 		keys1.put(TaraTypes.CONCEPT_KEY, KEYWORD);
+//end
 		keys1.put(TaraTypes.AS, KEYWORD);
 		keys1.put(TaraTypes.OPEN_AN, KEYWORD);
 		keys1.put(TaraTypes.CLOSE_AN, KEYWORD);

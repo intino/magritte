@@ -40,9 +40,9 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 		PluginDescriptor pluginDescriptor = getPluginDescriptor();
 		final Properties reportingProperties = new Properties();
 		queryPluginDescriptor(pluginDescriptor, reportingProperties);
-		LOGGER.debug("Properties read from plugin descriptor: " + reportingProperties);
+		LOGGER.debug("Properties read from plugin descriptor\: " + reportingProperties);
 		queryPropertiesFile(pluginDescriptor, reportingProperties);
-		LOGGER.debug("Final properties to be applied: " + reportingProperties);
+		LOGGER.debug("Final properties to be applied\: " + reportingProperties);
 		final LoggingEventSubmitter.SubmitException[] ex = new LoggingEventSubmitter.SubmitException[]{null};
 		Runnable runnable = getRunnable(events, reportingProperties);
 		ProgressManager progressManager = ProgressManager.getInstance();
@@ -81,9 +81,9 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 
 	private String processEvents(IdeaLoggingEvent[] events) {
 		StringBuilder stream = new StringBuilder();
-		for (IdeaLoggingEvent event : events) {
-			stream.append(event.getMessage() != null ? event.getMessage() : "");
-			stream.append(event.getThrowableText() != null ? event.getThrowableText() : "");
+		for (IdeaLoggingEvent event \: events) {
+			stream.append(event.getMessage() != null ? event.getMessage() \: "");
+			stream.append(event.getThrowableText() != null ? event.getThrowableText() \: "");
 		}
 		return stream.toString();
 	}
@@ -110,7 +110,7 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 		ClassLoader loader = pluginDescriptor.getPluginClassLoader();
 		InputStream stream = loader.getResourceAsStream(ERROR_SUBMITTER_PROPERTIES_PATH);
 		if (stream != null) {
-			LOGGER.debug("Reading ErrorReporter.properties from file system: " + ERROR_SUBMITTER_PROPERTIES_PATH);
+			LOGGER.debug("Reading ErrorReporter.properties from file system\: " + ERROR_SUBMITTER_PROPERTIES_PATH);
 			try {
 				properties.load(stream);
 			} catch (Exception e) {

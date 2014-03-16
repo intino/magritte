@@ -18,7 +18,7 @@
 
 root \:\:= (synthetizeStatement | NEWLINE)* (definition | NEWLINE)*
 
-synthetizeStatement \:\:= SYNTHETIZE composedIdentifier ((OPEN_AN synthetizeTag+ CLOSE_AN) | synthetizeAttribute )
+synthetizeStatement \:\:= SYNTHETIZE referenceIdentifier ((OPEN_AN synthetizeTag+ CLOSE_AN) | synthetizeAttribute )
 synthetizeTag \:\:= FINAL | ABSTRACT |  MULTIPLE |  OPTIONAL | HAS_CODE | SINGLETON | ROOT | EXTENSIBLE
 //{
 //mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.AnnotationsMixin'
@@ -26,11 +26,15 @@ synthetizeTag \:\:= FINAL | ABSTRACT |  MULTIPLE |  OPTIONAL | HAS_CODE | SINGLE
 //}
 synthetizeAttribute \:\:= NEW_LINE_INDENT( attribute  NEWLINE+)+ DEDENT
 
-definition \:\:= ::concepts::
+private definition \:\:= ::concepts::
 
-docLine \:\:= DOC+
-basicConstituents\:\:= attribute | referenceStatement | word
-definitionInjection \:\:= NEW composedIdentifier
+doc \:\:= DOC_LINE+
+{
+mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.DocMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.Doc'
+}
+private basicConstituents\:\:= attribute | referenceStatement | word
+definitionInjection \:\:= NEW referenceIdentifier
 {
 mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.DefinitionInjectionMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.DefinitionInjection'
@@ -42,10 +46,10 @@ identifier  \:\:=  IDENTIFIER_KEY
 mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.IdentifierMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.Identifier'
 }
-composedIdentifier  \:\:=  identifier (DOT identifier)*
+referenceIdentifier  \:\:=  identifier (DOT identifier)*
 {
 mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
-implements='monet.projectName.intellij.metamodel.psi.ReferenceIdentifier'
+implements='monet.::projectName::.intellij.metamodel.psi.ReferenceIdentifier'
 }
 polymorphic \:\:= POLYMORPHIC_KEY
 morph \:\:= MORPH_KEY
@@ -65,7 +69,7 @@ word\:\:= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ 
 mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.WordMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.Word'
 }
-referenceStatement\:\:= VAR composedIdentifier LIST? variableNames
+referenceStatement\:\:= VAR referenceIdentifier LIST? variableNames
 {
 mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.ReferenceStatementMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.ReferenceStatement'
@@ -89,11 +93,11 @@ naturalList\:\:= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
 
 @concept
 ::pipe|*::::identifier::@ruleConcept
-::identifier::\:\:= docLine? ::identifier::Signature ::code|*:: ::identifier::Body?
+::identifier::\:\:= doc? ::identifier::Signature ::code|*:: ::identifier::Body?
 { mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.DefinitionMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.Definition'
 }
-::identifier::Signature \:\:= ::lexicoIdentifier:: composedIdentifier? (polymorphic | modifier? morph?) (AS identifier)? ::assignAttributeHeader|*::
+::identifier::Signature \:\:= ::lexicoIdentifier:: referenceIdentifier? (polymorphic | modifier? morph?) (AS identifier)? ::assignAttributeHeader|*::
 { mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.SignatureMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.Signature'
 }

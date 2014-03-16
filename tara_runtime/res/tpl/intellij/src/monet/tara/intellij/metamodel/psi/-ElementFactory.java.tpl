@@ -14,7 +14,7 @@ public abstract class ::projectProperName::ElementFactory {
 
 	public abstract ::projectProperName::FileImpl createDummyFile(String text);
 
-	public abstract ::projectProperName::Identifier createNameIdentifier(String name);
+	public abstract Identifier createNameIdentifier(String name);
 
 	public abstract Attribute createAttribute(String name, String type);
 }

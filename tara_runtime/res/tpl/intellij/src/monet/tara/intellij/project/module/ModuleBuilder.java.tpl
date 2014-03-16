@@ -35,7 +35,7 @@ public class ModuleBuilder extends JavaModuleBuilder {
 	}
 
 	public void setSourcePaths(final List<Pair<String, String>> sourcePaths) {
-		mySourcePaths = sourcePaths != null ? new ArrayList<>(sourcePaths) : null;
+		mySourcePaths = sourcePaths != null ? new ArrayList<>(sourcePaths) \: null;
 	}
 
 
@@ -59,7 +59,7 @@ public class ModuleBuilder extends JavaModuleBuilder {
 			final List<Pair<String, String>> sourcePaths = getSourcePaths();
 
 			if (sourcePaths != null) {
-				for (final Pair<String, String> sourcePath : sourcePaths) {
+				for (final Pair<String, String> sourcePath \: sourcePaths) {
 					String first = sourcePath.first;
 					new File(first).mkdirs();
 					final VirtualFile sourceRoot = LocalFileSystem.getInstance()
@@ -90,7 +90,7 @@ public class ModuleBuilder extends JavaModuleBuilder {
 			compilerModuleExtension.inheritCompilerOutputPath(true);
 		}
 		LibraryTable libraryTable = rootModel.getModuleLibraryTable();
-		for (Pair<String, String> libInfo : myModuleLibraries) {
+		for (Pair<String, String> libInfo \: myModuleLibraries) {
 			final String moduleLibraryPath = libInfo.first;
 			final String sourceLibraryPath = libInfo.second;
 			Library library = libraryTable.createLibrary();

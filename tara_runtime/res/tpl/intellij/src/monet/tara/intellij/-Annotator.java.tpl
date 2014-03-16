@@ -44,7 +44,7 @@ public class ::projectProperName::Annotator implements Annotator {
 			psiElements = checkDefinitionInjectionAnnotation(element.getAnnotations());
 		else
 			psiElements = checkCorrectAnnotation(::projectProperName::PsiImplUtil.getContextOf(element), element.getAnnotations());
-		for (PsiElement psiElement : psiElements)
+		for (PsiElement psiElement \: psiElements)
 			holder.createErrorAnnotation(psiElement.getNode(), ::projectProperName::Bundle.message("annotation.definition.key.error.message"));
 	}
 
@@ -68,14 +68,14 @@ public class ::projectProperName::Annotator implements Annotator {
 
 	private List<PsiElement> checkAnnotationList(PsiElement[] annotations, String[] correctAnnotation) {
 		List<PsiElement> incorrectAnnotations = new ArrayList<>();
-		for (PsiElement annotation : annotations)
+		for (PsiElement annotation \: annotations)
 			if (!isIn(correctAnnotation, annotation.getText()))
 				incorrectAnnotations.add(annotation);
 		return incorrectAnnotations;
 	}
 
 	private boolean isIn(String[] correctAnnotation, String text) {
-		for (String s : correctAnnotation)
+		for (String s \: correctAnnotation)
 			if (s.equals(text)) return true;
 		return false;
 	}
@@ -87,7 +87,7 @@ public class ::projectProperName::Annotator implements Annotator {
 
 	private boolean hasMorphs(Definition context) {
 		if (context.getBody() != null)
-			for (Definition definition : context.getBody().getDefinitionList())
+			for (Definition definition \: context.getBody().getDefinitionList())
 				if (definition.isMorph()) return true;
 		return false;
 	}

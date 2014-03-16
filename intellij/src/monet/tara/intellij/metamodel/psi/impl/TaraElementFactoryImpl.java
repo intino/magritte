@@ -25,8 +25,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return (TaraFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.m2", TaraFileType.INSTANCE, text);
 	}
 
-	public TaraIdentifier createNameIdentifier(String name) {
-		return PsiTreeUtil.getChildOfType(((TaraConcept) createConcept(name)).getSignature(), TaraIdentifier.class);
+	public Identifier createNameIdentifier(String name) {
+		return PsiTreeUtil.getChildOfType(createConcept(name).getSignature(), Identifier.class);
 	}
 
 	public Attribute createAttribute(String name, String type) {
@@ -34,7 +34,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 			"Concept abstract as Source <has-code root>\n" +
 				"\tvar " + type + " " + name + "\n" +
 				"\tConcept as Ontology <optional>\n");
-		TaraBody body = ((TaraConcept) file.getFirstChild()).getBody();
+		Body body = ((Concept) file.getFirstChild()).getBody();
 		return body != null ? body.getAttributeList().get(0) : null;
 	}
 

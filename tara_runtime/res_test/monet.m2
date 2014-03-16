@@ -27,7 +27,7 @@ Concept abstract as Entity  <has-code>
 
     Concept abstract as View
 
-Concept Entity as Form <has-code extensible>
+Concept Entity as Form <root has-code extensible>
 
     Concept polymorphic as Field <has-code extensible multiple>
         var String label
@@ -115,7 +115,7 @@ Concept Entity as Form <has-code extensible>
                 Concept as ShowKey
                 Concept as Embedded
 
-        Concept Form.Field as CompositeField
+        Concept morph as CompositeField
             new Form.Field  <multiple>
             Concept as View <optional>
                 Concept as Table <optional>

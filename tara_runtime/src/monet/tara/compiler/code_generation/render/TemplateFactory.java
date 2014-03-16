@@ -28,12 +28,12 @@ public class TemplateFactory {
 		TEMPLATES.put("DuplicateInspection.form", IDE + SRC+ PROJECT_PATH + "codeinspection/Duplicate_Inspection.form");
 		TEMPLATES.put("UnusedAbstractInspection.java", IDE + SRC+ PROJECT_PATH + "codeinspection/UnusedAbstract_Inspection.java");
 		TEMPLATES.put("RemoveAttributeFix.java", IDE + SRC+ PROJECT_PATH + "codeinspection/fix/RemoveAttributeFix.java");
-		TEMPLATES.put("RemoveFix.java", IDE + SRC+ PROJECT_PATH + "codeinspection/fix/Remove_fix.java");
+		TEMPLATES.put("RemoveFix.java", IDE + SRC+ PROJECT_PATH + "codeinspection/fix/Remove_Fix.java");
 
-		TEMPLATES.put("CompilerConfigurable.form", IDE + SRC+ PROJECT_PATH + "compiler/-CompilerConfigurable.form");
-		TEMPLATES.put("CompilerConfigurable.java", IDE + SRC+ PROJECT_PATH + "compiler/-CompilerConfigurable.java");
-		TEMPLATES.put("CompilerConfiguration.java", IDE + SRC+ PROJECT_PATH + "compiler/-CompilerConfiguration.java");
-		TEMPLATES.put("CompilerWorkspaceConfiguration.java", IDE + SRC+ PROJECT_PATH + "compiler/-CompilerWorkspaceConfiguration.java");
+//		TEMPLATES.put("CompilerConfigurable.form", IDE + SRC+ PROJECT_PATH + "compiler/-CompilerConfigurable.form");
+//		TEMPLATES.put("CompilerConfigurable.java", IDE + SRC+ PROJECT_PATH + "compiler/-CompilerConfigurable.java");
+//		TEMPLATES.put("CompilerConfiguration.java", IDE + SRC+ PROJECT_PATH + "compiler/-CompilerConfiguration.java");
+//		TEMPLATES.put("CompilerWorkspaceConfiguration.java", IDE + SRC+ PROJECT_PATH + "compiler/-CompilerWorkspaceConfiguration.java");
 
 		TEMPLATES.put("LoggingEventSubmitter.java", IDE + SRC+ PROJECT_PATH + "diagnostic/errorreporting/LoggingEventSubmitter.java");
 		TEMPLATES.put("PluginErrorReportSubmitter.java", IDE + SRC+ PROJECT_PATH + "diagnostic/errorreporting/PluginErrorReportSubmitter.java");
@@ -41,14 +41,15 @@ public class TemplateFactory {
 
 		TEMPLATES.put("DocumentationProvider.java", IDE + SRC+ PROJECT_PATH + "documentation/-DocumentationProvider.java");
 
-		TEMPLATES.put("Block.java", IDE + SRC+ PROJECT_PATH + "formatter/-block.java");
-		TEMPLATES.put("FormattingModelBuilder.java", IDE + SRC+ PROJECT_PATH + "formatter/-FormattingModelBuilder.java");
+		//TEMPLATES.put("Block.java", IDE + SRC+ PROJECT_PATH + "formatter/-Block.java");
+		//TEMPLATES.put("FormattingModelBuilder.java", IDE + SRC+ PROJECT_PATH + "formatter/-FormattingModelBuilder.java");
 
 		TEMPLATES.put("BraceMatcher.java", IDE + SRC+ PROJECT_PATH + "highlighting/-BraceMatcher.java");
 		TEMPLATES.put("ColorSettingPage.java", IDE + SRC+ PROJECT_PATH + "highlighting/-ColorSettingPage.java");
 		TEMPLATES.put("HighlighterLexAdapter.java", IDE + SRC+ PROJECT_PATH + "highlighting/-HighlighterLexAdapter.java");
 		TEMPLATES.put("SyntaxHighlighter.java", IDE + SRC+ PROJECT_PATH + "highlighting/-SyntaxHighlighter.java");
 		TEMPLATES.put("SyntaxHighlighterFactory.java", IDE + SRC+ PROJECT_PATH + "highlighting/-SyntaxHighlighterFactory.java");
+		TEMPLATES.put("HighlighterLex.flex", IDE + SRC+ PROJECT_PATH + "highlighting/-HighlighterLex.flex");
 
 		TEMPLATES.put("FileType.java", IDE + SRC+ PROJECT_PATH + "metamodel/file/-FileType.java");
 		TEMPLATES.put("FileTypeFactory.java", IDE + SRC+ PROJECT_PATH + "metamodel/file/-FileTypeFactory.java");
@@ -62,22 +63,38 @@ public class TemplateFactory {
 		TEMPLATES.put("Attribute.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/Attribute.java");
 		TEMPLATES.put("File.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/-File.java");
 		TEMPLATES.put("_.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/_.java");
-		TEMPLATES.put("Signature.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/Signature.java");
 		TEMPLATES.put("Body.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/Body.java");
+		TEMPLATES.put("Annotations.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/Annotations.java");
+		TEMPLATES.put("Attribute.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/Attribute.java");
+		TEMPLATES.put("Doc.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/Doc.java");
+		TEMPLATES.put("_Injection.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/_Injection.java");
+		TEMPLATES.put("Identifier.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/Identifier.java");
+		TEMPLATES.put("ReferenceIdentifier.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/ReferenceIdentifier.java");
+		TEMPLATES.put("ReferenceStatement.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/ReferenceStatement.java");
+		TEMPLATES.put("Signature.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/Signature.java");
+		TEMPLATES.put("Word.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/Word.java");
 		TEMPLATES.put("ElementFactory.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/-ElementFactory.java");
 		TEMPLATES.put("ElementType.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/-ElementType.java");
 		TEMPLATES.put("TokenType.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/-TokenType.java");
-		TEMPLATES.put("BodyMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/BodyMixin.java");
+		TEMPLATES.put("AnnotationsMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/AnnotationsMixin.java");
 		TEMPLATES.put("AttributeMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/AttributeMixin.java");
-		TEMPLATES.put("SignatureMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/SignatureMixin.java");
-		TEMPLATES.put("IdentifierMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/IdentifierMixin.java");
-		TEMPLATES.put("ReferenceStatementMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/-ReferenceStatementMixin.java");
+		TEMPLATES.put("BodyMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/BodyMixin.java");
+		TEMPLATES.put("DocMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/DocMixin.java");
 		TEMPLATES.put("_Mixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/_Mixin.java");
+		TEMPLATES.put("_InjectionMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/_InjectionMixin.java");
+		TEMPLATES.put("AttributeMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/AttributeMixin.java");
+		TEMPLATES.put("IdentifierMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/IdentifierMixin.java");
+		TEMPLATES.put("ReferenceIdentifierMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/ReferenceIdentifierMixin.java");
+		TEMPLATES.put("ReferenceStatementMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/ReferenceStatementMixin.java");
+		TEMPLATES.put("SignatureMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/SignatureMixin.java");
+		TEMPLATES.put("WordMixin.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/WordMixin.java");
 		TEMPLATES.put("IdentifierManipulator.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/IdentifierManipulator.java");
 		TEMPLATES.put("ElementFactoryImpl.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/-ElementFactoryImpl.java");
 		TEMPLATES.put("FileImpl.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/-FileImpl.java");
 		TEMPLATES.put("PsiImplUtil.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/-PsiImplUtil.java");
 		TEMPLATES.put("Types.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/-Types.java");
+		TEMPLATES.put("Visitor.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/-Visitor.java");
+		TEMPLATES.put("DefinitionImpl.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/-DefinitionImpl.java");
 		TEMPLATES.put("Util.java", IDE + SRC+ PROJECT_PATH + "metamodel/psi/impl/-Util.java");
 
 		TEMPLATES.put("ModuleBuilder.java", IDE + SRC+ PROJECT_PATH + "project/module/ModuleBuilder.java");

@@ -17,29 +17,28 @@ public class ::projectProperName::PsiImplUtil {
 	}
 
 	public static String getIdentifier(Definition element) {
-		ASTNode valueNode;
-		if (element.getNode().findChildByType(::projectProperName::Types.SIGNATURE) != null) {
-			valueNode = element.getNode().findChildByType(::projectProperName::Types.SIGNATURE).findChildByType(::projectProperName::Types.IDENTIFIER);
+		if (element.getSignature().getIdentifier() != null) {
+			ASTNode valueNode = element.getSignature().getIdentifier().getNode();
 			if (valueNode != null) return valueNode.getText();
 		}
 		return null;
 	}
 
 	public static PsiElement getIdentifierNode(Definition element) {
-		if (element.getNode().findChildByType(::projectProperName::Types.SIGNATURE) != null) {
-			ASTNode valueNode = element.getNode().findChildByType(::projectProperName::Types.SIGNATURE).findChildByType(::projectProperName::Types.IDENTIFIER);
+		if (element.getSignature().getIdentifier() != null) {
+			ASTNode valueNode = element.getSignature().getIdentifier().getNode();
 			if (valueNode != null) return valueNode.getPsi();
 		}
 		return null;
 	}
 
-	public static String getIdentifier(::projectProperName::ReferenceIdentifier element) {
+	public static String getIdentifier(ReferenceIdentifier element) {
 		ASTNode valueNode = element.getNode().findChildByType(::projectProperName::Types.IDENTIFIER_KEY);
 		if (valueNode != null) return valueNode.getText();
 		else return null;
 	}
 
-	public static String getIdentifier(::projectProperName::ReferenceStatementImpl element) {
+	public static String getIdentifier(ReferenceStatement element) {
 		ASTNode valueNode = element.getNode().findChildByType(::projectProperName::Types.IDENTIFIER_KEY);
 		if (valueNode != null) return valueNode.getText();
 		else return null;
@@ -55,7 +54,7 @@ public class ::projectProperName::PsiImplUtil {
 		return element;
 	}
 
-	public static PsiElement getIdentifier(::projectProperName::Signature element) {
+	public static PsiElement getIdentifier(Signature element) {
 		ASTNode keyNode = element.getNode().findChildByType(::projectProperName::Types.IDENTIFIER);
 		if (keyNode != null) return keyNode.getPsi();
 		else return null;
@@ -90,7 +89,7 @@ public class ::projectProperName::PsiImplUtil {
 			PsiElement element = element1;
 			while ((element.getParent() != null) && !(element.getParent() instanceof ::projectProperName::File) && !(element.getParent() instanceof Definition))
 				element = element.getParent();
-			return (element.getParent() instanceof ::projectProperName::Definition) ? (::projectProperName::Definition) element.getParent() : null;
+			return (element.getParent() instanceof Definition) ? (Definition) element.getParent() \: null;
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 			return null;

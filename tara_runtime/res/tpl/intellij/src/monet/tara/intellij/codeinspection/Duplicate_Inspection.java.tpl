@@ -40,7 +40,7 @@ import java.util.*;
  * Created by oroncal on 09/01/14.
  */
 public class DuplicateDefinitionInspection extends GlobalSimpleInspectionTool {
-	private static final Logger LOG = Logger.getInstance("#com.intellij.codeInspection.DuplicatePropertyInspection");
+	private static final Logger LOG = Logger.getInstance("\#com.intellij.codeInspection.DuplicatePropertyInspection");
 
 	public boolean CURRENT_FILE = true;
 	public boolean MODULE_WITH_DEPENDENCIES = false;
@@ -57,30 +57,30 @@ public class DuplicateDefinitionInspection extends GlobalSimpleInspectionTool {
 	private static void surroundWithHref(StringBuffer anchor, PsiElement element, final boolean isValue) {
 		if (element != null) {
 			final PsiElement parent = element.getParent();
-			PsiElement elementToLink = isValue ? parent.getFirstChild() : parent.getLastChild();
+			PsiElement elementToLink = isValue ? parent.getFirstChild() \: parent.getLastChild();
 			if (elementToLink != null) {
 				HTMLComposer.appendAfterHeaderIndention(anchor);
 				HTMLComposer.appendAfterHeaderIndention(anchor);
-				anchor.append("<a HREF=\"");
+				anchor.append("<a HREF=\\"");
 				try {
 					final PsiFile file = element.getContainingFile();
 					if (file != null) {
 						final VirtualFile virtualFile = file.getVirtualFile();
 						if (virtualFile != null) {
-							anchor.append(new URL(virtualFile.getUrl() + "#" + elementToLink.getTextRange().getStartOffset()));
+							anchor.append(new URL(virtualFile.getUrl() + "\#" + elementToLink.getTextRange().getStartOffset()));
 						}
 					}
 				} catch (MalformedURLException e) {
 					LOG.error(e);
 				}
-				anchor.append("\">");
-				anchor.append(elementToLink.getText().replaceAll("\\$", "\\\\\\$"));
+				anchor.append("\\">");
+				anchor.append(elementToLink.getText().replaceAll("\\\\$", "\\\\\\\\\\\\$"));
 				anchor.append("</a>");
 				compoundLineLink(anchor, element);
 				anchor.append("<br>");
 			}
 		} else {
-			anchor.append("<font style=\"font-family:verdana; font-weight:bold; color:#FF0000\";>");
+			anchor.append("<font style=\\"font-family\:verdana; font-weight\:bold; color\:\#FF0000\\";>");
 			anchor.append(InspectionsBundle.message("inspection.export.results.invalidated.item"));
 			anchor.append("</font>");
 		}
@@ -93,18 +93,18 @@ public class DuplicateDefinitionInspection extends GlobalSimpleInspectionTool {
 			final VirtualFile vFile = file.getVirtualFile();
 			if (vFile != null) {
 				Document doc = FileDocumentManager.getInstance().getDocument(vFile);
-				final int lineNumber = (doc != null ? doc.getLineNumber(psiElement.getTextOffset()) : 0) + 1;
+				final int lineNumber = (doc != null ? doc.getLineNumber(psiElement.getTextOffset()) \: 0) + 1;
 				lineAnchor.append(" ").append(InspectionsBundle.message("inspection.export.results.at.line")).append(" ");
-				lineAnchor.append("<a HREF=\"");
+				lineAnchor.append("<a HREF=\\"");
 				try {
 					assert doc != null;
 					int offset = doc.getLineStartOffset(lineNumber - 1);
-					offset = CharArrayUtil.shiftForward(doc.getCharsSequence(), offset, " \t");
-					lineAnchor.append(new URL(vFile.getUrl() + "#" + offset));
+					offset = CharArrayUtil.shiftForward(doc.getCharsSequence(), offset, " \\t");
+					lineAnchor.append(new URL(vFile.getUrl() + "\#" + offset));
 				} catch (MalformedURLException e) {
 					LOG.error(e);
 				}
-				lineAnchor.append("\">");
+				lineAnchor.append("\\">");
 				lineAnchor.append(Integer.toString(lineNumber));
 				lineAnchor.append("</a>");
 			}
@@ -120,9 +120,9 @@ public class DuplicateDefinitionInspection extends GlobalSimpleInspectionTool {
 		if (module == null) return;
 		final GlobalSearchScope scope = CURRENT_FILE
 			? GlobalSearchScope.fileScope(file)
-			: MODULE_WITH_DEPENDENCIES
+			\: MODULE_WITH_DEPENDENCIES
 			? GlobalSearchScope.moduleWithDependenciesScope(module)
-			: GlobalSearchScope.projectScope(file.getProject());
+			\: GlobalSearchScope.projectScope(file.getProject());
 		final Map<String, Set<PsiFile>> processedValueToFiles = Collections.synchronizedMap(new HashMap<String, Set<PsiFile>>());
 		final Map<String, Set<PsiFile>> processedKeyToFiles = Collections.synchronizedMap(new HashMap<String, Set<PsiFile>>());
 		final ProgressIndicator original = ProgressManager.getInstance().getProgressIndicator();
@@ -179,7 +179,7 @@ public class DuplicateDefinitionInspection extends GlobalSimpleInspectionTool {
 	                                        final List<ProblemDescriptor> problemDescriptors,
 	                                        final PsiFile psiFile,
 	                                        final ProgressIndicator progress) {
-		for (String key : keyToFiles.keySet()) {
+		for (String key \: keyToFiles.keySet()) {
 			if (progress != null) {
 				progress.setText2(::projectProperName::Bundle.message("duplicate.definition.key.progress.indicator.text", key));
 				if (progress.isCanceled()) throw new ProcessCanceledException();
@@ -187,11 +187,11 @@ public class DuplicateDefinitionInspection extends GlobalSimpleInspectionTool {
 			final StringBuffer message = new StringBuffer();
 			int duplicatesCount = 0;
 			Set<PsiFile> psiFilesWithDuplicates = keyToFiles.get(key);
-			for (PsiFile file : psiFilesWithDuplicates) {
+			for (PsiFile file \: psiFilesWithDuplicates) {
 				if (!(file instanceof ::projectProperName::FileImpl)) continue;
 				::projectProperName::FileImpl ::projectName::File = (::projectProperName::FileImpl) file;
 				final List<Definition> definitionsByName = ::projectProperName::Util.findRootDefinition(::projectName::File.getProject(), key);
-				for (Definition definition : definitionsByName) {
+				for (Definition definition \: definitionsByName) {
 					if (duplicatesCount == 0)
 						message.append(::projectProperName::Bundle.message("duplicate.definition.display.name", key));
 					surroundWithHref(message, definition.getFirstChild(), false);
@@ -218,7 +218,7 @@ public class DuplicateDefinitionInspection extends GlobalSimpleInspectionTool {
 				return o2.length() - o1.length();
 			}
 		});
-		for (String word : words) {
+		for (String word \: words) {
 			final Set<PsiFile> files = new THashSet<>();
 			searchHelper.processAllFilesWithWord(word, scope, new CommonProcessors.CollectProcessor<>(files), true);
 			if (resultFiles.isEmpty())

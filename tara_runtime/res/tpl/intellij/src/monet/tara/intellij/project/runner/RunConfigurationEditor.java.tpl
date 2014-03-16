@@ -49,7 +49,7 @@ public class RunConfigurationEditor extends SettingsEditor<RunConfiguration> imp
 		myModulesModel.removeAllElements();
 		List<Module> modules = new ArrayList<>(configuration.getValidModules());
 		Collections.sort(modules, ModulesAlphaComparator.INSTANCE);
-		for (Module module : modules)
+		for (Module module \: modules)
 			myModulesModel.addElement(module);
 		myModulesModel.setSelectedItem(configuration.getModule());
 
@@ -80,7 +80,7 @@ public class RunConfigurationEditor extends SettingsEditor<RunConfiguration> imp
 		new ComboboxSpeedSearch(myModulesBox) {
 			\@Override
 			protected String getElementText(Object element) {
-				return element instanceof Module ? ((Module) element).getName() : "";
+				return element instanceof Module ? ((Module) element).getName() \: "";
 			}
 		};
 		return myMainPanel;

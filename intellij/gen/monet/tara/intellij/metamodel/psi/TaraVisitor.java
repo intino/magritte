@@ -36,7 +36,7 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitDoc(@NotNull TaraDoc o) {
-    visitPsiElement(o);
+    visitDoc(o);
   }
 
   public void visitDoubleList(@NotNull TaraDoubleList o) {

@@ -29,7 +29,7 @@ public class AttributeMixin extends ASTWrapperPsiElement {
 	\@Override
 	public String getName() {
 		return(((::projectProperName::Attribute) this).getVariableNames() != null)?
-			((::projectProperName::Attribute) this).getVariableNames().getText(): this.getNode().findChildByType(::projectProperName::Types.IDENTIFIER_KEY).getText();
+			((::projectProperName::Attribute) this).getVariableNames().getText()\: this.getNode().findChildByType(::projectProperName::Types.IDENTIFIER_KEY).getText();
 	}
 
 	public String getType() {

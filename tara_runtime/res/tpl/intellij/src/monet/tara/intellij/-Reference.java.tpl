@@ -38,7 +38,7 @@ public class ::projectProperName::Reference extends PsiReferenceBase<PsiElement>
 	\@Override
 	public PsiElement resolve() {
 		ResolveResult[] resolveResults = multiResolve(false);
-		return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
+		return resolveResults.length == 1 ? resolveResults[0].getElement() \: null;
 	}
 
 	\@NotNull
@@ -53,7 +53,7 @@ public class ::projectProperName::Reference extends PsiReferenceBase<PsiElement>
 
 	private Object[] fillVariants(List<Definition> definitions) {
 		List<LookupElement> variants = new ArrayList<>();
-		for (final Definition definition : definitions)
+		for (final Definition definition \: definitions)
 			if (definition.getName() != null && definition.getName().length() > 0)
 				variants.add(LookupElementBuilder.create(definition).withIcon(::projectProperName::Icons.ICON_13).withTypeText(getFileName(definition)));
 		return variants.toArray();
@@ -71,6 +71,6 @@ public class ::projectProperName::Reference extends PsiReferenceBase<PsiElement>
 	}
 
 	private String getFileName(Definition definition) {
-		return definition.getContainingFile().getName().split("\\.")[0];
+		return definition.getContainingFile().getName().split("\\\\.")[0];
 	}
 }

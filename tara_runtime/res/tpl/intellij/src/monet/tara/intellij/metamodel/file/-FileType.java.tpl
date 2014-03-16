@@ -28,7 +28,7 @@ public class ::projectProperName::FileType extends LanguageFileType {
 	\@NotNull
 	\@Override
 	public String getDefaultExtension() {
-		return "m2";
+		return "m1";
 	}
 
 	\@Nullable

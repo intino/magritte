@@ -26,7 +26,7 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	@NotNull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
-		Project project = myElement.getProject();//TODO
+		Project project = myElement.getProject();
 		final Concept concept = TaraUtil.resolveReferences(project, myElement);
 		List<ResolveResult> results = new ArrayList<>();
 		if (concept != null)

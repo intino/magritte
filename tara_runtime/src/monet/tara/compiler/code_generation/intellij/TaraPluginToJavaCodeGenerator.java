@@ -5,6 +5,7 @@ import monet.tara.compiler.code_generation.render.RenderUtils;
 import monet.tara.compiler.code_generation.render.RendersFactory;
 import monet.tara.compiler.code_generation.render.TemplateFactory;
 import monet.tara.compiler.core.CompilerConfiguration;
+import monet.tara.compiler.core.ast.AST;
 import monet.tara.compiler.core.error_collection.TaraException;
 
 import java.io.File;
@@ -16,11 +17,11 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 	CompilerConfiguration configuration;
 	private PrintWriter writer;
 
-	public void toJava(CompilerConfiguration configuration) throws TaraException {
+	public void toJava(CompilerConfiguration configuration, AST ast) throws TaraException {
 		this.configuration = configuration;
 		for (String template : TemplateFactory.getTemplates().keySet()) {
 			writer = getOutWriter(new File(this.getPath(TemplateFactory.getTemplate(template))));
-			writeTemplateBasedFile(template, null);
+			writeTemplateBasedFile(template, ast.getIdentifiers());
 			closeOutFile();
 		}
 	}

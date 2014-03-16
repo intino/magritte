@@ -51,8 +51,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void exitConcept(@NotNull ConceptContext ctx) {
 		ASTNode node = conceptStack.peek();
-		if (ctx.signature().modifier() == null ||
-			(ctx.signature().modifier() != null && ctx.signature().modifier().ABSTRACT() == null))
+		if (!node.isAbstract() && !node.isPolymorphic())
 			ast.addIdentifier(node.getIdentifier(), "CONCEPT");
 		conceptStack.pop();
 	}

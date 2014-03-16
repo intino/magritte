@@ -37,7 +37,7 @@ public class DefinitionNode extends ProjectViewNode<DefinitionTreeView> {
 	}
 
 	public boolean contains(\@NotNull VirtualFile file) {
-		for (final AbstractTreeNode aMyChildren : myChildren) {
+		for (final AbstractTreeNode aMyChildren \: myChildren) {
 			ProjectViewNode treeNode = (ProjectViewNode) aMyChildren;
 			if (treeNode.contains(file)) return true;
 		}
@@ -75,7 +75,7 @@ public class DefinitionNode extends ProjectViewNode<DefinitionTreeView> {
 
 	\@Override
 	public FileStatus getFileStatus() {
-		for (BasePsiNode<? extends PsiElement> child : myChildren) {
+		for (BasePsiNode<? extends PsiElement> child \: myChildren) {
 			final PsiElement value = child.getValue();
 			if (value == null || !value.isValid()) continue;
 			final FileStatus fileStatus = NavigationItemFileStatus.get(child);
@@ -88,7 +88,7 @@ public class DefinitionNode extends ProjectViewNode<DefinitionTreeView> {
 
 	\@Override
 	public boolean canHaveChildrenMatching(final Condition<PsiFile> condition) {
-		for (BasePsiNode<? extends PsiElement> child : myChildren) {
+		for (BasePsiNode<? extends PsiElement> child \: myChildren) {
 			if (condition.value(child.getValue().getContainingFile())) {
 				return true;
 			}

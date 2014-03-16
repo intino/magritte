@@ -20,7 +20,7 @@ public class ::projectProperName::LineMarkerProvider extends RelatedItemLineMark
 	protected void collectNavigationMarkers(\@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
 		if (element instanceof PsiIdentifier) {
 			PsiIdentifier psiIdentifier = (PsiIdentifier) element;
-			if (psiIdentifier.getText().equals("::projectProperName::") && psiIdentifier.getNextSibling().getText().equals(":") && psiIdentifier.getNextSibling().getNextSibling() != null) {
+			if (psiIdentifier.getText().equals("::projectProperName::") && psiIdentifier.getNextSibling().getText().equals("\:") && psiIdentifier.getNextSibling().getNextSibling() != null) {
 				PsiExpressionStatement identifier = (PsiExpressionStatement) psiIdentifier.getNextSibling().getNextSibling();
 				String value = identifier.getText();
 				Project project = element.getProject();

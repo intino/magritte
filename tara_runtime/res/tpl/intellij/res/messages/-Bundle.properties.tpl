@@ -13,7 +13,7 @@ remove.attribute.intention.text=Remove atrribute
 ::projectName::.files.inspection.group.display.name=::projectProperName:: Files
 unused.definition.inspection.display.name=Unused definition
 duplicate.definition.display.name=Duplicate Definition
-duplicate.definition.key.progress.indicator.text=Processing duplicate definition key:{0}
+duplicate.definition.key.progress.indicator.text=Processing duplicate definition key\:{0}
 
 invalid.::projectName::.definition.character= Invalid Character
 options.::projectName::.definition.identifier=Definition Identifier
@@ -25,7 +25,7 @@ searching.for.definition.key.progress.text=Searching for {0}
 unused.definition.problem.descriptor.name=Unused definition
 remove.definition.quick.fix.name=Remove definition
 no.definition.selected.panel.label=<html><body><center><b>Please select definition name on the left to edit its values</body></html>
-::projectName::.structure.view.group.by.label=Group by:
+::projectName::.structure.view.group.by.label=Group by\:
 select.definition.separator.dialog.text=Select separator
 select.definition.separator.dialog.title=definition Keys Separator
 select.separator.action.with.empty.separator.name=other...
@@ -35,14 +35,14 @@ project.view.resource.bundle.tree.node.text=Resource Bundle ''{0}''
 structure.view.group.by.prefixes.action.name=Group by Prefixes
 structure.view.group.by.prefixes.action.description=Groups ::projectName:: by common key prefixes
 unused.message.format.parameter.display.name=Missing message format parameter
-#{0},{1} used and unused parameter numbers
-unused.message.format.parameter.problem.descriptor=Using parameter {0} without using parameter {1} in <code>#ref<code> #loc
+\#{0},{1} used and unused parameter numbers
+unused.message.format.parameter.problem.descriptor=Using parameter {0} without using parameter {1} in <code>\#ref<code> \#loc
 unresolved.definition.key=Cannot resolve definition key
 unused.definition.suppress.for.definition=Suppress for this definition
 unused.definition.suppress.for.file=Suppress for whole file
-# suppress inspection "Unuseddefinition"
+\# suppress inspection "Unuseddefinition"
 action.I18nize.text=Internationali_ze...
-# suppress inspection "Unuseddefinition"
+\# suppress inspection "Unuseddefinition"
 action.I18nize.description=Replace Java string literal or JSP text with internationalized expression
 create.definition.quickfix.text=Create definition
 unescape=Unescape

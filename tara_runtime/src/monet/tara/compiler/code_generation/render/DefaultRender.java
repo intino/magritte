@@ -28,8 +28,9 @@ public class DefaultRender extends Render {
 	protected void render() throws TaraException {
 		try {
 			loadCanvas(tplName, true);
-			addMark("projectName", projectName);
+			addMark("projectName", projectName.toLowerCase());
 			addMark("projectProperName", RenderUtils.toProperCase(projectName));
+			addMark("projectUpperName", projectName.toUpperCase());
 		} catch (NullPointerException e) {
 			throw new TaraException("Template not found: " + tplName);
 		}

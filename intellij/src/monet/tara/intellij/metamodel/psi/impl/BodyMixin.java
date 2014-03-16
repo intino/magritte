@@ -5,8 +5,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import monet.tara.intellij.metamodel.psi.*;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class BodyMixin extends ASTWrapperPsiElement {
 
@@ -33,6 +37,31 @@ public class BodyMixin extends ASTWrapperPsiElement {
 
 	public PsiElement getPsiElement() {
 		return this;
+	}
+
+	@NotNull
+	public List<? extends Attribute> getAttributeList() {
+		return PsiTreeUtil.getChildrenOfTypeAsList(this, Attribute.class);
+	}
+
+	@NotNull
+	public List<? extends Concept> getConceptList() {
+		return PsiTreeUtil.getChildrenOfTypeAsList(this, Concept.class);
+	}
+
+	@NotNull
+	public List<? extends ConceptInjection> getConceptInjectionList() {
+		return PsiTreeUtil.getChildrenOfTypeAsList(this, ConceptInjection.class);
+	}
+
+	@NotNull
+	public List<? extends ReferenceStatement> getReferenceStatementList() {
+		return PsiTreeUtil.getChildrenOfTypeAsList(this, ReferenceStatement.class);
+	}
+
+	@NotNull
+	public List<? extends Word> getWordList() {
+		return PsiTreeUtil.getChildrenOfTypeAsList(this, Word.class);
 	}
 
 }

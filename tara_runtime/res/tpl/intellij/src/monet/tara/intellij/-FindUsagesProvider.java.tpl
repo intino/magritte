@@ -46,7 +46,7 @@ public class ::projectProperName::FindUsagesProvider implements FindUsagesProvid
 	public String getDescriptiveName(\@NotNull PsiElement element) {
 		if (element instanceof Definition) {
 			String name = ((Definition) element).getName();
-			return name == null ? "Anonymous" : name;
+			return name == null ? "Anonymous" \: name;
 		} else return "Error";
 	}
 
@@ -55,7 +55,7 @@ public class ::projectProperName::FindUsagesProvider implements FindUsagesProvid
 	public String getNodeText(\@NotNull PsiElement element, boolean useFullName) {
 		if (element instanceof Definition) {
 			String name = ((Definition) element).getName();
-			return name == null ? "Anonymous" : name;
+			return name == null ? "Anonymous" \: name;
 		} else return "Error";
 	}
 }

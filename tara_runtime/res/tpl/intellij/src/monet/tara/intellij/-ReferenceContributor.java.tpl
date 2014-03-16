@@ -15,7 +15,7 @@ public class ::projectProperName::ReferenceContributor extends PsiReferenceContr
 			public PsiReference[] getReferencesByElement(\@NotNull PsiElement element, \@NotNull com.intellij.util.ProcessingContext context) {
 				PsiLiteralExpression literalExpression = (PsiLiteralExpression) element;
 				String text = (String) literalExpression.getValue();
-				if (text != null && text.startsWith("::projectProperName:::"))
+				if (text != null && text.startsWith("::projectProperName::\:"))
 					return new PsiReference[]{ new ::projectProperName::Reference(element, new TextRange(6, text.length() + 1)) };
 				return new PsiReference[0];
 			}

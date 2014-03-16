@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="monet.::projectName::.intellij.project.runner.RunConfigurationEditor">
+<form xmlns="http\://www.intellij.com/uidesigner/form/" version="1" bind-to-class="monet.::projectName::.intellij.project.runner.RunConfigurationEditor">
   <grid id="27dc6" binding="myMainPanel" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
@@ -32,7 +32,7 @@
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Deploy URL:"/>
+          <text value="Deploy URL\:"/>
         </properties>
       </component>
       <component id="c5c05" class="javax.swing.JLabel">
@@ -40,7 +40,7 @@
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Deploy params:"/>
+          <text value="Deploy params\:"/>
         </properties>
       </component>
       <component id="86e25" class="javax.swing.JLabel">
@@ -49,7 +49,7 @@
         </constraints>
         <properties>
           <labelFor value="d1e7d"/>
-          <text value="Module:"/>
+          <text value="Module\:"/>
         </properties>
       </component>
       <component id="d1e7d" class="javax.swing.JComboBox" binding="myModulesBox">
@@ -63,7 +63,7 @@
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Working directory:"/>
+          <text value="Working directory\:"/>
         </properties>
       </component>
       <component id="c934c" class="javax.swing.JCheckBox" binding="myDebugCB" default-binding="true">

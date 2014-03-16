@@ -26,7 +26,7 @@ public interface Definition extends Navigatable, Iconable, PsiNamedElement {
 	Body getBody();
 
 	\@Nullable
-	::projectProperName::Doc getDoc();
+	Doc getDoc();
 
 	\@NotNull
 	Signature getSignature();
@@ -36,7 +36,7 @@ public interface Definition extends Navigatable, Iconable, PsiNamedElement {
 	boolean isMorph();
 
 	\@Nullable
-	::projectProperName::Annotations getAnnotations();
+	Annotations getAnnotations();
 
 	\@Override
 	Icon getIcon(\@IconFlags int i);

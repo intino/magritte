@@ -35,7 +35,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 
 	private static Collection<PsiFile> convertToFiles(Collection<BasePsiNode<? extends PsiElement>> definitionNodes) {
 		ArrayList<PsiFile> psiFiles = new ArrayList<>();
-		for (AbstractTreeNode treeNode : definitionNodes) {
+		for (AbstractTreeNode treeNode \: definitionNodes) {
 			psiFiles.add((PsiFile) treeNode.getValue());
 		}
 		return psiFiles;
@@ -45,7 +45,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 		if (children.isEmpty() || definitions.isEmpty()) return Collections.emptyList();
 		ArrayList<BasePsiNode<? extends PsiElement>> result = new ArrayList<>();
 		HashSet<PsiFile> psiFiles = new HashSet<>(definitions);
-		for (final AbstractTreeNode child : children) {
+		for (final AbstractTreeNode child \: children) {
 			if (child instanceof BasePsiNode) {
 				BasePsiNode<? extends PsiElement> treeNode = (BasePsiNode<? extends PsiElement>) child;
 				//noinspection SuspiciousMethodCalls
@@ -59,7 +59,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 	public Collection<AbstractTreeNode> modify(\@NotNull AbstractTreeNode parent, \@NotNull Collection<AbstractTreeNode> children, ViewSettings settings) {
 		if (parent.getValue() instanceof DefinitionTreeView) return children;
 		boolean definitionFound = false;
-		for (AbstractTreeNode node : children)
+		for (AbstractTreeNode node \: children)
 			if (node.getValue() instanceof PsiFile) {
 				PsiFile file = (PsiFile) node.getValue();
 				if (file.getFileType() == ::projectProperName::FileType.INSTANCE) {
@@ -71,7 +71,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 
 		Collection<AbstractTreeNode> result = new LinkedHashSet<>(children);
 		ProjectViewNode[] copy = children.toArray(new ProjectViewNode[children.size()]);
-		for (ProjectViewNode element : copy) {
+		for (ProjectViewNode element \: copy) {
 			PsiClass psiClass = null;
 			if (element.getValue() instanceof PsiClass)
 				psiClass = (PsiClass) element.getValue();
@@ -105,7 +105,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 
 	private List<PsiFile> findDefinitionsBoundToClass(PsiClass psiClass) {
 		ArrayList<PsiFile> files = new ArrayList<>();
-		for (PsiElement element : psiClass.getParent().getParent().getChildren())
+		for (PsiElement element \: psiClass.getParent().getParent().getChildren())
 			if (element instanceof ::projectProperName::File && ((::projectProperName::FileImpl) element).getPresentableName().equals(psiClass.getName()))
 				files.add((PsiFile) element);
 		return files;
@@ -115,7 +115,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 		if (selected != null) {
 			if (DefinitionTreeView.DATA_KEY.is(dataId)) {
 				List<DefinitionTreeView> result = new ArrayList<>();
-				for (AbstractTreeNode node : selected) {
+				for (AbstractTreeNode node \: selected) {
 					if (node.getValue() instanceof DefinitionTreeView) {
 						result.add((DefinitionTreeView) node.getValue());
 					}
@@ -124,7 +124,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 					return result.toArray(new DefinitionTreeView[result.size()]);
 				}
 			} else if (PlatformDataKeys.DELETE_ELEMENT_PROVIDER.is(dataId)) {
-				for (AbstractTreeNode node : selected) {
+				for (AbstractTreeNode node \: selected) {
 					if (node.getValue() instanceof DefinitionTreeView) {
 						return new MyDeleteProvider(selected);
 					}
@@ -143,7 +143,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 
 		private static PsiElement[] collectDefinitionPsiElements(Collection<AbstractTreeNode> selected) {
 			Set<PsiElement> result = new HashSet<>();
-			for (AbstractTreeNode node : selected) {
+			for (AbstractTreeNode node \: selected) {
 				if (node.getValue() instanceof DefinitionTreeView) {
 					DefinitionTreeView definition = (DefinitionTreeView) node.getValue();
 					result.add(definition.getClassToBind());

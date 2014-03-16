@@ -2,7 +2,6 @@ package monet.::projectName::.intellij.metamodel.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.TokenType;
@@ -11,10 +10,7 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
 import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
 import monet.::projectName::.intellij.metamodel.psi.Definition;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::Definition;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::Doc;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
@@ -46,28 +42,13 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 
 	\@Override
 	public String getName() {
-		return ::projectProperName::PsiImplUtil.getIdentifier((::projectProperName::Definition) this);
+		return ::projectProperName::PsiImplUtil.getIdentifier((Definition) this);
 	}
 
 	public ::projectProperName::FileImpl getFile() throws PsiInvalidElementAccessException {
 		return (::projectProperName::FileImpl) super.getContainingFile();
 	}
 
-	\@Nullable
-	public String getDocCommentText() {
-		StringBuilder text = new StringBuilder();
-		::projectProperName::Doc doc = ((::projectProperName::Definition) this).getDoc();
-		String comment;
-
-		if (doc != null) {
-			comment = doc.getText();
-			String trimmed = StringUtil.trimStart(StringUtil.trimStart(comment, "#"), "!");
-			text.insert(0, trimmed.trim());
-			if (text.length() == 0) return null;
-		} else
-			text.append(this.getText());
-		return text.toString();
-	}
 
 	public PsiElement getPsiElement() {
 		return this;

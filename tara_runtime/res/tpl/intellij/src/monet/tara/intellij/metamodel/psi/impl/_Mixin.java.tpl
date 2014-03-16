@@ -24,7 +24,6 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 
 	\@NotNull
 	public SearchScope getUseScope() {
-		// definition ref can occur in any file
 		return GlobalSearchScope.allScope(getProject());
 	}
 
@@ -43,7 +42,7 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 
 	\@Override
 	public String getName() {
-		return ::projectProperName::PsiImplUtil.getIdentifier((::projectProperName::Definition) this);
+		return ::projectProperName::PsiImplUtil.getIdentifier((Definition) this);
 	}
 
 	public ::projectProperName::FileImpl getFile() throws PsiInvalidElementAccessException {
@@ -53,12 +52,11 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 	\@Nullable
 	public String getDocCommentText() {
 		StringBuilder text = new StringBuilder();
-		::projectProperName::Doc doc = ((::projectProperName::Definition) this).getDoc();
+		Doc doc = ((Definition) this).getDoc();
 		String comment;
-
 		if (doc != null) {
 			comment = doc.getText();
-			String trimmed = StringUtil.trimStart(StringUtil.trimStart(comment, "#"), "!");
+			String trimmed = StringUtil.trimStart(StringUtil.trimStart(comment, "\#"), "!");
 			text.insert(0, trimmed.trim());
 			if (text.length() == 0) return null;
 		} else
@@ -80,7 +78,7 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 
 	\@NotNull
 	public PsiElement setName(String newName) {
-		return ::projectProperName::PsiImplUtil.setName(((::projectProperName::Definition) this).getSignature(), newName);
+		return ::projectProperName::PsiImplUtil.setName(((Definition) this).getSignature(), newName);
 	}
 
 	public PsiElement getIdentifierNode() {
@@ -89,14 +87,24 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 
 
 	public Body getBody() {
-		return findChildByClass(::projectProperName::Body.class);
+		return findChildByClass(Body.class);
 	}
 
 	public boolean isPolymorphic(){
-		return ((::projectProperName::Definition) this).getSignature().getPolymorphic() != null;
+		return ((Definition) this).getSignature().getPolymorphic() != null;
 	}
 
 	public boolean isMorph() {
-		return ((::projectProperName::Definition) this).getSignature().getMorph() != null;
+		return ((Definition) this).getSignature().getMorph() != null;
+	}
+
+	\@NotNull
+	public Signature getSignature() {
+		return findNotNullChildByClass(Signature.class);
+	}
+
+	\@Nullable
+	public Annotations getAnnotations() {
+		return findChildByClass(Annotations.class);
 	}
 }

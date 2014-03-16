@@ -37,7 +37,7 @@ public class JFlexRender extends Render {
 	private void addConceptForBNFToStringBuilder(StringBuilder keywords2, String identifierKey) {
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("conceptKey", identifierKey);
-		map.put("projectNameFile", projectName);
+		map.put("projectNameFile", RenderUtils.toProperCase(projectName));
 		keywords2.append(block("conceptsToBNF", map));
 	}
 

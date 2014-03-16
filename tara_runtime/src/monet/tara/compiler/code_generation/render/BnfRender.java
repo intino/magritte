@@ -95,7 +95,7 @@ public class BnfRender extends Render {
 
 	private void putConstituentsToHashMap(HashMap<String, Object> localMap, String constituent) {
 		localMap.put("identifierConstituent", (!constituent.equals("")) ? " | " + localMap.get("identifier") + "Constituents" : "");
-		localMap.put("constituentRule", (!constituent.equals("")) ? localMap.get("identifier") + "Constituents ::= " + constituent : "");
+		localMap.put("constituentRule", (!constituent.equals("")) ? "private " + localMap.get("identifier") + "Constituents ::= " + constituent : "");
 	}
 
 	private void putAttributesComponentsToHashMap(HashMap<String, Object> localMap, String attributesImplicit, String attributesExplicit) {

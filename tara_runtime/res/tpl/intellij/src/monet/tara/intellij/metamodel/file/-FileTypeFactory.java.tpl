@@ -6,6 +6,6 @@ import org.jetbrains.annotations.NotNull;
 public class ::projectProperName::FileTypeFactory extends FileTypeFactory {
 	\@Override
 	public void createFileTypes(\@NotNull com.intellij.openapi.fileTypes.FileTypeConsumer fileTypeConsumer) {
-		fileTypeConsumer.consume(::projectProperName::FileType.INSTANCE, "m2");
+		fileTypeConsumer.consume(::projectProperName::FileType.INSTANCE, "m1");
 	}
 }

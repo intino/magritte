@@ -21,7 +21,7 @@ import java.io.IOException;
 public class ::projectProperName::DocumentationProvider extends AbstractDocumentationProvider {
 	private static String getLocationString(PsiElement element) {
 		PsiFile file = element.getContainingFile();
-		return file != null ? " [" + file.getName().split("\\.")[0] + "]" : "";
+		return file != null ? " [" + file.getName().split("\\\\.")[0] + "]" \: "";
 	}
 
 	\@NotNull
@@ -53,8 +53,8 @@ public class ::projectProperName::DocumentationProvider extends AbstractDocument
 		\@NonNls String info = "";
 		TextAttributes attributes = EditorColorsManager.getInstance().getGlobalScheme().getAttributes(::projectProperName::SyntaxHighlighter.DOCUMENTATION).clone();
 		Color background = attributes.getBackgroundColor();
-		if (background != null) info += "<div bgcolor=#" + GuiUtils.colorToHex(background) + ">";
-		info += "<font color=#" + GuiUtils.colorToHex(attributes.getForegroundColor()) + ">" + html + "</font>";
+		if (background != null) info += "<div bgcolor=\#" + GuiUtils.colorToHex(background) + ">";
+		info += "<font color=\#" + GuiUtils.colorToHex(attributes.getForegroundColor()) + ">" + html + "</font>";
 		if (background != null) info += "</div>";
 		info += "<b>" + getLocationString(element) + "</b>";
 		return info;

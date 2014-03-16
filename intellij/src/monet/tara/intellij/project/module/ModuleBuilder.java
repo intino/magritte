@@ -20,8 +20,7 @@ import monet.tara.intellij.metamodel.TaraIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +36,6 @@ public class ModuleBuilder extends JavaModuleBuilder {
 	public void setSourcePaths(final List<Pair<String, String>> sourcePaths) {
 		mySourcePaths = sourcePaths != null ? new ArrayList<>(sourcePaths) : null;
 	}
-
 
 	public void addSourcePath(final Pair<String, String> sourcePathInfo) {
 		if (mySourcePaths == null) mySourcePaths = new ArrayList<>();
@@ -67,8 +65,13 @@ public class ModuleBuilder extends JavaModuleBuilder {
 					if (sourceRoot != null) {
 						contentEntry.addSourceFolder(sourceRoot, false, sourcePath.second);
 						try {
-							VfsUtil.createDirectories(sourceRoot.getParent().getPath() + "res/tpl");
-							VfsUtil.createDirectories(sourceRoot.getParent().getPath() + "res/logos");
+							VirtualFile res = VfsUtil.createDirectories(sourceRoot.getParent().getPath() + File.separator + "res");
+							VfsUtil.createDirectories(sourceRoot.getParent().getPath() + File.separator + "res" + File.separator + "tpl");
+							VirtualFile logos = VfsUtil.createDirectories(sourceRoot.getParent().getPath()
+								+ File.separator + "res" + File.separator + "logos");
+							File logo = new File(logos.getPath() + File.separator + "logo.png");
+							copyFile(new File(this.getClass().getResource(File.separator + "logos" + File.separator + "logo.png").getPath()), logo);
+
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -103,7 +106,6 @@ public class ModuleBuilder extends JavaModuleBuilder {
 		}
 	}
 
-
 	@Override
 	public com.intellij.openapi.module.ModuleType getModuleType() {
 		return ModuleType.getInstance();
@@ -127,5 +129,23 @@ public class ModuleBuilder extends JavaModuleBuilder {
 	@Override
 	public String getPresentableName() {
 		return "Tara";
+	}
+
+	private Boolean copyFile(File source, File destination) {
+		new File(destination.getParentFile().getAbsolutePath()).mkdirs();
+		try {
+			InputStream in = new FileInputStream(source);
+			OutputStream out = new FileOutputStream(destination);
+			byte[] buf = new byte[1024];
+			int len;
+			while ((len = in.read(buf)) > 0)
+				out.write(buf, 0, len);
+			in.close();
+			out.close();
+		} catch (IOException ex) {
+			return false;
+		}
+
+		return true;
 	}
 }

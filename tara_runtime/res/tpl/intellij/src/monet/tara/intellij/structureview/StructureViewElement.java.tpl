@@ -44,7 +44,7 @@ public class StructureViewElement implements StructureViewTreeElement {
 			Definition[] definitions = ::projectProperName::Util.getChildrenOf(definition);
 			if (definitions != null && !(definitions.length == 0)) {
 				List<TreeElement> treeElements = new ArrayList<>(definitions.length);
-				for (Definition definition : definitions)
+				for (Definition definition \: definitions)
 					treeElements.add(new StructureViewElement(definition));
 				return treeElements.toArray(new TreeElement[treeElements.size()]);
 			}
@@ -56,7 +56,7 @@ public class StructureViewElement implements StructureViewTreeElement {
 	public ItemPresentation getPresentation() {
 		return new ItemPresentation() {
 			public String getPresentableText() {
-				if (myPresentableName == null) return (definition.getName() == null ? "Anonymous" : definition.getName());
+				if (myPresentableName == null) return (definition.getName() == null ? "Anonymous" \: definition.getName());
 				else return myPresentableName;
 			}
 

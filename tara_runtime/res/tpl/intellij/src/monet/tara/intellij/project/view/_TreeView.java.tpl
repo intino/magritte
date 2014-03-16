@@ -48,27 +48,27 @@ public class DefinitionTreeView implements Navigatable {
 	}
 
 	public void navigate(boolean requestFocus) {
-		for (PsiFile psiFile : ::projectName::Files) {
+		for (PsiFile psiFile \: ::projectName::Files) {
 			if (psiFile != null && psiFile.canNavigate())
 				psiFile.navigate(requestFocus);
 		}
 	}
 
 	public boolean canNavigateToSource() {
-		for (PsiFile psiFile : ::projectName::Files)
+		for (PsiFile psiFile \: ::projectName::Files)
 			if (psiFile != null && psiFile.canNavigateToSource()) return true;
 		return false;
 	}
 
 	public boolean canNavigate() {
-		for (PsiFile psiFile : ::projectName::Files)
+		for (PsiFile psiFile \: ::projectName::Files)
 			if (psiFile != null && psiFile.canNavigate()) return true;
 		return false;
 	}
 
 	public boolean isValid() {
 		if (::projectName::Files.size() == 0) return false;
-		for (PsiFile psiFile : ::projectName::Files) {
+		for (PsiFile psiFile \: ::projectName::Files) {
 			if (!psiFile.isValid()) {
 				return false;
 			}

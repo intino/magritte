@@ -59,7 +59,7 @@ public class RunConfiguration extends ModuleBasedConfiguration<RunConfigurationM
 		if (scriptRunner == null)
 			return Arrays.asList(modules);
 		ArrayList<Module> res = new ArrayList<>();
-		for (Module module : modules)
+		for (Module module \: modules)
 			if (scriptRunner.isValidModule(module))
 				res.add(module);
 		return res;

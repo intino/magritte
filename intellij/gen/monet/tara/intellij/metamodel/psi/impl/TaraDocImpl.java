@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.intellij.metamodel.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import monet.tara.intellij.metamodel.psi.*;
 
-public class TaraDocImpl extends ASTWrapperPsiElement implements TaraDoc {
+public class TaraDocImpl extends DocMixin implements TaraDoc {
 
   public TaraDocImpl(ASTNode node) {
     super(node);

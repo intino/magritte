@@ -3,16 +3,16 @@ package monet.tara.intellij;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.*;
-import monet.tara.intellij.metamodel.psi.TaraTypes;
+import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 
 public class TaraReferenceContributor extends PsiReferenceContributor {
 	@Override
 	public void registerReferenceProviders(PsiReferenceRegistrar registrar) {
-		registrar.registerReferenceProvider(PlatformPatterns.psiElement(TaraTypes.IDENTIFIER), new PsiReferenceProvider() {
+		registrar.registerReferenceProvider(PlatformPatterns.psiElement(PsiLiteralExpression.class), new PsiReferenceProvider() {
 			@NotNull
 			@Override
-			public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull com.intellij.util.ProcessingContext context) {
+			public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
 				PsiLiteralExpression literalExpression = (PsiLiteralExpression) element;
 				String text = (String) literalExpression.getValue();
 				if (text != null && text.startsWith("Tara:"))
@@ -20,5 +20,6 @@ public class TaraReferenceContributor extends PsiReferenceContributor {
 				return new PsiReference[0];
 			}
 		});
+
 	}
 }

@@ -26,7 +26,7 @@ public interface Concept extends Navigatable, Iconable, PsiNamedElement {
 	Body getBody();
 
 	@Nullable
-	TaraDoc getDoc();
+	Doc getDoc();
 
 	@NotNull
 	Signature getSignature();
@@ -36,7 +36,7 @@ public interface Concept extends Navigatable, Iconable, PsiNamedElement {
 	boolean isMorph();
 
 	@Nullable
-	TaraAnnotations getAnnotations();
+	Annotations getAnnotations();
 
 	@Override
 	Icon getIcon(@IconFlags int i);

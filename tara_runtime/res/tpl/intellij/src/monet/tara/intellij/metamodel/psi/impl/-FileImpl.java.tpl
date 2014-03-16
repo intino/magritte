@@ -87,12 +87,12 @@ public class ::projectProperName::FileImpl extends PsiFileBase implements ::proj
 	}
 
 	private void insertLineBreakBefore(final ASTNode anchorBefore) {
-		getDefinitionList().addChild(ASTFactory.whitespace("\n"), anchorBefore);
+		getDefinitionList().addChild(ASTFactory.whitespace("\\n"), anchorBefore);
 	}
 
 	private boolean haveToAddNewLine() {
 		ASTNode lastChild = getDefinitionList().getLastChildNode();
-		return lastChild != null && !lastChild.getText().endsWith("\n");
+		return lastChild != null && !lastChild.getText().endsWith("\\n");
 	}
 
 

@@ -14,7 +14,7 @@ public abstract class TaraElementFactory {
 
 	public abstract TaraFileImpl createDummyFile(String text);
 
-	public abstract TaraIdentifier createNameIdentifier(String name);
+	public abstract Identifier createNameIdentifier(String name);
 
 	public abstract Attribute createAttribute(String name, String type);
 }

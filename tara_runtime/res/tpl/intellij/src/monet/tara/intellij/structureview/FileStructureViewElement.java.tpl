@@ -22,7 +22,7 @@ public class FileStructureViewElement extends PsiTreeElementBase<::projectProper
 	public Collection<StructureViewTreeElement> getChildrenBase() {
 		List<? extends Definition> definitions = getElement().getDefinitions();
 		Collection<StructureViewTreeElement> elements = new ArrayList<>(definitions.size());
-		for (Definition definition : definitions)
+		for (Definition definition \: definitions)
 			elements.add(new StructureViewElement(definition));
 		return elements;
 	}

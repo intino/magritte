@@ -13,12 +13,12 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class LoggingEventSubmitter {
-	private static final String TARA_MAIL_ADMIN_FROM = "::projectName::.mail.admin.from";
-	private static final String TARA_MAIL_ADMIN_TO = "::projectName::.mail.admin.to";
-	private static final String TARA_MAIL_ADMIN_HOST = "::projectName::.mail.admin.host";
-	private static final String TARA_MAIL_ADMIN_PORT = "::projectName::.mail.admin.port";
-	private static final String TARA_MAIL_ADMIN_USERNAME = "::projectName::.mail.admin.username";
-	private static final String TARA_MAIL_ADMIN_PASSWORD = "::projectName::.mail.admin.password";
+	private static final String ::projectUpperName::_MAIL_ADMIN_FROM = "::projectName::.mail.admin.from";
+	private static final String ::projectUpperName::_MAIL_ADMIN_TO = "::projectName::.mail.admin.to";
+	private static final String ::projectUpperName::_MAIL_ADMIN_HOST = "::projectName::.mail.admin.host";
+	private static final String ::projectUpperName::_MAIL_ADMIN_PORT = "::projectName::.mail.admin.port";
+	private static final String ::projectUpperName::_MAIL_ADMIN_USERNAME = "::projectName::.mail.admin.username";
+	private static final String ::projectUpperName::_MAIL_ADMIN_PASSWORD = "::projectName::.mail.admin.password";
 	private static final String PLUGIN_ID = "plugin.id";
 	private static final String PLUGIN_VERSION = "plugin.version";
 	private static final String PLUGIN_NAME = "plugin.name";
@@ -42,9 +42,9 @@ public class LoggingEventSubmitter {
 
 	private String prepareBody(String textBody) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(PLUGIN_ID).append(": ").append(emailProperties.get(PLUGIN_ID)).append("\n");
-		builder.append(PLUGIN_NAME).append(": ").append(emailProperties.get(PLUGIN_NAME)).append("\n");
-		builder.append(PLUGIN_VERSION).append(": ").append(emailProperties.get(PLUGIN_VERSION)).append("\n\n");
+		builder.append(PLUGIN_ID).append("\: ").append(emailProperties.get(PLUGIN_ID)).append("\\n");
+		builder.append(PLUGIN_NAME).append("\: ").append(emailProperties.get(PLUGIN_NAME)).append("\\n");
+		builder.append(PLUGIN_VERSION).append("\: ").append(emailProperties.get(PLUGIN_VERSION)).append("\\n\\n");
 		return builder.append(textBody).toString();
 	}
 
@@ -72,17 +72,17 @@ public class LoggingEventSubmitter {
 
 	private Transport prepareTransport(Session session) throws MessagingException {
 		Transport transport = session.getTransport("smtp");
-		transport.connect(emailProperties.getProperty(TARA_MAIL_ADMIN_HOST),
-			Integer.parseInt(emailProperties.getProperty(TARA_MAIL_ADMIN_PORT)),
-			emailProperties.getProperty(TARA_MAIL_ADMIN_USERNAME),
-			emailProperties.getProperty(TARA_MAIL_ADMIN_PASSWORD));
+		transport.connect(emailProperties.getProperty(::projectUpperName::_MAIL_ADMIN_HOST),
+			Integer.parseInt(emailProperties.getProperty(::projectUpperName::_MAIL_ADMIN_PORT)),
+			emailProperties.getProperty(::projectUpperName::_MAIL_ADMIN_USERNAME),
+			emailProperties.getProperty(::projectUpperName::_MAIL_ADMIN_PASSWORD));
 		return transport;
 	}
 
 	private MimeMessage prepareMimeMessage(Session session) throws MessagingException {
 		MimeMessage message = new MimeMessage(session);
-		message.setFrom(new InternetAddress(emailProperties.getProperty(TARA_MAIL_ADMIN_FROM)));
-		message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailProperties.getProperty(TARA_MAIL_ADMIN_TO)));
+		message.setFrom(new InternetAddress(emailProperties.getProperty(::projectUpperName::_MAIL_ADMIN_FROM)));
+		message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailProperties.getProperty(::projectUpperName::_MAIL_ADMIN_TO)));
 		message.setSubject(subject);
 		message.setText(htmlBody);
 		return message;

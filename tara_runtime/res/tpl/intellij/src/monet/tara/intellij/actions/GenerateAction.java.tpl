@@ -47,7 +47,7 @@ public class GenerateAction extends AnAction implements DumbAware {
 		boolean metaModelFound = false;
 		if (project != null && files != null) {
 			PsiManager manager = PsiManager.getInstance(project);
-			for (VirtualFile virtualFile : files) {
+			for (VirtualFile virtualFile \: files) {
 				PsiFile psiFile = manager.findFile(virtualFile);
 				metaModelFound = psiFile instanceof ::projectProperName::FileImpl;
 				if (metaModelFound) break;
@@ -88,7 +88,7 @@ public class GenerateAction extends AnAction implements DumbAware {
 					public void run() {
 						VirtualFile content = ProjectRootManager.getInstance(project).getFileIndex().
 							getContentRootForFile(::projectName::Files[0].getVirtualFile());
-						VirtualFile parentDir = content == null ? ::projectName::Files[0].getVirtualFile().getParent() : content;
+						VirtualFile parentDir = content == null ? ::projectName::Files[0].getVirtualFile().getParent() \: content;
 						String outputPath = new File(VfsUtil.virtualToIoFile(parentDir), "gen").getAbsolutePath();
 						pathsToRefresh.add(new File(outputPath));
 						try {
@@ -112,8 +112,8 @@ public class GenerateAction extends AnAction implements DumbAware {
 	private ::projectProperName::FileImpl[] filterFiles(VirtualFile[] sourceRoots, Project project) {
 		PsiManager psiManager = PsiManager.getInstance(project);
 		List<::projectProperName::FileImpl> filteredFiles = new ArrayList<>();
-		for (VirtualFile sourceRoot : sourceRoots)
-			for (VirtualFile file : sourceRoot.getChildren()) {
+		for (VirtualFile sourceRoot \: sourceRoots)
+			for (VirtualFile file \: sourceRoot.getChildren()) {
 				PsiFile ::projectName::File = psiManager.findFile(file);
 				if ((::projectName::File instanceof ::projectProperName::FileImpl)) filteredFiles.add((::projectProperName::FileImpl) ::projectName::File);
 			}

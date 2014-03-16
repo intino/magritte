@@ -1,7 +1,5 @@
 package monet.tara.compiler.code_generation.render;
 
-import monet.tara.compiler.code_generation.render.DefaultRender;
-import monet.tara.compiler.code_generation.render.RenderUtils;
 import monet.tara.compiler.core.ast.ASTNode;
 
 import java.util.HashMap;

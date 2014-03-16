@@ -22,7 +22,7 @@ public class BlockManager {
 		this.tokens = new IElementType[]{};
 		this.level = 0;
 		this.brackets = 0;
-		this.tabSize = (tabulationSize < 0) ? 1 : tabulationSize;
+		this.tabSize = (tabulationSize < 0) ? 1 \: tabulationSize;
 	}
 
 	public void reset() {
@@ -43,17 +43,17 @@ public class BlockManager {
 	private int spacesLength(String text) {
 		int value = 0;
 		for (int i = 0; i < text.length(); i++)
-			value += (text.charAt(i) == ('\t')) ? this.tabSize : 1;
+			value += (text.charAt(i) == ('\\t')) ? this.tabSize \: 1;
 		return value;
 	}
 
 	private IElementType[] spacesIndentTokens(int size) {
-		int length = (size > 0) ? size : Math.abs(size * 2) + 1;
+		int length = (size > 0) ? size \: Math.abs(size * 2) + 1;
 		IElementType[] actions = new IElementType[length];
 		if (size > 0) return new IElementType[]{TokenType.NEW_LINE_INDENT};
 		else
 			for (int i = 0; i < actions.length; i++)
-				actions[i] = (i % 2 == 0) ? ::projectProperName::Types.NEWLINE : ::projectProperName::Types.DEDENT;
+				actions[i] = (i % 2 == 0) ? ::projectProperName::Types.NEWLINE \: ::projectProperName::Types.DEDENT;
 		return actions;
 	}
 
@@ -62,7 +62,7 @@ public class BlockManager {
 		if (size > 0) return new IElementType[]{TokenType.NEW_LINE_INDENT};
 		else
 			for (int i = 0; i < actions.length; i++)
-				actions[i] = (i % 2 == 0) ? ::projectProperName::Types.NEWLINE : ::projectProperName::Types.DEDENT;
+				actions[i] = (i % 2 == 0) ? ::projectProperName::Types.NEWLINE \: ::projectProperName::Types.DEDENT;
 		return actions;
 	}
 

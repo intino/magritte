@@ -9,6 +9,9 @@ import monet.tara.compiler.core.error_collection.TaraException;
 import java.io.File;
 import java.util.Collection;
 
+import static java.lang.System.exit;
+import static java.lang.Thread.sleep;
+
 public class PluginGenerator {
 
 	public static final Logger LOG = Logger.getInstance("PluginGenerator");
@@ -23,11 +26,17 @@ public class PluginGenerator {
 	public void generate(Collection<SourceUnit> units) throws TaraException {
 		AST ast = mergeAST(units);
 		String tplPath = this.getClass().getResource(SEP + "tpl").getPath();
-		new TaraPluginToJavaCodeGenerator().toJava(configuration);
+		new TaraPluginToJavaCodeGenerator().toJava(configuration, ast);
 		File grammarFile = TaraToBnfCodeGenerator.toBnf(configuration, tplPath, ast);
 		BnfToJavaCodeGenerator.bnfToJava(configuration, grammarFile);
-		File lexFile = TaraToJFlexCodeGenerator.toJFlex(configuration, tplPath, ast);
-		JFlexToJavaGenerator.jFlexToJava(configuration, lexFile);
+		File[] lexFiles = TaraToJFlexCodeGenerator.toJFlex(configuration, tplPath, ast);
+		for (File lexFile : lexFiles)
+			JFlexToJavaGenerator.jFlexToJava(configuration, lexFile);
+		try {
+			sleep(3000);
+			exit(0);
+		} catch (InterruptedException ignored) {
+		}
 		PluginCompiler.generateClasses(configuration);
 		PluginPackager.doPackage(configuration);
 	}

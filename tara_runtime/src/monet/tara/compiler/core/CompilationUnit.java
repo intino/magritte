@@ -1,6 +1,7 @@
 package monet.tara.compiler.core;
 
 import monet.tara.compiler.code_generation.ClassGenerator;
+import monet.tara.compiler.code_generation.intellij.FileSystemUtils;
 import monet.tara.compiler.code_generation.intellij.PluginGenerator;
 import monet.tara.compiler.core.error_collection.CompilationFailedException;
 import monet.tara.compiler.core.error_collection.ErrorCollector;
@@ -111,6 +112,7 @@ public class CompilationUnit extends ProcessingUnit {
 	}
 
 	public void compile() throws CompilationFailedException {
+		FileSystemUtils.removeDir(configuration.getTempDirectory());
 		compile(Phases.ALL);
 	}
 

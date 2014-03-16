@@ -2,7 +2,6 @@ package monet.tara.intellij.metamodel.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.TokenType;
@@ -11,10 +10,7 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.metamodel.TaraIcons;
 import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.TaraConcept;
-import monet.tara.intellij.metamodel.psi.TaraDoc;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
@@ -46,28 +42,13 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String getName() {
-		return TaraPsiImplUtil.getIdentifier((TaraConcept) this);
+		return TaraPsiImplUtil.getIdentifier((Concept) this);
 	}
 
 	public TaraFileImpl getFile() throws PsiInvalidElementAccessException {
 		return (TaraFileImpl) super.getContainingFile();
 	}
 
-	@Nullable
-	public String getDocCommentText() {
-		StringBuilder text = new StringBuilder();
-		TaraDoc doc = ((TaraConcept) this).getDoc();
-		String comment;
-
-		if (doc != null) {
-			comment = doc.getText();
-			String trimmed = StringUtil.trimStart(StringUtil.trimStart(comment, "#"), "!");
-			text.insert(0, trimmed.trim());
-			if (text.length() == 0) return null;
-		} else
-			text.append(this.getText());
-		return text.toString();
-	}
 
 	public PsiElement getPsiElement() {
 		return this;

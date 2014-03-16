@@ -22,7 +22,7 @@ public class ::projectProperName::FoldingBuilder extends CustomFoldingBuilder {
 	                                        \@NotNull Document document,
 	                                        boolean quick) {
 		List<Definition> definitions = ::projectProperName::Util.findAllDefinitionsOfFile((::projectProperName::FileImpl) root);
-		for (final Definition definition : definitions)
+		for (final Definition definition \: definitions)
 			if (definition.getText() != null && definition.getBody() != null)
 				descriptors.add(new FoldingDescriptor(definition.getBody().getNode(), getRange(definition)) {
 					\@Nullable

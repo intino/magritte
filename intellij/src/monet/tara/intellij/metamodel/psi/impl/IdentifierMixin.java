@@ -4,8 +4,8 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
-import monet.tara.intellij.metamodel.psi.TaraIdentifier;
 import monet.tara.intellij.TaraReference;
+import monet.tara.intellij.metamodel.psi.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,7 +15,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	}
 
 	public String getIdentifier() {
-		return TaraPsiImplUtil.getIdentifier((TaraIdentifier) this);
+		return TaraPsiImplUtil.getIdentifier((Identifier) this);
 	}
 
 	@NotNull

@@ -14,10 +14,10 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
 public class LoggingEventSubmitter3 {
-	private static final String TARA_MAIL_ADMIN_FROM = "::projectName::.mail.admin.from";
-	private static final String TARA_MAIL_ADMIN_TO = "::projectName::.mail.admin.to";
-	private static final String TARA_MAIL_ADMIN_CC = "::projectName::.mail.admin.cc";
-	private static final String TARA_SERVER_URL = "::projectName::.admin.server.url";
+	private static final String ::projectUpperName::_MAIL_ADMIN_FROM = "::projectName::.mail.admin.from";
+	private static final String ::projectUpperName::_MAIL_ADMIN_TO = "::projectName::.mail.admin.to";
+	private static final String ::projectUpperName::_MAIL_ADMIN_CC = "::projectName::.mail.admin.cc";
+	private static final String ::projectUpperName::_SERVER_URL = "::projectName::.admin.server.url";
 	private static final String PLUGIN_ID = "plugin.id";
 	private static final String PLUGIN_VERSION = "plugin.version";
 	private static final String PLUGIN_NAME = "plugin.name";
@@ -34,9 +34,9 @@ public class LoggingEventSubmitter3 {
 
 	private String prepareBody(String textBody) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(PLUGIN_ID).append(": ").append(properties.get(PLUGIN_ID)).append("\n");
-		builder.append(PLUGIN_NAME).append(": ").append(properties.get(PLUGIN_NAME)).append("\n");
-		builder.append(PLUGIN_VERSION).append(": ").append(properties.get(PLUGIN_VERSION)).append("\n\n");
+		builder.append(PLUGIN_ID).append("\: ").append(properties.get(PLUGIN_ID)).append("\\n");
+		builder.append(PLUGIN_NAME).append("\: ").append(properties.get(PLUGIN_NAME)).append("\\n");
+		builder.append(PLUGIN_VERSION).append("\: ").append(properties.get(PLUGIN_VERSION)).append("\\n\\n");
 		return builder.append(textBody).toString();
 	}
 
@@ -60,8 +60,8 @@ public class LoggingEventSubmitter3 {
 				String responseMessage = httpConnection.getResponseMessage();
 
 				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Response code: " + responseCode);
-					LOGGER.debug("Response message: " + responseMessage);
+					LOGGER.debug("Response code\: " + responseCode);
+					LOGGER.debug("Response message\: " + responseMessage);
 				}
 			} catch (IOException ioe) {
 				LOGGER.info("Unable to retrieve response status");
@@ -74,7 +74,7 @@ public class LoggingEventSubmitter3 {
 	private URLConnection prepareConnection() throws SubmitException {
 		URLConnection connection;
 		try {
-			String server_url = (String) properties.get(TARA_SERVER_URL);
+			String server_url = (String) properties.get(::projectUpperName::_SERVER_URL);
 			URL url = new URL(server_url);
 			connection = url.openConnection();
 			connection.setRequestProperty("Content-type", "application/octet-stream");
@@ -96,14 +96,14 @@ public class LoggingEventSubmitter3 {
 		DataOutputStream stream = null;
 		try {
 			stream = new DataOutputStream(new DeflaterOutputStream(connection.getOutputStream()));
-			stream.writeUTF(get(PLUGIN_ID) != null ? get(PLUGIN_ID) : "");
-			stream.writeUTF(get(PLUGIN_NAME) != null ? get(PLUGIN_NAME) : "");
-			stream.writeUTF(get(PLUGIN_VERSION) != null ? get(PLUGIN_VERSION) : "");
-			//stream.writeUTF(ideaBuild != null ? ideaBuild : "");
-			stream.writeUTF(get(TARA_MAIL_ADMIN_TO) != null ? StringUtil.join(get(TARA_MAIL_ADMIN_TO), ":") : "");
-			stream.writeUTF(get(TARA_MAIL_ADMIN_CC) != null ? StringUtil.join(get(TARA_MAIL_ADMIN_CC), ":") : "");
+			stream.writeUTF(get(PLUGIN_ID) != null ? get(PLUGIN_ID) \: "");
+			stream.writeUTF(get(PLUGIN_NAME) != null ? get(PLUGIN_NAME) \: "");
+			stream.writeUTF(get(PLUGIN_VERSION) != null ? get(PLUGIN_VERSION) \: "");
+			//stream.writeUTF(ideaBuild != null ? ideaBuild \: "");
+			stream.writeUTF(get(::projectUpperName::_MAIL_ADMIN_TO) != null ? StringUtil.join(get(::projectUpperName::_MAIL_ADMIN_TO), "\:") \: "");
+			stream.writeUTF(get(::projectUpperName::_MAIL_ADMIN_CC) != null ? StringUtil.join(get(::projectUpperName::_MAIL_ADMIN_CC), "\:") \: "");
 			//stream.writeInt(events.length);
-			stream.writeUTF(subject + "\n");
+			stream.writeUTF(subject + "\\n");
 			stream.writeUTF(body);
 			stream.flush();
 		} catch (IOException ioe) {
@@ -130,8 +130,8 @@ public class LoggingEventSubmitter3 {
 			String statusMessage = inputStream.readUTF();
 
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Status OK: " + statusOK);
-				LOGGER.debug("Status message: " + statusMessage);
+				LOGGER.debug("Status OK\: " + statusOK);
+				LOGGER.debug("Status message\: " + statusMessage);
 			}
 
 			if (!statusOK) {

@@ -13,8 +13,6 @@ import monet.tara.intellij.metamodel.psi.TaraTypes;
 %function advance
 %type IElementType
 
-%{
-%}
 
 CONCEPT   = "Concept"
 MORPH_KEY  = "morph"

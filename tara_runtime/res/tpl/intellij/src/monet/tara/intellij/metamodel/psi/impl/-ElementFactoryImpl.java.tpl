@@ -15,27 +15,27 @@ public class ::projectProperName::ElementFactoryImpl extends ::projectProperName
 	}
 
 	public Definition createDefinition(String name) {
-		final ::projectProperName::FileImpl file = createDummyFile("Definition abstract as " + name + " <has-code root>\n" +
-			"\tDefinition as Ontology <optional>\n" +
-			"\tvar Uid uid");
+		final ::projectProperName::FileImpl file = createDummyFile("Definition abstract as " + name + " <has-code root>\\n" +
+			"\\tDefinition as Ontology <optional>\\n" +
+			"\\tvar Uid uid");
 		return (Definition) file.getFirstChild();
 	}
 
 	public ::projectProperName::FileImpl createDummyFile(String text) {
-		return (::projectProperName::FileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.m2", ::projectProperName::FileType.INSTANCE, text);
+		return (::projectProperName::FileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.m1", ::projectProperName::FileType.INSTANCE, text);
 	}
 
-	public ::projectProperName::Identifier createNameIdentifier(String name) {
-		return PsiTreeUtil.getChildOfType(((::projectProperName::Definition) createDefinition(name)).getSignature(), ::projectProperName::Identifier.class);
+	public Identifier createNameIdentifier(String name) {
+		return PsiTreeUtil.getChildOfType(createDefinition(name).getSignature(), Identifier.class);
 	}
 
 	public Attribute createAttribute(String name, String type) {
 		final ::projectProperName::FileImpl file = createDummyFile(
-			"Definition abstract as Source <has-code root>\n" +
-				"\tvar " + type + " " + name + "\n" +
-				"\tDefinition as Ontology <optional>\n");
-		::projectProperName::Body body = ((::projectProperName::Definition) file.getFirstChild()).getBody();
-		return body != null ? body.getAttributeList().get(0) : null;
+			"Definition abstract as Source <has-code root>\\n" +
+				"\\tvar " + type + " " + name + "\\n" +
+				"\\tDefinition as Ontology <optional>\\n");
+		Body body = ((Definition) file.getFirstChild()).getBody();
+		return body != null ? body.getAttributeList().get(0) \: null;
 	}
 
 }

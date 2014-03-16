@@ -39,7 +39,7 @@ public class ::projectProperName::AnnotationsCompletionContributor extends Compl
 	private static class AfterAngleFitFilter implements ElementFilter {
 		public boolean isAcceptable(Object element, PsiElement context) {
 			if (element instanceof PsiElement) {
-				PsiElement ctx = (context.getPrevSibling() != null) ? context : context.getParent();
+				PsiElement ctx = (context.getPrevSibling() != null) ? context \: context.getParent();
 				while (ctx.getPrevSibling() != null && !::projectProperName::Types.IDENTIFIER_KEY.equals(ctx.getPrevSibling().getNode().getElementType())) {
 					if (::projectProperName::Types.OPEN_AN.equals(ctx.getNode().getElementType())) return true;
 					if (::projectProperName::Types.CLOSE_AN.equals(ctx.getNode().getElementType())) return false;

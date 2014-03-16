@@ -25,7 +25,7 @@ public class ::projectProperName::Block extends AbstractBlock {
 	\@Override
 	protected List<Block> buildChildren() {
 		List<Block> blocks = new ArrayList<>();
-		for (ASTNode child : getNode().getChildren(null)) {
+		for (ASTNode child \: getNode().getChildren(null)) {
 			if (child.getElementType() == ::projectProperName::Types.CONCEPT_KEY)
 				blocks.add(new ::projectProperName::Block(child, Wrap.createWrap(WrapType.ALWAYS, false), Alignment.createAlignment()));
 			else if (child.getElementType() == ::projectProperName::Types.BODY)
