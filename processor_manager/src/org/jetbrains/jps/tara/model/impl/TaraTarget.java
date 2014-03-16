@@ -53,7 +53,7 @@ public class TaraTarget extends ModuleBasedTarget<TaraRootDescriptor> {
 	}
 
 	private Collection<TaraConfiguration> getRootConfigurations(BuildDataPaths dataPaths) {
-		return getRootConfigurations(getModuleResourcesConfiguration(dataPaths));
+		return getRootConfigurations(getModuleConfiguration(dataPaths));
 	}
 
 	private Collection<TaraConfiguration> getRootConfigurations(@Nullable TaraModuleConfiguration moduleConfig) {
@@ -63,7 +63,7 @@ public class TaraTarget extends ModuleBasedTarget<TaraRootDescriptor> {
 		return Collections.emptyList();
 	}
 
-	public TaraModuleConfiguration getModuleResourcesConfiguration(BuildDataPaths dataPaths) {
+	public TaraModuleConfiguration getModuleConfiguration(BuildDataPaths dataPaths) {
 		final TaraProjectConfiguration projectConfig = JpsTaraExtensionService.getInstance().getTaraProjectConfiguration(dataPaths);
 		return projectConfig.moduleConfigurations.get(myModule.getName());
 	}
@@ -92,7 +92,7 @@ public class TaraTarget extends ModuleBasedTarget<TaraRootDescriptor> {
 	@NotNull
 	@Override
 	public Collection<File> getOutputRoots(CompileContext context) {
-		final Set<File> result = new THashSet<File>(FileUtil.FILE_HASHING_STRATEGY);
+		final Set<File> result = new THashSet<>(FileUtil.FILE_HASHING_STRATEGY);
 		final File moduleOutput = getModuleOutputDir();
 		for (TaraConfiguration resConfig : getRootConfigurations(context.getProjectDescriptor().dataManager.getDataPaths())) {
 			final File output = getOutputDir(moduleOutput, resConfig);
@@ -125,7 +125,7 @@ public class TaraTarget extends ModuleBasedTarget<TaraRootDescriptor> {
 	@Override
 	public void writeConfiguration(ProjectDescriptor pd, PrintWriter out) {
 		final BuildDataPaths dataPaths = pd.getTargetsState().getDataPaths();
-		final TaraModuleConfiguration configuration = getModuleResourcesConfiguration(dataPaths);
+		final TaraModuleConfiguration configuration = getModuleConfiguration(dataPaths);
 		if (configuration != null) {
 			out.write(Integer.toHexString(configuration.computeConfigurationHash(isTests())));
 		}

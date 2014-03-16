@@ -61,21 +61,11 @@ public class TaraModuleConfiguration {
 
 	@Tag("resources")
 	@AbstractCollection(surroundWithTag = false, elementTag = "resource")
-	public List<TaraConfiguration> resources = new ArrayList<TaraConfiguration>();
+	public List<TaraConfiguration> resources = new ArrayList<>();
 
 	@Tag("test-resources")
 	@AbstractCollection(surroundWithTag = false, elementTag = "resource")
-	public List<TaraConfiguration> testResources = new ArrayList<TaraConfiguration>();
-
-	public Set<String> getFilteringExcludedExtensions() {
-		if (filteringExclusions.isEmpty()) {
-			return TaraProjectConfiguration.DEFAULT_FILTERING_EXCLUDED_EXTENSIONS;
-		}
-		final Set<String> result = new THashSet<String>(FileUtil.PATH_HASHING_STRATEGY);
-		result.addAll(TaraProjectConfiguration.DEFAULT_FILTERING_EXCLUDED_EXTENSIONS);
-		result.addAll(filteringExclusions);
-		return Collections.unmodifiableSet(result);
-	}
+	public List<TaraConfiguration> testResources = new ArrayList<>();
 
 	public int computeConfigurationHash(boolean forTestResources) {
 		int result = computeModuleConfigurationHash();
