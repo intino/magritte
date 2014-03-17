@@ -21,9 +21,7 @@ public class ::projectProperName::SignatureCompletionContributor extends Complet
 
 	private PsiElementPattern.Capture<PsiElement> afterDefinitionKey = psiElement()
 		.withLanguage(::projectProperName::Language.INSTANCE)
-		.and(new FilterPattern(new InSignatureFitFilter()))
-		.and(new FilterPattern(new AfterElementFitFilter(::projectProperName::Types.CONCEPT_KEY)));
-
+		.and(new FilterPattern(new InSignatureFitFilter()));
 	private ElementPattern<? extends PsiElement> afterPolymorphicOrMorphKey = psiElement()
 		.withLanguage(::projectProperName::Language.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))

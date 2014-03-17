@@ -190,23 +190,6 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 		return finalOutputs;
 	}
 
-	private List<File> collectFiles(CompileContext context,
-	                                DirtyFilesHolder<TaraRootDescriptor, TaraTarget> dirtyFilesHolder) throws IOException {
-		final JpsJavaCompilerConfiguration configuration = JpsJavaExtensionService.getInstance().
-			getCompilerConfiguration(context.getProjectDescriptor().getProject());
-		assert configuration != null;
-		final List<File> toCompile = new ArrayList<>();
-//		dirtyFilesHolder.processDirtyFiles(new FileProcessor<TaraRootDescriptor, TaraTarget>() {
-//			@Override
-//			public boolean apply(TaraTarget taraTarget, File file, TaraRootDescriptor taraRootDescriptor) throws IOException {
-//				if (isTaraFile(file.getPath()))
-//					toCompile.add(file);
-//				return true;
-//			}
-//		});
-		return toCompile;
-	}
-
 	@Override
 	public String toString() {
 		return builderName;

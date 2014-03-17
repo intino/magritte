@@ -34,8 +34,24 @@ public class PluginCompiler extends CodeGenerator {
 	}
 
 	private static String makeCompileCommand(File[] sources) {
-		ArrayList<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources, new String[]{},
-			new String[]{}, configuration.getTempDirectory().getAbsolutePath());
+		ArrayList<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources, getClassPath(),
+			new String[]{"-encoding " + System.getProperty("file.encoding")}, configuration.getTempDirectory().getAbsolutePath() + SEP + BUILD);
 		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
+	}
+
+	public static String[] getClassPath() {
+		String libPath = "/Applications/IntelliJIDEA13CE.app/lib/";
+		File[] jars = new File(libPath).listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.getName().endsWith(".jar");
+			}
+		});
+		ArrayList<String> jarNames = new ArrayList<>();
+		for (File jar : jars) jarNames.add(jar.getAbsolutePath());
+		jarNames.add(PluginCompiler.class.getResource("/tpl/markdown/markdown4j-2.2.jar").getPath());
+		jarNames.add(PluginCompiler.class.getResource("/tpl/errorreporting/commons-email-1.3.2.jar").getPath());
+		jarNames.add(PluginCompiler.class.getResource("/tpl/errorreporting/javax.mail.jar").getPath());
+		return jarNames.toArray(new String[jarNames.size()]);
 	}
 }

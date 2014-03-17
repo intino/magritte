@@ -10,7 +10,7 @@ public class PluginPackager extends CodeGenerator {
 
 	public static void doPackage(CompilerConfiguration configuration) {
 		File libPath = null;//LibManager.getLibraryPath();
-		String buildPath = configuration.getTempDirectory() + SEP + BUILD + SEP + IDE + "lib";
+		String buildPath = configuration.getTempDirectory() + SEP + BUILD + SEP + IDE + configuration.getProject() + SEP + "lib";
 		String srcPath = configuration.getTempDirectory() + SEP + SRC + SEP + IDE;
 		FileSystemUtils.createDir(buildPath);
 		compileTaraPluginSource(srcPath);

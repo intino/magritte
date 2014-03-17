@@ -38,7 +38,7 @@ public abstract class CodeGenerator {
 		if (!output.getMessage().equals(""))
 			System.out.println("Output:\n" + output.getMessage());
 		if (!error.getMessage().equals(""))
-			System.err.println("Error: " + error.getMessage());
+			System.err.println("\n\n" + error.getMessage());
 	}
 
 	protected static String newTemplate(String project, String template) {

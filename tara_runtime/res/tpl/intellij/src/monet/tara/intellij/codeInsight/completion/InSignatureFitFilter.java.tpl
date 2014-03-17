@@ -10,8 +10,6 @@ public class InSignatureFitFilter implements ElementFilter {
 		if (element instanceof PsiElement)
 			while (myCtx.getPrevSibling() != null) {
 				myCtx = myCtx.getPrevSibling();
-				if (::projectProperName::Types.CONCEPT_KEY.equals(myCtx.getNode().getElementType()))
-					return true;
 				if (::projectProperName::Types.NEWLINE.equals(myCtx.getNode().getElementType()) ||
 					::projectProperName::Types.NEW_LINE_INDENT.equals(myCtx.getNode().getElementType()) ||
 					::projectProperName::Types.DEDENT.equals(myCtx.getNode().getElementType()))

@@ -30,14 +30,14 @@ public class ::projectProperName::Util {
 	\@NotNull
 	public static List<Definition> getDefinitionsOfFileByName(::projectProperName::FileImpl ::projectName::File, String identifier) {
 		List<Definition> result = new ArrayList<>();
-		Definition[] definitions = PsiTreeUtil.getChildrenOfType(::projectName::File, ::projectProperName::Definition.class);
+		Definition[] definitions = PsiTreeUtil.getChildrenOfType(::projectName::File, Definition.class);
 		if (definitions != null) result.addAll(getDefinitionsByName(definitions, identifier));
 		return result;
 	}
 
 	public static List<Definition> getDefinitionsOfFile(::projectProperName::FileImpl ::projectName::File) {
 		List<Definition> result = new ArrayList<>();
-		Definition[] definitions = PsiTreeUtil.getChildrenOfType(::projectName::File, ::projectProperName::Definition.class);
+		Definition[] definitions = PsiTreeUtil.getChildrenOfType(::projectName::File, Definition.class);
 		if (definitions != null) Collections.addAll(result, definitions);
 		return result;
 	}
@@ -64,7 +64,7 @@ public class ::projectProperName::Util {
 	public static List<Definition> getRootDefinitions(Project project) {
 		List<Definition> result = new ArrayList<>();
 		for (::projectProperName::FileImpl ::projectName::File \: getProjectFiles(project)) {
-			Definition[] definitions = PsiTreeUtil.getChildrenOfType(::projectName::File, ::projectProperName::Definition.class);
+			Definition[] definitions = PsiTreeUtil.getChildrenOfType(::projectName::File, Definition.class);
 			if (definitions != null) Collections.addAll(result, definitions);
 		}
 		return result;
@@ -106,7 +106,7 @@ public class ::projectProperName::Util {
 	\@NotNull
 	public static List<Definition> findAllDefinitionsOfFile(::projectProperName::FileImpl ::projectName::File) {
 		List<Definition> result = new ArrayList<>();
-		Definition[] definitions = (Definition[]) PsiTreeUtil.getChildrenOfType(::projectName::File, ::projectProperName::Definition.class);
+		Definition[] definitions = (Definition[]) PsiTreeUtil.getChildrenOfType(::projectName::File, Definition.class);
 		if (definitions != null) {
 			Collections.addAll(result, definitions);
 			for (Definition definition \: definitions)

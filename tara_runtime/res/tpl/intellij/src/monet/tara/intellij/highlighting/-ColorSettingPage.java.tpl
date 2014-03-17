@@ -52,11 +52,11 @@ public class ::projectProperName::ColorSettingPage implements ColorSettingsPage 
 				"\\' Una entidad es un objeto en la unidad de negocio que representa un contenido" + "\\n" +
 				"Definition abstract as Entity<has-code>" + "\\n" +
 
-				"\\t\\' Añadir para ofrecer al usuario información más detallada de la entidad" + "\\n" +
+				"\\t\\' Incluir para ofrecer al usuario información más detallada de la entidad" + "\\n" +
 				"\\tDefinition as Description<optional>" + "\\n" +
 				"\\t\\tvar String description" + "\\n" +
 				"\\n" +
-				"\\t\\' Añadir para ofrecer al usuario una ayuda" + "\\n" +
+				"\\t\\' Incluir para ofrecer al usuario una ayuda" + "\\n" +
 				"\\t\\' - **resource**. Nombre del fichero incluido en la distribución" + "\\n" +
 				"\\tDefinition as Help<optional>" + "\\n" +
 				"\\t\\tvar String resource" + "\\n" +

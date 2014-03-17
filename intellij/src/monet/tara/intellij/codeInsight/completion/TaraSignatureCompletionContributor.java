@@ -26,7 +26,6 @@ import java.util.List;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
-
 public class TaraSignatureCompletionContributor extends CompletionContributor {
 
 	private PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement().withLanguage(TaraLanguage.INSTANCE)
