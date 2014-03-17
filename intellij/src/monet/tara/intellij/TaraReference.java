@@ -7,6 +7,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import monet.tara.intellij.metamodel.TaraIcons;
 import monet.tara.intellij.metamodel.psi.Concept;
+import monet.tara.intellij.metamodel.psi.Identifier;
 import monet.tara.intellij.metamodel.psi.TaraIdentifier;
 import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
@@ -45,10 +46,15 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	@Override
 	public Object[] getVariants() {
 		List<Concept> concepts = new ArrayList<>();
-		if (myElement.getPrevSibling() == null)
+		if (isReferenceToConcept())
 			refer((TaraIdentifier) myElement, concepts);
-		else getChildrenVariants((TaraIdentifier) myElement.getPrevSibling().getPrevSibling(), concepts);
+		else if (myElement.getPrevSibling().getPrevSibling() instanceof Identifier)
+			getChildrenVariants((TaraIdentifier) myElement.getPrevSibling().getPrevSibling(), concepts);
 		return fillVariants(concepts);
+	}
+
+	private boolean isReferenceToConcept() {
+		return myElement.getPrevSibling() == null;
 	}
 
 	private Object[] fillVariants(List<Concept> concepts) {

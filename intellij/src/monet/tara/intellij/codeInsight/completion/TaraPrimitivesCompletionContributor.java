@@ -22,7 +22,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 		.and(new FilterPattern(new AfterVarFitFilter()));
 
 	public TaraPrimitivesCompletionContributor() {
-		extend(CompletionType.BASIC, afterVar,
+		extend(CompletionType.SMART, afterVar,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,

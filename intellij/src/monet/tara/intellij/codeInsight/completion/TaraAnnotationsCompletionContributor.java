@@ -21,7 +21,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 		.and(new FilterPattern(new AfterAngleFitFilter()));
 
 	public TaraAnnotationsCompletionContributor() {
-		extend(CompletionType.BASIC, afterVar,
+		extend(CompletionType.SMART, afterVar,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
