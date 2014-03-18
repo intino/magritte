@@ -33,6 +33,7 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 
 	private String getPath(String template) {
 		String templateRefactored = template.replace("_", "Definition").replace("/tara/", "/" + configuration.getProject() + "/");
+		templateRefactored = templateRefactored.replace("tpl/","");
 		if (!template.contains("META-INF"))
 			templateRefactored = templateRefactored.replace("-", RenderUtils.toProperCase(configuration.getProject()));
 		return configuration.getTempDirectory().getAbsolutePath() + File.separator + SRC + File.separator + templateRefactored;

@@ -11,7 +11,7 @@ public class DefaultRender extends Render {
 
 	public DefaultRender(String tplName, String projectName) {
 		super(new Logger(), null);
-		setPath(this.getClass().getResource("/tpl/").getPath());
+		setPath(this.getClass().getResource("/").getPath());
 		this.tplName = tplName;
 		this.projectName = projectName;
 	}
@@ -21,7 +21,7 @@ public class DefaultRender extends Render {
 		try {
 			render();
 		} catch (TaraException ignored) {
-			System.err.println("Template not found: " + tplName);
+			System.err.println("Template not found: " + tplName + " in path " + path);
 		}
 	}
 

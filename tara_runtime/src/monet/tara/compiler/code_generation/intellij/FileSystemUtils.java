@@ -3,6 +3,9 @@ package monet.tara.compiler.code_generation.intellij;
 import java.io.*;
 import java.nio.file.FileSystemException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class FileSystemUtils {
 
@@ -391,5 +394,59 @@ public class FileSystemUtils {
 		for (File file : path.listFiles(filter))
 			if (file.isDirectory()) listFilesRecursive(file, javaFiles, filter);
 			else javaFiles.add(file);
+	}
+
+	public static void zipDir(String name, String directory) throws IOException {
+		File directoryToZip = new File(directory);
+		List<File> fileList = new ArrayList<>();
+		getAllFiles(directoryToZip, fileList);
+		writeZipFile(name, directoryToZip, fileList);
+	}
+
+
+
+	public static void writeInputStream(InputStream in, File outFile) throws IOException {
+		byte[] buffer = new byte[1024];
+		int len;
+		OutputStream out = new FileOutputStream(outFile);
+		while ((len = in.read(buffer)) >= 0)
+			out.write(buffer, 0, len);
+		in.close();
+		out.close();
+
+	}
+
+	public static void getAllFiles(File dir, List<File> fileList) {
+		File[] files = dir.listFiles();
+		for (File file : files != null ? files : new File[0]) {
+			fileList.add(file);
+			if (file.isDirectory())
+				getAllFiles(file, fileList);
+		}
+	}
+
+	public static void writeZipFile(String name, File directoryToZip, List<File> fileList) throws IOException {
+		FileOutputStream fos = new FileOutputStream(name);
+		ZipOutputStream zos = new ZipOutputStream(fos);
+		for (File file : fileList)
+			if (!file.isDirectory())
+				addToZip(directoryToZip, file, zos);
+		zos.close();
+		fos.close();
+
+	}
+
+	public static void addToZip(File directoryToZip, File file, ZipOutputStream zos) throws IOException {
+		FileInputStream fis = new FileInputStream(file);
+		String zipFilePath = file.getCanonicalPath().substring(directoryToZip.getCanonicalPath().length() + 1,
+			file.getCanonicalPath().length());
+		ZipEntry zipEntry = new ZipEntry(zipFilePath);
+		zos.putNextEntry(zipEntry);
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = fis.read(bytes)) >= 0)
+			zos.write(bytes, 0, length);
+		zos.closeEntry();
+		fis.close();
 	}
 }

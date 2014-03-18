@@ -35,7 +35,8 @@ public class PluginCompiler extends CodeGenerator {
 
 	private static String makeCompileCommand(File[] sources) {
 		ArrayList<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources, getClassPath(),
-			new String[]{"-encoding " + System.getProperty("file.encoding")}, configuration.getTempDirectory().getAbsolutePath() + SEP + BUILD);
+			new String[]{"-encoding " + System.getProperty("file.encoding")}, configuration.getTempDirectory().getAbsolutePath()
+			+ SEP + BUILD + SEP + IDE + configuration.getProject() + SEP + "lib" + SEP + configuration.getProject());
 		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 
@@ -49,9 +50,9 @@ public class PluginCompiler extends CodeGenerator {
 		});
 		ArrayList<String> jarNames = new ArrayList<>();
 		for (File jar : jars) jarNames.add(jar.getAbsolutePath());
-		jarNames.add(PluginCompiler.class.getResource("/tpl/markdown/markdown4j-2.2.jar").getPath());
-		jarNames.add(PluginCompiler.class.getResource("/tpl/errorreporting/commons-email-1.3.2.jar").getPath());
-		jarNames.add(PluginCompiler.class.getResource("/tpl/errorreporting/javax.mail.jar").getPath());
+		jarNames.add(PluginCompiler.class.getResource("/markdown4j-2.2.jar").getPath());
+		jarNames.add(PluginCompiler.class.getResource("/commons-email-1.3.2.jar").getPath());
+		jarNames.add(PluginCompiler.class.getResource("/javax.mail.jar").getPath());
 		return jarNames.toArray(new String[jarNames.size()]);
 	}
 }

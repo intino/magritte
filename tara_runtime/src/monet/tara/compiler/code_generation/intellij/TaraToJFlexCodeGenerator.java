@@ -19,7 +19,7 @@ public class TaraToJFlexCodeGenerator extends CodeGenerator {
 		ArrayList<File> resultFiles = new ArrayList<>();
 		for (String tpl : LEXER_TPL) {
 			String template = TemplateFactory.getTemplate(tpl);
-			String outPath = configuration.getTempDirectory().getAbsolutePath() + SEP + SRC + SEP +
+			String outPath = configuration.getTempDirectory().getAbsolutePath() + SEP + SRC +
 				newTemplate(RenderUtils.toProperCase(configuration.getProject()), template);
 			JFlexRender render = new JFlexRender(configuration.getProject(), template, tplPath, ast.getIdentifiers());
 			File file = new File(outPath);

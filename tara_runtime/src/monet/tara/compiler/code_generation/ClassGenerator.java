@@ -34,7 +34,7 @@ public class ClassGenerator extends CodeGenerator {
 	}
 
 	private File getTaraCoreFile() {
-		return new File(getClass().getResource(SEP + "tara_core" + SEP + "tara_core.jar").getPath());
+		return new File(getClass().getResource(SEP + "tara" + SEP + "core.jar").getPath());
 	}
 
 	private String makeCompileCommand(File[] sources) {

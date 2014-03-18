@@ -26,7 +26,7 @@ public class BnfToJavaCodeGenerator extends CodeGenerator {
 	}
 
 	private static String makeJavaCommand(String directory, File source) {
-		String grammarKit = BnfToJavaCodeGenerator.class.getResource("/grammar-kit/grammar-kit.jar").getPath();
+		String grammarKit = BnfToJavaCodeGenerator.class.getResource("/grammar-kit.jar").getPath();
 		String destiny = directory + SEP + SRC + SEP + IDE + SRC + SEP;
 		String[] vParams = new String[]{"-DUser.dir=" + destiny};
 		ArrayList<String> cmd = JavaCommandHelper.buildJavaJarExecuteCommandLine(grammarKit,
@@ -36,9 +36,8 @@ public class BnfToJavaCodeGenerator extends CodeGenerator {
 
 	public static void fixTypes(File tempPath, String project) {
 		try {
-			String typesFile = tempPath.getAbsolutePath() + SEP + SRC + SEP +
-				TemplateFactory.getTemplate("Types.java")
-					.replace("-", RenderUtils.toProperCase(project)).replace(SEP + "tara" + SEP, SEP + project.toLowerCase() + SEP);
+			String typesFile = tempPath.getAbsolutePath() + SEP + SRC +
+				TemplateFactory.getTemplate("Types.java").replace("/tpl", "").replace("-", RenderUtils.toProperCase(project)).replace(SEP + "tara" + SEP, SEP + project.toLowerCase() + SEP);
 			String fileContent = FileSystemUtils.readFile(typesFile);
 			fileContent = fileContent.replace("new " + RenderUtils.toProperCase(project) + "TokenType(\"NEW_LINE_INDENT\");", "TokenType.NEW_LINE_INDENT;");
 			FileSystemUtils.writeFile(typesFile, fileContent);

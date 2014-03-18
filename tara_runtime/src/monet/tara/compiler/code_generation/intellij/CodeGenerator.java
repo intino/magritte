@@ -42,7 +42,7 @@ public abstract class CodeGenerator {
 	}
 
 	protected static String newTemplate(String project, String template) {
-		return template.replace("-", project).replace("/tara/", "/" + project + "/");
+		return template.replace("-", project).replace("/tara/", "/" + project + "/").replace("tpl/", "");
 	}
 
 	protected static void out(String s) {

@@ -38,8 +38,8 @@ public class JFlexToJavaGenerator extends CodeGenerator {
 	}
 
 	private static File[] getJFlexLibFiles() {
-		return new File[]{new File(JFlexToJavaGenerator.class.getResource("/flex/JFlex.jar").getPath()),
-			new File(JFlexToJavaGenerator.class.getClass().getResource("/flex/idea-flex.skeleton").getPath())};
+		return new File[]{new File(JFlexToJavaGenerator.class.getResource("/JFlex.jar").getPath()),
+			new File(JFlexToJavaGenerator.class.getClass().getResource("/idea-flex.skeleton").getPath())};
 	}
 
 

@@ -5,9 +5,9 @@ import monet.tara.compiler.core.CompilationUnit;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.CompilerMessage;
 import monet.tara.compiler.core.SourceUnit;
+import monet.tara.compiler.core.error_collection.message.WarningMessage;
 import monet.tara.compiler.rt.TaraCompilerMessageCategories;
 import monet.tara.compiler.rt.TaraRtConstants;
-import org.codehaus.groovy.control.messages.WarningMessage;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ public class TaraCompilerRunner {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				//argsFile.delete();
+				argsFile.delete();
 			}
 		}
 	}

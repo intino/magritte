@@ -1,6 +1,7 @@
 package monet.tara.compiler.code_generation.intellij;
 
 import com.intellij.openapi.diagnostic.Logger;
+import monet.tara.compiler.code_generation.render.TemplateFactory;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.SourceUnit;
 import monet.tara.compiler.core.ast.AST;
@@ -22,7 +23,7 @@ public class PluginGenerator {
 
 	public void generate(Collection<SourceUnit> units) throws TaraException {
 		AST ast = mergeAST(units);
-		String tplPath = this.getClass().getResource(SEP + "tpl").getPath();
+		String tplPath = this.getClass().getResource(TemplateFactory.IDE_TPL).getPath();
 		new TaraPluginToJavaCodeGenerator().toJava(configuration, ast);
 		File grammarFile = TaraToBnfCodeGenerator.toBnf(configuration, tplPath, ast);
 		BnfToJavaCodeGenerator.bnfToJava(configuration, grammarFile);
