@@ -1,10 +1,6 @@
 src_file
-/Users/oroncal/workspace/tara/tara_runtime/res_test/monet.m2
-encoding
-UTF-8
+/Users/oroncal/workspace/sandbox/prueba/src/goros/goros.m2
 outputpath
-/Users/oroncal/workspace/sandbox/system/compile-server/test_2e78763/taraStubs/Test/java-production/
+/Users/oroncal/Library/Caches/IntelliJIdea13/plugins-sandbox/system/compile-server/prueba_5c886482/taraStubs/prueba/tara-plugin-production
 final_outputpath
-/Users/oroncal/workspace/sandbox/Test/out/production/Test/
-project
-goros
+/Users/oroncal/workspace/sandbox/prueba/out/production/prueba/
