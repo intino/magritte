@@ -4,8 +4,8 @@ import monet.tara.compiler.code_generation.render.RendersFactory;
 import monet.tara.compiler.core.ast.AST;
 import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.error_collection.ErrorCollector;
+import monet.tara.compiler.core.error_collection.SyntaxException;
 import monet.tara.compiler.core.error_collection.TaraException;
-import monet.tara.compiler.core.error_collection.message.SimpleMessage;
 import monet.tara.compiler.parser.Parser;
 import org.monet.templation.Render;
 
@@ -43,14 +43,9 @@ public class SourceUnit extends ProcessingUnit {
 		return ast;
 	}
 
-	public void parse() {
-		try {
-			if (parser == null)
-				parser = new Parser(source.getFile());
-			parser.parse();
-		} catch (Exception e) {
-			getErrorCollector().addError(new SimpleMessage("Parsing Error", this));
-		}
+	public void parse() throws IOException, SyntaxException {
+		if (parser == null) parser = new Parser(source.getFile());
+		parser.parse();
 	}
 
 	public void convert() throws TaraException {

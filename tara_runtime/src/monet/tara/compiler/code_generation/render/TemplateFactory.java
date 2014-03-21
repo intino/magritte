@@ -5,15 +5,14 @@ import java.util.Map;
 
 public class TemplateFactory {
 
-	private static final Map<String, String> TEMPLATES = new HashMap<>();
 	public static final String IDE_TPL = "/intellij/tpl/";
 	public static final String IDE = "intellij/";
+	public static final String CONCEPT_KEY = "_";
+	public static final String PROJECT_KEY = "-";
+	private static final Map<String, String> TEMPLATES = new HashMap<>();
 	private static final String SRC = "src/";
 	private static final String RES = "res/";
 	private static final String PROJECT_PATH = "monet/tara/" + IDE;
-
-	public static final String CONCEPT_KEY = "_";
-	public static final String PROJECT_KEY = "-";
 
 	static {
 		TEMPLATES.put("CreateFileAction.java", IDE_TPL + SRC + PROJECT_PATH + "actions/CreateFileAction.java");
@@ -94,8 +93,6 @@ public class TemplateFactory {
 		TEMPLATES.put("FileImpl.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/psi/impl/-FileImpl.java");
 		TEMPLATES.put("PsiImplUtil.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/psi/impl/-PsiImplUtil.java");
 		TEMPLATES.put("Types.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/psi/-Types.java");
-		TEMPLATES.put("Visitor.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/psi/-Visitor.java");
-		TEMPLATES.put("DefinitionImpl.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/psi/impl/-DefinitionImpl.java");
 		TEMPLATES.put("Util.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/psi/impl/-Util.java");
 
 		TEMPLATES.put("ModuleBuilder.java", IDE_TPL + SRC+ PROJECT_PATH + "project/module/ModuleBuilder.java");
@@ -138,7 +135,6 @@ public class TemplateFactory {
 		TEMPLATES.put("errorReporter.properties", IDE_TPL + RES+ "messages/errorReporter.properties");
 		TEMPLATES.put("PluginErrorReportSubmitterBundle.properties", IDE_TPL + RES+ "messages/PluginErrorReportSubmitterBundle.properties");
 		TEMPLATES.put("Bundle.properties", IDE_TPL + RES+ "messages/-Bundle.properties");
-
 //		TEMPLATES.put("Definition", "metamodel/Definition");
 //		TEMPLATES.put("Metamodel", "metamodel/Metamodel");
 	}

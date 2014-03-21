@@ -21,15 +21,12 @@ public class TaraCompilerRunner {
 		final List<File> srcFiles = new ArrayList<>();
 		final List<CompilerMessage> compilerMessages = new ArrayList<>();
 		getInfoFromArgsFile(argsFile, config, srcFiles);
-
 		if (srcFiles.isEmpty()) return true;
-
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
 		final CompilationUnit unit = new CompilationUnit(pluginGeneration, config, null);
 		addSources(srcFiles, unit);
-
-		System.out.println("Tarac: compiling...");
-		final List<TaraCompiler.OutputItem> compiledFiles = new TaraCompiler(pluginGeneration, compilerMessages).compile(unit);
+		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: compiling...");
+		final List<TaraCompiler.OutputItem> compiledFiles = new TaraCompiler(compilerMessages).compile(unit);
 		System.out.println();
 		if (compiledFiles.isEmpty()) reportNotCompiledItems(srcFiles);
 		else reportCompiledItems(compiledFiles);
@@ -73,6 +70,10 @@ public class TaraCompilerRunner {
 					configuration.setTargetDirectory(reader.readLine());
 				else if (line.startsWith(TaraRtConstants.PROJECT))
 					configuration.setProject(reader.readLine());
+				else if (line.startsWith(TaraRtConstants.IDEA_HOME))
+					configuration.setIdeaHome(reader.readLine());
+				else if (line.startsWith(TaraRtConstants.PROJECT_ICON))
+					configuration.setProjectIcon(reader.readLine());
 				line = reader.readLine();
 			}
 		} catch (IOException e) {
@@ -84,7 +85,7 @@ public class TaraCompilerRunner {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				argsFile.delete();
+//				argsFile.delete();
 			}
 		}
 	}
@@ -132,11 +133,5 @@ public class TaraCompilerRunner {
 			System.out.print(TaraRtConstants.TO_RECOMPILE_END);
 			System.out.println();
 		}
-	}
-
-	private static void addExceptionInfo(List<CompilerMessage> compilerMessages, Throwable e, String message) {
-		final StringWriter writer = new StringWriter();
-		e.printStackTrace(new PrintWriter(writer));
-		compilerMessages.add(new CompilerMessage(TaraCompilerMessageCategories.WARNING, message + ":\n" + writer, "<exception>", -1, -1));
 	}
 }

@@ -38,10 +38,14 @@ public class JFlexToJavaGenerator extends CodeGenerator {
 	}
 
 	private static File[] getJFlexLibFiles() {
-		return new File[]{new File(JFlexToJavaGenerator.class.getResource("/JFlex.jar").getPath()),
-			new File(JFlexToJavaGenerator.class.getClass().getResource("/idea-flex.skeleton").getPath())};
+		try {
+			return new File[]{new File(JFlexToJavaGenerator.class.getResource("/JFlex.jar").getPath()),
+				new File(JFlexToJavaGenerator.class.getResource("/idea-flex.skeleton").getPath())};
+		} catch (NullPointerException e) {
+			System.err.println("JFlex not found in " + JFlexToJavaGenerator.class.getResource("/JFlex.jar").getPath());
+			throw new NullPointerException();
+		}
 	}
-
 
 
 }

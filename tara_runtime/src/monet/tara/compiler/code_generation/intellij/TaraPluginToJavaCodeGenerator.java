@@ -1,9 +1,6 @@
 package monet.tara.compiler.code_generation.intellij;
 
-import monet.tara.compiler.code_generation.render.DefaultRender;
-import monet.tara.compiler.code_generation.render.RenderUtils;
-import monet.tara.compiler.code_generation.render.RendersFactory;
-import monet.tara.compiler.code_generation.render.TemplateFactory;
+import monet.tara.compiler.code_generation.render.*;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.ast.AST;
 import monet.tara.compiler.core.error_collection.TaraException;
@@ -20,10 +17,18 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 	public void toJava(CompilerConfiguration configuration, AST ast) throws TaraException {
 		this.configuration = configuration;
 		for (String template : TemplateFactory.getTemplates().keySet()) {
-			writer = getOutWriter(new File(this.getPath(TemplateFactory.getTemplate(template))));
+			writer = getOutWriter(new File(getDestinyOf(TemplateFactory.getTemplate(template))));
 			writeTemplateBasedFile(template, ast.getIdentifiers());
-			closeOutFile();
+			writer.close();
 		}
+		addIcons();
+	}
+
+	private void addIcons() throws TaraException {
+		for (String icon : IconFactory.getIcons().keySet())
+			FileSystemUtils.copyFile(getClass().getResource(IconFactory.getIcon(icon)).getPath(), getDestinyOf(IconFactory.getIcon(icon)));
+		if (configuration.getProjectIcon() != null)
+			FileSystemUtils.copyFile(configuration.getProjectIcon(), this.getDestinyOf(IconFactory.getIcon("-.png")));
 	}
 
 	private void writeTemplateBasedFile(String template, HashMap<String, String> param) {
@@ -31,16 +36,11 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 		writer.print(defaultRender.getOutput());
 	}
 
-	private String getPath(String template) {
+	private String getDestinyOf(String template) {
 		String templateRefactored = template.replace("_", "Definition").replace("/tara/", "/" + configuration.getProject() + "/");
-		templateRefactored = templateRefactored.replace("tpl/","");
+		templateRefactored = templateRefactored.replace("tpl/", "");
 		if (!template.contains("META-INF"))
 			templateRefactored = templateRefactored.replace("-", RenderUtils.toProperCase(configuration.getProject()));
 		return configuration.getTempDirectory().getAbsolutePath() + File.separator + SRC + File.separator + templateRefactored;
 	}
-
-	private void closeOutFile() {
-		writer.close();
-	}
-
 }

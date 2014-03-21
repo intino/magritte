@@ -16,29 +16,33 @@ public class ASTNode {
 	private ArrayList<ASTNode> children = new ArrayList<>();
 	private ArrayList<Variable> variables = new ArrayList<>();
 	private String identifier = "";
+	private String file;
+	private int line;
 
-	public ASTNode(String identifier, ASTNode parent) {
+	public ASTNode(String identifier, ASTNode parent, String file) {
 		this.identifier = identifier;
-		abstractModifier = false;
-		finalModifier = false;
-		morph = false;
-		polymorphic = false;
 		this.parent = parent;
-	}
-
-	public ASTNode() {
+		this.file = file;
 		abstractModifier = false;
 		finalModifier = false;
 		morph = false;
 		polymorphic = false;
 	}
 
-	public int getLineNumber() {
-		return 0;
+	public ASTNode(String file) {
+		this.file = file;
+		abstractModifier = false;
+		finalModifier = false;
+		morph = false;
+		polymorphic = false;
 	}
 
-	public int getColumnNumber() {
-		return 0;
+	public boolean isRoot() {
+		return getParent() == null;
+	}
+
+	public int getLine() {
+		return line;
 	}
 
 	public boolean hasCode() {
@@ -188,6 +192,14 @@ public class ASTNode {
 	public String getAbsolutePath() {
 		return (parent != null) ? parent.getAbsolutePath() +
 			((!getIdentifier().equals("")) ? "." + getIdentifier() : "") : getIdentifier();
+	}
+
+	public String getFile() {
+		return file;
+	}
+
+	public void setLine(int line) {
+		this.line = line;
 	}
 
 	public enum AnnotationType {

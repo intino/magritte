@@ -8,7 +8,6 @@ import monet.tara.compiler.core.error_collection.message.SyntaxErrorMessage;
 import monet.tara.compiler.core.error_collection.message.WarningMessage;
 
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,49 +23,33 @@ public class ErrorCollector {
 	}
 
 	public void addCollectorContents(ErrorCollector er) {
-		if (er.errors != null) {
-			if (this.errors == null)
-				this.errors = er.errors;
-			else {
-				this.errors.addAll(er.errors);
-			}
-		}
+		if (er.errors != null)
+			if (this.errors == null) this.errors = er.errors;
+			else this.errors.addAll(er.errors);
 		if (er.warnings != null)
-			if (this.warnings == null)
-				this.warnings = er.warnings;
-			else
-				this.warnings.addAll(er.warnings);
+			if (this.warnings == null) this.warnings = er.warnings;
+			else this.warnings.addAll(er.warnings);
 	}
 
 	public void addErrorAndContinue(Message message) {
-		if (this.errors == null) {
-			this.errors = new LinkedList();
-		}
-
+		if (this.errors == null) this.errors = new LinkedList();
 		this.errors.add(message);
 	}
 
 	public void addError(Message message) throws CompilationFailedException {
 		addErrorAndContinue(message);
-
-		if (this.errors != null)
-			failIfErrors();
 	}
 
 	public void addError(Message message, boolean fatal) throws CompilationFailedException {
-		if (fatal) {
-			addFatalError(message);
-		} else
-			addError(message);
+		if (fatal) addFatalError(message);
+		else addError(message);
 	}
 
-	public void addError(SyntaxException error, SourceUnit source)
-		throws CompilationFailedException {
+	public void addError(SyntaxException error, SourceUnit source) throws CompilationFailedException {
 		addError(Message.create(error, source), error.isFatal());
 	}
 
-	public void addFatalError(Message message)
-		throws CompilationFailedException {
+	public void addFatalError(Message message) throws CompilationFailedException {
 		addError(message);
 		failIfErrors();
 	}
@@ -105,16 +88,14 @@ public class ErrorCollector {
 	}
 
 	public WarningMessage getWarning(int index) {
-		if (index < getWarningCount()) {
+		if (index < getWarningCount())
 			return (WarningMessage) this.warnings.get(index);
-		}
 		return null;
 	}
 
 	public Message getError(int index) {
-		if (index < getErrorCount()) {
+		if (index < getErrorCount())
 			return (Message) this.errors.get(index);
-		}
 		return null;
 	}
 
@@ -124,7 +105,6 @@ public class ErrorCollector {
 
 	public SyntaxException getSyntaxError(int index) {
 		SyntaxException exception = null;
-
 		Message message = getError(index);
 		if ((message != null) && ((message instanceof SyntaxErrorMessage)))
 			exception = ((SyntaxErrorMessage) message).getCause();
@@ -133,24 +113,19 @@ public class ErrorCollector {
 
 	public Exception getException(int index) {
 		Exception exception = null;
-
 		Message message = getError(index);
-		if (message != null) {
-			if ((message instanceof ExceptionMessage)) {
+		if (message != null)
+			if ((message instanceof ExceptionMessage))
 				exception = ((ExceptionMessage) message).getCause();
-			} else if ((message instanceof SyntaxErrorMessage)) {
+			else if ((message instanceof SyntaxErrorMessage))
 				exception = ((SyntaxErrorMessage) message).getCause();
-			}
-		}
 		return exception;
 	}
 
 	public void addWarning(WarningMessage message) {
 		if (message.isRelevant(this.configuration.getWarningLevel())) {
-			if (this.warnings == null) {
+			if (this.warnings == null)
 				this.warnings = new LinkedList();
-			}
-
 			this.warnings.add(message);
 		}
 	}
@@ -165,26 +140,21 @@ public class ErrorCollector {
 			addWarning(new WarningMessage(importance, text, data, source));
 	}
 
-	public void failIfErrors()
-		throws CompilationFailedException {
-		if (hasErrors())
-			throw new MultipleCompilationErrorsException(this);
+	public void failIfErrors() throws CompilationFailedException {
+		if (hasErrors()) throw new MultipleCompilationErrorsException(this);
 	}
 
 	private void write(PrintWriter writer, List messages, String txt) {
 		if ((messages == null) || (messages.size() == 0)) return;
-		Iterator iterator = messages.iterator();
-		while (iterator.hasNext()) {
-			Message message = (Message) iterator.next();
+		for (Object message1 : messages) {
+			Message message = (Message) message1;
 			message.write(writer);
-
 			if ((this.configuration.getDebug()) && ((message instanceof SyntaxErrorMessage))) {
 				SyntaxErrorMessage sem = (SyntaxErrorMessage) message;
 				sem.getCause().printStackTrace(writer);
 			}
 			writer.println();
 		}
-
 		writer.print(messages.size());
 		writer.print(" " + txt);
 		if (messages.size() > 1) writer.print("s");

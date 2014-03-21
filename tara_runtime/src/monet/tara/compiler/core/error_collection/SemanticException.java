@@ -1,14 +1,18 @@
 package monet.tara.compiler.core.error_collection;
 
-public class SemanticException extends Exception {
 
-    SemanticError data = new SemanticError();
+import monet.tara.compiler.core.error_collection.semantic.SemanticError;
 
-    public SemanticException(SemanticError data) {
-        this.data = data;
-    }
+public class SemanticException extends TaraException {
 
-    public SemanticError getData() {
-        return data;
-    }
+	SemanticError[] errors;
+
+
+	public SemanticException(SemanticError[] errors) {
+		this.errors = errors;
+	}
+
+	public SemanticError[] getErrors() {
+		return errors;
+	}
 }

@@ -1,10 +1,10 @@
 package monet.tara.compiler.semantic;
 
-import AST.AST;
-import AST.ASTNode;
-import AST.ASTNode.AnnotationType;
-import AST.ASTNode.Reference;
-import Semantic.ErrorData.Warning;
+import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.compiler.core.ast.ASTNode.AnnotationType;
+import monet.tara.compiler.core.error_collection.semantic.SemanticErrorList;
+import monet.tara.compiler.core.error_collection.semantic.UnusedConceptError;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,10 +12,10 @@ import java.util.HashMap;
 
 public class ConceptsUsage {
 
-    private ErrorData errors = new ErrorData();
+    private SemanticErrorList errors = new SemanticErrorList();
     private HashMap<String, ASTNode> conceptList = new HashMap<>();
 
-    public ConceptsUsage(ErrorData errors) {
+    public ConceptsUsage(SemanticErrorList errors) {
         this.errors = errors;
     }
 
@@ -41,12 +41,12 @@ public class ConceptsUsage {
     }
 
     private void checkReference(ASTNode concept, AST ast) {
-        for (Reference reference : concept.getReferences())
+        for (ASTNode.Reference reference : concept.getReferences())
             checkIfUsed(ast.searchNode(reference.getNode(), concept));
     }
 
     public void finish() {
         for (String concept : conceptList.keySet())
-            errors.addConceptUnused(new Warning(concept, conceptList.get(concept)));
+            errors.add(new UnusedConceptError(concept, conceptList.get(concept)));
     }
 }

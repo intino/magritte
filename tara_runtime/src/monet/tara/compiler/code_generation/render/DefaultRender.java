@@ -21,7 +21,7 @@ public class DefaultRender extends Render {
 		try {
 			render();
 		} catch (TaraException ignored) {
-			System.err.println("Template not found: " + tplName + " in path " + path);
+			System.out.println("Template not found: " + tplName + " in path " + path);
 		}
 	}
 

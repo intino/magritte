@@ -14,18 +14,21 @@ import static monet.tara.compiler.parser.antlr.TaraM2Grammar.*;
 
 public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
+	private final String file;
 	AST ast;
 	Stack<ASTNode> conceptStack = new Stack<>();
 
-	public TaraASTGeneratorListener(AST ast) {
+	public TaraASTGeneratorListener(AST ast, String file) {
 		this.ast = ast;
+		this.file = file;
 	}
 
 	@Override
 	public void enterConcept(@NotNull ConceptContext ctx) {
 		ASTNode parent = null;
 		if (!conceptStack.empty()) parent = conceptStack.peek();
-		ASTNode node = new ASTNode(ctx.signature().IDENTIFIER().getText(), parent);
+		ASTNode node = new ASTNode(ctx.signature().IDENTIFIER().getText(), parent, file);
+		node.setLine(ctx.getStart().getLine());
 		if (parent != null) parent.add(node);
 		else ast.add(node);
 		ast.add(node.getIdentifier(), node);
@@ -123,7 +126,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterConceptInjection(@NotNull ConceptInjectionContext ctx) {
-		ASTNode componentNode = new ASTNode();
+		ASTNode componentNode = new ASTNode(file);
 		conceptStack.peek().add(componentNode);
 		componentNode.setParent(conceptStack.peek());
 		conceptStack.push(componentNode);

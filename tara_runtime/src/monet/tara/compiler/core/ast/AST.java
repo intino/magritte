@@ -109,4 +109,12 @@ public class AST {
 		}
 		return keys;
 	}
+
+	public ASTNode searchNode(String nodeName, ASTNode context) {
+		ASTNode result;
+		if (nodeName == null || nodeName.isEmpty()) return null;
+		if ((result = relativeSearch(nodeName, context)) != null) return result;
+		return absoluteSearch(nodeName);
+	}
+
 }

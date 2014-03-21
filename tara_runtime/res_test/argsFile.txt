@@ -1,6 +1,13 @@
 src_file
-/Users/oroncal/workspace/sandbox/prueba/src/goros/goros.m2
+/Users/oroncal/workspace/tara/tara_runtime/res_test/monet.m2
+project
+goros
+idea_home
+/Applications/IntelliJIDEA13CE.app/lib/
+icon
+/Users/oroncal/workspace/sandbox/prueba/res/logos/prueba.png
 outputpath
-/Users/oroncal/Library/Caches/IntelliJIdea13/plugins-sandbox/system/compile-server/prueba_5c886482/taraStubs/prueba/tara-plugin-production
+/Users/oroncal/workspace/sandbox/system/compile-server/test_2e78763/taraStubs/Test/java-production/
 final_outputpath
 /Users/oroncal/workspace/sandbox/prueba/out/production/prueba/
+

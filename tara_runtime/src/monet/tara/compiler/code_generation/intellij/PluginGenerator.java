@@ -1,6 +1,5 @@
 package monet.tara.compiler.code_generation.intellij;
 
-import com.intellij.openapi.diagnostic.Logger;
 import monet.tara.compiler.code_generation.render.TemplateFactory;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.SourceUnit;
@@ -12,8 +11,6 @@ import java.util.Collection;
 
 public class PluginGenerator {
 
-	public static final Logger LOG = Logger.getInstance("PluginGenerator");
-	private static final String SEP = File.separator;
 	CompilerConfiguration configuration;
 
 

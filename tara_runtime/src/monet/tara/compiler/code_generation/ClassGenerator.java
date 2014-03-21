@@ -24,6 +24,7 @@ public class ClassGenerator extends CodeGenerator {
 			Process jarProcess = rt.exec(makeJarCommand(configuration.getProject()), null, getOutPath());
 			printResult(jarProcess);
 		} catch (IOException | InterruptedException e) {
+			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
 	}

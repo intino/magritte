@@ -7,8 +7,8 @@ public class Phases {
 
 	public static final int INITIALIZATION = 1;
 	public static final int PARSING = 2;
-	public static final int SEMANTIC_ANALYSIS = 3;
-	public static final int CONVERSION = 4;
+	public static final int CONVERSION = 3;
+	public static final int SEMANTIC_ANALYSIS = 4;
 	public static final int CLASS_GENERATION = 5;
 	public static final int PLUGIN_GENERATION = 6;
 	public static final int OUTPUT = 7;

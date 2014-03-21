@@ -21,16 +21,5 @@ public class SyntaxErrorMessage extends Message {
 	}
 
 	public void write(PrintWriter output) {
-		String name = this.source.getName();
-		int line = getCause().getStartLine();
-		int column = getCause().getStartColumn();
-//		String sample = this.source.getSample(line, column);
-//
-//		output.print(name + ": " + line + ": " + getCause().getMessage());
-//		if (sample != null) {
-//			output.println();
-//			output.print(sample);
-//			output.println();
-//		}
 	}
 }

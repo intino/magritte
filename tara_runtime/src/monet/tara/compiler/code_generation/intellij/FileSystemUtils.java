@@ -404,10 +404,10 @@ public class FileSystemUtils {
 	}
 
 
-
 	public static void writeInputStream(InputStream in, File outFile) throws IOException {
 		byte[] buffer = new byte[1024];
 		int len;
+		if (outFile.isDirectory()) outFile.mkdirs();
 		OutputStream out = new FileOutputStream(outFile);
 		while ((len = in.read(buffer)) >= 0)
 			out.write(buffer, 0, len);

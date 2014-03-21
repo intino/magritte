@@ -10,6 +10,9 @@ Concept abstract as Source <has-code root>
 Concept Source as Thesaurus
     new Term <multiple>
 
+Concept Source as Thesauro
+    new Term <multiple>
+
 ' Una entidad es un objeto en la unidad de negocio que representa un contenido
 Concept abstract as Entity  <has-code>
 

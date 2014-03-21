@@ -44,7 +44,7 @@ public class TaraRuntimeException extends RuntimeException {
 	protected String getLocationText() {
 		String answer = ". ";
 		if (this.node != null) {
-			answer = answer + "At [" + this.node.getLineNumber() + ":" + this.node.getColumnNumber() + "] ";
+			answer = answer + "At [" + this.node.getLine() + "] ";
 		}
 		if (answer.equals(". ")) {
 			return "";

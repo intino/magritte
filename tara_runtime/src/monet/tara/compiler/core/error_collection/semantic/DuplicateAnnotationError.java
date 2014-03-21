@@ -4,7 +4,12 @@ import monet.tara.compiler.core.ast.ASTNode;
 
 public class DuplicateAnnotationError extends SemanticError implements SemanticError.FatalError {
 
-	protected DuplicateAnnotationError(String token, ASTNode node, String message) {
-		super(token, node, message);
+	public DuplicateAnnotationError(String token, ASTNode node) {
+		super(token, node);
+	}
+
+	@Override
+	public String getMessage() {
+		return "Duplicated annotation: " + token + " @ line " + this.line;
 	}
 }

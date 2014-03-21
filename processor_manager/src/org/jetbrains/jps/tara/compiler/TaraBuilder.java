@@ -1,13 +1,13 @@
 package org.jetbrains.jps.tara.compiler;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.SystemProperties;
 import com.intellij.util.containers.ContainerUtilRt;
 import gnu.trove.THashMap;
+import monet.tara.compiler.rt.TaraRtConstants;
 import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,12 +17,9 @@ import org.jetbrains.jps.builders.DirtyFilesHolder;
 import org.jetbrains.jps.cmdline.ClasspathBootstrap;
 import org.jetbrains.jps.cmdline.ProjectDescriptor;
 import org.jetbrains.jps.incremental.*;
-import org.jetbrains.jps.incremental.java.ClassPostProcessor;
-import org.jetbrains.jps.incremental.java.JavaBuilder;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import org.jetbrains.jps.incremental.messages.ProgressMessage;
-import org.jetbrains.jps.javac.OutputFileObject;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import org.jetbrains.jps.model.java.compiler.JpsJavaCompilerConfiguration;
@@ -40,8 +37,6 @@ import java.util.concurrent.Future;
 
 public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 	private static final Logger LOG = Logger.getInstance("#TaraBuilder");
-	private static final Key<Map<String, String>> STUB_TO_SRC = Key.create("STUB_TO_SRC");
-	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
 	private static final String TARA_EXTENSION = "m2";
 	private final boolean pluginGeneration;
 	private final String builderName;
@@ -53,110 +48,59 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 		builderName = "Tara " + (pluginGeneration ? "plugin generator" : "compiler");
 	}
 
-	static {
-		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
-	}
-
-	private static Set<String> getPathsToCompile(List<File> toCompile) {
-		final Set<String> toCompilePaths = new LinkedHashSet<>();
-		for (File file : toCompile) {
-			if (LOG.isDebugEnabled())
-				LOG.debug("Path to compile: " + file.getPath());
-			toCompilePaths.add(FileUtil.toSystemIndependentName(file.getPath()));
+	@Override
+	public void build(@NotNull TaraTarget target,
+	                  @NotNull DirtyFilesHolder<TaraRootDescriptor, TaraTarget> dirtyFilesHolder,
+	                  @NotNull BuildOutputConsumer outputConsumer,
+	                  @NotNull CompileContext context) throws ProjectBuildException, IOException {
+		try {
+			JpsProject project = context.getProjectDescriptor().getProject();
+			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
+			final List<File> toCompile = collectFiles(project);
+			if (toCompile.isEmpty()) return;
+			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("plugin-generation=" + pluginGeneration);
+			Map<TaraTarget, String> finalOutputs = getCanonicalModuleOutputs(context, target);
+			if (finalOutputs == null) return;
+			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
+			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleEncoding(target.getModule());
+			Map<TaraTarget, String> generationOutputs = pluginGeneration ? getStubGenerationOutputs(target, context) : finalOutputs;
+			String compilerOutput = generationOutputs.get(target);
+			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(target));
+			final File tempFile = TaracOSProcessHandler.fillFileWithTaracParameters(
+				project.getName(), compilerOutput, toCompilePaths, finalOutput, encoding,
+				getIcon(target.getModule().getSourceRoots(), project.getName()));
+			final TaracOSProcessHandler handler = runTarac(context, tempFile, settings);
+//			Map<TaraTarget, Collection<TaracOSProcessHandler.OutputItem>> compiled = processCompiledFiles(context, target, handler);
+			for (CompilerMessage message : handler.getCompilerMessages(target.getModule().getName()))
+				context.processMessage(message);
+		} catch (Exception e) {
+			throw new ProjectBuildException(e);
 		}
-		return toCompilePaths;
 	}
 
-	private static Map<TaraTarget, Collection<TaracOSProcessHandler.OutputItem>> processCompiledFiles(CompileContext context,
-	                                                                                                  TaraTarget target,
-	                                                                                                  Map<TaraTarget, String> generationOutputs,
-	                                                                                                  String compilerOutput,
-	                                                                                                  TaracOSProcessHandler handler)
-		throws IOException {
-		ProjectDescriptor pd = context.getProjectDescriptor();
-		final Map<TaraTarget, Collection<TaracOSProcessHandler.OutputItem>> compiled = new THashMap<>();
-		for (final TaracOSProcessHandler.OutputItem item : handler.getSuccessfullyCompiled()) {
-			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) {
-				LOG.info("compiled=" + item);
-			}
-			final ArrayList<BuildRootDescriptor> rd = (ArrayList<BuildRootDescriptor>) pd.getBuildRootIndex().findAllParentDescriptors(new File(item.sourcePath), context);
-			if (!rd.isEmpty()) {
-				final String outputPath = target.getModuleOutputDir().getPath();
-
-				Collection<TaracOSProcessHandler.OutputItem> items = compiled.get(rd.get(0).getTarget());
-				if (items == null) {
-					items = new ArrayList<>();
-					compiled.put((TaraTarget) rd.get(0).getTarget(), items);
-				}
-
-				items.add(new TaracOSProcessHandler.OutputItem(outputPath, item.sourcePath));
-			} else {
-				if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) {
-					LOG.info("No tara source root descriptor for th e item found =" + item);
-				}
+	private String getIcon(List<JpsModuleSourceRoot> sourceRoots, String projectName) {
+		for (JpsModuleSourceRoot root : sourceRoots) {
+			if (root.getFile().getName().equals("res")) {
+				String logoFile = root.getFile().getAbsoluteFile() + File.separator + TaraRtConstants.LOGO_PATH + File.separator + projectName + ".png";
+				File file = new File(logoFile);
+				if (file.exists())
+					return file.getAbsolutePath();
 			}
 		}
-		return compiled;
-	}
-
-	private static Map<TaraTarget, String> getStubGenerationOutputs(TaraTarget target, CompileContext context) throws IOException {
-		Map<TaraTarget, String> generationOutputs = new HashMap<>();
-		File commonRoot = new File(context.getProjectDescriptor().dataManager.getDataPaths().getDataStorageRoot(), "taraStubs");
-		File targetRoot = new File(commonRoot, target.getModule().getName() + File.separator + target.getTargetType().getTypeId());
-		if (!FileUtil.delete(targetRoot)) throw new IOException("External make cannot clean " + targetRoot.getPath());
-		if (!targetRoot.mkdirs()) throw new IOException("External make cannot create " + targetRoot.getPath());
-		generationOutputs.put(target, targetRoot.getPath());
-		return generationOutputs;
-	}
-
-	private static String getJavaExecutable() {
-		return SystemProperties.getJavaHome() + "/bin/java";
-	}
-
-	private static Collection<String> generateClasspath() {
-		final Set<String> clashPath = new LinkedHashSet<>();
-		clashPath.add(getTaraRtRoot().getPath());
-		clashPath.add(getAntlrLib().getPath());
-		return clashPath;
-	}
-
-	private static File getTaraRtRoot() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		if (root.isFile()) {
-			return new File(root.getParentFile(), "tara_rt.jar");
-		}
-		return root;
-	}
-
-	private static File getAntlrLib() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		return new File(root.getParentFile().getAbsolutePath(), "/lib/antlr-4.1-complete.jar");
-	}
-
-	public static boolean isTaraFile(String path) {
-		return path.endsWith("." + TARA_EXTENSION);
+		return null;
 	}
 
 	private TaracOSProcessHandler runTarac(final CompileContext context,
-	                                       TaraTarget taraTarget,
 	                                       File tempFile,
 	                                       final JpsTaraSettings settings) throws IOException {
 		ArrayList<String> classpath = new ArrayList<>(generateClasspath());
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Tarac classpath: " + classpath);
-		}
-
-		List<String> programParams = ContainerUtilRt.newArrayList(!pluginGeneration ? "--gen-plugin" : "tarac", tempFile.getPath());
+		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
+		List<String> programParams = ContainerUtilRt.newArrayList(pluginGeneration ? "--gen-plugin" : "tarac", tempFile.getPath());
 		List<String> vmParams = ContainerUtilRt.newArrayList();
 		vmParams.add("-Xmx" + settings.heapSize + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
-		String grapeRoot = System.getProperty(TaracOSProcessHandler.GRAPE_ROOT);
-		if (grapeRoot != null)
-			vmParams.add("-D" + TaracOSProcessHandler.GRAPE_ROOT + "=" + grapeRoot);
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
-			getJavaExecutable(), "monet.tara.TaracRunner",
-			Collections.<String>emptyList(), classpath,
-			vmParams, programParams);
+			getJavaExecutable(), "monet.tara.TaracRunner", Collections.<String>emptyList(), classpath, vmParams, programParams);
 		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
 		final Consumer<String> updater = new Consumer<String>() {
 			public void consume(String s) {
@@ -175,6 +119,88 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 	}
 
 
+	private Set<String> getPathsToCompile(List<File> toCompile) {
+		final Set<String> toCompilePaths = new LinkedHashSet<>();
+		for (File file : toCompile) {
+			if (LOG.isDebugEnabled())
+				LOG.debug("Path to compile: " + file.getPath());
+			toCompilePaths.add(FileUtil.toSystemIndependentName(file.getPath()));
+		}
+		return toCompilePaths;
+	}
+
+	private Map<TaraTarget, Collection<TaracOSProcessHandler.OutputItem>> processCompiledFiles(CompileContext context,
+	                                                                                           TaraTarget target,
+	                                                                                           TaracOSProcessHandler handler) throws IOException {
+		ProjectDescriptor pd = context.getProjectDescriptor();
+		final Map<TaraTarget, Collection<TaracOSProcessHandler.OutputItem>> compiled = new THashMap<>();
+		for (final TaracOSProcessHandler.OutputItem item : handler.getSuccessfullyCompiled()) {
+			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) {
+				LOG.info("compiled = " + item);
+				final ArrayList<BuildRootDescriptor> rd =
+					(ArrayList<BuildRootDescriptor>) pd.getBuildRootIndex().findAllParentDescriptors(new File(item.sourcePath), context);
+				if (!rd.isEmpty()) {
+					final String outputPath = target.getModuleOutputDir().getPath();
+					Collection<TaracOSProcessHandler.OutputItem> items = compiled.get(rd.get(0).getTarget());
+					if (items == null) {
+						items = new ArrayList<>();
+						compiled.put((TaraTarget) rd.get(0).getTarget(), items);
+					}
+					items.add(new TaracOSProcessHandler.OutputItem(outputPath, item.sourcePath));
+				} else {
+					if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) {
+						LOG.info("No tara source root descriptor for th e item found =" + item);
+					}
+				}
+			}
+		}
+		return compiled;
+	}
+
+	private Map<TaraTarget, String> getStubGenerationOutputs(TaraTarget target, CompileContext
+		context) throws IOException {
+		Map<TaraTarget, String> generationOutputs = new HashMap<>();
+		File commonRoot = new File(context.getProjectDescriptor().dataManager.getDataPaths().getDataStorageRoot(), "taraStubs");
+		File targetRoot = new File(commonRoot, target.getModule().getName() + File.separator + target.getTargetType().getTypeId());
+		if (!FileUtil.delete(targetRoot))
+			throw new IOException("External make cannot clean " + targetRoot.getPath());
+		if (!targetRoot.mkdirs()) throw new IOException("External make cannot create " + targetRoot.getPath());
+		generationOutputs.put(target, targetRoot.getPath());
+		return generationOutputs;
+	}
+
+	private String getJavaExecutable() {
+		return SystemProperties.getJavaHome() + "/bin/java";
+	}
+
+	private Collection<String> generateClasspath() {
+		final Set<String> clashPath = new LinkedHashSet<>();
+		clashPath.add(getTaraRtRoot().getPath());
+		clashPath.add(getAntlrLib().getPath());
+		clashPath.add(getTemplationLib().getPath());
+		return clashPath;
+	}
+
+	private File getTaraRtRoot() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		if (root.isFile()) return new File(root.getParentFile(), "tara_rt.jar");
+		return root;
+	}
+
+	private File getAntlrLib() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		return new File(root.getParentFile().getAbsolutePath(), File.separator + "lib" + File.separator + "antlr-4.2-complete.jar");
+	}
+
+	private File getTemplationLib() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		return new File(root.getParentFile().getAbsolutePath(), File.separator + "lib" + File.separator + "templation.jar");
+	}
+
+	private boolean isTaraFile(String path) {
+		return path.endsWith("." + TARA_EXTENSION);
+	}
+
 	@Nullable
 	private Map<TaraTarget, String> getCanonicalModuleOutputs(CompileContext context, TaraTarget target) {
 		Map<TaraTarget, String> finalOutputs = new HashMap<>();
@@ -186,7 +212,7 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 		}
 		String moduleOutputPath = FileUtil.toCanonicalPath(moduleOutputDir.getPath());
 		assert moduleOutputPath != null;
-		finalOutputs.put(target, moduleOutputPath.endsWith("/") ? moduleOutputPath : moduleOutputPath + "/");
+		finalOutputs.put(target, moduleOutputPath.endsWith(File.separator) ? moduleOutputPath : moduleOutputPath + File.separator);
 		return finalOutputs;
 	}
 
@@ -200,60 +226,13 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 		return builderName;
 	}
 
-	@Override
-	public void build(@NotNull TaraTarget target,
-	                  @NotNull DirtyFilesHolder<TaraRootDescriptor, TaraTarget> dirtyFilesHolder,
-	                  @NotNull BuildOutputConsumer outputConsumer,
-	                  @NotNull CompileContext context) throws ProjectBuildException, IOException {
-		try {
-			JpsTaraSettings settings = JpsTaraSettings.getSettings(context.getProjectDescriptor().getProject());
-			final List<File> toCompile = collectFiles(context.getProjectDescriptor().getProject());
-			if (toCompile.isEmpty()) return;
-			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("plugin-generation=" + pluginGeneration);
-			Map<TaraTarget, String> finalOutputs = getCanonicalModuleOutputs(context, target);
-			if (finalOutputs == null) return;
-
-			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
-			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleEncoding(target.getModule());
-			Map<TaraTarget, String> generationOutputs = pluginGeneration ? getStubGenerationOutputs(target, context) : finalOutputs;
-			String compilerOutput = generationOutputs.get(target);
-
-			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(target));
-			final File tempFile = TaracOSProcessHandler.fillFileWithTaracParameters(compilerOutput, toCompilePaths, finalOutput, encoding);
-
-			final TaracOSProcessHandler handler = runTarac(context, target, tempFile, settings);
-
-			Map<TaraTarget, Collection<TaracOSProcessHandler.OutputItem>>
-				compiled = processCompiledFiles(context, target, generationOutputs, compilerOutput, handler);
-
-//			if (pluginGeneration) {
-//				//addStubRootsToJavacSourcePath(context, generationOutputs);
-//				//rememberStubSources(context, compiled);
-//			}
-
-			for (CompilerMessage message : handler.getCompilerMessages(target.getModule().getName()))
-				context.processMessage(message);
-
-//			if (!pluginGeneration && updateDependencies(context, compiled, outputConsumer)) {
-//			}
-		} catch (Exception e) {
-			throw new ProjectBuildException(e);
-		} finally {
-			if (!pluginGeneration) {
-				FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, null);
-			}
-		}
-	}
-
 	private List<File> collectFiles(JpsProject project) {
 		final JpsJavaCompilerConfiguration configuration = JpsJavaExtensionService.getInstance().getCompilerConfiguration(project);
 		assert configuration != null;
 		final List<File> toCompile = new ArrayList<>();
-		for (JpsModule module : project.getModules()) {
-			for (JpsModuleSourceRoot root : module.getSourceRoots()) {
+		for (JpsModule module : project.getModules())
+			for (JpsModuleSourceRoot root : module.getSourceRoots())
 				toCompile.addAll(getTaraFilesFromRoot(root.getFile()));
-			}
-		}
 		return toCompile;
 	}
 
@@ -265,33 +244,5 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 			else if (isTaraFile(file.getPath()))
 				list.add(file);
 		return list;
-	}
-
-
-	private static class RecompileStubSources implements ClassPostProcessor {
-
-		public void process(CompileContext context, OutputFileObject out) {
-			Map<String, String> stubToSrc = STUB_TO_SRC.get(context);
-			if (stubToSrc == null) {
-				return;
-			}
-			File src = out.getSourceFile();
-			if (src == null) {
-				return;
-			}
-			String tara = stubToSrc.get(FileUtil.toSystemIndependentName(src.getPath()));
-			if (tara == null) {
-				return;
-			}
-			try {
-				final File taraFile = new File(tara);
-				if (!FSOperations.isMarkedDirty(context, taraFile)) {
-					FSOperations.markDirty(context, taraFile);
-					FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, Boolean.TRUE);
-				}
-			} catch (IOException e) {
-				LOG.error(e);
-			}
-		}
 	}
 }
