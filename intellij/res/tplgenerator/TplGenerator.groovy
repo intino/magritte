@@ -38,9 +38,10 @@ void createTPLs(String tplPath, File[] files) {
                         String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
                         text = text.replace(field, "::" + token + "::")
                     }
-                }
-                File newFile = new File(tplPath + it.parent.substring(8), it.name.replaceAll("Tara", "-").replace("Concept", "_") + ".tpl")
-                newFile.write(text)
+                    File newFile = new File(tplPath + it.parent.substring(8), it.name.replaceAll("Tara", "-").replace("Concept", "_") + ".tpl")
+                    newFile.write(text)
+                } else
+                    copyFile(it, new File(tplPath + it.parent.substring(8), it.name.replaceAll("Tara", "-").replace("Concept", "_")))
             } else if (it.name.endsWith(".bnf") || it.name.endsWith(".flex")) {
                 String mfile;
                 if (it.name.endsWith(".bnf")) mfile = "m1Grammar.tpl";
@@ -63,4 +64,21 @@ boolean isCorrectFileType(String fileName) {
     String extension = fileName.substring(fileName.lastIndexOf(".") + 1)
     if (fileTypes.contains(extension)) return true
     return false
+}
+
+public Boolean copyFile(File source, File destination) {
+    new File(destination.getParentFile().getAbsolutePath()).mkdirs();
+    try {
+        FileInputStream inFile = new FileInputStream(source);
+        OutputStream out = new FileOutputStream(destination);
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = inFile.read(buf)) > 0)
+            out.write(buf, 0, len);
+        inFile.close();
+        out.close();
+    } catch (IOException ex) {
+        return false;
+    }
+    return true;
 }
