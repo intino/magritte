@@ -8,9 +8,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.ResourceBundle;
 
-/**
- * This class allows for i18n of the messages displayed by the error report submitter.
- */
 public class PluginErrorReportSubmitterBundle {
 
 	protected static final String PATH_TO_BUNDLE = "messages.PluginErrorReportSubmitterBundle";
