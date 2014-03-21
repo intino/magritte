@@ -1,5 +1,6 @@
 package monet.tara.compiler.code_generation.intellij;
 
+import monet.tara.compiler.code_generation.PathManager;
 import monet.tara.compiler.code_generation.render.BnfRender;
 import monet.tara.compiler.code_generation.render.RenderUtils;
 import monet.tara.compiler.code_generation.render.TemplateFactory;
@@ -14,11 +15,11 @@ public class TaraToBnfCodeGenerator extends CodeGenerator {
 
 	private static final String GRAMMAR_TPL = "grammar";
 
-	public static File toBnf(CompilerConfiguration configuration, String tplPath, AST ast) throws TaraException {
+	public static File toBnf(CompilerConfiguration conf, String tplPath, AST ast) throws TaraException {
 		String template = TemplateFactory.getTemplate(GRAMMAR_TPL);
-		String outPath = configuration.getTempDirectory().getAbsolutePath() + SEP + SRC + SEP +
-			newTemplate(RenderUtils.toProperCase(configuration.getProject()), template);
-		BnfRender render = new BnfRender(configuration.getProject(), template, tplPath, ast);
+		String outPath = PathManager.getSrcDir(conf.getTempDirectory()) +
+			newTemplate(RenderUtils.toProperCase(conf.getProject()), template);
+		BnfRender render = new BnfRender(conf.getProject(), template, tplPath, ast);
 		File file = new File(outPath);
 		PrintWriter outWriter = getOutWriter(file);
 		outWriter.print(render.getOutput());

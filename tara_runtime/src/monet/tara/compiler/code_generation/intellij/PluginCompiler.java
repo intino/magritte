@@ -1,6 +1,7 @@
 package monet.tara.compiler.code_generation.intellij;
 
 import monet.tara.compiler.code_generation.JavaCommandHelper;
+import monet.tara.compiler.code_generation.PathManager;
 import monet.tara.compiler.core.CompilerConfiguration;
 
 import java.io.File;
@@ -10,12 +11,13 @@ import java.util.ArrayList;
 
 public class PluginCompiler extends CodeGenerator {
 
-	private static CompilerConfiguration configuration;
+	public static final String LIB = "lib";
+	private static CompilerConfiguration conf;
 
 	public static void generateClasses(CompilerConfiguration configuration) {
 		Runtime rt = Runtime.getRuntime();
 		try {
-			PluginCompiler.configuration = configuration;
+			PluginCompiler.conf = configuration;
 			Process compileProcess = rt.exec(makeCompileCommand(getSources()));
 			if (compileProcess.waitFor() == -1) return;
 			printResult(compileProcess);
@@ -25,7 +27,7 @@ public class PluginCompiler extends CodeGenerator {
 	}
 
 	private static File[] getSources() {
-		return FileSystemUtils.listFiles(configuration.getTempDirectory() + SEP + SRC + SEP, new FileFilter() {
+		return FileSystemUtils.listFiles(PathManager.getSrcDir(conf.getTempDirectory()), new FileFilter() {
 			@Override
 			public boolean accept(File file) {
 				return !file.getName().startsWith(".") && (file.getName().endsWith(".java") | file.isDirectory());
@@ -34,14 +36,16 @@ public class PluginCompiler extends CodeGenerator {
 	}
 
 	private static String makeCompileCommand(File[] sources) {
+		String SEP = PathManager.SEP;
 		ArrayList<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources, getClassPath(),
-			new String[]{"-encoding " + System.getProperty("file.encoding")}, configuration.getTempDirectory().getAbsolutePath()
-			+ SEP + BUILD + SEP + IDE + configuration.getProject() + SEP + "lib" + SEP + configuration.getProject());
+			new String[]{"-encoding " + System.getProperty("file.encoding")},
+			PathManager.getBuildIdeDir(conf.getTempDirectory()) + conf.getProject() + SEP + LIB + SEP + conf.getProject()
+		);
 		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 
 	public static String[] getClassPath() {
-		String libPath = "/Applications/IntelliJIDEA13CE.app/lib/";
+		String libPath = conf.getIdeaHome();
 		File[] jars = new File(libPath).listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File pathname) {

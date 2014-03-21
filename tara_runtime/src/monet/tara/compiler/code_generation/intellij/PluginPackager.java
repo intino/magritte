@@ -1,5 +1,6 @@
 package monet.tara.compiler.code_generation.intellij;
 
+import monet.tara.compiler.code_generation.PathManager;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.error_collection.TaraException;
 
@@ -16,7 +17,7 @@ public class PluginPackager extends CodeGenerator {
 
 	private static final String libPath = "/intellij/libs.zip";
 	private static final String swingLibPath = "/intellij/swing.zip";
-
+	private static final String SEP = PathManager.SEP;
 
 	public static void doPackage(CompilerConfiguration conf) throws TaraException {
 		try {
@@ -27,7 +28,7 @@ public class PluginPackager extends CodeGenerator {
 			writeLibs(libs, buildPath);
 			writeLibs(libs, buildPath + conf.getProject() + SEP);
 			writeLibs(swing, buildPath + conf.getProject() + SEP);
-			addDependenciesAndRes(buildPath + conf.getProject() + SEP, conf.getTempDirectory().getAbsolutePath());
+			addDependenciesAndRes(buildPath + conf.getProject() + SEP, conf.getTempDirectory());
 			FileSystemUtils.zipDir(buildPath + SEP + conf.getProject() + ".jar", buildPath + SEP + conf.getProject() + SEP);
 			FileSystemUtils.removeDir(buildPath + SEP + conf.getProject() + SEP);
 			File toZip = new File(buildPath).getParentFile().getParentFile();
@@ -39,9 +40,9 @@ public class PluginPackager extends CodeGenerator {
 		}
 	}
 
-	private static void addDependenciesAndRes(String destiny, String tempDir) throws FileSystemException {
-		String resDir = tempDir + SEP + SRC + SEP + IDE + RES;
-		File metainf = new File(tempDir + SEP + SRC + SEP + IDE + SRC + SEP + "META-INF");
+	private static void addDependenciesAndRes(String destiny, File tempDir) throws FileSystemException {
+		String resDir = PathManager.getBuildIdeResDir(tempDir);
+		File metainf = new File(PathManager.getSrcIdeDir(tempDir) + "META-INF");
 		if (metainf.exists()) FileSystemUtils.copyDir(metainf, new File(destiny + "META-INF"));
 		for (File file : new File(resDir).listFiles()) {
 			if (file.isDirectory()) FileSystemUtils.copyDir(file.getAbsolutePath(), destiny + file.getName());
@@ -51,7 +52,7 @@ public class PluginPackager extends CodeGenerator {
 	}
 
 	private static String composeBuildPath(CompilerConfiguration conf) {
-		return conf.getTempDirectory() + SEP + BUILD + SEP + IDE + conf.getProject() + SEP + "lib" + SEP;
+		return PathManager.getBuildIdeDir(conf.getTempDirectory()) + conf.getProject() + SEP + "lib" + SEP;
 	}
 
 	public static void writeLibs(File libs, String buildPath) throws IOException {
@@ -61,8 +62,7 @@ public class PluginPackager extends CodeGenerator {
 		while (entries.hasMoreElements()) {
 			ZipEntry entry = (ZipEntry) entries.nextElement();
 			if (entry.isDirectory()) {
-				if (!entry.getName().startsWith("__"))
-					mkdirs(new File(buildPath), entry.getName());
+				mkdirs(new File(buildPath), entry.getName());
 				continue;
 			}
 			jars.put(entry.getName(), zipFile.getInputStream(entry));

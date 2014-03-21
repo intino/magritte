@@ -1,6 +1,7 @@
 package monet.tara.compiler.code_generation.intellij;
 
 import monet.tara.compiler.code_generation.JavaCommandHelper;
+import monet.tara.compiler.code_generation.PathManager;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.error_collection.TaraException;
 
@@ -14,7 +15,7 @@ public class JFlexToJavaGenerator extends CodeGenerator {
 		File[] jflex = getJFlexLibFiles();
 		Runtime rt = Runtime.getRuntime();
 		try {
-			Process jflexToJavaProcess = rt.exec(makeJavaCommand(configuration.getTempDirectory().getAbsolutePath(), lexFile, jflex));
+			Process jflexToJavaProcess = rt.exec(makeJavaCommand(configuration.getTempDirectory(), lexFile, jflex));
 			printResult(jflexToJavaProcess);
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
@@ -22,8 +23,8 @@ public class JFlexToJavaGenerator extends CodeGenerator {
 		}
 	}
 
-	private static String makeJavaCommand(String directory, File lexFile, File[] jflex) {
-		String destiny = directory + SEP + SRC + SEP + IDE + SRC + SEP;
+	private static String makeJavaCommand(File tempDir, File lexFile, File[] jflex) {
+		String destiny = PathManager.getSrcIdeDir(tempDir);
 		String[] vParams = new String[]{
 			"-Xmx512m",
 			"-DUser.dir=" + destiny};

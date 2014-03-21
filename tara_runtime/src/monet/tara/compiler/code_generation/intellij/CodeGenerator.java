@@ -1,5 +1,6 @@
 package monet.tara.compiler.code_generation.intellij;
 
+import monet.tara.compiler.code_generation.PathManager;
 import monet.tara.compiler.core.error_collection.StreamWrapper;
 import monet.tara.compiler.core.error_collection.TaraException;
 
@@ -9,13 +10,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public abstract class CodeGenerator {
-
-	public static final String IDE = "intellij/";
-	public static final String PROJECT_PATH = "monet/tara/" + IDE;
-	public static final String SRC = "src";
-	public static final String BUILD = "build";
-	public static final String RES = "res";
-	public static final String SEP = File.separator;
 
 	protected static PrintWriter getOutWriter(File file) throws TaraException {
 		try {
@@ -43,7 +37,8 @@ public abstract class CodeGenerator {
 	}
 
 	protected static String newTemplate(String project, String template) {
-		return template.replace("-", project).replace("/tara/", "/" + project + "/").replace("tpl/", "");
+		String SEP = PathManager.SEP;
+		return template.replace("-", project).replace("tara" + SEP, SEP + project + SEP).replace("tpl" + SEP, "");
 	}
 
 	protected static void out(String s) {

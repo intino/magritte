@@ -9,10 +9,11 @@ import java.util.ArrayList;
 
 public class ClassGenerator extends CodeGenerator {
 
-	CompilerConfiguration configuration;
+	private static final String SEP = PathManager.SEP;
+	CompilerConfiguration conf;
 
-	public ClassGenerator(CompilerConfiguration configuration) {
-		this.configuration = configuration;
+	public ClassGenerator(CompilerConfiguration conf) {
+		this.conf = conf;
 	}
 
 	public void generate(CompilerConfiguration configuration) {
@@ -30,7 +31,7 @@ public class ClassGenerator extends CodeGenerator {
 	}
 
 	private String makeJarCommand(String name) {
-		ArrayList<String> cmd = JavaCommandHelper.buildJarCommandLine(configuration.getTempDirectory().getAbsolutePath(), name, new String[]{});
+		ArrayList<String> cmd = JavaCommandHelper.buildJarCommandLine(conf.getTempDirectory().getAbsolutePath(), name, new String[]{});
 		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 
@@ -41,20 +42,15 @@ public class ClassGenerator extends CodeGenerator {
 	private String makeCompileCommand(File[] sources) {
 		ArrayList<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources,
 			new String[]{getTaraCoreFile().getAbsolutePath() + SEP + "build" + SEP},
-			null, configuration.getTempDirectory().getAbsolutePath());
+			null, conf.getTempDirectory().getAbsolutePath());
 		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 
 	private File[] getSourceFiles(String type) {
-		File path = new File(configuration.getTempDirectory() + SEP + configuration.getProject());
+		File path = new File(conf.getTempDirectory() + SEP + conf.getProject());
 		ArrayList<File> javaFiles = new ArrayList<>();
 		getSourceFiles(path, javaFiles, type);
 		return javaFiles.toArray(new File[javaFiles.size()]);
-	}
-
-	private File[] getClassFiles() {
-		File path = new File(configuration.getTempDirectory() + SEP + "build" + SEP);
-		return path.listFiles();
 	}
 
 	private void getSourceFiles(File path, ArrayList<File> javaFiles, String extension) {
@@ -66,7 +62,7 @@ public class ClassGenerator extends CodeGenerator {
 	}
 
 	public File getOutPath() {
-		String outPath = configuration.getTempDirectory() + SEP + "out" + SEP;
+		String outPath = conf.getTempDirectory() + SEP + "out" + SEP;
 		File file = new File(outPath);
 		file.mkdirs();
 		return file;

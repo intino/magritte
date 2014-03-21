@@ -11,24 +11,24 @@ import java.util.Collection;
 
 public class PluginGenerator {
 
-	CompilerConfiguration configuration;
+	CompilerConfiguration conf;
 
 
-	public PluginGenerator(CompilerConfiguration configuration) {
-		this.configuration = configuration;
+	public PluginGenerator(CompilerConfiguration conf) {
+		this.conf = conf;
 	}
 
 	public void generate(Collection<SourceUnit> units) throws TaraException {
 		AST ast = mergeAST(units);
 		String tplPath = this.getClass().getResource(TemplateFactory.IDE_TPL).getPath();
-		new TaraPluginToJavaCodeGenerator().toJava(configuration, ast);
-		File grammarFile = TaraToBnfCodeGenerator.toBnf(configuration, tplPath, ast);
-		BnfToJavaCodeGenerator.bnfToJava(configuration, grammarFile);
-		File[] lexFiles = TaraToJFlexCodeGenerator.toJFlex(configuration, tplPath, ast);
+		new TaraPluginToJavaCodeGenerator().toJava(conf, ast);
+		File grammarFile = TaraToBnfCodeGenerator.toBnf(conf, tplPath, ast);
+		BnfToJavaCodeGenerator.bnfToJava(conf, grammarFile);
+		File[] lexFiles = TaraToJFlexCodeGenerator.toJFlex(conf, tplPath, ast);
 		for (File lexFile : lexFiles)
-			JFlexToJavaGenerator.jFlexToJava(configuration, lexFile);
-		PluginCompiler.generateClasses(configuration);
-		PluginPackager.doPackage(configuration);
+			JFlexToJavaGenerator.jFlexToJava(conf, lexFile);
+		PluginCompiler.generateClasses(conf);
+		PluginPackager.doPackage(conf);
 	}
 
 	private AST mergeAST(Collection<SourceUnit> units) {

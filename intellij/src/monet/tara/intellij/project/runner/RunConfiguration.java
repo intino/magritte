@@ -29,9 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-public class RunConfiguration extends ModuleBasedConfiguration<RunConfigurationModule>
-	implements RefactoringListenerProvider {
-
+public class RunConfiguration extends ModuleBasedConfiguration<RunConfigurationModule> implements RefactoringListenerProvider {
 	private final Map<String, String> envs = new LinkedHashMap<>();
 	private String workDir;
 	private boolean isDebugEnabled;

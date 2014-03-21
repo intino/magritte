@@ -1,5 +1,6 @@
 package monet.tara.compiler.code_generation.intellij;
 
+import monet.tara.compiler.code_generation.PathManager;
 import monet.tara.compiler.code_generation.render.JFlexRender;
 import monet.tara.compiler.code_generation.render.RenderUtils;
 import monet.tara.compiler.code_generation.render.TemplateFactory;
@@ -15,13 +16,13 @@ public class TaraToJFlexCodeGenerator extends CodeGenerator {
 
 	private static final String[] LEXER_TPL = new String[]{"lexer", "HighlighterLex.flex"};
 
-	public static File[] toJFlex(CompilerConfiguration configuration, String tplPath, AST ast) throws TaraException {
+	public static File[] toJFlex(CompilerConfiguration conf, String tplPath, AST ast) throws TaraException {
 		ArrayList<File> resultFiles = new ArrayList<>();
 		for (String tpl : LEXER_TPL) {
 			String template = TemplateFactory.getTemplate(tpl);
-			String outPath = configuration.getTempDirectory().getAbsolutePath() + SEP + SRC +
-				newTemplate(RenderUtils.toProperCase(configuration.getProject()), template);
-			JFlexRender render = new JFlexRender(configuration.getProject(), template, tplPath, ast.getIdentifiers());
+			String outPath = PathManager.getSrcDir(conf.getTempDirectory()) +
+				newTemplate(RenderUtils.toProperCase(conf.getProject()), template);
+			JFlexRender render = new JFlexRender(conf.getProject(), template, tplPath, ast.getIdentifiers());
 			File file = new File(outPath);
 			resultFiles.add(file);
 			writeTemplate(render, file);

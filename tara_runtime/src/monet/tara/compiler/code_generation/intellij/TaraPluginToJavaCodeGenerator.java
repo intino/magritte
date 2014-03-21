@@ -1,5 +1,6 @@
 package monet.tara.compiler.code_generation.intellij;
 
+import monet.tara.compiler.code_generation.PathManager;
 import monet.tara.compiler.code_generation.render.*;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.ast.AST;
@@ -41,6 +42,6 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 		templateRefactored = templateRefactored.replace("tpl/", "");
 		if (!template.contains("META-INF"))
 			templateRefactored = templateRefactored.replace("-", RenderUtils.toProperCase(configuration.getProject()));
-		return configuration.getTempDirectory().getAbsolutePath() + File.separator + SRC + File.separator + templateRefactored;
+		return PathManager.getSrcDir(configuration.getTempDirectory()) + templateRefactored;
 	}
 }
