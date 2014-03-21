@@ -69,8 +69,8 @@ public class ModuleBuilder extends JavaModuleBuilder {
 							VfsUtil.createDirectories(sourceRoot.getParent().getPath() + File.separator + "res" + File.separator + "tpl");
 							VirtualFile logos = VfsUtil.createDirectories(sourceRoot.getParent().getPath()
 								+ File.separator + "res" + File.separator + "logos");
-							File logo = new File(logos.getPath() + File.separator + rootModel.getProject().getName() + ".png");
-							copyFile(new File(this.getClass().getResource(File.separator + "logos" + File.separator + "logo.png").getPath()), logo);
+//							File logo = new File(logos.getPath() + File.separator + rootModel.getProject().getName() + ".png");
+//							copyFile(new File(this.getClass().getResource(File.separator + "logos" + File.separator + "logo.png").getPath()), logo);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}

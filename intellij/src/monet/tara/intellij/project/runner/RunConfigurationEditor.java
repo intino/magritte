@@ -96,4 +96,7 @@ public class RunConfigurationEditor extends SettingsEditor<RunConfiguration> imp
 		this.anchor = anchor;
 		myScriptParametersLabel.setAnchor(anchor);
 	}
+
+	private void createUIComponents() {
+	}
 }
