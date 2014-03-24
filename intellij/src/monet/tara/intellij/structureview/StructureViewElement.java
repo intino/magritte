@@ -56,7 +56,7 @@ public class StructureViewElement implements StructureViewTreeElement {
 	public ItemPresentation getPresentation() {
 		return new ItemPresentation() {
 			public String getPresentableText() {
-				if (myPresentableName == null) return (concept.getName() == null ? "Anonymous" : concept.getName());
+				if (myPresentableName == null) return concept.getName() == null ? "Anonymous" : concept.getName();
 				else return myPresentableName;
 			}
 

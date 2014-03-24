@@ -152,7 +152,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	}
 
 	public List<CompilerMessage> getCompilerMessages(String moduleName) {
-		ArrayList<CompilerMessage> messages = new ArrayList<>(compilerMessages);
+		List<CompilerMessage> messages = new ArrayList<>(compilerMessages);
 		final StringBuffer unParsedBuffer = getStdErr();
 		if (unParsedBuffer.length() != 0) {
 			String msg = unParsedBuffer.toString();

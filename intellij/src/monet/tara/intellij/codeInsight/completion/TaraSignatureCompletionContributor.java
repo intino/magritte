@@ -1,4 +1,4 @@
-package monet.tara.intellij.codeInsight.completion;
+package monet.tara.intellij.codeinsight.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -62,7 +62,8 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 					resultSet.addElement(LookupElementBuilder.create("final"));
 					resultSet.addAllElements(getVariants(parameters.getOriginalPosition()));
 				}
-			});
+			}
+		);
 
 		extend(CompletionType.SMART, afterPolymorphicOrMorphKey,
 			new CompletionProvider<CompletionParameters>() {
@@ -71,7 +72,8 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 				                           @NotNull CompletionResultSet resultSet) {
 					resultSet.addElement(LookupElementBuilder.create("as"));
 				}
-			});
+			}
+		);
 
 
 		extend(CompletionType.SMART, afterNewLine,
@@ -81,7 +83,8 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 				                           @NotNull CompletionResultSet resultSet) {
 					resultSet.addElement(LookupElementBuilder.create("Concept"));
 				}
-			});
+			}
+		);
 
 		extend(CompletionType.SMART, afterModifierKey,
 			new CompletionProvider<CompletionParameters>() {
@@ -91,7 +94,8 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 					resultSet.addElement(LookupElementBuilder.create("morph"));
 					resultSet.addElement(LookupElementBuilder.create("as"));
 				}
-			});
+			}
+		);
 	}
 
 	public static List<LookupElement> getVariants(PsiElement myElement) {
@@ -133,12 +137,10 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 		}
 
 		public boolean isAcceptable(Object element, PsiElement context) {
-			if (element instanceof PsiElement)
-				if (context.getPrevSibling() != null && context.getPrevSibling().getPrevSibling() != null) {
-					final ASTNode ctxPreviousNode = context.getPrevSibling().getPrevSibling().getNode();
-					if (type.equals(ctxPreviousNode.getElementType()))
-						return true;
-				}
+			if (element instanceof PsiElement && context.getPrevSibling() != null && context.getPrevSibling().getPrevSibling() != null) {
+				final ASTNode ctxPreviousNode = context.getPrevSibling().getPrevSibling().getNode();
+				if (type.equals(ctxPreviousNode.getElementType())) return true;
+			}
 			return false;
 		}
 

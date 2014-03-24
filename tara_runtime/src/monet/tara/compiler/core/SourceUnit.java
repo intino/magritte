@@ -1,19 +1,22 @@
 package monet.tara.compiler.core;
 
-import monet.tara.compiler.code_generation.render.RendersFactory;
+import monet.tara.compiler.codegeneration.render.RendersFactory;
 import monet.tara.compiler.core.ast.AST;
 import monet.tara.compiler.core.ast.ASTNode;
-import monet.tara.compiler.core.error_collection.ErrorCollector;
-import monet.tara.compiler.core.error_collection.SyntaxException;
-import monet.tara.compiler.core.error_collection.TaraException;
+import monet.tara.compiler.core.errorcollection.ErrorCollector;
+import monet.tara.compiler.core.errorcollection.SyntaxException;
+import monet.tara.compiler.core.errorcollection.TaraException;
 import monet.tara.compiler.parser.Parser;
 import org.monet.templation.Render;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class SourceUnit extends ProcessingUnit {
+
+	private static final Logger LOG = Logger.getLogger(SourceUnit.class.getName());
 	protected FileReaderSource source;
 	protected String name;
 	private AST ast;
@@ -65,7 +68,7 @@ public class SourceUnit extends ProcessingUnit {
 				writer.write(render.getOutput());
 				writer.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.severe(e.getMessage());
 				throw new TaraException("Error during java source writing");
 			}
 		}

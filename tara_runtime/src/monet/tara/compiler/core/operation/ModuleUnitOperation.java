@@ -1,7 +1,7 @@
 package monet.tara.compiler.core.operation;
 
 import monet.tara.compiler.core.SourceUnit;
-import monet.tara.compiler.core.error_collection.CompilationFailedException;
+import monet.tara.compiler.core.errorcollection.CompilationFailedException;
 
 import java.util.Collection;
 

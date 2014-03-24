@@ -1,8 +1,12 @@
 package monet.tara;
 
+
 import java.io.File;
+import java.util.logging.Logger;
 
 public class TaracRunner {
+
+	private static final Logger LOG = Logger.getLogger(TaracRunner.class.getName());
 
 	private TaracRunner() {
 
@@ -13,8 +17,8 @@ public class TaracRunner {
 		final File argsFile = checkConfigurationFile(args[1]);
 		try {
 			TaraCompilerRunner.runTaraCompiler(argsFile, isPluginGeneration(args[0]));
-		} catch (Throwable e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			LOG.severe(e.getMessage());
 			System.exit(1);
 		}
 	}

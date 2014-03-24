@@ -1,7 +1,7 @@
 package monet.tara.compiler.intellij.plugingeneration.render.psi.impl;
 
-import monet.tara.compiler.code_generation.render.DefaultRender;
-import monet.tara.compiler.code_generation.render.RendersFactory;
+import monet.tara.compiler.codegeneration.render.DefaultRender;
+import monet.tara.compiler.codegeneration.render.RendersFactory;
 import org.junit.Before;
 import org.junit.Test;
 

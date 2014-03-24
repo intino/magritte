@@ -1,6 +1,7 @@
 package monet.tara.intellij.documentation;
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.util.text.StringUtil;
@@ -19,6 +20,8 @@ import java.io.IOException;
 
 
 public class TaraDocumentationProvider extends AbstractDocumentationProvider {
+	private static final Logger LOG = Logger.getInstance(TaraDocumentationProvider.class.getName());
+
 	private String getLocationString(PsiElement element) {
 		PsiFile file = element.getContainingFile();
 		return file != null ? " [" + file.getName().split("\\.")[0] + "]" : "";
@@ -27,17 +30,14 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	@NotNull
 	private String renderConceptValue(Concept concept) {
 		String raw = concept.getText();
-		if (raw == null) {
-			return "<i>empty</i>";
-		}
+		if (raw == null) return "<i>empty</i>";
 		return StringUtil.escapeXml(raw);
 	}
 
 	@Nullable
 	public String getQuickNavigateInfo(PsiElement element, PsiElement originalElement) {
-		if (element instanceof Concept) {
+		if (element instanceof Concept)
 			return generateDoc(element, originalElement);
-		}
 		return null;
 	}
 
@@ -65,7 +65,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		try {
 			html = new Markdown4jProcessor().process(text.replace("'", ""));
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage());
 		}
 		return html;
 	}

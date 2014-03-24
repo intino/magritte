@@ -22,9 +22,6 @@ public class CompilerConfiguration {
 		String encoding = null;
 		try {
 			encoding = System.getProperty("file.encoding", "UTF8");
-		} catch (Exception ignored) {
-		}
-		try {
 			encoding = System.getProperty("tara.source.encoding", encoding);
 		} catch (Exception ignored) {
 		}

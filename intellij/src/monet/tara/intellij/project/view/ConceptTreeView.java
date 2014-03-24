@@ -67,7 +67,7 @@ public class ConceptTreeView implements Navigatable {
 	}
 
 	public boolean isValid() {
-		if (taraFiles.size() == 0) return false;
+		if (taraFiles.isEmpty()) return false;
 		for (PsiFile psiFile : taraFiles) {
 			if (!psiFile.isValid()) {
 				return false;

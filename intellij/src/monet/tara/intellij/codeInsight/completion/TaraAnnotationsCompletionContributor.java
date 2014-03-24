@@ -1,4 +1,4 @@
-package monet.tara.intellij.codeInsight.completion;
+package monet.tara.intellij.codeinsight.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;

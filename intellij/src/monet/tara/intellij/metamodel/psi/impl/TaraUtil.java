@@ -19,6 +19,9 @@ import java.util.List;
 
 public class TaraUtil {
 
+	private TaraUtil() {
+	}
+
 	@NotNull
 	public static List<Concept> findRootConcept(Project project, String identifier) {
 		List<Concept> result = new ArrayList<>();
@@ -117,12 +120,12 @@ public class TaraUtil {
 	}
 
 	public static Concept resolveReferences(Project project, PsiElement identifier) {
-		Concept reference;
 		if (identifier.getParent() instanceof ReferenceIdentifier) {
 			List<Identifier> route = (List<Identifier>) ((ReferenceIdentifier) (identifier.getParent())).getIdentifierList();
 			route = route.subList(0, route.indexOf(identifier) + 1);
-			if (!isRootConcept(TaraPsiImplUtil.resolveContextOfRef((ReferenceIdentifier) identifier.getParent())) &&
-				(reference = resolveRelativeReference(route, (TaraIdentifier) identifier)) != null) return reference;
+			Concept reference = resolveRelativeReference(route, (TaraIdentifier) identifier);
+			if (!isRootConcept(TaraPsiImplUtil.resolveContextOfRef((ReferenceIdentifier) identifier.getParent())) && reference != null)
+				return reference;
 			else return resolveAbsoluteReference(project, route);
 		}
 		return null;
@@ -135,8 +138,10 @@ public class TaraUtil {
 	private static Concept resolveRelativeReference(List<Identifier> route, Identifier element) {
 		Concept context = TaraPsiImplUtil.resolveContextOfRef((ReferenceIdentifier) element.getParent());
 		Concept concept = TaraPsiImplUtil.getContextOf(context);
-		for (Identifier identifier : route)
-			if ((concept = findChildOf(concept, ((TaraIdentifierImpl) identifier).getIdentifier())) == null) break;
+		for (Identifier identifier : route) {
+			concept = findChildOf(concept, ((TaraIdentifierImpl) identifier).getIdentifier());
+			if (concept == null) break;
+		}
 		return concept;
 	}
 

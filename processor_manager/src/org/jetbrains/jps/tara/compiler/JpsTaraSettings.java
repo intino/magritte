@@ -15,15 +15,15 @@ import java.io.File;
 
 public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 	public static final String DEFAULT_HEAP_SIZE = "400";
-	public String heapSize = DEFAULT_HEAP_SIZE;
+	private String heapSize = DEFAULT_HEAP_SIZE;
 	public static final boolean PLUGIN_GENERATION = true;
-	public boolean pluginGeneration = PLUGIN_GENERATION;
+	private boolean pluginGeneration = PLUGIN_GENERATION;
 	static final JpsElementChildRole<JpsTaraSettings> ROLE = JpsElementChildRoleBase.create("Tara Compiler Configuration");
-	public String version = "0.1";
-	public String commentaries = "";
+	private String version = "0.1";
+	private String commentaries = "";
 
 	@Tag("excludes")
-	public Element excludes = new Element("aaa");
+	private Element excludes = new Element("aaa");
 
 	private JpsCompilerExcludes myExcludeFromStubGeneration;
 
@@ -54,9 +54,50 @@ public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 
 	@Override
 	public void applyChanges(@NotNull JpsTaraSettings modified) {
+		//TODO
 	}
 
 	public boolean isExcludedFromStubGeneration(File file) {
 		return myExcludeFromStubGeneration != null && myExcludeFromStubGeneration.isExcluded(file);
+	}
+
+	public String getHeapSize() {
+		return heapSize;
+	}
+
+	public boolean isPluginGeneration() {
+		return pluginGeneration;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public String getCommentaries() {
+		return commentaries;
+	}
+
+	public Element getExcludes() {
+		return excludes;
+	}
+
+	public void setHeapSize(String heapSize) {
+		this.heapSize = heapSize;
+	}
+
+	public void setPluginGeneration(boolean pluginGeneration) {
+		this.pluginGeneration = pluginGeneration;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public void setCommentaries(String commentaries) {
+		this.commentaries = commentaries;
+	}
+
+	public void setExcludes(Element excludes) {
+		this.excludes = excludes;
 	}
 }

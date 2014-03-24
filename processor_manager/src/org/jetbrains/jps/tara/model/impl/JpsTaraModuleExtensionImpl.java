@@ -20,6 +20,7 @@ public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExte
 
 	@Override
 	public void applyChanges(@NotNull JpsTaraModuleExtensionImpl modified) {
+		//TODO
 	}
 }
 

@@ -21,6 +21,7 @@ public class TaraCompilerConfiguration implements PersistentStateComponent<JpsTa
 	private boolean pluginGeneration = JpsTaraSettings.PLUGIN_GENERATION;
 	private String version = "0.1";
 	private String commentaries = "";
+	private String vendor;
 
 	public TaraCompilerConfiguration(Project project) {
 		TaraCompilerWorkspaceConfiguration workspaceConfiguration = ServiceManager.getService(project, TaraCompilerWorkspaceConfiguration.class);
@@ -40,11 +41,11 @@ public class TaraCompilerConfiguration implements PersistentStateComponent<JpsTa
 
 	public JpsTaraSettings getState() {
 		final JpsTaraSettings jpsSettings = new JpsTaraSettings();
-		jpsSettings.heapSize = myHeapSize;
-		jpsSettings.pluginGeneration = pluginGeneration;
-		jpsSettings.version = version;
-		jpsSettings.commentaries = commentaries;
-		myExcludeFromStubGeneration.writeExternal(jpsSettings.excludes);
+		jpsSettings.setHeapSize(myHeapSize);
+		jpsSettings.setPluginGeneration(pluginGeneration);
+		jpsSettings.setVersion(version);
+		jpsSettings.setCommentaries(commentaries);
+		myExcludeFromStubGeneration.writeExternal(jpsSettings.getExcludes());
 		return jpsSettings;
 	}
 
@@ -53,11 +54,11 @@ public class TaraCompilerConfiguration implements PersistentStateComponent<JpsTa
 	}
 
 	public void loadState(JpsTaraSettings state) {
-		myHeapSize = state.heapSize;
-		pluginGeneration = state.pluginGeneration;
-		commentaries = state.commentaries;
-		version = state.version;
-		myExcludeFromStubGeneration.readExternal(state.excludes);
+		myHeapSize = state.getHeapSize();
+		pluginGeneration = state.isPluginGeneration();
+		commentaries = state.getCommentaries();
+		version = state.getVersion();
+		myExcludeFromStubGeneration.readExternal(state.getExcludes());
 	}
 
 	public String getHeapSize() {
@@ -68,7 +69,7 @@ public class TaraCompilerConfiguration implements PersistentStateComponent<JpsTa
 		myHeapSize = heapSize;
 	}
 
-	public boolean IsPluginGeneration() {
+	public boolean isPluginGeneration() {
 		return pluginGeneration;
 	}
 
@@ -96,4 +97,11 @@ public class TaraCompilerConfiguration implements PersistentStateComponent<JpsTa
 		Disposer.dispose(myExcludeFromStubGeneration);
 	}
 
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
 }

@@ -37,22 +37,19 @@ public class ConceptNode extends ProjectViewNode<ConceptTreeView> {
 	}
 
 	public boolean contains(@NotNull VirtualFile file) {
-		for (final AbstractTreeNode aMyChildren : myChildren) {
-			ProjectViewNode treeNode = (ProjectViewNode) aMyChildren;
-			if (treeNode.contains(file)) return true;
-		}
+		for (final AbstractTreeNode aMyChildren : myChildren)
+			if (((ProjectViewNode) aMyChildren).contains(file)) return true;
 		return false;
 	}
 
 	public void update(PresentationData presentation) {
-		if (getValue() == null || !getValue().isValid()) {
+		if (getValue() == null || !getValue().isValid())
 			setValue(null);
-		} else {
+		else {
 			presentation.setPresentableText(getValue().getName());
 			presentation.setIcon(TaraIcons.ICON_13);
 		}
 	}
-
 
 	@Override
 	public void setIcon(Icon icon) {
@@ -79,9 +76,8 @@ public class ConceptNode extends ProjectViewNode<ConceptTreeView> {
 			final PsiElement value = child.getValue();
 			if (value == null || !value.isValid()) continue;
 			final FileStatus fileStatus = NavigationItemFileStatus.get(child);
-			if (fileStatus != FileStatus.NOT_CHANGED) {
+			if (fileStatus != FileStatus.NOT_CHANGED)
 				return fileStatus;
-			}
 		}
 		return FileStatus.NOT_CHANGED;
 	}

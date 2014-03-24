@@ -22,7 +22,7 @@ public class LoggingEventSubmitter {
 	private static final String PLUGIN_ID = "plugin.id";
 	private static final String PLUGIN_VERSION = "plugin.version";
 	private static final String PLUGIN_NAME = "plugin.name";
-	private static final Logger LOGGER = Logger.getInstance(LoggingEventSubmitter.class.getName());
+	private static final Logger LOG = Logger.getInstance(LoggingEventSubmitter.class.getName());
 	private final String subject;
 	private String htmlBody;
 	private Properties emailProperties;
@@ -50,8 +50,8 @@ public class LoggingEventSubmitter {
 
 
 	void submit() {
-		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("About to send logging events");
+		if (LOG.isDebugEnabled())
+			LOG.debug("About to send logging events");
 
 		try {
 			Properties props = System.getProperties();
@@ -66,7 +66,7 @@ public class LoggingEventSubmitter {
 			transport.close();
 
 		} catch (MessagingException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage());
 		}
 	}
 

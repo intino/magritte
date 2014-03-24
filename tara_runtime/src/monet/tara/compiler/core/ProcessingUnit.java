@@ -1,7 +1,7 @@
 package monet.tara.compiler.core;
 
-import monet.tara.compiler.core.error_collection.CompilationFailedException;
-import monet.tara.compiler.core.error_collection.ErrorCollector;
+import monet.tara.compiler.core.errorcollection.CompilationFailedException;
+import monet.tara.compiler.core.errorcollection.ErrorCollector;
 
 public abstract class ProcessingUnit {
 

@@ -4,6 +4,7 @@
   <property name="src.dir" value="src" />
   <property name="test.dir" value="test" />
   <property name="build.dir" value="out" />
+  <property name="sonar.source" value="1.7"/>
   <path id="classpath">
   </path>
 

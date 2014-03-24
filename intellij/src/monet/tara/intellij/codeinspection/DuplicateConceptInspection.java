@@ -36,22 +36,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-/**
- * Created by oroncal on 09/01/14.
- */
 public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
-	private static final Logger LOG = Logger.getInstance("#com.intellij.codeInspection.DuplicatePropertyInspection");
+	private static final Logger LOG = Logger.getInstance(DuplicateConceptInspection.class.getName());
 
-	public boolean CURRENT_FILE = true;
-	public boolean MODULE_WITH_DEPENDENCIES = false;
-
-	public boolean CHECK_DUPLICATE_IDENTIFIERS = true;
-
-	@Override
-	public void checkFile(@NotNull PsiFile file, @NotNull InspectionManager manager, @NotNull ProblemsHolder problemsHolder, @NotNull GlobalInspectionContext globalContext, @NotNull ProblemDescriptionsProcessor problemDescriptionsProcessor) {
-		checkFile(file, manager, (GlobalInspectionContextImpl) globalContext, globalContext.getRefManager(), problemDescriptionsProcessor);
-	}
-
+	private boolean currentFile = true;
+	private boolean moduleWithDependencies = false;
+	private boolean checkDuplicateIdentifiers = true;
 
 	@SuppressWarnings({"HardCodedStringLiteral"})
 	private static void surroundWithHref(StringBuffer anchor, PsiElement element, final boolean isValue) {
@@ -111,6 +101,52 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 		}
 	}
 
+	private static void processTextUsages(final Map<String, Set<PsiFile>> processedTextToFiles,
+	                                      final String text,
+	                                      final Map<String, Set<PsiFile>> processedFoundTextToFiles,
+	                                      final PsiSearchHelper searchHelper,
+	                                      final GlobalSearchScope scope) {
+		if (!processedTextToFiles.containsKey(text)) {
+			if (processedFoundTextToFiles.containsKey(text)) {
+				final Set<PsiFile> filesWithValue = processedFoundTextToFiles.get(text);
+				processedTextToFiles.put(text, filesWithValue);
+			} else {
+				final Set<PsiFile> resultFiles = new HashSet<>();
+				findFilesWithText(text, searchHelper, scope, resultFiles);
+				if (resultFiles.isEmpty()) return;
+				processedTextToFiles.put(text, resultFiles);
+			}
+		}
+	}
+
+	private static void findFilesWithText(String stringToFind,
+	                                      PsiSearchHelper searchHelper,
+	                                      GlobalSearchScope scope,
+	                                      final Set<PsiFile> resultFiles) {
+		final List<String> words = StringUtil.getWordsIn(stringToFind);
+		if (words.isEmpty()) return;
+		Collections.sort(words, new Comparator<String>() {
+			@Override
+			public int compare(final String o1, final String o2) {
+				return o2.length() - o1.length();
+			}
+		});
+		for (String word : words) {
+			final Set<PsiFile> files = new THashSet<>();
+			searchHelper.processAllFilesWithWord(word, scope, new CommonProcessors.CollectProcessor<>(files), true);
+			if (resultFiles.isEmpty())
+				resultFiles.addAll(files);
+			else
+				resultFiles.retainAll(files);
+			if (resultFiles.isEmpty()) return;
+		}
+	}
+
+	@Override
+	public void checkFile(@NotNull PsiFile file, @NotNull InspectionManager manager, @NotNull ProblemsHolder problemsHolder, @NotNull GlobalInspectionContext globalContext, @NotNull ProblemDescriptionsProcessor problemDescriptionsProcessor) {
+		checkFile(file, manager, (GlobalInspectionContextImpl) globalContext, globalContext.getRefManager(), problemDescriptionsProcessor);
+	}
+
 	private void checkFile(final PsiFile file, final InspectionManager manager, GlobalInspectionContextImpl context, final RefManager refManager, final ProblemDescriptionsProcessor processor) {
 		if (!(file instanceof TaraFileImpl) || !context.isToCheckFile(file, this)) return;
 		final PsiSearchHelper searchHelper = PsiSearchHelper.SERVICE.getInstance(file.getProject());
@@ -118,9 +154,9 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 		final List<Concept> concepts = TaraUtil.getRootConcepts(taraFile.getProject());
 		Module module = ModuleUtil.findModuleForPsiElement(file);
 		if (module == null) return;
-		final GlobalSearchScope scope = CURRENT_FILE
+		final GlobalSearchScope scope = currentFile
 			? GlobalSearchScope.fileScope(file)
-			: MODULE_WITH_DEPENDENCIES
+			: moduleWithDependencies
 			? GlobalSearchScope.moduleWithDependenciesScope(module)
 			: GlobalSearchScope.projectScope(file.getProject());
 		final Map<String, Set<PsiFile>> processedValueToFiles = Collections.synchronizedMap(new HashMap<String, Set<PsiFile>>());
@@ -141,12 +177,10 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 						return true;
 					}
 				})) throw new ProcessCanceledException();
-
 				List<ProblemDescriptor> problemDescriptors = new ArrayList<>();
 				Map<String, Set<String>> keyToDifferentValues = new HashMap<>();
-				if (CHECK_DUPLICATE_IDENTIFIERS) {
-					prepareDuplicateKeysByFile(processedKeyToFiles, manager, keyToDifferentValues, problemDescriptors, file, original);
-				}
+				if (checkDuplicateIdentifiers)
+					prepareDuplicateKeysByFile(processedKeyToFiles, manager, problemDescriptors, file, original);
 				if (!problemDescriptors.isEmpty()) {
 					processor.addProblemElement(refManager.getReference(file),
 						problemDescriptors.toArray(new ProblemDescriptor[problemDescriptors.size()]));
@@ -155,27 +189,8 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 		}, progress);
 	}
 
-	private static void processTextUsages(final Map<String, Set<PsiFile>> processedTextToFiles,
-	                                      final String text,
-	                                      final Map<String, Set<PsiFile>> processedFoundTextToFiles,
-	                                      final PsiSearchHelper searchHelper,
-	                                      final GlobalSearchScope scope) {
-		if (!processedTextToFiles.containsKey(text)) {
-			if (processedFoundTextToFiles.containsKey(text)) {
-				final Set<PsiFile> filesWithValue = processedFoundTextToFiles.get(text);
-				processedTextToFiles.put(text, filesWithValue);
-			} else {
-				final Set<PsiFile> resultFiles = new HashSet<>();
-				findFilesWithText(text, searchHelper, scope, resultFiles);
-				if (resultFiles.isEmpty()) return;
-				processedTextToFiles.put(text, resultFiles);
-			}
-		}
-	}
-
 	private void prepareDuplicateKeysByFile(final Map<String, Set<PsiFile>> keyToFiles,
 	                                        final InspectionManager manager,
-	                                        final Map<String, Set<String>> keyToValues,
 	                                        final List<ProblemDescriptor> problemDescriptors,
 	                                        final PsiFile psiFile,
 	                                        final ProgressIndicator progress) {
@@ -203,30 +218,6 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 			}
 		}
 
-	}
-
-
-	private static void findFilesWithText(String stringToFind,
-	                                      PsiSearchHelper searchHelper,
-	                                      GlobalSearchScope scope,
-	                                      final Set<PsiFile> resultFiles) {
-		final List<String> words = StringUtil.getWordsIn(stringToFind);
-		if (words.isEmpty()) return;
-		Collections.sort(words, new Comparator<String>() {
-			@Override
-			public int compare(final String o1, final String o2) {
-				return o2.length() - o1.length();
-			}
-		});
-		for (String word : words) {
-			final Set<PsiFile> files = new THashSet<>();
-			searchHelper.processAllFilesWithWord(word, scope, new CommonProcessors.CollectProcessor<>(files), true);
-			if (resultFiles.isEmpty())
-				resultFiles.addAll(files);
-			else
-				resultFiles.retainAll(files);
-			if (resultFiles.isEmpty()) return;
-		}
 	}
 
 	@Override
@@ -270,22 +261,22 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 			buttonGroup.add(myModuleScope);
 			buttonGroup.add(myProjectScope);
 
-			myFileScope.setSelected(CURRENT_FILE);
-			myModuleScope.setSelected(MODULE_WITH_DEPENDENCIES);
-			myProjectScope.setSelected(!(CURRENT_FILE || MODULE_WITH_DEPENDENCIES));
+			myFileScope.setSelected(currentFile);
+			myModuleScope.setSelected(moduleWithDependencies);
+			myProjectScope.setSelected(!(currentFile || moduleWithDependencies));
 
 			myFileScope.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					CURRENT_FILE = myFileScope.isSelected();
+					currentFile = myFileScope.isSelected();
 				}
 			});
 			myModuleScope.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					MODULE_WITH_DEPENDENCIES = myModuleScope.isSelected();
-					if (MODULE_WITH_DEPENDENCIES) {
-						CURRENT_FILE = false;
+					moduleWithDependencies = myModuleScope.isSelected();
+					if (moduleWithDependencies) {
+						currentFile = false;
 					}
 				}
 			});
@@ -293,17 +284,17 @@ public class DuplicateConceptInspection extends GlobalSimpleInspectionTool {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (myProjectScope.isSelected()) {
-						CURRENT_FILE = false;
-						MODULE_WITH_DEPENDENCIES = false;
+						currentFile = false;
+						moduleWithDependencies = false;
 					}
 				}
 			});
 
-			myDuplicateKeys.setSelected(CHECK_DUPLICATE_IDENTIFIERS);
+			myDuplicateKeys.setSelected(checkDuplicateIdentifiers);
 			myDuplicateKeys.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					CHECK_DUPLICATE_IDENTIFIERS = myDuplicateKeys.isSelected();
+					checkDuplicateIdentifiers = myDuplicateKeys.isSelected();
 				}
 			});
 		}

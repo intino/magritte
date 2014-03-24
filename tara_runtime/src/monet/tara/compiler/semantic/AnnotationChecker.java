@@ -3,8 +3,8 @@ package monet.tara.compiler.semantic;
 
 import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.ast.ASTNode.AnnotationType;
-import monet.tara.compiler.core.error_collection.semantic.SemanticErrorList;
-import monet.tara.compiler.core.error_collection.semantic.WrongAnnotationError;
+import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
+import monet.tara.compiler.core.errorcollection.semantic.WrongAnnotationError;
 
 import java.util.ArrayList;
 import java.util.Arrays;

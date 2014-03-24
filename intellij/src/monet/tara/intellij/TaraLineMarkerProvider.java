@@ -20,12 +20,12 @@ public class TaraLineMarkerProvider extends RelatedItemLineMarkerProvider {
 	protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
 		if (element instanceof PsiIdentifier) {
 			PsiIdentifier psiIdentifier = (PsiIdentifier) element;
-			if (psiIdentifier.getText().equals("Tara") && psiIdentifier.getNextSibling().getText().equals(":") && psiIdentifier.getNextSibling().getNextSibling() != null) {
+			if ("Tara".equals(psiIdentifier.getText()) && ":".equals(psiIdentifier.getNextSibling().getText()) && psiIdentifier.getNextSibling().getNextSibling() != null) {
 				PsiExpressionStatement identifier = (PsiExpressionStatement) psiIdentifier.getNextSibling().getNextSibling();
 				String value = identifier.getText();
 				Project project = element.getProject();
 				final List<Concept> conceptList = TaraUtil.findRootConcept(project, value.replace(";", ""));
-				if (conceptList.size() > 0) {
+				if (conceptList.isEmpty()) {
 					NavigationGutterIconBuilder<PsiElement> psiElementNavigationGutterIconBuilder = NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTargets(conceptList);
 					NavigationGutterIconBuilder<PsiElement> builder =
 						psiElementNavigationGutterIconBuilder.setTooltipText("Navigate to the concept");

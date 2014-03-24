@@ -29,7 +29,7 @@ public class TaraCompilerConfigurable implements SearchableConfigurable, Configu
 	private JTextField myHeapSize;
 	private JPanel myMainPanel;
 	private JCheckBox pluginGenerationCheckBox;
-	private JTextField textField2;
+	private JTextField vendor;
 	private JTextArea commentaries;
 	private JTextField version;
 	private JList excludedStubs;
@@ -57,7 +57,8 @@ public class TaraCompilerConfigurable implements SearchableConfigurable, Configu
 				public List<VirtualFile> fun(final Module module) {
 					return ModuleRootManager.getInstance(module).getSourceRoots(JavaModuleSourceRootTypes.SOURCES);
 				}
-			})));
+			})
+		));
 		return new ExcludedEntriesConfigurable(project, descriptor, configuration);
 	}
 
@@ -87,10 +88,14 @@ public class TaraCompilerConfigurable implements SearchableConfigurable, Configu
 
 	public boolean isModified() {
 		return !Comparing.equal(compilerConfiguration.getHeapSize(), myHeapSize.getText()) ||
-			pluginGenerationCheckBox.isSelected() != compilerConfiguration.IsPluginGeneration() ||
-			myExcludes.isModified() ||
-			!version.getText().equals(compilerConfiguration.getVersion()) ||
-			!commentaries.getText().equals(compilerConfiguration.getCommentaries());
+			pluginGenerationCheckBox.isSelected() != compilerConfiguration.isPluginGeneration() ||
+			myExcludes.isModified() || checkVersionComentariesAndVendor();
+	}
+
+	private boolean checkVersionComentariesAndVendor() {
+		return !version.getText().equals(compilerConfiguration.getVersion()) ||
+			!commentaries.getText().equals(compilerConfiguration.getCommentaries()) ||
+			vendor.getText().equals(compilerConfiguration.getVendor());
 	}
 
 	public void apply() throws ConfigurationException {
@@ -99,14 +104,16 @@ public class TaraCompilerConfigurable implements SearchableConfigurable, Configu
 		compilerConfiguration.setPluginGeneration(pluginGenerationCheckBox.isSelected());
 		compilerConfiguration.setVersion(version.getText());
 		compilerConfiguration.setCommentaries(commentaries.getText());
+		compilerConfiguration.setVendor(vendor.getText());
 	}
 
 	public void reset() {
 		myHeapSize.setText(compilerConfiguration.getHeapSize());
-		pluginGenerationCheckBox.setSelected(compilerConfiguration.IsPluginGeneration());
+		pluginGenerationCheckBox.setSelected(compilerConfiguration.isPluginGeneration());
 		version.setText(compilerConfiguration.getVersion());
 		commentaries.setText(compilerConfiguration.getCommentaries());
 		myExcludes.reset();
+		vendor.setText("");
 	}
 
 	public void disposeUIResources() {

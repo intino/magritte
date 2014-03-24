@@ -1,7 +1,7 @@
 package monet.tara.compiler.parser;
 
 import monet.tara.compiler.core.ast.AST;
-import monet.tara.compiler.core.error_collection.SyntaxException;
+import monet.tara.compiler.core.errorcollection.SyntaxException;
 import monet.tara.compiler.parser.antlr.TaraASTGeneratorListener;
 import monet.tara.compiler.parser.antlr.TaraErrorStrategy;
 import monet.tara.compiler.parser.antlr.TaraM2Grammar;

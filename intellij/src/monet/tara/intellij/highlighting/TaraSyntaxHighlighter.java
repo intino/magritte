@@ -5,7 +5,6 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
-import com.intellij.openapi.options.OptionsBundle;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
@@ -41,13 +40,13 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 		DISPLAY_NAMES.put(STRING, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.types.string"), null));
 		DISPLAY_NAMES.put(DOCUMENTATION, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.comment"), null));
 		DISPLAY_NAMES.put(MODIFIERS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.modifier"), null));
-		DISPLAY_NAMES.put(OPERATOR, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.key.value.separator"), null));
+		DISPLAY_NAMES.put(OPERATOR, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.operator"), null));
 		DISPLAY_NAMES.put(ANNOTATION, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.annotation"), null));
 		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<>(TaraBundle.message("invalid.tara.concept.character"), HighlightSeverity.ERROR));
 	}
 
-	private static final Map<IElementType, TextAttributesKey> keys1;
-	private static final Map<IElementType, TextAttributesKey> keys2;
+	private static final Map<IElementType, TextAttributesKey> KEYS_1;
+	private static final Map<IElementType, TextAttributesKey> KEYS_2;
 
 	@NotNull
 	@Override
@@ -56,56 +55,56 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 	}
 
 	static {
-		keys1 = new THashMap<>();
-		keys2 = new THashMap<>();
+		KEYS_1 = new THashMap<>();
+		KEYS_2 = new THashMap<>();
 
-		keys1.put(TokenType.WHITE_SPACE, null);
-		keys1.put(TaraTypes.IDENTIFIER_KEY, IDENTIFIER);
+		KEYS_1.put(TokenType.WHITE_SPACE, null);
+		KEYS_1.put(TaraTypes.IDENTIFIER_KEY, IDENTIFIER);
 
 //gen %highlightKey%
-		keys1.put(TaraTypes.CONCEPT_KEY, KEYWORD);
+		KEYS_1.put(TaraTypes.CONCEPT_KEY, KEYWORD);
 //end
-		keys1.put(TaraTypes.AS, KEYWORD);
-		keys1.put(TaraTypes.OPEN_AN, KEYWORD);
-		keys1.put(TaraTypes.CLOSE_AN, KEYWORD);
-		keys1.put(TaraTypes.NEW, KEYWORD);
-		keys1.put(TaraTypes.VAR, KEYWORD);
+		KEYS_1.put(TaraTypes.AS, KEYWORD);
+		KEYS_1.put(TaraTypes.OPEN_AN, KEYWORD);
+		KEYS_1.put(TaraTypes.CLOSE_AN, KEYWORD);
+		KEYS_1.put(TaraTypes.NEW, KEYWORD);
+		KEYS_1.put(TaraTypes.VAR, KEYWORD);
 
-		keys1.put(TaraTypes.OPTIONAL, ANNOTATION);
-		keys1.put(TaraTypes.MULTIPLE, ANNOTATION);
-		keys1.put(TaraTypes.EXTENSIBLE, ANNOTATION);
-		keys1.put(TaraTypes.HAS_CODE, ANNOTATION);
-		keys1.put(TaraTypes.SINGLETON, ANNOTATION);
-		keys1.put(TaraTypes.ROOT, ANNOTATION);
+		KEYS_1.put(TaraTypes.OPTIONAL, ANNOTATION);
+		KEYS_1.put(TaraTypes.MULTIPLE, ANNOTATION);
+		KEYS_1.put(TaraTypes.EXTENSIBLE, ANNOTATION);
+		KEYS_1.put(TaraTypes.HAS_CODE, ANNOTATION);
+		KEYS_1.put(TaraTypes.SINGLETON, ANNOTATION);
+		KEYS_1.put(TaraTypes.ROOT, ANNOTATION);
 
-		keys1.put(TaraTypes.ASSIGN, OPERATOR);
-		keys1.put(TaraTypes.LEFT_SQUARE, OPERATOR);
-		keys1.put(TaraTypes.RIGHT_SQUARE, OPERATOR);
+		KEYS_1.put(TaraTypes.ASSIGN, OPERATOR);
+		KEYS_1.put(TaraTypes.LEFT_SQUARE, OPERATOR);
+		KEYS_1.put(TaraTypes.RIGHT_SQUARE, OPERATOR);
 
-		keys1.put(TaraTypes.STRING_TYPE, PRIMITIVE);
-		keys1.put(TaraTypes.DOUBLE_TYPE, PRIMITIVE);
-		keys1.put(TaraTypes.INT_TYPE, PRIMITIVE);
-		keys1.put(TaraTypes.UID_TYPE, PRIMITIVE);
+		KEYS_1.put(TaraTypes.STRING_TYPE, PRIMITIVE);
+		KEYS_1.put(TaraTypes.DOUBLE_TYPE, PRIMITIVE);
+		KEYS_1.put(TaraTypes.INT_TYPE, PRIMITIVE);
+		KEYS_1.put(TaraTypes.UID_TYPE, PRIMITIVE);
 
-		keys1.put(TaraTypes.ABSTRACT, MODIFIERS);
-		keys1.put(TaraTypes.FINAL, MODIFIERS);
-		keys1.put(TaraTypes.MORPH_KEY, MODIFIERS);
-		keys1.put(TaraTypes.POLYMORPHIC_KEY, MODIFIERS);
+		KEYS_1.put(TaraTypes.ABSTRACT, MODIFIERS);
+		KEYS_1.put(TaraTypes.FINAL, MODIFIERS);
+		KEYS_1.put(TaraTypes.MORPH_KEY, MODIFIERS);
+		KEYS_1.put(TaraTypes.POLYMORPHIC_KEY, MODIFIERS);
 
-		keys1.put(TaraTypes.DOC_LINE, DOCUMENTATION);
+		KEYS_1.put(TaraTypes.DOC_LINE, DOCUMENTATION);
 
-		keys1.put(TaraTypes.DOUBLE_VALUE, NUMBERS);
-		keys1.put(TaraTypes.NATURAL_VALUE, NUMBERS);
-		keys1.put(TaraTypes.NEGATIVE_VALUE_KEY, NUMBERS);
-		keys1.put(TaraTypes.BOOLEAN_VALUE, NUMBERS);
-		keys1.put(TaraTypes.STRING_VALUE, STRING);
+		KEYS_1.put(TaraTypes.DOUBLE_VALUE, NUMBERS);
+		KEYS_1.put(TaraTypes.NATURAL_VALUE, NUMBERS);
+		KEYS_1.put(TaraTypes.NEGATIVE_VALUE_KEY, NUMBERS);
+		KEYS_1.put(TaraTypes.BOOLEAN_VALUE, NUMBERS);
+		KEYS_1.put(TaraTypes.STRING_VALUE, STRING);
 
-		keys1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
+		KEYS_1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 	}
 
 	@NotNull
 	@Override
 	public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-		return pack(keys1.get(tokenType), keys2.get(tokenType));
+		return pack(KEYS_1.get(tokenType), KEYS_2.get(tokenType));
 	}
 }

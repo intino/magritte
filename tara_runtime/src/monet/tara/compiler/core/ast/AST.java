@@ -1,15 +1,12 @@
 package monet.tara.compiler.core.ast;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class AST {
 
-	private ArrayList<ASTNode> astRootNodes = new ArrayList<>();
-	private HashMap<String, String> identifierMap = new HashMap<>();
-	private HashMap<String, ArrayList<ASTNode>> lookUpTable = new HashMap<>();
+	private List<ASTNode> astRootNodes = new ArrayList<>();
+	private Map<String, String> identifierMap = new HashMap<>();
+	private Map<String, List<ASTNode>> lookUpTable = new HashMap<>();
 
 	public ASTNode[] getAstRootNodes() {
 		return astRootNodes.toArray(new ASTNode[astRootNodes.size()]);
@@ -20,11 +17,11 @@ public class AST {
 			identifierMap.put(identifier.toUpperCase() + "_" + context, identifier);
 	}
 
-	public HashMap<String, String> getIdentifiers() {
+	public Map<String, String> getIdentifiers() {
 		return identifierMap;
 	}
 
-	public HashMap<String, ArrayList<ASTNode>> getLookUpTable() {
+	public Map<String, List<ASTNode>> getLookUpTable() {
 		return lookUpTable;
 	}
 
@@ -44,12 +41,12 @@ public class AST {
 		identifierMap.putAll(m);
 	}
 
-	public void putAllLookupTable(Map<? extends String, ? extends ArrayList<ASTNode>> m) {
+	public void putAllLookupTable(Map<? extends String, ? extends List<ASTNode>> m) {
 		lookUpTable.putAll(m);
 	}
 
 	public boolean add(String name, ASTNode astNode) {
-		ArrayList<ASTNode> list = lookUpTable.containsKey(name) ? lookUpTable.get(name) : new ArrayList<ASTNode>();
+		List<ASTNode> list = lookUpTable.containsKey(name) ? lookUpTable.get(name) : new ArrayList<ASTNode>();
 		list.add(astNode);
 		lookUpTable.put(name, list);
 		return true;
@@ -68,7 +65,7 @@ public class AST {
 
 	private ASTNode absoluteSearch(String path) {
 		String[] tree = path.split("\\.");
-		ArrayList<ASTNode> nodes;
+		List<ASTNode> nodes;
 		if ((nodes = lookUpTable.get(tree[tree.length - 1])) == null) return null;
 		for (ASTNode node : nodes)
 			if (path.equals(node.getAbsolutePath()))
@@ -101,8 +98,8 @@ public class AST {
 		return null;
 	}
 
-	public ArrayList<String> getKeys(String value) {
-		ArrayList<String> keys = new ArrayList<>();
+	public List<String> getKeys(String value) {
+		List<String> keys = new ArrayList<>();
 		for (Map.Entry<String, String> entry : identifierMap.entrySet()) {
 			if (entry.getValue().equals(value))
 				keys.add(entry.getKey());

@@ -6,9 +6,9 @@ import monet.tara.compiler.core.ast.ASTNode.AnnotationType;
 import monet.tara.compiler.core.ast.ASTNode.Attribute;
 import monet.tara.compiler.core.ast.ASTNode.Reference;
 import monet.tara.compiler.core.ast.ASTNode.Word;
-import monet.tara.compiler.core.error_collection.semantic.DuplicateAnnotationError;
-import monet.tara.compiler.core.error_collection.semantic.DuplicateIdentifierError;
-import monet.tara.compiler.core.error_collection.semantic.SemanticErrorList;
+import monet.tara.compiler.core.errorcollection.semantic.DuplicateAnnotationError;
+import monet.tara.compiler.core.errorcollection.semantic.DuplicateIdentifierError;
+import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 
 import java.util.HashSet;
 import java.util.Set;

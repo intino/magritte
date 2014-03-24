@@ -29,7 +29,7 @@ public class BlockManager {
 
 	public void newlineAndSpaces(String text) {
 		if (!bracketsMode()) {
-			int newLevel = (spacesLength(text) / this.tabSize);
+			int newLevel = spacesLength(text) / this.tabSize;
 			this.tokens = indentationTokens(newLevel - level, true);
 			this.level = newLevel;
 		} else
@@ -64,7 +64,7 @@ public class BlockManager {
 	}
 
 	public boolean bracketsMode() {
-		return (brackets > 0);
+		return brackets > 0;
 	}
 
 	public int getLevel() {

@@ -25,15 +25,9 @@ public class BlockManager {
 		this.tabSize = (tabulationSize < 0) ? 1 : tabulationSize;
 	}
 
-	public void reset() {
-		this.tokens = new IElementType[]{};
-		this.level = 0;
-		this.brackets = 0;
-	}
-
 	public void spaces(String text) {
 		if (!bracketsMode()) {
-			int newLevel = (spacesLength(text) / this.tabSize);
+			int newLevel = spacesLength(text) / this.tabSize;
 			this.tokens = spacesIndentTokens(newLevel - level);
 			this.level = newLevel;
 		} else
@@ -71,11 +65,7 @@ public class BlockManager {
 	}
 
 	public boolean bracketsMode() {
-		return (brackets > 0);
-	}
-
-	public int getLevel() {
-		return level;
+		return brackets > 0;
 	}
 
 	public IElementType[] actions() {

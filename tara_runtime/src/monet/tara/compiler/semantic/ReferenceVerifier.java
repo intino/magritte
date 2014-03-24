@@ -4,7 +4,7 @@ package monet.tara.compiler.semantic;
 import monet.tara.compiler.core.ast.AST;
 import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.ast.ASTNode.Reference;
-import monet.tara.compiler.core.error_collection.semantic.*;
+import monet.tara.compiler.core.errorcollection.semantic.*;
 
 public class ReferenceVerifier {
 

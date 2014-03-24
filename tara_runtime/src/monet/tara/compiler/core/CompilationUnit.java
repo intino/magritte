@@ -1,11 +1,11 @@
 package monet.tara.compiler.core;
 
-import monet.tara.compiler.code_generation.ClassGenerator;
-import monet.tara.compiler.code_generation.intellij.FileSystemUtils;
-import monet.tara.compiler.code_generation.intellij.PluginGenerator;
-import monet.tara.compiler.core.error_collection.*;
-import monet.tara.compiler.core.error_collection.message.Message;
-import monet.tara.compiler.core.error_collection.semantic.SemanticError;
+import monet.tara.compiler.codegeneration.ClassGenerator;
+import monet.tara.compiler.codegeneration.intellij.FileSystemUtils;
+import monet.tara.compiler.codegeneration.intellij.PluginGenerator;
+import monet.tara.compiler.core.errorcollection.*;
+import monet.tara.compiler.core.errorcollection.message.Message;
+import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
 import monet.tara.compiler.core.operation.ModuleUnitOperation;
 import monet.tara.compiler.core.operation.Operation;
 import monet.tara.compiler.core.operation.SourceUnitOperation;
@@ -18,9 +18,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class CompilationUnit extends ProcessingUnit {
 
+	private static final Logger LOG = Logger.getLogger(CompilationUnit.class.getName());
 	private final boolean pluginGeneration;
 	protected Map<String, SourceUnit> sources;
 	protected ProgressCallback progressCallback;
@@ -31,7 +33,7 @@ public class CompilationUnit extends ProcessingUnit {
 				source.convert();
 				getErrorCollector().failIfErrors();
 			} catch (TaraException e) {
-				System.err.println("Error during conversion");
+				LOG.severe("Error during conversion");
 				getErrorCollector().addError(Message.create(e.getMessage(), source));
 			}
 		}
@@ -43,10 +45,10 @@ public class CompilationUnit extends ProcessingUnit {
 				source.parse();
 				getErrorCollector().failIfErrors();
 			} catch (IOException e) {
-				System.err.println("Error during Parsing");
+				LOG.severe("Error during Parsing");
 				getErrorCollector().addError(Message.create(e.getMessage(), CompilationUnit.this));
 			} catch (SyntaxException e) {
-				System.err.println("Syntax error during Parsing");
+				LOG.severe("Syntax error during Parsing");
 				getErrorCollector().addError(Message.create(e, source));
 			}
 		}
@@ -60,7 +62,7 @@ public class CompilationUnit extends ProcessingUnit {
 			} catch (SemanticException e) {
 				for (SemanticError error : e.getErrors())
 					if (error instanceof SemanticError.FatalError) {
-						System.err.println("Error during semantic analyze");
+						LOG.severe("Error during semantic analyze");
 						getErrorCollector().addError(Message.create(error, getSourceFromFile(error.getNode().getFile())));
 					} else
 						getErrorCollector().addWarning(2, error.getMessage(), getSourceFromFile(error.getNode().getFile()));
@@ -78,7 +80,7 @@ public class CompilationUnit extends ProcessingUnit {
 	private SrcToClassOperation classGeneration = new SrcToClassOperation() {
 		@Override
 		public void call() throws CompilationFailedException {
-			System.out.println("Generating classes");
+			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating classes");
 			ClassGenerator generator = new ClassGenerator(configuration);
 			//generator.generate();
 		}
@@ -93,8 +95,7 @@ public class CompilationUnit extends ProcessingUnit {
 				generator.generate(units);
 				getErrorCollector().failIfErrors();
 			} catch (TaraException e) {
-				e.printStackTrace();
-				System.err.print("Error during plugin generation");
+				LOG.severe("Error during plugin generation: " + e.getMessage());
 				throw new CompilationFailedException(phase, CompilationUnit.this);
 			}
 		}
@@ -102,7 +103,7 @@ public class CompilationUnit extends ProcessingUnit {
 
 	private SourceUnitOperation output = new SourceUnitOperation() {
 		public void call(SourceUnit taraClass) throws CompilationFailedException {
-
+			//TODO
 		}
 	};
 

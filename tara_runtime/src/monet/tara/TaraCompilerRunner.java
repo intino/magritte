@@ -5,7 +5,7 @@ import monet.tara.compiler.core.CompilationUnit;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.CompilerMessage;
 import monet.tara.compiler.core.SourceUnit;
-import monet.tara.compiler.core.error_collection.message.WarningMessage;
+import monet.tara.compiler.core.errorcollection.message.WarningMessage;
 import monet.tara.compiler.rt.TaraCompilerMessageCategories;
 import monet.tara.compiler.rt.TaraRtConstants;
 
@@ -13,8 +13,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class TaraCompilerRunner {
+	private final static Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
 
 	static boolean runTaraCompiler(File argsFile, boolean pluginGeneration) {
 		final CompilerConfiguration config = new CompilerConfiguration();
@@ -77,13 +79,13 @@ public class TaraCompilerRunner {
 				line = reader.readLine();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.severe(e.getMessage());
 		} finally {
 			try {
 				assert reader != null;
 				reader.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.severe(e.getMessage());
 			} finally {
 //				argsFile.delete();
 			}

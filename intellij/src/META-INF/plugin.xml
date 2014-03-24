@@ -79,11 +79,11 @@
                       groupKey="tara.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"
                       implementationClass="monet.tara.intellij.codeinspection.UnusedAbstractConceptInspection"/>
     <completion.contributor language="Tara"
-                            implementationClass="monet.tara.intellij.codeInsight.completion.TaraSignatureCompletionContributor"/>
+                            implementationClass="monet.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
     <completion.contributor language="Tara"
-                            implementationClass="monet.tara.intellij.codeInsight.completion.TaraPrimitivesCompletionContributor"/>
+                            implementationClass="monet.tara.intellij.codeinsight.completion.TaraPrimitivesCompletionContributor"/>
     <completion.contributor language="Tara"
-                            implementationClass="monet.tara.intellij.codeInsight.completion.TaraAnnotationsCompletionContributor"/>
+                            implementationClass="monet.tara.intellij.codeinsight.completion.TaraAnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="Tara"
                                   implementationClass="monet.tara.intellij.structureview.StructureViewFactory"/>
     <psi.referenceContributor language="JAVA" implementation="monet.tara.intellij.TaraReferenceContributor"/>

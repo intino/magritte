@@ -4,6 +4,8 @@
   <property name="src.dir" value="src" />
   <property name="test.dir" value="test" />
   <property name="build.dir" value="out" />
+  <property name="sonar.java.source" value="1.7"/>
+  <property name="sonar.target" value="1.7"/>
   <path id="classpath">
   </path>
 

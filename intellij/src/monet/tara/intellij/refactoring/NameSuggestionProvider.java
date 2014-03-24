@@ -28,7 +28,7 @@ public class NameSuggestionProvider implements com.intellij.refactoring.rename.N
 	@NotNull
 	protected String toCamelCase(@NotNull final String name, boolean uppercaseFirstLetter) {
 		final List<String> strings = StringUtil.split(name, "_");
-		if (strings.size() > 0) {
+		if (strings.isEmpty()) {
 			final StringBuilder buf = new StringBuilder();
 			String str = strings.get(0).toLowerCase();
 			if (uppercaseFirstLetter) str = StringUtil.capitalize(str);

@@ -1,6 +1,7 @@
 package monet.tara.intellij.metamodel.psi.impl;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import monet.tara.intellij.metamodel.psi.*;
 
@@ -9,6 +10,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class TaraPsiImplUtil {
+
+	private static final Logger LOG = Logger.getInstance(TaraPsiImplUtil.class.getName());
+
+	private TaraPsiImplUtil() {
+	}
 
 	public static String getIdentifier(Identifier keyNode) {
 		if (keyNode != null) return keyNode.getText();
@@ -71,9 +77,8 @@ public class TaraPsiImplUtil {
 
 
 	public static List<Concept> getChildrenOf(Concept concept) {
-		Body body;
-		if ((body = concept.getBody()) != null)
-			return getChildrenInBody(body);
+		Body body = concept.getBody();
+		if (body != null) return getChildrenInBody(body);
 		return Collections.EMPTY_LIST;
 	}
 
@@ -91,7 +96,7 @@ public class TaraPsiImplUtil {
 				element = element.getParent();
 			return (element.getParent() instanceof Concept) ? (Concept) element.getParent() : null;
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage());
 			return null;
 		}
 	}
@@ -100,7 +105,7 @@ public class TaraPsiImplUtil {
 		PsiElement child = annotations.getFirstChild();
 		List<PsiElement> annotationList = new ArrayList<>();
 		while (child.getNextSibling().getNextSibling() != null) {
-			if (!child.getNextSibling().getText().equals(" ")) annotationList.add(child.getNextSibling());
+			if (!" ".equals(child.getNextSibling().getText())) annotationList.add(child.getNextSibling());
 			child = child.getNextSibling();
 		}
 		return annotationList.toArray(new PsiElement[annotationList.size()]);

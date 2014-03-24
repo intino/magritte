@@ -93,11 +93,11 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 	private TaracOSProcessHandler runTarac(final CompileContext context,
 	                                       File tempFile,
 	                                       final JpsTaraSettings settings) throws IOException {
-		ArrayList<String> classpath = new ArrayList<>(generateClasspath());
+		List<String> classpath = new ArrayList<>(generateClasspath());
 		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
 		List<String> programParams = ContainerUtilRt.newArrayList(pluginGeneration ? "--gen-plugin" : "tarac", tempFile.getPath());
 		List<String> vmParams = ContainerUtilRt.newArrayList();
-		vmParams.add("-Xmx" + settings.heapSize + "m");
+		vmParams.add("-Xmx" + settings.getHeapSize() + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
 			getJavaExecutable(), "monet.tara.TaracRunner", Collections.<String>emptyList(), classpath, vmParams, programParams);
@@ -137,7 +137,7 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 		for (final TaracOSProcessHandler.OutputItem item : handler.getSuccessfullyCompiled()) {
 			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) {
 				LOG.info("compiled = " + item);
-				final ArrayList<BuildRootDescriptor> rd =
+				final List<BuildRootDescriptor> rd =
 					(ArrayList<BuildRootDescriptor>) pd.getBuildRootIndex().findAllParentDescriptors(new File(item.sourcePath), context);
 				if (!rd.isEmpty()) {
 					final String outputPath = target.getModuleOutputDir().getPath();
@@ -237,7 +237,7 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 	}
 
 	private List<File> getTaraFilesFromRoot(@NotNull File root) {
-		ArrayList<File> list = new ArrayList<>();
+		List<File> list = new ArrayList<>();
 		for (File file : root.listFiles())
 			if (file.isDirectory())
 				list.addAll(getTaraFilesFromRoot(file));
