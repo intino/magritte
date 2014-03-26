@@ -20,25 +20,30 @@ public class Constituents {
 		return constituent.substring(constituent.indexOf('|') + 1);
 	}
 
-	private String getTransformedAbsolutePath(ASTNode node) {
-		return node.getAbsolutePath().toLowerCase().replaceAll("\\.", "_");
+	private String getStringConstituents(ASTNode node, String constituents) {
+		String result = null;
+		if (node != null) {
+			for (ASTNode child : node.getChildren())
+				if (!child.isAbstract()) result = evaluateStringFormatConstituent(child, constituents);
+		}
+		return result;
 	}
 
 	private String getStringConstituentsPolymorphic(ASTNode node, String constituents) {
-		if (node != null) {
+		String result = null;
+		if (node != null)
 			for (ASTNode child : node.getChildren())
 				if (!child.isAbstract() && !child.isMorph() || contains(this.node.getChildren(), node))
-					constituents = evaluateStringFormatConstituent(child, constituents);
-		}
-		return constituents;
+					result = evaluateStringFormatConstituent(child, constituents);
+		return result;
 	}
 
-	private String getStringConstituents(ASTNode node, String constituents) {
-		if (node != null) {
-			for (ASTNode child : node.getChildren())
-				if (!child.isAbstract()) constituents = evaluateStringFormatConstituent(child, constituents);
+	private boolean contains(ASTNode[] nodes, ASTNode node) {
+		for (ASTNode child : nodes) {
+			ASTNode trulyNode = ("".equals(child.getIdentifier())) ? root.searchAncestry(child) : child;
+			if (trulyNode.equals(node)) return true;
 		}
-		return constituents;
+		return false;
 	}
 
 	private String evaluateStringFormatConstituent(ASTNode node, String constituents) {
@@ -51,20 +56,17 @@ public class Constituents {
 	}
 
 	private String evaluateFormat(ASTNode node, String constituents) {
+		String result = constituents;
 		ASTNode nodeAncestry = root.searchAncestry(node);
 		if (nodeAncestry != null && !nodeAncestry.isPolymorphic())
-			constituents += " | " + ((!"".equals(node.getIdentifier())) ?
+			result += " | " + ((!"".equals(node.getIdentifier())) ?
 				getTransformedAbsolutePath(node) : getTransformedAbsolutePath(nodeAncestry));
-		else constituents += ("".equals(node.getIdentifier())) ?
+		else result += ("".equals(node.getIdentifier())) ?
 			"" : " | " + getTransformedAbsolutePath(node);
-		return constituents;
+		return result;
 	}
 
-	private boolean contains(ASTNode[] nodes, ASTNode node) {
-		for (ASTNode child : nodes) {
-			ASTNode trulyNode = ("".equals(child.getIdentifier())) ? root.searchAncestry(child) : child;
-			if (trulyNode.equals(node)) return true;
-		}
-		return false;
+	private String getTransformedAbsolutePath(ASTNode node) {
+		return node.getAbsolutePath().toLowerCase().replaceAll("\\.", "_");
 	}
 }

@@ -7,6 +7,9 @@ import static monet.tara.compiler.codegeneration.render.grammarcomponents.Ending
 
 public class SelectorStringByVariableExplicit {
 
+	private SelectorStringByVariableExplicit() {
+	}
+
 	public static String selectByPositionReference(ASTNode elementType, ASTNode extendType, int index) {
 		return extendType == null ? processOwnReferences(elementType, index) : processParentReferences(elementType, extendType, index);
 	}

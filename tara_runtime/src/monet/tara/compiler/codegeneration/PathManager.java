@@ -4,14 +4,14 @@ import java.io.File;
 
 public class PathManager {
 
-	private PathManager() {
-	}
-
 	public static final String IDE = "intellij";
 	public static final String SRC = "src";
 	public static final String BUILD = "build";
 	public static final String RES = "res";
 	public static final String SEP = File.separator;
+
+	private PathManager() {
+	}
 
 	public static String getBuildIdeResDir(File tempDir) {
 		return tempDir + SEP + SRC + SEP + IDE + SEP + RES + SEP;

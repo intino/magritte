@@ -1,23 +1,10 @@
-/*
- * Copyright 2000-2012 JetBrains s.r.o.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.jetbrains.jps.tara.model.impl;
 
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.util.xmlb.annotations.*;
 import com.intellij.util.xmlb.annotations.AbstractCollection;
+import com.intellij.util.xmlb.annotations.MapAnnotation;
+import com.intellij.util.xmlb.annotations.OptionTag;
+import com.intellij.util.xmlb.annotations.Tag;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -70,9 +57,9 @@ public class TaraModuleConfiguration {
 	public int computeConfigurationHash(boolean forTestResources) {
 		int result = computeModuleConfigurationHash();
 
-		final List<TaraConfiguration> _resources = forTestResources ? testResources : resources;
+		final List<TaraConfiguration> taraResources = forTestResources ? testResources : resources;
 		result = 31 * result;
-		for (TaraConfiguration resource : _resources) {
+		for (TaraConfiguration resource : taraResources) {
 			result += resource.computeConfigurationHash();
 		}
 		return result;

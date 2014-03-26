@@ -7,6 +7,9 @@ import static monet.tara.compiler.codegeneration.render.grammarcomponents.Ending
 
 public class SelectorStringByVariableImplicit {
 
+	private SelectorStringByVariableImplicit() {
+	}
+
 	public static String selectByPositionAttributeImplicit(ASTNode elementType, ASTNode extendType, int index) {
 		return extendType == null ? processOwnAttributes(elementType, index) : processParentAttributes(elementType, extendType, index);
 	}

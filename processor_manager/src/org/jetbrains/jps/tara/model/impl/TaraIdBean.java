@@ -28,7 +28,7 @@ public class TaraIdBean {
 	}
 
 	private boolean checkVersion(TaraIdBean bean) {
-		return (version != null ? !version.equals(bean.version) : bean.version != null);
+		return version != null ? !version.equals(bean.version) : bean.version != null;
 	}
 
 	private boolean checkGroup(TaraIdBean bean) {

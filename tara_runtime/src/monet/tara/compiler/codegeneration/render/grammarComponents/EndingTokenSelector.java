@@ -5,6 +5,9 @@ import monet.tara.compiler.core.ast.ASTNode;
 
 public class EndingTokenSelector {
 
+	private EndingTokenSelector() {
+	}
+
 	public static String setAttributeStringWithEndingTokenImplicit(ASTNode.Attribute attribute, String token) {
 		if (attribute.isList()) return attribute.getPrimitiveType().toLowerCase() + "List" + token;
 		else return attribute.getPrimitiveType().toUpperCase() + "_VALUE_KEY" + token;

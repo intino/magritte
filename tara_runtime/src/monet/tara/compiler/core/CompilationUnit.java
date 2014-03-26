@@ -191,7 +191,7 @@ public class CompilationUnit extends ProcessingUnit {
 		getErrorCollector().failIfErrors();
 	}
 
-	public static abstract class ProgressCallback {
+	public abstract static class ProgressCallback {
 		public abstract void call(ProcessingUnit paramProcessingUnit, int paramInt) throws CompilationFailedException;
 	}
 }

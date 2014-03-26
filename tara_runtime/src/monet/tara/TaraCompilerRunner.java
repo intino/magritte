@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class TaraCompilerRunner {
-	private final static Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
+	private static final Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
 
 	private TaraCompilerRunner() {
 	}
@@ -80,7 +80,8 @@ public class TaraCompilerRunner {
 	}
 
 	private static void processArgs(CompilerConfiguration configuration, BufferedReader reader, String line) throws IOException {
-		while (line != null) {
+		String aLine = line;
+		while (aLine != null) {
 			if (line.startsWith(TaraRtConstants.ENCODING))
 				configuration.setSourceEncoding(reader.readLine());
 			else if (line.startsWith(TaraRtConstants.OUTPUTPATH))
@@ -93,7 +94,7 @@ public class TaraCompilerRunner {
 				configuration.setIdeaHome(reader.readLine());
 			else if (line.startsWith(TaraRtConstants.PROJECT_ICON))
 				configuration.setProjectIcon(reader.readLine());
-			line = reader.readLine();
+			aLine = reader.readLine();
 		}
 	}
 

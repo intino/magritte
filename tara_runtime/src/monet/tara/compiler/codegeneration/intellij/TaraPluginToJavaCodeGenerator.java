@@ -18,7 +18,7 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 	public void toJava(CompilerConfiguration configuration, AST ast) throws TaraException {
 		this.configuration = configuration;
 		for (String template : TemplateFactory.getTemplates().keySet()) {
-			if (!template.equals("grammar") && !template.equals("lexer") && !template.equals("HighlighterLex.flex")) {
+			if (!"grammar".equals(template) && !"lexer".equals(template) && !"HighlighterLex.flex".equals(template)) {
 				writer = getOutWriter(new File(getDestinyOf(TemplateFactory.getTemplate(template))));
 				writeTemplateBasedFile(template, ast.getIdentifiers());
 				writer.close();

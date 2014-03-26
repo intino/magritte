@@ -2,9 +2,6 @@ package monet.tara.compiler.core;
 
 public class Phases {
 
-	private Phases() {
-	}
-
 	public static final int INITIALIZATION = 1;
 	public static final int PARSING = 2;
 	public static final int CONVERSION = 3;
@@ -14,7 +11,7 @@ public class Phases {
 	public static final int OUTPUT = 7;
 	public static final int FINALIZATION = 8;
 	public static final int ALL = 9;
-	public static String[] descriptions = {
+	private static String[] descriptions = {
 		"initialization",
 		"parsing",
 		"semantic analysis",
@@ -22,6 +19,9 @@ public class Phases {
 		"class generation",
 		"output",
 		"finalization"};
+
+	private Phases() {
+	}
 
 	public static String getDescription(int phase) {
 		return descriptions[phase];
