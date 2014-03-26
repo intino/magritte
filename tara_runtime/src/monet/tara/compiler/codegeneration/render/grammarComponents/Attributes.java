@@ -44,7 +44,7 @@ public abstract class Attributes {
 		return attributesString;
 	}
 
-	protected String getStringOfWordList(List<String> wordTypes) {
+	public static String getStringOfWordList(List<String> wordTypes) {
 		String list = "(";
 		for (String word : wordTypes) {
 			if (wordTypes.indexOf(word) != wordTypes.size() - 1) list += setAttributeWithEndingToken(word, "| ");
@@ -53,8 +53,8 @@ public abstract class Attributes {
 		return list;
 	}
 
-	private String setAttributeWithEndingToken(String word, String token) {
+	private static String setAttributeWithEndingToken(String word, String token) {
 		return (!word.contains(".")) ? word.toUpperCase() + "_WORD" + token
-			: word.substring(word.lastIndexOf('.') + 1).toUpperCase() + "_WORD" + token;
+			: word.substring(word.lastIndexOf(".") + 1).toUpperCase() + "_WORD" + token;
 	}
 }
