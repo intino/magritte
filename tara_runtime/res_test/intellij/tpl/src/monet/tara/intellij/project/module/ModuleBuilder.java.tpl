@@ -3,6 +3,7 @@ package monet.::projectName::.intellij.project.module;
 import com.intellij.ide.util.projectWizard.JavaModuleBuilder;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.WizardContext;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ContentEntry;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleBuilder extends JavaModuleBuilder {
+	private static final Logger LOG = Logger.getInstance(ModuleBuilder.class.getName());
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
 	private String myCompilerOutputPath;
 	private List<Pair<String, String>> mySourcePaths;
@@ -65,21 +67,19 @@ public class ModuleBuilder extends JavaModuleBuilder {
 					if (sourceRoot != null) {
 						contentEntry.addSourceFolder(sourceRoot, false, sourcePath.second);
 						try {
-							VirtualFile res = VfsUtil.createDirectories(sourceRoot.getParent().getPath() + File.separator + "res");
+							VfsUtil.createDirectories(sourceRoot.getParent().getPath() + File.separator + "res");
 							VfsUtil.createDirectories(sourceRoot.getParent().getPath() + File.separator + "res" + File.separator + "tpl");
-							VirtualFile logos = VfsUtil.createDirectories(sourceRoot.getParent().getPath()
-								+ File.separator + "res" + File.separator + "logos");
-							File logo = new File(logos.getPath() + File.separator + rootModel.getProject().getName() + ".png");
-							copyFile(new File(this.getClass().getResource(File.separator + "logos" + File.separator + "logo.png").getPath()), logo);
+							VfsUtil.createDirectories(sourceRoot.getParent().getPath() + File.separator + "res" + File.separator + "logos");
+//							File logo = new File(logos.getPath() + File.separator + rootModel.getProject().getName() + ".png");
+//							copyFile(new File(this.getClass().getResource(File.separator + "logos" + File.separator + "logo.png").getPath()), logo);
 						} catch (IOException e) {
-							e.printStackTrace();
+							LOG.error(e.getMessage());
 						}
 					}
 				}
 			}
 		}
 		if (myCompilerOutputPath != null) {
-			// should set only absolute paths
 			String canonicalPath;
 			try {
 				canonicalPath = FileUtil.resolveShortWindowsName(myCompilerOutputPath);
@@ -136,8 +136,8 @@ public class ModuleBuilder extends JavaModuleBuilder {
 			InputStream in = new FileInputStream(source);
 			OutputStream out = new FileOutputStream(destination);
 			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0)
+			int len = in.read(buf);
+			while (len > 0)
 				out.write(buf, 0, len);
 			in.close();
 			out.close();

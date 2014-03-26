@@ -5,7 +5,6 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
-import com.intellij.openapi.options.OptionsBundle;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
@@ -41,13 +40,13 @@ public class ::projectProperName::SyntaxHighlighter extends SyntaxHighlighterBas
 		DISPLAY_NAMES.put(STRING, new Pair<String, HighlightSeverity>(::projectProperName::Bundle.message("options.::projectName::.types.string"), null));
 		DISPLAY_NAMES.put(DOCUMENTATION, new Pair<String, HighlightSeverity>(::projectProperName::Bundle.message("options.::projectName::.definition.comment"), null));
 		DISPLAY_NAMES.put(MODIFIERS, new Pair<String, HighlightSeverity>(::projectProperName::Bundle.message("options.::projectName::.definition.modifier"), null));
-		DISPLAY_NAMES.put(OPERATOR, new Pair<String, HighlightSeverity>(OptionsBundle.message("options.properties.attribute.descriptor.key.value.separator"), null));
+		DISPLAY_NAMES.put(OPERATOR, new Pair<String, HighlightSeverity>(::projectProperName::Bundle.message("options.::projectName::.definition.operator"), null));
 		DISPLAY_NAMES.put(ANNOTATION, new Pair<String, HighlightSeverity>(::projectProperName::Bundle.message("options.::projectName::.definition.annotation"), null));
 		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<>(::projectProperName::Bundle.message("invalid.::projectName::.definition.character"), HighlightSeverity.ERROR));
 	}
 
-	private static final Map<IElementType, TextAttributesKey> keys1;
-	private static final Map<IElementType, TextAttributesKey> keys2;
+	private static final Map<IElementType, TextAttributesKey> KEYS_1;
+	private static final Map<IElementType, TextAttributesKey> KEYS_2;
 
 	\@NotNull
 	\@Override
@@ -56,54 +55,54 @@ public class ::projectProperName::SyntaxHighlighter extends SyntaxHighlighterBas
 	}
 
 	static {
-		keys1 = new THashMap<>();
-		keys2 = new THashMap<>();
+		KEYS_1 = new THashMap<>();
+		KEYS_2 = new THashMap<>();
 
-		keys1.put(TokenType.WHITE_SPACE, null);
-		keys1.put(::projectProperName::Types.IDENTIFIER_KEY, IDENTIFIER);
+		KEYS_1.put(TokenType.WHITE_SPACE, null);
+		KEYS_1.put(::projectProperName::Types.IDENTIFIER_KEY, IDENTIFIER);
 
 ::highlightKey::
-		keys1.put(::projectProperName::Types.AS, KEYWORD);
-		keys1.put(::projectProperName::Types.OPEN_AN, KEYWORD);
-		keys1.put(::projectProperName::Types.CLOSE_AN, KEYWORD);
-		keys1.put(::projectProperName::Types.NEW, KEYWORD);
-		keys1.put(::projectProperName::Types.VAR, KEYWORD);
+		KEYS_1.put(::projectProperName::Types.AS, KEYWORD);
+		KEYS_1.put(::projectProperName::Types.OPEN_AN, KEYWORD);
+		KEYS_1.put(::projectProperName::Types.CLOSE_AN, KEYWORD);
+		KEYS_1.put(::projectProperName::Types.NEW, KEYWORD);
+		KEYS_1.put(::projectProperName::Types.VAR, KEYWORD);
 
-		keys1.put(::projectProperName::Types.OPTIONAL, ANNOTATION);
-		keys1.put(::projectProperName::Types.MULTIPLE, ANNOTATION);
-		keys1.put(::projectProperName::Types.EXTENSIBLE, ANNOTATION);
-		keys1.put(::projectProperName::Types.HAS_CODE, ANNOTATION);
-		keys1.put(::projectProperName::Types.SINGLETON, ANNOTATION);
-		keys1.put(::projectProperName::Types.ROOT, ANNOTATION);
+		KEYS_1.put(::projectProperName::Types.OPTIONAL, ANNOTATION);
+		KEYS_1.put(::projectProperName::Types.MULTIPLE, ANNOTATION);
+		KEYS_1.put(::projectProperName::Types.EXTENSIBLE, ANNOTATION);
+		KEYS_1.put(::projectProperName::Types.HAS_CODE, ANNOTATION);
+		KEYS_1.put(::projectProperName::Types.SINGLETON, ANNOTATION);
+		KEYS_1.put(::projectProperName::Types.ROOT, ANNOTATION);
 
-		keys1.put(::projectProperName::Types.ASSIGN, OPERATOR);
-		keys1.put(::projectProperName::Types.LEFT_SQUARE, OPERATOR);
-		keys1.put(::projectProperName::Types.RIGHT_SQUARE, OPERATOR);
+		KEYS_1.put(::projectProperName::Types.ASSIGN, OPERATOR);
+		KEYS_1.put(::projectProperName::Types.LEFT_SQUARE, OPERATOR);
+		KEYS_1.put(::projectProperName::Types.RIGHT_SQUARE, OPERATOR);
 
-		keys1.put(::projectProperName::Types.STRING_TYPE, PRIMITIVE);
-		keys1.put(::projectProperName::Types.DOUBLE_TYPE, PRIMITIVE);
-		keys1.put(::projectProperName::Types.INT_TYPE, PRIMITIVE);
-		keys1.put(::projectProperName::Types.UID_TYPE, PRIMITIVE);
+		KEYS_1.put(::projectProperName::Types.STRING_TYPE, PRIMITIVE);
+		KEYS_1.put(::projectProperName::Types.DOUBLE_TYPE, PRIMITIVE);
+		KEYS_1.put(::projectProperName::Types.INT_TYPE, PRIMITIVE);
+		KEYS_1.put(::projectProperName::Types.UID_TYPE, PRIMITIVE);
 
-		keys1.put(::projectProperName::Types.ABSTRACT, MODIFIERS);
-		keys1.put(::projectProperName::Types.FINAL, MODIFIERS);
-		keys1.put(::projectProperName::Types.MORPH_KEY, MODIFIERS);
-		keys1.put(::projectProperName::Types.POLYMORPHIC_KEY, MODIFIERS);
+		KEYS_1.put(::projectProperName::Types.ABSTRACT, MODIFIERS);
+		KEYS_1.put(::projectProperName::Types.FINAL, MODIFIERS);
+		KEYS_1.put(::projectProperName::Types.MORPH_KEY, MODIFIERS);
+		KEYS_1.put(::projectProperName::Types.POLYMORPHIC_KEY, MODIFIERS);
 
-		keys1.put(::projectProperName::Types.DOC_LINE, DOCUMENTATION);
+		KEYS_1.put(::projectProperName::Types.DOC_LINE, DOCUMENTATION);
 
-		keys1.put(::projectProperName::Types.DOUBLE_VALUE, NUMBERS);
-		keys1.put(::projectProperName::Types.NATURAL_VALUE, NUMBERS);
-		keys1.put(::projectProperName::Types.NEGATIVE_VALUE_KEY, NUMBERS);
-		keys1.put(::projectProperName::Types.BOOLEAN_VALUE, NUMBERS);
-		keys1.put(::projectProperName::Types.STRING_VALUE, STRING);
+		KEYS_1.put(::projectProperName::Types.DOUBLE_VALUE, NUMBERS);
+		KEYS_1.put(::projectProperName::Types.NATURAL_VALUE, NUMBERS);
+		KEYS_1.put(::projectProperName::Types.NEGATIVE_VALUE_KEY, NUMBERS);
+		KEYS_1.put(::projectProperName::Types.BOOLEAN_VALUE, NUMBERS);
+		KEYS_1.put(::projectProperName::Types.STRING_VALUE, STRING);
 
-		keys1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
+		KEYS_1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 	}
 
 	\@NotNull
 	\@Override
 	public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-		return pack(keys1.get(tokenType), keys2.get(tokenType));
+		return pack(KEYS_1.get(tokenType), KEYS_2.get(tokenType));
 	}
 }

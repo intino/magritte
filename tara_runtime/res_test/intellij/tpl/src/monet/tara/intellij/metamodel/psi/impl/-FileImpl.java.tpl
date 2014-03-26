@@ -38,11 +38,6 @@ public class ::projectProperName::FileImpl extends PsiFileBase implements ::proj
 		return "::projectProperName:: File";
 	}
 
-	\@Override
-	public Icon getIcon(int flags) {
-		return super.getIcon(flags);
-	}
-
 	public String getPresentableName(){
 		return getName().substring(0, getName().lastIndexOf("."));
 	}

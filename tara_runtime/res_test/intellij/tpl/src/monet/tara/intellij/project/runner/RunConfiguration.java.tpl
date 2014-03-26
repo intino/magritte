@@ -24,14 +24,9 @@ import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
-public class RunConfiguration extends ModuleBasedConfiguration<RunConfigurationModule>
-	implements RefactoringListenerProvider {
-
+public class RunConfiguration extends ModuleBasedConfiguration<RunConfigurationModule> implements RefactoringListenerProvider {
 	private final Map<String, String> envs = new LinkedHashMap<>();
 	private String workDir;
 	private boolean isDebugEnabled;
@@ -58,7 +53,7 @@ public class RunConfiguration extends ModuleBasedConfiguration<RunConfigurationM
 		final Runner scriptRunner = findConfiguration();
 		if (scriptRunner == null)
 			return Arrays.asList(modules);
-		ArrayList<Module> res = new ArrayList<>();
+		List res = new ArrayList<>();
 		for (Module module \: modules)
 			if (scriptRunner.isValidModule(module))
 				res.add(module);
@@ -107,6 +102,7 @@ public class RunConfiguration extends ModuleBasedConfiguration<RunConfigurationM
 			return new RefactoringElementAdapter() {
 				\@Override
 				protected void elementRenamedOrMoved(\@NotNull PsiElement newElement) {
+					//TODO
 				}
 
 				\@Override

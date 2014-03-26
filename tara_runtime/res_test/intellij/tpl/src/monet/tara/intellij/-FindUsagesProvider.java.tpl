@@ -16,6 +16,8 @@ public class ::projectProperName::FindUsagesProvider implements FindUsagesProvid
 	private static final DefaultWordsScanner WORDS_SCANNER =
 		new DefaultWordsScanner(new ::projectProperName::LexerAdapter(),
 			TokenSet.create(::projectProperName::Types.IDENTIFIER, ::projectProperName::Types.IDENTIFIER_KEY), TokenSet.create(::projectProperName::Types.DOC), TokenSet.EMPTY);
+	public static final String ANONYMOUS = "Anonymous";
+	public static final String ERROR = "Error";
 
 	\@Nullable
 	\@Override
@@ -31,7 +33,7 @@ public class ::projectProperName::FindUsagesProvider implements FindUsagesProvid
 	\@Nullable
 	\@Override
 	public String getHelpId(\@NotNull PsiElement psiElement) {
-		return HelpID.FIND_OTHER_USAGES;
+		return HelpID.FIND_PACKAGE_USAGES;
 	}
 
 	\@NotNull
@@ -46,8 +48,8 @@ public class ::projectProperName::FindUsagesProvider implements FindUsagesProvid
 	public String getDescriptiveName(\@NotNull PsiElement element) {
 		if (element instanceof Definition) {
 			String name = ((Definition) element).getName();
-			return name == null ? "Anonymous" \: name;
-		} else return "Error";
+			return name == null ? ANONYMOUS \: name;
+		} else return ERROR;
 	}
 
 	\@NotNull
@@ -55,7 +57,7 @@ public class ::projectProperName::FindUsagesProvider implements FindUsagesProvid
 	public String getNodeText(\@NotNull PsiElement element, boolean useFullName) {
 		if (element instanceof Definition) {
 			String name = ((Definition) element).getName();
-			return name == null ? "Anonymous" \: name;
-		} else return "Error";
+			return name == null ? ANONYMOUS \: name;
+		} else return ERROR;
 	}
 }

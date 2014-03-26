@@ -1,6 +1,7 @@
 package monet.::projectName::.intellij.metamodel.psi.impl;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import monet.::projectName::.intellij.metamodel.psi.*;
 
@@ -9,6 +10,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class ::projectProperName::PsiImplUtil {
+
+	private static final Logger LOG = Logger.getInstance(::projectProperName::PsiImplUtil.class.getName());
+
+	private ::projectProperName::PsiImplUtil() {
+	}
 
 	public static String getIdentifier(Identifier keyNode) {
 		if (keyNode != null) return keyNode.getText();
@@ -71,9 +77,10 @@ public class ::projectProperName::PsiImplUtil {
 
 
 	public static List<Definition> getChildrenOf(Definition definition) {
-		Body body;
-		if ((body = definition.getBody()) != null)
-			return getChildrenInBody(body);
+		if (definition != null) {
+			Body body = definition.getBody();
+			if (body != null) return getChildrenInBody(body);
+		}
 		return Collections.EMPTY_LIST;
 	}
 
@@ -91,7 +98,7 @@ public class ::projectProperName::PsiImplUtil {
 				element = element.getParent();
 			return (element.getParent() instanceof Definition) ? (Definition) element.getParent() \: null;
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage());
 			return null;
 		}
 	}
@@ -100,7 +107,7 @@ public class ::projectProperName::PsiImplUtil {
 		PsiElement child = annotations.getFirstChild();
 		List<PsiElement> annotationList = new ArrayList<>();
 		while (child.getNextSibling().getNextSibling() != null) {
-			if (!child.getNextSibling().getText().equals(" ")) annotationList.add(child.getNextSibling());
+			if (!" ".equals(child.getNextSibling().getText())) annotationList.add(child.getNextSibling());
 			child = child.getNextSibling();
 		}
 		return annotationList.toArray(new PsiElement[annotationList.size()]);

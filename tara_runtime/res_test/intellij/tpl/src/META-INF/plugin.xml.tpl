@@ -79,11 +79,11 @@
                       groupKey="::projectName::.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"
                       implementationClass="monet.::projectName::.intellij.codeinspection.UnusedAbstractDefinitionInspection"/>
     <completion.contributor language="::projectProperName::"
-                            implementationClass="monet.::projectName::.intellij.codeInsight.completion.::projectProperName::SignatureCompletionContributor"/>
+                            implementationClass="monet.::projectName::.intellij.codeinsight.completion.::projectProperName::SignatureCompletionContributor"/>
     <completion.contributor language="::projectProperName::"
-                            implementationClass="monet.::projectName::.intellij.codeInsight.completion.::projectProperName::PrimitivesCompletionContributor"/>
+                            implementationClass="monet.::projectName::.intellij.codeinsight.completion.::projectProperName::PrimitivesCompletionContributor"/>
     <completion.contributor language="::projectProperName::"
-                            implementationClass="monet.::projectName::.intellij.codeInsight.completion.::projectProperName::AnnotationsCompletionContributor"/>
+                            implementationClass="monet.::projectName::.intellij.codeinsight.completion.::projectProperName::AnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="::projectProperName::"
                                   implementationClass="monet.::projectName::.intellij.structureview.StructureViewFactory"/>
     <psi.referenceContributor language="JAVA" implementation="monet.::projectName::.intellij.::projectProperName::ReferenceContributor"/>

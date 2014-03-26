@@ -20,12 +20,12 @@ public class ::projectProperName::LineMarkerProvider extends RelatedItemLineMark
 	protected void collectNavigationMarkers(\@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
 		if (element instanceof PsiIdentifier) {
 			PsiIdentifier psiIdentifier = (PsiIdentifier) element;
-			if (psiIdentifier.getText().equals("::projectProperName::") && psiIdentifier.getNextSibling().getText().equals("\:") && psiIdentifier.getNextSibling().getNextSibling() != null) {
+			if ("::projectProperName::".equals(psiIdentifier.getText()) && "\:".equals(psiIdentifier.getNextSibling().getText()) && psiIdentifier.getNextSibling().getNextSibling() != null) {
 				PsiExpressionStatement identifier = (PsiExpressionStatement) psiIdentifier.getNextSibling().getNextSibling();
 				String value = identifier.getText();
 				Project project = element.getProject();
 				final List<Definition> definitionList = ::projectProperName::Util.findRootDefinition(project, value.replace(";", ""));
-				if (definitionList.size() > 0) {
+				if (definitionList.isEmpty()) {
 					NavigationGutterIconBuilder<PsiElement> psiElementNavigationGutterIconBuilder = NavigationGutterIconBuilder.create(::projectProperName::Icons.ICON_13).setTargets(definitionList);
 					NavigationGutterIconBuilder<PsiElement> builder =
 						psiElementNavigationGutterIconBuilder.setTooltipText("Navigate to the definition");

@@ -42,10 +42,8 @@ public class RunConfigurationEditor extends SettingsEditor<RunConfiguration> imp
 
 	public void resetEditorFrom(RunConfiguration configuration) {
 		workDirField.setText(configuration.getWorkDir());
-
 		myDebugCB.setEnabled(true);
 		myDebugCB.setSelected(configuration.isDebugEnabled());
-
 		myModulesModel.removeAllElements();
 		List<Module> modules = new ArrayList<>(configuration.getValidModules());
 		Collections.sort(modules, ModulesAlphaComparator.INSTANCE);
@@ -67,7 +65,6 @@ public class RunConfigurationEditor extends SettingsEditor<RunConfiguration> imp
 		myModulesBox.setModel(myModulesModel);
 		myDebugCB.setEnabled(true);
 		myDebugCB.setSelected(false);
-
 		myModulesBox.setRenderer(new ListCellRendererWrapper<Module>() {
 			\@Override
 			public void customize(JList list, Module module, int index, boolean selected, boolean hasFocus) {
@@ -95,5 +92,9 @@ public class RunConfigurationEditor extends SettingsEditor<RunConfiguration> imp
 	public void setAnchor(JComponent anchor) {
 		this.anchor = anchor;
 		myScriptParametersLabel.setAnchor(anchor);
+	}
+
+	private void createUIComponents() {
+		//TODO
 	}
 }

@@ -6,6 +6,7 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.psi.PsiElement;
 import monet.::projectName::.intellij.codeinspection.fix.RemoveAttributeFix;
 import monet.::projectName::.intellij.codeinspection.fix.RemoveDefinitionFix;
+import monet.::projectName::.intellij.metamodel.parser.Annotation;
 import monet.::projectName::.intellij.metamodel.psi.*;
 import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::PsiImplUtil;
 import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::Util;
@@ -16,9 +17,7 @@ import java.util.List;
 
 public class ::projectProperName::Annotator implements Annotator {
 
-	public static final String[] ROOT_ANNOTATIONS = new String[]{"root", "extensible", "singleton", "has-code"};
-	public static final String[] CHILD_ANNOTATIONS = new String[]{"extensible", "singleton", "has-code", "optional", "multiple"};
-	public static final String[] MORPH_ANNOTATIONS = new String[]{"extensible", "singleton", "has-code"};
+
 	AnnotationHolder holder = null;
 
 	\@Override
@@ -50,7 +49,7 @@ public class ::projectProperName::Annotator implements Annotator {
 
 	private PsiElement[] checkDefinitionInjectionAnnotation(PsiElement[] annotations) {
 		List<PsiElement> incorrectAnnotations;
-		incorrectAnnotations = checkAnnotationList(annotations, CHILD_ANNOTATIONS);
+		incorrectAnnotations = checkAnnotationList(annotations, Annotation.CHILD_ANNOTATIONS);
 		return incorrectAnnotations.toArray(new PsiElement[incorrectAnnotations.size()]);
 	}
 
@@ -58,11 +57,11 @@ public class ::projectProperName::Annotator implements Annotator {
 	private PsiElement[] checkCorrectAnnotation(Definition definition, PsiElement[] annotations) {
 		List<PsiElement> incorrectAnnotations;
 		if ((definition != null) && definition.getParent() instanceof ::projectProperName::File)
-			incorrectAnnotations = checkAnnotationList(annotations, ROOT_ANNOTATIONS);
+			incorrectAnnotations = checkAnnotationList(annotations, Annotation.ROOT_ANNOTATIONS);
 		else if ((definition != null) && definition.isMorph())
-			incorrectAnnotations = checkAnnotationList(annotations, MORPH_ANNOTATIONS);
+			incorrectAnnotations = checkAnnotationList(annotations, Annotation.MORPH_ANNOTATIONS);
 		else
-			incorrectAnnotations = checkAnnotationList(annotations, CHILD_ANNOTATIONS);
+			incorrectAnnotations = checkAnnotationList(annotations, Annotation.CHILD_ANNOTATIONS);
 		return incorrectAnnotations.toArray(new PsiElement[incorrectAnnotations.size()]);
 	}
 
@@ -105,9 +104,8 @@ public class ::projectProperName::Annotator implements Annotator {
 	}
 
 	private void checkDuplicated(Definition definition) {
-		if (definition.getIdentifierNode() != null)
-			if (::projectProperName::Util.findDuplicates(definition.getProject(), definition) != 1)
-				annotateAndFix(definition.getIdentifierNode(), new RemoveDefinitionFix(definition), ::projectProperName::Bundle.message("duplicate.definition.key.error.message"));
+		if (definition.getIdentifierNode() != null && ::projectProperName::Util.findDuplicates(definition.getProject(), definition) != 1)
+			annotateAndFix(definition.getIdentifierNode(), new RemoveDefinitionFix(definition), ::projectProperName::Bundle.message("duplicate.definition.key.error.message"));
 	}
 
 	private void checkDuplicated(Attribute attribute) {

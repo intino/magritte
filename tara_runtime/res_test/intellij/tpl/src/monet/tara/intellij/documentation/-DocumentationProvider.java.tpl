@@ -1,6 +1,7 @@
 package monet.::projectName::.intellij.documentation;
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.util.text.StringUtil;
@@ -19,6 +20,8 @@ import java.io.IOException;
 
 
 public class ::projectProperName::DocumentationProvider extends AbstractDocumentationProvider {
+	private static final Logger LOG = Logger.getInstance(::projectProperName::DocumentationProvider.class.getName());
+
 	private String getLocationString(PsiElement element) {
 		PsiFile file = element.getContainingFile();
 		return file != null ? " [" + file.getName().split("\\\\.")[0] + "]" \: "";
@@ -27,17 +30,14 @@ public class ::projectProperName::DocumentationProvider extends AbstractDocument
 	\@NotNull
 	private String renderDefinitionValue(Definition definition) {
 		String raw = definition.getText();
-		if (raw == null) {
-			return "<i>empty</i>";
-		}
+		if (raw == null) return "<i>empty</i>";
 		return StringUtil.escapeXml(raw);
 	}
 
 	\@Nullable
 	public String getQuickNavigateInfo(PsiElement element, PsiElement originalElement) {
-		if (element instanceof Definition) {
+		if (element instanceof Definition)
 			return generateDoc(element, originalElement);
-		}
 		return null;
 	}
 
@@ -65,7 +65,7 @@ public class ::projectProperName::DocumentationProvider extends AbstractDocument
 		try {
 			html = new Markdown4jProcessor().process(text.replace("'", ""));
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage());
 		}
 		return html;
 	}

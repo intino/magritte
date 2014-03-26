@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class ::projectProperName::ColorSettingPage implements ColorSettingsPage { //TODO
+public class ::projectProperName::ColorSettingPage implements ColorSettingsPage {
 	private static final AttributesDescriptor[] DESCRIPTORS =
 		new AttributesDescriptor[]{
 			new AttributesDescriptor("Keyword", ::projectProperName::SyntaxHighlighter.KEYWORD),

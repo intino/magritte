@@ -25,15 +25,9 @@ public class BlockManager {
 		this.tabSize = (tabulationSize < 0) ? 1 \: tabulationSize;
 	}
 
-	public void reset() {
-		this.tokens = new IElementType[]{};
-		this.level = 0;
-		this.brackets = 0;
-	}
-
 	public void spaces(String text) {
 		if (!bracketsMode()) {
-			int newLevel = (spacesLength(text) / this.tabSize);
+			int newLevel = spacesLength(text) / this.tabSize;
 			this.tokens = spacesIndentTokens(newLevel - level);
 			this.level = newLevel;
 		} else
@@ -53,7 +47,7 @@ public class BlockManager {
 		if (size > 0) return new IElementType[]{TokenType.NEW_LINE_INDENT};
 		else
 			for (int i = 0; i < actions.length; i++)
-				actions[i] = (i % 2 == 0) ? ::projectProperName::Types.NEWLINE \: ::projectProperName::Types.DEDENT;
+				actions[i] = (i \% 2 == 0) ? ::projectProperName::Types.NEWLINE \: ::projectProperName::Types.DEDENT;
 		return actions;
 	}
 
@@ -62,7 +56,7 @@ public class BlockManager {
 		if (size > 0) return new IElementType[]{TokenType.NEW_LINE_INDENT};
 		else
 			for (int i = 0; i < actions.length; i++)
-				actions[i] = (i % 2 == 0) ? ::projectProperName::Types.NEWLINE \: ::projectProperName::Types.DEDENT;
+				actions[i] = (i \% 2 == 0) ? ::projectProperName::Types.NEWLINE \: ::projectProperName::Types.DEDENT;
 		return actions;
 	}
 
@@ -71,11 +65,7 @@ public class BlockManager {
 	}
 
 	public boolean bracketsMode() {
-		return (brackets > 0);
-	}
-
-	public int getLevel() {
-		return level;
+		return brackets > 0;
 	}
 
 	public IElementType[] actions() {

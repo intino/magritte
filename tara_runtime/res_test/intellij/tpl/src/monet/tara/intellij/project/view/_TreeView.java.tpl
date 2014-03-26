@@ -67,7 +67,7 @@ public class DefinitionTreeView implements Navigatable {
 	}
 
 	public boolean isValid() {
-		if (::projectName::Files.size() == 0) return false;
+		if (::projectName::Files.isEmpty()) return false;
 		for (PsiFile psiFile \: ::projectName::Files) {
 			if (!psiFile.isValid()) {
 				return false;

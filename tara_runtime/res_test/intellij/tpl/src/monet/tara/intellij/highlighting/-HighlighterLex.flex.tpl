@@ -5,13 +5,13 @@ import com.intellij.psi.tree.IElementType;
 import monet.::projectName::.intellij.metamodel.psi.::projectNameFile::Types;
 import com.intellij.psi.TokenType;
 
-%%
+\%\%
 
-%class ::projectNameFile::HighlighterLex
-%implements FlexLexer
-%unicode
-%function advance
-%type IElementType
+\%class ::projectNameFile::HighlighterLex
+\%implements FlexLexer
+\%unicode
+\%function advance
+\%type IElementType
 
 
 SP = ([ ]+ | [\\t]+)
@@ -81,7 +81,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 
 
-%%
+\%\%
 <YYINITIAL> {
 
     {SYNTHETIZE}                {   return ::projectNameFile::Types.SYNTHETIZE; }

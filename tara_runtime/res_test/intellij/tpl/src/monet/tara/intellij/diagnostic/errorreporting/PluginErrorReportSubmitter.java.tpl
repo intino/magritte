@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
-	private static final Logger LOGGER = Logger.getInstance(LoggingEventSubmitter.class.getName());
+	private static final Logger LOG = Logger.getInstance(LoggingEventSubmitter.class.getName());
 	\@NonNls
 	private static final String ERROR_SUBMITTER_PROPERTIES_PATH = "errorreporting" + File.separator + "errorReporter.properties";
 	\@NonNls
@@ -40,16 +40,16 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 		PluginDescriptor pluginDescriptor = getPluginDescriptor();
 		final Properties reportingProperties = new Properties();
 		queryPluginDescriptor(pluginDescriptor, reportingProperties);
-		LOGGER.debug("Properties read from plugin descriptor\: " + reportingProperties);
+		LOG.debug("Properties read from plugin descriptor\: " + reportingProperties);
 		queryPropertiesFile(pluginDescriptor, reportingProperties);
-		LOGGER.debug("Final properties to be applied\: " + reportingProperties);
+		LOG.debug("Final properties to be applied\: " + reportingProperties);
 		final LoggingEventSubmitter.SubmitException[] ex = new LoggingEventSubmitter.SubmitException[]{null};
 		Runnable runnable = getRunnable(events, reportingProperties);
 		ProgressManager progressManager = ProgressManager.getInstance();
 		progressManager.runProcessWithProgressSynchronously(runnable, PluginErrorReportSubmitterBundle.message("progress.dialog.title"), false, null);
 		if (processExceptions(parentComponent, ex[0]))
 			return new SubmittedReportInfo(null, null, SubmittedReportInfo.SubmissionStatus.FAILED);
-		LOGGER.info("Error submission successful");
+		LOG.info("Error submission successful");
 		Messages.showInfoMessage(parentComponent, PluginErrorReportSubmitterBundle.message("successful.dialog.message"),
 			PluginErrorReportSubmitterBundle.message("successful.dialog.title"));
 		return new SubmittedReportInfo(null, null, SubmittedReportInfo.SubmissionStatus.NEW_ISSUE);
@@ -58,7 +58,7 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 
 	private boolean processExceptions(Component parentComponent, LoggingEventSubmitter.SubmitException e) {
 		if (e != null) {
-			LOGGER.info("Error submission failed", e);
+			LOG.info("Error submission failed", e);
 			Messages.showErrorDialog(parentComponent, e.getMessage(), PluginErrorReportSubmitterBundle.message("error.dialog.title"));
 			return true;
 		}
@@ -90,9 +90,8 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 
 	private void queryPluginDescriptor(\@NotNull PluginDescriptor pluginDescriptor, \@NotNull Properties properties) {
 		PluginId descPluginId = pluginDescriptor.getPluginId();
-		if (descPluginId != null)
-			if (!StringUtil.isEmptyOrSpaces(descPluginId.getIdString()))
-				properties.put(PLUGIN_ID_PROPERTY_KEY, descPluginId.getIdString());
+		if (descPluginId != null && !StringUtil.isEmptyOrSpaces(descPluginId.getIdString()))
+			properties.put(PLUGIN_ID_PROPERTY_KEY, descPluginId.getIdString());
 		if (pluginDescriptor instanceof IdeaPluginDescriptor) {
 			IdeaPluginDescriptor ideaPluginDescriptor = (IdeaPluginDescriptor) pluginDescriptor;
 			if (!StringUtil.isEmptyOrSpaces(ideaPluginDescriptor.getName()))
@@ -110,12 +109,11 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 		ClassLoader loader = pluginDescriptor.getPluginClassLoader();
 		InputStream stream = loader.getResourceAsStream(ERROR_SUBMITTER_PROPERTIES_PATH);
 		if (stream != null) {
-			LOGGER.debug("Reading ErrorReporter.properties from file system\: " + ERROR_SUBMITTER_PROPERTIES_PATH);
+			LOG.debug("Reading ErrorReporter.properties from file system\: " + ERROR_SUBMITTER_PROPERTIES_PATH);
 			try {
 				properties.load(stream);
 			} catch (Exception e) {
-				e.printStackTrace();
-				LOGGER.info("Could not read in ErrorReporter.properties from file system", e);
+				LOG.info("Could not read in ErrorReporter.properties from file system", e);
 			}
 		}
 	}

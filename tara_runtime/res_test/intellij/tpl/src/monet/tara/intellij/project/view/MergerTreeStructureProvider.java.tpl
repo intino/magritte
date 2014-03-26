@@ -10,7 +10,6 @@ import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassOwner;
@@ -34,17 +33,16 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 	}
 
 	private static Collection<PsiFile> convertToFiles(Collection<BasePsiNode<? extends PsiElement>> definitionNodes) {
-		ArrayList<PsiFile> psiFiles = new ArrayList<>();
-		for (AbstractTreeNode treeNode \: definitionNodes) {
+		List<PsiFile> psiFiles = new ArrayList<>();
+		for (AbstractTreeNode treeNode \: definitionNodes)
 			psiFiles.add((PsiFile) treeNode.getValue());
-		}
 		return psiFiles;
 	}
 
 	private static Collection<BasePsiNode<? extends PsiElement>> findDefinitionsIn(Collection<AbstractTreeNode> children, List<PsiFile> definitions) {
 		if (children.isEmpty() || definitions.isEmpty()) return Collections.emptyList();
-		ArrayList<BasePsiNode<? extends PsiElement>> result = new ArrayList<>();
-		HashSet<PsiFile> psiFiles = new HashSet<>(definitions);
+		List<BasePsiNode<? extends PsiElement>> result = new ArrayList<>();
+		Set<PsiFile> psiFiles = new HashSet<>(definitions);
 		for (final AbstractTreeNode child \: children) {
 			if (child instanceof BasePsiNode) {
 				BasePsiNode<? extends PsiElement> treeNode = (BasePsiNode<? extends PsiElement>) child;
@@ -58,6 +56,40 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 	\@NotNull
 	public Collection<AbstractTreeNode> modify(\@NotNull AbstractTreeNode parent, \@NotNull Collection<AbstractTreeNode> children, ViewSettings settings) {
 		if (parent.getValue() instanceof DefinitionTreeView) return children;
+		if (!definitionExists(children)) return children;
+		Collection<AbstractTreeNode> result = new LinkedHashSet<>(children);
+		ProjectViewNode[] copy = children.toArray(new ProjectViewNode[children.size()]);
+		for (ProjectViewNode element \: copy) {
+			PsiClass psiClass = getPsiClass(element);
+			if (psiClass == null || psiClass.getName() == null) continue;
+			List<PsiFile> definitions;
+			definitions = findDefinitionsBoundToClass(psiClass);
+			Collection<BasePsiNode<? extends PsiElement>> definitionNodes = findDefinitionsIn(children, definitions);
+			if (!definitionNodes.isEmpty()) {
+				Collection<PsiFile> definitionFiles = convertToFiles(definitionNodes);
+				Collection<BasePsiNode<? extends PsiElement>> subNodes = new ArrayList<>();
+				subNodes.add((BasePsiNode<? extends PsiElement>) element);
+				subNodes.addAll(definitionNodes);
+				result.add(new DefinitionNode(project, new DefinitionTreeView(psiClass, definitionFiles), settings, ::projectProperName::Icons.ICON_13, subNodes));
+				result.remove(element);
+				result.removeAll(definitionNodes);
+			}
+		}
+		return result;
+	}
+
+	private PsiClass getPsiClass(ProjectViewNode element) {
+		PsiClass psiClass = null;
+		if (element.getValue() instanceof PsiClass)
+			psiClass = (PsiClass) element.getValue();
+		else if (element.getValue() instanceof PsiClassOwner) {
+			final PsiClass[] psiClasses = ((PsiClassOwner) element.getValue()).getClasses();
+			if (psiClasses.length == 1) psiClass = psiClasses[0];
+		}
+		return psiClass;
+	}
+
+	private boolean definitionExists(Collection<AbstractTreeNode> children) {
 		boolean definitionFound = false;
 		for (AbstractTreeNode node \: children)
 			if (node.getValue() instanceof PsiFile) {
@@ -67,44 +99,11 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 					break;
 				}
 			}
-		if (!definitionFound) return children;
-
-		Collection<AbstractTreeNode> result = new LinkedHashSet<>(children);
-		ProjectViewNode[] copy = children.toArray(new ProjectViewNode[children.size()]);
-		for (ProjectViewNode element \: copy) {
-			PsiClass psiClass = null;
-			if (element.getValue() instanceof PsiClass)
-				psiClass = (PsiClass) element.getValue();
-			else if (element.getValue() instanceof PsiClassOwner) {
-				final PsiClass[] psiClasses = ((PsiClassOwner) element.getValue()).getClasses();
-				if (psiClasses.length == 1) psiClass = psiClasses[0];
-			}
-			if (psiClass == null) continue;
-			String qName = psiClass.getName();
-			if (qName == null) continue;
-			List<PsiFile> definitions;
-			try {
-				definitions = findDefinitionsBoundToClass(psiClass);
-			} catch (ProcessCanceledException e) {
-				continue;
-			}
-			Collection<BasePsiNode<? extends PsiElement>> definitionNodes = findDefinitionsIn(children, definitions);
-			if (!definitionNodes.isEmpty()) {
-				Collection<PsiFile> definitionFiles = convertToFiles(definitionNodes);
-				Collection<BasePsiNode<? extends PsiElement>> subNodes = new ArrayList<>();
-				subNodes.add((BasePsiNode<? extends PsiElement>) element);
-				subNodes.addAll(definitionNodes);
-				result.add(new DefinitionNode(project,
-					new DefinitionTreeView(psiClass, definitionFiles), settings, ::projectProperName::Icons.ICON_13, subNodes));
-				result.remove(element);
-				result.removeAll(definitionNodes);
-			}
-		}
-		return result;
+		return definitionFound;
 	}
 
 	private List<PsiFile> findDefinitionsBoundToClass(PsiClass psiClass) {
-		ArrayList<PsiFile> files = new ArrayList<>();
+		List<PsiFile> files = new ArrayList<>();
 		for (PsiElement element \: psiClass.getParent().getParent().getChildren())
 			if (element instanceof ::projectProperName::File && ((::projectProperName::FileImpl) element).getPresentableName().equals(psiClass.getName()))
 				files.add((PsiFile) element);
@@ -112,26 +111,24 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 	}
 
 	public Object getData(Collection<AbstractTreeNode> selected, String dataId) {
-		if (selected != null) {
+		if (selected != null)
 			if (DefinitionTreeView.DATA_KEY.is(dataId)) {
-				List<DefinitionTreeView> result = new ArrayList<>();
-				for (AbstractTreeNode node \: selected) {
-					if (node.getValue() instanceof DefinitionTreeView) {
-						result.add((DefinitionTreeView) node.getValue());
-					}
-				}
-				if (!result.isEmpty()) {
+				List<DefinitionTreeView> result = getDefinitionTreeViews(selected);
+				if (!result.isEmpty())
 					return result.toArray(new DefinitionTreeView[result.size()]);
-				}
-			} else if (PlatformDataKeys.DELETE_ELEMENT_PROVIDER.is(dataId)) {
-				for (AbstractTreeNode node \: selected) {
-					if (node.getValue() instanceof DefinitionTreeView) {
+			} else if (PlatformDataKeys.DELETE_ELEMENT_PROVIDER.is(dataId))
+				for (AbstractTreeNode node \: selected)
+					if (node.getValue() instanceof DefinitionTreeView)
 						return new MyDeleteProvider(selected);
-					}
-				}
-			}
-		}
 		return null;
+	}
+
+	private List<DefinitionTreeView> getDefinitionTreeViews(Collection<AbstractTreeNode> selected) {
+		List<DefinitionTreeView> result = new ArrayList<>();
+		for (AbstractTreeNode node \: selected)
+			if (node.getValue() instanceof DefinitionTreeView)
+				result.add((DefinitionTreeView) node.getValue());
+		return result;
 	}
 
 	private static class MyDeleteProvider implements DeleteProvider {
@@ -155,8 +152,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 		}
 
 		public void deleteElement(\@NotNull DataContext dataContext) {
-			Project project = CommonDataKeys.PROJECT.getData(dataContext);
-			DeleteHandler.deletePsiElement(myElements, project);
+			DeleteHandler.deletePsiElement(myElements, CommonDataKeys.PROJECT.getData(dataContext));
 		}
 
 		public boolean canDeleteElement(\@NotNull DataContext dataContext) {

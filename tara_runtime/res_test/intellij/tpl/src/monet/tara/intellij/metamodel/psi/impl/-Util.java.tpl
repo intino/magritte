@@ -19,6 +19,9 @@ import java.util.List;
 
 public class ::projectProperName::Util {
 
+	private ::projectProperName::Util() {
+	}
+
 	\@NotNull
 	public static List<Definition> findRootDefinition(Project project, String identifier) {
 		List<Definition> result = new ArrayList<>();
@@ -96,14 +99,6 @@ public class ::projectProperName::Util {
 	}
 
 	\@NotNull
-	public static List<Definition> findAllDefinitions(Project project) {
-		List<Definition> result = new ArrayList<>();
-		for (::projectProperName::FileImpl ::projectName::File \: getProjectFiles(project))
-			result.addAll(findAllDefinitionsOfFile(::projectName::File));
-		return result;
-	}
-
-	\@NotNull
 	public static List<Definition> findAllDefinitionsOfFile(::projectProperName::FileImpl ::projectName::File) {
 		List<Definition> result = new ArrayList<>();
 		Definition[] definitions = PsiTreeUtil.getChildrenOfType(::projectName::File, Definition.class);
@@ -117,12 +112,12 @@ public class ::projectProperName::Util {
 	}
 
 	public static Definition resolveReferences(Project project, PsiElement identifier) {
-		Definition reference;
 		if (identifier.getParent() instanceof ReferenceIdentifier) {
 			List<Identifier> route = (List<Identifier>) ((ReferenceIdentifier) (identifier.getParent())).getIdentifierList();
 			route = route.subList(0, route.indexOf(identifier) + 1);
-			if (!isRootDefinition(::projectProperName::PsiImplUtil.resolveContextOfRef((ReferenceIdentifier) identifier.getParent())) &&
-				(reference = resolveRelativeReference(route, (::projectProperName::Identifier) identifier)) != null) return reference;
+			Definition reference = resolveRelativeReference(route, (::projectProperName::Identifier) identifier);
+			if (!isRootDefinition(::projectProperName::PsiImplUtil.resolveContextOfRef((ReferenceIdentifier) identifier.getParent())) && reference != null)
+				return reference;
 			else return resolveAbsoluteReference(project, route);
 		}
 		return null;
@@ -135,8 +130,10 @@ public class ::projectProperName::Util {
 	private static Definition resolveRelativeReference(List<Identifier> route, Identifier element) {
 		Definition context = ::projectProperName::PsiImplUtil.resolveContextOfRef((ReferenceIdentifier) element.getParent());
 		Definition definition = ::projectProperName::PsiImplUtil.getContextOf(context);
-		for (Identifier identifier \: route)
-			if ((definition = findChildOf(definition, ((::projectProperName::IdentifierImpl) identifier).getIdentifier())) == null) break;
+		for (Identifier identifier \: route) {
+			definition = findChildOf(definition, ((::projectProperName::IdentifierImpl) identifier).getIdentifier());
+			if (definition == null) break;
+		}
 		return definition;
 	}
 
@@ -152,18 +149,6 @@ public class ::projectProperName::Util {
 			reference = internRef;
 		}
 		return reference;
-	}
-
-	public static Definition findSibling(Definition context, String identifier) {
-		PsiElement element = context;
-		List<Definition> childrenInBody;
-		while (element != null && !(element instanceof Body))
-			element = element.getParent();
-		if (element != null) {
-			childrenInBody = ::projectProperName::PsiImplUtil.getChildrenInBody((Body) element);
-			return findChildIn(childrenInBody, identifier);
-		}
-		return null;
 	}
 
 	public static List<Definition> getSiblings(Definition context) {
@@ -192,12 +177,5 @@ public class ::projectProperName::Util {
 			if (child.getName() != null && child.getName().equals(name))
 				return child;
 		return null;
-	}
-
-	public static ::projectProperName::Identifier[] getAbsoluteReference(::projectProperName::Identifier reference) {
-		ReferenceIdentifier extendedDefinition = (ReferenceIdentifier) reference.getParent();
-		List<::projectProperName::Identifier> identifiers = (List<::projectProperName::Identifier>) extendedDefinition.getIdentifierList();
-		identifiers = identifiers.subList(0, identifiers.indexOf(reference) + 1);
-		return identifiers.toArray(new ::projectProperName::Identifier[identifiers.size()]);
 	}
 }
