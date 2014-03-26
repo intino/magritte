@@ -99,14 +99,6 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static List<Concept> findAllConcepts(Project project) {
-		List<Concept> result = new ArrayList<>();
-		for (TaraFileImpl taraFile : getProjectFiles(project))
-			result.addAll(findAllConceptsOfFile(taraFile));
-		return result;
-	}
-
-	@NotNull
 	public static List<Concept> findAllConceptsOfFile(TaraFileImpl taraFile) {
 		List<Concept> result = new ArrayList<>();
 		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, Concept.class);
@@ -159,18 +151,6 @@ public class TaraUtil {
 		return reference;
 	}
 
-	public static Concept findSibling(Concept context, String identifier) {
-		PsiElement element = context;
-		List<Concept> childrenInBody;
-		while (element != null && !(element instanceof Body))
-			element = element.getParent();
-		if (element != null) {
-			childrenInBody = TaraPsiImplUtil.getChildrenInBody((Body) element);
-			return findChildIn(childrenInBody, identifier);
-		}
-		return null;
-	}
-
 	public static List<Concept> getSiblings(Concept context) {
 		PsiElement element = context;
 		while ((element != null) && !(element instanceof TaraFile) && !(element instanceof Body))
@@ -197,12 +177,5 @@ public class TaraUtil {
 			if (child.getName() != null && child.getName().equals(name))
 				return child;
 		return null;
-	}
-
-	public static TaraIdentifier[] getAbsoluteReference(TaraIdentifier reference) {
-		ReferenceIdentifier extendedConcept = (ReferenceIdentifier) reference.getParent();
-		List<TaraIdentifier> identifiers = (List<TaraIdentifier>) extendedConcept.getIdentifierList();
-		identifiers = identifiers.subList(0, identifiers.indexOf(reference) + 1);
-		return identifiers.toArray(new TaraIdentifier[identifiers.size()]);
 	}
 }

@@ -2,10 +2,8 @@ package org.jetbrains.jps.tara.compiler;
 
 import com.intellij.execution.process.BaseOSProcessHandler;
 import com.intellij.execution.process.ProcessOutputTypes;
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.Function;
@@ -17,9 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
 
-import java.io.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class TaracOSProcessHandler extends BaseOSProcessHandler {
@@ -35,27 +31,6 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		super(process, null, null);
 		LOG.setLevel(Level.ALL);
 		myStatusUpdater = statusUpdater;
-	}
-
-	public static File fillFileWithTaracParameters(final String projectName, final String outputDir,
-	                                               final Collection<String> changedSources,
-	                                               String finalOutput, @Nullable final String encoding, String iconPath) throws IOException {
-		File tempFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
-		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile)))) {
-			writer.write(TaraRtConstants.SRC_FILE + "\n");
-			for (String file : changedSources)
-				writer.write(file + "\n");
-			writer.write(TaraRtConstants.PROJECT + "\n" + projectName + "\n");
-			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
-			writer.write(TaraRtConstants.IDEA_HOME + "\n");
-			writer.write(PathManager.getHomePath() + File.separator + "lib" + File.separator + "\n");
-			if (iconPath != null) writer.write(TaraRtConstants.PROJECT_ICON + "\n" + iconPath + "\n");
-			writer.write(TaraRtConstants.OUTPUTPATH + "\n");
-			writer.write(outputDir + "\n");
-			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n");
-			writer.write(finalOutput + "\n");
-		}
-		return tempFile;
 	}
 
 	private List<String> splitAndTrim(String compiled) {
@@ -94,47 +69,53 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		if (StringUtil.isNotEmpty(text)) {
 			outputBuffer.append(text);
 			if (outputBuffer.indexOf(TaraRtConstants.COMPILED_START) != -1) {
-				if (outputBuffer.indexOf(TaraRtConstants.COMPILED_END) == -1) return;
-				final String compiled = handleOutputBuffer(TaraRtConstants.COMPILED_START, TaraRtConstants.COMPILED_END);
-				final List<String> list = splitAndTrim(compiled);
-				String outputPath = list.get(0);
-				String sourceFile = list.get(1);
-
-				OutputItem item = new OutputItem(outputPath, sourceFile);
-				if (LOG.isDebugEnabled()) LOG.debug("Output: " + item);
-				myCompiledItems.add(item);
+				processCompiledItems();
 			} else if (outputBuffer.indexOf(TaraRtConstants.MESSAGES_START) != -1) {
-				if (outputBuffer.indexOf(TaraRtConstants.MESSAGES_END) == -1) return;
-				text = handleOutputBuffer(TaraRtConstants.MESSAGES_START, TaraRtConstants.MESSAGES_END);
-				List<String> tokens = splitAndTrim(text);
-				LOG.assertTrue(tokens.size() > 4, "Wrong number of output params");
-				String category = tokens.get(0);
-				String message = tokens.get(1);
-				String url = tokens.get(2);
-				String lineNum = tokens.get(3);
-				String columnNum = tokens.get(4);
-				int lineInt;
-				int columnInt;
-				try {
-					lineInt = Integer.parseInt(lineNum);
-					columnInt = Integer.parseInt(columnNum);
-				} catch (NumberFormatException e) {
-					LOG.error(e);
-					lineInt = 0;
-					columnInt = 0;
-				}
-				BuildMessage.Kind kind = category.equals(TaraCompilerMessageCategories.ERROR)
-					? BuildMessage.Kind.ERROR
-					: category.equals(TaraCompilerMessageCategories.WARNING)
-					? BuildMessage.Kind.WARNING
-					: BuildMessage.Kind.INFO;
-
-				CompilerMessage compilerMessage = new CompilerMessage("Tarac", kind, message, url, -1, -1, -1, lineInt, columnInt);
-				if (LOG.isDebugEnabled())
-					LOG.debug("Message: " + compilerMessage);
-				compilerMessages.add(compilerMessage);
+				processMessage();
 			}
 		}
+	}
+
+	private void processMessage() {
+		String text;
+		if (outputBuffer.indexOf(TaraRtConstants.MESSAGES_END) == -1) return;
+		text = handleOutputBuffer(TaraRtConstants.MESSAGES_START, TaraRtConstants.MESSAGES_END);
+		List<String> tokens = splitAndTrim(text);
+		LOG.assertTrue(tokens.size() > 4, "Wrong number of output params");
+		String category = tokens.get(0);
+		String message = tokens.get(1);
+		String url = tokens.get(2);
+		String lineNum = tokens.get(3);
+		String columnNum = tokens.get(4);
+		int lineInt, columnInt;
+		try {
+			lineInt = Integer.parseInt(lineNum);
+			columnInt = Integer.parseInt(columnNum);
+		} catch (NumberFormatException e) {
+			LOG.error(e);
+			lineInt = 0;
+			columnInt = 0;
+		}
+		BuildMessage.Kind kind = category.equals(TaraCompilerMessageCategories.ERROR)
+			? BuildMessage.Kind.ERROR
+			: category.equals(TaraCompilerMessageCategories.WARNING)
+			? BuildMessage.Kind.WARNING
+			: BuildMessage.Kind.INFO;
+		CompilerMessage compilerMessage = new CompilerMessage("Tarac", kind, message, url, -1, -1, -1, lineInt, columnInt);
+		if (LOG.isDebugEnabled()) LOG.debug("Message: " + compilerMessage);
+		compilerMessages.add(compilerMessage);
+	}
+
+	private void processCompiledItems() {
+		if (outputBuffer.indexOf(TaraRtConstants.COMPILED_END) == -1) return;
+		final String compiled = handleOutputBuffer(TaraRtConstants.COMPILED_START, TaraRtConstants.COMPILED_END);
+		final List<String> list = splitAndTrim(compiled);
+		String outputPath = list.get(0);
+		String sourceFile = list.get(1);
+
+		OutputItem item = new OutputItem(outputPath, sourceFile);
+		if (LOG.isDebugEnabled()) LOG.debug("Output: " + item);
+		myCompiledItems.add(item);
 	}
 
 	private String handleOutputBuffer(String startMarker, String endMarker) {
@@ -175,8 +156,8 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	}
 
 	public static class OutputItem {
-		public final String outputPath;
-		public final String sourcePath;
+		private final String outputPath;
+		private final String sourcePath;
 
 		public OutputItem(String outputPath, String sourceFileName) {
 			this.outputPath = outputPath;

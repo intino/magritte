@@ -10,21 +10,22 @@ import java.io.InputStream;
 import java.nio.file.FileSystemException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class PluginPackager extends CodeGenerator {
 
-	private static final String libPath = "/intellij/libs.zip";
-	private static final String swingLibPath = "/intellij/swing.zip";
+	private static final String INTELLIJ_LIBS_ZIP = "/intellij/libs.zip";
+	private static final String SWING_LIB_PATH = "/intellij/swing.zip";
 	private static final String SEP = PathManager.SEP;
 
 	public static void doPackage(CompilerConfiguration conf) throws TaraException {
 		try {
 			String buildPath = composeBuildPath(conf);
 			FileSystemUtils.createDir(buildPath);
-			File libs = new File(PluginPackager.class.getResource(libPath).getPath());
-			File swing = new File(PluginPackager.class.getResource(swingLibPath).getPath());
+			File libs = new File(PluginPackager.class.getResource(INTELLIJ_LIBS_ZIP).getPath());
+			File swing = new File(PluginPackager.class.getResource(SWING_LIB_PATH).getPath());
 			writeLibs(libs, buildPath);
 			writeLibs(libs, buildPath + conf.getProject() + SEP);
 			writeLibs(swing, buildPath + conf.getProject() + SEP);
@@ -41,13 +42,14 @@ public class PluginPackager extends CodeGenerator {
 	}
 
 	private static void addDependenciesAndRes(String destiny, File tempDir) throws FileSystemException {
-		String resDir = PathManager.getBuildIdeResDir(tempDir);
+		File resDir = new File(PathManager.getBuildIdeResDir(tempDir));
 		File metainf = new File(PathManager.getSrcIdeDir(tempDir) + "META-INF");
 		if (metainf.exists()) FileSystemUtils.copyDir(metainf, new File(destiny + "META-INF"));
-		for (File file : new File(resDir).listFiles()) {
-			if (file.isDirectory()) FileSystemUtils.copyDir(file.getAbsolutePath(), destiny + file.getName());
-			else FileSystemUtils.copyFile(file.getAbsolutePath(), destiny + file.getName());
-		}
+		if (resDir.listFiles() != null)
+			for (File file : resDir.listFiles()) {
+				if (file.isDirectory()) FileSystemUtils.copyDir(file.getAbsolutePath(), destiny + file.getName());
+				else FileSystemUtils.copyFile(file.getAbsolutePath(), destiny + file.getName());
+			}
 
 	}
 
@@ -58,7 +60,7 @@ public class PluginPackager extends CodeGenerator {
 	public static void writeLibs(File libs, String buildPath) throws IOException {
 		ZipFile zipFile = new ZipFile(libs);
 		Enumeration entries = zipFile.entries();
-		HashMap<String, InputStream> jars = new HashMap<>();
+		Map<String, InputStream> jars = new HashMap<>();
 		while (entries.hasMoreElements()) {
 			ZipEntry entry = (ZipEntry) entries.nextElement();
 			if (entry.isDirectory()) {

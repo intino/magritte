@@ -11,28 +11,28 @@ import org.jetbrains.jps.tara.compiler.JpsTaraSettings;
 
 @State(name = "TaraCompilerConfiguration", storages = @Storage(file = StoragePathMacros.WORKSPACE_FILE))
 public class TaraCompilerWorkspaceConfiguration implements PersistentStateComponent<JpsTaraSettings>, Disposable {
+	final ExcludedEntriesConfiguration myExcludeFromStubGeneration = new ExcludedEntriesConfiguration();
 	String myHeapSize = JpsTaraSettings.DEFAULT_HEAP_SIZE;
 	boolean pluginGeneration = JpsTaraSettings.PLUGIN_GENERATION;
 	private String version = "0.1";
 	private String commentaries = "";
-	final ExcludedEntriesConfiguration myExcludeFromStubGeneration = new ExcludedEntriesConfiguration();
 
 	public JpsTaraSettings getState() {
 		final JpsTaraSettings jpsSettings = new JpsTaraSettings();
-		jpsSettings.heapSize = myHeapSize;
-		jpsSettings.pluginGeneration = pluginGeneration;
-		jpsSettings.version= version;
-		jpsSettings.commentaries= commentaries;
-		myExcludeFromStubGeneration.writeExternal(jpsSettings.excludes);
+		jpsSettings.setHeapSize(myHeapSize);
+		jpsSettings.setPluginGeneration(pluginGeneration);
+		jpsSettings.setVersion(version);
+		jpsSettings.setCommentaries(commentaries);
+		myExcludeFromStubGeneration.writeExternal(jpsSettings.getExcludes());
 		return jpsSettings;
 	}
 
 	public void loadState(JpsTaraSettings jpsSettings) {
-		myHeapSize = jpsSettings.heapSize;
-		pluginGeneration = jpsSettings.pluginGeneration;
-		commentaries = jpsSettings.commentaries;
-		version = jpsSettings.version;
-		myExcludeFromStubGeneration.readExternal(jpsSettings.excludes);
+		myHeapSize = jpsSettings.getHeapSize();
+		pluginGeneration = jpsSettings.isPluginGeneration();
+		commentaries = jpsSettings.getCommentaries();
+		version = jpsSettings.getVersion();
+		myExcludeFromStubGeneration.readExternal(jpsSettings.getExcludes());
 	}
 
 	public void dispose() {

@@ -1,6 +1,7 @@
 package monet.tara.compiler.rt;
 
 public class TaraRtConstants {
+
 	public static final String ENCODING = "encoding";
 	public static final String OUTPUTPATH = "outputpath";
 	public static final String PROJECT = "project";
@@ -19,4 +20,7 @@ public class TaraRtConstants {
 	public static final String NO_TARA = "Cannot compile Tara files: No Tara generator is defined";
 	public static final String PROJECT_ICON = "icon";
 	public static final String LOGO_PATH = "logos";
+
+	private TaraRtConstants() {
+	}
 }

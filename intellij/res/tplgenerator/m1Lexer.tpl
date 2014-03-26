@@ -21,7 +21,7 @@ import java.util.Queue;
 	private boolean end = false;
 
 	private IElementType sendToken() {
-		IElementType token = (end)? null:TokenType.WHITE_SPACE;
+		IElementType token = (end)? null\:TokenType.WHITE_SPACE;
 		if (!queue.isEmpty())
 			token = queue.poll();
 		if (!queue.isEmpty())
@@ -39,8 +39,8 @@ import java.util.Queue;
     }
 
 	private String getTextSpaces(String text){
-        int index = (text.indexOf(' ') == -1)? text.indexOf('\\t') : text.indexOf(' ');
-        return (index == -1)? "" : text.substring(index);
+        int index = (text.indexOf(' ') == -1)? text.indexOf('\\t') \: text.indexOf(' ');
+        return (index == -1)? "" \: text.substring(index);
     }
 
 	private boolean isWhiteLineOrEOF() {
@@ -117,7 +117,7 @@ CLOSE_BRACKET = "}"
 
 DOT           = "."
 COMMA         = ","
-ASSIGN        = ":"
+ASSIGN        = "\:"
 SEMICOLON     = ";"
 DOUBLE_COMMAS = "\\""
 OPEN_AN  = "<"
@@ -145,9 +145,9 @@ STRING_VALUE   = {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
 CODE           = "\#" {DIGIT}+
 DOC_LINE = "'" ~[\\n]
 
-DIGIT=[:digit:]
+DIGIT=[\:digit\:]
 
-IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
+IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 
 
 

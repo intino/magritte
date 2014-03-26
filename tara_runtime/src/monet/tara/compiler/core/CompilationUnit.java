@@ -14,10 +14,7 @@ import monet.tara.compiler.rt.TaraRtConstants;
 import monet.tara.compiler.semantic.SemanticAnalyzer;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class CompilationUnit extends ProcessingUnit {
@@ -159,8 +156,7 @@ public class CompilationUnit extends ProcessingUnit {
 
 	public void compile(int throughPhase) throws CompilationFailedException {
 		gotoPhase(1);
-		throughPhase = Math.min(throughPhase, 9);
-		while ((throughPhase >= this.phase) && (this.phase <= 9)) {
+		while ((Math.min(throughPhase, 9) >= this.phase) && (this.phase <= 9)) {
 			processPhaseOperations(this.phase);
 			if (this.progressCallback != null) this.progressCallback.call(this, this.phase);
 			completePhase();
@@ -171,17 +167,17 @@ public class CompilationUnit extends ProcessingUnit {
 	}
 
 	private void processPhaseOperations(int ph) {
-		LinkedList<Operation> ops = this.phaseOperations[ph];
+		List<Operation> ops = this.phaseOperations[ph];
 		for (Operation next : ops)
 			doPhaseOperation(next);
 	}
 
 	private void doPhaseOperation(Operation operation) {
-		if ((operation instanceof SourceUnitOperation))
+		if (operation instanceof SourceUnitOperation)
 			applyToSourceUnits((SourceUnitOperation) operation);
-		if ((operation instanceof SrcToClassOperation))
+		if (operation instanceof SrcToClassOperation)
 			((SrcToClassOperation) operation).call();
-		if ((operation instanceof ModuleUnitOperation))
+		if (operation instanceof ModuleUnitOperation)
 			((ModuleUnitOperation) operation).call(sources.values());
 	}
 

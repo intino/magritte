@@ -7,6 +7,7 @@ import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -42,14 +43,11 @@ public class JFlexToJavaGenerator extends CodeGenerator {
 		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 
-	private static File[] getJFlexLibFiles() {
-		try {
-			return new File[]{new File(JFlexToJavaGenerator.class.getResource("/JFlex.jar").getPath()),
-				new File(JFlexToJavaGenerator.class.getResource("/idea-flex.skeleton").getPath())};
-		} catch (NullPointerException e) {
-			LOG.severe("JFlex not found in " + JFlexToJavaGenerator.class.getResource("/JFlex.jar").getPath());
-			throw new NullPointerException();
-		}
+	private static File[] getJFlexLibFiles() throws TaraException {
+		URL jflex = JFlexToJavaGenerator.class.getResource("/JFlex.jar");
+		URL skeleton = JFlexToJavaGenerator.class.getResource("/idea-flex.skeleton");
+		if (jflex == null | skeleton == null) throw new TaraException("JFlex not found");
+		return new File[]{new File(jflex.getPath()), new File(skeleton.getPath())};
 	}
 
 

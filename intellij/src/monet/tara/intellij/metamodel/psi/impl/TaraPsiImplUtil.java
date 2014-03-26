@@ -77,8 +77,10 @@ public class TaraPsiImplUtil {
 
 
 	public static List<Concept> getChildrenOf(Concept concept) {
-		Body body = concept.getBody();
-		if (body != null) return getChildrenInBody(body);
+		if (concept != null) {
+			Body body = concept.getBody();
+			if (body != null) return getChildrenInBody(body);
+		}
 		return Collections.EMPTY_LIST;
 	}
 

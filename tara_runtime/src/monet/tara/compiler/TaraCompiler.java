@@ -96,17 +96,17 @@ public class TaraCompiler {
 	}
 
 	private void addErrorMessage(SyntaxException exception) {
-		final String LINE_AT = " @ line ";
+		final String lineAt = " @ line ";
 		String message = exception.getMessage();
-		String justMessage = message.substring(0, message.lastIndexOf(LINE_AT));
+		String justMessage = message.substring(0, message.lastIndexOf(lineAt));
 		collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, justMessage, exception.getSourceLocator(),
 			exception.getLine(), exception.getStartColumn()));
 	}
 
 	private void addErrorMessage(SemanticError exception) {
-		final String LINE_AT = " @ line ";
+		final String lineAt = " @ line ";
 		String message = exception.getMessage();
-		String justMessage = message.substring(0, message.lastIndexOf(LINE_AT));
+		String justMessage = message.substring(0, message.lastIndexOf(lineAt));
 		collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, justMessage, exception.getNode().getFile(),
 			exception.getLine(), 1));
 	}

@@ -4,8 +4,8 @@ import monet.tara.compiler.core.CompilationUnit;
 import monet.tara.compiler.core.Phases;
 
 public class CompilationFailedException extends RuntimeException {
-	protected int phase;
-	protected CompilationUnit unit;
+	protected final int phase;
+	protected final CompilationUnit unit;
 
 	public CompilationFailedException(int phase, CompilationUnit unit, Throwable cause) {
 		super(Phases.getDescription(phase) + " failed", cause);

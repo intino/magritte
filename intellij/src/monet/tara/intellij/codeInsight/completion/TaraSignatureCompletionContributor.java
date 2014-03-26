@@ -6,6 +6,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.lang.ASTNode;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.tree.IElementType;
@@ -28,6 +29,7 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 public class TaraSignatureCompletionContributor extends CompletionContributor {
 
+	public static final String MORPH = "morph";
 	private PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new InErrorFilter()));
 
@@ -48,15 +50,14 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 		.andOr(new FilterPattern(new AfterElementFitFilter(TaraTypes.FINAL)),
 			new FilterPattern(new AfterElementFitFilter(TaraTypes.ABSTRACT)));
 
-
 	public TaraSignatureCompletionContributor() {
-		extend(CompletionType.SMART, afterConceptKey,
+		extend(CompletionType.BASIC, afterConceptKey,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
 					resultSet.addElement(LookupElementBuilder.create("polymorphic"));
-					resultSet.addElement(LookupElementBuilder.create("morph"));
+					resultSet.addElement(LookupElementBuilder.create(MORPH));
 					resultSet.addElement(LookupElementBuilder.create("as"));
 					resultSet.addElement(LookupElementBuilder.create("abstract"));
 					resultSet.addElement(LookupElementBuilder.create("final"));
@@ -65,7 +66,7 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 			}
 		);
 
-		extend(CompletionType.SMART, afterPolymorphicOrMorphKey,
+		extend(CompletionType.BASIC, afterPolymorphicOrMorphKey,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
@@ -76,22 +77,24 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 		);
 
 
-		extend(CompletionType.SMART, afterNewLine,
+		extend(CompletionType.BASIC, afterNewLine,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
 					resultSet.addElement(LookupElementBuilder.create("Concept"));
+					resultSet.addElement(LookupElementBuilder.create("new"));
+					resultSet.addElement(LookupElementBuilder.create("var"));
 				}
 			}
 		);
 
-		extend(CompletionType.SMART, afterModifierKey,
+		extend(CompletionType.BASIC, afterModifierKey,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("morph"));
+					resultSet.addElement(LookupElementBuilder.create(MORPH));
 					resultSet.addElement(LookupElementBuilder.create("as"));
 				}
 			}
@@ -100,10 +103,13 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 
 	public static List<LookupElement> getVariants(PsiElement myElement) {
 		List<Concept> concepts = new ArrayList<>();
-		if (myElement.getPrevSibling().getNode().equals(TaraTypes.DOT))
-			getChildrenVariants((TaraIdentifier) myElement.getPrevSibling().getPrevSibling(), concepts);
-		else refer(myElement, concepts);
-		return fillVariants(concepts);
+		if (myElement.getPrevSibling() != null) {
+			if (TaraTypes.DOT.equals(myElement.getPrevSibling().getNode()))
+				getChildrenVariants((TaraIdentifier) myElement.getPrevSibling().getPrevSibling(), concepts);
+			else refer(myElement, concepts);
+			return fillVariants(concepts);
+		}
+		return Collections.EMPTY_LIST;
 	}
 
 	private static List<LookupElement> fillVariants(List<Concept> concepts) {
@@ -154,7 +160,7 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			if (element instanceof PsiElement) {
 				assert context != null;
-				if (context.getPrevSibling() == null) return true;
+				if (((PsiElement)element).getParent() instanceof PsiErrorElement) return true;
 			}
 			return false;
 		}

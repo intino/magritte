@@ -93,15 +93,14 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	}
 
 	private void addAttribute(AttributeContext ctx, TerminalNode type, ParserRuleContext value) {
-		if (ctx.ASSIGN() == null) {
+		if (ctx.ASSIGN() == null)
 			if (ctx.variableNames() != null)
 				for (TerminalNode node : ctx.variableNames().IDENTIFIER()) {
 					conceptStack.peek().add(new ASTNode.Attribute(type.getText(), node.getText(), false));
 					ast.addIdentifier(node.getText(), "ATTRIBUTE");
 				}
-			else
-				conceptStack.peek().add(new ASTNode.Attribute(type.getText(), ctx.IDENTIFIER().getText(), true));
-		} else {
+			else conceptStack.peek().add(new ASTNode.Attribute(type.getText(), ctx.IDENTIFIER().getText(), true));
+		else {
 			ASTNode.Attribute attribute = new ASTNode.Attribute(type.getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
 			String valueFormatted;
 			if (ctx.LIST() != null)
@@ -142,7 +141,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		String parent = getExtendedConceptString(ctx.referenceIdentifier());
 		String[] identifiers = getIdentifiers(ctx.variableNames());
 		for (String identifier : identifiers) {
-			conceptStack.peek().addReference(parent, identifier, (ctx.LIST() != null));
+			conceptStack.peek().addReference(parent, identifier, ctx.LIST() != null);
 			ast.addIdentifier(identifier, "ATTRIBUTE");
 		}
 	}
@@ -157,17 +156,17 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void enterAnnotations(@NotNull AnnotationsContext ctx) {
 		for (int i = 0; i < ctx.OPTIONAL().size(); i++)
-			conceptStack.peek().add(ASTNode.AnnotationType.Optional);
+			conceptStack.peek().add(ASTNode.AnnotationType.OPTIONAL);
 		for (int i = 0; i < ctx.MULTIPLE().size(); i++)
-			conceptStack.peek().add(ASTNode.AnnotationType.Multiple);
+			conceptStack.peek().add(ASTNode.AnnotationType.MULTIPLE);
 		for (int i = 0; i < ctx.EXTENSIBLE().size(); i++)
-			conceptStack.peek().add(ASTNode.AnnotationType.Extensible);
+			conceptStack.peek().add(ASTNode.AnnotationType.EXTENSIBLE);
 		for (int i = 0; i < ctx.HAS_CODE().size(); i++)
-			conceptStack.peek().add(ASTNode.AnnotationType.HasCode);
+			conceptStack.peek().add(ASTNode.AnnotationType.HAS_CODE);
 		for (int i = 0; i < ctx.SINGLETON().size(); i++)
-			conceptStack.peek().add(ASTNode.AnnotationType.Singleton);
+			conceptStack.peek().add(ASTNode.AnnotationType.SINGLETON);
 		for (int i = 0; i < ctx.ROOT().size(); i++)
-			conceptStack.peek().add(ASTNode.AnnotationType.Root);
+			conceptStack.peek().add(ASTNode.AnnotationType.ROOT);
 	}
 
 	private String[] getIdentifiers(VariableNamesContext namesContext) {

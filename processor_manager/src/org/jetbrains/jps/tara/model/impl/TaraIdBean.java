@@ -13,9 +13,6 @@ public class TaraIdBean {
 	@Tag("version")
 	public String version;
 
-	public TaraIdBean() {
-	}
-
 	public TaraIdBean(String groupId, String artifactId, String version) {
 		this.groupId = groupId;
 		this.artifactId = artifactId;
@@ -26,14 +23,20 @@ public class TaraIdBean {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
 		TaraIdBean bean = (TaraIdBean) o;
+		return !checkArtifact(bean) && !checkGroup(bean) && !checkVersion(bean);
+	}
 
-		if (artifactId != null ? !artifactId.equals(bean.artifactId) : bean.artifactId != null) return false;
-		if (groupId != null ? !groupId.equals(bean.groupId) : bean.groupId != null) return false;
-		if (version != null ? !version.equals(bean.version) : bean.version != null) return false;
+	private boolean checkVersion(TaraIdBean bean) {
+		return (version != null ? !version.equals(bean.version) : bean.version != null);
+	}
 
-		return true;
+	private boolean checkGroup(TaraIdBean bean) {
+		return groupId != null ? !groupId.equals(bean.groupId) : bean.groupId != null;
+	}
+
+	private boolean checkArtifact(TaraIdBean bean) {
+		return artifactId != null ? !artifactId.equals(bean.artifactId) : bean.artifactId != null;
 	}
 
 	@Override

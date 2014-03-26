@@ -38,6 +38,7 @@ void createTPLs(String tplPath, File[] files) {
                         String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
                         text = text.replace(field, "::" + token + "::")
                     }
+                    text = text.replaceAll("%", "\\\\%")
                     File newFile = new File(tplPath + it.parent.substring(8), it.name.replaceAll("Tara", "-").replace("Concept", "_") + ".tpl")
                     newFile.write(text)
                 } else
@@ -46,7 +47,7 @@ void createTPLs(String tplPath, File[] files) {
                 String mfile;
                 if (it.name.endsWith(".bnf")) mfile = "m1Grammar.tpl";
                 else mfile = it.name.contains("Highlighter") ? "m1HighlightLex.tpl" : "m1Lexer.tpl"
-                text = new File("intellij/res/tplgenerator/" + mfile).text
+                text = new File("intellij/res/tplgenerator/" + mfile).text.replaceAll("%", "\\\\%")
                 File newFile = new File(tplPath + it.parent.substring(8), it.name.replaceAll("Tara", "-").replace("Concept", "_") + ".tpl")
                 newFile.write(text)
             }

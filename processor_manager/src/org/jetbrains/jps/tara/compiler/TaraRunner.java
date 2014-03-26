@@ -21,17 +21,37 @@ import java.util.concurrent.Future;
 
 public class TaraRunner {
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
+	private static File argsFile;
 
-	protected static TaracOSProcessHandler runTaraCompiler(final CompileContext context,
-	                                                       File tempFile,
-	                                                       final JpsTaraSettings settings, boolean pluginGeneration) throws IOException {
-		List<String> classpath = new ArrayList<>(generateClasspath());
-		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
-		List<String> programParams = ContainerUtilRt.newArrayList(pluginGeneration ? "--gen-plugin" : "tarac", tempFile.getPath());
-		List<String> vmParams = ContainerUtilRt.newArrayList();
-		vmParams.add("-Xmx" + settings.getHeapSize() + "m");
-		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
-		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
+	protected TaraRunner(final String projectName, final String outputDir,
+	                     final Collection<String> changedSources,
+	                     String finalOutput, @Nullable final String encoding, String iconPath) throws IOException {
+		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
+		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
+			writer.write(TaraRtConstants.SRC_FILE + "\n");
+			for (String file : changedSources)
+				writer.write(file + "\n");
+			writer.write(TaraRtConstants.PROJECT + "\n" + projectName + "\n");
+			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
+			writer.write(TaraRtConstants.IDEA_HOME + "\n");
+			writer.write(PathManager.getHomePath() + File.separator + "lib" + File.separator + "\n");
+			if (iconPath != null) writer.write(TaraRtConstants.PROJECT_ICON + "\n" + iconPath + "\n");
+			writer.write(TaraRtConstants.OUTPUTPATH + "\n");
+			writer.write(outputDir + "\n");
+			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n");
+			writer.write(finalOutput + "\n");
+		}
+	}
+
+	protected TaracOSProcessHandler runTaraCompiler( final CompileContext context,
+		final JpsTaraSettings settings, boolean pluginGeneration)throws IOException {
+			List<String> classpath = new ArrayList<>(generateClasspath());
+			if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
+			List<String> programParams = ContainerUtilRt.newArrayList(pluginGeneration ? "--gen-plugin" : "tarac", argsFile.getPath());
+			List<String> vmParams = ContainerUtilRt.newArrayList();
+			vmParams.add("-Xmx" + settings.getHeapSize() + "m");
+			vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
+			final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
 			getJavaExecutable(), "monet.tara.TaracRunner", Collections.<String>emptyList(), classpath, vmParams, programParams);
 		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
 		final Consumer<String> updater = new Consumer<String>() {
@@ -50,32 +70,11 @@ public class TaraRunner {
 		return handler;
 	}
 
-	protected static File fillFileWithTaracParameters(final String projectName, final String outputDir,
-	                                               final Collection<String> changedSources,
-	                                               String finalOutput, @Nullable final String encoding, String iconPath) throws IOException {
-		File tempFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
-		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile)))) {
-			writer.write(TaraRtConstants.SRC_FILE + "\n");
-			for (String file : changedSources)
-				writer.write(file + "\n");
-			writer.write(TaraRtConstants.PROJECT + "\n" + projectName + "\n");
-			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
-			writer.write(TaraRtConstants.IDEA_HOME + "\n");
-			writer.write(PathManager.getHomePath() + File.separator + "lib" + File.separator + "\n");
-			if (iconPath != null) writer.write(TaraRtConstants.PROJECT_ICON + "\n" + iconPath + "\n");
-			writer.write(TaraRtConstants.OUTPUTPATH + "\n");
-			writer.write(outputDir + "\n");
-			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n");
-			writer.write(finalOutput + "\n");
-		}
-		return tempFile;
-	}
-
-	private static String getJavaExecutable() {
+	private String getJavaExecutable() {
 		return SystemProperties.getJavaHome() + "/bin/java";
 	}
 
-	private static Collection<String> generateClasspath() {
+	private Collection<String> generateClasspath() {
 		final Set<String> clashPath = new LinkedHashSet<>();
 		clashPath.add(getTaraRtRoot().getPath());
 		clashPath.add(getAntlrLib().getPath());
@@ -83,18 +82,18 @@ public class TaraRunner {
 		return clashPath;
 	}
 
-	private static File getTaraRtRoot() {
+	private File getTaraRtRoot() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		if (root.isFile()) return new File(root.getParentFile(), "tara_rt.jar");
 		return root;
 	}
 
-	private static File getAntlrLib() {
+	private File getAntlrLib() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		return new File(root.getParentFile().getAbsolutePath(), File.separator + "lib" + File.separator + "antlr-4.2-complete.jar");
 	}
 
-	private static File getTemplationLib() {
+	private File getTemplationLib() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		return new File(root.getParentFile().getAbsolutePath(), File.separator + "lib" + File.separator + "templation.jar");
 	}

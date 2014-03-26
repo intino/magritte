@@ -5,7 +5,7 @@ import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
 
 public class SemanticException extends TaraException {
 
-	SemanticError[] errors;
+	private final SemanticError[] errors;
 
 	public SemanticException(SemanticError[] errors) {
 		this.errors = errors.clone();

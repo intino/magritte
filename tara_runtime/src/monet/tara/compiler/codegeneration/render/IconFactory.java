@@ -5,16 +5,12 @@ import java.util.Map;
 
 public class IconFactory {
 
-	private IconFactory() {
-	}
-
 	public static final String IDE_TPL = "/intellij/tpl/";
 	public static final String IDE = "intellij/";
 	private static final String PROJECT_PATH = "monet/tara/" + IDE;
 	public static final String CONCEPT_KEY = "_";
 	private static final String SRC = "src/";
 	private static final Map<String, String> ICONS = new HashMap<>();
-
 
 	static {
 		ICONS.put("-.png", IDE_TPL + SRC + PROJECT_PATH + "metamodel/icons/-.png");
@@ -26,15 +22,16 @@ public class IconFactory {
 	}
 
 
+	private IconFactory() {
+	}
+
 	public static Map<String, String> getIcons() {
 		return ICONS;
 	}
 
 	public static String getIcon(String className) {
-		String icon;
-		if ((icon = ICONS.get(className)) != null)
-			return icon;
-		else
-			throw new RuntimeException("Icon not defined " + className);
+		String icon = ICONS.get(className);
+		if (icon != null) return icon;
+		else throw new RuntimeException("Icon not defined " + className);
 	}
 }

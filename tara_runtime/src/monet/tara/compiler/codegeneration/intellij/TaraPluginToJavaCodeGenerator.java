@@ -18,9 +18,11 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 	public void toJava(CompilerConfiguration configuration, AST ast) throws TaraException {
 		this.configuration = configuration;
 		for (String template : TemplateFactory.getTemplates().keySet()) {
-			writer = getOutWriter(new File(getDestinyOf(TemplateFactory.getTemplate(template))));
-			writeTemplateBasedFile(template, ast.getIdentifiers());
-			writer.close();
+			if (!template.equals("grammar") && !template.equals("lexer") && !template.equals("HighlighterLex.flex")) {
+				writer = getOutWriter(new File(getDestinyOf(TemplateFactory.getTemplate(template))));
+				writeTemplateBasedFile(template, ast.getIdentifiers());
+				writer.close();
+			}
 		}
 		addIcons();
 	}

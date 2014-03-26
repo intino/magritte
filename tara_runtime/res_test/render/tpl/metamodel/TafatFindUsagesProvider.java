@@ -31,7 +31,7 @@ public class TafatFindUsagesProvider implements FindUsagesProvider {
 	@Nullable
 	@Override
 	public String getHelpId(@NotNull PsiElement psiElement) {
-		return HelpID.FIND_OTHER_USAGES;
+		return HelpID.FIND_PACKAGE_USAGES;
 	}
 
 	@NotNull

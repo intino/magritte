@@ -18,6 +18,9 @@ import java.util.logging.Logger;
 public class TaraCompilerRunner {
 	private final static Logger LOG = Logger.getLogger(TaraCompilerRunner.class.getName());
 
+	private TaraCompilerRunner() {
+	}
+
 	static boolean runTaraCompiler(File argsFile, boolean pluginGeneration) {
 		final CompilerConfiguration config = new CompilerConfiguration();
 		final List<File> srcFiles = new ArrayList<>();
@@ -51,33 +54,17 @@ public class TaraCompilerRunner {
 
 	private static void getInfoFromArgsFile(File argsFile, CompilerConfiguration configuration, List<File> srcFiles) {
 		BufferedReader reader = null;
-		FileInputStream stream;
 		configuration.setOutput(new PrintWriter(System.err));
 		configuration.setWarningLevel(WarningMessage.PARANOIA);
 		try {
-			stream = new FileInputStream(argsFile);
-			reader = new BufferedReader(new InputStreamReader(stream));
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(argsFile)));
 			String line;
 			while ((line = reader.readLine()) != null) {
 				if (!TaraRtConstants.SRC_FILE.equals(line)) break;
 				final File file = new File(reader.readLine());
 				srcFiles.add(file);
 			}
-			while (line != null) {
-				if (line.startsWith(TaraRtConstants.ENCODING))
-					configuration.setSourceEncoding(reader.readLine());
-				else if (line.startsWith(TaraRtConstants.OUTPUTPATH))
-					configuration.setTempDirectory(reader.readLine());
-				else if (line.startsWith(TaraRtConstants.FINAL_OUTPUTPATH))
-					configuration.setTargetDirectory(reader.readLine());
-				else if (line.startsWith(TaraRtConstants.PROJECT))
-					configuration.setProject(reader.readLine());
-				else if (line.startsWith(TaraRtConstants.IDEA_HOME))
-					configuration.setIdeaHome(reader.readLine());
-				else if (line.startsWith(TaraRtConstants.PROJECT_ICON))
-					configuration.setProjectIcon(reader.readLine());
-				line = reader.readLine();
-			}
+			processArgs(configuration, reader, line);
 		} catch (IOException e) {
 			LOG.severe(e.getMessage());
 		} finally {
@@ -87,8 +74,26 @@ public class TaraCompilerRunner {
 			} catch (IOException e) {
 				LOG.severe(e.getMessage());
 			} finally {
-//				argsFile.delete();
+				//argsFile.delete();
 			}
+		}
+	}
+
+	private static void processArgs(CompilerConfiguration configuration, BufferedReader reader, String line) throws IOException {
+		while (line != null) {
+			if (line.startsWith(TaraRtConstants.ENCODING))
+				configuration.setSourceEncoding(reader.readLine());
+			else if (line.startsWith(TaraRtConstants.OUTPUTPATH))
+				configuration.setTempDirectory(reader.readLine());
+			else if (line.startsWith(TaraRtConstants.FINAL_OUTPUTPATH))
+				configuration.setTargetDirectory(reader.readLine());
+			else if (line.startsWith(TaraRtConstants.PROJECT))
+				configuration.setProject(reader.readLine());
+			else if (line.startsWith(TaraRtConstants.IDEA_HOME))
+				configuration.setIdeaHome(reader.readLine());
+			else if (line.startsWith(TaraRtConstants.PROJECT_ICON))
+				configuration.setProjectIcon(reader.readLine());
+			line = reader.readLine();
 		}
 	}
 

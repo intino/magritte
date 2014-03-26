@@ -24,13 +24,13 @@ public class SemanticAnalyzer {
 	}
 
 	private AST mergeAST(Collection<SourceUnit> units) {
-		AST ast = new AST();
+		AST newAst = new AST();
 		for (SourceUnit unit : units) {
-			ast.addAll(unit.getAST().getAstRootNodes());
-			ast.putAllIdentifiers(unit.getAST().getIdentifiers());
-			ast.putAllLookupTable(unit.getAST().getLookUpTable());
+			newAst.addAll(unit.getAST().getAstRootNodes());
+			newAst.putAllIdentifiers(unit.getAST().getIdentifiers());
+			newAst.putAllLookupTable(unit.getAST().getLookUpTable());
 		}
-		return ast;
+		return newAst;
 	}
 
 	public void analyze() throws SemanticException {

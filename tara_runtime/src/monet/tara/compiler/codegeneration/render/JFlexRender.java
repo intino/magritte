@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JFlexRender extends Render {
+	private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(DefaultRender.class.getName());
+
 	private String tplName;
 	private String projectName;
 	private Map<String, String> identifierMap;
@@ -36,14 +38,14 @@ public class JFlexRender extends Render {
 	}
 
 	private void addConceptForBNFToStringBuilder(StringBuilder keywords2, String identifierKey) {
-		HashMap<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("conceptKey", identifierKey);
 		map.put("projectNameFile", RenderUtils.toProperCase(projectName));
 		keywords2.append(block("conceptsToBNF", map));
 	}
 
 	private void addConceptToStringBuilder(StringBuilder keywords, String identifierKey, String identifierValue) {
-		HashMap<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("conceptKey", identifierKey);
 		map.put("conceptValue", identifierValue);
 		keywords.append(block("concepts", map));
@@ -52,6 +54,7 @@ public class JFlexRender extends Render {
 	private static class Logger implements CanvasLogger {
 		@Override
 		public void debug(String message, Object... args) {
+			LOG.severe(String.format(message, args));
 		}
 	}
 }

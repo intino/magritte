@@ -2,6 +2,9 @@ package monet.tara.compiler.codegeneration.render;
 
 public class RenderUtils {
 
+	private RenderUtils() {
+	}
+
 	public static String underscoreToCamelCase(String s) {
 		String[] parts = s.split("_");
 		String camelCaseString = "";

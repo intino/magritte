@@ -27,17 +27,17 @@ public class AnnotationChecker {
 	}
 
 	private void rootAnnotation(ASTNode concept) {
-		if (!concept.isRoot() && annotations.contains(AnnotationType.Root))
-			errors.add(new WrongAnnotationError(AnnotationType.Root.name(), concept));
+		if (!concept.isRoot() && annotations.contains(AnnotationType.ROOT))
+			errors.add(new WrongAnnotationError(AnnotationType.ROOT.name(), concept));
 	}
 
 	private void optionalAnnotation(ASTNode concept) {
-		if ((concept.isRoot() || concept.isMorph()) && annotations.contains(AnnotationType.Optional))
-			errors.add(new WrongAnnotationError(AnnotationType.Optional.name(), concept));
+		if ((concept.isRoot() || concept.isMorph()) && annotations.contains(AnnotationType.OPTIONAL))
+			errors.add(new WrongAnnotationError(AnnotationType.OPTIONAL.name(), concept));
 	}
 
 	private void multipleAnnotation(ASTNode concept) {
-		if ((concept.isRoot() || concept.isMorph()) && annotations.contains(AnnotationType.Multiple))
-			errors.add(new WrongAnnotationError(AnnotationType.Multiple.name(), concept));
+		if ((concept.isRoot() || concept.isMorph()) && annotations.contains(AnnotationType.MULTIPLE))
+			errors.add(new WrongAnnotationError(AnnotationType.MULTIPLE.name(), concept));
 	}
 }

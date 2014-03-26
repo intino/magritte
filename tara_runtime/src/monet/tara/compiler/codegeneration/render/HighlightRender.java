@@ -1,32 +1,33 @@
 package monet.tara.compiler.codegeneration.render;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HighlightRender extends DefaultRender {
-	HashMap<String, String> identifiers;
+	Map<String, String> identifiers;
 
 	public HighlightRender(String tplName, String projectName, Object identifiers) {
 		super(tplName, projectName);
-		this.identifiers = (HashMap<String, String>) identifiers;
+		this.identifiers = (Map<String, String>) identifiers;
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-		addMark("highlightKeys", buildKeys(makeKeywordList()));
+		addMark("highlightKey", buildKeys(makeKeywordList()));
 	}
 
 	private String buildKeys(String[] list) {
 		StringBuilder builder = new StringBuilder("");
 		for (String key : list)
-			builder.append("\n\t\t").append("keys1.put(").append(RenderUtils.toProperCase(projectName)).
+			builder.append("\n\t\t").append("KEYS_1.put(").append(RenderUtils.toProperCase(projectName)).
 				append("Types.").append(key).append(", KEYWORD);");
 		return builder.toString();
 	}
 
 	private String[] makeKeywordList() {
-		ArrayList<String> list = new ArrayList<>();
+		List<String> list = new ArrayList<>();
 		for (String key : identifiers.keySet())
 			if (key.contains("CONCEPT"))
 				list.add(key);

@@ -7,8 +7,6 @@ import com.intellij.util.containers.ConcurrentFactoryMap;
 import com.intellij.util.containers.FactoryMap;
 import com.intellij.util.xmlb.XmlSerializer;
 import gnu.trove.THashMap;
-import org.jetbrains.jps.tara.model.JpsTaraExtensionService;
-import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
 import org.jdom.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +19,8 @@ import org.jetbrains.jps.model.JpsSimpleElement;
 import org.jetbrains.jps.model.ex.JpsElementChildRoleBase;
 import org.jetbrains.jps.model.module.JpsDependencyElement;
 import org.jetbrains.jps.model.module.JpsModule;
+import org.jetbrains.jps.tara.model.JpsTaraExtensionService;
+import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
 
 import java.io.File;
 import java.util.Map;
@@ -41,8 +41,6 @@ public class JpsTaraExtensionServiceImpl extends JpsTaraExtensionService {
 		ResourcesBuilder.registerEnabler(new StandardResourceBuilderEnabler() {
 			@Override
 			public boolean isResourceProcessingEnabled(JpsModule module) {
-				// enable standard resource processing only if this is not a tara module
-				// for tara modules use tara-aware resource builder
 				return getExtension(module) == null;
 			}
 		});

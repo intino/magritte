@@ -8,9 +8,6 @@ import org.jetbrains.jps.model.module.JpsDependencyElement;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.service.JpsServiceManager;
 
-/**
- * @author nik
- */
 public abstract class JpsTaraExtensionService {
 	public static JpsTaraExtensionService getInstance() {
 		return JpsServiceManager.getInstance().getService(JpsTaraExtensionService.class);

@@ -6,14 +6,12 @@ import monet.tara.compiler.core.ast.ASTNode.AnnotationType;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import monet.tara.compiler.core.errorcollection.semantic.UnusedConceptError;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 public class ConceptsUsage {
 
     private SemanticErrorList errors = new SemanticErrorList();
-    private HashMap<String, ASTNode> conceptList = new HashMap<>();
+    private Map<String, ASTNode> conceptList = new HashMap<>();
 
     public ConceptsUsage(SemanticErrorList errors) {
         this.errors = errors;
@@ -25,8 +23,8 @@ public class ConceptsUsage {
     }
 
     private void addToList(ASTNode concept) {
-        ArrayList<AnnotationType> annotations = new ArrayList<>(Arrays.asList(concept.getAnnotations()));
-        if (!annotations.contains(AnnotationType.Root))
+        List<AnnotationType> annotations = new ArrayList<>(Arrays.asList(concept.getAnnotations()));
+        if (!annotations.contains(AnnotationType.ROOT))
             this.conceptList.put(concept.getAbsolutePath(), concept);
     }
 

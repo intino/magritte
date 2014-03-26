@@ -38,11 +38,6 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 		return "Tara File";
 	}
 
-	@Override
-	public Icon getIcon(int flags) {
-		return super.getIcon(flags);
-	}
-
 	public String getPresentableName(){
 		return getName().substring(0, getName().lastIndexOf("."));
 	}

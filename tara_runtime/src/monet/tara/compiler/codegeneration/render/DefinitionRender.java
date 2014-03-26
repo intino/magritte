@@ -25,7 +25,7 @@ public class DefinitionRender extends DefaultRender {
 	private String addDefinition(ASTNode node, int level) {
 		Map<String, Object> map = new HashMap<>();
 		StringBuilder definition = new StringBuilder();
-		setClassModifiers(node, (HashMap<String, Object>) map, level);
+		setClassModifiers(node, map, level);
 		map.put("DefinitionName", (node.getIdentifier().length() > 0) ? node.getIdentifier() : "_");
 		map.put("implements", getAnnotationsString(node));
 		map.put("attributes", addAttributes(node));
@@ -43,7 +43,7 @@ public class DefinitionRender extends DefaultRender {
 		return result.replaceAll("\n[\t]*[ ]*\n[\t]*[ ]*\n", "\n\n");
 	}
 
-	private void setClassModifiers(ASTNode node, HashMap<String, Object> map, int level) {
+	private void setClassModifiers(ASTNode node, Map<String, Object> map, int level) {
 		StringBuilder modifiers = new StringBuilder();
 		if (level > 0)
 			modifiers.append("static ");
@@ -98,9 +98,7 @@ public class DefinitionRender extends DefaultRender {
 				map.put("listCast", block("multipleCastBlock", new HashMap<String, Object>() {{
 					put("childType", childIdentifier);
 				}}));
-
 			}
-
 			map.put("childType", childIdentifier);
 			childGetters.append(block("childGetter", (HashMap<String, Object>) map)).append("\t");
 		}

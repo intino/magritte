@@ -9,6 +9,8 @@ import java.util.List;
 
 public class JavaCommandHelper {
 
+	public static final String JAVA_HOME = System.getProperty("java.home");
+
 	private JavaCommandHelper() {
 	}
 
@@ -24,14 +26,15 @@ public class JavaCommandHelper {
 			List<String> sourceParam = new ArrayList<>();
 			File buildPath = new File(buildDirectory);
 			buildPath.mkdirs();
-			cmdLine.add("-d " + buildPath.getAbsolutePath());
+			cmdLine.add("-d");
+			cmdLine.add(buildPath.getAbsolutePath());
 			if (classpath != null && classpath.length > 0) {
 				cmdLine.add("-classpath");
 				cmdLine.add(join(classpath, File.pathSeparator));
 			}
 			for (File source : sources)
 				sourceParam.add(source.getAbsolutePath());
-			cmdLine.add(join(sourceParam.toArray(new String[sourceParam.size()]), " "));
+			cmdLine.addAll(sourceParam);
 		}
 		return cmdLine;
 	}
@@ -61,18 +64,15 @@ public class JavaCommandHelper {
 	}
 
 	public static String getJavacExecutable() {
-		String javaPath = System.getProperty("java.home");
-		return javaPath.substring(0, javaPath.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator + "javac";
+		return JAVA_HOME.substring(0, JAVA_HOME.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator + "javac";
 	}
 
 	public static String getJarExecutable() {
-		String javaPath = System.getProperty("java.home");
-		return javaPath.substring(0, javaPath.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator + "jar";
+		return JAVA_HOME.substring(0, JAVA_HOME.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator + "jar";
 	}
 
 	public static String getJavaExecutable() {
-		String javaPath = System.getProperty("java.home");
-		return javaPath.substring(0, javaPath.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator + "java";
+		return JAVA_HOME.substring(0, JAVA_HOME.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator + "java";
 	}
 
 	@NotNull

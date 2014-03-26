@@ -5,10 +5,11 @@ import monet.tara.compiler.core.ast.ASTNode;
 
 public class TaraRuntimeException extends RuntimeException {
 
-	//	private ModuleNode module;
 	private ASTNode node;
 
-	public TaraRuntimeException() {
+
+	public TaraRuntimeException(ASTNode node) {
+		this.node = node;
 	}
 
 	public TaraRuntimeException(String message) {
@@ -43,12 +44,8 @@ public class TaraRuntimeException extends RuntimeException {
 
 	protected String getLocationText() {
 		String answer = ". ";
-		if (this.node != null) {
-			answer = answer + "At [" + this.node.getLine() + "] ";
-		}
-		if (answer.equals(". ")) {
-			return "";
-		}
+		if (this.node != null) answer = answer + "At [" + this.node.getLine() + "] ";
+		if (". ".equals(answer)) return "";
 		return answer;
 	}
 }

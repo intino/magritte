@@ -40,12 +40,12 @@ public class BnfToJavaCodeGenerator extends CodeGenerator {
 
 	public static void fixTypes(File tempDir, String project) throws TaraException {
 		try {
-			String SEP = PathManager.SEP;
+			String sep = PathManager.SEP;
 			String typesFile = PathManager.getSrcDir(tempDir) +
 				TemplateFactory.getTemplate("Types.java")
-					.replace(SEP + "tpl", "")
+					.replace(sep + "tpl", "")
 					.replace("-", RenderUtils.toProperCase(project))
-					.replace(SEP + "tara" + SEP, SEP + project.toLowerCase() + SEP);
+					.replace(sep + "tara" + sep, sep + project.toLowerCase() + sep);
 			String fileContent = FileSystemUtils.readFile(typesFile);
 			fileContent = fileContent.replace("new " + RenderUtils.toProperCase(project) + "TokenType(\"NEW_LINE_INDENT\");", "TokenType.NEW_LINE_INDENT;");
 			FileSystemUtils.writeFile(typesFile, fileContent);

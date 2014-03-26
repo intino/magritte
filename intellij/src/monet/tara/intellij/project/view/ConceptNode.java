@@ -51,11 +51,6 @@ public class ConceptNode extends ProjectViewNode<ConceptTreeView> {
 		}
 	}
 
-	@Override
-	public void setIcon(Icon icon) {
-		super.setIcon(icon);
-	}
-
 	public void navigate(final boolean requestFocus) {
 		getValue().navigate(requestFocus);
 	}

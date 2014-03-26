@@ -1,4 +1,4 @@
-package monet.::projectName::.intellij.codeInsight.completion;
+package monet.::projectName::.intellij.codeinsight.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -34,17 +34,17 @@ public class ::projectProperName::PrimitivesCompletionContributor extends Comple
 					resultSet.addElement(LookupElementBuilder.create("Boolean"));
 					resultSet.addElement(LookupElementBuilder.create("Uid"));
 				}
-			});
+			}
+		);
 	}
 
 	private static class AfterVarFitFilter implements ElementFilter {
 		public boolean isAcceptable(Object element, PsiElement context) {
-			if (element instanceof PsiElement)
-				if (context.getPrevSibling() != null) {
-					final ASTNode ctxPreviousNode = context.getPrevSibling().getPrevSibling().getNode();
-					if (::projectProperName::Types.VAR.equals(ctxPreviousNode.getElementType()))
-						return true;
-				}
+			if (element instanceof PsiElement && context.getPrevSibling() != null) {
+				final ASTNode ctxPreviousNode = context.getPrevSibling().getPrevSibling().getNode();
+				if (::projectProperName::Types.VAR.equals(ctxPreviousNode.getElementType()))
+					return true;
+			}
 			return false;
 		}
 

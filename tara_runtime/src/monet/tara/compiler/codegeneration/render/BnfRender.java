@@ -10,6 +10,7 @@ import org.monet.templation.Render;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BnfRender extends Render {
@@ -17,7 +18,7 @@ public class BnfRender extends Render {
 	private String tplName;
 	private String projectName;
 	private AST ast;
-	private ArrayList<ASTNode> rootList = new ArrayList<>();
+	private List<ASTNode> rootList = new ArrayList<>();
 
 	public BnfRender(String projectName, String tplName, String path, AST ast) {
 		super(new Logger(), path);
@@ -45,7 +46,7 @@ public class BnfRender extends Render {
 			if (isExtendedRoot(node)) rootList.add(node);
 		}
 		for (ASTNode child : node.getChildren())
-			if (!child.getIdentifier().equals("")) goOver(child);
+			if (!"".equals(child.getIdentifier())) goOver(child);
 	}
 
 	private void generateListOfRootConcepts() {
@@ -54,7 +55,7 @@ public class BnfRender extends Render {
 			Map<String, Object> localMap = new HashMap<>();
 			localMap.put("identifier", getTransformedAbsolutePath(node));
 			localMap.put("pipe", (rootList.indexOf(node) != 0 && concepts.length() != 0) ? "|" : "");
-			concepts.append(block("concept", (HashMap<String, Object>) localMap));
+			concepts.append(block("concept", localMap));
 		}
 		addMark("concepts", concepts.toString());
 	}
@@ -67,13 +68,13 @@ public class BnfRender extends Render {
 			(new ImplicitAttributes(node, ast)).getAttributesString(),
 			(new ExplicitAttributes(node, ast)).getAttributesString());
 		putConstituentsToHashMap(localMap, (new Constituents(ast, node)).getConstituentString());
-		concepts.append(block("ruleConcept", (HashMap<String, Object>) localMap));
+		concepts.append(block("ruleConcept", localMap));
 		addMark("rules", concepts.toString());
 	}
 
 	private boolean containsRoot(ASTNode.AnnotationType[] annotations) {
 		for (ASTNode.AnnotationType annotation : annotations)
-			if (annotation.equals(ASTNode.AnnotationType.Root)) return true;
+			if (ASTNode.AnnotationType.ROOT.equals(annotation)) return true;
 		return false;
 	}
 
@@ -96,18 +97,18 @@ public class BnfRender extends Render {
 	}
 
 	private void putConstituentsToHashMap(Map<String, Object> localMap, String constituent) {
-		localMap.put("identifierConstituent", (!constituent.equals("")) ? " | " + localMap.get("identifier") + "Constituents" : "");
-		localMap.put("constituentRule", (!constituent.equals("")) ? "private " + localMap.get("identifier") + "Constituents ::= " + constituent : "");
+		localMap.put("identifierConstituent", (!"".equals(constituent)) ? " | " + localMap.get("identifier") + "Constituents" : "");
+		localMap.put("constituentRule", (!"".equals(constituent)) ? "private " + localMap.get("identifier") + "Constituents ::= " + constituent : "");
 	}
 
 	private void putAttributesComponentsToHashMap(Map<String, Object> localMap, String attributesImplicit, String attributesExplicit) {
-		localMap.put("assignAttributeHeader", (!attributesImplicit.equals("")) ? "(ASSIGN " + localMap.get("identifier") + "AttributesImplicit)?" : "");
+		localMap.put("assignAttributeHeader", (!"".equals(attributesImplicit)) ? "(ASSIGN " + localMap.get("identifier") + "AttributesImplicit)?" : "");
 		localMap.put("typeValues", attributesImplicit);
 		localMap.put("typeKey-Value", attributesExplicit);
 		String attributeImplicitForm = localMap.get("identifier") + "AttributesImplicit ::= " + localMap.get("typeValues") + "\n";
 		String attributeExplicit = localMap.get("identifier") + "AttributesExplicit ::= " + localMap.get("typeKey-Value");
-		localMap.put("attributeRule", (!localMap.get("assignAttributeHeader").equals("")) ? attributeExplicit + "\n" + attributeImplicitForm : "");
-		localMap.put("identifierExplicitAttribute", (!localMap.get("assignAttributeHeader").equals("")) ? "| " + localMap.get("identifier") + "AttributesExplicit" : "");
+		localMap.put("attributeRule", (!"".equals(localMap.get("assignAttributeHeader"))) ? attributeExplicit + "\n" + attributeImplicitForm : "");
+		localMap.put("identifierExplicitAttribute", (!"".equals(localMap.get("assignAttributeHeader"))) ? "| " + localMap.get("identifier") + "AttributesExplicit" : "");
 	}
 
 	private void putMainComponentsToHashMap(ASTNode advance, Map<String, Object> localMap) {
@@ -120,7 +121,7 @@ public class BnfRender extends Render {
 	private static class Logger implements CanvasLogger {
 		@Override
 		public void debug(String message, Object... args) {
-			LOG.info(message);
+			LOG.severe(String.format(message, args));
 		}
 	}
 }

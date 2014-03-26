@@ -5,9 +5,9 @@ import monet.tara.compiler.core.ast.ASTNode;
 
 public abstract class SemanticError {
 
-	String token;
-	ASTNode node;
-	int line;
+	protected final String token;
+	protected final ASTNode node;
+	protected final int line;
 
 	protected SemanticError(String token, ASTNode node) {
 		this.token = token;

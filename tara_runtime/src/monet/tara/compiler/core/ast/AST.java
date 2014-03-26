@@ -57,16 +57,16 @@ public class AST {
 	}
 
 	public ASTNode searchAncestry(ASTNode node) {
-		ASTNode result;
 		if (node.getExtendFrom() == null) return null;
-		if ((result = relativeSearch(node.getExtendFrom(), node)) != null) return result;
+		ASTNode result = relativeSearch(node.getExtendFrom(), node);
+		if (result != null) return result;
 		return absoluteSearch(node.getExtendFrom());
 	}
 
 	private ASTNode absoluteSearch(String path) {
 		String[] tree = path.split("\\.");
-		List<ASTNode> nodes;
-		if ((nodes = lookUpTable.get(tree[tree.length - 1])) == null) return null;
+		List<ASTNode> nodes = lookUpTable.get(tree[tree.length - 1]);
+		if (nodes == null) return null;
 		for (ASTNode node : nodes)
 			if (path.equals(node.getAbsolutePath()))
 				return node;
@@ -78,11 +78,11 @@ public class AST {
 		ASTNode[] nodes;
 		if (context.getParent() != null) nodes = context.getParent().getChildren();
 		else return null;
-		ASTNode node = context;
 		String nodeName = tree[0];
-		if (!nodeName.isEmpty() && (node = isInList(nodes, nodeName)) != null)
+		ASTNode node = isInList(nodes, nodeName);
+		if (!nodeName.isEmpty() && node != null)
 			relativeSearch(concatenate(tree, 1), node);
-		return (node == context) ? null : node;
+		return (context.equals(node)) ? null : node;
 	}
 
 	private String concatenate(String[] tree, int start) {
@@ -108,9 +108,9 @@ public class AST {
 	}
 
 	public ASTNode searchNode(String nodeName, ASTNode context) {
-		ASTNode result;
+		ASTNode result = relativeSearch(nodeName, context);
 		if (nodeName == null || nodeName.isEmpty()) return null;
-		if ((result = relativeSearch(nodeName, context)) != null) return result;
+		if (result != null) return result;
 		return absoluteSearch(nodeName);
 	}
 

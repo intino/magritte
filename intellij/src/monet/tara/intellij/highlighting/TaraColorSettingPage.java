@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class TaraColorSettingPage implements ColorSettingsPage { //TODO
+public class TaraColorSettingPage implements ColorSettingsPage {
 	private static final AttributesDescriptor[] DESCRIPTORS =
 		new AttributesDescriptor[]{
 			new AttributesDescriptor("Keyword", TaraSyntaxHighlighter.KEYWORD),

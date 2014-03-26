@@ -19,17 +19,11 @@ public class CompilerConfiguration {
 		setWarningLevel(1);
 		setTempDirectory((File) null);
 		setDebug(false);
-		String encoding = null;
-		try {
-			encoding = System.getProperty("file.encoding", "UTF8");
-			encoding = System.getProperty("tara.source.encoding", encoding);
-		} catch (Exception ignored) {
-		}
+		String encoding;
+		encoding = System.getProperty("file.encoding", "UTF8");
+		encoding = System.getProperty("tara.source.encoding", encoding);
 		setSourceEncoding(encoding);
-		try {
-			setOutput(new PrintWriter(System.err));
-		} catch (Exception ignored) {
-		}
+		setOutput(new PrintWriter(System.err));
 	}
 
 	public int getWarningLevel() {
@@ -48,7 +42,7 @@ public class CompilerConfiguration {
 	}
 
 	public void setSourceEncoding(String encoding) {
-		if (encoding == null) encoding = "UTF8";
+		if (encoding == null) sourceEncoding = "UTF8";
 		this.sourceEncoding = encoding;
 	}
 
@@ -67,16 +61,16 @@ public class CompilerConfiguration {
 		return this.tempDirectory;
 	}
 
+	public void setTempDirectory(File directory) {
+		this.tempDirectory = directory;
+	}
+
 	public void setTempDirectory(String directory) {
 		if ((directory != null) && (directory.length() > 0)) {
 			this.tempDirectory = new File(directory);
 			this.tempDirectory.mkdirs();
 		} else
 			this.tempDirectory = null;
-	}
-
-	public void setTempDirectory(File directory) {
-		this.tempDirectory = directory;
 	}
 
 	public boolean getDebug() {
@@ -91,15 +85,15 @@ public class CompilerConfiguration {
 		return targetDirectory;
 	}
 
+	public void setTargetDirectory(File targetDirectory) {
+		this.targetDirectory = targetDirectory;
+	}
+
 	public void setTargetDirectory(String directory) {
 		if ((directory != null) && (directory.length() > 0))
 			this.targetDirectory = new File(directory);
 		else
 			this.tempDirectory = null;
-	}
-
-	public void setTargetDirectory(File targetDirectory) {
-		this.targetDirectory = targetDirectory;
 	}
 
 	public String getProject() {

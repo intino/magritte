@@ -14,9 +14,8 @@ public abstract class ProcessingUnit {
 	protected ProcessingUnit(CompilerConfiguration configuration, ErrorCollector er) {
 		this.phase = 1;
 		configure(configuration == null ? new CompilerConfiguration() : configuration);
-		if (er == null) er = new ErrorCollector(getConfiguration());
-		this.errorCollector = er;
-
+		if (er == null) errorCollector = new ErrorCollector(getConfiguration());
+		else this.errorCollector = er;
 	}
 
 	public void configure(CompilerConfiguration configuration) {
@@ -27,14 +26,13 @@ public abstract class ProcessingUnit {
 		return this.configuration;
 	}
 
-	public ErrorCollector getErrorCollector() {
-		return this.errorCollector;
-	}
-
 	public void setConfiguration(CompilerConfiguration configuration) {
 		this.configuration = configuration;
 	}
 
+	public ErrorCollector getErrorCollector() {
+		return this.errorCollector;
+	}
 
 	public void gotoPhase(int phase) throws CompilationFailedException {
 		if (!this.phaseComplete)

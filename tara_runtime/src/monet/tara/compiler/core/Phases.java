@@ -1,9 +1,9 @@
 package monet.tara.compiler.core;
 
-/**
- * Created by oroncal on 24/01/14.
- */
 public class Phases {
+
+	private Phases() {
+	}
 
 	public static final int INITIALIZATION = 1;
 	public static final int PARSING = 2;

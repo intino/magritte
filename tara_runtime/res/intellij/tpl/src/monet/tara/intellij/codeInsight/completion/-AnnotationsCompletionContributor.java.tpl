@@ -1,4 +1,4 @@
-package monet.::projectName::.intellij.codeInsight.completion;
+package monet.::projectName::.intellij.codeinsight.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;

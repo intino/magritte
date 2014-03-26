@@ -13,6 +13,9 @@ import java.util.logging.Logger;
 public abstract class CodeGenerator {
 	private static final Logger LOG = Logger.getLogger(CodeGenerator.class.getName());
 
+	protected CodeGenerator() {
+	}
+
 	protected static PrintWriter getOutWriter(File file) throws TaraException {
 		try {
 			file.getParentFile().mkdirs();
@@ -32,15 +35,15 @@ public abstract class CodeGenerator {
 		output.start();
 		error.join(3000);
 		output.join(3000);
-		if (!output.getMessage().equals(""))
-			LOG.info("Output:\n" + output.getMessage());
-		if (!error.getMessage().equals(""))
-			LOG.severe("\n\n" + error.getMessage());
+		if (!"".equals(output.getMessage()))
+			LOG.info("\nInfo:\n" + output.getMessage()+"\n");
+		if (!"".equals(error.getMessage()))
+			LOG.severe("\n" + error.getMessage());
 	}
 
 	protected static String newTemplate(String project, String template) {
-		String SEP = PathManager.SEP;
-		return template.replace("-", project).replace("tara" + SEP, SEP + project + SEP).replace("tpl" + SEP, "");
+		String sep = PathManager.SEP;
+		return template.replace("-", project).replace("tara" + sep, sep + project + sep).replace("tpl" + sep, "");
 	}
 
 	protected static void out(String s) {

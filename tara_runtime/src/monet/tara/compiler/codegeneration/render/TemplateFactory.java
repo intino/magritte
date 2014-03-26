@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class TemplateFactory {
 
-	public static final String IDE_TPL = "/intellij/tpl/";
+	public static final String IDE_TPL = "intellij/tpl/";
 	public static final String IDE = "intellij/";
 	public static final String CONCEPT_KEY = "_";
 	public static final String PROJECT_KEY = "-";
@@ -58,6 +58,7 @@ public class TemplateFactory {
 		TEMPLATES.put("GeneratedParserUtilBase.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/parser/GeneratedParserUtilBase.java");
 		TEMPLATES.put("ParserDefinition.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/parser/-ParserDefinition.java");
 		TEMPLATES.put("ParserUtil.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/parser/-ParserUtil.java");
+		TEMPLATES.put("Annotation.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/parser/Annotation.java");
 		TEMPLATES.put("Icons.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/-Icons.java");
 		TEMPLATES.put("Language.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/-Language.java");
 		TEMPLATES.put("Attribute.java", IDE_TPL + SRC+ PROJECT_PATH + "metamodel/psi/Attribute.java");
@@ -135,8 +136,6 @@ public class TemplateFactory {
 		TEMPLATES.put("errorReporter.properties", IDE_TPL + RES+ "messages/errorReporter.properties");
 		TEMPLATES.put("PluginErrorReportSubmitterBundle.properties", IDE_TPL + RES+ "messages/PluginErrorReportSubmitterBundle.properties");
 		TEMPLATES.put("Bundle.properties", IDE_TPL + RES+ "messages/-Bundle.properties");
-//		TEMPLATES.put("Definition", "metamodel/Definition");
-//		TEMPLATES.put("Metamodel", "metamodel/Metamodel");
 	}
 
 
@@ -146,10 +145,11 @@ public class TemplateFactory {
 	}
 
 	public static String getTemplate(String className) {
-		String template;
-		if ((template = TEMPLATES.get(className)) != null)
-			return template;
-		else
-			throw new RuntimeException("Template not defined "+ className);
+		String template= TEMPLATES.get(className);
+		if (template != null) return template;
+		else throw new RuntimeException("Template not defined "+ className);
+	}
+
+	private TemplateFactory() {
 	}
 }

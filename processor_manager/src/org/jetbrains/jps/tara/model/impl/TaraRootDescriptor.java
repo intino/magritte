@@ -43,7 +43,7 @@ public class TaraRootDescriptor extends BuildRootDescriptor {
 	@NotNull
 	@Override
 	public FileFilter createFileFilter() {
-		return null;//new TaraFileFilter(myFile, myConfig);
+		return null;//TODO
 	}
 
 	@Override

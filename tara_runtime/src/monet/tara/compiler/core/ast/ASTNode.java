@@ -12,9 +12,9 @@ public class ASTNode {
 	private boolean polymorphic;
 	private String extendFrom;
 	private ASTNode parent;
-	private ArrayList<AnnotationType> annotations = new ArrayList<>();
-	private ArrayList<ASTNode> children = new ArrayList<>();
-	private ArrayList<Variable> variables = new ArrayList<>();
+	private List<AnnotationType> annotations = new ArrayList<>();
+	private List<ASTNode> children = new ArrayList<>();
+	private List<Variable> variables = new ArrayList<>();
 	private String identifier = "";
 	private String file;
 	private int line;
@@ -45,9 +45,13 @@ public class ASTNode {
 		return line;
 	}
 
+	public void setLine(int line) {
+		this.line = line;
+	}
+
 	public boolean hasCode() {
 		for (AnnotationType annotation : annotations)
-			if (annotation.name().endsWith(AnnotationType.HasCode.name()))
+			if (annotation.name().endsWith(AnnotationType.HAS_CODE.name()))
 				return true;
 		return false;
 	}
@@ -107,7 +111,7 @@ public class ASTNode {
 			for (ASTNode child : children)
 				if (child.isMorph()) morphs.add(child);
 			return morphs.toArray(new ASTNode[morphs.size()]);
-		} else return null;
+		} else return new ASTNode[0];
 	}
 
 	public Word[] getWords() {
@@ -144,7 +148,7 @@ public class ASTNode {
 	}
 
 	public void setModifier(String modifier) {
-		if (modifier.equals("abstract"))
+		if ("abstract".equals(modifier))
 			abstractModifier = true;
 		else finalModifier = true;
 	}
@@ -185,25 +189,21 @@ public class ASTNode {
 		this.parent = parent;
 	}
 
-	public ArrayList<Variable> getVariables() {
+	public List<Variable> getVariables() {
 		return variables;
 	}
 
 	public String getAbsolutePath() {
 		return (parent != null) ? parent.getAbsolutePath() +
-			((!getIdentifier().equals("")) ? "." + getIdentifier() : "") : getIdentifier();
+			((!"".equals(getIdentifier())) ? "." + getIdentifier() : "") : getIdentifier();
 	}
 
 	public String getFile() {
 		return file;
 	}
 
-	public void setLine(int line) {
-		this.line = line;
-	}
-
 	public enum AnnotationType {
-		Extensible, HasCode, Root, Singleton, Multiple, Optional;
+		EXTENSIBLE, HAS_CODE, ROOT, SINGLETON, MULTIPLE, OPTIONAL;
 	}
 
 	public static class Attribute extends Variable {
@@ -264,7 +264,7 @@ public class ASTNode {
 	}
 
 	public static class Word extends Variable {
-		ArrayList<String> wordTypes;
+		List<String> wordTypes;
 		private String identifier;
 
 		public Word(String identifier) {
@@ -276,7 +276,7 @@ public class ASTNode {
 			return identifier;
 		}
 
-		public ArrayList<String> getWordTypes() {
+		public List<String> getWordTypes() {
 			return wordTypes;
 		}
 

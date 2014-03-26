@@ -47,7 +47,7 @@ public class DuplicateDetector {
 
 	private void checkChildren(ASTNode concept, Set<String> names) {
 		for (ASTNode child : concept.getChildren())
-			if (!names.add(child.getIdentifier()) && !child.getIdentifier().equals(""))
+			if (!names.add(child.getIdentifier()) && !"".equals(child.getIdentifier()))
 				errors.add(new DuplicateIdentifierError(child.getIdentifier(), concept));
 	}
 

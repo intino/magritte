@@ -19,18 +19,17 @@ public class SimpleMessage extends Message {
 
 	public SimpleMessage(String message, Object data, ProcessingUnit source) {
 		this.message = message;
-		this.data = null;
+		this.data = data;
 		this.owner = source;
 	}
 
 
 	public void write(PrintWriter writer) {
-		if ((this.owner instanceof SourceUnit)) {
+		if (this.owner instanceof SourceUnit) {
 			String name = ((SourceUnit) this.owner).getName();
 			writer.println("" + name + ": " + this.message);
-		} else {
+		} else
 			writer.println(this.message);
-		}
 	}
 
 	public String getMessage() {

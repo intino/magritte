@@ -1,4 +1,4 @@
-package monet.::projectName::.intellij.codeInsight.completion;
+package monet.::projectName::.intellij.codeinsight.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -6,6 +6,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.lang.ASTNode;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.tree.IElementType;
@@ -28,6 +29,7 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 public class ::projectProperName::SignatureCompletionContributor extends CompletionContributor {
 
+	public static final String MORPH = "morph";
 	private PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement().withLanguage(::projectProperName::Language.INSTANCE)
 		.and(new FilterPattern(new InErrorFilter()));
 
@@ -47,58 +49,66 @@ public class ::projectProperName::SignatureCompletionContributor extends Complet
 		.andOr(new FilterPattern(new AfterElementFitFilter(::projectProperName::Types.FINAL)),
 			new FilterPattern(new AfterElementFitFilter(::projectProperName::Types.ABSTRACT)));
 
-
 	public ::projectProperName::SignatureCompletionContributor() {
-		extend(CompletionType.SMART, afterDefinitionKey,
+		extend(CompletionType.BASIC, afterDefinitionKey,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(\@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           \@NotNull CompletionResultSet resultSet) {
 					resultSet.addElement(LookupElementBuilder.create("polymorphic"));
-					resultSet.addElement(LookupElementBuilder.create("morph"));
+					resultSet.addElement(LookupElementBuilder.create(MORPH));
 					resultSet.addElement(LookupElementBuilder.create("as"));
 					resultSet.addElement(LookupElementBuilder.create("abstract"));
 					resultSet.addElement(LookupElementBuilder.create("final"));
 					resultSet.addAllElements(getVariants(parameters.getOriginalPosition()));
 				}
-			});
+			}
+		);
 
-		extend(CompletionType.SMART, afterPolymorphicOrMorphKey,
+		extend(CompletionType.BASIC, afterPolymorphicOrMorphKey,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(\@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           \@NotNull CompletionResultSet resultSet) {
 					resultSet.addElement(LookupElementBuilder.create("as"));
 				}
-			});
+			}
+		);
 
 
-		extend(CompletionType.SMART, afterNewLine,
+		extend(CompletionType.BASIC, afterNewLine,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(\@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           \@NotNull CompletionResultSet resultSet) {
 					resultSet.addElement(LookupElementBuilder.create("Definition"));
+					resultSet.addElement(LookupElementBuilder.create("new"));
+					resultSet.addElement(LookupElementBuilder.create("var"));
 				}
-			});
+			}
+		);
 
-		extend(CompletionType.SMART, afterModifierKey,
+		extend(CompletionType.BASIC, afterModifierKey,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(\@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           \@NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("morph"));
+					resultSet.addElement(LookupElementBuilder.create(MORPH));
 					resultSet.addElement(LookupElementBuilder.create("as"));
 				}
-			});
+			}
+		);
 	}
 
 	public static List<LookupElement> getVariants(PsiElement myElement) {
 		List<Definition> definitions = new ArrayList<>();
-		if (myElement.getPrevSibling().getNode().equals(::projectProperName::Types.DOT))
-			getChildrenVariants((::projectProperName::Identifier) myElement.getPrevSibling().getPrevSibling(), definitions);
-		else refer(myElement, definitions);
-		return fillVariants(definitions);
+		if (myElement.getPrevSibling() != null) {
+			if (::projectProperName::Types.DOT.equals(myElement.getPrevSibling().getNode()))
+				getChildrenVariants((::projectProperName::Identifier) myElement.getPrevSibling().getPrevSibling(), definitions);
+			else refer(myElement, definitions);
+			return fillVariants(definitions);
+		}
+		return Collections.EMPTY_LIST;
 	}
 
 	private static List<LookupElement> fillVariants(List<Definition> definitions) {
@@ -132,12 +142,10 @@ public class ::projectProperName::SignatureCompletionContributor extends Complet
 		}
 
 		public boolean isAcceptable(Object element, PsiElement context) {
-			if (element instanceof PsiElement)
-				if (context.getPrevSibling() != null && context.getPrevSibling().getPrevSibling() != null) {
-					final ASTNode ctxPreviousNode = context.getPrevSibling().getPrevSibling().getNode();
-					if (type.equals(ctxPreviousNode.getElementType()))
-						return true;
-				}
+			if (element instanceof PsiElement && context.getPrevSibling() != null && context.getPrevSibling().getPrevSibling() != null) {
+				final ASTNode ctxPreviousNode = context.getPrevSibling().getPrevSibling().getNode();
+				if (type.equals(ctxPreviousNode.getElementType())) return true;
+			}
 			return false;
 		}
 
@@ -151,7 +159,7 @@ public class ::projectProperName::SignatureCompletionContributor extends Complet
 		public boolean isAcceptable(Object element, \@Nullable PsiElement context) {
 			if (element instanceof PsiElement) {
 				assert context != null;
-				if (context.getPrevSibling() == null) return true;
+				if (((PsiElement)element).getParent() instanceof PsiErrorElement) return true;
 			}
 			return false;
 		}

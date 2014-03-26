@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TaraFindUsagesProvider implements FindUsagesProvider {
+	public static final String ANONYMOUS = "Anonymous";
+	public static final String ERROR = "Error";
 	private static final DefaultWordsScanner WORDS_SCANNER =
 		new DefaultWordsScanner(new TaraLexerAdapter(),
 			TokenSet.create(TaraTypes.IDENTIFIER, TaraTypes.IDENTIFIER_KEY), TokenSet.create(TaraTypes.DOC), TokenSet.EMPTY);
@@ -46,8 +48,8 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	public String getDescriptiveName(@NotNull PsiElement element) {
 		if (element instanceof Concept) {
 			String name = ((Concept) element).getName();
-			return name == null ? "Anonymous" : name;
-		} else return "Error";
+			return name == null ? ANONYMOUS : name;
+		} else return ERROR;
 	}
 
 	@NotNull
@@ -55,7 +57,7 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
 		if (element instanceof Concept) {
 			String name = ((Concept) element).getName();
-			return name == null ? "Anonymous" : name;
-		} else return "Error";
+			return name == null ? ANONYMOUS : name;
+		} else return ERROR;
 	}
 }

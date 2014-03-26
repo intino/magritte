@@ -32,7 +32,7 @@ public class DefaultRender extends Render {
 			addMark("projectName", projectName.toLowerCase());
 			addMark("projectProperName", RenderUtils.toProperCase(projectName));
 			addMark("projectUpperName", projectName.toUpperCase());
-		} catch (NullPointerException e) {
+		} catch (Exception e) {
 			throw new TaraException("Template not found: " + tplName);
 		}
 
@@ -41,7 +41,7 @@ public class DefaultRender extends Render {
 	private static class Logger implements CanvasLogger {
 		@Override
 		public void debug(String message, Object... args) {
-			LOG.info(message);
+			LOG.info(String.format(message, args));
 		}
 	}
 

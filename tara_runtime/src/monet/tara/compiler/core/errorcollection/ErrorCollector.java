@@ -106,7 +106,7 @@ public class ErrorCollector {
 	public SyntaxException getSyntaxError(int index) {
 		SyntaxException exception = null;
 		Message message = getError(index);
-		if ((message != null) && ((message instanceof SyntaxErrorMessage)))
+		if (message instanceof SyntaxErrorMessage)
 			exception = ((SyntaxErrorMessage) message).getCause();
 		return exception;
 	}
@@ -115,9 +115,9 @@ public class ErrorCollector {
 		Exception exception = null;
 		Message message = getError(index);
 		if (message != null)
-			if ((message instanceof ExceptionMessage))
+			if (message instanceof ExceptionMessage)
 				exception = ((ExceptionMessage) message).getCause();
-			else if ((message instanceof SyntaxErrorMessage))
+			else if (message instanceof SyntaxErrorMessage)
 				exception = ((SyntaxErrorMessage) message).getCause();
 		return exception;
 	}
@@ -145,11 +145,11 @@ public class ErrorCollector {
 	}
 
 	private void write(PrintWriter writer, List messages, String txt) {
-		if ((messages == null) || (messages.size() == 0)) return;
+		if (messages == null || messages.isEmpty()) return;
 		for (Object message1 : messages) {
 			Message message = (Message) message1;
 			message.write(writer);
-			if ((this.configuration.getDebug()) && ((message instanceof SyntaxErrorMessage))) {
+			if (this.configuration.getDebug() && message instanceof SyntaxErrorMessage) {
 				SyntaxErrorMessage sem = (SyntaxErrorMessage) message;
 				sem.getCause().printStackTrace(writer);
 			}

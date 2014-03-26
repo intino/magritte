@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface Attribute extends Navigatable, Iconable, PsiNamedElement {
 
-	public String getType();
+	String getType();
 
 	@Nullable
 	TaraBooleanList getBooleanList();

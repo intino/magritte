@@ -44,7 +44,6 @@ public class TaraTarget extends ModuleBasedTarget<TaraRootDescriptor> {
 	@NotNull
 	@Override
 	public List<TaraRootDescriptor> computeRootDescriptors(JpsModel model, ModuleExcludeIndex index, IgnoredFileIndex ignoredFileIndex, BuildDataPaths dataPaths) {
-		// todo: should we honor ignored and excluded roots here?
 		final List<TaraRootDescriptor> result = new ArrayList<>();
 		for (TaraConfiguration resource : getRootConfigurations(dataPaths)) {
 			result.add(new TaraRootDescriptor(this, resource));

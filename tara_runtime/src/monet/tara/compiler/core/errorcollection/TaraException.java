@@ -2,17 +2,20 @@ package monet.tara.compiler.core.errorcollection;
 
 public class TaraException extends Exception {
 
-	private boolean fatal = true;
+	private final boolean fatal;
 
 	public TaraException() {
+		fatal = true;
 	}
 
 	public TaraException(String message) {
 		super(message);
+		fatal = true;
 	}
 
 	public TaraException(String message, Throwable cause) {
 		super(message, cause);
+		fatal = true;
 	}
 
 	public TaraException(boolean fatal) {
@@ -28,7 +31,4 @@ public class TaraException extends Exception {
 		return this.fatal;
 	}
 
-	public void setFatal(boolean fatal) {
-		this.fatal = fatal;
-	}
 }
