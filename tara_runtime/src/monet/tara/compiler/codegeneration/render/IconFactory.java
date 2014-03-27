@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class IconFactory {
 
-	public static final String IDE_TPL = "/intellij/tpl/";
+	public static final String IDE_TPL = "intellij/tpl/";
 	public static final String IDE = "intellij/";
 	private static final String PROJECT_PATH = "monet/tara/" + IDE;
 	public static final String CONCEPT_KEY = "_";

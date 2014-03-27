@@ -2,12 +2,12 @@ package monet.tara.compiler.codegeneration.intellij;
 
 import monet.tara.compiler.codegeneration.JavaCommandHelper;
 import monet.tara.compiler.codegeneration.PathManager;
+import monet.tara.compiler.codegeneration.ResourceManager;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -44,10 +44,10 @@ public class JFlexToJavaGenerator extends CodeGenerator {
 	}
 
 	private static File[] getJFlexLibFiles() throws TaraException {
-		URL jflex = JFlexToJavaGenerator.class.getResource("/JFlex.jar");
-		URL skeleton = JFlexToJavaGenerator.class.getResource("/idea-flex.skeleton");
+		File jflex = ResourceManager.getFile("JFlex.jar");
+		File skeleton = ResourceManager.getFile("idea-flex.skeleton");
 		if (jflex == null | skeleton == null) throw new TaraException("JFlex not found");
-		return new File[]{new File(jflex.getPath()), new File(skeleton.getPath())};
+		return new File[]{jflex, skeleton};
 	}
 
 

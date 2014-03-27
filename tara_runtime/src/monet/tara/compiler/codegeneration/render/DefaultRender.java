@@ -1,5 +1,6 @@
 package monet.tara.compiler.codegeneration.render;
 
+import monet.tara.compiler.codegeneration.ResourceManager;
 import monet.tara.compiler.core.errorcollection.TaraException;
 import org.monet.templation.CanvasLogger;
 import org.monet.templation.Render;
@@ -10,9 +11,9 @@ public class DefaultRender extends Render {
 	protected String tplName;
 	protected String projectName;
 
-	public DefaultRender(String tplName, String projectName) {
+	public DefaultRender(String tplName, String projectName) throws TaraException {
 		super(new Logger(), null);
-		setPath(this.getClass().getResource("/").getPath());
+		setPath(ResourceManager.get(""));
 		this.tplName = tplName;
 		this.projectName = projectName;
 	}

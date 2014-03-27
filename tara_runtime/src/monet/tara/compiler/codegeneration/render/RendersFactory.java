@@ -1,5 +1,7 @@
 package monet.tara.compiler.codegeneration.render;
 
+import monet.tara.compiler.core.errorcollection.TaraException;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -19,7 +21,7 @@ public class RendersFactory {
 	private RendersFactory() {
 	}
 
-	public static DefaultRender getRender(String name, String project, Object params) {
+	public static DefaultRender getRender(String name, String project, Object params) throws TaraException {
 		try {
 			Class<? extends DefaultRender> clazz = renders.get(RenderUtils.toProperCase(name));
 			Constructor constructor = clazz.getConstructor(String.class, String.class, Object.class);

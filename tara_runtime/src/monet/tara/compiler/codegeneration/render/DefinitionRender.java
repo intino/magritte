@@ -1,6 +1,7 @@
 package monet.tara.compiler.codegeneration.render;
 
 import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,7 @@ public class DefinitionRender extends DefaultRender {
 
 	ASTNode rootNode;
 
-	public DefinitionRender(String tplName, String projectName, Object node) {
+	public DefinitionRender(String tplName, String projectName, Object node) throws TaraException {
 		super(tplName, projectName);
 		this.rootNode = (ASTNode) node;
 	}

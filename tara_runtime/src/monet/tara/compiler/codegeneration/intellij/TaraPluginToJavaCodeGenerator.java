@@ -1,6 +1,7 @@
 package monet.tara.compiler.codegeneration.intellij;
 
 import monet.tara.compiler.codegeneration.PathManager;
+import monet.tara.compiler.codegeneration.ResourceManager;
 import monet.tara.compiler.codegeneration.render.*;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.ast.AST;
@@ -29,12 +30,12 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 
 	private void addIcons() throws TaraException {
 		for (String icon : IconFactory.getIcons().keySet())
-			FileSystemUtils.copyFile(getClass().getResource(IconFactory.getIcon(icon)).getPath(), getDestinyOf(IconFactory.getIcon(icon)));
+			FileSystemUtils.copyFile(ResourceManager.get(IconFactory.getIcon(icon)), getDestinyOf(IconFactory.getIcon(icon)));
 		if (configuration.getProjectIcon() != null)
 			FileSystemUtils.copyFile(configuration.getProjectIcon(), this.getDestinyOf(IconFactory.getIcon("-.png")));
 	}
 
-	private void writeTemplateBasedFile(String template, Map<String, String> param) {
+	private void writeTemplateBasedFile(String template, Map<String, String> param) throws TaraException {
 		DefaultRender defaultRender = RendersFactory.getRender(template, configuration.getProject(), param);
 		writer.print(defaultRender.getOutput());
 	}

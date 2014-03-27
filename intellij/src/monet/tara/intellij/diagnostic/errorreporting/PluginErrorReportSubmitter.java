@@ -15,14 +15,13 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.io.File;
 import java.io.InputStream;
 import java.util.Properties;
 
 public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 	private static final Logger LOG = Logger.getInstance(LoggingEventSubmitter.class.getName());
 	@NonNls
-	private static final String ERROR_SUBMITTER_PROPERTIES_PATH = "errorreporting" + File.separator + "errorReporter.properties";
+	private static final String ERROR_SUBMITTER_PROPERTIES_PATH = "messages/errorReporter.properties";
 	@NonNls
 	private static final String PLUGIN_ID_PROPERTY_KEY = "plugin.id";
 	@NonNls

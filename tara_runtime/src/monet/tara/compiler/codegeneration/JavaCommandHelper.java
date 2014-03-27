@@ -2,7 +2,10 @@ package monet.tara.compiler.codegeneration;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,24 +20,28 @@ public class JavaCommandHelper {
 	public static List<String> buildJavaCompileCommandLine(File[] sources,
 	                                                       String[] classpath,
 	                                                       String[] vmParams,
-	                                                       String buildDirectory) {
+	                                                       String buildDirectory) throws IOException {
 		final List<String> cmdLine = new ArrayList<>();
 		cmdLine.add(getJavacExecutable());
 		if (vmParams != null)
 			Collections.addAll(cmdLine, vmParams);
 		if (sources.length != 0) {
-			List<String> sourceParam = new ArrayList<>();
 			File buildPath = new File(buildDirectory);
 			buildPath.mkdirs();
+			cmdLine.add("-nowarn");
 			cmdLine.add("-d");
 			cmdLine.add(buildPath.getAbsolutePath());
 			if (classpath != null && classpath.length > 0) {
 				cmdLine.add("-classpath");
 				cmdLine.add(join(classpath, File.pathSeparator));
 			}
+			File temp = File.createTempFile("__srcToCompile", null);
+			temp.deleteOnExit();
+			BufferedWriter writer = new BufferedWriter(new FileWriter(temp));
 			for (File source : sources)
-				sourceParam.add(source.getAbsolutePath());
-			cmdLine.addAll(sourceParam);
+				writer.append(source.getAbsolutePath()).append("\n");
+			writer.close();
+			cmdLine.add("@" + temp);
 		}
 		return cmdLine;
 	}

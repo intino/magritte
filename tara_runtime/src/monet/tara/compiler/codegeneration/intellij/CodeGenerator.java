@@ -20,7 +20,6 @@ public abstract class CodeGenerator {
 		try {
 			file.getParentFile().mkdirs();
 			file.createNewFile();
-			out("// ---- " + file.getName() + "\n");
 			return new PrintWriter(new FileOutputStream(file));
 		} catch (IOException e) {
 			throw new TaraException("Error during plugin generation");
@@ -36,14 +35,14 @@ public abstract class CodeGenerator {
 		error.join(3000);
 		output.join(3000);
 		if (!"".equals(output.getMessage()))
-			LOG.info("\nInfo:\n" + output.getMessage()+"\n");
+			LOG.info("\n" + output.getMessage());
 		if (!"".equals(error.getMessage()))
 			LOG.severe("\n" + error.getMessage());
 	}
 
 	protected static String newTemplate(String project, String template) {
 		String sep = PathManager.SEP;
-		return template.replace("-", project).replace("tara" + sep, sep + project + sep).replace("tpl" + sep, "");
+		return template.replace("-", project).replace("/tara/", sep + project + sep).replace("tpl/", "").replaceAll("/", "\\" + sep);
 	}
 
 	protected static void out(String s) {

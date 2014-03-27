@@ -21,7 +21,7 @@ public class ::projectProperName::AnnotationsCompletionContributor extends Compl
 		.and(new FilterPattern(new AfterAngleFitFilter()));
 
 	public ::projectProperName::AnnotationsCompletionContributor() {
-		extend(CompletionType.SMART, afterVar,
+		extend(CompletionType.BASIC, afterVar,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(\@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,

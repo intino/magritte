@@ -2,6 +2,7 @@ package monet.tara.compiler.codegeneration;
 
 import monet.tara.compiler.codegeneration.intellij.CodeGenerator;
 import monet.tara.compiler.core.CompilerConfiguration;
+import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class ClassGenerator extends CodeGenerator {
 		this.conf = conf;
 	}
 
-	public void generate(CompilerConfiguration configuration) {
+	public void generate(CompilerConfiguration configuration) throws TaraException {
 		Runtime rt = Runtime.getRuntime();
 		try {
 			Process compileProcess = rt.exec(makeCompileCommand(getSourceFiles("java")));
@@ -36,15 +37,19 @@ public class ClassGenerator extends CodeGenerator {
 		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 
-	private File getTaraCoreFile() {
-		return new File(getClass().getResource(SEP + "tara" + SEP + "core.jar").getPath());
+	private File getTaraCoreFile() throws TaraException {
+		return ResourceManager.getFile("/tara/core.jar");
 	}
 
-	private String makeCompileCommand(File[] sources) {
-		List<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources,
-			new String[]{getTaraCoreFile().getAbsolutePath() + SEP + "build" + SEP},
-			null, conf.getTempDirectory().getAbsolutePath());
-		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
+	private String makeCompileCommand(File[] sources) throws TaraException {
+		try {
+			List<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources,
+				new String[]{getTaraCoreFile().getAbsolutePath() + SEP + "build" + SEP},
+				null, conf.getTempDirectory().getAbsolutePath());
+			return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
+		} catch (IOException e) {
+			throw new TaraException("Error compiling plugin");
+		}
 	}
 
 	private File[] getSourceFiles(String type) {

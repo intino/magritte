@@ -2,7 +2,9 @@ package monet.tara.compiler.codegeneration.intellij;
 
 import monet.tara.compiler.codegeneration.JavaCommandHelper;
 import monet.tara.compiler.codegeneration.PathManager;
+import monet.tara.compiler.codegeneration.ResourceManager;
 import monet.tara.compiler.core.CompilerConfiguration;
+import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -17,7 +19,7 @@ public class PluginCompiler extends CodeGenerator {
 	private static final Logger LOG = Logger.getLogger(PluginCompiler.class.getName());
 	private static CompilerConfiguration conf;
 
-	public static void generateClasses(CompilerConfiguration configuration) {
+	public static void generateClasses(CompilerConfiguration configuration) throws TaraException {
 		Runtime rt = Runtime.getRuntime();
 		try {
 			PluginCompiler.conf = configuration;
@@ -38,28 +40,24 @@ public class PluginCompiler extends CodeGenerator {
 		});
 	}
 
-	private static String[] makeCompileCommand(File[] sources) {
+	private static String[] makeCompileCommand(File[] sources) throws TaraException {
 		String sep = PathManager.SEP;
-		List<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources, getClassPath(),
-			new String[]{"-encoding", System.getProperty("file.encoding")},
-			PathManager.getBuildIdeDir(conf.getTempDirectory()) + conf.getProject() + sep + LIB + sep + conf.getProject());
-		return cmd.toArray(new String[cmd.size()]);
+		try {
+			List<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources, getClassPath(),
+				new String[]{"-encoding", System.getProperty("file.encoding")},
+				PathManager.getBuildIdeDir(conf.getTempDirectory()) + conf.getProject() + sep + LIB + sep + conf.getProject());
+			return cmd.toArray(new String[cmd.size()]);
+		} catch (IOException e) {
+			throw new TaraException("Error compiling plugin");
+		}
 	}
 
-	public static String[] getClassPath() {
-		String libPath = conf.getIdeaHome();
-		File[] jars = new File(libPath).listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.getName().endsWith(".jar");
-			}
-		});
+	public static String[] getClassPath() throws TaraException {
 		List<String> jarNames = new ArrayList<>();
-		for (File jar : jars)
-			jarNames.add(jar.getAbsolutePath());
-		jarNames.add(PluginCompiler.class.getResource("/markdown4j-2.2.jar").getPath());
-		jarNames.add(PluginCompiler.class.getResource("/commons-email-1.3.2.jar").getPath());
-		jarNames.add(PluginCompiler.class.getResource("/javax.mail.jar").getPath());
+		jarNames.add(conf.getIdeaHome() + "*");
+		jarNames.add(ResourceManager.get("markdown4j-2.2.jar"));
+		jarNames.add(ResourceManager.get("commons-email-1.3.2.jar"));
+		jarNames.add(ResourceManager.get("javax.mail.jar"));
 		return jarNames.toArray(new String[jarNames.size()]);
 	}
 }

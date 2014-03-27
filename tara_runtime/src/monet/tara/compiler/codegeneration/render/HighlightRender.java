@@ -1,5 +1,7 @@
 package monet.tara.compiler.codegeneration.render;
 
+import monet.tara.compiler.core.errorcollection.TaraException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +9,7 @@ import java.util.Map;
 public class HighlightRender extends DefaultRender {
 	Map<String, String> identifiers;
 
-	public HighlightRender(String tplName, String projectName, Object identifiers) {
+	public HighlightRender(String tplName, String projectName, Object identifiers) throws TaraException {
 		super(tplName, projectName);
 		this.identifiers = (Map<String, String>) identifiers;
 	}

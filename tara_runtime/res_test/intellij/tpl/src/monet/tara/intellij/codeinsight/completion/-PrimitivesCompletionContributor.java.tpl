@@ -22,7 +22,7 @@ public class ::projectProperName::PrimitivesCompletionContributor extends Comple
 		.and(new FilterPattern(new AfterVarFitFilter()));
 
 	public ::projectProperName::PrimitivesCompletionContributor() {
-		extend(CompletionType.SMART, afterVar,
+		extend(CompletionType.BASIC, afterVar,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(\@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,

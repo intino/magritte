@@ -1,6 +1,7 @@
 package monet.tara.compiler.codegeneration.intellij;
 
 import monet.tara.compiler.codegeneration.PathManager;
+import monet.tara.compiler.codegeneration.ResourceManager;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.errorcollection.TaraException;
 
@@ -16,16 +17,16 @@ import java.util.zip.ZipFile;
 
 public class PluginPackager extends CodeGenerator {
 
-	private static final String INTELLIJ_LIBS_ZIP = "/intellij/libs.zip";
-	private static final String SWING_LIB_PATH = "/intellij/swing.zip";
+	private static final String INTELLIJ_LIBS_ZIP = "intellij/libs.zip";
+	private static final String SWING_LIB_PATH = "intellij/swing.zip";
 	private static final String SEP = PathManager.SEP;
 
 	public static void doPackage(CompilerConfiguration conf) throws TaraException {
 		try {
 			String buildPath = composeBuildPath(conf);
 			FileSystemUtils.createDir(buildPath);
-			File libs = new File(PluginPackager.class.getResource(INTELLIJ_LIBS_ZIP).getPath());
-			File swing = new File(PluginPackager.class.getResource(SWING_LIB_PATH).getPath());
+			File libs = ResourceManager.getFile(INTELLIJ_LIBS_ZIP);
+			File swing = ResourceManager.getFile(SWING_LIB_PATH);
 			writeLibs(libs, buildPath);
 			writeLibs(libs, buildPath + conf.getProject() + SEP);
 			writeLibs(swing, buildPath + conf.getProject() + SEP);

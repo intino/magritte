@@ -13,11 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ::projectProperName::FindUsagesProvider implements FindUsagesProvider {
+	public static final String ANONYMOUS = "Anonymous";
+	public static final String ERROR = "Error";
 	private static final DefaultWordsScanner WORDS_SCANNER =
 		new DefaultWordsScanner(new ::projectProperName::LexerAdapter(),
 			TokenSet.create(::projectProperName::Types.IDENTIFIER, ::projectProperName::Types.IDENTIFIER_KEY), TokenSet.create(::projectProperName::Types.DOC), TokenSet.EMPTY);
-	public static final String ANONYMOUS = "Anonymous";
-	public static final String ERROR = "Error";
 
 	\@Nullable
 	\@Override

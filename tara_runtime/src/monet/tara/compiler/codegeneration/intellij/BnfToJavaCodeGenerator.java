@@ -2,6 +2,7 @@ package monet.tara.compiler.codegeneration.intellij;
 
 import monet.tara.compiler.codegeneration.JavaCommandHelper;
 import monet.tara.compiler.codegeneration.PathManager;
+import monet.tara.compiler.codegeneration.ResourceManager;
 import monet.tara.compiler.codegeneration.render.RenderUtils;
 import monet.tara.compiler.codegeneration.render.TemplateFactory;
 import monet.tara.compiler.core.CompilerConfiguration;
@@ -29,8 +30,8 @@ public class BnfToJavaCodeGenerator extends CodeGenerator {
 		}
 	}
 
-	private static String makeJavaCommand(File tempDir, File source) {
-		String grammarKit = BnfToJavaCodeGenerator.class.getResource("/grammar-kit.jar").getPath();
+	private static String makeJavaCommand(File tempDir, File source) throws TaraException {
+		String grammarKit = ResourceManager.get("grammar-kit.jar");
 		String destiny = PathManager.getSrcIdeDir(tempDir);
 		String[] vParams = new String[]{"-DUser.dir=" + destiny};
 		List<String> cmd = JavaCommandHelper.buildJavaJarExecuteCommandLine(grammarKit,
@@ -43,9 +44,9 @@ public class BnfToJavaCodeGenerator extends CodeGenerator {
 			String sep = PathManager.SEP;
 			String typesFile = PathManager.getSrcDir(tempDir) +
 				TemplateFactory.getTemplate("Types.java")
-					.replace(sep + "tpl", "")
+					.replace("/tpl", "")
 					.replace("-", RenderUtils.toProperCase(project))
-					.replace(sep + "tara" + sep, sep + project.toLowerCase() + sep);
+					.replace("/tara/", sep + project.toLowerCase() + sep).replaceAll("/", "\\" + sep);
 			String fileContent = FileSystemUtils.readFile(typesFile);
 			fileContent = fileContent.replace("new " + RenderUtils.toProperCase(project) + "TokenType(\"NEW_LINE_INDENT\");", "TokenType.NEW_LINE_INDENT;");
 			FileSystemUtils.writeFile(typesFile, fileContent);
