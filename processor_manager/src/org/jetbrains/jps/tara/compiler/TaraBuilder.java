@@ -149,11 +149,14 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 
 	private List<File> getTaraFilesFromRoot(@NotNull File root) {
 		List<File> list = new ArrayList<>();
-		for (File file : root.listFiles())
-			if (file.isDirectory())
-				list.addAll(getTaraFilesFromRoot(file));
-			else if (isTaraFile(file.getPath()))
-				list.add(file);
+		File[] files = root.listFiles();
+		if (files != null) {
+			for (File file : files)
+				if (file.isDirectory())
+					list.addAll(getTaraFilesFromRoot(file));
+				else if (isTaraFile(file.getPath()))
+					list.add(file);
+		}
 		return list;
 	}
 }

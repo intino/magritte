@@ -1,6 +1,8 @@
 package monet.tara;
 
 
+import monet.tara.compiler.rt.TaraRtConstants;
+
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -13,6 +15,7 @@ public class TaracRunner {
 	}
 
 	public static void main(String[] args) {
+		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Starting compiling");
 		checkArgumentsNumber(args);
 		final File argsFile = checkConfigurationFile(args[1]);
 		try {
