@@ -1,6 +1,6 @@
 package monet.tara
 
-String TPL_PATH = "tara_runtime/res/intellij/tpl";
+String TPL_PATH = "rt/res/intellij/tpl";
 String SRC_PATH = "intellij/src";
 String RES_PATH = "intellij/res";
 new File(TPL_PATH).deleteDir();

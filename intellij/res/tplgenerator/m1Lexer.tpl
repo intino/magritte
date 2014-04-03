@@ -90,7 +90,8 @@ NEWLINE= [\\n]+ ([ ] | [\\t])*
 
 //=====================
 //Reserved words
-SYNTHETIZE= "synthetize"
+
+SYNTHESIZE= "synthesize"
 MORPH_KEY = "Morph"
 POLYMORPHIC_KEY = "Polymorphic"
 MORPH_KEY     = "Morph"
@@ -154,7 +155,7 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 %%
 <YYINITIAL> {
 
-    {SYNTHETIZE}                    {   return ::projectNameFile::Types.SYNTHETIZE; }
+    {SYNTHESIZE}                    {   return ::projectNameFile::Types.SYNTHESIZE; }
 
     {POLYMORPHIC_KEY}                 {   return ::projectNameFile::Types.POLYMORPHIC_KEY; }
 
