@@ -1,0 +1,15 @@
+src_file
+/Users/oroncal/workspace/tara/rt/res_test/monet.m2
+/Users/oroncal/workspace/tara/rt/res_test/monet2.m2
+
+project
+goros
+idea_home
+/Applications/IntelliJ IDEA 13 CE.app/lib/
+icon
+/Users/oroncal/workspace/sandbox/goros/res/logos/goros.png
+outputpath
+/Users/oroncal/workspace/sandbox/system/compile-server/test_2e78763/taraStubs/Test/java-production/
+final_outputpath
+/Users/oroncal/workspace/sandbox/goros/out/production/prueba/
+

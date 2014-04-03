@@ -1,0 +1,51 @@
+group.names.::projectName::.files=::projectProperName:: Files
+duplicate.definition.key.error.message=Duplicated definition
+reference.definition.key.error.message=Unreached definition
+duplicate.attribute.key.error.message=Duplicate attribute
+annotation.definition.key.error.message=Unsupported this annotation here
+morph.non-existent.in.polymorphic.error.message=Polymorphic definition has to have morphs
+morph.not.in.polymorphic.error.message=Morph have to be inside of a polymorphic definition
+error.report.to.siani.action=::projectProperName:: plugin error report
+remove.definition.intention.text=Remove definition
+remove.attribute.intention.text=Remove atrribute
+::projectName::.files.inspection.group.display.name=::projectProperName:: Files
+unused.definition.inspection.display.name=Unused definition
+duplicate.definition.display.name=Duplicate Definition
+duplicate.definition.key.progress.indicator.text=Processing duplicate definition key\:{0}
+
+invalid.::projectName::.definition.character= Invalid Character
+options.::projectName::.definition.identifier=Definition Identifier
+options.::projectName::.definition.keyword=Keyword
+options.::projectName::.definition.modifier=Definition Modifier
+options.::projectName::.definition.operator=Attribute operator
+options.::projectName::.definition.annotation= Definition Annotation
+options.::projectName::.definition.duplicate= Duplicates Definitions
+searching.for.definition.key.progress.text=Searching for {0}
+unused.definition.problem.descriptor.name=Unused definition
+remove.definition.quick.fix.name=Remove definition
+no.definition.selected.panel.label=<html><body><center><b>Please select definition name on the left to edit its values</body></html>
+::projectName::.structure.view.group.by.label=Group by\:
+select.definition.separator.dialog.text=Select separator
+select.definition.separator.dialog.title=definition Keys Separator
+select.separator.action.with.empty.separator.name=other...
+resourcebundle.fake.file.type.description=ResourceBundle fake file type
+definition.key.expected.parsing.error.message=definition key expected
+project.view.resource.bundle.tree.node.text=Resource Bundle ''{0}''
+structure.view.group.by.prefixes.action.name=Group by Prefixes
+structure.view.group.by.prefixes.action.description=Groups ::projectName:: by common key prefixes
+unused.message.format.parameter.display.name=Missing message format parameter
+\#{0},{1} used and unused parameter numbers
+unused.message.format.parameter.problem.descriptor=Using parameter {0} without using parameter {1} in <code>\#ref<code> \#loc
+unresolved.definition.key=Cannot resolve definition key
+unused.definition.suppress.for.definition=Suppress for this definition
+unused.definition.suppress.for.file=Suppress for whole file
+\# suppress inspection "Unuseddefinition"
+action.I18nize.text=Internationali_ze...
+\# suppress inspection "Unuseddefinition"
+action.I18nize.description=Replace Java string literal or JSP text with internationalized expression
+create.definition.quickfix.text=Create definition
+unescape=Unescape
+trail.spaces.definition.inspection.display.name=Trailing Spaces in definition
+options.::projectName::.definition.primitive=Attribute type
+options.::projectName::.types.string=String
+options.::projectName::.definition.comment=Documentation
