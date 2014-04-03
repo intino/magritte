@@ -5,10 +5,10 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="processor_manager" />
-    <orderEntry type="module" module-name="tara_runtime" />
+    <orderEntry type="module" module-name="tara-jps-plugin" />
+    <orderEntry type="module" module-name="tara-runtime" />
     <orderEntry type="module" module-name="intellij" />
+    <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
 
