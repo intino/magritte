@@ -12,9 +12,8 @@ public class CreateFileAction extends CreateFileFromTemplateAction implements Du
 
 	public CreateFileAction() {
 		super("Concept", "Creates Concept file", TaraFileType.INSTANCE.getIcon());
-		if (FileTemplateManager.getInstance().getInternalTemplate("Concept") != null)
-			FileTemplateManager.getInstance().removeTemplate(FileTemplateManager.getInstance().getInternalTemplate("Concept"));
-		FileTemplateManager.getInstance().addTemplate("Concept", "m2").setText(getConceptTemplate());
+		if (FileTemplateManager.getInstance().getInternalTemplate("Concept") == null)
+			FileTemplateManager.getInstance().addTemplate("Concept", "m2").setText(getConceptTemplate());
 	}
 
 	@Override

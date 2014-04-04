@@ -35,4 +35,12 @@ public class SimpleMessage extends Message {
 	public String getMessage() {
 		return this.message;
 	}
+
+	public Object getData(){
+		return data;
+	}
+
+	public ProcessingUnit getOwner() {
+		return owner;
+	}
 }

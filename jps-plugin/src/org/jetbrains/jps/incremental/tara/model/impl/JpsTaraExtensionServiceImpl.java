@@ -1,6 +1,5 @@
 package org.jetbrains.jps.incremental.tara.model.impl;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.JDOMUtil;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.util.containers.ConcurrentFactoryMap;
@@ -26,7 +25,6 @@ import java.io.File;
 import java.util.Map;
 
 public class JpsTaraExtensionServiceImpl extends JpsTaraExtensionService {
-	private static final Logger LOG = Logger.getInstance("#JpsTaraExtensionServiceImpl");
 	private static final JpsElementChildRole<JpsSimpleElement<Boolean>> PRODUCTION_ON_TEST_ROLE = JpsElementChildRoleBase.create("production on test");
 	private final Map<File, TaraProjectConfiguration> myLoadedConfigs = new THashMap<>(FileUtil.FILE_HASHING_STRATEGY);
 	private final FactoryMap<File, Boolean> myConfigFileExists = new ConcurrentFactoryMap<File, Boolean>() {
@@ -98,8 +96,7 @@ public class JpsTaraExtensionServiceImpl extends JpsTaraExtensionService {
 				try {
 					final Document document = JDOMUtil.loadDocument(configFile);
 					XmlSerializer.deserializeInto(config, document.getRootElement());
-				} catch (Exception e) {
-					//LOG.info(e);
+				} catch (Exception ignored) {
 				}
 				myLoadedConfigs.put(configFile, config);
 			}

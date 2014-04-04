@@ -26,7 +26,7 @@ public abstract class CodeGenerator {
 		}
 	}
 
-	protected static void printResult(Process process) throws InterruptedException {
+	protected static String printResult(Process process) throws InterruptedException {
 		StreamWrapper error, output;
 		error = StreamWrapper.getStreamWrapper(process.getErrorStream(), "ERROR");
 		output = StreamWrapper.getStreamWrapper(process.getInputStream(), "OUTPUT");
@@ -38,6 +38,7 @@ public abstract class CodeGenerator {
 			LOG.info(output.getMessage());
 		if (error.getMessage() != null && !"".equals(error.getMessage()))
 			LOG.severe(error.getMessage());
+		return error.getMessage();
 	}
 
 	protected static String newTemplate(String project, String template) {

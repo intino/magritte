@@ -30,7 +30,6 @@ public class BnfToJavaCodeGenerator extends CodeGenerator {
 			fixTypes(configuration.getTempDirectory(), configuration.getProject());
 		} catch (IOException | InterruptedException e) {
 			LOG.severe(e.getMessage());
-			e.printStackTrace();
 			throw new TaraException("Error during plugin generation");
 		}
 	}
@@ -48,7 +47,8 @@ public class BnfToJavaCodeGenerator extends CodeGenerator {
 				FileSystemUtils.copyFile(psiStream, psi);
 				return new String[]{grammar.getAbsolutePath(), psi.getAbsolutePath()};
 			} catch (FileSystemException e) {
-				e.printStackTrace();
+				LOG.severe(e.getMessage());
+				throw new TaraException("Error during plugin generation");
 			}
 		else {
 			String grammarFile = ResourceManager.get(GRAMMAR_KIT_JAR);

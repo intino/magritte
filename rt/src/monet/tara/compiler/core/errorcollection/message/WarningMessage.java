@@ -33,4 +33,6 @@ public class WarningMessage extends SimpleMessage {
 		writer.print("warning: ");
 		super.write(writer);
 	}
+
+
 }

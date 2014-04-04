@@ -15,11 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 public class BnfRender extends Render {
-	private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(DefaultRender.class.getName());
+	private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(BnfRender.class.getName());
 	private String tplName;
 	private String projectName;
 	private AST ast;
 	private List<ASTNode> rootList = new ArrayList<>();
+	private List<String> synthesizeList = new ArrayList<>();
 
 	public BnfRender(String projectName, String tplName, AST ast) {
 		super(new Logger(), Canvas.FROM_RESOURCES_PREFIX);
@@ -35,6 +36,18 @@ public class BnfRender extends Render {
 		addMark("projectName", projectName.toLowerCase());
 		for (ASTNode node : ast.getAstRootNodes()) goOver(node);
 		generateListOfRootConcepts();
+		generateSynthesizeList();
+	}
+
+	private void generateSynthesizeList() {
+		StringBuilder concepts = new StringBuilder();
+		for (String concept : synthesizeList) {
+			Map<String, Object> localMap = new HashMap<>();
+			localMap.put("identifier", concept);
+			localMap.put("pipe", (synthesizeList.indexOf(concept) != 0 && concepts.length() != 0) ? "|" : "");
+			concepts.append(block("concept", localMap));
+		}
+		addMark("conceptKeyList", concepts.toString());
 	}
 
 	private String getTransformedAbsolutePath(ASTNode node) {
@@ -44,6 +57,8 @@ public class BnfRender extends Render {
 	private void goOver(ASTNode node) {
 		if (!node.isAbstract() && !node.isPolymorphic()) {
 			generateMainRulesForConcepts(node);
+			if (!synthesizeList.contains(ast.getKeys(node.getIdentifier()).get(0)))
+				synthesizeList.add(ast.getKeys(node.getIdentifier()).get(0));
 			if (isExtendedRoot(node)) rootList.add(node);
 		}
 		for (ASTNode child : node.getChildren())

@@ -2,6 +2,7 @@ package monet.tara.compiler;
 
 import monet.tara.compiler.core.CompilationUnit;
 import monet.tara.compiler.core.CompilerMessage;
+import monet.tara.compiler.core.SourceUnit;
 import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.errorcollection.*;
 import monet.tara.compiler.core.errorcollection.message.*;
@@ -10,7 +11,6 @@ import monet.tara.compiler.rt.TaraCompilerMessageCategories;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -31,11 +31,8 @@ public class TaraCompiler {
 			addCompiledFiles(unit, compiledFiles);
 		} catch (CompilationFailedException e) {
 			processCompilationException(e);
-		} catch (IOException e) {
+		} catch (IOException | TaraRuntimeException e) {
 			processException(e);
-		} catch (NoClassDefFoundError e) {
-			final String className = e.getMessage();
-			addMessageWithoutLocation(collector, "Tarac error: " + className + " class not found, try compiling it explicitly", true);
 		} finally {
 			addWarnings(unit.getErrorCollector(), collector);
 		}
@@ -54,7 +51,7 @@ public class TaraCompiler {
 	private void addWarnings(ErrorCollector errorCollector, List collector) {
 		for (int i = 0; i < errorCollector.getWarningCount(); i++) {
 			WarningMessage warning = errorCollector.getWarning(i);
-			collector.add(new CompilerMessage(CompilerMessage.WARNING, warning.getMessage(), null, -1, -1));
+			collector.add(new CompilerMessage(CompilerMessage.WARNING, warning.getMessage(), ((SourceUnit) warning.getOwner()).getName(), -1, -1));
 		}
 	}
 
@@ -85,9 +82,8 @@ public class TaraCompiler {
 			addErrorMessage((TaraRuntimeException) e);
 			return;
 		}
-		final StringWriter writer = new StringWriter();
 		LOG.severe(e.getMessage());
-		addMessageWithoutLocation(collector, writer.toString(), true);
+		addMessageWithoutLocation(collector, e.getMessage(), true);
 
 	}
 
@@ -113,8 +109,11 @@ public class TaraCompiler {
 
 	private void addErrorMessage(TaraRuntimeException exception) {
 		ASTNode astNode = exception.getNode();
-		collector.add(new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(),
-			astNode.getFile(), astNode.getLine(), -1));
+		if (astNode != null)
+			collector.add(new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(),
+				astNode.getFile(), astNode.getLine(), -1));
+		else
+			collector.add(new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(), "null", -1, -1));
 	}
 
 	private void addErrorMessage(SimpleMessage message, List collector) {

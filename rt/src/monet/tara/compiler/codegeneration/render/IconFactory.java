@@ -1,5 +1,7 @@
 package monet.tara.compiler.codegeneration.render;
 
+import monet.tara.compiler.core.errorcollection.TaraRuntimeException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,6 @@ public class IconFactory {
 	public static String getIcon(String className) {
 		String icon = ICONS.get(className);
 		if (icon != null) return icon;
-		else throw new RuntimeException("Icon not defined " + className);
+		else throw new TaraRuntimeException("Icon not defined " + className);
 	}
 }

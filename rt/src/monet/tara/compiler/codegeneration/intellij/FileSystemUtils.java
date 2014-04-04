@@ -105,7 +105,6 @@ public class FileSystemUtils {
 		try {
 			return copyFile(new FileInputStream(new File(source)), new File(destination));
 		} catch (FileNotFoundException | FileSystemException e) {
-			e.printStackTrace();
 			throw new FileSystemException("Could not copy the file");
 		}
 	}
@@ -121,21 +120,10 @@ public class FileSystemUtils {
 			source.close();
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new FileSystemException("Could not copy the file");
 		}
 
 		return true;
-	}
-
-	public static InputStream getInputStream(String sFilename) throws FileSystemException {
-		FileInputStream oReader;
-		try {
-			oReader = new FileInputStream(sFilename);
-		} catch (IOException oException) {
-			throw new FileSystemException("Could not read file", sFilename, oException.getMessage());
-		}
-		return oReader;
 	}
 
 	public static String readFile(String sFilename) throws FileSystemException {
@@ -165,16 +153,6 @@ public class FileSystemUtils {
 			throw new FileSystemException("Could not write file", sFilename, oException.getMessage());
 		}
 		return true;
-	}
-
-	public static OutputStream getOutputStream(String sFilename) throws FileSystemException {
-		FileOutputStream oStream;
-		try {
-			oStream = new FileOutputStream(sFilename);
-		} catch (IOException oException) {
-			throw new FileSystemException("Could not read file", sFilename, oException.getMessage());
-		}
-		return oStream;
 	}
 
 	public static File[] listFiles(String path, FileFilter fileFilter) {

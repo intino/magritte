@@ -17,8 +17,9 @@
 }
 
 root \:\:= (synthesizeStatement | NEWLINE)* (definition | NEWLINE)*
-
-synthesizeStatement \:\:= SYNTHESIZE referenceIdentifier ((OPEN_AN synthesizeTag+ CLOSE_AN) | synthesizeAttribute )
+private synt \:\:= ::conceptKeyList::
+private syntElement \:\:= synt (DOT synt)*
+synthesizeStatement \:\:= SYNTHESIZE syntElement ((OPEN_AN synthesizeTag+ CLOSE_AN) | synthesizeAttribute )
 synthesizeTag \:\:= FINAL | ABSTRACT |  MULTIPLE |  OPTIONAL | HAS_CODE | SINGLETON | ROOT | EXTENSIBLE
 synthesizeAttribute \:\:= NEW_LINE_INDENT( attribute  NEWLINE+)+ DEDENT
 

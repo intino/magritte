@@ -58,7 +58,7 @@ public class JFlexToJavaGenerator extends CodeGenerator {
 				skeleton.deleteOnExit();
 				return new String[]{jflex.getAbsolutePath(), skeleton.getAbsolutePath()};
 			} catch (FileSystemException e) {
-				e.printStackTrace();
+				LOG.severe(e.getMessage());
 				throw new TaraException("JFlex not found");
 			}
 		else {

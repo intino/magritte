@@ -132,7 +132,6 @@ public class TemplateFactory {
 		TEMPLATES.put("grammar", IDE_TPL + SRC + PROJECT_PATH + "metamodel/parser/-.bnf");
 
 		TEMPLATES.put("plugin.xml", IDE_TPL + SRC + "META-INF/plugin.xml");
-		//TEMPLATES.put("MANIFEST.MF", IDE_TPL + SRC + "META-INF/MANIFEST.MF");
 
 		TEMPLATES.put("errorReporter.properties", IDE_TPL + RES + "messages/errorReporter.properties");
 		TEMPLATES.put("PluginErrorReportSubmitterBundle.properties", IDE_TPL + RES + "messages/PluginErrorReportSubmitterBundle.properties");

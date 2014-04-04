@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="all" name="tara :: processor_manager">
+<project basedir="." default="all" name="tara :: jps-plugin">
+
   <property name="sources.dir" value="src" />
   <property name="test.dir" value="test" />
   <property name="build.dir" value="out" />

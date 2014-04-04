@@ -5,12 +5,12 @@ import monet.tara.compiler.core.errorcollection.TaraException;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.logging.Logger;
 
 
 public class ResourceManager {
 
-	private static final Logger LOG = Logger.getLogger(ResourceManager.class.getName());
+	private ResourceManager() {
+	}
 
 	public static String get(String resource) throws TaraException {
 		String query = (!resource.startsWith("/")) ? "/" + resource : resource;

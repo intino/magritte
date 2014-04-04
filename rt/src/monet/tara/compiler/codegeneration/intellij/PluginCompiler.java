@@ -27,13 +27,18 @@ public class PluginCompiler extends CodeGenerator {
 		try {
 			PluginCompiler.conf = configuration;
 			Process compileProcess = rt.exec(makeCompileCommand(getSources()));
-			if (compileProcess.waitFor() == -1) throw new TaraException("Compilation Failed");
-			printResult(compileProcess);
+			if (compileProcess.waitFor() == -1) throw new TaraException("Plugin Compilation failed");
+			String errorMessage = printResult(compileProcess);
+			if (isFatal(errorMessage)) throw new TaraException("Plugin Compilation failed");
 			addIcons();
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 			LOG.severe(e.getMessage());
 		}
+	}
+
+	private static boolean isFatal(String errorMessage) {
+		return errorMessage != null && !errorMessage.equals("") && !errorMessage.startsWith("Note");
 	}
 
 	private static File[] getSources() {
@@ -75,7 +80,7 @@ public class PluginCompiler extends CodeGenerator {
 
 	private static String getDestinyOf(String tpl) {
 		String template = tpl.substring(tpl.indexOf("src") + 3);
-		template = template.replace("_", "Definition").replace("/tara/", "/" + conf.getProject().toLowerCase() + "/");
+		template = template.replace("_", "Definition").replace("/tara/", '/' + conf.getProject().toLowerCase() + '/');
 		template = template.replace("-", RenderUtils.toProperCase(conf.getProject())).replaceAll("/", ("\\".equals(SEP)) ? "\\\\" : SEP);
 		return getBuildDirectory() + template;
 	}
@@ -92,8 +97,8 @@ public class PluginCompiler extends CodeGenerator {
 	private static String getJar(String jar) throws TaraException {
 		String path = ResourceManager.get(jar);
 		if (path.contains("!")) {
-			path = path.substring(0, path.indexOf("!")).replace("file:/", "");
-			path = path.substring(0, path.lastIndexOf("/") + 1) + jar;
+			path = path.substring(0, path.indexOf('!')).replace("file:/", "");
+			path = path.substring(0, path.lastIndexOf('/') + 1) + jar;
 			path = new File(path).getAbsolutePath();
 			if (!new File(path).exists()) throw new TaraException("Libs not found");
 		}

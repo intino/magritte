@@ -12,7 +12,7 @@ public abstract class ProcessingUnit {
 
 
 	protected ProcessingUnit(CompilerConfiguration configuration, ErrorCollector er) {
-		this.phase = 1;
+		this.phase = 0;
 		configure(configuration == null ? new CompilerConfiguration() : configuration);
 		if (er == null) errorCollector = new ErrorCollector(getConfiguration());
 		else this.errorCollector = er;

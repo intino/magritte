@@ -25,7 +25,7 @@ public class HighlightRender extends DefaultRender {
 		for (String key : list)
 			builder.append("\n\t\t").append("KEYS_1.put(").append(RenderUtils.toProperCase(projectName)).
 				append("Types.").append(key).append(", KEYWORD);");
-			builder.append("KEYS_1.put(GorosTypes.SYNTHESIZE, KEYWORD);");
+		builder.append("KEYS_1.put(").append(RenderUtils.toProperCase(projectName)).append("Types.SYNTHESIZE, KEYWORD);");
 		return builder.toString();
 	}
 

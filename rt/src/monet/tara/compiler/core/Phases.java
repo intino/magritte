@@ -12,11 +12,13 @@ public class Phases {
 	public static final int FINALIZATION = 8;
 	public static final int ALL = 9;
 	private static String[] descriptions = {
+		"",
 		"initialization",
 		"parsing",
-		"semantic analysis",
 		"conversion",
+		"semantic analysis",
 		"class generation",
+		"plugin generation",
 		"output",
 		"finalization"};
 

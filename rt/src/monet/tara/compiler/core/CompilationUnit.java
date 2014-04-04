@@ -64,7 +64,6 @@ public class CompilationUnit extends ProcessingUnit {
 					} else
 						getErrorCollector().addWarning(2, error.getMessage(), getSourceFromFile(error.getNode().getFile()));
 			}
-			getErrorCollector().failIfErrors();
 		}
 
 		private SourceUnit getSourceFromFile(String file) {
@@ -92,7 +91,7 @@ public class CompilationUnit extends ProcessingUnit {
 				generator.generate(units);
 				getErrorCollector().failIfErrors();
 			} catch (TaraException e) {
-				LOG.severe("Error during plugin generation: " + e.getMessage() + "\n" + getStackTrace(e));
+				LOG.severe("Error during plugin generation: " + e.getMessage() + "\n");
 				throw new CompilationFailedException(phase, CompilationUnit.this);
 			}
 		}
@@ -126,16 +125,8 @@ public class CompilationUnit extends ProcessingUnit {
 
 	}
 
-	private String getStackTrace(TaraException e) {
-		String trace = "";
-		for (StackTraceElement element : e.getStackTrace()) {
-			trace += element.toString() + "\n";
-		}
-		return trace;
-	}
-
 	public void addPhaseOperation(Operation operation, int phase) {
-		if ((phase < 0) || (phase > 9)) throw new IllegalArgumentException("phase " + phase + " is unknown");
+		if ((phase < 1) || (phase > 8)) throw new IllegalArgumentException("phase " + phase + " is unknown");
 		this.phaseOperations[phase].add(operation);
 	}
 
@@ -162,7 +153,7 @@ public class CompilationUnit extends ProcessingUnit {
 
 	public void compile(int throughPhase) throws CompilationFailedException {
 		gotoPhase(1);
-		while ((Math.min(throughPhase, 9) >= this.phase) && (this.phase <= 9)) {
+		while ((Math.min(throughPhase, 8) >= this.phase) && (this.phase <= 8)) {
 			processPhaseOperations(this.phase);
 			if (this.progressCallback != null) this.progressCallback.call(this, this.phase);
 			completePhase();
