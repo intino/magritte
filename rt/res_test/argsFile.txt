@@ -1,4 +1,5 @@
 src_file
+/Users/oroncal/workspace/tara/rt/res_test/monet.m2
 /Users/oroncal/workspace/tara/rt/res_test/monet2.m2
 
 project

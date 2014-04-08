@@ -12,7 +12,9 @@ public abstract class SemanticError {
 	protected SemanticError(String token, ASTNode node) {
 		this.token = token;
 		this.node = node;
-		this.line = node.getLine();
+		if (node != null)
+			this.line = node.getLine();
+		else this.line = -1;
 	}
 
 	public String getToken() {

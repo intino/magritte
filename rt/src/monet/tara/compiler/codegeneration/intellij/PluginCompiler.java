@@ -94,10 +94,11 @@ public class PluginCompiler extends CodeGenerator {
 		return jarNames.toArray(new String[jarNames.size()]);
 	}
 
-	private static String getJar(String jar) throws TaraException {
+	public static String getJar(String jar) throws TaraException {
 		String path = ResourceManager.get(jar);
 		if (path.contains("!")) {
-			path = path.substring(0, path.indexOf('!')).replace("file:/", "");
+			path = path.substring(0, path.indexOf('!')).replace("file:", "");
+			if (path.contains(":")) path = path.substring(0);
 			path = path.substring(0, path.lastIndexOf('/') + 1) + jar;
 			path = new File(path).getAbsolutePath();
 			if (!new File(path).exists()) throw new TaraException("Libs not found");

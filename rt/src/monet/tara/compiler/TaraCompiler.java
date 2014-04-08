@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class TaraCompiler {
+	public static final String LINE_AT = " @ line ";
 	private static final Logger LOG = Logger.getLogger(TaraCompiler.class.getName());
-
 	private final List<CompilerMessage> collector;
 
 	public TaraCompiler(List<CompilerMessage> collector) {
@@ -92,19 +92,22 @@ public class TaraCompiler {
 	}
 
 	private void addErrorMessage(SyntaxException exception) {
-		final String lineAt = " @ line ";
 		String message = exception.getMessage();
-		String justMessage = message.substring(0, message.lastIndexOf(lineAt));
+		String justMessage = message.substring(0, message.lastIndexOf(LINE_AT));
 		collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, justMessage, exception.getSourceLocator(),
 			exception.getLine(), exception.getStartColumn()));
 	}
 
 	private void addErrorMessage(SemanticError exception) {
-		final String lineAt = " @ line ";
-		String message = exception.getMessage();
-		String justMessage = message.substring(0, message.lastIndexOf(lineAt));
-		collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, justMessage, exception.getNode().getFile(),
-			exception.getLine(), 1));
+		String message;
+		if (exception.getNode() != null) {
+			message = exception.getMessage().substring(0, exception.getMessage().lastIndexOf(LINE_AT));
+			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, exception.getNode().getFile(),
+				exception.getLine(), 1));
+		} else {
+			message = exception.getMessage();
+			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, null, -1, -1));
+		}
 	}
 
 	private void addErrorMessage(TaraRuntimeException exception) {

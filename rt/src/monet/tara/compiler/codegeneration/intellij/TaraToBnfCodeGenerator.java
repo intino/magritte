@@ -2,7 +2,6 @@ package monet.tara.compiler.codegeneration.intellij;
 
 import monet.tara.compiler.codegeneration.PathManager;
 import monet.tara.compiler.codegeneration.render.BnfRender;
-import monet.tara.compiler.codegeneration.render.RenderUtils;
 import monet.tara.compiler.codegeneration.render.TemplateFactory;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.ast.AST;
@@ -18,7 +17,7 @@ public class TaraToBnfCodeGenerator extends CodeGenerator {
 	public static File toBnf(CompilerConfiguration conf, AST ast) throws TaraException {
 		String template = TemplateFactory.getTemplate(GRAMMAR_TPL);
 		String outPath = PathManager.getSrcDir(conf.getTempDirectory()) +
-			newTemplate(RenderUtils.toProperCase(conf.getProject()), template);
+			newTemplate(conf.getProject().toLowerCase(), template);
 		BnfRender render = new BnfRender(conf.getProject(), template, ast);
 		File file = new File(outPath);
 		PrintWriter outWriter = getOutWriter(file);

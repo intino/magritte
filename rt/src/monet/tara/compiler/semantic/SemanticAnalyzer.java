@@ -42,6 +42,7 @@ public class SemanticAnalyzer {
 
 	private void startAnalysis(ASTNode[] concepts) {
 		detector.checkDuplicateRoots(concepts);
+		checker.checkIfRoot(concepts);
 		for (ASTNode concept : concepts)
 			conceptAnalysis(concept);
 	}

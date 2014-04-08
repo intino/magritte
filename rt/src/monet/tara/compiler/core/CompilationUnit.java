@@ -3,6 +3,7 @@ package monet.tara.compiler.core;
 import monet.tara.compiler.codegeneration.ClassGenerator;
 import monet.tara.compiler.codegeneration.intellij.FileSystemUtils;
 import monet.tara.compiler.codegeneration.intellij.PluginGenerator;
+import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.errorcollection.*;
 import monet.tara.compiler.core.errorcollection.message.Message;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
@@ -60,15 +61,16 @@ public class CompilationUnit extends ProcessingUnit {
 				for (SemanticError error : e.getErrors())
 					if (error instanceof SemanticError.FatalError) {
 						LOG.severe("Error during semantic analyze");
-						getErrorCollector().addError(Message.create(error, getSourceFromFile(error.getNode().getFile())));
+						getErrorCollector().addError(Message.create(error, getSourceFromFile(error.getNode())));
 					} else
-						getErrorCollector().addWarning(2, error.getMessage(), getSourceFromFile(error.getNode().getFile()));
+						getErrorCollector().addWarning(2, error.getMessage(), getSourceFromFile(error.getNode()));
 			}
 		}
 
-		private SourceUnit getSourceFromFile(String file) {
-			for (String name : sources.keySet())
-				if (name.equals(file)) return sources.get(name);
+		private SourceUnit getSourceFromFile(ASTNode node) {
+			if (node != null)
+				for (String name : sources.keySet())
+					if (name.equals(node.getFile())) return sources.get(name);
 			return null;
 		}
 	};

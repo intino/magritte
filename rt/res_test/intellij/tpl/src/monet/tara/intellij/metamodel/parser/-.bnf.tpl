@@ -16,15 +16,12 @@
   psiImplUtilClass='monet.::projectName::.intellij.metamodel.psi.impl.::projectNameFile::PsiImplUtil'
 }
 
-root \:\:= (synthetizeStatement | NEWLINE)* (definition | NEWLINE)*
-
-synthetizeStatement \:\:= SYNTHETIZE referenceIdentifier ((OPEN_AN synthetizeTag+ CLOSE_AN) | synthetizeAttribute )
-synthetizeTag \:\:= FINAL | ABSTRACT |  MULTIPLE |  OPTIONAL | HAS_CODE | SINGLETON | ROOT | EXTENSIBLE
-//{
-//mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.AnnotationsMixin'
-//implements='monet.::projectName::.intellij.metamodel.psi.Annotation'
-//}
-synthetizeAttribute \:\:= NEW_LINE_INDENT( attribute  NEWLINE+)+ DEDENT
+root \:\:= (synthesizeStatement | NEWLINE)* (definition | NEWLINE)*
+private synt \:\:= ::conceptKeyList::
+private syntElement \:\:= synt (DOT synt)*
+synthesizeStatement \:\:= SYNTHESIZE syntElement ((OPEN_AN synthesizeTag+ CLOSE_AN) | synthesizeAttribute )
+synthesizeTag \:\:= FINAL | ABSTRACT |  MULTIPLE |  OPTIONAL | HAS_CODE | SINGLETON | ROOT | EXTENSIBLE
+synthesizeAttribute \:\:= NEW_LINE_INDENT( attribute  NEWLINE+)+ DEDENT
 
 private definition \:\:= ::concepts::
 

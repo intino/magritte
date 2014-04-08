@@ -5,18 +5,16 @@
   <vendor email="octavioroncal\@siani.es" url="http\://www.monet.org">Siani</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <small>most HTML tags may be used</small>
+      Siani development tool for the generation of model-based plugins.
       ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <small>most HTML tags may be used</small>
+      First Realease.
+        Windows integration.
       ]]>
   </change-notes>
 
-  <!-- please see http\://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="133.331"/>
+  <idea-version since-build="135.475"/>
 
   <!-- please see http\://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
@@ -86,7 +84,7 @@
                             implementationClass="monet.::projectName::.intellij.codeinsight.completion.::projectProperName::AnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="::projectProperName::"
                                   implementationClass="monet.::projectName::.intellij.structureview.StructureViewFactory"/>
-    <psi.referenceContributor language="JAVA" implementation="monet.::projectName::.intellij.::projectProperName::ReferenceContributor"/>
+    <psi.referenceContributor implementation="monet.::projectName::.intellij.::projectProperName::ReferenceContributor"/>
     <nameSuggestionProvider implementation="monet.::projectName::.intellij.refactoring.NameSuggestionProvider"/>
     <lang.elementManipulator forClass="monet.::projectName::.intellij.metamodel.psi.::projectProperName::Identifier"
                              implementationClass="monet.::projectName::.intellij.metamodel.psi.impl.IdentifierManipulator"/>

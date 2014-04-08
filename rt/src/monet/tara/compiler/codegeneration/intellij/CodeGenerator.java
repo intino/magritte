@@ -37,7 +37,8 @@ public abstract class CodeGenerator {
 		if (output.getMessage() != null && !"".equals(output.getMessage()))
 			LOG.info(output.getMessage());
 		if (error.getMessage() != null && !"".equals(error.getMessage()))
-			LOG.severe(error.getMessage());
+			if (!error.getMessage().startsWith("Note"))
+				LOG.severe(error.getMessage());
 		return error.getMessage();
 	}
 

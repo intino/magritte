@@ -56,6 +56,7 @@ public class PluginPackager extends CodeGenerator {
 				FileSystemUtils.copyFile(swingStream, swingFile);
 				libsFile.deleteOnExit();
 				swingFile.deleteOnExit();
+				libsFile.getParentFile().deleteOnExit();
 				return new File[]{libsFile, swingFile};
 			} catch (Exception e) {
 				throw new TaraException("Error during packaging: " + e.getMessage(), true);
@@ -79,8 +80,8 @@ public class PluginPackager extends CodeGenerator {
 		return PathManager.getBuildIdeDir(conf.getTempDirectory()) + conf.getProject() + SEP + "lib" + SEP;
 	}
 
-	public static void writeLibs(File libs, String buildPath) throws IOException {
-		ZipFile zipFile = new ZipFile(libs);
+	public static void writeLibs(File lib, String buildPath) throws IOException {
+		ZipFile zipFile = new ZipFile(lib);
 		Enumeration entries = zipFile.entries();
 		Map<String, InputStream> jars = new HashMap<>();
 		while (entries.hasMoreElements()) {
@@ -91,8 +92,10 @@ public class PluginPackager extends CodeGenerator {
 			}
 			jars.put(entry.getName(), zipFile.getInputStream(entry));
 		}
-		for (String file : jars.keySet())
+		for (String file : jars.keySet()) {
+			new File(buildPath + file).getParentFile().mkdirs();
 			FileSystemUtils.writeInputStream(jars.get(file), new File(buildPath + file));
+		}
 		zipFile.close();
 	}
 

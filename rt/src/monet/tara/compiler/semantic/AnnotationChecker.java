@@ -3,6 +3,7 @@ package monet.tara.compiler.semantic;
 
 import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.ast.ASTNode.AnnotationType;
+import monet.tara.compiler.core.errorcollection.semantic.NoRootError;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import monet.tara.compiler.core.errorcollection.semantic.WrongAnnotationError;
 
@@ -12,11 +13,13 @@ import java.util.List;
 
 public class AnnotationChecker {
 
+	private boolean thereIsAnyRoot;
 	private SemanticErrorList errors = new SemanticErrorList();
 	private List<AnnotationType> annotations = new ArrayList<>();
 
 	public AnnotationChecker(SemanticErrorList errors) {
 		this.errors = errors;
+		this.thereIsAnyRoot = false;
 	}
 
 	public void checkAnnotations(ASTNode concept) {
@@ -24,6 +27,27 @@ public class AnnotationChecker {
 		rootAnnotation(concept);
 		optionalAnnotation(concept);
 		multipleAnnotation(concept);
+	}
+
+	public void checkIfRoot(ASTNode[] conceptList) {
+		findRootConcepts(conceptList);
+		noRootConcepts();
+
+	}
+
+	private void findRootConcepts(ASTNode[] conceptList) {
+		for (ASTNode concept : conceptList)
+			thereIsAnyRoot = isRootConcept(concept) || thereIsAnyRoot;
+	}
+
+	private boolean isRootConcept(ASTNode concept) {
+		annotations = Arrays.asList(concept.getAnnotations());
+		return annotations.contains(AnnotationType.ROOT);
+	}
+
+	private void noRootConcepts() {
+		if (!thereIsAnyRoot)
+			errors.add(new NoRootError());
 	}
 
 	private void rootAnnotation(ASTNode concept) {

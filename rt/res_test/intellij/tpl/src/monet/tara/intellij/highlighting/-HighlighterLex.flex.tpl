@@ -20,7 +20,7 @@ NEWLINE= [\\n]+ ([ ] | [\\t])*
 
 //=====================
 //Reserved words
-SYNTHETIZE= "synthetize"
+SYNTHESIZE= "synthesize"
 MORPH_KEY = "Morph"
 POLYMORPHIC_KEY = "Polymorphic"
 MORPH_KEY = "Morph"
@@ -72,7 +72,7 @@ POSITIVE_VALUE = {POSITIVE}? {DIGIT}+
 NEGATIVE_VALUE = {NEGATIVE} {DIGIT}+
 DOUBLE_VALUE   = ({POSITIVE} | {NEGATIVE})? {DIGIT}+ {DOT} {DIGIT}+
 STRING_VALUE   = {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
-CODE           = "\#" {DIGIT}+
+::codeStatement::
 DOC_LINE = "'" ~[\\n]
 
 DIGIT=[:digit:]
@@ -84,7 +84,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 \%\%
 <YYINITIAL> {
 
-    {SYNTHETIZE}                {   return ::projectNameFile::Types.SYNTHETIZE; }
+    {SYNTHESIZE}                {   return ::projectNameFile::Types.SYNTHESIZE; }
 
     {POLYMORPHIC_KEY}           {   return ::projectNameFile::Types.POLYMORPHIC_KEY; }
 
@@ -118,7 +118,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{DOC_LINE}                       {   return ::projectNameFile::Types.DOC_LINE; }
 
 	{STRING_VALUE}              {   return ::projectNameFile::Types.STRING_VALUE_KEY; }
-	{CODE}                      {   return ::projectNameFile::Types.CODE;}
+::codeStatementFunction::
 	{BOOLEAN_VALUE}             {   return ::projectNameFile::Types.BOOLEAN_VALUE_KEY; }
 	{DOUBLE_VALUE}              {   return ::projectNameFile::Types.DOUBLE_VALUE_KEY; }
 	{NEGATIVE_VALUE}            {   return ::projectNameFile::Types.NEGATIVE_VALUE_KEY; }

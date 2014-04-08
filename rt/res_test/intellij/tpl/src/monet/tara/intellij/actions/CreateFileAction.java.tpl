@@ -12,9 +12,8 @@ public class CreateFileAction extends CreateFileFromTemplateAction implements Du
 
 	public CreateFileAction() {
 		super("Definition", "Creates Definition file", ::projectProperName::FileType.INSTANCE.getIcon());
-		if (FileTemplateManager.getInstance().getInternalTemplate("Definition") != null)
-			FileTemplateManager.getInstance().removeTemplate(FileTemplateManager.getInstance().getInternalTemplate("Definition"));
-		FileTemplateManager.getInstance().addTemplate("Definition", "m1").setText(getDefinitionTemplate());
+		if (FileTemplateManager.getInstance().getInternalTemplate("Definition") == null)
+			FileTemplateManager.getInstance().addTemplate("Definition", "m1").setText(getDefinitionTemplate());
 	}
 
 	\@Override

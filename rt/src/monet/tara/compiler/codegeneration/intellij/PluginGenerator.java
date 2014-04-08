@@ -21,17 +21,12 @@ public class PluginGenerator {
 	public void generate(Collection<SourceUnit> units) throws TaraException {
 		AST ast = mergeAST(units);
 		new TaraPluginToJavaCodeGenerator().toJava(conf, ast);
-		LOG.info("TO JAVA COMPLETE");
 		File grammarFile = TaraToBnfCodeGenerator.toBnf(conf, ast);
-		LOG.info("TO BNF COMPLETE");
 		BnfToJavaCodeGenerator.bnfToJava(conf, grammarFile);
-		LOG.info("BNF-TO-JAVA COMPLETE");
 		File[] lexFiles = TaraToJFlexCodeGenerator.toJFlex(conf, ast);
-		LOG.info("TO FLEX COMPLETE");
 		for (File lexFile : lexFiles)
 			JFlexToJavaGenerator.jFlexToJava(conf.getTempDirectory(), lexFile);
 		PluginCompiler.generateClasses(conf);
-		LOG.info("COMPILER FINISH");
 		PluginPackager.doPackage(conf);
 	}
 

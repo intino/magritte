@@ -38,7 +38,7 @@ public class DefinitionRender extends DefaultRender {
 		for (ASTNode child : node.getChildren())
 			childDefinitions.append(addDefinition(child, level + 1));
 		map.put("childrenDeclaration", childDefinitions.toString());
-		definition.append(block("definition", (HashMap<String, Object>) map));
+		definition.append(block("definition", map));
 		String result = definition.toString();
 		if (!node.equals(rootNode))
 			return result.replaceAll("\n", "\n\t");
@@ -59,7 +59,7 @@ public class DefinitionRender extends DefaultRender {
 			Map<String, Object> map = new HashMap<>();
 			map.put("name", attribute.getName());
 			map.put("type", attribute.getPrimitiveType().toUpperCase());
-			attributes.append(block("attribute", (HashMap<String, Object>) map));
+			attributes.append(block("attribute", map));
 		}
 		return attributes.toString();
 	}
@@ -70,7 +70,7 @@ public class DefinitionRender extends DefaultRender {
 			Map<String, Object> map = new HashMap<>();
 			map.put("type", reference.getNode());
 			map.put("name", reference.getName());
-			references.append(block("reference", (HashMap<String, Object>) map));
+			references.append(block("reference", map));
 		}
 		return references.toString();
 	}
