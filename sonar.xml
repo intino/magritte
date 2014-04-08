@@ -69,6 +69,6 @@
   </target>
 
   <!-- ========= The main target "all" ========= -->
-  <target name="all" depends="sonar"/>
+  <target name="all" depends="clean, sonar"/>
 
 </project>
