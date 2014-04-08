@@ -102,7 +102,7 @@ public class DefinitionRender extends DefaultRender {
 				}}));
 			}
 			map.put("childType", childIdentifier);
-			childGetters.append(block("childGetter", (HashMap<String, Object>) map)).append("\t");
+			childGetters.append(block("childGetter", map)).append("\t");
 		}
 		return childGetters.toString();
 	}
