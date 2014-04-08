@@ -32,8 +32,7 @@ public class PluginCompiler extends CodeGenerator {
 			if (isFatal(errorMessage)) throw new TaraException("Plugin Compilation failed");
 			addIcons();
 		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-			LOG.severe(e.getMessage());
+			LOG.severe(e.getLocalizedMessage());
 		}
 	}
 
@@ -57,7 +56,7 @@ public class PluginCompiler extends CodeGenerator {
 				getBuildDirectory());
 			return cmd.toArray(new String[cmd.size()]);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.severe(e.getMessage());
 			throw new TaraException("Error compiling plugin");
 		}
 	}
@@ -73,7 +72,7 @@ public class PluginCompiler extends CodeGenerator {
 			if (conf.getProjectIcon() != null && new File(conf.getProjectIcon()).exists())
 				FileSystemUtils.copyFile(conf.getProjectIcon(), getDestinyOf(IconFactory.getIcon("-.png")));
 		} catch (FileSystemException e) {
-			e.printStackTrace();
+			LOG.severe(e.getMessage());
 			throw new TaraException("Error adding icons to the plugin");
 		}
 	}
