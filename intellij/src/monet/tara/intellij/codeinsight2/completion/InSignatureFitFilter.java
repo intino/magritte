@@ -1,4 +1,4 @@
-package monet.tara.intellij.codeinsight.completion;
+package monet.tara.intellij.codeinsight2.completion;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.ElementFilter;
