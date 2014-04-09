@@ -38,18 +38,6 @@ public class TaraPsiImplUtil {
 		return null;
 	}
 
-	public static String getIdentifier(ReferenceIdentifier element) {
-		ASTNode valueNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER_KEY);
-		if (valueNode != null) return valueNode.getText();
-		else return null;
-	}
-
-	public static String getIdentifier(ReferenceStatement element) {
-		ASTNode valueNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER_KEY);
-		if (valueNode != null) return valueNode.getText();
-		else return null;
-	}
-
 	public static PsiElement setName(Signature element, String newName) {
 		ASTNode keyNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER);
 		if (keyNode != null) {
@@ -59,13 +47,6 @@ public class TaraPsiImplUtil {
 		}
 		return element;
 	}
-
-	public static PsiElement getIdentifier(Signature element) {
-		ASTNode keyNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER);
-		if (keyNode != null) return keyNode.getPsi();
-		else return null;
-	}
-
 
 	public static List<Concept> getChildrenInBody(Body body) {
 		return (List<Concept>) body.getConceptList();

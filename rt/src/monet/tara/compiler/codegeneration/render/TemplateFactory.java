@@ -8,7 +8,6 @@ public class TemplateFactory {
 	public static final String IDE_TPL = "intellij/tpl/";
 	public static final String IDE = "intellij/";
 	public static final String CONCEPT_KEY = "_";
-	public static final String PROJECT_KEY = "-";
 	private static final Map<String, String> TEMPLATES = new HashMap<>();
 	private static final String SRC = "src/";
 	private static final String RES = "res/";
@@ -139,17 +138,16 @@ public class TemplateFactory {
 	}
 
 
+	private TemplateFactory() {
+	}
 
 	public static Map<String, String> getTemplates() {
 		return TEMPLATES;
 	}
 
 	public static String getTemplate(String className) {
-		String template= TEMPLATES.get(className);
+		String template = TEMPLATES.get(className);
 		if (template != null) return template;
-		else throw new RuntimeException("Template not defined "+ className);
-	}
-
-	private TemplateFactory() {
+		else throw new RuntimeException("Template not defined " + className);
 	}
 }

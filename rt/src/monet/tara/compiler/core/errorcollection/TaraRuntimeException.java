@@ -7,11 +7,6 @@ public class TaraRuntimeException extends RuntimeException {
 
 	private ASTNode node;
 
-
-	public TaraRuntimeException(ASTNode node) {
-		this.node = node;
-	}
-
 	public TaraRuntimeException(String message) {
 		super(message);
 	}
@@ -20,15 +15,6 @@ public class TaraRuntimeException extends RuntimeException {
 		super(message);
 		this.node = node;
 	}
-
-	public TaraRuntimeException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public TaraRuntimeException(Throwable t) {
-		initCause(t);
-	}
-
 
 	public String getMessage() {
 		return getMessageWithoutLocationText() + getLocationText();

@@ -160,12 +160,6 @@ public class TaraUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	private static Concept findChildIn(List<Concept> list, String identifier) {
-		for (Concept concept : list)
-			if (concept.getName() != null && concept.getName().equals(identifier)) return concept;
-		return null;
-	}
-
 	public static Concept[] getChildrenOf(Concept concept) {
 		List<Concept> childrenOf = TaraPsiImplUtil.getChildrenOf(concept);
 		return childrenOf.toArray(new Concept[childrenOf.size()]);

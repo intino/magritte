@@ -4,7 +4,6 @@
     <!-- ========= Define the main properties of this project ========= -->
   <property name="sources.dir" value="src" />
   <property name="test.dir" value="test" />
-  <property name="build.dir" value="out" />
   <property name="sonar.java.source" value="1.7"/>
   <property name="sonar.target" value="1.7"/>
   <path id="classpath">
@@ -12,15 +11,8 @@
 
 
  <target name="clean">
-    <delete dir="${build.dir}" />
   </target>
 
-  <target name="init">
-    <mkdir dir="${build.dir}" />
-    <mkdir dir="${classes.dir}" />
-  </target>
-
-
-  <target name="all" depends="clean, init" />
+  <target name="all" depends="clean" />
 
 </project>

@@ -30,9 +30,9 @@
 
   <!-- Override some properties at module level -->
   <property name="intellij.sonar.projectName" value="intellij"/>
-  <property name="tara_runtime.sonar.projectName" value="tara_runtime"/>
-  <property name="tara_runtime_constants.sonar.projectName" value="tara_runtime_constants"/>
-  <property name="processor_manager.sonar.projectName" value="processor_manager"/>
+  <property name="tara_runtime.sonar.projectName" value="rt"/>
+  <property name="tara_runtime_constants.sonar.projectName" value="rt-constants"/>
+  <property name="processor_manager.sonar.projectName" value="jps-plugin"/>
 
 
   <!-- The following properties are required to use JaCoCo: -->
@@ -49,19 +49,16 @@
   <target name="clean">
     <delete dir=".sonar"/>
     <ant dir="intellij" target="clean"/>
-    <ant dir="tara_runtime" target="clean"/>
-    <ant dir="tara_runtime_constants" target="clean"/>
-    <ant dir="processor_manager" target="clean"/>
-  </target>
-
-  <target name="test">
-    <ant dir="tara_runtime" target="test"/>
+    <ant dir="rt" target="clean"/>
+    <ant dir="rt-constants" target="clean"/>
+    <ant dir="jps-plugin" target="clean"/>
   </target>
 
   <!-- ========= Define SonarQube target ========= -->
   <target name="sonar">
     <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
       <!-- Update the following line, or put the "sonar-ant-task-*.jar" file in your "$HOME/.ant/lib" folder -->
+      <!--<classpath path="/Applications/libraries/sonar-ant-task-2.1.jar"/>-->
     </taskdef>
 
     <!-- Execute SonarQube -->

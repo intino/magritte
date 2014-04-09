@@ -7,11 +7,9 @@ import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.logging.Logger;
 
 public class PluginGenerator {
 
-	private static final Logger LOG = Logger.getLogger(PluginGenerator.class.getName());
 	CompilerConfiguration conf;
 
 	public PluginGenerator(CompilerConfiguration conf) {

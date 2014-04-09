@@ -21,7 +21,6 @@ public class TaracRunner {
 			TaraCompilerRunner.runTaraCompiler(argsFile, isPluginGeneration(args[0]));
 		} catch (Exception e) {
 			LOG.severe("Exception in TaraCRunner: " + e.toString());
-			e.printStackTrace();
 			System.exit(1);
 		}
 	}

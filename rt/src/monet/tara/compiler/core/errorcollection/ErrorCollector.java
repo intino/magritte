@@ -22,15 +22,6 @@ public class ErrorCollector {
 		this.configuration = configuration;
 	}
 
-	public void addCollectorContents(ErrorCollector er) {
-		if (er.errors != null)
-			if (this.errors == null) this.errors = er.errors;
-			else this.errors.addAll(er.errors);
-		if (er.warnings != null)
-			if (this.warnings == null) this.warnings = er.warnings;
-			else this.warnings.addAll(er.warnings);
-	}
-
 	public void addErrorAndContinue(Message message) {
 		if (this.errors == null) this.errors = new LinkedList();
 		this.errors.add(message);
@@ -45,7 +36,7 @@ public class ErrorCollector {
 		else addError(message);
 	}
 
-	public void addError(SyntaxException error, SourceUnit source) throws CompilationFailedException {
+	public void addSyntaxError(SyntaxException error, SourceUnit source) throws CompilationFailedException {
 		addError(Message.create(error, source), error.isFatal());
 	}
 
@@ -65,18 +56,6 @@ public class ErrorCollector {
 
 	public CompilerConfiguration getConfiguration() {
 		return this.configuration;
-	}
-
-	public boolean hasWarnings() {
-		return this.warnings != null;
-	}
-
-	public List getWarnings() {
-		return this.warnings;
-	}
-
-	public List getErrors() {
-		return this.errors;
 	}
 
 	public int getWarningCount() {
@@ -99,29 +78,6 @@ public class ErrorCollector {
 		return null;
 	}
 
-	public Message getLastError() {
-		return (Message) this.errors.getLast();
-	}
-
-	public SyntaxException getSyntaxError(int index) {
-		SyntaxException exception = null;
-		Message message = getError(index);
-		if (message instanceof SyntaxErrorMessage)
-			exception = ((SyntaxErrorMessage) message).getCause();
-		return exception;
-	}
-
-	public Exception getException(int index) {
-		Exception exception = null;
-		Message message = getError(index);
-		if (message != null)
-			if (message instanceof ExceptionMessage)
-				exception = ((ExceptionMessage) message).getCause();
-			else if (message instanceof SyntaxErrorMessage)
-				exception = ((SyntaxErrorMessage) message).getCause();
-		return exception;
-	}
-
 	public void addWarning(WarningMessage message) {
 		if (message.isRelevant(this.configuration.getWarningLevel())) {
 			if (this.warnings == null)
@@ -133,11 +89,6 @@ public class ErrorCollector {
 	public void addWarning(int importance, String text, SourceUnit source) {
 		if (WarningMessage.isRelevant(importance, this.configuration.getWarningLevel()))
 			addWarning(new WarningMessage(importance, text, source));
-	}
-
-	public void addWarning(int importance, String text, Object data, SourceUnit source) {
-		if (WarningMessage.isRelevant(importance, this.configuration.getWarningLevel()))
-			addWarning(new WarningMessage(importance, text, data, source));
 	}
 
 	public void failIfErrors() throws CompilationFailedException {

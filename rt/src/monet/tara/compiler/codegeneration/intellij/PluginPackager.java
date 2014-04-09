@@ -36,8 +36,7 @@ public class PluginPackager extends CodeGenerator {
 			FileSystemUtils.zipDir(conf.getTargetDirectory() + SEP + conf.getProject() + ".zip", toZip.getPath() + SEP);
 			FileSystemUtils.removeDir(toZip);
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new TaraException("Error during packaging: " + e.getMessage(), true);
+			throw new TaraException("Error during packaging: " + e.toString(), true);
 		}
 	}
 

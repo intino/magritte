@@ -73,6 +73,10 @@ public class TaraCompilerConfiguration implements PersistentStateComponent<JpsTa
 		return pluginGeneration;
 	}
 
+	public void setPluginGeneration(boolean generation) {
+		pluginGeneration = generation;
+	}
+
 	public String getVersion() {
 		return version;
 	}
@@ -89,19 +93,15 @@ public class TaraCompilerConfiguration implements PersistentStateComponent<JpsTa
 		this.commentaries = commentaries;
 	}
 
-	public void setPluginGeneration(boolean generation) {
-		pluginGeneration = generation;
-	}
-
 	public void dispose() {
 		Disposer.dispose(myExcludeFromStubGeneration);
 	}
 
-	public void setVendor(String vendor) {
-		this.vendor = vendor;
-	}
-
 	public String getVendor() {
 		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
 	}
 }
