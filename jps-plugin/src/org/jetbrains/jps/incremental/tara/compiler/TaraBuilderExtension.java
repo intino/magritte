@@ -6,9 +6,6 @@ import org.jetbrains.jps.incremental.CompileContext;
 
 import java.util.Collection;
 
-/**
- * @author Sergey Evdokimov
- */
 public interface TaraBuilderExtension {
 
 	@NotNull

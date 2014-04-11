@@ -1,1 +1,1 @@
-org.jetbrains.jps.incremental.tara.model.TaraModelSerializationExtension
+org.jetbrains.jps.incremental.tara.compiler.TaraModelSerializerExtension

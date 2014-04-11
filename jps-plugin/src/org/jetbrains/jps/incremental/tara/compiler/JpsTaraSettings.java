@@ -15,17 +15,16 @@ import java.io.File;
 
 public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 	public static final String DEFAULT_HEAP_SIZE = "400";
-	private String heapSize = DEFAULT_HEAP_SIZE;
-	public static final boolean PLUGIN_GENERATION = true;
-	private boolean pluginGeneration = PLUGIN_GENERATION;
+	public String heapSize = DEFAULT_HEAP_SIZE;
+	public static final boolean DEFAULT_PLUGIN_GENERATION = true;
+	public boolean pluginGeneration = DEFAULT_PLUGIN_GENERATION;
 	public static final JpsElementChildRole<JpsTaraSettings> ROLE = JpsElementChildRoleBase.create("Tara Compiler Configuration");
-	private String version = "0.1";
-	private String commentaries = "";
+	public String version = "0.1";
+	public String commentaries = "";
+	private JpsCompilerExcludes myExcludeFromStubGeneration;
 
 	@Tag("excludes")
-	private Element excludes = new Element("aaa");
-
-	private JpsCompilerExcludes myExcludeFromStubGeneration;
+	public Element excludes = new Element("aaa");
 
 	public JpsTaraSettings() {
 	}
@@ -41,9 +40,8 @@ public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 		return settings == null ? new JpsTaraSettings() : settings;
 	}
 
-	void initExcludes() {
-		myExcludeFromStubGeneration = new JpsCompilerExcludesImpl();
-		JpsJavaCompilerConfigurationSerializer.readExcludes(excludes, myExcludeFromStubGeneration);
+	@Override
+	public void applyChanges(@NotNull JpsTaraSettings modified) {
 	}
 
 	@NotNull
@@ -52,52 +50,13 @@ public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 		return new JpsTaraSettings(this);
 	}
 
-	@Override
-	public void applyChanges(@NotNull JpsTaraSettings modified) {
-		//TODO
-	}
-
-	public boolean isExcludedFromStubGeneration(File file) {
+	public boolean isExcludedFromCompilation(File file) {
 		return myExcludeFromStubGeneration != null && myExcludeFromStubGeneration.isExcluded(file);
 	}
 
-	public String getHeapSize() {
-		return heapSize;
+	void initExcludes() {
+		myExcludeFromStubGeneration = new JpsCompilerExcludesImpl();
+		JpsJavaCompilerConfigurationSerializer.readExcludes(excludes, myExcludeFromStubGeneration);
 	}
 
-	public void setHeapSize(String heapSize) {
-		this.heapSize = heapSize;
-	}
-
-	public boolean isPluginGeneration() {
-		return pluginGeneration;
-	}
-
-	public void setPluginGeneration(boolean pluginGeneration) {
-		this.pluginGeneration = pluginGeneration;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	public String getCommentaries() {
-		return commentaries;
-	}
-
-	public void setCommentaries(String commentaries) {
-		this.commentaries = commentaries;
-	}
-
-	public Element getExcludes() {
-		return excludes;
-	}
-
-	public void setExcludes(Element excludes) {
-		this.excludes = excludes;
-	}
 }

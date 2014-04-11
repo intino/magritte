@@ -1,2 +1,2 @@
-Concept as Thesaurus
+Concept Thesaurus
 

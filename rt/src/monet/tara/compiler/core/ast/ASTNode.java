@@ -203,7 +203,7 @@ public class ASTNode {
 	}
 
 	public enum AnnotationType {
-		EXTENSIBLE, HAS_CODE, ROOT, SINGLETON, MULTIPLE, OPTIONAL;
+		EXTENSIBLE, HAS_CODE, ROOT, SINGLETON, MULTIPLE, OPTIONAL, GENERIC;
 	}
 
 	public static class Attribute extends Variable {

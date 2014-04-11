@@ -87,7 +87,6 @@ lexer grammar TaraM2Lexer;
 }
 
 CONCEPT    : 'Concept';
-AS         : 'as';
 FINAL      : 'final';
 ABSTRACT   : 'abstract';
 MULTIPLE   : 'multiple';
@@ -95,12 +94,13 @@ OPTIONAL   : 'optional';
 HAS_CODE   : 'has-code';
 EXTENSIBLE : 'extensible';
 VAR        : 'var';
-ROOT       : 'ast';
+ROOT       : 'root';
 SINGLETON  : 'singleton';
 NEW        : 'new';
 POLYMORPHIC: 'polymorphic';
 MORPH      : 'morph';
 WORD       : 'Word';
+GENERIC    : 'generic';
 
 LIST: LEFT_SQUARE RIGHT_SQUARE;
 LEFT_SQUARE : '[';
@@ -112,6 +112,7 @@ CLOSE_BRACKET: '}' { closeBracket(); };
 OPEN_AN : '<';
 CLOSE_AN: '>';
 
+COLON        : ':';
 COMMA        : ',';
 DOT          : '.';
 ASSIGN       : '=';

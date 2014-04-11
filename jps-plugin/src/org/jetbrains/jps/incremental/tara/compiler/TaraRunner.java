@@ -52,7 +52,7 @@ public class TaraRunner {
 		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
 		List<String> programParams = ContainerUtilRt.newArrayList(pluginGeneration ? "--gen-plugin" : "tarac", argsFile.getPath());
 		List<String> vmParams = ContainerUtilRt.newArrayList();
-		vmParams.add("-Xmx" + settings.getHeapSize() + "m");
+		vmParams.add("-Xmx" + settings.heapSize + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 			final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
 			getJavaExecutable(), "monet.tara.TaracRunner", Collections.<String>emptyList(), classpath, vmParams, programParams);

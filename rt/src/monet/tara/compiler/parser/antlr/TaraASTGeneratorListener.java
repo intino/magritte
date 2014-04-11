@@ -14,6 +14,7 @@ import static monet.tara.compiler.parser.antlr.TaraM2Grammar.*;
 
 public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
+	public static final String ATTRIBUTE = "ATTRIBUTE";
 	private final String file;
 	AST ast;
 	Stack<ASTNode> conceptStack = new Stack<>();
@@ -79,7 +80,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 		if (ctx.UID_TYPE() != null) {
 			conceptStack.peek().add(new ASTNode.Attribute(ctx.UID_TYPE().getText(), ctx.IDENTIFIER().getText(), false));
-			ast.addIdentifier(ctx.IDENTIFIER().getText(), "ATTRIBUTE");
+			ast.addIdentifier(ctx.IDENTIFIER().getText(), ATTRIBUTE);
 		} else if (ctx.INT_TYPE() != null)
 			addAttribute(ctx, ctx.INT_TYPE(), (ctx.integerValue() != null) ? ctx.integerValue() : ctx.integerList());
 		else if (ctx.DOUBLE_TYPE() != null)
@@ -97,7 +98,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 			if (ctx.variableNames() != null)
 				for (TerminalNode node : ctx.variableNames().IDENTIFIER()) {
 					conceptStack.peek().add(new ASTNode.Attribute(type.getText(), node.getText(), false));
-					ast.addIdentifier(node.getText(), "ATTRIBUTE");
+					ast.addIdentifier(node.getText(), ATTRIBUTE);
 				}
 			else conceptStack.peek().add(new ASTNode.Attribute(type.getText(), ctx.IDENTIFIER().getText(), true));
 		else {
@@ -115,7 +116,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void enterWord(@NotNull WordContext ctx) {
 		ASTNode.Word word = new ASTNode.Word(ctx.IDENTIFIER(0).getText());
-		ast.addIdentifier(word.getIdentifier(), "ATTRIBUTE");
+		ast.addIdentifier(word.getIdentifier(), ATTRIBUTE);
 		for (TerminalNode wordTypes : ctx.IDENTIFIER().subList(1, ctx.IDENTIFIER().size())) {
 			word.add(wordTypes.getText());
 			ast.addIdentifier(wordTypes.getText(), "WORD");
@@ -142,7 +143,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		String[] identifiers = getIdentifiers(ctx.variableNames());
 		for (String identifier : identifiers) {
 			conceptStack.peek().addReference(parent, identifier, ctx.LIST() != null);
-			ast.addIdentifier(identifier, "ATTRIBUTE");
+			ast.addIdentifier(identifier, ATTRIBUTE);
 		}
 	}
 
@@ -167,6 +168,8 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 			conceptStack.peek().add(ASTNode.AnnotationType.SINGLETON);
 		for (int i = 0; i < ctx.ROOT().size(); i++)
 			conceptStack.peek().add(ASTNode.AnnotationType.ROOT);
+		for (int i = 0; i < ctx.GENERIC().size(); i++)
+			conceptStack.peek().add(ASTNode.AnnotationType.GENERIC);
 	}
 
 	private String[] getIdentifiers(VariableNamesContext namesContext) {

@@ -5,11 +5,11 @@ options { tokenVocab=TaraM2Lexer; }
     package AntlrM2;
 }
 
-ast: (concept | NEWLINE)* EOF;
+root: (concept | NEWLINE)* EOF;
 
 concept: doc? signature annotations? body?;
 
-signature: CONCEPT referenceIdentifier? (POLYMORPHIC | modifier? MORPH?) AS IDENTIFIER;
+signature: CONCEPT (COLON referenceIdentifier)? (POLYMORPHIC | modifier? MORPH?) IDENTIFIER;
 
 body: NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT;
 
@@ -44,7 +44,7 @@ integerList: LEFT_SQUARE (POSITIVE_VALUE | NEGATIVE_VALUE)+ RIGHT_SQUARE;
 doubleList : LEFT_SQUARE (POSITIVE_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE)+ RIGHT_SQUARE;
 naturalList: LEFT_SQUARE POSITIVE_VALUE+ RIGHT_SQUARE;
 
-annotations: OPEN_AN (MULTIPLE | OPTIONAL | HAS_CODE | EXTENSIBLE| SINGLETON | ROOT)+ CLOSE_AN;
+annotations: OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | EXTENSIBLE| SINGLETON | ROOT)+ CLOSE_AN;
 
 variableNames: IDENTIFIER (COMMA IDENTIFIER)*;
 
