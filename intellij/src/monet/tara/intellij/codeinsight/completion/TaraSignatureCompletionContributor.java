@@ -3,55 +3,26 @@ package monet.tara.intellij.codeinsight.completion;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.lang.ASTNode;
-import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.filters.ElementFilter;
-import com.intellij.psi.filters.position.FilterPattern;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
 import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.TaraLanguage;
 import monet.tara.intellij.metamodel.psi.Concept;
 import monet.tara.intellij.metamodel.psi.TaraIdentifier;
 import monet.tara.intellij.metamodel.psi.TaraTypes;
 import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.intellij.patterns.PlatformPatterns.psiElement;
-
 public class TaraSignatureCompletionContributor extends CompletionContributor {
 
 	public static final String MORPH = "morph";
-	private PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new InErrorFilter()));
-
-	private PsiElementPattern.Capture<PsiElement> afterConceptKey = psiElement()
-		.withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new InSignatureFitFilter()))
-		.and(new FilterPattern(new AfterElementFitFilter(TaraTypes.CONCEPT_KEY)));
-
-	private PsiElementPattern.Capture<PsiElement> afterPolymorphicOrMorphKey = psiElement()
-		.withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new InSignatureFitFilter()))
-		.andOr(new FilterPattern(new AfterElementFitFilter(TaraTypes.POLYMORPHIC_KEY)),
-			new FilterPattern(new AfterElementFitFilter(TaraTypes.MORPH_KEY)));
-
-	private PsiElementPattern.Capture<PsiElement> afterModifierKey = psiElement()
-		.withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new InSignatureFitFilter()))
-		.andOr(new FilterPattern(new AfterElementFitFilter(TaraTypes.FINAL)),
-			new FilterPattern(new AfterElementFitFilter(TaraTypes.ABSTRACT)));
 
 	public TaraSignatureCompletionContributor() {
-		extend(CompletionType.BASIC, afterConceptKey,
+		extend(CompletionType.BASIC, TaraFilters.afterConceptKey,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
@@ -61,12 +32,22 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 					resultSet.addElement(LookupElementBuilder.create("as"));
 					resultSet.addElement(LookupElementBuilder.create("abstract"));
 					resultSet.addElement(LookupElementBuilder.create("final"));
-					resultSet.addAllElements(getVariants(parameters.getOriginalPosition()));
 				}
 			}
 		);
 
-		extend(CompletionType.BASIC, afterPolymorphicOrMorphKey,
+		extend(CompletionType.BASIC, TaraFilters.inheritance,
+			new CompletionProvider<CompletionParameters>() {
+				public void addCompletions(@NotNull CompletionParameters parameters,
+				                           ProcessingContext context,
+				                           @NotNull CompletionResultSet resultSet) {
+					resultSet.addAllElements(getVariants(parameters.getOriginalPosition() != null ?
+						parameters.getOriginalPosition() : parameters.getPosition()));
+				}
+			}
+		);
+
+		extend(CompletionType.BASIC, TaraFilters.afterPolymorphicOrMorphKey,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
@@ -76,8 +57,7 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 			}
 		);
 
-
-		extend(CompletionType.BASIC, afterNewLine,
+		extend(CompletionType.BASIC, TaraFilters.afterNewLine,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
@@ -89,7 +69,7 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 			}
 		);
 
-		extend(CompletionType.BASIC, afterModifierKey,
+		extend(CompletionType.BASIC, TaraFilters.afterModifierKey,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
@@ -104,7 +84,7 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 	public static List<LookupElement> getVariants(PsiElement myElement) {
 		List<Concept> concepts = new ArrayList<>();
 		if (myElement.getPrevSibling() != null) {
-			if (TaraTypes.DOT.equals(myElement.getPrevSibling().getNode()))
+			if (TaraTypes.DOT.equals(myElement.getPrevSibling().getNode().getElementType()))
 				getChildrenVariants((TaraIdentifier) myElement.getPrevSibling().getPrevSibling(), concepts);
 			else refer(myElement, concepts);
 			return fillVariants(concepts);
@@ -135,39 +115,5 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 		return concept.getContainingFile().getName().split("\\.")[0];
 	}
 
-	private static class AfterElementFitFilter implements ElementFilter {
-		IElementType type;
 
-		private AfterElementFitFilter(IElementType type) {
-			this.type = type;
-		}
-
-		public boolean isAcceptable(Object element, PsiElement context) {
-			if (element instanceof PsiElement && context.getPrevSibling() != null && context.getPrevSibling().getPrevSibling() != null) {
-				final ASTNode ctxPreviousNode = context.getPrevSibling().getPrevSibling().getNode();
-				if (type.equals(ctxPreviousNode.getElementType())) return true;
-			}
-			return false;
-		}
-
-		public boolean isClassAcceptable(Class hintClass) {
-			return true;
-		}
-	}
-
-	private class InErrorFilter implements ElementFilter {
-		@Override
-		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			if (element instanceof PsiElement) {
-				assert context != null;
-				if (((PsiElement)element).getParent() instanceof PsiErrorElement) return true;
-			}
-			return false;
-		}
-
-		@Override
-		public boolean isClassAcceptable(Class hintClass) {
-			return true;
-		}
-	}
 }
