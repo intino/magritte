@@ -94,7 +94,6 @@ NEWLINE= [\n]+ ([ ] | [\t])*
 CONCEPT   = "Concept"
 MORPH_KEY  = "morph"
 POLYMORPHIC_KEY = "polymorphic"
-AS        = "as"
 FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"
@@ -103,6 +102,7 @@ HAS_CODE  = "has-code"
 SINGLETON = "singleton"
 ROOT      = "root"
 EXTENSIBLE = "extensible"
+GENERIC   = "generic"
 WORD      = "Word"
 VAR       = "var"
 NEW       = "new"
@@ -116,7 +116,7 @@ OPEN_BRACKET  = "{"
 CLOSE_BRACKET = "}"
 
 DOT           = "."
-ASSIGN        = ":"
+COLON        = ":"
 SEMICOLON     = ";"+
 DOUBLE_COMMAS = "\""
 OPEN_AN  = "<"
@@ -151,9 +151,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{FINAL}                     {   return TaraTypes.FINAL; }
 
-	{AS}                        {   return TaraTypes.AS; }
-
-	{ASSIGN}                    {   return TaraTypes.ASSIGN; }
+	{COLON}                     {   return TaraTypes.COLON; }
 
 	{VAR}                       {   return TaraTypes.VAR; }
 
@@ -161,14 +159,15 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{LIST}                      {   return TaraTypes.LIST; }
 
-	{POLYMORPHIC_KEY}            {   return TaraTypes.POLYMORPHIC_KEY; }
-	{MORPH_KEY}                  {   return TaraTypes.MORPH_KEY; }
+	{POLYMORPHIC_KEY}           {   return TaraTypes.POLYMORPHIC_KEY; }
+	{MORPH_KEY}                 {   return TaraTypes.MORPH_KEY; }
 
 	{OPEN_AN}                   {   return TaraTypes.OPEN_AN; }
 	{CLOSE_AN}                  {   return TaraTypes.CLOSE_AN; }
 
 	{OPTIONAL}                  {   return TaraTypes.OPTIONAL; }
 	{MULTIPLE}                  {   return TaraTypes.MULTIPLE; }
+	{GENERIC}                   {   return TaraTypes.GENERIC; }
 
 	{HAS_CODE}                  {   return TaraTypes.HAS_CODE; }
 	{EXTENSIBLE}                {   return TaraTypes.EXTENSIBLE; }
@@ -177,11 +176,11 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{DOC_LINE}                  {   return TaraTypes.DOC_LINE; }
 
-	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE_KEY; }
-	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
-	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }
-	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE_KEY; }
-	{POSITIVE_VALUE_KEY}            {   return TaraTypes.NATURAL_VALUE_KEY; }
+	{STRING_VALUE_KEY}          {   return TaraTypes.STRING_VALUE_KEY; }
+	{BOOLEAN_VALUE_KEY}         {   return TaraTypes.BOOLEAN_VALUE_KEY; }
+	{DOUBLE_VALUE_KEY}          {   return TaraTypes.DOUBLE_VALUE_KEY; }
+	{NEGATIVE_VALUE_KEY}        {   return TaraTypes.NEGATIVE_VALUE_KEY; }
+	{POSITIVE_VALUE_KEY}        {   return TaraTypes.NATURAL_VALUE_KEY; }
 
 	{LEFT_SQUARE}               {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}              {   return TaraTypes.RIGHT_SQUARE; }

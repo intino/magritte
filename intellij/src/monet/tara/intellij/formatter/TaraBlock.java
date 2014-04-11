@@ -48,9 +48,9 @@ public class TaraBlock extends AbstractBlock {
 		if (child1 == null) return null;
 		PsiElement rightPsi = rightBlock.getNode().getPsi();
 		if (rightPsi instanceof Concept) return ONE_LINE_BREAK_SPACING;
-		else if (leftBlock.getNode().getElementType() == TaraTypes.ASSIGN)
+		else if (leftBlock.getNode().getElementType() == TaraTypes.COLON)
 			return MIN_SPACE;
-		else if (rightBlock.getNode().getElementType() == TaraTypes.ASSIGN)
+		else if (rightBlock.getNode().getElementType() == TaraTypes.COLON)
 			return MIN_SPACE;
 		return null;
 	}

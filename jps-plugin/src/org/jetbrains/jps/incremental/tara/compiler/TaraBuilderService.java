@@ -22,6 +22,6 @@ public class TaraBuilderService extends BuilderService {
 	@NotNull
 	@Override
 	public List<? extends TargetBuilder<?, ?>> createBuilders() {
-		return Collections.singletonList(new TaraBuilder(true));
+		return Collections.singletonList(new TaraBuilder());
 	}
 }

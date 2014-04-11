@@ -64,7 +64,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 //gen %highlightKey%
 		KEYS_1.put(TaraTypes.CONCEPT_KEY, KEYWORD);
 //end
-		KEYS_1.put(TaraTypes.AS, KEYWORD);
 		KEYS_1.put(TaraTypes.OPEN_AN, KEYWORD);
 		KEYS_1.put(TaraTypes.CLOSE_AN, KEYWORD);
 		KEYS_1.put(TaraTypes.NEW, KEYWORD);
@@ -76,8 +75,8 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 		KEYS_1.put(TaraTypes.HAS_CODE, ANNOTATION);
 		KEYS_1.put(TaraTypes.SINGLETON, ANNOTATION);
 		KEYS_1.put(TaraTypes.ROOT, ANNOTATION);
-
-		KEYS_1.put(TaraTypes.ASSIGN, OPERATOR);
+		KEYS_1.put(TaraTypes.GENERIC, ANNOTATION);
+		KEYS_1.put(TaraTypes.COLON, OPERATOR);
 		KEYS_1.put(TaraTypes.LEFT_SQUARE, OPERATOR);
 		KEYS_1.put(TaraTypes.RIGHT_SQUARE, OPERATOR);
 

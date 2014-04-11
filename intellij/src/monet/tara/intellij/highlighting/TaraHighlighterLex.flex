@@ -17,7 +17,6 @@ import monet.tara.intellij.metamodel.psi.TaraTypes;
 CONCEPT   = "Concept"
 MORPH_KEY  = "morph"
 POLYMORPHIC_KEY = "polymorphic"
-AS        = "as"
 FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"
@@ -39,7 +38,7 @@ OPEN_BRACKET  = "{"
 CLOSE_BRACKET = "}"
 
 DOT           = "."
-ASSIGN        = ":"
+COLON        = ":"
 SEMICOLON     = ";"
 DOUBLE_COMMAS = "\""
 OPEN_AN  = "<"
@@ -78,9 +77,7 @@ NEWLINE= [\n]+
 
 	{FINAL}                     {   return TaraTypes.FINAL; }
 
-	{AS}                        {   return TaraTypes.AS; }
-
-	{ASSIGN}                    {   return TaraTypes.ASSIGN; }
+	{COLON}                    {   return TaraTypes.COLON; }
 
 	{VAR}                       {   return TaraTypes.VAR; }
 

@@ -31,14 +31,13 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
 	private static final String TARA_EXTENSION = "m2";
-	private final boolean pluginGeneration;
 	private final String builderName;
+	private boolean pluginGeneration;
 
-	public TaraBuilder(boolean pluginGeneration) {
-		super(pluginGeneration ? Arrays.asList(TaraTargetType.PRODUCTION) : null);
-		this.pluginGeneration = pluginGeneration;
+	public TaraBuilder() {
+		super(Arrays.asList(TaraTargetType.PRODUCTION));
 		LOG.setLevel(Level.ALL);
-		builderName = "Tara " + (pluginGeneration ? "plugin generator" : "compiler");
+		builderName = "Tara compiler";
 	}
 
 	@Override
@@ -50,6 +49,7 @@ public class TaraBuilder extends TargetBuilder<TaraRootDescriptor, TaraTarget> {
 
 			JpsProject project = context.getProjectDescriptor().getProject();
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
+			pluginGeneration = settings.isPluginGeneration();
 			final List<File> toCompile = collectFiles(project);
 			if (toCompile.isEmpty()) return;
 			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("plugin-generation=" + pluginGeneration);

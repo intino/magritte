@@ -18,7 +18,7 @@ public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 	private String heapSize = DEFAULT_HEAP_SIZE;
 	public static final boolean PLUGIN_GENERATION = true;
 	private boolean pluginGeneration = PLUGIN_GENERATION;
-	static final JpsElementChildRole<JpsTaraSettings> ROLE = JpsElementChildRoleBase.create("Tara Compiler Configuration");
+	public static final JpsElementChildRole<JpsTaraSettings> ROLE = JpsElementChildRoleBase.create("Tara Compiler Configuration");
 	private String version = "0.1";
 	private String commentaries = "";
 
@@ -65,36 +65,36 @@ public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 		return heapSize;
 	}
 
-	public boolean isPluginGeneration() {
-		return pluginGeneration;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public String getCommentaries() {
-		return commentaries;
-	}
-
-	public Element getExcludes() {
-		return excludes;
-	}
-
 	public void setHeapSize(String heapSize) {
 		this.heapSize = heapSize;
+	}
+
+	public boolean isPluginGeneration() {
+		return pluginGeneration;
 	}
 
 	public void setPluginGeneration(boolean pluginGeneration) {
 		this.pluginGeneration = pluginGeneration;
 	}
 
+	public String getVersion() {
+		return version;
+	}
+
 	public void setVersion(String version) {
 		this.version = version;
 	}
 
+	public String getCommentaries() {
+		return commentaries;
+	}
+
 	public void setCommentaries(String commentaries) {
 		this.commentaries = commentaries;
+	}
+
+	public Element getExcludes() {
+		return excludes;
 	}
 
 	public void setExcludes(Element excludes) {
