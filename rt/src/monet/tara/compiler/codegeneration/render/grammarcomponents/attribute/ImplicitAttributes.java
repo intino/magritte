@@ -1,4 +1,4 @@
-package monet.tara.compiler.codegeneration.render.grammarcomponents.types;
+package monet.tara.compiler.codegeneration.render.grammarcomponents.attribute;
 
 
 import monet.tara.compiler.codegeneration.render.grammarcomponents.Attributes;

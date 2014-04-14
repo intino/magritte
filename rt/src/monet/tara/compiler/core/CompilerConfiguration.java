@@ -14,6 +14,9 @@ public class CompilerConfiguration {
 	private boolean debug;
 	private String ideaHome;
 	private String projectIcon;
+	private String version;
+	private String description;
+
 
 	public CompilerConfiguration() {
 		setWarningLevel(1);
@@ -131,5 +134,21 @@ public class CompilerConfiguration {
 
 	public void setProjectIcon(String projectIcon) {
 		this.projectIcon = projectIcon;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }

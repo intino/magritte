@@ -1,17 +1,16 @@
 <idea-plugin version="1">
   <id>siani.dev.::projectName::</id>
   <name>::projectProperName:: Plugin</name>
-  <version>1.0</version>
+  <version>
+    ::version::
+  </version>
   <vendor email="octavioroncal\@siani.es" url="http\://www.monet.org">Siani</vendor>
 
-  <description><![CDATA[
-      Siani development tool for the generation of model-based plugins.
-      ]]></description>
+  <description>
+    ::description::
+  </description>
 
-  <change-notes><![CDATA[
-      First Realease.
-        Windows integration.
-      ]]>
+  <change-notes><![CDATA[ First Realease. Windows integration. ]]>
   </change-notes>
 
   <idea-version since-build="135.475"/>
@@ -23,18 +22,21 @@
   -->
 
   <actions>
-    <!--<action id="BashErrorReporter.TriggerException"-->
-            <!--class="monet.::projectName::.intellij.actions.TriggerExceptionAction"-->
-            <!--text="Trigger Exception"-->
-            <!--description="Triggers an exception">-->
-      <!--<add-to-group group-id="ToolsMenu" anchor="last"/>-->
-    <!--</action>-->
     <action id="NewDefinition" class="monet.::projectName::.intellij.actions.CreateFileAction">
       <add-to-group group-id="NewGroup" anchor="first"/>
     </action>
     <action id="NewPackage" class="monet.::projectName::.intellij.actions.CreatePackageAction" text="Package"
             description="Create a new package" icon="AllIcons.Nodes.Package">
     </action>
+    <group id="Internal.::projectProperName::" text="::projectProperName::" popup="true" internal="true">
+      <action id="ExcludeFromCodeGeneration"
+              class="monet.::projectName::.intellij.compiler.ExcludeFromStubGenerationAction"
+              text="Exclude from stub generation"
+              description="Don't generate Java stubs for this ::projectProperName:: file on compilation">
+        <add-to-group group-id="EditorTabPopupMenu" anchor="first"/>
+      </action>
+      <add-to-group group-id="Internal"/>
+    </group>
   </actions>
 
   <application-components>

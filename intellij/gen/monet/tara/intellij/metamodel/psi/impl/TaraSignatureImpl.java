@@ -22,9 +22,9 @@ public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
   }
 
   @Override
-  @NotNull
+  @Nullable
   public TaraIdentifier getIdentifier() {
-    return findNotNullChildByClass(TaraIdentifier.class);
+    return findChildByClass(TaraIdentifier.class);
   }
 
   @Override

@@ -19,6 +19,7 @@ public class TemplateFactory {
 
 		TEMPLATES.put("InSignatureFitFilter.java", IDE_TPL + SRC + PROJECT_PATH + "codeinsight/completion/InSignatureFitFilter.java");
 		TEMPLATES.put("AnnotationsCompletionContributor.java", IDE_TPL + SRC + PROJECT_PATH + "codeinsight/completion/-AnnotationsCompletionContributor.java");
+		TEMPLATES.put("TaraFilter.java", IDE_TPL + SRC + PROJECT_PATH + "codeinsight/completion/-Filters.java");
 		TEMPLATES.put("PrimitivesCompletionContributor.java", IDE_TPL + SRC + PROJECT_PATH + "codeinsight/completion/-PrimitivesCompletionContributor.java");
 		TEMPLATES.put("SignatureCompletionContributor.java", IDE_TPL + SRC + PROJECT_PATH + "codeinsight/completion/-SignatureCompletionContributor.java");
 		TEMPLATES.put("InSignatureFitFilter.java", IDE_TPL + SRC + PROJECT_PATH + "codeinsight/completion/InSignatureFitFilter.java");
@@ -39,6 +40,7 @@ public class TemplateFactory {
 		TEMPLATES.put("PluginErrorReportSubmitterBundle.java", IDE_TPL + SRC + PROJECT_PATH + "diagnostic/errorreporting/PluginErrorReportSubmitterBundle.java");
 
 		TEMPLATES.put("DocumentationProvider.java", IDE_TPL + SRC + PROJECT_PATH + "documentation/-DocumentationProvider.java");
+		TEMPLATES.put("DocumentationFormatter.java", IDE_TPL + SRC + PROJECT_PATH + "documentation/-DocumentationFormatter.java");
 
 		//TEMPLATES.put("Block.java", IDE_TPL + SRC+ PROJECT_PATH + "formatter/-Block.java");
 		//TEMPLATES.put("FormattingModelBuilder.java", IDE_TPL + SRC+ PROJECT_PATH + "formatter/-FormattingModelBuilder.java");

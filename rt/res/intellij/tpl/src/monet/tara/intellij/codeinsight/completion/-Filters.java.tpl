@@ -1,4 +1,4 @@
-package monet.tara.intellij.codeinsight.completion;
+package monet.::projectName::.intellij.codeinsight.completion;
 
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
@@ -7,26 +7,26 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.tree.IElementType;
-import monet.tara.intellij.metamodel.TaraLanguage;
-import monet.tara.intellij.metamodel.psi.TaraTypes;
+import monet.::projectName::.intellij.metamodel.::projectProperName::Language;
+import monet.::projectName::.intellij.metamodel.psi.::projectProperName::Types;
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
-public class TaraFilters {
+public class ::projectProperName::Filters {
 
-	protected static PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement().withLanguage(TaraLanguage.INSTANCE)
+	protected static PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement().withLanguage(::projectProperName::Language.INSTANCE)
 		.and(new FilterPattern(new InErrorFilter()));
-	protected static PsiElementPattern.Capture<PsiElement> afterConceptKey = psiElement()
-		.withLanguage(TaraLanguage.INSTANCE)
+	protected static PsiElementPattern.Capture<PsiElement> afterDefinitionKey = psiElement()
+		.withLanguage(::projectProperName::Language.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
-		.and(new FilterPattern(new AfterElementFitFilter(TaraTypes.CONCEPT_KEY)));
+		.and(new FilterPattern(new AfterElementFitFilter(::projectProperName::Types.CONCEPT_KEY)));
 	protected static PsiElementPattern.Capture<PsiElement> afterModifierKey = psiElement()
-		.withLanguage(TaraLanguage.INSTANCE)
+		.withLanguage(::projectProperName::Language.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
-		.and(new FilterPattern(new AfterElementFitFilter(TaraTypes.MODIFIER)));
+		.and(new FilterPattern(new AfterElementFitFilter(::projectProperName::Types.MODIFIER)));
 
-	private TaraFilters() {
+	private ::projectProperName::Filters() {
 	}
 
 	private static class AfterElementFitFilter implements ElementFilter {
@@ -53,8 +53,8 @@ public class TaraFilters {
 	}
 
 	private static class InErrorFilter implements ElementFilter {
-		@Override
-		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
+		\@Override
+		public boolean isAcceptable(Object element, \@Nullable PsiElement context) {
 			if (element instanceof PsiElement) {
 				assert context != null;
 				if (((PsiElement) element).getParent() instanceof PsiErrorElement) return true;
@@ -62,7 +62,7 @@ public class TaraFilters {
 			return false;
 		}
 
-		@Override
+		\@Override
 		public boolean isClassAcceptable(Class hintClass) {
 			return true;
 		}

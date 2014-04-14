@@ -16,6 +16,7 @@ public class RendersFactory {
 	static {
 		renders.put("Definition", DefinitionRender.class);
 		renders.put("SyntaxHighlighter.java", HighlightRender.class);
+		renders.put("PluginDescriptorRender.java", PluginDescriptorRender.class);
 	}
 
 	private RendersFactory() {

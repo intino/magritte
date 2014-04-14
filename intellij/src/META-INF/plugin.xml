@@ -1,17 +1,22 @@
 <idea-plugin version="1">
   <id>siani.dev.tara</id>
   <name>Tara Plugin</name>
-  <version>1.0</version>
+  <version>
+    <!--gen %version%-->
+    1.0
+    <!--end-->
+  </version>
   <vendor email="octavioroncal@siani.es" url="http://www.monet.org">Siani</vendor>
 
-  <description><![CDATA[
-      Siani development tool for the generation of model-based plugins.
-      ]]></description>
-
-  <change-notes><![CDATA[
-      First Realease.
-        Windows integration.
+  <description>
+    <!--gen %description%-->
+    <![CDATA[
+      Siani development tool for the generation of model-based plugins
       ]]>
+    <!--end-->
+  </description>
+
+  <change-notes><![CDATA[ First Realease. Windows integration. ]]>
   </change-notes>
 
   <idea-version since-build="135.475"/>
@@ -23,12 +28,6 @@
   -->
 
   <actions>
-    <!--<action id="BashErrorReporter.TriggerException"-->
-    <!--class="monet.tara.intellij.actions.TriggerExceptionAction"-->
-    <!--text="Trigger Exception"-->
-    <!--description="Triggers an exception">-->
-    <!--<add-to-group group-id="ToolsMenu" anchor="last"/>-->
-    <!--</action>-->
     <action id="NewConcept" class="monet.tara.intellij.actions.CreateFileAction">
       <add-to-group group-id="NewGroup" anchor="first"/>
     </action>

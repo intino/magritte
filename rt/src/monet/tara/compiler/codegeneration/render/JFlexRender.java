@@ -48,7 +48,7 @@ public class JFlexRender extends Render {
 		if (hasCode) {
 			addMark("codeStatement", "CODE           = \"\\#\" {DIGIT}+");
 			addMark("codeStatementFunction", "{CODE}" +
-				"\t\t\t\t{   return " + RenderUtils.toProperCase(projectName) + "Types.CODE;}");
+				"                      {   return " + RenderUtils.toProperCase(projectName) + "Types.CODE;}");
 		} else {
 			addMark("codeStatement", "");
 			addMark("codeStatementFunction", "");

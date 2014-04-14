@@ -11,7 +11,6 @@ import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.Map;
 
 public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 
@@ -23,15 +22,14 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 		for (String template : TemplateFactory.getTemplates().keySet()) {
 			if (!"grammar".equals(template) && !"lexer".equals(template) && !"HighlighterLex.flex".equals(template)) {
 				writer = getOutWriter(new File(getDestinyOf(TemplateFactory.getTemplate(template))));
-				writeTemplateBasedFile(template, ast.getIdentifiers());
+				writeTemplateBasedFile(template, "plugin.xml".equals(template) ? configuration : ast.getIdentifiers());
 				writer.close();
 			}
 		}
 	}
 
 
-
-	private void writeTemplateBasedFile(String template, Map<String, String> param) throws TaraException {
+	private void writeTemplateBasedFile(String template, Object param) throws TaraException {
 		DefaultRender defaultRender = RendersFactory.getRender(template, configuration.getProject(), param);
 		writer.print(defaultRender.getOutput());
 	}

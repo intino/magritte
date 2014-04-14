@@ -9,6 +9,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
+import monet.tara.intellij.documentation.TaraDocumentationFormatter;
 import monet.tara.intellij.metamodel.TaraIcons;
 import monet.tara.intellij.metamodel.psi.*;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 
 public class ConceptMixin extends ASTWrapperPsiElement {
+
 
 	public ConceptMixin(@NotNull ASTNode node) {
 		super(node);
@@ -61,7 +63,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 			if (text.length() == 0) return null;
 		} else
 			text.append(this.getText());
-		return text.toString();
+		return TaraDocumentationFormatter.doc2Html(this, text.toString());
 	}
 
 	public PsiElement getPsiElement() {

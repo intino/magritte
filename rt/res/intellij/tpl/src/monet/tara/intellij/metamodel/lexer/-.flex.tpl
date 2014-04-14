@@ -95,7 +95,6 @@ SYNTHESIZE= "synthesize"
 MORPH_KEY = "Morph"
 POLYMORPHIC_KEY = "Polymorphic"
 MORPH_KEY     = "Morph"
-AS        = "as"
 FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"
@@ -118,7 +117,7 @@ CLOSE_BRACKET = "}"
 
 DOT           = "."
 COMMA         = ","
-ASSIGN        = "\:"
+COLON        = "\:"
 SEMICOLON     = ";"
 DOUBLE_COMMAS = "\\""
 OPEN_AN  = "<"
@@ -155,19 +154,17 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 \%\%
 <YYINITIAL> {
 
-    {SYNTHESIZE}                    {   return ::projectNameFile::Types.SYNTHESIZE; }
+    {SYNTHESIZE}                {   return ::projectNameFile::Types.SYNTHESIZE; }
 
-    {POLYMORPHIC_KEY}                 {   return ::projectNameFile::Types.POLYMORPHIC_KEY; }
+    {POLYMORPHIC_KEY}           {   return ::projectNameFile::Types.POLYMORPHIC_KEY; }
 
-	{MORPH_KEY}                     {   return ::projectNameFile::Types.MORPH_KEY; }
+	{MORPH_KEY}                 {   return ::projectNameFile::Types.MORPH_KEY; }
 
 	{ABSTRACT}                  {   return ::projectNameFile::Types.ABSTRACT; }
 
 	{FINAL}                     {   return ::projectNameFile::Types.FINAL; }
 
-	{AS}                        {   return ::projectNameFile::Types.AS; }
-
-	{ASSIGN}                    {   return ::projectNameFile::Types.ASSIGN; }
+	{COLON}                     {   return ::projectNameFile::Types.COLON; }
 
 	{VAR}                       {   return ::projectNameFile::Types.VAR; }
 
@@ -229,7 +226,7 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
                                 }
 ::conceptsToBNF::
 
-{IDENTIFIER_KEY}            {   return ::projectNameFile::Types.IDENTIFIER_KEY;}
+{IDENTIFIER_KEY}                {   return ::projectNameFile::Types.IDENTIFIER_KEY;}
 }
 
 .                               {  return TokenType.BAD_CHARACTER;}

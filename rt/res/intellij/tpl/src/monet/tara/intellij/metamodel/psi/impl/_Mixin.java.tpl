@@ -9,6 +9,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
+import monet.::projectName::.intellij.documentation.::projectProperName::DocumentationFormatter;
 import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
 import monet.::projectName::.intellij.metamodel.psi.*;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 
 public class DefinitionMixin extends ASTWrapperPsiElement {
+
 
 	public DefinitionMixin(\@NotNull ASTNode node) {
 		super(node);
@@ -61,7 +63,7 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 			if (text.length() == 0) return null;
 		} else
 			text.append(this.getText());
-		return text.toString();
+		return ::projectProperName::DocumentationFormatter.doc2Html(this, text.toString());
 	}
 
 	public PsiElement getPsiElement() {

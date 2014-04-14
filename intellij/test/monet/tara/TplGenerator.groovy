@@ -31,13 +31,9 @@ void createTPLs(String tplPath, File[] files) {
                     text = text.replaceAll("TARA", "::projectUpperName::")
                     text = text.replaceAll("m2", "m1")
                     text = text.replaceAll("concept", "definition")
-                    int index = text.indexOf("//gen")
-                    int endIndex = text.indexOf("//end")
-                    if (index > 0) {
-                        String field = text.substring(index, endIndex + 5)
-                        String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
-                        text = text.replace(field, "::" + token + "::")
-                    }
+                    if (it.getName().endsWith("xml"))
+                        text = addXmlMarks(text)
+                    else text = addJavaMarks(text)
                     text = text.replaceAll("%", "\\\\%")
                     File newFile = new File(tplPath + it.parent.substring(8), it.name.replaceAll("Tara", "-").replace("Concept", "_") + ".tpl")
                     newFile.write(text)
@@ -47,12 +43,38 @@ void createTPLs(String tplPath, File[] files) {
                 String mfile;
                 if (it.name.endsWith(".bnf")) mfile = "m1Grammar.tpl";
                 else mfile = it.name.contains("Highlighter") ? "m1HighlightLex.tpl" : "m1Lexer.tpl"
-                text = new File("intellij/res/tplgenerator/" + mfile).text.replaceAll("%", "\\\\%")
+                text = new File("intellij/res/tpl/" + mfile).text.replaceAll("%", "\\\\%")
                 File newFile = new File(tplPath + it.parent.substring(8), it.name.replaceAll("Tara", "-").replace("Concept", "_") + ".tpl")
                 newFile.write(text)
             }
         }
     }
+}
+
+private String addJavaMarks(String text) {
+    int index = text.indexOf("//gen")
+    int endIndex = text.indexOf("//end")
+    if (index > 0) {
+        String field = text.substring(index, endIndex + 5)
+        String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
+        text = text.replace(field, "::" + token + "::")
+    }
+    text
+}
+
+private String addXmlMarks(String text) {
+    int index = 0;
+    while (index >= 0) {
+        index = text.indexOf("<!--gen", index)
+        int endIndex = text.indexOf("<!--end-->")
+        if (index > 0) {
+            String field = text.substring(index, endIndex + 10)
+            String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
+            text = text.replace(field, "::" + token + "::")
+        }
+    }
+
+    text
 }
 
 void fixTypes() {
@@ -64,7 +86,7 @@ boolean isCorrectFileType(String fileName) {
     String[] fileTypes = ["java", "xml", "form", "properties", "png"]
     String extension = fileName.substring(fileName.lastIndexOf(".") + 1)
     if (fileTypes.contains(extension)) return true
-    return false
+    false
 }
 
 public Boolean copyFile(File source, File destination) {
@@ -78,8 +100,8 @@ public Boolean copyFile(File source, File destination) {
             out.write(buf, 0, len);
         inFile.close();
         out.close();
-    } catch (IOException ex) {
-        return false;
+    } catch (IOException ignored) {
+        false;
     }
-    return true;
+    true;
 }

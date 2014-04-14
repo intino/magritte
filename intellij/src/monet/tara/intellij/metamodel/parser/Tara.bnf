@@ -24,7 +24,7 @@ implements='monet.tara.intellij.metamodel.psi.Concept'
 }
 
 signature ::= CONCEPT_KEY (COLON referenceIdentifier)?  (polymorphic | modifier? morph?) identifier
-{ mixin= 'monet.tara.intellij.metamodel.psi.impl.SignatureMixin'
+{ pin=1 mixin= 'monet.tara.intellij.metamodel.psi.impl.SignatureMixin'
 implements='monet.tara.intellij.metamodel.psi.Signature'
 }
 
@@ -88,9 +88,12 @@ doc::= DOC_LINE+
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.DocMixin'
 implements='monet.tara.intellij.metamodel.psi.Doc'
 }
-referenceIdentifier::= identifier (DOT identifier)*
-{mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
+referenceIdentifier::= identifier child* {
+pin=1
+mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
 implements='monet.tara.intellij.metamodel.psi.ReferenceIdentifier'}
+
+private child ::= DOT identifier {pin=1}
 
 identifier::=  IDENTIFIER_KEY
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierMixin'

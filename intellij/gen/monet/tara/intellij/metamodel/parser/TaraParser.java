@@ -618,6 +618,21 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // DOT identifier
+  static boolean child(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "child")) return false;
+    if (!nextTokenIs(builder_, DOT)) return false;
+    boolean result_ = false;
+    boolean pinned_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
+    result_ = consumeToken(builder_, DOT);
+    pinned_ = result_; // pin = 1
+    result_ = result_ && identifier(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
+  }
+
+  /* ********************************************************** */
   // doc? signature annotations? body?
   public static boolean concept(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "concept")) return false;
@@ -913,39 +928,30 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // identifier (DOT identifier)*
+  // identifier child*
   public static boolean referenceIdentifier(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "referenceIdentifier")) return false;
     if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
     boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
+    boolean pinned_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = identifier(builder_, level_ + 1);
+    pinned_ = result_; // pin = 1
     result_ = result_ && referenceIdentifier_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, REFERENCE_IDENTIFIER, result_);
-    return result_;
+    exit_section_(builder_, level_, marker_, REFERENCE_IDENTIFIER, result_, pinned_, null);
+    return result_ || pinned_;
   }
 
-  // (DOT identifier)*
+  // child*
   private static boolean referenceIdentifier_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "referenceIdentifier_1")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!referenceIdentifier_1_0(builder_, level_ + 1)) break;
+      if (!child(builder_, level_ + 1)) break;
       if (!empty_element_parsed_guard_(builder_, "referenceIdentifier_1", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
-  }
-
-  // DOT identifier
-  private static boolean referenceIdentifier_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "referenceIdentifier_1_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, DOT);
-    result_ = result_ && identifier(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
   }
 
   /* ********************************************************** */
@@ -1000,13 +1006,15 @@ public class TaraParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "signature")) return false;
     if (!nextTokenIs(builder_, CONCEPT_KEY)) return false;
     boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
+    boolean pinned_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, CONCEPT_KEY);
-    result_ = result_ && signature_1(builder_, level_ + 1);
-    result_ = result_ && signature_2(builder_, level_ + 1);
-    result_ = result_ && identifier(builder_, level_ + 1);
-    exit_section_(builder_, marker_, SIGNATURE, result_);
-    return result_;
+    pinned_ = result_; // pin = 1
+    result_ = result_ && report_error_(builder_, signature_1(builder_, level_ + 1));
+    result_ = pinned_ && report_error_(builder_, signature_2(builder_, level_ + 1)) && result_;
+    result_ = pinned_ && identifier(builder_, level_ + 1) && result_;
+    exit_section_(builder_, level_, marker_, SIGNATURE, result_, pinned_, null);
+    return result_ || pinned_;
   }
 
   // (COLON referenceIdentifier)?

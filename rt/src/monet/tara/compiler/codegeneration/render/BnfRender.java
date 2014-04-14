@@ -1,8 +1,8 @@
 package monet.tara.compiler.codegeneration.render;
 
 import monet.tara.compiler.codegeneration.render.grammarcomponents.Constituents;
-import monet.tara.compiler.codegeneration.render.grammarcomponents.types.ExplicitAttributes;
-import monet.tara.compiler.codegeneration.render.grammarcomponents.types.ImplicitAttributes;
+import monet.tara.compiler.codegeneration.render.grammarcomponents.attribute.ExplicitAttributes;
+import monet.tara.compiler.codegeneration.render.grammarcomponents.attribute.ImplicitAttributes;
 import monet.tara.compiler.core.ast.AST;
 import monet.tara.compiler.core.ast.ASTNode;
 import org.monet.templation.Canvas;
@@ -94,6 +94,12 @@ public class BnfRender extends Render {
 		return false;
 	}
 
+	private boolean containsGeneric(ASTNode.AnnotationType[] annotations) {
+		for (ASTNode.AnnotationType annotation : annotations)
+			if (ASTNode.AnnotationType.GENERIC.equals(annotation)) return true;
+		return false;
+	}
+
 	private boolean isExtendedRoot(ASTNode node) {
 		if (node != null) {
 			if (containsRoot(node.getAnnotations())) return true;
@@ -132,6 +138,8 @@ public class BnfRender extends Render {
 		localMap.put("code", hasExtendedCode(advance) ? "CODE" : "");
 		localMap.put("projectName", projectName.toLowerCase());
 		localMap.put("lexicoIdentifier", ast.getKeys(advance.getIdentifier()).get(0));
+		localMap.put("genericOption",
+			(containsGeneric(advance.getAnnotations())) ? "| genericList" : "");
 	}
 
 	private static class Logger implements CanvasLogger {
