@@ -1,31 +1,4 @@
-Concept Term
-    var String code
-    var String label
-    new Term <multiple optional>
-
-Concept abstract Source <has-code root>
-    Concept Ontology <generic optional>
-        var Uid uid
-
-
-' Una entidad es un objeto en la unidad de negocio que representa un contenido
-Concept abstract Entity  <has-code>
-
-    ' Añadir para ofrecer al usuario información más detallada de la entidad
-    Concept Description <optional>
-        var String description
-
-    ' Añadir para ofrecer al usuario una ayuda
-    ' - **resource**. Nombre del fichero incluido en la distribución
-    Concept Help <generic optional>
-        var String resource
-
-    Concept Operation
-        var String label
-
-    Concept abstract View
-
-Concept:Entity Form <has-code extensible>
+Concept:Entity Form <has-code extensible root>
 
     Concept polymorphic Field <has-code extensible multiple>
         var String label
@@ -40,10 +13,10 @@ Concept:Entity Form <has-code extensible>
         Concept ReadOnly <optional>
 
         ' Añadir para mostrar un mensaje asociado al campo
-        ' - **WhenEmpty**. Cuando esta vacío
-        ' - **WhenRequired**. Cuando es un campo requerido y está vacío
-        ' - **WhenReadOnly**. Cuando el campo no es editable
-        ' - **WhenInvalid**. Cuando el valor del campo no es válido
+        ' * **WhenEmpty**. Cuando esta vacío
+        ' * **WhenRequired**. Cuando es un campo requerido y está vacío
+        ' * **WhenReadOnly**. Cuando el campo no es editable
+        ' * **WhenInvalid**. Cuando el valor del campo no es válido
         Concept Display <optional multiple>
             var Word when { WhenEmpty; WhenRequired; WhenReadOnly; WhenInvalid }
             var String message
@@ -113,16 +86,16 @@ Concept:Entity Form <has-code extensible>
                 Concept ShowKey
                 Concept Embedded
 
-        Concept:Form.Field CompositeField
+        Concept morph CompositeField
             new Form.Field  <multiple>
             Concept View <optional>
                 Concept Table <optional>
                     var Form.Field[] fields
                 Concept Section <optional>
                     var Form.Field[] fields
-
     Concept Georeference <optional>
     Concept:Entity.View abstract View
         var String label 
     Concept:View Tab <multiple>
     Concept:View Summary <optional>
+

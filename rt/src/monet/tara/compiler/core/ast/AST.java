@@ -37,12 +37,14 @@ public class AST {
 		return astRootNodes.add(astNode);
 	}
 
-	public void putAllIdentifiers(Map<? extends String, ? extends String> m) {
+	public void putAllIdentifiers(Map<String, String> m) {
 		identifierMap.putAll(m);
 	}
 
-	public void putAllLookupTable(Map<? extends String, ? extends List<ASTNode>> m) {
-		lookUpTable.putAll(m);
+	public void putAllLookupTable(Map<String, List<ASTNode>> m) {
+		for (Map.Entry<String, List<ASTNode>> entry : m.entrySet())
+			if (!lookUpTable.containsKey(entry.getKey())) lookUpTable.put(entry.getKey(), entry.getValue());
+			else lookUpTable.get(entry.getKey()).addAll(entry.getValue());
 	}
 
 	public boolean add(String name, ASTNode astNode) {

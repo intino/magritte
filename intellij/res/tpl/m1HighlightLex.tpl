@@ -138,23 +138,20 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
     {STRING_TYPE}               {   return ::projectNameFile::Types.STRING_TYPE; }
     {DOUBLE_TYPE}               {   return ::projectNameFile::Types.DOUBLE_TYPE; }
 
-	{SEMICOLON}                 {   return semicolon(); }
+	{SEMICOLON}                 {   return ::projectNameFile::Types.LEFT_SQUARE; }
 
 	{COMMA}                     {   return ::projectNameFile::Types.COMMA;     }
 
-	{OPEN_BRACKET}              {   return openBracket(); }
+	{OPEN_BRACKET}              {   return ::projectNameFile::Types.LEFT_SQUARE; }
 
-	{CLOSE_BRACKET}             {   return closeBracket(); }
+	{CLOSE_BRACKET}             {   return ::projectNameFile::Types.LEFT_SQUARE; }
 
-	{NEWLINE}                   {   return newlineIndent();}
+	{NEWLINE}                   {   return TokenType.WHITE_SPACE;}
 
 	{SPACES}                    {   return TokenType.WHITE_SPACE; }
 
 	{SP}                        {   return TokenType.WHITE_SPACE; }
 
-	<<EOF>>                     {
-                                    return eof();
-                                }
 ::conceptsToBNF::
 
 {IDENTIFIER_KEY}                {   return ::projectNameFile::Types.IDENTIFIER_KEY;}

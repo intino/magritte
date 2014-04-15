@@ -73,9 +73,9 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 	\@Override
 	public Icon getIcon(\@IconFlags int i) {
 		if (this.isMorph())
-		return ::projectProperName::Icons.MORPH_13;
+			return ::projectProperName::Icons.MORPH_13;
 		if (this.isPolymorphic()) return ::projectProperName::Icons.POLYMORPHIC_13;
-		return ::projectProperName::Icons.CONCEPT_13;
+		return ::projectProperName::Icons.DEFINITION_13;
 	}
 
 	\@NotNull
@@ -92,7 +92,7 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 		return findChildByClass(Body.class);
 	}
 
-	public boolean isPolymorphic(){
+	public boolean isPolymorphic() {
 		return ((Definition) this).getSignature().getPolymorphic() != null;
 	}
 

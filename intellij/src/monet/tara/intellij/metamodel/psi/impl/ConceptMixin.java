@@ -73,7 +73,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	@Override
 	public Icon getIcon(@IconFlags int i) {
 		if (this.isMorph())
-		return TaraIcons.MORPH_13;
+			return TaraIcons.MORPH_13;
 		if (this.isPolymorphic()) return TaraIcons.POLYMORPHIC_13;
 		return TaraIcons.CONCEPT_13;
 	}
@@ -92,7 +92,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return findChildByClass(Body.class);
 	}
 
-	public boolean isPolymorphic(){
+	public boolean isPolymorphic() {
 		return ((Concept) this).getSignature().getPolymorphic() != null;
 	}
 

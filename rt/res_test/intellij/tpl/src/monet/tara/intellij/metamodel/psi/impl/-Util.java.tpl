@@ -160,12 +160,6 @@ public class ::projectProperName::Util {
 		return Collections.EMPTY_LIST;
 	}
 
-	private static Definition findChildIn(List<Definition> list, String identifier) {
-		for (Definition definition \: list)
-			if (definition.getName() != null && definition.getName().equals(identifier)) return definition;
-		return null;
-	}
-
 	public static Definition[] getChildrenOf(Definition definition) {
 		List<Definition> childrenOf = ::projectProperName::PsiImplUtil.getChildrenOf(definition);
 		return childrenOf.toArray(new Definition[childrenOf.size()]);

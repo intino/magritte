@@ -81,9 +81,9 @@ public class BnfRender extends Render {
 		Map<String, Object> localMap = new HashMap<>();
 		putMainComponentsToHashMap(node, localMap);
 		putAttributesComponentsToHashMap(localMap,
-			(new ImplicitAttributes(node, ast)).getAttributesString(),
-			(new ExplicitAttributes(node, ast)).getAttributesString());
-		putConstituentsToHashMap(localMap, (new Constituents(ast, node)).getConstituentString());
+			new ImplicitAttributes(node, ast).getAttributesString(),
+			new ExplicitAttributes(node, ast).getAttributesString());
+		putConstituentsToHashMap(localMap, new Constituents(ast, node).getConstituentString());
 		concepts.append(block("ruleConcept", localMap));
 		addMark("rules", concepts.toString());
 	}
@@ -124,7 +124,7 @@ public class BnfRender extends Render {
 	}
 
 	private void putAttributesComponentsToHashMap(Map<String, Object> localMap, String attributesImplicit, String attributesExplicit) {
-		localMap.put("assignAttributeHeader", (!"".equals(attributesImplicit)) ? "(ASSIGN " + localMap.get("identifier") + "AttributesImplicit)?" : "");
+		localMap.put("assignAttributeHeader", (!"".equals(attributesImplicit)) ? "(COLON " + localMap.get("identifier") + "AttributesImplicit)?" : "");
 		localMap.put("typeValues", attributesImplicit);
 		localMap.put("typeKey-Value", attributesExplicit);
 		String attributeImplicitForm = localMap.get("identifier") + "AttributesImplicit ::= " + localMap.get("typeValues") + "\n";

@@ -8,6 +8,7 @@ File[] srcFiles = new File(SRC_PATH).listFiles()
 fixTypes()
 createTPLs(TPL_PATH, srcFiles)
 createTPLs(TPL_PATH, new File(RES_PATH).listFiles())
+new File(TPL_PATH + "/src/monet/tara/intellij/metamodel/psi/-Types.java.tpl").createNewFile()
 
 void createTPLs(String tplPath, File[] files) {
     File file = new File(tplPath)
@@ -31,6 +32,7 @@ void createTPLs(String tplPath, File[] files) {
                     text = text.replaceAll("TARA", "::projectUpperName::")
                     text = text.replaceAll("m2", "m1")
                     text = text.replaceAll("concept", "definition")
+                    text = text.replaceAll("CONCEPT", "DEFINITION")
                     if (it.getName().endsWith("xml"))
                         text = addXmlMarks(text)
                     else text = addJavaMarks(text)
@@ -57,7 +59,9 @@ private String addJavaMarks(String text) {
     if (index > 0) {
         String field = text.substring(index, endIndex + 5)
         String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
-        text = text.replace(field, "::" + token + "::")
+        if (token != "")
+            text = text.replace(field, "::" + token + "::")
+        else text = text.replace(field, "")
     }
     text
 }
@@ -70,7 +74,9 @@ private String addXmlMarks(String text) {
         if (index > 0) {
             String field = text.substring(index, endIndex + 10)
             String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
-            text = text.replace(field, "::" + token + "::")
+            if (token != "")
+                text = text.replace(field, "::" + token + "::")
+            else text = text.replace(field, "")
         }
     }
 

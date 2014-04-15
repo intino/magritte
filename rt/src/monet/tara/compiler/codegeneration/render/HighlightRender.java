@@ -25,14 +25,15 @@ public class HighlightRender extends DefaultRender {
 		for (String key : list)
 			builder.append("\n\t\t").append("KEYS_1.put(").append(RenderUtils.toProperCase(projectName)).
 				append("Types.").append(key).append(", KEYWORD);");
-		builder.append("KEYS_1.put(").append(RenderUtils.toProperCase(projectName)).append("Types.SYNTHESIZE, KEYWORD);");
+		builder.append("\nKEYS_1.put(").append(RenderUtils.toProperCase(projectName)).append("Types.SYNTHESIZE, KEYWORD);\n");
+		builder.append("KEYS_1.put(").append(RenderUtils.toProperCase(projectName)).append("Types.CODE, DOCUMENTATION);\n");
 		return builder.toString();
 	}
 
 	private String[] makeKeywordList() {
 		List<String> list = new ArrayList<>();
 		for (String key : identifiers.keySet())
-			if (key.contains("CONCEPT"))
+			if (key.contains("KEY"))
 				list.add(key);
 		return list.toArray(new String[list.size()]);
 	}

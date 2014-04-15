@@ -62,7 +62,6 @@ public class ::projectProperName::SyntaxHighlighter extends SyntaxHighlighterBas
 		KEYS_1.put(::projectProperName::Types.IDENTIFIER_KEY, IDENTIFIER);
 
 ::highlightKey::
-		KEYS_1.put(::projectProperName::Types.AS, KEYWORD);
 		KEYS_1.put(::projectProperName::Types.OPEN_AN, KEYWORD);
 		KEYS_1.put(::projectProperName::Types.CLOSE_AN, KEYWORD);
 		KEYS_1.put(::projectProperName::Types.NEW, KEYWORD);
@@ -74,8 +73,8 @@ public class ::projectProperName::SyntaxHighlighter extends SyntaxHighlighterBas
 		KEYS_1.put(::projectProperName::Types.HAS_CODE, ANNOTATION);
 		KEYS_1.put(::projectProperName::Types.SINGLETON, ANNOTATION);
 		KEYS_1.put(::projectProperName::Types.ROOT, ANNOTATION);
-
-		KEYS_1.put(::projectProperName::Types.ASSIGN, OPERATOR);
+		KEYS_1.put(::projectProperName::Types.GENERIC, ANNOTATION);
+		KEYS_1.put(::projectProperName::Types.COLON, OPERATOR);
 		KEYS_1.put(::projectProperName::Types.LEFT_SQUARE, OPERATOR);
 		KEYS_1.put(::projectProperName::Types.RIGHT_SQUARE, OPERATOR);
 
@@ -91,11 +90,11 @@ public class ::projectProperName::SyntaxHighlighter extends SyntaxHighlighterBas
 
 		KEYS_1.put(::projectProperName::Types.DOC_LINE, DOCUMENTATION);
 
-		KEYS_1.put(::projectProperName::Types.DOUBLE_VALUE, NUMBERS);
-		KEYS_1.put(::projectProperName::Types.NATURAL_VALUE, NUMBERS);
+		KEYS_1.put(::projectProperName::Types.DOUBLE_VALUE_KEY, NUMBERS);
+		KEYS_1.put(::projectProperName::Types.NATURAL_VALUE_KEY, NUMBERS);
 		KEYS_1.put(::projectProperName::Types.NEGATIVE_VALUE_KEY, NUMBERS);
-		KEYS_1.put(::projectProperName::Types.BOOLEAN_VALUE, NUMBERS);
-		KEYS_1.put(::projectProperName::Types.STRING_VALUE, STRING);
+		KEYS_1.put(::projectProperName::Types.BOOLEAN_VALUE_KEY, NUMBERS);
+		KEYS_1.put(::projectProperName::Types.STRING_VALUE_KEY, STRING);
 
 		KEYS_1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 	}

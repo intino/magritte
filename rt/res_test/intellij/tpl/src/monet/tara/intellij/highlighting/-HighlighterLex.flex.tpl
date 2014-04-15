@@ -14,17 +14,18 @@ import com.intellij.psi.TokenType;
 \%type IElementType
 
 
+
 SP = ([ ]+ | [\\t]+)
 SPACES= {SP}+
 NEWLINE= [\\n]+ ([ ] | [\\t])*
 
 //=====================
 //Reserved words
+
 SYNTHESIZE= "synthesize"
 MORPH_KEY = "Morph"
 POLYMORPHIC_KEY = "Polymorphic"
-MORPH_KEY = "Morph"
-AS        = "as"
+MORPH_KEY     = "Morph"
 FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"
@@ -47,7 +48,7 @@ CLOSE_BRACKET = "}"
 
 DOT           = "."
 COMMA         = ","
-ASSIGN        = ":"
+COLON        = "\:"
 SEMICOLON     = ";"
 DOUBLE_COMMAS = "\\""
 OPEN_AN  = "<"
@@ -75,9 +76,9 @@ STRING_VALUE   = {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
 ::codeStatement::
 DOC_LINE = "'" ~[\\n]
 
-DIGIT=[:digit:]
+DIGIT=[\:digit\:]
 
-IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
+IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 
 
 
@@ -94,9 +95,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{FINAL}                     {   return ::projectNameFile::Types.FINAL; }
 
-	{AS}                        {   return ::projectNameFile::Types.AS; }
-
-	{ASSIGN}                    {   return ::projectNameFile::Types.ASSIGN; }
+	{COLON}                     {   return ::projectNameFile::Types.COLON; }
 
 	{VAR}                       {   return ::projectNameFile::Types.VAR; }
 
@@ -118,7 +117,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{DOC_LINE}                       {   return ::projectNameFile::Types.DOC_LINE; }
 
 	{STRING_VALUE}              {   return ::projectNameFile::Types.STRING_VALUE_KEY; }
-::codeStatementFunction::
+	::codeStatementFunction::
 	{BOOLEAN_VALUE}             {   return ::projectNameFile::Types.BOOLEAN_VALUE_KEY; }
 	{DOUBLE_VALUE}              {   return ::projectNameFile::Types.DOUBLE_VALUE_KEY; }
 	{NEGATIVE_VALUE}            {   return ::projectNameFile::Types.NEGATIVE_VALUE_KEY; }
@@ -143,9 +142,9 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{COMMA}                     {   return ::projectNameFile::Types.COMMA;     }
 
-	{OPEN_BRACKET}              {   return ::projectNameFile::Types.LEFT_SQUARE;}
+	{OPEN_BRACKET}              {   return ::projectNameFile::Types.LEFT_SQUARE; }
 
-	{CLOSE_BRACKET}             {   return ::projectNameFile::Types.LEFT_SQUARE;}
+	{CLOSE_BRACKET}             {   return ::projectNameFile::Types.LEFT_SQUARE; }
 
 	{NEWLINE}                   {   return TokenType.WHITE_SPACE;}
 
@@ -163,6 +162,6 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 
 @concepts
-	::conceptKey::= "::conceptValue::"
+::conceptKey::= "::conceptValue::"
 @conceptsToBNF
     {::conceptKey::}                {  return ::projectNameFile::Types.::conceptKey::;  }

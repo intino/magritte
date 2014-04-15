@@ -20,7 +20,7 @@ root \:\:= (synthesizeStatement | NEWLINE)* (definition | NEWLINE)*
 private synt \:\:= ::conceptKeyList::
 private syntElement \:\:= synt (DOT synt)*
 synthesizeStatement \:\:= SYNTHESIZE syntElement ((OPEN_AN synthesizeTag+ CLOSE_AN) | synthesizeAttribute )
-synthesizeTag \:\:= FINAL | ABSTRACT |  MULTIPLE |  OPTIONAL | HAS_CODE | SINGLETON | ROOT | EXTENSIBLE
+synthesizeTag \:\:= FINAL | ABSTRACT |  MULTIPLE |  OPTIONAL | HAS_CODE | SINGLETON | ROOT | EXTENSIBLE | GENERIC
 synthesizeAttribute \:\:= NEW_LINE_INDENT( attribute  NEWLINE+)+ DEDENT
 
 private definition \:\:= ::concepts::
@@ -45,17 +45,17 @@ pin=1
 mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.ReferenceIdentifier'
 }
-private child ::= DOT identifier {pin=1}
+private child \:\:= DOT identifier {pin=1}
 polymorphic \:\:= POLYMORPHIC_KEY
 morph \:\:= MORPH_KEY
 genericList\:\:= OPEN_AN ( UID_TYPE|INT_TYPE|NATURAL_TYPE|DOUBLE_TYPE|STRING_TYPE|BOOLEAN_TYPE
                          | ::conceptKeyList:: ) CLOSE_AN
-attribute\:\:= VAR     UID_TYPE IDENTIFIER_KEY (ASSIGN stringValue)?
-           | VAR     INT_TYPE (variableNames | IDENTIFIER_KEY ASSIGN integerValue | LIST IDENTIFIER_KEY (ASSIGN integerList)?)
-           | VAR  DOUBLE_TYPE (variableNames | IDENTIFIER_KEY ASSIGN doubleValue | LIST IDENTIFIER_KEY (ASSIGN doubleList)?)
-           | VAR NATURAL_TYPE (variableNames | IDENTIFIER_KEY ASSIGN naturalValue | LIST IDENTIFIER_KEY (ASSIGN naturalList)?)
-           | VAR BOOLEAN_TYPE (variableNames | IDENTIFIER_KEY ASSIGN booleanValue | LIST IDENTIFIER_KEY (ASSIGN booleanList)?)
-           | VAR  STRING_TYPE (variableNames | IDENTIFIER_KEY ASSIGN stringValue | LIST IDENTIFIER_KEY (ASSIGN stringList)?) {
+attribute\:\:= VAR     UID_TYPE IDENTIFIER_KEY (COLON stringValue)?
+           | VAR     INT_TYPE (variableNames | IDENTIFIER_KEY COLON integerValue | LIST IDENTIFIER_KEY (COLON integerList)?)
+           | VAR  DOUBLE_TYPE (variableNames | IDENTIFIER_KEY COLON doubleValue | LIST IDENTIFIER_KEY (COLON doubleList)?)
+           | VAR NATURAL_TYPE (variableNames | IDENTIFIER_KEY COLON naturalValue | LIST IDENTIFIER_KEY (COLON naturalList)?)
+           | VAR BOOLEAN_TYPE (variableNames | IDENTIFIER_KEY COLON booleanValue | LIST IDENTIFIER_KEY (COLON booleanList)?)
+           | VAR  STRING_TYPE (variableNames | IDENTIFIER_KEY COLON stringValue | LIST IDENTIFIER_KEY (COLON stringList)?) {
 mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.AttributeMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.Attribute'
 }
@@ -92,7 +92,7 @@ naturalList\:\:= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
 { mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.DefinitionMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.Definition'
 }
-::identifier::Signature \:\:= ::lexicoIdentifier:: ((ASSIGN referenceIdentifier) ::genericOption:: )? (polymorphic | modifier? morph?) identifier? ::assignAttributeHeader|*::
+::identifier::Signature \:\:= ::lexicoIdentifier:: ((COLON referenceIdentifier) ::genericOption:: )? (polymorphic | modifier? morph?) identifier? ::assignAttributeHeader|*::
 { pin=1 mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.SignatureMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.Signature'
 }

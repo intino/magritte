@@ -5,6 +5,8 @@ import monet.tara.compiler.core.ast.ASTNode;
 
 public class EndingTokenSelector {
 
+	public static final String referenceIdentifier = "referenceIdentifier";
+
 	private EndingTokenSelector() {
 	}
 
@@ -17,7 +19,7 @@ public class EndingTokenSelector {
 		if (attribute.isList())
 			return "LEFT_SQUARE identifier+ RIGHT_SQUARE" + token;
 		else
-			return "IDENTIFIER_KEY" + token;
+			return referenceIdentifier + token;
 	}
 
 	public static String setWordStringWithEndingTokenImplicit(ASTNode.Word attribute, String token) {
@@ -26,18 +28,18 @@ public class EndingTokenSelector {
 
 	public static String setAttributeStringWithEndingToken(ASTNode.Attribute attribute, String token) {
 		if (attribute.isList())
-			return attribute.getName().toUpperCase() + "_ATTRIBUTE ASSIGN " + attribute.getPrimitiveType().toLowerCase() + "List" + token;
+			return attribute.getName().toUpperCase() + "_ATTRIBUTE COLON " + attribute.getPrimitiveType().toLowerCase() + "List" + token;
 		else
-			return attribute.getName().toUpperCase() + "_ATTRIBUTE ASSIGN " + attribute.getPrimitiveType().toUpperCase() + "_VALUE_KEY" + token;
+			return attribute.getName().toUpperCase() + "_ATTRIBUTE COLON " + attribute.getPrimitiveType().toUpperCase() + "_VALUE_KEY" + token;
 	}
 
 	public static String setReferenceStringWithEndingToken(ASTNode.Reference attribute, String token) {
 		if (attribute.isList())
-			return attribute.getName().toUpperCase() + "_ATTRIBUTE ASSIGN LEFT_SQUARE identifier+ RIGHT_SQUARE" + token;
-		else return attribute.getName().toUpperCase() + "_ATTRIBUTE ASSIGN IDENTIFIER_KEY" + token;
+			return attribute.getName().toUpperCase() + "_ATTRIBUTE COLON LEFT_SQUARE identifier+ RIGHT_SQUARE" + token;
+		else return attribute.getName().toUpperCase() + "_ATTRIBUTE COLON IDENTIFIER_KEY" + token;
 	}
 
 	public static String setWordStringWithEndingToken(ASTNode.Word attribute, String token) {
-		return attribute.getIdentifier().toUpperCase() + "_ATTRIBUTE ASSIGN " + Attributes.getStringOfWordList(attribute.getWordTypes()) + token;
+		return attribute.getIdentifier().toUpperCase() + "_ATTRIBUTE COLON " + Attributes.getStringOfWordList(attribute.getWordTypes()) + token;
 	}
 }

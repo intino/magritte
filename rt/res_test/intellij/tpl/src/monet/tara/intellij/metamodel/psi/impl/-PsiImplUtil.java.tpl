@@ -38,18 +38,6 @@ public class ::projectProperName::PsiImplUtil {
 		return null;
 	}
 
-	public static String getIdentifier(ReferenceIdentifier element) {
-		ASTNode valueNode = element.getNode().findChildByType(::projectProperName::Types.IDENTIFIER_KEY);
-		if (valueNode != null) return valueNode.getText();
-		else return null;
-	}
-
-	public static String getIdentifier(ReferenceStatement element) {
-		ASTNode valueNode = element.getNode().findChildByType(::projectProperName::Types.IDENTIFIER_KEY);
-		if (valueNode != null) return valueNode.getText();
-		else return null;
-	}
-
 	public static PsiElement setName(Signature element, String newName) {
 		ASTNode keyNode = element.getNode().findChildByType(::projectProperName::Types.IDENTIFIER);
 		if (keyNode != null) {
@@ -59,13 +47,6 @@ public class ::projectProperName::PsiImplUtil {
 		}
 		return element;
 	}
-
-	public static PsiElement getIdentifier(Signature element) {
-		ASTNode keyNode = element.getNode().findChildByType(::projectProperName::Types.IDENTIFIER);
-		if (keyNode != null) return keyNode.getPsi();
-		else return null;
-	}
-
 
 	public static List<Definition> getChildrenInBody(Body body) {
 		return (List<Definition>) body.getDefinitionList();
@@ -91,12 +72,12 @@ public class ::projectProperName::PsiImplUtil {
 		return (Definition) element.getParent();
 	}
 
-	public static Definition getContextOf(PsiElement element1) {
+	public static Definition getContextOf(PsiElement element) {
 		try {
-			PsiElement element = element1;
-			while ((element.getParent() != null) && !(element.getParent() instanceof ::projectProperName::File) && !(element.getParent() instanceof Definition))
-				element = element.getParent();
-			return (element.getParent() instanceof Definition) ? (Definition) element.getParent() \: null;
+			PsiElement aElement = element;
+			while ((aElement.getParent() != null) && !(aElement.getParent() instanceof ::projectProperName::File) && !(aElement.getParent() instanceof Definition))
+				aElement = aElement.getParent();
+			return (aElement.getParent() instanceof Definition) ? (Definition) aElement.getParent() \: null;
 		} catch (NullPointerException e) {
 			LOG.error(e.getMessage());
 			return null;

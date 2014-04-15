@@ -15,7 +15,6 @@ public class TemplateFactory {
 
 	static {
 		TEMPLATES.put("CreateFileAction.java", IDE_TPL + SRC + PROJECT_PATH + "actions/CreateFileAction.java");
-		TEMPLATES.put("CreatePackageAction.java", IDE_TPL + SRC + PROJECT_PATH + "actions/CreatePackageAction.java");
 
 		TEMPLATES.put("InSignatureFitFilter.java", IDE_TPL + SRC + PROJECT_PATH + "codeinsight/completion/InSignatureFitFilter.java");
 		TEMPLATES.put("AnnotationsCompletionContributor.java", IDE_TPL + SRC + PROJECT_PATH + "codeinsight/completion/-AnnotationsCompletionContributor.java");

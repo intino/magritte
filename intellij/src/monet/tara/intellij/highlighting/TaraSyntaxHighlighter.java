@@ -92,11 +92,11 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 
 		KEYS_1.put(TaraTypes.DOC_LINE, DOCUMENTATION);
 
-		KEYS_1.put(TaraTypes.DOUBLE_VALUE, NUMBERS);
-		KEYS_1.put(TaraTypes.NATURAL_VALUE, NUMBERS);
+		KEYS_1.put(TaraTypes.DOUBLE_VALUE_KEY, NUMBERS);
+		KEYS_1.put(TaraTypes.NATURAL_VALUE_KEY, NUMBERS);
 		KEYS_1.put(TaraTypes.NEGATIVE_VALUE_KEY, NUMBERS);
-		KEYS_1.put(TaraTypes.BOOLEAN_VALUE, NUMBERS);
-		KEYS_1.put(TaraTypes.STRING_VALUE, STRING);
+		KEYS_1.put(TaraTypes.BOOLEAN_VALUE_KEY, NUMBERS);
+		KEYS_1.put(TaraTypes.STRING_VALUE_KEY, STRING);
 
 		KEYS_1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 	}

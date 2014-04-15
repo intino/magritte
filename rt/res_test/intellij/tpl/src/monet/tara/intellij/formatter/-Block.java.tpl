@@ -26,7 +26,7 @@ public class ::projectProperName::Block extends AbstractBlock {
 	protected List<Block> buildChildren() {
 		List<Block> blocks = new ArrayList<>();
 		for (ASTNode child \: getNode().getChildren(null)) {
-			if (child.getElementType() == ::projectProperName::Types.CONCEPT_KEY)
+			if (child.getElementType() == ::projectProperName::Types.DEFINITION_KEY)
 				blocks.add(new ::projectProperName::Block(child, Wrap.createWrap(WrapType.ALWAYS, false), Alignment.createAlignment()));
 			else if (child.getElementType() == ::projectProperName::Types.BODY)
 				blocks.add(new ::projectProperName::Block(child, Wrap.createWrap(WrapType.ALWAYS, false), Alignment.createAlignment()));
@@ -48,9 +48,9 @@ public class ::projectProperName::Block extends AbstractBlock {
 		if (child1 == null) return null;
 		PsiElement rightPsi = rightBlock.getNode().getPsi();
 		if (rightPsi instanceof Definition) return ONE_LINE_BREAK_SPACING;
-		else if (leftBlock.getNode().getElementType() == ::projectProperName::Types.ASSIGN)
+		else if (leftBlock.getNode().getElementType() == ::projectProperName::Types.COLON)
 			return MIN_SPACE;
-		else if (rightBlock.getNode().getElementType() == ::projectProperName::Types.ASSIGN)
+		else if (rightBlock.getNode().getElementType() == ::projectProperName::Types.COLON)
 			return MIN_SPACE;
 		return null;
 	}

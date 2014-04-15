@@ -90,11 +90,11 @@ public class ::projectProperName::SyntaxHighlighter extends SyntaxHighlighterBas
 
 		KEYS_1.put(::projectProperName::Types.DOC_LINE, DOCUMENTATION);
 
-		KEYS_1.put(::projectProperName::Types.DOUBLE_VALUE, NUMBERS);
-		KEYS_1.put(::projectProperName::Types.NATURAL_VALUE, NUMBERS);
+		KEYS_1.put(::projectProperName::Types.DOUBLE_VALUE_KEY, NUMBERS);
+		KEYS_1.put(::projectProperName::Types.NATURAL_VALUE_KEY, NUMBERS);
 		KEYS_1.put(::projectProperName::Types.NEGATIVE_VALUE_KEY, NUMBERS);
-		KEYS_1.put(::projectProperName::Types.BOOLEAN_VALUE, NUMBERS);
-		KEYS_1.put(::projectProperName::Types.STRING_VALUE, STRING);
+		KEYS_1.put(::projectProperName::Types.BOOLEAN_VALUE_KEY, NUMBERS);
+		KEYS_1.put(::projectProperName::Types.STRING_VALUE_KEY, STRING);
 
 		KEYS_1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 	}

@@ -1,17 +1,16 @@
 <idea-plugin version="1">
   <id>siani.dev.::projectName::</id>
   <name>::projectProperName:: Plugin</name>
-  <version>1.0</version>
+  <version>
+    ::version::
+  </version>
   <vendor email="octavioroncal\@siani.es" url="http\://www.monet.org">Siani</vendor>
 
-  <description><![CDATA[
-      Siani development tool for the generation of model-based plugins.
-      ]]></description>
+  <description>
+    ::description::
+  </description>
 
-  <change-notes><![CDATA[
-      First Realease.
-        Windows integration.
-      ]]>
+  <change-notes><![CDATA[ First Realease. Windows integration. ]]>
   </change-notes>
 
   <idea-version since-build="135.475"/>
@@ -23,18 +22,11 @@
   -->
 
   <actions>
-    <!--<action id="BashErrorReporter.TriggerException"-->
-            <!--class="monet.::projectName::.intellij.actions.TriggerExceptionAction"-->
-            <!--text="Trigger Exception"-->
-            <!--description="Triggers an exception">-->
-      <!--<add-to-group group-id="ToolsMenu" anchor="last"/>-->
-    <!--</action>-->
     <action id="NewDefinition" class="monet.::projectName::.intellij.actions.CreateFileAction">
       <add-to-group group-id="NewGroup" anchor="first"/>
     </action>
-    <action id="NewPackage" class="monet.::projectName::.intellij.actions.CreatePackageAction" text="Package"
-            description="Create a new package" icon="AllIcons.Nodes.Package">
-    </action>
+    
+    
   </actions>
 
   <application-components>
@@ -49,16 +41,7 @@
     <moduleType id="::projectUpperName::_MODULE" implementationClass="monet.::projectName::.intellij.project.module.ModuleType"/>
     <treeStructureProvider implementation="monet.::projectName::.intellij.project.view.MergerTreeStructureProvider"/>
 
-    <!--compiler-->
-    <compileServer.plugin classpath="::projectName::-jps-plugin.jar"/>
-    <projectConfigurable instance="monet.::projectName::.intellij.compiler.::projectProperName::CompilerConfigurable" id="::projectProperName:: compiler"
-                         displayName="::projectProperName:: Compiler" parentId="project.propCompiler"/>
-
-    <projectService serviceInterface="monet.::projectName::.intellij.compiler.::projectProperName::CompilerWorkspaceConfiguration"
-                    serviceImplementation="monet.::projectName::.intellij.compiler.::projectProperName::CompilerWorkspaceConfiguration"/>
-    <projectService serviceInterface="monet.::projectName::.intellij.compiler.::projectProperName::CompilerConfiguration"
-                    serviceImplementation="monet.::projectName::.intellij.compiler.::projectProperName::CompilerConfiguration"/>
-    <!--end_compiler-->
+    
 
     <configurationType implementation="monet.::projectName::.intellij.project.runner.RunConfigurationType"/>
     <lang.commenter language="::projectProperName::" implementationClass="monet.::projectName::.intellij.::projectProperName::Commenter"/>

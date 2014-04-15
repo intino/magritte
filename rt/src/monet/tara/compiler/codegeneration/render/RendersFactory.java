@@ -14,9 +14,9 @@ public class RendersFactory {
 	private static Map<String, Class<? extends DefaultRender>> renders = new HashMap<>();
 
 	static {
-		renders.put("Definition", DefinitionRender.class);
-		renders.put("SyntaxHighlighter.java", HighlightRender.class);
-		renders.put("PluginDescriptorRender.java", PluginDescriptorRender.class);
+		renders.put("definition", DefinitionRender.class);
+		renders.put("syntaxhighlighter.java", HighlightRender.class);
+		renders.put("plugin.xml", PluginDescriptorRender.class);
 	}
 
 	private RendersFactory() {
@@ -24,7 +24,7 @@ public class RendersFactory {
 
 	public static DefaultRender getRender(String name, String project, Object params) throws TaraException {
 		try {
-			Class<? extends DefaultRender> clazz = renders.get(RenderUtils.toProperCase(name));
+			Class<? extends DefaultRender> clazz = renders.get(name.toLowerCase());
 			Constructor constructor = clazz.getConstructor(String.class, String.class, Object.class);
 			return (DefaultRender) constructor.newInstance(TemplateFactory.getTemplate(name), project, params);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
