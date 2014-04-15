@@ -1,20 +1,20 @@
 <idea-plugin version="1">
   <id>siani.dev.tara</id>
   <name>Tara Plugin</name>
+  <!--gen %version%-->
   <version>
-    <!--gen %version%-->
     1.0
-    <!--end-->
   </version>
+  <!--end-->
   <vendor email="octavioroncal@siani.es" url="http://www.monet.org">Siani</vendor>
 
+  <!--gen %description%-->
   <description>
-    <!--gen %description%-->
     <![CDATA[
       Siani development tool for the generation of model-based plugins
       ]]>
-    <!--end-->
   </description>
+  <!--end-->
 
   <change-notes><![CDATA[ First Realease. Windows integration. ]]>
   </change-notes>
@@ -28,7 +28,7 @@
   -->
 
   <actions>
-    <action id="NewConcept" class="monet.tara.intellij.actions.CreateFileAction">
+    <action id="NewConcept" class="monet.tara.intellij.actions.CreateTaraFileAction">
       <add-to-group group-id="NewGroup" anchor="first"/>
     </action>
     <!--gen %%-->
@@ -61,6 +61,7 @@
                     serviceImplementation="monet.tara.intellij.metamodel.psi.impl.TaraElementFactoryImpl"/>
     <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.ModuleType"/>
     <treeStructureProvider implementation="monet.tara.intellij.project.view.MergerTreeStructureProvider"/>
+    <fileTemplateGroup implementation="monet.tara.intellij.actions.TaraTemplatesFactory"/>
 
     <!--gen %%-->
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>

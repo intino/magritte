@@ -22,10 +22,15 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 		for (String template : TemplateFactory.getTemplates().keySet()) {
 			if (!"grammar".equals(template) && !"lexer".equals(template) && !"HighlighterLex.flex".equals(template)) {
 				writer = getOutWriter(new File(getDestinyOf(TemplateFactory.getTemplate(template))));
-				writeTemplateBasedFile(template, "plugin.xml".equals(template) ? configuration : ast.getIdentifiers());
+				writeTemplateBasedFile(template, calculateParam(template, ast));
 				writer.close();
 			}
 		}
+	}
+
+	private Object calculateParam(String template, AST ast) {
+		if ("plugin.xml".equals(template)) return configuration;
+		return ast;
 	}
 
 

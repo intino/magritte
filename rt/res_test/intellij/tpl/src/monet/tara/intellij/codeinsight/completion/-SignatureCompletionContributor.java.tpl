@@ -28,8 +28,7 @@ public class ::projectProperName::SignatureCompletionContributor extends Complet
 				public void addCompletions(\@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           \@NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("Definition"));
-					resultSet.addElement(LookupElementBuilder.create("new"));
+					::identifiers::
 					resultSet.addElement(LookupElementBuilder.create("var"));
 				}
 			}

@@ -13,7 +13,7 @@ public class AST {
 	}
 
 	public void addIdentifier(String identifier, String context) {
-		if (!checkRepeated(identifier) && !isNoName(identifier))
+		if (!identifierMap.containsKey(identifier) && !isUnName(identifier))
 			identifierMap.put(identifier.toUpperCase() + "_" + context, identifier);
 	}
 
@@ -25,12 +25,8 @@ public class AST {
 		return lookUpTable;
 	}
 
-	private boolean isNoName(String text) {
+	private boolean isUnName(String text) {
 		return text.isEmpty();
-	}
-
-	private boolean checkRepeated(String text) {
-		return identifierMap.containsKey(text);
 	}
 
 	public boolean add(ASTNode astNode) {

@@ -14,7 +14,9 @@ public class TemplateFactory {
 	private static final String PROJECT_PATH = "monet/tara/" + IDE;
 
 	static {
-		TEMPLATES.put("CreateFileAction.java", IDE_TPL + SRC + PROJECT_PATH + "actions/CreateFileAction.java");
+		TEMPLATES.put("CreateFileAction.java", IDE_TPL + SRC + PROJECT_PATH + "actions/Create-FileAction.java");
+		TEMPLATES.put("Templates.java", IDE_TPL + SRC + PROJECT_PATH + "actions/-Templates.java");
+		TEMPLATES.put("TemplatesFactory.java", IDE_TPL + SRC + PROJECT_PATH + "actions/-TemplatesFactory.java");
 
 		TEMPLATES.put("InSignatureFitFilter.java", IDE_TPL + SRC + PROJECT_PATH + "codeinsight/completion/InSignatureFitFilter.java");
 		TEMPLATES.put("AnnotationsCompletionContributor.java", IDE_TPL + SRC + PROJECT_PATH + "codeinsight/completion/-AnnotationsCompletionContributor.java");
@@ -136,6 +138,8 @@ public class TemplateFactory {
 		TEMPLATES.put("errorReporter.properties", IDE_TPL + RES + "messages/errorReporter.properties");
 		TEMPLATES.put("PluginErrorReportSubmitterBundle.properties", IDE_TPL + RES + "messages/PluginErrorReportSubmitterBundle.properties");
 		TEMPLATES.put("Bundle.properties", IDE_TPL + RES + "messages/-Bundle.properties");
+		TEMPLATES.put("-_.m2.ft", IDE_TPL + RES + "fileTemplates/j2ee/-_.m1.ft");
+		TEMPLATES.put("-_.m2.html", IDE_TPL + RES + "fileTemplates/j2ee/-_.m1.html");
 	}
 
 

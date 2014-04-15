@@ -7,27 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class HighlightRender extends DefaultRender {
+public class SignatureCompletionContributorRender extends DefaultRender {
 	Map<String, String> identifiers;
 
-	public HighlightRender(String tplName, String projectName, Object ast) throws TaraException {
+	public SignatureCompletionContributorRender(String tplName, String projectName, Object ast) throws TaraException {
 		super(tplName, projectName);
-		this.identifiers = ((AST) ast).getIdentifiers();
+		this.identifiers = ((AST)ast).getIdentifiers();
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-		addMark("highlightKey", buildKeys(makeKeywordList()));
+		addMark("identifiers", buildKeys(makeKeywordList()));
 	}
 
 	private String buildKeys(String[] list) {
 		StringBuilder builder = new StringBuilder("");
 		for (String key : list)
-			builder.append("\n\t\t").append("KEYS_1.put(").append(RenderUtils.toProperCase(projectName)).
-				append("Types.").append(key).append(", KEYWORD);");
-		builder.append("\n\t\tKEYS_1.put(").append(RenderUtils.toProperCase(projectName)).append("Types.SYNTHESIZE, KEYWORD);");
-		builder.append("\n\t\tKEYS_1.put(").append(RenderUtils.toProperCase(projectName)).append("Types.CODE, DOCUMENTATION);\n");
+			builder.append("\n\t\t\t\t\t").append("resultSet.addElement(LookupElementBuilder.create(\"").append(key).append("\"));");
 		return builder.toString();
 	}
 
@@ -35,7 +32,7 @@ public class HighlightRender extends DefaultRender {
 		List<String> list = new ArrayList<>();
 		for (String key : identifiers.keySet())
 			if (key.contains("KEY"))
-				list.add(key);
+				list.add(identifiers.get(key));
 		return list.toArray(new String[list.size()]);
 	}
 }

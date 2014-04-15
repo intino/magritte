@@ -28,8 +28,10 @@ public class TaraSignatureCompletionContributor extends CompletionContributor {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
+					//gen %identifiers%
 					resultSet.addElement(LookupElementBuilder.create("Concept"));
 					resultSet.addElement(LookupElementBuilder.create("new"));
+					//end
 					resultSet.addElement(LookupElementBuilder.create("var"));
 				}
 			}

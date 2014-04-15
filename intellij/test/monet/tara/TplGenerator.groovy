@@ -20,6 +20,7 @@ void createTPLs(String tplPath, File[] files) {
                 createTPLs(tplPath, it.listFiles())
             }
         } else {
+            def fileName = it.name.replaceAll("Tara", "-").replace("Concept", "_").replace("m2","m1")
             if (!it.name.startsWith(".") && !it.text.startsWith("/*") && isCorrectFileType(it.name)) {
                 String text = it.text;
                 if (!it.getName().endsWith("png")) {
@@ -37,16 +38,16 @@ void createTPLs(String tplPath, File[] files) {
                         text = addXmlMarks(text)
                     else text = addJavaMarks(text)
                     text = text.replaceAll("%", "\\\\%")
-                    File newFile = new File(tplPath + it.parent.substring(8), it.name.replaceAll("Tara", "-").replace("Concept", "_") + ".tpl")
+                    File newFile = new File(tplPath + it.parent.substring(8), fileName + ".tpl")
                     newFile.write(text)
                 } else
-                    copyFile(it, new File(tplPath + it.parent.substring(8), it.name.replaceAll("Tara", "-").replace("Concept", "_")))
+                    copyFile(it, new File(tplPath + it.parent.substring(8), fileName))
             } else if (it.name.endsWith(".bnf") || it.name.endsWith(".flex")) {
                 String mfile;
                 if (it.name.endsWith(".bnf")) mfile = "m1Grammar.tpl";
                 else mfile = it.name.contains("Highlighter") ? "m1HighlightLex.tpl" : "m1Lexer.tpl"
                 text = new File("intellij/res/tpl/" + mfile).text.replaceAll("%", "\\\\%")
-                File newFile = new File(tplPath + it.parent.substring(8), it.name.replaceAll("Tara", "-").replace("Concept", "_") + ".tpl")
+                File newFile = new File(tplPath + it.parent.substring(8), fileName + ".tpl")
                 newFile.write(text)
             }
         }
@@ -89,9 +90,8 @@ void fixTypes() {
 }
 
 boolean isCorrectFileType(String fileName) {
-    String[] fileTypes = ["java", "xml", "form", "properties", "png"]
-    String extension = fileName.substring(fileName.lastIndexOf(".") + 1)
-    if (fileTypes.contains(extension)) return true
+    String[] fileTypes = ["java", "xml", "form", "properties", "png", "html", "ft"]
+    if (fileTypes.contains(fileName.substring(fileName.lastIndexOf(".") + 1))) return true
     false
 }
 

@@ -17,6 +17,7 @@ public class RendersFactory {
 		renders.put("definition", DefinitionRender.class);
 		renders.put("syntaxhighlighter.java", HighlightRender.class);
 		renders.put("plugin.xml", PluginDescriptorRender.class);
+		renders.put("signaturecompletioncontributor.java", SignatureCompletionContributorRender.class);
 	}
 
 	private RendersFactory() {

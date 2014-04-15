@@ -35,8 +35,8 @@ public class EndingTokenSelector {
 
 	public static String setReferenceStringWithEndingToken(ASTNode.Reference attribute, String token) {
 		if (attribute.isList())
-			return attribute.getName().toUpperCase() + "_ATTRIBUTE COLON LEFT_SQUARE identifier+ RIGHT_SQUARE" + token;
-		else return attribute.getName().toUpperCase() + "_ATTRIBUTE COLON IDENTIFIER_KEY" + token;
+			return attribute.getName().toUpperCase() + "_ATTRIBUTE COLON LEFT_SQUARE" + referenceIdentifier + "+ RIGHT_SQUARE" + token;
+		else return attribute.getName().toUpperCase() + "_ATTRIBUTE COLON " + referenceIdentifier + token;
 	}
 
 	public static String setWordStringWithEndingToken(ASTNode.Word attribute, String token) {

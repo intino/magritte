@@ -14,8 +14,8 @@ public class PluginDescriptorRender extends DefaultRender {
 	@Override
 	protected void init() {
 		super.init();
-		addMark("version", configuration.getVersion());
-		addMark("description", "<![CDATA[" + configuration.getDescription() + "]]>");
+		addMark("version", "\n<version>" + configuration.getVersion() + "</version>\n");
+		addMark("description", "\n<description>\n<![CDATA[" + configuration.getDescription() + "]]>\n</description>\n");
 	}
 }
 

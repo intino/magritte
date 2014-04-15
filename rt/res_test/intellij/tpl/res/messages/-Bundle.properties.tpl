@@ -13,6 +13,12 @@ unused.definition.inspection.display.name=Unused definition
 duplicate.definition.display.name=Duplicate Definition
 duplicate.definition.key.progress.indicator.text=Processing duplicate definition key\:{0}
 
+file.template.group.title.::projectName::=::projectProperName::
+newdefinition.menu.action.text=::projectProperName:: Definition
+newdefinition.menu.action.description=Creates new ::projectProperName:: Definition
+newdefinition.dlg.prompt=Enter name for new ::projectProperName:: Definition
+::projectName::.file.extension.is.not.mapped.to.::projectName::.file.type=*.::projectProperName:: files are mapped to ''{0}''.\\nYou can map them to ::projectProperName:: in Settings | File types
+
 invalid.::projectName::.definition.character= Invalid Character
 options.::projectName::.definition.identifier=Definition Identifier
 options.::projectName::.definition.keyword=Keyword
@@ -34,14 +40,10 @@ project.view.resource.bundle.tree.node.text=Resource Bundle ''{0}''
 structure.view.group.by.prefixes.action.name=Group by Prefixes
 structure.view.group.by.prefixes.action.description=Groups ::projectName:: by common key prefixes
 unused.message.format.parameter.display.name=Missing message format parameter
-\#{0},{1} used and unused parameter numbers
-unused.message.format.parameter.problem.descriptor=Using parameter {0} without using parameter {1} in <code>\#ref<code> \#loc
 unresolved.definition.key=Cannot resolve definition key
 unused.definition.suppress.for.definition=Suppress for this definition
 unused.definition.suppress.for.file=Suppress for whole file
-\# suppress inspection "Unuseddefinition"
-action.I18nize.text=Internationali_ze...
-\# suppress inspection "Unuseddefinition"
+action.I18nize.text=Internationalize...
 action.I18nize.description=Replace Java string literal or JSP text with internationalized expression
 create.definition.quickfix.text=Create definition
 unescape=Unescape

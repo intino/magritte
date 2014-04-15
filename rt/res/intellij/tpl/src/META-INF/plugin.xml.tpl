@@ -1,14 +1,10 @@
 <idea-plugin version="1">
   <id>siani.dev.::projectName::</id>
   <name>::projectProperName:: Plugin</name>
-  <version>
-    ::version::
-  </version>
+  ::version::
   <vendor email="octavioroncal\@siani.es" url="http\://www.monet.org">Siani</vendor>
 
-  <description>
-    ::description::
-  </description>
+  ::description::
 
   <change-notes><![CDATA[ First Realease. Windows integration. ]]>
   </change-notes>
@@ -22,7 +18,7 @@
   -->
 
   <actions>
-    <action id="NewDefinition" class="monet.::projectName::.intellij.actions.CreateFileAction">
+    <action id="NewDefinition" class="monet.::projectName::.intellij.actions.Create::projectProperName::FileAction">
       <add-to-group group-id="NewGroup" anchor="first"/>
     </action>
     
@@ -40,6 +36,7 @@
                     serviceImplementation="monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::ElementFactoryImpl"/>
     <moduleType id="::projectUpperName::_MODULE" implementationClass="monet.::projectName::.intellij.project.module.ModuleType"/>
     <treeStructureProvider implementation="monet.::projectName::.intellij.project.view.MergerTreeStructureProvider"/>
+    <fileTemplateGroup implementation="monet.::projectName::.intellij.actions.::projectProperName::TemplatesFactory"/>
 
     
 
