@@ -1,6 +1,6 @@
 package monet.tara.compiler.parser;
 
-import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.errorcollection.SyntaxException;
 import monet.tara.compiler.parser.antlr.TaraASTGeneratorListener;
 import monet.tara.compiler.parser.antlr.TaraErrorStrategy;
@@ -28,9 +28,9 @@ public class Parser {
 		parser.setErrorHandler(new TaraErrorStrategy());
 	}
 
-	public AST convert() throws SyntaxException {
+	public ASTWrapper convert() throws SyntaxException {
 		try {
-			AST ast = new AST();
+			ASTWrapper ast = new ASTWrapper();
 			ParseTreeWalker walker = new ParseTreeWalker();
 			TaraASTGeneratorListener extractor = new TaraASTGeneratorListener(ast, file.getPath());
 			walker.walk(extractor, rootContext);

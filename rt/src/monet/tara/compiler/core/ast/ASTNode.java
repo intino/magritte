@@ -5,36 +5,41 @@ import java.util.List;
 
 public class ASTNode {
 
-	private String doc;
 	private boolean abstractModifier;
 	private boolean finalModifier;
 	private boolean morph;
 	private boolean polymorphic;
+	private String doc;
 	private String extendFrom;
-	private ASTNode parent;
-	private List<AnnotationType> annotations = new ArrayList<>();
-	private List<ASTNode> children = new ArrayList<>();
-	private List<Variable> variables = new ArrayList<>();
 	private String identifier = "";
 	private String file;
 	private int line;
+	private List<AnnotationType> annotations = new ArrayList<>();
+	private AST children = new AST();
+	private List<Variable> variables = new ArrayList<>();
+	private transient ASTNode parent;
+
+
+	public ASTNode() {
+	}
 
 	public ASTNode(String identifier, ASTNode parent, String file) {
 		this.identifier = identifier;
 		this.parent = parent;
 		this.file = file;
-		abstractModifier = false;
-		finalModifier = false;
-		morph = false;
-		polymorphic = false;
+		this.abstractModifier = false;
+		this.finalModifier = false;
+		this.morph = false;
+		this.polymorphic = false;
 	}
 
 	public ASTNode(String file) {
 		this.file = file;
-		abstractModifier = false;
-		finalModifier = false;
-		morph = false;
-		polymorphic = false;
+		this.abstractModifier = false;
+		this.finalModifier = false;
+		this.morph = false;
+		this.polymorphic = false;
+		this.parent = null;
 	}
 
 	public boolean isRoot() {
@@ -78,8 +83,8 @@ public class ASTNode {
 		return result.toArray(new Reference[result.size()]);
 	}
 
-	public ASTNode[] getChildren() {
-		return children.toArray(new ASTNode[children.size()]);
+	public AST getChildren() {
+		return children;
 	}
 
 	public ASTNode getChildByName(String name) {
@@ -195,7 +200,7 @@ public class ASTNode {
 
 	public String getAbsolutePath() {
 		return (parent != null) ? parent.getAbsolutePath() +
-			((!"".equals(getIdentifier())) ? "." + getIdentifier() : "") : getIdentifier();
+			((!"".equals(getIdentifier())) ? "." + getIdentifier() : ".annonymous(" + extendFrom + ")") : getIdentifier();
 	}
 
 	public String getFile() {

@@ -27,6 +27,8 @@ import java.util.List;
 
 public class ModuleBuilder extends JavaModuleBuilder {
 	private static final Logger LOG = Logger.getInstance(ModuleBuilder.class.getName());
+	public static final String RES = "res";
+	public static final String GEN = "gen";
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
 	private String myCompilerOutputPath;
 	private List<Pair<String, String>> mySourcePaths;
@@ -37,11 +39,6 @@ public class ModuleBuilder extends JavaModuleBuilder {
 
 	public void setSourcePaths(final List<Pair<String, String>> sourcePaths) {
 		mySourcePaths = sourcePaths != null ? new ArrayList<>(sourcePaths) : null;
-	}
-
-	public void addSourcePath(final Pair<String, String> sourcePathInfo) {
-		if (mySourcePaths == null) mySourcePaths = new ArrayList<>();
-		mySourcePaths.add(sourcePathInfo);
 	}
 
 	@Override
@@ -56,27 +53,19 @@ public class ModuleBuilder extends JavaModuleBuilder {
 		rootModel.inheritSdk();
 		ContentEntry contentEntry = doAddContentEntry(rootModel);
 		if (contentEntry != null) {
-			final List<Pair<String, String>> sourcePaths = getSourcePaths();
-
-			if (sourcePaths != null) {
-				for (final Pair<String, String> sourcePath : sourcePaths) {
+			mySourcePaths.add(Pair.create(getContentEntryPath() + File.separator + GEN, ""));
+			String parentPath = "";
+			if (mySourcePaths != null) {
+				for (final Pair<String, String> sourcePath : mySourcePaths) {
 					String first = sourcePath.first;
 					new File(first).mkdirs();
-					final VirtualFile sourceRoot = LocalFileSystem.getInstance()
-						.refreshAndFindFileByPath(FileUtil.toSystemIndependentName(first));
+					final VirtualFile sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(FileUtil.toSystemIndependentName(first));
 					if (sourceRoot != null) {
+						parentPath = sourceRoot.getParent().getPath();
 						contentEntry.addSourceFolder(sourceRoot, false, sourcePath.second);
-						try {
-							VfsUtil.createDirectories(sourceRoot.getParent().getPath() + File.separator + "res");
-							VfsUtil.createDirectories(sourceRoot.getParent().getPath() + File.separator + "res" + File.separator + "tpl");
-							VfsUtil.createDirectories(sourceRoot.getParent().getPath() + File.separator + "res" + File.separator + "logos");
-//							File logo = new File(logos.getPath() + File.separator + rootModel.getProject().getName() + ".png");
-//							copyFile(new File(this.getClass().getResource(File.separator + "logos" + File.separator + "logo.png").getPath()), logo);
-						} catch (IOException e) {
-							LOG.error(e.getMessage());
-						}
 					}
 				}
+				createResources(parentPath);
 			}
 		}
 		if (myCompilerOutputPath != null) {
@@ -102,6 +91,18 @@ public class ModuleBuilder extends JavaModuleBuilder {
 				modifiableModel.addRoot(getUrlByPath(sourceLibraryPath), OrderRootType.SOURCES);
 			}
 			modifiableModel.commit();
+		}
+	}
+
+	private void createResources(String parentPath) {
+		try {
+			VfsUtil.createDirectories(parentPath + File.separator + RES);
+			VfsUtil.createDirectories(parentPath + File.separator + RES + File.separator + "tpl");
+			VfsUtil.createDirectories(parentPath + File.separator + RES + File.separator + "logos");
+//					File logo = new File(logos.getPath() + File.separator + rootModel.getProject().getName() + ".png");
+//					copyFile(new File(this.getClass().getResource(File.separator + "logos" + File.separator + "logo.png").getPath()), logo);
+		} catch (IOException e) {
+			LOG.error(e.getMessage());
 		}
 	}
 

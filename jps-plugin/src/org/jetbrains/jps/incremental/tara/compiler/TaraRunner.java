@@ -89,6 +89,7 @@ public class TaraRunner {
 		final Set<String> classPath = new LinkedHashSet<>();
 		classPath.add(getTaraRtRoot().getPath());
 		classPath.add(getAntlrLib().getPath());
+		classPath.add(getGsonLib().getPath());
 		classPath.add(getTemplationLib().getPath());
 		return classPath;
 	}
@@ -104,6 +105,13 @@ public class TaraRunner {
 		root = new File(root.getParentFile(), "antlr-4.2-complete.jar");
 		return (root.exists()) ? new File(root.getParentFile(), "antlr-4.2-complete.jar") :
 			new File(root.getParentFile(), "lib/antlr-4.2-complete.jar");
+	}
+
+	private File getGsonLib() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		root = new File(root.getParentFile(), "gson-2.2.4.jar");
+		return (root.exists()) ? new File(root.getParentFile(), "gson-2.2.4.jar") :
+			new File(root.getParentFile(), "lib/gson-2.2.4.jar");
 	}
 
 	private File getTemplationLib() {

@@ -1,6 +1,6 @@
 package monet.tara.compiler.codegeneration.render;
 
-import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.ast.ASTNode;
 import org.monet.templation.Canvas;
 import org.monet.templation.CanvasLogger;
@@ -17,10 +17,10 @@ public class JFlexRender extends Render {
 	private Map<String, String> identifierMap;
 	private StringBuilder keywords = new StringBuilder();
 	private StringBuilder keywords2 = new StringBuilder();
-	private AST ast;
+	private ASTWrapper ast;
 	private boolean hasCode = false;
 
-	public JFlexRender(String projectName, String tplName, AST ast) {
+	public JFlexRender(String projectName, String tplName, ASTWrapper ast) {
 		super(new Logger(), Canvas.FROM_RESOURCES_PREFIX);
 		this.tplName = tplName;
 		this.projectName = projectName;
@@ -40,7 +40,7 @@ public class JFlexRender extends Render {
 		}
 		addMark("concepts", keywords.toString());
 		addMark("conceptsToBNF", keywords2.toString());
-		for (ASTNode node : ast.getAstRootNodes()) goOver(node);
+		for (ASTNode node : ast.getAST()) goOver(node);
 		addCodeMark();
 	}
 

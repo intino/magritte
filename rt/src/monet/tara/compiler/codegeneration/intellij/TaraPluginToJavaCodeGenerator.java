@@ -6,7 +6,7 @@ import monet.tara.compiler.codegeneration.render.RenderUtils;
 import monet.tara.compiler.codegeneration.render.RendersFactory;
 import monet.tara.compiler.codegeneration.render.TemplateFactory;
 import monet.tara.compiler.core.CompilerConfiguration;
-import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.io.File;
@@ -17,7 +17,7 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 	CompilerConfiguration configuration;
 	private PrintWriter writer;
 
-	public void toJava(CompilerConfiguration configuration, AST ast) throws TaraException {
+	public void toJava(CompilerConfiguration configuration, ASTWrapper ast) throws TaraException {
 		this.configuration = configuration;
 		for (String template : TemplateFactory.getTemplates().keySet()) {
 			if (!"grammar".equals(template) && !"lexer".equals(template) && !"HighlighterLex.flex".equals(template)) {
@@ -28,7 +28,7 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 		}
 	}
 
-	private Object calculateParam(String template, AST ast) {
+	private Object calculateParam(String template, ASTWrapper ast) {
 		if ("plugin.xml".equals(template)) return configuration;
 		return ast;
 	}

@@ -4,6 +4,7 @@ package monet.tara.compiler.semantic;
 import monet.tara.compiler.core.SourceUnit;
 import monet.tara.compiler.core.ast.AST;
 import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.errorcollection.SemanticException;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
@@ -11,7 +12,7 @@ import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import java.util.Collection;
 
 public class SemanticAnalyzer {
-	private AST ast;
+	private ASTWrapper ast;
 	private SemanticErrorList errors = new SemanticErrorList();
 
 	private DuplicateDetector detector = new DuplicateDetector(errors);
@@ -23,24 +24,24 @@ public class SemanticAnalyzer {
 		this.ast = mergeAST(sources);
 	}
 
-	private AST mergeAST(Collection<SourceUnit> units) {
-		AST newAst = new AST();
+	private ASTWrapper mergeAST(Collection<SourceUnit> units) {
+		ASTWrapper newAst = new ASTWrapper();
 		for (SourceUnit unit : units) {
-			newAst.addAll(unit.getAST().getAstRootNodes());
+			newAst.addAll(unit.getAST().getAST());
 			newAst.putAllIdentifiers(unit.getAST().getIdentifiers());
-			newAst.putAllLookupTable(unit.getAST().getLookUpTable());
+			newAst.putAllInNodeNameTable(unit.getAST().getNodeNameLookUpTable());
 		}
 		return newAst;
 	}
 
 	public void analyze() throws SemanticException {
-		startAnalysis(ast.getAstRootNodes());
+		startAnalysis(ast.getAST());
 		if (!errors.isEmpty()) throw new SemanticException(errors.toArray(new SemanticError[errors.size()]));
-		startReferenceAnalysis(ast.getAstRootNodes());
+		startReferenceAnalysis(ast.getAST());
 		if (!errors.isEmpty()) throw new SemanticException(errors.toArray(new SemanticError[errors.size()]));
 	}
 
-	private void startAnalysis(ASTNode[] concepts) {
+	private void startAnalysis(AST concepts) {
 		detector.checkDuplicateRoots(concepts);
 		checker.checkIfRoot(concepts);
 		for (ASTNode concept : concepts)
@@ -54,14 +55,14 @@ public class SemanticAnalyzer {
 			conceptAnalysis(child);
 	}
 
-	private void startReferenceAnalysis(ASTNode[] concepts) {
+	private void startReferenceAnalysis(AST concepts) {
 		useChecker.start(concepts);
 		referenceAnalysis(concepts);
 		useChecker.finish();
 	}
 
-	private void referenceAnalysis(ASTNode[] concepts) {
-		for (ASTNode concept : concepts) {
+	private void referenceAnalysis(AST astNodes) {
+		for (ASTNode concept : astNodes) {
 			verifier.checkConcept(concept, ast);
 			useChecker.checkUsage(concept, ast);
 			referenceAnalysis(concept.getChildren());

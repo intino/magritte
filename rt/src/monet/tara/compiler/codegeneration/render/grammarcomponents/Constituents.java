@@ -2,13 +2,14 @@ package monet.tara.compiler.codegeneration.render.grammarcomponents;
 
 
 import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.ast.ASTNode;
 
 public class Constituents {
-	private AST root;
+	private ASTWrapper root;
 	private ASTNode node;
 
-	public Constituents(AST root, ASTNode node) {
+	public Constituents(ASTWrapper root, ASTNode node) {
 		this.root = root;
 		this.node = node;
 	}
@@ -60,7 +61,7 @@ public class Constituents {
 		return constituents;
 	}
 
-	private boolean contains(ASTNode[] nodes, ASTNode node) {
+	private boolean contains(AST nodes, ASTNode node) {
 		for (ASTNode child : nodes) {
 			ASTNode trulyNode = ("".equals(child.getIdentifier())) ? root.searchAncestry(child) : child;
 			if (trulyNode.equals(node)) return true;

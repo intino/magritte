@@ -177,17 +177,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 		public void process(CompileContext context, OutputFileObject out) {
 			Map<String, String> stubToSrc = STUB_TO_SRC.get(context);
-			if (stubToSrc == null) {
+			if (stubToSrc == null)
 				return;
-			}
 			File src = out.getSourceFile();
-			if (src == null) {
+			if (src == null)
 				return;
-			}
 			String groovy = stubToSrc.get(FileUtil.toSystemIndependentName(src.getPath()));
-			if (groovy == null) {
+			if (groovy == null)
 				return;
-			}
 			try {
 				final File groovyFile = new File(groovy);
 				if (!FSOperations.isMarkedDirty(context, groovyFile)) {

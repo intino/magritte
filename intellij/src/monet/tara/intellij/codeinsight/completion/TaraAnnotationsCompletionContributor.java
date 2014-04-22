@@ -32,6 +32,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 					resultSet.addElement(LookupElementBuilder.create("singleton"));
 					resultSet.addElement(LookupElementBuilder.create("has-code"));
 					resultSet.addElement(LookupElementBuilder.create("extensible"));
+					resultSet.addElement(LookupElementBuilder.create("generic"));
 				}
 			});
 	}

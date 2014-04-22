@@ -1,7 +1,7 @@
 package monet.tara.compiler.semantic;
 
 
-import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.ast.ASTNode.Reference;
 import monet.tara.compiler.core.errorcollection.semantic.*;
@@ -14,7 +14,7 @@ public class ReferenceVerifier {
 		this.errors = errors;
 	}
 
-	public void checkConcept(ASTNode concept, AST ast) {
+	public void checkConcept(ASTNode concept, ASTWrapper ast) {
 		ASTNode ancestor = ast.searchAncestry(concept);
 		checkExtendedConcept(concept, ancestor);
 		checkExtendedFromFinal(concept, ancestor);
@@ -23,7 +23,7 @@ public class ReferenceVerifier {
 		checkVarReference(concept, ast);
 	}
 
-	private void checkVarReference(ASTNode concept, AST ast) {
+	private void checkVarReference(ASTNode concept, ASTWrapper ast) {
 		for (Reference reference : concept.getReferences())
 			if (ast.searchNode(reference.getNode(), concept) == null)
 				errors.add(new UndefinedReferenceError(reference.getNode(), concept));

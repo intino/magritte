@@ -1,6 +1,7 @@
 package monet.tara.compiler.semantic;
 
 
+import monet.tara.compiler.core.ast.AST;
 import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.ast.ASTNode.AnnotationType;
 import monet.tara.compiler.core.ast.ASTNode.Attribute;
@@ -21,7 +22,7 @@ public class DuplicateDetector {
 		this.errors = errors;
 	}
 
-	public void checkDuplicateRoots(ASTNode[] concepts) {
+	public void checkDuplicateRoots(AST concepts) {
 		checkSiblings(concepts);
 	}
 
@@ -38,7 +39,7 @@ public class DuplicateDetector {
 		checkReferences(concept, names);
 	}
 
-	private void checkSiblings(ASTNode[] concepts) {
+	private void checkSiblings(AST concepts) {
 		Set<String> names = new HashSet<>();
 		for (ASTNode concept : concepts)
 			if (!names.add(concept.getIdentifier()))

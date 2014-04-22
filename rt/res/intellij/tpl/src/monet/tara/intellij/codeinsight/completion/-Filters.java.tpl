@@ -19,7 +19,8 @@ public class ::projectProperName::Filters {
 		.and(new FilterPattern(new InErrorFilter()));
 	protected static PsiElementPattern.Capture<PsiElement> afterDefinitionKey = psiElement()
 		.withLanguage(::projectProperName::Language.INSTANCE)
-		.and(new FilterPattern(new InSignatureFitFilter()));
+		.and(new FilterPattern(new InSignatureFitFilter()))
+		.and(new FilterPattern(new AfterElementFitFilter(::projectProperName::Types.DEFINITION_KEY)));
 	protected static PsiElementPattern.Capture<PsiElement> afterModifierKey = psiElement()
 		.withLanguage(::projectProperName::Language.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))

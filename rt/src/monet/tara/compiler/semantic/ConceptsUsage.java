@@ -1,6 +1,7 @@
 package monet.tara.compiler.semantic;
 
 import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.ast.ASTNode.AnnotationType;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
@@ -17,7 +18,7 @@ public class ConceptsUsage {
         this.errors = errors;
     }
 
-    public void start(ASTNode[] conceptList) {
+    public void start(AST conceptList) {
         for (ASTNode concept : conceptList)
             addToList(concept);
     }
@@ -28,7 +29,7 @@ public class ConceptsUsage {
             this.conceptList.put(concept.getAbsolutePath(), concept);
     }
 
-    public void checkUsage(ASTNode concept, AST ast) {
+    public void checkUsage(ASTNode concept, ASTWrapper ast) {
         checkIfUsed(ast.searchAncestry(concept));
         checkReference(concept, ast);
     }
@@ -38,7 +39,7 @@ public class ConceptsUsage {
         conceptList.remove(rootConcept);
     }
 
-    private void checkReference(ASTNode concept, AST ast) {
+    private void checkReference(ASTNode concept, ASTWrapper ast) {
         for (ASTNode.Reference reference : concept.getReferences())
             checkIfUsed(ast.searchNode(reference.getNode(), concept));
     }

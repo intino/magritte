@@ -1,6 +1,6 @@
 package monet.tara.compiler.parser.antlr;
 
-import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.ast.ASTNode;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -16,10 +16,10 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	public static final String ATTRIBUTE = "ATTRIBUTE";
 	private final String file;
-	AST ast;
+	ASTWrapper ast;
 	Stack<ASTNode> conceptStack = new Stack<>();
 
-	public TaraASTGeneratorListener(AST ast, String file) {
+	public TaraASTGeneratorListener(ASTWrapper ast, String file) {
 		this.ast = ast;
 		this.file = file;
 	}

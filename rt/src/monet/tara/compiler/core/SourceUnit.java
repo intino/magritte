@@ -1,7 +1,7 @@
 package monet.tara.compiler.core;
 
 import monet.tara.compiler.codegeneration.render.RendersFactory;
-import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.errorcollection.ErrorCollector;
 import monet.tara.compiler.core.errorcollection.SyntaxException;
@@ -19,12 +19,12 @@ public class SourceUnit extends ProcessingUnit {
 	private static final Logger LOG = Logger.getLogger(SourceUnit.class.getName());
 	protected FileReaderSource source;
 	protected String name;
-	private AST ast;
+	private ASTWrapper ast;
 	private Parser parser;
 
-	public SourceUnit(String name, FileReaderSource source, CompilerConfiguration flags, ErrorCollector er) {
-		super(flags, er);
-		this.configuration = flags;
+	public SourceUnit(String name, FileReaderSource source, CompilerConfiguration configuration, ErrorCollector er) {
+		super(configuration, er);
+		this.configuration = configuration;
 		this.errorCollector = er;
 		this.name = name;
 		this.source = source;
@@ -42,7 +42,7 @@ public class SourceUnit extends ProcessingUnit {
 		return source;
 	}
 
-	public AST getAST() {
+	public ASTWrapper getAST() {
 		return ast;
 	}
 
@@ -56,9 +56,11 @@ public class SourceUnit extends ProcessingUnit {
 //		writeJavaSource();
 	}
 
+
+
 	private void writeJavaSource() throws TaraException {
 		String path = getDefinitionsPath();
-		for (ASTNode node : ast.getAstRootNodes()) {
+		for (ASTNode node : ast.getAST()) {
 			try {
 				File file = new File(path, node.getIdentifier() + "Definition" + ".java");
 				file.createNewFile();

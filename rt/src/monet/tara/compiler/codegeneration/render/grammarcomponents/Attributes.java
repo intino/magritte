@@ -1,6 +1,6 @@
 package monet.tara.compiler.codegeneration.render.grammarcomponents;
 
-import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.ast.ASTNode;
 
 import java.util.List;
@@ -9,7 +9,7 @@ public abstract class Attributes {
 
 	private String attributesString;
 
-	protected Attributes(ASTNode node, AST root) {
+	protected Attributes(ASTNode node, ASTWrapper root) {
 		this.attributesString = getParentAttributes(node, root) + getAttributes(node);
 	}
 
@@ -31,7 +31,7 @@ public abstract class Attributes {
 
 	protected abstract String stringByEvaluationType(ASTNode elementType, int i);
 
-	protected String getParentAttributes(ASTNode node, AST root) {
+	protected String getParentAttributes(ASTNode node, ASTWrapper root) {
 		String attributes = "";
 		ASTNode extendNode = root.searchAncestry(node);
 		if (extendNode != null)

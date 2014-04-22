@@ -20,29 +20,24 @@ root ::= (concept | NEWLINE)*
 
 concept ::= doc? signature annotations? body?
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.ConceptMixin'
-implements='monet.tara.intellij.metamodel.psi.Concept'
-}
+implements='monet.tara.intellij.metamodel.psi.Concept'}
 
 signature ::= CONCEPT_KEY (COLON referenceIdentifier)?  (polymorphic | modifier? morph?) identifier
 { pin=1 mixin= 'monet.tara.intellij.metamodel.psi.impl.SignatureMixin'
-implements='monet.tara.intellij.metamodel.psi.Signature'
-}
+implements='monet.tara.intellij.metamodel.psi.Signature'}
 
 body ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.BodyMixin'
-implements='monet.tara.intellij.metamodel.psi.Body'
-}
+implements='monet.tara.intellij.metamodel.psi.Body'}
 
 private conceptConstituents ::= attribute
 		                      | referenceStatement
 		                      | word
 		                      | concept
-		                      | conceptInjection
 
 referenceStatement::= VAR referenceIdentifier LIST? variableNames
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceStatementMixin'
 implements='monet.tara.intellij.metamodel.psi.ReferenceStatement'}
-conceptInjection::= NEW referenceIdentifier annotations?
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.ConceptInjectionMixin'
 implements='monet.tara.intellij.metamodel.psi.ConceptInjection'}
 
@@ -57,8 +52,7 @@ implements='monet.tara.intellij.metamodel.psi.Attribute'}
 
 word::= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.WordMixin'
-implements='monet.tara.intellij.metamodel.psi.Word'
-}
+implements='monet.tara.intellij.metamodel.psi.Word'}
 
 stringValue  ::= STRING_VALUE_KEY
 booleanValue ::= BOOLEAN_VALUE_KEY
@@ -66,15 +60,24 @@ integerValue ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue  ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
 naturalValue ::= NATURAL_VALUE_KEY
 
-stringList ::= LEFT_SQUARE STRING_VALUE_KEY+ RIGHT_SQUARE;
-booleanList::= LEFT_SQUARE BOOLEAN_VALUE_KEY+ RIGHT_SQUARE;
-integerList::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUARE;
-doubleList ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE;
-naturalList::= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
+stringList  ::= LEFT_SQUARE STRING_VALUE_KEY+ RIGHT_SQUARE;
+booleanList ::= LEFT_SQUARE BOOLEAN_VALUE_KEY+ RIGHT_SQUARE;
+integerList ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUARE;
+doubleList  ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE;
+naturalList ::= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
 
-annotations ::= OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | EXTENSIBLE | SINGLETON | ROOT)+ CLOSE_AN
+annotations ::= OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | INTENTION | extensible | extension | SINGLETON | ROOT)+ CLOSE_AN
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.AnnotationsMixin'
 implements='monet.tara.intellij.metamodel.psi.Annotations'}
+
+extension ::= EXTESIBLE_KEY COLON externalReference
+externalReference ::= identifier child*
+{pin=1
+mixin= 'monet.tara.intellij.metamodel.psi.impl.ExternalReferenceMixin'
+implements='monet.tara.intellij.metamodel.psi.ExternalReference'}
+
+extensible ::= EXTENSIBLE_KEY COLON lang
+lang::= IDENTIFIER_KEY
 
 variableNames::= IDENTIFIER_KEY (COMMA IDENTIFIER_KEY)*;
 
@@ -86,8 +89,8 @@ morph::= MORPH_KEY
 
 doc::= DOC_LINE+
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.DocMixin'
-implements='monet.tara.intellij.metamodel.psi.Doc'
-}
+implements='monet.tara.intellij.metamodel.psi.Doc'}
+
 referenceIdentifier::= identifier child* {
 pin=1
 mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'

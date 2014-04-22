@@ -13,7 +13,7 @@ public class PathManager {
 	private PathManager() {
 	}
 
-	public static String getBuildIdeResDir(File tempDir) {
+	public static String getResIdeDir(File tempDir) {
 		return tempDir + SEP + SRC + SEP + IDE + SEP + RES + SEP;
 	}
 

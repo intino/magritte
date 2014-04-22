@@ -1,6 +1,7 @@
 package monet.tara.compiler.semantic;
 
 
+import monet.tara.compiler.core.ast.AST;
 import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.ast.ASTNode.AnnotationType;
 import monet.tara.compiler.core.errorcollection.semantic.NoRootError;
@@ -29,13 +30,13 @@ public class AnnotationChecker {
 		multipleAnnotation(concept);
 	}
 
-	public void checkIfRoot(ASTNode[] conceptList) {
+	public void checkIfRoot(AST conceptList) {
 		findRootConcepts(conceptList);
 		noRootConcepts();
 
 	}
 
-	private void findRootConcepts(ASTNode[] conceptList) {
+	private void findRootConcepts(AST conceptList) {
 		for (ASTNode concept : conceptList)
 			thereIsAnyRoot = isRootConcept(concept) || thereIsAnyRoot;
 	}

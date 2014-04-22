@@ -4,7 +4,7 @@ import monet.tara.compiler.codegeneration.PathManager;
 import monet.tara.compiler.codegeneration.render.JFlexRender;
 import monet.tara.compiler.codegeneration.render.TemplateFactory;
 import monet.tara.compiler.core.CompilerConfiguration;
-import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.io.File;
@@ -16,7 +16,7 @@ public class TaraToJFlexCodeGenerator extends CodeGenerator {
 
 	private static final String[] LEXER_TPL = new String[]{"lexer", "HighlighterLex.flex"};
 
-	public static File[] toJFlex(CompilerConfiguration conf, AST ast) throws TaraException {
+	public static File[] toJFlex(CompilerConfiguration conf, ASTWrapper ast) throws TaraException {
 		List<File> resultFiles = new ArrayList<>();
 		for (String tpl : LEXER_TPL) {
 			String template = TemplateFactory.getTemplate(tpl);

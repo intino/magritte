@@ -1,18 +1,18 @@
 package monet.tara.compiler.codegeneration.render;
 
-import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTWrapper;
+import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class SignatureCompletionContributorRender extends DefaultRender {
-	Map<String, String> identifiers;
+	List<ASTNode> nodes;
 
 	public SignatureCompletionContributorRender(String tplName, String projectName, Object ast) throws TaraException {
 		super(tplName, projectName);
-		this.identifiers = ((AST)ast).getIdentifiers();
+		this.nodes = ((ASTWrapper) ast).getAST();
 	}
 
 	@Override
@@ -30,9 +30,8 @@ public class SignatureCompletionContributorRender extends DefaultRender {
 
 	private String[] makeKeywordList() {
 		List<String> list = new ArrayList<>();
-		for (String key : identifiers.keySet())
-			if (key.contains("KEY"))
-				list.add(identifiers.get(key));
+		for (ASTNode node : nodes)
+			list.add(node.getIdentifier());
 		return list.toArray(new String[list.size()]);
 	}
 }

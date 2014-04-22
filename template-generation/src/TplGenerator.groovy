@@ -1,16 +1,17 @@
-package monet.tara
+public static void main(String[] args) {
+    String TPL_PATH = "rt/res/intellij/tpl";
+    String SRC_PATH = "intellij/src";
+    String RES_PATH = "intellij/res";
+    new File(TPL_PATH).deleteDir();
+    File[] srcFiles = new File(SRC_PATH).listFiles()
+    fixTypes()
+    createTPLs(TPL_PATH, srcFiles)
+    createTPLs(TPL_PATH, new File(RES_PATH).listFiles())
+    new File(TPL_PATH + "/src/monet/tara/intellij/metamodel/psi/-Types.java.tpl").createNewFile()
+//    addMetamodelRepresentation("rt/src/monet/tara/compiler/core/ast", TPL_PATH + "/src/monet/tara/intellij/codeinsight/completion/ast")
+}
 
-String TPL_PATH = "rt/res/intellij/tpl";
-String SRC_PATH = "intellij/src";
-String RES_PATH = "intellij/res";
-new File(TPL_PATH).deleteDir();
-File[] srcFiles = new File(SRC_PATH).listFiles()
-fixTypes()
-createTPLs(TPL_PATH, srcFiles)
-createTPLs(TPL_PATH, new File(RES_PATH).listFiles())
-new File(TPL_PATH + "/src/monet/tara/intellij/metamodel/psi/-Types.java.tpl").createNewFile()
-
-void createTPLs(String tplPath, File[] files) {
+private void createTPLs(String tplPath, File[] files) {
     File file = new File(tplPath)
     files.each {
         if (it.isDirectory()) {
@@ -20,20 +21,12 @@ void createTPLs(String tplPath, File[] files) {
                 createTPLs(tplPath, it.listFiles())
             }
         } else {
-            def fileName = it.name.replaceAll("Tara", "-").replace("Concept", "_").replace("m2","m1")
+            def fileName = it.name.replaceAll("Tara", "-").replace("Concept", "_").replace("m2", "m1")
             if (!it.name.startsWith(".") && !it.text.startsWith("/*") && isCorrectFileType(it.name)) {
                 String text = it.text;
                 if (!it.getName().endsWith("png")) {
-                    text = text.replaceAll("\\\\", "\\\\\\\\")
-                    text = text.replaceAll(":", "\\\\:")
-                    text = text.replaceAll("@", "\\\\@")
-                    text = text.replaceAll("#", "\\\\#")
-                    text = text.replaceAll("tara", "::projectName::")
-                    text = text.replaceAll("Tara", "::projectProperName::").replaceAll("Concept", "Definition")
-                    text = text.replaceAll("TARA", "::projectUpperName::")
-                    text = text.replaceAll("m2", "m1")
-                    text = text.replaceAll("concept", "definition")
-                    text = text.replaceAll("CONCEPT", "DEFINITION")
+                    text = scapeMetaCharacters(text)
+                    text = addMarks(text)
                     if (it.getName().endsWith("xml"))
                         text = addXmlMarks(text)
                     else text = addJavaMarks(text)
@@ -52,6 +45,24 @@ void createTPLs(String tplPath, File[] files) {
             }
         }
     }
+}
+
+private String addMarks(String text) {
+    text = text.replaceAll("tara", "::projectName::")
+    text = text.replaceAll("Tara", "::projectProperName::").replaceAll("Concept", "Definition")
+    text = text.replaceAll("TARA", "::projectUpperName::")
+    text = text.replaceAll("m2", "m1")
+    text = text.replaceAll("concept", "definition")
+    text = text.replaceAll("CONCEPT", "DEFINITION")
+    text
+}
+
+private String scapeMetaCharacters(String text) {
+    text = text.replaceAll("\\\\", "\\\\\\\\")
+    text = text.replaceAll(":", "\\\\:")
+    text = text.replaceAll("@", "\\\\@")
+    text = text.replaceAll("#", "\\\\#")
+    text
 }
 
 private String addJavaMarks(String text) {
@@ -80,7 +91,6 @@ private String addXmlMarks(String text) {
             else text = text.replace(field, "")
         }
     }
-
     text
 }
 
@@ -90,7 +100,7 @@ void fixTypes() {
 }
 
 boolean isCorrectFileType(String fileName) {
-    String[] fileTypes = ["java", "xml", "form", "properties", "png", "html", "ft"]
+    String[] fileTypes = ["java", "xml", "form", "properties", "png", "html", "ft", "json"]
     if (fileTypes.contains(fileName.substring(fileName.lastIndexOf(".") + 1))) return true
     false
 }
@@ -110,4 +120,10 @@ public Boolean copyFile(File source, File destination) {
         false;
     }
     true;
+}
+
+private void addMetamodelRepresentation(String astDir, String destinyDir) {
+    new File(destinyDir).mkdirs()
+    copyFile(new File(astDir, "AST.java"), new File(destinyDir, "AST.java.tpl"));
+    copyFile(new File(astDir, "ASTNode.java"), new File(destinyDir, "ASTNode.java.tpl"));
 }

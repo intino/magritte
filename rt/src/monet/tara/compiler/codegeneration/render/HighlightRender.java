@@ -1,6 +1,6 @@
 package monet.tara.compiler.codegeneration.render;
 
-import monet.tara.compiler.core.ast.AST;
+import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class HighlightRender extends DefaultRender {
 
 	public HighlightRender(String tplName, String projectName, Object ast) throws TaraException {
 		super(tplName, projectName);
-		this.identifiers = ((AST) ast).getIdentifiers();
+		this.identifiers = ((ASTWrapper) ast).getIdentifiers();
 	}
 
 	@Override
