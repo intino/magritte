@@ -6,9 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.Identifier;
-import monet.tara.intellij.metamodel.psi.TaraIdentifier;
+import monet.tara.intellij.metamodel.psi.*;
 import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
@@ -27,11 +25,17 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	@NotNull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
-		Project project = myElement.getProject();
-		final Concept concept = TaraUtil.resolveReferences(project, myElement);
 		List<ResolveResult> results = new ArrayList<>();
-		if (concept != null)
-			results.add(new PsiElementResolveResult(concept));
+		Project project = myElement.getProject();
+		PsiElement element = null;
+		if (myElement.getParent() instanceof ReferenceIdentifier)
+			element = TaraUtil.resolveConceptReference(project, myElement);
+		else if (myElement.getParent() instanceof ImportIdentifier) {
+			element = TaraUtil.resolveHeaderReference(project, myElement);
+		}
+//		JavaHelper.getJavaHelper(myElement.getProject()).findClassMethod(parserClass, myElement.getText(), paramCount + 2)
+		if (element != null)
+			results.add(new PsiElementResolveResult(element));
 		return results.toArray(new ResolveResult[results.size()]);
 	}
 
@@ -72,7 +76,7 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	}
 
 	private void getChildrenVariants(TaraIdentifier parent, List<Concept> concepts) {
-		Concept concept = TaraUtil.resolveReferences(parent.getProject(), parent);
+		Concept concept = TaraUtil.resolveConceptReference(parent.getProject(), parent);
 		Collections.addAll(concepts, TaraUtil.getChildrenOf(concept));
 	}
 

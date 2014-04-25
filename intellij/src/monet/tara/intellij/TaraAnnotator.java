@@ -17,7 +17,6 @@ import java.util.List;
 
 public class TaraAnnotator implements Annotator {
 
-
 	AnnotationHolder holder = null;
 
 	@Override
@@ -38,21 +37,9 @@ public class TaraAnnotator implements Annotator {
 	}
 
 	private void checkAnnotations(Annotations element) {
-		PsiElement[] psiElements;
-		if (element.getParent() instanceof TaraConceptInjection)
-			psiElements = checkConceptInjectionAnnotation(element.getAnnotations());
-		else
-			psiElements = checkCorrectAnnotation(TaraPsiImplUtil.getContextOf(element), element.getAnnotations());
-		for (PsiElement psiElement : psiElements)
+		for (PsiElement psiElement : checkCorrectAnnotation(TaraPsiImplUtil.getContextOf(element), element.getAnnotations()))
 			holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
 	}
-
-	private PsiElement[] checkConceptInjectionAnnotation(PsiElement[] annotations) {
-		List<PsiElement> incorrectAnnotations;
-		incorrectAnnotations = checkAnnotationList(annotations, Annotation.CHILD_ANNOTATIONS);
-		return incorrectAnnotations.toArray(new PsiElement[incorrectAnnotations.size()]);
-	}
-
 
 	private PsiElement[] checkCorrectAnnotation(Concept concept, PsiElement[] annotations) {
 		List<PsiElement> incorrectAnnotations;
@@ -75,7 +62,7 @@ public class TaraAnnotator implements Annotator {
 
 	private boolean isIn(String[] correctAnnotation, String text) {
 		for (String s : correctAnnotation)
-			if (s.equals(text)) return true;
+			if (s.equals(text.split(":")[0])) return true;
 		return false;
 	}
 
@@ -98,7 +85,7 @@ public class TaraAnnotator implements Annotator {
 	}
 
 	private void checkWellReferenced(Identifier element) {
-		Concept concept = TaraUtil.resolveReferences(element.getProject(), element);
+		Concept concept = TaraUtil.resolveConceptReference(element.getProject(), element);
 		if (concept == null && element.getParent() instanceof TaraReferenceIdentifier)
 			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("reference.concept.key.error.message"));
 	}

@@ -52,7 +52,7 @@ public class PluginGenerator {
 			File file = new File(PathManager.getResIdeDir(conf.getTempDirectory()), AST_JSON);
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
-//			writer.write(new Gson().toJson(paths));
+//			writer.write(gson.toJson(paths));
 			writer.close();
 //			Type collectionType = new TypeToken<Collection<String>>() {}.getType();
 //			List<String> astNodes = gson.fromJson(new InputStreamReader(new FileInputStream("ast.json")), collectionType);

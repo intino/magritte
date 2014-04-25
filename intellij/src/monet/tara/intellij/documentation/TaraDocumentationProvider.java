@@ -4,6 +4,7 @@ import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import monet.tara.intellij.metamodel.psi.Concept;
+import monet.tara.intellij.metamodel.psi.TaraFile;
 import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +32,8 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
 		if (element instanceof Concept)
 			return ((Concept) element).getDocCommentText();
+		if (element instanceof TaraFile)
+			return renderConceptValue(((TaraFile) element).getConcept());
 		return renderConceptValue(TaraPsiImplUtil.getContextOf(element));
 	}
 }

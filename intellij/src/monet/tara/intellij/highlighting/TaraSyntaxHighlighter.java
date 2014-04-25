@@ -1,8 +1,11 @@
 package monet.tara.intellij.highlighting;
 
 import com.intellij.lang.annotation.HighlightSeverity;
+import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
+import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.editor.markup.EffectType;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.openapi.util.Pair;
@@ -12,6 +15,7 @@ import com.intellij.ui.JBColor;
 import gnu.trove.THashMap;
 import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.metamodel.psi.TaraTypes;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -20,7 +24,8 @@ import java.util.Map;
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 
 
-public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
+public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements TaraTypes {
+
 	public static final TextAttributesKey KEYWORD = createTextAttributesKey("Tara_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
 	public static final TextAttributesKey IDENTIFIER = createTextAttributesKey("Tara_IDENTIFIER", DefaultLanguageHighlighterColors.CLASS_NAME);
 	public static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.CONSTANT);
@@ -32,6 +37,19 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER", new TextAttributes(JBColor.RED, null, null, null, Font.BOLD));
 	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>(6);
+
+	public static final TextAttributes UNRESOLVED_ACCESS_ATTRIBUTES = HighlighterColors.TEXT.getDefaultAttributes().clone();
+
+	static {
+		UNRESOLVED_ACCESS_ATTRIBUTES.setForegroundColor(JBColor.BLACK);
+		UNRESOLVED_ACCESS_ATTRIBUTES.setEffectColor(JBColor.GRAY);
+		UNRESOLVED_ACCESS_ATTRIBUTES.setEffectType(EffectType.LINE_UNDERSCORE);
+	}
+
+	@NonNls
+	static final String UNRESOLVED_ACCESS_ID = "Unresolved reference access";
+	public static final TextAttributesKey UNRESOLVED_ACCESS =
+		TextAttributesKey.createTextAttributesKey(UNRESOLVED_ACCESS_ID, UNRESOLVED_ACCESS_ATTRIBUTES);
 
 	static {
 		DISPLAY_NAMES.put(IDENTIFIER, new Pair<>(TaraBundle.message("options.tara.concept.identifier"), HighlightSeverity.ERROR));
@@ -45,65 +63,66 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase {
 		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<>(TaraBundle.message("invalid.tara.concept.character"), HighlightSeverity.ERROR));
 	}
 
-	private static final Map<IElementType, TextAttributesKey> KEYS_1;
-	private static final Map<IElementType, TextAttributesKey> KEYS_2;
+	private static final Map<IElementType, TextAttributesKey> KEYS;
 
 	@NotNull
 	@Override
-	public com.intellij.lexer.Lexer getHighlightingLexer() {
+	public Lexer getHighlightingLexer() {
 		return new TaraHighlighterLexAdapter();
 	}
 
 	static {
-		KEYS_1 = new THashMap<>();
-		KEYS_2 = new THashMap<>();
+		KEYS = new THashMap<>();
 
-		KEYS_1.put(TokenType.WHITE_SPACE, null);
-		KEYS_1.put(TaraTypes.IDENTIFIER_KEY, IDENTIFIER);
+		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);
 
 //gen %highlightKey%
-		KEYS_1.put(TaraTypes.CONCEPT_KEY, KEYWORD);
+		KEYS.put(CONCEPT_KEY, KEYWORD);
+
 //end
-		KEYS_1.put(TaraTypes.OPEN_AN, KEYWORD);
-		KEYS_1.put(TaraTypes.CLOSE_AN, KEYWORD);
-		KEYS_1.put(TaraTypes.NEW, KEYWORD);
-		KEYS_1.put(TaraTypes.VAR, KEYWORD);
+		KEYS.put(IMPORT, KEYWORD);
+		KEYS.put(PACKAGE, KEYWORD);
+		KEYS.put(OPEN_AN, ANNOTATION);
+		KEYS.put(CLOSE_AN, ANNOTATION);
+		KEYS.put(VAR, KEYWORD);
 
-		KEYS_1.put(TaraTypes.OPTIONAL, ANNOTATION);
-		KEYS_1.put(TaraTypes.MULTIPLE, ANNOTATION);
-		KEYS_1.put(TaraTypes.EXTENSIBLE, ANNOTATION);
-		KEYS_1.put(TaraTypes.HAS_CODE, ANNOTATION);
-		KEYS_1.put(TaraTypes.SINGLETON, ANNOTATION);
-		KEYS_1.put(TaraTypes.ROOT, ANNOTATION);
-		KEYS_1.put(TaraTypes.GENERIC, ANNOTATION);
-		KEYS_1.put(TaraTypes.COLON, OPERATOR);
-		KEYS_1.put(TaraTypes.LEFT_SQUARE, OPERATOR);
-		KEYS_1.put(TaraTypes.RIGHT_SQUARE, OPERATOR);
+		KEYS.put(OPTIONAL, ANNOTATION);
+		KEYS.put(MULTIPLE, ANNOTATION);
+		KEYS.put(EXTENSIBLE_KEY, ANNOTATION);
+		KEYS.put(EXTENSION_KEY, ANNOTATION);
+		KEYS.put(HAS_CODE, ANNOTATION);
+		KEYS.put(SINGLETON, ANNOTATION);
+		KEYS.put(INTENTION, ANNOTATION);
+		KEYS.put(ROOT, ANNOTATION);
+		KEYS.put(GENERIC, ANNOTATION);
+		KEYS.put(COLON, OPERATOR);
+		KEYS.put(LEFT_SQUARE, OPERATOR);
+		KEYS.put(RIGHT_SQUARE, OPERATOR);
 
-		KEYS_1.put(TaraTypes.STRING_TYPE, PRIMITIVE);
-		KEYS_1.put(TaraTypes.DOUBLE_TYPE, PRIMITIVE);
-		KEYS_1.put(TaraTypes.INT_TYPE, PRIMITIVE);
-		KEYS_1.put(TaraTypes.UID_TYPE, PRIMITIVE);
+		KEYS.put(STRING_TYPE, PRIMITIVE);
+		KEYS.put(DOUBLE_TYPE, PRIMITIVE);
+		KEYS.put(INT_TYPE, PRIMITIVE);
+		KEYS.put(UID_TYPE, PRIMITIVE);
 
-		KEYS_1.put(TaraTypes.ABSTRACT, MODIFIERS);
-		KEYS_1.put(TaraTypes.FINAL, MODIFIERS);
-		KEYS_1.put(TaraTypes.MORPH_KEY, MODIFIERS);
-		KEYS_1.put(TaraTypes.POLYMORPHIC_KEY, MODIFIERS);
+		KEYS.put(ABSTRACT, MODIFIERS);
+		KEYS.put(FINAL, MODIFIERS);
+		KEYS.put(MORPH_KEY, MODIFIERS);
+		KEYS.put(POLYMORPHIC_KEY, MODIFIERS);
 
-		KEYS_1.put(TaraTypes.DOC_LINE, DOCUMENTATION);
+		KEYS.put(DOC_LINE, DOCUMENTATION);
 
-		KEYS_1.put(TaraTypes.DOUBLE_VALUE_KEY, NUMBERS);
-		KEYS_1.put(TaraTypes.NATURAL_VALUE_KEY, NUMBERS);
-		KEYS_1.put(TaraTypes.NEGATIVE_VALUE_KEY, NUMBERS);
-		KEYS_1.put(TaraTypes.BOOLEAN_VALUE_KEY, NUMBERS);
-		KEYS_1.put(TaraTypes.STRING_VALUE_KEY, STRING);
-
-		KEYS_1.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
+		KEYS.put(DOUBLE_VALUE_KEY, NUMBERS);
+		KEYS.put(NATURAL_VALUE_KEY, NUMBERS);
+		KEYS.put(NEGATIVE_VALUE_KEY, NUMBERS);
+		KEYS.put(BOOLEAN_VALUE_KEY, NUMBERS);
+		KEYS.put(STRING_VALUE_KEY, STRING);
+		KEYS.put(TokenType.WHITE_SPACE, null);
+		KEYS.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 	}
 
 	@NotNull
 	@Override
 	public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-		return pack(KEYS_1.get(tokenType), KEYS_2.get(tokenType));
+		return pack(KEYS.get(tokenType));
 	}
 }

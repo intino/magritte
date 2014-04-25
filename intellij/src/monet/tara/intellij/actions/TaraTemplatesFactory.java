@@ -59,7 +59,7 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 		return file;
 	}
 
-	public void registerCustromTemplates(String... templates) {
+	public void registerCustomTemplates(String... templates) {
 		Collections.addAll(myCustomTemplates, templates);
 	}
 

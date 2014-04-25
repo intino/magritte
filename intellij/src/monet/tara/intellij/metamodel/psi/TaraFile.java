@@ -9,15 +9,13 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 public interface TaraFile {
 
 	@NotNull
 	PsiFile getContainingFile();
 
 	@NotNull
-	List<Concept> getConcepts();
+	Concept getConcept();
 
 	Concept findConceptByKey(@NotNull @NonNls String key);
 
@@ -35,4 +33,6 @@ public interface TaraFile {
 	Project getProject();
 
 	String getText();
+
+	TaraPacket getPackage();
 }

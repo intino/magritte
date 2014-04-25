@@ -15,6 +15,8 @@ import monet.tara.intellij.metamodel.psi.TaraTypes;
 
 
 CONCEPT   = "Concept"
+IMPORT    = "import"
+PACKAGE    = "package"
 MORPH_KEY  = "morph"
 POLYMORPHIC_KEY = "polymorphic"
 FINAL     = "final"
@@ -23,12 +25,13 @@ MULTIPLE  = "multiple"
 OPTIONAL  = "optional"
 HAS_CODE  = "has-code"
 SINGLETON = "singleton"
+INTENTION = "intention"
 ROOT      = "root"
-EXTENSIBLE = "extensible"
+EXTENSION_KEY = "extension"
+EXTENSIBLE_KEY = "extensible"
+GENERIC   = "generic"
 WORD      = "Word"
 VAR       = "var"
-NEW       = "new"
-
 
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
 LEFT_SQUARE  = "["
@@ -73,6 +76,9 @@ NEWLINE= [\n]+
 
 	{CONCEPT}                   {   return TaraTypes.CONCEPT_KEY; }
 
+	{IMPORT}                   {   return TaraTypes.IMPORT; }
+	{PACKAGE}                   {   return TaraTypes.PACKAGE; }
+
 	{ABSTRACT}                  {   return TaraTypes.ABSTRACT; }
 
 	{FINAL}                     {   return TaraTypes.FINAL; }
@@ -80,8 +86,6 @@ NEWLINE= [\n]+
 	{COLON}                    {   return TaraTypes.COLON; }
 
 	{VAR}                       {   return TaraTypes.VAR; }
-
-	{NEW}                       {   return TaraTypes.NEW; }
 
 	{LIST}                      {   return TaraTypes.LIST; }
 
@@ -96,9 +100,12 @@ NEWLINE= [\n]+
 	{MULTIPLE}                  {   return TaraTypes.MULTIPLE; }
 
 	{HAS_CODE}                  {   return TaraTypes.HAS_CODE; }
-	{EXTENSIBLE}                {   return TaraTypes.EXTENSIBLE; }
+	{EXTENSIBLE_KEY}            {   return TaraTypes.EXTENSIBLE_KEY; }
+	{EXTENSION_KEY}             {   return TaraTypes.EXTENSION_KEY; }
 	{ROOT}                      {   return TaraTypes.ROOT; }
 	{SINGLETON}                 {   return TaraTypes.SINGLETON; }
+	{GENERIC}                   {   return TaraTypes.GENERIC; }
+	{INTENTION}                 {   return TaraTypes.INTENTION; }
 
 	{DOC_LINE}                  {   return TaraTypes.DOC_LINE; }
 
@@ -122,8 +129,6 @@ NEWLINE= [\n]+
     {STRING_TYPE}               {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}               {   return TaraTypes.DOUBLE_TYPE; }
 
-	{IDENTIFIER_KEY}            {   return TaraTypes.IDENTIFIER_KEY; }
-
 	{SEMICOLON}                 {   return TaraTypes.LEFT_SQUARE;  }
 
 	{OPEN_BRACKET}              {   return TaraTypes.LEFT_SQUARE; }
@@ -133,6 +138,8 @@ NEWLINE= [\n]+
 	{SPACES}                    {   return TokenType.WHITE_SPACE; }
 
     {SP}                        {   return TokenType.WHITE_SPACE; }
+
+	{IDENTIFIER_KEY}            {   return TaraTypes.IDENTIFIER_KEY; }
 
     {NEWLINE}                   {   return TokenType.WHITE_SPACE; }
 

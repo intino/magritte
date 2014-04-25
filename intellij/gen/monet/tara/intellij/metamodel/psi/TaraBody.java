@@ -14,9 +14,6 @@ public interface TaraBody extends Body {
   List<TaraConcept> getConceptList();
 
   @NotNull
-  List<TaraConceptInjection> getConceptInjectionList();
-
-  @NotNull
   List<TaraReferenceStatement> getReferenceStatementList();
 
   @NotNull

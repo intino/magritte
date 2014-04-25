@@ -92,6 +92,8 @@ NEWLINE= [\n]+ ([ ] | [\t])*
 //Reserved words
 
 CONCEPT   = "Concept"
+IMPORT    = "import"
+PACKAGE    = "package"
 MORPH_KEY  = "morph"
 POLYMORPHIC_KEY = "polymorphic"
 FINAL     = "final"
@@ -100,13 +102,13 @@ MULTIPLE  = "multiple"
 OPTIONAL  = "optional"
 HAS_CODE  = "has-code"
 SINGLETON = "singleton"
+INTENTION = "intention"
 ROOT      = "root"
-EXTENSIBLE = "extensible"
+EXTENSION_KEY = "extension"
+EXTENSIBLE_KEY = "extensible"
 GENERIC   = "generic"
 WORD      = "Word"
 VAR       = "var"
-NEW       = "new"
-
 
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
 LEFT_SQUARE  = "["
@@ -147,6 +149,10 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{CONCEPT}                   {   return TaraTypes.CONCEPT_KEY; }
 
+	{IMPORT}                    {   return TaraTypes.IMPORT; }
+
+	{PACKAGE}                   {   return TaraTypes.PACKAGE; }
+
 	{ABSTRACT}                  {   return TaraTypes.ABSTRACT; }
 
 	{FINAL}                     {   return TaraTypes.FINAL; }
@@ -154,8 +160,6 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{COLON}                     {   return TaraTypes.COLON; }
 
 	{VAR}                       {   return TaraTypes.VAR; }
-
-	{NEW}                       {   return TaraTypes.NEW; }
 
 	{LIST}                      {   return TaraTypes.LIST; }
 
@@ -170,7 +174,9 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{GENERIC}                   {   return TaraTypes.GENERIC; }
 
 	{HAS_CODE}                  {   return TaraTypes.HAS_CODE; }
-	{EXTENSIBLE}                {   return TaraTypes.EXTENSIBLE; }
+	{EXTENSIBLE_KEY}            {   return TaraTypes.EXTENSIBLE_KEY; }
+	{EXTENSION_KEY}             {   return TaraTypes.EXTENSION_KEY; }
+	{INTENTION}                 {   return TaraTypes.INTENTION; }
 	{ROOT}                      {   return TaraTypes.ROOT; }
 	{SINGLETON}                 {   return TaraTypes.SINGLETON; }
 

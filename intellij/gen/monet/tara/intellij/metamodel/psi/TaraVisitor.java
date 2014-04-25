@@ -31,10 +31,6 @@ public class TaraVisitor extends PsiElementVisitor {
     visitConcept(o);
   }
 
-  public void visitConceptInjection(@NotNull TaraConceptInjection o) {
-    visitConceptInjection(o);
-  }
-
   public void visitDoc(@NotNull TaraDoc o) {
     visitDoc(o);
   }
@@ -47,8 +43,32 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitExtensible(@NotNull TaraExtensible o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExtension(@NotNull TaraExtension o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExternalReference(@NotNull TaraExternalReference o) {
+    visitExternalReference(o);
+  }
+
+  public void visitHeader(@NotNull TaraHeader o) {
+    visitPsiElement(o);
+  }
+
+  public void visitHeaderReference(@NotNull TaraHeaderReference o) {
+    visitImportIdentifier(o);
+  }
+
   public void visitIdentifier(@NotNull TaraIdentifier o) {
     visitIdentifier(o);
+  }
+
+  public void visitImports(@NotNull TaraImports o) {
+    visitPsiElement(o);
   }
 
   public void visitIntegerList(@NotNull TaraIntegerList o) {
@@ -56,6 +76,10 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitIntegerValue(@NotNull TaraIntegerValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitLang(@NotNull TaraLang o) {
     visitPsiElement(o);
   }
 
@@ -72,6 +96,10 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitNaturalValue(@NotNull TaraNaturalValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPacket(@NotNull TaraPacket o) {
     visitPsiElement(o);
   }
 
@@ -105,6 +133,10 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitWord(@NotNull TaraWord o) {
     visitWord(o);
+  }
+
+  public void visitImportIdentifier(@NotNull ImportIdentifier o) {
+    visitElement(o);
   }
 
   public void visitPsiElement(@NotNull PsiElement o) {

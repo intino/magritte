@@ -16,7 +16,12 @@
   psiImplUtilClass='monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil'
 }
 
-root ::= (concept | NEWLINE)*
+root ::= header concept?  NEWLINE*
+
+header::= NEWLINE* packet (imports | NEWLINE)*;
+
+packet ::= PACKAGE headerReference NEWLINE;
+imports::= IMPORT headerReference NEWLINE;
 
 concept ::= doc? signature annotations? body?
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.ConceptMixin'
@@ -38,12 +43,10 @@ private conceptConstituents ::= attribute
 referenceStatement::= VAR referenceIdentifier LIST? variableNames
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceStatementMixin'
 implements='monet.tara.intellij.metamodel.psi.ReferenceStatement'}
-{mixin= 'monet.tara.intellij.metamodel.psi.impl.ConceptInjectionMixin'
-implements='monet.tara.intellij.metamodel.psi.ConceptInjection'}
 
 attribute::= VAR     UID_TYPE IDENTIFIER_KEY (COLON stringValue)?
            | VAR     INT_TYPE (variableNames | IDENTIFIER_KEY COLON integerValue | LIST IDENTIFIER_KEY (COLON integerList)?)
-           | VAR  DOUBLE_TYPE (variableNames | IDENTIFIER_KEY COLON doubleValue | LIST IDENTIFIER_KEY (COLON doubleList)?)
+           | VAR  DOUBLE_TYPE (variableNames | IDENTIFIER_KEY COLON doubleValue  | LIST IDENTIFIER_KEY (COLON doubleList)?)
            | VAR NATURAL_TYPE (variableNames | IDENTIFIER_KEY COLON naturalValue | LIST IDENTIFIER_KEY (COLON naturalList)?)
            | VAR BOOLEAN_TYPE (variableNames | IDENTIFIER_KEY COLON booleanValue | LIST IDENTIFIER_KEY (COLON booleanList)?)
            | VAR  STRING_TYPE (variableNames | IDENTIFIER_KEY COLON stringValue | LIST IDENTIFIER_KEY (COLON stringList)?)
@@ -70,13 +73,11 @@ annotations ::= OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | INTENTION | 
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.AnnotationsMixin'
 implements='monet.tara.intellij.metamodel.psi.Annotations'}
 
-extension ::= EXTESIBLE_KEY COLON externalReference
-externalReference ::= identifier child*
-{pin=1
-mixin= 'monet.tara.intellij.metamodel.psi.impl.ExternalReferenceMixin'
-implements='monet.tara.intellij.metamodel.psi.ExternalReference'}
+extension ::= EXTENSION_KEY COLON externalReference
+
 
 extensible ::= EXTENSIBLE_KEY COLON lang
+{pin=1}
 lang::= IDENTIFIER_KEY
 
 variableNames::= IDENTIFIER_KEY (COMMA IDENTIFIER_KEY)*;
@@ -91,10 +92,22 @@ doc::= DOC_LINE+
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.DocMixin'
 implements='monet.tara.intellij.metamodel.psi.Doc'}
 
-referenceIdentifier::= identifier child* {
-pin=1
+
+headerReference::= identifier child* {
+                pin=1
+                mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
+                implements='monet.tara.intellij.metamodel.psi.ImportIdentifier'
+                implements='monet.tara.intellij.metamodel.psi.ReferenceIdentifier'}
+
+referenceIdentifier::= identifier child*
+{pin=1
 mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
-implements='monet.tara.intellij.metamodel.psi.ReferenceIdentifier'}
+      implements='monet.tara.intellij.metamodel.psi.ReferenceIdentifier'}
+
+externalReference ::= identifier child*
+{pin=1
+mixin= 'monet.tara.intellij.metamodel.psi.impl.ExternalReferenceMixin'
+implements='monet.tara.intellij.metamodel.psi.ExternalReference'}
 
 private child ::= DOT identifier {pin=1}
 

@@ -35,12 +35,6 @@ public class TaraBodyImpl extends BodyMixin implements TaraBody {
 
   @Override
   @NotNull
-  public List<TaraConceptInjection> getConceptInjectionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraConceptInjection.class);
-  }
-
-  @Override
-  @NotNull
   public List<TaraReferenceStatement> getReferenceStatementList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraReferenceStatement.class);
   }

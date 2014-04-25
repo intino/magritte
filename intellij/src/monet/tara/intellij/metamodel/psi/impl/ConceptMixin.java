@@ -93,11 +93,22 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isPolymorphic() {
-		return ((Concept) this).getSignature().getPolymorphic() != null;
+		return this.getSignature().getPolymorphic() != null;
 	}
 
 	public boolean isMorph() {
-		return ((Concept) this).getSignature().getMorph() != null;
+		return this.getSignature().getMorph() != null;
+	}
+
+	public boolean isExtensible() {
+		Annotations annotations = this.getAnnotations();
+		if (annotations != null) {
+			PsiElement[] taraAnnotations = annotations.getAnnotations();
+			for (PsiElement element : taraAnnotations)
+				if (element instanceof TaraExtensible)
+					return true;
+		}
+		return false;
 	}
 
 	@NotNull

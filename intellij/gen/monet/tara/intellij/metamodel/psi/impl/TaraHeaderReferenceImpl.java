@@ -10,27 +10,21 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.intellij.metamodel.psi.TaraTypes.*;
 import monet.tara.intellij.metamodel.psi.*;
 
-public class TaraAnnotationsImpl extends AnnotationsMixin implements TaraAnnotations {
+public class TaraHeaderReferenceImpl extends ReferenceIdentifierMixin implements TaraHeaderReference {
 
-  public TaraAnnotationsImpl(ASTNode node) {
+  public TaraHeaderReferenceImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitAnnotations(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitHeaderReference(this);
     else super.accept(visitor);
   }
 
   @Override
   @NotNull
-  public List<TaraExtensible> getExtensibleList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraExtensible.class);
-  }
-
-  @Override
-  @NotNull
-  public List<TaraExtension> getExtensionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraExtension.class);
+  public List<TaraIdentifier> getIdentifierList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifier.class);
   }
 
 }

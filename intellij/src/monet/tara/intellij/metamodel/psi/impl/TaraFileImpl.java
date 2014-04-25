@@ -9,6 +9,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.ChangeUtil;
 import com.intellij.psi.impl.source.tree.TreeElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.metamodel.TaraIcons;
 import monet.tara.intellij.metamodel.TaraLanguage;
@@ -16,11 +17,11 @@ import monet.tara.intellij.metamodel.file.TaraFileType;
 import monet.tara.intellij.metamodel.psi.Concept;
 import monet.tara.intellij.metamodel.psi.TaraElementFactory;
 import monet.tara.intellij.metamodel.psi.TaraFile;
+import monet.tara.intellij.metamodel.psi.TaraPacket;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.util.List;
 
 public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	public TaraFileImpl(@NotNull com.intellij.psi.FileViewProvider viewProvider) {
@@ -38,7 +39,7 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 		return "Tara File";
 	}
 
-	public String getPresentableName(){
+	public String getPresentableName() {
 		return getName().substring(0, getName().lastIndexOf("."));
 	}
 
@@ -68,8 +69,13 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 
 	@NotNull
 	@Override
-	public List<Concept> getConcepts() {
-		return TaraUtil.getConceptsOfFile(this);
+	public Concept getConcept() {
+		return TaraUtil.getRootConceptOfFile(this);
+	}
+
+	@Override
+	public TaraPacket getPackage() {
+		return PsiTreeUtil.getChildrenOfType(this, TaraPacket.class)[0];
 	}
 
 	@Override

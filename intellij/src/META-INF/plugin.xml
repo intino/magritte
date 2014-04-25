@@ -54,6 +54,7 @@
   </application-components>
 
   <extensions defaultExtensionNs="com.intellij">
+    <fileDocumentManagerListener implementation="monet.tara.intellij.codegeneration.TaraFileDocumentManagerListener"/>
     <errorHandler implementation="monet.tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
                          implementationClass="monet.tara.intellij.refactoring.rename.NamesValidator"/>
@@ -62,7 +63,9 @@
     <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.ModuleType"/>
     <treeStructureProvider implementation="monet.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="monet.tara.intellij.actions.TaraTemplatesFactory"/>
-
+    <!--<codeInsight.lineMarkerProvider language="Tara"-->
+                                    <!--implementationClass="monet.tara.intellij.codeinsight.TaraLineMarkerProvider"/>-->
+    <gotoRelatedProvider implementation="monet.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <!--gen %%-->
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
     <projectConfigurable instance="monet.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
@@ -112,4 +115,10 @@
     <!--<refactoring.moveHandler implementation="com.intellij.uiDesigner.projectView.FormMoveProvider"/>-->
 
   </extensions>
+
+  <!--<application-components>-->
+  <!--<component>-->
+  <!--<implementation-class>org.jetbrains.plugins.groovy.gant.GantLoader</implementation-class>-->
+  <!--</component>-->
+  <!--</application-components>-->
 </idea-plugin>

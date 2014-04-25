@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraConceptInjection extends ConceptInjection {
-
-  @Nullable
-  TaraAnnotations getAnnotations();
+public interface TaraHeader extends PsiElement {
 
   @NotNull
-  TaraReferenceIdentifier getReferenceIdentifier();
+  List<TaraImports> getImportsList();
+
+  @NotNull
+  TaraPacket getPacket();
 
 }

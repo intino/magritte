@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleBuilder extends JavaModuleBuilder {
-	private static final Logger LOG = Logger.getInstance(ModuleBuilder.class.getName());
 	public static final String RES = "res";
 	public static final String GEN = "gen";
+	private static final Logger LOG = Logger.getInstance(ModuleBuilder.class.getName());
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
 	private String myCompilerOutputPath;
 	private List<Pair<String, String>> mySourcePaths;
