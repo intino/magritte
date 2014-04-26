@@ -1,4 +1,4 @@
-package monet.tara.intellij.codeinspection.fix;
+package monet.tara.intellij.annotator.fix;
 
 import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
@@ -7,19 +7,19 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.TaraBundle;
-import monet.tara.intellij.metamodel.psi.Concept;
+import monet.tara.intellij.metamodel.psi.Attribute;
 import org.jetbrains.annotations.NotNull;
 
-public class RemoveConceptFix implements IntentionAction {
-	private final Concept myConcept;
+public class RemoveAttributeFix implements IntentionAction {
+	private final Attribute attribute;
 
-	public RemoveConceptFix(@NotNull final Concept origConcept) {
-		myConcept = origConcept;
+	public RemoveAttributeFix(@NotNull final Attribute attribute) {
+		this.attribute = attribute;
 	}
 
 	@NotNull
 	public String getText() {
-		return TaraBundle.message("remove.concept.intention.text");
+		return TaraBundle.message("remove.attribute.intention.text");
 	}
 
 	@NotNull
@@ -28,12 +28,12 @@ public class RemoveConceptFix implements IntentionAction {
 	}
 
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-		return file.isValid() && myConcept.isValid() && myConcept.getManager().isInProject(myConcept);
+		return file.isValid() && attribute.isValid() && attribute.getManager().isInProject(attribute);
 	}
 
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-		myConcept.delete();
+		attribute.delete();
 	}
 
 	public boolean startInWriteAction() {

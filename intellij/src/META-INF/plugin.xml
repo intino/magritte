@@ -64,7 +64,7 @@
     <treeStructureProvider implementation="monet.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="monet.tara.intellij.actions.TaraTemplatesFactory"/>
     <!--<codeInsight.lineMarkerProvider language="Tara"-->
-                                    <!--implementationClass="monet.tara.intellij.codeinsight.TaraLineMarkerProvider"/>-->
+    <!--implementationClass="monet.tara.intellij.codeinsight.TaraLineMarkerProvider"/>-->
     <gotoRelatedProvider implementation="monet.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <!--gen %%-->
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
@@ -88,11 +88,7 @@
                                    implementationClass="monet.tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="monet.tara.intellij.highlighting.TaraColorSettingPage"/>
     <lang.braceMatcher language="Tara" implementationClass="monet.tara.intellij.highlighting.TaraBraceMatcher"/>
-    <annotator language="Tara" implementationClass="monet.tara.intellij.TaraAnnotator"/>
-    <globalInspection language="Tara" shortName="UnusedConcept" bundle="messages.TaraBundle"
-                      key="unused.concept.inspection.display.name"
-                      groupKey="tara.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"
-                      implementationClass="monet.tara.intellij.codeinspection.UnusedAbstractConceptInspection"/>
+    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.TaraAnnotator"/>
     <completion.contributor language="Tara"
                             implementationClass="monet.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
     <completion.contributor language="Tara"
@@ -113,12 +109,6 @@
     <lang.foldingBuilder language="Tara" implementationClass="monet.tara.intellij.TaraFoldingBuilder"/>
     <!--<lang.formatter language="Tara" implementationClass="monet.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
     <!--<refactoring.moveHandler implementation="com.intellij.uiDesigner.projectView.FormMoveProvider"/>-->
-
   </extensions>
 
-  <!--<application-components>-->
-  <!--<component>-->
-  <!--<implementation-class>org.jetbrains.plugins.groovy.gant.GantLoader</implementation-class>-->
-  <!--</component>-->
-  <!--</application-components>-->
 </idea-plugin>

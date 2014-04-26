@@ -1,19 +1,18 @@
 {
-  parserClass='monet.tara.intellij.metamodel.parser.TaraParser'
-  parserUtilClass="monet.tara.intellij.metamodel.parser.TaraParserUtil"
+	parserClass='monet.tara.intellij.metamodel.parser.TaraParser'
+	parserUtilClass="monet.tara.intellij.metamodel.parser.TaraParserUtil"
+	psiVisitorName="TaraVisitor"
+	extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
+	psiClassPrefix='Tara'
+	psiImplClassSuffix='Impl'
+	psiPackage='monet.tara.intellij.metamodel.psi'
+	psiImplPackage='monet.tara.intellij.metamodel.psi.impl'
 
-  extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
+	elementTypeHolderClass='monet.tara.intellij.metamodel.psi.TaraTypes'
+	elementTypeClass='monet.tara.intellij.metamodel.psi.TaraElementType'
+	tokenTypeClass='monet.tara.intellij.metamodel.psi.TaraTokenType'
 
-  psiClassPrefix='Tara'
-  psiImplClassSuffix='Impl'
-  psiPackage='monet.tara.intellij.metamodel.psi'
-  psiImplPackage='monet.tara.intellij.metamodel.psi.impl'
-
-  elementTypeHolderClass='monet.tara.intellij.metamodel.psi.TaraTypes'
-  elementTypeClass='monet.tara.intellij.metamodel.psi.TaraElementType'
-  tokenTypeClass='monet.tara.intellij.metamodel.psi.TaraTokenType'
-
-  psiImplUtilClass='monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil'
+	psiImplUtilClass='monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil'
 }
 
 root ::= header concept?  NEWLINE*

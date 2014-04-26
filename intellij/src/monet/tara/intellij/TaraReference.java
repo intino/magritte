@@ -27,16 +27,21 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
 		List<ResolveResult> results = new ArrayList<>();
 		Project project = myElement.getProject();
+		PsiElement element = resolveReference(project);
+//		JavaHelper.getJavaHelper(myElement.getProject()).findClassMethod(parserClass, myElement.getText(), paramCount + 2)
+		if (element != null)
+			results.add(new PsiElementResolveResult(element));
+		return results.toArray(new ResolveResult[results.size()]);
+	}
+
+	private PsiElement resolveReference(Project project) {
 		PsiElement element = null;
 		if (myElement.getParent() instanceof ReferenceIdentifier)
 			element = TaraUtil.resolveConceptReference(project, myElement);
 		else if (myElement.getParent() instanceof ImportIdentifier) {
 			element = TaraUtil.resolveHeaderReference(project, myElement);
 		}
-//		JavaHelper.getJavaHelper(myElement.getProject()).findClassMethod(parserClass, myElement.getText(), paramCount + 2)
-		if (element != null)
-			results.add(new PsiElementResolveResult(element));
-		return results.toArray(new ResolveResult[results.size()]);
+		return element;
 	}
 
 	@Nullable

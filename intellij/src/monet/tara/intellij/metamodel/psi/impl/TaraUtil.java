@@ -125,7 +125,9 @@ public class TaraUtil {
 	public static PsiElement resolveHeaderReference(Project project, PsiElement identifier) {
 		List<Identifier> route = (List<Identifier>) ((ImportIdentifier) (identifier.getParent())).getIdentifierList();
 		List<Identifier> subRoute = route.subList(0, route.indexOf(identifier) + 1);
-		return PsiManager.getInstance(project).findFile(resolveRoute(project, subRoute));
+		VirtualFile file = resolveRoute(project, subRoute);
+		if (file == null) return null;
+		return PsiManager.getInstance(project).findFile(file);
 	}
 
 	private static VirtualFile resolveRoute(Project project, List<Identifier> subRoute) {

@@ -1,12 +1,16 @@
-package monet.tara.intellij;
+package monet.tara.intellij.annotator;
 
 import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import monet.tara.intellij.codeinspection.fix.RemoveAttributeFix;
-import monet.tara.intellij.codeinspection.fix.RemoveConceptFix;
-import monet.tara.intellij.metamodel.parser.Annotation;
+import monet.tara.intellij.TaraBundle;
+import monet.tara.intellij.annotator.fix.RemoveAttributeFix;
+import monet.tara.intellij.annotator.fix.RemoveConceptFix;
+import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
+import monet.tara.intellij.metamodel.parser.TaraAnnotation;
 import monet.tara.intellij.metamodel.psi.*;
 import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
@@ -37,18 +41,20 @@ public class TaraAnnotator implements Annotator {
 	}
 
 	private void checkAnnotations(Annotations element) {
-		for (PsiElement psiElement : checkCorrectAnnotation(TaraPsiImplUtil.getContextOf(element), element.getAnnotations()))
-			holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
+		for (PsiElement psiElement : checkCorrectAnnotation(TaraPsiImplUtil.getContextOf(element), element.getAnnotations())) {
+			Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
+			errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
+		}
 	}
 
 	private PsiElement[] checkCorrectAnnotation(Concept concept, PsiElement[] annotations) {
 		List<PsiElement> incorrectAnnotations;
 		if ((concept != null) && concept.getParent() instanceof TaraFile)
-			incorrectAnnotations = checkAnnotationList(annotations, Annotation.ROOT_ANNOTATIONS);
+			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotation.ROOT_ANNOTATIONS);
 		else if ((concept != null) && concept.isMorph())
-			incorrectAnnotations = checkAnnotationList(annotations, Annotation.MORPH_ANNOTATIONS);
+			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotation.MORPH_ANNOTATIONS);
 		else
-			incorrectAnnotations = checkAnnotationList(annotations, Annotation.CHILD_ANNOTATIONS);
+			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotation.CHILD_ANNOTATIONS);
 		return incorrectAnnotations.toArray(new PsiElement[incorrectAnnotations.size()]);
 	}
 
@@ -67,8 +73,10 @@ public class TaraAnnotator implements Annotator {
 	}
 
 	private void checkPolymorphic(TaraPolymorphic element) {
-		if (!hasMorphs(TaraPsiImplUtil.getContextOf(element)))
-			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("morph.non-existent.in.polymorphic.error.message"));
+		if (!hasMorphs(TaraPsiImplUtil.getContextOf(element))) {
+			Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(),
+				TaraBundle.message("morph.non-existent.in.polymorphic.error.message"));
+		}
 	}
 
 	private boolean hasMorphs(Concept context) {
@@ -85,9 +93,21 @@ public class TaraAnnotator implements Annotator {
 	}
 
 	private void checkWellReferenced(Identifier element) {
-		Concept concept = TaraUtil.resolveConceptReference(element.getProject(), element);
-		if (concept == null && element.getParent() instanceof TaraReferenceIdentifier)
-			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("reference.concept.key.error.message"));
+		Concept concept = (Concept) resolveReference(element.getProject(), element);
+		if (concept == null && (element.getParent() instanceof TaraReferenceIdentifier || element.getParent() instanceof TaraHeaderReference)) {
+			Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), TaraBundle.message("reference.concept.key.error.message"));
+			errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
+		}
+	}
+
+	private PsiElement resolveReference(Project project, PsiElement element) {
+		PsiElement reference = null;
+		if (element.getParent() instanceof ReferenceIdentifier)
+			reference = TaraUtil.resolveConceptReference(project, element);
+		else if (element.getParent() instanceof ImportIdentifier) {
+			reference = TaraUtil.resolveHeaderReference(project, element);
+		}
+		return reference;
 	}
 
 	private void checkDuplicated(Concept concept) {

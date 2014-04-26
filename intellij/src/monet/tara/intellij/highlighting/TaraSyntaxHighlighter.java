@@ -3,9 +3,7 @@ package monet.tara.intellij.highlighting;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
-import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.editor.markup.EffectType;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.openapi.util.Pair;
@@ -15,7 +13,6 @@ import com.intellij.ui.JBColor;
 import gnu.trove.THashMap;
 import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.metamodel.psi.TaraTypes;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -37,23 +34,20 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER", new TextAttributes(JBColor.RED, null, null, null, Font.BOLD));
 	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>(6);
+	public static final TextAttributesKey UNRESOLVED_ACCESS = TextAttributesKey.createTextAttributesKey("Unresolved reference");
+	public static final TextAttributesKey ANNOTATION_ERROR = TextAttributesKey.createTextAttributesKey("Annotation unsupported in this context");
 
-	public static final TextAttributes UNRESOLVED_ACCESS_ATTRIBUTES = HighlighterColors.TEXT.getDefaultAttributes().clone();
 
 	static {
-		UNRESOLVED_ACCESS_ATTRIBUTES.setForegroundColor(JBColor.BLACK);
-		UNRESOLVED_ACCESS_ATTRIBUTES.setEffectColor(JBColor.GRAY);
-		UNRESOLVED_ACCESS_ATTRIBUTES.setEffectType(EffectType.LINE_UNDERSCORE);
+		UNRESOLVED_ACCESS.getDefaultAttributes().setForegroundColor(JBColor.RED);
+		UNRESOLVED_ACCESS.getDefaultAttributes().setFontType(Font.BOLD);
+		ANNOTATION_ERROR.getDefaultAttributes().setForegroundColor(JBColor.RED);
+		ANNOTATION_ERROR.getDefaultAttributes().setFontType(Font.BOLD);
 	}
 
-	@NonNls
-	static final String UNRESOLVED_ACCESS_ID = "Unresolved reference access";
-	public static final TextAttributesKey UNRESOLVED_ACCESS =
-		TextAttributesKey.createTextAttributesKey(UNRESOLVED_ACCESS_ID, UNRESOLVED_ACCESS_ATTRIBUTES);
-
 	static {
-		DISPLAY_NAMES.put(IDENTIFIER, new Pair<>(TaraBundle.message("options.tara.concept.identifier"), HighlightSeverity.ERROR));
-		DISPLAY_NAMES.put(KEYWORD, new Pair<>(TaraBundle.message("options.tara.concept.keyword"), HighlightSeverity.ERROR));
+		DISPLAY_NAMES.put(IDENTIFIER, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.identifier"), null));
+		DISPLAY_NAMES.put(KEYWORD, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.keyword"), null));
 		DISPLAY_NAMES.put(PRIMITIVE, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.primitive"), null));
 		DISPLAY_NAMES.put(STRING, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.types.string"), null));
 		DISPLAY_NAMES.put(DOCUMENTATION, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.comment"), null));
@@ -125,4 +119,5 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
 		return pack(KEYS.get(tokenType));
 	}
+
 }

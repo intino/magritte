@@ -76,14 +76,14 @@ NEWLINE= [\n]+
 
 	{CONCEPT}                   {   return TaraTypes.CONCEPT_KEY; }
 
-	{IMPORT}                   {   return TaraTypes.IMPORT; }
+	{IMPORT}                    {   return TaraTypes.IMPORT; }
 	{PACKAGE}                   {   return TaraTypes.PACKAGE; }
 
 	{ABSTRACT}                  {   return TaraTypes.ABSTRACT; }
 
 	{FINAL}                     {   return TaraTypes.FINAL; }
 
-	{COLON}                    {   return TaraTypes.COLON; }
+	{COLON}                     {   return TaraTypes.COLON; }
 
 	{VAR}                       {   return TaraTypes.VAR; }
 

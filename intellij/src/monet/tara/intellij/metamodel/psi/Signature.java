@@ -5,7 +5,7 @@ import com.intellij.psi.PsiInvalidElementAccessException;
 import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
 import org.jetbrains.annotations.Nullable;
 
-public interface Signature extends PsiElement {
+public interface Signature extends TaraPsiElement {
 
 	TaraFileImpl getFile() throws PsiInvalidElementAccessException;
 
