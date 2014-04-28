@@ -58,6 +58,7 @@ public class PluginGenerator {
 			writer.close();
 			Type collectionType = new TypeToken<Collection<ASTNode>>() {}.getType();
 			List<String> astNodes = gson.fromJson(new InputStreamReader(new FileInputStream("ast.json")), collectionType);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new TaraException("Error serializing ast");
