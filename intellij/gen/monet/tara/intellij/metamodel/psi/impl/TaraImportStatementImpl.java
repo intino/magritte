@@ -8,17 +8,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.intellij.metamodel.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import monet.tara.intellij.metamodel.psi.*;
 
-public class TaraImportsImpl extends ASTWrapperPsiElement implements TaraImports {
+public class TaraImportStatementImpl extends ImportMixin implements TaraImportStatement {
 
-  public TaraImportsImpl(ASTNode node) {
+  public TaraImportStatementImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitImports(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitImportStatement(this);
     else super.accept(visitor);
   }
 

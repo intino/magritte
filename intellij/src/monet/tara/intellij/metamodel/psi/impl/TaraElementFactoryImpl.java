@@ -15,9 +15,12 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	public Concept createConcept(String name) {
-		final TaraFileImpl file = createDummyFile("Concept abstract as " + name + " <has-code root>\n" +
-			"\tConcept as Ontology <optional>\n" +
-			"\tvar Uid uid");
+		final TaraFileImpl file = createDummyFile(
+			"package tara\n" +
+				"Concept abstract " + name + " <has-code root>\n" +
+				"\tConcept Ontology <optional>\n" +
+				"\tvar Uid uid"
+		);
 		return (Concept) file.getFirstChild();
 	}
 
@@ -31,11 +34,23 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public Attribute createAttribute(String name, String type) {
 		final TaraFileImpl file = createDummyFile(
-			"Concept abstract as Source <has-code root>\n" +
+			"package tara\n" +
+				"Concept abstract Source <has-code root>\n" +
 				"\tvar " + type + " " + name + "\n" +
-				"\tConcept as Ontology <optional>\n");
+				"\tConcept Ontology <optional>\n"
+		);
 		Body body = ((Concept) file.getFirstChild()).getBody();
 		return body != null ? body.getAttributeList().get(0) : null;
+	}
+
+	public Import createImport(String reference) {
+		final TaraFileImpl file = createDummyFile(
+			"package tara\n" +
+				"import " + reference + "\n\n" +
+				"Concept abstract Source <has-code root>\n"
+		);
+		Import[] imp = file.getImports();
+		return imp != null ? imp[0] : null;
 	}
 
 }

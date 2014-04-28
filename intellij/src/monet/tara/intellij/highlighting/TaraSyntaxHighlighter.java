@@ -4,7 +4,6 @@ import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.TokenType;
@@ -32,7 +31,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.CONSTANT);
 	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
 	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
-	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER", new TextAttributes(JBColor.RED, null, null, null, Font.BOLD));
+	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER");
 	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>(6);
 	public static final TextAttributesKey UNRESOLVED_ACCESS = TextAttributesKey.createTextAttributesKey("Unresolved reference");
 	public static final TextAttributesKey ANNOTATION_ERROR = TextAttributesKey.createTextAttributesKey("Annotation unsupported in this context");
@@ -41,6 +40,8 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	static {
 		UNRESOLVED_ACCESS.getDefaultAttributes().setForegroundColor(JBColor.RED);
 		UNRESOLVED_ACCESS.getDefaultAttributes().setFontType(Font.BOLD);
+		BAD_CHARACTER.getDefaultAttributes().setForegroundColor(JBColor.RED);
+		BAD_CHARACTER.getDefaultAttributes().setFontType(Font.BOLD);
 		ANNOTATION_ERROR.getDefaultAttributes().setForegroundColor(JBColor.RED);
 		ANNOTATION_ERROR.getDefaultAttributes().setFontType(Font.BOLD);
 	}
@@ -72,9 +73,9 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 //gen %highlightKey%
 		KEYS.put(CONCEPT_KEY, KEYWORD);
-
 //end
-		KEYS.put(IMPORT, KEYWORD);
+
+		KEYS.put(IMPORT_KEY, KEYWORD);
 		KEYS.put(PACKAGE, KEYWORD);
 		KEYS.put(OPEN_AN, ANNOTATION);
 		KEYS.put(CLOSE_AN, ANNOTATION);

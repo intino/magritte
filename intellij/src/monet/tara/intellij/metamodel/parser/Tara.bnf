@@ -3,6 +3,7 @@
 	parserUtilClass="monet.tara.intellij.metamodel.parser.TaraParserUtil"
 	psiVisitorName="TaraVisitor"
 	extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
+	implements='monet.tara.intellij.metamodel.psi.TaraPsiElement'
 	psiClassPrefix='Tara'
 	psiImplClassSuffix='Impl'
 	psiPackage='monet.tara.intellij.metamodel.psi'
@@ -15,12 +16,14 @@
 	psiImplUtilClass='monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil'
 }
 
-root ::= header concept?  NEWLINE*
+root ::= NEWLINE* header NEWLINE+ concept?  NEWLINE*
 
-header::= NEWLINE* packet (imports | NEWLINE)*;
+header ::=  packet importStatement*
 
-packet ::= PACKAGE headerReference NEWLINE;
-imports::= IMPORT headerReference NEWLINE;
+packet ::= PACKAGE headerReference
+importStatement ::= NEWLINE IMPORT_KEY headerReference
+{ mixin= 'monet.tara.intellij.metamodel.psi.impl.ImportMixin'
+implements='monet.tara.intellij.metamodel.psi.Import'}
 
 concept ::= doc? signature annotations? body?
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.ConceptMixin'
@@ -95,8 +98,7 @@ implements='monet.tara.intellij.metamodel.psi.Doc'}
 headerReference::= identifier child* {
                 pin=1
                 mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
-                implements='monet.tara.intellij.metamodel.psi.ImportIdentifier'
-                implements='monet.tara.intellij.metamodel.psi.ReferenceIdentifier'}
+                implements='monet.tara.intellij.metamodel.psi.HeaderReference'}
 
 referenceIdentifier::= identifier child*
 {pin=1

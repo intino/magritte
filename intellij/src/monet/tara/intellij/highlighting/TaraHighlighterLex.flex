@@ -15,7 +15,7 @@ import monet.tara.intellij.metamodel.psi.TaraTypes;
 
 
 CONCEPT   = "Concept"
-IMPORT    = "import"
+IMPORT_KEY    = "import"
 PACKAGE    = "package"
 MORPH_KEY  = "morph"
 POLYMORPHIC_KEY = "polymorphic"
@@ -76,7 +76,7 @@ NEWLINE= [\n]+
 
 	{CONCEPT}                   {   return TaraTypes.CONCEPT_KEY; }
 
-	{IMPORT}                    {   return TaraTypes.IMPORT; }
+	{IMPORT_KEY}                    {   return TaraTypes.IMPORT_KEY; }
 	{PACKAGE}                   {   return TaraTypes.PACKAGE; }
 
 	{ABSTRACT}                  {   return TaraTypes.ABSTRACT; }

@@ -88,7 +88,10 @@
                                    implementationClass="monet.tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="monet.tara.intellij.highlighting.TaraColorSettingPage"/>
     <lang.braceMatcher language="Tara" implementationClass="monet.tara.intellij.highlighting.TaraBraceMatcher"/>
-    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.TaraAnnotator"/>
+    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.ReferenceAnnotator"/>
+    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.AnnotationsAnnotator"/>
+    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.AttributeAnnotator"/>
+    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.ConceptAnnotator"/>
     <completion.contributor language="Tara"
                             implementationClass="monet.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
     <completion.contributor language="Tara"
@@ -101,14 +104,17 @@
     <nameSuggestionProvider implementation="monet.tara.intellij.refactoring.NameSuggestionProvider"/>
     <lang.elementManipulator forClass="monet.tara.intellij.metamodel.psi.TaraIdentifier"
                              implementationClass="monet.tara.intellij.metamodel.psi.impl.IdentifierManipulator"/>
+
     <lang.refactoringSupport language="Tara"
                              implementationClass="monet.tara.intellij.TaraRefactoringSupportProvider"/>
     <renameHandler implementation="monet.tara.intellij.refactoring.rename.RenameHandler"/>
     <lang.findUsagesProvider language="Tara"
                              implementationClass="monet.tara.intellij.TaraFindUsagesProvider"/>
     <lang.foldingBuilder language="Tara" implementationClass="monet.tara.intellij.TaraFoldingBuilder"/>
+    <projectService serviceInterface="monet.tara.intellij.codeinsight.JavaHelper"
+                    serviceImplementation="monet.tara.intellij.codeinsight.JavaHelper$Impl"/>
+    <!--<referenceImporter implementation="monet.tara.intellij.annotator.imports.TaraReferenceImporter"/>-->
     <!--<lang.formatter language="Tara" implementationClass="monet.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
     <!--<refactoring.moveHandler implementation="com.intellij.uiDesigner.projectView.FormMoveProvider"/>-->
   </extensions>
-
 </idea-plugin>

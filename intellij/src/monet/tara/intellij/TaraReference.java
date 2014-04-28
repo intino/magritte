@@ -2,11 +2,12 @@ package monet.tara.intellij;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.psi.*;
+import monet.tara.intellij.metamodel.psi.Concept;
+import monet.tara.intellij.metamodel.psi.Identifier;
+import monet.tara.intellij.metamodel.psi.TaraIdentifier;
 import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
@@ -26,22 +27,10 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
 		List<ResolveResult> results = new ArrayList<>();
-		Project project = myElement.getProject();
-		PsiElement element = resolveReference(project);
-//		JavaHelper.getJavaHelper(myElement.getProject()).findClassMethod(parserClass, myElement.getText(), paramCount + 2)
+		PsiElement element = TaraUtil.resolveReference(myElement);
 		if (element != null)
 			results.add(new PsiElementResolveResult(element));
 		return results.toArray(new ResolveResult[results.size()]);
-	}
-
-	private PsiElement resolveReference(Project project) {
-		PsiElement element = null;
-		if (myElement.getParent() instanceof ReferenceIdentifier)
-			element = TaraUtil.resolveConceptReference(project, myElement);
-		else if (myElement.getParent() instanceof ImportIdentifier) {
-			element = TaraUtil.resolveHeaderReference(project, myElement);
-		}
-		return element;
 	}
 
 	@Nullable
@@ -56,7 +45,7 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 	public Object[] getVariants() {
 		List<Concept> concepts = new ArrayList<>();
 		if (isReferenceToConcept())
-			refer((TaraIdentifier) myElement, concepts);
+			getVariants((TaraIdentifier) myElement, concepts);
 		else if (myElement.getPrevSibling().getPrevSibling() instanceof Identifier)
 			getChildrenVariants((TaraIdentifier) myElement.getPrevSibling().getPrevSibling(), concepts);
 		return fillVariants(concepts);
@@ -74,14 +63,14 @@ public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPo
 		return variants.toArray();
 	}
 
-	private void refer(TaraIdentifier parent, List<Concept> concepts) {
+	private void getVariants(TaraIdentifier parent, List<Concept> concepts) {
 		concepts.addAll(TaraUtil.getRootConcepts(parent.getProject()));
 		Concept context = TaraPsiImplUtil.getContextOf(parent);
 		concepts.addAll(TaraUtil.getSiblings(context));
 	}
 
 	private void getChildrenVariants(TaraIdentifier parent, List<Concept> concepts) {
-		Concept concept = TaraUtil.resolveConceptReference(parent.getProject(), parent);
+		Concept concept = TaraUtil.resolveConceptReference(parent);
 		Collections.addAll(concepts, TaraUtil.getChildrenOf(concept));
 	}
 

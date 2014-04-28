@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraExtensible extends PsiElement {
+public interface TaraExtensible extends TaraPsiElement {
 
   @Nullable
   TaraLang getLang();

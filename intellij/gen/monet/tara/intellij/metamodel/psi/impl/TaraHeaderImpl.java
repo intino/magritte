@@ -24,8 +24,8 @@ public class TaraHeaderImpl extends ASTWrapperPsiElement implements TaraHeader {
 
   @Override
   @NotNull
-  public List<TaraImports> getImportsList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraImports.class);
+  public List<TaraImportStatement> getImportStatementList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraImportStatement.class);
   }
 
   @Override

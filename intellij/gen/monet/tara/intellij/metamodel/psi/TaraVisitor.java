@@ -3,7 +3,6 @@ package monet.tara.intellij.metamodel.psi;
 
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiElement;
 
 public class TaraVisitor extends PsiElementVisitor {
 
@@ -60,15 +59,15 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitHeaderReference(@NotNull TaraHeaderReference o) {
-    visitImportIdentifier(o);
+    visitHeaderReference(o);
   }
 
   public void visitIdentifier(@NotNull TaraIdentifier o) {
     visitIdentifier(o);
   }
 
-  public void visitImports(@NotNull TaraImports o) {
-    visitPsiElement(o);
+  public void visitImportStatement(@NotNull TaraImportStatement o) {
+    visitImport(o);
   }
 
   public void visitIntegerList(@NotNull TaraIntegerList o) {
@@ -135,11 +134,11 @@ public class TaraVisitor extends PsiElementVisitor {
     visitWord(o);
   }
 
-  public void visitImportIdentifier(@NotNull ImportIdentifier o) {
+  public void visitImport(@NotNull Import o) {
     visitElement(o);
   }
 
-  public void visitPsiElement(@NotNull PsiElement o) {
+  public void visitPsiElement(@NotNull TaraPsiElement o) {
     visitElement(o);
   }
 

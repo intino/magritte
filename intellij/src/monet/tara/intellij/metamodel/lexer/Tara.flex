@@ -92,7 +92,7 @@ NEWLINE= [\n]+ ([ ] | [\t])*
 //Reserved words
 
 CONCEPT   = "Concept"
-IMPORT    = "import"
+IMPORT_KEY    = "import"
 PACKAGE    = "package"
 MORPH_KEY  = "morph"
 POLYMORPHIC_KEY = "polymorphic"
@@ -149,7 +149,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{CONCEPT}                   {   return TaraTypes.CONCEPT_KEY; }
 
-	{IMPORT}                    {   return TaraTypes.IMPORT; }
+	{IMPORT_KEY}                    {   return TaraTypes.IMPORT_KEY; }
 
 	{PACKAGE}                   {   return TaraTypes.PACKAGE; }
 

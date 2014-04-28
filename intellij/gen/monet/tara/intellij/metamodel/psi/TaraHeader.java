@@ -5,10 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraHeader extends PsiElement {
+public interface TaraHeader extends TaraPsiElement {
 
   @NotNull
-  List<TaraImports> getImportsList();
+  List<TaraImportStatement> getImportStatementList();
 
   @NotNull
   TaraPacket getPacket();

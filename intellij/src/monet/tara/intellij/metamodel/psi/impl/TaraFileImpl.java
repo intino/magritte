@@ -14,16 +14,14 @@ import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.metamodel.TaraIcons;
 import monet.tara.intellij.metamodel.TaraLanguage;
 import monet.tara.intellij.metamodel.file.TaraFileType;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.TaraElementFactory;
-import monet.tara.intellij.metamodel.psi.TaraFile;
-import monet.tara.intellij.metamodel.psi.TaraPacket;
+import monet.tara.intellij.metamodel.psi.*;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
 public class TaraFileImpl extends PsiFileBase implements TaraFile {
+
 	public TaraFileImpl(@NotNull com.intellij.psi.FileViewProvider viewProvider) {
 		super(viewProvider, TaraLanguage.INSTANCE);
 	}
@@ -75,24 +73,27 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 
 	@Override
 	public TaraPacket getPackage() {
-		return PsiTreeUtil.getChildrenOfType(this, TaraPacket.class)[0];
+		return PsiTreeUtil.getChildrenOfType(PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0], TaraPacket.class)[0];
 	}
+
+	@Override
+	public Import[] getImports() {
+		return PsiTreeUtil.getChildrenOfType(PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0], Import.class);
+	}
+
 
 	@Override
 	public Concept findConceptByKey(@NotNull @NonNls String key) {
 		return TaraUtil.getConceptsOfFileByName(this, key).get(0);
 	}
 
-	private ASTNode getConceptList() {
-		return null;
-	}
 
 	private void insertLineBreakBefore(final ASTNode anchorBefore) {
-		getConceptList().addChild(ASTFactory.whitespace("\n"), anchorBefore);
+		getNode().addChild(ASTFactory.whitespace("\n"), anchorBefore);
 	}
 
 	private boolean haveToAddNewLine() {
-		ASTNode lastChild = getConceptList().getLastChildNode();
+		ASTNode lastChild = getNode().getLastChildNode();
 		return lastChild != null && !lastChild.getText().endsWith("\n");
 	}
 
@@ -100,16 +101,26 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	@Override
 	@NotNull
 	public PsiElement addConcept(@NotNull Concept concept) throws IncorrectOperationException {
-		if (haveToAddNewLine()) {
-			insertLineBreakBefore(null);
-		}
+		if (haveToAddNewLine()) insertLineBreakBefore(null);
 		final TreeElement copy = ChangeUtil.copyToElement(concept.getPsiElement());
-		getConceptList().addChild(copy);
+		getNode().addChild(copy);
 		return copy.getPsi();
 	}
 
 	@Override
 	public Concept addConcept(String identifier) {
 		return (Concept) addConcept(TaraElementFactory.getInstance(getProject()).createConcept(identifier));
+	}
+
+	@Override
+	public Import addImport(String reference) {
+		Import anImport = TaraElementFactory.getInstance(getProject()).createImport(reference);
+		return (Import) addImport(anImport);
+	}
+
+	private PsiElement addImport(Import anImport) {
+		final TreeElement copy = ChangeUtil.copyToElement(anImport);
+		PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0].add(copy.getPsi());
+		return copy.getPsi();
 	}
 }

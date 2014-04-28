@@ -24,6 +24,8 @@ public interface TaraFile extends PsiFile{
 
 	Concept addConcept(String identifier);
 
+	Import addImport(String reference);
+
 	String getName();
 
 	VirtualFile getVirtualFile();
@@ -35,4 +37,6 @@ public interface TaraFile extends PsiFile{
 	String getText();
 
 	TaraPacket getPackage();
+
+	Import[] getImports();
 }

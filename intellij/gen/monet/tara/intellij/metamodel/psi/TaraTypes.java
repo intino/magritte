@@ -24,7 +24,7 @@ public interface TaraTypes {
   IElementType HEADER = new TaraElementType("HEADER");
   IElementType HEADER_REFERENCE = new TaraElementType("HEADER_REFERENCE");
   IElementType IDENTIFIER = new TaraElementType("IDENTIFIER");
-  IElementType IMPORTS = new TaraElementType("IMPORTS");
+  IElementType IMPORT_STATEMENT = new TaraElementType("IMPORT_STATEMENT");
   IElementType INTEGER_LIST = new TaraElementType("INTEGER_LIST");
   IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
   IElementType LANG = new TaraElementType("LANG");
@@ -60,7 +60,7 @@ public interface TaraTypes {
   IElementType GENERIC = new TaraTokenType("GENERIC");
   IElementType HAS_CODE = new TaraTokenType("HAS_CODE");
   IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
-  IElementType IMPORT = new TaraTokenType("IMPORT");
+  IElementType IMPORT_KEY = new TaraTokenType("IMPORT_KEY");
   IElementType INTENTION = new TaraTokenType("INTENTION");
   IElementType INT_TYPE = new TaraTokenType("INT_TYPE");
   IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
@@ -133,8 +133,8 @@ public interface TaraTypes {
       else if (type == IDENTIFIER) {
         return new TaraIdentifierImpl(node);
       }
-      else if (type == IMPORTS) {
-        return new TaraImportsImpl(node);
+      else if (type == IMPORT_STATEMENT) {
+        return new TaraImportStatementImpl(node);
       }
       else if (type == INTEGER_LIST) {
         return new TaraIntegerListImpl(node);
