@@ -18,7 +18,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	private final String file;
 	ASTWrapper ast;
 	Stack<ASTNode> conceptStack = new Stack<>();
-	String packet ="";
+	String packet = "";
 	ArrayList<String> imports = new ArrayList<>();
 
 	public TaraASTGeneratorListener(ASTWrapper ast, String file) {
@@ -64,7 +64,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void exitConcept(@NotNull ConceptContext ctx) {
 		ASTNode node = conceptStack.peek();
-		if (!node.isAbstract() && !node.isPolymorphic())
+		if (!node.isAbstract() && !node.isBase())
 			ast.addIdentifier(node.getIdentifier(), "KEY");
 		conceptStack.pop();
 	}
@@ -80,7 +80,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void enterModifier(@NotNull ModifierContext ctx) {
 		ASTNode node = conceptStack.peek();
-		if (ctx.BASE() != null) conceptStack.peek().setPolymorphic(true);
+		if (ctx.BASE() != null) conceptStack.peek().setBase(true);
 		else if (ctx.ABSTRACT() != null) node.setModifier(ctx.ABSTRACT().getText());
 		else if (ctx.FINAL() != null) node.setModifier(ctx.FINAL().getText());
 	}

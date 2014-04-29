@@ -8,18 +8,23 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.intellij.metamodel.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import monet.tara.intellij.metamodel.psi.*;
 
-public class TaraPolymorphicImpl extends ASTWrapperPsiElement implements TaraPolymorphic {
+public class TaraIdentifierReferenceImpl extends IdentifierReferenceMixin implements TaraIdentifierReference {
 
-  public TaraPolymorphicImpl(ASTNode node) {
+  public TaraIdentifierReferenceImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitPolymorphic(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitIdentifierReference(this);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<TaraIdentifier> getIdentifierList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifier.class);
   }
 
 }

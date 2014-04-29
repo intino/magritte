@@ -29,7 +29,7 @@ concept ::= doc? signature annotations? body?
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.ConceptMixin'
 implements='monet.tara.intellij.metamodel.psi.Concept'}
 
-signature ::= CONCEPT_KEY (COLON referenceIdentifier)?  (polymorphic | modifier? morph?) identifier
+signature ::= (CONCEPT_KEY | CASE_KEY) (COLON identifierReference)?  (based | modifier? cased?) identifier
 { pin=1 mixin= 'monet.tara.intellij.metamodel.psi.impl.SignatureMixin'
 implements='monet.tara.intellij.metamodel.psi.Signature'}
 
@@ -42,7 +42,7 @@ private conceptConstituents ::= attribute
 		                      | word
 		                      | concept
 
-referenceStatement::= VAR referenceIdentifier LIST? variableNames
+referenceStatement::= VAR identifierReference LIST? variableNames
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceStatementMixin'
 implements='monet.tara.intellij.metamodel.psi.ReferenceStatement'}
 
@@ -86,8 +86,8 @@ variableNames::= IDENTIFIER_KEY (COMMA IDENTIFIER_KEY)*;
 modifier::= ABSTRACT
           | FINAL
 
-polymorphic::= POLYMORPHIC_KEY
-morph::= MORPH_KEY
+based::= BASE_KEY
+cased::= CASE_KEY
 
 doc::= DOC_LINE+
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.DocMixin'
@@ -96,13 +96,13 @@ implements='monet.tara.intellij.metamodel.psi.Doc'}
 
 headerReference::= hierarchy* identifier  {
                 pin=2
-                mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
+                mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierReferenceMixin'
                 implements='monet.tara.intellij.metamodel.psi.HeaderReference'}
 
-referenceIdentifier::= hierarchy* identifier
+identifierReference::= hierarchy* identifier
 {pin=2
-mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
-      implements='monet.tara.intellij.metamodel.psi.ReferenceIdentifier'}
+mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierReferenceMixin'
+      implements='monet.tara.intellij.metamodel.psi.IdentifierReference'}
 
 externalReference ::= hierarchy* identifier
 {pin=2

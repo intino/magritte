@@ -22,10 +22,4 @@ public class TaraExtensibleImpl extends ASTWrapperPsiElement implements TaraExte
     else super.accept(visitor);
   }
 
-  @Override
-  @Nullable
-  public TaraLang getLang() {
-    return findChildByClass(TaraLang.class);
-  }
-
 }

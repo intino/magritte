@@ -87,8 +87,8 @@ morph::= MORPH_KEY
 doc::= DOC_LINE+
 
 referenceIdentifier::= identifier (DOT identifier)*
-{mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
-implements='monet.tara.intellij.metamodel.psi.ReferenceIdentifier'}
+{mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierReferenceMixin'
+implements='monet.tara.intellij.metamodel.psi.IdentifierReference'}
 
 identifier::=  IDENTIFIER_KEY
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierMixin'

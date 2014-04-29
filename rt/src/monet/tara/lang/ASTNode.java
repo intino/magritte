@@ -7,8 +7,8 @@ public class ASTNode {
 
 	private boolean abstractModifier;
 	private boolean finalModifier;
-	private boolean morph;
-	private boolean polymorphic;
+	private boolean caseConcept;
+	private boolean base;
 	private String doc;
 	private String extendFrom;
 	private String identifier = "";
@@ -30,16 +30,16 @@ public class ASTNode {
 		this.file = file;
 		this.abstractModifier = false;
 		this.finalModifier = false;
-		this.morph = false;
-		this.polymorphic = false;
+		this.caseConcept = false;
+		this.base = false;
 	}
 
 	public ASTNode(String file) {
 		this.file = file;
 		this.abstractModifier = false;
 		this.finalModifier = false;
-		this.morph = false;
-		this.polymorphic = false;
+		this.caseConcept = false;
+		this.base = false;
 		this.parent = null;
 	}
 
@@ -111,12 +111,12 @@ public class ASTNode {
 		this.doc = doc;
 	}
 
-	public ASTNode[] getMorphs() {
-		List<ASTNode> morphs = new ArrayList<>();
-		if (polymorphic) {
+	public ASTNode[] getCases() {
+		List<ASTNode> cases = new ArrayList<>();
+		if (base) {
 			for (ASTNode child : children)
-				if (child.isMorph()) morphs.add(child);
-			return morphs.toArray(new ASTNode[morphs.size()]);
+				if (child.isCase()) cases.add(child);
+			return cases.toArray(new ASTNode[cases.size()]);
 		} else return new ASTNode[0];
 	}
 
@@ -133,20 +133,20 @@ public class ASTNode {
 		return abstractModifier;
 	}
 
-	public boolean isMorph() {
-		return morph;
+	public boolean isCase() {
+		return caseConcept;
 	}
 
-	public void setMorph(boolean morph) {
-		this.morph = morph;
+	public void setCase(boolean caseConcept) {
+		this.caseConcept = caseConcept;
 	}
 
-	public boolean isPolymorphic() {
-		return polymorphic;
+	public boolean isBase() {
+		return base;
 	}
 
-	public void setPolymorphic(boolean polymorphic) {
-		this.polymorphic = polymorphic;
+	public void setBase(boolean base) {
+		this.base = base;
 	}
 
 	public String getModifier() {

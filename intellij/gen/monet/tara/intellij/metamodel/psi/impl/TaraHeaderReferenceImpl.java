@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.intellij.metamodel.psi.TaraTypes.*;
 import monet.tara.intellij.metamodel.psi.*;
 
-public class TaraHeaderReferenceImpl extends ReferenceIdentifierMixin implements TaraHeaderReference {
+public class TaraHeaderReferenceImpl extends IdentifierReferenceMixin implements TaraHeaderReference {
 
   public TaraHeaderReferenceImpl(ASTNode node) {
     super(node);

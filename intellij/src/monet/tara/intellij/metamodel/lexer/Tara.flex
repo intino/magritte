@@ -92,10 +92,10 @@ NEWLINE= [\n]+ ([ ] | [\t])*
 //Reserved words
 
 CONCEPT   = "Concept"
-IMPORT_KEY    = "import"
-PACKAGE    = "package"
-MORPH_KEY  = "morph"
-POLYMORPHIC_KEY = "polymorphic"
+IMPORT_KEY= "import"
+PACKAGE   = "package"
+CASE_KEY  = "case"
+BASE_KEY  = "base"
 FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"
@@ -104,7 +104,7 @@ HAS_CODE  = "has-code"
 SINGLETON = "singleton"
 INTENTION = "intention"
 ROOT      = "root"
-EXTENSION_KEY = "extension"
+EXTENSION_KEY  = "extension"
 EXTENSIBLE_KEY = "extensible"
 GENERIC   = "generic"
 WORD      = "Word"
@@ -118,7 +118,7 @@ OPEN_BRACKET  = "{"
 CLOSE_BRACKET = "}"
 
 DOT           = "."
-COLON        = ":"
+COLON         = ":"
 SEMICOLON     = ";"+
 DOUBLE_COMMAS = "\""
 OPEN_AN  = "<"
@@ -163,8 +163,8 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{LIST}                      {   return TaraTypes.LIST; }
 
-	{POLYMORPHIC_KEY}           {   return TaraTypes.POLYMORPHIC_KEY; }
-	{MORPH_KEY}                 {   return TaraTypes.MORPH_KEY; }
+	{BASE_KEY}                  {   return TaraTypes.BASE_KEY; }
+	{CASE_KEY}                  {   return TaraTypes.CASE_KEY; }
 
 	{OPEN_AN}                   {   return TaraTypes.OPEN_AN; }
 	{CLOSE_AN}                  {   return TaraTypes.CLOSE_AN; }

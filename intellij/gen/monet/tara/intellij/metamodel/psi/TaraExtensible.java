@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraExtensible extends TaraPsiElement {
 
-  @Nullable
-  TaraLang getLang();
-
 }

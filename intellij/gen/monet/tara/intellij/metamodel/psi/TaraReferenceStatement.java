@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface TaraReferenceStatement extends ReferenceStatement {
 
   @NotNull
-  TaraReferenceIdentifier getReferenceIdentifier();
+  TaraIdentifierReference getIdentifierReference();
 
   @NotNull
   TaraVariableNames getVariableNames();

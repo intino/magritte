@@ -17,8 +17,8 @@ import monet.tara.intellij.metamodel.psi.TaraTypes;
 CONCEPT   = "Concept"
 IMPORT_KEY    = "import"
 PACKAGE    = "package"
-MORPH_KEY  = "morph"
-POLYMORPHIC_KEY = "polymorphic"
+CASE_KEY  = "case"
+BASE_KEY = "base"
 FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"
@@ -76,7 +76,7 @@ NEWLINE= [\n]+
 
 	{CONCEPT}                   {   return TaraTypes.CONCEPT_KEY; }
 
-	{IMPORT_KEY}                    {   return TaraTypes.IMPORT_KEY; }
+	{IMPORT_KEY}                {   return TaraTypes.IMPORT_KEY; }
 	{PACKAGE}                   {   return TaraTypes.PACKAGE; }
 
 	{ABSTRACT}                  {   return TaraTypes.ABSTRACT; }
@@ -89,9 +89,9 @@ NEWLINE= [\n]+
 
 	{LIST}                      {   return TaraTypes.LIST; }
 
-	{POLYMORPHIC_KEY}           {   return TaraTypes.POLYMORPHIC_KEY; }
+	{BASE_KEY}                  {   return TaraTypes.BASE_KEY; }
 
-	{MORPH_KEY}                 {   return TaraTypes.MORPH_KEY; }
+	{CASE_KEY}                  {   return TaraTypes.CASE_KEY; }
 
 	{OPEN_AN}                   {   return TaraTypes.OPEN_AN; }
 	{CLOSE_AN}                  {   return TaraTypes.CLOSE_AN; }

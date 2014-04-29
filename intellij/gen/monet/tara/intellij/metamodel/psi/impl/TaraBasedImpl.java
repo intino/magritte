@@ -11,14 +11,14 @@ import static monet.tara.intellij.metamodel.psi.TaraTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import monet.tara.intellij.metamodel.psi.*;
 
-public class TaraMorphImpl extends ASTWrapperPsiElement implements TaraMorph {
+public class TaraBasedImpl extends ASTWrapperPsiElement implements TaraBased {
 
-  public TaraMorphImpl(ASTNode node) {
+  public TaraBasedImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitMorph(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitBased(this);
     else super.accept(visitor);
   }
 

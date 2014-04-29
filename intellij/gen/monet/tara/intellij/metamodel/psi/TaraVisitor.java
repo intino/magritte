@@ -14,6 +14,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitAttribute(o);
   }
 
+  public void visitBased(@NotNull TaraBased o) {
+    visitPsiElement(o);
+  }
+
   public void visitBody(@NotNull TaraBody o) {
     visitBody(o);
   }
@@ -23,6 +27,10 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitBooleanValue(@NotNull TaraBooleanValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitCased(@NotNull TaraCased o) {
     visitPsiElement(o);
   }
 
@@ -66,6 +74,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitIdentifier(o);
   }
 
+  public void visitIdentifierReference(@NotNull TaraIdentifierReference o) {
+    visitIdentifierReference(o);
+  }
+
   public void visitImportStatement(@NotNull TaraImportStatement o) {
     visitImport(o);
   }
@@ -78,15 +90,7 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitLang(@NotNull TaraLang o) {
-    visitPsiElement(o);
-  }
-
   public void visitModifier(@NotNull TaraModifier o) {
-    visitPsiElement(o);
-  }
-
-  public void visitMorph(@NotNull TaraMorph o) {
     visitPsiElement(o);
   }
 
@@ -100,14 +104,6 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitPacket(@NotNull TaraPacket o) {
     visitPsiElement(o);
-  }
-
-  public void visitPolymorphic(@NotNull TaraPolymorphic o) {
-    visitPsiElement(o);
-  }
-
-  public void visitReferenceIdentifier(@NotNull TaraReferenceIdentifier o) {
-    visitReferenceIdentifier(o);
   }
 
   public void visitReferenceStatement(@NotNull TaraReferenceStatement o) {

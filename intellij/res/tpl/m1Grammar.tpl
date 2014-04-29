@@ -82,7 +82,7 @@ pin=1
 mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.ReferenceIdentifier'
 }
-polymorphic \:\:= POLYMORPHIC_KEY
+base \:\:= POLYMORPHIC_KEY
 morph \:\:= MORPH_KEY
 genericList\:\:= OPEN_AN ( UID_TYPE|INT_TYPE|NATURAL_TYPE|DOUBLE_TYPE|STRING_TYPE|BOOLEAN_TYPE
                          | ::conceptKeyList:: ) CLOSE_AN
@@ -129,7 +129,7 @@ naturalList\:\:= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
 { mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.DefinitionMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.Definition'
 }
-::identifier::Signature \:\:= ::lexicoIdentifier:: ((COLON referenceIdentifier) ::genericOption:: )? (polymorphic | modifier? morph?) identifier? ::assignAttributeHeader|*::
+::identifier::Signature \:\:= ::lexicoIdentifier:: ((COLON referenceIdentifier) ::genericOption:: )? (base | modifier? morph?) identifier? ::assignAttributeHeader|*::
 { mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.SignatureMixin'
 implements='monet.::projectName::.intellij.metamodel.psi.Signature'
 }

@@ -33,7 +33,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		this.element = element;
 		this.holder = holder;
 		if (!(element instanceof Identifier)) return;
-		if (element.getParent() instanceof HeaderReference || element.getParent() instanceof ReferenceIdentifier)
+		if (element.getParent() instanceof HeaderReference || element.getParent() instanceof IdentifierReference)
 			checkWellReferenced();
 	}
 
@@ -41,7 +41,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		PsiElement reference = TaraUtil.resolveReference(element);
 		if (reference == null) {
 			Annotation errorAnnotation;
-			if (element.getParent() instanceof ReferenceIdentifier)
+			if (element.getParent() instanceof IdentifierReference)
 				addImportAlternatives((Identifier) element);
 			else {
 				String message = TaraBundle.message("reference.concept.key.error.message");

@@ -56,7 +56,7 @@ public class BnfRender extends Render {
 	}
 
 	private void goOver(ASTNode node) {
-		if (!node.isAbstract() && !node.isPolymorphic()) {
+		if (!node.isAbstract() && !node.isBase()) {
 			generateMainRulesForConcepts(node);
 			if (!synthesizeList.contains(ast.getKeys(node.getIdentifier()).get(0)))
 				synthesizeList.add(ast.getKeys(node.getIdentifier()).get(0));
@@ -104,7 +104,7 @@ public class BnfRender extends Render {
 	private boolean isExtendedRoot(ASTNode node) {
 		if (node != null) {
 			if (containsRoot(node.getAnnotations())) return true;
-			if (node.getParent() != null && node.isMorph()) return isExtendedRoot(node.getParent());
+			if (node.getParent() != null && node.isCase()) return isExtendedRoot(node.getParent());
 			if (ast.searchAncestry(node) != null) return isExtendedRoot(ast.searchAncestry(node));
 		}
 		return false;

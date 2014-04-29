@@ -7,32 +7,32 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.psi.PsiElement;
 import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.TaraMorph;
-import monet.tara.intellij.metamodel.psi.TaraPolymorphic;
+import monet.tara.intellij.metamodel.psi.TaraBased;
+import monet.tara.intellij.metamodel.psi.TaraCased;
 import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
 
 public abstract class TaraAnnotator implements Annotator {
 
 	protected AnnotationHolder holder = null;
 
-	private void checkPolymorphic(TaraPolymorphic element) {
-		if (!hasMorphs(TaraPsiImplUtil.getContextOf(element))) {
+	private void checkBase(TaraBased element) {
+		if (!hasCases(TaraPsiImplUtil.getContextOf(element))) {
 			Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(),
-				TaraBundle.message("morph.non-existent.in.polymorphic.error.message"));
+				TaraBundle.message("case.non-existent.in.base.error.message"));
 		}
 	}
 
-	private boolean hasMorphs(Concept context) {
+	private boolean hasCases(Concept context) {
 		if (context.getBody() != null)
 			for (Concept concept : context.getBody().getConceptList())
 				if (concept.isMorph()) return true;
 		return false;
 	}
 
-	private void checkMorph(TaraMorph element) {
+	private void checkCase(TaraCased element) {
 		Concept concept = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(element));
 		if (!concept.isPolymorphic())
-			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("morph.not.in.polymorphic.error.message"));
+			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("case.not.in.base.error.message"));
 	}
 
 	protected Annotation annotateAndFix(PsiElement element, IntentionAction fix, String message) {

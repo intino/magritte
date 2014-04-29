@@ -40,12 +40,12 @@ public class ReferenceVerifier {
 	}
 
 	private void checkPolymorphic(ASTNode concept) {
-		if (concept.isPolymorphic() && concept.getMorphs().length == 0)
+		if (concept.isBase() && concept.getCases().length == 0)
 			errors.add(new PolymorphicChildlessError(concept.getIdentifier(), concept));
 	}
 
 	private void checkMorph(ASTNode concept, ASTNode ancestor) {
-		if (concept.isMorph()) {
+		if (concept.isCase()) {
 			noParent(concept);
 			notPolymorphicParent(concept);
 			notExtendedFromMorph(concept, ancestor);
@@ -58,12 +58,12 @@ public class ReferenceVerifier {
 	}
 
 	private void notPolymorphicParent(ASTNode concept) {
-		if (concept.getParent() != null && !concept.getParent().isPolymorphic())
+		if (concept.getParent() != null && !concept.getParent().isBase())
 			errors.add(new MorphWithoutParentError(concept.getIdentifier(), concept));
 	}
 
 	private void notExtendedFromMorph(ASTNode concept, ASTNode ancestor) {
-		if (ancestor != null && !ancestor.isMorph())
+		if (ancestor != null && !ancestor.isCase())
 			errors.add(new InvalidHeritageError(concept.getExtendFrom(), concept));
 	}
 }

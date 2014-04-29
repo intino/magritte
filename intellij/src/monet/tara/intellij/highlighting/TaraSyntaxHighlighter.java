@@ -75,6 +75,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(CONCEPT_KEY, KEYWORD);
 //end
 
+		KEYS.put(CASE_KEY, KEYWORD);
 		KEYS.put(IMPORT_KEY, KEYWORD);
 		KEYS.put(PACKAGE, KEYWORD);
 		KEYS.put(OPEN_AN, ANNOTATION);
@@ -101,8 +102,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 		KEYS.put(ABSTRACT, MODIFIERS);
 		KEYS.put(FINAL, MODIFIERS);
-		KEYS.put(MORPH_KEY, MODIFIERS);
-		KEYS.put(POLYMORPHIC_KEY, MODIFIERS);
+		KEYS.put(BASE_KEY, MODIFIERS);
 
 		KEYS.put(DOC_LINE, DOCUMENTATION);
 

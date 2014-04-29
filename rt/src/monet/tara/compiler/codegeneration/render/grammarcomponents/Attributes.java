@@ -37,7 +37,7 @@ public abstract class Attributes {
 		if (extendNode != null)
 			for (int index = 0; index < extendNode.getVariables().size(); index++)
 				attributes += stringByEvaluationParentType(node, extendNode, index);
-		if (node.isMorph()) {
+		if (node.isCase()) {
 			extendNode = node.getParent();
 			if (extendNode != null)
 				for (int index = 0; index < extendNode.getVariables().size(); index++)

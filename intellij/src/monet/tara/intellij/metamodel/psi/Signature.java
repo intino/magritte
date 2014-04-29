@@ -20,13 +20,13 @@ public interface Signature extends TaraPsiElement {
 	TaraModifier getModifier();
 
 	@Nullable
-	TaraMorph getMorph();
+	boolean isCase();
 
 	@Nullable
-	TaraPolymorphic getPolymorphic();
+	boolean isBase();
 
 	@Nullable
-	TaraReferenceIdentifier getReferenceIdentifier();
+	TaraIdentifierReference getIdentifierReference();
 
 }
 

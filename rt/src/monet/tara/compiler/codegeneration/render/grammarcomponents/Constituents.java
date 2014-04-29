@@ -16,7 +16,7 @@ public class Constituents {
 
 	public String getConstituentString() {
 		String constituent = getStringConstituents(root.searchAncestry(node), "");
-		if (node.isMorph()) constituent = getStringConstituentsPolymorphic(node.getParent(), constituent);
+		if (node.isCase()) constituent = getStringConstituentsPolymorphic(node.getParent(), constituent);
 		constituent = getStringConstituents(node, constituent);
 		return constituent.substring(constituent.indexOf('|') + 1);
 	}
@@ -28,7 +28,7 @@ public class Constituents {
 	private String getStringConstituentsPolymorphic(ASTNode node, String constituents) {
 		if (node != null) {
 			for (ASTNode child : node.getChildren())
-				if (!child.isAbstract() && !child.isMorph() || contains(this.node.getChildren(), node))
+				if (!child.isAbstract() && !child.isCase() || contains(this.node.getChildren(), node))
 					constituents = evaluateStringFormatConstituent(child, constituents);
 		}
 		return constituents;
@@ -44,8 +44,8 @@ public class Constituents {
 
 	private String evaluateStringFormatConstituent(ASTNode node, String constituents) {
 		String result = constituents;
-		if (node.isPolymorphic()) {
-			for (ASTNode morphChild : node.getMorphs())
+		if (node.isBase()) {
+			for (ASTNode morphChild : node.getCases())
 				if (!morphChild.isAbstract()) result = evaluateFormat(morphChild, result);
 		} else result = evaluateFormat(node, result);
 		return result;
@@ -53,7 +53,7 @@ public class Constituents {
 
 	private String evaluateFormat(ASTNode node, String constituents) {
 		ASTNode nodeAncestry = root.searchAncestry(node);
-		if (nodeAncestry != null && !nodeAncestry.isPolymorphic())
+		if (nodeAncestry != null && !nodeAncestry.isBase())
 			constituents += " | " + ((!"".equals(node.getIdentifier())) ?
 				getTransformedAbsolutePath(node) : getTransformedAbsolutePath(nodeAncestry));
 		else constituents += ("".equals(node.getIdentifier())) ?

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface ReferenceIdentifier extends Navigatable, TaraPsiElement {
+public interface IdentifierReference extends Navigatable, TaraPsiElement {
 
 	@NotNull
 	List<? extends Identifier> getIdentifierList();

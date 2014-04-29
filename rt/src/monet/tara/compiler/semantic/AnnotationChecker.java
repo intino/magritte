@@ -57,12 +57,12 @@ public class AnnotationChecker {
 	}
 
 	private void optionalAnnotation(ASTNode concept) {
-		if ((concept.isRoot() || concept.isMorph()) && annotations.contains(AnnotationType.OPTIONAL))
+		if ((concept.isRoot() || concept.isCase()) && annotations.contains(AnnotationType.OPTIONAL))
 			errors.add(new WrongAnnotationError(AnnotationType.OPTIONAL.name(), concept));
 	}
 
 	private void multipleAnnotation(ASTNode concept) {
-		if ((concept.isRoot() || concept.isMorph()) && annotations.contains(AnnotationType.MULTIPLE))
+		if ((concept.isRoot() || concept.isCase()) && annotations.contains(AnnotationType.MULTIPLE))
 			errors.add(new WrongAnnotationError(AnnotationType.MULTIPLE.name(), concept));
 	}
 }

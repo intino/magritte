@@ -65,7 +65,7 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	public static Concept resolveContextOfRef(ReferenceIdentifier identifier) {
+	public static Concept resolveContextOfRef(IdentifierReference identifier) {
 		PsiElement element = identifier;
 		while (!(element.getParent() instanceof Concept))
 			element = element.getParent();

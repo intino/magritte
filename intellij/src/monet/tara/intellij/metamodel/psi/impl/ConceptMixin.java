@@ -80,24 +80,23 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public PsiElement setName(String newName) {
-		return TaraPsiImplUtil.setName(((Concept) this).getSignature(), newName);
+		return TaraPsiImplUtil.setName(this.getSignature(), newName);
 	}
 
 	public PsiElement getIdentifierNode() {
 		return TaraPsiImplUtil.getIdentifierNode((Concept) this);
 	}
 
-
 	public Body getBody() {
 		return findChildByClass(Body.class);
 	}
 
 	public boolean isPolymorphic() {
-		return this.getSignature().getPolymorphic() != null;
+		return this.getSignature().isBase();
 	}
 
 	public boolean isMorph() {
-		return this.getSignature().getMorph() != null;
+		return this.getSignature().isCase();
 	}
 
 	public boolean isExtensible() {

@@ -116,7 +116,7 @@ public class TaraUtil {
 
 	public static PsiElement resolveReference(PsiElement identifier) {
 		PsiElement reference = null;
-		if (identifier.getParent() instanceof ReferenceIdentifier)
+		if (identifier.getParent() instanceof IdentifierReference)
 			reference = resolveConceptReference(identifier);
 		else if (identifier.getParent() instanceof HeaderReference) {
 			reference = resolveHeaderReference(identifier);
@@ -126,8 +126,8 @@ public class TaraUtil {
 
 
 	public static Concept resolveConceptReference(PsiElement identifier) {
-		if (identifier.getParent() instanceof ReferenceIdentifier) {
-			List<Identifier> route = (List<Identifier>) ((ReferenceIdentifier) (identifier.getParent())).getIdentifierList();
+		if (identifier.getParent() instanceof IdentifierReference) {
+			List<Identifier> route = (List<Identifier>) ((IdentifierReference) (identifier.getParent())).getIdentifierList();
 			route = route.subList(0, route.indexOf(identifier) + 1);
 			return resolveInConceptReference(identifier, route);
 		}
@@ -171,7 +171,7 @@ public class TaraUtil {
 
 	private static Concept resolveInConceptReference(PsiElement identifier, List<Identifier> route) {
 		Concept reference = resolveRelativeReference(route, (TaraIdentifier) identifier);
-		if (!isRootConcept(TaraPsiImplUtil.resolveContextOfRef((ReferenceIdentifier) identifier.getParent())) && reference != null)
+		if (!isRootConcept(TaraPsiImplUtil.resolveContextOfRef((IdentifierReference) identifier.getParent())) && reference != null)
 			return reference;
 		else return resolveAbsoluteReference(identifier.getProject(), route);
 	}
@@ -181,7 +181,7 @@ public class TaraUtil {
 	}
 
 	private static Concept resolveRelativeReference(List<Identifier> route, Identifier element) {
-		Concept context = TaraPsiImplUtil.resolveContextOfRef((ReferenceIdentifier) element.getParent());
+		Concept context = TaraPsiImplUtil.resolveContextOfRef((IdentifierReference) element.getParent());
 		Concept concept = TaraPsiImplUtil.getContextOf(context);
 		for (Identifier identifier : route) {
 			concept = findChildOf(concept, ((TaraIdentifierImpl) identifier).getIdentifier());

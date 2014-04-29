@@ -23,32 +23,32 @@ public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
 
   @Override
   @Nullable
+  public TaraBased getBased() {
+    return findChildByClass(TaraBased.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraCased getCased() {
+    return findChildByClass(TaraCased.class);
+  }
+
+  @Override
+  @Nullable
   public TaraIdentifier getIdentifier() {
     return findChildByClass(TaraIdentifier.class);
   }
 
   @Override
   @Nullable
+  public TaraIdentifierReference getIdentifierReference() {
+    return findChildByClass(TaraIdentifierReference.class);
+  }
+
+  @Override
+  @Nullable
   public TaraModifier getModifier() {
     return findChildByClass(TaraModifier.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraMorph getMorph() {
-    return findChildByClass(TaraMorph.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraPolymorphic getPolymorphic() {
-    return findChildByClass(TaraPolymorphic.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraReferenceIdentifier getReferenceIdentifier() {
-    return findChildByClass(TaraReferenceIdentifier.class);
   }
 
 }
