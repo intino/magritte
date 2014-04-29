@@ -14,7 +14,6 @@ import java.util.Collection;
 public class SemanticAnalyzer {
 	private ASTWrapper ast;
 	private SemanticErrorList errors = new SemanticErrorList();
-
 	private DuplicateDetector detector = new DuplicateDetector(errors);
 	private ReferenceVerifier verifier = new ReferenceVerifier(errors);
 	private AnnotationChecker checker = new AnnotationChecker(errors);
