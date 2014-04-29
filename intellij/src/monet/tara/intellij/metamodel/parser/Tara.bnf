@@ -29,7 +29,9 @@ concept ::= doc? signature annotations? body?
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.ConceptMixin'
 implements='monet.tara.intellij.metamodel.psi.Concept'}
 
-signature ::= (CONCEPT_KEY | CASE_KEY) (COLON identifierReference)?  (based | modifier? cased?) identifier
+signature::= CASE IDENTIFIER
+         | CONCEPT modifier? IDENTIFIER_KEY
+         | CONCEPT COLON identifierReference (modifier? IDENTIFIER_KEY)?
 { pin=1 mixin= 'monet.tara.intellij.metamodel.psi.impl.SignatureMixin'
 implements='monet.tara.intellij.metamodel.psi.Signature'}
 
@@ -94,7 +96,7 @@ doc::= DOC_LINE+
 implements='monet.tara.intellij.metamodel.psi.Doc'}
 
 
-headerReference::= hierarchy* identifier  {
+headerReference   ::= hierarchy* identifier  {
                 pin=2
                 mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierReferenceMixin'
                 implements='monet.tara.intellij.metamodel.psi.HeaderReference'}

@@ -1,15 +1,18 @@
 // Generated from /home/bycor/Projects/Tara/src/AntlrM2/src/TaraM2Grammar.g4 by ANTLR 4.x
 
-    package AntlrM2;
+package monet.tara.compiler.parser.antlr;
 
-import org.antlr.v4.runtime.atn.*;
-import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.ParserATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class TaraM2Grammar extends Parser {
@@ -102,7 +105,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitRoot(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitRoot(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -193,7 +196,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitHeader(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitHeader(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -254,7 +257,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitImports(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitImports(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -300,7 +303,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitPacket(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitPacket(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -353,7 +356,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitConcept(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitConcept(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -428,7 +431,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitSignature(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitSignature(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -528,7 +531,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitBody(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitBody(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -608,7 +611,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitConceptConstituents(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitConceptConstituents(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -682,7 +685,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitReference(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitReference(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -745,7 +748,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitWord(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitWord(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -847,7 +850,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitAttribute(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitAttribute(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1105,7 +1108,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitStringValue(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitStringValue(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1146,7 +1149,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitBooleanValue(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitBooleanValue(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1188,7 +1191,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitIntegerValue(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitIntegerValue(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1237,7 +1240,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitDoubleValue(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitDoubleValue(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1284,7 +1287,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitNaturalValue(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitNaturalValue(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1330,7 +1333,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitStringList(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitStringList(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1391,7 +1394,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitBooleanList(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitBooleanList(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1456,7 +1459,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitIntegerList(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitIntegerList(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1530,7 +1533,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitDoubleList(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitDoubleList(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1596,7 +1599,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitNaturalList(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitNaturalList(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1693,7 +1696,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitAnnotations(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitAnnotations(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1800,7 +1803,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitExtension(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitExtension(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1845,7 +1848,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitExtensible(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitExtensible(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1895,7 +1898,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitVariableNames(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitVariableNames(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1957,7 +1960,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitHeaderReference(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitHeaderReference(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2020,7 +2023,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitExternalReference(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitExternalReference(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2083,7 +2086,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitIdentifierReference(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitIdentifierReference(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2141,7 +2144,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitHierarchy(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitHierarchy(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2185,7 +2188,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitModifier(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitModifier(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2235,7 +2238,7 @@ public class TaraM2Grammar extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof TaraM2GrammarVisitor ) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitDoc(this);
+			if ( visitor instanceof TaraM2GrammarVisitor) return ((TaraM2GrammarVisitor<? extends T>)visitor).visitDoc(this);
 			else return visitor.visitChildren(this);
 		}
 	}

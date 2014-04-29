@@ -1,6 +1,6 @@
 // Generated from /home/bycor/Projects/Tara/src/AntlrM2/src/TaraM2Grammar.g4 by ANTLR 4.x
 
-    package AntlrM2;
+package monet.tara.compiler.parser.antlr;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;
