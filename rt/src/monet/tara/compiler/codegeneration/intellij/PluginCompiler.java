@@ -7,6 +7,8 @@ import monet.tara.compiler.codegeneration.render.IconFactory;
 import monet.tara.compiler.codegeneration.render.RenderUtils;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.errorcollection.TaraException;
+import monet.tara.lang.AST;
+import monet.tara.lang.ASTNode;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -90,6 +92,9 @@ public class PluginCompiler extends CodeGenerator {
 		jarNames.add(getJar("markdown4j-2.2.jar"));
 		jarNames.add(getJar("commons-email-1.3.2.jar"));
 		jarNames.add(getJar("javax.mail.jar"));
+		jarNames.add(getJar("gson-2.2.4.jar"));
+		jarNames.add(AST.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+		jarNames.add(ASTNode.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 		return jarNames.toArray(new String[jarNames.size()]);
 	}
 

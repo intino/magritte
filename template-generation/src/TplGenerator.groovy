@@ -2,23 +2,28 @@ public static void main(String[] args) {
     String TPL_PATH = "rt/res/intellij/tpl";
     String SRC_PATH = "intellij/src";
     String RES_PATH = "intellij/res";
+    File templateBound = new File("rt/res/intellij/templates.properties")
+    templateBound.delete()
+    templateBound.createNewFile();
     new File(TPL_PATH).deleteDir();
     File[] srcFiles = new File(SRC_PATH).listFiles()
     fixTypes()
-    createTPLs(TPL_PATH, srcFiles)
-    createTPLs(TPL_PATH, new File(RES_PATH).listFiles())
+    createTPLs(TPL_PATH, srcFiles, templateBound)
+    createTPLs(TPL_PATH, new File(RES_PATH).listFiles(), templateBound)
     new File(TPL_PATH + "/src/monet/tara/intellij/metamodel/psi/-Types.java.tpl").createNewFile()
-//    addMetamodelRepresentation("rt/src/monet/tara/compiler/core/ast", TPL_PATH + "/src/monet/tara/intellij/codeinsight/completion/ast")
+    templateBound.append("Types.java" + " = " + "/intellij/tpl/src/monet/tara/intellij/metamodel/psi/-Types.java")
+    addLangHeritage("rt/src/monet/tara/lang", TPL_PATH + "/src/monet/tara/lang")
 }
 
-private void createTPLs(String tplPath, File[] files) {
+
+private static void createTPLs(String tplPath, File[] files, File templateBound) {
     File file = new File(tplPath)
     files.each {
         if (it.isDirectory()) {
             if (!it.name.contains("compiler")) {
                 file = new File(tplPath + it.getPath().substring(8) + "/")
                 file.mkdirs()
-                createTPLs(tplPath, it.listFiles())
+                createTPLs(tplPath, it.listFiles(), templateBound)
             }
         } else {
             def fileName = it.name.replaceAll("Tara", "-").replace("Concept", "_").replace("m2", "m1")
@@ -33,21 +38,30 @@ private void createTPLs(String tplPath, File[] files) {
                     text = text.replaceAll("%", "\\\\%")
                     File newFile = new File(tplPath + it.parent.substring(8), fileName + ".tpl")
                     newFile.write(text)
+                    templateBound.append(it.getName() + " = " + getRelativeTplPath(newFile) + "\n");
                 } else
                     copyFile(it, new File(tplPath + it.parent.substring(8), fileName))
             } else if (it.name.endsWith(".bnf") || it.name.endsWith(".flex")) {
                 String mfile;
                 if (it.name.endsWith(".bnf")) mfile = "m1Grammar.tpl";
                 else mfile = it.name.contains("Highlighter") ? "m1HighlightLex.tpl" : "m1Lexer.tpl"
-                text = new File("intellij/res/tpl/" + mfile).text.replaceAll("%", "\\\\%")
+                String text = (new File("intellij/res/tpl/" + mfile)).text.replaceAll("%", "\\\\%")
                 File newFile = new File(tplPath + it.parent.substring(8), fileName + ".tpl")
                 newFile.write(text)
+                templateBound.append(it.getName() + " = " + getRelativeTplPath(newFile) + "\n");
             }
         }
     }
 }
 
-private String addMarks(String text) {
+private static String getRelativeTplPath(File newFile) {
+    String IDE_TPL = "intellij/tpl/"
+    String path = newFile.getAbsolutePath()
+    def substring = path.substring(path.indexOf(IDE_TPL))
+    substring.substring(0, substring.lastIndexOf("."))
+}
+
+private static String addMarks(String text) {
     text = text.replaceAll("tara", "::projectName::")
     text = text.replaceAll("Tara", "::projectProperName::").replaceAll("Concept", "Definition")
     text = text.replaceAll("TARA", "::projectUpperName::")
@@ -57,7 +71,7 @@ private String addMarks(String text) {
     text
 }
 
-private String scapeMetaCharacters(String text) {
+private static String scapeMetaCharacters(String text) {
     text = text.replaceAll("\\\\", "\\\\\\\\")
     text = text.replaceAll(":", "\\\\:")
     text = text.replaceAll("@", "\\\\@")
@@ -65,7 +79,7 @@ private String scapeMetaCharacters(String text) {
     text
 }
 
-private String addJavaMarks(String text) {
+private static String addJavaMarks(String text) {
     int index = text.indexOf("//gen")
     int endIndex = text.indexOf("//end")
     if (index > 0) {
@@ -78,7 +92,7 @@ private String addJavaMarks(String text) {
     text
 }
 
-private String addXmlMarks(String text) {
+private static String addXmlMarks(String text) {
     int index = 0;
     while (index >= 0) {
         index = text.indexOf("<!--gen", index)
@@ -94,18 +108,18 @@ private String addXmlMarks(String text) {
     text
 }
 
-void fixTypes() {
+static void fixTypes() {
     File file = new File("intellij/gen/monet/tara/intellij/metamodel/psi/TaraTypes.java")
     file.write(file.text.replace("new TaraTokenType(\"NEW_LINE_INDENT\");", "TokenType.NEW_LINE_INDENT;"))
 }
 
-boolean isCorrectFileType(String fileName) {
+static boolean isCorrectFileType(String fileName) {
     String[] fileTypes = ["java", "xml", "form", "properties", "png", "html", "ft", "json"]
     if (fileTypes.contains(fileName.substring(fileName.lastIndexOf(".") + 1))) return true
     false
 }
 
-public Boolean copyFile(File source, File destination) {
+public static Boolean copyFile(File source, File destination) {
     new File(destination.getParentFile().getAbsolutePath()).mkdirs();
     try {
         FileInputStream inFile = new FileInputStream(source);
@@ -122,7 +136,7 @@ public Boolean copyFile(File source, File destination) {
     true;
 }
 
-private void addMetamodelRepresentation(String astDir, String destinyDir) {
+public static void addLangHeritage(String astDir, String destinyDir) {
     new File(destinyDir).mkdirs()
     copyFile(new File(astDir, "AST.java"), new File(destinyDir, "AST.java.tpl"));
     copyFile(new File(astDir, "ASTNode.java"), new File(destinyDir, "ASTNode.java.tpl"));

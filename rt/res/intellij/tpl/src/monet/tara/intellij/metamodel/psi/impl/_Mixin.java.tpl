@@ -93,11 +93,22 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isPolymorphic() {
-		return ((Definition) this).getSignature().getPolymorphic() != null;
+		return this.getSignature().getPolymorphic() != null;
 	}
 
 	public boolean isMorph() {
-		return ((Definition) this).getSignature().getMorph() != null;
+		return this.getSignature().getMorph() != null;
+	}
+
+	public boolean isExtensible() {
+		Annotations annotations = this.getAnnotations();
+		if (annotations != null) {
+			PsiElement[] ::projectName::Annotations = annotations.getAnnotations();
+			for (PsiElement element \: ::projectName::Annotations)
+				if (element instanceof ::projectProperName::Extensible)
+					return true;
+		}
+		return false;
 	}
 
 	\@NotNull

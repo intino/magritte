@@ -1,13 +1,12 @@
 package monet.::projectName::.intellij.metamodel.psi;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::FileImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface Body extends PsiElement {
+public interface Body extends ::projectProperName::PsiElement {
 
 	::projectProperName::FileImpl getFile() throws PsiInvalidElementAccessException;
 

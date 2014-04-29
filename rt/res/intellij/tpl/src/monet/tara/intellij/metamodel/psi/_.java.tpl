@@ -35,6 +35,8 @@ public interface Definition extends Navigatable, Iconable, PsiNamedElement {
 
 	boolean isMorph();
 
+	boolean isExtensible();
+
 	\@Nullable
 	Annotations getAnnotations();
 

@@ -1,12 +1,12 @@
 package monet.tara.compiler.semantic;
 
 
-import monet.tara.compiler.core.ast.AST;
-import monet.tara.compiler.core.ast.ASTNode;
-import monet.tara.compiler.core.ast.ASTNode.AnnotationType;
-import monet.tara.compiler.core.ast.ASTNode.Attribute;
-import monet.tara.compiler.core.ast.ASTNode.Reference;
-import monet.tara.compiler.core.ast.ASTNode.Word;
+import monet.tara.lang.AST;
+import monet.tara.lang.ASTNode;
+import monet.tara.lang.ASTNode.AnnotationType;
+import monet.tara.lang.ASTNode.Attribute;
+import monet.tara.lang.ASTNode.Reference;
+import monet.tara.lang.ASTNode.Word;
 import monet.tara.compiler.core.errorcollection.semantic.DuplicateAnnotationError;
 import monet.tara.compiler.core.errorcollection.semantic.DuplicateIdentifierError;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;

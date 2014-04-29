@@ -14,13 +14,6 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface TaraM2GrammarVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link TaraM2Grammar#naturalList}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNaturalList(@NotNull TaraM2Grammar.NaturalListContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link TaraM2Grammar#body}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -42,25 +35,11 @@ public interface TaraM2GrammarVisitor<T> extends ParseTreeVisitor<T> {
 	T visitNaturalValue(@NotNull TaraM2Grammar.NaturalValueContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link TaraM2Grammar#booleanList}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBooleanList(@NotNull TaraM2Grammar.BooleanListContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link TaraM2Grammar#root}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitRoot(@NotNull TaraM2Grammar.RootContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link TaraM2Grammar#integerList}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIntegerList(@NotNull TaraM2Grammar.IntegerListContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link TaraM2Grammar#attribute}.
@@ -84,11 +63,11 @@ public interface TaraM2GrammarVisitor<T> extends ParseTreeVisitor<T> {
 	T visitDoubleValue(@NotNull TaraM2Grammar.DoubleValueContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link TaraM2Grammar#reference}.
+	 * Visit a parse tree produced by {@link TaraM2Grammar#lang}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitReference(@NotNull TaraM2Grammar.ReferenceContext ctx);
+	T visitLang(@NotNull TaraM2Grammar.LangContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link TaraM2Grammar#booleanValue}.
@@ -98,11 +77,11 @@ public interface TaraM2GrammarVisitor<T> extends ParseTreeVisitor<T> {
 	T visitBooleanValue(@NotNull TaraM2Grammar.BooleanValueContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link TaraM2Grammar#modifier}.
+	 * Visit a parse tree produced by {@link TaraM2Grammar#child}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitModifier(@NotNull TaraM2Grammar.ModifierContext ctx);
+	T visitChild(@NotNull TaraM2Grammar.ChildContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link TaraM2Grammar#conceptConstituents}.
@@ -119,13 +98,6 @@ public interface TaraM2GrammarVisitor<T> extends ParseTreeVisitor<T> {
 	T visitReferenceIdentifier(@NotNull TaraM2Grammar.ReferenceIdentifierContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link TaraM2Grammar#doc}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDoc(@NotNull TaraM2Grammar.DocContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link TaraM2Grammar#integerValue}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -140,11 +112,109 @@ public interface TaraM2GrammarVisitor<T> extends ParseTreeVisitor<T> {
 	T visitStringList(@NotNull TaraM2Grammar.StringListContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#signature}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSignature(@NotNull TaraM2Grammar.SignatureContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#naturalList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNaturalList(@NotNull TaraM2Grammar.NaturalListContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#extensible}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExtensible(@NotNull TaraM2Grammar.ExtensibleContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#cases}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCases(@NotNull TaraM2Grammar.CasesContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#booleanList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBooleanList(@NotNull TaraM2Grammar.BooleanListContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#integerList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntegerList(@NotNull TaraM2Grammar.IntegerListContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#reference}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReference(@NotNull TaraM2Grammar.ReferenceContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#imports}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitImports(@NotNull TaraM2Grammar.ImportsContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#header}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitHeader(@NotNull TaraM2Grammar.HeaderContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#headerReference}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitHeaderReference(@NotNull TaraM2Grammar.HeaderReferenceContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#modifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitModifier(@NotNull TaraM2Grammar.ModifierContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#extension}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExtension(@NotNull TaraM2Grammar.ExtensionContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#doc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDoc(@NotNull TaraM2Grammar.DocContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link TaraM2Grammar#word}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitWord(@NotNull TaraM2Grammar.WordContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#packet}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPacket(@NotNull TaraM2Grammar.PacketContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link TaraM2Grammar#annotations}.
@@ -166,18 +236,4 @@ public interface TaraM2GrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitVariableNames(@NotNull TaraM2Grammar.VariableNamesContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link TaraM2Grammar#signature}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSignature(@NotNull TaraM2Grammar.SignatureContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link TaraM2Grammar#conceptInjection}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitConceptInjection(@NotNull TaraM2Grammar.ConceptInjectionContext ctx);
 }

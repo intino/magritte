@@ -78,9 +78,8 @@ implements='monet.tara.intellij.metamodel.psi.Annotations'}
 extension ::= EXTENSION_KEY COLON externalReference
 
 
-extensible ::= EXTENSIBLE_KEY COLON lang
+extensible ::= EXTENSIBLE_KEY COLON IDENTIFIER_KEY
 {pin=1}
-lang::= IDENTIFIER_KEY
 
 variableNames::= IDENTIFIER_KEY (COMMA IDENTIFIER_KEY)*;
 
@@ -95,22 +94,22 @@ doc::= DOC_LINE+
 implements='monet.tara.intellij.metamodel.psi.Doc'}
 
 
-headerReference::= identifier child* {
-                pin=1
+headerReference::= hierarchy* identifier  {
+                pin=2
                 mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
                 implements='monet.tara.intellij.metamodel.psi.HeaderReference'}
 
-referenceIdentifier::= identifier child*
-{pin=1
+referenceIdentifier::= hierarchy* identifier
+{pin=2
 mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceIdentifierMixin'
       implements='monet.tara.intellij.metamodel.psi.ReferenceIdentifier'}
 
-externalReference ::= identifier child*
-{pin=1
+externalReference ::= hierarchy* identifier
+{pin=2
 mixin= 'monet.tara.intellij.metamodel.psi.impl.ExternalReferenceMixin'
 implements='monet.tara.intellij.metamodel.psi.ExternalReference'}
 
-private child ::= DOT identifier {pin=1}
+private hierarchy ::= identifier DOT
 
 identifier::=  IDENTIFIER_KEY
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierMixin'

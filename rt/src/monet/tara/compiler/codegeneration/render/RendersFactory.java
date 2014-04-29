@@ -15,9 +15,9 @@ public class RendersFactory {
 
 	static {
 		renders.put("definition", DefinitionRender.class);
-		renders.put("syntaxhighlighter.java", HighlightRender.class);
+		renders.put("TaraSyntaxHighlighter.java", HighlightRender.class);
 		renders.put("plugin.xml", PluginDescriptorRender.class);
-		renders.put("signaturecompletioncontributor.java", SignatureCompletionContributorRender.class);
+		renders.put("TaraSignatureCompletionContributor.java", SignatureCompletionContributorRender.class);
 	}
 
 	private RendersFactory() {
@@ -25,7 +25,7 @@ public class RendersFactory {
 
 	public static DefaultRender getRender(String name, String project, Object params) throws TaraException {
 		try {
-			Class<? extends DefaultRender> clazz = renders.get(name.toLowerCase());
+			Class<? extends DefaultRender> clazz = renders.get(name);
 			Constructor constructor = clazz.getConstructor(String.class, String.class, Object.class);
 			return (DefaultRender) constructor.newInstance(TemplateFactory.getTemplate(name), project, params);
 		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {

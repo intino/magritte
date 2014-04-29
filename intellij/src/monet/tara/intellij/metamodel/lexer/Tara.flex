@@ -149,7 +149,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{CONCEPT}                   {   return TaraTypes.CONCEPT_KEY; }
 
-	{IMPORT_KEY}                    {   return TaraTypes.IMPORT_KEY; }
+	{IMPORT_KEY}                {   return TaraTypes.IMPORT_KEY; }
 
 	{PACKAGE}                   {   return TaraTypes.PACKAGE; }
 

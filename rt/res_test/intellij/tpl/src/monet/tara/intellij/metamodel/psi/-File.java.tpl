@@ -9,15 +9,13 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
-public interface ::projectProperName::File {
+public interface ::projectProperName::File extends PsiFile{
 
 	\@NotNull
 	PsiFile getContainingFile();
 
 	\@NotNull
-	List<Definition> getDefinitions();
+	Definition getDefinition();
 
 	Definition findDefinitionByKey(\@NotNull \@NonNls String key);
 
@@ -25,6 +23,8 @@ public interface ::projectProperName::File {
 	PsiElement addDefinition(\@NotNull Definition definition) throws IncorrectOperationException;
 
 	Definition addDefinition(String identifier);
+
+	Import addImport(String reference);
 
 	String getName();
 
@@ -35,4 +35,8 @@ public interface ::projectProperName::File {
 	Project getProject();
 
 	String getText();
+
+	::projectProperName::Packet getPackage();
+
+	Import[] getImports();
 }

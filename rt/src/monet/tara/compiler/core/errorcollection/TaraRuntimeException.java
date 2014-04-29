@@ -1,7 +1,7 @@
 package monet.tara.compiler.core.errorcollection;
 
 
-import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.lang.ASTNode;
 
 public class TaraRuntimeException extends RuntimeException {
 

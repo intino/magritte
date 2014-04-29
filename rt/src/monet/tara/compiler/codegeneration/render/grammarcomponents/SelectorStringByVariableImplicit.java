@@ -1,7 +1,7 @@
 package monet.tara.compiler.codegeneration.render.grammarcomponents;
 
 
-import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.lang.ASTNode;
 
 import static monet.tara.compiler.codegeneration.render.grammarcomponents.EndingTokenSelector.*;
 

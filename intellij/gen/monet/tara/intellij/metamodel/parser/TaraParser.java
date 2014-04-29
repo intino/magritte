@@ -641,21 +641,6 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // DOT identifier
-  static boolean child(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "child")) return false;
-    if (!nextTokenIs(builder_, DOT)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, DOT);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && identifier(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
-    return result_ || pinned_;
-  }
-
-  /* ********************************************************** */
   // doc? signature annotations? body?
   public static boolean concept(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "concept")) return false;
@@ -810,27 +795,25 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // identifier child*
+  // hierarchy* identifier
   public static boolean externalReference(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "externalReference")) return false;
     if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
     boolean result_ = false;
-    boolean pinned_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = identifier(builder_, level_ + 1);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && externalReference_1(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, EXTERNAL_REFERENCE, result_, pinned_, null);
-    return result_ || pinned_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = externalReference_0(builder_, level_ + 1);
+    result_ = result_ && identifier(builder_, level_ + 1);
+    exit_section_(builder_, marker_, EXTERNAL_REFERENCE, result_);
+    return result_;
   }
 
-  // child*
-  private static boolean externalReference_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "externalReference_1")) return false;
+  // hierarchy*
+  private static boolean externalReference_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "externalReference_0")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!child(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "externalReference_1", pos_)) break;
+      if (!hierarchy(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "externalReference_0", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
@@ -862,30 +845,41 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // identifier child*
+  // hierarchy* identifier
   public static boolean headerReference(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "headerReference")) return false;
     if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
     boolean result_ = false;
-    boolean pinned_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = identifier(builder_, level_ + 1);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && headerReference_1(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, HEADER_REFERENCE, result_, pinned_, null);
-    return result_ || pinned_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = headerReference_0(builder_, level_ + 1);
+    result_ = result_ && identifier(builder_, level_ + 1);
+    exit_section_(builder_, marker_, HEADER_REFERENCE, result_);
+    return result_;
   }
 
-  // child*
-  private static boolean headerReference_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "headerReference_1")) return false;
+  // hierarchy*
+  private static boolean headerReference_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "headerReference_0")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!child(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "headerReference_1", pos_)) break;
+      if (!hierarchy(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "headerReference_0", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
+  }
+
+  /* ********************************************************** */
+  // identifier DOT
+  static boolean hierarchy(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "hierarchy")) return false;
+    if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = identifier(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, DOT);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   /* ********************************************************** */
@@ -1073,27 +1067,25 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // identifier child*
+  // hierarchy* identifier
   public static boolean referenceIdentifier(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "referenceIdentifier")) return false;
     if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
     boolean result_ = false;
-    boolean pinned_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = identifier(builder_, level_ + 1);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && referenceIdentifier_1(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, REFERENCE_IDENTIFIER, result_, pinned_, null);
-    return result_ || pinned_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = referenceIdentifier_0(builder_, level_ + 1);
+    result_ = result_ && identifier(builder_, level_ + 1);
+    exit_section_(builder_, marker_, REFERENCE_IDENTIFIER, result_);
+    return result_;
   }
 
-  // child*
-  private static boolean referenceIdentifier_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "referenceIdentifier_1")) return false;
+  // hierarchy*
+  private static boolean referenceIdentifier_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "referenceIdentifier_0")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!child(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "referenceIdentifier_1", pos_)) break;
+      if (!hierarchy(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "referenceIdentifier_0", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;

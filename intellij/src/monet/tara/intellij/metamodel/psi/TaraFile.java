@@ -9,7 +9,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-public interface TaraFile extends PsiFile{
+public interface TaraFile extends PsiFile {
 
 	@NotNull
 	PsiFile getContainingFile();

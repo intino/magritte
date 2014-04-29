@@ -5,11 +5,17 @@ options { tokenVocab=TaraM2Lexer; }
     package AntlrM2;
 }
 
-root: (concept | NEWLINE)* EOF;
+root: NEWLINE* header NEWLINE+ concept?  NEWLINE* EOF;
+
+header: packet importStatement*;
+
+imports: NEWLINE IMPORT_KEY headerReference;
+packet : PACKAGE headerReference;
 
 concept: doc? signature annotations? body?;
 
-signature: CONCEPT (COLON referenceIdentifier)? (POLYMORPHIC | modifier? MORPH?) IDENTIFIER;
+signature: CONCEPT modifier? IDENTIFIER
+         | CONCEPT COLON referenceIdentifier (modifier? IDENTIFIER)?;
 
 body: NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT;
 
@@ -17,13 +23,13 @@ conceptConstituents: attribute
                    | reference
                    | word
                    | concept
-                   | conceptInjection;
+                   | case;
+
+case: doc? CASE_KEY IDENTIFIER annotations? body?;
 
 reference: VAR referenceIdentifier LIST? variableNames;
 
 word: VAR WORD IDENTIFIER NEW_LINE_INDENT (IDENTIFIER NEWLINE)+ DEDENT;
-
-conceptInjection: NEW referenceIdentifier annotations?;
 
 attribute: VAR     UID_TYPE  IDENTIFIER (ASSIGN stringValue)?
          | VAR     INT_TYPE (variableNames | IDENTIFIER ASSIGN integerValue | LIST IDENTIFIER (ASSIGN integerList)?)
@@ -44,13 +50,22 @@ integerList: LEFT_SQUARE (POSITIVE_VALUE | NEGATIVE_VALUE)+ RIGHT_SQUARE;
 doubleList : LEFT_SQUARE (POSITIVE_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE)+ RIGHT_SQUARE;
 naturalList: LEFT_SQUARE POSITIVE_VALUE+ RIGHT_SQUARE;
 
-annotations: OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | EXTENSIBLE| SINGLETON | ROOT)+ CLOSE_AN;
+annotations: OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | extension | extensible | INTENTION | SINGLETON | ROOT)+ CLOSE_AN;
+
+extension : EXTENSION COLON externalIdentifier;
+extensible: EXTENSIBLE COLON IDENTIFIER;
 
 variableNames: IDENTIFIER (COMMA IDENTIFIER)*;
 
-referenceIdentifier: IDENTIFIER (DOT IDENTIFIER)*;
+headerReference: hierarchy* IDENTIFIER;
+externalReference: hierarchy* IDENTIFIER;
+
+referenceIdentifier: hierarchy* IDENTIFIER;
+hierarchy: IDENTIFIER DOT;
+
 
 modifier: ABSTRACT
-        | FINAL;
+        | FINAL
+        | BASE;
 
 doc: DOC+;

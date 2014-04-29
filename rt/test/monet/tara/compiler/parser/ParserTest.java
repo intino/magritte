@@ -1,7 +1,7 @@
 package monet.tara.compiler.parser;
 
-import monet.tara.compiler.core.ast.ASTWrapper;
-import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.ASTNode;
 import org.junit.Assert;
 import org.junit.Test;
 

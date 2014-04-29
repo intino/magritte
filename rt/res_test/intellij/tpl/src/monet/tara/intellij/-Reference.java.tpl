@@ -2,7 +2,6 @@ package monet.::projectName::.intellij;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
@@ -27,11 +26,10 @@ public class ::projectProperName::Reference extends PsiReferenceBase<PsiElement>
 	\@NotNull
 	\@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
-		Project project = myElement.getProject();
-		final Definition definition = ::projectProperName::Util.resolveReferences(project, myElement);
 		List<ResolveResult> results = new ArrayList<>();
-		if (definition != null)
-			results.add(new PsiElementResolveResult(definition));
+		PsiElement element = ::projectProperName::Util.resolveReference(myElement);
+		if (element != null)
+			results.add(new PsiElementResolveResult(element));
 		return results.toArray(new ResolveResult[results.size()]);
 	}
 
@@ -47,7 +45,7 @@ public class ::projectProperName::Reference extends PsiReferenceBase<PsiElement>
 	public Object[] getVariants() {
 		List<Definition> definitions = new ArrayList<>();
 		if (isReferenceToDefinition())
-			refer((::projectProperName::Identifier) myElement, definitions);
+			getVariants((::projectProperName::Identifier) myElement, definitions);
 		else if (myElement.getPrevSibling().getPrevSibling() instanceof Identifier)
 			getChildrenVariants((::projectProperName::Identifier) myElement.getPrevSibling().getPrevSibling(), definitions);
 		return fillVariants(definitions);
@@ -65,14 +63,14 @@ public class ::projectProperName::Reference extends PsiReferenceBase<PsiElement>
 		return variants.toArray();
 	}
 
-	private void refer(::projectProperName::Identifier parent, List<Definition> definitions) {
+	private void getVariants(::projectProperName::Identifier parent, List<Definition> definitions) {
 		definitions.addAll(::projectProperName::Util.getRootDefinitions(parent.getProject()));
 		Definition context = ::projectProperName::PsiImplUtil.getContextOf(parent);
 		definitions.addAll(::projectProperName::Util.getSiblings(context));
 	}
 
 	private void getChildrenVariants(::projectProperName::Identifier parent, List<Definition> definitions) {
-		Definition definition = ::projectProperName::Util.resolveReferences(parent.getProject(), parent);
+		Definition definition = ::projectProperName::Util.resolveDefinitionReference(parent);
 		Collections.addAll(definitions, ::projectProperName::Util.getChildrenOf(definition));
 	}
 

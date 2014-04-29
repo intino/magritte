@@ -17,4 +17,6 @@ public abstract class ::projectProperName::ElementFactory {
 	public abstract Identifier createNameIdentifier(String name);
 
 	public abstract Attribute createAttribute(String name, String type);
+
+	public abstract Import createImport(String reference);
 }

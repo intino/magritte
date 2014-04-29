@@ -3,11 +3,11 @@ package monet.tara.compiler;
 import monet.tara.compiler.core.CompilationUnit;
 import monet.tara.compiler.core.CompilerMessage;
 import monet.tara.compiler.core.SourceUnit;
-import monet.tara.compiler.core.ast.ASTNode;
 import monet.tara.compiler.core.errorcollection.*;
 import monet.tara.compiler.core.errorcollection.message.*;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
 import monet.tara.compiler.rt.TaraCompilerMessageCategories;
+import monet.tara.lang.ASTNode;
 
 import java.io.File;
 import java.io.IOException;

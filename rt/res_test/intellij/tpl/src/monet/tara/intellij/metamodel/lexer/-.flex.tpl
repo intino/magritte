@@ -91,8 +91,10 @@ NEWLINE= [\\n]+ ([ ] | [\\t])*
 //=====================
 //Reserved words
 
-SYNTHESIZE= "synthesize"
-MORPH_KEY = "Morph"
+SYNTHESIZE = "synthesize"
+IMPORT_KEY = "import"
+PACKAGE    = "package"
+MORPH_KEY  = "Morph"
 POLYMORPHIC_KEY = "Polymorphic"
 MORPH_KEY     = "Morph"
 FINAL     = "final"
@@ -101,16 +103,22 @@ MULTIPLE  = "multiple"
 OPTIONAL  = "optional"
 HAS_CODE  = "has-code"
 SINGLETON = "singleton"
+INTENTION = "intention"
+GENERIC   = "generic"
 ROOT      = "root"
-EXTENSIBLE = "extensible"
+EXTENSIBLE_KEY = "extensible"
+EXTENSION_KEY = "extension"
 WORD      = "Word"
 VAR       = "var"
 NEW       = "new"
-
+CODE_KEY      = "code"
 
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
 LEFT_SQUARE  = "["
 RIGHT_SQUARE = "]"
+
+LEFT_PARENTHESIS = "("
+RIGHT_PARENTHESIS = ")"
 
 OPEN_BRACKET  = "{"
 CLOSE_BRACKET = "}"
@@ -142,7 +150,6 @@ POSITIVE_VALUE = {POSITIVE}? {DIGIT}+
 NEGATIVE_VALUE = {NEGATIVE} {DIGIT}+
 DOUBLE_VALUE   = ({POSITIVE} | {NEGATIVE})? {DIGIT}+ {DOT} {DIGIT}+
 STRING_VALUE   = {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
-::codeStatement::
 DOC_LINE = "'" ~[\\n]
 
 DIGIT=[\:digit\:]
@@ -155,6 +162,10 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 <YYINITIAL> {
 
     {SYNTHESIZE}                {   return ::projectNameFile::Types.SYNTHESIZE; }
+
+    {IMPORT_KEY}                {   return ::projectNameFile::Types.IMPORT_KEY; }
+
+    {PACKAGE}                   {   return ::projectNameFile::Types.PACKAGE; }
 
     {POLYMORPHIC_KEY}           {   return ::projectNameFile::Types.POLYMORPHIC_KEY; }
 
@@ -179,14 +190,17 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 	{MULTIPLE}                  {   return ::projectNameFile::Types.MULTIPLE; }
 
 	{HAS_CODE}                  {   return ::projectNameFile::Types.HAS_CODE; }
-	{EXTENSIBLE}                {   return ::projectNameFile::Types.EXTENSIBLE; }
+	{EXTENSIBLE_KEY}            {   return ::projectNameFile::Types.EXTENSIBLE_KEY; }
+	{EXTENSION_KEY}             {   return ::projectNameFile::Types.EXTENSION_KEY; }
 	{ROOT}                      {   return ::projectNameFile::Types.ROOT; }
 	{SINGLETON}                 {   return ::projectNameFile::Types.SINGLETON; }
+	{GENERIC}                   {   return ::projectNameFile::Types.GENERIC; }
+	{INTENTION}                 {   return ::projectNameFile::Types.INTENTION; }
 
 	{DOC_LINE}                       {   return ::projectNameFile::Types.DOC_LINE; }
 
 	{STRING_VALUE}              {   return ::projectNameFile::Types.STRING_VALUE_KEY; }
-	::codeStatementFunction::
+	{CODE_KEY}                      {   return ::projectNameFile::Types.CODE_KEY; }
 	{BOOLEAN_VALUE}             {   return ::projectNameFile::Types.BOOLEAN_VALUE_KEY; }
 	{DOUBLE_VALUE}              {   return ::projectNameFile::Types.DOUBLE_VALUE_KEY; }
 	{NEGATIVE_VALUE}            {   return ::projectNameFile::Types.NEGATIVE_VALUE_KEY; }
@@ -194,6 +208,9 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 
 	{LEFT_SQUARE}               {   return ::projectNameFile::Types.LEFT_SQUARE; }
 	{RIGHT_SQUARE}              {   return ::projectNameFile::Types.RIGHT_SQUARE; }
+
+    {LEFT_PARENTHESIS}          {   return ::projectNameFile::Types.LEFT_PARENTHESIS; }
+    {RIGHT_PARENTHESIS}         {   return ::projectNameFile::Types.RIGHT_PARENTHESIS; }
 
 	{WORD}                      {   return ::projectNameFile::Types.WORD_KEY; }
 

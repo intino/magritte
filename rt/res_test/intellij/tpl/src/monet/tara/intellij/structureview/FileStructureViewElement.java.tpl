@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class FileStructureViewElement extends PsiTreeElementBase<::projectProperName::FileImpl> {
 
@@ -20,10 +19,9 @@ public class FileStructureViewElement extends PsiTreeElementBase<::projectProper
 
 	\@NotNull
 	public Collection<StructureViewTreeElement> getChildrenBase() {
-		List<? extends Definition> definitions = getElement().getDefinitions();
-		Collection<StructureViewTreeElement> elements = new ArrayList<>(definitions.size());
-		for (Definition definition \: definitions)
-			elements.add(new StructureViewElement(definition));
+		Definition definition = getElement().getDefinition();
+		Collection<StructureViewTreeElement> elements = new ArrayList<>(1);
+		elements.add(new StructureViewElement(definition));
 		return elements;
 	}
 

@@ -1,9 +1,9 @@
 package monet.tara.compiler.semantic;
 
 
-import monet.tara.compiler.core.ast.AST;
-import monet.tara.compiler.core.ast.ASTNode;
-import monet.tara.compiler.core.ast.ASTNode.AnnotationType;
+import monet.tara.lang.AST;
+import monet.tara.lang.ASTNode;
+import monet.tara.lang.ASTNode.AnnotationType;
 import monet.tara.compiler.core.errorcollection.semantic.NoRootError;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import monet.tara.compiler.core.errorcollection.semantic.WrongAnnotationError;

@@ -1,6 +1,6 @@
 package monet.tara.compiler.core.errorcollection.semantic;
 
-import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.lang.ASTNode;
 
 public class UndefinedReferenceError extends SemanticError implements SemanticError.FatalError {
 	public UndefinedReferenceError(String name, ASTNode node) {

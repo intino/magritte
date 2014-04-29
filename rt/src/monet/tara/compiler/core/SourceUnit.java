@@ -1,8 +1,8 @@
 package monet.tara.compiler.core;
 
 import monet.tara.compiler.codegeneration.render.RendersFactory;
-import monet.tara.compiler.core.ast.ASTWrapper;
-import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.ASTNode;
 import monet.tara.compiler.core.errorcollection.ErrorCollector;
 import monet.tara.compiler.core.errorcollection.SyntaxException;
 import monet.tara.compiler.core.errorcollection.TaraException;

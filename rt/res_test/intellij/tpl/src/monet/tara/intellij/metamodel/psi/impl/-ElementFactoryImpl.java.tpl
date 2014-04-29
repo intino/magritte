@@ -15,9 +15,12 @@ public class ::projectProperName::ElementFactoryImpl extends ::projectProperName
 	}
 
 	public Definition createDefinition(String name) {
-		final ::projectProperName::FileImpl file = createDummyFile("Definition abstract as " + name + " <has-code root>\\n" +
-			"\\tDefinition as Ontology <optional>\\n" +
-			"\\tvar Uid uid");
+		final ::projectProperName::FileImpl file = createDummyFile(
+			"package ::projectName::\\n" +
+				"Definition abstract " + name + " <has-code root>\\n" +
+				"\\tDefinition Ontology <optional>\\n" +
+				"\\tvar Uid uid"
+		);
 		return (Definition) file.getFirstChild();
 	}
 
@@ -31,11 +34,23 @@ public class ::projectProperName::ElementFactoryImpl extends ::projectProperName
 
 	public Attribute createAttribute(String name, String type) {
 		final ::projectProperName::FileImpl file = createDummyFile(
-			"Definition abstract as Source <has-code root>\\n" +
+			"package ::projectName::\\n" +
+				"Definition abstract Source <has-code root>\\n" +
 				"\\tvar " + type + " " + name + "\\n" +
-				"\\tDefinition as Ontology <optional>\\n");
+				"\\tDefinition Ontology <optional>\\n"
+		);
 		Body body = ((Definition) file.getFirstChild()).getBody();
 		return body != null ? body.getAttributeList().get(0) \: null;
+	}
+
+	public Import createImport(String reference) {
+		final ::projectProperName::FileImpl file = createDummyFile(
+			"package ::projectName::\\n" +
+				"import " + reference + "\\n\\n" +
+				"Definition abstract Source <has-code root>\\n"
+		);
+		Import[] imp = file.getImports();
+		return imp != null ? imp[0] \: null;
 	}
 
 }

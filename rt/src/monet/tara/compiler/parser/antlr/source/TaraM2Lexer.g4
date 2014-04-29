@@ -87,20 +87,27 @@ lexer grammar TaraM2Lexer;
 }
 
 CONCEPT    : 'Concept';
-FINAL      : 'final';
-ABSTRACT   : 'abstract';
+CASE       : 'case';
+
 MULTIPLE   : 'multiple';
 OPTIONAL   : 'optional';
 HAS_CODE   : 'has-code';
-EXTENSIBLE : 'extensible';
-VAR        : 'var';
 ROOT       : 'root';
 SINGLETON  : 'singleton';
-NEW        : 'new';
-POLYMORPHIC: 'polymorphic';
-MORPH      : 'morph';
-WORD       : 'Word';
 GENERIC    : 'generic';
+INTENTION  : 'intention';
+EXTENSION  : 'extension';
+EXTENSIBLE : 'extensible';
+
+VAR        : 'var';
+WORD       : 'Word';
+
+FINAL      : 'final';
+ABSTRACT   : 'abstract';
+BASE       : 'base';
+
+IMPORT     : 'import';
+PACKAGE    : 'package';
 
 LIST: LEFT_SQUARE RIGHT_SQUARE;
 LEFT_SQUARE : '[';
@@ -140,8 +147,7 @@ IDENTIFIER: LETTER (DIGIT | LETTER)*;
 DIGIT : [0-9];
 
 LETTER: 'a'..'z'
-      | 'A'..'Z'
-      ;
+      | 'A'..'Z';
 
 NEWLINE: NL+ SP* { newlinesAndSpaces(); };
 

@@ -2,23 +2,22 @@ package monet.tara.compiler.codegeneration.intellij;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import monet.tara.compiler.codegeneration.PathManager;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.SourceUnit;
-import monet.tara.compiler.core.ast.AST;
-import monet.tara.compiler.core.ast.ASTNode;
-import monet.tara.compiler.core.ast.ASTWrapper;
 import monet.tara.compiler.core.errorcollection.TaraException;
+import monet.tara.lang.ASTWrapper;
 
-import java.io.*;
-import java.lang.reflect.Type;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.List;
 
 public class PluginGenerator {
 
-	private static final String AST_JSON = "m2" + PathManager.SEP + "ast.json";
+	private static final String AST_JSON = "ast" + PathManager.SEP + "ast.json";
 	CompilerConfiguration conf;
 
 	public PluginGenerator(CompilerConfiguration conf) {
@@ -48,17 +47,14 @@ public class PluginGenerator {
 		return ast;
 	}
 
-	private void serializeNodes(AST nodes) throws TaraException {
+	private void serializeNodes(List nodes) throws TaraException {
 		try {
-			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 			File file = new File(PathManager.getResIdeDir(conf.getTempDirectory()), AST_JSON);
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
+			Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 			writer.write(gson.toJson(nodes));
 			writer.close();
-			Type collectionType = new TypeToken<Collection<ASTNode>>() {}.getType();
-			List<String> astNodes = gson.fromJson(new InputStreamReader(new FileInputStream("ast.json")), collectionType);
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new TaraException("Error serializing ast");

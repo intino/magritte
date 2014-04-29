@@ -29,6 +29,7 @@
   </application-components>
 
   <extensions defaultExtensionNs="com.intellij">
+    <fileDocumentManagerListener implementation="monet.::projectName::.intellij.codegeneration.::projectProperName::FileDocumentManagerListener"/>
     <errorHandler implementation="monet.::projectName::.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="::projectProperName::"
                          implementationClass="monet.::projectName::.intellij.refactoring.rename.NamesValidator"/>
@@ -37,7 +38,9 @@
     <moduleType id="::projectUpperName::_MODULE" implementationClass="monet.::projectName::.intellij.project.module.ModuleType"/>
     <treeStructureProvider implementation="monet.::projectName::.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="monet.::projectName::.intellij.actions.::projectProperName::TemplatesFactory"/>
-
+    <!--<codeInsight.lineMarkerProvider language="::projectProperName::"-->
+    <!--implementationClass="monet.::projectName::.intellij.codeinsight.::projectProperName::LineMarkerProvider"/>-->
+    <gotoRelatedProvider implementation="monet.::projectName::.intellij.codeinsight.::projectProperName::RelatedFilesProvider"/>
     
 
     <configurationType implementation="monet.::projectName::.intellij.project.runner.RunConfigurationType"/>
@@ -51,11 +54,10 @@
                                    implementationClass="monet.::projectName::.intellij.highlighting.::projectProperName::SyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="monet.::projectName::.intellij.highlighting.::projectProperName::ColorSettingPage"/>
     <lang.braceMatcher language="::projectProperName::" implementationClass="monet.::projectName::.intellij.highlighting.::projectProperName::BraceMatcher"/>
-    <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.::projectProperName::Annotator"/>
-    <globalInspection language="::projectProperName::" shortName="UnusedDefinition" bundle="messages.::projectProperName::Bundle"
-                      key="unused.definition.inspection.display.name"
-                      groupKey="::projectName::.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"
-                      implementationClass="monet.::projectName::.intellij.codeinspection.UnusedAbstractDefinitionInspection"/>
+    <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.ReferenceAnnotator"/>
+    <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.AnnotationsAnnotator"/>
+    <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.AttributeAnnotator"/>
+    <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.DefinitionAnnotator"/>
     <completion.contributor language="::projectProperName::"
                             implementationClass="monet.::projectName::.intellij.codeinsight.completion.::projectProperName::SignatureCompletionContributor"/>
     <completion.contributor language="::projectProperName::"
@@ -68,14 +70,17 @@
     <nameSuggestionProvider implementation="monet.::projectName::.intellij.refactoring.NameSuggestionProvider"/>
     <lang.elementManipulator forClass="monet.::projectName::.intellij.metamodel.psi.::projectProperName::Identifier"
                              implementationClass="monet.::projectName::.intellij.metamodel.psi.impl.IdentifierManipulator"/>
+
     <lang.refactoringSupport language="::projectProperName::"
                              implementationClass="monet.::projectName::.intellij.::projectProperName::RefactoringSupportProvider"/>
     <renameHandler implementation="monet.::projectName::.intellij.refactoring.rename.RenameHandler"/>
     <lang.findUsagesProvider language="::projectProperName::"
                              implementationClass="monet.::projectName::.intellij.::projectProperName::FindUsagesProvider"/>
     <lang.foldingBuilder language="::projectProperName::" implementationClass="monet.::projectName::.intellij.::projectProperName::FoldingBuilder"/>
+    <projectService serviceInterface="monet.::projectName::.intellij.codeinsight.JavaHelper"
+                    serviceImplementation="monet.::projectName::.intellij.codeinsight.JavaHelper$Impl"/>
+    <!--<referenceImporter implementation="monet.::projectName::.intellij.annotator.imports.::projectProperName::ReferenceImporter"/>-->
     <!--<lang.formatter language="::projectProperName::" implementationClass="monet.::projectName::.intellij.formatter.::projectProperName::FormattingModelBuilder"/>-->
     <!--<refactoring.moveHandler implementation="com.intellij.uiDesigner.projectView.FormMoveProvider"/>-->
-
   </extensions>
 </idea-plugin>

@@ -1,6 +1,6 @@
 package monet.tara.compiler.codegeneration.render;
 
-import monet.tara.compiler.core.ast.ASTWrapper;
+import monet.tara.lang.ASTWrapper;
 import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.util.ArrayList;
@@ -24,10 +24,10 @@ public class HighlightRender extends DefaultRender {
 	private String buildKeys(String[] list) {
 		StringBuilder builder = new StringBuilder("");
 		for (String key : list)
-			builder.append("\n\t\t").append("KEYS_1.put(").append(RenderUtils.toProperCase(projectName)).
+			builder.append("\n\t\t").append("KEYS.put(").append(RenderUtils.toProperCase(projectName)).
 				append("Types.").append(key).append(", KEYWORD);");
-		builder.append("\n\t\tKEYS_1.put(").append(RenderUtils.toProperCase(projectName)).append("Types.SYNTHESIZE, KEYWORD);");
-		builder.append("\n\t\tKEYS_1.put(").append(RenderUtils.toProperCase(projectName)).append("Types.CODE, DOCUMENTATION);\n");
+		builder.append("\n\t\tKEYS.put(").append(RenderUtils.toProperCase(projectName)).append("Types.SYNTHESIZE, KEYWORD);");
+		builder.append("\n\t\tKEYS.put(").append(RenderUtils.toProperCase(projectName)).append("Types.CODE, DOCUMENTATION);\n");
 		return builder.toString();
 	}
 

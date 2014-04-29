@@ -1,6 +1,6 @@
 package monet.tara.compiler.codegeneration.render;
 
-import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.lang.ASTNode;
 import monet.tara.compiler.core.errorcollection.TaraException;
 
 import java.util.HashMap;

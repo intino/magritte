@@ -1,7 +1,7 @@
 package monet.tara.compiler.codegeneration.render.grammarcomponents;
 
-import monet.tara.compiler.core.ast.ASTWrapper;
-import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.ASTNode;
 
 import java.util.List;
 

@@ -2,9 +2,9 @@ package monet.tara.compiler.semantic;
 
 
 import monet.tara.compiler.core.SourceUnit;
-import monet.tara.compiler.core.ast.AST;
-import monet.tara.compiler.core.ast.ASTNode;
-import monet.tara.compiler.core.ast.ASTWrapper;
+import monet.tara.lang.AST;
+import monet.tara.lang.ASTNode;
+import monet.tara.lang.ASTWrapper;
 import monet.tara.compiler.core.errorcollection.SemanticException;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;

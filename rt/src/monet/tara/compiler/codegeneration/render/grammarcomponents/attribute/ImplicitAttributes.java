@@ -3,8 +3,8 @@ package monet.tara.compiler.codegeneration.render.grammarcomponents.attribute;
 
 import monet.tara.compiler.codegeneration.render.grammarcomponents.Attributes;
 import monet.tara.compiler.codegeneration.render.grammarcomponents.SelectorStringByVariableImplicit;
-import monet.tara.compiler.core.ast.ASTWrapper;
-import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.ASTNode;
 
 public class ImplicitAttributes extends Attributes {
 

@@ -1,7 +1,7 @@
 package monet.tara.compiler.parser.antlr;
 
-import monet.tara.compiler.core.ast.ASTWrapper;
-import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.lang.ASTNode;
+import monet.tara.lang.ASTWrapper;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -18,6 +18,8 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	private final String file;
 	ASTWrapper ast;
 	Stack<ASTNode> conceptStack = new Stack<>();
+	String packet ="";
+	ArrayList<String> imports = new ArrayList<>();
 
 	public TaraASTGeneratorListener(ASTWrapper ast, String file) {
 		this.ast = ast;
@@ -25,10 +27,23 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	}
 
 	@Override
+	public void enterPacket(@NotNull PacketContext ctx) {
+		packet = ctx.headerReference().getText();
+		imports.clear();
+	}
+
+	@Override
+	public void enterImports(@NotNull ImportsContext ctx) {
+		imports.add(ctx.headerReference().getText());
+	}
+
+	@Override
 	public void enterConcept(@NotNull ConceptContext ctx) {
 		ASTNode parent = null;
 		if (!conceptStack.empty()) parent = conceptStack.peek();
 		ASTNode node = new ASTNode(ctx.signature().IDENTIFIER().getText(), parent, file);
+		node.setPackage(packet);
+		node.addImports(imports);
 		node.setLine(ctx.getStart().getLine());
 		if (parent != null) parent.add(node);
 		else ast.add(node);
@@ -37,19 +52,13 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	}
 
 	@Override
-	public void enterSignature(@NotNull SignatureContext ctx) {
-		if (ctx.MORPH() != null) conceptStack.peek().setMorph(true);
-		if (ctx.POLYMORPHIC() != null) conceptStack.peek().setPolymorphic(true);
-
-	}
-
-	@Override
 	public void enterReferenceIdentifier(@NotNull ReferenceIdentifierContext ctx) {
 		String identifierName = "";
-		for (TerminalNode identifier : ctx.IDENTIFIER())
-			identifierName += "." + identifier;
+		for (ChildContext childContext : ctx.child())
+			identifierName += childContext;
+		identifierName += ctx.IDENTIFIER();
 		if (!(ctx.getParent() instanceof ReferenceContext))
-			conceptStack.peek().setExtendFrom(identifierName.substring(1));
+			conceptStack.peek().setExtendFrom(identifierName);
 	}
 
 	@Override
@@ -71,7 +80,9 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void enterModifier(@NotNull ModifierContext ctx) {
 		ASTNode node = conceptStack.peek();
-		node.setModifier((ctx.ABSTRACT() != null) ? ctx.ABSTRACT().getText() : ctx.FINAL().getText());
+		if (ctx.BASE() != null) conceptStack.peek().setPolymorphic(true);
+		else if (ctx.ABSTRACT() != null) node.setModifier(ctx.ABSTRACT().getText());
+		else if (ctx.FINAL() != null) node.setModifier(ctx.FINAL().getText());
 	}
 
 
@@ -125,19 +136,6 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	}
 
 	@Override
-	public void enterConceptInjection(@NotNull ConceptInjectionContext ctx) {
-		ASTNode componentNode = new ASTNode(file);
-		conceptStack.peek().add(componentNode);
-		componentNode.setParent(conceptStack.peek());
-		conceptStack.push(componentNode);
-	}
-
-	@Override
-	public void exitConceptInjection(@NotNull ConceptInjectionContext ctx) {
-		conceptStack.pop();
-	}
-
-	@Override
 	public void enterReference(@NotNull ReferenceContext ctx) {
 		String parent = getExtendedConceptString(ctx.referenceIdentifier());
 		String[] identifiers = getIdentifiers(ctx.variableNames());
@@ -147,11 +145,12 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		}
 	}
 
-	private String getExtendedConceptString(ReferenceIdentifierContext extendedConceptContext) {
+	private String getExtendedConceptString(ReferenceIdentifierContext ctx) {
 		String extendedConcept = "";
-		for (TerminalNode node : extendedConceptContext.IDENTIFIER())
-			extendedConcept += "." + node.getText();
-		return extendedConcept.substring(1);
+		for (ChildContext childContext : ctx.child())
+			extendedConcept += childContext;
+		extendedConcept += ctx.IDENTIFIER();
+		return extendedConcept;
 	}
 
 	@Override
@@ -160,7 +159,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 			conceptStack.peek().add(ASTNode.AnnotationType.OPTIONAL);
 		for (int i = 0; i < ctx.MULTIPLE().size(); i++)
 			conceptStack.peek().add(ASTNode.AnnotationType.MULTIPLE);
-		for (int i = 0; i < ctx.EXTENSIBLE().size(); i++)
+		for (int i = 0; i < ctx.extensible().size(); i++)
 			conceptStack.peek().add(ASTNode.AnnotationType.EXTENSIBLE);
 		for (int i = 0; i < ctx.HAS_CODE().size(); i++)
 			conceptStack.peek().add(ASTNode.AnnotationType.HAS_CODE);

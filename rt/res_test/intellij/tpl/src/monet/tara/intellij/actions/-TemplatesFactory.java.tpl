@@ -59,7 +59,7 @@ public class ::projectProperName::TemplatesFactory implements FileTemplateGroupD
 		return file;
 	}
 
-	public void registerCustromTemplates(String... templates) {
+	public void registerCustomTemplates(String... templates) {
 		Collections.addAll(myCustomTemplates, templates);
 	}
 

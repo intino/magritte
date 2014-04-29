@@ -16,6 +16,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 
 	@NotNull
 	private String renderConceptValue(Concept concept) {
+		if (concept == null) return "<i>empty</i>";
 		String raw = concept.getText();
 		if (raw == null) return "<i>empty</i>";
 		return StringUtil.escapeXml(raw);

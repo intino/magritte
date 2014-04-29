@@ -51,3 +51,7 @@ trail.spaces.definition.inspection.display.name=Trailing Spaces in definition
 options.::projectName::.definition.primitive=Attribute type
 options.::projectName::.types.string=String
 options.::projectName::.definition.comment=Documentation
+cannot.access=Unreachable element
+access.to.inaccessible.element=Create Property
+import.definition.intention.text=Import Definition
+remove.import.definition.intention.text=Remove import

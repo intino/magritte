@@ -3,7 +3,7 @@ package monet.tara.compiler.core;
 import monet.tara.compiler.codegeneration.ClassGenerator;
 import monet.tara.compiler.codegeneration.intellij.FileSystemUtils;
 import monet.tara.compiler.codegeneration.intellij.PluginGenerator;
-import monet.tara.compiler.core.ast.ASTNode;
+import monet.tara.lang.ASTNode;
 import monet.tara.compiler.core.errorcollection.*;
 import monet.tara.compiler.core.errorcollection.message.Message;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
