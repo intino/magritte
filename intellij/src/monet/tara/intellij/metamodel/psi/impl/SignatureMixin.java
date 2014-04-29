@@ -10,6 +10,7 @@ import monet.tara.intellij.metamodel.TaraIcons;
 import monet.tara.intellij.metamodel.psi.Concept;
 import monet.tara.intellij.metamodel.psi.TaraBased;
 import monet.tara.intellij.metamodel.psi.TaraCased;
+import monet.tara.intellij.metamodel.psi.TaraIdentifier;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -40,8 +41,8 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 	}
 
 
-	public PsiElement getIdentifierNode() {
-		return TaraPsiImplUtil.getIdentifierNode((Concept) this);
+	public TaraIdentifier getIdentifier() {
+		return (TaraIdentifier) TaraPsiImplUtil.getIdentifierNode((Concept) this);
 	}
 
 	@Override

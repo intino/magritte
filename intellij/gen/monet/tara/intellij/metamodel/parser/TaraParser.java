@@ -1160,84 +1160,74 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (CONCEPT_KEY | CASE_KEY) (COLON identifierReference)?  (based | modifier? cased?) identifier
+  // CASE IDENTIFIER_KEY
+  //          | CONCEPT_KEY modifier? IDENTIFIER_KEY
+  //          | CONCEPT_KEY COLON identifierReference (modifier? IDENTIFIER_KEY)?
   public static boolean signature(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "signature")) return false;
-    if (!nextTokenIs(builder_, "<signature>", CASE_KEY, CONCEPT_KEY)) return false;
+    if (!nextTokenIs(builder_, "<signature>", CASE, CONCEPT_KEY)) return false;
     boolean result_ = false;
-    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<signature>");
-    result_ = signature_0(builder_, level_ + 1);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, signature_1(builder_, level_ + 1));
-    result_ = pinned_ && report_error_(builder_, signature_2(builder_, level_ + 1)) && result_;
-    result_ = pinned_ && identifier(builder_, level_ + 1) && result_;
-    exit_section_(builder_, level_, marker_, SIGNATURE, result_, pinned_, null);
-    return result_ || pinned_;
+    result_ = parseTokens(builder_, 0, CASE, IDENTIFIER_KEY);
+    if (!result_) result_ = signature_1(builder_, level_ + 1);
+    if (!result_) result_ = signature_2(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, SIGNATURE, result_, false, null);
+    return result_;
   }
 
-  // CONCEPT_KEY | CASE_KEY
-  private static boolean signature_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "signature_0")) return false;
+  // CONCEPT_KEY modifier? IDENTIFIER_KEY
+  private static boolean signature_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "signature_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, CONCEPT_KEY);
-    if (!result_) result_ = consumeToken(builder_, CASE_KEY);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // (COLON identifierReference)?
-  private static boolean signature_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "signature_1")) return false;
-    signature_1_0(builder_, level_ + 1);
-    return true;
-  }
-
-  // COLON identifierReference
-  private static boolean signature_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "signature_1_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, COLON);
-    result_ = result_ && identifierReference(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // based | modifier? cased?
-  private static boolean signature_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "signature_2")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = based(builder_, level_ + 1);
-    if (!result_) result_ = signature_2_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // modifier? cased?
-  private static boolean signature_2_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "signature_2_1")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = signature_2_1_0(builder_, level_ + 1);
-    result_ = result_ && signature_2_1_1(builder_, level_ + 1);
+    result_ = result_ && signature_1_1(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, IDENTIFIER_KEY);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // modifier?
-  private static boolean signature_2_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "signature_2_1_0")) return false;
+  private static boolean signature_1_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "signature_1_1")) return false;
     modifier(builder_, level_ + 1);
     return true;
   }
 
-  // cased?
-  private static boolean signature_2_1_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "signature_2_1_1")) return false;
-    cased(builder_, level_ + 1);
+  // CONCEPT_KEY COLON identifierReference (modifier? IDENTIFIER_KEY)?
+  private static boolean signature_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "signature_2")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeTokens(builder_, 0, CONCEPT_KEY, COLON);
+    result_ = result_ && identifierReference(builder_, level_ + 1);
+    result_ = result_ && signature_2_3(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (modifier? IDENTIFIER_KEY)?
+  private static boolean signature_2_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "signature_2_3")) return false;
+    signature_2_3_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // modifier? IDENTIFIER_KEY
+  private static boolean signature_2_3_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "signature_2_3_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = signature_2_3_0_0(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, IDENTIFIER_KEY);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // modifier?
+  private static boolean signature_2_3_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "signature_2_3_0_0")) return false;
+    modifier(builder_, level_ + 1);
     return true;
   }
 

@@ -1,6 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.intellij.metamodel.psi;
 
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
@@ -44,6 +45,7 @@ public interface TaraTypes {
   IElementType BASE_KEY = new TaraTokenType("BASE_KEY");
   IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
   IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
+  IElementType CASE = new TaraTokenType("CASE");
   IElementType CASE_KEY = new TaraTokenType("CASE_KEY");
   IElementType CLOSE_AN = new TaraTokenType("CLOSE_AN");
   IElementType COLON = new TaraTokenType("COLON");
@@ -70,7 +72,7 @@ public interface TaraTypes {
   IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
   IElementType NEGATIVE_VALUE_KEY = new TaraTokenType("NEGATIVE_VALUE_KEY");
   IElementType NEWLINE = new TaraTokenType("NEWLINE");
-  IElementType NEW_LINE_INDENT = new TaraTokenType("NEW_LINE_INDENT");
+  IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
   IElementType OPEN_AN = new TaraTokenType("OPEN_AN");
   IElementType OPTIONAL = new TaraTokenType("OPTIONAL");
   IElementType PACKAGE = new TaraTokenType("PACKAGE");

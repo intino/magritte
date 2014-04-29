@@ -11,18 +11,14 @@ public interface Signature extends TaraPsiElement {
 
 	PsiElement getPsiElement();
 
-	PsiElement getIdentifierNode();
-
 	@Nullable
 	TaraIdentifier getIdentifier();
 
 	@Nullable
 	TaraModifier getModifier();
 
-	@Nullable
 	boolean isCase();
 
-	@Nullable
 	boolean isBase();
 
 	@Nullable

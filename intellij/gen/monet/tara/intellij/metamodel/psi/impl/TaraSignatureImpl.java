@@ -3,7 +3,10 @@ package monet.tara.intellij.metamodel.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
-import monet.tara.intellij.metamodel.psi.*;
+import monet.tara.intellij.metamodel.psi.TaraIdentifierReference;
+import monet.tara.intellij.metamodel.psi.TaraModifier;
+import monet.tara.intellij.metamodel.psi.TaraSignature;
+import monet.tara.intellij.metamodel.psi.TaraVisitor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,24 +19,6 @@ public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitSignature(this);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public TaraBased getBased() {
-    return findChildByClass(TaraBased.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraCased getCased() {
-    return findChildByClass(TaraCased.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraIdentifier getIdentifier() {
-    return findChildByClass(TaraIdentifier.class);
   }
 
   @Override
