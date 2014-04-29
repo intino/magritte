@@ -1,6 +1,6 @@
 // Generated from /home/bycor/Projects/Tara/src/AntlrM2/src/TaraM2Grammar.g4 by ANTLR 4.x
 
-    package monet.tara.compiler.parser.antlr;
+    package AntlrM2;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -71,13 +71,13 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAttribute(@NotNull TaraM2Grammar.AttributeContext ctx) { }
+	@Override public void enterExternalReference(@NotNull TaraM2Grammar.ExternalReferenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAttribute(@NotNull TaraM2Grammar.AttributeContext ctx) { }
+	@Override public void exitExternalReference(@NotNull TaraM2Grammar.ExternalReferenceContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -97,6 +97,19 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAttribute(@NotNull TaraM2Grammar.AttributeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAttribute(@NotNull TaraM2Grammar.AttributeContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDoubleValue(@NotNull TaraM2Grammar.DoubleValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -104,19 +117,6 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDoubleValue(@NotNull TaraM2Grammar.DoubleValueContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLang(@NotNull TaraM2Grammar.LangContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLang(@NotNull TaraM2Grammar.LangContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -136,19 +136,6 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterChild(@NotNull TaraM2Grammar.ChildContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitChild(@NotNull TaraM2Grammar.ChildContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterConceptConstituents(@NotNull TaraM2Grammar.ConceptConstituentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -156,19 +143,6 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitConceptConstituents(@NotNull TaraM2Grammar.ConceptConstituentsContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterReferenceIdentifier(@NotNull TaraM2Grammar.ReferenceIdentifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitReferenceIdentifier(@NotNull TaraM2Grammar.ReferenceIdentifierContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -195,6 +169,19 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStringList(@NotNull TaraM2Grammar.StringListContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterHierarchy(@NotNull TaraM2Grammar.HierarchyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitHierarchy(@NotNull TaraM2Grammar.HierarchyContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -240,19 +227,6 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCases(@NotNull TaraM2Grammar.CasesContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCases(@NotNull TaraM2Grammar.CasesContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterBooleanList(@NotNull TaraM2Grammar.BooleanListContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -273,6 +247,19 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitIntegerList(@NotNull TaraM2Grammar.IntegerListContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIdentifierReference(@NotNull TaraM2Grammar.IdentifierReferenceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdentifierReference(@NotNull TaraM2Grammar.IdentifierReferenceContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

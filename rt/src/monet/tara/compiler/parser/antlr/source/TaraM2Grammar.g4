@@ -5,29 +5,27 @@ options { tokenVocab=TaraM2Lexer; }
     package AntlrM2;
 }
 
-root: NEWLINE* header NEWLINE+ concept?  NEWLINE* EOF;
+root: NEWLINE* header NEWLINE+ concept NEWLINE* EOF;
 
-header: packet importStatement*;
+header: packet imports*;
 
-imports: NEWLINE IMPORT_KEY headerReference;
+imports: NEWLINE IMPORT headerReference;
 packet : PACKAGE headerReference;
 
 concept: doc? signature annotations? body?;
 
-signature: CONCEPT modifier? IDENTIFIER
-         | CONCEPT COLON referenceIdentifier (modifier? IDENTIFIER)?;
+signature: CASE IDENTIFIER
+         | CONCEPT modifier? IDENTIFIER
+         | CONCEPT COLON identifierReference (modifier? IDENTIFIER)?;
 
 body: NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT;
 
 conceptConstituents: attribute
                    | reference
                    | word
-                   | concept
-                   | case;
+                   | concept;
 
-case: doc? CASE_KEY IDENTIFIER annotations? body?;
-
-reference: VAR referenceIdentifier LIST? variableNames;
+reference: VAR identifierReference LIST? variableNames;
 
 word: VAR WORD IDENTIFIER NEW_LINE_INDENT (IDENTIFIER NEWLINE)+ DEDENT;
 
@@ -52,7 +50,7 @@ naturalList: LEFT_SQUARE POSITIVE_VALUE+ RIGHT_SQUARE;
 
 annotations: OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | extension | extensible | INTENTION | SINGLETON | ROOT)+ CLOSE_AN;
 
-extension : EXTENSION COLON externalIdentifier;
+extension : EXTENSION COLON externalReference;
 extensible: EXTENSIBLE COLON IDENTIFIER;
 
 variableNames: IDENTIFIER (COMMA IDENTIFIER)*;
@@ -60,9 +58,8 @@ variableNames: IDENTIFIER (COMMA IDENTIFIER)*;
 headerReference: hierarchy* IDENTIFIER;
 externalReference: hierarchy* IDENTIFIER;
 
-referenceIdentifier: hierarchy* IDENTIFIER;
+identifierReference: hierarchy* IDENTIFIER;
 hierarchy: IDENTIFIER DOT;
-
 
 modifier: ABSTRACT
         | FINAL

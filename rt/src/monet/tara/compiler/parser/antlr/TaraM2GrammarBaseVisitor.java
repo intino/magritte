@@ -1,6 +1,6 @@
 // Generated from /home/bycor/Projects/Tara/src/AntlrM2/src/TaraM2Grammar.g4 by ANTLR 4.x
 
-    package monet.tara.compiler.parser.antlr;
+    package AntlrM2;
 
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
@@ -52,7 +52,7 @@ public class TaraM2GrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAttribute(@NotNull TaraM2Grammar.AttributeContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExternalReference(@NotNull TaraM2Grammar.ExternalReferenceContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -68,7 +68,7 @@ public class TaraM2GrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDoubleValue(@NotNull TaraM2Grammar.DoubleValueContext ctx) { return visitChildren(ctx); }
+	@Override public T visitAttribute(@NotNull TaraM2Grammar.AttributeContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -76,7 +76,7 @@ public class TaraM2GrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLang(@NotNull TaraM2Grammar.LangContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDoubleValue(@NotNull TaraM2Grammar.DoubleValueContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -92,23 +92,7 @@ public class TaraM2GrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitChild(@NotNull TaraM2Grammar.ChildContext ctx) { return visitChildren(ctx); }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitConceptConstituents(@NotNull TaraM2Grammar.ConceptConstituentsContext ctx) { return visitChildren(ctx); }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitReferenceIdentifier(@NotNull TaraM2Grammar.ReferenceIdentifierContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -125,6 +109,14 @@ public class TaraM2GrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitStringList(@NotNull TaraM2Grammar.StringListContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitHierarchy(@NotNull TaraM2Grammar.HierarchyContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -156,14 +148,6 @@ public class TaraM2GrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCases(@NotNull TaraM2Grammar.CasesContext ctx) { return visitChildren(ctx); }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitBooleanList(@NotNull TaraM2Grammar.BooleanListContext ctx) { return visitChildren(ctx); }
 
 	/**
@@ -173,6 +157,14 @@ public class TaraM2GrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitIntegerList(@NotNull TaraM2Grammar.IntegerListContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitIdentifierReference(@NotNull TaraM2Grammar.IdentifierReferenceContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}

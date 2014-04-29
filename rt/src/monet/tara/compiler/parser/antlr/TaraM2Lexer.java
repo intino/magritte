@@ -1,6 +1,6 @@
 // Generated from /home/bycor/Projects/Tara/src/AntlrM2/src/TaraM2Lexer.g4 by ANTLR 4.x
 
-    package monet.tara.compiler.parser.antlr;
+    package AntlrM2;
 
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
