@@ -14,11 +14,11 @@ import monet.tara.intellij.metamodel.psi.TaraTypes;
 %type IElementType
 
 
-CONCEPT   = "Concept"
-IMPORT_KEY    = "import"
+CONCEPT    = "Concept"
+IMPORT_KEY = "import"
 PACKAGE    = "package"
-CASE_KEY  = "case"
-BASE_KEY = "base"
+CASE_KEY   = "case"
+BASE_KEY   = "base"
 FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"

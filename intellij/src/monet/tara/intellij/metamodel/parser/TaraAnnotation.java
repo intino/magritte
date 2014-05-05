@@ -11,7 +11,7 @@ public class TaraAnnotation {
 	public static final String MULTIPLE = "multiple";
 	public static final String GENERIC = "generic";
 	public static final String INTENTION = "intention";
-	public static final String[] MORPH_ANNOTATIONS = new String[]{EXTENSIBLE, SINGLETON, HAS_CODE, INTENTION};
+	public static final String[] CASE_ANNOTATIONS = new String[]{EXTENSIBLE, SINGLETON, HAS_CODE, INTENTION};
 	public static final String[] ROOT_ANNOTATIONS = new String[]{GENERIC, ROOT, EXTENSIBLE, SINGLETON, HAS_CODE, INTENTION};
 	public static final String[] CHILD_ANNOTATIONS = new String[]{GENERIC, EXTENSIBLE, EXTENSION, SINGLETON, HAS_CODE, OPTIONAL, MULTIPLE, INTENTION};
 

@@ -11,11 +11,9 @@ public interface TaraTypes {
 
   IElementType ANNOTATIONS = new TaraElementType("ANNOTATIONS");
   IElementType ATTRIBUTE = new TaraElementType("ATTRIBUTE");
-  IElementType BASED = new TaraElementType("BASED");
   IElementType BODY = new TaraElementType("BODY");
   IElementType BOOLEAN_LIST = new TaraElementType("BOOLEAN_LIST");
   IElementType BOOLEAN_VALUE = new TaraElementType("BOOLEAN_VALUE");
-  IElementType CASED = new TaraElementType("CASED");
   IElementType CONCEPT = new TaraElementType("CONCEPT");
   IElementType DOC = new TaraElementType("DOC");
   IElementType DOUBLE_LIST = new TaraElementType("DOUBLE_LIST");
@@ -45,7 +43,6 @@ public interface TaraTypes {
   IElementType BASE_KEY = new TaraTokenType("BASE_KEY");
   IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
   IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
-  IElementType CASE = new TaraTokenType("CASE");
   IElementType CASE_KEY = new TaraTokenType("CASE_KEY");
   IElementType CLOSE_AN = new TaraTokenType("CLOSE_AN");
   IElementType COLON = new TaraTokenType("COLON");
@@ -94,9 +91,6 @@ public interface TaraTypes {
       else if (type == ATTRIBUTE) {
         return new TaraAttributeImpl(node);
       }
-      else if (type == BASED) {
-        return new TaraBasedImpl(node);
-      }
       else if (type == BODY) {
         return new TaraBodyImpl(node);
       }
@@ -105,9 +99,6 @@ public interface TaraTypes {
       }
       else if (type == BOOLEAN_VALUE) {
         return new TaraBooleanValueImpl(node);
-      }
-      else if (type == CASED) {
-        return new TaraCasedImpl(node);
       }
       else if (type == CONCEPT) {
         return new TaraConceptImpl(node);

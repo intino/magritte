@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class ConceptMixin extends ASTWrapperPsiElement {
 
@@ -72,9 +73,9 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public Icon getIcon(@IconFlags int i) {
-		if (this.isMorph())
+		if (this.isCase())
 			return TaraIcons.MORPH_13;
-		if (this.isPolymorphic()) return TaraIcons.POLYMORPHIC_13;
+		if (this.isBase()) return TaraIcons.POLYMORPHIC_13;
 		return TaraIcons.CONCEPT_13;
 	}
 
@@ -91,11 +92,11 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return findChildByClass(Body.class);
 	}
 
-	public boolean isPolymorphic() {
+	public boolean isBase() {
 		return this.getSignature().isBase();
 	}
 
-	public boolean isMorph() {
+	public boolean isCase() {
 		return this.getSignature().isCase();
 	}
 
@@ -108,6 +109,28 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 					return true;
 		}
 		return false;
+	}
+
+	public boolean isExtension() {
+		Annotations annotations = this.getAnnotations();
+		if (annotations != null) {
+			PsiElement[] taraAnnotations = annotations.getAnnotations();
+			for (PsiElement element : taraAnnotations)
+				if (element instanceof TaraExtension)
+					return true;
+		}
+		return false;
+	}
+
+	public Concept[] getCases() {
+		ArrayList<Concept> cases = new ArrayList<>();
+		if (isBase()) {
+			Concept[] children = TaraUtil.getChildrenOf((Concept) this);
+			for (Concept child : children) {
+				if (child.isCase()) cases.add(child);
+			}
+		}
+		return cases.size() > 0 ? cases.toArray(new Concept[cases.size()]) : null;
 	}
 
 	@NotNull

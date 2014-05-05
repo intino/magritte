@@ -213,6 +213,7 @@ public class TaraUtil {
 		return Collections.EMPTY_LIST;
 	}
 
+	@NotNull
 	public static Concept[] getChildrenOf(Concept concept) {
 		List<Concept> childrenOf = TaraPsiImplUtil.getChildrenOf(concept);
 		return childrenOf.toArray(new Concept[childrenOf.size()]);

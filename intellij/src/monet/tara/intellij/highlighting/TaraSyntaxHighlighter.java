@@ -4,6 +4,7 @@ import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.editor.markup.EffectType;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.TokenType;
@@ -34,10 +35,13 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER");
 	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>(6);
 	public static final TextAttributesKey UNRESOLVED_ACCESS = TextAttributesKey.createTextAttributesKey("Unresolved reference");
+	public static final TextAttributesKey WARNING = TextAttributesKey.createTextAttributesKey("Annotation warning");
 	public static final TextAttributesKey ANNOTATION_ERROR = TextAttributesKey.createTextAttributesKey("Annotation unsupported in this context");
 
 
 	static {
+		WARNING.getDefaultAttributes().setForegroundColor(JBColor.LIGHT_GRAY);
+		WARNING.getDefaultAttributes().setEffectType(EffectType.WAVE_UNDERSCORE);
 		UNRESOLVED_ACCESS.getDefaultAttributes().setForegroundColor(JBColor.RED);
 		UNRESOLVED_ACCESS.getDefaultAttributes().setFontType(Font.BOLD);
 		BAD_CHARACTER.getDefaultAttributes().setForegroundColor(JBColor.RED);
@@ -76,6 +80,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 //end
 
 		KEYS.put(CASE_KEY, KEYWORD);
+		KEYS.put(BASE_KEY, KEYWORD);
 		KEYS.put(IMPORT_KEY, KEYWORD);
 		KEYS.put(PACKAGE, KEYWORD);
 		KEYS.put(OPEN_AN, ANNOTATION);
@@ -95,6 +100,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(LEFT_SQUARE, OPERATOR);
 		KEYS.put(RIGHT_SQUARE, OPERATOR);
 
+		KEYS.put(WORD_KEY, PRIMITIVE);
 		KEYS.put(STRING_TYPE, PRIMITIVE);
 		KEYS.put(DOUBLE_TYPE, PRIMITIVE);
 		KEYS.put(INT_TYPE, PRIMITIVE);
@@ -102,7 +108,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 		KEYS.put(ABSTRACT, MODIFIERS);
 		KEYS.put(FINAL, MODIFIERS);
-		KEYS.put(BASE_KEY, MODIFIERS);
 
 		KEYS.put(DOC_LINE, DOCUMENTATION);
 

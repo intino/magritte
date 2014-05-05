@@ -31,11 +31,15 @@ public interface Concept extends Navigatable, Iconable, PsiNamedElement {
 	@NotNull
 	Signature getSignature();
 
-	boolean isPolymorphic();
+	boolean isBase();
 
-	boolean isMorph();
+	boolean isCase();
+
+	Concept[] getCases();
 
 	boolean isExtensible();
+
+	boolean isExtension();
 
 	@Nullable
 	Annotations getAnnotations();

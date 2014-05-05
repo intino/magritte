@@ -29,9 +29,9 @@ concept ::= doc? signature annotations? body?
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.ConceptMixin'
 implements='monet.tara.intellij.metamodel.psi.Concept'}
 
-signature::= CASE IDENTIFIER_KEY
-         | CONCEPT_KEY modifier? IDENTIFIER_KEY
-         | CONCEPT_KEY COLON identifierReference (modifier? IDENTIFIER_KEY)?
+signature::= (CASE_KEY identifier)
+         | (CONCEPT_KEY modifier? identifier)
+         | (CONCEPT_KEY COLON identifierReference (modifier? identifier)?)
 { pin=1 mixin= 'monet.tara.intellij.metamodel.psi.impl.SignatureMixin'
 implements='monet.tara.intellij.metamodel.psi.Signature'}
 
@@ -87,24 +87,22 @@ variableNames::= IDENTIFIER_KEY (COMMA IDENTIFIER_KEY)*;
 
 modifier::= ABSTRACT
           | FINAL
-
-based::= BASE_KEY
-cased::= CASE_KEY
+          | BASE_KEY
 
 doc::= DOC_LINE+
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.DocMixin'
 implements='monet.tara.intellij.metamodel.psi.Doc'}
 
 
-headerReference   ::= hierarchy* identifier  {
-                pin=2
-                mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierReferenceMixin'
-                implements='monet.tara.intellij.metamodel.psi.HeaderReference'}
+headerReference ::= hierarchy* identifier
+{ pin=2
+mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierReferenceMixin'
+implements='monet.tara.intellij.metamodel.psi.HeaderReference'}
 
 identifierReference::= hierarchy* identifier
 {pin=2
 mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierReferenceMixin'
-      implements='monet.tara.intellij.metamodel.psi.IdentifierReference'}
+implements='monet.tara.intellij.metamodel.psi.IdentifierReference'}
 
 externalReference ::= hierarchy* identifier
 {pin=2
