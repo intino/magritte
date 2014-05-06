@@ -9,4 +9,6 @@ public interface ExternalReference extends Navigatable, TaraPsiElement {
 
 	@NotNull
 	List<? extends Identifier> getIdentifierList();
+
+
 }

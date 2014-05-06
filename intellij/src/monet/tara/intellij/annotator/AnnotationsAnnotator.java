@@ -45,7 +45,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		Concept context = TaraPsiImplUtil.getContextOf(element);
 		Concept[] children = TaraUtil.getChildrenOf(context);
 		for (Concept child : children) if (child.isExtension()) return;
-		Annotation warning = holder.createWarningAnnotation(element.getNode(), TaraBundle.message("annotation.extensible.key.warning.message"));
+		holder.createWarningAnnotation(element.getNode(), TaraBundle.message("annotation.extensible.key.warning.message"));
 	}
 
 	private PsiElement is(Annotations element, Class clazz) {

@@ -1,12 +1,12 @@
 package monet.tara.compiler.core;
 
 import monet.tara.compiler.codegeneration.render.RendersFactory;
-import monet.tara.lang.ASTWrapper;
-import monet.tara.lang.ASTNode;
 import monet.tara.compiler.core.errorcollection.ErrorCollector;
 import monet.tara.compiler.core.errorcollection.SyntaxException;
 import monet.tara.compiler.core.errorcollection.TaraException;
 import monet.tara.compiler.parser.Parser;
+import monet.tara.lang.ASTNode;
+import monet.tara.lang.ASTWrapper;
 import org.monet.templation.Render;
 
 import java.io.File;
@@ -55,8 +55,6 @@ public class SourceUnit extends ProcessingUnit {
 		ast = parser.convert();
 //		writeJavaSource();
 	}
-
-
 
 	private void writeJavaSource() throws TaraException {
 		String path = getDefinitionsPath();

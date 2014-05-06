@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TaraReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
+public class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
-	public TaraReference(@NotNull PsiElement element, TextRange textRange) {
+	public TaraReferenceSolver(@NotNull PsiElement element, TextRange textRange) {
 		super(element, textRange);
 	}
 

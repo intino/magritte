@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
@@ -19,7 +20,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	ASTWrapper ast;
 	Stack<ASTNode> conceptStack = new Stack<>();
 	String packet = "";
-	ArrayList<String> imports = new ArrayList<>();
+	HashMap<String, String> imports = new HashMap<>();
 
 	public TaraASTGeneratorListener(ASTWrapper ast, String file) {
 		this.ast = ast;
@@ -34,22 +35,27 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterImports(@NotNull ImportsContext ctx) {
-		imports.add(ctx.headerReference().getText());
+		imports.put(ctx.headerReference().getText(), "import");
 	}
 
 	@Override
 	public void enterConcept(@NotNull ConceptContext ctx) {
 		ASTNode parent = null;
 		if (!conceptStack.empty()) parent = conceptStack.peek();
-		ASTNode node = new ASTNode(ctx.signature().IDENTIFIER().getText(), parent, file);
+		String identifier = "";
+		if (ctx.signature().IDENTIFIER() != null)
+			identifier = ctx.signature().IDENTIFIER().getText();
+		ASTNode node = new ASTNode(identifier, parent, file);
 		node.setPackage(packet);
-		node.addImports(imports);
+		node.setImports(imports.keySet().toArray(new String[imports.keySet().size()]));
 		node.setLine(ctx.getStart().getLine());
+		if (ctx.signature().CASE() != null) node.setCase(true);
 		if (parent != null) parent.add(node);
 		else ast.add(node);
 		ast.add(node.getIdentifier(), node);
 		conceptStack.push(node);
 	}
+
 
 	@Override
 	public void enterIdentifierReference(@NotNull IdentifierReferenceContext ctx) {

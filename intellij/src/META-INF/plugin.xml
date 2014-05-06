@@ -63,8 +63,8 @@
     <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.ModuleType"/>
     <treeStructureProvider implementation="monet.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="monet.tara.intellij.actions.TaraTemplatesFactory"/>
-    <!--<codeInsight.lineMarkerProvider language="Tara"-->
-    <!--implementationClass="monet.tara.intellij.codeinsight.TaraLineMarkerProvider"/>-->
+    <codeInsight.lineMarkerProvider language="Tara"
+    implementationClass="monet.tara.intellij.codeinsight.TaraLineMarkerProvider"/>
     <gotoRelatedProvider implementation="monet.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <!--gen %%-->
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>

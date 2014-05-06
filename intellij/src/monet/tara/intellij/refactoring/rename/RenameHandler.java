@@ -12,7 +12,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.impl.source.resolve.reference.impl.PsiMultiReference;
 import com.intellij.refactoring.rename.PsiElementRenameHandler;
-import monet.tara.intellij.TaraReference;
+import monet.tara.intellij.TaraReferenceSolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,14 +21,14 @@ public class RenameHandler extends PsiElementRenameHandler {
 	@Nullable
 	private static PsiElement getPsiElement(final Editor editor) {
 		final PsiReference reference = TargetElementUtilBase.findReference(editor);
-		if (reference instanceof TaraReference) {
-			final ResolveResult[] resolveResults = ((TaraReference) reference).multiResolve(false);
+		if (reference instanceof TaraReferenceSolver) {
+			final ResolveResult[] resolveResults = ((TaraReferenceSolver) reference).multiResolve(false);
 			return resolveResults.length > 0 ? resolveResults[0].getElement() : null;
 		} else if (reference instanceof PsiMultiReference) {
 			final PsiReference[] references = ((PsiMultiReference) reference).getReferences();
 			for (PsiReference psiReference : references)
-				if (psiReference instanceof TaraReference) {
-					final ResolveResult[] resolveResults = ((TaraReference) psiReference).multiResolve(false);
+				if (psiReference instanceof TaraReferenceSolver) {
+					final ResolveResult[] resolveResults = ((TaraReferenceSolver) psiReference).multiResolve(false);
 					if (resolveResults.length > 0) return resolveResults[0].getElement();
 				}
 		}

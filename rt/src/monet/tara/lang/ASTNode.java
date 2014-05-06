@@ -1,6 +1,7 @@
 package monet.tara.lang;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ASTNode {
@@ -208,8 +209,9 @@ public class ASTNode {
 		return file;
 	}
 
-	public void addImports(ArrayList<String> imports) {
-		imports.addAll(imports);
+	public void setImports(String[] imports) {
+		if (imports.length > 0)
+			Collections.addAll(this.imports, imports);
 	}
 
 	public String getPackage() {

@@ -1,11 +1,11 @@
 package monet.tara.compiler.parser;
 
-import monet.tara.lang.ASTWrapper;
 import monet.tara.compiler.core.errorcollection.SyntaxException;
 import monet.tara.compiler.parser.antlr.TaraASTGeneratorListener;
 import monet.tara.compiler.parser.antlr.TaraErrorStrategy;
 import monet.tara.compiler.parser.antlr.TaraM2Grammar;
 import monet.tara.compiler.parser.antlr.TaraM2Lexer;
+import monet.tara.lang.ASTWrapper;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 

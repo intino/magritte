@@ -2,12 +2,12 @@ package monet.tara.compiler.semantic;
 
 
 import monet.tara.compiler.core.SourceUnit;
-import monet.tara.lang.AST;
-import monet.tara.lang.ASTNode;
-import monet.tara.lang.ASTWrapper;
 import monet.tara.compiler.core.errorcollection.SemanticException;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
+import monet.tara.lang.AST;
+import monet.tara.lang.ASTNode;
+import monet.tara.lang.ASTWrapper;
 
 import java.util.Collection;
 

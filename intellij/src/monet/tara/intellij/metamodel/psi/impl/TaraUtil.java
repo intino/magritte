@@ -118,9 +118,10 @@ public class TaraUtil {
 		PsiElement reference = null;
 		if (identifier.getParent() instanceof IdentifierReference)
 			reference = resolveConceptReference(identifier);
-		else if (identifier.getParent() instanceof HeaderReference) {
+		else if (identifier.getParent() instanceof HeaderReference)
 			reference = resolveHeaderReference(identifier);
-		}
+		else if (identifier.getParent() instanceof ExternalReference)
+			reference = resolveExternalReference(identifier);
 		return reference;
 	}
 
@@ -143,16 +144,27 @@ public class TaraUtil {
 		return PsiManager.getInstance(identifier.getProject()).findFile(file);
 	}
 
+	public static PsiElement resolveExternalReference(PsiElement identifier) {
+		TaraPacket packet = ((TaraFile) identifier.getContainingFile()).getPackage();
+		List<Identifier> route = (List<Identifier>) ((ExternalReference) (identifier.getParent())).getIdentifierList();
+		List<Identifier> subRoute = route.subList(0, route.indexOf(identifier) + 1);
+		String path = packet.getHeaderReference().getText() + "." +
+			TaraPsiImplUtil.getExtensibleOfExtension(TaraPsiImplUtil.getContextOf(identifier)).getName() + "." + join(subRoute, '.');
+		return resolveJavaClassReference(identifier.getProject(), path);
+	}
+
 	private static String join(List<Identifier> subRoute, char c) {
 		String result = "";
-		for (Identifier identifier : subRoute) {
-			result += c + identifier.getText();
-		}
+		for (Identifier identifier : subRoute) result += c + identifier.getText();
 		return result.substring(1);
 	}
 
 	public static PsiElement resolvePackageReference(Project project, String path) {
 		return (PsiElement) JavaHelper.getJavaHelper(project).findPackage(path);
+	}
+
+	public static PsiElement resolveJavaClassReference(Project project, String path) {
+		return JavaHelper.getJavaHelper(project).findClass(path);
 	}
 
 	private static VirtualFile resolveRoute(List<Identifier> subRoute) {
