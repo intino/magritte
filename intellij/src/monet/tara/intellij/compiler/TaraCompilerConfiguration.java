@@ -18,10 +18,10 @@ import org.jetbrains.jps.incremental.tara.compiler.JpsTaraSettings;
 public class TaraCompilerConfiguration implements PersistentStateComponent<JpsTaraSettings>, Disposable {
 	private final ExcludedEntriesConfiguration myExcludeFromStubGeneration = new ExcludedEntriesConfiguration();
 	private String myHeapSize = JpsTaraSettings.DEFAULT_HEAP_SIZE;
-	private boolean pluginGeneration = JpsTaraSettings.DEFAULT_PLUGIN_GENERATION;
+	private Boolean pluginGeneration = JpsTaraSettings.DEFAULT_PLUGIN_GENERATION;
 	private String version = "0.1";
 	private String commentaries = "";
-	private String vendor;
+	private String vendor="";
 
 	public TaraCompilerConfiguration(Project project) {
 		TaraCompilerWorkspaceConfiguration workspaceConfiguration = ServiceManager.getService(project, TaraCompilerWorkspaceConfiguration.class);

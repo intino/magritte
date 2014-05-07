@@ -38,7 +38,7 @@ public class TaraLanguage extends Language {
 			}.getType();
 			heritage = gson.fromJson(new InputStreamReader(heritageInputStream), collectionType);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			heritage = null;
 		}
 	}

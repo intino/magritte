@@ -10,10 +10,10 @@ import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.metamodel.psi.Concept;
 import org.jetbrains.annotations.NotNull;
 
-public class RemoveConceptFix implements IntentionAction {
+public class RenameConceptFix implements IntentionAction {
 	private final Concept myConcept;
 
-	public RemoveConceptFix(@NotNull final Concept origConcept) {
+	public RenameConceptFix(@NotNull final Concept origConcept) {
 		myConcept = origConcept;
 	}
 

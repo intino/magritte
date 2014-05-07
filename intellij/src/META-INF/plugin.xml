@@ -38,7 +38,6 @@
     <!--end-->
     <!--gen %%-->
     <group id="Internal.Tara" text="Tara" popup="true" internal="true">
-
       <action id="ExcludeFromCodeGeneration"
               class="monet.tara.intellij.compiler.ExcludeFromStubGenerationAction"
               text="Exclude from stub generation"
@@ -64,13 +63,12 @@
     <treeStructureProvider implementation="monet.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="monet.tara.intellij.actions.TaraTemplatesFactory"/>
     <codeInsight.lineMarkerProvider language="Tara"
-    implementationClass="monet.tara.intellij.codeinsight.TaraLineMarkerProvider"/>
+                                    implementationClass="monet.tara.intellij.codeinsight.TaraLineMarkerProvider"/>
     <gotoRelatedProvider implementation="monet.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <!--gen %%-->
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
     <projectConfigurable instance="monet.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
                          displayName="Tara Compiler" parentId="project.propCompiler"/>
-
     <projectService serviceInterface="monet.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
                     serviceImplementation="monet.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"/>
     <projectService serviceInterface="monet.tara.intellij.compiler.TaraCompilerConfiguration"
@@ -92,6 +90,7 @@
     <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.AnnotationsAnnotator"/>
     <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.AttributeAnnotator"/>
     <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.ConceptAnnotator"/>
+    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.PackageAnnotator"/>
     <completion.contributor language="Tara"
                             implementationClass="monet.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
     <completion.contributor language="Tara"

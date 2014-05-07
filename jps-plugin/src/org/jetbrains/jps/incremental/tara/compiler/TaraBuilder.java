@@ -32,6 +32,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private static final String TARA_EXTENSION = "m2";
 	private static final Key<Map<String, String>> STUB_TO_SRC = Key.create("STUB_TO_SRC");
 	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
+	private static Boolean done = false;
 	private final String builderName;
 	private boolean pluginGeneration;
 
@@ -49,15 +50,22 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return path.endsWith("." + TARA_EXTENSION);
 	}
 
+	@Override
+	public List<String> getCompilableFileExtensions() {
+		return Arrays.asList("m2");
+	}
+
 	public ExitCode build(CompileContext context, ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder, OutputConsumer outputConsumer) throws ProjectBuildException, IOException {
 		long start = 0;
 		try {
+			if (done) return ExitCode.NOTHING_DONE;
+			done = true;
 			JpsProject project = context.getProjectDescriptor().getProject();
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
 			pluginGeneration = settings.pluginGeneration;
 			final List<File> toCompile = collectFiles(project, settings);
 			if (toCompile.isEmpty()) return ExitCode.NOTHING_DONE;
-			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("plugin-generation=" + pluginGeneration);
+			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("plugin-generation = " + pluginGeneration);
 			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
 			if (finalOutputs == null) return ExitCode.ABORT;
 			start = System.currentTimeMillis();

@@ -21,10 +21,9 @@ public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 	public static final JpsElementChildRole<JpsTaraSettings> ROLE = JpsElementChildRoleBase.create("Tara Compiler Configuration");
 	public String version = "0.1";
 	public String commentaries = "";
-	private JpsCompilerExcludes myExcludeFromStubGeneration;
-
 	@Tag("excludes")
 	public Element excludes = new Element("aaa");
+	private JpsCompilerExcludes myExcludeFromStubGeneration;
 
 	public JpsTaraSettings() {
 	}

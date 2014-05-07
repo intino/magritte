@@ -112,8 +112,8 @@ public class TaraCompilerConfigurable implements SearchableConfigurable, Configu
 		pluginGenerationCheckBox.setSelected(compilerConfiguration.isPluginGeneration());
 		version.setText(compilerConfiguration.getVersion());
 		commentaries.setText(compilerConfiguration.getCommentaries());
-		myExcludes.reset();
 		vendor.setText("");
+		myExcludes.reset();
 	}
 
 	public void disposeUIResources() {
