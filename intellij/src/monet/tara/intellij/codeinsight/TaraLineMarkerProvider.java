@@ -15,7 +15,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.Function;
 import monet.tara.intellij.metamodel.psi.Identifier;
 import monet.tara.intellij.metamodel.psi.TaraExternalReference;
-import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
+import monet.tara.intellij.metamodel.psi.impl.ReferenceManager;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,8 +31,8 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 		public String fun(PsiElement element) {
 			PsiElement parent = element.getParent();
 			if (!(element instanceof Identifier) || !(parent instanceof TaraExternalReference)) return null;
-			PsiElement reference = TaraUtil.resolveExternalReference(element);
-			String start = "Concept extended in";
+			PsiElement reference = ReferenceManager.resolve((Identifier) element);
+			String start = "Concept extended in ";
 			@NonNls String pattern = reference.getNavigationElement().getContainingFile().getName();
 			return GutterIconTooltipHelper.composeText(new PsiElement[]{reference}, start, pattern);
 		}
@@ -46,7 +46,7 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 				return;
 			}
 			if (!(parent instanceof TaraExternalReference)) return;
-			NavigatablePsiElement reference = (NavigatablePsiElement) TaraUtil.resolveExternalReference(element);
+			NavigatablePsiElement reference = (NavigatablePsiElement) ReferenceManager.resolve((Identifier) element);
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
 			PsiElementListNavigator.

@@ -17,9 +17,7 @@ public class TaraPsiImplUtil {
 	}
 
 	public static String getIdentifier(Identifier keyNode) {
-		if (keyNode != null) return keyNode.getText();
-		else return null;
-
+		return keyNode != null ? keyNode.getText() : null;
 	}
 
 	public static String getIdentifier(Concept element) {
@@ -75,7 +73,7 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	public static Concept resolveContextOfRef(IdentifierReference identifier) {
+	public static Concept getContextOfRef(IdentifierReference identifier) {
 		PsiElement element = identifier;
 		while (!(element.getParent() instanceof Concept))
 			element = element.getParent();

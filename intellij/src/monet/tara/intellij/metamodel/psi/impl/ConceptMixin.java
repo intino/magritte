@@ -45,7 +45,8 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String getName() {
-		return TaraPsiImplUtil.getIdentifier((Concept) this);
+		Identifier identifierNode = (Identifier) getIdentifierNode();
+		return identifierNode != null ? identifierNode.getText() : null;
 	}
 
 	public TaraFileImpl getFile() throws PsiInvalidElementAccessException {
@@ -80,8 +81,8 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public PsiElement setName(String newName) {
-		return TaraPsiImplUtil.setName(this.getSignature(), newName);
+	public PsiElement setName(String name) {
+		return TaraPsiImplUtil.setName(this.getSignature(), name);
 	}
 
 	public PsiElement getIdentifierNode() {

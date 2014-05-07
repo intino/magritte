@@ -16,7 +16,6 @@ public abstract class TaraFix implements LocalQuickFix {
 
 	public static final TaraFix[] EMPTY_ARRAY = new TaraFix[0];
 
-	//to appear in "Apply Fix" statement when multiple Quick Fixes exist
 	@NotNull
 	public String getFamilyName() {
 		return "";

@@ -1,6 +1,8 @@
 package goros.m2
 
 import goros.m2.Source
+import goros.m1.Entity
+import goros.m1.Form
 
 
 Concept:Entity Form <has-code extensible:java>
@@ -35,6 +37,7 @@ Concept:Entity Form <has-code extensible:java>
                 ' Añadir para permitir un histórico de valores asociado al campo
                 ' **store**. Almacén donde se guardará el histórico
                 Concept AllowHistory <optional>
+                    var Form.OnChange
                     var String store
                 Concept Mode
 					var Word mode { Uppercase; Lowercase; Sentence; Title }

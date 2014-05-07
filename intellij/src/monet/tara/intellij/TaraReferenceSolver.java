@@ -3,12 +3,11 @@ package monet.tara.intellij;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.Identifier;
-import monet.tara.intellij.metamodel.psi.TaraIdentifier;
-import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
+import monet.tara.intellij.metamodel.psi.*;
+import monet.tara.intellij.metamodel.psi.impl.ReferenceManager;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +26,7 @@ public class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
 		List<ResolveResult> results = new ArrayList<>();
-		PsiElement element = TaraUtil.resolveReference(myElement);
+		PsiElement element = ReferenceManager.resolve((Identifier) myElement);
 		if (element != null)
 			results.add(new PsiElementResolveResult(element));
 		return results.toArray(new ResolveResult[results.size()]);
@@ -43,38 +42,80 @@ public class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements
 	@NotNull
 	@Override
 	public Object[] getVariants() {
-		List<Concept> concepts = new ArrayList<>();
-		if (isReferenceToConcept())
-			getVariants((TaraIdentifier) myElement, concepts);
-		else if (myElement.getPrevSibling().getPrevSibling() instanceof Identifier)
-			getChildrenVariants((TaraIdentifier) myElement.getPrevSibling().getPrevSibling(), concepts);
+		List<PsiElement> concepts = new ArrayList<>();
+		if (myElement.getParent() instanceof IdentifierReference) {
+			if (isReferenceToConcept()) concepts.addAll(getVariants((TaraIdentifier) myElement));
+			else if (isChildrenResolution())
+				getChildrenVariants((TaraIdentifier) myElement.getPrevSibling().getPrevSibling(), concepts);
+		} else getVariantsInHeader(getSubRoute((Identifier) myElement));
 		return fillVariants(concepts);
+	}
+
+	private boolean isChildrenResolution() {
+		return myElement.getPrevSibling().getPrevSibling() instanceof Identifier;
+	}
+
+	private void getVariantsInHeader(List<Identifier> route) {
+		//TODO
+	}
+
+	private List<Identifier> getSubRoute(Identifier identifier) {
+		List<Identifier> route = (List<Identifier>) ((HeaderReference) (identifier.getParent())).getIdentifierList();
+		return route.subList(0, route.indexOf(identifier) + 1);
 	}
 
 	private boolean isReferenceToConcept() {
 		return myElement.getPrevSibling() == null;
 	}
 
-	private Object[] fillVariants(List<Concept> concepts) {
+	private Object[] fillVariants(List<PsiElement> elements) {
 		List<LookupElement> variants = new ArrayList<>();
-		for (final Concept concept : concepts)
-			if (concept.getName() != null && concept.getName().length() > 0)
-				variants.add(LookupElementBuilder.create(concept).withIcon(TaraIcons.ICON_13).withTypeText(getFileName(concept)));
+		for (final PsiElement element : elements) {
+			if (element instanceof Concept) {
+				Concept concept = (Concept) element;
+				if (concept.getName() == null || concept.getName().length() == 0) continue;
+				variants.add(LookupElementBuilder.create((PsiNamedElement) concept.getIdentifierNode()).withIcon(TaraIcons.ICON_13).withTypeText(getFileName(element)));
+			} else
+				variants.add(LookupElementBuilder.create((PsiNamedElement) element).withIcon(TaraIcons.ICON_13).withTypeText(element.getParent().getText()));
+		}
 		return variants.toArray();
 	}
 
-	private void getVariants(TaraIdentifier parent, List<Concept> concepts) {
-		concepts.addAll(TaraUtil.getRootConcepts(parent.getProject()));
-		Concept context = TaraPsiImplUtil.getContextOf(parent);
-		concepts.addAll(TaraUtil.getSiblings(context));
+	private List<PsiElement> getVariants(TaraIdentifier parent) {
+		List<PsiElement> variants = new ArrayList<>();
+		variants.addAll(getPackageVariants(parent));
+		variants.addAll(getImportVariants(parent));
+		return variants;
 	}
 
-	private void getChildrenVariants(TaraIdentifier parent, List<Concept> concepts) {
-		Concept concept = TaraUtil.resolveConceptReference(parent);
-		Collections.addAll(concepts, TaraUtil.getChildrenOf(concept));
+	private List<PsiElement> getImportVariants(TaraIdentifier parent) {
+		List<PsiElement> variants = new ArrayList<>();
+		Import[] imports = ((TaraFile) parent.getContainingFile()).getImports();
+		for (Import anImport : imports) {
+			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
+			variants.add(importIdentifiers.get(importIdentifiers.size() - 1));
+		}
+		return variants;
 	}
 
-	private String getFileName(Concept concept) {
+	private List<PsiElement> getPackageVariants(TaraIdentifier parent) {
+		List<PsiElement> variants = new ArrayList<>();
+		VirtualFile packageFile = ReferenceManager.resolveRoute(((TaraFile) parent.getContainingFile()).getPackageRoute());
+		if (packageFile == null) return Collections.EMPTY_LIST;
+		for (VirtualFile vFile : packageFile.getChildren()) {
+			TaraFile file = TaraUtil.getTaraFileFromVirtual(parent.getProject(), vFile);
+			if (file != null) variants.add(file.getConcept());
+		}
+		return variants;
+	}
+
+	private void getChildrenVariants(TaraIdentifier parent, List<PsiElement> concepts) {
+		PsiElement element = ReferenceManager.resolve(parent);
+		if (element != null && element instanceof Concept)
+			Collections.addAll(concepts, TaraUtil.getChildrenOf((Concept) element));
+	}
+
+	private String getFileName(PsiElement concept) {
 		return concept.getContainingFile().getName().split("\\.")[0];
 	}
 }

@@ -6,8 +6,9 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public interface TaraFile extends PsiFile {
 
@@ -16,8 +17,6 @@ public interface TaraFile extends PsiFile {
 
 	@NotNull
 	Concept getConcept();
-
-	Concept findConceptByKey(@NotNull @NonNls String key);
 
 	@NotNull
 	PsiElement addConcept(@NotNull Concept concept) throws IncorrectOperationException;
@@ -37,6 +36,8 @@ public interface TaraFile extends PsiFile {
 	String getText();
 
 	TaraPacket getPackage();
+
+	List<? extends Identifier> getPackageRoute();
 
 	Import[] getImports();
 }

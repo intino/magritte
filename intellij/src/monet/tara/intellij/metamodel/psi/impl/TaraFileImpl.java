@@ -15,10 +15,10 @@ import monet.tara.intellij.metamodel.TaraIcons;
 import monet.tara.intellij.metamodel.TaraLanguage;
 import monet.tara.intellij.metamodel.file.TaraFileType;
 import monet.tara.intellij.metamodel.psi.*;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.util.List;
 
 public class TaraFileImpl extends PsiFileBase implements TaraFile {
 
@@ -77,15 +77,16 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	}
 
 	@Override
-	public Import[] getImports() {
-		return PsiTreeUtil.getChildrenOfType(PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0], Import.class);
+	public List<? extends Identifier> getPackageRoute() {
+		return getPackage().getHeaderReference().getIdentifierList();
 	}
 
 
 	@Override
-	public Concept findConceptByKey(@NotNull @NonNls String key) {
-		return TaraUtil.getConceptsOfFileByName(this, key).get(0);
+	public Import[] getImports() {
+		return PsiTreeUtil.getChildrenOfType(PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0], Import.class);
 	}
+
 
 
 	private void insertLineBreakBefore(final ASTNode anchorBefore) {

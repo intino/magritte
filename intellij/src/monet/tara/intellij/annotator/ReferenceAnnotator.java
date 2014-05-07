@@ -18,7 +18,7 @@ import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.annotator.imports.*;
 import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import monet.tara.intellij.metamodel.psi.*;
-import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
+import monet.tara.intellij.metamodel.psi.impl.ReferenceManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 	}
 
 	public void checkWellReferenced() {
-		PsiElement reference = TaraUtil.resolveReference(element);
+		PsiElement reference = ReferenceManager.resolve((Identifier) element);
 		if (reference == null) {
 			Annotation errorAnnotation;
 			if (element.getParent() instanceof IdentifierReference)
@@ -85,7 +85,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		return QuickFixWrapper.wrap((ProblemDescriptor) descr, 0);
 	}
 
-	private void addAutoImportFix(TaraPsiElement node, PsiReference reference, List<LocalQuickFix> actions) {
+	private void addAutoImportFix(PsiElement node, PsiReference reference, List<LocalQuickFix> actions) {
 		final PsiFile file = InjectedLanguageManager.getInstance(node.getProject()).getTopLevelFile(node);
 		if (!(file instanceof TaraFile)) return;
 //		AutoImportQuickFix importFix = TaraReferenceImporter.proposeImportFix(node, reference);

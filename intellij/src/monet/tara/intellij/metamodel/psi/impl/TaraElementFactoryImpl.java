@@ -21,7 +21,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 				"\tConcept Ontology <optional>\n" +
 				"\tvar Uid uid"
 		);
-		return (Concept) file.getFirstChild();
+		return file.getConcept();
 	}
 
 	public TaraFileImpl createDummyFile(String text) {

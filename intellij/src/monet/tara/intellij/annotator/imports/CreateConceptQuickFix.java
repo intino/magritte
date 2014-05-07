@@ -21,7 +21,7 @@ public class CreateConceptQuickFix implements LocalQuickFix {
 	@NotNull
 	@Override
 	public String getName() {
-		return "Create Concept" + name;
+		return "Create Concept " + name;
 	}
 
 	@NotNull
