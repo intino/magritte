@@ -96,6 +96,10 @@ public class ASTNode {
 		return null;
 	}
 
+	public List<String> getImports() {
+		return imports;
+	}
+
 	public String getExtendFrom() {
 		return extendFrom;
 	}
@@ -201,8 +205,12 @@ public class ASTNode {
 	}
 
 	public String getAbsolutePath() {
-		return (parent != null) ? parent.getAbsolutePath() +
-			((!"".equals(getIdentifier())) ? "." + getIdentifier() : ".annonymous(" + extendFrom + ")") : getIdentifier();
+		return aPackage + "." + getConceptRoute();
+	}
+
+	private String getConceptRoute() {
+		return ((parent != null) ? parent.getConceptRoute() +
+			((!"".equals(getIdentifier())) ? "." + getIdentifier() : ".annonymous(" + extendFrom + ")") : getIdentifier());
 	}
 
 	public String getFile() {

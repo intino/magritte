@@ -59,11 +59,8 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterIdentifierReference(@NotNull IdentifierReferenceContext ctx) {
-		String identifierName = "";
-		for (HierarchyContext childContext : ctx.hierarchy())
-			identifierName += childContext;
-		identifierName += ctx.IDENTIFIER();
-		if (!(ctx.getParent() instanceof ReferenceContext))
+		String identifierName = ctx.getText();
+		if (ctx.getParent() instanceof SignatureContext)
 			conceptStack.peek().setExtendFrom(identifierName);
 	}
 
@@ -143,20 +140,12 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterReference(@NotNull ReferenceContext ctx) {
-		String parent = getExtendedConceptString(ctx.identifierReference());
+		String parent = ctx.identifierReference().getText();
 		String[] identifiers = getIdentifiers(ctx.variableNames());
 		for (String identifier : identifiers) {
 			conceptStack.peek().addReference(parent, identifier, ctx.LIST() != null);
 			ast.addIdentifier(identifier, ATTRIBUTE);
 		}
-	}
-
-	private String getExtendedConceptString(IdentifierReferenceContext ctx) {
-		String extendedConcept = "";
-		for (HierarchyContext childContext : ctx.hierarchy())
-			extendedConcept += childContext;
-		extendedConcept += ctx.IDENTIFIER();
-		return extendedConcept;
 	}
 
 	@Override

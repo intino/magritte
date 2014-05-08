@@ -37,7 +37,7 @@ Concept:Entity Form <has-code extensible:java>
                 ' Añadir para permitir un histórico de valores asociado al campo
                 ' **store**. Almacén donde se guardará el histórico
                 Concept AllowHistory <optional>
-                    var Form.OnChange
+                	var Form.Field.OnChange onChange
                     var String store
                 Concept Mode
 					var Word mode { Uppercase; Lowercase; Sentence; Title }

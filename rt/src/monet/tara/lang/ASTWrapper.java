@@ -58,7 +58,7 @@ public class ASTWrapper {
 		if (node.getExtendFrom() == null) return null;
 		ASTNode result = relativeSearch(node.getExtendFrom(), node);
 		if (result != null) return result;
-		return absoluteSearch(node.getExtendFrom());
+		return absoluteSearch(node.getExtendFrom(), node);
 	}
 
 	public List<String> getKeys(String value) {
@@ -74,19 +74,24 @@ public class ASTWrapper {
 		ASTNode result = relativeSearch(nodeName, context);
 		if (nodeName == null || nodeName.isEmpty()) return null;
 		if (result != null) return result;
-		return absoluteSearch(nodeName);
+		return absoluteSearch(nodeName, context);
 	}
 
 	private boolean isUnName(String text) {
 		return text.isEmpty();
 	}
 
-	private ASTNode absoluteSearch(String path) {
+	private ASTNode absoluteSearch(String path, ASTNode context) {
 		String[] tree = path.split("\\.");
 		List<ASTNode> nodes = nodeNameLookUpTable.get(tree[tree.length - 1]);
 		if (nodes == null) return null;
 		for (ASTNode node : nodes)
-			if (path.equals(node.getAbsolutePath()))
+			for (String importPath : context.getImports()) {
+				String[] split = importPath.split("\\.");
+				if (split[split.length - 1].equals(node.getIdentifier())) return node;
+			}
+		for (ASTNode node : nodes)
+			if (context.getPackage().equals(node.getPackage()))
 				return node;
 		return null;
 	}
