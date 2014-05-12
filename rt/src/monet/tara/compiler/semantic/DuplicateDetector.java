@@ -60,8 +60,8 @@ public class DuplicateDetector {
 
 	private void checkWords(ASTNode concept, Set<String> names) {
 		for (Word word : concept.getWords()) {
-			if (!names.add(word.getIdentifier()))
-				errors.add(new DuplicateIdentifierError(word.getIdentifier(), concept));
+			if (!names.add(word.getName()))
+				errors.add(new DuplicateIdentifierError(word.getName(), concept));
 			checkWordValues(concept, word);
 		}
 	}

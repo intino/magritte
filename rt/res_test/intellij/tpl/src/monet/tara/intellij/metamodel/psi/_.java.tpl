@@ -4,14 +4,13 @@ import com.intellij.openapi.util.Iconable;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
-import com.intellij.psi.PsiNamedElement;
 import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::FileImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public interface Definition extends Navigatable, Iconable, PsiNamedElement {
+public interface Definition extends Navigatable, Iconable, ::projectProperName::PsiElement {
 
 	::projectProperName::FileImpl getFile() throws PsiInvalidElementAccessException;
 
@@ -31,16 +30,24 @@ public interface Definition extends Navigatable, Iconable, PsiNamedElement {
 	\@NotNull
 	Signature getSignature();
 
-	boolean isPolymorphic();
+	boolean isBase();
 
-	boolean isMorph();
+	boolean isCase();
+
+	Definition[] getCases();
 
 	boolean isExtensible();
+
+	boolean isExtension();
 
 	\@Nullable
 	Annotations getAnnotations();
 
 	\@Override
 	Icon getIcon(\@IconFlags int i);
+
+	PsiElement setName(String newName);
+
+	String getName();
 }
 

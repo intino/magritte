@@ -2,7 +2,7 @@ parser grammar TaraM2Grammar;
 options { tokenVocab=TaraM2Lexer; }
 
 @header{
-    package AntlrM2;
+    package monet.tara.compiler.parser.antlr.source;
 }
 
 root: NEWLINE* header NEWLINE+ concept NEWLINE* EOF;

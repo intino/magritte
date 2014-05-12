@@ -20,7 +20,7 @@ public class ::projectProperName::Filters {
 	protected static PsiElementPattern.Capture<PsiElement> afterDefinitionKey = psiElement()
 		.withLanguage(::projectProperName::Language.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
-		.and(new FilterPattern(new AfterElementFitFilter(::projectProperName::Types.DEFINITION_KEY)));
+		::empty|;::
 	protected static PsiElementPattern.Capture<PsiElement> afterModifierKey = psiElement()
 		.withLanguage(::projectProperName::Language.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
@@ -38,9 +38,9 @@ public class ::projectProperName::Filters {
 
 		public boolean isAcceptable(Object element, PsiElement context) {
 			PsiElement prevSibling = context.getParent().getPrevSibling();
-			if (prevSibling.getPrevSibling() != null) {
+			if (prevSibling != null && prevSibling.getPrevSibling() != null) {
 				PsiElement prevPrevSibling = prevSibling.getPrevSibling();
-				if (element instanceof PsiElement && prevSibling != null && prevPrevSibling != null) {
+				if (element instanceof PsiElement) {
 					if (prevSibling.getNode().getElementType() == TokenType.WHITE_SPACE && type.equals(prevPrevSibling.getNode().getElementType()))
 						return true;
 					else if (type.equals(prevSibling.getNode().getElementType())) return true;

@@ -11,22 +11,18 @@ public interface Signature extends ::projectProperName::PsiElement {
 
 	PsiElement getPsiElement();
 
-	PsiElement getIdentifierNode();
-
 	\@Nullable
 	::projectProperName::Identifier getIdentifier();
 
 	\@Nullable
 	::projectProperName::Modifier getModifier();
 
-	\@Nullable
-	::projectProperName::Morph getMorph();
+	boolean isCase();
+
+	boolean isBase();
 
 	\@Nullable
-	::projectProperName::Polymorphic getPolymorphic();
-
-	\@Nullable
-	::projectProperName::ReferenceIdentifier getReferenceIdentifier();
+	::projectProperName::IdentifierReference getIdentifierReference();
 
 }
 

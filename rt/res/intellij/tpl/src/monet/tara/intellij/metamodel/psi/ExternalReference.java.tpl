@@ -9,4 +9,6 @@ public interface ExternalReference extends Navigatable, ::projectProperName::Psi
 
 	\@NotNull
 	List<? extends Identifier> getIdentifierList();
+
+
 }

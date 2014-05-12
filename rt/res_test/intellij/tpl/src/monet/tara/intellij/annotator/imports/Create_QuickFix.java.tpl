@@ -21,7 +21,7 @@ public class CreateDefinitionQuickFix implements LocalQuickFix {
 	\@NotNull
 	\@Override
 	public String getName() {
-		return "Create Definition" + name;
+		return "Create Definition " + name;
 	}
 
 	\@NotNull

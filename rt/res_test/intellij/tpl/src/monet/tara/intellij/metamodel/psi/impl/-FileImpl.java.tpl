@@ -15,10 +15,10 @@ import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
 import monet.::projectName::.intellij.metamodel.::projectProperName::Language;
 import monet.::projectName::.intellij.metamodel.file.::projectProperName::FileType;
 import monet.::projectName::.intellij.metamodel.psi.*;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.util.List;
 
 public class ::projectProperName::FileImpl extends PsiFileBase implements ::projectProperName::File {
 
@@ -77,15 +77,16 @@ public class ::projectProperName::FileImpl extends PsiFileBase implements ::proj
 	}
 
 	\@Override
-	public Import[] getImports() {
-		return PsiTreeUtil.getChildrenOfType(PsiTreeUtil.getChildrenOfType(this, ::projectProperName::Header.class)[0], Import.class);
+	public List<? extends Identifier> getPackageRoute() {
+		return getPackage().getHeaderReference().getIdentifierList();
 	}
 
 
 	\@Override
-	public Definition findDefinitionByKey(\@NotNull \@NonNls String key) {
-		return ::projectProperName::Util.getDefinitionsOfFileByName(this, key).get(0);
+	public Import[] getImports() {
+		return PsiTreeUtil.getChildrenOfType(PsiTreeUtil.getChildrenOfType(this, ::projectProperName::Header.class)[0], Import.class);
 	}
+
 
 
 	private void insertLineBreakBefore(final ASTNode anchorBefore) {

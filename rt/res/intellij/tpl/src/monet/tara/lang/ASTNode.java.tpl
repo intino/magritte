@@ -1,23 +1,27 @@
 package monet.tara.lang;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ASTNode {
 
 	private boolean abstractModifier;
 	private boolean finalModifier;
-	private boolean morph;
-	private boolean polymorphic;
+	private boolean caseConcept;
+	private boolean base;
 	private String doc;
 	private String extendFrom;
+	private String baseConcept;
 	private String identifier = "";
 	private String file;
 	private int line;
 	private List<AnnotationType> annotations = new ArrayList<>();
+	private List<String> imports = new ArrayList<>();
 	private AST children = new AST();
 	private List<Variable> variables = new ArrayList<>();
 	private transient ASTNode parent;
+	private String aPackage;
 
 	public ASTNode() {
 	}
@@ -28,16 +32,16 @@ public class ASTNode {
 		this.file = file;
 		this.abstractModifier = false;
 		this.finalModifier = false;
-		this.morph = false;
-		this.polymorphic = false;
+		this.caseConcept = false;
+		this.base = false;
 	}
 
 	public ASTNode(String file) {
 		this.file = file;
 		this.abstractModifier = false;
 		this.finalModifier = false;
-		this.morph = false;
-		this.polymorphic = false;
+		this.caseConcept = false;
+		this.base = false;
 		this.parent = null;
 	}
 
@@ -93,6 +97,10 @@ public class ASTNode {
 		return null;
 	}
 
+	public List<String> getImports() {
+		return imports;
+	}
+
 	public String getExtendFrom() {
 		return extendFrom;
 	}
@@ -109,12 +117,12 @@ public class ASTNode {
 		this.doc = doc;
 	}
 
-	public ASTNode[] getMorphs() {
-		List<ASTNode> morphs = new ArrayList<>();
-		if (polymorphic) {
+	public ASTNode[] getCases() {
+		List<ASTNode> cases = new ArrayList<>();
+		if (base) {
 			for (ASTNode child : children)
-				if (child.isMorph()) morphs.add(child);
-			return morphs.toArray(new ASTNode[morphs.size()]);
+				if (child.isCase()) cases.add(child);
+			return cases.toArray(new ASTNode[cases.size()]);
 		} else return new ASTNode[0];
 	}
 
@@ -131,20 +139,20 @@ public class ASTNode {
 		return abstractModifier;
 	}
 
-	public boolean isMorph() {
-		return morph;
+	public boolean isCase() {
+		return caseConcept;
 	}
 
-	public void setMorph(boolean morph) {
-		this.morph = morph;
+	public void setCase(boolean caseConcept) {
+		this.caseConcept = caseConcept;
 	}
 
-	public boolean isPolymorphic() {
-		return polymorphic;
+	public boolean isBase() {
+		return base;
 	}
 
-	public void setPolymorphic(boolean polymorphic) {
-		this.polymorphic = polymorphic;
+	public void setBase(boolean base) {
+		this.base = base;
 	}
 
 	public String getModifier() {
@@ -157,8 +165,8 @@ public class ASTNode {
 		else finalModifier = true;
 	}
 
-	public void add(AnnotationType extension) {
-		annotations.add(extension);
+	public void add(AnnotationType annotation) {
+		annotations.add(annotation);
 	}
 
 	public void add(Attribute attribute) {
@@ -198,25 +206,61 @@ public class ASTNode {
 	}
 
 	public String getAbsolutePath() {
-		return (parent != null) ? parent.getAbsolutePath() +
-			((!"".equals(getIdentifier())) ? "." + getIdentifier() : ".annonymous(" + extendFrom + ")") : getIdentifier();
+		return aPackage + "." + getConceptRoute();
+	}
+
+	private String getConceptRoute() {
+		return ((parent != null) ? parent.getConceptRoute() +
+			((!"".equals(getIdentifier())) ? "." + getIdentifier() : ".annonymous(" + extendFrom + ")") : getIdentifier());
 	}
 
 	public String getFile() {
 		return file;
 	}
 
+	public void setImports(String[] imports) {
+		if (imports.length > 0)
+			Collections.addAll(this.imports, imports);
+	}
+
+	public String getPackage() {
+		return aPackage;
+	}
+
+	public void setPackage(String aPackage) {
+		this.aPackage = aPackage;
+	}
+
+	public String getBaseConcept() {
+		return baseConcept;
+	}
+
+	public void setBaseConcept(String baseConcept) {
+		this.baseConcept = baseConcept;
+	}
+
+	public boolean resolveChild(String[] path) {
+		if (path.length > 2) return false;
+		Variable variable = null;
+		for (Variable var : variables)
+			if (var.getName().equals(path[0])) variable = var;
+		if ((variable != null) && variable instanceof Word)
+			for (String wordElement : ((Word) variable).getWordTypes()) if (wordElement.equals(path[1])) return true;
+		return variable != null;
+	}
+
+
 	public enum AnnotationType {
 		EXTENSIBLE, HAS_CODE, ROOT, SINGLETON, MULTIPLE, OPTIONAL, GENERIC;
 	}
 
 	public static class Attribute extends Variable {
-		String primitiveType;
-		String name;
-		String value;
-		boolean isList;
+		public String primitiveType;
+		public String value;
+		public boolean isList;
 
 		public Attribute(String type, String name, boolean isList) {
+			this.name = name;
 			this.primitiveType = type;
 			this.name = name;
 			this.isList = isList;
@@ -224,10 +268,6 @@ public class ASTNode {
 
 		public String getPrimitiveType() {
 			return primitiveType;
-		}
-
-		public String getName() {
-			return name;
 		}
 
 		public String getValue() {
@@ -244,22 +284,17 @@ public class ASTNode {
 	}
 
 	public static class Reference extends Variable {
-		String node;
-		String name;
-		boolean isList;
+		public String node;
+		public boolean isList;
 
 		public Reference(String node, String name, boolean isList) {
-			this.node = node;
 			this.name = name;
+			this.node = node;
 			this.isList = isList;
 		}
 
 		public String getNode() {
 			return node;
-		}
-
-		public String getName() {
-			return name;
 		}
 
 		public boolean isList() {
@@ -268,16 +303,11 @@ public class ASTNode {
 	}
 
 	public static class Word extends Variable {
-		List<String> wordTypes;
-		private String identifier;
+		public List<String> wordTypes;
 
-		public Word(String identifier) {
-			this.identifier = identifier;
+		public Word(String name) {
+			this.name = name;
 			this.wordTypes = new ArrayList<>();
-		}
-
-		public String getIdentifier() {
-			return identifier;
 		}
 
 		public List<String> getWordTypes() {
@@ -289,6 +319,19 @@ public class ASTNode {
 		}
 	}
 
-	private static class Variable {
+	public static class Variable {
+		public String name;
+
+		public Variable() {
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
 	}
 }

@@ -16,6 +16,7 @@ public class ::projectProperName::DocumentationProvider extends AbstractDocument
 
 	\@NotNull
 	private String renderDefinitionValue(Definition definition) {
+		if (definition == null) return "<i>empty</i>";
 		String raw = definition.getText();
 		if (raw == null) return "<i>empty</i>";
 		return StringUtil.escapeXml(raw);

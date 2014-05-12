@@ -13,7 +13,10 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
 import monet.tara.intellij.metamodel.file.TaraFileType;
-import monet.tara.intellij.metamodel.psi.*;
+import monet.tara.intellij.metamodel.psi.Attribute;
+import monet.tara.intellij.metamodel.psi.Body;
+import monet.tara.intellij.metamodel.psi.Concept;
+import monet.tara.intellij.metamodel.psi.TaraFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 
@@ -38,6 +41,13 @@ public class TaraUtil {
 	public static Concept getRootConceptOfFile(TaraFileImpl taraFile) {
 		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, Concept.class);
 		return (concepts != null) ? concepts[0] : null;
+	}
+
+	@NotNull
+	public static Concept getBaseConceptOf(Concept concept) {
+		Concept contextOf = TaraPsiImplUtil.getContextOf(concept);
+		if (contextOf.isBase()) return contextOf;
+		else return TaraPsiImplUtil.getContextOf(contextOf);
 	}
 
 	@NotNull

@@ -49,7 +49,11 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		node.setPackage(packet);
 		node.setImports(imports.keySet().toArray(new String[imports.keySet().size()]));
 		node.setLine(ctx.getStart().getLine());
-		if (ctx.signature().CASE() != null) node.setCase(true);
+		if (ctx.signature().CASE() != null){
+			node.setCase(true);
+			node.setBaseConcept(parent.getIdentifier());
+			node.setExtendFrom(null);
+		}
 		if (parent != null) parent.add(node);
 		else ast.add(node);
 		ast.add(node.getIdentifier(), node);
@@ -130,7 +134,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void enterWord(@NotNull WordContext ctx) {
 		ASTNode.Word word = new ASTNode.Word(ctx.IDENTIFIER(0).getText());
-		ast.addIdentifier(word.getIdentifier(), ATTRIBUTE);
+		ast.addIdentifier(word.getName(), ATTRIBUTE);
 		for (TerminalNode wordTypes : ctx.IDENTIFIER().subList(1, ctx.IDENTIFIER().size())) {
 			word.add(wordTypes.getText());
 			ast.addIdentifier(wordTypes.getText(), "WORD");

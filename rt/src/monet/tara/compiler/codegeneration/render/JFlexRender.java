@@ -28,9 +28,9 @@ public class JFlexRender extends Render {
 	protected void init() {
 		loadCanvas(tplName, true);
 		addMark("projectName", projectName.toLowerCase());
-		addMark("projectNameFile", RenderUtils.toProperCase(projectName));
-		addMark("fileName", tplName);
+		addMark("projectProperName", RenderUtils.toProperCase(projectName));
 		for (String identifier : identifierMap.keySet()) {
+			if (!identifier.endsWith("KEY")) continue;
 			addConceptToStringBuilder(keywords, identifier, identifierMap.get(identifier));
 			addConceptForBNFToStringBuilder(keywords2, identifier);
 		}
@@ -41,7 +41,7 @@ public class JFlexRender extends Render {
 	private void addConceptForBNFToStringBuilder(StringBuilder keywords2, String identifierKey) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("conceptKey", identifierKey);
-		map.put("projectNameFile", RenderUtils.toProperCase(projectName));
+		map.put("projectProperName", RenderUtils.toProperCase(projectName));
 		keywords2.append(block("conceptsToBNF", map));
 	}
 

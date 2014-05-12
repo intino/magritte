@@ -1,7 +1,7 @@
 lexer grammar TaraM2Lexer;
 
 @header{
-    package AntlrM2;
+	package monet.tara.compiler.parser.antlr.source;
 }
 
 @lexer::members{

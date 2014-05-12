@@ -10,10 +10,10 @@ import monet.::projectName::.intellij.::projectProperName::Bundle;
 import monet.::projectName::.intellij.metamodel.psi.Definition;
 import org.jetbrains.annotations.NotNull;
 
-public class RemoveDefinitionFix implements IntentionAction {
+public class RenameDefinitionFix implements IntentionAction {
 	private final Definition myDefinition;
 
-	public RemoveDefinitionFix(\@NotNull final Definition origDefinition) {
+	public RenameDefinitionFix(\@NotNull final Definition origDefinition) {
 		myDefinition = origDefinition;
 	}
 

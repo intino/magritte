@@ -2,12 +2,12 @@ package monet.::projectName::.intellij.highlighting;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import monet.::projectName::.intellij.metamodel.psi.::projectNameFile::Types;
+import monet.::projectName::.intellij.metamodel.psi.::projectProperName::Types;
 import com.intellij.psi.TokenType;
 
 \%\%
 
-\%class ::projectNameFile::HighlighterLex
+\%class ::projectProperName::HighlighterLex
 \%implements FlexLexer
 \%unicode
 \%function advance
@@ -25,9 +25,8 @@ NEWLINE= [\\n]+ ([ ] | [\\t])*
 SYNTHESIZE = "synthesize"
 IMPORT_KEY = "import"
 PACKAGE    = "package"
-MORPH_KEY = "Morph"
-POLYMORPHIC_KEY = "Polymorphic"
-MORPH_KEY     = "Morph"
+CASE_KEY  = "case"
+BASE_KEY  = "base"
 FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"
@@ -41,7 +40,6 @@ EXTENSIBLE_KEY = "extensible"
 EXTENSION_KEY = "extension"
 WORD      = "Word"
 VAR       = "var"
-NEW       = "new"
 CODE_KEY  = "code"
 
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
@@ -92,76 +90,73 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 \%\%
 <YYINITIAL> {
 
-    {SYNTHESIZE}                {   return ::projectNameFile::Types.SYNTHESIZE; }
+    {SYNTHESIZE}                {   return ::projectProperName::Types.SYNTHESIZE; }
 
-	{IMPORT_KEY}                {   return ::projectNameFile::Types.IMPORT_KEY; }
+	{IMPORT_KEY}                {   return ::projectProperName::Types.IMPORT_KEY; }
 
-	{PACKAGE}                   {   return ::projectNameFile::Types.PACKAGE; }
+	{PACKAGE}                   {   return ::projectProperName::Types.PACKAGE; }
 
-    {POLYMORPHIC_KEY}           {   return ::projectNameFile::Types.POLYMORPHIC_KEY; }
+    {BASE_KEY}                  {   return ::projectProperName::Types.BASE_KEY; }
 
-	{MORPH_KEY}                 {   return ::projectNameFile::Types.MORPH_KEY; }
+	{CASE_KEY}                  {   return ::projectProperName::Types.CASE_KEY; }
 
-	{ABSTRACT}                  {   return ::projectNameFile::Types.ABSTRACT; }
+	{ABSTRACT}                  {   return ::projectProperName::Types.ABSTRACT; }
 
-	{FINAL}                     {   return ::projectNameFile::Types.FINAL; }
+	{FINAL}                     {   return ::projectProperName::Types.FINAL; }
 
-	{COLON}                     {   return ::projectNameFile::Types.COLON; }
+	{COLON}                     {   return ::projectProperName::Types.COLON; }
 
-	{VAR}                       {   return ::projectNameFile::Types.VAR; }
+	{VAR}                       {   return ::projectProperName::Types.VAR; }
 
-	{NEW}                       {   return ::projectNameFile::Types.NEW; }
+	{LIST}                      {   return ::projectProperName::Types.LIST; }
 
-	{LIST}                      {   return ::projectNameFile::Types.LIST; }
+	{OPEN_AN}                   {   return ::projectProperName::Types.OPEN_AN; }
+	{CLOSE_AN}                  {   return ::projectProperName::Types.CLOSE_AN; }
 
-	{OPEN_AN}                   {   return ::projectNameFile::Types.OPEN_AN; }
-	{CLOSE_AN}                  {   return ::projectNameFile::Types.CLOSE_AN; }
+	{OPTIONAL}                  {   return ::projectProperName::Types.OPTIONAL; }
+	{MULTIPLE}                  {   return ::projectProperName::Types.MULTIPLE; }
 
-	{OPTIONAL}                  {   return ::projectNameFile::Types.OPTIONAL; }
-	{MULTIPLE}                  {   return ::projectNameFile::Types.MULTIPLE; }
+	{HAS_CODE}                  {   return ::projectProperName::Types.HAS_CODE; }
+	{EXTENSIBLE_KEY}            {   return ::projectProperName::Types.EXTENSIBLE_KEY; }
+	{EXTENSION_KEY}             {   return ::projectProperName::Types.EXTENSION_KEY; }
+	{ROOT}                      {   return ::projectProperName::Types.ROOT; }
+	{SINGLETON}                 {   return ::projectProperName::Types.SINGLETON; }
+	{GENERIC}                   {   return ::projectProperName::Types.GENERIC; }
+	{INTENTION}                 {   return ::projectProperName::Types.INTENTION; }
 
-	{HAS_CODE}                  {   return ::projectNameFile::Types.HAS_CODE; }
-	{EXTENSIBLE_KEY}            {   return ::projectNameFile::Types.EXTENSIBLE_KEY; }
-	{EXTENSION_KEY}             {   return ::projectNameFile::Types.EXTENSION_KEY; }
-	{ROOT}                      {   return ::projectNameFile::Types.ROOT; }
-	{SINGLETON}                 {   return ::projectNameFile::Types.SINGLETON; }
-	{GENERIC}                   {   return ::projectNameFile::Types.GENERIC; }
-	{INTENTION}                 {   return ::projectNameFile::Types.INTENTION; }
+	{DOC_LINE}                  {   return ::projectProperName::Types.DOC_LINE; }
 
-	{DOC_LINE}                  {   return ::projectNameFile::Types.DOC_LINE; }
+	{STRING_VALUE}              {   return ::projectProperName::Types.STRING_VALUE_KEY; }
+	{CODE_KEY}                  {   return ::projectProperName::Types.CODE_KEY; }
+	{BOOLEAN_VALUE}             {   return ::projectProperName::Types.BOOLEAN_VALUE_KEY; }
+	{DOUBLE_VALUE}              {   return ::projectProperName::Types.DOUBLE_VALUE_KEY; }
+	{NEGATIVE_VALUE}            {   return ::projectProperName::Types.NEGATIVE_VALUE_KEY; }
+	{POSITIVE_VALUE}            {   return ::projectProperName::Types.NATURAL_VALUE_KEY; }
 
-	{STRING_VALUE}              {   return ::projectNameFile::Types.STRING_VALUE_KEY; }
-	{CODE_KEY}                  {   return ::projectNameFile::Types.CODE_KEY; }
-	{BOOLEAN_VALUE}             {   return ::projectNameFile::Types.BOOLEAN_VALUE_KEY; }
-	{DOUBLE_VALUE}              {   return ::projectNameFile::Types.DOUBLE_VALUE_KEY; }
-	{NEGATIVE_VALUE}            {   return ::projectNameFile::Types.NEGATIVE_VALUE_KEY; }
-	{POSITIVE_VALUE}            {   return ::projectNameFile::Types.NATURAL_VALUE_KEY; }
+	{LEFT_SQUARE}               {   return ::projectProperName::Types.LEFT_SQUARE; }
+	{RIGHT_SQUARE}              {   return ::projectProperName::Types.RIGHT_SQUARE; }
 
-	{LEFT_SQUARE}               {   return ::projectNameFile::Types.LEFT_SQUARE; }
-	{RIGHT_SQUARE}              {   return ::projectNameFile::Types.RIGHT_SQUARE; }
+    {LEFT_PARENTHESIS}          {   return ::projectProperName::Types.LEFT_PARENTHESIS; }
+    {RIGHT_PARENTHESIS}         {   return ::projectProperName::Types.RIGHT_PARENTHESIS; }
 
-    {LEFT_PARENTHESIS}          {   return ::projectNameFile::Types.LEFT_PARENTHESIS; }
-    {RIGHT_PARENTHESIS}         {   return ::projectNameFile::Types.RIGHT_PARENTHESIS; }
+	{WORD}                      {   return ::projectProperName::Types.WORD_KEY; }
 
-	{WORD}                      {   return ::projectNameFile::Types.WORD_KEY; }
+	{DOT}                       {   return ::projectProperName::Types.DOT; }
 
-	{DOT}                       {   return ::projectNameFile::Types.DOT; }
+	{UID_TYPE}                  {   return ::projectProperName::Types.UID_TYPE; }
+	{INT_TYPE}                  {   return ::projectProperName::Types.INT_TYPE; }
+	{BOOLEAN_TYPE}              {   return ::projectProperName::Types.BOOLEAN_TYPE; }
+	{NATURAL_TYPE}              {   return ::projectProperName::Types.NATURAL_TYPE; }
+    {STRING_TYPE}               {   return ::projectProperName::Types.STRING_TYPE; }
+    {DOUBLE_TYPE}               {   return ::projectProperName::Types.DOUBLE_TYPE; }
 
+	{SEMICOLON}                 {   return ::projectProperName::Types.LEFT_SQUARE; }
 
-	{UID_TYPE}                  {   return ::projectNameFile::Types.UID_TYPE; }
-	{INT_TYPE}                  {   return ::projectNameFile::Types.INT_TYPE; }
-	{BOOLEAN_TYPE}              {   return ::projectNameFile::Types.BOOLEAN_TYPE; }
-	{NATURAL_TYPE}              {   return ::projectNameFile::Types.NATURAL_TYPE; }
-    {STRING_TYPE}               {   return ::projectNameFile::Types.STRING_TYPE; }
-    {DOUBLE_TYPE}               {   return ::projectNameFile::Types.DOUBLE_TYPE; }
+	{COMMA}                     {   return ::projectProperName::Types.COMMA;     }
 
-	{SEMICOLON}                 {   return ::projectNameFile::Types.LEFT_SQUARE; }
+	{OPEN_BRACKET}              {   return ::projectProperName::Types.LEFT_SQUARE; }
 
-	{COMMA}                     {   return ::projectNameFile::Types.COMMA;     }
-
-	{OPEN_BRACKET}              {   return ::projectNameFile::Types.LEFT_SQUARE; }
-
-	{CLOSE_BRACKET}             {   return ::projectNameFile::Types.LEFT_SQUARE; }
+	{CLOSE_BRACKET}             {   return ::projectProperName::Types.LEFT_SQUARE; }
 
 	{NEWLINE}                   {   return TokenType.WHITE_SPACE;}
 
@@ -171,7 +166,7 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 
 ::conceptsToBNF::
 
-{IDENTIFIER_KEY}                {   return ::projectNameFile::Types.IDENTIFIER_KEY;}
+{IDENTIFIER_KEY}                {   return ::projectProperName::Types.IDENTIFIER_KEY;}
 }
 
 .                               {  return TokenType.BAD_CHARACTER;}
@@ -181,4 +176,4 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 @concepts
 ::conceptKey::= "::conceptValue::"
 @conceptsToBNF
-    {::conceptKey::}                {  return ::projectNameFile::Types.::conceptKey::;  }
+    {::conceptKey::}                {  return ::projectProperName::Types.::conceptKey::;  }

@@ -38,8 +38,8 @@
     <moduleType id="::projectUpperName::_MODULE" implementationClass="monet.::projectName::.intellij.project.module.ModuleType"/>
     <treeStructureProvider implementation="monet.::projectName::.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="monet.::projectName::.intellij.actions.::projectProperName::TemplatesFactory"/>
-    <!--<codeInsight.lineMarkerProvider language="::projectProperName::"-->
-    <!--implementationClass="monet.::projectName::.intellij.codeinsight.::projectProperName::LineMarkerProvider"/>-->
+    <codeInsight.lineMarkerProvider language="::projectProperName::"
+                                    implementationClass="monet.::projectName::.intellij.codeinsight.::projectProperName::LineMarkerProvider"/>
     <gotoRelatedProvider implementation="monet.::projectName::.intellij.codeinsight.::projectProperName::RelatedFilesProvider"/>
     
 
@@ -58,6 +58,7 @@
     <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.AnnotationsAnnotator"/>
     <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.AttributeAnnotator"/>
     <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.DefinitionAnnotator"/>
+    <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.PackageAnnotator"/>
     <completion.contributor language="::projectProperName::"
                             implementationClass="monet.::projectName::.intellij.codeinsight.completion.::projectProperName::SignatureCompletionContributor"/>
     <completion.contributor language="::projectProperName::"

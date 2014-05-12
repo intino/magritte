@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class DefinitionMixin extends ASTWrapperPsiElement {
 
@@ -44,7 +45,8 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 
 	\@Override
 	public String getName() {
-		return ::projectProperName::PsiImplUtil.getIdentifier((Definition) this);
+		Identifier identifierNode = (Identifier) getIdentifierNode();
+		return identifierNode != null ? identifierNode.getText() \: null;
 	}
 
 	public ::projectProperName::FileImpl getFile() throws PsiInvalidElementAccessException {
@@ -72,32 +74,31 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 
 	\@Override
 	public Icon getIcon(\@IconFlags int i) {
-		if (this.isMorph())
+		if (this.isCase())
 			return ::projectProperName::Icons.MORPH_13;
-		if (this.isPolymorphic()) return ::projectProperName::Icons.POLYMORPHIC_13;
+		if (this.isBase()) return ::projectProperName::Icons.POLYMORPHIC_13;
 		return ::projectProperName::Icons.DEFINITION_13;
 	}
 
 	\@NotNull
-	public PsiElement setName(String newName) {
-		return ::projectProperName::PsiImplUtil.setName(((Definition) this).getSignature(), newName);
+	public PsiElement setName(String name) {
+		return ::projectProperName::PsiImplUtil.setName(this.getSignature(), name);
 	}
 
 	public PsiElement getIdentifierNode() {
 		return ::projectProperName::PsiImplUtil.getIdentifierNode((Definition) this);
 	}
 
-
 	public Body getBody() {
 		return findChildByClass(Body.class);
 	}
 
-	public boolean isPolymorphic() {
-		return this.getSignature().getPolymorphic() != null;
+	public boolean isBase() {
+		return this.getSignature().isBase();
 	}
 
-	public boolean isMorph() {
-		return this.getSignature().getMorph() != null;
+	public boolean isCase() {
+		return this.getSignature().isCase();
 	}
 
 	public boolean isExtensible() {
@@ -109,6 +110,28 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 					return true;
 		}
 		return false;
+	}
+
+	public boolean isExtension() {
+		Annotations annotations = this.getAnnotations();
+		if (annotations != null) {
+			PsiElement[] ::projectName::Annotations = annotations.getAnnotations();
+			for (PsiElement element \: ::projectName::Annotations)
+				if (element instanceof ::projectProperName::Extension)
+					return true;
+		}
+		return false;
+	}
+
+	public Definition[] getCases() {
+		ArrayList<Definition> cases = new ArrayList<>();
+		if (isBase()) {
+			Definition[] children = ::projectProperName::Util.getChildrenOf((Definition) this);
+			for (Definition child \: children) {
+				if (child.isCase()) cases.add(child);
+			}
+		}
+		return cases.size() > 0 ? cases.toArray(new Definition[cases.size()]) \: null;
 	}
 
 	\@NotNull

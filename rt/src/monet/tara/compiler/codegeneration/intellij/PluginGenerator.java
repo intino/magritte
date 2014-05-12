@@ -1,19 +1,19 @@
 package monet.tara.compiler.codegeneration.intellij;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import monet.tara.compiler.codegeneration.PathManager;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.SourceUnit;
 import monet.tara.compiler.core.errorcollection.TaraException;
+import monet.tara.lang.ASTNode;
 import monet.tara.lang.ASTWrapper;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.List;
 
 public class PluginGenerator {
 
@@ -26,10 +26,9 @@ public class PluginGenerator {
 
 	public void generate(Collection<SourceUnit> units) throws TaraException {
 		ASTWrapper ast = mergeAST(units);
-		serializeNodes(ast.getAST());
-		new TaraPluginToJavaCodeGenerator().toJava(conf, ast);
-		File grammarFile = TaraToBnfCodeGenerator.toBnf(conf, ast);
-		BnfToJavaCodeGenerator.bnfToJava(conf, grammarFile);
+		serializeNodes(ast);
+		File bnfFile = new TaraPluginToJavaCodeGenerator().toJava(conf, ast);
+		BnfToJavaCodeGenerator.bnfToJava(conf, bnfFile);
 		File[] lexFiles = TaraToJFlexCodeGenerator.toJFlex(conf, ast);
 		for (File lexFile : lexFiles)
 			JFlexToJavaGenerator.jFlexToJava(conf.getTempDirectory(), lexFile);
@@ -47,17 +46,45 @@ public class PluginGenerator {
 		return ast;
 	}
 
-	private void serializeNodes(List nodes) throws TaraException {
+	private void serializeNodes(ASTWrapper astWrapper) throws TaraException {
 		try {
 			File file = new File(PathManager.getResIdeDir(conf.getTempDirectory()), AST_JSON);
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
-			Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
-			writer.write(gson.toJson(nodes));
+			GsonBuilder gsonBuilder = new GsonBuilder();
+			gsonBuilder.setPrettyPrinting();
+			gsonBuilder.registerTypeAdapter(ASTNode.Variable.class, new VariableSerializer());
+			Gson gson = gsonBuilder.excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+			writer.write(gson.toJson(astWrapper));
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new TaraException("Error serializing ast");
 		}
+	}
+
+	public static class VariableSerializer implements JsonSerializer<ASTNode.Variable> {
+		@Override
+		public JsonElement serialize(ASTNode.Variable variable, Type type, JsonSerializationContext jsonSerializationContext) {
+			final JsonObject object = new JsonObject();
+			object.addProperty("name", variable.name);
+			if (variable instanceof ASTNode.Word) {
+				ASTNode.Word word = (ASTNode.Word) variable;
+				final JsonArray list = new JsonArray();
+				for (String wordType : word.wordTypes) list.add(new JsonPrimitive(wordType));
+				object.add("wordTypes", list);
+			} else if (variable instanceof ASTNode.Attribute) {
+				ASTNode.Attribute attribute = (ASTNode.Attribute) variable;
+				object.addProperty("primitiveType", attribute.primitiveType);
+				object.addProperty("isList", attribute.isList);
+			} else if (variable instanceof ASTNode.Reference) {
+				ASTNode.Reference reference = (ASTNode.Reference) variable;
+				object.addProperty("node", reference.node);
+				object.addProperty("isList", reference.isList);
+			}
+			return object; // or throw an IllegalArgumentException
+
+		}
+
 	}
 }

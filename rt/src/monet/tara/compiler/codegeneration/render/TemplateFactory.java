@@ -26,8 +26,6 @@ public class TemplateFactory {
 		return TemplateBundle.message(key);
 	}
 
-
-
 	public static String[] getLexerTemplates() {
 		return new String[]{TemplateBundle.message(LEXERS[0]), TemplateBundle.message(LEXERS[1])};
 	}
@@ -35,12 +33,12 @@ public class TemplateFactory {
 	public static String getPluginDescriptorTemplate() {
 		return PLUGIN_DESCRIPTOR;
 	}
+
 	public static String getGrammarTemplate() {
 		return TemplateBundle.message(GRAMMAR);
 	}
 
 	private static class TemplateBundle {
-
 		@NonNls
 		protected static final String PATH_TO_BUNDLE = "intellij.templates";
 		private static Reference<ResourceBundle> ourBundle;

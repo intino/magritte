@@ -35,7 +35,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 
 	private void checkCorrectExtension(PsiElement element) {
 		Concept context = TaraPsiImplUtil.getContextOf(element);
-		if (TaraPsiImplUtil.getContextOf(context) == null || !TaraPsiImplUtil.getContextOf(context).isExtensible()) {
+		if (TaraPsiImplUtil.getContextOf(context) == null || !((TaraFile)element.getContainingFile()).getConcept().isExtensible()) {
 			Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), TaraBundle.message("annotation.extension.key.error.message"));
 			errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
 		}
@@ -76,6 +76,8 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		return (concept != null) && concept.getParent() instanceof TaraFile;
 	}
 
+
+	//%extension%
 	private List<PsiElement> checkAnnotationList(PsiElement[] annotations, String[] correctAnnotation) {
 		List<PsiElement> incorrectAnnotations = new ArrayList<>();
 		for (PsiElement annotation : annotations) {
@@ -85,6 +87,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		}
 		return incorrectAnnotations;
 	}
+	//end_extension
 
 	private boolean isIn(String[] correctAnnotation, String text) {
 		for (String s : correctAnnotation)

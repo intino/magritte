@@ -16,7 +16,6 @@ public abstract class ::projectProperName::Fix implements LocalQuickFix {
 
 	public static final ::projectProperName::Fix[] EMPTY_ARRAY = new ::projectProperName::Fix[0];
 
-	//to appear in "Apply Fix" statement when multiple Quick Fixes exist
 	\@NotNull
 	public String getFamilyName() {
 		return "";

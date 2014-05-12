@@ -83,7 +83,7 @@ Concept:Entity Form <has-code extensible:java>
                     case FromField
                         var Form.Field field
                     case FromTerm
-                        var Term term
+                        var Term termRef
                         Concept Depth {var Natural depth}
 
             Concept Filter <optional>
@@ -92,7 +92,7 @@ Concept:Entity Form <has-code extensible:java>
                 Concept ShowKey
                 Concept Embedded
 
-        Concept:Form.Field CompositeField
+        case CompositeField
             Concept:Form.Field FromField <multiple>
             Concept View <optional>
                 Concept Table <optional>

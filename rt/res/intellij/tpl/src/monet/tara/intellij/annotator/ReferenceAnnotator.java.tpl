@@ -18,7 +18,7 @@ import monet.::projectName::.intellij.::projectProperName::Bundle;
 import monet.::projectName::.intellij.annotator.imports.*;
 import monet.::projectName::.intellij.highlighting.::projectProperName::SyntaxHighlighter;
 import monet.::projectName::.intellij.metamodel.psi.*;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::Util;
+import monet.::projectName::.intellij.metamodel.psi.impl.ReferenceManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -33,15 +33,14 @@ public class ReferenceAnnotator extends ::projectProperName::Annotator {
 		this.element = element;
 		this.holder = holder;
 		if (!(element instanceof Identifier)) return;
-		if (element.getParent() instanceof HeaderReference || element.getParent() instanceof ReferenceIdentifier)
+		if (element.getParent() instanceof HeaderReference || element.getParent() instanceof IdentifierReference)
 			checkWellReferenced();
 	}
-
-	public void checkWellReferenced() {
-		PsiElement reference = ::projectProperName::Util.resolveReference(element);
-		if (reference == null) {
+public void checkWellReferenced() {
+		PsiElement reference = ReferenceManager.resolve((Identifier) element);
+		if (reference == null && !isWellMetaReferenced(element.getParent().getText())) {
 			Annotation errorAnnotation;
-			if (element.getParent() instanceof ReferenceIdentifier)
+			if (element.getParent() instanceof IdentifierReference)
 				addImportAlternatives((Identifier) element);
 			else {
 				String message = ::projectProperName::Bundle.message("reference.definition.key.error.message");
@@ -49,6 +48,13 @@ public class ReferenceAnnotator extends ::projectProperName::Annotator {
 				errorAnnotation.setTextAttributes(::projectProperName::SyntaxHighlighter.UNRESOLVED_ACCESS);
 			}
 		}
+	}
+
+	private boolean isWellMetaReferenced(String reference) {
+		monet.tara.lang.ASTWrapper heritage = monet.::projectName::.intellij.metamodel.::projectProperName::Language.getHeritage();
+		String[] refRoute = reference.split("\\\\.");
+		monet.tara.lang.ASTNode node = heritage.getNodeNameLookUpTable().get(refRoute[0]).get(0);
+		return node != null && node.resolveChild(Arrays.copyOfRange(refRoute, 1, refRoute.length));
 	}
 
 	private void addImportAlternatives(Identifier element) {
@@ -61,8 +67,6 @@ public class ReferenceAnnotator extends ::projectProperName::Annotator {
 		errorAnnotation.setTextAttributes(::projectProperName::SyntaxHighlighter.UNRESOLVED_ACCESS);
 		for (LocalQuickFix fix \: fixes)
 			errorAnnotation.registerFix(createIntention(element, fix.getName(), fix));
-
-
 	}
 
 	private void addCreateDefinitionFix(Identifier name, List<LocalQuickFix> actions) {
@@ -85,7 +89,7 @@ public class ReferenceAnnotator extends ::projectProperName::Annotator {
 		return QuickFixWrapper.wrap((ProblemDescriptor) descr, 0);
 	}
 
-	private void addAutoImportFix(::projectProperName::PsiElement node, PsiReference reference, List<LocalQuickFix> actions) {
+	private void addAutoImportFix(PsiElement node, PsiReference reference, List<LocalQuickFix> actions) {
 		final PsiFile file = InjectedLanguageManager.getInstance(node.getProject()).getTopLevelFile(node);
 		if (!(file instanceof ::projectProperName::File)) return;
 //		AutoImportQuickFix importFix = ::projectProperName::ReferenceImporter.proposeImportFix(node, reference);

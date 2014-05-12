@@ -6,14 +6,17 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
-import monet.::projectName::.intellij.codeinsight.JavaHelper;
 import monet.::projectName::.intellij.metamodel.file.::projectProperName::FileType;
-import monet.::projectName::.intellij.metamodel.psi.*;
+import monet.::projectName::.intellij.metamodel.psi.Attribute;
+import monet.::projectName::.intellij.metamodel.psi.Body;
+import monet.::projectName::.intellij.metamodel.psi.Definition;
+import monet.::projectName::.intellij.metamodel.psi.::projectProperName::File;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 
@@ -31,21 +34,20 @@ public class ::projectProperName::Util {
 	public static List<Definition> findRootDefinition(Project project, String identifier) {
 		List<Definition> result = new ArrayList<>();
 		for (::projectProperName::FileImpl ::projectName::File \: getProjectFiles(project))
-			result.addAll(getDefinitionsOfFileByName(::projectName::File, identifier));
-		return result;
-	}
-
-	\@NotNull
-	public static List<Definition> getDefinitionsOfFileByName(::projectProperName::FileImpl ::projectName::File, String identifier) {
-		List<Definition> result = new ArrayList<>();
-		Definition[] definitions = PsiTreeUtil.getChildrenOfType(::projectName::File, Definition.class);
-		if (definitions != null) result.addAll(getDefinitionsByName(definitions, identifier));
+			if (identifier.equals(::projectName::File.getDefinition().getName())) result.add(::projectName::File.getDefinition());
 		return result;
 	}
 
 	public static Definition getRootDefinitionOfFile(::projectProperName::FileImpl ::projectName::File) {
 		Definition[] definitions = PsiTreeUtil.getChildrenOfType(::projectName::File, Definition.class);
 		return (definitions != null) ? definitions[0] \: null;
+	}
+
+	\@NotNull
+	public static Definition getBaseDefinitionOf(Definition definition) {
+		Definition contextOf = ::projectProperName::PsiImplUtil.getContextOf(definition);
+		if (contextOf.isBase()) return contextOf;
+		else return ::projectProperName::PsiImplUtil.getContextOf(contextOf);
 	}
 
 	\@NotNull
@@ -56,14 +58,6 @@ public class ::projectProperName::Util {
 		for (VirtualFile file \: files)
 			if (file != null) ::projectName::Files.add((::projectProperName::FileImpl) PsiManager.getInstance(project).findFile(file));
 		return ::projectName::Files.toArray(new ::projectProperName::FileImpl[::projectName::Files.size()]);
-	}
-
-	\@NotNull
-	private static List<Definition> getDefinitionsByName(Definition[] definitions, String identifier) {
-		List<Definition> result = new ArrayList<>();
-		for (Definition definition \: definitions)
-			if (definition.getName() != null && identifier.equals(definition.getName())) result.add(definition);
-		return result;
 	}
 
 	\@NotNull
@@ -111,97 +105,20 @@ public class ::projectProperName::Util {
 				result.addAll(::projectProperName::PsiImplUtil.getChildrenOf(definition));
 		}
 		return result;
-
 	}
 
-	public static PsiElement resolveReference(PsiElement identifier) {
-		PsiElement reference = null;
-		if (identifier.getParent() instanceof ReferenceIdentifier)
-			reference = resolveDefinitionReference(identifier);
-		else if (identifier.getParent() instanceof HeaderReference) {
-			reference = resolveHeaderReference(identifier);
-		}
-		return reference;
-	}
-
-
-	public static Definition resolveDefinitionReference(PsiElement identifier) {
-		if (identifier.getParent() instanceof ReferenceIdentifier) {
-			List<Identifier> route = (List<Identifier>) ((ReferenceIdentifier) (identifier.getParent())).getIdentifierList();
-			route = route.subList(0, route.indexOf(identifier) + 1);
-			return resolveInDefinitionReference(identifier, route);
-		}
-		return null;
-	}
-
-	public static PsiElement resolveHeaderReference(PsiElement identifier) {
-		List<Identifier> route = (List<Identifier>) ((HeaderReference) (identifier.getParent())).getIdentifierList();
-		List<Identifier> subRoute = route.subList(0, route.indexOf(identifier) + 1);
-		VirtualFile file = resolveRoute(subRoute);
-		if (file == null || file.isDirectory())
-			return resolvePackageReference(identifier.getProject(), join(subRoute, '.'));
-		return PsiManager.getInstance(identifier.getProject()).findFile(file);
-	}
-
-	private static String join(List<Identifier> subRoute, char c) {
-		String result = "";
-		for (Identifier identifier \: subRoute) {
-			result += c + identifier.getText();
-		}
-		return result.substring(1);
-	}
-
-	public static PsiElement resolvePackageReference(Project project, String path) {
-		return (PsiElement) JavaHelper.getJavaHelper(project).findPackage(path);
-	}
-
-	private static VirtualFile resolveRoute(List<Identifier> subRoute) {
-		VirtualFile file = getSourcePath(subRoute.get(0).getProject());
-		for (Identifier identifier \: subRoute)
-			file = findChildFileOf(file, identifier.getText());
-		return file;
-	}
-
-	private static VirtualFile findChildFileOf(VirtualFile file, String name) {
+	public static VirtualFile findChildFileOf(VirtualFile file, String name) {
+		if (file.getChildren() == null) return null;
 		for (VirtualFile virtualFile \: file.getChildren())
 			if (virtualFile.getName().split("\\\\.")[0].equals(name))
 				return virtualFile;
 		return null;
 	}
 
-	private static Definition resolveInDefinitionReference(PsiElement identifier, List<Identifier> route) {
-		Definition reference = resolveRelativeReference(route, (::projectProperName::Identifier) identifier);
-		if (!isRootDefinition(::projectProperName::PsiImplUtil.resolveContextOfRef((ReferenceIdentifier) identifier.getParent())) && reference != null)
-			return reference;
-		else return resolveAbsoluteReference(identifier.getProject(), route);
-	}
-
-	private static boolean isRootDefinition(Definition definition) {
-		return ::projectProperName::PsiImplUtil.getContextOf(definition) == null;
-	}
-
-	private static Definition resolveRelativeReference(List<Identifier> route, Identifier element) {
-		Definition context = ::projectProperName::PsiImplUtil.resolveContextOfRef((ReferenceIdentifier) element.getParent());
-		Definition definition = ::projectProperName::PsiImplUtil.getContextOf(context);
-		for (Identifier identifier \: route) {
-			definition = findChildOf(definition, ((::projectProperName::IdentifierImpl) identifier).getIdentifier());
-			if (definition == null) break;
-		}
-		return definition;
-	}
-
-	private static Definition resolveAbsoluteReference(Project project, List<Identifier> identifiers) {
-		List<Definition> rootDefinitions = findRootDefinition(project, ((::projectProperName::IdentifierImpl) identifiers.get(0)).getIdentifier());
-		Definition reference = null;
-		for (Definition rootDefinition \: rootDefinitions) {
-			Definition internRef = rootDefinition;
-			for (int i = 1; i < identifiers.size(); i++) {
-				internRef = findChildOf(internRef, ((::projectProperName::IdentifierImpl) identifiers.get(i)).getIdentifier());
-				if (internRef == null) break;
-			}
-			reference = internRef;
-		}
-		return reference;
+	public static ::projectProperName::File get::projectProperName::FileFromVirtual(Project project, VirtualFile vFile) {
+		PsiFile file = PsiManager.getInstance(project).findFile(vFile);
+		if (file instanceof ::projectProperName::File) return (::projectProperName::File) file;
+		return null;
 	}
 
 	public static List<Definition> getSiblings(Definition context) {
@@ -213,6 +130,7 @@ public class ::projectProperName::Util {
 		return Collections.EMPTY_LIST;
 	}
 
+	\@NotNull
 	public static Definition[] getChildrenOf(Definition definition) {
 		List<Definition> childrenOf = ::projectProperName::PsiImplUtil.getChildrenOf(definition);
 		return childrenOf.toArray(new Definition[childrenOf.size()]);
@@ -225,7 +143,6 @@ public class ::projectProperName::Util {
 				return child;
 		return null;
 	}
-
 
 	public static VirtualFile getSourcePath(Project project) {
 		Module[] modules = ModuleManager.getInstance(project).getModules();

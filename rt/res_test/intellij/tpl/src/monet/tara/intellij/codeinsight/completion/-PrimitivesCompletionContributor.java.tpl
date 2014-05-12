@@ -41,6 +41,7 @@ public class ::projectProperName::PrimitivesCompletionContributor extends Comple
 	private static class AfterVarFitFilter implements ElementFilter {
 		public boolean isAcceptable(Object element, PsiElement context) {
 			if (element instanceof PsiElement && context.getPrevSibling() != null) {
+				if (context.getPrevSibling().getPrevSibling() == null) return false;
 				final ASTNode ctxPreviousNode = context.getPrevSibling().getPrevSibling().getNode();
 				if (::projectProperName::Types.VAR.equals(ctxPreviousNode.getElementType()))
 					return true;

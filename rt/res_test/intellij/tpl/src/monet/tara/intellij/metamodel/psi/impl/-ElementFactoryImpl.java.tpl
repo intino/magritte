@@ -21,7 +21,7 @@ public class ::projectProperName::ElementFactoryImpl extends ::projectProperName
 				"\\tDefinition Ontology <optional>\\n" +
 				"\\tvar Uid uid"
 		);
-		return (Definition) file.getFirstChild();
+		return file.getDefinition();
 	}
 
 	public ::projectProperName::FileImpl createDummyFile(String text) {

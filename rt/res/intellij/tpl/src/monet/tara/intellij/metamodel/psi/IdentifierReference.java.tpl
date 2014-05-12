@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface ReferenceIdentifier extends Navigatable, ::projectProperName::PsiElement {
+public interface IdentifierReference extends Navigatable, ::projectProperName::PsiElement {
 
 	\@NotNull
 	List<? extends Identifier> getIdentifierList();

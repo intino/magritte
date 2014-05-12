@@ -33,6 +33,7 @@ public class DefaultRender extends Render {
 			addMark("projectName", projectName.toLowerCase());
 			addMark("projectProperName", RenderUtils.toProperCase(projectName));
 			addMark("projectUpperName", projectName.toUpperCase());
+			addMark("empty", "empty");
 		} catch (Exception e) {
 			throw new TaraException("Template not found: " + tplName);
 		}

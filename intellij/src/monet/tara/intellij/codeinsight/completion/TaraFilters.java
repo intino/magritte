@@ -20,7 +20,9 @@ public class TaraFilters {
 	protected static PsiElementPattern.Capture<PsiElement> afterConceptKey = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
+		//gen %empty%;%
 		.and(new FilterPattern(new AfterElementFitFilter(TaraTypes.CONCEPT_KEY)));
+		//end
 	protected static PsiElementPattern.Capture<PsiElement> afterModifierKey = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))

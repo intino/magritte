@@ -17,7 +17,11 @@ public class ASTWrapper {
 
 	public void addIdentifier(String identifier, String context) {
 		if (!identifierMap.containsKey(identifier) && !isUnName(identifier))
-			identifierMap.put(identifier.toUpperCase() + "_" + context, identifier);
+			if (identifierMap.containsKey(identifier.toUpperCase() + "_KEY") && !identifierMap.containsValue(identifier))
+				identifierMap.put(identifier.toUpperCase() + "_MAIN_" + context, identifier);
+			else
+				identifierMap.put(identifier.toUpperCase() + "_" + context, identifier);
+
 	}
 
 	public Map<String, String> getIdentifiers() {
@@ -55,10 +59,11 @@ public class ASTWrapper {
 	}
 
 	public ASTNode searchAncestry(ASTNode node) {
-		if (node.getExtendFrom() == null) return null;
-		ASTNode result = relativeSearch(node.getExtendFrom(), node);
+		if (node.getExtendFrom() == null && node.getBaseConcept() == null) return null;
+		String ancestry = (node.getExtendFrom() != null) ? node.getExtendFrom() : node.getBaseConcept();
+		ASTNode result = relativeSearch(ancestry, node);
 		if (result != null) return result;
-		return absoluteSearch(node.getExtendFrom(), node);
+		return absoluteSearch(ancestry, node);
 	}
 
 	public List<String> getKeys(String value) {

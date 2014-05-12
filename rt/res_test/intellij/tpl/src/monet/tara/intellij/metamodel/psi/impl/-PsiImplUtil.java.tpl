@@ -17,15 +17,23 @@ public class ::projectProperName::PsiImplUtil {
 	}
 
 	public static String getIdentifier(Identifier keyNode) {
-		if (keyNode != null) return keyNode.getText();
-		else return null;
-
+		return keyNode != null ? keyNode.getText() \: null;
 	}
 
 	public static String getIdentifier(Definition element) {
 		if (element.getSignature().getIdentifier() != null) {
 			ASTNode valueNode = element.getSignature().getIdentifier().getNode();
-			if (valueNode != null) return valueNode.getText();
+			return valueNode.getText();
+		}
+		return null;
+	}
+
+	public static Definition getExtensibleOfExtension(Definition definition) {
+		if (definition.isExtension()) {
+			Definition context = getContextOf(definition);
+			while (context != null && !context.isExtensible())
+				context = getContextOf(definition);
+			if (context != null) return context;
 		}
 		return null;
 	}
@@ -33,7 +41,7 @@ public class ::projectProperName::PsiImplUtil {
 	public static PsiElement getIdentifierNode(Definition element) {
 		if (element.getSignature().getIdentifier() != null) {
 			ASTNode valueNode = element.getSignature().getIdentifier().getNode();
-			if (valueNode != null) return valueNode.getPsi();
+			return valueNode.getPsi();
 		}
 		return null;
 	}
@@ -65,7 +73,7 @@ public class ::projectProperName::PsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	public static Definition resolveContextOfRef(ReferenceIdentifier identifier) {
+	public static Definition getContextOfRef(IdentifierReference identifier) {
 		PsiElement element = identifier;
 		while (!(element.getParent() instanceof Definition))
 			element = element.getParent();

@@ -36,7 +36,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		if (element.getParent() instanceof HeaderReference || element.getParent() instanceof IdentifierReference)
 			checkWellReferenced();
 	}
-
+//%extension%
 	public void checkWellReferenced() {
 		PsiElement reference = ReferenceManager.resolve((Identifier) element);
 		if (reference == null) {
@@ -50,6 +50,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 			}
 		}
 	}
+//end_extension
 
 	private void addImportAlternatives(Identifier element) {
 		String message = TaraBundle.message("reference.concept.key.error.message");
@@ -61,8 +62,6 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
 		for (LocalQuickFix fix : fixes)
 			errorAnnotation.registerFix(createIntention(element, fix.getName(), fix));
-
-
 	}
 
 	private void addCreateConceptFix(Identifier name, List<LocalQuickFix> actions) {

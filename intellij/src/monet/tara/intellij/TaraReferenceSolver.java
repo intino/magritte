@@ -47,7 +47,8 @@ public class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements
 			if (isReferenceToConcept()) concepts.addAll(getVariants((TaraIdentifier) myElement));
 			else if (isChildrenResolution())
 				getChildrenVariants((TaraIdentifier) myElement.getPrevSibling().getPrevSibling(), concepts);
-		} else getVariantsInHeader(getSubRoute((Identifier) myElement));
+		} else if (myElement.getParent() instanceof HeaderReference)
+			getVariantsInHeader(getSubRoute((Identifier) myElement));
 		return fillVariants(concepts);
 	}
 
@@ -91,6 +92,7 @@ public class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements
 	private List<PsiElement> getImportVariants(TaraIdentifier parent) {
 		List<PsiElement> variants = new ArrayList<>();
 		Import[] imports = ((TaraFile) parent.getContainingFile()).getImports();
+		if (imports == null) return variants;
 		for (Import anImport : imports) {
 			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
 			variants.add(importIdentifiers.get(importIdentifiers.size() - 1));

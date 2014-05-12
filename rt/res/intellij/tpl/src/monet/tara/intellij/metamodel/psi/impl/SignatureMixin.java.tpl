@@ -8,6 +8,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
 import monet.::projectName::.intellij.metamodel.psi.Definition;
+import monet.::projectName::.intellij.metamodel.psi.::projectProperName::Types;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -38,12 +39,16 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 	}
 
 
-	public PsiElement getIdentifierNode() {
-		return ::projectProperName::PsiImplUtil.getIdentifierNode((Definition) this);
-	}
-
 	\@Override
 	public Icon getIcon(\@IconFlags int i) {
 		return ::projectProperName::Icons.DEFINITION_13;
+	}
+
+	public boolean isCase() {
+		return getNode().findChildByType(::projectProperName::Types.CASE_KEY) != null;
+	}
+
+	public boolean isBase() {
+		return getNode().findChildByType(::projectProperName::Types.BASE_KEY) != null;
 	}
 }

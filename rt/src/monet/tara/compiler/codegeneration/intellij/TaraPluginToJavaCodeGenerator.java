@@ -15,17 +15,21 @@ import java.io.PrintWriter;
 public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 
 	CompilerConfiguration configuration;
+
 	private PrintWriter writer;
 
-	public void toJava(CompilerConfiguration configuration, ASTWrapper ast) throws TaraException {
+	public File toJava(CompilerConfiguration configuration, ASTWrapper ast) throws TaraException {
+		File bnfFile = null;
 		this.configuration = configuration;
 		for (String template : TemplateFactory.getTemplates()) {
-			if (!template.endsWith(".bnf") && !template.endsWith(".flex")) {
-				writer = getOutWriter(new File(getDestinyOf(TemplateFactory.getTemplate(template))));
-				writeTemplateBasedFile(template, calculateParam(template, ast));
-				writer.close();
-			}
+			if (template.endsWith("HighlighterLex.flex")) continue;
+			File destiny = new File(getDestinyOf(TemplateFactory.getTemplate(template)));
+			writer = getOutWriter(destiny);
+			writeTemplateBasedFile(template, calculateParam(template, ast));
+			writer.close();
+			if (template.endsWith(".bnf")) bnfFile = destiny;
 		}
+		return bnfFile;
 	}
 
 	private Object calculateParam(String template, ASTWrapper ast) {

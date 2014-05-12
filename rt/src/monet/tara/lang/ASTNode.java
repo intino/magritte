@@ -12,6 +12,7 @@ public class ASTNode {
 	private boolean base;
 	private String doc;
 	private String extendFrom;
+	private String baseConcept;
 	private String identifier = "";
 	private String file;
 	private int line;
@@ -164,8 +165,8 @@ public class ASTNode {
 		else finalModifier = true;
 	}
 
-	public void add(AnnotationType extension) {
-		annotations.add(extension);
+	public void add(AnnotationType annotation) {
+		annotations.add(annotation);
 	}
 
 	public void add(Attribute attribute) {
@@ -230,18 +231,36 @@ public class ASTNode {
 		this.aPackage = aPackage;
 	}
 
+	public String getBaseConcept() {
+		return baseConcept;
+	}
+
+	public void setBaseConcept(String baseConcept) {
+		this.baseConcept = baseConcept;
+	}
+
+	public boolean resolveChild(String[] path) {
+		if (path.length > 2) return false;
+		Variable variable = null;
+		for (Variable var : variables)
+			if (var.getName().equals(path[0])) variable = var;
+		if ((variable != null) && variable instanceof Word)
+			for (String wordElement : ((Word) variable).getWordTypes()) if (wordElement.equals(path[1])) return true;
+		return variable != null;
+	}
+
 
 	public enum AnnotationType {
 		EXTENSIBLE, HAS_CODE, ROOT, SINGLETON, MULTIPLE, OPTIONAL, GENERIC;
 	}
 
 	public static class Attribute extends Variable {
-		String primitiveType;
-		String name;
-		String value;
-		boolean isList;
+		public String primitiveType;
+		public String value;
+		public boolean isList;
 
 		public Attribute(String type, String name, boolean isList) {
+			this.name = name;
 			this.primitiveType = type;
 			this.name = name;
 			this.isList = isList;
@@ -249,10 +268,6 @@ public class ASTNode {
 
 		public String getPrimitiveType() {
 			return primitiveType;
-		}
-
-		public String getName() {
-			return name;
 		}
 
 		public String getValue() {
@@ -269,22 +284,17 @@ public class ASTNode {
 	}
 
 	public static class Reference extends Variable {
-		String node;
-		String name;
-		boolean isList;
+		public String node;
+		public boolean isList;
 
 		public Reference(String node, String name, boolean isList) {
-			this.node = node;
 			this.name = name;
+			this.node = node;
 			this.isList = isList;
 		}
 
 		public String getNode() {
 			return node;
-		}
-
-		public String getName() {
-			return name;
 		}
 
 		public boolean isList() {
@@ -293,16 +303,11 @@ public class ASTNode {
 	}
 
 	public static class Word extends Variable {
-		List<String> wordTypes;
-		private String identifier;
+		public List<String> wordTypes;
 
-		public Word(String identifier) {
-			this.identifier = identifier;
+		public Word(String name) {
+			this.name = name;
 			this.wordTypes = new ArrayList<>();
-		}
-
-		public String getIdentifier() {
-			return identifier;
 		}
 
 		public List<String> getWordTypes() {
@@ -314,6 +319,19 @@ public class ASTNode {
 		}
 	}
 
-	private static class Variable {
+	public static class Variable {
+		public String name;
+
+		public Variable() {
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
 	}
 }
