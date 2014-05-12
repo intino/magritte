@@ -16,5 +16,5 @@ public void checkWellReferenced() {
 		monet.tara.lang.ASTWrapper heritage = monet.::projectName::.intellij.metamodel.::projectProperName::Language.getHeritage();
 		String[] refRoute = reference.split("\\\\.");
 		monet.tara.lang.ASTNode node = heritage.getNodeNameLookUpTable().get(refRoute[0]).get(0);
-		return node != null && node.resolveChild(Arrays.copyOfRange(refRoute, 1, refRoute.length));
+		return node != null && node.resolveChild(java.util.Arrays.copyOfRange(refRoute, 1, refRoute.length));
 	}

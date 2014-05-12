@@ -21,6 +21,7 @@ public class TaraLanguage extends Language {
 	}
 
 	public static ASTWrapper getHeritage() {
+		if (heritage == null) loadHeritage();
 		return heritage;
 	}
 
@@ -35,7 +36,7 @@ public class TaraLanguage extends Language {
 			gb.registerTypeAdapter(ASTNode.Variable.class, new CustomDeserializer());
 			heritage = gb.create().fromJson(new InputStreamReader(heritageInputStream), ASTWrapper.class);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			heritage = null;
 		}
 	}

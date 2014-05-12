@@ -26,13 +26,13 @@ header \:\:=  packet importStatement* synthesizeStatement*
 
 packet \:\:= PACKAGE headerReference
 importStatement \:\:= NEWLINE IMPORT_KEY headerReference
-{ mixin= 'monet.goros.intellij.metamodel.psi.impl.ImportMixin'
-implements='monet.goros.intellij.metamodel.psi.Import'}
+{ mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.ImportMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.Import'}
 
 annotations \:\:= OPEN_AN (code | extensible | extension | MULTIPLE | OPTIONAL)+ CLOSE_AN
 {
-mixin= 'monet.goros.intellij.metamodel.psi.impl.AnnotationsMixin'
-implements='monet.goros.intellij.metamodel.psi.Annotations'
+mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.AnnotationsMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.Annotations'
 }
 code \:\:= CODE_KEY COLON IDENTIFIER_KEY
 
@@ -42,34 +42,34 @@ extensible \:\:= EXTENSIBLE_KEY COLON IDENTIFIER_KEY
 
 doc \:\:= DOC_LINE+
 {
-mixin= 'monet.goros.intellij.metamodel.psi.impl.DocMixin'
-implements='monet.goros.intellij.metamodel.psi.Doc'
+mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.DocMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.Doc'
 }
 
 headerReference \:\:= hierarchy* identifier
 { pin=2
-mixin= 'monet.goros.intellij.metamodel.psi.impl.IdentifierReferenceMixin'
-implements='monet.goros.intellij.metamodel.psi.HeaderReference'}
+mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.IdentifierReferenceMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.HeaderReference'}
 
 identifierReference\:\:= hierarchy* identifier
 {pin=2
-mixin= 'monet.goros.intellij.metamodel.psi.impl.IdentifierReferenceMixin'
-implements='monet.goros.intellij.metamodel.psi.IdentifierReference'}
+mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.IdentifierReferenceMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.IdentifierReference'}
 
 externalReference \:\:= hierarchy* identifier
 {pin=2
-mixin= 'monet.goros.intellij.metamodel.psi.impl.ExternalReferenceMixin'
-implements='monet.goros.intellij.metamodel.psi.ExternalReference'}
+mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.ExternalReferenceMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.ExternalReference'}
 
 private hierarchy \:\:= identifier DOT
 
 identifier  \:\:=  IDENTIFIER_KEY {
-mixin= 'monet.goros.intellij.metamodel.psi.impl.IdentifierMixin'
-implements='monet.goros.intellij.metamodel.psi.Identifier'
+mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.IdentifierMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.Identifier'
 }
 metaIdentifier \:\:= IDENTIFIER_KEY {
-mixin= 'monet.goros.intellij.metamodel.psi.impl.MetaIdentifierMixin'
-implements='monet.goros.intellij.metamodel.psi.MetaIdentifier'
+mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.MetaIdentifierMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.MetaIdentifier'
 }
 
 modifier\:\:= ABSTRACT
@@ -77,22 +77,22 @@ modifier\:\:= ABSTRACT
           | BASE_KEY
 
 definition \:\:= doc? signature annotations? body?
-{ mixin= 'monet.goros.intellij.metamodel.psi.impl.DefinitionMixin'
-implements='monet.goros.intellij.metamodel.psi.Definition'}
+{ mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.DefinitionMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.Definition'}
 
 definitionKey \:\:= EVENT_KEY|FORM_KEY|ONCHANGE_KEY|DESCRIPTION_KEY|REQUIRED_KEY|READONLY_KEY|DISPLAY_KEY|BOOLEANFIELD_KEY|TEXTFIELD_KEY|EDITION_KEY|ALLOWHISTORY_KEY|MODE_KEY|MAXLENGTH_KEY|MINLENGTH_KEY|PATTERN_KEY|META_KEY|DATEFIELD_KEY|TODAYISTHELATESTDATE_KEY|TODAYISTHEEARLIESTDATE_KEY|SELECTFIELD_KEY|ALLOWSEARCH_KEY|ALLOWOTHERS_KEY|ROOT_KEY|INTERNAL_KEY|LEAF_KEY|FROMFIELD_KEY|FROMTERM_KEY|DEPTH_KEY|FILTER_KEY|VIEW_KEY|SHOWKEY_KEY|EMBEDDED_KEY|COMPOSITEFIELD_KEY|TABLE_KEY|SECTION_KEY|GEOREFERENCE_KEY|TAB_KEY|SUMMARY_KEY|HELP_KEY|OPERATION_KEY|THESAURUS_KEY|TERM_KEY|ONTOLOGY_KEY
 signature \:\:= ((CASE_KEY identifier)
 		 | heritageSignature
          | (metaIdentifier modifier? identifier?)) parameters?
-{ pin=1 mixin= 'monet.goros.intellij.metamodel.psi.impl.SignatureMixin'
-implements='monet.goros.intellij.metamodel.psi.Signature'}
+{ pin=1 mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.SignatureMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.Signature'}
 
 private heritageSignature\:\:=metaIdentifier COLON identifierReference modifier? identifier?
 { pin=2}
 
 body \:\:= NEW_LINE_INDENT (definitionConstituents NEWLINE+)+ DEDENT
-{ mixin= 'monet.goros.intellij.metamodel.psi.impl.BodyMixin'
-implements='monet.goros.intellij.metamodel.psi.Body'}
+{ mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.BodyMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.Body'}
 
 parameters\:\:= LEFT_PARENTHESIS ( explicitParameters | implicitParameters) RIGHT_PARENTHESIS
 
@@ -127,18 +127,18 @@ attribute\:\:= VAR     UID_TYPE IDENTIFIER_KEY (COLON stringValue)?
            | VAR BOOLEAN_TYPE (variableNames | IDENTIFIER_KEY COLON booleanValue | LIST IDENTIFIER_KEY (COLON booleanList)?)
            | VAR  STRING_TYPE (variableNames | IDENTIFIER_KEY COLON stringValue | LIST IDENTIFIER_KEY (COLON stringList)?)
 {
-mixin= 'monet.goros.intellij.metamodel.psi.impl.AttributeMixin'
-implements='monet.goros.intellij.metamodel.psi.Attribute'
+mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.AttributeMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.Attribute'
 }
 word\:\:= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT
 {
-mixin= 'monet.goros.intellij.metamodel.psi.impl.WordMixin'
-implements='monet.goros.intellij.metamodel.psi.Word'
+mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.WordMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.Word'
 }
 referenceStatement\:\:= VAR identifierReference LIST? variableNames
 {
-mixin= 'monet.goros.intellij.metamodel.psi.impl.ReferenceStatementMixin'
-implements='monet.goros.intellij.metamodel.psi.ReferenceStatement'
+mixin= 'monet.::projectName::.intellij.metamodel.psi.impl.ReferenceStatementMixin'
+implements='monet.::projectName::.intellij.metamodel.psi.ReferenceStatement'
 }
 variableNames\:\:= IDENTIFIER_KEY (COMMA IDENTIFIER_KEY)*;
 

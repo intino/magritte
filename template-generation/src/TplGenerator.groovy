@@ -1,4 +1,4 @@
-public class Tplgenerator {
+public class TplGenerator {
 
     static String TPL_PATH = "rt/res/intellij/tpl";
     static String SRC_PATH = "intellij/src";
@@ -21,6 +21,7 @@ public class Tplgenerator {
         File tpl_testPath = new File(RES_TEST_PATH)
         FileUtils.removeDir(tpl_testPath)
         FileUtils.copyDir(new File(TPL_PATH), tpl_testPath)
+        FileUtils.copyFile(templateBound, new File("rt/res_test/intellij/templates.properties"))
     }
 
 
@@ -65,7 +66,7 @@ public class Tplgenerator {
         String mfile
         if (it.name.endsWith(".bnf")) mfile = "m1Grammar.tpl"
         else mfile = it.name.contains("Highlighter") ? "m1HighlightLex.tpl" : "m1Lexer.tpl"
-        String text = (new File(Tplgenerator.class.getResource("/template-generation/tpl/").getPath() + mfile)).text.replaceAll("%", "\\\\%")
+        String text = (new File(TplGenerator.class.getResource("/template-generation/tpl/").getPath() + mfile)).text.replaceAll("%", "\\\\%")
         File newFile = new File(tplPath + it.parent.substring(8), newFileName + ".tpl")
         newFile.write(text)
         templateBound.append(it.getName() + " = " + FileUtils.getRelativeTplPath(newFile) + "\n");

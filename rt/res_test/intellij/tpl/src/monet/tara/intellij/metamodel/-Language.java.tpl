@@ -2,8 +2,8 @@ package monet.::projectName::.intellij.metamodel;
 
 import com.google.gson.*;
 import com.intellij.lang.Language;
-import monet.tara.lang.ASTNode;
-import monet.tara.lang.ASTWrapper;
+import monet.::projectName::.lang.ASTNode;
+import monet.::projectName::.lang.ASTWrapper;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,6 +21,7 @@ public class ::projectProperName::Language extends Language {
 	}
 
 	public static ASTWrapper getHeritage() {
+		if (heritage == null) loadHeritage();
 		return heritage;
 	}
 
@@ -35,7 +36,7 @@ public class ::projectProperName::Language extends Language {
 			gb.registerTypeAdapter(ASTNode.Variable.class, new CustomDeserializer());
 			heritage = gb.create().fromJson(new InputStreamReader(heritageInputStream), ASTWrapper.class);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			heritage = null;
 		}
 	}

@@ -16,13 +16,14 @@ public class MetaIdentifierMixin extends ASTWrapperPsiElement {
 	}
 
 	public String getIdentifier() {
-		return ::projectProperName::PsiImplUtil.getIdentifier((Identifier) this);
+		return this.getText();
 	}
 
 	\@NotNull
 	\@Override
 	public PsiReference[] getReferences() {
-		return new PsiReference[]{new ::projectProperName::ReferenceSolver(this, new TextRange(0, getIdentifier().length()))};
+		//new ::projectProperName::ReferenceSolver(this, new TextRange(0, getIdentifier().length()))
+		return new PsiReference[]{};
 	}
 
 	\@Nullable
