@@ -32,6 +32,7 @@ public class ::projectProperName::PrimitivesCompletionContributor extends Comple
 					resultSet.addElement(LookupElementBuilder.create("Integer"));
 					resultSet.addElement(LookupElementBuilder.create("Double"));
 					resultSet.addElement(LookupElementBuilder.create("Boolean"));
+					resultSet.addElement(LookupElementBuilder.create("Word"));
 					resultSet.addElement(LookupElementBuilder.create("Uid"));
 				}
 			}

@@ -15,26 +15,27 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 public class TaraFilters {
 
+	//%extension%
 	protected static PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new InErrorFilter()));
 	protected static PsiElementPattern.Capture<PsiElement> afterConceptKey = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
-		//gen %empty%;%
-		.and(new FilterPattern(new AfterElementFitFilter(TaraTypes.CONCEPT_KEY)));
+		//gen %empty%.andOr(new FilterPattern(new AfterElementFitFilter(monet.\:\:projectName\:\:.intellij.metamodel.psi.MetaIdentifier.class)), new FilterPattern(new AfterElementTypeFitFilter(\:\:projectProperName\:\:Types.CASE_KEY)));%
+		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.CONCEPT_KEY)));
 		//end
 	protected static PsiElementPattern.Capture<PsiElement> afterModifierKey = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
-		.and(new FilterPattern(new AfterElementFitFilter(TaraTypes.MODIFIER)));
+		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.MODIFIER)));
 
 	private TaraFilters() {
 	}
 
-	private static class AfterElementFitFilter implements ElementFilter {
+	private static class AfterElementTypeFitFilter implements ElementFilter {
 		IElementType type;
 
-		private AfterElementFitFilter(IElementType type) {
+		private AfterElementTypeFitFilter(IElementType type) {
 			this.type = type;
 		}
 
@@ -71,5 +72,5 @@ public class TaraFilters {
 			return true;
 		}
 	}
-
+	//end_extension
 }

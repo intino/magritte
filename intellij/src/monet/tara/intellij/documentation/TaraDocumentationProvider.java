@@ -31,7 +31,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	@NonNls
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
 		if (originalElement instanceof MetaIdentifier)
-			return extractMetaDocumentation(originalElement.getText());
+			return TaraDocumentationFormatter.doc2Html(null, extractMetaDocumentation(originalElement.getText()));
 		if (element instanceof Concept)
 			return ((Concept) element).getDocCommentText();
 		if (element instanceof TaraFile)

@@ -37,18 +37,32 @@ class TplMarker {
         text
     }
 
-    public static String addJavaMarks(String text) {
+    public static String addJavaMarks(String text, String replace) {
+        int index = text.indexOf("//gen")
+        int endIndex = text.indexOf("//end")
+        if (index > 0) {
+            String field = text.substring(index, endIndex + 5)
+            String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
+            if (token != "")
+                text = text.replace(field, "::" + replace + "::")
+            else text = text.replace(field, "")
+        }
+        text
+    }
+
+    public static String getGenText(String text) {
         int index = text.indexOf("//gen")
         int endIndex = text.indexOf("//end")
         if (index > 0) {
             String field = text.substring(index, endIndex + 5)
             String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
             if (token != "") {
-                token = token.replace("%", "|")
-                text = text.replace(field, "::" + token + "::")
-            } else text = text.replace(field, "")
+                String[] split = token.split("%")
+                if (split.length == 2) return split[0] + "|" + split[1]
+                else return split[0]
+            }
+            return "";
         }
-        text
     }
 
     public static String addXmlMarks(String text) {

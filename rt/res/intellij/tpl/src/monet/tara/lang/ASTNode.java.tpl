@@ -231,7 +231,7 @@ public class ASTNode {
 		this.aPackage = aPackage;
 	}
 
-	public String getBaseConcept() {
+	public String getBaseNode() {
 		return baseConcept;
 	}
 
@@ -240,7 +240,7 @@ public class ASTNode {
 	}
 
 	public boolean resolveChild(String[] path) {
-		if (path.length > 2) return false;
+		if (path.length > 2 || path.length == 0) return false;
 		Variable variable = null;
 		for (Variable var : variables)
 			if (var.getName().equals(path[0])) variable = var;

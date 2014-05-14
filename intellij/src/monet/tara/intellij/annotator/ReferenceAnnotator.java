@@ -13,9 +13,11 @@ import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
 import monet.tara.intellij.TaraBundle;
-import monet.tara.intellij.annotator.imports.*;
+import monet.tara.intellij.annotator.imports.CreateConceptQuickFix;
+import monet.tara.intellij.annotator.imports.ImportQuickFix;
+import monet.tara.intellij.annotator.imports.RemoveImportFix;
+import monet.tara.intellij.annotator.imports.TaraReferenceImporter;
 import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import monet.tara.intellij.metamodel.psi.*;
 import monet.tara.intellij.metamodel.psi.impl.ReferenceManager;
@@ -36,7 +38,8 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		if (element.getParent() instanceof HeaderReference || element.getParent() instanceof IdentifierReference)
 			checkWellReferenced();
 	}
-//%extension%
+
+	//%extension%
 	public void checkWellReferenced() {
 		PsiElement reference = ReferenceManager.resolve((Identifier) element);
 		if (reference == null) {
@@ -55,8 +58,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 	private void addImportAlternatives(Identifier element) {
 		String message = TaraBundle.message("reference.concept.key.error.message");
 		ArrayList<LocalQuickFix> fixes = new ArrayList<>();
-		addAutoImportFix(element, element.getReference(), fixes);
-		String packet = ((TaraFile) element.getContainingFile()).getPackage().getHeaderReference().getText();
+		addImportFix(element, fixes);
 		addCreateConceptFix(element, fixes);
 		Annotation errorAnnotation = holder.createErrorAnnotation(element, message);
 		errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
@@ -68,9 +70,6 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		actions.add(new CreateConceptQuickFix(name.getText(), name.getContainingFile().getParent()));
 	}
 
-	private boolean suppressHintForAutoImport(TaraPsiElement node, AutoImportQuickFix importFix) {
-		return false;
-	}
 
 	private IntentionAction createIntention(PsiElement node, String message, LocalQuickFix fix) {
 		return createIntention(node, node.getTextRange(), message, fix);
@@ -79,22 +78,14 @@ public class ReferenceAnnotator extends TaraAnnotator {
 	private IntentionAction createIntention(PsiElement node, TextRange range, String message, LocalQuickFix fix) {
 		LocalQuickFix[] quickFixes = {fix};
 		CommonProblemDescriptorImpl descr = new ProblemDescriptorImpl(node, node, message,
-			quickFixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true,
-			range, true);
+			quickFixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true, range, true);
 		return QuickFixWrapper.wrap((ProblemDescriptor) descr, 0);
 	}
 
-	private void addAutoImportFix(PsiElement node, PsiReference reference, List<LocalQuickFix> actions) {
+	private void addImportFix(PsiElement node, List<LocalQuickFix> actions) {
 		final PsiFile file = InjectedLanguageManager.getInstance(node.getProject()).getTopLevelFile(node);
 		if (!(file instanceof TaraFile)) return;
-//		AutoImportQuickFix importFix = TaraReferenceImporter.proposeImportFix(node, reference);
-//		if (importFix != null) {
-//			if (!suppressHintForAutoImport(node, importFix)) {
-//				final AutoImportHintAction autoImportHintAction = new AutoImportHintAction(importFix);
-//				actions.add(autoImportHintAction);
-//			} else {
-//				actions.add(importFix);
-//			}
-//		}
+		List<ImportQuickFix> importFix = TaraReferenceImporter.proposeImportFix(node);
+		for (ImportQuickFix importQuickFix : importFix) actions.add(importQuickFix);
 	}
 }

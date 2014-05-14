@@ -59,8 +59,8 @@ public class ASTWrapper {
 	}
 
 	public ASTNode searchAncestry(ASTNode node) {
-		if (node.getExtendFrom() == null && node.getBaseConcept() == null) return null;
-		String ancestry = (node.getExtendFrom() != null) ? node.getExtendFrom() : node.getBaseConcept();
+		if (node.getExtendFrom() == null && node.getBaseNode() == null) return null;
+		String ancestry = (node.getExtendFrom() != null) ? node.getExtendFrom() : node.getBaseNode();
 		ASTNode result = relativeSearch(ancestry, node);
 		if (result != null) return result;
 		return absoluteSearch(ancestry, node);

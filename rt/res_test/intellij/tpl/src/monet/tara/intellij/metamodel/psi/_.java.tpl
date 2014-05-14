@@ -49,5 +49,7 @@ public interface Definition extends Navigatable, Iconable, ::projectProperName::
 	PsiElement setName(String newName);
 
 	String getName();
+
+	String getType();
 }
 

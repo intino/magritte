@@ -15,7 +15,6 @@ public interface TaraFile extends PsiFile {
 	@NotNull
 	PsiFile getContainingFile();
 
-	@NotNull
 	Concept getConcept();
 
 	@NotNull
@@ -25,12 +24,14 @@ public interface TaraFile extends PsiFile {
 
 	Import addImport(String reference);
 
+	@NotNull
 	String getName();
 
 	VirtualFile getVirtualFile();
 
 	PsiDirectory getParent();
 
+	@NotNull
 	Project getProject();
 
 	String getText();

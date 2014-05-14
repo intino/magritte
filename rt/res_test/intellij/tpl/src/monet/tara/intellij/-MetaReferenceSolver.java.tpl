@@ -1,10 +1,15 @@
 package monet.::projectName::.intellij;
 
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
+import monet.::projectName::.intellij.metamodel.::projectProperName::Language;
 import monet.::projectName::.intellij.metamodel.psi.Definition;
 import monet.::projectName::.intellij.metamodel.psi.MetaIdentifier;
 import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::PsiImplUtil;
+::empty|import monet.tara.lang.ASTNode;::
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,6 +42,48 @@ public class ::projectProperName::MetaReferenceSolver extends PsiReferenceBase<P
 	\@NotNull
 	\@Override
 	public Object[] getVariants() {
-		return new Object[0];
+		List<String> definitions = new ArrayList<>();
+		if (myElement instanceof MetaIdentifier) {
+			Definition context = ::projectProperName::PsiImplUtil.getContextOf(::projectProperName::PsiImplUtil.getContextOf(myElement));
+			if (context != null) {
+				ASTNode node = ::projectProperName::Language.getHeritage().getNodeNameLookUpTable().get(context.getType()).get(0);
+				if (node != null) {
+					addChildren(definitions, node);
+					if (node.getExtendFrom() != null) addInheritedDefinitions(node.getExtendFrom(), definitions);
+					if (node.isCase()) addBaseDefinitions(node.getBaseNode(), definitions);
+				}
+			}
+		}
+		return fillVariants(definitions);
+	}
+
+	private void addBaseDefinitions(String baseDefinition, List<String> definitions) {
+		ASTNode node = ::projectProperName::Language.getHeritage().getNodeNameLookUpTable().get(baseDefinition).get(0);
+		for (ASTNode children \: node.getChildren())
+			if (!children.isCase() && !children.isAbstract()) definitions.add(children.getIdentifier());
+	}
+
+	private void addInheritedDefinitions(String extendFrom, List<String> definitions) {
+		ASTNode node = ::projectProperName::Language.getHeritage().getNodeNameLookUpTable().get(extendFrom).get(0);
+		for (ASTNode children \: node.getChildren())
+			if (!children.isBase() && !children.isAbstract()) definitions.add(children.getIdentifier());
+		if (node.getExtendFrom() != null) addInheritedDefinitions(node.getExtendFrom(), definitions);
+	}
+
+	private void addChildren(List<String> definitions, ASTNode node) {
+		for (ASTNode child \: node.getChildren())
+			if (!child.isBase() && !child.isAbstract())
+				definitions.add(child.getIdentifier());
+			else for (ASTNode astNode \: child.getChildren())
+				if (astNode.isCase())
+					definitions.add(astNode.getIdentifier());
+	}
+
+	private Object[] fillVariants(List<String> elements) {
+		List<LookupElement> variants = new ArrayList<>();
+		for (final String element \: elements)
+			if (element.length() != 0)
+				variants.add(LookupElementBuilder.create(element).withIcon(::projectProperName::Icons.TARA).withTypeText("Tara"));
+		return variants.toArray();
 	}
 }

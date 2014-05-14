@@ -31,7 +31,7 @@ public class ::projectProperName::DocumentationProvider extends AbstractDocument
 	\@NonNls
 	public String generateDoc(final PsiElement element, \@Nullable final PsiElement originalElement) {
 		if (originalElement instanceof MetaIdentifier)
-			return extractMetaDocumentation(originalElement.getText());
+			return ::projectProperName::DocumentationFormatter.doc2Html(null, extractMetaDocumentation(originalElement.getText()));
 		if (element instanceof Definition)
 			return ((Definition) element).getDocCommentText();
 		if (element instanceof ::projectProperName::File)

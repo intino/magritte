@@ -65,7 +65,6 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 		};
 	}
 
-	@NotNull
 	@Override
 	public Concept getConcept() {
 		return TaraUtil.getRootConceptOfFile(this);
@@ -86,8 +85,6 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	public Import[] getImports() {
 		return PsiTreeUtil.getChildrenOfType(PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0], Import.class);
 	}
-
-
 
 	private void insertLineBreakBefore(final ASTNode anchorBefore) {
 		getNode().addChild(ASTFactory.whitespace("\n"), anchorBefore);

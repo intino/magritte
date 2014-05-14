@@ -9,37 +9,37 @@ import org.jetbrains.annotations.Nullable;
 
 public class TaraConceptImpl extends ConceptMixin implements TaraConcept {
 
-  public TaraConceptImpl(ASTNode node) {
-    super(node);
-  }
+	public TaraConceptImpl(ASTNode node) {
+		super(node);
+	}
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitConcept(this);
-    else super.accept(visitor);
-  }
+	public void accept(@NotNull PsiElementVisitor visitor) {
+		if (visitor instanceof TaraVisitor) ((TaraVisitor) visitor).visitConcept(this);
+		else super.accept(visitor);
+	}
 
-  @Override
-  @Nullable
-  public TaraAnnotations getAnnotations() {
-    return findChildByClass(TaraAnnotations.class);
-  }
+	@Override
+	@Nullable
+	public TaraAnnotations getAnnotations() {
+		return findChildByClass(TaraAnnotations.class);
+	}
 
-  @Override
-  @Nullable
-  public TaraBody getBody() {
-    return findChildByClass(TaraBody.class);
-  }
+	@Override
+	@Nullable
+	public TaraBody getBody() {
+		return findChildByClass(TaraBody.class);
+	}
 
-  @Override
-  @Nullable
-  public TaraDoc getDoc() {
-    return findChildByClass(TaraDoc.class);
-  }
+	@Override
+	@Nullable
+	public TaraDoc getDoc() {
+		return findChildByClass(TaraDoc.class);
+	}
 
-  @Override
-  @NotNull
-  public TaraSignature getSignature() {
-    return findNotNullChildByClass(TaraSignature.class);
-  }
+	@Override
+	@NotNull
+	public TaraSignature getSignature() {
+		return findNotNullChildByClass(TaraSignature.class);
+	}
 
 }

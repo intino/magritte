@@ -13,8 +13,9 @@ public void checkWellReferenced() {
 	}
 
 	private boolean isWellMetaReferenced(String reference) {
-		monet.tara.lang.ASTWrapper heritage = monet.::projectName::.intellij.metamodel.::projectProperName::Language.getHeritage();
-		String[] refRoute = reference.split("\\\\.");
-		monet.tara.lang.ASTNode node = heritage.getNodeNameLookUpTable().get(refRoute[0]).get(0);
-		return node != null && node.resolveChild(java.util.Arrays.copyOfRange(refRoute, 1, refRoute.length));
-	}
+        monet.tara.lang.ASTWrapper heritage = monet.goros.intellij.metamodel.GorosLanguage.getHeritage();
+        String[] refRoute = reference.split\\\\\\.");
+        List<monet.tara.lang.ASTNode> astNodes = heritage.getNodeNameLookUpTable().get(refRoute[0]);
+        return astNodes != null && astNodes.get(0) != null &&
+            astNodes.get(0).resolveChild(java.util.Arrays.copyOfRange(refRoute, 1, refRoute.length));
+    }

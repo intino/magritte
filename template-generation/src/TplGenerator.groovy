@@ -24,27 +24,27 @@ public class TplGenerator {
         FileUtils.copyFile(templateBound, new File("rt/res_test/intellij/templates.properties"))
     }
 
-
     private static void createTPLs(String tplPath, File[] files, File templateBound) {
         File file = new File(tplPath)
         files.each {
             if (it.isDirectory()) {
-                if (!it.name.contains("compiler")) {
+                if (!it.name.contains("compiler") && !it.name.contains("formatter")) {
                     file = new File(tplPath + it.getPath().substring(8) + "/")
                     file.mkdirs()
                     createTPLs(tplPath, it.listFiles(), templateBound)
                 }
             } else {
-                def fileName = it.name.replaceAll("Tara", "-").replace("Concept", "_").replace("m2", "m1")
+                String fileName = it.name.replaceAll("Tara", "-").replace("Concept", "_").replace("m2", "m1")
                 if (!it.name.startsWith(".") && !it.text.startsWith("/*") && isCorrectFileType(it.name)) {
                     String text = it.text;
                     if (!it.getName().endsWith("png")) {
+                        String genText = TplMarker.getGenText(text)
                         text = TplMarker.scapeMetaCharacters(text)
                         text = TplMarker.addMarks(text)
                         def path = it.path.substring(it.path.lastIndexOf(SRC_PATH) + SRC_PATH.length() + 1);
                         text = TplMarker.addExtensions(path, text)
                         if (it.getName().endsWith("xml")) text = TplMarker.addXmlMarks(text)
-                        else text = TplMarker.addJavaMarks(text)
+                        else text = TplMarker.addJavaMarks(text, genText)
                         text = text.replaceAll("%", "\\\\%")
                         File newFile = new File(tplPath + it.parent.substring(8), fileName + ".tpl")
                         newFile.write(text)

@@ -2,9 +2,10 @@ package monet.tara.intellij.metamodel;
 
 import com.google.gson.*;
 import com.intellij.lang.Language;
+//gen %empty%import monet.tara.lang.ASTNode;import monet.tara.lang.ASTWrapper;%
 import monet.tara.lang.ASTNode;
 import monet.tara.lang.ASTWrapper;
-
+//end
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;

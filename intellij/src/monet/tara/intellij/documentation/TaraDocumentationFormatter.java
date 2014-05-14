@@ -31,7 +31,8 @@ public class TaraDocumentationFormatter {
 		if (background != null) info += "<div bgcolor=#" + GuiUtils.colorToHex(background) + ">";
 		info += "<font color=#" + GuiUtils.colorToHex(attributes.getForegroundColor()) + ">" + html + "</font>";
 		if (background != null) info += "</div>";
-		info += "<b>" + getLocationString(element) + "</b>";
+		if (element != null)
+			info += "<b>" + getLocationString(element) + "</b>";
 		return info;
 	}
 

@@ -26,8 +26,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		builder
 			.setTitle(TaraBundle.message("newconcept.dlg.prompt"))
 			.addKind("Tara Concept", TaraFileType.INSTANCE.getIcon(), TaraTemplates.TARA_CONCEPT);
-		//gen %definitions%
-
+		//gen %empty% %
 		//end
 	}
 

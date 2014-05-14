@@ -5,8 +5,9 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import monet.tara.intellij.TaraReferenceSolver;
+import monet.tara.intellij.TaraMetaReferenceSolver;
 import monet.tara.intellij.metamodel.psi.Identifier;
+import monet.tara.intellij.metamodel.psi.MetaIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,14 +23,13 @@ public class MetaIdentifierMixin extends ASTWrapperPsiElement {
 	@NotNull
 	@Override
 	public PsiReference[] getReferences() {
-		//new TaraReferenceSolver(this, new TextRange(0, getIdentifier().length()))
-		return new PsiReference[]{};
+		return new PsiReference[]{new TaraMetaReferenceSolver((MetaIdentifier) this, new TextRange(0, getIdentifier().length()))};
 	}
 
 	@Nullable
 	@Override
 	public PsiReference getReference() {
-		PsiReference[] references = new PsiReference[]{new TaraReferenceSolver(this, new TextRange(0, getIdentifier().length()))};
+		PsiReference[] references = new PsiReference[]{new TaraMetaReferenceSolver((MetaIdentifier) this, new TextRange(0, getIdentifier().length()))};
 		return references.length == 0 ? null : references[0];
 	}
 

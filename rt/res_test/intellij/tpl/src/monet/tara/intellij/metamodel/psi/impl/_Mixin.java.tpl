@@ -43,6 +43,11 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 		}
 	}
 
+	public String getType() {
+		MetaIdentifier type = getSignature().getType();
+		return type != null ? type.getText() \: null;
+	}
+
 	\@Override
 	public String getName() {
 		Identifier identifierNode = (Identifier) getIdentifierNode();

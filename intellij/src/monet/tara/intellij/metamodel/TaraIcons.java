@@ -11,6 +11,9 @@ public class TaraIcons {
 	public static final Icon MORPH_13 = IconLoader.getIcon("/monet/tara/intellij/metamodel/icons/morph.png");
 	public static final Icon POLYMORPHIC_13 = IconLoader.getIcon("/monet/tara/intellij/metamodel/icons/polymorphic.png");
 	public static final Icon ICON_100 = IconLoader.getIcon("/monet/tara/intellij/metamodel/icons/Tara100.png");
+	//%extension%
+	public static final Icon TARA = IconLoader.getIcon("/monet/tara/intellij/metamodel/icons/Tara.png");
+	//end_extension
 
 	private TaraIcons() {
 	}

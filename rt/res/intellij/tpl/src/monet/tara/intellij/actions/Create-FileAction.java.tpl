@@ -26,7 +26,7 @@ public class Create::projectProperName::FileAction extends JavaCreateTemplateInP
 		builder
 			.setTitle(::projectProperName::Bundle.message("newdefinition.dlg.prompt"))
 			.addKind("::projectProperName:: Definition", ::projectProperName::FileType.INSTANCE.getIcon(), ::projectProperName::Templates.::projectUpperName::_DEFINITION);
-		::definitions::
+		::empty| ::
 	}
 
 	\@Override

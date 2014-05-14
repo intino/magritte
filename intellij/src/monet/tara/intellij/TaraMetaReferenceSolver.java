@@ -1,10 +1,17 @@
 package monet.tara.intellij;
 
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import monet.tara.intellij.metamodel.TaraIcons;
+import monet.tara.intellij.metamodel.TaraLanguage;
 import monet.tara.intellij.metamodel.psi.Concept;
 import monet.tara.intellij.metamodel.psi.MetaIdentifier;
 import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
+//gen %empty%import monet.tara.lang.ASTNode;%
+import monet.tara.lang.ASTNode;
+//end
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,6 +44,50 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	@NotNull
 	@Override
 	public Object[] getVariants() {
-		return new Object[0];
+		List<String> concepts = new ArrayList<>();
+		if (myElement instanceof MetaIdentifier) {
+			Concept context = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(myElement));
+			if (context != null) {
+				ASTNode node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(context.getType()).get(0);
+				if (node != null) {
+					addChildren(concepts, node);
+					if (node.getExtendFrom() != null) addInheritedConcepts(node.getExtendFrom(), concepts);
+					if (node.isCase()) addBaseConcepts(node.getBaseNode(), concepts);
+				}
+			}
+		}
+		return fillVariants(concepts);
 	}
+
+	private void addBaseConcepts(String baseConcept, List<String> concepts) {
+		ASTNode node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(baseConcept).get(0);
+		for (ASTNode children : node.getChildren())
+			if (!children.isCase() && !children.isAbstract()) concepts.add(children.getIdentifier());
+	}
+
+	private void addInheritedConcepts(String extendFrom, List<String> concepts) {
+		ASTNode node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(extendFrom).get(0);
+		for (ASTNode children : node.getChildren())
+			if (!children.isBase() && !children.isAbstract()) concepts.add(children.getIdentifier());
+		if (node.getExtendFrom() != null) addInheritedConcepts(node.getExtendFrom(), concepts);
+	}
+
+	private void addChildren(List<String> concepts, ASTNode node) {
+		for (ASTNode child : node.getChildren())
+			if (!child.isBase() && !child.isAbstract())
+				concepts.add(child.getIdentifier());
+			else for (ASTNode astNode : child.getChildren())
+				if (astNode.isCase())
+					concepts.add(astNode.getIdentifier());
+	}
+
+//%extension%
+	private Object[] fillVariants(List<String> elements) {
+		List<LookupElement> variants = new ArrayList<>();
+		for (final String element : elements)
+			if (element.length() != 0)
+				variants.add(LookupElementBuilder.create(element).withIcon(TaraIcons.TARA).withTypeText("Tara"));
+		return variants.toArray();
+	}
+//end_extension
 }

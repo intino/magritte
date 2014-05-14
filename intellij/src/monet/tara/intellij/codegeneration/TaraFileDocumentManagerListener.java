@@ -111,7 +111,7 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 	}
 
 	private Concept getExtensibleConcept(TaraFile file) {
-		return file.getConcept().isExtensible() ? file.getConcept() : null;
+		return file.getConcept() == null ? null : file.getConcept().isExtensible() ? file.getConcept() : null;
 	}
 
 

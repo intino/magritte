@@ -24,5 +24,7 @@ public interface Signature extends TaraPsiElement {
 	@Nullable
 	TaraIdentifierReference getIdentifierReference();
 
+	@Nullable
+	MetaIdentifier getType();
 }
 

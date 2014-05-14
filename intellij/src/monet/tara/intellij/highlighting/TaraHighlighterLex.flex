@@ -30,7 +30,7 @@ ROOT      = "root"
 EXTENSION_KEY = "extension"
 EXTENSIBLE_KEY = "extensible"
 GENERIC   = "generic"
-WORD      = "Word"
+WORD_KEY      = "Word"
 VAR       = "var"
 
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
@@ -118,7 +118,7 @@ NEWLINE= [\n]+
 	{LEFT_SQUARE}               {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}              {   return TaraTypes.RIGHT_SQUARE; }
 
-	{WORD}                      {   return TaraTypes.WORD; }
+	{WORD_KEY}                  {   return TaraTypes.WORD_KEY; }
 
 	{DOT}                       {   return TaraTypes.DOT; }
 

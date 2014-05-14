@@ -49,5 +49,7 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 	PsiElement setName(String newName);
 
 	String getName();
+
+	String getType();
 }
 
