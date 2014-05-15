@@ -10,8 +10,8 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.TaraBundle;
-import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.file.TaraFileType;
+import monet.tara.intellij.lang.TaraIcons;
+import monet.tara.intellij.lang.file.TaraFileType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 

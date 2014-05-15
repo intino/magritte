@@ -1,0 +1,123 @@
+{
+	parserClass='monet.tara.intellij.lang.parser.TaraParser'
+	parserUtilClass="monet.tara.intellij.lang.parser.TaraParserUtil"
+	psiVisitorName="TaraVisitor"
+	extends='com.intellij.extapi.psi.ASTWrapperPsiElement'
+	implements='monet.tara.intellij.lang.psi.TaraPsiElement'
+	psiClassPrefix='Tara'
+	psiImplClassSuffix='Impl'
+	psiPackage='monet.tara.intellij.lang.psi'
+	psiImplPackage='monet.tara.intellij.lang.psi.impl'
+
+	elementTypeHolderClass='monet.tara.intellij.lang.psi.TaraTypes'
+	elementTypeClass='monet.tara.intellij.lang.psi.TaraElementType'
+	tokenTypeClass='monet.tara.intellij.lang.psi.TaraTokenType'
+
+	psiImplUtilClass='monet.tara.intellij.lang.psi.impl.TaraPsiImplUtil'
+}
+
+root ::= NEWLINE* header? NEWLINE* concept?  NEWLINE*
+
+header ::=  packet? importStatement*
+
+packet ::= PACKAGE headerReference
+importStatement ::= NEWLINE IMPORT_KEY headerReference
+{ mixin= 'monet.tara.intellij.lang.psi.impl.ImportMixin'
+implements='monet.tara.intellij.lang.psi.Import'}
+
+concept ::= doc? signature annotations? body?
+{ mixin= 'monet.tara.intellij.lang.psi.impl.ConceptMixin'
+implements='monet.tara.intellij.lang.psi.Concept'}
+
+signature::= (CASE_KEY identifier)
+         | (CONCEPT_KEY modifier? identifier)
+         | (CONCEPT_KEY COLON identifierReference (modifier? identifier)?)
+{ pin=1 mixin= 'monet.tara.intellij.lang.psi.impl.SignatureMixin'
+implements='monet.tara.intellij.lang.psi.Signature'}
+
+body ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT
+{ mixin= 'monet.tara.intellij.lang.psi.impl.BodyMixin'
+implements='monet.tara.intellij.lang.psi.Body'}
+
+private conceptConstituents ::= attribute
+		                      | referenceStatement
+		                      | word
+		                      | concept
+
+referenceStatement ::= doc? VAR identifierReference LIST? IDENTIFIER_KEY
+{mixin= 'monet.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
+implements='monet.tara.intellij.lang.psi.ReferenceStatement'}
+
+word ::= doc? VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT
+{ mixin= 'monet.tara.intellij.lang.psi.impl.WordMixin'
+implements='monet.tara.intellij.lang.psi.Word'}
+
+attribute ::= doc? ( uuidAttribute
+		           | integerAttribute
+		           | doubleAttribute
+		           | naturalAttribute
+		           | booleanAttribute
+		           | StringAttribute)
+{pin=2 mixin= 'monet.tara.intellij.lang.psi.impl.AttributeMixin'
+implements='monet.tara.intellij.lang.psi.Attribute'}
+
+private uuidAttribute ::= VAR     UID_TYPE IDENTIFIER_KEY (COLON stringValue)?
+{pin=3}
+private integerAttribute ::= VAR INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?) | (LIST IDENTIFIER_KEY (COLON integerList)?))
+{pin=2}
+private StringAttribute ::= VAR  STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?) | (LIST IDENTIFIER_KEY (COLON stringList)?))
+{pin=2}
+private naturalAttribute ::= VAR NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?))
+{pin=2}
+private booleanAttribute ::=VAR BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?))
+{pin=2}
+private doubleAttribute ::=VAR  DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)  | (LIST IDENTIFIER_KEY (COLON doubleList)?))
+{pin=2}
+
+stringValue  ::= STRING_VALUE_KEY
+booleanValue ::= BOOLEAN_VALUE_KEY
+integerValue ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
+doubleValue  ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
+naturalValue ::= NATURAL_VALUE_KEY
+
+stringList  ::= LEFT_SQUARE STRING_VALUE_KEY+ RIGHT_SQUARE;
+booleanList ::= LEFT_SQUARE BOOLEAN_VALUE_KEY+ RIGHT_SQUARE;
+integerList ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUARE;
+doubleList  ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE;
+naturalList ::= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
+
+annotations ::= OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | intention | SINGLETON | ROOT)+ CLOSE_AN
+{pin=1 mixin= 'monet.tara.intellij.lang.psi.impl.AnnotationsMixin'
+implements='monet.tara.intellij.lang.psi.Annotations'}
+
+intention ::= INTENTION_KEY {
+	pin=1
+	mixin= 'monet.tara.intellij.lang.psi.impl.ExternalReferenceMixin'
+	implements='monet.tara.intellij.lang.psi.ExternalReference'
+}
+
+modifier::= ABSTRACT
+          | FINAL
+          | BASE_KEY
+
+doc::= DOC_LINE+
+{ mixin= 'monet.tara.intellij.lang.psi.impl.DocMixin'
+implements='monet.tara.intellij.lang.psi.Doc'}
+
+
+headerReference ::= hierarchy* identifier
+{ pin=2
+mixin= 'monet.tara.intellij.lang.psi.impl.IdentifierReferenceMixin'
+implements='monet.tara.intellij.lang.psi.HeaderReference'}
+
+identifierReference::= hierarchy* identifier
+{pin=2
+mixin= 'monet.tara.intellij.lang.psi.impl.IdentifierReferenceMixin'
+implements='monet.tara.intellij.lang.psi.IdentifierReference'}
+
+
+private hierarchy ::= identifier DOT
+
+identifier::=  IDENTIFIER_KEY
+{mixin= 'monet.tara.intellij.lang.psi.impl.IdentifierMixin'
+implements='monet.tara.intellij.lang.psi.Identifier'}

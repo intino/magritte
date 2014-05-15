@@ -1,5 +1,5 @@
 public void checkWellReferenced() {
-		PsiElement reference = ReferenceManager.resolve((Identifier) element);
+		PsiElement reference = ReferenceManager.resolve((Identifier) element, false);
 		if (reference == null && !isWellMetaReferenced(element.getParent().getText())) {
 			Annotation errorAnnotation;
 			if (element.getParent() instanceof IdentifierReference)
@@ -13,8 +13,8 @@ public void checkWellReferenced() {
 	}
 
 	private boolean isWellMetaReferenced(String reference) {
-        monet.tara.lang.ASTWrapper heritage = monet.goros.intellij.metamodel.GorosLanguage.getHeritage();
-        String[] refRoute = reference.split\\\\\\.");
+        monet.tara.lang.ASTWrapper heritage = monet.goros.intellij.lang.GorosLanguage.getHeritage();
+        String[] refRoute = reference.split("\\\\.");
         List<monet.tara.lang.ASTNode> astNodes = heritage.getNodeNameLookUpTable().get(refRoute[0]);
         return astNodes != null && astNodes.get(0) != null &&
             astNodes.get(0).resolveChild(java.util.Arrays.copyOfRange(refRoute, 1, refRoute.length));

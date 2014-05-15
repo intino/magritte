@@ -6,46 +6,38 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import monet.::projectName::.intellij.::projectProperName::Bundle;
 import monet.::projectName::.intellij.highlighting.::projectProperName::SyntaxHighlighter;
-import monet.::projectName::.intellij.metamodel.parser.::projectProperName::Annotation;
-import monet.::projectName::.intellij.metamodel.psi.*;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::PsiImplUtil;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::Util;
+import monet.::projectName::.intellij.lang.parser.::projectProperName::Annotation;
+import monet.::projectName::.intellij.lang.psi.*;
+import monet.::projectName::.intellij.lang.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AnnotationsAnnotator extends ::projectProperName::Annotator {
+
+	HashMap<String, List<PsiElement>> duplicates;
 
 	\@Override
 	public void annotate(\@NotNull PsiElement element, \@NotNull AnnotationHolder holder) {
 		this.holder = holder;
 		if (element instanceof Annotations) {
+			duplicates = new HashMap<>();
 			checkAnnotations((Annotations) element);
-			PsiElement extension = is((Annotations) element, ::projectProperName::Extension.class);
-			if (extension != null) checkCorrectExtension(extension);
-			PsiElement extensible = is((Annotations) element, ::projectProperName::Extensible.class);
-			if (extensible != null) checkEmptyExtensible(extensible);
-			if (extensible != null && extension != null) {
-				Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), ::projectProperName::Bundle.message("annotation.extension.extensible.key.error.message"));
-				errorAnnotation.setTextAttributes(::projectProperName::SyntaxHighlighter.ANNOTATION_ERROR);
-			}
+			checkDuplicates();
 		}
 	}
 
-	private void checkCorrectExtension(PsiElement element) {
-		Definition context = ::projectProperName::PsiImplUtil.getContextOf(element);
-		if (::projectProperName::PsiImplUtil.getContextOf(context) == null || !((::projectProperName::File)element.getContainingFile()).getDefinition().isExtensible()) {
-			Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), ::projectProperName::Bundle.message("annotation.extension.key.error.message"));
-			errorAnnotation.setTextAttributes(::projectProperName::SyntaxHighlighter.ANNOTATION_ERROR);
+	private void checkDuplicates() {
+		for (String annotation \: duplicates.keySet()) {
+			List<PsiElement> annotationList = duplicates.get(annotation);
+			if (annotationList.size() > 1)
+				for (PsiElement element \: annotationList) {
+					Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), ::projectProperName::Bundle.message("annotation.definition.key.error.message"));
+					errorAnnotation.setTextAttributes(::projectProperName::SyntaxHighlighter.ANNOTATION_ERROR);
+				}
 		}
-	}
-
-	private void checkEmptyExtensible(PsiElement element) {
-		Definition context = ::projectProperName::PsiImplUtil.getContextOf(element);
-		Definition[] children = ::projectProperName::Util.getChildrenOf(context);
-		for (Definition child \: children) if (child.isExtension()) return;
-		holder.createWarningAnnotation(element.getNode(), ::projectProperName::Bundle.message("annotation.extensible.key.warning.message"));
 	}
 
 	private PsiElement is(Annotations element, Class clazz) {
@@ -77,10 +69,11 @@ public class AnnotationsAnnotator extends ::projectProperName::Annotator {
 	}
 
 
-		private List<PsiElement> checkAnnotationList(PsiElement[] annotations, String[] correctAnnotation) {
+	private List<PsiElement> checkAnnotationList(PsiElement[] annotations, String[] correctAnnotation) {
 		List<PsiElement> incorrectAnnotations = new ArrayList<>();
 		for (PsiElement annotation \: annotations) {
 			if (annotation instanceof PsiWhiteSpace) continue;
+			count(annotation);
 			if (!isIn(correctAnnotation, annotation.getText()))
 				incorrectAnnotations.add(annotation);
 			else if (::projectProperName::Types.CODE.equals(annotation.getNode().getElementType()))
@@ -105,13 +98,24 @@ public class AnnotationsAnnotator extends ::projectProperName::Annotator {
 	}
 
 	private boolean conceptHasCode(::projectProperName::MetaIdentifier metaId) {
-		monet.tara.lang.ASTWrapper heritage = monet.::projectName::.intellij.metamodel.::projectProperName::Language.getHeritage();
+		monet.tara.lang.ASTWrapper heritage = monet.::projectName::.intellij.lang.::projectProperName::Language.getHeritage();
 		monet.tara.lang.ASTNode node = heritage.getNodeNameLookUpTable().get(metaId.getText()).get(0);
 		if (node.hasCode()) return true;
 		monet.tara.lang.ASTNode ancestry;
 		while ((ancestry = heritage.searchAncestry(node)) != null) if (ancestry.hasCode()) return true;
 		return false;
 	}
+
+	private void count(PsiElement annotation) {
+		if (duplicates.containsKey(annotation.getText())) {
+			duplicates.get(annotation.getText()).add(annotation);
+		} else {
+			ArrayList<PsiElement> value = new ArrayList<>();
+			value.add(annotation);
+			duplicates.put(annotation.getText(), value);
+		}
+	}
+
 
 	private boolean isIn(String[] correctAnnotation, String text) {
 		for (String s \: correctAnnotation)

@@ -12,7 +12,7 @@ import com.intellij.openapi.vcs.FileStatus;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
+import monet.::projectName::.intellij.lang.::projectProperName::Icons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

@@ -19,8 +19,8 @@ import monet.tara.intellij.annotator.imports.ImportQuickFix;
 import monet.tara.intellij.annotator.imports.RemoveImportFix;
 import monet.tara.intellij.annotator.imports.TaraReferenceImporter;
 import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import monet.tara.intellij.metamodel.psi.*;
-import monet.tara.intellij.metamodel.psi.impl.ReferenceManager;
+import monet.tara.intellij.lang.psi.*;
+import monet.tara.intellij.lang.psi.impl.ReferenceManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

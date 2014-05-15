@@ -17,10 +17,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.containers.ContainerUtil;
-import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
-import monet.::projectName::.intellij.metamodel.file.::projectProperName::FileType;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::File;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::FileImpl;
+import monet.::projectName::.intellij.lang.::projectProperName::Icons;
+import monet.::projectName::.intellij.lang.file.::projectProperName::FileType;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::File;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::FileImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;

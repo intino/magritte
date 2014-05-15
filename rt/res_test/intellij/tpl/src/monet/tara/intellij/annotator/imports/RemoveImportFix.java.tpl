@@ -8,8 +8,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.::projectName::.intellij.::projectProperName::Bundle;
-import monet.::projectName::.intellij.metamodel.psi.Import;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::PsiElement;
+import monet.::projectName::.intellij.lang.psi.Import;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::PsiElement;
 import org.jetbrains.annotations.NotNull;
 
 public class RemoveImportFix implements IntentionAction {

@@ -2,7 +2,7 @@ package monet.::projectName::.intellij;
 
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;
-import monet.::projectName::.intellij.metamodel.psi.Definition;
+import monet.::projectName::.intellij.lang.psi.Definition;
 import org.jetbrains.annotations.NotNull;
 
 public class ::projectProperName::RefactoringSupportProvider extends RefactoringSupportProvider {

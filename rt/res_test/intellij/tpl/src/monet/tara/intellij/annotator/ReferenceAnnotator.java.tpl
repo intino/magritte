@@ -13,12 +13,14 @@ import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
 import monet.::projectName::.intellij.::projectProperName::Bundle;
-import monet.::projectName::.intellij.annotator.imports.*;
+import monet.::projectName::.intellij.annotator.imports.CreateDefinitionQuickFix;
+import monet.::projectName::.intellij.annotator.imports.ImportQuickFix;
+import monet.::projectName::.intellij.annotator.imports.RemoveImportFix;
+import monet.::projectName::.intellij.annotator.imports.::projectProperName::ReferenceImporter;
 import monet.::projectName::.intellij.highlighting.::projectProperName::SyntaxHighlighter;
-import monet.::projectName::.intellij.metamodel.psi.*;
-import monet.::projectName::.intellij.metamodel.psi.impl.ReferenceManager;
+import monet.::projectName::.intellij.lang.psi.*;
+import monet.::projectName::.intellij.lang.psi.impl.ReferenceManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -36,8 +38,9 @@ public class ReferenceAnnotator extends ::projectProperName::Annotator {
 		if (element.getParent() instanceof HeaderReference || element.getParent() instanceof IdentifierReference)
 			checkWellReferenced();
 	}
+
 public void checkWellReferenced() {
-		PsiElement reference = ReferenceManager.resolve((Identifier) element);
+		PsiElement reference = ReferenceManager.resolve((Identifier) element, false);
 		if (reference == null && !isWellMetaReferenced(element.getParent().getText())) {
 			Annotation errorAnnotation;
 			if (element.getParent() instanceof IdentifierReference)
@@ -51,8 +54,8 @@ public void checkWellReferenced() {
 	}
 
 	private boolean isWellMetaReferenced(String reference) {
-        monet.tara.lang.ASTWrapper heritage = monet.goros.intellij.metamodel.GorosLanguage.getHeritage();
-        String[] refRoute = reference.split\\\\\\.");
+        monet.tara.lang.ASTWrapper heritage = monet.goros.intellij.lang.GorosLanguage.getHeritage();
+        String[] refRoute = reference.split("\\\\.");
         List<monet.tara.lang.ASTNode> astNodes = heritage.getNodeNameLookUpTable().get(refRoute[0]);
         return astNodes != null && astNodes.get(0) != null &&
             astNodes.get(0).resolveChild(java.util.Arrays.copyOfRange(refRoute, 1, refRoute.length));
@@ -61,8 +64,7 @@ public void checkWellReferenced() {
 	private void addImportAlternatives(Identifier element) {
 		String message = ::projectProperName::Bundle.message("reference.definition.key.error.message");
 		ArrayList<LocalQuickFix> fixes = new ArrayList<>();
-		addAutoImportFix(element, element.getReference(), fixes);
-		String packet = ((::projectProperName::File) element.getContainingFile()).getPackage().getHeaderReference().getText();
+		addImportFix(element, fixes);
 		addCreateDefinitionFix(element, fixes);
 		Annotation errorAnnotation = holder.createErrorAnnotation(element, message);
 		errorAnnotation.setTextAttributes(::projectProperName::SyntaxHighlighter.UNRESOLVED_ACCESS);
@@ -74,9 +76,6 @@ public void checkWellReferenced() {
 		actions.add(new CreateDefinitionQuickFix(name.getText(), name.getContainingFile().getParent()));
 	}
 
-	private boolean suppressHintForAutoImport(::projectProperName::PsiElement node, AutoImportQuickFix importFix) {
-		return false;
-	}
 
 	private IntentionAction createIntention(PsiElement node, String message, LocalQuickFix fix) {
 		return createIntention(node, node.getTextRange(), message, fix);
@@ -85,22 +84,14 @@ public void checkWellReferenced() {
 	private IntentionAction createIntention(PsiElement node, TextRange range, String message, LocalQuickFix fix) {
 		LocalQuickFix[] quickFixes = {fix};
 		CommonProblemDescriptorImpl descr = new ProblemDescriptorImpl(node, node, message,
-			quickFixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true,
-			range, true);
+			quickFixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true, range, true);
 		return QuickFixWrapper.wrap((ProblemDescriptor) descr, 0);
 	}
 
-	private void addAutoImportFix(PsiElement node, PsiReference reference, List<LocalQuickFix> actions) {
+	private void addImportFix(PsiElement node, List<LocalQuickFix> actions) {
 		final PsiFile file = InjectedLanguageManager.getInstance(node.getProject()).getTopLevelFile(node);
 		if (!(file instanceof ::projectProperName::File)) return;
-//		AutoImportQuickFix importFix = ::projectProperName::ReferenceImporter.proposeImportFix(node, reference);
-//		if (importFix != null) {
-//			if (!suppressHintForAutoImport(node, importFix)) {
-//				final AutoImportHintAction autoImportHintAction = new AutoImportHintAction(importFix);
-//				actions.add(autoImportHintAction);
-//			} else {
-//				actions.add(importFix);
-//			}
-//		}
+		List<ImportQuickFix> importFix = ::projectProperName::ReferenceImporter.proposeImportFix(node);
+		for (ImportQuickFix importQuickFix \: importFix) actions.add(importQuickFix);
 	}
 }

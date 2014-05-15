@@ -19,7 +19,7 @@ import com.intellij.refactoring.listeners.RefactoringElementAdapter;
 import com.intellij.refactoring.listeners.RefactoringElementListener;
 import com.intellij.util.PathUtil;
 import com.intellij.util.containers.hash.LinkedHashMap;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::FileImpl;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::FileImpl;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

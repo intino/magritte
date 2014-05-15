@@ -15,12 +15,12 @@ public class IconFactory {
 	private static final Map<String, String> ICONS = new HashMap<>();
 
 	static {
-		ICONS.put("-.png", IDE_TPL + SRC + PROJECT_PATH + "metamodel/icons/-.png");
-		ICONS.put("_.png", IDE_TPL + SRC + PROJECT_PATH + "metamodel/icons/_.png");
-		ICONS.put("monet.png", IDE_TPL + SRC + PROJECT_PATH + "metamodel/icons/monet.png");
-		ICONS.put("morph.png", IDE_TPL + SRC + PROJECT_PATH + "metamodel/icons/morph.png");
-		ICONS.put("polymorphic.png", IDE_TPL + SRC + PROJECT_PATH + "metamodel/icons/polymorphic.png");
-		ICONS.put("tara100.png", IDE_TPL + SRC + PROJECT_PATH + "metamodel/icons/-100.png");
+		ICONS.put("-.png", IDE_TPL + SRC + PROJECT_PATH + "lang/icons/-.png");
+		ICONS.put("_.png", IDE_TPL + SRC + PROJECT_PATH + "lang/icons/_.png");
+		ICONS.put("monet.png", IDE_TPL + SRC + PROJECT_PATH + "lang/icons/monet.png");
+		ICONS.put("morph.png", IDE_TPL + SRC + PROJECT_PATH + "lang/icons/morph.png");
+		ICONS.put("polymorphic.png", IDE_TPL + SRC + PROJECT_PATH + "lang/icons/polymorphic.png");
+		ICONS.put("tara100.png", IDE_TPL + SRC + PROJECT_PATH + "lang/icons/-100.png");
 	}
 
 

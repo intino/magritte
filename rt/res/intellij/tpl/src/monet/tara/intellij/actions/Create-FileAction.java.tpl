@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.::projectName::.intellij.::projectProperName::Bundle;
-import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
-import monet.::projectName::.intellij.metamodel.file.::projectProperName::FileType;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::FileImpl;
+import monet.::projectName::.intellij.lang.::projectProperName::Icons;
+import monet.::projectName::.intellij.lang.file.::projectProperName::FileType;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::FileImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

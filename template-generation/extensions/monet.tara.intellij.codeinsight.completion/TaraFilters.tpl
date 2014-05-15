@@ -3,7 +3,7 @@ protected static PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement
 	protected static PsiElementPattern.Capture<PsiElement> afterDefinitionKey = psiElement()
 		.withLanguage(::projectProperName::Language.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
-		.andOr(new FilterPattern(new AfterElementFitFilter(monet.::projectName::.intellij.metamodel.psi.MetaIdentifier.class)), 
+		.andOr(new FilterPattern(new AfterElementFitFilter(monet.::projectName::.intellij.lang.psi.MetaIdentifier.class)), 
 			new FilterPattern(new AfterElementTypeFitFilter(::projectProperName::Types.CASE_KEY)));
 	protected static PsiElementPattern.Capture<PsiElement> afterModifierKey = psiElement()
 		.withLanguage(::projectProperName::Language.INSTANCE)

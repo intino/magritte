@@ -1,9 +1,9 @@
 package monet.tara.intellij.annotator.imports;
 
 import com.intellij.psi.PsiElement;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.TaraFile;
-import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
+import monet.tara.intellij.lang.psi.Concept;
+import monet.tara.intellij.lang.psi.TaraFile;
+import monet.tara.intellij.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

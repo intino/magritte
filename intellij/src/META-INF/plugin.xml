@@ -57,8 +57,8 @@
     <errorHandler implementation="monet.tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
                          implementationClass="monet.tara.intellij.refactoring.rename.NamesValidator"/>
-    <projectService serviceInterface="monet.tara.intellij.metamodel.psi.TaraElementFactory"
-                    serviceImplementation="monet.tara.intellij.metamodel.psi.impl.TaraElementFactoryImpl"/>
+    <projectService serviceInterface="monet.tara.intellij.lang.psi.TaraElementFactory"
+                    serviceImplementation="monet.tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
     <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.ModuleType"/>
     <treeStructureProvider implementation="monet.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="monet.tara.intellij.actions.TaraTemplatesFactory"/>
@@ -79,9 +79,9 @@
     <lang.commenter language="Tara" implementationClass="monet.tara.intellij.TaraCommenter"/>
     <lang.documentationProvider language="Tara"
                                 implementationClass="monet.tara.intellij.documentation.TaraDocumentationProvider"/>
-    <fileTypeFactory implementation="monet.tara.intellij.metamodel.file.TaraFileTypeFactory"/>
+    <fileTypeFactory implementation="monet.tara.intellij.lang.file.TaraFileTypeFactory"/>
     <lang.parserDefinition language="Tara"
-                           implementationClass="monet.tara.intellij.metamodel.parser.TaraParserDefinition"/>
+                           implementationClass="monet.tara.intellij.lang.parser.TaraParserDefinition"/>
     <lang.syntaxHighlighterFactory key="Tara"
                                    implementationClass="monet.tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="monet.tara.intellij.highlighting.TaraColorSettingPage"/>
@@ -101,8 +101,8 @@
                                   implementationClass="monet.tara.intellij.structureview.StructureViewFactory"/>
     <!--<psi.referenceContributor implementation="monet.tara.intellij.TaraReferenceContributor"/>-->
     <nameSuggestionProvider implementation="monet.tara.intellij.refactoring.NameSuggestionProvider"/>
-    <lang.elementManipulator forClass="monet.tara.intellij.metamodel.psi.TaraIdentifier"
-                             implementationClass="monet.tara.intellij.metamodel.psi.impl.IdentifierManipulator"/>
+    <lang.elementManipulator forClass="monet.tara.intellij.lang.psi.TaraIdentifier"
+                             implementationClass="monet.tara.intellij.lang.psi.impl.IdentifierManipulator"/>
 
     <lang.refactoringSupport language="Tara"
                              implementationClass="monet.tara.intellij.TaraRefactoringSupportProvider"/>

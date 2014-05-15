@@ -19,7 +19,7 @@ import com.intellij.refactoring.listeners.RefactoringElementAdapter;
 import com.intellij.refactoring.listeners.RefactoringElementListener;
 import com.intellij.util.PathUtil;
 import com.intellij.util.containers.hash.LinkedHashMap;
-import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
+import monet.tara.intellij.lang.psi.impl.TaraFileImpl;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

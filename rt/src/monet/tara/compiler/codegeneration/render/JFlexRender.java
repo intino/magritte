@@ -1,27 +1,22 @@
 package monet.tara.compiler.codegeneration.render;
 
+import monet.tara.compiler.core.errorcollection.TaraException;
 import monet.tara.lang.ASTWrapper;
-import org.monet.templation.Canvas;
 import org.monet.templation.CanvasLogger;
-import org.monet.templation.Render;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class JFlexRender extends Render {
+public class JFlexRender extends DefaultRender {
 	private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(JFlexRender.class.getName());
 
-	private String tplName;
-	private String projectName;
 	private Map<String, String> identifierMap;
 	private StringBuilder keywords = new StringBuilder();
 	private StringBuilder keywords2 = new StringBuilder();
 
-	public JFlexRender(String projectName, String tplName, ASTWrapper ast) {
-		super(new Logger(), Canvas.FROM_RESOURCES_PREFIX);
-		this.tplName = tplName;
-		this.projectName = projectName;
-		this.identifierMap = ast.getIdentifiers();
+	public JFlexRender(String tplName, String projectName, Object ast) throws TaraException {
+		super(tplName, projectName);
+		this.identifierMap = ((ASTWrapper) ast).getIdentifiers();
 	}
 
 	@Override

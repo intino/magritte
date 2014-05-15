@@ -2,8 +2,8 @@ package monet.::projectName::.intellij.codeinsight.completion;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.ElementFilter;
-import monet.::projectName::.intellij.metamodel.psi.Definition;
-import monet.::projectName::.intellij.metamodel.psi.Signature;
+import monet.::projectName::.intellij.lang.psi.Definition;
+import monet.::projectName::.intellij.lang.psi.Signature;
 
 public class InSignatureFitFilter implements ElementFilter {
 	public boolean isAcceptable(Object element, PsiElement context) {

@@ -4,7 +4,7 @@ import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.openapi.project.Project;
-import monet.tara.intellij.metamodel.TaraIcons;
+import monet.tara.intellij.lang.TaraIcons;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +22,7 @@ public class RunConfigurationType implements ConfigurationType {
 	}
 
 	public String getConfigurationTypeDescription() {
-		return "Tara metamodel";
+		return "Tara lang";
 	}
 
 	public Icon getIcon() {
@@ -49,7 +49,7 @@ public class RunConfigurationType implements ConfigurationType {
 		}
 
 		public com.intellij.execution.configurations.RunConfiguration createTemplateConfiguration(Project project) {
-			return new RunConfiguration("Tara metamodel", project, this);
+			return new RunConfiguration("Tara lang", project, this);
 		}
 
 	}

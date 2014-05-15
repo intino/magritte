@@ -5,10 +5,10 @@ import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import monet.tara.intellij.TaraBundle;
-import monet.tara.intellij.metamodel.psi.TaraFile;
-import monet.tara.intellij.metamodel.psi.TaraHeaderReference;
-import monet.tara.intellij.metamodel.psi.TaraPacket;
-import monet.tara.intellij.metamodel.psi.impl.ReferenceManager;
+import monet.tara.intellij.lang.psi.TaraFile;
+import monet.tara.intellij.lang.psi.TaraHeaderReference;
+import monet.tara.intellij.lang.psi.TaraPacket;
+import monet.tara.intellij.lang.psi.impl.ReferenceManager;
 import org.jetbrains.annotations.NotNull;
 
 public class PackageAnnotator extends TaraAnnotator {

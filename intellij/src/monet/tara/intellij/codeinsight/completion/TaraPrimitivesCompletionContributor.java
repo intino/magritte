@@ -8,8 +8,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
-import monet.tara.intellij.metamodel.TaraLanguage;
-import monet.tara.intellij.metamodel.psi.TaraTypes;
+import monet.tara.intellij.lang.TaraLanguage;
+import monet.tara.intellij.lang.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;

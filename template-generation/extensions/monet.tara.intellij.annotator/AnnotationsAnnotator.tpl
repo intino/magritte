@@ -27,7 +27,7 @@
 	}
 
 	private boolean conceptHasCode(::projectProperName::MetaIdentifier metaId) {
-		monet.tara.lang.ASTWrapper heritage = monet.::projectName::.intellij.metamodel.::projectProperName::Language.getHeritage();
+		monet.tara.lang.ASTWrapper heritage = monet.::projectName::.intellij.lang.::projectProperName::Language.getHeritage();
 		monet.tara.lang.ASTNode node = heritage.getNodeNameLookUpTable().get(metaId.getText()).get(0);
 		if (node.hasCode()) return true;
 		monet.tara.lang.ASTNode ancestry;

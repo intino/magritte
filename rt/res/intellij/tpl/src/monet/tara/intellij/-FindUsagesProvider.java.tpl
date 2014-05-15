@@ -6,9 +6,9 @@ import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
-import monet.::projectName::.intellij.metamodel.lexer.::projectProperName::LexerAdapter;
-import monet.::projectName::.intellij.metamodel.psi.Definition;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::Types;
+import monet.::projectName::.intellij.lang.lexer.::projectProperName::LexerAdapter;
+import monet.::projectName::.intellij.lang.psi.Definition;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::Types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -3,7 +3,7 @@ package monet.tara.intellij.project.runner;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
+import monet.tara.intellij.lang.psi.impl.TaraFileImpl;
 import org.jetbrains.annotations.Nullable;
 
 public class RunnerUtil {

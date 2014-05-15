@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.::projectName::.intellij.::projectProperName::Bundle;
-import monet.::projectName::.intellij.metamodel.psi.Definition;
+import monet.::projectName::.intellij.lang.psi.Definition;
 import org.jetbrains.annotations.NotNull;
 
 public class RenameDefinitionFix implements IntentionAction {

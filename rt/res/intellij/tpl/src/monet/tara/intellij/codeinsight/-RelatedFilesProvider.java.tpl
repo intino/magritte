@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.uiDesigner.compiler.Utils;
-import monet.::projectName::.intellij.metamodel.file.::projectProperName::FileType;
+import monet.::projectName::.intellij.lang.file.::projectProperName::FileType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;

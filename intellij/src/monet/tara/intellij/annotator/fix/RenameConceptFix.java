@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.TaraBundle;
-import monet.tara.intellij.metamodel.psi.Concept;
+import monet.tara.intellij.lang.psi.Concept;
 import org.jetbrains.annotations.NotNull;
 
 public class RenameConceptFix implements IntentionAction {

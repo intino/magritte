@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class FileRenderTest {
 
 	private String projectName = "tafat";
-	private String TLP_PATH = "intellij_plugin_builder/res_test/render/tpl/metamodel/file/";
+	private String TLP_PATH = "intellij_plugin_builder/res_test/render/tpl/lang/file/";
 
 	@Before
 	public void setUp() throws Exception {

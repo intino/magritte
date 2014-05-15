@@ -17,7 +17,7 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
+import monet.::projectName::.intellij.lang.::projectProperName::Icons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

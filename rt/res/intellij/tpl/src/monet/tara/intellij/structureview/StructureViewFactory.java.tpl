@@ -4,7 +4,7 @@ import com.intellij.ide.structureView.TreeBasedStructureViewBuilder;
 import com.intellij.lang.PsiStructureViewFactory;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiFile;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::FileImpl;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::FileImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

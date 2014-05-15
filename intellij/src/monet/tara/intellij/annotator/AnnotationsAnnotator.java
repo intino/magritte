@@ -6,11 +6,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import monet.tara.intellij.metamodel.parser.TaraAnnotation;
-import monet.tara.intellij.metamodel.psi.Annotations;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.TaraFile;
-import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
+import monet.tara.intellij.lang.parser.TaraAnnotation;
+import monet.tara.intellij.lang.psi.*;
+import monet.tara.intellij.lang.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

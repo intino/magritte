@@ -4,8 +4,8 @@ import com.intellij.codeInsight.intention.HighPriorityAction;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.TaraFile;
+import monet.tara.intellij.lang.psi.Concept;
+import monet.tara.intellij.lang.psi.TaraFile;
 import org.jetbrains.annotations.NotNull;
 
 public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {

@@ -4,8 +4,8 @@ import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.structureView.TextEditorBasedStructureViewModel;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.psi.PsiFile;
-import monet.::projectName::.intellij.metamodel.psi.Definition;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::FileImpl;
+import monet.::projectName::.intellij.lang.psi.Definition;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::FileImpl;
 import org.jetbrains.annotations.NotNull;
 
 public class StructureViewModel extends TextEditorBasedStructureViewModel implements com.intellij.ide.structureView.StructureViewModel.ElementInfoProvider {

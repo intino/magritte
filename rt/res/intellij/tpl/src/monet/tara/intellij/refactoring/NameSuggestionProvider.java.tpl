@@ -3,8 +3,8 @@ package monet.::projectName::.intellij.refactoring;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.SuggestedNameInfo;
-import monet.::projectName::.intellij.metamodel.psi.Definition;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::Identifier;
+import monet.::projectName::.intellij.lang.psi.Definition;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

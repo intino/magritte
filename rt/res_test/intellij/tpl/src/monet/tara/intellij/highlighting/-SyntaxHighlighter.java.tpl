@@ -12,7 +12,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
 import gnu.trove.THashMap;
 import monet.::projectName::.intellij.::projectProperName::Bundle;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::Types;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::Types;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -87,11 +87,9 @@ public class ::projectProperName::SyntaxHighlighter extends SyntaxHighlighterBas
 
 		KEYS.put(OPTIONAL, ANNOTATION);
 		KEYS.put(MULTIPLE, ANNOTATION);
-		KEYS.put(EXTENSIBLE_KEY, ANNOTATION);
-		KEYS.put(EXTENSION_KEY, ANNOTATION);
 		KEYS.put(HAS_CODE, ANNOTATION);
 		KEYS.put(SINGLETON, ANNOTATION);
-		KEYS.put(INTENTION, ANNOTATION);
+		KEYS.put(INTENTION_KEY, ANNOTATION);
 		KEYS.put(ROOT, ANNOTATION);
 		KEYS.put(GENERIC, ANNOTATION);
 		KEYS.put(COLON, OPERATOR);

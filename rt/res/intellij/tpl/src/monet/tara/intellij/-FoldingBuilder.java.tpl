@@ -6,10 +6,10 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import monet.::projectName::.intellij.metamodel.psi.Definition;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::File;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::FileImpl;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::Util;
+import monet.::projectName::.intellij.lang.psi.Definition;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::File;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::FileImpl;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

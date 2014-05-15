@@ -9,7 +9,7 @@
   <change-notes><![CDATA[ First Realease. Windows integration. ]]>
   </change-notes>
 
-  <idea-version since-build="135.475"/>
+  <idea-version since-build="135.375"/>
 
   <!-- please see http\://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
@@ -33,8 +33,8 @@
     <errorHandler implementation="monet.::projectName::.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="::projectProperName::"
                          implementationClass="monet.::projectName::.intellij.refactoring.rename.NamesValidator"/>
-    <projectService serviceInterface="monet.::projectName::.intellij.metamodel.psi.::projectProperName::ElementFactory"
-                    serviceImplementation="monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::ElementFactoryImpl"/>
+    <projectService serviceInterface="monet.::projectName::.intellij.lang.psi.::projectProperName::ElementFactory"
+                    serviceImplementation="monet.::projectName::.intellij.lang.psi.impl.::projectProperName::ElementFactoryImpl"/>
     <moduleType id="::projectUpperName::_MODULE" implementationClass="monet.::projectName::.intellij.project.module.ModuleType"/>
     <treeStructureProvider implementation="monet.::projectName::.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="monet.::projectName::.intellij.actions.::projectProperName::TemplatesFactory"/>
@@ -47,9 +47,9 @@
     <lang.commenter language="::projectProperName::" implementationClass="monet.::projectName::.intellij.::projectProperName::Commenter"/>
     <lang.documentationProvider language="::projectProperName::"
                                 implementationClass="monet.::projectName::.intellij.documentation.::projectProperName::DocumentationProvider"/>
-    <fileTypeFactory implementation="monet.::projectName::.intellij.metamodel.file.::projectProperName::FileTypeFactory"/>
+    <fileTypeFactory implementation="monet.::projectName::.intellij.lang.file.::projectProperName::FileTypeFactory"/>
     <lang.parserDefinition language="::projectProperName::"
-                           implementationClass="monet.::projectName::.intellij.metamodel.parser.::projectProperName::ParserDefinition"/>
+                           implementationClass="monet.::projectName::.intellij.lang.parser.::projectProperName::ParserDefinition"/>
     <lang.syntaxHighlighterFactory key="::projectProperName::"
                                    implementationClass="monet.::projectName::.intellij.highlighting.::projectProperName::SyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="monet.::projectName::.intellij.highlighting.::projectProperName::ColorSettingPage"/>
@@ -67,10 +67,10 @@
                             implementationClass="monet.::projectName::.intellij.codeinsight.completion.::projectProperName::AnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="::projectProperName::"
                                   implementationClass="monet.::projectName::.intellij.structureview.StructureViewFactory"/>
-    <psi.referenceContributor implementation="monet.::projectName::.intellij.::projectProperName::ReferenceContributor"/>
+    <!--<psi.referenceContributor implementation="monet.::projectName::.intellij.::projectProperName::ReferenceContributor"/>-->
     <nameSuggestionProvider implementation="monet.::projectName::.intellij.refactoring.NameSuggestionProvider"/>
-    <lang.elementManipulator forClass="monet.::projectName::.intellij.metamodel.psi.::projectProperName::Identifier"
-                             implementationClass="monet.::projectName::.intellij.metamodel.psi.impl.IdentifierManipulator"/>
+    <lang.elementManipulator forClass="monet.::projectName::.intellij.lang.psi.::projectProperName::Identifier"
+                             implementationClass="monet.::projectName::.intellij.lang.psi.impl.IdentifierManipulator"/>
 
     <lang.refactoringSupport language="::projectProperName::"
                              implementationClass="monet.::projectName::.intellij.::projectProperName::RefactoringSupportProvider"/>

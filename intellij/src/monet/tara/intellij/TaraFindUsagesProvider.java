@@ -6,9 +6,9 @@ import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
-import monet.tara.intellij.metamodel.lexer.TaraLexerAdapter;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.TaraTypes;
+import monet.tara.intellij.lang.lexer.TaraLexerAdapter;
+import monet.tara.intellij.lang.psi.Concept;
+import monet.tara.intellij.lang.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

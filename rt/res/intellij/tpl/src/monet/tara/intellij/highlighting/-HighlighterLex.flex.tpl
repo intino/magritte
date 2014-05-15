@@ -2,7 +2,7 @@ package monet.::projectName::.intellij.highlighting;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::Types;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::Types;
 import com.intellij.psi.TokenType;
 
 \%\%
@@ -33,11 +33,9 @@ MULTIPLE  = "multiple"
 OPTIONAL  = "optional"
 HAS_CODE  = "has-code"
 SINGLETON = "singleton"
-INTENTION = "intention"
+INTENTION_KEY = "intention"
 GENERIC   = "generic"
 ROOT      = "root"
-EXTENSIBLE_KEY = "extensible"
-EXTENSION_KEY = "extension"
 WORD      = "Word"
 VAR       = "var"
 CODE_KEY  = "code"
@@ -117,12 +115,10 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 	{MULTIPLE}                  {   return ::projectProperName::Types.MULTIPLE; }
 
 	{HAS_CODE}                  {   return ::projectProperName::Types.HAS_CODE; }
-	{EXTENSIBLE_KEY}            {   return ::projectProperName::Types.EXTENSIBLE_KEY; }
-	{EXTENSION_KEY}             {   return ::projectProperName::Types.EXTENSION_KEY; }
 	{ROOT}                      {   return ::projectProperName::Types.ROOT; }
 	{SINGLETON}                 {   return ::projectProperName::Types.SINGLETON; }
 	{GENERIC}                   {   return ::projectProperName::Types.GENERIC; }
-	{INTENTION}                 {   return ::projectProperName::Types.INTENTION; }
+	{INTENTION_KEY}             {   return ::projectProperName::Types.INTENTION_KEY; }
 
 	{DOC_LINE}                  {   return ::projectProperName::Types.DOC_LINE; }
 

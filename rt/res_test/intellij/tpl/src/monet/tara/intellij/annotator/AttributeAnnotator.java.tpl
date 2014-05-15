@@ -4,8 +4,8 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import monet.::projectName::.intellij.::projectProperName::Bundle;
 import monet.::projectName::.intellij.annotator.fix.RemoveAttributeFix;
-import monet.::projectName::.intellij.metamodel.psi.Attribute;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::Util;
+import monet.::projectName::.intellij.lang.psi.Attribute;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::Util;
 import org.jetbrains.annotations.NotNull;
 
 public class AttributeAnnotator extends ::projectProperName::Annotator {

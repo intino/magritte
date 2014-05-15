@@ -17,8 +17,8 @@ import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.openapi.vfs.newvfs.impl.VirtualDirectoryImpl;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import monet.::projectName::.intellij.metamodel.psi.Definition;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::File;
+import monet.::projectName::.intellij.lang.psi.Definition;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::File;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 
@@ -51,7 +51,7 @@ public class ::projectProperName::FileDocumentManagerListener implements FileDoc
 			isGenCreated(virtualFiles);
 			for (VirtualFile file \: virtualFiles)
 				if (file.isDirectory() && SRC.equals(file.getName()))
-					processExtensibleDefinitions((VirtualDirectoryImpl) file);
+					processIntentionDefinitions((VirtualDirectoryImpl) file);
 		}
 		refresh();
 	}
@@ -67,13 +67,13 @@ public class ::projectProperName::FileDocumentManagerListener implements FileDoc
 	private void processVirtualFile(VirtualFile file) {
 		PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
 		if (psiFile instanceof ::projectProperName::File) {
-			Definition definition = getExtensibleDefinition((::projectProperName::File) psiFile);
+			Definition definition = getIntentionDefinition((::projectProperName::File) psiFile);
 			if (definition != null)
-				createExtensibleClasses(file, definition);
+				createWrapperClasses(file, definition);
 		}
 	}
 
-	private void createExtensibleClasses(VirtualFile virtualFile, Definition definition) {
+	private void createWrapperClasses(VirtualFile virtualFile, Definition definition) {
 		try {
 			VirtualFile parent = virtualFile.getParent();
 			File classSrcFile = new File(parent.getPath() + File.separator + definition.getName() + ".java");
@@ -99,7 +99,7 @@ public class ::projectProperName::FileDocumentManagerListener implements FileDoc
 	}
 
 
-	private void processExtensibleDefinitions(VirtualDirectoryImpl directory) {
+	private void processIntentionDefinitions(VirtualDirectoryImpl directory) {
 		VfsUtilCore.visitChildrenRecursively(directory, new VirtualFileVisitor() {
 			\@Override
 			public boolean visitFile(\@NotNull VirtualFile file) {
@@ -110,10 +110,9 @@ public class ::projectProperName::FileDocumentManagerListener implements FileDoc
 		});
 	}
 
-	private Definition getExtensibleDefinition(::projectProperName::File file) {
-		return file.getDefinition().isExtensible() ? file.getDefinition() \: null;
+	private Definition getIntentionDefinition(::projectProperName::File file) {
+		return file.getDefinition() == null ? null \: file.getDefinition().isIntention() ? file.getDefinition() \: null;
 	}
-
 
 	private boolean saveAndBLock() {
 		try {

@@ -17,10 +17,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.containers.ContainerUtil;
-import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.file.TaraFileType;
-import monet.tara.intellij.metamodel.psi.TaraFile;
-import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
+import monet.tara.intellij.lang.TaraIcons;
+import monet.tara.intellij.lang.file.TaraFileType;
+import monet.tara.intellij.lang.psi.TaraFile;
+import monet.tara.intellij.lang.psi.impl.TaraFileImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;

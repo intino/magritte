@@ -4,11 +4,11 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
-import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
-import monet.::projectName::.intellij.metamodel.::projectProperName::Language;
-import monet.::projectName::.intellij.metamodel.psi.Definition;
-import monet.::projectName::.intellij.metamodel.psi.MetaIdentifier;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::PsiImplUtil;
+import monet.::projectName::.intellij.lang.::projectProperName::Icons;
+import monet.::projectName::.intellij.lang.::projectProperName::Language;
+import monet.::projectName::.intellij.lang.psi.Definition;
+import monet.::projectName::.intellij.lang.psi.MetaIdentifier;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::PsiImplUtil;
 ::empty|import monet.tara.lang.ASTNode;::
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

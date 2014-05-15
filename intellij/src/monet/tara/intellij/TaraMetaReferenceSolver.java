@@ -4,11 +4,11 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
-import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.TaraLanguage;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.MetaIdentifier;
-import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
+import monet.tara.intellij.lang.TaraIcons;
+import monet.tara.intellij.lang.TaraLanguage;
+import monet.tara.intellij.lang.psi.Concept;
+import monet.tara.intellij.lang.psi.MetaIdentifier;
+import monet.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 //gen %empty%import monet.tara.lang.ASTNode;%
 import monet.tara.lang.ASTNode;
 //end

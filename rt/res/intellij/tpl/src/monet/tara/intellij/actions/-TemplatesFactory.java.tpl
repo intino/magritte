@@ -10,8 +10,8 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import monet.::projectName::.intellij.::projectProperName::Bundle;
-import monet.::projectName::.intellij.metamodel.::projectProperName::Icons;
-import monet.::projectName::.intellij.metamodel.file.::projectProperName::FileType;
+import monet.::projectName::.intellij.lang.::projectProperName::Icons;
+import monet.::projectName::.intellij.lang.file.::projectProperName::FileType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 

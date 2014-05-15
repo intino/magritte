@@ -4,13 +4,13 @@ import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
-import monet.tara.intellij.metamodel.file.TaraFileType;
-import monet.tara.intellij.metamodel.psi.TaraTypes;
+import monet.tara.intellij.lang.file.TaraFileType;
+import monet.tara.intellij.lang.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.psi.TokenType.WHITE_SPACE;
-import static monet.tara.intellij.metamodel.psi.TaraTypes.IDENTIFIER_KEY;
+import static monet.tara.intellij.lang.psi.TaraTypes.IDENTIFIER_KEY;
 
 public class TaraBraceMatcher implements PairedBraceMatcher {
 	private final BracePair[] PAIRS;

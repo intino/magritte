@@ -3,8 +3,8 @@ package monet.tara.intellij.structureview;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
 import com.intellij.navigation.ItemPresentation;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
+import monet.tara.intellij.lang.psi.Concept;
+import monet.tara.intellij.lang.psi.impl.TaraFileImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

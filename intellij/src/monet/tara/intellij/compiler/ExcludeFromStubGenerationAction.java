@@ -10,7 +10,7 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
-import monet.tara.intellij.metamodel.file.TaraFileType;
+import monet.tara.intellij.lang.file.TaraFileType;
 
 public class ExcludeFromStubGenerationAction extends AnAction implements DumbAware {
 	public static void doExcludeFromStubGeneration(PsiFile file) {

@@ -6,10 +6,10 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.TaraFile;
-import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
-import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
+import monet.tara.intellij.lang.psi.Concept;
+import monet.tara.intellij.lang.psi.TaraFile;
+import monet.tara.intellij.lang.psi.impl.TaraFileImpl;
+import monet.tara.intellij.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -17,8 +17,8 @@ import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.openapi.vfs.newvfs.impl.VirtualDirectoryImpl;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.TaraFile;
+import monet.tara.intellij.lang.psi.Concept;
+import monet.tara.intellij.lang.psi.TaraFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 

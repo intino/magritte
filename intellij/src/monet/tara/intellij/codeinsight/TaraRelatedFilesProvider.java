@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.uiDesigner.compiler.Utils;
-import monet.tara.intellij.metamodel.file.TaraFileType;
+import monet.tara.intellij.lang.file.TaraFileType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;

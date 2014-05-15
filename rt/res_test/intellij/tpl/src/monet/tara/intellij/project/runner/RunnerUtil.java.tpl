@@ -3,7 +3,7 @@ package monet.::projectName::.intellij.project.runner;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::FileImpl;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::FileImpl;
 import org.jetbrains.annotations.Nullable;
 
 public class RunnerUtil {

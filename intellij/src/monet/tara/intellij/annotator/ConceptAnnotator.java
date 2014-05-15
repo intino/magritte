@@ -4,9 +4,9 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.annotator.fix.RenameConceptFix;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.TaraFile;
-import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
+import monet.tara.intellij.lang.psi.Concept;
+import monet.tara.intellij.lang.psi.TaraFile;
+import monet.tara.intellij.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class ConceptAnnotator extends TaraAnnotator {

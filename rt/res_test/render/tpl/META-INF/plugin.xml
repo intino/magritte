@@ -61,7 +61,7 @@
     <!--<localInspection language="Tafat" shortName="UnusedAbstractDefinition" bundle="messages.TafatBundle"-->
     <!--key="unused.abstract.definition.inspection.display.name"-->
     <!--groupKey="tafat.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"-->
-    <!--implementationClass="monet.tafat.intellij.metamodel.codeinspection.UnusedAbstractDefinitionInspection"/>-->
+    <!--implementationClass="monet.tafat.intellij.lang.codeinspection.UnusedAbstractDefinitionInspection"/>-->
     <!--<globalInspection shortName="DuplicateDefinitionInspection" bundle="messages.TafatBundle"-->
     <!--key="duplicate.definition.display.name"-->
     <!--groupKey="group.names.tafat.files" enabledByDefault="false" level="WARNING"-->

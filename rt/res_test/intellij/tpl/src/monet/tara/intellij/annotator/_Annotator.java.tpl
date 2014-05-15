@@ -4,9 +4,9 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import monet.::projectName::.intellij.::projectProperName::Bundle;
 import monet.::projectName::.intellij.annotator.fix.RenameDefinitionFix;
-import monet.::projectName::.intellij.metamodel.psi.Definition;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::File;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::Util;
+import monet.::projectName::.intellij.lang.psi.Definition;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::File;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::Util;
 import org.jetbrains.annotations.NotNull;
 
 public class DefinitionAnnotator extends ::projectProperName::Annotator {
@@ -23,7 +23,6 @@ public class DefinitionAnnotator extends ::projectProperName::Annotator {
 
 	private void isNameEqualsFileName(Definition definition) {
 		if (definition.getIdentifierNode() != null && !definition.getIdentifierNode().getText().equals(definition.getFile().getPresentableName()))
-
 			annotateAndFix(definition.getIdentifierNode(), new RenameDefinitionFix(definition), ::projectProperName::Bundle.message("prime.definition.name.different.file.error.message"));
 	}
 

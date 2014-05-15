@@ -8,8 +8,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.TaraBundle;
-import monet.tara.intellij.metamodel.psi.Import;
-import monet.tara.intellij.metamodel.psi.TaraPsiElement;
+import monet.tara.intellij.lang.psi.Import;
+import monet.tara.intellij.lang.psi.TaraPsiElement;
 import org.jetbrains.annotations.NotNull;
 
 public class RemoveImportFix implements IntentionAction {

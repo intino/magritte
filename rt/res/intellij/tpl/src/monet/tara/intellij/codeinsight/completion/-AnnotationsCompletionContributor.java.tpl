@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
-import monet.::projectName::.intellij.metamodel.::projectProperName::Language;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::Types;
+import monet.::projectName::.intellij.lang.::projectProperName::Language;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::Types;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;

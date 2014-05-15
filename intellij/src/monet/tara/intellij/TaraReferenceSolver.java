@@ -5,12 +5,12 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
-import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.psi.Concept;
-import monet.tara.intellij.metamodel.psi.HeaderReference;
-import monet.tara.intellij.metamodel.psi.Identifier;
-import monet.tara.intellij.metamodel.psi.IdentifierReference;
-import monet.tara.intellij.metamodel.psi.impl.ReferenceManager;
+import monet.tara.intellij.lang.TaraIcons;
+import monet.tara.intellij.lang.psi.Concept;
+import monet.tara.intellij.lang.psi.HeaderReference;
+import monet.tara.intellij.lang.psi.Identifier;
+import monet.tara.intellij.lang.psi.IdentifierReference;
+import monet.tara.intellij.lang.psi.impl.ReferenceManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

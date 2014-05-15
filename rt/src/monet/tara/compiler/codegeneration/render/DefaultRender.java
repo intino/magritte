@@ -12,8 +12,7 @@ public class DefaultRender extends Render {
 	protected String projectName;
 
 	public DefaultRender(String tplName, String projectName) throws TaraException {
-		super(new Logger(), null);
-		setPath(Canvas.FROM_RESOURCES_PREFIX);
+		super(new Logger(), Canvas.FROM_RESOURCES_PREFIX);
 		this.tplName = tplName;
 		this.projectName = projectName;
 	}

@@ -4,13 +4,13 @@ import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
-import monet.::projectName::.intellij.metamodel.file.::projectProperName::FileType;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::Types;
+import monet.::projectName::.intellij.lang.file.::projectProperName::FileType;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::Types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.psi.TokenType.WHITE_SPACE;
-import static monet.::projectName::.intellij.metamodel.psi.::projectProperName::Types.IDENTIFIER_KEY;
+import static monet.::projectName::.intellij.lang.psi.::projectProperName::Types.IDENTIFIER_KEY;
 
 public class ::projectProperName::BraceMatcher implements PairedBraceMatcher {
 	private final BracePair[] PAIRS;

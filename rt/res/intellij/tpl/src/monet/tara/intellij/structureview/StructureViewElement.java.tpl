@@ -3,8 +3,8 @@ package monet.::projectName::.intellij.structureview;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;
 import com.intellij.navigation.ItemPresentation;
-import monet.::projectName::.intellij.metamodel.psi.Definition;
-import monet.::projectName::.intellij.metamodel.psi.impl.::projectProperName::Util;
+import monet.::projectName::.intellij.lang.psi.Definition;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::Util;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

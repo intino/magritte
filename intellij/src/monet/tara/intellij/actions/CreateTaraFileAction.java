@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.TaraBundle;
-import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.file.TaraFileType;
-import monet.tara.intellij.metamodel.psi.impl.TaraFileImpl;
+import monet.tara.intellij.lang.TaraIcons;
+import monet.tara.intellij.lang.file.TaraFileType;
+import monet.tara.intellij.lang.psi.impl.TaraFileImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

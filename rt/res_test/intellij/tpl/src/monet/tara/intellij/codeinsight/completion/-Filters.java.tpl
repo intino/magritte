@@ -7,8 +7,8 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.tree.IElementType;
-import monet.::projectName::.intellij.metamodel.::projectProperName::Language;
-import monet.::projectName::.intellij.metamodel.psi.::projectProperName::Types;
+import monet.::projectName::.intellij.lang.::projectProperName::Language;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::Types;
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
@@ -20,7 +20,7 @@ public class ::projectProperName::Filters {
 	protected static PsiElementPattern.Capture<PsiElement> afterDefinitionKey = psiElement()
 		.withLanguage(::projectProperName::Language.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
-		.andOr(new FilterPattern(new AfterElementFitFilter(monet.::projectName::.intellij.metamodel.psi.MetaIdentifier.class)), 
+		.andOr(new FilterPattern(new AfterElementFitFilter(monet.::projectName::.intellij.lang.psi.MetaIdentifier.class)), 
 			new FilterPattern(new AfterElementTypeFitFilter(::projectProperName::Types.CASE_KEY)));
 	protected static PsiElementPattern.Capture<PsiElement> afterModifierKey = psiElement()
 		.withLanguage(::projectProperName::Language.INSTANCE)

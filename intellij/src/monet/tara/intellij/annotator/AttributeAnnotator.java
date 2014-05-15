@@ -4,8 +4,8 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.annotator.fix.RemoveAttributeFix;
-import monet.tara.intellij.metamodel.psi.Attribute;
-import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
+import monet.tara.intellij.lang.psi.Attribute;
+import monet.tara.intellij.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class AttributeAnnotator extends TaraAnnotator {

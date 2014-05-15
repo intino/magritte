@@ -15,8 +15,8 @@ public class TplGenerator {
         fixTypes()
         createTPLs(TPL_PATH, srcFiles, templateBound)
         createTPLs(TPL_PATH, new File(RES_PATH).listFiles(), templateBound)
-        new File(TPL_PATH + "/src/monet/tara/intellij/metamodel/psi/-Types.java.tpl").createNewFile()
-        templateBound.append("Types.java" + " = " + "/intellij/tpl/src/monet/tara/intellij/metamodel/psi/-Types.java")
+        new File(TPL_PATH + "/src/monet/tara/intellij/lang/psi/-Types.java.tpl").createNewFile()
+        templateBound.append("Types.java" + " = " + "/intellij/tpl/src/monet/tara/intellij/lang/psi/-Types.java")
         addLangHeritage("rt/src/monet/tara/lang", TPL_PATH + "/src/monet/tara/lang")
         File tpl_testPath = new File(RES_TEST_PATH)
         FileUtils.removeDir(tpl_testPath)
@@ -73,7 +73,7 @@ public class TplGenerator {
     }
 
     static void fixTypes() {
-        File file = new File("intellij/gen/monet/tara/intellij/metamodel/psi/TaraTypes.java")
+        File file = new File("intellij/gen/monet/tara/intellij/lang/psi/TaraTypes.java")
         file.write(file.text.replace("new TaraTokenType(\"NEW_LINE_INDENT\");", "TokenType.NEW_LINE_INDENT;"))
     }
 

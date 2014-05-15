@@ -1,0 +1,1 @@
+public static final Icon TARA = IconLoader.getIcon("/monet/::projectName::/intellij/lang/icons/Tara.png");

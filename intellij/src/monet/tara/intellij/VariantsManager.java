@@ -7,11 +7,11 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import monet.tara.intellij.codeinsight.JavaHelper;
-import monet.tara.intellij.metamodel.file.TaraFileType;
-import monet.tara.intellij.metamodel.psi.*;
-import monet.tara.intellij.metamodel.psi.impl.ReferenceManager;
-import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
-import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
+import monet.tara.intellij.lang.file.TaraFileType;
+import monet.tara.intellij.lang.psi.*;
+import monet.tara.intellij.lang.psi.impl.ReferenceManager;
+import monet.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import monet.tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
