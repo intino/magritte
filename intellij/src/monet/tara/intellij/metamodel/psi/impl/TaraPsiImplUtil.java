@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import monet.tara.intellij.metamodel.psi.*;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,6 +71,7 @@ public class TaraPsiImplUtil {
 		return (Concept) element.getParent();
 	}
 
+	@Nullable
 	public static Concept getContextOf(PsiElement element) {
 		try {
 			PsiElement aElement = element;
@@ -77,7 +79,7 @@ public class TaraPsiImplUtil {
 				aElement = aElement.getParent();
 			return (aElement.getParent() instanceof Concept) ? (Concept) aElement.getParent() : null;
 		} catch (NullPointerException e) {
-			LOG.error(e.getMessage());
+//			LOG.error(e.getMessage());
 			return null;
 		}
 	}

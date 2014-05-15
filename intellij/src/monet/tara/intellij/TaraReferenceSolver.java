@@ -6,7 +6,10 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import monet.tara.intellij.metamodel.TaraIcons;
-import monet.tara.intellij.metamodel.psi.*;
+import monet.tara.intellij.metamodel.psi.Concept;
+import monet.tara.intellij.metamodel.psi.HeaderReference;
+import monet.tara.intellij.metamodel.psi.Identifier;
+import monet.tara.intellij.metamodel.psi.IdentifierReference;
 import monet.tara.intellij.metamodel.psi.impl.ReferenceManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,8 +32,7 @@ public class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
 		List<ResolveResult> results = new ArrayList<>();
 		PsiElement element = ReferenceManager.resolve((Identifier) myElement, external);
-		if (element != null)
-			results.add(new PsiElementResolveResult(element));
+		if (element != null) results.add(new PsiElementResolveResult(element));
 		return results.toArray(new ResolveResult[results.size()]);
 	}
 
@@ -45,35 +47,25 @@ public class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements
 	@Override
 	public Object[] getVariants() {
 		List<PsiElement> variants = new ArrayList<>();
-		VariantsManager manager = new VariantsManager(variants, myElement, external);
-		if (myElement.getParent() instanceof IdentifierReference) {
-			if (isReferenceToConcept()) manager.getVariants((TaraIdentifier) myElement);
-			else if (manager.isChildrenResolution())
-				manager.getChildrenVariants((TaraIdentifier) myElement.getPrevSibling().getPrevSibling());
-		} else if (myElement.getParent() instanceof HeaderReference)
-			manager.getVariantsInHeader();
-		manager.getPackageVariants();
+		if (myElement.getParent() instanceof IdentifierReference || myElement.getParent() instanceof HeaderReference)
+			new VariantsManager(variants, myElement).resolveVariants();
 		return fillVariants(variants);
 	}
 
-
-	private boolean isReferenceToConcept() {
-		return myElement.getPrevSibling() == null;
-	}
-
-	public Object[] fillVariants(List<PsiElement> elements) {
-		List<LookupElement> variants = new ArrayList<>();
-		for (final PsiElement element : elements) {
-			if (element instanceof Concept) {
-				Concept concept = (Concept) element;
+	public Object[] fillVariants(List<PsiElement> variants) {
+		List<LookupElement> lookupElements = new ArrayList<>();
+		for (final PsiElement variant : variants) {
+			if (variant == null) continue;
+			if (variant instanceof Concept) {
+				Concept concept = (Concept) variant;
 				if (concept.getName() == null || concept.getName().length() == 0) continue;
-				variants.add(LookupElementBuilder.create((PsiNamedElement) concept.getIdentifierNode()).withIcon(TaraIcons.ICON_13).withTypeText(getFileName(element)));
+				lookupElements.add(LookupElementBuilder.create((PsiNamedElement) concept.getIdentifierNode()).withIcon(TaraIcons.ICON_13).withTypeText(getFileName(variant)));
 			} else {
-				Icon icon = (element instanceof PsiPackage) ? AllIcons.Nodes.Package : TaraIcons.ICON_13;
-				variants.add(LookupElementBuilder.create((PsiNamedElement) element).withIcon(icon).withTypeText(element.getParent().getText()));
+				Icon icon = (variant instanceof PsiPackage) ? AllIcons.Nodes.Package : TaraIcons.ICON_13;
+				lookupElements.add(LookupElementBuilder.create((PsiNamedElement) variant).withIcon(icon).withTypeText(variant.getParent().getText()));
 			}
 		}
-		return variants.toArray();
+		return lookupElements.toArray();
 	}
 
 	private String getFileName(PsiElement concept) {

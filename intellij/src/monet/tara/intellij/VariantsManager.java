@@ -10,6 +10,7 @@ import monet.tara.intellij.codeinsight.JavaHelper;
 import monet.tara.intellij.metamodel.file.TaraFileType;
 import monet.tara.intellij.metamodel.psi.*;
 import monet.tara.intellij.metamodel.psi.impl.ReferenceManager;
+import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
 import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 
 import java.util.ArrayList;
@@ -20,40 +21,72 @@ public class VariantsManager {
 
 	private final List<PsiElement> variants;
 	private final PsiElement myElement;
-	private final boolean external;
 	private final Project project;
+	private final List<Identifier> context;
 
-	public VariantsManager(List<PsiElement> variants, PsiElement myElement, boolean external) {
+	public VariantsManager(List<PsiElement> variants, PsiElement myElement) {
 		this.variants = variants;
 		this.myElement = myElement;
-		this.external = external;
 		this.project = myElement.getProject();
+		this.context = solveIdentifierContext();
 	}
 
-	public void getVariantsInHeader() {
-		List<Identifier> subRoute = getSubRoute((Identifier) myElement);
-		//TODO
+	public void resolveVariants() {
+		addContextVariants();
+		addInPackageVariants();
+		addImportVariants();
+		addPackageVariants();
 	}
 
-	public void getChildrenVariants(TaraIdentifier parent) {
-		PsiElement element = ReferenceManager.resolve(parent, external);
-		if (element != null && element instanceof Concept)
-			Collections.addAll(variants, TaraUtil.getChildrenOf((Concept) element));
+	private void addContextVariants() {
+		Concept contextOf = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(myElement));
+		if (contextOf == null) return;
+		for (Concept concept : TaraPsiImplUtil.getChildrenOf(contextOf))
+			resolveRouteFor(concept, context);
 	}
 
-	public void getPackageVariants() {
+	private List<PsiElement> addInPackageVariants() {
+		List<PsiElement> variants = new ArrayList<>();
+		VirtualFile packageFile = ReferenceManager.resolveRoute(((TaraFile) myElement.getContainingFile()).getPackageRoute());
+		if (packageFile == null) return Collections.EMPTY_LIST;
+		for (VirtualFile vFile : packageFile.getChildren()) {
+			TaraFile file = TaraUtil.getTaraFileFromVirtual(project, vFile);
+			if (file == null) continue;
+			resolveRouteFor(file.getConcept(), context);
+		}
+		return variants;
+	}
+
+	private List<PsiElement> addImportVariants() {
+		List<PsiElement> variants = new ArrayList<>();
+		Import[] imports = ((TaraFile) myElement.getContainingFile()).getImports();
+		if (imports == null) return variants;
+		for (Import anImport : imports) {
+			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
+			PsiElement resolve = ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1), false);
+			if (resolve == null) continue;
+			Concept concept = (resolve instanceof Identifier) ? TaraPsiImplUtil.getContextOf(resolve) : (Concept) resolve;
+			resolveRouteFor(concept, context);
+		}
+		return variants;
+	}
+
+	private void addPackageVariants() {
 		VirtualFile virtualFile = myElement.getContainingFile().getOriginalFile().getVirtualFile();
 		VirtualFile contentRoot = ProjectFileIndex.SERVICE.getInstance(project).getSourceRootForFile(virtualFile);
 		if (contentRoot == null) return;
 		if (isChildrenResolution()) resolveRelativePackageReference(contentRoot);
-		else resolveAbsolutePackageReference( contentRoot);
+		else resolveAbsolutePackageReference(contentRoot);
 	}
 
-	public List<PsiElement> getVariants(TaraIdentifier parent) {
-		List<PsiElement> variants = new ArrayList<>();
-		variants.addAll(getPackageVariants(parent));
-		variants.addAll(getImportVariants(parent));
-		return variants;
+	private void resolveRouteFor(Concept concept, List<Identifier> route) {
+		List<Concept> childrenOf = TaraPsiImplUtil.getChildrenOf(concept);
+		if (route.isEmpty()) {
+			if (!concept.isCase())
+				variants.add(concept);
+		} else if (route.get(0).getText().equals(concept.getName()))
+			for (Concept child : childrenOf)
+				resolveRouteFor(child, route.subList(1, route.size()));
 	}
 
 	private void resolveAbsolutePackageReference(VirtualFile contentRoot) {
@@ -97,34 +130,15 @@ public class VariantsManager {
 		return (myElement.getPrevSibling() != null) && myElement.getPrevSibling().getPrevSibling() instanceof Identifier;
 	}
 
-	private List<Identifier> getSubRoute(Identifier identifier) {
-		List<Identifier> route = (List<Identifier>) ((HeaderReference) (identifier.getParent())).getIdentifierList();
-		return route.subList(0, route.indexOf(identifier) + 1);
-	}
-
-
-
-	private List<PsiElement> getImportVariants(TaraIdentifier parent) {
-		List<PsiElement> variants = new ArrayList<>();
-		Import[] imports = ((TaraFile) parent.getContainingFile()).getImports();
-		if (imports == null) return variants;
-		for (Import anImport : imports) {
-			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
-			variants.add(importIdentifiers.get(importIdentifiers.size() - 1));
+	public List<Identifier> solveIdentifierContext() {
+		if (myElement.getParent() instanceof IdentifierReference) {
+			IdentifierReference element = (IdentifierReference) myElement.getParent();
+			List<? extends Identifier> list = element.getIdentifierList();
+			return (List<Identifier>) list.subList(0, list.size() - 1);
+		} else {
+			HeaderReference element = (HeaderReference) myElement.getParent();
+			List<? extends Identifier> list = element.getIdentifierList();
+			return (List<Identifier>) list.subList(0, list.size() - 1);
 		}
-		return variants;
 	}
-
-	private List<PsiElement> getPackageVariants(TaraIdentifier parent) {
-		List<PsiElement> variants = new ArrayList<>();
-		VirtualFile packageFile = ReferenceManager.resolveRoute(((TaraFile) parent.getContainingFile()).getPackageRoute());
-		if (packageFile == null) return Collections.EMPTY_LIST;
-		for (VirtualFile vFile : packageFile.getChildren()) {
-			TaraFile file = TaraUtil.getTaraFileFromVirtual(project, vFile);
-			if (file != null) variants.add(file.getConcept());
-		}
-		return variants;
-	}
-
-
 }
