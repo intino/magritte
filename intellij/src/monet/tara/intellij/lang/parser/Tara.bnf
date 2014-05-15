@@ -86,9 +86,11 @@ integerList ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUA
 doubleList  ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE;
 naturalList ::= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
 
-annotations ::= OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | intention | SINGLETON | ROOT)+ CLOSE_AN
-{pin=1 mixin= 'monet.tara.intellij.lang.psi.impl.AnnotationsMixin'
-implements='monet.tara.intellij.lang.psi.Annotations'}
+annotations ::= OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | intention | SINGLETON | ROOT)+ CLOSE_AN {
+	pin=1
+	mixin= 'monet.tara.intellij.lang.psi.impl.AnnotationsMixin'
+	implements='monet.tara.intellij.lang.psi.Annotations'
+}
 
 intention ::= INTENTION_KEY {
 	pin=1
@@ -96,24 +98,25 @@ intention ::= INTENTION_KEY {
 	implements='monet.tara.intellij.lang.psi.ExternalReference'
 }
 
-modifier::= ABSTRACT
-          | FINAL
-          | BASE_KEY
+modifier::= ABSTRACT | FINAL | BASE_KEY
 
-doc::= DOC_LINE+
-{ mixin= 'monet.tara.intellij.lang.psi.impl.DocMixin'
-implements='monet.tara.intellij.lang.psi.Doc'}
+doc::= DOC_LINE+ {
+	mixin= 'monet.tara.intellij.lang.psi.impl.DocMixin'
+	implements='monet.tara.intellij.lang.psi.Doc'
+}
 
 
-headerReference ::= hierarchy* identifier
-{ pin=2
-mixin= 'monet.tara.intellij.lang.psi.impl.IdentifierReferenceMixin'
-implements='monet.tara.intellij.lang.psi.HeaderReference'}
+headerReference ::= hierarchy* identifier {
+	pin=2
+	mixin= 'monet.tara.intellij.lang.psi.impl.IdentifierReferenceMixin'
+	implements='monet.tara.intellij.lang.psi.HeaderReference'
+}
 
-identifierReference::= hierarchy* identifier
-{pin=2
-mixin= 'monet.tara.intellij.lang.psi.impl.IdentifierReferenceMixin'
-implements='monet.tara.intellij.lang.psi.IdentifierReference'}
+identifierReference::= hierarchy* identifier {
+	pin=2
+	mixin= 'monet.tara.intellij.lang.psi.impl.IdentifierReferenceMixin'
+	implements='monet.tara.intellij.lang.psi.IdentifierReference'
+}
 
 
 private hierarchy ::= identifier DOT
