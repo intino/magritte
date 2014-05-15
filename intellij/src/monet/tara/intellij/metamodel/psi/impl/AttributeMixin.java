@@ -4,7 +4,6 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import monet.tara.intellij.metamodel.psi.Attribute;
-import monet.tara.intellij.metamodel.psi.TaraAttribute;
 import monet.tara.intellij.metamodel.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,8 +27,7 @@ public class AttributeMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String getName() {
-		return(((TaraAttribute) this).getVariableNames() != null)?
-			((TaraAttribute) this).getVariableNames().getText(): this.getNode().findChildByType(TaraTypes.IDENTIFIER_KEY).getText();
+		return this.getNode().findChildByType(TaraTypes.IDENTIFIER_KEY).getText();
 	}
 
 	public String getType() {

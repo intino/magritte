@@ -23,7 +23,6 @@ public class ConceptAnnotator extends TaraAnnotator {
 
 	private void isNameEqualsFileName(Concept concept) {
 		if (concept.getIdentifierNode() != null && !concept.getIdentifierNode().getText().equals(concept.getFile().getPresentableName()))
-
 			annotateAndFix(concept.getIdentifierNode(), new RenameConceptFix(concept), TaraBundle.message("prime.concept.name.different.file.error.message"));
 	}
 

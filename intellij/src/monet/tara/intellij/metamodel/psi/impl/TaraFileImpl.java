@@ -72,7 +72,10 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 
 	@Override
 	public TaraPacket getPackage() {
-		return PsiTreeUtil.getChildrenOfType(PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0], TaraPacket.class)[0];
+		TaraHeader[] header = PsiTreeUtil.getChildrenOfType(this, TaraHeader.class);
+		if (header == null) return null;
+		TaraPacket[] packet = PsiTreeUtil.getChildrenOfType(header[0], TaraPacket.class);
+		return packet != null ? packet[0] : null;
 	}
 
 	@Override
@@ -83,7 +86,8 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 
 	@Override
 	public Import[] getImports() {
-		return PsiTreeUtil.getChildrenOfType(PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0], Import.class);
+		TaraHeader[] header = PsiTreeUtil.getChildrenOfType(this, TaraHeader.class);
+		return header != null ? PsiTreeUtil.getChildrenOfType(header[0], Import.class) : null;
 	}
 
 	private void insertLineBreakBefore(final ASTNode anchorBefore) {

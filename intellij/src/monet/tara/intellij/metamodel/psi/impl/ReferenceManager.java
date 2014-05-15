@@ -1,15 +1,20 @@
 package monet.tara.intellij.metamodel.psi.impl;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import monet.tara.intellij.codeinsight.JavaHelper;
+import monet.tara.intellij.metamodel.file.TaraFileType;
 import monet.tara.intellij.metamodel.psi.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil.getContextOf;
+import static monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil.getContextOfRef;
 
 public class ReferenceManager {
 
@@ -17,20 +22,19 @@ public class ReferenceManager {
 	}
 
 	@Nullable
-	public static PsiElement resolve(Identifier identifier) {
+	public static PsiElement resolve(Identifier identifier, boolean external) {
 		PsiElement reference = null;
-		if (identifier.getParent() instanceof IdentifierReference)
+		if (external) reference = resolveExternalReference(identifier);
+		else if (identifier.getParent() instanceof IdentifierReference)
 			reference = resolveConceptReference(identifier, getIdentifiersFromConcept(identifier));
 		else if (identifier.getParent() instanceof HeaderReference)
 			reference = resolveHeaderReference(identifier, getRouteFromHeader(identifier));
-		else if (identifier.getParent() instanceof ExternalReference)
-			reference = resolveExternalReference(identifier, getIdentifiersFromExternal(identifier));
 		else if (identifier.getParent() instanceof Signature) return identifier;
 		if (reference instanceof Concept) reference = ((Concept) reference).getIdentifierNode();
 		return reference;
 	}
 
-	private static Concept resolveConceptReference(Identifier identifier, List<Identifier> route) {
+	private static PsiElement resolveConceptReference(Identifier identifier, List<Identifier> route) {
 		return resolveConcept(identifier, route);
 	}
 
@@ -44,13 +48,11 @@ public class ReferenceManager {
 		return taraFile != null ? taraFile.getConcept() : null;
 	}
 
-	private static PsiElement resolveExternalReference(Identifier identifier, List<Identifier> route) {
+	private static PsiElement resolveExternalReference(Identifier identifier) {
 		TaraPacket packet = ((TaraFile) identifier.getContainingFile()).getPackage();
-		String path = packet.getHeaderReference().getText() + "." +
-			TaraPsiImplUtil.getExtensibleOfExtension(TaraPsiImplUtil.getContextOf(identifier)).getName() + "." + join(route, '.');
+		String path = packet.getHeaderReference().getText() + "." + composeConceptRoute(identifier);
 		return resolveJavaClassReference(identifier.getProject(), path);
 	}
-
 
 	private static List<Identifier> getRouteFromHeader(Identifier identifier) {
 		List<Identifier> route = (List<Identifier>) ((HeaderReference) (identifier.getParent())).getIdentifierList();
@@ -63,14 +65,19 @@ public class ReferenceManager {
 		return route;
 	}
 
-	private static List<Identifier> getIdentifiersFromExternal(Identifier identifier) {
-		List<Identifier> route = (List<Identifier>) ((ExternalReference) (identifier.getParent())).getIdentifierList();
-		return route.subList(0, route.indexOf(identifier) + 1);
+	private static String composeConceptRoute(Identifier identifier) {
+		Concept concept = getContextOf(identifier);
+		String route = concept.getName();
+		while (concept != null) {
+			concept = getContextOf(concept);
+			if (concept != null) route = concept.getName() + "." + route;
+		}
+		return route;
 	}
 
-	private static Concept resolveConcept(PsiElement identifier, List<Identifier> route) {
-		Concept reference = resolveRelativeReference(route, (TaraIdentifier) identifier);
-		if (!isPrimeConcept(TaraPsiImplUtil.getContextOfRef((IdentifierReference) identifier.getParent())) && reference != null)
+	private static PsiElement resolveConcept(PsiElement identifier, List<Identifier> route) {
+		PsiElement reference = resolveRelativeReference(route, (TaraIdentifier) identifier);
+		if (!isPrimeConcept(getContextOfRef((IdentifierReference) identifier.getParent())) && reference != null)
 			return reference;
 		else return resolveAbsoluteReference(route);
 	}
@@ -109,12 +116,12 @@ public class ReferenceManager {
 	}
 
 	private static boolean isPrimeConcept(Concept concept) {
-		return TaraPsiImplUtil.getContextOf(concept) == null;
+		return getContextOf(concept) == null;
 	}
 
-	private static Concept resolveRelativeReference(List<Identifier> route, Identifier element) {
-		Concept context = TaraPsiImplUtil.getContextOfRef((IdentifierReference) element.getParent());
-		Concept concept = TaraPsiImplUtil.getContextOf(context);
+	private static PsiElement resolveRelativeReference(List<Identifier> route, Identifier element) {
+		Concept context = getContextOfRef((IdentifierReference) element.getParent());
+		Concept concept = getContextOf(context);
 		for (Identifier identifier : route) {
 			concept = TaraUtil.findChildOf(concept, ((TaraIdentifierImpl) identifier).getIdentifier());
 			if (concept == null) break;
@@ -122,16 +129,34 @@ public class ReferenceManager {
 		return concept;
 	}
 
-	private static Concept resolveAbsoluteReference(List<Identifier> route) {
-		TaraFile context = (TaraFile) TaraPsiImplUtil.getContextOf(route.get(0)).getContainingFile();
+	private static PsiElement resolveAbsoluteReference(List<Identifier> route) {
+		TaraFile context = (TaraFile) getContextOf(route.get(0)).getContainingFile();
 		Concept reference = searchInImport(route, context);
 		if (reference != null) return reference;
-		return searchInPackage(route, context.getPackageRoute());
+		PsiElement concept = searchInPackage(route, context.getPackageRoute());
+		return concept != null ? concept : searchInProject(route);
 	}
 
-	private static Concept searchInPackage(List<Identifier> route, List<? extends Identifier> aPackage) {
+	private static PsiElement searchInProject(List<Identifier> route) {
+		PsiFile file = route.get(0).getContainingFile();
+		final VirtualFile contentRoot = ProjectFileIndex.SERVICE.getInstance(file.getProject()).getSourceRootForFile(file.getOriginalFile().getVirtualFile());
+		if (contentRoot != null) {
+			String path = join(route, '/');
+			if (Character.isUpperCase(route.get(route.size() - 1).getText().charAt(0)))
+				path += "." + TaraFileType.INSTANCE.getDefaultExtension();
+			final VirtualFile proposedFile = contentRoot.findFileByRelativePath(path);
+			if (proposedFile != null) {
+				TaraFile taraFile = (TaraFile) PsiManager.getInstance(file.getProject()).findFile(proposedFile);
+				if (taraFile != null) return taraFile.getConcept();
+				else return resolvePackageReference(file.getProject(), join(route, '.'));
+			}
+		}
+		return null;
+	}
+
+	private static PsiElement searchInPackage(List<Identifier> route, List<? extends Identifier> aPackage) {
 		VirtualFile packageFile = resolveRoute(aPackage);
-		Concept reference;
+		PsiElement reference;
 		if (packageFile == null) return null;
 		for (VirtualFile vFile : packageFile.getChildren()) {
 			PsiFile file = PsiManager.getInstance(aPackage.get(0).getProject()).findFile(vFile);
@@ -176,7 +201,7 @@ public class ReferenceManager {
 		return concept;
 	}
 
-	private static String join(List<? extends Identifier> subRoute, char c) {
+	public static String join(List<? extends Identifier> subRoute, char c) {
 		String result = "";
 		for (Identifier identifier : subRoute) result += c + identifier.getText();
 		return result.substring(1);

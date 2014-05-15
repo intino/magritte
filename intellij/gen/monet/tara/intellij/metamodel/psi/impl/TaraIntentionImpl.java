@@ -10,21 +10,15 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static monet.tara.intellij.metamodel.psi.TaraTypes.*;
 import monet.tara.intellij.metamodel.psi.*;
 
-public class TaraExternalReferenceImpl extends ExternalReferenceMixin implements TaraExternalReference {
+public class TaraIntentionImpl extends ExternalReferenceMixin implements TaraIntention {
 
-  public TaraExternalReferenceImpl(ASTNode node) {
+  public TaraIntentionImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitExternalReference(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitIntention(this);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<TaraIdentifier> getIdentifierList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifier.class);
   }
 
 }

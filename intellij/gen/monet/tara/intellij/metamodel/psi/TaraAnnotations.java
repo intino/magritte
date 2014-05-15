@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TaraAnnotations extends Annotations {
 
   @NotNull
-  List<TaraExtensible> getExtensibleList();
-
-  @NotNull
-  List<TaraExtension> getExtensionList();
+  List<TaraIntention> getIntentionList();
 
 }

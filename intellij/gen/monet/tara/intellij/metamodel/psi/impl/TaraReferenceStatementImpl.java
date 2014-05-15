@@ -22,15 +22,15 @@ public class TaraReferenceStatementImpl extends ReferenceStatementMixin implemen
   }
 
   @Override
-  @NotNull
-  public TaraIdentifierReference getIdentifierReference() {
-    return findNotNullChildByClass(TaraIdentifierReference.class);
+  @Nullable
+  public TaraDoc getDoc() {
+    return findChildByClass(TaraDoc.class);
   }
 
   @Override
   @NotNull
-  public TaraVariableNames getVariableNames() {
-    return findNotNullChildByClass(TaraVariableNames.class);
+  public TaraIdentifierReference getIdentifierReference() {
+    return findNotNullChildByClass(TaraIdentifierReference.class);
   }
 
 }

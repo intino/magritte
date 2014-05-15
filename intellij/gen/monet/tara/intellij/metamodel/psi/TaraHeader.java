@@ -10,7 +10,7 @@ public interface TaraHeader extends TaraPsiElement {
   @NotNull
   List<TaraImportStatement> getImportStatementList();
 
-  @NotNull
+  @Nullable
   TaraPacket getPacket();
 
 }

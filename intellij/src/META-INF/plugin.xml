@@ -19,7 +19,7 @@
   <change-notes><![CDATA[ First Realease. Windows integration. ]]>
   </change-notes>
 
-  <idea-version since-build="135.475"/>
+  <idea-version since-build="135.375"/>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
@@ -99,7 +99,7 @@
                             implementationClass="monet.tara.intellij.codeinsight.completion.TaraAnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="Tara"
                                   implementationClass="monet.tara.intellij.structureview.StructureViewFactory"/>
-    <psi.referenceContributor implementation="monet.tara.intellij.TaraReferenceContributor"/>
+    <!--<psi.referenceContributor implementation="monet.tara.intellij.TaraReferenceContributor"/>-->
     <nameSuggestionProvider implementation="monet.tara.intellij.refactoring.NameSuggestionProvider"/>
     <lang.elementManipulator forClass="monet.tara.intellij.metamodel.psi.TaraIdentifier"
                              implementationClass="monet.tara.intellij.metamodel.psi.impl.IdentifierManipulator"/>

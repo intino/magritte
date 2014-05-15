@@ -14,6 +14,9 @@ public interface TaraAttribute extends Attribute {
   TaraBooleanValue getBooleanValue();
 
   @Nullable
+  TaraDoc getDoc();
+
+  @Nullable
   TaraDoubleList getDoubleList();
 
   @Nullable
@@ -36,8 +39,5 @@ public interface TaraAttribute extends Attribute {
 
   @Nullable
   TaraStringValue getStringValue();
-
-  @Nullable
-  TaraVariableNames getVariableNames();
 
 }

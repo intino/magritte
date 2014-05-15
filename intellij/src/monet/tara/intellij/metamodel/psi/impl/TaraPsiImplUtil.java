@@ -28,16 +28,6 @@ public class TaraPsiImplUtil {
 		return null;
 	}
 
-	public static Concept getExtensibleOfExtension(Concept concept) {
-		if (concept.isExtension()) {
-			Concept context = getContextOf(concept);
-			while (context != null && !context.isExtensible())
-				context = getContextOf(concept);
-			if (context != null) return context;
-		}
-		return null;
-	}
-
 	public static PsiElement getIdentifierNode(Concept element) {
 		if (element.getSignature().getIdentifier() != null) {
 			ASTNode valueNode = element.getSignature().getIdentifier().getNode();

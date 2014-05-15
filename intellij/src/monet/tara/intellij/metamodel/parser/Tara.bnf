@@ -16,9 +16,9 @@
 	psiImplUtilClass='monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil'
 }
 
-root ::= NEWLINE* header NEWLINE+ concept?  NEWLINE*
+root ::= NEWLINE* header? NEWLINE* concept?  NEWLINE*
 
-header ::=  packet importStatement*
+header ::=  packet? importStatement*
 
 packet ::= PACKAGE headerReference
 importStatement ::= NEWLINE IMPORT_KEY headerReference
@@ -44,22 +44,35 @@ private conceptConstituents ::= attribute
 		                      | word
 		                      | concept
 
-referenceStatement::= VAR identifierReference LIST? variableNames
+referenceStatement ::= doc? VAR identifierReference LIST? IDENTIFIER_KEY
 {mixin= 'monet.tara.intellij.metamodel.psi.impl.ReferenceStatementMixin'
 implements='monet.tara.intellij.metamodel.psi.ReferenceStatement'}
 
-attribute::= VAR     UID_TYPE IDENTIFIER_KEY (COLON stringValue)?
-           | VAR     INT_TYPE (variableNames | IDENTIFIER_KEY COLON integerValue | LIST IDENTIFIER_KEY (COLON integerList)?)
-           | VAR  DOUBLE_TYPE (variableNames | IDENTIFIER_KEY COLON doubleValue  | LIST IDENTIFIER_KEY (COLON doubleList)?)
-           | VAR NATURAL_TYPE (variableNames | IDENTIFIER_KEY COLON naturalValue | LIST IDENTIFIER_KEY (COLON naturalList)?)
-           | VAR BOOLEAN_TYPE (variableNames | IDENTIFIER_KEY COLON booleanValue | LIST IDENTIFIER_KEY (COLON booleanList)?)
-           | VAR  STRING_TYPE (variableNames | IDENTIFIER_KEY COLON stringValue | LIST IDENTIFIER_KEY (COLON stringList)?)
-{mixin= 'monet.tara.intellij.metamodel.psi.impl.AttributeMixin'
-implements='monet.tara.intellij.metamodel.psi.Attribute'}
-
-word::= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT
+word ::= doc? VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT
 { mixin= 'monet.tara.intellij.metamodel.psi.impl.WordMixin'
 implements='monet.tara.intellij.metamodel.psi.Word'}
+
+attribute ::= doc? ( uuidAttribute
+		           | integerAttribute
+		           | doubleAttribute
+		           | naturalAttribute
+		           | booleanAttribute
+		           | StringAttribute)
+{pin=2 mixin= 'monet.tara.intellij.metamodel.psi.impl.AttributeMixin'
+implements='monet.tara.intellij.metamodel.psi.Attribute'}
+
+private uuidAttribute ::= VAR     UID_TYPE IDENTIFIER_KEY (COLON stringValue)?
+{pin=3}
+private integerAttribute ::= VAR INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?) | (LIST IDENTIFIER_KEY (COLON integerList)?))
+{pin=2}
+private StringAttribute ::= VAR  STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?) | (LIST IDENTIFIER_KEY (COLON stringList)?))
+{pin=2}
+private naturalAttribute ::= VAR NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?))
+{pin=2}
+private booleanAttribute ::=VAR BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?))
+{pin=2}
+private doubleAttribute ::=VAR  DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)  | (LIST IDENTIFIER_KEY (COLON doubleList)?))
+{pin=2}
 
 stringValue  ::= STRING_VALUE_KEY
 booleanValue ::= BOOLEAN_VALUE_KEY
@@ -73,16 +86,14 @@ integerList ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUA
 doubleList  ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE;
 naturalList ::= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
 
-annotations ::= OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | INTENTION | extensible | extension | SINGLETON | ROOT)+ CLOSE_AN
-{mixin= 'monet.tara.intellij.metamodel.psi.impl.AnnotationsMixin'
+annotations ::= OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | intention | SINGLETON | ROOT)+ CLOSE_AN
+{pin=1 mixin= 'monet.tara.intellij.metamodel.psi.impl.AnnotationsMixin'
 implements='monet.tara.intellij.metamodel.psi.Annotations'}
 
-extension ::= EXTENSION_KEY COLON externalReference
-
-extensible ::= EXTENSIBLE_KEY COLON IDENTIFIER_KEY
-{pin=1}
-
-variableNames::= IDENTIFIER_KEY (COMMA IDENTIFIER_KEY)*;
+intention ::= INTENTION_KEY
+{pin=1
+mixin= 'monet.tara.intellij.metamodel.psi.impl.ExternalReferenceMixin'
+implements='monet.tara.intellij.metamodel.psi.ExternalReference'}
 
 modifier::= ABSTRACT
           | FINAL
@@ -103,10 +114,6 @@ identifierReference::= hierarchy* identifier
 mixin= 'monet.tara.intellij.metamodel.psi.impl.IdentifierReferenceMixin'
 implements='monet.tara.intellij.metamodel.psi.IdentifierReference'}
 
-externalReference ::= hierarchy* identifier
-{pin=2
-mixin= 'monet.tara.intellij.metamodel.psi.impl.ExternalReferenceMixin'
-implements='monet.tara.intellij.metamodel.psi.ExternalReference'}
 
 private hierarchy ::= identifier DOT
 

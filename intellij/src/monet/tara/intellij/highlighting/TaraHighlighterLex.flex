@@ -25,9 +25,8 @@ MULTIPLE  = "multiple"
 OPTIONAL  = "optional"
 HAS_CODE  = "has-code"
 SINGLETON = "singleton"
-INTENTION = "intention"
+INTENTION_KEY = "intention"
 ROOT      = "root"
-EXTENSION_KEY = "extension"
 EXTENSIBLE_KEY = "extensible"
 GENERIC   = "generic"
 WORD_KEY      = "Word"
@@ -100,12 +99,10 @@ NEWLINE= [\n]+
 	{MULTIPLE}                  {   return TaraTypes.MULTIPLE; }
 
 	{HAS_CODE}                  {   return TaraTypes.HAS_CODE; }
-	{EXTENSIBLE_KEY}            {   return TaraTypes.EXTENSIBLE_KEY; }
-	{EXTENSION_KEY}             {   return TaraTypes.EXTENSION_KEY; }
 	{ROOT}                      {   return TaraTypes.ROOT; }
 	{SINGLETON}                 {   return TaraTypes.SINGLETON; }
 	{GENERIC}                   {   return TaraTypes.GENERIC; }
-	{INTENTION}                 {   return TaraTypes.INTENTION; }
+	{INTENTION_KEY}             {   return TaraTypes.INTENTION_KEY; }
 
 	{DOC_LINE}                  {   return TaraTypes.DOC_LINE; }
 

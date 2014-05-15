@@ -2,6 +2,7 @@
 		List<PsiElement> incorrectAnnotations = new ArrayList<>();
 		for (PsiElement annotation \: annotations) {
 			if (annotation instanceof PsiWhiteSpace) continue;
+			count(annotation);
 			if (!isIn(correctAnnotation, annotation.getText()))
 				incorrectAnnotations.add(annotation);
 			else if (::projectProperName::Types.CODE.equals(annotation.getNode().getElementType()))

@@ -22,13 +22,13 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	@NotNull
 	@Override
 	public PsiReference[] getReferences() {
-		return new PsiReference[]{new TaraReferenceSolver(this, new TextRange(0, getIdentifier().length()))};
+		return new PsiReference[]{new TaraReferenceSolver(this, new TextRange(0, getIdentifier().length()), false)};
 	}
 
 	@Nullable
 	@Override
 	public PsiReference getReference() {
-		PsiReference[] references = new PsiReference[]{new TaraReferenceSolver(this, new TextRange(0, getIdentifier().length()))};
+		PsiReference[] references = new PsiReference[]{new TaraReferenceSolver(this, new TextRange(0, getIdentifier().length()), false)};
 		return references.length == 0 ? null : references[0];
 	}
 

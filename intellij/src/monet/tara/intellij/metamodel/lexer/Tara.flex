@@ -102,10 +102,8 @@ MULTIPLE  = "multiple"
 OPTIONAL  = "optional"
 HAS_CODE  = "has-code"
 SINGLETON = "singleton"
-INTENTION = "intention"
+INTENTION_KEY = "intention"
 ROOT      = "root"
-EXTENSION_KEY  = "extension"
-EXTENSIBLE_KEY = "extensible"
 GENERIC   = "generic"
 WORD      = "Word"
 VAR       = "var"
@@ -174,9 +172,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{GENERIC}                   {   return TaraTypes.GENERIC; }
 
 	{HAS_CODE}                  {   return TaraTypes.HAS_CODE; }
-	{EXTENSIBLE_KEY}            {   return TaraTypes.EXTENSIBLE_KEY; }
-	{EXTENSION_KEY}             {   return TaraTypes.EXTENSION_KEY; }
-	{INTENTION}                 {   return TaraTypes.INTENTION; }
+	{INTENTION_KEY}             {   return TaraTypes.INTENTION_KEY; }
 	{ROOT}                      {   return TaraTypes.ROOT; }
 	{SINGLETON}                 {   return TaraTypes.SINGLETON; }
 

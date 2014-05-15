@@ -36,9 +36,7 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	Concept[] getCases();
 
-	boolean isExtensible();
-
-	boolean isExtension();
+	boolean isIntention();
 
 	@Nullable
 	Annotations getAnnotations();

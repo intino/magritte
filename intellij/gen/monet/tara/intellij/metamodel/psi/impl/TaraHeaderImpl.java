@@ -29,9 +29,9 @@ public class TaraHeaderImpl extends ASTWrapperPsiElement implements TaraHeader {
   }
 
   @Override
-  @NotNull
+  @Nullable
   public TaraPacket getPacket() {
-    return findNotNullChildByClass(TaraPacket.class);
+    return findChildByClass(TaraPacket.class);
   }
 
 }

@@ -38,8 +38,4 @@ public interface Attribute extends Navigatable, Iconable, PsiNamedElement {
 
 	@Nullable
 	TaraStringValue getStringValue();
-
-	@Nullable
-	TaraVariableNames getVariableNames();
-
 }

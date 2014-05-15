@@ -35,6 +35,12 @@ public class TaraAttributeImpl extends AttributeMixin implements TaraAttribute {
 
   @Override
   @Nullable
+  public TaraDoc getDoc() {
+    return findChildByClass(TaraDoc.class);
+  }
+
+  @Override
+  @Nullable
   public TaraDoubleList getDoubleList() {
     return findChildByClass(TaraDoubleList.class);
   }
@@ -79,12 +85,6 @@ public class TaraAttributeImpl extends AttributeMixin implements TaraAttribute {
   @Nullable
   public TaraStringValue getStringValue() {
     return findChildByClass(TaraStringValue.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraVariableNames getVariableNames() {
-    return findChildByClass(TaraVariableNames.class);
   }
 
 }

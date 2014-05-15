@@ -106,23 +106,11 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return this.getSignature().isCase();
 	}
 
-	public boolean isExtensible() {
+	public boolean isIntention() {
 		Annotations annotations = this.getAnnotations();
 		if (annotations != null) {
-			PsiElement[] taraAnnotations = annotations.getAnnotations();
-			for (PsiElement element : taraAnnotations)
-				if (element instanceof TaraExtensible)
-					return true;
-		}
-		return false;
-	}
-
-	public boolean isExtension() {
-		Annotations annotations = this.getAnnotations();
-		if (annotations != null) {
-			PsiElement[] taraAnnotations = annotations.getAnnotations();
-			for (PsiElement element : taraAnnotations)
-				if (element instanceof TaraExtension)
+			for (PsiElement element : annotations.getAnnotations())
+				if (element instanceof TaraIntention)
 					return true;
 		}
 		return false;

@@ -39,9 +39,9 @@ public class ReferenceAnnotator extends TaraAnnotator {
 			checkWellReferenced();
 	}
 
-	//%extension%
+//%extension%
 	public void checkWellReferenced() {
-		PsiElement reference = ReferenceManager.resolve((Identifier) element);
+		PsiElement reference = ReferenceManager.resolve((Identifier) element, false);
 		if (reference == null) {
 			Annotation errorAnnotation;
 			if (element.getParent() instanceof IdentifierReference)

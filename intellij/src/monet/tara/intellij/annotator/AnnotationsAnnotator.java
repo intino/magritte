@@ -7,45 +7,39 @@ import com.intellij.psi.PsiWhiteSpace;
 import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import monet.tara.intellij.metamodel.parser.TaraAnnotation;
-import monet.tara.intellij.metamodel.psi.*;
+import monet.tara.intellij.metamodel.psi.Annotations;
+import monet.tara.intellij.metamodel.psi.Concept;
+import monet.tara.intellij.metamodel.psi.TaraFile;
 import monet.tara.intellij.metamodel.psi.impl.TaraPsiImplUtil;
-import monet.tara.intellij.metamodel.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AnnotationsAnnotator extends TaraAnnotator {
+
+	HashMap<String, List<PsiElement>> duplicates;
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
 		if (element instanceof Annotations) {
+			duplicates = new HashMap<>();
 			checkAnnotations((Annotations) element);
-			PsiElement extension = is((Annotations) element, TaraExtension.class);
-			if (extension != null) checkCorrectExtension(extension);
-			PsiElement extensible = is((Annotations) element, TaraExtensible.class);
-			if (extensible != null) checkEmptyExtensible(extensible);
-			if (extensible != null && extension != null) {
-				Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), TaraBundle.message("annotation.extension.extensible.key.error.message"));
-				errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
-			}
+			checkDuplicates();
 		}
 	}
 
-	private void checkCorrectExtension(PsiElement element) {
-		Concept context = TaraPsiImplUtil.getContextOf(element);
-		if (TaraPsiImplUtil.getContextOf(context) == null || !((TaraFile)element.getContainingFile()).getConcept().isExtensible()) {
-			Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), TaraBundle.message("annotation.extension.key.error.message"));
-			errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
+	private void checkDuplicates() {
+		for (String annotation : duplicates.keySet()) {
+			List<PsiElement> annotationList = duplicates.get(annotation);
+			if (annotationList.size() > 1)
+				for (PsiElement element : annotationList) {
+					Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
+					errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
+				}
 		}
-	}
-
-	private void checkEmptyExtensible(PsiElement element) {
-		Concept context = TaraPsiImplUtil.getContextOf(element);
-		Concept[] children = TaraUtil.getChildrenOf(context);
-		for (Concept child : children) if (child.isExtension()) return;
-		holder.createWarningAnnotation(element.getNode(), TaraBundle.message("annotation.extensible.key.warning.message"));
 	}
 
 	private PsiElement is(Annotations element, Class clazz) {
@@ -77,17 +71,29 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	}
 
 
-	//%extension%
+//%extension%
 	private List<PsiElement> checkAnnotationList(PsiElement[] annotations, String[] correctAnnotation) {
 		List<PsiElement> incorrectAnnotations = new ArrayList<>();
 		for (PsiElement annotation : annotations) {
 			if (annotation instanceof PsiWhiteSpace) continue;
+			count(annotation);
 			if (!isIn(correctAnnotation, annotation.getText()))
 				incorrectAnnotations.add(annotation);
 		}
 		return incorrectAnnotations;
 	}
-	//end_extension
+//end_extension
+
+	private void count(PsiElement annotation) {
+		if (duplicates.containsKey(annotation.getText())) {
+			duplicates.get(annotation.getText()).add(annotation);
+		} else {
+			ArrayList<PsiElement> value = new ArrayList<>();
+			value.add(annotation);
+			duplicates.put(annotation.getText(), value);
+		}
+	}
+
 
 	private boolean isIn(String[] correctAnnotation, String text) {
 		for (String s : correctAnnotation)

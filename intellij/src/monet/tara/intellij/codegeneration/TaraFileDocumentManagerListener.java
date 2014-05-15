@@ -51,7 +51,7 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 			isGenCreated(virtualFiles);
 			for (VirtualFile file : virtualFiles)
 				if (file.isDirectory() && SRC.equals(file.getName()))
-					processExtensibleConcepts((VirtualDirectoryImpl) file);
+					processIntentionConcepts((VirtualDirectoryImpl) file);
 		}
 		refresh();
 	}
@@ -67,13 +67,13 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 	private void processVirtualFile(VirtualFile file) {
 		PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
 		if (psiFile instanceof TaraFile) {
-			Concept concept = getExtensibleConcept((TaraFile) psiFile);
+			Concept concept = getIntentionConcept((TaraFile) psiFile);
 			if (concept != null)
-				createExtensibleClasses(file, concept);
+				createWrapperClasses(file, concept);
 		}
 	}
 
-	private void createExtensibleClasses(VirtualFile virtualFile, Concept concept) {
+	private void createWrapperClasses(VirtualFile virtualFile, Concept concept) {
 		try {
 			VirtualFile parent = virtualFile.getParent();
 			File classSrcFile = new File(parent.getPath() + File.separator + concept.getName() + ".java");
@@ -99,7 +99,7 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 	}
 
 
-	private void processExtensibleConcepts(VirtualDirectoryImpl directory) {
+	private void processIntentionConcepts(VirtualDirectoryImpl directory) {
 		VfsUtilCore.visitChildrenRecursively(directory, new VirtualFileVisitor() {
 			@Override
 			public boolean visitFile(@NotNull VirtualFile file) {
@@ -110,10 +110,9 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 		});
 	}
 
-	private Concept getExtensibleConcept(TaraFile file) {
-		return file.getConcept() == null ? null : file.getConcept().isExtensible() ? file.getConcept() : null;
+	private Concept getIntentionConcept(TaraFile file) {
+		return file.getConcept() == null ? null : file.getConcept().isIntention() ? file.getConcept() : null;
 	}
-
 
 	private boolean saveAndBLock() {
 		try {
