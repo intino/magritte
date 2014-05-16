@@ -21,58 +21,51 @@ root ::= NEWLINE* header? NEWLINE* concept?  NEWLINE*
 header ::=  packet? importStatement*
 
 packet ::= PACKAGE headerReference
-importStatement ::= NEWLINE IMPORT_KEY headerReference
-{ mixin= 'monet.tara.intellij.lang.psi.impl.ImportMixin'
-implements='monet.tara.intellij.lang.psi.Import'}
+importStatement ::= NEWLINE IMPORT_KEY headerReference {
+	mixin= 'monet.tara.intellij.lang.psi.impl.ImportMixin'
+	implements='monet.tara.intellij.lang.psi.Import'
+}
 
-concept ::= doc? signature annotations? body?
-{ mixin= 'monet.tara.intellij.lang.psi.impl.ConceptMixin'
-implements='monet.tara.intellij.lang.psi.Concept'}
+concept ::= doc? signature annotations? body? {
+	mixin= 'monet.tara.intellij.lang.psi.impl.ConceptMixin'
+	implements='monet.tara.intellij.lang.psi.Concept'
+}
 
-signature::= (CASE_KEY identifier)
-         | (CONCEPT_KEY modifier? identifier)
-         | (CONCEPT_KEY COLON identifierReference (modifier? identifier)?)
-{ pin=1 mixin= 'monet.tara.intellij.lang.psi.impl.SignatureMixin'
-implements='monet.tara.intellij.lang.psi.Signature'}
+signature::= (CASE_KEY identifier) | (CONCEPT_KEY modifier? identifier) | (CONCEPT_KEY COLON identifierReference (modifier? identifier)?) {
+	pin=1
+	mixin= 'monet.tara.intellij.lang.psi.impl.SignatureMixin'
+	implements='monet.tara.intellij.lang.psi.Signature'
+}
 
-body ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT
-{ mixin= 'monet.tara.intellij.lang.psi.impl.BodyMixin'
-implements='monet.tara.intellij.lang.psi.Body'}
+body ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT {
+	mixin= 'monet.tara.intellij.lang.psi.impl.BodyMixin'
+	implements='monet.tara.intellij.lang.psi.Body'
+}
 
-private conceptConstituents ::= attribute
-		                      | referenceStatement
-		                      | word
-		                      | concept
+private conceptConstituents ::= attribute | referenceStatement | word | concept
 
-referenceStatement ::= doc? VAR identifierReference LIST? IDENTIFIER_KEY
-{mixin= 'monet.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
-implements='monet.tara.intellij.lang.psi.ReferenceStatement'}
+referenceStatement ::= doc? VAR identifierReference LIST? IDENTIFIER_KEY {
+	mixin= 'monet.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
+	implements='monet.tara.intellij.lang.psi.ReferenceStatement'
+}
 
-word ::= doc? VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT
-{ mixin= 'monet.tara.intellij.lang.psi.impl.WordMixin'
-implements='monet.tara.intellij.lang.psi.Word'}
+word ::= doc? VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT {
+	mixin= 'monet.tara.intellij.lang.psi.impl.WordMixin'
+	implements='monet.tara.intellij.lang.psi.Word'
+}
 
-attribute ::= doc? ( uuidAttribute
-		           | integerAttribute
-		           | doubleAttribute
-		           | naturalAttribute
-		           | booleanAttribute
-		           | StringAttribute)
-{pin=2 mixin= 'monet.tara.intellij.lang.psi.impl.AttributeMixin'
-implements='monet.tara.intellij.lang.psi.Attribute'}
+attribute ::= doc? ( uuidAttribute | integerAttribute | doubleAttribute | naturalAttribute | booleanAttribute | StringAttribute) {
+	pin=2
+	mixin= 'monet.tara.intellij.lang.psi.impl.AttributeMixin'
+	implements='monet.tara.intellij.lang.psi.Attribute'
+}
 
-private uuidAttribute ::= VAR     UID_TYPE IDENTIFIER_KEY (COLON stringValue)?
-{pin=3}
-private integerAttribute ::= VAR INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?) | (LIST IDENTIFIER_KEY (COLON integerList)?))
-{pin=2}
-private StringAttribute ::= VAR  STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?) | (LIST IDENTIFIER_KEY (COLON stringList)?))
-{pin=2}
-private naturalAttribute ::= VAR NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?))
-{pin=2}
-private booleanAttribute ::=VAR BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?))
-{pin=2}
-private doubleAttribute ::=VAR  DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)  | (LIST IDENTIFIER_KEY (COLON doubleList)?))
-{pin=2}
+private uuidAttribute ::= VAR     UID_TYPE IDENTIFIER_KEY (COLON stringValue)? {pin=3}
+private integerAttribute ::= VAR INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?) | (LIST IDENTIFIER_KEY (COLON integerList)?)) {pin=2}
+private StringAttribute ::= VAR  STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?) | (LIST IDENTIFIER_KEY (COLON stringList)?)) {pin=2}
+private naturalAttribute ::= VAR NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?)) {pin=2}
+private booleanAttribute ::=VAR BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?)) {pin=2}
+private doubleAttribute ::=VAR  DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)  | (LIST IDENTIFIER_KEY (COLON doubleList)?)) {pin=2}
 
 stringValue  ::= STRING_VALUE_KEY
 booleanValue ::= BOOLEAN_VALUE_KEY
@@ -121,6 +114,7 @@ identifierReference::= hierarchy* identifier {
 
 private hierarchy ::= identifier DOT
 
-identifier::=  IDENTIFIER_KEY
-{mixin= 'monet.tara.intellij.lang.psi.impl.IdentifierMixin'
-implements='monet.tara.intellij.lang.psi.Identifier'}
+identifier::=  IDENTIFIER_KEY {
+	mixin= 'monet.tara.intellij.lang.psi.impl.IdentifierMixin'
+	implements='monet.tara.intellij.lang.psi.Identifier'
+}

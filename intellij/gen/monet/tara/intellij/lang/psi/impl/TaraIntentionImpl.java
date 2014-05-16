@@ -1,10 +1,11 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.intellij.lang.psi.impl;
 
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
-import monet.tara.intellij.lang.psi.*;
+import monet.tara.intellij.lang.psi.TaraIntention;
+import monet.tara.intellij.lang.psi.TaraVisitor;
+import org.jetbrains.annotations.NotNull;
 
 public class TaraIntentionImpl extends ExternalReferenceMixin implements TaraIntention {
 

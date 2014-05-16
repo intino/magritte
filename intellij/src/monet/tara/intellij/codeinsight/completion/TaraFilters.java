@@ -9,21 +9,22 @@ import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.tree.IElementType;
 import monet.tara.intellij.lang.TaraLanguage;
 import monet.tara.intellij.lang.psi.TaraTypes;
+import monet.tara.lang.Modifiable;
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
+
+@Modifiable(tag = "TaraFilters")
 public class TaraFilters {
 
-	//%extension%
 	protected static PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new InErrorFilter()));
+
 	protected static PsiElementPattern.Capture<PsiElement> afterConceptKey = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
-		//gen %empty%.andOr(new FilterPattern(new AfterElementFitFilter(monet.\:\:projectName\:\:.intellij.lang.psi.MetaIdentifier.class)), new FilterPattern(new AfterElementTypeFitFilter(\:\:projectProperName\:\:Types.CASE_KEY)));%
 		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.CONCEPT_KEY)));
-		//end
 	protected static PsiElementPattern.Capture<PsiElement> afterModifierKey = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
@@ -72,5 +73,4 @@ public class TaraFilters {
 			return true;
 		}
 	}
-	//end_extension
 }

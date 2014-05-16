@@ -1,4 +1,6 @@
-protected static PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement().withLanguage(::projectProperName::Language.INSTANCE)
+public class TaraFilters {
+
+	protected static PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement().withLanguage(::projectProperName::Language.INSTANCE)
 		.and(new FilterPattern(new InErrorFilter()));
 	protected static PsiElementPattern.Capture<PsiElement> afterDefinitionKey = psiElement()
 		.withLanguage(::projectProperName::Language.INSTANCE)
@@ -77,3 +79,4 @@ protected static PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement
 			return true;
 		}
 	}
+}

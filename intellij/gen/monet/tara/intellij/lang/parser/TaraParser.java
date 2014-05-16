@@ -1,14 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.intellij.lang.parser;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import com.intellij.openapi.diagnostic.Logger;
-import static monet.tara.intellij.lang.psi.TaraTypes.*;
-import static monet.tara.intellij.lang.parser.TaraParserUtil.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiParser;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.tree.IElementType;
+
+import static monet.tara.intellij.lang.parser.TaraParserUtil.*;
+import static monet.tara.intellij.lang.psi.TaraTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class TaraParser implements PsiParser {
@@ -241,12 +242,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // doc? ( uuidAttribute
-  // 		           | integerAttribute
-  // 		           | doubleAttribute
-  // 		           | naturalAttribute
-  // 		           | booleanAttribute
-  // 		           | StringAttribute)
+  // doc? ( uuidAttribute | integerAttribute | doubleAttribute | naturalAttribute | booleanAttribute | StringAttribute)
   public static boolean attribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute")) return false;
     if (!nextTokenIs(builder_, "<attribute>", DOC_LINE, VAR)) return false;
@@ -265,12 +261,7 @@ public class TaraParser implements PsiParser {
     return true;
   }
 
-  // uuidAttribute
-  // 		           | integerAttribute
-  // 		           | doubleAttribute
-  // 		           | naturalAttribute
-  // 		           | booleanAttribute
-  // 		           | StringAttribute
+  // uuidAttribute | integerAttribute | doubleAttribute | naturalAttribute | booleanAttribute | StringAttribute
   private static boolean attribute_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_1")) return false;
     boolean result_ = false;
@@ -504,10 +495,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // attribute
-  // 		                      | referenceStatement
-  // 		                      | word
-  // 		                      | concept
+  // attribute | referenceStatement | word | concept
   static boolean conceptConstituents(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "conceptConstituents")) return false;
     boolean result_ = false;
@@ -947,9 +935,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ABSTRACT
-  //           | FINAL
-  //           | BASE_KEY
+  // ABSTRACT | FINAL | BASE_KEY
   public static boolean modifier(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "modifier")) return false;
     boolean result_ = false;
@@ -1196,9 +1182,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (CASE_KEY identifier)
-  //          | (CONCEPT_KEY modifier? identifier)
-  //          | (CONCEPT_KEY COLON identifierReference (modifier? identifier)?)
+  // (CASE_KEY identifier) | (CONCEPT_KEY modifier? identifier) | (CONCEPT_KEY COLON identifierReference (modifier? identifier)?)
   public static boolean signature(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "signature")) return false;
     if (!nextTokenIs(builder_, "<signature>", CASE_KEY, CONCEPT_KEY)) return false;

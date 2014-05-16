@@ -9,6 +9,7 @@ import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.tree.IElementType;
 import monet.::projectName::.intellij.lang.::projectProperName::Language;
 import monet.::projectName::.intellij.lang.psi.::projectProperName::Types;
+
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
@@ -94,5 +95,4 @@ public class ::projectProperName::Filters {
 			return true;
 		}
 	}
-
 }

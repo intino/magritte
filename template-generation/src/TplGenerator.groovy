@@ -40,11 +40,13 @@ public class TplGenerator {
                     if (!it.getName().endsWith("png")) {
                         String genText = TplMarker.getGenText(text)
                         text = TplMarker.scapeMetaCharacters(text)
+                        text = TplMarker.processExtensions(text)
+                        text = TplMarker.processModifications(text)
                         text = TplMarker.addMarks(text)
                         def path = it.path.substring(it.path.lastIndexOf(SRC_PATH) + SRC_PATH.length() + 1);
                         text = TplMarker.addExtensions(path, text)
                         if (it.getName().endsWith("xml")) text = TplMarker.addXmlMarks(text)
-                        else text = TplMarker.addJavaMarks(text, genText)
+                        else text = TplMarker.addJavaGenMarks(text, genText)
                         text = text.replaceAll("%", "\\\\%")
                         File newFile = new File(tplPath + it.parent.substring(8), fileName + ".tpl")
                         newFile.write(text)

@@ -9,9 +9,8 @@ import monet.tara.intellij.lang.TaraLanguage;
 import monet.tara.intellij.lang.psi.Concept;
 import monet.tara.intellij.lang.psi.MetaIdentifier;
 import monet.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-//gen %empty%import monet.tara.lang.ASTNode;%
 import monet.tara.lang.ASTNode;
-//end
+import monet.tara.lang.Modifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +20,7 @@ import java.util.List;
 public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
 	public TaraMetaReferenceSolver(MetaIdentifier metaIdentifier, TextRange textRange) {
-		super(metaIdentifier,textRange);
+		super(metaIdentifier, textRange);
 	}
 
 	@NotNull
@@ -81,7 +80,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 					concepts.add(astNode.getIdentifier());
 	}
 
-//%extension%
+	@Modifiable(tag = "TaraMetaReferenceSolver.fillVariants")
 	private Object[] fillVariants(List<String> elements) {
 		List<LookupElement> variants = new ArrayList<>();
 		for (final String element : elements)
@@ -89,5 +88,4 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 				variants.add(LookupElementBuilder.create(element).withIcon(TaraIcons.TARA).withTypeText("Tara"));
 		return variants.toArray();
 	}
-//end_extension
 }

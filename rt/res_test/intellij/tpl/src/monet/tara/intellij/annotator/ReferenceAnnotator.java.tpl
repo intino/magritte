@@ -21,6 +21,7 @@ import monet.::projectName::.intellij.annotator.imports.::projectProperName::Ref
 import monet.::projectName::.intellij.highlighting.::projectProperName::SyntaxHighlighter;
 import monet.::projectName::.intellij.lang.psi.*;
 import monet.::projectName::.intellij.lang.psi.impl.ReferenceManager;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

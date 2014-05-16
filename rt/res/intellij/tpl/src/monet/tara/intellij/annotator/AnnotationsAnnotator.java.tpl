@@ -7,8 +7,11 @@ import com.intellij.psi.PsiWhiteSpace;
 import monet.::projectName::.intellij.::projectProperName::Bundle;
 import monet.::projectName::.intellij.highlighting.::projectProperName::SyntaxHighlighter;
 import monet.::projectName::.intellij.lang.parser.::projectProperName::Annotation;
+import monet.::projectName::.intellij.lang.psi.Annotations;
 import monet.::projectName::.intellij.lang.psi.*;
 import monet.::projectName::.intellij.lang.psi.impl.*;
+
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -20,12 +23,16 @@ public class AnnotationsAnnotator extends ::projectProperName::Annotator {
 	HashMap<String, List<PsiElement>> duplicates;
 
 	\@Override
+
 	public void annotate(\@NotNull PsiElement element, \@NotNull AnnotationHolder holder) {
 		this.holder = holder;
 		if (element instanceof Annotations) {
 			duplicates = new HashMap<>();
 			checkAnnotations((Annotations) element);
 			checkDuplicates();
+		}		else if (element instanceof monet.::projectName::.intellij.lang.psi.::projectProperName::Code) {
+			Annotation code = holder.createInfoAnnotation(element, "code");
+			code.setTextAttributes(::projectProperName::SyntaxHighlighter.DOCUMENTATION);
 		}
 	}
 
@@ -89,7 +96,7 @@ public class AnnotationsAnnotator extends ::projectProperName::Annotator {
 		if (metaIds == null) metaId = searchBaseDefinition(definition);
 		else metaId = metaIds[0];
 
-		return conceptHasCode(metaId);
+		return definitionHasCode(metaId);
 	}
 
 	private ::projectProperName::MetaIdentifier searchBaseDefinition(Definition definition) {
@@ -97,7 +104,7 @@ public class AnnotationsAnnotator extends ::projectProperName::Annotator {
 		return com.intellij.psi.util.PsiTreeUtil.getChildrenOfType(baseDefinition.getSignature(), ::projectProperName::MetaIdentifier.class)[0];
 	}
 
-	private boolean conceptHasCode(::projectProperName::MetaIdentifier metaId) {
+	private boolean definitionHasCode(::projectProperName::MetaIdentifier metaId) {
 		monet.tara.lang.ASTWrapper heritage = monet.::projectName::.intellij.lang.::projectProperName::Language.getHeritage();
 		monet.tara.lang.ASTNode node = heritage.getNodeNameLookUpTable().get(metaId.getText()).get(0);
 		if (node.hasCode()) return true;

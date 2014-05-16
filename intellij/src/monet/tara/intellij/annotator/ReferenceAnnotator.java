@@ -21,6 +21,7 @@ import monet.tara.intellij.annotator.imports.TaraReferenceImporter;
 import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import monet.tara.intellij.lang.psi.*;
 import monet.tara.intellij.lang.psi.impl.ReferenceManager;
+import monet.tara.lang.Modifiable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 			checkWellReferenced();
 	}
 
-//%extension%
+	@Modifiable(tag = "ReferenceAnnotator.checkWellReferenced")
 	public void checkWellReferenced() {
 		PsiElement reference = ReferenceManager.resolve((Identifier) element, false);
 		if (reference == null) {
@@ -53,7 +54,6 @@ public class ReferenceAnnotator extends TaraAnnotator {
 			}
 		}
 	}
-//end_extension
 
 	private void addImportAlternatives(Identifier element) {
 		String message = TaraBundle.message("reference.concept.key.error.message");

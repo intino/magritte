@@ -15,7 +15,7 @@
 
   psiImplUtilClass='monet.::projectName::.intellij.lang.psi.impl.::projectProperName::PsiImplUtil'
 }
-root \:\:= NEWLINE* header NEWLINE+ definition NEWLINE* {
+root \:\:= NEWLINE* header? NEWLINE+ definition? NEWLINE* {
 	pin = 4
 }
 definitionKey \:\:= ::conceptKeys::
@@ -23,7 +23,7 @@ synthesizeStatement \:\:= NEW_LINE SYNTHESIZE definitionKey ((OPEN_AN synthesize
 synthesizeTag \:\:= GENERIC | intention | FINAL | ABSTRACT |  MULTIPLE |  OPTIONAL | HAS_CODE | SINGLETON | ROOT
 synthesizeAttribute \:\:= NEW_LINE_INDENT( attribute  NEWLINE+)+ DEDENT
 
-header \:\:=  packet importStatement* synthesizeStatement*
+header \:\:=  packet? importStatement* synthesizeStatement*
 
 packet \:\:= PACKAGE headerReference
 
@@ -121,7 +121,7 @@ word\:\:= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ 
 	mixin= 'monet.::projectName::.intellij.lang.psi.impl.WordMixin'
 	implements='monet.::projectName::.intellij.lang.psi.Word'
 }
-referenceStatement\:\:= VAR identifierReference LIST? variableNames {
+referenceStatement\:\:= VAR identifierReference LIST? IDENTIFIER_KEY {
 	mixin= 'monet.::projectName::.intellij.lang.psi.impl.ReferenceStatementMixin'
 	implements='monet.::projectName::.intellij.lang.psi.ReferenceStatement'
 }
@@ -149,12 +149,6 @@ identifierReference\:\:= hierarchy* identifier {
 	pin=2
 	mixin= 'monet.::projectName::.intellij.lang.psi.impl.IdentifierReferenceMixin'
 	implements='monet.::projectName::.intellij.lang.psi.IdentifierReference'
-}
-
-externalReference \:\:= hierarchy* identifier {
-	pin=2
-	mixin= 'monet.::projectName::.intellij.lang.psi.impl.ExternalReferenceMixin'
-	implements='monet.::projectName::.intellij.lang.psi.ExternalReference'
 }
 
 private hierarchy \:\:= identifier DOT

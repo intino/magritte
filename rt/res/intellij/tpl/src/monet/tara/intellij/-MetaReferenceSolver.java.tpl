@@ -9,7 +9,8 @@ import monet.::projectName::.intellij.lang.::projectProperName::Language;
 import monet.::projectName::.intellij.lang.psi.Definition;
 import monet.::projectName::.intellij.lang.psi.MetaIdentifier;
 import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::PsiImplUtil;
-::empty|import monet.tara.lang.ASTNode;::
+import monet.tara.lang.ASTNode;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +20,7 @@ import java.util.List;
 public class ::projectProperName::MetaReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
 	public ::projectProperName::MetaReferenceSolver(MetaIdentifier metaIdentifier, TextRange textRange) {
-		super(metaIdentifier,textRange);
+		super(metaIdentifier, textRange);
 	}
 
 	\@NotNull

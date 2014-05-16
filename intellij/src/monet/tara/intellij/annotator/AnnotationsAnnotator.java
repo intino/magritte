@@ -7,8 +7,11 @@ import com.intellij.psi.PsiWhiteSpace;
 import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import monet.tara.intellij.lang.parser.TaraAnnotation;
+import monet.tara.intellij.lang.psi.Annotations;
 import monet.tara.intellij.lang.psi.*;
 import monet.tara.intellij.lang.psi.impl.*;
+import monet.tara.lang.Extensible;
+import monet.tara.lang.Modifiable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	HashMap<String, List<PsiElement>> duplicates;
 
 	@Override
+	@Extensible(tag = "AnnotationsAnnotator.annotate")
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
 		if (element instanceof Annotations) {
@@ -69,7 +73,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	}
 
 
-//%extension%
+	@Modifiable(tag = "AnnotationsAnnotator.checkAnnotationList")
 	private List<PsiElement> checkAnnotationList(PsiElement[] annotations, String[] correctAnnotation) {
 		List<PsiElement> incorrectAnnotations = new ArrayList<>();
 		for (PsiElement annotation : annotations) {
@@ -80,7 +84,6 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		}
 		return incorrectAnnotations;
 	}
-//end_extension
 
 	private void count(PsiElement annotation) {
 		if (duplicates.containsKey(annotation.getText())) {

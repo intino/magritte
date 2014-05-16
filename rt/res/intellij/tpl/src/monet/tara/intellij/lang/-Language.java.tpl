@@ -2,7 +2,8 @@ package monet.::projectName::.intellij.lang;
 
 import com.google.gson.*;
 import com.intellij.lang.Language;
-::empty|import monet.tara.lang.ASTNode;import monet.tara.lang.ASTWrapper;::
+import monet.tara.lang.ASTNode;
+import monet.tara.lang.ASTWrapper;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;

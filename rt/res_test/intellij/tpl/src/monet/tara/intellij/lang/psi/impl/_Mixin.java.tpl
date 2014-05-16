@@ -80,8 +80,8 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 	\@Override
 	public Icon getIcon(\@IconFlags int i) {
 		if (this.isCase())
-			return ::projectProperName::Icons.MORPH_13;
-		if (this.isBase()) return ::projectProperName::Icons.POLYMORPHIC_13;
+			return ::projectProperName::Icons.CASE_13;
+		if (this.isBase()) return ::projectProperName::Icons.BASE_13;
 		return ::projectProperName::Icons.DEFINITION_13;
 	}
 
