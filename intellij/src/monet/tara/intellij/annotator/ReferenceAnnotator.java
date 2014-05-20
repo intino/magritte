@@ -59,15 +59,15 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		String message = TaraBundle.message("reference.concept.key.error.message");
 		ArrayList<LocalQuickFix> fixes = new ArrayList<>();
 		addImportFix(element, fixes);
-		addCreateConceptFix(element, fixes);
+		addCreateConceptFix(element, "Concept", fixes);
 		Annotation errorAnnotation = holder.createErrorAnnotation(element, message);
 		errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
 		for (LocalQuickFix fix : fixes)
 			errorAnnotation.registerFix(createIntention(element, fix.getName(), fix));
 	}
 
-	private void addCreateConceptFix(Identifier name, List<LocalQuickFix> actions) {
-		actions.add(new CreateConceptQuickFix(name.getText(), name.getContainingFile().getParent()));
+	private void addCreateConceptFix(Identifier name, String type, List<LocalQuickFix> actions) {
+		actions.add(new CreateConceptQuickFix(name.getText(), type, name.getContainingFile().getParent()));
 	}
 
 

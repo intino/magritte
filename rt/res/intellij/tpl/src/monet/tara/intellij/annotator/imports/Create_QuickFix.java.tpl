@@ -11,10 +11,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class CreateDefinitionQuickFix implements LocalQuickFix {
 	private final String name;
+	private final String type;
 	private final PsiDirectory packet;
 
-	public CreateDefinitionQuickFix(String name, PsiDirectory packet) {
+	public CreateDefinitionQuickFix(String name, String type, PsiDirectory packet) {
 		this.name = name;
+		this.type = type;
 		this.packet = packet;
 	}
 
@@ -33,6 +35,6 @@ public class CreateDefinitionQuickFix implements LocalQuickFix {
 	\@Override
 	public void applyFix(\@NotNull Project project, \@NotNull ProblemDescriptor descriptor) {
 		String fileName = name + ".m1";
-		PsiFile file = ::projectProperName::TemplatesFactory.createFromTemplate(packet, name, fileName, ::projectProperName::Templates.::projectUpperName::_DEFINITION, true);
+		PsiFile file = ::projectProperName::TemplatesFactory.createFromTemplate(packet, name, fileName, ::projectProperName::Templates.getTemplate(type.toUpperCase()), true);
 	}
 }

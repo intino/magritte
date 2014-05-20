@@ -32,6 +32,7 @@ public class PluginGenerator {
 		File[] lexFiles = TaraToJFlexCodeGenerator.toJFlex(conf, ast);
 		for (File lexFile : lexFiles)
 			JFlexToJavaGenerator.jFlexToJava(conf.getTempDirectory(), lexFile);
+		TemplateGenerator.generateTemplates(conf);
 		PluginCompiler.generateClasses(conf);
 		PluginPackager.doPackage(conf);
 	}

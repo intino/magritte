@@ -1,7 +1,7 @@
 lexer grammar TaraM2Lexer;
 
 @header{
-	package monet.tara.compiler.parser.antlr.source;
+	package monet.tara.compiler.parser.antlr;
 }
 
 @lexer::members{
@@ -90,15 +90,12 @@ CONCEPT    : 'Concept';
 CASE       : 'case';
 
 MULTIPLE   : 'multiple';
-OPTIONAL   : 'optional';
-HAS_CODE   : 'has-code';
+REQUIRED   : 'required';
 ROOT       : 'root';
 SINGLETON  : 'singleton';
 GENERIC    : 'generic';
 INTENTION  : 'intention';
-EXTENSION  : 'extension';
-EXTENSIBLE : 'extensible';
-
+HAS_NAME   : 'has-name';
 VAR        : 'var';
 WORD       : 'Word';
 

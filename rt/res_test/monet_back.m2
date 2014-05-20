@@ -32,10 +32,10 @@ Concept abstract as Entity  <has-code>
 
 	Concept abstract as View
 
-Entity as Form <has-code extensible>
+Entity as Form <has-code>
 
 	from <multiple>
-		Concept abstract as Field <has-code extensible>
+		Concept abstract as Field <has-code>
 			var String label
 
 			?? Añadir para ofrecer al usuario información más detallada del campo

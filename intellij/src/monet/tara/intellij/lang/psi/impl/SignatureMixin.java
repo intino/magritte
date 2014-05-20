@@ -42,7 +42,7 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public Icon getIcon(@IconFlags int i) {
-		return TaraIcons.CONCEPT_13;
+		return TaraIcons.getIcon(TaraIcons.CONCEPT);
 	}
 
 	public boolean isCase() {

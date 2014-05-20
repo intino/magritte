@@ -80,7 +80,7 @@ public class TplGenerator {
     }
 
     static boolean isCorrectFileType(String fileName) {
-        String[] fileTypes = ["java", "xml", "form", "properties", "png", "html", "ft", "json"]
+        String[] fileTypes = ["java", "xml", "form", "properties", "png", "json"]
         if (fileTypes.contains(fileName.substring(fileName.lastIndexOf(".") + 1))) return true
         false
     }

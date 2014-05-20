@@ -27,6 +27,7 @@ import java.util.List;
 
 public class ModuleBuilder extends JavaModuleBuilder {
 	public static final String RES = "res";
+	public static final String ICONS = "icons";
 	public static final String GEN = "gen";
 	private static final Logger LOG = Logger.getInstance(ModuleBuilder.class.getName());
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
@@ -98,9 +99,10 @@ public class ModuleBuilder extends JavaModuleBuilder {
 		try {
 			VfsUtil.createDirectories(parentPath + File.separator + RES);
 			VfsUtil.createDirectories(parentPath + File.separator + RES + File.separator + "tpl");
-			VfsUtil.createDirectories(parentPath + File.separator + RES + File.separator + "logos");
-//					File logo = new File(logos.getPath() + File.separator + rootModel.getProject().getName() + ".png");
-//					copyFile(new File(this.getClass().getResource(File.separator + "logos" + File.separator + "logo.png").getPath()), logo);
+			VfsUtil.createDirectories(parentPath + File.separator + RES + File.separator + ICONS);
+			VfsUtil.createDirectories(parentPath + File.separator + RES + File.separator + ICONS + File.separator + "definitions");
+//	        File logo = new File(icons.getPath() + File.separator + rootModel.getProject().getName() + ".png");
+//			copyFile(new File(this.getClass().getResource(File.separator + "icons" + File.separator + "logo.png").getPath()), logo);
 		} catch (IOException e) {
 			LOG.error(e.getMessage());
 		}
@@ -113,7 +115,7 @@ public class ModuleBuilder extends JavaModuleBuilder {
 
 	@Override
 	public Icon getNodeIcon() {
-		return TaraIcons.ICON_13;
+		return TaraIcons.getIcon(TaraIcons.ICON_13);
 	}
 
 	@Override

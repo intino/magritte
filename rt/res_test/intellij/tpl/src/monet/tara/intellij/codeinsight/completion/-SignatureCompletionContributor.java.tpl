@@ -7,8 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class ::projectProperName::SignatureCompletionContributor extends CompletionContributor {
 
-	public static final String CASE = "case";
-
 	public ::projectProperName::SignatureCompletionContributor() {
 		extend(CompletionType.BASIC, ::projectProperName::Filters.afterDefinitionKey,
 			new CompletionProvider<CompletionParameters>() {
@@ -28,27 +26,11 @@ public class ::projectProperName::SignatureCompletionContributor extends Complet
 				                           ProcessingContext context,
 				                           \@NotNull CompletionResultSet resultSet) {
 					::identifiers::
-					resultSet.addElement(LookupElementBuilder.create(CASE));
+					resultSet.addElement(LookupElementBuilder.create("case"));
 					resultSet.addElement(LookupElementBuilder.create("var"));
 				}
 			}
 		);
-
-//		extend(CompletionType.BASIC, ::projectProperName::Filters.afterModifierKey,
-//			new CompletionProvider<CompletionParameters>() {
-//				public void addCompletions(\@NotNull CompletionParameters parameters,
-//				                           ProcessingContext context,
-//				                           \@NotNull CompletionResultSet resultSet) {
-//					Type collectionType = new TypeToken<Collection<String>>() {
-//					}.getType();
-//					try {
-//						List<String> astNodes = new Gson().fromJson(new InputStreamReader(new FileInputStream("ast.json")), collectionType);
-//					} catch (FileNotFoundException e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//		);
 	}
 
 }

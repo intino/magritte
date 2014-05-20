@@ -60,7 +60,7 @@ public class ::projectProperName::FileImpl extends PsiFileBase implements ::proj
 
 			\@Override
 			public Icon getIcon(final boolean open) {
-				return ::projectProperName::Icons.DEFINITION_13;
+				return ::projectProperName::Icons.getIcon(::projectProperName::Icons.DEFINITION);
 			}
 		};
 	}

@@ -5,6 +5,8 @@ public class TaraRtConstants {
 	public static final String ENCODING = "encoding";
 	public static final String OUTPUTPATH = "outputpath";
 	public static final String PROJECT = "project";
+	public static final String ICONS_PATH = "icons";
+	public static final String PROJECT_ICON = "project_icon";
 	public static final String IDEA_HOME = "idea_home";
 	public static final String FINAL_OUTPUTPATH = "final_outputpath";
 	public static final String SRC_FILE = "src_file";
@@ -18,8 +20,6 @@ public class TaraRtConstants {
 	public static final String PRESENTABLE_MESSAGE = "@#$%@# Presentable:";
 	public static final String CLEAR_PRESENTABLE = "$@#$%^ CLEAR_PRESENTABLE";
 	public static final String NO_TARA = "Cannot compile Tara files: No Tara generator is defined";
-	public static final String PROJECT_ICON = "icon";
-	public static final String LOGO_PATH = "logos";
 	public static final String CLASSPATH = "classpath";
 
 	private TaraRtConstants() {

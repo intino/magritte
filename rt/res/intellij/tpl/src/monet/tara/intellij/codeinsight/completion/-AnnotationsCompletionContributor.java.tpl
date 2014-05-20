@@ -8,6 +8,7 @@ import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
 import monet.::projectName::.intellij.lang.::projectProperName::Language;
+import monet.::projectName::.intellij.lang.parser.::projectProperName::Annotation;
 import monet.::projectName::.intellij.lang.psi.::projectProperName::Types;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,15 +27,11 @@ public class ::projectProperName::AnnotationsCompletionContributor extends Compl
 				public void addCompletions(\@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           \@NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("optional"));
-					resultSet.addElement(LookupElementBuilder.create("multiple"));
-					resultSet.addElement(LookupElementBuilder.create("root"));
-					resultSet.addElement(LookupElementBuilder.create("singleton"));
-					resultSet.addElement(LookupElementBuilder.create("has-code"));
-					resultSet.addElement(LookupElementBuilder.create("extensible"));
-					resultSet.addElement(LookupElementBuilder.create("generic"));
+					for (String annotation \: ::projectProperName::Annotation.getAnnotations())
+						resultSet.addElement(LookupElementBuilder.create(annotation));
 				}
-			});
+			}
+		);
 	}
 
 	private static class AfterAngleFitFilter implements ElementFilter {

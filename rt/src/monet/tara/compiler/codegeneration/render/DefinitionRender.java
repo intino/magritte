@@ -19,7 +19,7 @@ public class DefinitionRender extends DefaultRender {
 	@Override
 	protected void init() {
 		super.init();
-		if (rootNode.hasCode())
+		if (rootNode.hasName())
 			addMark("id", "true");
 		addMark("root", addDefinition(rootNode, 0));
 	}
@@ -33,7 +33,7 @@ public class DefinitionRender extends DefaultRender {
 		map.put("attributes", addAttributes(node));
 		map.put("references", addReferences(node));
 		map.put("childrenGetters", getChildrenGetters(node));
-		if (node.hasCode()) map.put("id", "id");
+		if (node.hasName()) map.put("id", "id");
 		StringBuilder childDefinitions = new StringBuilder();
 		for (ASTNode child : node.getChildren())
 			childDefinitions.append(addDefinition(child, level + 1));

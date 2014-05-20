@@ -16,12 +16,13 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Properties;
 
 public class ::projectProperName::TemplatesFactory implements FileTemplateGroupDescriptorFactory {
 	\@NonNls
-	public static final String[] TEMPLATES = {::projectProperName::Templates.::projectUpperName::_DEFINITION};
+	public static final Collection<String> TEMPLATES = ::projectProperName::Templates.getTemplateValues();
 	\@NonNls
 	static final String NAME_TEMPLATE_PROPERTY = "NAME";
 	static final String LOW_CASE_NAME_TEMPLATE_PROPERTY = "lowCaseName";
@@ -64,7 +65,7 @@ public class ::projectProperName::TemplatesFactory implements FileTemplateGroupD
 	}
 
 	public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
-		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(::projectProperName::Bundle.message("file.template.group.title.::projectName::"), ::projectProperName::Icons.ICON_100);
+		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(::projectProperName::Bundle.message("file.template.group.title.::projectName::"), ::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_100));
 		final FileTypeManager fileTypeManager = FileTypeManager.getInstance();
 		for (String template \: TEMPLATES) {
 			group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template).getIcon()));

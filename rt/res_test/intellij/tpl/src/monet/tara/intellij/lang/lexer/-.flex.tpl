@@ -99,15 +99,15 @@ BASE_KEY  = "base"
 FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"
-OPTIONAL  = "optional"
-HAS_CODE  = "has-code"
+REQUIRED  = "required"
+HAS_NAME  = "has-name"
 SINGLETON = "singleton"
 INTENTION_KEY = "intention"
 GENERIC   = "generic"
 ROOT      = "root"
 WORD      = "Word"
 VAR       = "var"
-CODE_KEY      = "code"
+CODE_KEY  = "code"
 
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
 LEFT_SQUARE  = "["
@@ -121,7 +121,7 @@ CLOSE_BRACKET = "}"
 
 DOT           = "."
 COMMA         = ","
-COLON        = "\:"
+COLON         = "\:"
 SEMICOLON     = ";"
 DOUBLE_COMMAS = "\\""
 OPEN_AN  = "<"
@@ -177,10 +177,10 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 	{OPEN_AN}                   {   return ::projectProperName::Types.OPEN_AN; }
 	{CLOSE_AN}                  {   return ::projectProperName::Types.CLOSE_AN; }
 
-	{OPTIONAL}                  {   return ::projectProperName::Types.OPTIONAL; }
+	{REQUIRED}                  {   return ::projectProperName::Types.REQUIRED; }
 	{MULTIPLE}                  {   return ::projectProperName::Types.MULTIPLE; }
 
-	{HAS_CODE}                  {   return ::projectProperName::Types.HAS_CODE; }
+	{HAS_NAME}                  {   return ::projectProperName::Types.HAS_NAME; }
 	{ROOT}                      {   return ::projectProperName::Types.ROOT; }
 	{SINGLETON}                 {   return ::projectProperName::Types.SINGLETON; }
 	{GENERIC}                   {   return ::projectProperName::Types.GENERIC; }

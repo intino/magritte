@@ -42,7 +42,7 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 
 	\@Override
 	public Icon getIcon(\@IconFlags int i) {
-		return ::projectProperName::Icons.DEFINITION_13;
+		return ::projectProperName::Icons.getIcon(::projectProperName::Icons.DEFINITION);
 	}
 
 	public boolean isCase() {

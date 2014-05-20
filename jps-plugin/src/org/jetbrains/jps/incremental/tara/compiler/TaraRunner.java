@@ -25,7 +25,7 @@ public class TaraRunner {
 
 	protected TaraRunner(final String projectName, final String outputDir,
 	                     final Collection<String> sources,
-	                     String finalOutput, @Nullable final String encoding, String iconPath) throws IOException {
+	                     String finalOutput, @Nullable final String encoding, String projectIcon, String[] iconPaths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
 			writer.write(TaraRtConstants.SRC_FILE + "\n");
@@ -36,7 +36,11 @@ public class TaraRunner {
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
 			writer.write(TaraRtConstants.IDEA_HOME + "\n");
 			writer.write(PathManager.getHomePath() + File.separator + "lib" + File.separator + "\n");
-			if (iconPath != null) writer.write(TaraRtConstants.PROJECT_ICON + "\n" + iconPath + "\n");
+			for (String iconPath : iconPaths) {
+				writer.write(TaraRtConstants.ICONS_PATH + "\n");
+				writer.write(iconPath + "\n");
+			}
+			if (projectIcon != null) writer.write(TaraRtConstants.PROJECT_ICON + "\n" + projectIcon + "\n");
 			writer.write(TaraRtConstants.OUTPUTPATH + "\n");
 			writer.write(outputDir + "\n");
 			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n");
@@ -54,7 +58,7 @@ public class TaraRunner {
 		List<String> vmParams = ContainerUtilRt.newArrayList();
 		vmParams.add("-Xmx" + settings.heapSize + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
-			final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
+		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
 			getJavaExecutable(), "monet.tara.TaracRunner", Collections.<String>emptyList(), classpath, vmParams, programParams);
 		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
 		final Consumer<String> updater = new Consumer<String>() {

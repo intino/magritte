@@ -2,21 +2,22 @@ package monet.tara.intellij.lang.parser;
 
 public class TaraAnnotation {
 
-	public static final String EXTENSIBLE = "extensible";
-	public static final String EXTENSION = "extension";
 	public static final String ROOT = "root";
 	public static final String SINGLETON = "singleton";
-	//gen%empty%public static final String CODE = "code";%
-	public static final String CODE = "has-code";
-	//end
-	public static final String OPTIONAL = "optional";
+	public static final String CODE = "code";
+	public static final String HASNAME = "has-name";
+	public static final String REQUIRED = "required";
 	public static final String MULTIPLE = "multiple";
 	public static final String GENERIC = "generic";
 	public static final String INTENTION = "intention";
-	public static final String[] CASE_ANNOTATIONS = new String[]{EXTENSIBLE, SINGLETON, CODE, INTENTION};
-	public static final String[] ROOT_ANNOTATIONS = new String[]{GENERIC, ROOT, EXTENSIBLE, SINGLETON, CODE, INTENTION};
-	public static final String[] CHILD_ANNOTATIONS = new String[]{GENERIC, EXTENSIBLE, EXTENSION, SINGLETON, CODE, OPTIONAL, MULTIPLE, INTENTION};
+	public static final String[] CASE_ANNOTATIONS = new String[]{SINGLETON, CODE, INTENTION};
+	public static final String[] ROOT_ANNOTATIONS = new String[]{GENERIC, ROOT, SINGLETON, CODE, INTENTION};
+	public static final String[] CHILD_ANNOTATIONS = new String[]{GENERIC, SINGLETON, CODE, REQUIRED, MULTIPLE, INTENTION};
 
 	private TaraAnnotation() {
+	}
+
+	public static String[] getAnnotations() {
+		return new String[]{MULTIPLE, INTENTION, REQUIRED, ROOT, SINGLETON, GENERIC, HASNAME};
 	}
 }

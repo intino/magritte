@@ -85,7 +85,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		List<LookupElement> variants = new ArrayList<>();
 		for (final String element : elements)
 			if (element.length() != 0)
-				variants.add(LookupElementBuilder.create(element).withIcon(TaraIcons.TARA).withTypeText("Tara"));
+				variants.add(LookupElementBuilder.create(element).withIcon(TaraIcons.getIcon(TaraIcons.ICON_13)).withTypeText("Tara"));
 		return variants.toArray();
 	}
 }

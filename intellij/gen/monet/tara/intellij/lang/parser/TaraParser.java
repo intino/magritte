@@ -1,15 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.intellij.lang.parser;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import com.intellij.lang.PsiParser;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.tree.IElementType;
-
-import static monet.tara.intellij.lang.parser.TaraParserUtil.*;
 import static monet.tara.intellij.lang.psi.TaraTypes.*;
+import static monet.tara.intellij.lang.parser.TaraParserUtil.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.lang.PsiParser;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class TaraParser implements PsiParser {
@@ -194,7 +194,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | intention | SINGLETON | ROOT)+ CLOSE_AN
+  // OPEN_AN (GENERIC | MULTIPLE | REQUIRED | HAS_NAME | intention | SINGLETON | ROOT)+ CLOSE_AN
   public static boolean annotations(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "annotations")) return false;
     if (!nextTokenIs(builder_, OPEN_AN)) return false;
@@ -209,7 +209,7 @@ public class TaraParser implements PsiParser {
     return result_ || pinned_;
   }
 
-  // (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | intention | SINGLETON | ROOT)+
+  // (GENERIC | MULTIPLE | REQUIRED | HAS_NAME | intention | SINGLETON | ROOT)+
   private static boolean annotations_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "annotations_1")) return false;
     boolean result_ = false;
@@ -225,15 +225,15 @@ public class TaraParser implements PsiParser {
     return result_;
   }
 
-  // GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | intention | SINGLETON | ROOT
+  // GENERIC | MULTIPLE | REQUIRED | HAS_NAME | intention | SINGLETON | ROOT
   private static boolean annotations_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "annotations_1_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, GENERIC);
     if (!result_) result_ = consumeToken(builder_, MULTIPLE);
-    if (!result_) result_ = consumeToken(builder_, OPTIONAL);
-    if (!result_) result_ = consumeToken(builder_, HAS_CODE);
+    if (!result_) result_ = consumeToken(builder_, REQUIRED);
+    if (!result_) result_ = consumeToken(builder_, HAS_NAME);
     if (!result_) result_ = intention(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, SINGLETON);
     if (!result_) result_ = consumeToken(builder_, ROOT);

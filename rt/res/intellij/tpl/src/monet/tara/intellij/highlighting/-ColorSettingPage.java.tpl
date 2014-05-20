@@ -26,7 +26,7 @@ public class ::projectProperName::ColorSettingPage implements ColorSettingsPage 
 	\@Nullable
 	\@Override
 	public javax.swing.Icon getIcon() {
-		return ::projectProperName::Icons.ICON_13;
+		return ::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_13);
 	}
 
 	\@NotNull

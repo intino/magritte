@@ -59,9 +59,9 @@ public class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements
 			if (variant instanceof Concept) {
 				Concept concept = (Concept) variant;
 				if (concept.getName() == null || concept.getName().length() == 0) continue;
-				lookupElements.add(LookupElementBuilder.create((PsiNamedElement) concept.getIdentifierNode()).withIcon(TaraIcons.ICON_13).withTypeText(getFileName(variant)));
+				lookupElements.add(LookupElementBuilder.create((PsiNamedElement) concept.getIdentifierNode()).withIcon(TaraIcons.getIcon(TaraIcons.ICON_13)).withTypeText(getFileName(variant)));
 			} else {
-				Icon icon = (variant instanceof PsiPackage) ? AllIcons.Nodes.Package : TaraIcons.ICON_13;
+				Icon icon = (variant instanceof PsiPackage) ? AllIcons.Nodes.Package : TaraIcons.getIcon(TaraIcons.ICON_13);
 				lookupElements.add(LookupElementBuilder.create((PsiNamedElement) variant).withIcon(icon).withTypeText(variant.getParent().getText()));
 			}
 		}

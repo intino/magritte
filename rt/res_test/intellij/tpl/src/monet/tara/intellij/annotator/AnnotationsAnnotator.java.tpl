@@ -8,8 +8,9 @@ import monet.::projectName::.intellij.::projectProperName::Bundle;
 import monet.::projectName::.intellij.highlighting.::projectProperName::SyntaxHighlighter;
 import monet.::projectName::.intellij.lang.parser.::projectProperName::Annotation;
 import monet.::projectName::.intellij.lang.psi.Annotations;
-import monet.::projectName::.intellij.lang.psi.*;
-import monet.::projectName::.intellij.lang.psi.impl.*;
+import monet.::projectName::.intellij.lang.psi.Definition;
+import monet.::projectName::.intellij.lang.psi.::projectProperName::File;
+import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::PsiImplUtil;
 
 
 import org.jetbrains.annotations.NotNull;
@@ -83,40 +84,19 @@ public class AnnotationsAnnotator extends ::projectProperName::Annotator {
 			count(annotation);
 			if (!isIn(correctAnnotation, annotation.getText()))
 				incorrectAnnotations.add(annotation);
-			else if (::projectProperName::Types.CODE.equals(annotation.getNode().getElementType()))
-				isCodeableDefinition(::projectProperName::PsiImplUtil.getContextOf(annotation));
-
 		}
 		return incorrectAnnotations;
 	}
 
-	private boolean isCodeableDefinition(Definition definition) {
-		::projectProperName::MetaIdentifier[] metaIds = com.intellij.psi.util.PsiTreeUtil.getChildrenOfType(definition.getSignature(), ::projectProperName::MetaIdentifier.class);
-		::projectProperName::MetaIdentifier metaId;
-		if (metaIds == null) metaId = searchBaseDefinition(definition);
-		else metaId = metaIds[0];
-
-		return definitionHasCode(metaId);
-	}
-
-	private ::projectProperName::MetaIdentifier searchBaseDefinition(Definition definition) {
-		Definition baseDefinition = ::projectProperName::Util.getBaseDefinitionOf(definition);
-		return com.intellij.psi.util.PsiTreeUtil.getChildrenOfType(baseDefinition.getSignature(), ::projectProperName::MetaIdentifier.class)[0];
-	}
-
-	private boolean definitionHasCode(::projectProperName::MetaIdentifier metaId) {
-		monet.tara.lang.ASTWrapper heritage = monet.::projectName::.intellij.lang.::projectProperName::Language.getHeritage();
-		monet.tara.lang.ASTNode node = heritage.getNodeNameLookUpTable().get(metaId.getText()).get(0);
-		if (node.hasCode()) return true;
-		monet.tara.lang.ASTNode ancestry;
-		while ((ancestry = heritage.searchAncestry(node)) != null) if (ancestry.hasCode()) return true;
-		return false;
+	private monet.::projectName::.intellij.lang.psi.::projectProperName::MetaIdentifier searchBaseDefinition(Definition definition) {
+		Definition baseDefinition = monet.::projectName::.intellij.lang.psi.impl.::projectProperName::Util.getBaseDefinitionOf(definition);
+		return com.intellij.psi.util.PsiTreeUtil.getChildrenOfType(baseDefinition.getSignature(), monet.::projectName::.intellij.lang.psi.::projectProperName::MetaIdentifier.class)[0];
 	}
 
 	private void count(PsiElement annotation) {
-		if (duplicates.containsKey(annotation.getText())) {
+		if (duplicates.containsKey(annotation.getText()))
 			duplicates.get(annotation.getText()).add(annotation);
-		} else {
+		else {
 			ArrayList<PsiElement> value = new ArrayList<>();
 			value.add(annotation);
 			duplicates.put(annotation.getText(), value);

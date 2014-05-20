@@ -2,12 +2,12 @@ parser grammar TaraM2Grammar;
 options { tokenVocab=TaraM2Lexer; }
 
 @header{
-    package monet.tara.compiler.parser.antlr.source;
+    package monet.tara.compiler.parser.antlr;
 }
 
-root: NEWLINE* header NEWLINE+ concept NEWLINE* EOF;
+root: NEWLINE* header? NEWLINE+ concept NEWLINE* EOF;
 
-header: packet imports*;
+header: packet? imports*;
 
 imports: NEWLINE IMPORT headerReference;
 packet : PACKAGE headerReference;
@@ -48,10 +48,7 @@ integerList: LEFT_SQUARE (POSITIVE_VALUE | NEGATIVE_VALUE)+ RIGHT_SQUARE;
 doubleList : LEFT_SQUARE (POSITIVE_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE)+ RIGHT_SQUARE;
 naturalList: LEFT_SQUARE POSITIVE_VALUE+ RIGHT_SQUARE;
 
-annotations: OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | extension | extensible | INTENTION | SINGLETON | ROOT)+ CLOSE_AN;
-
-extension : EXTENSION COLON externalReference;
-extensible: EXTENSIBLE COLON IDENTIFIER;
+annotations: OPEN_AN (GENERIC | HAS_NAME | MULTIPLE | REQUIRED  | INTENTION | SINGLETON | ROOT)+ CLOSE_AN;
 
 variableNames: IDENTIFIER (COMMA IDENTIFIER)*;
 

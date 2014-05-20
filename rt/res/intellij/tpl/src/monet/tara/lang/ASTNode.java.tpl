@@ -45,8 +45,12 @@ public class ASTNode {
 		this.parent = null;
 	}
 
-	public boolean isRoot() {
+	public boolean isPrime() {
 		return getParent() == null;
+	}
+
+	public boolean is(AnnotationType type) {
+		return (annotations.contains(type));
 	}
 
 	public int getLine() {
@@ -57,11 +61,8 @@ public class ASTNode {
 		this.line = line;
 	}
 
-	public boolean hasCode() {
-		for (AnnotationType annotation : annotations)
-			if (annotation.name().endsWith(AnnotationType.HAS_CODE.name()))
-				return true;
-		return false;
+	public boolean hasName() {
+		return annotations.contains(AnnotationType.HAS_NAME);
 	}
 
 	public String getIdentifier() {
@@ -99,6 +100,11 @@ public class ASTNode {
 
 	public List<String> getImports() {
 		return imports;
+	}
+
+	public void setImports(String[] imports) {
+		if (imports.length > 0)
+			Collections.addAll(this.imports, imports);
 	}
 
 	public String getExtendFrom() {
@@ -218,11 +224,6 @@ public class ASTNode {
 		return file;
 	}
 
-	public void setImports(String[] imports) {
-		if (imports.length > 0)
-			Collections.addAll(this.imports, imports);
-	}
-
 	public String getPackage() {
 		return aPackage;
 	}
@@ -251,7 +252,7 @@ public class ASTNode {
 
 
 	public enum AnnotationType {
-		EXTENSIBLE, HAS_CODE, ROOT, SINGLETON, MULTIPLE, OPTIONAL, GENERIC;
+		HAS_NAME, ROOT, SINGLETON, MULTIPLE, REQUIRED, GENERIC;
 	}
 
 	public static class Attribute extends Variable {

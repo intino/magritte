@@ -22,7 +22,6 @@ public class ModuleType extends JavaModuleType {
 		return ModuleTypeManager.getInstance().findByID(::projectUpperName::_MODULE);
 	}
 
-
 	\@NotNull
 	\@Override
 	public ModuleBuilder createModuleBuilder() {
@@ -41,10 +40,10 @@ public class ModuleType extends JavaModuleType {
 	}
 
 	public Icon getNodeIcon(final boolean isOpened) {
-		return ::projectProperName::Icons.ICON_13;
+		return ::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_13);
 	}
 
 	public Icon getBigIcon() {
-		return ::projectProperName::Icons.ICON_100;
+		return ::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_100);
 	}
 }

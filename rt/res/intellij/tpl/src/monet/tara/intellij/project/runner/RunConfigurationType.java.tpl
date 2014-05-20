@@ -26,7 +26,7 @@ public class RunConfigurationType implements ConfigurationType {
 	}
 
 	public Icon getIcon() {
-		return ::projectProperName::Icons.ICON_13;
+		return ::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_13);
 	}
 
 	\@NonNls

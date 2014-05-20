@@ -20,7 +20,7 @@ root \:\:= NEWLINE* header? NEWLINE+ definition? NEWLINE* {
 }
 definitionKey \:\:= ::conceptKeys::
 synthesizeStatement \:\:= NEW_LINE SYNTHESIZE definitionKey ((OPEN_AN synthesizeTag+ CLOSE_AN) | synthesizeAttribute )
-synthesizeTag \:\:= GENERIC | intention | FINAL | ABSTRACT |  MULTIPLE |  OPTIONAL | HAS_CODE | SINGLETON | ROOT
+synthesizeTag \:\:= GENERIC | intention | FINAL | ABSTRACT |  MULTIPLE |  REQUIRED | SINGLETON | ROOT | HAS_NAME
 synthesizeAttribute \:\:= NEW_LINE_INDENT( attribute  NEWLINE+)+ DEDENT
 
 header \:\:=  packet? importStatement* synthesizeStatement*
@@ -55,7 +55,7 @@ body \:\:= NEW_LINE_INDENT (definitionConstituents NEWLINE+)+ DEDENT {
 
 modifier\:\:= ABSTRACT | FINAL | BASE_KEY
 
-annotations \:\:= OPEN_AN (code | intention | MULTIPLE | OPTIONAL)+ CLOSE_AN {
+annotations \:\:= OPEN_AN (code | intention | MULTIPLE | REQUIRED)+ CLOSE_AN {
 	pin = 1
 	mixin = 'monet.::projectName::.intellij.lang.psi.impl.AnnotationsMixin'
     implements = 'monet.::projectName::.intellij.lang.psi.Annotations'

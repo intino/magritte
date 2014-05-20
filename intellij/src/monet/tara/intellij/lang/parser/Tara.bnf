@@ -79,7 +79,7 @@ integerList ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUA
 doubleList  ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE;
 naturalList ::= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
 
-annotations ::= OPEN_AN (GENERIC | MULTIPLE | OPTIONAL | HAS_CODE | intention | SINGLETON | ROOT)+ CLOSE_AN {
+annotations ::= OPEN_AN (GENERIC | MULTIPLE | REQUIRED | HAS_NAME | intention | SINGLETON | ROOT)+ CLOSE_AN {
 	pin=1
 	mixin= 'monet.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements='monet.tara.intellij.lang.psi.Annotations'

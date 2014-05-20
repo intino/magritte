@@ -22,12 +22,11 @@ BASE_KEY   = "base"
 FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"
-OPTIONAL  = "optional"
-HAS_CODE  = "has-code"
+REQUIRED  = "required"
+HAS_NAME  = "has-name"
 SINGLETON = "singleton"
 INTENTION_KEY = "intention"
 ROOT      = "root"
-EXTENSIBLE_KEY = "extensible"
 GENERIC   = "generic"
 WORD_KEY      = "Word"
 VAR       = "var"
@@ -95,10 +94,10 @@ NEWLINE= [\n]+
 	{OPEN_AN}                   {   return TaraTypes.OPEN_AN; }
 	{CLOSE_AN}                  {   return TaraTypes.CLOSE_AN; }
 
-	{OPTIONAL}                  {   return TaraTypes.OPTIONAL; }
+	{REQUIRED}                  {   return TaraTypes.REQUIRED; }
 	{MULTIPLE}                  {   return TaraTypes.MULTIPLE; }
 
-	{HAS_CODE}                  {   return TaraTypes.HAS_CODE; }
+	{HAS_NAME}                  {   return TaraTypes.HAS_NAME; }
 	{ROOT}                      {   return TaraTypes.ROOT; }
 	{SINGLETON}                 {   return TaraTypes.SINGLETON; }
 	{GENERIC}                   {   return TaraTypes.GENERIC; }

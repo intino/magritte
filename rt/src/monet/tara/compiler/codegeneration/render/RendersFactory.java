@@ -19,6 +19,8 @@ public class RendersFactory {
 		renders.put("plugin.xml", PluginDescriptorRender.class);
 		renders.put("TaraSignatureCompletionContributor.java", SignatureCompletionContributorRender.class);
 		renders.put("Tara.bnf", BnfRender.class);
+		renders.put("TaraIcons.java", IconsRender.class);
+		renders.put("TaraTemplates.java", TemplatesRender.class);
 	}
 
 	private RendersFactory() {

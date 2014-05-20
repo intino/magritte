@@ -99,9 +99,9 @@ BASE_KEY  = "base"
 FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"
-OPTIONAL  = "optional"
-HAS_CODE  = "has-code"
+REQUIRED  = "required"
 SINGLETON = "singleton"
+HAS_NAME  = "has-name"
 INTENTION_KEY = "intention"
 ROOT      = "root"
 GENERIC   = "generic"
@@ -167,11 +167,11 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{OPEN_AN}                   {   return TaraTypes.OPEN_AN; }
 	{CLOSE_AN}                  {   return TaraTypes.CLOSE_AN; }
 
-	{OPTIONAL}                  {   return TaraTypes.OPTIONAL; }
+	{REQUIRED}                  {   return TaraTypes.REQUIRED; }
 	{MULTIPLE}                  {   return TaraTypes.MULTIPLE; }
 	{GENERIC}                   {   return TaraTypes.GENERIC; }
 
-	{HAS_CODE}                  {   return TaraTypes.HAS_CODE; }
+	{HAS_NAME}                  {   return TaraTypes.HAS_NAME; }
 	{INTENTION_KEY}             {   return TaraTypes.INTENTION_KEY; }
 	{ROOT}                      {   return TaraTypes.ROOT; }
 	{SINGLETON}                 {   return TaraTypes.SINGLETON; }

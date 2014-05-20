@@ -9,25 +9,28 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.lang.TaraIcons;
-import monet.tara.intellij.lang.file.TaraFileType;
 import monet.tara.intellij.lang.psi.impl.TaraFileImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraFileImpl> {
 
 	public CreateTaraFileAction() {
 		super(TaraBundle.message("newconcept.menu.action.text"), TaraBundle.message("newconcept.menu.action.description"),
-			TaraIcons.ICON_13, true);
+			TaraIcons.getIcon(TaraIcons.ICON_13), true);
 	}
 
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
-		builder
-			.setTitle(TaraBundle.message("newconcept.dlg.prompt"))
-			.addKind("Tara Concept", TaraFileType.INSTANCE.getIcon(), TaraTemplates.TARA_CONCEPT);
-		//gen %empty% %
-		//end
+		builder.setTitle(TaraBundle.message("newconcept.dlg.prompt"));
+		for (Map.Entry<String, String> template : TaraTemplates.getTemplates())
+			builder.addKind(prettyPrint(template.getKey()), TaraIcons.getIcon(template.getKey().toUpperCase()), template.getValue());
+	}
+
+	private String prettyPrint(String template) {
+		return template.substring(0, 1).toUpperCase() + template.substring(1);
 	}
 
 	@Override

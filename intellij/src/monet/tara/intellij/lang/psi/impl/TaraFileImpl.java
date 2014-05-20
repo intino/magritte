@@ -60,7 +60,7 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 
 			@Override
 			public Icon getIcon(final boolean open) {
-				return TaraIcons.CONCEPT_13;
+				return TaraIcons.getIcon(TaraIcons.CONCEPT);
 			}
 		};
 	}

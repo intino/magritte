@@ -16,7 +16,8 @@ public class ::projectProperName::BraceMatcher implements PairedBraceMatcher {
 	private final BracePair[] PAIRS;
 
 	public ::projectProperName::BraceMatcher() {
-		PAIRS = new BracePair[]{new BracePair(::projectProperName::Types.LEFT_SQUARE, ::projectProperName::Types.RIGHT_SQUARE, false)};
+		PAIRS = new BracePair[]{new BracePair(::projectProperName::Types.LEFT_SQUARE, ::projectProperName::Types.RIGHT_SQUARE, false),
+			new BracePair(::projectProperName::Types.OPEN_AN, ::projectProperName::Types.CLOSE_AN, false)};
 	}
 
 	public BracePair[] getPairs() {

@@ -8,6 +8,7 @@ import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
 import monet.tara.intellij.lang.TaraLanguage;
+import monet.tara.intellij.lang.parser.TaraAnnotation;
 import monet.tara.intellij.lang.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,15 +27,11 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("optional"));
-					resultSet.addElement(LookupElementBuilder.create("multiple"));
-					resultSet.addElement(LookupElementBuilder.create("root"));
-					resultSet.addElement(LookupElementBuilder.create("singleton"));
-					resultSet.addElement(LookupElementBuilder.create("has-code"));
-					resultSet.addElement(LookupElementBuilder.create("extensible"));
-					resultSet.addElement(LookupElementBuilder.create("generic"));
+					for (String annotation : TaraAnnotation.getAnnotations())
+						resultSet.addElement(LookupElementBuilder.create(annotation));
 				}
-			});
+			}
+		);
 	}
 
 	private static class AfterAngleFitFilter implements ElementFilter {

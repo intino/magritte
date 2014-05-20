@@ -11,10 +11,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class CreateConceptQuickFix implements LocalQuickFix {
 	private final String name;
+	private final String type;
 	private final PsiDirectory packet;
 
-	public CreateConceptQuickFix(String name, PsiDirectory packet) {
+	public CreateConceptQuickFix(String name, String type, PsiDirectory packet) {
 		this.name = name;
+		this.type = type;
 		this.packet = packet;
 	}
 
@@ -33,6 +35,6 @@ public class CreateConceptQuickFix implements LocalQuickFix {
 	@Override
 	public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
 		String fileName = name + ".m2";
-		PsiFile file = TaraTemplatesFactory.createFromTemplate(packet, name, fileName, TaraTemplates.TARA_CONCEPT, true);
+		PsiFile file = TaraTemplatesFactory.createFromTemplate(packet, name, fileName, TaraTemplates.getTemplate(type.toUpperCase()), true);
 	}
 }

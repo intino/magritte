@@ -75,7 +75,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			String compilerOutput = generationOutputs.get(chunk.representativeTarget());
 			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
 			TaraRunner runner = new TaraRunner(project.getName(), compilerOutput, toCompilePaths, finalOutput, encoding,
-				getProjectIcon(chunk.getModules(), project.getName()));
+				getProjectIcon(chunk.getModules(), project.getName()), collectIconDirectories(chunk.getModules()));
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, pluginGeneration);
 			processMessages(chunk, context, handler);
 			return ExitCode.OK;
@@ -93,11 +93,21 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			context.processMessage(message);
 	}
 
+	private String[] collectIconDirectories(Set<JpsModule> jpsModules) {
+		ArrayList<String> iconDirectories = new ArrayList<>();
+		for (JpsModule module : jpsModules)
+			for (JpsModuleSourceRoot root : module.getSourceRoots())
+				if ("res".equals(root.getFile().getName()) && root.getFile().listFiles() != null)
+					for (File dir : root.getFile().listFiles())
+						if ("icons".equals(dir.getName())) iconDirectories.add(dir.getAbsolutePath());
+		return iconDirectories.toArray(new String[iconDirectories.size()]);
+	}
+
 	private String getProjectIcon(Set<JpsModule> jpsModules, String projectName) {
 		for (JpsModule module : jpsModules)
 			for (JpsModuleSourceRoot root : module.getSourceRoots())
 				if ("res".equals(root.getFile().getName())) {
-					String logoFile = root.getFile().getAbsoluteFile() + File.separator + TaraRtConstants.LOGO_PATH + File.separator + projectName + ".png";
+					String logoFile = root.getFile().getAbsoluteFile() + File.separator + TaraRtConstants.ICONS_PATH + File.separator + projectName + ".png";
 					File file = new File(logoFile);
 					if (file.exists())
 						return file.getAbsolutePath();

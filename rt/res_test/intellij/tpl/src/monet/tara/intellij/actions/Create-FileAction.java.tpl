@@ -9,24 +9,28 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.::projectName::.intellij.::projectProperName::Bundle;
 import monet.::projectName::.intellij.lang.::projectProperName::Icons;
-import monet.::projectName::.intellij.lang.file.::projectProperName::FileType;
 import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::FileImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 public class Create::projectProperName::FileAction extends JavaCreateTemplateInPackageAction<::projectProperName::FileImpl> {
 
 	public Create::projectProperName::FileAction() {
 		super(::projectProperName::Bundle.message("newdefinition.menu.action.text"), ::projectProperName::Bundle.message("newdefinition.menu.action.description"),
-			::projectProperName::Icons.ICON_13, true);
+			::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_13), true);
 	}
 
 	\@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
-		builder
-			.setTitle(::projectProperName::Bundle.message("newdefinition.dlg.prompt"))
-			.addKind("::projectProperName:: Definition", ::projectProperName::FileType.INSTANCE.getIcon(), ::projectProperName::Templates.::projectUpperName::_DEFINITION);
-		::empty| ::
+		builder.setTitle(::projectProperName::Bundle.message("newdefinition.dlg.prompt"));
+		for (Map.Entry<String, String> template \: ::projectProperName::Templates.getTemplates())
+			builder.addKind(prettyPrint(template.getKey()), ::projectProperName::Icons.getIcon(template.getKey().toUpperCase()), template.getValue());
+	}
+
+	private String prettyPrint(String template) {
+		return template.substring(0, 1).toUpperCase() + template.substring(1);
 	}
 
 	\@Override

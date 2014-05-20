@@ -1,9 +1,9 @@
 package monet.tara.compiler.codegeneration.intellij;
 
+import monet.tara.compiler.codegeneration.IconFactory;
 import monet.tara.compiler.codegeneration.JavaCommandHelper;
 import monet.tara.compiler.codegeneration.PathManager;
 import monet.tara.compiler.codegeneration.ResourceManager;
-import monet.tara.compiler.codegeneration.render.IconFactory;
 import monet.tara.compiler.codegeneration.render.RenderUtils;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.errorcollection.TaraException;
@@ -38,10 +38,6 @@ public class PluginCompiler extends CodeGenerator {
 		}
 	}
 
-	private static boolean isFatal(String errorMessage) {
-		return errorMessage != null && !errorMessage.equals("") && !errorMessage.startsWith("Note");
-	}
-
 	private static File[] getSources() {
 		return FileSystemUtils.listFiles(PathManager.getSrcDir(conf.getTempDirectory()), new FileFilter() {
 			@Override
@@ -73,6 +69,19 @@ public class PluginCompiler extends CodeGenerator {
 				FileSystemUtils.copyFile(ResourceManager.getStream(IconFactory.getIcon(icon)), new File(getDestinyOf(IconFactory.getIcon(icon))));
 			if (conf.getProjectIcon() != null && new File(conf.getProjectIcon()).exists())
 				FileSystemUtils.copyFile(conf.getProjectIcon(), getDestinyOf(IconFactory.getIcon("-.png")));
+			File iconDefinitions = new File(PathManager.getResIdeDir(conf.getTempDirectory()) + SEP + "icons" + SEP + "definitions" + SEP);
+			iconDefinitions.mkdir();
+			for (String iconDir : conf.getIconDirectories()) {
+				for (File icon : new File(iconDir).listFiles(new FileFilter() {
+					@Override
+					public boolean accept(File pathname) {
+						return pathname.getName().endsWith(".png");
+					}
+				})) {
+					File file = new File(iconDefinitions.getPath(), icon.getName().toLowerCase());
+					FileSystemUtils.copyFile(icon.getAbsolutePath(), file.getAbsolutePath());
+				}
+			}
 		} catch (FileSystemException e) {
 			LOG.severe(e.getMessage());
 			throw new TaraException("Error adding icons to the plugin");
@@ -80,7 +89,7 @@ public class PluginCompiler extends CodeGenerator {
 	}
 
 	private static String getDestinyOf(String tpl) {
-		String template = tpl.substring(tpl.indexOf("src") + 3);
+		String template = tpl.substring(tpl.indexOf("res") + 3);
 		template = template.replace("_", "Definition").replace("/tara/", '/' + conf.getProject().toLowerCase() + '/');
 		template = template.replace("-", RenderUtils.toProperCase(conf.getProject())).replaceAll("/", ("\\".equals(SEP)) ? "\\\\" : SEP);
 		return getBuildDirectory() + template;
@@ -108,5 +117,9 @@ public class PluginCompiler extends CodeGenerator {
 			if (!new File(path).exists()) throw new TaraException("Libs not found");
 		}
 		return path;
+	}
+
+	private static boolean isFatal(String errorMessage) {
+		return errorMessage != null && !errorMessage.equals("") && !errorMessage.startsWith("Note");
 	}
 }

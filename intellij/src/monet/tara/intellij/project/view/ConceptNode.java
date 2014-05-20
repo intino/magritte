@@ -47,7 +47,7 @@ public class ConceptNode extends ProjectViewNode<ConceptTreeView> {
 			setValue(null);
 		else {
 			presentation.setPresentableText(getValue().getName());
-			presentation.setIcon(TaraIcons.ICON_13);
+			presentation.setIcon(TaraIcons.getIcon(TaraIcons.ICON_13));
 		}
 	}
 

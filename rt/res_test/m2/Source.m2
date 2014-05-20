@@ -1,5 +1,5 @@
 package goros.m2
 
-Concept abstract Source <has-code root>
-    Concept Ontology <optional>
+Concept abstract Source <root>
+    Concept Ontology
         var Uid uid

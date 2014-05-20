@@ -66,15 +66,15 @@ public void checkWellReferenced() {
 		String message = ::projectProperName::Bundle.message("reference.definition.key.error.message");
 		ArrayList<LocalQuickFix> fixes = new ArrayList<>();
 		addImportFix(element, fixes);
-		addCreateDefinitionFix(element, fixes);
+		addCreateDefinitionFix(element, "Definition", fixes);
 		Annotation errorAnnotation = holder.createErrorAnnotation(element, message);
 		errorAnnotation.setTextAttributes(::projectProperName::SyntaxHighlighter.UNRESOLVED_ACCESS);
 		for (LocalQuickFix fix \: fixes)
 			errorAnnotation.registerFix(createIntention(element, fix.getName(), fix));
 	}
 
-	private void addCreateDefinitionFix(Identifier name, List<LocalQuickFix> actions) {
-		actions.add(new CreateDefinitionQuickFix(name.getText(), name.getContainingFile().getParent()));
+	private void addCreateDefinitionFix(Identifier name, String type, List<LocalQuickFix> actions) {
+		actions.add(new CreateDefinitionQuickFix(name.getText(), type, name.getContainingFile().getParent()));
 	}
 
 

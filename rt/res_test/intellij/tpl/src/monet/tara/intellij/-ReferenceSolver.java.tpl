@@ -59,9 +59,9 @@ public class ::projectProperName::ReferenceSolver extends PsiReferenceBase<PsiEl
 			if (variant instanceof Definition) {
 				Definition definition = (Definition) variant;
 				if (definition.getName() == null || definition.getName().length() == 0) continue;
-				lookupElements.add(LookupElementBuilder.create((PsiNamedElement) definition.getIdentifierNode()).withIcon(::projectProperName::Icons.ICON_13).withTypeText(getFileName(variant)));
+				lookupElements.add(LookupElementBuilder.create((PsiNamedElement) definition.getIdentifierNode()).withIcon(::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_13)).withTypeText(getFileName(variant)));
 			} else {
-				Icon icon = (variant instanceof PsiPackage) ? AllIcons.Nodes.Package \: ::projectProperName::Icons.ICON_13;
+				Icon icon = (variant instanceof PsiPackage) ? AllIcons.Nodes.Package \: ::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_13);
 				lookupElements.add(LookupElementBuilder.create((PsiNamedElement) variant).withIcon(icon).withTypeText(variant.getParent().getText()));
 			}
 		}

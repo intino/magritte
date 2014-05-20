@@ -83,17 +83,19 @@ public class TaraCompilerRunner {
 	private static void processArgs(CompilerConfiguration configuration, BufferedReader reader, String line) throws IOException {
 		String aLine = line;
 		while (aLine != null) {
-			if (aLine.startsWith(TaraRtConstants.ENCODING))
+			if (aLine.equals(TaraRtConstants.ENCODING))
 				configuration.setSourceEncoding(reader.readLine());
-			else if (aLine.startsWith(TaraRtConstants.OUTPUTPATH))
+			else if (aLine.equals(TaraRtConstants.OUTPUTPATH))
 				configuration.setTempDirectory(reader.readLine());
-			else if (aLine.startsWith(TaraRtConstants.FINAL_OUTPUTPATH))
+			else if (aLine.equals(TaraRtConstants.FINAL_OUTPUTPATH))
 				configuration.setTargetDirectory(reader.readLine());
-			else if (aLine.startsWith(TaraRtConstants.PROJECT))
+			else if (aLine.equals(TaraRtConstants.PROJECT))
 				configuration.setProject(reader.readLine());
-			else if (aLine.startsWith(TaraRtConstants.IDEA_HOME))
+			else if (aLine.equals(TaraRtConstants.IDEA_HOME))
 				configuration.setIdeaHome(reader.readLine());
-			else if (aLine.startsWith(TaraRtConstants.PROJECT_ICON))
+			else if (aLine.equals(TaraRtConstants.ICONS_PATH))
+				configuration.addIconPath(reader.readLine());
+			else if (aLine.equals(TaraRtConstants.PROJECT_ICON))
 				configuration.setProjectIcon(reader.readLine());
 			aLine = reader.readLine();
 		}

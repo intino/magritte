@@ -1,10 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.intellij.lang.psi;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
-import com.intellij.lang.ASTNode;
 import monet.tara.intellij.lang.psi.impl.*;
 
 public interface TaraTypes {
@@ -51,7 +51,7 @@ public interface TaraTypes {
   IElementType DOUBLE_VALUE_KEY = new TaraTokenType("DOUBLE_VALUE_KEY");
   IElementType FINAL = new TaraTokenType("FINAL");
   IElementType GENERIC = new TaraTokenType("GENERIC");
-  IElementType HAS_CODE = new TaraTokenType("HAS_CODE");
+  IElementType HAS_NAME = new TaraTokenType("HAS_NAME");
   IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
   IElementType IMPORT_KEY = new TaraTokenType("IMPORT_KEY");
   IElementType INTENTION_KEY = new TaraTokenType("INTENTION_KEY");
@@ -65,8 +65,8 @@ public interface TaraTypes {
   IElementType NEWLINE = new TaraTokenType("NEWLINE");
   IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
   IElementType OPEN_AN = new TaraTokenType("OPEN_AN");
-  IElementType OPTIONAL = new TaraTokenType("OPTIONAL");
   IElementType PACKAGE = new TaraTokenType("PACKAGE");
+  IElementType REQUIRED = new TaraTokenType("REQUIRED");
   IElementType RIGHT_SQUARE = new TaraTokenType("RIGHT_SQUARE");
   IElementType ROOT = new TaraTokenType("ROOT");
   IElementType SINGLETON = new TaraTokenType("SINGLETON");

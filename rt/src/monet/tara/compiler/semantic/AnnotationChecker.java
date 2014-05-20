@@ -26,7 +26,7 @@ public class AnnotationChecker {
 	public void checkAnnotations(ASTNode concept) {
 		annotations = Arrays.asList(concept.getAnnotations());
 		rootAnnotation(concept);
-		optionalAnnotation(concept);
+		requiredAnnotation(concept);
 		multipleAnnotation(concept);
 	}
 
@@ -52,17 +52,17 @@ public class AnnotationChecker {
 	}
 
 	private void rootAnnotation(ASTNode concept) {
-		if (!concept.isRoot() && annotations.contains(AnnotationType.ROOT))
+		if (!concept.isPrime() && annotations.contains(AnnotationType.ROOT))
 			errors.add(new WrongAnnotationError(AnnotationType.ROOT.name(), concept));
 	}
 
-	private void optionalAnnotation(ASTNode concept) {
-		if ((concept.isRoot() || concept.isCase()) && annotations.contains(AnnotationType.OPTIONAL))
-			errors.add(new WrongAnnotationError(AnnotationType.OPTIONAL.name(), concept));
+	private void requiredAnnotation(ASTNode concept) {
+		if ((concept.isPrime() || concept.isCase()) && annotations.contains(AnnotationType.REQUIRED))
+			errors.add(new WrongAnnotationError(AnnotationType.REQUIRED.name(), concept));
 	}
 
 	private void multipleAnnotation(ASTNode concept) {
-		if ((concept.isRoot() || concept.isCase()) && annotations.contains(AnnotationType.MULTIPLE))
+		if ((concept.isPrime() || concept.isCase()) && annotations.contains(AnnotationType.MULTIPLE))
 			errors.add(new WrongAnnotationError(AnnotationType.MULTIPLE.name(), concept));
 	}
 }

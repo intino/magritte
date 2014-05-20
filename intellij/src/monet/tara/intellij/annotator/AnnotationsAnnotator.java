@@ -8,8 +8,9 @@ import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import monet.tara.intellij.lang.parser.TaraAnnotation;
 import monet.tara.intellij.lang.psi.Annotations;
-import monet.tara.intellij.lang.psi.*;
-import monet.tara.intellij.lang.psi.impl.*;
+import monet.tara.intellij.lang.psi.Concept;
+import monet.tara.intellij.lang.psi.TaraFile;
+import monet.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import monet.tara.lang.Extensible;
 import monet.tara.lang.Modifiable;
 import org.jetbrains.annotations.NotNull;
@@ -86,9 +87,9 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	}
 
 	private void count(PsiElement annotation) {
-		if (duplicates.containsKey(annotation.getText())) {
+		if (duplicates.containsKey(annotation.getText()))
 			duplicates.get(annotation.getText()).add(annotation);
-		} else {
+		else {
 			ArrayList<PsiElement> value = new ArrayList<>();
 			value.add(annotation);
 			duplicates.put(annotation.getText(), value);

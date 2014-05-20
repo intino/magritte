@@ -22,7 +22,6 @@ public class ModuleType extends JavaModuleType {
 		return ModuleTypeManager.getInstance().findByID(TARA_MODULE);
 	}
 
-
 	@NotNull
 	@Override
 	public ModuleBuilder createModuleBuilder() {
@@ -41,10 +40,10 @@ public class ModuleType extends JavaModuleType {
 	}
 
 	public Icon getNodeIcon(final boolean isOpened) {
-		return TaraIcons.ICON_13;
+		return TaraIcons.getIcon(TaraIcons.ICON_13);
 	}
 
 	public Icon getBigIcon() {
-		return TaraIcons.ICON_100;
+		return TaraIcons.getIcon(TaraIcons.ICON_100);
 	}
 }

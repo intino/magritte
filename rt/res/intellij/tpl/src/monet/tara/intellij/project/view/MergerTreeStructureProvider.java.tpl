@@ -70,7 +70,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 				Collection<BasePsiNode<? extends PsiElement>> subNodes = new ArrayList<>();
 				subNodes.add((BasePsiNode<? extends PsiElement>) element);
 				subNodes.addAll(definitionNodes);
-				result.add(new DefinitionNode(project, new DefinitionTreeView(psiClass, definitionFiles), settings, ::projectProperName::Icons.ICON_13, subNodes));
+				result.add(new DefinitionNode(project, new DefinitionTreeView(psiClass, definitionFiles), settings, ::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_13), subNodes));
 				result.remove(element);
 				result.removeAll(definitionNodes);
 			}

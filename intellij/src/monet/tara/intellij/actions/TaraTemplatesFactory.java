@@ -16,12 +16,13 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Properties;
 
 public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory {
 	@NonNls
-	public static final String[] TEMPLATES = {TaraTemplates.TARA_CONCEPT};
+	public static final Collection<String> TEMPLATES = TaraTemplates.getTemplateValues();
 	@NonNls
 	static final String NAME_TEMPLATE_PROPERTY = "NAME";
 	static final String LOW_CASE_NAME_TEMPLATE_PROPERTY = "lowCaseName";
@@ -64,7 +65,7 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 	}
 
 	public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
-		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(TaraBundle.message("file.template.group.title.tara"), TaraIcons.ICON_100);
+		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(TaraBundle.message("file.template.group.title.tara"), TaraIcons.getIcon(TaraIcons.ICON_100));
 		final FileTypeManager fileTypeManager = FileTypeManager.getInstance();
 		for (String template : TEMPLATES) {
 			group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template).getIcon()));

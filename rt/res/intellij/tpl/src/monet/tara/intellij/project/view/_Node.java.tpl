@@ -47,7 +47,7 @@ public class DefinitionNode extends ProjectViewNode<DefinitionTreeView> {
 			setValue(null);
 		else {
 			presentation.setPresentableText(getValue().getName());
-			presentation.setIcon(::projectProperName::Icons.ICON_13);
+			presentation.setIcon(::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_13));
 		}
 	}
 

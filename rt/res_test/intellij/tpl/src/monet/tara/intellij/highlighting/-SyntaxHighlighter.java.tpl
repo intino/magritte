@@ -85,9 +85,8 @@ public class ::projectProperName::SyntaxHighlighter extends SyntaxHighlighterBas
 		KEYS.put(CLOSE_AN, ANNOTATION);
 		KEYS.put(VAR, KEYWORD);
 
-		KEYS.put(OPTIONAL, ANNOTATION);
+		KEYS.put(REQUIRED, ANNOTATION);
 		KEYS.put(MULTIPLE, ANNOTATION);
-		KEYS.put(HAS_CODE, ANNOTATION);
 		KEYS.put(SINGLETON, ANNOTATION);
 		KEYS.put(INTENTION_KEY, ANNOTATION);
 		KEYS.put(ROOT, ANNOTATION);

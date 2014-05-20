@@ -10,7 +10,7 @@ class TplMarker {
                 text = text.substring(0, index) + "::projectName::" + text.substring(index + "tara".length(), text.length())
             index++
         }
-        index =0
+        index = 0
         while ((index = text.indexOf("TARA", index)) > 0) {
             if (text.indexOf("Icons.TARA", index - 6) + 6 != index)
                 text = text.substring(0, index) + "::projectUpperName::" + text.substring(index + "TARA".length(), text.length())
@@ -94,10 +94,10 @@ class TplMarker {
         text
     }
 
-    static String removeAnnotation(String annotation, String text, int from, int to) {
+    static String removeAnnotation(String importSentence, String text, int from, int to) {
         String result = text.substring(0, from - 2) + text.substring(to + 1, text.length());
-        def of = result.indexOf(annotation)
-        return result.substring(0, of) + result.substring(of + annotation.length(), result.length());
+        def of = result.indexOf(importSentence)
+        return result.substring(0, of) + result.substring(of + importSentence.length(), result.length())
     }
 
     static int getLastIndexOfCurlyBlock(String text, int from) {
@@ -121,15 +121,18 @@ class TplMarker {
     }
 
     private static String addMarksWithSubstitution(String text, String replace) {
-        int index = text.indexOf("//gen")
-        int endIndex = text.indexOf("//end")
-        if (index > 0) {
-            String field = text.substring(index, endIndex + 5)
-            String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
-            if (token != "")
-                text = text.replace(field, "::" + replace + "::")
-            else text = text.replace(field, "")
+        int index = -1
+        while ((index = text.indexOf("//gen", index + 1)) > 0) {
+            int endIndex = text.indexOf("//end")
+            if (index > 0) {
+                String field = text.substring(index, endIndex + 5)
+                String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
+                if (token != "")
+                    text = text.replace(field, "::" + token + "::")
+                else text = text.replace(field, "")
+            }
         }
+
         text
     }
 
@@ -163,4 +166,5 @@ class TplMarker {
         }
         text
     }
+
 }

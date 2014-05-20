@@ -80,9 +80,9 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	@Override
 	public Icon getIcon(@IconFlags int i) {
 		if (this.isCase())
-			return TaraIcons.CASE_13;
-		if (this.isBase()) return TaraIcons.BASE_13;
-		return TaraIcons.CONCEPT_13;
+			return TaraIcons.getIcon(TaraIcons.CASE_13);
+		if (this.isBase()) return TaraIcons.getIcon(TaraIcons.BASE_13);
+		return TaraIcons.getIcon(TaraIcons.CONCEPT);
 	}
 
 	@NotNull

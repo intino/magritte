@@ -154,20 +154,18 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterAnnotations(@NotNull AnnotationsContext ctx) {
-		for (int i = 0; i < ctx.OPTIONAL().size(); i++)
-			conceptStack.peek().add(ASTNode.AnnotationType.OPTIONAL);
+		for (int i = 0; i < ctx.REQUIRED().size(); i++)
+			conceptStack.peek().add(ASTNode.AnnotationType.REQUIRED);
 		for (int i = 0; i < ctx.MULTIPLE().size(); i++)
 			conceptStack.peek().add(ASTNode.AnnotationType.MULTIPLE);
-		for (int i = 0; i < ctx.extensible().size(); i++)
-			conceptStack.peek().add(ASTNode.AnnotationType.EXTENSIBLE);
-		for (int i = 0; i < ctx.HAS_CODE().size(); i++)
-			conceptStack.peek().add(ASTNode.AnnotationType.HAS_CODE);
 		for (int i = 0; i < ctx.SINGLETON().size(); i++)
 			conceptStack.peek().add(ASTNode.AnnotationType.SINGLETON);
 		for (int i = 0; i < ctx.ROOT().size(); i++)
 			conceptStack.peek().add(ASTNode.AnnotationType.ROOT);
 		for (int i = 0; i < ctx.GENERIC().size(); i++)
 			conceptStack.peek().add(ASTNode.AnnotationType.GENERIC);
+		for (int i = 0; i < ctx.HAS_NAME().size(); i++)
+			conceptStack.peek().add(ASTNode.AnnotationType.HAS_NAME);
 	}
 
 	private String[] getIdentifiers(VariableNamesContext namesContext) {
