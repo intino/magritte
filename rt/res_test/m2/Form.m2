@@ -1,12 +1,10 @@
 package goros.m2
 
 import goros.m2.Source
-import goros.m1.Entity
-import goros.m1.Form
+import goros.m2.entity.Entity
 
-
-Concept:Entity Form <root>
-    Concept base Field <required>
+Concept:Entity Form
+    Concept base Field <multiple required>
         var String label
         Concept:Event OnChange <intention required>
  		' Añadir para ofrecer al usuario información más detallada del campo
@@ -83,17 +81,17 @@ Concept:Entity Form <root>
                     case FromField
                         var Form.Field field
                     case FromTerm
-                        var Term termRef
+                        var Term term
                         Concept Depth {var Natural depth}
 
             Concept Filter
                 var String[] tags
             Concept View
-                Concept ShowKey <required>
-                Concept Embedded <required>
+                Concept ShowKey
+                Concept Embedded
 
         case CompositeField
-            Concept:Form.Field FromField <multiple required>
+            Concept:Form.Field <multiple>
             Concept View
                 Concept Table
                     var Form.Field[] fields
@@ -103,9 +101,5 @@ Concept:Entity Form <root>
     Concept Georeference
     Concept:Entity.View abstract View
         var String label
-    Concept:View Tab <multiple required>
+    Concept:View Tab <multiple>
     Concept:View Summary
-
-
-
-

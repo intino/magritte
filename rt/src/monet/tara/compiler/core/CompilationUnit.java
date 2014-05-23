@@ -3,7 +3,6 @@ package monet.tara.compiler.core;
 import monet.tara.compiler.codegeneration.ClassGenerator;
 import monet.tara.compiler.codegeneration.intellij.FileSystemUtils;
 import monet.tara.compiler.codegeneration.intellij.PluginGenerator;
-import monet.tara.lang.ASTNode;
 import monet.tara.compiler.core.errorcollection.*;
 import monet.tara.compiler.core.errorcollection.message.Message;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
@@ -11,8 +10,11 @@ import monet.tara.compiler.core.operation.ModuleUnitOperation;
 import monet.tara.compiler.core.operation.Operation;
 import monet.tara.compiler.core.operation.SourceUnitOperation;
 import monet.tara.compiler.core.operation.SrcToClassOperation;
+import monet.tara.compiler.dependencyresolver.ASTDependencyResolver;
 import monet.tara.compiler.rt.TaraRtConstants;
 import monet.tara.compiler.semantic.SemanticAnalyzer;
+import monet.tara.lang.ASTNode;
+import monet.tara.lang.ASTWrapper;
 
 import java.io.IOException;
 import java.util.*;
@@ -23,23 +25,42 @@ public class CompilationUnit extends ProcessingUnit {
 	private static final Logger LOG = Logger.getLogger(CompilationUnit.class.getName());
 	private final boolean pluginGeneration;
 	protected Map<String, SourceUnit> sources;
-	protected ProgressCallback progressCallback;
-	private SourceUnitOperation convert = new SourceUnitOperation() {
-		public void call(SourceUnit source) throws CompilationFailedException {
+	protected ASTWrapper ast;
+	private ModuleUnitOperation semantic = new ModuleUnitOperation() {
+		public void call(Collection<SourceUnit> sources) throws CompilationFailedException {
 			try {
-				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Converting");
-				source.convert();
-				getErrorCollector().failIfErrors();
-			} catch (TaraException e) {
-				LOG.severe("Error during conversion");
-				getErrorCollector().addError(Message.create(e.getMessage(), source));
+				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Analyzing semantic");
+				SemanticAnalyzer analyzer = new SemanticAnalyzer(ast);
+				analyzer.analyze();
+			} catch (SemanticException e) {
+				for (SemanticError error : e.getErrors())
+					if (error instanceof SemanticError.FatalError) {
+						LOG.severe("Error during semantic analyze: " + e.getMessage());
+						getErrorCollector().addError(Message.create(error, getSourceFromFile(error.getNode())));
+					} else
+						getErrorCollector().addWarning(2, error.getMessage(), getSourceFromFile(error.getNode()));
 			}
 		}
 	};
+	protected ASTNode[] astProcessed;
+	private ModuleUnitOperation ASTDependencyResolution = new ModuleUnitOperation() {
+		public void call(Collection<SourceUnit> sources) throws CompilationFailedException {
+			try {
+				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "AST dependency resolution");
+				ASTDependencyResolver resolver = new ASTDependencyResolver(sources);
+				ast = resolver.getAst();
+				astProcessed = resolver.resolve();
+			} catch (DependencyException e) {
+				LOG.severe("Error during Dependency resolution: " + e.getMessage());
+				getErrorCollector().addError(Message.create(e, getSourceFromFile(e.getNode())));
+			}
+		}
+	};
+	protected ProgressCallback progressCallback;
 	private SourceUnitOperation parsing = new SourceUnitOperation() {
 		public void call(SourceUnit source) throws CompilationFailedException {
 			try {
-				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Parsing");
+				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Parsing" + source.getName());
 				source.parse();
 				getErrorCollector().failIfErrors();
 			} catch (IOException e) {
@@ -51,27 +72,16 @@ public class CompilationUnit extends ProcessingUnit {
 			}
 		}
 	};
-	private ModuleUnitOperation semantic = new ModuleUnitOperation() {
-		public void call(Collection<SourceUnit> sources) throws CompilationFailedException {
+	private SourceUnitOperation convert = new SourceUnitOperation() {
+		public void call(SourceUnit source) throws CompilationFailedException {
 			try {
-				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Analyzing semantic");
-				SemanticAnalyzer analyzer = new SemanticAnalyzer(sources);
-				analyzer.analyze();
-			} catch (SemanticException e) {
-				for (SemanticError error : e.getErrors())
-					if (error instanceof SemanticError.FatalError) {
-						LOG.severe("Error during semantic analyze");
-						getErrorCollector().addError(Message.create(error, getSourceFromFile(error.getNode())));
-					} else
-						getErrorCollector().addWarning(2, error.getMessage(), getSourceFromFile(error.getNode()));
+				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Converting");
+				source.convert();
+				getErrorCollector().failIfErrors();
+			} catch (TaraException e) {
+				LOG.severe("Error during conversion");
+				getErrorCollector().addError(Message.create(e.getMessage(), source));
 			}
-		}
-
-		private SourceUnit getSourceFromFile(ASTNode node) {
-			if (node != null)
-				for (String name : sources.keySet())
-					if (name.equals(node.getFile())) return sources.get(name);
-			return null;
 		}
 	};
 	private LinkedList<Operation>[] phaseOperations;
@@ -120,6 +130,7 @@ public class CompilationUnit extends ProcessingUnit {
 			this.phaseOperations[i] = new LinkedList();
 		addPhaseOperation(parsing, Phases.PARSING);
 		addPhaseOperation(convert, Phases.CONVERSION);
+		addPhaseOperation(ASTDependencyResolution, Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(semantic, Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
 		if (pluginGeneration) addPhaseOperation(pluginGenerationOperation, Phases.PLUGIN_GENERATION);
@@ -155,7 +166,7 @@ public class CompilationUnit extends ProcessingUnit {
 
 	public void compile(int throughPhase) throws CompilationFailedException {
 		gotoPhase(1);
-		while ((Math.min(throughPhase, 8) >= this.phase) && (this.phase <= 8)) {
+		while ((Math.min(throughPhase, 9) >= this.phase) && (this.phase <= 9)) {
 			processPhaseOperations(this.phase);
 			if (this.progressCallback != null) this.progressCallback.call(this, this.phase);
 			completePhase();
@@ -163,6 +174,16 @@ public class CompilationUnit extends ProcessingUnit {
 			applyToSourceUnits(this.mark);
 		}
 		this.errorCollector.failIfErrors();
+	}
+
+	public void applyToSourceUnits(SourceUnitOperation body) throws CompilationFailedException {
+		SourceUnit source;
+		for (String name : this.sources.keySet()) {
+			source = this.sources.get(name);
+			if ((source.phase < this.phase) || ((source.phase == this.phase) && (!source.phaseComplete)))
+				body.call(source);
+		}
+		getErrorCollector().failIfErrors();
 	}
 
 	private void processPhaseOperations(int ph) {
@@ -180,14 +201,11 @@ public class CompilationUnit extends ProcessingUnit {
 			((ModuleUnitOperation) operation).call(sources.values());
 	}
 
-	public void applyToSourceUnits(SourceUnitOperation body) throws CompilationFailedException {
-		SourceUnit source;
-		for (String name : this.sources.keySet()) {
-			source = this.sources.get(name);
-			if ((source.phase < this.phase) || ((source.phase == this.phase) && (!source.phaseComplete)))
-				body.call(source);
-		}
-		getErrorCollector().failIfErrors();
+	private SourceUnit getSourceFromFile(ASTNode node) {
+		if (node != null)
+			for (String name : sources.keySet())
+				if (name.equals(node.getFile())) return sources.get(name);
+		return null;
 	}
 
 	public abstract static class ProgressCallback {

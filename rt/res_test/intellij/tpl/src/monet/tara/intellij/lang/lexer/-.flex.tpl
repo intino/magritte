@@ -91,20 +91,12 @@ NEWLINE= [\\n]+ ([ ] | [\\t])*
 //=====================
 //Reserved words
 
-SYNTHESIZE = "synthesize"
 IMPORT_KEY = "import"
 PACKAGE    = "package"
 CASE_KEY  = "case"
 BASE_KEY  = "base"
 FINAL     = "final"
 ABSTRACT  = "abstract"
-MULTIPLE  = "multiple"
-REQUIRED  = "required"
-HAS_NAME  = "has-name"
-SINGLETON = "singleton"
-INTENTION_KEY = "intention"
-GENERIC   = "generic"
-ROOT      = "root"
 WORD      = "Word"
 VAR       = "var"
 CODE_KEY  = "code"
@@ -154,8 +146,6 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 \%\%
 <YYINITIAL> {
 
-    {SYNTHESIZE}                {   return ::projectProperName::Types.SYNTHESIZE; }
-
     {IMPORT_KEY}                {   return ::projectProperName::Types.IMPORT_KEY; }
 
     {PACKAGE}                   {   return ::projectProperName::Types.PACKAGE; }
@@ -176,15 +166,6 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 
 	{OPEN_AN}                   {   return ::projectProperName::Types.OPEN_AN; }
 	{CLOSE_AN}                  {   return ::projectProperName::Types.CLOSE_AN; }
-
-	{REQUIRED}                  {   return ::projectProperName::Types.REQUIRED; }
-	{MULTIPLE}                  {   return ::projectProperName::Types.MULTIPLE; }
-
-	{HAS_NAME}                  {   return ::projectProperName::Types.HAS_NAME; }
-	{ROOT}                      {   return ::projectProperName::Types.ROOT; }
-	{SINGLETON}                 {   return ::projectProperName::Types.SINGLETON; }
-	{GENERIC}                   {   return ::projectProperName::Types.GENERIC; }
-	{INTENTION_KEY}             {   return ::projectProperName::Types.INTENTION_KEY; }
 
 	{DOC_LINE}                  {   return ::projectProperName::Types.DOC_LINE; }
 

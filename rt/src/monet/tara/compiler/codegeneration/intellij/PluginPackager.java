@@ -64,7 +64,7 @@ public class PluginPackager extends CodeGenerator {
 	}
 
 	private static void addDependenciesAndRes(String destiny, File tempDir) throws FileSystemException {
-		File resDir = new File(PathManager.getResIdeDir(tempDir));
+		File resDir = new File(PathManager.getSourceResIdeDir(tempDir));
 		File metainf = new File(PathManager.getSrcIdeDir(tempDir) + "META-INF");
 		if (metainf.exists()) FileSystemUtils.copyDir(metainf, new File(destiny + "META-INF"));
 		if (resDir.listFiles() != null)

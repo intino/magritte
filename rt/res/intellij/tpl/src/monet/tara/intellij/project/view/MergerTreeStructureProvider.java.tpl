@@ -56,7 +56,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 	\@NotNull
 	public Collection<AbstractTreeNode> modify(\@NotNull AbstractTreeNode parent, \@NotNull Collection<AbstractTreeNode> children, ViewSettings settings) {
 		if (parent.getValue() instanceof DefinitionTreeView) return children;
-		if (!definitionExists(children)) return children;
+		if (!hasDefinitions(children)) return children;
 		Collection<AbstractTreeNode> result = new LinkedHashSet<>(children);
 		ProjectViewNode[] copy = children.toArray(new ProjectViewNode[children.size()]);
 		for (ProjectViewNode element \: copy) {
@@ -70,7 +70,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 				Collection<BasePsiNode<? extends PsiElement>> subNodes = new ArrayList<>();
 				subNodes.add((BasePsiNode<? extends PsiElement>) element);
 				subNodes.addAll(definitionNodes);
-				result.add(new DefinitionNode(project, new DefinitionTreeView(psiClass, definitionFiles), settings, ::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_13), subNodes));
+				result.add(new DefinitionNode(project, new DefinitionTreeView(psiClass, definitionFiles), settings, ::projectProperName::Icons.getIcon(::projectProperName::Icons.DEFINITION), subNodes));
 				result.remove(element);
 				result.removeAll(definitionNodes);
 			}
@@ -89,17 +89,11 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 		return psiClass;
 	}
 
-	private boolean definitionExists(Collection<AbstractTreeNode> children) {
-		boolean definitionFound = false;
+	private boolean hasDefinitions(Collection<AbstractTreeNode> children) {
 		for (AbstractTreeNode node \: children)
-			if (node.getValue() instanceof PsiFile) {
-				PsiFile file = (PsiFile) node.getValue();
-				if (file.getFileType() == ::projectProperName::FileType.INSTANCE) {
-					definitionFound = true;
-					break;
-				}
-			}
-		return definitionFound;
+			if (node.getValue() instanceof PsiFile)
+				if (((PsiFile) node.getValue()).getFileType() == ::projectProperName::FileType.INSTANCE) return true;
+		return false;
 	}
 
 	private List<PsiFile> findDefinitionsBoundToClass(PsiClass psiClass) {

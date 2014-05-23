@@ -11,24 +11,26 @@ public class ASTNode {
 	private boolean caseConcept;
 	private boolean base;
 	private String doc;
-	private String extendFrom;
+	private String parentName;
+	private transient ASTNode parentConcept;
+	private transient List<ASTNode> childrenConcepts;
 	private String baseConcept;
 	private String identifier = "";
 	private String file;
 	private int line;
 	private List<AnnotationType> annotations = new ArrayList<>();
 	private List<String> imports = new ArrayList<>();
-	private AST children = new AST();
+	private AST innerConcepts = new AST();
 	private List<Variable> variables = new ArrayList<>();
-	private transient ASTNode parent;
+	private transient ASTNode container;
 	private String aPackage;
 
 	public ASTNode() {
 	}
 
-	public ASTNode(String identifier, ASTNode parent, String file) {
+	public ASTNode(String identifier, ASTNode container, String file) {
 		this.identifier = identifier;
-		this.parent = parent;
+		this.container = container;
 		this.file = file;
 		this.abstractModifier = false;
 		this.finalModifier = false;
@@ -42,11 +44,11 @@ public class ASTNode {
 		this.finalModifier = false;
 		this.caseConcept = false;
 		this.base = false;
-		this.parent = null;
+		this.container = null;
 	}
 
 	public boolean isPrime() {
-		return getParent() == null;
+		return getContainer() == null;
 	}
 
 	public boolean is(AnnotationType type) {
@@ -87,12 +89,12 @@ public class ASTNode {
 		return result.toArray(new Reference[result.size()]);
 	}
 
-	public AST getChildren() {
-		return children;
+	public AST getInnerConcepts() {
+		return innerConcepts;
 	}
 
 	public ASTNode getChildByName(String name) {
-		for (ASTNode child : getChildren())
+		for (ASTNode child : getInnerConcepts())
 			if (child.getIdentifier().equals(name))
 				return child;
 		return null;
@@ -107,12 +109,24 @@ public class ASTNode {
 			Collections.addAll(this.imports, imports);
 	}
 
-	public String getExtendFrom() {
-		return extendFrom;
+	public String getParentName() {
+		return parentName;
 	}
 
-	public void setExtendFrom(String extendFrom) {
-		this.extendFrom = extendFrom;
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
+
+	public ASTNode getParentConcept() {
+		return parentConcept;
+	}
+
+	public void setParentConcept(ASTNode parentConcept) {
+		this.parentConcept = parentConcept;
+	}
+
+	public List<ASTNode> getChildren() {
+		return childrenConcepts;
 	}
 
 	public String getDoc() {
@@ -126,7 +140,7 @@ public class ASTNode {
 	public ASTNode[] getCases() {
 		List<ASTNode> cases = new ArrayList<>();
 		if (base) {
-			for (ASTNode child : children)
+			for (ASTNode child : innerConcepts)
 				if (child.isCase()) cases.add(child);
 			return cases.toArray(new ASTNode[cases.size()]);
 		} else return new ASTNode[0];
@@ -171,6 +185,11 @@ public class ASTNode {
 		else finalModifier = true;
 	}
 
+	public void addChild(ASTNode child) {
+		if (childrenConcepts == null) childrenConcepts = new ArrayList<>();
+		childrenConcepts.add(child);
+	}
+
 	public void add(AnnotationType annotation) {
 		annotations.add(annotation);
 	}
@@ -183,8 +202,8 @@ public class ASTNode {
 		variables.add(word);
 	}
 
-	public void add(ASTNode child) {
-		children.add(child);
+	public void add(ASTNode innerConcept) {
+		innerConcepts.add(innerConcept);
 	}
 
 	public void addReference(String type, String identifier, boolean isList) {
@@ -199,12 +218,12 @@ public class ASTNode {
 		return result;
 	}
 
-	public ASTNode getParent() {
-		return parent;
+	public ASTNode getContainer() {
+		return container;
 	}
 
-	public void setParent(ASTNode parent) {
-		this.parent = parent;
+	public void setContainer(ASTNode container) {
+		this.container = container;
 	}
 
 	public List<Variable> getVariables() {
@@ -216,8 +235,8 @@ public class ASTNode {
 	}
 
 	private String getConceptRoute() {
-		return ((parent != null) ? parent.getConceptRoute() +
-			((!"".equals(getIdentifier())) ? "." + getIdentifier() : ".annonymous(" + extendFrom + ")") : getIdentifier());
+		return ((container != null) ? container.getConceptRoute() +
+			((!"".equals(getIdentifier())) ? "." + getIdentifier() : ".annonymous(" + parentName + ")") : getIdentifier());
 	}
 
 	public String getFile() {
@@ -250,6 +269,10 @@ public class ASTNode {
 		return variable != null;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
 
 	public enum AnnotationType {
 		HAS_NAME, ROOT, SINGLETON, MULTIPLE, REQUIRED, GENERIC;
@@ -333,6 +356,5 @@ public class ASTNode {
 		public void setName(String name) {
 			this.name = name;
 		}
-
 	}
 }

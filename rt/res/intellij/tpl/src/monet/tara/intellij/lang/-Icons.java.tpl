@@ -10,7 +10,7 @@ public class ::projectProperName::Icons {
 
 
 	public static final String ICON_13 = "ICON_13";
-	public static final String DEFINITION = "DEFINITION_13";
+	public static final String DEFINITION = "DEFINITION";
 	public static final String CASE_13 = "CASE_13";
 	public static final String BASE_13 = "BASE_13";
 	public static final String ICON_100 = "ICON_100";

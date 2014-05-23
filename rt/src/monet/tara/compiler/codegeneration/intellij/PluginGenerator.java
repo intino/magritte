@@ -32,7 +32,7 @@ public class PluginGenerator {
 		File[] lexFiles = TaraToJFlexCodeGenerator.toJFlex(conf, ast);
 		for (File lexFile : lexFiles)
 			JFlexToJavaGenerator.jFlexToJava(conf.getTempDirectory(), lexFile);
-		TemplateGenerator.generateTemplates(conf);
+		TemplateGenerator.generateDefinitionTemplates(conf, ast);
 		PluginCompiler.generateClasses(conf);
 		PluginPackager.doPackage(conf);
 	}
@@ -49,7 +49,7 @@ public class PluginGenerator {
 
 	private void serializeNodes(ASTWrapper astWrapper) throws TaraException {
 		try {
-			File file = new File(PathManager.getResIdeDir(conf.getTempDirectory()), AST_JSON);
+			File file = new File(PathManager.getSourceResIdeDir(conf.getTempDirectory()), AST_JSON);
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
 			GsonBuilder gsonBuilder = new GsonBuilder();

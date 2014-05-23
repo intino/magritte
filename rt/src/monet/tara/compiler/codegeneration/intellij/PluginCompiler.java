@@ -69,7 +69,7 @@ public class PluginCompiler extends CodeGenerator {
 				FileSystemUtils.copyFile(ResourceManager.getStream(IconFactory.getIcon(icon)), new File(getDestinyOf(IconFactory.getIcon(icon))));
 			if (conf.getProjectIcon() != null && new File(conf.getProjectIcon()).exists())
 				FileSystemUtils.copyFile(conf.getProjectIcon(), getDestinyOf(IconFactory.getIcon("-.png")));
-			File iconDefinitions = new File(PathManager.getResIdeDir(conf.getTempDirectory()) + SEP + "icons" + SEP + "definitions" + SEP);
+			File iconDefinitions = new File(getBuildDirectory() + SEP + "icons" + SEP + "definitions" + SEP);
 			iconDefinitions.mkdir();
 			for (String iconDir : conf.getIconDirectories()) {
 				for (File icon : new File(iconDir).listFiles(new FileFilter() {

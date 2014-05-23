@@ -4,11 +4,11 @@ import monet.tara.compiler.core.errorcollection.TaraException;
 import monet.tara.lang.ASTNode;
 import monet.tara.lang.ASTWrapper;
 
-public class TemplatesRender extends DefaultRender {
+public class TemplatesClassRender extends DefaultRender {
 
 	ASTWrapper wrapper;
 
-	public TemplatesRender(String tplName, String projectName, Object astWrapper) throws TaraException {
+	public TemplatesClassRender(String tplName, String projectName, Object astWrapper) throws TaraException {
 		super(tplName, projectName);
 		this.wrapper = (ASTWrapper) astWrapper;
 	}

@@ -18,8 +18,8 @@ public class ParserTest {
 		ASTWrapper ast = parser.convert();
 		ASTNode node = ast.searchAncestry(ast.getAST().get(2));
 		Assert.assertEquals(ast.getAST().get(1), node);
-//		node = ast.searchAncestry(ast.getAST()[5].getChildren()[2]);
-//		Assert.assertEquals(ast.getAST()[4].getChildren()[3], node);
+//		node = ast.searchAncestry(ast.getAST()[5].getInnerConcepts()[2]);
+//		Assert.assertEquals(ast.getAST()[4].getInnerConcepts()[3], node);
 //		node = ast.searchAncestry(ast.getAST()[2]);
 //		Assert.assertEquals(null, node);
 //		Render render = RendersFactory.getRender("Definition", projectName, ast.getAST("Entity"));

@@ -30,7 +30,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	}
 
 	private String prettyPrint(String template) {
-		return template.substring(0, 1).toUpperCase() + template.substring(1);
+		return template.substring(0, 1).toUpperCase() + template.substring(1).toLowerCase();
 	}
 
 	@Override

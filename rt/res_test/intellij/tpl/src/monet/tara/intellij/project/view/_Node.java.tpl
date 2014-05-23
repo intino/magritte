@@ -4,6 +4,7 @@ import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
+import com.intellij.ide.projectView.impl.nodes.PsiFileNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.navigation.NavigationItemFileStatus;
 import com.intellij.openapi.project.Project;
@@ -12,10 +13,10 @@ import com.intellij.openapi.vcs.FileStatus;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import monet.::projectName::.intellij.lang.::projectProperName::Icons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class DefinitionNode extends ProjectViewNode<DefinitionTreeView> {
@@ -47,7 +48,7 @@ public class DefinitionNode extends ProjectViewNode<DefinitionTreeView> {
 			setValue(null);
 		else {
 			presentation.setPresentableText(getValue().getName());
-			presentation.setIcon(::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_13));
+			presentation.setIcon(((PsiFileNode) ((ArrayList) myChildren).get(1)).getValue().getIcon(0));
 		}
 	}
 

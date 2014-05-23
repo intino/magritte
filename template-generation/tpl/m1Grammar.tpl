@@ -19,9 +19,6 @@ root \:\:= NEWLINE* header? NEWLINE+ definition? NEWLINE* {
 	pin = 4
 }
 definitionKey \:\:= ::conceptKeys::
-synthesizeStatement \:\:= NEW_LINE SYNTHESIZE definitionKey ((OPEN_AN synthesizeTag+ CLOSE_AN) | synthesizeAttribute )
-synthesizeTag \:\:= GENERIC | intention | FINAL | ABSTRACT |  MULTIPLE |  REQUIRED | SINGLETON | ROOT | HAS_NAME
-synthesizeAttribute \:\:= NEW_LINE_INDENT( attribute  NEWLINE+)+ DEDENT
 
 header \:\:=  packet? importStatement* synthesizeStatement*
 

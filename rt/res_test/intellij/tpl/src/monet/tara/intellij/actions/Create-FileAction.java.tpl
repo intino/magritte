@@ -30,7 +30,7 @@ public class Create::projectProperName::FileAction extends JavaCreateTemplateInP
 	}
 
 	private String prettyPrint(String template) {
-		return template.substring(0, 1).toUpperCase() + template.substring(1);
+		return template.substring(0, 1).toUpperCase() + template.substring(1).toLowerCase();
 	}
 
 	\@Override

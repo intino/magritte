@@ -16,6 +16,7 @@ import monet.::projectName::.intellij.lang.::projectProperName::Language;
 import monet.::projectName::.intellij.lang.file.::projectProperName::FileType;
 import monet.::projectName::.intellij.lang.psi.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ::projectProperName::FileImpl extends PsiFileBase implements ::proj
 	}
 
 	public String getPresentableName() {
-		return getName().substring(0, getName().lastIndexOf("."));
+		return getName().split("\\\\.")[0];
 	}
 
 	\@Override
@@ -63,6 +64,17 @@ public class ::projectProperName::FileImpl extends PsiFileBase implements ::proj
 				return ::projectProperName::Icons.getIcon(::projectProperName::Icons.DEFINITION);
 			}
 		};
+	}
+
+	\@Nullable
+	\@Override
+	public Icon getIcon(int flags) {
+		MetaIdentifier type = this.getDefinition().getSignature().getType();
+		if (type != null) {
+			Icon icon = ::projectProperName::Icons.getIcon(type.getText().toUpperCase());
+			if (icon != null) return icon;
+		}
+		return ::projectProperName::Icons.getIcon(::projectProperName::Icons.DEFINITION);
 	}
 
 	\@Override

@@ -1,10 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.intellij.lang.psi;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.PsiElement;
+import com.intellij.lang.ASTNode;
 import monet.tara.intellij.lang.psi.impl.*;
 
 public interface TaraTypes {
@@ -67,11 +66,13 @@ public interface TaraTypes {
   IElementType OPEN_AN = new TaraTokenType("OPEN_AN");
   IElementType PACKAGE = new TaraTokenType("PACKAGE");
   IElementType REQUIRED = new TaraTokenType("REQUIRED");
+  IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
   IElementType RIGHT_SQUARE = new TaraTokenType("RIGHT_SQUARE");
   IElementType ROOT = new TaraTokenType("ROOT");
   IElementType SINGLETON = new TaraTokenType("SINGLETON");
   IElementType STRING_TYPE = new TaraTokenType("STRING_TYPE");
   IElementType STRING_VALUE_KEY = new TaraTokenType("STRING_VALUE_KEY");
+  IElementType SYSTEM = new TaraTokenType("SYSTEM");
   IElementType UID_TYPE = new TaraTokenType("UID_TYPE");
   IElementType VAR = new TaraTokenType("VAR");
   IElementType WORD_KEY = new TaraTokenType("WORD_KEY");

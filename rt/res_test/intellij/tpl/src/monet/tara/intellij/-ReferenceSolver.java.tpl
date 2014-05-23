@@ -69,6 +69,6 @@ public class ::projectProperName::ReferenceSolver extends PsiReferenceBase<PsiEl
 	}
 
 	private String getFileName(PsiElement definition) {
-		return definition.getContainingFile().getName().split("\\\\.")[0];
+		return definition.getContainingFile().getName();
 	}
 }

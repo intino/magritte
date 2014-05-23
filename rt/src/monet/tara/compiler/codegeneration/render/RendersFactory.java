@@ -20,7 +20,7 @@ public class RendersFactory {
 		renders.put("TaraSignatureCompletionContributor.java", SignatureCompletionContributorRender.class);
 		renders.put("Tara.bnf", BnfRender.class);
 		renders.put("TaraIcons.java", IconsRender.class);
-		renders.put("TaraTemplates.java", TemplatesRender.class);
+		renders.put("TaraTemplates.java", TemplatesClassRender.class);
 	}
 
 	private RendersFactory() {

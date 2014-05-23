@@ -100,12 +100,14 @@ FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"
 REQUIRED  = "required"
+SYSTEM    = "system"
 SINGLETON = "singleton"
 HAS_NAME  = "has-name"
 INTENTION_KEY = "intention"
 ROOT      = "root"
 GENERIC   = "generic"
-WORD      = "Word"
+WORD_KEY  = "Word"
+RESOURCE_KEY = "Resource"
 VAR       = "var"
 
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
@@ -172,6 +174,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{GENERIC}                   {   return TaraTypes.GENERIC; }
 
 	{HAS_NAME}                  {   return TaraTypes.HAS_NAME; }
+	{SYSTEM}                    {   return TaraTypes.SYSTEM; }
 	{INTENTION_KEY}             {   return TaraTypes.INTENTION_KEY; }
 	{ROOT}                      {   return TaraTypes.ROOT; }
 	{SINGLETON}                 {   return TaraTypes.SINGLETON; }
@@ -187,7 +190,8 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{LEFT_SQUARE}               {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}              {   return TaraTypes.RIGHT_SQUARE; }
 
-	{WORD}                      {   return TaraTypes.WORD_KEY; }
+	{WORD_KEY}                  {   return TaraTypes.WORD_KEY; }
+	{RESOURCE_KEY}              {   return TaraTypes.RESOURCE_KEY; }
 
 	{DOT}                       {   return TaraTypes.DOT; }
 

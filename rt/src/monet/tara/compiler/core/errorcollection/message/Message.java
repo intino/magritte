@@ -2,6 +2,7 @@ package monet.tara.compiler.core.errorcollection.message;
 
 import monet.tara.compiler.core.ProcessingUnit;
 import monet.tara.compiler.core.SourceUnit;
+import monet.tara.compiler.core.errorcollection.DependencyException;
 import monet.tara.compiler.core.errorcollection.SyntaxException;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
 
@@ -26,6 +27,10 @@ public abstract class Message {
 
 	public static Message create(SemanticError error, SourceUnit owner) {
 		return new SemanticErrorMessage(error, owner);
+	}
+
+	public static Message create(DependencyException exception, SourceUnit owner) {
+		return new DependencyErrorMessage(exception, owner);
 	}
 
 	public static Message create(String text, ProcessingUnit owner) {

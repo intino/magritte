@@ -50,7 +50,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 				ASTNode node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(context.getType()).get(0);
 				if (node != null) {
 					addChildren(concepts, node);
-					if (node.getExtendFrom() != null) addInheritedConcepts(node.getExtendFrom(), concepts);
+					if (node.getParentName() != null) addInheritedConcepts(node.getParentName(), concepts);
 					if (node.isCase()) addBaseConcepts(node.getBaseNode(), concepts);
 				}
 			}
@@ -68,7 +68,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		ASTNode node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(extendFrom).get(0);
 		for (ASTNode children : node.getChildren())
 			if (!children.isBase() && !children.isAbstract()) concepts.add(children.getIdentifier());
-		if (node.getExtendFrom() != null) addInheritedConcepts(node.getExtendFrom(), concepts);
+		if (node.getParentName() != null) addInheritedConcepts(node.getParentName(), concepts);
 	}
 
 	private void addChildren(List<String> concepts, ASTNode node) {

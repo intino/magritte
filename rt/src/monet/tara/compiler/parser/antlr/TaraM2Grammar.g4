@@ -5,7 +5,7 @@ options { tokenVocab=TaraM2Lexer; }
     package monet.tara.compiler.parser.antlr;
 }
 
-root: NEWLINE* header? NEWLINE+ concept NEWLINE* EOF;
+root: NEWLINE* header? NEWLINE* concept NEWLINE* EOF;
 
 header: packet? imports*;
 

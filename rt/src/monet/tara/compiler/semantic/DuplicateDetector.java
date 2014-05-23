@@ -1,15 +1,15 @@
 package monet.tara.compiler.semantic;
 
 
+import monet.tara.compiler.core.errorcollection.semantic.DuplicateAnnotationError;
+import monet.tara.compiler.core.errorcollection.semantic.DuplicateIdentifierError;
+import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import monet.tara.lang.AST;
 import monet.tara.lang.ASTNode;
 import monet.tara.lang.ASTNode.AnnotationType;
 import monet.tara.lang.ASTNode.Attribute;
 import monet.tara.lang.ASTNode.Reference;
 import monet.tara.lang.ASTNode.Word;
-import monet.tara.compiler.core.errorcollection.semantic.DuplicateAnnotationError;
-import monet.tara.compiler.core.errorcollection.semantic.DuplicateIdentifierError;
-import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -47,7 +47,7 @@ public class DuplicateDetector {
 	}
 
 	private void checkChildren(ASTNode concept, Set<String> names) {
-		for (ASTNode child : concept.getChildren())
+		for (ASTNode child : concept.getInnerConcepts())
 			if (!names.add(child.getIdentifier()) && !"".equals(child.getIdentifier()))
 				errors.add(new DuplicateIdentifierError(child.getIdentifier(), concept));
 	}

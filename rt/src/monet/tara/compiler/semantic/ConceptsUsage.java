@@ -30,7 +30,7 @@ public class ConceptsUsage {
     }
 
     public void checkUsage(ASTNode concept, ASTWrapper ast) {
-        checkIfUsed(ast.searchAncestry(concept));
+        checkIfUsed(concept.getParentConcept());
         checkReference(concept, ast);
     }
 

@@ -73,12 +73,18 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	static {
 		KEYS = new THashMap<>();
 
-		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);
-
 //gen %highlightKey%
 		KEYS.put(CONCEPT_KEY, KEYWORD);
+		KEYS.put(REQUIRED, ANNOTATION);
+		KEYS.put(MULTIPLE, ANNOTATION);
+		KEYS.put(SINGLETON, ANNOTATION);
+		KEYS.put(INTENTION_KEY, ANNOTATION);
+		KEYS.put(ROOT, ANNOTATION);
+		KEYS.put(GENERIC, ANNOTATION);
+		KEYS.put(HAS_NAME, ANNOTATION);
 //end
 
+		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);
 		KEYS.put(CASE_KEY, KEYWORD);
 		KEYS.put(BASE_KEY, KEYWORD);
 		KEYS.put(IMPORT_KEY, KEYWORD);
@@ -87,12 +93,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(CLOSE_AN, ANNOTATION);
 		KEYS.put(VAR, KEYWORD);
 
-		KEYS.put(REQUIRED, ANNOTATION);
-		KEYS.put(MULTIPLE, ANNOTATION);
-		KEYS.put(SINGLETON, ANNOTATION);
-		KEYS.put(INTENTION_KEY, ANNOTATION);
-		KEYS.put(ROOT, ANNOTATION);
-		KEYS.put(GENERIC, ANNOTATION);
 		KEYS.put(COLON, OPERATOR);
 		KEYS.put(LEFT_SQUARE, OPERATOR);
 		KEYS.put(RIGHT_SQUARE, OPERATOR);

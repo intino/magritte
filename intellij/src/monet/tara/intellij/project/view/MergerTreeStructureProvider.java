@@ -56,7 +56,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 	@NotNull
 	public Collection<AbstractTreeNode> modify(@NotNull AbstractTreeNode parent, @NotNull Collection<AbstractTreeNode> children, ViewSettings settings) {
 		if (parent.getValue() instanceof ConceptTreeView) return children;
-		if (!conceptExists(children)) return children;
+		if (!hasConcepts(children)) return children;
 		Collection<AbstractTreeNode> result = new LinkedHashSet<>(children);
 		ProjectViewNode[] copy = children.toArray(new ProjectViewNode[children.size()]);
 		for (ProjectViewNode element : copy) {
@@ -70,7 +70,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 				Collection<BasePsiNode<? extends PsiElement>> subNodes = new ArrayList<>();
 				subNodes.add((BasePsiNode<? extends PsiElement>) element);
 				subNodes.addAll(conceptNodes);
-				result.add(new ConceptNode(project, new ConceptTreeView(psiClass, conceptFiles), settings, TaraIcons.getIcon(TaraIcons.ICON_13), subNodes));
+				result.add(new ConceptNode(project, new ConceptTreeView(psiClass, conceptFiles), settings, TaraIcons.getIcon(TaraIcons.CONCEPT), subNodes));
 				result.remove(element);
 				result.removeAll(conceptNodes);
 			}
@@ -89,17 +89,11 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 		return psiClass;
 	}
 
-	private boolean conceptExists(Collection<AbstractTreeNode> children) {
-		boolean conceptFound = false;
+	private boolean hasConcepts(Collection<AbstractTreeNode> children) {
 		for (AbstractTreeNode node : children)
-			if (node.getValue() instanceof PsiFile) {
-				PsiFile file = (PsiFile) node.getValue();
-				if (file.getFileType() == TaraFileType.INSTANCE) {
-					conceptFound = true;
-					break;
-				}
-			}
-		return conceptFound;
+			if (node.getValue() instanceof PsiFile)
+				if (((PsiFile) node.getValue()).getFileType() == TaraFileType.INSTANCE) return true;
+		return false;
 	}
 
 	private List<PsiFile> findConceptsBoundToClass(PsiClass psiClass) {

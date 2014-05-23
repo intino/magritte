@@ -1,12 +1,5 @@
 package monet.tara.compiler.codegeneration.render;
 
-import com.intellij.CommonBundle;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.PropertyKey;
-
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
 import java.util.ResourceBundle;
 
 public class TemplateFactory {
@@ -39,24 +32,19 @@ public class TemplateFactory {
 	}
 
 	private static class TemplateBundle {
-		@NonNls
 		protected static final String PATH_TO_BUNDLE = "intellij.templates";
-		private static Reference<ResourceBundle> ourBundle;
+		private static ResourceBundle ourBundle;
 
 		private TemplateBundle() {
 		}
 
-		public static String message(@NotNull @PropertyKey(resourceBundle = PATH_TO_BUNDLE) String key, @NotNull Object... params) {
-			return CommonBundle.message(getBundle(), key, params);
+		public static String message(String key) {
+			return getBundle().getString(key);
 		}
 
 		private static ResourceBundle getBundle() {
-			ResourceBundle bundle = com.intellij.reference.SoftReference.dereference(ourBundle);
-			if (bundle == null) {
-				bundle = ResourceBundle.getBundle(PATH_TO_BUNDLE);
-				ourBundle = new SoftReference<>(bundle);
-			}
-			return bundle;
+			ourBundle = ResourceBundle.getBundle(PATH_TO_BUNDLE);
+			return ourBundle;
 		}
 	}
 }

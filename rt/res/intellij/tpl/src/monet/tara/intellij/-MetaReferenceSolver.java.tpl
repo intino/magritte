@@ -50,7 +50,7 @@ public class ::projectProperName::MetaReferenceSolver extends PsiReferenceBase<P
 				ASTNode node = ::projectProperName::Language.getHeritage().getNodeNameLookUpTable().get(context.getType()).get(0);
 				if (node != null) {
 					addChildren(definitions, node);
-					if (node.getExtendFrom() != null) addInheritedDefinitions(node.getExtendFrom(), definitions);
+					if (node.getParentName() != null) addInheritedDefinitions(node.getParentName(), definitions);
 					if (node.isCase()) addBaseDefinitions(node.getBaseNode(), definitions);
 				}
 			}
@@ -68,7 +68,7 @@ public class ::projectProperName::MetaReferenceSolver extends PsiReferenceBase<P
 		ASTNode node = ::projectProperName::Language.getHeritage().getNodeNameLookUpTable().get(extendFrom).get(0);
 		for (ASTNode children \: node.getChildren())
 			if (!children.isBase() && !children.isAbstract()) definitions.add(children.getIdentifier());
-		if (node.getExtendFrom() != null) addInheritedDefinitions(node.getExtendFrom(), definitions);
+		if (node.getParentName() != null) addInheritedDefinitions(node.getParentName(), definitions);
 	}
 
 	private void addChildren(List<String> definitions, ASTNode node) {

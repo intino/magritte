@@ -30,8 +30,8 @@ public class PackageAnnotator extends ::projectProperName::Annotator {
 	private boolean shouldHavePackage(::projectProperName::File file) {
 		final VirtualFile contentRoot = ProjectFileIndex.SERVICE.getInstance(file.getProject()).getSourceRootForFile(file.getVirtualFile());
 		if (contentRoot != null) {
-			final VirtualFile suposedFile = contentRoot.findFileByRelativePath(file.getName());
-			if (suposedFile != null && suposedFile.equals(file)) return false;
+			final VirtualFile supposedFile = contentRoot.findFileByRelativePath(file.getName());
+			if (supposedFile != null && supposedFile.equals(file)) return false;
 		}
 		return true;
 	}

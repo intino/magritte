@@ -13,7 +13,7 @@ public class IconFactory {
 
 	static {
 		ICONS.put("-.png", IDE_TPL + RES + "/icons/-.png");
-		ICONS.put("_.png", IDE_TPL + RES + "/icons/_.png");
+		ICONS.put("Definition.png", IDE_TPL + RES + "/icons/Definition.png");
 		ICONS.put("monet.png", IDE_TPL + RES + "/icons/monet.png");
 		ICONS.put("case.png", IDE_TPL + RES + "/icons/case.png");
 		ICONS.put("base.png", IDE_TPL + RES + "/icons/base.png");

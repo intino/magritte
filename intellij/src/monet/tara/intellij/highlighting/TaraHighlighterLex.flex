@@ -23,12 +23,14 @@ FINAL     = "final"
 ABSTRACT  = "abstract"
 MULTIPLE  = "multiple"
 REQUIRED  = "required"
+SYSTEM    = "system"
 HAS_NAME  = "has-name"
 SINGLETON = "singleton"
 INTENTION_KEY = "intention"
 ROOT      = "root"
 GENERIC   = "generic"
-WORD_KEY      = "Word"
+WORD_KEY  = "Word"
+RESOURCE_KEY = "Resource"
 VAR       = "var"
 
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
@@ -98,6 +100,7 @@ NEWLINE= [\n]+
 	{MULTIPLE}                  {   return TaraTypes.MULTIPLE; }
 
 	{HAS_NAME}                  {   return TaraTypes.HAS_NAME; }
+	{SYSTEM}                    {   return TaraTypes.SYSTEM; }
 	{ROOT}                      {   return TaraTypes.ROOT; }
 	{SINGLETON}                 {   return TaraTypes.SINGLETON; }
 	{GENERIC}                   {   return TaraTypes.GENERIC; }
@@ -115,6 +118,7 @@ NEWLINE= [\n]+
 	{RIGHT_SQUARE}              {   return TaraTypes.RIGHT_SQUARE; }
 
 	{WORD_KEY}                  {   return TaraTypes.WORD_KEY; }
+	{RESOURCE_KEY}              {   return TaraTypes.RESOURCE_KEY; }
 
 	{DOT}                       {   return TaraTypes.DOT; }
 

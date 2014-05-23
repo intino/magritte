@@ -40,14 +40,16 @@ public class ::projectProperName::LineMarkerProvider extends JavaLineMarkerProvi
 	}, new LineMarkerNavigator() {
 		\@Override
 		public void browse(MouseEvent e, PsiElement element) {
-			PsiElement parent = element.getParent();
-			if (!(element instanceof Identifier)) return;
+			if (!(element instanceof ::projectProperName::Intention)) return;
 			if (DumbService.isDumb(element.getProject())) {
 				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to overriding classes is not possible during index update");
 				return;
 			}
-			if (!(parent instanceof ::projectProperName::Intention)) return;
-			NavigatablePsiElement reference = (NavigatablePsiElement) ReferenceManager.resolve((Identifier) element, true);
+			PsiElement identifierNode = ::projectProperName::PsiImplUtil.getContextOf(element).getIdentifierNode();
+			if (identifierNode == null) return;
+			NavigatablePsiElement reference = (NavigatablePsiElement)
+				ReferenceManager.resolve((Identifier) identifierNode, true);
+			if (reference == null) return;
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
 			PsiElementListNavigator.

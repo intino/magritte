@@ -83,11 +83,12 @@ public class FileSystemUtils {
 		return true;
 	}
 
-	public static Boolean copyFile(String source, String destination) throws FileSystemException {
+	public static Boolean copyFile(String source, String destination) {
 		try {
 			return copyFile(new FileInputStream(new File(source)), new File(destination));
 		} catch (FileNotFoundException | FileSystemException e) {
-			throw new FileSystemException("Could not copy the file");
+			System.err.println("Could not copy the file: " + source);
+			return false;
 		}
 	}
 

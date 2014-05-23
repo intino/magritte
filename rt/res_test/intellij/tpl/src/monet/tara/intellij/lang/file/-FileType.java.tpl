@@ -34,6 +34,8 @@ public class ::projectProperName::FileType extends LanguageFileType {
 	\@Nullable
 	\@Override
 	public javax.swing.Icon getIcon() {
-		return ::projectProperName::Icons.getIcon(::projectProperName::Icons.ICON_13);
+		return ::projectProperName::Icons.getIcon(::projectProperName::Icons.DEFINITION);
 	}
+
+
 }

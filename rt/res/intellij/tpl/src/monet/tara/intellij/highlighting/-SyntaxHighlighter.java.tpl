@@ -73,10 +73,9 @@ public class ::projectProperName::SyntaxHighlighter extends SyntaxHighlighterBas
 	static {
 		KEYS = new THashMap<>();
 
-		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);
-
 ::highlightKey::
 
+		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);
 		KEYS.put(CASE_KEY, KEYWORD);
 		KEYS.put(BASE_KEY, KEYWORD);
 		KEYS.put(IMPORT_KEY, KEYWORD);
@@ -85,12 +84,6 @@ public class ::projectProperName::SyntaxHighlighter extends SyntaxHighlighterBas
 		KEYS.put(CLOSE_AN, ANNOTATION);
 		KEYS.put(VAR, KEYWORD);
 
-		KEYS.put(REQUIRED, ANNOTATION);
-		KEYS.put(MULTIPLE, ANNOTATION);
-		KEYS.put(SINGLETON, ANNOTATION);
-		KEYS.put(INTENTION_KEY, ANNOTATION);
-		KEYS.put(ROOT, ANNOTATION);
-		KEYS.put(GENERIC, ANNOTATION);
 		KEYS.put(COLON, OPERATOR);
 		KEYS.put(LEFT_SQUARE, OPERATOR);
 		KEYS.put(RIGHT_SQUARE, OPERATOR);

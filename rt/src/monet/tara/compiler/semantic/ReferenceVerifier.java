@@ -15,7 +15,7 @@ public class ReferenceVerifier {
 	}
 
 	public void checkConcept(ASTNode concept, ASTWrapper ast) {
-		ASTNode ancestor = ast.searchAncestry(concept);
+		ASTNode ancestor = concept.getParentConcept();
 		checkExtendedConcept(concept, ancestor);
 		checkExtendedFromFinal(concept, ancestor);
 		checkBase(concept);
@@ -30,13 +30,13 @@ public class ReferenceVerifier {
 	}
 
 	private void checkExtendedConcept(ASTNode concept, ASTNode ancestor) {
-		if (ancestor == null && concept.getExtendFrom() != null)
-			errors.add(new UndefinedReferenceError(concept.getExtendFrom(), concept));
+		if (ancestor == null && concept.getParentName() != null)
+			errors.add(new UndefinedReferenceError(concept.getParentName(), concept));
 	}
 
 	private void checkExtendedFromFinal(ASTNode concept, ASTNode ancestor) {
 		if (ancestor != null && ancestor.isFinal())
-			errors.add(new InvalidHeritageError(concept.getExtendFrom(), concept));
+			errors.add(new InvalidHeritageError(concept.getParentName(), concept));
 	}
 
 	private void checkBase(ASTNode concept) {
@@ -53,17 +53,17 @@ public class ReferenceVerifier {
 	}
 
 	private void noParent(ASTNode concept) {
-		if (concept.getParent() == null)
+		if (concept.getContainer() == null)
 			errors.add(new MorphWithoutParentError(concept.getIdentifier(), concept));
 	}
 
 	private void notBaseParent(ASTNode concept) {
-		if (concept.getParent() != null && !concept.getParent().isBase())
+		if (concept.getContainer() != null && !concept.getContainer().isBase())
 			errors.add(new MorphWithoutParentError(concept.getIdentifier(), concept));
 	}
 
 //	private void notExtendedFromBase(ASTNode concept, ASTNode ancestor) {
 //		if (ancestor != null && !ancestor.isCase())
-//			errors.add(new InvalidHeritageError(concept.getExtendFrom(), concept));
+//			errors.add(new InvalidHeritageError(concept.getParentName(), concept));
 //	}
 }

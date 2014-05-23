@@ -32,19 +32,14 @@ public class TaraRelatedFilesProvider extends GotoRelatedProvider {
 			}
 		} else {
 			PsiFile file = context.getContainingFile();
-			if (file.getFileType() == TaraFileType.INSTANCE) {
-				try {
-					String className = Utils.getBoundClassName(file.getText());
-					if (className != null) {
-						Project project = file.getProject();
-						PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project));
-						if (aClass != null) {
-							return Collections.singletonList(new GotoRelatedItem(aClass, "Java"));
-						}
-					}
-				} catch (Exception ignore) {
-
+			if (file.getFileType() == TaraFileType.INSTANCE) try {
+				String className = Utils.getBoundClassName(file.getText());
+				if (className != null) {
+					Project project = file.getProject();
+					PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project));
+					if (aClass != null) return Collections.singletonList(new GotoRelatedItem(aClass, "Java"));
 				}
+			} catch (Exception ignore) {
 			}
 		}
 		return Collections.emptyList();

@@ -51,7 +51,7 @@ public class TplGenerator {
                         File newFile = new File(tplPath + it.parent.substring(8), fileName + ".tpl")
                         newFile.write(text)
                         templateBound.append(it.getName() + " = " + FileUtils.getRelativeTplPath(newFile) + "\n");
-                    } else
+                    } else if (!it.name.startsWith("Concept"))
                         FileUtils.copyFile(it, new File(tplPath + it.parent.substring(8), fileName))
                 } else if (isGrammarFile(it)) {
                     processGrammarTemplates(tplPath, it, fileName, templateBound)

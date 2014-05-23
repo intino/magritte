@@ -52,7 +52,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		if (ctx.signature().CASE() != null){
 			node.setCase(true);
 			node.setBaseConcept(parent.getIdentifier());
-			node.setExtendFrom(null);
+			node.setParentName(null);
 		}
 		if (parent != null) parent.add(node);
 		else ast.add(node);
@@ -65,7 +65,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	public void enterIdentifierReference(@NotNull IdentifierReferenceContext ctx) {
 		String identifierName = ctx.getText();
 		if (ctx.getParent() instanceof SignatureContext)
-			conceptStack.peek().setExtendFrom(identifierName);
+			conceptStack.peek().setParentName(identifierName);
 	}
 
 	@Override

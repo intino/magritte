@@ -69,6 +69,6 @@ public class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements
 	}
 
 	private String getFileName(PsiElement concept) {
-		return concept.getContainingFile().getName().split("\\.")[0];
+		return concept.getContainingFile().getName();
 	}
 }

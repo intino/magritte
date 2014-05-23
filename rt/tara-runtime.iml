@@ -9,7 +9,7 @@
       <sourceFolder url="file://$MODULE_DIR$/lib" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="IDEA IC-135.475" jdkType="IDEA JDK" />
+    <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
     <orderEntry type="library" name="antlr-4.2-complete" level="project" />
     <orderEntry type="library" name="templation" level="project" />
     <orderEntry type="module-library" scope="TEST">
@@ -23,8 +23,8 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="tara-runtime-constants" />
     <orderEntry type="library" name="gson-2.2.4" level="project" />
+    <orderEntry type="module" module-name="tara-runtime-constants" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

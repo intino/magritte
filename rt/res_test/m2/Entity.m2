@@ -1,4 +1,5 @@
-package goros.m2
+package goros.m2.entity
+import goros.m2.Event
 
 ' Una entidad es un objeto en la unidad de negocio que representa un contenido
 Concept abstract Entity  <root>
@@ -14,5 +15,6 @@ Concept abstract Entity  <root>
 
     Concept Operation <required>
         var String label
+        Concept:Event Execute
 
-    Concept abstract View <required>
+    Concept abstract View

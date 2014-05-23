@@ -35,7 +35,7 @@ public class DefinitionRender extends DefaultRender {
 		map.put("childrenGetters", getChildrenGetters(node));
 		if (node.hasName()) map.put("id", "id");
 		StringBuilder childDefinitions = new StringBuilder();
-		for (ASTNode child : node.getChildren())
+		for (ASTNode child : node.getInnerConcepts())
 			childDefinitions.append(addDefinition(child, level + 1));
 		map.put("childrenDeclaration", childDefinitions.toString());
 		definition.append(block("definition", map));
@@ -89,14 +89,14 @@ public class DefinitionRender extends DefaultRender {
 
 	public String getChildrenGetters(ASTNode node) {
 		StringBuilder childGetters = new StringBuilder();
-		for (ASTNode child : node.getChildren()) {
+		for (ASTNode child : node.getInnerConcepts()) {
 			Map<String, Object> map = new HashMap<>();
 			final String childIdentifier =
-				RenderUtils.toProperCase((child.getIdentifier().length() > 0) ? child.getIdentifier() : child.getExtendFrom());
+				RenderUtils.toProperCase((child.getIdentifier().length() > 0) ? child.getIdentifier() : child.getParentName());
 			map.put("childGetter", "getChild");
 			if (childIdentifier.contains("[]")) {
 				map.put("listSuffix", "true");
-				map.put("childGetter", "getChildren");
+				map.put("childGetter", "getInnerConcepts");
 				map.put("listCast", block("multipleCastBlock", new HashMap<String, Object>() {{
 					put("childType", childIdentifier);
 				}}));

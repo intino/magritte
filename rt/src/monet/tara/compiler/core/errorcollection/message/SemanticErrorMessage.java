@@ -15,13 +15,13 @@ public class SemanticErrorMessage extends Message {
 		this.source = source;
 	}
 
-
 	public SemanticError getCause() {
 		return this.cause;
 	}
+
 	@Override
 	public void write(PrintWriter output) {
-		String description = "Semantic error: ";
+		String description = "Dependency error: ";
 		String message = this.cause.getMessage();
 		if (message != null) output.println(description + message);
 		else output.println(description + this.cause);

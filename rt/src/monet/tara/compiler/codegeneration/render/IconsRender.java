@@ -35,7 +35,7 @@ public class IconsRender extends DefaultRender {
 		for (ASTNode primeNode : wrapper.getAST())
 			if (!primeNode.isAbstract() && primeNode.is(ASTNode.AnnotationType.ROOT)) {
 				String name = primeNode.getIdentifier();
-				mark += "\t\ticons.put(\"" + name.toUpperCase() + "\", IconLoader.getIcon(\"/icons/definitions/" + name.toLowerCase() + ".png\"));";
+				mark += "\t\ticons.put(\"" + name.toUpperCase() + "\", IconLoader.getIcon(\"/icons/definitions/" + name.toLowerCase() + ".png\"));\n";
 			}
 		return mark;
 	}

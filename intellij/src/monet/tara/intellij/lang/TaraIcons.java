@@ -10,7 +10,7 @@ public class TaraIcons {
 
 
 	public static final String ICON_13 = "ICON_13";
-	public static final String CONCEPT = "CONCEPT_13";
+	public static final String CONCEPT = "CONCEPT";
 	public static final String CASE_13 = "CASE_13";
 	public static final String BASE_13 = "BASE_13";
 	public static final String ICON_100 = "ICON_100";

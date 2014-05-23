@@ -16,6 +16,7 @@ import monet.tara.intellij.lang.TaraLanguage;
 import monet.tara.intellij.lang.file.TaraFileType;
 import monet.tara.intellij.lang.psi.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.List;
@@ -38,7 +39,7 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	}
 
 	public String getPresentableName() {
-		return getName().substring(0, getName().lastIndexOf("."));
+		return getName().split("\\.")[0];
 	}
 
 	@Override
@@ -63,6 +64,17 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 				return TaraIcons.getIcon(TaraIcons.CONCEPT);
 			}
 		};
+	}
+
+	@Nullable
+	@Override
+	public Icon getIcon(int flags) {
+		MetaIdentifier type = this.getConcept().getSignature().getType();
+		if (type != null) {
+			Icon icon = TaraIcons.getIcon(type.getText().toUpperCase());
+			if (icon != null) return icon;
+		}
+		return TaraIcons.getIcon(TaraIcons.CONCEPT);
 	}
 
 	@Override
