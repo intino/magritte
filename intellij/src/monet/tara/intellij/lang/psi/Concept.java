@@ -48,6 +48,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	String getName();
 
+	String getQualifiedName();
+
 	String getType();
 }
 

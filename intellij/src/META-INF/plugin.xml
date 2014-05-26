@@ -99,7 +99,7 @@
                             implementationClass="monet.tara.intellij.codeinsight.completion.TaraAnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="Tara"
                                   implementationClass="monet.tara.intellij.structureview.StructureViewFactory"/>
-    <!--<psi.referenceContributor implementation="monet.tara.intellij.TaraReferenceContributor"/>-->
+    <!--<psi.referenceContributor implementation="monet.tara.intellij.lang.psi.resolve.TaraReferenceContributor"/>-->
     <nameSuggestionProvider implementation="monet.tara.intellij.refactoring.NameSuggestionProvider"/>
     <lang.elementManipulator forClass="monet.tara.intellij.lang.psi.TaraIdentifier"
                              implementationClass="monet.tara.intellij.lang.psi.impl.IdentifierManipulator"/>
@@ -108,12 +108,17 @@
                              implementationClass="monet.tara.intellij.TaraRefactoringSupportProvider"/>
     <renameHandler implementation="monet.tara.intellij.refactoring.rename.RenameHandler"/>
     <lang.findUsagesProvider language="Tara"
-                             implementationClass="monet.tara.intellij.TaraFindUsagesProvider"/>
+                             implementationClass="monet.tara.intellij.lang.psi.resolve.TaraFindUsagesProvider"/>
     <lang.foldingBuilder language="Tara" implementationClass="monet.tara.intellij.TaraFoldingBuilder"/>
     <projectService serviceInterface="monet.tara.intellij.codeinsight.JavaHelper"
                     serviceImplementation="monet.tara.intellij.codeinsight.JavaHelper$Impl"/>
     <!--<referenceImporter implementation="monet.tara.intellij.annotator.imports.TaraReferenceImporter"/>-->
     <!--<lang.formatter language="Tara" implementationClass="monet.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
-    <!--<refactoring.moveHandler implementation="com.intellij.uiDesigner.projectView.FormMoveProvider"/>-->
+    <moveFileHandler implementation="monet.tara.intellij.refactoring.move.TaraFileMoveHandler"/>
+    <refactoring.moveHandler implementation="monet.tara.intellij.refactoring.move.TaraMoveConcept"/>
+    <lang.importOptimizer language="Tara"
+                          implementationClass="monet.tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
+    <findUsagesHandlerFactory implementation="monet.tara.intellij.findUsages.TaraFindUsagesHandlerFactory" id="Tara"
+                              order="last, before default"/>
   </extensions>
 </idea-plugin>

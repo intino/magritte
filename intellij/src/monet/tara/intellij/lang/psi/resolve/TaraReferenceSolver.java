@@ -1,10 +1,11 @@
-package monet.tara.intellij;
+package monet.tara.intellij.lang.psi.resolve;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import monet.tara.intellij.VariantsManager;
 import monet.tara.intellij.lang.TaraIcons;
 import monet.tara.intellij.lang.psi.Concept;
 import monet.tara.intellij.lang.psi.HeaderReference;

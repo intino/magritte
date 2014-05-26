@@ -1,4 +1,4 @@
-package monet.tara.intellij;
+package monet.tara.intellij.lang.psi.resolve;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;

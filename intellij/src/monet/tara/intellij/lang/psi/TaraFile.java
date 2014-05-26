@@ -41,4 +41,6 @@ public interface TaraFile extends PsiFile {
 	List<? extends Identifier> getPackageRoute();
 
 	Import[] getImports();
+
+	void setPackage(String path);
 }

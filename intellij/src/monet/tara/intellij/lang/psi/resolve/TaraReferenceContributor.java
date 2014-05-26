@@ -1,4 +1,4 @@
-package monet.tara.intellij;
+package monet.tara.intellij.lang.psi.resolve;
 
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.*;

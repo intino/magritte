@@ -69,10 +69,12 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	@Nullable
 	@Override
 	public Icon getIcon(int flags) {
-		MetaIdentifier type = this.getConcept().getSignature().getType();
-		if (type != null) {
-			Icon icon = TaraIcons.getIcon(type.getText().toUpperCase());
-			if (icon != null) return icon;
+		if (getConcept() != null) {
+			MetaIdentifier type = this.getConcept().getSignature().getType();
+			if (type != null) {
+				Icon icon = TaraIcons.getIcon(type.getText().toUpperCase());
+				if (icon != null) return icon;
+			}
 		}
 		return TaraIcons.getIcon(TaraIcons.CONCEPT);
 	}
@@ -91,10 +93,18 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	}
 
 	@Override
+	public void setPackage(String path) {
+		TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
+		PsiElement replace = this.getPackage().replace(factory.createPackage(path));
+//		if (getImports() != null)
+//			if (!replace.getNextSibling().getFirstChild().getNextSibling().getNode().getElementType().equals(TaraTypes.NEWLINE))
+//				replace.getNextSibling().addAfter(factory.createNewLine(), replace.getNextSibling());
+	}
+
+	@Override
 	public List<? extends Identifier> getPackageRoute() {
 		return getPackage().getHeaderReference().getIdentifierList();
 	}
-
 
 	@Override
 	public Import[] getImports() {
@@ -134,7 +144,11 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 
 	private PsiElement addImport(Import anImport) {
 		final TreeElement copy = ChangeUtil.copyToElement(anImport);
-		PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0].add(copy.getPsi());
-		return copy.getPsi();
+		PsiElement psi = copy.getPsi();
+		PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0].add(psi);
+		TaraPacket aPackage = getPackage();
+//		if (!aPackage.getNextSibling().getFirstChild().getNextSibling().getNode().getElementType().equals(TaraTypes.NEWLINE))
+//			aPackage.getNextSibling().addAfter(TaraElementFactory.getInstance(this.getProject()).createNewLine(), aPackage.getNextSibling());
+		return psi;
 	}
 }

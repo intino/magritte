@@ -82,6 +82,8 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(ROOT, ANNOTATION);
 		KEYS.put(GENERIC, ANNOTATION);
 		KEYS.put(HAS_NAME, ANNOTATION);
+		KEYS.put(RESOURCE_KEY, PRIMITIVE);
+
 //end
 
 		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);

@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import monet.tara.intellij.TaraReferenceSolver;
+import monet.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

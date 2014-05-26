@@ -54,6 +54,17 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return identifierNode != null ? identifierNode.getText() : null;
 	}
 
+	public String getQualifiedName() {
+		Identifier identifierNode = (Identifier) getIdentifierNode();
+		String name = identifierNode != null ? identifierNode.getText() : "annonymous";
+		String packageName = ((TaraFile) this.getContainingFile()).getPackage().getHeaderReference().getText();
+		Concept concept = (Concept) this;
+		while ((concept = TaraPsiImplUtil.getContextOf(concept)) != null) {
+			name = concept.getName() + "." + name;
+		}
+		return packageName + "." + name;
+	}
+
 	public TaraFileImpl getFile() throws PsiInvalidElementAccessException {
 		return (TaraFileImpl) super.getContainingFile();
 	}

@@ -2,6 +2,7 @@ package monet.tara.intellij.lang.psi;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import monet.tara.intellij.lang.psi.impl.TaraFileImpl;
 
 public abstract class TaraElementFactory {
@@ -19,4 +20,8 @@ public abstract class TaraElementFactory {
 	public abstract Attribute createAttribute(String name, String type);
 
 	public abstract Import createImport(String reference);
+
+	public abstract TaraPacket createPackage(String reference);
+
+	public abstract PsiElement createNewLine();
 }

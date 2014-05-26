@@ -17,9 +17,6 @@ public interface Body extends TaraPsiElement {
 	List<? extends Concept> getConceptList();
 
 	@NotNull
-	List<? extends ConceptInjection> getConceptInjectionList();
-
-	@NotNull
 	List<? extends ReferenceStatement> getReferenceStatementList();
 
 	@NotNull

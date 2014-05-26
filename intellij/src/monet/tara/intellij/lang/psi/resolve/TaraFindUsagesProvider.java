@@ -1,7 +1,8 @@
-package monet.tara.intellij;
+package monet.tara.intellij.lang.psi.resolve;
 
 import com.intellij.find.impl.HelpID;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
+import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
@@ -15,13 +16,12 @@ import org.jetbrains.annotations.Nullable;
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	public static final String ANONYMOUS = "Anonymous";
 	public static final String ERROR = "Error";
-	private static final DefaultWordsScanner WORDS_SCANNER =
-		new DefaultWordsScanner(new TaraLexerAdapter(),
+	private static final DefaultWordsScanner WORDS_SCANNER = new DefaultWordsScanner(new TaraLexerAdapter(),
 			TokenSet.create(TaraTypes.IDENTIFIER, TaraTypes.IDENTIFIER_KEY), TokenSet.create(TaraTypes.DOC), TokenSet.EMPTY);
 
 	@Nullable
 	@Override
-	public com.intellij.lang.cacheBuilder.WordsScanner getWordsScanner() {
+	public WordsScanner getWordsScanner() {
 		return WORDS_SCANNER;
 	}
 

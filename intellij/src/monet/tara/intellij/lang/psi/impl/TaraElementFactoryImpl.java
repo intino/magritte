@@ -1,6 +1,7 @@
 package monet.tara.intellij.lang.psi.impl;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.util.PsiTreeUtil;
 import monet.tara.intellij.lang.file.TaraFileType;
@@ -47,10 +48,24 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		final TaraFileImpl file = createDummyFile(
 			"package tara\n" +
 				"import " + reference + "\n\n" +
-				"Concept abstract Source <has-code root>\n"
+				"Concept abstract Source <root>\n"
 		);
 		Import[] imp = file.getImports();
 		return imp != null ? imp[0] : null;
+	}
+
+	public TaraPacket createPackage(String reference) {
+		final TaraFileImpl file = createDummyFile(
+			"package " + reference + "\n" +
+				"Concept abstract Source <root>\n"
+		);
+		TaraPacket pack = file.getPackage();
+		return pack != null ? pack : null;
+	}
+
+	public PsiElement createNewLine() {
+		final TaraFileImpl file = createDummyFile("\n");
+		return file.getFirstChild();
 	}
 
 }

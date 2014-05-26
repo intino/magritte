@@ -52,7 +52,8 @@ public class VariantsManager {
 		for (VirtualFile vFile : packageFile.getChildren()) {
 			TaraFile file = TaraUtil.getTaraFileFromVirtual(project, vFile);
 			if (file == null) continue;
-			resolveRouteFor(file.getConcept(), context);
+			if (file.getConcept() != null)
+				resolveRouteFor(file.getConcept(), context);
 		}
 		return variants;
 	}
