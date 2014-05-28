@@ -20,7 +20,7 @@ root \:\:= NEWLINE* header? NEWLINE+ definition? NEWLINE* {
 }
 definitionKey \:\:= ::conceptKeys::
 
-header \:\:=  packet? importStatement* synthesizeStatement*
+header \:\:=  packet? importStatement*
 
 packet \:\:= PACKAGE headerReference
 
@@ -70,49 +70,53 @@ private heritageSignature\:\:=metaIdentifier COLON identifierReference modifier?
 	pin = 2
 }
 
-parameters\:\:= LEFT_PARENTHESIS ( explicitParameters | implicitParameters) RIGHT_PARENTHESIS
+parameters\:\:= LEFT_PARENTHESIS parameterList RIGHT_PARENTHESIS
+{mixin = 'monet.::projectName::.intellij.lang.psi.impl.ParametersMixin'
+implements = 'monet.::projectName::.intellij.lang.psi.Parameters'}
 
-implicitParameters\:\:= parameter (COMMA parameter)?
-{ pin=1}
-explicitParameters\:\:= parameterAssign (COMMA parameterAssign)?
-{ pin=1}
-private parameterAssign \:\:= identifier COLON parameter
+private parameterList\:\:=  explicit? parameter (COMMA explicit? parameter)*
 { pin=2}
-private parameter \:\:=   identifierReference
-						| stringValue
-			            | booleanValue
-			            | integerValue
-			            | doubleValue
-			            | naturalValue
-			            | stringList
-			            | booleanList
-			            | integerList
-			            | doubleList
-			            | naturalList
-			            | identifierList
+
+parameter \:\:=     identifierReference
+				| stringValue
+		        | booleanValue
+		        | naturalValue
+		        | integerValue
+		        | doubleValue
+		        | stringList
+		        | booleanList
+		        | integerList
+		        | doubleList
+		        | naturalList
+		        | identifierList
+{mixin = 'monet.::projectName::.intellij.lang.psi.impl.ParameterMixin'
+implements = 'monet.::projectName::.intellij.lang.psi.Parameter'}
+
+explicit\:\:= identifier COLON
+{ pin=2}
 
 private definitionConstituents \:\:=  attribute | referenceStatement | word | definition
 
 attribute \:\:= doc? ( uuidAttribute
+		           | StringAttribute)
+		           | booleanAttribute
+		           | naturalAttribute
 		           | integerAttribute
 		           | doubleAttribute
-		           | naturalAttribute
-		           | booleanAttribute
-		           | StringAttribute)
 {pin=2 mixin = 'monet.::projectName::.intellij.lang.psi.impl.AttributeMixin'
 implements = 'monet.::projectName::.intellij.lang.psi.Attribute'}
 
 private uuidAttribute \:\:= VAR     UID_TYPE IDENTIFIER_KEY (COLON stringValue)?
 {pin=3}
+private naturalAttribute \:\:= VAR NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?))
+{pin=2}
 private integerAttribute \:\:= VAR INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?) | (LIST IDENTIFIER_KEY (COLON integerList)?))
+{pin=2}
+private doubleAttribute \:\:= VAR  DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)  | (LIST IDENTIFIER_KEY (COLON doubleList)?))
 {pin=2}
 private StringAttribute \:\:= VAR  STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?) | (LIST IDENTIFIER_KEY (COLON stringList)?))
 {pin=2}
-private naturalAttribute \:\:= VAR NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?))
-{pin=2}
 private booleanAttribute \:\:=VAR BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?))
-{pin=2}
-private doubleAttribute \:\:= VAR  DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)  | (LIST IDENTIFIER_KEY (COLON doubleList)?))
 {pin=2}
 word\:\:= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT {
 	mixin= 'monet.::projectName::.intellij.lang.psi.impl.WordMixin'
@@ -125,9 +129,9 @@ referenceStatement\:\:= VAR identifierReference LIST? IDENTIFIER_KEY {
 
 stringValue  \:\:= STRING_VALUE_KEY
 booleanValue \:\:= BOOLEAN_VALUE_KEY
+naturalValue \:\:= NATURAL_VALUE_KEY
 integerValue \:\:= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue  \:\:= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
-naturalValue \:\:= NATURAL_VALUE_KEY
 
 stringList   \:\:= LEFT_SQUARE STRING_VALUE_KEY+ RIGHT_SQUARE;
 booleanList  \:\:= LEFT_SQUARE BOOLEAN_VALUE_KEY+ RIGHT_SQUARE;

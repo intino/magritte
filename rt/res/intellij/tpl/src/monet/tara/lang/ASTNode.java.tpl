@@ -284,7 +284,6 @@ public class ASTNode {
 		public boolean isList;
 
 		public Attribute(String type, String name, boolean isList) {
-			this.name = name;
 			this.primitiveType = type;
 			this.name = name;
 			this.isList = isList;
@@ -312,8 +311,8 @@ public class ASTNode {
 		public boolean isList;
 
 		public Reference(String node, String name, boolean isList) {
-			this.name = name;
 			this.node = node;
+			this.name = name;
 			this.isList = isList;
 		}
 
@@ -341,9 +340,18 @@ public class ASTNode {
 		public void add(String word) {
 			wordTypes.add(word);
 		}
+
+		public boolean contains(String word) {
+			return wordTypes.contains(word);
+		}
+
+		@Override
+		public boolean isList() {
+			return false;
+		}
 	}
 
-	public static class Variable {
+	public abstract static class Variable {
 		public String name;
 
 		public Variable() {
@@ -356,5 +364,7 @@ public class ASTNode {
 		public void setName(String name) {
 			this.name = name;
 		}
+
+		public abstract boolean isList();
 	}
 }

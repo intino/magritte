@@ -52,7 +52,8 @@ public class VariantsManager {
 		for (VirtualFile vFile \: packageFile.getChildren()) {
 			::projectProperName::File file = ::projectProperName::Util.get::projectProperName::FileFromVirtual(project, vFile);
 			if (file == null) continue;
-			resolveRouteFor(file.getDefinition(), context);
+			if (file.getDefinition() != null)
+				resolveRouteFor(file.getDefinition(), context);
 		}
 		return variants;
 	}

@@ -1,6 +1,7 @@
 package monet.::projectName::.intellij.lang.psi.impl;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.util.PsiTreeUtil;
 import monet.::projectName::.intellij.lang.file.::projectProperName::FileType;
@@ -47,10 +48,24 @@ public class ::projectProperName::ElementFactoryImpl extends ::projectProperName
 		final ::projectProperName::FileImpl file = createDummyFile(
 			"package ::projectName::\\n" +
 				"import " + reference + "\\n\\n" +
-				"Definition abstract Source <has-code root>\\n"
+				"Definition abstract Source <root>\\n"
 		);
 		Import[] imp = file.getImports();
 		return imp != null ? imp[0] \: null;
+	}
+
+	public ::projectProperName::Packet createPackage(String reference) {
+		final ::projectProperName::FileImpl file = createDummyFile(
+			"package " + reference + "\\n" +
+				"Definition abstract Source <root>\\n"
+		);
+		::projectProperName::Packet pack = file.getPackage();
+		return pack != null ? pack \: null;
+	}
+
+	public PsiElement createNewLine() {
+		final ::projectProperName::FileImpl file = createDummyFile("\\n");
+		return file.getFirstChild();
 	}
 
 }

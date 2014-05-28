@@ -69,10 +69,12 @@ public class ::projectProperName::FileImpl extends PsiFileBase implements ::proj
 	\@Nullable
 	\@Override
 	public Icon getIcon(int flags) {
-		MetaIdentifier type = this.getDefinition().getSignature().getType();
-		if (type != null) {
-			Icon icon = ::projectProperName::Icons.getIcon(type.getText().toUpperCase());
-			if (icon != null) return icon;
+		if (getDefinition() != null) {
+			MetaIdentifier type = this.getDefinition().getSignature().getType();
+			if (type != null) {
+				Icon icon = ::projectProperName::Icons.getIcon(type.getText().toUpperCase());
+				if (icon != null) return icon;
+			}
 		}
 		return ::projectProperName::Icons.getIcon(::projectProperName::Icons.DEFINITION);
 	}
@@ -91,10 +93,18 @@ public class ::projectProperName::FileImpl extends PsiFileBase implements ::proj
 	}
 
 	\@Override
+	public void setPackage(String path) {
+		::projectProperName::ElementFactory factory = ::projectProperName::ElementFactory.getInstance(this.getProject());
+		PsiElement replace = this.getPackage().replace(factory.createPackage(path));
+//		if (getImports() != null)
+//			if (!replace.getNextSibling().getFirstChild().getNextSibling().getNode().getElementType().equals(::projectProperName::Types.NEWLINE))
+//				replace.getNextSibling().addAfter(factory.createNewLine(), replace.getNextSibling());
+	}
+
+	\@Override
 	public List<? extends Identifier> getPackageRoute() {
 		return getPackage().getHeaderReference().getIdentifierList();
 	}
-
 
 	\@Override
 	public Import[] getImports() {
@@ -134,7 +144,11 @@ public class ::projectProperName::FileImpl extends PsiFileBase implements ::proj
 
 	private PsiElement addImport(Import anImport) {
 		final TreeElement copy = ChangeUtil.copyToElement(anImport);
-		PsiTreeUtil.getChildrenOfType(this, ::projectProperName::Header.class)[0].add(copy.getPsi());
-		return copy.getPsi();
+		PsiElement psi = copy.getPsi();
+		PsiTreeUtil.getChildrenOfType(this, ::projectProperName::Header.class)[0].add(psi);
+		::projectProperName::Packet aPackage = getPackage();
+//		if (!aPackage.getNextSibling().getFirstChild().getNextSibling().getNode().getElementType().equals(::projectProperName::Types.NEWLINE))
+//			aPackage.getNextSibling().addAfter(::projectProperName::ElementFactory.getInstance(this.getProject()).createNewLine(), aPackage.getNextSibling());
+		return psi;
 	}
 }

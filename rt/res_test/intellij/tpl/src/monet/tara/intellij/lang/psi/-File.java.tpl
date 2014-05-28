@@ -41,4 +41,6 @@ public interface ::projectProperName::File extends PsiFile {
 	List<? extends Identifier> getPackageRoute();
 
 	Import[] getImports();
+
+	void setPackage(String path);
 }

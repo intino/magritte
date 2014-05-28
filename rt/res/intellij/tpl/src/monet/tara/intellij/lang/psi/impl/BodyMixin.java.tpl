@@ -50,11 +50,6 @@ public class BodyMixin extends ASTWrapperPsiElement {
 	}
 
 	\@NotNull
-	public List<? extends DefinitionInjection> getDefinitionInjectionList() {
-		return PsiTreeUtil.getChildrenOfTypeAsList(this, DefinitionInjection.class);
-	}
-
-	\@NotNull
 	public List<? extends ReferenceStatement> getReferenceStatementList() {
 		return PsiTreeUtil.getChildrenOfTypeAsList(this, ReferenceStatement.class);
 	}

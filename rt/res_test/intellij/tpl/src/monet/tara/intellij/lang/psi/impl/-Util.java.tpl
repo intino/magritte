@@ -2,6 +2,7 @@ package monet.::projectName::.intellij.lang.psi.impl;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -20,10 +21,7 @@ import monet.::projectName::.intellij.lang.psi.::projectProperName::File;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ::projectProperName::Util {
 
@@ -154,5 +152,29 @@ public class ::projectProperName::Util {
 					return file;
 		}
 		return null;
+	}
+
+	public static ::projectProperName::File getOrCreateFile(String myDestination, Project myProject) {
+		return null;
+	}
+
+	public static void delete::projectProperName::File(String path) {
+
+	}
+
+	\@NotNull
+	public static Collection<VirtualFile> getSourceRoots(\@NotNull PsiElement foothold) {
+		final Module module = ModuleUtilCore.findModuleForPsiElement(foothold);
+		if (module != null) return getSourceRoots(module);
+		return Collections.emptyList();
+	}
+
+	\@NotNull
+	public static Collection<VirtualFile> getSourceRoots(\@NotNull Module module) {
+		final Set<VirtualFile> result = new LinkedHashSet<>();
+		final ModuleRootManager manager = ModuleRootManager.getInstance(module);
+		result.addAll(Arrays.asList(manager.getSourceRoots()));
+		result.addAll(Arrays.asList(manager.getContentRoots()));
+		return result;
 	}
 }

@@ -19,15 +19,16 @@ public class AttributeMixin extends ASTWrapperPsiElement {
 		ASTNode keyNode = getNode().findChildByType(::projectProperName::Types.IDENTIFIER_KEY);
 		if (keyNode != null) {
 			Attribute attribute = ::projectProperName::ElementFactoryImpl.getInstance(this.getProject()).createAttribute(newName, getType());
-			ASTNode newKeyNode = attribute.getFirstChild().getChildren()[0].getNode();
-			this.getNode().replaceChild(keyNode, newKeyNode);
+			ASTNode node = attribute.getFirstChild().getChildren()[0].getNode();
+			this.getNode().replaceChild(keyNode, node);
 		}
 		return this;
 	}
 
 	\@Override
 	public String getName() {
-		return this.getNode().findChildByType(::projectProperName::Types.IDENTIFIER_KEY).getText();
+		ASTNode childByType = this.getNode().findChildByType(::projectProperName::Types.IDENTIFIER_KEY);
+		return childByType.getText();
 	}
 
 	public String getType() {

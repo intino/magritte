@@ -8,6 +8,7 @@ import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import monet.::projectName::.intellij.documentation.::projectProperName::DocumentationFormatter;
 import monet.::projectName::.intellij.lang.::projectProperName::Icons;
@@ -48,10 +49,25 @@ public class DefinitionMixin extends ASTWrapperPsiElement {
 		return type != null ? type.getText() \: null;
 	}
 
+	public MetaIdentifier getMetaIdentifier() {
+		return PsiTreeUtil.getChildrenOfType(this.getSignature(), MetaIdentifier.class)[0];
+	}
+
 	\@Override
 	public String getName() {
 		Identifier identifierNode = (Identifier) getIdentifierNode();
 		return identifierNode != null ? identifierNode.getText() \: null;
+	}
+
+	public String getQualifiedName() {
+		Identifier identifierNode = (Identifier) getIdentifierNode();
+		String name = identifierNode != null ? identifierNode.getText() \: "annonymous";
+		String packageName = ((::projectProperName::File) this.getContainingFile()).getPackage().getHeaderReference().getText();
+		Definition definition = (Definition) this;
+		while ((definition = ::projectProperName::PsiImplUtil.getContextOf(definition)) != null) {
+			name = definition.getName() + "." + name;
+		}
+		return packageName + "." + name;
 	}
 
 	public ::projectProperName::FileImpl getFile() throws PsiInvalidElementAccessException {

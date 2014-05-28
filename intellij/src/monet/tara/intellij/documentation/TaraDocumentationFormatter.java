@@ -39,6 +39,7 @@ public class TaraDocumentationFormatter {
 	private static String markdownToHtml(String text) {
 		String html = "";
 		try {
+			if (text == null) return "";
 			String cleanText = text.replaceAll("'", "").replaceAll(" \\s+", " ").trim();
 			html = new Markdown4jProcessor().process(cleanText);
 		} catch (IOException e) {

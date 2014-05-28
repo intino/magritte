@@ -48,6 +48,11 @@ public interface Definition extends Navigatable, Iconable, ::projectProperName::
 
 	String getName();
 
+	String getQualifiedName();
+
 	String getType();
+
+	\@Nullable
+	MetaIdentifier getMetaIdentifier();
 }
 

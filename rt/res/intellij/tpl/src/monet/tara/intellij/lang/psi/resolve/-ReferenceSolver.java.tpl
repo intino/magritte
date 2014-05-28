@@ -1,10 +1,11 @@
-package monet.::projectName::.intellij;
+package monet.::projectName::.intellij.lang.psi.resolve;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import monet.::projectName::.intellij.VariantsManager;
 import monet.::projectName::.intellij.lang.::projectProperName::Icons;
 import monet.::projectName::.intellij.lang.psi.Definition;
 import monet.::projectName::.intellij.lang.psi.HeaderReference;

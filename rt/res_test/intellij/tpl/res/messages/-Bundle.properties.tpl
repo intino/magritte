@@ -14,7 +14,7 @@ remove.attribute.intention.text=Remove attribute
 unused.definition.inspection.display.name=Unused definition
 duplicate.definition.display.name=Duplicate Definition
 duplicate.definition.key.progress.indicator.text=Processing duplicate definition key\:{0}
-
+refactoring.move.class.or.function.error.selection=Error moving definition.
 file.template.group.title.::projectName::=::projectProperName::
 newdefinition.menu.action.text=::projectProperName:: Definition
 newdefinition.menu.action.description=Creates new ::projectProperName:: Definition
@@ -56,3 +56,8 @@ cannot.access=Unreachable element
 access.to.inaccessible.element=Create Property
 import.definition.intention.text=Import Definition
 remove.import.definition.intention.text=Remove import
+refactoring.move.definition.dialog.title=Move Definition
+refactoring.move.definition=Move Definition
+refactoring.move.definition.choose.destination.file.title=Choose destination
+refactoring.move.definition.error.destination.file.contains.definition.$0=Destination file contains definition
+refactoring.move.definition.error.cannot.use.module.name.$0=Definition cannot use module $0

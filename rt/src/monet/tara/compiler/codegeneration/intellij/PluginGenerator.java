@@ -3,7 +3,6 @@ package monet.tara.compiler.codegeneration.intellij;
 import com.google.gson.*;
 import monet.tara.compiler.codegeneration.PathManager;
 import monet.tara.compiler.core.CompilerConfiguration;
-import monet.tara.compiler.core.SourceUnit;
 import monet.tara.compiler.core.errorcollection.TaraException;
 import monet.tara.lang.ASTNode;
 import monet.tara.lang.ASTWrapper;
@@ -13,7 +12,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.Collection;
 
 public class PluginGenerator {
 
@@ -24,8 +22,7 @@ public class PluginGenerator {
 		this.conf = conf;
 	}
 
-	public void generate(Collection<SourceUnit> units) throws TaraException {
-		ASTWrapper ast = mergeAST(units);
+	public void generate(ASTWrapper ast) throws TaraException {
 		serializeNodes(ast);
 		File bnfFile = new TaraPluginToJavaCodeGenerator().toJava(conf, ast);
 		BnfToJavaCodeGenerator.bnfToJava(conf, bnfFile);
@@ -35,16 +32,6 @@ public class PluginGenerator {
 		TemplateGenerator.generateDefinitionTemplates(conf, ast);
 		PluginCompiler.generateClasses(conf);
 		PluginPackager.doPackage(conf);
-	}
-
-	private ASTWrapper mergeAST(Collection<SourceUnit> units) {
-		ASTWrapper ast = new ASTWrapper();
-		for (SourceUnit unit : units) {
-			ast.addAll(unit.getAST().getAST());
-			ast.putAllIdentifiers(unit.getAST().getIdentifiers());
-			ast.putAllInNodeNameTable(unit.getAST().getNodeNameLookUpTable());
-		}
-		return ast;
 	}
 
 	private void serializeNodes(ASTWrapper astWrapper) throws TaraException {

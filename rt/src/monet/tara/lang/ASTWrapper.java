@@ -21,7 +21,6 @@ public class ASTWrapper {
 				identifierMap.put(identifier.toUpperCase() + "_MAIN_" + context, identifier);
 			else
 				identifierMap.put(identifier.toUpperCase() + "_" + context, identifier);
-
 	}
 
 	public Map<String, String> getIdentifiers() {

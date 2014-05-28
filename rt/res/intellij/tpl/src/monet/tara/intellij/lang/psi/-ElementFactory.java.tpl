@@ -2,6 +2,7 @@ package monet.::projectName::.intellij.lang.psi;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::FileImpl;
 
 public abstract class ::projectProperName::ElementFactory {
@@ -19,4 +20,8 @@ public abstract class ::projectProperName::ElementFactory {
 	public abstract Attribute createAttribute(String name, String type);
 
 	public abstract Import createImport(String reference);
+
+	public abstract ::projectProperName::Packet createPackage(String reference);
+
+	public abstract PsiElement createNewLine();
 }

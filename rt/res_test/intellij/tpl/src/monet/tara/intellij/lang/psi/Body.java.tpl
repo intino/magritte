@@ -17,9 +17,6 @@ public interface Body extends ::projectProperName::PsiElement {
 	List<? extends Definition> getDefinitionList();
 
 	\@NotNull
-	List<? extends DefinitionInjection> getDefinitionInjectionList();
-
-	\@NotNull
 	List<? extends ReferenceStatement> getReferenceStatementList();
 
 	\@NotNull

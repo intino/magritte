@@ -172,9 +172,9 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 	{STRING_VALUE}              {   return ::projectProperName::Types.STRING_VALUE_KEY; }
 	{CODE_KEY}                  {   return ::projectProperName::Types.CODE_KEY; }
 	{BOOLEAN_VALUE}             {   return ::projectProperName::Types.BOOLEAN_VALUE_KEY; }
-	{DOUBLE_VALUE}              {   return ::projectProperName::Types.DOUBLE_VALUE_KEY; }
-	{NEGATIVE_VALUE}            {   return ::projectProperName::Types.NEGATIVE_VALUE_KEY; }
 	{POSITIVE_VALUE}            {   return ::projectProperName::Types.NATURAL_VALUE_KEY; }
+	{NEGATIVE_VALUE}            {   return ::projectProperName::Types.NEGATIVE_VALUE_KEY; }
+	{DOUBLE_VALUE}              {   return ::projectProperName::Types.DOUBLE_VALUE_KEY; }
 
 	{LEFT_SQUARE}               {   return ::projectProperName::Types.LEFT_SQUARE; }
 	{RIGHT_SQUARE}              {   return ::projectProperName::Types.RIGHT_SQUARE; }
@@ -188,10 +188,10 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 
 
 	{UID_TYPE}                  {   return ::projectProperName::Types.UID_TYPE; }
-	{INT_TYPE}                  {   return ::projectProperName::Types.INT_TYPE; }
+    {STRING_TYPE}               {   return ::projectProperName::Types.STRING_TYPE; }
 	{BOOLEAN_TYPE}              {   return ::projectProperName::Types.BOOLEAN_TYPE; }
 	{NATURAL_TYPE}              {   return ::projectProperName::Types.NATURAL_TYPE; }
-    {STRING_TYPE}               {   return ::projectProperName::Types.STRING_TYPE; }
+	{INT_TYPE}                  {   return ::projectProperName::Types.INT_TYPE; }
     {DOUBLE_TYPE}               {   return ::projectProperName::Types.DOUBLE_TYPE; }
 
 	{SEMICOLON}                 {   return semicolon(); }

@@ -1,4 +1,4 @@
-package monet.::projectName::.intellij;
+package monet.::projectName::.intellij.lang.psi.resolve;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;

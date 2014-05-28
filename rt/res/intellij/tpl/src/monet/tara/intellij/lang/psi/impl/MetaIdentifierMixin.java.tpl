@@ -4,7 +4,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
-import monet.::projectName::.intellij.::projectProperName::MetaReferenceSolver;
+import monet.::projectName::.intellij.lang.psi.resolve.::projectProperName::MetaReferenceSolver;
 import monet.::projectName::.intellij.lang.psi.MetaIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

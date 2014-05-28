@@ -26,7 +26,7 @@ public class ReferenceManager {
 		PsiElement reference = null;
 		if (external) reference = resolveExternalReference(identifier);
 		else if (identifier.getParent() instanceof IdentifierReference)
-			reference = resolveConceptReference(identifier, getIdentifiersFromConcept(identifier));
+			reference = resolveConceptReference(identifier, getIdentifiersOfReference(identifier));
 		else if (identifier.getParent() instanceof HeaderReference)
 			reference = resolveHeaderReference(identifier, getRouteFromHeader(identifier));
 		else if (identifier.getParent() instanceof Signature) return identifier;
@@ -59,7 +59,7 @@ public class ReferenceManager {
 		return route.subList(0, route.indexOf(identifier) + 1);
 	}
 
-	private static List<Identifier> getIdentifiersFromConcept(Identifier identifier) {
+	private static List<Identifier> getIdentifiersOfReference(Identifier identifier) {
 		List<Identifier> route = (List<Identifier>) ((IdentifierReference) (identifier.getParent())).getIdentifierList();
 		route = route.subList(0, route.indexOf(identifier) + 1);
 		return route;

@@ -1,10 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.intellij.lang.psi;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.PsiElement;
+import com.intellij.lang.ASTNode;
 import monet.tara.intellij.lang.psi.impl.*;
 
 public interface TaraTypes {
@@ -43,6 +42,7 @@ public interface TaraTypes {
   IElementType CASE_KEY = new TaraTokenType("CASE_KEY");
   IElementType CLOSE_AN = new TaraTokenType("CLOSE_AN");
   IElementType COLON = new TaraTokenType("COLON");
+  IElementType COMMA = new TaraTokenType("COMMA");
   IElementType CONCEPT_KEY = new TaraTokenType("CONCEPT_KEY");
   IElementType DEDENT = new TaraTokenType("DEDENT");
   IElementType DOC_LINE = new TaraTokenType("DOC_LINE");
@@ -56,6 +56,7 @@ public interface TaraTypes {
   IElementType IMPORT_KEY = new TaraTokenType("IMPORT_KEY");
   IElementType INTENTION_KEY = new TaraTokenType("INTENTION_KEY");
   IElementType INT_TYPE = new TaraTokenType("INT_TYPE");
+  IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
   IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
   IElementType LIST = new TaraTokenType("LIST");
   IElementType MULTIPLE = new TaraTokenType("MULTIPLE");
@@ -68,6 +69,7 @@ public interface TaraTypes {
   IElementType PACKAGE = new TaraTokenType("PACKAGE");
   IElementType REQUIRED = new TaraTokenType("REQUIRED");
   IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
+  IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");
   IElementType RIGHT_SQUARE = new TaraTokenType("RIGHT_SQUARE");
   IElementType ROOT = new TaraTokenType("ROOT");
   IElementType SINGLETON = new TaraTokenType("SINGLETON");

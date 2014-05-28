@@ -30,8 +30,8 @@ public class ASTDependencyResolver {
 			Set<ASTNode.AnnotationType> annotations = new HashSet<>();
 			collectHierarchyData(node.getParentConcept(), innerConcepts, vars, annotations);
 			for (ASTNode innerConcept : innerConcepts)
-				if (isImportable(node, innerConcept)) node.getInnerConcepts().add(innerConcept);
-			node.getVariables().addAll(vars);
+				if (isImportable(node, innerConcept)) node.getInnerConcepts().add(0, innerConcept);
+			node.getVariables().addAll(0,vars);
 			for (ASTNode.AnnotationType annotation : annotations) node.add(annotation);
 		}
 		return nodes.toArray(new ASTNode[nodes.size()]);
@@ -45,16 +45,16 @@ public class ASTDependencyResolver {
 	                                  List<ASTNode> innerConcepts,
 	                                  List<ASTNode.Variable> vars,
 	                                  Set<ASTNode.AnnotationType> annotations) {
-		innerConcepts.addAll(parentConcept.getInnerConcepts());
-		vars.addAll(parentConcept.getVariables());
+		innerConcepts.addAll(0, parentConcept.getInnerConcepts());
+		vars.addAll(0, parentConcept.getVariables());
 		Collections.addAll(annotations, parentConcept.getAnnotations());
 		if (parentConcept.getParentConcept() != null)
 			collectHierarchyData(parentConcept.getParentConcept(), innerConcepts, vars, annotations);
 	}
 
-	public void resolveHierarchyDependencies() throws DependencyException {
+	private void resolveHierarchyDependencies() throws DependencyException {
 		for (ASTNode node : nodes)
-			if (node.getParentName() != null) {
+			if (node.getParentName() != null || node.isCase()) {
 				ASTNode parent = ast.searchAncestry(node);
 				if (parent == null)
 					throw new DependencyException("Dependency resolution fail in: " + node + "doesn't find" + node.getParentName(), node);

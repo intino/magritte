@@ -47,6 +47,23 @@ class TplMarker {
         text
     }
 
+
+    public static String addXmlExtensions(String fileName, String text) {
+        def tag = "<!--%extensions%-->"
+        def offset = fileName.lastIndexOf(File.separator)
+        String route = fileName.substring(0, offset).replaceAll(File.separator, ".");
+        String objectName = fileName.substring(offset, fileName.length()).replaceAll("\\..*", ".tpl")
+        URL resource = TplMarker.class.getResource(extensionPath + route + objectName)
+        if (resource == null) return text;
+        String extension = new File(resource.getPath()).text;
+        int index = text.indexOf(tag)
+        if (index > 0) {
+            String field = text.substring(index, index + tag.length())
+            text = text.replace(field, extension);
+        }
+        text
+    }
+
     public static String addJavaGenMarks(String text, String replace) {
         text = addMarksWithSubstitution(text, replace)
         text
@@ -152,17 +169,14 @@ class TplMarker {
     }
 
     public static String addXmlMarks(String text) {
-        int index = 0;
-        while (index >= 0) {
-            index = text.indexOf("<!--gen", index)
+        int index = -1
+        while ((index = text.indexOf("<!--gen", index + 1)) > 0) {
             int endIndex = text.indexOf("<!--end-->")
-            if (index > 0) {
-                String field = text.substring(index, endIndex + 10)
-                String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
-                if (token != "")
-                    text = text.replace(field, "::" + token + "::")
-                else text = text.replace(field, "")
-            }
+            String field = text.substring(index, endIndex + 10)
+            String token = field.substring(field.indexOf("%") + 1, field.lastIndexOf("%"))
+            if (token != "")
+                text = text.replace(field, "::" + token + "::")
+            else text = text.replace(field, "")
         }
         text
     }

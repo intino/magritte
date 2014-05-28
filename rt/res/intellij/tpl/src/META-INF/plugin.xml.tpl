@@ -1,6 +1,6 @@
 <idea-plugin version="1">
   <id>siani.dev.::projectName::</id>
-  <name>::projectProperName:: Plugin</name>
+  <name>::projectProperName::</name>
   ::version::
   <vendor email="octavioroncal\@siani.es" url="http\://www.monet.org">Siani</vendor>
 
@@ -14,8 +14,7 @@
   <!-- please see http\://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
   <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
+  <depends>com.intellij.modules.lang</depends> -->
 
   <actions>
     <action id="NewDefinition" class="monet.::projectName::.intellij.actions.Create::projectProperName::FileAction">
@@ -59,6 +58,7 @@
     <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.AttributeAnnotator"/>
     <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.DefinitionAnnotator"/>
     <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.PackageAnnotator"/>
+    <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.ParameterAnnotator"/>
     <completion.contributor language="::projectProperName::"
                             implementationClass="monet.::projectName::.intellij.codeinsight.completion.::projectProperName::SignatureCompletionContributor"/>
     <completion.contributor language="::projectProperName::"
@@ -67,21 +67,30 @@
                             implementationClass="monet.::projectName::.intellij.codeinsight.completion.::projectProperName::AnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="::projectProperName::"
                                   implementationClass="monet.::projectName::.intellij.structureview.StructureViewFactory"/>
-    <!--<psi.referenceContributor implementation="monet.::projectName::.intellij.::projectProperName::ReferenceContributor"/>-->
+    <!--<psi.referenceContributor implementation="monet.::projectName::.intellij.lang.psi.resolve.::projectProperName::ReferenceContributor"/>-->
     <nameSuggestionProvider implementation="monet.::projectName::.intellij.refactoring.NameSuggestionProvider"/>
     <lang.elementManipulator forClass="monet.::projectName::.intellij.lang.psi.::projectProperName::Identifier"
                              implementationClass="monet.::projectName::.intellij.lang.psi.impl.IdentifierManipulator"/>
+    <codeInsight.parameterInfo language="::projectProperName::" implementationClass="monet.::projectName::.intellij.codeinsight.parameterinfo.::projectProperName::ParameterInfoHandler"/>
+
+    <codeInsight.parameterInfo language="::projectProperName::"
+                               implementationClass="monet.::projectName::.intellij.codeinsight.parameterinfo.::projectProperName::ParameterInfoHandler"/>
 
     <lang.refactoringSupport language="::projectProperName::"
                              implementationClass="monet.::projectName::.intellij.::projectProperName::RefactoringSupportProvider"/>
     <renameHandler implementation="monet.::projectName::.intellij.refactoring.rename.RenameHandler"/>
     <lang.findUsagesProvider language="::projectProperName::"
-                             implementationClass="monet.::projectName::.intellij.::projectProperName::FindUsagesProvider"/>
+                             implementationClass="monet.::projectName::.intellij.lang.psi.resolve.::projectProperName::FindUsagesProvider"/>
     <lang.foldingBuilder language="::projectProperName::" implementationClass="monet.::projectName::.intellij.::projectProperName::FoldingBuilder"/>
     <projectService serviceInterface="monet.::projectName::.intellij.codeinsight.JavaHelper"
                     serviceImplementation="monet.::projectName::.intellij.codeinsight.JavaHelper$Impl"/>
     <!--<referenceImporter implementation="monet.::projectName::.intellij.annotator.imports.::projectProperName::ReferenceImporter"/>-->
     <!--<lang.formatter language="::projectProperName::" implementationClass="monet.::projectName::.intellij.formatter.::projectProperName::FormattingModelBuilder"/>-->
-    <!--<refactoring.moveHandler implementation="com.intellij.uiDesigner.projectView.FormMoveProvider"/>-->
+    <moveFileHandler implementation="monet.::projectName::.intellij.refactoring.move.::projectProperName::FileMoveHandler"/>
+    <refactoring.moveHandler implementation="monet.::projectName::.intellij.refactoring.move.::projectProperName::MoveDefinition"/>
+    <lang.importOptimizer language="::projectProperName::"
+                          implementationClass="monet.::projectName::.intellij.codeinsight.imports.::projectProperName::ImportOptimizer"/>
+    <findUsagesHandlerFactory implementation="monet.::projectName::.intellij.findUsages.::projectProperName::FindUsagesHandlerFactory" id="::projectProperName::"
+                              order="last, before default"/>
   </extensions>
 </idea-plugin>

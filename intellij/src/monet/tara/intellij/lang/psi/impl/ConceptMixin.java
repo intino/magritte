@@ -8,6 +8,7 @@ import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.documentation.TaraDocumentationFormatter;
 import monet.tara.intellij.lang.TaraIcons;
@@ -46,6 +47,10 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	public String getType() {
 		MetaIdentifier type = getSignature().getType();
 		return type != null ? type.getText() : null;
+	}
+
+	public MetaIdentifier getMetaIdentifier() {
+		return PsiTreeUtil.getChildrenOfType(this.getSignature(), MetaIdentifier.class)[0];
 	}
 
 	@Override

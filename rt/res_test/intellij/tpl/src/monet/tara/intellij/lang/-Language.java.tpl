@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.intellij.lang.Language;
 import monet.tara.lang.ASTNode;
 import monet.tara.lang.ASTWrapper;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -47,8 +48,8 @@ public class ::projectProperName::Language extends Language {
 			String name = json.getAsJsonObject().get("name").getAsString();
 
 			JsonElement e = json.getAsJsonObject().get("node");
-			if (e != null && e.isJsonPrimitive() && e.getAsString() != null) return new ASTNode.Reference(name,
-				e.getAsString(), json.getAsJsonObject().get("isList").getAsBoolean());
+			if (e != null && e.isJsonPrimitive() && e.getAsString() != null) return new ASTNode.Reference(
+				e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean());
 
 			e = json.getAsJsonObject().get("primitiveType");
 			if (e != null && e.isJsonPrimitive() && e.getAsString() != null)

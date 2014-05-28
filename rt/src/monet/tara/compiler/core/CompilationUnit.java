@@ -100,7 +100,7 @@ public class CompilationUnit extends ProcessingUnit {
 			try {
 				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating plugin");
 				PluginGenerator generator = new PluginGenerator(configuration);
-				generator.generate(units);
+				generator.generate(ast);
 				getErrorCollector().failIfErrors();
 			} catch (TaraException e) {
 				LOG.severe("Error during plugin generation: " + e.getMessage() + "\n");

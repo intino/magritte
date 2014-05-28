@@ -109,6 +109,7 @@ GENERIC   = "generic"
 WORD_KEY  = "Word"
 RESOURCE_KEY = "Resource"
 VAR       = "var"
+PROPERTY  = "property"
 
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
 LEFT_SQUARE  = "["
@@ -126,7 +127,7 @@ CLOSE_AN = ">"
 POSITIVE = "+"
 NEGATIVE = "-"
 
-UID_TYPE     = "Uid"
+ALIAS_TYPE   = "Alias"
 INT_TYPE     = "Integer"
 NATURAL_TYPE = "Natural"
 DOUBLE_TYPE  = "Double"
@@ -160,6 +161,8 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{COLON}                     {   return TaraTypes.COLON; }
 
 	{VAR}                       {   return TaraTypes.VAR; }
+
+	{PROPERTY}                  {   return TaraTypes.PROPERTY; }
 
 	{LIST}                      {   return TaraTypes.LIST; }
 
@@ -195,7 +198,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{DOT}                       {   return TaraTypes.DOT; }
 
-	{UID_TYPE}                  {   return TaraTypes.UID_TYPE; }
+	{ALIAS_TYPE}                {   return TaraTypes.UID_TYPE; }
 	{INT_TYPE}                  {   return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}              {   return TaraTypes.BOOLEAN_TYPE; }
 	{NATURAL_TYPE}              {   return TaraTypes.NATURAL_TYPE; }
