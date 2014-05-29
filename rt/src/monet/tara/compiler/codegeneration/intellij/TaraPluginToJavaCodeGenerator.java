@@ -7,7 +7,7 @@ import monet.tara.compiler.codegeneration.render.RendersFactory;
 import monet.tara.compiler.codegeneration.render.TemplateFactory;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.errorcollection.TaraException;
-import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.TreeWrapper;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -18,7 +18,7 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 
 	private PrintWriter writer;
 
-	public File toJava(CompilerConfiguration configuration, ASTWrapper ast) throws TaraException {
+	public File toJava(CompilerConfiguration configuration, TreeWrapper ast) throws TaraException {
 		File bnfFile = null;
 		this.configuration = configuration;
 		for (String template : TemplateFactory.getTemplates()) {
@@ -32,7 +32,7 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 		return bnfFile;
 	}
 
-	private Object calculateParam(String template, ASTWrapper ast) {
+	private Object calculateParam(String template, TreeWrapper ast) {
 		if (TemplateFactory.getPluginDescriptorTemplate().equals(template)) return configuration;
 		return ast;
 	}
@@ -44,7 +44,7 @@ public class TaraPluginToJavaCodeGenerator extends CodeGenerator {
 	}
 
 	private String getDestinyOf(String template) {
-		String templateRefactored = template.replace("_", "Definition").replace("/tara/", "/" + configuration.getProject().toLowerCase() + "/");
+		String templateRefactored = template.replace("_", "Definition").replace("/-/", "/" + configuration.getProject().toLowerCase() + "/");
 		templateRefactored = templateRefactored.replace("tpl/", "");
 		if (!template.contains("META-INF"))
 			templateRefactored = templateRefactored.replace("-", RenderUtils.toProperCase(configuration.getProject()));

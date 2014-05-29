@@ -4,15 +4,14 @@ public class TaraAnnotation {
 
 	public static final String ROOT = "root";
 	public static final String SINGLETON = "singleton";
-	public static final String CODE = "code";
 	public static final String HASNAME = "has-name";
 	public static final String REQUIRED = "required";
 	public static final String MULTIPLE = "multiple";
 	public static final String GENERIC = "generic";
 	public static final String INTENTION = "intention";
-	public static final String[] CASE_ANNOTATIONS = new String[]{SINGLETON, CODE, INTENTION};
-	public static final String[] ROOT_ANNOTATIONS = new String[]{GENERIC, ROOT, SINGLETON, CODE, INTENTION};
-	public static final String[] CHILD_ANNOTATIONS = new String[]{GENERIC, SINGLETON, CODE, REQUIRED, MULTIPLE, INTENTION};
+	public static final String[] CASE_ANNOTATIONS = new String[]{SINGLETON, INTENTION};
+	public static final String[] ROOT_ANNOTATIONS = new String[]{GENERIC, ROOT, SINGLETON, INTENTION};
+	public static final String[] CHILD_ANNOTATIONS = new String[]{GENERIC, SINGLETON, REQUIRED, MULTIPLE, INTENTION};
 
 	private TaraAnnotation() {
 	}

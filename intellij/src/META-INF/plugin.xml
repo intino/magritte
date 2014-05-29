@@ -19,7 +19,7 @@
   <change-notes><![CDATA[ First Realease. Windows integration. ]]>
   </change-notes>
 
-  <idea-version since-build="135.375"/>
+  <idea-version since-build="133.375"/>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->

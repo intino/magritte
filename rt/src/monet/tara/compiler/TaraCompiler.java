@@ -7,7 +7,7 @@ import monet.tara.compiler.core.errorcollection.*;
 import monet.tara.compiler.core.errorcollection.message.*;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
 import monet.tara.compiler.rt.TaraCompilerMessageCategories;
-import monet.tara.lang.ASTNode;
+import monet.tara.lang.AbstractNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -111,10 +111,10 @@ public class TaraCompiler {
 	}
 
 	private void addErrorMessage(TaraRuntimeException exception) {
-		ASTNode astNode = exception.getNode();
-		if (astNode != null)
+		AbstractNode abstractNode = exception.getNode();
+		if (abstractNode != null)
 			collector.add(new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(),
-				astNode.getFile(), astNode.getLine(), -1));
+				abstractNode.getFile(), abstractNode.getLine(), -1));
 		else
 			collector.add(new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(), "null", -1, -1));
 	}

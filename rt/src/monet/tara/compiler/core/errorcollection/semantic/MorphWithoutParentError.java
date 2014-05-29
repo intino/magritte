@@ -1,10 +1,10 @@
 package monet.tara.compiler.core.errorcollection.semantic;
 
-import monet.tara.lang.ASTNode;
+import monet.tara.lang.AbstractNode;
 
 public class MorphWithoutParentError extends SemanticError implements SemanticError.FatalError {
 
-	public MorphWithoutParentError(String token, ASTNode node) {
+	public MorphWithoutParentError(String token, AbstractNode node) {
 		super(token, node);
 	}
 

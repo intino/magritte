@@ -6,7 +6,9 @@ import monet.tara.intellij.lang.TaraLanguage;
 import monet.tara.intellij.lang.psi.*;
 import monet.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import monet.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
-import monet.tara.lang.ASTNode;
+import monet.tara.lang.*;
+import monet.tara.lang.NodeAttribute;
+import monet.tara.lang.NodeWord;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -19,9 +21,9 @@ public class ParameterAnnotator extends TaraAnnotator {
 		if (!(element instanceof Parameter)) return;
 		MetaIdentifier metaIdentifier = TaraPsiImplUtil.getContextOf(element).getMetaIdentifier();
 		int index = getIndexOf((Parameters) element.getParent(), (Parameter) element);
-		ASTNode node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(metaIdentifier.getText()).get(0);
-		List<ASTNode.Variable> variables = node.getVariables();
-		ASTNode.Variable actualVariable = variables.get(index);
+		AbstractNode node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(metaIdentifier.getText()).get(0);
+		List<Variable> variables = node.getVariables();
+		Variable actualVariable = variables.get(index);
 		if (element.getFirstChild() instanceof TaraIdentifierReference /*|| element.getFirstChild() instanceof TaraIdentifierList*/) {
 			processAsWordOrReference(element, holder, actualVariable);
 		} else if (!areSameType(actualVariable, element)) {
@@ -29,19 +31,19 @@ public class ParameterAnnotator extends TaraAnnotator {
 		}
 	}
 
-	private void processAsWordOrReference(PsiElement element, AnnotationHolder holder, ASTNode.Variable actualVariable) {
-		if (actualVariable instanceof ASTNode.Word)
-			processAsWord((TaraIdentifierReference) element.getFirstChild(), ((ASTNode.Word) actualVariable));
+	private void processAsWordOrReference(PsiElement element, AnnotationHolder holder, Variable actualVariable) {
+		if (actualVariable instanceof NodeWord)
+			processAsWord((TaraIdentifierReference) element.getFirstChild(), ((NodeWord) actualVariable));
 		else if (element instanceof TaraIdentifierReference &&
-			checkReference((TaraIdentifierReference) element.getFirstChild(), (ASTNode.Reference) actualVariable))
+			checkReference((TaraIdentifierReference) element.getFirstChild(), (Reference) actualVariable))
 			holder.createErrorAnnotation(element, "Parameter type error");
 	}
 
-	private boolean processAsWord(TaraIdentifierReference reference, ASTNode.Word word) {
+	private boolean processAsWord(TaraIdentifierReference reference, NodeWord word) {
 		return word.contains(getLastElementOf(reference).getText());
 	}
 
-	private boolean checkReference(TaraIdentifierReference reference, ASTNode.Reference variable) {
+	private boolean checkReference(TaraIdentifierReference reference, Reference variable) {
 		TaraReferenceSolver solver = new TaraReferenceSolver(getLastElementOf(reference), reference.getTextRange(), false);
 		PsiElement resolve = solver.resolve();
 		if (resolve instanceof Concept) {
@@ -51,9 +53,9 @@ public class ParameterAnnotator extends TaraAnnotator {
 		return false;
 	}
 
-	private boolean areSameType(ASTNode.Variable variable, PsiElement element) {
-		if (!ASTNode.Attribute.class.isInstance(variable)) return false;
-		String varType = ((ASTNode.Attribute) variable).getPrimitiveType();
+	private boolean areSameType(Variable variable, PsiElement element) {
+		if (!NodeAttribute.class.isInstance(variable)) return false;
+		String varType = ((NodeAttribute) variable).getPrimitiveType();
 		Types type = Types.valueOf(element.getFirstChild().getClass().getSimpleName());
 		switch (type) {
 			case TaraStringValueImpl:

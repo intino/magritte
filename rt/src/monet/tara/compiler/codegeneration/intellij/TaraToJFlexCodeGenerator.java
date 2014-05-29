@@ -5,7 +5,7 @@ import monet.tara.compiler.codegeneration.render.JFlexRender;
 import monet.tara.compiler.codegeneration.render.TemplateFactory;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.errorcollection.TaraException;
-import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.TreeWrapper;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TaraToJFlexCodeGenerator extends CodeGenerator {
 
-	public static File[] toJFlex(CompilerConfiguration conf, ASTWrapper ast) throws TaraException {
+	public static File[] toJFlex(CompilerConfiguration conf, TreeWrapper ast) throws TaraException {
 		List<File> resultFiles = new ArrayList<>();
 		for (String template : TemplateFactory.getLexerTemplates()) {
 			String outPath = PathManager.getSrcDir(conf.getTempDirectory()) + newTemplate(conf.getProject().toLowerCase(), template);

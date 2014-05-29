@@ -1,7 +1,7 @@
 package monet.tara.compiler.codegeneration.render;
 
 import monet.tara.compiler.core.errorcollection.TaraException;
-import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.TreeWrapper;
 import org.monet.templation.CanvasLogger;
 
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class JFlexRender extends DefaultRender {
 
 	public JFlexRender(String tplName, String projectName, Object ast) throws TaraException {
 		super(tplName, projectName);
-		this.identifierMap = ((ASTWrapper) ast).getIdentifiers();
+		this.identifierMap = ((TreeWrapper) ast).getIdentifiers();
 	}
 
 	@Override

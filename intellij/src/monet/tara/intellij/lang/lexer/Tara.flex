@@ -176,7 +176,6 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{GENERIC}                   {   return TaraTypes.GENERIC; }
 
 	{HAS_NAME}                  {   return TaraTypes.HAS_NAME; }
-	{SYSTEM}                    {   return TaraTypes.SYSTEM; }
 	{INTENTION_KEY}             {   return TaraTypes.INTENTION_KEY; }
 	{ROOT}                      {   return TaraTypes.ROOT; }
 	{SINGLETON}                 {   return TaraTypes.SINGLETON; }

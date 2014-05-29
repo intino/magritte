@@ -1,8 +1,5 @@
 package goros.m2
 
-import goros.m2.Source
-import goros.m2.entity.Entity
-
 Concept:Entity Form
     Concept base Field <multiple required>
         var String label
@@ -25,7 +22,7 @@ Concept:Entity Form
         Concept Display <multiple>
             var Word when { WhenEmpty; WhenRequired; WhenReadOnly; WhenInvalid }
             var String message
-
+			var Resource:Template template
         ' Añadir para incluir un campo boolean en el formulario
         case BooleanField
 		' Añadir para incluir un campo texto en el formulario

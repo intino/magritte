@@ -4,7 +4,7 @@ import monet.tara.compiler.core.errorcollection.ErrorCollector;
 import monet.tara.compiler.core.errorcollection.SyntaxException;
 import monet.tara.compiler.core.errorcollection.TaraException;
 import monet.tara.compiler.parser.Parser;
-import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.TreeWrapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class SourceUnit extends ProcessingUnit {
 	private static final Logger LOG = Logger.getLogger(SourceUnit.class.getName());
 	protected FileReaderSource source;
 	protected String name;
-	private ASTWrapper ast;
+	private TreeWrapper abstractTree;
 	private Parser parser;
 
 	public SourceUnit(String name, FileReaderSource source, CompilerConfiguration configuration, ErrorCollector er) {
@@ -38,8 +38,8 @@ public class SourceUnit extends ProcessingUnit {
 		return source;
 	}
 
-	public ASTWrapper getAST() {
-		return ast;
+	public TreeWrapper getAbstractTree() {
+		return abstractTree;
 	}
 
 	public void parse() throws IOException, SyntaxException {
@@ -48,6 +48,6 @@ public class SourceUnit extends ProcessingUnit {
 	}
 
 	public void convert() throws TaraException {
-		ast = parser.convert();
+		abstractTree = parser.convert();
 	}
 }

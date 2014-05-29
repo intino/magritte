@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/rt/src/monet/tara/compiler/parser/antlr/TaraM2Grammar.g4 by ANTLR 4.x
+// Generated from /Users/octavio/workspace/tara/rt/src/monet/tara/compiler/parser/antlr/TaraM2Grammar.g4 by ANTLR 4.x
 
 package monet.tara.compiler.parser.antlr;
 
@@ -170,6 +170,16 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBooleanList(@NotNull TaraM2Grammar.BooleanListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraM2Grammar#resource}.
+	 * @param ctx the parse tree
+	 */
+	void enterResource(@NotNull TaraM2Grammar.ResourceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraM2Grammar#resource}.
+	 * @param ctx the parse tree
+	 */
+	void exitResource(@NotNull TaraM2Grammar.ResourceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#integerList}.
 	 * @param ctx the parse tree

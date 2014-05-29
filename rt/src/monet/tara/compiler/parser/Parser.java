@@ -1,11 +1,11 @@
 package monet.tara.compiler.parser;
 
 import monet.tara.compiler.core.errorcollection.SyntaxException;
-import monet.tara.compiler.parser.antlr.TaraASTGeneratorListener;
+import monet.tara.compiler.parser.antlr.TaraAbstractTreeGenerator;
 import monet.tara.compiler.parser.antlr.TaraErrorStrategy;
 import monet.tara.compiler.parser.antlr.TaraM2Grammar;
 import monet.tara.compiler.parser.antlr.TaraM2Lexer;
-import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.TreeWrapper;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
@@ -28,16 +28,18 @@ public class Parser {
 		parser.setErrorHandler(new TaraErrorStrategy());
 	}
 
-	public ASTWrapper convert() throws SyntaxException {
+	public TreeWrapper convert() throws SyntaxException {
 		try {
-			ASTWrapper ast = new ASTWrapper();
+			TreeWrapper ast = new TreeWrapper();
 			ParseTreeWalker walker = new ParseTreeWalker();
-			TaraASTGeneratorListener extractor = new TaraASTGeneratorListener(ast, file.getPath());
+			TaraAbstractTreeGenerator extractor = new TaraAbstractTreeGenerator(ast, file.getPath());
 			walker.walk(extractor, rootContext);
 			return ast;
-		} catch (RecognitionException e) {
-			Token token = ((org.antlr.v4.runtime.Parser) e.getRecognizer()).getCurrentToken();
-			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine());
+		} catch (RecognitionException | NullPointerException e) {
+//			Token token = ((org.antlr.v4.runtime.Parser) e.getRecognizer()).getCurrentToken();
+//			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine());
+			e.printStackTrace();
+			return null;
 		}
 	}
 

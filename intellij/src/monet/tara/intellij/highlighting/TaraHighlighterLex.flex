@@ -23,7 +23,6 @@ FINAL      = "final"
 ABSTRACT   = "abstract"
 MULTIPLE   = "multiple"
 REQUIRED   = "required"
-SYSTEM     = "system"
 HAS_NAME   = "has-name"
 SINGLETON  = "singleton"
 INTENTION_KEY = "intention"
@@ -102,7 +101,6 @@ NEWLINE= [\n]+
 	{MULTIPLE}                  {   return TaraTypes.MULTIPLE; }
 
 	{HAS_NAME}                  {   return TaraTypes.HAS_NAME; }
-	{SYSTEM}                    {   return TaraTypes.SYSTEM; }
 	{ROOT}                      {   return TaraTypes.ROOT; }
 	{SINGLETON}                 {   return TaraTypes.SINGLETON; }
 	{GENERIC}                   {   return TaraTypes.GENERIC; }

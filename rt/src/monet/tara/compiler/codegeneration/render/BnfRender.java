@@ -1,7 +1,7 @@
 package monet.tara.compiler.codegeneration.render;
 
 import monet.tara.compiler.core.errorcollection.TaraException;
-import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.TreeWrapper;
 
 import java.util.Set;
 
@@ -12,7 +12,7 @@ public class BnfRender extends DefaultRender {
 
 	public BnfRender(String tplName, String projectName, Object wrapper) throws TaraException {
 		super(tplName, projectName);
-		this.identifiers = ((ASTWrapper) wrapper).getNodeNameLookUpTable().keySet();
+		this.identifiers = ((TreeWrapper) wrapper).getNodeNameLookUpTable().keySet();
 	}
 
 	@Override

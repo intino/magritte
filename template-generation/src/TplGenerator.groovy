@@ -5,6 +5,7 @@ public class TplGenerator {
     static String RES_PATH = "intellij/res";
     static String RES_TEST_PATH = "rt/res_test/intellij/tpl";
     static File templateBound;
+    public static final String LANGUAGE_HERITAGE = "absmodel/src"
 
     public static void main(String[] args) {
         templateBound = new File("rt/res/intellij/templates.properties")
@@ -13,28 +14,30 @@ public class TplGenerator {
         new File(TPL_PATH).deleteDir();
         File[] srcFiles = new File(SRC_PATH).listFiles()
         fixTypes()
-        createTPLs(TPL_PATH, srcFiles, templateBound)
-        createTPLs(TPL_PATH, new File(RES_PATH).listFiles(), templateBound)
-        new File(TPL_PATH + "/src/monet/tara/intellij/lang/psi/-Types.java.tpl").createNewFile()
-        templateBound.append("Types.java" + " = " + "/intellij/tpl/src/monet/tara/intellij/lang/psi/-Types.java")
-        addLangHeritage("rt/src/monet/tara/lang", TPL_PATH + "/src/monet/tara/lang")
+        createTPLs(TPL_PATH, srcFiles, templateBound, true)
+        createTPLs(TPL_PATH, new File(LANGUAGE_HERITAGE).listFiles(), templateBound, false)
+        createTPLs(TPL_PATH, new File(RES_PATH).listFiles(), templateBound, true)
+        new File(TPL_PATH + "/src/monet/-/intellij/lang/psi/-Types.java.tpl").createNewFile()
+        templateBound.append("Types.java" + " = " + "/intellij/tpl/src/monet/-/intellij/lang/psi/-Types.java")
         File tpl_testPath = new File(RES_TEST_PATH)
         FileUtils.removeDir(tpl_testPath)
         FileUtils.copyDir(new File(TPL_PATH), tpl_testPath)
         FileUtils.copyFile(templateBound, new File("rt/res_test/intellij/templates.properties"))
     }
 
-    private static void createTPLs(String tplPath, File[] files, File templateBound) {
+    private static void createTPLs(String tplPath, File[] files, File templateBound, boolean replaceNames) {
         File file = new File(tplPath)
         files.each {
             if (it.isDirectory()) {
                 if (!it.name.contains("compiler") && !it.name.contains("formatter")) {
-                    file = new File(tplPath + it.getPath().substring(8) + "/")
+                    file = new File(getTemplatePath(tplPath, it, replaceNames) + "/")
                     file.mkdirs()
-                    createTPLs(tplPath, it.listFiles(), templateBound)
+                    createTPLs(tplPath, it.listFiles(), templateBound, replaceNames)
                 }
             } else {
-                String fileName = it.name.replaceAll("Tara", "-").replace("Concept", "_").replace("m2", "m1")
+                String fileName = it.name
+                if (replaceNames)
+                    fileName = fileName.replaceAll("Tara", "-").replace("Concept", "_").replace("m2", "m1")
                 if (!it.name.startsWith(".") && !it.text.startsWith("/*") && isCorrectFileType(it.name)) {
                     String text = it.text;
                     if (!it.getName().endsWith("png")) {
@@ -42,7 +45,8 @@ public class TplGenerator {
                         text = TplMarker.scapeMetaCharacters(text)
                         text = TplMarker.processExtensions(text)
                         text = TplMarker.processModifications(text)
-                        text = TplMarker.addMarks(text)
+                        if (replaceNames)
+                            text = TplMarker.addMarks(text)
                         def path = it.path.substring(it.path.lastIndexOf(SRC_PATH) + SRC_PATH.length() + 1);
                         text = TplMarker.addExtensions(path, text)
                         if (it.getName().endsWith("xml")) {
@@ -50,11 +54,12 @@ public class TplGenerator {
                             text = TplMarker.addXmlExtensions(path, text)
                         } else text = TplMarker.addJavaGenMarks(text, genText)
                         text = text.replaceAll("%", "\\\\%")
-                        File newFile = new File(tplPath + it.parent.substring(8), fileName + ".tpl")
+                        File newFile = new File(getTemplateParentPath(tplPath, it, replaceNames), fileName + ".tpl")
+                        newFile.getParentFile().mkdirs()
                         newFile.write(text)
                         templateBound.append(it.getName() + " = " + FileUtils.getRelativeTplPath(newFile) + "\n");
                     } else if (!it.name.startsWith("Concept"))
-                        FileUtils.copyFile(it, new File(tplPath + it.parent.substring(8), fileName))
+                        FileUtils.copyFile(it, new File(getTemplateParentPath(tplPath, it, replaceNames), fileName))
                 } else if (isGrammarFile(it)) {
                     processGrammarTemplates(tplPath, it, fileName, templateBound)
                 }
@@ -71,9 +76,19 @@ public class TplGenerator {
         if (it.name.endsWith(".bnf")) mfile = "m1Grammar.tpl"
         else mfile = it.name.contains("Highlighter") ? "m1HighlightLex.tpl" : "m1Lexer.tpl"
         String text = (new File(TplGenerator.class.getResource("/template-generation/tpl/").getPath() + mfile)).text.replaceAll("%", "\\\\%")
-        File newFile = new File(tplPath + it.parent.substring(8), newFileName + ".tpl")
+        File newFile = new File(getTemplateParentPath(tplPath, it, true), newFileName + ".tpl")
         newFile.write(text)
         templateBound.append(it.getName() + " = " + FileUtils.getRelativeTplPath(newFile) + "\n");
+    }
+
+    private static String getTemplatePath(String tplPath, File it, boolean replace) {
+        String tpl = tplPath + it.getPath().substring(8)
+        replace ? tpl.replace("tara", "-") : tpl
+    }
+
+    private static String getTemplateParentPath(String tplPath, File it, boolean replace) {
+        String tpl = tplPath + it.parent.substring(8)
+        replace ? tpl.replace("tara", "-") : tpl
     }
 
     static void fixTypes() {
@@ -86,13 +101,4 @@ public class TplGenerator {
         if (fileTypes.contains(fileName.substring(fileName.lastIndexOf(".") + 1))) return true
         false
     }
-
-
-    public static void addLangHeritage(String astDir, String destinyDir) {
-        new File(destinyDir).mkdirs()
-        FileUtils.copyFile(new File(astDir, "AST.java"), new File(destinyDir, "AST.java.tpl"));
-        FileUtils.copyFile(new File(astDir, "ASTNode.java"), new File(destinyDir, "ASTNode.java.tpl"));
-        FileUtils.copyFile(new File(astDir, "ASTWrapper.java"), new File(destinyDir, "ASTWrapper.java.tpl"));
-    }
-
 }

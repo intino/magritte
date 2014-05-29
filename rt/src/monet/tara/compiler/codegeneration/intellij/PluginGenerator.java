@@ -4,8 +4,7 @@ import com.google.gson.*;
 import monet.tara.compiler.codegeneration.PathManager;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.errorcollection.TaraException;
-import monet.tara.lang.ASTNode;
-import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,14 +14,14 @@ import java.lang.reflect.Type;
 
 public class PluginGenerator {
 
-	private static final String AST_JSON = "ast" + PathManager.SEP + "ast.json";
+	private static final String TREE_JSON = "ast" + PathManager.SEP + "ast.json";
 	CompilerConfiguration conf;
 
 	public PluginGenerator(CompilerConfiguration conf) {
 		this.conf = conf;
 	}
 
-	public void generate(ASTWrapper ast) throws TaraException {
+	public void generate(TreeWrapper ast) throws TaraException {
 		serializeNodes(ast);
 		File bnfFile = new TaraPluginToJavaCodeGenerator().toJava(conf, ast);
 		BnfToJavaCodeGenerator.bnfToJava(conf, bnfFile);
@@ -34,16 +33,16 @@ public class PluginGenerator {
 		PluginPackager.doPackage(conf);
 	}
 
-	private void serializeNodes(ASTWrapper astWrapper) throws TaraException {
+	private void serializeNodes(TreeWrapper treeWrapper) throws TaraException {
 		try {
-			File file = new File(PathManager.getSourceResIdeDir(conf.getTempDirectory()), AST_JSON);
+			File file = new File(PathManager.getSourceResIdeDir(conf.getTempDirectory()), TREE_JSON);
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
 			GsonBuilder gsonBuilder = new GsonBuilder();
 			gsonBuilder.setPrettyPrinting();
-			gsonBuilder.registerTypeAdapter(ASTNode.Variable.class, new VariableSerializer());
+			gsonBuilder.registerTypeAdapter(Variable.class, new VariableSerializer());
 			Gson gson = gsonBuilder.excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
-			writer.write(gson.toJson(astWrapper));
+			writer.write(gson.toJson(treeWrapper));
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -51,24 +50,29 @@ public class PluginGenerator {
 		}
 	}
 
-	public static class VariableSerializer implements JsonSerializer<ASTNode.Variable> {
+	public static class VariableSerializer implements JsonSerializer<Variable> {
 		@Override
-		public JsonElement serialize(ASTNode.Variable variable, Type type, JsonSerializationContext jsonSerializationContext) {
+		public JsonElement serialize(Variable variable, Type type, JsonSerializationContext jsonSerializationContext) {
 			final JsonObject object = new JsonObject();
 			object.addProperty("name", variable.name);
-			if (variable instanceof ASTNode.Word) {
-				ASTNode.Word word = (ASTNode.Word) variable;
+			if (variable instanceof NodeWord) {
+				NodeWord word = (NodeWord) variable;
 				final JsonArray list = new JsonArray();
 				for (String wordType : word.wordTypes) list.add(new JsonPrimitive(wordType));
 				object.add("wordTypes", list);
-			} else if (variable instanceof ASTNode.Attribute) {
-				ASTNode.Attribute attribute = (ASTNode.Attribute) variable;
+			} else if (variable instanceof NodeAttribute) {
+				NodeAttribute attribute = (NodeAttribute) variable;
 				object.addProperty("primitiveType", attribute.primitiveType);
 				object.addProperty("isList", attribute.isList);
-			} else if (variable instanceof ASTNode.Reference) {
-				ASTNode.Reference reference = (ASTNode.Reference) variable;
+				object.addProperty("isProperty", attribute.isProperty);
+			} else if (variable instanceof Reference) {
+				Reference reference = (Reference) variable;
 				object.addProperty("node", reference.node);
 				object.addProperty("isList", reference.isList);
+			} else if (variable instanceof Resource) {
+				Resource reference = (Resource) variable;
+				object.addProperty("type", reference.type);
+				object.addProperty("isProperty", reference.isProperty);
 			}
 			return object; // or throw an IllegalArgumentException
 

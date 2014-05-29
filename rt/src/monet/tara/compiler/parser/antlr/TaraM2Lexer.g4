@@ -1,7 +1,7 @@
 lexer grammar TaraM2Lexer;
 
 @header{
-	package monet.tara.compiler.parser.antlr;
+package monet.tara.compiler.parser.antlr;
 }
 
 @lexer::members{
@@ -99,6 +99,7 @@ HAS_NAME   : 'has-name';
 VAR        : 'var';
 PROPERTY   : 'property';
 WORD       : 'Word';
+RESOURCE   : 'Resource';
 
 FINAL      : 'final';
 ABSTRACT   : 'abstract';

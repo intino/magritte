@@ -57,7 +57,7 @@ implements='monet.tara.intellij.lang.psi.Attribute'}
 
 word::= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT
 { mixin= 'monet.tara.intellij.lang.psi.impl.WordMixin'
-implements='monet.tara.intellij.lang.psi.Word'
+implements='monet.tara.intellij.lang.psi.NodeWord'
 }
 
 stringValue  ::= STRING_VALUE_KEY

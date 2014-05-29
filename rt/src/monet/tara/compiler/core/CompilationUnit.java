@@ -10,11 +10,11 @@ import monet.tara.compiler.core.operation.ModuleUnitOperation;
 import monet.tara.compiler.core.operation.Operation;
 import monet.tara.compiler.core.operation.SourceUnitOperation;
 import monet.tara.compiler.core.operation.SrcToClassOperation;
-import monet.tara.compiler.dependencyresolver.ASTDependencyResolver;
+import monet.tara.compiler.dependencyresolver.AbstractTreeDependencyResolver;
 import monet.tara.compiler.rt.TaraRtConstants;
 import monet.tara.compiler.semantic.SemanticAnalyzer;
-import monet.tara.lang.ASTNode;
-import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.AbstractNode;
+import monet.tara.lang.TreeWrapper;
 
 import java.io.IOException;
 import java.util.*;
@@ -25,7 +25,7 @@ public class CompilationUnit extends ProcessingUnit {
 	private static final Logger LOG = Logger.getLogger(CompilationUnit.class.getName());
 	private final boolean pluginGeneration;
 	protected Map<String, SourceUnit> sources;
-	protected ASTWrapper ast;
+	protected TreeWrapper ast;
 	private ModuleUnitOperation semantic = new ModuleUnitOperation() {
 		public void call(Collection<SourceUnit> sources) throws CompilationFailedException {
 			try {
@@ -42,13 +42,13 @@ public class CompilationUnit extends ProcessingUnit {
 			}
 		}
 	};
-	protected ASTNode[] astProcessed;
+	protected AbstractNode[] astProcessed;
 	private ModuleUnitOperation ASTDependencyResolution = new ModuleUnitOperation() {
 		public void call(Collection<SourceUnit> sources) throws CompilationFailedException {
 			try {
-				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "AST dependency resolution");
-				ASTDependencyResolver resolver = new ASTDependencyResolver(sources);
-				ast = resolver.getAst();
+				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "monet.tara.lang.AST dependency resolution");
+				AbstractTreeDependencyResolver resolver = new AbstractTreeDependencyResolver(sources);
+				ast = resolver.getTree();
 				astProcessed = resolver.resolve();
 			} catch (DependencyException e) {
 				LOG.severe("Error during Dependency resolution: " + e.getMessage());
@@ -201,7 +201,7 @@ public class CompilationUnit extends ProcessingUnit {
 			((ModuleUnitOperation) operation).call(sources.values());
 	}
 
-	private SourceUnit getSourceFromFile(ASTNode node) {
+	private SourceUnit getSourceFromFile(AbstractNode node) {
 		if (node != null)
 			for (String name : sources.keySet())
 				if (name.equals(node.getFile())) return sources.get(name);

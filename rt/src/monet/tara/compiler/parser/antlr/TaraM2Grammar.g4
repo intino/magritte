@@ -34,7 +34,10 @@ attribute: ((VAR | PROPERTY)   ALIAS_TYPE  IDENTIFIER (ASSIGN stringValue)?)
          | ((VAR | PROPERTY)     INT_TYPE (variableNames | IDENTIFIER ASSIGN integerValue | LIST IDENTIFIER (ASSIGN integerList)?))
          | ((VAR | PROPERTY)  DOUBLE_TYPE (variableNames | IDENTIFIER ASSIGN doubleValue  | LIST IDENTIFIER  (ASSIGN doubleList)?))
          | ((VAR | PROPERTY) BOOLEAN_TYPE (variableNames | IDENTIFIER ASSIGN booleanValue | LIST IDENTIFIER (ASSIGN booleanList)?))
-         | ((VAR | PROPERTY)  STRING_TYPE (variableNames | IDENTIFIER ASSIGN stringValue  | LIST IDENTIFIER  (ASSIGN stringList)?));
+         | ((VAR | PROPERTY)  STRING_TYPE (variableNames | IDENTIFIER ASSIGN stringValue  | LIST IDENTIFIER  (ASSIGN stringList)?))
+         | resource;
+
+resource: (VAR | PROPERTY) RESOURCE COLON IDENTIFIER IDENTIFIER;
 
 naturalValue: POSITIVE_VALUE;
 integerValue: POSITIVE_VALUE | NEGATIVE_VALUE;

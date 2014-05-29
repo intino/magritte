@@ -1,9 +1,9 @@
 package monet.tara.compiler.core.errorcollection.semantic;
 
-import monet.tara.lang.ASTNode;
+import monet.tara.lang.AbstractNode;
 
 public class UnusedConceptError extends SemanticError implements SemanticError.Warning {
-	public UnusedConceptError(String token, ASTNode node) {
+	public UnusedConceptError(String token, AbstractNode node) {
 		super(token, node);
 	}
 

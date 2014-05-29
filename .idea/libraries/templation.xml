@@ -4,8 +4,6 @@
       <root url="jar://$PROJECT_DIR$/rt/lib/templation.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="file://$PROJECT_DIR$/../templation/src" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

@@ -32,7 +32,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 					resultSet.addElement(LookupElementBuilder.create("Integer"));
 					resultSet.addElement(LookupElementBuilder.create("Double"));
 					resultSet.addElement(LookupElementBuilder.create("Boolean"));
-					resultSet.addElement(LookupElementBuilder.create("Word"));
+					resultSet.addElement(LookupElementBuilder.create("NodeWord"));
 					resultSet.addElement(LookupElementBuilder.create("Uid"));
 				}
 			}

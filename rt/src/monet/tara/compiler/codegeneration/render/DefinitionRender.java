@@ -1,18 +1,20 @@
 package monet.tara.compiler.codegeneration.render;
 
-import monet.tara.lang.ASTNode;
+import monet.tara.lang.AbstractNode;
 import monet.tara.compiler.core.errorcollection.TaraException;
+import monet.tara.lang.NodeAttribute;
+import monet.tara.lang.Reference;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DefinitionRender extends DefaultRender {
 
-	ASTNode rootNode;
+	AbstractNode rootNode;
 
 	public DefinitionRender(String tplPath, String tplName, String projectName, Object node) throws TaraException {
 		super(tplName, projectName);
-		this.rootNode = (ASTNode) node;
+		this.rootNode = (AbstractNode) node;
 		setPath(tplPath);
 	}
 
@@ -24,7 +26,7 @@ public class DefinitionRender extends DefaultRender {
 		addMark("root", addDefinition(rootNode, 0));
 	}
 
-	private String addDefinition(ASTNode node, int level) {
+	private String addDefinition(AbstractNode node, int level) {
 		Map<String, Object> map = new HashMap<>();
 		StringBuilder definition = new StringBuilder();
 		setClassModifiers(node, map, level);
@@ -35,7 +37,7 @@ public class DefinitionRender extends DefaultRender {
 		map.put("childrenGetters", getChildrenGetters(node));
 		if (node.hasName()) map.put("id", "id");
 		StringBuilder childDefinitions = new StringBuilder();
-		for (ASTNode child : node.getInnerConcepts())
+		for (AbstractNode child : node.getInnerConcepts())
 			childDefinitions.append(addDefinition(child, level + 1));
 		map.put("childrenDeclaration", childDefinitions.toString());
 		definition.append(block("definition", map));
@@ -45,7 +47,7 @@ public class DefinitionRender extends DefaultRender {
 		return result.replaceAll("\n[\t]*[ ]*\n[\t]*[ ]*\n", "\n\n");
 	}
 
-	private void setClassModifiers(ASTNode node, Map<String, Object> map, int level) {
+	private void setClassModifiers(AbstractNode node, Map<String, Object> map, int level) {
 		StringBuilder modifiers = new StringBuilder();
 		if (level > 0)
 			modifiers.append("static ");
@@ -53,9 +55,9 @@ public class DefinitionRender extends DefaultRender {
 		map.put("modifier", modifiers.toString());
 	}
 
-	private String addAttributes(ASTNode node) {
+	private String addAttributes(AbstractNode node) {
 		StringBuilder attributes = new StringBuilder();
-		for (ASTNode.Attribute attribute : node.getAttributes()) {
+		for (NodeAttribute attribute : node.getAttributes()) {
 			Map<String, Object> map = new HashMap<>();
 			map.put("name", attribute.getName());
 			map.put("type", attribute.getPrimitiveType().toUpperCase());
@@ -64,9 +66,9 @@ public class DefinitionRender extends DefaultRender {
 		return attributes.toString();
 	}
 
-	private String addReferences(ASTNode node) {
+	private String addReferences(AbstractNode node) {
 		StringBuilder references = new StringBuilder();
-		for (ASTNode.Reference reference : node.getReferences()) {
+		for (Reference reference : node.getReferences()) {
 			Map<String, Object> map = new HashMap<>();
 			map.put("type", reference.getNode());
 			map.put("name", reference.getName());
@@ -75,11 +77,11 @@ public class DefinitionRender extends DefaultRender {
 		return references.toString();
 	}
 
-	private String getAnnotationsString(ASTNode node) {
+	private String getAnnotationsString(AbstractNode node) {
 		if (node.getAnnotations().length > 0) {
 			StringBuilder annotations = new StringBuilder();
 			annotations.append("implements ");
-			for (ASTNode.AnnotationType annotationType : node.getAnnotations())
+			for (AbstractNode.AnnotationType annotationType : node.getAnnotations())
 				annotations.append("Metamodel.").append(annotationType.name()).append(", ");
 			annotations.replace(annotations.lastIndexOf(","), annotations.lastIndexOf(",") + 1, "");
 			return annotations.toString();
@@ -87,9 +89,9 @@ public class DefinitionRender extends DefaultRender {
 		return "";
 	}
 
-	public String getChildrenGetters(ASTNode node) {
+	public String getChildrenGetters(AbstractNode node) {
 		StringBuilder childGetters = new StringBuilder();
-		for (ASTNode child : node.getInnerConcepts()) {
+		for (AbstractNode child : node.getInnerConcepts()) {
 			Map<String, Object> map = new HashMap<>();
 			final String childIdentifier =
 				RenderUtils.toProperCase((child.getIdentifier().length() > 0) ? child.getIdentifier() : child.getParentName());

@@ -1,9 +1,9 @@
 package monet.tara.compiler.semantic;
 
 
-import monet.tara.lang.ASTWrapper;
-import monet.tara.lang.ASTNode;
-import monet.tara.lang.ASTNode.Reference;
+import monet.tara.lang.AbstractNode;
+import monet.tara.lang.TreeWrapper;
+import monet.tara.lang.Reference;
 import monet.tara.compiler.core.errorcollection.semantic.*;
 
 public class ReferenceVerifier {
@@ -14,8 +14,8 @@ public class ReferenceVerifier {
 		this.errors = errors;
 	}
 
-	public void checkConcept(ASTNode concept, ASTWrapper ast) {
-		ASTNode ancestor = concept.getParentConcept();
+	public void checkConcept(AbstractNode concept, TreeWrapper ast) {
+		AbstractNode ancestor = concept.getParentConcept();
 		checkExtendedConcept(concept, ancestor);
 		checkExtendedFromFinal(concept, ancestor);
 		checkBase(concept);
@@ -23,28 +23,28 @@ public class ReferenceVerifier {
 		checkVarReference(concept, ast);
 	}
 
-	private void checkVarReference(ASTNode concept, ASTWrapper ast) {
+	private void checkVarReference(AbstractNode concept, TreeWrapper ast) {
 		for (Reference reference : concept.getReferences())
 			if (ast.searchNode(reference.getNode(), concept) == null)
 				errors.add(new UndefinedReferenceError(reference.getNode(), concept));
 	}
 
-	private void checkExtendedConcept(ASTNode concept, ASTNode ancestor) {
+	private void checkExtendedConcept(AbstractNode concept, AbstractNode ancestor) {
 		if (ancestor == null && concept.getParentName() != null)
 			errors.add(new UndefinedReferenceError(concept.getParentName(), concept));
 	}
 
-	private void checkExtendedFromFinal(ASTNode concept, ASTNode ancestor) {
+	private void checkExtendedFromFinal(AbstractNode concept, AbstractNode ancestor) {
 		if (ancestor != null && ancestor.isFinal())
 			errors.add(new InvalidHeritageError(concept.getParentName(), concept));
 	}
 
-	private void checkBase(ASTNode concept) {
+	private void checkBase(AbstractNode concept) {
 		if (concept.isBase() && concept.getCases().length == 0)
 			errors.add(new PolymorphicChildlessError(concept.getIdentifier(), concept));
 	}
 
-	private void checkCase(ASTNode concept, ASTNode ancestor) {
+	private void checkCase(AbstractNode concept, AbstractNode ancestor) {
 		if (concept.isCase()) {
 			noParent(concept);
 			notBaseParent(concept);
@@ -52,17 +52,17 @@ public class ReferenceVerifier {
 		}
 	}
 
-	private void noParent(ASTNode concept) {
+	private void noParent(AbstractNode concept) {
 		if (concept.getContainer() == null)
 			errors.add(new MorphWithoutParentError(concept.getIdentifier(), concept));
 	}
 
-	private void notBaseParent(ASTNode concept) {
+	private void notBaseParent(AbstractNode concept) {
 		if (concept.getContainer() != null && !concept.getContainer().isBase())
 			errors.add(new MorphWithoutParentError(concept.getIdentifier(), concept));
 	}
 
-//	private void notExtendedFromBase(ASTNode concept, ASTNode ancestor) {
+//	private void notExtendedFromBase(monet.tara.lang.AbstractNode concept, monet.tara.lang.AbstractNode ancestor) {
 //		if (ancestor != null && !ancestor.isCase())
 //			errors.add(new InvalidHeritageError(concept.getParentName(), concept));
 //	}

@@ -4,12 +4,9 @@ package monet.tara.compiler.semantic;
 import monet.tara.compiler.core.errorcollection.semantic.DuplicateAnnotationError;
 import monet.tara.compiler.core.errorcollection.semantic.DuplicateIdentifierError;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
-import monet.tara.lang.AST;
-import monet.tara.lang.ASTNode;
-import monet.tara.lang.ASTNode.AnnotationType;
-import monet.tara.lang.ASTNode.Attribute;
-import monet.tara.lang.ASTNode.Reference;
-import monet.tara.lang.ASTNode.Word;
+import monet.tara.lang.*;
+import monet.tara.lang.AbstractNode;
+import monet.tara.lang.AbstractNode.AnnotationType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,16 +19,16 @@ public class DuplicateDetector {
 		this.errors = errors;
 	}
 
-	public void checkDuplicateRoots(AST concepts) {
+	public void checkDuplicateRoots(AbstractTree concepts) {
 		checkSiblings(concepts);
 	}
 
-	public void checkDuplicates(ASTNode concept) {
+	public void checkDuplicates(AbstractNode concept) {
 		checkIdentifiers(concept);
 		checkAnnotations(concept);
 	}
 
-	private void checkIdentifiers(ASTNode concept) {
+	private void checkIdentifiers(AbstractNode concept) {
 		Set<String> names = new HashSet<>();
 		checkChildren(concept, names);
 		checkAttributes(concept, names);
@@ -39,47 +36,47 @@ public class DuplicateDetector {
 		checkReferences(concept, names);
 	}
 
-	private void checkSiblings(AST concepts) {
+	private void checkSiblings(AbstractTree concepts) {
 		Set<String> names = new HashSet<>();
-		for (ASTNode concept : concepts)
+		for (AbstractNode concept : concepts)
 			if (!names.add(concept.getIdentifier()))
 				errors.add(new DuplicateIdentifierError(concept.getIdentifier(), concept));
 	}
 
-	private void checkChildren(ASTNode concept, Set<String> names) {
-		for (ASTNode child : concept.getInnerConcepts())
+	private void checkChildren(AbstractNode concept, Set<String> names) {
+		for (AbstractNode child : concept.getInnerConcepts())
 			if (!names.add(child.getIdentifier()) && !"".equals(child.getIdentifier()))
 				errors.add(new DuplicateIdentifierError(child.getIdentifier(), concept));
 	}
 
-	private void checkAttributes(ASTNode concept, Set<String> names) {
-		for (Attribute attribute : concept.getAttributes())
+	private void checkAttributes(AbstractNode concept, Set<String> names) {
+		for (NodeAttribute attribute : concept.getAttributes())
 			if (!names.add(attribute.getName()))
 				errors.add(new DuplicateIdentifierError(attribute.getName(), concept));
 	}
 
-	private void checkWords(ASTNode concept, Set<String> names) {
-		for (Word word : concept.getWords()) {
+	private void checkWords(AbstractNode concept, Set<String> names) {
+		for (NodeWord word : concept.getWords()) {
 			if (!names.add(word.getName()))
 				errors.add(new DuplicateIdentifierError(word.getName(), concept));
 			checkWordValues(concept, word);
 		}
 	}
 
-	private void checkWordValues(ASTNode concept, Word word) {
+	private void checkWordValues(AbstractNode concept, NodeWord word) {
 		Set<String> wordValues = new HashSet<>();
 		for (String value : word.getWordTypes())
 			if (!wordValues.add(value))
 				errors.add(new DuplicateIdentifierError(value, concept));
 	}
 
-	private void checkReferences(ASTNode concept, Set<String> names) {
+	private void checkReferences(AbstractNode concept, Set<String> names) {
 		for (Reference reference : concept.getReferences())
 			if (!names.add(reference.getName()))
 				errors.add(new DuplicateIdentifierError(reference.getName(), concept));
 	}
 
-	private void checkAnnotations(ASTNode concept) {
+	private void checkAnnotations(AbstractNode concept) {
 		Set<String> annotations = new HashSet<>();
 		for (AnnotationType annotation : concept.getAnnotations())
 			if (!annotations.add(annotation.name()))

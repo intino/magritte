@@ -5,8 +5,8 @@ import monet.tara.compiler.codegeneration.render.DefinitionTemplateRender;
 import monet.tara.compiler.codegeneration.render.RenderUtils;
 import monet.tara.compiler.core.CompilerConfiguration;
 import monet.tara.compiler.core.errorcollection.TaraException;
-import monet.tara.lang.ASTNode;
-import monet.tara.lang.ASTWrapper;
+import monet.tara.lang.AbstractNode;
+import monet.tara.lang.TreeWrapper;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -14,16 +14,16 @@ import java.util.List;
 
 public class TemplateGenerator extends CodeGenerator {
 
-	public static void generateDefinitionTemplates(CompilerConfiguration conf, ASTWrapper ast) throws TaraException {
+	public static void generateDefinitionTemplates(CompilerConfiguration conf, TreeWrapper ast) throws TaraException {
 		String destiny = PathManager.getSourceResIdeDir(conf.getTempDirectory()) + "fileTemplates" + PathManager.SEP + "j2ee" + PathManager.SEP;
-		for (List<ASTNode> astNodes : ast.getNodeNameLookUpTable().values())
-			for (ASTNode node : astNodes)
-				if (node.is(ASTNode.AnnotationType.ROOT) && !node.getIdentifier().equals("") && !node.isAbstract()) {
+		for (List<AbstractNode> abstractNodes : ast.getNodeNameLookUpTable().values())
+			for (AbstractNode node : abstractNodes)
+				if (node.is(AbstractNode.AnnotationType.ROOT) && !node.getIdentifier().equals("") && !node.isAbstract()) {
 					writeTemplate(destiny + RenderUtils.toProperCase(conf.getProject()) + RenderUtils.toProperCase(node.getIdentifier()) + ".m1.ft", createTemplate(node));
 				}
 	}
 
-	private static String createTemplate(ASTNode node) throws TaraException {
+	private static String createTemplate(AbstractNode node) throws TaraException {
 		String definition = "Definition";
 		DefinitionTemplateRender render = new DefinitionTemplateRender(definition, node);
 		return render.getOutput();

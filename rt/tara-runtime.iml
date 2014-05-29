@@ -26,6 +26,7 @@
     <orderEntry type="library" name="gson-2.2.4" level="project" />
     <orderEntry type="module" module-name="tara-runtime-constants" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="abstract-model-representation" />
   </component>
 </module>
 

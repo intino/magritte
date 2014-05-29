@@ -214,8 +214,8 @@ public class TaraParser implements PsiParser {
     boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = aliasAttribute_0(builder_, level_ + 1);
-    result_ = result_ && consumeTokens(builder_, 2, ALIAS_TYPE, IDENTIFIER_KEY);
-    pinned_ = result_; // pin = 3
+    result_ = result_ && consumeTokens(builder_, 1, ALIAS_TYPE, IDENTIFIER_KEY);
+    pinned_ = result_; // pin = 2
     result_ = result_ && aliasAttribute_3(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
     return result_ || pinned_;

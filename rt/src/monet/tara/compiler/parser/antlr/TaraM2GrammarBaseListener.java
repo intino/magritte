@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/rt/src/monet/tara/compiler/parser/antlr/TaraM2Grammar.g4 by ANTLR 4.x
+// Generated from /Users/octavio/workspace/tara/rt/src/monet/tara/compiler/parser/antlr/TaraM2Grammar.g4 by ANTLR 4.x
 
 package monet.tara.compiler.parser.antlr;
 
@@ -206,6 +206,18 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBooleanList(@NotNull TaraM2Grammar.BooleanListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterResource(@NotNull TaraM2Grammar.ResourceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitResource(@NotNull TaraM2Grammar.ResourceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

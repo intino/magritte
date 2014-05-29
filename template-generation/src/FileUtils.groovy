@@ -48,6 +48,7 @@ class FileUtils {
             inFile.close();
             out.close();
         } catch (IOException ignored) {
+            println "error copying " + ignored.getMessage()
             false;
         }
         true;

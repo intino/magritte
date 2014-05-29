@@ -1,9 +1,9 @@
 package monet.tara.compiler.core.errorcollection.semantic;
 
-import monet.tara.lang.ASTNode;
+import monet.tara.lang.AbstractNode;
 
 public class InvalidHeritageError extends SemanticError implements SemanticError.FatalError {
-	public InvalidHeritageError(String token, ASTNode node) {
+	public InvalidHeritageError(String token, AbstractNode node) {
 		super(token, node);
 	}
 
