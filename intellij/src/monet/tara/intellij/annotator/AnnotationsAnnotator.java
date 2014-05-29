@@ -11,7 +11,6 @@ import monet.tara.intellij.lang.psi.Annotations;
 import monet.tara.intellij.lang.psi.Concept;
 import monet.tara.intellij.lang.psi.TaraFile;
 import monet.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import monet.tara.lang.Extensible;
 import monet.tara.lang.Modifiable;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +23,6 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	HashMap<String, List<PsiElement>> duplicates;
 
 	@Override
-	@Extensible(tag = "AnnotationsAnnotator.annotate")
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
 		if (element instanceof Annotations) {

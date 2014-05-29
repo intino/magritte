@@ -19,29 +19,30 @@ IMPORT_KEY = "import"
 PACKAGE    = "package"
 CASE_KEY   = "case"
 BASE_KEY   = "base"
-FINAL     = "final"
-ABSTRACT  = "abstract"
-MULTIPLE  = "multiple"
-REQUIRED  = "required"
-SYSTEM    = "system"
-HAS_NAME  = "has-name"
-SINGLETON = "singleton"
+FINAL      = "final"
+ABSTRACT   = "abstract"
+MULTIPLE   = "multiple"
+REQUIRED   = "required"
+SYSTEM     = "system"
+HAS_NAME   = "has-name"
+SINGLETON  = "singleton"
 INTENTION_KEY = "intention"
 ROOT      = "root"
 GENERIC   = "generic"
 WORD_KEY  = "Word"
 RESOURCE_KEY = "Resource"
 VAR       = "var"
+PROPERTY  = "property"
 
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
-LEFT_SQUARE  = "["
-RIGHT_SQUARE = "]"
+LEFT_SQUARE   = "["
+RIGHT_SQUARE  = "]"
 
 OPEN_BRACKET  = "{"
 CLOSE_BRACKET = "}"
 
 DOT           = "."
-COLON        = ":"
+COLON         = ":"
 SEMICOLON     = ";"
 DOUBLE_COMMAS = "\""
 OPEN_AN  = "<"
@@ -49,7 +50,7 @@ CLOSE_AN = ">"
 POSITIVE = "+"
 NEGATIVE = "-"
 
-UID_TYPE     = "Uid"
+ALIAS_TYPE   = "Alias"
 INT_TYPE     = "Int"
 NATURAL_TYPE = "Natural"
 DOUBLE_TYPE  = "Double"
@@ -57,10 +58,10 @@ STRING_TYPE  = "String"
 BOOLEAN_TYPE = "Boolean"
 
 BOOLEAN_VALUE_KEY  = "true" | "false"
-NATURAL_VALUE_KEY = {POSITIVE}? {DIGIT}+
+NATURAL_VALUE_KEY  = {POSITIVE}? {DIGIT}+
 NEGATIVE_VALUE_KEY = {NEGATIVE} {DIGIT}+
 DOUBLE_VALUE_KEY   = ({POSITIVE} | {NEGATIVE})? {DIGIT}+ {DOT} {DIGIT}+
-STRING_VALUE_KEY= {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
+STRING_VALUE_KEY   = {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
 
 DOC_LINE = "'" ~[\n]
 
@@ -86,6 +87,7 @@ NEWLINE= [\n]+
 	{COLON}                     {   return TaraTypes.COLON; }
 
 	{VAR}                       {   return TaraTypes.VAR; }
+	{PROPERTY}                  {   return TaraTypes.PROPERTY; }
 
 	{LIST}                      {   return TaraTypes.LIST; }
 
@@ -122,7 +124,7 @@ NEWLINE= [\n]+
 
 	{DOT}                       {   return TaraTypes.DOT; }
 
-	{UID_TYPE}                  {   return TaraTypes.UID_TYPE; }
+	{ALIAS_TYPE}                {   return TaraTypes.ALIAS_TYPE; }
 	{INT_TYPE}                  {   return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}              {   return TaraTypes.BOOLEAN_TYPE; }
 	{NATURAL_TYPE}              {   return TaraTypes.NATURAL_TYPE; }

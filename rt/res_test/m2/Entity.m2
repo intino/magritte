@@ -3,7 +3,7 @@ import goros.m2.Event
 
 ' Una entidad es un objeto en la unidad de negocio que representa un contenido
 Concept abstract Entity  <root>
-    
+    var Alias alias
     ' Añadir para ofrecer al usuario información más detallada de la entidad
     Concept Description
         var String description

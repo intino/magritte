@@ -54,19 +54,19 @@ word ::= doc? VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLIN
 	implements='monet.tara.intellij.lang.psi.Word'
 }
 
-attribute ::= doc? (aliasAttribute | integerAttribute | doubleAttribute | naturalAttribute | booleanAttribute | StringAttribute | resource) {
+attribute ::= doc? (property | aliasAttribute | integerAttribute | doubleAttribute | naturalAttribute | booleanAttribute | StringAttribute | resource) {
 	pin=2
 	mixin= 'monet.tara.intellij.lang.psi.impl.AttributeMixin'
 	implements='monet.tara.intellij.lang.psi.Attribute'
 }
 
-private aliasAttribute   ::= VAR ALIAS_TYPE IDENTIFIER_KEY (COLON stringValue)? {pin=3}
-private integerAttribute ::= VAR INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?)     | (LIST IDENTIFIER_KEY (COLON integerList)?)) {pin=2}
-private StringAttribute  ::= VAR STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?)   | (LIST IDENTIFIER_KEY (COLON stringList)?)) {pin=2}
-private naturalAttribute ::= VAR NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?)) {pin=2}
-private booleanAttribute ::= VAR BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?)) {pin=2}
-private doubleAttribute  ::= VAR DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)   | (LIST IDENTIFIER_KEY (COLON doubleList)?)) {pin=2}
-private resource         ::= VAR RESOURCE_KEY COLON IDENTIFIER_KEY IDENTIFIER_KEY {pin=2}
+private aliasAttribute   ::= (VAR | PROPERTY) ALIAS_TYPE IDENTIFIER_KEY (COLON stringValue)? {pin=3}
+private integerAttribute ::= (VAR | PROPERTY) INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?)     | (LIST IDENTIFIER_KEY (COLON integerList)?)) {pin=2}
+private StringAttribute  ::= (VAR | PROPERTY) STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?)   | (LIST IDENTIFIER_KEY (COLON stringList)?)) {pin=2}
+private naturalAttribute ::= (VAR | PROPERTY) NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?)) {pin=2}
+private booleanAttribute ::= (VAR | PROPERTY) BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?)) {pin=2}
+private doubleAttribute  ::= (VAR | PROPERTY) DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)   | (LIST IDENTIFIER_KEY (COLON doubleList)?)) {pin=2}
+private resource         ::= (VAR | PROPERTY) RESOURCE_KEY COLON IDENTIFIER_KEY IDENTIFIER_KEY {pin=2}
 
 stringValue  ::= STRING_VALUE_KEY
 booleanValue ::= BOOLEAN_VALUE_KEY
@@ -80,7 +80,7 @@ integerList ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUA
 doubleList  ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE
 naturalList ::= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE
 
-annotations ::= OPEN_AN (GENERIC | SYSTEM | MULTIPLE | REQUIRED | HAS_NAME | intention | SINGLETON | ROOT)+ CLOSE_AN {
+annotations ::= OPEN_AN (GENERIC | MULTIPLE | REQUIRED | HAS_NAME | intention | SINGLETON | ROOT)+ CLOSE_AN {
 	pin=1
 	mixin= 'monet.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements='monet.tara.intellij.lang.psi.Annotations'

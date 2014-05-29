@@ -13,8 +13,6 @@ import com.intellij.psi.TokenType;
 %function advance
 %type IElementType
 
-
-
 SP = ([ ]+ | [\\t]+)
 SPACES= {SP}+
 NEWLINE= [\\n]+ ([ ] | [\\t])*
@@ -30,13 +28,12 @@ FINAL     = "final"
 ABSTRACT  = "abstract"
 WORD      = "Word"
 VAR       = "var"
-CODE_KEY  = "code"
 
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
 LEFT_SQUARE  = "["
 RIGHT_SQUARE = "]"
 
-LEFT_PARENTHESIS = "("
+LEFT_PARENTHESIS  = "("
 RIGHT_PARENTHESIS = ")"
 
 OPEN_BRACKET  = "{"
@@ -44,7 +41,7 @@ CLOSE_BRACKET = "}"
 
 DOT           = "."
 COMMA         = ","
-COLON        = "\:"
+COLON         = "\:"
 SEMICOLON     = ";"
 DOUBLE_COMMAS = "\\""
 OPEN_AN  = "<"
@@ -52,7 +49,7 @@ CLOSE_AN = ">"
 POSITIVE = "+"
 NEGATIVE = "-"
 
-UID_TYPE     = "Uid"
+ALIAS_TYPE   = "Alias"
 INT_TYPE     = "Int"
 NATURAL_TYPE = "Natural"
 DOUBLE_TYPE  = "Double"
@@ -104,7 +101,6 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 	{DOC_LINE}                  {   return ::projectProperName::Types.DOC_LINE; }
 
 	{STRING_VALUE}              {   return ::projectProperName::Types.STRING_VALUE_KEY; }
-	{CODE_KEY}                  {   return ::projectProperName::Types.CODE_KEY; }
 	{BOOLEAN_VALUE}             {   return ::projectProperName::Types.BOOLEAN_VALUE_KEY; }
 	{DOUBLE_VALUE}              {   return ::projectProperName::Types.DOUBLE_VALUE_KEY; }
 	{NEGATIVE_VALUE}            {   return ::projectProperName::Types.NEGATIVE_VALUE_KEY; }
@@ -120,7 +116,7 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 
 	{DOT}                       {   return ::projectProperName::Types.DOT; }
 
-	{UID_TYPE}                  {   return ::projectProperName::Types.UID_TYPE; }
+	{ALIAS_TYPE}                {   return ::projectProperName::Types.ALIAS_TYPE; }
 	{INT_TYPE}                  {   return ::projectProperName::Types.INT_TYPE; }
 	{BOOLEAN_TYPE}              {   return ::projectProperName::Types.BOOLEAN_TYPE; }
 	{NATURAL_TYPE}              {   return ::projectProperName::Types.NATURAL_TYPE; }
@@ -135,7 +131,7 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 
 	{CLOSE_BRACKET}             {   return ::projectProperName::Types.LEFT_SQUARE; }
 
-	{NEWLINE}                   {   return TokenType.WHITE_SPACE;}
+	{NEWLINE}                   {   return TokenType.WHITE_SPACE; }
 
 	{SPACES}                    {   return TokenType.WHITE_SPACE; }
 

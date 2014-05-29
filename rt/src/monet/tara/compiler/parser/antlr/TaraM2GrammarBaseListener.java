@@ -1,6 +1,6 @@
 // Generated from /Users/oroncal/workspace/tara/rt/src/monet/tara/compiler/parser/antlr/TaraM2Grammar.g4 by ANTLR 4.x
 
-    package monet.tara.compiler.parser.antlr;
+package monet.tara.compiler.parser.antlr;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -79,18 +79,6 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStringValue(@NotNull TaraM2Grammar.StringValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStringValue(@NotNull TaraM2Grammar.StringValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterAttribute(@NotNull TaraM2Grammar.AttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -98,6 +86,18 @@ public class TaraM2GrammarBaseListener implements TaraM2GrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAttribute(@NotNull TaraM2Grammar.AttributeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStringValue(@NotNull TaraM2Grammar.StringValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStringValue(@NotNull TaraM2Grammar.StringValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

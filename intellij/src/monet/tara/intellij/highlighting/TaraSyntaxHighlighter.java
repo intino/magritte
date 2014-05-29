@@ -83,7 +83,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(GENERIC, ANNOTATION);
 		KEYS.put(HAS_NAME, ANNOTATION);
 		KEYS.put(RESOURCE_KEY, PRIMITIVE);
-
+		KEYS.put(PROPERTY, KEYWORD);
 //end
 
 		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);
@@ -103,7 +103,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(STRING_TYPE, PRIMITIVE);
 		KEYS.put(DOUBLE_TYPE, PRIMITIVE);
 		KEYS.put(INT_TYPE, PRIMITIVE);
-		KEYS.put(UID_TYPE, PRIMITIVE);
+		KEYS.put(ALIAS_TYPE, PRIMITIVE);
 
 		KEYS.put(ABSTRACT, MODIFIERS);
 		KEYS.put(FINAL, MODIFIERS);

@@ -275,18 +275,20 @@ public class ASTNode {
 	}
 
 	public enum AnnotationType {
-		HAS_NAME, ROOT, SINGLETON, MULTIPLE, REQUIRED, GENERIC;
+		HAS_NAME, ROOT, SINGLETON, MULTIPLE, REQUIRED, GENERIC, INTENTION;
 	}
 
 	public static class Attribute extends Variable {
-		public String primitiveType;
+		public final String primitiveType;
+		public final boolean isProperty;
+		public final boolean isList;
 		public String value;
-		public boolean isList;
 
-		public Attribute(String type, String name, boolean isList) {
+		public Attribute(String type, String name, boolean isList, boolean isProperty) {
 			this.primitiveType = type;
 			this.name = name;
 			this.isList = isList;
+			this.isProperty = isProperty;
 		}
 
 		public String getPrimitiveType() {
@@ -303,6 +305,10 @@ public class ASTNode {
 
 		public boolean isList() {
 			return isList;
+		}
+
+		public boolean isProperty() {
+			return isProperty;
 		}
 	}
 

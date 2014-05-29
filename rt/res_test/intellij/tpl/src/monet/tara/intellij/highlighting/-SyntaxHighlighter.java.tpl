@@ -92,7 +92,7 @@ public class ::projectProperName::SyntaxHighlighter extends SyntaxHighlighterBas
 		KEYS.put(STRING_TYPE, PRIMITIVE);
 		KEYS.put(DOUBLE_TYPE, PRIMITIVE);
 		KEYS.put(INT_TYPE, PRIMITIVE);
-		KEYS.put(UID_TYPE, PRIMITIVE);
+		KEYS.put(ALIAS_TYPE, PRIMITIVE);
 
 		KEYS.put(ABSTRACT, MODIFIERS);
 		KEYS.put(FINAL, MODIFIERS);

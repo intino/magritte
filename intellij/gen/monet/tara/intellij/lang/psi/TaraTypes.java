@@ -36,6 +36,7 @@ public interface TaraTypes {
   IElementType WORD = new TaraElementType("WORD");
 
   IElementType ABSTRACT = new TaraTokenType("ABSTRACT");
+  IElementType ALIAS_TYPE = new TaraTokenType("ALIAS_TYPE");
   IElementType BASE_KEY = new TaraTokenType("BASE_KEY");
   IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
   IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
@@ -67,6 +68,7 @@ public interface TaraTypes {
   IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
   IElementType OPEN_AN = new TaraTokenType("OPEN_AN");
   IElementType PACKAGE = new TaraTokenType("PACKAGE");
+  IElementType PROPERTY = new TaraTokenType("property");
   IElementType REQUIRED = new TaraTokenType("REQUIRED");
   IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
   IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");
@@ -75,8 +77,6 @@ public interface TaraTypes {
   IElementType SINGLETON = new TaraTokenType("SINGLETON");
   IElementType STRING_TYPE = new TaraTokenType("STRING_TYPE");
   IElementType STRING_VALUE_KEY = new TaraTokenType("STRING_VALUE_KEY");
-  IElementType SYSTEM = new TaraTokenType("SYSTEM");
-  IElementType UID_TYPE = new TaraTokenType("UID_TYPE");
   IElementType VAR = new TaraTokenType("VAR");
   IElementType WORD_KEY = new TaraTokenType("WORD_KEY");
 

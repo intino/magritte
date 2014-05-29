@@ -49,7 +49,7 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		node.setPackage(packet);
 		node.setImports(imports.keySet().toArray(new String[imports.keySet().size()]));
 		node.setLine(ctx.getStart().getLine());
-		if (ctx.signature().CASE() != null){
+		if (ctx.signature().CASE() != null) {
 			node.setCase(true);
 			node.setBaseConcept(parent.getIdentifier());
 			node.setParentName(null);
@@ -96,8 +96,8 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 	@Override
 	public void enterAttribute(@NotNull AttributeContext ctx) {
 
-		if (ctx.UID_TYPE() != null) {
-			conceptStack.peek().add(new ASTNode.Attribute(ctx.UID_TYPE().getText(), ctx.IDENTIFIER().getText(), false));
+		if (ctx.ALIAS_TYPE() != null) {
+			conceptStack.peek().add(new ASTNode.Attribute(ctx.ALIAS_TYPE().getText(), ctx.IDENTIFIER().getText(), false, ctx.PROPERTY() != null));
 			ast.addIdentifier(ctx.IDENTIFIER().getText(), ATTRIBUTE);
 		} else if (ctx.INT_TYPE() != null)
 			addAttribute(ctx, ctx.INT_TYPE(), (ctx.integerValue() != null) ? ctx.integerValue() : ctx.integerList());
@@ -115,12 +115,13 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 		if (ctx.ASSIGN() == null)
 			if (ctx.variableNames() != null)
 				for (TerminalNode node : ctx.variableNames().IDENTIFIER()) {
-					conceptStack.peek().add(new ASTNode.Attribute(type.getText(), node.getText(), false));
+					conceptStack.peek().add(new ASTNode.Attribute(type.getText(), node.getText(), false, ctx.PROPERTY() != null));
 					ast.addIdentifier(node.getText(), ATTRIBUTE);
 				}
-			else conceptStack.peek().add(new ASTNode.Attribute(type.getText(), ctx.IDENTIFIER().getText(), true));
+			else
+				conceptStack.peek().add(new ASTNode.Attribute(type.getText(), ctx.IDENTIFIER().getText(), true, ctx.PROPERTY() != null));
 		else {
-			ASTNode.Attribute attribute = new ASTNode.Attribute(type.getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null);
+			ASTNode.Attribute attribute = new ASTNode.Attribute(type.getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null, ctx.PROPERTY() != null);
 			String valueFormatted;
 			if (ctx.LIST() != null)
 				valueFormatted = value.toStringTree().split("\\[ | \\]")[1];
@@ -166,7 +167,10 @@ public class TaraASTGeneratorListener extends TaraM2GrammarBaseListener {
 			conceptStack.peek().add(ASTNode.AnnotationType.GENERIC);
 		for (int i = 0; i < ctx.HAS_NAME().size(); i++)
 			conceptStack.peek().add(ASTNode.AnnotationType.HAS_NAME);
+		for (int i = 0; i < ctx.INTENTION().size(); i++)
+			conceptStack.peek().add(ASTNode.AnnotationType.INTENTION);
 	}
+
 
 	private String[] getIdentifiers(VariableNamesContext namesContext) {
 		List<String> list = new ArrayList<>();

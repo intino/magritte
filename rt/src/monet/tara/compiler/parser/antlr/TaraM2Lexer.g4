@@ -97,6 +97,7 @@ GENERIC    : 'generic';
 INTENTION  : 'intention';
 HAS_NAME   : 'has-name';
 VAR        : 'var';
+PROPERTY   : 'property';
 WORD       : 'Word';
 
 FINAL      : 'final';
@@ -126,7 +127,7 @@ SEMICOLON    : ';'+ { semicolon(); };
 POSITIVE: '+';
 NEGATIVE: '-';
 
-UID_TYPE    : 'Uid';
+ALIAS_TYPE  : 'Alias';
 INT_TYPE    : 'Integer';
 NATURAL_TYPE: 'Natural';
 DOUBLE_TYPE : 'Double';

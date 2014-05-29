@@ -12,7 +12,6 @@ import monet.::projectName::.intellij.lang.psi.Definition;
 import monet.::projectName::.intellij.lang.psi.::projectProperName::File;
 import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::PsiImplUtil;
 
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -24,16 +23,12 @@ public class AnnotationsAnnotator extends ::projectProperName::Annotator {
 	HashMap<String, List<PsiElement>> duplicates;
 
 	\@Override
-
 	public void annotate(\@NotNull PsiElement element, \@NotNull AnnotationHolder holder) {
 		this.holder = holder;
 		if (element instanceof Annotations) {
 			duplicates = new HashMap<>();
 			checkAnnotations((Annotations) element);
 			checkDuplicates();
-		}		else if (element instanceof monet.::projectName::.intellij.lang.psi.::projectProperName::Code) {
-			Annotation code = holder.createInfoAnnotation(element, "code");
-			code.setTextAttributes(::projectProperName::SyntaxHighlighter.DOCUMENTATION);
 		}
 	}
 

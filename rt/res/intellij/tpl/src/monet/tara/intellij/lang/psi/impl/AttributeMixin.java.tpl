@@ -32,7 +32,7 @@ public class AttributeMixin extends ASTWrapperPsiElement {
 	}
 
 	public String getType() {
-		ASTNode keyNode = getNode().findChildByType(::projectProperName::Types.UID_TYPE);
+		ASTNode keyNode = getNode().findChildByType(::projectProperName::Types.ALIAS_TYPE);
 		if (keyNode != null) return keyNode.getText();
 		return null;
 	}

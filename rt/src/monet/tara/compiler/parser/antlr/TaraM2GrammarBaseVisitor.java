@@ -1,6 +1,6 @@
 // Generated from /Users/oroncal/workspace/tara/rt/src/monet/tara/compiler/parser/antlr/TaraM2Grammar.g4 by ANTLR 4.x
 
-    package monet.tara.compiler.parser.antlr;
+package monet.tara.compiler.parser.antlr;
 
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
@@ -55,14 +55,14 @@ public class TaraM2GrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStringValue(@NotNull TaraM2Grammar.StringValueContext ctx) { return visitChildren(ctx); }
+	@Override public T visitAttribute(@NotNull TaraM2Grammar.AttributeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAttribute(@NotNull TaraM2Grammar.AttributeContext ctx) { return visitChildren(ctx); }
+	@Override public T visitStringValue(@NotNull TaraM2Grammar.StringValueContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

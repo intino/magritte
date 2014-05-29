@@ -19,7 +19,10 @@ import java.util.*;
 
 public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActionSupport<Parameters, Parameter, Parameter> {
 
-	private static final Set<Class> STOP_SEARCHING_CLASSES = ContainerUtil.<Class>newHashSet(TaraFile.class);
+	private static final Set
+
+
+		<Class> STOP_SEARCHING_CLASSES = ContainerUtil.<Class>newHashSet(TaraFile.class);
 
 	@NotNull
 	@Override

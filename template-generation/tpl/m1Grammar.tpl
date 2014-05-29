@@ -52,13 +52,11 @@ body \:\:= NEW_LINE_INDENT (definitionConstituents NEWLINE+)+ DEDENT {
 
 modifier\:\:= ABSTRACT | FINAL | BASE_KEY
 
-annotations \:\:= OPEN_AN (code | intention | MULTIPLE | REQUIRED)+ CLOSE_AN {
+annotations \:\:= OPEN_AN (intention | MULTIPLE | REQUIRED)+ CLOSE_AN {
 	pin = 1
 	mixin = 'monet.::projectName::.intellij.lang.psi.impl.AnnotationsMixin'
     implements = 'monet.::projectName::.intellij.lang.psi.Annotations'
 }
-
-code \:\:= CODE_KEY COLON IDENTIFIER_KEY
 
 intention \:\:= INTENTION_KEY {
 	pin = 1
@@ -97,8 +95,8 @@ explicit\:\:= identifier COLON
 
 private definitionConstituents \:\:=  attribute | referenceStatement | word | definition
 
-attribute \:\:= doc? ( uuidAttribute
-		           | StringAttribute)
+attribute \:\:= doc? ( aliasAttribute
+		           | stringAttribute)
 		           | booleanAttribute
 		           | naturalAttribute
 		           | integerAttribute
@@ -106,7 +104,7 @@ attribute \:\:= doc? ( uuidAttribute
 {pin=2 mixin = 'monet.::projectName::.intellij.lang.psi.impl.AttributeMixin'
 implements = 'monet.::projectName::.intellij.lang.psi.Attribute'}
 
-private uuidAttribute \:\:= VAR     UID_TYPE IDENTIFIER_KEY (COLON stringValue)?
+private aliasAttribute \:\:= VAR ALIAS_TYPE IDENTIFIER_KEY (COLON stringValue)?
 {pin=3}
 private naturalAttribute \:\:= VAR NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?))
 {pin=2}
@@ -114,7 +112,7 @@ private integerAttribute \:\:= VAR INT_TYPE ((IDENTIFIER_KEY (COLON integerValue
 {pin=2}
 private doubleAttribute \:\:= VAR  DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)  | (LIST IDENTIFIER_KEY (COLON doubleList)?))
 {pin=2}
-private StringAttribute \:\:= VAR  STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?) | (LIST IDENTIFIER_KEY (COLON stringList)?))
+private stringAttribute \:\:= VAR  STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?) | (LIST IDENTIFIER_KEY (COLON stringList)?))
 {pin=2}
 private booleanAttribute \:\:=VAR BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?))
 {pin=2}

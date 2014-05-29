@@ -1,6 +1,6 @@
 // Generated from /Users/oroncal/workspace/tara/rt/src/monet/tara/compiler/parser/antlr/TaraM2Grammar.g4 by ANTLR 4.x
 
-    package monet.tara.compiler.parser.antlr;
+package monet.tara.compiler.parser.antlr;
 
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
@@ -61,16 +61,6 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 */
 	void exitExternalReference(@NotNull TaraM2Grammar.ExternalReferenceContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraM2Grammar#stringValue}.
-	 * @param ctx the parse tree
-	 */
-	void enterStringValue(@NotNull TaraM2Grammar.StringValueContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraM2Grammar#stringValue}.
-	 * @param ctx the parse tree
-	 */
-	void exitStringValue(@NotNull TaraM2Grammar.StringValueContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#attribute}.
 	 * @param ctx the parse tree
 	 */
@@ -80,6 +70,16 @@ public interface TaraM2GrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAttribute(@NotNull TaraM2Grammar.AttributeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraM2Grammar#stringValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringValue(@NotNull TaraM2Grammar.StringValueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraM2Grammar#stringValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringValue(@NotNull TaraM2Grammar.StringValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraM2Grammar#doubleValue}.
 	 * @param ctx the parse tree

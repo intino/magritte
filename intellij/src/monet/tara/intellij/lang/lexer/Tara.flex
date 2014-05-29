@@ -161,7 +161,6 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 	{COLON}                     {   return TaraTypes.COLON; }
 
 	{VAR}                       {   return TaraTypes.VAR; }
-
 	{PROPERTY}                  {   return TaraTypes.PROPERTY; }
 
 	{LIST}                      {   return TaraTypes.LIST; }
@@ -198,7 +197,7 @@ IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
 
 	{DOT}                       {   return TaraTypes.DOT; }
 
-	{ALIAS_TYPE}                {   return TaraTypes.UID_TYPE; }
+	{ALIAS_TYPE}                {   return TaraTypes.ALIAS_TYPE; }
 	{INT_TYPE}                  {   return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}              {   return TaraTypes.BOOLEAN_TYPE; }
 	{NATURAL_TYPE}              {   return TaraTypes.NATURAL_TYPE; }

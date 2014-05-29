@@ -99,7 +99,6 @@ FINAL     = "final"
 ABSTRACT  = "abstract"
 WORD      = "Word"
 VAR       = "var"
-CODE_KEY  = "code"
 
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
 LEFT_SQUARE  = "["
@@ -121,7 +120,7 @@ CLOSE_AN = ">"
 POSITIVE = "+"
 NEGATIVE = "-"
 
-UID_TYPE     = "Uid"
+ALIAS_TYPE   = "Alias"
 INT_TYPE     = "Int"
 NATURAL_TYPE = "Natural"
 DOUBLE_TYPE  = "Double"
@@ -170,7 +169,6 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 	{DOC_LINE}                  {   return ::projectProperName::Types.DOC_LINE; }
 
 	{STRING_VALUE}              {   return ::projectProperName::Types.STRING_VALUE_KEY; }
-	{CODE_KEY}                  {   return ::projectProperName::Types.CODE_KEY; }
 	{BOOLEAN_VALUE}             {   return ::projectProperName::Types.BOOLEAN_VALUE_KEY; }
 	{POSITIVE_VALUE}            {   return ::projectProperName::Types.NATURAL_VALUE_KEY; }
 	{NEGATIVE_VALUE}            {   return ::projectProperName::Types.NEGATIVE_VALUE_KEY; }
@@ -187,16 +185,16 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
 	{DOT}                       {   return ::projectProperName::Types.DOT; }
 
 
-	{UID_TYPE}                  {   return ::projectProperName::Types.UID_TYPE; }
-    {STRING_TYPE}               {   return ::projectProperName::Types.STRING_TYPE; }
+	{ALIAS_TYPE}                {   return ::projectProperName::Types.ALIAS_TYPE;   }
+    {STRING_TYPE}               {   return ::projectProperName::Types.STRING_TYPE;  }
 	{BOOLEAN_TYPE}              {   return ::projectProperName::Types.BOOLEAN_TYPE; }
 	{NATURAL_TYPE}              {   return ::projectProperName::Types.NATURAL_TYPE; }
-	{INT_TYPE}                  {   return ::projectProperName::Types.INT_TYPE; }
-    {DOUBLE_TYPE}               {   return ::projectProperName::Types.DOUBLE_TYPE; }
+	{INT_TYPE}                  {   return ::projectProperName::Types.INT_TYPE;     }
+    {DOUBLE_TYPE}               {   return ::projectProperName::Types.DOUBLE_TYPE;  }
 
 	{SEMICOLON}                 {   return semicolon(); }
 
-	{COMMA}                     {   return ::projectProperName::Types.COMMA;     }
+	{COMMA}                     {   return ::projectProperName::Types.COMMA; }
 
 	{OPEN_BRACKET}              {   return openBracket(); }
 

@@ -1,6 +1,6 @@
 // Generated from /Users/oroncal/workspace/tara/rt/src/monet/tara/compiler/parser/antlr/TaraM2Grammar.g4 by ANTLR 4.x
 
-    package monet.tara.compiler.parser.antlr;
+package monet.tara.compiler.parser.antlr;
 
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -44,17 +44,17 @@ public interface TaraM2GrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExternalReference(@NotNull TaraM2Grammar.ExternalReferenceContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link TaraM2Grammar#stringValue}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStringValue(@NotNull TaraM2Grammar.StringValueContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link TaraM2Grammar#attribute}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitAttribute(@NotNull TaraM2Grammar.AttributeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link TaraM2Grammar#stringValue}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringValue(@NotNull TaraM2Grammar.StringValueContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link TaraM2Grammar#doubleValue}.
 	 * @param ctx the parse tree

@@ -53,7 +53,7 @@ public class TaraLanguage extends Language {
 
 			e = json.getAsJsonObject().get("primitiveType");
 			if (e != null && e.isJsonPrimitive() && e.getAsString() != null)
-				return new ASTNode.Attribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean());
+				return new ASTNode.Attribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), json.getAsJsonObject().get("isProperty").getAsBoolean());
 
 			JsonArray array = json.getAsJsonObject().get("wordTypes").getAsJsonArray();
 			if (array != null && array.isJsonArray()) {

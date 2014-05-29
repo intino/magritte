@@ -19,7 +19,10 @@ import java.util.*;
 
 public class ::projectProperName::ParameterInfoHandler implements ParameterInfoHandlerWithTabActionSupport<Parameters, Parameter, Parameter> {
 
-	private static final Set<Class> STOP_SEARCHING_CLASSES = ContainerUtil.<Class>newHashSet(::projectProperName::File.class);
+	private static final Set
+
+
+		<Class> STOP_SEARCHING_CLASSES = ContainerUtil.<Class>newHashSet(::projectProperName::File.class);
 
 	\@NotNull
 	\@Override
@@ -122,15 +125,13 @@ public class ::projectProperName::ParameterInfoHandler implements ParameterInfoH
 	public void updateUI(Parameter p, \@NotNull ParameterInfoUIContext context) {
 		ASTWrapper wrapper = ::projectProperName::Language.getHeritage();
 		if (wrapper == null) return;
+		\@NonNls StringBuilder buffer = new StringBuilder();
 		MetaIdentifier metaIdentifier = PsiTreeUtil.getChildrenOfType(::projectProperName::PsiImplUtil.getContextOf(p).getSignature(), MetaIdentifier.class)[0];
 		ASTNode node = wrapper.getNodeNameLookUpTable().get(metaIdentifier.getText()).get(0);
 		ASTNode.Variable variable = node.getVariables().get(getIndexOf((Parameters) p.getParent(), p));
-		\@NonNls StringBuilder buffer = new StringBuilder();
-		if (variable instanceof ASTNode.Attribute) {
-			buffer.append(((ASTNode.Attribute) variable).getPrimitiveType());
-		} else if (variable instanceof ASTNode.Reference) {
-			buffer.append(((ASTNode.Reference) variable).getNode());
-		}
+		if (variable instanceof ASTNode.Attribute) buffer.append(((ASTNode.Attribute) variable).getPrimitiveType());
+		else if (variable instanceof ASTNode.Reference) buffer.append(((ASTNode.Reference) variable).getNode());
+
 		if (variable.isList()) buffer.append("[]");
 		buffer.append(" ");
 		buffer.append(variable.getName());
