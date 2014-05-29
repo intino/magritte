@@ -20,7 +20,7 @@ public class ::projectProperName::ElementFactoryImpl extends ::projectProperName
 			"package ::projectName::\\n" +
 				"Definition abstract " + name + " <has-code root>\\n" +
 				"\\tDefinition Ontology <optional>\\n" +
-				"\\tvar Uid uid"
+				"\\tvar Alias uid"
 		);
 		return file.getDefinition();
 	}

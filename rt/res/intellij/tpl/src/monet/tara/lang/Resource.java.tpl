@@ -2,11 +2,11 @@ package monet.tara.lang;
 
 public class Resource extends Variable {
 
-	public final String type;
+	public final String resourceType;
 	public final boolean isProperty;
 
-	public Resource(String type, String name, boolean isProperty) {
-		this.type = type;
+	public Resource(String resourceType, String name, boolean isProperty) {
+		this.resourceType = resourceType;
 		this.name = name;
 		this.isProperty = isProperty;
 	}

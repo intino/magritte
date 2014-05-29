@@ -125,6 +125,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		@NonNls StringBuilder buffer = new StringBuilder();
 		MetaIdentifier metaIdentifier = TaraPsiImplUtil.getContextOf(p).getMetaIdentifier();
 		AbstractNode node = wrapper.getNodeNameLookUpTable().get(metaIdentifier.getText()).get(0);
+		if (node.getVariables().isEmpty()) return;
 		Variable variable = node.getVariables().get(getIndexOf((Parameters) p.getParent(), p));
 		if (variable instanceof NodeAttribute) buffer.append(((NodeAttribute) variable).getPrimitiveType());
 		else if (variable instanceof Reference) buffer.append(((Reference) variable).getNode());

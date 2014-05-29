@@ -68,9 +68,11 @@ private heritageSignature\:\:=metaIdentifier COLON identifierReference modifier?
 	pin = 2
 }
 
-parameters\:\:= LEFT_PARENTHESIS parameterList RIGHT_PARENTHESIS
-{mixin = 'monet.::projectName::.intellij.lang.psi.impl.ParametersMixin'
-implements = 'monet.::projectName::.intellij.lang.psi.Parameters'}
+parameters\:\:= LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS {
+	pin=1
+	mixin = 'monet.::projectName::.intellij.lang.psi.impl.ParametersMixin'
+	implements = 'monet.::projectName::.intellij.lang.psi.Parameters'
+}
 
 private parameterList\:\:=  explicit? parameter (COMMA explicit? parameter)*
 { pin=2}
@@ -136,7 +138,7 @@ booleanList  \:\:= LEFT_SQUARE BOOLEAN_VALUE_KEY+ RIGHT_SQUARE;
 integerList  \:\:= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUARE;
 doubleList   \:\:= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE;
 naturalList  \:\:= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
-identifierList  \:\:= LEFT_SQUARE identifier+ RIGHT_SQUARE;
+identifierList \:\:= LEFT_SQUARE identifier+ RIGHT_SQUARE;
 
 headerReference \:\:= hierarchy* identifier {
 	pin=2

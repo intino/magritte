@@ -7,8 +7,6 @@ import monet.tara.intellij.lang.psi.*;
 import monet.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import monet.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
 import monet.tara.lang.*;
-import monet.tara.lang.NodeAttribute;
-import monet.tara.lang.NodeWord;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -23,12 +21,19 @@ public class ParameterAnnotator extends TaraAnnotator {
 		int index = getIndexOf((Parameters) element.getParent(), (Parameter) element);
 		AbstractNode node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(metaIdentifier.getText()).get(0);
 		List<Variable> variables = node.getVariables();
-		Variable actualVariable = variables.get(index);
-		if (element.getFirstChild() instanceof TaraIdentifierReference /*|| element.getFirstChild() instanceof TaraIdentifierList*/) {
-			processAsWordOrReference(element, holder, actualVariable);
-		} else if (!areSameType(actualVariable, element)) {
-			holder.createErrorAnnotation(element, "parameter missed");
+		if (index >= variables.size()) annotateInsufficientParameters(element, holder);
+		else {
+			Variable actualVariable = variables.get(index);
+			if (element.getFirstChild() instanceof TaraIdentifierReference /*|| element.getFirstChild() instanceof TaraIdentifierList*/) {
+				processAsWordOrReference(element, holder, actualVariable);
+			} else if (!areSameType(actualVariable, element)) {
+				holder.createErrorAnnotation(element, "parameter type error");
+			}
 		}
+	}
+
+	private void annotateInsufficientParameters(PsiElement element, AnnotationHolder holder) {
+		holder.createErrorAnnotation(element, "parameter missed");
 	}
 
 	private void processAsWordOrReference(PsiElement element, AnnotationHolder holder, Variable actualVariable) {
@@ -59,7 +64,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 		Types type = Types.valueOf(element.getFirstChild().getClass().getSimpleName());
 		switch (type) {
 			case TaraStringValueImpl:
-				return varType.equals("String") | varType.equals("Uid");
+				return varType.equals("String") | varType.equals("Alias");
 			case TaraBooleanValueImpl:
 				return varType.equals("Boolean");
 			case TaraNaturalValueImpl:

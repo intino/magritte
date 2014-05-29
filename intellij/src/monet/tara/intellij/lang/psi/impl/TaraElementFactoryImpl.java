@@ -20,7 +20,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 			"package tara\n" +
 				"Concept abstract " + name + " <has-code root>\n" +
 				"\tConcept Ontology <optional>\n" +
-				"\tvar Uid uid"
+				"\tvar Alias uid"
 		);
 		return file.getConcept();
 	}

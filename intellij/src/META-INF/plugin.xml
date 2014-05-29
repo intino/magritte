@@ -91,6 +91,7 @@
     <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.ConceptAnnotator"/>
     <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.PackageAnnotator"/>
     <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.ParameterAnnotator"/>
+    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.ParametersAnnotator"/>
     <completion.contributor language="Tara"
                             implementationClass="monet.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
     <completion.contributor language="Tara"

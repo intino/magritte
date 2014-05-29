@@ -41,7 +41,7 @@ public class ::projectProperName::ColorSettingPage implements ColorSettingsPage 
 		return
 			"Definition abstract as Source <has-code root> \\n" +
 				"\\tDefinition as Ontology<optional>" + "\\n" +
-				"\\t\\tvar Uid uid" +
+				"\\t\\tvar Alias uid" +
 				"\\n" +
 				"Definition Source as Thesaurus" + "\\n" +
 				"\\tnew Term<multiple>" + "\\n" +

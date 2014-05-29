@@ -54,6 +54,9 @@ public class ::projectProperName::Language extends Language {
 			if (e != null && e.isJsonPrimitive() && e.getAsString() != null)
 				return new NodeAttribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), json.getAsJsonObject().get("isProperty").getAsBoolean());
 
+			e = json.getAsJsonObject().get("resourceType");
+			if (e != null && e.isJsonPrimitive() && e.getAsString() != null)
+				return new Resource(e.getAsString(), name, json.getAsJsonObject().get("isProperty").getAsBoolean());
 			JsonArray array = json.getAsJsonObject().get("wordTypes").getAsJsonArray();
 			if (array != null && array.isJsonArray()) {
 				NodeWord word = new NodeWord(name);

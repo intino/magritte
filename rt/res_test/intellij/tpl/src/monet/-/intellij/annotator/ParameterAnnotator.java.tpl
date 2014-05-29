@@ -7,8 +7,6 @@ import monet.::projectName::.intellij.lang.psi.*;
 import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::PsiImplUtil;
 import monet.::projectName::.intellij.lang.psi.resolve.::projectProperName::ReferenceSolver;
 import monet.tara.lang.*;
-import monet.tara.lang.NodeAttribute;
-import monet.tara.lang.NodeWord;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -23,12 +21,19 @@ public class ParameterAnnotator extends ::projectProperName::Annotator {
 		int index = getIndexOf((Parameters) element.getParent(), (Parameter) element);
 		AbstractNode node = ::projectProperName::Language.getHeritage().getNodeNameLookUpTable().get(metaIdentifier.getText()).get(0);
 		List<Variable> variables = node.getVariables();
-		Variable actualVariable = variables.get(index);
-		if (element.getFirstChild() instanceof ::projectProperName::IdentifierReference /*|| element.getFirstChild() instanceof ::projectProperName::IdentifierList*/) {
-			processAsWordOrReference(element, holder, actualVariable);
-		} else if (!areSameType(actualVariable, element)) {
-			holder.createErrorAnnotation(element, "parameter missed");
+		if (index >= variables.size()) annotateInsufficientParameters(element, holder);
+		else {
+			Variable actualVariable = variables.get(index);
+			if (element.getFirstChild() instanceof ::projectProperName::IdentifierReference /*|| element.getFirstChild() instanceof ::projectProperName::IdentifierList*/) {
+				processAsWordOrReference(element, holder, actualVariable);
+			} else if (!areSameType(actualVariable, element)) {
+				holder.createErrorAnnotation(element, "parameter type error");
+			}
 		}
+	}
+
+	private void annotateInsufficientParameters(PsiElement element, AnnotationHolder holder) {
+		holder.createErrorAnnotation(element, "parameter missed");
 	}
 
 	private void processAsWordOrReference(PsiElement element, AnnotationHolder holder, Variable actualVariable) {
@@ -59,7 +64,7 @@ public class ParameterAnnotator extends ::projectProperName::Annotator {
 		Types type = Types.valueOf(element.getFirstChild().getClass().getSimpleName());
 		switch (type) {
 			case ::projectProperName::StringValueImpl\:
-				return varType.equals("String") | varType.equals("Uid");
+				return varType.equals("String") | varType.equals("Alias");
 			case ::projectProperName::BooleanValueImpl\:
 				return varType.equals("Boolean");
 			case ::projectProperName::NaturalValueImpl\:

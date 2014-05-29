@@ -41,7 +41,7 @@ public class TaraColorSettingPage implements ColorSettingsPage {
 		return
 			"Concept abstract as Source <has-code root> \n" +
 				"\tConcept as Ontology<optional>" + "\n" +
-				"\t\tvar Uid uid" +
+				"\t\tvar Alias uid" +
 				"\n" +
 				"Concept Source as Thesaurus" + "\n" +
 				"\tnew Term<multiple>" + "\n" +

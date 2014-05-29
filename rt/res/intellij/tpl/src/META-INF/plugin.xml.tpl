@@ -59,6 +59,7 @@
     <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.DefinitionAnnotator"/>
     <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.PackageAnnotator"/>
     <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.ParameterAnnotator"/>
+    <annotator language="::projectProperName::" implementationClass="monet.::projectName::.intellij.annotator.ParametersAnnotator"/>
     <completion.contributor language="::projectProperName::"
                             implementationClass="monet.::projectName::.intellij.codeinsight.completion.::projectProperName::SignatureCompletionContributor"/>
     <completion.contributor language="::projectProperName::"
