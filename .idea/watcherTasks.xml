@@ -21,26 +21,6 @@
       <option name="workingDir" value="$ProjectFileDir$" />
       <envs />
     </TaskOptions>
-    <TaskOptions isEnabled="false">
-      <option name="arguments" value="res/scripts/RegenerateLexer" />
-      <option name="checkSyntaxErrors" value="true" />
-      <option name="description" value="" />
-      <option name="exitCodeBehavior" value="ERROR" />
-      <option name="fileExtension" value="flex" />
-      <option name="immediateSync" value="true" />
-      <option name="name" value="RegenerateLexer" />
-      <option name="output" value="" />
-      <option name="outputFilters">
-        <array />
-      </option>
-      <option name="outputFromStdout" value="false" />
-      <option name="passParentEnvs" value="true" />
-      <option name="program" value="/Applications/groovy-2.2.1/bin/groovy" />
-      <option name="scopeName" value="Project Files" />
-      <option name="trackOnlyRoot" value="false" />
-      <option name="workingDir" value="$ProjectFileDir$" />
-      <envs />
-    </TaskOptions>
   </component>
 </project>
 

@@ -77,6 +77,12 @@ public class TaraAttributeImpl extends AttributeMixin implements TaraAttribute {
 
   @Override
   @Nullable
+  public TaraReferenceStatement getReferenceStatement() {
+    return findChildByClass(TaraReferenceStatement.class);
+  }
+
+  @Override
+  @Nullable
   public TaraStringList getStringList() {
     return findChildByClass(TaraStringList.class);
   }
@@ -85,6 +91,12 @@ public class TaraAttributeImpl extends AttributeMixin implements TaraAttribute {
   @Nullable
   public TaraStringValue getStringValue() {
     return findChildByClass(TaraStringValue.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraWord getWord() {
+    return findChildByClass(TaraWord.class);
   }
 
 }

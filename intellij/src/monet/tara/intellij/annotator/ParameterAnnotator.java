@@ -24,11 +24,10 @@ public class ParameterAnnotator extends TaraAnnotator {
 		if (index >= variables.size()) annotateInsufficientParameters(element, holder);
 		else {
 			Variable actualVariable = variables.get(index);
-			if (element.getFirstChild() instanceof TaraIdentifierReference /*|| element.getFirstChild() instanceof TaraIdentifierList*/) {
+			if (element.getFirstChild() instanceof TaraIdentifierReference /*|| element.getFirstChild() instanceof TaraIdentifierList*/)
 				processAsWordOrReference(element, holder, actualVariable);
-			} else if (!areSameType(actualVariable, element)) {
+			else if (!areSameType(actualVariable, element))
 				holder.createErrorAnnotation(element, "parameter type error");
-			}
 		}
 	}
 
@@ -83,8 +82,9 @@ public class ParameterAnnotator extends TaraAnnotator {
 				return varType.equals("Double") && variable.isList();
 			case TaraNaturalListImpl:
 				return varType.equals("Natural") && variable.isList();
+			default:
+				return false;
 		}
-		return false;
 	}
 
 	private int getIndexOf(Parameters parent, Parameter p) {
@@ -99,7 +99,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 
 	enum Types {
 		TaraStringValueImpl, TaraBooleanValueImpl, TaraIntegerValueImpl, TaraDoubleValueImpl, TaraNaturalValueImpl,
-		TaraStringListImpl, TaraBooleanListImpl, TaraIntegerListImpl, TaraDoubleListImpl, TaraNaturalListImpl
+		TaraStringListImpl, TaraBooleanListImpl, TaraIntegerListImpl, TaraDoubleListImpl, TaraNaturalListImpl, GorosEmptyImpl
 	}
 
 

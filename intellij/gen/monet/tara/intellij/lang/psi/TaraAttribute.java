@@ -35,9 +35,15 @@ public interface TaraAttribute extends Attribute {
   TaraNaturalValue getNaturalValue();
 
   @Nullable
+  TaraReferenceStatement getReferenceStatement();
+
+  @Nullable
   TaraStringList getStringList();
 
   @Nullable
   TaraStringValue getStringValue();
+
+  @Nullable
+  TaraWord getWord();
 
 }

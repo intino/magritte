@@ -8,22 +8,19 @@ import com.intellij.util.containers.ContainerUtil;
 import monet.::projectName::.intellij.lang.::projectProperName::Language;
 import monet.::projectName::.intellij.lang.psi.*;
 import monet.::projectName::.intellij.lang.psi.impl.::projectProperName::PsiImplUtil;
-import monet.tara.lang.NodeAttribute;
 import monet.tara.lang.*;
-import monet.tara.lang.NodeWord;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class ::projectProperName::ParameterInfoHandler implements ParameterInfoHandlerWithTabActionSupport<Parameters, Parameter, Parameter> {
+public class ::projectProperName::ParameterInfoHandler implements ParameterInfoHandlerWithTabActionSupport<Parameters, Object, ::projectProperName::PsiElement> {
 
 	private static final Set<Class> STOP_SEARCHING_CLASSES = ContainerUtil.<Class>newHashSet(::projectProperName::File.class);
 
 	\@NotNull
 	\@Override
-	public Parameter[] getActualParameters(\@NotNull Parameters o) {
+	public ::projectProperName::PsiElement[] getActualParameters(\@NotNull Parameters o) {
 		return o.getParameters();
 	}
 
@@ -42,7 +39,7 @@ public class ::projectProperName::ParameterInfoHandler implements ParameterInfoH
 	\@NotNull
 	\@Override
 	public Set<Class> getArgumentListAllowedParentClasses() {
-		return null;
+		return new HashSet<Class>(Arrays.asList(Signature.class));
 	}
 
 	\@NotNull
@@ -59,7 +56,7 @@ public class ::projectProperName::ParameterInfoHandler implements ParameterInfoH
 
 	\@Override
 	public boolean couldShowInLookup() {
-		return false;
+		return true;
 	}
 
 	\@Nullable
@@ -70,7 +67,7 @@ public class ::projectProperName::ParameterInfoHandler implements ParameterInfoH
 
 	\@Nullable
 	\@Override
-	public Object[] getParametersForDocumentation(Parameter p, ParameterInfoContext context) {
+	public Object[] getParametersForDocumentation(Object p, ParameterInfoContext context) {
 		return new Object[]{p};
 	}
 
@@ -79,13 +76,28 @@ public class ::projectProperName::ParameterInfoHandler implements ParameterInfoH
 	public Parameters findElementForParameterInfo(\@NotNull CreateParameterInfoContext context) {
 		final Parameters parameterList = ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), Parameters.class);
 		if (parameterList != null) {
-			if (!(parameterList.getParent() instanceof Signature)) return null;
-			final Parameter[] parameters = parameterList.getParameters();
-			if (parameters.length == 0) return null;
-			context.setItemsToShow(parameters);
-			return parameterList;
+			TreeWrapper wrapper = ::projectProperName::Language.getHeritage();
+			if (wrapper == null) return parameterList;
+			MetaIdentifier metaIdentifier = ::projectProperName::PsiImplUtil.getContextOf(parameterList).getMetaIdentifier();
+			AbstractNode node = wrapper.getNodeNameLookUpTable().get(metaIdentifier.getText()).get(0);
+			if (node.getVariables().isEmpty()) return parameterList;
+			List<Attribute> attributes = new ArrayList<>();
+			::projectProperName::ElementFactory instance = ::projectProperName::ElementFactory.getInstance(parameterList.getProject());
+			for (Variable variable \: node.getVariables()) {
+				Attribute attribute = null;
+				if (variable instanceof NodeAttribute)
+					attribute = instance.createAttribute(variable.getName(), ((NodeAttribute) variable).getPrimitiveType() + ((variable.isList()) ? "[]" \: ""));
+				else if (variable instanceof Reference)
+					attribute = instance.createAttribute(variable.getName(), ((Reference) variable).getNode() + ((variable.isList()) ? "[]" \: ""));
+				else if (variable instanceof NodeWord) {
+					List<String> wordTypes = ((NodeWord) variable).getWordTypes();
+					attribute = instance.createWord(variable.getName(), wordTypes.toArray(new String[wordTypes.size()]));
+				}
+				if (attribute != null) attributes.add(attribute);
+			}
+			context.setItemsToShow(new Object[]{attributes.toArray()});
 		}
-		return null;
+		return parameterList;
 	}
 
 	\@Override
@@ -119,31 +131,12 @@ public class ::projectProperName::ParameterInfoHandler implements ParameterInfoH
 	}
 
 	\@Override
-	public void updateUI(Parameter p, \@NotNull ParameterInfoUIContext context) {
-		TreeWrapper wrapper = ::projectProperName::Language.getHeritage();
-		if (wrapper == null) return;
-		\@NonNls StringBuilder buffer = new StringBuilder();
-		MetaIdentifier metaIdentifier = ::projectProperName::PsiImplUtil.getContextOf(p).getMetaIdentifier();
-		AbstractNode node = wrapper.getNodeNameLookUpTable().get(metaIdentifier.getText()).get(0);
-		if (node.getVariables().isEmpty()) return;
-		Variable variable = node.getVariables().get(getIndexOf((Parameters) p.getParent(), p));
-		if (variable instanceof NodeAttribute) buffer.append(((NodeAttribute) variable).getPrimitiveType());
-		else if (variable instanceof Reference) buffer.append(((Reference) variable).getNode());
-
-		if (variable.isList()) buffer.append("[]");
-		buffer.append(" ");
-		buffer.append(variable.getName());
-		if (variable instanceof NodeWord) {
-			List<String> wordTypes = ((NodeWord) variable).getWordTypes();
-			buffer.append(" -> ").append(Arrays.toString(wordTypes.toArray(new String[wordTypes.size()])));
-		}
-		int highlightEndOffset = buffer.length();
-		context.setupUIComponentPresentation(buffer.toString(), 0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
+	public void updateUI(Object attributes, \@NotNull ParameterInfoUIContext context) {
+		Attribute[] psiAttribute = (Attribute[]) ((Object[]) attributes)[0];
+		StringBuilder builder = new StringBuilder();
+		for (Attribute attribute \: psiAttribute) builder.append(", ").append(attribute.getText().substring(4));
+		int highlightEndOffset = builder.toString().length();
+		context.setupUIComponentPresentation(builder.toString(), 0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
 	}
 
-	private int getIndexOf(Parameters parent, Parameter p) {
-		List<Parameter> parameters = new ArrayList<>();
-		Collections.addAll(parameters, parent.getParameters());
-		return parameters.indexOf(p);
-	}
 }

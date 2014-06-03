@@ -85,39 +85,48 @@ parameter \:\:=     identifierReference
 		        | doubleValue
 		        | stringList
 		        | booleanList
+		        | naturalList
 		        | integerList
 		        | doubleList
-		        | naturalList
 		        | identifierList
+		        | empty
 {mixin = 'monet.::projectName::.intellij.lang.psi.impl.ParameterMixin'
 implements = 'monet.::projectName::.intellij.lang.psi.Parameter'}
 
+empty\:\:=
 explicit\:\:= identifier COLON
 { pin=2}
 
-private definitionConstituents \:\:=  attribute | referenceStatement | word | definition
+private definitionConstituents \:\:=  attribute | definition
 
-attribute \:\:= doc? ( aliasAttribute
-		           | stringAttribute)
-		           | booleanAttribute
-		           | naturalAttribute
-		           | integerAttribute
-		           | doubleAttribute
-{pin=2 mixin = 'monet.::projectName::.intellij.lang.psi.impl.AttributeMixin'
-implements = 'monet.::projectName::.intellij.lang.psi.Attribute'}
+attribute \:\:= doc? (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | StringAttribute
+						  | resource | word | referenceStatement) {
+	pin=2
+	mixin= 'monet.::projectName::.intellij.lang.psi.impl.AttributeMixin'
+	implements='monet.::projectName::.intellij.lang.psi.Attribute'
+}
 
-private aliasAttribute \:\:= VAR ALIAS_TYPE IDENTIFIER_KEY (COLON stringValue)?
-{pin=3}
-private naturalAttribute \:\:= VAR NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?))
-{pin=2}
-private integerAttribute \:\:= VAR INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?) | (LIST IDENTIFIER_KEY (COLON integerList)?))
-{pin=2}
-private doubleAttribute \:\:= VAR  DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)  | (LIST IDENTIFIER_KEY (COLON doubleList)?))
-{pin=2}
-private stringAttribute \:\:= VAR  STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?) | (LIST IDENTIFIER_KEY (COLON stringList)?))
-{pin=2}
-private booleanAttribute \:\:=VAR BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?))
-{pin=2}
+private aliasAttribute   \:\:= (VAR | PROPERTY) ALIAS_TYPE IDENTIFIER_KEY (COLON stringValue)? {pin=2}
+private StringAttribute  \:\:= (VAR | PROPERTY) STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?)   | (LIST IDENTIFIER_KEY (COLON stringList)?)) {pin=2}
+private booleanAttribute \:\:= (VAR | PROPERTY) BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?)) {pin=2}
+private naturalAttribute \:\:= (VAR | PROPERTY) NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?)) {pin=2}
+private integerAttribute \:\:= (VAR | PROPERTY) INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?)     | (LIST IDENTIFIER_KEY (COLON integerList)?)) {pin=2}
+private doubleAttribute  \:\:= (VAR | PROPERTY) DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)   | (LIST IDENTIFIER_KEY (COLON doubleList)?)) {pin=2}
+private resource         \:\:= (VAR | PROPERTY) RESOURCE_KEY COLON IDENTIFIER_KEY IDENTIFIER_KEY {pin=2}
+
+stringValue  \:\:= STRING_VALUE_KEY
+booleanValue \:\:= BOOLEAN_VALUE_KEY
+naturalValue \:\:= NATURAL_VALUE_KEY
+integerValue \:\:= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
+doubleValue  \:\:= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
+
+stringList   \:\:= LEFT_SQUARE STRING_VALUE_KEY+ RIGHT_SQUARE
+booleanList  \:\:= LEFT_SQUARE BOOLEAN_VALUE_KEY+ RIGHT_SQUARE
+naturalList  \:\:= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE
+integerList  \:\:= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUARE
+doubleList   \:\:= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE
+identifierList \:\:= LEFT_SQUARE identifier+ RIGHT_SQUARE;
+
 word\:\:= VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT {
 	mixin= 'monet.::projectName::.intellij.lang.psi.impl.WordMixin'
 	implements='monet.::projectName::.intellij.lang.psi.Word'
@@ -126,19 +135,6 @@ referenceStatement\:\:= VAR identifierReference LIST? IDENTIFIER_KEY {
 	mixin= 'monet.::projectName::.intellij.lang.psi.impl.ReferenceStatementMixin'
 	implements='monet.::projectName::.intellij.lang.psi.ReferenceStatement'
 }
-
-stringValue  \:\:= STRING_VALUE_KEY
-booleanValue \:\:= BOOLEAN_VALUE_KEY
-naturalValue \:\:= NATURAL_VALUE_KEY
-integerValue \:\:= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
-doubleValue  \:\:= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
-
-stringList   \:\:= LEFT_SQUARE STRING_VALUE_KEY+ RIGHT_SQUARE;
-booleanList  \:\:= LEFT_SQUARE BOOLEAN_VALUE_KEY+ RIGHT_SQUARE;
-integerList  \:\:= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUARE;
-doubleList   \:\:= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE;
-naturalList  \:\:= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE;
-identifierList \:\:= LEFT_SQUARE identifier+ RIGHT_SQUARE;
 
 headerReference \:\:= hierarchy* identifier {
 	pin=2

@@ -6,6 +6,7 @@ public class TplGenerator {
     static String RES_TEST_PATH = "rt/res_test/intellij/tpl";
     static File templateBound;
     public static final String LANGUAGE_HERITAGE = "absmodel/src"
+    public static final String TPL_GRAMMAR = "/tpl-gen/tpl/"
 
     public static void main(String[] args) {
         templateBound = new File("rt/res/intellij/templates.properties")
@@ -75,7 +76,7 @@ public class TplGenerator {
         String mfile
         if (it.name.endsWith(".bnf")) mfile = "m1Grammar.tpl"
         else mfile = it.name.contains("Highlighter") ? "m1HighlightLex.tpl" : "m1Lexer.tpl"
-        String text = (new File(TplGenerator.class.getResource("/template-generation/tpl/").getPath() + mfile)).text.replaceAll("%", "\\\\%")
+        String text = (new File(TplGenerator.class.getResource(TPL_GRAMMAR).getPath() + mfile)).text.replaceAll("%", "\\\\%")
         File newFile = new File(getTemplateParentPath(tplPath, it, true), newFileName + ".tpl")
         newFile.write(text)
         templateBound.append(it.getName() + " = " + FileUtils.getRelativeTplPath(newFile) + "\n");

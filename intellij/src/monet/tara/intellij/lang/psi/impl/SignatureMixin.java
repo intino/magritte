@@ -9,6 +9,7 @@ import com.intellij.psi.search.SearchScope;
 import monet.tara.intellij.lang.TaraIcons;
 import monet.tara.intellij.lang.psi.Concept;
 import monet.tara.intellij.lang.psi.MetaIdentifier;
+import monet.tara.intellij.lang.psi.Parameters;
 import monet.tara.intellij.lang.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,5 +57,10 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 	@Nullable
 	public MetaIdentifier getType() {
 		return findChildByClass(MetaIdentifier.class);
+	}
+
+	@Nullable
+	public Parameters getParameters() {
+		return findChildByClass(Parameters.class);
 	}
 }

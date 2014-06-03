@@ -18,7 +18,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	public Concept createConcept(String name) {
 		final TaraFileImpl file = createDummyFile(
 			"package tara\n" +
-				"Concept abstract " + name + " <has-code root>\n" +
+				"Concept abstract " + name + " <root>\n" +
 				"\tConcept Ontology <optional>\n" +
 				"\tvar Alias uid"
 		);
@@ -36,13 +36,32 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	public Attribute createAttribute(String name, String type) {
 		final TaraFileImpl file = createDummyFile(
 			"package tara\n" +
-				"Concept abstract Source <has-code root>\n" +
+				"Concept abstract Source\n" +
 				"\tvar " + type + " " + name + "\n" +
-				"\tConcept Ontology <optional>\n"
+				"\tConcept Ontology\n"
 		);
-		Body body = ((Concept) file.getFirstChild()).getBody();
-		return body != null ? body.getAttributeList().get(0) : null;
+		Body body = PsiTreeUtil.getChildOfType(file, Concept.class).getBody();
+		return body != null ? (Attribute) body.getFirstChild().getNextSibling() : null;
 	}
+
+	public Attribute createWord(String name, String[] types) {
+		final TaraFileImpl file = createDummyFile(
+			"package tara\n" +
+				"Concept abstract Source\n" +
+				"\tvar Word " + name + "\n" +
+				getWordTypesToString(types) +
+				"\tConcept Ontology\n"
+		);
+		Body body = PsiTreeUtil.getChildOfType(file, Concept.class).getBody();
+		return body != null ? (Attribute) body.getFirstChild().getNextSibling() : null;
+	}
+
+	private String getWordTypesToString(String[] types) {
+		StringBuilder builder = new StringBuilder();
+		for (String type : types) builder.append("\t\t").append(type).append("\n");
+		return builder.toString();
+	}
+
 
 	public Import createImport(String reference) {
 		final TaraFileImpl file = createDummyFile(
@@ -66,6 +85,15 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	public PsiElement createNewLine() {
 		final TaraFileImpl file = createDummyFile("\n");
 		return file.getFirstChild();
+	}
+
+	@Override
+	public Parameters createParameters(boolean string) {
+		final TaraFileImpl file = createDummyFile(
+			"package tara\n" +
+				"Form Ficha(" + (string ? "\"\"" : "") + ")\n"
+		);
+		return file.getConcept().getSignature().getParameters();
 	}
 
 }

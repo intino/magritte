@@ -83,8 +83,9 @@ public class ParameterAnnotator extends ::projectProperName::Annotator {
 				return varType.equals("Double") && variable.isList();
 			case ::projectProperName::NaturalListImpl\:
 				return varType.equals("Natural") && variable.isList();
+			default\:
+				return false;
 		}
-		return false;
 	}
 
 	private int getIndexOf(Parameters parent, Parameter p) {
@@ -99,7 +100,7 @@ public class ParameterAnnotator extends ::projectProperName::Annotator {
 
 	enum Types {
 		::projectProperName::StringValueImpl, ::projectProperName::BooleanValueImpl, ::projectProperName::IntegerValueImpl, ::projectProperName::DoubleValueImpl, ::projectProperName::NaturalValueImpl,
-		::projectProperName::StringListImpl, ::projectProperName::BooleanListImpl, ::projectProperName::IntegerListImpl, ::projectProperName::DoubleListImpl, ::projectProperName::NaturalListImpl
+		::projectProperName::StringListImpl, ::projectProperName::BooleanListImpl, ::projectProperName::IntegerListImpl, ::projectProperName::DoubleListImpl, ::projectProperName::NaturalListImpl, GorosEmptyImpl
 	}
 
 

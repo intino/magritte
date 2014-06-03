@@ -18,7 +18,7 @@ public class ::projectProperName::ElementFactoryImpl extends ::projectProperName
 	public Definition createDefinition(String name) {
 		final ::projectProperName::FileImpl file = createDummyFile(
 			"package ::projectName::\\n" +
-				"Definition abstract " + name + " <has-code root>\\n" +
+				"Definition abstract " + name + " <root>\\n" +
 				"\\tDefinition Ontology <optional>\\n" +
 				"\\tvar Alias uid"
 		);
@@ -36,13 +36,32 @@ public class ::projectProperName::ElementFactoryImpl extends ::projectProperName
 	public Attribute createAttribute(String name, String type) {
 		final ::projectProperName::FileImpl file = createDummyFile(
 			"package ::projectName::\\n" +
-				"Definition abstract Source <has-code root>\\n" +
+				"Definition abstract Source\\n" +
 				"\\tvar " + type + " " + name + "\\n" +
-				"\\tDefinition Ontology <optional>\\n"
+				"\\tDefinition Ontology\\n"
 		);
-		Body body = ((Definition) file.getFirstChild()).getBody();
-		return body != null ? body.getAttributeList().get(0) \: null;
+		Body body = PsiTreeUtil.getChildOfType(file, Definition.class).getBody();
+		return body != null ? (Attribute) body.getFirstChild().getNextSibling() \: null;
 	}
+
+	public Attribute createWord(String name, String[] types) {
+		final ::projectProperName::FileImpl file = createDummyFile(
+			"package ::projectName::\\n" +
+				"Definition abstract Source\\n" +
+				"\\tvar Word " + name + "\\n" +
+				getWordTypesToString(types) +
+				"\\tDefinition Ontology\\n"
+		);
+		Body body = PsiTreeUtil.getChildOfType(file, Definition.class).getBody();
+		return body != null ? (Attribute) body.getFirstChild().getNextSibling() \: null;
+	}
+
+	private String getWordTypesToString(String[] types) {
+		StringBuilder builder = new StringBuilder();
+		for (String type \: types) builder.append("\\t\\t").append(type).append("\\n");
+		return builder.toString();
+	}
+
 
 	public Import createImport(String reference) {
 		final ::projectProperName::FileImpl file = createDummyFile(
@@ -66,6 +85,15 @@ public class ::projectProperName::ElementFactoryImpl extends ::projectProperName
 	public PsiElement createNewLine() {
 		final ::projectProperName::FileImpl file = createDummyFile("\\n");
 		return file.getFirstChild();
+	}
+
+	\@Override
+	public Parameters createParameters(boolean string) {
+		final ::projectProperName::FileImpl file = createDummyFile(
+			"package ::projectName::\\n" +
+				"Form Ficha(" + (string ? "\\"\\"" \: "") + ")\\n"
+		);
+		return file.getDefinition().getSignature().getParameters();
 	}
 
 }

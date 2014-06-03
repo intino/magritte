@@ -299,7 +299,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // doc? (property | aliasAttribute | integerAttribute | doubleAttribute | naturalAttribute | booleanAttribute | StringAttribute | resource)
+  // doc? (referenceStatement | word | aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | StringAttribute | resource)
   public static boolean attribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute")) return false;
     boolean result_ = false;
@@ -317,16 +317,17 @@ public class TaraParser implements PsiParser {
     return true;
   }
 
-  // property | aliasAttribute | integerAttribute | doubleAttribute | naturalAttribute | booleanAttribute | StringAttribute | resource
+  // referenceStatement | word | aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | StringAttribute | resource
   private static boolean attribute_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, PROPERTY);
+    result_ = referenceStatement(builder_, level_ + 1);
+    if (!result_) result_ = word(builder_, level_ + 1);
     if (!result_) result_ = aliasAttribute(builder_, level_ + 1);
+    if (!result_) result_ = naturalAttribute(builder_, level_ + 1);
     if (!result_) result_ = integerAttribute(builder_, level_ + 1);
     if (!result_) result_ = doubleAttribute(builder_, level_ + 1);
-    if (!result_) result_ = naturalAttribute(builder_, level_ + 1);
     if (!result_) result_ = booleanAttribute(builder_, level_ + 1);
     if (!result_) result_ = StringAttribute(builder_, level_ + 1);
     if (!result_) result_ = resource(builder_, level_ + 1);
@@ -565,14 +566,12 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // attribute | referenceStatement | word | concept
+  // attribute  | concept
   static boolean conceptConstituents(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "conceptConstituents")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = attribute(builder_, level_ + 1);
-    if (!result_) result_ = referenceStatement(builder_, level_ + 1);
-    if (!result_) result_ = word(builder_, level_ + 1);
     if (!result_) result_ = concept(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;

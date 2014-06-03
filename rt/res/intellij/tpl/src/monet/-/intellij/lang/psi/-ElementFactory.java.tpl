@@ -24,4 +24,8 @@ public abstract class ::projectProperName::ElementFactory {
 	public abstract ::projectProperName::Packet createPackage(String reference);
 
 	public abstract PsiElement createNewLine();
+
+	public abstract Parameters createParameters(boolean string);
+
+	public abstract Attribute createWord(String name, String[] types);
 }

@@ -204,9 +204,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			if (groovy == null)
 				return;
 			try {
-				final File groovyFile = new File(groovy);
-				if (!FSOperations.isMarkedDirty(context, groovyFile)) {
-					FSOperations.markDirty(context, groovyFile);
+				final File file = new File(groovy);
+				if (!FSOperations.isMarkedDirty(context, file)) {
+					FSOperations.markDirty(context, file);
 					FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, Boolean.TRUE);
 				}
 			} catch (IOException e) {

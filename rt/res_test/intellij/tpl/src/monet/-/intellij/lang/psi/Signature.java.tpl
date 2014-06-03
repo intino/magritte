@@ -26,5 +26,7 @@ public interface Signature extends ::projectProperName::PsiElement {
 
 	\@Nullable
 	MetaIdentifier getType();
+
+	Parameters getParameters();
 }
 

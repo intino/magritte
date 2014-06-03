@@ -13,10 +13,4 @@ public interface TaraBody extends Body {
   @NotNull
   List<TaraConcept> getConceptList();
 
-  @NotNull
-  List<TaraReferenceStatement> getReferenceStatementList();
-
-  @NotNull
-  List<TaraWord> getWordList();
-
 }

@@ -42,7 +42,7 @@ body ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT {
 	implements='monet.tara.intellij.lang.psi.Body'
 }
 
-private conceptConstituents ::= attribute | referenceStatement | word | concept
+private conceptConstituents ::= attribute  | concept
 
 referenceStatement ::= doc? VAR identifierReference LIST? IDENTIFIER_KEY {
 	mixin= 'monet.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
@@ -54,31 +54,32 @@ word ::= doc? VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLIN
 	implements='monet.tara.intellij.lang.psi.Word'
 }
 
-attribute ::= doc? (property | aliasAttribute | integerAttribute | doubleAttribute | naturalAttribute | booleanAttribute | StringAttribute | resource) {
+attribute ::= doc? (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | StringAttribute
+                        | resource | referenceStatement | word) {
 	pin=2
 	mixin= 'monet.tara.intellij.lang.psi.impl.AttributeMixin'
 	implements='monet.tara.intellij.lang.psi.Attribute'
 }
 
 private aliasAttribute   ::= (VAR | PROPERTY) ALIAS_TYPE IDENTIFIER_KEY (COLON stringValue)? {pin=2}
-private integerAttribute ::= (VAR | PROPERTY) INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?)     | (LIST IDENTIFIER_KEY (COLON integerList)?)) {pin=2}
+private booleanAttribute ::= (VAR | PROPERTY) BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?)) {pin=2}
 private StringAttribute  ::= (VAR | PROPERTY) STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?)   | (LIST IDENTIFIER_KEY (COLON stringList)?)) {pin=2}
 private naturalAttribute ::= (VAR | PROPERTY) NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?)) {pin=2}
-private booleanAttribute ::= (VAR | PROPERTY) BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?)) {pin=2}
+private integerAttribute ::= (VAR | PROPERTY) INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?)     | (LIST IDENTIFIER_KEY (COLON integerList)?)) {pin=2}
 private doubleAttribute  ::= (VAR | PROPERTY) DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)   | (LIST IDENTIFIER_KEY (COLON doubleList)?)) {pin=2}
 private resource         ::= (VAR | PROPERTY) RESOURCE_KEY COLON IDENTIFIER_KEY IDENTIFIER_KEY {pin=2}
 
 stringValue  ::= STRING_VALUE_KEY
 booleanValue ::= BOOLEAN_VALUE_KEY
+naturalValue ::= NATURAL_VALUE_KEY
 integerValue ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue  ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
-naturalValue ::= NATURAL_VALUE_KEY
 
 stringList  ::= LEFT_SQUARE STRING_VALUE_KEY+ RIGHT_SQUARE
 booleanList ::= LEFT_SQUARE BOOLEAN_VALUE_KEY+ RIGHT_SQUARE
+naturalList ::= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE
 integerList ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUARE
 doubleList  ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE
-naturalList ::= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE
 
 annotations ::= OPEN_AN (GENERIC | MULTIPLE | REQUIRED | HAS_NAME | intention | SINGLETON | ROOT)+ CLOSE_AN {
 	pin=1

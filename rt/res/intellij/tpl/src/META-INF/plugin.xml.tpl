@@ -72,8 +72,7 @@
     <nameSuggestionProvider implementation="monet.::projectName::.intellij.refactoring.NameSuggestionProvider"/>
     <lang.elementManipulator forClass="monet.::projectName::.intellij.lang.psi.::projectProperName::Identifier"
                              implementationClass="monet.::projectName::.intellij.lang.psi.impl.IdentifierManipulator"/>
-    <codeInsight.parameterInfo language="::projectProperName::" implementationClass="monet.::projectName::.intellij.codeinsight.parameterinfo.::projectProperName::ParameterInfoHandler"/>
-
+    <!--\%extensions\%-->
     <codeInsight.parameterInfo language="::projectProperName::"
                                implementationClass="monet.::projectName::.intellij.codeinsight.parameterinfo.::projectProperName::ParameterInfoHandler"/>
 

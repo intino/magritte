@@ -9,6 +9,7 @@ import com.intellij.psi.search.SearchScope;
 import monet.::projectName::.intellij.lang.::projectProperName::Icons;
 import monet.::projectName::.intellij.lang.psi.Definition;
 import monet.::projectName::.intellij.lang.psi.MetaIdentifier;
+import monet.::projectName::.intellij.lang.psi.Parameters;
 import monet.::projectName::.intellij.lang.psi.::projectProperName::Types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,5 +57,10 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 	\@Nullable
 	public MetaIdentifier getType() {
 		return findChildByClass(MetaIdentifier.class);
+	}
+
+	\@Nullable
+	public Parameters getParameters() {
+		return findChildByClass(Parameters.class);
 	}
 }

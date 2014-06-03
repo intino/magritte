@@ -24,4 +24,8 @@ public abstract class TaraElementFactory {
 	public abstract TaraPacket createPackage(String reference);
 
 	public abstract PsiElement createNewLine();
+
+	public abstract Parameters createParameters(boolean string);
+
+	public abstract Attribute createWord(String name, String[] types);
 }

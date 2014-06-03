@@ -1,21 +1,21 @@
 src_file
-/Users/octavio/workspace/tara/rt/res_test/m2/Entity.m2
-/Users/octavio/workspace/tara/rt/res_test/m2/Event.m2
-/Users/octavio/workspace/tara/rt/res_test/m2/Form.m2
-/Users/octavio/workspace/tara/rt/res_test/m2/Source.m2
-/Users/octavio/workspace/tara/rt/res_test/m2/Term.m2
-/Users/octavio/workspace/tara/rt/res_test/m2/Thesaurus.m2
+/Users/oroncal/workspace/tara/rt/res_test/m2/Entity.m2
+/Users/oroncal/workspace/tara/rt/res_test/m2/Event.m2
+/Users/oroncal/workspace/tara/rt/res_test/m2/Form.m2
+/Users/oroncal/workspace/tara/rt/res_test/m2/Source.m2
+/Users/oroncal/workspace/tara/rt/res_test/m2/Term.m2
+/Users/oroncal/workspace/tara/rt/res_test/m2/Thesaurus.m2
 
 project
 goros
 idea_home
 /Applications/IntelliJ IDEA 13 CE.app/lib/
 project_icon
-/Users/octavio/workspace/sandbox/goros/res/icons/goros.png
+/Users/oroncal/workspace/sandbox/goros/res/icons/goros.png
 icons
-/Users/octavio/workspace/sandbox/goros/res/icons/definitions/
+/Users/oroncal/workspace/sandbox/goros/res/icons/definitions/
 outputpath
-/Users/octavio/workspace/sandbox/system/compile-server/test_2e78763/taraStubs/Test/java-production/
+/Users/oroncal/workspace/sandbox/system/compile-server/test_2e78763/taraStubs/Test/java-production/
 final_outputpath
-/Users/octavio/workspace/sandbox/goros/out/production/prueba/
+/Users/oroncal/workspace/sandbox/goros/out/production/prueba/
 
