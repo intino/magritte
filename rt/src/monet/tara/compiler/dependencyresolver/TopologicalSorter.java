@@ -1,7 +1,7 @@
 package monet.tara.compiler.dependencyresolver;
 
 
-import monet.tara.lang.AbstractNode;
+import monet.tara.lang.NodeObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,30 +10,30 @@ import java.util.Iterator;
 
 public class TopologicalSorter {
 
-	public boolean hasDependency(AbstractNode node) {
-		return node.getParentConcept() != null;
+	public boolean hasDependency(NodeObject node) {
+		return node.getParent() != null;
 	}
 
-	public ArrayList<AbstractNode> sort(AbstractNode[] allNodes) {
-		ArrayList<AbstractNode> sortedList = new ArrayList<>();
-		HashSet<AbstractNode> independientNodes = new HashSet<>();
+	public ArrayList<NodeObject> sort(NodeObject[] allNodes) {
+		ArrayList<NodeObject> sortedList = new ArrayList<>();
+		HashSet<NodeObject> independientNodes = new HashSet<>();
 
-		for (AbstractNode node : allNodes)
+		for (NodeObject node : allNodes)
 			if (!hasDependency(node)) independientNodes.add(node);
 
 		while (!independientNodes.isEmpty()) {
-			AbstractNode n = independientNodes.iterator().next();
+			NodeObject n = independientNodes.iterator().next();
 			independientNodes.remove(n);
 			sortedList.add(n);
-			for (Iterator<AbstractNode> it = n.getChildren().iterator(); it.hasNext(); ) {
-				AbstractNode m = it.next();
+			for (Iterator<NodeObject> it = n.getChildren().iterator(); it.hasNext(); ) {
+				NodeObject m = it.next();
 				it.remove();
 				m.setParentConcept(null);
 				if (!hasDependency(m)) independientNodes.add(m);
 			}
 		}
 		boolean cycle = false;
-		for (AbstractNode n : allNodes)
+		for (NodeObject n : allNodes)
 			if (!hasDependency(n)) {
 				cycle = true;
 				break;

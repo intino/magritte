@@ -19,7 +19,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 		if (!(element instanceof Parameter)) return;
 		MetaIdentifier metaIdentifier = TaraPsiImplUtil.getContextOf(element).getMetaIdentifier();
 		int index = getIndexOf((Parameters) element.getParent(), (Parameter) element);
-		AbstractNode node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(metaIdentifier.getText()).get(0);
+		NodeObject node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(metaIdentifier.getText()).get(0).getObject();
 		List<Variable> variables = node.getVariables();
 		if (index >= variables.size()) annotateInsufficientParameters(element, holder);
 		else {
@@ -52,7 +52,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 		PsiElement resolve = solver.resolve();
 		if (resolve instanceof Concept) {
 			MetaIdentifier metaIdentifier = ((Concept) resolve).getMetaIdentifier();
-			if ((metaIdentifier != null) && metaIdentifier.getText().equals(variable.getNode())) return true;
+			if ((metaIdentifier != null) && metaIdentifier.getText().equals(variable.getType())) return true;
 		}
 		return false;
 	}

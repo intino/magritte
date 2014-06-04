@@ -32,4 +32,8 @@ public class NodeAttribute extends Variable {
 	public boolean isProperty() {
 		return isProperty;
 	}
+
+	public String toString() {
+		return primitiveType + (isList ? "[]" \: "") + " " + name;
+	}
 }

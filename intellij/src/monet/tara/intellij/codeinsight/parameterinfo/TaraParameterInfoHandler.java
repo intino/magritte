@@ -73,31 +73,51 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@Nullable
 	@Override
-	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext context) {
-		final Parameters parameterList = findParameters(context);
+	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext parameterInfoContext) {
+		final Parameters parameterList = findParameters(parameterInfoContext);
 		if (parameterList != null) {
 			TreeWrapper wrapper = TaraLanguage.getHeritage();
 			if (wrapper == null) return parameterList;
-			MetaIdentifier metaIdentifier = TaraPsiImplUtil.getContextOf(parameterList).getMetaIdentifier();
-			AbstractNode node = wrapper.getNodeNameLookUpTable().get(metaIdentifier.getText()).get(0);
-			if (node.getVariables().isEmpty()) return parameterList;
+			Concept conceptContext = TaraPsiImplUtil.getContextOf(parameterList);
+			Node node = findCorrespondentNode(conceptContext, wrapper);
+			if (node == null) return parameterList;
+			if (node.getObject().getVariables().isEmpty()) return parameterList;
 			List<Attribute> attributes = new ArrayList<>();
 			TaraElementFactory instance = TaraElementFactory.getInstance(parameterList.getProject());
-			for (Variable variable : node.getVariables()) {
+			for (Variable variable : node.getObject().getVariables()) {
 				Attribute attribute = null;
 				if (variable instanceof NodeAttribute)
 					attribute = instance.createAttribute(variable.getName(), ((NodeAttribute) variable).getPrimitiveType() + ((variable.isList()) ? "[]" : ""));
 				else if (variable instanceof Reference)
-					attribute = instance.createAttribute(variable.getName(), ((Reference) variable).getNode() + ((variable.isList()) ? "[]" : ""));
+					attribute = instance.createAttribute(variable.getName(), ((Reference) variable).getType() + ((variable.isList()) ? "[]" : ""));
 				else if (variable instanceof NodeWord) {
 					List<String> wordTypes = ((NodeWord) variable).getWordTypes();
 					attribute = instance.createWord(variable.getName(), wordTypes.toArray(new String[wordTypes.size()]));
-				}
+				} else if (variable instanceof Resource)
+					attribute = instance.createResource(variable.getName(), ((Resource) variable).type);
+
 				if (attribute != null) attributes.add(attribute);
 			}
-			context.setItemsToShow(new Object[]{attributes.toArray()});
+			parameterInfoContext.setItemsToShow(new Object[]{attributes});
 		}
 		return parameterList;
+	}
+
+	private Node findCorrespondentNode(Concept concept, TreeWrapper wrapper) {
+		String id = getConceptQualifiedName(concept) + "." + concept.getMetaIdentifier().getText();
+		for (Node node : wrapper.getNodeNameLookUpTable().get(concept.getMetaIdentifier().getText()))
+			if (node.getQualifiedName().equals(id)) return node;
+		for (Node node : wrapper.getNodeNameLookUpTable().get(""))
+			if (node.getQualifiedName().equals(id)) return node;
+		return null;
+	}
+
+	private String getConceptQualifiedName(Concept concept) {
+		Concept container = concept;
+		String id = "";
+		while ((container = TaraPsiImplUtil.getContextOf(container)) != null)
+			id = container.getMetaIdentifier().getText() + "." + id;
+		return id.substring(0, id.length() - 1);
 	}
 
 	private Parameters findParameters(CreateParameterInfoContext context) {

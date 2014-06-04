@@ -1,52 +1,55 @@
 package monet.tara.compiler.semantic;
 
-import monet.tara.lang.AbstractNode;
-import monet.tara.lang.AbstractTree;
-import monet.tara.lang.Reference;
-import monet.tara.lang.TreeWrapper;
-import monet.tara.lang.AbstractNode.AnnotationType;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import monet.tara.compiler.core.errorcollection.semantic.UnusedConceptError;
+import monet.tara.lang.*;
+import monet.tara.lang.NodeObject.AnnotationType;
 
 import java.util.*;
 
 public class ConceptsUsage {
 
-    private SemanticErrorList errors = new SemanticErrorList();
-    private Map<String, AbstractNode> conceptList = new HashMap<>();
+	private SemanticErrorList errors = new SemanticErrorList();
+	private Map<String, Node> conceptList = new HashMap<>();
 
-    public ConceptsUsage(SemanticErrorList errors) {
-        this.errors = errors;
-    }
+	public ConceptsUsage(SemanticErrorList errors) {
+		this.errors = errors;
+	}
 
-    public void start(AbstractTree conceptList) {
-        for (AbstractNode concept : conceptList)
-            addToList(concept);
-    }
+	public void start(NodeTree conceptList) {
+		for (Node concept : conceptList)
+			addToList(concept);
+	}
 
-    private void addToList(AbstractNode concept) {
-        List<AnnotationType> annotations = new ArrayList<>(Arrays.asList(concept.getAnnotations()));
-        if (!annotations.contains(AnnotationType.ROOT))
-            this.conceptList.put(concept.getAbsolutePath(), concept);
-    }
+	private void addToList(Node node) {
+		NodeObject concept = node.getObject();
+		List<AnnotationType> annotations = new ArrayList<>(Arrays.asList(concept.getAnnotations()));
+		if (!annotations.contains(AnnotationType.ROOT))
+			this.conceptList.put(node.getAbsolutePath(), node);
+	}
 
-    public void checkUsage(AbstractNode concept, TreeWrapper ast) {
-        checkIfUsed(concept.getParentConcept());
-        checkReference(concept, ast);
-    }
+	public void checkUsage(Node concept, TreeWrapper ast) {
+//		removeAncestor(concept.getObject().getParent());
+		checkReference(concept, ast);
+	}
 
-    private void checkIfUsed(AbstractNode ancestor) {
-        String rootConcept = (ancestor != null)? ancestor.getAbsolutePath().split("\\.")[0] : "";
-        conceptList.remove(rootConcept);
-    }
+//	public void removeAncestor(NodeObject nodeObject) {
+//		String rootConcept = (nodeObject != null) ? nodeObject.getAbsolutePath().split("\\.")[0] : "";
+//		conceptList.remove(rootConcept);
+//	}
 
-    private void checkReference(AbstractNode concept, TreeWrapper ast) {
-        for (Reference reference : concept.getReferences())
-            checkIfUsed(ast.searchNode(reference.getNode(), concept));
-    }
+	private void checkIfUsed(Node node) {
+		String rootConcept = (node != null) ? node.getAbsolutePath().split("\\.")[0] : "";
+		conceptList.remove(rootConcept);
+	}
 
-    public void finish() {
-        for (String concept : conceptList.keySet())
-            errors.add(new UnusedConceptError(concept, conceptList.get(concept)));
-    }
+	private void checkReference(Node concept, TreeWrapper ast) {
+		for (Reference reference : concept.getObject().getReferences())
+			checkIfUsed(ast.searchNode(reference.getType(), concept));
+	}
+
+	public void finish() {
+		for (String concept : conceptList.keySet())
+			errors.add(new UnusedConceptError(concept, conceptList.get(concept)));
+	}
 }

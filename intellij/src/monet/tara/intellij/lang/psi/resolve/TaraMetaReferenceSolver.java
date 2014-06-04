@@ -9,8 +9,9 @@ import monet.tara.intellij.lang.TaraLanguage;
 import monet.tara.intellij.lang.psi.Concept;
 import monet.tara.intellij.lang.psi.MetaIdentifier;
 import monet.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import monet.tara.lang.AbstractNode;
 import monet.tara.lang.Modifiable;
+import monet.tara.lang.Node;
+import monet.tara.lang.NodeObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,10 +48,9 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		if (myElement instanceof MetaIdentifier) {
 			Concept context = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(myElement));
 			if (context != null) {
-				AbstractNode node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(context.getType()).get(0);
+				NodeObject node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(context.getType()).get(0).getObject();
 				if (node != null) {
 					addChildren(concepts, node);
-					if (node.getParentName() != null) addInheritedConcepts(node.getParentName(), concepts);
 					if (node.isCase()) addBaseConcepts(node.getBaseNode(), concepts);
 				}
 			}
@@ -59,25 +59,18 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	}
 
 	private void addBaseConcepts(String baseConcept, List<String> concepts) {
-		AbstractNode node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(baseConcept).get(0);
-		for (AbstractNode children : node.getChildren())
-			if (!children.isCase() && !children.isAbstract()) concepts.add(children.getIdentifier());
+		Node node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(baseConcept).get(0);
+		for (Node child : node.getInnerNodes())
+			if (!child.getObject().isCase() && !child.getObject().isAbstract()) concepts.add(child.getName());
 	}
 
-	private void addInheritedConcepts(String extendFrom, List<String> concepts) {
-		AbstractNode node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(extendFrom).get(0);
-		for (AbstractNode children : node.getChildren())
-			if (!children.isBase() && !children.isAbstract()) concepts.add(children.getIdentifier());
-		if (node.getParentName() != null) addInheritedConcepts(node.getParentName(), concepts);
-	}
-
-	private void addChildren(List<String> concepts, AbstractNode node) {
-		for (AbstractNode child : node.getChildren())
+	private void addChildren(List<String> concepts, NodeObject node) {
+		for (NodeObject child : node.getChildren())
 			if (!child.isBase() && !child.isAbstract())
-				concepts.add(child.getIdentifier());
-			else for (AbstractNode abstractNode : child.getChildren())
-				if (abstractNode.isCase())
-					concepts.add(abstractNode.getIdentifier());
+				concepts.add(child.getName());
+			else for (NodeObject nodeObject : child.getChildren())
+				if (nodeObject.isCase())
+					concepts.add(nodeObject.getName());
 	}
 
 	@Modifiable(tag = "TaraMetaReferenceSolver.fillVariants")

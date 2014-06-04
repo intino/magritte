@@ -13,7 +13,8 @@ import monet.tara.compiler.core.operation.SrcToClassOperation;
 import monet.tara.compiler.dependencyresolver.AbstractTreeDependencyResolver;
 import monet.tara.compiler.rt.TaraRtConstants;
 import monet.tara.compiler.semantic.SemanticAnalyzer;
-import monet.tara.lang.AbstractNode;
+import monet.tara.lang.Node;
+import monet.tara.lang.NodeObject;
 import monet.tara.lang.TreeWrapper;
 
 import java.io.IOException;
@@ -42,7 +43,21 @@ public class CompilationUnit extends ProcessingUnit {
 			}
 		}
 	};
-	protected AbstractNode[] astProcessed;
+	private ModuleUnitOperation pluginGenerationOperation = new ModuleUnitOperation() {
+		@Override
+		public void call(Collection<SourceUnit> units) throws CompilationFailedException {
+			try {
+				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating plugin");
+				PluginGenerator generator = new PluginGenerator(configuration);
+				generator.generate(ast);
+				getErrorCollector().failIfErrors();
+			} catch (TaraException e) {
+				LOG.severe("Error during plugin generation: " + e.getMessage() + "\n");
+				throw new CompilationFailedException(phase, CompilationUnit.this);
+			}
+		}
+	};
+	protected NodeObject[] astProcessed;
 	private ModuleUnitOperation ASTDependencyResolution = new ModuleUnitOperation() {
 		public void call(Collection<SourceUnit> sources) throws CompilationFailedException {
 			try {
@@ -91,21 +106,6 @@ public class CompilationUnit extends ProcessingUnit {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating classes");
 			ClassGenerator generator = new ClassGenerator(configuration);
 			//generator.generate();
-		}
-	};
-
-	private ModuleUnitOperation pluginGenerationOperation = new ModuleUnitOperation() {
-		@Override
-		public void call(Collection<SourceUnit> units) throws CompilationFailedException {
-			try {
-				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating plugin");
-				PluginGenerator generator = new PluginGenerator(configuration);
-				generator.generate(ast);
-				getErrorCollector().failIfErrors();
-			} catch (TaraException e) {
-				LOG.severe("Error during plugin generation: " + e.getMessage() + "\n");
-				throw new CompilationFailedException(phase, CompilationUnit.this);
-			}
 		}
 	};
 	private SourceUnitOperation output = new SourceUnitOperation() {
@@ -201,7 +201,7 @@ public class CompilationUnit extends ProcessingUnit {
 			((ModuleUnitOperation) operation).call(sources.values());
 	}
 
-	private SourceUnit getSourceFromFile(AbstractNode node) {
+	private SourceUnit getSourceFromFile(Node node) {
 		if (node != null)
 			for (String name : sources.keySet())
 				if (name.equals(node.getFile())) return sources.get(name);

@@ -1,17 +1,17 @@
 package monet.tara.compiler.core.errorcollection;
 
 
-import monet.tara.lang.AbstractNode;
+import monet.tara.lang.Node;
 
 public class TaraRuntimeException extends RuntimeException {
 
-	private AbstractNode node;
+	private Node node;
 
 	public TaraRuntimeException(String message) {
 		super(message);
 	}
 
-	public TaraRuntimeException(String message, AbstractNode node) {
+	public TaraRuntimeException(String message, Node node) {
 		super(message);
 		this.node = node;
 	}
@@ -20,7 +20,7 @@ public class TaraRuntimeException extends RuntimeException {
 		return getMessageWithoutLocationText() + getLocationText();
 	}
 
-	public AbstractNode getNode() {
+	public Node getNode() {
 		return this.node;
 	}
 

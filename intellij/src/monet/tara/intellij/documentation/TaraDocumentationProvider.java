@@ -40,6 +40,6 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	}
 
 	private String extractMetaDocumentation(String key) {
-		return TaraLanguage.getHeritage().getNodeNameLookUpTable().get(key).get(0).getDoc();
+		return TaraLanguage.getHeritage().getNodeNameLookUpTable().get(key).get(0).getObject().getDoc();
 	}
 }

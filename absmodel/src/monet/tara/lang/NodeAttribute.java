@@ -32,4 +32,15 @@ public class NodeAttribute extends Variable {
 	public boolean isProperty() {
 		return isProperty;
 	}
+
+	public String toString() {
+		return primitiveType + (isList ? "[]" : "") + " " + name;
+	}
+
+	@Override
+	public NodeAttribute clone() {
+		NodeAttribute nodeAttribute = new NodeAttribute(primitiveType, name, isList, isProperty);
+		nodeAttribute.setValue(value);
+		return nodeAttribute;
+	}
 }

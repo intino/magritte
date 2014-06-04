@@ -1,7 +1,9 @@
 package monet.tara.compiler.codegeneration.render;
 
 import monet.tara.compiler.core.errorcollection.TaraException;
-import monet.tara.lang.AbstractNode;
+import monet.tara.lang.Node;
+import monet.tara.lang.NodeObject;
+import monet.tara.lang.NodeTree;
 import monet.tara.lang.Variable;
 import org.monet.templation.Canvas;
 import org.monet.templation.CanvasLogger;
@@ -15,33 +17,33 @@ import java.util.Map;
 public class DefinitionTemplateRender extends Render {
 	private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(DefaultRender.class.getName());
 	private final String tplName;
-	AbstractNode abstractNode;
+	Node nodeObject;
 
-	public DefinitionTemplateRender(String tplName, AbstractNode node) throws TaraException {
+	public DefinitionTemplateRender(String tplName, Node node) throws TaraException {
 		super(new Logger(), Canvas.FROM_RESOURCES_PREFIX);
 		this.tplName = tplName;
-		this.abstractNode = node;
+		this.nodeObject = node;
 	}
 
 	@Override
 	protected void init() {
 		loadCanvas(tplName, true);
-		addMark("ConceptKey", RenderUtils.toProperCase(abstractNode.getIdentifier()));
-		if (!abstractNode.getVariables().isEmpty())
-			addMark("parameters", constructParameters(abstractNode.getVariables()));
-		StringBuilder children = constructChildren(abstractNode.getInnerConcepts());
+		addMark("ConceptKey", RenderUtils.toProperCase(nodeObject.getName()));
+		if (!nodeObject.getObject().getVariables().isEmpty())
+			addMark("parameters", constructParameters(nodeObject.getObject().getVariables()));
+		StringBuilder children = constructChildren(nodeObject.getInnerNodes());
 		addMark("children", children.toString());
 
 	}
 
-	private StringBuilder constructChildren(List<AbstractNode> innerConcepts) {
+	private StringBuilder constructChildren(NodeTree innerConcepts) {
 		StringBuilder builder = new StringBuilder();
-		if (innerConcepts==null) return builder;
-		for (AbstractNode node : innerConcepts)
-			if (node.is(AbstractNode.AnnotationType.REQUIRED) && !node.getIdentifier().equals("")) {
+		if (innerConcepts == null) return builder;
+		for (Node node : innerConcepts)
+			if (node.getObject().is(NodeObject.AnnotationType.REQUIRED) && !node.getName().equals("")) {
 				Map<String, Object> map = new HashMap<>();
-				map.put("ConceptKey", node.getIdentifier());
-				map.put("name", node.getIdentifier() + "Definition");
+				map.put("ConceptKey", node.getName());
+				map.put("name", node.getName() + "Definition");
 				builder.append(block("innerConcepts", map)).append("\n\n");
 			}
 		return builder;

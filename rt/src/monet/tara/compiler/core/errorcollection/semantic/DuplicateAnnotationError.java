@@ -1,10 +1,10 @@
 package monet.tara.compiler.core.errorcollection.semantic;
 
-import monet.tara.lang.AbstractNode;
+import monet.tara.lang.Node;
 
 public class DuplicateAnnotationError extends SemanticError implements SemanticError.FatalError {
 
-	public DuplicateAnnotationError(String token, AbstractNode node) {
+	public DuplicateAnnotationError(String token, Node node) {
 		super(token, node);
 	}
 

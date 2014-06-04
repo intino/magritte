@@ -1,9 +1,9 @@
 package monet.tara.compiler.core.errorcollection.semantic;
 
-import monet.tara.lang.AbstractNode;
+import monet.tara.lang.Node;
 
 public class PolymorphicChildlessError extends SemanticError implements SemanticError.FatalError {
-	public PolymorphicChildlessError(String token, AbstractNode node) {
+	public PolymorphicChildlessError(String token, Node node) {
 		super(token, node);
 	}
 

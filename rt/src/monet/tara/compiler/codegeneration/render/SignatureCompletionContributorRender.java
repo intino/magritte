@@ -1,14 +1,15 @@
 package monet.tara.compiler.codegeneration.render;
 
-import monet.tara.lang.AbstractNode;
-import monet.tara.lang.TreeWrapper;
 import monet.tara.compiler.core.errorcollection.TaraException;
+import monet.tara.lang.Node;
+import monet.tara.lang.NodeTree;
+import monet.tara.lang.TreeWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SignatureCompletionContributorRender extends DefaultRender {
-	List<AbstractNode> nodes;
+	NodeTree nodes;
 
 	public SignatureCompletionContributorRender(String tplName, String projectName, Object ast) throws TaraException {
 		super(tplName, projectName);
@@ -30,8 +31,8 @@ public class SignatureCompletionContributorRender extends DefaultRender {
 
 	private String[] makeKeywordList() {
 		List<String> list = new ArrayList<>();
-		for (AbstractNode node : nodes)
-			list.add(node.getIdentifier());
+		for (Node node : nodes)
+			list.add(node.getName());
 		return list.toArray(new String[list.size()]);
 	}
 }

@@ -27,8 +27,9 @@ public class AttributeMixin extends ASTWrapperPsiElement {
 
 	\@Override
 	public String getName() {
-		ASTNode childByType = this.getNode().findChildByType(::projectProperName::Types.IDENTIFIER_KEY);
-		return childByType.getText();
+		ASTNode child = this.getNode().findChildByType(::projectProperName::Types.IDENTIFIER_KEY);
+		if (child == null) child = this.getChildren()[0].getNode().findChildByType(::projectProperName::Types.IDENTIFIER_KEY);
+		return (child != null) ? child.getText() \: "";
 	}
 
 	public String getType() {

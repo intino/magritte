@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 
-public class PluginAbstractNodeRenderTest {
+public class PluginNodeObjectRenderTest {
 	private String projectName = "tafat";
 	private String TLP_PATH = "intellij_plugin_builder/res_test/render/tpl/META-INF/";
 

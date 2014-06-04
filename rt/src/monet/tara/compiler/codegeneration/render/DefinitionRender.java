@@ -1,20 +1,15 @@
 package monet.tara.compiler.codegeneration.render;
 
-import monet.tara.lang.AbstractNode;
 import monet.tara.compiler.core.errorcollection.TaraException;
-import monet.tara.lang.NodeAttribute;
-import monet.tara.lang.Reference;
-
-import java.util.HashMap;
-import java.util.Map;
+import monet.tara.lang.NodeObject;
 
 public class DefinitionRender extends DefaultRender {
 
-	AbstractNode rootNode;
+	NodeObject rootNode;
 
 	public DefinitionRender(String tplPath, String tplName, String projectName, Object node) throws TaraException {
 		super(tplName, projectName);
-		this.rootNode = (AbstractNode) node;
+		this.rootNode = (NodeObject) node;
 		setPath(tplPath);
 	}
 
@@ -23,91 +18,10 @@ public class DefinitionRender extends DefaultRender {
 		super.init();
 		if (rootNode.hasName())
 			addMark("id", "true");
-		addMark("root", addDefinition(rootNode, 0));
 	}
 
-	private String addDefinition(AbstractNode node, int level) {
-		Map<String, Object> map = new HashMap<>();
-		StringBuilder definition = new StringBuilder();
-		setClassModifiers(node, map, level);
-		map.put("DefinitionName", (node.getIdentifier().length() > 0) ? node.getIdentifier() : "_");
-		map.put("implements", getAnnotationsString(node));
-		map.put("attributes", addAttributes(node));
-		map.put("references", addReferences(node));
-		map.put("childrenGetters", getChildrenGetters(node));
-		if (node.hasName()) map.put("id", "id");
-		StringBuilder childDefinitions = new StringBuilder();
-		for (AbstractNode child : node.getInnerConcepts())
-			childDefinitions.append(addDefinition(child, level + 1));
-		map.put("childrenDeclaration", childDefinitions.toString());
-		definition.append(block("definition", map));
-		String result = definition.toString();
-		if (!node.equals(rootNode))
-			return result.replaceAll("\n", "\n\t");
-		return result.replaceAll("\n[\t]*[ ]*\n[\t]*[ ]*\n", "\n\n");
-	}
 
-	private void setClassModifiers(AbstractNode node, Map<String, Object> map, int level) {
-		StringBuilder modifiers = new StringBuilder();
-		if (level > 0)
-			modifiers.append("static ");
-		modifiers.append(node.getModifier()).append((node.getModifier().length() > 0) ? " " : "");
-		map.put("modifier", modifiers.toString());
-	}
 
-	private String addAttributes(AbstractNode node) {
-		StringBuilder attributes = new StringBuilder();
-		for (NodeAttribute attribute : node.getAttributes()) {
-			Map<String, Object> map = new HashMap<>();
-			map.put("name", attribute.getName());
-			map.put("type", attribute.getPrimitiveType().toUpperCase());
-			attributes.append(block("attribute", map));
-		}
-		return attributes.toString();
-	}
-
-	private String addReferences(AbstractNode node) {
-		StringBuilder references = new StringBuilder();
-		for (Reference reference : node.getReferences()) {
-			Map<String, Object> map = new HashMap<>();
-			map.put("type", reference.getNode());
-			map.put("name", reference.getName());
-			references.append(block("reference", map));
-		}
-		return references.toString();
-	}
-
-	private String getAnnotationsString(AbstractNode node) {
-		if (node.getAnnotations().length > 0) {
-			StringBuilder annotations = new StringBuilder();
-			annotations.append("implements ");
-			for (AbstractNode.AnnotationType annotationType : node.getAnnotations())
-				annotations.append("Metamodel.").append(annotationType.name()).append(", ");
-			annotations.replace(annotations.lastIndexOf(","), annotations.lastIndexOf(",") + 1, "");
-			return annotations.toString();
-		}
-		return "";
-	}
-
-	public String getChildrenGetters(AbstractNode node) {
-		StringBuilder childGetters = new StringBuilder();
-		for (AbstractNode child : node.getInnerConcepts()) {
-			Map<String, Object> map = new HashMap<>();
-			final String childIdentifier =
-				RenderUtils.toProperCase((child.getIdentifier().length() > 0) ? child.getIdentifier() : child.getParentName());
-			map.put("childGetter", "getChild");
-			if (childIdentifier.contains("[]")) {
-				map.put("listSuffix", "true");
-				map.put("childGetter", "getInnerConcepts");
-				map.put("listCast", block("multipleCastBlock", new HashMap<String, Object>() {{
-					put("childType", childIdentifier);
-				}}));
-			}
-			map.put("childType", childIdentifier);
-			childGetters.append(block("childGetter", map)).append("\t");
-		}
-		return childGetters.toString();
-	}
 
 
 }

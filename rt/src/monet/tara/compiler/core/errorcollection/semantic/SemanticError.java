@@ -1,15 +1,15 @@
 package monet.tara.compiler.core.errorcollection.semantic;
 
 
-import monet.tara.lang.AbstractNode;
+import monet.tara.lang.Node;
 
 public abstract class SemanticError {
 
 	protected final String token;
-	protected final AbstractNode node;
+	protected final Node node;
 	protected final int line;
 
-	protected SemanticError(String token, AbstractNode node) {
+	protected SemanticError(String token, Node node) {
 		this.token = token;
 		this.node = node;
 		if (node != null)
@@ -21,7 +21,7 @@ public abstract class SemanticError {
 		return token;
 	}
 
-	public AbstractNode getNode() {
+	public Node getNode() {
 		return node;
 	}
 

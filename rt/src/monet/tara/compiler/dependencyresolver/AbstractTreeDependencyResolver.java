@@ -2,18 +2,21 @@ package monet.tara.compiler.dependencyresolver;
 
 import monet.tara.compiler.core.SourceUnit;
 import monet.tara.compiler.core.errorcollection.DependencyException;
-import monet.tara.lang.AbstractNode;
-import monet.tara.lang.TreeWrapper;
-import monet.tara.lang.Variable;
+import monet.tara.lang.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 public class AbstractTreeDependencyResolver {
 	TreeWrapper tree;
-	List<AbstractNode> nodes = new ArrayList<>();
+	NodeTree nodes = new NodeTree();
+	NodeTree clones = new NodeTree();
+	TreeWrapper newTree;
 
 	public AbstractTreeDependencyResolver(Collection<SourceUnit> sources) throws DependencyException {
 		tree = mergeTrees(sources);
+		newTree = new TreeWrapper();
 		for (Collection o : tree.getNodeNameLookUpTable().values()) nodes.addAll(o);
 		resolveHierarchyDependencies();
 	}
@@ -22,45 +25,48 @@ public class AbstractTreeDependencyResolver {
 		return tree;
 	}
 
-
-	public AbstractNode[] resolve() throws DependencyException {
-		for (AbstractNode node : nodes) {
-			if (node.getParentConcept() == null) continue;
-			List<AbstractNode> innerConcepts = new ArrayList<>();
-			List<Variable> vars = new ArrayList<>();
-			Set<AbstractNode.AnnotationType> annotations = new HashSet<>();
-			collectHierarchyData(node.getParentConcept(), innerConcepts, vars, annotations);
-			for (AbstractNode innerConcept : innerConcepts)
-				if (isImportable(node, innerConcept)) node.getInnerConcepts().add(0, innerConcept);
-			node.getVariables().addAll(0,vars);
-			for (AbstractNode.AnnotationType annotation : annotations) node.add(annotation);
-		}
-		return nodes.toArray(new AbstractNode[nodes.size()]);
+	public NodeObject[] resolve() throws DependencyException {
+//		for (NodeObject node : nodes) {
+//			List<NodeObject> innerConcepts = new ArrayList<>();
+//			List<Variable> vars = new ArrayList<>();
+//			Set<NodeObject.AnnotationType> annotations = new HashSet<>();
+//			collectHierarchyData(node.getParent(), innerConcepts, vars, annotations);
+//			for (NodeObject innerConcept : innerConcepts)
+//				if (isImportable(node, innerConcept)) {
+//					innerConcept.setContainer(node);
+//					innerConcept.updateQulifiedName();
+//					node.getInnerConcepts().add(0, innerConcept);
+//				}
+//			node.getVariables().addAll(0, vars);
+//			for (NodeObject.AnnotationType annotation : annotations) node.add(annotation);
+//		}
+		return nodes.toArray(new NodeObject[nodes.size()]);
 	}
 
-	private boolean isImportable(AbstractNode node, AbstractNode innerConcept) {
+	private boolean isImportable(NodeObject node, NodeObject innerConcept) {
 		return !innerConcept.isCase() && !node.equals(innerConcept) && innerConcept.isAbstract() && !node.isBase();
 	}
 
-	private void collectHierarchyData(AbstractNode parentConcept,
-	                                  List<AbstractNode> innerConcepts,
+	private void collectHierarchyData(NodeObject parentConcept,
+	                                  List<NodeObject> innerConcepts,
 	                                  List<Variable> vars,
-	                                  Set<AbstractNode.AnnotationType> annotations) {
-		innerConcepts.addAll(0, parentConcept.getInnerConcepts());
-		vars.addAll(0, parentConcept.getVariables());
-		Collections.addAll(annotations, parentConcept.getAnnotations());
-		if (parentConcept.getParentConcept() != null)
-			collectHierarchyData(parentConcept.getParentConcept(), innerConcepts, vars, annotations);
+	                                  Set<NodeObject.AnnotationType> annotations) {
+//		for (NodeObject innerConcept : innerConcepts)
+//			innerConcepts.add(0, innerConcept.getClone());
+//		vars.addAll(0, parentConcept.getVariables());
+//		Collections.addAll(annotations, parentConcept.getAnnotations());
+//		if (parentConcept.getParent() != null)
+//			collectHierarchyData(parentConcept.getParent(), innerConcepts, vars, annotations);
 	}
 
 	private void resolveHierarchyDependencies() throws DependencyException {
-		for (AbstractNode node : nodes)
-			if (node.getParentName() != null || node.isCase()) {
-				AbstractNode parent = tree.searchAncestry(node);
+		for (Node node : nodes)
+			if (node.getObject().getParentName() != null || node.isCase()) {
+				Node parent = tree.searchAncestry(node);
 				if (parent == null)
-					throw new DependencyException("Dependency resolution fail in: " + node + "doesn't find" + node.getParentName(), node);
-				parent.addChild(node);
-				node.setParentConcept(parent);
+					throw new DependencyException("Dependency resolution fail in: " + node + "doesn't find" + node.getObject().getParentName(), node);
+				parent.getObject().addChild(node.getObject());
+				node.getObject().setParentConcept(parent.getObject());
 			}
 	}
 

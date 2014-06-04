@@ -44,6 +44,17 @@ public class ::projectProperName::ElementFactoryImpl extends ::projectProperName
 		return body != null ? (Attribute) body.getFirstChild().getNextSibling() \: null;
 	}
 
+	public Attribute createResource(String name, String type) {
+		final ::projectProperName::FileImpl file = createDummyFile(
+			"package ::projectName::\\n" +
+				"Definition abstract Source\\n" +
+				"\\tvar Resource\:" + type + " " + name + "\\n" +
+				"\\tDefinition Ontology\\n"
+		);
+		Body body = PsiTreeUtil.getChildOfType(file, Definition.class).getBody();
+		return body != null ? (Attribute) body.getFirstChild().getNextSibling() \: null;
+	}
+
 	public Attribute createWord(String name, String[] types) {
 		final ::projectProperName::FileImpl file = createDummyFile(
 			"package ::projectName::\\n" +

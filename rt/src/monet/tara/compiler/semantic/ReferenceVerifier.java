@@ -1,10 +1,11 @@
 package monet.tara.compiler.semantic;
 
 
-import monet.tara.lang.AbstractNode;
-import monet.tara.lang.TreeWrapper;
-import monet.tara.lang.Reference;
 import monet.tara.compiler.core.errorcollection.semantic.*;
+import monet.tara.lang.Node;
+import monet.tara.lang.NodeObject;
+import monet.tara.lang.Reference;
+import monet.tara.lang.TreeWrapper;
 
 public class ReferenceVerifier {
 
@@ -14,8 +15,8 @@ public class ReferenceVerifier {
 		this.errors = errors;
 	}
 
-	public void checkConcept(AbstractNode concept, TreeWrapper ast) {
-		AbstractNode ancestor = concept.getParentConcept();
+	public void checkConcept(Node concept, TreeWrapper ast) {
+		NodeObject ancestor = concept.getObject().getParent();
 		checkExtendedConcept(concept, ancestor);
 		checkExtendedFromFinal(concept, ancestor);
 		checkBase(concept);
@@ -23,47 +24,47 @@ public class ReferenceVerifier {
 		checkVarReference(concept, ast);
 	}
 
-	private void checkVarReference(AbstractNode concept, TreeWrapper ast) {
-		for (Reference reference : concept.getReferences())
-			if (ast.searchNode(reference.getNode(), concept) == null)
-				errors.add(new UndefinedReferenceError(reference.getNode(), concept));
+	private void checkVarReference(Node concept, TreeWrapper ast) {
+		for (Reference reference : concept.getObject().getReferences())
+			if (ast.searchNode(reference.getType(), concept) == null)
+				errors.add(new UndefinedReferenceError(reference.getType(), concept));
 	}
 
-	private void checkExtendedConcept(AbstractNode concept, AbstractNode ancestor) {
-		if (ancestor == null && concept.getParentName() != null)
-			errors.add(new UndefinedReferenceError(concept.getParentName(), concept));
+	private void checkExtendedConcept(Node concept, NodeObject ancestor) {
+		if (ancestor == null && concept.getObject().getParentName() != null)
+			errors.add(new UndefinedReferenceError(concept.getObject().getParentName(), concept));
 	}
 
-	private void checkExtendedFromFinal(AbstractNode concept, AbstractNode ancestor) {
+	private void checkExtendedFromFinal(Node concept, NodeObject ancestor) {
 		if (ancestor != null && ancestor.isFinal())
-			errors.add(new InvalidHeritageError(concept.getParentName(), concept));
+			errors.add(new InvalidHeritageError(concept.getObject().getParentName(), concept));
 	}
 
-	private void checkBase(AbstractNode concept) {
-		if (concept.isBase() && concept.getCases().length == 0)
-			errors.add(new PolymorphicChildlessError(concept.getIdentifier(), concept));
+	private void checkBase(Node concept) {
+		if (concept.getObject().isBase() && concept.getCases().length == 0)
+			errors.add(new PolymorphicChildlessError(concept.getName(), concept));
 	}
 
-	private void checkCase(AbstractNode concept, AbstractNode ancestor) {
-		if (concept.isCase()) {
+	private void checkCase(Node concept, NodeObject ancestor) {
+		if (concept.getObject().isCase()) {
 			noParent(concept);
 			notBaseParent(concept);
-//			notExtendedFromBase(concept, ancestor);
+			notExtendedFromBase(concept, ancestor);
 		}
 	}
 
-	private void noParent(AbstractNode concept) {
+	private void noParent(Node concept) {
 		if (concept.getContainer() == null)
-			errors.add(new MorphWithoutParentError(concept.getIdentifier(), concept));
+			errors.add(new MorphWithoutParentError(concept.getName(), concept));
 	}
 
-	private void notBaseParent(AbstractNode concept) {
+	private void notBaseParent(Node concept) {
 		if (concept.getContainer() != null && !concept.getContainer().isBase())
-			errors.add(new MorphWithoutParentError(concept.getIdentifier(), concept));
+			errors.add(new MorphWithoutParentError(concept.getName(), concept));
 	}
 
-//	private void notExtendedFromBase(monet.tara.lang.AbstractNode concept, monet.tara.lang.AbstractNode ancestor) {
-//		if (ancestor != null && !ancestor.isCase())
-//			errors.add(new InvalidHeritageError(concept.getParentName(), concept));
-//	}
+	private void notExtendedFromBase(Node concept, NodeObject ancestor) {
+		if (ancestor != null && !ancestor.isCase())
+			errors.add(new InvalidHeritageError(concept.getObject().getParentName(), concept));
+	}
 }

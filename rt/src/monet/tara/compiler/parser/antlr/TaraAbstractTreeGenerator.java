@@ -17,7 +17,7 @@ public class TaraAbstractTreeGenerator extends TaraM2GrammarBaseListener {
 	public static final String ATTRIBUTE = "ATTRIBUTE";
 	private final String file;
 	TreeWrapper ast;
-	Stack<AbstractNode> conceptStack = new Stack<>();
+	Stack<Node> conceptStack = new Stack<>();
 	String packet = "";
 	HashMap<String, String> imports = new HashMap<>();
 
@@ -39,23 +39,26 @@ public class TaraAbstractTreeGenerator extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterConcept(@NotNull ConceptContext ctx) {
-		AbstractNode parent = null;
-		if (!conceptStack.empty()) parent = conceptStack.peek();
+		Node container = null;
+		if (!conceptStack.empty()) container = conceptStack.peek();
 		String identifier = "";
 		if (ctx.signature().IDENTIFIER() != null)
 			identifier = ctx.signature().IDENTIFIER().getText();
-		AbstractNode node = new AbstractNode(identifier, parent, file);
-		node.setPackage(packet);
-		node.setImports(imports.keySet().toArray(new String[imports.keySet().size()]));
+		NodeObject object = new NodeObject(identifier);
+		Node node = new Node(object, container);
 		node.setLine(ctx.getStart().getLine());
+		node.setFile(file);
+		object.setDeclaredNode(node);
+		object.setPackage(packet);
+		object.setImports(imports.keySet().toArray(new String[imports.keySet().size()]));
 		if (ctx.signature().CASE() != null) {
-			node.setCase(true);
-			node.setBaseParentConcept(parent.getIdentifier());
-			node.setParentName(null);
+			object.setCase(true);
+			if (container != null)
+				object.setBaseParentConcept(container.getObject().getName());
+			object.setParentName(null);
 		}
-		if (parent != null) parent.add(node);
+		if (container != null) container.add(node);
 		else ast.add(node);
-		ast.add(node.getIdentifier(), node);
 		conceptStack.push(node);
 	}
 
@@ -64,14 +67,15 @@ public class TaraAbstractTreeGenerator extends TaraM2GrammarBaseListener {
 	public void enterIdentifierReference(@NotNull IdentifierReferenceContext ctx) {
 		String identifierName = ctx.getText();
 		if (ctx.getParent() instanceof SignatureContext)
-			conceptStack.peek().setParentName(identifierName);
+			conceptStack.peek().getObject().setParentName(identifierName);
 	}
 
 	@Override
 	public void exitConcept(@NotNull ConceptContext ctx) {
-		AbstractNode node = conceptStack.peek();
-		if (!node.isAbstract() && !node.isBase())
-			ast.addIdentifier(node.getIdentifier(), "KEY");
+		Node node = conceptStack.peek();
+		if (!node.getObject().isAbstract() && !node.getObject().isBase())
+			ast.addIdentifier(node.getObject().getName(), "KEY");
+		ast.add(node.getObject().getName(), node);
 		conceptStack.pop();
 	}
 
@@ -80,22 +84,22 @@ public class TaraAbstractTreeGenerator extends TaraM2GrammarBaseListener {
 		StringBuilder builder = new StringBuilder();
 		for (TerminalNode doc : ctx.DOC())
 			builder.append(doc.getText().substring(1));
-		conceptStack.peek().setDoc(builder.toString().trim());
+		conceptStack.peek().getObject().setDoc(builder.toString().trim());
 	}
 
 	@Override
 	public void enterModifier(@NotNull ModifierContext ctx) {
-		AbstractNode node = conceptStack.peek();
-		if (ctx.BASE() != null) conceptStack.peek().setBase(true);
-		else if (ctx.ABSTRACT() != null) node.setModifier(ctx.ABSTRACT().getText());
-		else if (ctx.FINAL() != null) node.setModifier(ctx.FINAL().getText());
+		Node node = conceptStack.peek();
+		if (ctx.BASE() != null) conceptStack.peek().getObject().setBase(true);
+		else if (ctx.ABSTRACT() != null) node.getObject().setModifier(ctx.ABSTRACT().getText());
+		else if (ctx.FINAL() != null) node.getObject().setModifier(ctx.FINAL().getText());
 	}
 
 
 	@Override
 	public void enterAttribute(@NotNull AttributeContext ctx) {
 		if (ctx.ALIAS_TYPE() != null) {
-			conceptStack.peek().add(new NodeAttribute(ctx.ALIAS_TYPE().getText(), ctx.IDENTIFIER().getText(), false, ctx.PROPERTY() != null));
+			conceptStack.peek().getObject().add(new NodeAttribute(ctx.ALIAS_TYPE().getText(), ctx.IDENTIFIER().getText(), false, ctx.PROPERTY() != null));
 			ast.addIdentifier(ctx.IDENTIFIER().getText(), ATTRIBUTE);
 		} else if (ctx.INT_TYPE() != null)
 			addAttribute(ctx, ctx.INT_TYPE(), (ctx.integerValue() != null) ? ctx.integerValue() : ctx.integerList());
@@ -111,7 +115,7 @@ public class TaraAbstractTreeGenerator extends TaraM2GrammarBaseListener {
 
 	@Override
 	public void enterResource(@NotNull ResourceContext ctx) {
-		conceptStack.peek().add(new Resource(ctx.IDENTIFIER(0).getText(), ctx.IDENTIFIER(1).getText(), ctx.PROPERTY() != null));
+		conceptStack.peek().getObject().add(new Resource(ctx.IDENTIFIER(0).getText(), ctx.IDENTIFIER(1).getText(), ctx.PROPERTY() != null));
 		ast.addIdentifier(ctx.IDENTIFIER(1).getText(), ATTRIBUTE);
 	}
 
@@ -119,11 +123,11 @@ public class TaraAbstractTreeGenerator extends TaraM2GrammarBaseListener {
 		if (ctx.ASSIGN() == null)
 			if (ctx.variableNames() != null)
 				for (TerminalNode node : ctx.variableNames().IDENTIFIER()) {
-					conceptStack.peek().add(new NodeAttribute(type.getText(), node.getText(), false, ctx.PROPERTY() != null));
+					conceptStack.peek().getObject().add(new NodeAttribute(type.getText(), node.getText(), false, ctx.PROPERTY() != null));
 					ast.addIdentifier(node.getText(), ATTRIBUTE);
 				}
 			else
-				conceptStack.peek().add(new NodeAttribute(type.getText(), ctx.IDENTIFIER().getText(), true, ctx.PROPERTY() != null));
+				conceptStack.peek().getObject().add(new NodeAttribute(type.getText(), ctx.IDENTIFIER().getText(), true, ctx.PROPERTY() != null));
 		else {
 			NodeAttribute attribute = new NodeAttribute(type.getText(), ctx.IDENTIFIER().getText(), ctx.LIST() != null, ctx.PROPERTY() != null);
 			String valueFormatted;
@@ -132,7 +136,7 @@ public class TaraAbstractTreeGenerator extends TaraM2GrammarBaseListener {
 			else
 				valueFormatted = value.getText();
 			attribute.setValue(valueFormatted);
-			conceptStack.peek().add(attribute);
+			conceptStack.peek().getObject().add(attribute);
 		}
 	}
 
@@ -144,7 +148,7 @@ public class TaraAbstractTreeGenerator extends TaraM2GrammarBaseListener {
 			word.add(wordTypes.getText());
 			ast.addIdentifier(wordTypes.getText(), "WORD");
 		}
-		conceptStack.peek().add(word);
+		conceptStack.peek().getObject().add(word);
 	}
 
 	@Override
@@ -152,7 +156,7 @@ public class TaraAbstractTreeGenerator extends TaraM2GrammarBaseListener {
 		String parent = ctx.identifierReference().getText();
 		String[] identifiers = getIdentifiers(ctx.variableNames());
 		for (String identifier : identifiers) {
-			conceptStack.peek().add(new Reference(parent, identifier, ctx.LIST() != null));
+			conceptStack.peek().getObject().add(new Reference(parent, identifier, ctx.LIST() != null));
 			ast.addIdentifier(identifier, ATTRIBUTE);
 		}
 	}
@@ -160,19 +164,19 @@ public class TaraAbstractTreeGenerator extends TaraM2GrammarBaseListener {
 	@Override
 	public void enterAnnotations(@NotNull AnnotationsContext ctx) {
 		for (int i = 0; i < ctx.REQUIRED().size(); i++)
-			conceptStack.peek().add(AbstractNode.AnnotationType.REQUIRED);
+			conceptStack.peek().getObject().add(NodeObject.AnnotationType.REQUIRED);
 		for (int i = 0; i < ctx.MULTIPLE().size(); i++)
-			conceptStack.peek().add(AbstractNode.AnnotationType.MULTIPLE);
+			conceptStack.peek().getObject().add(NodeObject.AnnotationType.MULTIPLE);
 		for (int i = 0; i < ctx.SINGLETON().size(); i++)
-			conceptStack.peek().add(AbstractNode.AnnotationType.SINGLETON);
+			conceptStack.peek().getObject().add(NodeObject.AnnotationType.SINGLETON);
 		for (int i = 0; i < ctx.ROOT().size(); i++)
-			conceptStack.peek().add(AbstractNode.AnnotationType.ROOT);
+			conceptStack.peek().getObject().add(NodeObject.AnnotationType.ROOT);
 		for (int i = 0; i < ctx.GENERIC().size(); i++)
-			conceptStack.peek().add(AbstractNode.AnnotationType.GENERIC);
+			conceptStack.peek().getObject().add(NodeObject.AnnotationType.GENERIC);
 		for (int i = 0; i < ctx.HAS_NAME().size(); i++)
-			conceptStack.peek().add(AbstractNode.AnnotationType.HAS_NAME);
+			conceptStack.peek().getObject().add(NodeObject.AnnotationType.HAS_NAME);
 		for (int i = 0; i < ctx.INTENTION().size(); i++)
-			conceptStack.peek().add(AbstractNode.AnnotationType.INTENTION);
+			conceptStack.peek().getObject().add(NodeObject.AnnotationType.INTENTION);
 	}
 
 

@@ -67,11 +67,11 @@ public class PluginGenerator {
 				object.addProperty("isProperty", attribute.isProperty);
 			} else if (variable instanceof Reference) {
 				Reference reference = (Reference) variable;
-				object.addProperty("node", reference.node);
+				object.addProperty("node", reference.type);
 				object.addProperty("isList", reference.isList);
 			} else if (variable instanceof Resource) {
 				Resource reference = (Resource) variable;
-				object.addProperty("resourceType", reference.resourceType);
+				object.addProperty("resourceType", reference.type);
 				object.addProperty("isProperty", reference.isProperty);
 			}
 			return object; // or throw an IllegalArgumentException

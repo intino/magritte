@@ -4,8 +4,8 @@ package monet.tara.compiler.semantic;
 import monet.tara.compiler.core.errorcollection.SemanticException;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
-import monet.tara.lang.AbstractNode;
-import monet.tara.lang.AbstractTree;
+import monet.tara.lang.Node;
+import monet.tara.lang.NodeTree;
 import monet.tara.lang.TreeWrapper;
 
 public class SemanticAnalyzer {
@@ -27,31 +27,31 @@ public class SemanticAnalyzer {
 //		if (!errors.isEmpty()) throw new SemanticException(errors.toArray(new SemanticError[errors.size()]));
 	}
 
-	private void startAnalysis(AbstractTree concepts) {
+	private void startAnalysis(NodeTree concepts) {
 		detector.checkDuplicateRoots(concepts);
 		checker.checkIfRoot(concepts);
-		for (AbstractNode concept : concepts)
+		for (Node concept : concepts)
 			conceptAnalysis(concept);
 	}
 
-	private void conceptAnalysis(AbstractNode concept) {
+	private void conceptAnalysis(Node concept) {
 		detector.checkDuplicates(concept);
 		checker.checkAnnotations(concept);
-		for (AbstractNode child : concept.getInnerConcepts())
+		for (Node child : concept.getInnerNodes())
 			conceptAnalysis(child);
 	}
 
-	private void startReferenceAnalysis(AbstractTree concepts) {
+	private void startReferenceAnalysis(NodeTree concepts) {
 		useChecker.start(concepts);
 		referenceAnalysis(concepts);
 		useChecker.finish();
 	}
 
-	private void referenceAnalysis(AbstractTree astNodes) {
-		for (AbstractNode concept : astNodes) {
+	private void referenceAnalysis(NodeTree astNodes) {
+		for (Node concept : astNodes) {
 			verifier.checkConcept(concept, ast);
 			useChecker.checkUsage(concept, ast);
-			referenceAnalysis(concept.getInnerConcepts());
+			referenceAnalysis(concept.getInnerNodes());
 		}
 	}
 }

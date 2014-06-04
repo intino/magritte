@@ -2,8 +2,8 @@ package monet.::projectName::.intellij.codeinsight.parameterinfo;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.*;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
 import monet.::projectName::.intellij.lang.::projectProperName::Language;
 import monet.::projectName::.intellij.lang.psi.*;
@@ -73,13 +73,14 @@ public class ::projectProperName::ParameterInfoHandler implements ParameterInfoH
 
 	\@Nullable
 	\@Override
-	public Parameters findElementForParameterInfo(\@NotNull CreateParameterInfoContext context) {
-		final Parameters parameterList = ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), Parameters.class);
+	public Parameters findElementForParameterInfo(\@NotNull CreateParameterInfoContext parameterInfoContext) {
+		final Parameters parameterList = findParameters(parameterInfoContext);
 		if (parameterList != null) {
 			TreeWrapper wrapper = ::projectProperName::Language.getHeritage();
 			if (wrapper == null) return parameterList;
-			MetaIdentifier metaIdentifier = ::projectProperName::PsiImplUtil.getContextOf(parameterList).getMetaIdentifier();
-			AbstractNode node = wrapper.getNodeNameLookUpTable().get(metaIdentifier.getText()).get(0);
+			Definition definitionContext = ::projectProperName::PsiImplUtil.getContextOf(parameterList);
+			AbstractNode node = findCorrespondentNode(definitionContext, wrapper);
+			if (node == null) return parameterList;
 			if (node.getVariables().isEmpty()) return parameterList;
 			List<Attribute> attributes = new ArrayList<>();
 			::projectProperName::ElementFactory instance = ::projectProperName::ElementFactory.getInstance(parameterList.getProject());
@@ -92,13 +93,43 @@ public class ::projectProperName::ParameterInfoHandler implements ParameterInfoH
 				else if (variable instanceof NodeWord) {
 					List<String> wordTypes = ((NodeWord) variable).getWordTypes();
 					attribute = instance.createWord(variable.getName(), wordTypes.toArray(new String[wordTypes.size()]));
-				}
+				} else if (variable instanceof Resource)
+					attribute = instance.createResource(variable.getName(), ((Resource) variable).resourceType);
+
 				if (attribute != null) attributes.add(attribute);
 			}
-			context.setItemsToShow(new Object[]{attributes.toArray()});
+			parameterInfoContext.setItemsToShow(new Object[]{attributes});
 		}
 		return parameterList;
 	}
+
+	private AbstractNode findCorrespondentNode(Definition definition, TreeWrapper wrapper) {
+		String id = getDefinitionQualifiedName(definition) + "." + definition.getMetaIdentifier().getText();
+		for (AbstractNode node \: wrapper.getNodeNameLookUpTable().get(definition.getMetaIdentifier().getText()))
+			if (node.getQualifiedName().equals(id)) return node;
+		for (AbstractNode node \: wrapper.getNodeNameLookUpTable().get(""))
+			if (node.getQualifiedName().equals(id)) return node;
+		return null;
+	}
+
+	private String getDefinitionQualifiedName(Definition definition) {
+		Definition container = definition;
+		String id = "";
+		while ((container = ::projectProperName::PsiImplUtil.getContextOf(container)) != null)
+			id = container.getMetaIdentifier().getText() + "." + id;
+		return id.substring(0, id.length() - 1);
+	}
+
+	private Parameters findParameters(CreateParameterInfoContext context) {
+		Parameters parameters = ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), Parameters.class);
+		if (parameters == null) {
+			Signature signature = PsiTreeUtil.findElementOfClassAtOffset(context.getFile(), context.getOffset(), Signature.class, false);
+			if (signature != null)
+				parameters = signature.getParameters();
+		}
+		return parameters;
+	}
+
 
 	\@Override
 	public void showParameterInfo(\@NotNull Parameters element, \@NotNull CreateParameterInfoContext context) {
@@ -116,7 +147,7 @@ public class ::projectProperName::ParameterInfoHandler implements ParameterInfoH
 		int index = ParameterInfoUtils.getCurrentParameterIndex(parameters.getNode(), context.getOffset(), getActualParameterDelimiterType());
 		context.setCurrentParameter(index);
 		final Object[] objectsToView = context.getObjectsToView();
-		context.setHighlightedParameter(index < objectsToView.length && index >= 0 ? (PsiElement) objectsToView[index] \: null);
+		context.setHighlightedParameter(index < objectsToView.length && index >= 0 ? ((List) objectsToView[0]).get(index) \: null);
 	}
 
 	\@Nullable
@@ -132,11 +163,12 @@ public class ::projectProperName::ParameterInfoHandler implements ParameterInfoH
 
 	\@Override
 	public void updateUI(Object attributes, \@NotNull ParameterInfoUIContext context) {
-		Attribute[] psiAttribute = (Attribute[]) ((Object[]) attributes)[0];
+		ArrayList<Attribute> psiAttribute = (ArrayList<Attribute>) attributes;
+		if (psiAttribute == null) return;
 		StringBuilder builder = new StringBuilder();
 		for (Attribute attribute \: psiAttribute) builder.append(", ").append(attribute.getText().substring(4));
 		int highlightEndOffset = builder.toString().length();
-		context.setupUIComponentPresentation(builder.toString(), 0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
+		context.setupUIComponentPresentation(builder.toString().substring(2), 0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
 	}
 
 }

@@ -1,6 +1,6 @@
 package monet.tara.lang;
 
-public abstract class Variable {
+public abstract class Variable implements Cloneable {
 	public String name;
 
 	public String getName() {
@@ -14,4 +14,9 @@ public abstract class Variable {
 	public abstract boolean isList();
 
 	public abstract boolean isProperty();
+
+	public abstract String toString();
+
+	public abstract Variable clone();
+
 }

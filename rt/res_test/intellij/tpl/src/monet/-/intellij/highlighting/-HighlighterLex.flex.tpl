@@ -28,7 +28,7 @@ FINAL     = "final"
 ABSTRACT  = "abstract"
 WORD      = "Word"
 VAR       = "var"
-
+RESOURCE_KEY = "Resource"
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
 LEFT_SQUARE  = "["
 RIGHT_SQUARE = "]"
@@ -113,6 +113,7 @@ IDENTIFIER_KEY = [\:jletter:] [\:jletterdigit\:]*
     {RIGHT_PARENTHESIS}         {   return ::projectProperName::Types.RIGHT_PARENTHESIS; }
 
 	{WORD}                      {   return ::projectProperName::Types.WORD_KEY; }
+	{RESOURCE_KEY}            {   return ::projectProperName::Types.RESOURCE_KEY; }
 
 	{DOT}                       {   return ::projectProperName::Types.DOT; }
 

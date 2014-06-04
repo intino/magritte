@@ -1,12 +1,12 @@
 package monet.tara.compiler.semantic;
 
 
-import monet.tara.lang.AbstractNode;
-import monet.tara.lang.AbstractTree;
-import monet.tara.lang.AbstractNode.AnnotationType;
 import monet.tara.compiler.core.errorcollection.semantic.NoRootError;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import monet.tara.compiler.core.errorcollection.semantic.WrongAnnotationError;
+import monet.tara.lang.Node;
+import monet.tara.lang.NodeObject.AnnotationType;
+import monet.tara.lang.NodeTree;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,26 +23,26 @@ public class AnnotationChecker {
 		this.thereIsAnyRoot = false;
 	}
 
-	public void checkAnnotations(AbstractNode concept) {
-		annotations = Arrays.asList(concept.getAnnotations());
+	public void checkAnnotations(Node concept) {
+		annotations = Arrays.asList(concept.getObject().getAnnotations());
 		rootAnnotation(concept);
 		requiredAnnotation(concept);
 		multipleAnnotation(concept);
 	}
 
-	public void checkIfRoot(AbstractTree conceptList) {
+	public void checkIfRoot(NodeTree conceptList) {
 		findRootConcepts(conceptList);
 		noRootConcepts();
 
 	}
 
-	private void findRootConcepts(AbstractTree conceptList) {
-		for (AbstractNode concept : conceptList)
+	private void findRootConcepts(NodeTree conceptList) {
+		for (Node concept : conceptList)
 			thereIsAnyRoot = isRootConcept(concept) || thereIsAnyRoot;
 	}
 
-	private boolean isRootConcept(AbstractNode concept) {
-		annotations = Arrays.asList(concept.getAnnotations());
+	private boolean isRootConcept(Node concept) {
+		annotations = Arrays.asList(concept.getObject().getAnnotations());
 		return annotations.contains(AnnotationType.ROOT);
 	}
 
@@ -51,17 +51,17 @@ public class AnnotationChecker {
 			errors.add(new NoRootError());
 	}
 
-	private void rootAnnotation(AbstractNode concept) {
+	private void rootAnnotation(Node concept) {
 		if (!concept.isPrime() && annotations.contains(AnnotationType.ROOT))
 			errors.add(new WrongAnnotationError(AnnotationType.ROOT.name(), concept));
 	}
 
-	private void requiredAnnotation(AbstractNode concept) {
+	private void requiredAnnotation(Node concept) {
 		if ((concept.isPrime() || concept.isCase()) && annotations.contains(AnnotationType.REQUIRED))
 			errors.add(new WrongAnnotationError(AnnotationType.REQUIRED.name(), concept));
 	}
 
-	private void multipleAnnotation(AbstractNode concept) {
+	private void multipleAnnotation(Node concept) {
 		if ((concept.isPrime() || concept.isCase()) && annotations.contains(AnnotationType.MULTIPLE))
 			errors.add(new WrongAnnotationError(AnnotationType.MULTIPLE.name(), concept));
 	}

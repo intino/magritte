@@ -1,6 +1,7 @@
 package monet.tara.lang;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NodeWord extends Variable {
@@ -31,5 +32,16 @@ public class NodeWord extends Variable {
 	@Override
 	public boolean isProperty() {
 		return false;
+	}
+
+	public String toString() {
+		return name + " -> " + Arrays.toString(wordTypes.toArray());
+	}
+
+	@Override
+	public NodeWord clone() {
+		NodeWord nodeWord = new NodeWord(name);
+		for (String wordType : wordTypes) nodeWord.add(wordType);
+		return nodeWord;
 	}
 }

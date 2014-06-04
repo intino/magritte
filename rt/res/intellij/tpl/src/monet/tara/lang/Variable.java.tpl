@@ -14,4 +14,6 @@ public abstract class Variable {
 	public abstract boolean isList();
 
 	public abstract boolean isProperty();
+
+	public abstract String toString();
 }

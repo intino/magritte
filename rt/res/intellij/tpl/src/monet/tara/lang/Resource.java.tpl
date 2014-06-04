@@ -20,4 +20,8 @@ public class Resource extends Variable {
 	public boolean isProperty() {
 		return isProperty;
 	}
+
+	public String toString() {
+		return "Resource\:" + resourceType + " " + name;
+	}
 }

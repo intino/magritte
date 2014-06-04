@@ -23,6 +23,7 @@ public class AbstractNode {
 	private List<Variable> variables = new ArrayList<>();
 	private transient AbstractNode container;
 	private String aPackage;
+	private String qualifiedName;
 
 	public AbstractNode() {
 	}
@@ -45,6 +46,7 @@ public class AbstractNode {
 		this.base = false;
 		this.container = null;
 	}
+
 
 	public boolean isPrime() {
 		return getContainer() == null;
@@ -226,9 +228,14 @@ public class AbstractNode {
 		return aPackage + "." + getConceptRoute();
 	}
 
+	public String getQualifiedName() {
+		return (qualifiedName == null) ? qualifiedName = getConceptRoute() \: qualifiedName;
+	}
+
 	private String getConceptRoute() {
-		return ((container != null) ? container.getConceptRoute() +
-			((!"".equals(getIdentifier())) ? "." + getIdentifier() \: ".annonymous(" + parentName + ")") \: getIdentifier());
+		return container != null ? container.getConceptRoute() +
+			(!container.isBase() ?
+				!"".equals(getIdentifier()) ? "." + getIdentifier() \: "." + parentName \: "") \: getIdentifier();
 	}
 
 	public String getFile() {
@@ -257,7 +264,8 @@ public class AbstractNode {
 		for (Variable var \: variables)
 			if (var.getName().equals(path[0])) variable = var;
 		if ((variable != null) && variable instanceof NodeWord)
-			for (String wordElement \: ((NodeWord) variable).getWordTypes()) if (wordElement.equals(path[1])) return true;
+			for (String wordElement \: ((NodeWord) variable).getWordTypes())
+				if (wordElement.equals(path[1])) return true;
 		return variable != null;
 	}
 

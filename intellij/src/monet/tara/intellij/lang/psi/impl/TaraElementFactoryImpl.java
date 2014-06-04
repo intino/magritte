@@ -44,6 +44,17 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return body != null ? (Attribute) body.getFirstChild().getNextSibling() : null;
 	}
 
+	public Attribute createResource(String name, String type) {
+		final TaraFileImpl file = createDummyFile(
+			"package tara\n" +
+				"Definition abstract Source\n" +
+				"\tvar Resource:" + type + " " + name + "\n" +
+				"\tDefinition Ontology\n"
+		);
+		Body body = PsiTreeUtil.getChildOfType(file, Concept.class).getBody();
+		return body != null ? (Attribute) body.getFirstChild().getNextSibling() : null;
+	}
+
 	public Attribute createWord(String name, String[] types) {
 		final TaraFileImpl file = createDummyFile(
 			"package tara\n" +

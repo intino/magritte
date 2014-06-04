@@ -53,7 +53,16 @@ public class ::projectProperName::ImportOptimizer implements ImportOptimizer {
 
 		private void deleteDuplicates() {
 			Set<Import> set = new HashSet<>();
-			for (Import anImport \: myImportBlock) if (!set.add(anImport)) anImport.delete();
+			for (Import anImport \: myImportBlock)
+				if (isInSet(set, anImport))
+					anImport.delete();
 		}
+
+		private boolean isInSet(Set<Import> set, Import anImport) {
+			for (Import anImport1 \: set) if (anImport1.getText().equals(anImport.getText())) return true;
+			set.add(anImport);
+			return false;
+		}
+
 	}
 }

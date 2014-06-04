@@ -22,4 +22,9 @@ public class Reference extends Variable {
 	public boolean isProperty() {
 		return false;
 	}
+
+	\@Override
+	public String toString() {
+		return node + (isList ? "[]" \: "") + " " + name;
+	}
 }

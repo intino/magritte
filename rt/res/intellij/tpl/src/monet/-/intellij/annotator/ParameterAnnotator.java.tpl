@@ -24,11 +24,10 @@ public class ParameterAnnotator extends ::projectProperName::Annotator {
 		if (index >= variables.size()) annotateInsufficientParameters(element, holder);
 		else {
 			Variable actualVariable = variables.get(index);
-			if (element.getFirstChild() instanceof ::projectProperName::IdentifierReference /*|| element.getFirstChild() instanceof ::projectProperName::IdentifierList*/) {
+			if (element.getFirstChild() instanceof ::projectProperName::IdentifierReference /*|| element.getFirstChild() instanceof ::projectProperName::IdentifierList*/)
 				processAsWordOrReference(element, holder, actualVariable);
-			} else if (!areSameType(actualVariable, element)) {
+			else if (!areSameType(actualVariable, element))
 				holder.createErrorAnnotation(element, "parameter type error");
-			}
 		}
 	}
 

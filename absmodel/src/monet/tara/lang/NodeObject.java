@@ -4,79 +4,62 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AbstractNode {
+public class NodeObject {
+	private Node declaredNode;
 	private boolean abstractModifier;
 	private boolean finalModifier;
 	private boolean caseConcept;
 	private boolean base;
 	private String doc;
 	private String parentName;
-	private transient AbstractNode parentConcept;
-	private transient List<AbstractNode> childrenConcepts;
+	private transient NodeObject parentConcept;
+	private transient List<NodeObject> childrenConcepts;
 	private String baseParentConcept;
-	private String identifier = "";
-	private String file;
-	private int line;
+	private String name = "";
 	private List<AnnotationType> annotations = new ArrayList<>();
 	private List<String> imports = new ArrayList<>();
-	private AbstractTree innerConcepts = new AbstractTree();
 	private List<Variable> variables = new ArrayList<>();
-	private transient AbstractNode container;
 	private String aPackage;
 
-	public AbstractNode() {
+	public NodeObject() {
 	}
 
-	public AbstractNode(String identifier, AbstractNode container, String file) {
-		this.identifier = identifier;
-		this.container = container;
-		this.file = file;
+	public NodeObject(String name) {
+		this.name = name;
 		this.abstractModifier = false;
 		this.finalModifier = false;
 		this.caseConcept = false;
 		this.base = false;
 	}
 
-	public AbstractNode(String file) {
-		this.file = file;
-		this.abstractModifier = false;
-		this.finalModifier = false;
-		this.caseConcept = false;
-		this.base = false;
-		this.container = null;
-	}
-
-	public boolean isPrime() {
-		return getContainer() == null;
-	}
 
 	public boolean is(AnnotationType type) {
 		return (annotations.contains(type));
-	}
-
-	public int getLine() {
-		return line;
-	}
-
-	public void setLine(int line) {
-		this.line = line;
 	}
 
 	public boolean hasName() {
 		return annotations.contains(AnnotationType.HAS_NAME);
 	}
 
-	public String getIdentifier() {
-		return identifier;
+	public String getName() {
+		return name;
 	}
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public NodeAttribute[] getAttributes() {
 		List<NodeAttribute> result = extractElements(variables, NodeAttribute.class);
 		return result.toArray(new NodeAttribute[result.size()]);
+	}
+
+	public Node getDeclaredNode() {
+		return declaredNode;
+	}
+
+	public void setDeclaredNode(Node declaredNode) {
+		this.declaredNode = declaredNode;
 	}
 
 	public AnnotationType[] getAnnotations() {
@@ -86,17 +69,6 @@ public class AbstractNode {
 	public Reference[] getReferences() {
 		List<Reference> result = extractElements(variables, Reference.class);
 		return result.toArray(new Reference[result.size()]);
-	}
-
-	public AbstractTree getInnerConcepts() {
-		return innerConcepts;
-	}
-
-	public AbstractNode getChildByName(String name) {
-		for (AbstractNode child : getInnerConcepts())
-			if (child.getIdentifier().equals(name))
-				return child;
-		return null;
 	}
 
 	public List<String> getImports() {
@@ -116,15 +88,15 @@ public class AbstractNode {
 		this.parentName = parentName;
 	}
 
-	public AbstractNode getParentConcept() {
+	public NodeObject getParent() {
 		return parentConcept;
 	}
 
-	public void setParentConcept(AbstractNode parentConcept) {
+	public void setParentConcept(NodeObject parentConcept) {
 		this.parentConcept = parentConcept;
 	}
 
-	public List<AbstractNode> getChildren() {
+	public List<NodeObject> getChildren() {
 		return childrenConcepts;
 	}
 
@@ -134,15 +106,6 @@ public class AbstractNode {
 
 	public void setDoc(String doc) {
 		this.doc = doc;
-	}
-
-	public AbstractNode[] getCases() {
-		List<AbstractNode> cases = new ArrayList<>();
-		if (base) {
-			for (AbstractNode child : innerConcepts)
-				if (child.isCase()) cases.add(child);
-			return cases.toArray(new AbstractNode[cases.size()]);
-		} else return new AbstractNode[0];
 	}
 
 	public NodeWord[] getWords() {
@@ -184,7 +147,7 @@ public class AbstractNode {
 		else finalModifier = true;
 	}
 
-	public void addChild(AbstractNode child) {
+	public void addChild(NodeObject child) {
 		if (childrenConcepts == null) childrenConcepts = new ArrayList<>();
 		childrenConcepts.add(child);
 	}
@@ -197,11 +160,6 @@ public class AbstractNode {
 		return variables.add(variable);
 	}
 
-	public void add(AbstractNode innerConcept) {
-		innerConcepts.add(innerConcept);
-	}
-
-
 	private <T> List<T> extractElements(List items, Class<T> type) {
 		List<T> result = new ArrayList<>();
 		for (Object e : items)
@@ -210,30 +168,10 @@ public class AbstractNode {
 		return result;
 	}
 
-	public AbstractNode getContainer() {
-		return container;
-	}
-
-	public void setContainer(AbstractNode container) {
-		this.container = container;
-	}
-
 	public List<Variable> getVariables() {
 		return variables;
 	}
 
-	public String getAbsolutePath() {
-		return aPackage + "." + getConceptRoute();
-	}
-
-	private String getConceptRoute() {
-		return ((container != null) ? container.getConceptRoute() +
-			((!"".equals(getIdentifier())) ? "." + getIdentifier() : ".annonymous(" + parentName + ")") : getIdentifier());
-	}
-
-	public String getFile() {
-		return file;
-	}
 
 	public String getPackage() {
 		return aPackage;
@@ -257,12 +195,12 @@ public class AbstractNode {
 		for (Variable var : variables)
 			if (var.getName().equals(path[0])) variable = var;
 		if ((variable != null) && variable instanceof NodeWord)
-			for (String wordElement : ((NodeWord) variable).getWordTypes()) if (wordElement.equals(path[1])) return true;
+			for (String wordElement : ((NodeWord) variable).getWordTypes())
+				if (wordElement.equals(path[1])) return true;
 		return variable != null;
 	}
 
 	public enum AnnotationType {
 		HAS_NAME, ROOT, SINGLETON, MULTIPLE, REQUIRED, GENERIC, INTENTION;
 	}
-
 }

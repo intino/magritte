@@ -1,15 +1,14 @@
 package monet.tara.compiler.core.errorcollection;
 
-import monet.tara.lang.AbstractNode;
+import monet.tara.lang.Node;
 
 public class DependencyException extends TaraException {
 
-
 	private final String message;
-	private final AbstractNode node;
+	private final Node node;
 	private final int line;
 
-	public DependencyException(String message, AbstractNode node) {
+	public DependencyException(String message, Node node) {
 		this.message = message;
 		this.node = node;
 		if (node != null)
@@ -18,10 +17,10 @@ public class DependencyException extends TaraException {
 	}
 
 	public String getMessage() {
-		return "Inconsistent dependency in " + node.getIdentifier();
+		return "Inconsistent dependency in " + node.getName();
 	}
 
-	public AbstractNode getNode() {
+	public Node getNode() {
 		return node;
 	}
 
