@@ -9,6 +9,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import monet.tara.intellij.TaraBundle;
 import monet.tara.intellij.lang.TaraIcons;
+import monet.tara.intellij.lang.file.TaraFileType;
 import monet.tara.intellij.lang.psi.impl.TaraFileImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,7 +48,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	@Nullable
 	@Override
 	protected TaraFileImpl doCreate(PsiDirectory directory, String newName, String templateName) throws IncorrectOperationException {
-		String fileName = newName + ".m2";
+		String fileName = newName + "." + TaraFileType.INSTANCE.getDefaultExtension();
 		PsiFile file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, templateName, true);
 		if (file instanceof TaraFileImpl) return (TaraFileImpl) file;
 		final String description = file.getFileType().getDescription();

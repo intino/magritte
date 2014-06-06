@@ -12,7 +12,7 @@ public class ParserTest {
 	@Test
 	public void parse() throws Exception {
 		String projectName = "goros";
-		Parser parser = new Parser(new File("tara_runtime/res_test/monet.m2"));
+		Parser parser = new Parser(new File("tara_runtime/res_test/monet.m"));
 		parser.parse();
 		TreeWrapper ast = parser.convert();
 		Node node = ast.searchAncestry(ast.getTree().get(2));

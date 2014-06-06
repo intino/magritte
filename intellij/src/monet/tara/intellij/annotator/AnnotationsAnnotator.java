@@ -11,7 +11,6 @@ import monet.tara.intellij.lang.psi.Annotations;
 import monet.tara.intellij.lang.psi.Concept;
 import monet.tara.intellij.lang.psi.TaraFile;
 import monet.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import monet.tara.lang.Modifiable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -72,7 +71,6 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	}
 
 
-	@Modifiable(tag = "AnnotationsAnnotator.checkAnnotationList")
 	private List<PsiElement> checkAnnotationList(PsiElement[] annotations, String[] correctAnnotation) {
 		List<PsiElement> incorrectAnnotations = new ArrayList<>();
 		for (PsiElement annotation : annotations) {

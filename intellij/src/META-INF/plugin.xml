@@ -58,7 +58,7 @@
                          implementationClass="monet.tara.intellij.refactoring.rename.NamesValidator"/>
     <projectService serviceInterface="monet.tara.intellij.lang.psi.TaraElementFactory"
                     serviceImplementation="monet.tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
-    <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.ModuleType"/>
+    <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.TaraModuleType"/>
     <treeStructureProvider implementation="monet.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="monet.tara.intellij.actions.TaraTemplatesFactory"/>
     <codeInsight.lineMarkerProvider language="Tara"
@@ -125,4 +125,9 @@
     <findUsagesHandlerFactory implementation="monet.tara.intellij.findUsages.TaraFindUsagesHandlerFactory" id="Tara"
                               order="last, before default"/>
   </extensions>
+  <module-components>
+    <component>
+      <implementation-class>monet.tara.intellij.project.module.ModuleConfiguration</implementation-class>
+    </component>
+  </module-components>
 </idea-plugin>

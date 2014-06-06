@@ -26,7 +26,7 @@ public class TaraBlock extends AbstractBlock {
 	protected List<Block> buildChildren() {
 		List<Block> blocks = new ArrayList<>();
 		for (ASTNode child : getNode().getChildren(null)) {
-			if (child.getElementType() == TaraTypes.CONCEPT_KEY)
+			if (child.getElementType() == TaraTypes.METAIDENTIFIER_KEY)
 				blocks.add(new TaraBlock(child, Wrap.createWrap(WrapType.ALWAYS, false), Alignment.createAlignment()));
 			else if (child.getElementType() == TaraTypes.BODY)
 				blocks.add(new TaraBlock(child, Wrap.createWrap(WrapType.ALWAYS, false), Alignment.createAlignment()));

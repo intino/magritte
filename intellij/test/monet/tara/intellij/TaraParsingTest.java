@@ -5,7 +5,7 @@ import monet.tara.intellij.lang.parser.TaraParserDefinition;
 
 public class TaraParsingTest extends ParsingTestCase {
 	public TaraParsingTest() {
-		super("", "m2", new TaraParserDefinition());
+		super("", "m", new TaraParserDefinition());
 	}
 
 	public void testParsingTestData() {

@@ -29,7 +29,7 @@ import java.util.*;
 public class TaraBuilder extends ModuleLevelBuilder {
 
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
-	private static final String TARA_EXTENSION = "m2";
+	private static final String TARA_EXTENSION = "m";
 	private static final Key<Map<String, String>> STUB_TO_SRC = Key.create("STUB_TO_SRC");
 	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
 	private static Boolean done = false;
@@ -52,7 +52,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	@Override
 	public List<String> getCompilableFileExtensions() {
-		return Arrays.asList("m2");
+		return Arrays.asList(TARA_EXTENSION);
 	}
 
 	public ExitCode build(CompileContext context, ModuleChunk chunk, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder, OutputConsumer outputConsumer) throws ProjectBuildException, IOException {

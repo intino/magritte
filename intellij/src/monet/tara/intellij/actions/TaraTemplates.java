@@ -1,5 +1,6 @@
 package monet.tara.intellij.actions;
 
+import monet.tara.intellij.lang.file.TaraFileType;
 import org.jetbrains.annotations.NonNls;
 
 import java.util.Collection;
@@ -14,7 +15,7 @@ public class TaraTemplates {
 
 	static {
 		//gen %templates%
-		templates.put("CONCEPT", "TaraConcept.m2");
+		templates.put("CONCEPT", "TaraConcept."+ TaraFileType.INSTANCE.getDefaultExtension());
 		//end
 	}
 

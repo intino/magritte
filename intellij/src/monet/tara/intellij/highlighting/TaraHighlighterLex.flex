@@ -36,11 +36,14 @@ PROPERTY  = "property"
 LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
 LEFT_SQUARE   = "["
 RIGHT_SQUARE  = "]"
+LEFT_PARENTHESIS  = "("
+RIGHT_PARENTHESIS = ")"
 
 OPEN_BRACKET  = "{"
 CLOSE_BRACKET = "}"
 
 DOT           = "."
+COMMA         = ","
 COLON         = ":"
 SEMICOLON     = ";"
 DOUBLE_COMMAS = "\""
@@ -74,7 +77,7 @@ NEWLINE= [\n]+
 %%
 <YYINITIAL> {
 
-	{CONCEPT}                   {   return TaraTypes.CONCEPT_KEY; }
+	{CONCEPT}                   {   return TaraTypes.METAIDENTIFIER_KEY; }
 
 	{IMPORT_KEY}                {   return TaraTypes.IMPORT_KEY; }
 	{PACKAGE}                   {   return TaraTypes.PACKAGE; }
@@ -116,11 +119,14 @@ NEWLINE= [\n]+
 
 	{LEFT_SQUARE}               {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}              {   return TaraTypes.RIGHT_SQUARE; }
+	{LEFT_PARENTHESIS}          {   return TaraTypes.LEFT_PARENTHESIS; }
+    {RIGHT_PARENTHESIS}         {   return TaraTypes.RIGHT_PARENTHESIS; }
 
 	{WORD_KEY}                  {   return TaraTypes.WORD_KEY; }
 	{RESOURCE_KEY}              {   return TaraTypes.RESOURCE_KEY; }
 
 	{DOT}                       {   return TaraTypes.DOT; }
+	{COMMA}                     {   return TaraTypes.COMMA; }
 
 	{ALIAS_TYPE}                {   return TaraTypes.ALIAS_TYPE; }
 	{INT_TYPE}                  {   return TaraTypes.INT_TYPE; }

@@ -109,6 +109,7 @@ public class ReferenceManager {
 	}
 
 	public static VirtualFile resolveRoute(List<? extends Identifier> route) {
+		if (route.isEmpty()) return null;
 		VirtualFile file = TaraUtil.getSourcePath(route.get(0).getProject());
 		for (Identifier identifier : route)
 			file = TaraUtil.findChildFileOf(file, identifier.getText());

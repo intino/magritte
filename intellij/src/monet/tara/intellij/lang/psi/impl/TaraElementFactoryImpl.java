@@ -26,7 +26,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	public TaraFileImpl createDummyFile(String text) {
-		return (TaraFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.m2", TaraFileType.INSTANCE, text);
+		return (TaraFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy." + TaraFileType.INSTANCE.getDefaultExtension(), TaraFileType.INSTANCE, text);
 	}
 
 	public Identifier createNameIdentifier(String name) {

@@ -9,7 +9,6 @@ import monet.tara.intellij.lang.TaraLanguage;
 import monet.tara.intellij.lang.psi.Concept;
 import monet.tara.intellij.lang.psi.MetaIdentifier;
 import monet.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import monet.tara.lang.Modifiable;
 import monet.tara.lang.Node;
 import monet.tara.lang.NodeObject;
 import org.jetbrains.annotations.NotNull;
@@ -73,7 +72,6 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 					concepts.add(nodeObject.getName());
 	}
 
-	@Modifiable(tag = "TaraMetaReferenceSolver.fillVariants")
 	private Object[] fillVariants(List<String> elements) {
 		List<LookupElement> variants = new ArrayList<>();
 		for (final String element : elements)

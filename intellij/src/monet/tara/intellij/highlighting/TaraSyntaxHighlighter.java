@@ -74,7 +74,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS = new THashMap<>();
 
 //gen %highlightKey%
-		KEYS.put(CONCEPT_KEY, KEYWORD);
+		KEYS.put(METAIDENTIFIER_KEY, KEYWORD);
 		KEYS.put(REQUIRED, ANNOTATION);
 		KEYS.put(MULTIPLE, ANNOTATION);
 		KEYS.put(SINGLETON, ANNOTATION);

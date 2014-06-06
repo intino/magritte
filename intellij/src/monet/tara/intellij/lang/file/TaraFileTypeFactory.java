@@ -6,6 +6,6 @@ import org.jetbrains.annotations.NotNull;
 public class TaraFileTypeFactory extends FileTypeFactory {
 	@Override
 	public void createFileTypes(@NotNull com.intellij.openapi.fileTypes.FileTypeConsumer fileTypeConsumer) {
-		fileTypeConsumer.consume(TaraFileType.INSTANCE, "m2");
+		fileTypeConsumer.consume(TaraFileType.INSTANCE, TaraFileType.INSTANCE.getDefaultExtension());
 	}
 }

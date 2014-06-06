@@ -13,7 +13,7 @@ import java.util.List;
 public class TaraReferenceImporter {
 	@NotNull
 	public static List<ImportQuickFix> proposeImportFix(final PsiElement node) {
-		List<Concept> concepts = TaraUtil.findRootConcept(node.getProject(), node.getText());
+		List<Concept> concepts = TaraUtil.findRootConcept(node, node.getText());
 		ArrayList<ImportQuickFix> quickFixes = new ArrayList<>();
 		if (concepts.isEmpty()) return Collections.EMPTY_LIST;
 		for (Concept concept : concepts) quickFixes.add(new ImportQuickFix((TaraFile) node.getContainingFile(),concept));

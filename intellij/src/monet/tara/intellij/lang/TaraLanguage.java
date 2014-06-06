@@ -46,7 +46,7 @@ public class TaraLanguage extends Language {
 			if (json == null) return null;
 			String name = json.getAsJsonObject().get("name").getAsString();
 
-			JsonElement e = json.getAsJsonObject().get("type");
+			JsonElement e = json.getAsJsonObject().get("node");
 			if (e != null && e.isJsonPrimitive() && e.getAsString() != null) return new Reference(
 				e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean());
 
@@ -54,7 +54,7 @@ public class TaraLanguage extends Language {
 			if (e != null && e.isJsonPrimitive() && e.getAsString() != null)
 				return new NodeAttribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), json.getAsJsonObject().get("isProperty").getAsBoolean());
 
-			e = json.getAsJsonObject().get("type");
+			e = json.getAsJsonObject().get("node");
 			if (e != null && e.isJsonPrimitive() && e.getAsString() != null)
 				return new Resource(e.getAsString(), name, json.getAsJsonObject().get("isProperty").getAsBoolean());
 			JsonArray array = json.getAsJsonObject().get("wordTypes").getAsJsonArray();

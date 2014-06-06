@@ -94,7 +94,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 					List<String> wordTypes = ((NodeWord) variable).getWordTypes();
 					attribute = instance.createWord(variable.getName(), wordTypes.toArray(new String[wordTypes.size()]));
 				} else if (variable instanceof Resource)
-					attribute = instance.createResource(variable.getName(), ((Resource) variable).type);
+					attribute = instance.createResource(variable.getName(), ((Resource) variable).node);
 
 				if (attribute != null) attributes.add(attribute);
 			}

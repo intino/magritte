@@ -42,6 +42,14 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitEmpty(@NotNull TaraEmpty o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExplicit(@NotNull TaraExplicit o) {
+    visitPsiElement(o);
+  }
+
   public void visitHeader(@NotNull TaraHeader o) {
     visitPsiElement(o);
   }
@@ -52,6 +60,10 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitIdentifier(@NotNull TaraIdentifier o) {
     visitIdentifier(o);
+  }
+
+  public void visitIdentifierList(@NotNull TaraIdentifierList o) {
+    visitPsiElement(o);
   }
 
   public void visitIdentifierReference(@NotNull TaraIdentifierReference o) {
@@ -74,6 +86,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitExternalReference(o);
   }
 
+  public void visitMetaIdentifier(@NotNull TaraMetaIdentifier o) {
+    visitMetaIdentifier(o);
+  }
+
   public void visitModifier(@NotNull TaraModifier o) {
     visitPsiElement(o);
   }
@@ -88,6 +104,14 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitPacket(@NotNull TaraPacket o) {
     visitPsiElement(o);
+  }
+
+  public void visitParameter(@NotNull TaraParameter o) {
+    visitParameter(o);
+  }
+
+  public void visitParameters(@NotNull TaraParameters o) {
+    visitParameters(o);
   }
 
   public void visitReferenceStatement(@NotNull TaraReferenceStatement o) {

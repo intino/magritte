@@ -23,19 +23,19 @@ public class TaraCodeInsightTest extends LightCodeInsightFixtureTestCase {
 
 
 	public void testFolding() {
-		myFixture.testFolding(getTestDataPath() + FOLDING + SEPARATOR + "FoldingTest.m2");
+		myFixture.testFolding(getTestDataPath() + FOLDING + SEPARATOR + "FoldingTest.m");
 	}
 
 
 	public void testAnnotator() {
-		myFixture.configureByFiles(ANNOTATION + SEPARATOR + "AnnotatorTestData.m2");
+		myFixture.configureByFiles(ANNOTATION + SEPARATOR + "AnnotatorTestData.m");
 		myFixture.checkHighlighting(true, true, true);
 	}
 
 	public void testRename() {
-		myFixture.configureByFiles(RENAME + SEPARATOR + "RenameTestData.m2");
+		myFixture.configureByFiles(RENAME + SEPARATOR + "RenameTestData.m");
 		myFixture.renameElementAtCaret("TermRenamed");
-		myFixture.checkResultByFile(RENAME + SEPARATOR + "RenameTestData.m2", RENAME + SEPARATOR + "RenameTestDataAfter.m2", true);
+		myFixture.checkResultByFile(RENAME + SEPARATOR + "RenameTestData.m", RENAME + SEPARATOR + "RenameTestDataAfter.m", true);
 	}
 
 	public void testCommenter() {

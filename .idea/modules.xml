@@ -8,7 +8,6 @@
       <module fileurl="file://$PROJECT_DIR$/jps-plugin/tara-jps-plugin.iml" filepath="$PROJECT_DIR$/jps-plugin/tara-jps-plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/rt/tara-runtime.iml" filepath="$PROJECT_DIR$/rt/tara-runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/rt-constants/tara-runtime-constants.iml" filepath="$PROJECT_DIR$/rt-constants/tara-runtime-constants.iml" />
-      <module fileurl="file://$PROJECT_DIR$/tpl-gen/template-generation.iml" filepath="$PROJECT_DIR$/tpl-gen/template-generation.iml" />
     </modules>
   </component>
 </project>

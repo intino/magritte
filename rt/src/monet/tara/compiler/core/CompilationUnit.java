@@ -2,7 +2,7 @@ package monet.tara.compiler.core;
 
 import monet.tara.compiler.codegeneration.ClassGenerator;
 import monet.tara.compiler.codegeneration.intellij.FileSystemUtils;
-import monet.tara.compiler.codegeneration.intellij.PluginGenerator;
+import monet.tara.compiler.codegeneration.intellij.PluginUpdater;
 import monet.tara.compiler.core.errorcollection.*;
 import monet.tara.compiler.core.errorcollection.message.Message;
 import monet.tara.compiler.core.errorcollection.semantic.SemanticError;
@@ -43,12 +43,12 @@ public class CompilationUnit extends ProcessingUnit {
 			}
 		}
 	};
-	private ModuleUnitOperation pluginGenerationOperation = new ModuleUnitOperation() {
+	private ModuleUnitOperation pluginUpdateOperation = new ModuleUnitOperation() {
 		@Override
 		public void call(Collection<SourceUnit> units) throws CompilationFailedException {
 			try {
 				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating plugin");
-				PluginGenerator generator = new PluginGenerator(configuration);
+				PluginUpdater generator = new PluginUpdater(configuration);
 				generator.generate(ast);
 				getErrorCollector().failIfErrors();
 			} catch (TaraException e) {
@@ -133,7 +133,7 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(ASTDependencyResolution, Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(semantic, Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
-		if (pluginGeneration) addPhaseOperation(pluginGenerationOperation, Phases.PLUGIN_GENERATION);
+		if (pluginGeneration) addPhaseOperation(pluginUpdateOperation, Phases.PLUGIN_GENERATION);
 		addPhaseOperation(output, Phases.OUTPUT);
 
 	}

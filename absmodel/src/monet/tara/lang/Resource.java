@@ -2,11 +2,11 @@ package monet.tara.lang;
 
 public class Resource extends Variable {
 
-	public final String type;
+	public final String node;
 	public final boolean isProperty;
 
-	public Resource(String type, String name, boolean isProperty) {
-		this.type = type;
+	public Resource(String node, String name, boolean isProperty) {
+		this.node = node;
 		this.name = name;
 		this.isProperty = isProperty;
 	}
@@ -22,11 +22,11 @@ public class Resource extends Variable {
 	}
 
 	public String toString() {
-		return "Resource:" + type + " " + name;
+		return "Resource:" + node + " " + name;
 	}
 
 	@Override
 	public Variable clone() {
-		return new Resource(type, name, isProperty);
+		return new Resource(node, name, isProperty);
 	}
 }

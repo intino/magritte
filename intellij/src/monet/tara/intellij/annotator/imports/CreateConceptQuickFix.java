@@ -7,6 +7,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import monet.tara.intellij.actions.TaraTemplates;
 import monet.tara.intellij.actions.TaraTemplatesFactory;
+import monet.tara.intellij.lang.file.TaraFileType;
 import org.jetbrains.annotations.NotNull;
 
 public class CreateConceptQuickFix implements LocalQuickFix {
@@ -34,7 +35,7 @@ public class CreateConceptQuickFix implements LocalQuickFix {
 
 	@Override
 	public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
-		String fileName = name + ".m2";
+		String fileName = name + "." + TaraFileType.INSTANCE.getDefaultExtension();
 		PsiFile file = TaraTemplatesFactory.createFromTemplate(packet, name, fileName, TaraTemplates.getTemplate(type.toUpperCase()), true);
 	}
 }

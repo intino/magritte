@@ -14,6 +14,12 @@ public interface TaraSignature extends Signature {
   TaraIdentifierReference getIdentifierReference();
 
   @Nullable
+  TaraMetaIdentifier getMetaIdentifier();
+
+  @Nullable
   TaraModifier getModifier();
+
+  @Nullable
+  TaraParameters getParameters();
 
 }

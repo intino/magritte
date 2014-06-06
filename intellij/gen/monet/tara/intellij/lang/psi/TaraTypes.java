@@ -1,10 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package monet.tara.intellij.lang.psi;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.PsiElement;
+import com.intellij.lang.ASTNode;
 import monet.tara.intellij.lang.psi.impl.*;
 
 public interface TaraTypes {
@@ -18,18 +18,24 @@ public interface TaraTypes {
   IElementType DOC = new TaraElementType("DOC");
   IElementType DOUBLE_LIST = new TaraElementType("DOUBLE_LIST");
   IElementType DOUBLE_VALUE = new TaraElementType("DOUBLE_VALUE");
+  IElementType EMPTY = new TaraElementType("EMPTY");
+  IElementType EXPLICIT = new TaraElementType("EXPLICIT");
   IElementType HEADER = new TaraElementType("HEADER");
   IElementType HEADER_REFERENCE = new TaraElementType("HEADER_REFERENCE");
   IElementType IDENTIFIER = new TaraElementType("IDENTIFIER");
+  IElementType IDENTIFIER_LIST = new TaraElementType("IDENTIFIER_LIST");
   IElementType IDENTIFIER_REFERENCE = new TaraElementType("IDENTIFIER_REFERENCE");
   IElementType IMPORT_STATEMENT = new TaraElementType("IMPORT_STATEMENT");
   IElementType INTEGER_LIST = new TaraElementType("INTEGER_LIST");
   IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
   IElementType INTENTION = new TaraElementType("INTENTION");
+  IElementType META_IDENTIFIER = new TaraElementType("META_IDENTIFIER");
   IElementType MODIFIER = new TaraElementType("MODIFIER");
   IElementType NATURAL_LIST = new TaraElementType("NATURAL_LIST");
   IElementType NATURAL_VALUE = new TaraElementType("NATURAL_VALUE");
   IElementType PACKET = new TaraElementType("PACKET");
+  IElementType PARAMETER = new TaraElementType("PARAMETER");
+  IElementType PARAMETERS = new TaraElementType("PARAMETERS");
   IElementType REFERENCE_STATEMENT = new TaraElementType("REFERENCE_STATEMENT");
   IElementType SIGNATURE = new TaraElementType("SIGNATURE");
   IElementType STRING_LIST = new TaraElementType("STRING_LIST");
@@ -45,7 +51,6 @@ public interface TaraTypes {
   IElementType CLOSE_AN = new TaraTokenType("CLOSE_AN");
   IElementType COLON = new TaraTokenType("COLON");
   IElementType COMMA = new TaraTokenType("COMMA");
-  IElementType CONCEPT_KEY = new TaraTokenType("CONCEPT_KEY");
   IElementType DEDENT = new TaraTokenType("DEDENT");
   IElementType DOC_LINE = new TaraTokenType("DOC_LINE");
   IElementType DOT = new TaraTokenType("DOT");
@@ -61,6 +66,7 @@ public interface TaraTypes {
   IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
   IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
   IElementType LIST = new TaraTokenType("LIST");
+  IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
   IElementType MULTIPLE = new TaraTokenType("MULTIPLE");
   IElementType NATURAL_TYPE = new TaraTokenType("NATURAL_TYPE");
   IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
@@ -111,6 +117,12 @@ public interface TaraTypes {
       else if (type == DOUBLE_VALUE) {
         return new TaraDoubleValueImpl(node);
       }
+      else if (type == EMPTY) {
+        return new TaraEmptyImpl(node);
+      }
+      else if (type == EXPLICIT) {
+        return new TaraExplicitImpl(node);
+      }
       else if (type == HEADER) {
         return new TaraHeaderImpl(node);
       }
@@ -119,6 +131,9 @@ public interface TaraTypes {
       }
       else if (type == IDENTIFIER) {
         return new TaraIdentifierImpl(node);
+      }
+      else if (type == IDENTIFIER_LIST) {
+        return new TaraIdentifierListImpl(node);
       }
       else if (type == IDENTIFIER_REFERENCE) {
         return new TaraIdentifierReferenceImpl(node);
@@ -135,6 +150,9 @@ public interface TaraTypes {
       else if (type == INTENTION) {
         return new TaraIntentionImpl(node);
       }
+      else if (type == META_IDENTIFIER) {
+        return new TaraMetaIdentifierImpl(node);
+      }
       else if (type == MODIFIER) {
         return new TaraModifierImpl(node);
       }
@@ -146,6 +164,12 @@ public interface TaraTypes {
       }
       else if (type == PACKET) {
         return new TaraPacketImpl(node);
+      }
+      else if (type == PARAMETER) {
+        return new TaraParameterImpl(node);
+      }
+      else if (type == PARAMETERS) {
+        return new TaraParametersImpl(node);
       }
       else if (type == REFERENCE_STATEMENT) {
         return new TaraReferenceStatementImpl(node);

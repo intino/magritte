@@ -104,7 +104,7 @@ public class TaraCompilerRunner {
 
 	private static void addSources(List<File> srcFiles, final CompilationUnit unit) {
 		for (final File file : srcFiles) {
-			if (!file.getName().endsWith(".m2"))
+			if (!file.getName().endsWith(".m"))
 				continue;
 			unit.addSource(new SourceUnit(file, unit.getConfiguration(), unit.getErrorCollector()));
 		}

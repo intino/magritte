@@ -28,7 +28,7 @@ public class TaraFileType extends LanguageFileType {
 	@NotNull
 	@Override
 	public String getDefaultExtension() {
-		return "m2";
+		return "m";
 	}
 
 	@Nullable
