@@ -231,6 +231,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitNaturalList(@NotNull TaraGrammar.NaturalListContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#module}.
+	 * @param ctx the parse tree
+	 */
+	void enterModule(@NotNull TaraGrammar.ModuleContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#module}.
+	 * @param ctx the parse tree
+	 */
+	void exitModule(@NotNull TaraGrammar.ModuleContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#booleanList}.
 	 * @param ctx the parse tree
 	 */

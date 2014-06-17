@@ -16,12 +16,17 @@ public class ReferenceVerifier {
 	}
 
 	public void checkConcept(Node concept, TreeWrapper ast) {
-		NodeObject ancestor = concept.getObject().getParent();
-		checkExtendedConcept(concept, ancestor);
-		checkExtendedFromFinal(concept, ancestor);
-		checkBase(concept);
-		checkCase(concept, ancestor);
+		Node ancestor = ast.searchAncestry(concept);
+		if (concept.getObject().getParentName() != null) checkParent(concept, ancestor);
+		if (concept.isBase()) checkBase(concept);
+		else if (concept.isCase()) checkCase(concept, ancestor.getObject());
 		checkVarReference(concept, ast);
+	}
+
+	private void checkParent(Node concept, Node ancestor) {
+		if (ancestor == null) {
+			errors.add(new UndefinedReferenceError(concept.getObject().getParentName(), concept));
+		} else checkExtendedFromFinal(concept, ancestor.getObject());
 	}
 
 	private void checkVarReference(Node concept, TreeWrapper ast) {
@@ -30,27 +35,20 @@ public class ReferenceVerifier {
 				errors.add(new UndefinedReferenceError(reference.getType(), concept));
 	}
 
-	private void checkExtendedConcept(Node concept, NodeObject ancestor) {
-		if (ancestor == null && concept.getObject().getParentName() != null)
-			errors.add(new UndefinedReferenceError(concept.getObject().getParentName(), concept));
-	}
-
 	private void checkExtendedFromFinal(Node concept, NodeObject ancestor) {
 		if (ancestor != null && ancestor.isFinal())
 			errors.add(new InvalidHeritageError(concept.getObject().getParentName(), concept));
 	}
 
 	private void checkBase(Node concept) {
-		if (concept.getObject().isBase() && concept.getCases().length == 0)
+		if (concept.getCases().length == 0)
 			errors.add(new PolymorphicChildlessError(concept.getName(), concept));
 	}
 
 	private void checkCase(Node concept, NodeObject ancestor) {
-		if (concept.getObject().isCase()) {
-			noParent(concept);
-			notBaseParent(concept);
-			notExtendedFromBase(concept, ancestor);
-		}
+		noParent(concept);
+		notBaseParent(concept);
+		notExtendedFromBase(concept, ancestor);
 	}
 
 	private void noParent(Node concept) {
@@ -64,7 +62,7 @@ public class ReferenceVerifier {
 	}
 
 	private void notExtendedFromBase(Node concept, NodeObject ancestor) {
-		if (ancestor != null && !ancestor.isCase())
+		if (ancestor != null && !ancestor.isBase())
 			errors.add(new InvalidHeritageError(concept.getObject().getParentName(), concept));
 	}
 }

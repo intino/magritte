@@ -42,7 +42,7 @@ public class TaraCompiler {
 	private void addCompiledFiles(CompilationUnit compilationUnit, final List<OutputItem> compiledFiles) throws IOException {
 		File targetDirectory = compilationUnit.getConfiguration().getTargetDirectory();
 		final String outputPath = targetDirectory.getCanonicalPath().replace(File.separatorChar, File.separator.charAt(0));
-		for (String fileName : compilationUnit.getSources())
+		for (String fileName : compilationUnit.getSourceUnitNames())
 			compiledFiles.add(new OutputItem(outputPath, fileName));
 		if (compilationUnit.isPluginGeneration())
 			compiledFiles.add(new OutputItem(outputPath, compilationUnit.getConfiguration().getProject() + ".zip"));

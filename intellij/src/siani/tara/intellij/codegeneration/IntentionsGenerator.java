@@ -7,10 +7,8 @@ import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -38,10 +36,6 @@ public class IntentionsGenerator {
 		genDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraFile.getManager(), gen);
 	}
 
-	private static void refreshFiles(Set<File> pathsToRefresh) {
-		LocalFileSystem.getInstance().refreshIoFiles(pathsToRefresh, true, true, null);
-	}
-
 	public void generate() {
 		final Set<File> pathsToRefresh = new HashSet<>();
 		ApplicationManager.getApplication().runReadAction(new Runnable() {
@@ -56,7 +50,6 @@ public class IntentionsGenerator {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				refreshFiles(pathsToRefresh);
 			}
 		});
 	}
@@ -94,8 +87,6 @@ public class IntentionsGenerator {
 						if (innerClass != null)
 							clazz = innerClass;
 						else clazz = createInnerClass(clazz, split[i], name, extensible);
-						LocalFileSystem.getInstance().refresh(true);
-						VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
 					}
 				}
 			}

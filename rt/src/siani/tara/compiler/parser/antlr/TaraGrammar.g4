@@ -10,7 +10,8 @@ root: NEWLINE* header? NEWLINE* concept NEWLINE* EOF;
 header: packet? imports*;
 
 imports: NEWLINE IMPORT headerReference;
-packet : PACKAGE headerReference;
+packet : PACKAGE (module COLON)? headerReference;
+module : (IDENTIFIER DOT)* IDENTIFIER;
 
 concept: doc? signature annotations? body?;
 signature: (CASE IDENTIFIER
@@ -49,7 +50,7 @@ integerAttribute : doc? (VAR | PROPERTY) INT_TYPE ((IDENTIFIER (COLON integerVal
 doubleAttribute  : doc? (VAR | PROPERTY) DOUBLE_TYPE ((IDENTIFIER (COLON doubleValue)?)   | (LIST IDENTIFIER (COLON doubleList)?)) ;
 resource         : doc? (VAR | PROPERTY) RESOURCE COLON IDENTIFIER IDENTIFIER;
 reference        : doc? VAR identifierReference LIST? IDENTIFIER;
-word             : VAR WORD IDENTIFIER NEW_LINE_INDENT (IDENTIFIER NEWLINE)+ DEDENT;
+word             : doc? VAR WORD IDENTIFIER NEW_LINE_INDENT (IDENTIFIER NEWLINE)+ DEDENT;
 
 naturalValue: POSITIVE_VALUE;
 integerValue: POSITIVE_VALUE | NEGATIVE_VALUE;

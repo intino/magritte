@@ -21,8 +21,10 @@ public class GenerateAction extends AnAction implements DumbAware {
 		if (project == null || files == null) return;
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
 		FileDocumentManager.getInstance().saveAllDocuments();
-		IntentionsGenerator generator = new IntentionsGenerator(project, (TaraFile) PsiManager.getInstance(project).findFile(files[0]));
-		generator.generate();
+		for (VirtualFile file : files) {
+			IntentionsGenerator generator = new IntentionsGenerator(project, (TaraFile) PsiManager.getInstance(project).findFile(file));
+			for (int i = 0; i < 4; i++) generator.generate();
+		}
 	}
 
 	@Override

@@ -1,7 +1,8 @@
-package siani.tara.compiler.core.operation;
+package siani.tara.compiler.core.operation.module;
 
 import siani.tara.compiler.core.SourceUnit;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
+import siani.tara.compiler.core.operation.Operation;
 
 import java.util.Collection;
 

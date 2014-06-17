@@ -47,6 +47,14 @@ public abstract class ProcessingUnit {
 		this.phaseComplete = true;
 	}
 
+	public int getPhase() {
+		return phase;
+	}
+
+	public boolean isPhaseComplete() {
+		return phaseComplete;
+	}
+
 	public void nextPhase() throws CompilationFailedException {
 		gotoPhase(this.phase + 1);
 	}

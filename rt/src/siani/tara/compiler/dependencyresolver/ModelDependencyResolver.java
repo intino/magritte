@@ -1,21 +1,19 @@
 package siani.tara.compiler.dependencyresolver;
 
-import siani.tara.compiler.core.SourceUnit;
 import siani.tara.compiler.core.errorcollection.DependencyException;
 import siani.tara.lang.*;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
 import static siani.tara.lang.NodeObject.AnnotationType;
 
-public class AbstractTreeDependencyResolver {
+public class ModelDependencyResolver {
 	TreeWrapper tree;
 	NodeTree nodes = new NodeTree();
 
-	public AbstractTreeDependencyResolver(Collection<SourceUnit> sources) throws DependencyException {
-		tree = mergeTrees(sources);
+	public ModelDependencyResolver(TreeWrapper treeWrapper) throws DependencyException {
+		tree = treeWrapper;
 		nodes.addAll(tree.getNodeTable().values());
 		resolveHierarchyDependencies();
 	}
@@ -77,7 +75,7 @@ public class AbstractTreeDependencyResolver {
 			public int compare(Node o1, Node o2) {
 				String qn1 = o1.getQualifiedName().replaceAll("\\[.*\\]", "");
 				int count1 = qn1.length() - qn1.replace(".", "").length();
-				String qn2 = o2.getQualifiedName().replaceAll("\\[.*\\]","");
+				String qn2 = o2.getQualifiedName().replaceAll("\\[.*\\]", "");
 				int count2 = qn2.length() - qn2.replace(".", "").length();
 				return count1 - count2;
 			}
@@ -116,15 +114,5 @@ public class AbstractTreeDependencyResolver {
 				if (node.isCase()) node.getObject().setBaseNode(ancestry);
 				else node.getObject().setParentObject(ancestry.getObject());
 			}
-	}
-
-	private TreeWrapper mergeTrees(Collection<SourceUnit> units) {
-		TreeWrapper treeWrapper = new TreeWrapper();
-		for (SourceUnit unit : units) {
-			treeWrapper.addAll(unit.getNodeTree().getTree());
-			treeWrapper.putAllIdentifiers(unit.getNodeTree().getIdentifiers());
-			treeWrapper.putAllInNodeNameTable(unit.getNodeTree().getNodeTable());
-		}
-		return treeWrapper;
 	}
 }

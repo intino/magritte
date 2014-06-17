@@ -11,27 +11,28 @@ import siani.tara.lang.TreeWrapper;
 import java.util.List;
 
 public class SemanticAnalyzer {
-	private TreeWrapper ast;
+	private TreeWrapper treeWrapper;
 	private SemanticErrorList errors = new SemanticErrorList();
 	private DuplicateDetector detector = new DuplicateDetector(errors);
-	private ReferenceVerifier verifier = new ReferenceVerifier(errors);
+	private ReferenceVerifier referenceVerifier = new ReferenceVerifier(errors);
 	private AnnotationChecker checker = new AnnotationChecker(errors);
-	private ConceptsUsage useChecker = new ConceptsUsage(errors);
+	private ConceptsUsage usageChecker = new ConceptsUsage(errors);
 
-	public SemanticAnalyzer(TreeWrapper ast) {
-		this.ast = ast;
+	public SemanticAnalyzer(TreeWrapper wrapper) {
+		this.treeWrapper = wrapper;
 	}
 
 	public void analyze() throws SemanticException {
-//		startAnalysis(ast.getTree());
+		startAnalysis(treeWrapper.getTree());
 		if (!errors.isEmpty()) throw new SemanticException(errors.toArray(new SemanticError[errors.size()]));
-//		startReferenceAnalysis(ast.getTree());
-//		if (!errors.isEmpty()) throw new SemanticException(errors.toArray(new SemanticError[errors.size()]));
+		startReferenceAnalysis(treeWrapper.getTree());
+		checker.checkIfRoot(treeWrapper.getTree());
+		if (!errors.isEmpty()) throw new SemanticException(errors.toArray(new SemanticError[errors.size()]));
+
 	}
 
 	private void startAnalysis(NodeTree concepts) {
 		detector.checkDuplicateRoots(concepts);
-		checker.checkIfRoot(concepts);
 		for (Node concept : concepts)
 			conceptAnalysis(concept);
 	}
@@ -44,15 +45,15 @@ public class SemanticAnalyzer {
 	}
 
 	private void startReferenceAnalysis(NodeTree concepts) {
-		useChecker.start(concepts);
+		usageChecker.start(concepts);
 		referenceAnalysis(concepts);
-		useChecker.finish();
+		usageChecker.finish();
 	}
 
 	private void referenceAnalysis(List<Node> astNodes) {
 		for (Node concept : astNodes) {
-			verifier.checkConcept(concept, ast);
-			useChecker.checkUsage(concept, ast);
+			referenceVerifier.checkConcept(concept, treeWrapper);
+			usageChecker.checkUsage(concept, treeWrapper);
 			referenceAnalysis(concept.getInnerNodes());
 		}
 	}

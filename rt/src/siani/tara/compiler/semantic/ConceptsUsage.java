@@ -29,14 +29,14 @@ public class ConceptsUsage {
 	}
 
 	public void checkUsage(Node concept, TreeWrapper ast) {
-//		removeAncestor(concept.getObject().getParent());
+//		removeAncestor(concept.getParent());
 		checkReference(concept, ast);
 	}
 
-//	public void removeAncestor(NodeObject nodeObject) {
-//		String rootConcept = (nodeObject != null) ? nodeObject.getAbsolutePath().split("\\.")[0] : "";
-//		conceptList.remove(rootConcept);
-//	}
+	public void removeAncestor(Node node) {
+		String rootConcept = (node != null) ? node.getQualifiedName().split("\\.")[0] : "";
+		conceptList.remove(rootConcept);
+	}
 
 	private void checkIfUsed(Node node) {
 		String rootConcept = (node != null) ? node.getAbsolutePath().split("\\.")[0] : "";
