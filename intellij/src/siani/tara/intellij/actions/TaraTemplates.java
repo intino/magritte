@@ -14,9 +14,8 @@ public class TaraTemplates {
 	public static HashMap<String, String> templates = new HashMap<>();
 
 	static {
-		//gen %templates%
 		templates.put("CONCEPT", "TaraConcept."+ TaraFileType.INSTANCE.getDefaultExtension());
-		//end
+		templates.put("TARA_INTENTION", "TaraIntentionClass");
 	}
 
 	private TaraTemplates() {

@@ -15,7 +15,7 @@ public class SourceUnit extends ProcessingUnit {
 	private static final Logger LOG = Logger.getLogger(SourceUnit.class.getName());
 	protected FileReaderSource source;
 	protected String name;
-	private TreeWrapper abstractTree;
+	private TreeWrapper nodeTree;
 	private Parser parser;
 
 	public SourceUnit(String name, FileReaderSource source, CompilerConfiguration configuration, ErrorCollector er) {
@@ -38,8 +38,8 @@ public class SourceUnit extends ProcessingUnit {
 		return source;
 	}
 
-	public TreeWrapper getAbstractTree() {
-		return abstractTree;
+	public TreeWrapper getNodeTree() {
+		return nodeTree;
 	}
 
 	public void parse() throws IOException, SyntaxException {
@@ -47,7 +47,7 @@ public class SourceUnit extends ProcessingUnit {
 		parser.parse();
 	}
 
-	public void convert() throws TaraException {
-		abstractTree = parser.convert();
+	public void importData() throws TaraException {
+		nodeTree = parser.convert();
 	}
 }

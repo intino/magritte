@@ -1,9 +1,9 @@
-package monet.tafat.intellij.metamodel;
+package siani.tafat.intellij.metamodel;
 
 import com.intellij.lexer.FlexLexer;
 import java.util.Stack;
 import com.intellij.psi.tree.IElementType;
-import monet.tafat.intellij.psi.TafatTypes;
+import siani.tafat.intellij.psi.TafatTypes;
 import com.intellij.psi.TokenType;
 %%
 

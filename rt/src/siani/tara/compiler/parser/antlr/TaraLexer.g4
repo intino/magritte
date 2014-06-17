@@ -1,4 +1,4 @@
-lexer grammar TaraM2Lexer;
+lexer grammar TaraLexer;
 
 @header{
 package siani.tara.compiler.parser.antlr;
@@ -86,7 +86,7 @@ package siani.tara.compiler.parser.antlr;
     }
 }
 
-CONCEPT    : 'Concept';
+METAIDENTIFIER : 'Concept';
 CASE       : 'case';
 
 MULTIPLE   : 'multiple';

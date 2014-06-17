@@ -1,6 +1,5 @@
 package siani.tara.compiler.codegeneration.intellij;
 
-import siani.tara.compiler.codegeneration.PathManager;
 import siani.tara.compiler.core.errorcollection.StreamWrapper;
 import siani.tara.compiler.core.errorcollection.TaraException;
 
@@ -40,11 +39,6 @@ public abstract class CodeGenerator {
 			if (!error.getMessage().startsWith("Note"))
 				LOG.severe(error.getMessage());
 		return error.getMessage();
-	}
-
-	protected static String newTemplate(String project, String template) {
-		String sep = PathManager.SEP;
-		return template.replace("-", project).replace("/tara/", sep + project + sep).replace("tpl/", "").replaceAll("/", "\\" + sep);
 	}
 
 	protected static void out(String s) {

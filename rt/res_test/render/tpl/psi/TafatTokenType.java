@@ -1,7 +1,7 @@
-package monet.tafat.intellij.psi;
+package siani.tafat.intellij.psi;
 
 import com.intellij.psi.tree.IElementType;
-import monet.tafat.intellij.metamodel.TafatLanguage;
+import siani.tafat.intellij.metamodel.TafatLanguage;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 

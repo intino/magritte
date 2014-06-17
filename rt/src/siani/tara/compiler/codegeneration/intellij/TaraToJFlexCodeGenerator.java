@@ -17,9 +17,9 @@ public class TaraToJFlexCodeGenerator extends CodeGenerator {
 	public static File[] toJFlex(CompilerConfiguration conf, TreeWrapper ast) throws TaraException {
 		List<File> resultFiles = new ArrayList<>();
 		for (String template : TemplateFactory.getLexerTemplates()) {
-			String outPath = PathManager.getSrcDir(conf.getTempDirectory()) + newTemplate(conf.getProject().toLowerCase(), template);
+			String out = PathManager.getSrcDir(conf.getTempDirectory()) + template;
 			JFlexRender render = new JFlexRender(template, conf.getProject(), ast);
-			File file = new File(outPath);
+			File file = new File(out);
 			resultFiles.add(file);
 			writeTemplate(render, file);
 		}
@@ -31,6 +31,4 @@ public class TaraToJFlexCodeGenerator extends CodeGenerator {
 		outWriter.print(render.getOutput());
 		outWriter.close();
 	}
-
-
 }

@@ -4,15 +4,19 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
+import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Node;
 import siani.tara.lang.NodeObject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import siani.tara.lang.TreeWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,18 +51,20 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		if (myElement instanceof MetaIdentifier) {
 			Concept context = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(myElement));
 			if (context != null) {
-				NodeObject node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(context.getType()).get(0).getObject();
+				TreeWrapper heritage = TaraLanguage.getHeritage(ModuleProvider.getModuleOfDocument((TaraFile) context.getContainingFile()));
+				if (heritage == null) return new Object[0];
+				NodeObject node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(context)).getObject();
 				if (node != null) {
 					addChildren(concepts, node);
-					if (node.isCase()) addBaseConcepts(node.getBaseNode(), concepts);
+					if (node.isCase()) addBaseConcepts(context, node.getBaseName(), concepts);
 				}
 			}
 		}
 		return fillVariants(concepts);
 	}
 
-	private void addBaseConcepts(String baseConcept, List<String> concepts) {
-		Node node = TaraLanguage.getHeritage().getNodeNameLookUpTable().get(baseConcept).get(0);
+	private void addBaseConcepts(Concept context, String baseConcept, List<String> concepts) {
+		Node node = TaraLanguage.getHeritage(ModuleProvider.getModuleOfDocument((TaraFile) context.getContainingFile())).getNodeTable().get(baseConcept);
 		for (Node child : node.getInnerNodes())
 			if (!child.getObject().isCase() && !child.getObject().isAbstract()) concepts.add(child.getName());
 	}

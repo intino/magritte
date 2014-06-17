@@ -9,11 +9,11 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
 import siani.tara.intellij.lang.lexer.TaraLexerAdapter;
 import siani.tara.intellij.lang.psi.TaraTypes;
-import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
 
 public class TaraParserDefinition implements ParserDefinition {
 	public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
@@ -24,7 +24,7 @@ public class TaraParserDefinition implements ParserDefinition {
 	@NotNull
 	@Override
 	public com.intellij.lexer.Lexer createLexer(Project project) {
-		return new TaraLexerAdapter();
+		return new TaraLexerAdapter(project);
 	}
 
 	@NotNull

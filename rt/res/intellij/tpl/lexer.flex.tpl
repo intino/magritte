@@ -9,7 +9,7 @@ import java.util.Queue;
 
 %%
 
-%class TaraLexer
+%class ::projectProperName::Lexer
 %implements FlexLexer
 %unicode
 %function advance

@@ -1,20 +1,16 @@
 <idea-plugin version="1">
   <id>siani.dev.tara</id>
   <name>Tara</name>
-  <!--gen %version%-->
   <version>
     1.0
   </version>
-  <!--end-->
-  <vendor email="octavioroncal@siani.es" url="http://www.monet.org">Siani</vendor>
+  <vendor email="octavioroncal@siani.es" url="http://www.siani.org">Siani</vendor>
 
-  <!--gen %description%-->
   <description>
     <![CDATA[
       Siani development tool for the generation of model-based plugins
       ]]>
   </description>
-  <!--end-->
 
   <change-notes><![CDATA[ First Realease. Windows integration. ]]>
   </change-notes>
@@ -27,107 +23,110 @@
   <depends>com.intellij.modules.lang</depends> -->
 
   <actions>
-    <action id="NewConcept" class="monet.tara.intellij.actions.CreateTaraFileAction">
+    <action id="NewConcept" class="siani.tara.intellij.actions.CreateTaraFileAction">
       <add-to-group group-id="NewGroup" anchor="first"/>
     </action>
-    <!--gen %%-->
-    <action id="NewPackage" class="monet.tara.intellij.actions.CreatePackageAction" text="Package"
+    <action id="NewPackage" class="siani.tara.intellij.actions.CreatePackageAction" text="Package"
             description="Create a new package" icon="AllIcons.Nodes.Package">
     </action>
-    <!--end-->
-    <!--gen %%-->
+
+    <group id="tara.file.group" popup="false">
+      <action id="grammar.Generate" class="siani.tara.intellij.actions.GenerateAction" text="Generate Intentions Code">
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>
+      </action>
+      <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
+      <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+      <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+    </group>
+
     <group id="Internal.Tara" text="Tara" popup="true" internal="true">
       <action id="ExcludeFromCodeGeneration"
-              class="monet.tara.intellij.compiler.ExcludeFromStubGenerationAction"
+              class="siani.tara.intellij.compiler.ExcludeFromStubGenerationAction"
               text="Exclude from stub generation"
               description="Don't generate Java stubs for this Tara file on compilation">
         <add-to-group group-id="EditorTabPopupMenu" anchor="first"/>
       </action>
       <add-to-group group-id="Internal"/>
     </group>
-    <!--end-->
   </actions>
 
   <application-components>
   </application-components>
 
   <extensions defaultExtensionNs="com.intellij">
-    <fileDocumentManagerListener implementation="monet.tara.intellij.codegeneration.TaraFileDocumentManagerListener"/>
-    <errorHandler implementation="monet.tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
+    <fileDocumentManagerListener implementation="siani.tara.intellij.codegeneration.TaraFileDocumentManagerListener"/>
+    <errorHandler implementation="siani.tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
-                         implementationClass="monet.tara.intellij.refactoring.rename.NamesValidator"/>
-    <projectService serviceInterface="monet.tara.intellij.lang.psi.TaraElementFactory"
-                    serviceImplementation="monet.tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
-    <moduleType id="TARA_MODULE" implementationClass="monet.tara.intellij.project.module.TaraModuleType"/>
-    <treeStructureProvider implementation="monet.tara.intellij.project.view.MergerTreeStructureProvider"/>
-    <fileTemplateGroup implementation="monet.tara.intellij.actions.TaraTemplatesFactory"/>
+                         implementationClass="siani.tara.intellij.refactoring.rename.NamesValidator"/>
+    <projectService serviceInterface="siani.tara.intellij.lang.psi.TaraElementFactory"
+                    serviceImplementation="siani.tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
+    <moduleType id="TARA_MODULE" implementationClass="siani.tara.intellij.project.module.TaraModuleType"/>
+    <treeStructureProvider implementation="siani.tara.intellij.project.view.MergerTreeStructureProvider"/>
+    <fileTemplateGroup implementation="siani.tara.intellij.actions.TaraTemplatesFactory"/>
     <codeInsight.lineMarkerProvider language="Tara"
-                                    implementationClass="monet.tara.intellij.codeinsight.TaraLineMarkerProvider"/>
-    <gotoRelatedProvider implementation="monet.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
-    <!--gen %%-->
+                                    implementationClass="siani.tara.intellij.codeinsight.TaraLineMarkerProvider"/>
+    <gotoRelatedProvider implementation="siani.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
-    <projectConfigurable instance="monet.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
+    <projectConfigurable instance="siani.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
                          displayName="Tara Compiler" parentId="project.propCompiler"/>
-    <projectService serviceInterface="monet.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
-                    serviceImplementation="monet.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"/>
-    <projectService serviceInterface="monet.tara.intellij.compiler.TaraCompilerConfiguration"
-                    serviceImplementation="monet.tara.intellij.compiler.TaraCompilerConfiguration"/>
-    <!--end-->
+    <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
+                    serviceImplementation="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"/>
+    <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerConfiguration"
+                    serviceImplementation="siani.tara.intellij.compiler.TaraCompilerConfiguration"/>
 
-    <configurationType implementation="monet.tara.intellij.project.runner.RunConfigurationType"/>
-    <lang.commenter language="Tara" implementationClass="monet.tara.intellij.TaraCommenter"/>
+    <configurationType implementation="siani.tara.intellij.project.runner.RunConfigurationType"/>
+    <lang.commenter language="Tara" implementationClass="siani.tara.intellij.TaraCommenter"/>
     <lang.documentationProvider language="Tara"
-                                implementationClass="monet.tara.intellij.documentation.TaraDocumentationProvider"/>
-    <fileTypeFactory implementation="monet.tara.intellij.lang.file.TaraFileTypeFactory"/>
+                                implementationClass="siani.tara.intellij.documentation.TaraDocumentationProvider"/>
+    <fileTypeFactory implementation="siani.tara.intellij.lang.file.TaraFileTypeFactory"/>
     <lang.parserDefinition language="Tara"
-                           implementationClass="monet.tara.intellij.lang.parser.TaraParserDefinition"/>
+                           implementationClass="siani.tara.intellij.lang.parser.TaraParserDefinition"/>
     <lang.syntaxHighlighterFactory key="Tara"
-                                   implementationClass="monet.tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
-    <colorSettingsPage implementation="monet.tara.intellij.highlighting.TaraColorSettingPage"/>
-    <lang.braceMatcher language="Tara" implementationClass="monet.tara.intellij.highlighting.TaraBraceMatcher"/>
-    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.ReferenceAnnotator"/>
-    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.AnnotationsAnnotator"/>
-    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.AttributeAnnotator"/>
-    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.ConceptAnnotator"/>
-    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.PackageAnnotator"/>
-    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.ParameterAnnotator"/>
-    <annotator language="Tara" implementationClass="monet.tara.intellij.annotator.ParametersAnnotator"/>
+                                   implementationClass="siani.tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
+    <colorSettingsPage implementation="siani.tara.intellij.highlighting.TaraColorSettingPage"/>
+    <lang.braceMatcher language="Tara" implementationClass="siani.tara.intellij.highlighting.TaraBraceMatcher"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ReferenceAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AnnotationsAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AttributeAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.PackageAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParameterAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParametersAnnotator"/>
     <completion.contributor language="Tara"
-                            implementationClass="monet.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
+                            implementationClass="siani.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
     <completion.contributor language="Tara"
-                            implementationClass="monet.tara.intellij.codeinsight.completion.TaraPrimitivesCompletionContributor"/>
+                            implementationClass="siani.tara.intellij.codeinsight.completion.TaraPrimitivesCompletionContributor"/>
     <completion.contributor language="Tara"
-                            implementationClass="monet.tara.intellij.codeinsight.completion.TaraAnnotationsCompletionContributor"/>
+                            implementationClass="siani.tara.intellij.codeinsight.completion.TaraAnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="Tara"
-                                  implementationClass="monet.tara.intellij.structureview.StructureViewFactory"/>
-    <!--<psi.referenceContributor implementation="monet.tara.intellij.lang.psi.resolve.TaraReferenceContributor"/>-->
-    <nameSuggestionProvider implementation="monet.tara.intellij.refactoring.NameSuggestionProvider"/>
-    <lang.elementManipulator forClass="monet.tara.intellij.lang.psi.TaraIdentifier"
-                             implementationClass="monet.tara.intellij.lang.psi.impl.IdentifierManipulator"/>
-    <!--%extensions%-->
+                                  implementationClass="siani.tara.intellij.structureview.StructureViewFactory"/>
+    <!--<psi.referenceContributor implementation="siani.tara.intellij.lang.psi.resolve.TaraReferenceContributor"/>-->
+    <nameSuggestionProvider implementation="siani.tara.intellij.refactoring.NameSuggestionProvider"/>
+    <lang.elementManipulator forClass="siani.tara.intellij.lang.psi.TaraIdentifier"
+                             implementationClass="siani.tara.intellij.lang.psi.impl.IdentifierManipulator"/>
     <codeInsight.parameterInfo language="Tara"
-                               implementationClass="monet.tara.intellij.codeinsight.parameterinfo.TaraParameterInfoHandler"/>
+                               implementationClass="siani.tara.intellij.codeinsight.parameterinfo.TaraParameterInfoHandler"/>
 
     <lang.refactoringSupport language="Tara"
-                             implementationClass="monet.tara.intellij.TaraRefactoringSupportProvider"/>
-    <renameHandler implementation="monet.tara.intellij.refactoring.rename.RenameHandler"/>
+                             implementationClass="siani.tara.intellij.TaraRefactoringSupportProvider"/>
+    <renameHandler implementation="siani.tara.intellij.refactoring.rename.RenameHandler"/>
     <lang.findUsagesProvider language="Tara"
-                             implementationClass="monet.tara.intellij.lang.psi.resolve.TaraFindUsagesProvider"/>
-    <lang.foldingBuilder language="Tara" implementationClass="monet.tara.intellij.TaraFoldingBuilder"/>
-    <projectService serviceInterface="monet.tara.intellij.codeinsight.JavaHelper"
-                    serviceImplementation="monet.tara.intellij.codeinsight.JavaHelper$Impl"/>
-    <!--<referenceImporter implementation="monet.tara.intellij.annotator.imports.TaraReferenceImporter"/>-->
-    <!--<lang.formatter language="Tara" implementationClass="monet.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
-    <moveFileHandler implementation="monet.tara.intellij.refactoring.move.TaraFileMoveHandler"/>
-    <refactoring.moveHandler implementation="monet.tara.intellij.refactoring.move.TaraMoveConcept"/>
+                             implementationClass="siani.tara.intellij.lang.psi.resolve.TaraFindUsagesProvider"/>
+    <lang.foldingBuilder language="Tara" implementationClass="siani.tara.intellij.TaraFoldingBuilder"/>
+    <projectService serviceInterface="siani.tara.intellij.codeinsight.JavaHelper"
+                    serviceImplementation="siani.tara.intellij.codeinsight.JavaHelper$Impl"/>
+    <!--<referenceImporter implementation="siani.tara.intellij.annotator.imports.TaraReferenceImporter"/>-->
+    <!--<lang.formatter language="Tara" implementationClass="siani.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
+    <moveFileHandler implementation="siani.tara.intellij.refactoring.move.TaraFileMoveHandler"/>
+    <refactoring.moveHandler implementation="siani.tara.intellij.refactoring.move.TaraMoveConcept"/>
     <lang.importOptimizer language="Tara"
-                          implementationClass="monet.tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
-    <findUsagesHandlerFactory implementation="monet.tara.intellij.findUsages.TaraFindUsagesHandlerFactory" id="Tara"
+                          implementationClass="siani.tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
+    <findUsagesHandlerFactory implementation="siani.tara.intellij.findUsages.TaraFindUsagesHandlerFactory" id="Tara"
                               order="last, before default"/>
   </extensions>
   <module-components>
     <component>
-      <implementation-class>monet.tara.intellij.project.module.ModuleConfiguration</implementation-class>
+      <implementation-class>siani.tara.intellij.project.module.ModuleConfiguration</implementation-class>
     </component>
   </module-components>
 </idea-plugin>

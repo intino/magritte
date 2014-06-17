@@ -5,19 +5,18 @@ import siani.tara.compiler.core.errorcollection.DependencyException;
 import siani.tara.lang.*;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.Collections;
+import java.util.Comparator;
+
+import static siani.tara.lang.NodeObject.AnnotationType;
 
 public class AbstractTreeDependencyResolver {
 	TreeWrapper tree;
 	NodeTree nodes = new NodeTree();
-	NodeTree clones = new NodeTree();
-	TreeWrapper newTree;
 
 	public AbstractTreeDependencyResolver(Collection<SourceUnit> sources) throws DependencyException {
 		tree = mergeTrees(sources);
-		newTree = new TreeWrapper();
-		for (Collection o : tree.getNodeNameLookUpTable().values()) nodes.addAll(o);
+		nodes.addAll(tree.getNodeTable().values());
 		resolveHierarchyDependencies();
 	}
 
@@ -25,59 +24,107 @@ public class AbstractTreeDependencyResolver {
 		return tree;
 	}
 
-	public NodeObject[] resolve() throws DependencyException {
-//		for (NodeObject node : nodes) {
-//			List<NodeObject> innerConcepts = new ArrayList<>();
-//			List<Variable> vars = new ArrayList<>();
-//			Set<NodeObject.AnnotationType> annotations = new HashSet<>();
-//			collectHierarchyData(node.getParent(), innerConcepts, vars, annotations);
-//			for (NodeObject innerConcept : innerConcepts)
-//				if (isImportable(node, innerConcept)) {
-//					innerConcept.setContainer(node);
-//					innerConcept.updateQulifiedName();
-//					node.getInnerConcepts().add(0, innerConcept);
-//				}
-//			node.getVariables().addAll(0, vars);
-//			for (NodeObject.AnnotationType annotation : annotations) node.add(annotation);
-//		}
-		return nodes.toArray(new NodeObject[nodes.size()]);
+	public TreeWrapper resolve() throws DependencyException {
+		restructure();
+		refactorTable();
+		resolveHeritage();
+		return tree;
 	}
 
-	private boolean isImportable(NodeObject node, NodeObject innerConcept) {
-		return !innerConcept.isCase() && !node.equals(innerConcept) && innerConcept.isAbstract() && !node.isBase();
+	private void refactorTable() {
+		tree.getNodeTable().clear();
+		for (Node value : nodes)
+			tree.add(value.getQualifiedName(), value);
 	}
 
-	private void collectHierarchyData(NodeObject parentConcept,
-	                                  List<NodeObject> innerConcepts,
-	                                  List<Variable> vars,
-	                                  Set<NodeObject.AnnotationType> annotations) {
-//		for (NodeObject innerConcept : innerConcepts)
-//			innerConcepts.add(0, innerConcept.getClone());
-//		vars.addAll(0, parentConcept.getVariables());
-//		Collections.addAll(annotations, parentConcept.getAnnotations());
-//		if (parentConcept.getParent() != null)
-//			collectHierarchyData(parentConcept.getParent(), innerConcepts, vars, annotations);
+	private void resolveHeritage() {
+		for (Node node : nodes) {
+			NodeObject object = node.getObject();
+			if (object.getParent() != null) {
+				addInnerConceptsInherited(object.getParent().getDeclaredNode(), node);
+				addInheritedVariables(object.getParent(), node);
+				addInheritedAnnotations(object.getParent(), node);
+			} else if (object.getBaseNode() != null) {
+				addInnerConceptsInherited(object.getBaseNode(), node);
+				addInheritedVariables(object.getBaseNode().getObject(), node);
+			}
+		}
+	}
+
+	private void addInheritedAnnotations(NodeObject parent, Node node) {
+		for (AnnotationType annotation : parent.getAnnotations()) node.getObject().add(annotation);
+	}
+
+	private void addInheritedVariables(NodeObject parent, Node node) {
+		for (Variable variable : parent.getVariables())
+			node.getObject().add(0, variable.clone());
+	}
+
+	private void addInnerConceptsInherited(Node parent, Node node) {
+		for (Node child : parent.getInnerNodes())
+			if (!child.isCase() && !child.getObject().isAbstract()) {
+				Node element = new Node(child.getObject(), node, true);
+				tree.add(element.getQualifiedName(), element);
+				node.add(0, element);
+				element.calculateQualifiedName();
+				for (Node innerChild : child.getInnerNodes()) addInnerConceptsInherited(innerChild, element);
+			}
+	}
+
+	private void restructure() {
+		Collections.sort(nodes, new Comparator<Node>() {
+			@Override
+			public int compare(Node o1, Node o2) {
+				String qn1 = o1.getQualifiedName().replaceAll("\\[.*\\]", "");
+				int count1 = qn1.length() - qn1.replace(".", "").length();
+				String qn2 = o2.getQualifiedName().replaceAll("\\[.*\\]","");
+				int count2 = qn2.length() - qn2.replace(".", "").length();
+				return count1 - count2;
+			}
+		});
+		for (Node node : nodes) {
+			if (node.isCase()) {
+				pullInsideBase(node);
+				recalculateNames(node);
+			}
+		}
+	}
+
+	private void recalculateNames(Node node) {
+		node.calculateQualifiedName();
+		for (Node child : node.getInnerNodes())
+			recalculateNames(child);
+	}
+
+	private void pullInsideBase(Node node) {
+		Node base = node.getContainer();
+		base.getObject().add(node);
+		node.getContainer().removeChild(node);
+		node.getObject().setBaseNode(base);
+		node.getObject().setBaseName(base.getQualifiedName());
+		node.setContainer(null);
 	}
 
 	private void resolveHierarchyDependencies() throws DependencyException {
 		for (Node node : nodes)
 			if (node.getObject().getParentName() != null || node.isCase()) {
-				Node parent = tree.searchAncestry(node);
-				if (parent == null)
-					throw new DependencyException("Dependency resolution fail in: " + node + "doesn't find" + node.getObject().getParentName(), node);
-				parent.getObject().addChild(node.getObject());
-				node.getObject().setParentConcept(parent.getObject());
+				Node ancestry = tree.searchAncestry(node);
+				if (ancestry == null)
+					throw new DependencyException("Dependency resolution fail in: " + node.getQualifiedName() +
+						". Not found ancestry: " + node.getObject().getParentName(), node);
+				ancestry.getObject().addChild(node.getObject());
+				if (node.isCase()) node.getObject().setBaseNode(ancestry);
+				else node.getObject().setParentObject(ancestry.getObject());
 			}
 	}
 
-
 	private TreeWrapper mergeTrees(Collection<SourceUnit> units) {
-		TreeWrapper newAst = new TreeWrapper();
+		TreeWrapper treeWrapper = new TreeWrapper();
 		for (SourceUnit unit : units) {
-			newAst.addAll(unit.getAbstractTree().getTree());
-			newAst.putAllIdentifiers(unit.getAbstractTree().getIdentifiers());
-			newAst.putAllInNodeNameTable(unit.getAbstractTree().getNodeNameLookUpTable());
+			treeWrapper.addAll(unit.getNodeTree().getTree());
+			treeWrapper.putAllIdentifiers(unit.getNodeTree().getIdentifiers());
+			treeWrapper.putAllInNodeNameTable(unit.getNodeTree().getNodeTable());
 		}
-		return newAst;
+		return treeWrapper;
 	}
 }

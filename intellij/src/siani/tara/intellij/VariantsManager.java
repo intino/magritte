@@ -4,8 +4,10 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiPackage;
 import siani.tara.intellij.codeinsight.JavaHelper;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
@@ -47,15 +49,22 @@ public class VariantsManager {
 
 	private List<PsiElement> addInPackageVariants() {
 		List<PsiElement> variants = new ArrayList<>();
-		VirtualFile packageFile = ReferenceManager.resolveRoute(((TaraFile) myElement.getContainingFile()).getPackageRoute());
+		List<? extends Identifier> packageRoute = ((TaraFile) myElement.getContainingFile()).getPackageRoute();
+		PsiPackage packageFile = (PsiPackage) ReferenceManager.resolve(packageRoute.get(packageRoute.size() - 1), false);
 		if (packageFile == null) return Collections.EMPTY_LIST;
-		for (VirtualFile vFile : packageFile.getChildren()) {
+		PsiDirectory[] directories = packageFile.getDirectories();
+		for (PsiDirectory directory : directories)
+			searchInPackage(directory);
+		return variants;
+	}
+
+	private void searchInPackage(PsiDirectory directory) {
+		for (VirtualFile vFile : directory.getVirtualFile().getChildren()) {
 			TaraFile file = TaraUtil.getTaraFileFromVirtual(project, vFile);
 			if (file == null) continue;
 			if (file.getConcept() != null)
 				resolveRouteFor(file.getConcept(), context);
 		}
-		return variants;
 	}
 
 	private List<PsiElement> addImportVariants() {
@@ -136,10 +145,12 @@ public class VariantsManager {
 			IdentifierReference element = (IdentifierReference) myElement.getParent();
 			List<? extends Identifier> list = element.getIdentifierList();
 			return (List<Identifier>) list.subList(0, list.size() - 1);
-		} else {
-			HeaderReference element = (HeaderReference) myElement.getParent();
+		}
+		if (myElement.getParent() instanceof TaraHeaderReference) {
+			TaraHeaderReference element = (TaraHeaderReference) myElement.getParent();
 			List<? extends Identifier> list = element.getIdentifierList();
 			return (List<Identifier>) list.subList(0, list.size() - 1);
 		}
+		return null;
 	}
 }

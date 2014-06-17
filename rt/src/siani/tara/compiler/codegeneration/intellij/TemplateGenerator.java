@@ -11,14 +11,12 @@ import siani.tara.lang.TreeWrapper;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.List;
 
 public class TemplateGenerator extends CodeGenerator {
 
 	public static void generateDefinitionTemplates(CompilerConfiguration conf, TreeWrapper ast) throws TaraException {
 		String destiny = PathManager.getSourceResIdeDir(conf.getTempDirectory()) + "fileTemplates" + PathManager.SEP + "j2ee" + PathManager.SEP;
-		for (List<Node> nodes : ast.getNodeNameLookUpTable().values())
-			for (Node node : nodes)
+			for (Node node : ast.getNodeTable().values())
 				if (node.getObject().is(NodeObject.AnnotationType.ROOT) && !node.getName().equals("") && !node.getObject().isAbstract()) {
 					writeTemplate(destiny + RenderUtils.toProperCase(conf.getProject()) + RenderUtils.toProperCase(node.getName()) + ".m1.ft", createTemplate(node));
 				}

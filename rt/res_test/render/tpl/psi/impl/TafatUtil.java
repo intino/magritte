@@ -1,4 +1,4 @@
-package monet.tafat.intellij.psi.impl;
+package siani.tafat.intellij.psi.impl;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -7,9 +7,9 @@ import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
-import monet.tafat.intellij.metamodel.file.TafatFile;
-import monet.tafat.intellij.metamodel.file.TafatFileType;
-import monet.tafat.intellij.psi.TafatDefinition;
+import siani.tafat.intellij.metamodel.file.TafatFile;
+import siani.tafat.intellij.metamodel.file.TafatFileType;
+import siani.tafat.intellij.psi.TafatDefinition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

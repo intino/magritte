@@ -8,6 +8,8 @@ import siani.tara.lang.Node;
 import siani.tara.lang.NodeTree;
 import siani.tara.lang.TreeWrapper;
 
+import java.util.List;
+
 public class SemanticAnalyzer {
 	private TreeWrapper ast;
 	private SemanticErrorList errors = new SemanticErrorList();
@@ -47,7 +49,7 @@ public class SemanticAnalyzer {
 		useChecker.finish();
 	}
 
-	private void referenceAnalysis(NodeTree astNodes) {
+	private void referenceAnalysis(List<Node> astNodes) {
 		for (Node concept : astNodes) {
 			verifier.checkConcept(concept, ast);
 			useChecker.checkUsage(concept, ast);

@@ -1,4 +1,4 @@
-package monet.tafat.intellij.psi;
+package siani.tafat.intellij.psi;
 
 import com.intellij.psi.PsiNameIdentifierOwner;
 

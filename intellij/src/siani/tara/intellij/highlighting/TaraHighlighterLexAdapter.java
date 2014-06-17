@@ -1,11 +1,11 @@
 package siani.tara.intellij.highlighting;
 
 import com.intellij.lexer.FlexAdapter;
-
-import java.io.Reader;
+import com.intellij.openapi.project.Project;
 
 public class TaraHighlighterLexAdapter extends FlexAdapter {
-	public TaraHighlighterLexAdapter() {
-		super(new TaraHighlighterLex((Reader) null));
+
+	public TaraHighlighterLexAdapter(Project project) {
+		super(new TaraHighlighterLexProxy(project));
 	}
 }

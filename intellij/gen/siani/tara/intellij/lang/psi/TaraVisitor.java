@@ -90,7 +90,15 @@ public class TaraVisitor extends PsiElementVisitor {
     visitMetaIdentifier(o);
   }
 
+  public void visitMetaWord(@NotNull TaraMetaWord o) {
+    visitPsiElement(o);
+  }
+
   public void visitModifier(@NotNull TaraModifier o) {
+    visitPsiElement(o);
+  }
+
+  public void visitModule(@NotNull TaraModule o) {
     visitPsiElement(o);
   }
 

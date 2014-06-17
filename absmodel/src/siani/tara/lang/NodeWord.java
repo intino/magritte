@@ -25,6 +25,11 @@ public class NodeWord extends Variable {
 	}
 
 	@Override
+	public String getType() {
+		return toString();
+	}
+
+	@Override
 	public boolean isList() {
 		return false;
 	}

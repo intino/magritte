@@ -1,4 +1,4 @@
-package monet.tafat.intellij.metamodel.file;
+package siani.tafat.intellij.metamodel.file;
 
 import com.intellij.openapi.fileTypes.FileTypeFactory;
 import org.jetbrains.annotations.NotNull;

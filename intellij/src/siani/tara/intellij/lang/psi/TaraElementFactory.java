@@ -30,4 +30,8 @@ public abstract class TaraElementFactory {
 	public abstract Attribute createWord(String name, String[] types);
 
 	public abstract Attribute createResource(String name, String types);
+
+	public abstract MetaIdentifier createMetaIdentifier(String module, String name);
+
+	public abstract PsiElement createMetaWordIdentifier(String module,String node, String name);
 }

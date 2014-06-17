@@ -6,14 +6,15 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.EffectType;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
 import gnu.trove.THashMap;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.lang.psi.TaraTypes;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Map;
@@ -67,13 +68,12 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	@NotNull
 	@Override
 	public Lexer getHighlightingLexer() {
-		return new TaraHighlighterLexAdapter();
+		return new TaraHighlighterLexAdapter(ProjectManager.getInstance().getOpenProjects()[0]);
 	}
 
 	static {
 		KEYS = new THashMap<>();
 
-//gen %highlightKey%
 		KEYS.put(METAIDENTIFIER_KEY, KEYWORD);
 		KEYS.put(REQUIRED, ANNOTATION);
 		KEYS.put(MULTIPLE, ANNOTATION);
@@ -84,8 +84,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(HAS_NAME, ANNOTATION);
 		KEYS.put(RESOURCE_KEY, PRIMITIVE);
 		KEYS.put(PROPERTY, KEYWORD);
-//end
-
 		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);
 		KEYS.put(CASE_KEY, KEYWORD);
 		KEYS.put(BASE_KEY, KEYWORD);
@@ -94,10 +92,10 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(OPEN_AN, ANNOTATION);
 		KEYS.put(CLOSE_AN, ANNOTATION);
 		KEYS.put(VAR, KEYWORD);
-
 		KEYS.put(COLON, OPERATOR);
 		KEYS.put(LEFT_SQUARE, OPERATOR);
 		KEYS.put(RIGHT_SQUARE, OPERATOR);
+		KEYS.put(META_WORD, OPERATOR);
 
 		KEYS.put(WORD_KEY, PRIMITIVE);
 		KEYS.put(STRING_TYPE, PRIMITIVE);

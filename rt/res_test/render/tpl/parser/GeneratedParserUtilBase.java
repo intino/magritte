@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package monet.tafat.intellij.parser;
+package siani.tafat.intellij.parser;
 
 import com.intellij.lang.*;
 import com.intellij.lang.impl.PsiBuilderAdapter;

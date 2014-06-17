@@ -1,8 +1,8 @@
-package monet.tafat.intellij.psi;
+package siani.tafat.intellij.psi;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
-import monet.tafat.intellij.metamodel.file.TafatFile;
+import siani.tafat.intellij.metamodel.file.TafatFile;
 
 public abstract class TafatElementFactory {
 

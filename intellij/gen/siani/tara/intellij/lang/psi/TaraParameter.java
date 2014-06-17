@@ -1,7 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package siani.tara.intellij.lang.psi;
 
+import java.util.List;
 import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
 
 public interface TaraParameter extends Parameter {
 
@@ -31,6 +33,9 @@ public interface TaraParameter extends Parameter {
 
   @Nullable
   TaraIntegerValue getIntegerValue();
+
+  @Nullable
+  TaraMetaWord getMetaWord();
 
   @Nullable
   TaraNaturalList getNaturalList();

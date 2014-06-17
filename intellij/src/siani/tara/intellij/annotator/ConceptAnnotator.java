@@ -27,7 +27,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 	}
 
 	private void isDuplicated(Concept concept) {
-		if (concept.getIdentifierNode() != null && TaraUtil.findDuplicates(concept.getProject(), concept) != 1)
+		if (concept.getIdentifierNode() != null && TaraUtil.findDuplicates(concept) != 1)
 			annotateAndFix(concept.getIdentifierNode(), new RenameConceptFix(concept), TaraBundle.message("duplicate.concept.key.error.message"));
 	}
 }

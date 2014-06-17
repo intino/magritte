@@ -1,4 +1,4 @@
-package monet.tafat.intellij.psi.impl;
+package siani.tafat.intellij.psi.impl;
 
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.AbstractElementManipulator;

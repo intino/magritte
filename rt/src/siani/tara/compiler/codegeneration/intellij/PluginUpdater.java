@@ -1,7 +1,6 @@
 package siani.tara.compiler.codegeneration.intellij;
 
 import com.google.gson.*;
-import siani.tara.compiler.codegeneration.PathManager;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.lang.*;
@@ -12,30 +11,30 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
+import static siani.tara.compiler.codegeneration.PathManager.SEP;
+
 public class PluginUpdater {
 
-	private static final String TREE_JSON = "ast" + PathManager.SEP + "ast.json";
 	CompilerConfiguration conf;
 
 	public PluginUpdater(CompilerConfiguration conf) {
 		this.conf = conf;
 	}
 
-	public void generate(TreeWrapper ast) throws TaraException {
-		serializeNodes(ast);
-//		File bnfFile = new TaraPluginToJavaCodeGenerator().toJava(conf, ast);
-//		BnfToJavaCodeGenerator.bnfToJava(conf, bnfFile);
-		File[] lexFiles = TaraToJFlexCodeGenerator.toJFlex(conf, ast);
+	public void generate(TreeWrapper treeWrapper) throws TaraException {
+		serializeNodes(treeWrapper);
+		System.out.println("Nodes serialized");
+		File[] lexFiles = TaraToJFlexCodeGenerator.toJFlex(conf, treeWrapper);
 		for (File lexFile : lexFiles)
 			JFlexToJavaGenerator.jFlexToJava(conf.getTempDirectory(), lexFile);
-		TemplateGenerator.generateDefinitionTemplates(conf, ast);
+//		TemplateGenerator.generateDefinitionTemplates(conf, treeWrapper);
 		PluginCompiler.generateClasses(conf);
-		PluginPackager.doPackage(conf);
+		PluginUpdateApplier.update(conf);
 	}
 
 	private void serializeNodes(TreeWrapper treeWrapper) throws TaraException {
 		try {
-			File file = new File(PathManager.getSourceResIdeDir(conf.getTempDirectory()), TREE_JSON);
+			File file = new File(conf.getPluginDirectory(), "classes" + SEP + conf.getProject() + SEP + conf.getProject() + ".json");
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
 			GsonBuilder gsonBuilder = new GsonBuilder();
@@ -46,7 +45,7 @@ public class PluginUpdater {
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new TaraException("Error serializing ast");
+			throw new TaraException("Error serializing tree model");
 		}
 	}
 

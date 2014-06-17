@@ -1,4 +1,4 @@
-package monet.tafat.intellij.metamodel;
+package siani.tafat.intellij.metamodel;
 
 import com.intellij.find.impl.HelpID;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
@@ -6,9 +6,9 @@ import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
-import monet.tafat.intellij.psi.TafatDefinition;
-import monet.tafat.intellij.psi.TafatIdentifier;
-import monet.tafat.intellij.psi.TafatTypes;
+import siani.tafat.intellij.psi.TafatDefinition;
+import siani.tafat.intellij.psi.TafatIdentifier;
+import siani.tafat.intellij.psi.TafatTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -3,8 +3,8 @@ package siani.tara.compiler.parser;
 import siani.tara.compiler.core.errorcollection.SyntaxException;
 import siani.tara.compiler.parser.antlr.TaraAbstractTreeGenerator;
 import siani.tara.compiler.parser.antlr.TaraErrorStrategy;
-import siani.tara.compiler.parser.antlr.TaraM2Grammar;
-import siani.tara.compiler.parser.antlr.TaraM2Lexer;
+import siani.tara.compiler.parser.antlr.TaraGrammar;
+import siani.tara.compiler.parser.antlr.TaraLexer;
 import siani.tara.lang.TreeWrapper;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -15,16 +15,16 @@ import java.io.IOException;
 public class Parser {
 
 	private final File file;
-	TaraM2Grammar parser;
-	TaraM2Grammar.RootContext rootContext;
+	TaraGrammar parser;
+	TaraGrammar.RootContext rootContext;
 
 	public Parser(File file) throws IOException {
 		this.file = file;
 		ANTLRInputStream input = new ANTLRFileStream(file.getAbsolutePath());
-		TaraM2Lexer lexer = new TaraM2Lexer(input);
+		TaraLexer lexer = new TaraLexer(input);
 		lexer.reset();
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		parser = new TaraM2Grammar(tokens);
+		parser = new TaraGrammar(tokens);
 		parser.setErrorHandler(new TaraErrorStrategy());
 	}
 

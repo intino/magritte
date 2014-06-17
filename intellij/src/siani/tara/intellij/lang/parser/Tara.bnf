@@ -19,11 +19,13 @@
 root ::= NEWLINE* header? NEWLINE* concept?  NEWLINE*
 
 header ::=  packet? importStatement*
-packet ::= PACKAGE headerReference
+packet ::= PACKAGE (module COLON)? headerReference
 importStatement ::= NEWLINE IMPORT_KEY headerReference {
 	mixin= 'siani.tara.intellij.lang.psi.impl.ImportMixin'
 	implements='siani.tara.intellij.lang.psi.Import'
 }
+
+module ::= (IDENTIFIER_KEY DOT)* IDENTIFIER_KEY
 
 doc::= DOC_LINE+ {
 	mixin= 'siani.tara.intellij.lang.psi.impl.DocMixin'
@@ -31,11 +33,13 @@ doc::= DOC_LINE+ {
 }
 
 concept ::= doc? signature annotations? body? {
+	pin = 2
 	mixin= 'siani.tara.intellij.lang.psi.impl.ConceptMixin'
 	implements='siani.tara.intellij.lang.psi.Concept'
 }
 
 modifier::= ABSTRACT | FINAL | BASE_KEY
+
 signature::= ((CASE_KEY identifier) | withHeritage | (metaIdentifier modifier? identifier)) parameters? {
 	pin=1
 	mixin= 'siani.tara.intellij.lang.psi.impl.SignatureMixin'
@@ -47,7 +51,7 @@ private withHeritage ::= metaIdentifier COLON identifierReference modifier? iden
 }
 
 parameters ::= LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS {
-	pin=1
+	pin = 3
 	mixin = 'siani.tara.intellij.lang.psi.impl.ParametersMixin'
 	implements = 'siani.tara.intellij.lang.psi.Parameters'
 }
@@ -58,8 +62,8 @@ private parameterList ::= explicit? parameter (COMMA explicit? parameter)*
 explicit::= identifier COLON
 { pin=2}
 
-parameter ::=     identifierReference
-				| stringValue
+parameter ::=     (identifierReference)
+				| (stringValue
 		        | booleanValue
 		        | naturalValue
 		        | integerValue
@@ -70,20 +74,30 @@ parameter ::=     identifierReference
 		        | integerList
 		        | doubleList
 		        | identifierList
-		        | empty
-{mixin = 'siani.tara.intellij.lang.psi.impl.ParameterMixin'
-implements = 'siani.tara.intellij.lang.psi.Parameter'}
+		        | metaWord
+		        | empty) {
+    pin = 1
+	mixin = 'siani.tara.intellij.lang.psi.impl.ParameterMixin'
+	implements = 'siani.tara.intellij.lang.psi.Parameter'
+}
+
+metaWord ::= metaIdentifier metaWordNames* {
+	pin = 1
+}
+private metaWordNames ::= DOT identifier
+{pin = 1}
 
 empty::=
 
 body ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT {
+	pin = 2
 	mixin= 'siani.tara.intellij.lang.psi.impl.BodyMixin'
 	implements='siani.tara.intellij.lang.psi.Body'
 }
 
 private conceptConstituents ::= attribute | concept
 
-attribute ::= doc? (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | StringAttribute
+attribute ::= doc? (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
                         | resource | referenceStatement | word) {
 	pin=2
 	mixin= 'siani.tara.intellij.lang.psi.impl.AttributeMixin'
@@ -92,7 +106,7 @@ attribute ::= doc? (aliasAttribute | naturalAttribute | integerAttribute | doubl
 
 private aliasAttribute   ::= (VAR | PROPERTY) ALIAS_TYPE IDENTIFIER_KEY (COLON stringValue)? {pin=2}
 private booleanAttribute ::= (VAR | PROPERTY) BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?)) {pin=2}
-private StringAttribute  ::= (VAR | PROPERTY) STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?)   | (LIST IDENTIFIER_KEY (COLON stringList)?)) {pin=2}
+private stringAttribute  ::= (VAR | PROPERTY) STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?)   | (LIST IDENTIFIER_KEY (COLON stringList)?)) {pin=2}
 private naturalAttribute ::= (VAR | PROPERTY) NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?)) {pin=2}
 private integerAttribute ::= (VAR | PROPERTY) INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?)     | (LIST IDENTIFIER_KEY (COLON integerList)?)) {pin=2}
 private doubleAttribute  ::= (VAR | PROPERTY) DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)   | (LIST IDENTIFIER_KEY (COLON doubleList)?)) {pin=2}
@@ -112,19 +126,21 @@ doubleList  ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VAL
 identifierList ::= LEFT_SQUARE identifier+ RIGHT_SQUARE;
 
 referenceStatement ::= doc? VAR identifierReference LIST? IDENTIFIER_KEY {
+	pin = 3
 	mixin= 'siani.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
 	implements='siani.tara.intellij.lang.psi.ReferenceStatement'
 }
 
 word ::= doc? VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT {
-	mixin= 'siani.tara.intellij.lang.psi.impl.WordMixin'
-	implements='siani.tara.intellij.lang.psi.Word'
+	pin = 3
+	mixin = 'siani.tara.intellij.lang.psi.impl.WordMixin'
+	implements ='siani.tara.intellij.lang.psi.Word'
 }
 
 annotations ::= OPEN_AN (GENERIC | MULTIPLE | REQUIRED | HAS_NAME | intention | SINGLETON | ROOT)+ CLOSE_AN {
-	pin=1
-	mixin= 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
-	implements='siani.tara.intellij.lang.psi.Annotations'
+	pin = 1
+	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
+	implements = 'siani.tara.intellij.lang.psi.Annotations'
 }
 
 intention ::= INTENTION_KEY {
@@ -146,6 +162,7 @@ identifierReference::= hierarchy* identifier {
 }
 
 private hierarchy ::= identifier DOT
+{pin=2}
 
 identifier::=  IDENTIFIER_KEY {
 	mixin= 'siani.tara.intellij.lang.psi.impl.IdentifierMixin'

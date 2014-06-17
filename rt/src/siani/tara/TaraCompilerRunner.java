@@ -83,20 +83,32 @@ public class TaraCompilerRunner {
 	private static void processArgs(CompilerConfiguration configuration, BufferedReader reader, String line) throws IOException {
 		String aLine = line;
 		while (aLine != null) {
-			if (aLine.equals(TaraRtConstants.ENCODING))
-				configuration.setSourceEncoding(reader.readLine());
-			else if (aLine.equals(TaraRtConstants.OUTPUTPATH))
-				configuration.setTempDirectory(reader.readLine());
-			else if (aLine.equals(TaraRtConstants.FINAL_OUTPUTPATH))
-				configuration.setTargetDirectory(reader.readLine());
-			else if (aLine.equals(TaraRtConstants.PROJECT))
-				configuration.setProject(reader.readLine());
-			else if (aLine.equals(TaraRtConstants.IDEA_HOME))
-				configuration.setIdeaHome(reader.readLine());
-			else if (aLine.equals(TaraRtConstants.ICONS_PATH))
-				configuration.addIconPath(reader.readLine());
-			else if (aLine.equals(TaraRtConstants.PROJECT_ICON))
-				configuration.setProjectIcon(reader.readLine());
+			switch (aLine) {
+				case TaraRtConstants.ENCODING:
+					configuration.setSourceEncoding(reader.readLine());
+					break;
+				case TaraRtConstants.OUTPUTPATH:
+					configuration.setTempDirectory(reader.readLine());
+					break;
+				case TaraRtConstants.FINAL_OUTPUTPATH:
+					configuration.setTargetDirectory(reader.readLine());
+					break;
+				case TaraRtConstants.PROJECT:
+					configuration.setProject(reader.readLine());
+					break;
+				case TaraRtConstants.IDEA_HOME:
+					configuration.setIdeaHome(reader.readLine());
+					break;
+				case TaraRtConstants.PLUGIN_HOME:
+					configuration.setPluginDirectory(reader.readLine());
+					break;
+				case TaraRtConstants.ICONS_PATH:
+					configuration.addIconPath(reader.readLine());
+					break;
+				case TaraRtConstants.PROJECT_ICON:
+					configuration.setProjectIcon(reader.readLine());
+					break;
+			}
 			aLine = reader.readLine();
 		}
 	}

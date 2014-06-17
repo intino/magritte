@@ -20,6 +20,7 @@ public class TaracRunner {
 		try {
 			TaraCompilerRunner.runTaraCompiler(argsFile, isPluginGeneration(args[0]));
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOG.severe("Exception in TaraCRunner: " + e.toString());
 			System.exit(1);
 		}

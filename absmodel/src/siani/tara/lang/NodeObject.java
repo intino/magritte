@@ -5,21 +5,25 @@ import java.util.Collections;
 import java.util.List;
 
 public class NodeObject {
-	private Node declaredNode;
+	private transient Node declaredNode;
 	private boolean abstractModifier;
 	private boolean finalModifier;
 	private boolean caseConcept;
 	private boolean base;
+	private List<Node> cases;
 	private String doc;
 	private String parentName;
-	private transient NodeObject parentConcept;
+	private transient NodeObject parentObject;
 	private transient List<NodeObject> childrenConcepts;
-	private String baseParentConcept;
+	private transient Node baseNode = null;
+	private transient String baseName = null;
 	private String name = "";
 	private List<AnnotationType> annotations = new ArrayList<>();
 	private List<String> imports = new ArrayList<>();
 	private List<Variable> variables = new ArrayList<>();
 	private String aPackage;
+	private List<String> parameters;
+
 
 	public NodeObject() {
 	}
@@ -32,10 +36,10 @@ public class NodeObject {
 		this.base = false;
 	}
 
-
 	public boolean is(AnnotationType type) {
 		return (annotations.contains(type));
 	}
+
 
 	public boolean hasName() {
 		return annotations.contains(AnnotationType.HAS_NAME);
@@ -60,6 +64,14 @@ public class NodeObject {
 
 	public void setDeclaredNode(Node declaredNode) {
 		this.declaredNode = declaredNode;
+	}
+
+	public List<String> getParameters() {
+		return parameters;
+	}
+
+	public boolean addParameter(String parameter) {
+		return parameters.add(parameter);
 	}
 
 	public AnnotationType[] getAnnotations() {
@@ -88,12 +100,20 @@ public class NodeObject {
 		this.parentName = parentName;
 	}
 
-	public NodeObject getParent() {
-		return parentConcept;
+	public Node getBaseNode() {
+		return baseNode;
 	}
 
-	public void setParentConcept(NodeObject parentConcept) {
-		this.parentConcept = parentConcept;
+	public void setBaseNode(Node baseObject) {
+		this.baseNode = baseObject;
+	}
+
+	public NodeObject getParent() {
+		return parentObject;
+	}
+
+	public void setParentObject(NodeObject parentObject) {
+		this.parentObject = parentObject;
 	}
 
 	public List<NodeObject> getChildren() {
@@ -111,6 +131,10 @@ public class NodeObject {
 	public NodeWord[] getWords() {
 		List<NodeWord> result = extractElements(variables, NodeWord.class);
 		return result.toArray(new NodeWord[result.size()]);
+	}
+
+	public List<Node> getCases() {
+		return cases;
 	}
 
 	public boolean isFinal() {
@@ -152,12 +176,21 @@ public class NodeObject {
 		childrenConcepts.add(child);
 	}
 
+	public boolean add(Node node) {
+		if (cases == null) cases = new ArrayList<>();
+		return cases.add(node);
+	}
+
 	public void add(AnnotationType annotation) {
 		annotations.add(annotation);
 	}
 
 	public boolean add(Variable variable) {
 		return variables.add(variable);
+	}
+
+	public void add(int index, Variable element) {
+		variables.add(index, element);
 	}
 
 	private <T> List<T> extractElements(List items, Class<T> type) {
@@ -172,7 +205,6 @@ public class NodeObject {
 		return variables;
 	}
 
-
 	public String getPackage() {
 		return aPackage;
 	}
@@ -181,13 +213,6 @@ public class NodeObject {
 		this.aPackage = aPackage;
 	}
 
-	public String getBaseNode() {
-		return baseParentConcept;
-	}
-
-	public void setBaseParentConcept(String baseParentConcept) {
-		this.baseParentConcept = baseParentConcept;
-	}
 
 	public boolean resolveChild(String[] path) {
 		if (path.length > 2 || path.length == 0) return false;
@@ -198,6 +223,14 @@ public class NodeObject {
 			for (String wordElement : ((NodeWord) variable).getWordTypes())
 				if (wordElement.equals(path[1])) return true;
 		return variable != null;
+	}
+
+	public String getBaseName() {
+		return baseName;
+	}
+
+	public void setBaseName(String baseName) {
+		this.baseName = baseName;
 	}
 
 	public enum AnnotationType {

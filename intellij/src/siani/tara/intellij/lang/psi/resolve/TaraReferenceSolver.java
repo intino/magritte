@@ -5,6 +5,8 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.VariantsManager;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.Concept;
@@ -12,8 +14,6 @@ import siani.tara.intellij.lang.psi.HeaderReference;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.IdentifierReference;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.ArrayList;

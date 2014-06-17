@@ -7,7 +7,7 @@ import com.intellij.psi.TokenType;
 
 %%
 
-%class TaraHighlighterLex
+%class ::projectProperName::HighlighterLex
 %implements FlexLexer
 %unicode
 %function advance

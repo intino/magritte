@@ -6,9 +6,9 @@ import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.openapi.components.StorageScheme;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
+import com.intellij.openapi.util.DefaultJDOMExternalizer;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
-import com.intellij.openapi.util.JDOMExternalizer;
 import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,6 @@ import java.io.*;
 public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable {
 
 	private final Module module;
-
 	Configuration configuration;
 
 	public ModuleConfiguration(Module module) {
@@ -79,7 +78,6 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 	}
 
 	@Override
@@ -92,6 +90,18 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 		configuration.writeExternal(element);
 	}
 
+	public String getParentName() {
+		return configuration.getParentName();
+	}
+
+	public boolean isSystem() {
+		return configuration.isSystem();
+	}
+
+	public String getParentFilePath() {
+		return configuration.getParentFilePath();
+	}
+
 	class Configuration implements JDOMExternalizable {
 		public String parentName = "";
 		public String parentFilePath = "";
@@ -99,16 +109,24 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 
 		@Override
 		public void readExternal(Element element) throws InvalidDataException {
-			parentName = JDOMExternalizer.readString(element, "parentName");
-			parentFilePath = JDOMExternalizer.readString(element, "parentFilePath");
-			system = JDOMExternalizer.readBoolean(element, "system");
+			DefaultJDOMExternalizer.readExternal(this, element);
 		}
 
 		@Override
 		public void writeExternal(Element element) throws WriteExternalException {
-			JDOMExternalizer.write(element, "parentName", parentName);
-			JDOMExternalizer.write(element, "parentFilePath", parentFilePath);
-			JDOMExternalizer.write(element, "system", system);
+			DefaultJDOMExternalizer.writeExternal(this, element);
+		}
+
+		public String getParentName() {
+			return parentName;
+		}
+
+		public String getParentFilePath() {
+			return parentFilePath;
+		}
+
+		public boolean isSystem() {
+			return system;
 		}
 	}
 }

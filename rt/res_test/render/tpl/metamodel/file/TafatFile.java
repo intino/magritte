@@ -1,8 +1,8 @@
-package monet.tafat.intellij.metamodel.file;
+package siani.tafat.intellij.metamodel.file;
 
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
-import monet.tafat.intellij.metamodel.TafatLanguage;
+import siani.tafat.intellij.metamodel.TafatLanguage;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

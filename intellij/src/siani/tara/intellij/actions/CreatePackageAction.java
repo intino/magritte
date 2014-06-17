@@ -37,8 +37,6 @@ public class CreatePackageAction extends DumbAwareAction {
 			@Override
 			protected void createDirectories(String subDirName) {
 				super.createDirectories(subDirName);
-				PsiFileSystemItem element = getCreatedElement();
-
 			}
 		};
 		Messages.showInputDialog(project, IdeBundle.message("prompt.enter.new.package.name"),

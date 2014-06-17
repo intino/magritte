@@ -3,14 +3,17 @@ package siani.tara.intellij.documentation;
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
 import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleProvider;
+import siani.tara.lang.TreeWrapper;
 
 
 public class TaraDocumentationProvider extends AbstractDocumentationProvider {
@@ -31,7 +34,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	@NonNls
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
 		if (originalElement instanceof MetaIdentifier)
-			return TaraDocumentationFormatter.doc2Html(null, extractMetaDocumentation(originalElement.getText()));
+			return TaraDocumentationFormatter.doc2Html(null, extractMetaDocumentation(TaraPsiImplUtil.getContextOf(originalElement)));
 		if (element instanceof Concept)
 			return ((Concept) element).getDocCommentText();
 		if (element instanceof TaraFile)
@@ -39,7 +42,8 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		return renderConceptValue(TaraPsiImplUtil.getContextOf(element));
 	}
 
-	private String extractMetaDocumentation(String key) {
-		return TaraLanguage.getHeritage().getNodeNameLookUpTable().get(key).get(0).getObject().getDoc();
+	private String extractMetaDocumentation(Concept element) {
+		TreeWrapper heritage = TaraLanguage.getHeritage(ModuleProvider.getModuleOfDocument((TaraFile) element.getContainingFile()));
+		return (heritage == null) ? null : heritage.get(TaraUtil.getMetaQualifiedName(element)).getObject().getDoc();
 	}
 }

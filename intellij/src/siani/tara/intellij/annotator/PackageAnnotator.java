@@ -4,19 +4,20 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.lang.psi.HeaderReference;
 import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.TaraHeaderReference;
 import siani.tara.intellij.lang.psi.TaraPacket;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
-import org.jetbrains.annotations.NotNull;
 
 public class PackageAnnotator extends TaraAnnotator {
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
-		if (element.getParent().getParent() instanceof TaraPacket)
+		if (element.getParent() instanceof HeaderReference && element.getParent().getParent() instanceof TaraPacket)
 			isWellPlaced((TaraHeaderReference) element.getParent());
 		else if (element instanceof TaraFile)
 			checkPackageExistence((TaraFile) element);

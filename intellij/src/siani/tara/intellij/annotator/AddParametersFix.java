@@ -60,7 +60,7 @@ public class AddParametersFix implements IntentionAction {
 	public boolean isStringAttribute(Variable variable) {
 		if (variable instanceof NodeAttribute) {
 			NodeAttribute o = (NodeAttribute) variable;
-			if ("string".equals(o.getPrimitiveType().toLowerCase()) || "alias".equals(o.getPrimitiveType().toLowerCase()))
+			if ("string".equals(o.getType().toLowerCase()) || "alias".equals(o.getType().toLowerCase()))
 				return true;
 		}
 		return false;

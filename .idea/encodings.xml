@@ -2,8 +2,8 @@
 <project version="4">
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$/rt/res_test/argsWin" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/rt/src/monet/tara/compiler/codegeneration/ResourceManager.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/rt/src/monet/tara/compiler/codegeneration/intellij/PluginUpdater.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rt/src/siani/tara/compiler/codegeneration/ResourceManager.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rt/src/siani/tara/compiler/codegeneration/intellij/PluginUpdater.java" charset="UTF-8" />
   </component>
 </project>
 

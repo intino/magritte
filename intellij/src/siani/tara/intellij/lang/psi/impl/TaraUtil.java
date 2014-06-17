@@ -1,10 +1,10 @@
 package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -14,13 +14,13 @@ import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.Attribute;
 import siani.tara.intellij.lang.psi.Body;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFile;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 
 import java.util.*;
 
@@ -35,6 +35,16 @@ public class TaraUtil {
 		for (TaraFileImpl taraFile : getModuleFiles(element.getContainingFile()))
 			if (identifier.equals(taraFile.getConcept().getName())) result.add(taraFile.getConcept());
 		return result;
+	}
+
+	public static String getMetaQualifiedName(Concept concept) {
+		Concept container = concept;
+		String id = container.getType();
+		while (TaraPsiImplUtil.getContextOf(container) != null) {
+			container = TaraPsiImplUtil.getContextOf(container);
+			id = container.getType() + "." + id;
+		}
+		return id;
 	}
 
 	public static Concept getRootConceptOfFile(TaraFileImpl taraFile) {
@@ -61,8 +71,9 @@ public class TaraUtil {
 		return taraFiles.toArray(new TaraFileImpl[taraFiles.size()]);
 	}
 
-	public static int findDuplicates(Project project, Concept concept) {
+	public static int findDuplicates(Concept concept) {
 		Concept parent = TaraPsiImplUtil.getContextOf(concept);
+		if (concept.getName() == null) return 1;
 		if (parent != null)
 			return checkChildDuplicates(concept, parent);
 		return findRootConcept(concept.getIdentifierNode(), concept.getIdentifierNode().getText()).size();
@@ -71,7 +82,7 @@ public class TaraUtil {
 	private static int checkChildDuplicates(Concept concept, Concept parent) {
 		int duplicates = 0;
 		for (Concept taraConcept : TaraPsiImplUtil.getChildrenOf(parent))
-			if (taraConcept.getName() != null && concept.getName() != null && taraConcept.getName().equals(concept.getName()))
+			if (taraConcept.getName() != null && taraConcept.getName().equals(concept.getName()))
 				duplicates++;
 		return duplicates;
 	}
@@ -87,15 +98,22 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static List<Concept> findAllConceptsOfFile(TaraFileImpl taraFile) {
-		List<Concept> result = new ArrayList<>();
+	public static List<Concept> findAllConceptsOfFile(TaraFile taraFile) {
+		List<Concept> collection = new ArrayList<>();
 		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, Concept.class);
 		if (concepts != null) {
-			Collections.addAll(result, concepts);
+			Collections.addAll(collection, concepts);
 			for (Concept concept : concepts)
-				result.addAll(TaraPsiImplUtil.getChildrenOf(concept));
+				collectChildren(concept, collection);
 		}
-		return result;
+		return collection;
+	}
+
+	private static void collectChildren(Concept concept, List<Concept> collection) {
+		for (Concept child : TaraUtil.getChildrenOf(concept)) {
+			collection.add(child);
+			collectChildren(child, collection);
+		}
 	}
 
 	public static VirtualFile findChildFileOf(VirtualFile file, String name) {
@@ -135,24 +153,21 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static VirtualFile getSourcePath(Project project) {
-		Module[] modules = ModuleManager.getInstance(project).getModules();
-		for (Module module : modules) {
-			ModuleRootManager mrm = ModuleRootManager.getInstance(module);
-			List<VirtualFile> virtualFiles = mrm.getSourceRoots(JavaModuleSourceRootTypes.SOURCES);
-			for (VirtualFile file : virtualFiles)
-				if (file.isDirectory() && "src".equals(file.getName()))
-					return file;
-		}
+	public static VirtualFile getSourcePath(Project project, PsiFile psiFile) {
+		ProjectFileIndex fileIndex = ProjectRootManager.getInstance(project).getFileIndex();
+		VirtualFile vfile = (psiFile.getVirtualFile() != null) ? psiFile.getVirtualFile() : psiFile.getOriginalFile().getVirtualFile();
+		Module moduleFile = fileIndex.getModuleForFile(vfile);
+		if (moduleFile == null) return null;
+		ModuleRootManager mrm = ModuleRootManager.getInstance(moduleFile);
+		List<VirtualFile> virtualFiles = mrm.getSourceRoots(JavaModuleSourceRootTypes.SOURCES);
+		for (VirtualFile file : virtualFiles)
+			if (file.isDirectory() && "src".equals(file.getName()))
+				return file;
 		return null;
 	}
 
 	public static TaraFile getOrCreateFile(String myDestination, Project myProject) {
 		return null;
-	}
-
-	public static void deleteTaraFile(String path) {
-
 	}
 
 	@NotNull
@@ -169,5 +184,22 @@ public class TaraUtil {
 		result.addAll(Arrays.asList(manager.getSourceRoots()));
 		result.addAll(Arrays.asList(manager.getContentRoots()));
 		return result;
+	}
+
+	public static Module getModuleOfFile(PsiFile file) {
+		ProjectFileIndex fileIndex = ProjectRootManager.getInstance(file.getProject()).getFileIndex();
+		VirtualFile vfile = (file.getVirtualFile() != null) ? file.getVirtualFile() : file.getOriginalFile().getVirtualFile();
+		return fileIndex.getModuleForFile(vfile);
+	}
+
+	public static String getLocalQNConcept(Concept concept) {
+		Concept container = concept;
+		String id = container.getName();
+		while (TaraPsiImplUtil.getContextOf(container) != null) {
+			container = TaraPsiImplUtil.getContextOf(container);
+			String name = container.getName();
+			id = (name == null ? "annonymous" : name) + "." + id;
+		}
+		return id;
 	}
 }

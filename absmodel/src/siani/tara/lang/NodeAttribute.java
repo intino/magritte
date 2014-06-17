@@ -13,16 +13,17 @@ public class NodeAttribute extends Variable {
 		this.isProperty = isProperty;
 	}
 
-	public String getPrimitiveType() {
-		return primitiveType;
-	}
-
 	public String getValue() {
 		return value;
 	}
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	@Override
+	public String getType() {
+		return primitiveType;
 	}
 
 	public boolean isList() {

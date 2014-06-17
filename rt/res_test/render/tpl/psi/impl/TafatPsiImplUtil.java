@@ -1,11 +1,11 @@
-package monet.tafat.intellij.psi.impl;
+package siani.tafat.intellij.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import monet.tafat.intellij.psi.TafatDefinition;
-import monet.tafat.intellij.psi.TafatDefinitionSignature;
-import monet.tafat.intellij.psi.TafatIdentifier;
-import monet.tafat.intellij.psi.TafatTypes;
+import siani.tafat.intellij.psi.TafatDefinition;
+import siani.tafat.intellij.psi.TafatDefinitionSignature;
+import siani.tafat.intellij.psi.TafatIdentifier;
+import siani.tafat.intellij.psi.TafatTypes;
 
 public class TafatPsiImplUtil {
 

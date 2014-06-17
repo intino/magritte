@@ -6,15 +6,18 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LexerLoader extends ClassLoader {
+
+	private static Map<String, Class<?>> loadedClasses = new HashMap<>();
 
 	public LexerLoader(ClassLoader parent) {
 		super(parent);
 	}
 
-	private Class<?> getClass(String name)
-		throws ClassNotFoundException {
+	private Class<?> getClass(String name) throws ClassNotFoundException {
 		String file = name.replace('.', File.separatorChar) + ".class";
 		byte[] b;
 		try {
@@ -23,28 +26,37 @@ public class LexerLoader extends ClassLoader {
 			resolveClass(c);
 			return c;
 		} catch (IOException e) {
-			e.printStackTrace();
 			return null;
 		}
 	}
 
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
-		System.out.println("loading class '" + name + "'");
+		if (findClassLoaded(name))
+			return loadedClasses.get(name);
+		try {
+			return super.loadClass(name);
+		} catch (ClassNotFoundException ignored) {
+		}
 		Class<?> aClass = getClass(name);
-		return (aClass != null) ? aClass : super.loadClass(name);
+		if (aClass == null) throw new ClassNotFoundException(name);
+		loadedClasses.put(name, aClass);
+		return aClass;
+	}
+
+	private boolean findClassLoaded(String name) {
+		return loadedClasses.containsKey(name);
 	}
 
 	private byte[] loadClassData(String name) throws IOException {
-		// Opening the file
-		String basePath = PathManager.getPluginsPath() + File.separator + "classes";
+		String basePath = PathManager.getPluginsPath() + File.separator + "tara" + File.separator + "classes";
 		FileInputStream stream = new FileInputStream(new File(basePath, name));
 		int size = stream.available();
 		byte buff[] = new byte[size];
 		DataInputStream in = new DataInputStream(stream);
-		// Reading the binary data
 		in.readFully(buff);
 		in.close();
 		return buff;
 	}
+
 
 }

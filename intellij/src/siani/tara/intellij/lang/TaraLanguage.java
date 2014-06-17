@@ -2,41 +2,64 @@ package siani.tara.intellij.lang;
 
 import com.google.gson.*;
 import com.intellij.lang.Language;
+import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.lang.*;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.io.File.separator;
 
 public class TaraLanguage extends Language {
 
-	public static final String TREE_JSON = "/ast/ast.json";
+	public static final String JSON = ".json";
+	public static final Map<String, TreeWrapper> heritages = new HashMap<>();
 	public static final TaraLanguage INSTANCE = new TaraLanguage();
-	public static TreeWrapper heritage = null;
 
 	private TaraLanguage() {
 		super("Tara");
-		loadHeritage();
 	}
 
-	public static TreeWrapper getHeritage() {
-		if (heritage == null) loadHeritage();
-		return heritage;
+	@Nullable
+	public static TreeWrapper getHeritage(Module module) {
+		TreeWrapper treeWrapper;
+		if (module == null) return null;
+		ModuleConfiguration moduleConfiguration = (ModuleConfiguration) module.getComponent("ModuleConfiguration");
+		String parent = moduleConfiguration.getParentName();
+		if (parent.isEmpty()) return null;
+		if ((treeWrapper = heritages.get(parent)) != null)
+			return treeWrapper;
+		return loadHeritage(module.getProject(), parent);
 	}
 
-	public static boolean hasHeritage() {
-		return heritage != null;
+	public static TreeWrapper getHeritage(PsiFile file) {
+		Module moduleFile = TaraUtil.getModuleOfFile(file);
+		return TaraLanguage.getHeritage(moduleFile);
 	}
 
-	private static void loadHeritage() {
+	private static TreeWrapper loadHeritage(Project project, String parent) {
 		try {
-			InputStream heritageInputStream = TaraLanguage.class.getResourceAsStream(TREE_JSON);
+			String heritageFile = PathManager.getPluginsPath() + separator + "tara" + separator + "classes" + separator + parent + separator + parent + JSON;
+			InputStream heritageInputStream = new FileInputStream(new File(heritageFile));
 			GsonBuilder gb = new GsonBuilder();
 			gb.registerTypeAdapter(Variable.class, new CustomDeserializer());
-			heritage = gb.create().fromJson(new InputStreamReader(heritageInputStream), TreeWrapper.class);
+			TreeWrapper treeWrapper = gb.create().fromJson(new InputStreamReader(heritageInputStream), TreeWrapper.class);
+			heritages.put(parent, treeWrapper);
+			return treeWrapper;
 		} catch (Exception e) {
-			//e.printStackTrace();
-			heritage = null;
+			e.printStackTrace();
+			return null;
 		}
 	}
 
@@ -54,7 +77,7 @@ public class TaraLanguage extends Language {
 			if (e != null && e.isJsonPrimitive() && e.getAsString() != null)
 				return new NodeAttribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), json.getAsJsonObject().get("isProperty").getAsBoolean());
 
-			e = json.getAsJsonObject().get("node");
+			e = json.getAsJsonObject().get("resourceType");
 			if (e != null && e.isJsonPrimitive() && e.getAsString() != null)
 				return new Resource(e.getAsString(), name, json.getAsJsonObject().get("isProperty").getAsBoolean());
 			JsonArray array = json.getAsJsonObject().get("wordTypes").getAsJsonArray();

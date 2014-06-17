@@ -1,4 +1,4 @@
-package monet.tafat.intellij.metamodel;
+package siani.tafat.intellij.metamodel;
 
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
@@ -11,11 +11,10 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.JBColor;
 import gnu.trove.THashMap;
-import monet.tafat.intellij.psi.TafatTypes;
+import siani.tafat.intellij.psi.TafatTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.io.Reader;
 import java.util.Map;
 
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;

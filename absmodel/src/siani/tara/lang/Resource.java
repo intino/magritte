@@ -12,6 +12,11 @@ public class Resource extends Variable {
 	}
 
 	@Override
+	public String getType() {
+		return node;
+	}
+
+	@Override
 	public boolean isList() {
 		return false;
 	}

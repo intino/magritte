@@ -14,7 +14,6 @@ import siani.tara.compiler.dependencyresolver.AbstractTreeDependencyResolver;
 import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.compiler.semantic.SemanticAnalyzer;
 import siani.tara.lang.Node;
-import siani.tara.lang.NodeObject;
 import siani.tara.lang.TreeWrapper;
 
 import java.io.IOException;
@@ -26,12 +25,12 @@ public class CompilationUnit extends ProcessingUnit {
 	private static final Logger LOG = Logger.getLogger(CompilationUnit.class.getName());
 	private final boolean pluginGeneration;
 	protected Map<String, SourceUnit> sources;
-	protected TreeWrapper ast;
+	protected TreeWrapper nodeTreeWrapper;
 	private ModuleUnitOperation semantic = new ModuleUnitOperation() {
 		public void call(Collection<SourceUnit> sources) throws CompilationFailedException {
 			try {
 				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Analyzing semantic");
-				SemanticAnalyzer analyzer = new SemanticAnalyzer(ast);
+				SemanticAnalyzer analyzer = new SemanticAnalyzer(nodeTreeWrapper);
 				analyzer.analyze();
 			} catch (SemanticException e) {
 				for (SemanticError error : e.getErrors())
@@ -47,9 +46,9 @@ public class CompilationUnit extends ProcessingUnit {
 		@Override
 		public void call(Collection<SourceUnit> units) throws CompilationFailedException {
 			try {
-				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating plugin");
+				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating plugin code");
 				PluginUpdater generator = new PluginUpdater(configuration);
-				generator.generate(ast);
+				generator.generate(nodeTreeWrapper);
 				getErrorCollector().failIfErrors();
 			} catch (TaraException e) {
 				LOG.severe("Error during plugin generation: " + e.getMessage() + "\n");
@@ -57,16 +56,15 @@ public class CompilationUnit extends ProcessingUnit {
 			}
 		}
 	};
-	protected NodeObject[] astProcessed;
 	private ModuleUnitOperation ASTDependencyResolution = new ModuleUnitOperation() {
 		public void call(Collection<SourceUnit> sources) throws CompilationFailedException {
 			try {
-				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "siani.tara.lang.AST dependency resolution");
+				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
 				AbstractTreeDependencyResolver resolver = new AbstractTreeDependencyResolver(sources);
-				ast = resolver.getTree();
-				astProcessed = resolver.resolve();
+				nodeTreeWrapper = resolver.resolve();
 			} catch (DependencyException e) {
 				LOG.severe("Error during Dependency resolution: " + e.getMessage());
+				e.printStackTrace();
 				getErrorCollector().addError(Message.create(e, getSourceFromFile(e.getNode())));
 			}
 		}
@@ -75,11 +73,11 @@ public class CompilationUnit extends ProcessingUnit {
 	private SourceUnitOperation parsing = new SourceUnitOperation() {
 		public void call(SourceUnit source) throws CompilationFailedException {
 			try {
-				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Parsing" + source.getName());
+				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Parsing " + source.getName());
 				source.parse();
 				getErrorCollector().failIfErrors();
 			} catch (IOException e) {
-				LOG.severe("Error during Parsing");
+				LOG.severe("Error during Parsing: " + e.getMessage());
 				getErrorCollector().addError(Message.create(e.getMessage(), CompilationUnit.this));
 			} catch (SyntaxException e) {
 				LOG.severe("Syntax error during Parsing");
@@ -87,14 +85,14 @@ public class CompilationUnit extends ProcessingUnit {
 			}
 		}
 	};
-	private SourceUnitOperation convert = new SourceUnitOperation() {
+	private SourceUnitOperation importData = new SourceUnitOperation() {
 		public void call(SourceUnit source) throws CompilationFailedException {
 			try {
 				System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Converting");
-				source.convert();
+				source.importData();
 				getErrorCollector().failIfErrors();
 			} catch (TaraException e) {
-				LOG.severe("Error during conversion");
+				LOG.severe("Error during conversion: " + e.getMessage());
 				getErrorCollector().addError(Message.create(e.getMessage(), source));
 			}
 		}
@@ -129,7 +127,7 @@ public class CompilationUnit extends ProcessingUnit {
 		for (int i = 0; i < this.phaseOperations.length; i++)
 			this.phaseOperations[i] = new LinkedList();
 		addPhaseOperation(parsing, Phases.PARSING);
-		addPhaseOperation(convert, Phases.CONVERSION);
+		addPhaseOperation(importData, Phases.CONVERSION);
 		addPhaseOperation(ASTDependencyResolution, Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(semantic, Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);

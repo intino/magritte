@@ -14,8 +14,7 @@ public class TaraIcons {
 	public static final String CASE_13 = "CASE_13";
 	public static final String BASE_13 = "BASE_13";
 	public static final String ICON_100 = "ICON_100";
-//gen %iconsVar%
-//end
+
 	@NonNls
 	public static HashMap<String, Icon> icons = new HashMap<>();
 
@@ -25,8 +24,6 @@ public class TaraIcons {
 		icons.put("BASE_13", IconLoader.getIcon("/icons/base.png"));
 		icons.put("ICON_100", IconLoader.getIcon("/icons/Tara100.png"));
 		icons.put("CONCEPT", IconLoader.getIcon("/icons/Concept.png"));
-//gen %icons%
-//end
 	}
 
 	private TaraIcons() {

@@ -1,10 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package siani.tara.intellij.lang.psi;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
-import com.intellij.lang.ASTNode;
 import siani.tara.intellij.lang.psi.impl.*;
 
 public interface TaraTypes {
@@ -30,7 +30,9 @@ public interface TaraTypes {
   IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
   IElementType INTENTION = new TaraElementType("INTENTION");
   IElementType META_IDENTIFIER = new TaraElementType("META_IDENTIFIER");
+  IElementType META_WORD = new TaraElementType("META_WORD");
   IElementType MODIFIER = new TaraElementType("MODIFIER");
+  IElementType MODULE = new TaraElementType("MODULE");
   IElementType NATURAL_LIST = new TaraElementType("NATURAL_LIST");
   IElementType NATURAL_VALUE = new TaraElementType("NATURAL_VALUE");
   IElementType PACKET = new TaraElementType("PACKET");
@@ -153,8 +155,14 @@ public interface TaraTypes {
       else if (type == META_IDENTIFIER) {
         return new TaraMetaIdentifierImpl(node);
       }
+      else if (type == META_WORD) {
+        return new TaraMetaWordImpl(node);
+      }
       else if (type == MODIFIER) {
         return new TaraModifierImpl(node);
+      }
+      else if (type == MODULE) {
+        return new TaraModuleImpl(node);
       }
       else if (type == NATURAL_LIST) {
         return new TaraNaturalListImpl(node);

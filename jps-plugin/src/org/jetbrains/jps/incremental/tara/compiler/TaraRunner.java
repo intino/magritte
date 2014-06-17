@@ -7,13 +7,13 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.SystemProperties;
 import com.intellij.util.containers.ContainerUtilRt;
-import monet.tara.compiler.rt.TaraRtConstants;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.cmdline.ClasspathBootstrap;
 import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ExternalProcessUtil;
 import org.jetbrains.jps.incremental.messages.ProgressMessage;
 import org.jetbrains.jps.service.SharedThreadPool;
+import siani.tara.compiler.rt.TaraRtConstants;
 
 import java.io.*;
 import java.util.*;
@@ -36,6 +36,8 @@ public class TaraRunner {
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
 			writer.write(TaraRtConstants.IDEA_HOME + "\n");
 			writer.write(PathManager.getHomePath() + File.separator + "lib" + File.separator + "\n");
+			writer.write(TaraRtConstants.PLUGIN_HOME + "\n");
+			writer.write(PathManager.getPluginsPath() + File.separator + "tara" + File.separator + "\n");
 			for (String iconPath : iconPaths) {
 				writer.write(TaraRtConstants.ICONS_PATH + "\n");
 				writer.write(iconPath + "\n");
@@ -59,7 +61,7 @@ public class TaraRunner {
 		vmParams.add("-Xmx" + settings.heapSize + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
-			getJavaExecutable(), "monet.tara.TaracRunner", Collections.<String>emptyList(), classpath, vmParams, programParams);
+			getJavaExecutable(), "siani.tara.TaracRunner", Collections.<String>emptyList(), classpath, vmParams, programParams);
 		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
 		final Consumer<String> updater = new Consumer<String>() {
 			public void consume(String s) {

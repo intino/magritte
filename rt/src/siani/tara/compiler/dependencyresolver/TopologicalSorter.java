@@ -28,7 +28,7 @@ public class TopologicalSorter {
 			for (Iterator<NodeObject> it = n.getChildren().iterator(); it.hasNext(); ) {
 				NodeObject m = it.next();
 				it.remove();
-				m.setParentConcept(null);
+				m.setParentObject(null);
 				if (!hasDependency(m)) independientNodes.add(m);
 			}
 		}

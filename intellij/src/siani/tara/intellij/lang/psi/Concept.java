@@ -50,6 +50,7 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	String getQualifiedName();
 
+	@Nullable
 	String getType();
 
 	@Nullable

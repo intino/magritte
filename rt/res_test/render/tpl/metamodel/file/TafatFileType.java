@@ -1,8 +1,8 @@
-package monet.tafat.intellij.metamodel.file;
+package siani.tafat.intellij.metamodel.file;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import monet.tafat.intellij.metamodel.TafatIcons;
-import monet.tafat.intellij.metamodel.TafatLanguage;
+import siani.tafat.intellij.metamodel.TafatIcons;
+import siani.tafat.intellij.metamodel.TafatLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

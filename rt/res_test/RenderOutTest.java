@@ -1,8 +1,8 @@
-package monet.goros.definitions;
+package siani.goros.definitions;
 
-import monet.tara.core.Definition;
-import monet.tara.core.Metamodel;
-import monet.tara.core.Id;
+import siani.tara.core.Definition;
+import siani.tara.core.Metamodel;
+import siani.tara.core.Id;
 
 
 public abstract class EntityDefinition extends Definition implements Metamodel.HasCode {

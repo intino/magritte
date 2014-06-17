@@ -3,9 +3,11 @@ package siani.tara.intellij.lang.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import siani.tara.intellij.lang.psi.Attribute;
-import siani.tara.intellij.lang.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.psi.Attribute;
+import siani.tara.intellij.lang.psi.ReferenceStatement;
+import siani.tara.intellij.lang.psi.TaraTypes;
+import siani.tara.intellij.lang.psi.TaraWord;
 
 public class AttributeMixin extends ASTWrapperPsiElement {
 
@@ -28,8 +30,16 @@ public class AttributeMixin extends ASTWrapperPsiElement {
 	@Override
 	public String getName() {
 		ASTNode child = this.getNode().findChildByType(TaraTypes.IDENTIFIER_KEY);
-		if (child == null) child = this.getChildren()[0].getNode().findChildByType(TaraTypes.IDENTIFIER_KEY);
-		return (child != null) ? child.getText() : "";
+		if (child == null) {
+			PsiElement lastChild = this.getLastChild();
+			if (lastChild instanceof ReferenceStatement) return getAsReferenceOrWord();
+			if (lastChild instanceof TaraWord) return getAsReferenceOrWord();
+		}
+		return child.getText();
+	}
+
+	private String getAsReferenceOrWord() {
+		return this.getLastChild().getNode().findChildByType(TaraTypes.IDENTIFIER_KEY).getText();
 	}
 
 	public String getType() {

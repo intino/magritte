@@ -6,10 +6,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.codeinsight.JavaHelper;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -110,7 +110,7 @@ public class ReferenceManager {
 
 	public static VirtualFile resolveRoute(List<? extends Identifier> route) {
 		if (route.isEmpty()) return null;
-		VirtualFile file = TaraUtil.getSourcePath(route.get(0).getProject());
+		VirtualFile file = TaraUtil.getSourcePath(route.get(0).getProject(), route.get(0).getContainingFile());
 		for (Identifier identifier : route)
 			file = TaraUtil.findChildFileOf(file, identifier.getText());
 		return file;

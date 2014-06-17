@@ -6,19 +6,21 @@ import java.util.List;
 public class Node {
 
 	private NodeObject object;
-	private Node container;
-	private NodeTree innerNodes;
+	private transient Node container;
+	private List<Node> innerNodes;
 	private String qualifiedName;
+	private boolean inherited;
 	private int line;
 	private String file;
 
-	public Node(NodeObject object, Node container) {
+	public Node(NodeObject object, Node container, boolean inherited) {
 		this.object = object;
 		this.container = container;
+		this.inherited = inherited;
 		innerNodes = new NodeTree();
 	}
 
-	public NodeTree getInnerNodes() {
+	public List<Node> getInnerNodes() {
 		return innerNodes;
 	}
 
@@ -30,6 +32,14 @@ public class Node {
 		return container;
 	}
 
+	public void setContainer(Node container) {
+		this.container = container;
+	}
+
+	public boolean removeChild(Node node) {
+		return innerNodes.remove(node);
+	}
+
 	public Node getChildByName(String name) {
 		for (Node child : innerNodes)
 			if (child.getObject().getName().equals(name))
@@ -39,6 +49,10 @@ public class Node {
 
 	public boolean add(Node node) {
 		return innerNodes.add(node);
+	}
+
+	public void add(int index, Node element) {
+		innerNodes.add(index, element);
 	}
 
 	public Node[] getCases() {
@@ -58,13 +72,25 @@ public class Node {
 		return (qualifiedName == null) ? qualifiedName = getNodeRoute() : qualifiedName;
 	}
 
+	public String calculateQualifiedName() {
+		return qualifiedName = getNodeRoute();
+	}
+
 	public String getName() {
 		return object.getName();
 	}
 
 	private String getNodeRoute() {
-		String name = !"".equals(getName()) ? getName() : getObject().getParentName();
-		return container != null ? container.getNodeRoute() + "." + name : name;
+		String name;
+		name = !"".equals(getName()) ? getName() : "[" + getObject().getParentName() + "@annonymous]";
+		if (container != null) return container.getNodeRoute() + (name.isEmpty() ? "" : "." + name);
+		else {
+			if ((getObject().getBaseName()) != null)
+				return getObject().getBaseName().substring(0, getObject().getBaseName().lastIndexOf(".")) + "." + name;
+			else {
+				return name;
+			}
+		}
 	}
 
 	public boolean isPrime() {
@@ -93,5 +119,14 @@ public class Node {
 
 	public void setFile(String file) {
 		this.file = file;
+	}
+
+	public boolean isInherited() {
+		return inherited;
+	}
+
+	@Override
+	public String toString() {
+		return "Node{" + qualifiedName + '}';
 	}
 }

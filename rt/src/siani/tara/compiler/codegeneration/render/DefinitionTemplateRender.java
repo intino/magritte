@@ -1,13 +1,12 @@
 package siani.tara.compiler.codegeneration.render;
 
-import monet.tara.compiler.core.errorcollection.TaraException;
-import monet.tara.lang.Node;
-import monet.tara.lang.NodeObject;
-import monet.tara.lang.NodeTree;
-import monet.tara.lang.Variable;
 import org.monet.templation.Canvas;
 import org.monet.templation.CanvasLogger;
 import org.monet.templation.Render;
+import siani.tara.compiler.core.errorcollection.TaraException;
+import siani.tara.lang.Node;
+import siani.tara.lang.NodeObject;
+import siani.tara.lang.Variable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +35,7 @@ public class DefinitionTemplateRender extends Render {
 
 	}
 
-	private StringBuilder constructChildren(NodeTree innerConcepts) {
+	private StringBuilder constructChildren(List<Node> innerConcepts) {
 		StringBuilder builder = new StringBuilder();
 		if (innerConcepts == null) return builder;
 		for (Node node : innerConcepts)

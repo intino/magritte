@@ -1,4 +1,4 @@
-package monet.tafat.intellij.metamodel;
+package siani.tafat.intellij.metamodel;
 
 import com.intellij.lang.Language;
 
