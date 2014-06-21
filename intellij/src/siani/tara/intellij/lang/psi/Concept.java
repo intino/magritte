@@ -55,5 +55,6 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	@Nullable
 	MetaIdentifier getMetaIdentifier();
+
 }
 

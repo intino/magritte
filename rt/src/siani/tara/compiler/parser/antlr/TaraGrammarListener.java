@@ -101,6 +101,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitIdentifierList(@NotNull TaraGrammar.IdentifierListContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#metaidentifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterMetaidentifier(@NotNull TaraGrammar.MetaidentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#metaidentifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitMetaidentifier(@NotNull TaraGrammar.MetaidentifierContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#doubleAttribute}.
 	 * @param ctx the parse tree
 	 */
@@ -120,6 +130,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBooleanValue(@NotNull TaraGrammar.BooleanValueContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#namespace}.
+	 * @param ctx the parse tree
+	 */
+	void enterNamespace(@NotNull TaraGrammar.NamespaceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#namespace}.
+	 * @param ctx the parse tree
+	 */
+	void exitNamespace(@NotNull TaraGrammar.NamespaceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#naturalAttribute}.
 	 * @param ctx the parse tree
@@ -291,6 +311,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitIdentifierReference(@NotNull TaraGrammar.IdentifierReferenceContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#reference}.
+	 * @param ctx the parse tree
+	 */
+	void enterReference(@NotNull TaraGrammar.ReferenceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#reference}.
+	 * @param ctx the parse tree
+	 */
+	void exitReference(@NotNull TaraGrammar.ReferenceContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#imports}.
 	 * @param ctx the parse tree
 	 */
@@ -311,16 +341,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitHeader(@NotNull TaraGrammar.HeaderContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#reference}.
-	 * @param ctx the parse tree
-	 */
-	void enterReference(@NotNull TaraGrammar.ReferenceContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#reference}.
-	 * @param ctx the parse tree
-	 */
-	void exitReference(@NotNull TaraGrammar.ReferenceContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#headerReference}.
 	 * @param ctx the parse tree
 	 */
@@ -330,16 +350,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitHeaderReference(@NotNull TaraGrammar.HeaderReferenceContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#modifier}.
-	 * @param ctx the parse tree
-	 */
-	void enterModifier(@NotNull TaraGrammar.ModifierContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#modifier}.
-	 * @param ctx the parse tree
-	 */
-	void exitModifier(@NotNull TaraGrammar.ModifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#explicit}.
 	 * @param ctx the parse tree
@@ -360,6 +370,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDoc(@NotNull TaraGrammar.DocContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#base}.
+	 * @param ctx the parse tree
+	 */
+	void enterBase(@NotNull TaraGrammar.BaseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#base}.
+	 * @param ctx the parse tree
+	 */
+	void exitBase(@NotNull TaraGrammar.BaseContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#aliasAttribute}.
 	 * @param ctx the parse tree

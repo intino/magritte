@@ -7,14 +7,12 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraFileImpl> {
 
@@ -26,13 +24,10 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
 		builder.setTitle(TaraBundle.message("newconcept.dlg.prompt"));
-		for (Map.Entry<String, String> template : TaraTemplates.getTemplates())
-			builder.addKind(prettyPrint(template.getKey()), TaraIcons.getIcon(template.getKey().toUpperCase()), template.getValue());
+		String concept = TaraTemplates.getTemplate("CONCEPT");
+		builder.addKind("Concept", TaraIcons.getIcon("CONCEPT"), concept);
 	}
 
-	private String prettyPrint(String template) {
-		return template.substring(0, 1).toUpperCase() + template.substring(1).toLowerCase();
-	}
 
 	@Override
 	protected String getActionName(PsiDirectory directory, String newName, String templateName) {

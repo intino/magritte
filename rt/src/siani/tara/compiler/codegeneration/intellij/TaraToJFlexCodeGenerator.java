@@ -18,12 +18,12 @@ public class TaraToJFlexCodeGenerator extends CodeGenerator {
 		List<File> resultFiles = new ArrayList<>();
 		for (String template : TemplateFactory.getLexerTemplates()) {
 			String out = PathManager.getSrcDir(conf.getTempDirectory()) + template;
-			JFlexRender render = new JFlexRender(template, conf.getProject(), ast);
+			JFlexRender render = new JFlexRender(template, conf.getModule(), ast);
 			File file = new File(out);
 			resultFiles.add(file);
 			writeTemplate(render, file);
 		}
-		return resultFiles.toArray(new File[2]);
+		return resultFiles.toArray(new File[resultFiles.size()]);
 	}
 
 	private static void writeTemplate(JFlexRender render, File file) throws TaraException {

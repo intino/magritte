@@ -8,7 +8,7 @@ import java.util.Set;
 public class TreeWrapper {
 
 	private NodeTree nodeTree = new NodeTree();
-	private transient Set<String> identifiers = new HashSet<>();
+	private Set<String> identifiers = new HashSet<>();
 	private Map<String, Node> nodeTable = new HashMap<>();
 
 	public NodeTree getTree() {
@@ -77,6 +77,10 @@ public class TreeWrapper {
 		Node result = relativeSearch(nodeName, context);
 		if (result != null) return result;
 		return absoluteSearch(nodeName, context);
+	}
+
+	public boolean hasIdentifier(String identifier) {
+		return identifiers.contains(identifier);
 	}
 
 	private boolean isUnName(String text) {

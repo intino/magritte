@@ -1,6 +1,5 @@
 package siani.tara.compiler.semantic;
 
-
 import siani.tara.compiler.core.errorcollection.semantic.*;
 import siani.tara.lang.Node;
 import siani.tara.lang.NodeObject;

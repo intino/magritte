@@ -4,7 +4,6 @@ import com.intellij.find.impl.HelpID;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
@@ -17,7 +16,7 @@ import siani.tara.intellij.lang.psi.TaraTypes;
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	public static final String ANONYMOUS = "Anonymous";
 	public static final String ERROR = "Error";
-	private static final DefaultWordsScanner WORDS_SCANNER = new DefaultWordsScanner(new TaraLexerAdapter(ProjectManager.getInstance().getOpenProjects()[0]),
+	private static final DefaultWordsScanner WORDS_SCANNER = new DefaultWordsScanner(new TaraLexerAdapter(),
 		TokenSet.create(TaraTypes.IDENTIFIER, TaraTypes.IDENTIFIER_KEY), TokenSet.create(TaraTypes.DOC), TokenSet.EMPTY);
 
 	@Nullable

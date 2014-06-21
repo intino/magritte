@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraBooleanList extends TaraPsiElement {
 
+  @NotNull
+  List<TaraBooleanValue> getBooleanValueList();
+
 }

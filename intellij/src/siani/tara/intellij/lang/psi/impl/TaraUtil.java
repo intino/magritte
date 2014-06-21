@@ -33,7 +33,8 @@ public class TaraUtil {
 	public static List<Concept> findRootConcept(PsiElement element, String identifier) {
 		List<Concept> result = new ArrayList<>();
 		for (TaraFileImpl taraFile : getModuleFiles(element.getContainingFile()))
-			if (identifier.equals(taraFile.getConcept().getName())) result.add(taraFile.getConcept());
+			if (taraFile.getConcept() != null && identifier.equals(taraFile.getConcept().getName()))
+				result.add(taraFile.getConcept());
 		return result;
 	}
 

@@ -35,11 +35,12 @@ public class Parser {
 			TaraAbstractTreeGenerator extractor = new TaraAbstractTreeGenerator(ast, file.getPath());
 			walker.walk(extractor, rootContext);
 			return ast;
-		} catch (RecognitionException | NullPointerException e) {
-//			Token token = ((org.antlr.v4.runtime.Parser) e.getRecognizer()).getCurrentToken();
-//			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine());
+		} catch (RecognitionException e) {
+			Token token = ((org.antlr.v4.runtime.Parser) e.getRecognizer()).getCurrentToken();
 			e.printStackTrace();
-			return null;
+			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine());
+//			e.printStackTrace();
+//			return null;
 		}
 	}
 

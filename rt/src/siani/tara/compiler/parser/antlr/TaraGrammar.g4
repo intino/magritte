@@ -7,16 +7,20 @@ package siani.tara.compiler.parser.antlr;
 
 root: NEWLINE* header? NEWLINE* concept NEWLINE* EOF;
 
-header: packet? imports*;
+header :  namespace NEWLINE+ packet? imports*;
 
+namespace : NAMESPACE IDENTIFIER;
 imports: NEWLINE IMPORT headerReference;
 packet : PACKAGE (module COLON)? headerReference;
 module : (IDENTIFIER DOT)* IDENTIFIER;
 
 concept: doc? signature annotations? body?;
-signature: (CASE IDENTIFIER
-         | (METAIDENTIFIER modifier? IDENTIFIER)
-         | (METAIDENTIFIER COLON identifierReference modifier? IDENTIFIER?)) parameters? ;
+signature: ((CASE IDENTIFIER)
+         | (metaidentifier base? IDENTIFIER)
+         | (metaidentifier COLON identifierReference base? IDENTIFIER?)) parameters? ;
+
+metaidentifier: METAIDENTIFIER | IDENTIFIER;
+
 parameters : LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS;
 parameterList : explicit? parameter (COMMA explicit? parameter)*;
 explicit: IDENTIFIER COLON;
@@ -40,17 +44,17 @@ conceptConstituents: attribute | concept;
 identifierList : LEFT_SQUARE IDENTIFIER+ RIGHT_SQUARE;
 
 attribute : (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
-                        | resource | reference | word);
+                        | resource | reference | word) annotations?;
 
-aliasAttribute   : doc? (VAR | PROPERTY) ALIAS_TYPE IDENTIFIER (COLON stringValue)?;
-booleanAttribute : doc? (VAR | PROPERTY) BOOLEAN_TYPE ((IDENTIFIER (COLON booleanValue)?) | (LIST IDENTIFIER (COLON booleanList)?));
-stringAttribute  : doc? (VAR | PROPERTY) STRING_TYPE ((IDENTIFIER (COLON stringValue)?)   | (LIST IDENTIFIER (COLON stringList)?)) ;
-naturalAttribute : doc? (VAR | PROPERTY) NATURAL_TYPE ((IDENTIFIER (COLON naturalValue)?) | (LIST IDENTIFIER (COLON naturalList)?));
-integerAttribute : doc? (VAR | PROPERTY) INT_TYPE ((IDENTIFIER (COLON integerValue)?)     | (LIST IDENTIFIER (COLON integerList)?));
-doubleAttribute  : doc? (VAR | PROPERTY) DOUBLE_TYPE ((IDENTIFIER (COLON doubleValue)?)   | (LIST IDENTIFIER (COLON doubleList)?)) ;
-resource         : doc? (VAR | PROPERTY) RESOURCE COLON IDENTIFIER IDENTIFIER;
-reference        : doc? VAR identifierReference LIST? IDENTIFIER;
-word             : doc? VAR WORD IDENTIFIER NEW_LINE_INDENT (IDENTIFIER NEWLINE)+ DEDENT;
+aliasAttribute   : doc? VAR ALIAS_TYPE IDENTIFIER (COLON stringValue)?                   ;
+booleanAttribute : doc? VAR BOOLEAN_TYPE (IDENTIFIER (COLON booleanValue)?)              ;
+stringAttribute  : doc? VAR STRING_TYPE (IDENTIFIER (COLON stringValue)?)                ;
+naturalAttribute : doc? VAR NATURAL_TYPE (IDENTIFIER (COLON naturalValue)?)              ;
+integerAttribute : doc? VAR INT_TYPE (IDENTIFIER (COLON integerValue)?)                  ;
+doubleAttribute  : doc? VAR DOUBLE_TYPE (IDENTIFIER (COLON doubleValue)?)                ;
+resource         : doc? VAR RESOURCE COLON IDENTIFIER IDENTIFIER                         ;
+reference        : doc? VAR identifierReference IDENTIFIER                               ;
+word             : doc? VAR WORD IDENTIFIER NEW_LINE_INDENT (IDENTIFIER NEWLINE)+ DEDENT ;
 
 naturalValue: POSITIVE_VALUE;
 integerValue: POSITIVE_VALUE | NEGATIVE_VALUE;
@@ -64,15 +68,13 @@ naturalList: LEFT_SQUARE POSITIVE_VALUE+ RIGHT_SQUARE;
 integerList: LEFT_SQUARE (POSITIVE_VALUE | NEGATIVE_VALUE)+ RIGHT_SQUARE;
 doubleList : LEFT_SQUARE (POSITIVE_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE)+ RIGHT_SQUARE;
 
-annotations: OPEN_AN (GENERIC | HAS_NAME | MULTIPLE | REQUIRED | INTENTION | SINGLETON | ROOT)+ CLOSE_AN;
+annotations: OPEN_AN (ABSTRACT | HAS_NAME | MULTIPLE | REQUIRED | INTENTION | TERMINAL | ROOT)+ CLOSE_AN;
 
 headerReference: hierarchy* IDENTIFIER;
 
 identifierReference: hierarchy* IDENTIFIER;
 hierarchy: IDENTIFIER DOT;
 
-modifier: ABSTRACT
-        | FINAL
-        | BASE;
+base: BASE;
 
 doc: DOC+;

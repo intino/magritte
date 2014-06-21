@@ -1,24 +1,17 @@
 package org.jetbrains.jps.incremental.tara.compiler;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.io.FileUtil;
 import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.ModuleChunk;
 import org.jetbrains.jps.builders.DirtyFilesHolder;
-import org.jetbrains.jps.builders.FileProcessor;
 import org.jetbrains.jps.builders.java.JavaSourceRootDescriptor;
 import org.jetbrains.jps.incremental.*;
-import org.jetbrains.jps.incremental.java.ClassPostProcessor;
-import org.jetbrains.jps.incremental.java.JavaBuilder;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
-import org.jetbrains.jps.javac.OutputFileObject;
 import org.jetbrains.jps.model.JpsProject;
-import org.jetbrains.jps.model.java.JpsJavaExtensionService;
-import org.jetbrains.jps.model.java.compiler.JpsJavaCompilerConfiguration;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.model.module.JpsModuleSourceRoot;
 import siani.tara.compiler.rt.TaraRtConstants;
@@ -31,8 +24,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
 	private static final String TARA_EXTENSION = "m";
-	private static final Key<Map<String, String>> STUB_TO_SRC = Key.create("STUB_TO_SRC");
-	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
 	private static Boolean done = false;
 	private final String builderName;
 	private boolean pluginGeneration;
@@ -43,9 +34,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		builderName = "Tara compiler";
 	}
 
-	static {
-		JavaBuilder.registerClassPostProcessor(new RecompileStubSources());
-	}
 
 	public static boolean isTaraFile(String path) {
 		return path.endsWith("." + TARA_EXTENSION);
@@ -66,7 +54,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			JpsProject project = context.getProjectDescriptor().getProject();
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
 			pluginGeneration = settings.pluginGeneration;
-			final List<File> toCompile = collectFiles(context, dirtyFilesHolder, settings);
+			final List<File> toCompile = collectFiles(chunk.getModules().iterator().next(), settings);
 			if (toCompile.isEmpty()) return ExitCode.NOTHING_DONE;
 			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("plugin-generation = " + pluginGeneration);
 			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
@@ -77,7 +65,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			Map<ModuleBuildTarget, String> generationOutputs = pluginGeneration ? getStubGenerationOutputs(chunk, context) : finalOutputs;
 			String compilerOutput = generationOutputs.get(chunk.representativeTarget());
 			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
-			TaraRunner runner = new TaraRunner(project.getName(), compilerOutput, toCompilePaths, finalOutput, encoding,
+			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), compilerOutput, toCompilePaths, finalOutput, encoding,
 				getProjectIcon(chunk.getModules(), project.getName()), collectIconDirectories(chunk.getModules()));
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, pluginGeneration);
 			processMessages(chunk, context, handler);
@@ -170,22 +158,12 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return builderName;
 	}
 
-	private List<File> collectFiles(CompileContext context, DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder,
+	private List<File> collectFiles(JpsModule module,
 	                                JpsTaraSettings settings) throws IOException {
-		final JpsJavaCompilerConfiguration configuration = JpsJavaExtensionService.getInstance().getCompilerConfiguration(context.getProjectDescriptor().getProject());
-		assert configuration != null;
 		final List<File> toCompile = new ArrayList<>();
-		dirtyFilesHolder.processDirtyFiles(new FileProcessor<JavaSourceRootDescriptor, ModuleBuildTarget>() {
-			@Override
-			public boolean apply(ModuleBuildTarget target, File file, JavaSourceRootDescriptor root) throws IOException {
-				final String path = file.getPath();
-				if (isTaraFile(path)) { //todo file type check
-					toCompile.add(file);
-					return true;
-				}
-				return true;
-			}
-		});
+		for (JpsModuleSourceRoot root : module.getSourceRoots())
+			if (!settings.isExcludedFromCompilation(root.getFile()))
+				toCompile.addAll(getTaraFilesFromRoot(root.getFile()));
 		return toCompile;
 	}
 
@@ -200,29 +178,5 @@ public class TaraBuilder extends ModuleLevelBuilder {
 					list.add(file);
 		}
 		return list;
-	}
-
-	private static class RecompileStubSources implements ClassPostProcessor {
-
-		public void process(CompileContext context, OutputFileObject out) {
-			Map<String, String> stubToSrc = STUB_TO_SRC.get(context);
-			if (stubToSrc == null)
-				return;
-			File src = out.getSourceFile();
-			if (src == null)
-				return;
-			String groovy = stubToSrc.get(FileUtil.toSystemIndependentName(src.getPath()));
-			if (groovy == null)
-				return;
-			try {
-				final File file = new File(groovy);
-				if (!FSOperations.isMarkedDirty(context, file)) {
-					FSOperations.markDirty(context, file);
-					FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, Boolean.TRUE);
-				}
-			} catch (IOException e) {
-				LOG.error(e);
-			}
-		}
 	}
 }

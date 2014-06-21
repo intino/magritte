@@ -95,7 +95,7 @@ public class IntentionsGenerator {
 	}
 
 	private PsiClass createInnerClass(PsiClass clazz, String qn, String name, boolean extensible) {
-		String text = FileTemplateManager.getInstance().getInternalTemplate("TaraInnerClass.java").getText();
+		String text = FileTemplateManager.getInstance().getJ2eeTemplate("TaraInnerClass.java").getText();
 		text = text.replace("${NAME}", name).replace("${PARENT}", (!extensible ? "extends " + qn + EXTENSIBLE : ""));
 		PsiClass aClass = JavaPsiFacade.getElementFactory(project).createClassFromText(text, clazz);
 		PsiClass innerClass = aClass.findInnerClassByName(name, false);

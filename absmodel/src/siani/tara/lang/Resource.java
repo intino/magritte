@@ -3,12 +3,16 @@ package siani.tara.lang;
 public class Resource extends Variable {
 
 	public final String node;
-	public final boolean isProperty;
 
-	public Resource(String node, String name, boolean isProperty) {
+	public Resource(String node, String name, boolean isTerminal) {
 		this.node = node;
 		this.name = name;
-		this.isProperty = isProperty;
+		this.isTerminal = isTerminal;
+	}
+
+	public Resource(String node, String name) {
+		this.node = node;
+		this.name = name;
 	}
 
 	@Override
@@ -17,14 +21,11 @@ public class Resource extends Variable {
 	}
 
 	@Override
-	public boolean isList() {
+	public boolean isMultiple() {
 		return false;
 	}
 
 	@Override
-	public boolean isProperty() {
-		return isProperty;
-	}
 
 	public String toString() {
 		return "Resource:" + node + " " + name;
@@ -32,6 +33,6 @@ public class Resource extends Variable {
 
 	@Override
 	public Variable clone() {
-		return new Resource(node, name, isProperty);
+		return new Resource(node, name, isTerminal);
 	}
 }

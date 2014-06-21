@@ -6,6 +6,6 @@ import com.intellij.openapi.project.Project;
 public class TaraHighlighterLexAdapter extends FlexAdapter {
 
 	public TaraHighlighterLexAdapter(Project project) {
-		super(new TaraHighlighterLexProxy(project));
+		super(new TaraHighlighterLex(null, project));
 	}
 }

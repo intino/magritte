@@ -8,23 +8,24 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraAttributeImpl extends AttributeMixin implements TaraAttribute {
+public class TaraVarInitImpl extends ASTWrapperPsiElement implements TaraVarInit {
 
-  public TaraAttributeImpl(ASTNode node) {
+  public TaraVarInitImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitAttribute(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitVarInit(this);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
-  public TaraAnnotations getAnnotations() {
-    return findChildByClass(TaraAnnotations.class);
+  public TaraBooleanList getBooleanList() {
+    return findChildByClass(TaraBooleanList.class);
   }
 
   @Override
@@ -35,8 +36,8 @@ public class TaraAttributeImpl extends AttributeMixin implements TaraAttribute {
 
   @Override
   @Nullable
-  public TaraDoc getDoc() {
-    return findChildByClass(TaraDoc.class);
+  public TaraDoubleList getDoubleList() {
+    return findChildByClass(TaraDoubleList.class);
   }
 
   @Override
@@ -47,8 +48,20 @@ public class TaraAttributeImpl extends AttributeMixin implements TaraAttribute {
 
   @Override
   @Nullable
+  public TaraIdentifierList getIdentifierList() {
+    return findChildByClass(TaraIdentifierList.class);
+  }
+
+  @Override
+  @Nullable
   public TaraIdentifierReference getIdentifierReference() {
     return findChildByClass(TaraIdentifierReference.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraIntegerList getIntegerList() {
+    return findChildByClass(TaraIntegerList.class);
   }
 
   @Override
@@ -59,20 +72,26 @@ public class TaraAttributeImpl extends AttributeMixin implements TaraAttribute {
 
   @Override
   @Nullable
+  public TaraNaturalList getNaturalList() {
+    return findChildByClass(TaraNaturalList.class);
+  }
+
+  @Override
+  @Nullable
   public TaraNaturalValue getNaturalValue() {
     return findChildByClass(TaraNaturalValue.class);
   }
 
   @Override
   @Nullable
-  public TaraStringValue getStringValue() {
-    return findChildByClass(TaraStringValue.class);
+  public TaraStringList getStringList() {
+    return findChildByClass(TaraStringList.class);
   }
 
   @Override
   @Nullable
-  public TaraWord getWord() {
-    return findChildByClass(TaraWord.class);
+  public TaraStringValue getStringValue() {
+    return findChildByClass(TaraStringValue.class);
   }
 
 }

@@ -56,13 +56,12 @@ public class TaraHighlighterLexProxy implements FlexLexer {
 	}
 
 	private void calculateParent(CharSequence buf) {
-		Module module = ModuleProvider.getModuleOfDocument(project, buf.toString());
+		Module module = ModuleProvider.getNamespaceOfDocument(project, buf.toString());
 		if (module == null) destiny = new TaraHighlighterLex((Reader) null);
 		else {
 			String parent = getParent(module);
 			destiny = (parent != null) ? loadClass(getClassName(parent) + "HighlighterLex") : new TaraHighlighterLex((Reader) null);
 		}
-
 	}
 
 	private String getClassName(String parent) {
@@ -76,7 +75,7 @@ public class TaraHighlighterLexProxy implements FlexLexer {
 
 	private FlexLexer loadClass(String lexerName) {
 		try {
-			LexerLoader loader = new LexerLoader(this.getClass().getClassLoader());
+			LexerLoader loader = new LexerLoader(this.getClass().getClassLoader(), project.getName());
 			Class<?> aClass = Class.forName(this.getClass().getPackage().getName() + "." + lexerName, true, loader);
 			Constructor<?> constructor = aClass.getDeclaredConstructor(Reader.class);
 			constructor.setAccessible(true);

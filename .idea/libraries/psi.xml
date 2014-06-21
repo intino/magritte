@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="psi">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/rt/lib/psi.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

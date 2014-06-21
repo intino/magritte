@@ -22,4 +22,10 @@ public class TaraStringListImpl extends ASTWrapperPsiElement implements TaraStri
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<TaraStringValue> getStringValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraStringValue.class);
+  }
+
 }

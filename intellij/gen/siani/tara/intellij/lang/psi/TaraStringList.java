@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraStringList extends TaraPsiElement {
 
+  @NotNull
+  List<TaraStringValue> getStringValueList();
+
 }

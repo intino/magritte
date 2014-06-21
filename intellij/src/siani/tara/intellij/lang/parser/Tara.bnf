@@ -18,7 +18,9 @@
 
 root ::= NEWLINE* header? NEWLINE* concept?  NEWLINE*
 
-header ::=  packet? importStatement*
+header ::=  namespace NEWLINE+ packet? importStatement*
+
+namespace ::= NAMESPACE_KEY IDENTIFIER_KEY
 packet ::= PACKAGE (module COLON)? headerReference
 importStatement ::= NEWLINE IMPORT_KEY headerReference {
 	mixin= 'siani.tara.intellij.lang.psi.impl.ImportMixin'
@@ -38,17 +40,16 @@ concept ::= doc? signature annotations? body? {
 	implements='siani.tara.intellij.lang.psi.Concept'
 }
 
-modifier::= ABSTRACT | FINAL | BASE_KEY
+base::= BASE_KEY
 
-signature::= ((CASE_KEY identifier) | withHeritage | (metaIdentifier modifier? identifier)) parameters? {
+signature::= ((CASE_KEY identifier) | withHeritage | (metaIdentifier base? identifier)) parameters? {
 	pin=1
 	mixin= 'siani.tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='siani.tara.intellij.lang.psi.Signature'
 }
 
-private withHeritage ::= metaIdentifier COLON identifierReference modifier? identifier?{
-	pin = 2
-}
+private withHeritage ::= metaIdentifier COLON identifierReference base? identifier?
+
 
 parameters ::= LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS {
 	pin = 3
@@ -95,41 +96,41 @@ body ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT {
 	implements='siani.tara.intellij.lang.psi.Body'
 }
 
-private conceptConstituents ::= attribute | concept
+private conceptConstituents ::= attribute | concept | varInit
 
 attribute ::= doc? (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
-                        | resource | referenceStatement | word) {
+                        | resource | referenceAttribute | word) annotations? {
 	pin=2
 	mixin= 'siani.tara.intellij.lang.psi.impl.AttributeMixin'
 	implements='siani.tara.intellij.lang.psi.Attribute'
 }
 
-private aliasAttribute   ::= (VAR | PROPERTY) ALIAS_TYPE IDENTIFIER_KEY (COLON stringValue)? {pin=2}
-private booleanAttribute ::= (VAR | PROPERTY) BOOLEAN_TYPE ((IDENTIFIER_KEY (COLON booleanValue)?) | (LIST IDENTIFIER_KEY (COLON booleanList)?)) {pin=2}
-private stringAttribute  ::= (VAR | PROPERTY) STRING_TYPE ((IDENTIFIER_KEY (COLON stringValue)?)   | (LIST IDENTIFIER_KEY (COLON stringList)?)) {pin=2}
-private naturalAttribute ::= (VAR | PROPERTY) NATURAL_TYPE ((IDENTIFIER_KEY (COLON naturalValue)?) | (LIST IDENTIFIER_KEY (COLON naturalList)?)) {pin=2}
-private integerAttribute ::= (VAR | PROPERTY) INT_TYPE ((IDENTIFIER_KEY (COLON integerValue)?)     | (LIST IDENTIFIER_KEY (COLON integerList)?)) {pin=2}
-private doubleAttribute  ::= (VAR | PROPERTY) DOUBLE_TYPE ((IDENTIFIER_KEY (COLON doubleValue)?)   | (LIST IDENTIFIER_KEY (COLON doubleList)?)) {pin=2}
-private resource         ::= (VAR | PROPERTY) RESOURCE_KEY COLON IDENTIFIER_KEY IDENTIFIER_KEY {pin=2}
-
-stringValue  ::= STRING_VALUE_KEY
-booleanValue ::= BOOLEAN_VALUE_KEY
-naturalValue ::= NATURAL_VALUE_KEY
-integerValue ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
-doubleValue  ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
-
-stringList  ::= LEFT_SQUARE STRING_VALUE_KEY+ RIGHT_SQUARE
-booleanList ::= LEFT_SQUARE BOOLEAN_VALUE_KEY+ RIGHT_SQUARE
-naturalList ::= LEFT_SQUARE NATURAL_VALUE_KEY+ RIGHT_SQUARE
-integerList ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY)+ RIGHT_SQUARE
-doubleList  ::= LEFT_SQUARE (NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY)+ RIGHT_SQUARE
-identifierList ::= LEFT_SQUARE identifier+ RIGHT_SQUARE;
-
-referenceStatement ::= doc? VAR identifierReference LIST? IDENTIFIER_KEY {
-	pin = 3
+private aliasAttribute           ::= VAR ALIAS_TYPE     IDENTIFIER_KEY (COLON stringValue)?   {pin=2}
+private booleanAttribute         ::= VAR BOOLEAN_TYPE   IDENTIFIER_KEY (COLON booleanValue)?  {pin=2}
+private stringAttribute          ::= VAR STRING_TYPE    IDENTIFIER_KEY (COLON stringValue)?   {pin=2}
+private naturalAttribute         ::= VAR NATURAL_TYPE   IDENTIFIER_KEY (COLON naturalValue)?  {pin=2}
+private integerAttribute         ::= VAR INT_TYPE       IDENTIFIER_KEY (COLON integerValue)?  {pin=2}
+private doubleAttribute          ::= VAR DOUBLE_TYPE    IDENTIFIER_KEY (COLON doubleValue)?   {pin=2}
+private resource                 ::= VAR RESOURCE_KEY COLON IDENTIFIER_KEY IDENTIFIER_KEY     {pin=2}
+private referenceAttribute       ::= VAR identifierReference IDENTIFIER_KEY {
+	pin = 2
 	mixin= 'siani.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
 	implements='siani.tara.intellij.lang.psi.ReferenceStatement'
 }
+
+stringValue    ::= STRING_VALUE_KEY  | STRING_MULTILINE_VALUE_KEY
+booleanValue   ::= BOOLEAN_VALUE_KEY
+naturalValue   ::= NATURAL_VALUE_KEY
+integerValue   ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
+doubleValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
+
+stringList     ::= LEFT_SQUARE stringValue+ RIGHT_SQUARE
+booleanList    ::= LEFT_SQUARE booleanValue+ RIGHT_SQUARE
+naturalList    ::= LEFT_SQUARE naturalValue+ RIGHT_SQUARE
+integerList    ::= LEFT_SQUARE integerValue+ RIGHT_SQUARE
+doubleList     ::= LEFT_SQUARE doubleValue+ RIGHT_SQUARE
+identifierList ::= LEFT_SQUARE identifier+ RIGHT_SQUARE;
+
 
 word ::= doc? VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLINE)+ DEDENT {
 	pin = 3
@@ -137,12 +138,25 @@ word ::= doc? VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY NEWLIN
 	implements ='siani.tara.intellij.lang.psi.Word'
 }
 
-annotations ::= OPEN_AN (GENERIC | MULTIPLE | REQUIRED | HAS_NAME | intention | SINGLETON | ROOT)+ CLOSE_AN {
+annotations ::= OPEN_AN (ABSTRACT | TERMINAL | MULTIPLE | REQUIRED | HAS_NAME | intention | ROOT)+ CLOSE_AN {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotations'
 }
 
+varInit ::= IDENTIFIER_KEY COLON ( identifierReference
+								 | stringValue
+                                 | booleanValue
+                                 | naturalValue
+                                 | integerValue
+                                 | doubleValue
+                                 | identifierList
+                                 | stringList
+                                 | booleanList
+                                 | naturalList
+                                 | integerList
+                                 | doubleList)
+{pin=2}
 intention ::= INTENTION_KEY {
 	pin=1
 	mixin= 'siani.tara.intellij.lang.psi.impl.ExternalReferenceMixin'
@@ -169,7 +183,7 @@ identifier::=  IDENTIFIER_KEY {
 	implements='siani.tara.intellij.lang.psi.Identifier'
 }
 
-metaIdentifier ::= METAIDENTIFIER_KEY {
+metaIdentifier ::= METAIDENTIFIER_KEY | IDENTIFIER_KEY {
 	mixin= 'siani.tara.intellij.lang.psi.impl.MetaIdentifierMixin'
 	implements='siani.tara.intellij.lang.psi.MetaIdentifier'
 }

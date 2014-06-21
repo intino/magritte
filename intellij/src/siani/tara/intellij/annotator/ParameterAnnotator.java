@@ -42,7 +42,6 @@ public class ParameterAnnotator extends TaraAnnotator {
 		String metaQualifiedName = TaraUtil.getMetaQualifiedName(concept);
 		Node node = tree.get(metaQualifiedName);
 		return (node != null) ? node : tree.get(asAnonymous(metaQualifiedName));
-
 	}
 
 	private String asAnonymous(String name) {
@@ -96,15 +95,15 @@ public class ParameterAnnotator extends TaraAnnotator {
 			case TaraDoubleValueImpl:
 				return varType.equals("Double");
 			case TaraStringListImpl:
-				return varType.equals("String") && variable.isList();
+				return varType.equals("String") && variable.isMultiple();
 			case TaraBooleanListImpl:
-				return varType.equals("Boolean") && variable.isList();
+				return varType.equals("Boolean") && variable.isMultiple();
 			case TaraIntegerListImpl:
-				return varType.equals("Integer") && variable.isList();
+				return varType.equals("Integer") && variable.isMultiple();
 			case TaraDoubleListImpl:
-				return varType.equals("Double") && variable.isList();
+				return varType.equals("Double") && variable.isMultiple();
 			case TaraNaturalListImpl:
-				return varType.equals("Natural") && variable.isList();
+				return varType.equals("Natural") && variable.isMultiple();
 			default:
 				return false;
 		}

@@ -94,30 +94,29 @@ NEWLINE= [\n]+ ([ ] | [\t])*
 METAIDENTIFIER  = "Concept"
 IMPORT_KEY      = "import"
 PACKAGE         = "package"
+NAMESPACE       = "namespace"
 CASE_KEY        = "case"
 BASE_KEY        = "base"
-FINAL           = "final"
 ABSTRACT        = "abstract"
 MULTIPLE        = "multiple"
 REQUIRED        = "required"
-SINGLETON       = "singleton"
 HAS_NAME        = "has-name"
 INTENTION_KEY   = "intention"
 ROOT            = "root"
-GENERIC         = "generic"
+TERMINAL         = "terminal"
 WORD_KEY        = "Word"
 RESOURCE_KEY    = "Resource"
 VAR             = "var"
-PROPERTY        = "property"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
-LIST                = {LEFT_SQUARE}{RIGHT_SQUARE}
 LEFT_SQUARE         = "["
 RIGHT_SQUARE        = "]"
 OPEN_BRACKET        = "{"
 CLOSE_BRACKET       = "}"
-
+APOSTROPHE          = "'"
+DASH                = "-"
+DASHES              = {DASH} {DASH}+
 DOT                 = "."
 COMMA               = ","
 COLON               = ":"
@@ -126,7 +125,6 @@ DOUBLE_COMMAS       = "\""
 OPEN_AN             = "<"
 CLOSE_AN            = ">"
 POSITIVE            = "+"
-NEGATIVE            = "-"
 
 ALIAS_TYPE          = "Alias"
 INT_TYPE            = "Integer"
@@ -137,11 +135,12 @@ BOOLEAN_TYPE        = "Boolean"
 
 BOOLEAN_VALUE_KEY   = "true" | "false"
 POSITIVE_VALUE_KEY  = {POSITIVE}? {DIGIT}+
-NEGATIVE_VALUE_KEY  = {NEGATIVE} {DIGIT}+
-DOUBLE_VALUE_KEY    = ({POSITIVE} | {NEGATIVE})? {DIGIT}+ {DOT} {DIGIT}+
-STRING_VALUE_KEY    = {DOUBLE_COMMAS} ~ {DOUBLE_COMMAS}
+NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
+DOUBLE_VALUE_KEY    = ({POSITIVE} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+
+STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
+STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
 
-DOC_LINE            = "'" ~[\n]
+DOC_LINE            = "#" ~[\n]
 DIGIT               =[:digit:]
 
 IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
@@ -149,81 +148,79 @@ IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
 %%
 <YYINITIAL> {
 
-	{METAIDENTIFIER}            {   return TaraTypes.METAIDENTIFIER_KEY; }
+	{METAIDENTIFIER}                {   return TaraTypes.METAIDENTIFIER_KEY; }
 
-	{IMPORT_KEY}                {   return TaraTypes.IMPORT_KEY; }
+	{IMPORT_KEY}                    {   return TaraTypes.IMPORT_KEY; }
 
-	{PACKAGE}                   {   return TaraTypes.PACKAGE; }
+	{PACKAGE}                       {   return TaraTypes.PACKAGE; }
 
-	{ABSTRACT}                  {   return TaraTypes.ABSTRACT; }
+	{NAMESPACE}                     {   return TaraTypes.NAMESPACE_KEY; }
 
-	{FINAL}                     {   return TaraTypes.FINAL; }
+	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 
-	{COLON}                     {   return TaraTypes.COLON; }
+	{COLON}                         {   return TaraTypes.COLON; }
 
-	{VAR}                       {   return TaraTypes.VAR; }
-	{PROPERTY}                  {   return TaraTypes.PROPERTY; }
+	{VAR}                           {   return TaraTypes.VAR; }
 
-	{LIST}                      {   return TaraTypes.LIST; }
+	{BASE_KEY}                      {   return TaraTypes.BASE_KEY; }
+	{CASE_KEY}                      {   return TaraTypes.CASE_KEY; }
 
-	{BASE_KEY}                  {   return TaraTypes.BASE_KEY; }
-	{CASE_KEY}                  {   return TaraTypes.CASE_KEY; }
+	{OPEN_AN}                       {   return TaraTypes.OPEN_AN; }
+	{CLOSE_AN}                      {   return TaraTypes.CLOSE_AN; }
 
-	{OPEN_AN}                   {   return TaraTypes.OPEN_AN; }
-	{CLOSE_AN}                  {   return TaraTypes.CLOSE_AN; }
+	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
+	{MULTIPLE}                      {   return TaraTypes.MULTIPLE; }
+	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 
-	{REQUIRED}                  {   return TaraTypes.REQUIRED; }
-	{MULTIPLE}                  {   return TaraTypes.MULTIPLE; }
-	{GENERIC}                   {   return TaraTypes.GENERIC; }
+	{HAS_NAME}                      {   return TaraTypes.HAS_NAME; }
+	{INTENTION_KEY}                 {   return TaraTypes.INTENTION_KEY; }
+	{ROOT}                          {   return TaraTypes.ROOT; }
 
-	{HAS_NAME}                  {   return TaraTypes.HAS_NAME; }
-	{INTENTION_KEY}             {   return TaraTypes.INTENTION_KEY; }
-	{ROOT}                      {   return TaraTypes.ROOT; }
-	{SINGLETON}                 {   return TaraTypes.SINGLETON; }
+	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 
-	{DOC_LINE}                  {   return TaraTypes.DOC_LINE; }
+	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE_KEY; }
+	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
 
-	{STRING_VALUE_KEY}          {   return TaraTypes.STRING_VALUE_KEY; }
-	{BOOLEAN_VALUE_KEY}         {   return TaraTypes.BOOLEAN_VALUE_KEY; }
-	{DOUBLE_VALUE_KEY}          {   return TaraTypes.DOUBLE_VALUE_KEY; }
-	{NEGATIVE_VALUE_KEY}        {   return TaraTypes.NEGATIVE_VALUE_KEY; }
-	{POSITIVE_VALUE_KEY}        {   return TaraTypes.NATURAL_VALUE_KEY; }
+	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
+	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }
+	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE_KEY; }
+	{POSITIVE_VALUE_KEY}            {   return TaraTypes.NATURAL_VALUE_KEY; }
 
-	{LEFT_SQUARE}               {   return TaraTypes.LEFT_SQUARE; }
-	{RIGHT_SQUARE}              {   return TaraTypes.RIGHT_SQUARE; }
-    {LEFT_PARENTHESIS}          {   return TaraTypes.LEFT_PARENTHESIS; }
-    {RIGHT_PARENTHESIS}         {   return TaraTypes.RIGHT_PARENTHESIS; }
+	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
+	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
+    {LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
+    {RIGHT_PARENTHESIS}             {   return TaraTypes.RIGHT_PARENTHESIS; }
 
-	{WORD_KEY}                  {   return TaraTypes.WORD_KEY; }
-	{RESOURCE_KEY}              {   return TaraTypes.RESOURCE_KEY; }
+	{WORD_KEY}                      {   return TaraTypes.WORD_KEY; }
+	{RESOURCE_KEY}                  {   return TaraTypes.RESOURCE_KEY; }
 
-	{DOT}                       {   return TaraTypes.DOT; }
-	{COMMA}                     {   return TaraTypes.COMMA;     }
+	{DOT}                           {   return TaraTypes.DOT; }
+	{COMMA}                         {   return TaraTypes.COMMA;     }
 
-	{ALIAS_TYPE}                {   return TaraTypes.ALIAS_TYPE; }
-	{INT_TYPE}                  {   return TaraTypes.INT_TYPE; }
-	{BOOLEAN_TYPE}              {   return TaraTypes.BOOLEAN_TYPE; }
-	{NATURAL_TYPE}              {   return TaraTypes.NATURAL_TYPE; }
-    {STRING_TYPE}               {   return TaraTypes.STRING_TYPE; }
-    {DOUBLE_TYPE}               {   return TaraTypes.DOUBLE_TYPE; }
+	{ALIAS_TYPE}                    {   return TaraTypes.ALIAS_TYPE; }
+	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
+	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
+	{NATURAL_TYPE}                  {   return TaraTypes.NATURAL_TYPE; }
+    {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
+    {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
 
-	{IDENTIFIER_KEY}            {   return TaraTypes.IDENTIFIER_KEY;}
+	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}
 
-	{SEMICOLON}                 {   return semicolon(); }
+	{SEMICOLON}                     {   return semicolon(); }
 
-	{OPEN_BRACKET}              {   return openBracket(); }
+	{OPEN_BRACKET}                  {   return openBracket(); }
 
-	{CLOSE_BRACKET}             {   return closeBracket(); }
+	{CLOSE_BRACKET}                 {   return closeBracket(); }
 
-	{NEWLINE}                   {   return newlineIndent();}
+	{NEWLINE}                       {   return newlineIndent();}
 
-	{SPACES}                    {   return TokenType.WHITE_SPACE; }
+	{SPACES}                        {   return TokenType.WHITE_SPACE; }
 
-	{SP}                        {   return TokenType.WHITE_SPACE; }
+	{SP}                            {   return TokenType.WHITE_SPACE; }
 
-	<<EOF>>                     {
-                                    return eof();
-                                }
+	<<EOF>>                         {
+                                        return eof();
+                                    }
 }
 
-.                               {  return TokenType.BAD_CHARACTER;}
+.                                   {  return TokenType.BAD_CHARACTER;}

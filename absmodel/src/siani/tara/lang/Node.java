@@ -8,6 +8,8 @@ public class Node {
 	private NodeObject object;
 	private transient Node container;
 	private List<Node> innerNodes;
+	private List<String> innerReferencesQN;
+	private List<Node> innerReferences;
 	private String qualifiedName;
 	private boolean inherited;
 	private int line;
@@ -18,6 +20,8 @@ public class Node {
 		this.container = container;
 		this.inherited = inherited;
 		innerNodes = new NodeTree();
+		innerReferencesQN = new ArrayList<>();
+		innerReferences = new ArrayList<>();
 	}
 
 	public List<Node> getInnerNodes() {
@@ -45,6 +49,10 @@ public class Node {
 			if (child.getObject().getName().equals(name))
 				return child;
 		return null;
+	}
+
+	public boolean add(String innerReference) {
+		return innerReferencesQN.add(innerReference);
 	}
 
 	public boolean add(Node node) {
@@ -128,5 +136,13 @@ public class Node {
 	@Override
 	public String toString() {
 		return "Node{" + qualifiedName + '}';
+	}
+
+	public List<String> getInnerReferencesQN() {
+		return innerReferencesQN;
+	}
+
+	public List<Node> getInnerReferences() {
+		return innerReferences;
 	}
 }

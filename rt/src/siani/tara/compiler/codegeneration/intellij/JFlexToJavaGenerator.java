@@ -30,18 +30,18 @@ public class JFlexToJavaGenerator extends CodeGenerator {
 		}
 	}
 
-	private static String makeJavaCommand(File tempDir, File lexFile, String[] jflex) {
+	private static String makeJavaCommand(File tempDir, File lexFile, String[] jflexLibs) {
 		String destiny = PathManager.getSrcIdeDir(tempDir);
 		String[] vParams = new String[]{
 			"-Xmx512m",
 			"-DUser.dir=" + destiny};
 		String[] pParams = new String[]{
 			"-sliceandcharat",
-			"-skel " + jflex[1],
+			"-skel " + jflexLibs[1],
 			"-d " + lexFile.getParentFile().getAbsolutePath(),
 			lexFile.getAbsolutePath()
 		};
-		List<String> cmd = JavaCommandHelper.buildJavaJarExecuteCommandLine(jflex[0], vParams, pParams);
+		List<String> cmd = JavaCommandHelper.buildJavaJarExecuteCommandLine(jflexLibs[0], vParams, pParams);
 		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 

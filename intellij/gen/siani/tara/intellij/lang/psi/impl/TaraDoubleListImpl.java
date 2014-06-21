@@ -22,4 +22,10 @@ public class TaraDoubleListImpl extends ASTWrapperPsiElement implements TaraDoub
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<TaraDoubleValue> getDoubleValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraDoubleValue.class);
+  }
+
 }

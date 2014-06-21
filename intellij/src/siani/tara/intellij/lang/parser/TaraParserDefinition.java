@@ -24,7 +24,7 @@ public class TaraParserDefinition implements ParserDefinition {
 	@NotNull
 	@Override
 	public com.intellij.lexer.Lexer createLexer(Project project) {
-		return new TaraLexerAdapter(project);
+		return new TaraLexerAdapter();
 	}
 
 	@NotNull

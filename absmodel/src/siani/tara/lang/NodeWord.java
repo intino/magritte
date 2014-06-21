@@ -7,6 +7,12 @@ import java.util.List;
 public class NodeWord extends Variable {
 	public List<String> wordTypes;
 
+	public NodeWord(String name, boolean isTerminal) {
+		this.name = name;
+		this.isTerminal = isTerminal;
+		this.wordTypes = new ArrayList<>();
+	}
+
 	public NodeWord(String name) {
 		this.name = name;
 		this.wordTypes = new ArrayList<>();
@@ -30,12 +36,7 @@ public class NodeWord extends Variable {
 	}
 
 	@Override
-	public boolean isList() {
-		return false;
-	}
-
-	@Override
-	public boolean isProperty() {
+	public boolean isMultiple() {
 		return false;
 	}
 
@@ -45,7 +46,7 @@ public class NodeWord extends Variable {
 
 	@Override
 	public NodeWord clone() {
-		NodeWord nodeWord = new NodeWord(name);
+		NodeWord nodeWord = new NodeWord(name, isTerminal);
 		for (String wordType : wordTypes) nodeWord.add(wordType);
 		return nodeWord;
 	}

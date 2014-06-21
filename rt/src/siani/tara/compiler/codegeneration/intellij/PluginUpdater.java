@@ -27,14 +27,13 @@ public class PluginUpdater {
 		File[] lexFiles = TaraToJFlexCodeGenerator.toJFlex(conf, treeWrapper);
 		for (File lexFile : lexFiles)
 			JFlexToJavaGenerator.jFlexToJava(conf.getTempDirectory(), lexFile);
-//		TemplateGenerator.generateDefinitionTemplates(conf, treeWrapper);
 		PluginCompiler.generateClasses(conf);
 		PluginUpdateApplier.update(conf);
 	}
 
 	private void serializeNodes(TreeWrapper treeWrapper) throws TaraException {
 		try {
-			File file = new File(conf.getPluginDirectory(), "classes" + SEP + conf.getProject() + SEP + conf.getProject() + ".json");
+			File file = new File(conf.getPluginDirectory(), "classes" + SEP + conf.getProject() + SEP + conf.getModule() + ".json");
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
 			GsonBuilder gsonBuilder = new GsonBuilder();
@@ -62,16 +61,16 @@ public class PluginUpdater {
 			} else if (variable instanceof NodeAttribute) {
 				NodeAttribute attribute = (NodeAttribute) variable;
 				object.addProperty("primitiveType", attribute.primitiveType);
-				object.addProperty("isList", attribute.isList);
-				object.addProperty("isProperty", attribute.isProperty);
+				object.addProperty("isMultiple", attribute.isMultiple);
+				object.addProperty("isTerminal", attribute.isTerminal);
 			} else if (variable instanceof Reference) {
 				Reference reference = (Reference) variable;
 				object.addProperty("node", reference.type);
-				object.addProperty("isList", reference.isList);
+				object.addProperty("isMultiple", reference.isMultiple);
 			} else if (variable instanceof Resource) {
 				Resource reference = (Resource) variable;
 				object.addProperty("resourceType", reference.node);
-				object.addProperty("isProperty", reference.isProperty);
+				object.addProperty("isTerminal", reference.isTerminal);
 			}
 			return object; // or throw an IllegalArgumentException
 

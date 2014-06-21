@@ -9,12 +9,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.io.File.separator;
+
 public class LexerLoader extends ClassLoader {
 
-	private static Map<String, Class<?>> loadedClasses = new HashMap<>();
+	private static final Map<String, Class<?>> loadedClasses = new HashMap<>();
+	private final String BASE_PATH;
 
-	public LexerLoader(ClassLoader parent) {
+	public LexerLoader(ClassLoader parent, String projectName) {
 		super(parent);
+		BASE_PATH = PathManager.getPluginsPath() + separator + "tara" + separator + "classes" + separator + projectName;
 	}
 
 	private Class<?> getClass(String name) throws ClassNotFoundException {
@@ -31,8 +35,10 @@ public class LexerLoader extends ClassLoader {
 	}
 
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
-		if (findClassLoaded(name))
-			return loadedClasses.get(name);
+		if (!haveToReload()) {
+			if (findClassLoaded(name))
+				return loadedClasses.get(name);
+		}
 		try {
 			return super.loadClass(name);
 		} catch (ClassNotFoundException ignored) {
@@ -43,13 +49,21 @@ public class LexerLoader extends ClassLoader {
 		return aClass;
 	}
 
+	private boolean haveToReload() {
+		File reload = new File(BASE_PATH, ".reload");
+		if (reload.exists()) {
+			reload.delete();
+			return true;
+		}
+		return false;
+	}
+
 	private boolean findClassLoaded(String name) {
 		return loadedClasses.containsKey(name);
 	}
 
 	private byte[] loadClassData(String name) throws IOException {
-		String basePath = PathManager.getPluginsPath() + File.separator + "tara" + File.separator + "classes";
-		FileInputStream stream = new FileInputStream(new File(basePath, name));
+		FileInputStream stream = new FileInputStream(new File(BASE_PATH, name));
 		int size = stream.available();
 		byte buff[] = new byte[size];
 		DataInputStream in = new DataInputStream(stream);

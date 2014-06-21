@@ -5,33 +5,42 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraAttribute extends Attribute {
+public interface TaraVarInit extends TaraPsiElement {
 
   @Nullable
-  TaraAnnotations getAnnotations();
+  TaraBooleanList getBooleanList();
 
   @Nullable
   TaraBooleanValue getBooleanValue();
 
   @Nullable
-  TaraDoc getDoc();
+  TaraDoubleList getDoubleList();
 
   @Nullable
   TaraDoubleValue getDoubleValue();
 
   @Nullable
+  TaraIdentifierList getIdentifierList();
+
+  @Nullable
   TaraIdentifierReference getIdentifierReference();
+
+  @Nullable
+  TaraIntegerList getIntegerList();
 
   @Nullable
   TaraIntegerValue getIntegerValue();
 
   @Nullable
+  TaraNaturalList getNaturalList();
+
+  @Nullable
   TaraNaturalValue getNaturalValue();
 
   @Nullable
-  TaraStringValue getStringValue();
+  TaraStringList getStringList();
 
   @Nullable
-  TaraWord getWord();
+  TaraStringValue getStringValue();
 
 }

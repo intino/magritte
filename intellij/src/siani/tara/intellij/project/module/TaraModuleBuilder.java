@@ -18,8 +18,8 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import siani.tara.intellij.lang.TaraIcons;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.TaraIcons;
 
 import javax.swing.*;
 import java.io.File;
@@ -98,6 +98,8 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			}
 			modifiableModel.commit();
 		}
+		if (parentModule != null)
+			rootModel.addModuleOrderEntry(parentModule);
 		persistTempConf();
 	}
 

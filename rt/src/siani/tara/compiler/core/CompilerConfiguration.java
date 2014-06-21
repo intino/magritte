@@ -9,6 +9,7 @@ public class CompilerConfiguration {
 	private int warningLevel;
 	private String sourceEncoding;
 	private String project;
+	private String module;
 	private PrintWriter output;
 	private File tempDirectory;
 	private File targetDirectory;
@@ -169,5 +170,13 @@ public class CompilerConfiguration {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getModule() {
+		return module;
+	}
+
+	public void setModule(String module) {
+		this.module = module;
 	}
 }

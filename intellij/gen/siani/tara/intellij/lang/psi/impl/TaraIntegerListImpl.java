@@ -22,4 +22,10 @@ public class TaraIntegerListImpl extends ASTWrapperPsiElement implements TaraInt
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<TaraIntegerValue> getIntegerValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIntegerValue.class);
+  }
+
 }

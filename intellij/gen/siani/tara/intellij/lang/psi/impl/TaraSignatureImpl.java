@@ -23,6 +23,12 @@ public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
 
   @Override
   @Nullable
+  public TaraBase getBase() {
+    return findChildByClass(TaraBase.class);
+  }
+
+  @Override
+  @Nullable
   public TaraIdentifier getIdentifier() {
     return findChildByClass(TaraIdentifier.class);
   }
@@ -37,12 +43,6 @@ public class TaraSignatureImpl extends SignatureMixin implements TaraSignature {
   @Nullable
   public TaraMetaIdentifier getMetaIdentifier() {
     return findChildByClass(TaraMetaIdentifier.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraModifier getModifier() {
-    return findChildByClass(TaraModifier.class);
   }
 
   @Override

@@ -22,4 +22,10 @@ public class TaraBooleanListImpl extends ASTWrapperPsiElement implements TaraBoo
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<TaraBooleanValue> getBooleanValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraBooleanValue.class);
+  }
+
 }

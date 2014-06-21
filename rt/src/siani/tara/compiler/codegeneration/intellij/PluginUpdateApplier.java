@@ -12,15 +12,18 @@ public class PluginUpdateApplier extends CodeGenerator {
 
 	public static void update(CompilerConfiguration conf) throws TaraException {
 		try {
-			File outpath = new File(conf.getPluginDirectory(), "classes");
+			File classes = new File(conf.getPluginDirectory(), "classes");
+			File outpath = new File(classes, conf.getProject());
 			FileSystemUtils.createDir(outpath + SEP + conf.getProject());
 			outpath.mkdirs();
 			String path = PathManager.getBuildIdeDir(conf.getTempDirectory()) + conf.getProject();
 			for (File file : new File(path).listFiles())
 				if (file.isDirectory())
 					FileSystemUtils.copyDir(file.getAbsolutePath(), outpath.getAbsolutePath() + SEP + file.getName());
+			new File(outpath, ".reload").createNewFile();
+			new File(outpath, ".model_reload").createNewFile();
 		} catch (Exception e) {
-			throw new TaraException("Error during packaging: " + e.toString(), true);
+			throw new TaraException("Error applying the update: " + e.toString(), true);
 		}
 	}
 

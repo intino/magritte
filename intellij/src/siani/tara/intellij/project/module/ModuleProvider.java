@@ -6,9 +6,9 @@ import siani.tara.intellij.lang.psi.TaraFile;
 
 public class ModuleProvider {
 
-	public static com.intellij.openapi.module.Module getModuleOfDocument(Project project, String fileText) {
+	public static com.intellij.openapi.module.Module getNamespaceOfDocument(Project project, String fileText) {
 		try {
-			String module = fileText.substring("package ".length(), fileText.indexOf(":"));
+			String module = fileText.substring("namespace ".length(), fileText.indexOf("\n"));
 			String[] split = module.split("\\.");
 			module = "";
 			for (String s1 : split) module += s1;
@@ -21,7 +21,7 @@ public class ModuleProvider {
 	}
 
 	public static com.intellij.openapi.module.Module getModuleOfDocument(TaraFile file) {
-		return getModuleOfDocument(file.getProject(), file.getText());
+		return getNamespaceOfDocument(file.getProject(), file.getText());
 	}
 
 

@@ -23,7 +23,7 @@ public class TaraRunner {
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static File argsFile;
 
-	protected TaraRunner(final String projectName, final String outputDir,
+	protected TaraRunner(final String projectName, final String moduleName, final String outputDir,
 	                     final Collection<String> sources,
 	                     String finalOutput, @Nullable final String encoding, String projectIcon, String[] iconPaths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
@@ -33,6 +33,7 @@ public class TaraRunner {
 				writer.write(file + "\n");
 			writer.write("\n");
 			writer.write(TaraRtConstants.PROJECT + "\n" + projectName + "\n");
+			writer.write(TaraRtConstants.MODULE + "\n" + moduleName + "\n");
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
 			writer.write(TaraRtConstants.IDEA_HOME + "\n");
 			writer.write(PathManager.getHomePath() + File.separator + "lib" + File.separator + "\n");

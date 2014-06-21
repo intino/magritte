@@ -26,7 +26,7 @@ public class TaraFilters {
 	protected static PsiElementPattern.Capture<PsiElement> afterModifierKey = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
-		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.MODIFIER)));
+		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.BASE_KEY)));
 
 	private TaraFilters() {
 	}

@@ -96,6 +96,9 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.PROJECT:
 					configuration.setProject(reader.readLine());
 					break;
+				case TaraRtConstants.MODULE:
+					configuration.setModule(reader.readLine());
+					break;
 				case TaraRtConstants.IDEA_HOME:
 					configuration.setIdeaHome(reader.readLine());
 					break;

@@ -22,4 +22,10 @@ public class TaraNaturalListImpl extends ASTWrapperPsiElement implements TaraNat
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<TaraNaturalValue> getNaturalValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraNaturalValue.class);
+  }
+
 }

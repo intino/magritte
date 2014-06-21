@@ -2,15 +2,19 @@ package siani.tara.lang;
 
 public class NodeAttribute extends Variable {
 	public final String primitiveType;
-	public final boolean isProperty;
-	public final boolean isList;
+	public boolean isMultiple;
 	public String value;
 
-	public NodeAttribute(String type, String name, boolean isList, boolean isProperty) {
+	public NodeAttribute(String type, String name, boolean isMultiple, boolean isTerminal) {
 		this.primitiveType = type;
 		this.name = name;
-		this.isList = isList;
-		this.isProperty = isProperty;
+		this.isMultiple = isMultiple;
+		this.isTerminal = isTerminal;
+	}
+
+	public NodeAttribute(String type, String name) {
+		this.primitiveType = type;
+		this.name = name;
 	}
 
 	public String getValue() {
@@ -26,21 +30,13 @@ public class NodeAttribute extends Variable {
 		return primitiveType;
 	}
 
-	public boolean isList() {
-		return isList;
-	}
-
-	public boolean isProperty() {
-		return isProperty;
-	}
-
 	public String toString() {
-		return primitiveType + (isList ? "[]" : "") + " " + name;
+		return primitiveType + (isMultiple ? "[]" : "") + " " + name;
 	}
 
 	@Override
 	public NodeAttribute clone() {
-		NodeAttribute nodeAttribute = new NodeAttribute(primitiveType, name, isList, isProperty);
+		NodeAttribute nodeAttribute = new NodeAttribute(primitiveType, name, isMultiple, isTerminal);
 		nodeAttribute.setValue(value);
 		return nodeAttribute;
 	}

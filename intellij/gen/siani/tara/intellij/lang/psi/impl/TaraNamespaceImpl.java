@@ -8,29 +8,18 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraReferenceStatementImpl extends ReferenceStatementMixin implements TaraReferenceStatement {
+public class TaraNamespaceImpl extends ASTWrapperPsiElement implements TaraNamespace {
 
-  public TaraReferenceStatementImpl(ASTNode node) {
+  public TaraNamespaceImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitReferenceStatement(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitNamespace(this);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public TaraDoc getDoc() {
-    return findChildByClass(TaraDoc.class);
-  }
-
-  @Override
-  @NotNull
-  public TaraIdentifierReference getIdentifierReference() {
-    return findNotNullChildByClass(TaraIdentifierReference.class);
   }
 
 }

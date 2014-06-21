@@ -2,34 +2,31 @@ package siani.tara.lang;
 
 public class Reference extends Variable {
 	public String type;
-	public boolean isList;
 
-	public Reference(String type, String name, boolean isList) {
+	public Reference(String type, String name, boolean isMultiple, boolean isTerminal) {
 		this.type = type;
 		this.name = name;
-		this.isList = isList;
+		this.isMultiple = isMultiple;
+		this.isTerminal = isTerminal;
+	}
+
+	public Reference(String type, String name) {
+		this.type = type;
+		this.name = name;
 	}
 
 	public String getType() {
 		return type;
 	}
 
-	public boolean isList() {
-		return isList;
-	}
-
-	@Override
-	public boolean isProperty() {
-		return false;
-	}
 
 	@Override
 	public String toString() {
-		return type + (isList ? "[]" : "") + " " + name;
+		return type + (isMultiple ? "[]" : "") + " " + name;
 	}
 
 	@Override
 	public Reference clone() {
-		return new Reference(type, name, isList);
+		return new Reference(type, name, isMultiple, isTerminal);
 	}
 }

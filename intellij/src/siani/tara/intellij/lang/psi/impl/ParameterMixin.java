@@ -16,6 +16,8 @@ import siani.tara.lang.NodeWord;
 import siani.tara.lang.TreeWrapper;
 import siani.tara.lang.Variable;
 
+import java.util.List;
+
 public class ParameterMixin extends ASTWrapperPsiElement {
 	public ParameterMixin(@NotNull ASTNode node) {
 		super(node);
@@ -30,9 +32,12 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	@Override
 	public PsiReference[] getReferences() {
 		TreeWrapper heritage = TaraLanguage.getHeritage(getContainingFile());
+		if (heritage == null) return new PsiReference[0];
 		Node node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getContextOf(this)));
 		if (node == null) return new PsiReference[0];
-		Variable variable = node.getObject().getVariables().get(getIndexInParent());
+		List<Variable> variables = node.getObject().getVariables();
+		if (variables.isEmpty()) return new PsiReference[]{};
+		Variable variable = variables.get(getIndexInParent());
 		if (NodeWord.class.isInstance(variable))
 			return new PsiReference[]{new TaraMetaWordReferenceSolver(this, new TextRange(0, getParameter().length()), node, variable)};
 		else if (this.getFirstChild() instanceof IdentifierReference)

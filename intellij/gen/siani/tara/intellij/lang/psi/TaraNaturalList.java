@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraNaturalList extends TaraPsiElement {
 
+  @NotNull
+  List<TaraNaturalValue> getNaturalValueList();
+
 }

@@ -92,8 +92,7 @@ CASE       : 'case';
 MULTIPLE   : 'multiple';
 REQUIRED   : 'required';
 ROOT       : 'root';
-SINGLETON  : 'singleton';
-GENERIC    : 'generic';
+TERMINAL   : 'terminal';
 INTENTION  : 'intention';
 HAS_NAME   : 'has-name';
 VAR        : 'var';
@@ -101,14 +100,13 @@ PROPERTY   : 'property';
 WORD       : 'Word';
 RESOURCE   : 'Resource';
 
-FINAL      : 'final';
 ABSTRACT   : 'abstract';
 BASE       : 'base';
 
 IMPORT     : 'import';
 PACKAGE    : 'package';
+NAMESPACE  : 'namespace';
 
-LIST: LEFT_SQUARE RIGHT_SQUARE;
 LEFT_SQUARE : '[';
 RIGHT_SQUARE: ']';
 LEFT_PARENTHESIS : '(';

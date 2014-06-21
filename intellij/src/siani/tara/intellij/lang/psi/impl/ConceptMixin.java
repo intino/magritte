@@ -152,4 +152,9 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	public Annotations getAnnotations() {
 		return findChildByClass(Annotations.class);
 	}
+
+	@Override
+	public String toString() {
+		return getName();
+	}
 }
