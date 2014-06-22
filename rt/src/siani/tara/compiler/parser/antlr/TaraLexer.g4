@@ -117,16 +117,16 @@ CLOSE_BRACKET: '}' { closeBracket(); };
 
 OPEN_AN : '<';
 CLOSE_AN: '>';
-
 COLON        : ':';
 COMMA        : ',';
 DOT          : '.';
 ASSIGN       : '=';
-DOUBLE_COMMAS: '"';
+APHOSTROPHE  : '\'';
 SEMICOLON    : ';'+ { semicolon(); };
 
 POSITIVE: '+';
-NEGATIVE: '-';
+DASHES       : DASH DASH+;
+DASH    : '-';
 
 ALIAS_TYPE  : 'Alias';
 INT_TYPE    : 'Integer';
@@ -137,9 +137,10 @@ BOOLEAN_TYPE: 'Boolean';
 
 BOOLEAN_VALUE : 'true' | 'false';
 POSITIVE_VALUE: POSITIVE? DIGIT+;
-NEGATIVE_VALUE: NEGATIVE DIGIT+ ;
-DOUBLE_VALUE  : (POSITIVE | NEGATIVE)? DIGIT+ DOT DIGIT+;
-STRING_VALUE  : DOUBLE_COMMAS (~'"')* DOUBLE_COMMAS;
+NEGATIVE_VALUE: DASH DIGIT+ ;
+DOUBLE_VALUE  : (POSITIVE | DASH)? DIGIT+ DOT DIGIT+;
+STRING_VALUE  : APHOSTROPHE (~'\'')* APHOSTROPHE;
+STRING_MULTILINE_VALUE_KEY   : DASHES  (~'-')* DASHES;
 
 IDENTIFIER: LETTER (DIGIT | LETTER)*;
 
@@ -152,7 +153,7 @@ NEWLINE: NL+ SP* { newlinesAndSpaces(); };
 
 SPACES: SP+ EOF? -> channel(HIDDEN);
 
-DOC : '\'' .*? NL;
+DOC : '#' .*? NL;
 
 SP: (' ' | '\t');
 NL: ('\r'? '\n' | '\n');

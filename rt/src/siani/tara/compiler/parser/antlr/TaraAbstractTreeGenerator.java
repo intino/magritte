@@ -73,7 +73,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		if (!node.getObject().isAbstract() && !node.getObject().isBase())
 			treeWrapper.addIdentifier(node.getObject().getName());
 		node.calculateQualifiedName();
-		if (ctx.body() == null)
+		if (node.getContainer() != null && ctx.body() == null)
 			node.getContainer().add(node.getQualifiedName());
 		treeWrapper.add(node.getQualifiedName(), node);
 		conceptStack.pop();

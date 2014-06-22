@@ -39,9 +39,21 @@ parameter :     identifierReference
 
 
 body: NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT;
-conceptConstituents: attribute | concept;
+conceptConstituents: attribute | concept | varInit;
 
 identifierList : LEFT_SQUARE IDENTIFIER+ RIGHT_SQUARE;
+varInit : IDENTIFIER COLON ( identifierReference
+								 | stringValue
+                                 | booleanValue
+                                 | naturalValue
+                                 | integerValue
+                                 | doubleValue
+                                 | identifierList
+                                 | stringList
+                                 | booleanList
+                                 | naturalList
+                                 | integerList
+                                 | doubleList);
 
 attribute : (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
                         | resource | reference | word) annotations?;
@@ -60,7 +72,7 @@ naturalValue: POSITIVE_VALUE;
 integerValue: POSITIVE_VALUE | NEGATIVE_VALUE;
 doubleValue : POSITIVE_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE;
 booleanValue: BOOLEAN_VALUE;
-stringValue : STRING_VALUE;
+stringValue : STRING_VALUE | STRING_MULTILINE_VALUE_KEY;
 
 stringList : LEFT_SQUARE STRING_VALUE+ RIGHT_SQUARE;
 booleanList: LEFT_SQUARE BOOLEAN_VALUE+ RIGHT_SQUARE;

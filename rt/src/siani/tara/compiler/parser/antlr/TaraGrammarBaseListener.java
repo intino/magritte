@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
+// Generated from /Users/octavio/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
 
 package siani.tara.compiler.parser.antlr;
 
@@ -458,6 +458,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBase(@NotNull TaraGrammar.BaseContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVarInit(@NotNull TaraGrammar.VarInitContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVarInit(@NotNull TaraGrammar.VarInitContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
