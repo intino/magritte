@@ -45,7 +45,7 @@ public class TaraImportOptimizer implements ImportOptimizer {
 		}
 
 		private void deleteUnnecessaryImportStatement() {
-			String packageText = file.getPackage().getHeaderReference().getText() + ".";
+			String packageText = file.getBoxReference().getHeaderReference().getText() + ".";
 			for (Import anImport : myImportBlock)
 				if (!anImport.getHeaderReference().getText().replace(packageText, "").contains("."))
 					anImport.delete();

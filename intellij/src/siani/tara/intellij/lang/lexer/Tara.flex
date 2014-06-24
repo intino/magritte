@@ -93,11 +93,10 @@ NEWLINE= [\n]+ ([ ] | [\t])*
 
 METAIDENTIFIER  = "Concept"
 IMPORT_KEY      = "import"
-PACKAGE         = "package"
-NAMESPACE       = "namespace"
+BOX_KEY         = "box"
 CASE_KEY        = "case"
-BASE_KEY        = "base"
-ABSTRACT        = "abstract"
+PRIVATE         = "private"
+PROPERTY        = "property"
 MULTIPLE        = "multiple"
 REQUIRED        = "required"
 HAS_NAME        = "has-name"
@@ -118,6 +117,7 @@ APOSTROPHE          = "'"
 DASH                = "-"
 DASHES              = {DASH} {DASH}+
 DOT                 = "."
+STAR                = "*"
 COMMA               = ","
 COLON               = ":"
 SEMICOLON           = ";"+
@@ -132,6 +132,7 @@ NATURAL_TYPE        = "Natural"
 DOUBLE_TYPE         = "Double"
 STRING_TYPE         = "String"
 BOOLEAN_TYPE        = "Boolean"
+EMPTY_REF               = "empty"
 
 BOOLEAN_VALUE_KEY   = "true" | "false"
 POSITIVE_VALUE_KEY  = {POSITIVE}? {DIGIT}+
@@ -152,17 +153,15 @@ IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
 
 	{IMPORT_KEY}                    {   return TaraTypes.IMPORT_KEY; }
 
-	{PACKAGE}                       {   return TaraTypes.PACKAGE; }
+	{BOX_KEY}                       {   return TaraTypes.BOX_KEY; }
 
-	{NAMESPACE}                     {   return TaraTypes.NAMESPACE_KEY; }
-
-	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
+	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
+	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 
 	{COLON}                         {   return TaraTypes.COLON; }
 
 	{VAR}                           {   return TaraTypes.VAR; }
 
-	{BASE_KEY}                      {   return TaraTypes.BASE_KEY; }
 	{CASE_KEY}                      {   return TaraTypes.CASE_KEY; }
 
 	{OPEN_AN}                       {   return TaraTypes.OPEN_AN; }
@@ -196,6 +195,7 @@ IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
 
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA;     }
+	{STAR}                          {   return TaraTypes.STAR;     }
 
 	{ALIAS_TYPE}                    {   return TaraTypes.ALIAS_TYPE; }
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
@@ -203,6 +203,7 @@ IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
 	{NATURAL_TYPE}                  {   return TaraTypes.NATURAL_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
+    {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}
 

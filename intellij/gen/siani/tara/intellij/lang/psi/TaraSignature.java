@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TaraSignature extends Signature {
 
   @Nullable
-  TaraBase getBase();
-
-  @Nullable
   TaraIdentifier getIdentifier();
 
   @Nullable

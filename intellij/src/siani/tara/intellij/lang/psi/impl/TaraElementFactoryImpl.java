@@ -17,9 +17,9 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public Concept createConcept(String name) {
 		final TaraFileImpl file = createDummyFile(
-			"package m34536:tara\n" +
-				"Concept abstract " + name + " <root>\n" +
-				"\tConcept Ontology <optional>\n" +
+			"box project.mod.tara\n" +
+				"Concept " + name + " <root>\n" +
+				"\tConcept Ontology <required>\n" +
 				"\tvar Alias uid"
 		);
 		return file.getConcept();
@@ -35,8 +35,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public Attribute createAttribute(String name, String type) {
 		final TaraFileImpl file = createDummyFile(
-			"package m34536:tara\n" +
-				"Concept abstract Source\n" +
+			"box project.mod.tara\n" +
+				"Concept Source\n" +
 				"\tvar " + type + " " + name + "\n" +
 				"\tConcept Ontology\n"
 		);
@@ -46,8 +46,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public Attribute createResource(String name, String type) {
 		final TaraFileImpl file = createDummyFile(
-			"package m34536:tara\n" +
-				"Concept abstract Source\n" +
+			"box project.mod.tara\n" +
+				"Concept Source\n" +
 				"\tvar Resource:" + type + " " + name + "\n" +
 				"\tConcept Ontology\n"
 		);
@@ -58,7 +58,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public MetaIdentifier createMetaIdentifier(String module, String name) {
 		final TaraFileImpl file = createDummyFile(
-			"package " + module + ":tara\n" +
+			"box " + "project." + module + ":tara\n" +
 				name + " Source\n"
 		);
 		return PsiTreeUtil.getChildOfType(file, Concept.class).getMetaIdentifier();
@@ -67,7 +67,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public PsiElement createMetaWordIdentifier(String module, String node, String name) {
 		final TaraFileImpl file = createDummyFile(
-			"package " + module + ":tara\n" +
+			"box " + "project." + module + ":tara\n" +
 				node + " Source(" + node + "." + name + ")\n"
 		);
 		Parameter[] parameters = PsiTreeUtil.getChildOfType(file, Concept.class).getSignature().getParameters().getParameters();
@@ -76,8 +76,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public Attribute createWord(String name, String[] types) {
 		final TaraFileImpl file = createDummyFile(
-			"package m34536:tara\n" +
-				"Concept abstract Source\n" +
+			"box project.mod.tara\n" +
+				"Concept Source\n" +
 				"\tvar Word " + name + "\n" +
 				getWordTypesToString(types) +
 				"\tConcept Ontology\n"
@@ -95,20 +95,20 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public Import createImport(String reference) {
 		final TaraFileImpl file = createDummyFile(
-			"package m34536:tara\n" +
+			"box project.mod.tara\n" +
 				"import " + reference + "\n\n" +
-				"Concept abstract Source <root>\n"
+				"Concept Source <root>\n"
 		);
 		Import[] imp = file.getImports();
 		return imp != null ? imp[0] : null;
 	}
 
-	public TaraPacket createPackage(String reference) {
+	public TaraBox createBox(String reference) {
 		final TaraFileImpl file = createDummyFile(
-			"package " + reference + "\n" +
-				"Concept abstract Source <root>\n"
+			"box " + reference + "\n" +
+				"Concept Source <root>\n"
 		);
-		TaraPacket pack = file.getPackage();
+		TaraBox pack = file.getBoxReference();
 		return pack != null ? pack : null;
 	}
 
@@ -120,7 +120,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public Parameters createParameters(boolean string) {
 		final TaraFileImpl file = createDummyFile(
-			"package m34536:tara\n" +
+			"box project.mod.tara\n" +
 				"Form Ficha(" + (string ? "\"\"" : "") + ")\n"
 		);
 		return file.getConcept().getSignature().getParameters();

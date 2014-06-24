@@ -7,13 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraHeader extends TaraPsiElement {
 
+  @Nullable
+  TaraBox getBox();
+
   @NotNull
   List<TaraImportStatement> getImportStatementList();
-
-  @NotNull
-  TaraNamespace getNamespace();
-
-  @Nullable
-  TaraPacket getPacket();
 
 }

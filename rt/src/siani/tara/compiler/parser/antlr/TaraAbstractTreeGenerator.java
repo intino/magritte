@@ -70,7 +70,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void exitConcept(@NotNull ConceptContext ctx) {
 		Node node = conceptStack.peek();
-		if (!node.getObject().isAbstract() && !node.getObject().isBase())
+//		if (!node.getObject().isAbstract() && !node.getObject().isBase())
 			treeWrapper.addIdentifier(node.getObject().getName());
 		node.calculateQualifiedName();
 		if (node.getContainer() != null && ctx.body() == null)
@@ -85,11 +85,6 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		for (TerminalNode doc : ctx.DOC())
 			builder.append(doc.getText().substring(1));
 		conceptStack.peek().getObject().setDoc(builder.toString().trim());
-	}
-
-	@Override
-	public void enterBase(@NotNull BaseContext ctx) {
-		if (ctx.BASE() != null) conceptStack.peek().getObject().setBase(true);
 	}
 
 	@Override
@@ -171,8 +166,8 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 			conceptStack.peek().getObject().add(NodeObject.AnnotationType.TERMINAL);
 		for (int i = 0; i < ctx.ROOT().size(); i++)
 			conceptStack.peek().getObject().add(NodeObject.AnnotationType.ROOT);
-		for (int i = 0; i < ctx.ABSTRACT().size(); i++)
-			conceptStack.peek().getObject().add(NodeObject.AnnotationType.ABSTRACT);
+		for (int i = 0; i < ctx.PRIVATE().size(); i++)
+			conceptStack.peek().getObject().add(NodeObject.AnnotationType.PRIVATE);
 		for (int i = 0; i < ctx.HAS_NAME().size(); i++)
 			conceptStack.peek().getObject().add(NodeObject.AnnotationType.HAS_NAME);
 		for (int i = 0; i < ctx.INTENTION().size(); i++)
@@ -184,10 +179,6 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		Variable variable = variables.get(variables.size() - 1);
 		variable.setTerminal(ctx.TERMINAL() != null);
 		variable.setMultiple(ctx.MULTIPLE() != null);
-		variable.setMultiple(ctx.REQUIRED() != null);
-		variable.setMultiple(ctx.ROOT() != null);
-		variable.setMultiple(ctx.ABSTRACT() != null);
-		variable.setMultiple(ctx.INTENTION() != null);
-		variable.setMultiple(ctx.HAS_NAME() != null);
+		variable.setProperty(ctx.PROPERTY() != null);
 	}
 }

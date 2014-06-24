@@ -92,7 +92,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.PackageAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParameterAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParametersAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptTypeAnnotator"/>
+    <!--<annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptTypeAnnotator"/>-->
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
     <completion.contributor language="Tara"

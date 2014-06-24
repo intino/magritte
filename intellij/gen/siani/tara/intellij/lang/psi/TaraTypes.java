@@ -1,25 +1,26 @@
 // This is a generated file. Not intended for manual editing.
 package siani.tara.intellij.lang.psi;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
-import com.intellij.lang.ASTNode;
 import siani.tara.intellij.lang.psi.impl.*;
 
 public interface TaraTypes {
 
   IElementType ANNOTATIONS = new TaraElementType("ANNOTATIONS");
   IElementType ATTRIBUTE = new TaraElementType("ATTRIBUTE");
-  IElementType BASE = new TaraElementType("BASE");
   IElementType BODY = new TaraElementType("BODY");
   IElementType BOOLEAN_LIST = new TaraElementType("BOOLEAN_LIST");
   IElementType BOOLEAN_VALUE = new TaraElementType("BOOLEAN_VALUE");
+  IElementType BOX = new TaraElementType("BOX");
   IElementType CONCEPT = new TaraElementType("CONCEPT");
   IElementType DOC = new TaraElementType("DOC");
   IElementType DOUBLE_LIST = new TaraElementType("DOUBLE_LIST");
   IElementType DOUBLE_VALUE = new TaraElementType("DOUBLE_VALUE");
   IElementType EMPTY = new TaraElementType("EMPTY");
+  IElementType EMPTY_FIELD = new TaraElementType("EMPTY_FIELD");
   IElementType EXPLICIT = new TaraElementType("EXPLICIT");
   IElementType HEADER = new TaraElementType("HEADER");
   IElementType HEADER_REFERENCE = new TaraElementType("HEADER_REFERENCE");
@@ -32,11 +33,8 @@ public interface TaraTypes {
   IElementType INTENTION = new TaraElementType("INTENTION");
   IElementType META_IDENTIFIER = new TaraElementType("META_IDENTIFIER");
   IElementType META_WORD = new TaraElementType("META_WORD");
-  IElementType MODULE = new TaraElementType("MODULE");
-  IElementType NAMESPACE = new TaraElementType("NAMESPACE");
   IElementType NATURAL_LIST = new TaraElementType("NATURAL_LIST");
   IElementType NATURAL_VALUE = new TaraElementType("NATURAL_VALUE");
-  IElementType PACKET = new TaraElementType("PACKET");
   IElementType PARAMETER = new TaraElementType("PARAMETER");
   IElementType PARAMETERS = new TaraElementType("PARAMETERS");
   IElementType SIGNATURE = new TaraElementType("SIGNATURE");
@@ -45,11 +43,10 @@ public interface TaraTypes {
   IElementType VAR_INIT = new TaraElementType("VAR_INIT");
   IElementType WORD = new TaraElementType("WORD");
 
-  IElementType ABSTRACT = new TaraTokenType("ABSTRACT");
   IElementType ALIAS_TYPE = new TaraTokenType("ALIAS_TYPE");
-  IElementType BASE_KEY = new TaraTokenType("BASE_KEY");
   IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
   IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
+  IElementType BOX_KEY = new TaraTokenType("BOX_KEY");
   IElementType CASE_KEY = new TaraTokenType("CASE_KEY");
   IElementType CLOSE_AN = new TaraTokenType("CLOSE_AN");
   IElementType COLON = new TaraTokenType("COLON");
@@ -59,6 +56,7 @@ public interface TaraTypes {
   IElementType DOT = new TaraTokenType("DOT");
   IElementType DOUBLE_TYPE = new TaraTokenType("DOUBLE_TYPE");
   IElementType DOUBLE_VALUE_KEY = new TaraTokenType("DOUBLE_VALUE_KEY");
+  IElementType EMPTY_REF = new TaraTokenType("EMPTY_REF");
   IElementType HAS_NAME = new TaraTokenType("HAS_NAME");
   IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
   IElementType IMPORT_KEY = new TaraTokenType("IMPORT_KEY");
@@ -68,19 +66,20 @@ public interface TaraTypes {
   IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
   IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
   IElementType MULTIPLE = new TaraTokenType("MULTIPLE");
-  IElementType NAMESPACE_KEY = new TaraTokenType("NAMESPACE_KEY");
   IElementType NATURAL_TYPE = new TaraTokenType("NATURAL_TYPE");
   IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
   IElementType NEGATIVE_VALUE_KEY = new TaraTokenType("NEGATIVE_VALUE_KEY");
   IElementType NEWLINE = new TaraTokenType("NEWLINE");
   IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
   IElementType OPEN_AN = new TaraTokenType("OPEN_AN");
-  IElementType PACKAGE = new TaraTokenType("PACKAGE");
+  IElementType PRIVATE = new TaraTokenType("PRIVATE");
+  IElementType PROPERTY = new TaraTokenType("PROPERTY");
   IElementType REQUIRED = new TaraTokenType("REQUIRED");
   IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
   IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");
   IElementType RIGHT_SQUARE = new TaraTokenType("RIGHT_SQUARE");
   IElementType ROOT = new TaraTokenType("ROOT");
+  IElementType STAR = new TaraTokenType("STAR");
   IElementType STRING_MULTILINE_VALUE_KEY = new TaraTokenType("STRING_MULTILINE_VALUE_KEY");
   IElementType STRING_TYPE = new TaraTokenType("STRING_TYPE");
   IElementType STRING_VALUE_KEY = new TaraTokenType("STRING_VALUE_KEY");
@@ -97,9 +96,6 @@ public interface TaraTypes {
       else if (type == ATTRIBUTE) {
         return new TaraAttributeImpl(node);
       }
-      else if (type == BASE) {
-        return new TaraBaseImpl(node);
-      }
       else if (type == BODY) {
         return new TaraBodyImpl(node);
       }
@@ -108,6 +104,9 @@ public interface TaraTypes {
       }
       else if (type == BOOLEAN_VALUE) {
         return new TaraBooleanValueImpl(node);
+      }
+      else if (type == BOX) {
+        return new TaraBoxImpl(node);
       }
       else if (type == CONCEPT) {
         return new TaraConceptImpl(node);
@@ -123,6 +122,9 @@ public interface TaraTypes {
       }
       else if (type == EMPTY) {
         return new TaraEmptyImpl(node);
+      }
+      else if (type == EMPTY_FIELD) {
+        return new TaraEmptyFieldImpl(node);
       }
       else if (type == EXPLICIT) {
         return new TaraExplicitImpl(node);
@@ -160,20 +162,11 @@ public interface TaraTypes {
       else if (type == META_WORD) {
         return new TaraMetaWordImpl(node);
       }
-      else if (type == MODULE) {
-        return new TaraModuleImpl(node);
-      }
-      else if (type == NAMESPACE) {
-        return new TaraNamespaceImpl(node);
-      }
       else if (type == NATURAL_LIST) {
         return new TaraNaturalListImpl(node);
       }
       else if (type == NATURAL_VALUE) {
         return new TaraNaturalValueImpl(node);
-      }
-      else if (type == PACKET) {
-        return new TaraPacketImpl(node);
       }
       else if (type == PARAMETER) {
         return new TaraParameterImpl(node);

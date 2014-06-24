@@ -42,56 +42,55 @@ import java.util.Set;
 	}
 %}
 
-CONCEPT    = "Concept"
-IMPORT_KEY = "import"
-PACKAGE    = "package"
-NAMESPACE  = "namespace"
-CASE_KEY   = "case"
-BASE_KEY   = "base"
-ABSTRACT   = "abstract"
-MULTIPLE   = "multiple"
-REQUIRED   = "required"
-HAS_NAME   = "has-name"
-TERMINAL  = "terminal"
-INTENTION_KEY = "intention"
-ROOT      = "root"
-WORD_KEY  = "Word"
-RESOURCE_KEY = "Resource"
-VAR       = "var"
+CONCEPT             = "Concept"
+IMPORT_KEY          = "import"
+BOX                 = "package"
+CASE_KEY            = "case"
+PRIVATE             = "private"
+MULTIPLE            = "multiple"
+REQUIRED            = "required"
+HAS_NAME            = "has-name"
+TERMINAL            = "terminal"
+INTENTION_KEY       = "intention"
+PROPERTY            = "property"
+ROOT                = "root"
+WORD_KEY            = "Word"
+RESOURCE_KEY        = "Resource"
+VAR                 = "var"
 
-LIST = {LEFT_SQUARE}{RIGHT_SQUARE}
-LEFT_SQUARE   = "["
-RIGHT_SQUARE  = "]"
-LEFT_PARENTHESIS  = "("
-RIGHT_PARENTHESIS = ")"
+LEFT_SQUARE         = "["
+RIGHT_SQUARE        = "]"
+LEFT_PARENTHESIS    = "("
+RIGHT_PARENTHESIS   = ")"
 
-OPEN_BRACKET  = "{"
-CLOSE_BRACKET = "}"
+OPEN_BRACKET        = "{"
+CLOSE_BRACKET       = "}"
 
-DOT           = "."
-COMMA         = ","
-COLON         = ":"
-SEMICOLON     = ";"
-APOSTROPHE    = "'"
-DASH     = "-"
-DASHES   = {DASH} {DASH}+
-OPEN_AN  = "<"
-CLOSE_AN = ">"
-POSITIVE = "+"
+DOT                 = "."
+STAR                = "*"
+COMMA               = ","
+COLON               = ":"
+SEMICOLON           = ";"
+APOSTROPHE          = "'"
+DASH                = "-"
+DASHES              = {DASH} {DASH}+
+OPEN_AN             = "<"
+CLOSE_AN            = ">"
+POSITIVE            = "+"
 
-ALIAS_TYPE   = "Alias"
-INT_TYPE     = "Integer"
-NATURAL_TYPE = "Natural"
-DOUBLE_TYPE  = "Double"
-STRING_TYPE  = "String"
-BOOLEAN_TYPE = "Boolean"
-
-BOOLEAN_VALUE_KEY  = "true" | "false"
-NATURAL_VALUE_KEY  = {POSITIVE}? {DIGIT}+
-NEGATIVE_VALUE_KEY = {DASH} {DIGIT}+
-DOUBLE_VALUE_KEY   = ({POSITIVE} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+
-STRING_VALUE_KEY   = {APOSTROPHE} ~ {APOSTROPHE}
+ALIAS_TYPE          = "Alias"
+INT_TYPE            = "Integer"
+NATURAL_TYPE        = "Natural"
+DOUBLE_TYPE         = "Double"
+STRING_TYPE         = "String"
+BOOLEAN_TYPE        = "Boolean"
+BOOLEAN_VALUE_KEY   = "true" | "false"
+NATURAL_VALUE_KEY   = {POSITIVE}? {DIGIT}+
+NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
+DOUBLE_VALUE_KEY    = ({POSITIVE} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+
+STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
+EMPTY_REF               = "empty"
 
 DOC_LINE = "#" ~[\n]
 
@@ -109,18 +108,13 @@ NEWLINE= [\n]+
 
 	{IMPORT_KEY}                    {   return TaraTypes.IMPORT_KEY; }
 
-	{PACKAGE}                       {  	return TaraTypes.PACKAGE; }
+	{BOX}                           {  	loadHeritage();return TaraTypes.BOX_KEY; }
 
-	{NAMESPACE}                     {   loadHeritage();
-										return TaraTypes.NAMESPACE_KEY;  }
-
-	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
+	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
 
 	{COLON}                         {   return TaraTypes.COLON; }
 
 	{VAR}                           {   return TaraTypes.VAR; }
-
-	{BASE_KEY}                      {   return TaraTypes.BASE_KEY; }
 
 	{CASE_KEY}                      {   return TaraTypes.CASE_KEY; }
 
@@ -134,6 +128,7 @@ NEWLINE= [\n]+
 	{ROOT}                          {   return TaraTypes.ROOT; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{INTENTION_KEY}                 {   return TaraTypes.INTENTION_KEY; }
+	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 
@@ -143,6 +138,7 @@ NEWLINE= [\n]+
 	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }
 	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE_KEY; }
 	{NATURAL_VALUE_KEY}             {   return TaraTypes.NATURAL_VALUE_KEY; }
+	{EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 
 	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
@@ -154,7 +150,7 @@ NEWLINE= [\n]+
 
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
-
+	{STAR}                          {   return TaraTypes.STAR;     }
 	{ALIAS_TYPE}                    {   return TaraTypes.ALIAS_TYPE; }
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
@@ -172,7 +168,7 @@ NEWLINE= [\n]+
 
     {SP}                            {   return TokenType.WHITE_SPACE; }
 
-	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY; }
+	{IDENTIFIER_KEY}                {   return evaluateIdentifier();  }
 
     {NEWLINE}                       {   return TokenType.WHITE_SPACE; }
 

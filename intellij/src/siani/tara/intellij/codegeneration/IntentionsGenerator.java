@@ -113,7 +113,7 @@ public class IntentionsGenerator {
 	}
 
 	private List<PsiDirectory> createPackage(TaraFile file) {
-		String[] packet = file.getPackage().getHeaderReference().getText().split("\\.");
+		String[] packet = file.getBoxReference().getHeaderReference().getText().split("\\.");
 		List<PsiDirectory> directories = new ArrayList<>();
 		for (String s : packet) {
 			PsiDirectory baseDirectory = (directories.isEmpty()) ? genDirectory : directories.get(directories.size() - 1);

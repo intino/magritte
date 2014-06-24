@@ -11,27 +11,15 @@ import static siani.tara.intellij.lang.psi.TaraTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraPacketImpl extends ASTWrapperPsiElement implements TaraPacket {
+public class TaraEmptyFieldImpl extends ASTWrapperPsiElement implements TaraEmptyField {
 
-  public TaraPacketImpl(ASTNode node) {
+  public TaraEmptyFieldImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitPacket(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitEmptyField(this);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public TaraHeaderReference getHeaderReference() {
-    return findNotNullChildByClass(TaraHeaderReference.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraModule getModule() {
-    return findChildByClass(TaraModule.class);
   }
 
 }

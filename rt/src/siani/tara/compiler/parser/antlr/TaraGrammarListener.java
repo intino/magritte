@@ -1,4 +1,4 @@
-// Generated from /Users/octavio/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
+// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
 
 package siani.tara.compiler.parser.antlr;
 
@@ -370,16 +370,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDoc(@NotNull TaraGrammar.DocContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#base}.
-	 * @param ctx the parse tree
-	 */
-	void enterBase(@NotNull TaraGrammar.BaseContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#base}.
-	 * @param ctx the parse tree
-	 */
-	void exitBase(@NotNull TaraGrammar.BaseContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#varInit}.
 	 * @param ctx the parse tree

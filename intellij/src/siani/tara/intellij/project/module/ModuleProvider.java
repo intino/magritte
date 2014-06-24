@@ -8,7 +8,7 @@ public class ModuleProvider {
 
 	public static com.intellij.openapi.module.Module getNamespaceOfDocument(Project project, String fileText) {
 		try {
-			String module = fileText.substring("namespace ".length(), fileText.indexOf("\n"));
+			String module = fileText.substring("box ".length(), fileText.indexOf("\n"));
 			String[] split = module.split("\\.");
 			module = "";
 			for (String s1 : split) module += s1;

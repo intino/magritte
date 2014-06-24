@@ -47,6 +47,12 @@ public class TaraAttributeImpl extends AttributeMixin implements TaraAttribute {
 
   @Override
   @Nullable
+  public TaraEmptyField getEmptyField() {
+    return findChildByClass(TaraEmptyField.class);
+  }
+
+  @Override
+  @Nullable
   public TaraIdentifierReference getIdentifierReference() {
     return findChildByClass(TaraIdentifierReference.class);
   }

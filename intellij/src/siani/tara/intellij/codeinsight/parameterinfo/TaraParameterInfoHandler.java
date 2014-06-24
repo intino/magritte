@@ -106,20 +106,19 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	private Node findNodeOf(Concept concept, TreeWrapper wrapper) {
 		Node node = wrapper.get(TaraUtil.getMetaQualifiedName(concept));
-		if (node != null && !node.isBase() && !node.getObject().isAbstract()) return node;
+		if (node != null) return node;
 		Concept context = TaraPsiImplUtil.getContextOf(concept);
 		Node contextNode = wrapper.get(TaraUtil.getMetaQualifiedName(context));
 		if (contextNode == null) return null;
 		for (Node inner : contextNode.getInnerNodes())
 			if (inner.getObject().getParentName() != null) {
 				Node ancestry = wrapper.searchAncestry(inner);
-				if (ancestry.isBase())
-					node = checkIfCase(ancestry, concept.getType());
-				else
+				node = checkIfCase(ancestry, concept.getType());
+				if (node == null)// TODO Revisar
 					node = wrapper.searchChildrenByName(ancestry, concept.getType());
 			}
-		if (node != null && !node.isBase() && !node.getObject().isAbstract()) return node;
-		return null;
+		return node;
+
 	}
 
 	private Node checkIfCase(Node ancestry, String name) {

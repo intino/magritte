@@ -15,7 +15,7 @@ public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
 
 	public ImportQuickFix(TaraFile file, Concept conceptToImport) {
 		this.file = file;
-		String packet = ((TaraFile) conceptToImport.getContainingFile()).getPackage().getHeaderReference().getText();
+		String packet = ((TaraFile) conceptToImport.getContainingFile()).getBoxReference().getHeaderReference().getText();
 		anImport = packet + "." + conceptToImport.getName();
 	}
 

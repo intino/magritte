@@ -20,6 +20,9 @@ public interface TaraAttribute extends Attribute {
   TaraDoubleValue getDoubleValue();
 
   @Nullable
+  TaraEmptyField getEmptyField();
+
+  @Nullable
   TaraIdentifierReference getIdentifierReference();
 
   @Nullable

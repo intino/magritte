@@ -36,9 +36,9 @@ public interface TaraFile extends PsiFile {
 
 	String getText();
 
-	TaraPacket getPackage();
+	TaraBox getBoxReference();
 
-	List<? extends Identifier> getPackageRoute();
+	List<? extends Identifier> getBoxRoute();
 
 	Import[] getImports();
 

@@ -21,7 +21,7 @@ public abstract class TaraElementFactory {
 
 	public abstract Import createImport(String reference);
 
-	public abstract TaraPacket createPackage(String reference);
+	public abstract TaraBox createBox(String reference);
 
 	public abstract PsiElement createNewLine();
 

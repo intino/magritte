@@ -1,4 +1,4 @@
-package siani.tara.compiler.codegeneration.intellij;
+package siani.tara.compiler.codegeneration;
 
 import siani.tara.compiler.core.errorcollection.StreamWrapper;
 import siani.tara.compiler.core.errorcollection.TaraException;

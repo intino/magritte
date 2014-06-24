@@ -30,8 +30,6 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 	@NotNull
 	Signature getSignature();
 
-	boolean isBase();
-
 	boolean isCase();
 
 	Concept[] getCases();

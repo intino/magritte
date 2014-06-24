@@ -66,12 +66,12 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	private void addBaseConcepts(Concept context, String baseConcept, List<String> concepts) {
 		Node node = TaraLanguage.getHeritage(ModuleProvider.getModuleOfDocument((TaraFile) context.getContainingFile())).getNodeTable().get(baseConcept);
 		for (Node child : node.getInnerNodes())
-			if (!child.getObject().isCase() && !child.getObject().isAbstract()) concepts.add(child.getName());
+			if (!child.getObject().isCase() && !child.getObject().is(NodeObject.AnnotationType.PRIVATE)) concepts.add(child.getName());
 	}
 
 	private void addChildren(List<String> concepts, NodeObject node) {
 		for (NodeObject child : node.getChildren())
-			if (!child.isBase() && !child.isAbstract())
+			if (!child.is(NodeObject.AnnotationType.PRIVATE)) //TODO REVISAR
 				concepts.add(child.getName());
 			else for (NodeObject nodeObject : child.getChildren())
 				if (nodeObject.isCase())

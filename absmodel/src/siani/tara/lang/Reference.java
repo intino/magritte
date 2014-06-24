@@ -2,6 +2,7 @@ package siani.tara.lang;
 
 public class Reference extends Variable {
 	public String type;
+	public boolean empty = false;
 
 	public Reference(String type, String name, boolean isMultiple, boolean isTerminal) {
 		this.type = type;
@@ -19,6 +20,13 @@ public class Reference extends Variable {
 		return type;
 	}
 
+	public boolean isEmpty() {
+		return empty;
+	}
+
+	public void setEmpty(boolean empty) {
+		this.empty = empty;
+	}
 
 	@Override
 	public String toString() {

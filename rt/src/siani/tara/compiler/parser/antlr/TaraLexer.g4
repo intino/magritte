@@ -86,54 +86,53 @@ package siani.tara.compiler.parser.antlr;
     }
 }
 
-METAIDENTIFIER : 'Concept';
-CASE       : 'case';
+METAIDENTIFIER      : 'Concept';
+CASE                : 'case';
 
-MULTIPLE   : 'multiple';
-REQUIRED   : 'required';
-ROOT       : 'root';
-TERMINAL   : 'terminal';
-INTENTION  : 'intention';
-HAS_NAME   : 'has-name';
-VAR        : 'var';
-PROPERTY   : 'property';
-WORD       : 'Word';
-RESOURCE   : 'Resource';
+PRIVATE             : 'private';
+MULTIPLE            : 'multiple';
+REQUIRED            : 'required';
+ROOT                : 'root';
+TERMINAL            : 'terminal';
+INTENTION           : 'intention';
+HAS_NAME            : 'has-name';
+VAR                 : 'var';
+PROPERTY            : 'property';
+WORD                : 'Word';
+RESOURCE            : 'Resource';
 
-ABSTRACT   : 'abstract';
-BASE       : 'base';
+IMPORT              : 'import';
+BOX                 : 'box';
+NAMESPACE           : 'namespace';
 
-IMPORT     : 'import';
-PACKAGE    : 'package';
-NAMESPACE  : 'namespace';
+LEFT_SQUARE         : '[';
+RIGHT_SQUARE        : ']';
+LEFT_PARENTHESIS    : '(';
+RIGHT_PARENTHESIS   : ')';
 
-LEFT_SQUARE : '[';
-RIGHT_SQUARE: ']';
-LEFT_PARENTHESIS : '(';
-RIGHT_PARENTHESIS: ')';
+OPEN_BRACKET        : '{' {  openBracket(); };
+CLOSE_BRACKET       : '}' { closeBracket(); };
 
-OPEN_BRACKET : '{' {  openBracket(); };
-CLOSE_BRACKET: '}' { closeBracket(); };
+OPEN_AN             : '<';
+CLOSE_AN            : '>';
+COLON               : ':';
+COMMA               : ',';
+DOT                 : '.';
+ASSIGN              : '=';
+APHOSTROPHE         : '\'';
+SEMICOLON           : ';'+ { semicolon(); };
+STAR                : '*';
+POSITIVE            : '+';
+DASHES              : DASH DASH+;
+DASH                : '-';
 
-OPEN_AN : '<';
-CLOSE_AN: '>';
-COLON        : ':';
-COMMA        : ',';
-DOT          : '.';
-ASSIGN       : '=';
-APHOSTROPHE  : '\'';
-SEMICOLON    : ';'+ { semicolon(); };
-
-POSITIVE: '+';
-DASHES       : DASH DASH+;
-DASH    : '-';
-
-ALIAS_TYPE  : 'Alias';
-INT_TYPE    : 'Integer';
-NATURAL_TYPE: 'Natural';
-DOUBLE_TYPE : 'Double';
-STRING_TYPE : 'String';
-BOOLEAN_TYPE: 'Boolean';
+ALIAS_TYPE          : 'Alias';
+INT_TYPE            : 'Integer';
+NATURAL_TYPE        : 'Natural';
+DOUBLE_TYPE         : 'Double';
+STRING_TYPE         : 'String';
+BOOLEAN_TYPE        : 'Boolean';
+EMPTY               : 'empty';
 
 BOOLEAN_VALUE : 'true' | 'false';
 POSITIVE_VALUE: POSITIVE? DIGIT+;

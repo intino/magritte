@@ -49,7 +49,7 @@ public class VariantsManager {
 
 	private List<PsiElement> addInPackageVariants() {
 		List<PsiElement> variants = new ArrayList<>();
-		List<? extends Identifier> packageRoute = ((TaraFile) myElement.getContainingFile()).getPackageRoute();
+		List<? extends Identifier> packageRoute = ((TaraFile) myElement.getContainingFile()).getBoxRoute();
 		PsiPackage packageFile = (PsiPackage) ReferenceManager.resolve(packageRoute.get(packageRoute.size() - 1), false);
 		if (packageFile == null) return Collections.EMPTY_LIST;
 		PsiDirectory[] directories = packageFile.getDirectories();

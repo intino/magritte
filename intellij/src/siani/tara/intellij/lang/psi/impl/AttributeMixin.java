@@ -30,9 +30,10 @@ public class AttributeMixin extends ASTWrapperPsiElement {
 	@Override
 	public String getName() {
 		ASTNode[] child = this.getNode().getChildren(TokenSet.create(TaraTypes.IDENTIFIER_KEY));
-		if (child == null) {
+		if (child == null || child.length == 0) {
 			PsiElement lastChild = this.getLastChild();
 			if (lastChild instanceof TaraWord) return getAsWord();
+			else return lastChild.getNode().getChildren(TokenSet.create(TaraTypes.IDENTIFIER_KEY))[0].getText();
 		}
 		return child[child.length - 1].getText();
 	}

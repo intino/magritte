@@ -50,9 +50,6 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 		return getNode().findChildByType(TaraTypes.CASE_KEY) != null;
 	}
 
-	public boolean isBase() {
-		return getNode().findChildByType(TaraTypes.BASE_KEY) != null;
-	}
 
 	@Nullable
 	public MetaIdentifier getType() {

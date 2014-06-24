@@ -10,11 +10,11 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	public String getQualifiedName() {
 		Identifier identifierNode = (Identifier) getIdentifierNode();
 		String name = identifierNode != null ? identifierNode.getText() : "annonymous";
-		String packageName = ((TaraFile) this.getContainingFile()).getPackage().getHeaderReference().getText();
+		String packageName = ((TaraFile) this.getContainingFile()).getBoxReference().getHeaderReference().getText();
 		Concept concept = (Concept) this;
 		while ((concept = TaraPsiImplUtil.getContextOf(concept)) != null) {
 			name = concept.getName() + "." + name;
@@ -97,7 +97,6 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	public Icon getIcon(@IconFlags int i) {
 		if (this.isCase())
 			return TaraIcons.getIcon(TaraIcons.CASE_13);
-		if (this.isBase()) return TaraIcons.getIcon(TaraIcons.BASE_13);
 		return TaraIcons.getIcon(TaraIcons.CONCEPT);
 	}
 
@@ -114,9 +113,6 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return findChildByClass(Body.class);
 	}
 
-	public boolean isBase() {
-		return this.getSignature().isBase();
-	}
 
 	public boolean isCase() {
 		return this.getSignature().isCase();
@@ -134,11 +130,9 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	public Concept[] getCases() {
 		ArrayList<Concept> cases = new ArrayList<>();
-		if (isBase()) {
-			Concept[] children = TaraUtil.getChildrenOf((Concept) this);
-			for (Concept child : children) {
-				if (child.isCase()) cases.add(child);
-			}
+		Concept[] children = TaraUtil.getChildrenOf((Concept) this);
+		for (Concept child : children) {
+			if (child.isCase()) cases.add(child);
 		}
 		return cases.size() > 0 ? cases.toArray(new Concept[cases.size()]) : null;
 	}

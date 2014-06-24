@@ -53,7 +53,9 @@ public class TaraLanguage extends Language {
 	private static TreeWrapper loadHeritage(String parent, String basePath) {
 		try {
 			String heritageFile = basePath + parent + JSON;
-			InputStream heritageInputStream = new FileInputStream(new File(heritageFile));
+			File file = new File(heritageFile);
+			if (!file.exists()) return null;
+			InputStream heritageInputStream = new FileInputStream(file);
 			GsonBuilder gb = new GsonBuilder();
 			gb.registerTypeAdapter(Variable.class, new ModelDeserializer());
 			TreeWrapper treeWrapper = gb.create().fromJson(new InputStreamReader(heritageInputStream), TreeWrapper.class);

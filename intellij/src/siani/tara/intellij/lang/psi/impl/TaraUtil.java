@@ -54,13 +54,6 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static Concept getBaseConceptOf(Concept concept) {
-		Concept contextOf = TaraPsiImplUtil.getContextOf(concept);
-		if (contextOf.isBase()) return contextOf;
-		else return TaraPsiImplUtil.getContextOf(contextOf);
-	}
-
-	@NotNull
 	private static TaraFileImpl[] getModuleFiles(PsiFile psiFile) {
 		List<TaraFileImpl> taraFiles = new ArrayList<>();
 		Module module = ProjectRootManager.getInstance(psiFile.getProject()).getFileIndex().getModuleForFile(psiFile.getVirtualFile());

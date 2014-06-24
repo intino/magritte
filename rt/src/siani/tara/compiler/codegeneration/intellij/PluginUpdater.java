@@ -23,12 +23,7 @@ public class PluginUpdater {
 
 	public void generate(TreeWrapper treeWrapper) throws TaraException {
 		serializeNodes(treeWrapper);
-		System.out.println("Nodes serialized");
-		File[] lexFiles = TaraToJFlexCodeGenerator.toJFlex(conf, treeWrapper);
-		for (File lexFile : lexFiles)
-			JFlexToJavaGenerator.jFlexToJava(conf.getTempDirectory(), lexFile);
-		PluginCompiler.generateClasses(conf);
-		PluginUpdateApplier.update(conf);
+		System.out.println("Nodes serialized. Plugin Updated");
 	}
 
 	private void serializeNodes(TreeWrapper treeWrapper) throws TaraException {
@@ -58,19 +53,28 @@ public class PluginUpdater {
 				final JsonArray list = new JsonArray();
 				for (String wordType : word.wordTypes) list.add(new JsonPrimitive(wordType));
 				object.add("wordTypes", list);
+				object.addProperty("isTerminal", word.isTerminal);
+				object.addProperty("defaultWord", word.getDefaultWord());
+				object.addProperty("isProperty", word.isProperty());
 			} else if (variable instanceof NodeAttribute) {
 				NodeAttribute attribute = (NodeAttribute) variable;
 				object.addProperty("primitiveType", attribute.primitiveType);
+				object.addProperty("value", attribute.getValue());
 				object.addProperty("isMultiple", attribute.isMultiple);
 				object.addProperty("isTerminal", attribute.isTerminal);
+				object.addProperty("isProperty", attribute.isProperty());
 			} else if (variable instanceof Reference) {
 				Reference reference = (Reference) variable;
 				object.addProperty("node", reference.type);
 				object.addProperty("isMultiple", reference.isMultiple);
-			} else if (variable instanceof Resource) {
-				Resource reference = (Resource) variable;
-				object.addProperty("resourceType", reference.node);
 				object.addProperty("isTerminal", reference.isTerminal);
+				object.addProperty("isProperty", reference.isProperty());
+				object.addProperty("isEmpty", reference.isEmpty());
+			} else if (variable instanceof Resource) {
+				Resource resource = (Resource) variable;
+				object.addProperty("resourceType", resource.node);
+				object.addProperty("isProperty", resource.isProperty());
+				object.addProperty("isTerminal", resource.isTerminal);
 			}
 			return object; // or throw an IllegalArgumentException
 

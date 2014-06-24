@@ -85,25 +85,25 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	}
 
 	@Override
-	public TaraPacket getPackage() {
+	public TaraBox getBoxReference() {
 		TaraHeader[] header = PsiTreeUtil.getChildrenOfType(this, TaraHeader.class);
 		if (header == null) return null;
-		TaraPacket[] packet = PsiTreeUtil.getChildrenOfType(header[0], TaraPacket.class);
+		TaraBox[] packet = PsiTreeUtil.getChildrenOfType(header[0], TaraBox.class);
 		return packet != null ? packet[0] : null;
 	}
 
 	@Override
 	public void setPackage(String path) {
 		TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
-		PsiElement replace = this.getPackage().replace(factory.createPackage(path));
+		PsiElement replace = this.getBoxReference().replace(factory.createBox(path));
 //		if (getImports() != null)
 //			if (!replace.getNextSibling().getFirstChild().getNextSibling().getNode().getElementType().equals(TaraTypes.NEWLINE))
 //				replace.getNextSibling().addAfter(factory.createNewLine(), replace.getNextSibling());
 	}
 
 	@Override
-	public List<? extends Identifier> getPackageRoute() {
-		return getPackage().getHeaderReference().getIdentifierList();
+	public List<? extends Identifier> getBoxRoute() {
+		return getBoxReference().getHeaderReference().getIdentifierList();
 	}
 
 	@Override
@@ -146,9 +146,9 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 		final TreeElement copy = ChangeUtil.copyToElement(anImport);
 		PsiElement psi = copy.getPsi();
 		PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0].add(psi);
-		TaraPacket aPackage = getPackage();
-//		if (!aPackage.getNextSibling().getFirstChild().getNextSibling().getNode().getElementType().equals(TaraTypes.NEWLINE))
-//			aPackage.getNextSibling().addAfter(TaraElementFactory.getInstance(this.getProject()).createNewLine(), aPackage.getNextSibling());
+		TaraBox box = getBoxReference();
+//		if (!box.getNextSibling().getFirstChild().getNextSibling().getNode().getElementType().equals(TaraTypes.NEWLINE))
+//			box.getNextSibling().addAfter(TaraElementFactory.getInstance(this.getProject()).createNewLine(), box.getNextSibling());
 		return psi;
 	}
 }

@@ -20,6 +20,9 @@ public interface TaraVarInit extends TaraPsiElement {
   TaraDoubleValue getDoubleValue();
 
   @Nullable
+  TaraEmptyField getEmptyField();
+
+  @Nullable
   TaraIdentifierList getIdentifierList();
 
   @Nullable

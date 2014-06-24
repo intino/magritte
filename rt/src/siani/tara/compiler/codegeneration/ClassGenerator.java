@@ -1,6 +1,5 @@
 package siani.tara.compiler.codegeneration;
 
-import siani.tara.compiler.codegeneration.intellij.CodeGenerator;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.TaraException;
 

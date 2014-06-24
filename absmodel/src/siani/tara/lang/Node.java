@@ -65,11 +65,9 @@ public class Node {
 
 	public Node[] getCases() {
 		List<Node> cases = new ArrayList<>();
-		if (getObject().isBase()) {
-			for (Node child : getInnerNodes())
-				if (child.getObject().isCase()) cases.add(child);
-			return cases.toArray(new Node[cases.size()]);
-		} else return new Node[0];
+		for (Node child : getInnerNodes())
+			if (child.getObject().isCase()) cases.add(child);
+		return cases.toArray(new Node[cases.size()]);
 	}
 
 	public String getAbsolutePath() {
@@ -103,10 +101,6 @@ public class Node {
 
 	public boolean isPrime() {
 		return getContainer() == null;
-	}
-
-	public boolean isBase() {
-		return object.isBase();
 	}
 
 	public boolean isCase() {

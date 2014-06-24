@@ -6,10 +6,7 @@ import java.util.List;
 
 public class NodeObject {
 	private transient Node declaredNode;
-	private boolean abstractModifier;
-	private boolean finalModifier;
 	private boolean caseConcept;
-	private boolean base;
 	private List<Node> cases;
 	private String doc;
 	private String parentName;
@@ -30,10 +27,7 @@ public class NodeObject {
 
 	public NodeObject(String name) {
 		this.name = name;
-		this.abstractModifier = false;
-		this.finalModifier = false;
 		this.caseConcept = false;
-		this.base = false;
 	}
 
 	public boolean is(AnnotationType type) {
@@ -137,13 +131,6 @@ public class NodeObject {
 		return cases;
 	}
 
-	public boolean isFinal() {
-		return finalModifier;
-	}
-
-	public boolean isAbstract() {
-		return abstractModifier;
-	}
 
 	public boolean isCase() {
 		return caseConcept;
@@ -151,24 +138,6 @@ public class NodeObject {
 
 	public void setCase(boolean caseConcept) {
 		this.caseConcept = caseConcept;
-	}
-
-	public boolean isBase() {
-		return base;
-	}
-
-	public void setBase(boolean base) {
-		this.base = base;
-	}
-
-	public String getModifier() {
-		return abstractModifier ? "abstract" : !finalModifier ? "" : "final";
-	}
-
-	public void setModifier(String modifier) {
-		if ("abstract".equals(modifier))
-			abstractModifier = true;
-		else finalModifier = true;
 	}
 
 	public void addChild(NodeObject child) {
@@ -234,6 +203,6 @@ public class NodeObject {
 	}
 
 	public enum AnnotationType {
-		HAS_NAME, ROOT, TERMINAL, MULTIPLE, REQUIRED, ABSTRACT, INTENTION;
+		PROPERTY, HAS_NAME, ROOT, TERMINAL, MULTIPLE, REQUIRED, PRIVATE, INTENTION;
 	}
 }

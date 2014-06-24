@@ -6,6 +6,7 @@ import java.util.List;
 
 public class NodeWord extends Variable {
 	public List<String> wordTypes;
+	public int defaultWord = -1;
 
 	public NodeWord(String name, boolean isTerminal) {
 		this.name = name;
@@ -38,6 +39,14 @@ public class NodeWord extends Variable {
 	@Override
 	public boolean isMultiple() {
 		return false;
+	}
+
+	public int getDefaultWord() {
+		return defaultWord;
+	}
+
+	public void setDefaultWord(int defaultWord) {
+		this.defaultWord = defaultWord;
 	}
 
 	public String toString() {

@@ -3,9 +3,9 @@ package siani.tara.lang;
 public abstract class Variable implements Cloneable {
 	public String name;
 	public String doc;
-	public boolean isTerminal;
-	public boolean isMultiple;
-	private boolean multiple;
+	public boolean isTerminal = false;
+	public boolean isMultiple = false;
+	public boolean isProperty = false;
 
 	public String getName() {
 		return name;
@@ -15,25 +15,21 @@ public abstract class Variable implements Cloneable {
 		this.name = name;
 	}
 
-	public abstract String getType();
-
 	public boolean isMultiple() {
 		return isMultiple;
 	}
 
 	public void setMultiple(boolean multiple) {
-		this.multiple = multiple;
+		this.isMultiple = multiple;
+	}
+
+	public boolean isTerminal() {
+		return isTerminal;
 	}
 
 	public void setTerminal(boolean isTerminal) {
 		this.isTerminal = isTerminal;
 	}
-
-	public boolean isTerminal(){
-		return isTerminal;
-	}
-
-	public abstract String toString();
 
 	public String getDoc() {
 		return doc;
@@ -43,5 +39,17 @@ public abstract class Variable implements Cloneable {
 		this.doc = doc;
 	}
 
+	public boolean isProperty() {
+		return isProperty;
+	}
+
+	public void setProperty(boolean isProperty) {
+		this.isProperty = isProperty;
+	}
+
+	public abstract String getType();
+
 	public abstract Variable clone();
+
+	public abstract String toString();
 }

@@ -48,6 +48,12 @@ public class TaraVarInitImpl extends ASTWrapperPsiElement implements TaraVarInit
 
   @Override
   @Nullable
+  public TaraEmptyField getEmptyField() {
+    return findChildByClass(TaraEmptyField.class);
+  }
+
+  @Override
+  @Nullable
   public TaraIdentifierList getIdentifierList() {
     return findChildByClass(TaraIdentifierList.class);
   }
