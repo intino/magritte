@@ -1,5 +1,8 @@
 package siani.tara.intellij.refactoring.move;
 
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
@@ -36,14 +39,16 @@ public class TaraFileMoveHandler extends MoveFileHandler {
 			while (root != null && !roots.contains(root.getVirtualFile())) root = root.getParentDirectory();
 			if (root == null) return;
 			String rootPath = root.getVirtualFile().getPath();
+			Project project = moveDestination.getProject();
+			Module moduleForFile = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(moveDestination.getVirtualFile());
 			String path = moveDestination.getVirtualFile().getPath().replace(rootPath, "").replaceAll(File.separator, ".").substring(1);
-			((TaraFile) file).setPackage(path);
+			TaraFile taraFile = (TaraFile) file;
+			taraFile.setBox(project.getName() + "." + moduleForFile.getName() + "." + path + "." + taraFile.getPresentableName());
 		}
 	}
 
 	@Override
-	public List<UsageInfo> findUsages(PsiFile file, PsiDirectory newParent, boolean searchInComments,
-	                                  boolean searchInNonJavaFiles) {
+	public List<UsageInfo> findUsages(PsiFile file, PsiDirectory newParent, boolean searchInComments, boolean searchInNonJavaFiles) {
 		if (file != null) {
 			final List<UsageInfo> usages = TaraRefactoringUtil.findUsages(file, false);
 			for (UsageInfo usage : usages) {

@@ -8,23 +8,30 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraImportStatementImpl extends ImportMixin implements TaraImportStatement {
+public class TaraFacetImpl extends ASTWrapperPsiElement implements TaraFacet {
 
-  public TaraImportStatementImpl(ASTNode node) {
+  public TaraFacetImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitImportStatement(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitFacet(this);
     else super.accept(visitor);
   }
 
   @Override
   @NotNull
-  public TaraHeaderReference getHeaderReference() {
-    return findNotNullChildByClass(TaraHeaderReference.class);
+  public TaraIdentifier getIdentifier() {
+    return findNotNullChildByClass(TaraIdentifier.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraParameters getParameters() {
+    return findChildByClass(TaraParameters.class);
   }
 
 }

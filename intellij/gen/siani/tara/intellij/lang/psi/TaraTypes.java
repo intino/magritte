@@ -1,15 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package siani.tara.intellij.lang.psi;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.PsiElement;
+import com.intellij.lang.ASTNode;
 import siani.tara.intellij.lang.psi.impl.*;
 
 public interface TaraTypes {
 
   IElementType ANNOTATIONS = new TaraElementType("ANNOTATIONS");
+  IElementType AN_IMPORT = new TaraElementType("AN_IMPORT");
   IElementType ATTRIBUTE = new TaraElementType("ATTRIBUTE");
   IElementType BODY = new TaraElementType("BODY");
   IElementType BOOLEAN_LIST = new TaraElementType("BOOLEAN_LIST");
@@ -22,12 +23,12 @@ public interface TaraTypes {
   IElementType EMPTY = new TaraElementType("EMPTY");
   IElementType EMPTY_FIELD = new TaraElementType("EMPTY_FIELD");
   IElementType EXPLICIT = new TaraElementType("EXPLICIT");
+  IElementType FACET = new TaraElementType("FACET");
   IElementType HEADER = new TaraElementType("HEADER");
   IElementType HEADER_REFERENCE = new TaraElementType("HEADER_REFERENCE");
   IElementType IDENTIFIER = new TaraElementType("IDENTIFIER");
   IElementType IDENTIFIER_LIST = new TaraElementType("IDENTIFIER_LIST");
   IElementType IDENTIFIER_REFERENCE = new TaraElementType("IDENTIFIER_REFERENCE");
-  IElementType IMPORT_STATEMENT = new TaraElementType("IMPORT_STATEMENT");
   IElementType INTEGER_LIST = new TaraElementType("INTEGER_LIST");
   IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
   IElementType INTENTION = new TaraElementType("INTENTION");
@@ -44,6 +45,7 @@ public interface TaraTypes {
   IElementType WORD = new TaraElementType("WORD");
 
   IElementType ALIAS_TYPE = new TaraTokenType("ALIAS_TYPE");
+  IElementType AS = new TaraTokenType("AS");
   IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
   IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
   IElementType BOX_KEY = new TaraTokenType("BOX_KEY");
@@ -93,6 +95,9 @@ public interface TaraTypes {
        if (type == ANNOTATIONS) {
         return new TaraAnnotationsImpl(node);
       }
+      else if (type == AN_IMPORT) {
+        return new TaraAnImportImpl(node);
+      }
       else if (type == ATTRIBUTE) {
         return new TaraAttributeImpl(node);
       }
@@ -129,6 +134,9 @@ public interface TaraTypes {
       else if (type == EXPLICIT) {
         return new TaraExplicitImpl(node);
       }
+      else if (type == FACET) {
+        return new TaraFacetImpl(node);
+      }
       else if (type == HEADER) {
         return new TaraHeaderImpl(node);
       }
@@ -143,9 +151,6 @@ public interface TaraTypes {
       }
       else if (type == IDENTIFIER_REFERENCE) {
         return new TaraIdentifierReferenceImpl(node);
-      }
-      else if (type == IMPORT_STATEMENT) {
-        return new TaraImportStatementImpl(node);
       }
       else if (type == INTEGER_LIST) {
         return new TaraIntegerListImpl(node);

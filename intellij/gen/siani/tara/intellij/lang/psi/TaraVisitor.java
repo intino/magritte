@@ -6,6 +6,10 @@ import com.intellij.psi.PsiElementVisitor;
 
 public class TaraVisitor extends PsiElementVisitor {
 
+  public void visitAnImport(@NotNull TaraAnImport o) {
+    visitImport(o);
+  }
+
   public void visitAnnotations(@NotNull TaraAnnotations o) {
     visitAnnotations(o);
   }
@@ -58,6 +62,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitFacet(@NotNull TaraFacet o) {
+    visitPsiElement(o);
+  }
+
   public void visitHeader(@NotNull TaraHeader o) {
     visitPsiElement(o);
   }
@@ -76,10 +84,6 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitIdentifierReference(@NotNull TaraIdentifierReference o) {
     visitIdentifierReference(o);
-  }
-
-  public void visitImportStatement(@NotNull TaraImportStatement o) {
-    visitImport(o);
   }
 
   public void visitIntegerList(@NotNull TaraIntegerList o) {

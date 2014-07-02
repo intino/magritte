@@ -18,6 +18,6 @@ public class TaraFindUsagesHandlerFactory extends FindUsagesHandlerFactory {
 	@Nullable
 	@Override
 	public FindUsagesHandler createFindUsagesHandler(@NotNull PsiElement element, boolean forHighlightUsages) {
-		return element instanceof TaraFile ? new TaraConceptFindUsagesHandler(((TaraFile) element).getConcept()) : null;
+		return element instanceof TaraFile ? new TaraConceptFindUsagesHandler(((TaraFile) element).getConcepts()[0]) : null; //TODO resolve just for the first concept
 	}
 }

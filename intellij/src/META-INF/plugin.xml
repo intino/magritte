@@ -89,7 +89,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AnnotationsAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AttributeAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.PackageAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.BoxReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParameterAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParametersAnnotator"/>
     <!--<annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptTypeAnnotator"/>-->

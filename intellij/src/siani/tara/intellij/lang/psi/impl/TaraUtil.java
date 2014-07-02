@@ -32,10 +32,18 @@ public class TaraUtil {
 	@NotNull
 	public static List<Concept> findRootConcept(PsiElement element, String identifier) {
 		List<Concept> result = new ArrayList<>();
-		for (TaraFileImpl taraFile : getModuleFiles(element.getContainingFile()))
-			if (taraFile.getConcept() != null && identifier.equals(taraFile.getConcept().getName()))
-				result.add(taraFile.getConcept());
+		for (TaraFileImpl taraFile : getModuleFiles(element.getContainingFile())) {
+			Concept[] concepts = taraFile.getConcepts();
+			if (concepts == null) continue;
+			extractConceptsByName(identifier, result, concepts);
+		}
 		return result;
+	}
+
+	private static void extractConceptsByName(String identifier, List<Concept> result, Concept[] concepts) {
+		for (Concept concept : concepts)
+			if (identifier.equals(concept.getName()))
+				result.add(concept);
 	}
 
 	public static String getMetaQualifiedName(Concept concept) {
@@ -48,9 +56,8 @@ public class TaraUtil {
 		return id;
 	}
 
-	public static Concept getRootConceptOfFile(TaraFileImpl taraFile) {
-		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, Concept.class);
-		return (concepts != null) ? concepts[0] : null;
+	public static Concept[] getRootConceptsOfFile(TaraFileImpl taraFile) {
+		return PsiTreeUtil.getChildrenOfType(taraFile, Concept.class);
 	}
 
 	@NotNull

@@ -35,7 +35,7 @@ public class VariantsManager {
 
 	public void resolveVariants() {
 		addContextVariants();
-		addInPackageVariants();
+		addInBoxVariants();
 		addImportVariants();
 		addPackageVariants();
 	}
@@ -47,7 +47,7 @@ public class VariantsManager {
 			resolveRouteFor(concept, context);
 	}
 
-	private List<PsiElement> addInPackageVariants() {
+	private List<PsiElement> addInBoxVariants() {
 		List<PsiElement> variants = new ArrayList<>();
 		List<? extends Identifier> packageRoute = ((TaraFile) myElement.getContainingFile()).getBoxRoute();
 		PsiPackage packageFile = (PsiPackage) ReferenceManager.resolve(packageRoute.get(packageRoute.size() - 1), false);
@@ -62,8 +62,9 @@ public class VariantsManager {
 		for (VirtualFile vFile : directory.getVirtualFile().getChildren()) {
 			TaraFile file = TaraUtil.getTaraFileFromVirtual(project, vFile);
 			if (file == null) continue;
-			if (file.getConcept() != null)
-				resolveRouteFor(file.getConcept(), context);
+
+//			if (file.getConcept() != null)
+//				resolveRouteFor(file.getConcept(), context);
 		}
 	}
 
@@ -121,7 +122,7 @@ public class VariantsManager {
 	private void addPossibleConceptOfPackage(VirtualFile file) {
 		if (TaraFileType.INSTANCE.getDefaultExtension().equals(file.getExtension())) {
 			TaraFile taraFile = (TaraFile) PsiManager.getInstance(project).findFile(file);
-			if (taraFile != null) variants.add(taraFile.getConcept());
+//			if (taraFile != null) variants.add(taraFile.getConcept());
 		}
 	}
 

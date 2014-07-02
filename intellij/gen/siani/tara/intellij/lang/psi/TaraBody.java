@@ -14,6 +14,9 @@ public interface TaraBody extends Body {
   List<TaraConcept> getConceptList();
 
   @NotNull
+  List<TaraFacet> getFacetList();
+
+  @NotNull
   List<TaraVarInit> getVarInitList();
 
 }

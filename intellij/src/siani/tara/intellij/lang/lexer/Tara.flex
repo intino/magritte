@@ -92,15 +92,16 @@ NEWLINE= [\n]+ ([ ] | [\t])*
 //Reserved words
 
 METAIDENTIFIER  = "Concept"
+INTENTION_KEY   = "Intention"
 IMPORT_KEY      = "import"
 BOX_KEY         = "box"
+AS              = "as"
 CASE_KEY        = "case"
 PRIVATE         = "private"
 PROPERTY        = "property"
 MULTIPLE        = "multiple"
 REQUIRED        = "required"
 HAS_NAME        = "has-name"
-INTENTION_KEY   = "intention"
 ROOT            = "root"
 TERMINAL         = "terminal"
 WORD_KEY        = "Word"
@@ -154,6 +155,8 @@ IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
 	{IMPORT_KEY}                    {   return TaraTypes.IMPORT_KEY; }
 
 	{BOX_KEY}                       {   return TaraTypes.BOX_KEY; }
+
+	{AS}                            {   return TaraTypes.AS; }
 
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }

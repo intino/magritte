@@ -38,6 +38,7 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 		return "Tara File";
 	}
 
+	@NotNull
 	public String getPresentableName() {
 		return getName().split("\\.")[0];
 	}
@@ -69,19 +70,24 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	@Nullable
 	@Override
 	public Icon getIcon(int flags) {
-		if (getConcept() != null) {
-			MetaIdentifier type = this.getConcept().getSignature().getType();
-			if (type != null) {
-				Icon icon = TaraIcons.getIcon(type.getText().toUpperCase());
-				if (icon != null) return icon;
-			}
-		}
+//		if (getConcepts() != null) {
+//			MetaIdentifier type = this.getConcept().getSignature().getType();
+//			if (type != null) {
+//				Icon icon = TaraIcons.getIcon(type.getText().toUpperCase());
+//				if (icon != null) return icon;
+//			}
+//		}
 		return TaraIcons.getIcon(TaraIcons.CONCEPT);
 	}
 
 	@Override
-	public Concept getConcept() {
-		return TaraUtil.getRootConceptOfFile(this);
+	public Concept[] getConcepts() {
+		return TaraUtil.getRootConceptsOfFile(this);
+	}
+
+	@Override
+	public TaraIntention[] getIntentions() {
+		return PsiTreeUtil.getChildrenOfType(this, TaraIntention.class);
 	}
 
 	@Override
@@ -93,7 +99,7 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	}
 
 	@Override
-	public void setPackage(String path) {
+	public void setBox(String path) {
 		TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
 		PsiElement replace = this.getBoxReference().replace(factory.createBox(path));
 //		if (getImports() != null)

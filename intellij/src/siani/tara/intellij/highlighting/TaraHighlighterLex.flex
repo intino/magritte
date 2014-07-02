@@ -43,15 +43,16 @@ import java.util.Set;
 %}
 
 CONCEPT             = "Concept"
+INTENTION_KEY       = "Intention"
 IMPORT_KEY          = "import"
-BOX                 = "package"
+BOX                 = "box"
+AS                  = "as"
 CASE_KEY            = "case"
 PRIVATE             = "private"
 MULTIPLE            = "multiple"
 REQUIRED            = "required"
 HAS_NAME            = "has-name"
 TERMINAL            = "terminal"
-INTENTION_KEY       = "intention"
 PROPERTY            = "property"
 ROOT                = "root"
 WORD_KEY            = "Word"
@@ -108,7 +109,10 @@ NEWLINE= [\n]+
 
 	{IMPORT_KEY}                    {   return TaraTypes.IMPORT_KEY; }
 
-	{BOX}                           {  	loadHeritage();return TaraTypes.BOX_KEY; }
+	{BOX}                           {  	loadHeritage();
+										return TaraTypes.BOX_KEY; }
+
+	{AS}                            {   return TaraTypes.AS; }
 
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
 

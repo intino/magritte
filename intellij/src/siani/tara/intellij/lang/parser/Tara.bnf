@@ -16,14 +16,17 @@
 	psiImplUtilClass='siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil'
 }
 
-root ::= NEWLINE* header? NEWLINE* (concept  NEWLINE*)*
+root ::= NEWLINE* header? NEWLINE+ ((concept | intention)  NEWLINE*)*
 
-header ::= box? importStatement*
+header ::= box?  imports?
 
 box ::= BOX_KEY headerReference
-importStatement ::= NEWLINE IMPORT_KEY headerReference {
+
+private imports ::= anImport+
+
+anImport ::=NEWLINE+ IMPORT_KEY headerReference {
 	mixin= 'siani.tara.intellij.lang.psi.impl.ImportMixin'
-	implements='siani.tara.intellij.lang.psi.Import'
+    implements='siani.tara.intellij.lang.psi.Import'
 }
 
 doc::= DOC_LINE+ {
@@ -92,7 +95,9 @@ body ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT {
 	implements='siani.tara.intellij.lang.psi.Body'
 }
 
-private conceptConstituents ::= attribute | concept | varInit
+private conceptConstituents ::= attribute | concept | varInit | facet
+
+facet ::= AS identifier parameters?
 
 attribute ::= doc? (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
                         | resource | referenceAttribute | word) annotations? {
@@ -134,7 +139,7 @@ word ::= doc? VAR WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY STAR? 
 	implements ='siani.tara.intellij.lang.psi.Word'
 }
 
-annotations ::= OPEN_AN (PRIVATE | TERMINAL | MULTIPLE | REQUIRED | HAS_NAME | intention | ROOT | PROPERTY)+ CLOSE_AN {
+annotations ::= OPEN_AN (PRIVATE | TERMINAL | MULTIPLE | REQUIRED | HAS_NAME | ROOT | PROPERTY)+ CLOSE_AN {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotations'
@@ -155,7 +160,7 @@ varInit ::= IDENTIFIER_KEY COLON ( emptyField
                                  | doubleList)
 {pin=2}
 
-intention ::= INTENTION_KEY {
+intention ::= INTENTION_KEY (COLON identifierReference)? IDENTIFIER_KEY {
 	pin=1
 	mixin= 'siani.tara.intellij.lang.psi.impl.ExternalReferenceMixin'
 	implements='siani.tara.intellij.lang.psi.ExternalReference'

@@ -22,7 +22,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 				"\tConcept Ontology <required>\n" +
 				"\tvar Alias uid"
 		);
-		return file.getConcept();
+		return file.getConcepts()[0];
 	}
 
 	public TaraFileImpl createDummyFile(String text) {
@@ -123,7 +123,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 			"box project.mod.tara\n" +
 				"Form Ficha(" + (string ? "\"\"" : "") + ")\n"
 		);
-		return file.getConcept().getSignature().getParameters();
+		return file.getConcepts()[0].getSignature().getParameters();
 	}
 
 }

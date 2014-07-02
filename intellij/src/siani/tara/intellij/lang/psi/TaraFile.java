@@ -15,7 +15,8 @@ public interface TaraFile extends PsiFile {
 	@NotNull
 	PsiFile getContainingFile();
 
-	Concept getConcept();
+	Concept[] getConcepts();
+	TaraIntention[] getIntentions();
 
 	@NotNull
 	PsiElement addConcept(@NotNull Concept concept) throws IncorrectOperationException;
@@ -26,6 +27,9 @@ public interface TaraFile extends PsiFile {
 
 	@NotNull
 	String getName();
+
+	@NotNull
+	String getPresentableName();
 
 	VirtualFile getVirtualFile();
 
@@ -42,5 +46,5 @@ public interface TaraFile extends PsiFile {
 
 	Import[] getImports();
 
-	void setPackage(String path);
+	void setBox(String path);
 }

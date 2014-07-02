@@ -10,21 +10,21 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraIntentionImpl extends ExternalReferenceMixin implements TaraIntention {
+public class TaraAnImportImpl extends ImportMixin implements TaraAnImport {
 
-  public TaraIntentionImpl(ASTNode node) {
+  public TaraAnImportImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitIntention(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitAnImport(this);
     else super.accept(visitor);
   }
 
   @Override
-  @Nullable
-  public TaraIdentifierReference getIdentifierReference() {
-    return findChildByClass(TaraIdentifierReference.class);
+  @NotNull
+  public TaraHeaderReference getHeaderReference() {
+    return findNotNullChildByClass(TaraHeaderReference.class);
   }
 
 }

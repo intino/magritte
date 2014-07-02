@@ -7,9 +7,9 @@ package siani.tara.compiler.parser.antlr;
 
 root: NEWLINE* header? NEWLINE* concept NEWLINE* EOF;
 
-header :  namespace NEWLINE+ box? imports*;
+header :  box? imports*;
 
-imports: NEWLINE IMPORT headerReference;
+imports: NEWLINE+ IMPORT headerReference;
 box : BOX headerReference;
 
 concept: doc? signature annotations? body?;

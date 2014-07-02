@@ -103,7 +103,6 @@ RESOURCE            : 'Resource';
 
 IMPORT              : 'import';
 BOX                 : 'box';
-NAMESPACE           : 'namespace';
 
 LEFT_SQUARE         : '[';
 RIGHT_SQUARE        : ']';

@@ -9,11 +9,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
-import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.actions.TaraTemplates;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
@@ -36,7 +37,7 @@ public class IntentionsGenerator {
 		genDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraFile.getManager(), gen);
 	}
 
-	public void generate() {
+	public void generate() {//TODO
 		final Set<File> pathsToRefresh = new HashSet<>();
 		ApplicationManager.getApplication().runReadAction(new Runnable() {
 			@Override
@@ -55,16 +56,16 @@ public class IntentionsGenerator {
 	}
 
 	private void processFile(PsiFile psiFile) {
-		if (psiFile instanceof TaraFile) {
-			final TaraFile taraFile = ((TaraFile) psiFile);
-			final String[] conceptIntentions = getConceptIntentions(taraFile);
-			if (taraFile.getConcept() != null && conceptIntentions.length > 0) {
-				final PsiClass sourceClass = getSourceClass(psiFile, taraFile.getConcept());
-				writeInnerClasses(conceptIntentions, sourceClass, false);
-				PsiClass genClass = getGenClass(taraFile);
-				writeInnerClasses(conceptIntentions, genClass, true);
-			}
-		}
+//		if (psiFile instanceof TaraFile) {
+//			final TaraFile taraFile = ((TaraFile) psiFile);
+//			final String[] conceptIntentions = getConceptIntentions(taraFile);
+//			if (taraFile.getConcept() != null && conceptIntentions.length > 0) {
+//				final PsiClass sourceClass = getSourceClass(psiFile, taraFile.getConcept());
+//				writeInnerClasses(conceptIntentions, sourceClass, false);
+//				PsiClass genClass = getGenClass(taraFile);
+//				writeInnerClasses(conceptIntentions, genClass, true);
+//			}
+//		}
 	}
 
 	private VirtualFile getGenDirectory(Collection<VirtualFile> virtualFiles) {
@@ -123,21 +124,21 @@ public class IntentionsGenerator {
 		}
 		return directories;
 	}
-
-	private PsiClass getGenClass(TaraFile file) {
-		PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(taraFile.getConcept().getQualifiedName() + EXTENSIBLE,
-			GlobalSearchScope.moduleScope(TaraUtil.getModuleOfFile(file)));
-		List<PsiDirectory> packages = createPackage(file);
-		return (aClass != null) ? aClass : JavaDirectoryService.getInstance().createClass((packages.isEmpty()) ? genDirectory : packages.get(packages.size() - 1),
-			file.getConcept().getName() + EXTENSIBLE, TaraTemplates.getTemplate("TARA_INTENTION"), true, getOptionsForGenClass());
-	}
-
-	private PsiClass getSourceClass(PsiFile psiFile, Concept concept) {
-		PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(taraFile.getConcept().getQualifiedName(),
-			GlobalSearchScope.moduleScope(TaraUtil.getModuleOfFile(psiFile)));
-		return (aClass != null) ? aClass : JavaDirectoryService.getInstance().createClass(psiFile.getParent(), concept.getName(),
-			"TaraIntentionClass", true, getOptionsForSrcClass(concept.getName()));
-	}
+//
+//	private PsiClass getGenClass(TaraFile file) {
+//		PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(taraFile.getConcept().getQualifiedName() + EXTENSIBLE,
+//			GlobalSearchScope.moduleScope(TaraUtil.getModuleOfFile(file)));
+//		List<PsiDirectory> packages = createPackage(file);
+//		return (aClass != null) ? aClass : JavaDirectoryService.getInstance().createClass((packages.isEmpty()) ? genDirectory : packages.get(packages.size() - 1),
+//			file.getConcept().getName() + EXTENSIBLE, TaraTemplates.getTemplate("TARA_INTENTION"), true, getOptionsForGenClass());
+//	}
+//
+//	private PsiClass getSourceClass(PsiFile psiFile, Concept concept) {
+//		PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(taraFile.getConcept().getQualifiedName(),
+//			GlobalSearchScope.moduleScope(TaraUtil.getModuleOfFile(psiFile)));
+//		return (aClass != null) ? aClass : JavaDirectoryService.getInstance().createClass(psiFile.getParent(), concept.getName(),
+//			"TaraIntentionClass", true, getOptionsForSrcClass(concept.getName()));
+//	}
 
 	private Map<String, String> getOptionsForSrcClass(String parent) {
 		Map<String, String> map = new HashMap<>();

@@ -24,7 +24,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterPacket(@NotNull PacketContext ctx) {
+	public void enterBox(@NotNull BoxContext ctx) {
 		packet = ctx.headerReference().getText();
 		imports.clear();
 	}

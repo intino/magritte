@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraImportStatement extends Import {
+public interface TaraAnImport extends Import {
 
   @NotNull
   TaraHeaderReference getHeaderReference();

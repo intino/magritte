@@ -19,7 +19,7 @@ public class FileStructureViewElement extends PsiTreeElementBase<TaraFileImpl> {
 
 	@NotNull
 	public Collection<StructureViewTreeElement> getChildrenBase() {
-		Concept concept = getElement().getConcept();
+		Concept concept = getElement().getConcepts()[0]; //TODO
 		Collection<StructureViewTreeElement> elements = new ArrayList<>(1);
 		elements.add(new StructureViewElement(concept));
 		return elements;

@@ -5,18 +5,15 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
-import siani.tara.intellij.lang.psi.HeaderReference;
-import siani.tara.intellij.lang.psi.TaraBox;
-import siani.tara.intellij.lang.psi.TaraFile;
-import siani.tara.intellij.lang.psi.TaraHeaderReference;
+import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
-public class PackageAnnotator extends TaraAnnotator {
+public class BoxReferenceAnnotator extends TaraAnnotator {
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
-		if (element.getParent() instanceof HeaderReference && element.getParent().getParent() instanceof TaraBox)
+		if (element instanceof Identifier && element.getParent().getParent() instanceof TaraBox)
 			isWellPlaced((TaraHeaderReference) element.getParent());
 		else if (element instanceof TaraFile)
 			checkBoxExistence((TaraFile) element);
@@ -29,7 +26,7 @@ public class PackageAnnotator extends TaraAnnotator {
 
 	private void isWellPlaced(TaraHeaderReference reference) {
 		VirtualFile file = ReferenceManager.resolveRoute(reference.getIdentifierList());
-		if (!reference.getContainingFile().getVirtualFile().getParent().equals(file)) {
+		if (!reference.getContainingFile().getVirtualFile().equals(file)) {
 			holder.createErrorAnnotation(reference.getNode(), TaraBundle.message("box.reference.error.message"));
 		}
 	}

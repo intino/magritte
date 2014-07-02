@@ -78,7 +78,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(EMPTY_REF, KEYWORD);
 		KEYS.put(REQUIRED, ANNOTATION);
 		KEYS.put(MULTIPLE, ANNOTATION);
-		KEYS.put(INTENTION_KEY, ANNOTATION);
+		KEYS.put(INTENTION_KEY, KEYWORD);
 		KEYS.put(ROOT, ANNOTATION);
 		KEYS.put(TERMINAL, ANNOTATION);
 		KEYS.put(PROPERTY, ANNOTATION);
@@ -92,6 +92,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(OPEN_AN, ANNOTATION);
 		KEYS.put(CLOSE_AN, ANNOTATION);
 		KEYS.put(VAR, KEYWORD);
+		KEYS.put(AS, KEYWORD);
 		KEYS.put(COLON, OPERATOR);
 		KEYS.put(LEFT_SQUARE, OPERATOR);
 		KEYS.put(RIGHT_SQUARE, OPERATOR);

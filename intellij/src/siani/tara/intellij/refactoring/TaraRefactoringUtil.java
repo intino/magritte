@@ -42,7 +42,7 @@ public class TaraRefactoringUtil {
 	}
 
 	public static void addImport(TaraFile reference, TaraFile newElement) {
-		reference.addImport(newElement.getConcept().getQualifiedName());
+		reference.addImport(newElement.getConcepts()[0].getQualifiedName()); //TODO
 	}
 
 	public static void updateImportOfElement(HeaderReference importReference, TaraFile newElement) {
