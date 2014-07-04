@@ -31,7 +31,8 @@ import java.util.List;
 public class TaraModuleBuilder extends JavaModuleBuilder {
 	public static final String RES = "res";
 	public static final String ICONS = "icons";
-	public static final String GEN = "gen";
+	public static final String OUT = "out";
+	public static final String MODEL = "model";
 	private static final Logger LOG = Logger.getInstance(TaraModuleBuilder.class.getName());
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
 	private String myCompilerOutputPath;
@@ -62,7 +63,8 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		rootModel.inheritSdk();
 		ContentEntry contentEntry = doAddContentEntry(rootModel);
 		if (contentEntry != null) {
-			mySourcePaths.add(Pair.create(getContentEntryPath() + File.separator + GEN, ""));
+			mySourcePaths.add(Pair.create(getContentEntryPath() + File.separator + OUT, ""));
+			mySourcePaths.add(Pair.create(getContentEntryPath() + File.separator + MODEL, ""));
 			String parentPath = "";
 			if (mySourcePaths != null) {
 				for (final Pair<String, String> sourcePath : mySourcePaths) {

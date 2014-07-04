@@ -44,12 +44,18 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	PsiElement setName(String newName);
 
+	@Nullable
 	String getName();
 
 	String getQualifiedName();
 
 	@Nullable
 	String getType();
+
+	Concept[] getConceptSiblings();
+
+	Concept[] getConceptChildren();
+
 
 	@Nullable
 	MetaIdentifier getMetaIdentifier();

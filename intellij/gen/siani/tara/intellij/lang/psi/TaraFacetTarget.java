@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraFacet extends TaraPsiElement {
-
-  @NotNull
-  TaraIdentifier getIdentifier();
+public interface TaraFacetTarget extends TaraPsiElement {
 
   @Nullable
-  TaraParameters getParameters();
+  TaraBody getBody();
+
+  @Nullable
+  TaraIdentifier getIdentifier();
 
 }

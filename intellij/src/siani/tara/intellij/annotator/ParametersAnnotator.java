@@ -2,7 +2,6 @@ package siani.tara.intellij.annotator;
 
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +9,6 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Node;
 import siani.tara.lang.NodeObject;
 import siani.tara.lang.TreeWrapper;
@@ -21,7 +19,7 @@ public class ParametersAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder annotationHolder) {
 		if (!Signature.class.isInstance(element)) return;
 		Concept concept = TaraPsiImplUtil.getContextOf(element);
-		TreeWrapper heritage = TaraLanguage.getHeritage(getModuleOf(element));
+		TreeWrapper heritage = TaraLanguage.getHeritage(((TaraFile)element.getContainingFile()).getParentModel());
 		Node node;
 		if (heritage == null || (node = findNode(concept, heritage)) == null) return;
 		NodeObject object = node.getObject();
@@ -45,13 +43,6 @@ public class ParametersAnnotator extends TaraAnnotator {
 		return subpath + "." + "[" + name.substring(name.lastIndexOf(".") + 1) + "@annonymous]";
 	}
 
-	private Module getModuleOf(PsiElement element) {
-		return ModuleProvider.getModuleOfDocument((TaraFile) element.getContainingFile());
-	}
-
-	private String getConceptQualifiedName(MetaIdentifier metaIdentifier) {
-		return TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getContextOf(metaIdentifier));
-	}
 
 	private String variablesToString(NodeObject node) {
 		StringBuilder builder = new StringBuilder();

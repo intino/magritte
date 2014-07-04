@@ -12,7 +12,6 @@ import siani.tara.intellij.lang.psi.MetaIdentifier;
 import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.TreeWrapper;
 
 
@@ -43,7 +42,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	}
 
 	private String extractMetaDocumentation(Concept element) {
-		TreeWrapper heritage = TaraLanguage.getHeritage(ModuleProvider.getModuleOfDocument((TaraFile) element.getContainingFile()));
+		TreeWrapper heritage = TaraLanguage.getHeritage(((TaraFile) element.getContainingFile()).getParentModel());
 		return (heritage == null) ? null : heritage.get(TaraUtil.getMetaQualifiedName(element)).getObject().getDoc();
 	}
 }

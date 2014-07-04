@@ -12,7 +12,6 @@ import siani.tara.intellij.lang.psi.MetaIdentifier;
 import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Node;
 import siani.tara.lang.TreeWrapper;
 
@@ -25,7 +24,7 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 		if (element instanceof MetaIdentifier) {
 			Concept concept = TaraPsiImplUtil.getContextOf(element);
 			if (concept == null) return;
-			TreeWrapper tree = TaraLanguage.getHeritage(ModuleProvider.getModuleOfDocument((TaraFile) element.getContainingFile()));
+			TreeWrapper tree = TaraLanguage.getHeritage(((TaraFile) element.getContainingFile()).getParentModel());
 			if (tree == null) {
 				if (!"Concept".equals(element.getNode().getText())) {
 					Annotation errorAnnotation = holder.createErrorAnnotation

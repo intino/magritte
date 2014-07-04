@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.EffectType;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
@@ -68,7 +67,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	@NotNull
 	@Override
 	public Lexer getHighlightingLexer() {
-		return new TaraHighlighterLexAdapter(ProjectManager.getInstance().getOpenProjects()[0]);
+		return new TaraHighlighterLexAdapter();
 	}
 
 	static {
@@ -76,23 +75,24 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 		KEYS.put(METAIDENTIFIER_KEY, KEYWORD);
 		KEYS.put(EMPTY_REF, KEYWORD);
-		KEYS.put(REQUIRED, ANNOTATION);
-		KEYS.put(MULTIPLE, ANNOTATION);
 		KEYS.put(INTENTION_KEY, KEYWORD);
+		KEYS.put(METAMODEL, KEYWORD);
+		KEYS.put(REQUIRED, ANNOTATION);
+		KEYS.put(SINGLE, ANNOTATION);
 		KEYS.put(ROOT, ANNOTATION);
 		KEYS.put(TERMINAL, ANNOTATION);
 		KEYS.put(PROPERTY, ANNOTATION);
 		KEYS.put(PRIVATE, ANNOTATION);
-		KEYS.put(HAS_NAME, ANNOTATION);
+		KEYS.put(NAMEABLE, ANNOTATION);
 		KEYS.put(RESOURCE_KEY, PRIMITIVE);
 		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);
 		KEYS.put(CASE_KEY, KEYWORD);
-		KEYS.put(IMPORT_KEY, KEYWORD);
+		KEYS.put(USE_KEY, KEYWORD);
 		KEYS.put(BOX_KEY, KEYWORD);
-		KEYS.put(OPEN_AN, ANNOTATION);
-		KEYS.put(CLOSE_AN, ANNOTATION);
+		KEYS.put(IS, ANNOTATION);
 		KEYS.put(VAR, KEYWORD);
 		KEYS.put(AS, KEYWORD);
+		KEYS.put(ON, KEYWORD);
 		KEYS.put(COLON, OPERATOR);
 		KEYS.put(LEFT_SQUARE, OPERATOR);
 		KEYS.put(RIGHT_SQUARE, OPERATOR);

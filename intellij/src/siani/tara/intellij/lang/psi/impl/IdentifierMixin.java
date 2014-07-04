@@ -5,10 +5,10 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
-import siani.tara.intellij.lang.psi.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.psi.Identifier;
+import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
 
 public class IdentifierMixin extends ASTWrapperPsiElement {
 	public IdentifierMixin(@NotNull ASTNode node) {
@@ -43,5 +43,9 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	@Override
 	public String getName() {
 		return this.getText();
+	}
+
+	public String toString() {
+		return this.getName();
 	}
 }

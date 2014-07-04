@@ -8,7 +8,6 @@ import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
-import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.*;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 		if (!(element instanceof Parameter)) return;
 		Concept concept = TaraPsiImplUtil.getContextOf(element);
 		int index = getIndexOf((Parameters) element.getParent(), (Parameter) element);
-		TreeWrapper tree = TaraLanguage.getHeritage(ModuleProvider.getModuleOfDocument((TaraFile) element.getContainingFile()));
+		TreeWrapper tree = TaraLanguage.getHeritage(((TaraFile) element.getContainingFile()).getParentModel());
 		Node node;
 		if (tree == null || (node = findNode(concept, tree)) == null) return;
 		NodeObject object = node.getObject();

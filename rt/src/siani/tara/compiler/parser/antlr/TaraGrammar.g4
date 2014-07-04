@@ -7,17 +7,19 @@ package siani.tara.compiler.parser.antlr;
 
 root: NEWLINE* header? NEWLINE* concept NEWLINE* EOF;
 
-header :  box? imports*;
-
-imports: NEWLINE+ IMPORT headerReference;
+header :  box? imports?;
 box : BOX headerReference;
 
+imports :  anImport+;
+anImport: NEWLINE+ USE headerReference (AS METAMODEL)?;
+
+doc: DOC+;
 concept: doc? signature annotations? body?;
+
 signature: ((CASE IDENTIFIER)
          | (metaidentifier IDENTIFIER)
          | (metaidentifier COLON identifierReference IDENTIFIER?)) parameters? ;
 
-metaidentifier: METAIDENTIFIER | IDENTIFIER;
 
 parameters : LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS;
 parameterList : explicit? parameter (COMMA explicit? parameter)*;
@@ -33,39 +35,31 @@ parameter :     identifierReference
 		        | naturalList
 		        | integerList
 		        | doubleList
-		        | identifierList;
+		        | identifierList
+		        | metaWord;
 
+metaWord : metaidentifier metaWordNames*;
+metaWordNames : DOT IDENTIFIER;
 
 body: NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT;
-conceptConstituents: attribute | concept | varInit;
+conceptConstituents: attribute | concept | varInit | facetApply | facetTarget;
 
-identifierList : LEFT_SQUARE IDENTIFIER+ RIGHT_SQUARE;
-varInit : IDENTIFIER COLON (       EMPTY
-								 | identifierReference
-								 | stringValue
-                                 | booleanValue
-                                 | naturalValue
-                                 | integerValue
-                                 | doubleValue
-                                 | identifierList
-                                 | stringList
-                                 | booleanList
-                                 | naturalList
-                                 | integerList
-                                 | doubleList);
+facetApply : AS IDENTIFIER parameters? WITH identifierReference;
+facetTarget : ON IDENTIFIER body?;
 
-attribute : (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
-                        | resource | reference | word) annotations?;
+attribute : doc? VAR (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
+| dateAttribute | resource | reference | word) annotations?;
 
-aliasAttribute   : doc? VAR ALIAS_TYPE IDENTIFIER (COLON stringValue | EMPTY)?                   ;
-booleanAttribute : doc? VAR BOOLEAN_TYPE (IDENTIFIER (COLON booleanValue | EMPTY)?)              ;
-stringAttribute  : doc? VAR STRING_TYPE (IDENTIFIER (COLON stringValue | EMPTY)?)                ;
-naturalAttribute : doc? VAR NATURAL_TYPE (IDENTIFIER (COLON naturalValue | EMPTY)?)              ;
-integerAttribute : doc? VAR INT_TYPE (IDENTIFIER (COLON integerValue | EMPTY)?)                  ;
-doubleAttribute  : doc? VAR DOUBLE_TYPE (IDENTIFIER (COLON doubleValue | EMPTY)?)                ;
-resource         : doc? VAR RESOURCE COLON IDENTIFIER IDENTIFIER                                 ;
-reference        : doc? VAR identifierReference IDENTIFIER  (COLON EMPTY)?                       ;
-word             : doc? VAR WORD IDENTIFIER NEW_LINE_INDENT (IDENTIFIER STAR? NEWLINE)+ DEDENT   ;
+resource         : RESOURCE COLON    IDENTIFIER IDENTIFIER;
+word             : WORD IDENTIFIER NEW_LINE_INDENT (IDENTIFIER STAR? NEWLINE)+ DEDENT;
+aliasAttribute   : ALIAS_TYPE   LIST IDENTIFIER (COLON stringValue  | EMPTY)?;
+booleanAttribute : BOOLEAN_TYPE LIST IDENTIFIER (COLON booleanValue | EMPTY)?;
+stringAttribute  : STRING_TYPE  LIST IDENTIFIER (COLON stringValue  | EMPTY)?;
+naturalAttribute : NATURAL_TYPE LIST IDENTIFIER (COLON naturalValue | EMPTY)?;
+integerAttribute : INT_TYPE     LIST IDENTIFIER (COLON integerValue | EMPTY)?;
+doubleAttribute  : DOUBLE_TYPE  LIST IDENTIFIER (COLON doubleValue  | EMPTY)?;
+dateAttribute    : DATE_TYPE    LIST IDENTIFIER (COLON naturalValue | EMPTY)?;
+reference        : identifierReference LIST IDENTIFIER  (COLON EMPTY)?       ;
 
 naturalValue: POSITIVE_VALUE;
 integerValue: POSITIVE_VALUE | NEGATIVE_VALUE;
@@ -78,12 +72,26 @@ booleanList: LEFT_SQUARE BOOLEAN_VALUE+ RIGHT_SQUARE;
 naturalList: LEFT_SQUARE POSITIVE_VALUE+ RIGHT_SQUARE;
 integerList: LEFT_SQUARE (POSITIVE_VALUE | NEGATIVE_VALUE)+ RIGHT_SQUARE;
 doubleList : LEFT_SQUARE (POSITIVE_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE)+ RIGHT_SQUARE;
+identifierList : LEFT_SQUARE IDENTIFIER+ RIGHT_SQUARE;
 
-annotations: OPEN_AN (PRIVATE | HAS_NAME | MULTIPLE | REQUIRED | INTENTION | TERMINAL | ROOT | PROPERTY)+ CLOSE_AN;
+annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMEABLE | ROOT | PROPERTY)+ ;
+
+varInit : IDENTIFIER COLON (EMPTY
+							| identifierReference
+							| stringValue
+                            | booleanValue
+                            | naturalValue
+                            | integerValue
+                            | doubleValue
+                            | identifierList
+                            | stringList
+                            | booleanList
+                            | naturalList
+                            | integerList
+                            | doubleList);
 
 headerReference: hierarchy* IDENTIFIER;
 
 identifierReference: hierarchy* IDENTIFIER;
 hierarchy: IDENTIFIER DOT;
-
-doc: DOC+;
+metaidentifier: METAIDENTIFIER | IDENTIFIER | INTENTION;

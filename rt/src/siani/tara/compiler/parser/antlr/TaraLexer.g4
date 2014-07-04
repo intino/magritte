@@ -87,28 +87,31 @@ package siani.tara.compiler.parser.antlr;
 }
 
 METAIDENTIFIER      : 'Concept';
+INTENTION           : 'Intention';
 CASE                : 'case';
 
+USE                 : 'use';
+BOX                 : 'box';
+METAMODEL           : 'metamodel';
+
+AS                  :'as';
+ON                  :'on';
+IS                  :'is';
+WITH                : 'WITH';
+//annotations
 PRIVATE             : 'private';
-MULTIPLE            : 'multiple';
+SINGLE              : 'single';
 REQUIRED            : 'required';
 ROOT                : 'root';
 TERMINAL            : 'terminal';
-INTENTION           : 'intention';
-HAS_NAME            : 'has-name';
-VAR                 : 'var';
+NAMEABLE            : 'nameable';
 PROPERTY            : 'property';
-WORD                : 'Word';
-RESOURCE            : 'Resource';
 
-IMPORT              : 'import';
-BOX                 : 'box';
-
-LEFT_SQUARE         : '[';
-RIGHT_SQUARE        : ']';
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';
-
+LEFT_SQUARE         : '[';
+RIGHT_SQUARE        : ']';
+LIST                :LEFT_SQUARE RIGHT_SQUARE;
 OPEN_BRACKET        : '{' {  openBracket(); };
 CLOSE_BRACKET       : '}' { closeBracket(); };
 
@@ -122,15 +125,20 @@ APHOSTROPHE         : '\'';
 SEMICOLON           : ';'+ { semicolon(); };
 STAR                : '*';
 POSITIVE            : '+';
-DASHES              : DASH DASH+;
 DASH                : '-';
+DASHES              : DASH DASH+;
 
-ALIAS_TYPE          : 'Alias';
-INT_TYPE            : 'Integer';
-NATURAL_TYPE        : 'Natural';
-DOUBLE_TYPE         : 'Double';
-STRING_TYPE         : 'String';
-BOOLEAN_TYPE        : 'Boolean';
+VAR                 : 'var';
+
+WORD                : 'word';
+RESOURCE            : 'resource';
+ALIAS_TYPE          : 'alias';
+INT_TYPE            : 'integer';
+NATURAL_TYPE        : 'natural';
+DOUBLE_TYPE         : 'double';
+STRING_TYPE         : 'string';
+BOOLEAN_TYPE        : 'boolean';
+DATE_TYPE           : 'date';
 EMPTY               : 'empty';
 
 BOOLEAN_VALUE : 'true' | 'false';

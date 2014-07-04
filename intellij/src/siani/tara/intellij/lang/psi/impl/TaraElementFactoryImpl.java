@@ -96,7 +96,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	public Import createImport(String reference) {
 		final TaraFileImpl file = createDummyFile(
 			"box project.mod.tara\n" +
-				"import " + reference + "\n\n" +
+				"use " + reference + "\n\n" +
 				"Concept Source <root>\n"
 		);
 		Import[] imp = file.getImports();

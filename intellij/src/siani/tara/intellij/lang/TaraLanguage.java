@@ -45,6 +45,16 @@ public class TaraLanguage extends Language {
 		return loadHeritage(parent, basePath);
 	}
 
+	public static TreeWrapper getHeritage(String parent) {
+		if (parent == null) return null;
+		TreeWrapper treeWrapper;
+		String[] splitName = parent.split("\\.");
+		String basePath = PathManager.getPluginsPath() + separator + "tara" + separator + "classes" + separator + splitName[0] + separator;
+		if ((treeWrapper = heritages.get(parent)) != null && haveToReload(basePath))
+			return treeWrapper;
+		return loadHeritage(parent, basePath);
+	}
+
 	public static TreeWrapper getHeritage(PsiFile file) {
 		Module moduleFile = TaraUtil.getModuleOfFile(file);
 		return TaraLanguage.getHeritage(moduleFile);

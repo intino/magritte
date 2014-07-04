@@ -21,10 +21,4 @@ public class TaraWordImpl extends WordMixin implements TaraWord {
     else super.accept(visitor);
   }
 
-  @Override
-  @Nullable
-  public TaraDoc getDoc() {
-    return findChildByClass(TaraDoc.class);
-  }
-
 }

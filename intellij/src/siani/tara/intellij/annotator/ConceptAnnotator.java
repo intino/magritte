@@ -6,7 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.annotator.fix.RenameConceptFix;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConceptAnnotator extends TaraAnnotator {
 
@@ -17,7 +20,30 @@ public class ConceptAnnotator extends TaraAnnotator {
 	}
 
 	private void isDuplicated(Concept concept) {
-		if (concept.getIdentifierNode() != null && TaraUtil.findDuplicates(concept) != 1)
+		if (concept.getIdentifierNode() != null && findDuplicates(concept) != 1)
 			annotateAndFix(concept.getIdentifierNode(), new RenameConceptFix(concept), TaraBundle.message("duplicate.concept.key.error.message"));
+	}
+
+	public static int findDuplicates(Concept concept) {
+		Concept parent = TaraPsiImplUtil.getContextOf(concept);
+		if (concept.getName() == null) return 1;
+		if (parent != null)
+			return checkChildDuplicates(concept, parent);
+		return searchConceptInFile(concept).size();
+	}
+
+	private static List<Concept> searchConceptInFile(Concept concept) {
+		List<Concept> list = new ArrayList<>();
+		for (Concept aConcept : concept.getFile().getConcepts())
+			if (concept.getName().equals(aConcept.getName())) list.add(aConcept);
+		return list;
+	}
+
+	private static int checkChildDuplicates(Concept concept, Concept parent) {
+		int duplicates = 0;
+		for (Concept taraConcept : TaraPsiImplUtil.getChildrenOf(parent))
+			if (taraConcept.getName() != null && taraConcept.getName().equals(concept.getName()))
+				duplicates++;
+		return duplicates;
 	}
 }

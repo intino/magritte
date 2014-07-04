@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraWord extends Word {
 
-  @Nullable
-  TaraDoc getDoc();
-
 }

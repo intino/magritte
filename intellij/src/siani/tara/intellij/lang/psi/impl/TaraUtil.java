@@ -15,14 +15,12 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 import siani.tara.intellij.lang.file.TaraFileType;
-import siani.tara.intellij.lang.psi.Attribute;
-import siani.tara.intellij.lang.psi.Body;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraFile;
+import siani.tara.intellij.lang.psi.*;
 
 import java.util.*;
+
+import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContextOf;
 
 public class TaraUtil {
 
@@ -57,7 +55,8 @@ public class TaraUtil {
 	}
 
 	public static Concept[] getRootConceptsOfFile(TaraFileImpl taraFile) {
-		return PsiTreeUtil.getChildrenOfType(taraFile, Concept.class);
+		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, Concept.class);
+		return concepts == null ? new Concept[0] : concepts;
 	}
 
 	@NotNull
@@ -72,21 +71,6 @@ public class TaraUtil {
 		return taraFiles.toArray(new TaraFileImpl[taraFiles.size()]);
 	}
 
-	public static int findDuplicates(Concept concept) {
-		Concept parent = TaraPsiImplUtil.getContextOf(concept);
-		if (concept.getName() == null) return 1;
-		if (parent != null)
-			return checkChildDuplicates(concept, parent);
-		return findRootConcept(concept.getIdentifierNode(), concept.getIdentifierNode().getText()).size();
-	}
-
-	private static int checkChildDuplicates(Concept concept, Concept parent) {
-		int duplicates = 0;
-		for (Concept taraConcept : TaraPsiImplUtil.getChildrenOf(parent))
-			if (taraConcept.getName() != null && taraConcept.getName().equals(concept.getName()))
-				duplicates++;
-		return duplicates;
-	}
 
 	@NotNull
 	public static Attribute[] findAttributeDuplicates(Attribute attribute) {
@@ -131,15 +115,6 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static List<Concept> getSiblings(Concept context) {
-		PsiElement element = context;
-		while ((element != null) && !(element instanceof TaraFile) && !(element instanceof Body))
-			element = element.getParent();
-		if (element != null && !(element instanceof TaraFile))
-			return TaraPsiImplUtil.getChildrenInBody((Body) element);
-		return Collections.EMPTY_LIST;
-	}
-
 	@NotNull
 	public static Concept[] getChildrenOf(Concept concept) {
 		List<Concept> childrenOf = TaraPsiImplUtil.getChildrenOf(concept);
@@ -155,16 +130,7 @@ public class TaraUtil {
 	}
 
 	public static VirtualFile getSourcePath(Project project, PsiFile psiFile) {
-		ProjectFileIndex fileIndex = ProjectRootManager.getInstance(project).getFileIndex();
-		VirtualFile vfile = (psiFile.getVirtualFile() != null) ? psiFile.getVirtualFile() : psiFile.getOriginalFile().getVirtualFile();
-		Module moduleFile = fileIndex.getModuleForFile(vfile);
-		if (moduleFile == null) return null;
-		ModuleRootManager mrm = ModuleRootManager.getInstance(moduleFile);
-		List<VirtualFile> virtualFiles = mrm.getSourceRoots(JavaModuleSourceRootTypes.SOURCES);
-		for (VirtualFile file : virtualFiles)
-			if (file.isDirectory() && "src".equals(file.getName()))
-				return file;
-		return null;
+		return ProjectRootManager.getInstance(project).getFileIndex().getSourceRootForFile(psiFile.getOriginalFile().getVirtualFile());
 	}
 
 	public static TaraFile getOrCreateFile(String myDestination, Project myProject) {
@@ -196,11 +162,21 @@ public class TaraUtil {
 	public static String getLocalQNConcept(Concept concept) {
 		Concept container = concept;
 		String id = container.getName();
-		while (TaraPsiImplUtil.getContextOf(container) != null) {
-			container = TaraPsiImplUtil.getContextOf(container);
+		while (getContextOf(container) != null) {
+			container = getContextOf(container);
 			String name = container.getName();
 			id = (name == null ? "annonymous" : name) + "." + id;
 		}
 		return id;
+	}
+
+	public static String composeConceptQN(Identifier identifier) {
+		Concept concept = getContextOf(identifier);
+		String route = concept.getName();
+		while (concept != null) {
+			concept = getContextOf(concept);
+			if (concept != null) route = concept.getName() + "." + route;
+		}
+		return route;
 	}
 }

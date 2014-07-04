@@ -11,21 +11,27 @@ import static siani.tara.intellij.lang.psi.TaraTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraFacetImpl extends ASTWrapperPsiElement implements TaraFacet {
+public class TaraFacetApplyImpl extends ASTWrapperPsiElement implements TaraFacetApply {
 
-  public TaraFacetImpl(ASTNode node) {
+  public TaraFacetApplyImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitFacet(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitFacetApply(this);
     else super.accept(visitor);
   }
 
   @Override
-  @NotNull
+  @Nullable
   public TaraIdentifier getIdentifier() {
-    return findNotNullChildByClass(TaraIdentifier.class);
+    return findChildByClass(TaraIdentifier.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraIdentifierReference getIdentifierReference() {
+    return findChildByClass(TaraIdentifierReference.class);
   }
 
   @Override

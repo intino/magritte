@@ -91,27 +91,32 @@ NEWLINE= [\n]+ ([ ] | [\t])*
 //=====================
 //Reserved words
 
-METAIDENTIFIER  = "Concept"
-INTENTION_KEY   = "Intention"
-IMPORT_KEY      = "import"
-BOX_KEY         = "box"
-AS              = "as"
-CASE_KEY        = "case"
-PRIVATE         = "private"
-PROPERTY        = "property"
-MULTIPLE        = "multiple"
-REQUIRED        = "required"
-HAS_NAME        = "has-name"
-ROOT            = "root"
-TERMINAL         = "terminal"
-WORD_KEY        = "Word"
-RESOURCE_KEY    = "Resource"
-VAR             = "var"
+METAIDENTIFIER      = "Concept"
+INTENTION_KEY       = "Intention"
+CASE_KEY            = "case"
+
+USE_KEY             = "use"
+BOX_KEY             = "box"
+METAMODEL           = "metamodel"
+
+WITH                = "with"
+AS                  = "as"
+ON                  = "on"
+IS                  = "is"
+//annotations
+PRIVATE             = "private"
+SINGLE              = "single"
+REQUIRED            = "required"
+NAMEABLE            = "nameable"
+TERMINAL            = "terminal"
+PROPERTY            = "property"
+ROOT                = "root"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
 LEFT_SQUARE         = "["
 RIGHT_SQUARE        = "]"
+LIST                = {LEFT_SQUARE} {RIGHT_SQUARE}
 OPEN_BRACKET        = "{"
 CLOSE_BRACKET       = "}"
 APOSTROPHE          = "'"
@@ -123,17 +128,20 @@ COMMA               = ","
 COLON               = ":"
 SEMICOLON           = ";"+
 DOUBLE_COMMAS       = "\""
-OPEN_AN             = "<"
-CLOSE_AN            = ">"
 POSITIVE            = "+"
 
-ALIAS_TYPE          = "Alias"
-INT_TYPE            = "Integer"
-NATURAL_TYPE        = "Natural"
-DOUBLE_TYPE         = "Double"
-STRING_TYPE         = "String"
-BOOLEAN_TYPE        = "Boolean"
-EMPTY_REF               = "empty"
+VAR                 = "var"
+
+WORD_TYPE           = "word"
+RESOURCE_TYPE       = "resource"
+ALIAS_TYPE          = "alias"
+INT_TYPE            = "integer"
+NATURAL_TYPE        = "natural"
+DOUBLE_TYPE         = "double"
+STRING_TYPE         = "string"
+BOOLEAN_TYPE        = "boolean"
+DATE_TYPE           = "date"
+EMPTY_REF           = "empty"
 
 BOOLEAN_VALUE_KEY   = "true" | "false"
 POSITIVE_VALUE_KEY  = {POSITIVE}? {DIGIT}+
@@ -143,7 +151,7 @@ STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
 
 DOC_LINE            = "#" ~[\n]
-DIGIT               =[:digit:]
+DIGIT               = [:digit:]
 
 IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
 
@@ -151,15 +159,17 @@ IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
 <YYINITIAL> {
 
 	{METAIDENTIFIER}                {   return TaraTypes.METAIDENTIFIER_KEY; }
+	{INTENTION_KEY}                 {   return TaraTypes.INTENTION_KEY; }
 
-	{IMPORT_KEY}                    {   return TaraTypes.IMPORT_KEY; }
+	{USE_KEY}                       {   return TaraTypes.USE_KEY; }
+	{METAMODEL}                     {   return TaraTypes.METAMODEL; }
 
 	{BOX_KEY}                       {   return TaraTypes.BOX_KEY; }
 
 	{AS}                            {   return TaraTypes.AS; }
 
-	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
-	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
+	{ON}                            {   return TaraTypes.ON; }
+	{WITH}                          {   return TaraTypes.WITH; }
 
 	{COLON}                         {   return TaraTypes.COLON; }
 
@@ -167,15 +177,14 @@ IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
 
 	{CASE_KEY}                      {   return TaraTypes.CASE_KEY; }
 
-	{OPEN_AN}                       {   return TaraTypes.OPEN_AN; }
-	{CLOSE_AN}                      {   return TaraTypes.CLOSE_AN; }
+	{IS}                            {   return TaraTypes.IS; }
 
+	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
+	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
-	{MULTIPLE}                      {   return TaraTypes.MULTIPLE; }
+	{SINGLE}                        {   return TaraTypes.SINGLE; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
-
-	{HAS_NAME}                      {   return TaraTypes.HAS_NAME; }
-	{INTENTION_KEY}                 {   return TaraTypes.INTENTION_KEY; }
+	{NAMEABLE}                      {   return TaraTypes.NAMEABLE; }
 	{ROOT}                          {   return TaraTypes.ROOT; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
@@ -193,12 +202,13 @@ IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
     {LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
     {RIGHT_PARENTHESIS}             {   return TaraTypes.RIGHT_PARENTHESIS; }
 
-	{WORD_KEY}                      {   return TaraTypes.WORD_KEY; }
-	{RESOURCE_KEY}                  {   return TaraTypes.RESOURCE_KEY; }
+	{WORD_TYPE}                      {   return TaraTypes.WORD_KEY; }
+	{RESOURCE_TYPE}                  {   return TaraTypes.RESOURCE_KEY; }
 
 	{DOT}                           {   return TaraTypes.DOT; }
-	{COMMA}                         {   return TaraTypes.COMMA;     }
-	{STAR}                          {   return TaraTypes.STAR;     }
+	{COMMA}                         {   return TaraTypes.COMMA; }
+	{STAR}                          {   return TaraTypes.STAR;  }
+	{LIST}                          {   return TaraTypes.LIST;  }
 
 	{ALIAS_TYPE}                    {   return TaraTypes.ALIAS_TYPE; }
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
@@ -206,6 +216,7 @@ IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
 	{NATURAL_TYPE}                  {   return TaraTypes.NATURAL_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
+    {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}

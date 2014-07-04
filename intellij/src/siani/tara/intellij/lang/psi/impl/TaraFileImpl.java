@@ -11,12 +11,12 @@ import com.intellij.psi.impl.source.tree.ChangeUtil;
 import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.List;
@@ -70,25 +70,15 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	@Nullable
 	@Override
 	public Icon getIcon(int flags) {
-//		if (getConcepts() != null) {
-//			MetaIdentifier type = this.getConcept().getSignature().getType();
-//			if (type != null) {
-//				Icon icon = TaraIcons.getIcon(type.getText().toUpperCase());
-//				if (icon != null) return icon;
-//			}
-//		}
 		return TaraIcons.getIcon(TaraIcons.CONCEPT);
 	}
 
+	@NotNull
 	@Override
 	public Concept[] getConcepts() {
 		return TaraUtil.getRootConceptsOfFile(this);
 	}
 
-	@Override
-	public TaraIntention[] getIntentions() {
-		return PsiTreeUtil.getChildrenOfType(this, TaraIntention.class);
-	}
 
 	@Override
 	public TaraBox getBoxReference() {
@@ -99,12 +89,21 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	}
 
 	@Override
+	public String getParentModel() {
+		TaraHeader[] header = PsiTreeUtil.getChildrenOfType(this, TaraHeader.class);
+		if (header == null) return null;
+		TaraAnImport[] imports = PsiTreeUtil.getChildrenOfType(header[0], TaraAnImport.class);
+		if (imports == null || imports.length == 0) return null;
+		for (TaraAnImport anImport : imports) {
+			if (anImport.getNode().findChildByType(TaraTypes.METAMODEL)!= null) return anImport.getHeaderReference().getText();
+		}
+		return null;
+	}
+
+	@Override
 	public void setBox(String path) {
 		TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
-		PsiElement replace = this.getBoxReference().replace(factory.createBox(path));
-//		if (getImports() != null)
-//			if (!replace.getNextSibling().getFirstChild().getNextSibling().getNode().getElementType().equals(TaraTypes.NEWLINE))
-//				replace.getNextSibling().addAfter(factory.createNewLine(), replace.getNextSibling());
+		this.getBoxReference().replace(factory.createBox(path));
 	}
 
 	@Override
@@ -113,6 +112,7 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	}
 
 	@Override
+	@Nullable
 	public Import[] getImports() {
 		TaraHeader[] header = PsiTreeUtil.getChildrenOfType(this, TaraHeader.class);
 		return header != null ? PsiTreeUtil.getChildrenOfType(header[0], Import.class) : null;
@@ -152,9 +152,6 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 		final TreeElement copy = ChangeUtil.copyToElement(anImport);
 		PsiElement psi = copy.getPsi();
 		PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0].add(psi);
-		TaraBox box = getBoxReference();
-//		if (!box.getNextSibling().getFirstChild().getNextSibling().getNode().getElementType().equals(TaraTypes.NEWLINE))
-//			box.getNextSibling().addAfter(TaraElementFactory.getInstance(this.getProject()).createNewLine(), box.getNextSibling());
 		return psi;
 	}
 }

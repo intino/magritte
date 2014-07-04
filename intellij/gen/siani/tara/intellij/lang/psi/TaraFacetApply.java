@@ -5,9 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraIntention extends ExternalReference {
+public interface TaraFacetApply extends TaraPsiElement {
+
+  @Nullable
+  TaraIdentifier getIdentifier();
 
   @Nullable
   TaraIdentifierReference getIdentifierReference();
+
+  @Nullable
+  TaraParameters getParameters();
 
 }

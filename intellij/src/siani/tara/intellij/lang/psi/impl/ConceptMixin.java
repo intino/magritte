@@ -49,6 +49,16 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return type != null ? type.getText() : null;
 	}
 
+	public Concept[] getConceptSiblings() {
+		Concept contextOf = TaraPsiImplUtil.getContextOf(this);
+		if (contextOf == null) return ((TaraFile)this.getContainingFile()).getConcepts();
+		return contextOf.getConceptChildren();
+	}
+
+	public Concept[] getConceptChildren() {
+		return TaraUtil.getChildrenOf((Concept) this);
+	}
+
 	public MetaIdentifier getMetaIdentifier() {
 		return PsiTreeUtil.getChildrenOfType(this.getSignature(), MetaIdentifier.class)[0];
 	}
@@ -119,13 +129,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isIntention() {
-		Annotations annotations = this.getAnnotations();
-		if (annotations != null) {
-			for (PsiElement element : annotations.getAnnotations())
-				if (element instanceof TaraIntention)
-					return true;
-		}
-		return false;
+		return this.getNode().findChildByType(TaraTypes.INTENTION_KEY) != null;
 	}
 
 	public Concept[] getCases() {

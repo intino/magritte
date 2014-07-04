@@ -2,7 +2,6 @@ package siani.tara.intellij.codeinsight.parameterinfo;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.*;
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
@@ -12,7 +11,6 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.*;
 
 import java.util.*;
@@ -79,8 +77,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext parameterInfoContext) {
 		final Parameters parameterList = findParameters(parameterInfoContext);
 		if (parameterList != null) {
-			Module module = ModuleProvider.getModuleOfDocument((TaraFile) parameterList.getContainingFile());
-			TreeWrapper treeWrapper = TaraLanguage.getHeritage(module);
+			TreeWrapper treeWrapper = TaraLanguage.getHeritage(((TaraFile) parameterList.getContainingFile()).getParentModel());
 			if (treeWrapper == null) return parameterList;
 			Concept conceptContext = TaraPsiImplUtil.getContextOf(parameterList);
 			Node node = findNodeOf(conceptContext, treeWrapper);

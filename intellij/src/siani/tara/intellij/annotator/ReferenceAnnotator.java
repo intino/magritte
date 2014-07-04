@@ -13,15 +13,18 @@ import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.annotator.imports.CreateConceptQuickFix;
 import siani.tara.intellij.annotator.imports.ImportQuickFix;
 import siani.tara.intellij.annotator.imports.RemoveImportFix;
 import siani.tara.intellij.annotator.imports.TaraReferenceImporter;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.Identifier;
+import siani.tara.intellij.lang.psi.IdentifierReference;
+import siani.tara.intellij.lang.psi.TaraFile;
+import siani.tara.intellij.lang.psi.TaraPsiElement;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,18 +37,18 @@ public class ReferenceAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.element = element;
 		this.holder = holder;
-		if (!(element instanceof Identifier)) return;
-		if (element.getParent() instanceof HeaderReference || element.getParent() instanceof IdentifierReference)
+		if (element instanceof IdentifierReference)
 			checkWellReferenced();
 	}
 
 	public void checkWellReferenced() {
-		PsiElement reference = ReferenceManager.resolve((Identifier) element, false);
+		PsiElement reference = ReferenceManager.resolve((IdentifierReference) element);
 		if (reference == null) {
 			Annotation errorAnnotation;
-			if (element.getParent() instanceof IdentifierReference)
-				addImportAlternatives((Identifier) element);
-			else {
+			if (element instanceof IdentifierReference) {
+				List<? extends Identifier> identifierList = ((IdentifierReference) element).getIdentifierList();
+				addImportAlternatives(identifierList.get(identifierList.size() - 1));
+			} else {
 				String message = TaraBundle.message("reference.concept.key.error.message");
 				errorAnnotation = annotateAndFix(element, new RemoveImportFix((TaraPsiElement) element.getParent()), message);
 				errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);

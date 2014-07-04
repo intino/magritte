@@ -23,7 +23,8 @@ public interface TaraTypes {
   IElementType EMPTY = new TaraElementType("EMPTY");
   IElementType EMPTY_FIELD = new TaraElementType("EMPTY_FIELD");
   IElementType EXPLICIT = new TaraElementType("EXPLICIT");
-  IElementType FACET = new TaraElementType("FACET");
+  IElementType FACET_APPLY = new TaraElementType("FACET_APPLY");
+  IElementType FACET_TARGET = new TaraElementType("FACET_TARGET");
   IElementType HEADER = new TaraElementType("HEADER");
   IElementType HEADER_REFERENCE = new TaraElementType("HEADER_REFERENCE");
   IElementType IDENTIFIER = new TaraElementType("IDENTIFIER");
@@ -31,7 +32,6 @@ public interface TaraTypes {
   IElementType IDENTIFIER_REFERENCE = new TaraElementType("IDENTIFIER_REFERENCE");
   IElementType INTEGER_LIST = new TaraElementType("INTEGER_LIST");
   IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
-  IElementType INTENTION = new TaraElementType("INTENTION");
   IElementType META_IDENTIFIER = new TaraElementType("META_IDENTIFIER");
   IElementType META_WORD = new TaraElementType("META_WORD");
   IElementType NATURAL_LIST = new TaraElementType("NATURAL_LIST");
@@ -50,30 +50,30 @@ public interface TaraTypes {
   IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
   IElementType BOX_KEY = new TaraTokenType("BOX_KEY");
   IElementType CASE_KEY = new TaraTokenType("CASE_KEY");
-  IElementType CLOSE_AN = new TaraTokenType("CLOSE_AN");
   IElementType COLON = new TaraTokenType("COLON");
   IElementType COMMA = new TaraTokenType("COMMA");
+  IElementType DATE_TYPE = new TaraTokenType("DATE_TYPE");
   IElementType DEDENT = new TaraTokenType("DEDENT");
   IElementType DOC_LINE = new TaraTokenType("DOC_LINE");
   IElementType DOT = new TaraTokenType("DOT");
   IElementType DOUBLE_TYPE = new TaraTokenType("DOUBLE_TYPE");
   IElementType DOUBLE_VALUE_KEY = new TaraTokenType("DOUBLE_VALUE_KEY");
   IElementType EMPTY_REF = new TaraTokenType("EMPTY_REF");
-  IElementType HAS_NAME = new TaraTokenType("HAS_NAME");
   IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
-  IElementType IMPORT_KEY = new TaraTokenType("IMPORT_KEY");
   IElementType INTENTION_KEY = new TaraTokenType("INTENTION_KEY");
   IElementType INT_TYPE = new TaraTokenType("INT_TYPE");
+  IElementType IS = new TaraTokenType("IS");
   IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
   IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
   IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
-  IElementType MULTIPLE = new TaraTokenType("MULTIPLE");
+  IElementType METAMODEL = new TaraTokenType("METAMODEL");
+  IElementType NAMEABLE = new TaraTokenType("NAMEABLE");
   IElementType NATURAL_TYPE = new TaraTokenType("NATURAL_TYPE");
   IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
   IElementType NEGATIVE_VALUE_KEY = new TaraTokenType("NEGATIVE_VALUE_KEY");
   IElementType NEWLINE = new TaraTokenType("NEWLINE");
   IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
-  IElementType OPEN_AN = new TaraTokenType("OPEN_AN");
+  IElementType ON = new TaraTokenType("ON");
   IElementType PRIVATE = new TaraTokenType("PRIVATE");
   IElementType PROPERTY = new TaraTokenType("PROPERTY");
   IElementType REQUIRED = new TaraTokenType("REQUIRED");
@@ -81,12 +81,15 @@ public interface TaraTypes {
   IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");
   IElementType RIGHT_SQUARE = new TaraTokenType("RIGHT_SQUARE");
   IElementType ROOT = new TaraTokenType("ROOT");
+  IElementType SINGLE = new TaraTokenType("SINGLE");
   IElementType STAR = new TaraTokenType("STAR");
   IElementType STRING_MULTILINE_VALUE_KEY = new TaraTokenType("STRING_MULTILINE_VALUE_KEY");
   IElementType STRING_TYPE = new TaraTokenType("STRING_TYPE");
   IElementType STRING_VALUE_KEY = new TaraTokenType("STRING_VALUE_KEY");
   IElementType TERMINAL = new TaraTokenType("TERMINAL");
+  IElementType USE_KEY = new TaraTokenType("USE_KEY");
   IElementType VAR = new TaraTokenType("VAR");
+  IElementType WITH = new TaraTokenType("WITH");
   IElementType WORD_KEY = new TaraTokenType("WORD_KEY");
 
   class Factory {
@@ -134,8 +137,11 @@ public interface TaraTypes {
       else if (type == EXPLICIT) {
         return new TaraExplicitImpl(node);
       }
-      else if (type == FACET) {
-        return new TaraFacetImpl(node);
+      else if (type == FACET_APPLY) {
+        return new TaraFacetApplyImpl(node);
+      }
+      else if (type == FACET_TARGET) {
+        return new TaraFacetTargetImpl(node);
       }
       else if (type == HEADER) {
         return new TaraHeaderImpl(node);
@@ -157,9 +163,6 @@ public interface TaraTypes {
       }
       else if (type == INTEGER_VALUE) {
         return new TaraIntegerValueImpl(node);
-      }
-      else if (type == INTENTION) {
-        return new TaraIntentionImpl(node);
       }
       else if (type == META_IDENTIFIER) {
         return new TaraMetaIdentifierImpl(node);

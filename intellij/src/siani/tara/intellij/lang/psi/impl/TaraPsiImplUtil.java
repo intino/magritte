@@ -3,8 +3,8 @@ package siani.tara.intellij.lang.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
-import siani.tara.intellij.lang.psi.*;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.psi.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,13 +64,6 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	public static Concept getContextOfRef(IdentifierReference identifier) {
-		PsiElement element = identifier;
-		while (!(element.getParent() instanceof Concept))
-			element = element.getParent();
-		return (Concept) element.getParent();
-	}
-
 	@Nullable
 	public static Concept getContextOf(PsiElement element) {
 		try {
@@ -87,7 +80,7 @@ public class TaraPsiImplUtil {
 	public static PsiElement[] getAnnotations(Annotations annotations) {
 		PsiElement child = annotations.getFirstChild();
 		List<PsiElement> annotationList = new ArrayList<>();
-		while (child.getNextSibling().getNextSibling() != null) {
+		while (child.getNextSibling() != null && child.getNextSibling().getNextSibling() != null) {
 			if (!" ".equals(child.getNextSibling().getText())) annotationList.add(child.getNextSibling());
 			child = child.getNextSibling();
 		}

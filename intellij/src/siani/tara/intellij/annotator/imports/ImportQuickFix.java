@@ -20,7 +20,7 @@ public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
 
 	@NotNull
 	public String getText() {
-		return "Import '" + anImport + "'";
+		return "Use '" + anImport + "'";
 	}
 
 	@NotNull
@@ -30,7 +30,7 @@ public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
 
 	@NotNull
 	public String getFamilyName() {
-		return "Import";
+		return "Use";
 	}
 
 

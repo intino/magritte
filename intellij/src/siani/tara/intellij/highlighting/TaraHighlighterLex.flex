@@ -21,12 +21,8 @@ import java.util.Set;
 %type IElementType
 
 %{
-	private Project project;
 	private Set<String> identifiers;
 
-	public TaraHighlighterLex(java.io.Reader o, Project project) {
-		this.project = project;
-	}
 
 	private IElementType evaluateIdentifier() {
 		String identifier = yytext().toString();
@@ -35,35 +31,46 @@ import java.util.Set;
 	}
 
 	private void loadHeritage() {
-		Module module = ModuleProvider.getNamespaceOfDocument(project, zzBuffer.toString());
-		TreeWrapper heritage = TaraLanguage.getHeritage(module);
-		if (heritage != null)
-			identifiers = heritage.getIdentifiers();
-	}
+		String[] uses = zzBuffer.toString().split("use");
+        String destiny = null;
+        for (String use : uses)
+            if (use.contains("as metamodel")) {
+                destiny = use.split("as metamodel")[0].trim();
+                break;
+            }
+        TreeWrapper heritage = TaraLanguage.getHeritage(destiny);
+        if (heritage != null)
+            identifiers = heritage.getIdentifiers();
+}
 %}
 
 CONCEPT             = "Concept"
 INTENTION_KEY       = "Intention"
-IMPORT_KEY          = "import"
+METAMODEL           = "metamodel"
+CASE_KEY            = "case"
+USE_KEY             = "use"
 BOX                 = "box"
 AS                  = "as"
-CASE_KEY            = "case"
+ON                  = "on"
+IS                  = "is"
+WITH                = "with"
+//annotations
 PRIVATE             = "private"
-MULTIPLE            = "multiple"
+SINGLE              = "single"
 REQUIRED            = "required"
-HAS_NAME            = "has-name"
+NAMEABLE            = "nameable"
 TERMINAL            = "terminal"
 PROPERTY            = "property"
 ROOT                = "root"
-WORD_KEY            = "Word"
-RESOURCE_KEY        = "Resource"
 VAR                 = "var"
+WORD_KEY            = "word"
+RESOURCE_KEY        = "resource"
 
-LEFT_SQUARE         = "["
-RIGHT_SQUARE        = "]"
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
-
+LEFT_SQUARE         = "["
+RIGHT_SQUARE        = "]"
+LIST                = {LEFT_SQUARE} {RIGHT_SQUARE}
 OPEN_BRACKET        = "{"
 CLOSE_BRACKET       = "}"
 
@@ -76,24 +83,24 @@ APOSTROPHE          = "'"
 DASH                = "-"
 DASHES              = {DASH} {DASH}+
 OPEN_AN             = "<"
-CLOSE_AN            = ">"
 POSITIVE            = "+"
 
-ALIAS_TYPE          = "Alias"
-INT_TYPE            = "Integer"
-NATURAL_TYPE        = "Natural"
-DOUBLE_TYPE         = "Double"
-STRING_TYPE         = "String"
-BOOLEAN_TYPE        = "Boolean"
+ALIAS_TYPE          = "alias"
+INT_TYPE            = "integer"
+NATURAL_TYPE        = "natural"
+DOUBLE_TYPE         = "double"
+STRING_TYPE         = "string"
+BOOLEAN_TYPE        = "boolean"
+DATE_TYPE           = "date"
 BOOLEAN_VALUE_KEY   = "true" | "false"
+EMPTY_REF           = "empty"
 NATURAL_VALUE_KEY   = {POSITIVE}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
 DOUBLE_VALUE_KEY    = ({POSITIVE} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+
 STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
-EMPTY_REF               = "empty"
 
-DOC_LINE = "#" ~[\n]
+DOC_LINE            = "#" ~[\n]
 
 DIGIT=[:digit:]
 IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
@@ -106,32 +113,29 @@ NEWLINE= [\n]+
 <YYINITIAL> {
 
 	{CONCEPT}                       {   return TaraTypes.METAIDENTIFIER_KEY; }
-
-	{IMPORT_KEY}                    {   return TaraTypes.IMPORT_KEY; }
+	{INTENTION_KEY}                 {   return TaraTypes.INTENTION_KEY; }
 
 	{BOX}                           {  	loadHeritage();
 										return TaraTypes.BOX_KEY; }
+	{USE_KEY}                       {   return TaraTypes.USE_KEY; }
+	{METAMODEL}                     {   return TaraTypes.METAMODEL; }
 
 	{AS}                            {   return TaraTypes.AS; }
-
-	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
-
+	{ON}                            {   return TaraTypes.ON; }
+	{IS}                            {   return TaraTypes.IS; }
+	{WITH}                          {   return TaraTypes.WITH; }
 	{COLON}                         {   return TaraTypes.COLON; }
 
 	{VAR}                           {   return TaraTypes.VAR; }
 
 	{CASE_KEY}                      {   return TaraTypes.CASE_KEY; }
 
-	{OPEN_AN}                       {   return TaraTypes.OPEN_AN; }
-	{CLOSE_AN}                      {   return TaraTypes.CLOSE_AN; }
-
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
-	{MULTIPLE}                      {   return TaraTypes.MULTIPLE; }
-
-	{HAS_NAME}                      {   return TaraTypes.HAS_NAME; }
+	{SINGLE}                        {   return TaraTypes.SINGLE; }
+	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
+	{NAMEABLE}                      {   return TaraTypes.NAMEABLE; }
 	{ROOT}                          {   return TaraTypes.ROOT; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
-	{INTENTION_KEY}                 {   return TaraTypes.INTENTION_KEY; }
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
@@ -155,12 +159,15 @@ NEWLINE= [\n]+
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
 	{STAR}                          {   return TaraTypes.STAR;     }
+	{LIST}                          {   return TaraTypes.LIST;  }
+
 	{ALIAS_TYPE}                    {   return TaraTypes.ALIAS_TYPE; }
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
 	{NATURAL_TYPE}                  {   return TaraTypes.NATURAL_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
+    {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
 
 	{SEMICOLON}                     {   return TaraTypes.LEFT_SQUARE;  }
 

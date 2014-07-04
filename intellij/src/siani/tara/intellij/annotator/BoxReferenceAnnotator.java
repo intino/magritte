@@ -13,8 +13,8 @@ public class BoxReferenceAnnotator extends TaraAnnotator {
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
-		if (element instanceof Identifier && element.getParent().getParent() instanceof TaraBox)
-			isWellPlaced((TaraHeaderReference) element.getParent());
+		if (element instanceof TaraHeaderReference && element.getParent() instanceof TaraBox)
+			isWellPlaced((TaraHeaderReference) element);
 		else if (element instanceof TaraFile)
 			checkBoxExistence((TaraFile) element);
 	}

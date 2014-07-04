@@ -13,13 +13,13 @@ import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Function;
-import siani.tara.intellij.lang.psi.Identifier;
-import siani.tara.intellij.lang.psi.TaraIntention;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
-import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Identifier;
+import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -30,7 +30,7 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
-			if (!(element instanceof TaraIntention)) return null;
+			if (!(element instanceof Concept)) return null;
 			PsiElement reference = ReferenceManager.resolve((Identifier) TaraPsiImplUtil.getContextOf(element).getIdentifierNode(), true);
 			String start = "Concept extended in ";
 			@NonNls String pattern = null;
@@ -40,7 +40,7 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {
-			if (!(element instanceof TaraIntention)) return;
+			if (!(element instanceof Concept)) return;
 			if (DumbService.isDumb(element.getProject())) {
 				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to overriding classes is not possible during index update");
 				return;
@@ -53,7 +53,7 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
 			PsiElementListNavigator.
-				openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overriding Methods of " + (reference != null ? reference.getName() : null), renderer);
+				openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overriding Methods of " + (reference.getName()), renderer);
 		}
 	}
 	);
@@ -65,7 +65,7 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (element instanceof TaraIntention) {
+		if (element instanceof Concept) {
 			final Icon icon = AllIcons.Gutter.ImplementedMethod;
 			final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;
 			return new LineMarkerInfo<>(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),

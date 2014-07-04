@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -15,8 +16,8 @@ public interface TaraFile extends PsiFile {
 	@NotNull
 	PsiFile getContainingFile();
 
+	@NotNull
 	Concept[] getConcepts();
-	TaraIntention[] getIntentions();
 
 	@NotNull
 	PsiElement addConcept(@NotNull Concept concept) throws IncorrectOperationException;
@@ -42,8 +43,11 @@ public interface TaraFile extends PsiFile {
 
 	TaraBox getBoxReference();
 
+	String getParentModel();
+
 	List<? extends Identifier> getBoxRoute();
 
+	@Nullable
 	Import[] getImports();
 
 	void setBox(String path);
