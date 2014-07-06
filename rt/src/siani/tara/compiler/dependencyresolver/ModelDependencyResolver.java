@@ -61,7 +61,7 @@ public class ModelDependencyResolver {
 	private void addInnerConceptsInherited(Node parent, Node node) {
 		for (Node child : parent.getInnerNodes())
 			if (!child.isCase() /*&& !child.getObject().isAbstract()*/) {
-				Node element = new Node(child.getObject(), node, true);
+				Node element = new Node(child.getObject(), node);
 				tree.add(element.getQualifiedName(), element);
 				node.add(0, element);
 				element.calculateQualifiedName();

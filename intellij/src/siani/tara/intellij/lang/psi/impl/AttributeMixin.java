@@ -33,7 +33,10 @@ public class AttributeMixin extends ASTWrapperPsiElement {
 		if (child == null || child.length == 0) {
 			PsiElement lastChild = this.getLastChild();
 			if (lastChild instanceof TaraWord) return getAsWord();
-			else return lastChild.getNode().getChildren(TokenSet.create(TaraTypes.IDENTIFIER_KEY))[0].getText();
+			else {
+				ASTNode[] children = lastChild.getNode().getChildren(TokenSet.create(TaraTypes.IDENTIFIER_KEY));
+				return (children.length == 0) ? "" : children[0].getText();
+			}
 		}
 		return child[child.length - 1].getText();
 	}

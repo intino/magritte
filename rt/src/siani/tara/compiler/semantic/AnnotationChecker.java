@@ -27,7 +27,7 @@ public class AnnotationChecker {
 		annotations = Arrays.asList(concept.getObject().getAnnotations());
 		rootAnnotation(concept);
 		requiredAnnotation(concept);
-		multipleAnnotation(concept);
+//		multipleAnnotation(concept);
 	}
 
 	public void checkIfRoot(NodeTree conceptList) {
@@ -61,8 +61,8 @@ public class AnnotationChecker {
 			errors.add(new WrongAnnotationError(AnnotationType.REQUIRED.name(), concept));
 	}
 
-	private void multipleAnnotation(Node concept) {
-		if ((concept.isPrime() || concept.isCase()) && annotations.contains(AnnotationType.MULTIPLE))
-			errors.add(new WrongAnnotationError(AnnotationType.MULTIPLE.name(), concept));
-	}
+//	private void multipleAnnotation(Node concept) {
+//		if ((concept.isPrime() || concept.isCase()) && annotations.contains(AnnotationType.MULTIPLE))
+//			errors.add(new WrongAnnotationError(AnnotationType.MULTIPLE.name(), concept));
+//	}
 }

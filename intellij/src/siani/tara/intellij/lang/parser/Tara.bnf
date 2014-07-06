@@ -108,14 +108,14 @@ attribute ::= doc? VAR (aliasAttribute | naturalAttribute | integerAttribute | d
 }
 
 private resource             ::= RESOURCE_KEY COLON IDENTIFIER_KEY IDENTIFIER_KEY                         {pin=1}
-private aliasAttribute       ::= ALIAS_TYPE   LIST  IDENTIFIER_KEY (COLON (stringValue  | emptyField))?   {pin=1}
-private booleanAttribute     ::= BOOLEAN_TYPE LIST  IDENTIFIER_KEY (COLON (booleanValue | emptyField))?   {pin=1}
-private stringAttribute      ::= STRING_TYPE  LIST  IDENTIFIER_KEY (COLON (stringValue  | emptyField))?   {pin=1}
-private naturalAttribute     ::= NATURAL_TYPE LIST  IDENTIFIER_KEY (COLON (naturalValue | emptyField))?   {pin=1}
-private integerAttribute     ::= INT_TYPE     LIST  IDENTIFIER_KEY (COLON (integerValue | emptyField))?   {pin=1}
-private doubleAttribute      ::= DOUBLE_TYPE  LIST  IDENTIFIER_KEY (COLON (doubleValue  | emptyField))?   {pin=1}
-private dateAttribute        ::= DATE_TYPE    LIST  IDENTIFIER_KEY (COLON (naturalValue | emptyField))?   {pin=1}
-private referenceAttribute   ::= identifierReference LIST IDENTIFIER_KEY (COLON emptyField)? {
+private aliasAttribute       ::= ALIAS_TYPE   LIST?  IDENTIFIER_KEY (COLON (stringValue  | emptyField))?   {pin=1}
+private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (COLON (booleanValue | emptyField))?   {pin=1}
+private stringAttribute      ::= STRING_TYPE  LIST?  IDENTIFIER_KEY (COLON (stringValue  | emptyField))?   {pin=1}
+private naturalAttribute     ::= NATURAL_TYPE LIST?  IDENTIFIER_KEY (COLON (naturalValue | emptyField))?   {pin=1}
+private integerAttribute     ::= INT_TYPE     LIST?  IDENTIFIER_KEY (COLON (integerValue | emptyField))?   {pin=1}
+private doubleAttribute      ::= DOUBLE_TYPE  LIST?  IDENTIFIER_KEY (COLON (doubleValue  | emptyField))?   {pin=1}
+private dateAttribute        ::= DATE_TYPE    LIST?  IDENTIFIER_KEY (COLON (naturalValue | emptyField))?   {pin=1}
+private referenceAttribute   ::= identifierReference LIST? IDENTIFIER_KEY (COLON emptyField)? {
 	pin = 1
 	mixin= 'siani.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
 	implements='siani.tara.intellij.lang.psi.ReferenceStatement'

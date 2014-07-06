@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TaraIdentifierList extends TaraPsiElement {
 
   @NotNull
-  List<TaraIdentifier> getIdentifierList();
+  List<TaraIdentifierReference> getIdentifierReferenceList();
 
 }

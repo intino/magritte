@@ -24,19 +24,19 @@ signature: ((CASE IDENTIFIER)
 parameters : LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS;
 parameterList : explicit? parameter (COMMA explicit? parameter)*;
 explicit: IDENTIFIER COLON;
-parameter :     identifierReference
-				| stringValue
-		        | booleanValue
-		        | naturalValue
-		        | integerValue
-		        | doubleValue
-		        | stringList
-		        | booleanList
-		        | naturalList
-		        | integerList
-		        | doubleList
-		        | identifierList
-		        | metaWord;
+parameter : identifierReference
+			| stringValue
+	        | booleanValue
+	        | naturalValue
+	        | integerValue
+	        | doubleValue
+	        | stringList
+	        | booleanList
+	        | naturalList
+	        | integerList
+	        | doubleList
+	        | identifierList
+	        | metaWord;
 
 metaWord : metaidentifier metaWordNames*;
 metaWordNames : DOT IDENTIFIER;

@@ -32,7 +32,6 @@ public class TaraUtil {
 		List<Concept> result = new ArrayList<>();
 		for (TaraFileImpl taraFile : getModuleFiles(element.getContainingFile())) {
 			Concept[] concepts = taraFile.getConcepts();
-			if (concepts == null) continue;
 			extractConceptsByName(identifier, result, concepts);
 		}
 		return result;

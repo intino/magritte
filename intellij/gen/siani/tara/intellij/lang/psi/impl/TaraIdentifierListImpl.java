@@ -24,8 +24,8 @@ public class TaraIdentifierListImpl extends ASTWrapperPsiElement implements Tara
 
   @Override
   @NotNull
-  public List<TaraIdentifier> getIdentifierList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifier.class);
+  public List<TaraIdentifierReference> getIdentifierReferenceList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifierReference.class);
   }
 
 }

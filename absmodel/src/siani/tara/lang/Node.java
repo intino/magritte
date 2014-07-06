@@ -1,27 +1,24 @@
 package siani.tara.lang;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Node {
 
 	private NodeObject object;
 	private transient Node container;
 	private List<Node> innerNodes;
-	private List<String> innerReferencesQN;
-	private List<Node> innerReferences;
+	private Map<String, Node> innerAsReferences = new HashMap<>();
 	private String qualifiedName;
-	private boolean inherited;
 	private int line;
 	private String file;
 
-	public Node(NodeObject object, Node container, boolean inherited) {
+	public Node(NodeObject object, Node container) {
 		this.object = object;
 		this.container = container;
-		this.inherited = inherited;
 		innerNodes = new NodeTree();
-		innerReferencesQN = new ArrayList<>();
-		innerReferences = new ArrayList<>();
 	}
 
 	public List<Node> getInnerNodes() {
@@ -51,9 +48,6 @@ public class Node {
 		return null;
 	}
 
-	public boolean add(String innerReference) {
-		return innerReferencesQN.add(innerReference);
-	}
 
 	public boolean add(Node node) {
 		return innerNodes.add(node);
@@ -61,6 +55,10 @@ public class Node {
 
 	public void add(int index, Node element) {
 		innerNodes.add(index, element);
+	}
+
+	public void addInnerAsReference(String qualifiedName, Node element) {
+		innerAsReferences.put(qualifiedName, element);
 	}
 
 	public Node[] getCases() {
@@ -71,7 +69,7 @@ public class Node {
 	}
 
 	public String getAbsolutePath() {
-		return getObject().getPackage() + "." + getNodeRoute();
+		return getObject().getBox() + "." + getNodeRoute();
 	}
 
 	public String getQualifiedName() {
@@ -123,20 +121,10 @@ public class Node {
 		this.file = file;
 	}
 
-	public boolean isInherited() {
-		return inherited;
-	}
-
 	@Override
 	public String toString() {
 		return "Node{" + qualifiedName + '}';
 	}
 
-	public List<String> getInnerReferencesQN() {
-		return innerReferencesQN;
-	}
 
-	public List<Node> getInnerReferences() {
-		return innerReferences;
-	}
 }

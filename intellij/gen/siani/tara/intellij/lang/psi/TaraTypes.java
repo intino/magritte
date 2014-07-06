@@ -65,6 +65,7 @@ public interface TaraTypes {
   IElementType IS = new TaraTokenType("IS");
   IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
   IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
+  IElementType LIST = new TaraTokenType("LIST");
   IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
   IElementType METAMODEL = new TaraTokenType("METAMODEL");
   IElementType NAMEABLE = new TaraTokenType("NAMEABLE");

@@ -70,7 +70,6 @@ public class ReferenceManager {
 		return route;
 	}
 
-
 	private static PsiElement resolveConcept(PsiElement identifier, List<Identifier> route) {
 		List<Identifier> subRoute = route.subList(0, route.indexOf(identifier) + 1);
 		PsiElement element = tryToResolveInBox(subRoute);
@@ -174,8 +173,8 @@ public class ReferenceManager {
 			if (resolve == null) continue;
 			TaraFile containingFile = (TaraFile) resolve.getContainingFile();
 			for (Concept concept : containingFile.getConcepts()) {
-				if (route.get(0).getText().equals(concept.getName()))
-					return concept;
+				Concept solution = resolvePathInConcept(route, concept);
+				if (solution != null) return solution;
 			}
 		}
 		return null;

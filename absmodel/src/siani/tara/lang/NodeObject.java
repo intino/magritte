@@ -6,7 +6,7 @@ import java.util.List;
 
 public class NodeObject {
 	private transient Node declaredNode;
-	private boolean caseConcept;
+	private boolean caseConcept = false;
 	private List<Node> cases;
 	private String doc;
 	private String parentName;
@@ -14,30 +14,29 @@ public class NodeObject {
 	private transient List<NodeObject> childrenConcepts;
 	private transient Node baseNode = null;
 	private transient String baseName = null;
+	private String type = "Concept";
 	private String name = "";
 	private List<AnnotationType> annotations = new ArrayList<>();
 	private List<String> imports = new ArrayList<>();
 	private List<Variable> variables = new ArrayList<>();
-	private String aPackage;
-	private List<String> parameters;
+	private List<NodeObject> intentions = new ArrayList<>();
+	private List<NodeObject> facets = new ArrayList<>();
+	private String box;
+	private List<String> parameters = new ArrayList<>();
 
 
 	public NodeObject() {
 	}
 
-	public NodeObject(String name) {
+	public NodeObject(String type, String name) {
+		this.type = type;
 		this.name = name;
-		this.caseConcept = false;
 	}
 
 	public boolean is(AnnotationType type) {
 		return (annotations.contains(type));
 	}
 
-
-	public boolean hasName() {
-		return annotations.contains(AnnotationType.HAS_NAME);
-	}
 
 	public String getName() {
 		return name;
@@ -62,10 +61,6 @@ public class NodeObject {
 
 	public List<String> getParameters() {
 		return parameters;
-	}
-
-	public boolean addParameter(String parameter) {
-		return parameters.add(parameter);
 	}
 
 	public AnnotationType[] getAnnotations() {
@@ -131,10 +126,10 @@ public class NodeObject {
 		return cases;
 	}
 
-
 	public boolean isCase() {
 		return caseConcept;
 	}
+
 
 	public void setCase(boolean caseConcept) {
 		this.caseConcept = caseConcept;
@@ -150,12 +145,24 @@ public class NodeObject {
 		return cases.add(node);
 	}
 
+	public boolean addParameter(String parameter) {
+		return parameters.add(parameter);
+	}
+
 	public void add(AnnotationType annotation) {
 		annotations.add(annotation);
 	}
 
 	public boolean add(Variable variable) {
 		return variables.add(variable);
+	}
+
+	public boolean addFacet(NodeObject variable) {
+		return facets.add(variable);
+	}
+
+	public boolean addIntention(NodeObject variable) {
+		return intentions.add(variable);
 	}
 
 	public void add(int index, Variable element) {
@@ -174,24 +181,12 @@ public class NodeObject {
 		return variables;
 	}
 
-	public String getPackage() {
-		return aPackage;
+	public String getBox() {
+		return box;
 	}
 
-	public void setPackage(String aPackage) {
-		this.aPackage = aPackage;
-	}
-
-
-	public boolean resolveChild(String[] path) {
-		if (path.length > 2 || path.length == 0) return false;
-		Variable variable = null;
-		for (Variable var : variables)
-			if (var.getName().equals(path[0])) variable = var;
-		if ((variable != null) && variable instanceof NodeWord)
-			for (String wordElement : ((NodeWord) variable).getWordTypes())
-				if (wordElement.equals(path[1])) return true;
-		return variable != null;
+	public void setBox(String box) {
+		this.box = box;
 	}
 
 	public String getBaseName() {
@@ -202,7 +197,31 @@ public class NodeObject {
 		this.baseName = baseName;
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public List<NodeObject> getFacets() {
+		return facets;
+	}
+
+	public void setFacets(List<NodeObject> facets) {
+		this.facets = facets;
+	}
+
+	public List<NodeObject> getIntentions() {
+		return intentions;
+	}
+
+	public void setIntentions(List<NodeObject> intentions) {
+		this.intentions = intentions;
+	}
+
 	public enum AnnotationType {
-		PROPERTY, HAS_NAME, ROOT, TERMINAL, MULTIPLE, REQUIRED, PRIVATE, INTENTION;
+		NAMEABLE, ROOT, TERMINAL, SINGLE, REQUIRED, PRIVATE, PROPERTY;
 	}
 }

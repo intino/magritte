@@ -27,13 +27,14 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("String"));
-					resultSet.addElement(LookupElementBuilder.create("Natural"));
-					resultSet.addElement(LookupElementBuilder.create("Integer"));
-					resultSet.addElement(LookupElementBuilder.create("Double"));
-					resultSet.addElement(LookupElementBuilder.create("Boolean"));
-					resultSet.addElement(LookupElementBuilder.create("Word"));
-					resultSet.addElement(LookupElementBuilder.create("Alias"));
+					resultSet.addElement(LookupElementBuilder.create("string"));
+					resultSet.addElement(LookupElementBuilder.create("natural"));
+					resultSet.addElement(LookupElementBuilder.create("integer"));
+					resultSet.addElement(LookupElementBuilder.create("double"));
+					resultSet.addElement(LookupElementBuilder.create("boolean"));
+					resultSet.addElement(LookupElementBuilder.create("word"));
+					resultSet.addElement(LookupElementBuilder.create("date"));
+					resultSet.addElement(LookupElementBuilder.create("alias"));
 				}
 			}
 		);

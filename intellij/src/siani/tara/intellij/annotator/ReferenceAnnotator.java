@@ -32,6 +32,7 @@ import java.util.List;
 public class ReferenceAnnotator extends TaraAnnotator {
 
 	private PsiElement element;
+	public static final String MESSAGE = TaraBundle.message("reference.concept.key.error.message");
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
@@ -49,19 +50,17 @@ public class ReferenceAnnotator extends TaraAnnotator {
 				List<? extends Identifier> identifierList = ((IdentifierReference) element).getIdentifierList();
 				addImportAlternatives(identifierList.get(identifierList.size() - 1));
 			} else {
-				String message = TaraBundle.message("reference.concept.key.error.message");
-				errorAnnotation = annotateAndFix(element, new RemoveImportFix((TaraPsiElement) element.getParent()), message);
+				errorAnnotation = annotateAndFix(element, new RemoveImportFix((TaraPsiElement) element.getParent()), MESSAGE);
 				errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
 			}
 		}
 	}
 
 	private void addImportAlternatives(Identifier element) {
-		String message = TaraBundle.message("reference.concept.key.error.message");
 		ArrayList<LocalQuickFix> fixes = new ArrayList<>();
 		addImportFix(element, fixes);
 		addCreateConceptFix(element, "Concept", fixes);
-		Annotation errorAnnotation = holder.createErrorAnnotation(element, message);
+		Annotation errorAnnotation = holder.createErrorAnnotation(element, MESSAGE);
 		errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
 		for (LocalQuickFix fix : fixes)
 			errorAnnotation.registerFix(createIntention(element, fix.getName(), fix));
@@ -83,10 +82,10 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		return QuickFixWrapper.wrap((ProblemDescriptor) descr, 0);
 	}
 
-	private void addImportFix(PsiElement node, List<LocalQuickFix> actions) {
+	private void addImportFix(Identifier node, List<LocalQuickFix> actions) {
 		final PsiFile file = InjectedLanguageManager.getInstance(node.getProject()).getTopLevelFile(node);
 		if (!(file instanceof TaraFile)) return;
-		List<ImportQuickFix> importFix = TaraReferenceImporter.proposeImportFix(node);
+		List<ImportQuickFix> importFix = TaraReferenceImporter.proposeImportFix((IdentifierReference) node.getParent());
 		for (ImportQuickFix importQuickFix : importFix) actions.add(importQuickFix);
 	}
 }

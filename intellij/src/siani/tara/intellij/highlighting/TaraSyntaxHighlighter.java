@@ -32,6 +32,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.CONSTANT);
 	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
 	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
+	public static final TextAttributesKey BRACKETS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.BRACKETS);
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER");
 	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>(6);
 	public static final TextAttributesKey UNRESOLVED_ACCESS = TextAttributesKey.createTextAttributesKey("Unresolved reference");
@@ -59,6 +60,8 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		DISPLAY_NAMES.put(MODIFIERS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.modifier"), null));
 		DISPLAY_NAMES.put(OPERATOR, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.operator"), null));
 		DISPLAY_NAMES.put(ANNOTATION, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.annotation"), null));
+		DISPLAY_NAMES.put(NUMBERS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.number"), null));
+		DISPLAY_NAMES.put(BRACKETS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.annotation"), null));
 		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<>(TaraBundle.message("invalid.tara.concept.character"), HighlightSeverity.ERROR));
 	}
 
@@ -93,16 +96,20 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(VAR, KEYWORD);
 		KEYS.put(AS, KEYWORD);
 		KEYS.put(ON, KEYWORD);
+		KEYS.put(WITH, KEYWORD);
+		KEYS.put(STAR, OPERATOR);
 		KEYS.put(COLON, OPERATOR);
-		KEYS.put(LEFT_SQUARE, OPERATOR);
-		KEYS.put(RIGHT_SQUARE, OPERATOR);
+		KEYS.put(LEFT_SQUARE, BRACKETS);
+		KEYS.put(RIGHT_SQUARE, BRACKETS);
 		KEYS.put(META_WORD, OPERATOR);
 
 		KEYS.put(WORD_KEY, PRIMITIVE);
 		KEYS.put(STRING_TYPE, PRIMITIVE);
 		KEYS.put(DOUBLE_TYPE, PRIMITIVE);
 		KEYS.put(INT_TYPE, PRIMITIVE);
+		KEYS.put(DATE_TYPE, PRIMITIVE);
 		KEYS.put(BOOLEAN_TYPE, PRIMITIVE);
+		KEYS.put(NATURAL_TYPE, PRIMITIVE);
 		KEYS.put(ALIAS_TYPE, PRIMITIVE);
 
 		KEYS.put(DOC_LINE, DOCUMENTATION);

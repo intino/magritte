@@ -7,7 +7,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiPackage;
 import siani.tara.intellij.codeinsight.JavaHelper;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
@@ -49,12 +48,13 @@ public class VariantsManager {
 
 	private List<PsiElement> addInBoxVariants() {
 		List<PsiElement> variants = new ArrayList<>();
-		List<? extends Identifier> packageRoute = ((TaraFile) myElement.getContainingFile()).getBoxRoute();
-		PsiPackage packageFile = (PsiPackage) ReferenceManager.resolve(packageRoute.get(packageRoute.size() - 1), false);
+		List<? extends Identifier> boxRoute = ((TaraFile) myElement.getContainingFile()).getBoxRoute();
+		TaraFile packageFile = (TaraFile) ReferenceManager.resolve(boxRoute.get(boxRoute.size() - 1), false);
 		if (packageFile == null) return Collections.EMPTY_LIST;
-		PsiDirectory[] directories = packageFile.getDirectories();
-		for (PsiDirectory directory : directories)
-			searchInPackage(directory);
+//
+//		PsiDirectory[] directories = packageFile.getDirectories();
+//		for (PsiDirectory directory : directories)
+//			searchInPackage(directory);
 		return variants;
 	}
 
@@ -76,8 +76,8 @@ public class VariantsManager {
 			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
 			PsiElement resolve = ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1), false);
 			if (resolve == null) continue;
-			Concept concept = (resolve instanceof Identifier) ? TaraPsiImplUtil.getContextOf(resolve) : (Concept) resolve;
-			resolveRouteFor(concept, context);
+//			Concept concept = (resolve instanceof Identifier) ? TaraPsiImplUtil.getContextOf(resolve) : (Concept) resolve;
+//			resolveRouteFor(concept, context);
 		}
 		return variants;
 	}
