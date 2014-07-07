@@ -1,4 +1,4 @@
-// Generated from /Users/octavio/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
+// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
 
 package siani.tara.compiler.parser.antlr;
 
@@ -150,16 +150,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNaturalAttribute(@NotNull TaraGrammar.NaturalAttributeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#conceptConstituents}.
-	 * @param ctx the parse tree
-	 */
-	void enterConceptConstituents(@NotNull TaraGrammar.ConceptConstituentsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#conceptConstituents}.
-	 * @param ctx the parse tree
-	 */
-	void exitConceptConstituents(@NotNull TaraGrammar.ConceptConstituentsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#parameter}.
 	 * @param ctx the parse tree
@@ -330,6 +320,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIdentifierReference(@NotNull TaraGrammar.IdentifierReferenceContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#wordNames}.
+	 * @param ctx the parse tree
+	 */
+	void enterWordNames(@NotNull TaraGrammar.WordNamesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#wordNames}.
+	 * @param ctx the parse tree
+	 */
+	void exitWordNames(@NotNull TaraGrammar.WordNamesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#reference}.
 	 * @param ctx the parse tree

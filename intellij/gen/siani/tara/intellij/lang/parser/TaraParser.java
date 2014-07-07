@@ -751,7 +751,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // AS identifier parameters? WITH identifierReference
+  // AS identifier parameters? (WITH identifierReference)?
   public static boolean facetApply(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "facetApply")) return false;
     if (!nextTokenIs(builder_, AS)) return false;
@@ -762,8 +762,7 @@ public class TaraParser implements PsiParser {
     pinned_ = result_; // pin = 1
     result_ = result_ && report_error_(builder_, identifier(builder_, level_ + 1));
     result_ = pinned_ && report_error_(builder_, facetApply_2(builder_, level_ + 1)) && result_;
-    result_ = pinned_ && report_error_(builder_, consumeToken(builder_, WITH)) && result_;
-    result_ = pinned_ && identifierReference(builder_, level_ + 1) && result_;
+    result_ = pinned_ && facetApply_3(builder_, level_ + 1) && result_;
     exit_section_(builder_, level_, marker_, FACET_APPLY, result_, pinned_, null);
     return result_ || pinned_;
   }
@@ -773,6 +772,24 @@ public class TaraParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "facetApply_2")) return false;
     parameters(builder_, level_ + 1);
     return true;
+  }
+
+  // (WITH identifierReference)?
+  private static boolean facetApply_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "facetApply_3")) return false;
+    facetApply_3_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // WITH identifierReference
+  private static boolean facetApply_3_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "facetApply_3_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, WITH);
+    result_ = result_ && identifierReference(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   /* ********************************************************** */

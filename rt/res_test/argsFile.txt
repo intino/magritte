@@ -1,15 +1,13 @@
 src_file
-/Users/oroncal/workspace/sandbox/goros/metamodel/src/siani/m2/Entity.m
-/Users/oroncal/workspace/sandbox/goros/metamodel/src/siani/m2/Event.m
-/Users/oroncal/workspace/sandbox/goros/metamodel/src/siani/m2/Form.m
-/Users/oroncal/workspace/sandbox/goros/metamodel/src/siani/m2/Source.m
-/Users/oroncal/workspace/sandbox/goros/metamodel/src/siani/m2/Term.m
-/Users/oroncal/workspace/sandbox/goros/metamodel/src/siani/m2/Thesaurus.m
+/Users/oroncal/workspace/sandbox/goros/metamod/model/siani/monet/engine/base.tara
+/Users/oroncal/workspace/sandbox/goros/metamod/model/siani/monet/engine/form.tara
+/Users/oroncal/workspace/sandbox/goros/metamod/model/siani/monet/engine/sets.tara
+/Users/oroncal/workspace/sandbox/goros/metamod/model/siani/monet/engine/sources.tara
 
 project
 Monet
 module
-metamodel
+metamod
 idea_home
 /Applications/IntelliJ IDEA 13 CE.app/lib/
 plugin_home

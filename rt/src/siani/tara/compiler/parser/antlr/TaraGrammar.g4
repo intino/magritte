@@ -5,7 +5,7 @@ options { tokenVocab=TaraLexer; }
 package siani.tara.compiler.parser.antlr;
 }
 
-root: NEWLINE* header? NEWLINE* concept NEWLINE* EOF;
+root: NEWLINE* header? NEWLINE+ (concept  NEWLINE*)* EOF;
 
 header :  box? imports?;
 box : BOX headerReference;
@@ -41,25 +41,25 @@ parameter : identifierReference
 metaWord : metaidentifier metaWordNames*;
 metaWordNames : DOT IDENTIFIER;
 
-body: NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT;
-conceptConstituents: attribute | concept | varInit | facetApply | facetTarget;
+body: NEW_LINE_INDENT ((attribute | concept | varInit | facetApply | facetTarget) NEWLINE+)+ DEDENT;
 
-facetApply : AS IDENTIFIER parameters? WITH identifierReference;
+facetApply : AS IDENTIFIER parameters? (WITH identifierReference)?;
 facetTarget : ON IDENTIFIER body?;
 
 attribute : doc? VAR (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
 | dateAttribute | resource | reference | word) annotations?;
 
 resource         : RESOURCE COLON    IDENTIFIER IDENTIFIER;
-word             : WORD IDENTIFIER NEW_LINE_INDENT (IDENTIFIER STAR? NEWLINE)+ DEDENT;
-aliasAttribute   : ALIAS_TYPE   LIST IDENTIFIER (COLON stringValue  | EMPTY)?;
-booleanAttribute : BOOLEAN_TYPE LIST IDENTIFIER (COLON booleanValue | EMPTY)?;
-stringAttribute  : STRING_TYPE  LIST IDENTIFIER (COLON stringValue  | EMPTY)?;
-naturalAttribute : NATURAL_TYPE LIST IDENTIFIER (COLON naturalValue | EMPTY)?;
-integerAttribute : INT_TYPE     LIST IDENTIFIER (COLON integerValue | EMPTY)?;
-doubleAttribute  : DOUBLE_TYPE  LIST IDENTIFIER (COLON doubleValue  | EMPTY)?;
-dateAttribute    : DATE_TYPE    LIST IDENTIFIER (COLON naturalValue | EMPTY)?;
-reference        : identifierReference LIST IDENTIFIER  (COLON EMPTY)?       ;
+word             : WORD IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
+wordNames        : IDENTIFIER STAR?;
+aliasAttribute   : ALIAS_TYPE   LIST? IDENTIFIER (COLON stringValue  | EMPTY)?;
+booleanAttribute : BOOLEAN_TYPE LIST? IDENTIFIER (COLON booleanValue | EMPTY)?;
+stringAttribute  : STRING_TYPE  LIST? IDENTIFIER (COLON stringValue  | EMPTY)?;
+naturalAttribute : NATURAL_TYPE LIST? IDENTIFIER (COLON naturalValue | EMPTY)?;
+integerAttribute : INT_TYPE     LIST? IDENTIFIER (COLON integerValue | EMPTY)?;
+doubleAttribute  : DOUBLE_TYPE  LIST? IDENTIFIER (COLON doubleValue  | EMPTY)?;
+dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (COLON naturalValue | EMPTY)?;
+reference        : identifierReference LIST? IDENTIFIER  (COLON EMPTY)?       ;
 
 naturalValue: POSITIVE_VALUE;
 integerValue: POSITIVE_VALUE | NEGATIVE_VALUE;

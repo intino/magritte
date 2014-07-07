@@ -99,9 +99,6 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.MODULE:
 					configuration.setModule(reader.readLine());
 					break;
-				case TaraRtConstants.IDEA_HOME:
-					configuration.setIdeaHome(reader.readLine());
-					break;
 				case TaraRtConstants.PLUGIN_HOME:
 					configuration.setPluginDirectory(reader.readLine());
 					break;
@@ -119,7 +116,7 @@ public class TaraCompilerRunner {
 
 	private static void addSources(List<File> srcFiles, final CompilationUnit unit) {
 		for (final File file : srcFiles) {
-			if (!file.getName().endsWith(".m"))
+			if (!file.getName().endsWith(".tara"))
 				continue;
 			unit.addSource(new SourceUnit(file, unit.getConfiguration(), unit.getErrorCollector()));
 		}

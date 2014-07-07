@@ -96,7 +96,7 @@ body ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT {
 
 private conceptConstituents ::= attribute | concept | varInit | facetApply | facetTarget
 
-facetApply ::= AS identifier parameters? WITH identifierReference
+facetApply ::= AS identifier parameters? (WITH identifierReference)?
 {pin = 1}
 facetTarget ::= ON identifier body?
 {pin = 1}

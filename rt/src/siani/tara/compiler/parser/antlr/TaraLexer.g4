@@ -97,7 +97,7 @@ METAMODEL           : 'metamodel';
 AS                  :'as';
 ON                  :'on';
 IS                  :'is';
-WITH                : 'WITH';
+WITH                : 'with';
 //annotations
 PRIVATE             : 'private';
 SINGLE              : 'single';

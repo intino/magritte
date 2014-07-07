@@ -1,4 +1,4 @@
-// Generated from /Users/octavio/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraLexer.g4 by ANTLR 4.x
+// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraLexer.g4 by ANTLR 4.x
 
 package siani.tara.compiler.parser.antlr;
 
@@ -267,8 +267,8 @@ public class TaraLexer extends Lexer {
 		"\u00a8\u00a9\7f\2\2\u00a9\u00aa\7g\2\2\u00aa\u00ab\7n\2\2\u00ab\16\3\2"+
 		"\2\2\u00ac\u00ad\7c\2\2\u00ad\u00ae\7u\2\2\u00ae\20\3\2\2\2\u00af\u00b0"+
 		"\7q\2\2\u00b0\u00b1\7p\2\2\u00b1\22\3\2\2\2\u00b2\u00b3\7k\2\2\u00b3\u00b4"+
-		"\7u\2\2\u00b4\24\3\2\2\2\u00b5\u00b6\7Y\2\2\u00b6\u00b7\7K\2\2\u00b7\u00b8"+
-		"\7V\2\2\u00b8\u00b9\7J\2\2\u00b9\26\3\2\2\2\u00ba\u00bb\7r\2\2\u00bb\u00bc"+
+		"\7u\2\2\u00b4\24\3\2\2\2\u00b5\u00b6\7y\2\2\u00b6\u00b7\7k\2\2\u00b7\u00b8"+
+		"\7v\2\2\u00b8\u00b9\7j\2\2\u00b9\26\3\2\2\2\u00ba\u00bb\7r\2\2\u00bb\u00bc"+
 		"\7t\2\2\u00bc\u00bd\7k\2\2\u00bd\u00be\7x\2\2\u00be\u00bf\7c\2\2\u00bf"+
 		"\u00c0\7v\2\2\u00c0\u00c1\7g\2\2\u00c1\30\3\2\2\2\u00c2\u00c3\7u\2\2\u00c3"+
 		"\u00c4\7k\2\2\u00c4\u00c5\7p\2\2\u00c5\u00c6\7i\2\2\u00c6\u00c7\7n\2\2"+

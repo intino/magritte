@@ -29,6 +29,25 @@ public class ModelDependencyResolver {
 		return tree;
 	}
 
+	private void restructure() {
+		Collections.sort(nodes, new Comparator<Node>() {
+			@Override
+			public int compare(Node o1, Node o2) {
+				String qn1 = o1.getQualifiedName().replaceAll("\\[.*\\]", "");
+				int count1 = qn1.length() - qn1.replace(".", "").length();
+				String qn2 = o2.getQualifiedName().replaceAll("\\[.*\\]", "");
+				int count2 = qn2.length() - qn2.replace(".", "").length();
+				return count1 - count2;
+			}
+		});
+		for (Node node : nodes) {
+			if (node.isCase()) {
+				pullInsideBase(node);
+				recalculateNames(node);
+			}
+		}
+	}
+
 	private void refactorTable() {
 		tree.getNodeTable().clear();
 		for (Node value : nodes)
@@ -42,9 +61,9 @@ public class ModelDependencyResolver {
 				addInnerConceptsInherited(object.getParent().getDeclaredNode(), node);
 				addInheritedVariables(object.getParent(), node);
 				addInheritedAnnotations(object.getParent(), node);
-			} else if (object.getBaseNode() != null) {
-				addInnerConceptsInherited(object.getBaseNode(), node);
-				addInheritedVariables(object.getBaseNode().getObject(), node);
+			} else if (object.isCase()) {
+				addInnerConceptsInherited(node.getContainer(), node);
+				addInheritedVariables(node.getContainer().getObject(), node);
 			}
 		}
 	}
@@ -69,25 +88,6 @@ public class ModelDependencyResolver {
 			}
 	}
 
-	private void restructure() {
-		Collections.sort(nodes, new Comparator<Node>() {
-			@Override
-			public int compare(Node o1, Node o2) {
-				String qn1 = o1.getQualifiedName().replaceAll("\\[.*\\]", "");
-				int count1 = qn1.length() - qn1.replace(".", "").length();
-				String qn2 = o2.getQualifiedName().replaceAll("\\[.*\\]", "");
-				int count2 = qn2.length() - qn2.replace(".", "").length();
-				return count1 - count2;
-			}
-		});
-		for (Node node : nodes) {
-			if (node.isCase()) {
-				pullInsideBase(node);
-				recalculateNames(node);
-			}
-		}
-	}
-
 	private void recalculateNames(Node node) {
 		node.calculateQualifiedName();
 		for (Node child : node.getInnerNodes())
@@ -98,8 +98,8 @@ public class ModelDependencyResolver {
 		Node base = node.getContainer();
 		base.getObject().add(node);
 		node.getContainer().removeChild(node);
-		node.getObject().setBaseNode(base);
-		node.getObject().setBaseName(base.getQualifiedName());
+		node.getObject().setParentName(base.getQualifiedName());
+		node.getObject().setParentObject(base.getObject());
 		node.setContainer(null);
 	}
 
@@ -111,7 +111,7 @@ public class ModelDependencyResolver {
 					throw new DependencyException("Dependency resolution fail in: " + node.getQualifiedName() +
 						". Not found ancestry: " + node.getObject().getParentName(), node);
 				ancestry.getObject().addChild(node.getObject());
-				if (node.isCase()) node.getObject().setBaseNode(ancestry);
+				if (node.isCase()) node.getObject().setParentObject(ancestry.getObject());
 				else node.getObject().setParentObject(ancestry.getObject());
 			}
 	}

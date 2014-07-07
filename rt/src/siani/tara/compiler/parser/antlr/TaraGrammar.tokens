@@ -68,12 +68,12 @@ CLOSE_BRACKET=24
 'resource'=39
 'empty'=47
 'box'=5
-'WITH'=10
 'string'=44
 'integer'=41
 'indent'=62
 '>'=26
 'alias'=40
+'with'=10
 '='=30
 'word'=38
 '+'=34

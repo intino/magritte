@@ -56,7 +56,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 				NodeObject node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(context)).getObject();
 				if (node != null) {
 					addChildren(concepts, node);
-					if (node.isCase()) addBaseConcepts(context, node.getBaseName(), concepts);
+					if (node.isCase()) addBaseConcepts(context, node.getParentName(), concepts);
 				}
 			}
 		}

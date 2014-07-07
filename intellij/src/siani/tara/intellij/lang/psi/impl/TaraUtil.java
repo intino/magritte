@@ -53,9 +53,17 @@ public class TaraUtil {
 		return id;
 	}
 
+	@NotNull
 	public static Concept[] getRootConceptsOfFile(TaraFileImpl taraFile) {
+		List<Concept> list = new ArrayList();
 		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, Concept.class);
-		return concepts == null ? new Concept[0] : concepts;
+		if (concepts != null) {
+			for (Concept concept : concepts) {
+				list.add(concept);
+				Collections.addAll(list, concept.getCases());
+			}
+		}
+		return list.toArray(new Concept[list.size()]);
 	}
 
 	@NotNull

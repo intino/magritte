@@ -21,7 +21,7 @@ public class MergeToModelOperation extends ModuleUnitOperation {
 
 	public void call(Collection<SourceUnit> sources) throws CompilationFailedException {
 		try {
-			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Merging to global model");
+			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: Merging to global model");
 			ASTMerger merger = new ASTMerger(sources);
 			compilationUnit.setModel(merger.doMerge());
 		} catch (MergeException e) {

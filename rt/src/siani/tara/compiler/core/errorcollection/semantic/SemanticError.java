@@ -33,7 +33,7 @@ public abstract class SemanticError {
 		if (o == null || getClass() != o.getClass()) return false;
 		SemanticError that = (SemanticError) o;
 		if (token != null ? !token.equals(that.token) : that.token != null) return false;
-		return !(node != null ? !node.getAbsolutePath().equals(that.node.getAbsolutePath()) : that.node != null);
+		return !(node != null ? !node.getQualifiedName().equals(that.node.getQualifiedName()) : that.node != null);
 
 	}
 

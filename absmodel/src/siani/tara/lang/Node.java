@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class Node {
 
+	protected static final String ANNONYMOUS = "@annonymous";
 	private NodeObject object;
 	private transient Node container;
 	private List<Node> innerNodes;
@@ -41,7 +42,7 @@ public class Node {
 		return innerNodes.remove(node);
 	}
 
-	public Node getChildByName(String name) {
+	public Node findChild(String name) {
 		for (Node child : innerNodes)
 			if (child.getObject().getName().equals(name))
 				return child;
@@ -68,33 +69,25 @@ public class Node {
 		return cases.toArray(new Node[cases.size()]);
 	}
 
-	public String getAbsolutePath() {
-		return getObject().getBox() + "." + getNodeRoute();
+	public String getName() {
+		return object.getName();
 	}
 
 	public String getQualifiedName() {
-		return (qualifiedName == null) ? qualifiedName = getNodeRoute() : qualifiedName;
+		return qualifiedName == null ? calculateQualifiedName() : qualifiedName;
 	}
 
 	public String calculateQualifiedName() {
 		return qualifiedName = getNodeRoute();
 	}
 
-	public String getName() {
-		return object.getName();
-	}
-
 	private String getNodeRoute() {
-		String name;
-		name = !"".equals(getName()) ? getName() : "[" + getObject().getParentName() + "@annonymous]";
-		if (container != null) return container.getNodeRoute() + (name.isEmpty() ? "" : "." + name);
-		else {
-			if ((getObject().getBaseName()) != null)
-				return getObject().getBaseName().substring(0, getObject().getBaseName().lastIndexOf(".")) + "." + name;
-			else {
-				return name;
-			}
-		}
+		String name = !getName().isEmpty() ? getName() : "[" + getObject().getParentName() + ANNONYMOUS + "]";
+
+		if (container != null && !getObject().isCase()) return container.getQualifiedName() + "." + name;
+		if (getObject().isCase())
+			return getContainer().getQualifiedName().substring(0, getContainer().getQualifiedName().lastIndexOf(".")) + "." + name;
+		else return getObject().getBox() + "." + name;
 	}
 
 	public boolean isPrime() {

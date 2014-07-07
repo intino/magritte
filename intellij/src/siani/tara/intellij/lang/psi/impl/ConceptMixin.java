@@ -138,7 +138,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		for (Concept child : children) {
 			if (child.isCase()) cases.add(child);
 		}
-		return cases.size() > 0 ? cases.toArray(new Concept[cases.size()]) : null;
+		return cases.size() > 0 ? cases.toArray(new Concept[cases.size()]) : new Concept[0];
 	}
 
 	@NotNull

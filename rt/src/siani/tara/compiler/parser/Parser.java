@@ -38,9 +38,9 @@ public class Parser {
 		} catch (RecognitionException e) {
 			Token token = ((org.antlr.v4.runtime.Parser) e.getRecognizer()).getCurrentToken();
 			e.printStackTrace();
-			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine());
-//			e.printStackTrace();
-//			return null;
+//			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine());
+			e.printStackTrace();
+			return null;
 		}
 	}
 

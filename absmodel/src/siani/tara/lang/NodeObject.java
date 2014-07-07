@@ -12,15 +12,13 @@ public class NodeObject {
 	private String parentName;
 	private transient NodeObject parentObject;
 	private transient List<NodeObject> childrenConcepts;
-	private transient Node baseNode = null;
-	private transient String baseName = null;
 	private String type = "Concept";
 	private String name = "";
 	private List<AnnotationType> annotations = new ArrayList<>();
 	private List<String> imports = new ArrayList<>();
 	private List<Variable> variables = new ArrayList<>();
-	private List<NodeObject> intentions = new ArrayList<>();
-	private List<NodeObject> facets = new ArrayList<>();
+	private List<NodeObject> facetTargets = new ArrayList<>();
+	private List<NodeObject> facetApplies = new ArrayList<>();
 	private String box;
 	private List<String> parameters = new ArrayList<>();
 
@@ -89,20 +87,13 @@ public class NodeObject {
 		this.parentName = parentName;
 	}
 
-	public Node getBaseNode() {
-		return baseNode;
-	}
-
-	public void setBaseNode(Node baseObject) {
-		this.baseNode = baseObject;
-	}
-
 	public NodeObject getParent() {
 		return parentObject;
 	}
 
 	public void setParentObject(NodeObject parentObject) {
 		this.parentObject = parentObject;
+		parentName = parentObject.getName();
 	}
 
 	public List<NodeObject> getChildren() {
@@ -157,12 +148,12 @@ public class NodeObject {
 		return variables.add(variable);
 	}
 
-	public boolean addFacet(NodeObject variable) {
-		return facets.add(variable);
+	public boolean applyFacet(NodeObject variable) {
+		return facetApplies.add(variable);
 	}
 
-	public boolean addIntention(NodeObject variable) {
-		return intentions.add(variable);
+	public boolean addFacetTarget(NodeObject variable) {
+		return facetTargets.add(variable);
 	}
 
 	public void add(int index, Variable element) {
@@ -189,14 +180,6 @@ public class NodeObject {
 		this.box = box;
 	}
 
-	public String getBaseName() {
-		return baseName;
-	}
-
-	public void setBaseName(String baseName) {
-		this.baseName = baseName;
-	}
-
 	public String getType() {
 		return type;
 	}
@@ -205,20 +188,20 @@ public class NodeObject {
 		this.type = type;
 	}
 
-	public List<NodeObject> getFacets() {
-		return facets;
+	public List<NodeObject> getFacetApplies() {
+		return facetApplies;
 	}
 
-	public void setFacets(List<NodeObject> facets) {
-		this.facets = facets;
+	public void setFacetApplies(List<NodeObject> facetApplies) {
+		this.facetApplies = facetApplies;
 	}
 
-	public List<NodeObject> getIntentions() {
-		return intentions;
+	public List<NodeObject> getFacetTargets() {
+		return facetTargets;
 	}
 
-	public void setIntentions(List<NodeObject> intentions) {
-		this.intentions = intentions;
+	public void setFacetTargets(List<NodeObject> facetTargets) {
+		this.facetTargets = facetTargets;
 	}
 
 	public enum AnnotationType {

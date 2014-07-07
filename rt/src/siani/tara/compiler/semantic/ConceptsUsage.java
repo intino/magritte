@@ -25,7 +25,7 @@ public class ConceptsUsage {
 		NodeObject concept = node.getObject();
 		List<AnnotationType> annotations = new ArrayList<>(Arrays.asList(concept.getAnnotations()));
 		if (!annotations.contains(AnnotationType.ROOT))
-			this.conceptList.put(node.getAbsolutePath(), node);
+			this.conceptList.put(node.getQualifiedName(), node);
 	}
 
 	public void checkUsage(Node concept, TreeWrapper ast) {
@@ -39,7 +39,7 @@ public class ConceptsUsage {
 	}
 
 	private void checkIfUsed(Node node) {
-		String rootConcept = (node != null) ? node.getAbsolutePath().split("\\.")[0] : "";
+		String rootConcept = (node != null) ? node.getQualifiedName().split("\\.")[0] : "";
 		conceptList.remove(rootConcept);
 	}
 

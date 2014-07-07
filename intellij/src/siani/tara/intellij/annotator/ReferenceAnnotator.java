@@ -20,10 +20,7 @@ import siani.tara.intellij.annotator.imports.ImportQuickFix;
 import siani.tara.intellij.annotator.imports.RemoveImportFix;
 import siani.tara.intellij.annotator.imports.TaraReferenceImporter;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import siani.tara.intellij.lang.psi.Identifier;
-import siani.tara.intellij.lang.psi.IdentifierReference;
-import siani.tara.intellij.lang.psi.TaraFile;
-import siani.tara.intellij.lang.psi.TaraPsiElement;
+import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
 import java.util.ArrayList;
@@ -38,7 +35,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.element = element;
 		this.holder = holder;
-		if (element instanceof IdentifierReference)
+		if (element instanceof IdentifierReference && !TaraFacetApply.class.isInstance(element.getParent()))//TODO facet reference
 			checkWellReferenced();
 	}
 

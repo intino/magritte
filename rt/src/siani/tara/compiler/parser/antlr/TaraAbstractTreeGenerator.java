@@ -1,5 +1,6 @@
 package siani.tara.compiler.parser.antlr;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import siani.tara.lang.*;
@@ -15,6 +16,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	private final String file;
 	TreeWrapper treeWrapper;
 	Stack<Node> conceptStack = new Stack<>();
+	Stack<NodeObject> facetApplyStack = new Stack<>();
 	String box = "";
 	HashMap<String, String> imports = new HashMap<>();
 	String currentDocAttribute = "";
@@ -41,43 +43,63 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		String identifier = "";
 		if (ctx.signature().IDENTIFIER() != null)
 			identifier = ctx.signature().IDENTIFIER().getText();
-		NodeObject object = new NodeObject(ctx.signature().metaidentifier().getText(), identifier);
+		String type = (ctx.signature().metaidentifier() != null) ?
+			ctx.signature().metaidentifier().getText() : container.getObject().getType();
+		NodeObject object = new NodeObject(type, identifier);
 		Node node = new Node(object, container);
 		node.setLine(ctx.getStart().getLine());
 		node.setFile(file);
 		object.setDeclaredNode(node);
 		object.setBox(box);
 		object.setImports(imports.keySet().toArray(new String[imports.keySet().size()]));
-		if (ctx.signature().CASE() != null) {
-			object.setCase(true);
-			object.setBaseNode(conceptStack.peek());
-			object.setParentName(null);
-		}
+		if (container != null) {
+			if (ctx.signature().CASE() != null) {
+				object.setCase(true);
+				object.setParentName(container.getQualifiedName());
+				object.setParentObject(container.getObject());
+			} else if (node.getName().isEmpty() && ctx.body() == null) { //treat as inner reference
+				container.addInnerAsReference(node.getQualifiedName(), node);
+			} else container.add(node);
+		} else treeWrapper.add(node);
 
 		conceptStack.push(node);
+
 	}
 
+	@Override
+	public void exitConcept(@NotNull ConceptContext ctx) {
+		Node node = conceptStack.peek();
+		node.calculateQualifiedName();
+		treeWrapper.addIdentifier(node.getObject().getName());
+		treeWrapper.add(node.getQualifiedName(), node);
+
+		conceptStack.pop();
+	}
+
+	@Override
+	public void enterFacetApply(@NotNull FacetApplyContext ctx) {
+		NodeObject object = conceptStack.peek().getObject();
+		if (!facetApplyStack.isEmpty()) object.setParentObject(facetApplyStack.peek());
+		object.applyFacet(new NodeObject("", ctx.IDENTIFIER().getText()));
+		facetApplyStack.push(object);
+	}
+
+	@Override
+	public void enterFacetTarget(@NotNull FacetTargetContext ctx) {
+		NodeObject object = conceptStack.peek().getObject();
+		object.addFacetTarget(new NodeObject("", ctx.IDENTIFIER().getText()));
+	}
+
+	@Override
+	public void exitFacetTarget(@NotNull FacetTargetContext ctx) {
+		facetApplyStack.pop();
+	}
 
 	@Override
 	public void enterIdentifierReference(@NotNull IdentifierReferenceContext ctx) {
 		String identifierName = ctx.getText();
 		if (ctx.getParent() instanceof SignatureContext)
 			conceptStack.peek().getObject().setParentName(identifierName);
-	}
-
-	@Override
-	public void exitConcept(@NotNull ConceptContext ctx) {
-		Node node = conceptStack.peek();
-		treeWrapper.addIdentifier(node.getObject().getName());
-		node.calculateQualifiedName();
-		Node container = node.getContainer();
-		if (container != null) {
-			if ("".equals(node.getName()) && ctx.body() == null)
-				container.addInnerAsReference(node.getAbsolutePath(), node);
-			else container.add(node);
-		} else treeWrapper.add(node);
-		treeWrapper.add(node.getQualifiedName(), node);
-		conceptStack.pop();
 	}
 
 	@Override
@@ -112,63 +134,88 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterParameter(@NotNull ParameterContext ctx) {
 		super.enterParameter(ctx);
-		conceptStack.peek().getObject().addParameter(ctx.getText());
+		NodeObject object = conceptStack.peek().getObject();
+		if (ctx.getParent().getParent().getParent() instanceof FacetApplyContext) {
+			List<NodeObject> facetApplies = object.getFacetApplies();
+			facetApplies.get(facetApplies.size() - 1).addParameter(ctx.getText());
+		} else
+			object.addParameter(ctx.getText());
 	}
 
 	@Override
 	public void enterDoubleAttribute(@NotNull DoubleAttributeContext ctx) {
-		super.enterDoubleAttribute(ctx);
-		NodeAttribute attribute = new NodeAttribute(ctx.DOUBLE_TYPE().getText(), ctx.IDENTIFIER().getText());
-		attribute.setDoc(currentDocAttribute);
-		conceptStack.peek().getObject().add(attribute);
+		NodeAttribute variable = new NodeAttribute(ctx.DOUBLE_TYPE().getText(), ctx.IDENTIFIER().getText());
+		addAttribute(ctx, variable);
+	}
+
+	@Override
+	public void enterDateAttribute(@NotNull DateAttributeContext ctx) {
+		NodeAttribute variable = new NodeAttribute(ctx.DATE_TYPE().getText(), ctx.IDENTIFIER().getText());
+		if (ctx.naturalValue() != null) variable.setValue(ctx.naturalValue().getText());
+		addAttribute(ctx, variable);
 	}
 
 	@Override
 	public void enterNaturalAttribute(@NotNull NaturalAttributeContext ctx) {
 		super.enterNaturalAttribute(ctx);
-		NodeAttribute attribute = new NodeAttribute(ctx.NATURAL_TYPE().getText(), ctx.IDENTIFIER().getText());
-		attribute.setDoc(currentDocAttribute);
-		conceptStack.peek().getObject().add(attribute);
+		NodeAttribute variable = new NodeAttribute(ctx.NATURAL_TYPE().getText(), ctx.IDENTIFIER().getText());
+		if (ctx.naturalValue() != null) variable.setValue(ctx.naturalValue().getText());
+		addAttribute(ctx, variable);
 	}
 
 	@Override
 	public void enterStringAttribute(@NotNull StringAttributeContext ctx) {
-		super.enterStringAttribute(ctx);
-		NodeAttribute attribute = new NodeAttribute(ctx.STRING_TYPE().getText(), ctx.IDENTIFIER().getText());
-		attribute.setDoc(currentDocAttribute);
-		conceptStack.peek().getObject().add(attribute);
+		NodeAttribute variable = new NodeAttribute(ctx.STRING_TYPE().getText(), ctx.IDENTIFIER().getText());
+		if (ctx.stringValue() != null) variable.setValue(ctx.stringValue().getText());
+		addAttribute(ctx, variable);
 	}
 
 	@Override
 	public void enterAliasAttribute(@NotNull AliasAttributeContext ctx) {
-		super.enterAliasAttribute(ctx);
-		NodeAttribute attribute = new NodeAttribute(ctx.ALIAS_TYPE().getText(), ctx.IDENTIFIER().getText());
-		attribute.setDoc(currentDocAttribute);
-		conceptStack.peek().getObject().add(attribute);
+		NodeAttribute variable = new NodeAttribute(ctx.ALIAS_TYPE().getText(), ctx.IDENTIFIER().getText());
+		if (ctx.stringValue() != null) variable.setValue(ctx.stringValue().getText());
+		addAttribute(ctx, variable);
 	}
 
 	@Override
 	public void enterResource(@NotNull ResourceContext ctx) {
 		Resource variable = new Resource(ctx.IDENTIFIER(0).getText(), ctx.IDENTIFIER(1).getText());
-		variable.setDoc(currentDocAttribute);
-		conceptStack.peek().getObject().add(variable);
+		addAttribute(ctx, variable);
 	}
 
 	@Override
 	public void enterWord(@NotNull WordContext ctx) {
-		NodeWord word = new NodeWord(ctx.IDENTIFIER(0).getText());
-		word.setDoc(currentDocAttribute);
-		for (TerminalNode wordTypes : ctx.IDENTIFIER().subList(1, ctx.IDENTIFIER().size()))
-			word.add(wordTypes.getText());
-		conceptStack.peek().getObject().add(word);
+		NodeWord variable = new NodeWord(ctx.IDENTIFIER().getText());
+		int defaultWord = -1;
+		int i = -1;
+		for (WordNamesContext word : ctx.wordNames()) {
+			i++;
+			variable.add(word.getText());
+			if (word.STAR() != null) defaultWord = i;
+		}
+		variable.setDefaultWord(defaultWord);
+		addAttribute(ctx, variable);
 	}
 
 	@Override
 	public void enterReference(@NotNull ReferenceContext ctx) {
-		String parent = ctx.identifierReference().getText();
-		Reference variable = new Reference(parent, ctx.IDENTIFIER().getText());
-		variable.setDoc(currentDocAttribute);
-		conceptStack.peek().getObject().add(variable);
+		Reference variable = new Reference(ctx.identifierReference().getText(), ctx.IDENTIFIER().getText());
+		addAttribute(ctx, variable);
+	}
+
+	@Override
+	public void enterBooleanAttribute(@NotNull BooleanAttributeContext ctx) {
+		NodeAttribute attribute = new NodeAttribute(ctx.BOOLEAN_TYPE().getText(), ctx.IDENTIFIER().getText());
+		addAttribute(ctx, attribute);
+	}
+
+	private void addAttribute(ParserRuleContext ctx, Variable attribute) {
+		NodeObject object = conceptStack.peek().getObject();
+		attribute.setDoc(currentDocAttribute);
+		if (ctx.getParent().getParent().getParent() instanceof FacetTargetContext) {
+			List<NodeObject> facetApplies = object.getFacetApplies();
+			facetApplies.get(facetApplies.size() - 1).add(attribute);
+		} else object.add(attribute);
 	}
 
 	@Override

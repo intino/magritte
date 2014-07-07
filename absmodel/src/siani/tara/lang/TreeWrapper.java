@@ -55,7 +55,7 @@ public class TreeWrapper {
 	}
 
 	public Node searchAncestry(Node node) {
-		if (node.getObject().getBaseNode() != null) return node.getObject().getBaseNode();
+		if (node.getObject().isCase()) return node.getContainer();
 		if (node.getObject().getParentName() == null) return null;
 		String ancestry = node.getObject().getParentName();
 		Node result = relativeSearch(ancestry, node);
