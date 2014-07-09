@@ -4,7 +4,7 @@ import siani.tara.compiler.core.errorcollection.ErrorCollector;
 import siani.tara.compiler.core.errorcollection.SyntaxException;
 import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.parser.Parser;
-import siani.tara.lang.TreeWrapper;
+import siani.tara.lang.Model;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class SourceUnit extends ProcessingUnit {
 	private static final Logger LOG = Logger.getLogger(SourceUnit.class.getName());
 	protected FileReaderSource source;
 	protected String name;
-	private TreeWrapper nodeTree;
+	private Model nodeTree;
 	private Parser parser;
 
 	public SourceUnit(String name, FileReaderSource source, CompilerConfiguration configuration, ErrorCollector er) {
@@ -38,7 +38,7 @@ public class SourceUnit extends ProcessingUnit {
 		return source;
 	}
 
-	public TreeWrapper getNodeTree() {
+	public Model getNodeTree() {
 		return nodeTree;
 	}
 

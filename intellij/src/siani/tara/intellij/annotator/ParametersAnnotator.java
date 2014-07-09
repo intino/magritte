@@ -9,9 +9,9 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.Node;
+import siani.tara.lang.DeclaredNode;
+import siani.tara.lang.Model;
 import siani.tara.lang.NodeObject;
-import siani.tara.lang.TreeWrapper;
 import siani.tara.lang.Variable;
 
 public class ParametersAnnotator extends TaraAnnotator {
@@ -19,8 +19,8 @@ public class ParametersAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder annotationHolder) {
 		if (!Signature.class.isInstance(element)) return;
 		Concept concept = TaraPsiImplUtil.getContextOf(element);
-		TreeWrapper heritage = TaraLanguage.getHeritage(((TaraFile)element.getContainingFile()).getParentModel());
-		Node node;
+		Model heritage = TaraLanguage.getHeritage(((TaraFile)element.getContainingFile()).getParentModel());
+		DeclaredNode node;
 		if (heritage == null || (node = findNode(concept, heritage)) == null) return;
 		NodeObject object = node.getObject();
 		Parameters[] parameters = PsiTreeUtil.getChildrenOfType(element, Parameters.class);
@@ -31,16 +31,17 @@ public class ParametersAnnotator extends TaraAnnotator {
 		}
 	}
 
-	private Node findNode(Concept concept, TreeWrapper tree) {
+	private DeclaredNode findNode(Concept concept, Model tree) {
 		String metaQualifiedName = TaraUtil.getMetaQualifiedName(concept);
-		Node node = tree.get(metaQualifiedName);
+		DeclaredNode node = tree.get(metaQualifiedName);
 		return (node != null) ? node : tree.get(asAnonymous(metaQualifiedName));
 
 	}
 
 	private String asAnonymous(String name) {
-		String subpath = name.substring(0, name.lastIndexOf("."));
-		return subpath + "." + "[" + name.substring(name.lastIndexOf(".") + 1) + "@annonymous]";
+		return name;
+//		String subpath = name.substring(0, name.lastIndexOf("."));
+//		return subpath + "." + "[" + name.substring(name.lastIndexOf(".") + 1) + "@annonymous]";
 	}
 
 

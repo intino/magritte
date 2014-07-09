@@ -1,8 +1,10 @@
 src_file
-/Users/oroncal/workspace/sandbox/goros/metamod/model/siani/monet/engine/base.tara
-/Users/oroncal/workspace/sandbox/goros/metamod/model/siani/monet/engine/form.tara
-/Users/oroncal/workspace/sandbox/goros/metamod/model/siani/monet/engine/sets.tara
-/Users/oroncal/workspace/sandbox/goros/metamod/model/siani/monet/engine/sources.tara
+/Users/oroncal/workspace/sandbox/goros/metamod/model/base.tara
+/Users/oroncal/workspace/sandbox/goros/metamod/model/form.tara
+/Users/oroncal/workspace/sandbox/goros/metamod/model/sets.tara
+/Users/oroncal/workspace/sandbox/goros/metamod/model/sources.tara
+/Users/oroncal/workspace/sandbox/goros/metamod/model/container.tara
+/Users/oroncal/workspace/sandbox/goros/metamod/model/entity.tara
 
 project
 Monet

@@ -6,7 +6,7 @@ import siani.tara.compiler.core.Phases;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.rt.TaraRtConstants;
-import siani.tara.lang.TreeWrapper;
+import siani.tara.lang.Model;
 
 import java.util.logging.Logger;
 
@@ -19,7 +19,7 @@ public class PluginUpdateOperation extends ModelOperation {
 	}
 
 	@Override
-	public void call(TreeWrapper model) throws CompilationFailedException {
+	public void call(Model model) throws CompilationFailedException {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating plugin code");
 			PluginUpdater generator = new PluginUpdater(unit.getConfiguration());

@@ -111,7 +111,7 @@ LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';
 LEFT_SQUARE         : '[';
 RIGHT_SQUARE        : ']';
-LIST                :LEFT_SQUARE RIGHT_SQUARE;
+LIST                : '...';
 OPEN_BRACKET        : '{' {  openBracket(); };
 CLOSE_BRACKET       : '}' { closeBracket(); };
 
@@ -120,7 +120,7 @@ CLOSE_AN            : '>';
 COLON               : ':';
 COMMA               : ',';
 DOT                 : '.';
-ASSIGN              : '=';
+EQUALS              : '=';
 APHOSTROPHE         : '\'';
 SEMICOLON           : ';'+ { semicolon(); };
 STAR                : '*';

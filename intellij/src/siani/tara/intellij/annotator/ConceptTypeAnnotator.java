@@ -12,8 +12,8 @@ import siani.tara.intellij.lang.psi.MetaIdentifier;
 import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.Node;
-import siani.tara.lang.TreeWrapper;
+import siani.tara.lang.DeclaredNode;
+import siani.tara.lang.Model;
 
 public class ConceptTypeAnnotator extends TaraAnnotator {
 
@@ -24,7 +24,7 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 		if (element instanceof MetaIdentifier) {
 			Concept concept = TaraPsiImplUtil.getContextOf(element);
 			if (concept == null) return;
-			TreeWrapper tree = TaraLanguage.getHeritage(((TaraFile) element.getContainingFile()).getParentModel());
+			Model tree = TaraLanguage.getHeritage(((TaraFile) element.getContainingFile()).getParentModel());
 			if (tree == null) {
 				if (!"Concept".equals(element.getNode().getText())) {
 					Annotation errorAnnotation = holder.createErrorAnnotation
@@ -32,7 +32,7 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 					errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
 				}
 			} else {
-				Node node = findNode(concept, tree);
+				DeclaredNode node = findNode(concept, tree);
 				if (node == null) {
 					Annotation errorAnnotation = holder.createErrorAnnotation
 						(concept, TaraBundle.message("Unknown.concept.key.error.message"));
@@ -43,13 +43,13 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 	}
 
 
-	private Node findNode(Concept concept, TreeWrapper tree) {
+	private DeclaredNode findNode(Concept concept, Model tree) {
 		String metaQualifiedName = TaraUtil.getMetaQualifiedName(concept);
 		String[] path = metaQualifiedName.split("\\.");
 		for (String s : path) {
 
 		}
-		Node node = tree.get(metaQualifiedName);
+		DeclaredNode node = tree.get(metaQualifiedName);
 		return (node != null) ? node : tree.get(asAnonymous(metaQualifiedName));
 	}
 

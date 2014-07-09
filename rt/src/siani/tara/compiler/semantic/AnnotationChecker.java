@@ -4,7 +4,7 @@ package siani.tara.compiler.semantic;
 import siani.tara.compiler.core.errorcollection.semantic.NoRootError;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import siani.tara.compiler.core.errorcollection.semantic.WrongAnnotationError;
-import siani.tara.lang.Node;
+import siani.tara.lang.DeclaredNode;
 import siani.tara.lang.NodeObject.AnnotationType;
 import siani.tara.lang.NodeTree;
 
@@ -23,7 +23,7 @@ public class AnnotationChecker {
 		this.thereIsAnyRoot = false;
 	}
 
-	public void checkAnnotations(Node concept) {
+	public void checkAnnotations(DeclaredNode concept) {
 		annotations = Arrays.asList(concept.getObject().getAnnotations());
 		rootAnnotation(concept);
 		requiredAnnotation(concept);
@@ -37,11 +37,11 @@ public class AnnotationChecker {
 	}
 
 	private void findRootConcepts(NodeTree conceptList) {
-		for (Node concept : conceptList)
+		for (DeclaredNode concept : conceptList)
 			thereIsAnyRoot = isRootConcept(concept) || thereIsAnyRoot;
 	}
 
-	private boolean isRootConcept(Node concept) {
+	private boolean isRootConcept(DeclaredNode concept) {
 		annotations = Arrays.asList(concept.getObject().getAnnotations());
 		return annotations.contains(AnnotationType.ROOT);
 	}
@@ -51,12 +51,12 @@ public class AnnotationChecker {
 			errors.add(new NoRootError());
 	}
 
-	private void rootAnnotation(Node concept) {
+	private void rootAnnotation(DeclaredNode concept) {
 		if (!concept.isPrime() && annotations.contains(AnnotationType.ROOT))
 			errors.add(new WrongAnnotationError(AnnotationType.ROOT.name(), concept));
 	}
 
-	private void requiredAnnotation(Node concept) {
+	private void requiredAnnotation(DeclaredNode concept) {
 		if ((concept.isPrime() || concept.isCase()) && annotations.contains(AnnotationType.REQUIRED))
 			errors.add(new WrongAnnotationError(AnnotationType.REQUIRED.name(), concept));
 	}

@@ -114,9 +114,7 @@ ROOT                = "root"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
-LEFT_SQUARE         = "["
-RIGHT_SQUARE        = "]"
-LIST                = {LEFT_SQUARE} {RIGHT_SQUARE}
+LIST                = "..."
 OPEN_BRACKET        = "{"
 CLOSE_BRACKET       = "}"
 APOSTROPHE          = "'"
@@ -126,6 +124,7 @@ DOT                 = "."
 STAR                = "*"
 COMMA               = ","
 COLON               = ":"
+EQUALS              = "="
 SEMICOLON           = ";"+
 DOUBLE_COMMAS       = "\""
 POSITIVE            = "+"
@@ -141,6 +140,7 @@ DOUBLE_TYPE         = "double"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
 DATE_TYPE           = "date"
+LOCATION_TYPE       = "location"
 EMPTY_REF           = "empty"
 
 BOOLEAN_VALUE_KEY   = "true" | "false"
@@ -167,17 +167,17 @@ IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
 	{BOX_KEY}                       {   return TaraTypes.BOX_KEY; }
 
 	{AS}                            {   return TaraTypes.AS; }
-
+	{IS}                            {   return TaraTypes.IS; }
 	{ON}                            {   return TaraTypes.ON; }
 	{WITH}                          {   return TaraTypes.WITH; }
 
 	{COLON}                         {   return TaraTypes.COLON; }
+	{EQUALS}                        {   return TaraTypes.EQUALS; }
 
 	{VAR}                           {   return TaraTypes.VAR; }
 
 	{CASE_KEY}                      {   return TaraTypes.CASE_KEY; }
 
-	{IS}                            {   return TaraTypes.IS; }
 
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
@@ -197,8 +197,6 @@ IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
 	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE_KEY; }
 	{POSITIVE_VALUE_KEY}            {   return TaraTypes.NATURAL_VALUE_KEY; }
 
-	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
-	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
     {LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
     {RIGHT_PARENTHESIS}             {   return TaraTypes.RIGHT_PARENTHESIS; }
 
@@ -217,6 +215,7 @@ IDENTIFIER_KEY      = [:jletter:] [:jletterdigit:]*
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
+    {LOCATION_TYPE}                 {   return TaraTypes.LOCATION_TYPE; }
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}

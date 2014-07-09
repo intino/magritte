@@ -4,7 +4,6 @@ import com.intellij.ide.util.projectWizard.JavaModuleBuilder;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ContentEntry;
@@ -23,7 +22,6 @@ import siani.tara.intellij.lang.TaraIcons;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +34,6 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	private static final Logger LOG = Logger.getInstance(TaraModuleBuilder.class.getName());
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
 	private String myCompilerOutputPath;
-	private Module parentModule;
-	private boolean system = false;
-	private File configFile;
 	private List<Pair<String, String>> mySourcePaths;
 
 	private static String getUrlByPath(final String path) {
@@ -52,8 +47,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	@Override
 	public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull ModulesProvider modulesProvider) {
 
-		return (wizardContext.getProject() != null) ? new ModuleWizardStep[]{
-			new TaraWizardStep(this, wizardContext, wizardContext.getProject())} : new ModuleWizardStep[]{};
+		return new ModuleWizardStep[]{};
 	}
 
 	@Override
@@ -100,30 +94,6 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			}
 			modifiableModel.commit();
 		}
-		if (parentModule != null)
-			rootModel.addModuleOrderEntry(parentModule);
-		persistTempConf();
-	}
-
-	private void persistTempConf() {
-		try {
-			FileWriter writer = new FileWriter(configFile);
-			writer.write((parentModule != null) ? parentModule.getName() : "null" + "\n");
-			writer.write((parentModule != null) ? parentModule.getModuleFilePath() : "null" + "\n");
-			writer.write(system + "\n");
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public void setParentModule(Module module) {
-		parentModule = module;
-	}
-
-	public void setSystem(boolean system) {
-		this.system = system;
 	}
 
 	private void createResources(String parentPath) {
@@ -133,8 +103,6 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			VfsUtil.createDirectories(parentPath + File.separator + RES + File.separator + ICONS);
 			VfsUtil.createDirectories(parentPath + File.separator + RES + File.separator + ICONS + File.separator + "definitions");
 			VfsUtil.createDirectories(parentPath + File.separator + ".config");
-			configFile = new File(parentPath + File.separator + ".config", "tara.conf");
-			configFile.createNewFile();
 		} catch (IOException e) {
 			LOG.error(e.getMessage());
 		}

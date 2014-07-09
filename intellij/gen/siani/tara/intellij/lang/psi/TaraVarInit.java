@@ -7,43 +7,25 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraVarInit extends TaraPsiElement {
 
-  @Nullable
-  TaraBooleanList getBooleanList();
+  @NotNull
+  List<TaraBooleanValue> getBooleanValueList();
 
-  @Nullable
-  TaraBooleanValue getBooleanValue();
-
-  @Nullable
-  TaraDoubleList getDoubleList();
-
-  @Nullable
-  TaraDoubleValue getDoubleValue();
+  @NotNull
+  List<TaraDoubleValue> getDoubleValueList();
 
   @Nullable
   TaraEmptyField getEmptyField();
 
-  @Nullable
-  TaraIdentifierList getIdentifierList();
+  @NotNull
+  List<TaraIdentifierReference> getIdentifierReferenceList();
 
-  @Nullable
-  TaraIdentifierReference getIdentifierReference();
+  @NotNull
+  List<TaraIntegerValue> getIntegerValueList();
 
-  @Nullable
-  TaraIntegerList getIntegerList();
+  @NotNull
+  List<TaraNaturalValue> getNaturalValueList();
 
-  @Nullable
-  TaraIntegerValue getIntegerValue();
-
-  @Nullable
-  TaraNaturalList getNaturalList();
-
-  @Nullable
-  TaraNaturalValue getNaturalValue();
-
-  @Nullable
-  TaraStringList getStringList();
-
-  @Nullable
-  TaraStringValue getStringValue();
+  @NotNull
+  List<TaraStringValue> getStringValueList();
 
 }

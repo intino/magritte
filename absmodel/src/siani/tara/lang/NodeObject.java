@@ -1,13 +1,12 @@
 package siani.tara.lang;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class NodeObject {
-	private transient Node declaredNode;
+	private String declaredNode;
 	private boolean caseConcept = false;
-	private List<Node> cases;
+	private List<DeclaredNode> cases;
 	private String doc;
 	private String parentName;
 	private transient NodeObject parentObject;
@@ -15,11 +14,9 @@ public class NodeObject {
 	private String type = "Concept";
 	private String name = "";
 	private List<AnnotationType> annotations = new ArrayList<>();
-	private List<String> imports = new ArrayList<>();
 	private List<Variable> variables = new ArrayList<>();
-	private List<NodeObject> facetTargets = new ArrayList<>();
-	private List<NodeObject> facetApplies = new ArrayList<>();
-	private String box;
+	private List<DeclaredNode> facetTargets = new ArrayList<>();
+	private List<DeclaredNode> facetApplies = new ArrayList<>();
 	private List<String> parameters = new ArrayList<>();
 
 
@@ -49,11 +46,11 @@ public class NodeObject {
 		return result.toArray(new NodeAttribute[result.size()]);
 	}
 
-	public Node getDeclaredNode() {
+	public String getDeclaredNode() {
 		return declaredNode;
 	}
 
-	public void setDeclaredNode(Node declaredNode) {
+	public void setDeclaredNode(String declaredNode) {
 		this.declaredNode = declaredNode;
 	}
 
@@ -68,15 +65,6 @@ public class NodeObject {
 	public Reference[] getReferences() {
 		List<Reference> result = extractElements(variables, Reference.class);
 		return result.toArray(new Reference[result.size()]);
-	}
-
-	public List<String> getImports() {
-		return imports;
-	}
-
-	public void setImports(String[] imports) {
-		if (imports.length > 0)
-			Collections.addAll(this.imports, imports);
 	}
 
 	public String getParentName() {
@@ -113,7 +101,7 @@ public class NodeObject {
 		return result.toArray(new NodeWord[result.size()]);
 	}
 
-	public List<Node> getCases() {
+	public List<DeclaredNode> getCases() {
 		return cases;
 	}
 
@@ -131,7 +119,7 @@ public class NodeObject {
 		childrenConcepts.add(child);
 	}
 
-	public boolean add(Node node) {
+	public boolean add(DeclaredNode node) {
 		if (cases == null) cases = new ArrayList<>();
 		return cases.add(node);
 	}
@@ -148,12 +136,12 @@ public class NodeObject {
 		return variables.add(variable);
 	}
 
-	public boolean applyFacet(NodeObject variable) {
-		return facetApplies.add(variable);
+	public boolean applyFacet(DeclaredNode object) {
+		return facetApplies.add(object);
 	}
 
-	public boolean addFacetTarget(NodeObject variable) {
-		return facetTargets.add(variable);
+	public boolean addFacetTarget(DeclaredNode object) {
+		return facetTargets.add(object);
 	}
 
 	public void add(int index, Variable element) {
@@ -172,14 +160,6 @@ public class NodeObject {
 		return variables;
 	}
 
-	public String getBox() {
-		return box;
-	}
-
-	public void setBox(String box) {
-		this.box = box;
-	}
-
 	public String getType() {
 		return type;
 	}
@@ -188,19 +168,19 @@ public class NodeObject {
 		this.type = type;
 	}
 
-	public List<NodeObject> getFacetApplies() {
+	public List<DeclaredNode> getFacetApplies() {
 		return facetApplies;
 	}
 
-	public void setFacetApplies(List<NodeObject> facetApplies) {
+	public void setFacetApplies(List<DeclaredNode> facetApplies) {
 		this.facetApplies = facetApplies;
 	}
 
-	public List<NodeObject> getFacetTargets() {
+	public List<DeclaredNode> getFacetTargets() {
 		return facetTargets;
 	}
 
-	public void setFacetTargets(List<NodeObject> facetTargets) {
+	public void setFacetTargets(List<DeclaredNode> facetTargets) {
 		this.facetTargets = facetTargets;
 	}
 

@@ -8,7 +8,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.lang.TreeWrapper;
+import siani.tara.lang.Model;
 
 import java.util.Set;
 
@@ -38,7 +38,7 @@ import java.util.Set;
                 destiny = use.split("as metamodel")[0].trim();
                 break;
             }
-        TreeWrapper heritage = TaraLanguage.getHeritage(destiny);
+        Model heritage = TaraLanguage.getHeritage(destiny);
         if (heritage != null)
             identifiers = heritage.getIdentifiers();
 }
@@ -64,13 +64,12 @@ PROPERTY            = "property"
 ROOT                = "root"
 VAR                 = "var"
 WORD_KEY            = "word"
+LOCATION_TYPE       = "location"
 RESOURCE_KEY        = "resource"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
-LEFT_SQUARE         = "["
-RIGHT_SQUARE        = "]"
-LIST                = {LEFT_SQUARE} {RIGHT_SQUARE}
+LIST                = "..."
 OPEN_BRACKET        = "{"
 CLOSE_BRACKET       = "}"
 
@@ -78,6 +77,7 @@ DOT                 = "."
 STAR                = "*"
 COMMA               = ","
 COLON               = ":"
+EQUALS              = "="
 SEMICOLON           = ";"
 APOSTROPHE          = "'"
 DASH                = "-"
@@ -124,7 +124,9 @@ NEWLINE= [\n]+
 	{ON}                            {   return TaraTypes.ON; }
 	{IS}                            {   return TaraTypes.IS; }
 	{WITH}                          {   return TaraTypes.WITH; }
+
 	{COLON}                         {   return TaraTypes.COLON; }
+	{EQUALS}                        {   return TaraTypes.EQUALS; }
 
 	{VAR}                           {   return TaraTypes.VAR; }
 
@@ -148,18 +150,16 @@ NEWLINE= [\n]+
 	{NATURAL_VALUE_KEY}             {   return TaraTypes.NATURAL_VALUE_KEY; }
 	{EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 
-	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
-	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
 	{LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
     {RIGHT_PARENTHESIS}             {   return TaraTypes.RIGHT_PARENTHESIS; }
-
-	{WORD_KEY}                      {   return TaraTypes.WORD_KEY; }
-	{RESOURCE_KEY}                  {   return TaraTypes.RESOURCE_KEY; }
 
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
 	{STAR}                          {   return TaraTypes.STAR;     }
 	{LIST}                          {   return TaraTypes.LIST;  }
+
+	{WORD_KEY}                      {   return TaraTypes.WORD_KEY; }
+	{RESOURCE_KEY}                  {   return TaraTypes.RESOURCE_KEY; }
 
 	{ALIAS_TYPE}                    {   return TaraTypes.ALIAS_TYPE; }
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
@@ -168,12 +168,13 @@ NEWLINE= [\n]+
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
+    {LOCATION_TYPE}                 {   return TaraTypes.LOCATION_TYPE; }
 
-	{SEMICOLON}                     {   return TaraTypes.LEFT_SQUARE;  }
+	{SEMICOLON}                     {   return TaraTypes.DOT;  }
 
-	{OPEN_BRACKET}                  {   return TaraTypes.LEFT_SQUARE; }
+	{OPEN_BRACKET}                  {   return TaraTypes.DOT; }
 
-	{CLOSE_BRACKET}                 {   return TaraTypes.LEFT_SQUARE; }
+	{CLOSE_BRACKET}                 {   return TaraTypes.DOT; }
 
 	{SPACES}                        {   return TokenType.WHITE_SPACE; }
 

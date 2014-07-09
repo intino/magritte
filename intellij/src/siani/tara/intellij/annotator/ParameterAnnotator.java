@@ -20,8 +20,8 @@ public class ParameterAnnotator extends TaraAnnotator {
 		if (!(element instanceof Parameter)) return;
 		Concept concept = TaraPsiImplUtil.getContextOf(element);
 		int index = getIndexOf((Parameters) element.getParent(), (Parameter) element);
-		TreeWrapper tree = TaraLanguage.getHeritage(((TaraFile) element.getContainingFile()).getParentModel());
-		Node node;
+		Model tree = TaraLanguage.getHeritage(((TaraFile) element.getContainingFile()).getParentModel());
+		DeclaredNode node;
 		if (tree == null || (node = findNode(concept, tree)) == null) return;
 		NodeObject object = node.getObject();
 		List<Variable> variables = object.getVariables();
@@ -29,17 +29,17 @@ public class ParameterAnnotator extends TaraAnnotator {
 		else {
 			Variable actualVariable = variables.get(index);
 			if (element.getFirstChild() instanceof TaraMetaWord ||
-				element.getFirstChild() instanceof TaraIdentifierReference ||
-				element.getFirstChild() instanceof TaraIdentifierList)
+				element.getFirstChild() instanceof TaraIdentifierReference )
+				//element.getFirstChild() instanceof TaraIdentifierList)
 				processAsWordOrReference(element, holder, actualVariable);
 			else if (!areSameType(actualVariable, element))
 				holder.createErrorAnnotation(element, "Incorrect type: " + actualVariable.getType() + " " + actualVariable.getName());
 		}
 	}
 
-	private Node findNode(Concept concept, TreeWrapper tree) {
+	private DeclaredNode findNode(Concept concept, Model tree) {
 		String metaQualifiedName = TaraUtil.getMetaQualifiedName(concept);
-		Node node = tree.get(metaQualifiedName);
+		DeclaredNode node = tree.get(metaQualifiedName);
 		return (node != null) ? node : tree.get(asAnonymous(metaQualifiedName));
 	}
 
@@ -94,15 +94,15 @@ public class ParameterAnnotator extends TaraAnnotator {
 			case TaraDoubleValueImpl:
 				return varType.equals("Double");
 			case TaraStringListImpl:
-				return varType.equals("String") && variable.isMultiple();
+				return varType.equals("String") && variable.isSingle();
 			case TaraBooleanListImpl:
-				return varType.equals("Boolean") && variable.isMultiple();
+				return varType.equals("Boolean") && variable.isSingle();
 			case TaraIntegerListImpl:
-				return varType.equals("Integer") && variable.isMultiple();
+				return varType.equals("Integer") && variable.isSingle();
 			case TaraDoubleListImpl:
-				return varType.equals("Double") && variable.isMultiple();
+				return varType.equals("Double") && variable.isSingle();
 			case TaraNaturalListImpl:
-				return varType.equals("Natural") && variable.isMultiple();
+				return varType.equals("Natural") && variable.isSingle();
 			default:
 				return false;
 		}

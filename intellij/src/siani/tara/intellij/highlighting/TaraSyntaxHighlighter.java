@@ -25,14 +25,14 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 	public static final TextAttributesKey KEYWORD = createTextAttributesKey("Tara_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
 	public static final TextAttributesKey IDENTIFIER = createTextAttributesKey("Tara_IDENTIFIER", DefaultLanguageHighlighterColors.CLASS_NAME);
-	public static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.CONSTANT);
-	public static final TextAttributesKey MODIFIERS = createTextAttributesKey("Tara_MODIFIERS", DefaultLanguageHighlighterColors.STATIC_FIELD);
+	public static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL);
 	public static final TextAttributesKey STRING = createTextAttributesKey("Tara_STRING", DefaultLanguageHighlighterColors.STRING);
 	public static final TextAttributesKey DOCUMENTATION = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
 	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.CONSTANT);
 	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
 	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
 	public static final TextAttributesKey BRACKETS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.BRACKETS);
+	public static final TextAttributesKey SEMICOLON_KEY = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.SEMICOLON);
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER");
 	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>(6);
 	public static final TextAttributesKey UNRESOLVED_ACCESS = TextAttributesKey.createTextAttributesKey("Unresolved reference");
@@ -57,7 +57,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		DISPLAY_NAMES.put(PRIMITIVE, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.primitive"), null));
 		DISPLAY_NAMES.put(STRING, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.types.string"), null));
 		DISPLAY_NAMES.put(DOCUMENTATION, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.comment"), null));
-		DISPLAY_NAMES.put(MODIFIERS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.modifier"), null));
+		DISPLAY_NAMES.put(SEMICOLON_KEY, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.semicolon"), null));
 		DISPLAY_NAMES.put(OPERATOR, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.operator"), null));
 		DISPLAY_NAMES.put(ANNOTATION, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.annotation"), null));
 		DISPLAY_NAMES.put(NUMBERS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.number"), null));
@@ -99,15 +99,16 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(WITH, KEYWORD);
 		KEYS.put(STAR, OPERATOR);
 		KEYS.put(COLON, OPERATOR);
-		KEYS.put(LEFT_SQUARE, BRACKETS);
-		KEYS.put(RIGHT_SQUARE, BRACKETS);
+		KEYS.put(EQUALS, OPERATOR);
 		KEYS.put(META_WORD, OPERATOR);
+		KEYS.put(LIST, OPERATOR);
 
 		KEYS.put(WORD_KEY, PRIMITIVE);
 		KEYS.put(STRING_TYPE, PRIMITIVE);
 		KEYS.put(DOUBLE_TYPE, PRIMITIVE);
 		KEYS.put(INT_TYPE, PRIMITIVE);
 		KEYS.put(DATE_TYPE, PRIMITIVE);
+		KEYS.put(LOCATION_TYPE, PRIMITIVE);
 		KEYS.put(BOOLEAN_TYPE, PRIMITIVE);
 		KEYS.put(NATURAL_TYPE, PRIMITIVE);
 		KEYS.put(ALIAS_TYPE, PRIMITIVE);

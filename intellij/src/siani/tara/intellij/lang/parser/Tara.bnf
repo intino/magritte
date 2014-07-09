@@ -59,21 +59,15 @@ parameters ::= LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS {
 private parameterList ::= explicit? parameter (COMMA explicit? parameter)*
 { pin=2}
 
-explicit::= identifier COLON
+explicit::= identifier EQUALS
 { pin=2}
 
-parameter ::=   identifierReference
-				| stringValue
-		        | booleanValue
-		        | naturalValue
-		        | integerValue
-		        | doubleValue
-		        | stringList
-		        | booleanList
-		        | naturalList
-		        | integerList
-		        | doubleList
-		        | identifierList
+parameter ::=   identifierReference+
+				| stringValue+
+		        | booleanValue+
+		        | naturalValue+
+		        | integerValue+
+		        | doubleValue+
 		        | metaWord
 		        | empty {
     pin = 1
@@ -101,21 +95,22 @@ facetApply ::= AS identifier parameters? (WITH identifierReference)?
 facetTarget ::= ON identifier body?
 {pin = 1}
 attribute ::= doc? VAR (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute | dateAttribute
-                        | resource | referenceAttribute | word) annotations? {
+                        | locationAttribute | resource | referenceAttribute | word) annotations? {
 	pin=2
 	mixin= 'siani.tara.intellij.lang.psi.impl.AttributeMixin'
 	implements='siani.tara.intellij.lang.psi.Attribute'
 }
 
-private resource             ::= RESOURCE_KEY COLON IDENTIFIER_KEY IDENTIFIER_KEY                         {pin=1}
-private aliasAttribute       ::= ALIAS_TYPE   LIST?  IDENTIFIER_KEY (COLON (stringValue  | emptyField))?   {pin=1}
-private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (COLON (booleanValue | emptyField))?   {pin=1}
-private stringAttribute      ::= STRING_TYPE  LIST?  IDENTIFIER_KEY (COLON (stringValue  | emptyField))?   {pin=1}
-private naturalAttribute     ::= NATURAL_TYPE LIST?  IDENTIFIER_KEY (COLON (naturalValue | emptyField))?   {pin=1}
-private integerAttribute     ::= INT_TYPE     LIST?  IDENTIFIER_KEY (COLON (integerValue | emptyField))?   {pin=1}
-private doubleAttribute      ::= DOUBLE_TYPE  LIST?  IDENTIFIER_KEY (COLON (doubleValue  | emptyField))?   {pin=1}
-private dateAttribute        ::= DATE_TYPE    LIST?  IDENTIFIER_KEY (COLON (naturalValue | emptyField))?   {pin=1}
-private referenceAttribute   ::= identifierReference LIST? IDENTIFIER_KEY (COLON emptyField)? {
+private resource             ::= RESOURCE_KEY EQUALS IDENTIFIER_KEY IDENTIFIER_KEY                         {pin=1}
+private locationAttribute    ::= LOCATION_TYPE       IDENTIFIER_KEY (EQUALS (naturalValue | emptyField))?   {pin=1}
+private aliasAttribute       ::= ALIAS_TYPE   LIST?  IDENTIFIER_KEY (EQUALS (stringValue  | emptyField))?   {pin=1}
+private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (EQUALS (booleanValue | emptyField))?   {pin=1}
+private stringAttribute      ::= STRING_TYPE  LIST?  IDENTIFIER_KEY (EQUALS (stringValue  | emptyField))?   {pin=1}
+private naturalAttribute     ::= NATURAL_TYPE LIST?  IDENTIFIER_KEY (EQUALS (naturalValue | emptyField))?   {pin=1}
+private integerAttribute     ::= INT_TYPE     LIST?  IDENTIFIER_KEY (EQUALS (integerValue | emptyField))?   {pin=1}
+private doubleAttribute      ::= DOUBLE_TYPE  LIST?  IDENTIFIER_KEY (EQUALS (doubleValue  | emptyField))?   {pin=1}
+private dateAttribute        ::= DATE_TYPE    LIST?  IDENTIFIER_KEY (EQUALS (naturalValue | emptyField))?   {pin=1}
+private referenceAttribute   ::= identifierReference LIST? IDENTIFIER_KEY (EQUALS emptyField)? {
 	pin = 1
 	mixin= 'siani.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
 	implements='siani.tara.intellij.lang.psi.ReferenceStatement'
@@ -132,33 +127,19 @@ naturalValue   ::= NATURAL_VALUE_KEY
 integerValue   ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
 
-stringList     ::= LEFT_SQUARE stringValue+ RIGHT_SQUARE
-booleanList    ::= LEFT_SQUARE booleanValue+ RIGHT_SQUARE
-naturalList    ::= LEFT_SQUARE naturalValue+ RIGHT_SQUARE
-integerList    ::= LEFT_SQUARE integerValue+ RIGHT_SQUARE
-doubleList     ::= LEFT_SQUARE doubleValue+ RIGHT_SQUARE
-identifierList ::= LEFT_SQUARE identifierReference+ RIGHT_SQUARE;
-
-
 annotations ::= IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMEABLE | ROOT | PROPERTY)+ {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotations'
 }
 
-varInit ::= IDENTIFIER_KEY COLON ( emptyField
-								 | identifierReference
-								 | stringValue
-                                 | booleanValue
-                                 | naturalValue
-                                 | integerValue
-                                 | doubleValue
-                                 | identifierList
-                                 | stringList
-                                 | booleanList
-                                 | naturalList
-                                 | integerList
-                                 | doubleList)
+varInit ::= IDENTIFIER_KEY EQUALS ( emptyField
+								 | identifierReference+
+								 | stringValue+
+                                 | booleanValue+
+                                 | naturalValue+
+                                 | integerValue+
+                                 | doubleValue+)
 {pin=2}
 emptyField ::= EMPTY_REF
 

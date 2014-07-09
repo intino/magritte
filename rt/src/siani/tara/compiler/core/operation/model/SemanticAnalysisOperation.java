@@ -8,8 +8,8 @@ import siani.tara.compiler.core.errorcollection.message.Message;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
 import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.compiler.semantic.SemanticAnalyzer;
-import siani.tara.lang.Node;
-import siani.tara.lang.TreeWrapper;
+import siani.tara.lang.DeclaredNode;
+import siani.tara.lang.Model;
 
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -24,7 +24,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 	}
 
 	@Override
-	public void call(TreeWrapper tree) throws CompilationFailedException {
+	public void call(Model tree) throws CompilationFailedException {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Analyzing semantic");
 			SemanticAnalyzer analyzer = new SemanticAnalyzer(compilationUnit.getModel());
@@ -41,7 +41,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 		}
 	}
 
-	private SourceUnit getSourceFromFile(Collection<SourceUnit> sources, Node node) {
+	private SourceUnit getSourceFromFile(Collection<SourceUnit> sources, DeclaredNode node) {
 		if (node == null) return null;
 		for (SourceUnit source : sources)
 			if (source.getName().equals(node.getFile())) return source;

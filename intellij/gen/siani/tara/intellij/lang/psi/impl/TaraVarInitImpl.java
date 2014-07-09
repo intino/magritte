@@ -23,27 +23,15 @@ public class TaraVarInitImpl extends ASTWrapperPsiElement implements TaraVarInit
   }
 
   @Override
-  @Nullable
-  public TaraBooleanList getBooleanList() {
-    return findChildByClass(TaraBooleanList.class);
+  @NotNull
+  public List<TaraBooleanValue> getBooleanValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraBooleanValue.class);
   }
 
   @Override
-  @Nullable
-  public TaraBooleanValue getBooleanValue() {
-    return findChildByClass(TaraBooleanValue.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraDoubleList getDoubleList() {
-    return findChildByClass(TaraDoubleList.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraDoubleValue getDoubleValue() {
-    return findChildByClass(TaraDoubleValue.class);
+  @NotNull
+  public List<TaraDoubleValue> getDoubleValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraDoubleValue.class);
   }
 
   @Override
@@ -53,51 +41,27 @@ public class TaraVarInitImpl extends ASTWrapperPsiElement implements TaraVarInit
   }
 
   @Override
-  @Nullable
-  public TaraIdentifierList getIdentifierList() {
-    return findChildByClass(TaraIdentifierList.class);
+  @NotNull
+  public List<TaraIdentifierReference> getIdentifierReferenceList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifierReference.class);
   }
 
   @Override
-  @Nullable
-  public TaraIdentifierReference getIdentifierReference() {
-    return findChildByClass(TaraIdentifierReference.class);
+  @NotNull
+  public List<TaraIntegerValue> getIntegerValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIntegerValue.class);
   }
 
   @Override
-  @Nullable
-  public TaraIntegerList getIntegerList() {
-    return findChildByClass(TaraIntegerList.class);
+  @NotNull
+  public List<TaraNaturalValue> getNaturalValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraNaturalValue.class);
   }
 
   @Override
-  @Nullable
-  public TaraIntegerValue getIntegerValue() {
-    return findChildByClass(TaraIntegerValue.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraNaturalList getNaturalList() {
-    return findChildByClass(TaraNaturalList.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraNaturalValue getNaturalValue() {
-    return findChildByClass(TaraNaturalValue.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraStringList getStringList() {
-    return findChildByClass(TaraStringList.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraStringValue getStringValue() {
-    return findChildByClass(TaraStringValue.class);
+  @NotNull
+  public List<TaraStringValue> getStringValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraStringValue.class);
   }
 
 }

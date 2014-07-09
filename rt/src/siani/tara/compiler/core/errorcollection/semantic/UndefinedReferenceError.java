@@ -1,9 +1,9 @@
 package siani.tara.compiler.core.errorcollection.semantic;
 
-import siani.tara.lang.Node;
+import siani.tara.lang.DeclaredNode;
 
 public class UndefinedReferenceError extends SemanticError implements SemanticError.FatalError {
-	public UndefinedReferenceError(String name, Node node) {
+	public UndefinedReferenceError(String name, DeclaredNode node) {
 		super(name, node);
 	}
 

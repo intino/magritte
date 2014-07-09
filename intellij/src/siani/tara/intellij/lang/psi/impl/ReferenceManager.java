@@ -171,6 +171,7 @@ public class ReferenceManager {
 			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
 			PsiElement resolve = resolve(importIdentifiers.get(importIdentifiers.size() - 1), false);
 			if (resolve == null) continue;
+			if (!TaraFile.class.isInstance(resolve.getContainingFile())) continue;
 			TaraFile containingFile = (TaraFile) resolve.getContainingFile();
 			for (Concept concept : containingFile.getConcepts()) {
 				Concept solution = resolvePathInConcept(route, concept);

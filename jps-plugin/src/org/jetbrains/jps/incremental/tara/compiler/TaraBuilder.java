@@ -23,7 +23,7 @@ import java.util.*;
 public class TaraBuilder extends ModuleLevelBuilder {
 
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
-	private static final String TARA_EXTENSION = "m";
+	private static final String TARA_EXTENSION = "tara";
 	private static Boolean done = false;
 	private final String builderName;
 	private boolean pluginGeneration;

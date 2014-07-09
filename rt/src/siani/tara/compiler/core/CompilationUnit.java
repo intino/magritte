@@ -8,7 +8,6 @@ import siani.tara.compiler.core.operation.Operation;
 import siani.tara.compiler.core.operation.SrcToClassOperation;
 import siani.tara.compiler.core.operation.model.ModelOperation;
 import siani.tara.compiler.core.operation.model.PluginUpdateOperation;
-import siani.tara.compiler.core.operation.model.SemanticAnalysisOperation;
 import siani.tara.compiler.core.operation.module.ASTDependencyResolutionOperation;
 import siani.tara.compiler.core.operation.module.MergeToModelOperation;
 import siani.tara.compiler.core.operation.module.ModuleUnitOperation;
@@ -17,7 +16,7 @@ import siani.tara.compiler.core.operation.sourceunit.MarkOperation;
 import siani.tara.compiler.core.operation.sourceunit.ParseOperation;
 import siani.tara.compiler.core.operation.sourceunit.SourceUnitOperation;
 import siani.tara.compiler.rt.TaraRtConstants;
-import siani.tara.lang.TreeWrapper;
+import siani.tara.lang.Model;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -31,7 +30,7 @@ public class CompilationUnit extends ProcessingUnit {
 	private final boolean pluginGeneration;
 	protected ProgressCallback progressCallback;
 	private Map<String, SourceUnit> sourceUnits;
-	private TreeWrapper model;
+	private Model model;
 	private LinkedList<Operation>[] phaseOperations;
 	private ModelOperation pluginUpdateOperation = new PluginUpdateOperation(this);
 	private SrcToClassOperation classGeneration = new SrcToClassOperation() {
@@ -58,7 +57,7 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ParseOperation(this.errorCollector), Phases.PARSING);
 		addPhaseOperation(new ImportDataOperation(this.errorCollector), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
-		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
+//		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new ASTDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
 		if (pluginGeneration) addPhaseOperation(pluginUpdateOperation, Phases.PLUGIN_GENERATION);
@@ -135,17 +134,13 @@ public class CompilationUnit extends ProcessingUnit {
 			((ModelOperation) operation).call(model);
 	}
 
-	public TreeWrapper getModel() {
+	public Model getModel() {
 		return model;
 	}
 
-
-
-	public void setModel(TreeWrapper model) {
+	public void setModel(Model model) {
 		this.model = model;
 	}
-
-
 
 	public abstract static class ProgressCallback {
 		public abstract void call(ProcessingUnit paramProcessingUnit, int paramInt) throws CompilationFailedException;

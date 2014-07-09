@@ -5,7 +5,7 @@ import siani.tara.compiler.parser.antlr.TaraAbstractTreeGenerator;
 import siani.tara.compiler.parser.antlr.TaraErrorStrategy;
 import siani.tara.compiler.parser.antlr.TaraGrammar;
 import siani.tara.compiler.parser.antlr.TaraLexer;
-import siani.tara.lang.TreeWrapper;
+import siani.tara.lang.Model;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
@@ -28,9 +28,9 @@ public class Parser {
 		parser.setErrorHandler(new TaraErrorStrategy());
 	}
 
-	public TreeWrapper convert() throws SyntaxException {
+	public Model convert() throws SyntaxException {
 		try {
-			TreeWrapper ast = new TreeWrapper();
+			Model ast = new Model(file.getName());
 			ParseTreeWalker walker = new ParseTreeWalker();
 			TaraAbstractTreeGenerator extractor = new TaraAbstractTreeGenerator(ast, file.getPath());
 			walker.walk(extractor, rootContext);

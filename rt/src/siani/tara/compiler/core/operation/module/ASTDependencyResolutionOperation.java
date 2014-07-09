@@ -7,7 +7,7 @@ import siani.tara.compiler.core.errorcollection.DependencyException;
 import siani.tara.compiler.core.errorcollection.message.Message;
 import siani.tara.compiler.dependencyresolver.ModelDependencyResolver;
 import siani.tara.compiler.rt.TaraRtConstants;
-import siani.tara.lang.Node;
+import siani.tara.lang.DeclaredNode;
 
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -24,7 +24,7 @@ public class ASTDependencyResolutionOperation extends ModuleUnitOperation {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
 			ModelDependencyResolver resolver = new ModelDependencyResolver(compilationUnit.getModel());
-			compilationUnit.setModel(resolver.resolve());
+			resolver.resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during Dependency resolution: " + e.getMessage());
 			e.printStackTrace();
@@ -32,7 +32,7 @@ public class ASTDependencyResolutionOperation extends ModuleUnitOperation {
 		}
 	}
 
-	private SourceUnit getSourceFromFile(Collection<SourceUnit> sources, Node node) {
+	private SourceUnit getSourceFromFile(Collection<SourceUnit> sources, DeclaredNode node) {
 		if (node == null) return null;
 		for (SourceUnit source : sources)
 			if (source.getName().equals(node.getFile())) return source;

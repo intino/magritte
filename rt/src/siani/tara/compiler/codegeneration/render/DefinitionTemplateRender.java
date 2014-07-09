@@ -4,7 +4,7 @@ import org.monet.templation.Canvas;
 import org.monet.templation.CanvasLogger;
 import org.monet.templation.Render;
 import siani.tara.compiler.core.errorcollection.TaraException;
-import siani.tara.lang.Node;
+import siani.tara.lang.DeclaredNode;
 import siani.tara.lang.NodeObject;
 import siani.tara.lang.Variable;
 
@@ -16,9 +16,9 @@ import java.util.Map;
 public class DefinitionTemplateRender extends Render {
 	private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(DefaultRender.class.getName());
 	private final String tplName;
-	Node nodeObject;
+	DeclaredNode nodeObject;
 
-	public DefinitionTemplateRender(String tplName, Node node) throws TaraException {
+	public DefinitionTemplateRender(String tplName, DeclaredNode node) throws TaraException {
 		super(new Logger(), Canvas.FROM_RESOURCES_PREFIX);
 		this.tplName = tplName;
 		this.nodeObject = node;
@@ -35,10 +35,10 @@ public class DefinitionTemplateRender extends Render {
 
 	}
 
-	private StringBuilder constructChildren(List<Node> innerConcepts) {
+	private StringBuilder constructChildren(List<DeclaredNode> innerConcepts) {
 		StringBuilder builder = new StringBuilder();
 		if (innerConcepts == null) return builder;
-		for (Node node : innerConcepts)
+		for (DeclaredNode node : innerConcepts)
 			if (node.getObject().is(NodeObject.AnnotationType.REQUIRED) && !node.getName().equals("")) {
 				Map<String, Object> map = new HashMap<>();
 				map.put("ConceptKey", node.getName());

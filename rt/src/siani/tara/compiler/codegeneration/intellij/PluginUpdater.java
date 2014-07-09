@@ -21,22 +21,24 @@ public class PluginUpdater {
 		this.conf = conf;
 	}
 
-	public void generate(TreeWrapper treeWrapper) throws TaraException {
-		serializeNodes(treeWrapper);
+	public void generate(Model model) throws TaraException {
+		serializeNodes(model);
 		System.out.println("Nodes serialized. Plugin Updated");
 	}
 
-	private void serializeNodes(TreeWrapper treeWrapper) throws TaraException {
+	private void serializeNodes(Model model) throws TaraException {
 		try {
-			File file = new File(conf.getPluginDirectory(), "classes" + SEP + conf.getProject() + SEP + conf.getModule() + ".json");
+			String parent = conf.getPluginDirectory() + SEP + "classes" + SEP + conf.getProject();
+			File file = new File(parent, conf.getModule() + ".json");
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
 			GsonBuilder gsonBuilder = new GsonBuilder();
 			gsonBuilder.setPrettyPrinting();
 			gsonBuilder.registerTypeAdapter(Variable.class, new VariableSerializer());
 			Gson gson = gsonBuilder.excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
-			writer.write(gson.toJson(treeWrapper));
+			writer.write(gson.toJson(model));
 			writer.close();
+			new File(parent, ".model_reload").createNewFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new TaraException("Error serializing tree model");
@@ -60,13 +62,13 @@ public class PluginUpdater {
 				NodeAttribute attribute = (NodeAttribute) variable;
 				object.addProperty("primitiveType", attribute.primitiveType);
 				object.addProperty("value", attribute.getValue());
-				object.addProperty("isMultiple", attribute.isMultiple);
+				object.addProperty("isSingle", attribute.isSingle);
 				object.addProperty("isTerminal", attribute.isTerminal);
 				object.addProperty("isProperty", attribute.isProperty());
 			} else if (variable instanceof Reference) {
 				Reference reference = (Reference) variable;
 				object.addProperty("node", reference.type);
-				object.addProperty("isMultiple", reference.isMultiple);
+				object.addProperty("isSingle", reference.isSingle);
 				object.addProperty("isTerminal", reference.isTerminal);
 				object.addProperty("isProperty", reference.isProperty());
 				object.addProperty("isEmpty", reference.isEmpty());

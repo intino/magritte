@@ -1,15 +1,15 @@
 package siani.tara.compiler.core.errorcollection.semantic;
 
 
-import siani.tara.lang.Node;
+import siani.tara.lang.DeclaredNode;
 
 public abstract class SemanticError {
 
 	protected final String token;
-	protected final Node node;
+	protected final DeclaredNode node;
 	protected final int line;
 
-	protected SemanticError(String token, Node node) {
+	protected SemanticError(String token, DeclaredNode node) {
 		this.token = token;
 		this.node = node;
 		if (node != null)
@@ -21,7 +21,7 @@ public abstract class SemanticError {
 		return token;
 	}
 
-	public Node getNode() {
+	public DeclaredNode getNode() {
 		return node;
 	}
 

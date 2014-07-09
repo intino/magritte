@@ -14,7 +14,6 @@ public class TaraColorSettingPage implements ColorSettingsPage {
 	private static final AttributesDescriptor[] DESCRIPTORS =
 		new AttributesDescriptor[]{
 			new AttributesDescriptor("Keyword", TaraSyntaxHighlighter.KEYWORD),
-			new AttributesDescriptor("Modifiers", TaraSyntaxHighlighter.MODIFIERS),
 			new AttributesDescriptor("String", TaraSyntaxHighlighter.STRING),
 			new AttributesDescriptor("Documentation", TaraSyntaxHighlighter.DOCUMENTATION),
 			new AttributesDescriptor("Primitive", TaraSyntaxHighlighter.PRIMITIVE),

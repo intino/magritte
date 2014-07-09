@@ -2,7 +2,7 @@ package siani.tara.compiler.codegeneration.render;
 
 import org.monet.templation.CanvasLogger;
 import siani.tara.compiler.core.errorcollection.TaraException;
-import siani.tara.lang.TreeWrapper;
+import siani.tara.lang.Model;
 
 import java.util.Set;
 
@@ -14,7 +14,7 @@ public class JFlexRender extends DefaultRender {
 
 	public JFlexRender(String tplName, String projectName, Object ast) throws TaraException {
 		super(tplName, projectName);
-		this.identifiers = ((TreeWrapper) ast).getIdentifiers();
+		this.identifiers = ((Model) ast).getIdentifiers();
 	}
 
 	@Override

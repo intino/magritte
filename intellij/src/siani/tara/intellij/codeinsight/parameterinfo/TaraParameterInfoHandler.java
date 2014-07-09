@@ -77,10 +77,10 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext parameterInfoContext) {
 		final Parameters parameterList = findParameters(parameterInfoContext);
 		if (parameterList != null) {
-			TreeWrapper treeWrapper = TaraLanguage.getHeritage(((TaraFile) parameterList.getContainingFile()).getParentModel());
-			if (treeWrapper == null) return parameterList;
+			Model model = TaraLanguage.getHeritage(((TaraFile) parameterList.getContainingFile()).getParentModel());
+			if (model == null) return parameterList;
 			Concept conceptContext = TaraPsiImplUtil.getContextOf(parameterList);
-			Node node = findNodeOf(conceptContext, treeWrapper);
+			DeclaredNode node = findNodeOf(conceptContext, model);
 			if (node == null) return parameterList;
 			if (node.getObject().getVariables().isEmpty()) return parameterList;
 			List<Attribute> attributes = new ArrayList<>();
@@ -88,7 +88,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			for (Variable variable : node.getObject().getVariables()) {
 				Attribute attribute = null;
 				if (variable instanceof NodeAttribute || variable instanceof Reference)
-					attribute = instance.createAttribute(variable.getName(), variable.getType() + ((variable.isMultiple()) ? "[]" : ""));
+					attribute = instance.createAttribute(variable.getName(), variable.getType() + ((variable.isSingle()) ? "[]" : ""));
 				else if (variable instanceof NodeWord) {
 					List<String> wordTypes = ((NodeWord) variable).getWordTypes();
 					attribute = instance.createWord(variable.getName(), wordTypes.toArray(new String[wordTypes.size()]));
@@ -101,15 +101,15 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		return parameterList;
 	}
 
-	private Node findNodeOf(Concept concept, TreeWrapper wrapper) {
-		Node node = wrapper.get(TaraUtil.getMetaQualifiedName(concept));
+	private DeclaredNode findNodeOf(Concept concept, Model wrapper) {
+		DeclaredNode node = wrapper.get(TaraUtil.getMetaQualifiedName(concept));
 		if (node != null) return node;
 		Concept context = TaraPsiImplUtil.getContextOf(concept);
-		Node contextNode = wrapper.get(TaraUtil.getMetaQualifiedName(context));
+		DeclaredNode contextNode = wrapper.get(TaraUtil.getMetaQualifiedName(context));
 		if (contextNode == null) return null;
-		for (Node inner : contextNode.getInnerNodes())
+		for (DeclaredNode inner : contextNode.getInnerNodes())
 			if (inner.getObject().getParentName() != null) {
-				Node ancestry = wrapper.searchAncestry(inner);
+				DeclaredNode ancestry = wrapper.searchAncestry(inner);
 				node = checkIfCase(ancestry, concept.getType());
 				if (node == null)// TODO Revisar
 					node = wrapper.searchChildrenByName(ancestry, concept.getType());
@@ -118,8 +118,8 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	}
 
-	private Node checkIfCase(Node ancestry, String name) {
-		for (Node node : ancestry.getCases())
+	private DeclaredNode checkIfCase(DeclaredNode ancestry, String name) {
+		for (DeclaredNode node : ancestry.getCases())
 			if (node.getName().equals(name)) return node;
 		return null;
 	}

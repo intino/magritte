@@ -11,9 +11,9 @@ import siani.tara.intellij.lang.psi.IdentifierReference;
 import siani.tara.intellij.lang.psi.Parameter;
 import siani.tara.intellij.lang.psi.Parameters;
 import siani.tara.intellij.lang.psi.resolve.TaraParameterReferenceSolver;
-import siani.tara.lang.Node;
+import siani.tara.lang.DeclaredNode;
+import siani.tara.lang.Model;
 import siani.tara.lang.NodeWord;
-import siani.tara.lang.TreeWrapper;
 import siani.tara.lang.Variable;
 
 import java.util.List;
@@ -31,9 +31,9 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	@NotNull
 	@Override
 	public PsiReference[] getReferences() {
-		TreeWrapper heritage = TaraLanguage.getHeritage(getContainingFile());
+		Model heritage = TaraLanguage.getHeritage(getContainingFile());
 		if (heritage == null) return new PsiReference[0];
-		Node node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getContextOf(this)));
+		DeclaredNode node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getContextOf(this)));
 		if (node == null) return new PsiReference[0];
 		List<Variable> variables = node.getObject().getVariables();
 		if (variables.isEmpty()) return new PsiReference[]{};
@@ -48,8 +48,8 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	@Nullable
 	@Override
 	public PsiReference getReference() {
-		TreeWrapper heritage = TaraLanguage.getHeritage(getContainingFile());
-		Node node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getContextOf(this)));
+		Model heritage = TaraLanguage.getHeritage(getContainingFile());
+		DeclaredNode node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getContextOf(this)));
 		if (node == null) return null;
 		Variable variable = node.getObject().getVariables().get(getIndexInParent());
 		if (NodeWord.class.isInstance(variable))

@@ -1,7 +1,7 @@
 package siani.tara.compiler.parser;
 
-import siani.tara.lang.Node;
-import siani.tara.lang.TreeWrapper;
+import siani.tara.lang.DeclaredNode;
+import siani.tara.lang.Model;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,8 +14,8 @@ public class ParserTest {
 		String projectName = "goros";
 		Parser parser = new Parser(new File("tara_runtime/res_test/monet.m"));
 		parser.parse();
-		TreeWrapper ast = parser.convert();
-		Node node = ast.searchAncestry(ast.getTree().get(2));
+		Model ast = parser.convert();
+		DeclaredNode node = ast.searchAncestry(ast.getTree().get(2));
 		Assert.assertEquals(ast.getTree().get(1), node);
 //		node = ast.searchAncestry(ast.getTree()[5].getInnerConcepts()[2]);
 //		Assert.assertEquals(ast.getTree()[4].getInnerConcepts()[3], node);

@@ -23,7 +23,7 @@ signature: ((CASE IDENTIFIER)
 
 parameters : LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS;
 parameterList : explicit? parameter (COMMA explicit? parameter)*;
-explicit: IDENTIFIER COLON;
+explicit: IDENTIFIER EQUALS;
 parameter : identifierReference
 			| stringValue
 	        | booleanValue
@@ -49,17 +49,17 @@ facetTarget : ON IDENTIFIER body?;
 attribute : doc? VAR (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
 | dateAttribute | resource | reference | word) annotations?;
 
-resource         : RESOURCE COLON    IDENTIFIER IDENTIFIER;
+resource         : RESOURCE EQUALS    IDENTIFIER IDENTIFIER;
 word             : WORD IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
 wordNames        : IDENTIFIER STAR?;
-aliasAttribute   : ALIAS_TYPE   LIST? IDENTIFIER (COLON stringValue  | EMPTY)?;
-booleanAttribute : BOOLEAN_TYPE LIST? IDENTIFIER (COLON booleanValue | EMPTY)?;
-stringAttribute  : STRING_TYPE  LIST? IDENTIFIER (COLON stringValue  | EMPTY)?;
-naturalAttribute : NATURAL_TYPE LIST? IDENTIFIER (COLON naturalValue | EMPTY)?;
-integerAttribute : INT_TYPE     LIST? IDENTIFIER (COLON integerValue | EMPTY)?;
-doubleAttribute  : DOUBLE_TYPE  LIST? IDENTIFIER (COLON doubleValue  | EMPTY)?;
-dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (COLON naturalValue | EMPTY)?;
-reference        : identifierReference LIST? IDENTIFIER  (COLON EMPTY)?       ;
+aliasAttribute   : ALIAS_TYPE   LIST? IDENTIFIER (EQUALS stringValue  | EMPTY)?;
+booleanAttribute : BOOLEAN_TYPE LIST? IDENTIFIER (EQUALS booleanValue | EMPTY)?;
+stringAttribute  : STRING_TYPE  LIST? IDENTIFIER (EQUALS stringValue  | EMPTY)?;
+naturalAttribute : NATURAL_TYPE LIST? IDENTIFIER (EQUALS naturalValue | EMPTY)?;
+integerAttribute : INT_TYPE     LIST? IDENTIFIER (EQUALS integerValue | EMPTY)?;
+doubleAttribute  : DOUBLE_TYPE  LIST? IDENTIFIER (EQUALS doubleValue  | EMPTY)?;
+dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (EQUALS naturalValue | EMPTY)?;
+reference        : identifierReference LIST? IDENTIFIER  (EQUALS EMPTY)?       ;
 
 naturalValue: POSITIVE_VALUE;
 integerValue: POSITIVE_VALUE | NEGATIVE_VALUE;
@@ -76,7 +76,7 @@ identifierList : LEFT_SQUARE IDENTIFIER+ RIGHT_SQUARE;
 
 annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMEABLE | ROOT | PROPERTY)+ ;
 
-varInit : IDENTIFIER COLON (EMPTY
+varInit : IDENTIFIER EQUALS (EMPTY
 							| identifierReference
 							| stringValue
                             | booleanValue

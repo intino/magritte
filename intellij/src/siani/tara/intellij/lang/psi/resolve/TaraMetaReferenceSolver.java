@@ -13,10 +13,9 @@ import siani.tara.intellij.lang.psi.MetaIdentifier;
 import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.intellij.project.module.ModuleProvider;
-import siani.tara.lang.Node;
+import siani.tara.lang.DeclaredNode;
+import siani.tara.lang.Model;
 import siani.tara.lang.NodeObject;
-import siani.tara.lang.TreeWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		if (myElement instanceof MetaIdentifier) {
 			Concept context = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(myElement));
 			if (context != null) {
-				TreeWrapper heritage = TaraLanguage.getHeritage(ModuleProvider.getModuleOfDocument((TaraFile) context.getContainingFile()));
+				Model heritage = TaraLanguage.getHeritage(((TaraFile) context.getContainingFile()).getParentModel());
 				if (heritage == null) return new Object[0];
 				NodeObject node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(context)).getObject();
 				if (node != null) {
@@ -64,8 +63,8 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	}
 
 	private void addBaseConcepts(Concept context, String baseConcept, List<String> concepts) {
-		Node node = TaraLanguage.getHeritage(ModuleProvider.getModuleOfDocument((TaraFile) context.getContainingFile())).getNodeTable().get(baseConcept);
-		for (Node child : node.getInnerNodes())
+		DeclaredNode node = TaraLanguage.getHeritage(((TaraFile) context.getContainingFile()).getParentModel()).getNodeTable().get(baseConcept);
+		for (DeclaredNode child : node.getInnerNodes())
 			if (!child.getObject().isCase() && !child.getObject().is(NodeObject.AnnotationType.PRIVATE)) concepts.add(child.getName());
 	}
 

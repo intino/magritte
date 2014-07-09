@@ -4,7 +4,7 @@ public abstract class Variable implements Cloneable {
 	public String name;
 	public String doc;
 	public boolean isTerminal = false;
-	public boolean isMultiple = false;
+	public boolean isSingle = false;
 	public boolean isProperty = false;
 
 	public String getName() {
@@ -15,12 +15,12 @@ public abstract class Variable implements Cloneable {
 		this.name = name;
 	}
 
-	public boolean isMultiple() {
-		return isMultiple;
+	public boolean isSingle() {
+		return isSingle;
 	}
 
-	public void setMultiple(boolean multiple) {
-		this.isMultiple = multiple;
+	public void setSingle(boolean multiple) {
+		this.isSingle = multiple;
 	}
 
 	public boolean isTerminal() {

@@ -124,9 +124,4 @@
     <findUsagesHandlerFactory implementation="siani.tara.intellij.findUsages.TaraFindUsagesHandlerFactory" id="Tara"
                               order="last, before default"/>
   </extensions>
-  <module-components>
-    <component>
-      <implementation-class>siani.tara.intellij.project.module.ModuleConfiguration</implementation-class>
-    </component>
-  </module-components>
 </idea-plugin>

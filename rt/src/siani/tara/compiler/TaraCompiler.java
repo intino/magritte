@@ -7,7 +7,7 @@ import siani.tara.compiler.core.errorcollection.*;
 import siani.tara.compiler.core.errorcollection.message.*;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
 import siani.tara.compiler.rt.TaraCompilerMessageCategories;
-import siani.tara.lang.Node;
+import siani.tara.lang.DeclaredNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -111,7 +111,7 @@ public class TaraCompiler {
 	}
 
 	private void addErrorMessage(TaraRuntimeException exception) {
-		Node node = exception.getNode();
+		DeclaredNode node = exception.getNode();
 		if (node != null)
 			collector.add(new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(),
 				node.getFile(), node.getLine(), -1));

@@ -1,9 +1,9 @@
 package siani.tara.compiler.core.errorcollection.semantic;
 
-import siani.tara.lang.Node;
+import siani.tara.lang.DeclaredNode;
 
 public class UnusedConceptError extends SemanticError implements SemanticError.Warning {
-	public UnusedConceptError(String token, Node node) {
+	public UnusedConceptError(String token, DeclaredNode node) {
 		super(token, node);
 	}
 
