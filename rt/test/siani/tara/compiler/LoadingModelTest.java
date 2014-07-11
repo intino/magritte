@@ -1,10 +1,8 @@
-package siani.tara.intellij.lang;
+package siani.tara.compiler;
 
 import com.google.gson.*;
-import com.intellij.lang.Language;
-import com.intellij.openapi.application.PathManager;
-import com.intellij.psi.PsiFile;
-import siani.tara.intellij.lang.psi.TaraFile;
+import org.junit.Assert;
+import org.junit.Test;
 import siani.tara.lang.*;
 
 import java.io.File;
@@ -12,63 +10,31 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 
 import static java.io.File.separator;
 
-public class TaraLanguage extends Language {
+public class LoadingModelTest {
 
 	public static final String JSON = ".json";
-	public static final Map<String, Model> heritages = new HashMap<>();
-	public static final TaraLanguage INSTANCE = new TaraLanguage();
+	String basePath = "/Users/oroncal/workspace/sandbox/plugins" + separator + "tara" + separator + "classes" + separator + "Monet" + separator;
 
-
-	private TaraLanguage() {
-		super("Tara");
-	}
-
-	public static Model getHeritage(String parent) {
-		if (parent == null) return null;
-		Model model;
-		String[] splitName = parent.split("\\.");
-		String basePath = PathManager.getPluginsPath() + separator + "tara" + separator + "classes" + separator + splitName[0] + separator;
-		if ((model = heritages.get(parent)) != null && haveToReload(basePath))
-			return model;
-		model = loadHeritage(basePath, splitName[1]);
-		heritages.put(parent, model);
-		return model;
-	}
-
-	public static Model getHeritage(PsiFile file) {
-		return TaraLanguage.getHeritage(((TaraFile)file).getParentModel());
-	}
-
-	private static Model loadHeritage(String basePath, String parent) {
+	@Test
+	public void loadModel() throws Exception {
 		try {
-			File file = new File(basePath, parent + JSON);
-			if (!file.exists()) return null;
+			File file = new File(basePath, "metamod" + JSON);
+			Assert.assertTrue(file.exists());
 			InputStream heritageInputStream = new FileInputStream(file);
 			GsonBuilder gb = new GsonBuilder();
+			gb.registerTypeAdapter(Variable.class, new ModelDeserializer());
 			gb.registerTypeAdapter(Node.class, new NodeAdapter());
-			gb.registerTypeAdapter(Variable.class, new VariableDeserializer());
-			return gb.create().fromJson(new InputStreamReader(heritageInputStream), Model.class);
+			Model model = gb.create().fromJson(new InputStreamReader(heritageInputStream), Model.class);
+			Assert.assertNotNull(model);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		}
 	}
 
-	private static boolean haveToReload(String basePath) {
-		File reload = new File(basePath, ".model_reload");
-		if (reload.exists()) {
-			reload.delete();
-			return true;
-		}
-		return false;
-	}
-
-	protected static class VariableDeserializer implements JsonDeserializer<Variable> {
+	private static class ModelDeserializer implements JsonDeserializer<Variable> {
 
 		public Variable deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 			if (json == null) return null;
@@ -93,10 +59,18 @@ public class TaraLanguage extends Language {
 			}
 			return null;
 		}
+
 	}
 
-	protected static class NodeAdapter implements JsonDeserializer<Node> {
+	public class NodeAdapter implements JsonSerializer<Node>, JsonDeserializer<Node> {
+		@Override
+		public JsonElement serialize(Node src, Type typeOfSrc, JsonSerializationContext context) {
+			JsonObject result = new JsonObject();
+			result.add("objectType", new JsonPrimitive(src.getClass().getSimpleName()));
+			result.add("properties", context.serialize(src, src.getClass()));
 
+			return result;
+		}
 
 		@Override
 		public Node deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)

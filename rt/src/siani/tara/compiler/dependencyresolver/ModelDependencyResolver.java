@@ -1,10 +1,7 @@
 package siani.tara.compiler.dependencyresolver;
 
 import siani.tara.compiler.core.errorcollection.DependencyException;
-import siani.tara.lang.DeclaredNode;
-import siani.tara.lang.Model;
-import siani.tara.lang.NodeObject;
-import siani.tara.lang.Variable;
+import siani.tara.lang.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,7 +14,6 @@ public class ModelDependencyResolver {
 	Model model;
 	List<String> toProcessNodes = new ArrayList<>();
 
-
 	public ModelDependencyResolver(Model model) throws DependencyException {
 		this.model = model;
 	}
@@ -26,46 +22,73 @@ public class ModelDependencyResolver {
 		model.sortNodeTable(new NodeComparator(model.getNodeTable()));
 		toProcessNodes.addAll(model.getNodeTable().keySet());
 		resolveHierarchyDependencies();
-		resolveInnerConceptsAsReferences();
-	}
-
-	private void resolveInnerConceptsAsReferences() {
-		for (DeclaredNode node : model.getNodeTable().values()) {
-
-		}
 	}
 
 	private void resolveHierarchyDependencies() throws DependencyException {
-		List<DeclaredNode> toAddNodes = new ArrayList<>();
+		List<LinkNode> toAddNodes = new ArrayList<>();
 		while (!toProcessNodes.isEmpty()) {
 			for (int i = 0; i < toProcessNodes.size(); i++) {
-				String toProcessNode = toProcessNodes.get(i);
-				DeclaredNode node = model.getNodeTable().get(toProcessNode);
-				NodeObject object = node.getObject();
-				if (object.getParentName() != null || node.isCase()) {
-					DeclaredNode parent = model.searchAncestry(node);
-					if (parent == null) throwError(node);
-					if (toProcessNodes.contains(parent.getQualifiedName())) continue;
-					linkToParent(object, parent);
-					extractInfoFromParent(toAddNodes, node, parent);
+				Node node = model.get(toProcessNodes.get(i));
+				if (node instanceof LinkNode)
+					linkToDeclared((LinkNode) node, model.searchDeclaredNodeOfLink((LinkNode) node));
+				else {
+					NodeObject object = node.getObject();
+					if (object.getParentName() != null || node.isCase()) {
+						DeclaredNode parent = model.searchAncestry(node);
+						if (parent == null) throwError(node);
+						if (toProcessNodes.contains(parent.getQualifiedName())) continue;
+						linkDeclaredToParent(object, parent);
+						extractInfoFromParent(toAddNodes, (DeclaredNode) node, parent);
+					}
 				}
 				toProcessNodes.remove(node.getQualifiedName());
 				i--;
 			}
 		}
-		for (DeclaredNode toAddNode : toAddNodes) model.add(toAddNode.getQualifiedName(), toAddNode);
+		addNewNodes(toAddNodes);
+		List<String> list = updateLinks(toAddNodes);
+		updateKeys(list);
 	}
 
-	private void addInnerConceptsInherited(DeclaredNode parent, DeclaredNode node, List<DeclaredNode> toAddNodes) {
-		for (DeclaredNode child : parent.getInnerNodes())
-			if (!child.isCase()) {
-				DeclaredNode element = new DeclaredNode(child.getObject(), node);
-				toAddNodes.add(element);
-				node.add(0, element);
-				element.calculateQualifiedName();
-				for (DeclaredNode innerChild : child.getInnerNodes())
-					addInnerConceptsInherited(innerChild, element, toAddNodes);
+	private void addNewNodes(List<LinkNode> toAddNodes) {
+		for (Node toAddNode : toAddNodes) {
+			toAddNode.calculateQualifiedName();
+			model.add(toAddNode.getQualifiedName(), toAddNode);
+		}
+		model.sortNodeTable(new NodeComparator(model.getNodeTable()));
+	}
+
+	private List<String> updateLinks(List<LinkNode> toAddNodes) {
+		List<String> nodes = new ArrayList();
+		for (Map.Entry<String, Node> node : model.getNodeTable().entrySet()) {
+			if (node.getValue() instanceof LinkNode) {
+				node.getValue().calculateQualifiedName();
+				if (!toAddNodes.contains(node.getValue()))
+					nodes.add(node.getKey());
 			}
+		}
+		return nodes;
+	}
+
+	private void updateKeys(List<String> nodes) {
+		Map<String, Node> nodeTable = model.getNodeTable();
+		for (String nodeName : nodes) {
+			Node nodeToUpdate = nodeTable.get(nodeName);
+			nodeTable.remove(nodeName);
+			nodeTable.put(nodeToUpdate.getQualifiedName(), nodeToUpdate);
+		}
+		model.sortNodeTable(new NodeComparator(model.getNodeTable()));
+	}
+
+	private void linkToDeclared(LinkNode node, DeclaredNode parent) {
+		node.setDestinyQN(parent.getQualifiedName());
+		node.setDestiny(parent);
+	}
+
+	private void extractInfoFromParent(List<LinkNode> toAddNodes, DeclaredNode node, DeclaredNode parent) {
+		collectInnerConceptsInherited(parent, node, toAddNodes);
+		calculateInheritedVariables(parent.getObject(), node);
+		addInheritedAnnotations(parent.getObject(), node);
 	}
 
 	private void addInheritedAnnotations(NodeObject parent, DeclaredNode node) {
@@ -80,47 +103,51 @@ public class ModelDependencyResolver {
 			node.getObject().add(0, variable.clone());
 	}
 
-	private void extractInfoFromParent(List<DeclaredNode> toAddNodes, DeclaredNode node, DeclaredNode parent) {
-		addInnerConceptsInherited(parent, node, toAddNodes);
-		calculateInheritedVariables(parent.getObject(), node);
-		addInheritedAnnotations(parent.getObject(), node);
+	private void collectInnerConceptsInherited(DeclaredNode parent, DeclaredNode node, List<LinkNode> toAddNodes) {
+		for (Node child : parent.getInnerNodes())
+			if (!child.isCase()) {
+				DeclaredNode destiny = (child instanceof LinkNode) ? ((LinkNode) child).getDestiny() : (DeclaredNode) child;
+				LinkNode element = new LinkNode(destiny, node);
+				element.setDestinyQN(destiny.getQualifiedName());
+				toAddNodes.add(element);
+				node.add(element, 0);
+				element.calculateQualifiedName();
+			}
 	}
 
-	private void linkToParent(NodeObject object, DeclaredNode parent) {
+	private void linkDeclaredToParent(NodeObject object, DeclaredNode parent) {
 		object.setParentObject(parent.getObject());
 		object.setParentName(parent.getQualifiedName());
 		parent.getObject().addChild(object);
 	}
 
-	private void throwError(DeclaredNode node) throws DependencyException {
+	private void throwError(Node node) throws DependencyException {
 		throw new DependencyException("Dependency resolution fail in: " + node.getQualifiedName() +
 			". Not found ancestry: " + node.getObject().getParentName(), node);
 	}
 
-
 	private class NodeComparator implements Comparator<String> {
-		Map<String, DeclaredNode> base;
+		Map<String, Node> base;
 		private Comparator<String> levelComparator = new Comparator<String>() {
 			public int compare(String o1, String o2) {
 				String qn1 = o1.replaceAll("\\[.*\\]", "");
 				String qn2 = o2.replaceAll("\\[.*\\]", "");
 				int count1 = qn1.length() - qn1.replace(".", "").length();
 				int count2 = qn2.length() - qn2.replace(".", "").length();
-				return count1 - count2 == 0 ? nameComparator.compare(o1, o2) : count1 - count2;
+				return count1 - count2;
 			}
 		};
-
 		private Comparator<String> nameComparator = new Comparator<String>() {
 			public int compare(String o1, String o2) {
-				if (o1.equals(o2)) return 0;
 				return o1.compareTo(o2);
 			}
 		};
-
-		private Comparator<DeclaredNode> hierarchyComparator = new Comparator<DeclaredNode>() {
-			public int compare(DeclaredNode o1, DeclaredNode o2) {
-				if (o1 == null) return 1;
-				if (o2 == null) return -1;
+		private Comparator<Node> hierarchyComparator = new Comparator<Node>() {
+			public int compare(Node o1, Node o2) {
+				if (o1 == null) return 0;
+				if (o2 == null) return 0;
+				if (o1 instanceof LinkNode | o2 instanceof LinkNode)
+					return 0;
 				boolean parentO1 = o1.getObject().getParentName() != null;
 				boolean parentO2 = o2.getObject().getParentName() != null;
 				if (parentO1 && parentO2) return 0;
@@ -130,13 +157,16 @@ public class ModelDependencyResolver {
 			}
 		};
 
-		public NodeComparator(Map<String, DeclaredNode> base) {
+		public NodeComparator(Map<String, Node> base) {
 			this.base = base;
 		}
 
 		@Override
 		public int compare(String o1, String o2) {
-			int compare = hierarchyComparator.compare(base.get(o1), base.get(o2));
+			int compare;
+			compare = nameComparator.compare(o1, o2);
+			if (compare == 0) return compare;
+			compare = hierarchyComparator.compare(base.get(o1), base.get(o2));
 			if (compare != 0) return compare;
 			compare = levelComparator.compare(o1, o2);
 			if (compare != 0) return compare;

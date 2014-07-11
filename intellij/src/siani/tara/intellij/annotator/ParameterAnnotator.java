@@ -21,7 +21,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 		Concept concept = TaraPsiImplUtil.getContextOf(element);
 		int index = getIndexOf((Parameters) element.getParent(), (Parameter) element);
 		Model tree = TaraLanguage.getHeritage(((TaraFile) element.getContainingFile()).getParentModel());
-		DeclaredNode node;
+		Node node;
 		if (tree == null || (node = findNode(concept, tree)) == null) return;
 		NodeObject object = node.getObject();
 		List<Variable> variables = object.getVariables();
@@ -37,9 +37,9 @@ public class ParameterAnnotator extends TaraAnnotator {
 		}
 	}
 
-	private DeclaredNode findNode(Concept concept, Model tree) {
+	private Node findNode(Concept concept, Model tree) {
 		String metaQualifiedName = TaraUtil.getMetaQualifiedName(concept);
-		DeclaredNode node = tree.get(metaQualifiedName);
+		Node node = tree.get(metaQualifiedName);
 		return (node != null) ? node : tree.get(asAnonymous(metaQualifiedName));
 	}
 

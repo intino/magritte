@@ -1,14 +1,14 @@
 package siani.tara.compiler.core.errorcollection;
 
-import siani.tara.lang.DeclaredNode;
+import siani.tara.lang.Node;
 
 public class DependencyException extends TaraException {
 
 	private final String message;
-	private final DeclaredNode node;
+	private final Node node;
 	private final int line;
 
-	public DependencyException(String message, DeclaredNode node) {
+	public DependencyException(String message, Node node) {
 		this.message = message;
 		this.node = node;
 		if (node != null)
@@ -20,7 +20,7 @@ public class DependencyException extends TaraException {
 		return "Inconsistent dependency in " + node.getName();
 	}
 
-	public DeclaredNode getNode() {
+	public Node getNode() {
 		return node;
 	}
 

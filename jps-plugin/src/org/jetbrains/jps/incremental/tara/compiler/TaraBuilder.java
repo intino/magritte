@@ -65,8 +65,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			Map<ModuleBuildTarget, String> generationOutputs = pluginGeneration ? getStubGenerationOutputs(chunk, context) : finalOutputs;
 			String compilerOutput = generationOutputs.get(chunk.representativeTarget());
 			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
+			String metamodel = null;
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), compilerOutput, toCompilePaths, finalOutput, encoding,
-				getProjectIcon(chunk.getModules(), project.getName()), collectIconDirectories(chunk.getModules()));
+				getProjectIcon(chunk.getModules(), project.getName()), collectIconDirectories(chunk.getModules()), metamodel);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, pluginGeneration);
 			processMessages(chunk, context, handler);
 			return ExitCode.OK;

@@ -30,6 +30,14 @@
             description="Create a new package" icon="AllIcons.Nodes.Package">
     </action>
 
+    <group id="tara.export.group" popup="false">
+      <action id="ExportModel" class="siani.tara.intellij.actions.ExportModelAction" text="Export Model"
+              description="Export the compilated model with dependencies">
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift E"/>
+      </action>
+      <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
+      <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+    </group>
     <group id="tara.file.group" popup="false">
       <action id="grammar.Generate" class="siani.tara.intellij.actions.GenerateAction" text="Generate Intentions Code">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>

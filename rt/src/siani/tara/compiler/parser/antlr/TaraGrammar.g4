@@ -18,7 +18,7 @@ concept: doc? signature annotations? body?;
 
 signature: ((CASE IDENTIFIER)
          | (metaidentifier IDENTIFIER)
-         | (metaidentifier COLON identifierReference IDENTIFIER?)) parameters? ;
+         | (metaidentifier COLON identifierReference IDENTIFIER?) | IDENTIFIER) parameters? ;
 
 
 parameters : LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS;

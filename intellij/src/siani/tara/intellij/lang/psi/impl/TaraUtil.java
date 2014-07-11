@@ -59,11 +59,19 @@ public class TaraUtil {
 		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, Concept.class);
 		if (concepts != null) {
 			for (Concept concept : concepts) {
+				extractCases(concept, list);
 				list.add(concept);
-				Collections.addAll(list, concept.getCases());
 			}
 		}
 		return list.toArray(new Concept[list.size()]);
+	}
+
+	private static void extractCases(Concept concept, List<Concept> list) {
+		List<Concept> cases = Arrays.asList(concept.getCases());
+		list.addAll(cases);
+		for (Concept aCase : cases) {
+			extractCases(aCase, list);
+		}
 	}
 
 	@NotNull

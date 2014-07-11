@@ -1425,7 +1425,7 @@ public class TaraParser implements PsiParser {
   /* ********************************************************** */
   // ((CASE_KEY identifier)
   // 			| withHeritage
-  // 			| (metaIdentifier identifier)) parameters?
+  // 			| (metaIdentifier identifier) | IDENTIFIER_KEY ) parameters?
   public static boolean signature(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "signature")) return false;
     boolean result_ = false;
@@ -1440,7 +1440,7 @@ public class TaraParser implements PsiParser {
 
   // (CASE_KEY identifier)
   // 			| withHeritage
-  // 			| (metaIdentifier identifier)
+  // 			| (metaIdentifier identifier) | IDENTIFIER_KEY
   private static boolean signature_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "signature_0")) return false;
     boolean result_ = false;
@@ -1448,6 +1448,7 @@ public class TaraParser implements PsiParser {
     result_ = signature_0_0(builder_, level_ + 1);
     if (!result_) result_ = withHeritage(builder_, level_ + 1);
     if (!result_) result_ = signature_0_2(builder_, level_ + 1);
+    if (!result_) result_ = consumeToken(builder_, IDENTIFIER_KEY);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }

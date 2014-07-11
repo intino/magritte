@@ -6,6 +6,7 @@ import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import siani.tara.lang.DeclaredNode;
 import siani.tara.lang.Model;
+import siani.tara.lang.Node;
 import siani.tara.lang.NodeTree;
 
 import java.util.List;
@@ -33,14 +34,14 @@ public class SemanticAnalyzer {
 
 	private void startAnalysis(NodeTree concepts) {
 		detector.checkDuplicateRoots(concepts);
-		for (DeclaredNode concept : concepts)
+		for (Node concept : concepts)
 			conceptAnalysis(concept);
 	}
 
-	private void conceptAnalysis(DeclaredNode concept) {
+	private void conceptAnalysis(Node concept) {
 		detector.checkDuplicates(concept);
-		checker.checkAnnotations(concept);
-		for (DeclaredNode child : concept.getInnerNodes())
+		checker.checkAnnotations((DeclaredNode) concept);
+		for (Node child : concept.getInnerNodes())
 			conceptAnalysis(child);
 	}
 
@@ -50,8 +51,8 @@ public class SemanticAnalyzer {
 		usageChecker.finish();
 	}
 
-	private void referenceAnalysis(List<DeclaredNode> astNodes) {
-		for (DeclaredNode concept : astNodes) {
+	private void referenceAnalysis(List<Node> astNodes) {
+		for (Node concept : astNodes) {
 			referenceVerifier.checkConcept(concept, model);
 			usageChecker.checkUsage(concept, model);
 			referenceAnalysis(concept.getInnerNodes());

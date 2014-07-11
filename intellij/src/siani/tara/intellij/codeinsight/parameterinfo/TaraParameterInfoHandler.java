@@ -80,7 +80,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			Model model = TaraLanguage.getHeritage(((TaraFile) parameterList.getContainingFile()).getParentModel());
 			if (model == null) return parameterList;
 			Concept conceptContext = TaraPsiImplUtil.getContextOf(parameterList);
-			DeclaredNode node = findNodeOf(conceptContext, model);
+			Node node = findNodeOf(conceptContext, model);
 			if (node == null) return parameterList;
 			if (node.getObject().getVariables().isEmpty()) return parameterList;
 			List<Attribute> attributes = new ArrayList<>();
@@ -101,13 +101,13 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		return parameterList;
 	}
 
-	private DeclaredNode findNodeOf(Concept concept, Model wrapper) {
-		DeclaredNode node = wrapper.get(TaraUtil.getMetaQualifiedName(concept));
+	private Node findNodeOf(Concept concept, Model wrapper) {
+		Node node = wrapper.get(TaraUtil.getMetaQualifiedName(concept));
 		if (node != null) return node;
 		Concept context = TaraPsiImplUtil.getContextOf(concept);
-		DeclaredNode contextNode = wrapper.get(TaraUtil.getMetaQualifiedName(context));
+		Node contextNode = wrapper.get(TaraUtil.getMetaQualifiedName(context));
 		if (contextNode == null) return null;
-		for (DeclaredNode inner : contextNode.getInnerNodes())
+		for (Node inner : contextNode.getInnerNodes())
 			if (inner.getObject().getParentName() != null) {
 				DeclaredNode ancestry = wrapper.searchAncestry(inner);
 				node = checkIfCase(ancestry, concept.getType());

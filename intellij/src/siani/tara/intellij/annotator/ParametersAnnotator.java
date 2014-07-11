@@ -6,13 +6,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Parameters;
+import siani.tara.intellij.lang.psi.Signature;
+import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.DeclaredNode;
-import siani.tara.lang.Model;
-import siani.tara.lang.NodeObject;
-import siani.tara.lang.Variable;
+import siani.tara.lang.*;
 
 public class ParametersAnnotator extends TaraAnnotator {
 	@Override
@@ -20,7 +20,7 @@ public class ParametersAnnotator extends TaraAnnotator {
 		if (!Signature.class.isInstance(element)) return;
 		Concept concept = TaraPsiImplUtil.getContextOf(element);
 		Model heritage = TaraLanguage.getHeritage(((TaraFile)element.getContainingFile()).getParentModel());
-		DeclaredNode node;
+		Node node;
 		if (heritage == null || (node = findNode(concept, heritage)) == null) return;
 		NodeObject object = node.getObject();
 		Parameters[] parameters = PsiTreeUtil.getChildrenOfType(element, Parameters.class);
@@ -31,9 +31,9 @@ public class ParametersAnnotator extends TaraAnnotator {
 		}
 	}
 
-	private DeclaredNode findNode(Concept concept, Model tree) {
+	private Node findNode(Concept concept, Model tree) {
 		String metaQualifiedName = TaraUtil.getMetaQualifiedName(concept);
-		DeclaredNode node = tree.get(metaQualifiedName);
+		Node node = tree.get(metaQualifiedName);
 		return (node != null) ? node : tree.get(asAnonymous(metaQualifiedName));
 
 	}

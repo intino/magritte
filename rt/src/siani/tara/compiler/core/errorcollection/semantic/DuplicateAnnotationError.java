@@ -1,10 +1,10 @@
 package siani.tara.compiler.core.errorcollection.semantic;
 
-import siani.tara.lang.DeclaredNode;
+import siani.tara.lang.Node;
 
 public class DuplicateAnnotationError extends SemanticError implements SemanticError.FatalError {
 
-	public DuplicateAnnotationError(String token, DeclaredNode node) {
+	public DuplicateAnnotationError(String token, Node node) {
 		super(token, node);
 	}
 

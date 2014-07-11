@@ -15,7 +15,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 
 	private final String file;
 	Model model;
-	Stack<DeclaredNode> conceptStack = new Stack<>();
+	Stack<Node> conceptStack = new Stack<>();
 	Stack<NodeObject> facetApplyStack = new Stack<>();
 	String box = "";
 	HashMap<String, String> imports = new HashMap<>();
@@ -39,46 +39,47 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterConcept(@NotNull ConceptContext ctx) {
-		DeclaredNode container = !conceptStack.empty() ? conceptStack.peek() : null;
-		String identifier = "";
-		if (ctx.signature().IDENTIFIER() != null)
-			identifier = ctx.signature().IDENTIFIER().getText();
-		String type = (ctx.signature().metaidentifier() != null) ?
-			ctx.signature().metaidentifier().getText() : container.getObject().getType();
-		NodeObject object = new NodeObject(type, identifier);
-		DeclaredNode node = new DeclaredNode(object, container);
-		node.setLine(ctx.getStart().getLine());
-		node.setFile(file);
-		node.setBox(box);
-		node.setImports(imports.keySet().toArray(new String[imports.keySet().size()]));
-		setParent(ctx, node);
+		DeclaredNode container = !conceptStack.empty() ? (DeclaredNode) conceptStack.peek() : null;
+		Node node;
+		String name = (ctx.signature().IDENTIFIER() != null) ? ctx.signature().IDENTIFIER().getText() : "";
+		String type = (ctx.signature().metaidentifier() != null) ? ctx.signature().metaidentifier().getText() :
+			container.getObject().getType();// container can't be null in case
+		NodeObject object = new NodeObject(type, name);
+		String parent = getParent(ctx);
+		node = name.isEmpty() && ctx.body() == null ? new LinkNode(parent, container) : new DeclaredNode(object, container);
+		addHeaderInformation(ctx, node);
 		if (container != null) {
 			if (ctx.signature().CASE() != null) {
 				object.setCase(true);
 				object.setParentName(container.getQualifiedName());
 				object.setParentObject(container.getObject());
-			} else if (node.getName().isEmpty() && ctx.body() == null) { //treat as inner reference
-				container.addInnerAsReference(node.getQualifiedName(), node);
-			} else container.add(node);
-		} else model.add(node);
+			} else object.setParentName(parent);
+			container.add(node);
+		} else model.add((DeclaredNode) node);
 		node.calculateQualifiedName();
-		object.setDeclaredNode(node.getQualifiedName());
+		if (node instanceof DeclaredNode) object.setDeclaredNodeQN(node.getQualifiedName());
 		conceptStack.push(node);
-
-	}
-
-	private void setParent(ConceptContext ctx, DeclaredNode node) {
-		IdentifierReferenceContext identifierReference = ctx.signature().identifierReference();
-		if (identifierReference != null)
-			node.getObject().setParentName(identifierReference.getText());
 	}
 
 	@Override
 	public void exitConcept(@NotNull ConceptContext ctx) {
-		DeclaredNode node = conceptStack.peek();
-		model.addIdentifier(node.getObject().getName());
+		Node node = conceptStack.peek();
+		if (node instanceof DeclaredNode)
+			model.addIdentifier(node.getObject().getName());
 		model.add(node.getQualifiedName(), node);
 		conceptStack.pop();
+	}
+
+	private void addHeaderInformation(ConceptContext ctx, Node node) {
+		node.setLine(ctx.getStart().getLine());
+		node.setFile(file);
+		node.setBox(box);
+		node.setImports(imports.keySet().toArray(new String[imports.keySet().size()]));
+	}
+
+	private String getParent(ConceptContext ctx) {
+		IdentifierReferenceContext identifierReference = ctx.signature().identifierReference();
+		return identifierReference != null ? identifierReference.getText() : null;
 	}
 
 	@Override

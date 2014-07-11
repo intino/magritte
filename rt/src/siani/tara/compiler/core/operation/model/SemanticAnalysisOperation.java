@@ -8,8 +8,8 @@ import siani.tara.compiler.core.errorcollection.message.Message;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
 import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.compiler.semantic.SemanticAnalyzer;
-import siani.tara.lang.DeclaredNode;
 import siani.tara.lang.Model;
+import siani.tara.lang.Node;
 
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -41,7 +41,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 		}
 	}
 
-	private SourceUnit getSourceFromFile(Collection<SourceUnit> sources, DeclaredNode node) {
+	private SourceUnit getSourceFromFile(Collection<SourceUnit> sources, Node node) {
 		if (node == null) return null;
 		for (SourceUnit source : sources)
 			if (source.getName().equals(node.getFile())) return source;

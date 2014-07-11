@@ -5,6 +5,7 @@ import siani.tara.compiler.core.errorcollection.semantic.NoRootError;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import siani.tara.compiler.core.errorcollection.semantic.WrongAnnotationError;
 import siani.tara.lang.DeclaredNode;
+import siani.tara.lang.Node;
 import siani.tara.lang.NodeObject.AnnotationType;
 import siani.tara.lang.NodeTree;
 
@@ -37,11 +38,11 @@ public class AnnotationChecker {
 	}
 
 	private void findRootConcepts(NodeTree conceptList) {
-		for (DeclaredNode concept : conceptList)
+		for (Node concept : conceptList)
 			thereIsAnyRoot = isRootConcept(concept) || thereIsAnyRoot;
 	}
 
-	private boolean isRootConcept(DeclaredNode concept) {
+	private boolean isRootConcept(Node concept) {
 		annotations = Arrays.asList(concept.getObject().getAnnotations());
 		return annotations.contains(AnnotationType.ROOT);
 	}

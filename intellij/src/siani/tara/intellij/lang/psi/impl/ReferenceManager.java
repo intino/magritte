@@ -11,8 +11,9 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.codeinsight.JavaHelper;
 import siani.tara.intellij.lang.psi.*;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContextOf;
 
@@ -89,7 +90,7 @@ public class ReferenceManager {
 	}
 
 	private static Concept[] getPossibleRoots(Identifier identifier) {
-		List<Concept> list = new ArrayList();
+		Set<Concept> list = new HashSet<>();
 		Concept parent = getContextOf(identifier);
 		while (parent != null) {
 			for (Concept sibling : parent.getConceptSiblings()) {
@@ -98,6 +99,10 @@ public class ReferenceManager {
 			}
 			parent = getContextOf(parent);
 		}
+		Concept[] concepts = ((TaraFile) identifier.getContainingFile()).getConcepts();
+		for (Concept concept : concepts)
+			if (identifier.getText().equals(concept.getName()))
+				list.add(concept);
 		return list.toArray(new Concept[list.size()]);
 	}
 

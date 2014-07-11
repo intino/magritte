@@ -35,6 +35,7 @@ public class PluginUpdater {
 			GsonBuilder gsonBuilder = new GsonBuilder();
 			gsonBuilder.setPrettyPrinting();
 			gsonBuilder.registerTypeAdapter(Variable.class, new VariableSerializer());
+			gsonBuilder.registerTypeAdapter(Node.class, new NodeAdapter());
 			Gson gson = gsonBuilder.excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 			writer.write(gson.toJson(model));
 			writer.close();
@@ -81,6 +82,18 @@ public class PluginUpdater {
 			return object; // or throw an IllegalArgumentException
 
 		}
+	}
+
+	private class NodeAdapter implements JsonSerializer<Node> {
+		@Override
+		public JsonElement serialize(Node src, Type typeOfSrc, JsonSerializationContext context) {
+			JsonObject result = new JsonObject();
+			result.add("objectType", new JsonPrimitive(src.getClass().getSimpleName()));
+			result.add("properties", context.serialize(src, src.getClass()));
+
+			return result;
+		}
+
 
 	}
 }

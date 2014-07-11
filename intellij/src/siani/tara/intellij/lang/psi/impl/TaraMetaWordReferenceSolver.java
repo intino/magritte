@@ -10,7 +10,7 @@ import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
-import siani.tara.lang.DeclaredNode;
+import siani.tara.lang.Node;
 import siani.tara.lang.NodeWord;
 import siani.tara.lang.Variable;
 
@@ -20,10 +20,10 @@ import java.util.List;
 
 public class TaraMetaWordReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
-	private final DeclaredNode node;
+	private final Node node;
 	private final Variable variable;
 
-	public TaraMetaWordReferenceSolver(PsiElement element, TextRange range, DeclaredNode node, Variable variable) {
+	public TaraMetaWordReferenceSolver(PsiElement element, TextRange range, Node node, Variable variable) {
 		super(element, range);
 		this.node = node;
 		this.variable = variable;

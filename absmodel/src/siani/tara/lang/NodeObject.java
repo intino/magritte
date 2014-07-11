@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NodeObject {
-	private String declaredNode;
+	private String declaredNodeQN;
 	private boolean caseConcept = false;
 	private List<DeclaredNode> cases;
 	private String doc;
@@ -46,12 +46,12 @@ public class NodeObject {
 		return result.toArray(new NodeAttribute[result.size()]);
 	}
 
-	public String getDeclaredNode() {
-		return declaredNode;
+	public String getDeclaredNodeQN() {
+		return declaredNodeQN;
 	}
 
-	public void setDeclaredNode(String declaredNode) {
-		this.declaredNode = declaredNode;
+	public void setDeclaredNodeQN(String declaredNodeQN) {
+		this.declaredNodeQN = declaredNodeQN;
 	}
 
 	public List<String> getParameters() {

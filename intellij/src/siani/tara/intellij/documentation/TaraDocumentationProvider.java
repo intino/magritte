@@ -12,8 +12,8 @@ import siani.tara.intellij.lang.psi.MetaIdentifier;
 import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.DeclaredNode;
 import siani.tara.lang.Model;
+import siani.tara.lang.Node;
 
 
 public class TaraDocumentationProvider extends AbstractDocumentationProvider {
@@ -45,7 +45,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	private String extractMetaDocumentation(Concept element) {
 		Model heritage = TaraLanguage.getHeritage(((TaraFile) element.getContainingFile()).getParentModel());
 		if (heritage == null) return null;
-		DeclaredNode node = heritage.searchNode(TaraUtil.getMetaQualifiedName(element));
+		Node node = heritage.searchNode(TaraUtil.getMetaQualifiedName(element));
 		if (node == null) return null;
 		return node.getObject().getDoc();
 	}
