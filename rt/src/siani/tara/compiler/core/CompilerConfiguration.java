@@ -20,6 +20,7 @@ public class CompilerConfiguration {
 	private String version = "1.0";
 	private String description = "";
 	private ArrayList<String> icons = new ArrayList<>();
+	private String modelsDirectory;
 
 
 	public CompilerConfiguration() {
@@ -178,5 +179,13 @@ public class CompilerConfiguration {
 
 	public void setModule(String module) {
 		this.module = module;
+	}
+
+	public void setModelsDirectory(String modelsDirectory) {
+		this.modelsDirectory = modelsDirectory;
+	}
+
+	public String getModelsDirectory() {
+		return modelsDirectory;
 	}
 }

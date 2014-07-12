@@ -180,7 +180,7 @@ public class TaraUtil {
 		while (getContextOf(container) != null) {
 			container = getContextOf(container);
 			String name = container.getName();
-			id = (name == null ? "annonymous" : name) + "." + id;
+			id = (name == null ? "anonymous" : name) + "." + id;
 		}
 		return id;
 	}

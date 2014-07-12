@@ -1,6 +1,6 @@
 package siani.tara.compiler.core.operation.model;
 
-import siani.tara.compiler.codegeneration.intellij.PluginUpdater;
+import siani.tara.compiler.codegeneration.model.ModelSerializer;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.Phases;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
@@ -10,11 +10,11 @@ import siani.tara.lang.Model;
 
 import java.util.logging.Logger;
 
-public class PluginUpdateOperation extends ModelOperation {
-	private static final Logger LOG = Logger.getLogger(PluginUpdateOperation.class.getName());
+public class SaveModelOperation extends ModelOperation {
+	private static final Logger LOG = Logger.getLogger(SaveModelOperation.class.getName());
 	private final CompilationUnit unit;
 
-	public PluginUpdateOperation(CompilationUnit unit) {
+	public SaveModelOperation(CompilationUnit unit) {
 		this.unit = unit;
 	}
 
@@ -22,8 +22,8 @@ public class PluginUpdateOperation extends ModelOperation {
 	public void call(Model model) throws CompilationFailedException {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating plugin code");
-			PluginUpdater generator = new PluginUpdater(unit.getConfiguration());
-			generator.generate(model);
+			ModelSerializer generator = new ModelSerializer(unit.getConfiguration());
+			generator.serialize(model);
 			unit.getErrorCollector().failIfErrors();
 		} catch (TaraException e) {
 			LOG.severe("Error during plugin generation: " + e.getMessage() + "\n");

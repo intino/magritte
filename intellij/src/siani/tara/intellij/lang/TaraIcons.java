@@ -14,6 +14,7 @@ public class TaraIcons {
 	public static final String CASE_13 = "CASE_13";
 	public static final String BASE_13 = "BASE_13";
 	public static final String ICON_100 = "ICON_100";
+	public static final String MAGRITTE = "MAGRITTE";
 
 	@NonNls
 	public static HashMap<String, Icon> icons = new HashMap<>();

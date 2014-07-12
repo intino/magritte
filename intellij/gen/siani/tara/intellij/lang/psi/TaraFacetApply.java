@@ -7,11 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraFacetApply extends TaraPsiElement {
 
-  @Nullable
-  TaraIdentifier getIdentifier();
-
-  @Nullable
-  TaraIdentifierReference getIdentifierReference();
+  @NotNull
+  List<TaraIdentifierReference> getIdentifierReferenceList();
 
   @Nullable
   TaraParameters getParameters();

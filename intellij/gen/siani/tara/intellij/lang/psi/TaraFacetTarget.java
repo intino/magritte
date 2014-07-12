@@ -11,6 +11,6 @@ public interface TaraFacetTarget extends TaraPsiElement {
   TaraBody getBody();
 
   @Nullable
-  TaraIdentifier getIdentifier();
+  TaraIdentifierReference getIdentifierReference();
 
 }

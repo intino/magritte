@@ -20,7 +20,7 @@
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
   <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends> -->
+  <depends>com.model.modules.lang</depends> -->
 
   <actions>
     <action id="NewConcept" class="siani.tara.intellij.actions.CreateTaraFileAction">
@@ -71,7 +71,7 @@
     <moduleType id="TARA_MODULE" implementationClass="siani.tara.intellij.project.module.TaraModuleType"/>
     <treeStructureProvider implementation="siani.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="siani.tara.intellij.actions.TaraTemplatesFactory"/>
-    <!--<codeInsight.lineMarkerProvider language="Tara" implementationClass="siani.tara.intellij.codeinsight.TaraLineMarkerProvider"/>-->
+    <!--<codeInsight.lineMarkerProvider language="Tara" implementationClass="siani.tara.model.codeinsight.TaraLineMarkerProvider"/>-->
     <gotoRelatedProvider implementation="siani.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
     <projectConfigurable instance="siani.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
@@ -99,7 +99,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.BoxReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParameterAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParametersAnnotator"/>
-    <!--<annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptTypeAnnotator"/>-->
+    <!--<annotator language="Tara" implementationClass="siani.tara.model.annotator.ConceptTypeAnnotator"/>-->
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
     <completion.contributor language="Tara"
@@ -108,7 +108,7 @@
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraAnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="Tara"
                                   implementationClass="siani.tara.intellij.structureview.StructureViewFactory"/>
-    <!--<psi.referenceContributor implementation="siani.tara.intellij.lang.psi.resolve.TaraReferenceContributor"/>-->
+    <!--<psi.referenceContributor implementation="siani.tara.model.lang.psi.resolve.TaraReferenceContributor"/>-->
     <nameSuggestionProvider implementation="siani.tara.intellij.refactoring.NameSuggestionProvider"/>
     <lang.elementManipulator forClass="siani.tara.intellij.lang.psi.TaraIdentifier"
                              implementationClass="siani.tara.intellij.lang.psi.impl.IdentifierManipulator"/>
@@ -123,8 +123,9 @@
     <lang.foldingBuilder language="Tara" implementationClass="siani.tara.intellij.TaraFoldingBuilder"/>
     <projectService serviceInterface="siani.tara.intellij.codeinsight.JavaHelper"
                     serviceImplementation="siani.tara.intellij.codeinsight.JavaHelper$Impl"/>
-    <!--<referenceImporter implementation="siani.tara.intellij.annotator.imports.TaraReferenceImporter"/>-->
-    <!--<lang.formatter language="Tara" implementationClass="siani.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
+    <facetType implementation="siani.tara.intellij.project.facet.MagritteFacetType"/>
+    <!--<referenceImporter implementation="siani.tara.model.annotator.imports.TaraReferenceImporter"/>-->
+    <!--<lang.formatter language="Tara" implementationClass="siani.tara.model.formatter.TaraFormattingModelBuilder"/>-->
     <moveFileHandler implementation="siani.tara.intellij.refactoring.move.TaraFileMoveHandler"/>
     <refactoring.moveHandler implementation="siani.tara.intellij.refactoring.move.TaraMoveConcept"/>
     <lang.importOptimizer language="Tara"

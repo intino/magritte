@@ -1,4 +1,4 @@
-package siani.tara.compiler.codegeneration.intellij;
+package siani.tara.compiler.codegeneration;
 
 import java.io.*;
 import java.nio.file.FileSystemException;

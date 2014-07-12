@@ -5,8 +5,9 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import siani.tara.lang.*;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import static siani.tara.compiler.parser.antlr.TaraGrammar.*;
@@ -18,7 +19,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	Stack<Node> conceptStack = new Stack<>();
 	Stack<NodeObject> facetApplyStack = new Stack<>();
 	String box = "";
-	HashMap<String, String> imports = new HashMap<>();
+	Set<String> imports = new HashSet<>();
 	String currentDocAttribute = "";
 
 	public TaraAbstractTreeGenerator(Model model, String file) {
@@ -34,7 +35,11 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterAnImport(@NotNull AnImportContext ctx) {
-		imports.put(ctx.headerReference().getText(), "use");
+		String text = ctx.headerReference().getText();
+		if (ctx.METAMODEL() != null)
+			model.setParentModel(text);
+		else
+			imports.add(text);
 	}
 
 	@Override
@@ -74,7 +79,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		node.setLine(ctx.getStart().getLine());
 		node.setFile(file);
 		node.setBox(box);
-		node.setImports(imports.keySet().toArray(new String[imports.keySet().size()]));
+		node.addImports(imports);
 	}
 
 	private String getParent(ConceptContext ctx) {
@@ -86,7 +91,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	public void enterFacetApply(@NotNull FacetApplyContext ctx) {
 		NodeObject object = conceptStack.peek().getObject();
 		if (!facetApplyStack.isEmpty()) object.setParentObject(facetApplyStack.peek());
-		DeclaredNode facetNode = new DeclaredNode(new NodeObject("", ctx.IDENTIFIER().getText()), null);
+		DeclaredNode facetNode = new DeclaredNode(new NodeObject("", ctx.identifierReference(0).getText()), null);
 		object.applyFacet(facetNode);
 		conceptStack.push(facetNode);
 	}
@@ -99,7 +104,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterFacetTarget(@NotNull FacetTargetContext ctx) {
 		NodeObject object = conceptStack.peek().getObject();
-		object.addFacetTarget(new DeclaredNode(new NodeObject("", ctx.IDENTIFIER().getText()), null));
+		object.addFacetTarget(new DeclaredNode(new NodeObject("", ctx.identifierReference().getText()), null));
 	}
 
 	@Override
@@ -213,8 +218,8 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		NodeObject object = conceptStack.peek().getObject();
 		attribute.setDoc(currentDocAttribute);
 		if (ctx.getParent().getParent().getParent() instanceof FacetTargetContext) {
-			List<DeclaredNode> facetApplies = object.getFacetApplies();
-			facetApplies.get(facetApplies.size() - 1).getObject().add(attribute);
+			List<DeclaredNode> targets = object.getFacetTargets();
+			targets.get(targets.size() - 1).getObject().add(attribute);
 		} else object.add(attribute);
 	}
 

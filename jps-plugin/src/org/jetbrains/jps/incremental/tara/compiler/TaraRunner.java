@@ -35,7 +35,8 @@ public class TaraRunner {
 			writer.write(TaraRtConstants.PROJECT + "\n" + projectName + "\n");
 			writer.write(TaraRtConstants.MODULE + "\n" + moduleName + "\n");
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
-			if (metamodel != null) writer.write(TaraRtConstants.METAMODEL_PATH + "\n" + encoding + "\n");
+			if (metamodel != null) writer.write(TaraRtConstants.MODELS_PATH + "\n" + PathManager.getPluginsPath() +
+				File.separator + "classes" + File.separator + projectName + "\n");
 			writer.write(TaraRtConstants.PLUGIN_HOME + "\n");
 			writer.write(PathManager.getPluginsPath() + File.separator + "tara" + File.separator + "\n");
 			for (String iconPath : iconPaths) {

@@ -22,7 +22,7 @@ public class TaraRtConstants {
 	public static final String NO_TARA = "Cannot compile Tara files: No Tara generator is defined";
 	public static final String CLASSPATH = "classpath";
 	public static final String MODULE = "module";
-	public static final String METAMODEL_PATH = "metamodel";
+	public static final String MODELS_PATH = "models";
 
 	private TaraRtConstants() {
 	}

@@ -1,14 +1,14 @@
 package siani.tara.compiler.core;
 
 import siani.tara.compiler.codegeneration.ClassGenerator;
-import siani.tara.compiler.codegeneration.intellij.FileSystemUtils;
+import siani.tara.compiler.codegeneration.FileSystemUtils;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.ErrorCollector;
 import siani.tara.compiler.core.operation.Operation;
 import siani.tara.compiler.core.operation.SrcToClassOperation;
 import siani.tara.compiler.core.operation.model.ModelOperation;
-import siani.tara.compiler.core.operation.model.PluginUpdateOperation;
-import siani.tara.compiler.core.operation.module.ASTDependencyResolutionOperation;
+import siani.tara.compiler.core.operation.model.SaveModelOperation;
+import siani.tara.compiler.core.operation.model.ModelDependencyResolutionOperation;
 import siani.tara.compiler.core.operation.module.MergeToModelOperation;
 import siani.tara.compiler.core.operation.module.ModuleUnitOperation;
 import siani.tara.compiler.core.operation.sourceunit.ImportDataOperation;
@@ -32,7 +32,6 @@ public class CompilationUnit extends ProcessingUnit {
 	private Map<String, SourceUnit> sourceUnits;
 	private Model model;
 	private LinkedList<Operation>[] phaseOperations;
-	private ModelOperation pluginUpdateOperation = new PluginUpdateOperation(this);
 	private SrcToClassOperation classGeneration = new SrcToClassOperation() {
 		@Override
 		public void call() throws CompilationFailedException {
@@ -58,9 +57,9 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ImportDataOperation(this.errorCollector), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
 //		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
-		addPhaseOperation(new ASTDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
+		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
-		if (pluginGeneration) addPhaseOperation(pluginUpdateOperation, Phases.PLUGIN_GENERATION);
+		if (pluginGeneration) addPhaseOperation(new SaveModelOperation(this), Phases.PLUGIN_GENERATION);
 		addPhaseOperation(output, Phases.OUTPUT);
 
 	}
@@ -126,11 +125,11 @@ public class CompilationUnit extends ProcessingUnit {
 	private void doPhaseOperation(Operation operation) {
 		if (operation instanceof SourceUnitOperation)
 			applyToSourceUnits((SourceUnitOperation) operation);
-		if (operation instanceof SrcToClassOperation)
+		else if (operation instanceof SrcToClassOperation)
 			((SrcToClassOperation) operation).call();
-		if (operation instanceof ModuleUnitOperation)
+		else if (operation instanceof ModuleUnitOperation)
 			((ModuleUnitOperation) operation).call(sourceUnits.values());
-		if (operation instanceof ModelOperation)
+		else if (operation instanceof ModelOperation)
 			((ModelOperation) operation).call(model);
 	}
 

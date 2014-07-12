@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Model {
 	private String name;
+	private String parentModel;
 	private Map<String, Node> nodeTable = new HashMap<>();
 	private NodeTree nodeTree = new NodeTree();
 	private Set<String> identifiers = new HashSet<>();
@@ -131,4 +132,11 @@ public class Model {
 		nodeTable = sorted_map;
 	}
 
+	public String getParentModel() {
+		return parentModel;
+	}
+
+	public void setParentModel(String parentModel) {
+		this.parentModel = parentModel;
+	}
 }

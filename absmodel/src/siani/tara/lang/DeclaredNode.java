@@ -43,7 +43,7 @@ public class DeclaredNode extends Node {
 
 	@Override
 	protected String getNodeRoute() {
-		String name = !getName().isEmpty() ? getName() : "[" + getObject().getParentName() + ANNONYMOUS + "]";
+		String name = !getName().isEmpty() ? getName() : "[" + getObject().getParentName() + ANONYMOUS + "]";
 		if (container != null && !getObject().isCase()) return container.getQualifiedName() + "." + name;
 		if (getObject().isCase())
 			return getContainer().getQualifiedName().substring(0, getContainer().getQualifiedName().lastIndexOf(".")) + "." + name;

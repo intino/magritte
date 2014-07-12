@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
+// Generated from /Users/octavio/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
 
 package siani.tara.compiler.parser.antlr;
 
@@ -1172,7 +1172,7 @@ public class TaraGrammar extends Parser {
 				setState(240); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << METAIDENTIFIER) | (1L << INTENTION) | (1L << CASE) | (1L << AS) | (1L << ON) | (1L << VAR) | (1L << IDENTIFIER) | (1L << DOC))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << METAIDENTIFIER) | (1L << INTENTION) | (1L << CASE) | (1L << ON) | (1L << IS) | (1L << VAR) | (1L << IDENTIFIER) | (1L << DOC))) != 0) );
 			setState(242); match(DEDENT);
 			}
 		}
@@ -1188,15 +1188,17 @@ public class TaraGrammar extends Parser {
 	}
 
 	public static class FacetApplyContext extends ParserRuleContext {
-		public TerminalNode AS() { return getToken(TaraGrammar.AS, 0); }
-		public IdentifierReferenceContext identifierReference() {
-			return getRuleContext(IdentifierReferenceContext.class,0);
+		public List<IdentifierReferenceContext> identifierReference() {
+			return getRuleContexts(IdentifierReferenceContext.class);
 		}
-		public TerminalNode IDENTIFIER() { return getToken(TaraGrammar.IDENTIFIER, 0); }
 		public TerminalNode WITH() { return getToken(TaraGrammar.WITH, 0); }
 		public ParametersContext parameters() {
 			return getRuleContext(ParametersContext.class,0);
 		}
+		public IdentifierReferenceContext identifierReference(int i) {
+			return getRuleContext(IdentifierReferenceContext.class,i);
+		}
+		public TerminalNode IS() { return getToken(TaraGrammar.IS, 0); }
 		public FacetApplyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1218,8 +1220,8 @@ public class TaraGrammar extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(244); match(AS);
-			setState(245); match(IDENTIFIER);
+			setState(244); match(IS);
+			setState(245); identifierReference();
 			setState(247);
 			_la = _input.LA(1);
 			if (_la==LEFT_PARENTHESIS) {
@@ -1251,11 +1253,13 @@ public class TaraGrammar extends Parser {
 	}
 
 	public static class FacetTargetContext extends ParserRuleContext {
+		public IdentifierReferenceContext identifierReference() {
+			return getRuleContext(IdentifierReferenceContext.class,0);
+		}
 		public TerminalNode ON() { return getToken(TaraGrammar.ON, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
-		public TerminalNode IDENTIFIER() { return getToken(TaraGrammar.IDENTIFIER, 0); }
 		public FacetTargetContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1278,7 +1282,7 @@ public class TaraGrammar extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(253); match(ON);
-			setState(254); match(IDENTIFIER);
+			setState(254); identifierReference();
 			setState(256);
 			_la = _input.LA(1);
 			if (_la==NEW_LINE_INDENT) {
@@ -3248,11 +3252,11 @@ public class TaraGrammar extends Parser {
 		"\u00ee\3\2\2\2\u00ee\u00ec\3\2\2\2\u00ee\u00ef\3\2\2\2\u00ef\u00f1\3\2"+
 		"\2\2\u00f0\u00e9\3\2\2\2\u00f1\u00f2\3\2\2\2\u00f2\u00f0\3\2\2\2\u00f2"+
 		"\u00f3\3\2\2\2\u00f3\u00f4\3\2\2\2\u00f4\u00f5\7A\2\2\u00f5\37\3\2\2\2"+
-		"\u00f6\u00f7\7\t\2\2\u00f7\u00f9\78\2\2\u00f8\u00fa\5\22\n\2\u00f9\u00f8"+
+		"\u00f6\u00f7\7\13\2\2\u00f7\u00f9\5X-\2\u00f8\u00fa\5\22\n\2\u00f9\u00f8"+
 		"\3\2\2\2\u00f9\u00fa\3\2\2\2\u00fa\u00fd\3\2\2\2\u00fb\u00fc\7\f\2\2\u00fc"+
 		"\u00fe\5X-\2\u00fd\u00fb\3\2\2\2\u00fd\u00fe\3\2\2\2\u00fe!\3\2\2\2\u00ff"+
-		"\u0100\7\n\2\2\u0100\u0102\78\2\2\u0101\u0103\5\36\20\2\u0102\u0101\3"+
-		"\2\2\2\u0102\u0103\3\2\2\2\u0103#\3\2\2\2\u0104\u0106\5\f\7\2\u0105\u0104"+
+		"\u0100\7\n\2\2\u0100\u0102\5X-\2\u0101\u0103\5\36\20\2\u0102\u0101\3\2"+
+		"\2\2\u0102\u0103\3\2\2\2\u0103#\3\2\2\2\u0104\u0106\5\f\7\2\u0105\u0104"+
 		"\3\2\2\2\u0105\u0106\3\2\2\2\u0106\u0107\3\2\2\2\u0107\u0112\7\'\2\2\u0108"+
 		"\u0113\5,\27\2\u0109\u0113\5\62\32\2\u010a\u0113\5\64\33\2\u010b\u0113"+
 		"\5\66\34\2\u010c\u0113\5.\30\2\u010d\u0113\5\60\31\2\u010e\u0113\58\35"+

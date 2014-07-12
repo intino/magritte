@@ -30,8 +30,8 @@ public class TaraFacetTargetImpl extends ASTWrapperPsiElement implements TaraFac
 
   @Override
   @Nullable
-  public TaraIdentifier getIdentifier() {
-    return findChildByClass(TaraIdentifier.class);
+  public TaraIdentifierReference getIdentifierReference() {
+    return findChildByClass(TaraIdentifierReference.class);
   }
 
 }

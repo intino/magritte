@@ -14,7 +14,7 @@ import com.intellij.lang.PsiParser;
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class TaraParser implements PsiParser {
 
-  public static final Logger LOG_ = Logger.getInstance("siani.tara.intellij.lang.parser.TaraParser");
+  public static final Logger LOG_ = Logger.getInstance("siani.tara.model.lang.parser.TaraParser");
 
   public ASTNode parse(IElementType root_, PsiBuilder builder_) {
     boolean result_;
@@ -674,16 +674,16 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // AS identifier parameters? (WITH identifierReference)?
+  // IS identifierReference parameters? (WITH identifierReference)?
   public static boolean facetApply(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "facetApply")) return false;
-    if (!nextTokenIs(builder_, AS)) return false;
+    if (!nextTokenIs(builder_, IS)) return false;
     boolean result_ = false;
     boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, AS);
+    result_ = consumeToken(builder_, IS);
     pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, identifier(builder_, level_ + 1));
+    result_ = result_ && report_error_(builder_, identifierReference(builder_, level_ + 1));
     result_ = pinned_ && report_error_(builder_, facetApply_2(builder_, level_ + 1)) && result_;
     result_ = pinned_ && facetApply_3(builder_, level_ + 1) && result_;
     exit_section_(builder_, level_, marker_, FACET_APPLY, result_, pinned_, null);
@@ -716,7 +716,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ON identifier body?
+  // ON identifierReference body?
   public static boolean facetTarget(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "facetTarget")) return false;
     if (!nextTokenIs(builder_, ON)) return false;
@@ -725,7 +725,7 @@ public class TaraParser implements PsiParser {
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, ON);
     pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, identifier(builder_, level_ + 1));
+    result_ = result_ && report_error_(builder_, identifierReference(builder_, level_ + 1));
     result_ = pinned_ && facetTarget_2(builder_, level_ + 1) && result_;
     exit_section_(builder_, level_, marker_, FACET_TARGET, result_, pinned_, null);
     return result_ || pinned_;

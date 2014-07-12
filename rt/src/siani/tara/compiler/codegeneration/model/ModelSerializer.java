@@ -1,4 +1,4 @@
-package siani.tara.compiler.codegeneration.intellij;
+package siani.tara.compiler.codegeneration.model;
 
 import com.google.gson.*;
 import siani.tara.compiler.core.CompilerConfiguration;
@@ -11,24 +11,22 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
-import static siani.tara.compiler.codegeneration.PathManager.SEP;
-
-public class PluginUpdater {
+public class ModelSerializer {
 
 	CompilerConfiguration conf;
 
-	public PluginUpdater(CompilerConfiguration conf) {
+	public ModelSerializer(CompilerConfiguration conf) {
 		this.conf = conf;
 	}
 
-	public void generate(Model model) throws TaraException {
+	public void serialize(Model model) throws TaraException {
 		serializeNodes(model);
 		System.out.println("Nodes serialized. Plugin Updated");
 	}
 
 	private void serializeNodes(Model model) throws TaraException {
 		try {
-			String parent = conf.getPluginDirectory() + SEP + "classes" + SEP + conf.getProject();
+			String parent = conf.getModelsDirectory();
 			File file = new File(parent, conf.getModule() + ".json");
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);

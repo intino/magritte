@@ -1,12 +1,12 @@
 package siani.tara.lang;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 
 public abstract class Node {
 
-	protected transient static final String ANNONYMOUS = "@annonymous";
+	protected transient static final String ANONYMOUS = "@anonymous";
 	protected transient static final String LINK = "@link";
 	protected String qualifiedName;
 	protected String file;
@@ -71,9 +71,9 @@ public abstract class Node {
 		return imports;
 	}
 
-	public void setImports(String[] imports) {
-		if (imports.length > 0)
-			Collections.addAll(this.imports, imports);
+	public void addImports(Collection<String> imports) {
+		if (imports.size() > 0)
+			this.imports.addAll(imports);
 	}
 
 	public void setQualifiedName(String qualifiedName) {
