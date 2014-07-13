@@ -4,7 +4,9 @@ import java.util.*;
 
 public class Model {
 	private String name;
-	private String parentModel;
+	private String parentModelName;
+	private boolean terminal;
+	private transient Model parentModel;
 	private Map<String, Node> nodeTable = new HashMap<>();
 	private NodeTree nodeTree = new NodeTree();
 	private Set<String> identifiers = new HashSet<>();
@@ -127,16 +129,33 @@ public class Model {
 	}
 
 	public void sortNodeTable(Comparator<String> comparator) {
-		TreeMap<String, Node> sorted_map = new TreeMap<>(comparator);
-		sorted_map.putAll(nodeTable);
-		nodeTable = sorted_map;
+		Map<String, Node> newMap;
+		newMap = comparator == null ? new HashMap<String, Node>() : new TreeMap<String, Node>(comparator);
+		newMap.putAll(nodeTable);
+		nodeTable = newMap;
 	}
 
-	public String getParentModel() {
+	public String getParentModelName() {
+		return parentModelName;
+	}
+
+	public void setParentModelName(String parentModelName) {
+		this.parentModelName = parentModelName;
+	}
+
+	public Model getParentModel() {
 		return parentModel;
 	}
 
-	public void setParentModel(String parentModel) {
+	public void setParentModel(Model parentModel) {
 		this.parentModel = parentModel;
+	}
+
+	public boolean isTerminal() {
+		return terminal;
+	}
+
+	public void setTerminal(boolean terminal) {
+		this.terminal = terminal;
 	}
 }

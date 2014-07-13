@@ -9,11 +9,11 @@ import java.util.Map;
 
 import static siani.tara.lang.NodeObject.AnnotationType;
 
-public class ModelDependencyResolver {
+public class InsideModelDependencyResolver {
 	Model model;
 	List<String> toProcessNodes = new ArrayList<>();
 
-	public ModelDependencyResolver(Model model) throws DependencyException {
+	public InsideModelDependencyResolver(Model model) throws DependencyException {
 		this.model = model;
 	}
 

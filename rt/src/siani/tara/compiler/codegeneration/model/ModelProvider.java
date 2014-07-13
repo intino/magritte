@@ -1,6 +1,7 @@
 package siani.tara.compiler.codegeneration.model;
 
 import com.google.gson.*;
+import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.lang.*;
 
 import java.io.File;
@@ -13,18 +14,17 @@ public class ModelProvider {
 
 	public static final String JSON = ".json";
 
-	public static Model getModel(String modelDirectory, String model) {
+	public static Model getModel(String modelDirectory, String model) throws TaraException {
 		try {
 			File file = new File(modelDirectory, model + JSON);
-			if (!file.exists()) return null;
+			if (!file.exists()) throw new TaraException("Model file not Found");
 			InputStream heritageInputStream = new FileInputStream(file);
 			GsonBuilder gb = new GsonBuilder();
 			gb.registerTypeAdapter(Node.class, new NodeAdapter());
 			gb.registerTypeAdapter(Variable.class, new VariableDeserializer());
 			return gb.create().fromJson(new InputStreamReader(heritageInputStream), Model.class);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+			throw new TaraException("Error deserializing model: " + e.getMessage());
 		}
 	}
 

@@ -37,7 +37,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	public void enterAnImport(@NotNull AnImportContext ctx) {
 		String text = ctx.headerReference().getText();
 		if (ctx.METAMODEL() != null)
-			model.setParentModel(text);
+			model.setParentModelName(text);
 		else
 			imports.add(text);
 	}

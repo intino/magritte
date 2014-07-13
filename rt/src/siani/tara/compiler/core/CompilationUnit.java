@@ -4,6 +4,7 @@ import siani.tara.compiler.codegeneration.ClassGenerator;
 import siani.tara.compiler.codegeneration.FileSystemUtils;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.ErrorCollector;
+import siani.tara.compiler.core.operation.model.LinkToParentModelOperation;
 import siani.tara.compiler.core.operation.Operation;
 import siani.tara.compiler.core.operation.SrcToClassOperation;
 import siani.tara.compiler.core.operation.model.ModelOperation;
@@ -56,8 +57,9 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ParseOperation(this.errorCollector), Phases.PARSING);
 		addPhaseOperation(new ImportDataOperation(this.errorCollector), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
+		addPhaseOperation(new LinkToParentModelOperation(this), Phases.CONVERSION);
 //		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
-		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
+		addPhaseOperation(new ModelDependencyResolutionOperation(), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
 		if (pluginGeneration) addPhaseOperation(new SaveModelOperation(this), Phases.PLUGIN_GENERATION);
 		addPhaseOperation(output, Phases.OUTPUT);

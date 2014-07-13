@@ -99,7 +99,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.BoxReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParameterAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParametersAnnotator"/>
-    <!--<annotator language="Tara" implementationClass="siani.tara.model.annotator.ConceptTypeAnnotator"/>-->
+    <!--<annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptTypeAnnotator"/>-->
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
     <completion.contributor language="Tara"
@@ -108,7 +108,7 @@
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraAnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="Tara"
                                   implementationClass="siani.tara.intellij.structureview.StructureViewFactory"/>
-    <!--<psi.referenceContributor implementation="siani.tara.model.lang.psi.resolve.TaraReferenceContributor"/>-->
+    <!--<psi.referenceContributor implementation="siani.tara.intellij.lang.psi.resolve.TaraReferenceContributor"/>-->
     <nameSuggestionProvider implementation="siani.tara.intellij.refactoring.NameSuggestionProvider"/>
     <lang.elementManipulator forClass="siani.tara.intellij.lang.psi.TaraIdentifier"
                              implementationClass="siani.tara.intellij.lang.psi.impl.IdentifierManipulator"/>
@@ -123,9 +123,9 @@
     <lang.foldingBuilder language="Tara" implementationClass="siani.tara.intellij.TaraFoldingBuilder"/>
     <projectService serviceInterface="siani.tara.intellij.codeinsight.JavaHelper"
                     serviceImplementation="siani.tara.intellij.codeinsight.JavaHelper$Impl"/>
-    <facetType implementation="siani.tara.intellij.project.facet.MagritteFacetType"/>
-    <!--<referenceImporter implementation="siani.tara.model.annotator.imports.TaraReferenceImporter"/>-->
-    <!--<lang.formatter language="Tara" implementationClass="siani.tara.model.formatter.TaraFormattingModelBuilder"/>-->
+    <!--<facetType implementation="siani.tara.intellij.project.facet.MagritteFacetType"/>-->
+    <!--<referenceImporter implementation="siani.tara.intellij.annotator.imports.TaraReferenceImporter"/>-->
+    <!--<lang.formatter language="Tara" implementationClass="siani.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
     <moveFileHandler implementation="siani.tara.intellij.refactoring.move.TaraFileMoveHandler"/>
     <refactoring.moveHandler implementation="siani.tara.intellij.refactoring.move.TaraMoveConcept"/>
     <lang.importOptimizer language="Tara"
