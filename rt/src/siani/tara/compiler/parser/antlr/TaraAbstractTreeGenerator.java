@@ -36,10 +36,8 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterAnImport(@NotNull AnImportContext ctx) {
 		String text = ctx.headerReference().getText();
-		if (ctx.METAMODEL() != null)
-			model.setParentModelName(text);
-		else
-			imports.add(text);
+		if (ctx.METAMODEL() != null) model.setParentModelName(text);
+		else imports.add(text);
 	}
 
 	@Override
@@ -156,7 +154,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterDateAttribute(@NotNull DateAttributeContext ctx) {
 		NodeAttribute variable = new NodeAttribute(ctx.DATE_TYPE().getText(), ctx.IDENTIFIER().getText());
-		if (ctx.naturalValue() != null) variable.setValue(ctx.naturalValue().getText());
+		if (ctx.dateValue() != null) variable.setValue(ctx.dateValue().getText());
 		addAttribute(ctx, variable);
 	}
 
@@ -176,15 +174,8 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterAliasAttribute(@NotNull AliasAttributeContext ctx) {
-		NodeAttribute variable = new NodeAttribute(ctx.ALIAS_TYPE().getText(), ctx.IDENTIFIER().getText());
-		if (ctx.stringValue() != null) variable.setValue(ctx.stringValue().getText());
-		addAttribute(ctx, variable);
-	}
-
-	@Override
 	public void enterResource(@NotNull ResourceContext ctx) {
-		Resource variable = new Resource(ctx.IDENTIFIER(0).getText(), ctx.IDENTIFIER(1).getText());
+		Resource variable = new Resource(ctx.attributeType().getText(), ctx.IDENTIFIER().getText());
 		addAttribute(ctx, variable);
 	}
 
@@ -239,7 +230,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 			conceptStack.peek().getObject().add(NodeObject.AnnotationType.ROOT);
 		for (int i = 0; i < ctx.PRIVATE().size(); i++)
 			conceptStack.peek().getObject().add(NodeObject.AnnotationType.PRIVATE);
-		for (int i = 0; i < ctx.NAMEABLE().size(); i++)
+		for (int i = 0; i < ctx.NAMED().size(); i++)
 			conceptStack.peek().getObject().add(NodeObject.AnnotationType.NAMEABLE);
 	}
 

@@ -20,6 +20,11 @@ public class Reference extends Variable {
 		return type;
 	}
 
+	@Override
+	public String getValue() {
+		return null;
+	}
+
 	public boolean isEmpty() {
 		return empty;
 	}

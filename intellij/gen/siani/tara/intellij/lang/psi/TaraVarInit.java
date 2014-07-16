@@ -11,6 +11,15 @@ public interface TaraVarInit extends TaraPsiElement {
   List<TaraBooleanValue> getBooleanValueList();
 
   @NotNull
+  List<TaraCodeValue> getCodeValueList();
+
+  @NotNull
+  List<TaraCoordinateValue> getCoordinateValueList();
+
+  @NotNull
+  List<TaraDateValue> getDateValueList();
+
+  @NotNull
   List<TaraDoubleValue> getDoubleValueList();
 
   @Nullable
@@ -21,6 +30,9 @@ public interface TaraVarInit extends TaraPsiElement {
 
   @NotNull
   List<TaraIntegerValue> getIntegerValueList();
+
+  @Nullable
+  TaraMeasure getMeasure();
 
   @NotNull
   List<TaraNaturalValue> getNaturalValueList();

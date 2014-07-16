@@ -17,6 +17,7 @@
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
     <orderEntry type="library" name="antlr-4.2-complete" level="project" />
     <orderEntry type="library" name="templation" level="project" />
+    <orderEntry type="library" scope="TEST" name="mockito-all-local" level="application" />
     <orderEntry type="module-library" scope="TEST">
       <library name="JUnit4">
         <CLASSES>

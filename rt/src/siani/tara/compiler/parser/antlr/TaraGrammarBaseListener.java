@@ -1,4 +1,4 @@
-// Generated from /Users/octavio/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
+// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
 
 package siani.tara.compiler.parser.antlr;
 
@@ -55,6 +55,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCoordinateValue(@NotNull TaraGrammar.CoordinateValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCoordinateValue(@NotNull TaraGrammar.CoordinateValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterNaturalValue(@NotNull TaraGrammar.NaturalValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -62,6 +74,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNaturalValue(@NotNull TaraGrammar.NaturalValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMeasure(@NotNull TaraGrammar.MeasureContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMeasure(@NotNull TaraGrammar.MeasureContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -103,18 +127,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIdentifierList(@NotNull TaraGrammar.IdentifierListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIdentifierList(@NotNull TaraGrammar.IdentifierListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterDoubleValue(@NotNull TaraGrammar.DoubleValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -122,6 +134,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDoubleValue(@NotNull TaraGrammar.DoubleValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAttributeType(@NotNull TaraGrammar.AttributeTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAttributeType(@NotNull TaraGrammar.AttributeTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -211,6 +235,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCodeValue(@NotNull TaraGrammar.CodeValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCodeValue(@NotNull TaraGrammar.CodeValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterParameterList(@NotNull TaraGrammar.ParameterListContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -235,13 +271,13 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStringList(@NotNull TaraGrammar.StringListContext ctx) { }
+	@Override public void enterCoordinateAttribute(@NotNull TaraGrammar.CoordinateAttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStringList(@NotNull TaraGrammar.StringListContext ctx) { }
+	@Override public void exitCoordinateAttribute(@NotNull TaraGrammar.CoordinateAttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -307,25 +343,13 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNaturalList(@NotNull TaraGrammar.NaturalListContext ctx) { }
+	@Override public void enterRefAttribute(@NotNull TaraGrammar.RefAttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNaturalList(@NotNull TaraGrammar.NaturalListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBooleanList(@NotNull TaraGrammar.BooleanListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBooleanList(@NotNull TaraGrammar.BooleanListContext ctx) { }
+	@Override public void exitRefAttribute(@NotNull TaraGrammar.RefAttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -367,18 +391,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIntegerList(@NotNull TaraGrammar.IntegerListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIntegerList(@NotNull TaraGrammar.IntegerListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterIdentifierReference(@NotNull TaraGrammar.IdentifierReferenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -403,18 +415,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterReference(@NotNull TaraGrammar.ReferenceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitReference(@NotNull TaraGrammar.ReferenceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterImports(@NotNull TaraGrammar.ImportsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -434,6 +434,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitHeader(@NotNull TaraGrammar.HeaderContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterReference(@NotNull TaraGrammar.ReferenceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitReference(@NotNull TaraGrammar.ReferenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -499,18 +511,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAliasAttribute(@NotNull TaraGrammar.AliasAttributeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAliasAttribute(@NotNull TaraGrammar.AliasAttributeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterBox(@NotNull TaraGrammar.BoxContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -547,18 +547,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDoubleList(@NotNull TaraGrammar.DoubleListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDoubleList(@NotNull TaraGrammar.DoubleListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterFacetTarget(@NotNull TaraGrammar.FacetTargetContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -566,6 +554,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFacetTarget(@NotNull TaraGrammar.FacetTargetContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDateValue(@NotNull TaraGrammar.DateValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDateValue(@NotNull TaraGrammar.DateValueContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

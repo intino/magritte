@@ -1,5 +1,8 @@
-package siani.tara.compiler.codegeneration;
+package siani.tara.compiler.codegeneration.java;
 
+import siani.tara.compiler.codegeneration.CodeGenerator;
+import siani.tara.compiler.codegeneration.PathManager;
+import siani.tara.compiler.codegeneration.ResourceManager;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.TaraException;
 
@@ -9,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class ClassGenerator extends CodeGenerator {
-	private static final Logger LOG = Logger.getLogger(ClassGenerator.class.getName());
+public class JavaCodeGenerator extends CodeGenerator {
+	private static final Logger LOG = Logger.getLogger(JavaCodeGenerator.class.getName());
 	private static final String SEP = PathManager.SEP;
 	CompilerConfiguration conf;
 
-	public ClassGenerator(CompilerConfiguration conf) {
+	public JavaCodeGenerator(CompilerConfiguration conf) {
 		this.conf = conf;
 	}
 
@@ -32,7 +35,7 @@ public class ClassGenerator extends CodeGenerator {
 	}
 
 	private String makeJarCommand(String name) {
-		List<String> cmd = JavaCommandHelper.buildJarCommandLine(conf.getTempDirectory().getAbsolutePath(), name, new String[]{});
+		List<String> cmd = JavaCommandHelper.buildJarCommandLine(conf.getOutDirectory().getAbsolutePath(), name, new String[]{});
 		return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 	}
 
@@ -44,7 +47,7 @@ public class ClassGenerator extends CodeGenerator {
 		try {
 			List<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources,
 				new String[]{getTaraCoreFile().getAbsolutePath() + SEP + "build" + SEP},
-				null, conf.getTempDirectory().getAbsolutePath());
+				null, conf.getOutDirectory().getAbsolutePath());
 			return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 		} catch (IOException e) {
 			throw new TaraException("Error compiling plugin");
@@ -52,7 +55,7 @@ public class ClassGenerator extends CodeGenerator {
 	}
 
 	private File[] getSourceFiles(String type) {
-		File path = new File(conf.getTempDirectory() + SEP + conf.getProject());
+		File path = new File(conf.getOutDirectory() + SEP + conf.getProject());
 		List<File> javaFiles = new ArrayList<>();
 		getSourceFiles(path, javaFiles, type);
 		return javaFiles.toArray(new File[javaFiles.size()]);
@@ -67,7 +70,7 @@ public class ClassGenerator extends CodeGenerator {
 	}
 
 	public File getOutPath() {
-		String outPath = conf.getTempDirectory() + SEP + "out" + SEP;
+		String outPath = conf.getOutDirectory() + SEP + "out" + SEP;
 		File file = new File(outPath);
 		file.mkdirs();
 		return file;

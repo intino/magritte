@@ -11,6 +11,15 @@ public interface TaraParameter extends Parameter {
   List<TaraBooleanValue> getBooleanValueList();
 
   @NotNull
+  List<TaraCodeValue> getCodeValueList();
+
+  @NotNull
+  List<TaraCoordinateValue> getCoordinateValueList();
+
+  @NotNull
+  List<TaraDateValue> getDateValueList();
+
+  @NotNull
   List<TaraDoubleValue> getDoubleValueList();
 
   @Nullable
@@ -21,6 +30,9 @@ public interface TaraParameter extends Parameter {
 
   @NotNull
   List<TaraIntegerValue> getIntegerValueList();
+
+  @Nullable
+  TaraMeasure getMeasure();
 
   @Nullable
   TaraMetaWord getMetaWord();

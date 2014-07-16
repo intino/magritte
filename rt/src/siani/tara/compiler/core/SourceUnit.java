@@ -15,7 +15,7 @@ public class SourceUnit extends ProcessingUnit {
 	private static final Logger LOG = Logger.getLogger(SourceUnit.class.getName());
 	protected FileReaderSource source;
 	protected String name;
-	private Model nodeTree;
+	private Model model;
 	private Parser parser;
 
 	public SourceUnit(String name, FileReaderSource source, CompilerConfiguration configuration, ErrorCollector er) {
@@ -38,8 +38,8 @@ public class SourceUnit extends ProcessingUnit {
 		return source;
 	}
 
-	public Model getNodeTree() {
-		return nodeTree;
+	public Model getModel() {
+		return model;
 	}
 
 	public void parse() throws IOException, SyntaxException {
@@ -48,6 +48,6 @@ public class SourceUnit extends ProcessingUnit {
 	}
 
 	public void importData() throws TaraException {
-		nodeTree = parser.convert();
+		model = parser.convert();
 	}
 }

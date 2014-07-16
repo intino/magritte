@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface TaraConcept extends Concept {
 
   @Nullable
-  TaraAnnotations getAnnotations();
+  TaraAnnotationsAndFacets getAnnotationsAndFacets();
 
   @Nullable
   TaraBody getBody();

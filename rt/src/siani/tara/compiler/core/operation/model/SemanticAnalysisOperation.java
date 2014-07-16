@@ -24,7 +24,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 	}
 
 	@Override
-	public void call(Model tree) throws CompilationFailedException {
+	public void call(Model model) throws CompilationFailedException {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Analyzing semantic");
 			SemanticAnalyzer analyzer = new SemanticAnalyzer(compilationUnit.getModel());

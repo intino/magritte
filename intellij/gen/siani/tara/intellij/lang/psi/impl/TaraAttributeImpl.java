@@ -23,14 +23,38 @@ public class TaraAttributeImpl extends AttributeMixin implements TaraAttribute {
 
   @Override
   @Nullable
-  public TaraAnnotations getAnnotations() {
-    return findChildByClass(TaraAnnotations.class);
+  public TaraAnnotationsAndFacets getAnnotationsAndFacets() {
+    return findChildByClass(TaraAnnotationsAndFacets.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraAttributeType getAttributeType() {
+    return findChildByClass(TaraAttributeType.class);
   }
 
   @Override
   @Nullable
   public TaraBooleanValue getBooleanValue() {
     return findChildByClass(TaraBooleanValue.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraCodeValue getCodeValue() {
+    return findChildByClass(TaraCodeValue.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraCoordinateValue getCoordinateValue() {
+    return findChildByClass(TaraCoordinateValue.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraDateValue getDateValue() {
+    return findChildByClass(TaraDateValue.class);
   }
 
   @Override

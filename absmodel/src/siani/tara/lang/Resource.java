@@ -21,6 +21,11 @@ public class Resource extends Variable {
 	}
 
 	@Override
+	public String getValue() {
+		return node;
+	}
+
+	@Override
 	public boolean isSingle() {
 		return false;
 	}

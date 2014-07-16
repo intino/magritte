@@ -31,6 +31,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.CONSTANT);
 	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
 	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
+	public static final TextAttributesKey REFERENCE = createTextAttributesKey("Tara_REFERENCE", DefaultLanguageHighlighterColors.CLASS_REFERENCE);
 	public static final TextAttributesKey BRACKETS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.BRACKETS);
 	public static final TextAttributesKey SEMICOLON_KEY = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.SEMICOLON);
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER");
@@ -86,7 +87,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(TERMINAL, ANNOTATION);
 		KEYS.put(PROPERTY, ANNOTATION);
 		KEYS.put(PRIVATE, ANNOTATION);
-		KEYS.put(NAMEABLE, ANNOTATION);
+		KEYS.put(NAMED, ANNOTATION);
 		KEYS.put(RESOURCE_KEY, PRIMITIVE);
 		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);
 		KEYS.put(CASE_KEY, KEYWORD);
@@ -108,19 +109,22 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(DOUBLE_TYPE, PRIMITIVE);
 		KEYS.put(INT_TYPE, PRIMITIVE);
 		KEYS.put(DATE_TYPE, PRIMITIVE);
-		KEYS.put(LOCATION_TYPE, PRIMITIVE);
+		KEYS.put(COORDINATE_TYPE, PRIMITIVE);
 		KEYS.put(BOOLEAN_TYPE, PRIMITIVE);
 		KEYS.put(NATURAL_TYPE, PRIMITIVE);
-		KEYS.put(ALIAS_TYPE, PRIMITIVE);
+		KEYS.put(REFERENCE_TYPE, PRIMITIVE);
 
 		KEYS.put(DOC_LINE, DOCUMENTATION);
 
 		KEYS.put(DOUBLE_VALUE_KEY, NUMBERS);
 		KEYS.put(NATURAL_VALUE_KEY, NUMBERS);
 		KEYS.put(NEGATIVE_VALUE_KEY, NUMBERS);
-		KEYS.put(BOOLEAN_VALUE_KEY, NUMBERS);
+		KEYS.put(BOOLEAN_VALUE_KEY, KEYWORD);
+		KEYS.put(CODE_VALUE_KEY, REFERENCE);
 		KEYS.put(STRING_VALUE_KEY, STRING);
 		KEYS.put(STRING_MULTILINE_VALUE_KEY, STRING);
+		KEYS.put(DATE_VALUE_KEY, NUMBERS);
+		KEYS.put(COORDINATE_VALUE_KEY, NUMBERS);
 		KEYS.put(TokenType.WHITE_SPACE, null);
 		KEYS.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 	}

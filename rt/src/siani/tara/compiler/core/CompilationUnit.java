@@ -1,15 +1,15 @@
 package siani.tara.compiler.core;
 
-import siani.tara.compiler.codegeneration.ClassGenerator;
-import siani.tara.compiler.codegeneration.FileSystemUtils;
+import siani.tara.compiler.codegeneration.java.JavaCodeGenerator;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.ErrorCollector;
-import siani.tara.compiler.core.operation.model.LinkToParentModelOperation;
+import siani.tara.compiler.core.operation.ModelToJavaOperation;
 import siani.tara.compiler.core.operation.Operation;
 import siani.tara.compiler.core.operation.SrcToClassOperation;
+import siani.tara.compiler.core.operation.model.LinkToParentModelOperation;
+import siani.tara.compiler.core.operation.model.ModelDependencyResolutionOperation;
 import siani.tara.compiler.core.operation.model.ModelOperation;
 import siani.tara.compiler.core.operation.model.SaveModelOperation;
-import siani.tara.compiler.core.operation.model.ModelDependencyResolutionOperation;
 import siani.tara.compiler.core.operation.module.MergeToModelOperation;
 import siani.tara.compiler.core.operation.module.ModuleUnitOperation;
 import siani.tara.compiler.core.operation.sourceunit.ImportDataOperation;
@@ -37,10 +37,11 @@ public class CompilationUnit extends ProcessingUnit {
 		@Override
 		public void call() throws CompilationFailedException {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating classes");
-			ClassGenerator generator = new ClassGenerator(configuration);
+			JavaCodeGenerator generator = new JavaCodeGenerator(configuration);
 			//generator.generate();
 		}
 	};
+
 	private SourceUnitOperation output = new SourceUnitOperation() {
 		public void call(SourceUnit taraClass) throws CompilationFailedException {
 			//TODO
@@ -57,9 +58,10 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ParseOperation(this.errorCollector), Phases.PARSING);
 		addPhaseOperation(new ImportDataOperation(this.errorCollector), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
-		addPhaseOperation(new LinkToParentModelOperation(this), Phases.CONVERSION);
 //		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
-		addPhaseOperation(new ModelDependencyResolutionOperation(), Phases.DEPENDENCY_RESOLUTION);
+		addPhaseOperation(new LinkToParentModelOperation(this), Phases.CONVERSION);
+		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
+		addPhaseOperation(new ModelToJavaOperation(this), Phases.CLASS_GENERATION);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
 		if (pluginGeneration) addPhaseOperation(new SaveModelOperation(this), Phases.PLUGIN_GENERATION);
 		addPhaseOperation(output, Phases.OUTPUT);
@@ -92,7 +94,7 @@ public class CompilationUnit extends ProcessingUnit {
 	}
 
 	public void compile() throws CompilationFailedException {
-		FileSystemUtils.removeDir(configuration.getTempDirectory());
+//		FileSystemUtils.removeDir(configuration.getOutDirectory());
 		compile(Phases.ALL);
 	}
 

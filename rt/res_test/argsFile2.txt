@@ -1,10 +1,14 @@
 src_file
-/Users/octavio/workspace/sandbox/Tafat/siani/model/aspects.tara
-/Users/octavio/workspace/sandbox/Tafat/siani/model/behaviors/electrical.tara
-/Users/octavio/workspace/sandbox/Tafat/siani/model/behaviors/thermal.tara
-/Users/octavio/workspace/sandbox/Tafat/siani/model/layers/assets.tara
-/Users/octavio/workspace/sandbox/Tafat/siani/model/layers/places.tara
-/Users/octavio/workspace/sandbox/Tafat/siani/model/layers/devices.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/aspects.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/behaviors/electrical.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/behaviors/thermal.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/assets.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/devices.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/places.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/mobility.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/people.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/vehicles.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/waste.tara
 
 project
 Tafat
@@ -12,13 +16,13 @@ module
 siani
 encoding
 UTF-8
-idea_home
-/Applications/IntelliJ IDEA 13 CE.app/lib/
+models
+/Users/oroncal/workspace/sandbox/plugins/tara/classes/Tafat
 plugin_home
-/Users/octavio/workspace/sandbox/plugins/tara/
+/Users/oroncal/workspace/sandbox/plugins/tara/
 outputpath
-/Users/octavio/workspace/sandbox/system/compile-server/monet_17a4ca36/taraStubs/Monet/java-production
+/Users/oroncal/workspace/sandbox/system/compile-server/tafat_8c395247/taraStubs/siani/java-production
 final_outputpath
-/Users/octavio/workspace/sandbox/Tafat/out/production/Tafat/
+/Users/oroncal/workspace/sandbox/Tafat/siani/out
 classpath
-/Users/octavio/workspace/sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/workspace/sandbox/plugins/tara/lib/tara.jar

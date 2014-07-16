@@ -8,13 +8,13 @@ import com.intellij.psi.PsiElement;
 public interface TaraBody extends Body {
 
   @NotNull
+  List<TaraAnnotationsAndFacets> getAnnotationsAndFacetsList();
+
+  @NotNull
   List<TaraAttribute> getAttributeList();
 
   @NotNull
   List<TaraConcept> getConceptList();
-
-  @NotNull
-  List<TaraFacetApply> getFacetApplyList();
 
   @NotNull
   List<TaraFacetTarget> getFacetTargetList();

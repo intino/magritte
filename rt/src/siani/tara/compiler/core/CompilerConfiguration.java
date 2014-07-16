@@ -65,11 +65,11 @@ public class CompilerConfiguration {
 			this.output = output;
 	}
 
-	public File getTempDirectory() {
+	public File getOutDirectory() {
 		return this.tempDirectory;
 	}
 
-	public void setTempDirectory(String directory) {
+	public void setOutDirectory(String directory) {
 		if ((directory != null) && (directory.length() > 0)) {
 			this.tempDirectory = new File(directory);
 			this.tempDirectory.mkdirs();

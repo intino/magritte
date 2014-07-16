@@ -1,4 +1,4 @@
-package siani.tara.compiler.codegeneration;
+package siani.tara.compiler.codegeneration.java;
 
 import java.io.BufferedWriter;
 import java.io.File;

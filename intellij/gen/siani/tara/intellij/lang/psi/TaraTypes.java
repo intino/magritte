@@ -10,12 +10,17 @@ import siani.tara.intellij.lang.psi.impl.*;
 public interface TaraTypes {
 
   IElementType ANNOTATIONS = new TaraElementType("ANNOTATIONS");
+  IElementType ANNOTATIONS_AND_FACETS = new TaraElementType("ANNOTATIONS_AND_FACETS");
   IElementType AN_IMPORT = new TaraElementType("AN_IMPORT");
   IElementType ATTRIBUTE = new TaraElementType("ATTRIBUTE");
+  IElementType ATTRIBUTE_TYPE = new TaraElementType("ATTRIBUTE_TYPE");
   IElementType BODY = new TaraElementType("BODY");
   IElementType BOOLEAN_VALUE = new TaraElementType("BOOLEAN_VALUE");
   IElementType BOX = new TaraElementType("BOX");
+  IElementType CODE_VALUE = new TaraElementType("CODE_VALUE");
   IElementType CONCEPT = new TaraElementType("CONCEPT");
+  IElementType COORDINATE_VALUE = new TaraElementType("COORDINATE_VALUE");
+  IElementType DATE_VALUE = new TaraElementType("DATE_VALUE");
   IElementType DOC = new TaraElementType("DOC");
   IElementType DOUBLE_VALUE = new TaraElementType("DOUBLE_VALUE");
   IElementType EMPTY = new TaraElementType("EMPTY");
@@ -28,6 +33,7 @@ public interface TaraTypes {
   IElementType IDENTIFIER = new TaraElementType("IDENTIFIER");
   IElementType IDENTIFIER_REFERENCE = new TaraElementType("IDENTIFIER_REFERENCE");
   IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
+  IElementType MEASURE = new TaraElementType("MEASURE");
   IElementType META_IDENTIFIER = new TaraElementType("META_IDENTIFIER");
   IElementType META_WORD = new TaraElementType("META_WORD");
   IElementType NATURAL_VALUE = new TaraElementType("NATURAL_VALUE");
@@ -38,40 +44,47 @@ public interface TaraTypes {
   IElementType VAR_INIT = new TaraElementType("VAR_INIT");
   IElementType WORD = new TaraElementType("WORD");
 
-  IElementType ALIAS_TYPE = new TaraTokenType("ALIAS_TYPE");
   IElementType AS = new TaraTokenType("AS");
   IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
   IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
   IElementType BOX_KEY = new TaraTokenType("BOX_KEY");
   IElementType CASE_KEY = new TaraTokenType("CASE_KEY");
+  IElementType CODE_VALUE_KEY = new TaraTokenType("CODE_VALUE_KEY");
   IElementType COLON = new TaraTokenType("COLON");
   IElementType COMMA = new TaraTokenType("COMMA");
+  IElementType COORDINATE_TYPE = new TaraTokenType("COORDINATE_TYPE");
+  IElementType COORDINATE_VALUE_KEY = new TaraTokenType("COORDINATE_VALUE_KEY");
   IElementType DATE_TYPE = new TaraTokenType("DATE_TYPE");
+  IElementType DATE_VALUE_KEY = new TaraTokenType("DATE_VALUE_KEY");
   IElementType DEDENT = new TaraTokenType("DEDENT");
   IElementType DOC_LINE = new TaraTokenType("DOC_LINE");
+  IElementType DOLLAR = new TaraTokenType("DOLLAR");
   IElementType DOT = new TaraTokenType("DOT");
   IElementType DOUBLE_TYPE = new TaraTokenType("DOUBLE_TYPE");
   IElementType DOUBLE_VALUE_KEY = new TaraTokenType("DOUBLE_VALUE_KEY");
   IElementType EMPTY_REF = new TaraTokenType("EMPTY_REF");
   IElementType EQUALS = new TaraTokenType("EQUALS");
+  IElementType EURO = new TaraTokenType("EURO");
+  IElementType GRADE = new TaraTokenType("GRADE");
   IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
   IElementType INTENTION_KEY = new TaraTokenType("INTENTION_KEY");
   IElementType INT_TYPE = new TaraTokenType("INT_TYPE");
   IElementType IS = new TaraTokenType("IS");
   IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
   IElementType LIST = new TaraTokenType("LIST");
-  IElementType LOCATION_TYPE = new TaraTokenType("LOCATION_TYPE");
   IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
   IElementType METAMODEL = new TaraTokenType("METAMODEL");
-  IElementType NAMEABLE = new TaraTokenType("NAMEABLE");
+  IElementType NAMED = new TaraTokenType("NAMED");
   IElementType NATURAL_TYPE = new TaraTokenType("NATURAL_TYPE");
   IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
   IElementType NEGATIVE_VALUE_KEY = new TaraTokenType("NEGATIVE_VALUE_KEY");
   IElementType NEWLINE = new TaraTokenType("NEWLINE");
   IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
   IElementType ON = new TaraTokenType("ON");
+  IElementType PERCENTAGE = new TaraTokenType("PERCENTAGE");
   IElementType PRIVATE = new TaraTokenType("PRIVATE");
   IElementType PROPERTY = new TaraTokenType("PROPERTY");
+  IElementType REFERENCE_TYPE = new TaraTokenType("REFERENCE_TYPE");
   IElementType REQUIRED = new TaraTokenType("REQUIRED");
   IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
   IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");
@@ -93,11 +106,17 @@ public interface TaraTypes {
        if (type == ANNOTATIONS) {
         return new TaraAnnotationsImpl(node);
       }
+      else if (type == ANNOTATIONS_AND_FACETS) {
+        return new TaraAnnotationsAndFacetsImpl(node);
+      }
       else if (type == AN_IMPORT) {
         return new TaraAnImportImpl(node);
       }
       else if (type == ATTRIBUTE) {
         return new TaraAttributeImpl(node);
+      }
+      else if (type == ATTRIBUTE_TYPE) {
+        return new TaraAttributeTypeImpl(node);
       }
       else if (type == BODY) {
         return new TaraBodyImpl(node);
@@ -108,8 +127,17 @@ public interface TaraTypes {
       else if (type == BOX) {
         return new TaraBoxImpl(node);
       }
+      else if (type == CODE_VALUE) {
+        return new TaraCodeValueImpl(node);
+      }
       else if (type == CONCEPT) {
         return new TaraConceptImpl(node);
+      }
+      else if (type == COORDINATE_VALUE) {
+        return new TaraCoordinateValueImpl(node);
+      }
+      else if (type == DATE_VALUE) {
+        return new TaraDateValueImpl(node);
       }
       else if (type == DOC) {
         return new TaraDocImpl(node);
@@ -146,6 +174,9 @@ public interface TaraTypes {
       }
       else if (type == INTEGER_VALUE) {
         return new TaraIntegerValueImpl(node);
+      }
+      else if (type == MEASURE) {
+        return new TaraMeasureImpl(node);
       }
       else if (type == META_IDENTIFIER) {
         return new TaraMetaIdentifierImpl(node);

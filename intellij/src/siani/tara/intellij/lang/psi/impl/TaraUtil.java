@@ -82,7 +82,10 @@ public class TaraUtil {
 		Collection<VirtualFile> files = FileBasedIndex.getInstance().
 			getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.moduleScope(module));
 		for (VirtualFile file : files)
-			if (file != null) taraFiles.add((TaraFileImpl) PsiManager.getInstance(psiFile.getProject()).findFile(file));
+			if (file != null) {
+				TaraFileImpl taraFile = (TaraFileImpl) PsiManager.getInstance(psiFile.getProject()).findFile(file);
+				if (taraFile != null) taraFiles.add(taraFile);
+			}
 		return taraFiles.toArray(new TaraFileImpl[taraFiles.size()]);
 	}
 

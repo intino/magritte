@@ -4,10 +4,10 @@ public class NodeAttribute extends Variable {
 	public final String primitiveType;
 	public String value;
 
-	public NodeAttribute(String type, String name, boolean isMultiple, boolean isTerminal) {
+	public NodeAttribute(String type, String name, boolean isSingle, boolean isTerminal) {
 		this.primitiveType = type;
 		this.name = name;
-		this.isSingle = isMultiple;
+		this.isSingle = isSingle;
 		this.isTerminal = isTerminal;
 	}
 

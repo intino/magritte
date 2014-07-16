@@ -88,7 +88,7 @@ public class TaraCompilerRunner {
 					configuration.setSourceEncoding(reader.readLine());
 					break;
 				case TaraRtConstants.OUTPUTPATH:
-					configuration.setTempDirectory(reader.readLine());
+					configuration.setOutDirectory(reader.readLine());
 					break;
 				case TaraRtConstants.FINAL_OUTPUTPATH:
 					configuration.setTargetDirectory(reader.readLine());

@@ -46,7 +46,7 @@ public class AttributeMixin extends ASTWrapperPsiElement {
 	}
 
 	public String getType() {
-		ASTNode keyNode = getNode().findChildByType(TaraTypes.ALIAS_TYPE);
+		ASTNode keyNode = getNode().getFirstChildNode().getTreeNext();
 		if (keyNode != null) return keyNode.getText();
 		return null;
 	}

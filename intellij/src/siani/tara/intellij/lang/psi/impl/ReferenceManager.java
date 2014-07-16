@@ -95,7 +95,7 @@ public class ReferenceManager {
 		while (parent != null) {
 			for (Concept sibling : parent.getConceptSiblings()) {
 				if (sibling.getName() != null && sibling.getName().equals(identifier.getName()))
-					list.add(parent);
+					list.add(sibling);
 			}
 			parent = getContextOf(parent);
 		}

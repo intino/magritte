@@ -34,7 +34,7 @@ doc::= DOC_LINE+ {
 	implements='siani.tara.intellij.lang.psi.Doc'
 }
 
-concept ::= doc? signature annotations? body? {
+concept ::= doc? signature annotationsAndFacets? body? {
 	pin = 2
 	mixin= 'siani.tara.intellij.lang.psi.impl.ConceptMixin'
 	implements='siani.tara.intellij.lang.psi.Concept'
@@ -42,7 +42,7 @@ concept ::= doc? signature annotations? body? {
 
 signature::= ((CASE_KEY identifier)
 			| withHeritage
-			| (metaIdentifier identifier) | IDENTIFIER_KEY ) parameters? {
+			| (metaIdentifier identifier) | metaIdentifier) parameters? {
 	pin=1
 	mixin= 'siani.tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='siani.tara.intellij.lang.psi.Signature'
@@ -65,9 +65,12 @@ explicit::= identifier EQUALS
 parameter ::=   identifierReference+
 				| stringValue+
 		        | booleanValue+
-		        | naturalValue+
-		        | integerValue+
-		        | doubleValue+
+		        | naturalValue+ measure?
+		        | integerValue+ measure?
+		        | doubleValue+  measure?
+		        | dateValue+
+		        | codeValue+
+		        | coordinateValue+
 		        | metaWord
 		        | empty {
     pin = 1
@@ -88,28 +91,24 @@ body ::= NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT {
 	implements='siani.tara.intellij.lang.psi.Body'
 }
 
-private conceptConstituents ::= attribute | concept | varInit | facetApply | facetTarget
+private conceptConstituents ::= attribute | concept | varInit | annotationsAndFacets | facetTarget
 
-facetApply ::= IS identifierReference parameters? (WITH identifierReference)?
-{pin = 1}
-facetTarget ::= ON identifierReference body?
-{pin = 1}
-attribute ::= doc? VAR (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute | dateAttribute
-                        | locationAttribute | resource | referenceAttribute | word) annotations? {
+attribute ::= doc? VAR (refAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute |
+			dateAttribute | coordinateAttribute | resource | referenceAttribute | word) annotationsAndFacets? {
 	pin=2
 	mixin= 'siani.tara.intellij.lang.psi.impl.AttributeMixin'
 	implements='siani.tara.intellij.lang.psi.Attribute'
 }
 
-private resource             ::= RESOURCE_KEY EQUALS IDENTIFIER_KEY IDENTIFIER_KEY                         {pin=1}
-private locationAttribute    ::= LOCATION_TYPE       IDENTIFIER_KEY (EQUALS (naturalValue | emptyField))?   {pin=1}
-private aliasAttribute       ::= ALIAS_TYPE   LIST?  IDENTIFIER_KEY (EQUALS (stringValue  | emptyField))?   {pin=1}
-private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (EQUALS (booleanValue | emptyField))?   {pin=1}
-private stringAttribute      ::= STRING_TYPE  LIST?  IDENTIFIER_KEY (EQUALS (stringValue  | emptyField))?   {pin=1}
-private naturalAttribute     ::= NATURAL_TYPE LIST?  IDENTIFIER_KEY (EQUALS (naturalValue | emptyField))?   {pin=1}
-private integerAttribute     ::= INT_TYPE     LIST?  IDENTIFIER_KEY (EQUALS (integerValue | emptyField))?   {pin=1}
-private doubleAttribute      ::= DOUBLE_TYPE  LIST?  IDENTIFIER_KEY (EQUALS (doubleValue  | emptyField))?   {pin=1}
-private dateAttribute        ::= DATE_TYPE    LIST?  IDENTIFIER_KEY (EQUALS (naturalValue | emptyField))?   {pin=1}
+private resource             ::= RESOURCE_KEY attributeType IDENTIFIER_KEY                                                  {pin=1}
+private coordinateAttribute  ::= COORDINATE_TYPE  LIST? IDENTIFIER_KEY (EQUALS (coordinateValue | emptyField))?             {pin=1}
+private refAttribute         ::= REFERENCE_TYPE   LIST?  IDENTIFIER_KEY (EQUALS (codeValue  | emptyField))?                 {pin=1}
+private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (EQUALS (booleanValue | emptyField))?                   {pin=1}
+private stringAttribute      ::= STRING_TYPE  LIST?  IDENTIFIER_KEY (EQUALS (stringValue  | emptyField))?                   {pin=1}
+private naturalAttribute     ::= NATURAL_TYPE attributeType? LIST?  IDENTIFIER_KEY (EQUALS (naturalValue | emptyField))?    {pin=1}
+private integerAttribute     ::= INT_TYPE     attributeType? LIST?  IDENTIFIER_KEY (EQUALS (integerValue | emptyField))?    {pin=1}
+private doubleAttribute      ::= DOUBLE_TYPE  attributeType? LIST?  IDENTIFIER_KEY (EQUALS (doubleValue  | emptyField))?    {pin=1}
+private dateAttribute        ::= DATE_TYPE    LIST?  IDENTIFIER_KEY (EQUALS (dateValue | emptyField))?                      {pin=1}
 private referenceAttribute   ::= identifierReference LIST? IDENTIFIER_KEY (EQUALS emptyField)? {
 	pin = 1
 	mixin= 'siani.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
@@ -120,26 +119,42 @@ word ::= WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+
 	mixin = 'siani.tara.intellij.lang.psi.impl.WordMixin'
 	implements ='siani.tara.intellij.lang.psi.Word'
 }
+attributeType   ::= COLON IDENTIFIER_KEY
+stringValue     ::= STRING_VALUE_KEY  | STRING_MULTILINE_VALUE_KEY
+booleanValue    ::= BOOLEAN_VALUE_KEY
+naturalValue    ::= NATURAL_VALUE_KEY
+integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
+doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
+codeValue       ::= CODE_VALUE_KEY
+dateValue       ::= DATE_VALUE_KEY
+coordinateValue ::= COORDINATE_VALUE_KEY
 
-stringValue    ::= STRING_VALUE_KEY  | STRING_MULTILINE_VALUE_KEY
-booleanValue   ::= BOOLEAN_VALUE_KEY
-naturalValue   ::= NATURAL_VALUE_KEY
-integerValue   ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
-doubleValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
+measure ::= IDENTIFIER_KEY | DOLLAR | EURO | PERCENTAGE | GRADE
 
-annotations ::= IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMEABLE | ROOT | PROPERTY)+ {
+annotationsAndFacets ::= IS (annotations | facetApply)+ {
+	pin = 1
+}
+facetApply ::= identifierReference parameters? (WITH identifierReference)?
+{pin = 2}
+facetTarget ::= ON identifierReference body?
+{pin = 1}
+annotations ::= (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | ROOT | PROPERTY)+ {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotations'
 }
 
+
 varInit ::= IDENTIFIER_KEY EQUALS ( emptyField
 								 | identifierReference+
 								 | stringValue+
                                  | booleanValue+
-                                 | naturalValue+
-                                 | integerValue+
-                                 | doubleValue+)
+                                 | dateValue+
+                                 | codeValue+
+                                 | coordinateValue+
+                                 | naturalValue+ measure?
+                                 | integerValue+ measure?
+                                 | doubleValue+  measure?)
 {pin=2}
 emptyField ::= EMPTY_REF
 

@@ -3,7 +3,7 @@ package siani.tara.intellij.lang.parser;
 public class TaraAnnotation {
 
 	public static final String ROOT = "root";
-	public static final String NAMEABLE = "nameable";
+	public static final String NAMEABLE = "named";
 	public static final String REQUIRED = "required";
 	public static final String SINGLE = "single";
 	public static final String TERMINAL = "terminal";

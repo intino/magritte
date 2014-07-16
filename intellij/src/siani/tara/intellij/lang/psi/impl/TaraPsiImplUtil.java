@@ -48,7 +48,8 @@ public class TaraPsiImplUtil {
 	}
 
 	public static List<Concept> getChildrenInBody(Body body) {
-		return (List<Concept>) body.getConceptList();
+		List<Concept> conceptList = (List<Concept>) body.getConceptList();
+		return conceptList == null ? Collections.EMPTY_LIST : conceptList;
 	}
 
 	public static List<Attribute> getAttributesInBody(Body body) {
@@ -59,9 +60,26 @@ public class TaraPsiImplUtil {
 	public static List<Concept> getChildrenOf(Concept concept) {
 		if (concept != null) {
 			Body body = concept.getBody();
-			if (body != null) return getChildrenInBody(body);
+			if (body != null) {
+				List<Concept> children = getChildrenInBody(body);
+				List<Concept> cases = new ArrayList<>();
+				for (Concept child : children) {
+					cases.addAll(collectInnerCases(child));
+				}
+				children.addAll(cases);
+				return children;
+			}
 		}
 		return Collections.EMPTY_LIST;
+	}
+
+	private static List<Concept> collectInnerCases(Concept concept) {
+		List<Concept> cases = new ArrayList();
+		for (Concept caseConcept : concept.getCases()) {
+			cases.add(caseConcept);
+			cases.addAll(collectInnerCases((caseConcept)));
+		}
+		return cases;
 	}
 
 	@Nullable

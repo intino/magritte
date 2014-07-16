@@ -17,10 +17,12 @@ public class ASTMerger {
 	public Model doMerge() throws MergeException {
 		CompilerConfiguration conf = sources.iterator().next().getConfiguration();
 		Model model = new Model(conf.getProject() + "." + conf.getModule());
+		model.setParentModelName(sources.iterator().next().getModel().getParentModelName());
+		model.setTerminal(sources.iterator().next().getModel().isTerminal());
 		for (SourceUnit unit : sources) {
-			model.addAll(unit.getNodeTree().getTree());
-			model.putAllIdentifiers(unit.getNodeTree().getIdentifiers());
-			model.putAllInNodeTable(unit.getNodeTree().getNodeTable());
+			model.addAll(unit.getModel().getTree());
+			model.putAllIdentifiers(unit.getModel().getIdentifiers());
+			model.putAllInNodeTable(unit.getModel().getNodeTable());
 		}
 		return model;
 	}

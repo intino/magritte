@@ -25,17 +25,13 @@ parameters : LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS;
 parameterList : explicit? parameter (COMMA explicit? parameter)*;
 explicit: IDENTIFIER EQUALS;
 parameter : identifierReference
-			| stringValue
-	        | booleanValue
-	        | naturalValue
-	        | integerValue
-	        | doubleValue
-	        | stringList
-	        | booleanList
-	        | naturalList
-	        | integerList
-	        | doubleList
-	        | identifierList
+			| stringValue+
+	        | booleanValue+
+	        | naturalValue+ measure?
+	        | integerValue+ measure?
+	        | doubleValue+ measure?
+            | dateValue+
+            | codeValue+
 	        | metaWord;
 
 metaWord : metaidentifier metaWordNames*;
@@ -46,49 +42,48 @@ body: NEW_LINE_INDENT ((attribute | concept | varInit | facetApply | facetTarget
 facetApply : IS identifierReference parameters? (WITH identifierReference)?;
 facetTarget : ON identifierReference body?;
 
-attribute : doc? VAR (aliasAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
-| dateAttribute | resource | reference | word) annotations?;
+attribute : doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
+	| dateAttribute |coordinateAttribute | refAttribute | resource | reference | word) annotations?;
 
-resource         : RESOURCE EQUALS    IDENTIFIER IDENTIFIER;
+resource         : RESOURCE attributeType IDENTIFIER;
 word             : WORD IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
 wordNames        : IDENTIFIER STAR?;
-aliasAttribute   : ALIAS_TYPE   LIST? IDENTIFIER (EQUALS stringValue  | EMPTY)?;
+
+reference        : identifierReference LIST? IDENTIFIER  (EQUALS EMPTY)?       ;
 booleanAttribute : BOOLEAN_TYPE LIST? IDENTIFIER (EQUALS booleanValue | EMPTY)?;
 stringAttribute  : STRING_TYPE  LIST? IDENTIFIER (EQUALS stringValue  | EMPTY)?;
-naturalAttribute : NATURAL_TYPE LIST? IDENTIFIER (EQUALS naturalValue | EMPTY)?;
-integerAttribute : INT_TYPE     LIST? IDENTIFIER (EQUALS integerValue | EMPTY)?;
-doubleAttribute  : DOUBLE_TYPE  LIST? IDENTIFIER (EQUALS doubleValue  | EMPTY)?;
-dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (EQUALS naturalValue | EMPTY)?;
-reference        : identifierReference LIST? IDENTIFIER  (EQUALS EMPTY)?       ;
+naturalAttribute : NATURAL_TYPE attributeType? LIST? IDENTIFIER (EQUALS naturalValue | EMPTY)?;
+integerAttribute : INT_TYPE     attributeType? LIST? IDENTIFIER (EQUALS integerValue | EMPTY)?;
+doubleAttribute  : DOUBLE_TYPE  attributeType? LIST? IDENTIFIER (EQUALS doubleValue  | EMPTY)?;
+dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (EQUALS dateValue | EMPTY)?;
+coordinateAttribute  : COORDINATE_TYPE  LIST? IDENTIFIER (EQUALS (coordinateValue | EMPTY))?;
+refAttribute         : REFERENCE_TYPE   LIST?  IDENTIFIER (EQUALS (codeValue  | EMPTY))?;
 
-naturalValue: POSITIVE_VALUE;
-integerValue: POSITIVE_VALUE | NEGATIVE_VALUE;
-doubleValue : POSITIVE_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE;
-booleanValue: BOOLEAN_VALUE;
-stringValue : STRING_VALUE | STRING_MULTILINE_VALUE_KEY;
+attributeType   : COLON IDENTIFIER;
+naturalValue    : NATURAL_VALUE;
+integerValue    : NATURAL_VALUE | NEGATIVE_VALUE;
+doubleValue     : NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE;
+booleanValue    : BOOLEAN_VALUE;
+stringValue     : STRING_VALUE | STRING_MULTILINE_VALUE_KEY;
+codeValue       : CODE_VALUE;
+dateValue       : DATE_VALUE;
+coordinateValue : COORDINATE_VALUE;
 
-stringList : LEFT_SQUARE STRING_VALUE+ RIGHT_SQUARE;
-booleanList: LEFT_SQUARE BOOLEAN_VALUE+ RIGHT_SQUARE;
-naturalList: LEFT_SQUARE POSITIVE_VALUE+ RIGHT_SQUARE;
-integerList: LEFT_SQUARE (POSITIVE_VALUE | NEGATIVE_VALUE)+ RIGHT_SQUARE;
-doubleList : LEFT_SQUARE (POSITIVE_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE)+ RIGHT_SQUARE;
-identifierList : LEFT_SQUARE IDENTIFIER+ RIGHT_SQUARE;
+measure : IDENTIFIER | DOLLAR | EURO | PERCENTAGE | GRADE;
 
-annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMEABLE | ROOT | PROPERTY)+ ;
+annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | ROOT | PROPERTY)+ ;
 
-varInit : IDENTIFIER EQUALS (EMPTY
-							| identifierReference
-							| stringValue
-                            | booleanValue
-                            | naturalValue
-                            | integerValue
-                            | doubleValue
-                            | identifierList
-                            | stringList
-                            | booleanList
-                            | naturalList
-                            | integerList
-                            | doubleList);
+varInit : IDENTIFIER EQUALS ( EMPTY
+				        | identifierReference+
+				        | stringValue+
+                        | booleanValue+
+						| dateValue+
+						| codeValue+
+						| coordinateValue+
+                        | naturalValue+ measure?
+                        | integerValue+ measure?
+                        | doubleValue+  measure?);
+
 
 headerReference: hierarchy* IDENTIFIER;
 

@@ -58,13 +58,12 @@ WITH                = "with"
 PRIVATE             = "private"
 SINGLE              = "single"
 REQUIRED            = "required"
-NAMEABLE            = "nameable"
+NAMED               = "named"
 TERMINAL            = "terminal"
 PROPERTY            = "property"
 ROOT                = "root"
 VAR                 = "var"
 WORD_KEY            = "word"
-LOCATION_TYPE       = "location"
 RESOURCE_KEY        = "resource"
 
 LEFT_PARENTHESIS    = "("
@@ -72,7 +71,9 @@ RIGHT_PARENTHESIS   = ")"
 LIST                = "..."
 OPEN_BRACKET        = "{"
 CLOSE_BRACKET       = "}"
-
+DOLLAR              = "$"
+EURO                = "€"
+PERCENTAGE          = "%"
 DOT                 = "."
 STAR                = "*"
 COMMA               = ","
@@ -82,12 +83,13 @@ SEMICOLON           = ";"
 APOSTROPHE          = "'"
 DASH                = "-"
 DASHES              = {DASH} {DASH}+
-OPEN_AN             = "<"
 POSITIVE            = "+"
+AMPERSAND           = "&"
 
-ALIAS_TYPE          = "alias"
+REFERENCE_TYPE      = "reference"
 INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
+COORDINATE_TYPE     = "coordinate"
 DOUBLE_TYPE         = "double"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
@@ -99,6 +101,9 @@ NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
 DOUBLE_VALUE_KEY    = ({POSITIVE} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+
 STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
+DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
+COORDINATE_VALUE_KEY= (({DOUBLE_VALUE_KEY} {DASH})+ {DOUBLE_VALUE_KEY}) |{DOUBLE_VALUE_KEY}
+CODE_VALUE_KEY      = {AMPERSAND} [:jletterdigit:]+
 
 DOC_LINE            = "#" ~[\n]
 
@@ -135,7 +140,7 @@ NEWLINE= [\n]+
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
 	{SINGLE}                        {   return TaraTypes.SINGLE; }
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
-	{NAMEABLE}                      {   return TaraTypes.NAMEABLE; }
+	{NAMED}                         {   return TaraTypes.NAMED; }
 	{ROOT}                          {   return TaraTypes.ROOT; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
@@ -148,11 +153,17 @@ NEWLINE= [\n]+
 	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }
 	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE_KEY; }
 	{NATURAL_VALUE_KEY}             {   return TaraTypes.NATURAL_VALUE_KEY; }
+	{DATE_VALUE_KEY}                {   return TaraTypes.DATE_VALUE_KEY; }
 	{EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
+	{CODE_VALUE_KEY}                {   return TaraTypes.CODE_VALUE_KEY; }
+	{COORDINATE_VALUE_KEY}          {   return TaraTypes.COORDINATE_VALUE_KEY; }
 
 	{LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
     {RIGHT_PARENTHESIS}             {   return TaraTypes.RIGHT_PARENTHESIS; }
 
+	{DOLLAR}                        {   return TaraTypes.DOLLAR;}
+    {EURO}                          {   return TaraTypes.EURO;}
+    {PERCENTAGE}                    {   return TaraTypes.PERCENTAGE;}
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
 	{STAR}                          {   return TaraTypes.STAR;     }
@@ -161,15 +172,14 @@ NEWLINE= [\n]+
 	{WORD_KEY}                      {   return TaraTypes.WORD_KEY; }
 	{RESOURCE_KEY}                  {   return TaraTypes.RESOURCE_KEY; }
 
-	{ALIAS_TYPE}                    {   return TaraTypes.ALIAS_TYPE; }
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
 	{NATURAL_TYPE}                  {   return TaraTypes.NATURAL_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
-    {LOCATION_TYPE}                 {   return TaraTypes.LOCATION_TYPE; }
-
+    {COORDINATE_TYPE}               {   return TaraTypes.COORDINATE_TYPE; }
+	{REFERENCE_TYPE}                {   return TaraTypes.REFERENCE_TYPE; }
 	{SEMICOLON}                     {   return TaraTypes.DOT;  }
 
 	{OPEN_BRACKET}                  {   return TaraTypes.DOT; }

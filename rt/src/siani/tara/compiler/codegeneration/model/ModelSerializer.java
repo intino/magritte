@@ -21,13 +21,13 @@ public class ModelSerializer {
 
 	public void serialize(Model model) throws TaraException {
 		serializeNodes(model);
-		System.out.println("Nodes serialized. Plugin Updated");
+		System.out.println("Model serialized. Plugin Updated");
 	}
 
 	private void serializeNodes(Model model) throws TaraException {
 		try {
-			String parent = conf.getModelsDirectory();
-			File file = new File(parent, conf.getModule() + ".json");
+			String modelsDirectory = conf.getModelsDirectory();
+			File file = new File(modelsDirectory, conf.getModule() + ".json");
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
 			GsonBuilder gsonBuilder = new GsonBuilder();
@@ -37,7 +37,7 @@ public class ModelSerializer {
 			Gson gson = gsonBuilder.excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 			writer.write(gson.toJson(model));
 			writer.close();
-			new File(parent, ".model_reload").createNewFile();
+			new File(modelsDirectory, ".model_reload").createNewFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new TaraException("Error serializing tree model");

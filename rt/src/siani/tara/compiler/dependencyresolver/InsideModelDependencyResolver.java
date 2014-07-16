@@ -3,9 +3,7 @@ package siani.tara.compiler.dependencyresolver;
 import siani.tara.compiler.core.errorcollection.DependencyException;
 import siani.tara.lang.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static siani.tara.lang.NodeObject.AnnotationType;
 
@@ -20,6 +18,16 @@ public class InsideModelDependencyResolver {
 	public void resolve() throws DependencyException {
 		model.sortNodeTable(new NodeComparator(model.getNodeTable()));
 		toProcessNodes.addAll(model.getNodeTable().keySet());
+		Collections.sort(toProcessNodes, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				boolean i1 = model.get(o1) instanceof LinkNode;
+				boolean i2 = model.get(o2) instanceof LinkNode;
+				if (i1 && !i2 ) return -1;
+				if (!i1 && i2 ) return 1;
+				return 0;
+			}
+		});
 		resolveHierarchyDependencies();
 	}
 
@@ -124,5 +132,4 @@ public class InsideModelDependencyResolver {
 		throw new DependencyException("Dependency resolution fail in: " + node.getQualifiedName() +
 			". Not found ancestry: " + node.getObject().getParentName(), node);
 	}
-
 }

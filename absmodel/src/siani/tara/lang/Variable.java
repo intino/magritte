@@ -49,6 +49,8 @@ public abstract class Variable implements Cloneable {
 
 	public abstract String getType();
 
+	public abstract String getValue();
+
 	public abstract Variable clone();
 
 	public abstract String toString();

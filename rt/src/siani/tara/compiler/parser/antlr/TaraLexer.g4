@@ -104,7 +104,7 @@ SINGLE              : 'single';
 REQUIRED            : 'required';
 ROOT                : 'root';
 TERMINAL            : 'terminal';
-NAMEABLE            : 'nameable';
+NAMED               : 'named';
 PROPERTY            : 'property';
 
 LEFT_PARENTHESIS    : '(';
@@ -115,8 +115,11 @@ LIST                : '...';
 OPEN_BRACKET        : '{' {  openBracket(); };
 CLOSE_BRACKET       : '}' { closeBracket(); };
 
-OPEN_AN             : '<';
-CLOSE_AN            : '>';
+AMPERSAND           : '&';
+DOLLAR              : '$';
+EURO                : '€';
+PERCENTAGE          : '%';
+GRADE               : 'º';
 COLON               : ':';
 COMMA               : ',';
 DOT                 : '.';
@@ -132,7 +135,8 @@ VAR                 : 'var';
 
 WORD                : 'word';
 RESOURCE            : 'resource';
-ALIAS_TYPE          : 'alias';
+REFERENCE_TYPE      : 'reference';
+COORDINATE_TYPE     : 'coordinate';
 INT_TYPE            : 'integer';
 NATURAL_TYPE        : 'natural';
 DOUBLE_TYPE         : 'double';
@@ -141,14 +145,16 @@ BOOLEAN_TYPE        : 'boolean';
 DATE_TYPE           : 'date';
 EMPTY               : 'empty';
 
-BOOLEAN_VALUE : 'true' | 'false';
-POSITIVE_VALUE: POSITIVE? DIGIT+;
-NEGATIVE_VALUE: DASH DIGIT+ ;
-DOUBLE_VALUE  : (POSITIVE | DASH)? DIGIT+ DOT DIGIT+;
-STRING_VALUE  : APHOSTROPHE (~'\'')* APHOSTROPHE;
+BOOLEAN_VALUE       : 'true' | 'false';
+NATURAL_VALUE      : POSITIVE? DIGIT+;
+NEGATIVE_VALUE      : DASH DIGIT+ ;
+DOUBLE_VALUE        : (POSITIVE | DASH)? DIGIT+ DOT DIGIT+;
+STRING_VALUE        : APHOSTROPHE (~'\'')* APHOSTROPHE;
 STRING_MULTILINE_VALUE_KEY   : DASHES  (~'-')* DASHES;
-
-IDENTIFIER: LETTER (DIGIT | LETTER)*;
+CODE_VALUE          : AMPERSAND (DIGIT|LETTER)+;
+DATE_VALUE          : ((NATURAL_VALUE DASH)+ NATURAL_VALUE) | NATURAL_VALUE;
+COORDINATE_VALUE    : ((DOUBLE_VALUE DASH)+ DOUBLE_VALUE) | DOUBLE_VALUE;
+IDENTIFIER          : LETTER (DIGIT | LETTER)*;
 
 DIGIT : [0-9];
 

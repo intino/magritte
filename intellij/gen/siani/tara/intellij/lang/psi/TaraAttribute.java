@@ -8,10 +8,22 @@ import com.intellij.psi.PsiElement;
 public interface TaraAttribute extends Attribute {
 
   @Nullable
-  TaraAnnotations getAnnotations();
+  TaraAnnotationsAndFacets getAnnotationsAndFacets();
+
+  @Nullable
+  TaraAttributeType getAttributeType();
 
   @Nullable
   TaraBooleanValue getBooleanValue();
+
+  @Nullable
+  TaraCodeValue getCodeValue();
+
+  @Nullable
+  TaraCoordinateValue getCoordinateValue();
+
+  @Nullable
+  TaraDateValue getDateValue();
 
   @Nullable
   TaraDoc getDoc();

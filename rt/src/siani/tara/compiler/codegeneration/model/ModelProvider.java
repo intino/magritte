@@ -17,7 +17,7 @@ public class ModelProvider {
 	public static Model getModel(String modelDirectory, String model) throws TaraException {
 		try {
 			File file = new File(modelDirectory, model + JSON);
-			if (!file.exists()) throw new TaraException("Model file not Found");
+			if (!file.exists()) throw new TaraException("Model file not Found: " + file.getAbsolutePath());
 			InputStream heritageInputStream = new FileInputStream(file);
 			GsonBuilder gb = new GsonBuilder();
 			gb.registerTypeAdapter(Node.class, new NodeAdapter());
@@ -60,7 +60,6 @@ public class ModelProvider {
 			JsonObject jsonObject = json.getAsJsonObject();
 			String type = jsonObject.get("objectType").getAsString();
 			JsonElement element = jsonObject.get("properties");
-
 			try {
 				return context.deserialize(element, Class.forName("siani.tara.lang." + type));
 			} catch (ClassNotFoundException cnfe) {

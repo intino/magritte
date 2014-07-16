@@ -29,6 +29,24 @@ public class TaraParameterImpl extends ParameterMixin implements TaraParameter {
 
   @Override
   @NotNull
+  public List<TaraCodeValue> getCodeValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraCodeValue.class);
+  }
+
+  @Override
+  @NotNull
+  public List<TaraCoordinateValue> getCoordinateValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraCoordinateValue.class);
+  }
+
+  @Override
+  @NotNull
+  public List<TaraDateValue> getDateValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraDateValue.class);
+  }
+
+  @Override
+  @NotNull
   public List<TaraDoubleValue> getDoubleValueList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraDoubleValue.class);
   }
@@ -49,6 +67,12 @@ public class TaraParameterImpl extends ParameterMixin implements TaraParameter {
   @NotNull
   public List<TaraIntegerValue> getIntegerValueList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIntegerValue.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraMeasure getMeasure() {
+    return findChildByClass(TaraMeasure.class);
   }
 
   @Override
