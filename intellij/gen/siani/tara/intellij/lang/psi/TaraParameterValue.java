@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraParameter extends Parameter {
+public interface TaraParameterValue extends TaraPsiElement {
 
   @NotNull
   List<TaraBooleanValue> getBooleanValueList();

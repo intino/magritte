@@ -1,26 +1,21 @@
 package siani.tara.lang;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class NodeObject {
-	private String declaredNodeQN;
-	private boolean caseConcept = false;
-	private List<DeclaredNode> cases;
-	private String doc;
-	private String parentName;
-	private transient NodeObject parentObject;
-	private transient List<NodeObject> childrenConcepts;
-	private String type = "Concept";
-	private String name = "";
-	private List<AnnotationType> annotations = new ArrayList<>();
-	private List<Variable> variables = new ArrayList<>();
-	private List<DeclaredNode> facetTargets = new ArrayList<>();
-	private List<DeclaredNode> facetApplies = new ArrayList<>();
-	private List<String> parameters = new ArrayList<>();
-
+public class NodeObject extends ModelObject {
+	String declaredNodeQN;
+	boolean caseConcept = false;
+	List<DeclaredNode> cases;
+	transient List<NodeObject> childrenConcepts;
+	List<AnnotationType> annotations = new ArrayList<>();
+	List<Variable> variables = new ArrayList<>();
+	List<NodeObject> facets = new ArrayList<>();
+	Map<String, List<Variable>> allowedFacets = new HashMap<>();
+	Map<String, String> allowedFacetsConstrains = new HashMap<>();
+	List<String> parameters = new ArrayList<>();
 
 	public NodeObject() {
+		super();
 	}
 
 	public NodeObject(String type, String name) {
@@ -30,15 +25,6 @@ public class NodeObject {
 
 	public boolean is(AnnotationType type) {
 		return (annotations.contains(type));
-	}
-
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public NodeAttribute[] getAttributes() {
@@ -67,23 +53,6 @@ public class NodeObject {
 		return result.toArray(new Reference[result.size()]);
 	}
 
-	public String getParentName() {
-		return parentName;
-	}
-
-	public void setParentName(String parentName) {
-		this.parentName = parentName;
-	}
-
-	public NodeObject getParent() {
-		return parentObject;
-	}
-
-	public void setParentObject(NodeObject parentObject) {
-		this.parentObject = parentObject;
-		parentName = parentObject.getName();
-	}
-
 	public List<NodeObject> getChildren() {
 		return childrenConcepts;
 	}
@@ -102,13 +71,12 @@ public class NodeObject {
 	}
 
 	public List<DeclaredNode> getCases() {
-		return cases;
+		return cases != null ? cases : Collections.EMPTY_LIST;
 	}
 
 	public boolean isCase() {
 		return caseConcept;
 	}
-
 
 	public void setCase(boolean caseConcept) {
 		this.caseConcept = caseConcept;
@@ -136,16 +104,40 @@ public class NodeObject {
 		return variables.add(variable);
 	}
 
-	public boolean applyFacet(DeclaredNode object) {
-		return facetApplies.add(object);
-	}
-
-	public boolean addFacetTarget(DeclaredNode object) {
-		return facetTargets.add(object);
-	}
-
 	public void add(int index, Variable element) {
 		variables.add(index, element);
+	}
+
+	public List<Variable> getVariables() {
+		return variables;
+	}
+
+	public boolean addFacet(NodeObject object) {
+		return facets.add(object);
+	}
+
+	public Map<String, List<Variable>> getAllowedFacets() {
+		return allowedFacets;
+	}
+
+	public List<NodeObject> getFacets() {
+		return facets;
+	}
+
+	public void setFacets(List<NodeObject> facets) {
+		this.facets = facets;
+	}
+
+	public void addAllowedFacet(String name, List<Variable> variables) {
+		allowedFacets.put(name, variables);
+	}
+
+	public String putFacetConstrain(String facet, String facetConstrain) {
+		return allowedFacetsConstrains.put(facet, facetConstrain);
+	}
+
+	public Map<String, String> getAllowedFacetsConstrains() {
+		return allowedFacetsConstrains;
 	}
 
 	private <T> List<T> extractElements(List items, Class<T> type) {
@@ -156,35 +148,5 @@ public class NodeObject {
 		return result;
 	}
 
-	public List<Variable> getVariables() {
-		return variables;
-	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public List<DeclaredNode> getFacetApplies() {
-		return facetApplies;
-	}
-
-	public void setFacetApplies(List<DeclaredNode> facetApplies) {
-		this.facetApplies = facetApplies;
-	}
-
-	public List<DeclaredNode> getFacetTargets() {
-		return facetTargets;
-	}
-
-	public void setFacetTargets(List<DeclaredNode> facetTargets) {
-		this.facetTargets = facetTargets;
-	}
-
-	public enum AnnotationType {
-		NAMEABLE, ROOT, TERMINAL, SINGLE, REQUIRED, PRIVATE, PROPERTY;
-	}
 }

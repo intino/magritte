@@ -4,10 +4,10 @@ public class NodeAttribute extends Variable {
 	public final String primitiveType;
 	public String value;
 
-	public NodeAttribute(String type, String name, boolean isSingle, boolean isTerminal) {
+	public NodeAttribute(String type, String name, boolean isList, boolean isTerminal) {
 		this.primitiveType = type;
 		this.name = name;
-		this.isSingle = isSingle;
+		this.isList = isList;
 		this.isTerminal = isTerminal;
 	}
 
@@ -30,12 +30,12 @@ public class NodeAttribute extends Variable {
 	}
 
 	public String toString() {
-		return primitiveType + (isSingle ? "[]" : "") + " " + name;
+		return primitiveType + (isList ? "..." : "") + " " + name;
 	}
 
 	@Override
 	public NodeAttribute clone() {
-		NodeAttribute nodeAttribute = new NodeAttribute(primitiveType, name, isSingle, isTerminal);
+		NodeAttribute nodeAttribute = new NodeAttribute(primitiveType, name, isList, isTerminal);
 		nodeAttribute.setValue(value);
 		return nodeAttribute;
 	}

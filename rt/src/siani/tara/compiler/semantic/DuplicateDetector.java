@@ -5,7 +5,7 @@ import siani.tara.compiler.core.errorcollection.semantic.DuplicateAnnotationErro
 import siani.tara.compiler.core.errorcollection.semantic.DuplicateIdentifierError;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import siani.tara.lang.*;
-import siani.tara.lang.NodeObject.AnnotationType;
+import siani.tara.lang.ModelObject.AnnotationType;
 
 import java.util.HashSet;
 import java.util.Set;

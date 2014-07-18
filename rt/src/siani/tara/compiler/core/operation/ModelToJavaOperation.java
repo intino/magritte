@@ -30,12 +30,12 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
-		try {
-			createBoxClasses(model);
-			createModelClasses(model);
-		} catch (TaraException e) {
-			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
-		}
+//		try {
+////			createBoxClasses(model);
+////			createModelClasses(model);
+//		} catch (TaraException e) {
+//			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
+//		}
 
 	}
 

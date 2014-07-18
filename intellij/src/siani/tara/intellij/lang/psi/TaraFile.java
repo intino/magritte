@@ -45,7 +45,7 @@ public interface TaraFile extends PsiFile {
 
 	String getParentModel();
 
-	List<? extends Identifier> getBoxRoute();
+	List<? extends Identifier> getBoxPath();
 
 	@Nullable
 	Import[] getImports();

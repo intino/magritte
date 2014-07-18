@@ -98,6 +98,8 @@ AS                  :'as';
 ON                  :'on';
 IS                  :'is';
 WITH                : 'with';
+IF                  : 'if';
+
 //annotations
 PRIVATE             : 'private';
 SINGLE              : 'single';
@@ -130,7 +132,7 @@ STAR                : '*';
 POSITIVE            : '+';
 DASH                : '-';
 DASHES              : DASH DASH+;
-
+UNDERDASH           : '_';
 VAR                 : 'var';
 
 WORD                : 'word';
@@ -154,7 +156,7 @@ STRING_MULTILINE_VALUE_KEY   : DASHES  (~'-')* DASHES;
 CODE_VALUE          : AMPERSAND (DIGIT|LETTER)+;
 DATE_VALUE          : ((NATURAL_VALUE DASH)+ NATURAL_VALUE) | NATURAL_VALUE;
 COORDINATE_VALUE    : ((DOUBLE_VALUE DASH)+ DOUBLE_VALUE) | DOUBLE_VALUE;
-IDENTIFIER          : LETTER (DIGIT | LETTER)*;
+IDENTIFIER          : LETTER (DIGIT | LETTER | DASH | UNDERDASH)*;
 
 DIGIT : [0-9];
 

@@ -1,17 +1,13 @@
 package siani.tara.intellij.lang;
 
-import com.google.gson.*;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.psi.PsiFile;
 import siani.tara.intellij.lang.psi.TaraFile;
-import siani.tara.lang.*;
+import siani.tara.lang.Model;
+import siani.tara.lang.util.ModelLoader;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +15,6 @@ import static java.io.File.separator;
 
 public class TaraLanguage extends Language {
 
-	public static final String JSON = ".json";
 	public static final Map<String, Model> heritages = new HashMap<>();
 	public static final TaraLanguage INSTANCE = new TaraLanguage();
 
@@ -28,36 +23,22 @@ public class TaraLanguage extends Language {
 		super("Tara");
 	}
 
-	public static Model getHeritage(String parent) {
+	public static Model getMetaModel(String parent) {
 		if (parent == null) return null;
 		Model model;
 		String[] splitName = parent.split("\\.");
 		String basePath = PathManager.getPluginsPath() + separator + "tara" + separator + "classes" + separator + splitName[0] + separator;
-		if ((model = heritages.get(parent)) != null && haveToReload(basePath))
+		if ((model = heritages.get(parent)) != null && !haveToReload(basePath))
 			return model;
-		model = loadHeritage(basePath, splitName[1]);
+		model = ModelLoader.load(basePath, splitName[1]);
 		heritages.put(parent, model);
 		return model;
 	}
 
-	public static Model getHeritage(PsiFile file) {
-		return TaraLanguage.getHeritage(((TaraFile)file).getParentModel());
+	public static Model getMetaModel(PsiFile file) {
+		return getMetaModel(((TaraFile) file).getParentModel());
 	}
 
-	private static Model loadHeritage(String basePath, String parent) {
-		try {
-			File file = new File(basePath, parent + JSON);
-			if (!file.exists()) return null;
-			InputStream heritageInputStream = new FileInputStream(file);
-			GsonBuilder gb = new GsonBuilder();
-			gb.registerTypeAdapter(Node.class, new NodeAdapter());
-			gb.registerTypeAdapter(Variable.class, new VariableDeserializer());
-			return gb.create().fromJson(new InputStreamReader(heritageInputStream), Model.class);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 
 	private static boolean haveToReload(String basePath) {
 		File reload = new File(basePath, ".model_reload");
@@ -66,50 +47,5 @@ public class TaraLanguage extends Language {
 			return true;
 		}
 		return false;
-	}
-
-	protected static class VariableDeserializer implements JsonDeserializer<Variable> {
-
-		public Variable deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-			if (json == null) return null;
-			String name = json.getAsJsonObject().get("name").getAsString();
-
-			JsonElement e = json.getAsJsonObject().get("node");
-			if (e != null && e.isJsonPrimitive() && e.getAsString() != null) return new Reference(
-				e.getAsString(), name, json.getAsJsonObject().get("isSingle").getAsBoolean(), json.getAsJsonObject().get("isTerminal").getAsBoolean());
-
-			e = json.getAsJsonObject().get("primitiveType");
-			if (e != null && e.isJsonPrimitive() && e.getAsString() != null)
-				return new NodeAttribute(e.getAsString(), name, json.getAsJsonObject().get("isSingle").getAsBoolean(), json.getAsJsonObject().get("isTerminal").getAsBoolean());
-
-			e = json.getAsJsonObject().get("resourceType");
-			if (e != null && e.isJsonPrimitive() && e.getAsString() != null)
-				return new Resource(e.getAsString(), name, json.getAsJsonObject().get("isTerminal").getAsBoolean());
-			JsonArray array = json.getAsJsonObject().get("wordTypes").getAsJsonArray();
-			if (array != null && array.isJsonArray()) {
-				NodeWord word = new NodeWord(name, json.getAsJsonObject().get("isTerminal").getAsBoolean());
-				for (JsonElement jsonElement : array) word.add(jsonElement.getAsString());
-				return word;
-			}
-			return null;
-		}
-	}
-
-	protected static class NodeAdapter implements JsonDeserializer<Node> {
-
-
-		@Override
-		public Node deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-			throws JsonParseException {
-			JsonObject jsonObject = json.getAsJsonObject();
-			String type = jsonObject.get("objectType").getAsString();
-			JsonElement element = jsonObject.get("properties");
-
-			try {
-				return context.deserialize(element, Class.forName("siani.tara.lang." + type));
-			} catch (ClassNotFoundException cnfe) {
-				throw new JsonParseException("Unknown element type: " + type, cnfe);
-			}
-		}
 	}
 }

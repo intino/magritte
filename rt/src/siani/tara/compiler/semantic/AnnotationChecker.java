@@ -6,7 +6,7 @@ import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import siani.tara.compiler.core.errorcollection.semantic.WrongAnnotationError;
 import siani.tara.lang.DeclaredNode;
 import siani.tara.lang.Node;
-import siani.tara.lang.NodeObject.AnnotationType;
+import siani.tara.lang.ModelObject.AnnotationType;
 import siani.tara.lang.NodeTree;
 
 import java.util.ArrayList;

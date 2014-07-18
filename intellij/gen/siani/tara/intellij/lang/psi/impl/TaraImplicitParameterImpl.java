@@ -10,27 +10,21 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraParametersImpl extends ParametersMixin implements TaraParameters {
+public class TaraImplicitParameterImpl extends ParameterMixin implements TaraImplicitParameter {
 
-  public TaraParametersImpl(ASTNode node) {
+  public TaraImplicitParameterImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitParameters(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitImplicitParameter(this);
     else super.accept(visitor);
   }
 
   @Override
   @NotNull
-  public List<TaraExplicitParameter> getExplicitParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraExplicitParameter.class);
-  }
-
-  @Override
-  @NotNull
-  public List<TaraImplicitParameter> getImplicitParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraImplicitParameter.class);
+  public TaraParameterValue getParameterValue() {
+    return findNotNullChildByClass(TaraParameterValue.class);
   }
 
 }

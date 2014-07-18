@@ -10,6 +10,7 @@ import static siani.tara.lang.NodeObject.AnnotationType;
 public class InsideModelDependencyResolver {
 	Model model;
 	List<String> toProcessNodes = new ArrayList<>();
+	private Comparator<String> comparator;
 
 	public InsideModelDependencyResolver(Model model) throws DependencyException {
 		this.model = model;
@@ -18,16 +19,18 @@ public class InsideModelDependencyResolver {
 	public void resolve() throws DependencyException {
 		model.sortNodeTable(new NodeComparator(model.getNodeTable()));
 		toProcessNodes.addAll(model.getNodeTable().keySet());
-		Collections.sort(toProcessNodes, new Comparator<String>() {
+		comparator = new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
 				boolean i1 = model.get(o1) instanceof LinkNode;
 				boolean i2 = model.get(o2) instanceof LinkNode;
-				if (i1 && !i2 ) return -1;
-				if (!i1 && i2 ) return 1;
-				return 0;
+				if (i1 && !i2) return -1;
+				if (!i1 && i2) return 1;
+				if (i1) return -1;
+				return 1;
 			}
-		});
+		};
+		Collections.sort(toProcessNodes, comparator);
 		resolveHierarchyDependencies();
 	}
 
@@ -38,7 +41,7 @@ public class InsideModelDependencyResolver {
 				Node node = model.get(toProcessNodes.get(i));
 				if (node instanceof LinkNode)
 					linkToDeclared((LinkNode) node, model.searchDeclaredNodeOfLink((LinkNode) node));
-				else {
+				else if (node instanceof DeclaredNode) {
 					NodeObject object = node.getObject();
 					if (object.getParentName() != null || node.isCase()) {
 						DeclaredNode parent = model.searchAncestry(node);
@@ -51,6 +54,7 @@ public class InsideModelDependencyResolver {
 				toProcessNodes.remove(node.getQualifiedName());
 				i--;
 			}
+
 		}
 		addNewNodes(toAddNodes);
 		List<String> list = updateLinks(toAddNodes);

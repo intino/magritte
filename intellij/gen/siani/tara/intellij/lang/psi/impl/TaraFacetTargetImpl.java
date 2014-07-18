@@ -29,9 +29,9 @@ public class TaraFacetTargetImpl extends ASTWrapperPsiElement implements TaraFac
   }
 
   @Override
-  @Nullable
-  public TaraIdentifierReference getIdentifierReference() {
-    return findChildByClass(TaraIdentifierReference.class);
+  @NotNull
+  public List<TaraIdentifierReference> getIdentifierReferenceList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifierReference.class);
   }
 
 }

@@ -17,7 +17,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	private final String file;
 	Model model;
 	Stack<Node> conceptStack = new Stack<>();
-	Stack<NodeObject> facetApplyStack = new Stack<>();
+	Stack<NodeObject> facetTargetStack = new Stack<>();
 	String box = "";
 	Set<String> imports = new HashSet<>();
 	String currentDocAttribute = "";
@@ -47,21 +47,38 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		String name = (ctx.signature().IDENTIFIER() != null) ? ctx.signature().IDENTIFIER().getText() : "";
 		String type = (ctx.signature().metaidentifier() != null) ? ctx.signature().metaidentifier().getText() :
 			container.getObject().getType();// container can't be null in case
-		NodeObject object = new NodeObject(type, name);
 		String parent = getParent(ctx);
-		node = name.isEmpty() && ctx.body() == null ? new LinkNode(parent, container) : new DeclaredNode(object, container);
+		if ((ctx.body() != null && ctx.body().facetTarget() != null && ctx.body().facetTarget().size() > 0) || type.equals("Intention"))
+			node = new IntentionNode(new IntentionObject(type, name), container);
+		else
+			node = name.isEmpty() && ctx.body() == null ? new LinkNode(parent, container) : new DeclaredNode(new NodeObject(type, name), container);
 		addHeaderInformation(ctx, node);
-		if (container != null) {
-			if (ctx.signature().CASE() != null) {
-				object.setCase(true);
-				object.setParentName(container.getQualifiedName());
-				object.setParentObject(container.getObject());
-			} else object.setParentName(parent);
-			container.add(node);
-		} else model.add((DeclaredNode) node);
+		addNodeToModel(ctx, node, parent);
 		node.calculateQualifiedName();
-		if (node instanceof DeclaredNode) object.setDeclaredNodeQN(node.getQualifiedName());
+		if (node instanceof DeclaredNode) node.getObject().setDeclaredNodeQN(node.getQualifiedName());
 		conceptStack.push(node);
+	}
+
+	private void addNodeToModel(ConceptContext ctx, Node node, String parent) {
+		DeclaredNode container = node.getContainer();
+		if (node instanceof DeclaredNode)
+			if (container != null) {
+				if (isCase(ctx)) {
+					node.getObject().setCase(true);
+					node.getObject().setParentName(node.getContainer().getQualifiedName());
+					node.getObject().setParentObject(container.getObject());
+					container.getObject().add((DeclaredNode) node);
+				} else node.getObject().setParentName(parent);
+				container.add(node);
+			} else model.add(node);
+		else if (node instanceof LinkNode)
+			container.add(node);
+		else
+			model.add(node);
+	}
+
+	private boolean isCase(ConceptContext ctx) {
+		return ctx.signature().CASE() != null;
 	}
 
 	@Override
@@ -87,22 +104,23 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterFacetApply(@NotNull FacetApplyContext ctx) {
-		NodeObject object = conceptStack.peek().getObject();
-		if (!facetApplyStack.isEmpty()) object.setParentObject(facetApplyStack.peek());
-		DeclaredNode facetNode = new DeclaredNode(new NodeObject("", ctx.identifierReference(0).getText()), null);
-		object.applyFacet(facetNode);
-		conceptStack.push(facetNode);
-	}
 
-	@Override
-	public void exitFacetApply(@NotNull FacetApplyContext ctx) {
-		conceptStack.pop();
 	}
 
 	@Override
 	public void enterFacetTarget(@NotNull FacetTargetContext ctx) {
-		NodeObject object = conceptStack.peek().getObject();
-		object.addFacetTarget(new DeclaredNode(new NodeObject("", ctx.identifierReference().getText()), null));
+		IntentionObject nodeObject = (IntentionObject) conceptStack.peek().getObject();
+		IntentionObject intentionObject = new IntentionObject("", ctx.identifierReference(0).getText());
+		if (ctx.IF() != null)
+			intentionObject.addFacetConstrain(ctx.identifierReference(1).getText());
+		if (!facetTargetStack.isEmpty()) intentionObject.setParentObject(facetTargetStack.peek());
+		nodeObject.addFacetObjectTarget(intentionObject);
+		facetTargetStack.push(intentionObject);
+	}
+
+	@Override
+	public void exitFacetTarget(@NotNull FacetTargetContext ctx) {
+		facetTargetStack.pop();
 	}
 
 	@Override
@@ -127,27 +145,28 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterIntegerAttribute(@NotNull IntegerAttributeContext ctx) {
-		super.enterIntegerAttribute(ctx);
-		NodeAttribute attribute = new NodeAttribute(ctx.INT_TYPE().getText(), ctx.IDENTIFIER().getText());
-		attribute.setDoc(currentDocAttribute);
-		conceptStack.peek().getObject().add(attribute);
-	}
-
-	@Override
 	public void enterParameter(@NotNull ParameterContext ctx) {
 		super.enterParameter(ctx);
 		NodeObject object = conceptStack.peek().getObject();
 		if (ctx.getParent().getParent().getParent() instanceof FacetApplyContext) {
-			List<DeclaredNode> facetApplies = object.getFacetApplies();
-			facetApplies.get(facetApplies.size() - 1).getObject().addParameter(ctx.getText());
+			List<NodeObject> facetApplies = object.getFacets();
+			facetApplies.get(facetApplies.size() - 1).addParameter(ctx.getText());
 		} else
 			object.addParameter(ctx.getText());
 	}
 
 	@Override
+	public void enterIntegerAttribute(@NotNull IntegerAttributeContext ctx) {
+		super.enterIntegerAttribute(ctx);
+		NodeAttribute variable = new NodeAttribute(ctx.INT_TYPE().getText(), ctx.IDENTIFIER().getText());
+		variable.setList(ctx.LIST() != null);
+		addAttribute(ctx, variable);
+	}
+
+	@Override
 	public void enterDoubleAttribute(@NotNull DoubleAttributeContext ctx) {
 		NodeAttribute variable = new NodeAttribute(ctx.DOUBLE_TYPE().getText(), ctx.IDENTIFIER().getText());
+		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
 
@@ -155,6 +174,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	public void enterDateAttribute(@NotNull DateAttributeContext ctx) {
 		NodeAttribute variable = new NodeAttribute(ctx.DATE_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.dateValue() != null) variable.setValue(ctx.dateValue().getText());
+		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
 
@@ -163,6 +183,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		super.enterNaturalAttribute(ctx);
 		NodeAttribute variable = new NodeAttribute(ctx.NATURAL_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.naturalValue() != null) variable.setValue(ctx.naturalValue().getText());
+		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
 
@@ -170,6 +191,24 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	public void enterStringAttribute(@NotNull StringAttributeContext ctx) {
 		NodeAttribute variable = new NodeAttribute(ctx.STRING_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.stringValue() != null) variable.setValue(ctx.stringValue().getText());
+		variable.setList(ctx.LIST() != null);
+		addAttribute(ctx, variable);
+	}
+
+	@Override
+	public void enterCoordinateAttribute(@NotNull CoordinateAttributeContext ctx) {
+		NodeAttribute variable = new NodeAttribute(ctx.COORDINATE_TYPE().getText(), ctx.IDENTIFIER().getText());
+		if (ctx.coordinateValue() != null) variable.setValue(ctx.coordinateValue().getText());
+		variable.setList(ctx.LIST() != null);
+		addAttribute(ctx, variable);
+
+	}
+
+	@Override
+	public void enterRefAttribute(@NotNull RefAttributeContext ctx) {
+		NodeAttribute variable = new NodeAttribute(ctx.REFERENCE_TYPE().getText(), ctx.IDENTIFIER().getText());
+		if (ctx.codeValue() != null) variable.setValue(ctx.codeValue().getText());
+		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
 
@@ -196,21 +235,23 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterReference(@NotNull ReferenceContext ctx) {
 		Reference variable = new Reference(ctx.identifierReference().getText(), ctx.IDENTIFIER().getText());
+		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
 
 	@Override
 	public void enterBooleanAttribute(@NotNull BooleanAttributeContext ctx) {
-		NodeAttribute attribute = new NodeAttribute(ctx.BOOLEAN_TYPE().getText(), ctx.IDENTIFIER().getText());
-		addAttribute(ctx, attribute);
+		NodeAttribute variable = new NodeAttribute(ctx.BOOLEAN_TYPE().getText(), ctx.IDENTIFIER().getText());
+		variable.setList(ctx.LIST() != null);
+		addAttribute(ctx, variable);
 	}
 
 	private void addAttribute(ParserRuleContext ctx, Variable attribute) {
 		NodeObject object = conceptStack.peek().getObject();
 		attribute.setDoc(currentDocAttribute);
 		if (ctx.getParent().getParent().getParent() instanceof FacetTargetContext) {
-			List<DeclaredNode> targets = object.getFacetTargets();
-			targets.get(targets.size() - 1).getObject().add(attribute);
+			List<IntentionObject> targets = ((IntentionObject) object).getFacetTargets();
+			targets.get(targets.size() - 1).add(attribute);
 		} else object.add(attribute);
 	}
 
@@ -238,7 +279,6 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		List<Variable> variables = conceptStack.peek().getObject().getVariables();
 		Variable variable = variables.get(variables.size() - 1);
 		variable.setTerminal(!ctx.TERMINAL().isEmpty());
-		variable.setSingle(!ctx.SINGLE().isEmpty());
 		variable.setProperty(!ctx.PROPERTY().isEmpty());
 	}
 }

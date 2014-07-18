@@ -40,7 +40,7 @@ metaWordNames : DOT IDENTIFIER;
 body: NEW_LINE_INDENT ((attribute | concept | varInit | facetApply | facetTarget) NEWLINE+)+ DEDENT;
 
 facetApply : IS identifierReference parameters? (WITH identifierReference)?;
-facetTarget : ON identifierReference body?;
+facetTarget : ON identifierReference (IF identifierReference)? body?;
 
 attribute : doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
 	| dateAttribute |coordinateAttribute | refAttribute | resource | reference | word) annotations?;

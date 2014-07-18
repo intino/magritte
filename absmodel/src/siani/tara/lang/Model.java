@@ -7,7 +7,7 @@ public class Model {
 	private String parentModelName;
 	private boolean terminal;
 	private transient Model parentModel;
-	private Map<String, Node> nodeTable = new HashMap<>();
+	private transient Map<String, Node> nodeTable = new HashMap<>();
 	private NodeTree nodeTree = new NodeTree();
 	private Set<String> identifiers = new HashSet<>();
 
@@ -31,7 +31,11 @@ public class Model {
 		return nodeTable;
 	}
 
-	public boolean add(DeclaredNode node) {
+	public void setNodeTable(Map<String, Node> nodeTable) {
+		this.nodeTable = nodeTable;
+	}
+
+	public boolean add(Node node) {
 		return nodeTree.add(node);
 	}
 
@@ -87,45 +91,94 @@ public class Model {
 		return null;
 	}
 
-	public Node searchNode(String nodeName, Node context) {
-		Node result = null;
+	public DeclaredNode searchDeclarationOfRefererence(String nodeName, Node context) {
+		DeclaredNode result = null;
 		if (nodeName == null || nodeName.isEmpty()) return null;
 		if (context != null) result = relativeSearch(nodeName, context);
 		if (result != null) return result;
 		return searchInImportReferences(nodeName, context);
 	}
 
-	public Node searchNode(String nodeName) {
-		if (nodeName == null || nodeName.isEmpty()) return null;
-		Node root = null;
-		String[] split = nodeName.split("\\.");
-		for (Node node : nodeTree) if (node.getName().equals(split[0])) root = node;
-		if (root == null) return null;
-		String subName = (split.length > 1) ? "." + nodeName.substring(nodeName.indexOf(".")) : "";
-		return get(root.getQualifiedName() + subName);
+	public Node searchNode(String qn) {
+		if (qn == null || qn.isEmpty()) return null;
+		String[] split = qn.split("\\.");
+		List<DeclaredNode> roots = getModelRoots();
+		DeclaredNode root = findNodeByName(roots, split[0]);
+		return split.length == 1 ? root : resolve(root, Arrays.copyOfRange(split, 1, split.length));
 	}
 
-	private Node searchInImportReferences(String path, Node context) {
+	private Node resolve(DeclaredNode nodeRoot, String[] path) {
+		Node node = nodeRoot;
+		for (String level : path) {
+			node = findInnerIn(node, level);
+			if (node == null) return null;
+		}
+		return node;
+	}
+
+	private Node findInnerIn(Node parent, String name) {
+		for (Node node : parent.getInnerNodes())
+			if (node instanceof LinkNode) {
+				if (((LinkNode) node).getDestinyName().equals(name)) return node;
+			} else if (node.getName().equals(name)) {
+				return node;
+			} else {
+				List<DeclaredNode> cases = new ArrayList();
+				extractCases(node, cases);
+				Node aCase = containsCase(cases, name);
+				if (aCase != null) return node;
+			}
+		return null;
+	}
+
+	private Node containsCase(List<DeclaredNode> cases, String name) {
+		for (DeclaredNode aCase : cases)
+			if (name.equals(aCase.getName())) return aCase;
+		return null;
+	}
+
+	private DeclaredNode findNodeByName(List<DeclaredNode> roots, String name) {
+		for (DeclaredNode root : roots) if (name.equals(root.getName())) return root;
+		return null;
+	}
+
+	private List<DeclaredNode> getModelRoots() {
+		List<DeclaredNode> roots = new ArrayList<>();
+		for (Node node : nodeTree) {
+			roots.add((DeclaredNode) node);
+			extractCases(node, roots);
+		}
+		return roots;
+	}
+
+	private void extractCases(Node node, List<DeclaredNode> list) {
+		List<DeclaredNode> cases = Arrays.asList(node.getCases());
+		list.addAll(cases);
+		for (DeclaredNode aCase : cases) {
+			extractCases(aCase, list);
+		}
+	}
+
+	private DeclaredNode searchInImportReferences(String path, Node context) {
 		for (String box : context.getImports()) {
 			if (!nodeTable.containsKey(box + "." + path)) continue;
 			Node node = nodeTable.get(box + "." + path);
-			if (node != null) return node;
+			if (node != null) return (DeclaredNode) node;
 			for (String importPath : context.getImports())
 				if (nodeTable.containsKey(importPath) && importPath.equals(path))
-					return nodeTable.get(importPath);
+					return (DeclaredNode) nodeTable.get(importPath);
 		}
 		return null;
 	}
 
-
-	private Node relativeSearch(String path, Node context) {
+	private DeclaredNode relativeSearch(String path, Node context) {
 		DeclaredNode container = context.getContainer();
 		while (container != null) {
-			Node node = get(container.getQualifiedName() + "." + path);
+			DeclaredNode node = (DeclaredNode) get(container.getQualifiedName() + "." + path);
 			if (node != null) return node;
 			container = container.getContainer();
 		}
-		return get(context.getBox() + "." + path);
+		return (DeclaredNode) get(context.getBox() + "." + path);
 	}
 
 	public void sortNodeTable(Comparator<String> comparator) {

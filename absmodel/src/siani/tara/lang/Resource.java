@@ -26,7 +26,7 @@ public class Resource extends Variable {
 	}
 
 	@Override
-	public boolean isSingle() {
+	public boolean isList() {
 		return false;
 	}
 

@@ -3,8 +3,8 @@ package siani.tara.lang;
 public abstract class Variable implements Cloneable {
 	public String name;
 	public String doc;
+	public boolean isList = false;
 	public boolean isTerminal = false;
-	public boolean isSingle = false;
 	public boolean isProperty = false;
 
 	public String getName() {
@@ -15,12 +15,12 @@ public abstract class Variable implements Cloneable {
 		this.name = name;
 	}
 
-	public boolean isSingle() {
-		return isSingle;
+	public boolean isList() {
+		return isList;
 	}
 
-	public void setSingle(boolean multiple) {
-		this.isSingle = multiple;
+	public void setList(boolean isList) {
+		this.isList = isList;
 	}
 
 	public boolean isTerminal() {

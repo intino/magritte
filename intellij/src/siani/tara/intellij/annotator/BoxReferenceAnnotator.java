@@ -25,7 +25,7 @@ public class BoxReferenceAnnotator extends TaraAnnotator {
 	}
 
 	private void isWellPlaced(TaraHeaderReference reference) {
-		VirtualFile file = ReferenceManager.resolveRoute(reference.getIdentifierList());
+		VirtualFile file = ReferenceManager.resolvePath(reference.getIdentifierList());
 		if (!reference.getContainingFile().getVirtualFile().equals(file)) {
 			holder.createErrorAnnotation(reference.getNode(), TaraBundle.message("box.reference.error.message"));
 		}

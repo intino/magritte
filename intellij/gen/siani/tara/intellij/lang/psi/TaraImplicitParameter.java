@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraFacetTarget extends TaraPsiElement {
-
-  @Nullable
-  TaraBody getBody();
+public interface TaraImplicitParameter extends Parameter {
 
   @NotNull
-  List<TaraIdentifierReference> getIdentifierReferenceList();
+  TaraParameterValue getParameterValue();
 
 }

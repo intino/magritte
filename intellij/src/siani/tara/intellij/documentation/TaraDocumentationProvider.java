@@ -43,7 +43,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	}
 
 	private String extractMetaDocumentation(Concept element) {
-		Model heritage = TaraLanguage.getHeritage(((TaraFile) element.getContainingFile()).getParentModel());
+		Model heritage = TaraLanguage.getMetaModel(((TaraFile) element.getContainingFile()).getParentModel());
 		if (heritage == null) return null;
 		Node node = heritage.searchNode(TaraUtil.getMetaQualifiedName(element));
 		if (node == null) return null;

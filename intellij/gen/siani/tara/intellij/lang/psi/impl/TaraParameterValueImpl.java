@@ -8,16 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraParameterImpl extends ParameterMixin implements TaraParameter {
+public class TaraParameterValueImpl extends ASTWrapperPsiElement implements TaraParameterValue {
 
-  public TaraParameterImpl(ASTNode node) {
+  public TaraParameterValueImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitParameter(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitParameterValue(this);
     else super.accept(visitor);
   }
 

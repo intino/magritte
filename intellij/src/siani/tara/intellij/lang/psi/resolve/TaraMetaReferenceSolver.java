@@ -50,7 +50,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		if (myElement instanceof MetaIdentifier) {
 			Concept context = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(myElement));
 			if (context != null) {
-				Model heritage = TaraLanguage.getHeritage(((TaraFile) context.getContainingFile()).getParentModel());
+				Model heritage = TaraLanguage.getMetaModel(((TaraFile) context.getContainingFile()).getParentModel());
 				if (heritage == null) return new Object[0];
 				NodeObject node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(context)).getObject();
 				if (node != null) {
@@ -63,7 +63,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	}
 
 	private void addBaseConcepts(Concept context, String baseConcept, List<String> concepts) {
-		Node node = TaraLanguage.getHeritage(((TaraFile) context.getContainingFile()).getParentModel()).getNodeTable().get(baseConcept);
+		Node node = TaraLanguage.getMetaModel(((TaraFile) context.getContainingFile()).getParentModel()).getNodeTable().get(baseConcept);
 		for (Node child : node.getInnerNodes())
 			if (!child.getObject().isCase() && !child.getObject().is(NodeObject.AnnotationType.PRIVATE)) concepts.add(child.getName());
 	}

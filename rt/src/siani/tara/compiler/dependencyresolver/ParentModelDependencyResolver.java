@@ -7,7 +7,7 @@ import siani.tara.lang.Variable;
 
 import java.util.*;
 
-import static siani.tara.lang.NodeObject.AnnotationType.TERMINAL;
+import static siani.tara.lang.ModelObject.AnnotationType.TERMINAL;
 
 public class ParentModelDependencyResolver {
 	private final Model model;
@@ -21,12 +21,12 @@ public class ParentModelDependencyResolver {
 
 	public void resolve() {
 		Map<String, Node> terminals = collectParentTerminalNodes(parentModel);
-		addTerminalNodes(terminals, model);
+		addTerminalNodes(terminals);
 		Map<Node, List<Variable>> terminalVariables = collectParentTerminalVariables(parentModel);
-		addTerminalVariables(terminalVariables, model);
+		addTerminalVariables(terminalVariables);
 	}
 
-	private void addTerminalVariables(Map<Node, List<Variable>> nodesWithTerminal, Model model) {
+	private void addTerminalVariables(Map<Node, List<Variable>> nodesWithTerminal) {
 		for (Map.Entry<Node, List<Variable>> terminal : nodesWithTerminal.entrySet()) {
 			Collection<Node> nodes = collectNodesByType(model, terminal.getKey().getContainer().getObject().getType());
 			if (nodes.isEmpty()) return;
@@ -65,7 +65,7 @@ public class ParentModelDependencyResolver {
 	}
 
 
-	private void addTerminalNodes(Map<String, Node> terminals, Model model) {
+	private void addTerminalNodes(Map<String, Node> terminals) {
 		for (Node terminal : terminals.values()) {
 			if (terminal.getContainer() == null) {
 				model.add((DeclaredNode) terminal);

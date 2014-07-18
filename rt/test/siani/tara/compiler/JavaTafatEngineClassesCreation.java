@@ -2,10 +2,10 @@ package siani.tara.compiler;
 
 import org.junit.Assert;
 import org.junit.Test;
-import siani.tara.compiler.codegeneration.model.ModelProvider;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.operation.ModelToJavaOperation;
+import siani.tara.lang.util.ModelLoader;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -26,7 +26,7 @@ public class JavaTafatEngineClassesCreation {
 		File value = new File("/Users/oroncal/workspace/tara/rt/res_test/Tafat/engine/out");
 		when(mockConfiguration.getOutDirectory()).thenReturn(value);
 		ModelToJavaOperation toJavaOperation = new ModelToJavaOperation(mockUnit);
-		toJavaOperation.call(ModelProvider.getModel("/Users/oroncal/workspace/tara/rt/res_test/", "engine"));
+		toJavaOperation.call(ModelLoader.load("/Users/oroncal/workspace/tara/rt/res_test/", "engine"));
 		String text = new String(Files.readAllBytes(Paths.get(value.getAbsolutePath() + "/magritte/model/TafatEngineCoreBox.java")), StandardCharsets.UTF_8);
 		Assert.assertEquals(expectedTafatEngineCoreBox,text);
 	}

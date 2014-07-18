@@ -43,13 +43,13 @@ public class VariantsManager {
 		Concept contextOf = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(myElement));
 		if (contextOf == null) return;
 		for (Concept concept : TaraPsiImplUtil.getChildrenOf(contextOf))
-			resolveRouteFor(concept, context);
+			resolvePathFor(concept, context);
 	}
 
 	private List<PsiElement> addInBoxVariants() {
 		List<PsiElement> variants = new ArrayList<>();
-		List<? extends Identifier> boxRoute = ((TaraFile) myElement.getContainingFile()).getBoxRoute();
-		TaraFile packageFile = (TaraFile) ReferenceManager.resolve(boxRoute.get(boxRoute.size() - 1), false);
+		List<? extends Identifier> boxPath = ((TaraFile) myElement.getContainingFile()).getBoxPath();
+		TaraFile packageFile = (TaraFile) ReferenceManager.resolve(boxPath.get(boxPath.size() - 1), false);
 		if (packageFile == null) return Collections.EMPTY_LIST;
 //
 //		PsiDirectory[] directories = packageFile.getDirectories();
@@ -64,7 +64,7 @@ public class VariantsManager {
 			if (file == null) continue;
 
 //			if (file.getConcept() != null)
-//				resolveRouteFor(file.getConcept(), context);
+//				resolvePathFor(file.getConcept(), context);
 		}
 	}
 
@@ -77,7 +77,7 @@ public class VariantsManager {
 			PsiElement resolve = ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1), false);
 			if (resolve == null) continue;
 //			Concept concept = (resolve instanceof Identifier) ? TaraPsiImplUtil.getContextOf(resolve) : (Concept) resolve;
-//			resolveRouteFor(concept, context);
+//			resolvePathFor(concept, context);
 		}
 		return variants;
 	}
@@ -90,14 +90,14 @@ public class VariantsManager {
 		else resolveAbsolutePackageReference(contentRoot);
 	}
 
-	private void resolveRouteFor(Concept concept, List<Identifier> route) {
+	private void resolvePathFor(Concept concept, List<Identifier> path) {
 		List<Concept> childrenOf = TaraPsiImplUtil.getChildrenOf(concept);
-		if (route.isEmpty()) {
+		if (path.isEmpty()) {
 			if (!concept.isCase())
 				variants.add(concept);
-		} else if (route.get(0).getText().equals(concept.getName()))
+		} else if (path.get(0).getText().equals(concept.getName()))
 			for (Concept child : childrenOf)
-				resolveRouteFor(child, route.subList(1, route.size()));
+				resolvePathFor(child, path.subList(1, path.size()));
 	}
 
 	private void resolveAbsolutePackageReference(VirtualFile contentRoot) {

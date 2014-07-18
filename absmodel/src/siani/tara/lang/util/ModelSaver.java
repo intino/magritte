@@ -1,0 +1,96 @@
+package siani.tara.lang.util;
+
+import com.google.gson.*;
+import siani.tara.lang.*;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+
+public class ModelSaver {
+
+	protected static final String JSON = ".json";
+
+	public static boolean save(Model model, String modelsDirectory) {
+		try {
+			File file = new File(modelsDirectory, model.getModelName().split("\\.")[1] + JSON);
+			file.getParentFile().mkdirs();
+			FileWriter writer = new FileWriter(file);
+			GsonBuilder gsonBuilder = new GsonBuilder();
+			gsonBuilder.setPrettyPrinting();
+			gsonBuilder.registerTypeAdapter(Variable.class, new VariableSerializer());
+			gsonBuilder.registerTypeAdapter(Node.class, new NodeAdapter());
+			gsonBuilder.registerTypeAdapter(ModelObject.class, new ObjectAdapter());
+			Gson gson = gsonBuilder.excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+			writer.write(gson.toJson(model));
+			writer.close();
+			new File(modelsDirectory, ".model_reload").createNewFile();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+
+	public static class VariableSerializer implements JsonSerializer<Variable> {
+		@Override
+		public JsonElement serialize(Variable variable, Type type, JsonSerializationContext jsonSerializationContext) {
+			final JsonObject object = new JsonObject();
+			object.addProperty("name", variable.name);
+			if (variable instanceof NodeWord) {
+				NodeWord word = (NodeWord) variable;
+				final JsonArray list = new JsonArray();
+				for (String wordType : word.wordTypes) list.add(new JsonPrimitive(wordType));
+				object.add("wordTypes", list);
+				object.addProperty("isTerminal", word.isTerminal);
+				object.addProperty("defaultWord", word.getDefaultWord());
+				object.addProperty("isProperty", word.isProperty());
+			} else if (variable instanceof NodeAttribute) {
+				NodeAttribute attribute = (NodeAttribute) variable;
+				object.addProperty("primitiveType", attribute.primitiveType);
+				object.addProperty("value", attribute.getValue());
+				object.addProperty("isList", attribute.isList);
+				object.addProperty("isTerminal", attribute.isTerminal);
+				object.addProperty("isProperty", attribute.isProperty());
+			} else if (variable instanceof Reference) {
+				Reference reference = (Reference) variable;
+				object.addProperty("node", reference.type);
+				object.addProperty("isList", reference.isList);
+				object.addProperty("isTerminal", reference.isTerminal);
+				object.addProperty("isProperty", reference.isProperty());
+				object.addProperty("isEmpty", reference.isEmpty());
+			} else if (variable instanceof Resource) {
+				Resource resource = (Resource) variable;
+				object.addProperty("resourceType", resource.node);
+				object.addProperty("isProperty", resource.isProperty());
+				object.addProperty("isTerminal", resource.isTerminal);
+			}
+			return object; // or throw an IllegalArgumentException
+
+		}
+	}
+
+	private static class NodeAdapter implements JsonSerializer<Node> {
+		@Override
+		public JsonElement serialize(Node src, Type typeOfSrc, JsonSerializationContext context) {
+			JsonObject object = new JsonObject();
+			object.add("NodeType", new JsonPrimitive(src.getClass().getSimpleName()));
+			object.add("properties", context.serialize(src, src.getClass()));
+			return object;
+		}
+	}
+
+	private static class ObjectAdapter implements JsonSerializer<ModelObject> {
+		@Override
+		public JsonElement serialize(ModelObject src, Type typeOfSrc, JsonSerializationContext context) {
+			JsonObject object = new JsonObject();
+			object.add("ObjectType", new JsonPrimitive(src.getClass().getSimpleName()));
+			object.add("properties", context.serialize(src, src.getClass()));
+			return object;
+		}
+	}
+
+}

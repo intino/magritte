@@ -4,14 +4,12 @@ import java.util.List;
 
 public class DeclaredNode extends Node {
 
-	private NodeObject object;
 	private List<Node> innerNodes;
 
 	public DeclaredNode() {
 	}
 
 	public DeclaredNode(NodeObject object, DeclaredNode container) {
-		super();
 		this.object = object;
 		this.container = container;
 		innerNodes = new NodeTree();
@@ -22,7 +20,7 @@ public class DeclaredNode extends Node {
 	}
 
 	public NodeObject getObject() {
-		return object;
+		return (NodeObject) object;
 	}
 
 	public DeclaredNode getContainer() {
@@ -42,7 +40,7 @@ public class DeclaredNode extends Node {
 	}
 
 	@Override
-	protected String getNodeRoute() {
+	protected String getNodePath() {
 		String name = !getName().isEmpty() ? getName() : "[" + getObject().getParentName() + ANONYMOUS + "]";
 		if (container != null && !getObject().isCase()) return container.getQualifiedName() + "." + name;
 		if (getObject().isCase())
@@ -52,7 +50,7 @@ public class DeclaredNode extends Node {
 
 
 	public boolean isCase() {
-		return object.isCase();
+		return getObject().isCase();
 	}
 
 	public String toString() {

@@ -1,9 +1,9 @@
 package siani.tara.compiler.semantic;
 
+import siani.tara.lang.ModelObject.AnnotationType;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import siani.tara.compiler.core.errorcollection.semantic.UnusedConceptError;
 import siani.tara.lang.*;
-import siani.tara.lang.NodeObject.AnnotationType;
 
 import java.util.*;
 
@@ -45,7 +45,7 @@ public class ConceptsUsage {
 
 	private void checkReference(Node concept, Model ast) {
 		for (Reference reference : concept.getObject().getReferences())
-			checkIfUsed(ast.searchNode(reference.getType(), concept));
+			checkIfUsed(ast.searchDeclarationOfRefererence(reference.getType(), concept));
 	}
 
 	public void finish() {

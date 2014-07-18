@@ -46,8 +46,8 @@ class NodeComparator implements Comparator<String> {
 		int compare;
 		compare = nameComparator.compare(o1, o2);
 		if (compare == 0) return compare;
-		compare = hierarchyComparator.compare(base.get(o1), base.get(o2));
-		if (compare != 0) return compare;
+//		compare = hierarchyComparator.compare(base.get(o1), base.get(o2));
+//		if (compare != 0) return compare;
 		compare = levelComparator.compare(o1, o2);
 		if (compare != 0) return compare;
 		compare = nameComparator.compare(o1, o2);

@@ -103,6 +103,7 @@ WITH                = "with"
 AS                  = "as"
 ON                  = "on"
 IS                  = "is"
+IF                  = "if"
 //annotations
 PRIVATE             = "private"
 SINGLE              = "single"
@@ -160,7 +161,7 @@ CODE_VALUE_KEY      = {AMPERSAND} [:jletterdigit:]+
 DOC_LINE            = "#" ~[\n]
 DIGIT               = [:digit:]
 
-IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})+
+IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 %%
 <YYINITIAL> {
@@ -177,6 +178,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})+
 	{IS}                            {   return TaraTypes.IS; }
 	{ON}                            {   return TaraTypes.ON; }
 	{WITH}                          {   return TaraTypes.WITH; }
+	{IF}                            {   return TaraTypes.IF; }
 
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }

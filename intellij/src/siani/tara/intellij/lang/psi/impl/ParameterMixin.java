@@ -3,16 +3,19 @@ package siani.tara.intellij.lang.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.IdentifierReference;
-import siani.tara.intellij.lang.psi.Parameter;
-import siani.tara.intellij.lang.psi.Parameters;
+import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.resolve.TaraParameterReferenceSolver;
-import siani.tara.lang.*;
+import siani.tara.lang.Model;
+import siani.tara.lang.Node;
+import siani.tara.lang.NodeWord;
+import siani.tara.lang.Variable;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
@@ -28,7 +31,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	@NotNull
 	@Override
 	public PsiReference[] getReferences() {
-		Model heritage = TaraLanguage.getHeritage(getContainingFile());
+		Model heritage = TaraLanguage.getMetaModel(getContainingFile());
 		if (heritage == null) return new PsiReference[0];
 		Node node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getContextOf(this)));
 		if (node == null) return new PsiReference[0];
@@ -45,7 +48,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	@Nullable
 	@Override
 	public PsiReference getReference() {
-		Model heritage = TaraLanguage.getHeritage(getContainingFile());
+		Model heritage = TaraLanguage.getMetaModel(getContainingFile());
 		Node node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getContextOf(this)));
 		if (node == null) return null;
 		Variable variable = node.getObject().getVariables().get(getIndexInParent());
@@ -58,10 +61,32 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
-	private int getIndexInParent() {
-		Parameter[] parameters = ((Parameters) this.getParent()).getParameters();
-		for (int i = 0; i < parameters.length; i++)
-			if (parameters[i].equals(this)) return i;
-		return -1;
+	public int getIndexInParent() {
+		return Arrays.asList(((Parameters) this.getParent()).getParameters()).indexOf(this);
+	}
+
+	public boolean isExplicit() {
+		return this instanceof TaraExplicitParameter;
+	}
+
+	public String getExplicitName() {
+		if (this instanceof TaraExplicitParameter) return ((TaraExplicitParameter) this).getIdentifier().getText();
+		return null;
+	}
+
+	public TaraParameterValue getValue() {
+		if (this instanceof TaraExplicitParameter) return ((TaraExplicitParameter) this).getParameterValue();
+		else return ((TaraImplicitParameter) this).getParameterValue();
+	}
+
+	public boolean isList() {
+		return getValue().getChildren().length > 1;
+	}
+
+	public TaraFacetApply isInFacet() {
+		PsiElement aElement = this;
+		while (!(aElement.getParent() instanceof Concept) && !(aElement.getParent() instanceof TaraFacetApply))
+			aElement = aElement.getParent();
+		return (aElement.getParent() instanceof TaraFacetApply) ? (TaraFacetApply) aElement.getParent() : null;
 	}
 }

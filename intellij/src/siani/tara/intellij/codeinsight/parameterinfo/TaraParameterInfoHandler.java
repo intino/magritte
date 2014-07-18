@@ -77,7 +77,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext parameterInfoContext) {
 		final Parameters parameterList = findParameters(parameterInfoContext);
 		if (parameterList != null) {
-			Model model = TaraLanguage.getHeritage(((TaraFile) parameterList.getContainingFile()).getParentModel());
+			Model model = TaraLanguage.getMetaModel(((TaraFile) parameterList.getContainingFile()).getParentModel());
 			if (model == null) return parameterList;
 			Concept conceptContext = TaraPsiImplUtil.getContextOf(parameterList);
 			Node node = findNodeOf(conceptContext, model);
@@ -88,7 +88,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			for (Variable variable : node.getObject().getVariables()) {
 				Attribute attribute = null;
 				if (variable instanceof NodeAttribute || variable instanceof Reference)
-					attribute = instance.createAttribute(variable.getName(), variable.getType() + ((variable.isSingle()) ? "[]" : ""));
+					attribute = instance.createAttribute(variable.getName(), variable.getType() + ((variable.isList()) ? "..." : ""));
 				else if (variable instanceof NodeWord) {
 					List<String> wordTypes = ((NodeWord) variable).getWordTypes();
 					attribute = instance.createWord(variable.getName(), wordTypes.toArray(new String[wordTypes.size()]));

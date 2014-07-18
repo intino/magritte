@@ -38,7 +38,7 @@ import java.util.Set;
                 destiny = use.split("as metamodel")[0].trim();
                 break;
             }
-        Model heritage = TaraLanguage.getHeritage(destiny);
+        Model heritage = TaraLanguage.getMetaModel(destiny);
         if (heritage != null)
             identifiers = heritage.getIdentifiers();
 }
@@ -53,6 +53,7 @@ BOX                 = "box"
 AS                  = "as"
 ON                  = "on"
 IS                  = "is"
+IF                  = "if"
 WITH                = "with"
 //annotations
 PRIVATE             = "private"
@@ -82,6 +83,7 @@ EQUALS              = "="
 SEMICOLON           = ";"
 APOSTROPHE          = "'"
 DASH                = "-"
+UNDERDASH           = "_"
 DASHES              = {DASH} {DASH}+
 POSITIVE            = "+"
 AMPERSAND           = "&"
@@ -108,7 +110,7 @@ CODE_VALUE_KEY      = {AMPERSAND} [:jletterdigit:]+
 DOC_LINE            = "#" ~[\n]
 
 DIGIT=[:digit:]
-IDENTIFIER_KEY = [:jletter:] [:jletterdigit:]*
+IDENTIFIER_KEY = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 SP = ([ ]+ | [\t]+)
 SPACES= {SP}+
@@ -129,7 +131,7 @@ NEWLINE= [\n]+
 	{ON}                            {   return TaraTypes.ON; }
 	{IS}                            {   return TaraTypes.IS; }
 	{WITH}                          {   return TaraTypes.WITH; }
-
+	{IF}                            {   return TaraTypes.IF; }
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
 

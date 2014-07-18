@@ -7,7 +7,7 @@ public class Reference extends Variable {
 	public Reference(String type, String name, boolean isMultiple, boolean isTerminal) {
 		this.type = type;
 		this.name = name;
-		this.isSingle = isMultiple;
+		this.isList = isMultiple;
 		this.isTerminal = isTerminal;
 	}
 
@@ -35,11 +35,11 @@ public class Reference extends Variable {
 
 	@Override
 	public String toString() {
-		return type + (isSingle ? "[]" : "") + " " + name;
+		return type + (isList ? "..." : "") + " " + name;
 	}
 
 	@Override
 	public Reference clone() {
-		return new Reference(type, name, isSingle, isTerminal);
+		return new Reference(type, name, isList, isTerminal);
 	}
 }

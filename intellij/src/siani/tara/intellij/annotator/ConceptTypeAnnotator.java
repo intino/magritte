@@ -24,7 +24,7 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 		if (element instanceof MetaIdentifier) {
 			Concept concept = TaraPsiImplUtil.getContextOf(element);
 			if (concept == null) return;
-			Model tree = TaraLanguage.getHeritage(((TaraFile) element.getContainingFile()).getParentModel());
+			Model tree = TaraLanguage.getMetaModel(((TaraFile) element.getContainingFile()).getParentModel());
 			if (tree == null) {
 				if (!"Concept".equals(element.getNode().getText())) {
 					Annotation errorAnnotation = holder.createErrorAnnotation

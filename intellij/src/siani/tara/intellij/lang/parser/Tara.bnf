@@ -50,19 +50,30 @@ signature::= ((CASE_KEY identifier)
 
 private withHeritage ::= metaIdentifier COLON identifierReference identifier?
 
-parameters ::= LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS {
+parameters ::= LEFT_PARENTHESIS (explicitParameters | implicitParameters)? RIGHT_PARENTHESIS {
 	pin = 3
 	mixin = 'siani.tara.intellij.lang.psi.impl.ParametersMixin'
 	implements = 'siani.tara.intellij.lang.psi.Parameters'
 }
 
-private parameterList ::= explicit? parameter (COMMA explicit? parameter)*
+private explicitParameters ::= explicitParameter (COMMA explicitParameter)*
 { pin=2}
 
-explicit::= identifier EQUALS
-{ pin=2}
+private implicitParameters ::= implicitParameter (COMMA implicitParameter)*
+{ pin=1}
 
-parameter ::=   identifierReference+
+explicitParameter ::= identifier EQUALS parameterValue {
+    pin = 2
+	mixin = 'siani.tara.intellij.lang.psi.impl.ParameterMixin'
+	implements = 'siani.tara.intellij.lang.psi.Parameter'
+}
+
+implicitParameter ::= parameterValue {
+    mixin = 'siani.tara.intellij.lang.psi.impl.ParameterMixin'
+    implements = 'siani.tara.intellij.lang.psi.Parameter'
+}
+
+parameterValue ::= identifierReference+
 				| stringValue+
 		        | booleanValue+
 		        | naturalValue+ measure?
@@ -72,11 +83,7 @@ parameter ::=   identifierReference+
 		        | codeValue+
 		        | coordinateValue+
 		        | metaWord
-		        | empty {
-    pin = 1
-	mixin = 'siani.tara.intellij.lang.psi.impl.ParameterMixin'
-	implements = 'siani.tara.intellij.lang.psi.Parameter'
-}
+		        | empty
 
 metaWord ::= metaIdentifier metaWordNames*
 {pin = 1}
@@ -136,7 +143,7 @@ annotationsAndFacets ::= IS (annotations | facetApply)+ {
 }
 facetApply ::= identifierReference parameters? (WITH identifierReference)?
 {pin = 2}
-facetTarget ::= ON identifierReference body?
+facetTarget ::= ON identifierReference (IF identifierReference)? body?
 {pin = 1}
 annotations ::= (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | ROOT | PROPERTY)+ {
 	pin = 1

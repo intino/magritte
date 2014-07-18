@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface TaraParameters extends Parameters {
 
   @NotNull
-  List<TaraExplicit> getExplicitList();
+  List<TaraExplicitParameter> getExplicitParameterList();
 
   @NotNull
-  List<TaraParameter> getParameterList();
+  List<TaraImplicitParameter> getImplicitParameterList();
 
 }

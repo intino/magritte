@@ -1,12 +1,13 @@
 src_file
-/Users/oroncal/workspace/sandbox/Tafat/siani/model/aspects.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/aspects/volume.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/aspects/site.tara
 /Users/oroncal/workspace/sandbox/Tafat/siani/model/behaviors/electrical.tara
 /Users/oroncal/workspace/sandbox/Tafat/siani/model/behaviors/thermal.tara
 /Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/assets.tara
 /Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/devices.tara
-/Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/places.tara
 /Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/mobility.tara
 /Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/people.tara
+/Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/places.tara
 /Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/vehicles.tara
 /Users/oroncal/workspace/sandbox/Tafat/siani/model/layers/waste.tara
 

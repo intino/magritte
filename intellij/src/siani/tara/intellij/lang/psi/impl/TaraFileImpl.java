@@ -107,7 +107,7 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	}
 
 	@Override
-	public List<? extends Identifier> getBoxRoute() {
+	public List<? extends Identifier> getBoxPath() {
 		return getBoxReference().getHeaderReference().getIdentifierList();
 	}
 

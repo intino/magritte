@@ -29,7 +29,7 @@ public class ReferenceManager {
 		else if (identifier.getParent() instanceof IdentifierReference)
 			reference = resolveConcept(identifier, getIdentifiersOfReference(identifier));
 		else if (identifier.getParent() instanceof HeaderReference)
-			reference = resolveHeaderReference(identifier, getRouteFromHeader(identifier));
+			reference = resolveHeaderReference(identifier, getPathFromHeader(identifier));
 		else if (identifier.getParent() instanceof Signature) return identifier;
 		if (reference instanceof Concept) reference = ((Concept) reference).getIdentifierNode();
 		return reference;
@@ -43,14 +43,14 @@ public class ReferenceManager {
 		return reference;
 	}
 
-	private static PsiElement resolveHeaderReference(Identifier identifier, List<Identifier> route) {
-		VirtualFile file = resolveRoute(route);
+	private static PsiElement resolveHeaderReference(Identifier identifier, List<Identifier> path) {
+		VirtualFile file = resolvePath(path);
 		if (file != null) {
 			if (file.isDirectory())
-				return resolvePackageReference(identifier.getProject(), join(route.subList(2, route.size()), '.'));
+				return resolvePackageReference(identifier.getProject(), join(path.subList(2, path.size()), '.'));
 			if ("iml".equals(file.getExtension()) || "xml".equals(file.getExtension()))
-				return PsiManager.getInstance(route.get(0).getProject()).findFile(file);
-		} else return resolveInnerConcept(route);
+				return PsiManager.getInstance(path.get(0).getProject()).findFile(file);
+		} else return resolveInnerConcept(path);
 		return PsiManager.getInstance(identifier.getProject()).findFile(file);
 	}
 
@@ -60,30 +60,30 @@ public class ReferenceManager {
 		return resolveJavaClassReference(identifier.getProject(), path);
 	}
 
-	private static List<Identifier> getRouteFromHeader(Identifier identifier) {
-		List<Identifier> route = (List<Identifier>) ((HeaderReference) (identifier.getParent())).getIdentifierList();
-		return route.subList(0, route.indexOf(identifier) + 1);
+	private static List<Identifier> getPathFromHeader(Identifier identifier) {
+		List<Identifier> path = (List<Identifier>) ((HeaderReference) (identifier.getParent())).getIdentifierList();
+		return path.subList(0, path.indexOf(identifier) + 1);
 	}
 
 	private static List<Identifier> getIdentifiersOfReference(Identifier identifier) {
-		List<Identifier> route = (List<Identifier>) ((IdentifierReference) (identifier.getParent())).getIdentifierList();
-		route = route.subList(0, route.indexOf(identifier) + 1);
-		return route;
+		List<Identifier> path = (List<Identifier>) ((IdentifierReference) (identifier.getParent())).getIdentifierList();
+		path = path.subList(0, path.indexOf(identifier) + 1);
+		return path;
 	}
 
-	private static PsiElement resolveConcept(PsiElement identifier, List<Identifier> route) {
-		List<Identifier> subRoute = route.subList(0, route.indexOf(identifier) + 1);
-		PsiElement element = tryToResolveInBox(subRoute);
+	private static PsiElement resolveConcept(PsiElement identifier, List<Identifier> path) {
+		List<Identifier> subPath = path.subList(0, path.indexOf(identifier) + 1);
+		PsiElement element = tryToResolveInBox(subPath);
 		if (element != null) return element;
-		return tryToResolveOnImportedBoxes(subRoute);
+		return tryToResolveOnImportedBoxes(subPath);
 	}
 
-	private static PsiElement tryToResolveInBox(List<Identifier> route) {
-		Concept[] possibleRoots = getPossibleRoots(route.get(0));
+	private static PsiElement tryToResolveInBox(List<Identifier> path) {
+		Concept[] possibleRoots = getPossibleRoots(path.get(0));
 		if (possibleRoots.length == 0) return null;
-		if (route.size() == 1) return possibleRoots[0];
+		if (path.size() == 1) return possibleRoots[0];
 		for (Concept possibleRoot : possibleRoots) {
-			Concept concept = resolvePathInConcept(route, possibleRoot);
+			Concept concept = resolvePathInConcept(path, possibleRoot);
 			if (concept != null) return concept;
 		}
 		return null;
@@ -106,9 +106,9 @@ public class ReferenceManager {
 		return list.toArray(new Concept[list.size()]);
 	}
 
-	private static Concept resolvePathInConcept(List<Identifier> route, Concept concept) {
+	private static Concept resolvePathInConcept(List<Identifier> path, Concept concept) {
 		Concept reference = null;
-		for (Identifier identifier : route) {
+		for (Identifier identifier : path) {
 			reference = (reference == null) ? identifier.getText().equals(concept.getName()) ? concept : null :
 				TaraUtil.findChildOf(reference, identifier.getText());
 			if (reference == null) return null;
@@ -116,20 +116,20 @@ public class ReferenceManager {
 		return reference;
 	}
 
-	private static PsiElement resolveInnerConcept(List<Identifier> route) {
+	private static PsiElement resolveInnerConcept(List<Identifier> path) {
 		int i;
 		VirtualFile file = null;
-		for (i = route.size() - 1; i >= 0; i--) {
-			file = resolveRoute(route.subList(0, i));
+		for (i = path.size() - 1; i >= 0; i--) {
+			file = resolvePath(path.subList(0, i));
 			if (file != null) break;
 		}
 		if (file != null) {
-			PsiFile file1 = PsiManager.getInstance(route.get(0).getProject()).findFile(file);
+			PsiFile file1 = PsiManager.getInstance(path.get(0).getProject()).findFile(file);
 			if (!TaraFile.class.isInstance(file1)) return null;
 			TaraFile taraFile = (TaraFile) file1;
 			Concept[] concept = taraFile.getConcepts();
 			for (Concept prime : concept) {
-				Concept aConcept = resolvePathInConcept(route, prime);
+				Concept aConcept = resolvePathInConcept(path, prime);
 				if (aConcept != null) return aConcept;
 			}
 		}
@@ -144,34 +144,34 @@ public class ReferenceManager {
 		return JavaHelper.getJavaHelper(project).findClass(path);
 	}
 
-	public static VirtualFile resolveRoute(List<? extends Identifier> boxRoute) {
-		if (boxRoute.isEmpty()) return null;
-		Project project = boxRoute.get(0).getProject();
-		if (boxRoute.size() == 1) return project.getWorkspaceFile();
-		if (boxRoute.size() == 2) {
-			Module moduleByName = ModuleManager.getInstance(project).findModuleByName(boxRoute.get(1).getText());
+	public static VirtualFile resolvePath(List<? extends Identifier> boxPath) {
+		if (boxPath.isEmpty()) return null;
+		Project project = boxPath.get(0).getProject();
+		if (boxPath.size() == 1) return project.getWorkspaceFile();
+		if (boxPath.size() == 2) {
+			Module moduleByName = ModuleManager.getInstance(project).findModuleByName(boxPath.get(1).getText());
 			if (moduleByName == null) return null;
 			return moduleByName.getModuleFile();
 		}
-		return resolveBoxInSourcePath(boxRoute.subList(2, boxRoute.size()), project);
+		return resolveBoxInSourcePath(boxPath.subList(2, boxPath.size()), project);
 	}
 
 
-	public static VirtualFile resolveBoxInSourcePath(List<? extends Identifier> boxRoute, Project project) {
-		VirtualFile file = TaraUtil.getSourcePath(project, boxRoute.get(0).getContainingFile());
-		for (Identifier identifier : boxRoute)
+	public static VirtualFile resolveBoxInSourcePath(List<? extends Identifier> boxPath, Project project) {
+		VirtualFile file = TaraUtil.getSourcePath(project, boxPath.get(0).getContainingFile());
+		for (Identifier identifier : boxPath)
 			file = TaraUtil.findChildFileOf(file, identifier.getText());
 		return file;
 	}
 
-	private static PsiElement tryToResolveOnImportedBoxes(List<Identifier> route) {
-		TaraFile context = (TaraFile) route.get(0).getContainingFile();
+	private static PsiElement tryToResolveOnImportedBoxes(List<Identifier> path) {
+		TaraFile context = (TaraFile) path.get(0).getContainingFile();
 		Import[] imports = context.getImports();
 		if (imports == null) return null;
-		return searchInImport(route, imports);
+		return searchInImport(path, imports);
 	}
 
-	private static Concept searchInImport(List<Identifier> route, Import[] imports) {
+	private static Concept searchInImport(List<Identifier> path, Import[] imports) {
 		for (Import anImport : imports) {
 			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
 			PsiElement resolve = resolve(importIdentifiers.get(importIdentifiers.size() - 1), false);
@@ -179,16 +179,16 @@ public class ReferenceManager {
 			if (!TaraFile.class.isInstance(resolve.getContainingFile())) continue;
 			TaraFile containingFile = (TaraFile) resolve.getContainingFile();
 			for (Concept concept : containingFile.getConcepts()) {
-				Concept solution = resolvePathInConcept(route, concept);
+				Concept solution = resolvePathInConcept(path, concept);
 				if (solution != null) return solution;
 			}
 		}
 		return null;
 	}
 
-	public static String join(List<? extends Identifier> subRoute, char c) {
+	public static String join(List<? extends Identifier> subPath, char c) {
 		String result = "";
-		for (Identifier identifier : subRoute) result += c + identifier.getText();
+		for (Identifier identifier : subPath) result += c + identifier.getText();
 		return result.substring(1);
 	}
 }

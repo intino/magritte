@@ -190,11 +190,11 @@ public class TaraUtil {
 
 	public static String composeConceptQN(Identifier identifier) {
 		Concept concept = getContextOf(identifier);
-		String route = concept.getName();
+		String path = concept.getName();
 		while (concept != null) {
 			concept = getContextOf(concept);
-			if (concept != null) route = concept.getName() + "." + route;
+			if (concept != null) path = concept.getName() + "." + path;
 		}
-		return route;
+		return path;
 	}
 }

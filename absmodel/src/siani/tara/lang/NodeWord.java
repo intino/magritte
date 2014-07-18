@@ -43,7 +43,7 @@ public class NodeWord extends Variable {
 	}
 
 	@Override
-	public boolean isSingle() {
+	public boolean isList() {
 		return false;
 	}
 
