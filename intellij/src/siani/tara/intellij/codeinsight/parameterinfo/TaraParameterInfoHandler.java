@@ -75,21 +75,23 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	@Nullable
 	@Override
 	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext parameterInfoContext) {
-		final Parameters parameterList = findParameters(parameterInfoContext);
-		if (parameterList != null) {
-			Model model = TaraLanguage.getMetaModel(((TaraFile) parameterList.getContainingFile()).getParentModel());
-			if (model == null) return parameterList;
-			Concept conceptContext = TaraPsiImplUtil.getContextOf(parameterList);
-			Node node = findNodeOf(conceptContext, model);
-			if (node == null) return parameterList;
-			if (node.getObject().getVariables().isEmpty()) return parameterList;
+		final Parameters parameters = findParameters(parameterInfoContext);
+		if (parameters != null) {
+			Model model = TaraLanguage.getMetaModel(((TaraFile) parameters.getContainingFile()).getParentModel());
+			if (model == null) return parameters;
+			TaraFacetApply facet = parameters.getParameters()[0].isInFacet();
+			Node node = findNode(TaraPsiImplUtil.getContextOf(parameters), model);
+			if (node == null) return parameters;
 			List<Attribute> attributes = new ArrayList<>();
-			TaraElementFactory instance = TaraElementFactory.getInstance(parameterList.getProject());
-			for (Variable variable : node.getObject().getVariables()) {
+			TaraElementFactory instance = TaraElementFactory.getInstance(parameters.getProject());
+			List<Variable> variables = (facet != null) ? getFacetVariables(facet.getMetaIdentifierList().get(0).getText(), node) : node.getObject().getVariables();
+			if (variables.isEmpty()) return parameters;
+			for (Variable variable : variables) {
 				Attribute attribute = null;
-				if (variable instanceof NodeAttribute || variable instanceof Reference)
-					attribute = instance.createAttribute(variable.getName(), variable.getType() + ((variable.isList()) ? "..." : ""));
-				else if (variable instanceof NodeWord) {
+				if (variable instanceof NodeAttribute || variable instanceof Reference) {
+					String[] ref = variable.getType().split("\\.");
+					attribute = instance.createAttribute(variable.getName(), ref[ref.length - 1] + ((variable.isList()) ? "..." : ""));
+				} else if (variable instanceof NodeWord) {
 					List<String> wordTypes = ((NodeWord) variable).getWordTypes();
 					attribute = instance.createWord(variable.getName(), wordTypes.toArray(new String[wordTypes.size()]));
 				} else if (variable instanceof Resource)
@@ -98,31 +100,20 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			}
 			parameterInfoContext.setItemsToShow(new Object[]{attributes});
 		}
-		return parameterList;
+		return parameters;
 	}
 
-	private Node findNodeOf(Concept concept, Model wrapper) {
-		Node node = wrapper.get(TaraUtil.getMetaQualifiedName(concept));
-		if (node != null) return node;
-		Concept context = TaraPsiImplUtil.getContextOf(concept);
-		Node contextNode = wrapper.get(TaraUtil.getMetaQualifiedName(context));
-		if (contextNode == null) return null;
-		for (Node inner : contextNode.getInnerNodes())
-			if (inner.getObject().getParentName() != null) {
-				DeclaredNode ancestry = wrapper.searchAncestry(inner);
-				node = checkIfCase(ancestry, concept.getType());
-				if (node == null)// TODO Revisar
-					node = wrapper.searchChildrenByName(ancestry, concept.getType());
-			}
-		return node;
-
+	private List<Variable> getFacetVariables(String name, Node node) {
+		for (Map.Entry<String, List<Variable>> entry : node.getObject().getAllowedFacets().entrySet()) {
+			if (entry.getKey().endsWith("." + name)) return entry.getValue();
+		}
+		return Collections.EMPTY_LIST;
 	}
 
-	private DeclaredNode checkIfCase(DeclaredNode ancestry, String name) {
-		for (DeclaredNode node : ancestry.getCases())
-			if (node.getName().equals(name)) return node;
-		return null;
+	protected Node findNode(Concept concept, Model model) {
+		return model.searchNode(TaraUtil.getMetaQualifiedName(concept));
 	}
+
 
 	private Parameters findParameters(CreateParameterInfoContext context) {
 		Parameters parameters = ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), Parameters.class);

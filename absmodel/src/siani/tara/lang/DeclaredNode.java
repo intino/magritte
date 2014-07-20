@@ -4,7 +4,7 @@ import java.util.List;
 
 public class DeclaredNode extends Node {
 
-	private List<Node> innerNodes;
+	private List<Node> innerNodes = new NodeTree();;
 
 	public DeclaredNode() {
 	}
@@ -12,7 +12,6 @@ public class DeclaredNode extends Node {
 	public DeclaredNode(NodeObject object, DeclaredNode container) {
 		this.object = object;
 		this.container = container;
-		innerNodes = new NodeTree();
 	}
 
 	public List<Node> getInnerNodes() {

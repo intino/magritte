@@ -38,6 +38,8 @@ public class Resource extends Variable {
 
 	@Override
 	public Variable clone() {
-		return new Resource(node, name, isTerminal);
+		Resource resource = new Resource(node, name, isTerminal);
+		resource.setProperty(isProperty);
+		return resource;
 	}
 }

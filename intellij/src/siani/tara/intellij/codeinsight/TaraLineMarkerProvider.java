@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
-import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -30,9 +29,10 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
-			if (!(element instanceof Concept)) return null;
-			PsiElement reference = ReferenceManager.resolve((Identifier) TaraPsiImplUtil.getContextOf(element).getIdentifierNode(), true);
-			String start = "Concept extended in ";
+			if (!(element instanceof Concept) || ((Concept) element).isIntention()) return null;
+			Concept concept = (Concept) element;
+			PsiElement reference = ReferenceManager.resolve((Identifier) concept.getIdentifierNode(), true);
+			String start = "Intention declared in ";
 			@NonNls String pattern = null;
 			if (reference != null) pattern = reference.getNavigationElement().getContainingFile().getName();
 			return GutterIconTooltipHelper.composeText(new PsiElement[]{reference}, start, pattern);
@@ -42,10 +42,10 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 		public void browse(MouseEvent e, PsiElement element) {
 			if (!(element instanceof Concept)) return;
 			if (DumbService.isDumb(element.getProject())) {
-				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to overriding classes is not possible during index update");
+				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
 				return;
 			}
-			PsiElement identifierNode = TaraPsiImplUtil.getContextOf(element).getIdentifierNode();
+			PsiElement identifierNode = ((Concept) element).getIdentifierNode();
 			if (identifierNode == null) return;
 			NavigatablePsiElement reference = (NavigatablePsiElement)
 				ReferenceManager.resolve((Identifier) identifierNode, true);
@@ -65,11 +65,15 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (element instanceof Concept) {
-			final Icon icon = AllIcons.Gutter.ImplementedMethod;
-			final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;
-			return new LineMarkerInfo<>(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
-				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
+		if (element instanceof Concept && ((Concept) element).isIntention()) {
+			Concept concept = (Concept) element;
+			PsiElement reference = ReferenceManager.resolve((Identifier) concept.getIdentifierNode(), true);
+			if (reference != null) {
+				final Icon icon = AllIcons.Gutter.ImplementedMethod;
+				final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;
+				return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
+					type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
+			}
 		}
 		return super.getLineMarkerInfo(element);
 	}

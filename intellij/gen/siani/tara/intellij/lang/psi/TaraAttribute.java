@@ -41,6 +41,9 @@ public interface TaraAttribute extends Attribute {
   TaraIntegerValue getIntegerValue();
 
   @Nullable
+  TaraMeasure getMeasure();
+
+  @Nullable
   TaraNaturalValue getNaturalValue();
 
   @Nullable

@@ -21,13 +21,13 @@ public class SaveModelOperation extends ModelOperation {
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		try {
-			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating plugin code");
+			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating model representation");
 			ModelSerializer generator = new ModelSerializer(unit.getConfiguration());
 			generator.serialize(model);
 			unit.getErrorCollector().failIfErrors();
 		} catch (TaraException e) {
-			LOG.severe("Error during plugin generation: " + e.getMessage() + "\n");
-			throw new CompilationFailedException(Phases.PLUGIN_GENERATION, unit);
+			LOG.severe("Error during model generation: " + e.getMessage() + "\n");
+			throw new CompilationFailedException(Phases.MODEL_GENERATION, unit);
 		}
 	}
 }

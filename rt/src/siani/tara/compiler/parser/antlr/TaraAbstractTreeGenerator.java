@@ -160,6 +160,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		super.enterIntegerAttribute(ctx);
 		NodeAttribute variable = new NodeAttribute(ctx.INT_TYPE().getText(), ctx.IDENTIFIER().getText());
 		variable.setList(ctx.LIST() != null);
+		if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
 		addAttribute(ctx, variable);
 	}
 
@@ -167,6 +168,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	public void enterDoubleAttribute(@NotNull DoubleAttributeContext ctx) {
 		NodeAttribute variable = new NodeAttribute(ctx.DOUBLE_TYPE().getText(), ctx.IDENTIFIER().getText());
 		variable.setList(ctx.LIST() != null);
+		if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
 		addAttribute(ctx, variable);
 	}
 
@@ -174,6 +176,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	public void enterDateAttribute(@NotNull DateAttributeContext ctx) {
 		NodeAttribute variable = new NodeAttribute(ctx.DATE_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.dateValue() != null) variable.setValue(ctx.dateValue().getText());
+		if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
@@ -183,6 +186,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		super.enterNaturalAttribute(ctx);
 		NodeAttribute variable = new NodeAttribute(ctx.NATURAL_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.naturalValue() != null) variable.setValue(ctx.naturalValue().getText());
+		if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
@@ -191,7 +195,16 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	public void enterStringAttribute(@NotNull StringAttributeContext ctx) {
 		NodeAttribute variable = new NodeAttribute(ctx.STRING_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.stringValue() != null) variable.setValue(ctx.stringValue().getText());
+		if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
 		variable.setList(ctx.LIST() != null);
+		addAttribute(ctx, variable);
+	}
+
+	@Override
+	public void enterBooleanAttribute(@NotNull BooleanAttributeContext ctx) {
+		NodeAttribute variable = new NodeAttribute(ctx.BOOLEAN_TYPE().getText(), ctx.IDENTIFIER().getText());
+		variable.setList(ctx.LIST() != null);
+		if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
 		addAttribute(ctx, variable);
 	}
 
@@ -199,6 +212,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	public void enterCoordinateAttribute(@NotNull CoordinateAttributeContext ctx) {
 		NodeAttribute variable = new NodeAttribute(ctx.COORDINATE_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.coordinateValue() != null) variable.setValue(ctx.coordinateValue().getText());
+		if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 
@@ -208,6 +222,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	public void enterRefAttribute(@NotNull RefAttributeContext ctx) {
 		NodeAttribute variable = new NodeAttribute(ctx.REFERENCE_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.codeValue() != null) variable.setValue(ctx.codeValue().getText());
+		else if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
@@ -236,13 +251,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	public void enterReference(@NotNull ReferenceContext ctx) {
 		Reference variable = new Reference(ctx.identifierReference().getText(), ctx.IDENTIFIER().getText());
 		variable.setList(ctx.LIST() != null);
-		addAttribute(ctx, variable);
-	}
-
-	@Override
-	public void enterBooleanAttribute(@NotNull BooleanAttributeContext ctx) {
-		NodeAttribute variable = new NodeAttribute(ctx.BOOLEAN_TYPE().getText(), ctx.IDENTIFIER().getText());
-		variable.setList(ctx.LIST() != null);
+		if (ctx.EMPTY() != null) variable.setEmpty(true);
 		addAttribute(ctx, variable);
 	}
 

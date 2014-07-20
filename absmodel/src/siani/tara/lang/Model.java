@@ -73,25 +73,25 @@ public class Model {
 		String ancestry = node.getObject().getParentName();
 		Node result = relativeSearch(ancestry, node);
 		if (result != null) return (DeclaredNode) result;
-		return (DeclaredNode) searchInImportReferences(ancestry, node);
+		return searchInImportReferences(ancestry, node);
 	}
 
 	public DeclaredNode searchDeclaredNodeOfLink(LinkNode node) {
 		Node result = relativeSearch(node.getDestinyQN(), node);
 		if (result != null) return (DeclaredNode) result;
-		return (DeclaredNode) searchInImportReferences(node.getDestinyQN(), node);
+		return searchInImportReferences(node.getDestinyQN(), node);
 	}
 
 	public Node searchChildrenByName(Node parent, String childName) {
 		for (Node node : nodeTable.values()) {
 			boolean cond = parent.equals(searchAncestry(node));
-			if (parent.equals(searchAncestry(node)) && (childName.equals(node.getName()) || ("").equals(node.getName())))
+			if (cond && (childName.equals(node.getName()) || ("").equals(node.getName())))
 				return node;
 		}
 		return null;
 	}
 
-	public DeclaredNode searchDeclarationOfRefererence(String nodeName, Node context) {
+	public DeclaredNode searchDeclarationOfReference(String nodeName, Node context) {
 		DeclaredNode result = null;
 		if (nodeName == null || nodeName.isEmpty()) return null;
 		if (context != null) result = relativeSearch(nodeName, context);
@@ -104,6 +104,7 @@ public class Model {
 		String[] split = qn.split("\\.");
 		List<DeclaredNode> roots = getModelRoots();
 		DeclaredNode root = findNodeByName(roots, split[0]);
+		if (root == null) return null;
 		return split.length == 1 ? root : resolve(root, Arrays.copyOfRange(split, 1, split.length));
 	}
 
@@ -120,15 +121,26 @@ public class Model {
 		for (Node node : parent.getInnerNodes())
 			if (node instanceof LinkNode) {
 				if (((LinkNode) node).getDestinyName().equals(name)) return node;
+				else {
+					Node destiny = searchInDestiny((LinkNode) node, name);
+					if (destiny != null) return destiny;
+				}
 			} else if (node.getName().equals(name)) {
 				return node;
 			} else {
 				List<DeclaredNode> cases = new ArrayList();
 				extractCases(node, cases);
 				Node aCase = containsCase(cases, name);
-				if (aCase != null) return node;
+				if (aCase != null) return aCase;
 			}
 		return null;
+	}
+
+	private Node searchInDestiny(LinkNode node, String name) {
+		List<DeclaredNode> cases = new ArrayList();
+		extractCases(node.getDestiny(), cases);
+		Node aCase = containsCase(cases, name);
+		return aCase != null ? aCase : null;
 	}
 
 	private Node containsCase(List<DeclaredNode> cases, String name) {

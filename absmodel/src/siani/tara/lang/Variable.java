@@ -1,6 +1,7 @@
 package siani.tara.lang;
 
 public abstract class Variable implements Cloneable {
+	public static final String EMPTY = "EMPTY_VALUE";
 	public String name;
 	public String doc;
 	public boolean isList = false;

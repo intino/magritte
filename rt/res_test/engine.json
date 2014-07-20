@@ -3,125 +3,145 @@
   "terminal": false,
   "nodeTree": [
     {
-      "objectType": "DeclaredNode",
+      "NodeType": "DeclaredNode",
       "properties": {
-        "object": {
-          "declaredNodeQN": "Tafat.engine.core.Simulation",
-          "caseConcept": false,
-          "type": "Concept",
-          "name": "Simulation",
-          "annotations": [
-            "REQUIRED",
-            "SINGLE",
-            "TERMINAL",
-            "ROOT"
-          ],
-          "variables": [
-            {
-              "name": "from",
-              "primitiveType": "date",
-              "isSingle": false,
-              "isTerminal": false,
-              "isProperty": false
-            },
-            {
-              "name": "to",
-              "primitiveType": "date",
-              "isSingle": false,
-              "isTerminal": false,
-              "isProperty": false
-            }
-          ],
-          "facetTargets": [],
-          "facetApplies": [],
-          "parameters": []
-        },
         "innerNodes": [],
-        "qualifiedName": "Tafat.engine.core.Simulation",
-        "file": "/Users/oroncal/workspace/sandbox/Tafat/engine/model/core.tara",
-        "box": "Tafat.engine.core",
+        "qualifiedName": "tafat.engine.core.Simulation",
+        "file": "/Users/octavio/workspace/sandbox/Tafat/engine/model/core.tara",
+        "box": "tafat.engine.core",
         "line": 3,
+        "object": {
+          "ObjectType": "NodeObject",
+          "properties": {
+            "declaredNodeQN": "tafat.engine.core.Simulation",
+            "caseConcept": false,
+            "annotations": [
+              "REQUIRED",
+              "SINGLE",
+              "TERMINAL",
+              "ROOT"
+            ],
+            "variables": [
+              {
+                "name": "from",
+                "primitiveType": "date",
+                "isList": false,
+                "isTerminal": false,
+                "isProperty": false
+              },
+              {
+                "name": "to",
+                "primitiveType": "date",
+                "isList": false,
+                "isTerminal": false,
+                "isProperty": false
+              }
+            ],
+            "facets": [],
+            "allowedFacets": {},
+            "allowedFacetsConstrains": {},
+            "parameters": [],
+            "type": "Concept",
+            "name": "Simulation"
+          }
+        },
         "imports": []
       }
     },
     {
-      "objectType": "DeclaredNode",
+      "NodeType": "DeclaredNode",
       "properties": {
-        "object": {
-          "declaredNodeQN": "Tafat.engine.core.Entity",
-          "caseConcept": false,
-          "type": "Concept",
-          "name": "Entity",
-          "annotations": [
-            "ROOT"
-          ],
-          "variables": [],
-          "facetTargets": [],
-          "facetApplies": [],
-          "parameters": []
-        },
         "innerNodes": [
           {
-            "objectType": "LinkNode",
+            "NodeType": "LinkNode",
             "properties": {
-              "destinyQN": "Tafat.engine.core.Entity",
-              "destinyBox": "Tafat.engine.core",
-              "qualifiedName": "Tafat.engine.core.Entity.[Tafat.engine.core.Entity@link]",
-              "file": "/Users/oroncal/workspace/sandbox/Tafat/engine/model/core.tara",
-              "box": "Tafat.engine.core",
+              "destinyQN": "tafat.engine.core.Entity",
+              "destinyBox": "tafat.engine.core",
+              "qualifiedName": "tafat.engine.core.Entity.[tafat.engine.core.Entity@link]",
+              "file": "/Users/octavio/workspace/sandbox/Tafat/engine/model/core.tara",
+              "box": "tafat.engine.core",
               "line": 8,
               "imports": []
             }
           }
         ],
-        "qualifiedName": "Tafat.engine.core.Entity",
-        "file": "/Users/oroncal/workspace/sandbox/Tafat/engine/model/core.tara",
-        "box": "Tafat.engine.core",
+        "qualifiedName": "tafat.engine.core.Entity",
+        "file": "/Users/octavio/workspace/sandbox/Tafat/engine/model/core.tara",
+        "box": "tafat.engine.core",
         "line": 7,
+        "object": {
+          "ObjectType": "NodeObject",
+          "properties": {
+            "declaredNodeQN": "tafat.engine.core.Entity",
+            "caseConcept": false,
+            "annotations": [
+              "ROOT"
+            ],
+            "variables": [],
+            "facets": [],
+            "allowedFacets": {},
+            "allowedFacetsConstrains": {},
+            "parameters": [],
+            "type": "Concept",
+            "name": "Entity"
+          }
+        },
         "imports": []
       }
     },
     {
-      "objectType": "DeclaredNode",
+      "NodeType": "IntentionNode",
       "properties": {
-        "object": {
-          "declaredNodeQN": "Tafat.engine.core.Aspect",
-          "caseConcept": false,
-          "type": "Intention",
-          "name": "Aspect",
-          "annotations": [],
-          "variables": [],
-          "facetTargets": [],
-          "facetApplies": [],
-          "parameters": []
-        },
         "innerNodes": [],
-        "qualifiedName": "Tafat.engine.core.Aspect",
-        "file": "/Users/oroncal/workspace/sandbox/Tafat/engine/model/core.tara",
-        "box": "Tafat.engine.core",
+        "qualifiedName": "tafat.engine.core.Aspect",
+        "file": "/Users/octavio/workspace/sandbox/Tafat/engine/model/core.tara",
+        "box": "tafat.engine.core",
         "line": 10,
+        "object": {
+          "ObjectType": "IntentionObject",
+          "properties": {
+            "objectTargets": [],
+            "facetTargets": {},
+            "declaredNodeQN": "tafat.engine.core.Aspect",
+            "caseConcept": false,
+            "annotations": [],
+            "variables": [],
+            "facets": [],
+            "allowedFacets": {},
+            "allowedFacetsConstrains": {},
+            "parameters": [],
+            "type": "Intention",
+            "name": "Aspect"
+          }
+        },
         "imports": []
       }
     },
     {
-      "objectType": "DeclaredNode",
+      "NodeType": "IntentionNode",
       "properties": {
-        "object": {
-          "declaredNodeQN": "Tafat.engine.core.Behavior",
-          "caseConcept": false,
-          "type": "Intention",
-          "name": "Behavior",
-          "annotations": [],
-          "variables": [],
-          "facetTargets": [],
-          "facetApplies": [],
-          "parameters": []
-        },
         "innerNodes": [],
-        "qualifiedName": "Tafat.engine.core.Behavior",
-        "file": "/Users/oroncal/workspace/sandbox/Tafat/engine/model/core.tara",
-        "box": "Tafat.engine.core",
+        "qualifiedName": "tafat.engine.core.Behavior",
+        "file": "/Users/octavio/workspace/sandbox/Tafat/engine/model/core.tara",
+        "box": "tafat.engine.core",
         "line": 12,
+        "object": {
+          "ObjectType": "IntentionObject",
+          "properties": {
+            "objectTargets": [],
+            "facetTargets": {},
+            "declaredNodeQN": "tafat.engine.core.Behavior",
+            "caseConcept": false,
+            "annotations": [],
+            "variables": [],
+            "facets": [],
+            "allowedFacets": {},
+            "allowedFacetsConstrains": {},
+            "parameters": [],
+            "type": "Intention",
+            "name": "Behavior"
+          }
+        },
         "imports": []
       }
     }

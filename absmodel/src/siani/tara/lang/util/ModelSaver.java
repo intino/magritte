@@ -26,7 +26,6 @@ public class ModelSaver {
 			Gson gson = gsonBuilder.excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 			writer.write(gson.toJson(model));
 			writer.close();
-			new File(modelsDirectory, ".model_reload").createNewFile();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -45,29 +44,24 @@ public class ModelSaver {
 				final JsonArray list = new JsonArray();
 				for (String wordType : word.wordTypes) list.add(new JsonPrimitive(wordType));
 				object.add("wordTypes", list);
-				object.addProperty("isTerminal", word.isTerminal);
 				object.addProperty("defaultWord", word.getDefaultWord());
-				object.addProperty("isProperty", word.isProperty());
 			} else if (variable instanceof NodeAttribute) {
 				NodeAttribute attribute = (NodeAttribute) variable;
 				object.addProperty("primitiveType", attribute.primitiveType);
 				object.addProperty("value", attribute.getValue());
 				object.addProperty("isList", attribute.isList);
-				object.addProperty("isTerminal", attribute.isTerminal);
-				object.addProperty("isProperty", attribute.isProperty());
+				if (attribute.measure != null) object.addProperty("measure", attribute.measure);
 			} else if (variable instanceof Reference) {
 				Reference reference = (Reference) variable;
 				object.addProperty("node", reference.type);
 				object.addProperty("isList", reference.isList);
-				object.addProperty("isTerminal", reference.isTerminal);
-				object.addProperty("isProperty", reference.isProperty());
-				object.addProperty("isEmpty", reference.isEmpty());
+				object.addProperty("empty", reference.empty);
 			} else if (variable instanceof Resource) {
 				Resource resource = (Resource) variable;
 				object.addProperty("resourceType", resource.node);
-				object.addProperty("isProperty", resource.isProperty());
-				object.addProperty("isTerminal", resource.isTerminal);
 			}
+			object.addProperty("isTerminal", variable.isTerminal);
+			object.addProperty("isProperty", variable.isProperty());
 			return object; // or throw an IllegalArgumentException
 
 		}

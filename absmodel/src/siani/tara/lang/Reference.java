@@ -22,7 +22,7 @@ public class Reference extends Variable {
 
 	@Override
 	public String getValue() {
-		return null;
+		return (empty) ? EMPTY : null;
 	}
 
 	public boolean isEmpty() {
@@ -33,6 +33,10 @@ public class Reference extends Variable {
 		this.empty = empty;
 	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	@Override
 	public String toString() {
 		return type + (isList ? "..." : "") + " " + name;
@@ -40,6 +44,8 @@ public class Reference extends Variable {
 
 	@Override
 	public Reference clone() {
-		return new Reference(type, name, isList, isTerminal);
+		Reference reference = new Reference(type, name, isList, isTerminal);
+		reference.setProperty(isProperty);
+		return reference;
 	}
 }

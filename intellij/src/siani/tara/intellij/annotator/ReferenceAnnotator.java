@@ -35,8 +35,18 @@ public class ReferenceAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.element = element;
 		this.holder = holder;
-		if (element instanceof IdentifierReference && !TaraFacetApply.class.isInstance(element.getParent()))//TODO facet reference
+		if (element instanceof IdentifierReference && !isInFacetApply(element))
 			checkWellReferenced();
+
+	}
+
+	private boolean isInFacetApply(PsiElement element) {
+		PsiElement aElement = element;
+		TaraFacetApply result;
+		while ((aElement.getParent() != null) && !(aElement.getParent() instanceof Concept) && !(aElement.getParent() instanceof TaraFacetApply))
+			aElement = aElement.getParent();
+		result = (aElement.getParent() instanceof TaraFacetApply) ? (TaraFacetApply) aElement.getParent() : null;
+		return result != null;
 	}
 
 	public void checkWellReferenced() {

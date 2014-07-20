@@ -112,9 +112,9 @@ private coordinateAttribute  ::= COORDINATE_TYPE  LIST? IDENTIFIER_KEY (EQUALS (
 private refAttribute         ::= REFERENCE_TYPE   LIST?  IDENTIFIER_KEY (EQUALS (codeValue  | emptyField))?                 {pin=1}
 private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (EQUALS (booleanValue | emptyField))?                   {pin=1}
 private stringAttribute      ::= STRING_TYPE  LIST?  IDENTIFIER_KEY (EQUALS (stringValue  | emptyField))?                   {pin=1}
-private naturalAttribute     ::= NATURAL_TYPE attributeType? LIST?  IDENTIFIER_KEY (EQUALS (naturalValue | emptyField))?    {pin=1}
-private integerAttribute     ::= INT_TYPE     attributeType? LIST?  IDENTIFIER_KEY (EQUALS (integerValue | emptyField))?    {pin=1}
-private doubleAttribute      ::= DOUBLE_TYPE  attributeType? LIST?  IDENTIFIER_KEY (EQUALS (doubleValue  | emptyField))?    {pin=1}
+private naturalAttribute     ::= NATURAL_TYPE attributeType? LIST?  IDENTIFIER_KEY (EQUALS (naturalValue measure? | emptyField))?    {pin=1}
+private integerAttribute     ::= INT_TYPE     attributeType? LIST?  IDENTIFIER_KEY (EQUALS (integerValue measure? | emptyField))?    {pin=1}
+private doubleAttribute      ::= DOUBLE_TYPE  attributeType? LIST?  IDENTIFIER_KEY (EQUALS (doubleValue  measure? | emptyField))?    {pin=1}
 private dateAttribute        ::= DATE_TYPE    LIST?  IDENTIFIER_KEY (EQUALS (dateValue | emptyField))?                      {pin=1}
 private referenceAttribute   ::= identifierReference LIST? IDENTIFIER_KEY (EQUALS emptyField)? {
 	pin = 1
@@ -141,7 +141,7 @@ measure ::= IDENTIFIER_KEY | DOLLAR | EURO | PERCENTAGE | GRADE
 annotationsAndFacets ::= IS (annotations | facetApply)+ {
 	pin = 1
 }
-facetApply ::= identifierReference parameters? (WITH identifierReference)?
+facetApply ::= metaIdentifier parameters? (WITH metaIdentifier)?
 {pin = 2}
 facetTarget ::= ON identifierReference (IF identifierReference)? body?
 {pin = 1}

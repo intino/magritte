@@ -7,7 +7,6 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraParameterValueImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
 import siani.tara.lang.*;
 
@@ -25,15 +24,18 @@ public class ParameterAnnotator extends TaraAnnotator {
 	protected static final String COORDINATE = "coordinate";
 	protected static final String DATE = "date";
 
+	Model model;
+	Node node;
+
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		if (!(element instanceof Parameter)) return;
 		Parameter parameter = (Parameter) element;
-		Model model = TaraLanguage.getMetaModel(((TaraFile) parameter.getContainingFile()).getParentModel());
+		model = TaraLanguage.getMetaModel(((TaraFile) parameter.getContainingFile()).getParentModel());
 		if (model == null) return;
 		TaraFacetApply inFacet = parameter.isInFacet();
 		Concept concept = TaraPsiImplUtil.getContextOf(parameter);
-		Node node = findNode(concept, model);
+		node = findNode(concept, model);
 		if (node == null) return;
 		List<Variable> facetVariables = null;
 		if (inFacet != null && (facetVariables = getAllowedFacet(node, inFacet.getFirstChild().getText())) == null)
@@ -49,7 +51,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 
 	private List<Variable> getAllowedFacet(Node node, String name) {
 		for (Map.Entry<String, List<Variable>> entry : node.getObject().getAllowedFacets().entrySet())
-			if (entry.getKey().substring(entry.getKey().lastIndexOf(".")).equals(name)) return entry.getValue();
+			if (entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1).equals(name)) return entry.getValue();
 		return null;
 	}
 
@@ -57,20 +59,24 @@ public class ParameterAnnotator extends TaraAnnotator {
 		String name = parameter.getIdentifier().getText();
 		Variable variable = getVariableByName(variables, name);
 		if (variable == null) annotateErroneousParameter(parameter, holder);
-		else if (!areSameType(variable, parameter) || (parameter.isList() && !variable.isList()))
+		else if (variable instanceof NodeWord) {
+			if (!isCorrectWord((NodeWord) variable, parameter.getValue().getText()))
+				annotateErroneousParameter(parameter, holder);
+		} else if (!areSameType(variable, parameter) || (parameter.isList() && !variable.isList()))
 			annotateErroneousParameter(parameter, holder);
+
+	}
+
+	private boolean isCorrectWord(NodeWord word, String value) {
+		return word.contains(value);
 	}
 
 	private void processImplicit(AnnotationHolder holder, TaraImplicitParameter parameter, List<Variable> variables, int index) {
 		Variable variable = variables.get(index);
-		if (parameter.getValue() instanceof TaraMetaWord || parameter.getValue() instanceof TaraIdentifierReference)
-			processAsWordOrReference(parameter, holder, variable);
+		if (parameter.getValue().getFirstChild() instanceof TaraMetaWord || parameter.getValue().getFirstChild() instanceof TaraIdentifierReference)
+			processAsWordOrReference(parameter.getValue(), holder, variable);
 		else if (!areSameType(variable, parameter) || (parameter.isList() && !variable.isList()))
-			holder.createErrorAnnotation(parameter, "Incorrect type: " + variable.getType() + " " + variable.getName());
-	}
-
-	private Node findNode(Concept concept, Model model) {
-		return model.searchNode(TaraUtil.getMetaQualifiedName(concept));
+			holder.createErrorAnnotation(parameter, "Incorrect type. Expected " + variable.getType() + " " + variable.getName());
 	}
 
 	private Variable getVariableByName(List<Variable> variables, String name) {
@@ -84,23 +90,34 @@ public class ParameterAnnotator extends TaraAnnotator {
 
 	private void processAsWordOrReference(PsiElement element, AnnotationHolder holder, Variable actualVariable) {
 		if (actualVariable instanceof NodeWord)
-			processAsWord((TaraMetaWord) element.getFirstChild(), ((NodeWord) actualVariable));
-		else if (element instanceof TaraIdentifierReference &&
-			checkReference((TaraIdentifierReference) element.getFirstChild(), (Reference) actualVariable))
-			holder.createErrorAnnotation(element, "Parameter type error");
+			isCorrectWord(((NodeWord) actualVariable), element.getFirstChild().getText());
+		else if (!Reference.class.isInstance(actualVariable))
+			holder.createErrorAnnotation(element, "Parameter type error. Expected " + actualVariable.getType());
+		else if (element.getFirstChild() instanceof TaraIdentifierReference &&
+			!checkWellReference((TaraIdentifierReference) element.getFirstChild(), (Reference) actualVariable))
+			holder.createErrorAnnotation(element, "Unexpected type. Bad reference");
 	}
 
-	private boolean processAsWord(TaraMetaWord metaWord, NodeWord word) {
-		return word.contains(metaWord.getLastChild().getText());
-	}
 
-	private boolean checkReference(TaraIdentifierReference reference, Reference variable) {
+	private boolean checkWellReference(TaraIdentifierReference reference, Reference variable) {
 		TaraReferenceSolver solver = new TaraReferenceSolver(getLastElementOf(reference), reference.getTextRange(), false);
-		PsiElement resolve = solver.resolve();
-		if (resolve instanceof Concept) {
-			MetaIdentifier metaIdentifier = ((Concept) resolve).getMetaIdentifier();
-			if ((metaIdentifier != null) && metaIdentifier.getText().equals(variable.getType())) return true;
+		Concept resolve = TaraPsiImplUtil.getContextOf(solver.resolve());
+		if (resolve != null) {
+			MetaIdentifier metaIdentifier = resolve.getMetaIdentifier();
+			if ((metaIdentifier != null))
+				return checkInHierarchy(metaIdentifier.getText(), variable.getType());
 		}
+		return false;
+	}
+
+	private boolean checkInHierarchy(String name, String type) {
+		Node referenceNode = model.get(type);
+		if (name.equals(referenceNode.getName())) return true;
+		List<NodeObject> children;
+		while ((children = referenceNode.getObject().getChildren()) != null)
+			for (NodeObject child : children)
+				if (child.getName().equals(name)) return true;
+
 		return false;
 	}
 

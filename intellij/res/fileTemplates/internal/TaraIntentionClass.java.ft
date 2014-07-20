@@ -1,8 +1,7 @@
-// This is a generated file. Not intended for manual editing.
-
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
+import magritte.metamorph.Intention;
 
-public abstract class ${NAME} ${PARENT} {
+public interface ${NAME} extends ${PARENT} {
 
 }

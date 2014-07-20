@@ -28,7 +28,7 @@ public class TaraLanguage extends Language {
 		Model model;
 		String[] splitName = parent.split("\\.");
 		String basePath = PathManager.getPluginsPath() + separator + "tara" + separator + "classes" + separator + splitName[0] + separator;
-		if ((model = heritages.get(parent)) != null && !haveToReload(basePath))
+		if ((model = heritages.get(parent)) != null && !haveToReload(basePath, parent))
 			return model;
 		model = ModelLoader.load(basePath, splitName[1]);
 		heritages.put(parent, model);
@@ -40,8 +40,8 @@ public class TaraLanguage extends Language {
 	}
 
 
-	private static boolean haveToReload(String basePath) {
-		File reload = new File(basePath, ".model_reload");
+	private static boolean haveToReload(String path, String parent) {
+		File reload = new File(path, parent + ".model_reload");
 		if (reload.exists()) {
 			reload.delete();
 			return true;

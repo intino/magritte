@@ -19,7 +19,7 @@ public class ModelLoader {
 	public static Model load(String modelsDirectory, String parent) {
 		try {
 			File file = new File(modelsDirectory, parent + JSON);
-			if (!file.exists()) return null;
+			if (!file.exists()) throw new Exception("Model file not found");
 			InputStream heritageInputStream = new FileInputStream(file);
 			GsonBuilder gb = new GsonBuilder();
 			gb.registerTypeAdapter(Node.class, new NodeAdapter());
@@ -43,6 +43,20 @@ public class ModelLoader {
 			processCases(aModel, nodeTable, node);
 		}
 		aModel.setNodeTable(nodeTable);
+		restoreHierarchyLinks(aModel);
+	}
+
+	private static void restoreHierarchyLinks(Model aModel) {
+		for (Node node : aModel.getNodeTable().values())
+			if (node instanceof DeclaredNode) {
+				DeclaredNode declaredNode = (DeclaredNode) node;
+				String parent = declaredNode.getObject().getParentName();
+				if ((parent) != null) {
+					Node parentNode = aModel.get(parent);
+					parentNode.getObject().addChild(node.getObject());
+					node.getObject().setParentObject(parentNode.getObject());
+				}
+			}
 	}
 
 	private static void processInnerNodes(Model aModel, Map<String, Node> nodeTable, Node node) {
@@ -74,19 +88,43 @@ public class ModelLoader {
 			String name = json.getAsJsonObject().get("name").getAsString();
 
 			JsonElement e = json.getAsJsonObject().get("node");
-			if (e != null && e.isJsonPrimitive() && e.getAsString() != null) return new Reference(
-				e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), json.getAsJsonObject().get("isTerminal").getAsBoolean());
+			if (e != null && e.isJsonPrimitive() && e.getAsString() != null) {
+				Reference reference = new Reference(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), json.getAsJsonObject().get("isTerminal").getAsBoolean());
+				JsonElement empty = json.getAsJsonObject().get("empty");
+				if (empty != null && empty.isJsonPrimitive()) reference.setEmpty(empty.getAsBoolean());
+				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
+				if (isProperty != null && isProperty.isJsonPrimitive())
+					reference.setProperty(isProperty.getAsBoolean());
+				return reference;
+			}
 
 			e = json.getAsJsonObject().get("primitiveType");
-			if (e != null && e.isJsonPrimitive() && e.getAsString() != null)
-				return new NodeAttribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), json.getAsJsonObject().get("isTerminal").getAsBoolean());
+			if (e != null && e.isJsonPrimitive() && e.getAsString() != null) {
+				NodeAttribute attr = new NodeAttribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), json.getAsJsonObject().get("isTerminal").getAsBoolean());
+				if (json.getAsJsonObject().get("value") != null)
+					attr.setValue(json.getAsJsonObject().get("value").getAsString());
+				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
+				if (isProperty != null && isProperty.isJsonPrimitive()) attr.setProperty(isProperty.getAsBoolean());
+				JsonElement measure = json.getAsJsonObject().get("measure");
+				if (measure != null && measure.isJsonPrimitive()) attr.measure = measure.getAsString();
+				return attr;
+			}
 
 			e = json.getAsJsonObject().get("resourceType");
-			if (e != null && e.isJsonPrimitive() && e.getAsString() != null)
-				return new Resource(e.getAsString(), name, json.getAsJsonObject().get("isTerminal").getAsBoolean());
+			if (e != null && e.isJsonPrimitive() && e.getAsString() != null) {
+				Resource resource = new Resource(e.getAsString(), name, json.getAsJsonObject().get("isTerminal").getAsBoolean());
+				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
+				if (isProperty != null && isProperty.isJsonPrimitive()) resource.setProperty(isProperty.getAsBoolean());
+				return resource;
+			}
+
 			JsonArray array = json.getAsJsonObject().get("wordTypes").getAsJsonArray();
 			if (array != null && array.isJsonArray()) {
 				NodeWord word = new NodeWord(name, json.getAsJsonObject().get("isTerminal").getAsBoolean());
+				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
+				if (isProperty != null && isProperty.isJsonPrimitive()) word.setProperty(isProperty.getAsBoolean());
+				JsonElement defaultWord = json.getAsJsonObject().get("defaultWord");
+				if (defaultWord != null && defaultWord.isJsonPrimitive()) word.setDefaultWord(defaultWord.getAsShort());
 				for (JsonElement jsonElement : array) word.add(jsonElement.getAsString());
 				return word;
 			}

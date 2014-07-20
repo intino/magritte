@@ -11,9 +11,7 @@ import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
 import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Model;
-import siani.tara.lang.Node;
 
 public class ConceptTypeAnnotator extends TaraAnnotator {
 
@@ -24,16 +22,10 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 		if (element instanceof MetaIdentifier) {
 			Concept concept = TaraPsiImplUtil.getContextOf(element);
 			if (concept == null) return;
-			Model tree = TaraLanguage.getMetaModel(((TaraFile) element.getContainingFile()).getParentModel());
-			if (tree == null) {
-				if (!"Concept".equals(element.getNode().getText())) {
-					Annotation errorAnnotation = holder.createErrorAnnotation
-						(concept, TaraBundle.message("Unknown.concept.without.heritage.key.error.message"));
-					errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
-				}
-			} else {
-				Node node = findNode(concept, tree);
-				if (node == null) {
+			if ("Concept".equals(element.getText())) return;
+			Model model = TaraLanguage.getMetaModel(((TaraFile) element.getContainingFile()).getParentModel());
+			if (model != null) {
+				if (findNode(concept, model) == null) {
 					Annotation errorAnnotation = holder.createErrorAnnotation
 						(concept, TaraBundle.message("Unknown.concept.key.error.message"));
 					errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
@@ -43,18 +35,4 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 	}
 
 
-	private Node findNode(Concept concept, Model tree) {
-		String metaQualifiedName = TaraUtil.getMetaQualifiedName(concept);
-		String[] path = metaQualifiedName.split("\\.");
-		for (String s : path) {
-
-		}
-		Node node = tree.get(metaQualifiedName);
-		return (node != null) ? node : tree.get(asAnonymous(metaQualifiedName));
-	}
-
-	private String asAnonymous(String name) {
-		String subPath = name.substring(0, name.lastIndexOf("."));
-		return subPath + "." + "[" + name.substring(name.lastIndexOf(".") + 1) + "@annonymous]";
-	}
 }

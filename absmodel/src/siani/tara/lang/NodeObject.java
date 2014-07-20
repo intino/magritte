@@ -48,9 +48,8 @@ public class NodeObject extends ModelObject {
 		return annotations.toArray(new AnnotationType[annotations.size()]);
 	}
 
-	public Reference[] getReferences() {
-		List<Reference> result = extractElements(variables, Reference.class);
-		return result.toArray(new Reference[result.size()]);
+	public List<Reference> getReferences() {
+		return extractElements(variables, Reference.class);
 	}
 
 	public List<NodeObject> getChildren() {
@@ -148,5 +147,7 @@ public class NodeObject extends ModelObject {
 		return result;
 	}
 
-
+	public String toString() {
+		return "NodeObject{" + name + '}';
+	}
 }

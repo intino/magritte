@@ -24,8 +24,8 @@ public class TaraFacetApplyImpl extends ASTWrapperPsiElement implements TaraFace
 
   @Override
   @NotNull
-  public List<TaraIdentifierReference> getIdentifierReferenceList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifierReference.class);
+  public List<TaraMetaIdentifier> getMetaIdentifierList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraMetaIdentifier.class);
   }
 
   @Override

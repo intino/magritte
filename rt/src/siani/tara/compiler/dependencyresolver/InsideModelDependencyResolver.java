@@ -10,7 +10,6 @@ import static siani.tara.lang.NodeObject.AnnotationType;
 public class InsideModelDependencyResolver {
 	Model model;
 	List<String> toProcessNodes = new ArrayList<>();
-	private Comparator<String> comparator;
 
 	public InsideModelDependencyResolver(Model model) throws DependencyException {
 		this.model = model;
@@ -19,7 +18,7 @@ public class InsideModelDependencyResolver {
 	public void resolve() throws DependencyException {
 		model.sortNodeTable(new NodeComparator(model.getNodeTable()));
 		toProcessNodes.addAll(model.getNodeTable().keySet());
-		comparator = new Comparator<String>() {
+		Collections.sort(toProcessNodes, new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
 				boolean i1 = model.get(o1) instanceof LinkNode;
@@ -29,9 +28,9 @@ public class InsideModelDependencyResolver {
 				if (i1) return -1;
 				return 1;
 			}
-		};
-		Collections.sort(toProcessNodes, comparator);
+		});
 		resolveHierarchyDependencies();
+
 	}
 
 	private void resolveHierarchyDependencies() throws DependencyException {
@@ -50,15 +49,23 @@ public class InsideModelDependencyResolver {
 						linkDeclaredToParent(object, parent);
 						extractInfoFromParent(toAddNodes, (DeclaredNode) node, parent);
 					}
+					resolveVariableReferences(node);
 				}
 				toProcessNodes.remove(node.getQualifiedName());
 				i--;
 			}
-
 		}
 		addNewNodes(toAddNodes);
 		List<String> list = updateLinks(toAddNodes);
 		updateKeys(list);
+	}
+
+	private void resolveVariableReferences(Node node) {
+		List<Reference> references = node.getObject().getReferences();
+		for (Reference reference : references) {
+			DeclaredNode declaredNode = model.searchDeclarationOfReference(reference.getType(), node);
+			reference.setType(declaredNode.getQualifiedName());
+		}
 	}
 
 	private void addNewNodes(List<LinkNode> toAddNodes) {

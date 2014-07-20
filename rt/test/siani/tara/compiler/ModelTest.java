@@ -14,19 +14,24 @@ public class ModelTest {
 
 	@Before
 	public void setUp() throws Exception {
-		model = ModelLoader.load("/Users/oroncal/workspace/tara/rt/res_test/", "siani");
+		model = ModelLoader.load("/Users/octavio/workspace/tara/rt/res_test/", "siani");
 	}
 
 	@Test
 	public void testSearchNode() throws Exception {
 		testCorrectSearch(model.searchNode("ResidentialBuilding"), "ResidentialBuilding");
 		testCorrectSearch(model.searchNode("BusLine.Transfer"), "Transfer");
-		testCorrectSearch(model.searchNode("ResidentialBuilding.Household.Appliance"), "Appliance");
+		testCorrectSearch(model.searchNode("ResidentialBuilding.Household.Radiator"), "Radiator");
 		testCorrectSearch(model.searchNode("Street.Section.Section"), "Section");
 		testCorrectSearch(model.searchNode("Street.Section.Section.Section"), "Section");
 		testCorrectSearch(model.searchNode("Street.Section.Section.Lane"), "Lane");
-		testCorrectSearch(model.searchNode("Street.Segment.UrbanFurniture.Shelter"),"Shelter");
-		testCorrectSearch(model.searchNode("Region.City.District"),"District");
+		testCorrectSearch(model.searchNode("Street.Segment.UrbanFurniture.Shelter"), "Shelter");
+		testCorrectSearch(model.searchNode("Region.City.District"), "District");
+		testCorrectSearch(model.searchNode("PowerPlant.ResidentialBuilding"), "ResidentialBuilding");
+		testCorrectSearch(model.searchNode("PowerPlant.Building.CommonInstallation.Lighting"), "Lighting");
+		testCorrectSearch(model.searchNode("PowerPlant.Building.CommonInstallation.Fridge"), "Fridge");
+		testCorrectSearch(model.searchNode("SubwayStation"), "SubwayStation");
+		testCorrectSearch(model.searchNode("FuelStation"), "FuelStation");
 		testIncorrectSearch(model.searchNode("Region.City.Island"));
 		testIncorrectSearch(model.searchNode("Street.Segment.Segment"));
 		testIncorrectSearch(model.searchNode("Street.Segment.Segment.Segment"));
@@ -39,8 +44,8 @@ public class ModelTest {
 
 	private void testCorrectSearch(Node node, String name) {
 		Assert.assertNotNull(node);
-		if (node instanceof LinkNode) Assert.assertEquals(((LinkNode) node).getDestinyName(), name);
-		else Assert.assertEquals(node.getName(), name);
+		if (node instanceof LinkNode) Assert.assertEquals(name, ((LinkNode) node).getDestinyName());
+		else Assert.assertEquals(name, node.getName());
 	}
 
 

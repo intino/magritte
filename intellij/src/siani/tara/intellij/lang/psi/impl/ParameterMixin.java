@@ -80,7 +80,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isList() {
-		return getValue().getChildren().length > 1;
+		return getValue().getChildren().length - (getValue().getMeasure() != null ? 1 : 0) > 1;
 	}
 
 	public TaraFacetApply isInFacet() {

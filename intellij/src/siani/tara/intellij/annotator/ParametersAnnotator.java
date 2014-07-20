@@ -11,39 +11,38 @@ import siani.tara.intellij.lang.psi.Parameters;
 import siani.tara.intellij.lang.psi.Signature;
 import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.*;
+import siani.tara.lang.Model;
+import siani.tara.lang.Node;
+import siani.tara.lang.NodeObject;
+import siani.tara.lang.Variable;
+
+import java.util.List;
 
 public class ParametersAnnotator extends TaraAnnotator {
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder annotationHolder) {
 		if (!Signature.class.isInstance(element)) return;
 		Concept concept = TaraPsiImplUtil.getContextOf(element);
+		if (isLinkConcept(concept)) return;
 		Model heritage = TaraLanguage.getMetaModel(((TaraFile) element.getContainingFile()).getParentModel());
 		Node node;
 		if (heritage == null || (node = findNode(concept, heritage)) == null) return;
 		NodeObject object = node.getObject();
 		Parameters[] parameters = PsiTreeUtil.getChildrenOfType(element, Parameters.class);
-		if (parameters == null && !object.getVariables().isEmpty() || (parameters != null) &&
-			parameters[0].getParameters().length != object.getVariables().size()) {
+		int minimum = collectMinimumNumberOfParameter(node.getObject().getVariables());
+		if (parameters == null && minimum > 0 || (parameters != null) && parameters[0].getParameters().length < minimum) {
 			Annotation errorAnnotation = annotationHolder.createErrorAnnotation(element, "parameters missed: " + variablesToString(object));
 			errorAnnotation.registerFix(new AddParametersFix((Signature) element, object.getVariables()));
 		}
+	}//TODO annotate also the facet parameters.
+
+	private int collectMinimumNumberOfParameter(List<Variable> variables) {
+		int result = variables.size();
+		for (Variable variable : variables)
+			if (variable.getValue() != null)
+				result--;
+		return result;
 	}
-
-	private Node findNode(Concept concept, Model tree) {
-		String metaQualifiedName = TaraUtil.getMetaQualifiedName(concept);
-		Node node = tree.get(metaQualifiedName);
-		return (node != null) ? node : tree.get(asAnonymous(metaQualifiedName));
-
-	}
-
-	private String asAnonymous(String name) {
-		return name;
-//		String subpath = name.substring(0, name.lastIndexOf("."));
-//		return subpath + "." + "[" + name.substring(name.lastIndexOf(".") + 1) + "@annonymous]";
-	}
-
 
 	private String variablesToString(NodeObject node) {
 		StringBuilder builder = new StringBuilder();

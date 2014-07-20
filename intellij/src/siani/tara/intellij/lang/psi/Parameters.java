@@ -5,4 +5,6 @@ import com.intellij.pom.Navigatable;
 public interface Parameters extends Navigatable, TaraPsiElement {
 
 	Parameter[] getParameters();
+
+	TaraFacetApply isInFacet();
 }

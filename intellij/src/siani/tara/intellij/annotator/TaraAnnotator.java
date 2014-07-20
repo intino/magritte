@@ -5,6 +5,10 @@ import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.psi.PsiElement;
+import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.lang.Model;
+import siani.tara.lang.Node;
 
 public abstract class TaraAnnotator implements Annotator {
 
@@ -16,4 +20,11 @@ public abstract class TaraAnnotator implements Annotator {
 		return errorAnnotation;
 	}
 
+	protected Node findNode(Concept concept, Model model) {
+		return model.searchNode(TaraUtil.getMetaQualifiedName(concept));
+	}
+
+	protected boolean isLinkConcept(Concept concept) {
+		return concept.getName() == null && concept.getBody() == null;
+	}
 }

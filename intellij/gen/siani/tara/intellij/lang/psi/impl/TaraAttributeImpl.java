@@ -89,6 +89,12 @@ public class TaraAttributeImpl extends AttributeMixin implements TaraAttribute {
 
   @Override
   @Nullable
+  public TaraMeasure getMeasure() {
+    return findChildByClass(TaraMeasure.class);
+  }
+
+  @Override
+  @Nullable
   public TaraNaturalValue getNaturalValue() {
     return findChildByClass(TaraNaturalValue.class);
   }

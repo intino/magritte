@@ -29,7 +29,7 @@ public class ReferenceVerifier {
 
 	private void checkVarReference(Node concept, Model ast) {
 		for (Reference reference : concept.getObject().getReferences())
-			if (ast.searchDeclarationOfRefererence(reference.getType(), concept) == null)
+			if (ast.searchDeclarationOfReference(reference.getType(), concept) == null)
 				errors.add(new UndefinedReferenceError(reference.getType(), concept));
 	}
 

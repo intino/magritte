@@ -63,7 +63,7 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new ModelToJavaOperation(this), Phases.CLASS_GENERATION);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
-		if (pluginGeneration) addPhaseOperation(new SaveModelOperation(this), Phases.PLUGIN_GENERATION);
+		if (pluginGeneration) addPhaseOperation(new SaveModelOperation(this), Phases.MODEL_GENERATION);
 		addPhaseOperation(output, Phases.OUTPUT);
 
 	}

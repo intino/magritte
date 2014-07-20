@@ -45,7 +45,7 @@ public class ConceptsUsage {
 
 	private void checkReference(Node concept, Model ast) {
 		for (Reference reference : concept.getObject().getReferences())
-			checkIfUsed(ast.searchDeclarationOfRefererence(reference.getType(), concept));
+			checkIfUsed(ast.searchDeclarationOfReference(reference.getType(), concept));
 	}
 
 	public void finish() {

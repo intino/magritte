@@ -45,10 +45,12 @@ public class TaraUtil {
 
 	public static String getMetaQualifiedName(Concept concept) {
 		Concept container = concept;
-		String id = container.getType();
+		String id = (container.getType() != null) ? container.getType() : "";
 		while (TaraPsiImplUtil.getContextOf(container) != null) {
 			container = TaraPsiImplUtil.getContextOf(container);
-			id = container.getType() + "." + id;
+			String containerName = container != null && container.getType() != null ? container.getType() : "";
+			String name = (!containerName.isEmpty() ? "." : "") + id;
+			id = containerName + (!id.isEmpty() ? name : "");
 		}
 		return id;
 	}

@@ -1,6 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package siani.tara.intellij.lang.psi;
 
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
@@ -80,7 +81,7 @@ public interface TaraTypes {
   IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
   IElementType NEGATIVE_VALUE_KEY = new TaraTokenType("NEGATIVE_VALUE_KEY");
   IElementType NEWLINE = new TaraTokenType("NEWLINE");
-  IElementType NEW_LINE_INDENT = new TaraTokenType("NEW_LINE_INDENT");
+  IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
   IElementType ON = new TaraTokenType("ON");
   IElementType PERCENTAGE = new TaraTokenType("PERCENTAGE");
   IElementType PRIVATE = new TaraTokenType("PRIVATE");

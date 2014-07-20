@@ -39,7 +39,7 @@ metaWordNames : DOT IDENTIFIER;
 
 body: NEW_LINE_INDENT ((attribute | concept | varInit | facetApply | facetTarget) NEWLINE+)+ DEDENT;
 
-facetApply : IS identifierReference parameters? (WITH identifierReference)?;
+facetApply : IS metaidentifier parameters? (WITH metaidentifier)?;
 facetTarget : ON identifierReference (IF identifierReference)? body?;
 
 attribute : doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
@@ -52,12 +52,12 @@ wordNames        : IDENTIFIER STAR?;
 reference        : identifierReference LIST? IDENTIFIER  (EQUALS EMPTY)?       ;
 booleanAttribute : BOOLEAN_TYPE LIST? IDENTIFIER (EQUALS booleanValue | EMPTY)?;
 stringAttribute  : STRING_TYPE  LIST? IDENTIFIER (EQUALS stringValue  | EMPTY)?;
-naturalAttribute : NATURAL_TYPE attributeType? LIST? IDENTIFIER (EQUALS naturalValue | EMPTY)?;
-integerAttribute : INT_TYPE     attributeType? LIST? IDENTIFIER (EQUALS integerValue | EMPTY)?;
-doubleAttribute  : DOUBLE_TYPE  attributeType? LIST? IDENTIFIER (EQUALS doubleValue  | EMPTY)?;
+naturalAttribute : NATURAL_TYPE attributeType? LIST? IDENTIFIER (EQUALS naturalValue measure?| EMPTY)?;
+integerAttribute : INT_TYPE     attributeType? LIST? IDENTIFIER (EQUALS integerValue measure?| EMPTY)?;
+doubleAttribute  : DOUBLE_TYPE  attributeType? LIST? IDENTIFIER (EQUALS doubleValue  measure?| EMPTY)?;
 dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (EQUALS dateValue | EMPTY)?;
 coordinateAttribute  : COORDINATE_TYPE  LIST? IDENTIFIER (EQUALS (coordinateValue | EMPTY))?;
-refAttribute         : REFERENCE_TYPE   LIST?  IDENTIFIER (EQUALS (codeValue  | EMPTY))?;
+refAttribute         : REFERENCE_TYPE   LIST?  IDENTIFIER (EQUALS (codeValue | EMPTY))?;
 
 attributeType   : COLON IDENTIFIER;
 naturalValue    : NATURAL_VALUE;

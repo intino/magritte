@@ -20,7 +20,7 @@
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
   <!-- uncomment to enable plugin in all products
-  <depends>com.model.modules.lang</depends> -->
+  <depends>com.intellij.modules.lang</depends> -->
 
   <actions>
     <action id="NewConcept" class="siani.tara.intellij.actions.CreateTaraFileAction">
@@ -32,7 +32,7 @@
 
     <group id="tara.export.group" popup="false">
       <action id="ExportModel" class="siani.tara.intellij.actions.ExportModelAction" text="Export Model"
-              description="Export the compilated model with dependencies">
+              description="Export the compiled model with dependencies">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift E"/>
       </action>
       <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
@@ -71,7 +71,8 @@
     <moduleType id="TARA_MODULE" implementationClass="siani.tara.intellij.project.module.TaraModuleType"/>
     <treeStructureProvider implementation="siani.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="siani.tara.intellij.actions.TaraTemplatesFactory"/>
-    <!--<codeInsight.lineMarkerProvider language="Tara" implementationClass="siani.tara.model.codeinsight.TaraLineMarkerProvider"/>-->
+    <codeInsight.lineMarkerProvider language="Tara"
+                                    implementationClass="siani.tara.intellij.codeinsight.TaraLineMarkerProvider"/>
     <gotoRelatedProvider implementation="siani.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
     <projectConfigurable instance="siani.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
@@ -99,7 +100,8 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.BoxReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParameterAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParametersAnnotator"/>
-    <!--<annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptTypeAnnotator"/>-->
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetApplyAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptTypeAnnotator"/>
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
     <completion.contributor language="Tara"

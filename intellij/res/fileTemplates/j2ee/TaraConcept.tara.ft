@@ -1,4 +1,4 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")box ${PROJECT_NAME}.${MODULE_NAME}.${PACKAGE_NAME}.${NAME}#end
 
-' ${DATE}. Documentation of the concept
+# ${DATE}. Documentation of the concept
 Concept ${NAME}
