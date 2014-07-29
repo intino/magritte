@@ -5,10 +5,12 @@ import org.junit.Test;
 import siani.tara.lang.Model;
 import siani.tara.lang.util.ModelLoader;
 
+import static java.io.File.separator;
+
 public class LoadingModelTest {
 
-//	String basePath = "/Users/oroncal/workspace/sandbox/plugins" + separator + "tara" + separator + "classes" + separator + "Tafat" + separator;
-	String basePath = "/Users/octavio/workspace/tara/rt/res_test/";
+	String basePath = "/Users/oroncal/workspace/sandbox/plugins" + separator + "tara" + separator + "classes" + separator + "tafat" + separator;
+//	String basePath = "/Users/octavio/workspace/tara/rt/res_test/";
 
 	@Test
 	public void loadModel() throws Exception {

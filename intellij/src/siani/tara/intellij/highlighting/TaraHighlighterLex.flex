@@ -48,6 +48,7 @@ CONCEPT             = "Concept"
 INTENTION_KEY       = "Intention"
 METAMODEL           = "metamodel"
 CASE_KEY            = "case"
+HAS                 = "has"
 USE_KEY             = "use"
 BOX                 = "box"
 AS                  = "as"
@@ -127,6 +128,7 @@ NEWLINE= [\n]+
 	{USE_KEY}                       {   return TaraTypes.USE_KEY; }
 	{METAMODEL}                     {   return TaraTypes.METAMODEL; }
 
+	{HAS}                           {   return TaraTypes.HAS; }
 	{AS}                            {   return TaraTypes.AS; }
 	{ON}                            {   return TaraTypes.ON; }
 	{IS}                            {   return TaraTypes.IS; }

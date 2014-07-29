@@ -4,24 +4,26 @@ import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Parameters;
 import siani.tara.intellij.lang.psi.Signature;
 import siani.tara.intellij.lang.psi.TaraElementFactory;
+import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.lang.NodeAttribute;
 import siani.tara.lang.Variable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class AddParametersFix implements IntentionAction {
 
-	Signature signature;
 	private final List<Variable> variables;
+	PsiElement signature;
 
 
-	public AddParametersFix(Signature signature, List<Variable> variables) {
+	public AddParametersFix(PsiElement signature, List<Variable> variables) {
 		this.signature = signature;
 		this.variables = variables;
 	}
@@ -49,7 +51,9 @@ public class AddParametersFix implements IntentionAction {
 		boolean stringAttribute = isStringAttribute(variables.get(0));
 		Parameters parameters = TaraElementFactory.getInstance(project).createParameters(stringAttribute);
 		signature.add(parameters);
-		editor.getCaretModel().moveToOffset(signature.getParameters().getTextOffset() + 1 + (stringAttribute ? 1 : 0));
+		int textOffset = signature instanceof Signature ? ((Signature) signature).getParameters().getTextOffset() :
+			((TaraFacetApply) signature).getParameters().getTextOffset();
+		editor.getCaretModel().moveToOffset(textOffset + 1 + (stringAttribute ? 1 : 0));
 	}
 
 	@Override

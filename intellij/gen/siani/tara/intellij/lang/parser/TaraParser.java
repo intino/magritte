@@ -50,6 +50,9 @@ public class TaraParser implements PsiParser {
     else if (root_ == CONCEPT) {
       result_ = concept(builder_, 0);
     }
+    else if (root_ == CONCEPT_REFERENCE) {
+      result_ = conceptReference(builder_, 0);
+    }
     else if (root_ == COORDINATE_VALUE) {
       result_ = coordinateValue(builder_, 0);
     }
@@ -137,7 +140,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // NEWLINE+ USE_KEY headerReference  (AS METAMODEL)?
+  // NEWLINE+ USE_KEY headerReference (AS METAMODEL)?
   public static boolean anImport(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "anImport")) return false;
     if (!nextTokenIs(builder_, NEWLINE)) return false;
@@ -511,7 +514,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // attribute | concept | varInit | annotationsAndFacets | facetTarget
+  // attribute | concept | varInit | annotationsAndFacets | facetTarget | conceptReference
   static boolean conceptConstituents(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "conceptConstituents")) return false;
     boolean result_ = false;
@@ -521,8 +524,38 @@ public class TaraParser implements PsiParser {
     if (!result_) result_ = varInit(builder_, level_ + 1);
     if (!result_) result_ = annotationsAndFacets(builder_, level_ + 1);
     if (!result_) result_ = facetTarget(builder_, level_ + 1);
+    if (!result_) result_ = conceptReference(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
+  }
+
+  /* ********************************************************** */
+  // doc? HAS identifierReference identifier?
+  public static boolean conceptReference(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "conceptReference")) return false;
+    if (!nextTokenIs(builder_, "<concept reference>", DOC_LINE, HAS)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<concept reference>");
+    result_ = conceptReference_0(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, HAS);
+    result_ = result_ && identifierReference(builder_, level_ + 1);
+    result_ = result_ && conceptReference_3(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, CONCEPT_REFERENCE, result_, false, null);
+    return result_;
+  }
+
+  // doc?
+  private static boolean conceptReference_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "conceptReference_0")) return false;
+    doc(builder_, level_ + 1);
+    return true;
+  }
+
+  // identifier?
+  private static boolean conceptReference_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "conceptReference_3")) return false;
+    identifier(builder_, level_ + 1);
+    return true;
   }
 
   /* ********************************************************** */

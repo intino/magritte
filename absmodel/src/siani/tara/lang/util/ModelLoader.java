@@ -37,6 +37,7 @@ public class ModelLoader {
 
 	private static void restoreTreeLinks(Model aModel, NodeTree tree) {
 		Map<String, Node> nodeTable = new HashMap();
+		for (Node node : tree) restoreDestinyLinks(node, aModel);
 		for (Node node : tree) {
 			nodeTable.put(node.getQualifiedName(), node);
 			processInnerNodes(aModel, nodeTable, node);
@@ -44,6 +45,15 @@ public class ModelLoader {
 		}
 		aModel.setNodeTable(nodeTable);
 		restoreHierarchyLinks(aModel);
+	}
+
+	private static void restoreDestinyLinks(Node node, Model model) {
+		for (Node inner : node.getInnerNodes())
+			if (inner instanceof LinkNode) {
+				LinkNode linkNode = (LinkNode) inner;
+				((LinkNode) inner)
+					.setDestiny((DeclaredNode) model.searchNode(linkNode.getDestinyQN().replace(linkNode.getDestinyBox() + ".", "")));
+			} else restoreDestinyLinks(inner, model);
 	}
 
 	private static void restoreHierarchyLinks(Model aModel) {

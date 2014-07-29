@@ -40,7 +40,7 @@ public class LinkNode extends Node {
 	}
 
 	public String getDestinyName() {
-		return destiny.getName();
+		return destinyQN.substring(destinyQN.lastIndexOf(".") + 1);
 	}
 
 	@Override

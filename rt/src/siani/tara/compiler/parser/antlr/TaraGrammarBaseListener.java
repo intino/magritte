@@ -1,4 +1,4 @@
-// Generated from /Users/octavio/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
+// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
 
 package siani.tara.compiler.parser.antlr;
 
@@ -211,18 +211,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParameter(@NotNull TaraGrammar.ParameterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitParameter(@NotNull TaraGrammar.ParameterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterStringAttribute(@NotNull TaraGrammar.StringAttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -230,6 +218,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStringAttribute(@NotNull TaraGrammar.StringAttributeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParameter(@NotNull TaraGrammar.ParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParameter(@NotNull TaraGrammar.ParameterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -410,6 +410,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitWordNames(@NotNull TaraGrammar.WordNamesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterConceptReference(@NotNull TaraGrammar.ConceptReferenceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitConceptReference(@NotNull TaraGrammar.ConceptReferenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

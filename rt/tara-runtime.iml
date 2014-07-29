@@ -29,9 +29,9 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="gson-2.2.4" level="project" />
-    <orderEntry type="library" name="mockito-all-1.9.5" level="application" />
     <orderEntry type="module" module-name="tara-runtime-constants" />
     <orderEntry type="module" module-name="abstract-model-representation" />
+    <orderEntry type="library" scope="TEST" name="mockito-all-local" level="application" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

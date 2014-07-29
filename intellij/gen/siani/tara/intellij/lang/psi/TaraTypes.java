@@ -1,10 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package siani.tara.intellij.lang.psi;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
-import com.intellij.lang.ASTNode;
 import siani.tara.intellij.lang.psi.impl.*;
 
 public interface TaraTypes {
@@ -19,6 +19,7 @@ public interface TaraTypes {
   IElementType BOX = new TaraElementType("BOX");
   IElementType CODE_VALUE = new TaraElementType("CODE_VALUE");
   IElementType CONCEPT = new TaraElementType("CONCEPT");
+  IElementType CONCEPT_REFERENCE = new TaraElementType("CONCEPT_REFERENCE");
   IElementType COORDINATE_VALUE = new TaraElementType("COORDINATE_VALUE");
   IElementType DATE_VALUE = new TaraElementType("DATE_VALUE");
   IElementType DOC = new TaraElementType("DOC");
@@ -67,6 +68,7 @@ public interface TaraTypes {
   IElementType EQUALS = new TaraTokenType("EQUALS");
   IElementType EURO = new TaraTokenType("EURO");
   IElementType GRADE = new TaraTokenType("GRADE");
+  IElementType HAS = new TaraTokenType("HAS");
   IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
   IElementType IF = new TaraTokenType("IF");
   IElementType INTENTION_KEY = new TaraTokenType("INTENTION_KEY");
@@ -134,6 +136,9 @@ public interface TaraTypes {
       }
       else if (type == CONCEPT) {
         return new TaraConceptImpl(node);
+      }
+      else if (type == CONCEPT_REFERENCE) {
+        return new TaraConceptReferenceImpl(node);
       }
       else if (type == COORDINATE_VALUE) {
         return new TaraCoordinateValueImpl(node);

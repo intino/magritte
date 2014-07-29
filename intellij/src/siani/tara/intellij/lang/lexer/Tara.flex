@@ -94,6 +94,7 @@ NEWLINE= [\n]+ ([ ] | [\t])*
 METAIDENTIFIER      = "Concept"
 INTENTION_KEY       = "Intention"
 CASE_KEY            = "case"
+HAS                 = "has"
 
 USE_KEY             = "use"
 BOX_KEY             = "box"
@@ -174,6 +175,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 	{BOX_KEY}                       {   return TaraTypes.BOX_KEY; }
 
+	{HAS}                           {   return TaraTypes.HAS; }
 	{AS}                            {   return TaraTypes.AS; }
 	{IS}                            {   return TaraTypes.IS; }
 	{ON}                            {   return TaraTypes.ON; }

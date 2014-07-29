@@ -34,7 +34,7 @@ public class ParametersAnnotator extends TaraAnnotator {
 			Annotation errorAnnotation = annotationHolder.createErrorAnnotation(element, "parameters missed: " + variablesToString(object));
 			errorAnnotation.registerFix(new AddParametersFix((Signature) element, object.getVariables()));
 		}
-	}//TODO annotate also the facet parameters.
+	}
 
 	private int collectMinimumNumberOfParameter(List<Variable> variables) {
 		int result = variables.size();

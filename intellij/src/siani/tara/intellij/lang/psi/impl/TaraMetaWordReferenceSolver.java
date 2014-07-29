@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.lang.Node;
-import siani.tara.lang.NodeWord;
 import siani.tara.lang.Variable;
 
 import javax.swing.*;
@@ -46,12 +45,12 @@ public class TaraMetaWordReferenceSolver extends PsiReferenceBase<PsiElement> im
 	public Object[] getVariants() {
 		List<String> variants = new ArrayList<>();
 		int children = myElement.getText().length() - myElement.getText().replace(".", "").length();
-		if (children == 0)
-			variants.add(node.getName());
-		else if (children == 1 && myElement.getChildren()[0].getChildren()[0].getText().equals(node.getName()))
-			variants.add(variable.getName());
-		else if (children == 2)
-			variants = ((NodeWord) variable).getWordTypes();
+//		if (children == 0)
+//			variants.add(node.getName());
+//		else if (children == 1 && myElement.getChildren()[0].getChildren()[0].getText().equals(node.getName()))
+//			variants.add(variable.getName());
+//		else if (children == 2)
+//			variants = ((NodeWord) variable).getWordTypes();
 		return fillVariants(variants);
 	}
 

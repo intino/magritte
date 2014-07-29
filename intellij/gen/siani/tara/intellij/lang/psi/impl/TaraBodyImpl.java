@@ -41,6 +41,12 @@ public class TaraBodyImpl extends BodyMixin implements TaraBody {
 
   @Override
   @NotNull
+  public List<TaraConceptReference> getConceptReferenceList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraConceptReference.class);
+  }
+
+  @Override
+  @NotNull
   public List<TaraFacetTarget> getFacetTargetList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraFacetTarget.class);
   }

@@ -1,4 +1,4 @@
-// Generated from /Users/octavio/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
+// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
 
 package siani.tara.compiler.parser.antlr;
 
@@ -171,16 +171,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitNaturalAttribute(@NotNull TaraGrammar.NaturalAttributeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#parameter}.
-	 * @param ctx the parse tree
-	 */
-	void enterParameter(@NotNull TaraGrammar.ParameterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#parameter}.
-	 * @param ctx the parse tree
-	 */
-	void exitParameter(@NotNull TaraGrammar.ParameterContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#stringAttribute}.
 	 * @param ctx the parse tree
 	 */
@@ -190,6 +180,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStringAttribute(@NotNull TaraGrammar.StringAttributeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameter(@NotNull TaraGrammar.ParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameter(@NotNull TaraGrammar.ParameterContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#codeValue}.
 	 * @param ctx the parse tree
@@ -340,6 +340,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitWordNames(@NotNull TaraGrammar.WordNamesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#conceptReference}.
+	 * @param ctx the parse tree
+	 */
+	void enterConceptReference(@NotNull TaraGrammar.ConceptReferenceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#conceptReference}.
+	 * @param ctx the parse tree
+	 */
+	void exitConceptReference(@NotNull TaraGrammar.ConceptReferenceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#imports}.
 	 * @param ctx the parse tree

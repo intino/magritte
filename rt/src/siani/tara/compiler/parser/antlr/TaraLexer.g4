@@ -95,6 +95,7 @@ BOX                 : 'box';
 METAMODEL           : 'metamodel';
 
 AS                  :'as';
+HAS                 :'has';
 ON                  :'on';
 IS                  :'is';
 WITH                : 'with';

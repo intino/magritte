@@ -4,7 +4,8 @@ import java.util.List;
 
 public class DeclaredNode extends Node {
 
-	private List<Node> innerNodes = new NodeTree();;
+	private List<Node> innerNodes = new NodeTree();
+	;
 
 	public DeclaredNode() {
 	}
@@ -53,6 +54,6 @@ public class DeclaredNode extends Node {
 	}
 
 	public String toString() {
-		return "DeclaredNode{" + qualifiedName + '}';
+		return "DeclaredNode" + (isCase() ? "AsCase" : "") + "{" + qualifiedName + '}';
 	}
 }

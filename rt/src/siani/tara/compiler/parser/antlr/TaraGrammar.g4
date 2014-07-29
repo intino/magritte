@@ -37,8 +37,9 @@ parameter : identifierReference
 metaWord : metaidentifier metaWordNames*;
 metaWordNames : DOT IDENTIFIER;
 
-body: NEW_LINE_INDENT ((attribute | concept | varInit | facetApply | facetTarget) NEWLINE+)+ DEDENT;
+body: NEW_LINE_INDENT ((attribute | concept | varInit | facetApply | facetTarget | conceptReference) NEWLINE+)+ DEDENT;
 
+conceptReference : doc? HAS identifierReference IDENTIFIER?;
 facetApply : IS metaidentifier parameters? (WITH metaidentifier)?;
 facetTarget : ON identifierReference (IF identifierReference)? body?;
 
