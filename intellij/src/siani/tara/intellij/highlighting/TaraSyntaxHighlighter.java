@@ -36,15 +36,13 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey SEMICOLON_KEY = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.SEMICOLON);
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER");
 	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>(6);
-	public static final TextAttributesKey PROPERTY_INFO = TextAttributesKey.createTextAttributesKey("Tara_PROPERTY");
 	public static final TextAttributesKey UNRESOLVED_ACCESS = TextAttributesKey.createTextAttributesKey("Unresolved reference");
+	public static final TextAttributesKey PROPERTY_INFO = TextAttributesKey.createTextAttributesKey("Property element");
 	public static final TextAttributesKey WARNING = TextAttributesKey.createTextAttributesKey("Annotation warning");
 	public static final TextAttributesKey ANNOTATION_ERROR = TextAttributesKey.createTextAttributesKey("Annotation unsupported in this context");
 
 
 	static {
-		PROPERTY_INFO.getDefaultAttributes().setBackgroundColor(JBColor.background());
-		PROPERTY_INFO.getDefaultAttributes().setForegroundColor(JBColor.LIGHT_GRAY);
 		WARNING.getDefaultAttributes().setForegroundColor(JBColor.LIGHT_GRAY);
 		WARNING.getDefaultAttributes().setEffectType(EffectType.WAVE_UNDERSCORE);
 		UNRESOLVED_ACCESS.getDefaultAttributes().setForegroundColor(JBColor.RED);
@@ -53,6 +51,8 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		BAD_CHARACTER.getDefaultAttributes().setFontType(Font.BOLD);
 		ANNOTATION_ERROR.getDefaultAttributes().setForegroundColor(JBColor.RED);
 		ANNOTATION_ERROR.getDefaultAttributes().setFontType(Font.BOLD);
+		PROPERTY_INFO.getDefaultAttributes().setForegroundColor(JBColor.LIGHT_GRAY);
+		PROPERTY_INFO.getDefaultAttributes().setFontType(Font.PLAIN);
 	}
 
 	static {

@@ -98,7 +98,6 @@ public class ParameterAnnotator extends TaraAnnotator {
 			holder.createErrorAnnotation(element, "Unexpected type. Bad reference");
 	}
 
-
 	private boolean checkWellReference(TaraIdentifierReference reference, Reference variable) {
 		TaraReferenceSolver solver = new TaraReferenceSolver(getLastElementOf(reference), reference.getTextRange(), false);
 		Concept resolve = TaraPsiImplUtil.getContextOf(solver.resolve());

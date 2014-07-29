@@ -21,8 +21,8 @@ public class PropertiesAnnotator extends TaraAnnotator {
 		Node node;
 		if (model == null || (node = findNode(concept, model)) == null) return;
 		if (node.getObject().is(ModelObject.AnnotationType.PROPERTY)) {
-			Annotation info = annotationHolder.createInfoAnnotation(element, "Property");
-			info.setTextAttributes(TaraSyntaxHighlighter.PROPERTY_INFO);
+			Annotation property = annotationHolder.createInfoAnnotation(element, "Property");
+			property.setTextAttributes(TaraSyntaxHighlighter.PROPERTY_INFO);
 		}
 	}
 }

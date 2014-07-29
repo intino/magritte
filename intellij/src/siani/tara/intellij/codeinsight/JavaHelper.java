@@ -234,7 +234,7 @@ public class JavaHelper {
 			Annotation[] annotations = delegate.getDeclaredAnnotations();
 			ArrayList<String> result = new ArrayList<String>(annotations.length);
 			for (Annotation annotation : annotations) {
-				Class<? extends Annotation> annotationType = annotation.annotationType(); // todo parameters?
+				Class<? extends Annotation> annotationType = annotation.annotationType();
 				result.add(annotationType.getCanonicalName());
 			}
 			return result;

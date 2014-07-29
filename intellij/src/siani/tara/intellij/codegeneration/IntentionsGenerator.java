@@ -6,7 +6,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
@@ -36,13 +35,11 @@ public class IntentionsGenerator {
 		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraFile.getManager(), srcDirectory);
 	}
 
-	public void generate() {//TODO
+	public void generate() {
 		final Set<File> pathsToRefresh = new HashSet<>();
 		ApplicationManager.getApplication().runReadAction(new Runnable() {
 			@Override
 			public void run() {
-				VirtualFile content = ProjectRootManager.getInstance(project).getFileIndex().getContentRootForFile(taraFile.getVirtualFile());
-				VirtualFile parentDir = content == null ? taraFile.getVirtualFile().getParent() : content;
 				pathsToRefresh.add(VfsUtil.virtualToIoFile(srcDirectory.getVirtualFile()));
 				try {
 					processFile(taraFile);
@@ -144,18 +141,4 @@ public class IntentionsGenerator {
 		return directories;
 	}
 
-//	private PsiClass getGenClass(TaraFile file) {
-//		PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(taraFile.getConcept().getQualifiedName() + INTENTION,
-//			GlobalSearchScope.moduleScope(TaraUtil.getModuleOfFile(file)));
-//		List<PsiDirectory> packages = createSrcPackageForFile(file);
-//		return (aClass != null) ? aClass : JavaDirectoryService.getInstance().createClass((packages.isEmpty()) ? srcDirectory : packages.get(packages.size() - 1),
-//			file.getConcept().getName() + INTENTION, TaraTemplates.getTemplate("TARA_INTENTION"), true, getOptionsForGenClass());
-//	}
-
-
-	private Map<String, String> getOptionsForGenClass() {
-		Map<String, String> map = new HashMap<>();
-		map.put("PARENT", "");
-		return map;
-	}
 }
