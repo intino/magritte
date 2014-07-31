@@ -139,7 +139,7 @@ coordinateValue ::= COORDINATE_VALUE_KEY
 
 measure ::= IDENTIFIER_KEY | DOLLAR | EURO | PERCENTAGE | GRADE
 
-annotationsAndFacets ::= IS (annotations | facetApply)+ {
+annotationsAndFacets ::= IS (annotations+ | facetApply) {
 	pin = 1
 }
 facetApply ::= metaIdentifier parameters? (WITH metaIdentifier)?

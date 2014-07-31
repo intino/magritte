@@ -31,7 +31,7 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 		public String fun(PsiElement element) {
 			if (!(element instanceof Concept) || ((Concept) element).isIntention()) return null;
 			Concept concept = (Concept) element;
-			PsiElement reference = ReferenceManager.resolve((Identifier) concept.getIdentifierNode(), true);
+			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode(), true);
 			String start = "Intention declared in ";
 			@NonNls String pattern = null;
 			if (reference != null) pattern = reference.getNavigationElement().getContainingFile().getName();
@@ -45,10 +45,10 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
 				return;
 			}
-			PsiElement identifierNode = ((Concept) element).getIdentifierNode();
+			Identifier identifierNode = ((Concept) element).getIdentifierNode();
 			if (identifierNode == null) return;
 			NavigatablePsiElement reference = (NavigatablePsiElement)
-				ReferenceManager.resolve((Identifier) identifierNode, true);
+				ReferenceManager.resolve(identifierNode, true);
 			if (reference == null) return;
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
@@ -67,7 +67,7 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
 		if (element instanceof Concept && ((Concept) element).isIntention()) {
 			Concept concept = (Concept) element;
-			PsiElement reference = ReferenceManager.resolve((Identifier) concept.getIdentifierNode(), true);
+			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode(), true);
 			if (reference != null) {
 				final Icon icon = AllIcons.Gutter.ImplementedMethod;
 				final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;

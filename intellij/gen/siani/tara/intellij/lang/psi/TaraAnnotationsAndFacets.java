@@ -10,7 +10,7 @@ public interface TaraAnnotationsAndFacets extends TaraPsiElement {
   @NotNull
   List<TaraAnnotations> getAnnotationsList();
 
-  @NotNull
-  List<TaraFacetApply> getFacetApplyList();
+  @Nullable
+  TaraFacetApply getFacetApply();
 
 }

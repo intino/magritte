@@ -7,9 +7,11 @@ import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import siani.tara.intellij.lang.psi.*;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.psi.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BodyMixin extends ASTWrapperPsiElement {
@@ -58,5 +60,21 @@ public class BodyMixin extends ASTWrapperPsiElement {
 	public List<? extends Word> getWordList() {
 		return PsiTreeUtil.getChildrenOfTypeAsList(this, Word.class);
 	}
+
+	@NotNull
+	public List<TaraFacetApply> getFacetApplies() {
+		TaraAnnotationsAndFacets[] element = PsiTreeUtil.getChildrenOfType(this, TaraAnnotationsAndFacets.class);
+		List<TaraFacetApply> facetApplies = new ArrayList();
+		if (element == null) return Collections.EMPTY_LIST;
+		for (TaraAnnotationsAndFacets facets : element)
+			facetApplies.add(facets.getFacetApply());
+		return facetApplies;
+	}
+
+	@NotNull
+	public List<TaraFacetTarget> getFacetTargets() {
+		return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraFacetTarget.class);
+	}
+
 
 }

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 
 public class ConceptMixin extends ASTWrapperPsiElement {
 
-
 	public ConceptMixin(@NotNull ASTNode node) {
 		super(node);
 	}
@@ -46,7 +45,14 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	public String getType() {
 		MetaIdentifier type = getSignature().getType();
-		return type != null ? type.getText() : null;
+		if (type == null && this.isCase())
+			return getBaseConcept().getType();
+		else
+			return type != null ? type.getText() : null;
+	}
+
+	public Concept getBaseConcept() {
+		return TaraPsiImplUtil.getContextOf(this);
 	}
 
 	public Concept[] getConceptSiblings() {
@@ -71,12 +77,12 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String getName() {
-		Identifier identifierNode = (Identifier) getIdentifierNode();
+		Identifier identifierNode = getIdentifierNode();
 		return identifierNode != null ? identifierNode.getText() : null;
 	}
 
 	public String getQualifiedName() {
-		Identifier identifierNode = (Identifier) getIdentifierNode();
+		Identifier identifierNode = getIdentifierNode();
 		String name = identifierNode != null ? identifierNode.getText() : "annonymous";
 		String packageName = ((TaraFile) this.getContainingFile()).getBoxReference().getHeaderReference().getText();
 		Concept concept = (Concept) this;
@@ -121,7 +127,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.setName(this.getSignature(), name);
 	}
 
-	public PsiElement getIdentifierNode() {
+	public Identifier getIdentifierNode() {
 		return TaraPsiImplUtil.getIdentifierNode((Concept) this);
 	}
 

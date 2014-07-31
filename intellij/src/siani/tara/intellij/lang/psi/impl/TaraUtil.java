@@ -78,17 +78,23 @@ public class TaraUtil {
 
 	@NotNull
 	private static TaraFileImpl[] getModuleFiles(PsiFile psiFile) {
-		List<TaraFileImpl> taraFiles = new ArrayList<>();
-		Module module = ProjectRootManager.getInstance(psiFile.getProject()).getFileIndex().getModuleForFile(psiFile.getVirtualFile());
+		Project project = psiFile.getProject();
+		Module module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(psiFile.getVirtualFile());
 		if (module == null) return new TaraFileImpl[0];
+		List<TaraFileImpl> taraFiles = getTaraFilesOfModule(project, module);
+		return taraFiles.toArray(new TaraFileImpl[taraFiles.size()]);
+	}
+
+	public static List<TaraFileImpl> getTaraFilesOfModule(Project project, Module module) {
+		List<TaraFileImpl> taraFiles = new ArrayList<>();
 		Collection<VirtualFile> files = FileBasedIndex.getInstance().
 			getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.moduleScope(module));
 		for (VirtualFile file : files)
 			if (file != null) {
-				TaraFileImpl taraFile = (TaraFileImpl) PsiManager.getInstance(psiFile.getProject()).findFile(file);
+				TaraFileImpl taraFile = (TaraFileImpl) PsiManager.getInstance(project).findFile(file);
 				if (taraFile != null) taraFiles.add(taraFile);
 			}
-		return taraFiles.toArray(new TaraFileImpl[taraFiles.size()]);
+		return taraFiles;
 	}
 
 

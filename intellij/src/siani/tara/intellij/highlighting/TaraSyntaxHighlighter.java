@@ -51,8 +51,9 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		BAD_CHARACTER.getDefaultAttributes().setFontType(Font.BOLD);
 		ANNOTATION_ERROR.getDefaultAttributes().setForegroundColor(JBColor.RED);
 		ANNOTATION_ERROR.getDefaultAttributes().setFontType(Font.BOLD);
-		PROPERTY_INFO.getDefaultAttributes().setForegroundColor(JBColor.LIGHT_GRAY);
+		PROPERTY_INFO.getDefaultAttributes().setForegroundColor(JBColor.foreground());
 		PROPERTY_INFO.getDefaultAttributes().setFontType(Font.PLAIN);
+		PROPERTY_INFO.getDefaultAttributes().setEffectType(EffectType.WAVE_UNDERSCORE);
 	}
 
 	static {

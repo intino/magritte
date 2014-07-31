@@ -29,12 +29,8 @@ public class TaraPsiImplUtil {
 		return null;
 	}
 
-	public static PsiElement getIdentifierNode(Concept element) {
-		if (element.getSignature().getIdentifier() != null) {
-			ASTNode valueNode = element.getSignature().getIdentifier().getNode();
-			return valueNode.getPsi();
-		}
-		return null;
+	public static Identifier getIdentifierNode(Concept element) {
+		return element.getSignature().getIdentifier() != null ? element.getSignature().getIdentifier() : null;
 	}
 
 	public static PsiElement setName(Signature element, String newName) {

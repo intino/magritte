@@ -1,8 +1,8 @@
 package siani.tara.intellij.lang.psi;
 
 import com.intellij.psi.PsiInvalidElementAccessException;
-import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
 
 import java.util.List;
 
@@ -13,7 +13,6 @@ public interface Body extends TaraPsiElement {
 	@NotNull
 	List<? extends Attribute> getAttributeList();
 
-
 	List<? extends Concept> getConceptList();
 
 	@NotNull
@@ -21,6 +20,12 @@ public interface Body extends TaraPsiElement {
 
 	@NotNull
 	List<? extends Word> getWordList();
+
+	@NotNull
+	List<TaraFacetTarget> getFacetTargets();
+
+	@NotNull
+	List<TaraFacetApply> getFacetApplies();
 
 }
 

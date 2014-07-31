@@ -7,8 +7,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
+
+import javax.swing.*;
 
 public class IdentifierMixin extends ASTWrapperPsiElement {
 	public IdentifierMixin(@NotNull ASTNode node) {
@@ -38,6 +41,11 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		ASTNode node = identifier.getNode();
 		this.getParent().getNode().replaceChild(getNode(), node);
 		return identifier;
+	}
+
+	@Override
+	public Icon getIcon(@IconFlags int i) {
+		return TaraIcons.getIcon(TaraIcons.CONCEPT);
 	}
 
 	@Override

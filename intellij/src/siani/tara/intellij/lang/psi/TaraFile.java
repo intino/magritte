@@ -36,14 +36,14 @@ public interface TaraFile extends PsiFile {
 
 	PsiDirectory getParent();
 
+	String getParentModel();
+
 	@NotNull
 	Project getProject();
 
 	String getText();
 
 	TaraBox getBoxReference();
-
-	String getParentModel();
 
 	List<? extends Identifier> getBoxPath();
 

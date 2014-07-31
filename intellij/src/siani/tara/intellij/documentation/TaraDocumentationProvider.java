@@ -13,10 +13,7 @@ import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.IntentionNode;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
-import siani.tara.lang.Variable;
+import siani.tara.lang.*;
 
 
 public class TaraDocumentationProvider extends AbstractDocumentationProvider {
@@ -47,7 +44,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		if (element instanceof Concept)
 			return ((Concept) element).getDocCommentText();
 		if (element instanceof TaraFile)
-			return renderConceptValue(((TaraFile) element).getConcepts()[0]); //TODO
+			return renderConceptValue(((TaraFile) element).getConcepts()[0]);
 		return renderConceptValue(TaraPsiImplUtil.getContextOf(element));
 	}
 
@@ -55,7 +52,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		Model model = TaraLanguage.getMetaModel(((TaraFile) concept.getContainingFile()).getParentModel());
 		if (model == null) return null;
 		Node facetNode = findFacet(model, facet);
-		return generateDocForNode(facetNode);
+		return generateDocForNode(facetNode, concept.getType());
 	}
 
 	private Node findFacet(Model model, String facet) {
@@ -69,7 +66,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		Node node = getNode(concept);
 		if (node == null) return null;
 		String doc = node.getObject().getDoc();
-		return doc != null ? doc : generateDocForNode(node);
+		return doc != null ? doc : generateDocForNode(node, concept.getType());
 	}
 
 	private Node getNode(Concept concept) {
@@ -78,20 +75,37 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		return model.searchNode(TaraUtil.getMetaQualifiedName(concept));
 	}
 
-	private String generateDocForNode(Node node) {
+	private String generateDocForNode(Node node, String contextNode) {
 		StringBuilder builder = new StringBuilder("**" + node.getObject().getType() + " " + node.getObject().getName() + "**\n");
 		for (Variable inner : node.getObject().getVariables()) {
-			builder.append("\t\t_").append(inner.getType()).append("_ _").append(inner.getName()).append("_\n");
+			builder.append("\t\t").append(inner.toString()).append("\n");
 			if (inner.getDoc() != null) builder.append(inner.getDoc()).append("\n");
 		}
 		for (Node inner : node.getInnerNodes()) {
-			builder.append("\t\t_").append(inner.getObject().getType()).append("_ _").append(inner.getObject().getName()).append("_\n");
+			builder.append("\t\t").append(inner.getObject().getType()).append(" ").append(inner.getObject().getName()).append("\n");
 			if (inner.getObject().getDoc() != null) builder.append(inner.getObject().getDoc()).append("\n");
 		}
-		if (!node.getObject().getAllowedFacets().isEmpty()) {
-			builder.append("\t\t_").append("*").append("Allowed facets:").append("*").append("_\n");
+		if (node instanceof IntentionNode) {
+			builder.append(generateDocForFacetApply((IntentionNode) node, contextNode));
+		} else if (!node.getObject().getAllowedFacets().isEmpty()) {
+			builder.append("\n\t\t").append("Allowed facets:").append("\n");
 			for (String key : node.getObject().getAllowedFacets().keySet())
-				builder.append("\t\t\t*").append(key).append("*\n");
+				builder.append("\t\t\t").append(key).append("\n");
+		}
+		return builder.toString();
+	}
+
+	private String generateDocForFacetApply(IntentionNode node, String contextNode) {
+		StringBuilder builder = new StringBuilder();
+		IntentionObject object = null;
+		for (IntentionObject intentionObject : node.getObject().getFacetTargets())
+			if (intentionObject.getName().equals(contextNode) || intentionObject.getName().endsWith("." + contextNode))
+				object = intentionObject;
+		if (object == null) return "";
+		builder.append("\n\t\t").append("On ").append(contextNode).append(":").append("\n");
+		for (Variable inner : object.getVariables()) {
+			builder.append("\t\t\t").append(inner.toString()).append("\n");
+			if (inner.getDoc() != null) builder.append(inner.getDoc()).append("\n");
 		}
 		return builder.toString();
 	}

@@ -19,7 +19,7 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	PsiElement getPsiElement();
 
-	PsiElement getIdentifierNode();
+	Identifier getIdentifierNode();
 
 	@Nullable
 	Body getBody();

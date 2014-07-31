@@ -221,7 +221,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // IS (annotations | facetApply)+
+  // IS (annotations+ | facetApply)
   public static boolean annotationsAndFacets(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "annotationsAndFacets")) return false;
     if (!nextTokenIs(builder_, IS)) return false;
@@ -235,29 +235,29 @@ public class TaraParser implements PsiParser {
     return result_ || pinned_;
   }
 
-  // (annotations | facetApply)+
+  // annotations+ | facetApply
   private static boolean annotationsAndFacets_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "annotationsAndFacets_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = annotationsAndFacets_1_0(builder_, level_ + 1);
-    int pos_ = current_position_(builder_);
-    while (result_) {
-      if (!annotationsAndFacets_1_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "annotationsAndFacets_1", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
+    if (!result_) result_ = facetApply(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // annotations | facetApply
+  // annotations+
   private static boolean annotationsAndFacets_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "annotationsAndFacets_1_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = annotations(builder_, level_ + 1);
-    if (!result_) result_ = facetApply(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (result_) {
+      if (!annotations(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "annotationsAndFacets_1_0", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }

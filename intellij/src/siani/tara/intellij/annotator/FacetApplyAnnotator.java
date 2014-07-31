@@ -20,14 +20,33 @@ public class FacetApplyAnnotator extends TaraAnnotator {
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		if (!(element instanceof TaraFacetApply)) return;
+		this.holder = holder;
 		TaraFacetApply facetApply = (TaraFacetApply) element;
 		Model model = TaraLanguage.getMetaModel(((TaraFile) facetApply.getContainingFile()).getParentModel());
 		if (model == null) return;
 		Concept concept = TaraPsiImplUtil.getContextOf(facetApply);
+
 		Node node = findNode(concept, model);
 		if (node == null) return;
-		if (!isAllowedFacet(node, facetApply.getMetaIdentifierList().get(0).getText()))
+		if (!isAllowedFacet(node, facetApply.getMetaIdentifierList().get(0).getText())) {
 			annotateErroneousFacet(facetApply, holder);
+		} else {
+			checkDuplicatedFacet(concept, facetApply);
+		}
+
+	}
+
+	private void checkDuplicatedFacet(Concept concept, TaraFacetApply facetApply) {
+		List<TaraFacetApply> facetApplies = concept.getBody().getFacetApplies();
+		int count = 0;
+		for (TaraFacetApply apply : facetApplies) {
+			if (apply == null || apply.getMetaIdentifierList().isEmpty() || facetApply.getMetaIdentifierList().isEmpty())
+				continue;
+			if (apply.getMetaIdentifierList().get(0).getText().equals(facetApply.getMetaIdentifierList().get(0).getText()))
+				count++;
+		}
+		if (count > 1)
+			annotateDuplicatedFacet(facetApply, holder);
 	}
 
 	private boolean isAllowedFacet(Node node, String name) {
@@ -38,5 +57,9 @@ public class FacetApplyAnnotator extends TaraAnnotator {
 
 	private void annotateErroneousFacet(PsiElement element, AnnotationHolder holder) {
 		holder.createErrorAnnotation(element, "That facet is not allowed in this context");
+	}
+
+	private void annotateDuplicatedFacet(PsiElement element, AnnotationHolder holder) {
+		holder.createErrorAnnotation(element, "DuplicatedFacet");
 	}
 }
