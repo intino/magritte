@@ -15,8 +15,9 @@ import static java.io.File.separator;
 
 public class TaraLanguage extends Language {
 
-	public static final Map<String, Model> heritages = new HashMap<>();
+	public static final Map<String, Model> models = new HashMap<>();
 	public static final TaraLanguage INSTANCE = new TaraLanguage();
+	public static final String MODELS_PATH = PathManager.getPluginsPath() + separator + "tara" + separator + "classes" + separator;
 
 
 	private TaraLanguage() {
@@ -27,11 +28,11 @@ public class TaraLanguage extends Language {
 		if (parent == null) return null;
 		Model model;
 		String[] splitName = parent.split("\\.");
-		String basePath = PathManager.getPluginsPath() + separator + "tara" + separator + "classes" + separator + splitName[0] + separator;
-		if ((model = heritages.get(parent)) != null && !haveToReload(basePath, parent))
+		String basePath = MODELS_PATH + splitName[0] + separator;
+		if ((model = models.get(parent)) != null && !haveToReload(basePath, parent))
 			return model;
-		model = ModelLoader.load(basePath, splitName[1]);
-		heritages.put(parent, model);
+		model = ModelLoader.load(basePath, parent);
+		models.put(parent, model);
 		return model;
 	}
 

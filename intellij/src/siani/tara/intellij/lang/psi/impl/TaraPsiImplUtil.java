@@ -94,8 +94,8 @@ public class TaraPsiImplUtil {
 	public static PsiElement[] getAnnotations(Annotations annotations) {
 		PsiElement child = annotations.getFirstChild();
 		List<PsiElement> annotationList = new ArrayList<>();
-		while (child.getNextSibling() != null && child.getNextSibling().getNextSibling() != null) {
-			if (!" ".equals(child.getNextSibling().getText())) annotationList.add(child.getNextSibling());
+		while (child != null) {
+			if (!" ".equals(child.getText())) annotationList.add(child);
 			child = child.getNextSibling();
 		}
 		return annotationList.toArray(new PsiElement[annotationList.size()]);

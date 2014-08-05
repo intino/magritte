@@ -29,13 +29,20 @@
     <action id="NewPackage" class="siani.tara.intellij.actions.CreatePackageAction" text="Package"
             description="Create a new package" icon="AllIcons.Nodes.Package">
     </action>
-
+    <group id="tara.import.group" popup="false">
+      <action id="ImportModel" class="siani.tara.intellij.actions.ImportModelAction" text="Import Model"
+              description="Import model">
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>
+      </action>
+      <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
+    </group>
     <group id="tara.export.group" popup="false">
       <action id="ExportModel" class="siani.tara.intellij.actions.ExportModelAction" text="Export Model"
               description="Export the compiled model with dependencies">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift E"/>
       </action>
-      <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
+      <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="Compile"/>
+      <add-to-group group-id="BuildMenu" anchor="after" relative-to-action="BuildJar"/>
       <add-to-group group-id="EditorPopupMenu" anchor="last"/>
     </group>
     <group id="tara.file.group" popup="false">
@@ -104,6 +111,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetApplyParametersAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptTypeAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.PropertiesAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ModelAnnotator"/>
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
     <completion.contributor language="Tara"
@@ -137,4 +145,11 @@
     <findUsagesHandlerFactory implementation="siani.tara.intellij.findUsages.TaraFindUsagesHandlerFactory" id="Tara"
                               order="last, before default"/>
   </extensions>
+
+  <module-components>
+    <component>
+      <implementation-class>siani.tara.intellij.project.module.ModuleConfiguration</implementation-class>
+    </component>
+  </module-components>
+
 </idea-plugin>

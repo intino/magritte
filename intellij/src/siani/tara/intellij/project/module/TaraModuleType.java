@@ -1,10 +1,12 @@
 package siani.tara.intellij.project.module;
 
 import com.intellij.openapi.module.JavaModuleType;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleTypeManager;
-import siani.tara.intellij.lang.TaraIcons;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.TaraIcons;
 
 import javax.swing.*;
 
@@ -28,6 +30,9 @@ public class TaraModuleType extends JavaModuleType {
 		return new TaraModuleBuilder();
 	}
 
+	public static boolean isOfType(Module module){
+		return ModuleType.get(module) instanceof TaraModuleType;
+	}
 
 	@NotNull
 	public String getDescription() {

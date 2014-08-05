@@ -21,7 +21,7 @@ import java.util.Queue;
 	private boolean end = false;
 
 	private IElementType sendToken() {
-		IElementType token = (end)? null:TokenType.WHITE_SPACE;
+		IElementType token = (end)? null : TaraTypes.NEWLINE;
 		if (!queue.isEmpty())
 			token = queue.poll();
 		if (!queue.isEmpty())
@@ -34,6 +34,7 @@ import java.util.Queue;
             blockManager.eof();
             storeTokens();
             end = true;
+            queue.add(TaraTypes.NEWLINE);
         }
         return sendToken();
     }

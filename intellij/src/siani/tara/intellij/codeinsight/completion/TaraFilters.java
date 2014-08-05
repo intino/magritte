@@ -2,29 +2,52 @@ package siani.tara.intellij.codeinsight.completion;
 
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.tree.IElementType;
-import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.TaraTypes;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.TaraLanguage;
+import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 
 public class TaraFilters {
 
-	protected static PsiElementPattern.Capture<PsiElement> afterNewLine = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new InErrorFilter()));
-
+	protected static PsiElementPattern.Capture<PsiElement> afterNewLineInBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
+		.and(new FilterPattern(new AfterNewLineInBodyFilter()));
+	protected static PsiElementPattern.Capture<PsiElement> afterEquals = psiElement().withLanguage(TaraLanguage.INSTANCE)
+		.and(new FilterPattern(new AfterEqualsFilter()));
+	protected static PsiElementPattern.Capture<PsiElement> AfterNewLineInBodyNoMetamodel = psiElement().withLanguage(TaraLanguage.INSTANCE)
+		.and(new FilterPattern(new AfterNewLineInBodyFilter())).and(new FilterPattern(new NoModelFilter()));
+	protected static PsiElementPattern.Capture<PsiElement> AfterNewLineNoMetamodel = psiElement().withLanguage(TaraLanguage.INSTANCE)
+		.and(new FilterPattern(new AfterNewLinePrimalFilter())).and(new FilterPattern(new NoModelFilter()));
 	protected static PsiElementPattern.Capture<PsiElement> afterConceptKey = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
 		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.METAIDENTIFIER_KEY)));
 
 	private TaraFilters() {
+	}
+
+	private static boolean inBody(PsiElement context) {
+		PsiElement parent = context.getParent();
+		while (parent != null) {
+			if (parent instanceof Body) return true;
+			parent = parent.getParent();
+		}
+		return false;
+	}
+
+	private static boolean inAnnotations(PsiElement context) {
+		PsiElement parent = context.getParent();
+		while (parent != null) {
+			if (parent instanceof TaraAnnotationsAndFacets) return true;
+			parent = parent.getParent();
+		}
+		return false;
 	}
 
 	private static class AfterElementTypeFitFilter implements ElementFilter {
@@ -52,13 +75,63 @@ public class TaraFilters {
 		}
 	}
 
-	private static class InErrorFilter implements ElementFilter {
+	private static class AfterNewLineInBodyFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			if (element instanceof PsiElement) {
-				assert context != null;
-				if (((PsiElement) element).getParent() instanceof PsiErrorElement) return true;
-			}
+			if (element instanceof PsiElement && context != null && context.getParent() != null)
+				if (context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context))
+					if (context.getPrevSibling().getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT)
+						|| context.getPrevSibling().getNode().getElementType().equals(TaraTypes.NEWLINE))
+						return true;
+			return false;
+		}
+
+		@Override
+		public boolean isClassAcceptable(Class hintClass) {
+			return true;
+		}
+	}
+
+	private static class NoModelFilter implements ElementFilter {
+		@Override
+		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
+			TaraFile file = (TaraFile) (context != null ? context.getContainingFile() : null);
+			return file != null && file.getParentModel() == null;
+		}
+
+		@Override
+		public boolean isClassAcceptable(Class hintClass) {
+			return true;
+		}
+	}
+
+	private static class AfterEqualsFilter implements ElementFilter {
+		@Override
+		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
+			if (element instanceof PsiElement && context != null && context.getPrevSibling() != null &&
+				context.getPrevSibling().getPrevSibling() != null)
+				if (TaraTypes.EQUALS.equals(context.getPrevSibling().getPrevSibling().getNode().getElementType()))
+					return true;
+			return false;
+		}
+
+		@Override
+		public boolean isClassAcceptable(Class hintClass) {
+			return true;
+		}
+	}
+
+	private static class AfterNewLinePrimalFilter implements ElementFilter {
+		@Override
+		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
+			if (element instanceof PsiElement && context != null && context.getParent() != null)
+				if (context.getParent() instanceof MetaIdentifier && !inBody(context) && !inAnnotations(context)) {
+					Concept contextOf = TaraPsiImplUtil.getContextOf(context);
+					if (contextOf == null || contextOf.getPrevSibling() == null) return false;
+					IElementType elementType = contextOf.getPrevSibling().getNode().getElementType();
+					if (TaraTypes.NEW_LINE_INDENT.equals(elementType) || TaraTypes.NEWLINE.equals(elementType))
+						return true;
+				}
 			return false;
 		}
 

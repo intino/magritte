@@ -16,7 +16,7 @@
 	psiImplUtilClass='siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil'
 }
 
-root ::= NEWLINE* header? NEWLINE+ (concept  NEWLINE*)*
+root ::= NEWLINE* header? NEWLINE+ (concept  NEWLINE+)*
 
 header ::= box?  imports?
 
@@ -49,6 +49,7 @@ signature::= ((CASE_KEY identifier)
 }
 
 private withHeritage ::= metaIdentifier COLON identifierReference identifier?
+{pin = 2}
 
 parameters ::= LEFT_PARENTHESIS (explicitParameters | implicitParameters)? RIGHT_PARENTHESIS {
 	pin = 3

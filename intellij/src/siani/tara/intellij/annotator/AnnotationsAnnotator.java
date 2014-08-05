@@ -3,7 +3,7 @@ package siani.tara.intellij.annotator;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiWhiteSpace;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import siani.tara.intellij.lang.parser.TaraAnnotation;
@@ -11,7 +11,6 @@ import siani.tara.intellij.lang.psi.Annotations;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,21 +18,28 @@ import java.util.List;
 
 public class AnnotationsAnnotator extends TaraAnnotator {
 
-	HashMap<String, List<PsiElement>> duplicates;
+	HashMap<String, List<PsiElement>> annotations;
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
 		if (element instanceof Annotations) {
-			duplicates = new HashMap<>();
+			annotations = new HashMap<>();
 			checkAnnotations((Annotations) element);
 			checkDuplicates();
 		}
 	}
 
+	private void checkAnnotations(Annotations element) {
+		for (PsiElement psiElement : checkCorrectAnnotation(TaraPsiImplUtil.getContextOf(element), element.getAnnotations())) {
+			Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
+			errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
+		}
+	}
+
 	private void checkDuplicates() {
-		for (String annotation : duplicates.keySet()) {
-			List<PsiElement> annotationList = duplicates.get(annotation);
+		for (String annotation : annotations.keySet()) {
+			List<PsiElement> annotationList = annotations.get(annotation);
 			if (annotationList.size() > 1)
 				for (PsiElement element : annotationList) {
 					Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
@@ -48,47 +54,39 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		return null;
 	}
 
-	private void checkAnnotations(Annotations element) {
-		for (PsiElement psiElement : checkCorrectAnnotation(TaraPsiImplUtil.getContextOf(element), element.getAnnotations())) {
-			Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
-			errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
-		}
-	}
-
-	private PsiElement[] checkCorrectAnnotation(Concept concept, PsiElement[] annotations) {
-		List<PsiElement> incorrectAnnotations;
-		if (isRootConcept(concept))
-			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotation.ROOT_ANNOTATIONS);
+	private PsiElement[] checkCorrectAnnotation(Concept concept, PsiElement[] annotationList) {
+		List<PsiElement> incorrects;
+		if (isPrimeConcept(concept))
+			incorrects = checkAnnotationList(annotationList, TaraAnnotation.ROOT_ANNOTATIONS);
 		else if ((concept != null) && concept.isCase())
-			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotation.CASE_ANNOTATIONS);
+			incorrects = checkAnnotationList(annotationList, TaraAnnotation.CASE_ANNOTATIONS);
 		else
-			incorrectAnnotations = checkAnnotationList(annotations, TaraAnnotation.CHILD_ANNOTATIONS);
-		return incorrectAnnotations.toArray(new PsiElement[incorrectAnnotations.size()]);
+			incorrects = checkAnnotationList(annotationList, TaraAnnotation.CHILD_ANNOTATIONS);
+		return incorrects.toArray(new PsiElement[incorrects.size()]);
 	}
 
-	private boolean isRootConcept(Concept concept) {
+	private boolean isPrimeConcept(Concept concept) {
 		return (concept != null) && concept.getParent() instanceof TaraFile;
 	}
 
 
-	private List<PsiElement> checkAnnotationList(PsiElement[] annotations, String[] correctAnnotation) {
+	private List<PsiElement> checkAnnotationList(PsiElement[] annotationList, String[] correctAnnotations) {
 		List<PsiElement> incorrectAnnotations = new ArrayList<>();
-		for (PsiElement annotation : annotations) {
-			if (annotation instanceof PsiWhiteSpace) continue;
+		for (PsiElement annotation : annotationList) {
 			count(annotation);
-			if (!isIn(correctAnnotation, annotation.getText()))
+			if (!isIn(correctAnnotations, annotation.getText()))
 				incorrectAnnotations.add(annotation);
 		}
 		return incorrectAnnotations;
 	}
 
 	private void count(PsiElement annotation) {
-		if (duplicates.containsKey(annotation.getText()))
-			duplicates.get(annotation.getText()).add(annotation);
+		if (annotations.containsKey(annotation.getText()))
+			annotations.get(annotation.getText()).add(annotation);
 		else {
 			ArrayList<PsiElement> value = new ArrayList<>();
 			value.add(annotation);
-			duplicates.put(annotation.getText(), value);
+			annotations.put(annotation.getText(), value);
 		}
 	}
 

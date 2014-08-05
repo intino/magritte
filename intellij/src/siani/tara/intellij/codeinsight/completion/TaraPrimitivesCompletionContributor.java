@@ -8,9 +8,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
-import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.TaraLanguage;
+import siani.tara.intellij.lang.psi.Attribute;
+import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.TaraTypes;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -27,14 +29,25 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("string"));
-					resultSet.addElement(LookupElementBuilder.create("natural"));
-					resultSet.addElement(LookupElementBuilder.create("integer"));
-					resultSet.addElement(LookupElementBuilder.create("double"));
-					resultSet.addElement(LookupElementBuilder.create("boolean"));
-					resultSet.addElement(LookupElementBuilder.create("word"));
-					resultSet.addElement(LookupElementBuilder.create("date"));
-					resultSet.addElement(LookupElementBuilder.create("alias"));
+					resultSet.addElement(LookupElementBuilder.create("string "));
+					resultSet.addElement(LookupElementBuilder.create("natural "));
+					resultSet.addElement(LookupElementBuilder.create("integer "));
+					resultSet.addElement(LookupElementBuilder.create("double "));
+					resultSet.addElement(LookupElementBuilder.create("boolean "));
+					resultSet.addElement(LookupElementBuilder.create("word "));
+					resultSet.addElement(LookupElementBuilder.create("date "));
+					resultSet.addElement(LookupElementBuilder.create("reference "));
+					resultSet.addElement(LookupElementBuilder.create("resource "));
+				}
+			}
+		);
+
+		extend(CompletionType.BASIC, TaraFilters.afterEquals,
+			new CompletionProvider<CompletionParameters>() {
+				public void addCompletions(@NotNull CompletionParameters parameters,
+				                           ProcessingContext context,
+				                           @NotNull CompletionResultSet resultSet) {
+					resultSet.addElement(LookupElementBuilder.create("empty"));
 				}
 			}
 		);
@@ -42,11 +55,23 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 
 	private static class AfterVarFitFilter implements ElementFilter {
 		public boolean isAcceptable(Object element, PsiElement context) {
-			if (element instanceof PsiElement && context.getPrevSibling() != null) {
-				if (context.getPrevSibling().getPrevSibling() == null) return false;
-				final ASTNode ctxPreviousNode = context.getPrevSibling().getPrevSibling().getNode();
+			if (element instanceof PsiElement && isInAttribute(context)) {
+				PsiElement parent = context.getParent().getParent();
+				if (parent == null) return false;
+				if (parent.getPrevSibling() == null || parent.getPrevSibling().getPrevSibling() == null) return false;
+
+				final ASTNode ctxPreviousNode = parent.getPrevSibling().getPrevSibling().getNode();
 				if (TaraTypes.VAR.equals(ctxPreviousNode.getElementType()))
 					return true;
+			}
+			return false;
+		}
+
+		private boolean isInAttribute(PsiElement context) {
+			PsiElement parent = context.getParent();
+			while (parent != null && !(parent instanceof Concept)) {
+				if (parent instanceof Attribute) return true;
+				parent = parent.getParent();
 			}
 			return false;
 		}

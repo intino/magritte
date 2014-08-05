@@ -5,6 +5,7 @@ import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.EffectType;
+import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.TokenType;
@@ -35,25 +36,23 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey BRACKETS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.BRACKETS);
 	public static final TextAttributesKey SEMICOLON_KEY = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.SEMICOLON);
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER");
-	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>(6);
-	public static final TextAttributesKey UNRESOLVED_ACCESS = TextAttributesKey.createTextAttributesKey("Unresolved reference");
-	public static final TextAttributesKey PROPERTY_INFO = TextAttributesKey.createTextAttributesKey("Property element");
-	public static final TextAttributesKey WARNING = TextAttributesKey.createTextAttributesKey("Annotation warning");
-	public static final TextAttributesKey ANNOTATION_ERROR = TextAttributesKey.createTextAttributesKey("Annotation unsupported in this context");
+	public static final TextAttributesKey ANNOTATION_ERROR = createTextAttributesKey("ANNOTATION_ERROR", errorTextAttributes());
+	public static final TextAttributesKey UNRESOLVED_ACCESS = createTextAttributesKey("UNRESOLVED_ACCESS", errorTextAttributes());
 
+	public static final TextAttributesKey PROPERTY_INFO = createTextAttributesKey("TARA_PROPERTY",
+		new TextAttributes(null, null, JBColor.ORANGE, EffectType.LINE_UNDERSCORE, Font.PLAIN));
+	public static final TextAttributesKey WARNING = createTextAttributesKey("WARNING",
+		new TextAttributes(null, null, JBColor.YELLOW, EffectType.WAVE_UNDERSCORE, Font.PLAIN));
+	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>();
+	private static final Map<IElementType, TextAttributesKey> KEYS;
 
-	static {
-		WARNING.getDefaultAttributes().setForegroundColor(JBColor.LIGHT_GRAY);
-		WARNING.getDefaultAttributes().setEffectType(EffectType.WAVE_UNDERSCORE);
-		UNRESOLVED_ACCESS.getDefaultAttributes().setForegroundColor(JBColor.RED);
-		UNRESOLVED_ACCESS.getDefaultAttributes().setFontType(Font.BOLD);
+	public TaraSyntaxHighlighter() {
 		BAD_CHARACTER.getDefaultAttributes().setForegroundColor(JBColor.RED);
 		BAD_CHARACTER.getDefaultAttributes().setFontType(Font.BOLD);
-		ANNOTATION_ERROR.getDefaultAttributes().setForegroundColor(JBColor.RED);
-		ANNOTATION_ERROR.getDefaultAttributes().setFontType(Font.BOLD);
-		PROPERTY_INFO.getDefaultAttributes().setForegroundColor(JBColor.foreground());
-		PROPERTY_INFO.getDefaultAttributes().setFontType(Font.PLAIN);
-		PROPERTY_INFO.getDefaultAttributes().setEffectType(EffectType.WAVE_UNDERSCORE);
+	}
+
+	private static TextAttributes errorTextAttributes() {
+		return new TextAttributes(JBColor.RED, null, null, null, Font.BOLD);
 	}
 
 	static {
@@ -69,8 +68,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		DISPLAY_NAMES.put(BRACKETS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.annotation"), null));
 		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<>(TaraBundle.message("invalid.tara.concept.character"), HighlightSeverity.ERROR));
 	}
-
-	private static final Map<IElementType, TextAttributesKey> KEYS;
 
 	@NotNull
 	@Override

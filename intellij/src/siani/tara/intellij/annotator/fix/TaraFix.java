@@ -24,12 +24,8 @@ public abstract class TaraFix implements LocalQuickFix {
 	public void applyFix(@NotNull Project project,
 	                     @NotNull ProblemDescriptor descriptor) {
 		final PsiElement problemElement = descriptor.getPsiElement();
-		if (problemElement == null || !problemElement.isValid()) {
-			return;
-		}
-		if (isQuickFixOnReadOnlyFile(problemElement)) {
-			return;
-		}
+		if (problemElement == null || !problemElement.isValid()) return;
+		if (isQuickFixOnReadOnlyFile(problemElement)) return;
 		try {
 			doFix(project, descriptor);
 		} catch (IncorrectOperationException e) {

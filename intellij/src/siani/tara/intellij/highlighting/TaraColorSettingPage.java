@@ -39,8 +39,8 @@ public class TaraColorSettingPage implements ColorSettingsPage {
 	public String getDemoText() {
 		return
 			"Concept abstract as Source <has-code root> \n" +
-				"\tConcept as Ontology<optional>" + "\n" +
-				"\t\tvar Alias uid" +
+				"\tConcept Ontology<optional>" + "\n" +
+				"\t\tvar reference uid" +
 				"\n" +
 				"Concept Source as Thesaurus" + "\n" +
 				"\tnew Term<multiple>" + "\n" +

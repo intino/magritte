@@ -2,6 +2,7 @@ package siani.tara.intellij.actions;
 
 import com.intellij.ide.actions.CreateFileFromTemplateDialog;
 import com.intellij.ide.actions.JavaCreateTemplateInPackageAction;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
@@ -13,6 +14,8 @@ import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleConfiguration;
 
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraFileImpl> {
 
@@ -44,7 +47,13 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	@Override
 	protected TaraFileImpl doCreate(PsiDirectory directory, String newName, String templateName) throws IncorrectOperationException {
 		String fileName = newName + "." + TaraFileType.INSTANCE.getDefaultExtension();
-		PsiFile file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, templateName, true);
+		Module moduleOfDirectory = TaraUtil.getModuleOfDirectory(directory);
+		String parentName = ModuleConfiguration.getInstance(moduleOfDirectory).getParentName();
+		PsiFile file;
+		String[] list;
+		list = parentName != null ? new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "PARENT_MODULE_NAME", parentName, "TYPE", "Concept"}
+			: new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "TYPE", "Concept"};
+		file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, templateName, true, list);
 		if (file instanceof TaraFileImpl) return (TaraFileImpl) file;
 		final String description = file.getFileType().getDescription();
 		throw new IncorrectOperationException(TaraBundle.message("tara.file.extension.is.not.mapped.to.tara.file.type", description));

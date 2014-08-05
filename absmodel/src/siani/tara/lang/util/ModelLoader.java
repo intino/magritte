@@ -29,8 +29,8 @@ public class ModelLoader {
 			restoreTreeLinks(aModel, aModel.getTree());
 			return aModel;
 		} catch (Exception e) {
-			LOG.severe("Error loading model " + parent + ": ");
-			e.printStackTrace();
+//			LOG.severe("Error loading model " + parent + ": ");
+//			e.printStackTrace();
 			return null;
 		}
 	}

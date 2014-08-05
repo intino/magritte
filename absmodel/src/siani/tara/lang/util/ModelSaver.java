@@ -11,11 +11,11 @@ import java.lang.reflect.Type;
 
 public class ModelSaver {
 
-	protected static final String JSON = ".json";
+	protected static final String JSON_EXTENSION = ".json";
 
 	public static boolean save(Model model, String modelsDirectory) {
 		try {
-			File file = new File(modelsDirectory, model.getModelName().split("\\.")[1] + JSON);
+			File file = new File(modelsDirectory, model.getModelName() + JSON_EXTENSION);
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
 			GsonBuilder gsonBuilder = new GsonBuilder();

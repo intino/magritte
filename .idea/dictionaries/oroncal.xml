@@ -2,6 +2,7 @@
   <dictionary name="oroncal">
     <words>
       <w>antlr</w>
+      <w>incorrects</w>
       <w>jflex</w>
       <w>metamodel</w>
       <w>tafat</w>
