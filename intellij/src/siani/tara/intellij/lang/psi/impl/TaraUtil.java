@@ -161,7 +161,7 @@ public class TaraUtil {
 	}
 
 	public static TaraFile getOrCreateFile(String myDestination, Project myProject) {
-		return null;
+		return null;//TODO
 	}
 
 	@NotNull
@@ -191,17 +191,6 @@ public class TaraUtil {
 		return fileIndex.getModuleForFile(file.getVirtualFile());
 	}
 
-	public static String getLocalQNConcept(Concept concept) {
-		Concept container = concept;
-		String id = container.getName();
-		while (getContextOf(container) != null) {
-			container = getContextOf(container);
-			String name = container.getName();
-			id = (name == null ? "anonymous" : name) + "." + id;
-		}
-		return id;
-	}
-
 	public static String composeConceptQN(Identifier identifier) {
 		Concept concept = getContextOf(identifier);
 		String path = concept.getName();
@@ -210,5 +199,15 @@ public class TaraUtil {
 			if (concept != null) path = concept.getName() + "." + path;
 		}
 		return path;
+	}
+
+	public static Concept findConceptByQN(String qualifiedName, PsiFile file) {
+		List<TaraFileImpl> filesOfModule = getTaraFilesOfModule(file.getProject(), getModuleOfFile(file));
+		for (TaraFileImpl taraFile : filesOfModule) {
+			Concept[] rootConceptsOfFile = getRootConceptsOfFile(taraFile);
+			for (Concept concept : rootConceptsOfFile)
+				if (concept.getQualifiedName().equals(qualifiedName)) return concept;
+		}
+		return null;
 	}
 }

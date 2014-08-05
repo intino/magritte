@@ -17,6 +17,8 @@ import siani.tara.lang.Model;
 
 public class ConceptTypeAnnotator extends TaraAnnotator {
 
+	protected static final String INTENTION = "Intention";
+	protected static final String CONCEPT = "Concept";
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
@@ -25,7 +27,7 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 			Concept concept = TaraPsiImplUtil.getContextOf(element);
 			if (concept == null) return;
 			Model model = TaraLanguage.getMetaModel(((TaraFile) element.getContainingFile()).getParentModel());
-			if ("Concept".equals(element.getText()) | "Intention".equals(element.getText())) {
+			if (CONCEPT.equals(element.getText()) | INTENTION.equals(element.getText())) {
 				if (concept.getName() == null)
 					holder.createErrorAnnotation(concept, "Concept without name");
 				IElementType elementType = concept.getPsiElement().getPrevSibling().getNode().getElementType();
@@ -37,7 +39,7 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 				}
 			}
 			if (model == null) {
-				if (!(element.getText().equals("Concept") || element.getText().equals("Intention")))
+				if (!(element.getText().equals(CONCEPT) || element.getText().equals(INTENTION)))
 					holder.createErrorAnnotation(concept, "Concept type not allowed here");
 			} else if (findNode(concept, model) == null) {
 				Annotation errorAnnotation = holder.createErrorAnnotation

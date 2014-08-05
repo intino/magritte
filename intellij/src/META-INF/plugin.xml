@@ -79,7 +79,10 @@
     <treeStructureProvider implementation="siani.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="siani.tara.intellij.actions.TaraTemplatesFactory"/>
     <codeInsight.lineMarkerProvider language="Tara"
-                                    implementationClass="siani.tara.intellij.codeinsight.TaraLineMarkerProvider"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.TaraIntentionLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="Tara"
+                                    implementationClass="siani.tara.intellij.codeinsight.TaraFacetLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="JAVA" implementationClass="siani.tara.intellij.codeinsight.JavaToTaraLineMarkerProvider"/>
     <gotoRelatedProvider implementation="siani.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
     <projectConfigurable instance="siani.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"

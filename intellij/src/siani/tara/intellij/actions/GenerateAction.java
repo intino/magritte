@@ -10,6 +10,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import siani.tara.intellij.codegeneration.FacetsGenerator;
 import siani.tara.intellij.codegeneration.IntentionsGenerator;
 import siani.tara.intellij.lang.psi.TaraFile;
 
@@ -23,7 +24,11 @@ public class GenerateAction extends AnAction implements DumbAware {
 		FileDocumentManager.getInstance().saveAllDocuments();
 		for (VirtualFile file : files) {
 			IntentionsGenerator generator = new IntentionsGenerator(project, (TaraFile) PsiManager.getInstance(project).findFile(file));
-			for (int i = 0; i < 4; i++) generator.generate();
+			FacetsGenerator facetsGenerator = new FacetsGenerator(project, (TaraFile) PsiManager.getInstance(project).findFile(file));
+			for (int i = 0; i < 4; i++) {
+				generator.generate();
+				facetsGenerator.generate();
+			}
 		}
 	}
 

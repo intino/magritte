@@ -23,7 +23,7 @@ import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
-public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
+public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 
 	private final MarkerType OVERRIDDEN_PROPERTY_TYPE = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
@@ -59,7 +59,7 @@ public class TaraLineMarkerProvider extends JavaLineMarkerProvider {
 	);
 
 
-	public TaraLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+	public TaraIntentionLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
 
