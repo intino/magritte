@@ -4,11 +4,9 @@ import com.intellij.find.findUsages.FindUsagesHandler;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
@@ -39,7 +37,7 @@ public class TaraConceptFindUsagesHandler extends FindUsagesHandler {
 		Project project = concept.getProject();
 		List<? extends PsiElement> conceptList = new ArrayList();
 		Map<Module, List<TaraFileImpl>> childModules = new HashMap<>();
-		Module moduleForFile = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(concept.getFile().getVirtualFile());
+		Module moduleForFile = TaraUtil.getModuleOfFile(concept.getFile());
 		if (moduleForFile == null) return PsiElement.EMPTY_ARRAY;
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
 			List<TaraFileImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(project, module);
@@ -53,11 +51,11 @@ public class TaraConceptFindUsagesHandler extends FindUsagesHandler {
 	}
 
 	private Collection collectChildConceptsByType(List<TaraFileImpl> files) {
-		List<Identifier> list = new ArrayList();
+		List<Concept> list = new ArrayList();
 		for (TaraFileImpl file : files)
 			for (Concept cpt : TaraUtil.getRootConceptsOfFile(file))
 				if (concept.getName().equals(cpt.getType()))
-					list.add(cpt.getIdentifierNode());
+					list.add(cpt);
 		return list;
 	}
 

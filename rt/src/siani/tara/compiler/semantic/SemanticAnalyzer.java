@@ -4,58 +4,52 @@ package siani.tara.compiler.semantic;
 import siani.tara.compiler.core.errorcollection.SemanticException;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
-import siani.tara.lang.DeclaredNode;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
-import siani.tara.lang.NodeTree;
+import siani.tara.lang.*;
 
-import java.util.List;
+import java.util.Collection;
 
 public class SemanticAnalyzer {
 	private Model model;
 	private SemanticErrorList errors = new SemanticErrorList();
-	private DuplicateDetector detector = new DuplicateDetector(errors);
-	private ReferenceVerifier referenceVerifier = new ReferenceVerifier(errors);
-	private AnnotationChecker checker = new AnnotationChecker(errors);
-	private ConceptsUsage usageChecker = new ConceptsUsage(errors);
 
-	public SemanticAnalyzer(Model wrapper) {
-		this.model = wrapper;
+
+	public SemanticAnalyzer(Model model) {
+		this.model = model;
 	}
 
 	public void analyze() throws SemanticException {
-		startAnalysis(model.getTree());
-		if (!errors.isEmpty()) throw new SemanticException(errors.toArray(new SemanticError[errors.size()]));
-		startReferenceAnalysis(model.getTree());
-		checker.checkIfRoot(model.getTree());
-		if (!errors.isEmpty()) throw new SemanticException(errors.toArray(new SemanticError[errors.size()]));
+		startDuplicatesAnalysis(model.getTreeModel());
+		if (!errors.isEmpty()) throwError();
+		startAnnotationsAnalysis(model.getNodeTable().values());
+		startUsageAnalysis();
+		if (!errors.isEmpty()) throwError();
+	}
+
+	private void startUsageAnalysis() throws SemanticException {
+		UsageAnalyzer usageAnalyzer = new UsageAnalyzer(model, errors);
+		usageAnalyzer.checkRootExistence(model.getTreeModel());
+		if (!errors.isEmpty()) throwError();
+		usageAnalyzer.checkUsage();
 
 	}
 
-	private void startAnalysis(NodeTree concepts) {
-		detector.checkDuplicateRoots(concepts);
-		for (Node concept : concepts)
-			conceptAnalysis(concept);
+	private void startAnnotationsAnalysis(Collection<Node> treeModel) {
+		AnnotationsAnalyzer analyzer = new AnnotationsAnalyzer(errors);
+		for (Node node : treeModel)
+			if (node.is(DeclaredNode.class) | node.is(IntentionNode.class))
+				analyzer.checkAnnotations(node);
 	}
 
-	private void conceptAnalysis(Node concept) {
-		detector.checkDuplicates(concept);
-		checker.checkAnnotations((DeclaredNode) concept);
-		for (Node child : concept.getInnerNodes())
-			conceptAnalysis(child);
+	private void startDuplicatesAnalysis(NodeTree treeModel) {
+		DuplicateDetector detector = new DuplicateDetector(errors);
+		for (Node node : treeModel)
+			if (node.is(DeclaredNode.class) && !node.getName().isEmpty()) {
+				detector.detectDuplicateNode(node, treeModel);
+				detector.detectDuplicates(node);
+			}
 	}
 
-	private void startReferenceAnalysis(NodeTree concepts) {
-		usageChecker.start(concepts);
-		referenceAnalysis(concepts);
-		usageChecker.finish();
-	}
-
-	private void referenceAnalysis(List<Node> astNodes) {
-		for (Node concept : astNodes) {
-			referenceVerifier.checkConcept(concept, model);
-			usageChecker.checkUsage(concept, model);
-			referenceAnalysis(concept.getInnerNodes());
-		}
+	private void throwError() throws SemanticException {
+		throw new SemanticException(errors.toArray(new SemanticError[errors.size()]));
 	}
 }

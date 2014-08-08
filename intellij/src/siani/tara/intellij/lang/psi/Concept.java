@@ -56,6 +56,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	Concept[] getConceptChildren();
 
+	TaraConceptReference[] getConceptLinks();
+
 	@Nullable
 	String getParentConcept();
 

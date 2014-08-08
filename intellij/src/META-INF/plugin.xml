@@ -65,9 +65,6 @@
     </group>
   </actions>
 
-  <application-components>
-  </application-components>
-
   <extensions defaultExtensionNs="com.intellij">
     <fileDocumentManagerListener implementation="siani.tara.intellij.codegeneration.TaraFileDocumentManagerListener"/>
     <errorHandler implementation="siani.tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
@@ -115,8 +112,10 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptTypeAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.PropertiesAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ModelAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptReferenceAnnotator"/>
     <completion.contributor language="Tara"
-                            implementationClass="siani.tara.intellij.codeinsight.completion.TaraSignatureCompletionContributor"/>
+                            implementationClass="siani.tara.intellij.codeinsight.completion.TaraConceptCompletionContributor"/>
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraPrimitivesCompletionContributor"/>
     <completion.contributor language="Tara"
@@ -148,6 +147,9 @@
     <findUsagesHandlerFactory implementation="siani.tara.intellij.findUsages.TaraFindUsagesHandlerFactory" id="Tara"
                               order="last, before default"/>
   </extensions>
+
+  <application-components>
+  </application-components>
 
   <module-components>
     <component>

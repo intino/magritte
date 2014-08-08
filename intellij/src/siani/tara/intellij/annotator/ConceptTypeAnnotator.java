@@ -8,12 +8,14 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.MetaIdentifier;
-import siani.tara.intellij.lang.psi.TaraFile;
-import siani.tara.intellij.lang.psi.TaraTypes;
+import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Model;
+import siani.tara.lang.Node;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConceptTypeAnnotator extends TaraAnnotator {
 
@@ -41,12 +43,27 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 			if (model == null) {
 				if (!(element.getText().equals(CONCEPT) || element.getText().equals(INTENTION)))
 					holder.createErrorAnnotation(concept, "Concept type not allowed here");
-			} else if (findNode(concept, model) == null) {
-				Annotation errorAnnotation = holder.createErrorAnnotation
-					(concept, TaraBundle.message("Unknown.concept.key.error.message"));
-				errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
+			} else {
+				if (findNode(concept, model) == null) {
+					Annotation errorAnnotation = holder.createErrorAnnotation
+						(concept, TaraBundle.message("Unknown.concept.key.error.message"));
+					errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
+				}
+				List<TaraConceptReference> incorrectInnerLinks = getIncorrectInnerLinks(concept, model);
+				for (TaraConceptReference incorrectInnerLink : incorrectInnerLinks)
+					holder.createErrorAnnotation(incorrectInnerLink, TaraBundle.message("Unknown.concept.key.error.message"));
 			}
 		}
+	}
+
+	private List<TaraConceptReference> getIncorrectInnerLinks(Concept concept, Model model) {
+		List<TaraConceptReference> list = new ArrayList();
+		TaraConceptReference[] conceptLinks = concept.getConceptLinks();
+		for (TaraConceptReference conceptLink : conceptLinks) {
+			Node reference = model.searchNode(TaraUtil.getMetaQualifiedName(conceptLink));
+			if (reference == null) list.add(conceptLink);
+		}
+		return list;
 	}
 }
 

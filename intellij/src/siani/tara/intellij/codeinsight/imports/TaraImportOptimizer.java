@@ -1,12 +1,17 @@
 package siani.tara.intellij.codeinsight.imports;
 
 import com.intellij.lang.ImportOptimizer;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
+import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.psi.IdentifierReference;
 import siani.tara.intellij.lang.psi.Import;
 import siani.tara.intellij.lang.psi.TaraElementFactory;
 import siani.tara.intellij.lang.psi.TaraFile;
-import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,12 +47,26 @@ public class TaraImportOptimizer implements ImportOptimizer {
 			if (myImportBlock == null) return;
 			deleteUnnecessaryImportStatement();
 			deleteDuplicates();
+			deleteUnusedImportStatement();
 		}
 
 		private void deleteUnnecessaryImportStatement() {
 			String packageText = file.getBoxReference().getHeaderReference().getText() + ".";
 			for (Import anImport : myImportBlock)
 				if (!anImport.getHeaderReference().getText().replace(packageText, "").contains("."))
+					anImport.delete();
+		}
+
+		private void deleteUnusedImportStatement() {
+			Collection<IdentifierReference> identifierReferences = PsiTreeUtil.collectElementsOfType(file, IdentifierReference.class);
+			Set<String> neededReferences = new HashSet<>();
+			for (IdentifierReference reference : identifierReferences) {
+				PsiElement resolve = ReferenceManager.resolve(reference);
+				if (resolve == null) continue;
+				neededReferences.add(((TaraFile) resolve.getContainingFile()).getBoxReference().getHeaderReference().getText());
+			}
+			for (Import anImport : myImportBlock)
+				if (!neededReferences.contains(anImport.getHeaderReference().getText()) && !anImport.isMetamodelImport())
 					anImport.delete();
 		}
 

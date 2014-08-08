@@ -2,14 +2,10 @@ package siani.tara.compiler.core;
 
 import siani.tara.compiler.codegeneration.java.JavaCodeGenerator;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
-import siani.tara.compiler.core.errorcollection.ErrorCollector;
 import siani.tara.compiler.core.operation.ModelToJavaOperation;
 import siani.tara.compiler.core.operation.Operation;
 import siani.tara.compiler.core.operation.SrcToClassOperation;
-import siani.tara.compiler.core.operation.model.LinkToParentModelOperation;
-import siani.tara.compiler.core.operation.model.ModelDependencyResolutionOperation;
-import siani.tara.compiler.core.operation.model.ModelOperation;
-import siani.tara.compiler.core.operation.model.SaveModelOperation;
+import siani.tara.compiler.core.operation.model.*;
 import siani.tara.compiler.core.operation.module.MergeToModelOperation;
 import siani.tara.compiler.core.operation.module.ModuleUnitOperation;
 import siani.tara.compiler.core.operation.sourceunit.ImportDataOperation;
@@ -48,8 +44,8 @@ public class CompilationUnit extends ProcessingUnit {
 		}
 	};
 
-	public CompilationUnit(boolean pluginGeneration, CompilerConfiguration configuration, ErrorCollector errorCollector) {
-		super(configuration, errorCollector);
+	public CompilationUnit(boolean pluginGeneration, CompilerConfiguration configuration) {
+		super(configuration, null);
 		this.pluginGeneration = pluginGeneration;
 		this.sourceUnits = new HashMap<>();
 		this.phaseOperations = new LinkedList[10];
@@ -58,8 +54,8 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ParseOperation(this.errorCollector), Phases.PARSING);
 		addPhaseOperation(new ImportDataOperation(this.errorCollector), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
-//		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new LinkToParentModelOperation(this), Phases.CONVERSION);
+		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new ModelToJavaOperation(this), Phases.CLASS_GENERATION);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);

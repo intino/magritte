@@ -95,4 +95,8 @@ public abstract class Node {
 
 	protected abstract String getNodePath();
 
+
+	public boolean is(Class type) {
+		return type.isInstance(this);
+	}
 }

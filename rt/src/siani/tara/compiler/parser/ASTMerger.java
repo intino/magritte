@@ -20,7 +20,7 @@ public class ASTMerger {
 		model.setParentModelName(sources.iterator().next().getModel().getParentModelName());
 		model.setTerminal(sources.iterator().next().getModel().isTerminal());
 		for (SourceUnit unit : sources) {
-			model.addAll(unit.getModel().getTree());
+			model.addAll(unit.getModel().getTreeModel());
 			model.putAllIdentifiers(unit.getModel().getIdentifiers());
 			model.putAllInNodeTable(unit.getModel().getNodeTable());
 		}

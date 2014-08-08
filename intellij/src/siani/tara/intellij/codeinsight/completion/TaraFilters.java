@@ -10,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.lang.Node;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -18,6 +20,8 @@ public class TaraFilters {
 
 	protected static PsiElementPattern.Capture<PsiElement> afterNewLineInBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLineInBodyFilter()));
+	protected static PsiElementPattern.Capture<PsiElement> inFacetBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
+		.and(new FilterPattern(new AfterNewLineInBodyFilter())).and(new FilterPattern(new InFacetFilter()));
 	protected static PsiElementPattern.Capture<PsiElement> afterEquals = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterEqualsFilter()));
 	protected static PsiElementPattern.Capture<PsiElement> AfterNewLineInBodyNoMetamodel = psiElement().withLanguage(TaraLanguage.INSTANCE)
@@ -80,7 +84,8 @@ public class TaraFilters {
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			if (element instanceof PsiElement && context != null && context.getParent() != null)
 				if (context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context))
-					if (context.getPrevSibling().getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT)
+					if (context.getPrevSibling() == null
+						|| context.getPrevSibling().getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT)
 						|| context.getPrevSibling().getNode().getElementType().equals(TaraTypes.NEWLINE))
 						return true;
 			return false;
@@ -130,6 +135,28 @@ public class TaraFilters {
 					if (contextOf == null || contextOf.getPrevSibling() == null) return false;
 					IElementType elementType = contextOf.getPrevSibling().getNode().getElementType();
 					if (TaraTypes.NEW_LINE_INDENT.equals(elementType) || TaraTypes.NEWLINE.equals(elementType))
+						return true;
+				}
+			return false;
+		}
+
+		@Override
+		public boolean isClassAcceptable(Class hintClass) {
+			return true;
+		}
+	}
+
+	private static class InFacetFilter implements ElementFilter {
+		private static final String INTENTION = "Intention";
+
+		@Override
+		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
+			if (element instanceof PsiElement && context != null && context.getParent() != null)
+				if (context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context)) {
+					Concept contextOf = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(context));
+					if (contextOf == null) return false;
+					Node node = TaraLanguage.getMetaModel(contextOf.getFile()).searchNode(TaraUtil.getMetaQualifiedName(contextOf));
+					if (node.getObject().getType().equals(INTENTION))
 						return true;
 				}
 			return false;

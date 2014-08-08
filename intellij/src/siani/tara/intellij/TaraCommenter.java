@@ -2,13 +2,10 @@ package siani.tara.intellij;
 
 import com.intellij.lang.Commenter;
 
-/**
- * Created by oroncal on 10/01/14.
- */
 public class TaraCommenter implements Commenter {
 
 	public String getLineCommentPrefix() {
-		return "'";
+		return "#";
 	}
 
 	public String getBlockCommentPrefix() {

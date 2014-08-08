@@ -44,6 +44,10 @@ public abstract class ModelObject {
 		this.type = type;
 	}
 
+	public boolean is(Class type) {
+		return type.isInstance(this);
+	}
+
 	public enum AnnotationType {
 		NAMEABLE, ROOT, TERMINAL, SINGLE, REQUIRED, PRIVATE, PROPERTY;
 	}

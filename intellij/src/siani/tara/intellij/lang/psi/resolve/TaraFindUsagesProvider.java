@@ -1,6 +1,5 @@
 package siani.tara.intellij.lang.psi.resolve;
 
-import com.intellij.find.impl.HelpID;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
@@ -9,16 +8,14 @@ import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.lexer.TaraLexerAdapter;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.Identifier;
-import siani.tara.intellij.lang.psi.TaraConcept;
-import siani.tara.intellij.lang.psi.TaraTypes;
+import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 public class TaraFindUsagesProvider implements FindUsagesProvider {
 	public static final String ANONYMOUS = "Anonymous";
 	private static final DefaultWordsScanner WORDS_SCANNER = new DefaultWordsScanner(new TaraLexerAdapter(),
-		TokenSet.create(TaraTypes.CONCEPT), TokenSet.create(TaraTypes.DOC), TokenSet.create(TaraTypes.IDENTIFIER_KEY));
+		TokenSet.create(TaraTypes.IDENTIFIER),
+		TokenSet.create(TaraTypes.DOC, TaraTypes.DOC_LINE), TokenSet.EMPTY);
 
 	@Nullable
 	@Override
@@ -28,13 +25,13 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 
 	@Override
 	public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
-		return psiElement instanceof TaraConcept || psiElement instanceof Identifier;
+		return psiElement instanceof TaraConcept || psiElement instanceof Identifier || psiElement instanceof IdentifierReference;
 	}
 
 	@Nullable
 	@Override
 	public String getHelpId(@NotNull PsiElement psiElement) {
-		return HelpID.FIND_IN_PROJECT;
+		return com.intellij.lang.HelpID.FIND_OTHER_USAGES;
 	}
 
 	@NotNull
@@ -57,13 +54,6 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	@NotNull
 	@Override
 	public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
-		if (element instanceof Concept) {
-			String name = ((Concept) element).getName();
-			return name == null ? ANONYMOUS : name;
-		} else if (element instanceof Identifier)
-			return TaraPsiImplUtil.getContextOf(element).getType() + " " + element.getText();
-		return element.getText();
+		return getDescriptiveName(element);
 	}
-
-
 }

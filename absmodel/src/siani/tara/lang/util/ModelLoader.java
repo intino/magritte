@@ -16,9 +16,9 @@ public class ModelLoader {
 	protected static final String JSON = ".json";
 	private static final Logger LOG = Logger.getLogger(ModelLoader.class.getName());
 
-	public static Model load(String modelsDirectory, String parent) {
+	public static Model load(String modelsDirectory, String model) {
 		try {
-			File file = new File(modelsDirectory, parent + JSON);
+			File file = new File(modelsDirectory, model + JSON);
 			if (!file.exists()) throw new Exception("Model file not found");
 			InputStream heritageInputStream = new FileInputStream(file);
 			GsonBuilder gb = new GsonBuilder();
@@ -26,10 +26,10 @@ public class ModelLoader {
 			gb.registerTypeAdapter(ModelObject.class, new NodeObjectAdapter());
 			gb.registerTypeAdapter(Variable.class, new VariableDeserializer());
 			Model aModel = gb.create().fromJson(new InputStreamReader(heritageInputStream), Model.class);
-			restoreTreeLinks(aModel, aModel.getTree());
+			restoreTreeLinks(aModel, aModel.getTreeModel());
 			return aModel;
 		} catch (Exception e) {
-//			LOG.severe("Error loading model " + parent + ": ");
+//			LOG.severe("Error loading model " + model + ": ");
 //			e.printStackTrace();
 			return null;
 		}

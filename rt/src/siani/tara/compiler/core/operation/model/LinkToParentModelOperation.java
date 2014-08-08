@@ -8,6 +8,7 @@ import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.lang.Model;
 import siani.tara.lang.util.ModelLoader;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 public class LinkToParentModelOperation extends ModelOperation {
@@ -28,7 +29,7 @@ public class LinkToParentModelOperation extends ModelOperation {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Catching info from parent model");
 			if (split.length != 2) throw new TaraException("Error finding parent model.", true);
 			String pathname = compilationUnit.getConfiguration().getModelsDirectory();
-			Model parentModel = ModelLoader.load(pathname, split[1]);
+			Model parentModel = ModelLoader.load(pathname + File.separator, parent);
 			if (parentModel == null) throw new TaraException("Error finding parent model.", true);
 			new ParentModelDependencyResolver(model, parentModel).resolve();
 		} catch (TaraException e) {

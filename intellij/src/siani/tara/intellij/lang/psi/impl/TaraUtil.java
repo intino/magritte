@@ -45,10 +45,12 @@ public class TaraUtil {
 	}
 
 	public static String getMetaQualifiedName(Concept concept) {
-		Concept container = concept;
+		Concept container = concept.isCase() ? TaraPsiImplUtil.getParentOf(concept) : concept;
+		if (container == null)
+			return null;
 		String id = (container.getType() != null) ? container.getType() : "";
 		while (TaraPsiImplUtil.getContextOf(container) != null) {
-			container = TaraPsiImplUtil.getContextOf(container);
+			container = container != null && container.isCase() ? TaraPsiImplUtil.getParentOf(container) : TaraPsiImplUtil.getContextOf(container);
 			String containerName = container != null && container.getType() != null ? container.getType() : "";
 			String name = (!containerName.isEmpty() ? "." : "") + id;
 			id = containerName + (!id.isEmpty() ? name : "");
@@ -56,8 +58,19 @@ public class TaraUtil {
 		return id;
 	}
 
+	public static String getMetaQualifiedName(TaraConceptReference reference) {
+		Concept concept = TaraPsiImplUtil.getContextOf(reference);
+		String metaQualifiedName = getMetaQualifiedName(concept);
+		List<TaraIdentifier> identifierList = reference.getIdentifierReference().getIdentifierList();
+		PsiElement resolve = ReferenceManager.resolve(identifierList.get(identifierList.size() - 1), false);
+		if (resolve == null || !Identifier.class.isInstance(resolve)) return null;
+		Concept contextOf = TaraPsiImplUtil.getContextOf(resolve);
+		String type = contextOf.getType();
+		return metaQualifiedName + "." + type;
+	}
+
 	@NotNull
-	public static Concept[] getRootConceptsOfFile(TaraFileImpl taraFile) {
+	public static Concept[] getRootConceptsOfFile(TaraFile taraFile) {
 		List<Concept> list = new ArrayList();
 		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraFile, Concept.class);
 		if (concepts != null) {
@@ -209,5 +222,9 @@ public class TaraUtil {
 				if (concept.getQualifiedName().equals(qualifiedName)) return concept;
 		}
 		return null;
+	}
+
+	public static TaraConceptReference[] getLinksOf(Concept concept) {
+		return concept.getBody() == null ? new TaraConceptReference[0] : concept.getBody().getConceptLinks();
 	}
 }

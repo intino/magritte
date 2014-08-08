@@ -14,7 +14,7 @@ public class FacetTargetsResolver {
 	}
 
 	public void resolve() throws TaraException {
-		for (Node node : model.getTree())
+		for (Node node : model.getTreeModel())
 			if (node instanceof IntentionNode) {
 				IntentionNode intentionNode = (IntentionNode) node;
 				if (intentionNode.getObject().getFacetTargets().size() > 0) {

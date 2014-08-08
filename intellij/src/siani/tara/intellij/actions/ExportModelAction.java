@@ -44,11 +44,11 @@ public class ExportModelAction extends ExportModelAbstractAction {
 		}
 	}
 
-	private void doPrepare(final List<Module> pluginModules, Project project) {
+	public void doPrepare(final List<Module> modules, Project project) {
 		final List<String> errorMessages = new ArrayList<>();
 		final List<String> successMessages = new ArrayList<>();
 		final CompilerManager compilerManager = CompilerManager.getInstance(project);
-		compilerManager.make(compilerManager.createModulesCompileScope(pluginModules.toArray(new Module[pluginModules.size()]), true),
+		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), true),
 			new CompileStatusNotification() {
 				public void finished(final boolean aborted,
 				                     final int errors,
@@ -57,7 +57,7 @@ public class ExportModelAction extends ExportModelAbstractAction {
 					if (aborted || errors != 0) return;
 					ApplicationManager.getApplication().invokeLater(new Runnable() {
 						public void run() {
-							for (Module aModule : pluginModules)
+							for (Module aModule : modules)
 								if (!doPrepare(aModule, errorMessages, successMessages)) return;
 							if (!errorMessages.isEmpty())
 								Messages.showErrorDialog(errorMessages.iterator().next(), TaraBundle.message("error.occurred"));
@@ -68,8 +68,8 @@ public class ExportModelAction extends ExportModelAbstractAction {
 									messageBuf.append(message);
 								}
 								Messages.showInfoMessage(messageBuf.toString(),
-									pluginModules.size() == 1
-										? TaraBundle.message("success.deployment.message", pluginModules.get(0).getName())
+									modules.size() == 1
+										? TaraBundle.message("success.deployment.message", modules.get(0).getName())
 										: TaraBundle.message("success.deployment.message.all"));
 							}
 						}

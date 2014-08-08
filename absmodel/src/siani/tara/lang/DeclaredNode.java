@@ -5,7 +5,6 @@ import java.util.List;
 public class DeclaredNode extends Node {
 
 	private List<Node> innerNodes = new NodeTree();
-	;
 
 	public DeclaredNode() {
 	}

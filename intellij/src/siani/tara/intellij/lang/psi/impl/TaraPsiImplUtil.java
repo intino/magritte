@@ -59,9 +59,8 @@ public class TaraPsiImplUtil {
 			if (body != null) {
 				List<Concept> children = getChildrenInBody(body);
 				List<Concept> cases = new ArrayList<>();
-				for (Concept child : children) {
+				for (Concept child : children)
 					cases.addAll(collectInnerCases(child));
-				}
 				children.addAll(cases);
 				return children;
 			}
@@ -89,6 +88,21 @@ public class TaraPsiImplUtil {
 //			LOG.error(e.getMessage());
 			return null;
 		}
+	}
+
+	public static Concept getParentOf(Concept concept) {
+		if (concept.isCase()) {
+			Concept parent = concept;
+			while (parent != null && parent.isCase()) parent = getContextOf(parent);
+			return parent;
+		} else {
+			if (concept.getParentConcept() != null) {
+				TaraIdentifierReference identifierReference = concept.getSignature().getIdentifierReference();
+				PsiElement resolve = ReferenceManager.resolve(identifierReference);
+				return getContextOf(resolve);
+			}
+		}
+		return null;
 	}
 
 	public static PsiElement[] getAnnotations(Annotations annotations) {

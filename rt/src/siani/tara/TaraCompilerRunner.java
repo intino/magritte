@@ -28,7 +28,7 @@ public class TaraCompilerRunner {
 		getInfoFromArgsFile(argsFile, config, srcFiles);
 		if (srcFiles.isEmpty()) return true;
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
-		final CompilationUnit unit = new CompilationUnit(pluginGeneration, config, null);
+		final CompilationUnit unit = new CompilationUnit(pluginGeneration, config);
 		addSources(srcFiles, unit);
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: compiling...");
 		final List<TaraCompiler.OutputItem> compiledFiles = new TaraCompiler(compilerMessages).compile(unit);

@@ -56,7 +56,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	}
 
 	private Node findFacet(Model model, String facet) {
-		for (Node node : model.getTree())
+		for (Node node : model.getTreeModel())
 			if (node instanceof IntentionNode && node.getName().equals(facet))
 				return node;
 		return null;

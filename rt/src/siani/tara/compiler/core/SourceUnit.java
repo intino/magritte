@@ -43,7 +43,7 @@ public class SourceUnit extends ProcessingUnit {
 	}
 
 	public void parse() throws IOException, SyntaxException {
-		if (parser == null) parser = new Parser(source.getFile());
+		if (parser == null) parser = new Parser(source.getFile(), configuration);
 		parser.parse();
 	}
 

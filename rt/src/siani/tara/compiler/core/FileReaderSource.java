@@ -5,8 +5,8 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 public class FileReaderSource extends AbstractReaderSource {
-	private File file;
 	private static final Charset UTF8 = Charset.forName("UTF-8");
+	private File file;
 
 	public FileReaderSource(File file, CompilerConfiguration configuration) {
 		super(configuration);

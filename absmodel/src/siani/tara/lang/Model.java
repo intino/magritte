@@ -15,7 +15,7 @@ public class Model {
 		this.name = name;
 	}
 
-	public NodeTree getTree() {
+	public NodeTree getTreeModel() {
 		return nodeTree;
 	}
 

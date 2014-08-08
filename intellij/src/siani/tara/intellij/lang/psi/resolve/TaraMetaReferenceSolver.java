@@ -62,7 +62,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 			if (context != null) {
 				Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(context));
 				addChildren(nodes, node);
-			} else addRootNodes(nodes, metaModel.getTree());
+			} else addRootNodes(nodes, metaModel.getTreeModel());
 			return fillVariants(nodes);
 		}
 	}
@@ -84,6 +84,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	}
 
 	private void addChildren(List<Node> nodeList, Node node) {
+		if (node == null) return;
 		for (Node child : node.getInnerNodes())
 			if (!child.getObject().is(NodeObject.AnnotationType.PRIVATE))
 				nodeList.add(child);

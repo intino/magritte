@@ -45,14 +45,15 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	public String getType() {
 		MetaIdentifier type = getSignature().getType();
-		if (type == null && this.isCase())
-			return getBaseConcept().getType();
-		else
+		if (type == null && this.isCase()) {
+			Concept baseConcept = getBaseConcept();
+			return baseConcept != null ? baseConcept.getType() : null;
+		} else
 			return type != null ? type.getText() : null;
 	}
 
 	public Concept getBaseConcept() {
-		return TaraPsiImplUtil.getContextOf(this);
+		return TaraPsiImplUtil.getParentOf((Concept) this);
 	}
 
 	public Concept[] getConceptSiblings() {
@@ -63,6 +64,10 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	public Concept[] getConceptChildren() {
 		return TaraUtil.getChildrenOf((Concept) this);
+	}
+
+	public TaraConceptReference[] getConceptLinks() {
+		return TaraUtil.getLinksOf((Concept) this);
 	}
 
 	@Nullable

@@ -40,7 +40,7 @@ public class InsideModelDependencyResolver {
 				Node node = model.get(toProcessNodes.get(i));
 				if (node instanceof LinkNode)
 					linkToDeclared((LinkNode) node, model.searchDeclaredNodeOfLink((LinkNode) node));
-				else if (node instanceof DeclaredNode) {
+				else {
 					NodeObject object = node.getObject();
 					if (object.getParentName() != null || node.isCase()) {
 						DeclaredNode parent = model.searchAncestry(node);
@@ -60,10 +60,11 @@ public class InsideModelDependencyResolver {
 		updateKeys(list);
 	}
 
-	private void resolveVariableReferences(Node node) {
+	private void resolveVariableReferences(Node node) throws DependencyException {
 		List<Reference> references = node.getObject().getReferences();
 		for (Reference reference : references) {
 			DeclaredNode declaredNode = model.searchDeclarationOfReference(reference.getType(), node);
+			if (declaredNode == null) throwError(node);
 			reference.setType(declaredNode.getQualifiedName());
 		}
 	}
@@ -141,6 +142,6 @@ public class InsideModelDependencyResolver {
 
 	private void throwError(Node node) throws DependencyException {
 		throw new DependencyException("Dependency resolution fail in: " + node.getQualifiedName() +
-			". Not found ancestry: " + node.getObject().getParentName(), node);
+			". Not found reference: " + node.getObject().getParentName(), node);
 	}
 }

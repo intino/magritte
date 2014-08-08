@@ -18,67 +18,65 @@ public class DuplicateDetector {
 		this.errors = errors;
 	}
 
-	public void checkDuplicateRoots(NodeTree concepts) {
-		checkSiblings(concepts);
+	public void detectDuplicates(Node node) {
+		checkIdentifiers(node);
+		checkAnnotations(node);
 	}
 
-	public void checkDuplicates(Node concept) {
-		checkIdentifiers(concept);
-		checkAnnotations(concept);
+	public boolean detectDuplicateNode(Node node, NodeTree treeModel) {
+		int count = 0;
+		for (Node n : treeModel)
+			if (node.getName().equals(n.getName())) count++;
+		return (count > 1);
 	}
 
-	private void checkIdentifiers(Node concept) {
+
+	private void checkIdentifiers(Node node) {
 		Set<String> names = new HashSet<>();
-		checkChildren(concept, names);
-		checkAttributes(concept, names);
-		checkWords(concept, names);
-		checkReferences(concept, names);
+		checkAttributes(node, names);
+		checkWords(node, names);
+		checkReferences(node, names);
+		checkInnerLinks(node);
 	}
 
-	private void checkSiblings(NodeTree concepts) {
-		Set<String> names = new HashSet<>();
-		for (Node concept : concepts)
-			if (!names.add(concept.getName()))
-				errors.add(new DuplicateIdentifierError(concept.getName(), concept));
-	}
-
-	private void checkChildren(Node concept, Set<String> names) {
-		for (Node child : concept.getInnerNodes())
-			if (!names.add(child.getName()) && !"".equals(child.getName()))
-				errors.add(new DuplicateIdentifierError(child.getName(), concept));
-	}
-
-	private void checkAttributes(Node concept, Set<String> names) {
-		for (NodeAttribute attribute : concept.getObject().getAttributes())
+	private void checkAttributes(Node node, Set<String> names) {
+		for (NodeAttribute attribute : node.getObject().getAttributes())
 			if (!names.add(attribute.getName()))
-				errors.add(new DuplicateIdentifierError(attribute.getName(), concept));
+				errors.add(new DuplicateIdentifierError(attribute.getName(), node));
 	}
 
-	private void checkWords(Node concept, Set<String> names) {
-		for (NodeWord word : concept.getObject().getWords()) {
+	private void checkWords(Node node, Set<String> names) {
+		for (NodeWord word : node.getObject().getWords()) {
 			if (!names.add(word.getName()))
-				errors.add(new DuplicateIdentifierError(word.getName(), concept));
-			checkWordValues(concept, word);
+				errors.add(new DuplicateIdentifierError(word.getName(), node));
+			checkWordValues(node, word);
 		}
 	}
 
-	private void checkWordValues(Node concept, NodeWord word) {
+	private void checkWordValues(Node node, NodeWord word) {
 		Set<String> wordValues = new HashSet<>();
 		for (String value : word.getWordTypes())
 			if (!wordValues.add(value))
-				errors.add(new DuplicateIdentifierError(value, concept));
+				errors.add(new DuplicateIdentifierError(value, node));
 	}
 
-	private void checkReferences(Node concept, Set<String> names) {
-		for (Reference reference : concept.getObject().getReferences())
+	private void checkReferences(Node node, Set<String> names) {
+		for (Reference reference : node.getObject().getReferences())
 			if (!names.add(reference.getName()))
-				errors.add(new DuplicateIdentifierError(reference.getName(), concept));
+				errors.add(new DuplicateIdentifierError(reference.getName(), node));
 	}
 
-	private void checkAnnotations(Node concept) {
+	private void checkInnerLinks(Node node) {
+		Set<String> set = new HashSet<>();
+		for (Node inner : node.getInnerNodes())
+			if (inner.is(LinkNode.class) && !set.add(((LinkNode) inner).getDestinyName()))
+				errors.add(new DuplicateIdentifierError(inner.getName(), inner));
+	}
+
+	private void checkAnnotations(Node node) {
 		Set<String> annotations = new HashSet<>();
-		for (AnnotationType annotation : concept.getObject().getAnnotations())
+		for (AnnotationType annotation : node.getObject().getAnnotations())
 			if (!annotations.add(annotation.name()))
-				errors.add(new DuplicateAnnotationError(annotation.name(), concept));
+				errors.add(new DuplicateAnnotationError(annotation.name(), node));
 	}
 }

@@ -57,7 +57,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	private PsiElement[] checkCorrectAnnotation(Concept concept, PsiElement[] annotationList) {
 		List<PsiElement> incorrects;
 		if (isPrimeConcept(concept))
-			incorrects = checkAnnotationList(annotationList, TaraAnnotation.ROOT_ANNOTATIONS);
+			incorrects = checkAnnotationList(annotationList, TaraAnnotation.PRIME_ANNOTATIONS);
 		else if ((concept != null) && concept.isCase())
 			incorrects = checkAnnotationList(annotationList, TaraAnnotation.CASE_ANNOTATIONS);
 		else

@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import siani.tara.lang.*;
+import siani.tara.lang.util.ModelLoader;
 
 import java.util.HashSet;
 import java.util.List;
@@ -12,9 +13,10 @@ import java.util.Stack;
 
 import static siani.tara.compiler.parser.antlr.TaraGrammar.*;
 
-public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
+public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	private final String file;
+	private final String modelsPath;
 	Model model;
 	Stack<Node> conceptStack = new Stack<>();
 	Stack<NodeObject> facetTargetStack = new Stack<>();
@@ -22,9 +24,10 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 	Set<String> imports = new HashSet<>();
 	String currentDocAttribute = "";
 
-	public TaraAbstractTreeGenerator(Model model, String file) {
+	public TaraAbstractModelGenerator(Model model, String file, String modelsPath) {
 		this.model = model;
 		this.file = file;
+		this.modelsPath = modelsPath;
 	}
 
 	@Override
@@ -35,9 +38,11 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterAnImport(@NotNull AnImportContext ctx) {
-		String text = ctx.headerReference().getText();
-		if (ctx.METAMODEL() != null) model.setParentModelName(text);
-		else imports.add(text);
+		String name = ctx.headerReference().getText();
+		if (ctx.METAMODEL() != null) {
+			model.setParentModelName(name);
+			model.setParentModel(ModelLoader.load(modelsPath, name));
+		} else imports.add(name);
 	}
 
 	@Override
@@ -45,10 +50,9 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		DeclaredNode container = !conceptStack.empty() ? (DeclaredNode) conceptStack.peek() : null;
 		Node node;
 		String name = (ctx.signature().IDENTIFIER() != null) ? ctx.signature().IDENTIFIER().getText() : "";
-		String type = (ctx.signature().metaidentifier() != null) ? ctx.signature().metaidentifier().getText() :
-			container.getObject().getType();// container can't be null in case
+		String type = (ctx.signature().metaidentifier() != null) ? ctx.signature().metaidentifier().getText() : container.getObject().getType();
 		String parent = getParent(ctx);
-		if ((ctx.body() != null && ctx.body().facetTarget() != null && ctx.body().facetTarget().size() > 0) || type.equals("Intention"))
+		if (type.equals("Intention") ||(!type.equals("Concept") && model.getParentModel().searchNode(type).is(IntentionNode.class)))
 			node = new IntentionNode(new IntentionObject(type, name), container);
 		else
 			node = name.isEmpty() && ctx.body() == null ? new LinkNode(parent, container) : new DeclaredNode(new NodeObject(type, name), container);
@@ -61,17 +65,18 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 
 	private void addNodeToModel(ConceptContext ctx, Node node, String parent) {
 		DeclaredNode container = node.getContainer();
-		if (node instanceof DeclaredNode)
+		if (node.is(DeclaredNode.class) || node.is(IntentionNode.class)) {
 			if (container != null) {
 				if (isCase(ctx)) {
 					node.getObject().setCase(true);
 					node.getObject().setParentName(node.getContainer().getQualifiedName());
 					node.getObject().setParentObject(container.getObject());
 					container.getObject().add((DeclaredNode) node);
-				} else node.getObject().setParentName(parent);
+				}
 				container.add(node);
 			} else model.add(node);
-		else if (node instanceof LinkNode)
+			if (parent != null) node.getObject().setParentName(parent);
+		} else if (node instanceof LinkNode)
 			container.add(node);
 		else
 			model.add(node);
@@ -167,7 +172,7 @@ public class TaraAbstractTreeGenerator extends TaraGrammarBaseListener {
 		super.enterIntegerAttribute(ctx);
 		NodeAttribute variable = new NodeAttribute(ctx.INT_TYPE().getText(), ctx.IDENTIFIER().getText());
 		variable.setList(ctx.LIST() != null);
-		if(ctx.integerValue() != null) variable.setValue(ctx.integerValue().getText());
+		if (ctx.integerValue() != null) variable.setValue(ctx.integerValue().getText());
 		else if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
 		if (ctx.measure() != null) variable.setValue(ctx.measure().getText());
 		addAttribute(ctx, variable);

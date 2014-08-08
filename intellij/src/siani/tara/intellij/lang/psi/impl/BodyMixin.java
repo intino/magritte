@@ -71,6 +71,11 @@ public class BodyMixin extends ASTWrapperPsiElement {
 		return facetApplies;
 	}
 
+	public TaraConceptReference[] getConceptLinks() {
+		TaraConceptReference[] references = PsiTreeUtil.getChildrenOfType(this, TaraConceptReference.class);
+		return references == null ? new TaraConceptReference[0] : references;
+	}
+
 	@NotNull
 	public List<TaraFacetTarget> getFacetTargets() {
 		return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraFacetTarget.class);
