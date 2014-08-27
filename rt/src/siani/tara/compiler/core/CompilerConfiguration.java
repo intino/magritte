@@ -13,7 +13,6 @@ public class CompilerConfiguration {
 	private PrintWriter output;
 	private File tempDirectory;
 	private File targetDirectory;
-	private File pluginDirectory;
 	private boolean debug;
 	private String ideaHome;
 	private String projectIcon;
@@ -125,13 +124,6 @@ public class CompilerConfiguration {
 				else f.delete();
 	}
 
-	public File getPluginDirectory() {
-		return pluginDirectory;
-	}
-
-	public void setPluginDirectory(String pluginDirectory) {
-		this.pluginDirectory = new File(pluginDirectory);
-	}
 
 	public String getIdeaHome() {
 		return ideaHome;

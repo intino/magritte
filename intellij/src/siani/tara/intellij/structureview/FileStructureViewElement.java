@@ -4,16 +4,16 @@ import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
 import com.intellij.navigation.ItemPresentation;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class FileStructureViewElement extends PsiTreeElementBase<TaraFileImpl> {
+public class FileStructureViewElement extends PsiTreeElementBase<TaraBoxFileImpl> {
 
-	protected FileStructureViewElement(TaraFileImpl propertiesFile) {
+	protected FileStructureViewElement(TaraBoxFileImpl propertiesFile) {
 		super(propertiesFile);
 	}
 

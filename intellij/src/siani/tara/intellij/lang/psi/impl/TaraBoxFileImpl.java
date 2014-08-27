@@ -21,9 +21,9 @@ import siani.tara.intellij.lang.psi.*;
 import javax.swing.*;
 import java.util.List;
 
-public class TaraFileImpl extends PsiFileBase implements TaraFile {
+public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 
-	public TaraFileImpl(@NotNull com.intellij.psi.FileViewProvider viewProvider) {
+	public TaraBoxFileImpl(@NotNull com.intellij.psi.FileViewProvider viewProvider) {
 		super(viewProvider, TaraLanguage.INSTANCE);
 	}
 
@@ -62,7 +62,7 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 
 			@Override
 			public Icon getIcon(final boolean open) {
-				return TaraIcons.getIcon(TaraIcons.CONCEPT);
+				return TaraIcons.getIcon(TaraIcons.BOX);
 			}
 		};
 	}
@@ -70,7 +70,7 @@ public class TaraFileImpl extends PsiFileBase implements TaraFile {
 	@Nullable
 	@Override
 	public Icon getIcon(int flags) {
-		return TaraIcons.getIcon(TaraIcons.CONCEPT);
+		return TaraIcons.getIcon(TaraIcons.BOX);
 	}
 
 	@NotNull

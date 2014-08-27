@@ -4,6 +4,7 @@ import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleTypeManager;
+import com.intellij.openapi.projectRoots.Sdk;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraIcons;
@@ -51,4 +52,11 @@ public class TaraModuleType extends JavaModuleType {
 	public Icon getBigIcon() {
 		return TaraIcons.getIcon(TaraIcons.ICON_100);
 	}
+
+	@Override
+	public boolean isValidSdk(@NotNull Module module, Sdk projectSdk) {
+		return JavaModuleType.isValidJavaSdk(module);
+	}
+
+
 }

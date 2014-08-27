@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.IdentifierReference;
 import siani.tara.intellij.lang.psi.Import;
 import siani.tara.intellij.lang.psi.TaraElementFactory;
-import siani.tara.intellij.lang.psi.TaraFile;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
 import java.util.Collection;
@@ -18,7 +18,7 @@ import java.util.Set;
 public class TaraImportOptimizer implements ImportOptimizer {
 	@Override
 	public boolean supports(PsiFile file) {
-		return file instanceof TaraFile;
+		return file instanceof TaraBoxFile;
 	}
 
 	@NotNull
@@ -27,17 +27,17 @@ public class TaraImportOptimizer implements ImportOptimizer {
 		return new Runnable() {
 			@Override
 			public void run() {
-				if (file instanceof TaraFile) new ImportsOptimizer((TaraFile) file).run();
+				if (file instanceof TaraBoxFile) new ImportsOptimizer((TaraBoxFile) file).run();
 			}
 		};
 	}
 
 	private static class ImportsOptimizer {
-		private final TaraFile file;
+		private final TaraBoxFile file;
 		private final Import[] myImportBlock;
 		private final TaraElementFactory generator;
 
-		private ImportsOptimizer(TaraFile file) {
+		private ImportsOptimizer(TaraBoxFile file) {
 			this.file = file;
 			myImportBlock = this.file.getImports();
 			generator = TaraElementFactory.getInstance(this.file.getProject());
@@ -63,7 +63,7 @@ public class TaraImportOptimizer implements ImportOptimizer {
 			for (IdentifierReference reference : identifierReferences) {
 				PsiElement resolve = ReferenceManager.resolve(reference);
 				if (resolve == null) continue;
-				neededReferences.add(((TaraFile) resolve.getContainingFile()).getBoxReference().getHeaderReference().getText());
+				neededReferences.add(((TaraBoxFile) resolve.getContainingFile()).getBoxReference().getHeaderReference().getText());
 			}
 			for (Import anImport : myImportBlock)
 				if (!neededReferences.contains(anImport.getHeaderReference().getText()) && !anImport.isMetamodelImport())

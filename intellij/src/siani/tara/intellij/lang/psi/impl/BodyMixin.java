@@ -33,8 +33,8 @@ public class BodyMixin extends ASTWrapperPsiElement {
 		}
 	}
 
-	public TaraFileImpl getFile() throws PsiInvalidElementAccessException {
-		return (TaraFileImpl) super.getContainingFile();
+	public TaraBoxFileImpl getFile() throws PsiInvalidElementAccessException {
+		return (TaraBoxFileImpl) super.getContainingFile();
 	}
 
 	public PsiElement getPsiElement() {

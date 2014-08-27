@@ -32,8 +32,8 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.getIdentifier((Concept) this);
 	}
 
-	public TaraFileImpl getFile() throws PsiInvalidElementAccessException {
-		return (TaraFileImpl) super.getContainingFile();
+	public TaraBoxFileImpl getFile() throws PsiInvalidElementAccessException {
+		return (TaraBoxFileImpl) super.getContainingFile();
 	}
 
 
@@ -47,7 +47,7 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isCase() {
-		return getNode().findChildByType(TaraTypes.CASE_KEY) != null;
+		return getNode().findChildByType(TaraTypes.SUB) != null;
 	}
 
 

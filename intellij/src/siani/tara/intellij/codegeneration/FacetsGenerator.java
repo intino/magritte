@@ -10,7 +10,7 @@ import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraFile;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
@@ -23,14 +23,14 @@ public class FacetsGenerator {
 	public static final String SRC = "src";
 	private static final String INTENTION = "Intention";
 	private final Project project;
-	private final TaraFile taraFile;
+	private final TaraBoxFile taraBoxFile;
 	private final PsiDirectory srcDirectory;
 
-	public FacetsGenerator(Project project, TaraFile taraFile) {
+	public FacetsGenerator(Project project, TaraBoxFile taraBoxFile) {
 		this.project = project;
-		this.taraFile = taraFile;
-		VirtualFile src = getSRCDirectory(TaraUtil.getSourceRoots(taraFile));
-		srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraFile.getManager(), src);
+		this.taraBoxFile = taraBoxFile;
+		VirtualFile src = getSRCDirectory(TaraUtil.getSourceRoots(taraBoxFile));
+		srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), src);
 	}
 
 	public void generate() {
@@ -40,7 +40,7 @@ public class FacetsGenerator {
 			public void run() {
 				pathsToRefresh.add(VfsUtil.virtualToIoFile(srcDirectory.getVirtualFile()));
 				try {
-					processFile(taraFile);
+					processFile(taraBoxFile);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -49,9 +49,9 @@ public class FacetsGenerator {
 	}
 
 	private void processFile(PsiFile psiFile) {
-		if (psiFile instanceof TaraFile) {
-			final TaraFile taraFile = ((TaraFile) psiFile);
-			final Concept[] facets = getFacets(taraFile);
+		if (psiFile instanceof TaraBoxFile) {
+			final TaraBoxFile taraBoxFile = ((TaraBoxFile) psiFile);
+			final Concept[] facets = getFacets(taraBoxFile);
 			for (Concept intention : facets) createFacetClass(intention);
 		}
 	}
@@ -84,11 +84,11 @@ public class FacetsGenerator {
 		throw new RuntimeException("Src directory not found");
 	}
 
-	private Concept[] getFacets(TaraFile taraFile) {
-		Model model = TaraLanguage.getMetaModel(taraFile);
+	private Concept[] getFacets(TaraBoxFile taraBoxFile) {
+		Model model = TaraLanguage.getMetaModel(taraBoxFile);
 		List<Concept> facets = new ArrayList<>();
 		if (model == null) return new Concept[0];
-		List<Concept> allConceptsOfFile = TaraUtil.findAllConceptsOfFile(taraFile);
+		List<Concept> allConceptsOfFile = TaraUtil.findAllConceptsOfFile(taraBoxFile);
 		for (Concept concept : allConceptsOfFile) {
 			Node node = findNode(concept, model);
 			if (node != null && node.getObject().getType().equals(INTENTION))
@@ -97,7 +97,7 @@ public class FacetsGenerator {
 		return facets.toArray(new Concept[facets.size()]);
 	}
 
-	private List<PsiDirectory> createSrcPackageForFile(TaraFile file) {
+	private List<PsiDirectory> createSrcPackageForFile(TaraBoxFile file) {
 		String[] packet = file.getBoxReference().getHeaderReference().getText().split("\\.");
 		List<PsiDirectory> directories = new ArrayList<>();
 		for (String s : packet) {

@@ -10,7 +10,7 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
-import siani.tara.intellij.lang.psi.TaraFile;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.*;
@@ -33,7 +33,6 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 
 	@NonNls
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
-
 		if (originalElement instanceof MetaIdentifier) {
 			Concept concept = TaraPsiImplUtil.getContextOf(originalElement);
 			String doc = originalElement.getParent() instanceof TaraFacetApply ?
@@ -43,13 +42,13 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		}
 		if (element instanceof Concept)
 			return ((Concept) element).getDocCommentText();
-		if (element instanceof TaraFile)
-			return renderConceptValue(((TaraFile) element).getConcepts()[0]);
+		if (element instanceof TaraBoxFile)
+			return renderConceptValue(((TaraBoxFile) element).getConcepts()[0]);
 		return renderConceptValue(TaraPsiImplUtil.getContextOf(element));
 	}
 
 	private String extractMetaDocumentationOfFacetApply(Concept concept, String facet) {
-		Model model = TaraLanguage.getMetaModel(((TaraFile) concept.getContainingFile()).getParentModel());
+		Model model = TaraLanguage.getMetaModel(concept.getContainingFile());
 		if (model == null) return null;
 		Node facetNode = findFacet(model, facet);
 		return generateDocForNode(facetNode, concept.getType());
@@ -57,7 +56,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 
 	private Node findFacet(Model model, String facet) {
 		for (Node node : model.getTreeModel())
-			if (node instanceof IntentionNode && node.getName().equals(facet))
+			if (node.getObject().is(ModelObject.AnnotationType.INTENTION) && node.getName().equals(facet))
 				return node;
 		return null;
 	}
@@ -70,7 +69,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	}
 
 	private Node getNode(Concept concept) {
-		Model model = TaraLanguage.getMetaModel(((TaraFile) concept.getContainingFile()).getParentModel());
+		Model model = TaraLanguage.getMetaModel(concept.getContainingFile());
 		if (model == null) return null;
 		return model.searchNode(TaraUtil.getMetaQualifiedName(concept));
 	}
@@ -85,8 +84,8 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 			builder.append("\t\t").append(inner.getObject().getType()).append(" ").append(inner.getObject().getName()).append("\n");
 			if (inner.getObject().getDoc() != null) builder.append(inner.getObject().getDoc()).append("\n");
 		}
-		if (node instanceof IntentionNode) {
-			builder.append(generateDocForFacetApply((IntentionNode) node, contextNode));
+		if (node.getObject().is(ModelObject.AnnotationType.INTENTION)) {
+			builder.append(generateDocForFacetApply((DeclaredNode) node, contextNode));
 		} else if (!node.getObject().getAllowedFacets().isEmpty()) {
 			builder.append("\n\t\t").append("Allowed facets:").append("\n");
 			for (String key : node.getObject().getAllowedFacets().keySet())
@@ -95,10 +94,10 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		return builder.toString();
 	}
 
-	private String generateDocForFacetApply(IntentionNode node, String contextNode) {
+	private String generateDocForFacetApply(DeclaredNode node, String contextNode) {
 		StringBuilder builder = new StringBuilder();
-		IntentionObject object = null;
-		for (IntentionObject intentionObject : node.getObject().getFacetTargets())
+		NodeObject object = null;
+		for (NodeObject intentionObject : node.getObject().getFacetTargets())
 			if (intentionObject.getName().equals(contextNode) || intentionObject.getName().endsWith("." + contextNode))
 				object = intentionObject;
 		if (object == null) return "";

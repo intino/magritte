@@ -15,8 +15,8 @@ public class FacetTargetsResolver {
 
 	public void resolve() throws TaraException {
 		for (Node node : model.getTreeModel())
-			if (node instanceof IntentionNode) {
-				IntentionNode intentionNode = (IntentionNode) node;
+			if (node instanceof DeclaredNode && node.getObject().is(ModelObject.AnnotationType.INTENTION)) {
+				DeclaredNode intentionNode = (DeclaredNode) node;
 				if (intentionNode.getObject().getFacetTargets().size() > 0) {
 					propagateVariablesHierarchy(intentionNode);
 					processAsFacetTarget(intentionNode);
@@ -24,8 +24,8 @@ public class FacetTargetsResolver {
 			}
 	}
 
-	private void propagateVariablesHierarchy(IntentionNode node) throws TaraException {
-		for (IntentionObject target : node.getObject().getFacetTargets()) {
+	private void propagateVariablesHierarchy(DeclaredNode node) throws TaraException {
+		for (NodeObject target : node.getObject().getFacetTargets()) {
 			for (Variable commonVariable : node.getObject().getVariables()) target.add(commonVariable);
 			if (target.getParent() != null)
 				for (Variable targetVar : target.getParent().getVariables())
@@ -34,7 +34,7 @@ public class FacetTargetsResolver {
 		}
 	}
 
-	private void resolveReferences(IntentionNode node, List<Reference> references) throws TaraException {
+	private void resolveReferences(DeclaredNode node, List<Reference> references) throws TaraException {
 		for (Reference reference : references) {
 			DeclaredNode declaredNode = model.searchDeclarationOfReference(reference.getType(), node);
 			if (declaredNode == null) declaredNode = (DeclaredNode) model.get(reference.getType());
@@ -44,12 +44,12 @@ public class FacetTargetsResolver {
 		}
 	}
 
-	private void processAsFacetTarget(IntentionNode node) {
-		for (IntentionObject facetTarget : node.getObject().getFacetTargets()) {
+	private void processAsFacetTarget(DeclaredNode node) {
+		for (NodeObject facetTarget : node.getObject().getFacetTargets()) {
 			Node targetNode = model.searchDeclarationOfReference(facetTarget.getName(), node);
 			targetNode.getObject().addAllowedFacet(node.getQualifiedName(), facetTarget.getVariables());
-			for (String constrain : facetTarget.getFacetConstrains())
-				targetNode.getObject().putFacetConstrain(node.getQualifiedName(), model.searchDeclarationOfReference(constrain, node).getQualifiedName());
+//			for (String constrain : facetTarget.getFacetConstrains())
+//				targetNode.getObject().putFacetConstrain(node.getQualifiedName(), model.searchDeclarationOfReference(constrain, node).getQualifiedName());
 			propagateToChildren(targetNode.getObject(), node.getQualifiedName(), facetTarget.getVariables(), targetNode.getObject().getAllowedFacetsConstrains().values());
 		}
 		node.getObject().getVariables().clear();

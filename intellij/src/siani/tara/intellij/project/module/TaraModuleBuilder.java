@@ -6,6 +6,7 @@ import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -20,6 +21,7 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraIcons;
+import siani.tara.intellij.project.sdk.TaraJdk;
 
 import javax.swing.*;
 import java.io.File;
@@ -49,6 +51,11 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 
 	public void setSourcePaths(final List<Pair<String, String>> sourcePaths) {
 		mySourcePaths = sourcePaths != null ? new ArrayList<>(sourcePaths) : null;
+	}
+
+	@Override
+	public boolean isSuitableSdkType(SdkTypeId sdk) {
+		return sdk == TaraJdk.getInstance();
 	}
 
 	@Override
@@ -96,9 +103,8 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			Library library = libraryTable.createLibrary();
 			Library.ModifiableModel modifiableModel = library.getModifiableModel();
 			modifiableModel.addRoot(getUrlByPath(moduleLibraryPath), OrderRootType.CLASSES);
-			if (sourceLibraryPath != null) {
+			if (sourceLibraryPath != null)
 				modifiableModel.addRoot(getUrlByPath(sourceLibraryPath), OrderRootType.SOURCES);
-			}
 			modifiableModel.commit();
 		}
 		if (parentModule != null)
@@ -170,5 +176,4 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		return "Tara modules are used for developing <b>JVM-based</b> applications with Tara model descriptions. " +
 			"You can create either a blank Tara module or a module based on a <b>Tara module</b>.";
 	}
-
 }

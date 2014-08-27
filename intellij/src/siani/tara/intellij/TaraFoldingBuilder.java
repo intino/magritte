@@ -7,8 +7,8 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraFile;
-import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	                                        @NotNull PsiElement root,
 	                                        @NotNull Document document,
 	                                        boolean quick) {
-		List<Concept> concepts = TaraUtil.findAllConceptsOfFile((TaraFileImpl) root);
+		List<Concept> concepts = TaraUtil.findAllConceptsOfFile((TaraBoxFileImpl) root);
 		for (final Concept concept : concepts)
 			if (concept.getText() != null && concept.getBody() != null)
 				descriptors.add(new FoldingDescriptor(concept.getBody().getNode(), getRange(concept)) {
@@ -46,7 +46,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 
 	@Override
 	protected boolean isCustomFoldingRoot(ASTNode node) {
-		return node.getPsi() instanceof TaraFile;
+		return node.getPsi() instanceof TaraBoxFile;
 	}
 
 	private String getHolderText() {

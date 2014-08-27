@@ -4,7 +4,10 @@ package siani.tara.compiler.semantic;
 import siani.tara.compiler.core.errorcollection.SemanticException;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
-import siani.tara.lang.*;
+import siani.tara.lang.DeclaredNode;
+import siani.tara.lang.Model;
+import siani.tara.lang.Node;
+import siani.tara.lang.NodeTree;
 
 import java.util.Collection;
 
@@ -27,7 +30,7 @@ public class SemanticAnalyzer {
 
 	private void startUsageAnalysis() throws SemanticException {
 		UsageAnalyzer usageAnalyzer = new UsageAnalyzer(model, errors);
-		usageAnalyzer.checkRootExistence(model.getTreeModel());
+		usageAnalyzer.checkRootExistence(model.getNodeTable().values());
 		if (!errors.isEmpty()) throwError();
 		usageAnalyzer.checkUsage();
 
@@ -36,7 +39,7 @@ public class SemanticAnalyzer {
 	private void startAnnotationsAnalysis(Collection<Node> treeModel) {
 		AnnotationsAnalyzer analyzer = new AnnotationsAnalyzer(errors);
 		for (Node node : treeModel)
-			if (node.is(DeclaredNode.class) | node.is(IntentionNode.class))
+			if (node.is(DeclaredNode.class))
 				analyzer.checkAnnotations(node);
 	}
 

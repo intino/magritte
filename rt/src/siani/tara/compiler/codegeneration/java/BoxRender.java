@@ -143,7 +143,7 @@ public class BoxRender extends Render {
 	private Set<String> collectQnNodes(Set<Node> nodes) {
 		Set<String> set = new HashSet<>();
 		for (Node node : nodes) {
-			if (node.isPrime() && !node.getObject().getType().equals("Intention"))
+			if (node.isPrime() && !node.getObject().is(ModelObject.AnnotationType.INTENTION))
 				set.add(node.getQualifiedName());
 		}
 		return set;

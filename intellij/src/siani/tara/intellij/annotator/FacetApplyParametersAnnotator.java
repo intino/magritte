@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
-import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.TaraParameters;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.lang.Model;
@@ -24,7 +23,7 @@ public class FacetApplyParametersAnnotator extends TaraAnnotator {
 		TaraFacetApply facetApply = (TaraFacetApply) element;
 		if (facetApply.getParameters() == null) return;
 		Concept concept = TaraPsiImplUtil.getContextOf(element);
-		Model model = TaraLanguage.getMetaModel(((TaraFile) element.getContainingFile()).getParentModel());
+		Model model = TaraLanguage.getMetaModel(element.getContainingFile());
 		Node node;
 		if (model == null || (node = findNode(concept, model)) == null) return;
 		TaraParameters parameters = facetApply.getParameters();

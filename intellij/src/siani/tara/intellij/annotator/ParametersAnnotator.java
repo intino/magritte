@@ -9,7 +9,6 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.Parameters;
 import siani.tara.intellij.lang.psi.Signature;
-import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
@@ -24,7 +23,7 @@ public class ParametersAnnotator extends TaraAnnotator {
 		if (!Signature.class.isInstance(element)) return;
 		Concept concept = TaraPsiImplUtil.getContextOf(element);
 		if (isLinkConcept(concept)) return;
-		Model heritage = TaraLanguage.getMetaModel(((TaraFile) element.getContainingFile()).getParentModel());
+		Model heritage = TaraLanguage.getMetaModel(element.getContainingFile());
 		Node node;
 		if (heritage == null || (node = findNode(concept, heritage)) == null) return;
 		NodeObject object = node.getObject();
@@ -32,7 +31,7 @@ public class ParametersAnnotator extends TaraAnnotator {
 		int minimum = collectMinimumNumberOfParameter(node.getObject().getVariables());
 		if (parameters == null && minimum > 0 || (parameters != null) && parameters[0].getParameters().length < minimum) {
 			Annotation errorAnnotation = annotationHolder.createErrorAnnotation(element, "parameters missed: " + variablesToString(object));
-			errorAnnotation.registerFix(new AddParametersFix((Signature) element, object.getVariables()));
+			errorAnnotation.registerFix(new AddParametersFix(element, object.getVariables()));
 		}
 	}
 

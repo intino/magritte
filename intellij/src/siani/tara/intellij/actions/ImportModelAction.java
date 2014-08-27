@@ -52,7 +52,7 @@ public class ImportModelAction extends AnAction implements DumbAware {
 		byte[] buffer = new byte[1024];
 		while ((len = zis.read(buffer)) > 0) fos.write(buffer, 0, len);
 		fos.close();
-		File reload = new File(TaraLanguage.MODELS_PATH + fileName.split("\\.")[0], fileName + ".model_reload");
+		File reload = new File(TaraLanguage.MODELS_PATH + fileName.split("\\.")[0], fileName + ".reload");
 		reload.createNewFile();
 	}
 }

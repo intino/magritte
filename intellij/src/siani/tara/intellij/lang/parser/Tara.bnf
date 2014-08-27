@@ -39,17 +39,15 @@ concept ::= doc? signature annotationsAndFacets? body? {
 	mixin= 'siani.tara.intellij.lang.psi.impl.ConceptMixin'
 	implements='siani.tara.intellij.lang.psi.Concept'
 }
-
-signature::= ((CASE_KEY identifier)
-			| withHeritage
-			| (metaIdentifier identifier) | metaIdentifier) parameters? {
+//simplify
+signature::= (SUB identifier) | (metaIdentifier parameters? identifier parent?) | (metaIdentifier parameters?)  {
 	pin=1
 	mixin= 'siani.tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='siani.tara.intellij.lang.psi.Signature'
 }
 
-private withHeritage ::= metaIdentifier COLON identifierReference identifier?
-{pin = 2}
+private parent ::= EXTENDS identifierReference
+{pin = 1}
 
 parameters ::= LEFT_PARENTHESIS (explicitParameters | implicitParameters)? RIGHT_PARENTHESIS {
 	pin = 3
@@ -111,7 +109,7 @@ attribute ::= doc? VAR (refAttribute | naturalAttribute | integerAttribute | dou
 }
 private resource             ::= RESOURCE_KEY attributeType IDENTIFIER_KEY                                                  {pin=1}
 private coordinateAttribute  ::= COORDINATE_TYPE  LIST? IDENTIFIER_KEY (EQUALS (coordinateValue | emptyField))?             {pin=1}
-private refAttribute         ::= REFERENCE_TYPE   LIST?  IDENTIFIER_KEY (EQUALS (codeValue  | emptyField))?                 {pin=1}
+private refAttribute         ::= PORT_TYPE        LIST? IDENTIFIER_KEY (EQUALS (codeValue  | emptyField))?                  {pin=1}
 private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (EQUALS (booleanValue | emptyField))?                   {pin=1}
 private stringAttribute      ::= STRING_TYPE  LIST?  IDENTIFIER_KEY (EQUALS (stringValue  | emptyField))?                   {pin=1}
 private naturalAttribute     ::= NATURAL_TYPE attributeType? LIST?  IDENTIFIER_KEY (EQUALS (naturalValue measure? | emptyField))?    {pin=1}
@@ -145,9 +143,10 @@ annotationsAndFacets ::= IS (annotations+ | facetApply) {
 }
 facetApply ::= metaIdentifier parameters? (WITH metaIdentifier)?
 {pin = 2}
-facetTarget ::= ON identifierReference (IF identifierReference)? body?
+facetTarget ::= ON identifierReference ALWAYS? body?
 {pin = 1}
-annotations ::= (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | ROOT | PROPERTY)+ {
+
+annotations ::= (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | COMPONENT | FACET | INTENTION | PROPERTY)+ {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotations'
@@ -187,7 +186,7 @@ identifier ::=  IDENTIFIER_KEY {
 	implements='siani.tara.intellij.lang.psi.Identifier'
 }
 
-metaIdentifier ::= METAIDENTIFIER_KEY | IDENTIFIER_KEY | INTENTION_KEY {
+metaIdentifier ::= METAIDENTIFIER_KEY | IDENTIFIER_KEY {
 	mixin= 'siani.tara.intellij.lang.psi.impl.MetaIdentifierMixin'
 	implements='siani.tara.intellij.lang.psi.MetaIdentifier'
 }

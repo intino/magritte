@@ -36,7 +36,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 					resultSet.addElement(LookupElementBuilder.create("boolean "));
 					resultSet.addElement(LookupElementBuilder.create("word "));
 					resultSet.addElement(LookupElementBuilder.create("date "));
-					resultSet.addElement(LookupElementBuilder.create("reference "));
+					resultSet.addElement(LookupElementBuilder.create("port "));
 					resultSet.addElement(LookupElementBuilder.create("resource "));
 				}
 			}

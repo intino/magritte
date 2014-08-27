@@ -23,17 +23,17 @@ public class AnnotationsAnalyzer {
 	}
 
 	private void rootAnnotation(Node node) {
-		if (!node.isPrime() && node.getObject().is(AnnotationType.ROOT))
+		if (!node.isPrime() && node.getObject().is(AnnotationType.COMPONENT))//TODO
 			if (node.isCase()) {
 				if (!checkRootCase(node))
-					errors.add(new WrongAnnotationError(AnnotationType.ROOT.name(), node));
-			} else errors.add(new WrongAnnotationError(AnnotationType.ROOT.name(), node));
+					errors.add(new WrongAnnotationError(AnnotationType.COMPONENT.name(), node));
+			} else errors.add(new WrongAnnotationError(AnnotationType.COMPONENT.name(), node));
 	}
 
 	private boolean checkRootCase(Node node) {
 		NodeObject caseNode = node.getObject();
 		while (caseNode.getParent() != null)
-			if (!caseNode.getParent().is(AnnotationType.ROOT)) return false;
+			if (!caseNode.getParent().is(AnnotationType.COMPONENT)) return false;//TODO
 			else caseNode = caseNode.getParent();
 		return true;
 	}

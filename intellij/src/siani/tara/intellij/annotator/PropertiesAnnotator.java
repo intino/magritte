@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.lang.Model;
 import siani.tara.lang.ModelObject;
 import siani.tara.lang.Node;
@@ -17,7 +16,7 @@ public class PropertiesAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder annotationHolder) {
 		if (!Concept.class.isInstance(element)) return;
 		Concept concept = (Concept) element;
-		Model model = TaraLanguage.getMetaModel(((TaraFile) element.getContainingFile()).getParentModel());
+		Model model = TaraLanguage.getMetaModel(element.getContainingFile());
 		Node node;
 		if (model == null || (node = findNode(concept, model)) == null) return;
 		if (node.getObject().is(ModelObject.AnnotationType.PROPERTY)) {

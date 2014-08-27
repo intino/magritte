@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.EffectType;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
@@ -72,7 +73,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	@NotNull
 	@Override
 	public Lexer getHighlightingLexer() {
-		return new TaraHighlighterLexAdapter();
+		return new TaraHighlighterLexAdapter(ProjectManager.getInstance().getDefaultProject());
 	}
 
 	static {
@@ -80,23 +81,24 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 		KEYS.put(METAIDENTIFIER_KEY, KEYWORD);
 		KEYS.put(EMPTY_REF, KEYWORD);
-		KEYS.put(INTENTION_KEY, KEYWORD);
 		KEYS.put(HAS, KEYWORD);
+		KEYS.put(EXTENDS, KEYWORD);
 		KEYS.put(METAMODEL, KEYWORD);
 		KEYS.put(REQUIRED, ANNOTATION);
 		KEYS.put(SINGLE, ANNOTATION);
-		KEYS.put(ROOT, ANNOTATION);
+		KEYS.put(FACET, ANNOTATION);
+		KEYS.put(INTENTION, ANNOTATION);
+		KEYS.put(COMPONENT, ANNOTATION);
 		KEYS.put(TERMINAL, ANNOTATION);
 		KEYS.put(PROPERTY, ANNOTATION);
 		KEYS.put(PRIVATE, ANNOTATION);
 		KEYS.put(NAMED, ANNOTATION);
 		KEYS.put(RESOURCE_KEY, PRIMITIVE);
 		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);
-		KEYS.put(CASE_KEY, KEYWORD);
+		KEYS.put(SUB, KEYWORD);
 		KEYS.put(USE_KEY, KEYWORD);
 		KEYS.put(BOX_KEY, KEYWORD);
 		KEYS.put(IS, ANNOTATION);
-		KEYS.put(IF, KEYWORD);
 		KEYS.put(VAR, KEYWORD);
 		KEYS.put(AS, KEYWORD);
 		KEYS.put(ON, KEYWORD);
@@ -105,6 +107,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(COLON, OPERATOR);
 		KEYS.put(EQUALS, OPERATOR);
 		KEYS.put(META_WORD, OPERATOR);
+		KEYS.put(ALWAYS, OPERATOR);
 		KEYS.put(LIST, OPERATOR);
 		KEYS.put(PERCENTAGE, PRIMITIVE);
 		KEYS.put(EURO, PRIMITIVE);
@@ -119,7 +122,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(COORDINATE_TYPE, PRIMITIVE);
 		KEYS.put(BOOLEAN_TYPE, PRIMITIVE);
 		KEYS.put(NATURAL_TYPE, PRIMITIVE);
-		KEYS.put(REFERENCE_TYPE, PRIMITIVE);
+		KEYS.put(PORT_TYPE, PRIMITIVE);
 
 		KEYS.put(DOC_LINE, DOCUMENTATION);
 

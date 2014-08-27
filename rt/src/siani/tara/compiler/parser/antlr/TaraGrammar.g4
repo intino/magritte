@@ -16,9 +16,8 @@ anImport: NEWLINE+ USE headerReference (AS METAMODEL)?;
 doc: DOC+;
 concept: doc? signature annotations? body?;
 
-signature: ((CASE IDENTIFIER)
-         | (metaidentifier IDENTIFIER)
-         | (metaidentifier COLON identifierReference IDENTIFIER?) | IDENTIFIER) parameters? ;
+signature: ((SUB IDENTIFIER)
+         | (metaidentifier parameters? IDENTIFIER (EXTENDS identifierReference)?) | metaidentifier parameters?);
 
 
 parameters : LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS;
@@ -41,10 +40,10 @@ body: NEW_LINE_INDENT ((attribute | concept | varInit | facetApply | facetTarget
 
 conceptReference : doc? HAS identifierReference IDENTIFIER?;
 facetApply : IS metaidentifier parameters? (WITH metaidentifier)?;
-facetTarget : ON identifierReference (IF identifierReference)? body?;
+facetTarget : ON identifierReference ALWAYS? body?;
 
 attribute : doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
-	| dateAttribute |coordinateAttribute | refAttribute | resource | reference | word) annotations?;
+	| dateAttribute |coordinateAttribute | portAttribute | resource | reference | word) annotations?;
 
 resource         : RESOURCE attributeType IDENTIFIER;
 word             : WORD IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
@@ -58,7 +57,7 @@ integerAttribute : INT_TYPE     attributeType? LIST? IDENTIFIER (EQUALS integerV
 doubleAttribute  : DOUBLE_TYPE  attributeType? LIST? IDENTIFIER (EQUALS doubleValue  measure?| EMPTY)?;
 dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (EQUALS dateValue | EMPTY)?;
 coordinateAttribute  : COORDINATE_TYPE  LIST? IDENTIFIER (EQUALS (coordinateValue | EMPTY))?;
-refAttribute         : REFERENCE_TYPE   LIST?  IDENTIFIER (EQUALS (codeValue | EMPTY))?;
+portAttribute    : PORT_TYPE   LIST?  IDENTIFIER (EQUALS (codeValue | EMPTY))?;
 
 attributeType   : COLON IDENTIFIER;
 naturalValue    : NATURAL_VALUE;
@@ -72,9 +71,9 @@ coordinateValue : COORDINATE_VALUE;
 
 measure : IDENTIFIER | DOLLAR | EURO | PERCENTAGE | GRADE;
 
-annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | ROOT | PROPERTY)+ ;
+annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | FACET | INTENTION | COMPONENT | PROPERTY)+ ;
 
-varInit : IDENTIFIER EQUALS ( EMPTY
+varInit : IDENTIFIER EQUALS (EMPTY
 				        | identifierReference+
 				        | stringValue+
                         | booleanValue+

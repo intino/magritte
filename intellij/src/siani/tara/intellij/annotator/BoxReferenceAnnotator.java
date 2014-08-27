@@ -15,11 +15,11 @@ public class BoxReferenceAnnotator extends TaraAnnotator {
 		this.holder = holder;
 		if (element instanceof TaraHeaderReference && element.getParent() instanceof TaraBox)
 			isWellPlaced((TaraHeaderReference) element);
-		else if (element instanceof TaraFile)
-			checkBoxExistence((TaraFile) element);
+		else if (element instanceof TaraBoxFile)
+			checkBoxExistence((TaraBoxFile) element);
 	}
 
-	private void checkBoxExistence(TaraFile file) {
+	private void checkBoxExistence(TaraBoxFile file) {
 		if (file.getBoxReference() == null)
 			holder.createErrorAnnotation(file.getNode(), TaraBundle.message("box.reference.error.message"));
 	}

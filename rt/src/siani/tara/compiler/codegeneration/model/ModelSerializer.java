@@ -20,7 +20,7 @@ public class ModelSerializer {
 		boolean save = ModelSaver.save(model, conf.getModelsDirectory());
 		if (!save) throw new TaraException("Error sav¡ng model.");
 		try {
-			new File(conf.getModelsDirectory(), model.getModelName() + ".model_reload").createNewFile();
+			new File(conf.getModelsDirectory(), model.getModelName() + ".reload").createNewFile();
 		} catch (IOException e) {
 			throw new TaraException("Error sav¡ng model.");
 		}

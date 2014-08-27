@@ -19,7 +19,7 @@ import com.intellij.refactoring.listeners.RefactoringElementAdapter;
 import com.intellij.refactoring.listeners.RefactoringElementListener;
 import com.intellij.util.PathUtil;
 import com.intellij.util.containers.hash.LinkedHashMap;
-import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -98,7 +98,7 @@ public class RunConfiguration extends ModuleBasedConfiguration<RunConfigurationM
 	public RefactoringElementListener getRefactoringElementListener(PsiElement element) {
 		final PsiClass classToRun = RunnerUtil.getRunningClass(element);
 
-		if (element instanceof TaraFileImpl) {
+		if (element instanceof TaraBoxFileImpl) {
 			return new RefactoringElementAdapter() {
 				@Override
 				protected void elementRenamedOrMoved(@NotNull PsiElement newElement) {

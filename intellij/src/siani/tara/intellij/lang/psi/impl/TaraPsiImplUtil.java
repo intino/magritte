@@ -70,7 +70,7 @@ public class TaraPsiImplUtil {
 
 	private static List<Concept> collectInnerCases(Concept concept) {
 		List<Concept> cases = new ArrayList();
-		for (Concept caseConcept : concept.getCases()) {
+		for (Concept caseConcept : concept.getSubConcepts()) {
 			cases.add(caseConcept);
 			cases.addAll(collectInnerCases((caseConcept)));
 		}
@@ -81,7 +81,7 @@ public class TaraPsiImplUtil {
 	public static Concept getContextOf(PsiElement element) {
 		try {
 			PsiElement aElement = element;
-			while ((aElement.getParent() != null) && !(aElement.getParent() instanceof TaraFile) && !(aElement.getParent() instanceof Concept))
+			while ((aElement.getParent() != null) && !(aElement.getParent() instanceof TaraBoxFile) && !(aElement.getParent() instanceof Concept))
 				aElement = aElement.getParent();
 			return (aElement.getParent() instanceof Concept) ? (Concept) aElement.getParent() : null;
 		} catch (NullPointerException e) {
@@ -91,9 +91,9 @@ public class TaraPsiImplUtil {
 	}
 
 	public static Concept getParentOf(Concept concept) {
-		if (concept.isCase()) {
+		if (concept.isSub()) {
 			Concept parent = concept;
-			while (parent != null && parent.isCase()) parent = getContextOf(parent);
+			while (parent != null && parent.isSub()) parent = getContextOf(parent);
 			return parent;
 		} else {
 			if (concept.getParentConcept() != null) {

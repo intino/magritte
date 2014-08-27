@@ -15,7 +15,7 @@ import com.intellij.util.IncorrectOperationException;
 import siani.tara.intellij.codeinsight.imports.TaraImportOptimizer;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.HeaderReference;
-import siani.tara.intellij.lang.psi.TaraFile;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.refactoring.TaraRefactoringUtil;
 
@@ -42,8 +42,8 @@ public class TaraFileMoveHandler extends MoveFileHandler {
 			Project project = moveDestination.getProject();
 			Module moduleForFile = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(moveDestination.getVirtualFile());
 			String path = moveDestination.getVirtualFile().getPath().replace(rootPath, "").replaceAll(File.separator, ".").substring(1);
-			TaraFile taraFile = (TaraFile) file;
-			taraFile.setBox(project.getName() + "." + moduleForFile.getName() + "." + path + "." + taraFile.getPresentableName());
+			TaraBoxFile taraBoxFile = (TaraBoxFile) file;
+			taraBoxFile.setBox(project.getName() + "." + moduleForFile.getName() + "." + path + "." + taraBoxFile.getPresentableName());
 		}
 	}
 
@@ -70,13 +70,13 @@ public class TaraFileMoveHandler extends MoveFileHandler {
 				reference.putCopyableUserData(REFERENCED_ELEMENT, null);
 				if (newElement != null) {
 					updatedFiles.add((PsiFile) newElement);
-					final TaraFile file = (TaraFile) reference.getContainingFile();
+					final TaraBoxFile file = (TaraBoxFile) reference.getContainingFile();
 					if (!(reference.getParent() instanceof HeaderReference) && inTheSamePackageAsReference(reference, usages)) {
 						updatedFiles.add(file);
-						TaraRefactoringUtil.addImport(file, (TaraFile) newElement);
+						TaraRefactoringUtil.addImport(file, (TaraBoxFile) newElement);
 					} else if (reference.getParent() instanceof HeaderReference) {
 						updatedFiles.add(file);
-						TaraRefactoringUtil.updateImportOfElement((HeaderReference) reference.getParent(), (TaraFile) newElement);
+						TaraRefactoringUtil.updateImportOfElement((HeaderReference) reference.getParent(), (TaraBoxFile) newElement);
 					}
 				}
 			}
@@ -90,7 +90,7 @@ public class TaraFileMoveHandler extends MoveFileHandler {
 
 	@Override
 	public void updateMovedFile(PsiFile psiFile) throws IncorrectOperationException {
-		TaraFile file = (TaraFile) psiFile;
+		TaraBoxFile file = (TaraBoxFile) psiFile;
 
 	}
 

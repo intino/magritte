@@ -7,8 +7,8 @@ import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.lang.IntentionNode;
 import siani.tara.lang.Model;
+import siani.tara.lang.ModelObject;
 import siani.tara.lang.Node;
 
 public class FacetAnnotator extends TaraAnnotator {
@@ -16,29 +16,30 @@ public class FacetAnnotator extends TaraAnnotator {
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
-		if (!(element instanceof Concept)) return;
-		Concept concept = (((Concept) element).isCase()) ? searchParent((Concept) element) : (Concept) element;
+		if (!Concept.class.isInstance(element)) return;
+		Concept conceptElement = (Concept) element;
+		Concept concept = conceptElement.isSub() ? searchParent(conceptElement) : conceptElement;
 		if (concept== null) return;
 		Model model = TaraLanguage.getMetaModel(concept.getFile());
 		if (model == null) return;
 		Node node = findNode(concept, model);
-		if (node == null || !node.is(IntentionNode.class)) return;
+		if (node == null || !node.getObject().is(ModelObject.AnnotationType.INTENTION)) return;
 		if (((Concept) element).getConceptLinks().length > 0)
 			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("facet.with.children.error.message"));
 		Concept[] conceptChildren = ((Concept) element).getConceptChildren();
-		if (conceptChildren.length > 0 && !allAreCases(conceptChildren))
+		if (conceptChildren.length > 0 && !allAreSub(conceptChildren))
 			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("facet.with.children.error.message"));
 	}
 
-	private boolean allAreCases(Concept[] conceptChildren) {
-		for (Concept conceptChild : conceptChildren) if (!conceptChild.isCase()) return false;
+	private boolean allAreSub(Concept[] conceptChildren) {
+		for (Concept conceptChild : conceptChildren) if (!conceptChild.isSub()) return false;
 		return true;
 	}
 
 	private Concept searchParent(Concept concept) {
 		Concept aConcept = concept;
-		while (aConcept != null && aConcept.isCase())
-			aConcept = TaraPsiImplUtil.getContextOf(concept);
+		while (aConcept != null && aConcept.isSub())
+			aConcept = TaraPsiImplUtil.getContextOf(aConcept);
 		return aConcept;
 	}
 }

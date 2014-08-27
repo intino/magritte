@@ -1,34 +1,22 @@
 package siani.tara.intellij;
 
-import com.intellij.navigation.NavigationItem;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import siani.tara.intellij.codeinsight.JavaHelper;
-import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 
 public class VariantsManager {
 
-	private final List<PsiElement> variants;
+	private final Collection<Concept> variants;
 	private final PsiElement myElement;
-	private final Project project;
 	private final List<Identifier> context;
 
-	public VariantsManager(List<PsiElement> variants, PsiElement myElement) {
+	public VariantsManager(Collection<Concept> variants, PsiElement myElement) {
 		this.variants = variants;
 		this.myElement = myElement;
-		this.project = myElement.getProject();
 		this.context = solveIdentifierContext();
 	}
 
@@ -36,7 +24,6 @@ public class VariantsManager {
 		addContextVariants();
 		addInBoxVariants();
 		addImportVariants();
-		addPackageVariants();
 	}
 
 	private void addContextVariants() {
@@ -46,99 +33,38 @@ public class VariantsManager {
 			resolvePathFor(concept, context);
 	}
 
-	private List<PsiElement> addInBoxVariants() {
-		List<PsiElement> variants = new ArrayList<>();
-		List<? extends Identifier> boxPath = ((TaraFile) myElement.getContainingFile()).getBoxPath();
-		TaraFile packageFile = (TaraFile) ReferenceManager.resolve(boxPath.get(boxPath.size() - 1), false);
-		if (packageFile == null) return Collections.EMPTY_LIST;
-//
-//		PsiDirectory[] directories = packageFile.getDirectories();
-//		for (PsiDirectory directory : directories)
-//			searchInPackage(directory);
-		return variants;
-	}
-
-	private void searchInPackage(PsiDirectory directory) {
-		for (VirtualFile vFile : directory.getVirtualFile().getChildren()) {
-			TaraFile file = TaraUtil.getTaraFileFromVirtual(project, vFile);
-			if (file == null) continue;
-
-//			if (file.getConcept() != null)
-//				resolvePathFor(file.getConcept(), context);
+	private void addInBoxVariants() {
+		List<? extends Identifier> boxPath = ((TaraBoxFile) myElement.getContainingFile()).getBoxPath();
+		TaraBoxFile box = (TaraBoxFile) ReferenceManager.resolve(boxPath.get(boxPath.size() - 1), false);
+		if (box == null) return;
+		for (Concept concept : box.getConcepts()) {
+			if (concept.equals(TaraPsiImplUtil.getContextOf(myElement))) continue;
+			resolvePathFor(concept, context);
 		}
 	}
 
-	private List<PsiElement> addImportVariants() {
-		List<PsiElement> variants = new ArrayList<>();
-		Import[] imports = ((TaraFile) myElement.getContainingFile()).getImports();
-		if (imports == null) return variants;
+	private void addImportVariants() {
+		Import[] imports = ((TaraBoxFile) myElement.getContainingFile()).getImports();
+		if (imports == null) return;
 		for (Import anImport : imports) {
 			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
 			PsiElement resolve = ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1), false);
-			if (resolve == null) continue;
-//			Concept concept = (resolve instanceof Identifier) ? TaraPsiImplUtil.getContextOf(resolve) : (Concept) resolve;
-//			resolvePathFor(concept, context);
+			if (resolve == null || !TaraBoxFile.class.isInstance(resolve)) continue;
+			for (Concept concept : ((TaraBoxFile) resolve).getConcepts()) {
+				if (concept.equals(TaraPsiImplUtil.getContextOf(myElement))) continue;
+				resolvePathFor(concept, context);
+			}
 		}
-		return variants;
-	}
-
-	private void addPackageVariants() {
-		VirtualFile virtualFile = myElement.getContainingFile().getOriginalFile().getVirtualFile();
-		VirtualFile contentRoot = ProjectFileIndex.SERVICE.getInstance(project).getSourceRootForFile(virtualFile);
-		if (contentRoot == null) return;
-		if (isChildrenResolution()) resolveRelativePackageReference(contentRoot);
-		else resolveAbsolutePackageReference(contentRoot);
 	}
 
 	private void resolvePathFor(Concept concept, List<Identifier> path) {
 		List<Concept> childrenOf = TaraPsiImplUtil.getChildrenOf(concept);
+		if (concept == null || concept.getType() == null) return;
 		if (path.isEmpty()) {
-			if (!concept.isCase())
-				variants.add(concept);
+			variants.add(concept);
 		} else if (path.get(0).getText().equals(concept.getName()))
 			for (Concept child : childrenOf)
 				resolvePathFor(child, path.subList(1, path.size()));
-	}
-
-	private void resolveAbsolutePackageReference(VirtualFile contentRoot) {
-		for (VirtualFile file : contentRoot.getChildren()) {
-			NavigationItem psi = JavaHelper.getJavaHelper(project).findPackage(file.getName());
-			if (file.isDirectory() && psi != null) variants.add((PsiElement) psi);
-		}
-	}
-
-	private void resolveRelativePackageReference(VirtualFile contentRoot) {
-		List<Identifier> objects = getIdentifiers();
-		VirtualFile parent = contentRoot.findFileByRelativePath(ReferenceManager.join(objects.subList(0, objects.size() - 1), '/'));
-		if (parent == null) return;
-		for (VirtualFile file : parent.getChildren()) {
-			String relativePath = getRelativePath(contentRoot, file);
-			NavigationItem aPackage = JavaHelper.getJavaHelper(project).findPackage(relativePath);
-			if (aPackage != null) variants.add((PsiElement) aPackage);
-			else addPossibleConceptOfPackage(file);
-		}
-	}
-
-	private void addPossibleConceptOfPackage(VirtualFile file) {
-		if (TaraFileType.INSTANCE.getDefaultExtension().equals(file.getExtension())) {
-			TaraFile taraFile = (TaraFile) PsiManager.getInstance(project).findFile(file);
-//			if (taraFile != null) variants.add(taraFile.getConcept());
-		}
-	}
-
-	private String getRelativePath(VirtualFile contentRoot, VirtualFile file) {
-		return file.getPath().replace(contentRoot.getPath(), "").replaceAll("/", ".").substring(1);
-	}
-
-	private List<Identifier> getIdentifiers() {
-		List<Identifier> objects = new ArrayList<>();
-		for (PsiElement element : myElement.getParent().getChildren())
-			if (element instanceof Identifier) objects.add((Identifier) element);
-		return objects;
-	}
-
-	public boolean isChildrenResolution() {
-		return (myElement.getPrevSibling() != null) && myElement.getPrevSibling().getPrevSibling() instanceof Identifier;
 	}
 
 	public List<Identifier> solveIdentifierContext() {

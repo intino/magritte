@@ -4,7 +4,7 @@ import com.intellij.openapi.util.Iconable;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
-import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +12,7 @@ import javax.swing.*;
 
 public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
-	TaraFileImpl getFile() throws PsiInvalidElementAccessException;
+	TaraBoxFileImpl getFile() throws PsiInvalidElementAccessException;
 
 	@Nullable
 	String getDocCommentText();
@@ -30,9 +30,9 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 	@NotNull
 	Signature getSignature();
 
-	boolean isCase();
+	boolean isSub();
 
-	Concept[] getCases();
+	Concept[] getSubConcepts();
 
 	boolean isIntention();
 
@@ -66,5 +66,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	String toString();
 
+	boolean equals(Object obj);
+
+	public int hashCode();
 }
 

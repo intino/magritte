@@ -144,7 +144,7 @@ public class TaraParser implements PsiParser {
   public static boolean anImport(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "anImport")) return false;
     if (!nextTokenIs(builder_, NEWLINE)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = anImport_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, USE_KEY);
@@ -157,7 +157,7 @@ public class TaraParser implements PsiParser {
   // NEWLINE+
   private static boolean anImport_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "anImport_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, NEWLINE);
     int pos_ = current_position_(builder_);
@@ -180,7 +180,7 @@ public class TaraParser implements PsiParser {
   // AS METAMODEL
   private static boolean anImport_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "anImport_3_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokens(builder_, 0, AS, METAMODEL);
     exit_section_(builder_, marker_, null, result_);
@@ -188,10 +188,10 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | ROOT | PROPERTY)+
+  // (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | COMPONENT | FACET | INTENTION | PROPERTY)+
   public static boolean annotations(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "annotations")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<annotations>");
     result_ = annotations_0(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -204,17 +204,19 @@ public class TaraParser implements PsiParser {
     return result_;
   }
 
-  // PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | ROOT | PROPERTY
+  // PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | COMPONENT | FACET | INTENTION | PROPERTY
   private static boolean annotations_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "annotations_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, PRIVATE);
     if (!result_) result_ = consumeToken(builder_, TERMINAL);
     if (!result_) result_ = consumeToken(builder_, SINGLE);
     if (!result_) result_ = consumeToken(builder_, REQUIRED);
     if (!result_) result_ = consumeToken(builder_, NAMED);
-    if (!result_) result_ = consumeToken(builder_, ROOT);
+    if (!result_) result_ = consumeToken(builder_, COMPONENT);
+    if (!result_) result_ = consumeToken(builder_, FACET);
+    if (!result_) result_ = consumeToken(builder_, INTENTION);
     if (!result_) result_ = consumeToken(builder_, PROPERTY);
     exit_section_(builder_, marker_, null, result_);
     return result_;
@@ -225,8 +227,8 @@ public class TaraParser implements PsiParser {
   public static boolean annotationsAndFacets(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "annotationsAndFacets")) return false;
     if (!nextTokenIs(builder_, IS)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, IS);
     pinned_ = result_; // pin = 1
@@ -238,7 +240,7 @@ public class TaraParser implements PsiParser {
   // annotations+ | facetApply
   private static boolean annotationsAndFacets_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "annotationsAndFacets_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = annotationsAndFacets_1_0(builder_, level_ + 1);
     if (!result_) result_ = facetApply(builder_, level_ + 1);
@@ -249,7 +251,7 @@ public class TaraParser implements PsiParser {
   // annotations+
   private static boolean annotationsAndFacets_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "annotationsAndFacets_1_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = annotations(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -268,8 +270,8 @@ public class TaraParser implements PsiParser {
   public static boolean attribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute")) return false;
     if (!nextTokenIs(builder_, "<attribute>", DOC_LINE, VAR)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<attribute>");
     result_ = attribute_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, VAR);
@@ -291,7 +293,7 @@ public class TaraParser implements PsiParser {
   // 			dateAttribute | coordinateAttribute | resource | referenceAttribute | word
   private static boolean attribute_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attribute_2")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = refAttribute(builder_, level_ + 1);
     if (!result_) result_ = naturalAttribute(builder_, level_ + 1);
@@ -320,7 +322,7 @@ public class TaraParser implements PsiParser {
   public static boolean attributeType(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attributeType")) return false;
     if (!nextTokenIs(builder_, COLON)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokens(builder_, 0, COLON, IDENTIFIER_KEY);
     exit_section_(builder_, marker_, ATTRIBUTE_TYPE, result_);
@@ -332,8 +334,8 @@ public class TaraParser implements PsiParser {
   public static boolean body(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "body")) return false;
     if (!nextTokenIs(builder_, NEW_LINE_INDENT)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, NEW_LINE_INDENT);
     result_ = result_ && body_1(builder_, level_ + 1);
@@ -346,7 +348,7 @@ public class TaraParser implements PsiParser {
   // (conceptConstituents NEWLINE+)+
   private static boolean body_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "body_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = body_1_0(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -362,7 +364,7 @@ public class TaraParser implements PsiParser {
   // conceptConstituents NEWLINE+
   private static boolean body_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "body_1_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = conceptConstituents(builder_, level_ + 1);
     result_ = result_ && body_1_0_1(builder_, level_ + 1);
@@ -373,7 +375,7 @@ public class TaraParser implements PsiParser {
   // NEWLINE+
   private static boolean body_1_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "body_1_0_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, NEWLINE);
     int pos_ = current_position_(builder_);
@@ -391,8 +393,8 @@ public class TaraParser implements PsiParser {
   static boolean booleanAttribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "booleanAttribute")) return false;
     if (!nextTokenIs(builder_, BOOLEAN_TYPE)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, BOOLEAN_TYPE);
     pinned_ = result_; // pin = 1
@@ -420,7 +422,7 @@ public class TaraParser implements PsiParser {
   // EQUALS (booleanValue | emptyField)
   private static boolean booleanAttribute_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "booleanAttribute_3_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EQUALS);
     result_ = result_ && booleanAttribute_3_0_1(builder_, level_ + 1);
@@ -431,7 +433,7 @@ public class TaraParser implements PsiParser {
   // booleanValue | emptyField
   private static boolean booleanAttribute_3_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "booleanAttribute_3_0_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = booleanValue(builder_, level_ + 1);
     if (!result_) result_ = emptyField(builder_, level_ + 1);
@@ -444,7 +446,7 @@ public class TaraParser implements PsiParser {
   public static boolean booleanValue(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "booleanValue")) return false;
     if (!nextTokenIs(builder_, BOOLEAN_VALUE_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, BOOLEAN_VALUE_KEY);
     exit_section_(builder_, marker_, BOOLEAN_VALUE, result_);
@@ -456,7 +458,7 @@ public class TaraParser implements PsiParser {
   public static boolean box(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "box")) return false;
     if (!nextTokenIs(builder_, BOX_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, BOX_KEY);
     result_ = result_ && headerReference(builder_, level_ + 1);
@@ -469,7 +471,7 @@ public class TaraParser implements PsiParser {
   public static boolean codeValue(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "codeValue")) return false;
     if (!nextTokenIs(builder_, CODE_VALUE_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, CODE_VALUE_KEY);
     exit_section_(builder_, marker_, CODE_VALUE, result_);
@@ -480,8 +482,8 @@ public class TaraParser implements PsiParser {
   // doc? signature annotationsAndFacets? body?
   public static boolean concept(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "concept")) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<concept>");
     result_ = concept_0(builder_, level_ + 1);
     result_ = result_ && signature(builder_, level_ + 1);
@@ -517,7 +519,7 @@ public class TaraParser implements PsiParser {
   // attribute | concept | varInit | annotationsAndFacets | facetTarget | conceptReference
   static boolean conceptConstituents(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "conceptConstituents")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = attribute(builder_, level_ + 1);
     if (!result_) result_ = concept(builder_, level_ + 1);
@@ -534,7 +536,7 @@ public class TaraParser implements PsiParser {
   public static boolean conceptReference(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "conceptReference")) return false;
     if (!nextTokenIs(builder_, "<concept reference>", DOC_LINE, HAS)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<concept reference>");
     result_ = conceptReference_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, HAS);
@@ -563,8 +565,8 @@ public class TaraParser implements PsiParser {
   static boolean coordinateAttribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "coordinateAttribute")) return false;
     if (!nextTokenIs(builder_, COORDINATE_TYPE)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, COORDINATE_TYPE);
     pinned_ = result_; // pin = 1
@@ -592,7 +594,7 @@ public class TaraParser implements PsiParser {
   // EQUALS (coordinateValue | emptyField)
   private static boolean coordinateAttribute_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "coordinateAttribute_3_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EQUALS);
     result_ = result_ && coordinateAttribute_3_0_1(builder_, level_ + 1);
@@ -603,7 +605,7 @@ public class TaraParser implements PsiParser {
   // coordinateValue | emptyField
   private static boolean coordinateAttribute_3_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "coordinateAttribute_3_0_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = coordinateValue(builder_, level_ + 1);
     if (!result_) result_ = emptyField(builder_, level_ + 1);
@@ -616,7 +618,7 @@ public class TaraParser implements PsiParser {
   public static boolean coordinateValue(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "coordinateValue")) return false;
     if (!nextTokenIs(builder_, COORDINATE_VALUE_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COORDINATE_VALUE_KEY);
     exit_section_(builder_, marker_, COORDINATE_VALUE, result_);
@@ -628,8 +630,8 @@ public class TaraParser implements PsiParser {
   static boolean dateAttribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "dateAttribute")) return false;
     if (!nextTokenIs(builder_, DATE_TYPE)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, DATE_TYPE);
     pinned_ = result_; // pin = 1
@@ -657,7 +659,7 @@ public class TaraParser implements PsiParser {
   // EQUALS (dateValue | emptyField)
   private static boolean dateAttribute_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "dateAttribute_3_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EQUALS);
     result_ = result_ && dateAttribute_3_0_1(builder_, level_ + 1);
@@ -668,7 +670,7 @@ public class TaraParser implements PsiParser {
   // dateValue | emptyField
   private static boolean dateAttribute_3_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "dateAttribute_3_0_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = dateValue(builder_, level_ + 1);
     if (!result_) result_ = emptyField(builder_, level_ + 1);
@@ -681,7 +683,7 @@ public class TaraParser implements PsiParser {
   public static boolean dateValue(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "dateValue")) return false;
     if (!nextTokenIs(builder_, DATE_VALUE_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DATE_VALUE_KEY);
     exit_section_(builder_, marker_, DATE_VALUE, result_);
@@ -693,7 +695,7 @@ public class TaraParser implements PsiParser {
   public static boolean doc(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "doc")) return false;
     if (!nextTokenIs(builder_, DOC_LINE)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DOC_LINE);
     int pos_ = current_position_(builder_);
@@ -711,8 +713,8 @@ public class TaraParser implements PsiParser {
   static boolean doubleAttribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "doubleAttribute")) return false;
     if (!nextTokenIs(builder_, DOUBLE_TYPE)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, DOUBLE_TYPE);
     pinned_ = result_; // pin = 1
@@ -748,7 +750,7 @@ public class TaraParser implements PsiParser {
   // EQUALS (doubleValue  measure? | emptyField)
   private static boolean doubleAttribute_4_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "doubleAttribute_4_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EQUALS);
     result_ = result_ && doubleAttribute_4_0_1(builder_, level_ + 1);
@@ -759,7 +761,7 @@ public class TaraParser implements PsiParser {
   // doubleValue  measure? | emptyField
   private static boolean doubleAttribute_4_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "doubleAttribute_4_0_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = doubleAttribute_4_0_1_0(builder_, level_ + 1);
     if (!result_) result_ = emptyField(builder_, level_ + 1);
@@ -770,7 +772,7 @@ public class TaraParser implements PsiParser {
   // doubleValue  measure?
   private static boolean doubleAttribute_4_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "doubleAttribute_4_0_1_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = doubleValue(builder_, level_ + 1);
     result_ = result_ && doubleAttribute_4_0_1_0_1(builder_, level_ + 1);
@@ -789,7 +791,7 @@ public class TaraParser implements PsiParser {
   // NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
   public static boolean doubleValue(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "doubleValue")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<double value>");
     result_ = consumeToken(builder_, NATURAL_VALUE_KEY);
     if (!result_) result_ = consumeToken(builder_, NEGATIVE_VALUE_KEY);
@@ -809,7 +811,7 @@ public class TaraParser implements PsiParser {
   public static boolean emptyField(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "emptyField")) return false;
     if (!nextTokenIs(builder_, EMPTY_REF)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EMPTY_REF);
     exit_section_(builder_, marker_, EMPTY_FIELD, result_);
@@ -821,8 +823,8 @@ public class TaraParser implements PsiParser {
   public static boolean explicitParameter(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "explicitParameter")) return false;
     if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = identifier(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, EQUALS);
@@ -837,7 +839,7 @@ public class TaraParser implements PsiParser {
   static boolean explicitParameters(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "explicitParameters")) return false;
     if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = explicitParameter(builder_, level_ + 1);
     result_ = result_ && explicitParameters_1(builder_, level_ + 1);
@@ -860,7 +862,7 @@ public class TaraParser implements PsiParser {
   // COMMA explicitParameter
   private static boolean explicitParameters_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "explicitParameters_1_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COMMA);
     result_ = result_ && explicitParameter(builder_, level_ + 1);
@@ -872,8 +874,9 @@ public class TaraParser implements PsiParser {
   // metaIdentifier parameters? (WITH metaIdentifier)?
   public static boolean facetApply(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "facetApply")) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    if (!nextTokenIs(builder_, "<facet apply>", IDENTIFIER_KEY, METAIDENTIFIER_KEY)) return false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<facet apply>");
     result_ = metaIdentifier(builder_, level_ + 1);
     result_ = result_ && facetApply_1(builder_, level_ + 1);
@@ -900,7 +903,7 @@ public class TaraParser implements PsiParser {
   // WITH metaIdentifier
   private static boolean facetApply_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "facetApply_2_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, WITH);
     result_ = result_ && metaIdentifier(builder_, level_ + 1);
@@ -909,12 +912,12 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ON identifierReference (IF identifierReference)? body?
+  // ON identifierReference ALWAYS? body?
   public static boolean facetTarget(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "facetTarget")) return false;
     if (!nextTokenIs(builder_, ON)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, ON);
     pinned_ = result_; // pin = 1
@@ -925,22 +928,11 @@ public class TaraParser implements PsiParser {
     return result_ || pinned_;
   }
 
-  // (IF identifierReference)?
+  // ALWAYS?
   private static boolean facetTarget_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "facetTarget_2")) return false;
-    facetTarget_2_0(builder_, level_ + 1);
+    consumeToken(builder_, ALWAYS);
     return true;
-  }
-
-  // IF identifierReference
-  private static boolean facetTarget_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "facetTarget_2_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, IF);
-    result_ = result_ && identifierReference(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
   }
 
   // body?
@@ -954,7 +946,7 @@ public class TaraParser implements PsiParser {
   // box?  imports?
   public static boolean header(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "header")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<header>");
     result_ = header_0(builder_, level_ + 1);
     result_ = result_ && header_1(builder_, level_ + 1);
@@ -981,7 +973,7 @@ public class TaraParser implements PsiParser {
   public static boolean headerReference(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "headerReference")) return false;
     if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = headerReference_0(builder_, level_ + 1);
     result_ = result_ && identifier(builder_, level_ + 1);
@@ -1006,7 +998,7 @@ public class TaraParser implements PsiParser {
   static boolean hierarchy(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "hierarchy")) return false;
     if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = identifier(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, DOT);
@@ -1019,7 +1011,7 @@ public class TaraParser implements PsiParser {
   public static boolean identifier(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "identifier")) return false;
     if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, IDENTIFIER_KEY);
     exit_section_(builder_, marker_, IDENTIFIER, result_);
@@ -1031,7 +1023,7 @@ public class TaraParser implements PsiParser {
   public static boolean identifierReference(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "identifierReference")) return false;
     if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = identifierReference_0(builder_, level_ + 1);
     result_ = result_ && identifier(builder_, level_ + 1);
@@ -1055,7 +1047,7 @@ public class TaraParser implements PsiParser {
   // parameterValue
   public static boolean implicitParameter(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "implicitParameter")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<implicit parameter>");
     result_ = parameterValue(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, IMPLICIT_PARAMETER, result_, false, null);
@@ -1066,8 +1058,8 @@ public class TaraParser implements PsiParser {
   // implicitParameter (COMMA implicitParameter)*
   static boolean implicitParameters(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "implicitParameters")) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = implicitParameter(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -1091,7 +1083,7 @@ public class TaraParser implements PsiParser {
   // COMMA implicitParameter
   private static boolean implicitParameters_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "implicitParameters_1_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COMMA);
     result_ = result_ && implicitParameter(builder_, level_ + 1);
@@ -1104,7 +1096,7 @@ public class TaraParser implements PsiParser {
   static boolean imports(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "imports")) return false;
     if (!nextTokenIs(builder_, NEWLINE)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = anImport(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -1122,8 +1114,8 @@ public class TaraParser implements PsiParser {
   static boolean integerAttribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "integerAttribute")) return false;
     if (!nextTokenIs(builder_, INT_TYPE)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, INT_TYPE);
     pinned_ = result_; // pin = 1
@@ -1159,7 +1151,7 @@ public class TaraParser implements PsiParser {
   // EQUALS (integerValue measure? | emptyField)
   private static boolean integerAttribute_4_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "integerAttribute_4_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EQUALS);
     result_ = result_ && integerAttribute_4_0_1(builder_, level_ + 1);
@@ -1170,7 +1162,7 @@ public class TaraParser implements PsiParser {
   // integerValue measure? | emptyField
   private static boolean integerAttribute_4_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "integerAttribute_4_0_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = integerAttribute_4_0_1_0(builder_, level_ + 1);
     if (!result_) result_ = emptyField(builder_, level_ + 1);
@@ -1181,7 +1173,7 @@ public class TaraParser implements PsiParser {
   // integerValue measure?
   private static boolean integerAttribute_4_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "integerAttribute_4_0_1_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = integerValue(builder_, level_ + 1);
     result_ = result_ && integerAttribute_4_0_1_0_1(builder_, level_ + 1);
@@ -1201,7 +1193,7 @@ public class TaraParser implements PsiParser {
   public static boolean integerValue(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "integerValue")) return false;
     if (!nextTokenIs(builder_, "<integer value>", NATURAL_VALUE_KEY, NEGATIVE_VALUE_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<integer value>");
     result_ = consumeToken(builder_, NATURAL_VALUE_KEY);
     if (!result_) result_ = consumeToken(builder_, NEGATIVE_VALUE_KEY);
@@ -1213,7 +1205,7 @@ public class TaraParser implements PsiParser {
   // IDENTIFIER_KEY | DOLLAR | EURO | PERCENTAGE | GRADE
   public static boolean measure(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "measure")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<measure>");
     result_ = consumeToken(builder_, IDENTIFIER_KEY);
     if (!result_) result_ = consumeToken(builder_, DOLLAR);
@@ -1225,14 +1217,14 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // METAIDENTIFIER_KEY | IDENTIFIER_KEY | INTENTION_KEY
+  // METAIDENTIFIER_KEY | IDENTIFIER_KEY
   public static boolean metaIdentifier(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "metaIdentifier")) return false;
-    boolean result_ = false;
+    if (!nextTokenIs(builder_, "<meta identifier>", IDENTIFIER_KEY, METAIDENTIFIER_KEY)) return false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<meta identifier>");
     result_ = consumeToken(builder_, METAIDENTIFIER_KEY);
     if (!result_) result_ = consumeToken(builder_, IDENTIFIER_KEY);
-    if (!result_) result_ = consumeToken(builder_, INTENTION_KEY);
     exit_section_(builder_, level_, marker_, META_IDENTIFIER, result_, false, null);
     return result_;
   }
@@ -1241,8 +1233,9 @@ public class TaraParser implements PsiParser {
   // metaIdentifier metaWordNames*
   public static boolean metaWord(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "metaWord")) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    if (!nextTokenIs(builder_, "<meta word>", IDENTIFIER_KEY, METAIDENTIFIER_KEY)) return false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<meta word>");
     result_ = metaIdentifier(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -1268,8 +1261,8 @@ public class TaraParser implements PsiParser {
   static boolean metaWordNames(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "metaWordNames")) return false;
     if (!nextTokenIs(builder_, DOT)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, DOT);
     pinned_ = result_; // pin = 1
@@ -1283,8 +1276,8 @@ public class TaraParser implements PsiParser {
   static boolean naturalAttribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "naturalAttribute")) return false;
     if (!nextTokenIs(builder_, NATURAL_TYPE)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, NATURAL_TYPE);
     pinned_ = result_; // pin = 1
@@ -1320,7 +1313,7 @@ public class TaraParser implements PsiParser {
   // EQUALS (naturalValue measure? | emptyField)
   private static boolean naturalAttribute_4_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "naturalAttribute_4_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EQUALS);
     result_ = result_ && naturalAttribute_4_0_1(builder_, level_ + 1);
@@ -1331,7 +1324,7 @@ public class TaraParser implements PsiParser {
   // naturalValue measure? | emptyField
   private static boolean naturalAttribute_4_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "naturalAttribute_4_0_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = naturalAttribute_4_0_1_0(builder_, level_ + 1);
     if (!result_) result_ = emptyField(builder_, level_ + 1);
@@ -1342,7 +1335,7 @@ public class TaraParser implements PsiParser {
   // naturalValue measure?
   private static boolean naturalAttribute_4_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "naturalAttribute_4_0_1_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = naturalValue(builder_, level_ + 1);
     result_ = result_ && naturalAttribute_4_0_1_0_1(builder_, level_ + 1);
@@ -1362,7 +1355,7 @@ public class TaraParser implements PsiParser {
   public static boolean naturalValue(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "naturalValue")) return false;
     if (!nextTokenIs(builder_, NATURAL_VALUE_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, NATURAL_VALUE_KEY);
     exit_section_(builder_, marker_, NATURAL_VALUE, result_);
@@ -1383,7 +1376,7 @@ public class TaraParser implements PsiParser {
   // 		        | empty
   public static boolean parameterValue(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<parameter value>");
     result_ = parameterValue_0(builder_, level_ + 1);
     if (!result_) result_ = parameterValue_1(builder_, level_ + 1);
@@ -1403,7 +1396,7 @@ public class TaraParser implements PsiParser {
   // identifierReference+
   private static boolean parameterValue_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = identifierReference(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -1419,7 +1412,7 @@ public class TaraParser implements PsiParser {
   // stringValue+
   private static boolean parameterValue_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = stringValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -1435,7 +1428,7 @@ public class TaraParser implements PsiParser {
   // booleanValue+
   private static boolean parameterValue_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue_2")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = booleanValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -1451,7 +1444,7 @@ public class TaraParser implements PsiParser {
   // naturalValue+ measure?
   private static boolean parameterValue_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue_3")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = parameterValue_3_0(builder_, level_ + 1);
     result_ = result_ && parameterValue_3_1(builder_, level_ + 1);
@@ -1462,7 +1455,7 @@ public class TaraParser implements PsiParser {
   // naturalValue+
   private static boolean parameterValue_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue_3_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = naturalValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -1485,7 +1478,7 @@ public class TaraParser implements PsiParser {
   // integerValue+ measure?
   private static boolean parameterValue_4(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue_4")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = parameterValue_4_0(builder_, level_ + 1);
     result_ = result_ && parameterValue_4_1(builder_, level_ + 1);
@@ -1496,7 +1489,7 @@ public class TaraParser implements PsiParser {
   // integerValue+
   private static boolean parameterValue_4_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue_4_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = integerValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -1519,7 +1512,7 @@ public class TaraParser implements PsiParser {
   // doubleValue+  measure?
   private static boolean parameterValue_5(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue_5")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = parameterValue_5_0(builder_, level_ + 1);
     result_ = result_ && parameterValue_5_1(builder_, level_ + 1);
@@ -1530,7 +1523,7 @@ public class TaraParser implements PsiParser {
   // doubleValue+
   private static boolean parameterValue_5_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue_5_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = doubleValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -1553,7 +1546,7 @@ public class TaraParser implements PsiParser {
   // dateValue+
   private static boolean parameterValue_6(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue_6")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = dateValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -1569,7 +1562,7 @@ public class TaraParser implements PsiParser {
   // codeValue+
   private static boolean parameterValue_7(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue_7")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = codeValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -1585,7 +1578,7 @@ public class TaraParser implements PsiParser {
   // coordinateValue+
   private static boolean parameterValue_8(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue_8")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = coordinateValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -1603,7 +1596,7 @@ public class TaraParser implements PsiParser {
   public static boolean parameters(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameters")) return false;
     if (!nextTokenIs(builder_, LEFT_PARENTHESIS)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LEFT_PARENTHESIS);
     result_ = result_ && parameters_1(builder_, level_ + 1);
@@ -1622,7 +1615,7 @@ public class TaraParser implements PsiParser {
   // explicitParameters | implicitParameters
   private static boolean parameters_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameters_1_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = explicitParameters(builder_, level_ + 1);
     if (!result_) result_ = implicitParameters(builder_, level_ + 1);
@@ -1631,14 +1624,29 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // REFERENCE_TYPE   LIST?  IDENTIFIER_KEY (EQUALS (codeValue  | emptyField))?
+  // EXTENDS identifierReference
+  static boolean parent(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "parent")) return false;
+    if (!nextTokenIs(builder_, EXTENDS)) return false;
+    boolean result_;
+    boolean pinned_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
+    result_ = consumeToken(builder_, EXTENDS);
+    pinned_ = result_; // pin = 1
+    result_ = result_ && identifierReference(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
+  }
+
+  /* ********************************************************** */
+  // PORT_TYPE        LIST? IDENTIFIER_KEY (EQUALS (codeValue  | emptyField))?
   static boolean refAttribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "refAttribute")) return false;
-    if (!nextTokenIs(builder_, REFERENCE_TYPE)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    if (!nextTokenIs(builder_, PORT_TYPE)) return false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, REFERENCE_TYPE);
+    result_ = consumeToken(builder_, PORT_TYPE);
     pinned_ = result_; // pin = 1
     result_ = result_ && report_error_(builder_, refAttribute_1(builder_, level_ + 1));
     result_ = pinned_ && report_error_(builder_, consumeToken(builder_, IDENTIFIER_KEY)) && result_;
@@ -1664,7 +1672,7 @@ public class TaraParser implements PsiParser {
   // EQUALS (codeValue  | emptyField)
   private static boolean refAttribute_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "refAttribute_3_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EQUALS);
     result_ = result_ && refAttribute_3_0_1(builder_, level_ + 1);
@@ -1675,7 +1683,7 @@ public class TaraParser implements PsiParser {
   // codeValue  | emptyField
   private static boolean refAttribute_3_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "refAttribute_3_0_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = codeValue(builder_, level_ + 1);
     if (!result_) result_ = emptyField(builder_, level_ + 1);
@@ -1688,8 +1696,8 @@ public class TaraParser implements PsiParser {
   static boolean referenceAttribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "referenceAttribute")) return false;
     if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = identifierReference(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -1717,7 +1725,7 @@ public class TaraParser implements PsiParser {
   // EQUALS emptyField
   private static boolean referenceAttribute_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "referenceAttribute_3_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EQUALS);
     result_ = result_ && emptyField(builder_, level_ + 1);
@@ -1730,8 +1738,8 @@ public class TaraParser implements PsiParser {
   static boolean resource(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "resource")) return false;
     if (!nextTokenIs(builder_, RESOURCE_KEY)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, RESOURCE_KEY);
     pinned_ = result_; // pin = 1
@@ -1746,7 +1754,7 @@ public class TaraParser implements PsiParser {
   static boolean root(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "root")) return false;
     if (!nextTokenIs(builder_, "", BOX_KEY, NEWLINE)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = root_0(builder_, level_ + 1);
     result_ = result_ && root_1(builder_, level_ + 1);
@@ -1778,7 +1786,7 @@ public class TaraParser implements PsiParser {
   // NEWLINE+
   private static boolean root_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "root_2")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, NEWLINE);
     int pos_ = current_position_(builder_);
@@ -1806,7 +1814,7 @@ public class TaraParser implements PsiParser {
   // concept  NEWLINE+
   private static boolean root_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "root_3_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = concept(builder_, level_ + 1);
     result_ = result_ && root_3_0_1(builder_, level_ + 1);
@@ -1817,7 +1825,7 @@ public class TaraParser implements PsiParser {
   // NEWLINE+
   private static boolean root_3_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "root_3_0_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, NEWLINE);
     int pos_ = current_position_(builder_);
@@ -1831,61 +1839,70 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ((CASE_KEY identifier)
-  // 			| withHeritage
-  // 			| (metaIdentifier identifier) | metaIdentifier) parameters?
+  // (SUB identifier) | (metaIdentifier parameters? identifier parent?) | (metaIdentifier parameters?)
   public static boolean signature(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "signature")) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<signature>");
     result_ = signature_0(builder_, level_ + 1);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && signature_1(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, SIGNATURE, result_, pinned_, null);
-    return result_ || pinned_;
+    if (!result_) result_ = signature_1(builder_, level_ + 1);
+    if (!result_) result_ = signature_2(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, SIGNATURE, result_, false, null);
+    return result_;
   }
 
-  // (CASE_KEY identifier)
-  // 			| withHeritage
-  // 			| (metaIdentifier identifier) | metaIdentifier
+  // SUB identifier
   private static boolean signature_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "signature_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = signature_0_0(builder_, level_ + 1);
-    if (!result_) result_ = withHeritage(builder_, level_ + 1);
-    if (!result_) result_ = signature_0_2(builder_, level_ + 1);
-    if (!result_) result_ = metaIdentifier(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // CASE_KEY identifier
-  private static boolean signature_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "signature_0_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, CASE_KEY);
+    result_ = consumeToken(builder_, SUB);
     result_ = result_ && identifier(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // metaIdentifier identifier
-  private static boolean signature_0_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "signature_0_2")) return false;
-    boolean result_ = false;
+  // metaIdentifier parameters? identifier parent?
+  private static boolean signature_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "signature_1")) return false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = metaIdentifier(builder_, level_ + 1);
+    result_ = result_ && signature_1_1(builder_, level_ + 1);
     result_ = result_ && identifier(builder_, level_ + 1);
+    result_ = result_ && signature_1_3(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // parameters?
-  private static boolean signature_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "signature_1")) return false;
+  private static boolean signature_1_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "signature_1_1")) return false;
+    parameters(builder_, level_ + 1);
+    return true;
+  }
+
+  // parent?
+  private static boolean signature_1_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "signature_1_3")) return false;
+    parent(builder_, level_ + 1);
+    return true;
+  }
+
+  // metaIdentifier parameters?
+  private static boolean signature_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "signature_2")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = metaIdentifier(builder_, level_ + 1);
+    result_ = result_ && signature_2_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // parameters?
+  private static boolean signature_2_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "signature_2_1")) return false;
     parameters(builder_, level_ + 1);
     return true;
   }
@@ -1895,8 +1912,8 @@ public class TaraParser implements PsiParser {
   static boolean stringAttribute(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stringAttribute")) return false;
     if (!nextTokenIs(builder_, STRING_TYPE)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, STRING_TYPE);
     pinned_ = result_; // pin = 1
@@ -1924,7 +1941,7 @@ public class TaraParser implements PsiParser {
   // EQUALS (stringValue  | emptyField)
   private static boolean stringAttribute_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stringAttribute_3_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EQUALS);
     result_ = result_ && stringAttribute_3_0_1(builder_, level_ + 1);
@@ -1935,7 +1952,7 @@ public class TaraParser implements PsiParser {
   // stringValue  | emptyField
   private static boolean stringAttribute_3_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stringAttribute_3_0_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = stringValue(builder_, level_ + 1);
     if (!result_) result_ = emptyField(builder_, level_ + 1);
@@ -1948,7 +1965,7 @@ public class TaraParser implements PsiParser {
   public static boolean stringValue(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stringValue")) return false;
     if (!nextTokenIs(builder_, "<string value>", STRING_MULTILINE_VALUE_KEY, STRING_VALUE_KEY)) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<string value>");
     result_ = consumeToken(builder_, STRING_VALUE_KEY);
     if (!result_) result_ = consumeToken(builder_, STRING_MULTILINE_VALUE_KEY);
@@ -1970,8 +1987,8 @@ public class TaraParser implements PsiParser {
   public static boolean varInit(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit")) return false;
     if (!nextTokenIs(builder_, IDENTIFIER_KEY)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeTokens(builder_, 2, IDENTIFIER_KEY, EQUALS);
     pinned_ = result_; // pin = 2
@@ -1992,7 +2009,7 @@ public class TaraParser implements PsiParser {
   //                                  | doubleValue+  measure?
   private static boolean varInit_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = emptyField(builder_, level_ + 1);
     if (!result_) result_ = varInit_2_1(builder_, level_ + 1);
@@ -2011,7 +2028,7 @@ public class TaraParser implements PsiParser {
   // identifierReference+
   private static boolean varInit_2_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2_1")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = identifierReference(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -2027,7 +2044,7 @@ public class TaraParser implements PsiParser {
   // stringValue+
   private static boolean varInit_2_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2_2")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = stringValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -2043,7 +2060,7 @@ public class TaraParser implements PsiParser {
   // booleanValue+
   private static boolean varInit_2_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2_3")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = booleanValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -2059,7 +2076,7 @@ public class TaraParser implements PsiParser {
   // dateValue+
   private static boolean varInit_2_4(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2_4")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = dateValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -2075,7 +2092,7 @@ public class TaraParser implements PsiParser {
   // codeValue+
   private static boolean varInit_2_5(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2_5")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = codeValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -2091,7 +2108,7 @@ public class TaraParser implements PsiParser {
   // coordinateValue+
   private static boolean varInit_2_6(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2_6")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = coordinateValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -2107,7 +2124,7 @@ public class TaraParser implements PsiParser {
   // naturalValue+ measure?
   private static boolean varInit_2_7(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2_7")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = varInit_2_7_0(builder_, level_ + 1);
     result_ = result_ && varInit_2_7_1(builder_, level_ + 1);
@@ -2118,7 +2135,7 @@ public class TaraParser implements PsiParser {
   // naturalValue+
   private static boolean varInit_2_7_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2_7_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = naturalValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -2141,7 +2158,7 @@ public class TaraParser implements PsiParser {
   // integerValue+ measure?
   private static boolean varInit_2_8(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2_8")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = varInit_2_8_0(builder_, level_ + 1);
     result_ = result_ && varInit_2_8_1(builder_, level_ + 1);
@@ -2152,7 +2169,7 @@ public class TaraParser implements PsiParser {
   // integerValue+
   private static boolean varInit_2_8_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2_8_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = integerValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -2175,7 +2192,7 @@ public class TaraParser implements PsiParser {
   // doubleValue+  measure?
   private static boolean varInit_2_9(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2_9")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = varInit_2_9_0(builder_, level_ + 1);
     result_ = result_ && varInit_2_9_1(builder_, level_ + 1);
@@ -2186,7 +2203,7 @@ public class TaraParser implements PsiParser {
   // doubleValue+
   private static boolean varInit_2_9_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varInit_2_9_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = doubleValue(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -2207,35 +2224,12 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // metaIdentifier COLON identifierReference identifier?
-  static boolean withHeritage(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "withHeritage")) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = metaIdentifier(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, COLON);
-    pinned_ = result_; // pin = 2
-    result_ = result_ && report_error_(builder_, identifierReference(builder_, level_ + 1));
-    result_ = pinned_ && withHeritage_3(builder_, level_ + 1) && result_;
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
-    return result_ || pinned_;
-  }
-
-  // identifier?
-  private static boolean withHeritage_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "withHeritage_3")) return false;
-    identifier(builder_, level_ + 1);
-    return true;
-  }
-
-  /* ********************************************************** */
   // WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+ DEDENT
   public static boolean word(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "word")) return false;
     if (!nextTokenIs(builder_, WORD_KEY)) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
+    boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeTokens(builder_, 1, WORD_KEY, IDENTIFIER_KEY, NEW_LINE_INDENT);
     pinned_ = result_; // pin = 1
@@ -2248,7 +2242,7 @@ public class TaraParser implements PsiParser {
   // (IDENTIFIER_KEY STAR? NEWLINE)+
   private static boolean word_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "word_3")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = word_3_0(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -2264,7 +2258,7 @@ public class TaraParser implements PsiParser {
   // IDENTIFIER_KEY STAR? NEWLINE
   private static boolean word_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "word_3_0")) return false;
-    boolean result_ = false;
+    boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, IDENTIFIER_KEY);
     result_ = result_ && word_3_0_1(builder_, level_ + 1);

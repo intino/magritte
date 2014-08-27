@@ -16,7 +16,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	public Concept createConcept(String name) {
-		final TaraFileImpl file = createDummyFile(
+		final TaraBoxFileImpl file = createDummyFile(
 			"box project.mod.tara\n" +
 				"Concept " + name + " <root>\n" +
 				"\tConcept Dummy <required>\n" +
@@ -25,8 +25,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return file.getConcepts()[0];
 	}
 
-	public TaraFileImpl createDummyFile(String text) {
-		return (TaraFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy." + TaraFileType.INSTANCE.getDefaultExtension(), TaraFileType.INSTANCE, text);
+	public TaraBoxFileImpl createDummyFile(String text) {
+		return (TaraBoxFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy." + TaraFileType.INSTANCE.getDefaultExtension(), TaraFileType.INSTANCE, text);
 	}
 
 	public Identifier createNameIdentifier(String name) {
@@ -34,7 +34,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	public Attribute createAttribute(String name, String type) {
-		final TaraFileImpl file = createDummyFile(
+		final TaraBoxFileImpl file = createDummyFile(
 			"box project.mod.tara\n" +
 				"Concept Dummy\n" +
 				"\tvar " + type + " " + name + "\n" +
@@ -45,7 +45,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	public Attribute createResource(String name, String type) {
-		final TaraFileImpl file = createDummyFile(
+		final TaraBoxFileImpl file = createDummyFile(
 			"box project.mod.tara\n" +
 				"Concept Source\n" +
 				"\tvar resource:" + type + " " + name + "\n" +
@@ -57,7 +57,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	@Override
 	public MetaIdentifier createMetaIdentifier(String module, String name) {
-		final TaraFileImpl file = createDummyFile(
+		final TaraBoxFileImpl file = createDummyFile(
 			"box " + "project." + module + ":tara\n" +
 				name + " Dummy\n"
 		);
@@ -66,7 +66,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	@Override
 	public PsiElement createMetaWordIdentifier(String module, String node, String name) {
-		final TaraFileImpl file = createDummyFile(
+		final TaraBoxFileImpl file = createDummyFile(
 			"box " + "project." + module + ":tara\n" +
 				node + " Dummy(" + node + "." + name + ")\n"
 		);
@@ -75,7 +75,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	public Attribute createWord(String name, String[] types) {
-		final TaraFileImpl file = createDummyFile(
+		final TaraBoxFileImpl file = createDummyFile(
 			"box project.mod.tara\n" +
 				"Concept Dummy\n" +
 				"\tvar word " + name + "\n" +
@@ -92,7 +92,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 
 	public Import createImport(String reference) {
-		final TaraFileImpl file = createDummyFile(
+		final TaraBoxFileImpl file = createDummyFile(
 			"box project.mod.tara\n" +
 				"use " + reference + "\n\n" +
 				"Concept Source is root\n"
@@ -102,7 +102,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	public TaraBox createBox(String reference) {
-		final TaraFileImpl file = createDummyFile(
+		final TaraBoxFileImpl file = createDummyFile(
 			"box " + reference + "\n" +
 				"Concept Source <root>\n"
 		);
@@ -111,13 +111,13 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	public PsiElement createNewLine() {
-		final TaraFileImpl file = createDummyFile("\n");
+		final TaraBoxFileImpl file = createDummyFile("\n");
 		return file.getFirstChild();
 	}
 
 	@Override
 	public Parameters createParameters(boolean string) {
-		final TaraFileImpl file = createDummyFile(
+		final TaraBoxFileImpl file = createDummyFile(
 			"box project.mod.tara\n" +
 				"Form Ficha(" + (string ? "\"\"" : "") + ")\n"
 		);

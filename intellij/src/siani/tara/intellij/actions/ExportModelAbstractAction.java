@@ -36,7 +36,7 @@ import java.util.zip.ZipOutputStream;
 
 public class ExportModelAbstractAction extends AnAction implements DumbAware {
 	@NonNls
-	private static final String ZIP_EXTENSION = ".zip";
+	private static final String TARA_EXTENSION = ".tara";
 	@NonNls
 	private static final String JAR_EXTENSION = ".jar";
 	private static final String JSON_EXTENSION = ".json";
@@ -82,7 +82,7 @@ public class ExportModelAbstractAction extends AnAction implements DumbAware {
 		final Set<Library> libs = new HashSet<>();
 		for (Module dep : modules)
 			getLibraries(dep, libs);
-		final String dstPath = defaultPath + (ZIP_EXTENSION);
+		final String dstPath = defaultPath + (TARA_EXTENSION);
 		final File dstFile = new File(dstPath);
 		return clearReadOnly(module.getProject(), dstFile) && ProgressManager.getInstance().runProcessWithProgressSynchronously(new Runnable() {
 			public void run() {

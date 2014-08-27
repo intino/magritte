@@ -13,8 +13,8 @@ import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraFile;
-import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.io.File;
@@ -25,14 +25,14 @@ public class IntentionsGenerator {
 	public static final String SRC = "src";
 	public static final String INTENTION = "Intention";
 	private final Project project;
-	private final TaraFile taraFile;
+	private final TaraBoxFile taraBoxFile;
 	private final PsiDirectory srcDirectory;
 
-	public IntentionsGenerator(Project project, TaraFile taraFile) {
+	public IntentionsGenerator(Project project, TaraBoxFile taraBoxFile) {
 		this.project = project;
-		this.taraFile = taraFile;
-		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(taraFile));
-		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraFile.getManager(), srcDirectory);
+		this.taraBoxFile = taraBoxFile;
+		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(taraBoxFile));
+		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), srcDirectory);
 	}
 
 	public void generate() {
@@ -42,7 +42,7 @@ public class IntentionsGenerator {
 			public void run() {
 				pathsToRefresh.add(VfsUtil.virtualToIoFile(srcDirectory.getVirtualFile()));
 				try {
-					processFile(taraFile);
+					processFile(taraBoxFile);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -51,9 +51,9 @@ public class IntentionsGenerator {
 	}
 
 	private void processFile(PsiFile psiFile) {
-		if (psiFile instanceof TaraFile) {
-			final TaraFile taraFile = ((TaraFile) psiFile);
-			final Concept[] intentions = getIntentions(taraFile);
+		if (psiFile instanceof TaraBoxFile) {
+			final TaraBoxFile taraBoxFile = ((TaraBoxFile) psiFile);
+			final Concept[] intentions = getIntentions(taraBoxFile);
 			for (Concept intention : intentions) createIntentionClass(intention);
 //			final PsiClass sourceClass = getSourceClass(psiFile, taraFile.getConcept());
 //			writeInnerClasses(intentions, sourceClass, false);
@@ -120,16 +120,16 @@ public class IntentionsGenerator {
 		return innerClass;
 	}
 
-	private Concept[] getIntentions(TaraFile taraFile) {
+	private Concept[] getIntentions(TaraBoxFile taraBoxFile) {
 		List<Concept> intentions = new ArrayList<>();
-		Concept[] allConceptsOfFile = TaraUtil.getRootConceptsOfFile((TaraFileImpl) taraFile);
+		Concept[] allConceptsOfFile = TaraUtil.getRootConceptsOfFile((TaraBoxFileImpl) taraBoxFile);
 		for (Concept concept : allConceptsOfFile)
 			if (concept.isIntention())
 				intentions.add(concept);
 		return intentions.toArray(new Concept[intentions.size()]);
 	}
 
-	private List<PsiDirectory> createSrcPackageForFile(TaraFile file) {
+	private List<PsiDirectory> createSrcPackageForFile(TaraBoxFile file) {
 		String[] packet = file.getBoxReference().getHeaderReference().getText().split("\\.");
 		List<PsiDirectory> directories = new ArrayList<>();
 		for (String s : packet) {

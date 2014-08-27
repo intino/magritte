@@ -1,6 +1,8 @@
 src_file
 /Users/oroncal/workspace/sandbox/tafat/siani/model/aspects/behaviors.tara
 /Users/oroncal/workspace/sandbox/tafat/siani/model/aspects/sites.tara
+/Users/oroncal/workspace/sandbox/tafat/siani/model/aspects/spatial.tara
+/Users/oroncal/workspace/sandbox/tafat/siani/model/aspects/weather.tara
 /Users/oroncal/workspace/sandbox/tafat/siani/model/behaviors/electrical.tara
 /Users/oroncal/workspace/sandbox/tafat/siani/model/behaviors/thermal.tara
 /Users/oroncal/workspace/sandbox/tafat/siani/model/layers/assets.tara
@@ -10,8 +12,6 @@ src_file
 /Users/oroncal/workspace/sandbox/tafat/siani/model/layers/places.tara
 /Users/oroncal/workspace/sandbox/tafat/siani/model/layers/vehicles.tara
 /Users/oroncal/workspace/sandbox/tafat/siani/model/layers/waste.tara
-/Users/oroncal/workspace/sandbox/tafat/siani/model/properties/spatial.tara
-/Users/oroncal/workspace/sandbox/tafat/siani/model/properties/weather.tara
 
 project
 tafat
@@ -21,11 +21,7 @@ encoding
 UTF-8
 models
 /Users/oroncal/workspace/sandbox/plugins/tara/classes/tafat
-plugin_home
-/Users/oroncal/workspace/sandbox/plugins/tara/
 outputpath
 /Users/oroncal/workspace/sandbox/system/compile-server/tafat_8c395247/taraStubs/siani/java-production
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat/siani/out
-classpath
-/Users/oroncal/workspace/sandbox/plugins/tara/lib/tara.jar

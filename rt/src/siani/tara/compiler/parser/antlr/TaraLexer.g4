@@ -87,8 +87,7 @@ package siani.tara.compiler.parser.antlr;
 }
 
 METAIDENTIFIER      : 'Concept';
-INTENTION           : 'Intention';
-CASE                : 'case';
+SUB                 : 'sub';
 
 USE                 : 'use';
 BOX                 : 'box';
@@ -99,17 +98,19 @@ HAS                 :'has';
 ON                  :'on';
 IS                  :'is';
 WITH                : 'with';
-IF                  : 'if';
+EXTENDS             : 'extends';
 
 //annotations
 PRIVATE             : 'private';
 SINGLE              : 'single';
 REQUIRED            : 'required';
-ROOT                : 'root';
+COMPONENT           : 'component';
+FACET               : 'facet';
+INTENTION           : 'intention';
 TERMINAL            : 'terminal';
 NAMED               : 'named';
 PROPERTY            : 'property';
-
+ALWAYS              : 'always';
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';
 LEFT_SQUARE         : '[';
@@ -138,7 +139,7 @@ VAR                 : 'var';
 
 WORD                : 'word';
 RESOURCE            : 'resource';
-REFERENCE_TYPE      : 'reference';
+PORT_TYPE           : 'port';
 COORDINATE_TYPE     : 'coordinate';
 INT_TYPE            : 'integer';
 NATURAL_TYPE        : 'natural';
@@ -149,7 +150,7 @@ DATE_TYPE           : 'date';
 EMPTY               : 'empty';
 
 BOOLEAN_VALUE       : 'true' | 'false';
-NATURAL_VALUE      : POSITIVE? DIGIT+;
+NATURAL_VALUE       : POSITIVE? DIGIT+;
 NEGATIVE_VALUE      : DASH DIGIT+ ;
 DOUBLE_VALUE        : (POSITIVE | DASH)? DIGIT+ DOT DIGIT+;
 STRING_VALUE        : APHOSTROPHE (~'\'')* APHOSTROPHE;

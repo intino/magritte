@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.x
+// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.4.1-dev
 
 package siani.tara.compiler.parser.antlr;
 
@@ -20,6 +20,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBody(@NotNull TaraGrammar.BodyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#portAttribute}.
+	 * @param ctx the parse tree
+	 */
+	void enterPortAttribute(@NotNull TaraGrammar.PortAttributeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#portAttribute}.
+	 * @param ctx the parse tree
+	 */
+	void exitPortAttribute(@NotNull TaraGrammar.PortAttributeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#integerAttribute}.
 	 * @param ctx the parse tree
@@ -280,16 +290,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSignature(@NotNull TaraGrammar.SignatureContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#refAttribute}.
-	 * @param ctx the parse tree
-	 */
-	void enterRefAttribute(@NotNull TaraGrammar.RefAttributeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#refAttribute}.
-	 * @param ctx the parse tree
-	 */
-	void exitRefAttribute(@NotNull TaraGrammar.RefAttributeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#dateAttribute}.
 	 * @param ctx the parse tree

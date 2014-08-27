@@ -8,13 +8,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
-import siani.tara.intellij.lang.psi.TaraFile;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
 
 public class AddMetamodelReferenceFix implements IntentionAction {
-	private final TaraFile file;
+	private final TaraBoxFile file;
 
-	public AddMetamodelReferenceFix(@NotNull final TaraFile taraFile) {
-		this.file = taraFile;
+	public AddMetamodelReferenceFix(@NotNull final TaraBoxFile taraBoxFile) {
+		this.file = taraBoxFile;
 	}
 
 	@NotNull

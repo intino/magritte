@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
-import siani.tara.intellij.lang.psi.TaraFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
@@ -22,31 +21,29 @@ public class FacetApplyAnnotator extends TaraAnnotator {
 		if (!(element instanceof TaraFacetApply)) return;
 		this.holder = holder;
 		TaraFacetApply facetApply = (TaraFacetApply) element;
-		Model model = TaraLanguage.getMetaModel(((TaraFile) facetApply.getContainingFile()).getParentModel());
+		Model model = TaraLanguage.getMetaModel(facetApply.getContainingFile());
 		if (model == null) return;
 		Concept concept = TaraPsiImplUtil.getContextOf(facetApply);
 
 		Node node = findNode(concept, model);
 		if (node == null) return;
-		if (!isAllowedFacet(node, facetApply.getMetaIdentifierList().get(0).getText())) {
+		if (!isAllowedFacet(node, facetApply.getMetaIdentifierList().get(0).getText()))
 			annotateErroneousFacet(facetApply, holder);
-		} else {
-			checkDuplicatedFacet(concept, facetApply);
-		}
+		else checkDuplicatedFacet(concept, facetApply);
 
 	}
 
 	private void checkDuplicatedFacet(Concept concept, TaraFacetApply facetApply) {
 		List<TaraFacetApply> facetApplies = concept.getBody().getFacetApplies();
 		int count = 0;
-		for (TaraFacetApply apply : facetApplies) {
-			if (apply == null || apply.getMetaIdentifierList().isEmpty() || facetApply.getMetaIdentifierList().isEmpty())
-				continue;
-			if (apply.getMetaIdentifierList().get(0).getText().equals(facetApply.getMetaIdentifierList().get(0).getText()))
-				count++;
-		}
-		if (count > 1)
-			annotateDuplicatedFacet(facetApply, holder);
+//		for (TaraFacetApply apply : facetApplies) {
+//			if (apply == null || apply.getMetaIdentifierList().isEmpty() || facetApply.getMetaIdentifierList().isEmpty())
+//				continue;
+//			if (apply.getMetaIdentifierList().get(0).getText().equals(facetApply.getMetaIdentifierList().get(0).getText()))
+//				count++;
+//		}
+//		if (count > 1)
+//			annotateDuplicatedFacet(facetApply, holder);
 	}
 
 	private boolean isAllowedFacet(Node node, String name) {

@@ -8,7 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.MetaIdentifier;
+import siani.tara.intellij.lang.psi.TaraConceptReference;
+import siani.tara.intellij.lang.psi.TaraTypes;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Model;
@@ -19,7 +22,6 @@ import java.util.List;
 
 public class ConceptTypeAnnotator extends TaraAnnotator {
 
-	protected static final String INTENTION = "Intention";
 	protected static final String CONCEPT = "Concept";
 
 	@Override
@@ -28,8 +30,8 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 		if (element instanceof MetaIdentifier) {
 			Concept concept = TaraPsiImplUtil.getContextOf(element);
 			if (concept == null) return;
-			Model model = TaraLanguage.getMetaModel(((TaraFile) element.getContainingFile()).getParentModel());
-			if (CONCEPT.equals(element.getText()) | INTENTION.equals(element.getText())) {
+			Model model = TaraLanguage.getMetaModel(element.getContainingFile());
+			if (CONCEPT.equals(element.getText())) {
 				if (concept.getName() == null)
 					holder.createErrorAnnotation(concept, "Concept without name");
 				IElementType elementType = concept.getPsiElement().getPrevSibling().getNode().getElementType();
@@ -41,7 +43,7 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 				}
 			}
 			if (model == null) {
-				if (!(element.getText().equals(CONCEPT) || element.getText().equals(INTENTION)))
+				if (!element.getText().equals(CONCEPT))
 					holder.createErrorAnnotation(concept, "Concept type not allowed here");
 			} else {
 				if (findNode(concept, model) == null) {

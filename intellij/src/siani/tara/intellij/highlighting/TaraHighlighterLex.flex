@@ -22,7 +22,12 @@ import java.util.Set;
 
 %{
 	private Set<String> identifiers;
+	private Project project;
 
+	public TaraHighlighterLex(java.io.Reader reader, Project project) {
+		this.zzReader = reader;
+		this.project = project;
+	}
 
 	private IElementType evaluateIdentifier() {
 		String identifier = yytext().toString();
@@ -38,23 +43,23 @@ import java.util.Set;
                 destiny = use.split("as metamodel")[0].trim();
                 break;
             }
-        Model heritage = TaraLanguage.getMetaModel(destiny);
+        Model heritage = TaraLanguage.getMetaModel(destiny, project);
         if (heritage != null)
             identifiers = heritage.getIdentifiers();
 }
 %}
 
 CONCEPT             = "Concept"
-INTENTION_KEY       = "Intention"
 METAMODEL           = "metamodel"
-CASE_KEY            = "case"
+SUB                 = "sub"
 HAS                 = "has"
+EXTENDS             = "extends"
 USE_KEY             = "use"
 BOX                 = "box"
 AS                  = "as"
 ON                  = "on"
 IS                  = "is"
-IF                  = "if"
+ALWAYS              = "always"
 WITH                = "with"
 //annotations
 PRIVATE             = "private"
@@ -63,7 +68,9 @@ REQUIRED            = "required"
 NAMED               = "named"
 TERMINAL            = "terminal"
 PROPERTY            = "property"
-ROOT                = "root"
+INTENTION           = "intention"
+FACET               = "facet"
+COMPONENT           = "component"
 VAR                 = "var"
 WORD_KEY            = "word"
 RESOURCE_KEY        = "resource"
@@ -89,7 +96,7 @@ DASHES              = {DASH} {DASH}+
 POSITIVE            = "+"
 AMPERSAND           = "&"
 
-REFERENCE_TYPE      = "reference"
+PORT_TYPE           = "port"
 INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
 COORDINATE_TYPE     = "coordinate"
@@ -121,7 +128,6 @@ NEWLINE= [\n]+
 <YYINITIAL> {
 
 	{CONCEPT}                       {   return TaraTypes.METAIDENTIFIER_KEY; }
-	{INTENTION_KEY}                 {   return TaraTypes.INTENTION_KEY; }
 
 	{BOX}                           {  	loadHeritage();
 										return TaraTypes.BOX_KEY; }
@@ -129,23 +135,24 @@ NEWLINE= [\n]+
 	{METAMODEL}                     {   return TaraTypes.METAMODEL; }
 
 	{HAS}                           {   return TaraTypes.HAS; }
+	{EXTENDS}                       {   return TaraTypes.EXTENDS; }
 	{AS}                            {   return TaraTypes.AS; }
 	{ON}                            {   return TaraTypes.ON; }
 	{IS}                            {   return TaraTypes.IS; }
 	{WITH}                          {   return TaraTypes.WITH; }
-	{IF}                            {   return TaraTypes.IF; }
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
-
+	{ALWAYS}                        {   return TaraTypes.ALWAYS; }
 	{VAR}                           {   return TaraTypes.VAR; }
-
-	{CASE_KEY}                      {   return TaraTypes.CASE_KEY; }
+	{SUB}                           {   return TaraTypes.SUB; }
 
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
 	{SINGLE}                        {   return TaraTypes.SINGLE; }
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
 	{NAMED}                         {   return TaraTypes.NAMED; }
-	{ROOT}                          {   return TaraTypes.ROOT; }
+	{INTENTION}                     {   return TaraTypes.INTENTION; }
+	{FACET}                         {   return TaraTypes.FACET; }
+	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 
@@ -183,8 +190,8 @@ NEWLINE= [\n]+
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {COORDINATE_TYPE}               {   return TaraTypes.COORDINATE_TYPE; }
-	{REFERENCE_TYPE}                {   return TaraTypes.REFERENCE_TYPE; }
-	{SEMICOLON}                     {   return TaraTypes.DOT;  }
+	{PORT_TYPE}                     {   return TaraTypes.PORT_TYPE; }
+	{SEMICOLON}                     {   return TaraTypes.VAR;  }
 
 	{OPEN_BRACKET}                  {   return TaraTypes.DOT; }
 

@@ -19,8 +19,8 @@ import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.containers.ContainerUtil;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.file.TaraFileType;
-import siani.tara.intellij.lang.psi.TaraFile;
-import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -62,9 +62,9 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 		for (ProjectViewNode element : copy) {
 			PsiClass psiClass = getPsiClass(element);
 			if (psiClass == null || psiClass.getName() == null) continue;
-			List<PsiFile> concepts;
-			concepts = findConceptsBoundToClass(psiClass);
-			Collection<BasePsiNode<? extends PsiElement>> conceptNodes = findConceptsIn(children, concepts);
+			List<PsiFile> taraFiles;
+			taraFiles = findConceptsBoundToClass(psiClass);
+			Collection<BasePsiNode<? extends PsiElement>> conceptNodes = findConceptsIn(children, taraFiles);
 			if (!conceptNodes.isEmpty()) {
 				Collection<PsiFile> conceptFiles = convertToFiles(conceptNodes);
 				Collection<BasePsiNode<? extends PsiElement>> subNodes = new ArrayList<>();
@@ -99,7 +99,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 	private List<PsiFile> findConceptsBoundToClass(PsiClass psiClass) {
 		List<PsiFile> files = new ArrayList<>();
 		for (PsiElement element : psiClass.getParent().getParent().getChildren())
-			if (element instanceof TaraFile && ((TaraFileImpl) element).getPresentableName().equals(psiClass.getName()))
+			if (element instanceof TaraBoxFile && ((TaraBoxFileImpl) element).getPresentableName().equals(psiClass.getName()))
 				files.add((PsiFile) element);
 		return files;
 	}

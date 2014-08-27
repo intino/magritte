@@ -99,9 +99,6 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.MODULE:
 					configuration.setModule(reader.readLine());
 					break;
-				case TaraRtConstants.PLUGIN_HOME:
-					configuration.setPluginDirectory(reader.readLine());
-					break;
 				case TaraRtConstants.MODELS_PATH:
 					configuration.setModelsDirectory(reader.readLine());
 					break;

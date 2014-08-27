@@ -9,13 +9,13 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.actions.ImportModelAction;
-import siani.tara.intellij.lang.psi.TaraFile;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
 
 public class ImportMetamodelFix implements IntentionAction {
-	private final TaraFile file;
+	private final TaraBoxFile file;
 
-	public ImportMetamodelFix(@NotNull final TaraFile taraFile) {
-		this.file = taraFile;
+	public ImportMetamodelFix(@NotNull final TaraBoxFile taraBoxFile) {
+		this.file = taraBoxFile;
 	}
 
 	@NotNull

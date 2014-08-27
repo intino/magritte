@@ -26,7 +26,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isRootCase(Concept element) {
-		return (element.isCase() && TaraPsiImplUtil.getContextOf(element) == null);
+		return (element.isSub() && TaraPsiImplUtil.getContextOf(element) == null);
 	}
 
 	private void isDuplicated(Concept concept) {

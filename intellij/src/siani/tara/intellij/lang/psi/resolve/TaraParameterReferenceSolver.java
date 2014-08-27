@@ -2,7 +2,6 @@ package siani.tara.intellij.lang.psi.resolve;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
@@ -14,9 +13,7 @@ import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.IdentifierReference;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TaraParameterReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
@@ -46,30 +43,26 @@ public class TaraParameterReferenceSolver extends PsiReferenceBase<PsiElement> i
 	@NotNull
 	@Override
 	public Object[] getVariants() {
-		List<PsiElement> variants = new ArrayList<>();
+		Set<Concept> variants = new HashSet();
 		PsiElement reference = myElement.getFirstChild();
 		if (reference instanceof IdentifierReference)
 			new VariantsManager(variants, reference.getLastChild()).resolveVariants();
 		return fillVariants(variants);
 	}
 
-	public Object[] fillVariants(List<PsiElement> variants) {
+	public Object[] fillVariants(Collection<Concept> variants) {
 		List<LookupElement> lookupElements = new ArrayList<>();
-		for (final PsiElement variant : variants) {
-			if (variant == null) continue;
-			if (variant instanceof Concept) {
-				Concept concept = (Concept) variant;
-				if (concept.getName() == null || concept.getName().length() == 0) continue;
-				lookupElements.add(LookupElementBuilder.create((PsiNamedElement) concept.getIdentifierNode()).withIcon(TaraIcons.getIcon(TaraIcons.ICON_13)).withTypeText(getFileName(variant)));
-			} else {
-				Icon icon = (variant instanceof PsiPackage) ? AllIcons.Nodes.Package : TaraIcons.getIcon(TaraIcons.ICON_13);
-				lookupElements.add(LookupElementBuilder.create((PsiNamedElement) variant).withIcon(icon).withTypeText(variant.getParent().getText()));
-			}
+		for (final Concept concept : variants) {
+			if (concept == null) continue;
+			if (concept.getName() == null || concept.getName().length() == 0) continue;
+			lookupElements.add(LookupElementBuilder.create(concept.getIdentifierNode()).
+				withIcon(TaraIcons.getIcon(TaraIcons.ICON_13)).withTypeText(getFileName(concept)));
 		}
 		return lookupElements.toArray();
 	}
 
 	private String getFileName(PsiElement concept) {
-		return concept.getContainingFile().getName();
+		String name = concept.getContainingFile().getName();
+		return name.substring(0, name.lastIndexOf("."));
 	}
 }

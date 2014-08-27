@@ -99,7 +99,8 @@ public class InsideModelDependencyResolver {
 		model.sortNodeTable(new NodeComparator(model.getNodeTable()));
 	}
 
-	private void linkToDeclared(LinkNode node, DeclaredNode parent) {
+	private void linkToDeclared(LinkNode node, DeclaredNode parent) throws DependencyException {
+		if (parent == null) throwError(node);
 		node.setDestinyQN(parent.getQualifiedName());
 		node.setDestiny(parent);
 	}

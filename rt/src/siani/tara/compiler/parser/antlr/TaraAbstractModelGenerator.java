@@ -50,12 +50,13 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		DeclaredNode container = !conceptStack.empty() ? (DeclaredNode) conceptStack.peek() : null;
 		Node node;
 		String name = (ctx.signature().IDENTIFIER() != null) ? ctx.signature().IDENTIFIER().getText() : "";
-		String type = (ctx.signature().metaidentifier() != null) ? ctx.signature().metaidentifier().getText() : container.getObject().getType();
+		String type = (ctx.signature().metaidentifier() != null) ?
+			ctx.signature().metaidentifier().getText() :
+			container.getObject().getType();
 		String parent = getParent(ctx);
-		if (type.equals("Intention") ||(!type.equals("Concept") && model.getParentModel().searchNode(type).is(IntentionNode.class)))
-			node = new IntentionNode(new IntentionObject(type, name), container);
-		else
-			node = name.isEmpty() && ctx.body() == null ? new LinkNode(parent, container) : new DeclaredNode(new NodeObject(type, name), container);
+		node = name.isEmpty() && ctx.body() == null ?
+			new LinkNode(parent, container) :
+			new DeclaredNode(new NodeObject(type, name), container);
 		addHeaderInformation(ctx, node);
 		addNodeToModel(ctx, node, parent);
 		node.calculateQualifiedName();
@@ -65,7 +66,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	private void addNodeToModel(ConceptContext ctx, Node node, String parent) {
 		DeclaredNode container = node.getContainer();
-		if (node.is(DeclaredNode.class) || node.is(IntentionNode.class)) {
+		if (node.is(DeclaredNode.class)) {
 			if (container != null) {
 				if (isCase(ctx)) {
 					node.getObject().setCase(true);
@@ -83,7 +84,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private boolean isCase(ConceptContext ctx) {
-		return ctx.signature().CASE() != null;
+		return ctx.signature().SUB() != null;
 	}
 
 	@Override
@@ -114,10 +115,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterFacetTarget(@NotNull FacetTargetContext ctx) {
-		IntentionObject nodeObject = (IntentionObject) conceptStack.peek().getObject();
-		IntentionObject intentionObject = new IntentionObject("", ctx.identifierReference(0).getText());
-		if (ctx.IF() != null)
-			intentionObject.addFacetConstrain(ctx.identifierReference(1).getText());
+		NodeObject nodeObject = conceptStack.peek().getObject();
+		NodeObject intentionObject = new NodeObject("", ctx.identifierReference().getText());
 		if (!facetTargetStack.isEmpty()) intentionObject.setParentObject(facetTargetStack.peek());
 		nodeObject.addFacetObjectTarget(intentionObject);
 		facetTargetStack.push(intentionObject);
@@ -248,8 +247,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterRefAttribute(@NotNull RefAttributeContext ctx) {
-		NodeAttribute variable = new NodeAttribute(ctx.REFERENCE_TYPE().getText(), ctx.IDENTIFIER().getText());
+	public void enterPortAttribute(@NotNull PortAttributeContext ctx) {
+		NodeAttribute variable = new NodeAttribute(ctx.PORT_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.codeValue() != null) variable.setValue(ctx.codeValue().getText());
 		else if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
 		variable.setList(ctx.LIST() != null);
@@ -288,7 +287,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		NodeObject object = conceptStack.peek().getObject();
 		attribute.setDoc(currentDocAttribute);
 		if (ctx.getParent().getParent().getParent() instanceof FacetTargetContext) {
-			List<IntentionObject> targets = ((IntentionObject) object).getFacetTargets();
+			List<NodeObject> targets = object.getFacetTargets();
 			targets.get(targets.size() - 1).add(attribute);
 		} else object.add(attribute);
 	}
@@ -307,12 +306,16 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			conceptStack.peek().getObject().add(NodeObject.AnnotationType.SINGLE);
 		for (int i = 0; i < ctx.TERMINAL().size(); i++)
 			conceptStack.peek().getObject().add(NodeObject.AnnotationType.TERMINAL);
-		for (int i = 0; i < ctx.ROOT().size(); i++)
-			conceptStack.peek().getObject().add(NodeObject.AnnotationType.ROOT);
+		for (int i = 0; i < ctx.COMPONENT().size(); i++)
+			conceptStack.peek().getObject().add(NodeObject.AnnotationType.COMPONENT);
 		for (int i = 0; i < ctx.PRIVATE().size(); i++)
 			conceptStack.peek().getObject().add(NodeObject.AnnotationType.PRIVATE);
 		for (int i = 0; i < ctx.NAMED().size(); i++)
 			conceptStack.peek().getObject().add(NodeObject.AnnotationType.NAMEABLE);
+		for (int i = 0; i < ctx.FACET().size(); i++)
+			conceptStack.peek().getObject().add(NodeObject.AnnotationType.FACET);
+		for (int i = 0; i < ctx.INTENTION().size(); i++)
+			conceptStack.peek().getObject().add(NodeObject.AnnotationType.INTENTION);
 	}
 
 	private void processVariableAnnotation(AnnotationsContext ctx) {

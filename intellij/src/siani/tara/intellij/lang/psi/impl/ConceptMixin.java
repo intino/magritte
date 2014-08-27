@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
+import siani.tara.intellij.lang.parser.TaraAnnotation;
 import siani.tara.intellij.lang.psi.*;
 
 import javax.swing.*;
@@ -45,7 +46,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	public String getType() {
 		MetaIdentifier type = getSignature().getType();
-		if (type == null && this.isCase()) {
+		if (type == null && this.isSub()) {
 			Concept baseConcept = getBaseConcept();
 			return baseConcept != null ? baseConcept.getType() : null;
 		} else
@@ -58,7 +59,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	public Concept[] getConceptSiblings() {
 		Concept contextOf = TaraPsiImplUtil.getContextOf(this);
-		if (contextOf == null) return ((TaraFile) this.getContainingFile()).getConcepts();
+		if (contextOf == null) return ((TaraBoxFile) this.getContainingFile()).getConcepts();
 		return contextOf.getConceptChildren();
 	}
 
@@ -89,7 +90,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	public String getQualifiedName() {
 		Identifier identifierNode = getIdentifierNode();
 		String name = identifierNode != null ? identifierNode.getText() : "annonymous";
-		String packageName = ((TaraFile) this.getContainingFile()).getBoxReference().getHeaderReference().getText();
+		String packageName = ((TaraBoxFile) this.getContainingFile()).getBoxReference().getHeaderReference().getText();
 		Concept concept = (Concept) this;
 		while ((concept = TaraPsiImplUtil.getContextOf(concept)) != null) {
 			name = concept.getName() + "." + name;
@@ -97,8 +98,8 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return packageName + "." + name;
 	}
 
-	public TaraFileImpl getFile() throws PsiInvalidElementAccessException {
-		return (TaraFileImpl) super.getContainingFile();
+	public TaraBoxFileImpl getFile() throws PsiInvalidElementAccessException {
+		return (TaraBoxFileImpl) super.getContainingFile();
 	}
 
 	@Nullable
@@ -122,7 +123,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public Icon getIcon(@IconFlags int i) {
-		if (this.isCase())
+		if (this.isSub())
 			return TaraIcons.getIcon(TaraIcons.CASE_13);
 		return TaraIcons.getIcon(TaraIcons.CONCEPT);
 	}
@@ -141,19 +142,22 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 
-	public boolean isCase() {
+	public boolean isSub() {
 		return this.getSignature().isCase();
 	}
 
 	public boolean isIntention() {
-		return "Intention".equals(this.getType());
+		if (this.getAnnotations() == null) return false;
+		for (String element : this.getAnnotations().getAnnotationsAsString())
+			if (element.equals(TaraAnnotation.INTENTION)) return true;
+		return false;
 	}
 
-	public Concept[] getCases() {
+	public Concept[] getSubConcepts() {
 		ArrayList<Concept> cases = new ArrayList<>();
 		Concept[] children = TaraUtil.getChildrenOf((Concept) this);
 		for (Concept child : children) {
-			if (child.isCase()) cases.add(child);
+			if (child.isSub()) cases.add(child);
 		}
 		return cases.size() > 0 ? cases.toArray(new Concept[cases.size()]) : new Concept[0];
 	}
@@ -171,5 +175,15 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	@Override
 	public String toString() {
 		return getName();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return (obj instanceof Concept && ((Concept) obj).getQualifiedName().equals(this.getQualifiedName()));
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getQualifiedName().hashCode();
 	}
 }

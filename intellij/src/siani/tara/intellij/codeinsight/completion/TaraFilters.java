@@ -11,6 +11,7 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.lang.ModelObject;
 import siani.tara.lang.Node;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
@@ -100,7 +101,7 @@ public class TaraFilters {
 	private static class NoModelFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			TaraFile file = (TaraFile) (context != null ? context.getContainingFile() : null);
+			TaraBoxFile file = (TaraBoxFile) (context != null ? context.getContainingFile() : null);
 			return file != null && file.getParentModel() == null;
 		}
 
@@ -147,8 +148,6 @@ public class TaraFilters {
 	}
 
 	private static class InFacetFilter implements ElementFilter {
-		private static final String INTENTION = "Intention";
-
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			if (element instanceof PsiElement && context != null && context.getParent() != null)
@@ -156,7 +155,7 @@ public class TaraFilters {
 					Concept contextOf = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(context));
 					if (contextOf == null) return false;
 					Node node = TaraLanguage.getMetaModel(contextOf.getFile()).searchNode(TaraUtil.getMetaQualifiedName(contextOf));
-					if (node.getObject().getType().equals(INTENTION))
+					if (node.getObject().is(ModelObject.AnnotationType.INTENTION))
 						return true;
 				}
 			return false;

@@ -6,10 +6,7 @@ import siani.tara.compiler.core.errorcollection.semantic.UnusedConceptError;
 import siani.tara.lang.*;
 import siani.tara.lang.ModelObject.AnnotationType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UsageAnalyzer {
 
@@ -26,7 +23,7 @@ public class UsageAnalyzer {
 
 	public void checkUsage() {
 		for (Node node : model.getTreeModel())
-			if (node.is(DeclaredNode.class) || node.is(IntentionNode.class)) addToList(node);
+			if (node.is(DeclaredNode.class)) addToList(node);
 		for (Map.Entry<String, Node> entry : toCheckNodes.entrySet())
 			removeParent(entry.getValue());
 		processReferences();
@@ -38,14 +35,13 @@ public class UsageAnalyzer {
 
 	private void processReferences() {
 		for (Map.Entry<String, Node> nodeEntry : toCheckNodes.entrySet())
-			if (isReferenced(nodeEntry.getKey()) || nodeEntry.getValue().is(IntentionNode.class))
+			if (isReferenced(nodeEntry.getKey()))
 				toRemove.add(nodeEntry.getKey());
-
 	}
 
 	private boolean isReferenced(String qn) {
 		for (Node node : model.getNodeTable().values()) {
-			if ((node.is(DeclaredNode.class) || node.is(IntentionNode.class)) && isReferencedInVar(node, qn))
+			if (node.is(DeclaredNode.class) && isReferencedInVar(node, qn))
 				return true;
 			else if (node.is(LinkNode.class) && isReferencedAsLink((LinkNode) node, qn)) return true;
 		}
@@ -66,13 +62,13 @@ public class UsageAnalyzer {
 		return node.getCases().length > 0;
 	}
 
-	public void checkRootExistence(NodeTree nodeTree) {
+	public void checkRootExistence(Collection<Node> nodeTree) {
 		findRootConcepts(nodeTree);
 		noRootConcepts();
 	}
 
 	private void addToList(Node node) {
-		if (!node.getObject().is(AnnotationType.ROOT))
+		if (node.getObject().is(AnnotationType.COMPONENT)) //TODO
 			this.toCheckNodes.put(node.getQualifiedName(), node);
 	}
 
@@ -80,10 +76,10 @@ public class UsageAnalyzer {
 		toRemove.add(node.getObject().getParentName());
 	}
 
-	private void findRootConcepts(NodeTree nodeTree) {
+	private void findRootConcepts(Collection<Node> nodeTree) {
 		for (Node node : nodeTree)
 			if (node instanceof DeclaredNode)
-				thereIsAnyRoot = node.getObject().is(AnnotationType.ROOT) || thereIsAnyRoot;
+				thereIsAnyRoot = !node.getObject().is(AnnotationType.COMPONENT) || thereIsAnyRoot;
 	}
 
 	private void noRootConcepts() {

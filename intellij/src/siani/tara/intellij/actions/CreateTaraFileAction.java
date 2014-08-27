@@ -13,11 +13,11 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.file.TaraFileType;
-import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 
-public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraFileImpl> {
+public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraBoxFileImpl> {
 
 	public CreateTaraFileAction() {
 		super(TaraBundle.message("newconcept.menu.action.text"), TaraBundle.message("newconcept.menu.action.description"),
@@ -27,10 +27,9 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
 		builder.setTitle(TaraBundle.message("newconcept.dlg.prompt"));
-		String concept = TaraTemplates.getTemplate("CONCEPT");
-		builder.addKind("Concept", TaraIcons.getIcon("CONCEPT"), concept);
+		String box = TaraTemplates.getTemplate("BOX");
+		builder.addKind("Concept", TaraIcons.getIcon(TaraIcons.BOX), box);
 	}
-
 
 	@Override
 	protected String getActionName(PsiDirectory directory, String newName, String templateName) {
@@ -39,13 +38,13 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 
 	@Nullable
 	@Override
-	protected PsiElement getNavigationElement(@NotNull TaraFileImpl createdElement) {
+	protected PsiElement getNavigationElement(@NotNull TaraBoxFileImpl createdElement) {
 		return createdElement;
 	}
 
 	@Nullable
 	@Override
-	protected TaraFileImpl doCreate(PsiDirectory directory, String newName, String templateName) throws IncorrectOperationException {
+	protected TaraBoxFileImpl doCreate(PsiDirectory directory, String newName, String templateName) throws IncorrectOperationException {
 		String fileName = newName + "." + TaraFileType.INSTANCE.getDefaultExtension();
 		Module moduleOfDirectory = TaraUtil.getModuleOfDirectory(directory);
 		String parentName = ModuleConfiguration.getInstance(moduleOfDirectory).getParentName();
@@ -54,7 +53,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		list = parentName != null ? new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "PARENT_MODULE_NAME", parentName, "TYPE", "Concept"}
 			: new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "TYPE", "Concept"};
 		file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, templateName, true, list);
-		if (file instanceof TaraFileImpl) return (TaraFileImpl) file;
+		if (file instanceof TaraBoxFileImpl) return (TaraBoxFileImpl) file;
 		final String description = file.getFileType().getDescription();
 		throw new IncorrectOperationException(TaraBundle.message("tara.file.extension.is.not.mapped.to.tara.file.type", description));
 	}

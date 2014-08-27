@@ -31,7 +31,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		if (!(element instanceof Parameter)) return;
 		Parameter parameter = (Parameter) element;
-		model = TaraLanguage.getMetaModel(((TaraFile) parameter.getContainingFile()).getParentModel());
+		model = TaraLanguage.getMetaModel(parameter.getContainingFile());
 		if (model == null) return;
 		TaraFacetApply inFacet = parameter.isInFacet();
 		Concept concept = TaraPsiImplUtil.getContextOf(parameter);

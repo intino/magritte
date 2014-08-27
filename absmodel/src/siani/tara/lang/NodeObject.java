@@ -12,6 +12,8 @@ public class NodeObject extends ModelObject {
 	List<NodeObject> facets = new ArrayList<>();
 	Map<String, List<Variable>> allowedFacets = new HashMap<>();
 	Map<String, String> allowedFacetsConstrains = new HashMap<>();
+	List<NodeObject> objectTargets = new ArrayList<>();
+	Map<String, Set<Variable>> facetTargets = new HashMap<>();
 	List<String> parameters = new ArrayList<>();
 
 	public NodeObject() {
@@ -133,6 +135,18 @@ public class NodeObject extends ModelObject {
 
 	public String putFacetConstrain(String facet, String facetConstrain) {
 		return allowedFacetsConstrains.put(facet, facetConstrain);
+	}
+
+	public boolean addFacetObjectTarget(NodeObject object) {
+		return objectTargets.add(object);
+	}
+
+	public List<NodeObject> getFacetTargets() {
+		return objectTargets;
+	}
+
+	public void setFacetTargets(Map<String, Set<Variable>> facetTargets) {
+		this.facetTargets = facetTargets;
 	}
 
 	public Map<String, String> getAllowedFacetsConstrains() {

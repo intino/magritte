@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface TaraFile extends PsiFile {
+public interface TaraBoxFile extends PsiFile {
 
 	@NotNull
 	PsiFile getContainingFile();

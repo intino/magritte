@@ -28,8 +28,8 @@ import java.util.List;
 
 public class ReferenceAnnotator extends TaraAnnotator {
 
-	private PsiElement element;
 	public static final String MESSAGE = TaraBundle.message("reference.concept.key.error.message");
+	private PsiElement element;
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
@@ -37,7 +37,6 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		this.holder = holder;
 		if (element instanceof IdentifierReference && !isInFacetApply(element))
 			checkWellReferenced();
-
 	}
 
 	private boolean isInFacetApply(PsiElement element) {
@@ -77,7 +76,6 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		actions.add(new CreateConceptQuickFix(name.getText(), type, name.getContainingFile().getParent()));
 	}
 
-
 	private IntentionAction createIntention(PsiElement node, String message, LocalQuickFix fix) {
 		return createIntention(node, node.getTextRange(), message, fix);
 	}
@@ -91,7 +89,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 
 	private void addImportFix(Identifier node, List<LocalQuickFix> actions) {
 		final PsiFile file = InjectedLanguageManager.getInstance(node.getProject()).getTopLevelFile(node);
-		if (!(file instanceof TaraFile)) return;
+		if (!(file instanceof TaraBoxFile)) return;
 		List<ImportQuickFix> importFix = TaraReferenceImporter.proposeImportFix((IdentifierReference) node.getParent());
 		for (ImportQuickFix importQuickFix : importFix) actions.add(importQuickFix);
 	}

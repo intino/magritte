@@ -8,12 +8,8 @@ engine
 encoding
 UTF-8
 models
-/Users/oroncal/workspace/sandbox/plugins/tara/classes/tafat
-plugin_home
-/Users/oroncal/workspace/sandbox/plugins/tara/
+/Users/oroncal/workspace/sandbox/plugins/tara_models/tafat
 outputpath
 /Users/oroncal/workspace/sandbox/system/compile-server/tafat_8c395247/taraStubs/siani/java-production
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat/siani/out/
-classpath
-/Users/oroncal/workspace/sandbox/plugins/tara/lib/tara.jar

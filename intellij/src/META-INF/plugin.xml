@@ -72,6 +72,7 @@
                          implementationClass="siani.tara.intellij.refactoring.rename.NamesValidator"/>
     <projectService serviceInterface="siani.tara.intellij.lang.psi.TaraElementFactory"
                     serviceImplementation="siani.tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
+    <sdkType implementation="siani.tara.intellij.project.sdk.TaraJdk"/>
     <moduleType id="TARA_MODULE" implementationClass="siani.tara.intellij.project.module.TaraModuleType"/>
     <treeStructureProvider implementation="siani.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="siani.tara.intellij.actions.TaraTemplatesFactory"/>

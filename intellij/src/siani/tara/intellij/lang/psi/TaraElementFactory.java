@@ -3,7 +3,7 @@ package siani.tara.intellij.lang.psi;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 
 public abstract class TaraElementFactory {
 
@@ -13,7 +13,7 @@ public abstract class TaraElementFactory {
 
 	public abstract Concept createConcept(String name);
 
-	public abstract TaraFileImpl createDummyFile(String text);
+	public abstract TaraBoxFileImpl createDummyFile(String text);
 
 	public abstract Identifier createNameIdentifier(String name);
 

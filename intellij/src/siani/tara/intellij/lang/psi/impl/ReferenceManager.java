@@ -55,7 +55,7 @@ public class ReferenceManager {
 	}
 
 	private static PsiElement resolveExternalReference(Identifier identifier) {
-		TaraBox box = ((TaraFile) identifier.getContainingFile()).getBoxReference();
+		TaraBox box = ((TaraBoxFile) identifier.getContainingFile()).getBoxReference();
 		String path = box.getHeaderReference().getText() + "." + TaraUtil.composeConceptQN(identifier);
 		return resolveJavaClassReference(identifier.getProject(), path);
 	}
@@ -93,13 +93,12 @@ public class ReferenceManager {
 		Set<Concept> list = new HashSet<>();
 		Concept parent = getContextOf(identifier);
 		while (parent != null) {
-			for (Concept sibling : parent.getConceptSiblings()) {
+			for (Concept sibling : parent.getConceptSiblings())
 				if (sibling.getName() != null && sibling.getName().equals(identifier.getText()))
 					list.add(sibling);
-			}
 			parent = getContextOf(parent);
 		}
-		Concept[] concepts = ((TaraFile) identifier.getContainingFile()).getConcepts();
+		Concept[] concepts = ((TaraBoxFile) identifier.getContainingFile()).getConcepts();
 		for (Concept concept : concepts)
 			if (identifier.getText().equals(concept.getName()))
 				list.add(concept);
@@ -125,9 +124,9 @@ public class ReferenceManager {
 		}
 		if (file != null) {
 			PsiFile file1 = PsiManager.getInstance(path.get(0).getProject()).findFile(file);
-			if (!TaraFile.class.isInstance(file1)) return null;
-			TaraFile taraFile = (TaraFile) file1;
-			Concept[] concept = taraFile.getConcepts();
+			if (!TaraBoxFile.class.isInstance(file1)) return null;
+			TaraBoxFile taraBoxFile = (TaraBoxFile) file1;
+			Concept[] concept = taraBoxFile.getConcepts();
 			for (Concept prime : concept) {
 				Concept aConcept = resolvePathInConcept(path, prime);
 				if (aConcept != null) return aConcept;
@@ -165,7 +164,7 @@ public class ReferenceManager {
 	}
 
 	private static PsiElement tryToResolveOnImportedBoxes(List<Identifier> path) {
-		TaraFile context = (TaraFile) path.get(0).getContainingFile();
+		TaraBoxFile context = (TaraBoxFile) path.get(0).getContainingFile();
 		Import[] imports = context.getImports();
 		if (imports == null) return null;
 		return searchInImport(path, imports);
@@ -176,8 +175,8 @@ public class ReferenceManager {
 			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
 			PsiElement resolve = resolve(importIdentifiers.get(importIdentifiers.size() - 1), false);
 			if (resolve == null) continue;
-			if (!TaraFile.class.isInstance(resolve.getContainingFile())) continue;
-			TaraFile containingFile = (TaraFile) resolve.getContainingFile();
+			if (!TaraBoxFile.class.isInstance(resolve.getContainingFile())) continue;
+			TaraBoxFile containingFile = (TaraBoxFile) resolve.getContainingFile();
 			for (Concept concept : containingFile.getConcepts()) {
 				Concept solution = resolvePathInConcept(path, concept);
 				if (solution != null) return solution;

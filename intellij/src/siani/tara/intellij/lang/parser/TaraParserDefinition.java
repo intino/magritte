@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.lexer.TaraLexerAdapter;
 import siani.tara.intellij.lang.psi.TaraTypes;
-import siani.tara.intellij.lang.psi.impl.TaraFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 
 public class TaraParserDefinition implements ParserDefinition {
 	public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
@@ -53,7 +53,7 @@ public class TaraParserDefinition implements ParserDefinition {
 	}
 
 	public PsiFile createFile(FileViewProvider viewProvider) {
-		return new TaraFileImpl(viewProvider);
+		return new TaraBoxFileImpl(viewProvider);
 	}
 
 	public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {

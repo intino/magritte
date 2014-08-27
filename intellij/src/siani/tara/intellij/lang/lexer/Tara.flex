@@ -93,8 +93,7 @@ NEWLINE= [\n]+ ([ ] | [\t])*
 //Reserved words
 
 METAIDENTIFIER      = "Concept"
-INTENTION_KEY       = "Intention"
-CASE_KEY            = "case"
+SUB                 = "sub"
 HAS                 = "has"
 
 USE_KEY             = "use"
@@ -104,8 +103,9 @@ METAMODEL           = "metamodel"
 WITH                = "with"
 AS                  = "as"
 ON                  = "on"
+ALWAYS              = "always"
 IS                  = "is"
-IF                  = "if"
+EXTENDS             = "extends"
 //annotations
 PRIVATE             = "private"
 SINGLE              = "single"
@@ -113,7 +113,9 @@ REQUIRED            = "required"
 NAMED               = "named"
 TERMINAL            = "terminal"
 PROPERTY            = "property"
-ROOT                = "root"
+COMPONENT           = "component"
+INTENTION           = "intention"
+FACET               = "facet"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -139,7 +141,7 @@ AMPERSAND           = "&"
 VAR                 = "var"
 
 WORD_TYPE           = "word"
-REFERENCE_TYPE      = "reference"
+PORT_TYPE           = "port"
 RESOURCE_TYPE       = "resource"
 INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
@@ -169,26 +171,26 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 <YYINITIAL> {
 
 	{METAIDENTIFIER}                {   return TaraTypes.METAIDENTIFIER_KEY; }
-	{INTENTION_KEY}                 {   return TaraTypes.INTENTION_KEY; }
 
 	{USE_KEY}                       {   return TaraTypes.USE_KEY; }
 	{METAMODEL}                     {   return TaraTypes.METAMODEL; }
 
 	{BOX_KEY}                       {   return TaraTypes.BOX_KEY; }
 
+	{EXTENDS}                       {   return TaraTypes.EXTENDS; }
 	{HAS}                           {   return TaraTypes.HAS; }
 	{AS}                            {   return TaraTypes.AS; }
 	{IS}                            {   return TaraTypes.IS; }
 	{ON}                            {   return TaraTypes.ON; }
 	{WITH}                          {   return TaraTypes.WITH; }
-	{IF}                            {   return TaraTypes.IF; }
+	{ALWAYS}                        {   return TaraTypes.ALWAYS; }
 
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
 
 	{VAR}                           {   return TaraTypes.VAR; }
 
-	{CASE_KEY}                      {   return TaraTypes.CASE_KEY; }
+	{SUB}                           {   return TaraTypes.SUB; }
 
 
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
@@ -197,7 +199,9 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{SINGLE}                        {   return TaraTypes.SINGLE; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{NAMED}                         {   return TaraTypes.NAMED; }
-	{ROOT}                          {   return TaraTypes.ROOT; }
+	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
+	{FACET}                         {   return TaraTypes.FACET; }
+	{INTENTION}                     {   return TaraTypes.INTENTION; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 
@@ -221,6 +225,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{DOLLAR}                        {   return TaraTypes.DOLLAR;}
     {EURO}                          {   return TaraTypes.EURO;}
     {PERCENTAGE}                    {   return TaraTypes.PERCENTAGE;}
+    {GRADE}                         {   return TaraTypes.GRADE;}
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
 	{STAR}                          {   return TaraTypes.STAR;  }
@@ -234,7 +239,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {COORDINATE_TYPE}               {   return TaraTypes.COORDINATE_TYPE; }
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
-	{REFERENCE_TYPE}                {   return TaraTypes.REFERENCE_TYPE; }
+	{PORT_TYPE}                     {   return TaraTypes.PORT_TYPE; }
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}
 	{SEMICOLON}                     {   return semicolon(); }
 

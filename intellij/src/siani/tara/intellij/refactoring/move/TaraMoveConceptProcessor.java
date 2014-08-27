@@ -14,7 +14,7 @@ import com.intellij.usageView.UsageViewDescriptor;
 import com.intellij.util.IncorrectOperationException;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraFile;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.refactoring.TaraRefactoringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 		setPreviewUsages(previewUsages);
 	}
 
-	private static void moveElement(@NotNull PsiNamedElement element, @NotNull Collection<UsageInfo> usages, @NotNull TaraFile destination) {
+	private static void moveElement(@NotNull PsiNamedElement element, @NotNull Collection<UsageInfo> usages, @NotNull TaraBoxFile destination) {
 		final PsiFile file = element.getContainingFile();
 //		TaraConceptRefactoringUtil.rememberNamedReferences(element);
 		final PsiNamedElement newElement = addToFile(element, destination, usages);
@@ -51,7 +51,7 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 		if (file != null) optimizeImports(file);
 	}
 
-	private static PsiNamedElement addToFile(@NotNull PsiNamedElement element, @NotNull final TaraFile destination, @NotNull Collection<UsageInfo> usages) {
+	private static PsiNamedElement addToFile(@NotNull PsiNamedElement element, @NotNull final TaraBoxFile destination, @NotNull Collection<UsageInfo> usages) {
 		List<PsiElement> topLevelAtDestination = new ArrayList<PsiElement>();
 		for (UsageInfo usage : usages) {
 			final PsiElement e = usage.getElement();
@@ -185,7 +185,7 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 			public void run() {
 				ApplicationManager.getApplication().runWriteAction(new Runnable() {
 					public void run() {
-						final TaraFile destination = TaraUtil.getOrCreateFile(myDestination, myProject);
+						final TaraBoxFile destination = TaraUtil.getOrCreateFile(myDestination, myProject);
 						CommonRefactoringUtil.checkReadOnlyStatus(myProject, destination);
 						for (PsiNamedElement e : myElements) {
 							// TODO: Check for resulting circular imports

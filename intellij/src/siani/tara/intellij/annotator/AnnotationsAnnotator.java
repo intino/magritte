@@ -9,7 +9,7 @@ import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import siani.tara.intellij.lang.parser.TaraAnnotation;
 import siani.tara.intellij.lang.psi.Annotations;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraFile;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		List<PsiElement> incorrects;
 		if (isPrimeConcept(concept))
 			incorrects = checkAnnotationList(annotationList, TaraAnnotation.PRIME_ANNOTATIONS);
-		else if ((concept != null) && concept.isCase())
+		else if ((concept != null) && concept.isSub())
 			incorrects = checkAnnotationList(annotationList, TaraAnnotation.CASE_ANNOTATIONS);
 		else
 			incorrects = checkAnnotationList(annotationList, TaraAnnotation.CHILD_ANNOTATIONS);
@@ -66,7 +66,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isPrimeConcept(Concept concept) {
-		return (concept != null) && concept.getParent() instanceof TaraFile;
+		return (concept != null) && concept.getParent() instanceof TaraBoxFile;
 	}
 
 

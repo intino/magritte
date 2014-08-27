@@ -34,7 +34,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		builderName = "Tara compiler";
 	}
 
-
 	public static boolean isTaraFile(String path) {
 		return path.endsWith("." + TARA_EXTENSION);
 	}

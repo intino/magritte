@@ -17,7 +17,7 @@ import java.util.*;
 
 public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActionSupport<Parameters, Object, TaraPsiElement> {
 
-	private static final Set<Class> STOP_SEARCHING_CLASSES = ContainerUtil.<Class>newHashSet(TaraFile.class);
+	private static final Set<Class> STOP_SEARCHING_CLASSES = ContainerUtil.<Class>newHashSet(TaraBoxFile.class);
 
 	@NotNull
 	@Override
@@ -77,7 +77,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext parameterInfoContext) {
 		final Parameters parameters = findParameters(parameterInfoContext);
 		if (parameters != null) {
-			Model model = TaraLanguage.getMetaModel(((TaraFile) parameters.getContainingFile()).getParentModel());
+			Model model = TaraLanguage.getMetaModel(parameters.getContainingFile());
 			if (model == null) return parameters;
 			TaraFacetApply facet = parameters.getParameters()[0].isInFacet();
 			Node node = findNode(TaraPsiImplUtil.getContextOf(parameters), model);
