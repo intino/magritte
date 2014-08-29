@@ -102,7 +102,6 @@ public class RunConfiguration extends ModuleBasedConfiguration<RunConfigurationM
 			return new RefactoringElementAdapter() {
 				@Override
 				protected void elementRenamedOrMoved(@NotNull PsiElement newElement) {
-					//TODO
 				}
 
 				@Override

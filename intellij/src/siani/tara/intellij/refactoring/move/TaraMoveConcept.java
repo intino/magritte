@@ -12,11 +12,11 @@ import com.intellij.refactoring.move.MoveCallback;
 import com.intellij.refactoring.move.MoveHandlerDelegate;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TaraMoveConcept extends MoveHandlerDelegate {
 
@@ -53,9 +53,7 @@ public class TaraMoveConcept extends MoveHandlerDelegate {
 		}
 		final TaraMoveConceptDialog dialog = new TaraMoveConceptDialog(project, elementsToMove, initialDestination);
 		dialog.show();
-		if (!dialog.isOK()) {
-			return;
-		}
+		if (!dialog.isOK()) return;
 		final String destination = dialog.getTargetPath();
 		final boolean previewUsages = dialog.isPreviewUsages();
 		try {

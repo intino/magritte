@@ -145,7 +145,7 @@
     <refactoring.moveHandler implementation="siani.tara.intellij.refactoring.move.TaraMoveConcept"/>
     <lang.importOptimizer language="Tara"
                           implementationClass="siani.tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
-    <findUsagesHandlerFactory implementation="siani.tara.intellij.findUsages.TaraFindUsagesHandlerFactory" id="Tara"
+    <findUsagesHandlerFactory implementation="siani.tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara"
                               order="last, before default"/>
   </extensions>
 

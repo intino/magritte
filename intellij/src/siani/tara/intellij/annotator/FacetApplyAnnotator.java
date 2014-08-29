@@ -24,7 +24,6 @@ public class FacetApplyAnnotator extends TaraAnnotator {
 		Model model = TaraLanguage.getMetaModel(facetApply.getContainingFile());
 		if (model == null) return;
 		Concept concept = TaraPsiImplUtil.getContextOf(facetApply);
-
 		Node node = findNode(concept, model);
 		if (node == null) return;
 		if (!isAllowedFacet(node, facetApply.getMetaIdentifierList().get(0).getText()))
@@ -36,14 +35,14 @@ public class FacetApplyAnnotator extends TaraAnnotator {
 	private void checkDuplicatedFacet(Concept concept, TaraFacetApply facetApply) {
 		List<TaraFacetApply> facetApplies = concept.getBody().getFacetApplies();
 		int count = 0;
-//		for (TaraFacetApply apply : facetApplies) {
-//			if (apply == null || apply.getMetaIdentifierList().isEmpty() || facetApply.getMetaIdentifierList().isEmpty())
-//				continue;
-//			if (apply.getMetaIdentifierList().get(0).getText().equals(facetApply.getMetaIdentifierList().get(0).getText()))
-//				count++;
-//		}
-//		if (count > 1)
-//			annotateDuplicatedFacet(facetApply, holder);
+		for (TaraFacetApply apply : facetApplies) {
+			if (apply == null || apply.getMetaIdentifierList().isEmpty() || facetApply.getMetaIdentifierList().isEmpty())
+				continue;
+			if (apply.getMetaIdentifierList().get(0).getText().equals(facetApply.getMetaIdentifierList().get(0).getText()))
+				count++;
+		}
+		if (count > 1)
+			annotateDuplicatedFacet(facetApply, holder);
 	}
 
 	private boolean isAllowedFacet(Node node, String name) {

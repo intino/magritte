@@ -34,30 +34,19 @@ public class TaraFileMoveHandler extends MoveFileHandler {
 	public void prepareMovedFile(PsiFile file, PsiDirectory moveDestination, Map<PsiElement, PsiElement> oldToNewMap) {
 		if (file != null) {
 			oldToNewMap.put(file, moveDestination);
-			final Collection<VirtualFile> roots = TaraUtil.getSourceRoots(file);
-			PsiDirectory root = moveDestination;
-			while (root != null && !roots.contains(root.getVirtualFile())) root = root.getParentDirectory();
-			if (root == null) return;
-			String rootPath = root.getVirtualFile().getPath();
-			Project project = moveDestination.getProject();
-			Module moduleForFile = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(moveDestination.getVirtualFile());
-			String path = moveDestination.getVirtualFile().getPath().replace(rootPath, "").replaceAll(File.separator, ".").substring(1);
-			TaraBoxFile taraBoxFile = (TaraBoxFile) file;
-			taraBoxFile.setBox(project.getName() + "." + moduleForFile.getName() + "." + path + "." + taraBoxFile.getPresentableName());
+			changeBox(file, moveDestination);
 		}
 	}
 
 	@Override
 	public List<UsageInfo> findUsages(PsiFile file, PsiDirectory newParent, boolean searchInComments, boolean searchInNonJavaFiles) {
-		if (file != null) {
-			final List<UsageInfo> usages = TaraRefactoringUtil.findUsages(file, false);
-			for (UsageInfo usage : usages) {
-				final PsiElement element = usage.getElement();
-				if (element != null) element.putCopyableUserData(REFERENCED_ELEMENT, file);
-			}
-			return usages;
+		final List<UsageInfo> usages = new ArrayList<>();
+		usages.addAll(TaraRefactoringUtil.findUsages(file, false));
+		for (UsageInfo usage : usages) {
+			final PsiElement element = usage.getElement();
+			if (element != null) element.putCopyableUserData(REFERENCED_ELEMENT, file);
 		}
-		return null;
+		return usages.isEmpty() ? null : usages;
 	}
 
 	@Override
@@ -78,27 +67,39 @@ public class TaraFileMoveHandler extends MoveFileHandler {
 						updatedFiles.add(file);
 						TaraRefactoringUtil.updateImportOfElement((HeaderReference) reference.getParent(), (TaraBoxFile) newElement);
 					}
+					for (PsiFile updatedFile : updatedFiles)
+						new TaraImportOptimizer().processFile(updatedFile);
 				}
-			}
-			if (!updatedFiles.isEmpty()) {
-				final TaraImportOptimizer optimizer = new TaraImportOptimizer();
-				for (PsiFile file : updatedFiles)
-					optimizer.processFile(file).run();
 			}
 		}
 	}
 
 	@Override
-	public void updateMovedFile(PsiFile psiFile) throws IncorrectOperationException {
-		TaraBoxFile file = (TaraBoxFile) psiFile;
-
+	public void updateMovedFile(PsiFile file) throws IncorrectOperationException {
+		if (file instanceof TaraBoxFile) {
+			final PsiDirectory containingDirectory = file.getContainingDirectory();
+			if (containingDirectory == null) return;
+			changeBox(file, containingDirectory);
+		}
 	}
-
 
 	private boolean inTheSamePackageAsReference(PsiElement element, List<UsageInfo> usages) {
 		for (UsageInfo usage : usages)
 			if (usage.getElement() != null && usage.getElement().getContainingFile().equals(element.getContainingFile()) &&
 				usage.getElement().getParent() instanceof HeaderReference) return false;
 		return true;
+	}
+
+	private void changeBox(PsiFile file, PsiDirectory moveDestination) {
+		final Collection<VirtualFile> roots = TaraUtil.getSourceRoots(file);
+		PsiDirectory root = moveDestination;
+		while (root != null && !roots.contains(root.getVirtualFile())) root = root.getParentDirectory();
+		if (root == null) return;
+		String rootPath = root.getVirtualFile().getPath();
+		Project project = moveDestination.getProject();
+		Module moduleForFile = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(moveDestination.getVirtualFile());
+		String path = moveDestination.getVirtualFile().getPath().replace(rootPath, "").replaceAll(File.separator, ".").substring(1);
+		TaraBoxFile taraBoxFile = (TaraBoxFile) file;
+		taraBoxFile.setBox(project.getName() + "." + moduleForFile.getName() + "." + path + "." + taraBoxFile.getPresentableName());
 	}
 }

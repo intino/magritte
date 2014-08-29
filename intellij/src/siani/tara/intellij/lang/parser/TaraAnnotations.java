@@ -1,6 +1,6 @@
 package siani.tara.intellij.lang.parser;
 
-public class TaraAnnotation {
+public class TaraAnnotations {
 
 	public static final String COMPONENT = "component";
 	public static final String NAMEABLE = "named";
@@ -16,7 +16,7 @@ public class TaraAnnotation {
 	public static final String[] CHILD_ANNOTATIONS = new String[]{PRIVATE, TERMINAL, REQUIRED, SINGLE, PROPERTY, NAMEABLE};
 	public static final String[] VARIABLE_ANNOTATIONS = new String[]{PRIVATE, TERMINAL, PROPERTY, SINGLE, PROPERTY};
 
-	private TaraAnnotation() {
+	private TaraAnnotations() {
 	}
 
 	public static String[] getAnnotations() {

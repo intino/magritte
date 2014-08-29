@@ -52,7 +52,7 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 	}
 
 	private static PsiNamedElement addToFile(@NotNull PsiNamedElement element, @NotNull final TaraBoxFile destination, @NotNull Collection<UsageInfo> usages) {
-		List<PsiElement> topLevelAtDestination = new ArrayList<PsiElement>();
+		List<PsiElement> topLevelAtDestination = new ArrayList<>();
 		for (UsageInfo usage : usages) {
 			final PsiElement e = usage.getElement();
 //			if (e != null && ScopeUtil.getScopeOwner(e) == destination && getImportStatementByElement(e) == null) {

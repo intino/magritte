@@ -3,13 +3,14 @@ package siani.tara.intellij.structureview;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
 import com.intellij.navigation.ItemPresentation;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 public class FileStructureViewElement extends PsiTreeElementBase<TaraBoxFileImpl> {
 
@@ -19,9 +20,10 @@ public class FileStructureViewElement extends PsiTreeElementBase<TaraBoxFileImpl
 
 	@NotNull
 	public Collection<StructureViewTreeElement> getChildrenBase() {
-		Concept concept = getElement().getConcepts()[0]; //TODO
+		if (getElement() == null) return Collections.EMPTY_LIST;
+		Concept[] concepts = getElement().getConcepts();
 		Collection<StructureViewTreeElement> elements = new ArrayList<>(1);
-		elements.add(new StructureViewElement(concept));
+		for (Concept concept : concepts) elements.add(new StructureViewElement(concept));
 		return elements;
 	}
 

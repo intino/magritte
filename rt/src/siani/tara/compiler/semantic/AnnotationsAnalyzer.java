@@ -24,7 +24,7 @@ public class AnnotationsAnalyzer {
 
 	private void rootAnnotation(Node node) {
 		if (!node.isPrime() && node.getObject().is(AnnotationType.COMPONENT))//TODO
-			if (node.isCase()) {
+			if (node.isSub()) {
 				if (!checkRootCase(node))
 					errors.add(new WrongAnnotationError(AnnotationType.COMPONENT.name(), node));
 			} else errors.add(new WrongAnnotationError(AnnotationType.COMPONENT.name(), node));
@@ -39,17 +39,17 @@ public class AnnotationsAnalyzer {
 	}
 
 	private void requiredAnnotation(Node node) {
-		if (node.isCase() && node.getObject().is(AnnotationType.REQUIRED))
+		if (node.isSub() && node.getObject().is(AnnotationType.REQUIRED))
 			errors.add(new WrongAnnotationError(AnnotationType.REQUIRED.name(), node));
 	}
 
 	private void singleAnnotation(Node node) {
-		if (node.isCase() && node.getObject().is(AnnotationType.SINGLE))
+		if (node.isSub() && node.getObject().is(AnnotationType.SINGLE))
 			errors.add(new WrongAnnotationError(AnnotationType.SINGLE.name(), node));
 	}
 
 	private void propertyAnnotation(Node node) {
-		if (node.isCase() && node.getObject().is(AnnotationType.SINGLE))
+		if (node.isSub() && node.getObject().is(AnnotationType.SINGLE))
 			errors.add(new WrongAnnotationError(AnnotationType.SINGLE.name(), node));
 	}
 }

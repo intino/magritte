@@ -4,6 +4,7 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.VariantsManager;
@@ -29,8 +30,8 @@ public class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
 		List<ResolveResult> results = new ArrayList<>();
-		PsiElement element = ReferenceManager.resolve((Identifier) myElement, external);
-		if (element != null) results.add(new PsiElementResolveResult(element));
+		PsiElement resolve = ReferenceManager.resolve((Identifier) myElement, external);
+		if (resolve != null) results.add(new PsiElementResolveResult(resolve));
 		return results.toArray(new ResolveResult[results.size()]);
 	}
 
@@ -63,5 +64,10 @@ public class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements
 	private String getFileName(PsiElement concept) {
 		String name = concept.getContainingFile().getName();
 		return name.substring(0, name.lastIndexOf("."));
+	}
+
+	@Override
+	public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+		return element;
 	}
 }

@@ -1,4 +1,4 @@
-package siani.tara.intellij.findUsages;
+package siani.tara.intellij.findusage;
 
 import com.intellij.find.findUsages.FindUsagesHandler;
 import com.intellij.openapi.module.Module;

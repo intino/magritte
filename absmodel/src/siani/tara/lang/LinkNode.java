@@ -59,8 +59,8 @@ public class LinkNode extends Node {
 	}
 
 	@Override
-	public boolean isCase() {
-		return destiny.isCase();
+	public boolean isSub() {
+		return destiny.isSub();
 	}
 
 	@Override

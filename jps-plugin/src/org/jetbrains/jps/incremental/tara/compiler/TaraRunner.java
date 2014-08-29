@@ -21,6 +21,9 @@ import java.util.concurrent.Future;
 
 public class TaraRunner {
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
+	private static final String ANTLR = "antlr-4.4-complete.jar";
+	private static final String GSON = "gson-2.2.4.jar";
+	private static final String TEMPLATION = "templation.jar";
 	private static File argsFile;
 
 	protected TaraRunner(final String projectName, final String moduleName, final String outputDir,
@@ -107,23 +110,23 @@ public class TaraRunner {
 
 	private File getAntlrLib() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		root = new File(root.getParentFile(), "antlr-4.2-complete.jar");
-		return (root.exists()) ? new File(root.getParentFile(), "antlr-4.2-complete.jar") :
-			new File(root.getParentFile(), "lib/antlr-4.2-complete.jar");
+		root = new File(root.getParentFile(), ANTLR);
+		return (root.exists()) ? new File(root.getParentFile(), ANTLR) :
+			new File(root.getParentFile(), "lib/" + ANTLR);
 	}
 
 	private File getGsonLib() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		root = new File(root.getParentFile(), "gson-2.2.4.jar");
-		return (root.exists()) ? new File(root.getParentFile(), "gson-2.2.4.jar") :
-			new File(root.getParentFile(), "lib/gson-2.2.4.jar");
+		root = new File(root.getParentFile(), GSON);
+		return (root.exists()) ? new File(root.getParentFile(), GSON) :
+			new File(root.getParentFile(), "lib/" + GSON);
 	}
 
 	private File getTemplationLib() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		root = new File(root.getParentFile(), "templation.jar");
-		return (root.exists()) ? new File(root.getParentFile(), "templation.jar") :
-			new File(root.getParentFile(), "lib/templation.jar");
+		root = new File(root.getParentFile(), TEMPLATION);
+		return (root.exists()) ? new File(root.getParentFile(), TEMPLATION) :
+			new File(root.getParentFile(), "lib/" + TEMPLATION);
 	}
 
 	private Collection<String> generateClasspath() {

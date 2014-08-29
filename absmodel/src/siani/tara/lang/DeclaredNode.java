@@ -48,11 +48,11 @@ public class DeclaredNode extends Node {
 	}
 
 
-	public boolean isCase() {
+	public boolean isSub() {
 		return getObject().isCase();
 	}
 
 	public String toString() {
-		return "DeclaredNode" + (isCase() ? "AsCase" : "") + "{" + qualifiedName + '}';
+		return "DeclaredNode" + (isSub() ? "AsCase" : "") + "{" + qualifiedName + '}';
 	}
 }

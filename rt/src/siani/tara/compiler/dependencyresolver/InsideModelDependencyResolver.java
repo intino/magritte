@@ -30,7 +30,6 @@ public class InsideModelDependencyResolver {
 			}
 		});
 		resolveHierarchyDependencies();
-
 	}
 
 	private void resolveHierarchyDependencies() throws DependencyException {
@@ -42,7 +41,7 @@ public class InsideModelDependencyResolver {
 					linkToDeclared((LinkNode) node, model.searchDeclaredNodeOfLink((LinkNode) node));
 				else {
 					NodeObject object = node.getObject();
-					if (object.getParentName() != null || node.isCase()) {
+					if (object.getParentName() != null || node.isSub()) {
 						DeclaredNode parent = model.searchAncestry(node);
 						if (parent == null) throwError(node);
 						if (toProcessNodes.contains(parent.getQualifiedName())) continue;
@@ -125,7 +124,7 @@ public class InsideModelDependencyResolver {
 
 	private void collectInnerConceptsInherited(DeclaredNode parent, DeclaredNode node, List<LinkNode> toAddNodes) {
 		for (Node child : parent.getInnerNodes())
-			if (!child.isCase()) {
+			if (!child.isSub()) {
 				DeclaredNode destiny = (child instanceof LinkNode) ? ((LinkNode) child).getDestiny() : (DeclaredNode) child;
 				LinkNode element = new LinkNode(destiny, node);
 				element.setDestinyQN(destiny.getQualifiedName());

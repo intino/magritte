@@ -18,18 +18,25 @@ public class ConceptAnnotator extends TaraAnnotator {
 		this.holder = holder;
 		if (!(element instanceof Concept)) return;
 		Concept concept = (Concept) element;
-		if (isRootCase(concept)) {
+		if (isRootSub(concept)) {
 			annotateAndFix(element, new RemoveConceptFix(concept), TaraBundle.message("concept.position.key.error.message"));
 			return;
 		}
-		isDuplicated(concept);
+		checkIfDuplicated(concept);
+		checkIfExtendedFromDifferentType(concept);
 	}
 
-	private boolean isRootCase(Concept element) {
+	private void checkIfExtendedFromDifferentType(Concept concept) {
+		if (concept.getSignature().getParentConcept() == null || concept.getType() == null) return;
+		if (!concept.getType().equals(concept.getSignature().getParentConcept().getType()))
+			annotateAndFix(concept.getSignature().getIdentifierReference(), new RemoveConceptFix(concept), TaraBundle.message("invalid.extension.concept.key.error.message"));
+	}
+
+	private boolean isRootSub(Concept element) {
 		return (element.isSub() && TaraPsiImplUtil.getContextOf(element) == null);
 	}
 
-	private void isDuplicated(Concept concept) {
+	private void checkIfDuplicated(Concept concept) {
 		if (concept.getIdentifierNode() != null && findDuplicates(concept) != 1)
 			annotateAndFix(concept.getIdentifierNode(), new RemoveConceptFix(concept), TaraBundle.message("duplicate.concept.key.error.message"));
 	}

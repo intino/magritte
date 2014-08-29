@@ -13,16 +13,9 @@ import siani.tara.lang.*;
 import java.util.List;
 import java.util.Map;
 
-public class ParameterAnnotator extends TaraAnnotator {
+import static siani.tara.intellij.lang.parser.TaraPrimitives.*;
 
-	protected static final String INTEGER = "integer";
-	protected static final String NATURAL = "natural";
-	protected static final String BOOLEAN = "boolean";
-	protected static final String STRING = "string";
-	protected static final String DOUBLE = "double";
-	protected static final String REFERENCE = "reference";
-	protected static final String COORDINATE = "coordinate";
-	protected static final String DATE = "date";
+public class ParameterAnnotator extends TaraAnnotator {
 
 	Model model;
 	Node node;
@@ -140,7 +133,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 			case TaraDoubleValueImpl:
 				return varType.equals(DOUBLE);
 			case TaraCodeValueImpl:
-				return varType.equals(REFERENCE);
+				return varType.equals(PORT);
 			case TaraDateValueImpl:
 				return varType.equals(DATE);
 			case TaraCoordinateValueImpl:

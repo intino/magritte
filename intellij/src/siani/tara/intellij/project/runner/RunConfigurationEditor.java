@@ -95,6 +95,5 @@ public class RunConfigurationEditor extends SettingsEditor<RunConfiguration> imp
 	}
 
 	private void createUIComponents() {
-		//TODO
 	}
 }

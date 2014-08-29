@@ -5,10 +5,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.util.Processor;
-import siani.tara.intellij.findUsages.TaraFindUsagesHandlerFactory;
+import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.findusage.TaraFindUsagesHandlerFactory;
 import siani.tara.intellij.lang.psi.HeaderReference;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,22 +27,20 @@ public class TaraRefactoringUtil {
 		final List<PsiElement> elementsToProcess = new ArrayList<>();
 		elementsToProcess.addAll(Arrays.asList(handler.getPrimaryElements()));
 		elementsToProcess.addAll(Arrays.asList(handler.getSecondaryElements()));
-		for (PsiElement e : elementsToProcess) {
+		for (PsiElement e : elementsToProcess)
 			handler.processElementUsages(e, new Processor<UsageInfo>() {
 				@Override
 				public boolean process(UsageInfo usageInfo) {
-					if (!usageInfo.isNonCodeUsage) {
+					if (!usageInfo.isNonCodeUsage)
 						usages.add(usageInfo);
-					}
 					return true;
 				}
 			}, FindUsagesHandler.createFindUsagesOptions(element.getProject(), null));
-		}
 		return usages;
 	}
 
-	public static void addImport(TaraBoxFile reference, TaraBoxFile newElement) {
-		reference.addImport(newElement.getConcepts()[0].getQualifiedName()); //TODO
+	public static void addImport(TaraBoxFile reference, TaraBoxFile boxFile) {
+		reference.addImport(boxFile.getBoxReference().getHeaderReference().getText());
 	}
 
 	public static void updateImportOfElement(HeaderReference importReference, TaraBoxFile newElement) {

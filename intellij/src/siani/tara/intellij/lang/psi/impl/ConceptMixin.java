@@ -14,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
-import siani.tara.intellij.lang.parser.TaraAnnotation;
 import siani.tara.intellij.lang.psi.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ConceptMixin extends ASTWrapperPsiElement {
 
@@ -143,13 +143,13 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 
 	public boolean isSub() {
-		return this.getSignature().isCase();
+		return this.getSignature().isSub();
 	}
 
 	public boolean isIntention() {
 		if (this.getAnnotations() == null) return false;
 		for (String element : this.getAnnotations().getAnnotationsAsString())
-			if (element.equals(TaraAnnotation.INTENTION)) return true;
+			if (element.equals(siani.tara.intellij.lang.parser.TaraAnnotations.INTENTION)) return true;
 		return false;
 	}
 
@@ -160,6 +160,18 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 			if (child.isSub()) cases.add(child);
 		}
 		return cases.size() > 0 ? cases.toArray(new Concept[cases.size()]) : new Concept[0];
+	}
+
+	public TaraFacetApply[] getFacetApplies() {
+		if (this.getBody() == null) return new TaraFacetApply[0];
+		List<TaraFacetApply> facetApplies = getBody().getFacetApplies();
+		return facetApplies.toArray(new TaraFacetApply[facetApplies.size()]);
+	}
+
+	public TaraFacetTarget[] getFacetTargets() {
+		if (this.getBody() == null) return new TaraFacetTarget[0];
+		List<TaraFacetTarget> facetTargets = getBody().getFacetTargets();
+		return facetTargets.toArray(new TaraFacetTarget[facetTargets.size()]);
 	}
 
 	@NotNull

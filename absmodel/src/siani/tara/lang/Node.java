@@ -29,7 +29,7 @@ public abstract class Node {
 
 	public abstract List<Node> getInnerNodes();
 
-	public abstract boolean isCase();
+	public abstract boolean isSub();
 
 	public DeclaredNode[] getCases() {
 		List<DeclaredNode> cases = new ArrayList<>();

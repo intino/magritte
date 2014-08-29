@@ -43,7 +43,6 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	}
 
 	public void disposeComponent() {
-		// TODO: insert component disposal logic here
 	}
 
 	@NotNull

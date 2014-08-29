@@ -7,10 +7,8 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
+import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.psi.*;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -170,8 +168,11 @@ public class TaraUtil {
 		return ProjectRootManager.getInstance(project).getFileIndex().getSourceRootForFile(psiFile.getOriginalFile().getVirtualFile());
 	}
 
-	public static TaraBoxFile getOrCreateFile(String myDestination, Project myProject) {
-		return null;//TODO
+	public static TaraBoxFile getOrCreateFile(String destiny, Project project) {
+		TaraBoxFileImpl boxFile = (TaraBoxFileImpl) PsiFileFactory.getInstance(project).
+			createFileFromText(destiny + "." + TaraFileType.INSTANCE.getDefaultExtension(), TaraFileType.INSTANCE, "");
+		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
+		return boxFile;
 	}
 
 	@NotNull

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import siani.tara.intellij.lang.parser.TaraAnnotation;
+import siani.tara.intellij.lang.parser.TaraAnnotations;
 import siani.tara.intellij.lang.psi.Annotations;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
@@ -57,11 +57,11 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	private PsiElement[] checkCorrectAnnotation(Concept concept, PsiElement[] annotationList) {
 		List<PsiElement> incorrects;
 		if (isPrimeConcept(concept))
-			incorrects = checkAnnotationList(annotationList, TaraAnnotation.PRIME_ANNOTATIONS);
+			incorrects = checkAnnotationList(annotationList, TaraAnnotations.PRIME_ANNOTATIONS);
 		else if ((concept != null) && concept.isSub())
-			incorrects = checkAnnotationList(annotationList, TaraAnnotation.CASE_ANNOTATIONS);
+			incorrects = checkAnnotationList(annotationList, TaraAnnotations.CASE_ANNOTATIONS);
 		else
-			incorrects = checkAnnotationList(annotationList, TaraAnnotation.CHILD_ANNOTATIONS);
+			incorrects = checkAnnotationList(annotationList, TaraAnnotations.CHILD_ANNOTATIONS);
 		return incorrects.toArray(new PsiElement[incorrects.size()]);
 	}
 

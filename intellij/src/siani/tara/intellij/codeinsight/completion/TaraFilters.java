@@ -29,10 +29,10 @@ public class TaraFilters {
 		.and(new FilterPattern(new AfterNewLineInBodyFilter())).and(new FilterPattern(new NoModelFilter()));
 	protected static PsiElementPattern.Capture<PsiElement> AfterNewLineNoMetamodel = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLinePrimalFilter())).and(new FilterPattern(new NoModelFilter()));
-	protected static PsiElementPattern.Capture<PsiElement> afterConceptKey = psiElement()
+	protected static PsiElementPattern.Capture<PsiElement> afterConceptNameKey = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new InSignatureFitFilter()))
-		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.METAIDENTIFIER_KEY)));
+		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.IDENTIFIER)));
 
 	private TaraFilters() {
 	}

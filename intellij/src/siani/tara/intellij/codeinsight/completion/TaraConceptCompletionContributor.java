@@ -13,7 +13,7 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("case "));
+					resultSet.addElement(LookupElementBuilder.create("sub "));
 					resultSet.addElement(LookupElementBuilder.create("has "));
 					resultSet.addElement(LookupElementBuilder.create("var "));
 					resultSet.addElement(LookupElementBuilder.create("is "));
@@ -37,6 +37,16 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
 					resultSet.addElement(LookupElementBuilder.create("Concept "));
+				}
+			}
+		);
+
+		extend(CompletionType.BASIC, TaraFilters.afterConceptNameKey,
+			new CompletionProvider<CompletionParameters>() {
+				public void addCompletions(@NotNull CompletionParameters parameters,
+				                           ProcessingContext context,
+				                           @NotNull CompletionResultSet resultSet) {
+					resultSet.addElement(LookupElementBuilder.create("extends "));
 				}
 			}
 		);
