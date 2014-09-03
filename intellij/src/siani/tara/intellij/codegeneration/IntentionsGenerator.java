@@ -14,7 +14,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.io.File;
@@ -122,7 +121,7 @@ public class IntentionsGenerator {
 
 	private Concept[] getIntentions(TaraBoxFile taraBoxFile) {
 		List<Concept> intentions = new ArrayList<>();
-		Concept[] allConceptsOfFile = TaraUtil.getRootConceptsOfFile((TaraBoxFileImpl) taraBoxFile);
+		Concept[] allConceptsOfFile = TaraUtil.getRootConceptsOfFile(taraBoxFile);
 		for (Concept concept : allConceptsOfFile)
 			if (concept.isIntention())
 				intentions.add(concept);

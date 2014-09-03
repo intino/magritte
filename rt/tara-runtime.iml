@@ -33,6 +33,7 @@
     </orderEntry>
     <orderEntry type="library" scope="TEST" name="mockito-all-local" level="application" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="mockito-all-local" level="application" />
   </component>
 </module>
 

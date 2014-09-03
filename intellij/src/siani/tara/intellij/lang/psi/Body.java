@@ -29,5 +29,7 @@ public interface Body extends TaraPsiElement {
 	@NotNull
 	List<TaraFacetApply> getFacetApplies();
 
+	List<TaraAnnotationsAndFacets> getAnnotationsAndFacetsList();
+
 }
 

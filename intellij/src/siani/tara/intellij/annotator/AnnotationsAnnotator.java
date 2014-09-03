@@ -31,7 +31,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	}
 
 	private void checkAnnotations(Annotations element) {
-		for (PsiElement psiElement : checkCorrectAnnotation(TaraPsiImplUtil.getContextOf(element), element.getAnnotations())) {
+		for (PsiElement psiElement : getIncorrectAnnotations(TaraPsiImplUtil.getContextOf(element), element.getAnnotations())) {
 			Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
 			errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
 		}
@@ -48,13 +48,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		}
 	}
 
-	private PsiElement is(Annotations element, Class clazz) {
-		for (PsiElement psi : element.getAnnotations())
-			if (clazz.isInstance(psi)) return psi;
-		return null;
-	}
-
-	private PsiElement[] checkCorrectAnnotation(Concept concept, PsiElement[] annotationList) {
+	private PsiElement[] getIncorrectAnnotations(Concept concept, PsiElement[] annotationList) {
 		List<PsiElement> incorrects;
 		if (isPrimeConcept(concept))
 			incorrects = checkAnnotationList(annotationList, TaraAnnotations.PRIME_ANNOTATIONS);

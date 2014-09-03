@@ -1,6 +1,6 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
-import magritte.metamorph.Intention;
+import magritte.cast.Intention;
 
 public interface ${NAME} extends ${PARENT} {
 

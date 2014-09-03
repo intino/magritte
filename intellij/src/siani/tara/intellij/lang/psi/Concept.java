@@ -36,8 +36,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isIntention();
 
-	@Nullable
-	Annotations getAnnotations();
+	@NotNull
+	PsiElement[] getAnnotations();
 
 	@Override
 	Icon getIcon(@IconFlags int i);

@@ -2,6 +2,8 @@
 
 import magritte.schema.Node;
 import magritte.schema.Variable;
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")import ${PACKAGE_NAME}.${PARENT};#end
+
 
 public class ${NAME} extends ${PARENT} {
 

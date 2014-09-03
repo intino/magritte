@@ -18,6 +18,7 @@ import siani.tara.intellij.lang.psi.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ConceptMixin extends ASTWrapperPsiElement {
@@ -147,9 +148,9 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isIntention() {
-		if (this.getAnnotations() == null) return false;
-		for (String element : this.getAnnotations().getAnnotationsAsString())
-			if (element.equals(siani.tara.intellij.lang.parser.TaraAnnotations.INTENTION)) return true;
+		for (PsiElement annotation : getAnnotations())
+			if (siani.tara.intellij.lang.parser.TaraAnnotations.INTENTION.equals(annotation.getText()))
+				return true;
 		return false;
 	}
 
@@ -179,9 +180,19 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return findNotNullChildByClass(Signature.class);
 	}
 
-	@Nullable
-	public Annotations getAnnotations() {
-		return findChildByClass(Annotations.class);
+	@NotNull
+	public PsiElement[] getAnnotations() {
+		List<PsiElement> list = new ArrayList<>();
+		TaraAnnotationsAndFacets annotationsAndFacets = findChildByClass(TaraAnnotationsAndFacets.class);
+		if (annotationsAndFacets != null)
+			for (Annotations taraAnnotations : annotationsAndFacets.getAnnotationsList())
+				Collections.addAll(list, taraAnnotations.getAnnotations());
+		if (this.getBody() != null && getBody().getAnnotationsAndFacetsList() != null)
+			for (TaraAnnotationsAndFacets inBody : getBody().getAnnotationsAndFacetsList())
+				for (TaraAnnotations taraAnnotations : inBody.getAnnotationsList()) {
+					Collections.addAll(list, taraAnnotations.getAnnotations());
+				}
+		return list.toArray(new PsiElement[list.size()]);
 	}
 
 	@Override

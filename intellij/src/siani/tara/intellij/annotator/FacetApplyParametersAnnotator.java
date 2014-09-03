@@ -13,6 +13,7 @@ import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 import siani.tara.lang.Variable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class FacetApplyParametersAnnotator extends TaraAnnotator {
 	}
 
 	private List<Variable> getFacetVariables(Map<String, List<Variable>> facets, String facetName) {
-		List<Variable> variables = null;
+		List<Variable> variables = new ArrayList<>();
 		for (String key : facets.keySet()) if (key.endsWith(facetName)) variables = facets.get(key);
 		return variables;
 	}
