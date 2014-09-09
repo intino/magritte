@@ -90,17 +90,17 @@ public class TaraUtil {
 		Project project = psiFile.getProject();
 		Module module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(psiFile.getVirtualFile());
 		if (module == null) return new TaraBoxFileImpl[0];
-		List<TaraBoxFileImpl> taraFiles = getTaraFilesOfModule(project, module);
+		List<TaraBoxFileImpl> taraFiles = getTaraFilesOfModule(module);
 		return taraFiles.toArray(new TaraBoxFileImpl[taraFiles.size()]);
 	}
 
-	public static List<TaraBoxFileImpl> getTaraFilesOfModule(Project project, Module module) {
+	public static List<TaraBoxFileImpl> getTaraFilesOfModule(Module module) {
 		List<TaraBoxFileImpl> taraFiles = new ArrayList<>();
 		Collection<VirtualFile> files = FileBasedIndex.getInstance().
 			getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.moduleScope(module));
 		for (VirtualFile file : files)
 			if (file != null) {
-				TaraBoxFileImpl taraFile = (TaraBoxFileImpl) PsiManager.getInstance(project).findFile(file);
+				TaraBoxFileImpl taraFile = (TaraBoxFileImpl) PsiManager.getInstance(module.getProject()).findFile(file);
 				if (taraFile != null) taraFiles.add(taraFile);
 			}
 		return taraFiles;
@@ -213,7 +213,7 @@ public class TaraUtil {
 	}
 
 	public static Concept findConceptByQN(String qualifiedName, PsiFile file) {
-		List<TaraBoxFileImpl> filesOfModule = getTaraFilesOfModule(file.getProject(), getModuleOfFile(file));
+		List<TaraBoxFileImpl> filesOfModule = getTaraFilesOfModule(getModuleOfFile(file));
 		for (TaraBoxFileImpl taraFile : filesOfModule) {
 			Concept[] rootConceptsOfFile = getRootConceptsOfFile(taraFile);
 			for (Concept concept : rootConceptsOfFile)

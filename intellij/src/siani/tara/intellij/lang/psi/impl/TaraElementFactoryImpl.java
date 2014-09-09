@@ -17,9 +17,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public Concept createConcept(String name) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"box project.mod.tara\n" +
-				"Concept " + name + " <root>\n" +
-				"\tConcept Dummy <required>\n" +
+			"box project.mod.tara\n\n" +
+				"Concept " + name + "\n" +
 				"\tvar reference uid"
 		);
 		return file.getConcepts()[0];
@@ -56,19 +55,18 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	@Override
-	public MetaIdentifier createMetaIdentifier(String module, String name) {
+	public TaraBox createBoxReference(String project, String module, String packageName) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"box " + "project." + module + ":tara\n" +
-				name + " Dummy\n"
-		);
-		return PsiTreeUtil.getChildOfType(file, Concept.class).getMetaIdentifier();
+			"box " + project + "." + module + "." + packageName +
+				"\nConcept Dummy\n");
+		return file.getBoxReference();
 	}
 
 	@Override
 	public PsiElement createMetaWordIdentifier(String module, String node, String name) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"box " + "project." + module + ":tara\n" +
-				node + " Dummy(" + node + "." + name + ")\n"
+			"box " + "project." + module + ".tara\n" +
+				node + "(" + node + "." + name + ")" + " Dummy"+"\n"
 		);
 		Parameter[] parameters = PsiTreeUtil.getChildOfType(file, Concept.class).getSignature().getParameters().getParameters();
 		return parameters[0].getLastChild().getLastChild();
@@ -95,7 +93,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		final TaraBoxFileImpl file = createDummyFile(
 			"box project.mod.tara\n" +
 				"use " + reference + "\n\n" +
-				"Concept Source is root\n"
+				"Concept Source\n"
 		);
 		Import[] imp = file.getImports();
 		return imp != null ? imp[0] : null;
@@ -104,7 +102,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	public TaraBox createBox(String reference) {
 		final TaraBoxFileImpl file = createDummyFile(
 			"box " + reference + "\n" +
-				"Concept Source <root>\n"
+				"Concept Source\n"
 		);
 		TaraBox pack = file.getBoxReference();
 		return pack != null ? pack : null;

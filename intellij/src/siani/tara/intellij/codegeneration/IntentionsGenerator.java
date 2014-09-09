@@ -87,7 +87,6 @@ public class IntentionsGenerator {
 		for (VirtualFile file : virtualFiles)
 			if (file.isDirectory() && SRC.equals(file.getName())) return file;
 		throw new RuntimeException("src directory not found");
-
 	}
 
 	private void writeInnerClasses(final String[] conceptIntentions, final PsiClass sourceClass, final boolean extensible) {

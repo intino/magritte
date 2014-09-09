@@ -1,4 +1,4 @@
-package siani.tara.intellij.codeinsight;
+package siani.tara.intellij.codeinsight.linemarkers;
 
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.DaemonBundle;
@@ -16,23 +16,33 @@ import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.lang.Model;
+import siani.tara.lang.ModelObject;
+import siani.tara.lang.Node;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
-public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
+public class TaraFacetLineMarkerProvider extends JavaLineMarkerProvider {
 
+	private static final String INTENTION = "Intention";
 	private final MarkerType OVERRIDDEN_PROPERTY_TYPE = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
-			if (!(element instanceof Concept) || ((Concept) element).isIntention()) return null;
+			if (!Concept.class.isInstance(element)) return null;
 			Concept concept = (Concept) element;
+			Model model = TaraLanguage.getMetaModel(concept.getFile());
+			if (model == null) return null;
+			Node node = findNode(concept, model);
+			if (node == null || !node.getObject().is(ModelObject.AnnotationType.INTENTION)) return null;
 			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode(), true);
-			String start = "Intention declared in ";
+			String start = "Facet declared in ";
 			@NonNls String pattern = null;
 			if (reference != null) pattern = reference.getNavigationElement().getContainingFile().getName();
 			return GutterIconTooltipHelper.composeText(new PsiElement[]{reference}, start, pattern);
@@ -59,14 +69,18 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 	);
 
 
-	public TaraIntentionLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+	public TaraFacetLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (element instanceof Concept && ((Concept) element).isIntention()) {
+		if (element instanceof Concept) {
 			Concept concept = (Concept) element;
+			Model model = TaraLanguage.getMetaModel(concept.getFile());
+			if (model == null) return null;
+			Node node = findNode(concept, model);
+			if (node == null || !node.getObject().is(ModelObject.AnnotationType.INTENTION)) return null;
 			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode(), true);
 			if (reference != null) {
 				final Icon icon = AllIcons.Gutter.ImplementedMethod;
@@ -76,5 +90,9 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 			}
 		}
 		return super.getLineMarkerInfo(element);
+	}
+
+	protected Node findNode(Concept concept, Model model) {
+		return model.searchNode(TaraUtil.getMetaQualifiedName(concept));
 	}
 }

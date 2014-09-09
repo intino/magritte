@@ -38,19 +38,20 @@ public class TaraWizardStep extends ModuleWizardStep {
 			}
 		});
 		List<Module> modules = new ArrayList<>();
-
-		for (Module module : ModuleManager.getInstance(project).getModules())
-			if (TaraModuleType.TARA_MODULE.equals(module.getOptionValue(Module.ELEMENT_TYPE)) && !ModuleConfiguration.getInstance(module).isSystem())
-				modules.add(module);
-		moduleChooser.setListData(modules.toArray());
-		moduleChooser.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				myParent = (Module) ((JList) e.getSource()).getSelectedValue();
-			}
-		});
+		if (project == null) moduleChooser.setEnabled(false);
+		else {
+			for (Module module : ModuleManager.getInstance(this.project).getModules())
+				if (TaraModuleType.TARA_MODULE.equals(module.getOptionValue(Module.ELEMENT_TYPE)) && !ModuleConfiguration.getInstance(module).isSystem())
+					modules.add(module);
+			moduleChooser.setListData(modules.toArray());
+			moduleChooser.addListSelectionListener(new ListSelectionListener() {
+				@Override
+				public void valueChanged(ListSelectionEvent e) {
+					myParent = (Module) ((JList) e.getSource()).getSelectedValue();
+				}
+			});
+		}
 	}
-
 
 	@Override
 	public JComponent getComponent() {

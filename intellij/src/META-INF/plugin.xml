@@ -77,10 +77,10 @@
     <treeStructureProvider implementation="siani.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="siani.tara.intellij.actions.TaraTemplatesFactory"/>
     <codeInsight.lineMarkerProvider language="Tara"
-                                    implementationClass="siani.tara.intellij.codeinsight.TaraIntentionLineMarkerProvider"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraIntentionLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="Tara"
-                                    implementationClass="siani.tara.intellij.codeinsight.TaraFacetLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider language="JAVA" implementationClass="siani.tara.intellij.codeinsight.JavaToTaraLineMarkerProvider"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraFacetLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="JAVA" implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaToTaraLineMarkerProvider"/>
     <gotoRelatedProvider implementation="siani.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
     <projectConfigurable instance="siani.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
@@ -147,6 +147,7 @@
                           implementationClass="siani.tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
     <findUsagesHandlerFactory implementation="siani.tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara"
                               order="last, before default"/>
+
   </extensions>
 
   <application-components>
@@ -158,4 +159,9 @@
     </component>
   </module-components>
 
+  <project-components>
+    <component>
+      <implementation-class>siani.tara.intellij.project.module.TaraModuleListener</implementation-class>
+    </component>
+  </project-components>
 </idea-plugin>

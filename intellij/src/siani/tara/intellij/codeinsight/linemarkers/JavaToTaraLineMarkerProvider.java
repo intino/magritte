@@ -1,4 +1,4 @@
-package siani.tara.intellij.codeinsight;
+package siani.tara.intellij.codeinsight.linemarkers;
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;

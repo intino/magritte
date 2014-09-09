@@ -11,6 +11,7 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.lang.Model;
 import siani.tara.lang.ModelObject;
 import siani.tara.lang.Node;
 
@@ -154,7 +155,9 @@ public class TaraFilters {
 				if (context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context)) {
 					Concept contextOf = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(context));
 					if (contextOf == null) return false;
-					Node node = TaraLanguage.getMetaModel(contextOf.getFile()).searchNode(TaraUtil.getMetaQualifiedName(contextOf));
+					Model metaModel = TaraLanguage.getMetaModel(contextOf.getFile());
+					if (metaModel == null) return false;
+					Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(contextOf));
 					if (node.getObject().is(ModelObject.AnnotationType.INTENTION))
 						return true;
 				}

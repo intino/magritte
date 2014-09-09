@@ -69,11 +69,18 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 
 	private void addRootNodes(List<Node> nodeList, NodeTree tree) {
 		for (Node node : tree)
-			if ((node instanceof DeclaredNode && node.getObject().is(ModelObject.AnnotationType.INTENTION))
-				|| !node.getObject().is(ModelObject.AnnotationType.COMPONENT))
+			if ((node instanceof DeclaredNode) && !node.getObject().is(ModelObject.AnnotationType.COMPONENT)) {
 				nodeList.add(node);
+				addSubNodes(nodeList, node);
+			}
 	}
 
+	private void addSubNodes(List<Node> nodeList, Node node) {
+		for (Node caseNode : node.getObject().getCases()) {
+			nodeList.add(caseNode);
+			addSubNodes(nodeList, caseNode);
+		}
+	}
 
 	private Object[] fillFacetVariants(Set<String> allowedFacets) {
 		List<LookupElement> variants = new ArrayList<>();

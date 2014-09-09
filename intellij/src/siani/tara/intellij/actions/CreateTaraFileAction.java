@@ -20,20 +20,20 @@ import siani.tara.intellij.project.module.ModuleConfiguration;
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraBoxFileImpl> {
 
 	public CreateTaraFileAction() {
-		super(TaraBundle.message("newconcept.menu.action.text"), TaraBundle.message("newconcept.menu.action.description"),
-			TaraIcons.getIcon(TaraIcons.ICON_13), true);
+		super(TaraBundle.message("newbox.menu.action.text"), TaraBundle.message("newbox.menu.action.description"),
+			TaraIcons.getIcon(TaraIcons.BOX), true);
 	}
 
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
-		builder.setTitle(TaraBundle.message("newconcept.dlg.prompt"));
+		builder.setTitle(TaraBundle.message("newbox.dlg.prompt"));
 		String box = TaraTemplates.getTemplate("BOX");
-		builder.addKind("Concept", TaraIcons.getIcon(TaraIcons.BOX), box);
+		builder.addKind("Box", TaraIcons.getIcon(TaraIcons.BOX), box);
 	}
 
 	@Override
 	protected String getActionName(PsiDirectory directory, String newName, String templateName) {
-		return TaraBundle.message("newconcept.menu.action.text");
+		return TaraBundle.message("newbox.menu.action.text");
 	}
 
 	@Nullable

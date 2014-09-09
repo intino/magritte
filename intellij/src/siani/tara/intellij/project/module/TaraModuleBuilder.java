@@ -35,7 +35,7 @@ import static java.io.File.separator;
 public class TaraModuleBuilder extends JavaModuleBuilder {
 	public static final String RES = "res";
 	public static final String ICONS = "icons";
-	public static final String OUT = "out";
+	public static final String GEN = "gen";
 	public static final String MODEL = "model";
 	private static final Logger LOG = Logger.getInstance(TaraModuleBuilder.class.getName());
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
@@ -60,8 +60,8 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 
 	@Override
 	public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull ModulesProvider modulesProvider) {
-		return (wizardContext.getProject() != null) ? new ModuleWizardStep[]{
-			new TaraWizardStep(this, wizardContext, wizardContext.getProject())} : new ModuleWizardStep[]{};
+		return (new ModuleWizardStep[]{
+			new TaraWizardStep(this, wizardContext, wizardContext.getProject())});
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		rootModel.inheritSdk();
 		ContentEntry contentEntry = doAddContentEntry(rootModel);
 		if (contentEntry != null) {
-			mySourcePaths.add(Pair.create(getContentEntryPath() + separator + OUT, ""));
+			mySourcePaths.add(Pair.create(getContentEntryPath() + separator + GEN, ""));
 			mySourcePaths.add(Pair.create(getContentEntryPath() + separator + MODEL, ""));
 			String parentPath = "";
 			if (mySourcePaths != null) {

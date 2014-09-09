@@ -40,7 +40,7 @@ public class TaraConceptFindUsagesHandler extends FindUsagesHandler {
 		Module moduleForFile = TaraUtil.getModuleOfFile(concept.getFile());
 		if (moduleForFile == null) return PsiElement.EMPTY_ARRAY;
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
-			List<TaraBoxFileImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(project, module);
+			List<TaraBoxFileImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(module);
 			if (taraFilesOfModule.isEmpty()) continue;
 			if ((project.getName() + "." + moduleForFile.getName()).equals(taraFilesOfModule.get(0).getParentModel()))
 				childModules.put(module, taraFilesOfModule);

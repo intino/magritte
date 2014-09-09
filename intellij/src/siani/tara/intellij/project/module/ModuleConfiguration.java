@@ -1,15 +1,13 @@
 package siani.tara.intellij.project.module;
 
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
-import com.intellij.openapi.components.StorageScheme;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.util.DefaultJDOMExternalizer;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +37,6 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	)
 
 	public void initComponent() {
-
 	}
 
 	public void disposeComponent() {
@@ -51,6 +48,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	}
 
 	public void projectOpened() {
+
 		// called when project is opened
 	}
 
@@ -72,12 +70,19 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 				configuration.parentName = ((aux = br.readLine()).equals("null")) ? "" : aux;
 				configuration.parentFilePath = ((aux = br.readLine()).equals("null")) ? "" : aux;
 				configuration.system = Boolean.parseBoolean(br.readLine());
-				System.out.println(configuration.system);
 				file.delete();
 				file.getParentFile().delete();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+	}
+
+	public void setParentName(String parent){
+		configuration.parentName = parent;
+	}
+
+	public void setParentFilePath(String path) {
+		configuration.parentFilePath = path;
 	}
 
 	@Override
@@ -100,6 +105,14 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 
 	public String getParentFilePath() {
 		return configuration.getParentFilePath();
+	}
+
+	public void loadState(ModuleConfiguration state) {
+		XmlSerializerUtil.copyBean(state, this);
+	}
+
+	public ModuleConfiguration getState() {
+		return this;
 	}
 
 	class Configuration implements JDOMExternalizable {

@@ -8,7 +8,6 @@ public class MarkDownTest {
 	@Test
 	public void testMarkDown() throws Exception {
 		String html = new Markdown4jProcessor().process("This is a *bold* text");
-		System.out.println(html);
 		html = new Markdown4jProcessor().process("**Entity ResidentialBuilding**\n" +
 			"\t*reference* *channels*\n" +
 			"\t *Entity* \\*BusinessPremises\\*\n" +
