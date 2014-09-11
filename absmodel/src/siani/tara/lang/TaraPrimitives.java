@@ -1,4 +1,4 @@
-package siani.tara.intellij.lang.parser;
+package siani.tara.lang;
 
 public class TaraPrimitives {
 

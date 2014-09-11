@@ -15,11 +15,15 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.TaraAnnotations;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static siani.tara.lang.TaraAnnotations.FACET;
+import static siani.tara.lang.TaraAnnotations.INTENTION;
 
 public class ConceptMixin extends ASTWrapperPsiElement {
 
@@ -149,7 +153,14 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	public boolean isIntention() {
 		for (PsiElement annotation : getAnnotations())
-			if (siani.tara.intellij.lang.parser.TaraAnnotations.INTENTION.equals(annotation.getText()))
+			if (INTENTION.equals(annotation.getText()))
+				return true;
+		return false;
+	}
+
+	public boolean isFacet() {
+		for (PsiElement annotation : getAnnotations())
+			if (FACET.equals(annotation.getText()))
 				return true;
 		return false;
 	}

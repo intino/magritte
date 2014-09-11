@@ -5,10 +5,25 @@ import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import siani.tara.compiler.core.errorcollection.semantic.WrongAnnotationError;
 import siani.tara.lang.ModelObject.AnnotationType;
 import siani.tara.lang.Node;
-import siani.tara.lang.NodeObject;
+
+import java.util.List;
+
+import static java.util.Arrays.asList;
 
 public class AnnotationsAnalyzer {
 
+	public static final String COMPONENT = "component";
+	public static final String NAMED = "named";
+	public static final String REQUIRED = "required";
+	public static final String SINGLE = "single";
+	public static final String TERMINAL = "terminal";
+	public static final String PROPERTY = "property";
+	public static final String[] SUB_ANNOTATIONS = new String[]{PROPERTY, NAMED, TERMINAL};
+	public static final String PRIVATE = "private";
+	public static final String[] COMPONENT_ANNOTATIONS = new String[]{PRIVATE, TERMINAL, REQUIRED, SINGLE, PROPERTY, NAMED};
+	public static final String INTENTION = "intention";
+	public static final String FACET = "facet";
+	public static final String[] PRIME_ANNOTATIONS = new String[]{PRIVATE, COMPONENT, SINGLE, NAMED, TERMINAL, PROPERTY, REQUIRED, INTENTION, FACET};
 	private SemanticErrorList errors = new SemanticErrorList();
 
 	public AnnotationsAnalyzer(SemanticErrorList errors) {
@@ -16,40 +31,17 @@ public class AnnotationsAnalyzer {
 	}
 
 	public void checkAnnotations(Node node) {
-		rootAnnotation(node);
-		requiredAnnotation(node);
-		singleAnnotation(node);
-		propertyAnnotation(node);
+		if (node.isPrime()) checkAnnotations(node, PRIME_ANNOTATIONS);
+		else if (node.isSub())
+			checkAnnotations(node, SUB_ANNOTATIONS);
+		else checkAnnotations(node, COMPONENT_ANNOTATIONS);
 	}
 
-	private void rootAnnotation(Node node) {
-		if (!node.isPrime() && node.getObject().is(AnnotationType.COMPONENT))//TODO
-			if (node.isSub()) {
-				if (!checkRootCase(node))
-					errors.add(new WrongAnnotationError(AnnotationType.COMPONENT.name(), node));
-			} else errors.add(new WrongAnnotationError(AnnotationType.COMPONENT.name(), node));
-	}
-
-	private boolean checkRootCase(Node node) {
-		NodeObject caseNode = node.getObject();
-		while (caseNode.getParent() != null)
-			if (!caseNode.getParent().is(AnnotationType.COMPONENT)) return false;//TODO
-			else caseNode = caseNode.getParent();
-		return true;
-	}
-
-	private void requiredAnnotation(Node node) {
-		if (node.isSub() && node.getObject().is(AnnotationType.REQUIRED))
-			errors.add(new WrongAnnotationError(AnnotationType.REQUIRED.name(), node));
-	}
-
-	private void singleAnnotation(Node node) {
-		if (node.isSub() && node.getObject().is(AnnotationType.SINGLE))
-			errors.add(new WrongAnnotationError(AnnotationType.SINGLE.name(), node));
-	}
-
-	private void propertyAnnotation(Node node) {
-		if (node.isSub() && node.getObject().is(AnnotationType.SINGLE))
-			errors.add(new WrongAnnotationError(AnnotationType.SINGLE.name(), node));
+	private void checkAnnotations(Node node, String[] annotations) {
+		List<String> list = asList(annotations);
+		for (AnnotationType annotation : node.getObject().getAnnotations()) {
+			if (!list.contains(annotation.name().toLowerCase()))
+				errors.add(new WrongAnnotationError(annotation.name(), node));
+		}
 	}
 }

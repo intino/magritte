@@ -9,7 +9,7 @@ import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.parser.TaraAnnotations;
+import siani.tara.lang.TaraAnnotations;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraAnnotationsAndFacets;
 import siani.tara.intellij.lang.psi.TaraTypes;

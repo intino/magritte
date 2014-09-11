@@ -44,6 +44,16 @@ public abstract class ModelObject {
 		this.type = type;
 	}
 
+	public String getMetaQN() {
+		String qn = "." + type;
+		NodeObject parent = this.getParent();
+		while (parent != null) {
+			qn += "." + parent.getType();
+			parent = parent.getParent();
+		}
+		return qn.substring(1);
+	}
+
 	public boolean is(Class type) {
 		return type.isInstance(this);
 	}

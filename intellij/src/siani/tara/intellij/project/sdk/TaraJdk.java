@@ -67,13 +67,13 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 
 	private static VirtualFile[] getIdeaLibrary(String home) {
 		ArrayList<VirtualFile> result = new ArrayList<>();
-		appendIdeaLibrary(home, result, "junit.jar");
+		appendLibrary(home, result, "junit.jar");
 		return VfsUtilCore.toVirtualFileArray(result);
 	}
 
-	private static void appendIdeaLibrary(final String libDirPath,
-	                                      final ArrayList<VirtualFile> result,
-	                                      @NonNls final String... forbidden) {
+	private static void appendLibrary(final String libDirPath,
+	                                  final ArrayList<VirtualFile> result,
+	                                  @NonNls final String... forbidden) {
 		Arrays.sort(forbidden);
 		final String path = libDirPath + File.separator + LIB_DIR_NAME;
 		final JarFileSystem jfs = JarFileSystem.getInstance();

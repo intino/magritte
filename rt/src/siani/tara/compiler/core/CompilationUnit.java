@@ -55,17 +55,18 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ImportDataOperation(this.errorCollector), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
 		addPhaseOperation(new LinkToParentModelOperation(this), Phases.CONVERSION);
-		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
+		addPhaseOperation(new SemanticPreAnalysisOperation(this), Phases.SEMANTIC_PRE_ANALYSIS);
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
+		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new ModelToJavaOperation(this), Phases.CLASS_GENERATION);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
 		if (pluginGeneration) addPhaseOperation(new SaveModelOperation(this), Phases.MODEL_GENERATION);
 		addPhaseOperation(output, Phases.OUTPUT);
-
 	}
 
 	public void addPhaseOperation(Operation operation, int phase) {
-		if ((phase < 1) || (phase > 8)) throw new IllegalArgumentException("phase " + phase + " is unknown");
+		if ((phase < Phases.FIRST) || (phase > Phases.LAST))
+			throw new IllegalArgumentException("phase " + phase + " is unknown");
 		this.phaseOperations[phase].add(operation);
 	}
 

@@ -11,7 +11,7 @@ import java.util.*;
 public class UsageAnalyzer {
 
 	private final Model model;
-	private boolean thereIsAnyRoot;
+	private boolean noComponentExist;
 	private SemanticErrorList errors = new SemanticErrorList();
 	private Map<String, Node> toCheckNodes = new HashMap<>();
 	private List<String> toRemove = new ArrayList();
@@ -19,6 +19,17 @@ public class UsageAnalyzer {
 	public UsageAnalyzer(Model model, SemanticErrorList errors) {
 		this.model = model;
 		this.errors = errors;
+	}
+
+	public void checkNoConceptExistence(Collection<Node> nodeTree) {
+		findNoComponentConcepts(nodeTree);
+		if (!noComponentExist) errors.add(new NoRootError());
+	}
+
+	private void findNoComponentConcepts(Collection<Node> nodeTree) {
+		for (Node node : nodeTree)
+			if (node instanceof DeclaredNode)
+				noComponentExist = !node.getObject().is(AnnotationType.COMPONENT) || noComponentExist;
 	}
 
 	public void checkUsage() {
@@ -59,31 +70,15 @@ public class UsageAnalyzer {
 	}
 
 	private boolean isAbstract(Node node) {
-		return node.getCases().length > 0;
-	}
-
-	public void checkRootExistence(Collection<Node> nodeTree) {
-		findRootConcepts(nodeTree);
-		noRootConcepts();
+		return node.getSubConcepts().length > 0;
 	}
 
 	private void addToList(Node node) {
-		if (node.getObject().is(AnnotationType.COMPONENT)) //TODO
+		if (node.getObject().is(AnnotationType.COMPONENT))
 			this.toCheckNodes.put(node.getQualifiedName(), node);
 	}
 
 	private void removeParent(Node node) {
 		toRemove.add(node.getObject().getParentName());
-	}
-
-	private void findRootConcepts(Collection<Node> nodeTree) {
-		for (Node node : nodeTree)
-			if (node instanceof DeclaredNode)
-				thereIsAnyRoot = !node.getObject().is(AnnotationType.COMPONENT) || thereIsAnyRoot;
-	}
-
-	private void noRootConcepts() {
-		if (!thereIsAnyRoot)
-			errors.add(new NoRootError());
 	}
 }

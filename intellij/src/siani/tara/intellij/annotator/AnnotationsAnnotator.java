@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import siani.tara.intellij.lang.parser.TaraAnnotations;
+import siani.tara.lang.TaraAnnotations;
 import siani.tara.intellij.lang.psi.Annotations;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
@@ -30,8 +30,9 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		}
 	}
 
-	private void checkAnnotations(Annotations element) {
-		for (PsiElement psiElement : getIncorrectAnnotations(TaraPsiImplUtil.getContextOf(element), element.getAnnotations())) {
+	private void checkAnnotations(@NotNull Annotations annotationsElement) {
+		Concept contextOf = TaraPsiImplUtil.getContextOf(annotationsElement);
+		for (PsiElement psiElement : getIncorrectAnnotations(contextOf, contextOf.getAnnotations())) {
 			Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
 			errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
 		}
@@ -42,7 +43,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 			List<PsiElement> annotationList = annotations.get(annotation);
 			if (annotationList.size() > 1)
 				for (PsiElement element : annotationList) {
-					Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
+					Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), TaraBundle.message("duplicated.annotation.key.error.message"));
 					errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
 				}
 		}
@@ -53,9 +54,9 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		if (isPrimeConcept(concept))
 			incorrects = checkAnnotationList(annotationList, TaraAnnotations.PRIME_ANNOTATIONS);
 		else if ((concept != null) && concept.isSub())
-			incorrects = checkAnnotationList(annotationList, TaraAnnotations.CASE_ANNOTATIONS);
+			incorrects = checkAnnotationList(annotationList, TaraAnnotations.SUB_ANNOTATIONS);
 		else
-			incorrects = checkAnnotationList(annotationList, TaraAnnotations.CHILD_ANNOTATIONS);
+			incorrects = checkAnnotationList(annotationList, TaraAnnotations.COMPONENT_ANNOTATIONS);
 		return incorrects.toArray(new PsiElement[incorrects.size()]);
 	}
 

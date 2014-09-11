@@ -36,6 +36,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isIntention();
 
+	boolean isFacet();
+
 	@NotNull
 	PsiElement[] getAnnotations();
 

@@ -41,15 +41,15 @@ public class DeclaredNode extends Node {
 	@Override
 	protected String getNodePath() {
 		String name = !getName().isEmpty() ? getName() : "[" + getObject().getParentName() + ANONYMOUS + "]";
-		if (container != null && !getObject().isCase()) return container.getQualifiedName() + "." + name;
-		if (getObject().isCase())
+		if (container != null && !getObject().isSub()) return container.getQualifiedName() + "." + name;
+		if (getObject().isSub())
 			return getContainer().getQualifiedName().substring(0, getContainer().getQualifiedName().lastIndexOf(".")) + "." + name;
 		else return getBox() + "." + name;
 	}
 
 
 	public boolean isSub() {
-		return getObject().isCase();
+		return getObject().isSub();
 	}
 
 	public String toString() {

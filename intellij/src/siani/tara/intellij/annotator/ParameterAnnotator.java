@@ -13,7 +13,7 @@ import siani.tara.lang.*;
 import java.util.List;
 import java.util.Map;
 
-import static siani.tara.intellij.lang.parser.TaraPrimitives.*;
+import static siani.tara.lang.TaraPrimitives.*;
 
 public class ParameterAnnotator extends TaraAnnotator {
 

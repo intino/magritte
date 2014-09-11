@@ -101,7 +101,8 @@ public class TaraCompiler {
 	private void addErrorMessage(SemanticError exception) {
 		String message;
 		if (exception.getNode() != null) {
-			message = exception.getMessage().substring(0, exception.getMessage().lastIndexOf(LINE_AT));
+			message = (exception.getMessage().contains(LINE_AT)) ?
+				exception.getMessage().substring(0, exception.getMessage().lastIndexOf(LINE_AT)) : exception.getMessage();
 			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, exception.getNode().getFile(),
 				exception.getLine(), 1));
 		} else {

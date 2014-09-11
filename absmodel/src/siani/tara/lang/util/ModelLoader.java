@@ -85,7 +85,7 @@ public class ModelLoader {
 	}
 
 	private static void processCases(Model aModel, Map<String, Node> nodeTable, Node node) {
-		for (DeclaredNode aCase : node.getCases()) {
+		for (DeclaredNode aCase : node.getSubConcepts()) {
 			nodeTable.put(aCase.getQualifiedName(), aCase);
 			processInnerNodes(aModel, nodeTable, aCase);
 		}

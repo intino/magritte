@@ -68,7 +68,7 @@ public class ParentModelDependencyResolver {
 	private void addTerminalNodes(Map<String, Node> terminals) {
 		for (Node terminal : terminals.values()) {
 			if (terminal.getContainer() == null) {
-				model.add((DeclaredNode) terminal);
+				model.add(terminal);
 				model.add(terminal.getQualifiedName(), terminal);
 				model.addIdentifier(terminal.getName());
 			} else {

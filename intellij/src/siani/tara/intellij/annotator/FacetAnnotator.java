@@ -19,7 +19,7 @@ public class FacetAnnotator extends TaraAnnotator {
 		if (!Concept.class.isInstance(element)) return;
 		Concept conceptElement = (Concept) element;
 		Concept concept = conceptElement.isSub() ? searchParent(conceptElement) : conceptElement;
-		if (concept== null) return;
+		if (concept == null) return;
 		Model model = TaraLanguage.getMetaModel(concept.getFile());
 		if (model == null) return;
 		Node node = findNode(concept, model);

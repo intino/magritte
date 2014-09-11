@@ -59,6 +59,15 @@ public class Model {
 		return nodeTable.get(qualifiedName);
 	}
 
+	public List<Node> collectRequiredNodes() {
+		List<Node> list = new ArrayList();
+		for (Node node : nodeTable.values()) {
+			if (node instanceof DeclaredNode && node.getObject().is(ModelObject.AnnotationType.REQUIRED))
+				list.add(node);
+		}
+		return list;
+	}
+
 	public String getModelName() {
 		return name;
 	}
@@ -68,7 +77,7 @@ public class Model {
 	}
 
 	public DeclaredNode searchAncestry(Node node) {
-		if (node.getObject().isCase()) return node.getContainer();
+		if (node.getObject().isSub()) return node.getContainer();
 		if (node.getObject().getParentName() == null) return null;
 		String ancestry = node.getObject().getParentName();
 		Node result = relativeSearch(ancestry, node);
@@ -164,7 +173,7 @@ public class Model {
 	}
 
 	private void extractCases(Node node, List<DeclaredNode> list) {
-		List<DeclaredNode> cases = Arrays.asList(node.getCases());
+		List<DeclaredNode> cases = Arrays.asList(node.getSubConcepts());
 		list.addAll(cases);
 		for (DeclaredNode aCase : cases) {
 			extractCases(aCase, list);

@@ -76,7 +76,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	}
 
 	private void addSubNodes(List<Node> nodeList, Node node) {
-		for (Node caseNode : node.getObject().getCases()) {
+		for (Node caseNode : node.getObject().getSubConcepts()) {
 			nodeList.add(caseNode);
 			addSubNodes(nodeList, caseNode);
 		}

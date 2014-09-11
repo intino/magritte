@@ -11,7 +11,6 @@ public class NodeObject extends ModelObject {
 	List<Variable> variables = new ArrayList<>();
 	List<NodeObject> facets = new ArrayList<>();
 	Map<String, List<Variable>> allowedFacets = new HashMap<>();
-	Map<String, String> allowedFacetsConstrains = new HashMap<>();
 	List<NodeObject> objectTargets = new ArrayList<>();
 	Map<String, Set<Variable>> facetTargets = new HashMap<>();
 	List<String> parameters = new ArrayList<>();
@@ -71,11 +70,11 @@ public class NodeObject extends ModelObject {
 		return result.toArray(new NodeWord[result.size()]);
 	}
 
-	public List<DeclaredNode> getCases() {
+	public List<DeclaredNode> getSubConcepts() {
 		return cases != null ? cases : Collections.EMPTY_LIST;
 	}
 
-	public boolean isCase() {
+	public boolean isSub() {
 		return caseConcept;
 	}
 
@@ -133,10 +132,6 @@ public class NodeObject extends ModelObject {
 		allowedFacets.put(name, variables);
 	}
 
-	public String putFacetConstrain(String facet, String facetConstrain) {
-		return allowedFacetsConstrains.put(facet, facetConstrain);
-	}
-
 	public boolean addFacetObjectTarget(NodeObject object) {
 		return objectTargets.add(object);
 	}
@@ -147,10 +142,6 @@ public class NodeObject extends ModelObject {
 
 	public void setFacetTargets(Map<String, Set<Variable>> facetTargets) {
 		this.facetTargets = facetTargets;
-	}
-
-	public Map<String, String> getAllowedFacetsConstrains() {
-		return allowedFacetsConstrains;
 	}
 
 	private <T> List<T> extractElements(List items, Class<T> type) {

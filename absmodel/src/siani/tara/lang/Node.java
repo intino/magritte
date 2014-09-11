@@ -31,11 +31,11 @@ public abstract class Node {
 
 	public abstract boolean isSub();
 
-	public DeclaredNode[] getCases() {
-		List<DeclaredNode> cases = new ArrayList<>();
+	public DeclaredNode[] getSubConcepts() {
+		List<DeclaredNode> subs = new ArrayList<>();
 		for (Node child : getInnerNodes())
-			if (child instanceof DeclaredNode && child.getObject().isCase()) cases.add((DeclaredNode) child);
-		return cases.toArray(new DeclaredNode[cases.size()]);
+			if (child instanceof DeclaredNode && child.getObject().isSub()) subs.add((DeclaredNode) child);
+		return subs.toArray(new DeclaredNode[subs.size()]);
 	}
 
 	public String getQualifiedName() {

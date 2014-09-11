@@ -115,6 +115,8 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ModelAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptReferenceAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetTargetAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.imports.ImportMetamodelAnnotation"/>
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraConceptCompletionContributor"/>
     <completion.contributor language="Tara"
