@@ -58,7 +58,4 @@ public abstract class ModelObject {
 		return type.isInstance(this);
 	}
 
-	public enum AnnotationType {
-		NAMEABLE, COMPONENT, TERMINAL, SINGLE, REQUIRED, PRIVATE, PROPERTY, FACET, INTENTION;
-	}
 }

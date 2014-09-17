@@ -62,7 +62,7 @@ public class Model {
 	public List<Node> collectRequiredNodes() {
 		List<Node> list = new ArrayList();
 		for (Node node : nodeTable.values()) {
-			if (node instanceof DeclaredNode && node.getObject().is(ModelObject.AnnotationType.REQUIRED))
+			if (node instanceof DeclaredNode && node.getObject().is(Annotations.Annotation.REQUIRED))
 				list.add(node);
 		}
 		return list;

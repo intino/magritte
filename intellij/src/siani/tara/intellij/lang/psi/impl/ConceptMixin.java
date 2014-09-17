@@ -15,15 +15,13 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.TaraAnnotations;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.lang.TaraAnnotations.FACET;
-import static siani.tara.lang.TaraAnnotations.INTENTION;
+import static siani.tara.lang.Annotations.Annotation.FACET;
 
 public class ConceptMixin extends ASTWrapperPsiElement {
 
@@ -153,25 +151,27 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	public boolean isIntention() {
 		for (PsiElement annotation : getAnnotations())
-			if (INTENTION.equals(annotation.getText()))
+			if (siani.tara.lang.Annotations.Annotation.INTENTION.getName().equals(annotation.getText()))
 				return true;
 		return false;
 	}
 
 	public boolean isFacet() {
 		for (PsiElement annotation : getAnnotations())
-			if (FACET.equals(annotation.getText()))
+			if (FACET.getName().equals(annotation.getText()))
 				return true;
 		return false;
 	}
 
 	public Concept[] getSubConcepts() {
-		ArrayList<Concept> cases = new ArrayList<>();
-		Concept[] children = TaraUtil.getChildrenOf((Concept) this);
-		for (Concept child : children) {
-			if (child.isSub()) cases.add(child);
-		}
-		return cases.size() > 0 ? cases.toArray(new Concept[cases.size()]) : new Concept[0];
+		ArrayList<Concept> subs = new ArrayList<>();
+		List<Concept> children = TaraPsiImplUtil.getInnerConceptsInBody(this.getBody());
+		for (Concept child : children)
+			if (child.isSub()) {
+				subs.add(child);
+				Collections.addAll(subs, child.getSubConcepts());
+			}
+		return subs.size() > 0 ? subs.toArray(new Concept[subs.size()]) : new Concept[0];
 	}
 
 	public TaraFacetApply[] getFacetApplies() {
@@ -196,13 +196,12 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		List<PsiElement> list = new ArrayList<>();
 		TaraAnnotationsAndFacets annotationsAndFacets = findChildByClass(TaraAnnotationsAndFacets.class);
 		if (annotationsAndFacets != null)
-			for (Annotations taraAnnotations : annotationsAndFacets.getAnnotationsList())
+			for (siani.tara.intellij.lang.psi.Annotations taraAnnotations : annotationsAndFacets.getAnnotationsList())
 				Collections.addAll(list, taraAnnotations.getAnnotations());
 		if (this.getBody() != null && getBody().getAnnotationsAndFacetsList() != null)
 			for (TaraAnnotationsAndFacets inBody : getBody().getAnnotationsAndFacetsList())
-				for (TaraAnnotations taraAnnotations : inBody.getAnnotationsList()) {
+				for (TaraAnnotations taraAnnotations : inBody.getAnnotationsList())
 					Collections.addAll(list, taraAnnotations.getAnnotations());
-				}
 		return list.toArray(new PsiElement[list.size()]);
 	}
 

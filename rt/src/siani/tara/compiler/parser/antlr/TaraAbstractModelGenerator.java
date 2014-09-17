@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import static siani.tara.compiler.parser.antlr.TaraGrammar.*;
+import static siani.tara.lang.Annotations.Annotation;
 
 public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
@@ -268,7 +269,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		int i = -1;
 		for (WordNamesContext word : ctx.wordNames()) {
 			i++;
-			variable.add(word.getText());
+			variable.add(word.IDENTIFIER().getText());
 			if (word.STAR() != null) defaultWord = i;
 		}
 		variable.setDefaultWord((short) defaultWord);
@@ -299,23 +300,23 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			return;
 		}
 		for (int i = 0; i < ctx.REQUIRED().size(); i++)
-			conceptStack.peek().getObject().add(NodeObject.AnnotationType.REQUIRED);
+			conceptStack.peek().getObject().add(Annotation.REQUIRED);
 		for (int i = 0; i < ctx.PROPERTY().size(); i++)
-			conceptStack.peek().getObject().add(NodeObject.AnnotationType.PROPERTY);
+			conceptStack.peek().getObject().add(Annotation.PROPERTY);
 		for (int i = 0; i < ctx.SINGLE().size(); i++)
-			conceptStack.peek().getObject().add(NodeObject.AnnotationType.SINGLE);
+			conceptStack.peek().getObject().add(Annotation.SINGLE);
 		for (int i = 0; i < ctx.TERMINAL().size(); i++)
-			conceptStack.peek().getObject().add(NodeObject.AnnotationType.TERMINAL);
+			conceptStack.peek().getObject().add(Annotation.TERMINAL);
 		for (int i = 0; i < ctx.COMPONENT().size(); i++)
-			conceptStack.peek().getObject().add(NodeObject.AnnotationType.COMPONENT);
+			conceptStack.peek().getObject().add(Annotation.COMPONENT);
 		for (int i = 0; i < ctx.PRIVATE().size(); i++)
-			conceptStack.peek().getObject().add(NodeObject.AnnotationType.PRIVATE);
+			conceptStack.peek().getObject().add(Annotation.PRIVATE);
 		for (int i = 0; i < ctx.NAMED().size(); i++)
-			conceptStack.peek().getObject().add(NodeObject.AnnotationType.NAMEABLE);
+			conceptStack.peek().getObject().add(Annotation.NAMED);
 		for (int i = 0; i < ctx.FACET().size(); i++)
-			conceptStack.peek().getObject().add(NodeObject.AnnotationType.FACET);
+			conceptStack.peek().getObject().add(Annotation.FACET);
 		for (int i = 0; i < ctx.INTENTION().size(); i++)
-			conceptStack.peek().getObject().add(NodeObject.AnnotationType.INTENTION);
+			conceptStack.peek().getObject().add(Annotation.INTENTION);
 	}
 
 	private void processVariableAnnotation(AnnotationsContext ctx) {

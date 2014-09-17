@@ -13,7 +13,6 @@ import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Model;
-import siani.tara.lang.ModelObject;
 import siani.tara.lang.Node;
 
 import java.io.File;
@@ -22,7 +21,6 @@ import java.util.*;
 public class FacetsGenerator {
 
 	public static final String SRC = "src";
-	private static final String INTENTION = "Intention";
 	private final Project project;
 	private final TaraBoxFile taraBoxFile;
 	private final PsiDirectory srcDirectory;
@@ -53,7 +51,7 @@ public class FacetsGenerator {
 		if (psiFile instanceof TaraBoxFile) {
 			final TaraBoxFile taraBoxFile = ((TaraBoxFile) psiFile);
 			final Concept[] facets = getFacets(taraBoxFile);
-			for (Concept intention : facets) createFacetClass(intention);
+			for (Concept facet : facets) createFacetClass(facet);
 		}
 	}
 
@@ -90,11 +88,9 @@ public class FacetsGenerator {
 		List<Concept> facets = new ArrayList<>();
 		if (model == null) return new Concept[0];
 		List<Concept> allConceptsOfFile = TaraUtil.findAllConceptsOfFile(taraBoxFile);
-		for (Concept concept : allConceptsOfFile) {
-			Node node = findNode(concept, model);
-			if (node != null && node.getObject().is(ModelObject.AnnotationType.INTENTION))
+		for (Concept concept : allConceptsOfFile)
+			if (concept.isFacet() && !concept.isIntention())
 				facets.add(concept);
-		}
 		return facets.toArray(new Concept[facets.size()]);
 	}
 

@@ -43,7 +43,8 @@ public class TaraPsiImplUtil {
 		return element;
 	}
 
-	public static List<Concept> getChildrenInBody(Body body) {
+	public static List<Concept> getInnerConceptsInBody(Body body) {
+		if (body == null) return Collections.EMPTY_LIST;
 		List<Concept> conceptList = (List<Concept>) body.getConceptList();
 		return conceptList == null ? Collections.EMPTY_LIST : conceptList;
 	}
@@ -57,24 +58,46 @@ public class TaraPsiImplUtil {
 		if (concept != null) {
 			Body body = concept.getBody();
 			if (body != null) {
-				List<Concept> children = getChildrenInBody(body);
-				List<Concept> cases = new ArrayList<>();
+				List<Concept> children = getInnerConceptsInBody(body);
+				List<Concept> subConcepts = new ArrayList<>();
 				for (Concept child : children)
-					cases.addAll(collectInnerCases(child));
-				children.addAll(cases);
+					subConcepts.addAll(collectInnerSubs(child));
+				children.addAll(subConcepts);
 				return children;
 			}
 		}
 		return Collections.EMPTY_LIST;
 	}
 
-	private static List<Concept> collectInnerCases(Concept concept) {
-		List<Concept> cases = new ArrayList();
-		for (Concept caseConcept : concept.getSubConcepts()) {
-			cases.add(caseConcept);
-			cases.addAll(collectInnerCases((caseConcept)));
+	public static List<Concept> getInnerConceptsOf(Concept concept) {
+		if (concept != null) {
+			Body body = concept.getBody();
+			if (body != null) {
+				List<Concept> children = getInnerConceptsInBody(body);
+				removeSubs(children);
+				List<Concept> subConcepts = new ArrayList<>();
+				for (Concept child : children)
+					subConcepts.addAll(collectInnerSubs(child));
+				children.addAll(subConcepts);
+				return children;
+			}
 		}
-		return cases;
+		return Collections.EMPTY_LIST;
+	}
+
+	private static void removeSubs(List<Concept> children) {
+		List<Concept> list = new ArrayList();
+		for (Concept concept : children) if (concept.isSub()) list.add(concept);
+		children.removeAll(list);
+	}
+
+	private static List<Concept> collectInnerSubs(Concept concept) {
+		List<Concept> subs = new ArrayList();
+		for (Concept subConcept : concept.getSubConcepts()) {
+			subs.add(subConcept);
+			subs.addAll(collectInnerSubs((subConcept)));
+		}
+		return subs;
 	}
 
 	@Nullable

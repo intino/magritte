@@ -5,7 +5,8 @@ import siani.tara.lang.*;
 
 import java.util.*;
 
-import static siani.tara.lang.NodeObject.AnnotationType;
+import static siani.tara.lang.Annotations.Annotation;
+import static siani.tara.lang.Annotations.Annotation.*;
 
 public class InsideModelDependencyResolver {
 	Model model;
@@ -24,9 +25,9 @@ public class InsideModelDependencyResolver {
 				boolean i1 = model.get(o1) instanceof LinkNode;
 				boolean i2 = model.get(o2) instanceof LinkNode;
 				if (i1 && !i2) return -1;
-				if (!i1 && i2) return 1;
-				if (i1) return -1;
-				return 1;
+				if (!i1 && !i2) return 0;
+				if (!i1) return 1;
+				return -1;
 			}
 		});
 		resolveHierarchyDependencies();
@@ -111,8 +112,8 @@ public class InsideModelDependencyResolver {
 	}
 
 	private void addInheritedAnnotations(NodeObject parent, DeclaredNode node) {
-		for (AnnotationType annotation : parent.getAnnotations()) {
-			if (annotation.equals(AnnotationType.PRIVATE)) continue;
+		for (Annotation annotation : parent.getAnnotations()) {
+			if (annotation.equals(PRIVATE)) continue;
 			node.getObject().add(annotation);
 		}
 	}

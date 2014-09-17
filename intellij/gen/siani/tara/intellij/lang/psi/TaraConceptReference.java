@@ -13,7 +13,7 @@ public interface TaraConceptReference extends TaraPsiElement {
   @Nullable
   TaraIdentifier getIdentifier();
 
-  @NotNull
+  @Nullable
   TaraIdentifierReference getIdentifierReference();
 
 }

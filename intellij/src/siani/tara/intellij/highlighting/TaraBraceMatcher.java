@@ -4,10 +4,10 @@ import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
-import siani.tara.intellij.lang.file.TaraFileType;
-import siani.tara.intellij.lang.psi.TaraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.file.TaraFileType;
+import siani.tara.intellij.lang.psi.TaraTypes;
 
 import static com.intellij.psi.TokenType.WHITE_SPACE;
 import static siani.tara.intellij.lang.psi.TaraTypes.IDENTIFIER_KEY;

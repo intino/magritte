@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static siani.tara.lang.Annotations.Annotation.*;
+
 public class BoxRender extends Render {
 	private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(BoxRender.class.getName());
 	private final Set<Node> nodes;
@@ -96,11 +98,11 @@ public class BoxRender extends Render {
 		return nodeLoadBuilder.append(block("has", map)).toString();
 	}
 
-	private Object getAnnotationsAsBlock(NodeObject.AnnotationType[] annotations) {
+	private Object getAnnotationsAsBlock(Annotations.Annotation[] annotations) {
 		StringBuilder annotationsBuilder = new StringBuilder();
-		for (NodeObject.AnnotationType annotation : annotations) {
+		for (Annotations.Annotation annotation : annotations) {
 			Map<String, Object> map = new HashMap<>();
-			map.put("annotation", annotation.name().toUpperCase());
+			map.put("annotation", annotation.getName());
 			annotationsBuilder.append(block("annotations", map).trim());
 		}
 		return annotationsBuilder.toString();
@@ -143,7 +145,7 @@ public class BoxRender extends Render {
 	private Set<String> collectQnNodes(Set<Node> nodes) {
 		Set<String> set = new HashSet<>();
 		for (Node node : nodes) {
-			if (node.isPrime() && !node.getObject().is(ModelObject.AnnotationType.INTENTION))
+			if (node.isPrime() && !node.getObject().is(INTENTION))
 				set.add(node.getQualifiedName());
 		}
 		return set;

@@ -22,25 +22,21 @@ import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Model;
-import siani.tara.lang.ModelObject;
 import siani.tara.lang.Node;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
+import static siani.tara.lang.Annotations.Annotation.INTENTION;
+
 public class TaraFacetLineMarkerProvider extends JavaLineMarkerProvider {
 
-	private static final String INTENTION = "Intention";
 	private final MarkerType OVERRIDDEN_PROPERTY_TYPE = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
 			if (!Concept.class.isInstance(element)) return null;
 			Concept concept = (Concept) element;
-			Model model = TaraLanguage.getMetaModel(concept.getFile());
-			if (model == null) return null;
-			Node node = findNode(concept, model);
-			if (node == null || !node.getObject().is(ModelObject.AnnotationType.INTENTION)) return null;
 			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode(), true);
 			String start = "Facet declared in ";
 			@NonNls String pattern = null;
@@ -80,7 +76,7 @@ public class TaraFacetLineMarkerProvider extends JavaLineMarkerProvider {
 			Model model = TaraLanguage.getMetaModel(concept.getFile());
 			if (model == null) return null;
 			Node node = findNode(concept, model);
-			if (node == null || !node.getObject().is(ModelObject.AnnotationType.INTENTION)) return null;
+			if (node == null || !node.getObject().is(INTENTION)) return null;
 			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode(), true);
 			if (reference != null) {
 				final Icon icon = AllIcons.Gutter.ImplementedMethod;

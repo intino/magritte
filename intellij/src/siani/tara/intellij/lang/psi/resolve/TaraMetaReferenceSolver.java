@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContextOf;
+import static siani.tara.lang.Annotations.Annotation.*;
 
 public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
@@ -69,7 +70,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 
 	private void addRootNodes(List<Node> nodeList, NodeTree tree) {
 		for (Node node : tree)
-			if ((node instanceof DeclaredNode) && !node.getObject().is(ModelObject.AnnotationType.COMPONENT)) {
+			if ((node instanceof DeclaredNode) && !node.getObject().is(COMPONENT)) {
 				nodeList.add(node);
 				addSubNodes(nodeList, node);
 			}
@@ -94,7 +95,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	private void addChildren(List<Node> nodeList, Node node) {
 		if (node == null) return;
 		for (Node child : node.getInnerNodes())
-			if (!child.getObject().is(NodeObject.AnnotationType.PRIVATE))
+			if (!child.getObject().is(PRIVATE))
 				nodeList.add(child);
 	}
 

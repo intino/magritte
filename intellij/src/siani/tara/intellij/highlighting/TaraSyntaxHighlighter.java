@@ -41,7 +41,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey UNRESOLVED_ACCESS = createTextAttributesKey("UNRESOLVED_ACCESS", errorTextAttributes());
 
 	public static final TextAttributesKey PROPERTY_INFO = createTextAttributesKey("TARA_PROPERTY",
-		new TextAttributes(null, null, JBColor.ORANGE, EffectType.LINE_UNDERSCORE, Font.PLAIN));
+		new TextAttributes(null, null, JBColor.ORANGE, null, Font.PLAIN));
 	public static final TextAttributesKey WARNING = createTextAttributesKey("WARNING",
 		new TextAttributes(null, null, JBColor.YELLOW, EffectType.WAVE_UNDERSCORE, Font.PLAIN));
 	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>();

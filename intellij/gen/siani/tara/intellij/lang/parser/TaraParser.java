@@ -338,9 +338,9 @@ public class TaraParser implements PsiParser {
     boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, NEW_LINE_INDENT);
-    result_ = result_ && body_1(builder_, level_ + 1);
-    pinned_ = result_; // pin = 2
-    result_ = result_ && consumeToken(builder_, DEDENT);
+    pinned_ = result_; // pin = 1
+    result_ = result_ && report_error_(builder_, body_1(builder_, level_ + 1));
+    result_ = pinned_ && consumeToken(builder_, DEDENT) && result_;
     exit_section_(builder_, level_, marker_, BODY, result_, pinned_, null);
     return result_ || pinned_;
   }
@@ -516,14 +516,14 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // attribute | concept | varInit | annotationsAndFacets | facetTarget | conceptReference
+  // varInit | attribute | concept | annotationsAndFacets | facetTarget | conceptReference
   static boolean conceptConstituents(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "conceptConstituents")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = attribute(builder_, level_ + 1);
+    result_ = varInit(builder_, level_ + 1);
+    if (!result_) result_ = attribute(builder_, level_ + 1);
     if (!result_) result_ = concept(builder_, level_ + 1);
-    if (!result_) result_ = varInit(builder_, level_ + 1);
     if (!result_) result_ = annotationsAndFacets(builder_, level_ + 1);
     if (!result_) result_ = facetTarget(builder_, level_ + 1);
     if (!result_) result_ = conceptReference(builder_, level_ + 1);
@@ -537,13 +537,15 @@ public class TaraParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "conceptReference")) return false;
     if (!nextTokenIs(builder_, "<concept reference>", DOC_LINE, HAS)) return false;
     boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<concept reference>");
     result_ = conceptReference_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, HAS);
-    result_ = result_ && identifierReference(builder_, level_ + 1);
-    result_ = result_ && conceptReference_3(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, CONCEPT_REFERENCE, result_, false, null);
-    return result_;
+    pinned_ = result_; // pin = 2
+    result_ = result_ && report_error_(builder_, identifierReference(builder_, level_ + 1));
+    result_ = pinned_ && conceptReference_3(builder_, level_ + 1) && result_;
+    exit_section_(builder_, level_, marker_, CONCEPT_REFERENCE, result_, pinned_, null);
+    return result_ || pinned_;
   }
 
   // doc?
@@ -876,14 +878,12 @@ public class TaraParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "facetApply")) return false;
     if (!nextTokenIs(builder_, "<facet apply>", IDENTIFIER_KEY, METAIDENTIFIER_KEY)) return false;
     boolean result_;
-    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<facet apply>");
     result_ = metaIdentifier(builder_, level_ + 1);
     result_ = result_ && facetApply_1(builder_, level_ + 1);
-    pinned_ = result_; // pin = 2
     result_ = result_ && facetApply_2(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, FACET_APPLY, result_, pinned_, null);
-    return result_ || pinned_;
+    exit_section_(builder_, level_, marker_, FACET_APPLY, result_, false, null);
+    return result_;
   }
 
   // parameters?
@@ -1948,16 +1948,33 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // STRING_VALUE_KEY  | STRING_MULTILINE_VALUE_KEY
+  // STRING_VALUE_KEY  | (NEWLINE? STRING_MULTILINE_VALUE_KEY)
   public static boolean stringValue(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stringValue")) return false;
-    if (!nextTokenIs(builder_, "<string value>", STRING_MULTILINE_VALUE_KEY, STRING_VALUE_KEY)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<string value>");
     result_ = consumeToken(builder_, STRING_VALUE_KEY);
-    if (!result_) result_ = consumeToken(builder_, STRING_MULTILINE_VALUE_KEY);
+    if (!result_) result_ = stringValue_1(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, STRING_VALUE, result_, false, null);
     return result_;
+  }
+
+  // NEWLINE? STRING_MULTILINE_VALUE_KEY
+  private static boolean stringValue_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "stringValue_1")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = stringValue_1_0(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, STRING_MULTILINE_VALUE_KEY);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // NEWLINE?
+  private static boolean stringValue_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "stringValue_1_0")) return false;
+    consumeToken(builder_, NEWLINE);
+    return true;
   }
 
   /* ********************************************************** */

@@ -7,8 +7,8 @@ import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.lang.Annotations;
 import siani.tara.lang.Model;
-import siani.tara.lang.ModelObject;
 import siani.tara.lang.Node;
 
 public class FacetAnnotator extends TaraAnnotator {
@@ -23,7 +23,7 @@ public class FacetAnnotator extends TaraAnnotator {
 		Model model = TaraLanguage.getMetaModel(concept.getFile());
 		if (model == null) return;
 		Node node = findNode(concept, model);
-		if (node == null || !node.getObject().is(ModelObject.AnnotationType.INTENTION)) return;
+		if (node == null || !node.getObject().is(Annotations.Annotation.INTENTION)) return;
 		if (((Concept) element).getConceptLinks().length > 0)
 			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("facet.with.children.error.message"));
 		Concept[] conceptChildren = ((Concept) element).getConceptChildren();

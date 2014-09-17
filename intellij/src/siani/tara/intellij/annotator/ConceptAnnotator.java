@@ -9,6 +9,7 @@ import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ConceptAnnotator extends TaraAnnotator {
@@ -42,8 +43,8 @@ public class ConceptAnnotator extends TaraAnnotator {
 	}
 
 	public int findDuplicates(Concept concept) {
-		Concept parent = TaraPsiImplUtil.getContextOf(concept);
 		if (concept.getName() == null) return 1;
+		Concept parent = TaraPsiImplUtil.getContextOf(concept);
 		if (parent != null)
 			return checkChildDuplicates(concept, parent);
 		return searchConceptInFile(concept).size();
@@ -51,7 +52,8 @@ public class ConceptAnnotator extends TaraAnnotator {
 
 	private int checkChildDuplicates(Concept concept, Concept parent) {
 		int duplicates = 0;
-		for (Concept taraConcept : TaraPsiImplUtil.getChildrenOf(parent))
+		List<Concept> innerConceptsOf = concept.isSub() ? Arrays.asList(parent.getSubConcepts()) : TaraPsiImplUtil.getInnerConceptsOf(parent);
+		for (Concept taraConcept : innerConceptsOf)
 			if (taraConcept.getName() != null && taraConcept.getName().equals(concept.getName()))
 				duplicates++;
 		return duplicates;

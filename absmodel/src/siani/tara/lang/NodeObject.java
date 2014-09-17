@@ -7,7 +7,7 @@ public class NodeObject extends ModelObject {
 	boolean caseConcept = false;
 	List<DeclaredNode> cases;
 	transient List<NodeObject> childrenConcepts;
-	List<AnnotationType> annotations = new ArrayList<>();
+	List<Annotations.Annotation> annotations = new ArrayList<>();
 	List<Variable> variables = new ArrayList<>();
 	List<NodeObject> facets = new ArrayList<>();
 	Map<String, List<Variable>> allowedFacets = new HashMap<>();
@@ -24,7 +24,7 @@ public class NodeObject extends ModelObject {
 		this.name = name;
 	}
 
-	public boolean is(AnnotationType type) {
+	public boolean is(Annotations.Annotation type) {
 		return (annotations.contains(type));
 	}
 
@@ -45,8 +45,8 @@ public class NodeObject extends ModelObject {
 		return parameters;
 	}
 
-	public AnnotationType[] getAnnotations() {
-		return annotations.toArray(new AnnotationType[annotations.size()]);
+	public Annotations.Annotation[] getAnnotations() {
+		return annotations.toArray(new Annotations.Annotation[annotations.size()]);
 	}
 
 	public List<Reference> getReferences() {
@@ -96,7 +96,7 @@ public class NodeObject extends ModelObject {
 		return parameters.add(parameter);
 	}
 
-	public void add(AnnotationType annotation) {
+	public void add(Annotations.Annotation annotation) {
 		annotations.add(annotation);
 	}
 

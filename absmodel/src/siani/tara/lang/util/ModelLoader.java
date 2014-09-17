@@ -29,8 +29,8 @@ public class ModelLoader {
 			restoreTreeLinks(aModel, aModel.getTreeModel());
 			return aModel;
 		} catch (Exception e) {
-//			LOG.severe("Error loading model " + model + ": ");
-//			e.printStackTrace();
+			LOG.severe("Error loading model " + model + ": ");
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -131,11 +131,13 @@ public class ModelLoader {
 			JsonArray array = json.getAsJsonObject().get("wordTypes").getAsJsonArray();
 			if (array != null && array.isJsonArray()) {
 				NodeWord word = new NodeWord(name, json.getAsJsonObject().get("isTerminal").getAsBoolean());
+				for (JsonElement jsonElement : array) word.add(jsonElement.getAsString());
 				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
 				if (isProperty != null && isProperty.isJsonPrimitive()) word.setProperty(isProperty.getAsBoolean());
 				JsonElement defaultWord = json.getAsJsonObject().get("defaultWord");
 				if (defaultWord != null && defaultWord.isJsonPrimitive()) word.setDefaultWord(defaultWord.getAsShort());
-				for (JsonElement jsonElement : array) word.add(jsonElement.getAsString());
+				if (json.getAsJsonObject().get("value") != null)
+					word.setValue(json.getAsJsonObject().get("value").getAsString());
 				return word;
 			}
 			return null;

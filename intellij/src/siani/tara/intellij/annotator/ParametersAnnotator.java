@@ -10,10 +10,9 @@ import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.Parameters;
 import siani.tara.intellij.lang.psi.Signature;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
-import siani.tara.lang.NodeObject;
-import siani.tara.lang.Variable;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.lang.*;
 
 import java.util.List;
 
@@ -22,24 +21,26 @@ public class ParametersAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder annotationHolder) {
 		if (!Signature.class.isInstance(element)) return;
 		Concept concept = TaraPsiImplUtil.getContextOf(element);
+		boolean system = ModuleConfiguration.getInstance(TaraUtil.getModuleOfFile(element.getContainingFile())).isSystem();
 		if (isLinkConcept(concept)) return;
 		Model heritage = TaraLanguage.getMetaModel(element.getContainingFile());
 		Node node;
 		if (heritage == null || (node = findNode(concept, heritage)) == null) return;
 		NodeObject object = node.getObject();
 		Parameters[] parameters = PsiTreeUtil.getChildrenOfType(element, Parameters.class);
-		int minimum = collectMinimumNumberOfParameter(node.getObject().getVariables());
+		int minimum = collectMinimumNumberOfParameter(node.getObject().getVariables(), system);
 		if (parameters == null && minimum > 0 || (parameters != null) && parameters[0].getParameters().length < minimum) {
 			Annotation errorAnnotation = annotationHolder.createErrorAnnotation(element, "parameters missed: " + variablesToString(object));
 			errorAnnotation.registerFix(new AddParametersFix(element, object.getVariables()));
 		}
 	}
 
-	private int collectMinimumNumberOfParameter(List<Variable> variables) {
+	private int collectMinimumNumberOfParameter(List<Variable> variables, boolean system) {
 		int result = variables.size();
 		for (Variable variable : variables)
-			if (variable.getValue() != null)
+			if (variable.getValue() != null || (!system && variable.isTerminal()) || (variable instanceof NodeWord))
 				result--;
+
 		return result;
 	}
 

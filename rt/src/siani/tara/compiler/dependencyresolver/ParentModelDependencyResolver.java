@@ -1,13 +1,11 @@
 package siani.tara.compiler.dependencyresolver;
 
-import siani.tara.lang.DeclaredNode;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
-import siani.tara.lang.Variable;
+import siani.tara.lang.*;
 
 import java.util.*;
 
-import static siani.tara.lang.ModelObject.AnnotationType.TERMINAL;
+import static siani.tara.lang.Annotations.Annotation.TERMINAL;
+
 
 public class ParentModelDependencyResolver {
 	private final Model model;

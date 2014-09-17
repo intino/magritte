@@ -45,6 +45,7 @@ public class ModelSaver {
 				for (String wordType : word.wordTypes) list.add(new JsonPrimitive(wordType));
 				object.add("wordTypes", list);
 				object.addProperty("defaultWord", word.getDefaultWord());
+				object.addProperty("value", word.getValue());
 			} else if (variable instanceof NodeAttribute) {
 				NodeAttribute attribute = (NodeAttribute) variable;
 				object.addProperty("primitiveType", attribute.primitiveType);

@@ -35,7 +35,8 @@ public class ParameterAnnotator extends TaraAnnotator {
 			return;
 		List<Variable> variables = (inFacet != null) ? facetVariables : node.getObject().getVariables();
 		int index = parameter.getIndexInParent();
-		if (index >= variables.size()) annotateErroneousParameter(parameter, holder);
+		if (index >= variables.size())
+			annotateErroneousParameter(parameter, holder);
 		else {
 			if (parameter.isExplicit()) processExplicit(holder, (TaraExplicitParameter) parameter, variables);
 			else processImplicit(holder, (TaraImplicitParameter) parameter, variables, index);

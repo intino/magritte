@@ -9,11 +9,13 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
-import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.*;
+
+import static siani.tara.lang.Annotations.Annotation.INTENTION;
 
 
 public class TaraDocumentationProvider extends AbstractDocumentationProvider {
@@ -56,7 +58,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 
 	private Node findFacet(Model model, String facet) {
 		for (Node node : model.getTreeModel())
-			if (node.getObject().is(ModelObject.AnnotationType.INTENTION) && node.getName().equals(facet))
+			if (node.getObject().is(INTENTION) && node.getName().equals(facet))
 				return node;
 		return null;
 	}
@@ -84,7 +86,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 			builder.append("\t\t").append(inner.getObject().getType()).append(" ").append(inner.getObject().getName()).append("\n");
 			if (inner.getObject().getDoc() != null) builder.append(inner.getObject().getDoc()).append("\n");
 		}
-		if (node.getObject().is(ModelObject.AnnotationType.INTENTION)) {
+		if (node.getObject().is(INTENTION)) {
 			builder.append(generateDocForFacetApply((DeclaredNode) node, contextNode));
 		} else if (!node.getObject().getAllowedFacets().isEmpty()) {
 			builder.append("\n\t\t").append("Allowed facets:").append("\n");

@@ -35,9 +35,9 @@ public class TaraConceptReferenceImpl extends ASTWrapperPsiElement implements Ta
   }
 
   @Override
-  @NotNull
+  @Nullable
   public TaraIdentifierReference getIdentifierReference() {
-    return findNotNullChildByClass(TaraIdentifierReference.class);
+    return findChildByClass(TaraIdentifierReference.class);
   }
 
 }

@@ -7,7 +7,7 @@ import java.util.List;
 public class NodeWord extends Variable {
 	public List<String> wordTypes;
 	public short defaultWord = -1;
-	public Short value = null;
+	public String value = null;
 
 	public NodeWord(String name, boolean isTerminal) {
 		this.name = name;
@@ -39,7 +39,11 @@ public class NodeWord extends Variable {
 
 	@Override
 	public String getValue() {
-		return (value != null) ? value.toString() : null;
+		return (value != null) ? value : null;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	@Override
@@ -47,12 +51,14 @@ public class NodeWord extends Variable {
 		return false;
 	}
 
-	public int getDefaultWord() {
+	public short getDefaultWord() {
 		return defaultWord;
 	}
 
 	public void setDefaultWord(short defaultWord) {
 		this.defaultWord = defaultWord;
+		if (defaultWord >= 0)
+			this.value = wordTypes.get(defaultWord);
 	}
 
 	public String toString() {

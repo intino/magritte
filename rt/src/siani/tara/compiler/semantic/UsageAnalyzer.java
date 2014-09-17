@@ -4,9 +4,10 @@ import siani.tara.compiler.core.errorcollection.semantic.NoRootError;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import siani.tara.compiler.core.errorcollection.semantic.UnusedConceptError;
 import siani.tara.lang.*;
-import siani.tara.lang.ModelObject.AnnotationType;
 
 import java.util.*;
+
+import static siani.tara.lang.Annotations.Annotation.COMPONENT;
 
 public class UsageAnalyzer {
 
@@ -29,7 +30,7 @@ public class UsageAnalyzer {
 	private void findNoComponentConcepts(Collection<Node> nodeTree) {
 		for (Node node : nodeTree)
 			if (node instanceof DeclaredNode)
-				noComponentExist = !node.getObject().is(AnnotationType.COMPONENT) || noComponentExist;
+				noComponentExist = !node.getObject().is(COMPONENT) || noComponentExist;
 	}
 
 	public void checkUsage() {
@@ -74,7 +75,7 @@ public class UsageAnalyzer {
 	}
 
 	private void addToList(Node node) {
-		if (node.getObject().is(AnnotationType.COMPONENT))
+		if (node.getObject().is(COMPONENT))
 			this.toCheckNodes.put(node.getQualifiedName(), node);
 	}
 
