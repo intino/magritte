@@ -9,11 +9,13 @@ import siani.tara.intellij.lang.psi.impl.TaraParameterValueImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
 import siani.tara.lang.*;
+import siani.tara.lang.Attribute;
+import siani.tara.lang.Word;
 
 import java.util.List;
 import java.util.Map;
 
-import static siani.tara.lang.TaraPrimitives.*;
+import static siani.tara.lang.Primitives.*;
 
 public class ParameterAnnotator extends TaraAnnotator {
 
@@ -53,15 +55,15 @@ public class ParameterAnnotator extends TaraAnnotator {
 		String name = parameter.getIdentifier().getText();
 		Variable variable = getVariableByName(variables, name);
 		if (variable == null) annotateErroneousParameter(parameter, holder);
-		else if (variable instanceof NodeWord) {
-			if (!isCorrectWord((NodeWord) variable, parameter.getValue().getText()))
+		else if (variable instanceof Word) {
+			if (!isCorrectWord((Word) variable, parameter.getValue().getText()))
 				annotateErroneousParameter(parameter, holder);
 		} else if (!areSameType(variable, parameter) || (parameter.isList() && !variable.isList()))
 			annotateErroneousParameter(parameter, holder);
 
 	}
 
-	private boolean isCorrectWord(NodeWord word, String value) {
+	private boolean isCorrectWord(Word word, String value) {
 		return word.contains(value);
 	}
 
@@ -83,8 +85,8 @@ public class ParameterAnnotator extends TaraAnnotator {
 	}
 
 	private void processAsWordOrReference(PsiElement element, AnnotationHolder holder, Variable actualVariable) {
-		if (actualVariable instanceof NodeWord)
-			isCorrectWord(((NodeWord) actualVariable), element.getFirstChild().getText());
+		if (actualVariable instanceof Word)
+			isCorrectWord(((Word) actualVariable), element.getFirstChild().getText());
 		else if (!Reference.class.isInstance(actualVariable))
 			holder.createErrorAnnotation(element, "Parameter type error. Expected " + actualVariable.getType());
 		else if (element.getFirstChild() instanceof TaraIdentifierReference &&
@@ -115,7 +117,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 	}
 
 	private boolean areSameType(Variable variable, Parameter parameter) {
-		if (!NodeAttribute.class.isInstance(variable)) return false;
+		if (!Attribute.class.isInstance(variable)) return false;
 		String varType = variable.getType();
 		String parameterType = parameter.getValue().getClass().getSimpleName();
 		Types type;

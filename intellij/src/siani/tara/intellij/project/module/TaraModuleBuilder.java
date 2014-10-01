@@ -38,6 +38,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	public static final String GEN = "gen";
 	public static final String MODEL = "model";
 	private static final Logger LOG = Logger.getInstance(TaraModuleBuilder.class.getName());
+	private static final String ITRULES = "itrules";
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
 	private Module parentModule;
 	private boolean system = false;
@@ -135,7 +136,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	private void createResources(String parentPath) {
 		try {
 			VfsUtil.createDirectories(parentPath + separator + RES);
-			VfsUtil.createDirectories(parentPath + separator + RES + separator + "tpl");
+			VfsUtil.createDirectories(parentPath + separator + RES + separator + ITRULES);
 			VfsUtil.createDirectories(parentPath + separator + RES + separator + ICONS);
 			VfsUtil.createDirectories(parentPath + separator + RES + separator + ICONS + separator + "definitions");
 			VfsUtil.createDirectories(parentPath + separator + ".config");

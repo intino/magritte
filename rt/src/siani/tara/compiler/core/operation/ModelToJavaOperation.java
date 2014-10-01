@@ -1,72 +1,53 @@
 package siani.tara.compiler.core.operation;
 
-import siani.tara.compiler.codegeneration.java.BoxWriter;
-import siani.tara.compiler.codegeneration.java.JavaClassWriter;
+import org.siani.itrules.AbstractFrame;
+import org.siani.itrules.Document;
+import org.siani.itrules.RuleEngine;
+import siani.tara.compiler.codegeneration.FrameCreator;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
-import siani.tara.compiler.core.errorcollection.TaraException;
-import siani.tara.compiler.core.operation.model.ModelDependencyResolutionOperation;
 import siani.tara.compiler.core.operation.model.ModelOperation;
-import siani.tara.lang.DeclaredNode;
 import siani.tara.lang.Model;
-import siani.tara.lang.Node;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 public class ModelToJavaOperation extends ModelOperation {
-	private static final Logger LOG = Logger.getLogger(ModelDependencyResolutionOperation.class.getName());
-	private CompilationUnit compilationUnit;
+	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
 	private CompilerConfiguration configuration;
+	private File rulesFolder;
 
 	public ModelToJavaOperation(CompilationUnit compilationUnit) {
 		super();
-		this.compilationUnit = compilationUnit;
 		configuration = compilationUnit.getConfiguration();
+		rulesFolder = configuration.getRulesDirectory();
 	}
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
-//		try {
-////			createBoxClasses(model);
-////			createModelClasses(model);
-//		} catch (TaraException e) {
-//			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
-//		}
-
-	}
-
-	private void createModelClasses(Model model) throws TaraException {
-		List<String> toProcess = new ArrayList<>();
-		toProcess.addAll(model.getNodeTable().keySet());
-		Collections.sort(toProcess);
-		for (String toProcessNode : toProcess) {
-			Node node = model.get(toProcessNode);
-			if (node instanceof DeclaredNode)
-				new JavaClassWriter(node).write(configuration.getOutDirectory());
-		}
-	}
-
-	private void createBoxClasses(Model model) throws TaraException {
-		List<String> toProcess = new ArrayList<>();
-		toProcess.addAll(model.getNodeTable().keySet());
-		Collections.sort(toProcess);
-		BoxWriter writer = new BoxWriter();
-		String actualBox = "";
-		for (String toProcessNode : toProcess) {
-			Node node = model.get(toProcessNode);
-			if (!node.getBox().equals(actualBox)) {
-				if (!actualBox.isEmpty()) writer.write(configuration.getOutDirectory());
-				actualBox = node.getBox();
-				writer = new BoxWriter();
+		AbstractFrame[] frames = FrameCreator.create(model);
+		for (String ruleFile : rulesFolder.list())
+			for (AbstractFrame frame : frames) {
+				FileInputStream fileInputStream = getRulesInput(ruleFile);
+				Document document = new Document();
+				new RuleEngine(fileInputStream).render(frame, document);
+				printDocument(configuration.getOutDirectory(), document.content());
 			}
-			writer.setName(actualBox);
-			writer.addNode(node);
-		}
-		if (!actualBox.isEmpty()) writer.write(configuration.getOutDirectory());
+	}
 
+	private void printDocument(File outDirectory, String content) {
+
+	}
+
+	private FileInputStream getRulesInput(String ruleFile) {
+		try {
+			return new FileInputStream(new File(ruleFile));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

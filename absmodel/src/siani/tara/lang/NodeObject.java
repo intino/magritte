@@ -28,9 +28,9 @@ public class NodeObject extends ModelObject {
 		return (annotations.contains(type));
 	}
 
-	public NodeAttribute[] getAttributes() {
-		List<NodeAttribute> result = extractElements(variables, NodeAttribute.class);
-		return result.toArray(new NodeAttribute[result.size()]);
+	public Attribute[] getAttributes() {
+		List<Attribute> result = extractElements(variables, Attribute.class);
+		return result.toArray(new Attribute[result.size()]);
 	}
 
 	public String getDeclaredNodeQN() {
@@ -65,9 +65,9 @@ public class NodeObject extends ModelObject {
 		this.doc = doc;
 	}
 
-	public NodeWord[] getWords() {
-		List<NodeWord> result = extractElements(variables, NodeWord.class);
-		return result.toArray(new NodeWord[result.size()]);
+	public Word[] getWords() {
+		List<Word> result = extractElements(variables, Word.class);
+		return result.toArray(new Word[result.size()]);
 	}
 
 	public List<DeclaredNode> getSubConcepts() {

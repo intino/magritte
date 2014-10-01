@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class NodeWord extends Variable {
+public class Word extends Variable {
 	public List<String> wordTypes;
 	public short defaultWord = -1;
 	public String value = null;
 
-	public NodeWord(String name, boolean isTerminal) {
+	public Word(String name, boolean isTerminal) {
 		this.name = name;
 		this.isTerminal = isTerminal;
 		this.wordTypes = new ArrayList<>();
 	}
 
-	public NodeWord(String name) {
+	public Word(String name) {
 		this.name = name;
 		this.wordTypes = new ArrayList<>();
 	}
@@ -66,10 +66,10 @@ public class NodeWord extends Variable {
 	}
 
 	@Override
-	public NodeWord clone() {
-		NodeWord nodeWord = new NodeWord(name, isTerminal);
-		for (String wordType : wordTypes) nodeWord.add(wordType);
-		nodeWord.setProperty(isProperty);
-		return nodeWord;
+	public Word clone() {
+		Word word = new Word(name, isTerminal);
+		for (String wordType : wordTypes) word.add(wordType);
+		word.setProperty(isProperty);
+		return word;
 	}
 }

@@ -34,7 +34,7 @@ public class FacetsGenerator {
 
 	public void generate() {
 		final Set<File> pathsToRefresh = new HashSet<>();
-		ApplicationManager.getApplication().runReadAction(new Runnable() {
+		ApplicationManager.getApplication().runWriteAction(new Runnable() {
 			@Override
 			public void run() {
 				pathsToRefresh.add(VfsUtil.virtualToIoFile(srcDirectory.getVirtualFile()));

@@ -16,10 +16,7 @@
     </content>
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
     <orderEntry type="library" name="antlr" level="project" />
-    <orderEntry type="library" name="templation" level="project" />
     <orderEntry type="library" name="gson-2.2.4" level="project" />
-    <orderEntry type="module" module-name="tara-runtime-constants" />
-    <orderEntry type="module" module-name="abstract-model-representation" />
     <orderEntry type="module-library" scope="TEST">
       <library name="JUnit4">
         <CLASSES>
@@ -32,6 +29,9 @@
       </library>
     </orderEntry>
     <orderEntry type="library" scope="TEST" name="mockito-all-local" level="application" />
+    <orderEntry type="library" name="itrules" level="project" />
+    <orderEntry type="module" module-name="tara-runtime-constants" />
+    <orderEntry type="module" module-name="abstract-model-representation" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

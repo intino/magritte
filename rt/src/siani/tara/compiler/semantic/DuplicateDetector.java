@@ -41,20 +41,20 @@ public class DuplicateDetector {
 	}
 
 	private void checkAttributes(Node node, Set<String> names) {
-		for (NodeAttribute attribute : node.getObject().getAttributes())
+		for (Attribute attribute : node.getObject().getAttributes())
 			if (!names.add(attribute.getName()))
 				errors.add(new DuplicateIdentifierError(attribute.getName(), node));
 	}
 
 	private void checkWords(Node node, Set<String> names) {
-		for (NodeWord word : node.getObject().getWords()) {
+		for (Word word : node.getObject().getWords()) {
 			if (!names.add(word.getName()))
 				errors.add(new DuplicateIdentifierError(word.getName(), node));
 			checkWordValues(node, word);
 		}
 	}
 
-	private void checkWordValues(Node node, NodeWord word) {
+	private void checkWordValues(Node node, Word word) {
 		Set<String> wordValues = new HashSet<>();
 		for (String value : word.getWordTypes())
 			if (!wordValues.add(value))

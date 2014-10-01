@@ -28,7 +28,10 @@ public class TaraRunner {
 
 	protected TaraRunner(final String projectName, final String moduleName, final String outputDir,
 	                     final Collection<String> sources,
-	                     String finalOutput, @Nullable final String encoding, String projectIcon, String[] iconPaths) throws IOException {
+	                     String finalOutput,
+	                     @Nullable final String encoding,
+	                     String rulesPath,
+	                     String[] iconPaths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
 			writer.write(TaraRtConstants.SRC_FILE + "\n");
@@ -40,11 +43,12 @@ public class TaraRunner {
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
 			String tara_models = PathManager.getPluginsPath() + File.separator + "tara_models" + File.separator;
 			writer.write(TaraRtConstants.MODELS_PATH + "\n" + tara_models + File.separator + projectName + File.separator + "\n");
+			writer.write(TaraRtConstants.IT_RULES + "\n");
+			writer.write(rulesPath + "\n");
 			for (String iconPath : iconPaths) {
 				writer.write(TaraRtConstants.ICONS_PATH + "\n");
 				writer.write(iconPath + "\n");
 			}
-			if (projectIcon != null) writer.write(TaraRtConstants.PROJECT_ICON + "\n" + projectIcon + "\n");
 			writer.write(TaraRtConstants.OUTPUTPATH + "\n");
 			writer.write(outputDir + "\n");
 			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n");

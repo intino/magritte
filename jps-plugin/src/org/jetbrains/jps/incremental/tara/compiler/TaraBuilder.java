@@ -14,7 +14,6 @@ import org.jetbrains.jps.incremental.messages.CompilerMessage;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.model.module.JpsModuleSourceRoot;
-import siani.tara.compiler.rt.TaraRtConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +23,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
 	private static final String TARA_EXTENSION = "tara";
+	private static final String RES = "res";
+	private static final String ICONS = "icons";
 	private static Boolean done = false;
 	private final String builderName;
 	private boolean pluginGeneration;
@@ -64,8 +65,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			Map<ModuleBuildTarget, String> generationOutputs = pluginGeneration ? getStubGenerationOutputs(chunk, context) : finalOutputs;
 			String compilerOutput = generationOutputs.get(chunk.representativeTarget());
 			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
-			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), compilerOutput, toCompilePaths, finalOutput, encoding,
-				getProjectIcon(chunk.getModules(), project.getName()), collectIconDirectories(chunk.getModules()));
+			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), compilerOutput, toCompilePaths, finalOutput, encoding
+				, getRulesDir(chunk.getModules()), collectIconDirectories(chunk.getModules()));
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, pluginGeneration);
 			processMessages(chunk, context, handler);
 			return ExitCode.OK;
@@ -85,23 +86,25 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	private String[] collectIconDirectories(Set<JpsModule> jpsModules) {
 		ArrayList<String> iconDirectories = new ArrayList<>();
-		for (JpsModule module : jpsModules)
-			for (JpsModuleSourceRoot root : module.getSourceRoots())
-				if ("res".equals(root.getFile().getName()) && root.getFile().listFiles() != null)
-					for (File dir : root.getFile().listFiles())
-						if ("icons".equals(dir.getName())) iconDirectories.add(dir.getAbsolutePath());
+		for (JpsModule module : jpsModules) {
+			File res = new File(module.getSourceRoots().get(0).getFile().getParentFile(), RES);
+			if (res.exists()) {
+				File icons = new File(res, ICONS);
+				if (icons.exists()) iconDirectories.add(icons.getAbsolutePath());
+			}
+		}
 		return iconDirectories.toArray(new String[iconDirectories.size()]);
 	}
 
-	private String getProjectIcon(Set<JpsModule> jpsModules, String projectName) {
-		for (JpsModule module : jpsModules)
-			for (JpsModuleSourceRoot root : module.getSourceRoots())
-				if ("res".equals(root.getFile().getName())) {
-					String logoFile = root.getFile().getAbsoluteFile() + File.separator + TaraRtConstants.ICONS_PATH + File.separator + projectName + ".png";
-					File file = new File(logoFile);
-					if (file.exists())
-						return file.getAbsolutePath();
-				}
+	public String getRulesDir(Set<JpsModule> jpsModules) {
+		for (JpsModule module : jpsModules) {
+			File moduleFile = module.getSourceRoots().get(0).getFile().getParentFile();
+			File res = new File(moduleFile, RES);
+			if (res.exists()) {
+				File file = new File(res, "itrules");
+				if (file.exists()) return file.getAbsolutePath();
+			}
+		}
 		return null;
 	}
 

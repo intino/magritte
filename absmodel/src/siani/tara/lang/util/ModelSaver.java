@@ -39,15 +39,15 @@ public class ModelSaver {
 		public JsonElement serialize(Variable variable, Type type, JsonSerializationContext jsonSerializationContext) {
 			final JsonObject object = new JsonObject();
 			object.addProperty("name", variable.name);
-			if (variable instanceof NodeWord) {
-				NodeWord word = (NodeWord) variable;
+			if (variable instanceof Word) {
+				Word word = (Word) variable;
 				final JsonArray list = new JsonArray();
 				for (String wordType : word.wordTypes) list.add(new JsonPrimitive(wordType));
 				object.add("wordTypes", list);
 				object.addProperty("defaultWord", word.getDefaultWord());
 				object.addProperty("value", word.getValue());
-			} else if (variable instanceof NodeAttribute) {
-				NodeAttribute attribute = (NodeAttribute) variable;
+			} else if (variable instanceof Attribute) {
+				Attribute attribute = (Attribute) variable;
 				object.addProperty("primitiveType", attribute.primitiveType);
 				object.addProperty("value", attribute.getValue());
 				object.addProperty("isList", attribute.isList);

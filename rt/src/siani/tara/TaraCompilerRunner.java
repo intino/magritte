@@ -105,6 +105,9 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.ICONS_PATH:
 					configuration.addIconPath(reader.readLine());
 					break;
+				case TaraRtConstants.IT_RULES:
+					configuration.setRulesDirectory(new File(reader.readLine()));
+					break;
 				case TaraRtConstants.PROJECT_ICON:
 					configuration.setProjectIcon(reader.readLine());
 					break;

@@ -10,10 +10,8 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.resolve.TaraParameterReferenceSolver;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
-import siani.tara.lang.NodeWord;
-import siani.tara.lang.Variable;
+import siani.tara.lang.*;
+import siani.tara.lang.Word;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +36,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		List<Variable> variables = node.getObject().getVariables();
 		if (variables.isEmpty()) return new PsiReference[]{};
 		Variable variable = variables.get(getIndexInParent());
-		if (NodeWord.class.isInstance(variable))
+		if (Word.class.isInstance(variable))
 			return new PsiReference[]{new TaraMetaWordReferenceSolver(this, new TextRange(0, getParameter().length()), node, variable)};
 		else if (this.getFirstChild() instanceof IdentifierReference)
 			return new PsiReference[]{new TaraParameterReferenceSolver(this, new TextRange(0, getParameter().length()))};
@@ -52,7 +50,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		Node node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getContextOf(this)));
 		if (node == null) return null;
 		Variable variable = node.getObject().getVariables().get(getIndexInParent());
-		if (NodeWord.class.isInstance(variable))
+		if (siani.tara.lang.Word.class.isInstance(variable))
 			return new TaraMetaWordReferenceSolver(this, new TextRange(0, getParameter().length()), node, variable);
 		else if (this.getFirstChild() instanceof IdentifierReference) {
 			PsiReference[] references = new PsiReference[]{new TaraParameterReferenceSolver(this, new TextRange(0, getParameter().length()))};

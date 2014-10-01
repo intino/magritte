@@ -1,7 +1,6 @@
 package siani.tara.compiler.codegeneration.java;
 
 import siani.tara.compiler.codegeneration.CodeGenerator;
-import siani.tara.compiler.codegeneration.PathManager;
 import siani.tara.compiler.codegeneration.ResourceManager;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.TaraException;
@@ -14,7 +13,7 @@ import java.util.logging.Logger;
 
 public class JavaCodeGenerator extends CodeGenerator {
 	private static final Logger LOG = Logger.getLogger(JavaCodeGenerator.class.getName());
-	private static final String SEP = PathManager.SEP;
+	private static final String SEP = File.separator;
 	CompilerConfiguration conf;
 
 	public JavaCodeGenerator(CompilerConfiguration conf) {

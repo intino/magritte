@@ -110,7 +110,7 @@ public class ModelLoader {
 
 			e = json.getAsJsonObject().get("primitiveType");
 			if (e != null && e.isJsonPrimitive() && e.getAsString() != null) {
-				NodeAttribute attr = new NodeAttribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), json.getAsJsonObject().get("isTerminal").getAsBoolean());
+				Attribute attr = new Attribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), json.getAsJsonObject().get("isTerminal").getAsBoolean());
 				if (json.getAsJsonObject().get("value") != null)
 					attr.setValue(json.getAsJsonObject().get("value").getAsString());
 				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
@@ -130,7 +130,7 @@ public class ModelLoader {
 
 			JsonArray array = json.getAsJsonObject().get("wordTypes").getAsJsonArray();
 			if (array != null && array.isJsonArray()) {
-				NodeWord word = new NodeWord(name, json.getAsJsonObject().get("isTerminal").getAsBoolean());
+				Word word = new Word(name, json.getAsJsonObject().get("isTerminal").getAsBoolean());
 				for (JsonElement jsonElement : array) word.add(jsonElement.getAsString());
 				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
 				if (isProperty != null && isProperty.isJsonPrimitive()) word.setProperty(isProperty.getAsBoolean());

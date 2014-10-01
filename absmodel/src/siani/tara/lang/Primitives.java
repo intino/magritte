@@ -1,6 +1,6 @@
 package siani.tara.lang;
 
-public class TaraPrimitives {
+public class Primitives {
 
 	public static final String INTEGER = "integer";
 	public static final String NATURAL = "natural";

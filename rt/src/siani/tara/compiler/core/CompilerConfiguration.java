@@ -12,6 +12,7 @@ public class CompilerConfiguration {
 	private String module;
 	private PrintWriter output;
 	private File tempDirectory;
+	private File rulesDirectory;
 	private File targetDirectory;
 	private boolean debug;
 	private String ideaHome;
@@ -179,5 +180,13 @@ public class CompilerConfiguration {
 
 	public String getModelsDirectory() {
 		return modelsDirectory;
+	}
+
+	public File getRulesDirectory() {
+		return rulesDirectory;
+	}
+
+	public void setRulesDirectory(File rulesDirectory) {
+		this.rulesDirectory = rulesDirectory;
 	}
 }

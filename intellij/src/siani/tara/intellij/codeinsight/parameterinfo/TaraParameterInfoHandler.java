@@ -12,6 +12,8 @@ import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.*;
+import siani.tara.lang.Attribute;
+import siani.tara.lang.Word;
 
 import java.util.*;
 
@@ -82,17 +84,17 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			TaraFacetApply facet = parameters.getParameters()[0].isInFacet();
 			Node node = findNode(TaraPsiImplUtil.getContextOf(parameters), model);
 			if (node == null) return parameters;
-			List<Attribute> attributes = new ArrayList<>();
+			List<siani.tara.intellij.lang.psi.Attribute> attributes = new ArrayList<>();
 			TaraElementFactory instance = TaraElementFactory.getInstance(parameters.getProject());
 			List<Variable> variables = (facet != null) ? getFacetVariables(facet.getMetaIdentifierList().get(0).getText(), node) : node.getObject().getVariables();
 			if (variables.isEmpty()) return parameters;
 			for (Variable variable : variables) {
-				Attribute attribute = null;
-				if (variable instanceof NodeAttribute || variable instanceof Reference) {
+				siani.tara.intellij.lang.psi.Attribute attribute = null;
+				if (variable instanceof Attribute || variable instanceof Reference) {
 					String[] ref = variable.getType().split("\\.");
 					attribute = instance.createAttribute(variable.getName(), ref[ref.length - 1] + ((variable.isList()) ? "..." : ""));
-				} else if (variable instanceof NodeWord) {
-					List<String> wordTypes = ((NodeWord) variable).getWordTypes();
+				} else if (variable instanceof Word) {
+					List<String> wordTypes = ((Word) variable).getWordTypes();
 					attribute = instance.createWord(variable.getName(), wordTypes.toArray(new String[wordTypes.size()]));
 				} else if (variable instanceof Resource)
 					attribute = instance.createResource(variable.getName(), ((Resource) variable).node);
@@ -157,10 +159,10 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@Override
 	public void updateUI(Object attributes, @NotNull ParameterInfoUIContext context) {
-		ArrayList<Attribute> psiAttribute = (ArrayList<Attribute>) attributes;
+		ArrayList<siani.tara.intellij.lang.psi.Attribute> psiAttribute = (ArrayList<siani.tara.intellij.lang.psi.Attribute>) attributes;
 		if (psiAttribute == null) return;
 		StringBuilder builder = new StringBuilder();
-		for (Attribute attribute : psiAttribute) builder.append(", ").append(attribute.getText().substring(4));
+		for (siani.tara.intellij.lang.psi.Attribute attribute : psiAttribute) builder.append(", ").append(attribute.getText().substring(4));
 		int highlightEndOffset = builder.toString().length();
 		context.setupUIComponentPresentation(builder.toString().substring(2), 0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
 	}

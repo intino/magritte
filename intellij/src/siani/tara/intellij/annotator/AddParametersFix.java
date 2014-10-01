@@ -12,7 +12,7 @@ import siani.tara.intellij.lang.psi.Parameters;
 import siani.tara.intellij.lang.psi.Signature;
 import siani.tara.intellij.lang.psi.TaraElementFactory;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
-import siani.tara.lang.NodeAttribute;
+import siani.tara.lang.Attribute;
 import siani.tara.lang.Variable;
 
 import java.util.List;
@@ -62,8 +62,8 @@ public class AddParametersFix implements IntentionAction {
 	}
 
 	public boolean isStringAttribute(Variable variable) {
-		if (variable instanceof NodeAttribute) {
-			NodeAttribute o = (NodeAttribute) variable;
+		if (variable instanceof Attribute) {
+			Attribute o = (Attribute) variable;
 			if ("string".equals(o.getType().toLowerCase()) || "alias".equals(o.getType().toLowerCase()))
 				return true;
 		}
