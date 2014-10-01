@@ -8,13 +8,15 @@ import siani.tara.lang.Node;
 import siani.tara.lang.NodeObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FrameCreator {
-	public static Frame[] create(Model model) {
-		List<Frame> frames = new ArrayList<>();
+	public static Map<String, Frame> create(Model model) {
+		Map<String, Frame> frames = new HashMap<>();
 		for (final Node node : model.getNodeTable().values()) {
-			frames.add(new Frame(getTypes(node)) {{
+			frames.put(node.getQualifiedName(), new Frame(getTypes(node)) {{
 				property("Name", node.getName());
 				property("QualifiedName", node.getQualifiedName());
 				if (node.getObject().getParent() != null)
@@ -28,7 +30,7 @@ public class FrameCreator {
 				property("Country", "Spain");
 			}});
 		}
-		return frames.toArray(new Frame[frames.size()]);
+		return frames;
 	}
 
 	private static String[] getTypes(Node node) {

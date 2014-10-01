@@ -1,7 +1,7 @@
 package siani.tara.compiler.core.operation;
 
-import org.siani.itrules.AbstractFrame;
 import org.siani.itrules.Document;
+import org.siani.itrules.Frame;
 import org.siani.itrules.RuleEngine;
 import siani.tara.compiler.codegeneration.FrameCreator;
 import siani.tara.compiler.core.CompilationUnit;
@@ -13,6 +13,7 @@ import siani.tara.lang.Model;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class ModelToJavaOperation extends ModelOperation {
@@ -28,17 +29,18 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
-		AbstractFrame[] frames = FrameCreator.create(model);
+		Map<String, Frame> frames = FrameCreator.create(model);
 		for (String ruleFile : rulesFolder.list())
-			for (AbstractFrame frame : frames) {
+			for (Map.Entry<String, Frame> frame : frames.entrySet()) {
 				FileInputStream fileInputStream = getRulesInput(ruleFile);
 				Document document = new Document();
-				new RuleEngine(fileInputStream).render(frame, document);
-				printDocument(configuration.getOutDirectory(), document.content());
+				new RuleEngine(fileInputStream).render(frame.getValue(), document);
+				printDocument(configuration.getOutDirectory(), document.content(), frame.getKey());
 			}
 	}
 
-	private void printDocument(File outDirectory, String content) {
+	private void printDocument(File outDirectory, String content, String qn) {
+		
 
 	}
 
