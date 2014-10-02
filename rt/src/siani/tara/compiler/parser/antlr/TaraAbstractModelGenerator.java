@@ -20,7 +20,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	private final String modelsPath;
 	Model model;
 	Stack<Node> conceptStack = new Stack<>();
-	Stack<NodeObject> facetTargetStack = new Stack<>();
+	Stack<FacetTarget> facetTargetStack = new Stack<>();
 	String box = "";
 	Set<String> imports = new HashSet<>();
 	String currentDocAttribute = "";
@@ -111,16 +111,18 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterFacetApply(@NotNull FacetApplyContext ctx) {
-
+		NodeObject nodeObject = conceptStack.peek().getObject();
+		List<MetaidentifierContext> names = ctx.metaidentifier();
+		nodeObject.addFacet(new Facet(names.get(0).getText(), names.size() == 2 ? names.get(1).getText() : null));
 	}
 
 	@Override
 	public void enterFacetTarget(@NotNull FacetTargetContext ctx) {
 		NodeObject nodeObject = conceptStack.peek().getObject();
-		NodeObject intentionObject = new NodeObject("", ctx.identifierReference().getText());
-		if (!facetTargetStack.isEmpty()) intentionObject.setParentObject(facetTargetStack.peek());
-		nodeObject.addFacetObjectTarget(intentionObject);
-		facetTargetStack.push(intentionObject);
+		FacetTarget facetTarget = new FacetTarget(ctx.identifierReference().getText(),
+			!facetTargetStack.isEmpty() ? facetTargetStack.peek() : null);
+		nodeObject.addFacetTarget(facetTarget);
+		facetTargetStack.push(facetTarget);
 	}
 
 	@Override
@@ -149,11 +151,15 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterParameter(@NotNull ParameterContext ctx) {
 		super.enterParameter(ctx);
 		NodeObject object = conceptStack.peek().getObject();
-		if (ctx.getParent().getParent().getParent() instanceof FacetApplyContext) {
-			List<NodeObject> facetApplies = object.getFacets();
-			facetApplies.get(facetApplies.size() - 1).addParameter(ctx.getText());
+		if (inFacetApply(ctx)) {
+			List<Facet> facetApplies = object.getFacets();
+			facetApplies.get(facetApplies.size() - 1).add(ctx.getText());
 		} else
 			object.addParameter(ctx.getText());
+	}
+
+	private boolean inFacetApply(ParameterContext ctx) {
+		return ctx.getParent().getParent().getParent() instanceof FacetApplyContext;
 	}
 
 	@Override
@@ -288,7 +294,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		NodeObject object = conceptStack.peek().getObject();
 		attribute.setDoc(currentDocAttribute);
 		if (ctx.getParent().getParent().getParent() instanceof FacetTargetContext) {
-			List<NodeObject> targets = object.getFacetTargets();
+			List<FacetTarget> targets = object.getFacetTargets();
 			targets.get(targets.size() - 1).add(attribute);
 		} else object.add(attribute);
 	}

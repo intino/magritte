@@ -46,7 +46,7 @@ public class FacetApplyAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isAllowedFacet(Node node, String name) {
-		for (Map.Entry<String, List<Variable>> entry : node.getObject().getAllowedFacets().entrySet())
+		for (Map.Entry<String, List<Variable>> entry : node.getObject().getAllowedFacetsParameters().entrySet())
 			if (entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1).equals(name)) return true;
 		return false;
 	}

@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 public class TaraRunner {
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static final String ANTLR = "antlr-4.4-complete.jar";
+	private static final String ITRULES = "itrules.jar";
 	private static final String GSON = "gson-2.2.4.jar";
 	private static final String TEMPLATION = "templation.jar";
 	private static File argsFile;
@@ -101,6 +102,7 @@ public class TaraRunner {
 		final Set<String> classPath = new LinkedHashSet<>();
 		classPath.add(getTaraRtRoot().getPath());
 		classPath.add(getAntlrLib().getPath());
+		classPath.add(getItRulesLib().getPath());
 		classPath.add(getGsonLib().getPath());
 		classPath.add(getTemplationLib().getPath());
 		return classPath;
@@ -117,6 +119,13 @@ public class TaraRunner {
 		root = new File(root.getParentFile(), ANTLR);
 		return (root.exists()) ? new File(root.getParentFile(), ANTLR) :
 			new File(root.getParentFile(), "lib/" + ANTLR);
+	}
+
+	private File getItRulesLib() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		root = new File(root.getParentFile(), ITRULES);
+		return (root.exists()) ? new File(root.getParentFile(), ITRULES) :
+			new File(root.getParentFile(), "lib/" + ITRULES);
 	}
 
 	private File getGsonLib() {

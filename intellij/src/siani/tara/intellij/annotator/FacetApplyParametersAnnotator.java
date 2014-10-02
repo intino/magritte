@@ -28,7 +28,7 @@ public class FacetApplyParametersAnnotator extends TaraAnnotator {
 		Node node;
 		if (model == null || (node = findNode(concept, model)) == null) return;
 		TaraParameters parameters = facetApply.getParameters();
-		List<Variable> facetVariables = getFacetVariables(node.getObject().getAllowedFacets(), facetApply.getMetaIdentifierList().get(0).getText());
+		List<Variable> facetVariables = getFacetVariables(node.getObject().getAllowedFacetsParameters(), facetApply.getMetaIdentifierList().get(0).getText());
 		int minimum = collectMinimumNumberOfParameter(facetVariables);
 		if (parameters == null && minimum > 0 || (parameters != null) && parameters.getParameters().length < minimum) {
 			Annotation errorAnnotation = annotationHolder.createErrorAnnotation(element, "parameters missed: " + variablesToString(facetVariables));

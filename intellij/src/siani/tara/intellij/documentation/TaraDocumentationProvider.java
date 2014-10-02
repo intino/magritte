@@ -88,9 +88,9 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		}
 		if (node.getObject().is(INTENTION)) {
 			builder.append(generateDocForFacetApply((DeclaredNode) node, contextNode));
-		} else if (!node.getObject().getAllowedFacets().isEmpty()) {
+		} else if (!node.getObject().getAllowedFacetsParameters().isEmpty()) {
 			builder.append("\n\t\t").append("Allowed facets:").append("\n");
-			for (String key : node.getObject().getAllowedFacets().keySet())
+			for (String key : node.getObject().getAllowedFacetsParameters().keySet())
 				builder.append("\t\t\t").append(key).append("\n");
 		}
 		return builder.toString();
@@ -98,13 +98,13 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 
 	private String generateDocForFacetApply(DeclaredNode node, String contextNode) {
 		StringBuilder builder = new StringBuilder();
-		NodeObject object = null;
-		for (NodeObject intentionObject : node.getObject().getFacetTargets())
-			if (intentionObject.getName().equals(contextNode) || intentionObject.getName().endsWith("." + contextNode))
-				object = intentionObject;
-		if (object == null) return "";
+		FacetTarget target = null;
+		for (FacetTarget facetTarget : node.getObject().getFacetTargets())
+			if (facetTarget.getDestinyName().equals(contextNode) || facetTarget.getDestinyName().endsWith("." + contextNode))
+				target = facetTarget;
+		if (target == null) return "";
 		builder.append("\n\t\t").append("On ").append(contextNode).append(":").append("\n");
-		for (Variable inner : object.getVariables()) {
+		for (Variable inner : target.getVariables()) {
 			builder.append("\t\t\t").append(inner.toString()).append("\n");
 			if (inner.getDoc() != null) builder.append(inner.getDoc()).append("\n");
 		}

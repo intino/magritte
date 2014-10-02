@@ -106,7 +106,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	}
 
 	private List<Variable> getFacetVariables(String name, Node node) {
-		for (Map.Entry<String, List<Variable>> entry : node.getObject().getAllowedFacets().entrySet()) {
+		for (Map.Entry<String, List<Variable>> entry : node.getObject().getAllowedFacetsParameters().entrySet()) {
 			if (entry.getKey().endsWith("." + name)) return entry.getValue();
 		}
 		return Collections.EMPTY_LIST;

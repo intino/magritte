@@ -57,7 +57,7 @@ public class Word extends Variable {
 
 	public void setDefaultWord(short defaultWord) {
 		this.defaultWord = defaultWord;
-		if (defaultWord >= 0)
+		if (defaultWord >= 0 && value == null)
 			this.value = wordTypes.get(defaultWord);
 	}
 

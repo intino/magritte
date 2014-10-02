@@ -57,7 +57,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		if (myElement.getParent() instanceof TaraFacetApply) {
 			Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(getContextOf(myElement)));
 			if (node == null) return PsiElement.EMPTY_ARRAY;
-			return fillFacetVariants(node.getObject().getAllowedFacets().keySet());
+			return fillFacetVariants(node.getObject().getAllowedFacetsParameters().keySet());
 		} else {
 			Concept context = getContextOf(getContextOf(myElement));
 			if (context != null) {

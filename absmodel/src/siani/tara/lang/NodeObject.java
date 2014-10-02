@@ -9,10 +9,9 @@ public class NodeObject extends ModelObject {
 	transient List<NodeObject> childrenConcepts;
 	List<Annotations.Annotation> annotations = new ArrayList<>();
 	List<Variable> variables = new ArrayList<>();
-	List<NodeObject> facets = new ArrayList<>();
-	Map<String, List<Variable>> allowedFacets = new HashMap<>();
-	List<NodeObject> objectTargets = new ArrayList<>();
-	Map<String, Set<Variable>> facetTargets = new HashMap<>();
+	List<Facet> facets = new ArrayList<>();
+	Map<String, List<Variable>> allowedFacetsParameters = new HashMap<>();
+	List<FacetTarget> facetTargets = new ArrayList<>();
 	List<String> parameters = new ArrayList<>();
 
 	public NodeObject() {
@@ -112,36 +111,28 @@ public class NodeObject extends ModelObject {
 		return variables;
 	}
 
-	public boolean addFacet(NodeObject object) {
+	public boolean addFacet(Facet object) {
 		return facets.add(object);
 	}
 
-	public Map<String, List<Variable>> getAllowedFacets() {
-		return allowedFacets;
-	}
-
-	public List<NodeObject> getFacets() {
-		return facets;
-	}
-
-	public void setFacets(List<NodeObject> facets) {
-		this.facets = facets;
+	public Map<String, List<Variable>> getAllowedFacetsParameters() {
+		return allowedFacetsParameters;
 	}
 
 	public void addAllowedFacet(String name, List<Variable> variables) {
-		allowedFacets.put(name, variables);
+		allowedFacetsParameters.put(name, variables);
 	}
 
-	public boolean addFacetObjectTarget(NodeObject object) {
-		return objectTargets.add(object);
+	public List<FacetTarget> getFacetTargets() {
+		return facetTargets;
 	}
 
-	public List<NodeObject> getFacetTargets() {
-		return objectTargets;
+	public boolean addFacetTarget(FacetTarget object) {
+		return facetTargets.add(object);
 	}
 
-	public void setFacetTargets(Map<String, Set<Variable>> facetTargets) {
-		this.facetTargets = facetTargets;
+	public List<Facet> getFacets() {
+		return facets;
 	}
 
 	private <T> List<T> extractElements(List items, Class<T> type) {

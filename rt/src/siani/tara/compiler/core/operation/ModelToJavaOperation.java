@@ -30,7 +30,9 @@ public class ModelToJavaOperation extends ModelOperation {
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		Map<String, Frame> frames = FrameCreator.create(model);
-		for (String ruleFile : rulesFolder.list())
+		System.out.println(rulesFolder.getAbsolutePath());
+		if (rulesFolder.listFiles() == null) return;
+		for (File ruleFile : rulesFolder.listFiles())
 			for (Map.Entry<String, Frame> frame : frames.entrySet()) {
 				FileInputStream fileInputStream = getRulesInput(ruleFile);
 				Document document = new Document();
@@ -40,13 +42,12 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private void printDocument(File outDirectory, String content, String qn) {
-		
 
 	}
 
-	private FileInputStream getRulesInput(String ruleFile) {
+	private FileInputStream getRulesInput(File ruleFile) {
 		try {
-			return new FileInputStream(new File(ruleFile));
+			return new FileInputStream(ruleFile);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

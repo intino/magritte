@@ -27,13 +27,13 @@ public class FacetTargetsResolver {
 	}
 
 	private void propagateVariablesHierarchy(DeclaredNode node) throws TaraException {
-		for (NodeObject target : node.getObject().getFacetTargets()) {
+		for (FacetTarget target : node.getObject().getFacetTargets()) {
 			for (Variable commonVariable : node.getObject().getVariables())
 				target.add(commonVariable);
-			if (target.getParent() != null)
-				for (Variable targetVar : target.getParent().getVariables())
+			if (target.getParentTarget() != null)
+				for (Variable targetVar : target.getParentTarget().getVariables())
 					if (!target.getVariables().contains(targetVar)) target.add(targetVar);
-			resolveVariableReferences(node, target.getReferences());
+			resolveVariableReferences(node, target.getVariableReferences());
 		}
 	}
 
@@ -48,7 +48,7 @@ public class FacetTargetsResolver {
 	}
 
 	private void processAsFacetTarget(DeclaredNode facetNode) {
-		for (NodeObject facetTarget : facetNode.getObject().getFacetTargets()) {
+		for (FacetTarget facetTarget : facetNode.getObject().getFacetTargets()) {
 			List<Node> destinies = new ArrayList();
 			collectTargetsOfFacet(facetNode, facetTarget, destinies);
 			addAllowedFacetsToDestinies(facetNode, destinies, facetTarget.getVariables());
@@ -75,16 +75,16 @@ public class FacetTargetsResolver {
 		}
 	}
 
-	private void collectTargetsOfFacet(Node facetNode, NodeObject facetTarget, List<Node> targets) {
+	private void collectTargetsOfFacet(Node facetNode, FacetTarget facetTarget, List<Node> targets) {
 		Node node;
-		if (facetTarget.getDeclaredNodeQN() != null)
-			node = model.get(facetTarget.getDeclaredNodeQN());
+		if (facetTarget.getDestinyQN() != null)
+			node = model.get(facetTarget.getDestinyQN());
 		else {
-			node = model.searchDeclarationOfReference(facetTarget.getName(), facetNode);
-			facetTarget.setDeclaredNodeQN(node.getQualifiedName());
+			node = model.searchDeclarationOfReference(facetTarget.getDestinyName(), facetNode);
+			facetTarget.setDestinyQN(node.getQualifiedName());
 		}
 		if (!node.getObject().is(FACET)) targets.add(node);
-		else for (NodeObject object : node.getObject().getFacetTargets())
+		else for (FacetTarget object : node.getObject().getFacetTargets())
 			collectTargetsOfFacet(node, object, targets);
 	}
 }
