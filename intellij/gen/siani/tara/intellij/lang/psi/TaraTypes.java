@@ -73,6 +73,7 @@ public interface TaraTypes {
   IElementType GRADE = new TaraTokenType("GRADE");
   IElementType HAS = new TaraTokenType("HAS");
   IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
+  IElementType INLINE = TokenType.NEW_LINE_INDENT;
   IElementType INTENTION = new TaraTokenType("INTENTION");
   IElementType INT_TYPE = new TaraTokenType("INT_TYPE");
   IElementType IS = new TaraTokenType("IS");

@@ -58,6 +58,15 @@ import java.util.Queue;
         return sendToken();
     }
 
+    private IElementType inline() {
+            if (queue.isEmpty()) {
+                String spaces = "    ";
+                blockManager.spaces(spaces);
+                storeTokens();
+            }
+            return sendToken();
+        }
+
     private IElementType openBracket() {
         blockManager.openBracket(yytext().length());
         storeTokens();
@@ -85,11 +94,11 @@ import java.util.Queue;
     }
 %}
 
-SP = ([ ]+ | [\t]+)
-SPACES= {SP}+
-NEWLINE= [\n]+ ([ ] | [\t])*
+SP                  = ([ ]+ | [\t]+)
+SPACES              = {SP}+
+NEWLINE             = [\n]+ ([ ] | [\t])*
+INLINE              = ">"
 
-//=====================
 //Reserved words
 
 METAIDENTIFIER      = "Concept"
@@ -248,6 +257,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{CLOSE_BRACKET}                 {   return closeBracket(); }
 
 	{NEWLINE}                       {   return newlineIndent();}
+	{INLINE}                        {   return inline();}
 
 	{SPACES}                        {   return TokenType.WHITE_SPACE; }
 

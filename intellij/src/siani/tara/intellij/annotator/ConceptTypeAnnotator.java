@@ -3,6 +3,7 @@ package siani.tara.intellij.annotator;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
@@ -34,8 +35,8 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 			if (CONCEPT.equals(element.getText())) {
 				if (concept.getName() == null)
 					holder.createErrorAnnotation(concept, "Concept without name");
-				IElementType elementType = concept.getPsiElement().getPrevSibling().getNode().getElementType();
-				if (!(elementType.equals(TaraTypes.NEWLINE) || elementType.equals(TaraTypes.NEW_LINE_INDENT)))
+				IElementType elementType = getPreviousToken(concept);
+				if (!elementType.equals(TaraTypes.NEWLINE) && !elementType.equals(TaraTypes.NEW_LINE_INDENT))
 					holder.createErrorAnnotation(concept, "Concept in bad position");
 				if (model != null) {
 					Annotation errorAnnotation = holder.createErrorAnnotation(concept, "Concept type not allowed here");
@@ -56,6 +57,13 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 					holder.createErrorAnnotation(incorrectInnerLink, TaraBundle.message("Unknown.concept.key.error.message"));
 			}
 		}
+	}
+
+	private IElementType getPreviousToken(Concept concept) {
+		PsiElement prevSibling = concept.getPsiElement().getPrevSibling();
+		while (prevSibling.getNode().getElementType() == TokenType.WHITE_SPACE)
+			prevSibling = prevSibling.getPrevSibling();
+		return prevSibling.getNode().getElementType();
 	}
 
 	private List<TaraConceptReference> getIncorrectInnerLinks(Concept concept, Model model) {

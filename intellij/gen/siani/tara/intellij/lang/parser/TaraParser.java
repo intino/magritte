@@ -330,19 +330,30 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // NEW_LINE_INDENT (conceptConstituents NEWLINE+)+ DEDENT
+  // (NEW_LINE_INDENT | INLINE) (conceptConstituents NEWLINE+)+ DEDENT
   public static boolean body(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "body")) return false;
-    if (!nextTokenIs(builder_, NEW_LINE_INDENT)) return false;
+    if (!nextTokenIs(builder_, "<body>", INLINE, NEW_LINE_INDENT)) return false;
     boolean result_;
     boolean pinned_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, NEW_LINE_INDENT);
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<body>");
+    result_ = body_0(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
     result_ = result_ && report_error_(builder_, body_1(builder_, level_ + 1));
     result_ = pinned_ && consumeToken(builder_, DEDENT) && result_;
     exit_section_(builder_, level_, marker_, BODY, result_, pinned_, null);
     return result_ || pinned_;
+  }
+
+  // NEW_LINE_INDENT | INLINE
+  private static boolean body_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "body_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, NEW_LINE_INDENT);
+    if (!result_) result_ = consumeToken(builder_, INLINE);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   // (conceptConstituents NEWLINE+)+

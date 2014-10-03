@@ -120,7 +120,7 @@ DOC_LINE            = "#" ~[\n]
 DIGIT=[:digit:]
 IDENTIFIER_KEY = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
-SP = ([ ]+ | [\t]+)
+SP = ([ ]+ | [\t]+) | ">"
 SPACES= {SP}+
 NEWLINE= [\n]+
 
