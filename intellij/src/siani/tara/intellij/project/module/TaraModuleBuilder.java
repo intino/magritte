@@ -39,19 +39,21 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	public static final String MODEL = "model";
 	private static final Logger LOG = Logger.getInstance(TaraModuleBuilder.class.getName());
 	private static final String ITRULES = "itrules";
+	private static final String SRC = "src";
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
 	private Module parentModule;
 	private boolean system = false;
 	private File configFile;
 	private String myCompilerOutputPath;
-	private List<Pair<String, String>> mySourcePaths;
+	private List<Pair<String, String>> mySourcePaths = new ArrayList<>();
 
 	private static String getUrlByPath(final String path) {
 		return VfsUtil.getUrlForLibraryRoot(new File(path));
 	}
 
 	public void setSourcePaths(final List<Pair<String, String>> sourcePaths) {
-		mySourcePaths = sourcePaths != null ? new ArrayList<>(sourcePaths) : null;
+		if (sourcePaths != null)
+			mySourcePaths.addAll(sourcePaths);
 	}
 
 	@Override
@@ -72,6 +74,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		rootModel.inheritSdk();
 		ContentEntry contentEntry = doAddContentEntry(rootModel);
 		if (contentEntry != null) {
+			addSrcIfNotExists(getContentEntryPath());
 			mySourcePaths.add(Pair.create(getContentEntryPath() + separator + GEN, ""));
 			mySourcePaths.add(Pair.create(getContentEntryPath() + separator + MODEL, ""));
 			String parentPath = "";
@@ -111,6 +114,13 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		if (parentModule != null)
 			rootModel.addModuleOrderEntry(parentModule);
 		persistTempConf();
+	}
+
+	private void addSrcIfNotExists(String contentEntryPath) {
+		for (Pair<String, String> mySourcePath : mySourcePaths)
+			if (mySourcePath.first.endsWith(separator + "src"))
+				return;
+		mySourcePaths.add(Pair.create(contentEntryPath + separator + SRC, ""));
 	}
 
 	private void persistTempConf() {
