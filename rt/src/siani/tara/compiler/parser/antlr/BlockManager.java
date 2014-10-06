@@ -28,12 +28,9 @@ public class BlockManager {
 	}
 
 	public void newlineAndSpaces(String text) {
-		if (!bracketsMode()) {
-			int newLevel = (spacesLength(text) / this.tabSize);
-			this.tokens = indentationTokens(newLevel - level, true);
-			this.level = newLevel;
-		} else
-			this.tokens = create(Token.ERROR);
+		int newLevel = (spacesLength(text) / this.tabSize);
+		this.tokens = indentationTokens(newLevel - level, true);
+		this.level = newLevel;
 	}
 
 	private int spacesLength(String text) {
@@ -63,14 +60,6 @@ public class BlockManager {
 		return new Token[]{token};
 	}
 
-	public boolean bracketsMode() {
-		return (brackets > 0);
-	}
-
-	public int getLevel() {
-		return level;
-	}
-
 	public Token[] actions() {
 		return tokens;
 	}
@@ -82,14 +71,14 @@ public class BlockManager {
 	}
 
 	public void semicolon(int size) {
-		if (bracketsMode() && size == 1)
+		if (size == 1)
 			this.tokens = create(Token.NEWLINE);
 		else
 			this.tokens = create(Token.ERROR);
 	}
 
 	public void closeBracket(int size) {
-		if (bracketsMode() && (brackets - size >= 0)) {
+		if (brackets - size >= 0) {
 			this.tokens = indentationTokens(-size, false);
 			this.level -= size;
 			this.brackets -= size;
@@ -98,11 +87,8 @@ public class BlockManager {
 	}
 
 	public void eof() {
-		if (!bracketsMode()) {
-			this.tokens = indentationTokens(-level, false);
-			this.level -= level;
-		} else
-			this.tokens = create(Token.ERROR);
+		this.tokens = indentationTokens(-level, false);
+		this.level -= level;
 	}
 
 	public enum Token {

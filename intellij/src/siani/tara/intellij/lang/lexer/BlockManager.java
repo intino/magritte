@@ -26,12 +26,9 @@ public class BlockManager {
 	}
 
 	public void spaces(String text) {
-		if (!bracketsMode()) {
-			int newLevel = spacesLength(text) / this.tabSize;
-			this.tokens = spacesIndentTokens(newLevel - level);
-			this.level = newLevel;
-		} else
-			this.tokens = create(TokenType.BAD_CHARACTER);
+		int newLevel = spacesLength(text) / this.tabSize;
+		this.tokens = spacesIndentTokens(newLevel - level);
+		this.level = newLevel;
 	}
 
 	private int spacesLength(String text) {
@@ -64,10 +61,6 @@ public class BlockManager {
 		return new IElementType[]{token};
 	}
 
-	public boolean bracketsMode() {
-		return brackets > 0;
-	}
-
 	public IElementType[] actions() {
 		return tokens;
 	}
@@ -79,14 +72,14 @@ public class BlockManager {
 	}
 
 	public void semicolon(int size) {
-		if (bracketsMode() && size == 1)
+		if (size == 1)
 			this.tokens = create(TaraTypes.NEWLINE);
 		else
 			this.tokens = create(TokenType.BAD_CHARACTER);
 	}
 
 	public void closeBracket(int size) {
-		if (bracketsMode() && (brackets - size >= 0)) {
+		if (brackets - size >= 0) {
 			this.tokens = indentTokens(-size);
 			this.level -= size;
 			this.brackets -= size;
@@ -95,10 +88,7 @@ public class BlockManager {
 	}
 
 	public void eof() {
-		if (!bracketsMode()) {
-			this.tokens = indentTokens(-level);
-			this.level -= level;
-		} else
-			this.tokens = create(TokenType.BAD_CHARACTER);
+		this.tokens = indentTokens(-level);
+		this.level -= level;
 	}
 }

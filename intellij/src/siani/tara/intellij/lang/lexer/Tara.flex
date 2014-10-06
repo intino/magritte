@@ -59,25 +59,8 @@ import java.util.Queue;
     }
 
     private IElementType inline() {
-            if (queue.isEmpty()) {
-                String spaces = "    ";
-                blockManager.spaces(spaces);
-                storeTokens();
-            }
-            return sendToken();
-        }
-
-    private IElementType openBracket() {
         blockManager.openBracket(yytext().length());
         storeTokens();
-        return sendToken();
-    }
-
-    private IElementType closeBracket() {
-       if (queue.isEmpty()) {
-            blockManager.closeBracket(yytext().length());
-            storeTokens();
-        }
         return sendToken();
     }
 
@@ -129,8 +112,6 @@ FACET               = "facet"
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
 LIST                = "..."
-OPEN_BRACKET        = "{"
-CLOSE_BRACKET       = "}"
 APOSTROPHE          = "'"
 DASH                = "-"
 UNDERDASH           = "_"
@@ -251,10 +232,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{PORT_TYPE}                     {   return TaraTypes.PORT_TYPE; }
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}
 	{SEMICOLON}                     {   return semicolon(); }
-
-	{OPEN_BRACKET}                  {   return openBracket(); }
-
-	{CLOSE_BRACKET}                 {   return closeBracket(); }
 
 	{NEWLINE}                       {   return newlineIndent();}
 	{INLINE}                        {   return inline();}

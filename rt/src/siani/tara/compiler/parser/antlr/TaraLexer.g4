@@ -52,13 +52,8 @@ package siani.tara.compiler.parser.antlr;
             skip();
     }
 
-    private void openBracket() {
+    private void inline() {
         blockManager.openBracket(getText().length());
-        sendTokens();
-    }
-
-    private void closeBracket() {
-        blockManager.closeBracket(getText().length());
         sendTokens();
     }
 
@@ -93,10 +88,10 @@ USE                 : 'use';
 BOX                 : 'box';
 METAMODEL           : 'metamodel';
 
-AS                  :'as';
-HAS                 :'has';
-ON                  :'on';
-IS                  :'is';
+AS                  : 'as';
+HAS                 : 'has';
+ON                  : 'on';
+IS                  : 'is';
 WITH                : 'with';
 EXTENDS             : 'extends';
 
@@ -116,8 +111,8 @@ RIGHT_PARENTHESIS   : ')';
 LEFT_SQUARE         : '[';
 RIGHT_SQUARE        : ']';
 LIST                : '...';
-OPEN_BRACKET        : '{' {  openBracket(); };
-CLOSE_BRACKET       : '}' { closeBracket(); };
+INLINE              : '>'       { inline(); };
+CLOSE_INLINE        : '<';
 
 AMPERSAND           : '&';
 DOLLAR              : '$';
@@ -129,7 +124,7 @@ COMMA               : ',';
 DOT                 : '.';
 EQUALS              : '=';
 APHOSTROPHE         : '\'';
-SEMICOLON           : ';'+ { semicolon(); };
+SEMICOLON           : ';'+      { semicolon(); };
 STAR                : '*';
 POSITIVE            : '+';
 DASH                : '-';
