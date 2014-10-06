@@ -19,8 +19,8 @@ import static siani.tara.lang.Primitives.*;
 
 public class ParameterAnnotator extends TaraAnnotator {
 
-	Model model;
-	Node node;
+	private Model model;
+	private Node node;
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {

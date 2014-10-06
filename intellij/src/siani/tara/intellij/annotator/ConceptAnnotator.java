@@ -16,8 +16,8 @@ public class ConceptAnnotator extends TaraAnnotator {
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
+		if (!Concept.class.isInstance(element)) return;
 		this.holder = holder;
-		if (!(element instanceof Concept)) return;
 		Concept concept = (Concept) element;
 		if (isRootSub(concept)) {
 			annotateAndFix(element, new RemoveConceptFix(concept), TaraBundle.message("concept.position.key.error.message"));
@@ -59,7 +59,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 		return duplicates;
 	}
 
-	private List<Concept> searchConceptInFile(Concept concept) {
+	private List <Concept> searchConceptInFile(Concept concept) {
 		List<Concept> list = new ArrayList<>();
 		for (Concept aConcept : concept.getFile().getConcepts())
 			if (concept.getName().equals(aConcept.getName())) list.add(aConcept);

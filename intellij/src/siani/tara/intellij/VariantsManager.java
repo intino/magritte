@@ -29,7 +29,7 @@ public class VariantsManager {
 	private void addContextVariants() {
 		Concept contextOf = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(myElement));
 		if (contextOf == null) return;
-		for (Concept concept : TaraPsiImplUtil.getChildrenOf(contextOf))
+		for (Concept concept : TaraPsiImplUtil.getInnerConceptsOf(contextOf))
 			resolvePathFor(concept, context);
 	}
 
@@ -58,7 +58,7 @@ public class VariantsManager {
 	}
 
 	private void resolvePathFor(Concept concept, List<Identifier> path) {
-		List<Concept> childrenOf = TaraPsiImplUtil.getChildrenOf(concept);
+		List<Concept> childrenOf = TaraPsiImplUtil.getInnerConceptsOf(concept);
 		if (concept == null || concept.getType() == null) return;
 		if (path.isEmpty()) {
 			variants.add(concept);

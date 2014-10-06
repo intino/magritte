@@ -117,12 +117,12 @@ CODE_VALUE_KEY      = {AMPERSAND} [:jletterdigit:]+
 
 DOC_LINE            = "#" ~[\n]
 
-DIGIT=[:digit:]
+DIGIT               = [:digit:]
 IDENTIFIER_KEY = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
-SP = ([ ]+ | [\t]+) | ">"
-SPACES= {SP}+
-NEWLINE= [\n]+
+SP                  = ([ ]+ | [\t]+) | ">"
+SPACES              = {SP}+
+NEWLINE             = [\n]+
 
 %%
 <YYINITIAL> {

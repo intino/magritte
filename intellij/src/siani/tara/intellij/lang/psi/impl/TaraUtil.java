@@ -152,12 +152,12 @@ public class TaraUtil {
 
 	@NotNull
 	public static Concept[] getChildrenOf(Concept concept) {
-		List<Concept> childrenOf = TaraPsiImplUtil.getChildrenOf(concept);
+		List<Concept> childrenOf = TaraPsiImplUtil.getInnerConceptsOf(concept);
 		return childrenOf.toArray(new Concept[childrenOf.size()]);
 	}
 
 	public static Concept findChildOf(Concept concept, String name) {
-		List<Concept> children = TaraPsiImplUtil.getChildrenOf(concept);
+		List<Concept> children = TaraPsiImplUtil.getInnerConceptsOf(concept);
 		for (Concept child : children)
 			if (child.getName() != null && child.getName().equals(name))
 				return child;

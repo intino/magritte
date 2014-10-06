@@ -13,7 +13,7 @@ import siani.tara.lang.util.ModelLoader;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,7 +24,7 @@ public class TaraLanguage extends Language {
 	public static final TaraLanguage INSTANCE = new TaraLanguage();
 	public static final String MODELS_PATH = PathManager.getPluginsPath() + separator + "tara_models" + separator;
 	public static final Map<String, Model> models = new HashMap<>();
-	private static final Set<String> modelPaths = new HashSet<>();
+	private static final Set<String> modelPaths = new LinkedHashSet<>();
 
 	static {
 		modelPaths.add(MODELS_PATH);
@@ -43,10 +43,10 @@ public class TaraLanguage extends Language {
 		if (parent == null) return null;
 		Model model;
 		String[] splitName = parent.split("\\.");
+		if ((model = models.get(parent)) != null && !haveToReload(parent))
+			return model;
 		for (String modelPath : modelPaths) {
 			String basePath = modelPath + splitName[0] + separator;
-			if ((model = models.get(parent)) != null && !haveToReload(basePath, parent))
-				return model;
 			model = ModelLoader.load(basePath, parent);
 			if (model == null) continue;
 			models.put(parent, model);
@@ -71,11 +71,14 @@ public class TaraLanguage extends Language {
 		modelPaths.add(path);
 	}
 
-	private static boolean haveToReload(String path, String parent) {
-		File reload = new File(path, parent + ".reload");
-		if (reload.exists()) {
-			reload.delete();
-			return true;
+	private static boolean haveToReload(String parent) {
+		for (String modelPath : modelPaths) {
+			String basePath = modelPath + parent.split("\\.")[0] + separator;
+			File reload = new File(basePath, parent + ".reload");
+			if (reload.exists()) {
+				reload.delete();
+				return true;
+			}
 		}
 		return false;
 	}

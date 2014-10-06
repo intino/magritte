@@ -101,5 +101,4 @@ public class BlockManager {
 		} else
 			this.tokens = create(TokenType.BAD_CHARACTER);
 	}
-
 }

@@ -54,21 +54,6 @@ public class TaraPsiImplUtil {
 	}
 
 
-	public static List<Concept> getChildrenOf(Concept concept) {
-		if (concept != null) {
-			Body body = concept.getBody();
-			if (body != null) {
-				List<Concept> children = getInnerConceptsInBody(body);
-				List<Concept> subConcepts = new ArrayList<>();
-				for (Concept child : children)
-					subConcepts.addAll(collectInnerSubs(child));
-				children.addAll(subConcepts);
-				return children;
-			}
-		}
-		return Collections.EMPTY_LIST;
-	}
-
 	public static List<Concept> getInnerConceptsOf(Concept concept) {
 		if (concept != null) {
 			Body body = concept.getBody();
