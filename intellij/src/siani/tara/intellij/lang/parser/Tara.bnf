@@ -24,7 +24,7 @@ box ::= BOX_KEY headerReference
 
 private imports ::= anImport+
 
-anImport ::= NEWLINE+ USE_KEY headerReference (AS METAMODEL)? {
+anImport ::= NEWLINE+ USE_KEY headerReference (AS IDENTIFIER_KEY)? {
 	mixin= 'siani.tara.intellij.lang.psi.impl.ImportMixin'
     implements='siani.tara.intellij.lang.psi.Import'
 }
@@ -82,7 +82,7 @@ parameterValue ::= identifierReference+
 		        | integerValue+ measure?
 		        | doubleValue+  measure?
 		        | dateValue+
-		        | codeValue+
+		        | portValue+
 		        | coordinateValue+
 		        | metaWord
 		        | empty
@@ -113,7 +113,7 @@ attribute ::= doc? VAR (refAttribute | naturalAttribute | integerAttribute | dou
 }
 private resource             ::= RESOURCE_KEY attributeType IDENTIFIER_KEY                                                  {pin=1}
 private coordinateAttribute  ::= COORDINATE_TYPE  LIST? IDENTIFIER_KEY (EQUALS (coordinateValue | emptyField))?             {pin=1}
-private refAttribute         ::= PORT_TYPE        LIST? IDENTIFIER_KEY (EQUALS (codeValue  | emptyField))?                  {pin=1}
+private refAttribute         ::= PORT_TYPE        LIST? IDENTIFIER_KEY (EQUALS (portValue  | emptyField))?                  {pin=1}
 private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (EQUALS (booleanValue | emptyField))?                   {pin=1}
 private stringAttribute      ::= STRING_TYPE  LIST?  IDENTIFIER_KEY (EQUALS (stringValue  | emptyField))?                   {pin=1}
 private naturalAttribute     ::= NATURAL_TYPE attributeType? LIST?  IDENTIFIER_KEY (EQUALS (naturalValue measure? | emptyField))?    {pin=1}
@@ -136,7 +136,7 @@ booleanValue    ::= BOOLEAN_VALUE_KEY
 naturalValue    ::= NATURAL_VALUE_KEY
 integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
-codeValue       ::= CODE_VALUE_KEY
+portValue       ::= CODE_VALUE_KEY
 dateValue       ::= DATE_VALUE_KEY
 coordinateValue ::= COORDINATE_VALUE_KEY
 
@@ -150,7 +150,7 @@ facetApply ::= metaIdentifier parameters? (WITH metaIdentifier)?
 facetTarget ::= ON identifierReference ALWAYS? body?
 {pin = 1}
 
-annotations ::= (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | COMPONENT | FACET | INTENTION | PROPERTY)+ {
+annotations ::= (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | COMPONENT | FACET | INTENTION | PROPERTY | UNIVERSAL)+ {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotations'
@@ -161,12 +161,17 @@ varInit ::= IDENTIFIER_KEY EQUALS ( emptyField
 								 | stringValue+
                                  | booleanValue+
                                  | dateValue+
-                                 | codeValue+
+                                 | portValue+
                                  | coordinateValue+
                                  | naturalValue+ measure?
                                  | integerValue+ measure?
                                  | doubleValue+  measure?)
-{pin=2}
+{   pin=2
+	mixin = 'siani.tara.intellij.lang.psi.impl.VarInitMixin'
+	implements = 'siani.tara.intellij.lang.psi.VarInit'
+
+}
+
 emptyField ::= EMPTY_REF
 
 headerReference ::= hierarchy* identifier {

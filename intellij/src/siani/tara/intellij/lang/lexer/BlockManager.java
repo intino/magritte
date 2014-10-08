@@ -8,20 +8,17 @@ public class BlockManager {
 
 	private int level;
 	private int tabSize;
-	private int brackets;
 	private IElementType[] tokens;
 
 	public BlockManager() {
 		this.tokens = new IElementType[]{};
 		this.level = 0;
-		this.brackets = 0;
 		this.tabSize = 4;
 	}
 
 	public BlockManager(int tabulationSize) {
 		this.tokens = new IElementType[]{};
 		this.level = 0;
-		this.brackets = 0;
 		this.tabSize = (tabulationSize < 0) ? 1 : tabulationSize;
 	}
 
@@ -68,22 +65,12 @@ public class BlockManager {
 	public void openBracket(int size) {
 		this.tokens = indentTokens(size);
 		this.level += size;
-		this.brackets += size;
 	}
 
 	public void semicolon(int size) {
 		if (size == 1)
 			this.tokens = create(TaraTypes.NEWLINE);
 		else
-			this.tokens = create(TokenType.BAD_CHARACTER);
-	}
-
-	public void closeBracket(int size) {
-		if (brackets - size >= 0) {
-			this.tokens = indentTokens(-size);
-			this.level -= size;
-			this.brackets -= size;
-		} else
 			this.tokens = create(TokenType.BAD_CHARACTER);
 	}
 

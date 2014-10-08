@@ -16,5 +16,5 @@ models
 outputpath
 /Users/oroncal/workspace/sandbox/system/compile-server/test_2e78763/taraStubs/Test/java-production/
 final_outputpath
-/Users/oroncal/workspace/sandbox/Monet/engine/model/out/production/prueba/
+/Users/oroncal/workspace/sandbox/monet/engine/model/out/production/prueba/
 

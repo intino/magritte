@@ -4,27 +4,23 @@ public class BlockManager {
 
 	private int level;
 	private int tabSize;
-	private int brackets;
 	private Token[] tokens;
 
 	public BlockManager() {
 		this.tokens = new Token[]{};
 		this.level = 0;
-		this.brackets = 0;
 		this.tabSize = 4;
 	}
 
 	public BlockManager(int tabulationSize) {
 		this.tokens = new Token[]{};
 		this.level = 0;
-		this.brackets = 0;
 		this.tabSize = (tabulationSize < 0) ? 1 : tabulationSize;
 	}
 
 	public void reset() {
 		this.tokens = new Token[]{};
 		this.level = 0;
-		this.brackets = 0;
 	}
 
 	public void newlineAndSpaces(String text) {
@@ -67,22 +63,12 @@ public class BlockManager {
 	public void openBracket(int size) {
 		this.tokens = indentationTokens(size, false);
 		this.level += size;
-		this.brackets += size;
 	}
 
 	public void semicolon(int size) {
 		if (size == 1)
 			this.tokens = create(Token.NEWLINE);
 		else
-			this.tokens = create(Token.ERROR);
-	}
-
-	public void closeBracket(int size) {
-		if (brackets - size >= 0) {
-			this.tokens = indentationTokens(-size, false);
-			this.level -= size;
-			this.brackets -= size;
-		} else
 			this.tokens = create(Token.ERROR);
 	}
 

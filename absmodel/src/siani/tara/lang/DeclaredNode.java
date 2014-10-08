@@ -55,4 +55,11 @@ public class DeclaredNode extends Node {
 	public String toString() {
 		return "DeclaredNode" + (isSub() ? "AsCase" : "") + "{" + qualifiedName + '}';
 	}
+
+	public boolean contains(String name) {
+		for (Node innerNode : innerNodes)
+			if (innerNode.getName().equals(name))
+				return true;
+		return false;
+	}
 }

@@ -12,6 +12,6 @@ public class ImportMixin extends ASTWrapperPsiElement {
 
 
 	public boolean isMetamodelImport() {
-		return this.findChildByType(TaraTypes.METAMODEL) != null;
+		return this.findChildByType(TaraTypes.IDENTIFIER_KEY) != null;
 	}
 }

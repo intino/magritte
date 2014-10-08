@@ -7,6 +7,7 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Annotations;
+import siani.tara.lang.DeclaredNode;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -36,7 +37,14 @@ public class RequiredConceptsAnnotator extends TaraAnnotator {
 
 	private boolean existInstanceOf(Node requiredNode, Concept[] childrenOf) {
 		for (Concept concept : childrenOf)
-			if (requiredNode.getName().equals(concept.getType())) return true;
+			if (requiredNode.getName().equals(concept.getType()) || checkInSubs(requiredNode.getSubConcepts(), concept))
+				return true;
+		return false;
+	}
+
+	private boolean checkInSubs(DeclaredNode[] subConcepts, Concept concept) {
+		for (DeclaredNode subConcept : subConcepts)
+			if (subConcept.getName().equals(concept.getType())) return true;
 		return false;
 	}
 

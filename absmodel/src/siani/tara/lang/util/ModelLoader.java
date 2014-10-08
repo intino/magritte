@@ -51,8 +51,8 @@ public class ModelLoader {
 		for (Node inner : node.getInnerNodes())
 			if (inner instanceof LinkNode) {
 				LinkNode linkNode = (LinkNode) inner;
-				((LinkNode) inner)
-					.setDestiny((DeclaredNode) model.searchNode(linkNode.getDestinyQN().replace(linkNode.getDestinyBox() + ".", "")));
+				Node node1 = model.searchNode(linkNode.getDestinyQN().replace(linkNode.getDestinyBox() + ".", ""));
+				linkNode.setDestiny((DeclaredNode) node1);
 			} else restoreDestinyLinks(inner, model);
 	}
 

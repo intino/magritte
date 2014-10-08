@@ -15,12 +15,11 @@ import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContextOf;
-import static siani.tara.lang.Annotations.Annotation.*;
+import static siani.tara.lang.Annotations.Annotation.COMPONENT;
+import static siani.tara.lang.Annotations.Annotation.PRIVATE;
 
 public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
@@ -52,6 +51,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		String parentModel = ((TaraBoxFile) myElement.getContainingFile()).getParentModel();
 		if (parentModel == null) return PsiElement.EMPTY_ARRAY;
 		List<Node> nodes = new ArrayList<>();
+		List<Variable> variables = null;
 		Model metaModel = TaraLanguage.getMetaModel(myElement.getContainingFile());
 		if (metaModel == null) return new Object[0];
 		if (myElement.getParent() instanceof TaraFacetApply) {
@@ -63,8 +63,15 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 			if (context != null) {
 				Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(context));
 				addChildren(nodes, node);
+				variables = node.getObject().getVariables();
 			} else addRootNodes(nodes, metaModel.getTreeModel());
-			return fillVariants(nodes);
+			Object[] nodeObjects = fillNodeVariants(nodes);
+			if (variables == null) return nodeObjects;
+			else {
+				List<Object> nodesAndVariables = new ArrayList<>(Arrays.asList(nodeObjects));
+				Collections.addAll(nodesAndVariables, fillVariables(variables));
+				return nodesAndVariables.toArray();
+			}
 		}
 	}
 
@@ -95,18 +102,39 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	private void addChildren(List<Node> nodeList, Node node) {
 		if (node == null) return;
 		for (Node child : node.getInnerNodes())
-			if (!child.getObject().is(PRIVATE))
+			if (!child.getObject().is(PRIVATE)) {
 				nodeList.add(child);
+				addSubs(nodeList, child);
+			}
 	}
 
-	private Object[] fillVariants(List<Node> nodes) {
+	private void addSubs(List<Node> nodeList, Node child) {
+		for (DeclaredNode sub : child.getSubConcepts()) {
+			nodeList.add(sub);
+			addSubNodes(nodeList, sub);
+		}
+	}
+
+	private Object[] fillNodeVariants(List<Node> nodes) {
 		List<LookupElement> variants = new ArrayList<>();
 		for (final Node node : nodes) {
 			if (!LinkNode.class.isInstance(node) && node.getName().isEmpty()) continue;
 			String name = (node instanceof LinkNode) ? ((LinkNode) node).getDestinyName() : node.getName();
 			LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(name).withIcon(TaraIcons.getIcon(TaraIcons.ICON_13));
-			variants.add(lookupElementBuilder.withTypeText(node.getObject().getType()));
+			String parent = node.getObject().getParent() != null ? " > " + node.getObject().getParentName() : "";
+			variants.add(lookupElementBuilder.withTypeText(node.getObject().getType() + parent));
 		}
 		return variants.toArray();
 	}
+
+	private Object[] fillVariables(List<Variable> variables) {
+		List<LookupElement> variants = new ArrayList<>();
+		for (final Variable variable : variables) {
+			LookupElementBuilder builder = LookupElementBuilder.create(variable.getName()).withIcon(TaraIcons.getIcon(TaraIcons.ICON_13));
+			variants.add(builder.withTypeText(variable.getType()));
+		}
+		return variants.toArray();
+
+	}
+
 }

@@ -95,7 +95,7 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 		TaraAnImport[] imports = PsiTreeUtil.getChildrenOfType(header[0], TaraAnImport.class);
 		if (imports == null || imports.length == 0) return null;
 		for (TaraAnImport anImport : imports) {
-			if (anImport.getNode().findChildByType(TaraTypes.METAMODEL)!= null) return anImport.getHeaderReference().getText();
+			if (anImport.isMetamodelImport()) return anImport.getHeaderReference().getText();
 		}
 		return null;
 	}

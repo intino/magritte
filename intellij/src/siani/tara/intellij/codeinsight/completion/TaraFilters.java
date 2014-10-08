@@ -1,5 +1,6 @@
 package siani.tara.intellij.codeinsight.completion;
 
+import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.TokenType;
@@ -26,14 +27,14 @@ public class TaraFilters {
 		.and(new FilterPattern(new AfterNewLineInBodyFilter())).and(new FilterPattern(new InFacetFilter()));
 	protected static PsiElementPattern.Capture<PsiElement> afterEquals = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterEqualsFilter()));
-	protected static PsiElementPattern.Capture<PsiElement> AfterNewLineInBodyNoMetamodel = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new AfterNewLineInBodyFilter())).and(new FilterPattern(new NoModelFilter()));
 	protected static PsiElementPattern.Capture<PsiElement> AfterNewLineNoMetamodel = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLinePrimalFilter())).and(new FilterPattern(new NoModelFilter()));
-	protected static PsiElementPattern.Capture<PsiElement> afterConceptNameKey = psiElement()
+	protected static PsiElementPattern.Capture<PsiElement> afterIdentifier = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new InSignatureFitFilter()))
-		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.IDENTIFIER)));
+		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.IDENTIFIER_KEY)));
+	public static ElementPattern<? extends PsiElement> afterSignature = psiElement()
+		.withLanguage(TaraLanguage.INSTANCE)
+		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.SIGNATURE)));
 
 	private TaraFilters() {
 	}
@@ -64,7 +65,7 @@ public class TaraFilters {
 		}
 
 		public boolean isAcceptable(Object element, PsiElement context) {
-			PsiElement prevSibling = context.getParent().getPrevSibling();
+			PsiElement prevSibling = (context.getPrevSibling() != null ? context.getPrevSibling() : context.getParent().getPrevSibling());
 			if (prevSibling != null && prevSibling.getPrevSibling() != null) {
 				PsiElement prevPrevSibling = prevSibling.getPrevSibling();
 				if (element instanceof PsiElement) {

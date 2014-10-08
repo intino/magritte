@@ -40,7 +40,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterAnImport(@NotNull AnImportContext ctx) {
 		String name = ctx.headerReference().getText();
-		if (ctx.METAMODEL() != null) {
+		if (ctx.ID() != null) {
 			model.setParentModelName(name);
 			model.setParentModel(ModelLoader.load(modelsPath, name));
 		} else imports.add(name);
@@ -297,6 +297,11 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			List<FacetTarget> targets = object.getFacetTargets();
 			targets.get(targets.size() - 1).add(attribute);
 		} else object.add(attribute);
+	}
+
+	@Override
+	public void enterVarInit(@NotNull VarInitContext ctx) {
+		super.enterVarInit(ctx); //TODO
 	}
 
 	@Override

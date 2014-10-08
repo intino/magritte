@@ -86,7 +86,6 @@ SUB                 : 'sub';
 
 USE                 : 'use';
 BOX                 : 'box';
-METAMODEL           : 'metamodel';
 
 AS                  : 'as';
 HAS                 : 'has';
@@ -105,6 +104,7 @@ INTENTION           : 'intention';
 TERMINAL            : 'terminal';
 NAMED               : 'named';
 PROPERTY            : 'property';
+UNIVERSAL           : 'universal';
 ALWAYS              : 'always';
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';

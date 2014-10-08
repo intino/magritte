@@ -90,7 +90,6 @@ HAS                 = "has"
 
 USE_KEY             = "use"
 BOX_KEY             = "box"
-METAMODEL           = "metamodel"
 
 WITH                = "with"
 AS                  = "as"
@@ -106,6 +105,7 @@ NAMED               = "named"
 TERMINAL            = "terminal"
 PROPERTY            = "property"
 COMPONENT           = "component"
+UNIVERSAL           = "universal"
 INTENTION           = "intention"
 FACET               = "facet"
 
@@ -163,7 +163,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{METAIDENTIFIER}                {   return TaraTypes.METAIDENTIFIER_KEY; }
 
 	{USE_KEY}                       {   return TaraTypes.USE_KEY; }
-	{METAMODEL}                     {   return TaraTypes.METAMODEL; }
 
 	{BOX_KEY}                       {   return TaraTypes.BOX_KEY; }
 
@@ -192,6 +191,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
 	{FACET}                         {   return TaraTypes.FACET; }
 	{INTENTION}                     {   return TaraTypes.INTENTION; }
+	{UNIVERSAL}                     {   return TaraTypes.UNIVERSAL; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 

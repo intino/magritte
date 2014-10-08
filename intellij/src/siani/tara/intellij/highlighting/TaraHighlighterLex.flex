@@ -50,7 +50,6 @@ import java.util.Set;
 %}
 
 CONCEPT             = "Concept"
-METAMODEL           = "metamodel"
 SUB                 = "sub"
 HAS                 = "has"
 EXTENDS             = "extends"
@@ -69,6 +68,7 @@ NAMED               = "named"
 TERMINAL            = "terminal"
 PROPERTY            = "property"
 INTENTION           = "intention"
+UNIVERSAL           = "universal"
 FACET               = "facet"
 COMPONENT           = "component"
 VAR                 = "var"
@@ -132,7 +132,6 @@ NEWLINE             = [\n]+
 	{BOX}                           {  	loadHeritage();
 										return TaraTypes.BOX_KEY; }
 	{USE_KEY}                       {   return TaraTypes.USE_KEY; }
-	{METAMODEL}                     {   return TaraTypes.METAMODEL; }
 
 	{HAS}                           {   return TaraTypes.HAS; }
 	{EXTENDS}                       {   return TaraTypes.EXTENDS; }
@@ -151,6 +150,7 @@ NEWLINE             = [\n]+
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
 	{NAMED}                         {   return TaraTypes.NAMED; }
 	{INTENTION}                     {   return TaraTypes.INTENTION; }
+	{UNIVERSAL}                     {   return TaraTypes.UNIVERSAL; }
 	{FACET}                         {   return TaraTypes.FACET; }
 	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }

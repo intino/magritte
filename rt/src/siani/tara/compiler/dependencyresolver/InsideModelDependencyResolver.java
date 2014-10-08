@@ -6,7 +6,7 @@ import siani.tara.lang.*;
 import java.util.*;
 
 import static siani.tara.lang.Annotations.Annotation;
-import static siani.tara.lang.Annotations.Annotation.*;
+import static siani.tara.lang.Annotations.Annotation.PRIVATE;
 
 public class InsideModelDependencyResolver {
 	Model model;
@@ -128,6 +128,7 @@ public class InsideModelDependencyResolver {
 			if (!child.isSub()) {
 				DeclaredNode destiny = (child instanceof LinkNode) ? ((LinkNode) child).getDestiny() : (DeclaredNode) child;
 				LinkNode element = new LinkNode(destiny, node);
+				if (node.contains(child.getName())) continue;
 				element.setDestinyQN(destiny.getQualifiedName());
 				toAddNodes.add(element);
 				node.add(element, 0);

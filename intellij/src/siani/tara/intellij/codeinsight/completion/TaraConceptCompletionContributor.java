@@ -41,7 +41,7 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 			}
 		);
 
-		extend(CompletionType.BASIC, TaraFilters.afterConceptNameKey,
+		extend(CompletionType.BASIC, TaraFilters.afterIdentifier,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
@@ -51,5 +51,4 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 			}
 		);
 	}
-
 }

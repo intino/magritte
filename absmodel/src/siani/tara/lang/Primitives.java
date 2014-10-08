@@ -9,5 +9,6 @@ public class Primitives {
 	public static final String DOUBLE = "double";
 	public static final String PORT = "port";
 	public static final String COORDINATE = "coordinate";
+	public static final String REFERENCE = "identifier";
 	public static final String DATE = "date";
 }

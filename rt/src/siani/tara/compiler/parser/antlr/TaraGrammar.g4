@@ -11,7 +11,7 @@ header :  box? imports?;
 box : BOX headerReference;
 
 imports :  anImport+;
-anImport: NEWLINE+ USE headerReference (AS METAMODEL)?;
+anImport: NEWLINE+ USE headerReference (AS ID)?;
 
 doc: DOC+;
 concept: doc? signature annotations? body?;
@@ -71,7 +71,7 @@ coordinateValue : COORDINATE_VALUE;
 
 measure : IDENTIFIER | DOLLAR | EURO | PERCENTAGE | GRADE;
 
-annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | FACET | INTENTION | COMPONENT | PROPERTY)+ ;
+annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | FACET | INTENTION | COMPONENT | PROPERTY | UNIVERSAL)+ ;
 
 varInit : IDENTIFIER EQUALS (EMPTY
 				        | identifierReference+

@@ -80,7 +80,8 @@
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraIntentionLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraFacetLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider language="JAVA" implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaToTaraLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="JAVA"
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaToTaraLineMarkerProvider"/>
     <gotoRelatedProvider implementation="siani.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
     <projectConfigurable instance="siani.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
@@ -117,6 +118,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetTargetAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.RequiredConceptsAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VarInitAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.imports.ImportMetamodelAnnotation"/>
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraConceptCompletionContributor"/>
