@@ -13,6 +13,7 @@ import siani.tara.lang.Node;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class RequiredConceptsAnnotator extends TaraAnnotator {
@@ -50,6 +51,7 @@ public class RequiredConceptsAnnotator extends TaraAnnotator {
 
 	private Collection<Node> getRequiredInnerNodes(Node node) {
 		List<Node> required = new ArrayList<>();
+		if (node == null) return Collections.EMPTY_LIST;
 		for (Node inner : node.getInnerNodes()) {
 			if (inner.getObject().is(Annotations.Annotation.REQUIRED))
 				required.add(inner);

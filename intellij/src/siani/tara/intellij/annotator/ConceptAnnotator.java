@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.annotator.fix.RemoveConceptFix;
 import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.TaraFacetTarget;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import java.util.ArrayList;
@@ -34,32 +35,44 @@ public class ConceptAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isRootSub(Concept element) {
-		return (element.isSub() && TaraPsiImplUtil.getContextOf(element) == null);
+		return (element.isSub() && TaraPsiImplUtil.getConceptContextOf(element) == null);
 	}
 
 	private void checkIfDuplicated(Concept concept) {
-		if (concept.getIdentifierNode() != null && findDuplicates(concept) != 1)
+		if (concept.getIdentifierNode() != null && findDuplicates(concept) > 1)
 			annotateAndFix(concept.getIdentifierNode(), new RemoveConceptFix(concept), TaraBundle.message("duplicate.concept.key.error.message"));
 	}
 
 	public int findDuplicates(Concept concept) {
 		if (concept.getName() == null) return 1;
-		Concept parent = TaraPsiImplUtil.getContextOf(concept);
+		Concept parent = TaraPsiImplUtil.getConceptContextOf(concept);
 		if (parent != null)
 			return checkChildDuplicates(concept, parent);
+		else {
+			PsiElement inFacetTarget = TaraPsiImplUtil.getContextOf(concept);
+			if (inFacetTarget != null && inFacetTarget instanceof TaraFacetTarget) {
+				List<Concept> innerConceptsInBody = TaraPsiImplUtil.getInnerConceptsInBody(((TaraFacetTarget) inFacetTarget).getBody());
+				return countDuplicates(innerConceptsInBody, concept.getName());
+			}
+		}
 		return searchConceptInFile(concept).size();
 	}
 
 	private int checkChildDuplicates(Concept concept, Concept parent) {
-		int duplicates = 0;
 		List<Concept> innerConceptsOf = concept.isSub() ? Arrays.asList(parent.getSubConcepts()) : TaraPsiImplUtil.getInnerConceptsOf(parent);
+		String name = concept.getName();
+		return countDuplicates(innerConceptsOf, name);
+	}
+
+	private int countDuplicates(List<Concept> innerConceptsOf, String name) {
+		int duplicates = 0;
 		for (Concept taraConcept : innerConceptsOf)
-			if (taraConcept.getName() != null && taraConcept.getName().equals(concept.getName()))
+			if (taraConcept.getName() != null && taraConcept.getName().equals(name))
 				duplicates++;
 		return duplicates;
 	}
 
-	private List <Concept> searchConceptInFile(Concept concept) {
+	private List<Concept> searchConceptInFile(Concept concept) {
 		List<Concept> list = new ArrayList<>();
 		for (Concept aConcept : concept.getFile().getConcepts())
 			if (concept.getName().equals(aConcept.getName())) list.add(aConcept);

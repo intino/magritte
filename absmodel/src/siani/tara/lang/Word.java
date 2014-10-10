@@ -70,6 +70,7 @@ public class Word extends Variable {
 		Word word = new Word(name, isTerminal);
 		for (String wordType : wordTypes) word.add(wordType);
 		word.setProperty(isProperty);
+		word.setUniversal(isUniversal);
 		return word;
 	}
 }

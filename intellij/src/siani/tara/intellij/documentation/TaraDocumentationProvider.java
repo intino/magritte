@@ -36,7 +36,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	@NonNls
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
 		if (originalElement instanceof MetaIdentifier) {
-			Concept concept = TaraPsiImplUtil.getContextOf(originalElement);
+			Concept concept = TaraPsiImplUtil.getConceptContextOf(originalElement);
 			String doc = originalElement.getParent() instanceof TaraFacetApply ?
 				extractMetaDocumentationOfFacetApply(concept, originalElement.getText())
 				: extractMetaDocumentationOfConcept(concept);
@@ -45,8 +45,8 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		if (element instanceof Concept)
 			return ((Concept) element).getDocCommentText();
 		if (element instanceof TaraBoxFile)
-			return renderConceptValue(((TaraBoxFile) element).getConcepts()[0]);
-		return renderConceptValue(TaraPsiImplUtil.getContextOf(element));
+			return ((TaraBoxFile) element).getConcepts().length > 0 ? renderConceptValue(((TaraBoxFile) element).getConcepts()[0]) : "";
+		return renderConceptValue(TaraPsiImplUtil.getConceptContextOf(element));
 	}
 
 	private String extractMetaDocumentationOfFacetApply(Concept concept, String facet) {
@@ -88,9 +88,9 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		}
 		if (node.getObject().is(INTENTION)) {
 			builder.append(generateDocForFacetApply((DeclaredNode) node, contextNode));
-		} else if (!node.getObject().getAllowedFacetsParameters().isEmpty()) {
+		} else if (!node.getObject().getAllowedFacets().isEmpty()) {
 			builder.append("\n\t\t").append("Allowed facets:").append("\n");
-			for (String key : node.getObject().getAllowedFacetsParameters().keySet())
+			for (String key : node.getObject().getAllowedFacets().keySet())
 				builder.append("\t\t\t").append(key).append("\n");
 		}
 		return builder.toString();

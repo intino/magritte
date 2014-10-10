@@ -55,7 +55,7 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 		PsiElement resolve = ReferenceManager.resolve(parentReference);
 		if (resolve instanceof Identifier) {
 			Identifier identifier = (Identifier) resolve;
-			return TaraPsiImplUtil.getContextOf(identifier);
+			return TaraPsiImplUtil.getConceptContextOf(identifier);
 		}
 		return null;
 	}

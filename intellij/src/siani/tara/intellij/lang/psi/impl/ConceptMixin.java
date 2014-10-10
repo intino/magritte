@@ -61,7 +61,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public Concept[] getConceptSiblings() {
-		Concept contextOf = TaraPsiImplUtil.getContextOf(this);
+		Concept contextOf = TaraPsiImplUtil.getConceptContextOf(this);
 		if (contextOf == null) return ((TaraBoxFile) this.getContainingFile()).getConcepts();
 		return contextOf.getConceptChildren();
 	}
@@ -93,11 +93,11 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	public String getQualifiedName() {
 		Identifier identifierNode = getIdentifierNode();
 		String name = identifierNode != null ? identifierNode.getText() : "annonymous";
-		String packageName = ((TaraBoxFile) this.getContainingFile()).getBoxReference().getHeaderReference().getText();
+		TaraBoxFile containingFile = (TaraBoxFile) this.getContainingFile();
+		String packageName = containingFile.getBoxReference().getHeaderReference().getText();
 		Concept concept = (Concept) this;
-		while ((concept = TaraPsiImplUtil.getContextOf(concept)) != null) {
+		while ((concept = TaraPsiImplUtil.getConceptContextOf(concept)) != null)
 			name = concept.getName() + "." + name;
-		}
 		return packageName + "." + name;
 	}
 

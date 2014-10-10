@@ -8,8 +8,8 @@ import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraParameterValueImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
-import siani.tara.lang.*;
 import siani.tara.lang.Attribute;
+import siani.tara.lang.*;
 import siani.tara.lang.Word;
 
 import java.util.List;
@@ -25,11 +25,12 @@ public class ParameterAnnotator extends TaraAnnotator {
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		if (!(element instanceof Parameter)) return;
+		this.holder = holder;
 		Parameter parameter = (Parameter) element;
 		model = TaraLanguage.getMetaModel(parameter.getContainingFile());
 		if (model == null) return;
 		TaraFacetApply inFacet = parameter.isInFacet();
-		Concept concept = TaraPsiImplUtil.getContextOf(parameter);
+		Concept concept = TaraPsiImplUtil.getConceptContextOf(parameter);
 		node = findNode(concept, model);
 		if (node == null) return;
 		List<Variable> facetVariables = null;
@@ -40,18 +41,19 @@ public class ParameterAnnotator extends TaraAnnotator {
 		if (index >= variables.size())
 			annotateErroneousParameter(parameter, holder);
 		else {
-			if (parameter.isExplicit()) processExplicit(holder, (TaraExplicitParameter) parameter, variables);
-			else processImplicit(holder, (TaraImplicitParameter) parameter, variables, index);
+			if (parameter.isExplicit()) processExplicit((TaraExplicitParameter) parameter, variables);
+			else processImplicit((TaraImplicitParameter) parameter, variables, index);
 		}
 	}
 
 	private List<Variable> getAllowedFacet(Node node, String name) {
-		for (Map.Entry<String, List<Variable>> entry : node.getObject().getAllowedFacetsParameters().entrySet())
-			if (entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1).equals(name)) return entry.getValue();
+		for (Map.Entry<String, FacetTarget> entry : node.getObject().getAllowedFacets().entrySet())
+			if (entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1).equals(name))
+				return entry.getValue().getVariables();
 		return null;
 	}
 
-	private void processExplicit(AnnotationHolder holder, TaraExplicitParameter parameter, List<Variable> variables) {
+	private void processExplicit(TaraExplicitParameter parameter, List<Variable> variables) {
 		String name = parameter.getIdentifier().getText();
 		Variable variable = getVariableByName(variables, name);
 		if (variable == null) annotateErroneousParameter(parameter, holder);
@@ -67,10 +69,10 @@ public class ParameterAnnotator extends TaraAnnotator {
 		return word.contains(value);
 	}
 
-	private void processImplicit(AnnotationHolder holder, TaraImplicitParameter parameter, List<Variable> variables, int index) {
+	private void processImplicit(TaraImplicitParameter parameter, List<Variable> variables, int index) {
 		Variable variable = variables.get(index);
 		if (parameter.getValue().getFirstChild() instanceof TaraMetaWord || parameter.getValue().getFirstChild() instanceof TaraIdentifierReference)
-			processAsWordOrReference(parameter.getValue(), holder, variable);
+			processAsWordOrReference(parameter.getValue(), variable);
 		else if (!areSameType(variable, parameter) || (parameter.isList() && !variable.isList()))
 			holder.createErrorAnnotation(parameter, "Incorrect type. Expected " + variable.getType() + " " + variable.getName());
 	}
@@ -84,25 +86,48 @@ public class ParameterAnnotator extends TaraAnnotator {
 		holder.createErrorAnnotation(element, "erroneous parameter");
 	}
 
-	private void processAsWordOrReference(PsiElement element, AnnotationHolder holder, Variable actualVariable) {
-		if (actualVariable instanceof Word)
-			isCorrectWord(((Word) actualVariable), element.getFirstChild().getText());
-		else if (!Reference.class.isInstance(actualVariable))
-			holder.createErrorAnnotation(element, "Parameter type error. Expected " + actualVariable.getType());
-		else if (element.getFirstChild() instanceof TaraIdentifierReference &&
-			!checkWellReference((TaraIdentifierReference) element.getFirstChild(), (Reference) actualVariable))
-			holder.createErrorAnnotation(element, "Unexpected type. Bad reference");
+	private void processAsWordOrReference(PsiElement element, Variable variable) {
+		if (variable instanceof Word)
+			isCorrectWord(((Word) variable), element.getFirstChild().getText());
+		else if (variable instanceof Reference) checkReferences(element.getChildren(), (Reference) variable);
+		else holder.createErrorAnnotation(element, "Parameter type error. Expected " + variable.getType());
+	}
+
+	private void checkReferences(PsiElement[] children, Reference reference) {
+		if (children.length > 1 && !reference.isList())
+			holder.createErrorAnnotation(children[0].getParent(), "Only one item is expected");
+		for (PsiElement child : children) {
+			if (child instanceof TaraIdentifierReference &&
+				!checkWellReference((TaraIdentifierReference) child, reference)) {
+				holder.createErrorAnnotation(child, "Unexpected type. Bad reference");
+				continue;
+			}
+			if (child instanceof TaraIdentifierReference && !reference.isUniversal() && !inSameContext((TaraIdentifierReference) child))
+				holder.createErrorAnnotation(child, "Bad referenced. The reference has to be in the context");
+		}
 	}
 
 	private boolean checkWellReference(TaraIdentifierReference reference, Reference variable) {
 		TaraReferenceSolver solver = new TaraReferenceSolver(getLastElementOf(reference), reference.getTextRange(), false);
-		Concept resolve = TaraPsiImplUtil.getContextOf(solver.resolve());
+		Concept resolve = TaraPsiImplUtil.getConceptContextOf(solver.resolve());
 		if (resolve != null) {
 			MetaIdentifier metaIdentifier = resolve.getMetaIdentifier();
 			if ((metaIdentifier != null))
 				return checkInHierarchy(metaIdentifier.getText(), variable.getType());
 		}
 		return false;
+	}
+
+	private boolean inSameContext(TaraIdentifierReference reference) {
+		TaraReferenceSolver solver = new TaraReferenceSolver(getLastElementOf(reference), reference.getTextRange(), false);
+		Concept resolve = TaraPsiImplUtil.getConceptContextOf(solver.resolve());
+		PsiElement referenceContext = reference;
+		PsiElement resolveContext = resolve;
+		while ((TaraPsiImplUtil.getConceptContextOf(referenceContext)) != null)
+			referenceContext = TaraPsiImplUtil.getConceptContextOf(referenceContext);
+		while ((TaraPsiImplUtil.getConceptContextOf(resolveContext)) != null)
+			resolveContext = TaraPsiImplUtil.getConceptContextOf(resolveContext);
+		return resolveContext == referenceContext;
 	}
 
 	private boolean checkInHierarchy(String name, String type) {

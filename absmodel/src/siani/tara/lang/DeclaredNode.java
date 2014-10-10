@@ -5,6 +5,7 @@ import java.util.List;
 public class DeclaredNode extends Node {
 
 	private List<Node> innerNodes = new NodeTree();
+	private transient FacetTarget inFacetTargetParent = null;
 
 	public DeclaredNode() {
 	}
@@ -41,12 +42,13 @@ public class DeclaredNode extends Node {
 	@Override
 	protected String getNodePath() {
 		String name = !getName().isEmpty() ? getName() : "[" + getObject().getParentName() + ANONYMOUS + "]";
-		if (container != null && !getObject().isSub()) return container.getQualifiedName() + "." + name;
+		if (container != null && !getObject().isSub())
+			return container.getQualifiedName() +
+				(isInFacetTargetParent() ? IN_FACET_TARGET + "(" + this.getFacetTargetParent().getDestinyName() + ")" : "") + "." + name;
 		if (getObject().isSub())
 			return getContainer().getQualifiedName().substring(0, getContainer().getQualifiedName().lastIndexOf(".")) + "." + name;
 		else return getBox() + "." + name;
 	}
-
 
 	public boolean isSub() {
 		return getObject().isSub();
@@ -61,5 +63,17 @@ public class DeclaredNode extends Node {
 			if (innerNode.getName().equals(name))
 				return true;
 		return false;
+	}
+
+	public FacetTarget getFacetTargetParent() {
+		return inFacetTargetParent;
+	}
+
+	public void setFacetTargetParent(FacetTarget facetTarget) {
+		this.inFacetTargetParent = facetTarget;
+	}
+
+	public boolean isInFacetTargetParent() {
+		return this.inFacetTargetParent != null;
 	}
 }

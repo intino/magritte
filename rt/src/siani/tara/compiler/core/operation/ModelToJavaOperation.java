@@ -1,8 +1,6 @@
 package siani.tara.compiler.core.operation;
 
-import org.siani.itrules.Document;
 import org.siani.itrules.Frame;
-import org.siani.itrules.RuleEngine;
 import siani.tara.compiler.codegeneration.FrameCreator;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.CompilerConfiguration;
@@ -30,15 +28,14 @@ public class ModelToJavaOperation extends ModelOperation {
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		Map<String, Frame> frames = FrameCreator.create(model);
-		System.out.println(rulesFolder.getAbsolutePath());
-		if (rulesFolder.listFiles() == null) return;
-		for (File ruleFile : rulesFolder.listFiles())
-			for (Map.Entry<String, Frame> frame : frames.entrySet()) {
-				FileInputStream fileInputStream = getRulesInput(ruleFile);
-				Document document = new Document();
-				new RuleEngine(fileInputStream).render(frame.getValue(), document);
-				printDocument(configuration.getOutDirectory(), document.content(), frame.getKey());
-			}
+//		if (rulesFolder.listFiles() == null) return;
+//		for (File ruleFile : rulesFolder.listFiles())
+//			for (Map.Entry<String, Frame> frame : frames.entrySet()) {
+//				FileInputStream fileInputStream = getRulesInput(ruleFile);
+//				Document document = new Document();
+//				new RuleEngine(fileInputStream).render(frame.getValue(), document);
+//				printDocument(configuration.getOutDirectory(), document.content(), frame.getKey());
+//			}
 	}
 
 	private void printDocument(File outDirectory, String content, String qn) {

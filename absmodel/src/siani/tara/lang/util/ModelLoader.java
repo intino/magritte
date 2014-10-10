@@ -103,8 +103,9 @@ public class ModelLoader {
 				JsonElement empty = json.getAsJsonObject().get("empty");
 				if (empty != null && empty.isJsonPrimitive()) reference.setEmpty(empty.getAsBoolean());
 				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
-				if (isProperty != null && isProperty.isJsonPrimitive())
-					reference.setProperty(isProperty.getAsBoolean());
+				if (isProperty != null && isProperty.isJsonPrimitive()) reference.setProperty(isProperty.getAsBoolean());
+				JsonElement isUniversal = json.getAsJsonObject().get("isUniversal");
+				if (isUniversal != null && isUniversal.isJsonPrimitive()) reference.setUniversal(isUniversal.getAsBoolean());
 				return reference;
 			}
 
@@ -125,6 +126,8 @@ public class ModelLoader {
 				Resource resource = new Resource(e.getAsString(), name, json.getAsJsonObject().get("isTerminal").getAsBoolean());
 				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
 				if (isProperty != null && isProperty.isJsonPrimitive()) resource.setProperty(isProperty.getAsBoolean());
+				JsonElement isUniversal = json.getAsJsonObject().get("isUniversal");
+				if (isUniversal != null && isUniversal.isJsonPrimitive()) resource.setUniversal(isUniversal.getAsBoolean());
 				return resource;
 			}
 

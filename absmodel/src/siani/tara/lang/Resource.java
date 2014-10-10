@@ -40,6 +40,7 @@ public class Resource extends Variable {
 	public Variable clone() {
 		Resource resource = new Resource(node, name, isTerminal);
 		resource.setProperty(isProperty);
+		resource.setUniversal(isUniversal);
 		return resource;
 	}
 }

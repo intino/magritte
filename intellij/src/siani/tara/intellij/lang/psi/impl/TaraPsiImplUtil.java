@@ -70,6 +70,7 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
+
 	private static void removeSubs(List<Concept> children) {
 		List<Concept> list = new ArrayList();
 		for (Concept concept : children) if (concept.isSub()) list.add(concept);
@@ -86,10 +87,12 @@ public class TaraPsiImplUtil {
 	}
 
 	@Nullable
-	public static Concept getContextOf(PsiElement element) {
+	public static Concept getConceptContextOf(PsiElement element) {
 		try {
 			PsiElement aElement = element;
-			while ((aElement.getParent() != null) && !(aElement.getParent() instanceof TaraBoxFile) && !(aElement.getParent() instanceof Concept))
+			while ((aElement.getParent() != null)
+				&& !(aElement.getParent() instanceof TaraBoxFile)
+				&& !(aElement.getParent() instanceof Concept))
 				aElement = aElement.getParent();
 			return (aElement.getParent() instanceof Concept) ? (Concept) aElement.getParent() : null;
 		} catch (NullPointerException e) {
@@ -98,29 +101,31 @@ public class TaraPsiImplUtil {
 		}
 	}
 
+	@Nullable
+	public static PsiElement getContextOf(PsiElement element) {
+		PsiElement aElement = element;
+		while ((aElement.getParent() != null)
+			&& !(aElement.getParent() instanceof TaraBoxFile)
+			&& !(aElement.getParent() instanceof Concept)
+			&& !(aElement.getParent() instanceof TaraFacetTarget)
+			&& !(aElement.getParent() instanceof TaraFacetApply))
+			aElement = aElement.getParent();
+		return aElement.getParent();
+	}
+
 	public static Concept getParentOf(Concept concept) {
 		if (concept.isSub()) {
 			Concept parent = concept;
-			while (parent != null && parent.isSub()) parent = getContextOf(parent);
+			while (parent != null && parent.isSub()) parent = getConceptContextOf(parent);
 			return parent;
 		} else {
 			if (concept.getParentConcept() != null) {
 				TaraIdentifierReference identifierReference = concept.getSignature().getIdentifierReference();
 				PsiElement resolve = ReferenceManager.resolve(identifierReference);
-				return getContextOf(resolve);
+				return getConceptContextOf(resolve);
 			}
 		}
 		return null;
-	}
-
-	public static PsiElement[] getAnnotations(Annotations annotations) {
-		PsiElement child = annotations.getFirstChild();
-		List<PsiElement> annotationList = new ArrayList<>();
-		while (child != null) {
-			if (!" ".equals(child.getText())) annotationList.add(child);
-			child = child.getNextSibling();
-		}
-		return annotationList.toArray(new PsiElement[annotationList.size()]);
 	}
 
 }

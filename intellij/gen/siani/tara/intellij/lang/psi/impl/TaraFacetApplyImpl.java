@@ -23,6 +23,12 @@ public class TaraFacetApplyImpl extends ASTWrapperPsiElement implements TaraFace
   }
 
   @Override
+  @Nullable
+  public TaraBody getBody() {
+    return findChildByClass(TaraBody.class);
+  }
+
+  @Override
   @NotNull
   public List<TaraMetaIdentifier> getMetaIdentifierList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraMetaIdentifier.class);

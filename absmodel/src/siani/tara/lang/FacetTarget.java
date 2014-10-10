@@ -11,6 +11,7 @@ public class FacetTarget {
 	private boolean always;
 	private transient FacetTarget parentTarget;
 	private List<Variable> variables = new ArrayList<>();
+	private List<Node> inner = new ArrayList<>();
 
 	public FacetTarget(String destiny, FacetTarget parentTarget) {
 		this.destinyName = destiny;
@@ -67,5 +68,13 @@ public class FacetTarget {
 			if (type.isAssignableFrom(e.getClass()))
 				result.add((T) e);
 		return result;
+	}
+
+	public List<Node> getInner() {
+		return inner;
+	}
+
+	public boolean add(Node node) {
+		return inner.add(node);
 	}
 }

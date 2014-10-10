@@ -29,7 +29,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	}
 
 	private void checkAnnotations(@NotNull siani.tara.intellij.lang.psi.Annotations annotationsElement) {
-		Concept contextOf = TaraPsiImplUtil.getContextOf(annotationsElement);
+		Concept contextOf = TaraPsiImplUtil.getConceptContextOf(annotationsElement);
 		for (PsiElement psiElement : getIncorrectAnnotations(contextOf, contextOf.getAnnotations())) {
 			com.intellij.lang.annotation.Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
 			errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);

@@ -7,6 +7,7 @@ public abstract class Variable implements Cloneable {
 	public boolean isList = false;
 	public boolean isTerminal = false;
 	public boolean isProperty = false;
+	public boolean isUniversal = false;
 
 	public String getName() {
 		return name;
@@ -46,6 +47,14 @@ public abstract class Variable implements Cloneable {
 
 	public void setProperty(boolean isProperty) {
 		this.isProperty = isProperty;
+	}
+
+	public boolean isUniversal() {
+		return isUniversal;
+	}
+
+	public void setUniversal(boolean isUniversal) {
+		this.isUniversal = isUniversal;
 	}
 
 	public abstract String getType();

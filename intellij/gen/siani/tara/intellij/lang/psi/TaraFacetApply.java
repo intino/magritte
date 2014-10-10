@@ -7,6 +7,9 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraFacetApply extends TaraPsiElement {
 
+  @Nullable
+  TaraBody getBody();
+
   @NotNull
   List<TaraMetaIdentifier> getMetaIdentifierList();
 

@@ -7,6 +7,8 @@ import java.util.List;
 public abstract class Node {
 
 	protected transient static final String ANONYMOUS = "@anonymous";
+	protected transient static final String IN_FACET_TARGET = "@facetTarget";
+	protected transient static final String IN_FACET_APPLY = "@facetApply";
 	protected transient static final String LINK = "@link";
 	protected String qualifiedName;
 	protected String file;

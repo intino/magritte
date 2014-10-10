@@ -51,29 +51,11 @@ public class FacetTargetsResolver {
 		for (FacetTarget facetTarget : facetNode.getObject().getFacetTargets()) {
 			List<Node> destinies = new ArrayList();
 			collectTargetsOfFacet(facetNode, facetTarget, destinies);
-			addAllowedFacetsToDestinies(facetNode, destinies, facetTarget.getVariables());
+			addAllowedFacetsToDestinies(facetNode, destinies, facetTarget);
 		}
 		facetNode.getObject().getVariables().clear();
 	}
 
-
-	private void addAllowedFacetsToDestinies(DeclaredNode facetNode, List<Node> targets, List<Variable> variables) {
-		for (Node target : targets) {
-			target.getObject().addAllowedFacet(facetNode.getQualifiedName(), variables);
-			ArrayList<NodeObject> descendants = new ArrayList<>();
-			collectDescentOfNode(target.getObject(), descendants);
-			for (NodeObject destiny : descendants)
-				destiny.addAllowedFacet(facetNode.getQualifiedName(), variables);
-		}
-	}
-
-	private void collectDescentOfNode(NodeObject object, List<NodeObject> descendants) {
-		if (object.getChildren() == null) return;
-		for (NodeObject child : object.getChildren()) {
-			descendants.add(child);
-			if (child.getChildren() != null) collectDescentOfNode(child, descendants);
-		}
-	}
 
 	private void collectTargetsOfFacet(Node facetNode, FacetTarget facetTarget, List<Node> targets) {
 		Node node;
@@ -86,5 +68,23 @@ public class FacetTargetsResolver {
 		if (!node.getObject().is(FACET)) targets.add(node);
 		else for (FacetTarget object : node.getObject().getFacetTargets())
 			collectTargetsOfFacet(node, object, targets);
+	}
+
+	private void addAllowedFacetsToDestinies(DeclaredNode facetNode, List<Node> targets, FacetTarget facet) {
+		for (Node target : targets) {
+			target.getObject().addAllowedFacet(facetNode.getQualifiedName(), facet);
+			ArrayList<NodeObject> descendants = new ArrayList<>();
+			collectDescentOfNode(target.getObject(), descendants);
+			for (NodeObject destiny : descendants)
+				destiny.addAllowedFacet(facetNode.getQualifiedName(), facet);
+		}
+	}
+
+	private void collectDescentOfNode(NodeObject object, List<NodeObject> descendants) {
+		if (object.getChildren() == null) return;
+		for (NodeObject child : object.getChildren()) {
+			descendants.add(child);
+			if (child.getChildren() != null) collectDescentOfNode(child, descendants);
+		}
 	}
 }

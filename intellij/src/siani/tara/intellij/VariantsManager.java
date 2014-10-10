@@ -27,7 +27,7 @@ public class VariantsManager {
 	}
 
 	private void addContextVariants() {
-		Concept contextOf = TaraPsiImplUtil.getContextOf(TaraPsiImplUtil.getContextOf(myElement));
+		Concept contextOf = TaraPsiImplUtil.getConceptContextOf(TaraPsiImplUtil.getConceptContextOf(myElement));
 		if (contextOf == null) return;
 		for (Concept concept : TaraPsiImplUtil.getInnerConceptsOf(contextOf))
 			resolvePathFor(concept, context);
@@ -38,7 +38,7 @@ public class VariantsManager {
 		TaraBoxFile box = (TaraBoxFile) ReferenceManager.resolve(boxPath.get(boxPath.size() - 1), false);
 		if (box == null) return;
 		for (Concept concept : box.getConcepts()) {
-			if (concept.equals(TaraPsiImplUtil.getContextOf(myElement))) continue;
+			if (concept.equals(TaraPsiImplUtil.getConceptContextOf(myElement))) continue;
 			resolvePathFor(concept, context);
 		}
 	}
@@ -51,7 +51,7 @@ public class VariantsManager {
 			PsiElement resolve = ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1), false);
 			if (resolve == null || !TaraBoxFile.class.isInstance(resolve)) continue;
 			for (Concept concept : ((TaraBoxFile) resolve).getConcepts()) {
-				if (concept.equals(TaraPsiImplUtil.getContextOf(myElement))) continue;
+				if (concept.equals(TaraPsiImplUtil.getConceptContextOf(myElement))) continue;
 				resolvePathFor(concept, context);
 			}
 		}

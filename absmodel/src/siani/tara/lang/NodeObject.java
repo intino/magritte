@@ -5,12 +5,12 @@ import java.util.*;
 public class NodeObject extends ModelObject {
 	String declaredNodeQN;
 	boolean caseConcept = false;
-	List<DeclaredNode> cases;
+	List<DeclaredNode> subconcepts;
 	transient List<NodeObject> childrenConcepts;
 	List<Annotations.Annotation> annotations = new ArrayList<>();
 	List<Variable> variables = new ArrayList<>();
 	List<Facet> facets = new ArrayList<>();
-	Map<String, List<Variable>> allowedFacetsParameters = new HashMap<>();
+	Map<String, FacetTarget> allowedFacets = new HashMap<>();
 	List<FacetTarget> facetTargets = new ArrayList<>();
 	List<String> parameters = new ArrayList<>();
 
@@ -70,7 +70,7 @@ public class NodeObject extends ModelObject {
 	}
 
 	public List<DeclaredNode> getSubConcepts() {
-		return cases != null ? cases : Collections.EMPTY_LIST;
+		return subconcepts != null ? subconcepts : Collections.EMPTY_LIST;
 	}
 
 	public boolean isSub() {
@@ -86,9 +86,9 @@ public class NodeObject extends ModelObject {
 		childrenConcepts.add(child);
 	}
 
-	public boolean add(DeclaredNode node) {
-		if (cases == null) cases = new ArrayList<>();
-		return cases.add(node);
+	public boolean add(DeclaredNode sub) {
+		if (subconcepts == null) subconcepts = new ArrayList<>();
+		return subconcepts.add(sub);
 	}
 
 	public boolean addParameter(String parameter) {
@@ -115,12 +115,12 @@ public class NodeObject extends ModelObject {
 		return facets.add(object);
 	}
 
-	public Map<String, List<Variable>> getAllowedFacetsParameters() {
-		return allowedFacetsParameters;
+	public Map<String, FacetTarget> getAllowedFacets() {
+		return allowedFacets;
 	}
 
-	public void addAllowedFacet(String name, List<Variable> variables) {
-		allowedFacetsParameters.put(name, variables);
+	public void addAllowedFacet(String name, FacetTarget facetTarget) {
+		allowedFacets.put(name, facetTarget);
 	}
 
 	public List<FacetTarget> getFacetTargets() {

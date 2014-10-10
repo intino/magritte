@@ -39,6 +39,7 @@ public class Attribute extends Variable {
 		Attribute attribute = new Attribute(primitiveType, name, isList, isTerminal);
 		attribute.setValue(value);
 		attribute.setProperty(isProperty);
+		attribute.setUniversal(isUniversal);
 		attribute.measure = measure;
 		return attribute;
 	}

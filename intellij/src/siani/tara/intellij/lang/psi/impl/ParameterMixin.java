@@ -31,7 +31,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	public PsiReference[] getReferences() {
 		Model heritage = TaraLanguage.getMetaModel(getContainingFile());
 		if (heritage == null) return new PsiReference[0];
-		Node node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getContextOf(this)));
+		Node node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getConceptContextOf(this)));
 		if (node == null) return new PsiReference[0];
 		List<Variable> variables = node.getObject().getVariables();
 		if (variables.isEmpty()) return new PsiReference[]{};
@@ -47,7 +47,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	@Override
 	public PsiReference getReference() {
 		Model heritage = TaraLanguage.getMetaModel(getContainingFile());
-		Node node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getContextOf(this)));
+		Node node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getConceptContextOf(this)));
 		if (node == null) return null;
 		Variable variable = node.getObject().getVariables().get(getIndexInParent());
 		if (siani.tara.lang.Word.class.isInstance(variable))

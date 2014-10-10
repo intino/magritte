@@ -48,12 +48,11 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterConcept(@NotNull ConceptContext ctx) {
-		DeclaredNode container = !conceptStack.empty() ? (DeclaredNode) conceptStack.peek() : null;
+		DeclaredNode container = (!conceptStack.empty() ? (DeclaredNode) conceptStack.peek() : null);
 		Node node;
 		String name = (ctx.signature().IDENTIFIER() != null) ? ctx.signature().IDENTIFIER().getText() : "";
 		String type = (ctx.signature().metaidentifier() != null) ?
-			ctx.signature().metaidentifier().getText() :
-			container.getObject().getType();
+			ctx.signature().metaidentifier().getText() : container.getObject().getType();
 		String parent = getParent(ctx);
 		node = name.isEmpty() && ctx.body() == null ?
 			new LinkNode(parent, container) :
@@ -65,17 +64,25 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		conceptStack.push(node);
 	}
 
+	private boolean isInFacetTarget(ConceptContext ctx) {
+		return ctx.getParent().getParent() instanceof FacetTargetContext;
+	}
+
 	private void addNodeToModel(ConceptContext ctx, Node node, String parent) {
 		DeclaredNode container = node.getContainer();
 		if (node.is(DeclaredNode.class)) {
 			if (container != null) {
-				if (isCase(ctx)) {
+				if (isSub(ctx)) {
 					node.getObject().setCase(true);
 					node.getObject().setParentName(node.getContainer().getQualifiedName());
 					node.getObject().setParentObject(container.getObject());
 					container.getObject().add((DeclaredNode) node);
-				}
-				container.add(node);
+					container.add(node);
+				} else if (isInFacetTarget(ctx)) {
+					List<FacetTarget> facetTargets = conceptStack.peek().getObject().getFacetTargets();
+					facetTargets.get(facetTargets.size() - 1).add(node);
+					((DeclaredNode) node).setFacetTargetParent(facetTargets.get(facetTargets.size() - 1));
+				} else container.add(node);
 			} else model.add(node);
 			if (parent != null) node.getObject().setParentName(parent);
 		} else if (node instanceof LinkNode)
@@ -84,7 +91,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			model.add(node);
 	}
 
-	private boolean isCase(ConceptContext ctx) {
+	private boolean isSub(ConceptContext ctx) {
 		return ctx.signature().SUB() != null;
 	}
 
@@ -284,10 +291,10 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterReference(@NotNull ReferenceContext ctx) {
-		Reference variable = new Reference(ctx.identifierReference().getText(), ctx.IDENTIFIER().getText());
-		variable.setList(ctx.LIST() != null);
-		if (ctx.EMPTY() != null) variable.setEmpty(true);
-		addAttribute(ctx, variable);
+		Reference reference = new Reference(ctx.identifierReference().getText(), ctx.IDENTIFIER().getText());
+		reference.setList(ctx.LIST() != null);
+		if (ctx.EMPTY() != null) reference.setEmpty(true);
+		addAttribute(ctx, reference);
 	}
 
 	private void addAttribute(ParserRuleContext ctx, Variable attribute) {
@@ -335,5 +342,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		Variable variable = variables.get(variables.size() - 1);
 		variable.setTerminal(!ctx.TERMINAL().isEmpty());
 		variable.setProperty(!ctx.PROPERTY().isEmpty());
+		variable.setProperty(!ctx.PROPERTY().isEmpty());
+		variable.setUniversal(!ctx.UNIVERSAL().isEmpty());
 	}
 }

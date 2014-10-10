@@ -22,7 +22,7 @@ public class VarInitAnnotator extends TaraAnnotator {
 		if (!TaraVarInit.class.isInstance(element)) return;
 		VarInit varInit = (VarInit) element;
 		Model model = TaraLanguage.getMetaModel(element.getContainingFile());
-		Concept concept = TaraPsiImplUtil.getContextOf(element);
+		Concept concept = TaraPsiImplUtil.getConceptContextOf(element);
 		if (concept == null) return;
 		Node node = findNode(concept, model);
 		if (node == null) return;

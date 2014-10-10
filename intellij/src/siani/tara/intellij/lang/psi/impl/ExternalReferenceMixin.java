@@ -18,7 +18,7 @@ public class ExternalReferenceMixin extends ASTWrapperPsiElement {
 	@NotNull
 	@Override
 	public PsiReference[] getReferences() {
-		Concept contextOf = TaraPsiImplUtil.getContextOf(this);
+		Concept contextOf = TaraPsiImplUtil.getConceptContextOf(this);
 		if (contextOf == null) return PsiReference.EMPTY_ARRAY;
 		PsiElement identifierNode = contextOf.getIdentifierNode();
 		if (identifierNode == null) return PsiReference.EMPTY_ARRAY;
@@ -28,7 +28,7 @@ public class ExternalReferenceMixin extends ASTWrapperPsiElement {
 	@Nullable
 	@Override
 	public PsiReference getReference() {
-		Concept contextOf = TaraPsiImplUtil.getContextOf(this);
+		Concept contextOf = TaraPsiImplUtil.getConceptContextOf(this);
 		if (contextOf == null) return null;
 		PsiElement identifierNode = contextOf.getIdentifierNode();
 		if (identifierNode == null) return null;

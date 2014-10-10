@@ -57,12 +57,14 @@ public class ModelSaver {
 				object.addProperty("node", reference.type);
 				object.addProperty("isList", reference.isList);
 				object.addProperty("empty", reference.empty);
+
 			} else if (variable instanceof Resource) {
 				Resource resource = (Resource) variable;
 				object.addProperty("resourceType", resource.node);
 			}
 			object.addProperty("isTerminal", variable.isTerminal);
-			object.addProperty("isProperty", variable.isProperty());
+			object.addProperty("isProperty", variable.isProperty);
+			object.addProperty("isUniversal", variable.isUniversal);
 			return object; // or throw an IllegalArgumentException
 
 		}

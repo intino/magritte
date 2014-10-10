@@ -19,7 +19,7 @@ public class ConceptReferenceAnnotator extends TaraAnnotator {
 
 	private boolean isDuplicated(TaraConceptReference reference) {
 		int count = 0;
-		Concept contextOf = TaraPsiImplUtil.getContextOf(reference);
+		Concept contextOf = TaraPsiImplUtil.getConceptContextOf(reference);
 		if (contextOf == null) return false;
 		TaraConceptReference[] links = contextOf.getConceptLinks();
 		for (TaraConceptReference link : links)

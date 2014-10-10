@@ -46,6 +46,7 @@ public class Reference extends Variable {
 	public Reference clone() {
 		Reference reference = new Reference(type, name, isList, isTerminal);
 		reference.setProperty(isProperty);
+		reference.setUniversal(isUniversal);
 		return reference;
 	}
 }

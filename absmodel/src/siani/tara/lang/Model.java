@@ -110,24 +110,59 @@ public class Model {
 
 	public Node searchNode(String qn) {
 		if (qn == null || qn.isEmpty()) return null;
-		String[] split = qn.split("\\.");
-		List<DeclaredNode> roots = getModelRoots();
-		DeclaredNode root = findNodeByName(roots, split[0]);
-		if (root == null) return null;
-		return split.length == 1 ? root : resolve(root, Arrays.copyOfRange(split, 1, split.length));
+		String[] path = qn.split("\\.");
+		Node currentNode = null;
+		String inFacet = null;
+		for (String nodeName : path) {
+			String name = isInFacet(nodeName) ? nodeName.substring(0, nodeName.indexOf("@")) : nodeName;
+			if (!searchInFacet(inFacet)) {
+				currentNode = (currentNode == null) ? findNodeInList(getModelRoots(), name) : findInnerIn(currentNode, name);
+				if (isInFacet(nodeName)) inFacet = nodeName.substring(nodeName.indexOf("@"));
+			} else {
+				if (isInFacetTarget(inFacet)) {
+					currentNode = findNodeInList(getModelRoots(), name);
+					inFacet = null;
+					continue;
+				} else
+					currentNode = findInnerInList(findFacetApply(currentNode.getObject().getAllowedFacets(), getFacet(inFacet)).getInner(), name);
+				inFacet = null;
+			}
+			if (currentNode == null) return null;
+		}
+		return currentNode;
 	}
 
-	private Node resolve(DeclaredNode nodeRoot, String[] path) {
-		Node node = nodeRoot;
-		for (String level : path) {
-			node = findInnerIn(node, level);
-			if (node == null) return null;
+	private boolean searchInFacet(String inFacet) {
+		return inFacet != null;
+	}
+
+	private boolean isInFacet(String nodeName) {
+		return nodeName.contains("@");
+	}
+
+	private FacetTarget findFacetApply(Map<String, FacetTarget> facets, String facet) {
+		for (Map.Entry<String, FacetTarget> facetApply : facets.entrySet()) {
+			String[] key = facetApply.getKey().split("\\.");
+			if (key[key.length - 1].equals(facet)) return facetApply.getValue();
 		}
-		return node;
+		return null;
+	}
+
+	private String getFacet(String nodeName) {
+		return nodeName.substring(nodeName.indexOf("(") + 1, nodeName.indexOf(")"));
+	}
+
+	private boolean isInFacetTarget(String rootName) {
+		return rootName.contains(Node.IN_FACET_TARGET);
 	}
 
 	private Node findInnerIn(Node parent, String name) {
-		for (Node node : parent.getInnerNodes())
+		return findInnerInList(parent.getInnerNodes(), name);
+
+	}
+
+	private Node findInnerInList(List<Node> innerNodes, String name) {
+		for (Node node : innerNodes)
 			if (node instanceof LinkNode) {
 				if (((LinkNode) node).getDestinyName().equals(name)) return node;
 				else {
@@ -158,8 +193,8 @@ public class Model {
 		return null;
 	}
 
-	private DeclaredNode findNodeByName(List<DeclaredNode> roots, String name) {
-		for (DeclaredNode root : roots) if (name.equals(root.getName())) return root;
+	private DeclaredNode findNodeInList(List<DeclaredNode> nodeList, String name) {
+		for (DeclaredNode root : nodeList) if (name.equals(root.getName())) return root;
 		return null;
 	}
 

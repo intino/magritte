@@ -1,6 +1,7 @@
 src_file
 /Users/oroncal/workspace/sandbox/monet/engine/model/base.tara
 /Users/oroncal/workspace/sandbox/monet/engine/model/form.tara
+/Users/oroncal/workspace/sandbox/monet/engine/model/collection.tara
 
 project
 monet

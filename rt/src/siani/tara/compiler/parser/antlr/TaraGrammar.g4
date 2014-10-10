@@ -39,7 +39,7 @@ metaWordNames : DOT IDENTIFIER;
 body: NEW_LINE_INDENT ((attribute | concept | varInit | facetApply | facetTarget | conceptReference) NEWLINE+)+ DEDENT;
 
 conceptReference : doc? HAS identifierReference IDENTIFIER?;
-facetApply : IS metaidentifier parameters? (WITH metaidentifier)?;
+facetApply : IS metaidentifier parameters? (WITH metaidentifier)? body?;
 facetTarget : ON identifierReference ALWAYS? body?;
 
 attribute : doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
@@ -49,7 +49,7 @@ resource         : RESOURCE attributeType IDENTIFIER;
 word             : WORD IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
 wordNames        : IDENTIFIER STAR?;
 
-reference        : identifierReference LIST? IDENTIFIER  (EQUALS EMPTY)?       ;
+reference        : identifierReference LIST? IDENTIFIER  (EQUALS EMPTY)?;
 booleanAttribute : BOOLEAN_TYPE LIST? IDENTIFIER (EQUALS booleanValue | EMPTY)?;
 stringAttribute  : STRING_TYPE  LIST? IDENTIFIER (EQUALS stringValue  | EMPTY)?;
 naturalAttribute : NATURAL_TYPE attributeType? LIST? IDENTIFIER (EQUALS naturalValue measure?| EMPTY)?;
