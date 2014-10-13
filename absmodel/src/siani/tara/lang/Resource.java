@@ -21,11 +21,6 @@ public class Resource extends Variable {
 	}
 
 	@Override
-	public String getValue() {
-		return node;
-	}
-
-	@Override
 	public boolean isList() {
 		return false;
 	}
@@ -41,6 +36,8 @@ public class Resource extends Variable {
 		Resource resource = new Resource(node, name, isTerminal);
 		resource.setProperty(isProperty);
 		resource.setUniversal(isUniversal);
+		resource.setDefaultValues(getDefaultValues());
+		for (String value : values) resource.addValue(value);
 		return resource;
 	}
 }

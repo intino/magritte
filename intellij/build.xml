@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="all" name="tara :: intellij">
 
-  <property name="src.dir" value="src" />
-  <property name="test.dir" value="test" />
-  <property name="sonar.source" value="1.7"/>
+  <property name="src.dir" defaultValue="src"/>
+  <property name="test.dir" defaultValue="test"/>
+  <property name="sonar.source" defaultValue="1.7"/>
   <path id="classpath">
   </path>
 
- <target name="clean">
+  <target name="clean">
   </target>
 
-  <target name="all" depends="clean" />
+  <target name="all" depends="clean"/>
 
 </project>

@@ -11,7 +11,7 @@ header :  box? imports?;
 box : BOX headerReference;
 
 imports :  anImport+;
-anImport: NEWLINE+ USE headerReference (AS ID)?;
+anImport: NEWLINE+ USE headerReference (AS IDENTIFIER)?;
 
 doc: DOC+;
 concept: doc? signature annotations? body?;
@@ -21,7 +21,7 @@ signature: ((SUB IDENTIFIER)
 
 
 parameters : LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS;
-parameterList : explicit? parameter (COMMA explicit? parameter)*;
+parameterList : (explicit parameter (COMMA explicit parameter)*) | parameter+;
 explicit: IDENTIFIER EQUALS;
 parameter : identifierReference
 			| stringValue+
@@ -30,7 +30,7 @@ parameter : identifierReference
 	        | integerValue+ measure?
 	        | doubleValue+ measure?
             | dateValue+
-            | codeValue+
+            | portValue+
 	        | metaWord;
 
 metaWord : metaidentifier metaWordNames*;
@@ -50,14 +50,14 @@ word             : WORD IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
 wordNames        : IDENTIFIER STAR?;
 
 reference        : identifierReference LIST? IDENTIFIER  (EQUALS EMPTY)?;
-booleanAttribute : BOOLEAN_TYPE LIST? IDENTIFIER (EQUALS booleanValue | EMPTY)?;
-stringAttribute  : STRING_TYPE  LIST? IDENTIFIER (EQUALS stringValue  | EMPTY)?;
-naturalAttribute : NATURAL_TYPE attributeType? LIST? IDENTIFIER (EQUALS naturalValue measure?| EMPTY)?;
-integerAttribute : INT_TYPE     attributeType? LIST? IDENTIFIER (EQUALS integerValue measure?| EMPTY)?;
-doubleAttribute  : DOUBLE_TYPE  attributeType? LIST? IDENTIFIER (EQUALS doubleValue  measure?| EMPTY)?;
-dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (EQUALS dateValue | EMPTY)?;
-coordinateAttribute  : COORDINATE_TYPE  LIST? IDENTIFIER (EQUALS (coordinateValue | EMPTY))?;
-portAttribute    : PORT_TYPE   LIST?  IDENTIFIER (EQUALS (codeValue | EMPTY))?;
+booleanAttribute : BOOLEAN_TYPE LIST? IDENTIFIER (EQUALS booleanValue+ | EMPTY)?;
+stringAttribute  : STRING_TYPE  LIST? IDENTIFIER (EQUALS stringValue+  | EMPTY)?;
+naturalAttribute : NATURAL_TYPE attributeType? LIST? IDENTIFIER (EQUALS naturalValue+ measure?| EMPTY)?;
+integerAttribute : INT_TYPE     attributeType? LIST? IDENTIFIER (EQUALS integerValue+ measure?| EMPTY)?;
+doubleAttribute  : DOUBLE_TYPE  attributeType? LIST? IDENTIFIER (EQUALS doubleValue+  measure?| EMPTY)?;
+dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (EQUALS dateValue+ | EMPTY)?;
+coordinateAttribute  : COORDINATE_TYPE  LIST? IDENTIFIER (EQUALS (coordinateValue+ | EMPTY))?;
+portAttribute    : PORT_TYPE   LIST?  IDENTIFIER (EQUALS (portValue+ | EMPTY))?;
 
 attributeType   : COLON IDENTIFIER;
 naturalValue    : NATURAL_VALUE;
@@ -65,7 +65,7 @@ integerValue    : NATURAL_VALUE | NEGATIVE_VALUE;
 doubleValue     : NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE;
 booleanValue    : BOOLEAN_VALUE;
 stringValue     : STRING_VALUE | STRING_MULTILINE_VALUE_KEY;
-codeValue       : CODE_VALUE;
+portValue       : PORT_VALUE;
 dateValue       : DATE_VALUE;
 coordinateValue : COORDINATE_VALUE;
 
@@ -78,7 +78,7 @@ varInit : IDENTIFIER EQUALS (EMPTY
 				        | stringValue+
                         | booleanValue+
 						| dateValue+
-						| codeValue+
+						| portValue+
 						| coordinateValue+
                         | naturalValue+ measure?
                         | integerValue+ measure?

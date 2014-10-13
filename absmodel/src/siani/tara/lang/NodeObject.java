@@ -7,12 +7,13 @@ public class NodeObject extends ModelObject {
 	boolean caseConcept = false;
 	List<DeclaredNode> subconcepts;
 	transient List<NodeObject> childrenConcepts;
-	List<Annotations.Annotation> annotations = new ArrayList<>();
+	transient Map<String, String> parameters = new LinkedHashMap<>();
+	transient Map<String, Variable> variableInits = new LinkedHashMap<>();
 	List<Variable> variables = new ArrayList<>();
+	List<Annotations.Annotation> annotations = new ArrayList<>();
 	List<Facet> facets = new ArrayList<>();
 	Map<String, FacetTarget> allowedFacets = new HashMap<>();
 	List<FacetTarget> facetTargets = new ArrayList<>();
-	List<String> parameters = new ArrayList<>();
 
 	public NodeObject() {
 		super();
@@ -40,7 +41,7 @@ public class NodeObject extends ModelObject {
 		this.declaredNodeQN = declaredNodeQN;
 	}
 
-	public List<String> getParameters() {
+	public Map<String, String> getParameters() {
 		return parameters;
 	}
 
@@ -91,8 +92,8 @@ public class NodeObject extends ModelObject {
 		return subconcepts.add(sub);
 	}
 
-	public boolean addParameter(String parameter) {
-		return parameters.add(parameter);
+	public void addParameter(String name, String value) {
+		parameters.put(name, value);
 	}
 
 	public void add(Annotations.Annotation annotation) {
@@ -141,6 +142,14 @@ public class NodeObject extends ModelObject {
 			if (type.isAssignableFrom(e.getClass()))
 				result.add((T) e);
 		return result;
+	}
+
+	public void putVariableInitialisation(String name, Variable value) {
+		variableInits.put(name, value);
+	}
+
+	public Map<String, Variable> getVariableInits() {
+		return variableInits;
 	}
 
 	public String toString() {

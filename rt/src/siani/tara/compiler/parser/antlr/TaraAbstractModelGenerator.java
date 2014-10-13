@@ -6,10 +6,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import siani.tara.lang.*;
 import siani.tara.lang.util.ModelLoader;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 import static siani.tara.compiler.parser.antlr.TaraGrammar.*;
 import static siani.tara.lang.Annotations.Annotation;
@@ -40,7 +37,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterAnImport(@NotNull AnImportContext ctx) {
 		String name = ctx.headerReference().getText();
-		if (ctx.ID() != null) {
+		if (ctx.IDENTIFIER() != null) {
 			model.setParentModelName(name);
 			model.setParentModel(ModelLoader.load(modelsPath, name));
 		} else imports.add(name);
@@ -155,14 +152,22 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterParameter(@NotNull ParameterContext ctx) {
+	public void enterParameterList(@NotNull ParameterListContext ctx) {
+		boolean explicit = ctx.explicit().isEmpty();
+		for (int i = 0; i < ctx.parameter().size(); i++) {
+			String text = explicit ? "" + i : ctx.explicit(i).IDENTIFIER().getText();
+			addParameter(text, ctx.parameter().get(i));
+		}
+	}
+
+	public void addParameter(String name, @NotNull ParameterContext ctx) {
 		super.enterParameter(ctx);
 		NodeObject object = conceptStack.peek().getObject();
 		if (inFacetApply(ctx)) {
 			List<Facet> facetApplies = object.getFacets();
-			facetApplies.get(facetApplies.size() - 1).add(ctx.getText());
+			facetApplies.get(facetApplies.size() - 1).add(name, ctx.getText());
 		} else
-			object.addParameter(ctx.getText());
+			object.addParameter(name, ctx.getText());
 	}
 
 	private boolean inFacetApply(ParameterContext ctx) {
@@ -185,9 +190,10 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		super.enterIntegerAttribute(ctx);
 		Attribute variable = new Attribute(ctx.INT_TYPE().getText(), ctx.IDENTIFIER().getText());
 		variable.setList(ctx.LIST() != null);
-		if (ctx.integerValue() != null) variable.setValue(ctx.integerValue().getText());
-		else if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
-		if (ctx.measure() != null) variable.setValue(ctx.measure().getText());
+		if (ctx.integerValue() != null)
+			variable.setDefaultValues(getTextArrayOfContextList(ctx.integerValue()));
+		else if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
+		if (ctx.measure() != null) variable.setMeasure(ctx.measure().getText());
 		addAttribute(ctx, variable);
 	}
 
@@ -195,9 +201,9 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterDoubleAttribute(@NotNull DoubleAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.DOUBLE_TYPE().getText(), ctx.IDENTIFIER().getText());
 		variable.setList(ctx.LIST() != null);
-		if (ctx.doubleValue() != null) variable.setValue(ctx.doubleValue().getText());
-		else if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
-		if (ctx.measure() != null) variable.setValue(ctx.measure().getText());
+		if (ctx.doubleValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.doubleValue()));
+		else if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
+		if (ctx.measure() != null) variable.setMeasure(ctx.measure().getText());
 		addAttribute(ctx, variable);
 	}
 
@@ -205,9 +211,9 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterNaturalAttribute(@NotNull NaturalAttributeContext ctx) {
 		super.enterNaturalAttribute(ctx);
 		Attribute variable = new Attribute(ctx.NATURAL_TYPE().getText(), ctx.IDENTIFIER().getText());
-		if (ctx.naturalValue() != null) variable.setValue(ctx.naturalValue().getText());
-		if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
-		if (ctx.measure() != null) variable.setValue(ctx.measure().getText());
+		if (ctx.naturalValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.naturalValue()));
+		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
+		if (ctx.measure() != null) variable.setMeasure(ctx.measure().getText());
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
@@ -215,8 +221,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterDateAttribute(@NotNull DateAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.DATE_TYPE().getText(), ctx.IDENTIFIER().getText());
-		if (ctx.dateValue() != null) variable.setValue(ctx.dateValue().getText());
-		if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
+		if (ctx.dateValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.dateValue()));
+		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
@@ -224,10 +230,16 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterStringAttribute(@NotNull StringAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.STRING_TYPE().getText(), ctx.IDENTIFIER().getText());
-		if (ctx.stringValue() != null) variable.setValue(formatText(ctx.stringValue().getText()));
-		if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
+		if (ctx.stringValue() != null) variable.setDefaultValues(formatValues(ctx.stringValue()));
+		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
+	}
+
+	private String[] formatValues(List<StringValueContext> values) {
+		List<String> strings = new ArrayList<>();
+		for (StringValueContext value : values) strings.add(formatText(value.getText()));
+		return strings.toArray(new String[strings.size()]);
 	}
 
 	private String formatText(String text) {
@@ -246,15 +258,16 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterBooleanAttribute(@NotNull BooleanAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.BOOLEAN_TYPE().getText(), ctx.IDENTIFIER().getText());
 		variable.setList(ctx.LIST() != null);
-		if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
+		if (ctx.booleanValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.booleanValue()));
+		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
 		addAttribute(ctx, variable);
 	}
 
 	@Override
 	public void enterCoordinateAttribute(@NotNull CoordinateAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.COORDINATE_TYPE().getText(), ctx.IDENTIFIER().getText());
-		if (ctx.coordinateValue() != null) variable.setValue(ctx.coordinateValue().getText());
-		else if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
+		if (ctx.coordinateValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.coordinateValue()));
+		else if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 
@@ -263,8 +276,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterPortAttribute(@NotNull PortAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.PORT_TYPE().getText(), ctx.IDENTIFIER().getText());
-		if (ctx.codeValue() != null) variable.setValue(ctx.codeValue().getText());
-		else if (ctx.EMPTY() != null) variable.setValue(Variable.EMPTY);
+		if (ctx.portValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.portValue()));
+		else if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
@@ -281,11 +294,10 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		int defaultWord = -1;
 		int i = -1;
 		for (WordNamesContext word : ctx.wordNames()) {
-			i++;
 			variable.add(word.IDENTIFIER().getText());
-			if (word.STAR() != null) defaultWord = i;
+			if (word.STAR() != null) defaultWord = ++i;
 		}
-		variable.setDefaultWord((short) defaultWord);
+		variable.setDefaultValues(new String[]{variable.wordTypes.get(defaultWord)});
 		addAttribute(ctx, variable);
 	}
 
@@ -308,7 +320,46 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterVarInit(@NotNull VarInitContext ctx) {
-		super.enterVarInit(ctx); //TODO
+		NodeObject object = conceptStack.peek().getObject();
+		String name = ctx.IDENTIFIER().getText();
+		object.putVariableInitialisation(name, getValueOfInit(name, ctx));
+	}
+
+	private Variable getValueOfInit(String name, VarInitContext ctx) {
+		Variable variable = null;
+		String measure = ctx.measure() != null ? ctx.measure().getText() : "";
+		if (!ctx.booleanValue().isEmpty()) {
+			variable = new Attribute(Primitives.BOOLEAN, name, ctx.booleanValue().size() > 1, false);
+			for (BooleanValueContext context : ctx.booleanValue()) variable.addValue(context.getText());
+		} else if (!ctx.integerValue().isEmpty()) {
+			variable = new Attribute(Primitives.INTEGER, name, ctx.booleanValue().size() > 1, false);
+			((Attribute) variable).setMeasure(measure);
+			for (IntegerValueContext context : ctx.integerValue()) variable.addValue(context.getText());
+		} else if (!ctx.doubleValue().isEmpty()) {
+			variable = new Attribute(Primitives.DOUBLE, name, ctx.booleanValue().size() > 1, false);
+			((Attribute) variable).setMeasure(measure);
+			for (DoubleValueContext context : ctx.doubleValue()) variable.addValue(context.getText());
+		} else if (!ctx.naturalValue().isEmpty()) {
+			variable = new Attribute(Primitives.NATURAL, name, ctx.booleanValue().size() > 1, false);
+			((Attribute) variable).setMeasure(measure);
+			for (NaturalValueContext context : ctx.naturalValue()) variable.addValue(context.getText());
+		} else if (!ctx.stringValue().isEmpty()) {
+			variable = new Attribute(Primitives.STRING, name, ctx.booleanValue().size() > 1, false);
+			for (StringValueContext context : ctx.stringValue()) variable.addValue(context.getText());
+		} else if (!ctx.coordinateValue().isEmpty()) {
+			variable = new Attribute(Primitives.COORDINATE, name, ctx.booleanValue().size() > 1, false);
+			for (CoordinateValueContext context : ctx.coordinateValue()) variable.addValue(context.getText());
+		} else if (!ctx.portValue().isEmpty()) {
+			variable = new Attribute(Primitives.PORT, name, ctx.booleanValue().size() > 1, false);
+			for (PortValueContext context : ctx.portValue()) variable.addValue(context.getText());
+		} else if (!ctx.dateValue().isEmpty()) {
+			variable = new Attribute(Primitives.DATE, name, ctx.booleanValue().size() > 1, false);
+			for (DateValueContext context : ctx.dateValue()) variable.addValue(context.getText());
+		} else if (!ctx.identifierReference().isEmpty()) {
+			variable = new Reference(Primitives.REFERENCE, name, ctx.booleanValue().size() > 1, false);
+			for (IdentifierReferenceContext context : ctx.identifierReference()) variable.addValue(context.getText());
+		}
+		return variable;
 	}
 
 	@Override
@@ -342,7 +393,12 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		Variable variable = variables.get(variables.size() - 1);
 		variable.setTerminal(!ctx.TERMINAL().isEmpty());
 		variable.setProperty(!ctx.PROPERTY().isEmpty());
-		variable.setProperty(!ctx.PROPERTY().isEmpty());
 		variable.setUniversal(!ctx.UNIVERSAL().isEmpty());
+	}
+
+	private String[] getTextArrayOfContextList(List<? extends ParserRuleContext> ctx) {
+		List<String> list = new ArrayList<>();
+		for (ParserRuleContext parserRuleContext : ctx) list.add(parserRuleContext.getText());
+		return list.toArray(new String[list.size()]);
 	}
 }

@@ -25,7 +25,7 @@ public class FrameCreator {
 						property("Variables", new Frame(getTypes(variable)) {{
 							property("Name", variable.getName());
 							property("Type", variable.getType());
-							property("Value", variable.getValue());
+							property("DefaultValues", variable.getDefaultValues());
 						}});
 					}
 
@@ -36,7 +36,7 @@ public class FrameCreator {
 								property("Variables", new Frame(getTypes(variable)) {{
 									property("Name", variable.getName());
 									property("Type", variable.getType());
-									property("Value", variable.getValue());
+									property("DefaultValues", variable.getDefaultValues());
 								}});
 							}
 						}});

@@ -6,8 +6,6 @@ import java.util.List;
 
 public class Word extends Variable {
 	public List<String> wordTypes;
-	public short defaultWord = -1;
-	public String value = null;
 
 	public Word(String name, boolean isTerminal) {
 		this.name = name;
@@ -38,27 +36,8 @@ public class Word extends Variable {
 	}
 
 	@Override
-	public String getValue() {
-		return (value != null) ? value : null;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	@Override
 	public boolean isList() {
 		return false;
-	}
-
-	public short getDefaultWord() {
-		return defaultWord;
-	}
-
-	public void setDefaultWord(short defaultWord) {
-		this.defaultWord = defaultWord;
-		if (defaultWord >= 0 && value == null)
-			this.value = wordTypes.get(defaultWord);
 	}
 
 	public String toString() {
@@ -71,6 +50,8 @@ public class Word extends Variable {
 		for (String wordType : wordTypes) word.add(wordType);
 		word.setProperty(isProperty);
 		word.setUniversal(isUniversal);
+		word.setDefaultValues(defaultValues);
+		for (String value : values) word.addValue(value);
 		return word;
 	}
 }

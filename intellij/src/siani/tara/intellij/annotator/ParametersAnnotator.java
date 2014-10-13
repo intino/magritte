@@ -38,9 +38,8 @@ public class ParametersAnnotator extends TaraAnnotator {
 	private int collectMinimumNumberOfParameter(List<Variable> variables, boolean system) {
 		int result = variables.size();
 		for (Variable variable : variables)
-			if (variable.getValue() != null || (!system && variable.isTerminal()) || (variable instanceof Word))
+			if ((variable.getDefaultValues() != null && variable.getDefaultValues().length > 0) || (!system && variable.isTerminal()) || (variable instanceof Word))
 				result--;
-
 		return result;
 	}
 

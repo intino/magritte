@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="all" name="tara_runtime_constants">
 
-    <!-- ========= Define the main properties of this project ========= -->
-  <property name="sources.dir" value="src" />
-  <property name="test.dir" value="test" />
-  <property name="sonar.java.source" value="1.7"/>
-  <property name="sonar.target" value="1.7"/>
+  <!-- ========= Define the main properties of this project ========= -->
+  <property name="sources.dir" defaultValue="src"/>
+  <property name="test.dir" defaultValue="test"/>
+  <property name="sonar.java.source" defaultValue="1.7"/>
+  <property name="sonar.target" defaultValue="1.7"/>
   <path id="classpath">
   </path>
 
 
- <target name="clean">
+  <target name="clean">
   </target>
 
-  <target name="all" depends="clean" />
+  <target name="all" depends="clean"/>
 
 </project>

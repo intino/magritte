@@ -1,6 +1,9 @@
 package siani.tara.compiler.dependencyresolver;
 
-import siani.tara.lang.*;
+import siani.tara.lang.DeclaredNode;
+import siani.tara.lang.Model;
+import siani.tara.lang.Node;
+import siani.tara.lang.Variable;
 
 import java.util.*;
 
@@ -18,23 +21,8 @@ public class ParentModelDependencyResolver {
 	}
 
 	public void resolve() {
-		Map<String, Node> terminals = collectParentTerminalNodes(parentModel);
-		addTerminalNodes(terminals);
-		Map<Node, List<Variable>> terminalVariables = collectParentTerminalVariables(parentModel);
-		addTerminalVariables(terminalVariables);
-	}
-
-	private void addTerminalVariables(Map<Node, List<Variable>> nodesWithTerminal) {
-		for (Map.Entry<Node, List<Variable>> terminal : nodesWithTerminal.entrySet()) {
-			Collection<Node> nodes = collectNodesByType(model, terminal.getKey().getContainer().getObject().getType());
-			if (nodes.isEmpty()) return;
-			for (Node node : nodes)
-				if (node instanceof DeclaredNode) {
-					DeclaredNode declaredNode = (DeclaredNode) node;
-					for (Variable variable : terminal.getValue())
-						declaredNode.getObject().add(variable.clone());
-				}
-		}
+		addTerminalNodes(collectParentTerminalNodes(parentModel));
+		addVariables(collectParentTerminalVariables(parentModel));
 	}
 
 	private Map<Node, List<Variable>> collectParentTerminalVariables(Model parentModel) {
@@ -44,6 +32,19 @@ public class ParentModelDependencyResolver {
 			if (!variables.isEmpty()) terminalVariables.put(node, variables);
 		}
 		return terminalVariables;
+	}
+
+	private void addVariables(Map<Node, List<Variable>> nodesWithValued) {
+		for (Map.Entry<Node, List<Variable>> entry : nodesWithValued.entrySet()) {
+			Collection<Node> nodes = collectNodesByType(model, entry.getKey().getContainer().getObject().getType());
+			if (nodes.isEmpty()) return;
+			for (Node node : nodes)
+				if (node instanceof DeclaredNode) {
+					DeclaredNode declaredNode = (DeclaredNode) node;
+					for (Variable variable : entry.getValue())
+						declaredNode.getObject().add(variable.clone());
+				}
+		}
 	}
 
 	private Map<String, Node> collectParentTerminalNodes(Model parent) {
@@ -56,29 +57,25 @@ public class ParentModelDependencyResolver {
 
 	private List<Variable> getTerminalVariables(Node node) {
 		List<Variable> list = new ArrayList();
-		for (Variable variable : node.getObject().getVariables()) {
+		for (Variable variable : node.getObject().getVariables())
 			if (variable.isTerminal()) list.add(variable);
-		}
 		return list;
 	}
 
 
 	private void addTerminalNodes(Map<String, Node> terminals) {
-		for (Node terminal : terminals.values()) {
+		for (Node terminal : terminals.values())
 			if (terminal.getContainer() == null) {
 				model.add(terminal);
 				model.add(terminal.getQualifiedName(), terminal);
 				model.addIdentifier(terminal.getName());
-			} else {
-				addInnerTerminal(model, terminal);
-			}
-		}
+			} else addInnerTerminal(model, terminal);
 	}
 
 	private void addInnerTerminal(Model model, Node terminal) {
 		Collection<Node> nodes = collectNodesByType(model, terminal.getContainer().getObject().getType());
 		if (nodes.isEmpty()) return;
-		for (Node node : nodes) {
+		for (Node node : nodes)
 			if (node instanceof DeclaredNode) {
 				DeclaredNode declaredNode = (DeclaredNode) node;
 				declaredNode.add(terminal, 0);
@@ -86,7 +83,6 @@ public class ParentModelDependencyResolver {
 				model.add(terminal.getQualifiedName(), terminal);
 				model.addIdentifier(terminal.getName());
 			}
-		}
 	}
 
 	private Collection<Node> collectNodesByType(Model model, String type) {

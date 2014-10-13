@@ -33,7 +33,7 @@ public class ModelToJavaOperation extends ModelOperation {
 //			for (Map.Entry<String, Frame> frame : frames.entrySet()) {
 //				FileInputStream fileInputStream = getRulesInput(ruleFile);
 //				Document document = new Document();
-//				new RuleEngine(fileInputStream).render(frame.getValue(), document);
+//				new RuleEngine(fileInputStream).render(frame.getDefaultValue(), document);
 //				printDocument(configuration.getOutDirectory(), document.content(), frame.getKey());
 //			}
 	}

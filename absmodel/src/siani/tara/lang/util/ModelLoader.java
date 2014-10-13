@@ -96,54 +96,45 @@ public class ModelLoader {
 		public Variable deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 			if (json == null) return null;
 			String name = json.getAsJsonObject().get("name").getAsString();
+			boolean isTerminal = json.getAsJsonObject().get("isTerminal").getAsBoolean();
+			Variable variable;
+			JsonElement e;
+			JsonArray array;
+			if ((e = json.getAsJsonObject().get("node")) != null && e.isJsonPrimitive() && e.getAsString() != null) {
+				variable = new Reference(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), isTerminal);
+				processReference(json, (Reference) variable);
+			} else if ((e = json.getAsJsonObject().get("primitiveType")) != null && e.isJsonPrimitive() && e.getAsString() != null) {
+				variable = new Attribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), isTerminal);
+				processAttribute(json, (Attribute) variable);
+			} else if ((array = json.getAsJsonObject().get("wordTypes").getAsJsonArray()) != null && array.isJsonArray()) {
+				variable = new Word(name, isTerminal);
+				for (JsonElement jsonElement : array) ((Word) variable).add(jsonElement.getAsString());
+			} else
+				variable = new Resource(json.getAsJsonObject().get("resourceType").getAsString(), name, isTerminal);
+			if ((e = json.getAsJsonObject().get("isProperty")) != null && e.isJsonPrimitive())
+				variable.setProperty(e.getAsBoolean());
+			if ((e = json.getAsJsonObject().get("isUniversal")) != null && e.isJsonPrimitive())
+				variable.setUniversal(e.getAsBoolean());
+			if ((e = json.getAsJsonObject().get("isProperty")) != null && e.isJsonPrimitive())
+				variable.setProperty(e.getAsBoolean());
+			if (json.getAsJsonObject().get("values") != null &&
+				(array = json.getAsJsonObject().get("values").getAsJsonArray()) != null && array.isJsonArray())
+				for (JsonElement jsonElement : array) variable.addValue(jsonElement.getAsString());
+			if ((array = json.getAsJsonObject().get("defaultValues").getAsJsonArray()) != null && array.isJsonArray())
+				for (JsonElement jsonElement : array) variable.addValue(jsonElement.getAsString());
+			return variable;
+		}
 
-			JsonElement e = json.getAsJsonObject().get("node");
-			if (e != null && e.isJsonPrimitive() && e.getAsString() != null) {
-				Reference reference = new Reference(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), json.getAsJsonObject().get("isTerminal").getAsBoolean());
-				JsonElement empty = json.getAsJsonObject().get("empty");
-				if (empty != null && empty.isJsonPrimitive()) reference.setEmpty(empty.getAsBoolean());
-				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
-				if (isProperty != null && isProperty.isJsonPrimitive()) reference.setProperty(isProperty.getAsBoolean());
-				JsonElement isUniversal = json.getAsJsonObject().get("isUniversal");
-				if (isUniversal != null && isUniversal.isJsonPrimitive()) reference.setUniversal(isUniversal.getAsBoolean());
-				return reference;
-			}
+		private void processAttribute(JsonElement json, Attribute attribute) {
+			JsonElement measure = json.getAsJsonObject().get("measure");
+			if (measure != null && measure.isJsonPrimitive())
+				attribute.measure = measure.getAsString();
+		}
 
-			e = json.getAsJsonObject().get("primitiveType");
-			if (e != null && e.isJsonPrimitive() && e.getAsString() != null) {
-				Attribute attr = new Attribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), json.getAsJsonObject().get("isTerminal").getAsBoolean());
-				if (json.getAsJsonObject().get("value") != null)
-					attr.setValue(json.getAsJsonObject().get("value").getAsString());
-				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
-				if (isProperty != null && isProperty.isJsonPrimitive()) attr.setProperty(isProperty.getAsBoolean());
-				JsonElement measure = json.getAsJsonObject().get("measure");
-				if (measure != null && measure.isJsonPrimitive()) attr.measure = measure.getAsString();
-				return attr;
-			}
-
-			e = json.getAsJsonObject().get("resourceType");
-			if (e != null && e.isJsonPrimitive() && e.getAsString() != null) {
-				Resource resource = new Resource(e.getAsString(), name, json.getAsJsonObject().get("isTerminal").getAsBoolean());
-				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
-				if (isProperty != null && isProperty.isJsonPrimitive()) resource.setProperty(isProperty.getAsBoolean());
-				JsonElement isUniversal = json.getAsJsonObject().get("isUniversal");
-				if (isUniversal != null && isUniversal.isJsonPrimitive()) resource.setUniversal(isUniversal.getAsBoolean());
-				return resource;
-			}
-
-			JsonArray array = json.getAsJsonObject().get("wordTypes").getAsJsonArray();
-			if (array != null && array.isJsonArray()) {
-				Word word = new Word(name, json.getAsJsonObject().get("isTerminal").getAsBoolean());
-				for (JsonElement jsonElement : array) word.add(jsonElement.getAsString());
-				JsonElement isProperty = json.getAsJsonObject().get("isProperty");
-				if (isProperty != null && isProperty.isJsonPrimitive()) word.setProperty(isProperty.getAsBoolean());
-				JsonElement defaultWord = json.getAsJsonObject().get("defaultWord");
-				if (defaultWord != null && defaultWord.isJsonPrimitive()) word.setDefaultWord(defaultWord.getAsShort());
-				if (json.getAsJsonObject().get("value") != null)
-					word.setValue(json.getAsJsonObject().get("value").getAsString());
-				return word;
-			}
-			return null;
+		private void processReference(JsonElement json, Reference reference) {
+			JsonElement empty = json.getAsJsonObject().get("empty");
+			if (empty != null && empty.isJsonPrimitive())
+				reference.setEmpty(empty.getAsBoolean());
 		}
 	}
 

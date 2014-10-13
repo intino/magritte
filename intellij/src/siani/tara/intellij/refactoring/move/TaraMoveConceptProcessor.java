@@ -12,12 +12,12 @@ import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.usageView.UsageViewDescriptor;
 import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.refactoring.TaraRefactoringUtil;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -57,7 +57,7 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 			final PsiElement e = usage.getElement();
 //			if (e != null && ScopeUtil.getScopeOwner(e) == destination && getImportStatementByElement(e) == null) {
 //				PsiElement topLevel = PsiTreeUtil.findFirstParent(e, new Condition<PsiElement>() {
-//					public boolean value(PsiElement element) {
+//					public boolean defaultValue(PsiElement element) {
 //						return element.getParent() == destination;
 //					}
 //				});

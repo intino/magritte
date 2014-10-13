@@ -46,7 +46,7 @@ public class FacetApplyParametersAnnotator extends TaraAnnotator {
 	private int collectMinimumNumberOfParameter(List<Variable> variables) {
 		int result = variables.size();
 		for (Variable variable : variables)
-			if (variable.getValue() != null)
+			if (variable.getDefaultValues() != null && variable.getDefaultValues().length > 0)
 				result--;
 		return result;
 	}

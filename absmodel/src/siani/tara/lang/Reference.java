@@ -20,9 +20,13 @@ public class Reference extends Variable {
 		return type;
 	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	@Override
-	public String getValue() {
-		return (empty) ? EMPTY : null;
+	public String[] getDefaultValues() {
+		return (empty) ? new String[]{EMPTY} : new String[0];
 	}
 
 	public boolean isEmpty() {
@@ -31,10 +35,6 @@ public class Reference extends Variable {
 
 	public void setEmpty(boolean empty) {
 		this.empty = empty;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	@Override
@@ -47,6 +47,8 @@ public class Reference extends Variable {
 		Reference reference = new Reference(type, name, isList, isTerminal);
 		reference.setProperty(isProperty);
 		reference.setUniversal(isUniversal);
+		reference.setDefaultValues(getDefaultValues());
+		for (String value : values) reference.addValue(value);
 		return reference;
 	}
 }

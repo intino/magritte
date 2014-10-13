@@ -2,48 +2,48 @@
 <project name="Tara" default="all" basedir="." xmlns:sonar="antlib:org.sonar.ant">
 
   <!-- ========= Define the main properties of this project ========= -->
-  <property name="src.dir" value="src"/>
-  <property name="test.dir" value="test"/>
-  <property name="build.dir" value="out"/>
-  <property name="classes.dir" value="${build.dir}"/>
-  <property name="reports.dir" value="${build.dir}/reports"/>
-  <property name="reports.junit.xml.dir" value="${reports.dir}/junit"/>
+  <property name="src.dir" defaultValue="src"/>
+  <property name="test.dir" defaultValue="test"/>
+  <property name="build.dir" defaultValue="out"/>
+  <property name="classes.dir" defaultValue="${build.dir}"/>
+  <property name="reports.dir" defaultValue="${build.dir}/reports"/>
+  <property name="reports.junit.xml.dir" defaultValue="${reports.dir}/junit"/>
 
   <!-- Define the SonarQube properties -->
-  <property name="sonar.sourceEncoding" value="UTF-8"/>
-  <property name="sonar.host.url" value="http://192.168.200.88:9000"/>
-  <property name="sonar.login" value="application_hudson"/>
+  <property name="sonar.sourceEncoding" defaultValue="UTF-8"/>
+  <property name="sonar.host.url" defaultValue="http://192.168.200.88:9000"/>
+  <property name="sonar.login" defaultValue="application_hudson"/>
   <loadfile property="sonar_web_password" srcfile="web.password"/>
-  <property name="sonar.password" value="${sonar_web_password}"/>
-  <property name="sonar.projectKey" value="tara"/>
-  <property name="sonar.projectName" value="tara"/>
-  <property name="sonar.projectVersion" value="1.0"/>
-  <property name="sonar.language" value="java"/>
-  <property name="sonar.java.source" value="1.7"/>
-  <property name="sonar.java.source" value="1.7"/>
-  <property name="sonar.sources" value="${src.dir}"/>
-  <property name="sonar.tests" value="${test.dir}"/>
-  <property name="sonar.binaries" value="${classes.dir}"/>
-  <property name="sonar.surefire.reportsPath" value="${reports.junit.xml.dir}"/>
-  <property name="sonar.modules" value="intellij,jps-plugin,rt,rt-constants"/>
-  <property name="sonar.sourceEncoding" value="UTF-8"/>
+  <property name="sonar.password" defaultValue="${sonar_web_password}"/>
+  <property name="sonar.projectKey" defaultValue="tara"/>
+  <property name="sonar.projectName" defaultValue="tara"/>
+  <property name="sonar.projectVersion" defaultValue="1.0"/>
+  <property name="sonar.language" defaultValue="java"/>
+  <property name="sonar.java.source" defaultValue="1.7"/>
+  <property name="sonar.java.source" defaultValue="1.7"/>
+  <property name="sonar.sources" defaultValue="${src.dir}"/>
+  <property name="sonar.tests" defaultValue="${test.dir}"/>
+  <property name="sonar.binaries" defaultValue="${classes.dir}"/>
+  <property name="sonar.surefire.reportsPath" defaultValue="${reports.junit.xml.dir}"/>
+  <property name="sonar.modules" defaultValue="intellij,jps-plugin,rt,rt-constants"/>
+  <property name="sonar.sourceEncoding" defaultValue="UTF-8"/>
 
   <!-- Override some properties at module level -->
-  <property name="intellij.sonar.projectName" value="intellij"/>
-  <property name="tara_runtime.sonar.projectName" value="rt"/>
-  <property name="tara_runtime_constants.sonar.projectName" value="rt-constants"/>
-  <property name="processor_manager.sonar.projectName" value="jps-plugin"/>
+  <property name="intellij.sonar.projectName" defaultValue="intellij"/>
+  <property name="tara_runtime.sonar.projectName" defaultValue="rt"/>
+  <property name="tara_runtime_constants.sonar.projectName" defaultValue="rt-constants"/>
+  <property name="processor_manager.sonar.projectName" defaultValue="jps-plugin"/>
 
 
   <!-- The following properties are required to use JaCoCo: -->
-  <property name="sonar.dynamicAnalysis" value="true"/>
-  <property name="sonar.java.coveragePlugin" value="jacoco"/>
-  <property name="sonar.jacoco.reportPath" value="target/jacoco.exec"/>
+  <property name="sonar.dynamicAnalysis" defaultValue="true"/>
+  <property name="sonar.java.coveragePlugin" defaultValue="jacoco"/>
+  <property name="sonar.jacoco.reportPath" defaultValue="target/jacoco.exec"/>
 
-  <property name="sonar.jdbc.url" value="jdbc:mysql://192.168.200.88:3306/sonar_40?characterEncoding=utf8"/>
-  <property name="sonar.jdbc.username" value="sonar"/>
+  <property name="sonar.jdbc.url" defaultValue="jdbc:mysql://192.168.200.88:3306/sonar_40?characterEncoding=utf8"/>
+  <property name="sonar.jdbc.username" defaultValue="sonar"/>
   <loadfile property="sonar_mysql_password" srcfile="mysql.password"/>
-  <property name="sonar.jdbc.password" value="${sonar_mysql_password}"/>
+  <property name="sonar.jdbc.password" defaultValue="${sonar_mysql_password}"/>
 
   <!-- ========= Define "regular" targets: clean, compile, test, ... ========= -->
   <target name="clean">

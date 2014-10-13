@@ -528,7 +528,7 @@ class TaraLexer implements FlexLexer {
 	private static final String ZZ_ERROR_MSG[] = {
 		"Unkown internal scanner error",
 		"Error: could not match input",
-		"Error: pushback value was too large"
+		"Error: pushback defaultValue was too large"
 	};
 
 	/**
@@ -775,7 +775,7 @@ class TaraLexer implements FlexLexer {
 	 * It is equivalent to yytext().charAt(pos), but faster
 	 *
 	 * @param pos the position of the character to fetch.
-	 *            A value from 0 to yylength()-1.
+	 *            A defaultValue from 0 to yylength()-1.
 	 * @return the character at position pos
 	 */
 	public final char yycharat(int pos) {

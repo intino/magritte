@@ -1,13 +1,15 @@
 package siani.tara.lang;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Facet {
 
 	private String name;
 	private String implementation;
-	private List<String> parameters = new ArrayList<>();
+	private Map<String, String> parameters = new LinkedHashMap<>();
 	private List<Node> inner = new ArrayList<>();
 
 	public Facet(String name, String implementation) {
@@ -19,12 +21,12 @@ public class Facet {
 		return name;
 	}
 
-	public List<String> getParameters() {
+	public Map<String, String> getParameters() {
 		return parameters;
 	}
 
-	public boolean add(String parameter) {
-		return parameters.add(parameter);
+	public void add(String name, String parameter) {
+		parameters.put(name, parameter);
 	}
 
 	public String getImplementation() {

@@ -44,12 +44,9 @@ public class ModelSaver {
 				final JsonArray list = new JsonArray();
 				for (String wordType : word.wordTypes) list.add(new JsonPrimitive(wordType));
 				object.add("wordTypes", list);
-				object.addProperty("defaultWord", word.getDefaultWord());
-				object.addProperty("value", word.getValue());
 			} else if (variable instanceof Attribute) {
 				Attribute attribute = (Attribute) variable;
 				object.addProperty("primitiveType", attribute.primitiveType);
-				object.addProperty("value", attribute.getValue());
 				object.addProperty("isList", attribute.isList);
 				if (attribute.measure != null) object.addProperty("measure", attribute.measure);
 			} else if (variable instanceof Reference) {
@@ -57,7 +54,6 @@ public class ModelSaver {
 				object.addProperty("node", reference.type);
 				object.addProperty("isList", reference.isList);
 				object.addProperty("empty", reference.empty);
-
 			} else if (variable instanceof Resource) {
 				Resource resource = (Resource) variable;
 				object.addProperty("resourceType", resource.node);
@@ -65,8 +61,16 @@ public class ModelSaver {
 			object.addProperty("isTerminal", variable.isTerminal);
 			object.addProperty("isProperty", variable.isProperty);
 			object.addProperty("isUniversal", variable.isUniversal);
+			JsonArray list = new JsonArray();
+			if (variable.values != null) {
+				for (String value : variable.values) list.add(new JsonPrimitive(value));
+				object.add("values", list);
+			}
+			if (variable.defaultValues != null) {
+				for (String value : variable.defaultValues) list.add(new JsonPrimitive(value));
+				object.add("defaultValues", list);
+			}
 			return object; // or throw an IllegalArgumentException
-
 		}
 	}
 

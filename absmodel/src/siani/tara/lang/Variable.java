@@ -1,9 +1,13 @@
 package siani.tara.lang;
 
+import java.util.List;
+
 public abstract class Variable implements Cloneable {
 	public static final String EMPTY = "EMPTY_VALUE";
 	public String name;
 	public String doc;
+	public String[] defaultValues;
+	public List<String> values;
 	public boolean isList = false;
 	public boolean isTerminal = false;
 	public boolean isProperty = false;
@@ -59,7 +63,21 @@ public abstract class Variable implements Cloneable {
 
 	public abstract String getType();
 
-	public abstract String getValue();
+	public String[] getValues() {
+		return values.toArray(new String[values.size()]);
+	}
+
+	public void addValue(String value) {
+		this.values.add(value);
+	}
+
+	public String[] getDefaultValues() {
+		return defaultValues;
+	}
+
+	public void setDefaultValues(String[] defaultValue) {
+		this.defaultValues = defaultValue;
+	}
 
 	public abstract Variable clone();
 

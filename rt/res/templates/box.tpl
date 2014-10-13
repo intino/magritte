@@ -46,4 +46,4 @@ end();
 @has
 has(::nameUpper::);
 @set
-set(::nodeName::.::var::, ::value::);
+set(::nodeName::.::var::, ::defaultValue::);

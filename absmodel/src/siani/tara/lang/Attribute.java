@@ -2,7 +2,6 @@ package siani.tara.lang;
 
 public class Attribute extends Variable {
 	public final String primitiveType;
-	public String value;
 	public String measure;
 
 	public Attribute(String type, String name, boolean isList, boolean isTerminal) {
@@ -17,12 +16,12 @@ public class Attribute extends Variable {
 		this.name = name;
 	}
 
-	public String getValue() {
-		return value;
+	public void setMeasure(String measure) {
+		this.measure = measure;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public String getMeasure() {
+		return measure;
 	}
 
 	@Override
@@ -37,10 +36,12 @@ public class Attribute extends Variable {
 	@Override
 	public Attribute clone() {
 		Attribute attribute = new Attribute(primitiveType, name, isList, isTerminal);
-		attribute.setValue(value);
+		attribute.setDefaultValues(defaultValues);
 		attribute.setProperty(isProperty);
 		attribute.setUniversal(isUniversal);
 		attribute.measure = measure;
+		attribute.setDefaultValues(defaultValues);
+		for (String value : values) attribute.addValue(value);
 		return attribute;
 	}
 }
