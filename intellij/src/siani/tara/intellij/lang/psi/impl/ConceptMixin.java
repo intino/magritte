@@ -153,7 +153,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		for (PsiElement annotation : getAnnotations())
 			if (siani.tara.lang.Annotations.Annotation.INTENTION.getName().equals(annotation.getText()))
 				return true;
-		return false;
+		return getParentConcept() != null && TaraPsiImplUtil.getParentOf((Concept) this).isIntention();
 	}
 
 	public boolean isFacet() {

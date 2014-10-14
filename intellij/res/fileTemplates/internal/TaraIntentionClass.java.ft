@@ -1,7 +1,0 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
-
-import magritte.cast.Intention;
-
-public interface ${NAME} extends ${PARENT} {
-
-}

@@ -7,6 +7,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.impl.source.tree.ChangeUtil;
 import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -98,6 +99,11 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 			if (anImport.isMetamodelImport()) return anImport.getHeaderReference().getText();
 		}
 		return null;
+	}
+
+	@Override
+	public String getBox() throws PsiInvalidElementAccessException {
+		return getBoxReference() != null ? getBoxReference().getHeaderReference().getText() : null;
 	}
 
 	@Override

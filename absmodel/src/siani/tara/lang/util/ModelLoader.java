@@ -106,7 +106,8 @@ public class ModelLoader {
 			} else if ((e = json.getAsJsonObject().get("primitiveType")) != null && e.isJsonPrimitive() && e.getAsString() != null) {
 				variable = new Attribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), isTerminal);
 				processAttribute(json, (Attribute) variable);
-			} else if ((array = json.getAsJsonObject().get("wordTypes").getAsJsonArray()) != null && array.isJsonArray()) {
+			} else if (json.getAsJsonObject().get("wordTypes") != null && json.getAsJsonObject().get("wordTypes").isJsonArray()) {
+				array = json.getAsJsonObject().get("wordTypes").getAsJsonArray();
 				variable = new Word(name, isTerminal);
 				for (JsonElement jsonElement : array) ((Word) variable).add(jsonElement.getAsString());
 			} else
@@ -120,8 +121,10 @@ public class ModelLoader {
 			if (json.getAsJsonObject().get("values") != null &&
 				(array = json.getAsJsonObject().get("values").getAsJsonArray()) != null && array.isJsonArray())
 				for (JsonElement jsonElement : array) variable.addValue(jsonElement.getAsString());
-			if ((array = json.getAsJsonObject().get("defaultValues").getAsJsonArray()) != null && array.isJsonArray())
+			if ((json.getAsJsonObject().get("defaultValues")) != null && json.getAsJsonObject().get("defaultValues").isJsonArray()) {
+				array = json.getAsJsonObject().get("defaultValues").getAsJsonArray();
 				for (JsonElement jsonElement : array) variable.addValue(jsonElement.getAsString());
+			}
 			return variable;
 		}
 

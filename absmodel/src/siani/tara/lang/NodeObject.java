@@ -4,8 +4,8 @@ import java.util.*;
 
 public class NodeObject extends ModelObject {
 	String declaredNodeQN;
-	boolean caseConcept = false;
-	List<DeclaredNode> subconcepts;
+	boolean subConcept = false;
+	List<DeclaredNode> subConcepts;
 	transient List<NodeObject> childrenConcepts;
 	transient Map<String, String> parameters = new LinkedHashMap<>();
 	transient Map<String, Variable> variableInits = new LinkedHashMap<>();
@@ -71,15 +71,15 @@ public class NodeObject extends ModelObject {
 	}
 
 	public List<DeclaredNode> getSubConcepts() {
-		return subconcepts != null ? subconcepts : Collections.EMPTY_LIST;
+		return subConcepts != null ? subConcepts : Collections.EMPTY_LIST;
 	}
 
 	public boolean isSub() {
-		return caseConcept;
+		return subConcept;
 	}
 
 	public void setCase(boolean caseConcept) {
-		this.caseConcept = caseConcept;
+		this.subConcept = caseConcept;
 	}
 
 	public void addChild(NodeObject child) {
@@ -88,8 +88,8 @@ public class NodeObject extends ModelObject {
 	}
 
 	public boolean add(DeclaredNode sub) {
-		if (subconcepts == null) subconcepts = new ArrayList<>();
-		return subconcepts.add(sub);
+		if (subConcepts == null) subConcepts = new ArrayList<>();
+		return subConcepts.add(sub);
 	}
 
 	public void addParameter(String name, String value) {

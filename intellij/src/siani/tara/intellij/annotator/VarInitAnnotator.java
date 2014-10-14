@@ -40,6 +40,5 @@ public class VarInitAnnotator extends TaraAnnotator {
 			&& !(valueType.equals(REFERENCE) && variable instanceof Reference))
 			holder.createErrorAnnotation(element.getNode(), "Incompatible types. Found " +
 				valueType + ". " + variable.getType() + " expected");
-
 	}
 }

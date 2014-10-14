@@ -28,7 +28,7 @@ public class FacetTargetAnnotator extends TaraAnnotator {
 		if (parent != null && !parent.isSub() && !parent.isFacet())
 			holder.createErrorAnnotation(facetTarget.getNode(),
 				TaraBundle.message("target.in.nofacet.concept.error.message"));
-		else if (parent != null && parent.isSub() && TaraPsiImplUtil.getParentOf(parent).isFacet())
+		else if (parent != null && parent.isSub() && !TaraPsiImplUtil.getParentOf(parent).isFacet())
 			holder.createErrorAnnotation(facetTarget.getNode(),
 				TaraBundle.message("target.in.nofacet.concept.error.message"));
 	}

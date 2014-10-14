@@ -58,7 +58,6 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 	}
 	);
 
-
 	public TaraIntentionLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}

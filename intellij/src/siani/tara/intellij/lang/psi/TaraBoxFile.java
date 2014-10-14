@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +16,8 @@ public interface TaraBoxFile extends PsiFile {
 
 	@NotNull
 	PsiFile getContainingFile();
+
+	String getBox() throws PsiInvalidElementAccessException;
 
 	@NotNull
 	Concept[] getConcepts();

@@ -29,6 +29,16 @@ public class FrameCreator {
 						}});
 					}
 
+					for (final Map.Entry<String, Variable> entry : node.getObject().getVariableInits().entrySet()) {
+						property("VarInit", new Frame("VarInit") {{
+							property("Name", entry.getValue().getName());
+							property("Type", entry.getValue().getType());
+							property("value", entry.getValue().getDefaultValues());
+							if (entry.getValue() instanceof Attribute && isNumeric(entry.getValue().getType()))
+								property("measure", ((Attribute) entry.getValue()).getMeasure());
+						}});
+					}
+
 					for (final FacetTarget facetTarget : node.getObject().getFacetTargets()) {
 						property("FacetTarget", new Frame(getTypes(facetTarget)) {{
 							property("Destiny", facetTarget.getDestinyQN());
@@ -53,6 +63,10 @@ public class FrameCreator {
 
 			});
 		return frames;
+	}
+
+	private static boolean isNumeric(String type) {
+		return type.equals(Primitives.DOUBLE) || type.equals(Primitives.INTEGER) || type.equals(Primitives.NATURAL);
 	}
 
 	private static String[] getTypes(Facet facet) {
@@ -89,5 +103,11 @@ public class FrameCreator {
 		for (Annotations.Annotation annotation : object.getAnnotations())
 			types.add(annotation.getName());
 		return types.toArray(new String[types.size()]);
+	}
+
+	private static String[] asStringList(Annotations.Annotation[] annotations) {
+		List<String> list = new ArrayList<>();
+		for (Annotations.Annotation annotation : annotations) list.add(annotation.getName());
+		return list.toArray(new String[list.size()]);
 	}
 }
