@@ -27,7 +27,7 @@ public class RequiredConceptsAnnotator extends TaraAnnotator {
 		if (model == null) return;
 		this.holder = holder;
 		Concept concept = (Concept) element;
-		Concept[] childrenOf = TaraUtil.getChildrenOf(concept);
+		Collection<Concept> childrenOf = TaraUtil.getInnerConceptsOf(concept);
 		Node node = findNode(concept, model);
 		Collection<Node> requiredNodes = getRequiredInnerNodes(node);
 		if (requiredNodes.isEmpty()) return;
@@ -36,7 +36,7 @@ public class RequiredConceptsAnnotator extends TaraAnnotator {
 				holder.createErrorAnnotation(element.getNode(), "This concept requires an inner " + requiredNode.getName());
 	}
 
-	private boolean existInstanceOf(Node requiredNode, Concept[] childrenOf) {
+	private boolean existInstanceOf(Node requiredNode, Collection<Concept> childrenOf) {
 		for (Concept concept : childrenOf)
 			if (requiredNode.getName().equals(concept.getType()) || checkInSubs(requiredNode.getSubConcepts(), concept))
 				return true;
@@ -52,10 +52,9 @@ public class RequiredConceptsAnnotator extends TaraAnnotator {
 	private Collection<Node> getRequiredInnerNodes(Node node) {
 		List<Node> required = new ArrayList<>();
 		if (node == null) return Collections.EMPTY_LIST;
-		for (Node inner : node.getInnerNodes()) {
+		for (Node inner : node.getInnerNodes())
 			if (inner.getObject().is(Annotations.Annotation.REQUIRED))
 				required.add(inner);
-		}
 		return required;
 	}
 }

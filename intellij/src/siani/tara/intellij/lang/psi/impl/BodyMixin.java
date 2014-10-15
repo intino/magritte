@@ -42,8 +42,8 @@ public class BodyMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public List<? extends Attribute> getAttributeList() {
-		return PsiTreeUtil.getChildrenOfTypeAsList(this, Attribute.class);
+	public List<? extends Variable> getAttributeList() {
+		return PsiTreeUtil.getChildrenOfTypeAsList(this, Variable.class);
 	}
 
 	@NotNull

@@ -10,7 +10,7 @@ import siani.tara.intellij.lang.psi.TaraFacetTarget;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class ConceptAnnotator extends TaraAnnotator {
@@ -59,12 +59,12 @@ public class ConceptAnnotator extends TaraAnnotator {
 	}
 
 	private int checkChildDuplicates(Concept concept, Concept parent) {
-		List<Concept> innerConceptsOf = concept.isSub() ? Arrays.asList(parent.getSubConcepts()) : TaraPsiImplUtil.getInnerConceptsOf(parent);
+		Collection<Concept> innerConceptsOf = concept.isSub() ? parent.getSubConcepts() : TaraPsiImplUtil.getInnerConceptsOf(parent);
 		String name = concept.getName();
 		return countDuplicates(innerConceptsOf, name);
 	}
 
-	private int countDuplicates(List<Concept> innerConceptsOf, String name) {
+	private int countDuplicates(Collection<Concept> innerConceptsOf, String name) {
 		int duplicates = 0;
 		for (Concept taraConcept : innerConceptsOf)
 			if (taraConcept.getName() != null && taraConcept.getName().equals(name))

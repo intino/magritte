@@ -2,23 +2,38 @@ package siani.tara.intellij.annotator;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.annotator.fix.RemoveAttributeFix;
-import siani.tara.intellij.lang.psi.Attribute;
-import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.psi.Body;
+import siani.tara.intellij.lang.psi.Variable;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AttributeAnnotator extends TaraAnnotator {
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
-		if (element instanceof Attribute)
-			checkDuplicated((Attribute) element);
+		if (element instanceof Variable)
+			checkDuplicated((Variable) element);
 	}
 
-	private void checkDuplicated(Attribute attribute) {
-		if (TaraUtil.findAttributeDuplicates(attribute).length != 1)
-			annotateAndFix(attribute, new RemoveAttributeFix(attribute), TaraBundle.message("duplicate.attribute.key.error.message"));
+	private void checkDuplicated(Variable variable) {
+		if (findAttributeDuplicates(variable).length != 1)
+			annotateAndFix(variable, new RemoveAttributeFix(variable), TaraBundle.message("duplicate.attribute.key.error.message"));
 	}
+
+	@NotNull
+	private Variable[] findAttributeDuplicates(Variable variable) {
+		List<Variable> result = new ArrayList<>();
+		List<Variable> variables = TaraPsiImplUtil.getVariablesInBody((Body) variable.getParent());
+		for (Variable taraVariable : variables)
+			if (taraVariable.getName() != null && taraVariable.getName().equals(variable.getName()))
+				result.add(taraVariable);
+		return result.toArray(new Variable[result.size()]);
+	}
+
 }

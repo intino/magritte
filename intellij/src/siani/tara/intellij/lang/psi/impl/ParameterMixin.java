@@ -10,7 +10,9 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.resolve.TaraParameterReferenceSolver;
-import siani.tara.lang.*;
+import siani.tara.lang.Model;
+import siani.tara.lang.Node;
+import siani.tara.lang.Variable;
 import siani.tara.lang.Word;
 
 import java.util.Arrays;

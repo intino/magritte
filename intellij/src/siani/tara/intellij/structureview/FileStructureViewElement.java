@@ -21,7 +21,7 @@ public class FileStructureViewElement extends PsiTreeElementBase<TaraBoxFileImpl
 	@NotNull
 	public Collection<StructureViewTreeElement> getChildrenBase() {
 		if (getElement() == null) return Collections.EMPTY_LIST;
-		Concept[] concepts = getElement().getConcepts();
+		Collection<Concept> concepts = getElement().getConcepts();
 		Collection<StructureViewTreeElement> elements = new ArrayList<>(1);
 		for (Concept concept : concepts) elements.add(new StructureViewElement(concept));
 		return elements;

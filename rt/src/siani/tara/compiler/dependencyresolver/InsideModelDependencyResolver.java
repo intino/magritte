@@ -100,7 +100,8 @@ public class InsideModelDependencyResolver {
 	}
 
 	private void linkToDeclared(LinkNode node, DeclaredNode parent) throws DependencyException {
-		if (parent == null) throwError(node);
+		if (parent == null)
+			throwError(node);
 		node.setDestinyQN(parent.getQualifiedName());
 		node.setDestiny(parent);
 	}

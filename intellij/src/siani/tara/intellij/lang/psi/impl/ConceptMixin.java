@@ -18,6 +18,7 @@ import siani.tara.intellij.lang.psi.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -60,14 +61,18 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.getParentOf((Concept) this);
 	}
 
-	public Concept[] getConceptSiblings() {
+	public Collection<Concept> getConceptSiblings() {
 		Concept contextOf = TaraPsiImplUtil.getConceptContextOf(this);
 		if (contextOf == null) return ((TaraBoxFile) this.getContainingFile()).getConcepts();
-		return contextOf.getConceptChildren();
+		return contextOf.getInnerConcepts();
 	}
 
-	public Concept[] getConceptChildren() {
-		return TaraUtil.getChildrenOf((Concept) this);
+	public Collection<Concept> getInnerConcepts() {
+		return TaraUtil.getInnerConceptsOf((Concept) this);
+	}
+
+	public Collection<Variable> getVariables() {
+		return TaraPsiImplUtil.getVariablesInBody(this.getBody());
 	}
 
 	public TaraConceptReference[] getConceptLinks() {
@@ -88,6 +93,10 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	public String getName() {
 		Identifier identifierNode = getIdentifierNode();
 		return identifierNode != null ? identifierNode.getText() : null;
+	}
+
+	public Parameter[] getParameters() {
+		return getSignature().getParameters().getParameters();
 	}
 
 	public String getQualifiedName() {
@@ -163,15 +172,15 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	public Concept[] getSubConcepts() {
+	public Collection<Concept> getSubConcepts() {
 		ArrayList<Concept> subs = new ArrayList<>();
 		List<Concept> children = TaraPsiImplUtil.getInnerConceptsInBody(this.getBody());
 		for (Concept child : children)
 			if (child.isSub()) {
 				subs.add(child);
-				Collections.addAll(subs, child.getSubConcepts());
+				subs.addAll(child.getSubConcepts());
 			}
-		return subs.size() > 0 ? subs.toArray(new Concept[subs.size()]) : new Concept[0];
+		return subs;
 	}
 
 	public TaraFacetApply[] getFacetApplies() {
@@ -180,10 +189,8 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return facetApplies.toArray(new TaraFacetApply[facetApplies.size()]);
 	}
 
-	public TaraFacetTarget[] getFacetTargets() {
-		if (this.getBody() == null) return new TaraFacetTarget[0];
-		List<TaraFacetTarget> facetTargets = getBody().getFacetTargets();
-		return facetTargets.toArray(new TaraFacetTarget[facetTargets.size()]);
+	public Collection<TaraFacetTarget> getFacetTargets() {
+		return TaraPsiImplUtil.getFacetTargets((Concept) this);
 	}
 
 	@NotNull

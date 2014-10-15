@@ -3,12 +3,13 @@ package siani.tara.intellij.structureview;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;
 import com.intellij.navigation.ItemPresentation;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class StructureViewElement implements StructureViewTreeElement {
@@ -41,9 +42,9 @@ public class StructureViewElement implements StructureViewTreeElement {
 	@Override
 	public TreeElement[] getChildren() {
 		if (concept != null) {
-			Concept[] concepts = TaraUtil.getChildrenOf(concept);
-			if (concepts != null && !(concepts.length == 0)) {
-				List<TreeElement> treeElements = new ArrayList<>(concepts.length);
+			Collection<Concept> concepts = TaraUtil.getInnerConceptsOf(concept);
+			if (!concepts.isEmpty()) {
+				List<TreeElement> treeElements = new ArrayList<>(concepts.size());
 				for (Concept concept : concepts)
 					treeElements.add(new StructureViewElement(concept));
 				return treeElements.toArray(new TreeElement[treeElements.size()]);

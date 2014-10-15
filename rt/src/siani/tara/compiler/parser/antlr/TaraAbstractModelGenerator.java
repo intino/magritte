@@ -297,7 +297,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			variable.add(word.IDENTIFIER().getText());
 			if (word.STAR() != null) defaultWord = ++i;
 		}
-		variable.setDefaultValues(new String[]{variable.wordTypes.get(defaultWord)});
+		if (defaultWord >= 0)
+			variable.setDefaultValues(new String[]{variable.wordTypes.get(defaultWord)});
 		addAttribute(ctx, variable);
 	}
 

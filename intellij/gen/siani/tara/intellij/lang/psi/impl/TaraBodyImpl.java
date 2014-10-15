@@ -29,12 +29,6 @@ public class TaraBodyImpl extends BodyMixin implements TaraBody {
 
   @Override
   @NotNull
-  public List<TaraAttribute> getAttributeList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraAttribute.class);
-  }
-
-  @Override
-  @NotNull
   public List<TaraConcept> getConceptList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraConcept.class);
   }
@@ -55,6 +49,12 @@ public class TaraBodyImpl extends BodyMixin implements TaraBody {
   @NotNull
   public List<TaraVarInit> getVarInitList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraVarInit.class);
+  }
+
+  @Override
+  @NotNull
+  public List<TaraVariable> getVariableList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraVariable.class);
   }
 
 }

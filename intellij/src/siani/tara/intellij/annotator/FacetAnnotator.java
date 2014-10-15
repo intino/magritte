@@ -11,6 +11,8 @@ import siani.tara.lang.Annotations;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
+import java.util.Collection;
+
 public class FacetAnnotator extends TaraAnnotator {
 
 	@Override
@@ -26,12 +28,12 @@ public class FacetAnnotator extends TaraAnnotator {
 		if (node == null || !node.getObject().is(Annotations.Annotation.INTENTION)) return;
 		if (((Concept) element).getConceptLinks().length > 0)
 			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("facet.with.children.error.message"));
-		Concept[] conceptChildren = ((Concept) element).getConceptChildren();
-		if (conceptChildren.length > 0 && !allAreSub(conceptChildren))
+		Collection<Concept> conceptChildren = ((Concept) element).getInnerConcepts();
+		if (!conceptChildren.isEmpty() && !allAreSub(conceptChildren))
 			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("facet.with.children.error.message"));
 	}
 
-	private boolean allAreSub(Concept[] conceptChildren) {
+	private boolean allAreSub(Collection<Concept> conceptChildren) {
 		for (Concept conceptChild : conceptChildren) if (!conceptChild.isSub()) return false;
 		return true;
 	}

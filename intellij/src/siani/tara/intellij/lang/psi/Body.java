@@ -11,7 +11,7 @@ public interface Body extends TaraPsiElement {
 	TaraBoxFileImpl getFile() throws PsiInvalidElementAccessException;
 
 	@NotNull
-	List<? extends Attribute> getAttributeList();
+	List<? extends Variable> getAttributeList();
 
 	List<? extends Concept> getConceptList();
 

@@ -6,15 +6,15 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import siani.tara.intellij.TaraBundle;
-import siani.tara.intellij.lang.psi.Attribute;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.lang.psi.Variable;
 
 public class RemoveAttributeFix implements IntentionAction {
-	private final Attribute attribute;
+	private final Variable variable;
 
-	public RemoveAttributeFix(@NotNull final Attribute attribute) {
-		this.attribute = attribute;
+	public RemoveAttributeFix(@NotNull final Variable variable) {
+		this.variable = variable;
 	}
 
 	@NotNull
@@ -28,12 +28,12 @@ public class RemoveAttributeFix implements IntentionAction {
 	}
 
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-		return file.isValid() && attribute.isValid() && attribute.getManager().isInProject(attribute);
+		return file.isValid() && variable.isValid() && variable.getManager().isInProject(variable);
 	}
 
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-		attribute.delete();
+		variable.delete();
 	}
 
 	public boolean startInWriteAction() {

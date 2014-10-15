@@ -9,60 +9,55 @@ import java.util.List;
 import java.util.Map;
 
 public class FrameCreator {
-	public static Map<String, Frame> create(Model model) {
-		Map<String, Frame> frames = new HashMap<>();
+	public static Frame create(Model model) {
+		final Map<String, Frame> frames = new HashMap<>();
 		for (final Node node : model.getNodeTable().values())
-			frames.put(node.getQualifiedName(), new Frame(getTypes(node)) {
-				{
-					property("Name", node.getName());
-					property("QualifiedName", node.getQualifiedName());
-					property("Box", node.getBox());
-					if (node.getObject().getParent() != null)
-						property("Parent", node.getObject().getParentName());
-					property("Doc", node.getObject().getDoc());
+			frames.put(node.getQualifiedName(), new Frame(getTypes(node)) {{
+				addSlot("Name", node.getName());
+				addSlot("QualifiedName", node.getQualifiedName());
+				addSlot("Box", node.getBox());
+				if (node.getObject().getParent() != null)
+					addSlot("Parent", node.getObject().getParentName());
+				addSlot("Doc", node.getObject().getDoc());
 
-					for (final Variable variable : node.getObject().getVariables()) {
-						property("Variables", new Frame(getTypes(variable)) {{
-							property("Name", variable.getName());
-							property("Type", variable.getType());
-							property("DefaultValues", variable.getDefaultValues());
-						}});
-					}
+				for (final Variable variable : node.getObject().getVariables())
+					addSlot("Variables", new Frame(getTypes(variable)) {{
+						addSlot("Name", variable.getName());
+						addSlot("Type", variable.getType());
+						addSlot("DefaultValues", variable.getDefaultValues());
+					}});
 
-					for (final Map.Entry<String, Variable> entry : node.getObject().getVariableInits().entrySet()) {
-						property("VarInit", new Frame("VarInit") {{
-							property("Name", entry.getValue().getName());
-							property("Type", entry.getValue().getType());
-							property("value", entry.getValue().getDefaultValues());
-							if (entry.getValue() instanceof Attribute && isNumeric(entry.getValue().getType()))
-								property("measure", ((Attribute) entry.getValue()).getMeasure());
-						}});
-					}
+				for (final Map.Entry<String, Variable> entry : node.getObject().getVariableInits().entrySet())
+					addSlot("VarInit", new Frame("VarInit") {{
+						addSlot("Name", entry.getValue().getName());
+						addSlot("Type", entry.getValue().getType());
+						addSlot("value", entry.getValue().getDefaultValues());
+						if (entry.getValue() instanceof Attribute && isNumeric(entry.getValue().getType()))
+							addSlot("measure", ((Attribute) entry.getValue()).getMeasure());
+					}});
 
-					for (final FacetTarget facetTarget : node.getObject().getFacetTargets()) {
-						property("FacetTarget", new Frame(getTypes(facetTarget)) {{
-							property("Destiny", facetTarget.getDestinyQN());
-							for (final Variable variable : node.getObject().getVariables()) {
-								property("Variables", new Frame(getTypes(variable)) {{
-									property("Name", variable.getName());
-									property("Type", variable.getType());
-									property("DefaultValues", variable.getDefaultValues());
-								}});
-							}
-						}});
-					}
+				for (final FacetTarget facetTarget : node.getObject().getFacetTargets())
+					addSlot("FacetTarget", new Frame(getTypes(facetTarget)) {{
+						addSlot("Destiny", facetTarget.getDestinyQN());
+						for (final Variable variable : node.getObject().getVariables()) {
+							addSlot("Variables", new Frame(getTypes(variable)) {{
+								addSlot("Name", variable.getName());
+								addSlot("Type", variable.getType());
+								addSlot("DefaultValues", variable.getDefaultValues());
+							}});
+						}
+					}});
 
-					for (final Facet facet : node.getObject().getFacets())
-						property("Facet", new Frame(getTypes(facet)) {{
-							property("Name", facet.getName());
-							if (facet.getImplementation() != null)
-								property("implementation", facet.getImplementation());
-						}});
-				}
-
-
-			});
-		return frames;
+				for (final Facet facet : node.getObject().getFacets())
+					addSlot("Facet", new Frame(getTypes(facet)) {{
+						addSlot("Name", facet.getName());
+						if (facet.getImplementation() != null)
+							addSlot("implementation", facet.getImplementation());
+					}});
+			}});
+		return new Frame("model") {{
+			for (Frame frame : frames.values()) frame.addSlot("concepts", frame);
+		}};
 	}
 
 	private static boolean isNumeric(String type) {

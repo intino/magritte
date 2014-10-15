@@ -33,13 +33,13 @@ public class TaraUtil {
 	public static List<Concept> findRootConcept(PsiElement element, String identifier) {
 		List<Concept> result = new ArrayList<>();
 		for (TaraBoxFileImpl taraFile : getModuleFiles(element.getContainingFile())) {
-			Concept[] concepts = taraFile.getConcepts();
+			Collection<Concept> concepts = taraFile.getConcepts();
 			extractConceptsByName(identifier, result, concepts);
 		}
 		return result;
 	}
 
-	private static void extractConceptsByName(String identifier, List<Concept> result, Concept[] concepts) {
+	private static void extractConceptsByName(String identifier, List<Concept> result, Collection<Concept> concepts) {
 		for (Concept concept : concepts)
 			if (identifier.equals(concept.getName()))
 				result.add(concept);
@@ -77,21 +77,15 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static Concept[] getRootConceptsOfFile(TaraBoxFile taraBoxFile) {
+	public static Collection<Concept> getRootConceptsOfFile(TaraBoxFile taraBoxFile) {
 		Set<Concept> list = new HashSet<>();
 		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraBoxFile, Concept.class);
-		if (concepts != null) {
+		if (concepts != null)
 			for (Concept concept : concepts) {
 				list.add(concept);
-				extractSubConcepts(concept, list);
+				list.addAll(concept.getSubConcepts());
 			}
-		}
-		return list.toArray(new Concept[list.size()]);
-	}
-
-	private static void extractSubConcepts(Concept concept, Set<Concept> list) {
-		List<Concept> cases = Arrays.asList(concept.getSubConcepts());
-		list.addAll(cases);
+		return list;
 	}
 
 	@NotNull
@@ -117,16 +111,6 @@ public class TaraUtil {
 
 
 	@NotNull
-	public static Attribute[] findAttributeDuplicates(Attribute attribute) {
-		List<Attribute> result = new ArrayList<>();
-		List<Attribute> attributes = TaraPsiImplUtil.getAttributesInBody((Body) attribute.getParent());
-		for (Attribute taraAttribute : attributes)
-			if (taraAttribute.getName() != null && taraAttribute.getName().equals(attribute.getName()))
-				result.add(taraAttribute);
-		return result.toArray(new Attribute[result.size()]);
-	}
-
-	@NotNull
 	public static List<Concept> findAllConceptsOfFile(TaraBoxFile taraBoxFile) {
 		List<Concept> collection = new ArrayList<>();
 		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraBoxFile, Concept.class);
@@ -139,7 +123,7 @@ public class TaraUtil {
 	}
 
 	private static void collectChildren(Concept concept, List<Concept> collection) {
-		for (Concept child : TaraUtil.getChildrenOf(concept)) {
+		for (Concept child : TaraUtil.getInnerConceptsOf(concept)) {
 			collection.add(child);
 			collectChildren(child, collection);
 		}
@@ -153,16 +137,9 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static TaraBoxFile getTaraFileFromVirtual(Project project, VirtualFile vFile) {
-		PsiFile file = PsiManager.getInstance(project).findFile(vFile);
-		if (file instanceof TaraBoxFile) return (TaraBoxFile) file;
-		return null;
-	}
-
 	@NotNull
-	public static Concept[] getChildrenOf(Concept concept) {
-		List<Concept> childrenOf = TaraPsiImplUtil.getInnerConceptsOf(concept);
-		return childrenOf.toArray(new Concept[childrenOf.size()]);
+	public static Collection<Concept> getInnerConceptsOf(Concept concept) {
+		return TaraPsiImplUtil.getInnerConceptsOf(concept);
 	}
 
 	public static Concept findChildOf(Concept concept, String name) {
@@ -223,11 +200,9 @@ public class TaraUtil {
 
 	public static Concept findConceptByQN(String qualifiedName, PsiFile file) {
 		List<TaraBoxFileImpl> filesOfModule = getTaraFilesOfModule(getModuleOfFile(file));
-		for (TaraBoxFileImpl taraFile : filesOfModule) {
-			Concept[] rootConceptsOfFile = getRootConceptsOfFile(taraFile);
-			for (Concept concept : rootConceptsOfFile)
+		for (TaraBoxFileImpl taraFile : filesOfModule)
+			for (Concept concept : getRootConceptsOfFile(taraFile))
 				if (concept.getQualifiedName().equals(qualifiedName)) return concept;
-		}
 		return null;
 	}
 

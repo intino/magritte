@@ -4,11 +4,12 @@ import com.intellij.openapi.util.Iconable;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 
 import javax.swing.*;
+import java.util.Collection;
 
 public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
@@ -32,7 +33,7 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isSub();
 
-	Concept[] getSubConcepts();
+	Collection<Concept> getSubConcepts();
 
 	boolean isIntention();
 
@@ -54,15 +55,19 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 	@Nullable
 	String getType();
 
-	Concept[] getConceptSiblings();
+	Parameter[] getParameters();
 
-	Concept[] getConceptChildren();
+	Collection<Concept> getConceptSiblings();
+
+	Collection<Concept> getInnerConcepts();
+
+	Collection<Variable> getVariables();
 
 	TaraConceptReference[] getConceptLinks();
 
 	TaraFacetApply[] getFacetApplies();
 
-	TaraFacetTarget[] getFacetTargets();
+	Collection<TaraFacetTarget> getFacetTargets();
 
 	@Nullable
 	String getParentConcept();

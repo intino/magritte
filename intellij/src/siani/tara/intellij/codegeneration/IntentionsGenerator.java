@@ -59,6 +59,7 @@ public class IntentionsGenerator {
 	}
 
 	private void processFile(PsiFile psiFile) {
+
 		if (psiFile instanceof TaraBoxFile) {
 			Concept[] intentions = getIntentions(((TaraBoxFile) psiFile));
 			if (intentions.length > 0)
@@ -67,6 +68,8 @@ public class IntentionsGenerator {
 	}
 
 	private void createIntentionClasses(Concept[] concepts) {
+		PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(concepts[0].getQualifiedName(),
+			GlobalSearchScope.moduleScope(TaraUtil.getModuleOfFile(concepts[0].getFile())));
 		PsiDirectory destiny = getDestiny(concepts[0].getFile());
 		Map<String, List<Concept>> destinyFiles = collectFilesOfConcepts(concepts);
 		for (Map.Entry<String, List<Concept>> entry : destinyFiles.entrySet()) {
@@ -105,14 +108,14 @@ public class IntentionsGenerator {
 				if (isProcessed(processedConcepts, aConcept)) continue;
 				if (frameStack.isEmpty()) {
 					frame = new Frame("intention");
-					frame.property("name", aConcept.getName());
-					frame.property("box", aConcept.getFile().getBox());
+					frame.addSlot("name", aConcept.getName());
+					frame.addSlot("box", aConcept.getFile().getBox());
 					if (aConcept.getParentConcept() != null)
-						frame.property("parent", TaraPsiImplUtil.getParentOf(aConcept).getQualifiedName());
+						frame.addSlot("parent", TaraPsiImplUtil.getParentOf(aConcept).getQualifiedName());
 					frameStack.push(frame);
 				} else {
 					Frame subFrame = createSubFrameOfConcept(aConcept);
-					frameStack.peek().property("sub", subFrame);
+					frameStack.peek().addSlot("sub", subFrame);
 					frameStack.push(subFrame);
 				}
 				processedConcepts.add(aConcept);
@@ -131,9 +134,9 @@ public class IntentionsGenerator {
 
 	private Frame createSubFrameOfConcept(Concept aConcept) {
 		Frame frame = new Frame("sub");
-		frame.property("name", aConcept.getName());
+		frame.addSlot("name", aConcept.getName());
 		if (aConcept.getParentConcept() != null)
-			frame.property("parent", TaraPsiImplUtil.getParentOf(aConcept).getQualifiedName());
+			frame.addSlot("parent", TaraPsiImplUtil.getParentOf(aConcept).getQualifiedName());
 		return frame;
 	}
 

@@ -17,7 +17,7 @@ public abstract class TaraElementFactory {
 
 	public abstract Identifier createNameIdentifier(String name);
 
-	public abstract Attribute createAttribute(String name, String type);
+	public abstract Variable createAttribute(String name, String type);
 
 	public abstract Import createImport(String reference);
 
@@ -27,11 +27,11 @@ public abstract class TaraElementFactory {
 
 	public abstract Parameters createParameters(boolean string);
 
-	public abstract Attribute createWord(String name, String[] types);
+	public abstract Variable createWord(String name, String[] types);
 
-	public abstract Attribute createResource(String name, String types);
+	public abstract Variable createResource(String name, String types);
 
 	public abstract TaraBox createBoxReference(String project, String module, String packageName);
 
-	public abstract PsiElement createMetaWordIdentifier(String module,String node, String name);
+	public abstract PsiElement createMetaWordIdentifier(String module, String node, String name);
 }

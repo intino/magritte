@@ -8,8 +8,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface TaraBoxFile extends PsiFile {
@@ -19,8 +19,10 @@ public interface TaraBoxFile extends PsiFile {
 
 	String getBox() throws PsiInvalidElementAccessException;
 
+	void setBox(String path);
+
 	@NotNull
-	Concept[] getConcepts();
+	Collection<Concept> getConcepts();
 
 	@NotNull
 	PsiElement addConcept(@NotNull Concept concept) throws IncorrectOperationException;
@@ -50,8 +52,6 @@ public interface TaraBoxFile extends PsiFile {
 
 	List<? extends Identifier> getBoxPath();
 
-	@Nullable
-	Import[] getImports();
-
-	void setBox(String path);
+	@NotNull
+	Collection<Import> getImports();
 }

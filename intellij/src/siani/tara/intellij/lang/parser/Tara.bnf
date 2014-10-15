@@ -41,7 +41,7 @@ concept ::= doc? signature annotationsAndFacets? body? {
 }
 //simplify
 signature::= subConcept | metaIdentifier parameters? (identifier parent?)? {
-	pin=1
+	pin = 1
 	mixin= 'siani.tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='siani.tara.intellij.lang.psi.Signature'
 }
@@ -59,10 +59,10 @@ parameters ::= LEFT_PARENTHESIS (explicitParameters | implicitParameters)? RIGHT
 }
 
 private explicitParameters ::= explicitParameter (COMMA explicitParameter)*
-{ pin=2}
+{ pin = 2}
 
 private implicitParameters ::= implicitParameter (COMMA implicitParameter)*
-{ pin=1}
+{ pin = 1}
 
 explicitParameter ::= identifier EQUALS parameterValue {
     pin = 2
@@ -96,39 +96,39 @@ empty::=
 
 body ::= (NEW_LINE_INDENT | INLINE) (conceptConstituents NEWLINE+)+ DEDENT {
 	pin = 1
-	mixin= 'siani.tara.intellij.lang.psi.impl.BodyMixin'
-	implements='siani.tara.intellij.lang.psi.Body'
+	mixin = 'siani.tara.intellij.lang.psi.impl.BodyMixin'
+	implements = 'siani.tara.intellij.lang.psi.Body'
 }
 
-private conceptConstituents ::= varInit | attribute | concept | annotationsAndFacets | facetTarget | conceptReference
+private conceptConstituents ::= varInit | variable | concept | annotationsAndFacets | facetTarget | conceptReference
 
 conceptReference ::= doc? HAS identifierReference identifier?
-{pin=2}
+{pin = 2}
 
-attribute ::= doc? VAR (refAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute |
+variable ::= doc? VAR (portAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute |
 			dateAttribute | coordinateAttribute | resource | referenceAttribute | word) annotationsAndFacets? {
-	pin=2
-	mixin= 'siani.tara.intellij.lang.psi.impl.AttributeMixin'
-	implements='siani.tara.intellij.lang.psi.Attribute'
+	pin = 2
+	mixin = 'siani.tara.intellij.lang.psi.impl.VariableMixin'
+	implements = 'siani.tara.intellij.lang.psi.Variable'
 }
 private resource             ::= RESOURCE_KEY attributeType IDENTIFIER_KEY                                                  {pin=1}
-private coordinateAttribute  ::= COORDINATE_TYPE  LIST? IDENTIFIER_KEY (EQUALS (coordinateValue | emptyField))?             {pin=1}
-private refAttribute         ::= PORT_TYPE        LIST? IDENTIFIER_KEY (EQUALS (portValue  | emptyField))?                  {pin=1}
-private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (EQUALS (booleanValue | emptyField))?                   {pin=1}
-private stringAttribute      ::= STRING_TYPE  LIST?  IDENTIFIER_KEY (EQUALS (stringValue  | emptyField))?                   {pin=1}
-private naturalAttribute     ::= NATURAL_TYPE attributeType? LIST?  IDENTIFIER_KEY (EQUALS (naturalValue measure? | emptyField))?    {pin=1}
-private integerAttribute     ::= INT_TYPE     attributeType? LIST?  IDENTIFIER_KEY (EQUALS (integerValue measure? | emptyField))?    {pin=1}
-private doubleAttribute      ::= DOUBLE_TYPE  attributeType? LIST?  IDENTIFIER_KEY (EQUALS (doubleValue  measure? | emptyField))?    {pin=1}
-private dateAttribute        ::= DATE_TYPE    LIST?  IDENTIFIER_KEY (EQUALS (dateValue | emptyField))?                      {pin=1}
+private coordinateAttribute  ::= COORDINATE_TYPE  LIST? IDENTIFIER_KEY (EQUALS (coordinateValue+ | emptyField))?             {pin=1}
+private portAttribute        ::= PORT_TYPE        LIST? IDENTIFIER_KEY (EQUALS (portValue+  | emptyField))?                  {pin=1}
+private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (EQUALS (booleanValue+ | emptyField))?                   {pin=1}
+private stringAttribute      ::= STRING_TYPE  LIST?  IDENTIFIER_KEY (EQUALS (stringValue+  | emptyField))?                   {pin=1}
+private naturalAttribute     ::= NATURAL_TYPE attributeType? LIST?  IDENTIFIER_KEY (EQUALS (naturalValue+ measure? | emptyField))?    {pin=1}
+private integerAttribute     ::= INT_TYPE     attributeType? LIST?  IDENTIFIER_KEY (EQUALS (integerValue+ measure? | emptyField))?    {pin=1}
+private doubleAttribute      ::= DOUBLE_TYPE  attributeType? LIST?  IDENTIFIER_KEY (EQUALS (doubleValue+  measure? | emptyField))?    {pin=1}
+private dateAttribute        ::= DATE_TYPE    LIST?  IDENTIFIER_KEY (EQUALS (dateValue+ | emptyField))?                      {pin=1}
 private referenceAttribute   ::= identifierReference LIST? IDENTIFIER_KEY (EQUALS emptyField)? {
 	pin = 1
-	mixin= 'siani.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
-	implements='siani.tara.intellij.lang.psi.ReferenceStatement'
+	mixin = 'siani.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
+	implements = 'siani.tara.intellij.lang.psi.ReferenceStatement'
 }
 word ::= WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+ DEDENT {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.WordMixin'
-	implements ='siani.tara.intellij.lang.psi.Word'
+	implements = 'siani.tara.intellij.lang.psi.Word'
 }
 attributeType   ::= COLON IDENTIFIER_KEY
 stringValue     ::= STRING_VALUE_KEY  | (NEWLINE? STRING_MULTILINE_VALUE_KEY)
@@ -166,8 +166,8 @@ varInit ::= IDENTIFIER_KEY EQUALS ( emptyField
                                  | coordinateValue+
                                  | naturalValue+ measure?
                                  | integerValue+ measure?
-                                 | doubleValue+  measure?)
-{   pin=2
+                                 | doubleValue+  measure?) {
+    pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.VarInitMixin'
 	implements = 'siani.tara.intellij.lang.psi.VarInit'
 
@@ -176,26 +176,26 @@ varInit ::= IDENTIFIER_KEY EQUALS ( emptyField
 emptyField ::= EMPTY_REF
 
 headerReference ::= hierarchy* identifier {
-	pin=2
-	mixin= 'siani.tara.intellij.lang.psi.impl.IdentifierReferenceMixin'
-	implements='siani.tara.intellij.lang.psi.HeaderReference'
+	pin = 2
+	mixin = 'siani.tara.intellij.lang.psi.impl.IdentifierReferenceMixin'
+	implements = 'siani.tara.intellij.lang.psi.HeaderReference'
 }
 
 identifierReference ::= hierarchy* identifier {
-	pin=2
-	mixin= 'siani.tara.intellij.lang.psi.impl.IdentifierReferenceMixin'
-	implements='siani.tara.intellij.lang.psi.IdentifierReference'
+	pin = 2
+	mixin = 'siani.tara.intellij.lang.psi.impl.IdentifierReferenceMixin'
+	implements = 'siani.tara.intellij.lang.psi.IdentifierReference'
 }
 
 private hierarchy ::= identifier DOT
-{pin=2}
+{pin = 2}
 
 identifier ::=  IDENTIFIER_KEY {
-	mixin= 'siani.tara.intellij.lang.psi.impl.IdentifierMixin'
-	implements='siani.tara.intellij.lang.psi.Identifier'
+	mixin = 'siani.tara.intellij.lang.psi.impl.IdentifierMixin'
+	implements = 'siani.tara.intellij.lang.psi.Identifier'
 }
 
 metaIdentifier ::= METAIDENTIFIER_KEY | IDENTIFIER_KEY {
-	mixin= 'siani.tara.intellij.lang.psi.impl.MetaIdentifierMixin'
-	implements='siani.tara.intellij.lang.psi.MetaIdentifier'
+	mixin = 'siani.tara.intellij.lang.psi.impl.MetaIdentifierMixin'
+	implements = 'siani.tara.intellij.lang.psi.MetaIdentifier'
 }

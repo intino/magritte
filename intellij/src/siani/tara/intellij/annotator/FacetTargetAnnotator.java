@@ -38,7 +38,7 @@ public class FacetTargetAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isChild(Concept child, Concept parent) {
-		for (Concept concept : parent.getConceptChildren())
+		for (Concept concept : parent.getInnerConcepts())
 			if (concept.getQualifiedName().equals(child.getQualifiedName()))
 				return true;
 		return false;

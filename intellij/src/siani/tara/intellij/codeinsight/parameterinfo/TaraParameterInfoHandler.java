@@ -12,7 +12,7 @@ import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.*;
-import siani.tara.lang.Attribute;
+import siani.tara.lang.Variable;
 import siani.tara.lang.Word;
 
 import java.util.*;
@@ -84,12 +84,12 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			TaraFacetApply facet = parameters.getParameters()[0].isInFacet();
 			Node node = findNode(TaraPsiImplUtil.getConceptContextOf(parameters), model);
 			if (node == null) return parameters;
-			List<siani.tara.intellij.lang.psi.Attribute> attributes = new ArrayList<>();
+			List<siani.tara.intellij.lang.psi.Variable> attributes = new ArrayList<>();
 			TaraElementFactory instance = TaraElementFactory.getInstance(parameters.getProject());
 			List<Variable> variables = (facet != null) ? getFacetVariables(facet.getMetaIdentifierList().get(0).getText(), node) : node.getObject().getVariables();
 			if (variables.isEmpty()) return parameters;
 			for (Variable variable : variables) {
-				siani.tara.intellij.lang.psi.Attribute attribute = null;
+				siani.tara.intellij.lang.psi.Variable attribute = null;
 				if (variable instanceof Attribute || variable instanceof Reference) {
 					String[] ref = variable.getType().split("\\.");
 					attribute = instance.createAttribute(variable.getName(), ref[ref.length - 1] + ((variable.isList()) ? "..." : ""));
@@ -159,10 +159,11 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 
 	@Override
 	public void updateUI(Object attributes, @NotNull ParameterInfoUIContext context) {
-		ArrayList<siani.tara.intellij.lang.psi.Attribute> psiAttribute = (ArrayList<siani.tara.intellij.lang.psi.Attribute>) attributes;
-		if (psiAttribute == null) return;
+		ArrayList<siani.tara.intellij.lang.psi.Variable> psiVariable = (ArrayList<siani.tara.intellij.lang.psi.Variable>) attributes;
+		if (psiVariable == null) return;
 		StringBuilder builder = new StringBuilder();
-		for (siani.tara.intellij.lang.psi.Attribute attribute : psiAttribute) builder.append(", ").append(attribute.getText().substring(4));
+		for (siani.tara.intellij.lang.psi.Variable variable : psiVariable)
+			builder.append(", ").append(variable.getText().substring(4));
 		int highlightEndOffset = builder.toString().length();
 		context.setupUIComponentPresentation(builder.toString().substring(2), 0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
 	}

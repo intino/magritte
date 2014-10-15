@@ -20,6 +20,9 @@ import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 
 import javax.swing.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
@@ -76,7 +79,7 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 
 	@NotNull
 	@Override
-	public Concept[] getConcepts() {
+	public Collection<Concept> getConcepts() {
 		return TaraUtil.getRootConceptsOfFile(this);
 	}
 
@@ -118,10 +121,12 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 	}
 
 	@Override
-	@Nullable
-	public Import[] getImports() {
+	@NotNull
+	public Collection<Import> getImports() {
 		TaraHeader[] header = PsiTreeUtil.getChildrenOfType(this, TaraHeader.class);
-		return header != null ? PsiTreeUtil.getChildrenOfType(header[0], Import.class) : null;
+		if (header == null) return Collections.EMPTY_LIST;
+		Import[] imports = PsiTreeUtil.getChildrenOfType(header[0], Import.class);
+		return imports != null ? Arrays.asList(imports) : Collections.EMPTY_LIST;
 	}
 
 	private void insertLineBreakBefore(final ASTNode anchorBefore) {

@@ -1,18 +1,17 @@
 package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public class TaraPsiImplUtil {
-
-	private static final Logger LOG = Logger.getInstance(TaraPsiImplUtil.class.getName());
 
 	private TaraPsiImplUtil() {
 	}
@@ -49,23 +48,20 @@ public class TaraPsiImplUtil {
 		return conceptList == null ? Collections.EMPTY_LIST : conceptList;
 	}
 
-	public static List<Attribute> getAttributesInBody(Body body) {
-		return (List<Attribute>) body.getAttributeList();
+	public static List<Variable> getVariablesInBody(Body body) {
+		return (List<Variable>) body.getAttributeList();
 	}
 
 
 	public static List<Concept> getInnerConceptsOf(Concept concept) {
-		if (concept != null) {
-			Body body = concept.getBody();
-			if (body != null) {
-				List<Concept> children = getInnerConceptsInBody(body);
-				removeSubs(children);
-				List<Concept> subConcepts = new ArrayList<>();
-				for (Concept child : children)
-					subConcepts.addAll(collectInnerSubs(child));
-				children.addAll(subConcepts);
-				return children;
-			}
+		if (concept != null) if (concept.getBody() != null) {
+			List<Concept> children = getInnerConceptsInBody(concept.getBody());
+			removeSubs(children);
+			List<Concept> subConcepts = new ArrayList<>();
+			for (Concept child : children)
+				subConcepts.addAll(collectInnerSubs(child));
+			children.addAll(subConcepts);
+			return children;
 		}
 		return Collections.EMPTY_LIST;
 	}
@@ -96,8 +92,22 @@ public class TaraPsiImplUtil {
 				aElement = aElement.getParent();
 			return (aElement.getParent() instanceof Concept) ? (Concept) aElement.getParent() : null;
 		} catch (NullPointerException e) {
-//			LOG.error(e.getMessage());
 			return null;
+		}
+	}
+
+	@NotNull
+	public static Collection<TaraFacetTarget> getFacetTargets(Concept concept) {
+		if (concept.getBody() == null) return Collections.EMPTY_LIST;
+		List<TaraFacetTarget> targets = new ArrayList<>();
+		getFacetTargets(concept.getBody(), targets);
+		return targets;
+	}
+
+	private static void getFacetTargets(Body body, List<TaraFacetTarget> targets) {
+		for (TaraFacetTarget target : body.getFacetTargets()) {
+			targets.add(target);
+			if (target.getBody() != null) getFacetTargets(body, targets);
 		}
 	}
 
@@ -118,12 +128,10 @@ public class TaraPsiImplUtil {
 			Concept parent = concept;
 			while (parent != null && parent.isSub()) parent = getConceptContextOf(parent);
 			return parent;
-		} else {
-			if (concept.getParentConcept() != null) {
-				TaraIdentifierReference identifierReference = concept.getSignature().getIdentifierReference();
-				PsiElement resolve = ReferenceManager.resolve(identifierReference);
-				return getConceptContextOf(resolve);
-			}
+		} else if (concept.getParentConcept() != null) {
+			TaraIdentifierReference identifierReference = concept.getSignature().getIdentifierReference();
+			PsiElement resolve = ReferenceManager.resolve(identifierReference);
+			return getConceptContextOf(resolve);
 		}
 		return null;
 	}

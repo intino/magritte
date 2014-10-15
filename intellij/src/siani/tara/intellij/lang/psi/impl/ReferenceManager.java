@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.codeinsight.JavaHelper;
 import siani.tara.intellij.lang.psi.*;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -98,7 +99,7 @@ public class ReferenceManager {
 					list.add(sibling);
 			parent = getConceptContextOf(parent);
 		}
-		Concept[] concepts = ((TaraBoxFile) identifier.getContainingFile()).getConcepts();
+		Collection<Concept> concepts = ((TaraBoxFile) identifier.getContainingFile()).getConcepts();
 		for (Concept concept : concepts)
 			if (identifier.getText().equals(concept.getName()))
 				list.add(concept);
@@ -126,8 +127,7 @@ public class ReferenceManager {
 			PsiFile file1 = PsiManager.getInstance(path.get(0).getProject()).findFile(file);
 			if (!TaraBoxFile.class.isInstance(file1)) return null;
 			TaraBoxFile taraBoxFile = (TaraBoxFile) file1;
-			Concept[] concept = taraBoxFile.getConcepts();
-			for (Concept prime : concept) {
+			for (Concept prime : taraBoxFile.getConcepts()) {
 				Concept aConcept = resolvePathInConcept(path, prime);
 				if (aConcept != null) return aConcept;
 			}
@@ -165,12 +165,11 @@ public class ReferenceManager {
 
 	private static PsiElement tryToResolveOnImportedBoxes(List<Identifier> path) {
 		TaraBoxFile context = (TaraBoxFile) path.get(0).getContainingFile();
-		Import[] imports = context.getImports();
-		if (imports == null) return null;
+		Collection<Import> imports = context.getImports();
 		return searchInImport(path, imports);
 	}
 
-	private static Concept searchInImport(List<Identifier> path, Import[] imports) {
+	private static Concept searchInImport(List<Identifier> path, Collection<Import> imports) {
 		for (Import anImport : imports) {
 			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
 			PsiElement resolve = resolve(importIdentifiers.get(importIdentifiers.size() - 1), false);

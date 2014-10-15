@@ -231,7 +231,7 @@ public class Model {
 		DeclaredNode container = context.getContainer();
 		while (container != null) {
 			DeclaredNode node = (DeclaredNode) get(container.getQualifiedName() + "." + path);
-			if (node != null) return node;
+			if (node != null && !node.equals(context)) return node;
 			container = container.getContainer();
 		}
 		return (DeclaredNode) get(context.getBox() + "." + path);

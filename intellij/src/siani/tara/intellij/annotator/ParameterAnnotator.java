@@ -8,8 +8,8 @@ import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraParameterValueImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
-import siani.tara.lang.Attribute;
 import siani.tara.lang.*;
+import siani.tara.lang.Variable;
 import siani.tara.lang.Word;
 
 import java.util.List;

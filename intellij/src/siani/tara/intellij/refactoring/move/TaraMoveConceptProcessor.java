@@ -190,7 +190,7 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 						for (PsiNamedElement e : myElements) {
 							// TODO: Check for resulting circular imports
 							CommonRefactoringUtil.checkReadOnlyStatus(myProject, e);
-							if (e instanceof Concept && destination.getConcepts()[0] != null) {//TODO
+							if (e instanceof Concept && destination.getConcepts().iterator().next() != null) {//TODO
 								throw new IncorrectOperationException(TaraBundle.message("refactoring.move.concept.error.destination.file.contains.concept.$0",
 									e.getName()));
 							}

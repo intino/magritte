@@ -39,12 +39,12 @@ public class TaraFileFindUsagesHandler extends FindUsagesHandler {
 		List<PsiElement> identifiers = new ArrayList();
 		for (Concept concept : boxFile.getConcepts()) {
 			identifiers.addAll(getIdentifiersOfConcepts(concept.getSubConcepts()));
-			identifiers.addAll(getIdentifiersOfConcepts(concept.getConceptChildren()));
+			identifiers.addAll(getIdentifiersOfConcepts(concept.getInnerConcepts()));
 		}
 		return identifiers.toArray(new PsiElement[identifiers.size()]);
 	}
 
-	private List<Identifier> getIdentifiersOfConcepts(Concept[] concepts) {
+	private List<Identifier> getIdentifiersOfConcepts(Collection<Concept> concepts) {
 		List<Identifier> list = new ArrayList();
 		for (Concept concept : concepts) list.add(concept.getIdentifierNode());
 		return list;

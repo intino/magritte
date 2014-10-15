@@ -10,9 +10,9 @@ import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.Attribute;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraTypes;
+import siani.tara.intellij.lang.psi.Variable;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -70,7 +70,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 		private boolean isInAttribute(PsiElement context) {
 			PsiElement parent = context.getParent();
 			while (parent != null && !(parent instanceof Concept)) {
-				if (parent instanceof Attribute) return true;
+				if (parent instanceof Variable) return true;
 				parent = parent.getParent();
 			}
 			return false;
