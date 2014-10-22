@@ -37,7 +37,8 @@ public class Resource extends Variable {
 		resource.setProperty(isProperty);
 		resource.setUniversal(isUniversal);
 		resource.setDefaultValues(getDefaultValues());
-		for (String value : values) resource.addValue(value);
+		if (values != null)
+			for (Object value : values) resource.addValue(value);
 		return resource;
 	}
 }

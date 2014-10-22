@@ -5,33 +5,18 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.lang.psi.TaraDateValue;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import siani.tara.lang.Primitives;
 
 public class DateValueAnnotator extends TaraAnnotator {
 
-	SimpleDateFormat[] formats = new SimpleDateFormat[]{
-		new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()),
-		new SimpleDateFormat("yyyy-MM-dd-HH-mm", Locale.getDefault()),
-		new SimpleDateFormat("yyyy-MM-dd-HH", Locale.getDefault()),
-		new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
-		new SimpleDateFormat("yyyy", Locale.getDefault())
-	};
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
 		if (!TaraDateValue.class.isInstance(element)) return;
 		TaraDateValue date = (TaraDateValue) element;
-		for (SimpleDateFormat format : formats) {
-			try {
-				format.parse(date.getText());
-				return;
-			} catch (ParseException ignored) {
-			}
-		}
-		holder.createErrorAnnotation(element.getNode(), TaraBundle.message("date.value.key.error.message"));
+		Object[] conversion = Primitives.getConverter(Primitives.DATE).convert(date.getText());
+		if (conversion.length == 0)
+			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("date.defaultValue.key.error.message"));
 	}
 }

@@ -6,6 +6,7 @@ import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.MergeException;
 import siani.tara.compiler.parser.ASTMerger;
 import siani.tara.compiler.rt.TaraRtConstants;
+import siani.tara.lang.Model;
 
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -23,7 +24,9 @@ public class MergeToModelOperation extends ModuleUnitOperation {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: Merging to global model");
 			ASTMerger merger = new ASTMerger(sources);
-			compilationUnit.setModel(merger.doMerge());
+			Model model = merger.doMerge();
+			model.setSystem(compilationUnit.getConfiguration().isSystemModel());
+			compilationUnit.setModel(model);
 		} catch (MergeException e) {
 			LOG.severe("Error merging sources representations: " + e.getMessage());
 			e.printStackTrace();

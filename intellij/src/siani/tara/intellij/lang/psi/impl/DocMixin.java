@@ -8,4 +8,9 @@ public class DocMixin extends ASTWrapperPsiElement {
 	public DocMixin(@NotNull ASTNode node) {
 		super(node);
 	}
+
+
+	public String getDocText() {
+		return getText().substring(1).trim();
+	}
 }

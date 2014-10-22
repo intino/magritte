@@ -21,6 +21,7 @@ public class CompilerConfiguration {
 	private String description = "";
 	private ArrayList<String> icons = new ArrayList<>();
 	private String modelsDirectory;
+	private boolean system;
 
 
 	public CompilerConfiguration() {
@@ -188,5 +189,13 @@ public class CompilerConfiguration {
 
 	public void setRulesDirectory(File rulesDirectory) {
 		this.rulesDirectory = rulesDirectory;
+	}
+
+	public void setSystem(boolean system) {
+		this.system = system;
+	}
+
+	public boolean isSystemModel() {
+		return system;
 	}
 }

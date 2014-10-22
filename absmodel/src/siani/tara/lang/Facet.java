@@ -9,7 +9,7 @@ public class Facet {
 
 	private String name;
 	private String implementation;
-	private Map<String, String> parameters = new LinkedHashMap<>();
+	private Map<String, Variable> parameters = new LinkedHashMap<>();
 	private List<Node> inner = new ArrayList<>();
 
 	public Facet(String name, String implementation) {
@@ -21,11 +21,11 @@ public class Facet {
 		return name;
 	}
 
-	public Map<String, String> getParameters() {
+	public Map<String, Variable> getParameters() {
 		return parameters;
 	}
 
-	public void add(String name, String parameter) {
+	public void add(String name, Variable parameter) {
 		parameters.put(name, parameter);
 	}
 

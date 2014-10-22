@@ -7,10 +7,10 @@ public class TaraCRunnerTest {
 
 	@Test
 	public void compilerTest() {
-//		String[] args = new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/argsFile2.txt"};
-		String[] args = new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/monet.txt"};
-//		String[] args = new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/argsFile.txt"};
-//		String[] args = new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/argsTafatEngine.txt"};
+//		String[] args = new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/monet.txt"};
+//		String[] args = new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/externa.txt"};
+//		String[] args = new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/tafatEngine.txt"};
+		String[] args = new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/tafatM1.txt"};
 		TaracRunner.main(args);
 	}
 

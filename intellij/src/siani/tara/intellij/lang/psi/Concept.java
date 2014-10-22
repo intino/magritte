@@ -47,6 +47,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	PsiElement setName(String newName);
 
+	Concept getParentConcept();
+
 	@Nullable
 	String getName();
 
@@ -70,7 +72,7 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 	Collection<TaraFacetTarget> getFacetTargets();
 
 	@Nullable
-	String getParentConcept();
+	String getParentConceptName();
 
 	@Nullable
 	MetaIdentifier getMetaIdentifier();

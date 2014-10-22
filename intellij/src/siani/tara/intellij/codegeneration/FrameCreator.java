@@ -21,8 +21,8 @@ public class FrameCreator {
 
 	private static void add(final Concept concept, Frame frame) {
 		final Frame newFrame = new Frame(getTypes(concept));
-		frame.addSlot("concept", newFrame);
-		newFrame.addSlot("doc", concept.getDocCommentText());
+		frame.addSlot("Concept", newFrame);
+		newFrame.addSlot("Doc", concept.getDocCommentText());
 		for (final Variable variable : concept.getVariables())
 			newFrame.addSlot("variables", new Frame(getTypes(variable)) {{
 				addSlot("Name", variable.getName());
@@ -33,10 +33,9 @@ public class FrameCreator {
 			newFrame.addSlot("parameters", new Frame("parameter") {{
 				if (parameter.isExplicit())
 					addSlot("Name", ((TaraExplicitParameter) parameter).getIdentifier());
-				addSlot("DefaultValues", parameter.getValue().getText());
+				addSlot("value", parameter.getValue().getText());
 			}});
-		Collection<TaraFacetTarget> facetTargets = concept.getFacetTargets();
-		for (final TaraFacetTarget target : facetTargets)
+		for (final TaraFacetTarget target : concept.getFacetTargets())
 			newFrame.addSlot("targets", new Frame("target") {{
 				addSlot("Destiny", target.getIdentifierReference().getText());
 			}});

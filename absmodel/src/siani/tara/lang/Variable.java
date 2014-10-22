@@ -1,13 +1,15 @@
 package siani.tara.lang;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class Variable implements Cloneable {
 	public static final String EMPTY = "EMPTY_VALUE";
 	public String name;
 	public String doc;
-	public String[] defaultValues;
-	public List<String> values;
+	public Object[] defaultValues;
+	public List<Object> values;
 	public boolean isList = false;
 	public boolean isTerminal = false;
 	public boolean isProperty = false;
@@ -63,19 +65,25 @@ public abstract class Variable implements Cloneable {
 
 	public abstract String getType();
 
-	public String[] getValues() {
-		return values.toArray(new String[values.size()]);
+	public Object[] getValues() {
+		return values != null ? values.toArray(new Object[values.size()]) : new Object[0];
 	}
 
-	public void addValue(String value) {
+	public void setValues(Object... values) {
+		if (this.values == null) this.values = new ArrayList<>();
+		Collections.addAll(this.values, values);
+	}
+
+	public void addValue(Object value) {
+		if(values== null) this.values = new ArrayList<>();
 		this.values.add(value);
 	}
 
-	public String[] getDefaultValues() {
+	public Object[] getDefaultValues() {
 		return defaultValues;
 	}
 
-	public void setDefaultValues(String[] defaultValue) {
+	public void setDefaultValues(Object... defaultValue) {
 		this.defaultValues = defaultValue;
 	}
 

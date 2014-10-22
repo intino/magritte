@@ -16,22 +16,26 @@ anImport: NEWLINE+ USE headerReference (AS IDENTIFIER)?;
 doc: DOC+;
 concept: doc? signature annotations? body?;
 
-signature: ((SUB IDENTIFIER)
-         | (metaidentifier parameters? IDENTIFIER (EXTENDS identifierReference)?) | metaidentifier parameters?);
+signature: (SUB IDENTIFIER)
+			| (metaidentifier parameters? IDENTIFIER (EXTENDS identifierReference)?)
+			| metaidentifier parameters?;
 
 
 parameters : LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS;
-parameterList : (explicit parameter (COMMA explicit parameter)*) | parameter+;
+parameterList : (explicit initValue (COMMA explicit initValue)*) | (initValue (COMMA initValue)*);
 explicit: IDENTIFIER EQUALS;
-parameter : identifierReference
+
+initValue : identifierReference+
 			| stringValue+
 	        | booleanValue+
 	        | naturalValue+ measure?
 	        | integerValue+ measure?
 	        | doubleValue+ measure?
+	        | coordinateValue+
             | dateValue+
             | portValue+
-	        | metaWord;
+	        | metaWord
+	        | EMPTY;
 
 metaWord : metaidentifier metaWordNames*;
 metaWordNames : DOT IDENTIFIER;
@@ -73,20 +77,10 @@ measure : IDENTIFIER | DOLLAR | EURO | PERCENTAGE | GRADE;
 
 annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | FACET | INTENTION | COMPONENT | PROPERTY | UNIVERSAL)+ ;
 
-varInit : IDENTIFIER EQUALS (EMPTY
-				        | identifierReference+
-				        | stringValue+
-                        | booleanValue+
-						| dateValue+
-						| portValue+
-						| coordinateValue+
-                        | naturalValue+ measure?
-                        | integerValue+ measure?
-                        | doubleValue+  measure?);
-
+varInit : IDENTIFIER EQUALS initValue;
 
 headerReference: hierarchy* IDENTIFIER;
 
 identifierReference: hierarchy* IDENTIFIER;
 hierarchy: IDENTIFIER DOT;
-metaidentifier: METAIDENTIFIER | IDENTIFIER | INTENTION;
+metaidentifier: METAIDENTIFIER | IDENTIFIER;

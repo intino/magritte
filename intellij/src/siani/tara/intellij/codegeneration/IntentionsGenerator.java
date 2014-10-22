@@ -2,36 +2,35 @@ package siani.tara.intellij.codegeneration;
 
 import com.intellij.ide.util.DirectoryUtil;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.Result;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.JavaDirectoryService;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
+import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.search.GlobalSearchScope;
-import org.siani.itrules.Document;
-import org.siani.itrules.Frame;
-import org.siani.itrules.RuleEngine;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Doc;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
+import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
+
+import static com.intellij.psi.JavaPsiFacade.getElementFactory;
+import static com.intellij.psi.JavaPsiFacade.getInstance;
 
 public class IntentionsGenerator {
 
 	public static final String SRC = "src";
-	public static final String INTENTION = "Intention";
-	private static final String JAVA_EXTENSION = ".java";
-	private static final String intentionRules = "/fileTemplates/internal/intention.itr";
 	private final Project project;
 	private final TaraBoxFile taraBoxFile;
 	private final PsiDirectory srcDirectory;
@@ -59,121 +58,103 @@ public class IntentionsGenerator {
 	}
 
 	private void processFile(PsiFile psiFile) {
-
-		if (psiFile instanceof TaraBoxFile) {
-			Concept[] intentions = getIntentions(((TaraBoxFile) psiFile));
-			if (intentions.length > 0)
-				createIntentionClasses(intentions);
-		}
+		if (psiFile instanceof TaraBoxFile)
+			for (Concept intention : getIntentions(((TaraBoxFile) psiFile)))
+				createIntentionClasses(getIntentionsPath(intention));
 	}
 
-	private void createIntentionClasses(Concept[] concepts) {
-		PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(concepts[0].getQualifiedName(),
-			GlobalSearchScope.moduleScope(TaraUtil.getModuleOfFile(concepts[0].getFile())));
-		PsiDirectory destiny = getDestiny(concepts[0].getFile());
-		Map<String, List<Concept>> destinyFiles = collectFilesOfConcepts(concepts);
-		for (Map.Entry<String, List<Concept>> entry : destinyFiles.entrySet()) {
-			String content = createIntentionClass(entry.getValue());
-			if (content == null) continue;
-			writeIntentionClass(new File(destiny.getVirtualFile().getPath(), entry.getKey() + JAVA_EXTENSION), content);
-		}
-	}
-
-	private void writeIntentionClass(File file, String content) {
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-			writer.write(content);
-			writer.close();
-		} catch (IOException ignored) {
-		}
-	}
-
-	private String createIntentionClass(List<Concept> concepts) {
-		Frame frame = createFrame(concepts);
-		RuleEngine engine = new RuleEngine(getClass().getResourceAsStream(intentionRules));
-		Document document = new Document();
-		engine.render(frame, document);
-		return document.content();
-	}
-
-	private Frame createFrame(List<Concept> concepts) {
-		Set<Concept> processedConcepts = new HashSet<>();
-		Frame frame = null;
-		Stack<Frame> frameStack = new Stack<>();
-		for (Concept concept : concepts) {
-			PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(concepts.get(0).getQualifiedName(),
-				GlobalSearchScope.moduleScope(TaraUtil.getModuleOfFile(concepts.get(0).getFile())));
-			if (aClass != null) continue;
-			for (Concept aConcept : getPathToConcept(concept)) {
-				if (isProcessed(processedConcepts, aConcept)) continue;
-				if (frameStack.isEmpty()) {
-					frame = new Frame("intention");
-					frame.addSlot("name", aConcept.getName());
-					frame.addSlot("box", aConcept.getFile().getBox());
-					if (aConcept.getParentConcept() != null)
-						frame.addSlot("parent", TaraPsiImplUtil.getParentOf(aConcept).getQualifiedName());
-					frameStack.push(frame);
-				} else {
-					Frame subFrame = createSubFrameOfConcept(aConcept);
-					frameStack.peek().addSlot("sub", subFrame);
-					frameStack.push(subFrame);
-				}
-				processedConcepts.add(aConcept);
-			}
-			frameStack.clear();
-			frameStack.push(frame);
-		}
-		return frame;
-	}
-
-	private boolean isProcessed(Set<Concept> processedConcepts, Concept concept) {
-		for (Concept processedConcept : processedConcepts)
-			if (processedConcept.equals(concept)) return true;
-		return false;
-	}
-
-	private Frame createSubFrameOfConcept(Concept aConcept) {
-		Frame frame = new Frame("sub");
-		frame.addSlot("name", aConcept.getName());
-		if (aConcept.getParentConcept() != null)
-			frame.addSlot("parent", TaraPsiImplUtil.getParentOf(aConcept).getQualifiedName());
-		return frame;
-	}
-
-	private List<Concept> getPathToConcept(Concept concept) {
+	private List<Concept> getIntentionsPath(Concept intention) {
 		List<Concept> list = new ArrayList<>();
-		Concept aConcept = concept;
-		list.add(aConcept);
-		while ((aConcept = TaraPsiImplUtil.getConceptContextOf(aConcept)) != null)
-			list.add(0, aConcept);
+		Concept contextOf = intention;
+		while ((contextOf = TaraPsiImplUtil.getConceptContextOf(contextOf)) != null)
+			list.add(0, contextOf);
+		list.add(intention);
 		return list;
 	}
 
-	private Map<String, List<Concept>> collectFilesOfConcepts(Concept[] concepts) {
-		Map<String, List<Concept>> fileNames = new HashMap<>();
-		for (Concept concept : concepts) {
-			Concept aConcept = getRootConcept(concept);
-			if (aConcept != null) {
-				if (!fileNames.containsKey(aConcept.getName()))
-					fileNames.put(aConcept.getName(), new ArrayList<Concept>());
-				fileNames.get(aConcept.getName()).add(concept);
-			}
+	private void createIntentionClasses(List<Concept> path) {
+		List<PsiClass> psiClasses = new ArrayList<>();
+		psiClasses.add(createClass(path.get(0)));
+		for (int i = 1; i < path.size(); i++)
+			psiClasses.add(createInnerClass(path.get(i), psiClasses.get(psiClasses.size() - 1)));
+	}
+
+	private PsiClass createClass(Concept concept) {
+		PsiClass aClass = getClass(concept);
+		if (aClass != null) {
+			setDocumentation(concept.getDoc(), aClass);
+			return aClass;
 		}
-		return fileNames;
+		Concept parentConcept = concept.getParentConcept() != null ?
+			TaraPsiImplUtil.getConceptContextOf(ReferenceManager.resolve(concept.getSignature().getParentReference())) : null;
+		PsiDirectory destiny = getDestiny(concept);
+		PsiClass anInterface = JavaDirectoryService.getInstance().createInterface(destiny, concept.getName());
+		setDocumentation(concept.getDoc(), anInterface);
+		if (parentConcept != null) {
+			PsiClass parentClass = getClass(concept) != null ? getClass(concept) :
+				JavaDirectoryService.getInstance().createInterface(destiny, concept.getName());
+			aClass.getExtendsList().add(getElementFactory(project).createClassReferenceElement(parentClass));
+		}
+		return anInterface;
 	}
 
-	private Concept getRootConcept(Concept concept) {
-		Concept aConcept = concept;
-		while (TaraPsiImplUtil.getConceptContextOf(aConcept) != null)
-			aConcept = TaraPsiImplUtil.getConceptContextOf(aConcept);
-		return aConcept;
+	private void setDocumentation(final Doc doc, final PsiClass aClass) {
+		WriteCommandAction action = new WriteCommandAction(project, aClass.getContainingFile()) {
+			@Override
+			protected void run(@NotNull Result result) throws Throwable {
+				if (doc != null) {
+					PsiDocComment docComment = aClass.getDocComment();
+					PsiDocComment text = getElementFactory(project).createDocCommentFromText("/**\n* " + doc.getDocText() + "\n*/");
+					if (docComment != null)
+						docComment.delete();
+					aClass.getParent().addBefore(text, aClass);
+				}
+			}
+		};
+		action.execute();
 	}
 
-	private PsiDirectory getDestiny(TaraBoxFileImpl conceptFile) {
-		List<PsiDirectory> packages = createSrcPackageForFile(conceptFile);
+	private PsiClass createInnerClass(final Concept concept, final PsiClass container) {
+		final PsiClass[] aClass = new PsiClass[1];
+		if ((aClass[0] = getClass(concept)) != null) {
+			setDocumentation(concept.getDoc(), aClass[0]);
+			return aClass[0];
+		}
+		WriteCommandAction action = new WriteCommandAction(project, container.getContainingFile()) {
+			@Override
+			protected void run(@NotNull Result result) throws Throwable {
+				aClass[0] = IntentionsGenerator.this.getClass(concept);
+				if (aClass[0] == null) {
+					aClass[0] = getElementFactory(project).createInterface(concept.getName());
+					if (concept.getParentConcept() != null)
+						setParentToClass(concept, aClass[0]);
+					container.add(aClass[0]);
+					setDocumentation(concept.getDoc(), aClass[0]);
+				}
+			}
+		};
+		action.execute();
+		return aClass[0];
+	}
+
+	private void setParentToClass(Concept concept, PsiClass aClass) {
+		Concept parent = (concept.getParentConceptName() != null) ? concept.getParentConcept() : null;
+		if (parent == null) return;
+		PsiClass parentClass = getClass(parent);
+		if (parentClass == null)
+			parentClass = createClass(parent);
+		aClass.getExtendsList().add(getElementFactory(project).createClassReferenceElement(parentClass));
+	}
+
+	private PsiClass getClass(Concept concept) {
+		return getInstance(project).findClass(concept.getQualifiedName(),
+			GlobalSearchScope.moduleScope(TaraUtil.getModuleOfFile(concept.getContainingFile())));
+	}
+
+	private PsiDirectory getDestiny(Concept concept) {
+		List<PsiDirectory> packages = createSrcPackageForFile(concept.getFile());
 		return (packages.isEmpty()) ? srcDirectory : packages.get(packages.size() - 1);
 	}
-
 
 	private VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {
 		for (VirtualFile file : virtualFiles)
@@ -201,5 +182,4 @@ public class IntentionsGenerator {
 		}
 		return directories;
 	}
-
 }

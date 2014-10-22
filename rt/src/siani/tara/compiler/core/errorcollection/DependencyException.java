@@ -17,7 +17,7 @@ public class DependencyException extends TaraException {
 	}
 
 	public String getMessage() {
-		return "Inconsistent dependency in " + node.getName();
+		return "Inconsistent dependency in concept " + node.getName() + "; " + message;
 	}
 
 	public Node getNode() {

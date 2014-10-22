@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static siani.tara.lang.Primitives.getConverter;
+
 public class ModelLoader {
 	protected static final String JSON = ".json";
 	private static final Logger LOG = Logger.getLogger(ModelLoader.class.getName());
@@ -120,10 +122,12 @@ public class ModelLoader {
 				variable.setProperty(e.getAsBoolean());
 			if (json.getAsJsonObject().get("values") != null &&
 				(array = json.getAsJsonObject().get("values").getAsJsonArray()) != null && array.isJsonArray())
-				for (JsonElement jsonElement : array) variable.addValue(jsonElement.getAsString());
+				for (JsonElement jsonElement : array)
+					variable.addValue(getConverter(variable.getType()).convert(jsonElement.getAsString()));
 			if ((json.getAsJsonObject().get("defaultValues")) != null && json.getAsJsonObject().get("defaultValues").isJsonArray()) {
 				array = json.getAsJsonObject().get("defaultValues").getAsJsonArray();
-				for (JsonElement jsonElement : array) variable.addValue(jsonElement.getAsString());
+				for (JsonElement jsonElement : array)
+					variable.setDefaultValues(getConverter(variable.getType()).convert(jsonElement.getAsString()));
 			}
 			return variable;
 		}

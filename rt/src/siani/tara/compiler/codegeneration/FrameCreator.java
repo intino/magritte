@@ -4,64 +4,99 @@ import org.siani.itrules.Frame;
 import siani.tara.lang.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class FrameCreator {
 	public static Frame create(Model model) {
-		final Map<String, Frame> frames = new HashMap<>();
-		for (final Node node : model.getNodeTable().values())
-			frames.put(node.getQualifiedName(), new Frame(getTypes(node)) {{
-				addSlot("Name", node.getName());
-				addSlot("QualifiedName", node.getQualifiedName());
-				addSlot("Box", node.getBox());
-				if (node.getObject().getParent() != null)
-					addSlot("Parent", node.getObject().getParentName());
-				addSlot("Doc", node.getObject().getDoc());
-
-				for (final Variable variable : node.getObject().getVariables())
-					addSlot("Variables", new Frame(getTypes(variable)) {{
-						addSlot("Name", variable.getName());
-						addSlot("Type", variable.getType());
-						addSlot("DefaultValues", variable.getDefaultValues());
-					}});
-
-				for (final Map.Entry<String, Variable> entry : node.getObject().getVariableInits().entrySet())
-					addSlot("VarInit", new Frame("VarInit") {{
-						addSlot("Name", entry.getValue().getName());
-						addSlot("Type", entry.getValue().getType());
-						addSlot("value", entry.getValue().getDefaultValues());
-						if (entry.getValue() instanceof Attribute && isNumeric(entry.getValue().getType()))
-							addSlot("measure", ((Attribute) entry.getValue()).getMeasure());
-					}});
-
-				for (final FacetTarget facetTarget : node.getObject().getFacetTargets())
-					addSlot("FacetTarget", new Frame(getTypes(facetTarget)) {{
-						addSlot("Destiny", facetTarget.getDestinyQN());
-						for (final Variable variable : node.getObject().getVariables()) {
-							addSlot("Variables", new Frame(getTypes(variable)) {{
-								addSlot("Name", variable.getName());
-								addSlot("Type", variable.getType());
-								addSlot("DefaultValues", variable.getDefaultValues());
-							}});
-						}
-					}});
-
-				for (final Facet facet : node.getObject().getFacets())
-					addSlot("Facet", new Frame(getTypes(facet)) {{
-						addSlot("Name", facet.getName());
-						if (facet.getImplementation() != null)
-							addSlot("implementation", facet.getImplementation());
-					}});
-			}});
-		return new Frame("model") {{
-			for (Frame frame : frames.values()) frame.addSlot("concepts", frame);
-		}};
+		Frame frame = new Frame("model");
+		frame.addSlot("name", model.getModelName());
+		for (Node node : model.getTreeModel())
+			add(node, frame);
+		return frame;
 	}
 
-	private static boolean isNumeric(String type) {
-		return type.equals(Primitives.DOUBLE) || type.equals(Primitives.INTEGER) || type.equals(Primitives.NATURAL);
+	public static Frame createBoxFrame(List<Node> nodes) {
+		Frame frame = new Frame("Box");
+		frame.addSlot("name", nodes.get(0).getBox());
+		for (String anImport : nodes.get(0).getImports())
+			frame.addSlot("import", anImport);
+		for (Node node : nodes)
+			add(node, frame);
+		return frame;
+	}
+
+	private static void add(final Node node, Frame frame) {
+		if (node instanceof LinkNode) return;
+		final Frame newFrame = new Frame(getTypes(node));
+		frame.addSlot("node", newFrame);
+		if (node.getObject().getDoc() != null)
+			newFrame.addSlot("doc", node.getObject().getDoc());
+		if (node.getName() != null && !node.getName().isEmpty())
+			newFrame.addSlot("name", node.getName());
+		if (node.getObject().getType() != null)
+			newFrame.addSlot("nodeType", node.getObject().getType());
+		addVariables(node, newFrame);
+
+		addParameters(node, newFrame);
+		addTargets(node, newFrame);
+		addFacets(node, newFrame);
+		addVarInitializations(node, newFrame);
+
+		for (Node inner : node.getInnerNodes())
+			add(inner, newFrame);
+		for (Node sub : node.getObject().getSubConcepts())
+			add(sub, frame);
+	}
+
+	private static void addVariables(Node node, final Frame newFrame) {
+		for (final Variable variable : node.getObject().getVariables())
+			if (variable instanceof Word) {
+				final Word word = (Word) variable;
+				newFrame.addSlot("Word", new Frame(getTypes(variable)) {{
+					addSlot("name", word.getName());
+					addSlot("words", word.getWordTypes().toArray(new String[word.getWordTypes().size()]));
+				}});
+			} else if (variable.getDefaultValues() != null && variable.getDefaultValues().length > 0)
+				newFrame.addSlot("set", new Frame(getTypes(variable)) {{
+					addSlot("name", variable.getName());
+					addSlot("type", variable.getType());
+					if (variable.getDefaultValues() != null && variable.getDefaultValues().length > 0)
+						newFrame.addSlot("set", new Frame("Set") {{
+							addSlot("type", variable.getType());
+							addSlot("name", variable.getName());
+							addSlot("value", variable.getDefaultValues()[0]);
+						}});
+				}});
+	}
+
+	private static void addVarInitializations(Node node, Frame newFrame) {
+		for (final Map.Entry<String, Variable> entry : node.getObject().getVariableInits().entrySet())
+			newFrame.addSlot("set", new Frame("Set") {{
+				addSlot("Name", entry.getKey());
+			}});
+	}
+
+	private static void addFacets(Node node, Frame newFrame) {
+		for (final Facet facet : node.getObject().getFacets())
+			newFrame.addSlot("facets", new Frame(getTypes(facet)) {{
+				addSlot("name", facet.getName());
+			}});
+	}
+
+	private static void addTargets(Node node, Frame newFrame) {
+		for (final FacetTarget target : node.getObject().getFacetTargets())
+			newFrame.addSlot("targets", new Frame(getTypes(target)) {{
+				addSlot("name", target.getDestinyQN());
+			}});
+	}
+
+	private static void addParameters(Node node, Frame newFrame) {
+		for (final Map.Entry<String, Variable> entry : node.getObject().getParameters().entrySet())
+			newFrame.addSlot("parameters", new Frame("parameter") {{
+				addSlot("name", entry.getKey());
+				addSlot("value", entry.getValue());//TODO
+			}});
 	}
 
 	private static String[] getTypes(Facet facet) {
@@ -94,15 +129,9 @@ public class FrameCreator {
 		List<String> types = new ArrayList<>();
 		NodeObject object = node.getObject();
 		types.add(object.getType());
-		types.add("node");
+		types.add("Node");
 		for (Annotations.Annotation annotation : object.getAnnotations())
 			types.add(annotation.getName());
 		return types.toArray(new String[types.size()]);
-	}
-
-	private static String[] asStringList(Annotations.Annotation[] annotations) {
-		List<String> list = new ArrayList<>();
-		for (Annotations.Annotation annotation : annotations) list.add(annotation.getName());
-		return list.toArray(new String[list.size()]);
 	}
 }

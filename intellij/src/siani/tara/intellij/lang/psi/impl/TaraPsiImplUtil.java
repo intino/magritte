@@ -129,7 +129,7 @@ public class TaraPsiImplUtil {
 			while (parent != null && parent.isSub()) parent = getConceptContextOf(parent);
 			return parent;
 		} else if (concept.getParentConcept() != null) {
-			TaraIdentifierReference identifierReference = concept.getSignature().getIdentifierReference();
+			TaraIdentifierReference identifierReference = concept.getSignature().getParentReference();
 			PsiElement resolve = ReferenceManager.resolve(identifierReference);
 			return getConceptContextOf(resolve);
 		}

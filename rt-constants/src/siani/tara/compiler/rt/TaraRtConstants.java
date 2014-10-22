@@ -23,7 +23,9 @@ public class TaraRtConstants {
 	public static final String CLASSPATH = "classpath";
 	public static final String MODULE = "module";
 	public static final String MODELS_PATH = "models";
+	public static final String SYSTEM = "system";
 
 	private TaraRtConstants() {
 	}
+
 }

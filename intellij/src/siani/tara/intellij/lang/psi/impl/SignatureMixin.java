@@ -60,6 +60,12 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
+
+	@Nullable
+	public TaraIdentifierReference getParentReference() {
+		return findChildByClass(TaraIdentifierReference.class);
+	}
+
 	@Nullable
 	public Parameters getParameters() {
 		return findChildByClass(Parameters.class);

@@ -51,7 +51,8 @@ public class FacetsGenerator {
 		if (psiFile instanceof TaraBoxFile) {
 			final TaraBoxFile taraBoxFile = ((TaraBoxFile) psiFile);
 			final Concept[] facets = getFacets(taraBoxFile);
-			for (Concept facet : facets) createFacetClass(facet);
+			for (Concept facet : facets)
+				createFacetClass(facet);
 		}
 	}
 

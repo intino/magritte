@@ -51,7 +51,8 @@ public class Word extends Variable {
 		word.setProperty(isProperty);
 		word.setUniversal(isUniversal);
 		word.setDefaultValues(defaultValues);
-		for (String value : values) word.addValue(value);
+		if (values != null)
+			for (Object value : values) word.addValue(value);
 		return word;
 	}
 }

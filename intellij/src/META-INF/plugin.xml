@@ -66,7 +66,7 @@
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <fileDocumentManagerListener implementation="siani.tara.intellij.codegeneration.TaraFileDocumentManagerListener"/>
+    <!--<fileDocumentManagerListener implementation="siani.tara.intellij.codegeneration.TaraFileDocumentManagerListener"/>-->
     <errorHandler implementation="siani.tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitter"/>
     <lang.namesValidator language="Tara"
                          implementationClass="siani.tara.intellij.refactoring.rename.NamesValidator"/>
@@ -120,6 +120,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.RequiredConceptsAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VarInitAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.imports.ImportMetamodelAnnotation"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.DateValueAnnotator"/>
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraConceptCompletionContributor"/>
     <completion.contributor language="Tara"

@@ -16,12 +16,12 @@ public class Attribute extends Variable {
 		this.name = name;
 	}
 
-	public void setMeasure(String measure) {
-		this.measure = measure;
-	}
-
 	public String getMeasure() {
 		return measure;
+	}
+
+	public void setMeasure(String measure) {
+		this.measure = measure;
 	}
 
 	@Override
@@ -41,7 +41,8 @@ public class Attribute extends Variable {
 		attribute.setUniversal(isUniversal);
 		attribute.measure = measure;
 		attribute.setDefaultValues(defaultValues);
-		for (String value : values) attribute.addValue(value);
+		if (values != null)
+			for (Object value : values) attribute.addValue(value);
 		return attribute;
 	}
 }

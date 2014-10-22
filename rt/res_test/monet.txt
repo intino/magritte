@@ -7,16 +7,18 @@ project
 monet
 module
 engine
+system
+false
 encoding
 UTF-8
 models
 /Users/oroncal/workspace/sandbox/plugins/tara_models/monet/
 itrules
-/Users/oroncal/workspace/sandbox/Tafat/engine/res/itrules
+/Users/oroncal/workspace/sandbox/monet/engine/res/itrules
 icons
-/Users/oroncal/workspace/sandbox/Tafat/engine/res/icons
+/Users/oroncal/workspace/sandbox/monet/engine/res/icons
 outputpath
 /Users/oroncal/workspace/sandbox/system/compile-server/test_2e78763/taraStubs/Test/java-production/
 final_outputpath
-/Users/oroncal/workspace/sandbox/Monet/engine/model/out/production/prueba/
+/Users/oroncal/workspace/sandbox/monet/engine/gen/
 

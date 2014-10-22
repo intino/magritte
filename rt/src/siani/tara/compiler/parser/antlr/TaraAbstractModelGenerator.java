@@ -10,6 +10,7 @@ import java.util.*;
 
 import static siani.tara.compiler.parser.antlr.TaraGrammar.*;
 import static siani.tara.lang.Annotations.Annotation;
+import static siani.tara.lang.Primitives.*;
 
 public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
@@ -51,8 +52,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		String type = (ctx.signature().metaidentifier() != null) ?
 			ctx.signature().metaidentifier().getText() : container.getObject().getType();
 		String parent = getParent(ctx);
-		node = name.isEmpty() && ctx.body() == null ?
-			new LinkNode(parent, container) :
+		node = name.isEmpty() && ctx.body() == null && parent != null ? new LinkNode(parent, container) :
 			new DeclaredNode(new NodeObject(type, name), container);
 		addHeaderInformation(ctx, node);
 		addNodeToModel(ctx, node, parent);
@@ -154,23 +154,23 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterParameterList(@NotNull ParameterListContext ctx) {
 		boolean explicit = ctx.explicit().isEmpty();
-		for (int i = 0; i < ctx.parameter().size(); i++) {
-			String text = explicit ? "" + i : ctx.explicit(i).IDENTIFIER().getText();
-			addParameter(text, ctx.parameter().get(i));
+		for (int i = 0; i < ctx.initValue().size(); i++) {
+			String name = explicit ? "" + i : ctx.explicit(i).IDENTIFIER().getText();
+			addParameter(name, ctx.initValue(i));
 		}
 	}
 
-	public void addParameter(String name, @NotNull ParameterContext ctx) {
-		super.enterParameter(ctx);
+	public void addParameter(String name, @NotNull InitValueContext ctx) {
 		NodeObject object = conceptStack.peek().getObject();
+		Variable valueOfInit = getValueOfInit(name, ctx);
 		if (inFacetApply(ctx)) {
 			List<Facet> facetApplies = object.getFacets();
-			facetApplies.get(facetApplies.size() - 1).add(name, ctx.getText());
+			facetApplies.get(facetApplies.size() - 1).add(name, valueOfInit);
 		} else
-			object.addParameter(name, ctx.getText());
+			object.addParameter(name, valueOfInit);
 	}
 
-	private boolean inFacetApply(ParameterContext ctx) {
+	private boolean inFacetApply(InitValueContext ctx) {
 		return ctx.getParent().getParent().getParent() instanceof FacetApplyContext;
 	}
 
@@ -222,7 +222,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterDateAttribute(@NotNull DateAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.DATE_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.dateValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.dateValue()));
-		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
+		if (ctx.EMPTY() != null) variable.setDefaultValues(new Date[0]);
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
@@ -323,45 +323,53 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterVarInit(@NotNull VarInitContext ctx) {
 		NodeObject object = conceptStack.peek().getObject();
 		String name = ctx.IDENTIFIER().getText();
-		object.putVariableInitialisation(name, getValueOfInit(name, ctx));
+		object.putVariableInitialisation(name, getValueOfInit(name, ctx.initValue()));
 	}
 
-	private Variable getValueOfInit(String name, VarInitContext ctx) {
+	private Variable getValueOfInit(String name, InitValueContext ctx) {
 		Variable variable = null;
 		String measure = ctx.measure() != null ? ctx.measure().getText() : "";
 		if (!ctx.booleanValue().isEmpty()) {
-			variable = new Attribute(Primitives.BOOLEAN, name, ctx.booleanValue().size() > 1, false);
-			for (BooleanValueContext context : ctx.booleanValue()) variable.addValue(context.getText());
+			variable = new Attribute(BOOLEAN, name, ctx.booleanValue().size() > 1, false);
+			for (BooleanValueContext context : ctx.booleanValue())
+				variable.addValue(getConverter(BOOLEAN).convert(context.getText()));
 		} else if (!ctx.integerValue().isEmpty()) {
-			variable = new Attribute(Primitives.INTEGER, name, ctx.booleanValue().size() > 1, false);
+			variable = new Attribute(INTEGER, name, ctx.integerValue().size() > 1, false);
 			((Attribute) variable).setMeasure(measure);
-			for (IntegerValueContext context : ctx.integerValue()) variable.addValue(context.getText());
+			for (IntegerValueContext context : ctx.integerValue())
+				variable.addValue(getConverter(INTEGER).convert(context.getText()));
 		} else if (!ctx.doubleValue().isEmpty()) {
-			variable = new Attribute(Primitives.DOUBLE, name, ctx.booleanValue().size() > 1, false);
+			variable = new Attribute(DOUBLE, name, ctx.doubleValue().size() > 1, false);
 			((Attribute) variable).setMeasure(measure);
-			for (DoubleValueContext context : ctx.doubleValue()) variable.addValue(context.getText());
+			for (DoubleValueContext context : ctx.doubleValue())
+				variable.addValue(getConverter(DOUBLE).convert(context.getText()));
 		} else if (!ctx.naturalValue().isEmpty()) {
-			variable = new Attribute(Primitives.NATURAL, name, ctx.booleanValue().size() > 1, false);
+			variable = new Attribute(NATURAL, name, ctx.naturalValue().size() > 1, false);
 			((Attribute) variable).setMeasure(measure);
-			for (NaturalValueContext context : ctx.naturalValue()) variable.addValue(context.getText());
+			for (NaturalValueContext context : ctx.naturalValue())
+				variable.addValue(getConverter(NATURAL).convert(context.getText()));
 		} else if (!ctx.stringValue().isEmpty()) {
-			variable = new Attribute(Primitives.STRING, name, ctx.booleanValue().size() > 1, false);
+			variable = new Attribute(STRING, name, ctx.stringValue().size() > 1, false);
 			for (StringValueContext context : ctx.stringValue()) variable.addValue(context.getText());
 		} else if (!ctx.coordinateValue().isEmpty()) {
-			variable = new Attribute(Primitives.COORDINATE, name, ctx.booleanValue().size() > 1, false);
-			for (CoordinateValueContext context : ctx.coordinateValue()) variable.addValue(context.getText());
+			variable = new Attribute(COORDINATE, name, ctx.coordinateValue().size() > 1, false);
+			for (CoordinateValueContext context : ctx.coordinateValue())
+				variable.addValue(getConverter(COORDINATE).convert(context.getText()));
 		} else if (!ctx.portValue().isEmpty()) {
-			variable = new Attribute(Primitives.PORT, name, ctx.booleanValue().size() > 1, false);
-			for (PortValueContext context : ctx.portValue()) variable.addValue(context.getText());
+			variable = new Attribute(PORT, name, ctx.portValue().size() > 1, false);
+			for (PortValueContext context : ctx.portValue())
+				variable.addValue(getConverter(PORT).convert(context.getText()));
 		} else if (!ctx.dateValue().isEmpty()) {
-			variable = new Attribute(Primitives.DATE, name, ctx.booleanValue().size() > 1, false);
-			for (DateValueContext context : ctx.dateValue()) variable.addValue(context.getText());
+			variable = new Attribute(DATE, name, ctx.dateValue().size() > 1, false);
+			for (DateValueContext context : ctx.dateValue())
+				variable.addValue(getConverter(DATE).convert(context.getText()));
 		} else if (!ctx.identifierReference().isEmpty()) {
-			variable = new Reference(Primitives.REFERENCE, name, ctx.booleanValue().size() > 1, false);
+			variable = new Reference(REFERENCE, name, ctx.identifierReference().size() > 1, false);
 			for (IdentifierReferenceContext context : ctx.identifierReference()) variable.addValue(context.getText());
 		}
 		return variable;
 	}
+
 
 	@Override
 	public void enterAnnotations(@NotNull AnnotationsContext ctx) {

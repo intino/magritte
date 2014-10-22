@@ -5,4 +5,6 @@ import com.intellij.pom.Navigatable;
 public interface Doc extends Navigatable, TaraPsiElement {
 
 
+	String getDocText();
+
 }

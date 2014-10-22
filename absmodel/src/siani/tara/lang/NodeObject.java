@@ -7,7 +7,7 @@ public class NodeObject extends ModelObject {
 	boolean subConcept = false;
 	List<DeclaredNode> subConcepts;
 	transient List<NodeObject> childrenConcepts;
-	transient Map<String, String> parameters = new LinkedHashMap<>();
+	transient Map<String, Variable> parameters = new LinkedHashMap<>();
 	transient Map<String, Variable> variableInits = new LinkedHashMap<>();
 	List<Variable> variables = new ArrayList<>();
 	List<Annotations.Annotation> annotations = new ArrayList<>();
@@ -41,7 +41,7 @@ public class NodeObject extends ModelObject {
 		this.declaredNodeQN = declaredNodeQN;
 	}
 
-	public Map<String, String> getParameters() {
+	public Map<String, Variable> getParameters() {
 		return parameters;
 	}
 
@@ -92,7 +92,7 @@ public class NodeObject extends ModelObject {
 		return subConcepts.add(sub);
 	}
 
-	public void addParameter(String name, String value) {
+	public void addParameter(String name, Variable value) {
 		parameters.put(name, value);
 	}
 

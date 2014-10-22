@@ -14,7 +14,7 @@ public interface Signature extends TaraPsiElement {
 	boolean isSub();
 
 	@Nullable
-	TaraIdentifierReference getIdentifierReference();
+	TaraIdentifierReference getParentReference();
 
 	@Nullable
 	MetaIdentifier getType();

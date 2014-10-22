@@ -31,7 +31,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 	private void checkIfExtendedFromDifferentType(Concept concept) {
 		if (concept.getSignature().getParentConcept() == null || concept.getType() == null) return;
 		if (!concept.getType().equals(concept.getSignature().getParentConcept().getType()))
-			annotateAndFix(concept.getSignature().getIdentifierReference(), new RemoveConceptFix(concept), TaraBundle.message("invalid.extension.concept.key.error.message"));
+			annotateAndFix(concept.getSignature().getParentReference(), new RemoveConceptFix(concept), TaraBundle.message("invalid.extension.concept.key.error.message"));
 	}
 
 	private boolean isRootSub(Concept element) {

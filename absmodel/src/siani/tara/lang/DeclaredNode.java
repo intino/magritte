@@ -41,7 +41,8 @@ public class DeclaredNode extends Node {
 
 	@Override
 	protected String getNodePath() {
-		String name = !getName().isEmpty() ? getName() : "[" + getObject().getParentName() + ANONYMOUS + "]";
+		String name = !getName().isEmpty() ? getName() :
+			"[" + (getObject().getParentName() == null ? getObject().type : getObject().getParentName()) + ANONYMOUS + "]";
 		if (container != null && !getObject().isSub())
 			return container.getQualifiedName() +
 				(isInFacetTargetParent() ? IN_FACET_TARGET + "(" + this.getFacetTargetParent().getDestinyName() + ")" : "") + "." + name;

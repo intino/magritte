@@ -80,9 +80,13 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	@Nullable
-	public String getParentConcept() {
+	public String getParentConceptName() {
 		Signature signature = this.getSignature();
-		return signature.getIdentifierReference() != null ? signature.getIdentifierReference().getText() : null;
+		return signature.getParentReference() != null ? signature.getParentReference().getText() : null;
+	}
+
+	public Concept getParentConcept() {
+		return this.getSignature().getParentConcept();
 	}
 
 	public MetaIdentifier getMetaIdentifier() {
@@ -162,7 +166,9 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		for (PsiElement annotation : getAnnotations())
 			if (siani.tara.lang.Annotations.Annotation.INTENTION.getName().equals(annotation.getText()))
 				return true;
-		return getParentConcept() != null && TaraPsiImplUtil.getParentOf((Concept) this).isIntention();
+		Concept parent = null;
+		if (getParentConceptName() != null) parent = getParentConcept();
+		return parent != null && parent.isIntention();
 	}
 
 	public boolean isFacet() {

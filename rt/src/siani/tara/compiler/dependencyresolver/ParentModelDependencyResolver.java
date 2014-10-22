@@ -12,42 +12,64 @@ import static siani.tara.lang.Annotations.Annotation.TERMINAL;
 
 public class ParentModelDependencyResolver {
 	private final Model model;
-	private final Model parentModel;
+	private final Model parent;
 
 	public ParentModelDependencyResolver(Model model, Model parentModel) {
 		this.model = model;
-		this.parentModel = parentModel;
+		this.parent = parentModel;
 		model.setParentModel(parentModel);
 	}
 
 	public void resolve() {
-		addTerminalNodes(collectParentTerminalNodes(parentModel));
-		addVariables(collectParentTerminalVariables(parentModel));
+		addTerminalNodes(collectParentTerminalNodes());
+		setValuesToNodes();
 	}
 
-	private Map<Node, List<Variable>> collectParentTerminalVariables(Model parentModel) {
-		Map<Node, List<Variable>> terminalVariables = new HashMap<>();
-		for (Node node : parentModel.getNodeTable().values()) {
-			List<Variable> variables = getTerminalVariables(node);
-			if (!variables.isEmpty()) terminalVariables.put(node, variables);
-		}
-		return terminalVariables;
+	private void setValuesToNodes() {
+		for (Node parentNode : this.parent.getNodeTable().values())
+			for (Node instance : getInstancesOf(parentNode)) {
+				addClassVariablesToInstance(parentNode.getObject().getVariables(), instance);
+				setValuesFromParams(instance);
+				setValuesFromVarInits(instance);
+			}
 	}
 
-	private void addVariables(Map<Node, List<Variable>> nodesWithValued) {
-		for (Map.Entry<Node, List<Variable>> entry : nodesWithValued.entrySet()) {
-			Collection<Node> nodes = collectNodesByType(model, entry.getKey().getContainer().getObject().getType());
-			if (nodes.isEmpty()) return;
-			for (Node node : nodes)
-				if (node instanceof DeclaredNode) {
-					DeclaredNode declaredNode = (DeclaredNode) node;
-					for (Variable variable : entry.getValue())
-						declaredNode.getObject().add(variable.clone());
-				}
-		}
+	private void setValuesFromParams(Node instance) {
+		for (Map.Entry<String, Variable> entry : instance.getObject().getParameters().entrySet())
+			try {
+				Integer index = Integer.valueOf(entry.getKey());
+				instance.getObject().getVariables().get(index).setValues(entry.getValue().getValues());
+			} catch (NumberFormatException ignored) {
+				for (Variable variable : instance.getObject().getVariables())
+					if (variable.getName().equals(entry.getKey()))
+						variable.setValues(entry.getValue().getValues());
+			}
 	}
 
-	private Map<String, Node> collectParentTerminalNodes(Model parent) {
+	private void setValuesFromVarInits(Node instance) {
+		for (Map.Entry<String, Variable> entry : instance.getObject().getVariableInits().entrySet())
+			for (Variable variable : instance.getObject().getVariables())
+				if (variable.getName().equals(entry.getKey()))
+					variable.setValues(entry.getValue().getValues());
+	}
+
+	private void addClassVariablesToInstance(List<Variable> variables, Node instance) {
+		List<Variable> clones = new ArrayList<>();
+		for (Variable variable : variables)
+			if (variable.values == null || variable.values.isEmpty())
+				clones.add(variable.clone());
+		instance.getObject().getVariables().addAll(0, clones);
+	}
+
+	private Collection<Node> getInstancesOf(Node node) {
+		List<Node> instances = new ArrayList<>();
+		for (Node instance : model.getNodeTable().values())
+			if (instance.getObject().getType().equals(node.getName()))
+				instances.add(instance);
+		return instances;
+	}
+
+	private Map<String, Node> collectParentTerminalNodes() {
 		Map<String, Node> terminals = new HashMap<>();
 		for (Node node : parent.getNodeTable().values())
 			if (node.getObject().is(TERMINAL))
@@ -55,41 +77,30 @@ public class ParentModelDependencyResolver {
 		return terminals;
 	}
 
-	private List<Variable> getTerminalVariables(Node node) {
-		List<Variable> list = new ArrayList();
-		for (Variable variable : node.getObject().getVariables())
-			if (variable.isTerminal()) list.add(variable);
-		return list;
-	}
-
-
 	private void addTerminalNodes(Map<String, Node> terminals) {
 		for (Node terminal : terminals.values())
 			if (terminal.getContainer() == null) {
 				model.add(terminal);
 				model.add(terminal.getQualifiedName(), terminal);
 				model.addIdentifier(terminal.getName());
-			} else addInnerTerminal(model, terminal);
+				terminal.getObject().setParentObject(null);
+				terminal.getObject().setParentName(null);
+			} else addInnerTerminal(terminal);
 	}
 
-	private void addInnerTerminal(Model model, Node terminal) {
-		Collection<Node> nodes = collectNodesByType(model, terminal.getContainer().getObject().getType());
+	private void addInnerTerminal(Node terminal) {
+		Collection<Node> nodes = getInstancesOf(terminal.getContainer());
 		if (nodes.isEmpty()) return;
 		for (Node node : nodes)
 			if (node instanceof DeclaredNode) {
 				DeclaredNode declaredNode = (DeclaredNode) node;
-				declaredNode.add(terminal, 0);
+				declaredNode.add(terminal, 0); // Possible StackOverFlow maybe clone needed
+				terminal.getObject().setParentObject(null); //Possible loss of info
+				terminal.getObject().setParentName(null);
 				terminal.setContainer(declaredNode);
 				model.add(terminal.getQualifiedName(), terminal);
 				model.addIdentifier(terminal.getName());
 			}
 	}
 
-	private Collection<Node> collectNodesByType(Model model, String type) {
-		List<Node> list = new ArrayList<>();
-		for (Node node : model.getNodeTable().values())
-			if (node.getObject().getType().equals(type))
-				list.add(node);
-		return list;
-	}
 }

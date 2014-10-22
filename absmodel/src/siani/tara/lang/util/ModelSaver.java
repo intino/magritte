@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.text.DateFormat;
 
 public class ModelSaver {
 
@@ -19,6 +20,7 @@ public class ModelSaver {
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
 			GsonBuilder gsonBuilder = new GsonBuilder();
+			gsonBuilder.setDateFormat(DateFormat.FULL, DateFormat.FULL).create();
 			gsonBuilder.setPrettyPrinting();
 			gsonBuilder.registerTypeAdapter(Variable.class, new VariableSerializer());
 			gsonBuilder.registerTypeAdapter(Node.class, new NodeAdapter());
@@ -63,11 +65,15 @@ public class ModelSaver {
 			object.addProperty("isUniversal", variable.isUniversal);
 			JsonArray list = new JsonArray();
 			if (variable.values != null) {
-				for (String value : variable.values) list.add(new JsonPrimitive(value));
+				for (Object value : variable.values)
+					list.add(new JsonPrimitive(variable instanceof Word ? (String) value :
+						Primitives.getConverter(variable.getType()).convert(value)[0]));
 				object.add("values", list);
 			}
 			if (variable.defaultValues != null) {
-				for (String value : variable.defaultValues) list.add(new JsonPrimitive(value));
+				for (Object value : variable.defaultValues)
+					list.add(new JsonPrimitive(variable instanceof Word ? (String) value :
+						Primitives.getConverter(variable.getType()).convert(value)[0]));
 				object.add("defaultValues", list);
 			}
 			return object; // or throw an IllegalArgumentException

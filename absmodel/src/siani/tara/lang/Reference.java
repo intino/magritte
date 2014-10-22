@@ -48,7 +48,8 @@ public class Reference extends Variable {
 		reference.setProperty(isProperty);
 		reference.setUniversal(isUniversal);
 		reference.setDefaultValues(getDefaultValues());
-		for (String value : values) reference.addValue(value);
+		if (values != null)
+			for (Object value : values) reference.addValue(value);
 		return reference;
 	}
 }

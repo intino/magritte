@@ -10,6 +10,7 @@ public class Model {
 	private transient Map<String, Node> nodeTable = new HashMap<>();
 	private NodeTree nodeTree = new NodeTree();
 	private Set<String> identifiers = new HashSet<>();
+	private boolean system;
 
 	public Model(String name) {
 		this.name = name;
@@ -266,5 +267,13 @@ public class Model {
 
 	public void setTerminal(boolean terminal) {
 		this.terminal = terminal;
+	}
+
+	public boolean isSystem() {
+		return system;
+	}
+
+	public void setSystem(boolean system) {
+		this.system = system;
 	}
 }
