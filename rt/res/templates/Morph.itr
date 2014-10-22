@@ -1,0 +1,59 @@
+defrule type(Box)
+package schema;
+
+import magritte.model.Model;
+
+public class $name~Box extends Box {
+    protected $name~Box(Model model) {
+        super(model);
+    }
+
+    public static void load(Model model) {
+        new $name~Box(model);
+    }
+
+    @Override
+    protected void loadDependencies() {
+        $import...[$NL]
+    }
+
+    @Override
+    protected void loadNodes() {
+        $node...[$NL]
+    }
+}
+endrule
+
+defrule type(Node) trigger(node)
+[/**
+ * $doc
+*/]
+def("$name");
+    $nodeType...[$NL]
+    $parent
+    $var...[$NL]
+    $set...[$NL]
+    $node...[$NL]
+
+end();
+endrule
+
+defrule trigger(import)
+$value~Box.define(model());
+endrule
+
+defrule trigger(nodeType)
+type($value);
+endrule
+
+defrule trigger(parent)
+parent($value);
+endrule
+
+defrule trigger(var)
+var($value);
+endrule
+
+defrule trigger(set) type(Set)
+set(of($type).var($name), $value);
+endrule
