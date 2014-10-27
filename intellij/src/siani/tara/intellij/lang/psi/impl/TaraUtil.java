@@ -202,7 +202,7 @@ public class TaraUtil {
 		List<TaraBoxFileImpl> filesOfModule = getTaraFilesOfModule(getModuleOfFile(file));
 		for (TaraBoxFileImpl taraFile : filesOfModule)
 			for (Concept concept : getRootConceptsOfFile(taraFile))
-				if (concept.getQualifiedName().equals(qualifiedName)) return concept;
+				if (concept.getQualifiedName().equalsIgnoreCase(qualifiedName)) return concept;
 		return null;
 	}
 

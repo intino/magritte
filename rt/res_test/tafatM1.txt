@@ -17,6 +17,8 @@ project
 tafat
 module
 siani
+system
+false
 encoding
 UTF-8
 models
@@ -24,4 +26,4 @@ models
 outputpath
 /Users/oroncal/workspace/sandbox/system/compile-server/tafat_8c395247/taraStubs/siani/java-production
 final_outputpath
-/Users/oroncal/workspace/sandbox/tafat/siani/out
+/Users/oroncal/workspace/sandbox/tafat/siani/gen

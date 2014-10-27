@@ -65,10 +65,6 @@ public class ParameterAnnotator extends TaraAnnotator {
 
 	}
 
-	private boolean isCorrectWord(Word word, String value) {
-		return word.contains(value);
-	}
-
 	private void processImplicit(TaraImplicitParameter parameter, List<Variable> variables, int index) {
 		Variable variable = variables.get(index);
 		if (parameter.getValue().getFirstChild() instanceof TaraMetaWord || parameter.getValue().getFirstChild() instanceof TaraIdentifierReference)
@@ -86,35 +82,51 @@ public class ParameterAnnotator extends TaraAnnotator {
 		holder.createErrorAnnotation(element, "erroneous parameter");
 	}
 
-	private void processAsWordOrReference(PsiElement element, Variable variable) {
-		if (variable instanceof Word)
-			isCorrectWord(((Word) variable), element.getFirstChild().getText());
-		else if (variable instanceof Reference) checkReferences(element.getChildren(), (Reference) variable);
-		else holder.createErrorAnnotation(element, "Parameter type error. Expected " + variable.getType());
+	private void processAsWordOrReference(PsiElement parameterValue, Variable variable) {
+		if (variable instanceof Word) {
+			if (!isCorrectWord(((Word) variable), parameterValue.getFirstChild().getText()))
+				holder.createErrorAnnotation(parameterValue, "Parameter type error. Expected " + variable.getType());
+		} else if (variable instanceof Reference)
+			checkReferences(parameterValue.getChildren(), (Reference) variable);
+		else holder.createErrorAnnotation(parameterValue, "Parameter type error. Expected " + variable.getType());
 	}
 
-	private void checkReferences(PsiElement[] children, Reference reference) {
-		if (children.length > 1 && !reference.isList())
-			holder.createErrorAnnotation(children[0].getParent(), "Only one item is expected");
-		for (PsiElement child : children) {
-			if (child instanceof TaraIdentifierReference &&
-				!checkWellReference((TaraIdentifierReference) child, reference)) {
-				holder.createErrorAnnotation(child, "Unexpected type. Bad reference");
+	private boolean isCorrectWord(Word word, String value) {
+		return word.contains(value);
+	}
+
+	private void checkReferences(PsiElement[] parameterValues, Reference reference) {
+		if (parameterValues.length > 1 && !reference.isList())
+			holder.createErrorAnnotation(parameterValues[0].getParent(), "Only one item is expected");
+		for (PsiElement value : parameterValues) {
+			if (value instanceof TaraIdentifierReference &&
+				!checkWellReference((TaraIdentifierReference) value, reference)) {
+				holder.createErrorAnnotation(value, "Unexpected type. Bad reference");
 				continue;
 			}
-			if (child instanceof TaraIdentifierReference && !reference.isUniversal() && !inSameContext((TaraIdentifierReference) child))
-				holder.createErrorAnnotation(child, "Bad referenced. The reference has to be in the context");
+			Concept conceptContextOf = TaraPsiImplUtil.getConceptContextOf(value);
+			if (TaraPsiImplUtil.getConceptContextOf(conceptContextOf) != null)
+				if (value instanceof TaraIdentifierReference && !reference.isUniversal() && !inSameContext((TaraIdentifierReference) value))
+					holder.createErrorAnnotation(value, "Bad referenced. The reference has to be in the same context");
 		}
 	}
 
 	private boolean checkWellReference(TaraIdentifierReference reference, Reference variable) {
 		TaraReferenceSolver solver = new TaraReferenceSolver(getLastElementOf(reference), reference.getTextRange(), false);
-		Concept resolve = TaraPsiImplUtil.getConceptContextOf(solver.resolve());
-		if (resolve != null) {
-			MetaIdentifier metaIdentifier = resolve.getMetaIdentifier();
+		Concept destiny = TaraPsiImplUtil.getConceptContextOf(solver.resolve());
+		if (destiny != null) {
+			MetaIdentifier metaIdentifier = destiny.getMetaIdentifier();
 			if ((metaIdentifier != null))
-				return checkInHierarchy(metaIdentifier.getText(), variable.getType());
+				return checkInHierarchy(metaIdentifier.getText(), variable.getType()) || asFacet(destiny, variable.getType());
 		}
+		return false;
+	}
+
+	private boolean asFacet(Concept destiny, String reference) {
+		String facet = reference.substring(reference.lastIndexOf(".") + 1);
+		for (FacetApply facetApply : destiny.getFacetApplies())
+			if (facetApply.getFacetName().equals(facet))
+				return true;
 		return false;
 	}
 
@@ -137,7 +149,6 @@ public class ParameterAnnotator extends TaraAnnotator {
 		while ((children = referenceNode.getObject().getChildren()) != null)
 			for (NodeObject child : children)
 				if (child.getName().equals(name)) return true;
-
 		return false;
 	}
 
@@ -184,6 +195,4 @@ public class ParameterAnnotator extends TaraAnnotator {
 		TaraDateValueImpl, TaraCoordinateValueImpl, TaraNaturalListImpl, TaraDoubleListImpl, TaraIntegerListImpl, TaraBooleanListImpl,
 		TaraStringListImpl, TaraDateListImpl, TaraCoordinateListImpl, TaraReferenceListImpl, TaraEmptyImpl, TaraMetaWordImpl, TaraIdentifierReferenceImpl
 	}
-
-
 }

@@ -125,12 +125,12 @@ private referenceAttribute   ::= identifierReference LIST? IDENTIFIER_KEY (EQUAL
 	mixin = 'siani.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
 	implements = 'siani.tara.intellij.lang.psi.ReferenceStatement'
 }
-word ::= WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+ DEDENT {
+word ::= WORD_KEY LIST? IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+ DEDENT {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.WordMixin'
 	implements = 'siani.tara.intellij.lang.psi.Word'
 }
-attributeType   ::= COLON IDENTIFIER_KEY
+attributeType   ::= COLON measure
 stringValue     ::= STRING_VALUE_KEY  | (NEWLINE? STRING_MULTILINE_VALUE_KEY)
 booleanValue    ::= BOOLEAN_VALUE_KEY
 naturalValue    ::= NATURAL_VALUE_KEY
@@ -145,8 +145,11 @@ measure ::= IDENTIFIER_KEY | DOLLAR | EURO | PERCENTAGE | GRADE
 annotationsAndFacets ::= IS (annotations+ | facetApply)
 {pin = 1}
 
-facetApply ::= metaIdentifier parameters? (WITH metaIdentifier)? body?
-{pin = 1}
+facetApply ::= metaIdentifier parameters? (WITH metaIdentifier)? body?{
+	pin = 1
+	mixin = 'siani.tara.intellij.lang.psi.impl.FacetApplyMixin'
+    implements = 'siani.tara.intellij.lang.psi.FacetApply'
+}
 
 facetTarget ::= ON identifierReference ALWAYS? body?
 {pin = 1}

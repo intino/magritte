@@ -62,9 +62,13 @@ public class InsideModelDependencyResolver {
 
 	private void resolveVariableReferences(Node node) throws DependencyException {
 		List<Reference> references = node.getObject().getReferences();
+		DeclaredNode declaredNode;
 		for (Reference reference : references) {
-			DeclaredNode declaredNode = model.searchDeclarationOfReference(reference.getType(), node);
-			if (declaredNode == null) throwError(node);
+			declaredNode = (DeclaredNode) model.get(reference.getType());
+			if (declaredNode == null)
+				declaredNode = model.searchDeclarationOfReference(reference.getType(), node);
+			if (declaredNode == null)
+				throwError(node);
 			reference.setType(declaredNode.getQualifiedName());
 		}
 	}
@@ -120,8 +124,10 @@ public class InsideModelDependencyResolver {
 	}
 
 	private void calculateInheritedVariables(NodeObject parent, DeclaredNode node) {
+		List<Variable> variables = new ArrayList<>();
 		for (Variable variable : parent.getVariables())
-			node.getObject().add(0, variable.clone());
+			variables.add(variable.clone());
+			node.getObject().getVariables().addAll(0, variables);
 	}
 
 	private void collectInnerConceptsInherited(DeclaredNode parent, DeclaredNode node, List<LinkNode> toAddNodes) {

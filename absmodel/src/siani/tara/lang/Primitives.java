@@ -18,7 +18,7 @@ public class Primitives {
 	public static final Map<String, Converter> CONVERTER_MAP = new HashMap<>();
 
 	static {
-		Converter stringConverter = new Converter() {
+		final Converter stringConverter = new Converter() {
 			@Override
 			public Object[] convert(String... value) {
 				return value;
@@ -34,7 +34,35 @@ public class Primitives {
 		CONVERTER_MAP.put(STRING, stringConverter);
 		CONVERTER_MAP.put(PORT, stringConverter);
 		CONVERTER_MAP.put(COORDINATE, stringConverter);
-		CONVERTER_MAP.put(REFERENCE, stringConverter);
+		Converter coordinateConverter = new Converter() {
+			@Override
+			public Object[] convert(String... values) {
+				List<Double[]> coordinatesList = new ArrayList<>();
+				for (String o : values) {
+					String[] split = o.split("-");
+					List<Double> doubles = new ArrayList<>();
+					for (String coordinate : split)
+						doubles.add(Double.valueOf(coordinate));
+					coordinatesList.add(doubles.toArray(new Double[doubles.size()]));
+				}
+				return coordinatesList.toArray();
+			}
+
+			@Override
+			public String[] convert(Object... value) {
+				List<String> strings = new ArrayList<>();
+				for (Object o : value) {
+					if (!(o instanceof Double[])) return new String[0];
+					Double[] doubles = (Double[]) o;
+					String stringCoordinate = "";
+					for (Double aDouble : doubles)
+						stringCoordinate += "-" + aDouble;
+					strings.add(stringCoordinate.substring(1));
+				}
+				return strings.toArray(new String[strings.size()]);
+			}
+		};
+		CONVERTER_MAP.put(REFERENCE, coordinateConverter);
 
 		Converter numberConverter = new Converter() {
 			@Override
@@ -87,37 +115,47 @@ public class Primitives {
 		});
 
 		CONVERTER_MAP.put(DATE, new Converter() {
-				SimpleDateFormat[] formats = new SimpleDateFormat[]{
-					new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()),
-					new SimpleDateFormat("yyyy-MM-dd-HH-mm", Locale.getDefault()),
-					new SimpleDateFormat("yyyy-MM-dd-HH", Locale.getDefault()),
-					new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
-					new SimpleDateFormat("yyyy", Locale.getDefault())
-				};
+			SimpleDateFormat[] formats = new SimpleDateFormat[]{
+				new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()),
+				new SimpleDateFormat("yyyy-MM-dd-HH-mm", Locale.getDefault()),
+				new SimpleDateFormat("yyyy-MM-dd-HH", Locale.getDefault()),
+				new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
+				new SimpleDateFormat("yyyy", Locale.getDefault())
+			};
 
-				@Override
-				public Date[] convert(String... date) {
-					List<Date> objects = new ArrayList<>();
-					for (String aDate : date)
-						for (SimpleDateFormat format : formats) {
-							try {
-								objects.add(format.parse(aDate));
-							} catch (ParseException ignored) {
-								throw new RuntimeException("Date not well format: " + aDate);
-							}
+			@Override
+			public Date[] convert(String... date) {
+				List<Date> objects = new ArrayList<>();
+				for (String aDate : date)
+					for (SimpleDateFormat format : formats)
+						try {
+							objects.add(format.parse(aDate));
+							break;
+						} catch (ParseException ignored) {
 						}
-					return objects.toArray(new Date[objects.size()]);
-				}
-
-				@Override
-				public String[] convert(Object... value) {
-					List<String> strings = new ArrayList<>();
-					for (Object o : value) strings.add(formats[0].format((Date) o));
-					return strings.toArray(new String[strings.size()]);
-				}
+				return objects.toArray(new Date[objects.size()]);
 			}
-		);
 
+			@Override
+			public String[] convert(Object... value) {
+				List<String> strings = new ArrayList<>();
+				for (Object o : value) strings.add(formats[0].format((Date) o));
+				return strings.toArray(new String[strings.size()]);
+			}
+		});
+	}
+
+	public static String[] getPrimitives() {
+		List<String> list = new ArrayList<>();
+		list.add(INTEGER);
+		list.add(NATURAL);
+		list.add(BOOLEAN);
+		list.add(STRING);
+		list.add(DOUBLE);
+		list.add(PORT);
+		list.add(COORDINATE);
+		list.add(DATE);
+		return list.toArray(new String[list.size()]);
 	}
 
 	public static Converter getConverter(String type) {

@@ -22,4 +22,10 @@ public class TaraAttributeTypeImpl extends ASTWrapperPsiElement implements TaraA
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public TaraMeasure getMeasure() {
+    return findNotNullChildByClass(TaraMeasure.class);
+  }
+
 }

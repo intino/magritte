@@ -11,7 +11,10 @@ import org.jetbrains.jps.builders.java.JavaSourceRootDescriptor;
 import org.jetbrains.jps.incremental.*;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
+import org.jetbrains.jps.model.JpsDummyElement;
 import org.jetbrains.jps.model.JpsProject;
+import org.jetbrains.jps.model.java.JpsJavaSdkType;
+import org.jetbrains.jps.model.library.sdk.JpsSdk;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.model.module.JpsModuleSourceRoot;
 
@@ -27,7 +30,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private static final String ICONS = "icons";
 	private static Boolean done = false;
 	private final String builderName;
-	private boolean pluginGeneration;
+	private boolean javaGeneration;
 
 	public TaraBuilder() {
 		super(BuilderCategory.OVERWRITING_TRANSLATOR);
@@ -37,6 +40,10 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	public static boolean isTaraFile(String path) {
 		return path.endsWith("." + TARA_EXTENSION);
+	}
+
+	private static JpsSdk<JpsDummyElement> getMagritteJdk(ModuleChunk chunk) {
+		return chunk.getModules().iterator().next().getSdk(JpsJavaSdkType.INSTANCE);
 	}
 
 	@Override
@@ -53,21 +60,21 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			done = true;
 			JpsProject project = context.getProjectDescriptor().getProject();
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
-			pluginGeneration = settings.pluginGeneration;
+			javaGeneration = settings.pluginGeneration;
 			final List<File> toCompile = collectFiles(chunk.getModules().iterator().next(), settings);
 			if (toCompile.isEmpty()) return ExitCode.NOTHING_DONE;
-			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("plugin-generation = " + pluginGeneration);
+			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("java-generation = " + javaGeneration);
 			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
 			if (finalOutputs == null) return ExitCode.ABORT;
 			start = System.currentTimeMillis();
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
-			Map<ModuleBuildTarget, String> generationOutputs = pluginGeneration ? getStubGenerationOutputs(chunk, context) : finalOutputs;
-			String compilerOutput = generationOutputs.get(chunk.representativeTarget());
+			Map<ModuleBuildTarget, String> generationOutputs = javaGeneration ? getStubGenerationOutputs(chunk, context) : finalOutputs;
+			String compilerOutput = generationOutputs.get(chunk.representativeTarget()); //TODO replacement to getOutDir
 			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
-			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), compilerOutput, toCompilePaths, finalOutput, encoding
-				, getRulesDir(chunk.getModules()), collectIconDirectories(chunk.getModules()));
-			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, pluginGeneration);
+			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), getOutDir(chunk.getModules()), false, toCompilePaths, finalOutput, encoding
+				, getRulesDir(chunk.getModules()), collectIconDirectories(chunk.getModules()), getMagritteJdk(chunk).getHomePath());
+			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
 			return ExitCode.OK;
 		} catch (Exception e) {
@@ -106,6 +113,19 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			}
 		}
 		return null;
+	}
+
+	public String getOutDir(Set<JpsModule> jpsModules) {
+		for (JpsModule module : jpsModules) {
+			for (JpsModuleSourceRoot moduleSourceRoot : module.getSourceRoots())
+				if (moduleSourceRoot.getFile().getName().equals("gen"))
+					return moduleSourceRoot.getFile().getAbsolutePath();
+			File moduleFile = module.getSourceRoots().get(0).getFile().getParentFile();
+			File gen = new File(moduleFile, "gen");
+			gen.mkdir();
+			return gen.getAbsolutePath();
+		}
+		return "";
 	}
 
 	private Set<String> getPathsToCompile(List<File> toCompile) {

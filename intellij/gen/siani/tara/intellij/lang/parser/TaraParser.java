@@ -266,13 +266,14 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // COLON IDENTIFIER_KEY
+  // COLON measure
   public static boolean attributeType(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attributeType")) return false;
     if (!nextTokenIs(builder_, COLON)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeTokens(builder_, 0, COLON, IDENTIFIER_KEY);
+    result_ = consumeToken(builder_, COLON);
+    result_ = result_ && measure(builder_, level_ + 1);
     exit_section_(builder_, marker_, ATTRIBUTE_TYPE, result_);
     return result_;
   }
@@ -2393,31 +2394,40 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // WORD_KEY IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+ DEDENT
+  // WORD_KEY LIST? IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+ DEDENT
   public static boolean word(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "word")) return false;
     if (!nextTokenIs(builder_, WORD_KEY)) return false;
     boolean result_;
     boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeTokens(builder_, 1, WORD_KEY, IDENTIFIER_KEY, NEW_LINE_INDENT);
+    result_ = consumeToken(builder_, WORD_KEY);
     pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, word_3(builder_, level_ + 1));
+    result_ = result_ && report_error_(builder_, word_1(builder_, level_ + 1));
+    result_ = pinned_ && report_error_(builder_, consumeTokens(builder_, -1, IDENTIFIER_KEY, NEW_LINE_INDENT)) && result_;
+    result_ = pinned_ && report_error_(builder_, word_4(builder_, level_ + 1)) && result_;
     result_ = pinned_ && consumeToken(builder_, DEDENT) && result_;
     exit_section_(builder_, level_, marker_, WORD, result_, pinned_, null);
     return result_ || pinned_;
   }
 
+  // LIST?
+  private static boolean word_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "word_1")) return false;
+    consumeToken(builder_, LIST);
+    return true;
+  }
+
   // (IDENTIFIER_KEY STAR? NEWLINE)+
-  private static boolean word_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "word_3")) return false;
+  private static boolean word_4(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "word_4")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = word_3_0(builder_, level_ + 1);
+    result_ = word_4_0(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
     while (result_) {
-      if (!word_3_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "word_3", pos_)) break;
+      if (!word_4_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "word_4", pos_)) break;
       pos_ = current_position_(builder_);
     }
     exit_section_(builder_, marker_, null, result_);
@@ -2425,20 +2435,20 @@ public class TaraParser implements PsiParser {
   }
 
   // IDENTIFIER_KEY STAR? NEWLINE
-  private static boolean word_3_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "word_3_0")) return false;
+  private static boolean word_4_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "word_4_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, IDENTIFIER_KEY);
-    result_ = result_ && word_3_0_1(builder_, level_ + 1);
+    result_ = result_ && word_4_0_1(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, NEWLINE);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // STAR?
-  private static boolean word_3_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "word_3_0_1")) return false;
+  private static boolean word_4_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "word_4_0_1")) return false;
     consumeToken(builder_, STAR);
     return true;
   }

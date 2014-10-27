@@ -36,6 +36,7 @@
       </action>
       <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
     </group>
+
     <group id="tara.export.group" popup="false">
       <action id="ExportModel" class="siani.tara.intellij.actions.ExportModelAction" text="Export Model"
               description="Export the compiled model with dependencies">
@@ -45,6 +46,7 @@
       <add-to-group group-id="BuildMenu" anchor="after" relative-to-action="BuildJar"/>
       <add-to-group group-id="EditorPopupMenu" anchor="last"/>
     </group>
+
     <group id="tara.file.group" popup="false">
       <action id="grammar.Generate" class="siani.tara.intellij.actions.GenerateAction" text="Generate Intentions Code">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>
@@ -52,6 +54,13 @@
       <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
       <add-to-group group-id="EditorPopupMenu" anchor="last"/>
       <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+    </group>
+
+    <group id="tara.module.group" popup="false">
+      <action id="ModuleParent" class="siani.tara.intellij.actions.ConfigModuleAction" text="Configure tara module"
+              description="Set parent and level of module">
+      </action>
+      <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="Compile"/>
     </group>
 
     <group id="Internal.Tara" text="Tara" popup="true" internal="true">
@@ -165,9 +174,9 @@
     </component>
   </module-components>
 
-  <project-components>
-    <component>
-      <implementation-class>siani.tara.intellij.project.module.TaraModuleListener</implementation-class>
-    </component>
-  </project-components>
+  <!--<project-components>-->
+    <!--<component>-->
+      <!--<implementation-class>siani.tara.intellij.project.module.TaraModuleListener</implementation-class>-->
+    <!--</component>-->
+  <!--</project-components>-->
 </idea-plugin>

@@ -18,7 +18,7 @@ public class ASTMerger {
 		CompilerConfiguration conf = sources.iterator().next().getConfiguration();
 		Model model = new Model(conf.getProject() + "." + conf.getModule());
 		model.setParentModelName(sources.iterator().next().getModel().getParentModelName());
-		model.setTerminal(sources.iterator().next().getModel().isTerminal());
+		model.setSystem(sources.iterator().next().getModel().isSystem());
 		for (SourceUnit unit : sources) {
 			model.addAll(unit.getModel().getTreeModel());
 			model.putAllIdentifiers(unit.getModel().getIdentifiers());

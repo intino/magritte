@@ -75,7 +75,6 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		ContentEntry contentEntry = doAddContentEntry(rootModel);
 		if (contentEntry != null) {
 			addSrcIfNotExists(getContentEntryPath());
-			mySourcePaths.add(Pair.create(getContentEntryPath() + separator + GEN, ""));
 			mySourcePaths.add(Pair.create(getContentEntryPath() + separator + MODEL, ""));
 			String parentPath = "";
 			if (mySourcePaths != null) {

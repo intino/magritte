@@ -243,7 +243,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private String formatText(String text) {
-		if (!text.startsWith("---")) return text;
+		if (!text.startsWith("---")) return text.substring(1, text.length() - 1);
 		String s = text.replaceAll("---(-*)\\n", "").replaceAll("---(-*)", "");
 		String[] splits = s.split("[\t]+|[ ]+");
 		char l = 0;
@@ -290,16 +290,17 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterWord(@NotNull WordContext ctx) {
-		Word variable = new Word(ctx.IDENTIFIER().getText());
+		Word word = new Word(ctx.IDENTIFIER().getText());
 		int defaultWord = -1;
 		int i = -1;
-		for (WordNamesContext word : ctx.wordNames()) {
-			variable.add(word.IDENTIFIER().getText());
-			if (word.STAR() != null) defaultWord = ++i;
+		for (WordNamesContext wordName : ctx.wordNames()) {
+			word.add(wordName.IDENTIFIER().getText());
+			if (wordName.STAR() != null) defaultWord = ++i;
 		}
 		if (defaultWord >= 0)
-			variable.setDefaultValues(new String[]{variable.wordTypes.get(defaultWord)});
-		addAttribute(ctx, variable);
+			word.setDefaultValues(new String[]{word.wordTypes.get(defaultWord)});
+		if (ctx.LIST()!= null) word.setList(true);
+		addAttribute(ctx, word);
 	}
 
 	@Override
@@ -332,37 +333,38 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		if (!ctx.booleanValue().isEmpty()) {
 			variable = new Attribute(BOOLEAN, name, ctx.booleanValue().size() > 1, false);
 			for (BooleanValueContext context : ctx.booleanValue())
-				variable.addValue(getConverter(BOOLEAN).convert(context.getText()));
+				variable.addValue(getConverter(BOOLEAN).convert(context.getText())[0]);
 		} else if (!ctx.integerValue().isEmpty()) {
 			variable = new Attribute(INTEGER, name, ctx.integerValue().size() > 1, false);
 			((Attribute) variable).setMeasure(measure);
 			for (IntegerValueContext context : ctx.integerValue())
-				variable.addValue(getConverter(INTEGER).convert(context.getText()));
+				variable.addValue(getConverter(INTEGER).convert(context.getText())[0]);
 		} else if (!ctx.doubleValue().isEmpty()) {
 			variable = new Attribute(DOUBLE, name, ctx.doubleValue().size() > 1, false);
 			((Attribute) variable).setMeasure(measure);
 			for (DoubleValueContext context : ctx.doubleValue())
-				variable.addValue(getConverter(DOUBLE).convert(context.getText()));
+				variable.addValue(getConverter(DOUBLE).convert(context.getText())[0]);
 		} else if (!ctx.naturalValue().isEmpty()) {
 			variable = new Attribute(NATURAL, name, ctx.naturalValue().size() > 1, false);
 			((Attribute) variable).setMeasure(measure);
 			for (NaturalValueContext context : ctx.naturalValue())
-				variable.addValue(getConverter(NATURAL).convert(context.getText()));
+				variable.addValue(getConverter(NATURAL).convert(context.getText())[0]);
 		} else if (!ctx.stringValue().isEmpty()) {
 			variable = new Attribute(STRING, name, ctx.stringValue().size() > 1, false);
-			for (StringValueContext context : ctx.stringValue()) variable.addValue(context.getText());
+			for (StringValueContext context : ctx.stringValue())
+				variable.addValue(formatText(context.getText()));
 		} else if (!ctx.coordinateValue().isEmpty()) {
 			variable = new Attribute(COORDINATE, name, ctx.coordinateValue().size() > 1, false);
 			for (CoordinateValueContext context : ctx.coordinateValue())
-				variable.addValue(getConverter(COORDINATE).convert(context.getText()));
+				variable.addValue(getConverter(COORDINATE).convert(context.getText())[0]);
 		} else if (!ctx.portValue().isEmpty()) {
 			variable = new Attribute(PORT, name, ctx.portValue().size() > 1, false);
 			for (PortValueContext context : ctx.portValue())
-				variable.addValue(getConverter(PORT).convert(context.getText()));
+				variable.addValue(getConverter(PORT).convert(context.getText())[0]);
 		} else if (!ctx.dateValue().isEmpty()) {
 			variable = new Attribute(DATE, name, ctx.dateValue().size() > 1, false);
 			for (DateValueContext context : ctx.dateValue())
-				variable.addValue(getConverter(DATE).convert(context.getText()));
+				variable.addValue(getConverter(DATE).convert(context.getText())[0]);
 		} else if (!ctx.identifierReference().isEmpty()) {
 			variable = new Reference(REFERENCE, name, ctx.identifierReference().size() > 1, false);
 			for (IdentifierReferenceContext context : ctx.identifierReference()) variable.addValue(context.getText());

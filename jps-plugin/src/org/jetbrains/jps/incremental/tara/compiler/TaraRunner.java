@@ -24,15 +24,14 @@ public class TaraRunner {
 	private static final String ANTLR = "antlr-4.4-complete.jar";
 	private static final String ITRULES = "itrules.jar";
 	private static final String GSON = "gson-2.2.4.jar";
-	private static final String TEMPLATION = "templation.jar";
 	private static File argsFile;
 
-	protected TaraRunner(final String projectName, final String moduleName, final String outputDir,
+	protected TaraRunner(final String projectName, final String moduleName, final String outputDir, final boolean system,
 	                     final Collection<String> sources,
 	                     String finalOutput,
 	                     @Nullable final String encoding,
 	                     String rulesPath,
-	                     String[] iconPaths) throws IOException {
+	                     String[] iconPaths, String magritteJdk) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
 			writer.write(TaraRtConstants.SRC_FILE + "\n");
@@ -41,15 +40,15 @@ public class TaraRunner {
 			writer.write("\n");
 			writer.write(TaraRtConstants.PROJECT + "\n" + projectName + "\n");
 			writer.write(TaraRtConstants.MODULE + "\n" + moduleName + "\n");
+			writer.write(TaraRtConstants.SYSTEM + "\n" + system + "\n");
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
 			String tara_models = PathManager.getPluginsPath() + File.separator + "tara_models" + File.separator;
-			writer.write(TaraRtConstants.MODELS_PATH + "\n" + tara_models + File.separator + projectName + File.separator + "\n");
+			writer.write(TaraRtConstants.MODELS_PATH + "\n" + tara_models + projectName + File.separator + "\n");
+			writer.write(TaraRtConstants.JDK_HOME + "\n" + magritteJdk + File.separator + "lib" + File.separator + "\n");
 			writer.write(TaraRtConstants.IT_RULES + "\n");
 			writer.write(rulesPath + "\n");
-			for (String iconPath : iconPaths) {
-				writer.write(TaraRtConstants.ICONS_PATH + "\n");
-				writer.write(iconPath + "\n");
-			}
+			for (String iconPath : iconPaths)
+				writer.write(TaraRtConstants.ICONS_PATH + "\n" + iconPath + "\n");
 			writer.write(TaraRtConstants.OUTPUTPATH + "\n");
 			writer.write(outputDir + "\n");
 			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n");
@@ -104,14 +103,13 @@ public class TaraRunner {
 		classPath.add(getAntlrLib().getPath());
 		classPath.add(getItRulesLib().getPath());
 		classPath.add(getGsonLib().getPath());
-		classPath.add(getTemplationLib().getPath());
 		return classPath;
 	}
 
-	private File getTaraRtRoot() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		if (root.isFile()) return new File(root.getParentFile(), "tara.jar");
-		return root;
+	private Collection<String> generateClasspath() {
+		final Set<String> cp = new LinkedHashSet<>();
+		cp.add(getTaraRtRoot().getPath());
+		return cp;
 	}
 
 	private File getAntlrLib() {
@@ -135,17 +133,11 @@ public class TaraRunner {
 			new File(root.getParentFile(), "lib/" + GSON);
 	}
 
-	private File getTemplationLib() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		root = new File(root.getParentFile(), TEMPLATION);
-		return (root.exists()) ? new File(root.getParentFile(), TEMPLATION) :
-			new File(root.getParentFile(), "lib/" + TEMPLATION);
-	}
 
-	private Collection<String> generateClasspath() {
-		final Set<String> cp = new LinkedHashSet<>();
-		cp.add(getTaraRtRoot().getPath());
-		return cp;
+	private File getTaraRtRoot() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		if (root.isFile()) return new File(root.getParentFile(), "tara.jar");
+		return root;
 	}
 
 }

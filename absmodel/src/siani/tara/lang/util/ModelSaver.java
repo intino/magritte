@@ -33,7 +33,6 @@ public class ModelSaver {
 			e.printStackTrace();
 			return false;
 		}
-
 	}
 
 	public static class VariableSerializer implements JsonSerializer<Variable> {
@@ -65,14 +64,15 @@ public class ModelSaver {
 			object.addProperty("isUniversal", variable.isUniversal);
 			JsonArray list = new JsonArray();
 			if (variable.values != null) {
-				for (Object value : variable.values)
-					list.add(new JsonPrimitive(variable instanceof Word ? (String) value :
+				for (Object value : variable.values) {
+					list.add(new JsonPrimitive(variable instanceof Word || variable instanceof Reference ? (String) value :
 						Primitives.getConverter(variable.getType()).convert(value)[0]));
+				}
 				object.add("values", list);
 			}
 			if (variable.defaultValues != null) {
 				for (Object value : variable.defaultValues)
-					list.add(new JsonPrimitive(variable instanceof Word ? (String) value :
+					list.add(new JsonPrimitive(variable instanceof Word || variable instanceof Reference ? (String) value :
 						Primitives.getConverter(variable.getType()).convert(value)[0]));
 				object.add("defaultValues", list);
 			}

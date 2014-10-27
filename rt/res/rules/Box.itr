@@ -1,0 +1,79 @@
+defrule type(Box)
+package $box+lowercase;
+
+import magritte.Store;
+import magritte.primitives.*;
+import magritte.schema.Box;
+
+import static magritte.Node.Annotation.*;
+
+public class $name+camelCase~Box extends Box {
+
+    public static void define(Store store) {
+        new $name+camelCase~Box(store);
+    }
+
+    private $name+camelCase~Box(Store store) {
+        super(store);
+    }
+
+    @Override
+    protected void loadDependencies() {
+        $import...[$NL]
+    }
+
+    @Override
+    protected void loadNodes() {
+        $node...[$NL]
+    }
+}
+endrule
+
+defrule type(Node) trigger(node)
+[/**
+ * $doc
+*/]\
+def(["$name"]);
+	$annotation...[$NL]\
+    $nodeType...[$NL]\
+    $parent\
+    $variable+set...[$NL]\
+    $node...[$NL]\
+end();
+endrule
+
+defrule trigger(import)
+$value~Box.define(store());
+endrule
+
+defrule trigger(nodeType)
+type("$value");
+endrule
+
+defrule trigger(parent)
+parent("$value");
+endrule
+
+defrule type(Variable) type(reference) slot-name(value) trigger(set)
+set("$name", node("$variableValue"));
+endrule
+
+defrule type(Variable) type(List) slot-name(value) trigger(set)
+set("$name", $variableValue);
+endrule
+
+defrule type(Variable) !type(List) slot-name(value) trigger(set)
+set("$name", $variableValue);
+endrule
+
+defrule type(Annotation) trigger(annotation)
+annotation($value+UpperCase);
+endrule
+
+defrule trigger(variableValue) slot-type(date)
+new Date($value~L)
+endrule
+
+defrule trigger(variableValue) slot-type(coordinate)
+Coordinate.of($value)
+endrule

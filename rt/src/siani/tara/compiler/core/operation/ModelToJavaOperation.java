@@ -1,9 +1,10 @@
 package siani.tara.compiler.core.operation;
 
 import org.siani.itrules.Document;
-import org.siani.itrules.Frame;
+import org.siani.itrules.Formatter;
 import org.siani.itrules.RuleEngine;
 import siani.tara.compiler.codegeneration.FrameCreator;
+import siani.tara.compiler.codegeneration.ResourceManager;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.TaraException;
@@ -20,8 +21,11 @@ import java.util.logging.Logger;
 public class ModelToJavaOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
 	private static final String BOX_ITR = "Box.itr";
+	private static final String MORPH_ITR = "Morph.itr";
 	private static final String JAVA = ".java";
 	private final CompilationUnit compilationUnit;
+	private FrameCreator creator;
+	private Model model;
 	private File rulesFolder;
 	private File outFolder;
 
@@ -29,24 +33,98 @@ public class ModelToJavaOperation extends ModelOperation {
 		super();
 		this.compilationUnit = compilationUnit;
 		rulesFolder = compilationUnit.getConfiguration().getRulesDirectory();
-		outFolder = compilationUnit.getConfiguration().getTargetDirectory();
+		outFolder = compilationUnit.getConfiguration().getOutDirectory();
 	}
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
-//		List<List<Node>> groupByBox = groupByBox(model.getTreeModel());
-//		try {
-//			writeDocuments(createBoxes(groupByBox));
-//			writeDocuments(createModel(FrameCreator.create(model)));
-//		} catch (TaraException e) {
-//			LOG.severe("Error during dependency resolution: " + e.getMessage());
-//			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
-//		}
-
+		this.model = model;
+		creator = new FrameCreator(model.isSystem());
+		List<List<Node>> groupByBox = groupByBox(model.getTreeModel());
+		try {
+			writeDocuments(createBoxes(groupByBox));
+			if (!model.isSystem())
+				writeDocuments(createMorphs());
+		} catch (TaraException e) {
+			LOG.severe("Error during java model generation: " + e.getMessage());
+			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
+		}
 	}
 
-	private Map<String, Document> createModel(Frame frame) {
-		return Collections.EMPTY_MAP; //TODO
+	private Map<String, Document> createMorphs() throws TaraException {
+		File file = new File(rulesFolder, MORPH_ITR);
+		InputStream stream;
+		if (!file.exists()) {
+			LOG.log(Level.INFO, "User Morph.itr rules file not found. Trying use default");
+			stream = getRulesFromResources(MORPH_ITR);
+		} else stream = getRulesInput(file);
+		if (stream == null) {
+			LOG.log(Level.SEVERE, "Morph.itr rules file not found.");
+			throw new TaraException("Morph.itr rules file not found.");
+		}
+		Set<Node> set = new HashSet<>();
+		getRootNodes(model.getTreeModel(), set);
+		return processMorphs(set, stream);
+	}
+
+	private void getRootNodes(Collection<Node> treeModel, Set<Node> list) {
+		for (Node node : treeModel) {
+			list.add(node);
+			Node[] concepts = node.getSubConcepts();
+			if (concepts.length > 0) {
+				Collections.addAll(list, concepts);
+				getRootNodes(Arrays.asList(concepts), list);
+			}
+		}
+	}
+
+
+	private Map<String, Document> processMorphs(Collection<Node> nodes, InputStream rulesInput) {
+		Map<String, Document> map = new HashMap();
+		RuleEngine ruleEngine = new RuleEngine(rulesInput);
+		addReferenceFormatter(ruleEngine);
+		for (Node node : nodes) {
+			Document document = new Document();
+			ruleEngine.render(creator.createNodeFrame(node), document);
+			map.put(composePath(node.getQualifiedName()), document);
+		}
+		return map;
+	}
+
+	private void addReferenceFormatter(RuleEngine ruleEngine) {
+		ruleEngine.register("reference", new Formatter() {
+			@Override
+			public Object format(Object value) {
+				String val = value.toString();
+				if (!val.contains(".")) return val.substring(0, 1).toUpperCase() + val.substring(1);
+				return composePath(val);
+			}
+		});
+	}
+
+	private Map<String, Document> createBoxes(List<List<Node>> groupByBox) throws TaraException {
+		File file = new File(rulesFolder, BOX_ITR);
+		InputStream stream;
+		if (!file.exists()) {
+			LOG.log(Level.INFO, "User Box.itr rules file not found. Trying use default");
+			stream = getRulesFromResources(BOX_ITR);
+		} else stream = getRulesInput(file);
+		if (stream == null) {
+			LOG.log(Level.SEVERE, "Box.itr rules file not found.");
+			throw new TaraException("Box.itr rules file not found.");
+		}
+		return processBoxes(groupByBox, stream);
+	}
+
+	private Map<String, Document> processBoxes(List<List<Node>> groupByBox, InputStream rulesInput) {
+		Map<String, Document> map = new HashMap();
+		RuleEngine ruleEngine = new RuleEngine(rulesInput);
+		for (List<Node> nodes : groupByBox) {
+			Document document = new Document();
+			ruleEngine.render(creator.createBoxFrame(nodes, collectParentBoxes(nodes)), document);
+			map.put(composePath(nodes.get(0).getBox()) + "Box", document);
+		}
+		return map;
 	}
 
 	private void writeDocuments(Map<String, Document> documentMap) {
@@ -63,26 +141,28 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-	private Map<String, Document> createBoxes(List<List<Node>> groupByBox) throws TaraException {
-		File file = new File(rulesFolder, BOX_ITR);
-		LOG.log(Level.SEVERE, "User Box.itr rules file not found. Trying use default");
-		if (!file.exists()) file = getRulesFromResources();
-		if (!file.exists()) {
-			LOG.log(Level.SEVERE, "Box.itr rules file not found.");
-			throw new TaraException("Box.itr rules file not found.");
-		}
-		return processBoxes(groupByBox, getRulesInput(file));
+	private Collection<String> collectParentBoxes(List<Node> nodes) {
+		Model parent = model.getParentModel();
+		if (parent == null) return Collections.EMPTY_LIST;
+		Set<String> boxes = new HashSet<>();
+		for (Node node : nodes)
+			boxes.add(parent.searchNode(node.getObject().getMetaQN()).getBox());
+		return boxes;
 	}
 
-	private Map<String, Document> processBoxes(List<List<Node>> groupByBox, FileInputStream rulesInput) {
-		Map<String, Document> map = new HashMap();
-		RuleEngine ruleEngine = new RuleEngine(rulesInput);
-		for (List<Node> nodes : groupByBox) {
-			Document document = new Document();
-			ruleEngine.render(FrameCreator.createBoxFrame(nodes), document);
-			map.put(nodes.get(0).getBox(), document);
-		}
-		return map;
+	private String composePath(String box) {
+		String name = box.substring(box.lastIndexOf(".") + 1);
+		name = name.substring(0, 1).toUpperCase() + name.substring(1);
+		String[] parts = name.split(" ");
+		String camelName = "";
+		for (String part : parts)
+			camelName = camelName + properCase(part);
+
+		return box.substring(0, box.lastIndexOf(".")) + "." + camelName;
+	}
+
+	private String properCase(String part) {
+		return part.substring(0, 1).toUpperCase() + part.substring(1).toLowerCase();
 	}
 
 	private List<List<Node>> groupByBox(NodeTree treeModel) {
@@ -108,7 +188,8 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-	public File getRulesFromResources() {
-		return new File(this.getClass().getResource("/templates/" + BOX_ITR).getFile());
+	public InputStream getRulesFromResources(String rules) throws TaraException {
+		InputStream stream = ResourceManager.getStream("rules/" + rules);
+		return stream;
 	}
 }

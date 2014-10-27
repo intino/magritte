@@ -39,13 +39,13 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 				if (!elementType.equals(TaraTypes.NEWLINE) && !elementType.equals(TaraTypes.NEW_LINE_INDENT))
 					holder.createErrorAnnotation(concept, "Concept in bad position");
 				if (model != null) {
-					Annotation errorAnnotation = holder.createErrorAnnotation(concept, "Concept type not allowed here");
+					Annotation errorAnnotation = holder.createErrorAnnotation(concept, TaraBundle.message("concept.position.key.error.message"));
 					errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
 				}
 			}
 			if (model == null) {
 				if (!element.getText().equals(CONCEPT))
-					holder.createErrorAnnotation(concept, "Concept type not allowed here");
+					holder.createErrorAnnotation(concept, TaraBundle.message("concept.position.key.error.message"));
 			} else {
 				if (findNode(concept, model) == null) {
 					Annotation errorAnnotation = holder.createErrorAnnotation

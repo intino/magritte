@@ -1,0 +1,129 @@
+defrule type(Morph)
+package $box+lowercase;
+
+[import $import...[;$NL]]\
+import magritte.Node;
+import magritte.Set;
+import magritte.morphs.Concept;
+
+import java.util.Date;
+
+$node
+endrule
+
+
+defrule type(Word) type(List) trigger(wordInstantiation)
+public static enum $name+camelCase {
+
+    $words...[, ];
+
+    private static int$[] ordinal($name+camelCase$[] values) {
+        int$[] result = new int$[values.length];
+        for (int i = 0; i < result.length; i++) result$[i] = values$[i].ordinal();
+        return result;
+    }
+
+    private static $name+camelCase$[] cardinal(int$[] values) {
+        if (values == null) values = new int$[0];
+        $name+camelCase$[] result = new $name+camelCase$[values.length];
+        for (int i = 0; i < result.length; i++) result$[i] = cardinal(values$[i]);
+        return result;
+    }
+
+    private static $name+camelCase cardinal(int value) {
+        return $name+camelCase.values()$[value];
+    }
+}
+
+endrule
+
+defrule type(Word) !type(List) trigger(wordInstantiation)
+public static enum $name+camelCase {
+    $words...[, ];
+
+    private static $name+camelCase ordinal(Integer value) {
+        return value == null ? null : $name+camelCase.values()$[value];
+    }
+}
+
+endrule
+
+defrule type(Word) type(List) trigger(getter)
+public $name+reference$[] get$name+camelCase() {
+    return $name+CamelCase.cardinal(get("$name+lowerCamelCase", int$[].class));
+}
+
+endrule
+
+defrule type(Word) trigger(getter)
+public $name+reference get$name+camelCase() {
+    return get("$name", $type+camelCase.class);
+}
+
+endrule
+
+defrule type(Word) type(List) trigger(setter)
+public void set$name+camelCase($name+camelCase~... values) {
+    set("$name", $name+camelCase.ordinal(values));
+}
+
+endrule
+
+defrule type(Word) !type(List) trigger(setter)
+public void set$name+camelCase($name+camelCase value) {
+    set("$name", value.ordinal());
+}
+
+endrule
+
+defrule type(Variable) !type(Word) trigger(getter)
+public $type+reference get$name+camelCase() {
+    return get("$name", $type+reference.class);
+}
+
+endrule
+
+defrule type(Variable) !type(Word) trigger(setter)
+public void set$name+camelCase($type+reference value) {
+    set("$name", value);
+}
+
+endrule
+
+defrule type(Variable) !type(Word) type(List) trigger(setter)
+public void set$name+camelCase($type+camelCase) {
+    set("$name", $type+camelCase.class);
+}
+
+endrule
+
+defrule type(Node) trigger(get)
+public Set<$name+camelCase> get$name+camelCase~Set() {
+	return components($name+camelCase.class);
+}
+
+endrule
+
+defrule type(Node) trigger(set)
+public void set$name+camelCase($name+camelCase value) {
+	set("$name+lowerCase", value != null ? value.node() : null);
+}
+
+endrule
+
+defrule type(Node) trigger(node)
+public [$static ]class $name+camelCase extends $nodeType {
+
+	public $name+camelCase(Node node) {
+        super(node);
+    }
+
+	$variable+wordInstantiation...[$NL]\
+    $variable+getter...[$NL]\
+    $variable+setter...[$NL]\
+	$node+set\
+    $node+get\
+    $node...[$NL]\
+
+}
+endrule

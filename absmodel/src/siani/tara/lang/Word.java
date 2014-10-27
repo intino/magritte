@@ -30,14 +30,13 @@ public class Word extends Variable {
 		return wordTypes.contains(word);
 	}
 
-	@Override
-	public String getType() {
-		return toString();
+	public int indexOf(String word) {
+		return wordTypes.indexOf(word);
 	}
 
 	@Override
-	public boolean isList() {
-		return false;
+	public String getType() {
+		return getName();
 	}
 
 	public String toString() {

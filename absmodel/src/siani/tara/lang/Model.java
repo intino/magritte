@@ -5,7 +5,6 @@ import java.util.*;
 public class Model {
 	private String name;
 	private String parentModelName;
-	private boolean terminal;
 	private transient Model parentModel;
 	private transient Map<String, Node> nodeTable = new HashMap<>();
 	private NodeTree nodeTree = new NodeTree();
@@ -259,14 +258,6 @@ public class Model {
 
 	public void setParentModel(Model parentModel) {
 		this.parentModel = parentModel;
-	}
-
-	public boolean isTerminal() {
-		return terminal;
-	}
-
-	public void setTerminal(boolean terminal) {
-		this.terminal = terminal;
 	}
 
 	public boolean isSystem() {

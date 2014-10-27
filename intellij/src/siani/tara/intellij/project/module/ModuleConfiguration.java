@@ -1,6 +1,9 @@
 package siani.tara.intellij.project.module;
 
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.StoragePathMacros;
+import com.intellij.openapi.components.StorageScheme;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.util.DefaultJDOMExternalizer;
@@ -77,14 +80,6 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 			}
 	}
 
-	public void setParentName(String parent){
-		configuration.parentName = parent;
-	}
-
-	public void setParentFilePath(String path) {
-		configuration.parentFilePath = path;
-	}
-
 	@Override
 	public void readExternal(Element element) throws InvalidDataException {
 		configuration.readExternal(element);
@@ -99,12 +94,24 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 		return configuration.getParentName();
 	}
 
+	public void setParentName(String parent) {
+		configuration.parentName = parent;
+	}
+
 	public boolean isSystem() {
 		return configuration.isSystem();
 	}
 
+	public void setSystem(boolean system) {
+		configuration.system = system;
+	}
+
 	public String getParentFilePath() {
 		return configuration.getParentFilePath();
+	}
+
+	public void setParentFilePath(String path) {
+		configuration.parentFilePath = path;
 	}
 
 	public void loadState(ModuleConfiguration state) {

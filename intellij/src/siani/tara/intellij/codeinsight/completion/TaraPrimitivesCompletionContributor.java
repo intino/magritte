@@ -13,6 +13,7 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraTypes;
 import siani.tara.intellij.lang.psi.Variable;
+import siani.tara.lang.Primitives;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -29,15 +30,8 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(LookupElementBuilder.create("string "));
-					resultSet.addElement(LookupElementBuilder.create("natural "));
-					resultSet.addElement(LookupElementBuilder.create("integer "));
-					resultSet.addElement(LookupElementBuilder.create("double "));
-					resultSet.addElement(LookupElementBuilder.create("boolean "));
-					resultSet.addElement(LookupElementBuilder.create("word "));
-					resultSet.addElement(LookupElementBuilder.create("date "));
-					resultSet.addElement(LookupElementBuilder.create("port "));
-					resultSet.addElement(LookupElementBuilder.create("resource "));
+					for (String primitive : Primitives.getPrimitives())
+						resultSet.addElement(LookupElementBuilder.create(primitive + " "));
 				}
 			}
 		);

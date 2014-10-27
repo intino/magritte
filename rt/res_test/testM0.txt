@@ -1,0 +1,17 @@
+src_file
+/Users/oroncal/workspace/sandbox/test/m0/model/test/movie.tara
+
+project
+test
+module
+m0
+system
+true
+encoding
+UTF-8
+models
+/Users/oroncal/workspace/sandbox/plugins/tara_models/test/
+outputpath
+/Users/oroncal/workspace/sandbox/test/m0/gen
+final_outputpath
+/Users/oroncal/workspace/sandbox/test/m0/gen

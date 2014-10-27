@@ -50,7 +50,7 @@ attribute : doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | bo
 	| dateAttribute |coordinateAttribute | portAttribute | resource | reference | word) annotations?;
 
 resource         : RESOURCE attributeType IDENTIFIER;
-word             : WORD IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
+word             : WORD LIST? IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
 wordNames        : IDENTIFIER STAR?;
 
 reference        : identifierReference LIST? IDENTIFIER  (EQUALS EMPTY)?;
@@ -63,7 +63,7 @@ dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (EQUALS dateValue+ | EMPTY)?;
 coordinateAttribute  : COORDINATE_TYPE  LIST? IDENTIFIER (EQUALS (coordinateValue+ | EMPTY))?;
 portAttribute    : PORT_TYPE   LIST?  IDENTIFIER (EQUALS (portValue+ | EMPTY))?;
 
-attributeType   : COLON IDENTIFIER;
+attributeType   : COLON measure;
 naturalValue    : NATURAL_VALUE;
 integerValue    : NATURAL_VALUE | NEGATIVE_VALUE;
 doubleValue     : NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE;

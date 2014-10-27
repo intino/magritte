@@ -71,7 +71,7 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitFacetApply(@NotNull TaraFacetApply o) {
-    visitPsiElement(o);
+    visitFacetApply(o);
   }
 
   public void visitFacetTarget(@NotNull TaraFacetTarget o) {

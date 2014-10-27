@@ -20,8 +20,13 @@ import siani.tara.intellij.annotator.imports.ImportQuickFix;
 import siani.tara.intellij.annotator.imports.RemoveImportFix;
 import siani.tara.intellij.annotator.imports.TaraReferenceImporter;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.lang.Model;
+import siani.tara.lang.Node;
+import siani.tara.lang.Word;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +55,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 
 	public void checkWellReferenced() {
 		PsiElement reference = ReferenceManager.resolve((IdentifierReference) element);
-		if (reference == null) {
+		if (reference == null && !checkAsMetaWord(TaraPsiImplUtil.getConceptContextOf(element), element.getText())) {
 			Annotation errorAnnotation;
 			if (element instanceof IdentifierReference) {
 				List<? extends Identifier> identifierList = ((IdentifierReference) element).getIdentifierList();
@@ -60,6 +65,19 @@ public class ReferenceAnnotator extends TaraAnnotator {
 				errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
 			}
 		}
+	}
+
+	private boolean checkAsMetaWord(Concept concept, String wordName) {
+		Model model = TaraLanguage.getMetaModel(concept.getFile());
+		if (model == null) return false;
+		Node node = findNode(concept, model);
+		if (node == null) return false;
+		Word[] words = node.getObject().getWords();
+		if (words.length == 0) return false;
+		for (Word word : words)
+			if (word.contains(wordName))
+				return true;
+		return true;
 	}
 
 	private void addImportAlternatives(Identifier element) {

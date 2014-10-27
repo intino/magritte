@@ -3,129 +3,184 @@ package siani.tara.compiler.codegeneration;
 import org.siani.itrules.Frame;
 import siani.tara.lang.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FrameCreator {
-	public static Frame create(Model model) {
-		Frame frame = new Frame("model");
-		frame.addSlot("name", model.getModelName());
-		for (Node node : model.getTreeModel())
-			add(node, frame);
+
+
+	private final boolean system;
+	private Node initNode;
+
+	public FrameCreator(boolean system) {
+		this.system = system;
+	}
+
+	public Frame createNodeFrame(Node node) {
+		this.initNode = node;
+		final Frame frame = new Frame("Morph");
+		frame.addSlot("box", node.getBox());
+		add(node, frame);
+		initNode = null;
 		return frame;
 	}
 
-	public static Frame createBoxFrame(List<Node> nodes) {
+	public Frame createBoxFrame(List<Node> nodes, Collection<String> parentBoxes) {
 		Frame frame = new Frame("Box");
-		frame.addSlot("name", nodes.get(0).getBox());
-		for (String anImport : nodes.get(0).getImports())
-			frame.addSlot("import", anImport);
+		String name = nodes.get(0).getBox().substring(nodes.get(0).getBox().lastIndexOf(".") + 1);
+		frame.addSlot("name", name);
+		String box = nodes.get(0).getBox().substring(0, nodes.get(0).getBox().lastIndexOf("."));
+		frame.addSlot("box", box);
+		for (String anImport : parentBoxes)
+			frame.addSlot("import", composePath(anImport));
 		for (Node node : nodes)
 			add(node, frame);
 		return frame;
 	}
 
-	private static void add(final Node node, Frame frame) {
+	private void add(final Node node, Frame frame) {
 		if (node instanceof LinkNode) return;
 		final Frame newFrame = new Frame(getTypes(node));
 		frame.addSlot("node", newFrame);
+		addAnnotations(node, newFrame);
+		addNodeInfo(node, newFrame);
+		addInner(node, newFrame);
+		if (!node.isSub() && !node.equals(initNode))
+			addSubs(node, frame);
+	}
+
+	private void addAnnotations(final Node node, Frame frame) {
+		if (node.getObject().getAnnotations().length > 0 || system)
+			frame.addSlot("annotation", new Frame("Annotation") {{
+				for (Annotations.Annotation annotation : node.getObject().getAnnotations())
+					addSlot("value", annotation);
+				if (system)
+					addSlot("value", "case");
+			}});
+	}
+
+	private void addNodeInfo(Node node, Frame newFrame) {
+		if (node != initNode)
+			newFrame.addSlot("static", "static");
 		if (node.getObject().getDoc() != null)
 			newFrame.addSlot("doc", node.getObject().getDoc());
 		if (node.getName() != null && !node.getName().isEmpty())
 			newFrame.addSlot("name", node.getName());
+		if (node.getObject().getParent() != null)
+			newFrame.addSlot("parent", node.getObject().getParent().getName());
 		if (node.getObject().getType() != null)
 			newFrame.addSlot("nodeType", node.getObject().getType());
 		addVariables(node, newFrame);
-
-		addParameters(node, newFrame);
 		addTargets(node, newFrame);
 		addFacets(node, newFrame);
-		addVarInitializations(node, newFrame);
 
-		for (Node inner : node.getInnerNodes())
-			add(inner, newFrame);
-		for (Node sub : node.getObject().getSubConcepts())
+	}
+
+	private void addSubs(Node node, Frame frame) {
+		Set<Node> subs = new HashSet<>();
+		collectSubs(node.getSubConcepts(), subs);
+		for (Node sub : subs)
 			add(sub, frame);
 	}
 
-	private static void addVariables(Node node, final Frame newFrame) {
-		for (final Variable variable : node.getObject().getVariables())
-			if (variable instanceof Word) {
-				final Word word = (Word) variable;
-				newFrame.addSlot("Word", new Frame(getTypes(variable)) {{
-					addSlot("name", word.getName());
-					addSlot("words", word.getWordTypes().toArray(new String[word.getWordTypes().size()]));
-				}});
-			} else if (variable.getDefaultValues() != null && variable.getDefaultValues().length > 0)
-				newFrame.addSlot("set", new Frame(getTypes(variable)) {{
+	private void collectSubs(Node[] subs, Collection<Node> list) {
+		for (Node sub : subs) {
+			list.add(sub);
+			Node[] innerSubs = sub.getSubConcepts();
+			if (innerSubs.length > 0) {
+				Collections.addAll(list, innerSubs);
+				collectSubs(innerSubs, list);
+			}
+		}
+	}
+
+	private void addInner(Node node, Frame newFrame) {
+		for (Node inner : node.getInnerNodes())
+			if (!inner.isSub())
+				add(inner, newFrame);
+	}
+
+	private void addVariables(Node node, final Frame frame) {
+		for (final Variable variable : node.getObject().getVariables()) {
+			Frame varFrame = new Frame(getTypes(variable)) {{
+				addSlot("name", variable.getName());
+				addSlot("type", variable.getType());
+				if (variable instanceof Word)
+					addSlot("words", ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));
+			}};
+			frame.addSlot("variable", varFrame);
+			if (variable.getValues() != null && variable.getValues().length > 0) {
+				addVariableValue(varFrame, variable);
+			} else if (system)
+				frame.addSlot("variable", new Frame(getTypes(variable)) {{
 					addSlot("name", variable.getName());
-					addSlot("type", variable.getType());
-					if (variable.getDefaultValues() != null && variable.getDefaultValues().length > 0)
-						newFrame.addSlot("set", new Frame("Set") {{
-							addSlot("type", variable.getType());
-							addSlot("name", variable.getName());
-							addSlot("value", variable.getDefaultValues()[0]);
-						}});
+					addSlot("variableValue", variable.getDefaultValues()[0]);
 				}});
+		}
 	}
 
-	private static void addVarInitializations(Node node, Frame newFrame) {
-		for (final Map.Entry<String, Variable> entry : node.getObject().getVariableInits().entrySet())
-			newFrame.addSlot("set", new Frame("Set") {{
-				addSlot("Name", entry.getKey());
-			}});
+	private void addVariableValue(Frame frame, final Variable variable) {
+		if (variable instanceof Word) {
+			Word word = (Word) variable;
+			for (Object value : word.values)
+				frame.addSlot("variableValue", word.indexOf(value.toString()));
+		} else {
+			final Object value = variable.getType().equals(Primitives.STRING) ? "\"" + variable.getValues()[0].toString() + "\"" :
+				variable.getValues()[0];
+			Frame innerFrame = new Frame(variable.getType()) {{
+				if (value instanceof Date)
+					addSlot("value", ((Date) value).getTime());
+				else if (variable.getType().equals(Primitives.COORDINATE)) {
+					addSlot("value", Primitives.getConverter(Primitives.COORDINATE).convert(value)[0].replace("-", ","));
+				} else
+					addSlot("value", value);
+			}};
+			frame.addSlot("variableValue", innerFrame);
+		}
+
 	}
 
-	private static void addFacets(Node node, Frame newFrame) {
+	private void addFacets(Node node, Frame newFrame) {
 		for (final Facet facet : node.getObject().getFacets())
 			newFrame.addSlot("facets", new Frame(getTypes(facet)) {{
 				addSlot("name", facet.getName());
 			}});
 	}
 
-	private static void addTargets(Node node, Frame newFrame) {
+	private void addTargets(Node node, Frame newFrame) {
 		for (final FacetTarget target : node.getObject().getFacetTargets())
 			newFrame.addSlot("targets", new Frame(getTypes(target)) {{
-				addSlot("name", target.getDestinyQN());
+				addSlot("name", target.getDestinyName());
 			}});
 	}
 
-	private static void addParameters(Node node, Frame newFrame) {
-		for (final Map.Entry<String, Variable> entry : node.getObject().getParameters().entrySet())
-			newFrame.addSlot("parameters", new Frame("parameter") {{
-				addSlot("name", entry.getKey());
-				addSlot("value", entry.getValue());//TODO
-			}});
-	}
-
-	private static String[] getTypes(Facet facet) {
+	private String[] getTypes(Facet facet) {
 		List<String> list = new ArrayList<>();
-		list.add("facet");
+		list.add("Facet");
 		list.add(facet.getName());
 		return list.toArray(new String[list.size()]);
 	}
 
-	private static String[] getTypes(FacetTarget facetTarget) {
+	private String[] getTypes(FacetTarget facetTarget) {
 		List<String> list = new ArrayList<>();
-		list.add("facetTarget");
-		list.add(facetTarget.getDestinyQN());
+		list.add("FacetTarget");
+		if (facetTarget.getDestinyQN() != null)
+			list.add(facetTarget.getDestinyQN());
 		if (facetTarget.isAlways())
 			list.add("always");
 		return list.toArray(new String[list.size()]);
 	}
 
-	private static String[] getTypes(Variable variable) {
+	private String[] getTypes(Variable variable) {
 		List<String> list = new ArrayList<>();
 		list.add(variable.getClass().getSimpleName());
-		list.add("variable");
+		list.add("Variable");
 		if (variable.isTerminal()) list.add("terminal");
-		if (variable.isList()) list.add("list");
+		if (variable.isList()) list.add("List");
 		if (variable.isProperty()) list.add("property");
 		return list.toArray(new String[list.size()]);
 	}
 
-	private static String[] getTypes(Node node) {
+	private String[] getTypes(Node node) {
 		List<String> types = new ArrayList<>();
 		NodeObject object = node.getObject();
 		types.add(object.getType());
@@ -133,5 +188,20 @@ public class FrameCreator {
 		for (Annotations.Annotation annotation : object.getAnnotations())
 			types.add(annotation.getName());
 		return types.toArray(new String[types.size()]);
+	}
+
+	private String composePath(String box) {
+		String name = box.substring(box.lastIndexOf(".") + 1);
+		name = name.substring(0, 1).toUpperCase() + name.substring(1);
+		String[] parts = name.split(" ");
+		String camelName = "";
+		for (String part : parts)
+			camelName = camelName + properCase(part);
+
+		return box.substring(0, box.lastIndexOf(".")) + "." + camelName;
+	}
+
+	private String properCase(String part) {
+		return part.substring(0, 1).toUpperCase() + part.substring(1).toLowerCase();
 	}
 }
