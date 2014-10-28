@@ -8,6 +8,7 @@ import java.util.*;
 public class FrameCreator {
 
 
+	private static final String SEPARATOR = ".";
 	private final boolean system;
 	private Node initNode;
 
@@ -18,7 +19,10 @@ public class FrameCreator {
 	public Frame createNodeFrame(Node node) {
 		this.initNode = node;
 		final Frame frame = new Frame("Morph");
-		frame.addSlot("box", node.getBox());
+		String box = node.getBox();
+		frame.addSlot("box", box);
+		if (!PathFormatter.composeMorphPackagePath(box).isEmpty())
+			frame.addSlot("package", PathFormatter.composeMorphPackagePath(box));
 		add(node, frame);
 		initNode = null;
 		return frame;
@@ -26,16 +30,19 @@ public class FrameCreator {
 
 	public Frame createBoxFrame(List<Node> nodes, Collection<String> parentBoxes) {
 		Frame frame = new Frame("Box");
-		String name = nodes.get(0).getBox().substring(nodes.get(0).getBox().lastIndexOf(".") + 1);
+		String name = nodes.get(0).getBox().substring(nodes.get(0).getBox().lastIndexOf(SEPARATOR) + 1);
 		frame.addSlot("name", name);
-		String box = nodes.get(0).getBox().substring(0, nodes.get(0).getBox().lastIndexOf("."));
+		String box = nodes.get(0).getBox().substring(0, nodes.get(0).getBox().lastIndexOf(SEPARATOR));
 		frame.addSlot("box", box);
+		if (!PathFormatter.composeMorphPackagePath(box).isEmpty())
+			frame.addSlot("package", PathFormatter.composeMorphPackagePath(box));
 		for (String anImport : parentBoxes)
 			frame.addSlot("import", composePath(anImport));
 		for (Node node : nodes)
 			add(node, frame);
 		return frame;
 	}
+
 
 	private void add(final Node node, Frame frame) {
 		if (node instanceof LinkNode) return;
@@ -191,14 +198,14 @@ public class FrameCreator {
 	}
 
 	private String composePath(String box) {
-		String name = box.substring(box.lastIndexOf(".") + 1);
+		String name = box.substring(box.lastIndexOf(SEPARATOR) + 1);
 		name = name.substring(0, 1).toUpperCase() + name.substring(1);
 		String[] parts = name.split(" ");
 		String camelName = "";
 		for (String part : parts)
 			camelName = camelName + properCase(part);
 
-		return box.substring(0, box.lastIndexOf(".")) + "." + camelName;
+		return box.substring(0, box.lastIndexOf(SEPARATOR)) + SEPARATOR + camelName;
 	}
 
 	private String properCase(String part) {

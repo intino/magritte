@@ -52,6 +52,5 @@ public class Parser {
 			Token token = ((org.antlr.v4.runtime.Parser) e.getRecognizer()).getCurrentToken();
 			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine());
 		}
-
 	}
 }

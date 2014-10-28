@@ -8,8 +8,6 @@ import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.ex.JpsElementBase;
 import org.jetbrains.jps.model.ex.JpsElementChildRoleBase;
 import org.jetbrains.jps.model.java.compiler.JpsCompilerExcludes;
-import org.jetbrains.jps.model.java.impl.compiler.JpsCompilerExcludesImpl;
-import org.jetbrains.jps.model.serialization.java.compiler.JpsJavaCompilerConfigurationSerializer;
 
 import java.io.File;
 
@@ -52,10 +50,4 @@ public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 	public boolean isExcludedFromCompilation(File file) {
 		return myExcludeFromStubGeneration != null && myExcludeFromStubGeneration.isExcluded(file);
 	}
-
-	void initExcludes() {
-		myExcludeFromStubGeneration = new JpsCompilerExcludesImpl();
-		JpsJavaCompilerConfigurationSerializer.readExcludes(excludes, myExcludeFromStubGeneration);
-	}
-
 }

@@ -1,5 +1,5 @@
 defrule type(Box)
-package $box+lowercase;
+package magritte.loaders[.$package+lowercase];
 
 import magritte.Store;
 import magritte.primitives.*;
@@ -67,7 +67,7 @@ set("$name", $variableValue);
 endrule
 
 defrule type(Annotation) trigger(annotation)
-annotation($value+UpperCase);
+set($value+UpperCase);
 endrule
 
 defrule trigger(variableValue) slot-type(date)

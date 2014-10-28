@@ -1,5 +1,5 @@
 src_file
-/Users/oroncal/workspace/sandbox/test/m1/model/test/media.tara
+/Users/oroncal/workspace/sandbox/test/m1/model/media.tara
 
 project
 test

@@ -116,16 +116,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 	public String getOutDir(Set<JpsModule> jpsModules) {
-		for (JpsModule module : jpsModules) {
-			for (JpsModuleSourceRoot moduleSourceRoot : module.getSourceRoots())
-				if (moduleSourceRoot.getFile().getName().equals("gen"))
-					return moduleSourceRoot.getFile().getAbsolutePath();
-			File moduleFile = module.getSourceRoots().get(0).getFile().getParentFile();
-			File gen = new File(moduleFile, "gen");
-			gen.mkdir();
-			return gen.getAbsolutePath();
-		}
-		return "";
+		JpsModule module = jpsModules.iterator().next();
+		for (JpsModuleSourceRoot moduleSourceRoot : module.getSourceRoots())
+			if (moduleSourceRoot.getFile().getName().equals("gen"))
+				return moduleSourceRoot.getFile().getAbsolutePath();
+		File moduleFile = module.getSourceRoots().get(0).getFile().getParentFile();
+		File gen = new File(moduleFile, "gen");
+		gen.mkdir();
+		return gen.getAbsolutePath();
 	}
 
 	private Set<String> getPathsToCompile(List<File> toCompile) {

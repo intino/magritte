@@ -1,11 +1,11 @@
 defrule type(Morph)
-package $box+lowercase;
+package magritte.morphs[.$package+lowercase];
 
 [import $import...[;$NL]]\
 import magritte.Node;
 import magritte.Set;
 import magritte.morphs.Concept;
-
+import magritte.primitives.*;
 import java.util.Date;
 
 $node

@@ -18,6 +18,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static siani.tara.compiler.codegeneration.PathFormatter.*;
+
 public class ModelToJavaOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
 	private static final String BOX_ITR = "Box.itr";
@@ -42,9 +44,9 @@ public class ModelToJavaOperation extends ModelOperation {
 		creator = new FrameCreator(model.isSystem());
 		List<List<Node>> groupByBox = groupByBox(model.getTreeModel());
 		try {
-			writeDocuments(createBoxes(groupByBox));
+			writeDocuments(getBoxPath(File.separator), createBoxes(groupByBox));
 			if (!model.isSystem())
-				writeDocuments(createMorphs());
+				writeDocuments(getMorphPath(File.separator), createMorphs());
 		} catch (TaraException e) {
 			LOG.severe("Error during java model generation: " + e.getMessage());
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
@@ -78,7 +80,6 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-
 	private Map<String, Document> processMorphs(Collection<Node> nodes, InputStream rulesInput) {
 		Map<String, Document> map = new HashMap();
 		RuleEngine ruleEngine = new RuleEngine(rulesInput);
@@ -86,7 +87,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		for (Node node : nodes) {
 			Document document = new Document();
 			ruleEngine.render(creator.createNodeFrame(node), document);
-			map.put(composePath(node.getQualifiedName()), document);
+			map.put(buildMorphPath(node.getQualifiedName()), document);
 		}
 		return map;
 	}
@@ -97,7 +98,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			public Object format(Object value) {
 				String val = value.toString();
 				if (!val.contains(".")) return val.substring(0, 1).toUpperCase() + val.substring(1);
-				return composePath(val);
+				return getMorphPath(".") + "." + buildMorphPath(val);
 			}
 		});
 	}
@@ -122,14 +123,16 @@ public class ModelToJavaOperation extends ModelOperation {
 		for (List<Node> nodes : groupByBox) {
 			Document document = new Document();
 			ruleEngine.render(creator.createBoxFrame(nodes, collectParentBoxes(nodes)), document);
-			map.put(composePath(nodes.get(0).getBox()) + "Box", document);
+			map.put(composeBoxPackagePath(nodes.get(0).getBox()) + "Box", document);
 		}
 		return map;
 	}
 
-	private void writeDocuments(Map<String, Document> documentMap) {
+	private void writeDocuments(String directory, Map<String, Document> documentMap) {
+		File destiny = new File(outFolder, directory);
+		destiny.mkdirs();
 		for (Map.Entry<String, Document> entry : documentMap.entrySet()) {
-			File file = new File(outFolder, entry.getKey().replace(".", File.separator) + JAVA);
+			File file = new File(destiny, entry.getKey().replace(".", File.separator) + JAVA);
 			file.getParentFile().mkdirs();
 			try {
 				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
@@ -148,21 +151,6 @@ public class ModelToJavaOperation extends ModelOperation {
 		for (Node node : nodes)
 			boxes.add(parent.searchNode(node.getObject().getMetaQN()).getBox());
 		return boxes;
-	}
-
-	private String composePath(String box) {
-		String name = box.substring(box.lastIndexOf(".") + 1);
-		name = name.substring(0, 1).toUpperCase() + name.substring(1);
-		String[] parts = name.split(" ");
-		String camelName = "";
-		for (String part : parts)
-			camelName = camelName + properCase(part);
-
-		return box.substring(0, box.lastIndexOf(".")) + "." + camelName;
-	}
-
-	private String properCase(String part) {
-		return part.substring(0, 1).toUpperCase() + part.substring(1).toLowerCase();
 	}
 
 	private List<List<Node>> groupByBox(NodeTree treeModel) {
@@ -189,7 +177,6 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	public InputStream getRulesFromResources(String rules) throws TaraException {
-		InputStream stream = ResourceManager.getStream("rules/" + rules);
-		return stream;
+		return ResourceManager.getStream("rules/" + rules);
 	}
 }
