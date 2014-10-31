@@ -28,12 +28,13 @@ public class FrameCreator {
 		return frame;
 	}
 
-	public Frame createBoxFrame(List<Node> nodes, Collection<String> parentBoxes) {
+	public Frame createBoxFrame(List<Node> nodes, Collection<String> parentBoxes, long buildNumber) {
 		Frame frame = new Frame("Box");
 		String name = nodes.get(0).getBox().substring(nodes.get(0).getBox().lastIndexOf(SEPARATOR) + 1);
 		frame.addSlot("name", name);
 		String box = nodes.get(0).getBox().substring(0, nodes.get(0).getBox().lastIndexOf(SEPARATOR));
 		frame.addSlot("box", box);
+		frame.addSlot("buildNumber", buildNumber);
 		if (!PathFormatter.composeMorphPackagePath(box).isEmpty())
 			frame.addSlot("package", PathFormatter.composeMorphPackagePath(box));
 		for (String anImport : parentBoxes)

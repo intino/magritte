@@ -69,7 +69,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			JpsProject project = context.getProjectDescriptor().getProject();
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
 			javaGeneration = settings.pluginGeneration;
-			final List<File> toCompile = collectFiles(chunk.getModules().iterator().next(), settings);
+			final List<File> toCompile = collectFiles(chunk.getModules().iterator().next());
 			if (toCompile.isEmpty()) return ExitCode.NOTHING_DONE;
 			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("java-generation = " + javaGeneration);
 			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
@@ -81,10 +81,12 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			Map<ModuleBuildTarget, String> generationOutputs = javaGeneration ? getStubGenerationOutputs(chunk, context) : finalOutputs;
 			String compilerOutput = generationOutputs.get(chunk.representativeTarget()); //TODO replacement to getOutDir
 			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
-			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), getOutDir(chunk.getModules()), isSystem, toCompilePaths, finalOutput, encoding
-				, getRulesDir(chunk.getModules()), collectIconDirectories(chunk.getModules()), getMagritteJdk(chunk).getHomePath());
+			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), getOutDir(chunk.getModules()),
+				isSystem, context.getCompilationStartStamp(), toCompilePaths, finalOutput, encoding, getRulesDir(chunk.getModules()),
+				collectIconDirectories(chunk.getModules()), getMagritteJdk(chunk).getHomePath());
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
+			context.setDone(1);
 			return ExitCode.OK;
 		} catch (Exception e) {
 			throw new ProjectBuildException(e);
@@ -187,12 +189,10 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return builderName;
 	}
 
-	private List<File> collectFiles(JpsModule module,
-	                                JpsTaraSettings settings) throws IOException {
+	private List<File> collectFiles(JpsModule module) throws IOException {
 		final List<File> toCompile = new ArrayList<>();
 		for (JpsModuleSourceRoot root : module.getSourceRoots())
-			if (!settings.isExcludedFromCompilation(root.getFile()))
-				toCompile.addAll(getTaraFilesFromRoot(root.getFile()));
+			toCompile.addAll(getTaraFilesFromRoot(root.getFile()));
 		return toCompile;
 	}
 

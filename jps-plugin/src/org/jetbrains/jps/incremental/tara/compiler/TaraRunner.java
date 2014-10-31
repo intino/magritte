@@ -27,7 +27,7 @@ public class TaraRunner {
 	private static File argsFile;
 
 	protected TaraRunner(final String projectName, final String moduleName, final String outputDir, final boolean system,
-	                     final Collection<String> sources,
+	                     long build_number,final Collection<String> sources,
 	                     String finalOutput,
 	                     @Nullable final String encoding,
 	                     String rulesPath,
@@ -41,6 +41,7 @@ public class TaraRunner {
 			writer.write(TaraRtConstants.PROJECT + "\n" + projectName + "\n");
 			writer.write(TaraRtConstants.MODULE + "\n" + moduleName + "\n");
 			writer.write(TaraRtConstants.SYSTEM + "\n" + system + "\n");
+			writer.write(TaraRtConstants.BUILD_NUMBER + "\n" + build_number + "\n");
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
 			String tara_models = PathManager.getPluginsPath() + File.separator + "tara_models" + File.separator;
 			writer.write(TaraRtConstants.MODELS_PATH + "\n" + tara_models + projectName + File.separator + "\n");

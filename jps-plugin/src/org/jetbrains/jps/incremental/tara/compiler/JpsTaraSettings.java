@@ -7,9 +7,6 @@ import org.jetbrains.jps.model.JpsElementChildRole;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.ex.JpsElementBase;
 import org.jetbrains.jps.model.ex.JpsElementChildRoleBase;
-import org.jetbrains.jps.model.java.compiler.JpsCompilerExcludes;
-
-import java.io.File;
 
 public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 	public static final String DEFAULT_HEAP_SIZE = "400";
@@ -21,7 +18,6 @@ public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 	public String commentaries = "";
 	@Tag("excludes")
 	public Element excludes = new Element("aaa");
-	private JpsCompilerExcludes myExcludeFromStubGeneration;
 
 	public JpsTaraSettings() {
 	}
@@ -47,7 +43,4 @@ public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 		return new JpsTaraSettings(this);
 	}
 
-	public boolean isExcludedFromCompilation(File file) {
-		return myExcludeFromStubGeneration != null && myExcludeFromStubGeneration.isExcluded(file);
-	}
 }

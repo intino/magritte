@@ -122,7 +122,8 @@ public class ModelToJavaOperation extends ModelOperation {
 		RuleEngine ruleEngine = new RuleEngine(rulesInput);
 		for (List<Node> nodes : groupByBox) {
 			Document document = new Document();
-			ruleEngine.render(creator.createBoxFrame(nodes, collectParentBoxes(nodes)), document);
+			long buildNumber = compilationUnit.getConfiguration().getBuildNumber();
+			ruleEngine.render(creator.createBoxFrame(nodes, collectParentBoxes(nodes), buildNumber), document);
 			map.put(composeBoxPackagePath(nodes.get(0).getBox()) + "Box", document);
 		}
 		return map;

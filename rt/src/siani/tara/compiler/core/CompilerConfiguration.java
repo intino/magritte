@@ -22,6 +22,7 @@ public class CompilerConfiguration {
 	private ArrayList<String> icons = new ArrayList<>();
 	private String modelsDirectory;
 	private boolean system;
+	private long buildNumber;
 
 
 	public CompilerConfiguration() {
@@ -197,5 +198,13 @@ public class CompilerConfiguration {
 
 	public boolean isSystemModel() {
 		return system;
+	}
+
+	public void setBuildNumber(long buildNumber) {
+		this.buildNumber = buildNumber;
+	}
+
+	public long getBuildNumber() {
+		return buildNumber;
 	}
 }
