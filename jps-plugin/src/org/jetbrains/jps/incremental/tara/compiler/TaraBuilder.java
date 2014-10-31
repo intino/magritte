@@ -17,7 +17,15 @@ import org.jetbrains.jps.model.java.JpsJavaSdkType;
 import org.jetbrains.jps.model.library.sdk.JpsSdk;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.model.module.JpsModuleSourceRoot;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -68,11 +76,12 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			if (finalOutputs == null) return ExitCode.ABORT;
 			start = System.currentTimeMillis();
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
+			final boolean isSystem = isSystem(getModuleConfigurationFile(chunk.getModules().iterator().next()));
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 			Map<ModuleBuildTarget, String> generationOutputs = javaGeneration ? getStubGenerationOutputs(chunk, context) : finalOutputs;
 			String compilerOutput = generationOutputs.get(chunk.representativeTarget()); //TODO replacement to getOutDir
 			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
-			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), getOutDir(chunk.getModules()), false, toCompilePaths, finalOutput, encoding
+			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), getOutDir(chunk.getModules()), isSystem, toCompilePaths, finalOutput, encoding
 				, getRulesDir(chunk.getModules()), collectIconDirectories(chunk.getModules()), getMagritteJdk(chunk).getHomePath());
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
@@ -198,5 +207,37 @@ public class TaraBuilder extends ModuleLevelBuilder {
 					list.add(file);
 		}
 		return list;
+	}
+
+	private File getModuleConfigurationFile(JpsModule module) {
+		List<String> urls = module.getContentRootsList().getUrls();
+		if (urls.isEmpty()) return null;
+		File file = new File(urls.get(0).substring(7), module.getName() + ".iml");
+		if (!file.exists()) return null;
+		return file;
+	}
+
+	public boolean isSystem(File moduleFile) {
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		try {
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(moduleFile);
+			NodeList nList = doc.getElementsByTagName("component");
+			for (int i = 0; i < nList.getLength(); i++)
+				if (nList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					Element element = (Element) nList.item(i);
+					if (!element.getAttribute("name").equals("ModuleConfiguration")) continue;
+					NodeList componentChildren = element.getElementsByTagName("option");
+					for (int j = 0; j < componentChildren.getLength(); j++)
+						if (componentChildren.item(j).getNodeType() == Node.ELEMENT_NODE) {
+							Element option = (Element) componentChildren.item(j);
+							if (option.getAttribute("name").equals("system"))
+								return Boolean.valueOf(option.getAttribute("value"));
+						}
+				}
+		} catch (SAXException | ParserConfigurationException | IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
