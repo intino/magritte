@@ -44,9 +44,6 @@ public interface TaraVariable extends Variable {
   List<TaraNaturalValue> getNaturalValueList();
 
   @NotNull
-  List<TaraPortValue> getPortValueList();
-
-  @NotNull
   List<TaraStringValue> getStringValueList();
 
   @Nullable

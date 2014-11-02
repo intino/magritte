@@ -1,11 +1,14 @@
 package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.lang.ASTFactory;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.impl.source.tree.ChangeUtil;
+import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -22,7 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.lang.Annotations.Annotation.FACET;
+import static siani.tara.lang.Annotations.Annotation.*;
 
 public class ConceptMixin extends ASTWrapperPsiElement {
 
@@ -118,6 +121,14 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return (TaraBoxFileImpl) super.getContainingFile();
 	}
 
+	public void addAddress(TaraAddress address) {
+		final TreeElement copy = ChangeUtil.copyToElement(address);
+		PsiElement psi = copy.getPsi();
+		TaraSignature taraSignature = PsiTreeUtil.getChildrenOfType(this, TaraSignature.class)[0];
+		taraSignature.getNode().addChild(ASTFactory.whitespace(" "));
+		taraSignature.add(psi);
+	}
+
 	@Nullable
 	public String getDocCommentText() {
 		StringBuilder text = new StringBuilder();
@@ -164,7 +175,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	public boolean isIntention() {
 		for (PsiElement annotation : getAnnotations())
-			if (siani.tara.lang.Annotations.Annotation.INTENTION.getName().equals(annotation.getText()))
+			if (INTENTION.getName().equals(annotation.getText()))
 				return true;
 		Concept parent = null;
 		if (getParentConceptName() != null) parent = getParentConcept();
@@ -176,6 +187,17 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 			if (FACET.getName().equals(annotation.getText()))
 				return true;
 		return false;
+	}
+
+	public boolean isAddressed() {
+		for (PsiElement annotation : getAnnotations())
+			if (ADDRESSED.getName().equals(annotation.getText()))
+				return true;
+		return false;
+	}
+
+	public TaraAddress getAddress() {
+		return getSignature().getAddress();
 	}
 
 	public Collection<Concept> getSubConcepts() {

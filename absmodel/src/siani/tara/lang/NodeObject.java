@@ -14,6 +14,7 @@ public class NodeObject extends ModelObject {
 	List<Facet> facets = new ArrayList<>();
 	Map<String, FacetTarget> allowedFacets = new HashMap<>();
 	List<FacetTarget> facetTargets = new ArrayList<>();
+	String address;
 
 	public NodeObject() {
 		super();
@@ -51,6 +52,14 @@ public class NodeObject extends ModelObject {
 
 	public List<Reference> getReferences() {
 		return extractElements(variables, Reference.class);
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public List<NodeObject> getChildren() {

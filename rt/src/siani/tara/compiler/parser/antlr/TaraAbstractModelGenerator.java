@@ -274,12 +274,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterPortAttribute(@NotNull PortAttributeContext ctx) {
-		Attribute variable = new Attribute(ctx.PORT_TYPE().getText(), ctx.IDENTIFIER().getText());
-		if (ctx.portValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.portValue()));
-		else if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
-		variable.setList(ctx.LIST() != null);
-		addAttribute(ctx, variable);
+	public void enterAddress(@NotNull AddressContext ctx) {
+		conceptStack.peek().getObject().setAddress(ctx.getText().substring(1));
 	}
 
 	@Override
@@ -299,7 +295,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		}
 		if (defaultWord >= 0)
 			word.setDefaultValues(new String[]{word.wordTypes.get(defaultWord)});
-		if (ctx.LIST()!= null) word.setList(true);
+		if (ctx.LIST() != null) word.setList(true);
 		addAttribute(ctx, word);
 	}
 
@@ -357,10 +353,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			variable = new Attribute(COORDINATE, name, ctx.coordinateValue().size() > 1, false);
 			for (CoordinateValueContext context : ctx.coordinateValue())
 				variable.addValue(getConverter(COORDINATE).convert(context.getText())[0]);
-		} else if (!ctx.portValue().isEmpty()) {
-			variable = new Attribute(PORT, name, ctx.portValue().size() > 1, false);
-			for (PortValueContext context : ctx.portValue())
-				variable.addValue(getConverter(PORT).convert(context.getText())[0]);
 		} else if (!ctx.dateValue().isEmpty()) {
 			variable = new Attribute(DATE, name, ctx.dateValue().size() > 1, false);
 			for (DateValueContext context : ctx.dateValue())
@@ -397,6 +389,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			conceptStack.peek().getObject().add(Annotation.FACET);
 		for (int i = 0; i < ctx.INTENTION().size(); i++)
 			conceptStack.peek().getObject().add(Annotation.INTENTION);
+		for (int i = 0; i < ctx.ADDRESSED().size(); i++)
+			conceptStack.peek().getObject().add(Annotation.ADDRESSED);
 	}
 
 	private void processVariableAnnotation(AnnotationsContext ctx) {

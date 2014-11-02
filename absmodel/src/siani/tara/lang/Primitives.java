@@ -11,7 +11,6 @@ public class Primitives {
 	public static final String BOOLEAN = "boolean";
 	public static final String STRING = "string";
 	public static final String DOUBLE = "double";
-	public static final String PORT = "port";
 	public static final String COORDINATE = "coordinate";
 	public static final String REFERENCE = "identifier";
 	public static final String DATE = "date";
@@ -32,7 +31,6 @@ public class Primitives {
 			}
 		};
 		CONVERTER_MAP.put(STRING, stringConverter);
-		CONVERTER_MAP.put(PORT, stringConverter);
 		CONVERTER_MAP.put(COORDINATE, stringConverter);
 		Converter coordinateConverter = new Converter() {
 			@Override
@@ -152,7 +150,6 @@ public class Primitives {
 		list.add(BOOLEAN);
 		list.add(STRING);
 		list.add(DOUBLE);
-		list.add(PORT);
 		list.add(COORDINATE);
 		list.add(DATE);
 		return list.toArray(new String[list.size()]);

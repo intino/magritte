@@ -21,7 +21,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	                                        @NotNull PsiElement root,
 	                                        @NotNull Document document,
 	                                        boolean quick) {
-		List<Concept> concepts = TaraUtil.findAllConceptsOfFile((TaraBoxFileImpl) root);
+		List<Concept> concepts = TaraUtil.getAllConceptsOfFile((TaraBoxFileImpl) root);
 		for (final Concept concept : concepts)
 			if (concept.getText() != null && concept.getBody() != null)
 				descriptors.add(new FoldingDescriptor(concept.getBody().getNode(), getRange(concept)) {

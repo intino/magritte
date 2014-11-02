@@ -88,7 +88,7 @@ public class FacetsGenerator {
 		Model model = TaraLanguage.getMetaModel(taraBoxFile);
 		List<Concept> facets = new ArrayList<>();
 		if (model == null) return new Concept[0];
-		List<Concept> allConceptsOfFile = TaraUtil.findAllConceptsOfFile(taraBoxFile);
+		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(taraBoxFile);
 		for (Concept concept : allConceptsOfFile)
 			if (concept.isFacet() && !concept.isIntention())
 				facets.add(concept);

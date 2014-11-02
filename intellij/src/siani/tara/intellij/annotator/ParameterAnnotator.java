@@ -171,8 +171,6 @@ public class ParameterAnnotator extends TaraAnnotator {
 				return varType.equals(INTEGER) || varType.equals(DOUBLE);
 			case TaraDoubleValueImpl:
 				return varType.equals(DOUBLE);
-			case TaraCodeValueImpl:
-				return varType.equals(PORT);
 			case TaraDateValueImpl:
 				return varType.equals(DATE);
 			case TaraCoordinateValueImpl:

@@ -9,6 +9,7 @@ import siani.tara.intellij.lang.psi.impl.*;
 
 public interface TaraTypes {
 
+	IElementType ADDRESS = new TaraElementType("ADDRESS");
 	IElementType ANNOTATIONS = new TaraElementType("ANNOTATIONS");
 	IElementType ANNOTATIONS_AND_FACETS = new TaraElementType("ANNOTATIONS_AND_FACETS");
 	IElementType AN_IMPORT = new TaraElementType("AN_IMPORT");
@@ -39,19 +40,19 @@ public interface TaraTypes {
 	IElementType NATURAL_VALUE = new TaraElementType("NATURAL_VALUE");
 	IElementType PARAMETERS = new TaraElementType("PARAMETERS");
 	IElementType PARAMETER_VALUE = new TaraElementType("PARAMETER_VALUE");
-	IElementType PORT_VALUE = new TaraElementType("PORT_VALUE");
 	IElementType SIGNATURE = new TaraElementType("SIGNATURE");
 	IElementType STRING_VALUE = new TaraElementType("STRING_VALUE");
 	IElementType VARIABLE = new TaraElementType("VARIABLE");
 	IElementType VAR_INIT = new TaraElementType("VAR_INIT");
 	IElementType WORD = new TaraElementType("WORD");
 
+	IElementType ADDRESSED = new TaraTokenType("ADDRESSED");
+	IElementType ADDRESS_VALUE = new TaraTokenType("ADDRESS_VALUE");
 	IElementType ALWAYS = new TaraTokenType("ALWAYS");
 	IElementType AS = new TaraTokenType("AS");
 	IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
 	IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
 	IElementType BOX_KEY = new TaraTokenType("BOX_KEY");
-	IElementType CODE_VALUE_KEY = new TaraTokenType("CODE_VALUE_KEY");
 	IElementType COLON = new TaraTokenType("COLON");
 	IElementType COMMA = new TaraTokenType("COMMA");
 	IElementType COMPONENT = new TaraTokenType("COMPONENT");
@@ -88,7 +89,6 @@ public interface TaraTypes {
 	IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
 	IElementType ON = new TaraTokenType("ON");
 	IElementType PERCENTAGE = new TaraTokenType("PERCENTAGE");
-	IElementType PORT_TYPE = new TaraTokenType("PORT_TYPE");
 	IElementType PRIVATE = new TaraTokenType("PRIVATE");
 	IElementType PROPERTY = new TaraTokenType("PROPERTY");
 	IElementType REQUIRED = new TaraTokenType("REQUIRED");
@@ -110,7 +110,9 @@ public interface TaraTypes {
 	class Factory {
 		public static PsiElement createElement(ASTNode node) {
 			IElementType type = node.getElementType();
-			if (type == ANNOTATIONS) {
+			if (type == ADDRESS) {
+				return new TaraAddressImpl(node);
+			} else if (type == ANNOTATIONS) {
 				return new TaraAnnotationsImpl(node);
 			} else if (type == ANNOTATIONS_AND_FACETS) {
 				return new TaraAnnotationsAndFacetsImpl(node);
@@ -170,8 +172,6 @@ public interface TaraTypes {
 				return new TaraParametersImpl(node);
 			} else if (type == PARAMETER_VALUE) {
 				return new TaraParameterValueImpl(node);
-			} else if (type == PORT_VALUE) {
-				return new TaraPortValueImpl(node);
 			} else if (type == SIGNATURE) {
 				return new TaraSignatureImpl(node);
 			} else if (type == STRING_VALUE) {

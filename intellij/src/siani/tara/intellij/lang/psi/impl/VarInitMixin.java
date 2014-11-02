@@ -29,7 +29,6 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		if (!((TaraVarInit) this).getDoubleValueList().isEmpty()) return DOUBLE;
 		if (!((TaraVarInit) this).getIntegerValueList().isEmpty()) return INTEGER;
 		if (!((TaraVarInit) this).getNaturalValueList().isEmpty()) return NATURAL;
-		if (!((TaraVarInit) this).getPortValueList().isEmpty()) return PORT;
 		if (!((TaraVarInit) this).getIdentifierReferenceList().isEmpty()) return REFERENCE;
 		if (!((TaraVarInit) this).getStringValueList().isEmpty()) return STRING;
 		if (((TaraVarInit) this).getEmptyField() != null) return EMPTY;

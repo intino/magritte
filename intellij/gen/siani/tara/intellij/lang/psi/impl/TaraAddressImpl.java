@@ -11,14 +11,14 @@ import static siani.tara.intellij.lang.psi.TaraTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraPortValueImpl extends ASTWrapperPsiElement implements TaraPortValue {
+public class TaraAddressImpl extends ASTWrapperPsiElement implements TaraAddress {
 
-  public TaraPortValueImpl(ASTNode node) {
+  public TaraAddressImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitPortValue(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitAddress(this);
     else super.accept(visitor);
   }
 

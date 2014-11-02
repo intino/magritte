@@ -111,7 +111,7 @@ public class TaraUtil {
 
 
 	@NotNull
-	public static List<Concept> findAllConceptsOfFile(TaraBoxFile taraBoxFile) {
+	public static List<Concept> getAllConceptsOfFile(TaraBoxFile taraBoxFile) {
 		List<Concept> collection = new ArrayList<>();
 		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraBoxFile, Concept.class);
 		if (concepts != null) {

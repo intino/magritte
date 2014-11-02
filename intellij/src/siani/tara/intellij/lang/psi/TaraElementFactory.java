@@ -34,4 +34,6 @@ public abstract class TaraElementFactory {
 	public abstract TaraBox createBoxReference(String project, String module, String packageName);
 
 	public abstract PsiElement createMetaWordIdentifier(String module, String node, String name);
+
+	public abstract TaraAddress createAddress(long address);
 }

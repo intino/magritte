@@ -130,6 +130,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VarInitAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.imports.ImportMetamodelAnnotation"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.DateValueAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AddressAnnotator"/>
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraConceptCompletionContributor"/>
     <completion.contributor language="Tara"
@@ -174,9 +175,9 @@
     </component>
   </module-components>
 
-  <!--<project-components>-->
-    <!--<component>-->
-      <!--<implementation-class>siani.tara.intellij.project.module.TaraModuleListener</implementation-class>-->
-    <!--</component>-->
-  <!--</project-components>-->
+  <project-components>
+    <component>
+      <implementation-class>siani.tara.intellij.project.module.TaraModuleListener</implementation-class>
+    </component>
+  </project-components>
 </idea-plugin>

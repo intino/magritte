@@ -182,7 +182,7 @@ public class IntentionsGeneratorByFrame {
 
 	private Concept[] getIntentions(TaraBoxFile taraBoxFile) {
 		List<Concept> intentions = new ArrayList<>();
-		List<Concept> allConceptsOfFile = TaraUtil.findAllConceptsOfFile(taraBoxFile);
+		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(taraBoxFile);
 		for (Concept concept : allConceptsOfFile)
 			if (concept.isIntention())
 				intentions.add(concept);

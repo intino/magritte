@@ -16,9 +16,11 @@ anImport: NEWLINE+ USE headerReference (AS IDENTIFIER)?;
 doc: DOC+;
 concept: doc? signature annotations? body?;
 
-signature: (SUB IDENTIFIER)
+signature: ((SUB IDENTIFIER)
 			| (metaidentifier parameters? IDENTIFIER (EXTENDS identifierReference)?)
-			| metaidentifier parameters?;
+			| metaidentifier parameters?) address?;
+
+address: ADDRESS_VALUE;
 
 
 parameters : LEFT_PARENTHESIS parameterList? RIGHT_PARENTHESIS;
@@ -33,7 +35,6 @@ initValue : identifierReference+
 	        | doubleValue+ measure?
 	        | coordinateValue+
             | dateValue+
-            | portValue+
 	        | metaWord
 	        | EMPTY;
 
@@ -47,7 +48,7 @@ facetApply : IS metaidentifier parameters? (WITH metaidentifier)? body?;
 facetTarget : ON identifierReference ALWAYS? body?;
 
 attribute : doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
-	| dateAttribute |coordinateAttribute | portAttribute | resource | reference | word) annotations?;
+	| dateAttribute |coordinateAttribute | resource | reference | word) annotations?;
 
 resource         : RESOURCE attributeType IDENTIFIER;
 word             : WORD LIST? IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
@@ -61,7 +62,6 @@ integerAttribute : INT_TYPE     attributeType? LIST? IDENTIFIER (EQUALS integerV
 doubleAttribute  : DOUBLE_TYPE  attributeType? LIST? IDENTIFIER (EQUALS doubleValue+  measure?| EMPTY)?;
 dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (EQUALS dateValue+ | EMPTY)?;
 coordinateAttribute  : COORDINATE_TYPE  LIST? IDENTIFIER (EQUALS (coordinateValue+ | EMPTY))?;
-portAttribute    : PORT_TYPE   LIST?  IDENTIFIER (EQUALS (portValue+ | EMPTY))?;
 
 attributeType   : COLON measure;
 naturalValue    : NATURAL_VALUE;
@@ -69,13 +69,12 @@ integerValue    : NATURAL_VALUE | NEGATIVE_VALUE;
 doubleValue     : NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE;
 booleanValue    : BOOLEAN_VALUE;
 stringValue     : STRING_VALUE | STRING_MULTILINE_VALUE_KEY;
-portValue       : PORT_VALUE;
 dateValue       : DATE_VALUE;
 coordinateValue : COORDINATE_VALUE;
 
 measure : IDENTIFIER | DOLLAR | EURO | PERCENTAGE | GRADE;
 
-annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | FACET | INTENTION | COMPONENT | PROPERTY | UNIVERSAL)+ ;
+annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | FACET | INTENTION | COMPONENT | PROPERTY | UNIVERSAL | ADDRESSED)+ ;
 
 varInit : IDENTIFIER EQUALS initValue;
 

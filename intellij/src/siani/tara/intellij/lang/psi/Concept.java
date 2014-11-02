@@ -39,6 +39,10 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isFacet();
 
+	boolean isAddressed();
+
+	TaraAddress getAddress();
+
 	@NotNull
 	PsiElement[] getAnnotations();
 
@@ -76,6 +80,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	@Nullable
 	MetaIdentifier getMetaIdentifier();
+
+	void addAddress(TaraAddress address);
 
 	String toString();
 

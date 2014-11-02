@@ -22,4 +22,6 @@ public interface Signature extends TaraPsiElement {
 	Concept getParentConcept();
 
 	Parameters getParameters();
+
+	TaraAddress getAddress();
 }

@@ -40,11 +40,14 @@ concept ::= doc? signature annotationsAndFacets? body? {
 	implements='siani.tara.intellij.lang.psi.Concept'
 }
 //simplify
-signature::= subConcept | metaIdentifier parameters? (identifier parent?)? {
+signature::= subConcept | metaIdentifier parameters? (identifier parent?)? address? {
 	pin = 1
 	mixin= 'siani.tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='siani.tara.intellij.lang.psi.Signature'
 }
+
+address::= ADDRESS_VALUE
+{pin = 1}
 
 private subConcept ::= SUB identifier
 {pin = 1}
@@ -82,7 +85,6 @@ parameterValue ::= identifierReference+
 		        | integerValue+ measure?
 		        | doubleValue+  measure?
 		        | dateValue+
-		        | portValue+
 		        | coordinateValue+
 		        | metaWord
 		        | empty
@@ -105,7 +107,7 @@ private conceptConstituents ::= varInit | variable | concept | annotationsAndFac
 conceptReference ::= doc? HAS identifierReference identifier?
 {pin = 2}
 
-variable ::= doc? VAR (portAttribute | naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute |
+variable ::= doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute |
 			dateAttribute | coordinateAttribute | resource | referenceAttribute | word) annotationsAndFacets? {
 	pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.VariableMixin'
@@ -113,7 +115,6 @@ variable ::= doc? VAR (portAttribute | naturalAttribute | integerAttribute | dou
 }
 private resource             ::= RESOURCE_KEY attributeType IDENTIFIER_KEY                                                  {pin=1}
 private coordinateAttribute  ::= COORDINATE_TYPE  LIST? IDENTIFIER_KEY (EQUALS (coordinateValue+ | emptyField))?             {pin=1}
-private portAttribute        ::= PORT_TYPE        LIST? IDENTIFIER_KEY (EQUALS (portValue+  | emptyField))?                  {pin=1}
 private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (EQUALS (booleanValue+ | emptyField))?                   {pin=1}
 private stringAttribute      ::= STRING_TYPE  LIST?  IDENTIFIER_KEY (EQUALS (stringValue+  | emptyField))?                   {pin=1}
 private naturalAttribute     ::= NATURAL_TYPE attributeType? LIST?  IDENTIFIER_KEY (EQUALS (naturalValue+ measure? | emptyField))?    {pin=1}
@@ -136,7 +137,6 @@ booleanValue    ::= BOOLEAN_VALUE_KEY
 naturalValue    ::= NATURAL_VALUE_KEY
 integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
-portValue       ::= CODE_VALUE_KEY
 dateValue       ::= DATE_VALUE_KEY
 coordinateValue ::= COORDINATE_VALUE_KEY
 
@@ -154,7 +154,7 @@ facetApply ::= metaIdentifier parameters? (WITH metaIdentifier)? body?{
 facetTarget ::= ON identifierReference ALWAYS? body?
 {pin = 1}
 
-annotations ::= (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | COMPONENT | FACET | INTENTION | PROPERTY | UNIVERSAL)+ {
+annotations ::= (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | COMPONENT | FACET | INTENTION | PROPERTY | UNIVERSAL | ADDRESSED)+ {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotations'
@@ -165,7 +165,6 @@ varInit ::= IDENTIFIER_KEY EQUALS ( emptyField
 								 | stringValue+
                                  | booleanValue+
                                  | dateValue+
-                                 | portValue+
                                  | coordinateValue+
                                  | naturalValue+ measure?
                                  | integerValue+ measure?

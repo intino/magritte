@@ -95,12 +95,6 @@ public class TaraVariableImpl extends VariableMixin implements TaraVariable {
 
   @Override
   @NotNull
-  public List<TaraPortValue> getPortValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraPortValue.class);
-  }
-
-  @Override
-  @NotNull
   public List<TaraStringValue> getStringValueList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraStringValue.class);
   }

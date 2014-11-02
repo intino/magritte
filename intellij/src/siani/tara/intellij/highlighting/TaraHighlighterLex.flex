@@ -70,6 +70,7 @@ PROPERTY            = "property"
 INTENTION           = "intention"
 UNIVERSAL           = "universal"
 FACET               = "facet"
+ADDRESSED           = "addressed"
 COMPONENT           = "component"
 VAR                 = "var"
 WORD_KEY            = "word"
@@ -96,7 +97,6 @@ DASHES              = {DASH} {DASH}+
 POSITIVE            = "+"
 AMPERSAND           = "&"
 
-PORT_TYPE           = "port"
 INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
 COORDINATE_TYPE     = "coordinate"
@@ -112,8 +112,8 @@ DOUBLE_VALUE_KEY    = ({POSITIVE} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+
 STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
 DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
+ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
 COORDINATE_VALUE_KEY= (({DOUBLE_VALUE_KEY} {DASH})+ {DOUBLE_VALUE_KEY}) |{DOUBLE_VALUE_KEY}
-CODE_VALUE_KEY      = {AMPERSAND} [:jletterdigit:]+
 
 DOC_LINE            = "#" ~[\n]
 
@@ -155,9 +155,11 @@ NEWLINE             = [\n]+
 	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
+	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 
+	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
 	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE_KEY; }
 	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
 	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
@@ -166,7 +168,6 @@ NEWLINE             = [\n]+
 	{NATURAL_VALUE_KEY}             {   return TaraTypes.NATURAL_VALUE_KEY; }
 	{DATE_VALUE_KEY}                {   return TaraTypes.DATE_VALUE_KEY; }
 	{EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
-	{CODE_VALUE_KEY}                {   return TaraTypes.CODE_VALUE_KEY; }
 	{COORDINATE_VALUE_KEY}          {   return TaraTypes.COORDINATE_VALUE_KEY; }
 
 	{LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
@@ -190,7 +191,6 @@ NEWLINE             = [\n]+
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {COORDINATE_TYPE}               {   return TaraTypes.COORDINATE_TYPE; }
-	{PORT_TYPE}                     {   return TaraTypes.PORT_TYPE; }
 	{SEMICOLON}                     {   return TaraTypes.VAR;  }
 
 	{OPEN_BRACKET}                  {   return TaraTypes.DOT; }

@@ -6,6 +6,10 @@ import com.intellij.psi.PsiElementVisitor;
 
 public class TaraVisitor extends PsiElementVisitor {
 
+  public void visitAddress(@NotNull TaraAddress o) {
+    visitPsiElement(o);
+  }
+
   public void visitAnImport(@NotNull TaraAnImport o) {
     visitImport(o);
   }
@@ -124,10 +128,6 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitParameters(@NotNull TaraParameters o) {
     visitParameters(o);
-  }
-
-  public void visitPortValue(@NotNull TaraPortValue o) {
-    visitPsiElement(o);
   }
 
   public void visitSignature(@NotNull TaraSignature o) {

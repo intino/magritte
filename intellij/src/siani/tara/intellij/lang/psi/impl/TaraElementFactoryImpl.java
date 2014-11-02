@@ -74,6 +74,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return parameters[0].getLastChild().getLastChild();
 	}
 
+	@Override
 	public Variable createWord(String name, String[] types) {
 		final TaraBoxFileImpl file = createDummyFile(
 			"box project.mod.tara\n" +
@@ -122,6 +123,24 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 				"Form Ficha(" + (string ? "\"\"" : "") + ")\n"
 		);
 		return file.getConcepts().iterator().next().getSignature().getParameters();
+	}
+
+	public TaraAddress createAddress(long value) {
+		String addr = value + "";
+		if (addr.length() < 9)
+			addr = format(addr);
+		final TaraBoxFileImpl file = createDummyFile(
+			"box project.mod.tara\n" +
+				"Form Ficha &" + addr.substring(0, 3) + "." + addr.substring(3, 6) + "." + addr.substring(6, 9) + "\n"
+		);
+		return file.getConcepts().iterator().next().getAddress();
+	}
+
+	private String format(String address) {
+		String newAddress = address;
+		for (int i = address.length(); i <= 9; i++)
+			newAddress = "0" + newAddress;
+		return newAddress;
 	}
 
 }

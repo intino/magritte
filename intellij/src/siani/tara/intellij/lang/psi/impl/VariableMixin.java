@@ -74,8 +74,6 @@ public class VariableMixin extends ASTWrapperPsiElement {
 			list.addAll(getElementsAsString(((TaraVariable) this).getIntegerValueList()));
 		else if (((TaraVariable) this).getStringValueList().isEmpty())
 			list.addAll(getElementsAsString(((TaraVariable) this).getStringValueList()));
-		else if (((TaraVariable) this).getPortValueList().isEmpty())
-			list.addAll(getElementsAsString(((TaraVariable) this).getPortValueList()));
 		else if (((TaraVariable) this).getCoordinateValueList().isEmpty())
 			list.addAll(getElementsAsString(((TaraVariable) this).getCoordinateValueList()));
 		else if (((TaraVariable) this).getDateValueList().isEmpty())

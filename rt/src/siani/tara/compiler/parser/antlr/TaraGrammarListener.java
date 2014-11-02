@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.4.1-dev
+// Generated from /Users/octavio/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.4.1-dev
 
 package siani.tara.compiler.parser.antlr;
 
@@ -20,16 +20,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBody(@NotNull TaraGrammar.BodyContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#portAttribute}.
-	 * @param ctx the parse tree
-	 */
-	void enterPortAttribute(@NotNull TaraGrammar.PortAttributeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#portAttribute}.
-	 * @param ctx the parse tree
-	 */
-	void exitPortAttribute(@NotNull TaraGrammar.PortAttributeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#integerAttribute}.
 	 * @param ctx the parse tree
@@ -121,16 +111,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitDoubleValue(@NotNull TaraGrammar.DoubleValueContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#portValue}.
-	 * @param ctx the parse tree
-	 */
-	void enterPortValue(@NotNull TaraGrammar.PortValueContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#portValue}.
-	 * @param ctx the parse tree
-	 */
-	void exitPortValue(@NotNull TaraGrammar.PortValueContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#attributeType}.
 	 * @param ctx the parse tree
 	 */
@@ -201,16 +181,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitStringAttribute(@NotNull TaraGrammar.StringAttributeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#initValue}.
-	 * @param ctx the parse tree
-	 */
-	void enterInitValue(@NotNull TaraGrammar.InitValueContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#initValue}.
-	 * @param ctx the parse tree
-	 */
-	void exitInitValue(@NotNull TaraGrammar.InitValueContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#parameterList}.
 	 * @param ctx the parse tree
 	 */
@@ -220,6 +190,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitParameterList(@NotNull TaraGrammar.ParameterListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#initValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterInitValue(@NotNull TaraGrammar.InitValueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#initValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitInitValue(@NotNull TaraGrammar.InitValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#integerValue}.
 	 * @param ctx the parse tree
@@ -410,6 +390,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExplicit(@NotNull TaraGrammar.ExplicitContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#address}.
+	 * @param ctx the parse tree
+	 */
+	void enterAddress(@NotNull TaraGrammar.AddressContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#address}.
+	 * @param ctx the parse tree
+	 */
+	void exitAddress(@NotNull TaraGrammar.AddressContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#varInit}.
 	 * @param ctx the parse tree

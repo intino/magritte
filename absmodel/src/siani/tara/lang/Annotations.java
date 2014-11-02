@@ -7,12 +7,12 @@ import static siani.tara.lang.Annotations.Annotation.*;
 
 public class Annotations {
 
-	public static final Annotation[] SUB_ANNOTATIONS = new Annotation[]{PROPERTY, NAMED, TERMINAL};
+	public static final Annotation[] SUB_ANNOTATIONS = new Annotation[]{PROPERTY, NAMED, TERMINAL, ADDRESSED};
 	public static final Annotation[] COMPONENT_ANNOTATIONS = new Annotation[]{PRIVATE, TERMINAL, REQUIRED, SINGLE,
-		PROPERTY, NAMED, INTENTION};
+		PROPERTY, NAMED, INTENTION, ADDRESSED};
 	public static final Annotation[] VARIABLE_ANNOTATIONS = new Annotation[]{PRIVATE, TERMINAL, PROPERTY, SINGLE, PROPERTY, UNIVERSAL};
 	public static final Annotation[] PRIME_ANNOTATIONS = new Annotation[]{PRIVATE, COMPONENT, SINGLE, NAMED, TERMINAL,
-		PROPERTY, REQUIRED, INTENTION, FACET};
+		PROPERTY, REQUIRED, INTENTION, FACET, ADDRESSED};
 
 	private Annotations() {
 	}
@@ -25,7 +25,7 @@ public class Annotations {
 
 	public enum Annotation {
 		NAMED("named"), COMPONENT("component"), TERMINAL("terminal"), SINGLE("single"), REQUIRED("required"),
-		PRIVATE("private"), PROPERTY("property"), FACET("facet"), INTENTION("intention"), UNIVERSAL("universal");
+		PRIVATE("private"), PROPERTY("property"), FACET("facet"), INTENTION("intention"), UNIVERSAL("universal"), ADDRESSED("addressed");
 
 		private String name;
 

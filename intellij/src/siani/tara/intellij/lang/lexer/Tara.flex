@@ -108,6 +108,7 @@ COMPONENT           = "component"
 UNIVERSAL           = "universal"
 INTENTION           = "intention"
 FACET               = "facet"
+ADDRESSED           = "addressed"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -131,7 +132,6 @@ AMPERSAND           = "&"
 VAR                 = "var"
 
 WORD_TYPE           = "word"
-PORT_TYPE           = "port"
 RESOURCE_TYPE       = "resource"
 INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
@@ -149,8 +149,8 @@ DOUBLE_VALUE_KEY    = ({POSITIVE} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+
 STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
 DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
+ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
 COORDINATE_VALUE_KEY= ({DOUBLE_VALUE_KEY} | {NATURAL_VALUE_KEY} | {NEGATIVE_VALUE_KEY}) ({DASH} {DOUBLE_VALUE_KEY} | {NATURAL_VALUE_KEY} | {NEGATIVE_VALUE_KEY})+
-CODE_VALUE_KEY      = {AMPERSAND} [:jletterdigit:]+
 
 DOC_LINE            = "#" ~[\n]
 DIGIT               = [:digit:]
@@ -192,18 +192,19 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{FACET}                         {   return TaraTypes.FACET; }
 	{INTENTION}                     {   return TaraTypes.INTENTION; }
 	{UNIVERSAL}                     {   return TaraTypes.UNIVERSAL; }
+	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 
 	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE_KEY; }
 	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
 
+	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
 	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
 	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }
 	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE_KEY; }
 	{NATURAL_VALUE_KEY}             {   return TaraTypes.NATURAL_VALUE_KEY; }
 	{DATE_VALUE_KEY}                {   return TaraTypes.DATE_VALUE_KEY; }
-	{CODE_VALUE_KEY}                {   return TaraTypes.CODE_VALUE_KEY; }
 	{COORDINATE_VALUE_KEY}          {   return TaraTypes.COORDINATE_VALUE_KEY; }
 
     {LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
@@ -229,7 +230,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {COORDINATE_TYPE}               {   return TaraTypes.COORDINATE_TYPE; }
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
-	{PORT_TYPE}                     {   return TaraTypes.PORT_TYPE; }
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}
 	{SEMICOLON}                     {   return semicolon(); }
 
