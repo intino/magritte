@@ -23,10 +23,10 @@ public interface TaraVarInit extends VarInit {
   TaraEmptyField getEmptyField();
 
   @NotNull
-  List<TaraIdentifierReference> getIdentifierReferenceList();
+  List<TaraIntegerValue> getIntegerValueList();
 
   @NotNull
-  List<TaraIntegerValue> getIntegerValueList();
+  List<TaraLinkValue> getLinkValueList();
 
   @Nullable
   TaraMeasure getMeasure();

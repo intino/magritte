@@ -29,7 +29,8 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey IDENTIFIER = createTextAttributesKey("Tara_IDENTIFIER", DefaultLanguageHighlighterColors.CLASS_NAME);
 	public static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL);
 	public static final TextAttributesKey STRING = createTextAttributesKey("Tara_STRING", DefaultLanguageHighlighterColors.STRING);
-	public static final TextAttributesKey DOCUMENTATION = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+	public static final TextAttributesKey ADDRESS = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP);
+	public static final TextAttributesKey DOCUMENTATION = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.DOC_COMMENT);
 	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.CONSTANT);
 	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
 	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
@@ -40,10 +41,9 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey ANNOTATION_ERROR = createTextAttributesKey("ANNOTATION_ERROR", errorTextAttributes());
 	public static final TextAttributesKey UNRESOLVED_ACCESS = createTextAttributesKey("UNRESOLVED_ACCESS", errorTextAttributes());
 
-	public static final TextAttributesKey PROPERTY_INFO = createTextAttributesKey("TARA_PROPERTY",
-		new TextAttributes(null, null, JBColor.ORANGE, null, Font.PLAIN));
 	public static final TextAttributesKey WARNING = createTextAttributesKey("WARNING",
 		new TextAttributes(null, null, JBColor.YELLOW, EffectType.WAVE_UNDERSCORE, Font.PLAIN));
+
 	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>();
 	private static final Map<IElementType, TextAttributesKey> KEYS;
 
@@ -93,6 +93,8 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(PRIVATE, ANNOTATION);
 		KEYS.put(UNIVERSAL, ANNOTATION);
 		KEYS.put(ADDRESSED, ANNOTATION);
+		KEYS.put(AGGREGABLE, ANNOTATION);
+
 		KEYS.put(NAMED, ANNOTATION);
 		KEYS.put(RESOURCE_KEY, PRIMITIVE);
 		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);
@@ -100,7 +102,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(USE_KEY, KEYWORD);
 		KEYS.put(BOX_KEY, KEYWORD);
 		KEYS.put(IS, KEYWORD);
-		KEYS.put(VAR, KEYWORD);
+		KEYS.put(SLOT, KEYWORD);
 		KEYS.put(AS, KEYWORD);
 		KEYS.put(ON, KEYWORD);
 		KEYS.put(WITH, KEYWORD);
@@ -126,7 +128,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 		KEYS.put(DOC_LINE, DOCUMENTATION);
 
-		KEYS.put(ADDRESS_VALUE, REFERENCE);
+		KEYS.put(ADDRESS_VALUE, ADDRESS);
 		KEYS.put(DOUBLE_VALUE_KEY, NUMBERS);
 		KEYS.put(NATURAL_VALUE_KEY, NUMBERS);
 		KEYS.put(NEGATIVE_VALUE_KEY, NUMBERS);

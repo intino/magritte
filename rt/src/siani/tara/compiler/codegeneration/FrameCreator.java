@@ -111,7 +111,7 @@ public class FrameCreator {
 		for (final Variable variable : node.getObject().getVariables()) {
 			Frame varFrame = new Frame(getTypes(variable)) {{
 				addSlot("name", variable.getName());
-				addSlot("type", variable.getType());
+				addSlot("type", variable.getType().equals("Natural") ? "Integer" : variable.getType());
 				if (variable instanceof Word)
 					addSlot("words", ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));
 			}};

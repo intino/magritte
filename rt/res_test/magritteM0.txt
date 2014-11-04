@@ -1,10 +1,10 @@
 src_file
-/Users/oroncal/workspace/magritte-framework/media/model/base.tara
+/Users/oroncal/workspace/magritte-framework/m2/model/entity.tara
 
 project
 magritte
 module
-media
+m2
 system
 false
 encoding

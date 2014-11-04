@@ -22,7 +22,6 @@ import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class GenerateAction extends AnAction implements DumbAware {
@@ -46,6 +45,7 @@ public class GenerateAction extends AnAction implements DumbAware {
 
 	private void generateAddresses(TaraBoxFile box) {
 		Model model = TaraLanguage.getMetaModel(box);
+		if (model == null) return;
 		AddressGenerator addressGenerator = new AddressGenerator(getAddressedConcepts(model, TaraUtil.getAllConceptsOfFile(box)));
 		addressGenerator.generate();
 	}
@@ -67,14 +67,14 @@ public class GenerateAction extends AnAction implements DumbAware {
 		e.getPresentation().setVisible(taraFound);
 	}
 
-	private Collection<Concept> getAddressedConcepts(Model model, List<Concept> allConceptsOfFile) {
+	private Concept[] getAddressedConcepts(Model model, List<Concept> allConceptsOfFile) {
 		List<Concept> concepts = new ArrayList<>();
 		for (Concept concept : allConceptsOfFile) {
 			Node node = model.searchNode(TaraUtil.getMetaQualifiedName(concept));
 			if (node != null && node.getObject().is(Annotations.Annotation.ADDRESSED))
 				concepts.add(concept);
 		}
-		return concepts;
+		return concepts.toArray(new Concept[concepts.size()]);
 	}
 
 

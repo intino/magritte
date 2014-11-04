@@ -107,6 +107,7 @@ PROPERTY            : 'property';
 UNIVERSAL           : 'universal';
 ALWAYS              : 'always';
 ADDRESSED           : 'addressed';
+AGGREGABLE          : 'aggregable';
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';
 LEFT_SQUARE         : '[';
@@ -131,7 +132,8 @@ POSITIVE            : '+';
 DASH                : '-';
 DASHES              : DASH DASH+;
 UNDERDASH           : '_';
-VAR                 : 'var';
+SLOT                : 'slot';
+LINK_KEY            : 'link';
 
 WORD                : 'word';
 RESOURCE            : 'resource';

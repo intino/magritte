@@ -183,17 +183,25 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isFacet() {
-		for (PsiElement annotation : getAnnotations())
-			if (FACET.getName().equals(annotation.getText()))
-				return true;
-		return false;
+		return is(FACET);
 	}
 
 	public boolean isAddressed() {
+		return is(ADDRESSED);
+	}
+
+	public boolean isAggregable() {
+		return is(AGGREGABLE);
+	}
+
+	private boolean is(siani.tara.lang.Annotations.Annotation taraAnnotation) {
 		for (PsiElement annotation : getAnnotations())
-			if (ADDRESSED.getName().equals(annotation.getText()))
+			if (taraAnnotation.getName().equals(annotation.getText()))
 				return true;
-		return false;
+		Concept parent = null;
+		if (getParentConceptName() != null) parent = getParentConcept();
+		return parent != null && ((ConceptMixin) parent).is(taraAnnotation);
+
 	}
 
 	public TaraAddress getAddress() {

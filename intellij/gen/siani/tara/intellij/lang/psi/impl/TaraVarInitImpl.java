@@ -53,14 +53,14 @@ public class TaraVarInitImpl extends VarInitMixin implements TaraVarInit {
 
   @Override
   @NotNull
-  public List<TaraIdentifierReference> getIdentifierReferenceList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifierReference.class);
+  public List<TaraIntegerValue> getIntegerValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIntegerValue.class);
   }
 
   @Override
   @NotNull
-  public List<TaraIntegerValue> getIntegerValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIntegerValue.class);
+  public List<TaraLinkValue> getLinkValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraLinkValue.class);
   }
 
   @Override

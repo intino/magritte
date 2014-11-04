@@ -107,7 +107,7 @@ private conceptConstituents ::= varInit | variable | concept | annotationsAndFac
 conceptReference ::= doc? HAS identifierReference identifier?
 {pin = 2}
 
-variable ::= doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute |
+variable ::= doc? SLOT (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute |
 			dateAttribute | coordinateAttribute | resource | referenceAttribute | word) annotationsAndFacets? {
 	pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.VariableMixin'
@@ -139,7 +139,7 @@ integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
 dateValue       ::= DATE_VALUE_KEY
 coordinateValue ::= COORDINATE_VALUE_KEY
-
+linkValue       ::= ADDRESS_VALUE | identifierReference
 measure ::= IDENTIFIER_KEY | DOLLAR | EURO | PERCENTAGE | GRADE
 
 annotationsAndFacets ::= IS (annotations+ | facetApply)
@@ -154,14 +154,14 @@ facetApply ::= metaIdentifier parameters? (WITH metaIdentifier)? body?{
 facetTarget ::= ON identifierReference ALWAYS? body?
 {pin = 1}
 
-annotations ::= (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | COMPONENT | FACET | INTENTION | PROPERTY | UNIVERSAL | ADDRESSED)+ {
+annotations ::= (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | COMPONENT | FACET | INTENTION | PROPERTY | UNIVERSAL | ADDRESSED | AGGREGABLE)+ {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotations'
 }
 
-varInit ::= IDENTIFIER_KEY EQUALS ( emptyField
-								 | identifierReference+
+varInit ::=  IDENTIFIER_KEY COLON ( emptyField
+                                 | linkValue+
 								 | stringValue+
                                  | booleanValue+
                                  | dateValue+
@@ -172,7 +172,6 @@ varInit ::= IDENTIFIER_KEY EQUALS ( emptyField
     pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.VarInitMixin'
 	implements = 'siani.tara.intellij.lang.psi.VarInit'
-
 }
 
 emptyField ::= EMPTY_REF

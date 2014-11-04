@@ -71,8 +71,10 @@ INTENTION           = "intention"
 UNIVERSAL           = "universal"
 FACET               = "facet"
 ADDRESSED           = "addressed"
+AGGREGABLE          = "aggregable"
+
 COMPONENT           = "component"
-VAR                 = "var"
+SLOT                = "slot"
 WORD_KEY            = "word"
 RESOURCE_KEY        = "resource"
 
@@ -142,7 +144,7 @@ NEWLINE             = [\n]+
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
 	{ALWAYS}                        {   return TaraTypes.ALWAYS; }
-	{VAR}                           {   return TaraTypes.VAR; }
+	{SLOT}                          {   return TaraTypes.SLOT; }
 	{SUB}                           {   return TaraTypes.SUB; }
 
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
@@ -156,6 +158,7 @@ NEWLINE             = [\n]+
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
+	{AGGREGABLE}                    {   return TaraTypes.AGGREGABLE; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 
@@ -191,7 +194,7 @@ NEWLINE             = [\n]+
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {COORDINATE_TYPE}               {   return TaraTypes.COORDINATE_TYPE; }
-	{SEMICOLON}                     {   return TaraTypes.VAR;  }
+	{SEMICOLON}                     {   return TaraTypes.HAS;  }
 
 	{OPEN_BRACKET}                  {   return TaraTypes.DOT; }
 

@@ -17,6 +17,7 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 					resultSet.addElement(LookupElementBuilder.create("has "));
 					resultSet.addElement(LookupElementBuilder.create("var "));
 					resultSet.addElement(LookupElementBuilder.create("is "));
+					resultSet.addElement(LookupElementBuilder.create("link "));
 				}
 			}
 		);

@@ -109,6 +109,7 @@ UNIVERSAL           = "universal"
 INTENTION           = "intention"
 FACET               = "facet"
 ADDRESSED           = "addressed"
+AGGREGABLE          = "aggregable"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -129,7 +130,7 @@ GRADE               = "º"
 SEMICOLON           = ";"+
 POSITIVE            = "+"
 AMPERSAND           = "&"
-VAR                 = "var"
+SLOT                = "slot"
 
 WORD_TYPE           = "word"
 RESOURCE_TYPE       = "resource"
@@ -177,10 +178,9 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
 
-	{VAR}                           {   return TaraTypes.VAR; }
+	{SLOT}                          {   return TaraTypes.SLOT; }
 
 	{SUB}                           {   return TaraTypes.SUB; }
-
 
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
@@ -193,6 +193,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{INTENTION}                     {   return TaraTypes.INTENTION; }
 	{UNIVERSAL}                     {   return TaraTypes.UNIVERSAL; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
+	{AGGREGABLE}                    {   return TaraTypes.AGGREGABLE; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 

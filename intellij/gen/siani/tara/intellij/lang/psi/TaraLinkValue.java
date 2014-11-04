@@ -5,21 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraSignature extends Signature {
-
-  @Nullable
-  TaraAddress getAddress();
-
-  @Nullable
-  TaraIdentifier getIdentifier();
+public interface TaraLinkValue extends TaraPsiElement {
 
   @Nullable
   TaraIdentifierReference getIdentifierReference();
-
-  @Nullable
-  TaraMetaIdentifier getMetaIdentifier();
-
-  @Nullable
-  TaraParameters getParameters();
 
 }

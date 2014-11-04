@@ -36,19 +36,22 @@ initValue : identifierReference+
 	        | coordinateValue+
             | dateValue+
 	        | metaWord
+	        | linkValue
 	        | EMPTY;
 
 metaWord : metaidentifier metaWordNames*;
 metaWordNames : DOT IDENTIFIER;
 
-body: NEW_LINE_INDENT ((attribute | concept | varInit | facetApply | facetTarget | conceptReference) NEWLINE+)+ DEDENT;
+body: NEW_LINE_INDENT ((attribute | concept | link | varInit | facetApply | facetTarget | conceptReference) NEWLINE+)+ DEDENT;
 
-conceptReference : doc? HAS identifierReference IDENTIFIER?;
+attribute : doc? SLOT (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
+	| dateAttribute |coordinateAttribute | resource | reference | word) annotations?;
+
+link : LINK_KEY identifierReference IDENTIFIER;
+
 facetApply : IS metaidentifier parameters? (WITH metaidentifier)? body?;
 facetTarget : ON identifierReference ALWAYS? body?;
-
-attribute : doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
-	| dateAttribute |coordinateAttribute | resource | reference | word) annotations?;
+conceptReference : doc? HAS identifierReference IDENTIFIER?;
 
 resource         : RESOURCE attributeType IDENTIFIER;
 word             : WORD LIST? IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
@@ -57,9 +60,9 @@ wordNames        : IDENTIFIER STAR?;
 reference        : identifierReference LIST? IDENTIFIER  (EQUALS EMPTY)?;
 booleanAttribute : BOOLEAN_TYPE LIST? IDENTIFIER (EQUALS booleanValue+ | EMPTY)?;
 stringAttribute  : STRING_TYPE  LIST? IDENTIFIER (EQUALS stringValue+  | EMPTY)?;
-naturalAttribute : NATURAL_TYPE attributeType? LIST? IDENTIFIER (EQUALS naturalValue+ measure?| EMPTY)?;
-integerAttribute : INT_TYPE     attributeType? LIST? IDENTIFIER (EQUALS integerValue+ measure?| EMPTY)?;
-doubleAttribute  : DOUBLE_TYPE  attributeType? LIST? IDENTIFIER (EQUALS doubleValue+  measure?| EMPTY)?;
+naturalAttribute : NATURAL_TYPE attributeType? LIST? IDENTIFIER (EQUALS naturalValue+ measure? | EMPTY)?;
+integerAttribute : INT_TYPE     attributeType? LIST? IDENTIFIER (EQUALS integerValue+ measure? | EMPTY)?;
+doubleAttribute  : DOUBLE_TYPE  attributeType? LIST? IDENTIFIER (EQUALS doubleValue+  measure? | EMPTY)?;
 dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (EQUALS dateValue+ | EMPTY)?;
 coordinateAttribute  : COORDINATE_TYPE  LIST? IDENTIFIER (EQUALS (coordinateValue+ | EMPTY))?;
 
@@ -71,12 +74,13 @@ booleanValue    : BOOLEAN_VALUE;
 stringValue     : STRING_VALUE | STRING_MULTILINE_VALUE_KEY;
 dateValue       : DATE_VALUE;
 coordinateValue : COORDINATE_VALUE;
+linkValue       : address | identifierReference;
 
 measure : IDENTIFIER | DOLLAR | EURO | PERCENTAGE | GRADE;
 
-annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | FACET | INTENTION | COMPONENT | PROPERTY | UNIVERSAL | ADDRESSED)+ ;
+annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | FACET | INTENTION | COMPONENT | PROPERTY | UNIVERSAL | ADDRESSED | AGGREGABLE)+ ;
 
-varInit : IDENTIFIER EQUALS initValue;
+varInit : IDENTIFIER COLON initValue;
 
 headerReference: hierarchy* IDENTIFIER;
 

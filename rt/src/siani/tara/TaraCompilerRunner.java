@@ -122,7 +122,6 @@ public class TaraCompilerRunner {
 		}
 	}
 
-
 	private static void addSources(List<File> srcFiles, final CompilationUnit unit) {
 		for (final File file : srcFiles) {
 			if (!file.getName().endsWith(".tara"))

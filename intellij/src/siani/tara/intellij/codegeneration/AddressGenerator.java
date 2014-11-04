@@ -9,19 +9,18 @@ import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraElementFactory;
 import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.Random;
 
 public class AddressGenerator {
-	private final Collection<Concept> concepts;
+	private final Concept[] concepts;
 	private final Project project;
 	private final TaraBoxFileImpl file;
 
-	public AddressGenerator(Collection<Concept> concepts) {
+	public AddressGenerator(Concept... concepts) {
 		this.concepts = concepts;
-		project = concepts.iterator().next().getProject();
-		file = concepts.iterator().next().getFile();
+		project = concepts[0].getProject();
+		file = concepts[0].getFile();
 	}
 
 	public void generate() {

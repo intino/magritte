@@ -36,4 +36,8 @@ public abstract class TaraElementFactory {
 	public abstract PsiElement createMetaWordIdentifier(String module, String node, String name);
 
 	public abstract TaraAddress createAddress(long address);
+
+	public abstract TaraAnnotations createAnnotation(String name);
+
+	public abstract TaraAnnotationsAndFacets createAnnotationAndFacetWith(String name);
 }
