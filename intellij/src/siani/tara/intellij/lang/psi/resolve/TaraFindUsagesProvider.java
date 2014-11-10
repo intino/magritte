@@ -47,7 +47,7 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 			String name = ((Concept) element).getName();
 			return name == null ? ANONYMOUS : name;
 		} else if (element instanceof Identifier)
-			return TaraPsiImplUtil.getConceptContextOf(element).getType() + " " + element.getText();
+			return TaraPsiImplUtil.getConceptContainerOf(element).getType() + " " + element.getText();
 		else if (element instanceof TaraBoxFile)
 			return (((TaraBoxFile) element).getName());
 		return element.getText();

@@ -4,6 +4,7 @@ import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.SourceUnit;
 import siani.tara.compiler.core.errorcollection.MergeException;
 import siani.tara.lang.Model;
+import siani.tara.lang.Node;
 
 import java.util.Collection;
 
@@ -24,6 +25,10 @@ public class ASTMerger {
 			model.putAllIdentifiers(unit.getModel().getIdentifiers());
 			model.putAllInNodeTable(unit.getModel().getNodeTable());
 		}
+		for (Node node : model.getNodeTable().values()) {
+			node.setModelOwner(model.getModelName());
+		}
+
 		return model;
 	}
 }

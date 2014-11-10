@@ -40,6 +40,11 @@ public class DeclaredNode extends Node {
 	}
 
 	@Override
+	public boolean isAggregated() {
+		return getObject().is(Annotations.Annotation.AGGREGATED);
+	}
+
+	@Override
 	protected String getNodePath() {
 		String name = !getName().isEmpty() ? getName() :
 			"[" + (getObject().getParentName() == null ? getObject().type : getObject().getParentName()) + ANONYMOUS + "]";

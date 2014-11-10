@@ -21,7 +21,7 @@ public class AddressAnnotator extends TaraAnnotator {
 		if (!TaraAddress.class.isInstance(element)) return;
 		this.holder = holder;
 		TaraAddress address = (TaraAddress) element;
-		Concept concept = TaraPsiImplUtil.getConceptContextOf(address);
+		Concept concept = TaraPsiImplUtil.getConceptContainerOf(address);
 		if (concept == null) return;
 		Model model = TaraLanguage.getMetaModel(concept.getFile());
 		if (model == null) annotateAndFix(element, new RemoveAddressFix(concept), "Address not available");

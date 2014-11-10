@@ -16,6 +16,7 @@ public abstract class Node {
 	protected transient DeclaredNode container;
 	ModelObject object;
 	private List<String> imports = new ArrayList<>();
+	private String modelOwner;
 
 	public Node() {
 	}
@@ -94,10 +95,20 @@ public abstract class Node {
 		return getContainer() == null;
 	}
 
+	public abstract boolean isAggregated();
+
 	protected abstract String getNodePath();
 
 
 	public boolean is(Class type) {
 		return type.isInstance(this);
+	}
+
+	public void setModelOwner(String modelOwner) {
+		this.modelOwner = modelOwner;
+	}
+
+	public String getModelOwner() {
+		return modelOwner;
 	}
 }

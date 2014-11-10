@@ -23,7 +23,7 @@ public class TaraFindUsagesHandlerFactory extends FindUsagesHandlerFactory {
 		if (element instanceof Concept) return new TaraConceptFindUsagesHandler((Concept) element);
 		if (element instanceof TaraBoxFile) return new TaraFileFindUsagesHandler((TaraBoxFile) element);
 		else {
-			Concept contextOf = TaraPsiImplUtil.getConceptContextOf(element);
+			Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(element);
 			if (contextOf == null) return null;
 			return new TaraConceptFindUsagesHandler(contextOf);
 		}

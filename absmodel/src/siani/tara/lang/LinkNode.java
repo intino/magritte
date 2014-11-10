@@ -7,6 +7,8 @@ public class LinkNode extends Node {
 	transient DeclaredNode destiny;
 	String destinyQN;
 	String destinyBox;
+	boolean aggregated;
+	boolean reference;
 
 	public LinkNode() {
 	}
@@ -29,6 +31,14 @@ public class LinkNode extends Node {
 	public void setDestiny(DeclaredNode destiny) {
 		this.destiny = destiny;
 		this.destinyBox = destiny.getBox();
+	}
+
+	public boolean isReference() {
+		return reference;
+	}
+
+	public void setReference(boolean reference) {
+		this.reference = reference;
 	}
 
 	public String getDestinyQN() {
@@ -58,6 +68,14 @@ public class LinkNode extends Node {
 		return container;
 	}
 
+	public boolean isAggregated() {
+		return aggregated;
+	}
+
+	public void setAggregated(boolean aggregated) {
+		this.aggregated = aggregated;
+	}
+
 	@Override
 	public boolean isSub() {
 		return destiny.isSub();
@@ -79,7 +97,8 @@ public class LinkNode extends Node {
 	@Override
 	protected String getNodePath() {
 		String destiny = (getDestiny() != null) ? getDestiny().getQualifiedName() : getDestinyQN();
-		String name = "[" + destiny + LINK + "]";
+
+		String name = "[" + destiny + LINK + (isAggregated() ? "{aggregated}" : "") + "]";
 		return container.getQualifiedName() + "." + name;
 	}
 

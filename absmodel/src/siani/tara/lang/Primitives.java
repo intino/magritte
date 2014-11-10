@@ -156,7 +156,8 @@ public class Primitives {
 	}
 
 	public static Converter getConverter(String type) {
-		return CONVERTER_MAP.get(type);
+		Converter converter = CONVERTER_MAP.get(type);
+		return converter == null ? CONVERTER_MAP.get(STRING) : converter;
 	}
 
 

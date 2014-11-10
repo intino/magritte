@@ -18,13 +18,13 @@ public class FacetTargetAnnotator extends TaraAnnotator {
 		TaraFacetTarget facetTarget = (TaraFacetTarget) element;
 		if (isInnerFacetTarget(facetTarget)) {
 			PsiElement parentFacet = facetTarget.getParent().getParent();
-			Concept parent = TaraPsiImplUtil.getConceptContextOf(
+			Concept parent = TaraPsiImplUtil.getConceptContainerOf(
 				ReferenceManager.resolve(((TaraFacetTarget) parentFacet).getIdentifierReference()));
-			Concept child = TaraPsiImplUtil.getConceptContextOf(ReferenceManager.resolve(facetTarget.getIdentifierReference()));
+			Concept child = TaraPsiImplUtil.getConceptContainerOf(ReferenceManager.resolve(facetTarget.getIdentifierReference()));
 			if (!isChild(child, parent)) holder.createErrorAnnotation(facetTarget.getIdentifierReference().getNode(),
 				TaraBundle.message("no.child.concept.error.message", child.getName(), parent.getName()));
 		}
-		Concept parent = TaraPsiImplUtil.getConceptContextOf(facetTarget);
+		Concept parent = TaraPsiImplUtil.getConceptContainerOf(facetTarget);
 		if (parent != null && !parent.isSub() && !parent.isFacet())
 			holder.createErrorAnnotation(facetTarget.getNode(),
 				TaraBundle.message("target.in.nofacet.concept.error.message"));

@@ -87,10 +87,10 @@ INLINE              = ">"
 METAIDENTIFIER      = "Concept"
 SUB                 = "sub"
 HAS                 = "has"
+VAR                 = "var"
 
 USE_KEY             = "use"
 BOX_KEY             = "box"
-
 WITH                = "with"
 AS                  = "as"
 ON                  = "on"
@@ -109,7 +109,7 @@ UNIVERSAL           = "universal"
 INTENTION           = "intention"
 FACET               = "facet"
 ADDRESSED           = "addressed"
-AGGREGABLE          = "aggregable"
+AGGREGATED          = "aggregated"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -130,7 +130,6 @@ GRADE               = "º"
 SEMICOLON           = ";"+
 POSITIVE            = "+"
 AMPERSAND           = "&"
-SLOT                = "slot"
 
 WORD_TYPE           = "word"
 RESOURCE_TYPE       = "resource"
@@ -169,6 +168,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 	{EXTENDS}                       {   return TaraTypes.EXTENDS; }
 	{HAS}                           {   return TaraTypes.HAS; }
+	{VAR}                           {   return TaraTypes.VAR; }
 	{AS}                            {   return TaraTypes.AS; }
 	{IS}                            {   return TaraTypes.IS; }
 	{ON}                            {   return TaraTypes.ON; }
@@ -177,8 +177,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
-
-	{SLOT}                          {   return TaraTypes.SLOT; }
 
 	{SUB}                           {   return TaraTypes.SUB; }
 
@@ -193,7 +191,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{INTENTION}                     {   return TaraTypes.INTENTION; }
 	{UNIVERSAL}                     {   return TaraTypes.UNIVERSAL; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
-	{AGGREGABLE}                    {   return TaraTypes.AGGREGABLE; }
+    {AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 

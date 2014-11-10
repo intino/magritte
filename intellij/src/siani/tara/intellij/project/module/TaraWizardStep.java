@@ -26,6 +26,7 @@ public class TaraWizardStep extends ModuleWizardStep {
 	private JCheckBox systemCheckBox;
 	private JPanel whitePanel;
 	private JList moduleChooser;
+	private JLabel parentModel;
 
 	public TaraWizardStep(TaraModuleBuilder builder, WizardContext context, Project project) {
 		this.context = context;

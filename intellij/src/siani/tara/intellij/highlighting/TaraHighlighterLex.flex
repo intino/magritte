@@ -58,6 +58,8 @@ BOX                 = "box"
 AS                  = "as"
 ON                  = "on"
 IS                  = "is"
+VAR                 = "var"
+
 ALWAYS              = "always"
 WITH                = "with"
 //annotations
@@ -71,12 +73,8 @@ INTENTION           = "intention"
 UNIVERSAL           = "universal"
 FACET               = "facet"
 ADDRESSED           = "addressed"
-AGGREGABLE          = "aggregable"
-
 COMPONENT           = "component"
-SLOT                = "slot"
-WORD_KEY            = "word"
-RESOURCE_KEY        = "resource"
+AGGREGATED          = "aggregated"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -99,6 +97,8 @@ DASHES              = {DASH} {DASH}+
 POSITIVE            = "+"
 AMPERSAND           = "&"
 
+WORD_KEY            = "word"
+RESOURCE_KEY        = "resource"
 INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
 COORDINATE_TYPE     = "coordinate"
@@ -134,7 +134,7 @@ NEWLINE             = [\n]+
 	{BOX}                           {  	loadHeritage();
 										return TaraTypes.BOX_KEY; }
 	{USE_KEY}                       {   return TaraTypes.USE_KEY; }
-
+	{VAR}                           {   return TaraTypes.VAR; }
 	{HAS}                           {   return TaraTypes.HAS; }
 	{EXTENDS}                       {   return TaraTypes.EXTENDS; }
 	{AS}                            {   return TaraTypes.AS; }
@@ -144,8 +144,8 @@ NEWLINE             = [\n]+
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
 	{ALWAYS}                        {   return TaraTypes.ALWAYS; }
-	{SLOT}                          {   return TaraTypes.SLOT; }
 	{SUB}                           {   return TaraTypes.SUB; }
+	{AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
 
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
 	{SINGLE}                        {   return TaraTypes.SINGLE; }
@@ -158,7 +158,6 @@ NEWLINE             = [\n]+
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
-	{AGGREGABLE}                    {   return TaraTypes.AGGREGABLE; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 
@@ -194,7 +193,7 @@ NEWLINE             = [\n]+
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {COORDINATE_TYPE}               {   return TaraTypes.COORDINATE_TYPE; }
-	{SEMICOLON}                     {   return TaraTypes.HAS;  }
+	{SEMICOLON}                     {   return TaraTypes.BOX_KEY;  }
 
 	{OPEN_BRACKET}                  {   return TaraTypes.DOT; }
 

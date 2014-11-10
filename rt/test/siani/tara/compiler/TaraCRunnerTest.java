@@ -15,6 +15,16 @@ public class TaraCRunnerTest {
 		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/testM1.txt"});
 	}
 
+	@Test
+	public void TestTafat2M2() {
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/tafat2M2.txt"});
+	}
+
+	@Test
+	public void TestTafat2M1() {
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/tafat2M1.txt"});
+	}
+
 
 	@Test
 	public void TestM0() {

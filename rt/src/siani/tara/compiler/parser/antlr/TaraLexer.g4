@@ -87,6 +87,7 @@ SUB                 : 'sub';
 USE                 : 'use';
 BOX                 : 'box';
 
+VAR                 : 'var';
 AS                  : 'as';
 HAS                 : 'has';
 ON                  : 'on';
@@ -107,7 +108,8 @@ PROPERTY            : 'property';
 UNIVERSAL           : 'universal';
 ALWAYS              : 'always';
 ADDRESSED           : 'addressed';
-AGGREGABLE          : 'aggregable';
+AGGREGATED          : 'aggregated';
+
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';
 LEFT_SQUARE         : '[';
@@ -132,8 +134,6 @@ POSITIVE            : '+';
 DASH                : '-';
 DASHES              : DASH DASH+;
 UNDERDASH           : '_';
-SLOT                : 'slot';
-LINK_KEY            : 'link';
 
 WORD                : 'word';
 RESOURCE            : 'resource';

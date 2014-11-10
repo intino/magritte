@@ -73,7 +73,7 @@ public class TaraMoveConcept extends MoveHandlerDelegate {
 	                         @Nullable Editor editor) {
 		final PsiNamedElement e = getElementToMove(element);
 		if (e instanceof Concept) {
-			if (TaraPsiImplUtil.getConceptContextOf(e) == null) {
+			if (TaraPsiImplUtil.getConceptContainerOf(e) == null) {
 				PsiElement targetContainer = null;
 				if (editor != null)
 					targetContainer = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());

@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static siani.tara.compiler.codegeneration.PathFormatter.*;
+import static siani.tara.lang.Annotations.Annotation.TERMINAL;
 
 public class ModelToJavaOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
@@ -149,8 +150,10 @@ public class ModelToJavaOperation extends ModelOperation {
 		Model parent = model.getParentModel();
 		if (parent == null) return Collections.EMPTY_LIST;
 		Set<String> boxes = new HashSet<>();
-		for (Node node : nodes)
+		for (Node node : nodes) {
+			if (node.getObject().is(TERMINAL) && !node.getModelOwner().equals(model.getModelName())) continue;
 			boxes.add(parent.searchNode(node.getObject().getMetaQN()).getBox());
+		}
 		return boxes;
 	}
 

@@ -17,7 +17,7 @@ import siani.tara.lang.*;
 
 import java.util.*;
 
-import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContextOf;
+import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContainerOf;
 import static siani.tara.lang.Annotations.Annotation.COMPONENT;
 import static siani.tara.lang.Annotations.Annotation.PRIVATE;
 
@@ -31,7 +31,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
 		List<ResolveResult> results = new ArrayList<>();
-		Concept contextOf = getConceptContextOf(myElement);
+		Concept contextOf = getConceptContainerOf(myElement);
 		if (contextOf != null)
 			results.add(new PsiElementResolveResult(contextOf));
 		return results.toArray(new ResolveResult[results.size()]);
@@ -55,11 +55,11 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		Model metaModel = TaraLanguage.getMetaModel(myElement.getContainingFile());
 		if (metaModel == null) return new Object[0];
 		if (myElement.getParent() instanceof TaraFacetApply) {
-			Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(getConceptContextOf(myElement)));
+			Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(getConceptContainerOf(myElement)));
 			if (node == null) return PsiElement.EMPTY_ARRAY;
 			return fillFacetVariants(node.getObject().getAllowedFacets().keySet());
 		} else {
-			Concept context = getConceptContextOf(getConceptContextOf(myElement));
+			Concept context = getConceptContainerOf(getConceptContainerOf(myElement));
 			if (context != null) {
 				Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(context));
 				addChildren(nodes, node);

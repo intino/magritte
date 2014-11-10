@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraConceptReferenceImpl extends ASTWrapperPsiElement implements TaraConceptReference {
+public class TaraConceptReferenceImpl extends ConceptReferenceMixin implements TaraConceptReference {
 
   public TaraConceptReferenceImpl(ASTNode node) {
     super(node);

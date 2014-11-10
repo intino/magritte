@@ -55,7 +55,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 
 	public void checkWellReferenced() {
 		PsiElement reference = ReferenceManager.resolve((IdentifierReference) element);
-		if (reference == null && !checkAsMetaWord(TaraPsiImplUtil.getConceptContextOf(element), element.getText())) {
+		if (reference == null && !checkAsMetaWord(TaraPsiImplUtil.getConceptContainerOf(element), element.getText())) {
 			Annotation errorAnnotation;
 			if (element instanceof IdentifierReference) {
 				List<? extends Identifier> identifierList = ((IdentifierReference) element).getIdentifierList();

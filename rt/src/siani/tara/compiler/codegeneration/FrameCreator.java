@@ -7,7 +7,6 @@ import java.util.*;
 
 public class FrameCreator {
 
-
 	private static final String SEPARATOR = ".";
 	private final boolean system;
 	private Node initNode;
@@ -21,8 +20,8 @@ public class FrameCreator {
 		final Frame frame = new Frame("Morph");
 		String box = node.getBox();
 		frame.addSlot("box", box);
-		if (!PathFormatter.composeMorphPackagePath(box).isEmpty())
-			frame.addSlot("package", PathFormatter.composeMorphPackagePath(box));
+		if (!PathFormatter.composeMorphPackagePath(node.getQualifiedName()).isEmpty())
+			frame.addSlot("package", PathFormatter.composeMorphPackagePath(node.getQualifiedName()));
 		add(node, frame);
 		initNode = null;
 		return frame;
@@ -31,10 +30,8 @@ public class FrameCreator {
 	public Frame createBoxFrame(List<Node> nodes, Collection<String> parentBoxes, long buildNumber) {
 		Frame frame = new Frame("Box");
 		String name = nodes.get(0).getBox().substring(nodes.get(0).getBox().lastIndexOf(SEPARATOR) + 1);
-		frame.addSlot("name", name);
 		String box = nodes.get(0).getBox().substring(0, nodes.get(0).getBox().lastIndexOf(SEPARATOR));
-		frame.addSlot("box", box);
-		frame.addSlot("buildNumber", buildNumber);
+		frame.addSlot("name", name).addSlot("box", box).addSlot("buildNumber", buildNumber);
 		if (!PathFormatter.composeMorphPackagePath(box).isEmpty())
 			frame.addSlot("package", PathFormatter.composeMorphPackagePath(box));
 		for (String anImport : parentBoxes)
@@ -44,16 +41,21 @@ public class FrameCreator {
 		return frame;
 	}
 
-
 	private void add(final Node node, Frame frame) {
-		if (node instanceof LinkNode) return;
-		final Frame newFrame = new Frame(getTypes(node));
-		frame.addSlot("node", newFrame);
-		addAnnotations(node, newFrame);
-		addNodeInfo(node, newFrame);
-		addInner(node, newFrame);
-		if (!node.isSub() && !node.equals(initNode))
-			addSubs(node, frame);
+		if (node.is(DeclaredNode.class)) {
+			final Frame newFrame = new Frame(getTypes(node));
+			frame.addSlot("node", newFrame);
+			addAnnotations(node, newFrame);
+			addNodeInfo(node, newFrame);
+			addInner(node, newFrame);
+			if (!node.isSub() && !node.equals(initNode))
+				addSubs(node, frame);
+		} else if (((LinkNode) node).isReference()) {
+			LinkNode linkNode = (LinkNode) node;
+			Frame newFrame = new Frame(getReferenceTypes(linkNode));
+			newFrame.addSlot("parent", linkNode.getDestinyName());
+			frame.addSlot("reference", newFrame);
+		}
 	}
 
 	private void addAnnotations(final Node node, Frame frame) {
@@ -144,7 +146,6 @@ public class FrameCreator {
 			}};
 			frame.addSlot("variableValue", innerFrame);
 		}
-
 	}
 
 	private void addFacets(Node node, Frame newFrame) {
@@ -192,7 +193,8 @@ public class FrameCreator {
 		List<String> types = new ArrayList<>();
 		NodeObject object = node.getObject();
 		types.add(object.getType());
-		types.add("Node");
+		types.add(node.getClass().getSimpleName());
+		types.add(Node.class.getSimpleName());
 		for (Annotations.Annotation annotation : object.getAnnotations())
 			types.add(annotation.getName());
 		return types.toArray(new String[types.size()]);
@@ -211,5 +213,13 @@ public class FrameCreator {
 
 	private String properCase(String part) {
 		return part.substring(0, 1).toUpperCase() + part.substring(1).toLowerCase();
+	}
+
+	public String[] getReferenceTypes(LinkNode node) {
+		List<String> types = new ArrayList<>();
+		types.add("reference");
+		if (node.isAggregated())
+			types.add(Annotations.Annotation.AGGREGATED.getName());
+		return types.toArray(new String[types.size()]);
 	}
 }

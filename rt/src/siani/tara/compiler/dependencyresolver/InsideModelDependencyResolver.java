@@ -127,7 +127,7 @@ public class InsideModelDependencyResolver {
 		List<Variable> variables = new ArrayList<>();
 		for (Variable variable : parent.getVariables())
 			variables.add(variable.clone());
-			node.getObject().getVariables().addAll(0, variables);
+		node.getObject().getVariables().addAll(0, variables);
 	}
 
 	private void collectInnerConceptsInherited(DeclaredNode parent, DeclaredNode node, List<LinkNode> toAddNodes) {

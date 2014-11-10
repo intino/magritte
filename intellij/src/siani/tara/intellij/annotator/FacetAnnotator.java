@@ -41,7 +41,7 @@ public class FacetAnnotator extends TaraAnnotator {
 	private Concept searchParent(Concept concept) {
 		Concept aConcept = concept;
 		while (aConcept != null && aConcept.isSub())
-			aConcept = TaraPsiImplUtil.getConceptContextOf(aConcept);
+			aConcept = TaraPsiImplUtil.getConceptContainerOf(aConcept);
 		return aConcept;
 	}
 }

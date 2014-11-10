@@ -65,7 +65,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public Collection<Concept> getConceptSiblings() {
-		Concept contextOf = TaraPsiImplUtil.getConceptContextOf(this);
+		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(this);
 		if (contextOf == null) return ((TaraBoxFile) this.getContainingFile()).getConcepts();
 		return contextOf.getInnerConcepts();
 	}
@@ -112,7 +112,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		TaraBoxFile containingFile = (TaraBoxFile) this.getContainingFile();
 		String packageName = containingFile.getBoxReference().getHeaderReference().getText();
 		Concept concept = (Concept) this;
-		while ((concept = TaraPsiImplUtil.getConceptContextOf(concept)) != null)
+		while ((concept = TaraPsiImplUtil.getConceptContainerOf(concept)) != null)
 			name = concept.getName() + "." + name;
 		return packageName + "." + name;
 	}
@@ -190,8 +190,16 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return is(ADDRESSED);
 	}
 
-	public boolean isAggregable() {
-		return is(AGGREGABLE);
+	public boolean isAggregated() {
+		return is(AGGREGATED);
+	}
+
+	public boolean isProperty() {
+		return is(PROPERTY);
+	}
+
+	public boolean isComponent() {
+		return is(COMPONENT);
 	}
 
 	private boolean is(siani.tara.lang.Annotations.Annotation taraAnnotation) {

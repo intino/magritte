@@ -30,7 +30,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 		model = TaraLanguage.getMetaModel(parameter.getContainingFile());
 		if (model == null) return;
 		TaraFacetApply inFacet = parameter.isInFacet();
-		Concept concept = TaraPsiImplUtil.getConceptContextOf(parameter);
+		Concept concept = TaraPsiImplUtil.getConceptContainerOf(parameter);
 		node = findNode(concept, model);
 		if (node == null) return;
 		List<Variable> facetVariables = null;
@@ -104,8 +104,8 @@ public class ParameterAnnotator extends TaraAnnotator {
 				holder.createErrorAnnotation(value, "Unexpected type. Bad reference");
 				continue;
 			}
-			Concept conceptContextOf = TaraPsiImplUtil.getConceptContextOf(value);
-			if (TaraPsiImplUtil.getConceptContextOf(conceptContextOf) != null)
+			Concept conceptContextOf = TaraPsiImplUtil.getConceptContainerOf(value);
+			if (TaraPsiImplUtil.getConceptContainerOf(conceptContextOf) != null)
 				if (value instanceof TaraIdentifierReference && !reference.isUniversal() && !inSameContext((TaraIdentifierReference) value))
 					holder.createErrorAnnotation(value, "Bad referenced. The reference has to be in the same context");
 		}
@@ -113,7 +113,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 
 	private boolean checkWellReference(TaraIdentifierReference reference, Reference variable) {
 		TaraReferenceSolver solver = new TaraReferenceSolver(getLastElementOf(reference), reference.getTextRange(), false);
-		Concept destiny = TaraPsiImplUtil.getConceptContextOf(solver.resolve());
+		Concept destiny = TaraPsiImplUtil.getConceptContainerOf(solver.resolve());
 		if (destiny != null) {
 			MetaIdentifier metaIdentifier = destiny.getMetaIdentifier();
 			if ((metaIdentifier != null))
@@ -132,13 +132,13 @@ public class ParameterAnnotator extends TaraAnnotator {
 
 	private boolean inSameContext(TaraIdentifierReference reference) {
 		TaraReferenceSolver solver = new TaraReferenceSolver(getLastElementOf(reference), reference.getTextRange(), false);
-		Concept resolve = TaraPsiImplUtil.getConceptContextOf(solver.resolve());
+		Concept resolve = TaraPsiImplUtil.getConceptContainerOf(solver.resolve());
 		PsiElement referenceContext = reference;
 		PsiElement resolveContext = resolve;
-		while ((TaraPsiImplUtil.getConceptContextOf(referenceContext)) != null)
-			referenceContext = TaraPsiImplUtil.getConceptContextOf(referenceContext);
-		while ((TaraPsiImplUtil.getConceptContextOf(resolveContext)) != null)
-			resolveContext = TaraPsiImplUtil.getConceptContextOf(resolveContext);
+		while ((TaraPsiImplUtil.getConceptContainerOf(referenceContext)) != null)
+			referenceContext = TaraPsiImplUtil.getConceptContainerOf(referenceContext);
+		while ((TaraPsiImplUtil.getConceptContainerOf(resolveContext)) != null)
+			resolveContext = TaraPsiImplUtil.getConceptContainerOf(resolveContext);
 		return resolveContext == referenceContext;
 	}
 

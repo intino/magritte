@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContextOf;
+import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContainerOf;
 
 public class ReferenceManager {
 
@@ -92,12 +92,12 @@ public class ReferenceManager {
 
 	private static Concept[] getPossibleRoots(Identifier identifier) {
 		Set<Concept> list = new HashSet<>();
-		Concept parent = getConceptContextOf(identifier);
+		Concept parent = getConceptContainerOf(identifier);
 		while (parent != null) {
 			for (Concept sibling : parent.getConceptSiblings())
 				if (sibling.getName() != null && sibling.getName().equals(identifier.getText()) && !sibling.equals(parent))
 					list.add(sibling);
-			parent = getConceptContextOf(parent);
+			parent = getConceptContainerOf(parent);
 		}
 		Collection<Concept> concepts = ((TaraBoxFile) identifier.getContainingFile()).getConcepts();
 		for (Concept concept : concepts)

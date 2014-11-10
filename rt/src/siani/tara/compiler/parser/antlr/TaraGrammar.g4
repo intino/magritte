@@ -42,16 +42,14 @@ initValue : identifierReference+
 metaWord : metaidentifier metaWordNames*;
 metaWordNames : DOT IDENTIFIER;
 
-body: NEW_LINE_INDENT ((attribute | concept | link | varInit | facetApply | facetTarget | conceptReference) NEWLINE+)+ DEDENT;
+body: NEW_LINE_INDENT ((attribute | concept | varInit | facetApply | facetTarget | conceptReference) NEWLINE+)+ DEDENT;
 
-attribute : doc? SLOT (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
+attribute : doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
 	| dateAttribute |coordinateAttribute | resource | reference | word) annotations?;
-
-link : LINK_KEY identifierReference IDENTIFIER;
 
 facetApply : IS metaidentifier parameters? (WITH metaidentifier)? body?;
 facetTarget : ON identifierReference ALWAYS? body?;
-conceptReference : doc? HAS identifierReference IDENTIFIER?;
+conceptReference : doc? HAS identifierReference IDENTIFIER? (IS AGGREGATED)?;
 
 resource         : RESOURCE attributeType IDENTIFIER;
 word             : WORD LIST? IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
@@ -78,7 +76,7 @@ linkValue       : address | identifierReference;
 
 measure : IDENTIFIER | DOLLAR | EURO | PERCENTAGE | GRADE;
 
-annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | FACET | INTENTION | COMPONENT | PROPERTY | UNIVERSAL | ADDRESSED | AGGREGABLE)+ ;
+annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | FACET | INTENTION | COMPONENT | PROPERTY | UNIVERSAL | ADDRESSED | AGGREGATED)+ ;
 
 varInit : IDENTIFIER COLON initValue;
 

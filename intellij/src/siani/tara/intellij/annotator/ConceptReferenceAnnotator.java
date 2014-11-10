@@ -19,11 +19,18 @@ public class ConceptReferenceAnnotator extends TaraAnnotator {
 
 	private boolean isDuplicated(TaraConceptReference reference) {
 		int count = 0;
-		Concept contextOf = TaraPsiImplUtil.getConceptContextOf(reference);
+		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(reference);
 		if (contextOf == null) return false;
 		TaraConceptReference[] links = contextOf.getConceptLinks();
-		for (TaraConceptReference link : links)
-			if (reference.getIdentifierReference().getText().equals(link.getIdentifierReference().getText())) count++;
+		for (TaraConceptReference link : links) {
+			if (reference.getIdentifierReference() == null || link.getIdentifierReference() == null) continue;
+			if (reference.getIdentifierReference().getText().equals(link.getIdentifierReference().getText()) && areIncompatibles(reference, link))
+				count++;
+		}
 		return count > 1;
+	}
+
+	private boolean areIncompatibles(TaraConceptReference reference, TaraConceptReference link) {
+		return reference.isAggregated() == link.isAggregated();
 	}
 }

@@ -82,7 +82,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			Model model = TaraLanguage.getMetaModel(parameters.getContainingFile());
 			if (model == null) return parameters;
 			TaraFacetApply facet = parameters.getParameters()[0].isInFacet();
-			Node node = findNode(TaraPsiImplUtil.getConceptContextOf(parameters), model);
+			Node node = findNode(TaraPsiImplUtil.getConceptContainerOf(parameters), model);
 			if (node == null) return parameters;
 			List<siani.tara.intellij.lang.psi.Variable> attributes = new ArrayList<>();
 			TaraElementFactory instance = TaraElementFactory.getInstance(parameters.getProject());

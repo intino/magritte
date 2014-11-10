@@ -22,7 +22,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 
 	private PsiElementPattern.Capture<PsiElement> afterVar = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new AfterSlotFitFilter()));
+		.and(new FilterPattern(new AfterVarFitFilter()));
 
 	public TaraPrimitivesCompletionContributor() {
 		extend(CompletionType.BASIC, afterVar,
@@ -47,7 +47,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 		);
 	}
 
-	private static class AfterSlotFitFilter implements ElementFilter {
+	private static class AfterVarFitFilter implements ElementFilter {
 		public boolean isAcceptable(Object element, PsiElement context) {
 			if (element instanceof PsiElement && isInAttribute(context)) {
 				PsiElement parent = context.getParent().getParent();
@@ -55,7 +55,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 				if (parent.getPrevSibling() == null || parent.getPrevSibling().getPrevSibling() == null) return false;
 
 				final ASTNode ctxPreviousNode = parent.getPrevSibling().getPrevSibling().getNode();
-				if (TaraTypes.SLOT.equals(ctxPreviousNode.getElementType()))
+				if (TaraTypes.VAR.equals(ctxPreviousNode.getElementType()))
 					return true;
 			}
 			return false;

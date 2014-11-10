@@ -8,7 +8,8 @@ public class PathFormatter {
 
 	public static final String MAGRITTE_PATH = "magritte";
 	public static final String MORPH_PATH = "morphs";
-	public static final String BOX_PATH = "loaders";
+	public static final String BOX_PATH = "boxes";
+	public static final String JAVA = "java";
 
 	public static String composeBoxPackagePath(String box) {
 		String[] split = box.split("\\.");
@@ -26,7 +27,6 @@ public class PathFormatter {
 		String aPackage = "";
 		for (int i = 2; i < split.length - 1; i++)
 			aPackage += i < split.length - 2 ? split[i] + "." : camelCase(split[i]);
-
 		return aPackage;
 	}
 
@@ -54,7 +54,7 @@ public class PathFormatter {
 	}
 
 	public static String getMorphPath(String separator) {
-		return MAGRITTE_PATH + separator + MORPH_PATH;
+		return MAGRITTE_PATH + separator + MORPH_PATH + separator + JAVA;
 	}
 
 	public static String getBoxPath(String separator) {

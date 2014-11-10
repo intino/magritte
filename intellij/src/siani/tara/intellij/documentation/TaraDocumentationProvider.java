@@ -36,7 +36,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	@NonNls
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
 		if (originalElement instanceof MetaIdentifier) {
-			Concept concept = TaraPsiImplUtil.getConceptContextOf(originalElement);
+			Concept concept = TaraPsiImplUtil.getConceptContainerOf(originalElement);
 			String doc = originalElement.getParent() instanceof TaraFacetApply ?
 				extractMetaDocumentationOfFacetApply(concept, originalElement.getText())
 				: extractMetaDocumentationOfConcept(concept);
@@ -46,7 +46,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 			return ((Concept) element).getDocCommentText();
 		if (element instanceof TaraBoxFile)
 			return !((TaraBoxFile) element).getConcepts().isEmpty() ? renderConceptValue(((TaraBoxFile) element).getConcepts().iterator().next()) : "";
-		return renderConceptValue(TaraPsiImplUtil.getConceptContextOf(element));
+		return renderConceptValue(TaraPsiImplUtil.getConceptContainerOf(element));
 	}
 
 	private String extractMetaDocumentationOfFacetApply(Concept concept, String facet) {

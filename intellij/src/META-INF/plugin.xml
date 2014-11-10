@@ -131,7 +131,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.imports.ImportMetamodelAnnotation"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.DateValueAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AddressAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AggregableConceptAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AggregatedConceptAnnotator"/>
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraConceptCompletionContributor"/>
     <completion.contributor language="Tara"

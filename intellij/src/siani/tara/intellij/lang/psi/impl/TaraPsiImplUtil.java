@@ -83,7 +83,7 @@ public class TaraPsiImplUtil {
 	}
 
 	@Nullable
-	public static Concept getConceptContextOf(PsiElement element) {
+	public static Concept getConceptContainerOf(PsiElement element) {
 		try {
 			PsiElement aElement = element;
 			while ((aElement.getParent() != null)
@@ -126,12 +126,12 @@ public class TaraPsiImplUtil {
 	public static Concept getParentOf(Concept concept) {
 		if (concept.isSub()) {
 			Concept parent = concept;
-			while (parent != null && parent.isSub()) parent = getConceptContextOf(parent);
+			while (parent != null && parent.isSub()) parent = getConceptContainerOf(parent);
 			return parent;
 		} else if (concept.getParentConcept() != null) {
 			TaraIdentifierReference identifierReference = concept.getSignature().getParentReference();
 			PsiElement resolve = ReferenceManager.resolve(identifierReference);
-			return getConceptContextOf(resolve);
+			return getConceptContainerOf(resolve);
 		}
 		return null;
 	}

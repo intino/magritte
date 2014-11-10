@@ -19,7 +19,7 @@ import siani.tara.intellij.lang.psi.*;
 
 import java.util.*;
 
-import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContextOf;
+import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContainerOf;
 
 public class TaraUtil {
 
@@ -46,32 +46,33 @@ public class TaraUtil {
 	}
 
 	public static String getMetaQualifiedName(Concept concept) {
-		PsiElement node = concept;
-		String type = concept != null ? concept.getType() : "";
-		while ((node = TaraPsiImplUtil.getContextOf(node)) != null)
-			if (node instanceof Concept && !((Concept) node).isSub())
-				type = ((Concept) node).getType() + "." + type;
-			else if (node instanceof TaraFacetApply || node instanceof TaraFacetTarget) {
-				if (node instanceof TaraFacetTarget)
-					type = FACET_TARGET + "(" + ((TaraFacetTarget) node).getIdentifierReference().getText() + ")" + "." + type;
+		PsiElement element = concept;
+		String type = concept != null && !concept.isSub() ? concept.getType() : "";
+		while ((element = TaraPsiImplUtil.getContextOf(element)) != null)
+			if (element instanceof Concept && !((Concept) element).isSub())
+				type = ((Concept) element).getType() + "." + type;
+			else if (element instanceof TaraFacetApply || element instanceof TaraFacetTarget) {
+				if (element instanceof TaraFacetTarget)
+					type = FACET_TARGET + "(" + ((TaraFacetTarget) element).getIdentifierReference().getText() + ")" + "." + type;
 				else type = FACET_APPLY + "(" +
-					((TaraFacetApply) node).getMetaIdentifierList().get(0).getText() + ")" + "." + type;
-				Concept conceptContextOf = getConceptContextOf(node);
+					((TaraFacetApply) element).getMetaIdentifierList().get(0).getText() + ")" + "." + type;
+				Concept conceptContextOf = getConceptContainerOf(element);
 				if (conceptContextOf != null) {
 					type = conceptContextOf.getType() + type;
-					node = conceptContextOf;
+					element = conceptContextOf;
 				}
 			}
 		return type;
 	}
 
 	public static String getMetaQualifiedName(TaraConceptReference reference) {
-		Concept concept = TaraPsiImplUtil.getConceptContextOf(reference);
+		Concept concept = TaraPsiImplUtil.getConceptContainerOf(reference);
 		String metaQualifiedName = getMetaQualifiedName(concept);
+		if (reference.getIdentifierReference() == null) return "";
 		List<TaraIdentifier> identifierList = reference.getIdentifierReference().getIdentifierList();
 		PsiElement resolve = ReferenceManager.resolve(identifierList.get(identifierList.size() - 1), false);
 		if (resolve == null || !Identifier.class.isInstance(resolve)) return null;
-		Concept contextOf = TaraPsiImplUtil.getConceptContextOf(resolve);
+		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(resolve);
 		String type = contextOf.getType();
 		return metaQualifiedName + "." + type;
 	}
@@ -189,10 +190,10 @@ public class TaraUtil {
 	}
 
 	public static String composeConceptQN(Identifier identifier) {
-		Concept concept = getConceptContextOf(identifier);
+		Concept concept = getConceptContainerOf(identifier);
 		String path = concept.getName();
 		while (concept != null) {
-			concept = getConceptContextOf(concept);
+			concept = getConceptContainerOf(concept);
 			if (concept != null) path = concept.getName() + "." + path;
 		}
 		return path;

@@ -70,7 +70,7 @@ public class DuplicateDetector {
 	private void checkInnerLinks(Node node) {
 		Set<String> set = new HashSet<>();
 		for (Node inner : node.getInnerNodes())
-			if (inner.is(LinkNode.class) && !set.add(((LinkNode) inner).getDestinyName()))
+			if (inner.is(LinkNode.class) && !set.add(((LinkNode) inner).getDestinyName() + (inner.isAggregated() ? "[Aggregated]" : "")))
 				errors.add(new DuplicateIdentifierError(inner.getName(), inner));
 	}
 

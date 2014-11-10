@@ -143,7 +143,7 @@ public class IntentionsGeneratorByFrame {
 		List<Concept> list = new ArrayList<>();
 		Concept aConcept = concept;
 		list.add(aConcept);
-		while ((aConcept = TaraPsiImplUtil.getConceptContextOf(aConcept)) != null)
+		while ((aConcept = TaraPsiImplUtil.getConceptContainerOf(aConcept)) != null)
 			list.add(0, aConcept);
 		return list;
 	}
@@ -163,8 +163,8 @@ public class IntentionsGeneratorByFrame {
 
 	private Concept getRootConcept(Concept concept) {
 		Concept aConcept = concept;
-		while (TaraPsiImplUtil.getConceptContextOf(aConcept) != null)
-			aConcept = TaraPsiImplUtil.getConceptContextOf(aConcept);
+		while (TaraPsiImplUtil.getConceptContainerOf(aConcept) != null)
+			aConcept = TaraPsiImplUtil.getConceptContainerOf(aConcept);
 		return aConcept;
 	}
 

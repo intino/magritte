@@ -29,7 +29,7 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
 		if (element instanceof MetaIdentifier) {
-			Concept concept = TaraPsiImplUtil.getConceptContextOf(element);
+			Concept concept = TaraPsiImplUtil.getConceptContainerOf(element);
 			if (concept == null) return;
 			Model model = TaraLanguage.getMetaModel(element.getContainingFile());
 			if (CONCEPT.equals(element.getText())) {

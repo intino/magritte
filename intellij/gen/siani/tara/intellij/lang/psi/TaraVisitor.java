@@ -43,7 +43,7 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitConceptReference(@NotNull TaraConceptReference o) {
-    visitPsiElement(o);
+    visitConceptReference(o);
   }
 
   public void visitCoordinateValue(@NotNull TaraCoordinateValue o) {

@@ -21,7 +21,7 @@ public class FacetApplyAnnotator extends TaraAnnotator {
 		TaraFacetApply facetApply = (TaraFacetApply) element;
 		Model model = TaraLanguage.getMetaModel(facetApply.getContainingFile());
 		if (model == null) return;
-		Concept concept = TaraPsiImplUtil.getConceptContextOf(facetApply);
+		Concept concept = TaraPsiImplUtil.getConceptContainerOf(facetApply);
 		Node node = findNode(concept, model);
 		if (node == null) return;
 		if (!isAllowedFacet(node, facetApply.getMetaIdentifierList().get(0).getText()))

@@ -66,7 +66,7 @@ public class IntentionsGenerator {
 	private List<Concept> getIntentionsPath(Concept intention) {
 		List<Concept> list = new ArrayList<>();
 		Concept contextOf = intention;
-		while ((contextOf = TaraPsiImplUtil.getConceptContextOf(contextOf)) != null)
+		while ((contextOf = TaraPsiImplUtil.getConceptContainerOf(contextOf)) != null)
 			list.add(0, contextOf);
 		list.add(intention);
 		return list;
@@ -86,7 +86,7 @@ public class IntentionsGenerator {
 			return aClass;
 		}
 		Concept parentConcept = concept.getParentConcept() != null ?
-			TaraPsiImplUtil.getConceptContextOf(ReferenceManager.resolve(concept.getSignature().getParentReference())) : null;
+			TaraPsiImplUtil.getConceptContainerOf(ReferenceManager.resolve(concept.getSignature().getParentReference())) : null;
 		PsiDirectory destiny = getDestiny(concept);
 		PsiClass anInterface = JavaDirectoryService.getInstance().createInterface(destiny, concept.getName());
 		setDocumentation(concept.getDoc(), anInterface);

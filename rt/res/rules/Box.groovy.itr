@@ -1,8 +1,7 @@
 defrule type(Box)
-package magritte.boxes[.$package+lowercase];
+package magritte.loaders[.$package+lowercase];
 
 import magritte.Model;
-import magritte.boxes.Box;
 import magritte.primitives.*;
 
 import static magritte.Annotation.*;
@@ -14,7 +13,7 @@ public class $name+camelCase~Box extends Box {
     }
 
     private $name+camelCase~Box(Model model) {
-        super(model);
+        super(store);
     }
 
     @Override
@@ -33,12 +32,11 @@ defrule type(Node) trigger(node)
 [/**
  * $doc
 */]\
-[$add.]def(["$name"]);
+def(["$name"]);
 	$annotation...[$NL]\
     $nodeType...[$NL]\
     $parent\
     $variable+set...[$NL]\
-    $reference
     $node...[$NL]\
 end();
 endrule
@@ -55,18 +53,6 @@ defrule trigger(parent)
 parent("$value");
 endrule
 
-defrule type(reference) !type(aggregated) trigger(reference)
-add().def();
-    type("$type");
-end();
-endrule
-
-defrule type(reference) trigger(reference)
-def();
-    parent("$value");
-end();
-endrule
-
 defrule type(Variable) type(reference) slot-name(value) trigger(set)
 set("$name", node("$variableValue"));
 endrule
@@ -80,7 +66,7 @@ set("$name", $variableValue);
 endrule
 
 defrule type(Annotation) trigger(annotation)
-set($value+UpperCase...[, ]);
+set($value+UpperCase);
 endrule
 
 defrule trigger(variableValue) slot-type(date)

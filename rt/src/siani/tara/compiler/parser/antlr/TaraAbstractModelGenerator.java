@@ -178,6 +178,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterConceptReference(@NotNull ConceptReferenceContext ctx) {
 		String parent = ctx.identifierReference().getText();
 		LinkNode node = new LinkNode(parent, (DeclaredNode) conceptStack.peek());
+		node.setAggregated(ctx.AGGREGATED() != null);
 		addHeaderInformation(ctx, node);
 		((DeclaredNode) conceptStack.peek()).add(node);
 		node.calculateQualifiedName();
@@ -391,8 +392,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			conceptStack.peek().getObject().add(Annotation.INTENTION);
 		for (int i = 0; i < ctx.ADDRESSED().size(); i++)
 			conceptStack.peek().getObject().add(Annotation.ADDRESSED);
-		for (int i = 0; i < ctx.AGGREGABLE().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.AGGREGABLE);
+		for (int i = 0; i < ctx.AGGREGATED().size(); i++)
+			conceptStack.peek().getObject().add(Annotation.AGGREGATED);
 	}
 
 	private void processVariableAnnotation(AnnotationsContext ctx) {

@@ -35,7 +35,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isRootSub(Concept element) {
-		return (element.isSub() && TaraPsiImplUtil.getConceptContextOf(element) == null);
+		return (element.isSub() && TaraPsiImplUtil.getConceptContainerOf(element) == null);
 	}
 
 	private void checkIfDuplicated(Concept concept) {
@@ -45,7 +45,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 
 	public int findDuplicates(Concept concept) {
 		if (concept.getName() == null) return 1;
-		Concept parent = TaraPsiImplUtil.getConceptContextOf(concept);
+		Concept parent = TaraPsiImplUtil.getConceptContainerOf(concept);
 		if (parent != null)
 			return checkChildDuplicates(concept, parent);
 		else {

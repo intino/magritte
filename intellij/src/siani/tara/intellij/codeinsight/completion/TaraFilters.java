@@ -134,7 +134,7 @@ public class TaraFilters {
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			if (element instanceof PsiElement && context != null && context.getParent() != null)
 				if (context.getParent() instanceof MetaIdentifier && !inBody(context) && !inAnnotations(context)) {
-					Concept contextOf = TaraPsiImplUtil.getConceptContextOf(context);
+					Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(context);
 					if (contextOf == null || contextOf.getPrevSibling() == null) return false;
 					IElementType elementType = contextOf.getPrevSibling().getNode().getElementType();
 					if (TaraTypes.NEW_LINE_INDENT.equals(elementType) || TaraTypes.NEWLINE.equals(elementType))
@@ -154,7 +154,7 @@ public class TaraFilters {
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			if (element instanceof PsiElement && context != null && context.getParent() != null)
 				if (context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context)) {
-					Concept contextOf = TaraPsiImplUtil.getConceptContextOf(TaraPsiImplUtil.getConceptContextOf(context));
+					Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(TaraPsiImplUtil.getConceptContainerOf(context));
 					if (contextOf == null) return false;
 					Model metaModel = TaraLanguage.getMetaModel(contextOf.getFile());
 					if (metaModel == null) return false;

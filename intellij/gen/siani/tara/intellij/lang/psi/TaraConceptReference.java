@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraConceptReference extends TaraPsiElement {
+public interface TaraConceptReference extends ConceptReference {
 
   @Nullable
   TaraDoc getDoc();

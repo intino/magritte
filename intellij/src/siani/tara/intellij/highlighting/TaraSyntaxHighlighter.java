@@ -93,7 +93,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(PRIVATE, ANNOTATION);
 		KEYS.put(UNIVERSAL, ANNOTATION);
 		KEYS.put(ADDRESSED, ANNOTATION);
-		KEYS.put(AGGREGABLE, ANNOTATION);
+		KEYS.put(AGGREGATED, ANNOTATION);
 
 		KEYS.put(NAMED, ANNOTATION);
 		KEYS.put(RESOURCE_KEY, PRIMITIVE);
@@ -102,7 +102,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(USE_KEY, KEYWORD);
 		KEYS.put(BOX_KEY, KEYWORD);
 		KEYS.put(IS, KEYWORD);
-		KEYS.put(SLOT, KEYWORD);
+		KEYS.put(VAR, KEYWORD);
 		KEYS.put(AS, KEYWORD);
 		KEYS.put(ON, KEYWORD);
 		KEYS.put(WITH, KEYWORD);
@@ -116,7 +116,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(EURO, PRIMITIVE);
 		KEYS.put(DOLLAR, PRIMITIVE);
 		KEYS.put(GRADE, PRIMITIVE);
-
+		KEYS.put(NEW_LINE_INDENT, KEYWORD);
 		KEYS.put(WORD_KEY, PRIMITIVE);
 		KEYS.put(STRING_TYPE, PRIMITIVE);
 		KEYS.put(DOUBLE_TYPE, PRIMITIVE);
