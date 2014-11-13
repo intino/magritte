@@ -38,7 +38,8 @@ defrule type(Node) trigger(node)
     $nodeType...[$NL]\
     $parent\
     $variable+set...[$NL]\
-    $reference
+    $reference\
+
     $node...[$NL]\
 end();
 endrule
@@ -55,7 +56,7 @@ defrule trigger(parent)
 parent("$value");
 endrule
 
-defrule type(reference) !type(aggregated) trigger(reference)
+defrule type(reference) type(aggregated) trigger(reference)
 add().def();
     type("$type");
 end();
@@ -63,24 +64,25 @@ endrule
 
 defrule type(reference) trigger(reference)
 def();
-    parent("$value");
+    $parent
 end();
+
 endrule
 
-defrule type(Variable) type(reference) slot-name(value) trigger(set)
+defrule type(Variable) type(reference) slot-name(variableValue) trigger(set)
 set("$name", node("$variableValue"));
 endrule
 
-defrule type(Variable) type(List) slot-name(value) trigger(set)
+defrule type(Variable) type(List) slot-name(variableValue) trigger(set)
 set("$name", $variableValue);
 endrule
 
-defrule type(Variable) !type(List) slot-name(value) trigger(set)
+defrule type(Variable) slot-name(variableValue)  trigger(set)
 set("$name", $variableValue);
 endrule
 
 defrule type(Annotation) trigger(annotation)
-set($value+UpperCase...[, ]);
+set($value+CamelCase...[, ]);
 endrule
 
 defrule trigger(variableValue) slot-type(date)

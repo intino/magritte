@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="itrules">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/rt/lib/itrules-0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/rt/lib/itrules.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

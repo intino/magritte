@@ -15,6 +15,7 @@ import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.*;
 
+import static siani.tara.lang.Annotations.Annotation.FACET;
 import static siani.tara.lang.Annotations.Annotation.INTENTION;
 
 
@@ -58,7 +59,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 
 	private Node findFacet(Model model, String facet) {
 		for (Node node : model.getTreeModel())
-			if (node.getObject().is(INTENTION) && node.getName().equals(facet))
+			if (node.getObject().is(FACET) && node.getName().equals(facet))
 				return node;
 		return null;
 	}

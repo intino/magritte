@@ -10,8 +10,6 @@ import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
-import java.util.List;
-
 public class FacetApplyAnnotator extends TaraAnnotator {
 
 	@Override
@@ -31,7 +29,7 @@ public class FacetApplyAnnotator extends TaraAnnotator {
 	}
 
 	private void checkDuplicatedFacet(Concept concept, TaraFacetApply facetApply) {
-		List<TaraFacetApply> facetApplies = concept.getBody().getFacetApplies();
+		TaraFacetApply[] facetApplies = concept.getFacetApplies();
 		int count = 0;
 		for (TaraFacetApply apply : facetApplies) {
 			if (apply == null || apply.getMetaIdentifierList().isEmpty() || facetApply.getMetaIdentifierList().isEmpty())

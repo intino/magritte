@@ -1,37 +1,33 @@
-package siani.tara.intellij.annotator;
+package siani.tara.intellij.annotator.fix;
 
 import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Parameters;
 import siani.tara.intellij.lang.psi.Signature;
 import siani.tara.intellij.lang.psi.TaraElementFactory;
-import siani.tara.intellij.lang.psi.TaraFacetApply;
-import siani.tara.lang.Attribute;
 import siani.tara.lang.Variable;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class AddParametersFix implements IntentionAction {
-
+public class OfferCompletingParameters implements IntentionAction {
+	private final Signature signature;
 	private final List<Variable> variables;
-	PsiElement signature;
 
-
-	public AddParametersFix(PsiElement signature, List<Variable> variables) {
-		this.signature = signature;
+	public OfferCompletingParameters(Signature element, List<Variable> variables) {
+		this.signature = element;
 		this.variables = variables;
 	}
 
 	@NotNull
 	@Override
 	public String getText() {
-		return "Add parameters";
+		return "Add explicit parameters";
 	}
 
 	@NotNull
@@ -48,12 +44,21 @@ public class AddParametersFix implements IntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-		boolean stringAttribute = isStringAttribute(variables.get(0));
-		Parameters parameters = TaraElementFactory.getInstance(project).createParameters(stringAttribute);
-		signature.add(parameters);
-		int textOffset = signature instanceof Signature ? ((Signature) signature).getParameters().getTextOffset() :
-			((TaraFacetApply) signature).getParameters().getTextOffset();
-		editor.getCaretModel().moveToOffset(textOffset + 1 + (stringAttribute ? 1 : 0));
+		Parameters parameters = TaraElementFactory.getInstance(project).createParameters(getNames(variables));
+		if (signature.getParameters() == null) signature.add(parameters);
+		else signature.getParameters().replace(parameters);
+		editor.getCaretModel().moveToOffset(offset());
+	}
+
+	private int offset() {
+		return signature.getParameters().getParameters()[0].getTextOffset() + variables.get(0).getName().length() + 3;
+	}
+
+
+	private String[] getNames(List<Variable> variables) {
+		List<String> names = new ArrayList<>();
+		for (Variable variable : variables) names.add(variable.getName());
+		return names.toArray(new String[names.size()]);
 	}
 
 	@Override
@@ -61,12 +66,4 @@ public class AddParametersFix implements IntentionAction {
 		return true;
 	}
 
-	public boolean isStringAttribute(Variable variable) {
-		if (variable instanceof Attribute) {
-			Attribute o = (Attribute) variable;
-			if ("string".equals(o.getType().toLowerCase()) || "alias".equals(o.getType().toLowerCase()))
-				return true;
-		}
-		return false;
-	}
 }

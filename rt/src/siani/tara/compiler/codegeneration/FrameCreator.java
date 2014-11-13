@@ -54,6 +54,7 @@ public class FrameCreator {
 			LinkNode linkNode = (LinkNode) node;
 			Frame newFrame = new Frame(getReferenceTypes(linkNode));
 			newFrame.addSlot("parent", linkNode.getDestinyName());
+			newFrame.addSlot("type", linkNode.getDestiny().getObject().getType());
 			frame.addSlot("reference", newFrame);
 		}
 	}
@@ -70,7 +71,7 @@ public class FrameCreator {
 
 	private void addNodeInfo(Node node, Frame newFrame) {
 		if (node != initNode)
-			newFrame.addSlot("static", "static");
+			newFrame.addSlot("inner", "inner");
 		if (node.getObject().getDoc() != null)
 			newFrame.addSlot("doc", node.getObject().getDoc());
 		if (node.getName() != null && !node.getName().isEmpty())

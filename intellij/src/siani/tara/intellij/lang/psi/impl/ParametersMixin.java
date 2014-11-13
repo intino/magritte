@@ -14,8 +14,10 @@ public class ParametersMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
+	@NotNull
 	public Parameter[] getParameters() {
-		return PsiTreeUtil.getChildrenOfType(this, Parameter.class);
+		Parameter[] childrenOfType = PsiTreeUtil.getChildrenOfType(this, Parameter.class);
+		return childrenOfType == null ? new Parameter[0] : childrenOfType;
 	}
 
 	public TaraFacetApply isInFacet() {

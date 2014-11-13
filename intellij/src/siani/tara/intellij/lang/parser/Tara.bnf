@@ -87,14 +87,11 @@ parameterValue ::= identifierReference+
 		        | dateValue+
 		        | coordinateValue+
 		        | metaWord
-		        | empty
 
 metaWord ::= metaIdentifier metaWordNames*
 {pin = 1}
 private metaWordNames ::= DOT identifier
 {pin = 1}
-
-empty::=
 
 body ::= (NEW_LINE_INDENT | INLINE) (conceptConstituents NEWLINE+)+ DEDENT {
 	pin = 1

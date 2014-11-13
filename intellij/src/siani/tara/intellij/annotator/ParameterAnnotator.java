@@ -57,6 +57,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 		String name = parameter.getIdentifier().getText();
 		Variable variable = getVariableByName(variables, name);
 		if (variable == null) annotateErroneousParameter(parameter, holder);
+		if (parameter.getValue() == null) annotateErroneousParameter(parameter, holder);
 		else if (variable instanceof Word) {
 			if (!isCorrectWord((Word) variable, parameter.getValue().getText()))
 				annotateErroneousParameter(parameter, holder);
@@ -155,6 +156,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 	private boolean areSameType(Variable variable, Parameter parameter) {
 		if (!Attribute.class.isInstance(variable)) return false;
 		String varType = variable.getType();
+		if (parameter.getValue() == null) return false;
 		String parameterType = parameter.getValue().getClass().getSimpleName();
 		Types type;
 		if (parameterType.equals("TaraParameterValueImpl"))

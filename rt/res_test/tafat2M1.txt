@@ -16,7 +16,7 @@ itrules
 icons
 /Users/oroncal/workspace/sandbox/tafat2/m1/res/icons
 outputpath
-/Users/oroncal/workspace/sandbox/system/compile-server/magritte_e46cd235/taraStubs/media/java-production
+/Users/oroncal/workspace/sandbox/tafat2/m1/gen
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat2/m1/gen
 classpath

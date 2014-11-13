@@ -4,6 +4,7 @@ import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.annotator.fix.OfferCompletingFacetParameters;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class FacetApplyParametersAnnotator extends TaraAnnotator {
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder annotationHolder) {
+		holder = annotationHolder;
 		if (!TaraFacetApply.class.isInstance(element)) return;
 		TaraFacetApply facetApply = (TaraFacetApply) element;
 		if (facetApply.getParameters() == null) return;
@@ -31,9 +33,13 @@ public class FacetApplyParametersAnnotator extends TaraAnnotator {
 		TaraParameters parameters = facetApply.getParameters();
 		List<Variable> facetVariables = getFacetVariables(node.getObject().getAllowedFacets(), facetApply.getMetaIdentifierList().get(0).getText());
 		int minimum = collectMinimumNumberOfParameter(facetVariables);
-		if (parameters == null && minimum > 0 || (parameters != null) && parameters.getParameters().length < minimum) {
-			Annotation errorAnnotation = annotationHolder.createErrorAnnotation(element, "parameters missed: " + variablesToString(facetVariables));
-			errorAnnotation.registerFix(new AddParametersFix(element, facetVariables));
+		if (parameters == null && minimum > 0 || (parameters != null && parameters.getParameters().length < minimum)) {
+			Annotation annotation = annotationHolder.createErrorAnnotation(element, "Parameters missed: " + variablesToString(facetVariables));
+			if (parameters == null || parameters.getParameters().length == 0)
+				annotation.registerFix(new OfferCompletingFacetParameters((TaraFacetApply) element, facetVariables));
+		} else if (facetVariables.size() > 0 && (parameters == null || parameters.getParameters().length < facetVariables.size())) {
+			Annotation annotation = annotationHolder.createInfoAnnotation(element, "Add explicit parameters");
+			annotation.registerFix(new OfferCompletingFacetParameters((TaraFacetApply) element, facetVariables));
 		}
 	}
 

@@ -68,7 +68,7 @@ public void set$name+camelCase($type+camelCase) {
 endrule
 
 defrule type(declarednode) trigger(node)
-public [$static ]class $name+camelCase extends Morph {
+public [$inner ]class $name+camelCase extends Morph {
 
 	public $name+camelCase(Node node) {
         super(node);

@@ -23,7 +23,6 @@ public interface TaraTypes {
 	IElementType DATE_VALUE = new TaraElementType("DATE_VALUE");
 	IElementType DOC = new TaraElementType("DOC");
 	IElementType DOUBLE_VALUE = new TaraElementType("DOUBLE_VALUE");
-	IElementType EMPTY = new TaraElementType("EMPTY");
 	IElementType EMPTY_FIELD = new TaraElementType("EMPTY_FIELD");
 	IElementType EXPLICIT_PARAMETER = new TaraElementType("EXPLICIT_PARAMETER");
 	IElementType FACET_APPLY = new TaraElementType("FACET_APPLY");
@@ -140,8 +139,6 @@ public interface TaraTypes {
 				return new TaraDocImpl(node);
 			} else if (type == DOUBLE_VALUE) {
 				return new TaraDoubleValueImpl(node);
-			} else if (type == EMPTY) {
-				return new TaraEmptyImpl(node);
 			} else if (type == EMPTY_FIELD) {
 				return new TaraEmptyFieldImpl(node);
 			} else if (type == EXPLICIT_PARAMETER) {

@@ -27,6 +27,8 @@ public abstract class TaraElementFactory {
 
 	public abstract Parameters createParameters(boolean string);
 
+	public abstract Parameters createParameters(String... string);
+
 	public abstract Variable createWord(String name, String[] types);
 
 	public abstract Variable createResource(String name, String types);

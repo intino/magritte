@@ -62,9 +62,6 @@ public class TaraParser implements PsiParser {
     else if (root_ == DOUBLE_VALUE) {
       result_ = doubleValue(builder_, 0);
     }
-    else if (root_ == EMPTY) {
-      result_ = empty(builder_, 0);
-    }
     else if (root_ == EMPTY_FIELD) {
       result_ = emptyField(builder_, 0);
     }
@@ -850,12 +847,6 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  public static boolean empty(PsiBuilder builder_, int level_) {
-    builder_.mark().done(EMPTY);
-    return true;
-  }
-
-  /* ********************************************************** */
   // EMPTY_REF
   public static boolean emptyField(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "emptyField")) return false;
@@ -1474,7 +1465,6 @@ public class TaraParser implements PsiParser {
   // 		        | dateValue+
   // 		        | coordinateValue+
   // 		        | metaWord
-  // 		        | empty
   public static boolean parameterValue(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parameterValue")) return false;
     boolean result_;
@@ -1488,7 +1478,6 @@ public class TaraParser implements PsiParser {
     if (!result_) result_ = parameterValue_6(builder_, level_ + 1);
     if (!result_) result_ = parameterValue_7(builder_, level_ + 1);
     if (!result_) result_ = metaWord(builder_, level_ + 1);
-    if (!result_) result_ = empty(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, PARAMETER_VALUE, result_, false, null);
     return result_;
   }

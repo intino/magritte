@@ -228,8 +228,11 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public TaraFacetApply[] getFacetApplies() {
-		if (this.getBody() == null) return new TaraFacetApply[0];
-		List<TaraFacetApply> facetApplies = getBody().getFacetApplies();
+		List<TaraFacetApply> facetApplies = new ArrayList<>();
+		if (((TaraConcept) this).getAnnotationsAndFacets() != null && ((TaraConcept) this).getAnnotationsAndFacets().getFacetApply() != null)
+			facetApplies.add(((TaraConcept) this).getAnnotationsAndFacets().getFacetApply());
+		if (this.getBody() != null)
+			facetApplies.addAll(getBody().getFacetApplies());
 		return facetApplies.toArray(new TaraFacetApply[facetApplies.size()]);
 	}
 

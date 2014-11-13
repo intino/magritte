@@ -120,9 +120,26 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	public Parameters createParameters(boolean string) {
 		final TaraBoxFileImpl file = createDummyFile(
 			"box project.mod.tara\n" +
-				"Form Ficha(" + (string ? "\"\"" : "") + ")\n"
+				"Form(" + (string ? "\"\"" : "") + ")" + "Ficha\n"
 		);
 		return file.getConcepts().iterator().next().getSignature().getParameters();
+	}
+
+	@Override
+	public Parameters createParameters(String... names) {
+		String parameters = buildParameters(names);
+		final TaraBoxFileImpl file = createDummyFile(
+			"box project.mod.tara\n" +
+				"Form(" + parameters + ")" + " Ficha\n"
+		);
+		return file.getConcepts().iterator().next().getSignature().getParameters();
+	}
+
+	private String buildParameters(String[] names) {
+		String parms = "";
+		String separator = ", ";
+		for (String name : names) parms += name + " = " + separator;
+		return parms.substring(0, parms.length() - separator.length());
 	}
 
 	public TaraAddress createAddress(long value) {

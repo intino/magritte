@@ -47,12 +47,6 @@ public class TaraParameterValueImpl extends ASTWrapperPsiElement implements Tara
   }
 
   @Override
-  @Nullable
-  public TaraEmpty getEmpty() {
-    return findChildByClass(TaraEmpty.class);
-  }
-
-  @Override
   @NotNull
   public List<TaraIdentifierReference> getIdentifierReferenceList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifierReference.class);

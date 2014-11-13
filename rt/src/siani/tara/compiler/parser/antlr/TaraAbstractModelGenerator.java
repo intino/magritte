@@ -179,6 +179,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		String parent = ctx.identifierReference().getText();
 		LinkNode node = new LinkNode(parent, (DeclaredNode) conceptStack.peek());
 		node.setAggregated(ctx.AGGREGATED() != null);
+		node.setReference(true);
 		addHeaderInformation(ctx, node);
 		((DeclaredNode) conceptStack.peek()).add(node);
 		node.calculateQualifiedName();
