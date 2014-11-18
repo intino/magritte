@@ -16,7 +16,7 @@
 	psiImplUtilClass='siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil'
 }
 
-root ::= NEWLINE* header? NEWLINE+ (concept  NEWLINE+)*
+root ::= NEWLINE* header? NEWLINE+ (concept NEWLINE+)*
 
 header ::= box?  imports?
 
@@ -24,7 +24,7 @@ box ::= BOX_KEY headerReference
 
 private imports ::= anImport+
 
-anImport ::= NEWLINE+ USE_KEY headerReference (AS IDENTIFIER_KEY)? {
+anImport ::= NEWLINE+ USE_KEY headerReference (AS METAMODEL)? {
 	mixin= 'siani.tara.intellij.lang.psi.impl.ImportMixin'
     implements='siani.tara.intellij.lang.psi.Import'
 }
@@ -108,12 +108,14 @@ conceptReference ::= doc? HAS identifierReference identifier? (IS AGGREGATED)?
 	implements = 'siani.tara.intellij.lang.psi.ConceptReference'
 }
 
-variable ::= doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute |
-			dateAttribute | coordinateAttribute | resource | referenceAttribute | word) annotationsAndFacets? {
+variable ::= doc? VAR variableDeclaration annotationsAndFacets? {
 	pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'siani.tara.intellij.lang.psi.Variable'
 }
+private variableDeclaration::= naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute |
+		dateAttribute | coordinateAttribute | resource | referenceAttribute | word
+
 private resource             ::= RESOURCE_KEY attributeType IDENTIFIER_KEY                                                  {pin=1}
 private coordinateAttribute  ::= COORDINATE_TYPE  LIST? IDENTIFIER_KEY (EQUALS (coordinateValue+ | emptyField))?             {pin=1}
 private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (EQUALS (booleanValue+ | emptyField))?                   {pin=1}
@@ -141,7 +143,7 @@ doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
 dateValue       ::= DATE_VALUE_KEY
 coordinateValue ::= COORDINATE_VALUE_KEY
 linkValue       ::= ADDRESS_VALUE | identifierReference
-measure ::= IDENTIFIER_KEY | DOLLAR | EURO | PERCENTAGE | GRADE
+measure ::= IDENTIFIER_KEY | MEASURE_VALUE
 
 annotationsAndFacets ::= IS (annotations+ | facetApply)
 {pin = 1}
@@ -155,7 +157,7 @@ facetApply ::= metaIdentifier parameters? (WITH metaIdentifier)? body?{
 facetTarget ::= ON identifierReference ALWAYS? body?
 {pin = 1}
 
-annotations ::= (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | COMPONENT | FACET | INTENTION | PROPERTY | UNIVERSAL | ADDRESSED | AGGREGATED)+ {
+annotations ::= (ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED | COMPONENT | FACET | INTENTION | PROPERTY | UNIVERSAL | ADDRESSED | AGGREGATED)+ {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotations'

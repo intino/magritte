@@ -13,7 +13,7 @@ import siani.tara.lang.Node;
 
 import java.util.Collection;
 
-public class FacetAnnotator extends TaraAnnotator {
+public class IntentionAnnotator extends TaraAnnotator {
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
@@ -27,10 +27,10 @@ public class FacetAnnotator extends TaraAnnotator {
 		Node node = findNode(concept, model);
 		if (node == null || !node.getObject().is(Annotations.Annotation.INTENTION)) return;
 		if (((Concept) element).getConceptLinks().length > 0)
-			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("facet.with.children.error.message"));
+			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("intention.with.children.error.message"));
 		Collection<Concept> conceptChildren = ((Concept) element).getInnerConcepts();
 		if (!conceptChildren.isEmpty() && !allAreSub(conceptChildren))
-			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("facet.with.children.error.message"));
+			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("intention.with.children.error.message"));
 	}
 
 	private boolean allAreSub(Collection<Concept> conceptChildren) {

@@ -22,7 +22,7 @@ public class ParametersAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		if (!Signature.class.isInstance(element)) return;
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(element);
-		boolean system = ModuleConfiguration.getInstance(TaraUtil.getModuleOfFile(element.getContainingFile())).isSystem();
+		boolean system = ModuleConfiguration.getInstance(TaraUtil.getModuleOfFile(element.getContainingFile())).isTerminal();
 		if (isLinkConcept(concept)) return;
 		Model heritage = TaraLanguage.getMetaModel(element.getContainingFile());
 		Node node;

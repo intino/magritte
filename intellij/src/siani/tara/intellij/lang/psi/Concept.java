@@ -33,6 +33,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isSub();
 
+	boolean isRoot();
+
 	Collection<Concept> getSubConcepts();
 
 	boolean isIntention();
@@ -63,6 +65,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 	String getName();
 
 	String getQualifiedName();
+
+	String getMetaQualifiedName();
 
 	@Nullable
 	String getType();

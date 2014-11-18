@@ -16,54 +16,54 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.TaraBundle;
 
-public class Magritte implements ValidatableSdkAdditionalData, JDOMExternalizable {
-	private static final Logger LOG = Logger.getInstance("#org.jetbrains.idea.devkit.projectRoots.Magritte");
+public class Tdk implements ValidatableSdkAdditionalData, JDOMExternalizable {
+	private static final Logger LOG = Logger.getInstance("#org.jetbrains.idea.devkit.projectRoots.TDK");
 
 	@SuppressWarnings({"WeakerAccess"})
-	public String myMagritteHome;
+	public String myTdkHome;
 	private final Sdk myCurrentJdk;
 
 	private String myJavaSdkName;
 	private Sdk myJavaSdk;
 
-	private LocalFileSystem.WatchRequest myMagritteRoot = null;
+	private LocalFileSystem.WatchRequest myTDKRoot = null;
 	@NonNls
 	private static final String SDK = "sdk";
 
-	public Magritte(String MagritteHome, Sdk javaSdk, Sdk currentJdk) {
-		myMagritteHome = MagritteHome;
+	public Tdk(String MagritteHome, Sdk javaSdk, Sdk currentJdk) {
+		myTdkHome = MagritteHome;
 		myCurrentJdk = currentJdk;
-		if (myMagritteHome != null) {
-			myMagritteRoot = LocalFileSystem.getInstance().addRootToWatch(myMagritteHome, true);
+		if (myTdkHome != null) {
+			myTDKRoot = LocalFileSystem.getInstance().addRootToWatch(myTdkHome, true);
 		}
 		myJavaSdk = javaSdk;
 	}
 
 	//readExternal()
-	public Magritte(Sdk currentSdk) {
+	public Tdk(Sdk currentSdk) {
 		myCurrentJdk = currentSdk;
 	}
 
-	public String getMagritteHome() {
-		return myMagritteHome;
+	public String getTdkHome() {
+		return myTdkHome;
 	}
 
 	public Object clone() throws CloneNotSupportedException {
-		return new Magritte(myMagritteHome, getJavaSdk(), myCurrentJdk);
+		return new Tdk(myTdkHome, getJavaSdk(), myCurrentJdk);
 	}
 
 	public void checkValid(SdkModel sdkModel) throws ConfigurationException {
-		if (myMagritteHome == null || myMagritteHome.length() == 0 || getJavaSdk() == null) {
+		if (myTdkHome == null || myTdkHome.length() == 0 || getJavaSdk() == null) {
 			throw new ConfigurationException(TaraBundle.message("Magritte.specification"));
 		}
 	}
 
 	public void readExternal(Element element) throws InvalidDataException {
 		DefaultJDOMExternalizer.readExternal(this, element);
-		LOG.assertTrue(myMagritteRoot == null);
+		LOG.assertTrue(myTDKRoot == null);
 		myJavaSdkName = element.getAttributeValue(SDK);
-		if (myMagritteHome != null) {
-			myMagritteRoot = LocalFileSystem.getInstance().addRootToWatch(myMagritteHome, true);
+		if (myTdkHome != null) {
+			myTDKRoot = LocalFileSystem.getInstance().addRootToWatch(myTdkHome, true);
 		}
 	}
 
@@ -76,8 +76,8 @@ public class Magritte implements ValidatableSdkAdditionalData, JDOMExternalizabl
 	}
 
 	void cleanupWatchedRoots() {
-		if (myMagritteRoot != null) {
-			LocalFileSystem.getInstance().removeWatchedRoot(myMagritteRoot);
+		if (myTDKRoot != null) {
+			LocalFileSystem.getInstance().removeWatchedRoot(myTDKRoot);
 		}
 	}
 

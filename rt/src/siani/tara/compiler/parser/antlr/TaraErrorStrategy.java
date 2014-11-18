@@ -10,7 +10,8 @@ public class TaraErrorStrategy extends DefaultErrorStrategy {
 		System.out.println("Line: " + token.getLine());
 		System.out.println("Column: " + token.getCharPositionInLine());
 		System.out.println("Text Length: " + token.getText().length());
-		System.out.println("Token type: " + nameList[token.getType()]);
+		if (token.getType() > 0)
+			System.out.println("Token type: " + nameList[token.getType()]);
 		System.out.println("Text: " + token.getText().replace("\n", "\\n"));
 		System.out.println("Expected tokens: " + recognizer.getExpectedTokens().toString(recognizer.getTokenNames()));
 	}

@@ -5,7 +5,7 @@ options { tokenVocab=TaraLexer; }
 package siani.tara.compiler.parser.antlr;
 }
 
-root: NEWLINE* header? NEWLINE+ (concept  NEWLINE*)* EOF;
+root: NEWLINE* header? NEWLINE* (concept NEWLINE*)* EOF;
 
 header :  box? imports?;
 box : BOX headerReference;
@@ -76,7 +76,7 @@ linkValue       : address | identifierReference;
 
 measure : IDENTIFIER | DOLLAR | EURO | PERCENTAGE | GRADE;
 
-annotations: IS (PRIVATE | TERMINAL | SINGLE | REQUIRED | NAMED | FACET | INTENTION | COMPONENT | PROPERTY | UNIVERSAL | ADDRESSED | AGGREGATED)+ ;
+annotations: IS (ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED | FACET | INTENTION | COMPONENT | PROPERTY | UNIVERSAL | ADDRESSED | AGGREGATED)+ ;
 
 varInit : IDENTIFIER COLON initValue;
 

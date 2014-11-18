@@ -46,7 +46,9 @@ public class GenerateAction extends AnAction implements DumbAware {
 	private void generateAddresses(TaraBoxFile box) {
 		Model model = TaraLanguage.getMetaModel(box);
 		if (model == null) return;
-		AddressGenerator addressGenerator = new AddressGenerator(getAddressedConcepts(model, TaraUtil.getAllConceptsOfFile(box)));
+		Concept[] addressedConcepts = getAddressedConcepts(model, TaraUtil.getAllConceptsOfFile(box));
+		if (addressedConcepts.length == 0) return;
+		AddressGenerator addressGenerator = new AddressGenerator(addressedConcepts);
 		addressGenerator.generate();
 	}
 

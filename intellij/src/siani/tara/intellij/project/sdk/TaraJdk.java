@@ -37,7 +37,7 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 	private static final Icon ADD_SDK = TaraIcons.getIcon(TaraIcons.ADD_SDK);
 	private static final Icon SDK_CLOSED = TaraIcons.getIcon(TaraIcons.SDK_CLOSED);
 
-	private static final Logger LOG = Logger.getInstance("#org.jetbrains.idea.devkit.projectRoots.IdeaJdk");
+	private static final Logger LOG = Logger.getInstance("#org.jetbrains.idea.devkit.projectRoots.TaraJdk");
 	@NonNls
 	private static final String LIB_DIR_NAME = "lib";
 	@NonNls
@@ -50,8 +50,8 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 	@Nullable
 	private static Sdk getInternalJavaSdk(final Sdk sdk) {
 		final SdkAdditionalData data = sdk.getSdkAdditionalData();
-		if (data instanceof Magritte)
-			return ((Magritte) data).getJavaSdk();
+		if (data instanceof Tdk)
+			return ((Tdk) data).getJavaSdk();
 		return null;
 	}
 
@@ -125,14 +125,14 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 		TaraLanguage.addModelRoot(new File(sdkHome, "model").getAbsolutePath());
 	}
 
-	static String getDefaultMagritte() {
-		@NonNls String defaultMagritte = "";
+	static String getDefaultTdk() {
+		@NonNls String defaultTdk = "";
 		try {
-			defaultMagritte = new File(PathManager.getSystemPath()).getCanonicalPath() + File.separator + "plugins-sandbox";
+			defaultTdk = new File(PathManager.getSystemPath()).getCanonicalPath() + File.separator + "plugins-sandbox";
 		} catch (IOException e) {
 			//can't be on running instance
 		}
-		return defaultMagritte;
+		return defaultTdk;
 	}
 
 	private static void addSources(File file, SdkModificator sdkModificator) {
@@ -219,13 +219,13 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 
 	public static boolean isFromTARAProject(String path) {
 		File home = new File(path, LIB_DIR_NAME);
-		File[] magritteFile = home.listFiles(new FileFilter() {
+		File[] tdkFile = home.listFiles(new FileFilter() {
 			public boolean accept(File pathname) {
 				@NonNls final String name = pathname.getName();
-				return name.equals("magritte.jar") && !pathname.isDirectory();
+				return name.equals("tdk.jar") && !pathname.isDirectory();
 			}
 		});
-		return magritteFile != null && magritteFile.length != 0;
+		return tdkFile != null && tdkFile.length != 0;
 	}
 
 	public Icon getIcon() {
@@ -260,13 +260,13 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 
 	public String suggestSdkName(String currentSdkName, String sdkHome) {
 		@NonNls final String productName;
-		productName = "Magritte ";
+		productName = "Tdk ";
 		String buildNumber = getBuildNumber(sdkHome);
 		return productName + (buildNumber != null ? buildNumber : "");
 	}
 
 	public boolean setupSdkPaths(final Sdk sdk, SdkModel sdkModel) {
-		final Magritte additionalData = (Magritte) sdk.getSdkAdditionalData();
+		final Tdk additionalData = (Tdk) sdk.getSdkAdditionalData();
 		if (additionalData != null)
 			additionalData.cleanupWatchedRoots();
 
@@ -296,7 +296,7 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 			final Sdk jdk = sdkModel.findSdk(name);
 			LOG.assertTrue(jdk != null);
 			setupSdkPaths(sdkModificator, sdk.getHomePath(), jdk);
-			sdkModificator.setSdkAdditionalData(new Magritte(getDefaultMagritte(), jdk, sdk));
+			sdkModificator.setSdkAdditionalData(new Tdk(getDefaultTdk(), jdk, sdk));
 			sdkModificator.setVersionString(jdk.getVersionString());
 			sdkModificator.commitChanges();
 			return true;
@@ -330,16 +330,16 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 	}
 
 	public void saveAdditionalData(@NotNull SdkAdditionalData additionalData, @NotNull Element additional) {
-		if (additionalData instanceof Magritte)
+		if (additionalData instanceof Tdk)
 			try {
-				((Magritte) additionalData).writeExternal(additional);
+				((Tdk) additionalData).writeExternal(additional);
 			} catch (WriteExternalException e) {
 				LOG.error(e);
 			}
 	}
 
 	public SdkAdditionalData loadAdditionalData(@NotNull Sdk sdk, Element additional) {
-		Magritte sandbox = new Magritte(sdk);
+		Tdk sandbox = new Tdk(sdk);
 		try {
 			sandbox.readExternal(additional);
 		} catch (InvalidDataException e) {

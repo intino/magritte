@@ -17,7 +17,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.lang.Model;
+import siani.tara.lang.Node;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -117,6 +120,10 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return packageName + "." + name;
 	}
 
+	public String getMetaQualifiedName() {
+		return TaraUtil.getMetaQualifiedName((Concept) this);
+	}
+
 	public TaraBoxFileImpl getFile() throws PsiInvalidElementAccessException {
 		return (TaraBoxFileImpl) super.getContainingFile();
 	}
@@ -168,9 +175,12 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return findChildByClass(Body.class);
 	}
 
-
 	public boolean isSub() {
 		return this.getSignature().isSub();
+	}
+
+	public boolean isRoot() {
+		return TaraPsiImplUtil.getConceptContainerOf(this) == null;
 	}
 
 	public boolean isIntention() {
@@ -191,7 +201,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isAggregated() {
-		return is(AGGREGATED);
+		return is(AGGREGATED) && isMetaAggregated();
 	}
 
 	public boolean isProperty() {
@@ -199,8 +209,23 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isComponent() {
-		return is(COMPONENT);
+		return is(COMPONENT) || isMetaComponent();
 	}
+
+	private boolean isMetaComponent() {
+		Model metamodel = TaraLanguage.getMetaModel(this.getFile());
+		if (metamodel == null) return false;
+		Node node = metamodel.searchNode(this.getMetaQualifiedName());
+		return (node != null && node.getObject().is(COMPONENT));
+	}
+
+	private boolean isMetaAggregated() {
+		Model metamodel = TaraLanguage.getMetaModel(this.getFile());
+		if (metamodel == null) return false;
+		Node node = metamodel.searchNode(this.getMetaQualifiedName());
+		return (node != null && node.getObject().is(AGGREGATED));
+	}
+
 
 	private boolean is(siani.tara.lang.Annotations.Annotation taraAnnotation) {
 		for (PsiElement annotation : getAnnotations())
@@ -261,7 +286,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String toString() {
-		return getName();
+		return getName() != null ? getName() : "unNamed";
 	}
 
 	@Override

@@ -1,9 +1,6 @@
 package siani.tara.compiler.dependencyresolver;
 
-import siani.tara.lang.DeclaredNode;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
-import siani.tara.lang.Variable;
+import siani.tara.lang.*;
 
 import java.util.*;
 
@@ -56,9 +53,19 @@ public class ParentModelDependencyResolver {
 	private void addClassVariablesToInstance(List<Variable> variables, Node instance) {
 		List<Variable> clones = new ArrayList<>();
 		for (Variable variable : variables)
-			if (variable.values == null || variable.values.isEmpty())
-				clones.add(variable.clone());
+			if (variable.values == null || variable.values.isEmpty()) {
+				Variable clone = variable.clone();
+				clones.add(clone);
+				if (variable instanceof Reference && variable.isTerminal())
+					addInheritedTypes(parent.get(clone.getType()).getName(), (Reference) clone);
+			}
 		instance.getObject().getVariables().addAll(0, clones);
+	}
+
+	private void addInheritedTypes(String nodeType, Reference clone) {
+		for (Node node : model.getNodeTable().values())
+			if (node.getObject().getType().equals(nodeType))
+				clone.addInheritedType(node.getObject().getName());
 	}
 
 	private Collection<Node> getInstancesOf(Node node) {

@@ -44,6 +44,7 @@ public class ExportModelAbstractAction extends AnAction implements DumbAware {
 	private static final String TEMP_PREFIX = "temp";
 	@NonNls
 	private static final String MIDDLE_LIB_DIR = "lib";
+	private static final String MIDDLE_BIN_DIR = "bin";
 	private static final String MIDDLE_MODEL_DIR = "model";
 
 	public static void getDependencies(Module module, final Set<Module> modules) {
@@ -123,8 +124,10 @@ public class ExportModelAbstractAction extends AnAction implements DumbAware {
 				addStructure(modelName, zos);
 				addStructure(modelName + "/" + MIDDLE_LIB_DIR, zos);
 				final String entryName = modelName + JAR_EXTENSION;
-				ZipUtil.addFileToZip(zos, jarFile, getZipPath(modelName, entryName), new HashSet<String>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+				ZipUtil.addFileToZip(zos, jarFile, getZipPath(modelName, entryName),
+					new HashSet<String>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 				addModelRepresentation(zos, modelName);
+				addStandAloneCompiler(zos, modelName);
 				Set<String> usedJarNames = new HashSet<>();
 				usedJarNames.add(entryName);
 				Set<VirtualFile> jarredVirtualFiles = new HashSet<>();
@@ -144,6 +147,15 @@ public class ExportModelAbstractAction extends AnAction implements DumbAware {
 				if (zos != null) zos.close();
 			}
 		}
+	}
+
+	private void addStandAloneCompiler(ZipOutputStream zos, String modelName) throws IOException {
+		String entryName = "tarac" + JAR_EXTENSION;
+		File file = new File(this.getClass().getResource("/compiler/" + entryName).getFile());
+		if (!file.exists()) throw new IOException("tarac not found");
+		final String path = "/" + modelName + "/" + MIDDLE_BIN_DIR + "/" + entryName;
+		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
+		ZipUtil.addFileToZip(zos, file, path, new HashSet<String>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 	}
 
 	private String getZipPath(final String modelName, final String entryName) {

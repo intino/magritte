@@ -69,7 +69,7 @@ public class SemanticAnalyzer {
 		List<DeclaredNode> arrayList = new ArrayList();
 		for (Node node : parentModel.getNodeTable().values())
 			if (node.is(DeclaredNode.class) && node.getObject().is(REQUIRED))
-				if ((model.isSystem() && node.getObject().is(TERMINAL)) || (!model.isSystem() && !node.getObject().is(TERMINAL)))
+				if ((model.isTerminal() && node.getObject().is(TERMINAL)) || (!model.isTerminal() && !node.getObject().is(TERMINAL)))
 					arrayList.add((DeclaredNode) node);
 		return arrayList;
 	}

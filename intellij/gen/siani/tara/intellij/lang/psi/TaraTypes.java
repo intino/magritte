@@ -63,16 +63,13 @@ public interface TaraTypes {
 	IElementType DATE_VALUE_KEY = new TaraTokenType("DATE_VALUE_KEY");
 	IElementType DEDENT = new TaraTokenType("DEDENT");
 	IElementType DOC_LINE = new TaraTokenType("DOC_LINE");
-	IElementType DOLLAR = new TaraTokenType("DOLLAR");
 	IElementType DOT = new TaraTokenType("DOT");
 	IElementType DOUBLE_TYPE = new TaraTokenType("DOUBLE_TYPE");
 	IElementType DOUBLE_VALUE_KEY = new TaraTokenType("DOUBLE_VALUE_KEY");
 	IElementType EMPTY_REF = new TaraTokenType("EMPTY_REF");
 	IElementType EQUALS = new TaraTokenType("EQUALS");
-	IElementType EURO = new TaraTokenType("EURO");
 	IElementType EXTENDS = new TaraTokenType("EXTENDS");
 	IElementType FACET = new TaraTokenType("FACET");
-	IElementType GRADE = new TaraTokenType("GRADE");
 	IElementType HAS = new TaraTokenType("HAS");
 	IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
 	IElementType INLINE = new TaraTokenType("INLINE");
@@ -81,7 +78,9 @@ public interface TaraTypes {
 	IElementType IS = new TaraTokenType("IS");
 	IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
 	IElementType LIST = new TaraTokenType("LIST");
+	IElementType MEASURE_VALUE = new TaraTokenType("MEASURE_VALUE");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
+	IElementType METAMODEL = new TaraTokenType("METAMODEL");
 	IElementType NAMED = new TaraTokenType("NAMED");
 	IElementType NATURAL_TYPE = new TaraTokenType("NATURAL_TYPE");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
@@ -89,7 +88,6 @@ public interface TaraTypes {
 	IElementType NEWLINE = new TaraTokenType("NEWLINE");
 	IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
 	IElementType ON = new TaraTokenType("ON");
-	IElementType PERCENTAGE = new TaraTokenType("PERCENTAGE");
 	IElementType PRIVATE = new TaraTokenType("PRIVATE");
 	IElementType PROPERTY = new TaraTokenType("PROPERTY");
 	IElementType REQUIRED = new TaraTokenType("REQUIRED");

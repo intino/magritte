@@ -25,7 +25,7 @@ public class MergeToModelOperation extends ModuleUnitOperation {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: Merging to global model");
 			ASTMerger merger = new ASTMerger(sources);
 			Model model = merger.doMerge();
-			model.setSystem(compilationUnit.getConfiguration().isSystemModel());
+			model.setTerminal(compilationUnit.getConfiguration().isSystemModel());
 			compilationUnit.setModel(model);
 		} catch (MergeException e) {
 			LOG.severe("Error merging sources representations: " + e.getMessage());

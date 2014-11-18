@@ -55,6 +55,12 @@ public class ModelSaver {
 				object.addProperty("node", reference.type);
 				object.addProperty("isList", reference.isList);
 				object.addProperty("empty", reference.empty);
+				if (!reference.getInheritedTypes().isEmpty()) {
+					JsonArray list = new JsonArray();
+					for (String refType : reference.getInheritedTypes())
+						list.add(new JsonPrimitive(refType));
+					object.add("inheritedTypes", list);
+				}
 			} else if (variable instanceof Resource) {
 				Resource resource = (Resource) variable;
 				object.addProperty("resourceType", resource.node);

@@ -59,6 +59,7 @@ AS                  = "as"
 ON                  = "on"
 IS                  = "is"
 VAR                 = "var"
+METAMODEL           = "metamodel"
 
 ALWAYS              = "always"
 WITH                = "with"
@@ -83,9 +84,12 @@ OPEN_BRACKET        = "{"
 CLOSE_BRACKET       = "}"
 DOLLAR              = "$"
 EURO                = "€"
+GRADE               = "º"
 PERCENTAGE          = "%"
 DOT                 = "."
 STAR                = "*"
+BY                  = "·"
+DIVIDED_BY          = "/"
 COMMA               = ","
 COLON               = ":"
 EQUALS              = "="
@@ -115,12 +119,12 @@ STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
 DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
-COORDINATE_VALUE_KEY= (({DOUBLE_VALUE_KEY} {DASH})+ {DOUBLE_VALUE_KEY}) |{DOUBLE_VALUE_KEY}
-
+COORDINATE_VALUE_KEY= "["({DOUBLE_VALUE_KEY} | {NATURAL_VALUE_KEY} | {NEGATIVE_VALUE_KEY}) ({SPACES}? {COMMA} {SPACES}?  {DOUBLE_VALUE_KEY} | {NATURAL_VALUE_KEY} | {NEGATIVE_VALUE_KEY})+ "]"
+MEASURE_VALUE       = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})*
 DOC_LINE            = "#" ~[\n]
 
 DIGIT               = [:digit:]
-IDENTIFIER_KEY = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
+IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 SP                  = ([ ]+ | [\t]+) | ">"
 SPACES              = {SP}+
@@ -130,6 +134,8 @@ NEWLINE             = [\n]+
 <YYINITIAL> {
 
 	{CONCEPT}                       {   return TaraTypes.METAIDENTIFIER_KEY; }
+
+	{METAMODEL}                     {   return TaraTypes.METAMODEL; }
 
 	{BOX}                           {  	loadHeritage();
 										return TaraTypes.BOX_KEY; }
@@ -175,9 +181,6 @@ NEWLINE             = [\n]+
 	{LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
     {RIGHT_PARENTHESIS}             {   return TaraTypes.RIGHT_PARENTHESIS; }
 
-	{DOLLAR}                        {   return TaraTypes.DOLLAR;}
-    {EURO}                          {   return TaraTypes.EURO;}
-    {PERCENTAGE}                    {   return TaraTypes.PERCENTAGE;}
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
 	{STAR}                          {   return TaraTypes.STAR;     }
@@ -204,6 +207,8 @@ NEWLINE             = [\n]+
     {SP}                            {   return TokenType.WHITE_SPACE; }
 
 	{IDENTIFIER_KEY}                {   return evaluateIdentifier();  }
+
+	{MEASURE_VALUE}                 {   return TaraTypes.MEASURE_VALUE; }
 
     {NEWLINE}                       {   return TokenType.WHITE_SPACE; }
 

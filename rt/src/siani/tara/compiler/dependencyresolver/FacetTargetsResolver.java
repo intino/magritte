@@ -29,10 +29,10 @@ public class FacetTargetsResolver {
 	private void propagateVariablesHierarchy(DeclaredNode node) throws TaraException {
 		for (FacetTarget target : node.getObject().getFacetTargets()) {
 			for (Variable commonVariable : node.getObject().getVariables())
-				target.add(commonVariable);
+				target.add(0, commonVariable);
 			if (target.getParentTarget() != null)
 				for (Variable targetVar : target.getParentTarget().getVariables())
-					if (!target.getVariables().contains(targetVar)) target.add(targetVar);
+					if (!target.getVariables().contains(targetVar)) target.add(0, targetVar);
 			resolveVariableReferences(node, target.getVariableReferences());
 		}
 	}

@@ -12,6 +12,7 @@ public class Primitives {
 	public static final String STRING = "string";
 	public static final String DOUBLE = "double";
 	public static final String COORDINATE = "coordinate";
+	public static final String RESOURCE = "resource";
 	public static final String REFERENCE = "identifier";
 	public static final String DATE = "date";
 	public static final Map<String, Converter> CONVERTER_MAP = new HashMap<>();
@@ -152,6 +153,7 @@ public class Primitives {
 		list.add(DOUBLE);
 		list.add(COORDINATE);
 		list.add(DATE);
+		list.add(RESOURCE);
 		return list.toArray(new String[list.size()]);
 	}
 

@@ -97,6 +97,7 @@ ON                  = "on"
 ALWAYS              = "always"
 IS                  = "is"
 EXTENDS             = "extends"
+METAMODEL           = "metamodel"
 //annotations
 PRIVATE             = "private"
 SINGLE              = "single"
@@ -120,6 +121,8 @@ UNDERDASH           = "_"
 DASHES              = {DASH} {DASH}+
 DOT                 = "."
 STAR                = "*"
+BY                  = "·"
+DIVIDED_BY          = "/"
 COMMA               = ","
 COLON               = ":"
 EQUALS              = "="
@@ -150,7 +153,8 @@ STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
 DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
-COORDINATE_VALUE_KEY= ({DOUBLE_VALUE_KEY} | {NATURAL_VALUE_KEY} | {NEGATIVE_VALUE_KEY}) ({DASH} {DOUBLE_VALUE_KEY} | {NATURAL_VALUE_KEY} | {NEGATIVE_VALUE_KEY})+
+COORDINATE_VALUE_KEY= "["({DOUBLE_VALUE_KEY} | {NATURAL_VALUE_KEY} | {NEGATIVE_VALUE_KEY}) ({SPACES}? {COMMA} {SPACES}? {DOUBLE_VALUE_KEY} | {NATURAL_VALUE_KEY} | {NEGATIVE_VALUE_KEY})+ "]"
+MEASURE_VALUE       = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})*
 
 DOC_LINE            = "#" ~[\n]
 DIGIT               = [:digit:]
@@ -161,6 +165,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 <YYINITIAL> {
 
 	{METAIDENTIFIER}                {   return TaraTypes.METAIDENTIFIER_KEY; }
+
+	{METAMODEL}                     {   return TaraTypes.METAMODEL; }
 
 	{USE_KEY}                       {   return TaraTypes.USE_KEY; }
 
@@ -212,10 +218,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{WORD_TYPE}                     {   return TaraTypes.WORD_KEY; }
 	{RESOURCE_TYPE}                 {   return TaraTypes.RESOURCE_KEY; }
 
-	{DOLLAR}                        {   return TaraTypes.DOLLAR;}
-    {EURO}                          {   return TaraTypes.EURO;}
-    {PERCENTAGE}                    {   return TaraTypes.PERCENTAGE;}
-    {GRADE}                         {   return TaraTypes.GRADE;}
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
 	{STAR}                          {   return TaraTypes.STAR;  }
@@ -231,7 +233,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}
 	{SEMICOLON}                     {   return semicolon(); }
-
+	{MEASURE_VALUE}                 {   return TaraTypes.MEASURE_VALUE; }
 	{NEWLINE}                       {   return newlineIndent();}
 	{INLINE}                        {   return inline();}
 

@@ -26,17 +26,18 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
 public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements TaraTypes {
 
 	public static final TextAttributesKey KEYWORD = createTextAttributesKey("Tara_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+	public static final TextAttributesKey META_IDENTIFIER = createTextAttributesKey("Tara_METAIDENTIFIER", DefaultLanguageHighlighterColors.INSTANCE_METHOD);
 	public static final TextAttributesKey IDENTIFIER = createTextAttributesKey("Tara_IDENTIFIER", DefaultLanguageHighlighterColors.CLASS_NAME);
-	public static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL);
-	public static final TextAttributesKey STRING = createTextAttributesKey("Tara_STRING", DefaultLanguageHighlighterColors.STRING);
-	public static final TextAttributesKey ADDRESS = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP);
+	public static final TextAttributesKey OPERATOR = createTextAttributesKey("Tara_OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN);
+	public static final TextAttributesKey STRING = createTextAttributesKey("Tara_STRING", DefaultLanguageHighlighterColors.NUMBER);
+	public static final TextAttributesKey ADDRESS = createTextAttributesKey("Tara_ADDRESS", DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP);
 	public static final TextAttributesKey DOCUMENTATION = createTextAttributesKey("Tara_COMMENT", DefaultLanguageHighlighterColors.DOC_COMMENT);
-	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.CONSTANT);
+	public static final TextAttributesKey PRIMITIVE = createTextAttributesKey("Tara_PRIMITIVE", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
 	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Tara_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
-	public static final TextAttributesKey NUMBERS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
+	public static final TextAttributesKey NUMBER = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
 	public static final TextAttributesKey REFERENCE = createTextAttributesKey("Tara_REFERENCE", DefaultLanguageHighlighterColors.CLASS_REFERENCE);
-	public static final TextAttributesKey BRACKETS = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.BRACKETS);
-	public static final TextAttributesKey SEMICOLON_KEY = createTextAttributesKey("Tara_NUMBER", DefaultLanguageHighlighterColors.SEMICOLON);
+	public static final TextAttributesKey BRACKETS = createTextAttributesKey("Tara_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS);
+	public static final TextAttributesKey SEMICOLON_KEY = createTextAttributesKey("Tara_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER");
 	public static final TextAttributesKey ANNOTATION_ERROR = createTextAttributesKey("ANNOTATION_ERROR", errorTextAttributes());
 	public static final TextAttributesKey UNRESOLVED_ACCESS = createTextAttributesKey("UNRESOLVED_ACCESS", errorTextAttributes());
@@ -65,7 +66,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		DISPLAY_NAMES.put(SEMICOLON_KEY, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.semicolon"), null));
 		DISPLAY_NAMES.put(OPERATOR, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.operator"), null));
 		DISPLAY_NAMES.put(ANNOTATION, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.annotation"), null));
-		DISPLAY_NAMES.put(NUMBERS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.number"), null));
+		DISPLAY_NAMES.put(NUMBER, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.number"), null));
 		DISPLAY_NAMES.put(BRACKETS, new Pair<String, HighlightSeverity>(TaraBundle.message("options.tara.concept.annotation"), null));
 		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<>(TaraBundle.message("invalid.tara.concept.character"), HighlightSeverity.ERROR));
 	}
@@ -79,7 +80,8 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	static {
 		KEYS = new THashMap<>();
 
-		KEYS.put(METAIDENTIFIER_KEY, KEYWORD);
+		KEYS.put(METAIDENTIFIER_KEY, META_IDENTIFIER);
+		KEYS.put(METAMODEL, KEYWORD);
 		KEYS.put(EMPTY_REF, KEYWORD);
 		KEYS.put(HAS, KEYWORD);
 		KEYS.put(EXTENDS, KEYWORD);
@@ -94,6 +96,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(UNIVERSAL, ANNOTATION);
 		KEYS.put(ADDRESSED, ANNOTATION);
 		KEYS.put(AGGREGATED, ANNOTATION);
+		KEYS.put(NEW_LINE_INDENT, KEYWORD);
 
 		KEYS.put(NAMED, ANNOTATION);
 		KEYS.put(RESOURCE_KEY, PRIMITIVE);
@@ -112,10 +115,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(META_WORD, OPERATOR);
 		KEYS.put(ALWAYS, ANNOTATION);
 		KEYS.put(LIST, OPERATOR);
-		KEYS.put(PERCENTAGE, PRIMITIVE);
-		KEYS.put(EURO, PRIMITIVE);
-		KEYS.put(DOLLAR, PRIMITIVE);
-		KEYS.put(GRADE, PRIMITIVE);
+		KEYS.put(MEASURE_VALUE, PRIMITIVE);
 		KEYS.put(NEW_LINE_INDENT, KEYWORD);
 		KEYS.put(WORD_KEY, PRIMITIVE);
 		KEYS.put(STRING_TYPE, PRIMITIVE);
@@ -129,14 +129,14 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(DOC_LINE, DOCUMENTATION);
 
 		KEYS.put(ADDRESS_VALUE, ADDRESS);
-		KEYS.put(DOUBLE_VALUE_KEY, NUMBERS);
-		KEYS.put(NATURAL_VALUE_KEY, NUMBERS);
-		KEYS.put(NEGATIVE_VALUE_KEY, NUMBERS);
+		KEYS.put(DOUBLE_VALUE_KEY, NUMBER);
+		KEYS.put(NATURAL_VALUE_KEY, NUMBER);
+		KEYS.put(NEGATIVE_VALUE_KEY, NUMBER);
 		KEYS.put(BOOLEAN_VALUE_KEY, KEYWORD);
 		KEYS.put(STRING_VALUE_KEY, STRING);
 		KEYS.put(STRING_MULTILINE_VALUE_KEY, STRING);
-		KEYS.put(DATE_VALUE_KEY, NUMBERS);
-		KEYS.put(COORDINATE_VALUE_KEY, NUMBERS);
+		KEYS.put(DATE_VALUE_KEY, NUMBER);
+		KEYS.put(COORDINATE_VALUE_KEY, NUMBER);
 		KEYS.put(TokenType.WHITE_SPACE, null);
 		KEYS.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 	}

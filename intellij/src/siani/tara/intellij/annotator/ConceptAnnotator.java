@@ -1,19 +1,33 @@
 package siani.tara.intellij.annotator;
 
 import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.annotator.fix.RemoveConceptFix;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
+import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.module.ModuleProvider;
+import siani.tara.lang.Model;
+import siani.tara.lang.Node;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
+import static siani.tara.lang.Annotations.Annotation.*;
+
 public class ConceptAnnotator extends TaraAnnotator {
+
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
@@ -24,8 +38,60 @@ public class ConceptAnnotator extends TaraAnnotator {
 			annotateAndFix(element, new RemoveConceptFix(concept), TaraBundle.message("concept.position.key.error.message"));
 			return;
 		}
+		addRootAnnotation(concept);
 		checkIfDuplicated(concept);
 		checkIfExtendedFromDifferentType(concept);
+		checkAsComponent(concept);
+		checkAsFacet(concept);
+		checkJavaClassCreation(concept);
+		checkAddressAdded(concept);
+	}
+
+	private void checkAddressAdded(Concept concept) {
+		Model model = TaraLanguage.getMetaModel(concept.getContainingFile());
+		if (model == null) return;
+		Node node = findNode(concept, model);
+		if (node != null && node.getObject().is(ADDRESSED) && concept.getAddress() == null)
+			holder.createErrorAnnotation(concept.getSignature(), "Address needed");
+	}
+
+	private void checkAsFacet(Concept concept) {
+		Model model = TaraLanguage.getMetaModel(concept.getContainingFile());
+		if (model == null) return;
+		Node node = findNode(concept, model);
+		if (node == null) return;
+		if (node.getObject().is(FACET))
+			holder.createErrorAnnotation(concept.getIdentifierNode(), "Facets are no instantiable");
+	}
+
+	private void checkJavaClassCreation(Concept concept) {
+		if ((concept.isIntention() || concept.isFacet()) && !javaClassCreated(concept))
+			holder.createWarningAnnotation(concept.getSignature().getNode(), TaraBundle.message("intention.no.java.class.error.message"));
+	}
+
+	private boolean javaClassCreated(Concept concept) {
+		return ReferenceManager.resolve(concept.getIdentifierNode(), true) != null;
+	}
+
+	private void checkAsComponent(Concept concept) {
+		Model model = TaraLanguage.getMetaModel(concept.getContainingFile());
+		if (model == null) return;
+		Node node = findNode(concept, model);
+		if (node == null) return;
+		if (node.getObject().is(COMPONENT)) {
+			Collection<Concept> rootConcepts = TaraUtil.getRootConceptsOfFile(concept.getFile());
+			if (rootConcepts.contains(concept) && concept.getIdentifierNode() != null && !isTerminalModule(concept))
+				holder.createErrorAnnotation(concept.getIdentifierNode(), "Component cannot be declared as root");
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	private void addRootAnnotation(Concept concept) {
+		Collection<Concept> rootConcepts = TaraUtil.getRootConceptsOfFile(concept.getFile());
+		if (rootConcepts.contains(concept) && concept.getIdentifierNode() != null) {
+			TextAttributesKey root = createTextAttributesKey("CONCEPT_ROOT", new TextAttributes(null, null, null, null, Font.BOLD));
+			holder.createInfoAnnotation(concept.getIdentifierNode(), "Root").setTextAttributes(root);
+		}
 	}
 
 	private void checkIfExtendedFromDifferentType(Concept concept) {
@@ -77,5 +143,9 @@ public class ConceptAnnotator extends TaraAnnotator {
 		for (Concept aConcept : concept.getFile().getConcepts())
 			if (concept.getName().equals(aConcept.getName())) list.add(aConcept);
 		return list;
+	}
+
+	public boolean isTerminalModule(Concept concept) {
+		return ModuleConfiguration.getInstance(ModuleProvider.getModuleOfDocument(concept.getFile())).isTerminal();
 	}
 }

@@ -10,7 +10,7 @@ public class FacetTarget {
 	private NodeObject destiny;
 	private boolean always;
 	private transient FacetTarget parentTarget;
-	private List<Variable> variables = new ArrayList<>();
+	private ArrayList<Variable> variables = new ArrayList<>();
 	private List<Node> inner = new ArrayList<>();
 
 	public FacetTarget(String destiny, FacetTarget parentTarget) {
@@ -54,8 +54,12 @@ public class FacetTarget {
 		return variables;
 	}
 
-	public boolean add(Variable s) {
-		return variables.add(s);
+	public boolean add(Variable var) {
+		return variables.add(var);
+	}
+
+	public void add(int index, Variable var) {
+		variables.add(index, var);
 	}
 
 	public List<Reference> getVariableReferences() {

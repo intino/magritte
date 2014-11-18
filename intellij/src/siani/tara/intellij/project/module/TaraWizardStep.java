@@ -9,60 +9,58 @@ import com.intellij.openapi.project.Project;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 public class TaraWizardStep extends ModuleWizardStep {
 
 	private final TaraModuleBuilder builder;
 	private final WizardContext context;
+	protected JCheckBox terminalCheckBox;
 	private Project project;
 	private Module myParent;
-	private boolean system;
+	private boolean terminal;
+	private JPanel mainPanel;
+	private JComboBox metamodelBox;
 
-	private JPanel myMainPanel;
-	private JCheckBox systemCheckBox;
-	private JPanel whitePanel;
-	private JList moduleChooser;
-	private JLabel parentModel;
 
 	public TaraWizardStep(TaraModuleBuilder builder, WizardContext context, Project project) {
 		this.context = context;
 		this.builder = builder;
 		this.project = project;
-		systemCheckBox.addChangeListener(new ChangeListener() {
+		terminalCheckBox.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				system = ((JCheckBox) e.getSource()).isSelected();
+				terminal = ((JCheckBox) e.getSource()).isSelected();
 			}
 		});
-		List<Module> modules = new ArrayList<>();
-		if (project == null) moduleChooser.setEnabled(false);
+		if (project == null) metamodelBox.setEnabled(false);
 		else {
-			for (Module module : ModuleManager.getInstance(this.project).getModules())
-				if (TaraModuleType.TARA_MODULE.equals(module.getOptionValue(Module.ELEMENT_TYPE)) && !ModuleConfiguration.getInstance(module).isSystem())
-					modules.add(module);
-			moduleChooser.setListData(modules.toArray());
-			moduleChooser.addListSelectionListener(new ListSelectionListener() {
+			loadBoxValues();
+			metamodelBox.addItemListener(new ItemListener() {
 				@Override
-				public void valueChanged(ListSelectionEvent e) {
-					myParent = (Module) ((JList) e.getSource()).getSelectedValue();
+				public void itemStateChanged(ItemEvent e) {
+					myParent = (Module) ((JComboBox) e.getSource()).getSelectedItem();
 				}
 			});
 		}
 	}
 
+	private void loadBoxValues() {
+		for (Module candidate : ModuleManager.getInstance(this.project).getModules())
+			metamodelBox.addItem(candidate.getName());
+	}
+
 	@Override
 	public JComponent getComponent() {
-		return myMainPanel;
+		return mainPanel;
 	}
 
 	@Override
 	public void updateDataModel() {
 		context.setProjectBuilder(builder);
 		builder.setParentModule(myParent);
-		builder.setSystem(system);
+		builder.setSystem(terminal);
 	}
+
 }

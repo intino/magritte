@@ -49,7 +49,7 @@ public class TaraPsiImplUtil {
 	}
 
 	public static List<Variable> getVariablesInBody(Body body) {
-		return (List<Variable>) body.getAttributeList();
+		return (body != null) ? (List<Variable>) body.getAttributeList() : Collections.EMPTY_LIST;
 	}
 
 

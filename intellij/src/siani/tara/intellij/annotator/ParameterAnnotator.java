@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraParameterValueImpl;
-import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
 import siani.tara.lang.*;
 import siani.tara.lang.Variable;
@@ -15,6 +14,7 @@ import siani.tara.lang.Word;
 import java.util.List;
 import java.util.Map;
 
+import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContainerOf;
 import static siani.tara.lang.Primitives.*;
 
 public class ParameterAnnotator extends TaraAnnotator {
@@ -30,7 +30,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 		model = TaraLanguage.getMetaModel(parameter.getContainingFile());
 		if (model == null) return;
 		TaraFacetApply inFacet = parameter.isInFacet();
-		Concept concept = TaraPsiImplUtil.getConceptContainerOf(parameter);
+		Concept concept = getConceptContainerOf(parameter);
 		node = findNode(concept, model);
 		if (node == null) return;
 		List<Variable> facetVariables = null;
@@ -75,7 +75,8 @@ public class ParameterAnnotator extends TaraAnnotator {
 	}
 
 	private Variable getVariableByName(List<Variable> variables, String name) {
-		for (Variable variable : variables) if (variable.getName().equals(name)) return variable;
+		for (Variable variable : variables)
+			if (variable.getName().equals(name)) return variable;
 		return null;
 	}
 
@@ -105,8 +106,8 @@ public class ParameterAnnotator extends TaraAnnotator {
 				holder.createErrorAnnotation(value, "Unexpected type. Bad reference");
 				continue;
 			}
-			Concept conceptContextOf = TaraPsiImplUtil.getConceptContainerOf(value);
-			if (TaraPsiImplUtil.getConceptContainerOf(conceptContextOf) != null)
+			Concept conceptContextOf = getConceptContainerOf(value);
+			if (getConceptContainerOf(conceptContextOf) != null)
 				if (value instanceof TaraIdentifierReference && !reference.isUniversal() && !inSameContext((TaraIdentifierReference) value))
 					holder.createErrorAnnotation(value, "Bad referenced. The reference has to be in the same context");
 		}
@@ -114,13 +115,19 @@ public class ParameterAnnotator extends TaraAnnotator {
 
 	private boolean checkWellReference(TaraIdentifierReference reference, Reference variable) {
 		TaraReferenceSolver solver = new TaraReferenceSolver(getLastElementOf(reference), reference.getTextRange(), false);
-		Concept destiny = TaraPsiImplUtil.getConceptContainerOf(solver.resolve());
+		Concept destiny = getConceptContainerOf(solver.resolve());
 		if (destiny != null) {
 			MetaIdentifier metaIdentifier = destiny.getMetaIdentifier();
 			if ((metaIdentifier != null))
-				return checkInHierarchy(metaIdentifier.getText(), variable.getType()) || asFacet(destiny, variable.getType());
+				return checkInHierarchy(metaIdentifier.getText(), variable.getType())
+					|| asFacet(destiny, variable.getType())
+					|| checkTypeAsTerminal(destiny, variable);
 		}
 		return false;
+	}
+
+	private boolean checkTypeAsTerminal(Concept destiny, Reference variable) {
+		return variable.getInheritedTypes().contains(destiny.getType());
 	}
 
 	private boolean asFacet(Concept destiny, String reference) {
@@ -133,18 +140,19 @@ public class ParameterAnnotator extends TaraAnnotator {
 
 	private boolean inSameContext(TaraIdentifierReference reference) {
 		TaraReferenceSolver solver = new TaraReferenceSolver(getLastElementOf(reference), reference.getTextRange(), false);
-		Concept resolve = TaraPsiImplUtil.getConceptContainerOf(solver.resolve());
+		Concept resolve = getConceptContainerOf(solver.resolve());
 		PsiElement referenceContext = reference;
 		PsiElement resolveContext = resolve;
-		while ((TaraPsiImplUtil.getConceptContainerOf(referenceContext)) != null)
-			referenceContext = TaraPsiImplUtil.getConceptContainerOf(referenceContext);
-		while ((TaraPsiImplUtil.getConceptContainerOf(resolveContext)) != null)
-			resolveContext = TaraPsiImplUtil.getConceptContainerOf(resolveContext);
+		while ((getConceptContainerOf(referenceContext)) != null)
+			referenceContext = getConceptContainerOf(referenceContext);
+		while ((getConceptContainerOf(resolveContext)) != null)
+			resolveContext = getConceptContainerOf(resolveContext);
 		return resolveContext == referenceContext;
 	}
 
 	private boolean checkInHierarchy(String name, String type) {
 		Node referenceNode = model.get(type);
+		if (name == null || referenceNode == null) return false;
 		if (name.equals(referenceNode.getName())) return true;
 		List<NodeObject> children;
 		while ((children = referenceNode.getObject().getChildren()) != null)

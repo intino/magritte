@@ -152,7 +152,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // NEWLINE+ USE_KEY headerReference (AS IDENTIFIER_KEY)?
+  // NEWLINE+ USE_KEY headerReference (AS METAMODEL)?
   public static boolean anImport(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "anImport")) return false;
     if (!nextTokenIs(builder_, NEWLINE)) return false;
@@ -182,19 +182,19 @@ public class TaraParser implements PsiParser {
     return result_;
   }
 
-  // (AS IDENTIFIER_KEY)?
+  // (AS METAMODEL)?
   private static boolean anImport_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "anImport_3")) return false;
     anImport_3_0(builder_, level_ + 1);
     return true;
   }
 
-  // AS IDENTIFIER_KEY
+  // AS METAMODEL
   private static boolean anImport_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "anImport_3_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeTokens(builder_, 0, AS, IDENTIFIER_KEY);
+    result_ = consumeTokens(builder_, 0, AS, METAMODEL);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -1279,16 +1279,14 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER_KEY | DOLLAR | EURO | PERCENTAGE | GRADE
+  // IDENTIFIER_KEY | MEASURE_VALUE
   public static boolean measure(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "measure")) return false;
+    if (!nextTokenIs(builder_, "<measure>", IDENTIFIER_KEY, MEASURE_VALUE)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<measure>");
     result_ = consumeToken(builder_, IDENTIFIER_KEY);
-    if (!result_) result_ = consumeToken(builder_, DOLLAR);
-    if (!result_) result_ = consumeToken(builder_, EURO);
-    if (!result_) result_ = consumeToken(builder_, PERCENTAGE);
-    if (!result_) result_ = consumeToken(builder_, GRADE);
+    if (!result_) result_ = consumeToken(builder_, MEASURE_VALUE);
     exit_section_(builder_, level_, marker_, MEASURE, result_, false, null);
     return result_;
   }
@@ -2270,8 +2268,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute |
-  // 			dateAttribute | coordinateAttribute | resource | referenceAttribute | word) annotationsAndFacets?
+  // doc? VAR variableDeclaration annotationsAndFacets?
   public static boolean variable(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "variable")) return false;
     if (!nextTokenIs(builder_, "<variable>", DOC_LINE, VAR)) return false;
@@ -2281,7 +2278,7 @@ public class TaraParser implements PsiParser {
     result_ = variable_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, VAR);
     pinned_ = result_; // pin = 2
-    result_ = result_ && report_error_(builder_, variable_2(builder_, level_ + 1));
+    result_ = result_ && report_error_(builder_, variableDeclaration(builder_, level_ + 1));
     result_ = pinned_ && variable_3(builder_, level_ + 1) && result_;
     exit_section_(builder_, level_, marker_, VARIABLE, result_, pinned_, null);
     return result_ || pinned_;
@@ -2294,10 +2291,18 @@ public class TaraParser implements PsiParser {
     return true;
   }
 
+  // annotationsAndFacets?
+  private static boolean variable_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "variable_3")) return false;
+    annotationsAndFacets(builder_, level_ + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
   // naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute |
-  // 			dateAttribute | coordinateAttribute | resource | referenceAttribute | word
-  private static boolean variable_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "variable_2")) return false;
+  // 		dateAttribute | coordinateAttribute | resource | referenceAttribute | word
+  static boolean variableDeclaration(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "variableDeclaration")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = naturalAttribute(builder_, level_ + 1);
@@ -2312,13 +2317,6 @@ public class TaraParser implements PsiParser {
     if (!result_) result_ = word(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
-  }
-
-  // annotationsAndFacets?
-  private static boolean variable_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "variable_3")) return false;
-    annotationsAndFacets(builder_, level_ + 1);
-    return true;
   }
 
   /* ********************************************************** */

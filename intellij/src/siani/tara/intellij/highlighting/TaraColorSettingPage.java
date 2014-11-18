@@ -13,12 +13,14 @@ import java.util.Map;
 public class TaraColorSettingPage implements ColorSettingsPage {
 	private static final AttributesDescriptor[] DESCRIPTORS =
 		new AttributesDescriptor[]{
-			new AttributesDescriptor("Keyword", TaraSyntaxHighlighter.KEYWORD),
+			new AttributesDescriptor("Meta Identifier", TaraSyntaxHighlighter.META_IDENTIFIER),
+			new AttributesDescriptor("Identifier", TaraSyntaxHighlighter.IDENTIFIER),
 			new AttributesDescriptor("String", TaraSyntaxHighlighter.STRING),
 			new AttributesDescriptor("Documentation", TaraSyntaxHighlighter.DOCUMENTATION),
 			new AttributesDescriptor("Primitive", TaraSyntaxHighlighter.PRIMITIVE),
 			new AttributesDescriptor("Annotations", TaraSyntaxHighlighter.ANNOTATION),
-			new AttributesDescriptor("Numbers", TaraSyntaxHighlighter.NUMBERS),
+			new AttributesDescriptor("Number", TaraSyntaxHighlighter.NUMBER),
+			new AttributesDescriptor("Operator", TaraSyntaxHighlighter.OPERATOR),
 			new AttributesDescriptor("Bad Characters", TaraSyntaxHighlighter.BAD_CHARACTER)
 		};
 
@@ -38,28 +40,39 @@ public class TaraColorSettingPage implements ColorSettingsPage {
 	@Override
 	public String getDemoText() {
 		return
-			"Concept abstract as Source <has-code root> \n" +
-				"\tConcept Ontology<optional>" + "\n" +
-				"\t\tvar reference uid" +
+			"box millenermetamodel.m0.pruebareunion\n" +
+				"use millenermetamodel.m1 as metamodel\n" +
 				"\n" +
-				"Concept Source as Thesaurus" + "\n" +
-				"\tnew Term<multiple>" + "\n" +
+				"Territory LaReunion is terminal\n" +
+				"    var integer value = 0\n" +
+				"    var string quantity = \'cantidad\'\n" +
+				"    Territory SaintPierre\n" +
+				"        Zone C49D420\n" +
+				"            Zone I23981\n" +
+				"        Zone Z9D421\n" +
+				"        Zone Z9D409\n" +
+				"        Zone Z9D402\n" +
+				" \n" +
+				"Building X\n" +
+				"   Place(C49D420)\n" +
+				"   Area(30.0)\n" +
+				"\tHousehold X\n" +
+				"\t\tBattery X \n" +
+				"\t\t\tis BatteryControl\n" +
+				"\t\t\tis Storage\n" +
+				"\t\t\tis Electrical\n" +
 				"\n" +
-				"Concept as Operation" + "\n" +
-				"\tvar String label" + "\n" +
-
-				"\' Una entidad es un objeto en la unidad de negocio que representa un contenido" + "\n" +
-				"Concept abstract as Entity<has-code>" + "\n" +
-
-				"\t\' Incluir para ofrecer al usuario información más detallada de la entidad" + "\n" +
-				"\tConcept as Description<optional>" + "\n" +
-				"\t\tvar String description" + "\n" +
 				"\n" +
-				"\t\' Incluir para ofrecer al usuario una ayuda" + "\n" +
-				"\t\' - **resource**. Nombre del fichero incluido en la distribución" + "\n" +
-				"\tConcept as Help<optional>" + "\n" +
-				"\t\tvar String resource" + "\n" +
-				"\n" + "====B@d_Ch@r@cter====";
+				"Transformer Z97411P1120\n" +
+				"    Location((55.47953318,-20.89841472))\n" +
+				"    is Electrical\n" +
+				"\n" +
+				"\n" +
+				"Substation S_PAUD\n" +
+				"    Location((55.29967083,20.98750276))\n" +
+				"    FeederSocket BELLEMENE is Electrical\n" +
+				"\n" +
+				"Connection(S_PAUD, X.X.X)\n";
 	}
 
 	@Nullable

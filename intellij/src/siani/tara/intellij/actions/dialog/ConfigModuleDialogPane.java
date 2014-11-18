@@ -8,18 +8,17 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 
 import javax.swing.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigModuleDialogPane extends DialogWrapper {
 
+	private static final String NO_PARENT = "None";
 	private final Module module;
-	protected JCheckBox systemCheckBox;
+	protected JCheckBox terminalCheckBox;
 	private JPanel dialogContents;
-	private JCheckBox parentCheckBox;
-	private JComboBox parentComboBox;
+	private JComboBox metamodelBox;
+	private JLabel metamodelField;
 	private Module[] candidates;
 
 	public ConfigModuleDialogPane(final Project project, Module module) {
@@ -33,35 +32,27 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 	@Nullable
 	@Override
 	protected JComponent createCenterPanel() {
-		parentCheckBox.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				parentComboBox.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
-			}
-		});
 		return dialogContents;
 	}
 
 	public void loadValues() {
-		if (ModuleConfiguration.getInstance(module).getParentName().isEmpty()) {
-			parentCheckBox.setSelected(false);
-			parentComboBox.setEnabled(false);
-		} else parentCheckBox.setSelected(true);
+		metamodelBox.addItem(NO_PARENT);
 		for (Module candidate : candidates) {
-			parentComboBox.addItem(candidate.getName());
+			metamodelBox.addItem(candidate.getName());
 			if (ModuleConfiguration.getInstance(module).getParentName().equals(candidate.getName()))
-				parentComboBox.setSelectedItem(candidate.getName());
+				metamodelBox.setSelectedItem(candidate.getName());
 		}
-		systemCheckBox.setSelected(ModuleConfiguration.getInstance(module).isSystem());
+		if (metamodelBox.getSelectedItem() == null) metamodelBox.setSelectedItem(NO_PARENT);
+		terminalCheckBox.setSelected(ModuleConfiguration.getInstance(module).isTerminal());
 	}
 
 	public void saveValues() {
-		setParent(parentCheckBox.isSelected() ? searchParent((String) parentComboBox.getSelectedItem()) : null);
-		setSystem(systemCheckBox.isSelected());
+		setParent(metamodelBox.getSelectedItem().equals(NO_PARENT) ? searchParent((String) metamodelBox.getSelectedItem()) : null);
+		setTerminal(terminalCheckBox.isSelected());
 	}
 
-	private void setSystem(boolean selected) {
-		ModuleConfiguration.getInstance(module).setSystem(selected);
+	private void setTerminal(boolean selected) {
+		ModuleConfiguration.getInstance(module).setTerminal(selected);
 	}
 
 	private Module searchParent(String parentName) {
@@ -84,15 +75,13 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 	private Module[] getParentModulesCandidates(Project project, Module module) {
 		List<Module> candidates = new ArrayList<>();
 		for (Module aModule : ModuleManager.getInstance(project).getModules())
-			if (aModule != module && !ModuleConfiguration.getInstance(aModule).isSystem()) candidates.add(aModule);
+			if (aModule != module && !ModuleConfiguration.getInstance(aModule).isTerminal()) candidates.add(aModule);
 		return candidates.toArray(new Module[candidates.size()]);
 	}
 
 
 	@Override
 	public String toString() {
-		return "ConfigANTLRPerGrammar{" +
-			"ParentCheckBox = " + parentCheckBox +
-			", ParentModule = " + parentComboBox + '}';
+		return "ConfigANTLRPerGrammar{" + '}';
 	}
 }

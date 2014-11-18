@@ -66,17 +66,17 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		List<String> list = new ArrayList<>();
 		if (((TaraVariable) this).getBooleanValueList().isEmpty())
 			list.addAll(getElementsAsString(((TaraVariable) this).getBooleanValueList()));
-		else if (((TaraVariable) this).getDoubleValueList().isEmpty())
+		else if (!((TaraVariable) this).getDoubleValueList().isEmpty())
 			list.addAll(getElementsAsString(((TaraVariable) this).getDoubleValueList()));
-		else if (((TaraVariable) this).getNaturalValueList().isEmpty())
+		else if (!((TaraVariable) this).getNaturalValueList().isEmpty())
 			list.addAll(getElementsAsString(((TaraVariable) this).getNaturalValueList()));
-		else if (((TaraVariable) this).getIntegerValueList().isEmpty())
+		else if (!((TaraVariable) this).getIntegerValueList().isEmpty())
 			list.addAll(getElementsAsString(((TaraVariable) this).getIntegerValueList()));
-		else if (((TaraVariable) this).getStringValueList().isEmpty())
+		else if (!((TaraVariable) this).getStringValueList().isEmpty())
 			list.addAll(getElementsAsString(((TaraVariable) this).getStringValueList()));
-		else if (((TaraVariable) this).getCoordinateValueList().isEmpty())
+		else if (!((TaraVariable) this).getCoordinateValueList().isEmpty())
 			list.addAll(getElementsAsString(((TaraVariable) this).getCoordinateValueList()));
-		else if (((TaraVariable) this).getDateValueList().isEmpty())
+		else if (!((TaraVariable) this).getDateValueList().isEmpty())
 			list.addAll(getElementsAsString(((TaraVariable) this).getDateValueList()));
 		else if (((TaraVariable) this).getEmptyField() != null)
 			list.add(((TaraVariable) this).getEmptyField().getText());

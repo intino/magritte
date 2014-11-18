@@ -142,6 +142,11 @@ public class ModelLoader {
 			JsonElement empty = json.getAsJsonObject().get("empty");
 			if (empty != null && empty.isJsonPrimitive())
 				reference.setEmpty(empty.getAsBoolean());
+			if ((json.getAsJsonObject().get("inheritedTypes")) != null && json.getAsJsonObject().get("inheritedTypes").isJsonArray()) {
+				JsonArray array = json.getAsJsonObject().get("inheritedTypes").getAsJsonArray();
+				for (JsonElement jsonElement : array)
+					reference.addInheritedType(jsonElement.getAsString());
+			}
 		}
 	}
 

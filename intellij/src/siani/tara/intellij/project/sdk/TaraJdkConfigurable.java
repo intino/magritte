@@ -28,50 +28,38 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 public class TaraJdkConfigurable implements AdditionalDataConfigurable {
+	@NonNls
+	private static final String SANDBOX_HISTORY = "DEVKIT_SANDBOX_HISTORY";
 	private final JLabel mySandboxHomeLabel = new JLabel(TaraBundle.message("sandbox.home.label"));
 	private final TextFieldWithStoredHistory mySandboxHome = new TextFieldWithStoredHistory(SANDBOX_HISTORY);
-
 	private final JLabel myInternalJreLabel = new JLabel("Internal Java Platform:");
 	private final DefaultComboBoxModel myJdksModel = new DefaultComboBoxModel();
 	private final JComboBox myInternalJres = new JComboBox(myJdksModel);
-
-	private Sdk myTaraJdk;
-
-	private boolean myModified;
-	@NonNls
-	private static final String SANDBOX_HISTORY = "DEVKIT_SANDBOX_HISTORY";
-
 	private final SdkModel mySdkModel;
-	private final SdkModificator mySdkModificator;
-	private boolean myFreeze = false;
+	private final SdkModificator mySdkModifier;
 	private final SdkModel.Listener myListener;
+	private Sdk myTaraJdk;
+	private boolean myModified;
+	private boolean myFreeze = false;
 
 	public TaraJdkConfigurable(final SdkModel sdkModel, final SdkModificator sdkModificator) {
 		mySdkModel = sdkModel;
-		mySdkModificator = sdkModificator;
+		mySdkModifier = sdkModificator;
 		myListener = new SdkModel.Listener() {
 			public void sdkAdded(Sdk sdk) {
-				if (sdk.getSdkType().equals(JavaSdk.getInstance())) {
-					addJavaSdk(sdk);
-				}
+				if (sdk.getSdkType().equals(JavaSdk.getInstance())) addJavaSdk(sdk);
 			}
 
 			public void beforeSdkRemove(Sdk sdk) {
-				if (sdk.getSdkType().equals(JavaSdk.getInstance())) {
-					removeJavaSdk(sdk);
-				}
+				if (sdk.getSdkType().equals(JavaSdk.getInstance())) removeJavaSdk(sdk);
 			}
 
 			public void sdkChanged(Sdk sdk, String previousName) {
-				if (sdk.getSdkType().equals(JavaSdk.getInstance())) {
-					updateJavaSdkList(sdk, previousName);
-				}
+				if (sdk.getSdkType().equals(JavaSdk.getInstance())) updateJavaSdkList(sdk, previousName);
 			}
 
 			public void sdkHomeSelected(final Sdk sdk, final String newSdkHome) {
-				if (sdk.getSdkType() instanceof TaraJdk) {
-					internalJdkUpdate(sdk);
-				}
+				if (sdk.getSdkType() instanceof TaraJdk) internalJdkUpdate(sdk);
 			}
 		};
 		mySdkModel.addListener(myListener);
@@ -131,13 +119,13 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 						continue;
 					}
 					final VirtualFile[] internalRoots = javaJdk.getSdkModificator().getRoots(type);
-					final VirtualFile[] configuredRoots = mySdkModificator.getRoots(type);
+					final VirtualFile[] configuredRoots = mySdkModifier.getRoots(type);
 					for (VirtualFile file : internalRoots) {
 						if (e.getStateChange() == ItemEvent.DESELECTED) {
-							mySdkModificator.removeRoot(file, type);
+							mySdkModifier.removeRoot(file, type);
 						} else {
 							if (ArrayUtil.find(configuredRoots, file) == -1) {
-								mySdkModificator.addRoot(file, type);
+								mySdkModifier.addRoot(file, type);
 							}
 						}
 					}
@@ -161,7 +149,7 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 	}
 
 	private void internalJdkUpdate(final Sdk sdk) {
-		final Sdk javaSdk = ((Magritte) sdk.getSdkAdditionalData()).getJavaSdk();
+		final Sdk javaSdk = ((Tdk) sdk.getSdkAdditionalData()).getJavaSdk();
 		if (myJdksModel.getIndexOf(javaSdk) == -1) {
 			myJdksModel.addElement(javaSdk);
 		} else {
@@ -174,15 +162,15 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 	}
 
 	public void apply() throws ConfigurationException {
-    /*if (mySandboxHome.getText() == null || mySandboxHome.getText().length() == 0) {
+	/*if (mySandboxHome.getText() == null || mySandboxHome.getText().length() == 0) {
       throw new ConfigurationException(TaraBundle.message("sandbox.specification"));
     }*/
 		mySandboxHome.addCurrentTextToHistory();
-		final Magritte additionalData = (Magritte) myTaraJdk.getSdkAdditionalData();
+		final Tdk additionalData = (Tdk) myTaraJdk.getSdkAdditionalData();
 		if (additionalData != null) {
 			additionalData.cleanupWatchedRoots();
 		}
-		Magritte sandbox = new Magritte(mySandboxHome.getText(), (Sdk) myInternalJres.getSelectedItem(), myTaraJdk);
+		Tdk sandbox = new Tdk(mySandboxHome.getText(), (Sdk) myInternalJres.getSelectedItem(), myTaraJdk);
 		final SdkModificator modificator = myTaraJdk.getSdkModificator();
 		modificator.setSdkAdditionalData(sandbox);
 		ApplicationManager.getApplication().runWriteAction(new Runnable() {
@@ -199,9 +187,9 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 		updateJdkList();
 		myFreeze = false;
 		mySandboxHome.reset();
-		if (myTaraJdk != null && myTaraJdk.getSdkAdditionalData() instanceof Magritte) {
-			final Magritte sandbox = (Magritte) myTaraJdk.getSdkAdditionalData();
-			final String sandboxHome = sandbox.getMagritteHome();
+		if (myTaraJdk != null && myTaraJdk.getSdkAdditionalData() instanceof Tdk) {
+			final Tdk sandbox = (Tdk) myTaraJdk.getSdkAdditionalData();
+			final String sandboxHome = sandbox.getTdkHome();
 			mySandboxHome.setText(sandboxHome);
 			mySandboxHome.setSelectedItem(sandboxHome);
 			final Sdk internalJava = sandbox.getJavaSdk();
@@ -215,7 +203,7 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 			}
 			myModified = false;
 		} else {
-			mySandboxHome.setText(TaraJdk.getDefaultMagritte());
+			mySandboxHome.setText(TaraJdk.getDefaultTdk());
 		}
 	}
 
@@ -235,7 +223,7 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 		final Sdk[] sdks = mySdkModel.getSdks();
 		for (Sdk currentSdk : sdks) {
 			if (currentSdk.getSdkType() instanceof TaraJdk) {
-				final Magritte sandbox = (Magritte) currentSdk.getSdkAdditionalData();
+				final Tdk sandbox = (Tdk) currentSdk.getSdkAdditionalData();
 				final Sdk internalJava = sandbox.getJavaSdk();
 				if (internalJava != null && Comparing.equal(internalJava.getName(), previousName)) {
 					sandbox.setJavaSdk(sdk);

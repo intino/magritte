@@ -384,7 +384,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		for (int i = 0; i < ctx.COMPONENT().size(); i++)
 			conceptStack.peek().getObject().add(Annotation.COMPONENT);
 		for (int i = 0; i < ctx.PRIVATE().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.PRIVATE);
+			conceptStack.peek().getObject().add(Annotation.ABSTRACT);
 		for (int i = 0; i < ctx.NAMED().size(); i++)
 			conceptStack.peek().getObject().add(Annotation.NAMED);
 		for (int i = 0; i < ctx.FACET().size(); i++)

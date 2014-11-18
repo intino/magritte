@@ -1,7 +1,11 @@
 package siani.tara.lang;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Reference extends Variable {
 	public String type;
+	public List<String> inheritedTypes = new ArrayList<>();
 	public boolean empty = false;
 
 	public Reference(String type, String name, boolean isMultiple, boolean isTerminal) {
@@ -40,6 +44,14 @@ public class Reference extends Variable {
 	@Override
 	public String toString() {
 		return type + (isList ? "..." : "") + " " + name;
+	}
+
+	public List<String> getInheritedTypes() {
+		return inheritedTypes;
+	}
+
+	public boolean addInheritedType(String c) {
+		return inheritedTypes.add(c);
 	}
 
 	@Override

@@ -72,7 +72,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 				configuration.parentName = ((aux = br.readLine()).equals("null")) ? "" : aux;
 				configuration.parentFilePath = ((aux = br.readLine()).equals("null")) ? "" : aux;
-				configuration.system = Boolean.parseBoolean(br.readLine());
+				configuration.terminal = Boolean.parseBoolean(br.readLine());
 				file.delete();
 				file.getParentFile().delete();
 			} catch (IOException e) {
@@ -98,12 +98,12 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 		configuration.parentName = parent;
 	}
 
-	public boolean isSystem() {
-		return configuration.isSystem();
+	public boolean isTerminal() {
+		return configuration.isTerminal();
 	}
 
-	public void setSystem(boolean system) {
-		configuration.system = system;
+	public void setTerminal(boolean system) {
+		configuration.terminal = system;
 	}
 
 	public String getParentFilePath() {
@@ -125,7 +125,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	class Configuration implements JDOMExternalizable {
 		public String parentName = "";
 		public String parentFilePath = "";
-		public boolean system = false;
+		public boolean terminal = false;
 
 		@Override
 		public void readExternal(Element element) throws InvalidDataException {
@@ -145,8 +145,8 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 			return parentFilePath;
 		}
 
-		public boolean isSystem() {
-			return system;
+		public boolean isTerminal() {
+			return terminal;
 		}
 	}
 }

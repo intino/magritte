@@ -42,11 +42,11 @@ public class ModelToJavaOperation extends ModelOperation {
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		this.model = model;
-		creator = new FrameCreator(model.isSystem());
+		creator = new FrameCreator(model.isTerminal());
 		List<List<Node>> groupByBox = groupByBox(model.getTreeModel());
 		try {
 			writeDocuments(getBoxPath(File.separator), createBoxes(groupByBox));
-			if (!model.isSystem())
+			if (!model.isTerminal())
 				writeDocuments(getMorphPath(File.separator), createMorphs());
 		} catch (TaraException e) {
 			LOG.severe("Error during java model generation: " + e.getMessage());

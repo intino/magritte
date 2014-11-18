@@ -9,7 +9,7 @@ public class Model {
 	private transient Map<String, Node> nodeTable = new HashMap<>();
 	private NodeTree nodeTree = new NodeTree();
 	private Set<String> identifiers = new HashSet<>();
-	private boolean system;
+	private boolean terminal;
 
 	public Model(String name) {
 		this.name = name;
@@ -100,12 +100,12 @@ public class Model {
 		return null;
 	}
 
-	public DeclaredNode searchDeclarationOfReference(String nodeName, Node context) {
+	public DeclaredNode searchDeclarationOfReference(String referenceName, Node context) {
 		DeclaredNode result = null;
-		if (nodeName == null || nodeName.isEmpty()) return null;
-		if (context != null) result = relativeSearch(nodeName, context);
+		if (referenceName == null || referenceName.isEmpty()) return null;
+		if (context != null) result = relativeSearch(referenceName, context);
 		if (result != null) return result;
-		return searchInImportReferences(nodeName, context);
+		return searchInImportReferences(referenceName, context);
 	}
 
 	public Node searchNode(String qn) {
@@ -260,11 +260,11 @@ public class Model {
 		this.parentModel = parentModel;
 	}
 
-	public boolean isSystem() {
-		return system;
+	public boolean isTerminal() {
+		return terminal;
 	}
 
-	public void setSystem(boolean system) {
-		this.system = system;
+	public void setTerminal(boolean terminal) {
+		this.terminal = terminal;
 	}
 }
