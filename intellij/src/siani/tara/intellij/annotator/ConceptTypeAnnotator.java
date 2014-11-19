@@ -47,11 +47,8 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 				if (!element.getText().equals(CONCEPT))
 					holder.createErrorAnnotation(concept, TaraBundle.message("concept.position.key.error.message"));
 			} else {
-				if (findNode(concept, model) == null) {
-					Annotation errorAnnotation = holder.createErrorAnnotation
-						(concept, TaraBundle.message("Unknown.concept.key.error.message"));
-					errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
-				}
+				if (findNode(concept, model) == null)
+					holder.createErrorAnnotation(element, TaraBundle.message("Unknown.concept.key.error.message"));
 				List<TaraConceptReference> incorrectInnerLinks = getIncorrectInnerLinks(concept, model);
 				for (TaraConceptReference incorrectInnerLink : incorrectInnerLinks)
 					holder.createErrorAnnotation(incorrectInnerLink, TaraBundle.message("Unknown.concept.key.error.message"));

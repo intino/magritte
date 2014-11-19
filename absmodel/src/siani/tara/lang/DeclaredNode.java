@@ -31,7 +31,7 @@ public class DeclaredNode extends Node {
 		return innerNodes.add(node);
 	}
 
-	public void add(Node node, int index) {
+	public void add(int index, Node node) {
 		innerNodes.add(index, node);
 	}
 

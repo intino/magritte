@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.annotator.fix.AddAddressFix;
 import siani.tara.intellij.annotator.fix.RemoveConceptFix;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
@@ -38,26 +39,32 @@ public class ConceptAnnotator extends TaraAnnotator {
 			annotateAndFix(element, new RemoveConceptFix(concept), TaraBundle.message("concept.position.key.error.message"));
 			return;
 		}
+		Model model = TaraLanguage.getMetaModel(concept.getContainingFile());
 		addRootAnnotation(concept);
 		checkIfDuplicated(concept);
 		checkIfExtendedFromDifferentType(concept);
-		checkAsComponent(concept);
-		checkAsFacet(concept);
 		checkJavaClassCreation(concept);
-		checkAddressAdded(concept);
+		if (model != null) {
+			checkAsComponent(model, concept);
+			checkAsFacet(model, concept);
+			checkAddressAdded(model, concept);
+			checkAsNamed(model, concept);
+		}
 	}
 
-	private void checkAddressAdded(Concept concept) {
-		Model model = TaraLanguage.getMetaModel(concept.getContainingFile());
-		if (model == null) return;
+	private void checkAsNamed(Model model, Concept concept) {
+		Node node = findNode(concept, model);
+		if (node != null && node.getObject().is(NAMED) && concept.getName() == null)
+			annotateAndFix(concept.getSignature(), new AddAddressFix(concept), "Name needed");
+	}
+
+	private void checkAddressAdded(Model model, Concept concept) {
 		Node node = findNode(concept, model);
 		if (node != null && node.getObject().is(ADDRESSED) && concept.getAddress() == null)
-			holder.createErrorAnnotation(concept.getSignature(), "Address needed");
+			annotateAndFix(concept.getSignature(), new AddAddressFix(concept), "Address needed");
 	}
 
-	private void checkAsFacet(Concept concept) {
-		Model model = TaraLanguage.getMetaModel(concept.getContainingFile());
-		if (model == null) return;
+	private void checkAsFacet(Model model, Concept concept) {
 		Node node = findNode(concept, model);
 		if (node == null) return;
 		if (node.getObject().is(FACET))
@@ -73,9 +80,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 		return ReferenceManager.resolve(concept.getIdentifierNode(), true) != null;
 	}
 
-	private void checkAsComponent(Concept concept) {
-		Model model = TaraLanguage.getMetaModel(concept.getContainingFile());
-		if (model == null) return;
+	private void checkAsComponent(Model model, Concept concept) {
 		Node node = findNode(concept, model);
 		if (node == null) return;
 		if (node.getObject().is(COMPONENT)) {
@@ -106,7 +111,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 
 	private void checkIfDuplicated(Concept concept) {
 		if (concept.getIdentifierNode() != null && findDuplicates(concept) > 1)
-			annotateAndFix(concept.getIdentifierNode(), new RemoveConceptFix(concept), TaraBundle.message("duplicate.concept.key.error.message"));
+			annotateAndFix(concept.getSignature(), new RemoveConceptFix(concept), TaraBundle.message("duplicate.concept.key.error.message"));
 	}
 
 	public int findDuplicates(Concept concept) {

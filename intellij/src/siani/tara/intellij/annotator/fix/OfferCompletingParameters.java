@@ -45,7 +45,7 @@ public class OfferCompletingParameters implements IntentionAction {
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
 		Parameters parameters = TaraElementFactory.getInstance(project).createParameters(getNames(variables));
-		if (signature.getParameters() == null) signature.add(parameters);
+		if (signature.getParameters() == null) signature.addAfter(parameters, signature.getType());
 		else signature.getParameters().replace(parameters);
 		editor.getCaretModel().moveToOffset(offset());
 	}

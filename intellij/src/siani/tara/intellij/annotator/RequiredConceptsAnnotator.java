@@ -33,7 +33,7 @@ public class RequiredConceptsAnnotator extends TaraAnnotator {
 		if (requiredNodes.isEmpty()) return;
 		for (Node requiredNode : requiredNodes)
 			if (!existInstanceOf(requiredNode, childrenOf))
-				holder.createErrorAnnotation(element.getNode(), "This concept requires an inner " + requiredNode.getName());
+				holder.createErrorAnnotation(((Concept)element).getSignature(), "This concept requires an inner " + requiredNode.getName());
 	}
 
 	private boolean existInstanceOf(Node requiredNode, Collection<Concept> childrenOf) {

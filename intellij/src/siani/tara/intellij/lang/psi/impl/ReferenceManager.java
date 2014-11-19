@@ -103,7 +103,14 @@ public class ReferenceManager {
 		for (Concept concept : concepts)
 			if (identifier.getText().equals(concept.getName()))
 				list.add(concept);
+		addAggregated(list, identifier);
 		return list.toArray(new Concept[list.size()]);
+	}
+
+	private static void addAggregated(Set<Concept> list, Identifier identifier) {
+		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile((TaraBoxFile) identifier.getContainingFile());
+		for (Concept concept : allConceptsOfFile)
+			if (concept.isAggregated() && identifier.getText().equals(concept.getName())) list.add(concept);
 	}
 
 	private static Concept resolvePathInConcept(List<Identifier> path, Concept concept) {

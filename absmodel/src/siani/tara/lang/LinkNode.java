@@ -7,7 +7,7 @@ public class LinkNode extends Node {
 	transient DeclaredNode destiny;
 	String destinyQN;
 	String destinyBox;
-	boolean aggregated;
+	boolean aggregated = false;
 	boolean reference;
 
 	public LinkNode() {

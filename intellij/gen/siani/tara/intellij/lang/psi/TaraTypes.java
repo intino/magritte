@@ -46,6 +46,7 @@ public interface TaraTypes {
 	IElementType VAR_INIT = new TaraElementType("VAR_INIT");
 	IElementType WORD = new TaraElementType("WORD");
 
+	IElementType ABSTRACT = new TaraTokenType("ABSTRACT");
 	IElementType ADDRESSED = new TaraTokenType("ADDRESSED");
 	IElementType ADDRESS_VALUE = new TaraTokenType("ADDRESS_VALUE");
 	IElementType AGGREGATED = new TaraTokenType("AGGREGATED");
@@ -88,7 +89,6 @@ public interface TaraTypes {
 	IElementType NEWLINE = new TaraTokenType("NEWLINE");
 	IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
 	IElementType ON = new TaraTokenType("ON");
-	IElementType PRIVATE = new TaraTokenType("PRIVATE");
 	IElementType PROPERTY = new TaraTokenType("PROPERTY");
 	IElementType REQUIRED = new TaraTokenType("REQUIRED");
 	IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");

@@ -138,7 +138,7 @@ public class InsideModelDependencyResolver {
 				if (node.contains(child.getName())) continue;
 				element.setDestinyQN(destiny.getQualifiedName());
 				toAddNodes.add(element);
-				node.add(element, 0);
+				node.add(0, element);
 				element.calculateQualifiedName();
 			}
 	}

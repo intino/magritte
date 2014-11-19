@@ -87,7 +87,7 @@ public class NodeObject extends ModelObject {
 		return subConcept;
 	}
 
-	public void setCase(boolean caseConcept) {
+	public void setSub(boolean caseConcept) {
 		this.subConcept = caseConcept;
 	}
 

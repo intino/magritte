@@ -30,7 +30,7 @@ public class AddressGenerator {
 				for (Concept concept : concepts)
 					if (concept.getAddress() == null)
 						concept.addAddress(
-							TaraElementFactory.getInstance(concept.getProject()).createAddress(new Random(new Date().getTime()).nextLong()));
+							TaraElementFactory.getInstance(concept.getProject()).createAddress(Math.abs(new Random(new Date().getTime()).nextLong())));
 			}
 		};
 		RunResult execute = action.execute();

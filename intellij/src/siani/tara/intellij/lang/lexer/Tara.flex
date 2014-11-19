@@ -99,7 +99,7 @@ IS                  = "is"
 EXTENDS             = "extends"
 METAMODEL           = "metamodel"
 //annotations
-PRIVATE             = "private"
+ABSTRACT             = "abstract"
 SINGLE              = "single"
 REQUIRED            = "required"
 NAMED               = "named"
@@ -187,7 +187,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{SUB}                           {   return TaraTypes.SUB; }
 
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
-	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
+	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
 	{SINGLE}                        {   return TaraTypes.SINGLE; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }

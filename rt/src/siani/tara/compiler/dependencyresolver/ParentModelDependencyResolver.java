@@ -101,7 +101,7 @@ public class ParentModelDependencyResolver {
 		for (Node node : nodes)
 			if (node instanceof DeclaredNode) {
 				DeclaredNode declaredNode = (DeclaredNode) node;
-				declaredNode.add(terminal, 0); // Possible StackOverFlow maybe clone needed
+				declaredNode.add(0, terminal); // Possible StackOverFlow maybe clone needed
 				terminal.getObject().setParentObject(null); //Possible loss of info
 				terminal.getObject().setParentName(null);
 				terminal.setContainer(declaredNode);

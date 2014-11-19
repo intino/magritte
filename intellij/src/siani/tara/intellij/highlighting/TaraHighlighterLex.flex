@@ -64,7 +64,7 @@ METAMODEL           = "metamodel"
 ALWAYS              = "always"
 WITH                = "with"
 //annotations
-PRIVATE             = "private"
+ABSTRACT             = "private"
 SINGLE              = "single"
 REQUIRED            = "required"
 NAMED               = "named"
@@ -155,7 +155,7 @@ NEWLINE             = [\n]+
 
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
 	{SINGLE}                        {   return TaraTypes.SINGLE; }
-	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
+	{ABSTRACT}                       {   return TaraTypes.ABSTRACT; }
 	{NAMED}                         {   return TaraTypes.NAMED; }
 	{INTENTION}                     {   return TaraTypes.INTENTION; }
 	{UNIVERSAL}                     {   return TaraTypes.UNIVERSAL; }

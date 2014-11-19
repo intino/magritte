@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class AddressAnnotator extends TaraAnnotator {
 
-	private static Map<String, String> addresses = new HashMap<>();
+	private Map<String, String> addresses = new HashMap<>();
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {

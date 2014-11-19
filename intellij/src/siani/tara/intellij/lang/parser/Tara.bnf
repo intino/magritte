@@ -163,7 +163,7 @@ annotations ::= (ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED | COMPONENT | F
 	implements = 'siani.tara.intellij.lang.psi.Annotations'
 }
 
-varInit ::=  IDENTIFIER_KEY COLON ( emptyField
+varInit ::=  IDENTIFIER_KEY EQUALS ( emptyField
                                  | linkValue+
 								 | stringValue+
                                  | booleanValue+

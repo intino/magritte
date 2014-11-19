@@ -96,7 +96,7 @@ WITH                : 'with';
 EXTENDS             : 'extends';
 
 //annotations
-PRIVATE             : 'private';
+ABSTRACT            : 'abstract';
 SINGLE              : 'single';
 REQUIRED            : 'required';
 COMPONENT           : 'component';

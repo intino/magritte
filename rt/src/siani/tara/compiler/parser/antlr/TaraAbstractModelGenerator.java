@@ -70,7 +70,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		if (node.is(DeclaredNode.class)) {
 			if (container != null) {
 				if (isSub(ctx)) {
-					node.getObject().setCase(true);
+					node.getObject().setSub(true);
 					node.getObject().setParentName(node.getContainer().getQualifiedName());
 					node.getObject().setParentObject(container.getObject());
 					container.getObject().add((DeclaredNode) node);
@@ -383,7 +383,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			conceptStack.peek().getObject().add(Annotation.TERMINAL);
 		for (int i = 0; i < ctx.COMPONENT().size(); i++)
 			conceptStack.peek().getObject().add(Annotation.COMPONENT);
-		for (int i = 0; i < ctx.PRIVATE().size(); i++)
+		for (int i = 0; i < ctx.ABSTRACT().size(); i++)
 			conceptStack.peek().getObject().add(Annotation.ABSTRACT);
 		for (int i = 0; i < ctx.NAMED().size(); i++)
 			conceptStack.peek().getObject().add(Annotation.NAMED);

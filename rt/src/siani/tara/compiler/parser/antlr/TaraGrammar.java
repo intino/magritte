@@ -20,21 +20,21 @@ public class TaraGrammar extends Parser {
 		new PredictionContextCache();
 	public static final int
 		DOLLAR=33, FACET=16, RIGHT_SQUARE=28, STAR=43, NEGATIVE_VALUE=60, DOC=72, 
-		LETTER=69, DATE_VALUE=65, SUB=2, DEDENT=76, EQUALS=40, BOOLEAN_VALUE=58, 
+		LETTER=69, DATE_VALUE=65, SUB=2, DEDENT=76, EQUALS=40, ABSTRACT=12, BOOLEAN_VALUE=58, 
 		METAIDENTIFIER=1, RESOURCE=49, ADDRESS_VALUE=64, UNKNOWN_TOKEN=77, WORD=48, 
 		AS=6, HAS=7, BOX=4, RIGHT_PARENTHESIS=26, DASHES=46, ALWAYS=22, COMMA=38, 
 		IS=9, IDENTIFIER=67, LEFT_PARENTHESIS=25, COORDINATE_VALUE=66, STRING_MULTILINE_VALUE_KEY=63, 
 		VAR=5, NL=74, DIGIT=68, INTENTION=17, DOT=39, COMPONENT=15, STRING_VALUE=62, 
 		DOUBLE_VALUE=61, WITH=10, POSITIVE=44, NEW_LINE_INDENT=75, AGGREGATED=24, 
-		ADDRESSED=23, DASH=45, COORDINATE_TYPE=50, PRIVATE=12, NATURAL_TYPE=52, 
-		TERMINAL=18, UNDERDASH=47, ON=8, AMPERSAND=32, CLOSE_INLINE=31, BOOLEAN_TYPE=55, 
-		DOUBLE_TYPE=53, SEMICOLON=42, INT_TYPE=51, REQUIRED=14, LIST=29, PERCENTAGE=35, 
-		EMPTY=57, COLON=37, NATURAL_VALUE=59, EURO=34, GRADE=36, NEWLINE=70, SINGLE=13, 
+		ADDRESSED=23, DASH=45, COORDINATE_TYPE=50, NATURAL_TYPE=52, TERMINAL=18, 
+		UNDERDASH=47, ON=8, AMPERSAND=32, CLOSE_INLINE=31, BOOLEAN_TYPE=55, DOUBLE_TYPE=53, 
+		SEMICOLON=42, INT_TYPE=51, REQUIRED=14, LIST=29, PERCENTAGE=35, EMPTY=57, 
+		COLON=37, NATURAL_VALUE=59, EURO=34, GRADE=36, NEWLINE=70, SINGLE=13, 
 		PROPERTY=20, SPACES=71, SP=73, APHOSTROPHE=41, STRING_TYPE=54, NAMED=19, 
 		DATE_TYPE=56, INLINE=30, USE=3, UNIVERSAL=21, EXTENDS=11, LEFT_SQUARE=27;
 	public static final String[] tokenNames = {
 		"<INVALID>", "'Concept'", "'sub'", "'use'", "'box'", "'var'", "'as'", 
-		"'has'", "'on'", "'is'", "'with'", "'extends'", "'private'", "'single'", 
+		"'has'", "'on'", "'is'", "'with'", "'extends'", "'abstract'", "'single'", 
 		"'required'", "'component'", "'facet'", "'intention'", "'terminal'", "'named'", 
 		"'property'", "'universal'", "'always'", "'addressed'", "'aggregated'", 
 		"'('", "')'", "'['", "']'", "'...'", "'>'", "'<'", "'&'", "'$'", "'€'", 
@@ -3069,6 +3069,9 @@ public class TaraGrammar extends Parser {
 	public static class AnnotationsContext extends ParserRuleContext {
 		public List<TerminalNode> FACET() { return getTokens(TaraGrammar.FACET); }
 		public List<TerminalNode> AGGREGATED() { return getTokens(TaraGrammar.AGGREGATED); }
+		public TerminalNode ABSTRACT(int i) {
+			return getToken(TaraGrammar.ABSTRACT, i);
+		}
 		public List<TerminalNode> UNIVERSAL() { return getTokens(TaraGrammar.UNIVERSAL); }
 		public List<TerminalNode> NAMED() { return getTokens(TaraGrammar.NAMED); }
 		public TerminalNode PROPERTY(int i) {
@@ -3077,7 +3080,7 @@ public class TaraGrammar extends Parser {
 		public TerminalNode FACET(int i) {
 			return getToken(TaraGrammar.FACET, i);
 		}
-		public List<TerminalNode> PRIVATE() { return getTokens(TaraGrammar.PRIVATE); }
+		public List<TerminalNode> ABSTRACT() { return getTokens(TaraGrammar.ABSTRACT); }
 		public TerminalNode AGGREGATED(int i) {
 			return getToken(TaraGrammar.AGGREGATED, i);
 		}
@@ -3113,9 +3116,6 @@ public class TaraGrammar extends Parser {
 			return getToken(TaraGrammar.COMPONENT, i);
 		}
 		public List<TerminalNode> COMPONENT() { return getTokens(TaraGrammar.COMPONENT); }
-		public TerminalNode PRIVATE(int i) {
-			return getToken(TaraGrammar.PRIVATE, i);
-		}
 		public AnnotationsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3146,7 +3146,7 @@ public class TaraGrammar extends Parser {
 				{
 				setState(524);
 				_la = _input.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PRIVATE) | (1L << SINGLE) | (1L << REQUIRED) | (1L << COMPONENT) | (1L << FACET) | (1L << INTENTION) | (1L << TERMINAL) | (1L << NAMED) | (1L << PROPERTY) | (1L << UNIVERSAL) | (1L << ADDRESSED) | (1L << AGGREGATED))) != 0)) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABSTRACT) | (1L << SINGLE) | (1L << REQUIRED) | (1L << COMPONENT) | (1L << FACET) | (1L << INTENTION) | (1L << TERMINAL) | (1L << NAMED) | (1L << PROPERTY) | (1L << UNIVERSAL) | (1L << ADDRESSED) | (1L << AGGREGATED))) != 0)) ) {
 				_errHandler.recoverInline(this);
 				}
 				consume();
@@ -3155,7 +3155,7 @@ public class TaraGrammar extends Parser {
 				setState(527); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PRIVATE) | (1L << SINGLE) | (1L << REQUIRED) | (1L << COMPONENT) | (1L << FACET) | (1L << INTENTION) | (1L << TERMINAL) | (1L << NAMED) | (1L << PROPERTY) | (1L << UNIVERSAL) | (1L << ADDRESSED) | (1L << AGGREGATED))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABSTRACT) | (1L << SINGLE) | (1L << REQUIRED) | (1L << COMPONENT) | (1L << FACET) | (1L << INTENTION) | (1L << TERMINAL) | (1L << NAMED) | (1L << PROPERTY) | (1L << UNIVERSAL) | (1L << ADDRESSED) | (1L << AGGREGATED))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {

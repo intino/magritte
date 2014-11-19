@@ -48,7 +48,7 @@ public class CompilationUnit extends ProcessingUnit {
 		super(configuration, null);
 		this.pluginGeneration = pluginGeneration;
 		this.sourceUnits = new HashMap<>();
-		this.phaseOperations = new LinkedList[10];
+		this.phaseOperations = new LinkedList[Phases.ALL];
 		for (int i = 0; i < this.phaseOperations.length; i++)
 			this.phaseOperations[i] = new LinkedList();
 		addPhaseOperation(new ParseOperation(this.errorCollector), Phases.PARSING);
@@ -97,7 +97,7 @@ public class CompilationUnit extends ProcessingUnit {
 
 	public void compile(int throughPhase) throws CompilationFailedException {
 		gotoPhase(1);
-		while ((Math.min(throughPhase, 9) >= this.phase) && (this.phase <= 9)) {
+		while ((Math.min(throughPhase, Phases.LAST) >= this.phase) && (this.phase <= Phases.LAST)) {
 			processPhaseOperations(this.phase);
 			if (this.progressCallback != null) this.progressCallback.call(this, this.phase);
 			completePhase();
