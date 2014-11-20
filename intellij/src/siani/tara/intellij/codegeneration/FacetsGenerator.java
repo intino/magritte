@@ -18,6 +18,8 @@ import siani.tara.lang.Node;
 import java.io.File;
 import java.util.*;
 
+import static siani.tara.lang.Annotations.Annotation.INTENTION;
+
 public class FacetsGenerator {
 
 	public static final String SRC = "src";
@@ -52,8 +54,17 @@ public class FacetsGenerator {
 			final TaraBoxFile taraBoxFile = ((TaraBoxFile) psiFile);
 			final Concept[] facets = getFacets(taraBoxFile);
 			for (Concept facet : facets)
-				createFacetClass(facet);
+				if (isIntention(facet))
+					createFacetClass(facet);
 		}
+	}
+
+	private boolean isIntention(Concept facet) {
+		if (facet.isIntention()) return true;
+		Model model = TaraLanguage.getMetaModel(facet.getFile());
+		if (model == null) return false;
+		Node node = model.searchNode(facet.getMetaQualifiedName());
+		return node.getObject().is(INTENTION);
 	}
 
 	private PsiClass createFacetClass(Concept concept) {

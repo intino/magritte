@@ -70,7 +70,7 @@ public class TaraUtil {
 		String metaQualifiedName = getMetaQualifiedName(concept);
 		if (reference.getIdentifierReference() == null) return "";
 		List<TaraIdentifier> identifierList = reference.getIdentifierReference().getIdentifierList();
-		PsiElement resolve = ReferenceManager.resolve(identifierList.get(identifierList.size() - 1), false);
+		PsiElement resolve = ReferenceManager.resolve(identifierList.get(identifierList.size() - 1));
 		if (resolve == null || !Identifier.class.isInstance(resolve)) return null;
 		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(resolve);
 		String type = contextOf.getType();

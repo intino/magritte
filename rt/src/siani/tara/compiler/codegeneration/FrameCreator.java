@@ -8,11 +8,11 @@ import java.util.*;
 public class FrameCreator {
 
 	private static final String SEPARATOR = ".";
-	private final boolean system;
+	private final boolean terminal;
 	private Node initNode;
 
-	public FrameCreator(boolean system) {
-		this.system = system;
+	public FrameCreator(boolean terminal) {
+		this.terminal = terminal;
 	}
 
 	public Frame createNodeFrame(Node node) {
@@ -60,11 +60,11 @@ public class FrameCreator {
 	}
 
 	private void addAnnotations(final Node node, Frame frame) {
-		if (node.getObject().getAnnotations().length > 0 || system)
+		if (node.getObject().getAnnotations().length > 0 || terminal)
 			frame.addSlot("annotation", new Frame("Annotation") {{
 				for (Annotations.Annotation annotation : node.getObject().getAnnotations())
 					addSlot("value", annotation);
-				if (system)
+				if (terminal)
 					addSlot("value", "case");
 			}});
 	}
@@ -121,7 +121,7 @@ public class FrameCreator {
 			frame.addSlot("variable", varFrame);
 			if (variable.getValues() != null && variable.getValues().length > 0) {
 				addVariableValue(varFrame, variable);
-			} else if (system)
+			} else if (terminal)
 				frame.addSlot("variable", new Frame(getTypes(variable)) {{
 					addSlot("name", variable.getName());
 					addSlot("variableValue", variable.getDefaultValues()[0]);

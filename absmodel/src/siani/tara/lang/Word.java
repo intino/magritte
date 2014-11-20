@@ -7,12 +7,6 @@ import java.util.List;
 public class Word extends Variable {
 	public List<String> wordTypes;
 
-	public Word(String name, boolean isTerminal) {
-		this.name = name;
-		this.isTerminal = isTerminal;
-		this.wordTypes = new ArrayList<>();
-	}
-
 	public Word(String name) {
 		this.name = name;
 		this.wordTypes = new ArrayList<>();
@@ -45,10 +39,9 @@ public class Word extends Variable {
 
 	@Override
 	public Word clone() {
-		Word word = new Word(name, isTerminal);
+		Word word = new Word(name);
 		for (String wordType : wordTypes) word.add(wordType);
-		word.setProperty(isProperty);
-		word.setUniversal(isUniversal);
+		for (Annotations.Annotation annotation : annotations) word.add(annotation);
 		word.setDefaultValues(defaultValues);
 		if (values != null)
 			for (Object value : values) word.addValue(value);

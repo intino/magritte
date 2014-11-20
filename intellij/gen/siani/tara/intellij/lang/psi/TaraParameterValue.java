@@ -19,6 +19,9 @@ public interface TaraParameterValue extends TaraPsiElement {
   @NotNull
   List<TaraDoubleValue> getDoubleValueList();
 
+  @Nullable
+  TaraEmptyField getEmptyField();
+
   @NotNull
   List<TaraIdentifierReference> getIdentifierReferenceList();
 

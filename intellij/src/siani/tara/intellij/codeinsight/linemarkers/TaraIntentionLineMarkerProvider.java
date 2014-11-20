@@ -31,7 +31,7 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 		public String fun(PsiElement element) {
 			if (!(element instanceof Concept) || ((Concept) element).isIntention()) return null;
 			Concept concept = (Concept) element;
-			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode(), true);
+			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode());
 			String start = "Intention declared in ";
 			@NonNls String pattern = null;
 			if (reference != null) pattern = reference.getNavigationElement().getContainingFile().getName();
@@ -48,7 +48,7 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 			Identifier identifierNode = ((Concept) element).getIdentifierNode();
 			if (identifierNode == null) return;
 			NavigatablePsiElement reference = (NavigatablePsiElement)
-				ReferenceManager.resolve(identifierNode, true);
+				ReferenceManager.resolve(identifierNode);
 			if (reference == null) return;
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
@@ -66,7 +66,7 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
 		if (element instanceof Concept && ((Concept) element).isIntention()) {
 			Concept concept = (Concept) element;
-			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode(), true);
+			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode());
 			if (reference != null) {
 				final Icon icon = AllIcons.Gutter.ImplementedMethod;
 				final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;

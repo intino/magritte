@@ -23,6 +23,9 @@ public interface TaraVarInit extends VarInit {
   TaraEmptyField getEmptyField();
 
   @NotNull
+  List<TaraIdentifier> getIdentifierList();
+
+  @NotNull
   List<TaraIntegerValue> getIntegerValueList();
 
   @NotNull

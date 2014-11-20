@@ -6,11 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraBundle;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.ConceptReference;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.lang.Annotations;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,12 +30,23 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		}
 	}
 
-	private void checkAnnotations(@NotNull siani.tara.intellij.lang.psi.Annotations annotationsElement) {
-		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(annotationsElement);
-		for (PsiElement psiElement : getIncorrectAnnotations(contextOf, contextOf.getAnnotations())) {
-			com.intellij.lang.annotation.Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
-			errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
+	private void checkAnnotations(@NotNull siani.tara.intellij.lang.psi.Annotations element) {
+		if (element.getParent() instanceof ConceptReference)
+			for (PsiElement psiElement : getConceptReferenceIncorrectAnnotations(element)) {
+				com.intellij.lang.annotation.Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
+				errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
+			}
+		else {
+			Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(element);
+			for (PsiElement psiElement : getConceptIncorrectAnnotations(contextOf, contextOf.getAnnotations())) {
+				com.intellij.lang.annotation.Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
+				errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
+			}
 		}
+	}
+
+	private Collection<PsiElement> getConceptReferenceIncorrectAnnotations(siani.tara.intellij.lang.psi.Annotations element) {
+		return checkAnnotationList(element.getAnnotations(), Annotations.HAS_ANNOTATIONS);
 	}
 
 	private void checkDuplicates() {
@@ -47,7 +60,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		}
 	}
 
-	private PsiElement[] getIncorrectAnnotations(Concept concept, PsiElement[] annotationList) {
+	private PsiElement[] getConceptIncorrectAnnotations(Concept concept, PsiElement[] annotationList) {
 		List<PsiElement> incorrects;
 		if (isPrimeConcept(concept))
 			incorrects = checkAnnotationList(annotationList, Annotations.PRIME_ANNOTATIONS);

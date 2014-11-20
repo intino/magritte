@@ -65,10 +65,11 @@ public class ModelSaver {
 				Resource resource = (Resource) variable;
 				object.addProperty("resourceType", resource.node);
 			}
-			object.addProperty("isTerminal", variable.isTerminal);
-			object.addProperty("isProperty", variable.isProperty);
-			object.addProperty("isUniversal", variable.isUniversal);
 			JsonArray list = new JsonArray();
+			for (Annotations.Annotation value : variable.annotations)
+				list.add(new JsonPrimitive(value.getName()));
+			object.add("annotations", list);
+			list = new JsonArray();
 			if (variable.values != null) {
 				for (Object value : variable.values) {
 					list.add(new JsonPrimitive(variable instanceof Word || variable instanceof Reference ? (String) value :
@@ -76,6 +77,7 @@ public class ModelSaver {
 				}
 				object.add("values", list);
 			}
+			list = new JsonArray();
 			if (variable.defaultValues != null) {
 				for (Object value : variable.defaultValues)
 					list.add(new JsonPrimitive(variable instanceof Word || variable instanceof Reference ? (String) value :

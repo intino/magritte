@@ -4,11 +4,10 @@ public class Attribute extends Variable {
 	public final String primitiveType;
 	public String measure;
 
-	public Attribute(String type, String name, boolean isList, boolean isTerminal) {
+	public Attribute(String type, String name, boolean isList) {
 		this.primitiveType = type;
 		this.name = name;
 		this.isList = isList;
-		this.isTerminal = isTerminal;
 	}
 
 	public Attribute(String type, String name) {
@@ -35,10 +34,9 @@ public class Attribute extends Variable {
 
 	@Override
 	public Attribute clone() {
-		Attribute attribute = new Attribute(primitiveType, name, isList, isTerminal);
+		Attribute attribute = new Attribute(primitiveType, name, isList);
 		attribute.setDefaultValues(defaultValues);
-		attribute.setProperty(isProperty);
-		attribute.setUniversal(isUniversal);
+		for (Annotations.Annotation annotation : annotations) attribute.add(annotation);
 		attribute.measure = measure;
 		attribute.setDefaultValues(defaultValues);
 		if (values != null)

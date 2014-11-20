@@ -109,6 +109,9 @@ UNIVERSAL           : 'universal';
 ALWAYS              : 'always';
 ADDRESSED           : 'addressed';
 AGGREGATED          : 'aggregated';
+COMPOSED            : 'composed';
+MULTIPLE            : 'multiple';
+ROOT                : 'root';
 
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';

@@ -47,9 +47,7 @@ public class ConfigModuleAction extends AnAction implements DumbAware {
 		final Module module = e.getData(LangDataKeys.MODULE);
 		ConfigModuleDialogPane configDialog = new ConfigModuleDialogPane(e.getProject(), module);
 		configDialog.getPeer().setTitle("Configure Module " + (module != null ? module.getName() : ""));
-
 		configDialog.show();
-
 		if (configDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
 			configDialog.saveValues();
 		}

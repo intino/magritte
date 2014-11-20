@@ -30,7 +30,9 @@ public class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
 		List<ResolveResult> results = new ArrayList<>();
-		PsiElement resolve = ReferenceManager.resolve((Identifier) myElement, external);
+		PsiElement resolve = (external) ?
+			ReferenceManager.resolveExternal((Identifier) myElement) :
+			ReferenceManager.resolve((Identifier) myElement);
 		if (resolve != null) results.add(new PsiElementResolveResult(resolve));
 		return results.toArray(new ResolveResult[results.size()]);
 	}

@@ -91,16 +91,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitStringValue(@NotNull TaraGrammar.StringValueContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#attribute}.
-	 * @param ctx the parse tree
-	 */
-	void enterAttribute(@NotNull TaraGrammar.AttributeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#attribute}.
-	 * @param ctx the parse tree
-	 */
-	void exitAttribute(@NotNull TaraGrammar.AttributeContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#doubleValue}.
 	 * @param ctx the parse tree
 	 */
@@ -460,6 +450,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAnnotations(@NotNull TaraGrammar.AnnotationsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#variable}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariable(@NotNull TaraGrammar.VariableContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#variable}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariable(@NotNull TaraGrammar.VariableContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#facetTarget}.
 	 * @param ctx the parse tree

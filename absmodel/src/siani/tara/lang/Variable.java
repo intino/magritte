@@ -1,8 +1,11 @@
 package siani.tara.lang;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import static siani.tara.lang.Annotations.Annotation.*;
 
 public abstract class Variable implements Cloneable {
 	public static final String EMPTY = "EMPTY_VALUE";
@@ -10,10 +13,8 @@ public abstract class Variable implements Cloneable {
 	public String doc;
 	public Object[] defaultValues;
 	public List<Object> values;
+	public List<Annotations.Annotation> annotations = new ArrayList<>();
 	public boolean isList = false;
-	public boolean isTerminal = false;
-	public boolean isProperty = false;
-	public boolean isUniversal = false;
 
 	public String getName() {
 		return name;
@@ -32,11 +33,23 @@ public abstract class Variable implements Cloneable {
 	}
 
 	public boolean isTerminal() {
-		return isTerminal;
+		return annotations.contains(TERMINAL);
 	}
 
-	public void setTerminal(boolean isTerminal) {
-		this.isTerminal = isTerminal;
+	public boolean isProperty() {
+		return annotations.contains(PROPERTY);
+	}
+
+	public boolean isUniversal() {
+		return annotations.contains(UNIVERSAL);
+	}
+
+	public boolean addAll(Collection<? extends Annotations.Annotation> annotations) {
+		return this.annotations.addAll(annotations);
+	}
+
+	public boolean add(Annotations.Annotation annotation) {
+		return annotations.add(annotation);
 	}
 
 	public String getDoc() {
@@ -45,22 +58,6 @@ public abstract class Variable implements Cloneable {
 
 	public void setDoc(String doc) {
 		this.doc = doc;
-	}
-
-	public boolean isProperty() {
-		return isProperty;
-	}
-
-	public void setProperty(boolean isProperty) {
-		this.isProperty = isProperty;
-	}
-
-	public boolean isUniversal() {
-		return isUniversal;
-	}
-
-	public void setUniversal(boolean isUniversal) {
-		this.isUniversal = isUniversal;
 	}
 
 	public abstract String getType();
@@ -75,7 +72,7 @@ public abstract class Variable implements Cloneable {
 	}
 
 	public void addValue(Object value) {
-		if(values== null) this.values = new ArrayList<>();
+		if (values == null) this.values = new ArrayList<>();
 		this.values.add(value);
 	}
 

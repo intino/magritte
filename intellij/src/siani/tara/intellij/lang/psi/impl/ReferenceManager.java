@@ -24,7 +24,19 @@ public class ReferenceManager {
 	}
 
 	@Nullable
-	public static PsiElement resolve(Identifier identifier, boolean external) {
+	public static PsiElement resolveExternal(Identifier identifier) {
+		PsiElement reference = null;
+		if (identifier.getParent() instanceof IdentifierReference)
+			reference = resolveConcept(identifier, getIdentifiersOfReference(identifier));
+		else if (identifier.getParent() instanceof HeaderReference)
+			reference = resolveHeaderReference(identifier, getPathFromHeader(identifier));
+		else if (identifier.getParent() instanceof Signature) return identifier;
+		if (reference instanceof Concept) reference = ((Concept) reference).getIdentifierNode();
+		return reference;
+	}
+
+	@Nullable
+	public static PsiElement resolve(Identifier identifier) {
 		PsiElement reference = null;
 		if (external) reference = resolveExternalReference(identifier);
 		else if (identifier.getParent() instanceof IdentifierReference)
@@ -92,6 +104,20 @@ public class ReferenceManager {
 
 	private static Concept[] getPossibleRoots(Identifier identifier) {
 		Set<Concept> list = new HashSet<>();
+		addConceptsInContext(identifier, list);
+		addRootConcepts(identifier, list);
+		addAggregated(list, identifier);
+		return list.toArray(new Concept[list.size()]);
+	}
+
+	private static void addRootConcepts(Identifier identifier, Set<Concept> list) {
+		Collection<Concept> concepts = ((TaraBoxFile) identifier.getContainingFile()).getConcepts();
+		for (Concept concept : concepts)
+			if (identifier.getText().equals(concept.getName()))
+				list.add(concept);
+	}
+
+	private static void addConceptsInContext(Identifier identifier, Set<Concept> list) {
 		Concept parent = getConceptContainerOf(identifier);
 		while (parent != null) {
 			for (Concept sibling : parent.getConceptSiblings())
@@ -99,12 +125,6 @@ public class ReferenceManager {
 					list.add(sibling);
 			parent = getConceptContainerOf(parent);
 		}
-		Collection<Concept> concepts = ((TaraBoxFile) identifier.getContainingFile()).getConcepts();
-		for (Concept concept : concepts)
-			if (identifier.getText().equals(concept.getName()))
-				list.add(concept);
-		addAggregated(list, identifier);
-		return list.toArray(new Concept[list.size()]);
 	}
 
 	private static void addAggregated(Set<Concept> list, Identifier identifier) {
@@ -179,7 +199,7 @@ public class ReferenceManager {
 	private static Concept searchInImport(List<Identifier> path, Collection<Import> imports) {
 		for (Import anImport : imports) {
 			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
-			PsiElement resolve = resolve(importIdentifiers.get(importIdentifiers.size() - 1), false);
+			PsiElement resolve = resolve(importIdentifiers.get(importIdentifiers.size() - 1));
 			if (resolve == null) continue;
 			if (!TaraBoxFile.class.isInstance(resolve.getContainingFile())) continue;
 			TaraBoxFile containingFile = (TaraBoxFile) resolve.getContainingFile();

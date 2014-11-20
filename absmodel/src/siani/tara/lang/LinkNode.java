@@ -1,14 +1,18 @@
 package siani.tara.lang;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import static siani.tara.lang.Annotations.Annotation.AGGREGATED;
 
 public class LinkNode extends Node {
 
 	transient DeclaredNode destiny;
 	String destinyQN;
 	String destinyBox;
-	boolean aggregated = false;
 	boolean reference;
+	List<Annotations.Annotation> annotations = new ArrayList<>();
 
 	public LinkNode() {
 	}
@@ -69,11 +73,11 @@ public class LinkNode extends Node {
 	}
 
 	public boolean isAggregated() {
-		return aggregated;
+		return annotations.contains(AGGREGATED);
 	}
 
-	public void setAggregated(boolean aggregated) {
-		this.aggregated = aggregated;
+	public boolean addAll(Collection<? extends Annotations.Annotation> c) {
+		return annotations.addAll(c);
 	}
 
 	@Override
@@ -97,7 +101,6 @@ public class LinkNode extends Node {
 	@Override
 	protected String getNodePath() {
 		String destiny = (getDestiny() != null) ? getDestiny().getQualifiedName() : getDestinyQN();
-
 		String name = "[" + destiny + LINK + (isAggregated() ? "{aggregated}" : "") + "]";
 		return container.getQualifiedName() + "." + name;
 	}

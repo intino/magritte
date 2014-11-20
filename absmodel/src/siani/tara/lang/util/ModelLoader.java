@@ -98,28 +98,25 @@ public class ModelLoader {
 		public Variable deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 			if (json == null) return null;
 			String name = json.getAsJsonObject().get("name").getAsString();
-			boolean isTerminal = json.getAsJsonObject().get("isTerminal").getAsBoolean();
 			Variable variable;
 			JsonElement e;
 			JsonArray array;
 			if ((e = json.getAsJsonObject().get("node")) != null && e.isJsonPrimitive() && e.getAsString() != null) {
-				variable = new Reference(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), isTerminal);
+				variable = new Reference(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean());
 				processReference(json, (Reference) variable);
 			} else if ((e = json.getAsJsonObject().get("primitiveType")) != null && e.isJsonPrimitive() && e.getAsString() != null) {
-				variable = new Attribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean(), isTerminal);
+				variable = new Attribute(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean());
 				processAttribute(json, (Attribute) variable);
 			} else if (json.getAsJsonObject().get("wordTypes") != null && json.getAsJsonObject().get("wordTypes").isJsonArray()) {
 				array = json.getAsJsonObject().get("wordTypes").getAsJsonArray();
-				variable = new Word(name, isTerminal);
+				variable = new Word(name);
 				for (JsonElement jsonElement : array) ((Word) variable).add(jsonElement.getAsString());
 			} else
-				variable = new Resource(json.getAsJsonObject().get("resourceType").getAsString(), name, isTerminal);
-			if ((e = json.getAsJsonObject().get("isProperty")) != null && e.isJsonPrimitive())
-				variable.setProperty(e.getAsBoolean());
-			if ((e = json.getAsJsonObject().get("isUniversal")) != null && e.isJsonPrimitive())
-				variable.setUniversal(e.getAsBoolean());
-			if ((e = json.getAsJsonObject().get("isProperty")) != null && e.isJsonPrimitive())
-				variable.setProperty(e.getAsBoolean());
+				variable = new Resource(json.getAsJsonObject().get("resourceType").getAsString(), name);
+			if (json.getAsJsonObject().get("annotations") != null &&
+				(array = json.getAsJsonObject().get("annotations").getAsJsonArray()) != null && array.isJsonArray())
+				for (JsonElement jsonElement : array)
+					variable.add(Annotations.Annotation.valueOf(jsonElement.getAsString().toUpperCase()));
 			if (json.getAsJsonObject().get("values") != null &&
 				(array = json.getAsJsonObject().get("values").getAsJsonArray()) != null && array.isJsonArray())
 				for (JsonElement jsonElement : array)

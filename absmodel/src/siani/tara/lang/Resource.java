@@ -4,12 +4,6 @@ public class Resource extends Variable {
 
 	public final String node;
 
-	public Resource(String node, String name, boolean isTerminal) {
-		this.node = node;
-		this.name = name;
-		this.isTerminal = isTerminal;
-	}
-
 	public Resource(String node, String name) {
 		this.node = node;
 		this.name = name;
@@ -33,9 +27,8 @@ public class Resource extends Variable {
 
 	@Override
 	public Variable clone() {
-		Resource resource = new Resource(node, name, isTerminal);
-		resource.setProperty(isProperty);
-		resource.setUniversal(isUniversal);
+		Resource resource = new Resource(node, name);
+		for (Annotations.Annotation annotation : annotations) resource.add(annotation);
 		resource.setDefaultValues(getDefaultValues());
 		if (values != null)
 			for (Object value : values) resource.addValue(value);

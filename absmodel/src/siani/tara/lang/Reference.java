@@ -8,11 +8,10 @@ public class Reference extends Variable {
 	public List<String> inheritedTypes = new ArrayList<>();
 	public boolean empty = false;
 
-	public Reference(String type, String name, boolean isMultiple, boolean isTerminal) {
+	public Reference(String type, String name, boolean isMultiple) {
 		this.type = type;
 		this.name = name;
 		this.isList = isMultiple;
-		this.isTerminal = isTerminal;
 	}
 
 	public Reference(String type, String name) {
@@ -56,9 +55,8 @@ public class Reference extends Variable {
 
 	@Override
 	public Reference clone() {
-		Reference reference = new Reference(type, name, isList, isTerminal);
-		reference.setProperty(isProperty);
-		reference.setUniversal(isUniversal);
+		Reference reference = new Reference(type, name, isList);
+		for (Annotations.Annotation annotation : annotations) reference.add(annotation);
 		reference.setDefaultValues(getDefaultValues());
 		if (values != null)
 			for (Object value : values) reference.addValue(value);

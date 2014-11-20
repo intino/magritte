@@ -178,13 +178,18 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterConceptReference(@NotNull ConceptReferenceContext ctx) {
 		String parent = ctx.identifierReference().getText();
 		LinkNode node = new LinkNode(parent, (DeclaredNode) conceptStack.peek());
-		node.setAggregated(ctx.AGGREGATED() != null);
 		node.setReference(true);
 		addHeaderInformation(ctx, node);
 		((DeclaredNode) conceptStack.peek()).add(node);
+
+	}
+
+	@Override
+	public void exitConceptReference(@NotNull ConceptReferenceContext ctx) {
+		List<Node> innerNodes = conceptStack.peek().getInnerNodes();
+		Node node = innerNodes.get(innerNodes.size() - 1);
 		node.calculateQualifiedName();
 		model.add(node.getQualifiedName(), node);
-		node.calculateQualifiedName();
 	}
 
 	@Override
@@ -329,85 +334,87 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		Variable variable = null;
 		String measure = ctx.measure() != null ? ctx.measure().getText() : "";
 		if (!ctx.booleanValue().isEmpty()) {
-			variable = new Attribute(BOOLEAN, name, ctx.booleanValue().size() > 1, false);
+			variable = new Attribute(BOOLEAN, name, ctx.booleanValue().size() > 1);
 			for (BooleanValueContext context : ctx.booleanValue())
 				variable.addValue(getConverter(BOOLEAN).convert(context.getText())[0]);
 		} else if (!ctx.integerValue().isEmpty()) {
-			variable = new Attribute(INTEGER, name, ctx.integerValue().size() > 1, false);
+			variable = new Attribute(INTEGER, name, ctx.integerValue().size() > 1);
 			((Attribute) variable).setMeasure(measure);
 			for (IntegerValueContext context : ctx.integerValue())
 				variable.addValue(getConverter(INTEGER).convert(context.getText())[0]);
 		} else if (!ctx.doubleValue().isEmpty()) {
-			variable = new Attribute(DOUBLE, name, ctx.doubleValue().size() > 1, false);
+			variable = new Attribute(DOUBLE, name, ctx.doubleValue().size() > 1);
 			((Attribute) variable).setMeasure(measure);
 			for (DoubleValueContext context : ctx.doubleValue())
 				variable.addValue(getConverter(DOUBLE).convert(context.getText())[0]);
 		} else if (!ctx.naturalValue().isEmpty()) {
-			variable = new Attribute(NATURAL, name, ctx.naturalValue().size() > 1, false);
+			variable = new Attribute(NATURAL, name, ctx.naturalValue().size() > 1);
 			((Attribute) variable).setMeasure(measure);
 			for (NaturalValueContext context : ctx.naturalValue())
 				variable.addValue(getConverter(NATURAL).convert(context.getText())[0]);
 		} else if (!ctx.stringValue().isEmpty()) {
-			variable = new Attribute(STRING, name, ctx.stringValue().size() > 1, false);
+			variable = new Attribute(STRING, name, ctx.stringValue().size() > 1);
 			for (StringValueContext context : ctx.stringValue())
 				variable.addValue(formatText(context.getText()));
 		} else if (!ctx.coordinateValue().isEmpty()) {
-			variable = new Attribute(COORDINATE, name, ctx.coordinateValue().size() > 1, false);
+			variable = new Attribute(COORDINATE, name, ctx.coordinateValue().size() > 1);
 			for (CoordinateValueContext context : ctx.coordinateValue())
 				variable.addValue(getConverter(COORDINATE).convert(context.getText())[0]);
 		} else if (!ctx.dateValue().isEmpty()) {
-			variable = new Attribute(DATE, name, ctx.dateValue().size() > 1, false);
+			variable = new Attribute(DATE, name, ctx.dateValue().size() > 1);
 			for (DateValueContext context : ctx.dateValue())
 				variable.addValue(getConverter(DATE).convert(context.getText())[0]);
 		} else if (!ctx.identifierReference().isEmpty()) {
-			variable = new Reference(REFERENCE, name, ctx.identifierReference().size() > 1, false);
+			variable = new Reference(REFERENCE, name, ctx.identifierReference().size() > 1);
 			for (IdentifierReferenceContext context : ctx.identifierReference()) variable.addValue(context.getText());
 		}
 		return variable;
 	}
 
-
 	@Override
 	public void enterAnnotations(@NotNull AnnotationsContext ctx) {
-		if (ctx.getParent() instanceof AttributeContext) {
-			processVariableAnnotation(ctx);
-			return;
-		}
-		for (int i = 0; i < ctx.REQUIRED().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.REQUIRED);
-		for (int i = 0; i < ctx.PROPERTY().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.PROPERTY);
-		for (int i = 0; i < ctx.SINGLE().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.SINGLE);
-		for (int i = 0; i < ctx.TERMINAL().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.TERMINAL);
-		for (int i = 0; i < ctx.COMPONENT().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.COMPONENT);
-		for (int i = 0; i < ctx.ABSTRACT().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.ABSTRACT);
-		for (int i = 0; i < ctx.NAMED().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.NAMED);
-		for (int i = 0; i < ctx.FACET().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.FACET);
-		for (int i = 0; i < ctx.INTENTION().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.INTENTION);
-		for (int i = 0; i < ctx.ADDRESSED().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.ADDRESSED);
-		for (int i = 0; i < ctx.AGGREGATED().size(); i++)
-			conceptStack.peek().getObject().add(Annotation.AGGREGATED);
-	}
-
-	private void processVariableAnnotation(AnnotationsContext ctx) {
-		List<Variable> variables = conceptStack.peek().getObject().getVariables();
-		Variable variable = variables.get(variables.size() - 1);
-		variable.setTerminal(!ctx.TERMINAL().isEmpty());
-		variable.setProperty(!ctx.PROPERTY().isEmpty());
-		variable.setUniversal(!ctx.UNIVERSAL().isEmpty());
+		List<Annotation> annotations = getAnnotations(ctx);
+		if (ctx.getParent() instanceof VariableContext) {
+			List<Variable> variables = conceptStack.peek().getObject().getVariables();
+			Variable variable = variables.get(variables.size() - 1);
+			variable.addAll(annotations);
+		} else if (ctx.getParent() instanceof ConceptReferenceContext) {
+			List<Node> innerNodes = conceptStack.peek().getInnerNodes();
+			((LinkNode) innerNodes.get(innerNodes.size() - 1)).addAll(annotations);
+		} else
+			conceptStack.peek().getObject().addAll(annotations);
 	}
 
 	private String[] getTextArrayOfContextList(List<? extends ParserRuleContext> ctx) {
 		List<String> list = new ArrayList<>();
 		for (ParserRuleContext parserRuleContext : ctx) list.add(parserRuleContext.getText());
 		return list.toArray(new String[list.size()]);
+	}
+
+	private List<Annotation> getAnnotations(AnnotationsContext ctx) {
+		List<Annotation> annotations = new ArrayList<>();
+		for (int i = 0; i < ctx.REQUIRED().size(); i++)
+			annotations.add(Annotation.REQUIRED);
+		for (int i = 0; i < ctx.PROPERTY().size(); i++)
+			annotations.add(Annotation.PROPERTY);
+		for (int i = 0; i < ctx.SINGLE().size(); i++)
+			annotations.add(Annotation.SINGLE);
+		for (int i = 0; i < ctx.TERMINAL().size(); i++)
+			annotations.add(Annotation.TERMINAL);
+		for (int i = 0; i < ctx.COMPONENT().size(); i++)
+			annotations.add(Annotation.COMPONENT);
+		for (int i = 0; i < ctx.ABSTRACT().size(); i++)
+			annotations.add(Annotation.ABSTRACT);
+		for (int i = 0; i < ctx.NAMED().size(); i++)
+			annotations.add(Annotation.NAMED);
+		for (int i = 0; i < ctx.FACET().size(); i++)
+			annotations.add(Annotation.FACET);
+		for (int i = 0; i < ctx.INTENTION().size(); i++)
+			annotations.add(Annotation.INTENTION);
+		for (int i = 0; i < ctx.ADDRESSED().size(); i++)
+			annotations.add(Annotation.ADDRESSED);
+		for (int i = 0; i < ctx.AGGREGATED().size(); i++)
+			annotations.add(Annotation.AGGREGATED);
+		return annotations;
 	}
 }

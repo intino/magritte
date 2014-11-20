@@ -27,7 +27,7 @@ public class TaraParameterReferenceSolver extends PsiReferenceBase<PsiElement> i
 		List<ResolveResult> results = new ArrayList<>();
 		PsiElement reference = myElement.getFirstChild();
 		if (!IdentifierReference.class.isInstance(reference)) return ResolveResult.EMPTY_ARRAY;
-		PsiElement element = ReferenceManager.resolve((Identifier) reference.getLastChild(), false);
+		PsiElement element = ReferenceManager.resolve((Identifier) reference.getLastChild());
 		if (element != null) results.add(new PsiElementResolveResult(element));
 		return results.toArray(new ResolveResult[results.size()]);
 	}

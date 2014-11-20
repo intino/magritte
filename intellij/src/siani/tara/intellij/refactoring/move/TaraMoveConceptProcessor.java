@@ -124,27 +124,6 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 //		new TaraImportOptimizer().processFile(file).run();
 	}
 
-	private static boolean resolvesToLocalStarImport(@NotNull PsiElement element) {
-		final PsiReference ref = element.getReference();
-		final List<PsiElement> resolvedElements = new ArrayList<>();
-		if (ref instanceof PsiPolyVariantReference) {
-			for (ResolveResult result : ((PsiPolyVariantReference) ref).multiResolve(false)) {
-				resolvedElements.add(result.getElement());
-			}
-		} else if (ref != null) {
-			resolvedElements.add(ref.resolve());
-		}
-		final PsiFile containingFile = element.getContainingFile();
-		if (containingFile != null) {
-//			for (PsiElement resolved : resolvedElements) {
-//				if (resolved instanceof TaraStarImportElement && resolved.getContainingFile() == containingFile) {
-//					return true;
-//				}
-//			}
-		}
-		return false;
-	}
-
 	private static void checkValidImportableFile(PsiElement anchor, VirtualFile file) {
 //		final QualifiedName qName = QualifiedNameFinder.findShortestImportableQName(anchor, file);
 //		if (!TaraConceptRefactoringUtil.isValidQualifiedName(qName)) {

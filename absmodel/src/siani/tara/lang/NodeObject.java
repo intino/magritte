@@ -109,6 +109,10 @@ public class NodeObject extends ModelObject {
 		annotations.add(annotation);
 	}
 
+	public boolean addAll(Collection<? extends Annotations.Annotation> c) {
+		return annotations.addAll(c);
+	}
+
 	public boolean add(Variable variable) {
 		return variables.add(variable);
 	}

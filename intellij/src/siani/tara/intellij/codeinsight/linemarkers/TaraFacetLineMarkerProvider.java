@@ -37,7 +37,7 @@ public class TaraFacetLineMarkerProvider extends JavaLineMarkerProvider {
 		public String fun(PsiElement element) {
 			if (!Concept.class.isInstance(element)) return null;
 			Concept concept = (Concept) element;
-			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode(), true);
+			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode());
 			String start = "Facet declared in ";
 			@NonNls String pattern = null;
 			if (reference != null) pattern = reference.getNavigationElement().getContainingFile().getName();
@@ -54,7 +54,7 @@ public class TaraFacetLineMarkerProvider extends JavaLineMarkerProvider {
 			Identifier identifierNode = ((Concept) element).getIdentifierNode();
 			if (identifierNode == null) return;
 			NavigatablePsiElement reference = (NavigatablePsiElement)
-				ReferenceManager.resolve(identifierNode, true);
+				ReferenceManager.resolve(identifierNode);
 			if (reference == null) return;
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
@@ -77,7 +77,7 @@ public class TaraFacetLineMarkerProvider extends JavaLineMarkerProvider {
 			if (model == null) return null;
 			Node node = findNode(concept, model);
 			if (node == null || !node.getObject().is(INTENTION)) return null;
-			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode(), true);
+			PsiElement reference = ReferenceManager.resolveExternal(concept.getIdentifierNode());
 			if (reference != null) {
 				final Icon icon = AllIcons.Gutter.ImplementedMethod;
 				final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;

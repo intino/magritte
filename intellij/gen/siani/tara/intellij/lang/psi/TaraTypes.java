@@ -58,7 +58,7 @@ public interface TaraTypes {
 	IElementType COLON = new TaraTokenType("COLON");
 	IElementType COMMA = new TaraTokenType("COMMA");
 	IElementType COMPONENT = new TaraTokenType("COMPONENT");
-	IElementType COORDINATE_TYPE = new TaraTokenType("COORDINATE_TYPE");
+	IElementType COMPOSED = new TaraTokenType("COMPOSED");
 	IElementType COORDINATE_VALUE_KEY = new TaraTokenType("COORDINATE_VALUE_KEY");
 	IElementType DATE_TYPE = new TaraTokenType("DATE_TYPE");
 	IElementType DATE_VALUE_KEY = new TaraTokenType("DATE_VALUE_KEY");
@@ -82,6 +82,7 @@ public interface TaraTypes {
 	IElementType MEASURE_VALUE = new TaraTokenType("MEASURE_VALUE");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
 	IElementType METAMODEL = new TaraTokenType("METAMODEL");
+	IElementType MULTIPLE = new TaraTokenType("MULTIPLE");
 	IElementType NAMED = new TaraTokenType("NAMED");
 	IElementType NATURAL_TYPE = new TaraTokenType("NATURAL_TYPE");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
@@ -93,6 +94,7 @@ public interface TaraTypes {
 	IElementType REQUIRED = new TaraTokenType("REQUIRED");
 	IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
 	IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");
+	IElementType ROOT = new TaraTokenType("ROOT");
 	IElementType SINGLE = new TaraTokenType("SINGLE");
 	IElementType STAR = new TaraTokenType("STAR");
 	IElementType STRING_MULTILINE_VALUE_KEY = new TaraTokenType("STRING_MULTILINE_VALUE_KEY");
@@ -100,6 +102,7 @@ public interface TaraTypes {
 	IElementType STRING_VALUE_KEY = new TaraTokenType("STRING_VALUE_KEY");
 	IElementType SUB = new TaraTokenType("SUB");
 	IElementType TERMINAL = new TaraTokenType("TERMINAL");
+	IElementType TUPLE_TYPE = new TaraTokenType("TUPLE_TYPE");
 	IElementType UNIVERSAL = new TaraTokenType("UNIVERSAL");
 	IElementType USE_KEY = new TaraTokenType("USE_KEY");
 	IElementType VAR = new TaraTokenType("VAR");

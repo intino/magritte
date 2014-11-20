@@ -47,7 +47,7 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 	}
 
 	public void saveValues() {
-		setParent(metamodelBox.getSelectedItem().equals(NO_PARENT) ? searchParent((String) metamodelBox.getSelectedItem()) : null);
+		setParent(!metamodelBox.getSelectedItem().equals(NO_PARENT) ? searchParent((String) metamodelBox.getSelectedItem()) : null);
 		setTerminal(terminalCheckBox.isSelected());
 	}
 

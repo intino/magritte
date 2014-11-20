@@ -43,7 +43,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 		addRootAnnotation(concept);
 		checkIfDuplicated(concept);
 		checkIfExtendedFromDifferentType(concept);
-		checkJavaClassCreation(concept);
+		checkJavaClassCreation(model, concept);
 		if (model != null) {
 			checkAsComponent(model, concept);
 			checkAsFacet(model, concept);
@@ -71,13 +71,21 @@ public class ConceptAnnotator extends TaraAnnotator {
 			holder.createErrorAnnotation(concept.getIdentifierNode(), "Facets are no instantiable");
 	}
 
-	private void checkJavaClassCreation(Concept concept) {
-		if ((concept.isIntention() || concept.isFacet()) && !javaClassCreated(concept))
-			holder.createWarningAnnotation(concept.getSignature().getNode(), TaraBundle.message("intention.no.java.class.error.message"));
+	private void checkJavaClassCreation(Model model, Concept concept) {
+		if ((concept.isIntention()) && !javaClassCreated(concept))
+			holder.createWarningAnnotation(concept.getSignature().getNode(), TaraBundle.message("no.java.generated.class.error.message"));
+		if ((concept.isFacet() && isIntentionInstance(model, concept)) && !javaClassCreated(concept))
+			holder.createWarningAnnotation(concept.getSignature().getNode(), TaraBundle.message("no.java.generated.class.error.message"));
+	}
+
+	private boolean isIntentionInstance(Model model, Concept concept) {
+		Node node = findNode(concept, model);
+		return node != null && node.getObject().is(INTENTION);
+
 	}
 
 	private boolean javaClassCreated(Concept concept) {
-		return ReferenceManager.resolve(concept.getIdentifierNode(), true) != null;
+		return ReferenceManager.resolve(concept.getIdentifierNode()) != null;
 	}
 
 	private void checkAsComponent(Model model, Concept concept) {

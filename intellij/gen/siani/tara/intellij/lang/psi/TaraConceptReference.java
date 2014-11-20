@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 public interface TaraConceptReference extends ConceptReference {
 
   @Nullable
-  TaraDoc getDoc();
+  TaraAnnotations getAnnotations();
 
   @Nullable
-  TaraIdentifier getIdentifier();
+  TaraDoc getDoc();
 
   @Nullable
   TaraIdentifierReference getIdentifierReference();

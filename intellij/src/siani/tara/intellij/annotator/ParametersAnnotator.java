@@ -41,10 +41,10 @@ public class ParametersAnnotator extends TaraAnnotator {
 		}
 	}
 
-	private int collectMinimumNumberOfParameter(List<Variable> variables, boolean system) {
+	private int collectMinimumNumberOfParameter(List<Variable> variables, boolean terminal) {
 		int result = variables.size();
 		for (Variable variable : variables)
-			if ((variable.getDefaultValues() != null && variable.getDefaultValues().length > 0) || (!system && variable.isTerminal()) || (variable instanceof Word))
+			if ((variable.getDefaultValues() != null && variable.getDefaultValues().length > 0) || (!terminal && variable.isTerminal()) || (variable instanceof Word))
 				result--;
 		return result;
 	}

@@ -64,7 +64,7 @@ METAMODEL           = "metamodel"
 ALWAYS              = "always"
 WITH                = "with"
 //annotations
-ABSTRACT             = "private"
+ABSTRACT            = "abstract"
 SINGLE              = "single"
 REQUIRED            = "required"
 NAMED               = "named"
@@ -76,6 +76,9 @@ FACET               = "facet"
 ADDRESSED           = "addressed"
 COMPONENT           = "component"
 AGGREGATED          = "aggregated"
+COMPOSED            = "composed"
+MULTIPLE            = "multiple"
+ROOT                = "root"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -105,7 +108,7 @@ WORD_KEY            = "word"
 RESOURCE_KEY        = "resource"
 INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
-COORDINATE_TYPE     = "coordinate"
+TUPLE_TYPE          = "tuple"
 DOUBLE_TYPE         = "double"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
@@ -119,7 +122,6 @@ STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
 DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
-COORDINATE_VALUE_KEY= "["({DOUBLE_VALUE_KEY} | {NATURAL_VALUE_KEY} | {NEGATIVE_VALUE_KEY}) ({SPACES}? {COMMA} {SPACES}?  {DOUBLE_VALUE_KEY} | {NATURAL_VALUE_KEY} | {NEGATIVE_VALUE_KEY})+ "]"
 MEASURE_VALUE       = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})*
 DOC_LINE            = "#" ~[\n]
 
@@ -151,7 +153,6 @@ NEWLINE             = [\n]+
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
 	{ALWAYS}                        {   return TaraTypes.ALWAYS; }
 	{SUB}                           {   return TaraTypes.SUB; }
-	{AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
 
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
 	{SINGLE}                        {   return TaraTypes.SINGLE; }
@@ -164,6 +165,10 @@ NEWLINE             = [\n]+
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
+	{AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
+	{COMPOSED}                      {   return TaraTypes.COMPOSED; }
+    {ROOT}                          {   return TaraTypes.ROOT; }
+    {MULTIPLE}                      {   return TaraTypes.MULTIPLE; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 
@@ -176,7 +181,6 @@ NEWLINE             = [\n]+
 	{NATURAL_VALUE_KEY}             {   return TaraTypes.NATURAL_VALUE_KEY; }
 	{DATE_VALUE_KEY}                {   return TaraTypes.DATE_VALUE_KEY; }
 	{EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
-	{COORDINATE_VALUE_KEY}          {   return TaraTypes.COORDINATE_VALUE_KEY; }
 
 	{LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
     {RIGHT_PARENTHESIS}             {   return TaraTypes.RIGHT_PARENTHESIS; }
@@ -195,7 +199,7 @@ NEWLINE             = [\n]+
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
-    {COORDINATE_TYPE}               {   return TaraTypes.COORDINATE_TYPE; }
+    {TUPLE_TYPE}                    {   return TaraTypes.TUPLE_TYPE; }
 	{SEMICOLON}                     {   return TaraTypes.BOX_KEY;  }
 
 	{OPEN_BRACKET}                  {   return TaraTypes.DOT; }

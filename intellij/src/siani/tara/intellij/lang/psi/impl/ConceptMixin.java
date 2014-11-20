@@ -226,15 +226,12 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return (node != null && node.getObject().is(AGGREGATED));
 	}
 
-
 	private boolean is(siani.tara.lang.Annotations.Annotation taraAnnotation) {
 		for (PsiElement annotation : getAnnotations())
 			if (taraAnnotation.getName().equals(annotation.getText()))
 				return true;
-		Concept parent = null;
-		if (getParentConceptName() != null) parent = getParentConcept();
+		Concept parent = getParentConceptName() != null ? getParentConcept() : null;
 		return parent != null && ((ConceptMixin) parent).is(taraAnnotation);
-
 	}
 
 	public TaraAddress getAddress() {

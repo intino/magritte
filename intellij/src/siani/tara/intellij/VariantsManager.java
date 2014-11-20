@@ -35,7 +35,7 @@ public class VariantsManager {
 
 	private void addInBoxVariants() {
 		List<? extends Identifier> boxPath = ((TaraBoxFile) myElement.getContainingFile()).getBoxPath();
-		TaraBoxFile box = (TaraBoxFile) ReferenceManager.resolve(boxPath.get(boxPath.size() - 1), false);
+		TaraBoxFile box = (TaraBoxFile) ReferenceManager.resolve(boxPath.get(boxPath.size() - 1));
 		if (box == null) return;
 		for (Concept concept : box.getConcepts()) {
 			if (!concept.equals(TaraPsiImplUtil.getConceptContainerOf(myElement))) resolvePathFor(concept, context);
@@ -46,7 +46,7 @@ public class VariantsManager {
 		Collection<Import> imports = ((TaraBoxFile) myElement.getContainingFile()).getImports();
 		for (Import anImport : imports) {
 			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
-			PsiElement resolve = ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1), false);
+			PsiElement resolve = ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1));
 			if (resolve == null || !TaraBoxFile.class.isInstance(resolve)) continue;
 			for (Concept concept : ((TaraBoxFile) resolve).getConcepts())
 				if (!concept.equals(TaraPsiImplUtil.getConceptContainerOf(myElement)))

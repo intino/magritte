@@ -23,14 +23,14 @@ public class TaraConceptReferenceImpl extends ConceptReferenceMixin implements T
 
   @Override
   @Nullable
-  public TaraDoc getDoc() {
-    return findChildByClass(TaraDoc.class);
+  public TaraAnnotations getAnnotations() {
+    return findChildByClass(TaraAnnotations.class);
   }
 
   @Override
   @Nullable
-  public TaraIdentifier getIdentifier() {
-    return findChildByClass(TaraIdentifier.class);
+  public TaraDoc getDoc() {
+    return findChildByClass(TaraDoc.class);
   }
 
   @Override

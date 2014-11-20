@@ -8,10 +8,7 @@ import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraVarInit;
 import siani.tara.intellij.lang.psi.VarInit;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
-import siani.tara.lang.Reference;
-import siani.tara.lang.Variable;
+import siani.tara.lang.*;
 
 import static siani.tara.lang.Primitives.*;
 
@@ -22,6 +19,7 @@ public class VarInitAnnotator extends TaraAnnotator {
 		if (!TaraVarInit.class.isInstance(element)) return;
 		VarInit varInit = (VarInit) element;
 		Model model = TaraLanguage.getMetaModel(element.getContainingFile());
+		if (model == null) return;
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(element);
 		if (concept == null) return;
 		Node node = findNode(concept, model);
@@ -37,7 +35,7 @@ public class VarInitAnnotator extends TaraAnnotator {
 		String valueType = varInit.getValueType();
 		if (!valueType.equalsIgnoreCase(variable.getType())
 			&& !(valueType.equals(NATURAL) && variable.getType().equals(INTEGER))
-			&& !(valueType.equals(REFERENCE) && variable instanceof Reference))
+			&& !(valueType.equals(REFERENCE) && (variable instanceof Reference || variable instanceof Word)))
 			holder.createErrorAnnotation(element.getNode(), "Incompatible types. Found " +
 				valueType + ". " + variable.getType() + " expected");
 	}

@@ -1,5 +1,5 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")box ${PROJECT_NAME}.${MODULE_NAME}.${PACKAGE_NAME}.${NAME}
+#if (${PACKAGE_NAME.toLowerCase()} && ${PACKAGE_NAME.toLowerCase()} != "")box ${PROJECT_NAME.toLowerCase()}.${MODULE_NAME.toLowerCase()}.${PACKAGE_NAME.toLowerCase()}.${NAME}
 #else
-box ${PROJECT_NAME}.${MODULE_NAME}.${NAME}#end
+box ${PROJECT_NAME.toLowerCase()}.${MODULE_NAME.toLowerCase()}.${NAME.toLowerCase()}#end
 
-#if (${PARENT_MODULE_NAME} && ${PARENT_MODULE_NAME} != "")use ${PROJECT_NAME}.${PARENT_MODULE_NAME} as metamodel#end
+#if (${PARENT_MODULE_NAME.toLowerCase()} && ${PARENT_MODULE_NAME.toLowerCase()} != "")use ${PROJECT_NAME.toLowerCase()}.${PARENT_MODULE_NAME.toLowerCase()} as metamodel#end
