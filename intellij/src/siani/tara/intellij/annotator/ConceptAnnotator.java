@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.fix.AddAddressFix;
 import siani.tara.intellij.annotator.fix.RemoveConceptFix;
 import siani.tara.intellij.lang.TaraLanguage;
@@ -36,7 +36,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 		this.holder = holder;
 		Concept concept = (Concept) element;
 		if (isRootSub(concept)) {
-			annotateAndFix(element, new RemoveConceptFix(concept), TaraBundle.message("concept.position.key.error.message"));
+			annotateAndFix(element, new RemoveConceptFix(concept), MessageProvider.message("concept.position.key.error.message"));
 			return;
 		}
 		Model model = TaraLanguage.getMetaModel(concept.getContainingFile());
@@ -73,15 +73,15 @@ public class ConceptAnnotator extends TaraAnnotator {
 
 	private void checkJavaClassCreation(Model model, Concept concept) {
 		if ((concept.isIntention()) && !javaClassCreated(concept))
-			holder.createWarningAnnotation(concept.getSignature().getNode(), TaraBundle.message("no.java.generated.class.error.message"));
+			holder.createWarningAnnotation(concept.getSignature().getNode(), MessageProvider.message("no.java.generated.class.error.message"));
 		if ((concept.isFacet() && isIntentionInstance(model, concept)) && !javaClassCreated(concept))
-			holder.createWarningAnnotation(concept.getSignature().getNode(), TaraBundle.message("no.java.generated.class.error.message"));
+			holder.createWarningAnnotation(concept.getSignature().getNode(), MessageProvider.message("no.java.generated.class.error.message"));
 	}
 
 	private boolean isIntentionInstance(Model model, Concept concept) {
+		if(model == null) return false;
 		Node node = findNode(concept, model);
 		return node != null && node.getObject().is(INTENTION);
-
 	}
 
 	private boolean javaClassCreated(Concept concept) {
@@ -110,7 +110,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 	private void checkIfExtendedFromDifferentType(Concept concept) {
 		if (concept.getSignature().getParentConcept() == null || concept.getType() == null) return;
 		if (!concept.getType().equals(concept.getSignature().getParentConcept().getType()))
-			annotateAndFix(concept.getSignature().getParentReference(), new RemoveConceptFix(concept), TaraBundle.message("invalid.extension.concept.key.error.message"));
+			annotateAndFix(concept.getSignature().getParentReference(), new RemoveConceptFix(concept), MessageProvider.message("invalid.extension.concept.key.error.message"));
 	}
 
 	private boolean isRootSub(Concept element) {
@@ -119,7 +119,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 
 	private void checkIfDuplicated(Concept concept) {
 		if (concept.getIdentifierNode() != null && findDuplicates(concept) > 1)
-			annotateAndFix(concept.getSignature(), new RemoveConceptFix(concept), TaraBundle.message("duplicate.concept.key.error.message"));
+			annotateAndFix(concept.getSignature(), new RemoveConceptFix(concept), MessageProvider.message("duplicate.concept.key.error.message"));
 	}
 
 	public int findDuplicates(Concept concept) {

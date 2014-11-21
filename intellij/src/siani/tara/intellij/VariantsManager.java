@@ -4,17 +4,19 @@ import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class VariantsManager {
 
-	private final Collection<Concept> variants;
+	private final Set<Concept> variants;
 	private final PsiElement myElement;
 	private final List<Identifier> context;
 
-	public VariantsManager(Collection<Concept> variants, PsiElement myElement) {
+	public VariantsManager(Set<Concept> variants, PsiElement myElement) {
 		this.variants = variants;
 		this.myElement = myElement;
 		this.context = solveIdentifierContext();
@@ -37,21 +39,33 @@ public class VariantsManager {
 		List<? extends Identifier> boxPath = ((TaraBoxFile) myElement.getContainingFile()).getBoxPath();
 		TaraBoxFile box = (TaraBoxFile) ReferenceManager.resolve(boxPath.get(boxPath.size() - 1));
 		if (box == null) return;
-		for (Concept concept : box.getConcepts()) {
-			if (!concept.equals(TaraPsiImplUtil.getConceptContainerOf(myElement))) resolvePathFor(concept, context);
-		}
+		for (Concept concept : box.getConcepts())
+			if (!concept.equals(TaraPsiImplUtil.getConceptContainerOf(myElement)))
+				resolvePathFor(concept, context);
+		addAggregatedConcepts(box);
 	}
 
 	private void addImportVariants() {
 		Collection<Import> imports = ((TaraBoxFile) myElement.getContainingFile()).getImports();
 		for (Import anImport : imports) {
-			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
-			PsiElement resolve = ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1));
+			PsiElement resolve = resolveImport(anImport);
 			if (resolve == null || !TaraBoxFile.class.isInstance(resolve)) continue;
 			for (Concept concept : ((TaraBoxFile) resolve).getConcepts())
 				if (!concept.equals(TaraPsiImplUtil.getConceptContainerOf(myElement)))
 					resolvePathFor(concept, context);
+			addAggregatedConcepts((TaraBoxFile) resolve);
 		}
+	}
+
+	private PsiElement resolveImport(Import anImport) {
+		List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
+		return ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1));
+	}
+
+	private void addAggregatedConcepts(TaraBoxFile box) {
+		for (Concept concept : TaraUtil.getAllConceptsOfFile(box))
+			if (!variants.contains(concept) && concept.isAggregated())
+				resolvePathFor(concept, context);
 	}
 
 	private void resolvePathFor(Concept concept, List<Identifier> path) {

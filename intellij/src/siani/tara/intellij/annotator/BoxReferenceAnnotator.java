@@ -4,7 +4,7 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
@@ -21,13 +21,13 @@ public class BoxReferenceAnnotator extends TaraAnnotator {
 
 	private void checkBoxExistence(TaraBoxFile file) {
 		if (file.getBoxReference() == null)
-			holder.createErrorAnnotation(file.getNode(), TaraBundle.message("box.reference.error.message"));
+			holder.createErrorAnnotation(file.getNode(), MessageProvider.message("box.reference.error.message"));
 	}
 
 	private void isWellPlaced(TaraHeaderReference reference) {
 		VirtualFile file = ReferenceManager.resolvePath(reference.getIdentifierList());
 		if (!reference.getContainingFile().getVirtualFile().equals(file)) {
-			holder.createErrorAnnotation(reference.getNode(), TaraBundle.message("box.reference.error.message"));
+			holder.createErrorAnnotation(reference.getNode(), MessageProvider.message("box.reference.error.message"));
 		}
 	}
 }

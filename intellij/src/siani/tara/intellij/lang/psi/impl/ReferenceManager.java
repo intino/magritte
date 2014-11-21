@@ -11,10 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.codeinsight.JavaHelper;
 import siani.tara.intellij.lang.psi.*;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContainerOf;
 
@@ -24,28 +21,24 @@ public class ReferenceManager {
 	}
 
 	@Nullable
-	public static PsiElement resolveExternal(Identifier identifier) {
-		PsiElement reference = null;
+	public static PsiElement resolve(Identifier identifier) {
+		PsiElement reference = resolveInternal(identifier);
+		return reference instanceof Concept ? ((Concept) reference).getIdentifierNode() : reference;
+	}
+
+	private static PsiElement resolveInternal(Identifier identifier) {
 		if (identifier.getParent() instanceof IdentifierReference)
-			reference = resolveConcept(identifier, getIdentifiersOfReference(identifier));
-		else if (identifier.getParent() instanceof HeaderReference)
-			reference = resolveHeaderReference(identifier, getPathFromHeader(identifier));
-		else if (identifier.getParent() instanceof Signature) return identifier;
-		if (reference instanceof Concept) reference = ((Concept) reference).getIdentifierNode();
-		return reference;
+			return resolveConcept(identifier, getIdentifiersOfReference(identifier));
+		if (identifier.getParent() instanceof HeaderReference)
+			return resolveHeaderReference(identifier, getPathFromHeader(identifier));
+		if (identifier.getParent() instanceof Signature)
+			return identifier;
+		return null;
 	}
 
 	@Nullable
-	public static PsiElement resolve(Identifier identifier) {
-		PsiElement reference = null;
-		if (external) reference = resolveExternalReference(identifier);
-		else if (identifier.getParent() instanceof IdentifierReference)
-			reference = resolveConcept(identifier, getIdentifiersOfReference(identifier));
-		else if (identifier.getParent() instanceof HeaderReference)
-			reference = resolveHeaderReference(identifier, getPathFromHeader(identifier));
-		else if (identifier.getParent() instanceof Signature) return identifier;
-		if (reference instanceof Concept) reference = ((Concept) reference).getIdentifierNode();
-		return reference;
+	public static PsiElement resolveExternal(Identifier identifier) {
+		return resolveExternalReference(identifier);
 	}
 
 	@Nullable
@@ -103,40 +96,82 @@ public class ReferenceManager {
 	}
 
 	private static Concept[] getPossibleRoots(Identifier identifier) {
-		Set<Concept> list = new HashSet<>();
-		addConceptsInContext(identifier, list);
-		addRootConcepts(identifier, list);
-		addAggregated(list, identifier);
-		return list.toArray(new Concept[list.size()]);
+		Set<Concept> set = new HashSet<>();
+		addConceptsInContext(identifier, set);
+		addRootConcepts(identifier, set);
+		addAggregated((TaraBoxFile) identifier.getContainingFile(), identifier, set, toArrayList(set));
+		return set.toArray(new Concept[set.size()]);
 	}
 
-	private static void addRootConcepts(Identifier identifier, Set<Concept> list) {
+	private static ArrayList<Concept> toArrayList(Set<Concept> set) {
+		ArrayList<Concept> visited = new ArrayList<>();
+		visited.addAll(set);
+		return visited;
+	}
+
+	private static void addRootConcepts(Identifier identifier, Set<Concept> set) {
 		Collection<Concept> concepts = ((TaraBoxFile) identifier.getContainingFile()).getConcepts();
 		for (Concept concept : concepts)
-			if (identifier.getText().equals(concept.getName()))
-				list.add(concept);
+			if (namesAreEqual(identifier, concept))
+				set.add(concept);
 	}
 
-	private static void addConceptsInContext(Identifier identifier, Set<Concept> list) {
+	private static void addConceptsInContext(Identifier identifier, Set<Concept> set) {
 		Concept parent = getConceptContainerOf(identifier);
 		while (parent != null) {
 			for (Concept sibling : parent.getConceptSiblings())
 				if (sibling.getName() != null && sibling.getName().equals(identifier.getText()) && !sibling.equals(parent))
-					list.add(sibling);
+					set.add(sibling);
 			parent = getConceptContainerOf(parent);
 		}
 	}
 
-	private static void addAggregated(Set<Concept> list, Identifier identifier) {
-		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile((TaraBoxFile) identifier.getContainingFile());
+	private static void addAggregated(TaraBoxFile file, Identifier identifier, Set<Concept> set, ArrayList<Concept> visited) {
+		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(file);
 		for (Concept concept : allConceptsOfFile)
-			if (concept.isAggregated() && identifier.getText().equals(concept.getName())) list.add(concept);
+			if (isAggregated(concept, visited, set) && namesAreEqual(identifier, concept))
+				set.add(concept);
+	}
+
+	private static boolean namesAreEqual(Identifier identifier, Concept concept) {
+		return identifier.getText().equals(concept.getName());
+	}
+
+	private static boolean isAggregated(Concept concept, ArrayList<Concept> visited, Set<Concept> set) {
+		if (visited.contains(concept)) return false;
+		visited.add(concept);
+		if (concept.isAnnotatedAsAggregated()) return true;
+		IdentifierReference parentReference = concept.getSignature().getParentReference();
+		if (parentReference == null) return false;
+		Concept[] roots = getRootConcepts(parentReference, visited, set);
+		if (roots.length == 0) return false;
+		if (roots.length == 1) return roots[0].isAnnotatedAsAggregated();
+		for (Concept possibleRoot : roots) {
+			Concept aggregated = resolvePathInConcept((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
+			if (aggregated != null) return aggregated.isAnnotatedAsAggregated();
+		}
+
+		return false;
+	}
+
+	private static Concept[] getRootConcepts(IdentifierReference parentReference, ArrayList<Concept> visited, Set<Concept> roots) {
+		Identifier identifier = getIdentifier(parentReference);
+		addConceptsInContext(identifier, roots);
+		addRootConcepts(identifier, roots);
+		visited.addAll(roots);
+		addAggregated((TaraBoxFile) identifier.getContainingFile(), identifier, roots, visited);
+		return roots.toArray(new Concept[roots.size()]);
+	}
+
+	private static Identifier getIdentifier(IdentifierReference reference) {
+		List<? extends Identifier> identifierList = reference.getIdentifierList();
+		return identifierList.get(identifierList.size() - 1);
 	}
 
 	private static Concept resolvePathInConcept(List<Identifier> path, Concept concept) {
 		Concept reference = null;
 		for (Identifier identifier : path) {
-			reference = (reference == null) ? identifier.getText().equals(concept.getName()) ? concept : null :
+			reference = (reference == null) ? namesAreEqual(identifier, concept) ? concept : null :
 				TaraUtil.findChildOf(reference, identifier.getText());
 			if (reference == null) return null;
 		}
@@ -198,12 +233,13 @@ public class ReferenceManager {
 
 	private static Concept searchInImport(List<Identifier> path, Collection<Import> imports) {
 		for (Import anImport : imports) {
-			List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
-			PsiElement resolve = resolve(importIdentifiers.get(importIdentifiers.size() - 1));
-			if (resolve == null) continue;
-			if (!TaraBoxFile.class.isInstance(resolve.getContainingFile())) continue;
+			PsiElement resolve = resolveImport(anImport);
+			if (resolve == null || !TaraBoxFile.class.isInstance(resolve.getContainingFile())) continue;
 			TaraBoxFile containingFile = (TaraBoxFile) resolve.getContainingFile();
-			for (Concept concept : containingFile.getConcepts()) {
+			Set<Concept> concepts = new HashSet<>();
+			concepts.addAll(containingFile.getConcepts());
+			addAggregated(containingFile, path.get(0), concepts, toArrayList(concepts));
+			for (Concept concept : concepts) {
 				Concept solution = resolvePathInConcept(path, concept);
 				if (solution != null) return solution;
 			}
@@ -211,9 +247,15 @@ public class ReferenceManager {
 		return null;
 	}
 
+	private static PsiElement resolveImport(Import anImport) {
+		List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
+		return resolve(importIdentifiers.get(importIdentifiers.size() - 1));
+	}
+
 	public static String join(List<? extends Identifier> subPath, char c) {
 		String result = "";
 		for (Identifier identifier : subPath) result += c + identifier.getText();
 		return result.substring(1);
 	}
+
 }

@@ -14,17 +14,15 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.imports.CreateConceptQuickFix;
 import siani.tara.intellij.annotator.imports.ImportQuickFix;
 import siani.tara.intellij.annotator.imports.RemoveImportFix;
 import siani.tara.intellij.annotator.imports.TaraReferenceImporter;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 import siani.tara.lang.Word;
 
@@ -33,14 +31,14 @@ import java.util.List;
 
 public class ReferenceAnnotator extends TaraAnnotator {
 
-	public static final String MESSAGE = TaraBundle.message("reference.concept.key.error.message");
+	public static final String MESSAGE = MessageProvider.message("unreached.reference.key.error.message");
 	private PsiElement element;
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.element = element;
 		this.holder = holder;
-		if (element instanceof IdentifierReference && !isInFacetApply(element))
+		if (element instanceof Identifier && !isInFacetApply(element))
 			checkWellReferenced();
 	}
 
@@ -54,8 +52,10 @@ public class ReferenceAnnotator extends TaraAnnotator {
 	}
 
 	public void checkWellReferenced() {
-		PsiElement reference = ReferenceManager.resolve((IdentifierReference) element);
-		if (reference == null && !checkAsMetaWord(TaraPsiImplUtil.getConceptContainerOf(element), element.getText())) {
+		PsiElement reference = ReferenceManager.resolve((Identifier) element);
+		if (reference == null
+			&& !checkAsMetaWord(TaraPsiImplUtil.getConceptContainerOf(element), element.getText())
+			&& !isParameterName(element)) {
 			Annotation errorAnnotation;
 			if (element instanceof IdentifierReference) {
 				List<? extends Identifier> identifierList = ((IdentifierReference) element).getIdentifierList();
@@ -67,10 +67,12 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		}
 	}
 
+	private boolean isParameterName(PsiElement element) {
+		return (element.getParent() instanceof TaraExplicitParameter);
+	}
+
 	private boolean checkAsMetaWord(Concept concept, String wordName) {
-		Model model = TaraLanguage.getMetaModel(concept.getFile());
-		if (model == null) return false;
-		Node node = findNode(concept, model);
+		Node node = findMetaNode(concept);
 		if (node == null) return false;
 		Word[] words = node.getObject().getWords();
 		if (words.length == 0) return false;

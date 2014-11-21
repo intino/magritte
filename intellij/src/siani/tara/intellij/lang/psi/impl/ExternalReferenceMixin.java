@@ -8,8 +8,9 @@ import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
+import siani.tara.intellij.lang.psi.resolve.TaraExternalReferenceSolver;
 
+@SuppressWarnings("UnusedDeclaration")
 public class ExternalReferenceMixin extends ASTWrapperPsiElement {
 	public ExternalReferenceMixin(@NotNull ASTNode node) {
 		super(node);
@@ -22,7 +23,7 @@ public class ExternalReferenceMixin extends ASTWrapperPsiElement {
 		if (contextOf == null) return PsiReference.EMPTY_ARRAY;
 		PsiElement identifierNode = contextOf.getIdentifierNode();
 		if (identifierNode == null) return PsiReference.EMPTY_ARRAY;
-		return new PsiReference[]{new TaraReferenceSolver(identifierNode, new TextRange(0, identifierNode.getText().length()), true)};
+		return new PsiReference[]{new TaraExternalReferenceSolver(identifierNode, new TextRange(0, identifierNode.getText().length()))};
 	}
 
 	@Nullable
@@ -32,7 +33,7 @@ public class ExternalReferenceMixin extends ASTWrapperPsiElement {
 		if (contextOf == null) return null;
 		PsiElement identifierNode = contextOf.getIdentifierNode();
 		if (identifierNode == null) return null;
-		PsiReference[] references = new PsiReference[]{new TaraReferenceSolver(identifierNode, new TextRange(0, identifierNode.getText().length()), true)};
+		PsiReference[] references = new PsiReference[]{new TaraExternalReferenceSolver(identifierNode, new TextRange(0, identifierNode.getText().length()))};
 		return references.length == 0 ? null : references[0];
 	}
 }

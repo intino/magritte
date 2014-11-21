@@ -201,7 +201,14 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isAggregated() {
-		return is(AGGREGATED) && isMetaAggregated();
+		return is(AGGREGATED) || isMetaAggregated();
+	}
+
+	public boolean isAnnotatedAsAggregated() {
+		for (PsiElement annotation : getAnnotations())
+			if (AGGREGATED.getName().equals(annotation.getText()))
+				return true;
+		return false;
 	}
 
 	public boolean isProperty() {

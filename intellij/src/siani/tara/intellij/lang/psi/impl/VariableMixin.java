@@ -62,7 +62,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return list;
 	}
 
-	public Collection<String> getDefaultValues() {
+	public Collection<String> getDefaultValuesAsString() {
 		List<String> list = new ArrayList<>();
 		if (((TaraVariable) this).getBooleanValueList().isEmpty())
 			list.addAll(getElementsAsString(((TaraVariable) this).getBooleanValueList()));

@@ -27,7 +27,7 @@ public class FrameCreator {
 			newFrame.addSlot("variables", new Frame(getTypes(variable)) {{
 				addSlot("Name", variable.getName());
 				addSlot("Type", variable.getType());
-				addSlot("DefaultValues", variable.getDefaultValues());
+				addSlot("DefaultValues", variable.getDefaultValuesAsString());
 			}});
 		for (final Parameter parameter : concept.getParameters())
 			newFrame.addSlot("parameters", new Frame("parameter") {{

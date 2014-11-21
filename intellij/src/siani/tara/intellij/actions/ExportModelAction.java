@@ -12,7 +12,7 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
 import com.intellij.openapi.ui.Messages;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.project.module.TaraModuleType;
 
 import java.util.ArrayList;
@@ -36,8 +36,8 @@ public class ExportModelAction extends ExportModelAbstractAction {
 		}
 		ChooseModulesDialog dialog = new ChooseModulesDialog(project,
 			taraModules,
-			TaraBundle.message("select.tara.module.title"),
-			TaraBundle.message("select.tara.module.description"));
+			MessageProvider.message("select.tara.module.title"),
+			MessageProvider.message("select.tara.module.description"));
 		dialog.show();
 		if (dialog.isOK()) {
 			doPrepare(dialog.getChosenElements(), project);
@@ -60,7 +60,7 @@ public class ExportModelAction extends ExportModelAbstractAction {
 							for (Module aModule : modules)
 								if (!doPrepare(aModule, errorMessages, successMessages)) return;
 							if (!errorMessages.isEmpty())
-								Messages.showErrorDialog(errorMessages.iterator().next(), TaraBundle.message("error.occurred"));
+								Messages.showErrorDialog(errorMessages.iterator().next(), MessageProvider.message("error.occurred"));
 							else if (!successMessages.isEmpty()) {
 								StringBuilder messageBuf = new StringBuilder();
 								for (String message : successMessages) {
@@ -69,8 +69,8 @@ public class ExportModelAction extends ExportModelAbstractAction {
 								}
 								Messages.showInfoMessage(messageBuf.toString(),
 									modules.size() == 1
-										? TaraBundle.message("success.deployment.message", modules.get(0).getName())
-										: TaraBundle.message("success.deployment.message.all"));
+										? MessageProvider.message("success.deployment.message", modules.get(0).getName())
+										: MessageProvider.message("success.deployment.message.all"));
 							}
 						}
 					});
@@ -95,7 +95,7 @@ public class ExportModelAction extends ExportModelAbstractAction {
 		}
 		e.getPresentation().setVisible(enabled);
 		e.getPresentation().setEnabled(enabled);
-		if (enabled) e.getPresentation().setText(TaraBundle.message("prepare.for.deployment"));
+		if (enabled) e.getPresentation().setText(MessageProvider.message("prepare.for.deployment"));
 	}
 
 }

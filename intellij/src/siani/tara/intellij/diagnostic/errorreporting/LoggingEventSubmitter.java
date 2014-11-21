@@ -52,7 +52,6 @@ public class LoggingEventSubmitter {
 	void submit() {
 		if (LOG.isDebugEnabled())
 			LOG.debug("About to send logging events");
-
 		try {
 			Properties props = System.getProperties();
 			props.put("mail.smtp.auth", "true");

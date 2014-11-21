@@ -13,6 +13,10 @@ public interface Body extends TaraPsiElement {
 	@NotNull
 	List<? extends Variable> getAttributeList();
 
+	@NotNull
+	List<? extends VarInit> getVarInitList();
+
+	@NotNull
 	List<? extends Concept> getConceptList();
 
 	TaraConceptReference[] getConceptLinks();
@@ -29,6 +33,7 @@ public interface Body extends TaraPsiElement {
 	@NotNull
 	List<TaraFacetApply> getFacetApplies();
 
+	@NotNull
 	List<TaraAnnotationsAndFacets> getAnnotationsAndFacetsList();
 
 }

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
@@ -39,19 +39,19 @@ public class ConceptTypeAnnotator extends TaraAnnotator {
 				if (!elementType.equals(TaraTypes.NEWLINE) && !elementType.equals(TaraTypes.NEW_LINE_INDENT))
 					holder.createErrorAnnotation(concept, "Concept in bad position");
 				if (model != null) {
-					Annotation errorAnnotation = holder.createErrorAnnotation(concept, TaraBundle.message("concept.position.key.error.message"));
+					Annotation errorAnnotation = holder.createErrorAnnotation(concept, MessageProvider.message("concept.position.key.error.message"));
 					errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
 				}
 			}
 			if (model == null) {
 				if (!element.getText().equals(CONCEPT))
-					holder.createErrorAnnotation(concept, TaraBundle.message("concept.position.key.error.message"));
+					holder.createErrorAnnotation(concept, MessageProvider.message("concept.position.key.error.message"));
 			} else {
 				if (findNode(concept, model) == null)
-					holder.createErrorAnnotation(element, TaraBundle.message("Unknown.concept.key.error.message"));
+					holder.createErrorAnnotation(element, MessageProvider.message("Unknown.concept.key.error.message"));
 				List<TaraConceptReference> incorrectInnerLinks = getIncorrectInnerLinks(concept, model);
 				for (TaraConceptReference incorrectInnerLink : incorrectInnerLinks)
-					holder.createErrorAnnotation(incorrectInnerLink, TaraBundle.message("Unknown.concept.key.error.message"));
+					holder.createErrorAnnotation(incorrectInnerLink, MessageProvider.message("Unknown.concept.key.error.message"));
 			}
 		}
 	}

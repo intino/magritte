@@ -3,7 +3,7 @@ package siani.tara.intellij.annotator.imports;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.TaraAnnotator;
 import siani.tara.intellij.lang.psi.TaraAnImport;
 import siani.tara.intellij.lang.psi.TaraHeader;
@@ -24,6 +24,6 @@ public class ImportMetamodelAnnotation extends TaraAnnotator {
 				imports.add(anImport);
 		if (imports.size() > 1)
 			for (TaraAnImport anImport : imports)
-				holder.createErrorAnnotation(anImport.getNode(), TaraBundle.message("duplicated.metamodel.import.error.message"));
+				holder.createErrorAnnotation(anImport.getNode(), MessageProvider.message("duplicated.metamodel.import.error.message"));
 	}
 }

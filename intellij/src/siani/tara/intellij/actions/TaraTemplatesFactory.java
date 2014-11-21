@@ -8,7 +8,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.util.IncorrectOperationException;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.file.TaraFileType;
 import org.jetbrains.annotations.NonNls;
@@ -58,7 +58,7 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 
 
 	public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
-		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(TaraBundle.message("file.template.group.title.tara"), TaraIcons.getIcon(TaraIcons.ICON_100));
+		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(MessageProvider.message("file.template.group.title.tara"), TaraIcons.getIcon(TaraIcons.ICON_100));
 		final FileTypeManager fileTypeManager = FileTypeManager.getInstance();
 		for (String template : TEMPLATES) {
 			group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template).getIcon()));

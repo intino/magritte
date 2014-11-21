@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.Identifier;
-import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
+import siani.tara.intellij.lang.psi.resolve.TaraInternalReferenceSolver;
 
 import javax.swing.*;
 
@@ -25,13 +25,13 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	@NotNull
 	@Override
 	public PsiReference[] getReferences() {
-		return new PsiReference[]{new TaraReferenceSolver(this, new TextRange(0, getIdentifier().length()), false)};
+		return new PsiReference[]{new TaraInternalReferenceSolver(this, new TextRange(0, getIdentifier().length()))};
 	}
 
 	@Nullable
 	@Override
 	public PsiReference getReference() {
-		PsiReference[] references = new PsiReference[]{new TaraReferenceSolver(this, new TextRange(0, getIdentifier().length()), false)};
+		PsiReference[] references = new PsiReference[]{new TaraInternalReferenceSolver(this, new TextRange(0, getIdentifier().length()))};
 		return references.length == 0 ? null : references[0];
 	}
 

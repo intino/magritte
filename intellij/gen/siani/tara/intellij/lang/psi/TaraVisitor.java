@@ -142,6 +142,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitVarInit(o);
   }
 
+  public void visitVarInitValue(@NotNull TaraVarInitValue o) {
+    visitPsiElement(o);
+  }
+
   public void visitVariable(@NotNull TaraVariable o) {
     visitVariable(o);
   }

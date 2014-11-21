@@ -163,7 +163,7 @@ IDENTIFIER          : LETTER (DIGIT | LETTER | DASH | UNDERDASH)*;
 DIGIT : [0-9];
 
 LETTER: 'a'..'z'
-      | 'A'..'Z';
+      | 'A'..'Z' | 'ñ'| 'Ñ';
 
 NEWLINE: NL+ SP* { newlinesAndSpaces(); };
 

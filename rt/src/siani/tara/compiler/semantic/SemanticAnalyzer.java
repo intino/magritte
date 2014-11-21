@@ -10,9 +10,12 @@ import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.lang.Annotations.Annotation.*;
+import static siani.tara.lang.Annotations.Annotation.REQUIRED;
+import static siani.tara.lang.Annotations.Annotation.TERMINAL;
 
 public class SemanticAnalyzer {
 	private Model model;
@@ -37,41 +40,46 @@ public class SemanticAnalyzer {
 	}
 
 	private void parentModelCoherenceAnalysis() throws SemanticException {
-		List<DeclaredNode> requiredNodes = collectRequiredNodes(model.getParentModel());
-		for (Node node : model.getNodeTable().values())
-			checkRequired(requiredNodes, node.getObject().getMetaQN());
-		if (requiredNodes.size() > 0) {
-			for (DeclaredNode requiredNode : requiredNodes)
-				errors.add(new RequiredConceptNotFoundError(requiredNode.getName(), requiredNode));
-			throwError();
+		for (Node node : model.getNodeTable().values()) {
+			Collection<Node> requiredNodes = getRequiredInnerNodes(node);
+			for (Node requiredNode : requiredNodes) {
+				if (!existInstanceOf(requiredNode, getInnerNodes(node)))
+					errors.add(new RequiredConceptNotFoundError(node.getName(), node));
+			}
 		}
 	}
 
-	private void checkRequired(List<DeclaredNode> requiredNodes, String metaQN) {
-		DeclaredNode toDelete = null;
-		for (DeclaredNode requiredNode : requiredNodes)
-			if (getMetaName(requiredNode).equals(metaQN))
-				toDelete = requiredNode;
-		if (toDelete != null) requiredNodes.remove(toDelete);
+	private boolean existInstanceOf(Node requiredNode, Collection<Node> childrenOf) {
+		for (Node node : childrenOf)
+			if (requiredNode.getName().equals(node.getObject().getType()) || checkInSubs(requiredNode.getSubConcepts(), node))
+				return true;
+		return false;
 	}
 
-	private String getMetaName(DeclaredNode requiredNode) {
-		String qn = requiredNode.getQualifiedName();
-		String[] split = qn.split("\\.");
-		String name = "";
-		for (int i = 3; i < split.length; i++) {
-			name += "." + split[i];
-		}
-		return name.substring(1);
+
+	private List<Node> getInnerNodes(Node node) {
+		List<Node> inners = new ArrayList<>();
+		for (Node inner : node.getInnerNodes())
+			if (!inner.isSub())
+				inners.add(inner);
+		return inners;
 	}
 
-	private List<DeclaredNode> collectRequiredNodes(Model parentModel) {
-		List<DeclaredNode> arrayList = new ArrayList();
-		for (Node node : parentModel.getNodeTable().values())
-			if (node.is(DeclaredNode.class) && node.getObject().is(REQUIRED))
-				if ((model.isTerminal() && node.getObject().is(TERMINAL)) || (!model.isTerminal() && !node.getObject().is(TERMINAL)))
-					arrayList.add((DeclaredNode) node);
-		return arrayList;
+	private boolean checkInSubs(DeclaredNode[] subConcepts, Node concept) {
+		for (DeclaredNode subConcept : subConcepts)
+			if (subConcept.getName().equals(concept.getObject().getType())) return true;
+		return false;
+	}
+
+	private Collection<Node> getRequiredInnerNodes(Node node) {
+		List<Node> required = new ArrayList<>();
+		if (node == null) return Collections.EMPTY_LIST;
+		for (Node inner : node.getInnerNodes())
+			if (inner.getObject().is(REQUIRED) &&
+				(model.getParentModel().isTerminal() && node.getObject().is(TERMINAL) ||
+					!model.isTerminal() && !node.getObject().is(TERMINAL)))
+				required.add(inner);
+		return required;
 	}
 
 	private void throwError() throws SemanticException {

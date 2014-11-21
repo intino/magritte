@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.Concept;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +19,7 @@ public class RemoveConceptFix implements IntentionAction {
 
 	@NotNull
 	public String getText() {
-		return TaraBundle.message("remove.concept.intention.text");
+		return MessageProvider.message("remove.concept.intention.text");
 	}
 
 	@NotNull

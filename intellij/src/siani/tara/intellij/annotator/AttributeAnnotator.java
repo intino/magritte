@@ -3,7 +3,7 @@ package siani.tara.intellij.annotator;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.fix.RemoveAttributeFix;
 import siani.tara.intellij.lang.psi.Body;
 import siani.tara.intellij.lang.psi.Variable;
@@ -23,7 +23,7 @@ public class AttributeAnnotator extends TaraAnnotator {
 
 	private void checkDuplicated(Variable variable) {
 		if (findAttributeDuplicates(variable).length != 1)
-			annotateAndFix(variable, new RemoveAttributeFix(variable), TaraBundle.message("duplicate.attribute.key.error.message"));
+			annotateAndFix(variable, new RemoveAttributeFix(variable), MessageProvider.message("duplicate.attribute.key.error.message"));
 	}
 
 	@NotNull

@@ -415,6 +415,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			annotations.add(Annotation.ADDRESSED);
 		for (int i = 0; i < ctx.AGGREGATED().size(); i++)
 			annotations.add(Annotation.AGGREGATED);
+		for (int i = 0; i < ctx.UNIVERSAL().size(); i++)
+			annotations.add(Annotation.UNIVERSAL);
 		return annotations;
 	}
 }

@@ -21,7 +21,7 @@ import org.jdom.Element;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
 
@@ -280,13 +280,13 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 		if (javaSdks.isEmpty()) {
 			JavaSdkVersion requiredVersion = getRequiredJdkVersion(sdk);
 			if (requiredVersion != null)
-				Messages.showErrorDialog(TaraBundle.message("no.java.sdk.for.idea.sdk.found", requiredVersion), "No Java SDK Found");
+				Messages.showErrorDialog(MessageProvider.message("no.java.sdk.for.idea.sdk.found", requiredVersion), "No Java SDK Found");
 			else
-				Messages.showErrorDialog(TaraBundle.message("no.idea.sdk.version.found"), "No Java SDK Found");
+				Messages.showErrorDialog(MessageProvider.message("no.idea.sdk.version.found"), "No Java SDK Found");
 			return false;
 		}
 
-		final int choice = Messages.showChooseDialog("Select Java SDK to be used for " + TaraBundle.message("sdk.title"),
+		final int choice = Messages.showChooseDialog("Select Java SDK to be used for " + MessageProvider.message("sdk.title"),
 			"Select Internal Java Platform",
 			ArrayUtil.toStringArray(javaSdks), javaSdks.get(0),
 			Messages.getQuestionIcon());
@@ -349,7 +349,7 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 	}
 
 	public String getPresentableName() {
-		return TaraBundle.message("sdk.title");
+		return MessageProvider.message("sdk.title");
 	}
 
 	@Override

@@ -31,6 +31,7 @@ public class AggregatedConceptAnnotator extends TaraAnnotator {
 		if (!Concept.class.isInstance(element)) return;
 		this.holder = holder;
 		Concept concept = (Concept) element;
+		if (concept.isAggregated()) addAggregatedAnnotation(concept);
 		Model metamodel = TaraLanguage.getMetaModel(concept.getFile());
 		if (metamodel == null) return;
 		Node node = findNode(concept, metamodel);

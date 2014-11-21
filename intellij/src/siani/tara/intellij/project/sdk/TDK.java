@@ -14,7 +14,7 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import org.jdom.Element;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 
 public class Tdk implements ValidatableSdkAdditionalData, JDOMExternalizable {
 	private static final Logger LOG = Logger.getInstance("#org.jetbrains.idea.devkit.projectRoots.TDK");
@@ -54,7 +54,7 @@ public class Tdk implements ValidatableSdkAdditionalData, JDOMExternalizable {
 
 	public void checkValid(SdkModel sdkModel) throws ConfigurationException {
 		if (myTdkHome == null || myTdkHome.length() == 0 || getJavaSdk() == null) {
-			throw new ConfigurationException(TaraBundle.message("Magritte.specification"));
+			throw new ConfigurationException(MessageProvider.message("Magritte.specification"));
 		}
 	}
 

@@ -17,7 +17,7 @@ import com.intellij.ui.ListCellRendererWrapper;
 import com.intellij.ui.TextFieldWithStoredHistory;
 import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NonNls;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -30,7 +30,7 @@ import java.awt.event.ItemListener;
 public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 	@NonNls
 	private static final String SANDBOX_HISTORY = "DEVKIT_SANDBOX_HISTORY";
-	private final JLabel mySandboxHomeLabel = new JLabel(TaraBundle.message("sandbox.home.label"));
+	private final JLabel mySandboxHomeLabel = new JLabel(MessageProvider.message("sandbox.home.label"));
 	private final TextFieldWithStoredHistory mySandboxHome = new TextFieldWithStoredHistory(SANDBOX_HISTORY);
 	private final JLabel myInternalJreLabel = new JLabel("Internal Java Platform:");
 	private final DefaultComboBoxModel myJdksModel = new DefaultComboBoxModel();
@@ -86,8 +86,8 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 		wholePanel.add(GuiUtils.constructFieldWithBrowseButton(mySandboxHome, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
-				descriptor.setTitle(TaraBundle.message("sandbox.home.label"));
-				descriptor.setDescription(TaraBundle.message("sandbox.home.label"));
+				descriptor.setTitle(MessageProvider.message("sandbox.home.label"));
+				descriptor.setDescription(MessageProvider.message("sandbox.home.label"));
 				VirtualFile file = FileChooser.chooseFile(descriptor, mySandboxHome, null, null);
 				if (file != null) {
 					mySandboxHome.setText(FileUtil.toSystemDependentName(file.getPath()));

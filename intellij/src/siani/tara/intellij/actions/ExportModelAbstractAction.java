@@ -20,7 +20,7 @@ import com.intellij.util.io.ZipUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.project.module.TaraModuleType;
 
@@ -89,18 +89,18 @@ public class ExportModelAbstractAction extends AnAction implements DumbAware {
 			public void run() {
 				final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
 				if (progressIndicator != null) {
-					progressIndicator.setText(TaraBundle.message("prepare.for.deployment.common"));
+					progressIndicator.setText(MessageProvider.message("prepare.for.deployment.common"));
 					progressIndicator.setIndeterminate(true);
 				}
 				try {
 					File jarFile = jarModulesOutput(modules);
 					processLibrariesAndJpsModules(jarFile, dstFile, modelName, libs, progressIndicator);
-					successMessages.add(TaraBundle.message("saved.message", 1, modelName, dstPath));
+					successMessages.add(MessageProvider.message("saved.message", 1, modelName, dstPath));
 				} catch (final IOException e) {
 					errorMessages.add(e.getMessage() + "\n(" + dstPath + ")");
 				}
 			}
-		}, TaraBundle.message("prepare.for.deployment", modelName), true, module.getProject());
+		}, MessageProvider.message("prepare.for.deployment", modelName), true, module.getProject());
 	}
 
 	private void addModelRepresentation(ZipOutputStream zos, String modelName) throws IOException {

@@ -1,7 +1,8 @@
 src_file
-/Users/oroncal/workspace/sandbox/monet/engine/model/base.tara
-/Users/oroncal/workspace/sandbox/monet/engine/model/form.tara
-/Users/oroncal/workspace/sandbox/monet/engine/model/collection.tara
+/Users/oroncal/workspace/sandbox/Monet/engine/model/form.tara
+/Users/oroncal/workspace/sandbox/Monet/engine/model/container.tara
+/Users/oroncal/workspace/sandbox/Monet/engine/model/entity.tara
+/Users/oroncal/workspace/sandbox/Monet/engine/model/thesaurus.tara
 
 project
 monet
@@ -12,13 +13,13 @@ false
 encoding
 UTF-8
 models
-/Users/oroncal/workspace/sandbox/plugins/tara_models/monet/
+/Users/oroncal/workspace/sandbox/plugins/tara_models/Monet/
 itrules
-/Users/oroncal/workspace/sandbox/monet/engine/res/itrules
+/Users/oroncal/workspace/sandbox/Monet/engine/res/itrules
 icons
-/Users/oroncal/workspace/sandbox/monet/engine/res/icons
+/Users/oroncal/workspace/sandbox/Monet/engine/res/icons
 outputpath
 /Users/oroncal/workspace/sandbox/system/compile-server/test_2e78763/taraStubs/Test/java-production/
 final_outputpath
-/Users/oroncal/workspace/sandbox/monet/engine/gen/
+/Users/oroncal/workspace/sandbox/Monet/engine/gen/
 

@@ -9,13 +9,13 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.ResourceBundle;
 
-public class TaraBundle {
+public class MessageProvider {
 
 	@NonNls
 	protected static final String PATH_TO_BUNDLE = "messages.TaraBundle";
 	private static Reference<ResourceBundle> ourBundle;
 
-	private TaraBundle() {
+	private MessageProvider() {
 	}
 
 	public static String message(@NotNull @PropertyKey(resourceBundle = PATH_TO_BUNDLE) String key, @NotNull Object... params) {

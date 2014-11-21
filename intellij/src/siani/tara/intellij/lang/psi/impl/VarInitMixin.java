@@ -5,6 +5,7 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.TaraTypes;
 import siani.tara.intellij.lang.psi.TaraVarInit;
+import siani.tara.intellij.lang.psi.TaraVarInitValue;
 
 import static siani.tara.lang.Primitives.*;
 
@@ -23,16 +24,24 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public String getValueType() {
-		if (!((TaraVarInit) this).getBooleanValueList().isEmpty()) return BOOLEAN;
-		if (!((TaraVarInit) this).getCoordinateValueList().isEmpty()) return COORDINATE;
-		if (!((TaraVarInit) this).getDateValueList().isEmpty()) return DATE;
-		if (!((TaraVarInit) this).getDoubleValueList().isEmpty()) return DOUBLE;
-		if (!((TaraVarInit) this).getIntegerValueList().isEmpty()) return INTEGER;
-		if (!((TaraVarInit) this).getNaturalValueList().isEmpty()) return NATURAL;
-		if (!((TaraVarInit) this).getLinkValueList().isEmpty()
-			|| !((TaraVarInit) this).getIdentifierList().isEmpty()) return REFERENCE;
-		if (!((TaraVarInit) this).getStringValueList().isEmpty()) return STRING;
-		if (((TaraVarInit) this).getEmptyField() != null) return EMPTY;
+		TaraVarInitValue varInitValue = ((TaraVarInit) this).getVarInitValue();
+		if (varInitValue == null) return "null";
+		if (!varInitValue.getBooleanValueList().isEmpty()) return BOOLEAN;
+		if (!varInitValue.getCoordinateValueList().isEmpty()) return COORDINATE;
+		if (!varInitValue.getDateValueList().isEmpty()) return DATE;
+		if (!varInitValue.getDoubleValueList().isEmpty()) return DOUBLE;
+		if (!varInitValue.getIntegerValueList().isEmpty()) return INTEGER;
+		if (!varInitValue.getNaturalValueList().isEmpty()) return NATURAL;
+		if (!varInitValue.getLinkValueList().isEmpty()
+			|| !varInitValue.getIdentifierList().isEmpty()) return REFERENCE;
+		if (!varInitValue.getStringValueList().isEmpty()) return STRING;
+		if (varInitValue.getEmptyField() != null) return EMPTY;
 		return "null";
+	}
+
+	public TaraVarInitValue getValue() {
+		TaraVarInitValue varInitValue = ((TaraVarInit) this).getVarInitValue();
+		if (varInitValue == null) return null;
+		return varInitValue;
 	}
 }

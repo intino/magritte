@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.fix.RemoveConceptLinkFix;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraConceptReference;
@@ -25,10 +25,10 @@ public class ConceptReferenceAnnotator extends TaraAnnotator {
 		if (element instanceof TaraConceptReference) {
 			TaraConceptReference reference = (TaraConceptReference) element;
 			if (isDuplicated(reference))
-				annotateAndFix(element, new RemoveConceptLinkFix(reference), TaraBundle.message("duplicate.link.concept.error.message"));
+				annotateAndFix(element, new RemoveConceptLinkFix(reference), MessageProvider.message("duplicate.link.concept.error.message"));
 			TaraIdentifierReference identifierReference = reference.getIdentifierReference();
 			if (reference.isAggregated() && destinyIsComponent(reference))
-				annotateAndFix(element, new RemoveConceptLinkFix(reference), TaraBundle.message("duplicate.link.concept.error.message"));
+				annotateAndFix(element, new RemoveConceptLinkFix(reference), MessageProvider.message("duplicate.link.concept.error.message"));
 			addReferenceHighlight(holder, identifierReference);
 		}
 	}

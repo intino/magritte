@@ -14,7 +14,7 @@ import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
@@ -79,7 +79,7 @@ public class TaraMoveConcept extends MoveHandlerDelegate {
 					targetContainer = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
 				doMove(project, new PsiElement[]{e}, targetContainer, null);
 			} else
-				CommonRefactoringUtil.showErrorHint(project, editor, TaraBundle.message("refactoring.move.class.or.function.error.selection"), RefactoringBundle.message("error.title"), null);
+				CommonRefactoringUtil.showErrorHint(project, editor, MessageProvider.message("refactoring.move.class.or.function.error.selection"), RefactoringBundle.message("error.title"), null);
 			return true;
 		}
 		return false;

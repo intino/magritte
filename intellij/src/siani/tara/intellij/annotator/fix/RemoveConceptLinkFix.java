@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.TaraConceptReference;
 import siani.tara.intellij.lang.psi.TaraTypes;
 
@@ -20,7 +20,7 @@ public class RemoveConceptLinkFix implements IntentionAction {
 
 	@NotNull
 	public String getText() {
-		return TaraBundle.message("remove.reference.intention.text");
+		return MessageProvider.message("remove.reference.intention.text");
 	}
 
 	@NotNull

@@ -90,10 +90,10 @@ public class ModelSaver {
 
 	private static class NodeAdapter implements JsonSerializer<Node> {
 		@Override
-		public JsonElement serialize(Node src, Type typeOfSrc, JsonSerializationContext context) {
+		public JsonElement serialize(Node node, Type typeOfSrc, JsonSerializationContext context) {
 			JsonObject object = new JsonObject();
-			object.add("NodeType", new JsonPrimitive(src.getClass().getSimpleName()));
-			object.add("properties", context.serialize(src, src.getClass()));
+			object.add("NodeType", new JsonPrimitive(node.getClass().getSimpleName()));
+			object.add("properties", context.serialize(node, node.getClass()));
 			return object;
 		}
 	}

@@ -45,7 +45,7 @@ metaWordNames : DOT IDENTIFIER;
 body: NEW_LINE_INDENT ((variable | concept | varInit | facetApply | facetTarget | conceptReference) NEWLINE+)+ DEDENT;
 
 variable : doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
-	| dateAttribute |coordinateAttribute | resource | reference | word) annotations?;
+	| dateAttribute | coordinateAttribute | resource | reference | word) annotations?;
 
 facetApply : IS metaidentifier parameters? (WITH metaidentifier)? body?;
 facetTarget : ON identifierReference ALWAYS? body?;
@@ -69,7 +69,7 @@ naturalValue    : NATURAL_VALUE;
 integerValue    : NATURAL_VALUE | NEGATIVE_VALUE;
 doubleValue     : NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE;
 booleanValue    : BOOLEAN_VALUE;
-stringValue     : STRING_VALUE | STRING_MULTILINE_VALUE_KEY;
+stringValue     : STRING_VALUE | (NEWLINE? STRING_MULTILINE_VALUE_KEY);
 dateValue       : DATE_VALUE;
 coordinateValue : COORDINATE_VALUE;
 linkValue       : address | identifierReference;
@@ -79,7 +79,7 @@ measure : IDENTIFIER | DOLLAR | EURO | PERCENTAGE | GRADE;
 annotations: IS (ABSTRACT | TERMINAL | SINGLE | MULTIPLE | REQUIRED |
  NAMED | FACET | INTENTION | ROOT | COMPONENT | PROPERTY | UNIVERSAL | ADDRESSED | COMPOSED | AGGREGATED)+ ;
 
-varInit : IDENTIFIER COLON initValue;
+varInit : IDENTIFIER EQUALS initValue;
 
 headerReference: hierarchy* IDENTIFIER;
 

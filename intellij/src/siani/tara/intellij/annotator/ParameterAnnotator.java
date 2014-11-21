@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraParameterValueImpl;
-import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
+import siani.tara.intellij.lang.psi.resolve.TaraInternalReferenceSolver;
 import siani.tara.lang.*;
 import siani.tara.lang.Variable;
 import siani.tara.lang.Word;
@@ -114,7 +114,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 	}
 
 	private boolean checkWellReference(TaraIdentifierReference reference, Reference variable) {
-		TaraReferenceSolver solver = new TaraReferenceSolver(getLastElementOf(reference), reference.getTextRange(), false);
+		TaraInternalReferenceSolver solver = new TaraInternalReferenceSolver(getLastElementOf(reference), reference.getTextRange());
 		Concept destiny = getConceptContainerOf(solver.resolve());
 		if (destiny != null) {
 			MetaIdentifier metaIdentifier = destiny.getMetaIdentifier();
@@ -139,7 +139,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 	}
 
 	private boolean inSameContext(TaraIdentifierReference reference) {
-		TaraReferenceSolver solver = new TaraReferenceSolver(getLastElementOf(reference), reference.getTextRange(), false);
+		TaraInternalReferenceSolver solver = new TaraInternalReferenceSolver(getLastElementOf(reference), reference.getTextRange());
 		Concept resolve = getConceptContainerOf(solver.resolve());
 		PsiElement referenceContext = reference;
 		PsiElement resolveContext = resolve;

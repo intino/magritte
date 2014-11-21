@@ -3,7 +3,7 @@ package siani.tara.intellij.annotator;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
@@ -27,10 +27,10 @@ public class IntentionAnnotator extends TaraAnnotator {
 		Node node = findNode(concept, model);
 		if (node == null || !node.getObject().is(Annotations.Annotation.INTENTION)) return;
 		if (((Concept) element).getConceptLinks().length > 0)
-			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("intention.with.children.error.message"));
+			holder.createErrorAnnotation(element.getNode(), MessageProvider.message("intention.with.children.error.message"));
 		Collection<Concept> conceptChildren = ((Concept) element).getInnerConcepts();
 		if (!conceptChildren.isEmpty() && !allAreSub(conceptChildren))
-			holder.createErrorAnnotation(element.getNode(), TaraBundle.message("intention.with.children.error.message"));
+			holder.createErrorAnnotation(element.getNode(), MessageProvider.message("intention.with.children.error.message"));
 	}
 
 	private boolean allAreSub(Collection<Concept> conceptChildren) {

@@ -13,7 +13,7 @@ import com.intellij.usageView.UsageInfo;
 import com.intellij.usageView.UsageViewDescriptor;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
@@ -22,7 +22,7 @@ import siani.tara.intellij.refactoring.TaraRefactoringUtil;
 import java.util.*;
 
 public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
-	public static final String REFACTORING_NAME = TaraBundle.message("refactoring.move.concept");
+	public static final String REFACTORING_NAME = MessageProvider.message("refactoring.move.concept");
 
 	private PsiNamedElement[] myElements;
 	private String myDestination;
@@ -170,7 +170,7 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 							// TODO: Check for resulting circular imports
 							CommonRefactoringUtil.checkReadOnlyStatus(myProject, e);
 							if (e instanceof Concept && destination.getConcepts().iterator().next() != null) {//TODO
-								throw new IncorrectOperationException(TaraBundle.message("refactoring.move.concept.error.destination.file.contains.concept.$0",
+								throw new IncorrectOperationException(MessageProvider.message("refactoring.move.concept.error.destination.file.contains.concept.$0",
 									e.getName()));
 							}
 							checkValidImportableFile(destination, e.getContainingFile().getVirtualFile());

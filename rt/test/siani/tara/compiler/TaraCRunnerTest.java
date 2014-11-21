@@ -55,7 +55,7 @@ public class TaraCRunnerTest {
 	@Test
 	public void MonetM1() {
 		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/monet.txt"});
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/monetM1.txt"});
 
-		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/externa.txt"});
 	}
 }

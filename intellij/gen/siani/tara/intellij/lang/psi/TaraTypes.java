@@ -44,6 +44,7 @@ public interface TaraTypes {
 	IElementType STRING_VALUE = new TaraElementType("STRING_VALUE");
 	IElementType VARIABLE = new TaraElementType("VARIABLE");
 	IElementType VAR_INIT = new TaraElementType("VAR_INIT");
+	IElementType VAR_INIT_VALUE = new TaraElementType("VAR_INIT_VALUE");
 	IElementType WORD = new TaraElementType("WORD");
 
 	IElementType ABSTRACT = new TaraTokenType("ABSTRACT");
@@ -182,6 +183,8 @@ public interface TaraTypes {
 				return new TaraVariableImpl(node);
 			} else if (type == VAR_INIT) {
 				return new TaraVarInitImpl(node);
+			} else if (type == VAR_INIT_VALUE) {
+				return new TaraVarInitValueImpl(node);
 			} else if (type == WORD) {
 				return new TaraWordImpl(node);
 			}

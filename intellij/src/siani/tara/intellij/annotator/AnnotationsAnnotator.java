@@ -3,7 +3,7 @@ package siani.tara.intellij.annotator;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.TaraBundle;
+import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.ConceptReference;
@@ -33,13 +33,13 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	private void checkAnnotations(@NotNull siani.tara.intellij.lang.psi.Annotations element) {
 		if (element.getParent() instanceof ConceptReference)
 			for (PsiElement psiElement : getConceptReferenceIncorrectAnnotations(element)) {
-				com.intellij.lang.annotation.Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
+				com.intellij.lang.annotation.Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), MessageProvider.message("annotation.concept.key.error.message"));
 				errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
 			}
 		else {
 			Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(element);
 			for (PsiElement psiElement : getConceptIncorrectAnnotations(contextOf, contextOf.getAnnotations())) {
-				com.intellij.lang.annotation.Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), TaraBundle.message("annotation.concept.key.error.message"));
+				com.intellij.lang.annotation.Annotation errorAnnotation = holder.createErrorAnnotation(psiElement.getNode(), MessageProvider.message("annotation.concept.key.error.message"));
 				errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
 			}
 		}
@@ -54,7 +54,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 			List<PsiElement> annotationList = annotations.get(annotation);
 			if (annotationList.size() > 1)
 				for (PsiElement element : annotationList) {
-					com.intellij.lang.annotation.Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), TaraBundle.message("duplicated.annotation.key.error.message"));
+					com.intellij.lang.annotation.Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), MessageProvider.message("duplicated.annotation.key.error.message"));
 					errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
 				}
 		}
