@@ -208,6 +208,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterDoubleAttribute(@NotNull DoubleAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.DOUBLE_TYPE().getText(), ctx.IDENTIFIER().getText());
 		variable.setList(ctx.LIST() != null);
+		if (ctx.count() != null)
+			variable.setCount(Integer.parseInt(ctx.count().naturalValue().getText()));
 		if (ctx.doubleValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.doubleValue()));
 		else if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
 		if (ctx.measure() != null) variable.setMeasure(ctx.measure().getText());
@@ -268,16 +270,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		if (ctx.booleanValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.booleanValue()));
 		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
 		addAttribute(ctx, variable);
-	}
-
-	@Override
-	public void enterCoordinateAttribute(@NotNull CoordinateAttributeContext ctx) {
-		Attribute variable = new Attribute(ctx.COORDINATE_TYPE().getText(), ctx.IDENTIFIER().getText());
-		if (ctx.coordinateValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.coordinateValue()));
-		else if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
-		variable.setList(ctx.LIST() != null);
-		addAttribute(ctx, variable);
-
 	}
 
 	@Override
@@ -356,10 +348,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			variable = new Attribute(STRING, name, ctx.stringValue().size() > 1);
 			for (StringValueContext context : ctx.stringValue())
 				variable.addValue(formatText(context.getText()));
-		} else if (!ctx.coordinateValue().isEmpty()) {
-			variable = new Attribute(COORDINATE, name, ctx.coordinateValue().size() > 1);
-			for (CoordinateValueContext context : ctx.coordinateValue())
-				variable.addValue(getConverter(COORDINATE).convert(context.getText())[0]);
 		} else if (!ctx.dateValue().isEmpty()) {
 			variable = new Attribute(DATE, name, ctx.dateValue().size() > 1);
 			for (DateValueContext context : ctx.dateValue())

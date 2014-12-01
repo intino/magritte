@@ -20,7 +20,7 @@ public class ModelLoader {
 
 	public static Model load(String modelsDirectory, String model) {
 		try {
-			File file = new File(modelsDirectory, model + JSON);
+			File file = new File(modelsDirectory.toLowerCase(), model.toLowerCase() + JSON);
 			if (!file.exists()) throw new Exception("Model file not found");
 			InputStream heritageInputStream = new FileInputStream(file);
 			GsonBuilder gb = new GsonBuilder();
@@ -39,7 +39,8 @@ public class ModelLoader {
 
 	private static void restoreTreeLinks(Model aModel, NodeTree tree) {
 		Map<String, Node> nodeTable = new HashMap();
-		for (Node node : tree) restoreDestinyLinks(node, aModel);
+		for (Node node : tree)
+			restoreDestinyLinks(node, aModel);
 		for (Node node : tree) {
 			nodeTable.put(node.getQualifiedName(), node);
 			processInnerNodes(aModel, nodeTable, node);
@@ -53,8 +54,8 @@ public class ModelLoader {
 		for (Node inner : node.getInnerNodes())
 			if (inner instanceof LinkNode) {
 				LinkNode linkNode = (LinkNode) inner;
-				Node node1 = model.searchNode(linkNode.getDestinyQN().replace(linkNode.getDestinyBox() + ".", ""));
-				linkNode.setDestiny((DeclaredNode) node1);
+				Node destiny = model.searchNode(linkNode.getDestinyQN().replace(linkNode.getDestinyBox() + ".", ""));
+				linkNode.setDestiny((DeclaredNode) destiny);
 			} else restoreDestinyLinks(inner, model);
 	}
 
@@ -133,14 +134,17 @@ public class ModelLoader {
 			JsonElement measure = json.getAsJsonObject().get("measure");
 			if (measure != null && measure.isJsonPrimitive())
 				attribute.measure = measure.getAsString();
+			JsonElement count = json.getAsJsonObject().get("count");
+			if (count != null && count.isJsonPrimitive())
+				attribute.count = count.getAsInt();
 		}
 
 		private void processReference(JsonElement json, Reference reference) {
 			JsonElement empty = json.getAsJsonObject().get("empty");
 			if (empty != null && empty.isJsonPrimitive())
 				reference.setEmpty(empty.getAsBoolean());
-			if ((json.getAsJsonObject().get("inheritedTypes")) != null && json.getAsJsonObject().get("inheritedTypes").isJsonArray()) {
-				JsonArray array = json.getAsJsonObject().get("inheritedTypes").getAsJsonArray();
+			if ((json.getAsJsonObject().get("instanceTypes")) != null && json.getAsJsonObject().get("instanceTypes").isJsonArray()) {
+				JsonArray array = json.getAsJsonObject().get("instanceTypes").getAsJsonArray();
 				for (JsonElement jsonElement : array)
 					reference.addInheritedType(jsonElement.getAsString());
 			}

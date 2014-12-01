@@ -46,7 +46,7 @@ public class TaraVisitor extends PsiElementVisitor {
     visitConceptReference(o);
   }
 
-  public void visitCoordinateValue(@NotNull TaraCoordinateValue o) {
+  public void visitCount(@NotNull TaraCount o) {
     visitPsiElement(o);
   }
 

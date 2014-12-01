@@ -11,14 +11,14 @@ import static siani.tara.intellij.lang.psi.TaraTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraCoordinateValueImpl extends ASTWrapperPsiElement implements TaraCoordinateValue {
+public class TaraCountImpl extends ASTWrapperPsiElement implements TaraCount {
 
-  public TaraCoordinateValueImpl(ASTNode node) {
+  public TaraCountImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitCoordinateValue(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitCount(this);
     else super.accept(visitor);
   }
 

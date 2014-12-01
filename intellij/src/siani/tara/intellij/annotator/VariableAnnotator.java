@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.TaraVariable;
+import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
 public class VariableAnnotator extends TaraAnnotator {
 	@Override
@@ -21,9 +22,12 @@ public class VariableAnnotator extends TaraAnnotator {
 		return (variable.getIdentifierReference() != null);
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	private void addReferenceAnnotation(TaraVariable variable) {
-		Annotation aggregated = holder.createInfoAnnotation(variable.getIdentifierReference(), "reference");
-		aggregated.setTextAttributes(createReferenceHighlight());
+		if (ReferenceManager.resolve(variable.getIdentifierReference()) != null) {
+			Annotation aggregated = holder.createInfoAnnotation(variable.getIdentifierReference(), "reference");
+			aggregated.setTextAttributes(createReferenceHighlight());
+		}
 	}
 
 	private TextAttributesKey createReferenceHighlight() {

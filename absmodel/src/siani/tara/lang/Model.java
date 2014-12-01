@@ -59,15 +59,6 @@ public class Model {
 		return nodeTable.get(qualifiedName);
 	}
 
-	public List<Node> collectRequiredNodes() {
-		List<Node> list = new ArrayList();
-		for (Node node : nodeTable.values()) {
-			if (node instanceof DeclaredNode && node.getObject().is(Annotations.Annotation.REQUIRED))
-				list.add(node);
-		}
-		return list;
-	}
-
 	public String getModelName() {
 		return name;
 	}
@@ -89,15 +80,6 @@ public class Model {
 		Node result = relativeSearch(node.getDestinyQN(), node);
 		if (result != null) return (DeclaredNode) result;
 		return searchInImportReferences(node.getDestinyQN(), node);
-	}
-
-	public Node searchChildrenByName(Node parent, String childName) {
-		for (Node node : nodeTable.values()) {
-			boolean cond = parent.equals(searchAncestry(node));
-			if (cond && (childName.equals(node.getName()) || ("").equals(node.getName())))
-				return node;
-		}
-		return null;
 	}
 
 	public DeclaredNode searchDeclarationOfReference(String referenceName, Node context) {
@@ -158,7 +140,6 @@ public class Model {
 
 	private Node findInnerIn(Node parent, String name) {
 		return findInnerInList(parent.getInnerNodes(), name);
-
 	}
 
 	private Node findInnerInList(List<Node> innerNodes, String name) {
@@ -172,24 +153,24 @@ public class Model {
 			} else if (node.getName().equals(name)) {
 				return node;
 			} else {
-				List<DeclaredNode> cases = new ArrayList();
-				extractCases(node, cases);
-				Node aCase = containsCase(cases, name);
-				if (aCase != null) return aCase;
+				List<DeclaredNode> subs = new ArrayList();
+				extractSubs(node, subs);
+				Node aSub = containsSub(subs, name);
+				if (aSub != null) return aSub;
 			}
 		return null;
 	}
 
 	private Node searchInDestiny(LinkNode node, String name) {
-		List<DeclaredNode> cases = new ArrayList();
-		extractCases(node.getDestiny(), cases);
-		Node aCase = containsCase(cases, name);
-		return aCase != null ? aCase : null;
+		List<DeclaredNode> subs = new ArrayList();
+		extractSubs(node.getDestiny(), subs);
+		Node aSub = containsSub(subs, name);
+		return aSub != null ? aSub : null;
 	}
 
-	private Node containsCase(List<DeclaredNode> cases, String name) {
-		for (DeclaredNode aCase : cases)
-			if (name.equals(aCase.getName())) return aCase;
+	private Node containsSub(List<DeclaredNode> subs, String name) {
+		for (DeclaredNode sub : subs)
+			if (name.equals(sub.getName())) return sub;
 		return null;
 	}
 
@@ -202,17 +183,17 @@ public class Model {
 		List<DeclaredNode> roots = new ArrayList<>();
 		for (Node node : nodeTree) {
 			roots.add((DeclaredNode) node);
-			extractCases(node, roots);
+			extractSubs(node, roots);
 		}
 		return roots;
 	}
 
-	private void extractCases(Node node, List<DeclaredNode> list) {
-		List<DeclaredNode> cases = Arrays.asList(node.getSubConcepts());
-		list.addAll(cases);
-		for (DeclaredNode aCase : cases) {
-			extractCases(aCase, list);
-		}
+	private void extractSubs(Node node, List<DeclaredNode> list) {
+		if (node == null) return;
+		List<DeclaredNode> subs = Arrays.asList(node.getSubConcepts());
+		list.addAll(subs);
+		for (DeclaredNode aSub : subs)
+			extractSubs(aSub, list);
 	}
 
 	private DeclaredNode searchInImportReferences(String path, Node context) {

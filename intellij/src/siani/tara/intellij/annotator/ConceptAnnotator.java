@@ -4,6 +4,7 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.fix.AddAddressFix;
@@ -12,10 +13,10 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
-import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -43,57 +44,59 @@ public class ConceptAnnotator extends TaraAnnotator {
 		addRootAnnotation(concept);
 		checkIfDuplicated(concept);
 		checkIfExtendedFromDifferentType(concept);
-		checkJavaClassCreation(model, concept);
+		checkConceptName(concept, isTerminal(concept.getFile()));
 		if (model != null) {
-			checkAsComponent(model, concept);
-			checkAsFacet(model, concept);
-			checkAddressAdded(model, concept);
-			checkAsNamed(model, concept);
+			Node node = findNode(concept, model);
+			if (node == null) return;
+			checkJavaClassCreation(node, concept);
+			checkAsComponent(node, concept);
+			checkAsFacet(node, concept);
+			checkAddressAdded(node, concept);
+			checkAsNamed(node, concept);
 		}
 	}
 
-	private void checkAsNamed(Model model, Concept concept) {
-		Node node = findNode(concept, model);
+	private void checkConceptName(Concept concept, boolean terminal) {
+		if (concept.getName() != null && Character.isLowerCase(concept.getName().charAt(0)) && !terminal)
+			holder.createWarningAnnotation(concept.getIdentifierNode(), "Concept should be in camel-case");
+	}
+
+	private void checkAsNamed(Node node, Concept concept) {
 		if (node != null && node.getObject().is(NAMED) && concept.getName() == null)
 			annotateAndFix(concept.getSignature(), new AddAddressFix(concept), "Name needed");
 	}
 
-	private void checkAddressAdded(Model model, Concept concept) {
-		Node node = findNode(concept, model);
+
+	private void checkAddressAdded(Node node, Concept concept) {
 		if (node != null && node.getObject().is(ADDRESSED) && concept.getAddress() == null)
 			annotateAndFix(concept.getSignature(), new AddAddressFix(concept), "Address needed");
 	}
 
-	private void checkAsFacet(Model model, Concept concept) {
-		Node node = findNode(concept, model);
+	private void checkAsFacet(Node node, Concept concept) {
 		if (node == null) return;
 		if (node.getObject().is(FACET))
 			holder.createErrorAnnotation(concept.getIdentifierNode(), "Facets are no instantiable");
 	}
 
-	private void checkJavaClassCreation(Model model, Concept concept) {
+	private void checkJavaClassCreation(Node node, Concept concept) {
 		if ((concept.isIntention()) && !javaClassCreated(concept))
 			holder.createWarningAnnotation(concept.getSignature().getNode(), MessageProvider.message("no.java.generated.class.error.message"));
-		if ((concept.isFacet() && isIntentionInstance(model, concept)) && !javaClassCreated(concept))
+		if ((concept.isFacet() && isIntention(node)) && !javaClassCreated(concept))
 			holder.createWarningAnnotation(concept.getSignature().getNode(), MessageProvider.message("no.java.generated.class.error.message"));
 	}
 
-	private boolean isIntentionInstance(Model model, Concept concept) {
-		if(model == null) return false;
-		Node node = findNode(concept, model);
-		return node != null && node.getObject().is(INTENTION);
+	private boolean isIntention(Node node) {
+		return node.getObject().is(INTENTION);
 	}
 
 	private boolean javaClassCreated(Concept concept) {
 		return ReferenceManager.resolve(concept.getIdentifierNode()) != null;
 	}
 
-	private void checkAsComponent(Model model, Concept concept) {
-		Node node = findNode(concept, model);
-		if (node == null) return;
+	private void checkAsComponent(Node node, Concept concept) {
 		if (node.getObject().is(COMPONENT)) {
 			Collection<Concept> rootConcepts = TaraUtil.getRootConceptsOfFile(concept.getFile());
-			if (rootConcepts.contains(concept) && concept.getIdentifierNode() != null && !isTerminalModule(concept))
+			if (rootConcepts.contains(concept) && concept.getIdentifierNode() != null && !isTerminal(concept.getFile()))
 				holder.createErrorAnnotation(concept.getIdentifierNode(), "Component cannot be declared as root");
 		}
 	}
@@ -125,8 +128,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 	public int findDuplicates(Concept concept) {
 		if (concept.getName() == null) return 1;
 		Concept parent = TaraPsiImplUtil.getConceptContainerOf(concept);
-		if (parent != null)
-			return checkChildDuplicates(concept, parent);
+		if (parent != null) return checkChildDuplicates(concept, parent);
 		else {
 			PsiElement inFacetTarget = TaraPsiImplUtil.getContextOf(concept);
 			if (inFacetTarget != null && inFacetTarget instanceof TaraFacetTarget) {
@@ -153,12 +155,24 @@ public class ConceptAnnotator extends TaraAnnotator {
 
 	private List<Concept> searchConceptInFile(Concept concept) {
 		List<Concept> list = new ArrayList<>();
-		for (Concept aConcept : concept.getFile().getConcepts())
+		for (Concept aConcept : getRootConcepts(concept.getFile()))
+			//noinspection ConstantConditions
 			if (concept.getName().equals(aConcept.getName())) list.add(aConcept);
 		return list;
 	}
 
-	public boolean isTerminalModule(Concept concept) {
-		return ModuleConfiguration.getInstance(ModuleProvider.getModuleOfDocument(concept.getFile())).isTerminal();
+	private Collection<Concept> getRootConcepts(TaraBoxFileImpl file) {
+		List<Concept> list = new ArrayList<>();
+		Concept[] concepts = PsiTreeUtil.getChildrenOfType(file, Concept.class);
+		if (concepts != null)
+			for (Concept concept : concepts) {
+				list.add(concept);
+				list.addAll(concept.getSubConcepts());
+			}
+		return list;
+	}
+
+	private boolean isTerminal(TaraBoxFileImpl boxFile) {
+		return ModuleConfiguration.getInstance(TaraUtil.getModuleOfFile(boxFile)).isTerminal();
 	}
 }

@@ -30,12 +30,6 @@ public class TaraParameterValueImpl extends ASTWrapperPsiElement implements Tara
 
   @Override
   @NotNull
-  public List<TaraCoordinateValue> getCoordinateValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraCoordinateValue.class);
-  }
-
-  @Override
-  @NotNull
   public List<TaraDateValue> getDateValueList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraDateValue.class);
   }

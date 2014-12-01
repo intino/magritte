@@ -3,6 +3,7 @@ package siani.tara.lang;
 public class Attribute extends Variable {
 	public final String primitiveType;
 	public String measure;
+	public Integer count;
 
 	public Attribute(String type, String name, boolean isList) {
 		this.primitiveType = type;
@@ -21,6 +22,14 @@ public class Attribute extends Variable {
 
 	public void setMeasure(String measure) {
 		this.measure = measure;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 	@Override

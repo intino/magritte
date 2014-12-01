@@ -5,6 +5,7 @@ import com.intellij.lang.ASTFactory;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
@@ -27,7 +28,7 @@ import java.util.List;
 
 public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 
-	public TaraBoxFileImpl(@NotNull com.intellij.psi.FileViewProvider viewProvider) {
+	public TaraBoxFileImpl(@NotNull FileViewProvider viewProvider) {
 		super(viewProvider, TaraLanguage.INSTANCE);
 	}
 

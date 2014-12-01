@@ -23,7 +23,7 @@
   <depends>com.intellij.modules.lang</depends> -->
 
   <actions>
-    <action id="NewConcept" class="siani.tara.intellij.actions.CreateTaraFileAction">
+    <action id="NewTaraFile" class="siani.tara.intellij.actions.CreateTaraFileAction">
       <add-to-group group-id="NewGroup" anchor="first"/>
     </action>
     <action id="NewPackage" class="siani.tara.intellij.actions.CreatePackageAction" text="Package"
@@ -48,7 +48,7 @@
     </group>
 
     <group id="tara.file.group" popup="false">
-      <action id="grammar.Generate" class="siani.tara.intellij.actions.GenerateAction" text="Generate Intentions Code">
+      <action id="tara.Generate" class="siani.tara.intellij.actions.GenerateAction" text="Generate Intentions Code">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>
       </action>
       <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>

@@ -140,9 +140,7 @@ public class FrameCreator {
 			Frame innerFrame = new Frame(variable.getType()) {{
 				if (value instanceof Date)
 					addSlot("value", ((Date) value).getTime());
-				else if (variable.getType().equals(Primitives.COORDINATE)) {
-					addSlot("value", Primitives.getConverter(Primitives.COORDINATE).convert(value)[0].replace("-", ","));
-				} else
+				else
 					addSlot("value", value);
 			}};
 			frame.addSlot("variableValue", innerFrame);

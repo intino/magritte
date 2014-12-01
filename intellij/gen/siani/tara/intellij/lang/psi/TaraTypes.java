@@ -19,7 +19,7 @@ public interface TaraTypes {
 	IElementType BOX = new TaraElementType("BOX");
 	IElementType CONCEPT = new TaraElementType("CONCEPT");
 	IElementType CONCEPT_REFERENCE = new TaraElementType("CONCEPT_REFERENCE");
-	IElementType COORDINATE_VALUE = new TaraElementType("COORDINATE_VALUE");
+	IElementType COUNT = new TaraElementType("COUNT");
 	IElementType DATE_VALUE = new TaraElementType("DATE_VALUE");
 	IElementType DOC = new TaraElementType("DOC");
 	IElementType DOUBLE_VALUE = new TaraElementType("DOUBLE_VALUE");
@@ -60,7 +60,6 @@ public interface TaraTypes {
 	IElementType COMMA = new TaraTokenType("COMMA");
 	IElementType COMPONENT = new TaraTokenType("COMPONENT");
 	IElementType COMPOSED = new TaraTokenType("COMPOSED");
-	IElementType COORDINATE_VALUE_KEY = new TaraTokenType("COORDINATE_VALUE_KEY");
 	IElementType DATE_TYPE = new TaraTokenType("DATE_TYPE");
 	IElementType DATE_VALUE_KEY = new TaraTokenType("DATE_VALUE_KEY");
 	IElementType DEDENT = new TaraTokenType("DEDENT");
@@ -79,6 +78,7 @@ public interface TaraTypes {
 	IElementType INT_TYPE = new TaraTokenType("INT_TYPE");
 	IElementType IS = new TaraTokenType("IS");
 	IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
+	IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
 	IElementType LIST = new TaraTokenType("LIST");
 	IElementType MEASURE_VALUE = new TaraTokenType("MEASURE_VALUE");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
@@ -95,6 +95,7 @@ public interface TaraTypes {
 	IElementType REQUIRED = new TaraTokenType("REQUIRED");
 	IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
 	IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");
+	IElementType RIGHT_SQUARE = new TaraTokenType("RIGHT_SQUARE");
 	IElementType ROOT = new TaraTokenType("ROOT");
 	IElementType SINGLE = new TaraTokenType("SINGLE");
 	IElementType STAR = new TaraTokenType("STAR");
@@ -103,7 +104,6 @@ public interface TaraTypes {
 	IElementType STRING_VALUE_KEY = new TaraTokenType("STRING_VALUE_KEY");
 	IElementType SUB = new TaraTokenType("SUB");
 	IElementType TERMINAL = new TaraTokenType("TERMINAL");
-	IElementType TUPLE_TYPE = new TaraTokenType("TUPLE_TYPE");
 	IElementType UNIVERSAL = new TaraTokenType("UNIVERSAL");
 	IElementType USE_KEY = new TaraTokenType("USE_KEY");
 	IElementType VAR = new TaraTokenType("VAR");
@@ -133,8 +133,8 @@ public interface TaraTypes {
 				return new TaraConceptImpl(node);
 			} else if (type == CONCEPT_REFERENCE) {
 				return new TaraConceptReferenceImpl(node);
-			} else if (type == COORDINATE_VALUE) {
-				return new TaraCoordinateValueImpl(node);
+			} else if (type == COUNT) {
+				return new TaraCountImpl(node);
 			} else if (type == DATE_VALUE) {
 				return new TaraDateValueImpl(node);
 			} else if (type == DOC) {

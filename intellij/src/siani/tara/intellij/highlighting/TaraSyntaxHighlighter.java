@@ -115,6 +115,8 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(META_WORD, OPERATOR);
 		KEYS.put(ALWAYS, ANNOTATION);
 		KEYS.put(LIST, OPERATOR);
+		KEYS.put(LEFT_SQUARE, OPERATOR);
+		KEYS.put(RIGHT_SQUARE, OPERATOR);
 		KEYS.put(MEASURE_VALUE, PRIMITIVE);
 		KEYS.put(NEW_LINE_INDENT, KEYWORD);
 		KEYS.put(WORD_KEY, PRIMITIVE);
@@ -122,7 +124,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(DOUBLE_TYPE, PRIMITIVE);
 		KEYS.put(INT_TYPE, PRIMITIVE);
 		KEYS.put(DATE_TYPE, PRIMITIVE);
-		KEYS.put(TUPLE_TYPE, PRIMITIVE);
 		KEYS.put(BOOLEAN_TYPE, PRIMITIVE);
 		KEYS.put(NATURAL_TYPE, PRIMITIVE);
 
@@ -136,7 +137,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(STRING_VALUE_KEY, STRING);
 		KEYS.put(STRING_MULTILINE_VALUE_KEY, STRING);
 		KEYS.put(DATE_VALUE_KEY, NUMBER);
-		KEYS.put(COORDINATE_VALUE_KEY, NUMBER);
 		KEYS.put(TokenType.WHITE_SPACE, null);
 		KEYS.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 	}

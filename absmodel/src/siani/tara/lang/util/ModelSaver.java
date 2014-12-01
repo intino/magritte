@@ -16,12 +16,11 @@ public class ModelSaver {
 
 	public static boolean save(Model model, String modelsDirectory) {
 		try {
-			File file = new File(modelsDirectory, model.getModelName() + JSON_EXTENSION);
+			File file = new File(modelsDirectory.toLowerCase(), model.getModelName().toLowerCase() + JSON_EXTENSION);
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
 			GsonBuilder gsonBuilder = new GsonBuilder();
-			gsonBuilder.setDateFormat(DateFormat.FULL, DateFormat.FULL).create();
-			gsonBuilder.setPrettyPrinting();
+			gsonBuilder.setDateFormat(DateFormat.FULL, DateFormat.FULL).setPrettyPrinting();
 			gsonBuilder.registerTypeAdapter(Variable.class, new VariableSerializer());
 			gsonBuilder.registerTypeAdapter(Node.class, new NodeAdapter());
 			gsonBuilder.registerTypeAdapter(ModelObject.class, new ObjectAdapter());
@@ -50,6 +49,7 @@ public class ModelSaver {
 				object.addProperty("primitiveType", attribute.primitiveType);
 				object.addProperty("isList", attribute.isList);
 				if (attribute.measure != null) object.addProperty("measure", attribute.measure);
+				if (attribute.count != null) object.addProperty("count", attribute.count);
 			} else if (variable instanceof Reference) {
 				Reference reference = (Reference) variable;
 				object.addProperty("node", reference.type);
@@ -59,7 +59,7 @@ public class ModelSaver {
 					JsonArray list = new JsonArray();
 					for (String refType : reference.getInheritedTypes())
 						list.add(new JsonPrimitive(refType));
-					object.add("inheritedTypes", list);
+					object.add("instanceTypes", list);
 				}
 			} else if (variable instanceof Resource) {
 				Resource resource = (Resource) variable;

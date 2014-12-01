@@ -55,18 +55,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCoordinateValue(@NotNull TaraGrammar.CoordinateValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCoordinateValue(@NotNull TaraGrammar.CoordinateValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterNaturalValue(@NotNull TaraGrammar.NaturalValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -86,6 +74,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMeasure(@NotNull TaraGrammar.MeasureContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCount(@NotNull TaraGrammar.CountContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCount(@NotNull TaraGrammar.CountContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -242,18 +242,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitIntegerValue(@NotNull TaraGrammar.IntegerValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCoordinateAttribute(@NotNull TaraGrammar.CoordinateAttributeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCoordinateAttribute(@NotNull TaraGrammar.CoordinateAttributeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

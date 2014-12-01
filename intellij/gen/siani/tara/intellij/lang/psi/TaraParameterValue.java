@@ -11,9 +11,6 @@ public interface TaraParameterValue extends TaraPsiElement {
   List<TaraBooleanValue> getBooleanValueList();
 
   @NotNull
-  List<TaraCoordinateValue> getCoordinateValueList();
-
-  @NotNull
   List<TaraDateValue> getDateValueList();
 
   @NotNull

@@ -14,6 +14,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.siani.itrules.Document;
 import org.siani.itrules.Frame;
 import org.siani.itrules.RuleEngine;
+import org.siani.itrules.TemplateReader;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
@@ -89,7 +90,7 @@ public class IntentionsGeneratorByFrame {
 
 	private String createIntentionClass(List<Concept> concepts) {
 		Frame frame = createFrame(concepts);
-		RuleEngine engine = new RuleEngine(getClass().getResourceAsStream(intentionRules));
+		RuleEngine engine = new RuleEngine(new TemplateReader(this.getClass().getResourceAsStream(intentionRules)).read());
 		Document document = new Document();
 		engine.render(frame, document);
 		return document.content();

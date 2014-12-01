@@ -122,10 +122,6 @@ INLINE              : '>'       { inline(); };
 CLOSE_INLINE        : '<';
 
 AMPERSAND           : '&';
-DOLLAR              : '$';
-EURO                : '€';
-PERCENTAGE          : '%';
-GRADE               : 'º';
 COLON               : ':';
 COMMA               : ',';
 DOT                 : '.';
@@ -134,13 +130,8 @@ APHOSTROPHE         : '\'';
 SEMICOLON           : ';'+      { semicolon(); };
 STAR                : '*';
 POSITIVE            : '+';
-DASH                : '-';
-DASHES              : DASH DASH+;
-UNDERDASH           : '_';
-
 WORD                : 'word';
 RESOURCE            : 'resource';
-COORDINATE_TYPE     : 'coordinate';
 INT_TYPE            : 'integer';
 NATURAL_TYPE        : 'natural';
 DOUBLE_TYPE         : 'double';
@@ -157,13 +148,12 @@ STRING_VALUE        : APHOSTROPHE (~'\'')* APHOSTROPHE;
 STRING_MULTILINE_VALUE_KEY   : DASHES  (~'-')* DASHES;
 ADDRESS_VALUE       : AMPERSAND DIGIT DIGIT DIGIT (DOT DIGIT DIGIT DIGIT)+;
 DATE_VALUE          : ((NATURAL_VALUE DASH)+ NATURAL_VALUE) | NATURAL_VALUE;
-COORDINATE_VALUE    :'[' (DOUBLE_VALUE | NEGATIVE_VALUE | NATURAL_VALUE) (COMMA (DOUBLE_VALUE | NEGATIVE_VALUE | NATURAL_VALUE))+ ']';
 IDENTIFIER          : LETTER (DIGIT | LETTER | DASH | UNDERDASH)*;
-
+MEASURE_VALUE       : (UNDERDASH | BY | DIVIDED_BY | PERCENTAGE | DOLLAR | EURO | GRADE | LETTER | DIGIT)+;
 DIGIT : [0-9];
 
 LETTER: 'a'..'z'
-      | 'A'..'Z' | 'ñ'| 'Ñ';
+      | 'A'..'Z' | 'ñ' | 'Ñ';
 
 NEWLINE: NL+ SP* { newlinesAndSpaces(); };
 
@@ -172,9 +162,19 @@ SPACES: SP+ EOF? -> channel(HIDDEN);
 DOC : '#' .*? NL;
 
 SP: (' ' | '\t');
-NL: ('\r'? '\n' | '\n');
+NL: ('\r'? '\n' | '\r');
 
 NEW_LINE_INDENT: 'indent';
 DEDENT         : 'dedent';
 
 UNKNOWN_TOKEN: . ;
+
+fragment DOLLAR              : '$';
+fragment EURO                : '€';
+fragment PERCENTAGE          : '%';
+fragment GRADE               : 'º';
+fragment BY                  : '·';
+fragment DIVIDED_BY          : '/';
+fragment DASH                : '-';
+fragment DASHES              : DASH DASH+;
+fragment UNDERDASH           : '_';

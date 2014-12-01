@@ -85,7 +85,6 @@ parameterValue ::= identifierReference+
 		        | integerValue+ measure?
 		        | doubleValue+  measure?
 		        | dateValue+
-		        | coordinateValue+
 		        | metaWord
 		        | emptyField
 
@@ -115,15 +114,14 @@ variable ::= doc? VAR variableDeclaration annotationsAndFacets? {
 	implements = 'siani.tara.intellij.lang.psi.Variable'
 }
 private variableDeclaration::= naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute |
-		dateAttribute | tupleAttribute | resource | referenceAttribute | word
+		dateAttribute | resource | referenceAttribute | word
 
 private resource             ::= RESOURCE_KEY attributeType IDENTIFIER_KEY                                                   {pin=1}
-private tupleAttribute       ::= TUPLE_TYPE   LIST?  IDENTIFIER_KEY (EQUALS (doubleValue+  | emptyField))?                   {pin=1}
 private booleanAttribute     ::= BOOLEAN_TYPE LIST?  IDENTIFIER_KEY (EQUALS (booleanValue+ | emptyField))?                   {pin=1}
 private stringAttribute      ::= STRING_TYPE  LIST?  IDENTIFIER_KEY (EQUALS (stringValue+  | emptyField))?                   {pin=1}
 private naturalAttribute     ::= NATURAL_TYPE attributeType? LIST?  IDENTIFIER_KEY (EQUALS (naturalValue+ measure? | emptyField))?    {pin=1}
 private integerAttribute     ::= INT_TYPE     attributeType? LIST?  IDENTIFIER_KEY (EQUALS (integerValue+ measure? | emptyField))?    {pin=1}
-private doubleAttribute      ::= DOUBLE_TYPE  attributeType? LIST?  IDENTIFIER_KEY (EQUALS (doubleValue+  measure? | emptyField))?    {pin=1}
+private doubleAttribute      ::= DOUBLE_TYPE  attributeType? (LIST | count)?  IDENTIFIER_KEY (EQUALS (doubleValue+  measure? | emptyField))?    {pin=1}
 private dateAttribute        ::= DATE_TYPE    LIST?  IDENTIFIER_KEY (EQUALS (dateValue+ | emptyField))?                      {pin=1}
 private referenceAttribute   ::= identifierReference LIST? IDENTIFIER_KEY (EQUALS emptyField)? {
 	pin = 1
@@ -142,9 +140,9 @@ naturalValue    ::= NATURAL_VALUE_KEY
 integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
 dateValue       ::= DATE_VALUE_KEY
-coordinateValue ::= COORDINATE_VALUE_KEY
 linkValue       ::= ADDRESS_VALUE | identifierReference
 measure ::= IDENTIFIER_KEY | MEASURE_VALUE
+count ::= 	LEFT_SQUARE NATURAL_VALUE_KEY RIGHT_SQUARE
 
 annotationsAndFacets ::= IS (annotations+ | facetApply)
 {pin = 1}
@@ -177,7 +175,6 @@ varInitValue ::= emptyField
                 | stringValue+
                 | booleanValue+
                 | dateValue+
-                | coordinateValue+
                 | naturalValue+ measure?
                 | integerValue+ measure?
                 | doubleValue+  measure?

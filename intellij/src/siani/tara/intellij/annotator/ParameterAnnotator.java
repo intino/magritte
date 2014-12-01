@@ -183,8 +183,6 @@ public class ParameterAnnotator extends TaraAnnotator {
 				return varType.equals(DOUBLE);
 			case TaraDateValueImpl:
 				return varType.equals(DATE);
-			case TaraCoordinateValueImpl:
-				return varType.equals(COORDINATE);
 			default:
 				return false;
 		}

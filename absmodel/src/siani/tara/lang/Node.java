@@ -13,12 +13,14 @@ public abstract class Node {
 	protected String file;
 	protected String box;
 	protected int line;
+	protected List<String> instanceTypes;
 	protected transient DeclaredNode container;
 	ModelObject object;
 	private List<String> imports = new ArrayList<>();
 	private String modelOwner;
 
 	public Node() {
+		instanceTypes = new ArrayList<>();
 	}
 
 	public abstract DeclaredNode getContainer();
@@ -99,7 +101,6 @@ public abstract class Node {
 
 	protected abstract String getNodePath();
 
-
 	public boolean is(Class type) {
 		return type.isInstance(this);
 	}
@@ -110,5 +111,9 @@ public abstract class Node {
 
 	public String getModelOwner() {
 		return modelOwner;
+	}
+
+	public boolean addInstanceType(String inheritedType) {
+		return instanceTypes.add(inheritedType);
 	}
 }

@@ -16,6 +16,9 @@ public interface TaraVariable extends Variable {
   @NotNull
   List<TaraBooleanValue> getBooleanValueList();
 
+  @Nullable
+  TaraCount getCount();
+
   @NotNull
   List<TaraDateValue> getDateValueList();
 

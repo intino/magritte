@@ -117,6 +117,8 @@ ADDRESSED           = "addressed"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
+LEFT_SQUARE         = "["
+RIGHT_SQUARE        = "]"
 LIST                = "..."
 APOSTROPHE          = "'"
 DASH                = "-"
@@ -145,7 +147,6 @@ DOUBLE_TYPE         = "double"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
 DATE_TYPE           = "date"
-TUPLE_TYPE          = "coordinate"
 EMPTY_REF           = "empty"
 
 BOOLEAN_VALUE_KEY   = "true" | "false"
@@ -156,7 +157,7 @@ STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
 DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
-MEASURE_VALUE       = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})*
+MEASURE_VALUE       = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})+
 
 DOC_LINE            = "#" ~[\n]
 DIGIT               = [:digit:]
@@ -222,6 +223,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{WORD_TYPE}                     {   return TaraTypes.WORD_KEY; }
 	{RESOURCE_TYPE}                 {   return TaraTypes.RESOURCE_KEY; }
 
+	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
+	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
 	{STAR}                          {   return TaraTypes.STAR;  }
@@ -233,7 +236,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
-    {TUPLE_TYPE}                    {   return TaraTypes.TUPLE_TYPE; }
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}
 	{SEMICOLON}                     {   return semicolon(); }

@@ -108,9 +108,9 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	}
 
 	private String buildConceptHolderText(Concept concept) {
-		String text = " > ";
+		String text = "";
 		for (Concept inner : concept.getInnerConcepts())
-			text += ((inner.getName() != null) ? inner.getName() : inner.getType() + "{unNamed}") + "; ";
+			if (inner.getName() != null) text += " " + inner.getName();
 		return text;
 	}
 

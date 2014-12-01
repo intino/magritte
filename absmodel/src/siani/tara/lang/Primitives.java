@@ -11,7 +11,6 @@ public class Primitives {
 	public static final String BOOLEAN = "boolean";
 	public static final String STRING = "string";
 	public static final String DOUBLE = "double";
-	public static final String COORDINATE = "coordinate";
 	public static final String RESOURCE = "resource";
 	public static final String REFERENCE = "identifier";
 	public static final String DATE = "date";
@@ -32,36 +31,7 @@ public class Primitives {
 			}
 		};
 		CONVERTER_MAP.put(STRING, stringConverter);
-		CONVERTER_MAP.put(COORDINATE, stringConverter);
-		Converter coordinateConverter = new Converter() {
-			@Override
-			public Object[] convert(String... values) {
-				List<Double[]> coordinatesList = new ArrayList<>();
-				for (String o : values) {
-					String[] split = o.split("-");
-					List<Double> doubles = new ArrayList<>();
-					for (String coordinate : split)
-						doubles.add(Double.valueOf(coordinate));
-					coordinatesList.add(doubles.toArray(new Double[doubles.size()]));
-				}
-				return coordinatesList.toArray();
-			}
-
-			@Override
-			public String[] convert(Object... value) {
-				List<String> strings = new ArrayList<>();
-				for (Object o : value) {
-					if (!(o instanceof Double[])) return new String[0];
-					Double[] doubles = (Double[]) o;
-					String stringCoordinate = "";
-					for (Double aDouble : doubles)
-						stringCoordinate += "-" + aDouble;
-					strings.add(stringCoordinate.substring(1));
-				}
-				return strings.toArray(new String[strings.size()]);
-			}
-		};
-		CONVERTER_MAP.put(REFERENCE, coordinateConverter);
+		CONVERTER_MAP.put(REFERENCE, stringConverter);
 
 		Converter numberConverter = new Converter() {
 			@Override
@@ -151,7 +121,6 @@ public class Primitives {
 		list.add(BOOLEAN);
 		list.add(STRING);
 		list.add(DOUBLE);
-		list.add(COORDINATE);
 		list.add(DATE);
 		list.add(RESOURCE);
 		return list.toArray(new String[list.size()]);

@@ -9,12 +9,7 @@ public abstract class ModelObject {
 	protected String parentName;
 	protected transient NodeObject parentObject;
 	protected String type = "Concept";
-	protected List<String> inheritedTypes;
 	protected String name = "";
-
-	public ModelObject() {
-		inheritedTypes = new ArrayList<>();
-	}
 
 	public String getName() {
 		return name;
@@ -60,9 +55,6 @@ public abstract class ModelObject {
 		return qn.substring(1);
 	}
 
-	public boolean addInheritedTypes(String inheritedType) {
-		return inheritedTypes.add(inheritedType);
-	}
 
 	public boolean is(Class type) {
 		return type.isInstance(this);

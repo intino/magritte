@@ -99,7 +99,7 @@ public class TaraFileMoveHandler extends MoveFileHandler {
 		Project project = moveDestination.getProject();
 		Module moduleForFile = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(moveDestination.getVirtualFile());
 		String path = moveDestination.getVirtualFile().getPath().replace(rootPath, "");
-		if (!path.isEmpty()) path.replaceAll(File.separator, ".").substring(1);
+		if (!path.isEmpty()) path = path.replaceAll(File.separator, ".").substring(1);
 		TaraBoxFile taraBoxFile = (TaraBoxFile) file;
 		taraBoxFile.setBox(project.getName() + "." + moduleForFile.getName() + (path.isEmpty() ? "." : "." + path + ".") + taraBoxFile.getPresentableName());
 	}

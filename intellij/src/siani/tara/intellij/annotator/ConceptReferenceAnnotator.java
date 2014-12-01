@@ -40,7 +40,7 @@ public class ConceptReferenceAnnotator extends TaraAnnotator {
 
 	@SuppressWarnings("deprecation")
 	private void addReferenceHighlight(AnnotationHolder holder, TaraIdentifierReference identifierReference) {
-		if (identifierReference != null) {
+		if (identifierReference != null && ReferenceManager.resolve(identifierReference) != null) {
 			TextAttributesKey component = createTextAttributesKey("CONCEPT_REFERENCE",
 				new TextAttributes(null, null, null, null, Font.ITALIC));
 			holder.createInfoAnnotation(identifierReference, "reference").setTextAttributes(component);

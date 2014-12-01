@@ -83,8 +83,8 @@ ROOT                = "root"
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
 LIST                = "..."
-OPEN_BRACKET        = "{"
-CLOSE_BRACKET       = "}"
+LEFT_SQUARE         = "["
+RIGHT_SQUARE        = "]"
 DOLLAR              = "$"
 EURO                = "€"
 GRADE               = "º"
@@ -108,7 +108,6 @@ WORD_KEY            = "word"
 RESOURCE_KEY        = "resource"
 INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
-TUPLE_TYPE          = "tuple"
 DOUBLE_TYPE         = "double"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
@@ -199,12 +198,10 @@ NEWLINE             = [\n]+
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
-    {TUPLE_TYPE}                    {   return TaraTypes.TUPLE_TYPE; }
 	{SEMICOLON}                     {   return TaraTypes.BOX_KEY;  }
 
-	{OPEN_BRACKET}                  {   return TaraTypes.DOT; }
-
-	{CLOSE_BRACKET}                 {   return TaraTypes.DOT; }
+	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
+	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
 
 	{SPACES}                        {   return TokenType.WHITE_SPACE; }
 

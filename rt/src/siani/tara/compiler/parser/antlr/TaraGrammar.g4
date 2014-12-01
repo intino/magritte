@@ -33,7 +33,6 @@ initValue : identifierReference+
 	        | naturalValue+ measure?
 	        | integerValue+ measure?
 	        | doubleValue+ measure?
-	        | coordinateValue+
             | dateValue+
 	        | metaWord
 	        | linkValue
@@ -45,7 +44,7 @@ metaWordNames : DOT IDENTIFIER;
 body: NEW_LINE_INDENT ((variable | concept | varInit | facetApply | facetTarget | conceptReference) NEWLINE+)+ DEDENT;
 
 variable : doc? VAR (naturalAttribute | integerAttribute | doubleAttribute | booleanAttribute | stringAttribute
-	| dateAttribute | coordinateAttribute | resource | reference | word) annotations?;
+	| dateAttribute | resource | reference | word) annotations?;
 
 facetApply : IS metaidentifier parameters? (WITH metaidentifier)? body?;
 facetTarget : ON identifierReference ALWAYS? body?;
@@ -60,9 +59,8 @@ booleanAttribute : BOOLEAN_TYPE LIST? IDENTIFIER (EQUALS booleanValue+ | EMPTY)?
 stringAttribute  : STRING_TYPE  LIST? IDENTIFIER (EQUALS stringValue+  | EMPTY)?;
 naturalAttribute : NATURAL_TYPE attributeType? LIST? IDENTIFIER (EQUALS naturalValue+ measure? | EMPTY)?;
 integerAttribute : INT_TYPE     attributeType? LIST? IDENTIFIER (EQUALS integerValue+ measure? | EMPTY)?;
-doubleAttribute  : DOUBLE_TYPE  attributeType? LIST? IDENTIFIER (EQUALS doubleValue+  measure? | EMPTY)?;
+doubleAttribute  : DOUBLE_TYPE  attributeType? (LIST | count)? IDENTIFIER (EQUALS doubleValue+  measure? | EMPTY)?;
 dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (EQUALS dateValue+ | EMPTY)?;
-coordinateAttribute  : COORDINATE_TYPE  LIST? IDENTIFIER (EQUALS (coordinateValue+ | EMPTY))?;
 
 attributeType   : COLON measure;
 naturalValue    : NATURAL_VALUE;
@@ -71,10 +69,9 @@ doubleValue     : NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE;
 booleanValue    : BOOLEAN_VALUE;
 stringValue     : STRING_VALUE | (NEWLINE? STRING_MULTILINE_VALUE_KEY);
 dateValue       : DATE_VALUE;
-coordinateValue : COORDINATE_VALUE;
 linkValue       : address | identifierReference;
-
-measure : IDENTIFIER | DOLLAR | EURO | PERCENTAGE | GRADE;
+count : LEFT_SQUARE naturalValue RIGHT_SQUARE;
+measure : IDENTIFIER | MEASURE_VALUE;
 
 annotations: IS (ABSTRACT | TERMINAL | SINGLE | MULTIPLE | REQUIRED |
  NAMED | FACET | INTENTION | ROOT | COMPONENT | PROPERTY | UNIVERSAL | ADDRESSED | COMPOSED | AGGREGATED)+ ;

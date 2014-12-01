@@ -3,6 +3,7 @@ package siani.tara.compiler.core.operation;
 import org.siani.itrules.Document;
 import org.siani.itrules.Formatter;
 import org.siani.itrules.RuleEngine;
+import org.siani.itrules.TemplateReader;
 import siani.tara.compiler.codegeneration.FrameCreator;
 import siani.tara.compiler.codegeneration.ResourceManager;
 import siani.tara.compiler.core.CompilationUnit;
@@ -83,7 +84,7 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private Map<String, Document> processMorphs(Collection<Node> nodes, InputStream rulesInput) {
 		Map<String, Document> map = new HashMap();
-		RuleEngine ruleEngine = new RuleEngine(rulesInput);
+		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
 		addReferenceFormatter(ruleEngine);
 		for (Node node : nodes) {
 			Document document = new Document();
@@ -120,7 +121,7 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private Map<String, Document> processBoxes(List<List<Node>> groupByBox, InputStream rulesInput) {
 		Map<String, Document> map = new HashMap();
-		RuleEngine ruleEngine = new RuleEngine(rulesInput);
+		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
 		for (List<Node> nodes : groupByBox) {
 			Document document = new Document();
 			long buildNumber = compilationUnit.getConfiguration().getBuildNumber();

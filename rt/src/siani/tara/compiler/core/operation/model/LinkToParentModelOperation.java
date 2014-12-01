@@ -26,14 +26,14 @@ public class LinkToParentModelOperation extends ModelOperation {
 		if (parent == null) return;
 		String[] split = parent.split("\\.");
 		try {
-			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Catching info from parent model");
-			if (split.length != 2) throw new TaraException("Error finding parent model.", true);
+			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Catching info from metamodel");
+			if (split.length != 2) throw new TaraException("Error finding metamodel.", true);
 			String pathname = compilationUnit.getConfiguration().getModelsDirectory();
 			Model parentModel = ModelLoader.load(pathname + File.separator, parent);
-			if (parentModel == null) throw new TaraException("Error finding parent model.", true);
+			if (parentModel == null) throw new TaraException("Error finding metamodel.", true);
 			new ParentModelDependencyResolver(model, parentModel).resolve();
 		} catch (TaraException e) {
-			LOG.severe("Error linking with parent model: " + e.getMessage());
+			LOG.severe("Error linking with metamodel: " + e.getMessage());
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 	}

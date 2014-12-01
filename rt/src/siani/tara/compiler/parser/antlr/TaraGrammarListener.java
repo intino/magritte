@@ -41,16 +41,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitConcept(@NotNull TaraGrammar.ConceptContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#coordinateValue}.
-	 * @param ctx the parse tree
-	 */
-	void enterCoordinateValue(@NotNull TaraGrammar.CoordinateValueContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#coordinateValue}.
-	 * @param ctx the parse tree
-	 */
-	void exitCoordinateValue(@NotNull TaraGrammar.CoordinateValueContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#naturalValue}.
 	 * @param ctx the parse tree
 	 */
@@ -70,6 +60,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMeasure(@NotNull TaraGrammar.MeasureContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#count}.
+	 * @param ctx the parse tree
+	 */
+	void enterCount(@NotNull TaraGrammar.CountContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#count}.
+	 * @param ctx the parse tree
+	 */
+	void exitCount(@NotNull TaraGrammar.CountContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#root}.
 	 * @param ctx the parse tree
@@ -200,16 +200,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIntegerValue(@NotNull TaraGrammar.IntegerValueContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#coordinateAttribute}.
-	 * @param ctx the parse tree
-	 */
-	void enterCoordinateAttribute(@NotNull TaraGrammar.CoordinateAttributeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#coordinateAttribute}.
-	 * @param ctx the parse tree
-	 */
-	void exitCoordinateAttribute(@NotNull TaraGrammar.CoordinateAttributeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#metaWordNames}.
 	 * @param ctx the parse tree

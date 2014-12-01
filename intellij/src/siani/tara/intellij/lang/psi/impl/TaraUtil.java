@@ -79,7 +79,7 @@ public class TaraUtil {
 
 	@NotNull
 	public static Collection<Concept> getRootConceptsOfFile(TaraBoxFile taraBoxFile) {
-		Set<Concept> list = new HashSet<>();
+		List<Concept> list = new ArrayList<>();
 		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraBoxFile, Concept.class);
 		if (concepts != null)
 			for (Concept concept : concepts) {

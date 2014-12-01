@@ -10,11 +10,15 @@ import siani.tara.intellij.lang.psi.ConceptReference;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.lang.Annotations;
+import siani.tara.lang.Annotations.Annotation;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+
+import static siani.tara.lang.Annotations.Annotation.NAMED;
+import static siani.tara.lang.Annotations.Annotation.PROPERTY;
 
 public class AnnotationsAnnotator extends TaraAnnotator {
 
@@ -27,7 +31,21 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 			annotations = new HashMap<>();
 			checkAnnotations((siani.tara.intellij.lang.psi.Annotations) element);
 			checkDuplicates();
+			checkConsistency(((siani.tara.intellij.lang.psi.Annotations) element).getAnnotations());
 		}
+	}
+
+	private void checkConsistency(PsiElement[] annotations) {
+		List<String> names = annotationsToString(annotations);
+		if ((names.contains(PROPERTY.getName())) && names.contains(NAMED.getName()))
+			holder.createErrorAnnotation(annotations[0].getParent(), MessageProvider.message("inconsistent.annotations.key.error.message"));
+	}
+
+	private List<String> annotationsToString(PsiElement[] annotations) {
+		List<String> names = new ArrayList<>();
+		for (PsiElement annotation : annotations)
+			names.add(annotation.getText());
+		return names;
 	}
 
 	private void checkAnnotations(@NotNull siani.tara.intellij.lang.psi.Annotations element) {
@@ -76,7 +94,7 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 	}
 
 
-	private List<PsiElement> checkAnnotationList(PsiElement[] annotationList, Annotations.Annotation[] correctAnnotations) {
+	private List<PsiElement> checkAnnotationList(PsiElement[] annotationList, Annotation[] correctAnnotations) {
 		List<PsiElement> incorrectAnnotations = new ArrayList<>();
 		for (PsiElement annotation : annotationList) {
 			count(annotation);
@@ -96,8 +114,8 @@ public class AnnotationsAnnotator extends TaraAnnotator {
 		}
 	}
 
-	private boolean isIn(Annotations.Annotation[] correctAnnotation, String text) {
-		for (Annotations.Annotation s : correctAnnotation)
+	private boolean isIn(Annotation[] correctAnnotation, String text) {
+		for (Annotation s : correctAnnotation)
 			if (s.getName().equals(text)) return true;
 		return false;
 	}
