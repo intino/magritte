@@ -7,6 +7,7 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -20,7 +21,7 @@ public class FacetApplyAnnotator extends TaraAnnotator {
 		Model model = TaraLanguage.getMetaModel(facetApply.getContainingFile());
 		if (model == null) return;
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(facetApply);
-		Node node = findNode(concept, model);
+		Node node = TaraUtil.findNode(concept, model);
 		if (node == null) return;
 		if (!isAllowedFacet(node, facetApply.getMetaIdentifierList().get(0).getText()))
 			annotateErroneousFacet(facetApply, holder);

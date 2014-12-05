@@ -10,6 +10,7 @@ import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.TaraParameters;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.FacetTarget;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
@@ -29,7 +30,7 @@ public class FacetApplyParametersAnnotator extends TaraAnnotator {
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(element);
 		Model model = TaraLanguage.getMetaModel(element.getContainingFile());
 		Node node;
-		if (model == null || (node = findNode(concept, model)) == null) return;
+		if (model == null || (node = TaraUtil.findNode(concept, model)) == null) return;
 		TaraParameters parameters = facetApply.getParameters();
 		List<Variable> facetVariables = getFacetVariables(node.getObject().getAllowedFacets(), facetApply.getMetaIdentifierList().get(0).getText());
 		int minimum = collectMinimumNumberOfParameter(facetVariables);

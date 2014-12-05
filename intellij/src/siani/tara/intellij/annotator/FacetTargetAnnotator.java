@@ -18,19 +18,18 @@ public class FacetTargetAnnotator extends TaraAnnotator {
 		TaraFacetTarget facetTarget = (TaraFacetTarget) element;
 		if (isInnerFacetTarget(facetTarget)) {
 			PsiElement parentFacet = facetTarget.getParent().getParent();
-			Concept parent = TaraPsiImplUtil.getConceptContainerOf(
-				ReferenceManager.resolve(((TaraFacetTarget) parentFacet).getIdentifierReference()));
+			Concept parent = TaraPsiImplUtil.getConceptContainerOf(ReferenceManager.resolve(((TaraFacetTarget) parentFacet).getIdentifierReference()));
 			Concept child = TaraPsiImplUtil.getConceptContainerOf(ReferenceManager.resolve(facetTarget.getIdentifierReference()));
 			if (!isChild(child, parent)) holder.createErrorAnnotation(facetTarget.getIdentifierReference().getNode(),
-				MessageProvider.message("no.child.concept.error.message", child.getName(), parent.getName()));
+				MessageProvider.message("no.child.concept", child.getName(), parent.getName()));
 		}
 		Concept parent = TaraPsiImplUtil.getConceptContainerOf(facetTarget);
 		if (parent != null && !parent.isSub() && !parent.isFacet())
 			holder.createErrorAnnotation(facetTarget.getNode(),
-				MessageProvider.message("target.in.nofacet.concept.error.message"));
+				MessageProvider.message("target.in.nofacet.concept"));
 		else if (parent != null && parent.isSub() && !TaraPsiImplUtil.getParentOf(parent).isFacet())
 			holder.createErrorAnnotation(facetTarget.getNode(),
-				MessageProvider.message("target.in.nofacet.concept.error.message"));
+				MessageProvider.message("target.in.nofacet.concept"));
 	}
 
 	private boolean isInnerFacetTarget(TaraFacetTarget facetTarget) {
@@ -38,7 +37,7 @@ public class FacetTargetAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isChild(Concept child, Concept parent) {
-		for (Concept concept : parent.getInnerConcepts())
+		for (Concept concept : parent.getSubConcepts())
 			if (concept.getQualifiedName().equals(child.getQualifiedName()))
 				return true;
 		return false;

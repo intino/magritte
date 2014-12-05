@@ -71,7 +71,7 @@ NAMED               = "named"
 TERMINAL            = "terminal"
 PROPERTY            = "property"
 INTENTION           = "intention"
-UNIVERSAL           = "universal"
+LOCAL               = "local"
 FACET               = "facet"
 ADDRESSED           = "addressed"
 COMPONENT           = "component"
@@ -155,10 +155,10 @@ NEWLINE             = [\n]+
 
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
 	{SINGLE}                        {   return TaraTypes.SINGLE; }
-	{ABSTRACT}                       {   return TaraTypes.ABSTRACT; }
+	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 	{NAMED}                         {   return TaraTypes.NAMED; }
 	{INTENTION}                     {   return TaraTypes.INTENTION; }
-	{UNIVERSAL}                     {   return TaraTypes.UNIVERSAL; }
+	{LOCAL}                         {   return TaraTypes.LOCAL; }
 	{FACET}                         {   return TaraTypes.FACET; }
 	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }

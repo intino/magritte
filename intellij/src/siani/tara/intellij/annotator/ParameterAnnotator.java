@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraParameterValueImpl;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.lang.psi.resolve.TaraInternalReferenceSolver;
 import siani.tara.lang.*;
 import siani.tara.lang.Variable;
@@ -31,7 +32,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 		if (model == null) return;
 		TaraFacetApply inFacet = parameter.isInFacet();
 		Concept concept = getConceptContainerOf(parameter);
-		node = findNode(concept, model);
+		node = TaraUtil.findNode(concept, model);
 		if (node == null) return;
 		List<Variable> facetVariables = null;
 		if (inFacet != null && (facetVariables = getAllowedFacet(node, inFacet.getFirstChild().getText())) == null)
@@ -56,14 +57,21 @@ public class ParameterAnnotator extends TaraAnnotator {
 	private void processExplicit(TaraExplicitParameter parameter, List<Variable> variables) {
 		String name = parameter.getIdentifier().getText();
 		Variable variable = getVariableByName(variables, name);
-		if (variable == null) annotateErroneousParameter(parameter, holder);
+		if (variable == null) {
+			annotateErroneousParameter(parameter, holder);
+			return;
+		}
 		if (parameter.getValue() == null) annotateErroneousParameter(parameter, holder);
 		else if (variable instanceof Word) {
 			if (!isCorrectWord((Word) variable, parameter.getValue().getText()))
 				annotateErroneousParameter(parameter, holder);
-		} else if (!areSameType(variable, parameter) || (parameter.isList() && !variable.isList()))
+		} else if (!areSameType(variable, parameter) || (parameter.isList() && !variable.isList()) || checkAsTuple(parameter.getValuesLength(), variable))
 			annotateErroneousParameter(parameter, holder);
 
+	}
+
+	private boolean checkAsTuple(int parametersLength, Variable variable) {
+		return (variable instanceof Attribute && variable.getType().equals(DOUBLE) && parametersLength != ((Attribute) variable).getCount());
 	}
 
 	private void processImplicit(TaraImplicitParameter parameter, List<Variable> variables, int index) {
@@ -108,7 +116,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 			}
 			Concept conceptContextOf = getConceptContainerOf(value);
 			if (getConceptContainerOf(conceptContextOf) != null)
-				if (value instanceof TaraIdentifierReference && !reference.isUniversal() && !inSameContext((TaraIdentifierReference) value))
+				if (value instanceof TaraIdentifierReference && reference.isLocal() && !inSameContext((TaraIdentifierReference) value))
 					holder.createErrorAnnotation(value, "Bad referenced. The reference has to be in the same context");
 		}
 	}
@@ -172,7 +180,7 @@ public class ParameterAnnotator extends TaraAnnotator {
 		else type = Types.valueOf(parameterType);
 		switch (type) {
 			case TaraStringValueImpl:
-				return varType.equals(STRING);
+				return varType.equals(STRING) || varType.equals(RESOURCE);
 			case TaraBooleanValueImpl:
 				return varType.equals(BOOLEAN);
 			case TaraNaturalValueImpl:

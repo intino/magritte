@@ -70,8 +70,8 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 			try {
 				String aux;
 				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-				configuration.parentName = ((aux = br.readLine()).equals("null")) ? "" : aux;
-				configuration.parentFilePath = ((aux = br.readLine()).equals("null")) ? "" : aux;
+				configuration.metamodelName = ((aux = br.readLine()).equals("null")) ? "" : aux;
+				configuration.metamodelFilePath = ((aux = br.readLine()).equals("null")) ? "" : aux;
 				configuration.terminal = Boolean.parseBoolean(br.readLine());
 				file.delete();
 				file.getParentFile().delete();
@@ -90,12 +90,12 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 		configuration.writeExternal(element);
 	}
 
-	public String getParentName() {
-		return configuration.getParentName();
+	public String getMetamodelName() {
+		return configuration.getMetamodelName();
 	}
 
-	public void setParentName(String parent) {
-		configuration.parentName = parent;
+	public void setMetamodelName(String parent) {
+		configuration.metamodelName = parent;
 	}
 
 	public boolean isTerminal() {
@@ -106,12 +106,12 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 		configuration.terminal = system;
 	}
 
-	public String getParentFilePath() {
-		return configuration.getParentFilePath();
+	public String getMetamodelFilePath() {
+		return configuration.getMetamodelFilePath();
 	}
 
-	public void setParentFilePath(String path) {
-		configuration.parentFilePath = path;
+	public void setMetamodelFilePath(String path) {
+		configuration.metamodelFilePath = path;
 	}
 
 	public void loadState(ModuleConfiguration state) {
@@ -123,8 +123,8 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	}
 
 	class Configuration implements JDOMExternalizable {
-		public String parentName = "";
-		public String parentFilePath = "";
+		public String metamodelName = "";
+		public String metamodelFilePath = "";
 		public boolean terminal = false;
 
 		@Override
@@ -137,12 +137,12 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 			DefaultJDOMExternalizer.writeExternal(this, element);
 		}
 
-		public String getParentName() {
-			return parentName;
+		public String getMetamodelName() {
+			return metamodelName;
 		}
 
-		public String getParentFilePath() {
-			return parentFilePath;
+		public String getMetamodelFilePath() {
+			return metamodelFilePath;
 		}
 
 		public boolean isTerminal() {

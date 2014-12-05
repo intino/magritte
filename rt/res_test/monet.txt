@@ -1,8 +1,6 @@
 src_file
-/Users/oroncal/workspace/sandbox/Monet/engine/model/form.tara
-/Users/oroncal/workspace/sandbox/Monet/engine/model/container.tara
-/Users/oroncal/workspace/sandbox/Monet/engine/model/entity.tara
-/Users/oroncal/workspace/sandbox/Monet/engine/model/thesaurus.tara
+/Users/oroncal/workspace/sandbox/Monet/engine/model/entities.tara
+/Users/oroncal/workspace/sandbox/Monet/engine/model/fields.tara
 
 project
 monet

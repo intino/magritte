@@ -33,7 +33,7 @@ public class PropertiesAnnotator extends TaraAnnotator {
 			checkContainsTerminal(concept);
 		Model model = TaraLanguage.getMetaModel(element.getContainingFile());
 		Node node;
-		if (model == null || (node = findNode(concept, model)) == null) return;
+		if (model == null || (node = TaraUtil.findNode(concept, model)) == null) return;
 		if (node.getObject().is(PROPERTY) && ((Concept) element).getMetaIdentifier() != null) {
 			checkPropertyConstrains(concept);
 			holder.createInfoAnnotation(((Concept) element).getMetaIdentifier(), "Property").setTextAttributes(createKeyWordProperty());

@@ -40,8 +40,8 @@ public abstract class Variable implements Cloneable {
 		return annotations.contains(PROPERTY);
 	}
 
-	public boolean isUniversal() {
-		return annotations.contains(UNIVERSAL);
+	public boolean isLocal() {
+		return annotations.contains(LOCAL);
 	}
 
 	public boolean addAll(Collection<? extends Annotations.Annotation> annotations) {

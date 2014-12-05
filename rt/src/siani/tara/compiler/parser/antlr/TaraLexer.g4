@@ -105,7 +105,7 @@ INTENTION           : 'intention';
 TERMINAL            : 'terminal';
 NAMED               : 'named';
 PROPERTY            : 'property';
-UNIVERSAL           : 'universal';
+LOCAL               : 'local';
 ALWAYS              : 'always';
 ADDRESSED           : 'addressed';
 AGGREGATED          : 'aggregated';
@@ -140,6 +140,7 @@ BOOLEAN_TYPE        : 'boolean';
 DATE_TYPE           : 'date';
 EMPTY               : 'empty';
 
+MANTISA             : 'E' (POSITIVE | DASH)? DIGIT+;
 BOOLEAN_VALUE       : 'true' | 'false';
 NATURAL_VALUE       : POSITIVE? DIGIT+;
 NEGATIVE_VALUE      : DASH DIGIT+ ;
@@ -149,11 +150,8 @@ STRING_MULTILINE_VALUE_KEY   : DASHES  (~'-')* DASHES;
 ADDRESS_VALUE       : AMPERSAND DIGIT DIGIT DIGIT (DOT DIGIT DIGIT DIGIT)+;
 DATE_VALUE          : ((NATURAL_VALUE DASH)+ NATURAL_VALUE) | NATURAL_VALUE;
 IDENTIFIER          : LETTER (DIGIT | LETTER | DASH | UNDERDASH)*;
-MEASURE_VALUE       : (UNDERDASH | BY | DIVIDED_BY | PERCENTAGE | DOLLAR | EURO | GRADE | LETTER | DIGIT)+;
-DIGIT : [0-9];
 
-LETTER: 'a'..'z'
-      | 'A'..'Z' | 'ñ' | 'Ñ';
+MEASURE_VALUE       : (UNDERDASH | BY | DIVIDED_BY | PERCENTAGE | DOLLAR | EURO | GRADE | LETTER|DIGIT)+;
 
 NEWLINE: NL+ SP* { newlinesAndSpaces(); };
 
@@ -178,3 +176,5 @@ fragment DIVIDED_BY          : '/';
 fragment DASH                : '-';
 fragment DASHES              : DASH DASH+;
 fragment UNDERDASH           : '_';
+fragment DIGIT               : [0-9];
+fragment LETTER              : 'a'..'z' | 'A'..'Z' | 'ñ' | 'Ñ';

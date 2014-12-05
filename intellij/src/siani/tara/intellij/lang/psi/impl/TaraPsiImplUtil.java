@@ -43,9 +43,7 @@ public class TaraPsiImplUtil {
 	}
 
 	public static List<Concept> getInnerConceptsInBody(Body body) {
-		if (body == null) return Collections.EMPTY_LIST;
-		List<Concept> conceptList = (List<Concept>) body.getConceptList();
-		return conceptList == null ? Collections.EMPTY_LIST : conceptList;
+		return body == null ? Collections.EMPTY_LIST : (List<Concept>) body.getConceptList();
 	}
 
 	public static List<Variable> getVariablesInBody(Body body) {

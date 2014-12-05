@@ -47,7 +47,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	protected TaraBoxFileImpl doCreate(PsiDirectory directory, String newName, String templateName) throws IncorrectOperationException {
 		String fileName = newName + "." + TaraFileType.INSTANCE.getDefaultExtension();
 		Module moduleOfDirectory = TaraUtil.getModuleOfDirectory(directory);
-		String parentName = ModuleConfiguration.getInstance(moduleOfDirectory).getParentName();
+		String parentName = ModuleConfiguration.getInstance(moduleOfDirectory).getMetamodelName();
 		PsiFile file;
 		String[] list;
 		list = parentName != null ? new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "PARENT_MODULE_NAME", parentName, "TYPE", "Concept"}

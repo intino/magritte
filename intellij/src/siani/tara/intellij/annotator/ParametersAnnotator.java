@@ -26,7 +26,7 @@ public class ParametersAnnotator extends TaraAnnotator {
 		if (isLinkConcept(concept)) return;
 		Model heritage = TaraLanguage.getMetaModel(element.getContainingFile());
 		Node node;
-		if (heritage == null || (node = findNode(concept, heritage)) == null) return;
+		if (heritage == null || (node = TaraUtil.findNode(concept, heritage)) == null) return;
 		NodeObject object = node.getObject();
 		Parameters[] parameters = PsiTreeUtil.getChildrenOfType(element, Parameters.class);
 		List<Variable> variables = node.getObject().getVariables();

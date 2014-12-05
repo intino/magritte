@@ -38,7 +38,7 @@ public class Attribute extends Variable {
 	}
 
 	public String toString() {
-		return primitiveType + (isList ? "..." : "") + " " + name;
+		return primitiveType + (isList ? "..." : "") + (count != null ? "[" + count + "]" : "") + " " + name;
 	}
 
 	@Override

@@ -433,7 +433,7 @@ public class GeneratedParserUtilBase {
 				state.lastExpectedVariantPos = -1;
 			}
 		} else if (!result && pinned && frame.errorReportedAt < 0) {
-			// do not report if there are errors beyond current position
+			// do not report if there are annotations beyond current position
 			if (getLastVariantPos(state, initialPos) == initialPos) {
 				// do not force, inner recoverRoot might have skipped some tokens
 				reportError(builder_, state, frame, false, false);

@@ -20,18 +20,22 @@ import siani.tara.intellij.annotator.imports.ImportQuickFix;
 import siani.tara.intellij.annotator.imports.RemoveImportFix;
 import siani.tara.intellij.annotator.imports.TaraReferenceImporter;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Node;
 import siani.tara.lang.Word;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
+
 public class ReferenceAnnotator extends TaraAnnotator {
 
-	public static final String MESSAGE = MessageProvider.message("unreached.reference.key.error.message");
+	public static final String MESSAGE = MessageProvider.message("unreached.reference");
 	private PsiElement element;
 
 	@Override
@@ -61,7 +65,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 				List<? extends Identifier> identifierList = ((IdentifierReference) element).getIdentifierList();
 				addImportAlternatives(identifierList.get(identifierList.size() - 1));
 			} else {
-				errorAnnotation = annotateAndFix(element, new RemoveImportFix((TaraPsiElement) element.getParent()), MESSAGE);
+				errorAnnotation = annotateAndFix(element, new AnnotateAndFix(ERROR,MESSAGE, new RemoveImportFix((TaraPsiElement) element.getParent())));
 				errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
 			}
 		}
@@ -72,7 +76,7 @@ public class ReferenceAnnotator extends TaraAnnotator {
 	}
 
 	private boolean checkAsMetaWord(Concept concept, String wordName) {
-		Node node = findMetaNode(concept);
+		Node node = TaraUtil.findNode(concept, TaraLanguage.getMetaModel(element.getContainingFile()));
 		if (node == null) return false;
 		Word[] words = node.getObject().getWords();
 		if (words.length == 0) return false;

@@ -64,7 +64,7 @@ public class ModelLoader {
 			if (node instanceof DeclaredNode) {
 				DeclaredNode declaredNode = (DeclaredNode) node;
 				String parent = declaredNode.getObject().getParentName();
-				if ((parent) != null) {
+				if (parent != null) {
 					Node parentNode = aModel.get(parent);
 					parentNode.getObject().addChild(node.getObject());
 					node.getObject().setParentObject(parentNode.getObject());

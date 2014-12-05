@@ -1,5 +1,6 @@
 package siani.tara.compiler.core;
 
+import siani.tara.compiler.codegeneration.FileSystemUtils;
 import siani.tara.compiler.codegeneration.java.JavaCodeGenerator;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.operation.ModelToJavaOperation;
@@ -91,7 +92,7 @@ public class CompilationUnit extends ProcessingUnit {
 	}
 
 	public void compile() throws CompilationFailedException {
-//		FileSystemUtils.removeDir(configuration.getOutDirectory());
+		FileSystemUtils.removeDir(configuration.getOutDirectory());
 		compile(Phases.ALL);
 	}
 

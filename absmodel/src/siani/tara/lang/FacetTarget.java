@@ -7,7 +7,7 @@ public class FacetTarget {
 
 	private String destinyQN;
 	private String destinyName;
-	private NodeObject destiny;
+	private transient NodeObject destiny;
 	private boolean always;
 	private transient FacetTarget parentTarget;
 	private ArrayList<Variable> variables = new ArrayList<>();
@@ -80,5 +80,10 @@ public class FacetTarget {
 
 	public boolean add(Node node) {
 		return inner.add(node);
+	}
+
+	@Override
+	public String toString() {
+		return "Target{" + destinyQN + '}';
 	}
 }

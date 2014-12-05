@@ -83,6 +83,10 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return getValue().getChildren().length - (getValue().getMeasure() != null ? 1 : 0) > 1;
 	}
 
+	public int getValuesLength() {
+		return getValue().getChildren().length - (getValue().getMeasure() != null ? 1 : 0);
+	}
+
 	public TaraFacetApply isInFacet() {
 		PsiElement aElement = this;
 		while (!(aElement.getParent() instanceof Concept) && !(aElement.getParent() instanceof TaraFacetApply))

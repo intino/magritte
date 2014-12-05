@@ -46,7 +46,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		if (element instanceof Concept)
 			return ((Concept) element).getDocCommentText();
 		if (element instanceof TaraBoxFile)
-			return !((TaraBoxFile) element).getConcepts().isEmpty() ? renderConceptValue(((TaraBoxFile) element).getConcepts().iterator().next()) : "";
+			return ((TaraBoxFile) element).getBox();
 		return renderConceptValue(TaraPsiImplUtil.getConceptContainerOf(element));
 	}
 

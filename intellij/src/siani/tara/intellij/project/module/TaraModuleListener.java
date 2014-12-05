@@ -112,9 +112,9 @@ public class TaraModuleListener implements ProjectComponent {
 
 		private void changeDependentModules(List<Module> modules, Module rootModule, String oldName) {
 			for (Module module : modules) {
-				if (ModuleConfiguration.getInstance(module).getParentName().equals(oldName)) {
-					ModuleConfiguration.getInstance(module).setParentFilePath(rootModule.getModuleFilePath());
-					ModuleConfiguration.getInstance(module).setParentName(rootModule.getName());
+				if (ModuleConfiguration.getInstance(module).getMetamodelName().equals(oldName)) {
+					ModuleConfiguration.getInstance(module).setMetamodelFilePath(rootModule.getModuleFilePath());
+					ModuleConfiguration.getInstance(module).setMetamodelName(rootModule.getName());
 				}
 			}
 		}

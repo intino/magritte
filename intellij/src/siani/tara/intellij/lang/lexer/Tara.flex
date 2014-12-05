@@ -110,7 +110,7 @@ COMPOSED            = "composed"
 COMPONENT           = "component"
 MULTIPLE            = "multiple"
 ROOT                = "root"
-UNIVERSAL           = "universal"
+LOCAL               = "local"
 INTENTION           = "intention"
 FACET               = "facet"
 ADDRESSED           = "addressed"
@@ -148,11 +148,11 @@ STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
 DATE_TYPE           = "date"
 EMPTY_REF           = "empty"
-
+MANTISA             = "E" ({POSITIVE} | {DASH})? {DIGIT}+
 BOOLEAN_VALUE_KEY   = "true" | "false"
 NATURAL_VALUE_KEY   = {POSITIVE}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
-DOUBLE_VALUE_KEY    = ({POSITIVE} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+
+DOUBLE_VALUE_KEY    = ({POSITIVE} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {MANTISA}?
 STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
 DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
@@ -198,7 +198,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
 	{FACET}                         {   return TaraTypes.FACET; }
 	{INTENTION}                     {   return TaraTypes.INTENTION; }
-	{UNIVERSAL}                     {   return TaraTypes.UNIVERSAL; }
+	{LOCAL}                         {   return TaraTypes.LOCAL; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
     {AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
 	{COMPOSED}                      {   return TaraTypes.COMPOSED; }

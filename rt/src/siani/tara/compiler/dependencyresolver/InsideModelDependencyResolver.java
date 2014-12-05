@@ -40,17 +40,7 @@ public class InsideModelDependencyResolver {
 				Node node = model.get(toProcessNodes.get(i));
 				if (node instanceof LinkNode)
 					linkToDeclared((LinkNode) node, model.searchDeclaredNodeOfLink((LinkNode) node));
-				else {
-					NodeObject object = node.getObject();
-					if (object.getParentName() != null || node.isSub()) {
-						DeclaredNode parent = model.searchAncestry(node);
-						if (parent == null) throwError(node);
-						if (toProcessNodes.contains(parent.getQualifiedName())) continue;
-						linkDeclaredToParent(object, parent);
-						extractInfoFromParent(toAddNodes, (DeclaredNode) node, parent);
-					}
-					resolveVariableReferences(node);
-				}
+				else if (resolveAsDeclared(toAddNodes, node)) continue;
 				toProcessNodes.remove(node.getQualifiedName());
 				i--;
 			}
@@ -60,6 +50,19 @@ public class InsideModelDependencyResolver {
 		updateKeys(list);
 	}
 
+	private boolean resolveAsDeclared(List<LinkNode> toAddNodes, Node node) throws DependencyException {
+		NodeObject object = node.getObject();
+		if (object.getParentName() != null || node.isSub()) {
+			DeclaredNode parent = model.searchAncestry(node);
+			if (parent == null) throwError(node);
+			if (toProcessNodes.contains(parent.getQualifiedName())) return true;
+			linkDeclaredToParent(object, parent);
+			extractInfoFromParent(toAddNodes, (DeclaredNode) node, parent);
+		}
+		resolveVariableReferences(node);
+		return false;
+	}
+
 	private void resolveVariableReferences(Node node) throws DependencyException {
 		List<Reference> references = node.getObject().getReferences();
 		DeclaredNode declaredNode;
@@ -67,8 +70,7 @@ public class InsideModelDependencyResolver {
 			declaredNode = (DeclaredNode) model.get(reference.getType());
 			if (declaredNode == null)
 				declaredNode = model.searchDeclarationOfReference(reference.getType(), node);
-			if (declaredNode == null)
-				throwError(node);
+			if (declaredNode == null) throwError(node);
 			reference.setType(declaredNode.getQualifiedName());
 		}
 	}
@@ -117,10 +119,9 @@ public class InsideModelDependencyResolver {
 	}
 
 	private void addInheritedAnnotations(NodeObject parent, DeclaredNode node) {
-		for (Annotation annotation : parent.getAnnotations()) {
-			if (annotation.equals(ABSTRACT)) continue;
-			node.getObject().add(annotation);
-		}
+		for (Annotation annotation : parent.getAnnotations())
+			if (!annotation.equals(ABSTRACT))
+				node.getObject().add(annotation);
 	}
 
 	private void calculateInheritedVariables(NodeObject parent, DeclaredNode node) {

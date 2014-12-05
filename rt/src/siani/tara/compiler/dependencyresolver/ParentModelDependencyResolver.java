@@ -4,7 +4,7 @@ import siani.tara.lang.*;
 
 import java.util.*;
 
-import static siani.tara.lang.Annotations.Annotation.TERMINAL;
+import static siani.tara.lang.Annotations.Annotation.FACET;
 
 
 public class ParentModelDependencyResolver {
@@ -18,7 +18,7 @@ public class ParentModelDependencyResolver {
 	}
 
 	public void resolve() {
-		addTerminalNodes(collectParentTerminalNodes());
+		addTerminalNodes(parent.getTerminalNodes());
 		setValuesToNodes();
 	}
 
@@ -34,7 +34,7 @@ public class ParentModelDependencyResolver {
 	private void setValuesFromParams(Node instance) {
 		for (Map.Entry<String, Variable> entry : instance.getObject().getParameters().entrySet())
 			try {
-				Integer index = Integer.valueOf(entry.getKey());
+				int index = Integer.valueOf(entry.getKey());
 				instance.getObject().getVariables().get(index).setValues(entry.getValue().getValues());
 			} catch (NumberFormatException ignored) {
 				for (Variable variable : instance.getObject().getVariables())
@@ -76,38 +76,39 @@ public class ParentModelDependencyResolver {
 		return instances;
 	}
 
-	private Map<String, Node> collectParentTerminalNodes() {
-		Map<String, Node> terminals = new HashMap<>();
-		for (Node node : parent.getNodeTable().values())
-			if (node.getObject().is(TERMINAL))
-				terminals.put(node.getName(), node);
-		return terminals;
-	}
-
 	private void addTerminalNodes(Map<String, Node> terminals) {
-		for (Node terminal : terminals.values())
-			if (terminal.getContainer() == null) {
-				model.add(terminal);
-				model.add(terminal.getQualifiedName(), terminal);
-				model.addIdentifier(terminal.getName());
-				terminal.getObject().setParentObject(null);
-				terminal.getObject().setParentName(null);
-			} else addInnerTerminal(terminal);
+		for (Node terminal : terminals.values()) {
+			if (terminal.getObject().is(FACET)) resolveTargets(terminal);
+			model.add(terminal.getQualifiedName(), terminal);
+			model.addIdentifier(terminal.getName());
+		}
 	}
 
-	private void addInnerTerminal(Node terminal) {
-		Collection<Node> nodes = getInstancesOf(terminal.getContainer());
-		if (nodes.isEmpty()) return;
-		for (Node node : nodes)
-			if (node instanceof DeclaredNode) {
-				DeclaredNode declaredNode = (DeclaredNode) node;
-				declaredNode.add(0, terminal); // Possible StackOverFlow maybe clone needed
-				terminal.getObject().setParentObject(null); //Possible loss of info
-				terminal.getObject().setParentName(null);
-				terminal.setContainer(declaredNode);
-				model.add(terminal.getQualifiedName(), terminal);
-				model.addIdentifier(terminal.getName());
+	private void resolveTargets(Node terminal) {
+		List<FacetTarget> newFacets = new ArrayList<>();
+		if (terminal.getObject().getFacetTargets().isEmpty()) return;
+		for (FacetTarget facetTarget : terminal.getObject().getFacetTargets())
+			createFacetTargets(terminal, newFacets, findInstancesOf(facetTarget.getDestinyName()));
+		terminal.getObject().getFacetTargets().clear();
+		terminal.getObject().getFacetTargets().addAll(newFacets);
+	}
+
+	private void createFacetTargets(Node facetNode, List<FacetTarget> newFacets, Collection<Node> nodes) {
+		for (Node node : nodes) {
+			FacetTarget target = new FacetTarget(node.getName(), null);
+			target.setDestiny(node.getObject());
+			newFacets.add(target);
+			node.getObject().addAllowedFacet(facetNode.getQualifiedName(), target);
+		}
+	}
+
+	private Collection<Node> findInstancesOf(String type) {
+		Set<Node> nodes = new HashSet<>();
+		for (Node node : model.getNodeTable().values())
+			if (node.is(DeclaredNode.class) && node.getObject().getType().equals(type)) {
+				nodes.add(node);
+				Collections.addAll(nodes, node.getSubConcepts());
 			}
+		return nodes;
 	}
-
 }

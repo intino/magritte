@@ -16,8 +16,8 @@ public class FacetTargetsResolver {
 	}
 
 	public void resolve() throws TaraException {
-		for (Node node : model.getTreeModel())
-			if (node instanceof DeclaredNode && node.getObject().is(FACET)) {
+		for (Node node : model.getNodeTable().values())
+			if (node.is(DeclaredNode.class) && node.getObject().is(FACET)) {
 				DeclaredNode declaredNode = (DeclaredNode) node;
 				if (declaredNode.getObject().getFacetTargets().size() > 0) {
 					propagateVariablesHierarchy(declaredNode);
@@ -50,14 +50,14 @@ public class FacetTargetsResolver {
 	private void processAsFacetTarget(DeclaredNode facetNode) {
 		for (FacetTarget facetTarget : facetNode.getObject().getFacetTargets()) {
 			List<Node> destinies = new ArrayList();
-			collectTargetsOfFacet(facetNode, facetTarget, destinies);
+			resolveDestiniesOfTarget(facetNode, facetTarget, destinies);
 			addAllowedFacetsToDestinies(facetNode, destinies, facetTarget);
 		}
 		facetNode.getObject().getVariables().clear();
 	}
 
 
-	private void collectTargetsOfFacet(Node facetNode, FacetTarget facetTarget, List<Node> targets) {
+	private void resolveDestiniesOfTarget(Node facetNode, FacetTarget facetTarget, List<Node> destinies) {
 		Node node;
 		if (facetTarget.getDestinyQN() != null)
 			node = model.get(facetTarget.getDestinyQN());
@@ -65,9 +65,10 @@ public class FacetTargetsResolver {
 			node = model.searchDeclarationOfReference(facetTarget.getDestinyName(), facetNode);
 			facetTarget.setDestinyQN(node.getQualifiedName());
 		}
-		if (!node.getObject().is(FACET)) targets.add(node);
+		if (!node.getObject().is(FACET))
+			destinies.add(node);
 		else for (FacetTarget object : node.getObject().getFacetTargets())
-			collectTargetsOfFacet(node, object, targets);
+			resolveDestiniesOfTarget(node, object, destinies);
 	}
 
 	private void addAllowedFacetsToDestinies(DeclaredNode facetNode, List<Node> targets, FacetTarget facet) {

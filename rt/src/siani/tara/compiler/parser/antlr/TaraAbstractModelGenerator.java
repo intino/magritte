@@ -65,27 +65,25 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		return ctx.getParent().getParent() instanceof FacetTargetContext;
 	}
 
-	private void addNodeToModel(ConceptContext ctx, Node node, String parent) {
+	private void addNodeToModel(ConceptContext concept, Node node, String parent) {
 		DeclaredNode container = node.getContainer();
 		if (node.is(DeclaredNode.class)) {
 			if (container != null) {
-				if (isSub(ctx)) {
+				if (isSub(concept)) {
 					node.getObject().setSub(true);
 					node.getObject().setParentName(node.getContainer().getQualifiedName());
 					node.getObject().setParentObject(container.getObject());
 					container.getObject().add((DeclaredNode) node);
 					container.add(node);
-				} else if (isInFacetTarget(ctx)) {
+				} else if (isInFacetTarget(concept)) {
 					List<FacetTarget> facetTargets = conceptStack.peek().getObject().getFacetTargets();
 					facetTargets.get(facetTargets.size() - 1).add(node);
 					((DeclaredNode) node).setFacetTargetParent(facetTargets.get(facetTargets.size() - 1));
 				} else container.add(node);
 			} else model.add(node);
 			if (parent != null) node.getObject().setParentName(parent);
-		} else if (node instanceof LinkNode)
+		} else
 			container.add(node);
-		else
-			model.add(node);
 	}
 
 	private boolean isSub(ConceptContext ctx) {
@@ -208,8 +206,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterDoubleAttribute(@NotNull DoubleAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.DOUBLE_TYPE().getText(), ctx.IDENTIFIER().getText());
 		variable.setList(ctx.LIST() != null);
-		if (ctx.count() != null)
-			variable.setCount(Integer.parseInt(ctx.count().naturalValue().getText()));
+		if (ctx.count() != null) variable.setCount(Integer.parseInt(ctx.count().naturalValue().getText()));
 		if (ctx.doubleValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.doubleValue()));
 		else if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
 		if (ctx.measure() != null) variable.setMeasure(ctx.measure().getText());
@@ -403,8 +400,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			annotations.add(Annotation.ADDRESSED);
 		for (int i = 0; i < ctx.AGGREGATED().size(); i++)
 			annotations.add(Annotation.AGGREGATED);
-		for (int i = 0; i < ctx.UNIVERSAL().size(); i++)
-			annotations.add(Annotation.UNIVERSAL);
+		for (int i = 0; i < ctx.LOCAL().size(); i++)
+			annotations.add(Annotation.LOCAL);
 		return annotations;
 	}
 }

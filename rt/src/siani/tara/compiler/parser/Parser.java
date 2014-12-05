@@ -33,11 +33,11 @@ public class Parser {
 
 	public Model convert() throws SyntaxException {
 		try {
-			Model ast = new Model(file.getName());
+			Model model = new Model(file.getName());
 			ParseTreeWalker walker = new ParseTreeWalker();
-			TaraAbstractModelGenerator extractor = new TaraAbstractModelGenerator(ast, file.getPath(), configuration.getModelsDirectory());
+			TaraAbstractModelGenerator extractor = new TaraAbstractModelGenerator(model, file.getPath(), configuration.getModelsDirectory());
 			walker.walk(extractor, rootContext);
-			return ast;
+			return model;
 		} catch (RecognitionException e) {
 			Token token = ((org.antlr.v4.runtime.Parser) e.getRecognizer()).getCurrentToken();
 			e.printStackTrace();

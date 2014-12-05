@@ -12,5 +12,7 @@ public interface Parameter extends Navigatable, TaraPsiElement {
 
 	public boolean isList();
 
+	public int getValuesLength();
+
 	public TaraFacetApply isInFacet();
 }

@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.annotator.semanticAnalizers.VariableAnalyzer;
 import siani.tara.intellij.lang.psi.TaraVariable;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
@@ -13,24 +14,28 @@ public class VariableAnnotator extends TaraAnnotator {
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
-		if (!TaraVariable.class.isInstance(element)) return;
-		TaraVariable variable = (TaraVariable) element;
-		if (isReference(variable)) addReferenceAnnotation(variable);
+		if (TaraVariable.class.isInstance(element)) {
+			VariableAnalyzer analyzer = new VariableAnalyzer((TaraVariable) element);
+			analyzeAndAnnotate(analyzer);
+			if (!analyzer.hasErrors() && isReference((TaraVariable) element))
+				addReferenceAnnotation((TaraVariable) element);
+		}
 	}
 
 	private boolean isReference(TaraVariable variable) {
-		return (variable.getIdentifierReference() != null);
+		return variable.getIdentifierReference() != null;
 	}
 
 	@SuppressWarnings("ConstantConditions")
 	private void addReferenceAnnotation(TaraVariable variable) {
 		if (ReferenceManager.resolve(variable.getIdentifierReference()) != null) {
-			Annotation aggregated = holder.createInfoAnnotation(variable.getIdentifierReference(), "reference");
-			aggregated.setTextAttributes(createReferenceHighlight());
+			Annotation reference = holder.createInfoAnnotation(variable.getIdentifierReference(), "reference");
+			reference.setTextAttributes(createReferenceHighlight());
 		}
 	}
 
 	private TextAttributesKey createReferenceHighlight() {
 		return DefaultLanguageHighlighterColors.STATIC_FIELD;
 	}
+
 }

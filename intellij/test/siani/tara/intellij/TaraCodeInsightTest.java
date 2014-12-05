@@ -9,7 +9,7 @@ public class TaraCodeInsightTest extends LightCodeInsightFixtureTestCase {
 	private static final String COMPLETION = "completion";
 	private static final String FIND_USAGES = "findUsages";
 	private static final String FOLDING = "folding";
-	private static final String REFERENCE = "reference";
+	private static final String REFERENCE = "boxReference";
 	private static final String RENAME = "rename";
 
 

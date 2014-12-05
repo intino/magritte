@@ -61,7 +61,7 @@ public class DeclaredNode extends Node {
 	}
 
 	public String toString() {
-		return "DeclaredNode" + (isSub() ? "AsCase" : "") + "{" + qualifiedName + '}';
+		return "DeclaredNode" + (isSub() ? "AsSub" : "") + "{" + qualifiedName + '}';
 	}
 
 	public boolean contains(String name) {

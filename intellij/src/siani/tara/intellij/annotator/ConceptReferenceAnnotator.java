@@ -5,13 +5,10 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.MessageProvider;
-import siani.tara.intellij.annotator.fix.RemoveConceptLinkFix;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.annotator.semanticAnalizers.ConceptReferenceAnalyzer;
 import siani.tara.intellij.lang.psi.TaraConceptReference;
 import siani.tara.intellij.lang.psi.TaraIdentifierReference;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
-import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import java.awt.*;
 
@@ -22,20 +19,11 @@ public class ConceptReferenceAnnotator extends TaraAnnotator {
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
-		if (element instanceof TaraConceptReference) {
-			TaraConceptReference reference = (TaraConceptReference) element;
-			if (isDuplicated(reference))
-				annotateAndFix(element, new RemoveConceptLinkFix(reference), MessageProvider.message("duplicate.link.concept.error.message"));
-			TaraIdentifierReference identifierReference = reference.getIdentifierReference();
-			if (reference.isAggregated() && destinyIsComponent(reference))
-				annotateAndFix(element, new RemoveConceptLinkFix(reference), MessageProvider.message("duplicate.link.concept.error.message"));
-			addReferenceHighlight(holder, identifierReference);
-		}
-	}
-
-	private boolean destinyIsComponent(TaraConceptReference reference) {
-		Concept concept = TaraPsiImplUtil.getConceptContainerOf(ReferenceManager.resolve(reference.getIdentifierReference()));
-		return concept != null && concept.isComponent();
+		if (!TaraConceptReference.class.isInstance(element)) return;
+		ConceptReferenceAnalyzer checker = new ConceptReferenceAnalyzer((TaraConceptReference) element);
+		analyzeAndAnnotate(checker);
+		if (checker.results().isEmpty())
+			addReferenceHighlight(holder, ((TaraConceptReference) element).getIdentifierReference());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -47,20 +35,4 @@ public class ConceptReferenceAnnotator extends TaraAnnotator {
 		}
 	}
 
-	private boolean isDuplicated(TaraConceptReference reference) {
-		int count = 0;
-		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(reference);
-		if (contextOf == null) return false;
-		TaraConceptReference[] links = contextOf.getConceptLinks();
-		for (TaraConceptReference link : links) {
-			if (reference.getIdentifierReference() == null || link.getIdentifierReference() == null) continue;
-			if (reference.getIdentifierReference().getText().equals(link.getIdentifierReference().getText()) && areIncompatibles(reference, link))
-				count++;
-		}
-		return count > 1;
-	}
-
-	private boolean areIncompatibles(TaraConceptReference reference, TaraConceptReference link) {
-		return reference.isAggregated() == link.isAggregated();
-	}
 }

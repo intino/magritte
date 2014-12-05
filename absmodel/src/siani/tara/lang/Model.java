@@ -2,6 +2,8 @@ package siani.tara.lang;
 
 import java.util.*;
 
+import static siani.tara.lang.Annotations.Annotation.TERMINAL;
+
 public class Model {
 	private String name;
 	private String parentModelName;
@@ -59,6 +61,14 @@ public class Model {
 		return nodeTable.get(qualifiedName);
 	}
 
+	public Map<String, Node> getTerminalNodes() {
+		Map<String, Node> terminals = new HashMap<>();
+		for (Node node : getNodeTable().values())
+			if (node.getObject().is(TERMINAL))
+				terminals.put(node.getName(), node);
+		return terminals;
+	}
+
 	public String getModelName() {
 		return name;
 	}
@@ -77,9 +87,13 @@ public class Model {
 	}
 
 	public DeclaredNode searchDeclaredNodeOfLink(LinkNode node) {
-		Node result = relativeSearch(node.getDestinyQN(), node);
-		if (result != null) return (DeclaredNode) result;
-		return searchInImportReferences(node.getDestinyQN(), node);
+		DeclaredNode result = relativeSearch(node.getDestinyQN(), node);
+		if (result != null) return result;
+		result = searchInImportReferences(node.getDestinyQN(), node);
+		if (result != null) return result;
+		if (get(node.getDestinyQN()) != null && get(node.getDestinyQN()).is(DeclaredNode.class))
+			return (DeclaredNode) get(node.getDestinyQN());
+		return null;
 	}
 
 	public DeclaredNode searchDeclarationOfReference(String referenceName, Node context) {

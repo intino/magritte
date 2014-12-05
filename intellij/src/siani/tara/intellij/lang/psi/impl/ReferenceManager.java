@@ -38,7 +38,7 @@ public class ReferenceManager {
 
 	@Nullable
 	public static PsiElement resolveExternal(Identifier identifier) {
-		return resolveExternalReference(identifier);
+		return identifier != null ? resolveExternalReference(identifier) : null;
 	}
 
 	@Nullable
@@ -114,7 +114,9 @@ public class ReferenceManager {
 			resolve = resolveBoxPath(path.subList(0, i--));
 		if (resolve == null || i < 2) return null;
 		List<Identifier> qn = path.subList(i + 1, path.size());
-		return tryToResolveInBox((TaraBoxFile) PsiManager.getInstance(path.get(0).getProject()).findFile(resolve), qn);
+		PsiFile file = PsiManager.getInstance(path.get(0).getProject()).findFile(resolve);
+		if (qn.isEmpty()) return file;
+		return tryToResolveInBox((TaraBoxFile) file, qn);
 	}
 
 	private static PsiElement searchAsProjectOrModule(List<Identifier> path) {
@@ -239,7 +241,11 @@ public class ReferenceManager {
 	public static VirtualFile resolveBoxPath(List<? extends Identifier> boxPath) {
 		if (boxPath.isEmpty()) return null;
 		Project project = boxPath.get(0).getProject();
-		if (boxPath.size() == 1) return project.getWorkspaceFile();
+		if (boxPath.size() == 1) {
+			if (project.getName().toLowerCase().equals(boxPath.get(0).getText()))
+				return project.getProjectFile();
+			else return null;
+		}
 		if (boxPath.size() == 2) {
 			Module moduleByName = ModuleManager.getInstance(project).findModuleByName(boxPath.get(1).getText());
 			if (moduleByName == null) return null;

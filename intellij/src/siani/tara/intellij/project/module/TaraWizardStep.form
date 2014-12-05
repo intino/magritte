@@ -16,7 +16,7 @@
         </constraints>
         <properties>
           <selected value="true"/>
-          <text value="is system module"/>
+          <text value="is terminal module"/>
         </properties>
       </component>
       <component id="1f682" class="javax.swing.JComboBox" binding="metamodelBox">

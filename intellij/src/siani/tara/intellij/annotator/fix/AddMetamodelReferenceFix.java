@@ -19,7 +19,7 @@ public class AddMetamodelReferenceFix implements IntentionAction {
 
 	@NotNull
 	public String getText() {
-		return MessageProvider.message("add.metamodel.reference.intention.text");
+		return MessageProvider.message("add.metamodel.reference.intention");
 	}
 
 	@NotNull

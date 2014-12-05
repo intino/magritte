@@ -1,4 +1,4 @@
-package siani.tara.intellij.annotator;
+package siani.tara.intellij.annotator.fix;
 
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;

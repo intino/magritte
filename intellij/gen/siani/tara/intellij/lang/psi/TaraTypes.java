@@ -80,6 +80,7 @@ public interface TaraTypes {
 	IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
 	IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
 	IElementType LIST = new TaraTokenType("LIST");
+	IElementType LOCAL = new TaraTokenType("LOCAL");
 	IElementType MEASURE_VALUE = new TaraTokenType("MEASURE_VALUE");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
 	IElementType METAMODEL = new TaraTokenType("METAMODEL");
@@ -104,7 +105,6 @@ public interface TaraTypes {
 	IElementType STRING_VALUE_KEY = new TaraTokenType("STRING_VALUE_KEY");
 	IElementType SUB = new TaraTokenType("SUB");
 	IElementType TERMINAL = new TaraTokenType("TERMINAL");
-	IElementType UNIVERSAL = new TaraTokenType("UNIVERSAL");
 	IElementType USE_KEY = new TaraTokenType("USE_KEY");
 	IElementType VAR = new TaraTokenType("VAR");
 	IElementType WITH = new TaraTokenType("WITH");

@@ -8,6 +8,7 @@ import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraVarInit;
 import siani.tara.intellij.lang.psi.VarInit;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.*;
 
 import static siani.tara.lang.Primitives.*;
@@ -22,7 +23,7 @@ public class VarInitAnnotator extends TaraAnnotator {
 		if (model == null) return;
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(element);
 		if (concept == null) return;
-		Node node = findNode(concept, model);
+		Node node = TaraUtil.findNode(concept, model);
 		if (node == null) return;
 		Variable variable = null;
 		for (Variable var : node.getObject().getVariables())

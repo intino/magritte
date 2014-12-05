@@ -48,8 +48,6 @@ public class ConfigModuleAction extends AnAction implements DumbAware {
 		ConfigModuleDialogPane configDialog = new ConfigModuleDialogPane(e.getProject(), module);
 		configDialog.getPeer().setTitle("Configure Module " + (module != null ? module.getName() : ""));
 		configDialog.show();
-		if (configDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
-			configDialog.saveValues();
-		}
+		if (configDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) configDialog.saveValues();
 	}
 }

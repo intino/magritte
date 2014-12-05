@@ -113,7 +113,6 @@
     <lang.braceMatcher language="Tara" implementationClass="siani.tara.intellij.highlighting.TaraBraceMatcher"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AnnotationsAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AttributeAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.BoxReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParameterAnnotator"/>
@@ -122,8 +121,6 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetApplyParametersAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptTypeAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.PropertiesAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ModelAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.IntentionAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetTargetAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.RequiredConceptsAnnotator"/>

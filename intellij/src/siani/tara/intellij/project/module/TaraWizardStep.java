@@ -18,7 +18,7 @@ public class TaraWizardStep extends ModuleWizardStep {
 	private final WizardContext context;
 	protected JCheckBox terminalCheckBox;
 	private Project project;
-	private Module myParent;
+	private Module metamodel;
 	private boolean terminal;
 	private JPanel mainPanel;
 	private JComboBox metamodelBox;
@@ -40,7 +40,7 @@ public class TaraWizardStep extends ModuleWizardStep {
 			metamodelBox.addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent e) {
-					myParent = (Module) ((JComboBox) e.getSource()).getSelectedItem();
+					metamodel = (Module) ((JComboBox) e.getSource()).getSelectedItem();
 				}
 			});
 		}
@@ -59,7 +59,7 @@ public class TaraWizardStep extends ModuleWizardStep {
 	@Override
 	public void updateDataModel() {
 		context.setProjectBuilder(builder);
-		builder.setParentModule(myParent);
+		builder.setMetamodelModule(metamodel);
 		builder.setSystem(terminal);
 	}
 

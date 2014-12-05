@@ -19,7 +19,7 @@ public class RemoveAttributeFix implements IntentionAction {
 
 	@NotNull
 	public String getText() {
-		return MessageProvider.message("remove.attribute.intention.text");
+		return MessageProvider.message("remove.attribute.intention");
 	}
 
 	@NotNull

@@ -41,7 +41,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	private static final String ITRULES = "itrules";
 	private static final String SRC = "src";
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
-	private Module parentModule;
+	private Module metamodelModule;
 	private boolean system = false;
 	private File configFile;
 	private String myCompilerOutputPath;
@@ -110,8 +110,8 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 				modifiableModel.addRoot(getUrlByPath(sourceLibraryPath), OrderRootType.SOURCES);
 			modifiableModel.commit();
 		}
-		if (parentModule != null)
-			rootModel.addModuleOrderEntry(parentModule);
+		if (metamodelModule != null)
+			rootModel.addModuleOrderEntry(metamodelModule);
 		persistTempConf();
 	}
 
@@ -125,8 +125,8 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	private void persistTempConf() {
 		try {
 			FileWriter writer = new FileWriter(configFile);
-			writer.write(((parentModule != null) ? parentModule.getName() : "null") + "\n");
-			writer.write(((parentModule != null) ? parentModule.getModuleFilePath() : "null") + "\n");
+			writer.write(((metamodelModule != null) ? metamodelModule.getName() : "null") + "\n");
+			writer.write(((metamodelModule != null) ? metamodelModule.getModuleFilePath() : "null") + "\n");
 			writer.write(system + "\n");
 			writer.close();
 		} catch (IOException e) {
@@ -134,8 +134,8 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		}
 	}
 
-	public void setParentModule(Module module) {
-		parentModule = module;
+	public void setMetamodelModule(Module module) {
+		metamodelModule = module;
 	}
 
 	public void setSystem(boolean system) {

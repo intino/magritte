@@ -1,9 +1,7 @@
-package siani.tara.intellij.annotator;
+package siani.tara.intellij.annotator.semanticAnalizers;
 
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.MessageProvider;
+import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.annotator.fix.RemoveAttributeFix;
 import siani.tara.intellij.lang.psi.Body;
 import siani.tara.intellij.lang.psi.Variable;
@@ -12,18 +10,27 @@ import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttributeAnnotator extends TaraAnnotator {
+import static siani.tara.intellij.MessageProvider.message;
+import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 
-	@Override
-	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
-		this.holder = holder;
-		if (element instanceof Variable)
-			checkDuplicated((Variable) element);
+public class VariableAnalyzer extends TaraAnalyzer {
+
+	private final Variable variable;
+
+	public VariableAnalyzer(Variable variable) {
+		this.variable = variable;
 	}
 
-	private void checkDuplicated(Variable variable) {
-		if (findAttributeDuplicates(variable).length != 1)
-			annotateAndFix(variable, new RemoveAttributeFix(variable), MessageProvider.message("duplicate.attribute.key.error.message"));
+	@Override
+	public void analyze() {
+		if (isDuplicated())
+			results.put(variable,
+				new AnnotateAndFix(ERROR, message("duplicate.attribute"), new RemoveAttributeFix(variable)));
+
+	}
+
+	private boolean isDuplicated() {
+		return findAttributeDuplicates(variable).length != 1;
 	}
 
 	@NotNull

@@ -157,7 +157,7 @@ facetTarget ::= ON identifierReference ALWAYS? body?
 {pin = 1}
 
 annotations ::= (ABSTRACT | TERMINAL | SINGLE | MULTIPLE | REQUIRED | NAMED
-	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | UNIVERSAL | ADDRESSED | AGGREGATED | COMPOSED)+ {
+	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | COMPOSED)+ {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotations'

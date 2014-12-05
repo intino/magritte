@@ -1,8 +1,5 @@
 package siani.tara.lang;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class ModelObject {
 
 	protected String doc;

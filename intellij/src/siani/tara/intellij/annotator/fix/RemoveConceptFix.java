@@ -19,7 +19,7 @@ public class RemoveConceptFix implements IntentionAction {
 
 	@NotNull
 	public String getText() {
-		return MessageProvider.message("remove.concept.intention.text");
+		return MessageProvider.message("remove.concept.intention");
 	}
 
 	@NotNull

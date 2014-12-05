@@ -24,6 +24,6 @@ public class ImportMetamodelAnnotation extends TaraAnnotator {
 				imports.add(anImport);
 		if (imports.size() > 1)
 			for (TaraAnImport anImport : imports)
-				holder.createErrorAnnotation(anImport.getNode(), MessageProvider.message("duplicated.metamodel.import.error.message"));
+				holder.createErrorAnnotation(anImport.getNode(), MessageProvider.message("duplicated.metamodel.import"));
 	}
 }

@@ -30,7 +30,7 @@ public class RequiredConceptsAnnotator extends TaraAnnotator {
 		this.holder = holder;
 		Concept concept = (Concept) element;
 		Collection<Concept> childrenOf = TaraUtil.getInnerConceptsOf(concept);
-		Node node = findNode(concept, model);
+		Node node = TaraUtil.findNode(concept, model);
 		Collection<Node> requiredNodes = getRequiredInnerNodes(node);
 		if (requiredNodes.isEmpty()) return;
 		for (Node requiredNode : requiredNodes)

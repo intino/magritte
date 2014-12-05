@@ -16,6 +16,9 @@ import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.lang.Model;
+import siani.tara.lang.Node;
 
 import java.util.*;
 
@@ -189,6 +192,10 @@ public class TaraUtil {
 		return fileIndex.getModuleForFile(file.getVirtualFile());
 	}
 
+	public static boolean isTerminalBox(TaraBoxFileImpl boxFile) {
+		return ModuleConfiguration.getInstance(TaraUtil.getModuleOfFile(boxFile)).isTerminal();
+	}
+
 	public static String composeConceptQN(Identifier identifier) {
 		Concept concept = getConceptContainerOf(identifier);
 		String path = concept.getName();
@@ -209,5 +216,9 @@ public class TaraUtil {
 
 	public static TaraConceptReference[] getLinksOf(Concept concept) {
 		return concept.getBody() == null ? new TaraConceptReference[0] : concept.getBody().getConceptLinks();
+	}
+
+	public static Node findNode(Concept concept, Model model) {
+		return model.searchNode(concept.getMetaQualifiedName());
 	}
 }
