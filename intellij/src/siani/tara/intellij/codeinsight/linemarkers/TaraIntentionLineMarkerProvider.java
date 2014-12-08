@@ -29,9 +29,9 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
-			if (!(element instanceof Concept) || ((Concept) element).isIntention()) return null;
+			if (!((element instanceof Concept && ((Concept) element).isIntention()))) return null;
 			Concept concept = (Concept) element;
-			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode());
+			PsiElement reference = ReferenceManager.resolveExternal(concept.getIdentifierNode());
 			String start = "Intention declared in ";
 			@NonNls String pattern = null;
 			if (reference != null) pattern = reference.getNavigationElement().getContainingFile().getName();
@@ -47,13 +47,11 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 			}
 			Identifier identifierNode = ((Concept) element).getIdentifierNode();
 			if (identifierNode == null) return;
-			NavigatablePsiElement reference = (NavigatablePsiElement)
-				ReferenceManager.resolve(identifierNode);
+			NavigatablePsiElement reference = (NavigatablePsiElement) ReferenceManager.resolveExternal(identifierNode);
 			if (reference == null) return;
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
-			PsiElementListNavigator.
-				openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overriding Methods of " + (reference.getName()), renderer);
+			PsiElementListNavigator.openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overriding Methods of " + (reference.getName()), renderer);
 		}
 	}
 	);

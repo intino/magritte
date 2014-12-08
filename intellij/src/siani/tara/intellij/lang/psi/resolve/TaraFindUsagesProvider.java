@@ -37,7 +37,7 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	@NotNull
 	@Override
 	public String getType(@NotNull PsiElement element) {
-		return "In child models:";
+		return TaraPsiImplUtil.getConceptContainerOf(element).getType();
 	}
 
 	@NotNull
@@ -47,7 +47,7 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 			String name = ((Concept) element).getName();
 			return name == null ? ANONYMOUS : name;
 		} else if (element instanceof Identifier)
-			return TaraPsiImplUtil.getConceptContainerOf(element).getType() + " " + element.getText();
+			return element.getText();
 		else if (element instanceof TaraBoxFile)
 			return (((TaraBoxFile) element).getName());
 		return element.getText();

@@ -3,7 +3,7 @@ package siani.tara.intellij.actions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.fileChooser.FileChooser;
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
+import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -27,7 +27,7 @@ public class ImportModelAction extends AnAction implements DumbAware {
 
 	public void importModel(Project project) {
 		try {
-			VirtualFile file = FileChooser.chooseFile(FileChooserDescriptorFactory.onlyFiles().chooseJars(true, true, true).build(),
+			VirtualFile file = FileChooser.chooseFile(new FileChooserDescriptor(true, false, true, true, true, false),
 				project, project.getBaseDir());
 			if (file == null) return;
 			if (file.isDirectory()) return;

@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static siani.tara.lang.Primitives.getConverter;
@@ -21,7 +22,10 @@ public class ModelLoader {
 	public static Model load(String modelsDirectory, String model) {
 		try {
 			File file = new File(modelsDirectory.toLowerCase(), model.toLowerCase() + JSON);
-			if (!file.exists()) throw new Exception("Model file not found");
+			if (!file.exists()) {
+				LOG.log(Level.SEVERE,"Model file not found");
+				return null;
+			}
 			InputStream heritageInputStream = new FileInputStream(file);
 			GsonBuilder gb = new GsonBuilder();
 			gb.registerTypeAdapter(Node.class, new NodeAdapter());

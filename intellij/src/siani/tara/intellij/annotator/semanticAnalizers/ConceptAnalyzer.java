@@ -36,7 +36,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		else if (isDuplicated())
 			results.put(concept.getSignature(),
 				addError(message("duplicate.concept")));
-		else if (analyzeIfExtendedFromDifferentType(concept)) {
+		else if (!analyzeIfExtendedFromSameType(concept)) {
 			results.put(concept.getSignature().getParentReference(), addError(message("invalid.extension.concept")));
 			return;
 		}
@@ -73,7 +73,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		return concept.getIdentifierNode() != null && findDuplicates() > 1;
 	}
 
-	private boolean analyzeIfExtendedFromDifferentType(Concept concept) {
+	private boolean analyzeIfExtendedFromSameType(Concept concept) {
 		return concept.getSignature().getParentConcept() == null
 			|| concept.getType() == null
 			|| concept.getType().equals(concept.getSignature().getParentConcept().getType());
@@ -128,11 +128,11 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 			results.put(concept.getIdentifierNode(), new AnnotateAndFix(ERROR, "Component cannot be declared as root"));
 		else if (!isFacet(node))
 			results.put(concept.getIdentifierNode(), new AnnotateAndFix(ERROR, "Facets are no instantiable"));
-		else if (analyzeAsNamed(node))
+		else if (!analyzeAsNamed(node))
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name required", new AddAddressFix(concept)));
-		else if (analyzeAddressAdded(node))
+		else if (!analyzeAddressAdded(node))
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Address required", new AddAddressFix(concept)));
-		else if (analyzeAsIntention())
+		else if (concept.isIntention() && !analyzeAsIntention())
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, message("intention.with.children")));
 	}
 
@@ -150,14 +150,14 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean analyzeAsIntention() {
-		return (hasLinks(concept) || hasNoComponents(concept));
+		return !(hasLinks(concept) || hasComponents(concept));
 	}
 
 	private boolean analyzeAddressAdded(Node node) {
 		return !(node.getObject().is(ADDRESSED) && concept.getAddress() == null);
 	}
 
-	private boolean hasNoComponents(Concept concept) {
+	private boolean hasComponents(Concept concept) {
 		return !concept.getInnerConcepts().isEmpty();
 	}
 

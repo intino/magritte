@@ -37,7 +37,7 @@ public class TaraFacetLineMarkerProvider extends JavaLineMarkerProvider {
 		public String fun(PsiElement element) {
 			if (!Concept.class.isInstance(element)) return null;
 			Concept concept = (Concept) element;
-			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode());
+			PsiElement reference = ReferenceManager.resolveExternal(concept.getIdentifierNode());
 			String start = "Facet declared in ";
 			@NonNls String pattern = null;
 			if (reference != null) pattern = reference.getNavigationElement().getContainingFile().getName();

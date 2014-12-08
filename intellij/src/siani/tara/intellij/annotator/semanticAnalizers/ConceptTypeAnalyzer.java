@@ -37,16 +37,16 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		if (model != null && analyzeModelCoherence())
-			addError(MessageProvider.message("concept.position.key"), TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
-		else if (isConceptType()) {
-			if (isUnnamedConcept()) addError("Concept without name");
-			else if (isWellPositioned()) addError("Concept in bad position");
-		} else {
-			if (!existsConceptTypeInMetamodel())
+		if (model != null) {
+			if (analyzeModelCoherence())
+				addError(MessageProvider.message("concept.position.key"), TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
+			else if (!existsConceptTypeInMetamodel())
 				results.put(metaIdentifier, new AnnotateAndFix(ERROR, MessageProvider.message("Unknown.concept")));
 			for (TaraConceptReference incorrectInnerLink : getIncorrectInnerLinks(concept, model))
 				results.put(incorrectInnerLink, new AnnotateAndFix(ERROR, MessageProvider.message("Unknown.concept")));
+		} else if (isConceptType()) {
+			if (!hasName()) addError("Concept without name");
+			else if (!isWellPositioned()) addError("Concept in bad position");
 		}
 	}
 
@@ -54,8 +54,8 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 		return TaraUtil.findNode(concept, model) != null;
 	}
 
-	private boolean isUnnamedConcept() {
-		return concept.getName() == null;
+	private boolean hasName() {
+		return concept.getName() != null;
 	}
 
 	private boolean isConceptType() {

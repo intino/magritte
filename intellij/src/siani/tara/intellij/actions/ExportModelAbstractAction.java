@@ -260,7 +260,7 @@ public class ExportModelAbstractAction extends AnAction implements DumbAware {
 	private boolean clearReadOnly(final Project project, final File dstFile) {
 		final URL url;
 		try {
-			url = dstFile.toURL();
+			url = dstFile.toURI().toURL();
 		} catch (MalformedURLException e) {
 			return true;
 		}

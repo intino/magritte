@@ -219,6 +219,6 @@ public class TaraUtil {
 	}
 
 	public static Node findNode(Concept concept, Model model) {
-		return model.searchNode(concept.getMetaQualifiedName());
+		return model != null ? model.searchNode(concept.getMetaQualifiedName()) : null;
 	}
 }

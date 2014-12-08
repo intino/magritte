@@ -3,7 +3,7 @@
   <component name="ModuleConfiguration">
     <option name="parentName" value="" />
     <option name="parentFilePath" value="" />
-    <option name="system" value="false" />
+    <option name="terminal" value="false" />
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
@@ -15,4 +15,3 @@
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
-
