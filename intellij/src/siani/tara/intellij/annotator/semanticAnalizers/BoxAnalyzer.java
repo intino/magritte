@@ -28,7 +28,6 @@ public class BoxAnalyzer extends TaraAnalyzer {
 		TaraBoxFile file = (TaraBoxFile) boxReference.getContainingFile();
 		if (analyzeWellPlaced())
 			results.put(boxReference, new AnnotateAndFix(ERROR, message("mismatched.box.reference")));
-		if (!hasErrors) analyzeBoxExistence(file);
 		if (!hasErrors) analyzeMetamodelExistence(file);
 	}
 
@@ -36,12 +35,6 @@ public class BoxAnalyzer extends TaraAnalyzer {
 		VirtualFile file = ReferenceManager.resolveBoxPath(boxReference.getIdentifierList());
 		VirtualFile containingFile = boxReference.getContainingFile().getVirtualFile();
 		return !containingFile.equals(file);
-
-	}
-
-	private void analyzeBoxExistence(TaraBoxFile file) {
-		if (hasErrors = file.getBoxReference() == null)
-			results.put(file, new AnnotateAndFix(ERROR, message("mismatched.box.reference")));
 	}
 
 	private void analyzeMetamodelExistence(TaraBoxFile file) {

@@ -118,7 +118,6 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParameterAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParametersAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetApplyAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetApplyParametersAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptTypeAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.PropertiesAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptReferenceAnnotator"/>
