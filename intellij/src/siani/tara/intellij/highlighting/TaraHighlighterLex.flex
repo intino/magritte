@@ -54,7 +54,6 @@ SUB                 = "sub"
 HAS                 = "has"
 EXTENDS             = "extends"
 USE_KEY             = "use"
-BOX                 = "box"
 AS                  = "as"
 ON                  = "on"
 IS                  = "is"
@@ -136,10 +135,8 @@ NEWLINE             = [\n]+
 
 	{CONCEPT}                       {   return TaraTypes.METAIDENTIFIER_KEY; }
 
-	{METAMODEL}                     {   return TaraTypes.METAMODEL; }
+	{METAMODEL}                     {   loadHeritage(); return TaraTypes.METAMODEL; }
 
-	{BOX}                           {  	loadHeritage();
-										return TaraTypes.BOX_KEY; }
 	{USE_KEY}                       {   return TaraTypes.USE_KEY; }
 	{VAR}                           {   return TaraTypes.VAR; }
 	{HAS}                           {   return TaraTypes.HAS; }
@@ -198,7 +195,7 @@ NEWLINE             = [\n]+
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
-	{SEMICOLON}                     {   return TaraTypes.BOX_KEY;  }
+	{SEMICOLON}                     {   return TaraTypes.USE_KEY;  }
 
 	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }

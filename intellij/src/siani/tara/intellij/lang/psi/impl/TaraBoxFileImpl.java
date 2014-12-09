@@ -86,14 +86,6 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 
 
 	@Override
-	public TaraBox getBoxReference() {
-		TaraHeader[] header = PsiTreeUtil.getChildrenOfType(this, TaraHeader.class);
-		if (header == null) return null;
-		TaraBox[] packet = PsiTreeUtil.getChildrenOfType(header[0], TaraBox.class);
-		return packet != null ? packet[0] : null;
-	}
-
-	@Override
 	public String getParentModel() {
 		TaraHeader[] header = PsiTreeUtil.getChildrenOfType(this, TaraHeader.class);
 		if (header == null) return null;
@@ -103,22 +95,6 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 			if (anImport.isMetamodelImport()) return anImport.getHeaderReference().getText();
 		}
 		return null;
-	}
-
-	@Override
-	public String getBox() throws PsiInvalidElementAccessException {
-		return getBoxReference() != null ? getBoxReference().getHeaderReference().getText() : null;
-	}
-
-	@Override
-	public void setBox(String path) {
-		TaraElementFactory factory = TaraElementFactory.getInstance(this.getProject());
-		this.getBoxReference().replace(factory.createBox(path));
-	}
-
-	@Override
-	public List<? extends Identifier> getBoxPath() {
-		return getBoxReference().getHeaderReference().getIdentifierList();
 	}
 
 	@Override

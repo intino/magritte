@@ -36,8 +36,7 @@ public class VariantsManager {
 	}
 
 	private void addInBoxVariants() {
-		List<? extends Identifier> boxPath = ((TaraBoxFile) myElement.getContainingFile()).getBoxPath();
-		TaraBoxFile box = (TaraBoxFile) ReferenceManager.resolve(boxPath.get(boxPath.size() - 1));
+		TaraBoxFile box = ((TaraBoxFile) myElement.getContainingFile());
 		if (box == null) return;
 		for (Concept concept : box.getConcepts())
 			if (!concept.equals(TaraPsiImplUtil.getConceptContainerOf(myElement)))

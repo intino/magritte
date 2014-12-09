@@ -4,9 +4,9 @@ import com.intellij.codeInsight.intention.HighPriorityAction;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
-import org.jetbrains.annotations.NotNull;
 
 public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
 
@@ -15,7 +15,7 @@ public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
 
 	public ImportQuickFix(TaraBoxFile fileDestiny, Concept conceptToImport) {
 		this.file = fileDestiny;
-		anImport = ((TaraBoxFile) conceptToImport.getContainingFile()).getBoxReference().getHeaderReference().getText();
+		anImport = conceptToImport.getContainingFile().getName();
 	}
 
 	@NotNull

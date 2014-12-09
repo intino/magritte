@@ -43,9 +43,6 @@ public class TaraParser implements PsiParser {
     else if (t == BOOLEAN_VALUE) {
       r = booleanValue(b, 0);
     }
-    else if (t == BOX) {
-      r = box(b, 0);
-    }
     else if (t == CONCEPT) {
       r = concept(b, 0);
     }
@@ -446,19 +443,6 @@ public class TaraParser implements PsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, BOOLEAN_VALUE_KEY);
     exit_section_(b, m, BOOLEAN_VALUE, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // BOX_KEY headerReference
-  public static boolean box(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "box")) return false;
-    if (!nextTokenIs(b, BOX_KEY)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, BOX_KEY);
-    r = r && headerReference(b, l + 1);
-    exit_section_(b, m, BOX, r);
     return r;
   }
 
@@ -925,28 +909,12 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // box?  imports?
+  // imports?
   public static boolean header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header")) return false;
-    boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<header>");
-    r = header_0(b, l + 1);
-    r = r && header_1(b, l + 1);
-    exit_section_(b, l, m, HEADER, r, false, null);
-    return r;
-  }
-
-  // box?
-  private static boolean header_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "header_0")) return false;
-    box(b, l + 1);
-    return true;
-  }
-
-  // imports?
-  private static boolean header_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "header_1")) return false;
     imports(b, l + 1);
+    exit_section_(b, l, m, HEADER, true, false, null);
     return true;
   }
 
@@ -1682,7 +1650,7 @@ public class TaraParser implements PsiParser {
   // NEWLINE* header? NEWLINE+ (concept NEWLINE+)*
   static boolean root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root")) return false;
-    if (!nextTokenIs(b, "", BOX_KEY, NEWLINE)) return false;
+    if (!nextTokenIs(b, NEWLINE)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = root_0(b, l + 1);

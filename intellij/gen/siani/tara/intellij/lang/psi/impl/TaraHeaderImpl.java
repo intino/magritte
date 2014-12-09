@@ -28,10 +28,4 @@ public class TaraHeaderImpl extends ASTWrapperPsiElement implements TaraHeader {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraAnImport.class);
   }
 
-  @Override
-  @Nullable
-  public TaraBox getBox() {
-    return findChildByClass(TaraBox.class);
-  }
-
 }

@@ -90,7 +90,6 @@ HAS                 = "has"
 VAR                 = "var"
 
 USE_KEY             = "use"
-BOX_KEY             = "box"
 WITH                = "with"
 AS                  = "as"
 ON                  = "on"
@@ -172,8 +171,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{METAMODEL}                     {   return TaraTypes.METAMODEL; }
 
 	{USE_KEY}                       {   return TaraTypes.USE_KEY; }
-
-	{BOX_KEY}                       {   return TaraTypes.BOX_KEY; }
 
 	{EXTENDS}                       {   return TaraTypes.EXTENDS; }
 	{HAS}                           {   return TaraTypes.HAS; }

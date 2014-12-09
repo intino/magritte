@@ -12,7 +12,6 @@ public class FrameCreator {
 
 	public static Frame create(TaraBoxFile box) {
 		Frame frame = new Frame("box");
-		frame.addSlot("box", box.getBox());
 		frame.addSlot("import", getImports(box));
 		for (final Concept concept : box.getConcepts())
 			add(concept, frame);

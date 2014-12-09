@@ -21,8 +21,6 @@ public abstract class TaraElementFactory {
 
 	public abstract Import createImport(String reference);
 
-	public abstract TaraBox createBox(String reference);
-
 	public abstract PsiElement createNewLine();
 
 	public abstract Parameters createParameters(boolean string);
@@ -32,8 +30,6 @@ public abstract class TaraElementFactory {
 	public abstract Variable createWord(String name, String[] types);
 
 	public abstract Variable createResource(String name, String types);
-
-	public abstract TaraBox createBoxReference(String project, String module, String packageName);
 
 	public abstract PsiElement createMetaWordIdentifier(String module, String node, String name);
 

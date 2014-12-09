@@ -7,7 +7,6 @@ import com.intellij.usageView.UsageInfo;
 import com.intellij.util.Processor;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.findusage.TaraFindUsagesHandlerFactory;
-import siani.tara.intellij.lang.psi.HeaderReference;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 
 import java.util.ArrayList;
@@ -40,12 +39,6 @@ public class TaraRefactoringUtil {
 	}
 
 	public static void addImport(TaraBoxFile reference, TaraBoxFile boxFile) {
-		reference.addImport(boxFile.getBoxReference().getHeaderReference().getText());
-	}
-
-	public static void updateImportOfElement(HeaderReference importReference, TaraBoxFile newElement) {
-		TaraBoxFile file = (TaraBoxFile) importReference.getContainingFile();
-		importReference.getParent().delete();
-		addImport(file, newElement);
+		reference.addImport(boxFile.getName());
 	}
 }

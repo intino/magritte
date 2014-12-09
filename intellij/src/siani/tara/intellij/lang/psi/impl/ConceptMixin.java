@@ -112,12 +112,10 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	public String getQualifiedName() {
 		Identifier identifierNode = getIdentifierNode();
 		String name = identifierNode != null ? identifierNode.getText() : "annonymous";
-		TaraBoxFile containingFile = (TaraBoxFile) this.getContainingFile();
-		String packageName = containingFile.getBoxReference().getHeaderReference().getText();
 		Concept concept = (Concept) this;
 		while ((concept = TaraPsiImplUtil.getConceptContainerOf(concept)) != null)
 			name = concept.getName() + "." + name;
-		return packageName + "." + name;
+		return name;
 	}
 
 	public String getMetaQualifiedName() {

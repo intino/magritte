@@ -61,9 +61,10 @@ public class ReferenceManager {
 	}
 
 	private static PsiElement resolveExternalReference(Identifier identifier) {
-		TaraBox box = ((TaraBoxFile) identifier.getContainingFile()).getBoxReference();
-		String path = box.getHeaderReference().getText() + "." + TaraUtil.composeConceptQN(identifier);
-		return resolveJavaClassReference(identifier.getProject(), path);
+//		TaraBox box = ((TaraBoxFile) identifier.getContainingFile()).getBoxReference();
+//		String path = box.getHeaderReference().getText() + "." + TaraUtil.composeConceptQN(identifier);
+//		return resolveJavaClassReference(identifier.getProject(), path);
+		return null;//TODO
 	}
 
 	private static List<Identifier> getPathFromHeader(Identifier identifier) {

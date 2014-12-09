@@ -57,14 +57,6 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	@Override
-	public TaraBox createBoxReference(String project, String module, String packageName) {
-		final TaraBoxFileImpl file = createDummyFile(
-			"box " + project + "." + module + "." + packageName +
-				"\nConcept Dummy\n");
-		return file.getBoxReference();
-	}
-
-	@Override
 	public PsiElement createMetaWordIdentifier(String module, String node, String name) {
 		final TaraBoxFileImpl file = createDummyFile(
 			"box " + "project." + module + ".tara\n" +
@@ -100,15 +92,6 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		);
 		Collection<Import> imp = file.getImports();
 		return imp.iterator().next();
-	}
-
-	public TaraBox createBox(String reference) {
-		final TaraBoxFileImpl file = createDummyFile(
-			"box " + reference + "\n" +
-				"Concept Source\n"
-		);
-		TaraBox pack = file.getBoxReference();
-		return pack != null ? pack : null;
 	}
 
 	public PsiElement createNewLine() {

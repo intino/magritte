@@ -48,7 +48,7 @@ public class TaraCompilerConfigurable implements SearchableConfigurable, Configu
 		final ProjectFileIndex index = ProjectRootManager.getInstance(project).getFileIndex();
 		final FileChooserDescriptor descriptor = new FileChooserDescriptor(true, true, false, false, false, true) {
 			public boolean isFileVisible(VirtualFile file, boolean showHiddenFiles) {
-				return super.isFileVisible(file, showHiddenFiles) && !index.isUnderIgnored(file);
+				return super.isFileVisible(file, showHiddenFiles);// && !index.isUnderIgnored(file);TODO
 			}
 		};
 		descriptor.setRoots(ContainerUtil.concat(

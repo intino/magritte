@@ -44,18 +44,10 @@ public class TaraImportOptimizer implements ImportOptimizer {
 		}
 
 		public void run() {
-			if (myImportBlock == null) return;
-			deleteUnnecessaryImportStatement();
 			deleteDuplicates();
 			deleteUnusedImportStatement();
 		}
 
-		private void deleteUnnecessaryImportStatement() {
-			String packageText = file.getBoxReference().getHeaderReference().getText() + ".";
-			for (Import anImport : myImportBlock)
-				if (!anImport.getHeaderReference().getText().replace(packageText, "").contains("."))
-					anImport.delete();
-		}
 
 		private void deleteUnusedImportStatement() {
 			Collection<IdentifierReference> identifierReferences = PsiTreeUtil.collectElementsOfType(file, IdentifierReference.class);
@@ -63,7 +55,7 @@ public class TaraImportOptimizer implements ImportOptimizer {
 			for (IdentifierReference reference : identifierReferences) {
 				PsiElement resolve = ReferenceManager.resolve(reference);
 				if (resolve == null) continue;
-				neededReferences.add(((TaraBoxFile) resolve.getContainingFile()).getBoxReference().getHeaderReference().getText());
+				neededReferences.add(resolve.getContainingFile().getName());
 			}
 			for (Import anImport : myImportBlock)
 				if (!neededReferences.contains(anImport.getHeaderReference().getText()) && !anImport.isMetamodelImport())

@@ -18,9 +18,7 @@
 
 root ::= NEWLINE* header? NEWLINE+ (concept NEWLINE+)*
 
-header ::= box?  imports?
-
-box ::= BOX_KEY headerReference
+header ::= imports?
 
 private imports ::= anImport+
 

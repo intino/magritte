@@ -1,6 +1,5 @@
 package siani.tara.intellij.codegeneration;
 
-import com.intellij.ide.util.DirectoryUtil;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -172,14 +171,14 @@ public class IntentionsGenerator {
 	}
 
 	private List<PsiDirectory> createSrcPackageForFile(TaraBoxFile file) {
-		String[] packet = file.getBoxReference().getHeaderReference().getText().split("\\.");
+//		String[] packet = file.getBoxReference().getHeaderReference().getText().split("\\.");
 		List<PsiDirectory> directories = new ArrayList<>();
-		for (String s : packet) {
-			PsiDirectory baseDirectory = (directories.isEmpty()) ? srcDirectory : directories.get(directories.size() - 1);
-			PsiDirectory subdirectory = baseDirectory.findSubdirectory(s);
-			if (subdirectory != null) directories.add(subdirectory);
-			else directories.add(DirectoryUtil.createSubdirectories(s, baseDirectory, "."));
-		}
+//		for (String s : packet) {
+//			PsiDirectory baseDirectory = (directories.isEmpty()) ? srcDirectory : directories.get(directories.size() - 1);
+//			PsiDirectory subdirectory = baseDirectory.findSubdirectory(s);
+//			if (subdirectory != null) directories.add(subdirectory);
+//			else directories.add(DirectoryUtil.createSubdirectories(s, baseDirectory, "."));
+//		}
 		return directories;
 	}
 }

@@ -34,10 +34,6 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitBox(@NotNull TaraBox o) {
-    visitPsiElement(o);
-  }
-
   public void visitConcept(@NotNull TaraConcept o) {
     visitConcept(o);
   }

@@ -14,7 +14,6 @@ import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Identifier;
-import siani.tara.intellij.lang.psi.TaraBox;
 import siani.tara.intellij.lang.psi.TaraElementFactory;
 import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
@@ -103,7 +102,6 @@ public class TaraModuleListener implements ProjectComponent {
 				String newName = module.getName();
 				String oldName = myModulesNames.put(module, newName);
 				if (!newName.equals(oldName)) {
-					changeFiles(module);
 					changeDependentModules(modules, module, oldName);
 				}
 
@@ -116,15 +114,6 @@ public class TaraModuleListener implements ProjectComponent {
 					ModuleConfiguration.getInstance(module).setMetamodelFilePath(rootModule.getModuleFilePath());
 					ModuleConfiguration.getInstance(module).setMetamodelName(rootModule.getName());
 				}
-			}
-		}
-
-		private void changeFiles(Module module) {
-			Project project = module.getProject();
-			for (TaraBoxFileImpl boxFile : TaraUtil.getTaraFilesOfModule(module)) {
-				TaraBox taraBox = TaraElementFactory.getInstance(project)
-					.createBoxReference(project.getName(), module.getName(), extractPackage(boxFile.getBoxPath()));
-				boxFile.getBoxReference().replace(taraBox);
 			}
 		}
 
