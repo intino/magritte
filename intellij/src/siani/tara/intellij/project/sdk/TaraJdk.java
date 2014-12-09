@@ -50,8 +50,8 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 	@Nullable
 	private static Sdk getInternalJavaSdk(final Sdk sdk) {
 		final SdkAdditionalData data = sdk.getSdkAdditionalData();
-		if (data instanceof Tdk)
-			return ((Tdk) data).getJavaSdk();
+		if (data instanceof Tdk2)
+			return ((Tdk2) data).getJavaSdk();
 		return null;
 	}
 
@@ -266,7 +266,7 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 	}
 
 	public boolean setupSdkPaths(final Sdk sdk, SdkModel sdkModel) {
-		final Tdk additionalData = (Tdk) sdk.getSdkAdditionalData();
+		final Tdk2 additionalData = (Tdk2) sdk.getSdkAdditionalData();
 		if (additionalData != null)
 			additionalData.cleanupWatchedRoots();
 
@@ -296,7 +296,7 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 			final Sdk jdk = sdkModel.findSdk(name);
 			LOG.assertTrue(jdk != null);
 			setupSdkPaths(sdkModificator, sdk.getHomePath(), jdk);
-			sdkModificator.setSdkAdditionalData(new Tdk(getDefaultTdk(), jdk, sdk));
+			sdkModificator.setSdkAdditionalData(new Tdk2(getDefaultTdk(), jdk, sdk));
 			sdkModificator.setVersionString(jdk.getVersionString());
 			sdkModificator.commitChanges();
 			return true;
@@ -330,16 +330,16 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 	}
 
 	public void saveAdditionalData(@NotNull SdkAdditionalData additionalData, @NotNull Element additional) {
-		if (additionalData instanceof Tdk)
+		if (additionalData instanceof Tdk2)
 			try {
-				((Tdk) additionalData).writeExternal(additional);
+				((Tdk2) additionalData).writeExternal(additional);
 			} catch (WriteExternalException e) {
 				LOG.error(e);
 			}
 	}
 
 	public SdkAdditionalData loadAdditionalData(@NotNull Sdk sdk, Element additional) {
-		Tdk sandbox = new Tdk(sdk);
+		Tdk2 sandbox = new Tdk2(sdk);
 		try {
 			sandbox.readExternal(additional);
 		} catch (InvalidDataException e) {

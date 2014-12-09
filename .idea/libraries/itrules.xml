@@ -5,8 +5,9 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="file://$PROJECT_DIR$/../itrules/src" />
-      <root url="file://$PROJECT_DIR$/../itrules/rules-engine/src" />
+      <root url="file://$PROJECT_DIR$/../it-rules/gen" />
+      <root url="file://$PROJECT_DIR$/../it-rules/rules-engine/src" />
+      <root url="file://$PROJECT_DIR$/../it-rules/src" />
     </SOURCES>
   </library>
 </component>

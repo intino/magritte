@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.MessageProvider;
 
-public class Tdk implements ValidatableSdkAdditionalData, JDOMExternalizable {
+public class Tdk2 implements ValidatableSdkAdditionalData, JDOMExternalizable {
 	private static final Logger LOG = Logger.getInstance("#org.jetbrains.idea.devkit.projectRoots.TDK");
 
 	@SuppressWarnings({"WeakerAccess"})
@@ -30,7 +30,7 @@ public class Tdk implements ValidatableSdkAdditionalData, JDOMExternalizable {
 	@NonNls
 	private static final String SDK = "sdk";
 
-	public Tdk(String MagritteHome, Sdk javaSdk, Sdk currentJdk) {
+	public Tdk2(String MagritteHome, Sdk javaSdk, Sdk currentJdk) {
 		myTdkHome = MagritteHome;
 		myCurrentJdk = currentJdk;
 		if (myTdkHome != null) {
@@ -40,7 +40,7 @@ public class Tdk implements ValidatableSdkAdditionalData, JDOMExternalizable {
 	}
 
 	//readExternal()
-	public Tdk(Sdk currentSdk) {
+	public Tdk2(Sdk currentSdk) {
 		myCurrentJdk = currentSdk;
 	}
 
@@ -49,7 +49,7 @@ public class Tdk implements ValidatableSdkAdditionalData, JDOMExternalizable {
 	}
 
 	public Object clone() throws CloneNotSupportedException {
-		return new Tdk(myTdkHome, getJavaSdk(), myCurrentJdk);
+		return new Tdk2(myTdkHome, getJavaSdk(), myCurrentJdk);
 	}
 
 	public void checkValid(SdkModel sdkModel) throws ConfigurationException {

@@ -149,7 +149,7 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 	}
 
 	private void internalJdkUpdate(final Sdk sdk) {
-		final Sdk javaSdk = ((Tdk) sdk.getSdkAdditionalData()).getJavaSdk();
+		final Sdk javaSdk = ((Tdk2) sdk.getSdkAdditionalData()).getJavaSdk();
 		if (myJdksModel.getIndexOf(javaSdk) == -1) {
 			myJdksModel.addElement(javaSdk);
 		} else {
@@ -166,11 +166,11 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
       throw new ConfigurationException(TaraBundle.message("sandbox.specification"));
     }*/
 		mySandboxHome.addCurrentTextToHistory();
-		final Tdk additionalData = (Tdk) myTaraJdk.getSdkAdditionalData();
+		final Tdk2 additionalData = (Tdk2) myTaraJdk.getSdkAdditionalData();
 		if (additionalData != null) {
 			additionalData.cleanupWatchedRoots();
 		}
-		Tdk sandbox = new Tdk(mySandboxHome.getText(), (Sdk) myInternalJres.getSelectedItem(), myTaraJdk);
+		Tdk2 sandbox = new Tdk2(mySandboxHome.getText(), (Sdk) myInternalJres.getSelectedItem(), myTaraJdk);
 		final SdkModificator modificator = myTaraJdk.getSdkModificator();
 		modificator.setSdkAdditionalData(sandbox);
 		ApplicationManager.getApplication().runWriteAction(new Runnable() {
@@ -187,8 +187,8 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 		updateJdkList();
 		myFreeze = false;
 		mySandboxHome.reset();
-		if (myTaraJdk != null && myTaraJdk.getSdkAdditionalData() instanceof Tdk) {
-			final Tdk sandbox = (Tdk) myTaraJdk.getSdkAdditionalData();
+		if (myTaraJdk != null && myTaraJdk.getSdkAdditionalData() instanceof Tdk2) {
+			final Tdk2 sandbox = (Tdk2) myTaraJdk.getSdkAdditionalData();
 			final String sandboxHome = sandbox.getTdkHome();
 			mySandboxHome.setText(sandboxHome);
 			mySandboxHome.setSelectedItem(sandboxHome);
@@ -223,7 +223,7 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 		final Sdk[] sdks = mySdkModel.getSdks();
 		for (Sdk currentSdk : sdks) {
 			if (currentSdk.getSdkType() instanceof TaraJdk) {
-				final Tdk sandbox = (Tdk) currentSdk.getSdkAdditionalData();
+				final Tdk2 sandbox = (Tdk2) currentSdk.getSdkAdditionalData();
 				final Sdk internalJava = sandbox.getJavaSdk();
 				if (internalJava != null && Comparing.equal(internalJava.getName(), previousName)) {
 					sandbox.setJavaSdk(sdk);
