@@ -11,6 +11,7 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -69,7 +70,7 @@ public class FacetsGenerator {
 	private PsiClass createFacetClass(Concept concept) {
 		PsiFile file = concept.getContainingFile();
 		PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(concept.getQualifiedName(),
-			GlobalSearchScope.moduleScope(TaraUtil.getModuleOfFile(file)));
+			GlobalSearchScope.moduleScope(ModuleProvider.getModuleOfFile(file)));
 		String parent = "_" + concept.getName() + "_";
 		PsiDirectory destiny = getDestiny(concept);
 		return (aClass != null) ? aClass :

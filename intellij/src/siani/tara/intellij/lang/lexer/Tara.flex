@@ -135,7 +135,7 @@ EURO                = "€"
 PERCENTAGE          = "%"
 GRADE               = "º"
 SEMICOLON           = ";"+
-POSITIVE            = "+"
+
 AMPERSAND           = "&"
 
 WORD_TYPE           = "word"
@@ -147,11 +147,11 @@ STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
 DATE_TYPE           = "date"
 EMPTY_REF           = "empty"
-MANTISA             = "E" ({POSITIVE} | {DASH})? {DIGIT}+
+MANTISA             = "E" ({PLUS} | {DASH})? {DIGIT}+
 BOOLEAN_VALUE_KEY   = "true" | "false"
-NATURAL_VALUE_KEY   = {POSITIVE}? {DIGIT}+
+NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
-DOUBLE_VALUE_KEY    = ({POSITIVE} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {MANTISA}?
+DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {MANTISA}?
 STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
 DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
@@ -159,6 +159,7 @@ ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT}
 MEASURE_VALUE       = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})+
 
 DOC_LINE            = "#" ~[\n]
+PLUS                = "+"
 DIGIT               = [:digit:]
 
 IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
@@ -226,6 +227,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{COMMA}                         {   return TaraTypes.COMMA; }
 	{STAR}                          {   return TaraTypes.STAR;  }
 	{LIST}                          {   return TaraTypes.LIST;  }
+	{PLUS}                          {   return TaraTypes.PLUS;  }
 
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }

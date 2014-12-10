@@ -1,9 +1,5 @@
 lexer grammar TaraLexer;
 
-@header{
-package siani.tara.compiler.parser.antlr;
-}
-
 @lexer::members{
     BlockManager blockManager = new BlockManager();
     private static java.util.Queue<Token> queue = new java.util.LinkedList<>();
@@ -85,7 +81,6 @@ METAIDENTIFIER      : 'Concept';
 SUB                 : 'sub';
 
 USE                 : 'use';
-BOX                 : 'box';
 
 VAR                 : 'var';
 AS                  : 'as';

@@ -10,6 +10,7 @@ import com.intellij.ide.util.MethodCellRenderer;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Function;
@@ -27,17 +28,16 @@ import siani.tara.lang.Node;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
-import static siani.tara.lang.Annotations.Annotation.INTENTION;
-
 public class TaraFacetLineMarkerProvider extends JavaLineMarkerProvider {
 
+	private static final String FACETS_PATH = "custom";
 	private final MarkerType OVERRIDDEN_PROPERTY_TYPE = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
 			if (!Concept.class.isInstance(element)) return null;
 			Concept concept = (Concept) element;
-			PsiElement reference = ReferenceManager.resolveExternal(concept.getIdentifierNode());
+			PsiElement reference = resolveExternal(concept);
 			String start = "Facet declared in ";
 			@NonNls String pattern = null;
 			if (reference != null) pattern = reference.getNavigationElement().getContainingFile().getName();
@@ -71,24 +71,24 @@ public class TaraFacetLineMarkerProvider extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (element instanceof Concept) {
-			Concept concept = (Concept) element;
-			Model model = TaraLanguage.getMetaModel(concept.getFile());
-			if (model == null) return null;
-			Node node = findNode(concept, model);
-			if (node == null || !node.getObject().is(INTENTION)) return null;
-			PsiElement reference = ReferenceManager.resolveExternal(concept.getIdentifierNode());
-			if (reference != null) {
-				final Icon icon = AllIcons.Gutter.ImplementedMethod;
-				final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;
-				return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
-					type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
-			}
-		}
-		return super.getLineMarkerInfo(element);
+		if (!(element instanceof Concept)) return super.getLineMarkerInfo(element);
+		Concept concept = (Concept) element;
+		Model model = TaraLanguage.getMetaModel(concept.getFile());
+		if (model == null) return null;
+		Node node = model.searchNode(TaraUtil.getMetaQualifiedName(concept));
+		if (node == null) return null;
+		PsiElement reference = resolveExternal(concept);
+		if (reference != null) {
+			final Icon icon = AllIcons.Gutter.ImplementedMethod;
+			final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;
+			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
+				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
+		} else return super.getLineMarkerInfo(element);
 	}
 
-	protected Node findNode(Concept concept, Model model) {
-		return model.searchNode(TaraUtil.getMetaQualifiedName(concept));
+	private PsiElement resolveExternal(Concept concept) {
+		Project project = concept.getProject();
+		return ReferenceManager.resolveJavaClassReference(project, project.getName() + "." + FACETS_PATH + "." + concept.getName());
 	}
+
 }

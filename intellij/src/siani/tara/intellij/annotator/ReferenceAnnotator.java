@@ -55,17 +55,17 @@ public class ReferenceAnnotator extends TaraAnnotator {
 		return result != null;
 	}
 
-	public void checkWellReferenced() {
+	private void checkWellReferenced() {
 		PsiElement reference = ReferenceManager.resolve((Identifier) element);
 		if (reference == null
 			&& !checkAsMetaWord(TaraPsiImplUtil.getConceptContainerOf(element), element.getText())
 			&& !isParameterName(element)) {
 			Annotation errorAnnotation;
-			if (element instanceof IdentifierReference) {
-				List<? extends Identifier> identifierList = ((IdentifierReference) element).getIdentifierList();
+			if (element.getParent() instanceof IdentifierReference) {
+				List<? extends Identifier> identifierList = ((IdentifierReference) element.getParent()).getIdentifierList();
 				addImportAlternatives(identifierList.get(identifierList.size() - 1));
 			} else {
-				errorAnnotation = annotateAndFix(element, new AnnotateAndFix(ERROR,MESSAGE, new RemoveImportFix((TaraPsiElement) element.getParent())));
+				errorAnnotation = annotateAndFix(element, new AnnotateAndFix(ERROR, MESSAGE, new RemoveImportFix((TaraPsiElement) element.getParent())));
 				errorAnnotation.setTextAttributes(TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
 			}
 		}

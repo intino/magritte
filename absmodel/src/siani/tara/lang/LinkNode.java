@@ -10,7 +10,6 @@ public class LinkNode extends Node {
 
 	transient DeclaredNode destiny;
 	String destinyQN;
-	String destinyBox;
 	boolean reference;
 	List<Annotations.Annotation> annotations = new ArrayList<>();
 
@@ -20,7 +19,6 @@ public class LinkNode extends Node {
 	public LinkNode(DeclaredNode destiny, DeclaredNode container) {
 		this.destiny = destiny;
 		this.container = container;
-		this.destinyBox = destiny.getBox();
 	}
 
 	public LinkNode(String destinyQN, DeclaredNode container) {
@@ -34,7 +32,6 @@ public class LinkNode extends Node {
 
 	public void setDestiny(DeclaredNode destiny) {
 		this.destiny = destiny;
-		this.destinyBox = destiny.getBox();
 	}
 
 	public boolean isReference() {
@@ -88,14 +85,6 @@ public class LinkNode extends Node {
 	@Override
 	public String getName() {
 		return "";
-	}
-
-	public String getDestinyBox() {
-		return destinyBox;
-	}
-
-	public void setDestinyBox(String destinyBox) {
-		this.destinyBox = destinyBox;
 	}
 
 	@Override

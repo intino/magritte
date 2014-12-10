@@ -11,7 +11,6 @@ public abstract class Node {
 	protected transient static final String LINK = "@link";
 	protected String qualifiedName;
 	protected String file;
-	protected String box;
 	protected int line;
 	protected List<String> instanceTypes;
 	protected transient DeclaredNode container;
@@ -70,14 +69,6 @@ public abstract class Node {
 
 	public void setFile(String file) {
 		this.file = file;
-	}
-
-	public String getBox() {
-		return box;
-	}
-
-	public void setBox(String box) {
-		this.box = box;
 	}
 
 	public List<String> getImports() {

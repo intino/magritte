@@ -1,7 +1,5 @@
 // Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.4.1-dev
-
 package siani.tara.compiler.parser.antlr;
-
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -171,16 +169,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitStringAttribute(@NotNull TaraGrammar.StringAttributeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#parameterList}.
-	 * @param ctx the parse tree
-	 */
-	void enterParameterList(@NotNull TaraGrammar.ParameterListContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#parameterList}.
-	 * @param ctx the parse tree
-	 */
-	void exitParameterList(@NotNull TaraGrammar.ParameterListContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#initValue}.
 	 * @param ctx the parse tree
 	 */
@@ -190,6 +178,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInitValue(@NotNull TaraGrammar.InitValueContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#parameterList}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameterList(@NotNull TaraGrammar.ParameterListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#parameterList}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameterList(@NotNull TaraGrammar.ParameterListContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#integerValue}.
 	 * @param ctx the parse tree
@@ -331,16 +329,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitImports(@NotNull TaraGrammar.ImportsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#header}.
-	 * @param ctx the parse tree
-	 */
-	void enterHeader(@NotNull TaraGrammar.HeaderContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#header}.
-	 * @param ctx the parse tree
-	 */
-	void exitHeader(@NotNull TaraGrammar.HeaderContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#reference}.
 	 * @param ctx the parse tree
 	 */
@@ -410,16 +398,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDoc(@NotNull TaraGrammar.DocContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#box}.
-	 * @param ctx the parse tree
-	 */
-	void enterBox(@NotNull TaraGrammar.BoxContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#box}.
-	 * @param ctx the parse tree
-	 */
-	void exitBox(@NotNull TaraGrammar.BoxContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#word}.
 	 * @param ctx the parse tree

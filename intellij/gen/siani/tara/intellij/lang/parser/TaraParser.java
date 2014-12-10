@@ -73,9 +73,6 @@ public class TaraParser implements PsiParser {
     else if (t == FACET_TARGET) {
       r = facetTarget(b, 0);
     }
-    else if (t == HEADER) {
-      r = header(b, 0);
-    }
     else if (t == HEADER_REFERENCE) {
       r = headerReference(b, 0);
     }
@@ -87,6 +84,9 @@ public class TaraParser implements PsiParser {
     }
     else if (t == IMPLICIT_PARAMETER) {
       r = implicitParameter(b, 0);
+    }
+    else if (t == IMPORTS) {
+      r = imports(b, 0);
     }
     else if (t == INTEGER_VALUE) {
       r = integerValue(b, 0);
@@ -153,46 +153,30 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // NEWLINE+ USE_KEY headerReference (AS METAMODEL)?
+  // USE_KEY headerReference (AS METAMODEL)? NEWLINE
   public static boolean anImport(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "anImport")) return false;
-    if (!nextTokenIs(b, NEWLINE)) return false;
+    if (!nextTokenIs(b, USE_KEY)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = anImport_0(b, l + 1);
-    r = r && consumeToken(b, USE_KEY);
+    r = consumeToken(b, USE_KEY);
     r = r && headerReference(b, l + 1);
-    r = r && anImport_3(b, l + 1);
+    r = r && anImport_2(b, l + 1);
+    r = r && consumeToken(b, NEWLINE);
     exit_section_(b, m, AN_IMPORT, r);
     return r;
   }
 
-  // NEWLINE+
-  private static boolean anImport_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "anImport_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, NEWLINE);
-    int c = current_position_(b);
-    while (r) {
-      if (!consumeToken(b, NEWLINE)) break;
-      if (!empty_element_parsed_guard_(b, "anImport_0", c)) break;
-      c = current_position_(b);
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
   // (AS METAMODEL)?
-  private static boolean anImport_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "anImport_3")) return false;
-    anImport_3_0(b, l + 1);
+  private static boolean anImport_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "anImport_2")) return false;
+    anImport_2_0(b, l + 1);
     return true;
   }
 
   // AS METAMODEL
-  private static boolean anImport_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "anImport_3_0")) return false;
+  private static boolean anImport_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "anImport_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, AS, METAMODEL);
@@ -201,8 +185,8 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (ABSTRACT | TERMINAL | SINGLE | MULTIPLE | REQUIRED | NAMED
-  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | COMPOSED)+
+  // (PLUS? (ABSTRACT | TERMINAL | SINGLE | MULTIPLE | REQUIRED | NAMED
+  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | COMPOSED))+
   public static boolean annotations(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotations")) return false;
     boolean r;
@@ -218,10 +202,29 @@ public class TaraParser implements PsiParser {
     return r;
   }
 
-  // ABSTRACT | TERMINAL | SINGLE | MULTIPLE | REQUIRED | NAMED
-  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | COMPOSED
+  // PLUS? (ABSTRACT | TERMINAL | SINGLE | MULTIPLE | REQUIRED | NAMED
+  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | COMPOSED)
   private static boolean annotations_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotations_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = annotations_0_0(b, l + 1);
+    r = r && annotations_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // PLUS?
+  private static boolean annotations_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "annotations_0_0")) return false;
+    consumeToken(b, PLUS);
+    return true;
+  }
+
+  // ABSTRACT | TERMINAL | SINGLE | MULTIPLE | REQUIRED | NAMED
+  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | COMPOSED
+  private static boolean annotations_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "annotations_0_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, ABSTRACT);
@@ -909,16 +912,6 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // imports?
-  public static boolean header(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "header")) return false;
-    Marker m = enter_section_(b, l, _NONE_, "<header>");
-    imports(b, l + 1);
-    exit_section_(b, l, m, HEADER, true, false, null);
-    return true;
-  }
-
-  /* ********************************************************** */
   // hierarchy* identifier
   public static boolean headerReference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "headerReference")) return false;
@@ -1041,21 +1034,44 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // anImport+
-  static boolean imports(PsiBuilder b, int l) {
+  // (anImport NEWLINE*)+
+  public static boolean imports(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "imports")) return false;
-    if (!nextTokenIs(b, NEWLINE)) return false;
+    if (!nextTokenIs(b, USE_KEY)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = anImport(b, l + 1);
+    r = imports_0(b, l + 1);
     int c = current_position_(b);
     while (r) {
-      if (!anImport(b, l + 1)) break;
+      if (!imports_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "imports", c)) break;
       c = current_position_(b);
     }
+    exit_section_(b, m, IMPORTS, r);
+    return r;
+  }
+
+  // anImport NEWLINE*
+  private static boolean imports_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "imports_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = anImport(b, l + 1);
+    r = r && imports_0_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // NEWLINE*
+  private static boolean imports_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "imports_0_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!consumeToken(b, NEWLINE)) break;
+      if (!empty_element_parsed_guard_(b, "imports_0_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
   }
 
   /* ********************************************************** */
@@ -1647,16 +1663,14 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // NEWLINE* header? NEWLINE+ (concept NEWLINE+)*
+  // NEWLINE* imports? (concept NEWLINE+)*
   static boolean root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root")) return false;
-    if (!nextTokenIs(b, NEWLINE)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = root_0(b, l + 1);
     r = r && root_1(b, l + 1);
     r = r && root_2(b, l + 1);
-    r = r && root_3(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1673,62 +1687,46 @@ public class TaraParser implements PsiParser {
     return true;
   }
 
-  // header?
+  // imports?
   private static boolean root_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_1")) return false;
-    header(b, l + 1);
+    imports(b, l + 1);
     return true;
   }
 
-  // NEWLINE+
+  // (concept NEWLINE+)*
   private static boolean root_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, NEWLINE);
-    int c = current_position_(b);
-    while (r) {
-      if (!consumeToken(b, NEWLINE)) break;
-      if (!empty_element_parsed_guard_(b, "root_2", c)) break;
-      c = current_position_(b);
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (concept NEWLINE+)*
-  private static boolean root_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_3")) return false;
     int c = current_position_(b);
     while (true) {
-      if (!root_3_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "root_3", c)) break;
+      if (!root_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "root_2", c)) break;
       c = current_position_(b);
     }
     return true;
   }
 
   // concept NEWLINE+
-  private static boolean root_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_3_0")) return false;
+  private static boolean root_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = concept(b, l + 1);
-    r = r && root_3_0_1(b, l + 1);
+    r = r && root_2_0_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // NEWLINE+
-  private static boolean root_3_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_3_0_1")) return false;
+  private static boolean root_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_2_0_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, NEWLINE);
     int c = current_position_(b);
     while (r) {
       if (!consumeToken(b, NEWLINE)) break;
-      if (!empty_element_parsed_guard_(b, "root_3_0_1", c)) break;
+      if (!empty_element_parsed_guard_(b, "root_2_0_1", c)) break;
       c = current_position_(b);
     }
     exit_section_(b, m, null, r);

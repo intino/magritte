@@ -229,7 +229,7 @@ public class Model {
 			if (node != null && !node.equals(context)) return node;
 			container = container.getContainer();
 		}
-		return (DeclaredNode) get(context.getBox() + "." + path);
+		return (DeclaredNode) get(path);
 	}
 
 	public void sortNodeTable(Comparator<String> comparator) {

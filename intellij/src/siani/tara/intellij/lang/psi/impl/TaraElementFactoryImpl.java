@@ -7,8 +7,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 
-import java.util.Collection;
-
 public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	private final Project project;
@@ -19,8 +17,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public Concept createConcept(String name) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"box project.mod.tara\n\n" +
-				"Concept " + name + "\n" +
+			"Concept " + name + "\n" +
 				"\tvar reference uid"
 		);
 		return file.getConcepts().iterator().next();
@@ -36,8 +33,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public Variable createAttribute(String name, String type) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"box project.mod.tara\n" +
-				"Concept Dummy\n" +
+			"Concept Dummy\n" +
 				"\tvar " + type + " " + name + "\n" +
 				"\tConcept Dummy2\n"
 		);
@@ -47,8 +43,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public Variable createResource(String name, String type) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"box project.mod.tara\n" +
-				"Concept Source\n" +
+			"Concept Source\n" +
 				"\tvar resource:" + type + " " + name + "\n" +
 				"\tConcept Ontology\n"
 		);
@@ -59,8 +54,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public PsiElement createMetaWordIdentifier(String module, String node, String name) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"box " + "project." + module + ".tara\n" +
-				node + "(" + node + "." + name + ")" + " Dummy" + "\n"
+			node + "(" + node + "." + name + ")" + " Dummy" + "\n"
 		);
 		Parameter[] parameters = PsiTreeUtil.getChildOfType(file, Concept.class).getSignature().getParameters().getParameters();
 		return parameters[0].getLastChild().getLastChild();
@@ -69,8 +63,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public Variable createWord(String name, String[] types) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"box project.mod.tara\n" +
-				"Concept Dummy\n" +
+			"Concept Dummy\n" +
 				"\tvar word " + name + "\n" +
 				getWordTypesToString(types));
 		Body body = PsiTreeUtil.getChildOfType(file, Concept.class).getBody();
@@ -84,14 +77,12 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 
-	public Import createImport(String reference) {
+	public TaraImports createImport(String reference) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"box project.mod.tara\n" +
-				"use " + reference + "\n\n" +
+			"use " + reference + "\n" +
 				"Concept Source\n"
 		);
-		Collection<Import> imp = file.getImports();
-		return imp.iterator().next();
+		return PsiTreeUtil.getChildrenOfType(file, TaraImports.class)[0];
 	}
 
 	public PsiElement createNewLine() {
@@ -102,8 +93,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public Parameters createParameters(boolean string) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"box project.mod.tara\n" +
-				"Form(" + (string ? "\"\"" : "") + ")" + "Ficha\n"
+			"Form(" + (string ? "\"\"" : "") + ")" + "Ficha\n"
 		);
 		return file.getConcepts().iterator().next().getSignature().getParameters();
 	}
@@ -112,8 +102,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	public Parameters createParameters(String... names) {
 		String parameters = buildParameters(names);
 		final TaraBoxFileImpl file = createDummyFile(
-			"box project.mod.tara\n" +
-				"Form(" + parameters + ")" + " Ficha\n"
+			"Form(" + parameters + ")" + " Ficha\n"
 		);
 		return file.getConcepts().iterator().next().getSignature().getParameters();
 	}
@@ -130,8 +119,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		if (addr.length() < 9)
 			addr = format(addr);
 		final TaraBoxFileImpl file = createDummyFile(
-			"box project.mod.tara\n" +
-				"Form Ficha &" + addr.substring(0, 3) + "." + addr.substring(3, 6) + "." + addr.substring(6, 9) + "\n"
+			"Form Ficha &" + addr.substring(0, 3) + "." + addr.substring(3, 6) + "." + addr.substring(6, 9) + "\n"
 		);
 		return file.getConcepts().iterator().next().getAddress();
 	}
@@ -146,8 +134,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public TaraAnnotations createAnnotation(String annotation) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"box project.mod.tara\n" +
-				"Form Ficha is " + annotation + "\n"
+			"Form Ficha is " + annotation + "\n"
 		);
 		TaraConcept next = (TaraConcept) file.getConcepts().iterator().next();
 		return next.getAnnotationsAndFacets().getAnnotationsList().get(0);
@@ -156,13 +143,10 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	@Override
 	public TaraAnnotationsAndFacets createAnnotationAndFacetWith(String annotation) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"box project.mod.tara\n" +
-				"Form Ficha is " + annotation + "\n"
+			"Form Ficha is " + annotation + "\n"
 		);
 		TaraConcept next = (TaraConcept) file.getConcepts().iterator().next();
 		return next.getAnnotationsAndFacets();
-
-
 	}
 
 }

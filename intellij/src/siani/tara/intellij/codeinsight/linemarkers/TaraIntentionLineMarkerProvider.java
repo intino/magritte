@@ -10,6 +10,7 @@ import com.intellij.ide.util.MethodCellRenderer;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Function;
@@ -25,13 +26,14 @@ import java.awt.event.MouseEvent;
 
 public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 
+	private static final String INTENTIONS_PATH = "intentions";
+
 	private final MarkerType OVERRIDDEN_PROPERTY_TYPE = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
 			if (!((element instanceof Concept && ((Concept) element).isIntention()))) return null;
-			Concept concept = (Concept) element;
-			PsiElement reference = ReferenceManager.resolveExternal(concept.getIdentifierNode());
+			PsiElement reference = resolveExternal((Concept) element);
 			String start = "Intention declared in ";
 			@NonNls String pattern = null;
 			if (reference != null) pattern = reference.getNavigationElement().getContainingFile().getName();
@@ -63,8 +65,7 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
 		if (element instanceof Concept && ((Concept) element).isIntention()) {
-			Concept concept = (Concept) element;
-			PsiElement reference = ReferenceManager.resolve(concept.getIdentifierNode());
+			PsiElement reference = resolveExternal((Concept) element);
 			if (reference != null) {
 				final Icon icon = AllIcons.Gutter.ImplementedMethod;
 				final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;
@@ -73,5 +74,10 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 			}
 		}
 		return super.getLineMarkerInfo(element);
+	}
+
+	private PsiElement resolveExternal(Concept concept) {
+		Project project = concept.getProject();
+		return ReferenceManager.resolveJavaClassReference(project, project.getName() + "." + INTENTIONS_PATH + "." + concept.getName());
 	}
 }

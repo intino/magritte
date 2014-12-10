@@ -1,15 +1,12 @@
 package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.codeinsight.JavaHelper;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.project.module.ModuleProvider;
 
 import java.util.*;
 
@@ -30,7 +27,7 @@ public class ReferenceManager {
 		if (identifier.getParent() instanceof IdentifierReference)
 			return resolveConcept(identifier, getIdentifiersOfReference(identifier));
 		if (identifier.getParent() instanceof HeaderReference)
-			return resolveHeaderReference(identifier, getPathFromHeader(identifier));
+			return resolveHeaderReference(identifier);
 		if (identifier.getParent() instanceof Signature)
 			return identifier;
 		return null;
@@ -49,15 +46,8 @@ public class ReferenceManager {
 		return reference;
 	}
 
-	private static PsiElement resolveHeaderReference(Identifier identifier, List<Identifier> path) {
-		VirtualFile file = resolveBoxPath(path);
-		if (file != null) {
-			if (file.isDirectory())
-				return resolvePackageReference(identifier.getProject(), join(path.subList(2, path.size()), '.'));
-			if ("iml".equals(file.getExtension()) || "xml".equals(file.getExtension()))
-				return PsiManager.getInstance(path.get(0).getProject()).findFile(file);
-		} else return resolveInnerConcept(path);
-		return PsiManager.getInstance(identifier.getProject()).findFile(file);
+	private static PsiElement resolveHeaderReference(Identifier identifier) {
+		return resolveBoxPath(identifier);
 	}
 
 	private static PsiElement resolveExternalReference(Identifier identifier) {
@@ -65,11 +55,6 @@ public class ReferenceManager {
 //		String path = box.getHeaderReference().getText() + "." + TaraUtil.composeConceptQN(identifier);
 //		return resolveJavaClassReference(identifier.getProject(), path);
 		return null;//TODO
-	}
-
-	private static List<Identifier> getPathFromHeader(Identifier identifier) {
-		List<Identifier> path = (List<Identifier>) ((HeaderReference) (identifier.getParent())).getIdentifierList();
-		return path.subList(0, path.indexOf(identifier) + 1);
 	}
 
 	private static List<Identifier> getIdentifiersOfReference(Identifier identifier) {
@@ -107,29 +92,12 @@ public class ReferenceManager {
 	}
 
 	private static PsiElement tryToResolveAsQN(List<Identifier> path) {
-		if (path.size() <= 2) return searchAsProjectOrModule(path);
-		if (!projectAndModuleWellReference(path)) return null;
-		VirtualFile resolve = null;
-		int i = path.size();
-		while (i > 2 && resolve == null)
-			resolve = resolveBoxPath(path.subList(0, i--));
-		if (resolve == null || i < 2) return null;
-		List<Identifier> qn = path.subList(i + 1, path.size());
-		PsiFile file = PsiManager.getInstance(path.get(0).getProject()).findFile(resolve);
-		if (qn.isEmpty()) return file;
-		return tryToResolveInBox((TaraBoxFile) file, qn);
-	}
-
-	private static PsiElement searchAsProjectOrModule(List<Identifier> path) {
-		return resolveHeaderReference(path.get(path.size() - 1), path);
-	}
-
-	private static boolean projectAndModuleWellReference(List<Identifier> path) {
-		Project project = path.get(0).getProject();
-		if (path.get(0).getText().equalsIgnoreCase(project.getName())) return true;
-		if (path.size() == 1) return false;
-		Module module = TaraUtil.getModuleOfFile(path.get(0).getContainingFile());
-		return path.get(1).getText().equalsIgnoreCase(module.getName());
+		TaraBoxFileImpl resolve;
+		resolve = resolveBoxPath(path.get(0));
+		if (resolve == null || path.size() == 0) return null;
+		List<Identifier> qn = path.subList(1, path.size());
+		if (qn.isEmpty()) return resolve;
+		return tryToResolveInBox(resolve, qn);
 	}
 
 	private static ArrayList<Concept> toArrayList(Set<Concept> set) {
@@ -184,7 +152,6 @@ public class ReferenceManager {
 			Concept aggregated = resolvePathInConcept((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
 			if (aggregated != null) return aggregated.isAnnotatedAsAggregated();
 		}
-
 		return false;
 	}
 
@@ -212,54 +179,22 @@ public class ReferenceManager {
 		return reference;
 	}
 
-	private static PsiElement resolveInnerConcept(List<Identifier> path) {
-		int i;
-		VirtualFile file = null;
-		for (i = path.size() - 1; i >= 0; i--) {
-			file = resolveBoxPath(path.subList(0, i));
-			if (file != null) break;
-		}
-		if (file != null) {
-			PsiFile file1 = PsiManager.getInstance(path.get(0).getProject()).findFile(file);
-			if (!TaraBoxFile.class.isInstance(file1)) return null;
-			TaraBoxFile taraBoxFile = (TaraBoxFile) file1;
-			for (Concept prime : taraBoxFile.getConcepts()) {
-				Concept aConcept = resolvePathInConcept(path, prime);
-				if (aConcept != null) return aConcept;
-			}
-		}
-		return null;
-	}
-
 	private static PsiElement resolvePackageReference(Project project, String path) {
 		return (PsiElement) JavaHelper.getJavaHelper(project).findPackage(path);
 	}
 
-	private static PsiElement resolveJavaClassReference(Project project, String path) {
+	public static PsiElement resolveJavaClassReference(Project project, String path) {
 		return JavaHelper.getJavaHelper(project).findClass(path);
 	}
 
-	public static VirtualFile resolveBoxPath(List<? extends Identifier> boxPath) {
-		if (boxPath.isEmpty()) return null;
-		Project project = boxPath.get(0).getProject();
-		if (boxPath.size() == 1) {
-			if (project.getName().toLowerCase().equals(boxPath.get(0).getText()))
-				return project.getProjectFile();
-			else return null;
-		}
-		if (boxPath.size() == 2) {
-			Module moduleByName = ModuleManager.getInstance(project).findModuleByName(boxPath.get(1).getText());
-			if (moduleByName == null) return null;
-			return moduleByName.getModuleFile();
-		}
-		return resolveBoxInSourcePath(boxPath.subList(2, boxPath.size()), project);
-	}
-
-	public static VirtualFile resolveBoxInSourcePath(List<? extends Identifier> boxPath, Project project) {
-		VirtualFile file = TaraUtil.getSourcePath(project, boxPath.get(0).getContainingFile());
-		for (Identifier identifier : boxPath)
-			file = TaraUtil.findChildFileOf(file, identifier.getText());
-		return file;
+	public static TaraBoxFileImpl resolveBoxPath(Identifier identifier) {
+		TaraBoxFile containingFile = (TaraBoxFile) identifier.getContainingFile();
+		if (containingFile == null || containingFile.getVirtualFile() == null) return null;
+		Module moduleOfDocument = ModuleProvider.getModuleOfFile(containingFile);
+		List<TaraBoxFileImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(moduleOfDocument);
+		for (TaraBoxFileImpl taraBoxFile : taraFilesOfModule)
+			if (taraBoxFile.getPresentableName().equals(identifier.getText())) return taraBoxFile;
+		return null;
 	}
 
 	private static PsiElement tryToResolveOnImportedBoxes(List<Identifier> path) {

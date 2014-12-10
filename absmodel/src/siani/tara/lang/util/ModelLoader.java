@@ -58,7 +58,7 @@ public class ModelLoader {
 		for (Node inner : node.getInnerNodes())
 			if (inner instanceof LinkNode) {
 				LinkNode linkNode = (LinkNode) inner;
-				Node destiny = model.searchNode(linkNode.getDestinyQN().replace(linkNode.getDestinyBox() + ".", ""));
+				Node destiny = model.searchNode(linkNode.getDestinyQN());
 				linkNode.setDestiny((DeclaredNode) destiny);
 			} else restoreDestinyLinks(inner, model);
 	}
@@ -80,8 +80,7 @@ public class ModelLoader {
 		for (Node inner : node.getInnerNodes()) {
 			if (inner instanceof LinkNode) {
 				LinkNode linkNode = (LinkNode) inner;
-				String replace = linkNode.getDestinyQN().replace(linkNode.getDestinyBox() + ".", "");
-				DeclaredNode destiny = (DeclaredNode) aModel.searchNode(replace);
+				DeclaredNode destiny = (DeclaredNode) aModel.searchNode(linkNode.getDestinyQN());
 				linkNode.setDestiny(destiny);
 			} else {
 				processCases(aModel, nodeTable, inner);

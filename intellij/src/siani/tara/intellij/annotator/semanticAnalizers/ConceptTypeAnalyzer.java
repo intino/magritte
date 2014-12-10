@@ -45,8 +45,10 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 			for (TaraConceptReference incorrectInnerLink : getIncorrectInnerLinks(concept, model))
 				results.put(incorrectInnerLink, new AnnotateAndFix(ERROR, MessageProvider.message("Unknown.concept")));
 		} else if (isConceptType()) {
-			if (!hasName()) addError("Concept without name");
-			else if (!isWellPositioned()) addError("Concept in bad position");
+			if (!hasName())
+				addError("Concept without name");
+			else if (!isWellPositioned())
+				addError("Concept in bad position");
 		}
 	}
 
@@ -64,7 +66,10 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 
 	private boolean isWellPositioned() {
 		IElementType elementType = getPreviousToken(concept);
-		return elementType.equals(TaraTypes.NEWLINE) || elementType.equals(TaraTypes.NEW_LINE_INDENT);
+		return elementType == null
+			|| TaraTypes.IMPORTS.equals(elementType)
+			|| TaraTypes.NEWLINE.equals(elementType)
+			|| TaraTypes.NEW_LINE_INDENT.equals(elementType);
 	}
 
 	private boolean analyzeModelCoherence() {
@@ -73,6 +78,7 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 
 	private IElementType getPreviousToken(Concept concept) {
 		PsiElement prevSibling = concept.getPsiElement().getPrevSibling();
+		if (prevSibling == null) return null;
 		while (prevSibling.getNode().getElementType() == TokenType.WHITE_SPACE)
 			prevSibling = prevSibling.getPrevSibling();
 		return prevSibling.getNode().getElementType();

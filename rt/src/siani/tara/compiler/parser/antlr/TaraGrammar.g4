@@ -1,17 +1,11 @@
 parser grammar TaraGrammar;
 options { tokenVocab=TaraLexer; }
 
-@header{
-package siani.tara.compiler.parser.antlr;
-}
 
-root: NEWLINE* header? NEWLINE* (concept NEWLINE*)* EOF;
+root: imports? NEWLINE* (concept NEWLINE*)* EOF;
 
-header :  box? imports?;
-box : BOX headerReference;
-
-imports :  anImport+;
-anImport: NEWLINE+ USE headerReference (AS IDENTIFIER)?;
+imports : anImport+;
+anImport: NEWLINE* USE headerReference (AS IDENTIFIER)? NEWLINE;
 
 doc: DOC+;
 concept: doc? signature annotations? body?;

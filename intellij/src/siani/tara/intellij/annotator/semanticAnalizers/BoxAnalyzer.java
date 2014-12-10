@@ -1,15 +1,13 @@
 package siani.tara.intellij.annotator.semanticAnalizers;
 
-import com.intellij.openapi.vfs.VirtualFile;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.annotator.fix.AddMetamodelReferenceFix;
 import siani.tara.intellij.annotator.fix.ImportMetamodelFix;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.TaraHeaderReference;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
-import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Model;
 
 import static siani.tara.intellij.MessageProvider.message;
@@ -26,19 +24,11 @@ public class BoxAnalyzer extends TaraAnalyzer {
 	@Override
 	public void analyze() {
 		TaraBoxFile file = (TaraBoxFile) boxReference.getContainingFile();
-		if (analyzeWellPlaced())
-			results.put(boxReference, new AnnotateAndFix(ERROR, message("mismatched.box.reference")));
 		if (!hasErrors) analyzeMetamodelExistence(file);
 	}
 
-	private boolean analyzeWellPlaced() {
-		VirtualFile file = ReferenceManager.resolveBoxPath(boxReference.getIdentifierList());
-		VirtualFile containingFile = boxReference.getContainingFile().getVirtualFile();
-		return !containingFile.equals(file);
-	}
-
 	private void analyzeMetamodelExistence(TaraBoxFile file) {
-		String metamodelName = ModuleConfiguration.getInstance(TaraUtil.getModuleOfFile(file)).getMetamodelName();
+		String metamodelName = ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(file)).getMetamodelName();
 		if (hasErrors = (file.getParentModel() == null && metamodelName != null && !metamodelName.isEmpty()))
 			results.put(file, new AnnotateAndFix(ERROR, message("model.not.found"), new AddMetamodelReferenceFix(file)));
 		else if (metamodelName != null && !metamodelName.isEmpty()) {

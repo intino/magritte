@@ -30,12 +30,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterBox(@NotNull BoxContext ctx) {
-		box = ctx.headerReference().getText();
-		imports.clear();
-	}
-
-	@Override
 	public void enterAnImport(@NotNull AnImportContext ctx) {
 		String name = ctx.headerReference().getText();
 		if (ctx.IDENTIFIER() != null) {
@@ -102,7 +96,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	private void addHeaderInformation(ParserRuleContext ctx, Node node) {
 		node.setLine(ctx.getStart().getLine());
 		node.setFile(file);
-		node.setBox(box);
 		node.addImports(imports);
 	}
 

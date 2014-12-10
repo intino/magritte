@@ -8,7 +8,6 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.impl.source.tree.ChangeUtil;
 import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -24,7 +23,7 @@ import javax.swing.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.Iterator;
 
 public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 
@@ -45,7 +44,7 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 
 	@NotNull
 	public String getPresentableName() {
-		return getName().split("\\.")[0];
+		return getName().substring(0, getName().lastIndexOf("."));
 	}
 
 	@Override
@@ -87,9 +86,9 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 
 	@Override
 	public String getParentModel() {
-		TaraHeader[] header = PsiTreeUtil.getChildrenOfType(this, TaraHeader.class);
-		if (header == null) return null;
-		TaraAnImport[] imports = PsiTreeUtil.getChildrenOfType(header[0], TaraAnImport.class);
+		TaraImports[] taraImports = PsiTreeUtil.getChildrenOfType(this, TaraImports.class);
+		if (taraImports == null) return null;
+		TaraAnImport[] imports = PsiTreeUtil.getChildrenOfType(taraImports[0], TaraAnImport.class);
 		if (imports == null || imports.length == 0) return null;
 		for (TaraAnImport anImport : imports) {
 			if (anImport.isMetamodelImport()) return anImport.getHeaderReference().getText();
@@ -100,9 +99,9 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 	@Override
 	@NotNull
 	public Collection<Import> getImports() {
-		TaraHeader[] header = PsiTreeUtil.getChildrenOfType(this, TaraHeader.class);
-		if (header == null) return Collections.EMPTY_LIST;
-		Import[] imports = PsiTreeUtil.getChildrenOfType(header[0], Import.class);
+		TaraImports[] taraImports = PsiTreeUtil.getChildrenOfType(this, TaraImports.class);
+		if (taraImports == null) return Collections.EMPTY_LIST;
+		Import[] imports = PsiTreeUtil.getChildrenOfType(taraImports[0], Import.class);
 		return imports != null ? Arrays.asList(imports) : Collections.EMPTY_LIST;
 	}
 
@@ -132,14 +131,31 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 
 	@Override
 	public Import addImport(String reference) {
-		Import anImport = TaraElementFactory.getInstance(getProject()).createImport(reference);
-		return (Import) addImport(anImport);
+		TaraImports imports = TaraElementFactory.getInstance(getProject()).createImport(reference);
+		return (Import) addImport(imports);
 	}
 
-	private PsiElement addImport(Import anImport) {
-		final TreeElement copy = ChangeUtil.copyToElement(anImport);
-		PsiElement psi = copy.getPsi();
-		PsiTreeUtil.getChildrenOfType(this, TaraHeader.class)[0].add(psi);
-		return psi;
+	private PsiElement addImport(TaraImports imports) {
+		final TreeElement copy = ChangeUtil.copyToElement(imports);
+		TaraImports psi = (TaraImports) copy.getPsi();
+		return this.getImports().isEmpty() ? addTaraImport(psi) : addImportToList(psi);
+	}
+
+	private TaraAnImport addTaraImport(TaraImports psi) {
+		TaraAnImport anImport = ((TaraImports) this.addBefore(psi, findImportAnchor())).getAnImportList().get(0);
+		anImport.add(TaraElementFactoryImpl.getInstance(psi.getProject()).createNewLine());
+		return anImport;
+	}
+
+	private PsiElement findImportAnchor() {
+		Iterator<Concept> iterator = this.getConcepts().iterator();
+		if (iterator.hasNext()) return iterator.next();
+		return this.getFirstChild();
+	}
+
+	private Import addImportToList(TaraImports psi) {
+		TaraImports taraImports = PsiTreeUtil.getChildrenOfType(this, TaraImports.class)[0];
+		return (Import) taraImports.addBefore(psi.getAnImportList().get(0), taraImports.getAnImportList().get(0));
+
 	}
 }

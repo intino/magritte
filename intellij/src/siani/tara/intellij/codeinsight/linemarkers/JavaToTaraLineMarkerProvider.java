@@ -18,6 +18,7 @@ public class JavaToTaraLineMarkerProvider extends RelatedItemLineMarkerProvider 
 		if (element instanceof PsiClass) {
 			PsiClass psiClass = (PsiClass) element;
 			psiClass.getQualifiedName();
+			if(element.getContainingFile() == null) return;
 			Concept concept = TaraUtil.findConceptByQN(psiClass.getQualifiedName(), element.getContainingFile());
 			if (concept != null) {
 				NavigationGutterIconBuilder<PsiElement> builder =

@@ -74,10 +74,6 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitHeader(@NotNull TaraHeader o) {
-    visitPsiElement(o);
-  }
-
   public void visitHeaderReference(@NotNull TaraHeaderReference o) {
     visitHeaderReference(o);
   }
@@ -92,6 +88,10 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitImplicitParameter(@NotNull TaraImplicitParameter o) {
     visitParameter(o);
+  }
+
+  public void visitImports(@NotNull TaraImports o) {
+    visitPsiElement(o);
   }
 
   public void visitIntegerValue(@NotNull TaraIntegerValue o) {

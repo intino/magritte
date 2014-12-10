@@ -19,7 +19,7 @@ public abstract class TaraElementFactory {
 
 	public abstract Variable createAttribute(String name, String type);
 
-	public abstract Import createImport(String reference);
+	public abstract TaraImports createImport(String reference);
 
 	public abstract PsiElement createNewLine();
 

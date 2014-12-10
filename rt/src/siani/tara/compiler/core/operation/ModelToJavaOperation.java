@@ -126,7 +126,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			Document document = new Document();
 			long buildNumber = compilationUnit.getConfiguration().getBuildNumber();
 			ruleEngine.render(creator.createBoxFrame(nodes, collectParentBoxes(nodes), buildNumber), document);
-			map.put(composeBoxPackagePath(nodes.get(0).getBox()) + "Box", document);
+//			map.put(composeBoxPackagePath(nodes.get(0).getBox()) + "Box", document);
 		}
 		return map;
 	}
@@ -153,7 +153,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		Set<String> boxes = new HashSet<>();
 		for (Node node : nodes) {
 			if (node.getObject().is(TERMINAL) && !node.getModelOwner().equals(model.getModelName())) continue;
-			boxes.add(parent.searchNode(node.getObject().getMetaQN()).getBox());
+//			boxes.add(parent.searchNode(node.getObject().getMetaQN()).getBox());
 		}
 		return boxes;
 	}
@@ -161,9 +161,9 @@ public class ModelToJavaOperation extends ModelOperation {
 	private List<List<Node>> groupByBox(NodeTree treeModel) {
 		Map<String, List<Node>> nodes = new HashMap();
 		for (Node node : treeModel) {
-			if (!nodes.containsKey(node.getBox()))
-				nodes.put(node.getBox(), new ArrayList<Node>());
-			nodes.get(node.getBox()).add(node);
+//			if (!nodes.containsKey(node.getBox()))
+//				nodes.put(node.getBox(), new ArrayList<Node>());
+//			nodes.get(node.getBox()).add(node);
 		}
 		List<List<Node>> lists = new ArrayList<>();
 		for (List<Node> nodeList : nodes.values())

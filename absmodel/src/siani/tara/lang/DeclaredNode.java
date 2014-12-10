@@ -51,9 +51,10 @@ public class DeclaredNode extends Node {
 		if (container != null && !getObject().isSub())
 			return container.getQualifiedName() +
 				(isInFacetTargetParent() ? IN_FACET_TARGET + "(" + this.getFacetTargetParent().getDestinyName() + ")" : "") + "." + name;
-		if (getObject().isSub())
-			return getContainer().getQualifiedName().substring(0, getContainer().getQualifiedName().lastIndexOf(".")) + "." + name;
-		else return getBox() + "." + name;
+		if (getObject().isSub()) {
+			String containerName = getContainer().getQualifiedName();
+			return (containerName.contains(".") ? containerName.substring(0, containerName.lastIndexOf(".")) + "." : "") + name;
+		} else return name;
 	}
 
 	public boolean isSub() {

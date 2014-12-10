@@ -7,6 +7,7 @@ import siani.tara.intellij.annotator.fix.AddAnnotationFix;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -30,7 +31,7 @@ public class AggregatedAnalyzer extends TaraAnalyzer {
 		Model metamodel = getMetamodel(concept);
 		if (metamodel == null) return;
 		Node node = TaraUtil.findNode(concept, metamodel);
-		boolean terminal = ModuleConfiguration.getInstance(TaraUtil.getModuleOfFile(concept.getContainingFile())).isTerminal();
+		boolean terminal = ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(concept.getContainingFile())).isTerminal();
 		if (hasErrors = !terminal & node.isAggregated() && !concept.isAggregated())
 			results.put(concept.getSignature(),
 				new TaraAnnotator.AnnotateAndFix(ERROR, "This concept should be aggregated", new AddAnnotationFix(concept, AGGREGATED)));

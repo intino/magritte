@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -133,14 +134,6 @@ public class TaraUtil {
 		}
 	}
 
-	public static VirtualFile findChildFileOf(VirtualFile file, String name) {
-		if (file == null || file.getChildren() == null) return null;
-		for (VirtualFile virtualFile : file.getChildren())
-			if (virtualFile.getName().split("\\.")[0].equals(name))
-				return virtualFile;
-		return null;
-	}
-
 	@NotNull
 	public static Collection<Concept> getInnerConceptsOf(Concept concept) {
 		return TaraPsiImplUtil.getInnerConceptsOf(concept);
@@ -152,10 +145,6 @@ public class TaraUtil {
 			if (child.getName() != null && child.getName().equals(name))
 				return child;
 		return null;
-	}
-
-	public static VirtualFile getSourcePath(Project project, PsiFile psiFile) {
-		return ProjectRootManager.getInstance(project).getFileIndex().getSourceRootForFile(psiFile.getOriginalFile().getVirtualFile());
 	}
 
 	public static TaraBoxFile getOrCreateFile(String destiny, Project project) {
@@ -181,11 +170,6 @@ public class TaraUtil {
 		return result;
 	}
 
-	public static Module getModuleOfFile(PsiFile file) {
-		ProjectFileIndex fileIndex = ProjectRootManager.getInstance(file.getProject()).getFileIndex();
-		VirtualFile vfile = (file.getVirtualFile() != null) ? file.getVirtualFile() : file.getOriginalFile().getVirtualFile();
-		return fileIndex.getModuleForFile(vfile);
-	}
 
 	public static Module getModuleOfDirectory(PsiDirectory file) {
 		ProjectFileIndex fileIndex = ProjectRootManager.getInstance(file.getProject()).getFileIndex();
@@ -193,21 +177,11 @@ public class TaraUtil {
 	}
 
 	public static boolean isTerminalBox(TaraBoxFileImpl boxFile) {
-		return ModuleConfiguration.getInstance(TaraUtil.getModuleOfFile(boxFile)).isTerminal();
-	}
-
-	public static String composeConceptQN(Identifier identifier) {
-		Concept concept = getConceptContainerOf(identifier);
-		String path = concept.getName();
-		while (concept != null) {
-			concept = getConceptContainerOf(concept);
-			if (concept != null) path = concept.getName() + "." + path;
-		}
-		return path;
+		return ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(boxFile)).isTerminal();
 	}
 
 	public static Concept findConceptByQN(String qualifiedName, PsiFile file) {
-		List<TaraBoxFileImpl> filesOfModule = getTaraFilesOfModule(getModuleOfFile(file));
+		List<TaraBoxFileImpl> filesOfModule = getTaraFilesOfModule(ModuleProvider.getModuleOfFile(file));
 		for (TaraBoxFileImpl taraFile : filesOfModule)
 			for (Concept concept : getRootConceptsOfFile(taraFile))
 				if (concept.getQualifiedName().equalsIgnoreCase(qualifiedName)) return concept;

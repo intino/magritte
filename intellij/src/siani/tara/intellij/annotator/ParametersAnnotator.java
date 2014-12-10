@@ -13,6 +13,7 @@ import siani.tara.intellij.lang.psi.Signature;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.*;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class ParametersAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		if (!Signature.class.isInstance(element)) return;
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(element);
-		boolean system = ModuleConfiguration.getInstance(TaraUtil.getModuleOfFile(element.getContainingFile())).isTerminal();
+		boolean system = ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(element.getContainingFile())).isTerminal();
 		if (isLinkConcept(concept)) return;
 		Model heritage = TaraLanguage.getMetaModel(element.getContainingFile());
 		Node node;

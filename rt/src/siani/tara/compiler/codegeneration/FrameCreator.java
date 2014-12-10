@@ -18,8 +18,6 @@ public class FrameCreator {
 	public Frame createNodeFrame(Node node) {
 		this.initNode = node;
 		final Frame frame = new Frame("Morph");
-		String box = node.getBox();
-		frame.addSlot("box", box);
 		if (!PathFormatter.composeMorphPackagePath(node.getQualifiedName()).isEmpty())
 			frame.addSlot("package", PathFormatter.composeMorphPackagePath(node.getQualifiedName()));
 		add(node, frame);
@@ -29,8 +27,8 @@ public class FrameCreator {
 
 	public Frame createBoxFrame(List<Node> nodes, Collection<String> parentBoxes, long buildNumber) {
 		Frame frame = new Frame("Box");
-		String name = nodes.get(0).getBox().substring(nodes.get(0).getBox().lastIndexOf(SEPARATOR) + 1);
-		String box = nodes.get(0).getBox().substring(0, nodes.get(0).getBox().lastIndexOf(SEPARATOR));
+		String name = "nodes.get(0).getBox().substring(nodes.get(0).getBox().lastIndexOf(SEPARATOR) + 1)";//TODO
+		String box = "nodes.get(0).getBox().substring(0, nodes.get(0).getBox().lastIndexOf(SEPARATOR))";//TODO
 		frame.addSlot("name", name).addSlot("box", box).addSlot("buildNumber", buildNumber);
 		if (!PathFormatter.composeMorphPackagePath(box).isEmpty())
 			frame.addSlot("package", PathFormatter.composeMorphPackagePath(box));
