@@ -41,7 +41,7 @@ public class Word extends Variable {
 	public Word clone() {
 		Word word = new Word(name);
 		for (String wordType : wordTypes) word.add(wordType);
-		for (Annotations.Annotation annotation : annotations) word.add(annotation);
+		for (Annotation annotation : annotations) word.add(annotation);
 		word.setDefaultValues(defaultValues);
 		if (values != null)
 			for (Object value : values) word.addValue(value);

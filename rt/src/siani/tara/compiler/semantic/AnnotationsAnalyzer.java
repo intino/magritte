@@ -3,6 +3,8 @@ package siani.tara.compiler.semantic;
 
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import siani.tara.compiler.core.errorcollection.semantic.WrongAnnotationError;
+import siani.tara.lang.Annotation;
+import siani.tara.lang.Annotations;
 import siani.tara.lang.Node;
 
 import java.util.List;
@@ -18,10 +20,10 @@ public class AnnotationsAnalyzer {
 	}
 
 	public void checkAnnotations(Node node) {
-		if (node.isPrime()) checkAnnotations(node, PRIME_ANNOTATIONS);
+		if (node.isPrime()) checkAnnotations(node, Annotations.PRIME_ANNOTATIONS);
 		else if (node.isSub())
-			checkAnnotations(node, SUB_ANNOTATIONS);
-		else checkAnnotations(node, COMPONENT_ANNOTATIONS);
+			checkAnnotations(node, Annotations.SUB_ANNOTATIONS);
+		else checkAnnotations(node, Annotations.COMPONENT_ANNOTATIONS);
 	}
 
 	private void checkAnnotations(Node node, Annotation[] annotations) {

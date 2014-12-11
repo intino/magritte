@@ -60,7 +60,7 @@ public class FrameCreator {
 	private void addAnnotations(final Node node, Frame frame) {
 		if (node.getObject().getAnnotations().length > 0 || terminal)
 			frame.addSlot("annotation", new Frame("Annotation") {{
-				for (Annotation.Annotation annotation : node.getObject().getAnnotations())
+				for (Annotation annotation : node.getObject().getAnnotations())
 					addSlot("value", annotation);
 				if (terminal)
 					addSlot("value", "case");
@@ -192,7 +192,7 @@ public class FrameCreator {
 		types.add(object.getType());
 		types.add(node.getClass().getSimpleName());
 		types.add(Node.class.getSimpleName());
-		for (Annotation.Annotation annotation : object.getAnnotations())
+		for (Annotation annotation : object.getAnnotations())
 			types.add(annotation.getName());
 		return types.toArray(new String[types.size()]);
 	}
@@ -216,7 +216,7 @@ public class FrameCreator {
 		List<String> types = new ArrayList<>();
 		types.add("reference");
 		if (node.isAggregated())
-			types.add(Annotation.Annotation.AGGREGATED.getName());
+			types.add(Annotation.AGGREGATED.getName());
 		return types.toArray(new String[types.size()]);
 	}
 }

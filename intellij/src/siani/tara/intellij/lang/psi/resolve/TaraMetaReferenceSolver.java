@@ -18,8 +18,8 @@ import siani.tara.lang.*;
 import java.util.*;
 
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContainerOf;
-import static siani.tara.lang.Annotation.Annotation.COMPONENT;
-import static siani.tara.lang.Annotation.Annotation.ABSTRACT;
+import static siani.tara.lang.Annotation.COMPONENT;
+import static siani.tara.lang.Annotation.ABSTRACT;
 
 public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 

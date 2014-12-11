@@ -20,7 +20,7 @@ import java.util.List;
 import static siani.tara.intellij.MessageProvider.message;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.WARNING;
-import static siani.tara.lang.Annotation.Annotation.*;
+import static siani.tara.lang.Annotation.*;
 
 public class ConceptAnalyzer extends TaraAnalyzer {
 

@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static siani.tara.compiler.codegeneration.PathFormatter.*;
-import static siani.tara.lang.Annotation.Annotation.TERMINAL;
+import static siani.tara.lang.Annotation.TERMINAL;
 
 public class ModelToJavaOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());

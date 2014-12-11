@@ -18,7 +18,7 @@ import java.awt.*;
 import java.util.Collection;
 
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
-import static siani.tara.lang.Annotation.Annotation.PROPERTY;
+import static siani.tara.lang.Annotation.PROPERTY;
 
 public class ConceptAnnotator extends TaraAnnotator {
 

@@ -6,7 +6,7 @@ import siani.tara.intellij.lang.psi.Annotation;
 import siani.tara.intellij.lang.psi.Annotations;
 import siani.tara.intellij.lang.psi.TaraConceptReference;
 
-import static siani.tara.lang.Annotation.Annotation.AGGREGATED;
+import static siani.tara.lang.Annotation.AGGREGATED;
 
 public class ConceptReferenceMixin extends ASTWrapperPsiElement {
 	public ConceptReferenceMixin(ASTNode node) {

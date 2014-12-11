@@ -41,7 +41,7 @@ public class DeclaredNode extends Node {
 
 	@Override
 	public boolean isAggregated() {
-		return getObject().is(Annotations.Annotation.AGGREGATED);
+		return getObject().is(Annotation.AGGREGATED);
 	}
 
 	@Override

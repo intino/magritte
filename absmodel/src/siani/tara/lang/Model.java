@@ -2,7 +2,7 @@ package siani.tara.lang;
 
 import java.util.*;
 
-import static siani.tara.lang.Annotations.Annotation.TERMINAL;
+import static siani.tara.lang.Annotation.TERMINAL;
 
 public class Model {
 	private String name;

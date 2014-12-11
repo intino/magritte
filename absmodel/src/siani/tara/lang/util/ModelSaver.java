@@ -66,7 +66,7 @@ public class ModelSaver {
 				object.addProperty("resourceType", resource.node);
 			}
 			JsonArray list = new JsonArray();
-			for (Annotations.Annotation value : variable.annotations)
+			for (Annotation value : variable.annotations)
 				list.add(new JsonPrimitive(value.getName()));
 			object.add("annotations", list);
 			list = new JsonArray();

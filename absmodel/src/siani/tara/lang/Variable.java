@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.lang.Annotations.Annotation.*;
+import static siani.tara.lang.Annotation.*;
 
 public abstract class Variable implements Cloneable {
 	public static final String EMPTY = "EMPTY_VALUE";
@@ -13,7 +13,7 @@ public abstract class Variable implements Cloneable {
 	public String doc;
 	public Object[] defaultValues;
 	public List<Object> values;
-	public List<Annotations.Annotation> annotations = new ArrayList<>();
+	public List<Annotation> annotations = new ArrayList<>();
 	public boolean isList = false;
 
 	public String getName() {
@@ -44,11 +44,11 @@ public abstract class Variable implements Cloneable {
 		return annotations.contains(LOCAL);
 	}
 
-	public boolean addAll(Collection<? extends Annotations.Annotation> annotations) {
+	public boolean addAll(Collection<? extends Annotation> annotations) {
 		return this.annotations.addAll(annotations);
 	}
 
-	public boolean add(Annotations.Annotation annotation) {
+	public boolean add(Annotation annotation) {
 		return annotations.add(annotation);
 	}
 

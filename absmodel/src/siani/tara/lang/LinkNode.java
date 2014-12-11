@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static siani.tara.lang.Annotations.Annotation.AGGREGATED;
+import static siani.tara.lang.Annotation.AGGREGATED;
 
 public class LinkNode extends Node {
 
 	transient DeclaredNode destiny;
 	String destinyQN;
 	boolean reference;
-	List<Annotations.Annotation> annotations = new ArrayList<>();
+	List<Annotation> annotations = new ArrayList<>();
 
 	public LinkNode() {
 	}
@@ -73,7 +73,7 @@ public class LinkNode extends Node {
 		return annotations.contains(AGGREGATED);
 	}
 
-	public boolean addAll(Collection<? extends Annotations.Annotation> c) {
+	public boolean addAll(Collection<? extends Annotation> c) {
 		return annotations.addAll(c);
 	}
 

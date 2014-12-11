@@ -56,7 +56,7 @@ public class Reference extends Variable {
 	@Override
 	public Reference clone() {
 		Reference reference = new Reference(type, name, isList);
-		for (Annotations.Annotation annotation : annotations) reference.add(annotation);
+		for (Annotation annotation : annotations) reference.add(annotation);
 		reference.setDefaultValues(getDefaultValues());
 		if (values != null)
 			for (Object value : values) reference.addValue(value);

@@ -120,7 +120,7 @@ public class ModelLoader {
 			if (json.getAsJsonObject().get("annotations") != null &&
 				(array = json.getAsJsonObject().get("annotations").getAsJsonArray()) != null && array.isJsonArray())
 				for (JsonElement jsonElement : array)
-					variable.add(Annotations.Annotation.valueOf(jsonElement.getAsString().toUpperCase()));
+					variable.add(Annotation.valueOf(jsonElement.getAsString().toUpperCase()));
 			if (json.getAsJsonObject().get("values") != null &&
 				(array = json.getAsJsonObject().get("values").getAsJsonArray()) != null && array.isJsonArray())
 				for (JsonElement jsonElement : array)

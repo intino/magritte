@@ -7,7 +7,7 @@ import siani.tara.lang.*;
 
 import java.util.*;
 
-import static siani.tara.lang.Annotation.Annotation.COMPONENT;
+import static siani.tara.lang.Annotation.COMPONENT;
 
 public class UsageAnalyzer {
 

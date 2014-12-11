@@ -9,10 +9,10 @@ import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.lang.Annotation;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraAnnotationsAndFacets;
 import siani.tara.intellij.lang.psi.TaraTypes;
+import siani.tara.lang.Annotations;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -29,7 +29,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					for (String annotation : Annotation.getAnnotations())
+					for (String annotation : Annotations.getAnnotations())
 						resultSet.addElement(LookupElementBuilder.create(annotation));
 				}
 			}

@@ -16,9 +16,9 @@ import siani.tara.lang.Annotation;
 
 public class AddAnnotationFix implements IntentionAction {
 	private final Concept concept;
-	private final Annotation.Annotation annotation;
+	private final Annotation annotation;
 
-	public AddAnnotationFix(Concept concept, Annotation.Annotation annotation) {
+	public AddAnnotationFix(Concept concept, Annotation annotation) {
 		this.concept = concept;
 		this.annotation = annotation;
 	}

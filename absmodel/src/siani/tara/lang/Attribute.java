@@ -45,7 +45,7 @@ public class Attribute extends Variable {
 	public Attribute clone() {
 		Attribute attribute = new Attribute(primitiveType, name, isList);
 		attribute.setDefaultValues(defaultValues);
-		for (Annotations.Annotation annotation : annotations) attribute.add(annotation);
+		for (Annotation annotation : annotations) attribute.add(annotation);
 		attribute.measure = measure;
 		attribute.setDefaultValues(defaultValues);
 		if (values != null)

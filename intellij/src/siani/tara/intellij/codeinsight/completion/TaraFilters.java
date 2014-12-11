@@ -159,7 +159,7 @@ public class TaraFilters {
 					Model metaModel = TaraLanguage.getMetaModel(contextOf.getFile());
 					if (metaModel == null) return false;
 					Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(contextOf));
-					if (node.getObject().is(Annotation.Annotation.INTENTION))
+					if (node.getObject().is(Annotation.INTENTION))
 						return true;
 				}
 			return false;

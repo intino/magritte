@@ -10,7 +10,7 @@ public class NodeObject extends ModelObject {
 	transient Map<String, Variable> parameters = new LinkedHashMap<>();
 	transient Map<String, Variable> variableInits = new LinkedHashMap<>();
 	List<Variable> variables = new ArrayList<>();
-	List<Annotations.Annotation> annotations = new ArrayList<>();
+	List<Annotation> annotations = new ArrayList<>();
 	List<Facet> facets = new ArrayList<>();
 	Map<String, FacetTarget> allowedFacets = new HashMap<>();
 	List<FacetTarget> facetTargets = new ArrayList<>();
@@ -25,7 +25,7 @@ public class NodeObject extends ModelObject {
 		this.name = name;
 	}
 
-	public boolean is(Annotations.Annotation type) {
+	public boolean is(Annotation type) {
 		return (annotations.contains(type));
 	}
 
@@ -46,8 +46,8 @@ public class NodeObject extends ModelObject {
 		return parameters;
 	}
 
-	public Annotations.Annotation[] getAnnotations() {
-		return annotations.toArray(new Annotations.Annotation[annotations.size()]);
+	public Annotation[] getAnnotations() {
+		return annotations.toArray(new Annotation[annotations.size()]);
 	}
 
 	public List<Reference> getReferences() {
@@ -105,11 +105,11 @@ public class NodeObject extends ModelObject {
 		parameters.put(name, value);
 	}
 
-	public void add(Annotations.Annotation annotation) {
+	public void add(Annotation annotation) {
 		annotations.add(annotation);
 	}
 
-	public boolean addAll(Collection<? extends Annotations.Annotation> c) {
+	public boolean addAll(Collection<? extends Annotation> c) {
 		return annotations.addAll(c);
 	}
 

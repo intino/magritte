@@ -3,7 +3,7 @@ package siani.tara.lang;
 import java.util.ArrayList;
 import java.util.List;
 
-import static siani.tara.lang.Annotations.Annotation.*;
+import static siani.tara.lang.Annotation.*;
 
 public class Annotations {
 
@@ -25,19 +25,4 @@ public class Annotations {
 	}
 
 
-	public enum Annotation {
-		NAMED("named"), COMPONENT("component"), TERMINAL("terminal"), SINGLE("single"), REQUIRED("required"),
-		ABSTRACT("abstract"), PROPERTY("property"), FACET("facet"), INTENTION("intention"), LOCAL("local"),
-		ADDRESSED("addressed"), AGGREGATED("aggregated"), COMPOSED("composed"), MULTIPLE("composed"), ROOT("root");
-
-		private String name;
-
-		private Annotation(String name) {
-			this.name = name;
-		}
-
-		public String getName() {
-			return name;
-		}
-	}
 }

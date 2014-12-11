@@ -19,16 +19,15 @@ import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.Annotation;
-import siani.tara.intellij.lang.psi.Variable;
-import siani.tara.lang.*;
+import siani.tara.lang.Model;
+import siani.tara.lang.Node;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static siani.tara.lang.Annotation.Annotation.*;
+import static siani.tara.lang.Annotation.*;
 
 public class ConceptMixin extends ASTWrapperPsiElement {
 
@@ -231,7 +230,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return (node != null && node.getObject().is(AGGREGATED));
 	}
 
-	private boolean is(siani.tara.lang.Annotation.Annotation taraAnnotation) {
+	private boolean is(siani.tara.lang.Annotation taraAnnotation) {
 		for (PsiElement annotation : getNormalAnnotations())
 			if (taraAnnotation.getName().equals(annotation.getText()))
 				return true;

@@ -16,7 +16,7 @@ import java.awt.*;
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.INFO;
-import static siani.tara.lang.Annotation.Annotation.AGGREGATED;
+import static siani.tara.lang.Annotation.AGGREGATED;
 
 public class AggregatedAnalyzer extends TaraAnalyzer {
 

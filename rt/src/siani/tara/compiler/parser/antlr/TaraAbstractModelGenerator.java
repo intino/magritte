@@ -9,7 +9,6 @@ import siani.tara.lang.util.ModelLoader;
 import java.util.*;
 
 import static siani.tara.compiler.parser.antlr.TaraGrammar.*;
-import static siani.tara.lang.Annotation.Annotation;
 import static siani.tara.lang.Primitives.*;
 
 public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
@@ -351,7 +350,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterAnnotations(@NotNull AnnotationsContext ctx) {
-		List<NormalAnnotation> annotations = getAnnotations(ctx);
+		List<Annotation> annotations = getAnnotations(ctx);
 		if (ctx.getParent() instanceof VariableContext) {
 			List<Variable> variables = conceptStack.peek().getObject().getVariables();
 			Variable variable = variables.get(variables.size() - 1);
@@ -369,8 +368,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		return list.toArray(new String[list.size()]);
 	}
 
-	private List<NormalAnnotation> getAnnotations(AnnotationsContext ctx) {
-		List<NormalAnnotation> annotations = new ArrayList<>();
+	private List<Annotation> getAnnotations(AnnotationsContext ctx) {
+		List<Annotation> annotations = new ArrayList<>();
 		for (int i = 0; i < ctx.REQUIRED().size(); i++)
 			annotations.add(Annotation.REQUIRED);
 		for (int i = 0; i < ctx.PROPERTY().size(); i++)

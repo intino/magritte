@@ -4,7 +4,7 @@ import siani.tara.lang.*;
 
 import java.util.*;
 
-import static siani.tara.lang.Annotation.Annotation.FACET;
+import static siani.tara.lang.Annotation.FACET;
 
 
 public class ParentModelDependencyResolver {

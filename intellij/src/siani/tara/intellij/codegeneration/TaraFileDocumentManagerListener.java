@@ -53,7 +53,7 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 		List<Concept> concepts = new ArrayList<>();
 		for (Concept concept : allConceptsOfFile) {
 			Node node = model.searchNode(TaraUtil.getMetaQualifiedName(concept));
-			if (node != null && node.getObject().is(Annotation.Annotation.ADDRESSED))
+			if (node != null && node.getObject().is(Annotation.ADDRESSED))
 				concepts.add(concept);
 		}
 		return concepts.toArray(new Concept[concepts.size()]);
