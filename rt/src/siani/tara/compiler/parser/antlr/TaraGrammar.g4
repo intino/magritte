@@ -59,7 +59,7 @@ dateAttribute    : DATE_TYPE    LIST? IDENTIFIER (EQUALS dateValue+ | EMPTY)?;
 attributeType   : COLON measure;
 naturalValue    : NATURAL_VALUE;
 integerValue    : NATURAL_VALUE | NEGATIVE_VALUE;
-doubleValue     : NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE;
+doubleValue     : (NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE) SCIENCE_NOT?;
 booleanValue    : BOOLEAN_VALUE;
 stringValue     : STRING_VALUE | (NEWLINE? STRING_MULTILINE_VALUE_KEY);
 dateValue       : DATE_VALUE;
@@ -67,8 +67,8 @@ linkValue       : address | identifierReference;
 count : LEFT_SQUARE naturalValue RIGHT_SQUARE;
 measure : IDENTIFIER | MEASURE_VALUE;
 
-annotations: IS (ABSTRACT | TERMINAL | SINGLE | MULTIPLE | REQUIRED |
- NAMED | FACET | INTENTION | ROOT | COMPONENT | PROPERTY | LOCAL | ADDRESSED | COMPOSED | AGGREGATED)+ ;
+annotations: IS (PLUS? (ABSTRACT | TERMINAL | SINGLE | REQUIRED | READONLY |
+ NAMED | FACET | INTENTION | ROOT | COMPONENT | PROPERTY | LOCAL | ADDRESSED | AGGREGATED))+ ;
 
 varInit : IDENTIFIER EQUALS initValue;
 

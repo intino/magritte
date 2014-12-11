@@ -2,9 +2,11 @@ package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
+import siani.tara.intellij.lang.psi.Annotation;
+import siani.tara.intellij.lang.psi.Annotations;
 import siani.tara.intellij.lang.psi.TaraConceptReference;
-import siani.tara.lang.Annotations;
+
+import static siani.tara.lang.Annotation.Annotation.AGGREGATED;
 
 public class ConceptReferenceMixin extends ASTWrapperPsiElement {
 	public ConceptReferenceMixin(ASTNode node) {
@@ -13,11 +15,10 @@ public class ConceptReferenceMixin extends ASTWrapperPsiElement {
 
 	public boolean isAggregated() {
 		TaraConceptReference reference = (TaraConceptReference) this;
-		if (reference.getAnnotations() == null) return false;
-		for (PsiElement psiElement : reference.getAnnotations().getAnnotations())
-			if (Annotations.Annotation.AGGREGATED.getName().equals(psiElement.getText())) return true;
+		Annotations annotations = reference.getAnnotations();
+		if (annotations == null) return false;
+		for (Annotation annotation : annotations.getNormalAnnotations())
+			if (AGGREGATED.getName().equals(annotation.getText())) return true;
 		return false;
 	}
-
-
 }

@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface TaraVariable extends Variable {
 
   @Nullable
-  TaraAnnotationsAndFacets getAnnotationsAndFacets();
+  TaraAnnotations getAnnotations();
 
   @Nullable
   TaraAttributeType getAttributeType();

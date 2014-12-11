@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.lang.Annotations.Annotation.REQUIRED;
-import static siani.tara.lang.Annotations.Annotation.TERMINAL;
+import static siani.tara.lang.Annotation.Annotation.REQUIRED;
+import static siani.tara.lang.Annotation.Annotation.TERMINAL;
 
 public class SemanticAnalyzer {
 	private Model model;

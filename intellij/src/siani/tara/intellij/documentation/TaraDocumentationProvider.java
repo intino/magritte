@@ -15,8 +15,8 @@ import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.*;
 
-import static siani.tara.lang.Annotations.Annotation.FACET;
-import static siani.tara.lang.Annotations.Annotation.INTENTION;
+import static siani.tara.lang.Annotation.Annotation.FACET;
+import static siani.tara.lang.Annotation.Annotation.INTENTION;
 
 
 public class TaraDocumentationProvider extends AbstractDocumentationProvider {

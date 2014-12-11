@@ -14,5 +14,4 @@ public class FacetApplyAnnotator extends TaraAnnotator {
 		this.holder = holder;
 		analyzeAndAnnotate(new FacetApplyAnalyzer((TaraFacetApply) element));
 	}
-
 }

@@ -10,6 +10,7 @@ import siani.tara.intellij.lang.psi.impl.*;
 public interface TaraTypes {
 
 	IElementType ADDRESS = new TaraElementType("ADDRESS");
+	IElementType ANNOTATION = new TaraElementType("ANNOTATION");
 	IElementType ANNOTATIONS = new TaraElementType("ANNOTATIONS");
 	IElementType ANNOTATIONS_AND_FACETS = new TaraElementType("ANNOTATIONS_AND_FACETS");
 	IElementType AN_IMPORT = new TaraElementType("AN_IMPORT");
@@ -57,7 +58,6 @@ public interface TaraTypes {
 	IElementType COLON = new TaraTokenType("COLON");
 	IElementType COMMA = new TaraTokenType("COMMA");
 	IElementType COMPONENT = new TaraTokenType("COMPONENT");
-	IElementType COMPOSED = new TaraTokenType("COMPOSED");
 	IElementType DATE_TYPE = new TaraTokenType("DATE_TYPE");
 	IElementType DATE_VALUE_KEY = new TaraTokenType("DATE_VALUE_KEY");
 	IElementType DEDENT = new TaraTokenType("DEDENT");
@@ -82,7 +82,6 @@ public interface TaraTypes {
 	IElementType MEASURE_VALUE = new TaraTokenType("MEASURE_VALUE");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
 	IElementType METAMODEL = new TaraTokenType("METAMODEL");
-	IElementType MULTIPLE = new TaraTokenType("MULTIPLE");
 	IElementType NAMED = new TaraTokenType("NAMED");
 	IElementType NATURAL_TYPE = new TaraTokenType("NATURAL_TYPE");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
@@ -92,6 +91,7 @@ public interface TaraTypes {
 	IElementType ON = new TaraTokenType("ON");
 	IElementType PLUS = new TaraTokenType("PLUS");
 	IElementType PROPERTY = new TaraTokenType("PROPERTY");
+	IElementType READONLY = new TaraTokenType("READONLY");
 	IElementType REQUIRED = new TaraTokenType("REQUIRED");
 	IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
 	IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");
@@ -114,6 +114,8 @@ public interface TaraTypes {
 			IElementType type = node.getElementType();
 			if (type == ADDRESS) {
 				return new TaraAddressImpl(node);
+			} else if (type == ANNOTATION) {
+				return new TaraAnnotationImpl(node);
 			} else if (type == ANNOTATIONS) {
 				return new TaraAnnotationsImpl(node);
 			} else if (type == ANNOTATIONS_AND_FACETS) {

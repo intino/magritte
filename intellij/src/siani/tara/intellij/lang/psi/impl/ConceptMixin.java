@@ -19,16 +19,16 @@ import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
+import siani.tara.intellij.lang.psi.Annotation;
+import siani.tara.intellij.lang.psi.Variable;
+import siani.tara.lang.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.lang.Annotations.Annotation.*;
+import static siani.tara.lang.Annotation.Annotation.*;
 
 public class ConceptMixin extends ASTWrapperPsiElement {
 
@@ -182,7 +182,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isIntention() {
-		for (PsiElement annotation : getAnnotations())
+		for (PsiElement annotation : getNormalAnnotations())
 			if (INTENTION.getName().equals(annotation.getText()))
 				return true;
 		Concept parent = null;
@@ -203,7 +203,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isAnnotatedAsAggregated() {
-		for (PsiElement annotation : getAnnotations())
+		for (PsiElement annotation : getNormalAnnotations())
 			if (AGGREGATED.getName().equals(annotation.getText()))
 				return true;
 		return false;
@@ -231,8 +231,8 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return (node != null && node.getObject().is(AGGREGATED));
 	}
 
-	private boolean is(siani.tara.lang.Annotations.Annotation taraAnnotation) {
-		for (PsiElement annotation : getAnnotations())
+	private boolean is(siani.tara.lang.Annotation.Annotation taraAnnotation) {
+		for (PsiElement annotation : getNormalAnnotations())
 			if (taraAnnotation.getName().equals(annotation.getText()))
 				return true;
 		Concept parent = getParentConceptName() != null ? getParentConcept() : null;
@@ -273,17 +273,30 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public PsiElement[] getAnnotations() {
-		List<PsiElement> list = new ArrayList<>();
+	public List<Annotation> getNormalAnnotations() {
+		List<Annotation> list = new ArrayList<>();
 		TaraAnnotationsAndFacets annotationsAndFacets = findChildByClass(TaraAnnotationsAndFacets.class);
-		if (annotationsAndFacets != null)
-			for (siani.tara.intellij.lang.psi.Annotations taraAnnotations : annotationsAndFacets.getAnnotationsList())
-				Collections.addAll(list, taraAnnotations.getAnnotations());
-		if (this.getBody() != null && getBody().getAnnotationsAndFacetsList() != null)
+		if (annotationsAndFacets != null && annotationsAndFacets.getAnnotations() != null)
+			list.addAll(annotationsAndFacets.getAnnotations().getNormalAnnotations());
+		if (this.getBody() != null)
 			for (TaraAnnotationsAndFacets inBody : getBody().getAnnotationsAndFacetsList())
-				for (TaraAnnotations taraAnnotations : inBody.getAnnotationsList())
-					Collections.addAll(list, taraAnnotations.getAnnotations());
-		return list.toArray(new PsiElement[list.size()]);
+				list.addAll(((Annotations) inBody.getAnnotations()).getNormalAnnotations());
+		return list;
+	}
+
+	@NotNull
+	public List<Annotation> getMetaAnnotations() {
+		List<Annotation> list = new ArrayList<>();
+		TaraAnnotationsAndFacets annotationsAndFacets = findChildByClass(TaraAnnotationsAndFacets.class);
+		if (annotationsAndFacets != null && annotationsAndFacets.getAnnotations() != null)
+			list.addAll(annotationsAndFacets.getAnnotations().getMetaAnnotations());
+		if (this.getBody() != null)
+			for (TaraAnnotationsAndFacets inBody : getBody().getAnnotationsAndFacetsList()) {
+				Annotations annotations = inBody.getAnnotations();
+				if (annotations == null) continue;
+				list.addAll(annotations.getMetaAnnotations());
+			}
+		return list;
 	}
 
 	@Override

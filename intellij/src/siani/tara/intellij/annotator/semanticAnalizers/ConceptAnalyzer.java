@@ -4,12 +4,13 @@ import com.intellij.psi.PsiElement;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.annotator.fix.AddAddressFix;
 import siani.tara.intellij.annotator.fix.RemoveConceptFix;
+import siani.tara.intellij.lang.psi.Annotation;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
+import siani.tara.intellij.lang.psi.Variable;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.List;
 import static siani.tara.intellij.MessageProvider.message;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.WARNING;
-import static siani.tara.lang.Annotations.Annotation.*;
+import static siani.tara.lang.Annotation.Annotation.*;
 
 public class ConceptAnalyzer extends TaraAnalyzer {
 
@@ -34,17 +35,14 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		if (isRootSub())
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, message("sub.bad.position")));
 		else if (isDuplicated())
-			results.put(concept.getSignature(),
-				addError(message("duplicate.concept")));
+			results.put(concept.getSignature(), addError(message("duplicate.concept")));
 		else if (!analyzeIfExtendedFromSameType(concept)) {
 			results.put(concept.getSignature().getParentReference(), addError(message("invalid.extension.concept")));
 			return;
 		}
-
-		Node node = getMetaConcept();
+		Node node = getMetaConcept(concept);
 		if (node == null) return;
-
-		analyzeAnnotationConstrains(node);
+		analyzeMetaAnnotationConstrains(node);
 		if (!hasErrors()) analyzeAddressAdded(node);
 		if (!hasErrors()) analyzeConceptName(concept, TaraUtil.isTerminalBox(concept.getFile()));
 		analyzeJavaClassCreation(node, concept);
@@ -54,11 +52,6 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		return new AnnotateAndFix(ERROR, message, new RemoveConceptFix(concept));
 	}
 
-	private Node getMetaConcept() {
-		Model model = getMetamodel(concept);
-		if (model == null) return null;
-		return TaraUtil.findNode(concept, model);
-	}
 
 	private boolean isRootSub() {
 		return concept.isSub() && TaraPsiImplUtil.getConceptContainerOf(concept) == null;
@@ -123,17 +116,57 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class")));
 	}
 
-	private void analyzeAnnotationConstrains(Node node) {
+	private void analyzeMetaAnnotationConstrains(Node node) {
 		if (!analyzeAsComponent(node))
 			results.put(concept.getIdentifierNode(), new AnnotateAndFix(ERROR, "Component cannot be declared as root"));
 		else if (!isFacet(node))
 			results.put(concept.getIdentifierNode(), new AnnotateAndFix(ERROR, "Facets are no instantiable"));
 		else if (!analyzeAsNamed(node))
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name required", new AddAddressFix(concept)));
+		else if (!analyzeAsProperty(node))
+			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name required", new AddAddressFix(concept)));
 		else if (!analyzeAddressAdded(node))
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Address required", new AddAddressFix(concept)));
 		else if (concept.isIntention() && !analyzeAsIntention())
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, message("intention.with.children")));
+	}
+
+	private boolean analyzeAsProperty(Node node) {
+		if (concept.isProperty()) checkContainsTerminal(concept);
+		if (results.size() > 0) return false;
+		if (!node.getObject().is(PROPERTY)) return true;
+		if (concept.getName() != null && !concept.getName().isEmpty())
+			results.put(this.concept.getFirstChild(), new AnnotateAndFix(ERROR, "Properties are unnamed"));
+		if (areMultiple())
+			results.put(this.concept.getFirstChild(), new AnnotateAndFix(ERROR, "Properties are single"));
+		return true;
+	}
+
+	private void checkContainsTerminal(Concept concept) {
+		if ((concept.isComponent() && concept.isProperty()) && concept.isAggregated())
+			results.put(this.concept, new AnnotateAndFix(ERROR, "An aggregated concept cannot be component or property"));
+		for (Variable variable : concept.getVariables())
+			if (isTerminal(variable)) {
+				results.put(this.concept, new AnnotateAndFix(ERROR, "Property concept cannot have terminal variables"));
+				return;
+			}
+		for (Concept inner : concept.getInnerConcepts())
+			checkContainsTerminal(inner);
+	}
+
+	private boolean isTerminal(Variable variable) {
+		for (Annotation annotation : variable.getAnnotations().getNormalAnnotations())
+			if (annotation.getText().contains(TERMINAL.getName())) return true;
+		return false;
+	}
+
+	private boolean areMultiple() {
+		List<Concept> concepts = new ArrayList<>();
+		if (concept.getType() == null) return false;
+		for (Concept inner : TaraUtil.getInnerConceptsOf(TaraPsiImplUtil.getConceptContainerOf(concept)))
+			if (concept.getType().equals(inner.getType()))
+				concepts.add(inner);
+		return concepts.size() > 1;
 	}
 
 	private boolean analyzeAsComponent(Node node) {

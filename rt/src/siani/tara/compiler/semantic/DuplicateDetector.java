@@ -9,8 +9,6 @@ import siani.tara.lang.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import static siani.tara.lang.Annotations.Annotation;
-
 public class DuplicateDetector {
 
 	private SemanticErrorList errors = new SemanticErrorList();
@@ -76,7 +74,7 @@ public class DuplicateDetector {
 
 	private void checkAnnotations(Node node) {
 		Set<String> annotations = new HashSet<>();
-		for (Annotation annotation : node.getObject().getAnnotations())
+		for (NormalAnnotation annotation : node.getObject().getAnnotations())
 			if (!annotations.add(annotation.name()))
 				errors.add(new DuplicateAnnotationError(annotation.name(), node));
 	}

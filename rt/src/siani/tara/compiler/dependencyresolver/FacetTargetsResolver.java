@@ -6,7 +6,7 @@ import siani.tara.lang.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static siani.tara.lang.Annotations.Annotation.FACET;
+import static siani.tara.lang.Annotation.Annotation.FACET;
 
 public class FacetTargetsResolver {
 	private final Model model;

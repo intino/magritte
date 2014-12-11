@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraAnnotations extends Annotations {
 
+  @NotNull
+  List<TaraAnnotation> getAnnotationList();
+
 }

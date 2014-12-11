@@ -12,7 +12,7 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.Annotations;
+import siani.tara.lang.Annotation;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -159,7 +159,7 @@ public class TaraFilters {
 					Model metaModel = TaraLanguage.getMetaModel(contextOf.getFile());
 					if (metaModel == null) return false;
 					Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(contextOf));
-					if (node.getObject().is(Annotations.Annotation.INTENTION))
+					if (node.getObject().is(Annotation.Annotation.INTENTION))
 						return true;
 				}
 			return false;

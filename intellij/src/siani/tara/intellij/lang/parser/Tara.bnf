@@ -104,7 +104,7 @@ conceptReference ::= doc? HAS identifierReference (IS annotations)?
 	implements = 'siani.tara.intellij.lang.psi.ConceptReference'
 }
 
-variable ::= doc? VAR variableDeclaration annotationsAndFacets? {
+variable ::= doc? VAR variableDeclaration (IS annotations)? {
 	pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'siani.tara.intellij.lang.psi.Variable'
@@ -140,10 +140,10 @@ linkValue       ::= ADDRESS_VALUE | identifierReference
 measure ::= IDENTIFIER_KEY | MEASURE_VALUE
 count ::= 	LEFT_SQUARE NATURAL_VALUE_KEY RIGHT_SQUARE
 
-annotationsAndFacets ::= IS (annotations+ | facetApply)
+annotationsAndFacets ::= IS (annotations | facetApply)
 {pin = 1}
 
-facetApply ::= metaIdentifier parameters? (WITH metaIdentifier)? body?{
+facetApply ::= metaIdentifier parameters? (WITH metaIdentifier)? body? {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.FacetApplyMixin'
     implements = 'siani.tara.intellij.lang.psi.FacetApply'
@@ -152,11 +152,18 @@ facetApply ::= metaIdentifier parameters? (WITH metaIdentifier)? body?{
 facetTarget ::= ON identifierReference ALWAYS? body?
 {pin = 1}
 
-annotations ::= (PLUS? (ABSTRACT | TERMINAL | SINGLE | MULTIPLE | REQUIRED | NAMED
-	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | COMPOSED))+ {
+annotations ::= annotation+{
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotations'
+}
+
+
+annotation ::= PLUS? (ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED
+	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | READONLY) {
+	pin = 2
+	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationMixin'
+	implements = 'siani.tara.intellij.lang.psi.Annotation'
 }
 
 varInit ::=  IDENTIFIER_KEY EQUALS varInitValue {

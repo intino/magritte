@@ -10,7 +10,7 @@ public interface Variable extends Navigatable, Iconable, PsiNamedElement {
 
 	String getType();
 
-	Collection<String> getAnnotations();
+	TaraAnnotations getAnnotations();
 
 	Collection<String> getDefaultValuesAsString();
 

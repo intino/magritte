@@ -10,6 +10,7 @@ import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 
 import javax.swing.*;
 import java.util.Collection;
+import java.util.List;
 
 public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
@@ -54,7 +55,9 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 	TaraAddress getAddress();
 
 	@NotNull
-	PsiElement[] getAnnotations();
+	List<Annotation> getNormalAnnotations();
+
+	List<Annotation> getMetaAnnotations();
 
 	@Override
 	Icon getIcon(@IconFlags int i);

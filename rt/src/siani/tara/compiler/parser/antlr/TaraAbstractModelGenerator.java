@@ -9,7 +9,7 @@ import siani.tara.lang.util.ModelLoader;
 import java.util.*;
 
 import static siani.tara.compiler.parser.antlr.TaraGrammar.*;
-import static siani.tara.lang.Annotations.Annotation;
+import static siani.tara.lang.Annotation.Annotation;
 import static siani.tara.lang.Primitives.*;
 
 public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
@@ -351,7 +351,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterAnnotations(@NotNull AnnotationsContext ctx) {
-		List<Annotation> annotations = getAnnotations(ctx);
+		List<NormalAnnotation> annotations = getAnnotations(ctx);
 		if (ctx.getParent() instanceof VariableContext) {
 			List<Variable> variables = conceptStack.peek().getObject().getVariables();
 			Variable variable = variables.get(variables.size() - 1);
@@ -369,8 +369,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		return list.toArray(new String[list.size()]);
 	}
 
-	private List<Annotation> getAnnotations(AnnotationsContext ctx) {
-		List<Annotation> annotations = new ArrayList<>();
+	private List<NormalAnnotation> getAnnotations(AnnotationsContext ctx) {
+		List<NormalAnnotation> annotations = new ArrayList<>();
 		for (int i = 0; i < ctx.REQUIRED().size(); i++)
 			annotations.add(Annotation.REQUIRED);
 		for (int i = 0; i < ctx.PROPERTY().size(); i++)
@@ -395,6 +395,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			annotations.add(Annotation.AGGREGATED);
 		for (int i = 0; i < ctx.LOCAL().size(); i++)
 			annotations.add(Annotation.LOCAL);
+		for (int i = 0; i < ctx.LOCAL().size(); i++)
+			annotations.add(Annotation.READONLY);
 		return annotations;
 	}
 }

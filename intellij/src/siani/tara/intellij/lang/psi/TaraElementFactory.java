@@ -35,7 +35,7 @@ public abstract class TaraElementFactory {
 
 	public abstract TaraAddress createAddress(long address);
 
-	public abstract TaraAnnotations createAnnotation(String name);
+	public abstract Annotation createAnnotation(String name);
 
 	public abstract TaraAnnotationsAndFacets createAnnotationAndFacetWith(String name);
 }

@@ -1,8 +1,11 @@
 package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.codeinsight.JavaHelper;
 import siani.tara.intellij.lang.psi.*;
@@ -27,15 +30,28 @@ public class ReferenceManager {
 		if (identifier.getParent() instanceof IdentifierReference)
 			return resolveConcept(identifier, getIdentifiersOfReference(identifier));
 		if (identifier.getParent() instanceof HeaderReference)
-			return resolveHeaderReference(identifier);
+			return ((Import) identifier.getParent().getParent()).isMetamodelImport() ?
+				resolveMetamodelImport(identifier) : resolveHeaderReference(identifier);
 		if (identifier.getParent() instanceof Signature)
 			return identifier;
 		return null;
 	}
 
-	@Nullable
-	public static PsiElement resolveExternal(Identifier identifier) {
-		return identifier != null ? resolveExternalReference(identifier) : null;
+	private static PsiElement resolveMetamodelImport(Identifier identifier) {
+		HeaderReference reference = (HeaderReference) identifier.getParent();
+		List<? extends Identifier> identifiers = reference.getIdentifierList();
+		if (identifiers.size() > 2) return null;
+		Project project = identifier.getProject();
+		if (identifier.equals(identifiers.get(0))) return getPsiFile(project.getProjectFile(), project);
+		if (identifier.equals(identifiers.get(1))) {
+			Module moduleByName = ModuleManager.getInstance(project).findModuleByName(identifier.getName());
+			return moduleByName != null ? getPsiFile(moduleByName.getModuleFile(), project) : null;
+		}
+		return null;
+	}
+
+	private static PsiElement getPsiFile(VirtualFile file, Project project) {
+		return PsiManager.getInstance(project).findFile(file);
 	}
 
 	@Nullable
@@ -48,13 +64,6 @@ public class ReferenceManager {
 
 	private static PsiElement resolveHeaderReference(Identifier identifier) {
 		return resolveBoxPath(identifier);
-	}
-
-	private static PsiElement resolveExternalReference(Identifier identifier) {
-//		TaraBox box = ((TaraBoxFile) identifier.getContainingFile()).getBoxReference();
-//		String path = box.getHeaderReference().getText() + "." + TaraUtil.composeConceptQN(identifier);
-//		return resolveJavaClassReference(identifier.getProject(), path);
-		return null;//TODO
 	}
 
 	private static List<Identifier> getIdentifiersOfReference(Identifier identifier) {
@@ -229,11 +238,4 @@ public class ReferenceManager {
 		List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
 		return resolve(importIdentifiers.get(importIdentifiers.size() - 1));
 	}
-
-	public static String join(List<? extends Identifier> subPath, char c) {
-		String result = "";
-		for (Identifier identifier : subPath) result += c + identifier.getText();
-		return result.substring(1);
-	}
-
 }

@@ -21,4 +21,10 @@ public class TaraAnnotationsImpl extends AnnotationsMixin implements TaraAnnotat
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<TaraAnnotation> getAnnotationList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraAnnotation.class);
+  }
+
 }

@@ -8,7 +8,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.annotator.semanticAnalizers.TaraAnalyzer;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import siani.tara.intellij.lang.psi.Concept;
 
 import java.util.Map;
 
@@ -37,52 +36,48 @@ public abstract class TaraAnnotator implements Annotator {
 			}
 			if (entry.getValue().textAttributes() != null)
 				annotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
-			if (entry.getValue().action() != null)
-				annotation.registerFix(entry.getValue().action());
+			for (IntentionAction action : entry.getValue().actions()) annotation.registerFix(action);
 		}
 	}
+
 	@Deprecated
 	protected Annotation annotateAndFix(PsiElement element, AnnotateAndFix annotateAndFix) {
 		Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), annotateAndFix.message());
-		errorAnnotation.registerFix(annotateAndFix.action());
+		for (IntentionAction action : annotateAndFix.actions()) errorAnnotation.registerFix(action);
 		return errorAnnotation;
-	}
-
-	protected boolean isLinkConcept(Concept concept) {
-		return concept.getName() == null && concept.getBody() == null;
 	}
 
 	public static class AnnotateAndFix {
 		private Level level;
 		private String message;
-		private IntentionAction action;
+		private IntentionAction actions[] = IntentionAction.EMPTY_ARRAY;
 		private TextAttributesKey attributes;
 
 		public AnnotateAndFix(Level level, String message) {
-			this(level, message, (IntentionAction) null);
+			this(level, message, null, IntentionAction.EMPTY_ARRAY);
 		}
 
-		public AnnotateAndFix(Level level, String message, IntentionAction action) {
-			this(level, message, null, action);
+		public AnnotateAndFix(Level level, String message, IntentionAction actions) {
+			this(level, message, null, actions);
 		}
 
 		public AnnotateAndFix(Level level, String message, TextAttributesKey attributes) {
-			this(level, message, attributes, null);
+			this(level, message, attributes, IntentionAction.EMPTY_ARRAY);
 		}
 
-		public AnnotateAndFix(Level level, String message, TextAttributesKey attributes, IntentionAction action) {
+		public AnnotateAndFix(Level level, String message, TextAttributesKey attributes, IntentionAction... actions) {
 			this.level = level;
 			this.message = message;
 			this.attributes = attributes;
-			this.action = action;
+			this.actions = actions;
 		}
 
 		public String message() {
 			return message;
 		}
 
-		public IntentionAction action() {
-			return action;
+		public IntentionAction[] actions() {
+			return actions;
 		}
 
 		public Level level() {

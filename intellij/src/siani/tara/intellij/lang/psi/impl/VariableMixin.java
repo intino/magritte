@@ -53,15 +53,6 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
-	public Collection<String> getAnnotations() {
-		List<String> list = new ArrayList<>();
-		TaraAnnotationsAndFacets annotationsAndFacets = ((TaraVariable) this).getAnnotationsAndFacets();
-		if (annotationsAndFacets != null)
-			for (siani.tara.intellij.lang.psi.Annotations taraAnnotations : annotationsAndFacets.getAnnotationsList())
-				for (PsiElement element : taraAnnotations.getAnnotations()) list.add(element.getText());
-		return list;
-	}
-
 	public Collection<String> getDefaultValuesAsString() {
 		List<String> list = new ArrayList<>();
 		if (((TaraVariable) this).getBooleanValueList().isEmpty())

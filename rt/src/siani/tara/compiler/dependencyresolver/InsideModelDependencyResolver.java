@@ -5,8 +5,7 @@ import siani.tara.lang.*;
 
 import java.util.*;
 
-import static siani.tara.lang.Annotations.Annotation;
-import static siani.tara.lang.Annotations.Annotation.ABSTRACT;
+import static siani.tara.lang.Annotation.Annotation.ABSTRACT;
 
 public class InsideModelDependencyResolver {
 	Model model;
@@ -119,7 +118,7 @@ public class InsideModelDependencyResolver {
 	}
 
 	private void addInheritedAnnotations(NodeObject parent, DeclaredNode node) {
-		for (Annotation annotation : parent.getAnnotations())
+		for (NormalAnnotation annotation : parent.getAnnotations())
 			if (!annotation.equals(ABSTRACT))
 				node.getObject().add(annotation);
 	}

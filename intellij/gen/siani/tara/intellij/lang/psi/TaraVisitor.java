@@ -14,6 +14,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitImport(o);
   }
 
+  public void visitAnnotation(@NotNull TaraAnnotation o) {
+    visitAnnotation(o);
+  }
+
   public void visitAnnotations(@NotNull TaraAnnotations o) {
     visitAnnotations(o);
   }

@@ -75,8 +75,7 @@ FACET               = "facet"
 ADDRESSED           = "addressed"
 COMPONENT           = "component"
 AGGREGATED          = "aggregated"
-COMPOSED            = "composed"
-MULTIPLE            = "multiple"
+READONLY            = "readonly"
 ROOT                = "root"
 
 LEFT_PARENTHESIS    = "("
@@ -100,7 +99,7 @@ APOSTROPHE          = "'"
 DASH                = "-"
 UNDERDASH           = "_"
 DASHES              = {DASH} {DASH}+
-POSITIVE            = "+"
+PLUS                = "+"
 AMPERSAND           = "&"
 
 WORD_KEY            = "word"
@@ -113,9 +112,9 @@ BOOLEAN_TYPE        = "boolean"
 DATE_TYPE           = "date"
 BOOLEAN_VALUE_KEY   = "true" | "false"
 EMPTY_REF           = "empty"
-NATURAL_VALUE_KEY   = {POSITIVE}? {DIGIT}+
+NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
-DOUBLE_VALUE_KEY    = ({POSITIVE} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+
+DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+
 STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
 DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
@@ -162,9 +161,8 @@ NEWLINE             = [\n]+
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
 	{AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
-	{COMPOSED}                      {   return TaraTypes.COMPOSED; }
+	{READONLY}                      {   return TaraTypes.READONLY; }
     {ROOT}                          {   return TaraTypes.ROOT; }
-    {MULTIPLE}                      {   return TaraTypes.MULTIPLE; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 
@@ -185,6 +183,7 @@ NEWLINE             = [\n]+
 	{COMMA}                         {   return TaraTypes.COMMA; }
 	{STAR}                          {   return TaraTypes.STAR;     }
 	{LIST}                          {   return TaraTypes.LIST;  }
+	{PLUS}                          {   return TaraTypes.PLUS;  }
 
 	{WORD_KEY}                      {   return TaraTypes.WORD_KEY; }
 	{RESOURCE_KEY}                  {   return TaraTypes.RESOURCE_KEY; }

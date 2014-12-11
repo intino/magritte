@@ -27,6 +27,7 @@ import java.awt.event.MouseEvent;
 public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 
 	private static final String INTENTIONS_PATH = "intentions";
+	private static final String INTENTION = "Intention";
 
 	private final MarkerType OVERRIDDEN_PROPERTY_TYPE = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
@@ -49,7 +50,7 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 			}
 			Identifier identifierNode = ((Concept) element).getIdentifierNode();
 			if (identifierNode == null) return;
-			NavigatablePsiElement reference = (NavigatablePsiElement) ReferenceManager.resolveExternal(identifierNode);
+			NavigatablePsiElement reference = (NavigatablePsiElement) resolveExternal(((Concept) element));
 			if (reference == null) return;
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
@@ -78,6 +79,6 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 
 	private PsiElement resolveExternal(Concept concept) {
 		Project project = concept.getProject();
-		return ReferenceManager.resolveJavaClassReference(project, project.getName() + "." + INTENTIONS_PATH + "." + concept.getName());
+		return ReferenceManager.resolveJavaClassReference(project, INTENTIONS_PATH + "." + concept.getName() + INTENTION);
 	}
 }

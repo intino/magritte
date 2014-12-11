@@ -17,7 +17,7 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.Annotations;
+import siani.tara.lang.Annotation;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -71,7 +71,7 @@ public class GenerateAction extends AnAction implements DumbAware {
 		List<Concept> concepts = new ArrayList<>();
 		for (Concept concept : allConceptsOfFile) {
 			Node node = model.searchNode(TaraUtil.getMetaQualifiedName(concept));
-			if (node != null && node.getObject().is(Annotations.Annotation.ADDRESSED))
+			if (node != null && node.getObject().is(Annotation.Annotation.ADDRESSED))
 				concepts.add(concept);
 		}
 		return concepts.toArray(new Concept[concepts.size()]);

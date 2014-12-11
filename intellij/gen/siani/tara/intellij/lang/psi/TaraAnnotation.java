@@ -5,12 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraAnnotationsAndFacets extends TaraPsiElement {
-
-  @Nullable
-  TaraAnnotations getAnnotations();
-
-  @Nullable
-  TaraFacetApply getFacetApply();
+public interface TaraAnnotation extends Annotation {
 
 }

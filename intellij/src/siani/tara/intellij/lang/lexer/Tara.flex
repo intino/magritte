@@ -105,9 +105,8 @@ NAMED               = "named"
 TERMINAL            = "terminal"
 PROPERTY            = "property"
 AGGREGATED          = "aggregated"
-COMPOSED            = "composed"
 COMPONENT           = "component"
-MULTIPLE            = "multiple"
+READONLY            = "readonly"
 ROOT                = "root"
 LOCAL               = "local"
 INTENTION           = "intention"
@@ -199,9 +198,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{LOCAL}                         {   return TaraTypes.LOCAL; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
     {AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
-	{COMPOSED}                      {   return TaraTypes.COMPOSED; }
+	{READONLY}                      {   return TaraTypes.READONLY; }
     {ROOT}                          {   return TaraTypes.ROOT; }
-    {MULTIPLE}                      {   return TaraTypes.MULTIPLE; }
 
 	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
 

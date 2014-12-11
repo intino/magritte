@@ -132,19 +132,17 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	@Override
-	public TaraAnnotations createAnnotation(String annotation) {
+	public Annotation createAnnotation(String annotation) {
 		final TaraBoxFileImpl file = createDummyFile(
 			"Form Ficha is " + annotation + "\n"
 		);
 		TaraConcept next = (TaraConcept) file.getConcepts().iterator().next();
-		return next.getAnnotationsAndFacets().getAnnotationsList().get(0);
+		return next.getNormalAnnotations().get(0);
 	}
 
 	@Override
 	public TaraAnnotationsAndFacets createAnnotationAndFacetWith(String annotation) {
-		final TaraBoxFileImpl file = createDummyFile(
-			"Form Ficha is " + annotation + "\n"
-		);
+		final TaraBoxFileImpl file = createDummyFile("Form Ficha is " + annotation + "\n");
 		TaraConcept next = (TaraConcept) file.getConcepts().iterator().next();
 		return next.getAnnotationsAndFacets();
 	}

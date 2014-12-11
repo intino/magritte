@@ -3,7 +3,6 @@ package siani.tara.intellij.annotator;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.annotator.semanticAnalizers.VariableAnalyzer;
@@ -30,12 +29,8 @@ public class VariableAnnotator extends TaraAnnotator {
 	private void addReferenceAnnotation(TaraVariable variable) {
 		if (ReferenceManager.resolve(variable.getIdentifierReference()) != null) {
 			Annotation reference = holder.createInfoAnnotation(variable.getIdentifierReference(), "reference");
-			reference.setTextAttributes(createReferenceHighlight());
+			reference.setTextAttributes(DefaultLanguageHighlighterColors.STATIC_FIELD);
 		}
-	}
-
-	private TextAttributesKey createReferenceHighlight() {
-		return DefaultLanguageHighlighterColors.STATIC_FIELD;
 	}
 
 }

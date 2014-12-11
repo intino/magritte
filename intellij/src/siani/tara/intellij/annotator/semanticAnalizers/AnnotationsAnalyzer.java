@@ -1,61 +1,82 @@
 package siani.tara.intellij.annotator.semanticAnalizers;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.MessageProvider;
-import siani.tara.intellij.annotator.TaraAnnotator;
-import siani.tara.intellij.lang.psi.Annotations;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.ConceptReference;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
+import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.Annotation;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import java.util.*;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
-import static siani.tara.lang.Annotations.Annotation.NAMED;
-import static siani.tara.lang.Annotations.Annotation.PROPERTY;
+import static siani.tara.lang.Annotation.Annotation.*;
 
 public class AnnotationsAnalyzer extends TaraAnalyzer {
 
-	private final Annotations taraAnnotations;
+	private final Annotations annotations;
+	private final List<? extends Annotation> annotationList;
 
 	public AnnotationsAnalyzer(Annotations annotations) {
-		this.taraAnnotations = annotations;
+		this.annotations = annotations;
+		this.annotationList = annotations.getNormalAnnotations();
 	}
 
 	public void analyze() {
-		if (hasErrors = analyzeAnnotations(taraAnnotations)) return;
-		if (hasErrors = analyzeConsistency(taraAnnotations.getAnnotations())) return;
+		if (hasErrors = !analyzeAnnotations()) return;
+		if (hasErrors = !analyzeConsistency()) return;
 		hasErrors = analyzeDuplicates();
 	}
 
-	private boolean analyzeAnnotations(@NotNull Annotations element) {
-		if (element.getParent() instanceof ConceptReference)
-			for (PsiElement psiElement : getConceptReferenceIncorrectAnnotations(element))
+	private boolean analyzeAnnotations() {
+		if (annotations.getParent() instanceof ConceptReference)
+			for (PsiElement psiElement : getConceptReferenceIncorrectAnnotations(annotations))
 				this.results.put(psiElement,
-					new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("annotation.concept")));
+					new AnnotateAndFix(ERROR, MessageProvider.message("annotation.concept")));
 		else {
-			Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(element);
-			for (PsiElement psiElement : getConceptIncorrectAnnotations(contextOf, contextOf.getAnnotations()))
+			Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(annotations);
+			if (contextOf == null) return true;
+			for (PsiElement psiElement : getConceptIncorrectAnnotations(contextOf, contextOf.getNormalAnnotations()))
 				this.results.put(psiElement,
-					new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("annotation.concept")));
+					new AnnotateAndFix(ERROR, MessageProvider.message("annotation.concept")));
 		}
 		return this.results.isEmpty();
 	}
 
-	private Collection<PsiElement> getConceptReferenceIncorrectAnnotations(Annotations element) {
-		return analyzeAnnotationList(element.getAnnotations(), siani.tara.lang.Annotations.HAS_ANNOTATIONS);
+	public boolean analyzeConsistency() {
+		List<String> names = annotationsToString(annotationList);
+		if ((names.contains(PROPERTY.getName()) || names.contains(FACET.getName())) && names.contains(NAMED.getName())) {
+			this.results.put(this.annotations,
+				new AnnotateAndFix(ERROR, MessageProvider.message("inconsistent.annotations")));
+			return false;
+		}
+		return true;
 	}
 
-	private PsiElement[] getConceptIncorrectAnnotations(Concept concept, PsiElement[] annotationList) {
+	private boolean analyzeDuplicates() {
+		Map<String, List<PsiElement>> annotationMap = count(annotationList);
+		for (String annotation : annotationMap.keySet())
+			if (annotationMap.get(annotation).size() > 1) {
+				for (PsiElement element : annotationMap.get(annotation))
+					this.results.put(element, new AnnotateAndFix(ERROR, MessageProvider.message("duplicated.annotation.key.error.message")));
+				return true;
+			}
+		return false;
+	}
+
+	private Collection<PsiElement> getConceptReferenceIncorrectAnnotations(Annotations element) {
+		return analyzeAnnotationList(element.getNormalAnnotations(), siani.tara.lang.Annotation.HAS_ANNOTATIONS);
+	}
+
+
+	private PsiElement[] getConceptIncorrectAnnotations(Concept concept, Collection<? extends Annotation> annotationList) {
 		List<PsiElement> incorrects;
 		if (isPrimeConcept(concept))
-			incorrects = analyzeAnnotationList(annotationList, siani.tara.lang.Annotations.PRIME_ANNOTATIONS);
+			incorrects = analyzeAnnotationList(annotationList, siani.tara.lang.Annotation.PRIME_ANNOTATIONS);
 		else if ((concept != null) && concept.isSub())
-			incorrects = analyzeAnnotationList(annotationList, siani.tara.lang.Annotations.SUB_ANNOTATIONS);
+			incorrects = analyzeAnnotationList(annotationList, siani.tara.lang.Annotation.SUB_ANNOTATIONS);
 		else
-			incorrects = analyzeAnnotationList(annotationList, siani.tara.lang.Annotations.COMPONENT_ANNOTATIONS);
+			incorrects = analyzeAnnotationList(annotationList, siani.tara.lang.Annotation.COMPONENT_ANNOTATIONS);
 		return incorrects.toArray(new PsiElement[incorrects.size()]);
 	}
 
@@ -63,8 +84,7 @@ public class AnnotationsAnalyzer extends TaraAnalyzer {
 		return (concept != null) && concept.getParent() instanceof TaraBoxFile;
 	}
 
-
-	private List<PsiElement> analyzeAnnotationList(PsiElement[] annotationList, siani.tara.lang.Annotations.Annotation[] correctAnnotations) {
+	private List<PsiElement> analyzeAnnotationList(Collection<? extends Annotation> annotationList, siani.tara.lang.Annotation.Annotation[] correctAnnotations) {
 		List<PsiElement> incorrectAnnotations = new ArrayList<>();
 		for (PsiElement annotation : annotationList) {
 			if (!isIn(correctAnnotations, annotation.getText()))
@@ -73,35 +93,13 @@ public class AnnotationsAnalyzer extends TaraAnalyzer {
 		return incorrectAnnotations;
 	}
 
-	private boolean isIn(siani.tara.lang.Annotations.Annotation[] correctAnnotation, String text) {
-		for (siani.tara.lang.Annotations.Annotation s : correctAnnotation)
+	private boolean isIn(siani.tara.lang.Annotation.Annotation[] correctAnnotation, String text) {
+		for (siani.tara.lang.Annotation.Annotation s : correctAnnotation)
 			if (s.getName().equals(text)) return true;
 		return false;
 	}
 
-	public boolean analyzeConsistency(PsiElement[] annotations) {
-		List<String> names = annotationsToString(annotations);
-		if ((names.contains(PROPERTY.getName())) && names.contains(NAMED.getName())) {
-			this.results.put(taraAnnotations,
-				new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("inconsistent.annotations")));
-			return false;
-		}
-		return true;
-	}
-
-	private boolean analyzeDuplicates() {
-		PsiElement[] psiAnnotations = taraAnnotations.getAnnotations();
-		Map<String, List<PsiElement>> annotationMap = count(psiAnnotations);
-		for (String annotation : annotationMap.keySet())
-			if (annotationMap.get(annotation).size() > 1) {
-				for (PsiElement element : annotationMap.get(annotation))
-					this.results.put(element, new TaraAnnotator.AnnotateAndFix(ERROR, MessageProvider.message("duplicated.annotation.key.error.message")));
-				return true;
-			}
-		return false;
-	}
-
-	private Map<String, List<PsiElement>> count(PsiElement[] psiAnnotations) {
+	private Map<String, List<PsiElement>> count(Collection<? extends Annotation> psiAnnotations) {
 		Map<String, List<PsiElement>> map = new HashMap();
 		for (PsiElement psiAnnotation : psiAnnotations)
 			count(map, psiAnnotation);
@@ -118,7 +116,7 @@ public class AnnotationsAnalyzer extends TaraAnalyzer {
 		}
 	}
 
-	private List<String> annotationsToString(PsiElement[] annotations) {
+	private List<String> annotationsToString(Collection<? extends Annotation> annotations) {
 		List<String> names = new ArrayList<>();
 		for (PsiElement annotation : annotations)
 			names.add(annotation.getText());

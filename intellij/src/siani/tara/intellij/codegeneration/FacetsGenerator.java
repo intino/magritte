@@ -18,7 +18,7 @@ import siani.tara.lang.Node;
 import java.io.File;
 import java.util.*;
 
-import static siani.tara.lang.Annotations.Annotation.INTENTION;
+import static siani.tara.lang.Annotation.Annotation.INTENTION;
 
 public class FacetsGenerator {
 

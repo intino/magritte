@@ -23,9 +23,9 @@ public class TaraAnnotationsAndFacetsImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
-  @NotNull
-  public List<TaraAnnotations> getAnnotationsList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraAnnotations.class);
+  @Nullable
+  public TaraAnnotations getAnnotations() {
+    return findChildByClass(TaraAnnotations.class);
   }
 
   @Override
