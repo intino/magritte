@@ -5,6 +5,8 @@ import siani.tara.TaracRunner;
 
 public class TaraCRunnerTest {
 
+
+
 	@Test
 	public void TestMagritteM2() {
 		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/magritteM2.txt"});
@@ -25,6 +27,16 @@ public class TaraCRunnerTest {
 		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/tafat2M1.txt"});
 	}
 
+
+	@Test
+	public void TestSmartCitiesM2() {
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/smartM2.txt"});
+	}
+
+	@Test
+	public void TestSmartCitiesM1() {
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/smartM1.txt"});
+	}
 
 	@Test
 	public void TestM0() {

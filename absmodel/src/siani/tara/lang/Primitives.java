@@ -10,6 +10,8 @@ public class Primitives {
 	public static final String NATURAL = "natural";
 	public static final String BOOLEAN = "boolean";
 	public static final String STRING = "string";
+	public static final String RATIO = "ratio";
+	public static final String MEASURE = "measure";
 	public static final String DOUBLE = "double";
 	public static final String RESOURCE = "resource";
 	public static final String REFERENCE = "identifier";
@@ -123,6 +125,8 @@ public class Primitives {
 		list.add(DOUBLE);
 		list.add(DATE);
 		list.add(RESOURCE);
+		list.add(MEASURE);
+		list.add(RATIO);
 		return list.toArray(new String[list.size()]);
 	}
 

@@ -4,8 +4,9 @@ import com.intellij.psi.PsiElement;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.Annotation;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.module.ModuleProvider;
 
 import java.util.*;
 
@@ -16,16 +17,31 @@ public class AnnotationsAnalyzer extends TaraAnalyzer {
 
 	private final Annotations annotations;
 	private final List<? extends Annotation> annotationList;
+	private final boolean isTerminalModule;
 
 	public AnnotationsAnalyzer(Annotations annotations) {
 		this.annotations = annotations;
 		this.annotationList = annotations.getNormalAnnotations();
+		this.isTerminalModule = isTerminalModule();
 	}
 
 	public void analyze() {
-		if (hasErrors = !analyzeAnnotations()) return;
-		if (hasErrors = !analyzeConsistency()) return;
-		hasErrors = analyzeDuplicates();
+		if (!analyzeAnnotations()) return;
+		if (!analyzeConsistency()) return;
+		if (!analyzeDuplicates()) return;
+		analyzeMetaAnnotations();
+	}
+
+	private boolean analyzeMetaAnnotations() {
+		List<? extends Annotation> metaAnnotations = annotations.getMetaAnnotations();
+		if ((!metaAnnotations.isEmpty() && isTerminalModule)) {
+			this.results.put(annotations, new AnnotateAndFix(ERROR, MessageProvider.message("metaannotation.in.terminal")));
+			return false;
+		} else return true;
+	}
+
+	private boolean isTerminalModule() {
+		return ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(annotations.getContainingFile())).isTerminal();
 	}
 
 	private boolean analyzeAnnotations() {
@@ -59,9 +75,9 @@ public class AnnotationsAnalyzer extends TaraAnalyzer {
 			if (annotationMap.get(annotation).size() > 1) {
 				for (PsiElement element : annotationMap.get(annotation))
 					this.results.put(element, new AnnotateAndFix(ERROR, MessageProvider.message("duplicated.annotation.key.error.message")));
-				return true;
+				return false;
 			}
-		return false;
+		return true;
 	}
 
 	private Collection<PsiElement> getConceptReferenceIncorrectAnnotations(Annotations element) {

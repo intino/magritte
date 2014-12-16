@@ -34,6 +34,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitBody(o);
   }
 
+  public void visitBooleanAttribute(@NotNull TaraBooleanAttribute o) {
+    visitPsiElement(o);
+  }
+
   public void visitBooleanValue(@NotNull TaraBooleanValue o) {
     visitPsiElement(o);
   }
@@ -50,12 +54,24 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitDateAttribute(@NotNull TaraDateAttribute o) {
+    visitPsiElement(o);
+  }
+
   public void visitDateValue(@NotNull TaraDateValue o) {
     visitPsiElement(o);
   }
 
   public void visitDoc(@NotNull TaraDoc o) {
     visitDoc(o);
+  }
+
+  public void visitDoubleAttribute(@NotNull TaraDoubleAttribute o) {
+    visitPsiElement(o);
+  }
+
+  public void visitDoubleMeasure(@NotNull TaraDoubleMeasure o) {
+    visitPsiElement(o);
   }
 
   public void visitDoubleValue(@NotNull TaraDoubleValue o) {
@@ -98,6 +114,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitIntegerAttribute(@NotNull TaraIntegerAttribute o) {
+    visitPsiElement(o);
+  }
+
   public void visitIntegerValue(@NotNull TaraIntegerValue o) {
     visitPsiElement(o);
   }
@@ -106,7 +126,15 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitMeasure(@NotNull TaraMeasure o) {
+  public void visitMeasureAttribute(@NotNull TaraMeasureAttribute o) {
+    visitPsiElement(o);
+  }
+
+  public void visitMeasureType(@NotNull TaraMeasureType o) {
+    visitPsiElement(o);
+  }
+
+  public void visitMeasureValue(@NotNull TaraMeasureValue o) {
     visitPsiElement(o);
   }
 
@@ -115,6 +143,10 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitMetaWord(@NotNull TaraMetaWord o) {
+    visitPsiElement(o);
+  }
+
+  public void visitNaturalAttribute(@NotNull TaraNaturalAttribute o) {
     visitPsiElement(o);
   }
 
@@ -130,8 +162,24 @@ public class TaraVisitor extends PsiElementVisitor {
     visitParameters(o);
   }
 
+  public void visitRatioAttribute(@NotNull TaraRatioAttribute o) {
+    visitPsiElement(o);
+  }
+
+  public void visitReferenceAttribute(@NotNull TaraReferenceAttribute o) {
+    visitReferenceStatement(o);
+  }
+
+  public void visitResource(@NotNull TaraResource o) {
+    visitPsiElement(o);
+  }
+
   public void visitSignature(@NotNull TaraSignature o) {
     visitSignature(o);
+  }
+
+  public void visitStringAttribute(@NotNull TaraStringAttribute o) {
+    visitPsiElement(o);
   }
 
   public void visitStringValue(@NotNull TaraStringValue o) {
@@ -150,6 +198,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitVariable(o);
   }
 
+  public void visitVariableType(@NotNull TaraVariableType o) {
+    visitPsiElement(o);
+  }
+
   public void visitWord(@NotNull TaraWord o) {
     visitWord(o);
   }
@@ -159,6 +211,10 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitParameter(@NotNull Parameter o) {
+    visitElement(o);
+  }
+
+  public void visitReferenceStatement(@NotNull ReferenceStatement o) {
     visitElement(o);
   }
 

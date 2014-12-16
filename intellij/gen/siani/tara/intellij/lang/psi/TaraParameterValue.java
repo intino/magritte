@@ -26,7 +26,7 @@ public interface TaraParameterValue extends TaraPsiElement {
   List<TaraIntegerValue> getIntegerValueList();
 
   @Nullable
-  TaraMeasure getMeasure();
+  TaraMeasureValue getMeasureValue();
 
   @Nullable
   TaraMetaWord getMetaWord();

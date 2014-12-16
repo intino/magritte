@@ -18,6 +18,10 @@ public class AnnotationMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
+	public boolean is(siani.tara.lang.Annotation annotation) {
+		return this.getText().equals(annotation.getName());
+	}
+
 	@Override
 	public String toString() {
 		return getText();

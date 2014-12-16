@@ -24,16 +24,16 @@ public class BoxAnalyzer extends TaraAnalyzer {
 	@Override
 	public void analyze() {
 		TaraBoxFile file = (TaraBoxFile) boxReference.getContainingFile();
-		if (!hasErrors) analyzeMetamodelExistence(file);
+		if (!hasErrors()) analyzeMetamodelExistence(file);
 	}
 
 	private void analyzeMetamodelExistence(TaraBoxFile file) {
 		String metamodelName = ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(file)).getMetamodelName();
-		if (hasErrors = (file.getParentModel() == null && metamodelName != null && !metamodelName.isEmpty()))
+		if (file.getParentModel() == null && metamodelName != null && !metamodelName.isEmpty())
 			results.put(file, new AnnotateAndFix(ERROR, message("model.not.found"), new AddMetamodelReferenceFix(file)));
 		else if (metamodelName != null && !metamodelName.isEmpty()) {
 			Model parentModel = TaraLanguage.getMetaModel(file);
-			if (hasErrors = (parentModel == null && !metamodelName.isEmpty()))
+			if (parentModel == null && !metamodelName.isEmpty())
 				results.put(file, new AnnotateAndFix(ERROR, message("parent.model.file.found"), new ImportMetamodelFix(file)));
 		}
 	}

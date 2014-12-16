@@ -19,6 +19,11 @@ public class DeclaredNode extends Node {
 		return innerNodes;
 	}
 
+	@Override
+	public Annotation[] getAnnotations() {
+		return getObject().getAnnotations();
+	}
+
 	public NodeObject getObject() {
 		return (NodeObject) object;
 	}

@@ -46,7 +46,7 @@ public class NodeObject extends ModelObject {
 		return parameters;
 	}
 
-	public Annotation[] getAnnotations() {
+	protected Annotation[] getAnnotations() {
 		return annotations.toArray(new Annotation[annotations.size()]);
 	}
 

@@ -274,28 +274,33 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	@NotNull
 	public List<Annotation> getNormalAnnotations() {
 		List<Annotation> list = new ArrayList<>();
-		TaraAnnotationsAndFacets annotationsAndFacets = findChildByClass(TaraAnnotationsAndFacets.class);
-		if (annotationsAndFacets != null && annotationsAndFacets.getAnnotations() != null)
-			list.addAll(annotationsAndFacets.getAnnotations().getNormalAnnotations());
-		if (this.getBody() != null)
-			for (TaraAnnotationsAndFacets inBody : getBody().getAnnotationsAndFacetsList())
-				list.addAll(((Annotations) inBody.getAnnotations()).getNormalAnnotations());
+		for (Annotation annotation : getAnnotations()) {
+			if (!annotation.isMetaAnnotation()) list.add(annotation);
+		}
 		return list;
 	}
 
 	@NotNull
 	public List<Annotation> getMetaAnnotations() {
 		List<Annotation> list = new ArrayList<>();
-		TaraAnnotationsAndFacets annotationsAndFacets = findChildByClass(TaraAnnotationsAndFacets.class);
-		if (annotationsAndFacets != null && annotationsAndFacets.getAnnotations() != null)
-			list.addAll(annotationsAndFacets.getAnnotations().getMetaAnnotations());
-		if (this.getBody() != null)
-			for (TaraAnnotationsAndFacets inBody : getBody().getAnnotationsAndFacetsList()) {
-				Annotations annotations = inBody.getAnnotations();
-				if (annotations == null) continue;
-				list.addAll(annotations.getMetaAnnotations());
-			}
+		for (Annotation annotation : getAnnotations()) if (annotation.isMetaAnnotation()) list.add(annotation);
 		return list;
+	}
+
+	public Annotation[] getAnnotations() {
+		List<Annotation> list = new ArrayList<>();
+		TaraAnnotationsAndFacets[] annotationsAndFacets = findChildrenByClass(TaraAnnotationsAndFacets.class);
+		for (TaraAnnotationsAndFacets annotationsAndFacet : annotationsAndFacets) {
+			if (annotationsAndFacet != null && annotationsAndFacet.getAnnotations() != null)
+				list.addAll(annotationsAndFacet.getAnnotations().getAnnotationList());
+			if (this.getBody() != null)
+				for (TaraAnnotationsAndFacets inBody : getBody().getAnnotationsAndFacetsList()) {
+					Annotations annotations = inBody.getAnnotations();
+					if (annotations == null) continue;
+					list.addAll(annotations.getAnnotationList());
+				}
+		}
+		return list.toArray(new Annotation[list.size()]);
 	}
 
 	@Override

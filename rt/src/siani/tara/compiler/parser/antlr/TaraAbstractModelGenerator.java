@@ -18,7 +18,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	Model model;
 	Stack<Node> conceptStack = new Stack<>();
 	Stack<FacetTarget> facetTargetStack = new Stack<>();
-	String box = "";
 	Set<String> imports = new HashSet<>();
 	String currentDocAttribute = "";
 
@@ -86,10 +85,17 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void exitConcept(@NotNull ConceptContext ctx) {
 		Node node = conceptStack.peek();
-		if (node instanceof DeclaredNode)
-			model.addIdentifier(node.getObject().getName());
+		if (node instanceof DeclaredNode) {
+			if (hasSubs(node)) node.getObject().add(Annotation.ABSTRACT);
+			else model.addIdentifier(node.getObject().getName());
+		}
 		model.add(node.getQualifiedName(), node);
 		conceptStack.pop();
+	}
+
+	private boolean hasSubs(Node node) {
+		for (Node inner : node.getInnerNodes()) if (inner.is(DeclaredNode.class) && inner.isSub()) return true;
+		return false;
 	}
 
 	private void addHeaderInformation(ParserRuleContext ctx, Node node) {
@@ -189,8 +195,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		variable.setList(ctx.LIST() != null);
 		if (ctx.integerValue() != null)
 			variable.setDefaultValues(getTextArrayOfContextList(ctx.integerValue()));
-		else if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
-		if (ctx.measure() != null) variable.setMeasure(ctx.measure().getText());
+//		else if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
+//		if (ctx.measureValue() != null) variable.setMeasureValue(ctx.measureValue().getText());
 		addAttribute(ctx, variable);
 	}
 
@@ -200,8 +206,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		variable.setList(ctx.LIST() != null);
 		if (ctx.count() != null) variable.setCount(Integer.parseInt(ctx.count().naturalValue().getText()));
 		if (ctx.doubleValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.doubleValue()));
-		else if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
-		if (ctx.measure() != null) variable.setMeasure(ctx.measure().getText());
+		if (ctx.doubleMeasure() != null) variable.setMeasureType(ctx.doubleMeasure().getText());
+		if (ctx.measureValue() != null) variable.setMeasureValue(ctx.measureValue().getText());
 		addAttribute(ctx, variable);
 	}
 
@@ -210,8 +216,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		super.enterNaturalAttribute(ctx);
 		Attribute variable = new Attribute(ctx.NATURAL_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.naturalValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.naturalValue()));
-		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
-		if (ctx.measure() != null) variable.setMeasure(ctx.measure().getText());
+		if (ctx.measureValue() != null) variable.setMeasureValue(ctx.measureValue().getText());
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
@@ -220,16 +225,29 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterDateAttribute(@NotNull DateAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.DATE_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.dateValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.dateValue()));
-		if (ctx.EMPTY() != null) variable.setDefaultValues(new Date[0]);
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
+	}
+
+	@Override
+	public void enterMeasureAttribute(@NotNull MeasureAttributeContext ctx) {
+		Attribute variable = new Attribute(ctx.MEASURE_TYPE().getText(), ctx.IDENTIFIER().getText());
+		variable.setList(ctx.LIST() != null);
+		if (ctx.doubleValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.doubleValue()));
+		if (ctx.attributeType() != null) variable.setMeasureType(ctx.attributeType().getText());
+		if (ctx.measureValue() != null) variable.setMeasureValue(ctx.measureValue().getText());
+		addAttribute(ctx, variable);
+	}
+
+	@Override
+	public void enterRatioAttribute(@NotNull RatioAttributeContext ctx) {
 	}
 
 	@Override
 	public void enterStringAttribute(@NotNull StringAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.STRING_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.stringValue() != null) variable.setDefaultValues(formatValues(ctx.stringValue()));
-		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
+//		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
@@ -257,7 +275,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		Attribute variable = new Attribute(ctx.BOOLEAN_TYPE().getText(), ctx.IDENTIFIER().getText());
 		variable.setList(ctx.LIST() != null);
 		if (ctx.booleanValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.booleanValue()));
-		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
+//		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
 		addAttribute(ctx, variable);
 	}
 
@@ -313,24 +331,24 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	private Variable getValueOfInit(String name, InitValueContext ctx) {
 		Variable variable = null;
-		String measure = ctx.measure() != null ? ctx.measure().getText() : "";
+		String measure = ctx.measureValue() != null ? ctx.measureValue().getText() : "";
 		if (!ctx.booleanValue().isEmpty()) {
 			variable = new Attribute(BOOLEAN, name, ctx.booleanValue().size() > 1);
 			for (BooleanValueContext context : ctx.booleanValue())
 				variable.addValue(getConverter(BOOLEAN).convert(context.getText())[0]);
 		} else if (!ctx.integerValue().isEmpty()) {
 			variable = new Attribute(INTEGER, name, ctx.integerValue().size() > 1);
-			((Attribute) variable).setMeasure(measure);
+			((Attribute) variable).setMeasureValue(measure);
 			for (IntegerValueContext context : ctx.integerValue())
 				variable.addValue(getConverter(INTEGER).convert(context.getText())[0]);
 		} else if (!ctx.doubleValue().isEmpty()) {
 			variable = new Attribute(DOUBLE, name, ctx.doubleValue().size() > 1);
-			((Attribute) variable).setMeasure(measure);
+			((Attribute) variable).setMeasureValue(measure);
 			for (DoubleValueContext context : ctx.doubleValue())
 				variable.addValue(getConverter(DOUBLE).convert(context.getText())[0]);
 		} else if (!ctx.naturalValue().isEmpty()) {
 			variable = new Attribute(NATURAL, name, ctx.naturalValue().size() > 1);
-			((Attribute) variable).setMeasure(measure);
+			((Attribute) variable).setMeasureValue(measure);
 			for (NaturalValueContext context : ctx.naturalValue())
 				variable.addValue(getConverter(NATURAL).convert(context.getText())[0]);
 		} else if (!ctx.stringValue().isEmpty()) {
@@ -368,34 +386,11 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		return list.toArray(new String[list.size()]);
 	}
 
-	private List<Annotation> getAnnotations(AnnotationsContext ctx) {
+	private List<Annotation> getAnnotations(AnnotationsContext context) {
 		List<Annotation> annotations = new ArrayList<>();
-		for (int i = 0; i < ctx.REQUIRED().size(); i++)
-			annotations.add(Annotation.REQUIRED);
-		for (int i = 0; i < ctx.PROPERTY().size(); i++)
-			annotations.add(Annotation.PROPERTY);
-		for (int i = 0; i < ctx.SINGLE().size(); i++)
-			annotations.add(Annotation.SINGLE);
-		for (int i = 0; i < ctx.TERMINAL().size(); i++)
-			annotations.add(Annotation.TERMINAL);
-		for (int i = 0; i < ctx.COMPONENT().size(); i++)
-			annotations.add(Annotation.COMPONENT);
-		for (int i = 0; i < ctx.ABSTRACT().size(); i++)
-			annotations.add(Annotation.ABSTRACT);
-		for (int i = 0; i < ctx.NAMED().size(); i++)
-			annotations.add(Annotation.NAMED);
-		for (int i = 0; i < ctx.FACET().size(); i++)
-			annotations.add(Annotation.FACET);
-		for (int i = 0; i < ctx.INTENTION().size(); i++)
-			annotations.add(Annotation.INTENTION);
-		for (int i = 0; i < ctx.ADDRESSED().size(); i++)
-			annotations.add(Annotation.ADDRESSED);
-		for (int i = 0; i < ctx.AGGREGATED().size(); i++)
-			annotations.add(Annotation.AGGREGATED);
-		for (int i = 0; i < ctx.LOCAL().size(); i++)
-			annotations.add(Annotation.LOCAL);
-		for (int i = 0; i < ctx.LOCAL().size(); i++)
-			annotations.add(Annotation.READONLY);
+		for (AnnotationContext annotation : context.annotation()) {
+			annotations.add(Annotation.valueOf(annotation.getText().toUpperCase().replace("+", "META_")));
+		}
 		return annotations;
 	}
 }

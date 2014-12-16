@@ -60,8 +60,8 @@ public class TaraParameterValueImpl extends ASTWrapperPsiElement implements Tara
 
   @Override
   @Nullable
-  public TaraMeasure getMeasure() {
-    return findChildByClass(TaraMeasure.class);
+  public TaraMeasureValue getMeasureValue() {
+    return findChildByClass(TaraMeasureValue.class);
   }
 
   @Override

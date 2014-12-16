@@ -134,9 +134,9 @@ public class ModelLoader {
 		}
 
 		private void processAttribute(JsonElement json, Attribute attribute) {
-			JsonElement measure = json.getAsJsonObject().get("measure");
+			JsonElement measure = json.getAsJsonObject().get("measureValue");
 			if (measure != null && measure.isJsonPrimitive())
-				attribute.measure = measure.getAsString();
+				attribute.measureValue = measure.getAsString();
 			JsonElement count = json.getAsJsonObject().get("count");
 			if (count != null && count.isJsonPrimitive())
 				attribute.count = count.getAsInt();

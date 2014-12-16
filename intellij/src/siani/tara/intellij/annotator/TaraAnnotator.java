@@ -7,7 +7,6 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.annotator.semanticAnalizers.TaraAnalyzer;
-import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 
 import java.util.Map;
 
@@ -28,14 +27,14 @@ public abstract class TaraAnnotator implements Annotator {
 					annotation = holder.createInfoAnnotation(entry.getKey().getNode(), entry.getValue().message());
 					break;
 				case WARNING:
-					annotation = holder.createInfoAnnotation(entry.getKey().getNode(), entry.getValue().message());
+					annotation = holder.createWarningAnnotation(entry.getKey().getNode(), entry.getValue().message());
 					break;
 				case ERROR:
 					annotation = holder.createErrorAnnotation(entry.getKey().getNode(), entry.getValue().message());
 					break;
 			}
 			if (entry.getValue().textAttributes() != null)
-				annotation.setTextAttributes(TaraSyntaxHighlighter.ANNOTATION_ERROR);
+				annotation.setTextAttributes(entry.getValue().attributes);
 			for (IntentionAction action : entry.getValue().actions()) annotation.registerFix(action);
 		}
 	}

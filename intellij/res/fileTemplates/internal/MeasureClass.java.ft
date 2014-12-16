@@ -1,0 +1,42 @@
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")import tara.Metric;#end
+
+
+public enum ${NAME} implements Metric {
+
+	//Add the metrics here ${MEASURE}
+	;
+
+	private final String label;
+	private final Converter converter;
+
+
+	${NAME}(Converter converter) {
+		this(null, converter);
+	}
+
+	${NAME}(String label, Converter converter) {
+		this.label = label;
+		this.converter = converter;
+	}
+
+	${NAME}(final double factor){
+		this(new Metric.Converter(){
+			@Override
+			public double convert(double value){
+				return value*factor;
+			}
+		});
+	}
+
+	@Override
+	public String toString() {
+		return label == null ? super.toString() : label;
+	}
+
+	@Override
+	public double value(double value) {
+		return converter.convert(value);
+	}
+}

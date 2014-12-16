@@ -24,9 +24,7 @@ public class VariableAnalyzer extends TaraAnalyzer {
 	@Override
 	public void analyze() {
 		if (isDuplicated())
-			results.put(variable,
-				new AnnotateAndFix(ERROR, message("duplicate.attribute"), new RemoveAttributeFix(variable)));
-
+			results.put(variable, new AnnotateAndFix(ERROR, message("duplicate.attribute"), new RemoveAttributeFix(variable)));
 	}
 
 	private boolean isDuplicated() {

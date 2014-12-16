@@ -16,7 +16,7 @@ import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.E
 public abstract class TaraAnalyzer {
 
 	protected Map<PsiElement, TaraAnnotator.AnnotateAndFix> results = new HashMap<>();
-	protected boolean hasErrors = false;
+	private boolean hasErrors = false;
 
 	public abstract void analyze();
 

@@ -59,6 +59,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	List<Annotation> getMetaAnnotations();
 
+	Annotation[] getAnnotations();
+
 	@Override
 	Icon getIcon(@IconFlags int i);
 

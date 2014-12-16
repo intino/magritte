@@ -32,6 +32,8 @@ public abstract class Node {
 
 	public abstract List<Node> getInnerNodes();
 
+	public abstract Annotation[] getAnnotations();
+
 	public abstract boolean isSub();
 
 	public DeclaredNode[] getSubConcepts() {

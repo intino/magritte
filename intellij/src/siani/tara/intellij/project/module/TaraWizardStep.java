@@ -22,6 +22,7 @@ public class TaraWizardStep extends ModuleWizardStep {
 	private boolean terminal;
 	private JPanel mainPanel;
 	private JComboBox metamodelBox;
+	private JPanel MyPanel;
 
 
 	public TaraWizardStep(TaraModuleBuilder builder, WizardContext context, Project project) {
@@ -47,8 +48,9 @@ public class TaraWizardStep extends ModuleWizardStep {
 	}
 
 	private void loadBoxValues() {
+		metamodelBox.addItem("none");
 		for (Module candidate : ModuleManager.getInstance(this.project).getModules())
-			metamodelBox.addItem(candidate.getName());
+			metamodelBox.addItem(candidate);
 	}
 
 	@Override

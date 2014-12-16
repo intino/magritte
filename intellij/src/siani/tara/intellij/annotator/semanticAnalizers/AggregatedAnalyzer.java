@@ -32,15 +32,16 @@ public class AggregatedAnalyzer extends TaraAnalyzer {
 		if (metamodel == null) return;
 		Node node = TaraUtil.findNode(concept, metamodel);
 		boolean terminal = ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(concept.getContainingFile())).isTerminal();
-		if (hasErrors = !terminal & node.isAggregated() && !concept.isAggregated())
+		if (!terminal & node.isAggregated() && !concept.isAggregated())
 			results.put(concept.getSignature(),
 				new TaraAnnotator.AnnotateAndFix(ERROR, "This concept should be aggregated", new AddAnnotationFix(concept, AGGREGATED)));
-		if (!hasErrors && (node.isAggregated() && terminal || concept.isAggregated()))
+		if (!hasErrors() && (node.isAggregated() && terminal || concept.isAggregated()))
 			addAggregatedAnnotation(concept);
 	}
 
 	private void addAggregatedAnnotation(Concept concept) {
-		results.put(concept.getIdentifierNode(), new TaraAnnotator.AnnotateAndFix(INFO, "Root", createAggregatedHighlight()));
+		if (!concept.isRoot() && concept.getName() != null)
+			results.put(concept.getIdentifierNode(), new TaraAnnotator.AnnotateAndFix(INFO, "Root", createAggregatedHighlight()));
 	}
 
 	@SuppressWarnings("deprecation")

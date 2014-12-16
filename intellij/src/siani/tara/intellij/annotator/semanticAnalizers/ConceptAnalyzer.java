@@ -1,16 +1,17 @@
 package siani.tara.intellij.annotator.semanticAnalizers;
 
+import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.annotator.fix.AddAddressFix;
+import siani.tara.intellij.annotator.fix.AddAnnotationFix;
 import siani.tara.intellij.annotator.fix.RemoveConceptFix;
-import siani.tara.intellij.lang.psi.Annotation;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraFacetTarget;
-import siani.tara.intellij.lang.psi.Variable;
+import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Node;
 
 import java.util.ArrayList;
@@ -32,17 +33,15 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		if (isRootSub())
-			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, message("sub.bad.position")));
-		else if (isDuplicated())
-			results.put(concept.getSignature(), addError(message("duplicate.concept")));
-		else if (!analyzeIfExtendedFromSameType(concept)) {
+		if (isRootSub()) results.put(concept.getSignature(), new AnnotateAndFix(ERROR, message("sub.bad.position")));
+		else if (isDuplicated()) results.put(concept.getSignature(), addError(message("duplicate.concept")));
+		else if (!analyzeIfExtendedFromSameType(concept))
 			results.put(concept.getSignature().getParentReference(), addError(message("invalid.extension.concept")));
-			return;
-		}
+		if (hasErrors()) return;
 		Node node = getMetaConcept(concept);
 		if (node == null) return;
 		analyzeMetaAnnotationConstrains(node);
+		if (!hasErrors()) analyzeMetaMetaAnnotationConstrains(node);
 		if (!hasErrors()) analyzeAddressAdded(node);
 		if (!hasErrors()) analyzeConceptName(concept, TaraUtil.isTerminalBox(concept.getFile()));
 		analyzeJavaClassCreation(node, concept);
@@ -51,7 +50,6 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	private AnnotateAndFix addError(String message) {
 		return new AnnotateAndFix(ERROR, message, new RemoveConceptFix(concept));
 	}
-
 
 	private boolean isRootSub() {
 		return concept.isSub() && TaraPsiImplUtil.getConceptContainerOf(concept) == null;
@@ -63,7 +61,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean isDuplicated() {
-		return concept.getIdentifierNode() != null && findDuplicates() > 1;
+		return concept.getIdentifierNode() != null && findDuplicates();
 	}
 
 	private boolean analyzeIfExtendedFromSameType(Concept concept) {
@@ -72,18 +70,26 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 			|| concept.getType().equals(concept.getSignature().getParentConcept().getType());
 	}
 
-	public int findDuplicates() {
-		if (concept.getName() == null) return 1;
+	public boolean findDuplicates() {
+		if (concept.getName() == null) return false;
 		Concept parent = TaraPsiImplUtil.getConceptContainerOf(concept);
-		if (parent != null) return analyzeChildDuplicates(parent);
+		if (parent != null) return analyzeChildDuplicates(parent) > 1;
 		else {
 			PsiElement inFacetTarget = TaraPsiImplUtil.getContextOf(concept);
 			if (inFacetTarget != null && inFacetTarget instanceof TaraFacetTarget) {
 				List<Concept> innerConceptsInBody = TaraPsiImplUtil.getInnerConceptsInBody(((TaraFacetTarget) inFacetTarget).getBody());
-				return countDuplicates(innerConceptsInBody, concept.getName());
+				return countDuplicates(innerConceptsInBody, concept.getName()) > 1;
 			}
 		}
-		return searchConceptInFile(concept).size();
+		return searchDuplicatesInAllModule(concept);
+	}
+
+	private boolean searchDuplicatesInAllModule(Concept concept) {
+		Module moduleOfFile = ModuleProvider.getModuleOfFile(concept.getContainingFile());
+		int size = 0;
+		for (TaraBoxFileImpl file : TaraUtil.getTaraFilesOfModule(moduleOfFile))
+			size += searchConceptInFile(concept, file).size();
+		return size > 1;
 	}
 
 
@@ -101,7 +107,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		return duplicates;
 	}
 
-	private List<Concept> searchConceptInFile(Concept concept) {
+	private List<Concept> searchConceptInFile(Concept concept, TaraBoxFile containingFile) {
 		List<Concept> list = new ArrayList<>();
 		for (Concept aConcept : TaraUtil.getRootConceptsOfFile(concept.getFile()))
 			//noinspection ConstantConditions
@@ -131,6 +137,21 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, message("intention.with.children")));
 	}
 
+	private void analyzeMetaMetaAnnotationConstrains(Node node) {
+		for (siani.tara.lang.Annotation annotation : node.getAnnotations()) {
+			if (annotation.isMeta() && !is(siani.tara.lang.Annotation.valueOf(annotation.getName().substring(1).toUpperCase()))) {
+				results.put(concept.getSignature(),
+					new AnnotateAndFix(ERROR, message("annotation.required", annotation.getName().substring(1)), new AddAnnotationFix(concept, annotation)));
+			}
+		}
+	}
+
+	private boolean is(siani.tara.lang.Annotation annotation) {
+		for (Annotation taraAnnotation : concept.getAnnotations())
+			if (taraAnnotation.is(annotation)) return true;
+		return false;
+	}
+
 	private boolean analyzeAsProperty(Node node) {
 		if (concept.isProperty()) checkContainsTerminal(concept);
 		if (results.size() > 0) return false;
@@ -155,6 +176,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean isTerminal(Variable variable) {
+		if (variable.getAnnotations() == null) return false;
 		for (Annotation annotation : variable.getAnnotations().getNormalAnnotations())
 			if (annotation.getText().contains(TERMINAL.getName())) return true;
 		return false;

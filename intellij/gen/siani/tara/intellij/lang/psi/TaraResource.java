@@ -5,6 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraMeasure extends TaraPsiElement {
+public interface TaraResource extends TaraPsiElement {
+
+  @Nullable
+  TaraAttributeType getAttributeType();
 
 }

@@ -203,7 +203,15 @@ public class IntentionsGenerator {
 	private PsiDirectory findDestiny() {
 		PsiDirectory subdirectory = srcDirectory.findSubdirectory(INTENTIONS);
 		if (subdirectory != null) return subdirectory;
-		return DirectoryUtil.createSubdirectories(INTENTIONS, srcDirectory, ".");
+		final PsiDirectory[] destiny = new PsiDirectory[1];
+		WriteCommandAction action = new WriteCommandAction(project, taraBoxFile) {
+			@Override
+			protected void run(@NotNull Result result) throws Throwable {
+				destiny[0] = DirectoryUtil.createSubdirectories(INTENTIONS, srcDirectory, ".");
+			}
+		};
+		action.execute();
+		return destiny[0];
 	}
 
 	private VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {

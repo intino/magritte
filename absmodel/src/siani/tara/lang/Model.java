@@ -198,8 +198,18 @@ public class Model {
 		for (Node node : nodeTree) {
 			roots.add((DeclaredNode) node);
 			extractSubs(node, roots);
+			extractAggregatedNodes(node, roots);
 		}
 		return roots;
+	}
+
+	private void extractAggregatedNodes(Node node, List<DeclaredNode> roots) {
+		if (node == null) return;
+		for (Node inner : node.getInnerNodes())
+			if (inner.is(DeclaredNode.class)) {
+				if (inner.isAggregated()) roots.add((DeclaredNode) inner);
+				extractAggregatedNodes(inner, roots);
+			}
 	}
 
 	private void extractSubs(Node node, List<DeclaredNode> list) {

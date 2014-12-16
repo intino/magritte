@@ -95,7 +95,7 @@ COMMA               = ","
 COLON               = ":"
 EQUALS              = "="
 SEMICOLON           = ";"
-APOSTROPHE          = "'"
+APOSTROPHE          = "\""
 DASH                = "-"
 UNDERDASH           = "_"
 DASHES              = {DASH} {DASH}+
@@ -109,17 +109,20 @@ NATURAL_TYPE        = "natural"
 DOUBLE_TYPE         = "double"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
+RATIO_TYPE          = "ratio"
+MEASURE_TYPE_KEY        = "measure"
 DATE_TYPE           = "date"
 BOOLEAN_VALUE_KEY   = "true" | "false"
 EMPTY_REF           = "empty"
 NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
-DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+
+NOT_CIENTIFICA      = "E" ({PLUS} | {DASH})? {DIGIT}+
+DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {NOT_CIENTIFICA}?
 STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
 DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
-MEASURE_VALUE       = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})*
+MEASURE_VALUE_TYPE       = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})*
 DOC_LINE            = "#" ~[\n]
 
 DIGIT               = [:digit:]
@@ -194,6 +197,8 @@ NEWLINE             = [\n]+
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
+    {RATIO_TYPE}                    {   return TaraTypes.RATIO_TYPE; }
+    {MEASURE_TYPE_KEY}              {   return TaraTypes.MEASURE_TYPE_KEY; }
 	{SEMICOLON}                     {   return TaraTypes.USE_KEY;  }
 
 	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
@@ -205,8 +210,7 @@ NEWLINE             = [\n]+
 
 	{IDENTIFIER_KEY}                {   return evaluateIdentifier();  }
 
-	{MEASURE_VALUE}                 {   return TaraTypes.MEASURE_VALUE; }
-
+    {MEASURE_VALUE_TYPE}            {   return TaraTypes.MEASURE_VALUE; }
     {NEWLINE}                       {   return TokenType.WHITE_SPACE; }
 
     .                               {   return TokenType.BAD_CHARACTER; }

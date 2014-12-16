@@ -120,7 +120,7 @@ COLON               : ':';
 COMMA               : ',';
 DOT                 : '.';
 EQUALS              : '=';
-APHOSTROPHE         : '\'';
+APHOSTROPHE         : '"';
 SEMICOLON           : ';'+      { semicolon(); };
 STAR                : '*';
 PLUS                : '+';
@@ -131,6 +131,8 @@ NATURAL_TYPE        : 'natural';
 DOUBLE_TYPE         : 'double';
 STRING_TYPE         : 'string';
 BOOLEAN_TYPE        : 'boolean';
+MEASURE_TYPE        : 'measure';
+RATIO_TYPE          : 'ratio';
 DATE_TYPE           : 'date';
 EMPTY               : 'empty';
 
@@ -145,7 +147,7 @@ ADDRESS_VALUE       : AMPERSAND DIGIT DIGIT DIGIT (DOT DIGIT DIGIT DIGIT)+;
 DATE_VALUE          : ((NATURAL_VALUE DASH)+ NATURAL_VALUE) | NATURAL_VALUE;
 IDENTIFIER          : LETTER (DIGIT | LETTER | DASH | UNDERDASH)*;
 
-MEASURE_VALUE       : (UNDERDASH | BY | DIVIDED_BY | PERCENTAGE | DOLLAR | EURO | GRADE | LETTER|DIGIT)+;
+MEASURE_VALUE       : (UNDERDASH | BY | DIVIDED_BY | PERCENTAGE | DOLLAR | EURO | GRADE | LETTER | DIGIT)+;
 
 NEWLINE: NL+ SP* { newlinesAndSpaces(); };
 

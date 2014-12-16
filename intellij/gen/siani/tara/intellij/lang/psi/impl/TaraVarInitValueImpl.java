@@ -48,8 +48,8 @@ public class TaraVarInitValueImpl extends ASTWrapperPsiElement implements TaraVa
 
   @Override
   @NotNull
-  public List<TaraIdentifier> getIdentifierList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifier.class);
+  public List<TaraIdentifierReference> getIdentifierReferenceList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifierReference.class);
   }
 
   @Override
@@ -66,8 +66,8 @@ public class TaraVarInitValueImpl extends ASTWrapperPsiElement implements TaraVa
 
   @Override
   @Nullable
-  public TaraMeasure getMeasure() {
-    return findChildByClass(TaraMeasure.class);
+  public TaraMeasureValue getMeasureValue() {
+    return findChildByClass(TaraMeasureValue.class);
   }
 
   @Override

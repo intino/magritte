@@ -20,7 +20,7 @@ public interface TaraVarInitValue extends TaraPsiElement {
   TaraEmptyField getEmptyField();
 
   @NotNull
-  List<TaraIdentifier> getIdentifierList();
+  List<TaraIdentifierReference> getIdentifierReferenceList();
 
   @NotNull
   List<TaraIntegerValue> getIntegerValueList();
@@ -29,7 +29,7 @@ public interface TaraVarInitValue extends TaraPsiElement {
   List<TaraLinkValue> getLinkValueList();
 
   @Nullable
-  TaraMeasure getMeasure();
+  TaraMeasureValue getMeasureValue();
 
   @NotNull
   List<TaraNaturalValue> getNaturalValueList();

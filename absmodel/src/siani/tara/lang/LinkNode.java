@@ -60,6 +60,11 @@ public class LinkNode extends Node {
 	}
 
 	@Override
+	public Annotation[] getAnnotations() {
+		return annotations.toArray(new Annotation[annotations.size()]);
+	}
+
+	@Override
 	public NodeObject getObject() {
 		return destiny.getObject();
 	}

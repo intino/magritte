@@ -15,6 +15,7 @@ public class AnnotationsMixin extends ASTWrapperPsiElement {
 	}
 
 
+	@NotNull
 	public List<Annotation> getMetaAnnotations() {
 		List<Annotation> annotations = new ArrayList<>();
 		for (Annotation annotation : ((Annotations) this).getAnnotationList())
@@ -23,6 +24,7 @@ public class AnnotationsMixin extends ASTWrapperPsiElement {
 		return annotations;
 	}
 
+	@NotNull
 	public List<Annotation> getNormalAnnotations() {
 		List<Annotation> annotations = new ArrayList<>();
 		for (Annotation annotation : ((Annotations) this).getAnnotationList())

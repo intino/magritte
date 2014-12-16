@@ -58,9 +58,9 @@ public class FrameCreator {
 	}
 
 	private void addAnnotations(final Node node, Frame frame) {
-		if (node.getObject().getAnnotations().length > 0 || terminal)
+		if (node.getAnnotations().length > 0 || terminal)
 			frame.addSlot("annotation", new Frame("Annotation") {{
-				for (Annotation annotation : node.getObject().getAnnotations())
+				for (Annotation annotation : node.getAnnotations())
 					addSlot("value", annotation);
 				if (terminal)
 					addSlot("value", "case");
@@ -192,7 +192,7 @@ public class FrameCreator {
 		types.add(object.getType());
 		types.add(node.getClass().getSimpleName());
 		types.add(Node.class.getSimpleName());
-		for (Annotation annotation : object.getAnnotations())
+		for (Annotation annotation : node.getAnnotations())
 			types.add(annotation.getName());
 		return types.toArray(new String[types.size()]);
 	}

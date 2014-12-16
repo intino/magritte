@@ -24,8 +24,8 @@ public class TaraAttributeTypeImpl extends ASTWrapperPsiElement implements TaraA
 
   @Override
   @NotNull
-  public TaraMeasure getMeasure() {
-    return findNotNullChildByClass(TaraMeasure.class);
+  public TaraMeasureType getMeasureType() {
+    return findNotNullChildByClass(TaraMeasureType.class);
   }
 
 }

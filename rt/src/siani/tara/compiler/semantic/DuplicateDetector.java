@@ -74,7 +74,7 @@ public class DuplicateDetector {
 
 	private void checkAnnotations(Node node) {
 		Set<String> annotations = new HashSet<>();
-		for (Annotation annotation : node.getObject().getAnnotations())
+		for (Annotation annotation : node.getAnnotations())
 			if (!annotations.add(annotation.name()))
 				errors.add(new DuplicateAnnotationError(annotation.name(), node));
 	}

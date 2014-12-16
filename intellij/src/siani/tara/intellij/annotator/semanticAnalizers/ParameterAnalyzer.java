@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
+import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.INFO;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContainerOf;
 import static siani.tara.lang.Primitives.*;
 
@@ -39,33 +40,47 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		if (inFacet != null && (facetVariables = getAllowedFacet(node, inFacet.getFirstChild().getText())) == null)
 			return;
 		List<Variable> variables = (inFacet != null) ? facetVariables : node.getObject().getVariables();
-		int index = parameter.getIndexInParent();
-		if (index >= variables.size())
+		if (parameter.getIndexInParent() >= variables.size()) {
 			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
+		} else analyzeParameter(variables, parameter.getIndexInParent());
+	}
+
+	private void analyzeParameter(List<Variable> variables, int index) {
+		if (parameter.isExplicit())
+			processExplicit(variables);
 		else {
-			if (parameter.isExplicit()) processExplicit((TaraExplicitParameter) parameter, variables);
-			else processImplicit((TaraImplicitParameter) parameter, variables, index);
+			processImplicit(variables.get(index));
+			if (!hasErrors()) addParameterNameInfo(variables.get(index));
 		}
 	}
 
-	private void processExplicit(TaraExplicitParameter parameter, List<Variable> variables) {
+	private void addParameterNameInfo(Variable variable) {
+		results.put(parameter, new AnnotateAndFix(INFO, variable.getName()));
+
+	}
+
+	private void processExplicit(List<Variable> variables) {
+		TaraExplicitParameter parameter = (TaraExplicitParameter) this.parameter;
 		String name = parameter.getIdentifier().getText();
 		Variable variable = getVariableByName(variables, name);
 		if (variable == null) {
-			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
+			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE + ": " + name + " does not exists."));
 			return;
 		}
-		if (parameter.getValue() == null) results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
+		if (parameter.getValue() == null)
+			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
 		else if (variable instanceof siani.tara.lang.Word) {
 			if (!isCorrectWord((siani.tara.lang.Word) variable, parameter.getValue().getText()))
 				results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
+		} else if (variable instanceof Reference) {
+			if (parameter.getParameterValue() != null)
+				checkReferences(parameter.getParameterValue().getChildren(), (Reference) variable);
 		} else if (!areSameType(variable, parameter) || (parameter.isList() && !variable.isList()) || checkAsTuple(parameter.getValuesLength(), variable))
 			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
-
 	}
 
-	private void processImplicit(TaraImplicitParameter parameter, List<Variable> variables, int index) {
-		Variable variable = variables.get(index);
+	private void processImplicit(Variable variable) {
+		TaraImplicitParameter parameter = (TaraImplicitParameter) this.parameter;
 		if (parameter.getValue().getFirstChild() instanceof TaraMetaWord || parameter.getValue().getFirstChild() instanceof TaraIdentifierReference)
 			processAsWordOrReference(parameter.getValue(), variable);
 		else if (!areSameType(variable, parameter) || (parameter.isList() && !variable.isList()))
@@ -73,7 +88,9 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean checkAsTuple(int parametersLength, Variable variable) {
-		return (variable instanceof Attribute && variable.getType().equals(DOUBLE) && parametersLength != ((Attribute) variable).getCount());
+		if (!Attribute.class.isInstance(variable) || variable.getType().equals(DOUBLE)) return false;
+		Attribute attribute = (Attribute) variable;
+		return attribute.getCount() != 0 && parametersLength != attribute.getCount();
 	}
 
 	private List<Variable> getAllowedFacet(Node node, String name) {
@@ -183,11 +200,11 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 			case TaraBooleanValueImpl:
 				return varType.equals(BOOLEAN);
 			case TaraNaturalValueImpl:
-				return varType.equals(NATURAL) || varType.equals(INTEGER) || varType.equals(DOUBLE);
+				return varType.equals(NATURAL) || varType.equals(INTEGER) || varType.equals(DOUBLE) || varType.equals(MEASURE);
 			case TaraIntegerValueImpl:
-				return varType.equals(INTEGER) || varType.equals(DOUBLE);
+				return varType.equals(INTEGER) || varType.equals(DOUBLE) || varType.equals(MEASURE);
 			case TaraDoubleValueImpl:
-				return varType.equals(DOUBLE);
+				return varType.equals(DOUBLE) || varType.equals(MEASURE);
 			case TaraDateValueImpl:
 				return varType.equals(DATE);
 			default:

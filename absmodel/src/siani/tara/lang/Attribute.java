@@ -2,8 +2,9 @@ package siani.tara.lang;
 
 public class Attribute extends Variable {
 	public final String primitiveType;
-	public String measure;
-	public Integer count;
+	public String measureValue;
+	public String measureType;
+	public Integer count = 1;
 
 	public Attribute(String type, String name, boolean isList) {
 		this.primitiveType = type;
@@ -16,20 +17,33 @@ public class Attribute extends Variable {
 		this.name = name;
 	}
 
-	public String getMeasure() {
-		return measure;
+	public String getMeasureValue() {
+		return measureValue;
 	}
 
-	public void setMeasure(String measure) {
-		this.measure = measure;
+	public void setMeasureValue(String measureValue) {
+		this.measureValue = measureValue;
 	}
 
-	public int getCount() {
+	public String getMeasureType() {
+		return measureType;
+	}
+
+	public void setMeasureType(String measureType) {
+		this.measureType = measureType;
+	}
+
+	public Integer getCount() {
 		return count;
 	}
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	@Override
+	public boolean isList() {
+		return count > 1 || isList;
 	}
 
 	@Override
@@ -46,7 +60,7 @@ public class Attribute extends Variable {
 		Attribute attribute = new Attribute(primitiveType, name, isList);
 		attribute.setDefaultValues(defaultValues);
 		for (Annotation annotation : annotations) attribute.add(annotation);
-		attribute.measure = measure;
+		attribute.measureValue = measureValue;
 		attribute.setDefaultValues(defaultValues);
 		if (values != null)
 			for (Object value : values) attribute.addValue(value);

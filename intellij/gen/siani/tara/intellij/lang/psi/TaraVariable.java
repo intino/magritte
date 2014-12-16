@@ -11,42 +11,9 @@ public interface TaraVariable extends Variable {
   TaraAnnotations getAnnotations();
 
   @Nullable
-  TaraAttributeType getAttributeType();
-
-  @NotNull
-  List<TaraBooleanValue> getBooleanValueList();
-
-  @Nullable
-  TaraCount getCount();
-
-  @NotNull
-  List<TaraDateValue> getDateValueList();
-
-  @Nullable
   TaraDoc getDoc();
 
-  @NotNull
-  List<TaraDoubleValue> getDoubleValueList();
-
   @Nullable
-  TaraEmptyField getEmptyField();
-
-  @Nullable
-  TaraIdentifierReference getIdentifierReference();
-
-  @NotNull
-  List<TaraIntegerValue> getIntegerValueList();
-
-  @Nullable
-  TaraMeasure getMeasure();
-
-  @NotNull
-  List<TaraNaturalValue> getNaturalValueList();
-
-  @NotNull
-  List<TaraStringValue> getStringValueList();
-
-  @Nullable
-  TaraWord getWord();
+  TaraVariableType getVariableType();
 
 }

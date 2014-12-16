@@ -1,5 +1,1 @@
-#if (${PACKAGE_NAME.toLowerCase()} && ${PACKAGE_NAME.toLowerCase()} != "")box ${PROJECT_NAME.toLowerCase()}.${MODULE_NAME.toLowerCase()}.${PACKAGE_NAME.toLowerCase()}.${NAME}
-#else
-box ${PROJECT_NAME.toLowerCase()}.${MODULE_NAME.toLowerCase()}.${NAME.toLowerCase()}#end
-
 #if (${PARENT_MODULE_NAME.toLowerCase()} && ${PARENT_MODULE_NAME.toLowerCase()} != "")use ${PROJECT_NAME.toLowerCase()}.${PARENT_MODULE_NAME.toLowerCase()} as metamodel#end

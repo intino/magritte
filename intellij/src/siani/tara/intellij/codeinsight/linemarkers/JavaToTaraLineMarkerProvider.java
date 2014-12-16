@@ -33,7 +33,7 @@ public class JavaToTaraLineMarkerProvider extends RelatedItemLineMarkerProvider 
 
 	private String getQualifiedName(PsiClass psiClass) {
 		String qualifiedName = psiClass.getQualifiedName();
-		assert qualifiedName != null;
+		if (qualifiedName == null) return "";
 		return qualifiedName.length() > INTENTIONS.length() && qualifiedName.startsWith(INTENTIONS) && qualifiedName.endsWith(INTENTION) ?
 			qualifiedName.substring(qualifiedName.indexOf(".") + 1).replaceAll(INTENTION, "")
 			: qualifiedName;

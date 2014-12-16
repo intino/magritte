@@ -128,7 +128,7 @@ public class ReferenceManager {
 			identifier.getText().equals(container.getName())) set.add(container);
 		while (container != null) {
 			for (Concept sibling : container.getConceptSiblings())
-				if (identifier.getText().equals(sibling.getName()) && !sibling.equals(container))
+				if (identifier.getText().equals(sibling.getName()) && !sibling.equals(getConceptContainerOf(identifier)))
 					set.add(sibling);
 			container = getConceptContainerOf(container);
 		}

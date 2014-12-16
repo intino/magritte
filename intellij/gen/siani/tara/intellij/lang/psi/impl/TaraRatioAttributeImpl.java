@@ -11,15 +11,21 @@ import static siani.tara.intellij.lang.psi.TaraTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraMeasureImpl extends ASTWrapperPsiElement implements TaraMeasure {
+public class TaraRatioAttributeImpl extends ASTWrapperPsiElement implements TaraRatioAttribute {
 
-  public TaraMeasureImpl(ASTNode node) {
+  public TaraRatioAttributeImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitMeasure(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitRatioAttribute(this);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<TaraDoubleValue> getDoubleValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraDoubleValue.class);
   }
 
 }

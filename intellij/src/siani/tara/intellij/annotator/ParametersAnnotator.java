@@ -11,6 +11,7 @@ public class ParametersAnnotator extends TaraAnnotator {
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		if (!Parameters.class.isInstance(element)) return;
+		this.holder = holder;
 		analyzeAndAnnotate(new ParametersAnalyzer((Parameters) element));
 	}
 }

@@ -48,7 +48,7 @@ public class ModelSaver {
 				Attribute attribute = (Attribute) variable;
 				object.addProperty("primitiveType", attribute.primitiveType);
 				object.addProperty("isList", attribute.isList);
-				if (attribute.measure != null) object.addProperty("measure", attribute.measure);
+				if (attribute.measureValue != null) object.addProperty("measureValue", attribute.measureValue);
 				if (attribute.count != null) object.addProperty("count", attribute.count);
 			} else if (variable instanceof Reference) {
 				Reference reference = (Reference) variable;

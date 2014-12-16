@@ -118,7 +118,7 @@ RIGHT_PARENTHESIS   = ")"
 LEFT_SQUARE         = "["
 RIGHT_SQUARE        = "]"
 LIST                = "..."
-APOSTROPHE          = "'"
+APOSTROPHE          = "\""
 DASH                = "-"
 UNDERDASH           = "_"
 DASHES              = {DASH} {DASH}+
@@ -134,7 +134,6 @@ EURO                = "€"
 PERCENTAGE          = "%"
 GRADE               = "º"
 SEMICOLON           = ";"+
-
 AMPERSAND           = "&"
 
 WORD_TYPE           = "word"
@@ -144,22 +143,29 @@ NATURAL_TYPE        = "natural"
 DOUBLE_TYPE         = "double"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
+RATIO_TYPE          = "ratio"
+MEASURE_TYPE_KEY    = "measure"
 DATE_TYPE           = "date"
 EMPTY_REF           = "empty"
-MANTISA             = "E" ({PLUS} | {DASH})? {DIGIT}+
+SCIENCE_NOT         = "E" ({PLUS} | {DASH})? {DIGIT}+
 BOOLEAN_VALUE_KEY   = "true" | "false"
 NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
-DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {MANTISA}?
-STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
-STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
+DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOT}?
 DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
-MEASURE_VALUE       = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})+
+MEASURE_VALUE_KEY   = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})+
 
 DOC_LINE            = "#" ~[\n]
 PLUS                = "+"
 DIGIT               = [:digit:]
+STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
+STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
+//STRING_VALUE_KEY    = {APOSTROPHE} ~ ( {ESC_SEQ} | ~("\\"|"\"") )* {APOSTROPHE}
+ESC_SEQ = "\\" ("b"|"t"|"n"|"f"|"r"|"\""|"\""|"\\") | {UNICODE_ESC} | {OCTAL_ESC}
+OCTAL_ESC =   "\\" ("0".."3") ("0".."7") ("0".."7") |   "\\" ("0".."7") ("0".."7") |   "\\" ("0".."7")
+UNICODE_ESC =   "\\" "u" {HEX_DIGIT} {HEX_DIGIT} {HEX_DIGIT} {HEX_DIGIT}
+HEX_DIGIT = ("0".."9"|"a".."f"|"A".."F") ;
 
 IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
@@ -233,10 +239,12 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
+    {RATIO_TYPE}                    {   return TaraTypes.RATIO_TYPE; }
+    {MEASURE_TYPE_KEY}              {   return TaraTypes.MEASURE_TYPE_KEY; }
     {EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 	{IDENTIFIER_KEY}                {   return TaraTypes.IDENTIFIER_KEY;}
+	{MEASURE_VALUE_KEY}             {   return TaraTypes.MEASURE_VALUE_KEY; }
 	{SEMICOLON}                     {   return semicolon(); }
-	{MEASURE_VALUE}                 {   return TaraTypes.MEASURE_VALUE; }
 	{NEWLINE}                       {   return newlineIndent();}
 	{INLINE}                        {   return inline();}
 

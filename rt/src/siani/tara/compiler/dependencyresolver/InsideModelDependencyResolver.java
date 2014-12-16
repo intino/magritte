@@ -114,10 +114,10 @@ public class InsideModelDependencyResolver {
 	private void extractInfoFromParent(List<LinkNode> toAddNodes, DeclaredNode node, DeclaredNode parent) {
 		collectInnerConceptsInherited(parent, node, toAddNodes);
 		calculateInheritedVariables(parent.getObject(), node);
-		addInheritedAnnotations(parent.getObject(), node);
+		addInheritedAnnotations(parent, node);
 	}
 
-	private void addInheritedAnnotations(NodeObject parent, DeclaredNode node) {
+	private void addInheritedAnnotations(Node parent, DeclaredNode node) {
 		for (Annotation annotation : parent.getAnnotations())
 			if (!annotation.equals(ABSTRACT))
 				node.getObject().add(annotation);

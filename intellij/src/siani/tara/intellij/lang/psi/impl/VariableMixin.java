@@ -9,6 +9,7 @@ import siani.tara.intellij.lang.psi.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class VariableMixin extends ASTWrapperPsiElement {
@@ -31,44 +32,51 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String getName() {
-		ASTNode[] child = this.getNode().getChildren(TokenSet.create(TaraTypes.IDENTIFIER_KEY));
+		TaraVariableType variableType = ((TaraVariable) this).getVariableType();
+		if (variableType == null) return "unName";
+		if (variableType.getWord() != null)
+			return getAsWord();
+		ASTNode[] child = variableType.getNode().getChildren(TokenSet.create(TaraTypes.IDENTIFIER_KEY));
 		if (child == null || child.length == 0) {
-			PsiElement lastChild = this.getLastChild();
-			if (lastChild instanceof TaraWord) return getAsWord();
-			else {
-				ASTNode[] children = lastChild.getNode().getChildren(TokenSet.create(TaraTypes.IDENTIFIER_KEY));
-				return (children.length == 0) ? "" : children[0].getText();
-			}
+			PsiElement lastChild = variableType.getLastChild();
+			ASTNode[] children = lastChild.getNode().getChildren(TokenSet.create(TaraTypes.IDENTIFIER_KEY));
+			return (children.length == 0) ? "" : children[0].getText();
 		}
 		return child[child.length - 1].getText();
 	}
 
 	private String getAsWord() {
-		return this.getLastChild().getNode().findChildByType(TaraTypes.IDENTIFIER_KEY).getText();
+		TaraVariableType type = ((TaraVariable) this).getVariableType();
+		if (type == null || type.getWord() == null) return "";
+		return type.getWord().getNode().findChildByType(TaraTypes.IDENTIFIER_KEY).getText();
 	}
 
+	@NotNull
 	public String getType() {
-		ASTNode keyNode = getNode().getFirstChildNode().getTreeNext();
-		if (keyNode != null) return keyNode.getText();
-		return null;
+		TaraVariableType type = ((TaraVariable) this).getVariableType();
+		if (type == null) return "null";
+		return type.getNode().getFirstChildNode().getText();
 	}
 
+	@NotNull
 	public Collection<String> getDefaultValuesAsString() {
 		List<String> list = new ArrayList<>();
-		if (((TaraVariable) this).getBooleanValueList().isEmpty())
-			list.addAll(getElementsAsString(((TaraVariable) this).getBooleanValueList()));
-		else if (!((TaraVariable) this).getDoubleValueList().isEmpty())
-			list.addAll(getElementsAsString(((TaraVariable) this).getDoubleValueList()));
-		else if (!((TaraVariable) this).getNaturalValueList().isEmpty())
-			list.addAll(getElementsAsString(((TaraVariable) this).getNaturalValueList()));
-		else if (!((TaraVariable) this).getIntegerValueList().isEmpty())
-			list.addAll(getElementsAsString(((TaraVariable) this).getIntegerValueList()));
-		else if (!((TaraVariable) this).getStringValueList().isEmpty())
-			list.addAll(getElementsAsString(((TaraVariable) this).getStringValueList()));
-		else if (!((TaraVariable) this).getDateValueList().isEmpty())
-			list.addAll(getElementsAsString(((TaraVariable) this).getDateValueList()));
-		else if (((TaraVariable) this).getEmptyField() != null)
-			list.add(((TaraVariable) this).getEmptyField().getText());
+		TaraVariableType type = ((TaraVariable) this).getVariableType();
+		if (type == null) return Collections.EMPTY_LIST;
+		if (type.getBooleanAttribute() != null)
+			list.addAll(getElementsAsString(type.getBooleanAttribute().getBooleanValueList()));
+		else if (type.getDoubleAttribute() != null)
+			list.addAll(getElementsAsString(type.getDoubleAttribute().getDoubleValueList()));
+		else if (type.getNaturalAttribute() != null)
+			list.addAll(getElementsAsString(type.getNaturalAttribute().getNaturalValueList()));
+		else if (type.getIntegerAttribute() != null)
+			list.addAll(getElementsAsString(type.getIntegerAttribute().getIntegerValueList()));
+		else if (type.getStringAttribute() != null)
+			list.addAll(getElementsAsString(type.getStringAttribute().getStringValueList()));
+		else if (type.getDateAttribute() != null)
+			list.addAll(getElementsAsString(type.getDateAttribute().getDateValueList()));
+		else if (type.getReferenceAttribute() != null && type.getReferenceAttribute().getEmptyField() != null)
+			list.add((type).getReferenceAttribute().getEmptyField().getText());
 		return list;
 	}
 
@@ -78,4 +86,8 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return list;
 	}
 
+	@Override
+	public String toString() {
+		return getType() + " " + getName();
+	}
 }

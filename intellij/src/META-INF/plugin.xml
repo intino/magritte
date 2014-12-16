@@ -125,6 +125,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VarInitAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.imports.ImportMetamodelAnnotation"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.DateValueAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.MeasureAnnotator"/>
     <!--<annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AddressAnnotator"/>-->
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AggregatedConceptAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VariableAnnotator"/>

@@ -23,7 +23,7 @@ public class AddressAnalyzer extends TaraAnalyzer {
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(address);
 		if (concept == null) return;
 		Model model = TaraLanguage.getMetaModel(concept.getFile());
-		if (hasErrors = model != null)
+		if (model != null)
 			results.put(address, new AnnotateAndFix(ERROR, "Address not available", new RemoveAddressFix(concept)));
 	}
 }

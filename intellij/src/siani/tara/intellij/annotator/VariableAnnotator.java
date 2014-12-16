@@ -22,13 +22,14 @@ public class VariableAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isReference(TaraVariable variable) {
-		return variable.getIdentifierReference() != null;
+		if (variable.getVariableType() == null) return false;
+		return variable.getVariableType().getReferenceAttribute() != null;
 	}
 
 	@SuppressWarnings("ConstantConditions")
 	private void addReferenceAnnotation(TaraVariable variable) {
-		if (ReferenceManager.resolve(variable.getIdentifierReference()) != null) {
-			Annotation reference = holder.createInfoAnnotation(variable.getIdentifierReference(), "reference");
+		if (ReferenceManager.resolve(variable.getVariableType().getReferenceAttribute().getIdentifierReference()) != null) {
+			Annotation reference = holder.createInfoAnnotation(variable.getVariableType().getReferenceAttribute().getIdentifierReference(), "reference");
 			reference.setTextAttributes(DefaultLanguageHighlighterColors.STATIC_FIELD);
 		}
 	}

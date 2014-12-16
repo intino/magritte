@@ -28,7 +28,7 @@ public class AnnotationsAnalyzer {
 
 	private void checkAnnotations(Node node, Annotation[] annotations) {
 		List<Annotation> list = asList(annotations);
-		for (Annotation annotation : node.getObject().getAnnotations())
+		for (Annotation annotation : node.getAnnotations())
 			if (!list.contains(annotation))
 				errors.add(new WrongAnnotationError(annotation.name(), node));
 	}
