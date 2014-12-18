@@ -18,6 +18,8 @@ import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.module.ModuleProvider;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -156,6 +158,28 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 	private Import addImportToList(TaraImports psi) {
 		TaraImports taraImports = PsiTreeUtil.getChildrenOfType(this, TaraImports.class)[0];
 		return (Import) taraImports.addBefore(psi.getAnImportList().get(0), taraImports.getAnImportList().get(0));
+	}
 
+	public void updateMetamodelImport() {
+		String metaModule = ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(this)).getMetamodelName();
+		String metamodelName = metaModule == null ? null : this.getProject().getName() + "." + metaModule;
+		setMetamodelImport(metamodelName);
+	}
+
+	private void setMetamodelImport(String metamodelName) {
+		Import anImport = getMetamodelImport();
+		if (anImport != null) removeMetamodelImport();
+		if (metamodelName != null)
+			addImport(TaraElementFactory.getInstance(this.getProject()).createMetamodelImport(metamodelName));
+	}
+
+	private void removeMetamodelImport() {
+		getMetamodelImport().delete();
+	}
+
+	public Import getMetamodelImport() {
+		for (Import anImport : getImports())
+			if (anImport.isMetamodelImport()) return anImport;
+		return null;
 	}
 }

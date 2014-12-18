@@ -35,14 +35,14 @@ initValue : identifierReference+
 metaWord : metaidentifier metaWordNames*;
 metaWordNames : DOT IDENTIFIER;
 
-body: NEW_LINE_INDENT ((variable | concept | varInit | annotationsAndFacets | facetTarget | conceptReference) NEWLINE+)+ DEDENT;
+body: NEW_LINE_INDENT ((variable | concept | varInit | annotationsAndFacets | facetTarget | conceptReference | doc) NEWLINE+)+ DEDENT;
 
-variable : doc? VAR (naturalAttribute | integerAttribute | doubleAttribute |ratioAttribute | measureAttribute|
+variable : VAR (naturalAttribute | integerAttribute | doubleAttribute |ratioAttribute | measureAttribute|
     booleanAttribute | stringAttribute | dateAttribute | resource | reference | word) (IS annotations)?;
 
 facetApply : metaidentifier parameters? (WITH metaidentifier)? body?;
 facetTarget : ON identifierReference ALWAYS? body?;
-conceptReference : doc? HAS identifierReference (IS annotations)?;
+conceptReference : HAS identifierReference (IS annotations)?;
 
 word             : WORD LIST? IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
 wordNames        : IDENTIFIER STAR?;

@@ -5,10 +5,8 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import siani.tara.intellij.annotator.TaraAnnotator;
 import siani.tara.intellij.annotator.fix.AddAnnotationFix;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
-import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import java.awt.*;
@@ -28,9 +26,8 @@ public class AggregatedAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		Model metamodel = getMetamodel(concept);
-		if (metamodel == null) return;
-		Node node = TaraUtil.findNode(concept, metamodel);
+		Node node = getMetaConcept(concept);
+		if (node == null) return;
 		boolean terminal = ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(concept.getContainingFile())).isTerminal();
 		if (!terminal & node.isAggregated() && !concept.isAggregated())
 			results.put(concept.getSignature(),

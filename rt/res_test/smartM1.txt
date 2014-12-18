@@ -10,9 +10,11 @@ false
 encoding
 UTF-8
 models
-/Users/oroncal/workspace/sandbox/system/plugins-sandbox/plugins/tara_models/SmartCities
+/Users/oroncal/workspace/sandbox/tara/plugins/tara_models/SmartCities
 itrules
 /Users/oroncal/workspace/sandbox/SmartCities/smartcities/res/itrules
+metrics
+/Users/oroncal/workspace/sandbox/SmartCities/out/production/smartcities/
 icons
 /Users/oroncal/workspace/sandbox/SmartCities/smartcities/res/icons
 outputpath

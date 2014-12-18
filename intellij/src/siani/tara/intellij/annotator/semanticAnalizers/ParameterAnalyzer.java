@@ -77,6 +77,13 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 				checkReferences(parameter.getParameterValue().getChildren(), (Reference) variable);
 		} else if (!areSameType(variable, parameter) || (parameter.isList() && !variable.isList()) || checkAsTuple(parameter.getValuesLength(), variable))
 			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
+		else if (variable.getType().equals(MEASURE))
+			analyzeMetric(variable, parameter);
+	}
+
+	private void analyzeMetric(Variable variable, Parameter parameter) {
+		AnnotateAndFix result = new MetricAnalyzer(model, variable, parameter.getValues(), parameter.getMeasure().getText()).analyze();
+		if (result != null) results.put(parameter, result);
 	}
 
 	private void processImplicit(Variable variable) {

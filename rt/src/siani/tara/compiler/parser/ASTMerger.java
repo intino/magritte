@@ -3,6 +3,7 @@ package siani.tara.compiler.parser;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.SourceUnit;
 import siani.tara.compiler.core.errorcollection.MergeException;
+import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -25,10 +26,10 @@ public class ASTMerger {
 			model.putAllIdentifiers(unit.getModel().getIdentifiers());
 			model.putAllInNodeTable(unit.getModel().getNodeTable());
 		}
-		for (Node node : model.getNodeTable().values()) {
+		for (Node node : model.getNodeTable().values())
 			node.setModelOwner(model.getModelName());
-		}
-
+		model.addMetrics(MetricsLoader.loadMetrics(conf));
+		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");
 		return model;
 	}
 }

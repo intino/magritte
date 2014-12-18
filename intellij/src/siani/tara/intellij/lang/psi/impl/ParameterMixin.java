@@ -15,6 +15,7 @@ import siani.tara.lang.Node;
 import siani.tara.lang.Variable;
 import siani.tara.lang.Word;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -79,6 +80,12 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		else return ((TaraImplicitParameter) this).getParameterValue();
 	}
 
+	public TaraMeasureValue getMeasure() {
+		if (this instanceof TaraExplicitParameter)
+			return ((TaraExplicitParameter) this).getParameterValue() != null ? ((TaraExplicitParameter) this).getParameterValue().getMeasureValue() : null;
+		else return ((TaraImplicitParameter) this).getParameterValue().getMeasureValue();
+	}
+
 	public boolean isList() {
 		return getValue().getChildren().length - (getValue().getMeasureValue() != null ? 1 : 0) > 1;
 	}
@@ -86,6 +93,16 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	public int getValuesLength() {
 		return getValue().getChildren().length - (getValue().getMeasureValue() != null ? 1 : 0);
 	}
+
+	public String[] getValues() {
+		List<String> values = new ArrayList<>();
+		for (PsiElement element : getValue().getChildren()) {
+			if (element instanceof TaraMeasureValue) continue;
+			values.add(element.getText());
+		}
+		return values.toArray(new String[values.size()]);
+	}
+
 
 	public TaraFacetApply isInFacet() {
 		PsiElement aElement = this;

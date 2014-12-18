@@ -10,10 +10,7 @@ public interface TaraConceptReference extends ConceptReference {
   @Nullable
   TaraAnnotations getAnnotations();
 
-  @Nullable
-  TaraDoc getDoc();
-
-  @Nullable
+  @NotNull
   TaraIdentifierReference getIdentifierReference();
 
 }

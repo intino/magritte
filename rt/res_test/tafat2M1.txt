@@ -10,7 +10,7 @@ false
 encoding
 UTF-8
 models
-/Users/oroncal/workspace/sandbox/system/plugins-sandbox/plugins/tara_models/millenermetamodel
+/Users/oroncal/workspace/sandbox/tara/plugins/tara_models/millenermetamodel
 itrules
 /Users/oroncal/workspace/sandbox/millenermodel/m1/res/itrules
 icons

@@ -27,11 +27,11 @@ public class TaraRunner {
 	private static File argsFile;
 
 	protected TaraRunner(final String projectName, final String moduleName, final String outputDir, final boolean system,
-	                     long build_number,final Collection<String> sources,
+	                     long build_number, final Collection<String> sources,
 	                     String finalOutput,
 	                     @Nullable final String encoding,
-	                     String rulesPath,
-	                     String[] iconPaths, String magritteJdk) throws IOException {
+	                     String rulesDir,
+	                     String[] iconPaths, String magritteJdk, String metricsDir) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
 			writer.write(TaraRtConstants.SRC_FILE + "\n");
@@ -47,7 +47,9 @@ public class TaraRunner {
 			writer.write(TaraRtConstants.MODELS_PATH + "\n" + tara_models + projectName + File.separator + "\n");
 			writer.write(TaraRtConstants.JDK_HOME + "\n" + magritteJdk + File.separator + "lib" + File.separator + "\n");
 			writer.write(TaraRtConstants.IT_RULES + "\n");
-			writer.write(rulesPath + "\n");
+			writer.write(rulesDir + "\n");
+			writer.write(TaraRtConstants.METRICS + "\n");
+			writer.write(metricsDir + "\n");
 			for (String iconPath : iconPaths)
 				writer.write(TaraRtConstants.ICONS_PATH + "\n" + iconPath + "\n");
 			writer.write(TaraRtConstants.OUTPUTPATH + "\n");

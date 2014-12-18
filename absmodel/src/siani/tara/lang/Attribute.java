@@ -62,6 +62,8 @@ public class Attribute extends Variable {
 		for (Annotation annotation : annotations) attribute.add(annotation);
 		attribute.measureValue = measureValue;
 		attribute.setDefaultValues(defaultValues);
+		attribute.setMeasureType(measureType);
+		attribute.setMeasureValue(measureValue);
 		if (values != null)
 			for (Object value : values) attribute.addValue(value);
 		return attribute;

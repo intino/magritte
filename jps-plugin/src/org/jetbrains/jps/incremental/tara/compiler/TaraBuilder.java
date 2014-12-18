@@ -83,7 +83,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), getOutDir(chunk.getModules()),
 				isSystem, context.getCompilationStartStamp(), toCompilePaths, finalOutput, encoding, getRulesDir(chunk.getModules()),
-				collectIconDirectories(chunk.getModules()), getMagritteJdk(chunk).getHomePath());
+				collectIconDirectories(chunk.getModules()), getMagritteJdk(chunk).getHomePath(), finalOutput);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
 			context.setDone(1);

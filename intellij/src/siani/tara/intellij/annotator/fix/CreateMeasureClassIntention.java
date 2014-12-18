@@ -13,7 +13,7 @@ import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.codegeneration.MeasureClassCreator;
+import siani.tara.intellij.codegeneration.MetricClassCreator;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
@@ -55,7 +55,7 @@ public class CreateMeasureClassIntention implements IntentionAction {
 		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(file));
 		PsiDirectoryImpl srcPsiDirectory = new PsiDirectoryImpl((PsiManagerImpl) file.getManager(), srcDirectory);
 		PsiDirectory destiny = findDestiny(file, srcPsiDirectory, destinyPath);
-		MeasureClassCreator creator = new MeasureClassCreator(project, destiny, className);
+		MetricClassCreator creator = new MetricClassCreator(project, destiny, className);
 		creator.createClass();
 	}
 

@@ -9,6 +9,7 @@ public class TaraRtConstants {
 	public static final String PROJECT_ICON = "project_icon";
 	public static final String FINAL_OUTPUTPATH = "final_outputpath";
 	public static final String IT_RULES = "itrules";
+	public static final String METRICS = "metrics";
 	public static final String SRC_FILE = "src_file";
 	public static final String COMPILED_START = "%%c";
 	public static final String COMPILED_END = "/%c";

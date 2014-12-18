@@ -15,13 +15,20 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		this.project = project;
 	}
 
-	public Concept createConcept(String name) {
+	public Concept createConcept(String name, String type) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"Concept " + name + "\n" +
-				"\tvar reference uid"
+			type + " " + name + "\n"
 		);
 		return file.getConcepts().iterator().next();
 	}
+
+	public Concept createConcept(String name) {
+		final TaraBoxFileImpl file = createDummyFile(
+			"Concept" + " " + name + "\n"
+		);
+		return file.getConcepts().iterator().next();
+	}
+
 
 	public TaraBoxFileImpl createDummyFile(String text) {
 		return (TaraBoxFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy." + TaraFileType.INSTANCE.getDefaultExtension(), TaraFileType.INSTANCE, text);
@@ -80,6 +87,14 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	public TaraImports createImport(String reference) {
 		final TaraBoxFileImpl file = createDummyFile(
 			"use " + reference + "\n" +
+				"Concept Source\n"
+		);
+		return PsiTreeUtil.getChildrenOfType(file, TaraImports.class)[0];
+	}
+
+	public TaraImports createMetamodelImport(String name) {
+		final TaraBoxFileImpl file = createDummyFile(
+			"use " + name + " as metamodel\n" +
 				"Concept Source\n"
 		);
 		return PsiTreeUtil.getChildrenOfType(file, TaraImports.class)[0];

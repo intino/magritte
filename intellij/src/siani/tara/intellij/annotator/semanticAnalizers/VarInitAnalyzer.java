@@ -13,10 +13,12 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 
 	private final VarInit varInit;
 	private Variable variable;
+	private Model metamodel;
 
 	public VarInitAnalyzer(VarInit varInit) {
 		super();
 		this.varInit = varInit;
+		metamodel = getMetamodel(varInit);
 		Node node = getMetaConcept(TaraPsiImplUtil.getConceptContainerOf(varInit));
 		if (node != null) variable = searchVariable(node);
 	}
@@ -29,14 +31,23 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 		}
 		String valueType = varInit.getValueType();
 		if (!valueType.equalsIgnoreCase(variable.getType())
-			&& !(valueType.equals(NATURAL) && (variable.getType().equals(INTEGER) || variable.getType().equals(DOUBLE)) || variable.getType().equals(MEASURE))
-			&& !(valueType.equals(INTEGER) && (variable.getType().equals(DOUBLE) || variable.getType().equals(MEASURE)))
-			&& !(valueType.equals(DOUBLE) && (variable.getType().equals(MEASURE)))
-			&& !(valueType.equals(REFERENCE) && (variable instanceof Reference || variable instanceof Word)))
+			&& !areCompatibleTypes(valueType) && !(valueType.equals(REFERENCE) && (variable instanceof Reference || variable instanceof Word)))
 			results.put(varInit, new AnnotateAndFix(ERROR, "Incompatible types. Found " + valueType + ". " + variable.getType() + " expected"));
 		if (!hasErrors() && variable.getType().equals(Primitives.DOUBLE))
 			analyzeAsTuple();
+		if (hasErrors()) return;
+		if (!variable.getType().equals(Primitives.MEASURE)) return;
+		String[] values = varInit.getValues();
+		if (varInit.getMeasureValue() != null) {
+			AnnotateAndFix result = new MetricAnalyzer(metamodel, variable, values, varInit.getMeasureValue()).analyze();
+			if (result != null) results.put(varInit, result);
+		}
+	}
 
+	private boolean areCompatibleTypes(String valueType) {
+		return (valueType.equals(NATURAL) && (variable.getType().equals(INTEGER) || variable.getType().equals(DOUBLE)) || variable.getType().equals(MEASURE))
+			|| (valueType.equals(INTEGER) && (variable.getType().equals(DOUBLE) || variable.getType().equals(MEASURE)))
+			|| (valueType.equals(DOUBLE) && (variable.getType().equals(MEASURE)));
 	}
 
 	private void analyzeAsTuple() {

@@ -1,9 +1,8 @@
 // This is a generated file. Not intended for manual editing.
 package siani.tara.intellij.lang.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface TaraConcept extends Concept {
 
@@ -12,9 +11,6 @@ public interface TaraConcept extends Concept {
 
   @Nullable
   TaraBody getBody();
-
-  @Nullable
-  TaraDoc getDoc();
 
   @NotNull
   TaraSignature getSignature();

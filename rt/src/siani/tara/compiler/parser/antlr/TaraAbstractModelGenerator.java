@@ -134,17 +134,9 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterDoc(@NotNull DocContext ctx) {
 		StringBuilder builder = new StringBuilder();
 		for (TerminalNode doc : ctx.DOC())
-			builder.append(doc.getText().substring(1));
+			builder.append(doc.getText().substring(4));
 		String trim = builder.toString().trim();
-		if (ctx.getParent() instanceof ConceptContext)
-			conceptStack.peek().getObject().setDoc(trim);
-		else
-			currentDocAttribute = trim;
-	}
-
-	@Override
-	public void exitDoc(@NotNull DocContext ctx) {
-		currentDocAttribute = "";
+		conceptStack.peek().getObject().addDoc(trim);
 	}
 
 	@Override
@@ -234,7 +226,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		Attribute variable = new Attribute(ctx.MEASURE_TYPE().getText(), ctx.IDENTIFIER().getText());
 		variable.setList(ctx.LIST() != null);
 		if (ctx.doubleValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.doubleValue()));
-		if (ctx.attributeType() != null) variable.setMeasureType(ctx.attributeType().getText());
+		if (ctx.attributeType() != null) variable.setMeasureType(ctx.attributeType().measureType().getText());
 		if (ctx.measureValue() != null) variable.setMeasureValue(ctx.measureValue().getText());
 		addAttribute(ctx, variable);
 	}

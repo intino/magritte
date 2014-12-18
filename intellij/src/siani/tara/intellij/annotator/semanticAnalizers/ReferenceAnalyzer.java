@@ -72,7 +72,8 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	private void addImportAlternatives(Identifier element) {
 		ArrayList<LocalQuickFix> fixes = new ArrayList<>();
 		addImportFix(element, fixes);
-		addCreateConceptFix(element, "Concept", fixes);
+		Concept concept = TaraPsiImplUtil.getConceptContainerOf(element);
+		addCreateConceptFix(element, concept != null ? concept.getType() : "Concept", fixes);
 		results.put(element, new TaraAnnotator.AnnotateAndFix(ERROR, MESSAGE, TaraSyntaxHighlighter.UNRESOLVED_ACCESS, createFixes(element, fixes)));
 	}
 
@@ -84,7 +85,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	}
 
 	private void addCreateConceptFix(Identifier name, String type, List<LocalQuickFix> actions) {
-		actions.add(new CreateConceptQuickFix(name.getText(), type, name.getContainingFile().getParent()));
+		actions.add(new CreateConceptQuickFix(name.getText(), type, (TaraBoxFile) name.getContainingFile()));
 	}
 
 	private IntentionAction createIntention(PsiElement node, String message, LocalQuickFix fix) {

@@ -2,23 +2,16 @@
 
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")import tara.Metric;#end
 
-
 public enum ${NAME} implements Metric {
 
 	//Add the metrics here ${MEASURE}
 	;
 
-	private final String label;
 	private final Converter converter;
-
+	private final String label;
 
 	${NAME}(Converter converter) {
-		this(null, converter);
-	}
-
-	${NAME}(String label, Converter converter) {
-		this.label = label;
-		this.converter = converter;
+	this(null, converter);
 	}
 
 	${NAME}(final double factor){
@@ -28,6 +21,11 @@ public enum ${NAME} implements Metric {
 				return value*factor;
 			}
 		});
+	}
+
+	${NAME}(Converter converter, String label) {
+		this.converter = converter;
+		this.label = label;
 	}
 
 	@Override

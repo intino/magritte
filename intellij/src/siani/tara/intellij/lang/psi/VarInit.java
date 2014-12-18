@@ -8,5 +8,9 @@ public interface VarInit extends Navigatable, TaraPsiElement {
 
 	String getValueType();
 
+	String[] getValues();
+
 	TaraVarInitValue getValue();
+
+	String getMeasureValue();
 }

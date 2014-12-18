@@ -30,7 +30,7 @@ doc::= DOC_LINE+ {
 	implements='siani.tara.intellij.lang.psi.Doc'
 }
 
-concept ::= doc? signature annotationsAndFacets? body? {
+concept ::= signature annotationsAndFacets? body? {
 	pin = 2
 	mixin= 'siani.tara.intellij.lang.psi.impl.ConceptMixin'
 	implements='siani.tara.intellij.lang.psi.Concept'
@@ -95,16 +95,16 @@ body ::= (NEW_LINE_INDENT | INLINE) (conceptConstituents NEWLINE+)+ DEDENT {
 	implements = 'siani.tara.intellij.lang.psi.Body'
 }
 
-private conceptConstituents ::= varInit | variable | concept | annotationsAndFacets | facetTarget | conceptReference
+private conceptConstituents ::= varInit | variable | concept | annotationsAndFacets | facetTarget | conceptReference | doc
 
-conceptReference ::= doc? HAS identifierReference (IS annotations)?
+conceptReference ::= HAS identifierReference (IS annotations)?
 {
 	pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.ConceptReferenceMixin'
 	implements = 'siani.tara.intellij.lang.psi.ConceptReference'
 }
 
-variable ::= doc? VAR variableType (IS annotations)? {
+variable ::= VAR variableType (IS annotations)? {
 	pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'siani.tara.intellij.lang.psi.Variable'

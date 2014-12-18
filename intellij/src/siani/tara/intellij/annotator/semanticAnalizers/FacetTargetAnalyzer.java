@@ -7,6 +7,8 @@ import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.lang.Annotation;
+import siani.tara.lang.Node;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 
@@ -28,10 +30,11 @@ public class FacetTargetAnalyzer extends TaraAnalyzer {
 				MessageProvider.message("no.child.concept", child.getName(), parent.getName())));
 		}
 		Concept parent = TaraPsiImplUtil.getConceptContainerOf(target);
-		if (parent != null && !parent.isSub() && !parent.isFacet())
+		Node metaConcept = getMetaConcept(parent);
+		if (metaConcept == null) return;
+		if (parent != null && !parent.isSub() && !parent.isFacet() && !metaConcept.getObject().is(Annotation.META_FACET))
 			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.in.nofacet.concept")));
-		else if (parent != null && parent.isSub() && !TaraPsiImplUtil.getParentOf(parent).isFacet())
-			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.in.nofacet.concept")));
+
 	}
 
 	private boolean isInnerFacetTarget() {
@@ -44,5 +47,4 @@ public class FacetTargetAnalyzer extends TaraAnalyzer {
 				return true;
 		return false;
 	}
-
 }

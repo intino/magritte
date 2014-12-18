@@ -5,13 +5,13 @@ import com.intellij.psi.JavaDirectoryService;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
 
-public class MeasureClassCreator {
+public class MetricClassCreator {
 
 	private final Project project;
 	private final String className;
 	private final PsiDirectory destiny;
 
-	public MeasureClassCreator(Project project, PsiDirectory destiny, String className) {
+	public MetricClassCreator(Project project, PsiDirectory destiny, String className) {
 		this.project = project;
 		this.className = className;
 		this.destiny = destiny;

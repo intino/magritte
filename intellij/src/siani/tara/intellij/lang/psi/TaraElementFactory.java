@@ -13,6 +13,8 @@ public abstract class TaraElementFactory {
 
 	public abstract Concept createConcept(String name);
 
+	public abstract Concept createConcept(String name, String type);
+
 	public abstract TaraBoxFileImpl createDummyFile(String text);
 
 	public abstract Identifier createNameIdentifier(String name);
@@ -20,6 +22,8 @@ public abstract class TaraElementFactory {
 	public abstract Variable createAttribute(String name, String type);
 
 	public abstract TaraImports createImport(String reference);
+
+	public abstract TaraImports createMetamodelImport(String reference);
 
 	public abstract PsiElement createNewLine();
 

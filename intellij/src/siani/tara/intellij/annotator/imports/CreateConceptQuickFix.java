@@ -3,22 +3,19 @@ package siani.tara.intellij.annotator.imports;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiFile;
-import siani.tara.intellij.actions.TaraTemplates;
-import siani.tara.intellij.actions.TaraTemplatesFactory;
-import siani.tara.intellij.lang.file.TaraFileType;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraElementFactory;
 
 public class CreateConceptQuickFix implements LocalQuickFix {
 	private final String name;
 	private final String type;
-	private final PsiDirectory packet;
+	private final TaraBoxFile file;
 
-	public CreateConceptQuickFix(String name, String type, PsiDirectory packet) {
+	public CreateConceptQuickFix(String name, String type, TaraBoxFile file) {
 		this.name = name;
 		this.type = type;
-		this.packet = packet;
+		this.file = file;
 	}
 
 	@NotNull
@@ -35,7 +32,9 @@ public class CreateConceptQuickFix implements LocalQuickFix {
 
 	@Override
 	public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
-		String fileName = name + "." + TaraFileType.INSTANCE.getDefaultExtension();
-		PsiFile file = TaraTemplatesFactory.createFromTemplate(packet, name, fileName, TaraTemplates.getTemplate(type.toUpperCase()), true);
+		file.add(TaraElementFactory.getInstance(project).createNewLine());
+		file.add(TaraElementFactory.getInstance(project).createNewLine());
+		file.add(TaraElementFactory.getInstance(project).createNewLine());
+		file.addConcept(TaraElementFactory.getInstance(project).createConcept(name, type));
 	}
 }

@@ -136,15 +136,13 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	@Nullable
 	public String getDocCommentText() {
 		StringBuilder text = new StringBuilder();
-		Doc doc = ((Concept) this).getDoc();
+		Doc[] docs = this.getDoc();
 		String comment;
-		if (doc != null) {
+		for (Doc doc : docs) {
 			comment = doc.getText();
 			String trimmed = StringUtil.trimStart(StringUtil.trimStart(comment, "#"), "!");
-			text.insert(0, trimmed.trim());
-			if (text.length() == 0) return null;
-		} else
-			text.append(this.getText());
+			text.append(trimmed.trim()).append("\n");
+		}
 		return TaraDocumentationFormatter.doc2Html(this, text.toString());
 	}
 
@@ -301,6 +299,11 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 				}
 		}
 		return list.toArray(new Annotation[list.size()]);
+	}
+
+	@NotNull
+	public Doc[] getDoc() {
+		return null;
 	}
 
 	@Override

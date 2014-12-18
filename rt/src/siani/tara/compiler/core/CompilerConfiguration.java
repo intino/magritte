@@ -23,6 +23,7 @@ public class CompilerConfiguration {
 	private String modelsDirectory;
 	private boolean system;
 	private long buildNumber;
+	private File metricsDirectory;
 
 
 	public CompilerConfiguration() {
@@ -206,5 +207,13 @@ public class CompilerConfiguration {
 
 	public long getBuildNumber() {
 		return buildNumber;
+	}
+
+	public void setMetricsDirectory(File metricsDirectory) {
+		this.metricsDirectory = metricsDirectory;
+	}
+
+	public File getMetricsDirectory() {
+		return metricsDirectory;
 	}
 }

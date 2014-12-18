@@ -28,15 +28,9 @@ public class TaraConceptReferenceImpl extends ConceptReferenceMixin implements T
   }
 
   @Override
-  @Nullable
-  public TaraDoc getDoc() {
-    return findChildByClass(TaraDoc.class);
-  }
-
-  @Override
-  @Nullable
+  @NotNull
   public TaraIdentifierReference getIdentifierReference() {
-    return findChildByClass(TaraIdentifierReference.class);
+    return findNotNullChildByClass(TaraIdentifierReference.class);
   }
 
 }

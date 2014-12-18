@@ -6,7 +6,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.annotator.TaraAnnotator;
 import siani.tara.intellij.annotator.fix.CreateMeasureClassIntention;
-import siani.tara.intellij.annotator.semanticAnalizers.metrics.Metrics;
 import siani.tara.intellij.lang.psi.TaraAttributeType;
 import siani.tara.intellij.lang.psi.TaraMeasureAttribute;
 import siani.tara.intellij.project.module.ModuleProvider;
@@ -15,16 +14,18 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.HashMap;
+import java.util.Map;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.WARNING;
 
-public class MeasureAnalyzer extends TaraAnalyzer {
-	private final String MetricsPackage;
+public class MeasureAttributeAnalyzer extends TaraAnalyzer {
+	private final String metricsPackage;
 	private final TaraAttributeType measure;
 
-	public MeasureAnalyzer(TaraAttributeType measure) {
+	public MeasureAttributeAnalyzer(TaraAttributeType measure) {
 		this.measure = measure;
-		MetricsPackage = measure.getProject().getName() + "." + "metrics";
+		metricsPackage = measure.getProject().getName() + "." + "metrics";
 	}
 
 	@Override
@@ -35,14 +36,14 @@ public class MeasureAnalyzer extends TaraAnalyzer {
 				if (metricValue != null) Metrics.getInstance().add(metricValue);
 				else results.put(measure.getMeasureType(),
 					new TaraAnnotator.AnnotateAndFix(WARNING, "Measure Not Found. Create or Compile it.",
-						new CreateMeasureClassIntention(measure.getMeasureType().getText(), MetricsPackage)));
+						new CreateMeasureClassIntention(measure.getMeasureType().getText(), metricsPackage.toLowerCase())));
 			}
 		}
 	}
 
 	private Class<?> loadCompiledMetricClass(@NotNull Module module, String className) {
 		VirtualFile compilerOutputPath = CompilerModuleExtension.getInstance(module).getCompilerOutputPath();
-		return loadClass(compilerOutputPath.getPath(), MetricsPackage + "." + className);
+		return loadClass(compilerOutputPath.getPath(), metricsPackage + "." + className);
 	}
 
 	private Class<?> loadClass(String path, String className) {
@@ -61,4 +62,33 @@ public class MeasureAnalyzer extends TaraAnalyzer {
 		return ModuleProvider.getModuleOfFile(measure.getContainingFile());
 	}
 
+	public static class Metrics {
+
+		private static Metrics instance;
+		private static Map<String, Class<?>> metrics = new HashMap<>();
+
+		public interface Converter {
+			public double convert(double value);
+		}
+
+		private Metrics() {
+		}
+
+		public static Metrics getInstance() {
+			if (instance == null) instance = new Metrics();
+			return instance;
+		}
+
+		public Class<?> add(Class<?> metric) {
+			return metrics.put(metric.getClass().getSimpleName(), metric);
+		}
+
+		public Class<?>[] getMetrics() {
+			return metrics.values().toArray(new Class<?>[metrics.size()]);
+		}
+
+		public Class<?> get(String measure) {
+			return metrics.get(measure);
+		}
+	}
 }

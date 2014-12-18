@@ -10,10 +10,7 @@ public interface TaraVariable extends Variable {
   @Nullable
   TaraAnnotations getAnnotations();
 
-  @Nullable
-  TaraDoc getDoc();
-
-  @Nullable
+  @NotNull
   TaraVariableType getVariableType();
 
 }

@@ -23,7 +23,7 @@ public class ModelLoader {
 		try {
 			File file = new File(modelsDirectory.toLowerCase(), model.toLowerCase() + JSON);
 			if (!file.exists()) {
-				LOG.log(Level.SEVERE,"Model file not found");
+				LOG.log(Level.SEVERE, "Model file not found");
 				return null;
 			}
 			InputStream heritageInputStream = new FileInputStream(file);
@@ -134,9 +134,12 @@ public class ModelLoader {
 		}
 
 		private void processAttribute(JsonElement json, Attribute attribute) {
-			JsonElement measure = json.getAsJsonObject().get("measureValue");
-			if (measure != null && measure.isJsonPrimitive())
-				attribute.measureValue = measure.getAsString();
+			JsonElement measureValue = json.getAsJsonObject().get("measureValue");
+			if (measureValue != null && measureValue.isJsonPrimitive())
+				attribute.measureValue = measureValue.getAsString();
+			JsonElement measureType = json.getAsJsonObject().get("measureType");
+			if (measureType != null && measureType.isJsonPrimitive())
+				attribute.measureType = measureType.getAsString();
 			JsonElement count = json.getAsJsonObject().get("count");
 			if (count != null && count.isJsonPrimitive())
 				attribute.count = count.getAsInt();

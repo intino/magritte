@@ -85,7 +85,7 @@ LEFT_SQUARE         = "["
 RIGHT_SQUARE        = "]"
 DOLLAR              = "$"
 EURO                = "€"
-GRADE               = "º"
+GRADE               = "º" | "°"
 PERCENTAGE          = "%"
 DOT                 = "."
 STAR                = "*"
@@ -122,8 +122,8 @@ STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
 DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
-MEASURE_VALUE_TYPE       = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})*
-DOC_LINE            = "#" ~[\n]
+MEASURE_VALUE_TYPE  = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})*
+DOC_LINE            = "def" ~[\n]
 
 DIGIT               = [:digit:]
 IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
@@ -167,7 +167,7 @@ NEWLINE             = [\n]+
 	{READONLY}                      {   return TaraTypes.READONLY; }
     {ROOT}                          {   return TaraTypes.ROOT; }
 
-	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
+	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 
 	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
 	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE_KEY; }

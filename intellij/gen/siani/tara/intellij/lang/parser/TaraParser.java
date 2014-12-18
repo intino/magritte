@@ -464,43 +464,35 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // doc? signature annotationsAndFacets? body?
+  // signature annotationsAndFacets? body?
   public static boolean concept(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "concept")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, "<concept>");
-    r = concept_0(b, l + 1);
-    r = r && signature(b, l + 1);
+    r = signature(b, l + 1);
+    r = r && concept_1(b, l + 1);
     p = r; // pin = 2
-    r = r && report_error_(b, concept_2(b, l + 1));
-    r = p && concept_3(b, l + 1) && r;
+    r = r && concept_2(b, l + 1);
     exit_section_(b, l, m, CONCEPT, r, p, null);
     return r || p;
   }
 
-  // doc?
-  private static boolean concept_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "concept_0")) return false;
-    doc(b, l + 1);
-    return true;
-  }
-
   // annotationsAndFacets?
-  private static boolean concept_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "concept_2")) return false;
+  private static boolean concept_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "concept_1")) return false;
     annotationsAndFacets(b, l + 1);
     return true;
   }
 
   // body?
-  private static boolean concept_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "concept_3")) return false;
+  private static boolean concept_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "concept_2")) return false;
     body(b, l + 1);
     return true;
   }
 
   /* ********************************************************** */
-  // varInit | variable | concept | annotationsAndFacets | facetTarget | conceptReference
+  // varInit | variable | concept | annotationsAndFacets | facetTarget | conceptReference | doc
   static boolean conceptConstituents(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "conceptConstituents")) return false;
     boolean r;
@@ -511,43 +503,36 @@ public class TaraParser implements PsiParser {
     if (!r) r = annotationsAndFacets(b, l + 1);
     if (!r) r = facetTarget(b, l + 1);
     if (!r) r = conceptReference(b, l + 1);
+    if (!r) r = doc(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // doc? HAS identifierReference (IS annotations)?
+  // HAS identifierReference (IS annotations)?
   public static boolean conceptReference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "conceptReference")) return false;
-    if (!nextTokenIs(b, "<concept reference>", DOC_LINE, HAS)) return false;
+    if (!nextTokenIs(b, HAS)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, "<concept reference>");
-    r = conceptReference_0(b, l + 1);
-    r = r && consumeToken(b, HAS);
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = consumeToken(b, HAS);
+    r = r && identifierReference(b, l + 1);
     p = r; // pin = 2
-    r = r && report_error_(b, identifierReference(b, l + 1));
-    r = p && conceptReference_3(b, l + 1) && r;
+    r = r && conceptReference_2(b, l + 1);
     exit_section_(b, l, m, CONCEPT_REFERENCE, r, p, null);
     return r || p;
   }
 
-  // doc?
-  private static boolean conceptReference_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conceptReference_0")) return false;
-    doc(b, l + 1);
-    return true;
-  }
-
   // (IS annotations)?
-  private static boolean conceptReference_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conceptReference_3")) return false;
-    conceptReference_3_0(b, l + 1);
+  private static boolean conceptReference_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conceptReference_2")) return false;
+    conceptReference_2_0(b, l + 1);
     return true;
   }
 
   // IS annotations
-  private static boolean conceptReference_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conceptReference_3_0")) return false;
+  private static boolean conceptReference_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "conceptReference_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, IS);
@@ -2232,38 +2217,30 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // doc? VAR variableType (IS annotations)?
+  // VAR variableType (IS annotations)?
   public static boolean variable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable")) return false;
-    if (!nextTokenIs(b, "<variable>", DOC_LINE, VAR)) return false;
+    if (!nextTokenIs(b, VAR)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, "<variable>");
-    r = variable_0(b, l + 1);
-    r = r && consumeToken(b, VAR);
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = consumeToken(b, VAR);
+    r = r && variableType(b, l + 1);
     p = r; // pin = 2
-    r = r && report_error_(b, variableType(b, l + 1));
-    r = p && variable_3(b, l + 1) && r;
+    r = r && variable_2(b, l + 1);
     exit_section_(b, l, m, VARIABLE, r, p, null);
     return r || p;
   }
 
-  // doc?
-  private static boolean variable_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "variable_0")) return false;
-    doc(b, l + 1);
-    return true;
-  }
-
   // (IS annotations)?
-  private static boolean variable_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "variable_3")) return false;
-    variable_3_0(b, l + 1);
+  private static boolean variable_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "variable_2")) return false;
+    variable_2_0(b, l + 1);
     return true;
   }
 
   // IS annotations
-  private static boolean variable_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "variable_3_0")) return false;
+  private static boolean variable_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "variable_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, IS);

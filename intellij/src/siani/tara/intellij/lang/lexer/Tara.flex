@@ -132,7 +132,7 @@ EQUALS              = "="
 DOLLAR              = "$"
 EURO                = "€"
 PERCENTAGE          = "%"
-GRADE               = "º"
+GRADE               = "º" | "°"
 SEMICOLON           = ";"+
 AMPERSAND           = "&"
 
@@ -156,16 +156,11 @@ DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATU
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
 MEASURE_VALUE_KEY   = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})+
 
-DOC_LINE            = "#" ~[\n]
+DOC_LINE            = "def" ~[\n]
 PLUS                = "+"
 DIGIT               = [:digit:]
 STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
 STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
-//STRING_VALUE_KEY    = {APOSTROPHE} ~ ( {ESC_SEQ} | ~("\\"|"\"") )* {APOSTROPHE}
-ESC_SEQ = "\\" ("b"|"t"|"n"|"f"|"r"|"\""|"\""|"\\") | {UNICODE_ESC} | {OCTAL_ESC}
-OCTAL_ESC =   "\\" ("0".."3") ("0".."7") ("0".."7") |   "\\" ("0".."7") ("0".."7") |   "\\" ("0".."7")
-UNICODE_ESC =   "\\" "u" {HEX_DIGIT} {HEX_DIGIT} {HEX_DIGIT} {HEX_DIGIT}
-HEX_DIGIT = ("0".."9"|"a".."f"|"A".."F") ;
 
 IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
@@ -207,7 +202,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{READONLY}                      {   return TaraTypes.READONLY; }
     {ROOT}                          {   return TaraTypes.ROOT; }
 
-	{DOC_LINE}                      {   return TaraTypes.DOC_LINE; }
+	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 
 	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE_KEY; }
 	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }

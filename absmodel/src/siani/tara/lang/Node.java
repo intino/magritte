@@ -86,6 +86,13 @@ public abstract class Node {
 			this.imports.addAll(imports);
 	}
 
+	public boolean is(Annotation annotation) {
+		for (Annotation a : getAnnotations())
+			if (annotation.equals(a)) return true;
+		return false;
+	}
+
+
 	public boolean isPrime() {
 		return getContainer() == null;
 	}

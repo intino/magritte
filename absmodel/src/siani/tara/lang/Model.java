@@ -11,6 +11,7 @@ public class Model {
 	private transient Map<String, Node> nodeTable = new HashMap<>();
 	private NodeTree nodeTree = new NodeTree();
 	private Set<String> identifiers = new HashSet<>();
+	private Map<String, List<String>> metrics = new HashMap<>();
 	private boolean terminal;
 
 	public Model(String name) {
@@ -59,6 +60,14 @@ public class Model {
 	public Node get(String qualifiedName) {
 		if (!nodeTable.containsKey(qualifiedName)) return null;
 		return nodeTable.get(qualifiedName);
+	}
+
+	public void addMetrics(Map<String, List<String>> metrics) {
+		this.metrics.putAll(metrics);
+	}
+
+	public Map<String, List<String>> getMetrics() {
+		return metrics;
 	}
 
 	public Map<String, Node> getTerminalNodes() {

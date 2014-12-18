@@ -9,7 +9,6 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface TaraBoxFile extends PsiFile {
 
@@ -45,4 +44,6 @@ public interface TaraBoxFile extends PsiFile {
 
 	@NotNull
 	Collection<Import> getImports();
+
+	void updateMetamodelImport();
 }

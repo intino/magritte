@@ -26,8 +26,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 	@Nullable
 	Body getBody();
 
-	@Nullable
-	Doc getDoc();
+	@NotNull
+	Doc[] getDoc();
 
 	@NotNull
 	Signature getSignature();

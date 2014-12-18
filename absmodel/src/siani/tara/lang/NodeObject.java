@@ -70,8 +70,8 @@ public class NodeObject extends ModelObject {
 		return doc;
 	}
 
-	public void setDoc(String doc) {
-		this.doc = doc;
+	public void addDoc(String doc) {
+		this.doc = this.doc != null ? this.doc + doc : doc;
 	}
 
 	public Word[] getWords() {
