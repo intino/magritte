@@ -56,7 +56,6 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 
 	private void addParameterNameInfo(Variable variable) {
 		results.put(parameter, new AnnotateAndFix(INFO, variable.getName()));
-
 	}
 
 	private void processExplicit(List<Variable> variables) {

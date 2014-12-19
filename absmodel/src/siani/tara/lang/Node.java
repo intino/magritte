@@ -53,6 +53,10 @@ public abstract class Node {
 
 	public abstract String getName();
 
+	public String getType() {
+		return object.getType();
+	}
+
 	public String calculateQualifiedName() {
 		return qualifiedName = getNodePath();
 	}

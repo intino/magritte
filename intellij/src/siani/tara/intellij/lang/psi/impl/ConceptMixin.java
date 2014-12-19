@@ -25,6 +25,7 @@ import siani.tara.lang.Node;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static siani.tara.lang.Annotation.*;
@@ -80,6 +81,11 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.getVariablesInBody(this.getBody());
 	}
 
+	public Collection<VarInit> getVarInits() {
+		if (this.getBody() == null) return Collections.EMPTY_LIST;
+		return (Collection<VarInit>) this.getBody().getVarInitList();
+	}
+
 	public TaraConceptReference[] getConceptLinks() {
 		return TaraUtil.getLinksOf((Concept) this);
 	}
@@ -104,7 +110,9 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return identifierNode != null ? identifierNode.getText() : null;
 	}
 
+	@NotNull
 	public Parameter[] getParameters() {
+		if (getSignature().getParameters() == null) return new Parameter[0];
 		return getSignature().getParameters().getParameters();
 	}
 
@@ -166,6 +174,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.getIdentifierNode((Concept) this);
 	}
 
+	@Nullable
 	public Body getBody() {
 		return findChildByClass(Body.class);
 	}

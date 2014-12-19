@@ -87,7 +87,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		Node node = conceptStack.peek();
 		if (node instanceof DeclaredNode) {
 			if (hasSubs(node)) node.getObject().add(Annotation.ABSTRACT);
-			else model.addIdentifier(node.getObject().getName());
+			else if (!node.is(Annotation.ABSTRACT)) model.addIdentifier(node.getObject().getName());
 		}
 		model.add(node.getQualifiedName(), node);
 		conceptStack.pop();
@@ -380,9 +380,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	private List<Annotation> getAnnotations(AnnotationsContext context) {
 		List<Annotation> annotations = new ArrayList<>();
-		for (AnnotationContext annotation : context.annotation()) {
+		for (AnnotationContext annotation : context.annotation())
 			annotations.add(Annotation.valueOf(annotation.getText().toUpperCase().replace("+", "META_")));
-		}
 		return annotations;
 	}
 }

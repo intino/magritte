@@ -4,6 +4,8 @@ import siani.tara.lang.*;
 
 import java.util.*;
 
+import static siani.tara.lang.Annotation.AGGREGATED;
+import static siani.tara.lang.Annotation.COMPONENT;
 import static siani.tara.lang.Annotation.FACET;
 
 
@@ -20,6 +22,23 @@ public class ParentModelDependencyResolver {
 	public void resolve() {
 		addTerminalNodes(parent.getTerminalNodes());
 		setValuesToNodes();
+		addAnnotationsTonInstances();
+	}
+
+	private void addAnnotationsTonInstances() {
+		for (Node parentNode : this.parent.getNodeTable().values())
+			for (Node instance : getInstancesOf(parentNode)) {
+				addParentAnnotation(parentNode.getAnnotations(), instance);
+			}
+	}
+
+	private void addParentAnnotation(Annotation[] annotations, Node instance) {
+		for (Annotation annotation : annotations) {
+			if (annotation.isMeta() && !instance.is(Annotation.getNormalAnnotationOfMeta(annotation)))
+				instance.getObject().add(annotation);
+			else if (annotation.equals(COMPONENT) || annotation.equals(AGGREGATED))
+				instance.getObject().add(annotation);
+		}
 	}
 
 	private void setValuesToNodes() {

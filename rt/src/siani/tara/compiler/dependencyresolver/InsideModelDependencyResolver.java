@@ -131,16 +131,15 @@ public class InsideModelDependencyResolver {
 	}
 
 	private void collectInnerConceptsInherited(DeclaredNode parent, DeclaredNode node, List<LinkNode> toAddNodes) {
-		for (Node child : parent.getInnerNodes())
-			if (!child.isSub()) {
-				DeclaredNode destiny = (child instanceof LinkNode) ? ((LinkNode) child).getDestiny() : (DeclaredNode) child;
-				LinkNode element = new LinkNode(destiny, node);
-				if (node.contains(child.getName())) continue;
-				element.setDestinyQN(destiny.getQualifiedName());
-				toAddNodes.add(element);
-				node.add(0, element);
-				element.calculateQualifiedName();
-			}
+		for (Node child : parent.getInnerNodes()) {
+			if (child.isSub() || node.contains(child.getType(), child.getName(), child.isAggregated())) continue;
+			DeclaredNode destiny = (child instanceof LinkNode) ? ((LinkNode) child).getDestiny() : (DeclaredNode) child;
+			LinkNode element = new LinkNode(destiny, node);
+			element.setDestinyQN(destiny.getQualifiedName());
+			toAddNodes.add(element);
+			node.add(0, element);
+			element.calculateQualifiedName();
+		}
 	}
 
 	private void linkDeclaredToParent(NodeObject object, DeclaredNode parent) {

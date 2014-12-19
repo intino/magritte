@@ -89,7 +89,11 @@ public class LinkNode extends Node {
 
 	@Override
 	public String getName() {
-		return "";
+		return destiny.getName();
+	}
+
+	public String getType() {
+		return destiny.getType();
 	}
 
 	@Override

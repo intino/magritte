@@ -49,9 +49,8 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private void analyzeAnnotationsConstrains() {
-		if (concept.isFacet() && concept.getFacetTargets().isEmpty()) {
+		if (concept.isFacet() && concept.getFacetTargets().isEmpty())
 			results.put(concept.getSignature(), addError(message("facet.target.missed")));
-		}
 	}
 
 	private AnnotateAndFix addError(String message) {

@@ -17,7 +17,6 @@
 }
 
 root ::= NEWLINE* imports? (concept NEWLINE+)*
-
 imports ::= (anImport NEWLINE*)+
 
 anImport ::= USE_KEY headerReference (AS METAMODEL)? NEWLINE {

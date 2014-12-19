@@ -78,6 +78,7 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 	@Nullable
 	String getType();
 
+	@NotNull
 	Parameter[] getParameters();
 
 	Collection<Concept> getConceptSiblings();
@@ -85,6 +86,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 	Collection<Concept> getInnerConcepts();
 
 	Collection<Variable> getVariables();
+
+	Collection<VarInit> getVarInits();
 
 	TaraConceptReference[] getConceptLinks();
 

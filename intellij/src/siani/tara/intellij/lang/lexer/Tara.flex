@@ -242,7 +242,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{SEMICOLON}                     {   return semicolon(); }
 	{NEWLINE}                       {   return newlineIndent();}
 	{INLINE}                        {   return inline();}
-
 	{SPACES}                        {   return TokenType.WHITE_SPACE; }
 
 	{SP}                            {   return TokenType.WHITE_SPACE; }

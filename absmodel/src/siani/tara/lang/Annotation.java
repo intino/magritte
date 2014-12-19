@@ -24,4 +24,8 @@ public enum Annotation {
 	public boolean isMeta() {
 		return name.startsWith("+");
 	}
+
+	public static Annotation getNormalAnnotationOfMeta(Annotation annotation) {
+		return annotation.isMeta() ? Annotation.valueOf(annotation.getName().substring(1)) : annotation;
+	}
 }

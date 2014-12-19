@@ -65,7 +65,13 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	@Nullable
 	@Override
 	public Object[] getParametersForLookup(LookupElement item, ParameterInfoContext context) {
-		return null;
+		Parameters parameters = ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), Parameters.class);
+		if (parameters == null) {
+			Signature signature = PsiTreeUtil.findElementOfClassAtOffset(context.getFile(), context.getOffset(), Signature.class, false);
+			if (signature != null)
+				parameters = signature.getParameters();
+		}
+		return new Object[]{parameters};
 	}
 
 	@Nullable
@@ -81,8 +87,8 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		if (parameters != null) {
 			Model model = TaraLanguage.getMetaModel(parameters.getContainingFile());
 			if (model == null) return parameters;
-			if (parameters.getParameters().length == 0) return parameters;
-			TaraFacetApply facet = parameters.getParameters()[0].isInFacet();
+//			if (parameters.getParameters().length == 0) return parameters;
+			TaraFacetApply facet = parameters.isInFacet();
 			Node node = findNode(TaraPsiImplUtil.getConceptContainerOf(parameters), model);
 			if (node == null) return parameters;
 			List<siani.tara.intellij.lang.psi.Variable> attributes = new ArrayList<>();

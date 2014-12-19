@@ -37,7 +37,8 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	@NotNull
 	@Override
 	public String getType(@NotNull PsiElement element) {
-		return TaraPsiImplUtil.getConceptContainerOf(element).getType();
+		Concept container = TaraPsiImplUtil.getConceptContainerOf(element);
+		return container == null || container.getType() == null ? "" : container.getType();
 	}
 
 	@NotNull

@@ -14,6 +14,7 @@ import siani.tara.intellij.lang.psi.TaraConceptReference;
 import siani.tara.intellij.lang.psi.TaraTypes;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.lang.Annotation;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -53,7 +54,8 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean existsConceptTypeInMetamodel() {
-		return TaraUtil.findNode(concept, model) != null;
+		Node node = TaraUtil.findNode(concept, model);
+		return node != null && !node.is(Annotation.ABSTRACT);
 	}
 
 	private boolean hasName() {

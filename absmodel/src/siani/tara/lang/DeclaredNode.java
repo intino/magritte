@@ -77,6 +77,13 @@ public class DeclaredNode extends Node {
 		return false;
 	}
 
+	public boolean contains(String type, String name, boolean aggregated) {
+		for (Node innerNode : innerNodes)
+			if (innerNode.getType().equals(type) && innerNode.getName().equals(name) && innerNode.isAggregated() == aggregated)
+				return true;
+		return false;
+	}
+
 	public FacetTarget getFacetTargetParent() {
 		return inFacetTargetParent;
 	}
