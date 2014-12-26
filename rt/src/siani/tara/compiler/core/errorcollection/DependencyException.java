@@ -1,5 +1,6 @@
 package siani.tara.compiler.core.errorcollection;
 
+import siani.tara.lang.LinkNode;
 import siani.tara.lang.Node;
 
 public class DependencyException extends TaraException {
@@ -17,7 +18,7 @@ public class DependencyException extends TaraException {
 	}
 
 	public String getMessage() {
-		return "Inconsistent dependency in concept " + node.getName() + "; " + message;
+		return "Inconsistent dependency in concept " + (node instanceof LinkNode ? ((LinkNode) node).getDestinyName() : node.getName())+ "; " + message + " @ line " + this.line + ", column " + 1 + ".";
 	}
 
 	public Node getNode() {

@@ -58,6 +58,7 @@ public class TaraRunner {
 			writer.write(finalOutput + "\n");
 			writer.write(TaraRtConstants.CLASSPATH + "\n");
 			writer.write(join(generateClasspath()));
+			writer.close();
 		}
 	}
 

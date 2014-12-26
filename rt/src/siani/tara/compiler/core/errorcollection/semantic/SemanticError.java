@@ -34,7 +34,6 @@ public abstract class SemanticError {
 		SemanticError that = (SemanticError) o;
 		if (token != null ? !token.equals(that.token) : that.token != null) return false;
 		return !(node != null ? !node.getQualifiedName().equals(that.node.getQualifiedName()) : that.node != null);
-
 	}
 
 	@Override

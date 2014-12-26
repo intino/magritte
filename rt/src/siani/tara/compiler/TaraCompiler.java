@@ -57,8 +57,8 @@ public class TaraCompiler {
 
 	private void processCompilationException(Exception exception) {
 		if (exception instanceof MultipleCompilationErrorsException) {
-			MultipleCompilationErrorsException multipleCompilationErrorsException = (MultipleCompilationErrorsException) exception;
-			ErrorCollector errorCollector = multipleCompilationErrorsException.getErrorCollector();
+			MultipleCompilationErrorsException errorsException = (MultipleCompilationErrorsException) exception;
+			ErrorCollector errorCollector = errorsException.getErrorCollector();
 			for (int i = 0; i < errorCollector.getErrorCount(); i++)
 				processException(errorCollector.getError(i));
 		} else processException(exception);
@@ -69,6 +69,8 @@ public class TaraCompiler {
 			addErrorMessage(((SyntaxErrorMessage) message).getCause());
 		if (message instanceof SemanticErrorMessage)
 			addErrorMessage(((SemanticErrorMessage) message).getCause());
+		if (message instanceof DependencyErrorMessage)
+			addErrorMessage(((DependencyErrorMessage) message).getCause());
 		else if (message instanceof ExceptionMessage)
 			processException(((ExceptionMessage) message).getCause());
 		else if (message instanceof SimpleMessage)
@@ -109,6 +111,13 @@ public class TaraCompiler {
 			message = exception.getMessage();
 			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, null, -1, -1));
 		}
+	}
+
+	private void addErrorMessage(DependencyException exception) {
+		String message = exception.getMessage();
+		String justMessage = message.substring(0, message.lastIndexOf(LINE_AT));
+		collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, justMessage, exception.getNode().getFile(),
+			exception.getLine(), 1));
 	}
 
 	private void addErrorMessage(TaraRuntimeException exception) {

@@ -27,18 +27,16 @@ public class ParentModelDependencyResolver {
 
 	private void addAnnotationsTonInstances() {
 		for (Node parentNode : this.parent.getNodeTable().values())
-			for (Node instance : getInstancesOf(parentNode)) {
+			for (Node instance : getInstancesOf(parentNode))
 				addParentAnnotation(parentNode.getAnnotations(), instance);
-			}
 	}
 
 	private void addParentAnnotation(Annotation[] annotations, Node instance) {
-		for (Annotation annotation : annotations) {
+		for (Annotation annotation : annotations)
 			if (annotation.isMeta() && !instance.is(Annotation.getNormalAnnotationOfMeta(annotation)))
 				instance.getObject().add(annotation);
 			else if (annotation.equals(COMPONENT) || annotation.equals(AGGREGATED))
 				instance.getObject().add(annotation);
-		}
 	}
 
 	private void setValuesToNodes() {
@@ -114,7 +112,7 @@ public class ParentModelDependencyResolver {
 
 	private void createFacetTargets(Node facetNode, List<FacetTarget> newFacets, Collection<Node> nodes) {
 		for (Node node : nodes) {
-			FacetTarget target = new FacetTarget(node.getName(), null);
+			FacetTarget target = new FacetTarget(node.getName());
 			target.setDestiny(node.getObject());
 			newFacets.add(target);
 			node.getObject().addAllowedFacet(facetNode.getQualifiedName(), target);

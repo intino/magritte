@@ -166,7 +166,7 @@ UNKNOWN_TOKEN: . ;
 fragment DOLLAR              : '$';
 fragment EURO                : '€';
 fragment PERCENTAGE          : '%';
-fragment GRADE               : 'º';
+fragment GRADE               : 'º'| '°';
 fragment BY                  : '·';
 fragment DIVIDED_BY          : '/';
 fragment DASH                : '-';

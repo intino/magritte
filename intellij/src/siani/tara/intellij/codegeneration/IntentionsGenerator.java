@@ -58,9 +58,8 @@ public class IntentionsGenerator {
 		action = new WriteCommandAction(project, getCreatedInterfaces()) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
-				for (Map.Entry<Concept, PsiClass> entry : psiClasses.entrySet()) {
+				for (Map.Entry<Concept, PsiClass> entry : psiClasses.entrySet())
 					addInnerTargets(entry.getKey(), entry.getValue());
-				}
 			}
 		};
 		action.execute();
@@ -121,10 +120,8 @@ public class IntentionsGenerator {
 			classToContainer.put(aClass, intermediateClass);
 			setParent(container.getQualifiedName(), aClass);
 			intermediateClass.add(aClass);  //DON'T MOVE UP
-
 		}
 		return aClass;
-
 	}
 
 	private PsiClass createIntermediateClasses(PsiClass container, List<TaraIdentifier> identifiers) {

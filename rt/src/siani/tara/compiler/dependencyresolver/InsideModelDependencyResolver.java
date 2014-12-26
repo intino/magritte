@@ -149,7 +149,9 @@ public class InsideModelDependencyResolver {
 	}
 
 	private void throwError(Node node) throws DependencyException {
-		throw new DependencyException("Dependency resolution fail in: " + node.getQualifiedName() +
-			". Not found reference: " + node.getObject().getParentName(), node);
+		if (node.getObject() != null)
+			throw new DependencyException("Not found reference: " + node.getObject().getParentName(), node);
+		else if (node instanceof LinkNode)
+			throw new DependencyException("Not found reference: " + ((LinkNode) node).getDestinyName(), node);
 	}
 }

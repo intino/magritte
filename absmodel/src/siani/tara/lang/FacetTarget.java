@@ -9,13 +9,11 @@ public class FacetTarget {
 	private String destinyName;
 	private transient NodeObject destiny;
 	private boolean always;
-	private transient FacetTarget parentTarget;
 	private ArrayList<Variable> variables = new ArrayList<>();
 	private List<Node> inner = new ArrayList<>();
 
-	public FacetTarget(String destiny, FacetTarget parentTarget) {
+	public FacetTarget(String destiny) {
 		this.destinyName = destiny;
-		this.parentTarget = parentTarget;
 	}
 
 	public String getDestinyName() {
@@ -36,10 +34,6 @@ public class FacetTarget {
 
 	public void setDestiny(NodeObject destiny) {
 		this.destiny = destiny;
-	}
-
-	public FacetTarget getParentTarget() {
-		return parentTarget;
 	}
 
 	public boolean isAlways() {
@@ -85,5 +79,17 @@ public class FacetTarget {
 	@Override
 	public String toString() {
 		return "Target{" + destinyQN + '}';
+	}
+
+	public FacetTarget clone() {
+		FacetTarget target = new FacetTarget(this.getDestinyName());
+		target.setDestiny(this.getDestiny());
+		target.setDestinyQN(this.getDestinyQN());
+		target.setAlways(this.isAlways());
+		for (Node node : this.getInner())
+			target.add(node.is(LinkNode.class) ? node : new LinkNode((DeclaredNode) node, null));
+		for (Variable variable : this.getVariables())
+			target.add(variable);
+		return target;
 	}
 }

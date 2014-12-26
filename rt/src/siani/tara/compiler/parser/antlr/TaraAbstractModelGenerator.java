@@ -17,7 +17,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	private final String modelsPath;
 	Model model;
 	Stack<Node> conceptStack = new Stack<>();
-	Stack<FacetTarget> facetTargetStack = new Stack<>();
 	Set<String> imports = new HashSet<>();
 	String currentDocAttribute = "";
 
@@ -53,10 +52,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		conceptStack.push(node);
 	}
 
-	private boolean isInFacetTarget(ConceptContext ctx) {
-		return ctx.getParent().getParent() instanceof FacetTargetContext;
-	}
-
 	private void addNodeToModel(ConceptContext concept, Node node, String parent) {
 		DeclaredNode container = node.getContainer();
 		if (node.is(DeclaredNode.class)) {
@@ -76,6 +71,10 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			if (parent != null) node.getObject().setParentName(parent);
 		} else
 			container.add(node);
+	}
+
+	private boolean isInFacetTarget(ConceptContext ctx) {
+		return ctx.getParent().getParent() instanceof FacetTargetContext;
 	}
 
 	private boolean isSub(ConceptContext ctx) {
@@ -119,15 +118,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterFacetTarget(@NotNull FacetTargetContext ctx) {
 		NodeObject nodeObject = conceptStack.peek().getObject();
-		FacetTarget facetTarget = new FacetTarget(ctx.identifierReference().getText(),
-			!facetTargetStack.isEmpty() ? facetTargetStack.peek() : null);
+		FacetTarget facetTarget = new FacetTarget(ctx.identifierReference().getText());
 		nodeObject.addFacetTarget(facetTarget);
-		facetTargetStack.push(facetTarget);
-	}
-
-	@Override
-	public void exitFacetTarget(@NotNull FacetTargetContext ctx) {
-		facetTargetStack.pop();
 	}
 
 	@Override

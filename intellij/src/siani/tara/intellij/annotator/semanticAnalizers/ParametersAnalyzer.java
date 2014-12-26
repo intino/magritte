@@ -49,7 +49,7 @@ public class ParametersAnalyzer extends TaraAnalyzer {
 	}
 
 	private void collectParametersNames(List<String> collected, List<Variable> variables) {
-		if (parameters.getParameters().length == 0) return;
+		if (parameters.getParameters().length == 0 || variables.isEmpty()) return;
 		for (Parameter parameter : parameters.getParameters()) {
 			if (parameter.isExplicit())
 				collected.add(((TaraExplicitParameter) parameter).getIdentifier().getText());

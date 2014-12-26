@@ -45,11 +45,14 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 				results.put(metaIdentifier, new AnnotateAndFix(ERROR, MessageProvider.message("Unknown.concept")));
 			for (TaraConceptReference incorrectInnerLink : getIncorrectInnerLinks(concept, model))
 				results.put(incorrectInnerLink, new AnnotateAndFix(ERROR, MessageProvider.message("Unknown.concept")));
-		} else if (isConceptType()) {
-			if (!hasName())
-				addError("Concept without name");
-			else if (!isWellPositioned())
-				addError("Concept in bad position");
+		} else {
+			if (isConceptType()) {
+				if (!hasName())
+					addError("Concept without name");
+				else if (!isWellPositioned())
+					addError("Concept in bad position");
+			} else
+				results.put(metaIdentifier, new AnnotateAndFix(ERROR, MessageProvider.message("Unknown.concept")));
 		}
 	}
 

@@ -38,9 +38,9 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		else if (!analyzeIfExtendedFromSameType(concept))
 			results.put(concept.getSignature().getParentReference(), addError(message("invalid.extension.concept")));
 		if (hasErrors()) return;
+		analyzeAnnotationsConstrains();
 		Node node = getMetaConcept(concept);
 		if (node == null) return;
-		analyzeAnnotationsConstrains();
 		if (!hasErrors()) analyzeMetaAnnotationConstrains(node);
 		if (!hasErrors()) analyzeMetaMetaAnnotationConstrains(node);
 		if (!hasErrors()) analyzeAddressAdded(node);
@@ -51,6 +51,8 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	private void analyzeAnnotationsConstrains() {
 		if (concept.isFacet() && concept.getFacetTargets().isEmpty())
 			results.put(concept.getSignature(), addError(message("facet.target.missed")));
+		else if(concept.isSub() && !concept.getFacetTargets().isEmpty())
+			results.put(concept.getSignature(), addError(message("facets.not.allowed")));
 	}
 
 	private AnnotateAndFix addError(String message) {

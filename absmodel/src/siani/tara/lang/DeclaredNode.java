@@ -66,6 +66,12 @@ public class DeclaredNode extends Node {
 		return getObject().isSub();
 	}
 
+	public boolean hasSubs() {
+		for (Node innerNode : innerNodes)
+			if (innerNode.isSub()) return true;
+		return false;
+	}
+
 	public String toString() {
 		return "DeclaredNode" + (isSub() ? "AsSub" : "") + "{" + qualifiedName + '}';
 	}

@@ -18,6 +18,7 @@ public class LinkNode extends Node {
 
 	public LinkNode(DeclaredNode destiny, DeclaredNode container) {
 		this.destiny = destiny;
+		destinyQN = destiny.getQualifiedName();
 		this.container = container;
 	}
 
@@ -66,7 +67,7 @@ public class LinkNode extends Node {
 
 	@Override
 	public NodeObject getObject() {
-		return destiny.getObject();
+		return destiny != null ? destiny.getObject() : null;
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class LinkNode extends Node {
 	protected String getNodePath() {
 		String destiny = (getDestiny() != null) ? getDestiny().getQualifiedName() : getDestinyQN();
 		String name = "[" + destiny + LINK + (isAggregated() ? "{aggregated}" : "") + "]";
-		return container.getQualifiedName() + "." + name;
+		return (container != null ? container.getQualifiedName() + "." : "") + name;
 	}
 
 	public String toString() {

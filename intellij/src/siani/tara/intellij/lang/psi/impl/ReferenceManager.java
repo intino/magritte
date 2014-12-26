@@ -125,10 +125,11 @@ public class ReferenceManager {
 	private static void addConceptsInContext(Identifier identifier, Set<Concept> set) {
 		Concept container = getConceptContainerOf(identifier);
 		if (container != null && !isExtendsReference((IdentifierReference) identifier.getParent()) &&
-			identifier.getText().equals(container.getName())) set.add(container);
+			namesAreEqual(identifier, container))
+			set.add(container);
 		while (container != null) {
 			for (Concept sibling : container.getConceptSiblings())
-				if (identifier.getText().equals(sibling.getName()) && !sibling.equals(getConceptContainerOf(identifier)))
+				if (namesAreEqual(identifier, sibling) && !sibling.equals(getConceptContainerOf(identifier)))
 					set.add(sibling);
 			container = getConceptContainerOf(container);
 		}
@@ -141,7 +142,7 @@ public class ReferenceManager {
 	private static void addAggregated(TaraBoxFile file, Identifier identifier, Set<Concept> set, ArrayList<Concept> visited) {
 		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(file);
 		for (Concept concept : allConceptsOfFile)
-			if (isAggregated(file, concept, visited, set) && namesAreEqual(identifier, concept))
+			if (isAggregated(file, concept, visited) && namesAreEqual(identifier, concept))
 				set.add(concept);
 	}
 
@@ -149,13 +150,13 @@ public class ReferenceManager {
 		return identifier.getText().equals(concept.getName());
 	}
 
-	private static boolean isAggregated(TaraBoxFile file, Concept concept, ArrayList<Concept> visited, Set<Concept> set) {
+	private static boolean isAggregated(TaraBoxFile file, Concept concept, ArrayList<Concept> visited) {
 		if (visited.contains(concept)) return false;
 		visited.add(concept);
 		if (concept.isAnnotatedAsAggregated()) return true;
 		IdentifierReference parentReference = concept.getSignature().getParentReference();
 		if (parentReference == null) return false;
-		Concept[] roots = getRootConcepts(file, parentReference, visited, set);
+		Concept[] roots = getRootConcepts(file, parentReference, visited, new HashSet<Concept>());
 		if (roots.length == 0) return false;
 		for (Concept possibleRoot : roots) {
 			Concept aggregated = resolvePathInConcept((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);

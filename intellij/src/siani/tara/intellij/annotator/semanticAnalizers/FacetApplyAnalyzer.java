@@ -1,5 +1,6 @@
 package siani.tara.intellij.annotator.semanticAnalizers;
 
+import com.intellij.codeInsight.intention.IntentionAction;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.annotator.fix.OfferCompletingFacetParameters;
 import siani.tara.intellij.lang.psi.Concept;
@@ -30,7 +31,7 @@ public class FacetApplyAnalyzer extends TaraAnalyzer {
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(facetApply);
 		Node node = TaraUtil.findNode(concept, getMetamodel(facetApply));
 		if (node == null) return;
-		if (!isAllowedFacet(node, facetApply.getMetaIdentifierList().get(0).getText()))
+ 		if (!isAllowedFacet(node, facetApply.getMetaIdentifierList().get(0).getText()))
 			results.put(facetApply, new AnnotateAndFix(ERROR, "This facet is not allowed in this context"));
 		else if (isDuplicatedFacet(concept, facetApply))
 			results.put(facetApply, new AnnotateAndFix(ERROR, "Duplicated facet"));
@@ -43,8 +44,9 @@ public class FacetApplyAnalyzer extends TaraAnalyzer {
 		List<Variable> facetVariables = getFacetVariables(node.getObject().getAllowedFacets(), facetApply.getMetaIdentifierList().get(0).getText());
 		int minimum = collectMinimumNumberOfParameter(facetVariables);
 		if ((parameters.getParameters().length < minimum)) {
-			AnnotateAndFix value = new AnnotateAndFix(ERROR, "Parameters missed: " + variablesToString(facetVariables),
-				(parameters.getParameters().length == 0) ? new OfferCompletingFacetParameters(facetApply, facetVariables) : null);
+			AnnotateAndFix value = new AnnotateAndFix(ERROR, "Parameters missed: " + variablesToString(facetVariables));
+			if (parameters.getParameters().length == 0)
+				value.setActions(new IntentionAction[]{new OfferCompletingFacetParameters(facetApply, facetVariables)});
 			results.put(parameters, value);
 		}
 	}
@@ -67,9 +69,9 @@ public class FacetApplyAnalyzer extends TaraAnalyzer {
 		return (count > 1);
 	}
 
-	private List<Variable> getFacetVariables(Map<String, FacetTarget> facets, String facetName) {
-		for (String key : facets.keySet())
-			if (key.endsWith(facetName)) return facets.get(key).getVariables();
+	private List<Variable> getFacetVariables(Map<String, List<FacetTarget>> facets, String facetName) {
+//		for (String key : facets.keySet())
+//			if (key.endsWith(facetName)) return facets.get(key).getVariables();
 		return Collections.EMPTY_LIST;
 	}
 

@@ -91,6 +91,10 @@ public abstract class TaraAnnotator implements Annotator {
 			this.attributes = attributes;
 		}
 
+		public void setActions(IntentionAction[] actions) {
+			this.actions = actions;
+		}
+
 		public static enum Level {INFO, WARNING, ERROR}
 	}
 }

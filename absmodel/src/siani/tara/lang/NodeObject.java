@@ -12,7 +12,7 @@ public class NodeObject extends ModelObject {
 	List<Variable> variables = new ArrayList<>();
 	List<Annotation> annotations = new ArrayList<>();
 	List<Facet> facets = new ArrayList<>();
-	Map<String, FacetTarget> allowedFacets = new HashMap<>();
+	Map<String, List<FacetTarget>> allowedFacets = new HashMap<>();
 	List<FacetTarget> facetTargets = new ArrayList<>();
 	String address;
 
@@ -129,12 +129,24 @@ public class NodeObject extends ModelObject {
 		return facets.add(object);
 	}
 
-	public Map<String, FacetTarget> getAllowedFacets() {
+	public Map<String, List<FacetTarget>> getAllowedFacets() {
 		return allowedFacets;
 	}
 
+	public FacetTarget getAllowedFacetByContext(String name, String context) {
+		List<FacetTarget> targets = allowedFacets.get(name);
+		if (targets == null) return null;
+		if (targets.size() == 1) return targets.get(0);
+		if(context == null) return null;
+		for (FacetTarget target : targets)
+			if (context.equals(target.getDestinyName()))
+				return target;
+		return null;
+	}
+
 	public void addAllowedFacet(String name, FacetTarget facetTarget) {
-		allowedFacets.put(name, facetTarget);
+		if (allowedFacets.get(name) == null) allowedFacets.put(name, new ArrayList<FacetTarget>());
+		allowedFacets.get(name).add(facetTarget);
 	}
 
 	public List<FacetTarget> getFacetTargets() {

@@ -4,13 +4,13 @@ import com.intellij.psi.PsiElement;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraParameterValueImpl;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.lang.psi.resolve.TaraInternalReferenceSolver;
 import siani.tara.lang.*;
 import siani.tara.lang.Variable;
 
 import java.util.List;
-import java.util.Map;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.INFO;
@@ -37,12 +37,19 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		if (node == null) return;
 		TaraFacetApply inFacet = parameter.isInFacet();
 		List<Variable> facetVariables = null;
-		if (inFacet != null && (facetVariables = getAllowedFacet(node, inFacet.getFirstChild().getText())) == null)
+		if (inFacet != null && (facetVariables = getAllowedFacet(node, inFacet.getFirstChild().getText(), getContextNameOf(inFacet))) == null)
 			return;
 		List<Variable> variables = (inFacet != null) ? facetVariables : node.getObject().getVariables();
-		if (parameter.getIndexInParent() >= variables.size()) {
+		if (parameter.getIndexInParent() >= variables.size())
 			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
-		} else analyzeParameter(variables, parameter.getIndexInParent());
+		else analyzeParameter(variables, parameter.getIndexInParent());
+	}
+
+	private String getContextNameOf(TaraFacetApply inFacet) {
+		PsiElement contextOf = TaraPsiImplUtil.getContextOf(inFacet);
+		if (contextOf instanceof TaraFacetApply)
+			return contextOf.getFirstChild().getText();
+		return null;
 	}
 
 	private void analyzeParameter(List<Variable> variables, int index) {
@@ -99,11 +106,9 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		return attribute.getCount() != 0 && parametersLength != attribute.getCount();
 	}
 
-	private List<Variable> getAllowedFacet(Node node, String name) {
-		for (Map.Entry<String, FacetTarget> entry : node.getObject().getAllowedFacets().entrySet())
-			if (entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1).equals(name))
-				return entry.getValue().getVariables();
-		return null;
+	private List<Variable> getAllowedFacet(Node node, String name, String context) {
+		FacetTarget todo = node.getObject().getAllowedFacetByContext(name, context);
+		return todo != null ? todo.getVariables() : null;
 	}
 
 	private Variable getVariableByName(List<Variable> variables, String name) {

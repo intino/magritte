@@ -50,18 +50,20 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		if (!MetaIdentifier.class.isInstance(myElement)) return PsiElement.EMPTY_ARRAY;
 		String parentModel = ((TaraBoxFile) myElement.getContainingFile()).getParentModel();
 		if (parentModel == null) return PsiElement.EMPTY_ARRAY;
-		List<Node> nodes = new ArrayList<>();
 		List<Variable> variables = null;
 		Model metaModel = TaraLanguage.getMetaModel(myElement.getContainingFile());
 		if (metaModel == null) return new Object[0];
 		if (myElement.getParent() instanceof TaraFacetApply) {
 			Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(getConceptContainerOf(myElement)));
-			if (node == null) return PsiElement.EMPTY_ARRAY;
+			if (node == null || node.is(ABSTRACT) || node.getSubConcepts().length > 0) return PsiElement.EMPTY_ARRAY;
 			return fillFacetVariants(node.getObject().getAllowedFacets().keySet());
 		} else {
+			List<Node> nodes = new ArrayList<>();
 			Concept context = getConceptContainerOf(getConceptContainerOf(myElement));
 			if (context != null) {
 				Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(context));
+				if (node == null || node.is(ABSTRACT) || node.getSubConcepts().length > 0)
+					return PsiElement.EMPTY_ARRAY;
 				addChildren(nodes, node);
 				variables = node.getObject().getVariables();
 			} else addRootNodes(nodes, metaModel.getTreeModel());

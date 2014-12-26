@@ -54,6 +54,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		Model model = TaraLanguage.getMetaModel(concept.getContainingFile());
 		if (model == null) return null;
 		Node facetNode = findFacet(model, facet);
+		if (facetNode == null) return null;
 		return generateDocForNode(facetNode, concept.getType());
 	}
 

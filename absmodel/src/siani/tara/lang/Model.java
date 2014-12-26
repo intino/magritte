@@ -128,8 +128,11 @@ public class Model {
 					currentNode = findNodeInList(getModelRoots(), name);
 					inFacet = null;
 					continue;
-				} else
-					currentNode = findInnerInList(findFacetApply(currentNode.getObject().getAllowedFacets(), getFacet(inFacet)).getInner(), name);
+				} else {
+					FacetTarget allowedFacetByContext = currentNode.getObject().getAllowedFacetByContext(getFacet(inFacet), null);
+					if(allowedFacetByContext != null)
+					currentNode = findInnerInList(allowedFacetByContext.getInner(), name);//TODO the context cannot be null
+				}
 				inFacet = null;
 			}
 			if (currentNode == null) return null;
@@ -143,14 +146,6 @@ public class Model {
 
 	private boolean isInFacet(String nodeName) {
 		return nodeName.contains("@");
-	}
-
-	private FacetTarget findFacetApply(Map<String, FacetTarget> facets, String facet) {
-		for (Map.Entry<String, FacetTarget> facetApply : facets.entrySet()) {
-			String[] key = facetApply.getKey().split("\\.");
-			if (key[key.length - 1].equals(facet)) return facetApply.getValue();
-		}
-		return null;
 	}
 
 	private String getFacet(String nodeName) {

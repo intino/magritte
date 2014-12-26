@@ -2,10 +2,10 @@ parser grammar TaraGrammar;
 options { tokenVocab=TaraLexer; }
 
 
-root: imports? NEWLINE* (concept NEWLINE*)* EOF;
+root: NEWLINE* imports? (concept NEWLINE*)* EOF;
 
 imports : anImport+;
-anImport: NEWLINE* USE headerReference (AS IDENTIFIER)? NEWLINE;
+anImport: USE headerReference (AS IDENTIFIER)? NEWLINE;
 
 doc: DOC+;
 concept: doc? signature annotationsAndFacets? body?;

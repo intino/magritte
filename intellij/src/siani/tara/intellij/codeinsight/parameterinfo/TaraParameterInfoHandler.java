@@ -2,6 +2,7 @@ package siani.tara.intellij.codeinsight.parameterinfo;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.*;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
@@ -93,7 +94,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			if (node == null) return parameters;
 			List<siani.tara.intellij.lang.psi.Variable> attributes = new ArrayList<>();
 			TaraElementFactory instance = TaraElementFactory.getInstance(parameters.getProject());
-			List<Variable> variables = (facet != null) ? getFacetVariables(facet.getMetaIdentifierList().get(0).getText(), node) : node.getObject().getVariables();
+			List<Variable> variables = (facet != null) ? getFacetVariables(facet.getMetaIdentifierList().get(0).getText(), getContextNameOf(facet), node) : node.getObject().getVariables();
 			if (variables.isEmpty()) return parameters;
 			for (Variable variable : variables) {
 				siani.tara.intellij.lang.psi.Variable attribute = null;
@@ -112,17 +113,21 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		return parameters;
 	}
 
-	private List<Variable> getFacetVariables(String name, Node node) {
-		for (Map.Entry<String, FacetTarget> entry : node.getObject().getAllowedFacets().entrySet()) {
-			if (entry.getKey().endsWith("." + name)) return entry.getValue().getVariables();
-		}
-		return Collections.EMPTY_LIST;
+	private String getContextNameOf(TaraFacetApply facetApply) {
+		PsiElement contextOf = TaraPsiImplUtil.getContextOf(facetApply);
+		if (contextOf instanceof TaraFacetApply)
+			return contextOf.getFirstChild().getText();
+		return null;
+	}
+
+	private List<Variable> getFacetVariables(String name, String context, Node node) {
+		FacetTarget target = node.getObject().getAllowedFacetByContext(name, context);
+		return target != null ? target.getVariables() : Collections.EMPTY_LIST;
 	}
 
 	protected Node findNode(Concept concept, Model model) {
 		return model.searchNode(TaraUtil.getMetaQualifiedName(concept));
 	}
-
 
 	private Parameters findParameters(CreateParameterInfoContext context) {
 		Parameters parameters = ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), Parameters.class);
