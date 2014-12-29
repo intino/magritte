@@ -189,10 +189,14 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		Node referenceNode = model.get(type);
 		if (name == null || referenceNode == null) return false;
 		if (name.equals(referenceNode.getName())) return true;
-		List<NodeObject> children;
-		while ((children = referenceNode.getObject().getChildren()) != null)
-			for (NodeObject child : children)
-				if (child.getName().equals(name)) return true;
+		return search(name, referenceNode.getObject());
+	}
+
+	private boolean search(String name, NodeObject referenceNode) {
+		List<NodeObject> children = referenceNode.getChildren();
+		if (children == null) return false;
+		for (NodeObject child : children)
+			if (child.getName().equals(name) || search(name, child)) return true;
 		return false;
 	}
 

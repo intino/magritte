@@ -129,15 +129,24 @@ public class Model {
 					inFacet = null;
 					continue;
 				} else {
-					FacetTarget allowedFacetByContext = currentNode.getObject().getAllowedFacetByContext(getFacet(inFacet), null);
-					if(allowedFacetByContext != null)
-					currentNode = findInnerInList(allowedFacetByContext.getInner(), name);//TODO the context cannot be null
+					FacetTarget allowedFacetByContext = currentNode.getObject().getAllowedFacetByContext(getFacetName(getFacet(inFacet)), getContext(getFacet(inFacet)));//TODO the context cannot be null
+					if (allowedFacetByContext != null)
+						currentNode = findInnerInList(allowedFacetByContext.getInner(), name);
+					else return null;
 				}
 				inFacet = null;
 			}
 			if (currentNode == null) return null;
 		}
 		return currentNode;
+	}
+
+	private String getFacetName(String inFacet) {
+		return inFacet.substring(inFacet.lastIndexOf("$")+1);
+	}
+
+	private String getContext(String inFacet) {
+		return inFacet.substring(0,inFacet.lastIndexOf("$"));
 	}
 
 	private boolean searchInFacet(String inFacet) {

@@ -54,12 +54,12 @@ public class TaraUtil {
 		String type = concept != null && !concept.isSub() ? concept.getType() : "";
 		while ((element = TaraPsiImplUtil.getContextOf(element)) != null)
 			if (element instanceof Concept && !((Concept) element).isSub())
-				type = ((Concept) element).getType() + "." + type;
+				type = ((Concept) element).getType() + (type != null && type.length() > 0 ? "." + type : "");
 			else if (element instanceof TaraFacetApply || element instanceof TaraFacetTarget) {
 				if (element instanceof TaraFacetTarget)
 					type = FACET_TARGET + "(" + ((TaraFacetTarget) element).getIdentifierReference().getText() + ")" + "." + type;
 				else type = FACET_APPLY + "(" +
-					((TaraFacetApply) element).getMetaIdentifierList().get(0).getText() + ")" + "." + type;
+					getFacetPath((TaraFacetApply) element) + ")" + "." + type;
 				Concept conceptContextOf = getConceptContainerOf(element);
 				if (conceptContextOf != null) {
 					type = conceptContextOf.getType() + type;
@@ -67,6 +67,16 @@ public class TaraUtil {
 				}
 			}
 		return type;
+	}
+
+	private static String getFacetPath(TaraFacetApply apply) {
+		PsiElement element = apply;
+		String path = "";
+		while (element instanceof TaraFacetApply) {
+			path = ((TaraFacetApply) element).getMetaIdentifierList().get(0).getText() + (path.length() > 0 ? "$" + path : "");
+			element = TaraPsiImplUtil.getContextOf(element);
+		}
+		return path;
 	}
 
 	public static String getMetaQualifiedName(TaraConceptReference reference) {
