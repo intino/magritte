@@ -96,8 +96,8 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.PROJECT:
 					configuration.setProject(reader.readLine());
 					break;
-				case TaraRtConstants.BUILD_NUMBER:
-					configuration.setBuildNumber(Long.valueOf(reader.readLine()));
+				case TaraRtConstants.RESOURCES:
+					configuration.setResourcesDirectory(new File(reader.readLine()));
 					break;
 				case TaraRtConstants.MODULE:
 					configuration.setModule(reader.readLine());

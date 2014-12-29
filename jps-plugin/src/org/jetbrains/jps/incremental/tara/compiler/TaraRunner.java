@@ -7,7 +7,6 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.SystemProperties;
 import com.intellij.util.containers.ContainerUtilRt;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.cmdline.ClasspathBootstrap;
 import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ExternalProcessUtil;
@@ -26,12 +25,10 @@ public class TaraRunner {
 	private static final String GSON = "gson-2.2.4.jar";
 	private static File argsFile;
 
-	protected TaraRunner(final String projectName, final String moduleName, final String outputDir, final boolean system,
-	                     long build_number, final Collection<String> sources,
-	                     String finalOutput,
-	                     @Nullable final String encoding,
-	                     String rulesDir,
-	                     String[] iconPaths, String magritteJdk, String metricsDir) throws IOException {
+	protected TaraRunner(final String projectName, final String moduleName, final boolean system, final Collection<String> sources,
+	                     final String encoding,
+	                     String[] iconPaths,
+	                     List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
 			writer.write(TaraRtConstants.SRC_FILE + "\n");
@@ -41,21 +38,17 @@ public class TaraRunner {
 			writer.write(TaraRtConstants.PROJECT + "\n" + projectName + "\n");
 			writer.write(TaraRtConstants.MODULE + "\n" + moduleName + "\n");
 			writer.write(TaraRtConstants.SYSTEM + "\n" + system + "\n");
-			writer.write(TaraRtConstants.BUILD_NUMBER + "\n" + build_number + "\n");
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
 			String tara_models = PathManager.getPluginsPath() + File.separator + "tara_models" + File.separator;
 			writer.write(TaraRtConstants.MODELS_PATH + "\n" + tara_models + projectName + File.separator + "\n");
-			writer.write(TaraRtConstants.JDK_HOME + "\n" + magritteJdk + File.separator + "lib" + File.separator + "\n");
-			writer.write(TaraRtConstants.IT_RULES + "\n");
-			writer.write(rulesDir + "\n");
-			writer.write(TaraRtConstants.METRICS + "\n");
-			writer.write(metricsDir + "\n");
 			for (String iconPath : iconPaths)
 				writer.write(TaraRtConstants.ICONS_PATH + "\n" + iconPath + "\n");
-			writer.write(TaraRtConstants.OUTPUTPATH + "\n");
-			writer.write(outputDir + "\n");
-			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n");
-			writer.write(finalOutput + "\n");
+			writer.write(TaraRtConstants.OUTPUTPATH + "\n" + paths.get(0) + "\n");
+			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n" + paths.get(1) + "\n");
+			writer.write(TaraRtConstants.JDK_HOME + "\n" + paths.get(2) + File.separator + "lib" + File.separator + "\n");
+			writer.write(TaraRtConstants.IT_RULES + "\n" + paths.get(3) + "\n");
+			writer.write(TaraRtConstants.METRICS + "\n" + paths.get(4) + "\n");
+			writer.write(TaraRtConstants.RESOURCES + "\n" + paths.get(5) + "\n");
 			writer.write(TaraRtConstants.CLASSPATH + "\n");
 			writer.write(join(generateClasspath()));
 			writer.close();

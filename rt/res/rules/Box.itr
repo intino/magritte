@@ -1,9 +1,8 @@
 defrule type(Box)
-package magritte.boxes[.$package+lowercase];
+package magritte.editors;
 
 import magritte.Model;
-import magritte.boxes.Box;
-import magritte.primitives.*;
+import magritte.types.TimeInstant;
 
 import static magritte.Annotation.*;
 

@@ -3,6 +3,7 @@ package siani.tara.compiler.codegeneration;
 import org.siani.itrules.Frame;
 import siani.tara.lang.*;
 
+import java.io.File;
 import java.util.*;
 
 public class FrameCreator {
@@ -27,9 +28,8 @@ public class FrameCreator {
 
 	public Frame createBoxFrame(List<Node> nodes, Collection<String> parentBoxes, long buildNumber) {
 		Frame frame = new Frame("Box");
-		String name = "nodes.get(0).getBox().substring(nodes.get(0).getBox().lastIndexOf(SEPARATOR) + 1)";//TODO
 		String box = "nodes.get(0).getBox().substring(0, nodes.get(0).getBox().lastIndexOf(SEPARATOR))";//TODO
-		frame.addSlot("name", name).addSlot("box", box).addSlot("buildNumber", buildNumber);
+		frame.addSlot("name", getFileName(nodes)).addSlot("box", box).addSlot("buildNumber", buildNumber);
 		if (!PathFormatter.composeMorphPackagePath(box).isEmpty())
 			frame.addSlot("package", PathFormatter.composeMorphPackagePath(box));
 		for (String anImport : parentBoxes)
@@ -37,6 +37,11 @@ public class FrameCreator {
 		for (Node node : nodes)
 			add(node, frame);
 		return frame;
+	}
+
+	private String getFileName(List<Node> nodes) {
+		String file = nodes.get(0).getFile();
+		return file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf("."));
 	}
 
 	private void add(final Node node, Frame frame) {

@@ -24,6 +24,7 @@ public class CompilerConfiguration {
 	private boolean system;
 	private long buildNumber;
 	private File metricsDirectory;
+	private File resourcesDirectory;
 
 
 	public CompilerConfiguration() {
@@ -115,6 +116,13 @@ public class CompilerConfiguration {
 		this.project = project;
 	}
 
+	public File getResourcesDirectory() {
+		return resourcesDirectory;
+	}
+
+	public void setResourcesDirectory(File resourcesDirectory) {
+		this.resourcesDirectory = resourcesDirectory;
+	}
 
 	public void cleanTemp() {
 		cleanTemp(tempDirectory);

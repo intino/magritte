@@ -50,8 +50,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return path.endsWith("." + TARA_EXTENSION);
 	}
 
-	private static JpsSdk<JpsDummyElement> getMagritteJdk(ModuleChunk chunk) {
-		return chunk.getModules().iterator().next().getSdk(JpsJavaSdkType.INSTANCE);
+	private static JpsSdk<JpsDummyElement> getMagritteJdk(Set<JpsModule> modules) {
+		return modules.iterator().next().getSdk(JpsJavaSdkType.INSTANCE);
 	}
 
 	@Override
@@ -78,12 +78,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
 			final boolean isSystem = isSystem(getModuleConfigurationFile(chunk.getModules().iterator().next()));
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
-			Map<ModuleBuildTarget, String> generationOutputs = javaGeneration ? getStubGenerationOutputs(chunk, context) : finalOutputs;
-			String compilerOutput = generationOutputs.get(chunk.representativeTarget()); //TODO replacement to getOutDir
-			String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
-			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), getOutDir(chunk.getModules()),
-				isSystem, context.getCompilationStartStamp(), toCompilePaths, finalOutput, encoding, getRulesDir(chunk.getModules()),
-				collectIconDirectories(chunk.getModules()), getMagritteJdk(chunk).getHomePath(), finalOutput);
+			List<String> paths = collectPaths(chunk, context, finalOutputs);
+			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(),
+				isSystem, toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
 			context.setDone(1);
@@ -97,6 +94,21 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		}
 	}
 
+	private List<String> collectPaths(ModuleChunk chunk, CompileContext context, Map<ModuleBuildTarget, String> finalOutputs) throws IOException {
+		Set<JpsModule> modules = chunk.getModules();
+		Map<ModuleBuildTarget, String> generationOutputs = javaGeneration ? getStubGenerationOutputs(chunk, context) : finalOutputs;
+		String compilerOutput = generationOutputs.get(chunk.representativeTarget()); //TODO replace getOutDir for it
+		String finalOutput = FileUtil.toSystemDependentName(finalOutputs.get(chunk.representativeTarget()));
+		List<String> list = new ArrayList<>();
+		list.add(getOutDir(chunk.getModules()));
+		list.add(finalOutput);
+		list.add(getMagritteJdk(modules).getHomePath());
+		list.add(getRulesDir(modules));
+		list.add(finalOutput);//metrics path
+		list.add(getResourcesFile(modules.iterator().next()).getPath());
+		return list;
+	}
+
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {
 		for (CompilerMessage message : handler.getCompilerMessages(chunk.getName()))
 			context.processMessage(message);
@@ -105,7 +117,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private String[] collectIconDirectories(Set<JpsModule> jpsModules) {
 		ArrayList<String> iconDirectories = new ArrayList<>();
 		for (JpsModule module : jpsModules) {
-			File res = new File(module.getSourceRoots().get(0).getFile().getParentFile(), RES);
+			File res = getResourcesFile(module);
 			if (res.exists()) {
 				File icons = new File(res, ICONS);
 				if (icons.exists()) iconDirectories.add(icons.getAbsolutePath());
@@ -114,10 +126,13 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return iconDirectories.toArray(new String[iconDirectories.size()]);
 	}
 
+	private File getResourcesFile(JpsModule module) {
+		return new File(module.getSourceRoots().get(0).getFile().getParentFile(), RES);
+	}
+
 	public String getRulesDir(Set<JpsModule> jpsModules) {
 		for (JpsModule module : jpsModules) {
-			File moduleFile = module.getSourceRoots().get(0).getFile().getParentFile();
-			File res = new File(moduleFile, RES);
+			File res = getResourcesFile(module);
 			if (res.exists()) {
 				File file = new File(res, "itrules");
 				if (file.exists()) return file.getAbsolutePath();
