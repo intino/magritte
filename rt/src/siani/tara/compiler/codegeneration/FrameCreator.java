@@ -3,8 +3,10 @@ package siani.tara.compiler.codegeneration;
 import org.siani.itrules.Frame;
 import siani.tara.lang.*;
 
-import java.io.File;
 import java.util.*;
+
+import static siani.tara.compiler.codegeneration.InflectorProvider.getInflector;
+import static siani.tara.compiler.codegeneration.NameFormatter.*;
 
 public class FrameCreator {
 
@@ -19,35 +21,27 @@ public class FrameCreator {
 	public Frame createNodeFrame(Node node) {
 		this.initNode = node;
 		final Frame frame = new Frame("Morph");
-		if (!PathFormatter.composeMorphPackagePath(node.getQualifiedName()).isEmpty())
-			frame.addSlot("package", PathFormatter.composeMorphPackagePath(node.getQualifiedName()));
+		if (!composeMorphPackagePath(node.getQualifiedName()).isEmpty())
+			frame.addFrame("package", composeMorphPackagePath(node.getQualifiedName()));
 		add(node, frame);
 		initNode = null;
 		return frame;
 	}
 
-	public Frame createBoxFrame(List<Node> nodes, Collection<String> parentBoxes, long buildNumber) {
+	public Frame createBoxFrame(List<Node> nodes, Collection<String> parentBoxes) {
 		Frame frame = new Frame("Box");
-		String box = "nodes.get(0).getBox().substring(0, nodes.get(0).getBox().lastIndexOf(SEPARATOR))";//TODO
-		frame.addSlot("name", getFileName(nodes)).addSlot("box", box).addSlot("buildNumber", buildNumber);
-		if (!PathFormatter.composeMorphPackagePath(box).isEmpty())
-			frame.addSlot("package", PathFormatter.composeMorphPackagePath(box));
-		for (String anImport : parentBoxes)
-			frame.addSlot("import", composePath(anImport));
+		frame.addFrame("name", buildFileName(nodes.get(0).getFile(), nodes.get(0).getModelOwner()));
+		for (String box : parentBoxes)
+			frame.addFrame("import", box);
 		for (Node node : nodes)
 			add(node, frame);
 		return frame;
 	}
 
-	private String getFileName(List<Node> nodes) {
-		String file = nodes.get(0).getFile();
-		return file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf("."));
-	}
-
 	private void add(final Node node, Frame frame) {
 		if (node.is(DeclaredNode.class)) {
 			final Frame newFrame = new Frame(getTypes(node));
-			frame.addSlot("node", newFrame);
+			frame.addFrame("node", newFrame);
 			addAnnotations(node, newFrame);
 			addNodeInfo(node, newFrame);
 			addInner(node, newFrame);
@@ -56,37 +50,50 @@ public class FrameCreator {
 		} else if (((LinkNode) node).isReference()) {
 			LinkNode linkNode = (LinkNode) node;
 			Frame newFrame = new Frame(getReferenceTypes(linkNode));
-			newFrame.addSlot("parent", linkNode.getDestinyName());
-			newFrame.addSlot("type", linkNode.getDestiny().getObject().getType());
-			frame.addSlot("reference", newFrame);
+			newFrame.addFrame("parent", linkNode.getDestinyName());
+			newFrame.addFrame("type", linkNode.getDestiny().getObject().getType());
+			frame.addFrame("reference", newFrame);
 		}
 	}
 
 	private void addAnnotations(final Node node, Frame frame) {
 		if (node.getAnnotations().length > 0 || terminal)
-			frame.addSlot("annotation", new Frame("Annotation") {{
+			frame.addFrame("annotation", new Frame("Annotation") {{
 				for (Annotation annotation : node.getAnnotations())
-					addSlot("value", annotation);
+					addFrame("value", annotation);
 				if (terminal)
-					addSlot("value", "case");
+					addFrame("value", "case");
 			}});
 	}
 
 	private void addNodeInfo(Node node, Frame newFrame) {
 		if (node != initNode)
-			newFrame.addSlot("inner", "inner");
+			newFrame.addFrame("inner", "inner");
 		if (node.getObject().getDoc() != null)
-			newFrame.addSlot("doc", node.getObject().getDoc());
+			newFrame.addFrame("doc", node.getObject().getDoc());
 		if (node.getName() != null && !node.getName().isEmpty())
-			newFrame.addSlot("name", node.getName());
+			newFrame.addFrame("name", node.getName());
 		if (node.getObject().getParent() != null)
-			newFrame.addSlot("parent", node.getObject().getParent().getName());
-		if (node.getObject().getType() != null)
-			newFrame.addSlot("nodeType", node.getObject().getType());
+			newFrame.addFrame("parent", node.getObject().getParent().getName());
+		if (node.getObject().getType() != null) {
+			Frame typeFrame = new Frame("nodeType");
+			typeFrame.addFrame("name", node.getObject().getType());
+			addFacetTargets(node, typeFrame);
+			newFrame.addFrame("nodeType", typeFrame);
+
+		}
 		addVariables(node, newFrame);
 		addTargets(node, newFrame);
 		addFacets(node, newFrame);
 
+	}
+
+	private void addFacetTargets(Node node, Frame typeFrame) {
+		if (node.getObject().getFacetTargets().isEmpty()) return;
+		typeFrame.addFrame("target", "millener.extensions." + camelCase(node.getName()));
+		for (FacetTarget target : node.getObject().getFacetTargets())
+			typeFrame.addFrame("target", "millener.extensions." +
+				getInflector(Locale.ENGLISH).plural(node.getName()).toLowerCase() + "." + camelCase(target.getDestinyName())+".class");
 	}
 
 	private void addSubs(Node node, Frame frame) {
@@ -116,18 +123,18 @@ public class FrameCreator {
 	private void addVariables(Node node, final Frame frame) {
 		for (final Variable variable : node.getObject().getVariables()) {
 			Frame varFrame = new Frame(getTypes(variable)) {{
-				addSlot("name", variable.getName());
-				addSlot("type", variable.getType().equals("Natural") ? "Integer" : variable.getType());
+				addFrame("name", variable.getName());
+				addFrame("type", variable.getType().equals("Natural") ? "Integer" : variable.getType());
 				if (variable instanceof Word)
-					addSlot("words", ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));
+					addFrame("words", ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));
 			}};
-			frame.addSlot("variable", varFrame);
+			frame.addFrame("variable", varFrame);
 			if (variable.getValues() != null && variable.getValues().length > 0) {
 				addVariableValue(varFrame, variable);
 			} else if (terminal)
-				frame.addSlot("variable", new Frame(getTypes(variable)) {{
-					addSlot("name", variable.getName());
-					addSlot("variableValue", variable.getDefaultValues()[0]);
+				frame.addFrame("variable", new Frame(getTypes(variable)) {{
+					addFrame("name", variable.getName());
+					addFrame("variableValue", variable.getDefaultValues()[0]);
 				}});
 		}
 	}
@@ -136,31 +143,31 @@ public class FrameCreator {
 		if (variable instanceof Word) {
 			Word word = (Word) variable;
 			for (Object value : word.values)
-				frame.addSlot("variableValue", word.indexOf(value.toString()));
+				frame.addFrame("variableValue", word.indexOf(value.toString()));
 		} else {
 			final Object value = variable.getType().equals(Primitives.STRING) ? "\"" + variable.getValues()[0].toString() + "\"" :
 				variable.getValues()[0];
 			Frame innerFrame = new Frame(variable.getType()) {{
 				if (value instanceof Date)
-					addSlot("value", ((Date) value).getTime());
+					addFrame("value", ((Date) value).getTime());
 				else
-					addSlot("value", value);
+					addFrame("value", value);
 			}};
-			frame.addSlot("variableValue", innerFrame);
+			frame.addFrame("variableValue", innerFrame);
 		}
 	}
 
 	private void addFacets(Node node, Frame newFrame) {
 		for (final Facet facet : node.getObject().getFacets())
-			newFrame.addSlot("facets", new Frame(getTypes(facet)) {{
-				addSlot("name", facet.getName());
+			newFrame.addFrame("facets", new Frame(getTypes(facet)) {{
+				addFrame("name", facet.getName());
 			}});
 	}
 
 	private void addTargets(Node node, Frame newFrame) {
 		for (final FacetTarget target : node.getObject().getFacetTargets())
-			newFrame.addSlot("targets", new Frame(getTypes(target)) {{
-				addSlot("name", target.getDestinyName());
+			newFrame.addFrame("targets", new Frame(getTypes(target)) {{
+				addFrame("name", target.getDestinyName());
 			}});
 	}
 
@@ -202,20 +209,6 @@ public class FrameCreator {
 		return types.toArray(new String[types.size()]);
 	}
 
-	private String composePath(String box) {
-		String name = box.substring(box.lastIndexOf(SEPARATOR) + 1);
-		name = name.substring(0, 1).toUpperCase() + name.substring(1);
-		String[] parts = name.split(" ");
-		String camelName = "";
-		for (String part : parts)
-			camelName = camelName + properCase(part);
-
-		return box.substring(0, box.lastIndexOf(SEPARATOR)) + SEPARATOR + camelName;
-	}
-
-	private String properCase(String part) {
-		return part.substring(0, 1).toUpperCase() + part.substring(1).toLowerCase();
-	}
 
 	public String[] getReferenceTypes(LinkNode node) {
 		List<String> types = new ArrayList<>();

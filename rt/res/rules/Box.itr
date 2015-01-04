@@ -2,17 +2,17 @@ defrule type(Box)
 package magritte.editors;
 
 import magritte.Model;
-import magritte.types.TimeInstant;
+import magritte.boxes.Box;
 
 import static magritte.Annotation.*;
 
-public class $name+camelCase~Box extends Box {
+public class $name extends Box {
 
-    public static void define(Model model) {
-        new $name+camelCase~Box(model);
+    public static void load(Model model) {
+        new $name(model).load();
     }
 
-    private $name+camelCase~Box(Model model) {
+    private $name(Model model) {
         super(model);
     }
 
@@ -38,17 +38,16 @@ defrule type(Node) trigger(node)
     $parent\
     $variable+set...[$NL]\
     $reference\
-
     $node...[$NL]\
 end();
 endrule
 
 defrule trigger(import)
-$value~Box.define(store());
+$value.load(model());
 endrule
 
-defrule trigger(nodeType)
-type("$value");
+defrule type(nodeType) trigger(nodeType)
+type("$name"[,$NL$target...[,$NL]]);
 endrule
 
 defrule trigger(parent)

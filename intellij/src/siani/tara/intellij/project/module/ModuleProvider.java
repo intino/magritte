@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile;
 public class ModuleProvider {
 
 	public static com.intellij.openapi.module.Module getModuleOfFile(PsiFile file) {
+		if(file == null) return null;
 		return ProjectRootManager.getInstance(file.getProject()).getFileIndex().getModuleForFile(file.getVirtualFile());
 	}
 

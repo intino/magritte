@@ -5,6 +5,7 @@ import org.siani.itrules.Formatter;
 import org.siani.itrules.RuleEngine;
 import org.siani.itrules.TemplateReader;
 import siani.tara.compiler.codegeneration.FrameCreator;
+import siani.tara.compiler.codegeneration.NameFormatter;
 import siani.tara.compiler.codegeneration.ResourceManager;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
@@ -19,7 +20,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static siani.tara.compiler.codegeneration.PathFormatter.*;
+import static siani.tara.compiler.codegeneration.NameFormatter.*;
 import static siani.tara.lang.Annotation.TERMINAL;
 
 public class ModelToJavaOperation extends ModelOperation {
@@ -48,11 +49,25 @@ public class ModelToJavaOperation extends ModelOperation {
 		try {
 			writeDocuments(getBoxPath(File.separator), createBoxes(groupByBox));
 			if (!model.isTerminal())
-				writeDocuments(getMorphPath(File.separator), createMorphs());
+				writeDocuments(getMorphPath(compilationUnit.getConfiguration().getProject(),File.separator), createMorphs());
 		} catch (TaraException e) {
 			LOG.severe("Error during java model generation: " + e.getMessage());
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
+	}
+
+	private Map<String, Document> createBoxes(List<List<Node>> groupByBox) throws TaraException {
+		File file = new File(rulesFolder, BOX_ITR);
+		InputStream stream;
+		if (!file.exists()) {
+			LOG.log(Level.INFO, "User Box.itr rules file not found. Trying use default");
+			stream = getRulesFromResources(BOX_ITR);
+		} else stream = getRulesInput(file);
+		if (stream == null) {
+			LOG.log(Level.SEVERE, "Box.itr rules file not found.");
+			throw new TaraException("Box.itr rules file not found.");
+		}
+		return processBoxes(groupByBox, stream);
 	}
 
 	private Map<String, Document> createMorphs() throws TaraException {
@@ -100,23 +115,9 @@ public class ModelToJavaOperation extends ModelOperation {
 			public Object format(Object value) {
 				String val = value.toString();
 				if (!val.contains(".")) return val.substring(0, 1).toUpperCase() + val.substring(1);
-				return getMorphPath(".") + "." + buildMorphPath(val);
+				return getMorphPath(compilationUnit.getConfiguration().getProject(),".") + "." + buildMorphPath(val);
 			}
 		});
-	}
-
-	private Map<String, Document> createBoxes(List<List<Node>> groupByBox) throws TaraException {
-		File file = new File(rulesFolder, BOX_ITR);
-		InputStream stream;
-		if (!file.exists()) {
-			LOG.log(Level.INFO, "User Box.itr rules file not found. Trying use default");
-			stream = getRulesFromResources(BOX_ITR);
-		} else stream = getRulesInput(file);
-		if (stream == null) {
-			LOG.log(Level.SEVERE, "Box.itr rules file not found.");
-			throw new TaraException("Box.itr rules file not found.");
-		}
-		return processBoxes(groupByBox, stream);
 	}
 
 	private Map<String, Document> processBoxes(List<List<Node>> groupByBox, InputStream rulesInput) {
@@ -124,11 +125,15 @@ public class ModelToJavaOperation extends ModelOperation {
 		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
 		for (List<Node> nodes : groupByBox) {
 			Document document = new Document();
-			long buildNumber = compilationUnit.getConfiguration().getBuildNumber();
-			ruleEngine.render(creator.createBoxFrame(nodes, collectParentBoxes(nodes), buildNumber), document);
-//			map.put(composeBoxPackagePath(nodes.get(0).getBox()) + "Box", document);
+			ruleEngine.render(creator.createBoxFrame(nodes, collectParentBoxes(nodes)), document);
+			map.put(composeBoxName(nodes.get(0).getFile()), document);
 		}
 		return map;
+	}
+
+	private String composeBoxName(String file) {
+		return NameFormatter.camelCase(model.getModelName().replace(".", "_") + "_" +
+			file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(".")) + "Box", "_");
 	}
 
 	private void writeDocuments(String directory, Map<String, Document> documentMap) {
@@ -153,7 +158,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		Set<String> boxes = new HashSet<>();
 		for (Node node : nodes) {
 			if (node.getObject().is(TERMINAL) && !node.getModelOwner().equals(model.getModelName())) continue;
-			boxes.add(parent.searchNode(node.getObject().getMetaQN()).getFile());
+			boxes.add(buildFileName(parent.searchNode(node.getObject().getMetaQN()).getFile(), parent.getModelName()));
 		}
 		return boxes;
 	}

@@ -21,6 +21,16 @@ public class TaraCRunnerTest {
 	}
 
 	@Test
+	public void TestMagritteTafat2M2() {
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/Octavio/workspace/tara/rt/res_test/magritteTafatM2.txt"});
+	}
+
+	@Test
+	public void TestMagritteTafat2M1() {
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/Octavio/workspace/tara/rt/res_test/magritteTafatM1.txt"});
+	}
+
+	@Test
 	public void TestTafat2M1() {
 		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/tafat2M1.txt"});
 	}
