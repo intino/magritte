@@ -1,40 +1,30 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")import tara.Metric;#end
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")import magritte.Metric;#end
 
 public enum ${NAME} implements Metric {
 
 	//Add the metrics here ${MEASURE}
 	;
 
-	private final Converter converter;
-	private final String label;
-
-	${NAME}(Converter converter) {
-	this(null, converter);
-	}
-
-	${NAME}(final double factor){
-		this(new Metric.Converter(){
-			@Override
-			public double convert(double value){
-				return value*factor;
-			}
-		});
-	}
-
-	${NAME}(Converter converter, String label) {
-		this.converter = converter;
-		this.label = label;
-	}
+	@Override
+	public double value(double value) {
+		return converters[this.ordinal()].convert(value);
+		}
 
 	@Override
 	public String toString() {
-		return label == null ? super.toString() : label;
+		return super.toString();
 	}
 
-	@Override
-	public double value(double value) {
-		return converter.convert(value);
+	private static final Converter[] converters = { };
+
+	private static Converter factor(final double factor) {
+		return new Converter() {
+			@Override
+			public double convert(double value) {
+				return value*factor;
+				}
+			};
+		}
 	}
-}

@@ -7,7 +7,7 @@ public class TaraCRunnerTest {
 
 	@Test
 	public void TestMagritteM2() {
-		TaracRunner.main(new String[]{"--gen-plugin", "/Users/octavio/workspace/tara/rt/res_test/magritteM2.txt"});
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/magritteM2.txt"});
 	}
 
 	@Test
@@ -17,17 +17,17 @@ public class TaraCRunnerTest {
 
 	@Test
 	public void TestTafat2M2() {
-		TaracRunner.main(new String[]{"--gen-plugin", "/Users/octavio/workspace/tara/rt/res_test/tafat2M2.txt"});
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/tafat2M2.txt"});
 	}
 
 	@Test
 	public void TestMagritteTafat2M2() {
-		TaracRunner.main(new String[]{"--gen-plugin", "/Users/Octavio/workspace/tara/rt/res_test/magritteTafatM2.txt"});
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/magritteTafatM2.txt"});
 	}
 
 	@Test
 	public void TestMagritteTafat2M1() {
-		TaracRunner.main(new String[]{"--gen-plugin", "/Users/Octavio/workspace/tara/rt/res_test/magritteTafatM1.txt"});
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/magritteTafatM1.txt"});
 	}
 
 	@Test

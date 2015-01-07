@@ -2,12 +2,10 @@ defrule type(Morph)
 package magritte.morphs[.$package+lowercase];
 
 [import $import...[;$NL]]\
-import magritte.Node;
 import magritte.Set;
-import magritte.helpers.Enumerate;
-import magritte.morphs.Morph;
-import magritte.primitives.*;
+import magritte.types.Enumerate;
 import java.util.Date;
+import magritte.wrappers.Morph;
 
 $node
 endrule
@@ -48,7 +46,7 @@ endrule
 
 defrule type(Variable) !type(Word) trigger(getter)
 public $type+reference get$name+camelCase() {
-    return get("$name", $type+reference.class);
+    return get("$name");
 }
 
 endrule
@@ -61,8 +59,8 @@ public void set$name+camelCase($type+reference value) {
 endrule
 
 defrule type(Variable) !type(Word) type(List) trigger(setter)
-public void set$name+camelCase($type+camelCase) {
-    set("$name", $type+camelCase.class);
+public void set$name+camelCase($type+camelCase $name+camelCase) {
+    set("$name", $type+camelCase);
 }
 
 endrule
@@ -70,26 +68,11 @@ endrule
 defrule type(declarednode) trigger(node)
 public [$inner ]class $name+camelCase extends Morph {
 
-	public $name+camelCase(Node node) {
-        super(node);
-    }
-
 	$variable+wordInstantiation...[$NL]\
     $variable+getter...[$NL]\
 
     $variable+setter...[$NL]\
 
-    public class $name+camelCase~Definition extends Definition {
-
-        public $name+camelCase~Definition(Node node) {
-            super(node);
-        }
-
-        @Override
-        public Node produce(Node target) {
-            return super.produce(target);
-        }
-    }
     $node...[$NL]\
 
 }

@@ -49,7 +49,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		try {
 			writeDocuments(getBoxPath(File.separator), createBoxes(groupByBox));
 			if (!model.isTerminal())
-				writeDocuments(getMorphPath(compilationUnit.getConfiguration().getProject(),File.separator), createMorphs());
+				writeDocuments(getMorphPath(File.separator), createMorphs());
 		} catch (TaraException e) {
 			LOG.severe("Error during java model generation: " + e.getMessage());
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
@@ -104,7 +104,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		for (Node node : nodes) {
 			Document document = new Document();
 			ruleEngine.render(creator.createNodeFrame(node), document);
-			map.put(buildMorphPath(node.getQualifiedName()), document);
+			map.put(node.getName(), document);
 		}
 		return map;
 	}
@@ -115,7 +115,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			public Object format(Object value) {
 				String val = value.toString();
 				if (!val.contains(".")) return val.substring(0, 1).toUpperCase() + val.substring(1);
-				return getMorphPath(compilationUnit.getConfiguration().getProject(),".") + "." + buildMorphPath(val);
+				return getMorphPath(".") + "." + buildMorphPath(val);
 			}
 		});
 	}

@@ -103,7 +103,7 @@ PLUS                = "+"
 AMPERSAND           = "&"
 
 WORD_KEY            = "word"
-RESOURCE_KEY        = "resource"
+RESOURCE_KEY        = "file"
 INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
 DOUBLE_TYPE         = "double"

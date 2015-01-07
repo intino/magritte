@@ -35,7 +35,7 @@ concept ::= signature annotationsAndFacets? body? {
 	implements='siani.tara.intellij.lang.psi.Concept'
 }
 //simplify
-signature::= subConcept | metaIdentifier parameters? (identifier parent?)? address? {
+signature::= (subConcept | metaIdentifier parameters? identifier? parent?) address? {
 	pin = 1
 	mixin= 'siani.tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='siani.tara.intellij.lang.psi.Signature'
@@ -44,7 +44,7 @@ signature::= subConcept | metaIdentifier parameters? (identifier parent?)? addre
 address::= ADDRESS_VALUE
 {pin = 1}
 
-private subConcept ::= SUB identifier
+private subConcept ::= SUB parameters? identifier
 {pin = 1}
 
 private parent ::= EXTENDS identifierReference
@@ -113,11 +113,11 @@ variableType::= naturalAttribute | integerAttribute | ratioAttribute | measureAt
 
 naturalAttribute     ::= NATURAL_TYPE doubleMeasure? LIST? IDENTIFIER_KEY (EQUALS naturalValue+ measureValue?)?      {pin=1}
 integerAttribute     ::= INT_TYPE     doubleMeasure? LIST? IDENTIFIER_KEY (EQUALS integerValue+ measureValue?)?      {pin=1}
-resource             ::= RESOURCE_KEY attributeType IDENTIFIER_KEY                      {pin=1}
-booleanAttribute     ::= BOOLEAN_TYPE LIST? IDENTIFIER_KEY (EQUALS booleanValue+)?      {pin=1}
-stringAttribute      ::= STRING_TYPE  LIST? IDENTIFIER_KEY (EQUALS stringValue+ )?      {pin=1}
-dateAttribute        ::= DATE_TYPE    LIST? IDENTIFIER_KEY (EQUALS dateValue+)?         {pin=1}
-ratioAttribute       ::= RATIO_TYPE   LIST? IDENTIFIER_KEY (EQUALS doubleValue+)?       {pin=1}
+resource             ::= RESOURCE_KEY attributeType IDENTIFIER_KEY (EQUALS stringValue)? {pin=1}
+booleanAttribute     ::= BOOLEAN_TYPE LIST? IDENTIFIER_KEY (EQUALS booleanValue+)?       {pin=1}
+stringAttribute      ::= STRING_TYPE  LIST? IDENTIFIER_KEY (EQUALS stringValue+ )?       {pin=1}
+dateAttribute        ::= DATE_TYPE    LIST? IDENTIFIER_KEY (EQUALS dateValue+)?          {pin=1}
+ratioAttribute       ::= RATIO_TYPE   LIST? IDENTIFIER_KEY (EQUALS doubleValue+)?        {pin=1}
 
 doubleAttribute      ::= DOUBLE_TYPE  (LIST | count)? doubleMeasure? IDENTIFIER_KEY (EQUALS doubleValue+ measureValue?)?    {pin=1}
 measureAttribute     ::= MEASURE_TYPE_KEY attributeType (LIST | count)? IDENTIFIER_KEY (EQUALS doubleValue+  measureValue?)?   {pin=1}

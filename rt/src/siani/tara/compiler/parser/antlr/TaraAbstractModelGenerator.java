@@ -270,7 +270,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterResource(@NotNull ResourceContext ctx) {
-		Resource variable = new Resource(ctx.attributeType().getText(), ctx.IDENTIFIER().getText());
+		Resource variable = new Resource(ctx.attributeType().measureType().getText(), ctx.IDENTIFIER().getText());
 		addAttribute(ctx, variable);
 	}
 

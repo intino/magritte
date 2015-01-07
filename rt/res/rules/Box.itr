@@ -2,7 +2,6 @@ defrule type(Box)
 package magritte.editors;
 
 import magritte.Model;
-import magritte.boxes.Box;
 
 import static magritte.Annotation.*;
 

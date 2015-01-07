@@ -1,5 +1,7 @@
 package siani.tara.intellij.annotator.semanticAnalizers;
 
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.lang.psi.*;
@@ -7,9 +9,12 @@ import siani.tara.intellij.lang.psi.impl.TaraParameterValueImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.lang.psi.resolve.TaraInternalReferenceSolver;
+import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.*;
 import siani.tara.lang.Variable;
+import siani.tara.lang.Word;
 
+import java.io.File;
 import java.util.List;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
@@ -75,13 +80,15 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		}
 		if (parameter.getValue() == null)
 			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
-		else if (variable instanceof siani.tara.lang.Word) {
-			if (!isCorrectWord((siani.tara.lang.Word) variable, parameter.getValue().getText()))
+		else if (variable instanceof Resource)
+			analyzeAsResource(variable);
+		else if (variable instanceof Word) {
+			if (!isCorrectWord((Word) variable, parameter.getValue().getText()))
 				results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
 		} else if (variable instanceof Reference) {
 			if (parameter.getParameterValue() != null)
 				checkReferences(parameter.getParameterValue().getChildren(), (Reference) variable);
-		} else if (!areSameType(variable, parameter) || (parameter.isList() && !variable.isList()) || checkAsTuple(parameter.getValuesLength(), variable))
+		} else if (!areCompatibleTypes(variable, parameter) || (parameter.isList() && !variable.isList()) || checkAsTuple(parameter.getValuesLength(), variable))
 			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
 		else if (variable.getType().equals(MEASURE))
 			analyzeMetric(variable, parameter);
@@ -92,12 +99,42 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		if (result != null) results.put(parameter, result);
 	}
 
+	private void analyzeAsResource(Variable variable) {
+		List<TaraStringValue> values = parameter.getValue().getStringValueList();
+		for (TaraStringValue value : values) {
+			if (!existResource(value.getText()))
+				results.put(parameter, new AnnotateAndFix(ERROR, "Resource not found"));
+			else if (!sameType(value.getText().replace("\"", ""), variable.getType()))
+				results.put(parameter, new AnnotateAndFix(ERROR, "Incompatible types. Found " +
+					value.getText().substring(value.getText().lastIndexOf(".")) + ". " + variable.getType() + " expected"));
+		}
+	}
+
+	private boolean existResource(String destiny) {
+		return findResource(destiny.replace("\"", "")) != null;
+	}
+
+	private File findResource(String destiny) {
+		VirtualFile[] parent = ModuleRootManager.getInstance(ModuleProvider.getModuleOfFile(parameter.getContainingFile())).getSourceRoots();
+		for (VirtualFile virtualFile : parent) {
+			File file = new File(virtualFile.getPath(), destiny);
+			if (file.exists()) return file;
+		}
+		return null;
+	}
+
+	private boolean sameType(String destiny, String type) {
+		return type.equals(Resource.ANY) || destiny.substring(destiny.lastIndexOf(".") + 1).equals(type);
+	}
+
 	private void processImplicit(Variable variable) {
 		TaraImplicitParameter parameter = (TaraImplicitParameter) this.parameter;
 		if (parameter.getValue().getFirstChild() instanceof TaraMetaWord || parameter.getValue().getFirstChild() instanceof TaraIdentifierReference)
 			processAsWordOrReference(parameter.getValue(), variable);
-		else if (!areSameType(variable, parameter) || (parameter.isList() && !variable.isList()))
-			results.put(parameter, new AnnotateAndFix(ERROR, "Incorrect type. Expected " + variable.getType() + " " + variable.getName()));
+		else if (!areCompatibleTypes(variable, parameter) || (parameter.isList() && !variable.isList()))
+			results.put(parameter, new AnnotateAndFix(ERROR, "Incorrect type. Expected " + variable.getType()));
+		if (variable instanceof Resource)
+			analyzeAsResource(variable);
 	}
 
 	private boolean checkAsTuple(int parametersLength, Variable variable) {
@@ -117,10 +154,9 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		return null;
 	}
 
-
 	private void processAsWordOrReference(PsiElement parameterValue, Variable variable) {
-		if (variable instanceof siani.tara.lang.Word) {
-			if (!isCorrectWord(((siani.tara.lang.Word) variable), parameterValue.getFirstChild().getText()))
+		if (variable instanceof Word) {
+			if (!isCorrectWord(((Word) variable), parameterValue.getFirstChild().getText()))
 				results.put(parameterValue, new AnnotateAndFix(ERROR, "Parameter type error. Expected " + variable.getType()));
 		} else if (variable instanceof Reference)
 			checkReferences(parameterValue.getChildren(), (Reference) variable);
@@ -128,7 +164,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 			results.put(parameterValue, new AnnotateAndFix(ERROR, "Parameter type error. Expected " + variable.getType()));
 	}
 
-	private boolean isCorrectWord(siani.tara.lang.Word word, String value) {
+	private boolean isCorrectWord(Word word, String value) {
 		return word.contains(value);
 	}
 
@@ -200,8 +236,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		return false;
 	}
 
-	private boolean areSameType(Variable variable, Parameter parameter) {
-		if (!Attribute.class.isInstance(variable)) return false;
+	private boolean areCompatibleTypes(Variable variable, Parameter parameter) {
 		String varType = variable.getType();
 		if (parameter.getValue() == null) return false;
 		String parameterType = parameter.getValue().getClass().getSimpleName();
@@ -211,7 +246,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		else type = Types.valueOf(parameterType);
 		switch (type) {
 			case TaraStringValueImpl:
-				return varType.equals(STRING) || varType.equals(RESOURCE);
+				return varType.equals(STRING) || variable instanceof Resource;
 			case TaraBooleanValueImpl:
 				return varType.equals(BOOLEAN);
 			case TaraNaturalValueImpl:

@@ -39,7 +39,7 @@ public class Model {
 	}
 
 	public boolean add(Node node) {
-		return nodeTree.add(node);
+		return nodeTree.add(node) && add(node.getName(), node);
 	}
 
 	public void putAllIdentifiers(Set<String> set) {
@@ -142,11 +142,11 @@ public class Model {
 	}
 
 	private String getFacetName(String inFacet) {
-		return inFacet.substring(inFacet.lastIndexOf("$")+1);
+		return inFacet.contains("$") ? inFacet.substring(inFacet.lastIndexOf("$") + 1) : inFacet;
 	}
 
 	private String getContext(String inFacet) {
-		return inFacet.substring(0,inFacet.lastIndexOf("$"));
+		return inFacet.contains("$") ? inFacet.substring(0, inFacet.lastIndexOf("$")) : "";
 	}
 
 	private boolean searchInFacet(String inFacet) {

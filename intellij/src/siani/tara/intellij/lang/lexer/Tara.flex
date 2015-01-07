@@ -137,7 +137,7 @@ SEMICOLON           = ";"+
 AMPERSAND           = "&"
 
 WORD_TYPE           = "word"
-RESOURCE_TYPE       = "resource"
+RESOURCE_TYPE       = "file"
 INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
 DOUBLE_TYPE         = "double"

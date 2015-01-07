@@ -25,7 +25,7 @@ public class FacetTargetAnalyzer extends TaraAnalyzer {
 		if (metaConcept == null) return;
 		if (parent != null && !parent.isSub() && !parent.isFacet() && !metaConcept.getObject().is(Annotation.META_FACET))
 			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.in.nofacet.concept")));
-		if (TaraPsiImplUtil.getContextOf(target) instanceof TaraFacetTarget)
+		else if (TaraPsiImplUtil.getContextOf(target) instanceof TaraFacetTarget)
 			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.not.allowed")));
 	}
 }

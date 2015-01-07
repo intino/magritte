@@ -30,8 +30,7 @@ public abstract class ModelObject {
 
 	public void setParentObject(NodeObject parentObject) {
 		this.parentObject = parentObject;
-		if (parentObject != null)
-			parentName = parentObject.getName();
+		if (parentObject != null) parentName = parentObject.getDeclaredNodeQN();
 	}
 
 	public String getType() {

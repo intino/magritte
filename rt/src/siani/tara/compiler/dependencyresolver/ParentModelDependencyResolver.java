@@ -22,7 +22,7 @@ public class ParentModelDependencyResolver {
 	public void resolve() {
 		addTerminalNodes(parent.getTerminalNodes());
 		setValuesToNodes();
-		addAnnotationsTonInstances();
+		 addAnnotationsTonInstances();
 	}
 
 	private void addAnnotationsTonInstances() {
@@ -96,9 +96,18 @@ public class ParentModelDependencyResolver {
 	private void addTerminalNodes(Map<String, Node> terminals) {
 		for (Node terminal : terminals.values()) {
 			if (terminal.getObject().is(FACET)) resolveTargets(terminal);
-			model.add(terminal.getQualifiedName(), terminal);
-			model.addIdentifier(terminal.getName());
+			model.add(terminal);
+			addIdentifiers(terminal);
+
 		}
+	}
+
+	private void addIdentifiers(Node terminal) {
+		model.addIdentifier(terminal.getName());
+		for (Node node : terminal.getInnerNodes())
+			if (node.is(DeclaredNode.class)) addIdentifiers(node);
+		for (Node node : terminal.getSubConcepts())
+			addIdentifiers(node);
 	}
 
 	private void resolveTargets(Node terminal) {

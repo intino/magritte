@@ -2,16 +2,17 @@ package siani.tara.lang;
 
 public class Resource extends Variable {
 
-	public final String node;
+	public static final String ANY = "any";
+	public final String fileType;
 
-	public Resource(String node, String name) {
-		this.node = node;
+	public Resource(String fileType, String name) {
+		this.fileType = fileType;
 		this.name = name;
 	}
 
 	@Override
 	public String getType() {
-		return node;
+		return fileType;
 	}
 
 	@Override
@@ -22,12 +23,12 @@ public class Resource extends Variable {
 	@Override
 
 	public String toString() {
-		return "Resource:" + node + " " + name;
+		return "Resource:" + fileType + " " + name;
 	}
 
 	@Override
 	public Variable clone() {
-		Resource resource = new Resource(node, name);
+		Resource resource = new Resource(fileType, name);
 		for (Annotation annotation : annotations) resource.add(annotation);
 		resource.setDefaultValues(getDefaultValues());
 		if (values != null)

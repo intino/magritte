@@ -116,7 +116,7 @@ public class ModelLoader {
 				variable = new Word(name);
 				for (JsonElement jsonElement : array) ((Word) variable).add(jsonElement.getAsString());
 			} else
-				variable = new Resource(json.getAsJsonObject().get("resourceType").getAsString(), name);
+				variable = new Resource(json.getAsJsonObject().get("fileType").getAsString(), name);
 			if (json.getAsJsonObject().get("annotations") != null &&
 				(array = json.getAsJsonObject().get("annotations").getAsJsonArray()) != null && array.isJsonArray())
 				for (JsonElement jsonElement : array)

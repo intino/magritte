@@ -28,4 +28,10 @@ public class TaraResourceImpl extends ASTWrapperPsiElement implements TaraResour
     return findChildByClass(TaraAttributeType.class);
   }
 
+  @Override
+  @Nullable
+  public TaraStringValue getStringValue() {
+    return findChildByClass(TaraStringValue.class);
+  }
+
 }

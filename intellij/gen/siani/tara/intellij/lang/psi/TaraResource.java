@@ -10,4 +10,7 @@ public interface TaraResource extends TaraPsiElement {
   @Nullable
   TaraAttributeType getAttributeType();
 
+  @Nullable
+  TaraStringValue getStringValue();
+
 }

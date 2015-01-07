@@ -9,7 +9,7 @@ public enum Annotation {
 	META_NAMED("+named"), META_COMPONENT("+component"), META_SINGLE("+single"), META_REQUIRED("+required"),
 	META_PROPERTY("+property"), META_FACET("+facet"), META_INTENTION("+intention"), META_LOCAL("+local"),
 	META_ADDRESSED("+addressed"), META_AGGREGATED("+aggregated"), META_COMPOSED("+composed"), META_MULTIPLE("+composed"),
-	META_ROOT("+root"), META_READONLY("readonly");
+	META_ROOT("+root"), META_READONLY("readonly"), META_TERMINAL("+terminal");
 
 	private String name;
 

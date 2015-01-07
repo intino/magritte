@@ -60,7 +60,7 @@ public class FrameCreator {
 		if (node.getAnnotations().length > 0 || terminal)
 			frame.addFrame("annotation", new Frame("Annotation") {{
 				for (Annotation annotation : node.getAnnotations())
-					addFrame("value", annotation);
+					if (!annotation.isMeta()) addFrame("value", annotation);
 				if (terminal)
 					addFrame("value", "case");
 			}});
@@ -68,7 +68,7 @@ public class FrameCreator {
 
 	private void addNodeInfo(Node node, Frame newFrame) {
 		if (node != initNode)
-			newFrame.addFrame("inner", "inner");
+			newFrame.addFrame("inner", "static");
 		if (node.getObject().getDoc() != null)
 			newFrame.addFrame("doc", node.getObject().getDoc());
 		if (node.getName() != null && !node.getName().isEmpty())
@@ -93,7 +93,7 @@ public class FrameCreator {
 		typeFrame.addFrame("target", "millener.extensions." + camelCase(node.getName()));
 		for (FacetTarget target : node.getObject().getFacetTargets())
 			typeFrame.addFrame("target", "millener.extensions." +
-				getInflector(Locale.ENGLISH).plural(node.getName()).toLowerCase() + "." + camelCase(target.getDestinyName())+".class");
+				getInflector(Locale.ENGLISH).plural(node.getName()).toLowerCase() + "." + camelCase(target.getDestinyName()) + ".class");
 	}
 
 	private void addSubs(Node node, Frame frame) {

@@ -64,7 +64,7 @@ public class ModelSaver {
 				}
 			} else if (variable instanceof Resource) {
 				Resource resource = (Resource) variable;
-				object.addProperty("resourceType", resource.node);
+				object.addProperty("fileType", resource.fileType);
 			}
 			JsonArray list = new JsonArray();
 			for (Annotation value : variable.annotations)

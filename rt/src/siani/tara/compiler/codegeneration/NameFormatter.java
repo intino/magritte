@@ -48,8 +48,8 @@ public class NameFormatter {
 		return value.substring(0, 1).toUpperCase() + value.substring(1);
 	}
 
-	public static String getMorphPath(String projectName, String separator) {
-		return projectName + separator + MORPH_PATH + separator + JAVA;
+	public static String getMorphPath(String separator) {
+		return MAGRITTE_PATH + separator + MORPH_PATH;
 	}
 
 	public static String getBoxPath(String separator) {
