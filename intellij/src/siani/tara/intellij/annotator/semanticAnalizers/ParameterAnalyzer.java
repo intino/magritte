@@ -54,6 +54,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		PsiElement contextOf = TaraPsiImplUtil.getContextOf(inFacet);
 		if (contextOf instanceof TaraFacetApply)
 			return contextOf.getFirstChild().getText();
+		if (contextOf instanceof Concept) return ((Concept) contextOf).getType();
 		return null;
 	}
 
@@ -124,7 +125,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean sameType(String destiny, String type) {
-		return type.equals(Resource.ANY) || destiny.substring(destiny.lastIndexOf(".") + 1).equals(type);
+		return type.equals(Resource.ANY) || destiny.substring(destiny.lastIndexOf(".") + 1).equalsIgnoreCase(type);
 	}
 
 	private void processImplicit(Variable variable) {
@@ -133,8 +134,13 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 			processAsWordOrReference(parameter.getValue(), variable);
 		else if (!areCompatibleTypes(variable, parameter) || (parameter.isList() && !variable.isList()))
 			results.put(parameter, new AnnotateAndFix(ERROR, "Incorrect type. Expected " + variable.getType()));
-		if (variable instanceof Resource)
-			analyzeAsResource(variable);
+		else if (variable instanceof Resource) analyzeAsResource(variable);
+		else if  (mustBeMeasured((Attribute) variable) && parameter.getMeasure() == null)
+			results.put(parameter, new AnnotateAndFix(ERROR, "Measure missed. Expected " + ((Attribute) variable).getMeasureType()));
+	}
+
+	private boolean mustBeMeasured(Attribute attribute) {
+		return ((DOUBLE.equals(attribute.getType()) && attribute.getMeasureType() != null) || MEASURE.equals(attribute.getType()));
 	}
 
 	private boolean checkAsTuple(int parametersLength, Variable variable) {
@@ -144,8 +150,8 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 	}
 
 	private List<Variable> getAllowedFacet(Node node, String name, String context) {
-		FacetTarget todo = node.getObject().getAllowedFacetByContext(name, context);
-		return todo != null ? todo.getVariables() : null;
+		FacetTarget target = node.getObject().getAllowedFacetByContext(name, context);
+		return target != null ? target.getVariables() : null;
 	}
 
 	private Variable getVariableByName(List<Variable> variables, String name) {
@@ -246,17 +252,18 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		else type = Types.valueOf(parameterType);
 		switch (type) {
 			case TaraStringValueImpl:
-				return varType.equals(STRING) || variable instanceof Resource;
+				return varType.equals(STRING) || varType.equals(DATE) || variable instanceof Resource;
 			case TaraBooleanValueImpl:
 				return varType.equals(BOOLEAN);
 			case TaraNaturalValueImpl:
-				return varType.equals(NATURAL) || varType.equals(INTEGER) || varType.equals(DOUBLE) || varType.equals(MEASURE);
+				return varType.equals(NATURAL) || varType.equals(INTEGER) || varType.equals(DOUBLE) ||
+					varType.equals(MEASURE) || (varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText()));
 			case TaraIntegerValueImpl:
-				return varType.equals(INTEGER) || varType.equals(DOUBLE) || varType.equals(MEASURE);
+				return varType.equals(INTEGER) || varType.equals(DOUBLE) || varType.equals(MEASURE) ||
+					(varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText()));
 			case TaraDoubleValueImpl:
-				return varType.equals(DOUBLE) || varType.equals(MEASURE);
-			case TaraDateValueImpl:
-				return varType.equals(DATE);
+				return varType.equals(DOUBLE) || varType.equals(MEASURE) ||
+					(varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText()));
 			default:
 				return false;
 		}
@@ -272,7 +279,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 
 	enum Types {
 		TaraStringValueImpl, TaraBooleanValueImpl, TaraIntegerValueImpl, TaraDoubleValueImpl, TaraNaturalValueImpl, TaraCodeValueImpl,
-		TaraDateValueImpl, TaraCoordinateValueImpl, TaraNaturalListImpl, TaraDoubleListImpl, TaraIntegerListImpl, TaraBooleanListImpl,
+		TaraCoordinateValueImpl, TaraNaturalListImpl, TaraDoubleListImpl, TaraIntegerListImpl, TaraBooleanListImpl,
 		TaraStringListImpl, TaraDateListImpl, TaraCoordinateListImpl, TaraReferenceListImpl, TaraEmptyImpl, TaraMetaWordImpl, TaraIdentifierReferenceImpl
 	}
 }

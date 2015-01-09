@@ -29,7 +29,6 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		TaraVarInitValue varInitValue = ((TaraVarInit) this).getVarInitValue();
 		if (varInitValue == null) return "null";
 		if (!varInitValue.getBooleanValueList().isEmpty()) return BOOLEAN;
-		if (!varInitValue.getDateValueList().isEmpty()) return DATE;
 		if (!varInitValue.getDoubleValueList().isEmpty()) return DOUBLE;
 		if (!varInitValue.getIntegerValueList().isEmpty()) return INTEGER;
 		if (!varInitValue.getNaturalValueList().isEmpty()) return NATURAL;

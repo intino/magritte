@@ -498,14 +498,4 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVariable(@NotNull TaraGrammar.VariableContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#dateValue}.
-	 * @param ctx the parse tree
-	 */
-	void enterDateValue(@NotNull TaraGrammar.DateValueContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#dateValue}.
-	 * @param ctx the parse tree
-	 */
-	void exitDateValue(@NotNull TaraGrammar.DateValueContext ctx);
 }

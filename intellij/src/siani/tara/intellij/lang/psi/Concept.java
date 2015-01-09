@@ -46,6 +46,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isAggregated();
 
+	boolean isMetaAggregated();
+
 	boolean isProperty();
 
 	boolean isComponent();

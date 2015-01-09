@@ -191,6 +191,7 @@ public class TaraUtil {
 	}
 
 	public static Concept findConceptByQN(String qualifiedName, PsiFile file) {
+		if (file == null) return null;
 		List<TaraBoxFileImpl> filesOfModule = getTaraFilesOfModule(ModuleProvider.getModuleOfFile(file));
 		for (TaraBoxFileImpl taraFile : filesOfModule)
 			for (Concept concept : getRootConceptsOfFile(taraFile))

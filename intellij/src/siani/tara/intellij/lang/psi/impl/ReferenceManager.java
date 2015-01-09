@@ -142,7 +142,7 @@ public class ReferenceManager {
 	private static void addAggregated(TaraBoxFile file, Identifier identifier, Set<Concept> set, ArrayList<Concept> visited) {
 		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(file);
 		for (Concept concept : allConceptsOfFile)
-			if (isAggregated(file, concept, visited) && namesAreEqual(identifier, concept))
+			if (namesAreEqual(identifier, concept) && isAggregated(file, concept, visited))
 				set.add(concept);
 	}
 
@@ -153,7 +153,7 @@ public class ReferenceManager {
 	private static boolean isAggregated(TaraBoxFile file, Concept concept, ArrayList<Concept> visited) {
 		if (visited.contains(concept)) return false;
 		visited.add(concept);
-		if (concept.isAnnotatedAsAggregated()) return true;
+		if (concept.isAnnotatedAsAggregated() || concept.isMetaAggregated()) return true;
 		IdentifierReference parentReference = concept.getSignature().getParentReference();
 		if (parentReference == null) return false;
 		Concept[] roots = getRootConcepts(file, parentReference, visited, new HashSet<Concept>());

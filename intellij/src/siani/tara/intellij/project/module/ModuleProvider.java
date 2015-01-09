@@ -1,13 +1,13 @@
 package siani.tara.intellij.project.module;
 
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiElement;
 
 public class ModuleProvider {
 
-	public static com.intellij.openapi.module.Module getModuleOfFile(PsiFile file) {
-		if(file == null) return null;
-		return ProjectRootManager.getInstance(file.getProject()).getFileIndex().getModuleForFile(file.getVirtualFile());
+	public static com.intellij.openapi.module.Module getModuleOfFile(PsiElement element) {
+		if (element == null) return null;
+		return ProjectRootManager.getInstance(element.getProject()).getFileIndex().getModuleForFile(element.getContainingFile().getVirtualFile());
 	}
 
 }

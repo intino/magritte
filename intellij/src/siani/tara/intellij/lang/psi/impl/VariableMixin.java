@@ -74,7 +74,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		else if (type.getStringAttribute() != null)
 			list.addAll(getElementsAsString(type.getStringAttribute().getStringValueList()));
 		else if (type.getDateAttribute() != null)
-			list.addAll(getElementsAsString(type.getDateAttribute().getDateValueList()));
+			list.addAll(getElementsAsString(type.getDateAttribute().getStringValueList()));
 		else if (type.getReferenceAttribute() != null && type.getReferenceAttribute().getEmptyField() != null)
 			list.add((type).getReferenceAttribute().getEmptyField().getText());
 		return list;

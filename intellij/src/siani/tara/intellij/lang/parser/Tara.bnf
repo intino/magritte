@@ -116,7 +116,7 @@ integerAttribute     ::= INT_TYPE     doubleMeasure? LIST? IDENTIFIER_KEY (EQUAL
 resource             ::= RESOURCE_KEY attributeType IDENTIFIER_KEY (EQUALS stringValue)? {pin=1}
 booleanAttribute     ::= BOOLEAN_TYPE LIST? IDENTIFIER_KEY (EQUALS booleanValue+)?       {pin=1}
 stringAttribute      ::= STRING_TYPE  LIST? IDENTIFIER_KEY (EQUALS stringValue+ )?       {pin=1}
-dateAttribute        ::= DATE_TYPE    LIST? IDENTIFIER_KEY (EQUALS dateValue+)?          {pin=1}
+dateAttribute        ::= DATE_TYPE    LIST? IDENTIFIER_KEY (EQUALS stringValue+)?        {pin=1}
 ratioAttribute       ::= RATIO_TYPE   LIST? IDENTIFIER_KEY (EQUALS doubleValue+)?        {pin=1}
 
 doubleAttribute      ::= DOUBLE_TYPE  (LIST | count)? doubleMeasure? IDENTIFIER_KEY (EQUALS doubleValue+ measureValue?)?    {pin=1}
@@ -184,7 +184,6 @@ varInitValue ::= emptyField
                 | linkValue+
                 | stringValue+
                 | booleanValue+
-                | dateValue+
                 | naturalValue+ measureValue?
                 | integerValue+ measureValue?
                 | doubleValue+  measureValue?

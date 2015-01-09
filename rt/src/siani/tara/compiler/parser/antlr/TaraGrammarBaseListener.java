@@ -600,18 +600,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitVariable(@NotNull TaraGrammar.VariableContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterDateValue(@NotNull TaraGrammar.DateValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDateValue(@NotNull TaraGrammar.DateValueContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

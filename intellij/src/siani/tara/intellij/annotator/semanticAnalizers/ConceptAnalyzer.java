@@ -11,6 +11,7 @@ import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
+import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import static siani.tara.lang.Annotation.*;
 public class ConceptAnalyzer extends TaraAnalyzer {
 
 	private static final String FACET_PATH = "facets";
+	private static final String INTENTION_PATH = "intentions";
 	private Concept concept;
 
 	public ConceptAnalyzer(Concept concept) {
@@ -40,18 +42,19 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		if (hasErrors()) return;
 		analyzeAnnotationsConstrains();
 		Node node = getMetaConcept(concept);
-		if (node == null) return;
-		if (!hasErrors()) analyzeMetaAnnotationConstrains(node);
-		if (!hasErrors()) analyzeMetaMetaAnnotationConstrains(node);
-		if (!hasErrors()) analyzeAddressAdded(node);
-		if (!hasErrors()) analyzeConceptName(concept, TaraUtil.isTerminalBox(concept.getFile()));
-		analyzeJavaClassCreation(node, concept);
+		if (node != null) {
+			if (!hasErrors()) analyzeMetaAnnotationConstrains(node);
+			if (!hasErrors()) analyzeMetaMetaAnnotationConstrains(node);
+			if (!hasErrors()) analyzeAddressAdded(node);
+			if (!hasErrors()) analyzeConceptName(concept, TaraUtil.isTerminalBox(concept.getFile()));
+		}
+		if (!hasErrors()) analyzeJavaClassCreation(node, concept);
 	}
 
 	private void analyzeAnnotationsConstrains() {
 		if (concept.isFacet() && concept.getFacetTargets().isEmpty())
 			results.put(concept.getSignature(), addError(message("facet.target.missed")));
-		else if(concept.isSub() && !concept.getFacetTargets().isEmpty())
+		else if (concept.isSub() && !concept.getFacetTargets().isEmpty())
 			results.put(concept.getSignature(), addError(message("facets.not.allowed")));
 	}
 
@@ -64,8 +67,12 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private void analyzeConceptName(Concept concept, boolean terminal) {
-		if (concept.getName() != null && Character.isLowerCase(concept.getName().charAt(0)) && !terminal)
+		if (concept.getName() == null) return;
+		if (Character.isLowerCase(concept.getName().charAt(0)) && !terminal)
 			results.put(concept.getIdentifierNode(), new AnnotateAndFix(WARNING, "Concept should be in camelCase"));
+		Model metamodel = getMetamodel(concept);
+		if (metamodel != null && metamodel.getIdentifiers().contains(concept.getName()))
+			results.put(concept.getIdentifierNode(), new AnnotateAndFix(ERROR, "Concept name not allowed"));
 	}
 
 	private boolean isDuplicated() {
@@ -124,10 +131,15 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private void analyzeJavaClassCreation(Node node, Concept concept) {
-		if ((concept.isIntention()) && !javaClassCreated(concept))
+		if ((concept.isIntention()) && !isIntentionClassCreated(concept))
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class")));
-		if (((concept.isFacet() || node.is(META_FACET)) && node.is(INTENTION)) && !javaClassCreated(concept))
+		if (shouldHaveClass(node, concept) && !isFacetClassCreated(concept))
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.java.generated.class")));
+	}
+
+	private boolean shouldHaveClass(Node node, Concept concept) {
+		if(concept == null || node == null) return false;
+		return (concept.isFacet() || node.is(META_FACET)) && node.is(INTENTION);
 	}
 
 	private void analyzeMetaAnnotationConstrains(Node node) {
@@ -226,11 +238,11 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		return !(node.getObject().is(NAMED) && concept.getName() == null);
 	}
 
-	private boolean isIntention(Node node) {
-		return node.getObject().is(INTENTION);
+	private boolean isIntentionClassCreated(Concept concept) {
+		return ReferenceManager.resolveJavaClassReference(concept.getProject(), INTENTION_PATH + "." + concept.getName() + "Intention") != null;
 	}
 
-	private boolean javaClassCreated(Concept concept) {
-		return ReferenceManager.resolveJavaClassReference(concept.getProject(), FACET_PATH + "." + concept.getIdentifierNode()) != null;
+	private boolean isFacetClassCreated(Concept concept) {
+		return ReferenceManager.resolveJavaClassReference(concept.getProject(), concept.getName() + concept.getType()) != null;
 	}
 }

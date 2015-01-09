@@ -152,9 +152,8 @@ BOOLEAN_VALUE_KEY   = "true" | "false"
 NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
 DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOT}?
-DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
-MEASURE_VALUE_KEY   = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})+
+MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 
 DOC_LINE            = "def" ~[\n]
 PLUS                = "+"
@@ -212,7 +211,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }
 	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE_KEY; }
 	{NATURAL_VALUE_KEY}             {   return TaraTypes.NATURAL_VALUE_KEY; }
-	{DATE_VALUE_KEY}                {   return TaraTypes.DATE_VALUE_KEY; }
 
     {LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
     {RIGHT_PARENTHESIS}             {   return TaraTypes.RIGHT_PARENTHESIS; }

@@ -22,7 +22,7 @@ public class ParentModelDependencyResolver {
 	public void resolve() {
 		addTerminalNodes(parent.getTerminalNodes());
 		setValuesToNodes();
-		 addAnnotationsTonInstances();
+		addAnnotationsTonInstances();
 	}
 
 	private void addAnnotationsTonInstances() {
@@ -114,15 +114,18 @@ public class ParentModelDependencyResolver {
 		List<FacetTarget> newFacets = new ArrayList<>();
 		if (terminal.getObject().getFacetTargets().isEmpty()) return;
 		for (FacetTarget facetTarget : terminal.getObject().getFacetTargets())
-			createFacetTargets(terminal, newFacets, findInstancesOf(facetTarget.getDestinyName()));
+			createFacetTargets(terminal, newFacets, findInstancesOf(facetTarget.getDestinyName()), facetTarget);
 		terminal.getObject().getFacetTargets().clear();
 		terminal.getObject().getFacetTargets().addAll(newFacets);
 	}
 
-	private void createFacetTargets(Node facetNode, List<FacetTarget> newFacets, Collection<Node> nodes) {
+	private void createFacetTargets(Node facetNode, List<FacetTarget> newFacets, Collection<Node> nodes, FacetTarget facetTarget) {
 		for (Node node : nodes) {
 			FacetTarget target = new FacetTarget(node.getName());
 			target.setDestiny(node.getObject());
+			target.setDestinyQN(node.getQualifiedName());
+			for (Node inner : facetTarget.getInner()) target.add(inner);
+			for (Variable var : facetTarget.getVariables()) target.add(var);
 			newFacets.add(target);
 			node.getObject().addAllowedFacet(facetNode.getQualifiedName(), target);
 		}

@@ -22,7 +22,6 @@ import static siani.tara.lang.Annotation.PROPERTY;
 
 public class ConceptAnnotator extends TaraAnnotator {
 
-
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		if (!Concept.class.isInstance(element)) return;

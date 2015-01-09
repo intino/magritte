@@ -2,7 +2,6 @@ defrule type(Morph)
 package magritte.morphs[.$package+lowercase];
 
 [import $import...[;$NL]]\
-import magritte.Set;
 import magritte.types.Enumerate;
 import java.util.Date;
 import magritte.wrappers.Morph;

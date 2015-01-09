@@ -27,7 +27,6 @@ initValue : identifierReference+
 	        | naturalValue+ measureValue?
 	        | integerValue+ measureValue?
 	        | doubleValue+ measureValue?
-            | dateValue+
 	        | metaWord
 	        | linkValue
 	        | EMPTY;
@@ -50,14 +49,14 @@ wordNames        : IDENTIFIER STAR?;
 resource             : RESOURCE attributeType IDENTIFIER;
 booleanAttribute     : BOOLEAN_TYPE LIST? IDENTIFIER (EQUALS booleanValue+)?;
 stringAttribute      : STRING_TYPE  LIST? IDENTIFIER (EQUALS stringValue+)?;
-dateAttribute        : DATE_TYPE    LIST? IDENTIFIER (EQUALS dateValue+)?;
+dateAttribute        : DATE_TYPE    LIST? IDENTIFIER (EQUALS stringValue+)?;
 ratioAttribute       : RATIO_TYPE   LIST? IDENTIFIER (EQUALS doubleValue+)?;
 naturalAttribute     : NATURAL_TYPE doubleMeasure? LIST? IDENTIFIER (EQUALS naturalValue+ measureValue?)?;
 integerAttribute     : INT_TYPE     doubleMeasure? LIST? IDENTIFIER (EQUALS integerValue+ measureValue?)?;
 
 doubleAttribute      : DOUBLE_TYPE  (LIST | count)? doubleMeasure? IDENTIFIER (EQUALS doubleValue+ measureValue?)?;
 measureAttribute     : MEASURE_TYPE attributeType (LIST | count)? IDENTIFIER (EQUALS doubleValue+ measureValue?)?;
-reference   : identifierReference LIST? IDENTIFIER (EQUALS EMPTY)?;
+reference            : identifierReference LIST? IDENTIFIER (EQUALS EMPTY)?;
 
 attributeType   : COLON measureType;
 measureType     : IDENTIFIER;
@@ -67,7 +66,6 @@ booleanValue    : BOOLEAN_VALUE;
 naturalValue    : NATURAL_VALUE;
 integerValue    : NATURAL_VALUE | NEGATIVE_VALUE;
 doubleValue     : (NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE) SCIENCE_NOT?;
-dateValue       : DATE_VALUE;
 linkValue       : address | identifierReference;
 count : LEFT_SQUARE naturalValue RIGHT_SQUARE;
 measureValue : IDENTIFIER | MEASURE_VALUE;

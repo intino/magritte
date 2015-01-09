@@ -1,13 +1,8 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
-import magritte.schema.Node;
-import magritte.schema.Variable;
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")import ${PACKAGE_NAME}.${PARENT};#end
+import intentions.${TYPE}Intention;
+import magritte.morphs.${NAME};
 
+public class ${NAME}${TYPE} extends ${NAME} implements ${TYPE}Intention {
 
-public class ${NAME} extends ${PARENT} {
-
-	public${NAME}(Node node){
-		super(node);
-	}
 }

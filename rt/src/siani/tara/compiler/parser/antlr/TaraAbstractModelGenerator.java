@@ -208,7 +208,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterDateAttribute(@NotNull DateAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.DATE_TYPE().getText(), ctx.IDENTIFIER().getText());
-		if (ctx.dateValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.dateValue()));
+		if (ctx.stringValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.stringValue()));
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
@@ -225,6 +225,12 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterRatioAttribute(@NotNull RatioAttributeContext ctx) {
+		super.enterRatioAttribute(ctx);
+		Attribute variable = new Attribute(ctx.RATIO_TYPE().getText(), ctx.IDENTIFIER().getText());
+		if (ctx.doubleValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.doubleValue()));
+		variable.setMeasureValue("%");
+		variable.setList(ctx.LIST() != null);
+		addAttribute(ctx, variable);
 	}
 
 	@Override
@@ -339,10 +345,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			variable = new Attribute(STRING, name, ctx.stringValue().size() > 1);
 			for (StringValueContext context : ctx.stringValue())
 				variable.addValue(formatText(context.getText()));
-		} else if (!ctx.dateValue().isEmpty()) {
-			variable = new Attribute(DATE, name, ctx.dateValue().size() > 1);
-			for (DateValueContext context : ctx.dateValue())
-				variable.addValue(getConverter(DATE).convert(context.getText())[0]);
 		} else if (!ctx.identifierReference().isEmpty()) {
 			variable = new Reference(REFERENCE, name, ctx.identifierReference().size() > 1);
 			for (IdentifierReferenceContext context : ctx.identifierReference()) variable.addValue(context.getText());

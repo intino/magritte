@@ -230,7 +230,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return (node != null && node.getObject().is(COMPONENT));
 	}
 
-	private boolean isMetaAggregated() {
+	public boolean isMetaAggregated() {
 		Model metamodel = TaraLanguage.getMetaModel(this.getFile());
 		if (metamodel == null) return false;
 		Node node = metamodel.searchNode(this.getMetaQualifiedName());

@@ -24,8 +24,8 @@ public class TaraDateAttributeImpl extends ASTWrapperPsiElement implements TaraD
 
   @Override
   @NotNull
-  public List<TaraDateValue> getDateValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraDateValue.class);
+  public List<TaraStringValue> getStringValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraStringValue.class);
   }
 
 }

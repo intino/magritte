@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TaraDateAttribute extends TaraPsiElement {
 
   @NotNull
-  List<TaraDateValue> getDateValueList();
+  List<TaraStringValue> getStringValueList();
 
 }

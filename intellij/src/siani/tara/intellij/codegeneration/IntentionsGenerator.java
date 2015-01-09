@@ -29,7 +29,7 @@ public class IntentionsGenerator {
 	private final Project project;
 	private final TaraBoxFile taraBoxFile;
 	private final PsiDirectory srcDirectory;
-	private final PsiDirectory destiny;
+	private PsiDirectory destiny;
 	private final Module module;
 	private Map<PsiClass, PsiClass> classToContainer = new HashMap<>();
 	private Map<Concept, PsiClass> psiClasses = new HashMap<>();
@@ -39,7 +39,6 @@ public class IntentionsGenerator {
 		this.taraBoxFile = taraBoxFile;
 		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(taraBoxFile));
 		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), srcDirectory);
-		this.destiny = findDestiny();
 		this.module = ModuleProvider.getModuleOfFile(taraBoxFile);
 	}
 
@@ -72,11 +71,14 @@ public class IntentionsGenerator {
 	}
 
 	private void processFile(PsiFile psiFile) {
-		if (psiFile instanceof TaraBoxFile)
-			for (Concept intention : getIntentions(((TaraBoxFile) psiFile))) {
+		if (psiFile instanceof TaraBoxFile) {
+			Concept[] intentions = getIntentions(((TaraBoxFile) psiFile));
+			if (intentions.length > 0) this.destiny = findDestiny();
+			for (Concept intention : intentions) {
 				classToContainer.clear();
 				psiClasses.put(intention, createIntentionClass(getIntentionsPath(intention)));
 			}
+		}
 	}
 
 	private PsiClass createIntentionClass(List<Concept> concepts) {

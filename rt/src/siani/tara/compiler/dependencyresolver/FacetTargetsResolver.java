@@ -73,25 +73,15 @@ public class FacetTargetsResolver {
 	}
 
 	private void processFacetTarget(DeclaredNode facetNode) throws DependencyException {
+		propagateComponentsToFacets(facetNode);
 		for (FacetTarget facetTarget : facetNode.getObject().getFacetTargets()) {
 			List<Node> destinies = new ArrayList();
 			resolveDestiniesOfTarget(facetNode, facetTarget, destinies);
+			if (facetNode.is(Annotation.ABSTRACT)) continue;
 			addAllowedFacetsToDestinies(facetNode, destinies, facetTarget);
 		}
 		facetNode.getObject().getVariables().clear();
 	}
-
-
-//	private void processFacetTarget(DeclaredNode facetNode) throws DependencyException {
-//		for (FacetTarget facetTarget : facetNode.getObject().getFacetTargets()) {
-//			List<Node> destinies = new ArrayList();
-//			resolveDestiniesOfTarget(facetNode, facetTarget, destinies);
-//			if (facetNode.is(ABSTRACT)) continue;
-//			addAllowedFacetsToDestinies(facetNode, destinies, facetTarget);
-//		}
-//		facetNode.getObject().getVariables().clear();
-//	}
-
 
 	private void propagateComponentsToFacets(DeclaredNode node) throws DependencyException {
 		for (FacetTarget target : node.getObject().getFacetTargets()) {
@@ -115,7 +105,6 @@ public class FacetTargetsResolver {
 			reference.setType(declaredNode.getQualifiedName());
 		}
 	}
-
 
 	private void resolveDestiniesOfTarget(Node facetNode, FacetTarget facetTarget, List<Node> destinies) throws DependencyException {
 		Node node;

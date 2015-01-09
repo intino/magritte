@@ -30,12 +30,6 @@ public class TaraVarInitValueImpl extends ASTWrapperPsiElement implements TaraVa
 
   @Override
   @NotNull
-  public List<TaraDateValue> getDateValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraDateValue.class);
-  }
-
-  @Override
-  @NotNull
   public List<TaraDoubleValue> getDoubleValueList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraDoubleValue.class);
   }

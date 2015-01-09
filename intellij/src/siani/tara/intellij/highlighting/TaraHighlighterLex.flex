@@ -120,9 +120,8 @@ NOT_CIENTIFICA      = "E" ({PLUS} | {DASH})? {DIGIT}+
 DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {NOT_CIENTIFICA}?
 STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
-DATE_VALUE_KEY      = (({NATURAL_VALUE_KEY} {DASH})+ {NATURAL_VALUE_KEY}) |{NATURAL_VALUE_KEY}
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
-MEASURE_VALUE_TYPE  = ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY} | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE})*
+MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 DOC_LINE            = "def" ~[\n]
 
 DIGIT               = [:digit:]
@@ -176,7 +175,6 @@ NEWLINE             = [\n]+
 	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }
 	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE_KEY; }
 	{NATURAL_VALUE_KEY}             {   return TaraTypes.NATURAL_VALUE_KEY; }
-	{DATE_VALUE_KEY}                {   return TaraTypes.DATE_VALUE_KEY; }
 	{EMPTY_REF}                     {   return TaraTypes.EMPTY_REF; }
 
 	{LEFT_PARENTHESIS}              {   return TaraTypes.LEFT_PARENTHESIS; }
@@ -210,7 +208,7 @@ NEWLINE             = [\n]+
 
 	{IDENTIFIER_KEY}                {   return evaluateIdentifier();  }
 
-    {MEASURE_VALUE_TYPE}            {   return TaraTypes.MEASURE_VALUE; }
+    {MEASURE_VALUE_KEY}            {   return TaraTypes.MEASURE_VALUE; }
     {NEWLINE}                       {   return TokenType.WHITE_SPACE; }
 
     .                               {   return TokenType.BAD_CHARACTER; }

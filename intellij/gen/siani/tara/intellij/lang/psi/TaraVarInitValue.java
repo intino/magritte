@@ -11,9 +11,6 @@ public interface TaraVarInitValue extends TaraPsiElement {
   List<TaraBooleanValue> getBooleanValueList();
 
   @NotNull
-  List<TaraDateValue> getDateValueList();
-
-  @NotNull
   List<TaraDoubleValue> getDoubleValueList();
 
   @Nullable

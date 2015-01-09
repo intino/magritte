@@ -78,7 +78,7 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean sameType(String destiny, String type) {
-		return type.equals(Resource.ANY) || destiny.substring(destiny.lastIndexOf(".") + 1).equals(type);
+		return type.equals(Resource.ANY) || destiny.substring(destiny.lastIndexOf(".") + 1).equalsIgnoreCase(type);
 	}
 
 	private boolean areCompatibleTypes(String valueType) {
