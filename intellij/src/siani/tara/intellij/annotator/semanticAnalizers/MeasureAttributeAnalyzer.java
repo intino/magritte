@@ -2,6 +2,7 @@ package siani.tara.intellij.annotator.semanticAnalizers;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.CompilerModuleExtension;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.annotator.TaraAnnotator;
@@ -35,7 +36,7 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 				Class<?> metricValue = loadCompiledMetricClass(getModule(), measure.getMeasureType().getText());
 				if (metricValue != null) Metrics.getInstance().add(metricValue);
 				else results.put(measure.getMeasureType(),
-					new TaraAnnotator.AnnotateAndFix(WARNING, "Measure Not Found. Create or Compile it.",
+					new TaraAnnotator.AnnotateAndFix(WARNING, "Metric Not Found. Create and Compile it.",
 						new CreateMeasureClassIntention(measure.getMeasureType().getText(), metricsPackage.toLowerCase())));
 			}
 		}
@@ -43,15 +44,13 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 
 	private Class<?> loadCompiledMetricClass(@NotNull Module module, String className) {
 		VirtualFile compilerOutputPath = CompilerModuleExtension.getInstance(module).getCompilerOutputPath();
-		return loadClass(compilerOutputPath.getPath(), metricsPackage + "." + className);
+		return loadClass(compilerOutputPath.getPath(), ModuleRootManager.getInstance(module).getSdk().getHomePath(), metricsPackage + "." + className);
 	}
 
-	private Class<?> loadClass(String path, String className) {
+	private Class<?> loadClass(String path, String sdk, String className) {
 		File file = new File(path);
 		try {
-			URL url = file.toURI().toURL();
-			URL[] urls = new URL[]{url};
-			ClassLoader cl = new URLClassLoader(urls);
+			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL(), new File(sdk, "lib/tdk.jar").toURI().toURL()});
 			return cl.loadClass(className);
 		} catch (MalformedURLException | ClassNotFoundException ignored) {
 		}
@@ -62,14 +61,10 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 		return ModuleProvider.getModuleOfFile(measure.getContainingFile());
 	}
 
-	public static class Metrics {
+	private static class Metrics {
 
 		private static Metrics instance;
 		private static Map<String, Class<?>> metrics = new HashMap<>();
-
-		public interface Converter {
-			public double convert(double value);
-		}
 
 		private Metrics() {
 		}
@@ -81,10 +76,6 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 
 		public Class<?> add(Class<?> metric) {
 			return metrics.put(metric.getClass().getSimpleName(), metric);
-		}
-
-		public Class<?>[] getMetrics() {
-			return metrics.values().toArray(new Class<?>[metrics.size()]);
 		}
 
 		public Class<?> get(String measure) {

@@ -17,7 +17,7 @@ public enum ${NAME} implements Metric {
 		return super.toString();
 	}
 
-	private static final Converter[] converters = { };
+	private static final Converter[] converters = { /* Add factors here */ };
 
 	private static Converter factor(final double factor) {
 		return new Converter() {

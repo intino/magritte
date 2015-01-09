@@ -2,7 +2,6 @@ package siani.tara.intellij.codegeneration;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaDirectoryService;
-import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
 
 public class MetricClassCreator {
@@ -19,6 +18,6 @@ public class MetricClassCreator {
 
 	public void createClass() {
 		if (destiny.findFile(className + ".java") != null) return;
-		PsiClass measureClass = JavaDirectoryService.getInstance().createClass(destiny, className, "MeasureClass", false);
+		JavaDirectoryService.getInstance().createClass(destiny, className, "MetricClass", false);
 	}
 }
