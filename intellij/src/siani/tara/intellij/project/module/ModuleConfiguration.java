@@ -19,16 +19,20 @@ import java.io.*;
 
 public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable {
 
-	private final Module module;
+	private Module module;
 	Configuration configuration;
 
 	public ModuleConfiguration(Module module) {
-		this.module = module;
-		configuration = new Configuration();
+		if (TaraModuleType.isOfType(module)) {
+			this.module = module;
+			configuration = new Configuration();
+		} else module = null;
 	}
 
 	public static ModuleConfiguration getInstance(Module module) {
-		return module.getComponent(ModuleConfiguration.class);
+		if (TaraModuleType.isOfType(module))
+			return module.getComponent(ModuleConfiguration.class);
+		return null;
 	}
 
 	@State(
@@ -60,7 +64,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	}
 
 	public void moduleAdded() {
-		loadConfiguration();
+		if (TaraModuleType.isOfType(module)) loadConfiguration();
 	}
 
 	private void loadConfiguration() {
@@ -82,12 +86,14 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 
 	@Override
 	public void readExternal(Element element) throws InvalidDataException {
-		configuration.readExternal(element);
+		if (configuration != null)
+			configuration.readExternal(element);
 	}
 
 	@Override
 	public void writeExternal(Element element) throws WriteExternalException {
-		configuration.writeExternal(element);
+		if (configuration != null)
+			configuration.writeExternal(element);
 	}
 
 	public String getMetamodelName() {
