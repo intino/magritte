@@ -26,11 +26,11 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 		if (TaraModuleType.isOfType(module)) {
 			this.module = module;
 			configuration = new Configuration();
-		} else module = null;
+		}
 	}
 
 	public static ModuleConfiguration getInstance(Module module) {
-		if (TaraModuleType.isOfType(module))
+		if (module != null && TaraModuleType.isOfType(module))
 			return module.getComponent(ModuleConfiguration.class);
 		return null;
 	}
@@ -64,7 +64,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	}
 
 	public void moduleAdded() {
-		if (TaraModuleType.isOfType(module)) loadConfiguration();
+		if (module != null && TaraModuleType.isOfType(module)) loadConfiguration();
 	}
 
 	private void loadConfiguration() {
