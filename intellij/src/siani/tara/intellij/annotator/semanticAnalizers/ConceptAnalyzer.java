@@ -25,7 +25,7 @@ import static siani.tara.lang.Annotation.*;
 
 public class ConceptAnalyzer extends TaraAnalyzer {
 
-	private static final String FACET_PATH = "facets";
+	private static final String FACET_PATH = "extensions";
 	private static final String INTENTION_PATH = "intentions";
 	private Concept concept;
 
@@ -100,7 +100,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean searchDuplicatesInAllModule(Concept concept) {
-		Module moduleOfFile = ModuleProvider.getModuleOfFile(concept.getContainingFile());
+		Module moduleOfFile = ModuleProvider.getModuleOf(concept.getContainingFile());
 		int size = 0;
 		for (TaraBoxFileImpl file : TaraUtil.getTaraFilesOfModule(moduleOfFile))
 			size += searchConceptInFile(concept, file).size();
@@ -138,7 +138,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean shouldHaveClass(Node node, Concept concept) {
-		if(concept == null || node == null) return false;
+		if (concept == null || node == null) return false;
 		return (concept.isFacet() || node.is(META_FACET)) && node.is(INTENTION);
 	}
 
@@ -243,6 +243,10 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean isFacetClassCreated(Concept concept) {
-		return ReferenceManager.resolveJavaClassReference(concept.getProject(), concept.getName() + concept.getType()) != null;
+		return ReferenceManager.resolveJavaClassReference(concept.getProject(), getPackage(concept) + "." + concept.getName() + concept.getType()) != null;
+	}
+
+	private String getPackage(Concept concept) {
+		return concept.getProject().getName() + "." + ModuleProvider.getModuleOf(concept).getName() + "." + FACET_PATH;
 	}
 }

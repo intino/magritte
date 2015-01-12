@@ -28,9 +28,6 @@ public class $name extends Box {
 endrule
 
 defrule type(Node) trigger(node)
-[/**
- * $doc
-*/]\
 [$add.]def(["$name"]);
 	$annotation...[$NL]\
     $nodeType...[$NL]\
@@ -38,7 +35,6 @@ defrule type(Node) trigger(node)
     $variable+set...[$NL]\
     $reference\
     $node...[$NL]\
-end();
 endrule
 
 defrule trigger(import)
@@ -54,15 +50,11 @@ parent("$value");
 endrule
 
 defrule type(reference) type(aggregated) trigger(reference)
-add().def();
-    type("$type");
-end();
+add().def();type("$type");
 endrule
 
 defrule type(reference) trigger(reference)
-def();
-    $parent
-end();
+def();$parent
 
 endrule
 

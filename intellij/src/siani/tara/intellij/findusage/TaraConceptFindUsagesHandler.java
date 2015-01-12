@@ -38,7 +38,7 @@ public class TaraConceptFindUsagesHandler extends FindUsagesHandler {
 		Project project = concept.getProject();
 		List<? extends PsiElement> conceptList = new ArrayList();
 		Map<Module, List<TaraBoxFileImpl>> childModules = new HashMap<>();
-		Module moduleForFile = ModuleProvider.getModuleOfFile(concept.getFile());
+		Module moduleForFile = ModuleProvider.getModuleOf(concept.getFile());
 		if (moduleForFile == null) return PsiElement.EMPTY_ARRAY;
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
 			List<TaraBoxFileImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(module);

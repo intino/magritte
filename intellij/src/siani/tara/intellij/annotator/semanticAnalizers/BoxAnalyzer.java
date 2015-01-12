@@ -28,7 +28,7 @@ public class BoxAnalyzer extends TaraAnalyzer {
 	}
 
 	private void analyzeMetamodelExistence(TaraBoxFile file) {
-		String metamodelName = ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(file)).getMetamodelName();
+		String metamodelName = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(file)).getMetamodelName();
 		if (file.getParentModel() == null && metamodelName != null && !metamodelName.isEmpty())
 			results.put(file, new AnnotateAndFix(ERROR, message("model.not.found"), new AddMetamodelReferenceFix(file)));
 		else if (metamodelName != null && !metamodelName.isEmpty()) {

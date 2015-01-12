@@ -69,6 +69,6 @@ public class MetricAnalyzer {
 		String metrics = "";
 		for (String allowedMetric : allowedMetrics)
 			metrics += ", " + (plural ? inflector.plural(allowedMetric.toLowerCase()) : allowedMetric.toLowerCase());
-		return metrics.substring(2);
+		return metrics.isEmpty() ? "" : metrics.substring(2);
 	}
 }

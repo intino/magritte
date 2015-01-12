@@ -15,7 +15,7 @@ public class CompilerConfiguration {
 	private File rulesDirectory;
 	private File targetDirectory;
 	private boolean debug;
-	private String ideaHome;
+	private String tdkHome;
 	private String projectIcon;
 	private String version = "1.0";
 	private String description = "";
@@ -28,7 +28,7 @@ public class CompilerConfiguration {
 
 	public CompilerConfiguration() {
 		setWarningLevel(1);
-		setTempDirectory((File) null);
+		setTempDirectory(null);
 		setDebug(false);
 		String encoding;
 		encoding = System.getProperty("file.encoding", "UTF8");
@@ -136,12 +136,12 @@ public class CompilerConfiguration {
 	}
 
 
-	public String getIdeaHome() {
-		return ideaHome;
+	public String getTdkHome() {
+		return tdkHome;
 	}
 
-	public void setIdeaHome(String ideaHome) {
-		this.ideaHome = ideaHome;
+	public void setTdkHome(String tdkHome) {
+		this.tdkHome = tdkHome;
 	}
 
 	public String getProjectIcon() {

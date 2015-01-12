@@ -37,7 +37,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		Node node = heritage.getNodeTable().get(TaraUtil.getMetaQualifiedName(TaraPsiImplUtil.getConceptContainerOf(this)));
 		if (node == null) return new PsiReference[0];
 		List<Variable> variables = node.getObject().getVariables();
-		if (variables.isEmpty()) return new PsiReference[]{};
+		if (variables.isEmpty() || variables.size() <= getIndexInParent()) return new PsiReference[]{};
 		Variable variable = variables.get(getIndexInParent());
 		if (Word.class.isInstance(variable))
 			return new PsiReference[]{new TaraMetaWordReferenceSolver(this, new TextRange(0, getParameter().length()), node, variable)};

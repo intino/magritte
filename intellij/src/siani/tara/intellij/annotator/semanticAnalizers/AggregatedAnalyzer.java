@@ -25,7 +25,7 @@ public class AggregatedAnalyzer extends TaraAnalyzer {
 	public void analyze() {
 		Node node = getMetaConcept(concept);
 		if (node == null) return;
-		boolean terminal = ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(concept.getContainingFile())).isTerminal();
+		boolean terminal = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(concept.getContainingFile())).isTerminal();
 		if (!hasErrors() && (node.isAggregated() && terminal || concept.isAnnotatedAsAggregated()))
 			addAggregatedAnnotation(concept);
 	}

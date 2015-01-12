@@ -10,33 +10,43 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
-import org.siani.itrules.formatter.InflectorFactory;
+import org.siani.itrules.formatter.Inflector;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
 import siani.tara.intellij.lang.psi.TaraIdentifier;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import java.util.*;
 
-import static siani.tara.intellij.project.module.ModuleProvider.getModuleOfFile;
+import static org.siani.itrules.formatter.InflectorFactory.getInflector;
+import static siani.tara.intellij.project.module.ModuleProvider.getModuleOf;
 import static siani.tara.lang.Annotation.INTENTION;
+import static siani.tara.lang.Annotation.META_FACET;
 
 public class FacetsGenerator {
 
 	public static final String SRC = "src";
 	private final Project project;
+	private final Module module;
+	private final String[] FACETS_PATH;
 	private final TaraBoxFile taraBoxFile;
+	private final PsiDirectory facetsHome;
 	private final PsiDirectory srcDirectory;
 
-	public FacetsGenerator(Project project, TaraBoxFile taraBoxFile) {
-		this.project = project;
+	public FacetsGenerator(TaraBoxFile taraBoxFile) {
 		this.taraBoxFile = taraBoxFile;
+		this.project = taraBoxFile.getProject();
+		module = ModuleProvider.getModuleOf(taraBoxFile);
 		VirtualFile src = getSRCDirectory(TaraUtil.getSourceRoots(taraBoxFile));
 		srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), src);
+		FACETS_PATH = new String[]{project.getName().toLowerCase(), "extensions"};
+		facetsHome = findFacetsDestiny();
+
 	}
 
 	public void generate() {
@@ -46,7 +56,7 @@ public class FacetsGenerator {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
 				try {
-					pathsToRefresh.add(srcDirectory.getVirtualFile());
+					pathsToRefresh.add(facetsHome.getVirtualFile());
 					classes.addAll(processFile(taraBoxFile));
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -90,10 +100,10 @@ public class FacetsGenerator {
 
 
 	private PsiClass createFacetClass(Concept concept) {
-		PsiClass aClass = findClassInModule(concept.getName() + concept.getType(), getModuleOfFile(concept.getContainingFile()));
+		PsiClass aClass = findClassInModule(concept.getName() + concept.getType(), getModuleOf(concept.getContainingFile()));
 		return (aClass != null) ? aClass :
 			JavaDirectoryService.getInstance().
-				createClass(srcDirectory, concept.getName(), "TaraFacetClass", false, getOptionsForFacetClass(concept.getType()));
+				createClass(facetsHome, concept.getName(), "TaraFacetClass", false, getOptionsForFacetClass(concept.getType()));
 	}
 
 	private List<PsiClass> createTargetClasses(Concept facet) {
@@ -105,7 +115,7 @@ public class FacetsGenerator {
 
 	private void implementAbstractMethods(PsiClass destiny, PsiJavaCodeReferenceElement[] referenceElements) {
 		for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
-			PsiClass aClass = findClassInProject(referenceElement.getQualifiedName(), getModuleOfFile(referenceElement));
+			PsiClass aClass = findClassInProject(referenceElement.getQualifiedName(), getModuleOf(referenceElement));
 			if (aClass == null) continue;
 			implementMethods(destiny, getAbstractMethods(aClass));
 		}
@@ -157,28 +167,31 @@ public class FacetsGenerator {
 		String name = identifierList.get(identifierList.size() - 1).getName();
 		if (name == null) return null;
 		String fullName = name + concept.getType();
-		String aPackage = makePackage(concept.getName());
-		PsiClass aClass = findClassInModule(aPackage + "." + fullName, getModuleOfFile(concept.getContainingFile()));
+		String aPackage = makePackage(concept);
+		PsiClass aClass = findClassInModule(aPackage + "." + fullName, getModuleOf(concept.getContainingFile()));
 		return (aClass != null) ? aClass : JavaDirectoryService.getInstance().
 			createClass(createTargetDestiny(aPackage), name, "TaraFacetClass", false, getOptionsForFacetClass(concept.getType()));
 	}
 
 	private PsiDirectory createTargetDestiny(final String aPackage) {
-		final PsiDirectory[] destiny = new PsiDirectory[1];
-		PsiDirectory subdirectory = srcDirectory.findSubdirectory(aPackage);
-		if (subdirectory != null) return subdirectory;
-		WriteCommandAction action = new WriteCommandAction(project, taraBoxFile) {
-			@Override
-			protected void run(@NotNull Result result) throws Throwable {
-				destiny[0] = DirectoryUtil.createSubdirectories(aPackage, srcDirectory, ".");
-			}
-		};
-		action.execute();
-		return destiny[0];
+		PsiDirectory directory = facetsHome.findSubdirectory(aPackage);
+		if (directory != null) return directory;
+		else directory = srcDirectory;
+		String[] packages = aPackage.split("\\.");
+		for (String name : packages) {
+			PsiDirectory subdirectory = directory.findSubdirectory(name);
+			directory = subdirectory != null ? subdirectory : createPackage(directory, name);
+		}
+		return directory;
 	}
 
-	private String makePackage(String name) {
-		return InflectorFactory.getInflector(Locale.getDefault()).plural(name).toLowerCase();
+	private String makePackage(Concept concept) {
+		String path = "";
+		for (String subpath : FACETS_PATH) {
+			path += subpath + ".";
+		}
+		Inflector inflector = getInflector(Locale.getDefault());
+		return path + inflector.plural(concept.getType()).toLowerCase() + "." + inflector.plural(concept.getName()).toLowerCase();
 	}
 
 	private boolean isIntention(Concept facet) {
@@ -202,14 +215,19 @@ public class FacetsGenerator {
 	}
 
 	private Concept[] getFacets(TaraBoxFile taraBoxFile) {
-		Model model = TaraLanguage.getMetaModel(taraBoxFile);
 		List<Concept> facets = new ArrayList<>();
-		if (model == null) return new Concept[0];
 		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(taraBoxFile);
+		Model model = TaraLanguage.getMetaModel(taraBoxFile);
 		for (Concept concept : allConceptsOfFile)
-			if (concept.isFacet() && !concept.isIntention())
+			if ((concept.isFacet() || isMetaFacet(model, concept)) && !concept.isIntention())
 				facets.add(concept);
 		return facets.toArray(new Concept[facets.size()]);
+	}
+
+	private boolean isMetaFacet(Model model, Concept concept) {
+		if (model == null) return false;
+		Node node = model.searchNode(concept.getMetaQualifiedName());
+		return node != null && node.is(META_FACET);
 	}
 
 	private PsiClass findClassInModule(String qn, Module module) {
@@ -219,4 +237,26 @@ public class FacetsGenerator {
 	private PsiClass findClassInProject(String qn, Module module) {
 		return JavaPsiFacade.getInstance(project).findClass(qn, GlobalSearchScope.projectScope(module.getProject()));
 	}
+
+	private PsiDirectory findFacetsDestiny() {
+		PsiDirectory directory = srcDirectory;
+		for (String name : FACETS_PATH) {
+			PsiDirectory subdirectory = directory.findSubdirectory(name.toLowerCase());
+			directory = subdirectory != null ? subdirectory : createPackage(directory, name);
+		}
+		return directory;
+	}
+
+	private PsiDirectory createPackage(final PsiDirectory parent, final String name) {
+		final PsiDirectory[] destiny = new PsiDirectory[1];
+		WriteCommandAction action = new WriteCommandAction(project, parent.getContainingFile()) {
+			@Override
+			protected void run(@NotNull Result result) throws Throwable {
+				destiny[0] = DirectoryUtil.createSubdirectories(name, parent, ".");
+			}
+		};
+		action.execute();
+		return destiny[0];
+	}
+
 }

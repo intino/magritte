@@ -23,10 +23,27 @@ public class MetricsLoader {
 			}
 		})) {
 			String className = getClassName(file);
-			Class<?> aClass = loadClass(config.getMetricsDirectory().getPath(), config.getProject() + ".metrics." + className);
+			Class<?> aClass = loadClass(config.getMetricsDirectory().getPath(), config.getProject() + ".metrics." + className, getLibs(config.getTdkHome()));
 			map.put(className, extractEnums(aClass));
 		}
 		return map;
+	}
+
+	private static List<URL> getLibs(String tdkHome) {
+		List<URL> urls = new ArrayList<>();
+		for (File file : new File(tdkHome).listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".jar");
+			}
+		})) {
+			try {
+				urls.add(file.toURI().toURL());
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		}
+		return urls;
 	}
 
 	private static List<String> extractEnums(Class<?> aClass) {
@@ -36,12 +53,12 @@ public class MetricsLoader {
 		return enums;
 	}
 
-	private static Class<?> loadClass(String path, String className) {
+	private static Class<?> loadClass(String path, String className, List<URL> urls) {
 		File file = new File(path);
 		try {
 			URL url = file.toURI().toURL();
-			URL[] urls = new URL[]{url};
-			ClassLoader cl = new URLClassLoader(urls);
+			urls.add(url);
+			ClassLoader cl = new URLClassLoader(urls.toArray(new URL[urls.size()]));
 			return cl.loadClass(className);
 		} catch (MalformedURLException | ClassNotFoundException ignored) {
 		}

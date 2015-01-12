@@ -187,12 +187,12 @@ public class TaraUtil {
 	}
 
 	public static boolean isTerminalBox(TaraBoxFileImpl boxFile) {
-		return ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(boxFile)).isTerminal();
+		return ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(boxFile)).isTerminal();
 	}
 
 	public static Concept findConceptByQN(String qualifiedName, PsiFile file) {
 		if (file == null) return null;
-		List<TaraBoxFileImpl> filesOfModule = getTaraFilesOfModule(ModuleProvider.getModuleOfFile(file));
+		List<TaraBoxFileImpl> filesOfModule = getTaraFilesOfModule(ModuleProvider.getModuleOf(file));
 		for (TaraBoxFileImpl taraFile : filesOfModule)
 			for (Concept concept : getRootConceptsOfFile(taraFile))
 				if (concept.getQualifiedName().equalsIgnoreCase(qualifiedName)) return concept;

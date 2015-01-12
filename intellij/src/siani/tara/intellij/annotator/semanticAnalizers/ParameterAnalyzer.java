@@ -116,7 +116,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 	}
 
 	private File findResource(String destiny) {
-		VirtualFile[] parent = ModuleRootManager.getInstance(ModuleProvider.getModuleOfFile(parameter.getContainingFile())).getSourceRoots();
+		VirtualFile[] parent = ModuleRootManager.getInstance(ModuleProvider.getModuleOf(parameter.getContainingFile())).getSourceRoots();
 		for (VirtualFile virtualFile : parent) {
 			File file = new File(virtualFile.getPath(), destiny);
 			if (file.exists()) return file;

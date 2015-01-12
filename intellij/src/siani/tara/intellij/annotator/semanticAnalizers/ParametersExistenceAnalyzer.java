@@ -28,7 +28,7 @@ public class ParametersExistenceAnalyzer extends TaraAnalyzer {
 	@Override
 	public void analyze() {
 		if(node == null) return;
-		boolean system = ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(concept.getContainingFile())).isTerminal();
+		boolean system = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(concept.getContainingFile())).isTerminal();
 		List<Variable> variables = node.getObject().getVariables();
 		List<String> compare = compare(collectMinimumNumberOfParameter(variables, system), collectDeclaredParameters(concept));
 		if (!compare.isEmpty())

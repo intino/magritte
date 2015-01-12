@@ -45,7 +45,7 @@ public class TaraRunner {
 				writer.write(TaraRtConstants.ICONS_PATH + "\n" + iconPath + "\n");
 			writer.write(TaraRtConstants.OUTPUTPATH + "\n" + paths.get(0) + "\n");
 			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n" + paths.get(1) + "\n");
-			writer.write(TaraRtConstants.JDK_HOME + "\n" + paths.get(2) + File.separator + "lib" + File.separator + "\n");
+			writer.write(TaraRtConstants.TDK_HOME + "\n" + paths.get(2) + File.separator + "lib" + File.separator + "\n");
 			if (paths.get(3) != null) writer.write(TaraRtConstants.IT_RULES + "\n" + paths.get(3) + "\n");
 			writer.write(TaraRtConstants.METRICS + "\n" + paths.get(4) + "\n");
 			writer.write(TaraRtConstants.RESOURCES + "\n" + paths.get(5) + "\n");

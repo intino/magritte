@@ -69,7 +69,7 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 	}
 
 	private File findResource(String destiny) {
-		VirtualFile[] parent = ModuleRootManager.getInstance(ModuleProvider.getModuleOfFile(varInit.getContainingFile())).getSourceRoots();
+		VirtualFile[] parent = ModuleRootManager.getInstance(ModuleProvider.getModuleOf(varInit.getContainingFile())).getSourceRoots();
 		for (VirtualFile virtualFile : parent) {
 			File file = new File(virtualFile.getPath(), destiny);
 			if (file.exists()) return file;

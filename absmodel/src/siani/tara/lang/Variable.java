@@ -39,6 +39,9 @@ public abstract class Variable implements Cloneable {
 	public boolean isProperty() {
 		return annotations.contains(PROPERTY);
 	}
+	public boolean isReadOnly() {
+		return annotations.contains(READONLY);
+	}
 
 	public boolean isLocal() {
 		return annotations.contains(LOCAL);

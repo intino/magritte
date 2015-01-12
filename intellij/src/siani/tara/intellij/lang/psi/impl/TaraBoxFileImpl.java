@@ -161,7 +161,7 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 	}
 
 	public void updateMetamodelImport() {
-		String metaModule = ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(this)).getMetamodelName();
+		String metaModule = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(this)).getMetamodelName();
 		String metamodelName = metaModule == null ? null : this.getProject().getName() + "." + metaModule;
 		setMetamodelImport(metamodelName);
 	}

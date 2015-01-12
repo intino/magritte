@@ -26,7 +26,7 @@ public class ParametersAnalyzer extends TaraAnalyzer {
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(parameters);
 		Node node = getMetaConcept(concept);
 		if (node == null) return;
-		boolean system = ModuleConfiguration.getInstance(ModuleProvider.getModuleOfFile(parameters.getContainingFile())).isTerminal();
+		boolean system = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(parameters.getContainingFile())).isTerminal();
 		List<Variable> variables = node.getObject().getVariables();
 		List<String> compare = compare(collectMinimumNumberOfParameter(variables, system), collectDeclaredParameters(concept, variables));
 		if (!compare.isEmpty())

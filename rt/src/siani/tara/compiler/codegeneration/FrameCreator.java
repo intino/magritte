@@ -11,10 +11,12 @@ import static siani.tara.compiler.codegeneration.NameFormatter.*;
 public class FrameCreator {
 
 	private static final String SEPARATOR = ".";
+	private final String projectName;
 	private final boolean terminal;
 	private Node initNode;
 
-	public FrameCreator(boolean terminal) {
+	public FrameCreator(String projectName, boolean terminal) {
+		this.projectName = projectName;
 		this.terminal = terminal;
 	}
 
@@ -75,6 +77,7 @@ public class FrameCreator {
 			newFrame.addFrame("name", node.getName());
 		if (node.getObject().getParent() != null)
 			newFrame.addFrame("parent", node.getObject().getParent().getName());
+		else newFrame.addFrame("parent", "Morph");
 		if (node.getObject().getType() != null) {
 			Frame typeFrame = new Frame("nodeType");
 			typeFrame.addFrame("name", node.getObject().getType());
@@ -90,9 +93,9 @@ public class FrameCreator {
 
 	private void addFacetTargets(Node node, Frame typeFrame) {
 		if (node.getObject().getFacetTargets().isEmpty()) return;
-		typeFrame.addFrame("target", "millener.extensions." + camelCase(node.getName()));
+		typeFrame.addFrame("target", projectName + ".extensions." + camelCase(node.getName()));
 		for (FacetTarget target : node.getObject().getFacetTargets())
-			typeFrame.addFrame("target", "millener.extensions." +
+			typeFrame.addFrame("target", projectName + ".extensions." +
 				getInflector(Locale.ENGLISH).plural(node.getName()).toLowerCase() + "." + camelCase(target.getDestinyName()) + ".class");
 	}
 
@@ -124,10 +127,16 @@ public class FrameCreator {
 		for (final Variable variable : node.getObject().getVariables()) {
 			Frame varFrame = new Frame(getTypes(variable)) {{
 				addFrame("name", variable.getName());
-				addFrame("type", variable.getType().equals("Natural") ? "Integer" : variable.getType());
+				addFrame("type", getType());
 				if (variable instanceof Word)
 					addFrame("words", ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));
-			}};
+			}
+
+				private String getType() {
+					if (variable.getType().equals("Natural")) return "Integer";
+					else return variable.getType();
+				}
+			};
 			frame.addFrame("variable", varFrame);
 			if (variable.getValues() != null && variable.getValues().length > 0) {
 				addVariableValue(varFrame, variable);
@@ -192,9 +201,11 @@ public class FrameCreator {
 		List<String> list = new ArrayList<>();
 		list.add(variable.getClass().getSimpleName());
 		list.add("Variable");
+		list.add(variable.getType());
 		if (variable.isTerminal()) list.add("terminal");
 		if (variable.isList()) list.add("List");
 		if (variable.isProperty()) list.add("property");
+		if (variable.isReadOnly()) list.add("readonly");
 		return list.toArray(new String[list.size()]);
 	}
 
@@ -205,7 +216,7 @@ public class FrameCreator {
 		types.add(node.getClass().getSimpleName());
 		types.add(Node.class.getSimpleName());
 		for (Annotation annotation : node.getAnnotations())
-			types.add(annotation.getName());
+			types.add(annotation.getName().replace("+", "meta"));
 		return types.toArray(new String[types.size()]);
 	}
 

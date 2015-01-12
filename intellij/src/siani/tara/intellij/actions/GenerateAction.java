@@ -1,15 +1,20 @@
 package siani.tara.intellij.actions;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.codegeneration.AddressGenerator;
 import siani.tara.intellij.codegeneration.FacetsGenerator;
 import siani.tara.intellij.codegeneration.IntentionsGenerator;
@@ -22,11 +27,12 @@ import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class GenerateAction extends AnAction implements DumbAware {
 	@Override
-	public void actionPerformed(AnActionEvent e) {
+	public void actionPerformed(@NotNull AnActionEvent e) {
 		final Project project = getEventProject(e);
 		final VirtualFile[] files = LangDataKeys.VIRTUAL_FILE_ARRAY.getData(e.getDataContext());
 		if (project == null || files == null) return;
@@ -34,11 +40,16 @@ public class GenerateAction extends AnAction implements DumbAware {
 		FileDocumentManager.getInstance().saveAllDocuments();
 		for (VirtualFile file : files) {
 			IntentionsGenerator intentionsGenerator = new IntentionsGenerator(project, (TaraBoxFile) PsiManager.getInstance(project).findFile(file));
-			FacetsGenerator facetsGenerator = new FacetsGenerator(project, (TaraBoxFile) PsiManager.getInstance(project).findFile(file));
+			FacetsGenerator facetsGenerator = new FacetsGenerator((TaraBoxFile) PsiManager.getInstance(project).findFile(file));
 			generateAddresses((TaraBoxFile) PsiManager.getInstance(project).findFile(file));
 			intentionsGenerator.generate();
 			facetsGenerator.generate();
 		}
+		String report = String.format("Facet & Intention Classes have been Generated Sucessfully");
+		Notifications.Bus.notify(new Notification("Tara Generator", "", report, NotificationType.INFORMATION), project);
+		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(e.getData(LangDataKeys.PSI_FILE)));
+		VfsUtil.markDirtyAndRefresh(true, true, true, srcDirectory);
+		srcDirectory.refresh(true, true);
 	}
 
 	private void generateAddresses(TaraBoxFile box) {
@@ -51,7 +62,7 @@ public class GenerateAction extends AnAction implements DumbAware {
 	}
 
 	@Override
-	public void update(AnActionEvent e) {
+	public void update(@NotNull AnActionEvent e) {
 		Project project = getEventProject(e);
 		VirtualFile[] files = LangDataKeys.VIRTUAL_FILE_ARRAY.getData(e.getDataContext());
 		boolean taraFound = false;
@@ -77,5 +88,9 @@ public class GenerateAction extends AnAction implements DumbAware {
 		return concepts.toArray(new Concept[concepts.size()]);
 	}
 
-
+	private VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {
+		for (VirtualFile file : virtualFiles)
+			if (file.isDirectory() && "src".equals(file.getName())) return file;
+		throw new RuntimeException("src directory not found");
+	}
 }

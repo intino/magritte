@@ -108,6 +108,9 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.MODELS_PATH:
 					configuration.setModelsDirectory(reader.readLine());
 					break;
+				case TaraRtConstants.TDK_HOME:
+					configuration.setTdkHome(reader.readLine());
+					break;
 				case TaraRtConstants.ICONS_PATH:
 					configuration.addIconPath(reader.readLine());
 					break;

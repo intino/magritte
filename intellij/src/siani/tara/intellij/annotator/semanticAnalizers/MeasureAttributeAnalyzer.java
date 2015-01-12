@@ -43,8 +43,12 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 	}
 
 	private Class<?> loadCompiledMetricClass(@NotNull Module module, String className) {
-		VirtualFile compilerOutputPath = CompilerModuleExtension.getInstance(module).getCompilerOutputPath();
-		return loadClass(compilerOutputPath.getPath(), ModuleRootManager.getInstance(module).getSdk().getHomePath(), metricsPackage + "." + className);
+		try {
+			VirtualFile compilerOutputPath = CompilerModuleExtension.getInstance(module).getCompilerOutputPath(); //TODO
+			return loadClass(compilerOutputPath.getPath(), ModuleRootManager.getInstance(module).getSdk().getHomePath(), metricsPackage + "." + className);
+		} catch (Exception e){
+			return null;
+		}
 	}
 
 	private Class<?> loadClass(String path, String sdk, String className) {
@@ -58,7 +62,7 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 	}
 
 	private Module getModule() {
-		return ModuleProvider.getModuleOfFile(measure.getContainingFile());
+		return ModuleProvider.getModuleOf(measure.getContainingFile());
 	}
 
 	private static class Metrics {

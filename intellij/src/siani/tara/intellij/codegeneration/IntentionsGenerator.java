@@ -40,7 +40,7 @@ public class IntentionsGenerator {
 		this.taraBoxFile = taraBoxFile;
 		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(taraBoxFile));
 		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), srcDirectory);
-		this.module = ModuleProvider.getModuleOfFile(taraBoxFile);
+		this.module = ModuleProvider.getModuleOf(taraBoxFile);
 	}
 
 	public void generate() {

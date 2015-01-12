@@ -10,10 +10,9 @@ anImport: USE headerReference (AS IDENTIFIER)? NEWLINE;
 doc: DOC+;
 concept: doc? signature annotationsAndFacets? body?;
 
-signature: ((SUB IDENTIFIER)
-			| (metaidentifier parameters? IDENTIFIER (EXTENDS identifierReference)?)
-			| metaidentifier parameters?) address?;
+signature: ((SUB parameters? IDENTIFIER) | (metaidentifier parameters? IDENTIFIER? parent?)) address?;
 
+parent : EXTENDS identifierReference;
 address: ADDRESS_VALUE;
 
 

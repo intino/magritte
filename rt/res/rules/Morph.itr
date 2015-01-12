@@ -4,6 +4,7 @@ package magritte.morphs[.$package+lowercase];
 [import $import...[;$NL]]\
 import magritte.types.Enumerate;
 import java.util.Date;
+import magritte.types.TimeInstant;
 import magritte.wrappers.Morph;
 
 $node
@@ -43,36 +44,81 @@ public void set$name+camelCase($name+camelCase value) {
 
 endrule
 
-defrule type(Variable) !type(Word) trigger(getter)
-public $type+reference get$name+camelCase() {
+defrule type(Variable) type(Date) !type(Word) trigger(getter)
+public TimeInstant $name+lowerCamelCase() {
+    return TimeInstant.value((long) get("$name"));
+}
+
+endrule
+
+defrule type(Variable) type(Measure) !type(Word) trigger(getter)
+public double $name+lowerCamelCase() {
     return get("$name");
 }
 
 endrule
 
-defrule type(Variable) !type(Word) trigger(setter)
-public void set$name+camelCase($type+reference value) {
+defrule type(Variable) !type(Word) trigger(getter)
+public $type+reference $name+lowerCamelCase() {
+    return get("$name");
+}
+
+endrule
+
+defrule type(Variable) type(Date) !type(readonly) !type(Word) trigger(setter)
+public void set$name+camelCase(TimeInstant value) {
     set("$name", value);
 }
 
 endrule
 
-defrule type(Variable) !type(Word) type(List) trigger(setter)
+defrule type(Variable) type(Measure) !type(readonly) !type(Word) trigger(setter)
+public void set$name+camelCase(double $name+lowerCamelCase) {
+    set("$name", $name+lowerCamelCase);
+}
+
+endrule
+
+defrule type(Variable) !type(readonly) !type(Word) type(List) trigger(setter)
 public void set$name+camelCase($type+camelCase $name+camelCase) {
     set("$name", $type+camelCase);
 }
 
 endrule
 
+
+defrule type(Variable) !type(readonly) !type(Word) !type(List) trigger(setter)
+public void set$name+camelCase($type+reference value) {
+    set("$name", value);
+}
+
+endrule
+
+defrule trigger(parent) slot-name(value)
+extends $value
+endrule
+
+defrule type(declarednode) type(intention)  type(metafacet) trigger(node)
+public [$inner ]class $name+camelCase extends $parent {
+
+    public intentions.$name+camelCase~Intention$[] extensions() {
+        return extensions(intentions.$name+camelCase~Intention.class);
+    }
+
+	$variable+wordInstantiation...[$NL]\
+    $variable+getter...[$NL]\
+    $variable+setter...[$NL]\
+    $node...[$NL]\
+}
+endrule
+
 defrule type(declarednode) trigger(node)
-public [$inner ]class $name+camelCase extends Morph {
+public [$inner ]class $name+camelCase $parent {
 
 	$variable+wordInstantiation...[$NL]\
     $variable+getter...[$NL]\
 
     $variable+setter...[$NL]\
-
     $node...[$NL]\
-
 }
 endrule

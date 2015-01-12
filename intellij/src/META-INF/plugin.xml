@@ -57,7 +57,7 @@
     </group>
 
     <group id="tara.module.group" popup="false">
-      <action id="ModuleParent" class="siani.tara.intellij.actions.ConfigModuleAction" text="Configure tara module"
+      <action id="configModule" class="siani.tara.intellij.actions.ConfigModuleAction" text="Configure tara module"
               description="Set parent and level of module">
       </action>
       <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="Compile"/>
