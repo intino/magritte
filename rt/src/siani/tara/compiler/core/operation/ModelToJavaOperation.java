@@ -44,7 +44,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		this.model = model;
-		creator = new FrameCreator(model.getModelName(), model.isTerminal());
+		creator = new FrameCreator(model);
 		List<List<Node>> groupByBox = groupByBox(model.getTreeModel());
 		try {
 			writeDocuments(getBoxPath(File.separator), createBoxes(groupByBox));
@@ -102,7 +102,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
 		addReferenceFormatter(ruleEngine);
 		for (Node node : nodes) {
-			if(node.is(TERMINAL)) continue;
+			if (node.is(TERMINAL)) continue;
 			Document document = new Document();
 			ruleEngine.render(creator.createNodeFrame(node), document);
 			map.put(node.getName(), document);

@@ -7,7 +7,7 @@ import siani.tara.lang.Attribute;
 import siani.tara.lang.Model;
 import siani.tara.lang.Variable;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,10 +35,12 @@ public class MetricAnalyzer {
 
 
 	private List<String> getAllowedMetrics() {
-		for (Map.Entry<String, List<String>> entry : metamodel.getMetrics().entrySet())
+		List<String> list = new ArrayList<>();
+		for (Map.Entry<String, List<Map.Entry<String, String>>> entry : metamodel.getMetrics().entrySet())
 			if (entry.getKey().equalsIgnoreCase(((Attribute) variable).getMeasureType()))
-				return entry.getValue();
-		return Collections.emptyList();
+				for (Map.Entry<String, String> stringEntry : entry.getValue())
+					list.add(stringEntry.getValue());
+		return list;
 	}
 
 	private boolean hasCorrectMetric(String[] values, String measure) {

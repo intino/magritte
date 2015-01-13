@@ -247,6 +247,6 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private String getPackage(Concept concept) {
-		return concept.getProject().getName() + "." + ModuleProvider.getModuleOf(concept).getName() + "." + FACET_PATH;
+		return concept.getProject().getName() + "." + FACET_PATH;
 	}
 }

@@ -187,9 +187,7 @@ public class FacetsGenerator {
 
 	private String makePackage(Concept concept) {
 		String path = "";
-		for (String subpath : FACETS_PATH) {
-			path += subpath + ".";
-		}
+		for (String subpath : FACETS_PATH) path += subpath + ".";
 		Inflector inflector = getInflector(Locale.getDefault());
 		return path + inflector.plural(concept.getType()).toLowerCase() + "." + inflector.plural(concept.getName()).toLowerCase();
 	}

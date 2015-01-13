@@ -12,8 +12,8 @@ import java.util.*;
 
 public class MetricsLoader {
 
-	public static Map<String, List<String>> loadMetrics(CompilerConfiguration config) {
-		Map<String, List<String>> map = new HashMap();
+	public static Map<String, List<Map.Entry<String, String>>> loadMetrics(CompilerConfiguration config) {
+		Map<String, List<Map.Entry<String, String>>> map = new HashMap();
 		String metricDir = config.getMetricsDirectory().getPath() + File.separator + config.getProject() + File.separator + "metrics";
 		if (!new File(metricDir).exists()) return map;
 		for (File file : new File(metricDir).listFiles(new FilenameFilter() {
@@ -46,10 +46,12 @@ public class MetricsLoader {
 		return urls;
 	}
 
-	private static List<String> extractEnums(Class<?> aClass) {
-		List<String> enums = new ArrayList<>();
-		for (Field field : aClass.getFields())
-			enums.add(field.getName());
+	private static List<Map.Entry<String, String>> extractEnums(Class<?> aClass) {
+		List<Map.Entry<String, String>> enums = new ArrayList<>();
+		for (Field field : aClass.getFields()) {
+			Enum anEnum = Enum.valueOf((Class<Enum>) aClass, field.getName());
+			enums.add(new AbstractMap.SimpleEntry<>(field.getName(),anEnum.toString()));
+		}
 		return enums;
 	}
 

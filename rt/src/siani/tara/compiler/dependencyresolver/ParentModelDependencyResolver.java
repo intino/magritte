@@ -22,10 +22,10 @@ public class ParentModelDependencyResolver {
 	public void resolve() {
 		addTerminalNodes(parent.getTerminalNodes());
 		setValuesToNodes();
-		addAnnotationsTonInstances();
+		addAnnotationsToInstances();
 	}
 
-	private void addAnnotationsTonInstances() {
+	private void addAnnotationsToInstances() {
 		for (Node parentNode : this.parent.getNodeTable().values())
 			for (Node instance : getInstancesOf(parentNode))
 				addParentAnnotation(parentNode.getAnnotations(), instance);
@@ -34,7 +34,7 @@ public class ParentModelDependencyResolver {
 	private void addParentAnnotation(Annotation[] annotations, Node instance) {
 		for (Annotation annotation : annotations)
 			if (annotation.isMeta() && !instance.is(Annotation.getNormalAnnotationOfMeta(annotation)))
-				instance.getObject().add(annotation);
+				instance.getObject().add(Annotation.getNormalAnnotationOfMeta(annotation));
 			else if (annotation.equals(COMPONENT) || annotation.equals(AGGREGATED))
 				instance.getObject().add(annotation);
 	}
@@ -42,6 +42,7 @@ public class ParentModelDependencyResolver {
 	private void setValuesToNodes() {
 		for (Node parentNode : this.parent.getNodeTable().values())
 			for (Node instance : getInstancesOf(parentNode)) {
+				if (instance.is(LinkNode.class)) continue;
 				addClassVariablesToInstance(parentNode.getObject().getVariables(), instance);
 				setValuesFromParams(instance);
 				setValuesFromVarInits(instance);
@@ -49,22 +50,28 @@ public class ParentModelDependencyResolver {
 	}
 
 	private void setValuesFromParams(Node instance) {
-		for (Map.Entry<String, Variable> entry : instance.getObject().getParameters().entrySet())
+		for (Map.Entry<String, Variable> entry : instance.getObject().getParameters().entrySet()) {
+			List<Variable> variables = instance.getObject().getVariables();
+			Object[] values = entry.getValue().getValues();
 			try {
 				int index = Integer.valueOf(entry.getKey());
-				instance.getObject().getVariables().get(index).setValues(entry.getValue().getValues());
+				if (model.isTerminal()) variables.get(index).setValues(values);
+				else variables.get(index).setDefaultValues(values);
 			} catch (NumberFormatException ignored) {
-				for (Variable variable : instance.getObject().getVariables())
+				for (Variable variable : variables)
 					if (variable.getName().equals(entry.getKey()))
-						variable.setValues(entry.getValue().getValues());
+						if (model.isTerminal()) variable.setValues(values);
+						else variable.setDefaultValues(values);
 			}
+		}
 	}
 
 	private void setValuesFromVarInits(Node instance) {
 		for (Map.Entry<String, Variable> entry : instance.getObject().getVariableInits().entrySet())
 			for (Variable variable : instance.getObject().getVariables())
 				if (variable.getName().equals(entry.getKey()))
-					variable.setValues(entry.getValue().getValues());
+					if (model.isTerminal()) variable.setValues(entry.getValue().getValues());
+					else variable.setDefaultValues(entry.getValue().getValues());
 	}
 
 	private void addClassVariablesToInstance(List<Variable> variables, Node instance) {

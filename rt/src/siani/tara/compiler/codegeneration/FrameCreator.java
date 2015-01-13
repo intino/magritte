@@ -1,6 +1,7 @@
 package siani.tara.compiler.codegeneration;
 
 import org.siani.itrules.Frame;
+import org.siani.itrules.formatter.Inflector;
 import siani.tara.lang.*;
 
 import java.util.*;
@@ -11,13 +12,16 @@ import static siani.tara.compiler.codegeneration.NameFormatter.*;
 public class FrameCreator {
 
 	private static final String SEPARATOR = ".";
+	private final Model model;
 	private final String projectName;
 	private final boolean terminal;
 	private Node initNode;
 
-	public FrameCreator(String projectName, boolean terminal) {
-		this.projectName = projectName;
-		this.terminal = terminal;
+	public FrameCreator(Model model) {
+		this.model = model;
+		projectName = model.getModelName().substring(0, model.getModelName().indexOf("."));
+		terminal = model.isTerminal();
+
 	}
 
 	public Frame createNodeFrame(Node node) {
@@ -35,6 +39,8 @@ public class FrameCreator {
 		frame.addFrame("name", buildFileName(nodes.get(0).getFile(), nodes.get(0).getModelOwner()));
 		for (String box : parentBoxes)
 			frame.addFrame("import", box);
+		for (String metric : model.getMetrics().keySet())
+			frame.addFrame("importMetric", "import static " + projectName + SEPARATOR + "metrics" + SEPARATOR + metric + SEPARATOR + "*;");
 		for (Node node : nodes)
 			add(node, frame);
 		return frame;
@@ -83,7 +89,6 @@ public class FrameCreator {
 			typeFrame.addFrame("name", node.getObject().getType());
 			addFacetTargets(node, typeFrame);
 			newFrame.addFrame("nodeType", typeFrame);
-
 		}
 		addVariables(node, newFrame);
 		addTargets(node, newFrame);
@@ -93,10 +98,12 @@ public class FrameCreator {
 
 	private void addFacetTargets(Node node, Frame typeFrame) {
 		if (node.getObject().getFacetTargets().isEmpty()) return;
-		typeFrame.addFrame("target", projectName + ".extensions." + camelCase(node.getName()));
-		for (FacetTarget target : node.getObject().getFacetTargets())
-			typeFrame.addFrame("target", projectName + ".extensions." +
-				getInflector(Locale.ENGLISH).plural(node.getName()).toLowerCase() + "." + camelCase(target.getDestinyName()) + ".class");
+		typeFrame.addFrame("target", projectName + ".extensions." + camelCase(node.getName()) + node.getType() + ".class");
+		Inflector inflector = getInflector(Locale.getDefault());
+		for (FacetTarget target : node.getObject().getFacetTargets()) {
+			typeFrame.addFrame("target", projectName + ".extensions." + inflector.plural(node.getType()).toLowerCase() + "." +
+				inflector.plural(node.getName()).toLowerCase() + "." + camelCase(target.getDestinyName()) + node.getType() + ".class");
+		}
 	}
 
 	private void addSubs(Node node, Frame frame) {
@@ -125,18 +132,7 @@ public class FrameCreator {
 
 	private void addVariables(Node node, final Frame frame) {
 		for (final Variable variable : node.getObject().getVariables()) {
-			Frame varFrame = new Frame(getTypes(variable)) {{
-				addFrame("name", variable.getName());
-				addFrame("type", getType());
-				if (variable instanceof Word)
-					addFrame("words", ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));
-			}
-
-				private String getType() {
-					if (variable.getType().equals("Natural")) return "Integer";
-					else return variable.getType();
-				}
-			};
+			Frame varFrame = createVarFrame(variable);
 			frame.addFrame("variable", varFrame);
 			if (variable.getValues() != null && variable.getValues().length > 0) {
 				addVariableValue(varFrame, variable);
@@ -146,24 +142,107 @@ public class FrameCreator {
 					addFrame("variableValue", variable.getDefaultValues()[0]);
 				}});
 		}
+		for (FacetTarget target : node.getObject().getFacetTargets())
+			for (final Variable variable : target.getVariables()) {
+				if (variable.getDefaultValues() == null) continue;
+				Frame varFrame = createTargetVarFrame(node.getName(), target.getDestinyName(), variable);
+				frame.addFrame("variable", varFrame);
+				addVariableValue(varFrame, variable);//TODO terminal
+			}
+	}
+
+	private Frame createVarFrame(final Variable variable) {
+		return new Frame(getTypes(variable)) {
+			{
+				addFrame("name", variable.getName());
+				addFrame("type", getType());
+				if (variable instanceof Word)
+					addFrame("words", ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));
+				else if (variable.getType().equals(Primitives.MEASURE)) {
+					addFrame("measureType", ((Attribute) variable).getMeasureType());
+					addFrame("measureValue", resolveMetric(((Attribute) variable).getMeasureValue()));
+				}
+			}
+
+			private String getType() {
+				if (variable.getType().equals("Natural")) return "Integer";
+				else return variable.getType();
+			}
+		};
+	}
+
+	private String resolveMetric(String measureValue) {
+		Map<String, List<Map.Entry<String, String>>> metrics = model.getMetrics();
+		return metrics.get("Temperature").get(0).getKey();
+	}
+
+	private Frame createTargetVarFrame(final String node, final String target, final Variable variable) {
+		return new Frame(getFacetTypes(variable)) {
+			{
+				addFrame("name", variable.getName());
+				addFrame("type", getTargetVarTypes());
+				if (variable instanceof Word)
+					addFrame("words", ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));
+				else if (variable.getType().equals(Primitives.MEASURE)) {
+					addFrame("measureType", ((Attribute) variable).getMeasureType());
+					addFrame("measureValue", resolveMetric(((Attribute) variable).getMeasureValue()));
+				}
+				addFrame("target", target);
+				addFrame("node", node);
+			}
+
+			private String[] getTargetVarTypes() {
+				List<String> types = new ArrayList<>();
+				if (variable.getType().equals("Natural")) types.add("Integer");
+				else types.add(variable.getType());
+				return types.toArray(new String[types.size()]);
+			}
+
+		};
+	}
+
+	private String[] getFacetTypes(Variable variable) {
+		List<String> types = new ArrayList<>();
+		Collections.addAll(types, getTypes(variable));
+		types.add("target");
+		return types.toArray(new String[types.size()]);
 	}
 
 	private void addVariableValue(Frame frame, final Variable variable) {
-		if (variable instanceof Word) {
-			Word word = (Word) variable;
-			for (Object value : word.values)
-				frame.addFrame("variableValue", word.indexOf(value.toString()));
-		} else {
-			final Object value = variable.getType().equals(Primitives.STRING) ? "\"" + variable.getValues()[0].toString() + "\"" :
-				variable.getValues()[0];
-			Frame innerFrame = new Frame(variable.getType()) {{
-				if (value instanceof Date)
-					addFrame("value", ((Date) value).getTime());
-				else
-					addFrame("value", value);
-			}};
-			frame.addFrame("variableValue", innerFrame);
-		}
+		if (variable.getValues() != null && variable.getValues().length != 0)
+			if (variable instanceof Word) {
+				Word word = (Word) variable;
+				for (Object value : word.values)
+					frame.addFrame("variableValue", word.indexOf(value.toString()));
+			} else {
+
+				final Object value = variable.getType().equals(Primitives.STRING) ? "\"" + variable.getValues()[0].toString() + "\"" :
+					variable.getValues()[0];
+				Frame innerFrame = new Frame(variable.getType()) {{
+					if (value instanceof Date)
+						addFrame("value", ((Date) value).getTime());
+					else
+						addFrame("value", value);
+				}};
+				frame.addFrame("variableValue", innerFrame);
+			}
+		if (variable.getDefaultValues() != null && variable.getDefaultValues().length != 0)
+			if (variable instanceof Word) {
+				Word word = (Word) variable;
+				for (Object value : word.values)
+					frame.addFrame("defaultValue", word.indexOf(value.toString()));
+			} else {
+
+				final Object value = variable.getType().equals(Primitives.STRING) ? "\"" + variable.getDefaultValues()[0].toString() + "\"" :
+					variable.getDefaultValues()[0];
+				Frame innerFrame = new Frame(variable.getType()) {{
+					if (value instanceof Date)
+						addFrame("value", ((Date) value).getTime());
+					else
+						addFrame("value", value);
+				}};
+				frame.addFrame("defaultValue", innerFrame);
+			}
 	}
 
 	private void addFacets(Node node, Frame newFrame) {
