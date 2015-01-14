@@ -1,9 +1,15 @@
 package siani.tara.compiler.codegeneration;
 
+import org.siani.itrules.formatter.Inflector;
+import org.siani.itrules.formatter.InflectorFactory;
+import siani.tara.lang.Node;
+import siani.tara.lang.NodeObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class NameFormatter {
 
@@ -11,14 +17,19 @@ public class NameFormatter {
 	public static final String MORPH_PATH = "morphs";
 	public static final String BOX_PATH = "editors";
 	public static final String JAVA = "java";
+	public static final String DOT = ".";
 
-	public static String composeMorphPackagePath(String box) {
-		String[] split = box.split("\\.");
-		if (split.length <= 3) return "";
+	public static String composeMorphPackagePath(Node node) {
+		if (!node.isSub())
+			return getMorphPath(DOT);
 		String aPackage = "";
-		for (int i = 2; i < split.length - 1; i++)
-			aPackage += i < split.length - 2 ? split[i] + "." : camelCase(split[i], " ");
-		return aPackage;
+		NodeObject parent = node.getObject().getParent();
+		Inflector inflector = InflectorFactory.getInflector(Locale.getDefault());
+		while (parent != null) {
+			aPackage = inflector.plural(parent.getName()) + aPackage;
+			parent = parent.isSub() ? parent.getParent() : null;
+		}
+		return getMorphPath(DOT) + DOT + aPackage.toLowerCase();
 	}
 
 	public static String buildMorphPath(String box) {
@@ -28,7 +39,7 @@ public class NameFormatter {
 		list.addAll(Arrays.asList(split).subList(2, split.length - 1));
 		list.add(camelCase(split[split.length - 1], " "));
 		String aPackage = "";
-		for (String s : list) aPackage += "." + s;
+		for (String s : list) aPackage += DOT + s;
 		return aPackage.substring(1);
 	}
 
@@ -57,7 +68,7 @@ public class NameFormatter {
 	}
 
 	public static String buildFileName(String file, String model) {
-		return camelCase(model.replace(".", "_") + "_" +
-			file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(".")), "_") + "Box";
+		return camelCase(model.replace(DOT, "_") + "_" +
+			file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(DOT)), "_") + "Box";
 	}
 }

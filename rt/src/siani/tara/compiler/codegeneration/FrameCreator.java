@@ -2,6 +2,7 @@ package siani.tara.compiler.codegeneration;
 
 import org.siani.itrules.Frame;
 import org.siani.itrules.formatter.Inflector;
+import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.lang.*;
 
 import java.util.*;
@@ -24,29 +25,53 @@ public class FrameCreator {
 
 	}
 
-	public Frame createNodeFrame(Node node) {
+	public Map.Entry<String, Frame> createMorphFrame(Node node) {
 		this.initNode = node;
 		final Frame frame = new Frame("Morph");
-		if (!composeMorphPackagePath(node.getQualifiedName()).isEmpty())
-			frame.addFrame("package", composeMorphPackagePath(node.getQualifiedName()));
-		add(node, frame);
+		String packagePath = composeMorphPackagePath(node);
+		if (!packagePath.isEmpty())
+			frame.addFrame("package", packagePath);
+		nodeToFrame(node, frame);
 		initNode = null;
-		return frame;
+		return new AbstractMap.SimpleEntry<>(packagePath + SEPARATOR + node.getName(), frame);
 	}
 
 	public Frame createBoxFrame(List<Node> nodes, Collection<String> parentBoxes) {
 		Frame frame = new Frame("Box");
-		frame.addFrame("name", buildFileName(nodes.get(0).getFile(), nodes.get(0).getModelOwner()));
+		frame.addFrame("name", buildFileName(nodes.get(0).getFile(), model.getModelName()));
 		for (String box : parentBoxes)
-			frame.addFrame("import", box);
-		for (String metric : model.getMetrics().keySet())
-			frame.addFrame("importMetric", "import static " + projectName + SEPARATOR + "metrics" + SEPARATOR + metric + SEPARATOR + "*;");
+			frame.addFrame("dependency", box);
+		addMetricImports(frame);
+		addFacetImports(nodes, frame);
 		for (Node node : nodes)
-			add(node, frame);
+			nodeToFrame(this.initNode = node, frame);
+		this.initNode = null;
 		return frame;
 	}
 
-	private void add(final Node node, Frame frame) {
+	private void addMetricImports(Frame frame) {
+		for (String metric : model.getMetrics().keySet())
+			frame.addFrame("importMetric", "import static " + projectName + SEPARATOR + "metrics" + SEPARATOR + metric + SEPARATOR + "*;");
+	}
+
+	private void addFacetImports(List<Node> nodes, Frame frame) {
+		Set<String> imports = searchFacets(nodes);
+		for (String anImport : imports)
+			frame.addFrame("importFacet", "import " + projectName + SEPARATOR + "extensions" + SEPARATOR + anImport.toLowerCase() + ".*;");
+	}
+
+	private Set<String> searchFacets(List<Node> nodes) {
+		Set<String> imports = new HashSet<>();
+		for (Node node : nodes) {
+			if (node.is(LinkNode.class)) continue;
+			for (Facet facet : node.getObject().getFacets())
+				imports.add(InflectorFactory.getInflector(Locale.getDefault()).plural(facet.getName()));
+			imports.addAll(searchFacets(node.getInnerNodes()));
+		}
+		return imports;
+	}
+
+	private void nodeToFrame(final Node node, Frame frame) {
 		if (node.is(DeclaredNode.class)) {
 			final Frame newFrame = new Frame(getTypes(node));
 			frame.addFrame("node", newFrame);
@@ -75,42 +100,77 @@ public class FrameCreator {
 	}
 
 	private void addNodeInfo(Node node, Frame newFrame) {
-		if (node != initNode)
-			newFrame.addFrame("inner", "static");
-		if (node.getObject().getDoc() != null)
-			newFrame.addFrame("doc", node.getObject().getDoc());
+		if (initNode != null && node != initNode) {
+			newFrame.addFrame("inner", "");
+			if (node.is(Annotation.AGGREGATED)) newFrame.addFrame("relation", "add");
+			else newFrame.addFrame("relation", "has");
+		}
+		NodeObject object = node.getObject();
+		if (object.getDoc() != null)
+			newFrame.addFrame("doc", object.getDoc());
 		if (node.getName() != null && !node.getName().isEmpty())
 			newFrame.addFrame("name", node.getName());
 		if (node.getObject().getParent() != null)
 			newFrame.addFrame("parent", node.getObject().getParent().getName());
 		else newFrame.addFrame("parent", "Morph");
 		if (node.getObject().getType() != null) {
-			Frame typeFrame = new Frame("nodeType");
-			typeFrame.addFrame("name", node.getObject().getType());
+			Frame typeFrame = new Frame("nodeType").addFrame("name", node.getObject().getType());
 			addFacetTargets(node, typeFrame);
 			newFrame.addFrame("nodeType", typeFrame);
 		}
+		for (Facet facet : node.getObject().getFacets()) {
+			Frame facetFrame = new Frame("facet").addFrame("name", facet.getName()).addFrame("facet", getFacetDestinies(node));
+			newFrame.addFrame("facet", facetFrame);
+		}
+		if (object.getAddress() != null) newFrame.addFrame("address", object.getAddress().replace(".", ""));
 		addVariables(node, newFrame);
 		addTargets(node, newFrame);
 		addFacets(node, newFrame);
 
 	}
 
+	private String[] getFacetDestinies(Node node) {
+		List<String> list = new ArrayList<>();
+		for (Facet facet : node.getObject().getFacets()) list.add(buildFacetPath(node, facet.getName()));
+		return list.toArray(new String[list.size()]);
+	}
+
+	private String buildFacetPath(Node node, String name) {
+		Node aNode = node;
+		String path = node.getName() + node.getType() + name + ".class";
+		while (aNode.getContainer() != null) {
+			aNode = aNode.getContainer();
+			path = addToPath(name, aNode, path);
+
+		}
+
+		return path;
+	}
+
+	private String addToPath(String name, Node aNode, String path) {
+		for (Facet facet : aNode.getObject().getFacets())
+			if (facet.getName().equals(name))
+				path = aNode.getName() + aNode.getType() + name + "." + path;
+		return path;
+	}
+
 	private void addFacetTargets(Node node, Frame typeFrame) {
 		if (node.getObject().getFacetTargets().isEmpty()) return;
-		typeFrame.addFrame("target", projectName + ".extensions." + camelCase(node.getName()) + node.getType() + ".class");
+		Frame targetFrame = new Frame("target", node.is(Annotation.INTENTION) ? "intention" : "");
+		targetFrame.addFrame("target", projectName + ".extensions." + camelCase(node.getName()) + node.getType() + ".class");
 		Inflector inflector = getInflector(Locale.getDefault());
 		for (FacetTarget target : node.getObject().getFacetTargets()) {
-			typeFrame.addFrame("target", projectName + ".extensions." + inflector.plural(node.getType()).toLowerCase() + "." +
+			targetFrame.addFrame("target", projectName + ".extensions." + inflector.plural(node.getType()).toLowerCase() + "." +
 				inflector.plural(node.getName()).toLowerCase() + "." + camelCase(target.getDestinyName()) + node.getType() + ".class");
 		}
+		typeFrame.addFrame("target", targetFrame);
 	}
 
 	private void addSubs(Node node, Frame frame) {
 		Set<Node> subs = new HashSet<>();
 		collectSubs(node.getSubConcepts(), subs);
 		for (Node sub : subs)
-			add(sub, frame);
+			nodeToFrame(sub, frame);
 	}
 
 	private void collectSubs(Node[] subs, Collection<Node> list) {
@@ -127,7 +187,7 @@ public class FrameCreator {
 	private void addInner(Node node, Frame newFrame) {
 		for (Node inner : node.getInnerNodes())
 			if (!inner.isSub())
-				add(inner, newFrame);
+				nodeToFrame(inner, newFrame);
 	}
 
 	private void addVariables(Node node, final Frame frame) {

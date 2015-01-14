@@ -1,9 +1,7 @@
 package siani.tara.compiler.core.operation;
 
-import org.siani.itrules.Document;
+import org.siani.itrules.*;
 import org.siani.itrules.Formatter;
-import org.siani.itrules.RuleEngine;
-import org.siani.itrules.TemplateReader;
 import siani.tara.compiler.codegeneration.FrameCreator;
 import siani.tara.compiler.codegeneration.NameFormatter;
 import siani.tara.compiler.codegeneration.ResourceManager;
@@ -11,6 +9,7 @@ import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.core.operation.model.ModelOperation;
+import siani.tara.lang.DeclaredNode;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 import siani.tara.lang.NodeTree;
@@ -47,9 +46,9 @@ public class ModelToJavaOperation extends ModelOperation {
 		creator = new FrameCreator(model);
 		List<List<Node>> groupByBox = groupByBox(model.getTreeModel());
 		try {
-			writeDocuments(getBoxPath(File.separator), createBoxes(groupByBox));
+			writeBoxes(getBoxPath(File.separator), createBoxes(groupByBox));
 			if (!model.isTerminal())
-				writeDocuments(getMorphPath(File.separator), createMorphs());
+				writeMorphs(createMorphs());
 		} catch (TaraException e) {
 			LOG.severe("Error during java model generation: " + e.getMessage());
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
@@ -82,17 +81,27 @@ public class ModelToJavaOperation extends ModelOperation {
 			throw new TaraException("Morph.itr rules file not found.");
 		}
 		Set<Node> set = new HashSet<>();
-		getRootNodes(model.getTreeModel(), set);
+		getRootNodes(model, set);
 		return processMorphs(set, stream);
 	}
 
-	private void getRootNodes(Collection<Node> treeModel, Set<Node> list) {
+	private void getRootNodes(Model model, Set<Node> list) {
+		addRootAndSubs(model.getTreeModel(), list);
+		addAggregated(model.getNodeTable(), list);
+	}
+
+	private void addAggregated(Map<String, Node> nodeTable, Set<Node> list) {
+		for (Node node : nodeTable.values())
+			if (node.is(DeclaredNode.class) && node.isAggregated()) list.add(node);
+	}
+
+	private void addRootAndSubs(Collection<Node> treeModel, Set<Node> list) {
 		for (Node node : treeModel) {
 			list.add(node);
 			Node[] concepts = node.getSubConcepts();
 			if (concepts.length > 0) {
 				Collections.addAll(list, concepts);
-				getRootNodes(Arrays.asList(concepts), list);
+				addRootAndSubs(Arrays.asList(concepts), list);
 			}
 		}
 	}
@@ -102,10 +111,11 @@ public class ModelToJavaOperation extends ModelOperation {
 		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
 		addReferenceFormatter(ruleEngine);
 		for (Node node : nodes) {
-			if (node.is(TERMINAL)) continue;
+			if (!node.getModelOwner().equals(model.getModelName())) continue;
 			Document document = new Document();
-			ruleEngine.render(creator.createNodeFrame(node), document);
-			map.put(node.getName(), document);
+			Map.Entry<String, Frame> morphFrame = creator.createMorphFrame(node);
+			ruleEngine.render(morphFrame.getValue(), document);
+			map.put(morphFrame.getKey(), document);
 		}
 		return map;
 	}
@@ -137,7 +147,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(".")) + "Box", "_");
 	}
 
-	private void writeDocuments(String directory, Map<String, Document> documentMap) {
+	private void writeBoxes(String directory, Map<String, Document> documentMap) {
 		File destiny = new File(outFolder, directory);
 		destiny.mkdirs();
 		for (Map.Entry<String, Document> entry : documentMap.entrySet()) {
@@ -153,6 +163,21 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
+	private void writeMorphs(Map<String, Document> documentMap) {
+		for (Map.Entry<String, Document> entry : documentMap.entrySet()) {
+			File file = new File(outFolder, entry.getKey().replace(".", File.separator) + JAVA);
+			file.getParentFile().mkdirs();
+			try {
+				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
+				fileWriter.write(entry.getValue().content());
+				fileWriter.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
 	private Collection<String> collectParentBoxes(List<Node> nodes) {
 		Model parent = model.getParentModel();
 		if (parent == null) return Collections.EMPTY_LIST;
@@ -167,10 +192,15 @@ public class ModelToJavaOperation extends ModelOperation {
 	private List<List<Node>> groupByBox(NodeTree treeModel) {
 		Map<String, List<Node>> nodes = new HashMap();
 		for (Node node : treeModel) {
+			if (!model.getModelName().equals(node.getModelOwner())) continue;
 			if (!nodes.containsKey(node.getFile()))
 				nodes.put(node.getFile(), new ArrayList<Node>());
 			nodes.get(node.getFile()).add(node);
 		}
+		return pack(nodes);
+	}
+
+	private List<List<Node>> pack(Map<String, List<Node>> nodes) {
 		List<List<Node>> lists = new ArrayList<>();
 		for (List<Node> nodeList : nodes.values())
 			lists.add(nodeList);

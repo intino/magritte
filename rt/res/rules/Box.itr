@@ -2,9 +2,10 @@ defrule type(Box)
 package magritte.editors;
 
 import magritte.Model;
+$importFacet...[$NL]
 
 import static magritte.Annotation.*;
-$importMetric[$NL]
+$importMetric...[$NL]
 
 public class $name extends Box {
 
@@ -18,7 +19,7 @@ public class $name extends Box {
 
     @Override
     protected void loadDependencies() {
-        $import...[$NL]
+        [$dependency...[$NL].load(model());]
     }
 
     @Override
@@ -29,10 +30,7 @@ public class $name extends Box {
 endrule
 
 defrule type(Node) trigger(node)
-[$add.]def(["$name"]);
-	$annotation...[$NL]\
-    $nodeType...[$NL]\
-    $parent\
+[$relation();]def(["$name"]); $nodeType...[$NL][ $facet][ $address][ $annotation...[$NL]][ $parent]
     $variable+set...[$NL]\
     $reference\
     $node...[$NL]\
@@ -42,8 +40,16 @@ defrule trigger(import)
 $value.load(model());
 endrule
 
+defrule trigger(address)
+address($value);
+endrule
+
 defrule type(nodeType) trigger(nodeType)
-type("$name"[,$NL$target...[,$NL]]);
+type("$name"[,$NL$target]);
+endrule
+
+defrule type(target) !type(intention) trigger(target)
+$target...[, $NL]
 endrule
 
 defrule trigger(parent)
@@ -66,8 +72,6 @@ endrule
 defrule type(Variable) type(target) !type(List) slot-name(defaultValue) trigger(set)
 set("!$node:$name<$target", $defaultValue);
 endrule
-
-
 
 defrule type(Variable) type(reference) slot-name(variableValue) trigger(set)
 set("$name", node("$variableValue"));
