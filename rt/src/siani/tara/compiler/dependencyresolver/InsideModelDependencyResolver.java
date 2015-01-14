@@ -120,7 +120,7 @@ public class InsideModelDependencyResolver {
 	private void addInheritedAnnotations(Node parent, DeclaredNode node) {
 		for (Annotation annotation : parent.getAnnotations())
 			if (!annotation.equals(ABSTRACT))
-				node.getObject().add(annotation);
+				node.add(annotation);
 	}
 
 	private void calculateInheritedVariables(NodeObject parent, DeclaredNode node) {

@@ -32,11 +32,12 @@ public class ParentModelDependencyResolver {
 	}
 
 	private void addParentAnnotation(Annotation[] annotations, Node instance) {
-		for (Annotation annotation : annotations)
+		for (Annotation annotation : annotations) {
 			if (annotation.isMeta() && !instance.is(Annotation.getNormalAnnotationOfMeta(annotation)))
-				instance.getObject().add(Annotation.getNormalAnnotationOfMeta(annotation));
-			else if (annotation.equals(COMPONENT) || annotation.equals(AGGREGATED))
-				instance.getObject().add(annotation);
+				instance.add(Annotation.getNormalAnnotationOfMeta(annotation));
+			else if (!instance.is(annotation) && COMPONENT.equals(annotation) || AGGREGATED.equals(annotation))
+				instance.add(annotation);
+		}
 	}
 
 	private void setValuesToNodes() {

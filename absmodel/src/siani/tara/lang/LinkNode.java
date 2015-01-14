@@ -66,6 +66,11 @@ public class LinkNode extends Node {
 	}
 
 	@Override
+	protected List<Annotation> getAnnotationList() {
+		return annotations;
+	}
+
+	@Override
 	public NodeObject getObject() {
 		return destiny != null ? destiny.getObject() : null;
 	}

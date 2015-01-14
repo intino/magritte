@@ -28,7 +28,7 @@ import static siani.tara.intellij.project.module.ModuleProvider.getModuleOf;
 import static siani.tara.lang.Annotation.INTENTION;
 import static siani.tara.lang.Annotation.META_FACET;
 
-public class FacetsGenerator {
+public class FacetTargetsGenerator {
 
 	public static final String SRC = "src";
 	private final Project project;
@@ -38,11 +38,11 @@ public class FacetsGenerator {
 	private final PsiDirectory facetsHome;
 	private final PsiDirectory srcDirectory;
 
-	public FacetsGenerator(TaraBoxFile taraBoxFile) {
+	public FacetTargetsGenerator(TaraBoxFile taraBoxFile) {
 		this.taraBoxFile = taraBoxFile;
 		this.project = taraBoxFile.getProject();
 		module = ModuleProvider.getModuleOf(taraBoxFile);
-		VirtualFile src = getSRCDirectory(TaraUtil.getSourceRoots(taraBoxFile));
+		VirtualFile src = getSrcDirectory(TaraUtil.getSourceRoots(taraBoxFile));
 		srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), src);
 		FACETS_PATH = new String[]{project.getName().toLowerCase(), "extensions"};
 		facetsHome = findFacetsDestiny();
@@ -98,12 +98,11 @@ public class FacetsGenerator {
 		return psiClasses;
 	}
 
-
 	private PsiClass createFacetClass(Concept concept) {
 		PsiClass aClass = findClassInModule(concept.getName() + concept.getType(), getModuleOf(concept.getContainingFile()));
 		return (aClass != null) ? aClass :
 			JavaDirectoryService.getInstance().
-				createClass(facetsHome, concept.getName(), "TaraFacetClass", false, getOptionsForFacetClass(concept.getType()));
+				createClass(facetsHome, concept.getName(), "TaraFacetTargetClass", false, getOptionsForFacetClass(concept.getType()));
 	}
 
 	private List<PsiClass> createTargetClasses(Concept facet) {
@@ -170,7 +169,7 @@ public class FacetsGenerator {
 		String aPackage = makePackage(concept);
 		PsiClass aClass = findClassInModule(aPackage + "." + fullName, getModuleOf(concept.getContainingFile()));
 		return (aClass != null) ? aClass : JavaDirectoryService.getInstance().
-			createClass(createTargetDestiny(aPackage), name, "TaraFacetClass", false, getOptionsForFacetClass(concept.getType()));
+			createClass(createTargetDestiny(aPackage), name, "TaraFacetTargetClass", false, getOptionsForFacetClass(concept.getType()));
 	}
 
 	private PsiDirectory createTargetDestiny(final String aPackage) {
@@ -206,7 +205,7 @@ public class FacetsGenerator {
 		return map;
 	}
 
-	private VirtualFile getSRCDirectory(Collection<VirtualFile> virtualFiles) {
+	private VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {
 		for (VirtualFile file : virtualFiles)
 			if (file.isDirectory() && SRC.equals(file.getName())) return file;
 		throw new RuntimeException("Src directory not found");

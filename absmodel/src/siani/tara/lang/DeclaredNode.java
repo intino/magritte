@@ -24,6 +24,11 @@ public class DeclaredNode extends Node {
 		return getObject().getAnnotations();
 	}
 
+	@Override
+	protected List<Annotation> getAnnotationList() {
+		return getObject().annotations;
+	}
+
 	public NodeObject getObject() {
 		return (NodeObject) object;
 	}

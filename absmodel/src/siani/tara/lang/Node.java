@@ -34,6 +34,12 @@ public abstract class Node {
 
 	public abstract Annotation[] getAnnotations();
 
+	protected abstract List<Annotation> getAnnotationList();
+
+	public void add(Annotation annotation) {
+		getAnnotationList().add(annotation);
+	}
+
 	public abstract boolean isSub();
 
 	public DeclaredNode[] getSubConcepts() {

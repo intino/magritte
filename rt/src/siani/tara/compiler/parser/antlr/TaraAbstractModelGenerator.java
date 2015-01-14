@@ -85,7 +85,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void exitConcept(@NotNull ConceptContext ctx) {
 		Node node = conceptStack.peek();
 		if (node instanceof DeclaredNode) {
-			if (hasSubs(node)) node.getObject().add(Annotation.ABSTRACT);
+			if (hasSubs(node)) node.add(Annotation.ABSTRACT);
 			else if (!node.is(Annotation.ABSTRACT)) model.addIdentifier(node.getObject().getName());
 		}
 		model.add(node.getQualifiedName(), node);

@@ -1,0 +1,8 @@
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+
+import intentions.${FACET_PLURAL}.${TYPE}${FACET}Intention;
+import magritte.morphs.${NAME};
+
+public class ${NAME}${TYPE}${FACET} extends ${NAME} implements ${TYPE}${FACET}Intention {
+
+}

@@ -105,10 +105,6 @@ public class NodeObject extends ModelObject {
 		parameters.put(name, value);
 	}
 
-	public void add(Annotation annotation) {
-		annotations.add(annotation);
-	}
-
 	public boolean addAll(Collection<? extends Annotation> c) {
 		return annotations.addAll(c);
 	}
