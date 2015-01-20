@@ -89,6 +89,8 @@
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraIntentionLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraFacetLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="Tara"
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraMetricLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="JAVA"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaToTaraLineMarkerProvider"/>
     <gotoRelatedProvider implementation="siani.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
