@@ -1,9 +1,11 @@
 package siani.tara.intellij.annotator.semanticAnalizers;
 
+import com.intellij.psi.PsiElement;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
+import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.lang.Annotation;
 import siani.tara.lang.Node;
@@ -27,5 +29,12 @@ public class FacetTargetAnalyzer extends TaraAnalyzer {
 			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.in.nofacet.concept")));
 		else if (TaraPsiImplUtil.getContextOf(target) instanceof TaraFacetTarget)
 			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.not.allowed")));
+		else {
+			PsiElement resolve = ReferenceManager.resolve(target.getIdentifierReference());
+			if (resolve == null) return;
+			Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(resolve);
+			if (contextOf != null && contextOf.equals(parent))
+				results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.not.allowed")));
+		}
 	}
 }

@@ -11,6 +11,7 @@ import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.*;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
@@ -44,13 +45,22 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 			analyzeAsTuple();
 		if (hasErrors()) return;
 		if (variable instanceof Resource) analyzeAsResource();
+		else if (variable instanceof Word) analyzeAsWord();
 		else if (!variable.getType().equals(Primitives.MEASURE)) return;
+		if (hasErrors()) return;
 		String[] values = varInit.getValues();
 		if (varInit.getMeasureValue() != null) {
 			AnnotateAndFix result = new MetricAnalyzer(metamodel, variable, values, varInit.getMeasureValue()).analyze();
 			if (result != null) results.put(varInit, result);
 		}
+	}
 
+	private void analyzeAsWord() {
+		String varInitValue = this.varInit.getValue().getText();
+		Word word = (Word) variable;
+		for (Object value : word.getWordTypes()) if (value.toString().equals(varInitValue)) return;
+		String values = Arrays.toString(word.getWordTypes().toArray(new String[word.getWordTypes().size()]));
+		results.put(varInit, new AnnotateAndFix(ERROR, "Value not allowed. Expected types: " + values));
 	}
 
 	private void analyzeAsResource() {
@@ -85,7 +95,7 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 		return (valueType.equals(NATURAL) && (variable.getType().equals(INTEGER) || variable.getType().equals(DOUBLE)) || variable.getType().equals(MEASURE))
 			|| (valueType.equals(INTEGER) && (variable.getType().equals(DOUBLE) || variable.getType().equals(MEASURE)))
 			|| (valueType.equals(DOUBLE) && (variable.getType().equals(MEASURE)))
-			|| (valueType.equals(STRING) && (variable instanceof Resource));
+			|| (valueType.equals(STRING) && (variable.getType().equals(DATE) || (variable instanceof Resource)));
 	}
 
 	private void analyzeAsTuple() {

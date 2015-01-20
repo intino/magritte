@@ -115,7 +115,7 @@ naturalAttribute     ::= NATURAL_TYPE doubleMeasure? LIST? IDENTIFIER_KEY (EQUAL
 integerAttribute     ::= INT_TYPE     doubleMeasure? LIST? IDENTIFIER_KEY (EQUALS integerValue+ measureValue?)?      {pin=1}
 resource             ::= RESOURCE_KEY attributeType IDENTIFIER_KEY (EQUALS stringValue)? {pin=1}
 booleanAttribute     ::= BOOLEAN_TYPE LIST? IDENTIFIER_KEY (EQUALS booleanValue+)?       {pin=1}
-stringAttribute      ::= STRING_TYPE  LIST? IDENTIFIER_KEY (EQUALS stringValue+ )?       {pin=1}
+stringAttribute      ::= STRING_TYPE  LIST? IDENTIFIER_KEY (EQUALS stringValue+)?       {pin=1}
 dateAttribute        ::= DATE_TYPE    LIST? IDENTIFIER_KEY (EQUALS stringValue+)?        {pin=1}
 ratioAttribute       ::= RATIO_TYPE   LIST? IDENTIFIER_KEY (EQUALS doubleValue+)?        {pin=1}
 
@@ -135,7 +135,9 @@ word ::= WORD_KEY LIST? IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEW
 
 attributeType   ::= COLON measureType
 doubleMeasure   ::= COLON (MEASURE_VALUE_KEY | IDENTIFIER_KEY)
-measureType     ::= IDENTIFIER_KEY
+measureType     ::= IDENTIFIER_KEY {
+	implements = 'siani.tara.intellij.lang.psi.MeasureType'
+}
 
 stringValue     ::= STRING_VALUE_KEY  | (NEWLINE? STRING_MULTILINE_VALUE_KEY)
 booleanValue    ::= BOOLEAN_VALUE_KEY
@@ -167,7 +169,7 @@ annotations ::= annotation+ {
 }
 
 annotation ::= PLUS? (ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED
-	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | READONLY) {
+	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | READONLY | CASE) {
 	pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotation'

@@ -105,6 +105,7 @@ ALWAYS              : 'always';
 ADDRESSED           : 'addressed';
 AGGREGATED          : 'aggregated';
 READONLY            : 'readonly';
+CASE                : 'case';
 ROOT                : 'root';
 
 LEFT_PARENTHESIS    : '(';

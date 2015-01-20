@@ -7,6 +7,7 @@ import siani.tara.lang.Attribute;
 import siani.tara.lang.Model;
 import siani.tara.lang.Variable;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class MetricAnalyzer {
 
 	private List<String> getAllowedMetrics() {
 		List<String> list = new ArrayList<>();
-		for (Map.Entry<String, List<Map.Entry<String, String>>> entry : metamodel.getMetrics().entrySet())
+		for (Map.Entry<String, List<SimpleEntry<String, String>>> entry : metamodel.getMetrics().entrySet())
 			if (entry.getKey().equalsIgnoreCase(((Attribute) variable).getMeasureType()))
 				for (Map.Entry<String, String> stringEntry : entry.getValue())
 					list.add(stringEntry.getValue());

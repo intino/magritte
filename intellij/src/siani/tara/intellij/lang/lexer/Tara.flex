@@ -112,6 +112,7 @@ LOCAL               = "local"
 INTENTION           = "intention"
 FACET               = "facet"
 ADDRESSED           = "addressed"
+CASE                = "case"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -198,6 +199,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{LOCAL}                         {   return TaraTypes.LOCAL; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
     {AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
+    {CASE}                          {   return TaraTypes.CASE; }
 	{READONLY}                      {   return TaraTypes.READONLY; }
     {ROOT}                          {   return TaraTypes.ROOT; }
 

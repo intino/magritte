@@ -76,6 +76,7 @@ ADDRESSED           = "addressed"
 COMPONENT           = "component"
 AGGREGATED          = "aggregated"
 READONLY            = "readonly"
+CASE                = "case"
 ROOT                = "root"
 
 LEFT_PARENTHESIS    = "("
@@ -164,6 +165,7 @@ NEWLINE             = [\n]+
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
 	{AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
 	{READONLY}                      {   return TaraTypes.READONLY; }
+	{CASE}                          {   return TaraTypes.CASE; }
     {ROOT}                          {   return TaraTypes.ROOT; }
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }

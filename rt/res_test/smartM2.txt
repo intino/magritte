@@ -5,7 +5,7 @@ project
 SmartCities
 module
 tafat
-system
+terminal
 false
 encoding
 UTF-8

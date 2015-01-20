@@ -7,7 +7,6 @@ import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Node;
 import siani.tara.lang.Variable;
-import siani.tara.lang.Word;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +25,9 @@ public class ParametersAnalyzer extends TaraAnalyzer {
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(parameters);
 		Node node = getMetaConcept(concept);
 		if (node == null) return;
-		boolean system = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(parameters.getContainingFile())).isTerminal();
+		boolean terminal = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(parameters.getContainingFile())).isTerminal();
 		List<Variable> variables = node.getObject().getVariables();
-		List<String> compare = compare(collectMinimumNumberOfParameter(variables, system), collectDeclaredParameters(concept, variables));
+		List<String> compare = compare(collectMinimumNumberOfParameter(variables, terminal), collectDeclaredParameters(concept, variables));
 		if (!compare.isEmpty())
 			results.put(parameters, new AnnotateAndFix(ERROR, "parameters missed: " + parametersToString(compare)));
 	}
@@ -60,10 +59,20 @@ public class ParametersAnalyzer extends TaraAnalyzer {
 
 	private List<String> collectMinimumNumberOfParameter(List<Variable> variables, boolean terminal) {
 		List<String> result = new ArrayList<>();
-		for (Variable variable : variables)
-			if (!((variable.getDefaultValues() != null && variable.getDefaultValues().length > 0) || (!terminal && variable.isTerminal()) || (variable instanceof Word)))
-				result.add(variable.getName());
+		for (Variable variable : variables) {
+			if (hasDefaultValue(variable) || isTerminalVariable(terminal, variable))
+				continue;
+			result.add(variable.getName());
+		}
 		return result;
+	}
+
+	private boolean isTerminalVariable(boolean terminal, Variable variable) {
+		return (!terminal && variable.isTerminal());
+	}
+
+	private boolean hasDefaultValue(Variable variable) {
+		return (variable.getDefaultValues() != null && variable.getDefaultValues().length > 0);
 	}
 
 	private String parametersToString(List<String> parameterList) {

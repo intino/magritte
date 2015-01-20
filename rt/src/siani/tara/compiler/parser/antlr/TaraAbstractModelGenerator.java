@@ -104,7 +104,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private String getParent(ConceptContext ctx) {
-		if(ctx.signature().parent() == null) return null;
+		if (ctx.signature().parent() == null) return null;
 		IdentifierReferenceContext identifierReference = ctx.signature().parent().identifierReference();
 		return identifierReference != null ? identifierReference.getText() : null;
 	}

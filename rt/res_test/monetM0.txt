@@ -5,8 +5,8 @@ project
 census
 module
 adeje
-system
-false
+terminal
+true
 encoding
 UTF-8
 models

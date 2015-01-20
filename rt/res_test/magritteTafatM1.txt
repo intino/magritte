@@ -5,7 +5,7 @@ project
 millener
 module
 ontology
-system
+terminal
 false
 encoding
 UTF-8

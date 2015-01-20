@@ -1,11 +1,12 @@
 src_file
 /Users/oroncal/workspace/sandbox/Monet/service/model/Main.tara
+/Users/oroncal/workspace/sandbox/Monet/service/model/Ontology.tara
 
 project
 census
 module
 service
-system
+terminal
 false
 encoding
 UTF-8

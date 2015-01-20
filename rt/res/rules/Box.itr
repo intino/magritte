@@ -30,10 +30,10 @@ public class $name extends Box {
 endrule
 
 defrule type(Node) trigger(node)
-[$relation();]def(["$name"]); $nodeType...[$NL][ $facet][ $address][ $annotation...[$NL]][ $parent]
-    $variable+set...[$NL]\
+[$relation();]def(["$name"]); $nodeType...[$NL][ $facet][ $address][ $annotation...[$NL]][ $parent]$variable+set...[$NL]\
     $reference\
     $node...[$NL]\
+[$back()]\
 endrule
 
 defrule trigger(import)
@@ -50,6 +50,10 @@ endrule
 
 defrule type(target) !type(intention) trigger(target)
 $target...[, $NL]
+endrule
+
+defrule type(facetApply) trigger(facet)
+type("$name"[, $apply]);
 endrule
 
 defrule trigger(parent)
@@ -75,6 +79,14 @@ endrule
 
 defrule type(Variable) type(reference) slot-name(variableValue) trigger(set)
 set("$name", node("$variableValue"));
+endrule
+
+defrule type(Variable) type(string) !type(List) slot-name(variableValue) trigger(set)
+set("$name", "$variableValue");
+endrule
+
+defrule type(Variable) type(resource) !type(List) slot-name(variableValue) trigger(set)
+set("$name", resource("$variableValue"));
 endrule
 
 defrule type(Variable) type(List) slot-name(variableValue) trigger(set)

@@ -6,7 +6,6 @@ import org.junit.Test;
 import siani.tara.lang.LinkNode;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
-import siani.tara.lang.util.ModelLoader;
 
 public class ModelTest {
 
@@ -14,7 +13,7 @@ public class ModelTest {
 
 	@Before
 	public void setUp() throws Exception {
-		model = ModelLoader.load("/Users/octavio/workspace/tara/rt/res_test/", "siani");
+//		model = ModelLoader.load("/Users/octavio/workspace/tara/rt/res_test/", "siani");
 	}
 
 	@Test
@@ -49,4 +48,36 @@ public class ModelTest {
 	}
 
 
+	private String rebuild(String metaNode) {
+		String[] names = metaNode.split("\\.");
+		String qn = "";
+		boolean inLink = false;
+		for (String name : names) {
+			if (name.startsWith("[")) inLink = true;
+			if (!inLink) qn += "." + name;
+			else if (name.endsWith("@link]")) qn += "." + name.replace("@link]", "").replace("[","");
+			if (name.endsWith("]")) inLink = false;
+		}
+		return qn.substring(1);
+	}
+
+	@Test
+	public void testName() throws Exception {
+		String metanode = "Animales.Perro.[Animales.Animal.FechaNacimiento@link]";
+		Assert.assertEquals("Animales.Perro.FechaNacimiento", rebuild(metanode));
+
+		metanode = "Animales.Perro.[FechaNacimiento@link].Milu";
+		Assert.assertEquals("Animales.Perro.FechaNacimiento.Milu", rebuild(metanode));
+
+		metanode = "Animales.Perro.[FechaNacimiento@link].Milu.Aq344";
+		Assert.assertEquals("Animales.Perro.FechaNacimiento.Milu.Aq344", rebuild(metanode));
+		metanode = "";
+		Assert.assertEquals("", rebuild(metanode));
+
+		metanode = "Animales";
+		Assert.assertEquals("Animales", rebuild(metanode));
+
+		metanode = "Animales.Perro.[FechaNacimiento@link].Milu.Aq344.[Animales.Animal.FechaNacimiento@link]";
+		Assert.assertEquals("Animales.Perro.FechaNacimiento.Milu.Aq344.FechaNacimiento", rebuild(metanode));
+	}
 }

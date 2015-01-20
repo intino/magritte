@@ -59,6 +59,8 @@ public class ModelLoader {
 			if (inner instanceof LinkNode) {
 				LinkNode linkNode = (LinkNode) inner;
 				Node destiny = model.searchNode(linkNode.getDestinyQN());
+				if (destiny == null)
+					throw new RuntimeException("Destiny of LinkNode " + node.getQualifiedName() + ", not found");
 				linkNode.setDestiny((DeclaredNode) destiny);
 			} else restoreDestinyLinks(inner, model);
 	}

@@ -102,7 +102,7 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.MODULE:
 					configuration.setModule(reader.readLine());
 					break;
-				case TaraRtConstants.SYSTEM:
+				case TaraRtConstants.TERMINAL:
 					configuration.setSystem(Boolean.valueOf(reader.readLine()));
 					break;
 				case TaraRtConstants.MODELS_PATH:

@@ -93,12 +93,17 @@ public class ParentModelDependencyResolver {
 				clone.addInheritedType(node.getObject().getName());
 	}
 
-	private Collection<Node> getInstancesOf(Node node) {
+	private Collection<Node> getInstancesOf(Node metaNode) {
+		if (metaNode.getName() == null) return Collections.EMPTY_LIST;
 		List<Node> instances = new ArrayList<>();
 		for (Node instance : model.getNodeTable().values())
-			if (instance.getObject().getType().equals(node.getName()))
+			if (instance.getObject().getType().equals(metaNode.getName()) && isInstance(metaNode, instance))
 				instances.add(instance);
 		return instances;
+	}
+
+	private boolean isInstance(Node metaNode, Node instance) {
+		return parent.searchNode(instance.getMetaQN()).equals(metaNode);
 	}
 
 	private void addTerminalNodes(Map<String, Node> terminals) {
@@ -106,7 +111,6 @@ public class ParentModelDependencyResolver {
 			if (terminal.getObject().is(FACET)) resolveTargets(terminal);
 			model.add(terminal);
 			addIdentifiers(terminal);
-
 		}
 	}
 

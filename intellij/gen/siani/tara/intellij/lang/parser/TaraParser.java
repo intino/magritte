@@ -1,14 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package siani.tara.intellij.lang.parser;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static siani.tara.intellij.lang.psi.TaraTypes.*;
-import static siani.tara.intellij.lang.parser.TaraParserUtil.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
+import com.intellij.psi.tree.IElementType;
+
+import static siani.tara.intellij.lang.parser.TaraParserUtil.*;
+import static siani.tara.intellij.lang.psi.TaraTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class TaraParser implements PsiParser {
@@ -228,7 +228,7 @@ public class TaraParser implements PsiParser {
 
   /* ********************************************************** */
   // PLUS? (ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED
-  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | READONLY)
+  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | READONLY | CASE)
   public static boolean annotation(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotation")) return false;
     boolean r;
@@ -247,7 +247,7 @@ public class TaraParser implements PsiParser {
   }
 
   // ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED
-  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | READONLY
+  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | READONLY | CASE
   private static boolean annotation_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotation_1")) return false;
     boolean r;
@@ -266,6 +266,7 @@ public class TaraParser implements PsiParser {
     if (!r) r = consumeToken(b, ADDRESSED);
     if (!r) r = consumeToken(b, AGGREGATED);
     if (!r) r = consumeToken(b, READONLY);
+    if (!r) r = consumeToken(b, CASE);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1913,7 +1914,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // STRING_TYPE  LIST? IDENTIFIER_KEY (EQUALS stringValue+ )?
+  // STRING_TYPE  LIST? IDENTIFIER_KEY (EQUALS stringValue+)?
   public static boolean stringAttribute(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stringAttribute")) return false;
     if (!nextTokenIs(b, STRING_TYPE)) return false;
@@ -1935,7 +1936,7 @@ public class TaraParser implements PsiParser {
     return true;
   }
 
-  // (EQUALS stringValue+ )?
+  // (EQUALS stringValue+)?
   private static boolean stringAttribute_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stringAttribute_3")) return false;
     stringAttribute_3_0(b, l + 1);

@@ -24,7 +24,7 @@ project
 SmartCities
 module
 smartcities
-system
+terminal
 false
 build_number
 1418984929258

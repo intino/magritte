@@ -1,8 +1,9 @@
 package siani.tara.lang;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Primitives {
 
@@ -85,35 +86,7 @@ public class Primitives {
 			}
 		});
 
-		CONVERTER_MAP.put(DATE, new Converter() {
-			SimpleDateFormat[] formats = new SimpleDateFormat[]{
-				new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault()),
-				new SimpleDateFormat("yyyy-MM-dd-HH-mm", Locale.getDefault()),
-				new SimpleDateFormat("yyyy-MM-dd-HH", Locale.getDefault()),
-				new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
-				new SimpleDateFormat("yyyy", Locale.getDefault())
-			};
-
-			@Override
-			public Date[] convert(String... date) {
-				List<Date> objects = new ArrayList<>();
-				for (String aDate : date)
-					for (SimpleDateFormat format : formats)
-						try {
-							objects.add(format.parse(aDate));
-							break;
-						} catch (ParseException ignored) {
-						}
-				return objects.toArray(new Date[objects.size()]);
-			}
-
-			@Override
-			public String[] convert(Object... value) {
-				List<String> strings = new ArrayList<>();
-				for (Object o : value) strings.add(formats[0].format((Date) o));
-				return strings.toArray(new String[strings.size()]);
-			}
-		});
+		CONVERTER_MAP.put(DATE, stringConverter);
 	}
 
 	public static String[] getPrimitives() {

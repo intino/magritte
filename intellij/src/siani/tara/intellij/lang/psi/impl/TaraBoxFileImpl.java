@@ -169,7 +169,7 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 	private void setMetamodelImport(String metamodelName) {
 		Import anImport = getMetamodelImport();
 		if (anImport != null) removeMetamodelImport();
-		if (metamodelName != null)
+		if (metamodelName != null && !metamodelName.isEmpty())
 			addImport(TaraElementFactory.getInstance(this.getProject()).createMetamodelImport(metamodelName));
 	}
 

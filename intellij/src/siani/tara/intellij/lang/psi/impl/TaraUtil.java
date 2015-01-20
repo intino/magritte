@@ -186,6 +186,13 @@ public class TaraUtil {
 		return fileIndex.getModuleForFile(file.getVirtualFile());
 	}
 
+	public static VirtualFile getSrcRoot(Collection<VirtualFile> virtualFiles) {
+		for (VirtualFile file : virtualFiles)
+			if (file.isDirectory() && "src".equals(file.getName())) return file;
+		throw new RuntimeException("src directory not found");
+	}
+
+
 	public static boolean isTerminalBox(TaraBoxFileImpl boxFile) {
 		return ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(boxFile)).isTerminal();
 	}

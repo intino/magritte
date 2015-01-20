@@ -8,7 +8,7 @@ public abstract class Node {
 
 	protected transient static final String ANONYMOUS = "@anonymous";
 	protected transient static final String IN_FACET_TARGET = "@facetTarget";
-	protected transient static final String LINK = "@link";
+	public transient static final String LINK = "@link";
 	protected String qualifiedName;
 	protected String file;
 	protected int line;
@@ -125,5 +125,13 @@ public abstract class Node {
 
 	public boolean addInstanceType(String inheritedType) {
 		return instanceTypes.add(inheritedType);
+	}
+
+	public boolean isAnnonymous() {
+		return getName().contains(ANONYMOUS);
+	}
+
+	public String getMetaQN() {
+		return container == null ? (isSub() ? "" : getType()) : container.getMetaQN() + (isSub() ? "" : "." + getType());
 	}
 }

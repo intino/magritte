@@ -25,7 +25,6 @@ import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getParentOf;
 
 public class IntentionsGenerator {
 
-	public static final String SRC = "src";
 	private static final String INTENTIONS = "intentions";
 	private static final String INTENTION = "Intention";
 
@@ -38,7 +37,7 @@ public class IntentionsGenerator {
 	public IntentionsGenerator(Project project, TaraBoxFile taraBoxFile) {
 		this.project = project;
 		this.taraBoxFile = taraBoxFile;
-		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(taraBoxFile));
+		VirtualFile srcDirectory = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(taraBoxFile));
 		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), srcDirectory);
 		this.module = ModuleProvider.getModuleOf(taraBoxFile);
 	}
@@ -206,11 +205,6 @@ public class IntentionsGenerator {
 		return destiny[0];
 	}
 
-	private VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {
-		for (VirtualFile file : virtualFiles)
-			if (file.isDirectory() && SRC.equals(file.getName())) return file;
-		throw new RuntimeException("src directory not found");
-	}
 
 	private Concept[] getIntentions(TaraBoxFile taraBoxFile) {
 		List<Concept> intentions = new ArrayList<>();

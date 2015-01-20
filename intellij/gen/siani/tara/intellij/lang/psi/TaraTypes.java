@@ -68,6 +68,7 @@ public interface TaraTypes {
 	IElementType AS = new TaraTokenType("AS");
 	IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
 	IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
+	IElementType CASE = new TaraTokenType("CASE");
 	IElementType COLON = new TaraTokenType("COLON");
 	IElementType COMMA = new TaraTokenType("COMMA");
 	IElementType COMPONENT = new TaraTokenType("COMPONENT");

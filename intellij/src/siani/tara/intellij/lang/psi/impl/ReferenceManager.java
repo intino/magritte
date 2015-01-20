@@ -239,4 +239,10 @@ public class ReferenceManager {
 		List<TaraIdentifier> importIdentifiers = anImport.getHeaderReference().getIdentifierList();
 		return resolve(importIdentifiers.get(importIdentifiers.size() - 1));
 	}
+
+	public static PsiElement resolveMeasure(MeasureType element) {
+		Project project = element.getProject();
+		String path = project.getName().toLowerCase() + "." + "metrics" + "." + element.getText();
+		return resolveJavaClassReference(project, path);
+	}
 }

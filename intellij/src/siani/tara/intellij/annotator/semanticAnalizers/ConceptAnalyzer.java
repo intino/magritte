@@ -144,9 +144,9 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 
 	private void analyzeMetaAnnotationConstrains(Node node) {
 		if (!analyzeAsComponent(node))
-			results.put(concept.getIdentifierNode(), new AnnotateAndFix(ERROR, "Component cannot be declared as root"));
+			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Component cannot be declared as root"));
 		else if (!isFacet(node))
-			results.put(concept.getIdentifierNode(), new AnnotateAndFix(ERROR, "Facets are no instantiable"));
+			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Facets are no instantiable"));
 		else if (!analyzeAsNamed(node))
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name required", new AddAddressFix(concept)));
 		else if (!analyzeAsProperty(node))

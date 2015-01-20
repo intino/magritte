@@ -2,7 +2,8 @@ package siani.tara.compiler.core.operation;
 
 import org.siani.itrules.*;
 import org.siani.itrules.Formatter;
-import siani.tara.compiler.codegeneration.FrameCreator;
+import siani.tara.compiler.codegeneration.BoxFrameCreator;
+import siani.tara.compiler.codegeneration.MorphFrameCreator;
 import siani.tara.compiler.codegeneration.NameFormatter;
 import siani.tara.compiler.codegeneration.ResourceManager;
 import siani.tara.compiler.core.CompilationUnit;
@@ -28,7 +29,6 @@ public class ModelToJavaOperation extends ModelOperation {
 	private static final String MORPH_ITR = "Morph.itr";
 	private static final String JAVA = ".java";
 	private final CompilationUnit compilationUnit;
-	private FrameCreator creator;
 	private Model model;
 	private File rulesFolder;
 	private File outFolder;
@@ -43,12 +43,10 @@ public class ModelToJavaOperation extends ModelOperation {
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		this.model = model;
-		creator = new FrameCreator(model);
 		List<List<Node>> groupByBox = groupByBox(model.getTreeModel());
 		try {
 			writeBoxes(getBoxPath(File.separator), createBoxes(groupByBox));
-			if (!model.isTerminal())
-				writeMorphs(createMorphs());
+			if (!model.isTerminal()) writeMorphs(createMorphs());
 		} catch (TaraException e) {
 			LOG.severe("Error during java model generation: " + e.getMessage());
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
@@ -106,6 +104,17 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
+	private Map<String, Document> processBoxes(List<List<Node>> groupByBox, InputStream rulesInput) {
+		Map<String, Document> map = new HashMap();
+		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
+		for (List<Node> nodes : groupByBox) {
+			Document document = new Document();
+			ruleEngine.render(new BoxFrameCreator(model).create(nodes, collectParentBoxes(nodes)), document);
+			map.put(composeBoxName(nodes.get(0).getFile()), document);
+		}
+		return map;
+	}
+
 	private Map<String, Document> processMorphs(Collection<Node> nodes, InputStream rulesInput) {
 		Map<String, Document> map = new HashMap();
 		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
@@ -113,7 +122,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		for (Node node : nodes) {
 			if (!node.getModelOwner().equals(model.getModelName())) continue;
 			Document document = new Document();
-			Map.Entry<String, Frame> morphFrame = creator.createMorphFrame(node);
+			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(model).create(node);
 			ruleEngine.render(morphFrame.getValue(), document);
 			map.put(morphFrame.getKey(), document);
 		}
@@ -129,17 +138,6 @@ public class ModelToJavaOperation extends ModelOperation {
 				return getMorphPath(".") + "." + buildMorphPath(val);
 			}
 		});
-	}
-
-	private Map<String, Document> processBoxes(List<List<Node>> groupByBox, InputStream rulesInput) {
-		Map<String, Document> map = new HashMap();
-		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
-		for (List<Node> nodes : groupByBox) {
-			Document document = new Document();
-			ruleEngine.render(creator.createBoxFrame(nodes, collectParentBoxes(nodes)), document);
-			map.put(composeBoxName(nodes.get(0).getFile()), document);
-		}
-		return map;
 	}
 
 	private String composeBoxName(String file) {

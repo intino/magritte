@@ -25,7 +25,7 @@ public class TaraRtConstants {
 	public static final String CLASSPATH = "classpath";
 	public static final String MODULE = "module";
 	public static final String MODELS_PATH = "models";
-	public static final String SYSTEM = "system";
+	public static final String TERMINAL = "terminal";
 	public static final String TDK_HOME = "jdk_home";
 	public static final String BUILD_NUMBER = "build_number";
 

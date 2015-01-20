@@ -5,7 +5,7 @@ project
 millener
 module
 engine
-system
+terminal
 false
 encoding
 UTF-8

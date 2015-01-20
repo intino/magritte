@@ -75,7 +75,7 @@ annotationsAndFacets: IS (annotations | facetApply);
 annotations: annotation+;
 
 annotation: PLUS? (ABSTRACT | TERMINAL | SINGLE | REQUIRED | READONLY |
-              NAMED | FACET | INTENTION | ROOT | COMPONENT | PROPERTY | LOCAL | ADDRESSED | AGGREGATED);
+              NAMED | FACET | INTENTION | ROOT | COMPONENT | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | CASE);
 
 varInit : IDENTIFIER EQUALS initValue;
 

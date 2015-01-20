@@ -1,11 +1,12 @@
 src_file
 /Users/oroncal/workspace/sandbox/Monet/engine/model/Main.tara
+/Users/oroncal/workspace/sandbox/Monet/engine/model/Tafat.tara
 
 project
 census
 module
 engine
-system
+terminal
 false
 encoding
 UTF-8

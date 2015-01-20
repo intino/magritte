@@ -1,6 +1,7 @@
 package siani.tara.lang;
 
 import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
 
 import static siani.tara.lang.Annotation.TERMINAL;
 
@@ -11,7 +12,7 @@ public class Model {
 	private transient Map<String, Node> nodeTable = new HashMap<>();
 	private NodeTree nodeTree = new NodeTree();
 	private Set<String> identifiers = new HashSet<>();
-	private Map<String, List<Map.Entry<String, String>>> metrics = new HashMap<>();
+	private Map<String, List<SimpleEntry<String, String>>> metrics = new HashMap<>();
 	private boolean terminal;
 
 	public Model(String name) {
@@ -58,22 +59,22 @@ public class Model {
 	}
 
 	public Node get(String qualifiedName) {
-		if (!nodeTable.containsKey(qualifiedName)) return null;
+		if (nodeTable == null || !nodeTable.containsKey(qualifiedName)) return null;
 		return nodeTable.get(qualifiedName);
 	}
 
-	public void addMetrics(Map<String, List<Map.Entry<String, String>>> metrics) {
+	public void addMetrics(Map<String, List<SimpleEntry<String, String>>> metrics) {
 		this.metrics.putAll(metrics);
 	}
 
-	public Map<String, List<Map.Entry<String, String>>> getMetrics() {
+	public Map<String, List<SimpleEntry<String, String>>> getMetrics() {
 		return metrics;
 	}
 
 	public Map<String, Node> getTerminalNodes() {
 		Map<String, Node> terminals = new HashMap<>();
 		for (Node node : getNodeTable().values())
-			if (node.getObject().is(TERMINAL))
+			if (node.is(DeclaredNode.class) && node.getObject().is(TERMINAL))
 				terminals.put(node.getName(), node);
 		return terminals;
 	}
@@ -162,7 +163,7 @@ public class Model {
 	}
 
 	private boolean isInFacet(String nodeName) {
-		return nodeName.contains("@");
+		return !nodeName.contains(Node.ANONYMOUS) && nodeName.contains("@");
 	}
 
 	private String getFacet(String nodeName) {
