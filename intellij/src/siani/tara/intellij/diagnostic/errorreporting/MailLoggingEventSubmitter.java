@@ -12,7 +12,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-public class LoggingEventSubmitter {
+public class MailLoggingEventSubmitter {
 	private static final String TARA_MAIL_ADMIN_FROM = "tara.mail.admin.from";
 	private static final String TARA_MAIL_ADMIN_TO = "tara.mail.admin.to";
 	private static final String TARA_MAIL_ADMIN_HOST = "tara.mail.admin.host";
@@ -22,12 +22,12 @@ public class LoggingEventSubmitter {
 	private static final String PLUGIN_ID = "plugin.id";
 	private static final String PLUGIN_VERSION = "plugin.version";
 	private static final String PLUGIN_NAME = "plugin.name";
-	private static final Logger LOG = Logger.getInstance(LoggingEventSubmitter.class.getName());
+	private static final Logger LOG = Logger.getInstance(MailLoggingEventSubmitter.class.getName());
 	private final String subject;
 	private String htmlBody;
 	private Properties emailProperties;
 
-	public LoggingEventSubmitter(Properties emailProperties, String subject, String textBody) {
+	public MailLoggingEventSubmitter(Properties emailProperties, String subject, String textBody) {
 		MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
 		mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
 		mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
