@@ -49,7 +49,6 @@ public class PivotalLoggingEventSubmitter {
 		HttpURLConnection connection = createConnection("POST", story.url + COMMENTS);
 		addComments(connection, story);
 		checkResponse(connection);
-		System.out.println(getResponse(connection));
 	}
 
 	private void addComments(HttpURLConnection connection, PivotalStory story) throws IOException {
@@ -72,7 +71,6 @@ public class PivotalLoggingEventSubmitter {
 		String output;
 		while ((output = reader.readLine()) != null)
 			builder.append(output);
-		System.out.println(builder.toString());
 		return builder.toString();
 	}
 

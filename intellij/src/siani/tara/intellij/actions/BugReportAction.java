@@ -9,6 +9,7 @@ import com.intellij.openapi.extensions.PluginDescriptor;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.actions.dialog.BugReportDialogPane;
@@ -16,6 +17,8 @@ import siani.tara.intellij.diagnostic.errorreporting.PivotalLoggingEventSubmitte
 import siani.tara.intellij.lang.TaraIcons;
 
 import java.util.Properties;
+
+import static siani.tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitterBundle.message;
 
 public class BugReportAction extends AnAction implements DumbAware {
 	public static final Logger LOG = Logger.getInstance("Config module Action");
@@ -41,8 +44,10 @@ public class BugReportAction extends AnAction implements DumbAware {
 		}
 		BugReportDialogPane configDialog = new BugReportDialogPane(e.getProject());
 		configDialog.show();
-		if (configDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE)
+		if (configDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
 			sendReport(configDialog.getReportType(), configDialog.getReportTitle(), configDialog.getReportDescription());
+			Messages.showInfoMessage(e.getProject(), message("successful.dialog.message"), message("successful.dialog.title"));
+		}
 	}
 
 	private void sendReport(String type, String reportTitle, String reportDescription) {
@@ -50,6 +55,7 @@ public class BugReportAction extends AnAction implements DumbAware {
 		final Properties properties = createErrorProperties(plugin, reportTitle, reportDescription, type);
 		PivotalLoggingEventSubmitter submitter = new PivotalLoggingEventSubmitter(properties);
 		submitter.submit();
+
 	}
 
 	private Properties createErrorProperties(PluginDescriptor descriptor, String title, String description, String type) {
@@ -68,7 +74,7 @@ public class BugReportAction extends AnAction implements DumbAware {
 				properties.put(REPORT_DESCRIPTION, description);
 			if (title != null)
 				properties.put(REPORT_TITLE, title);
-			if (type!= null)
+			if (type != null)
 				properties.put(REPORT_TYPE, type);
 		}
 		return properties;
