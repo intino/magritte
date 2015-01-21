@@ -13,7 +13,6 @@ import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Annotation;
-import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
@@ -154,11 +153,9 @@ public class TaraFilters {
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			if (element instanceof PsiElement && context != null && context.getParent() != null)
 				if (context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context)) {
-					Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(TaraPsiImplUtil.getConceptContainerOf(context));
-					if (contextOf == null) return false;
-					Model metaModel = TaraLanguage.getMetaModel(contextOf.getFile());
-					if (metaModel == null) return false;
-					Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(contextOf));
+					Concept concept = TaraPsiImplUtil.getConceptContainerOf(TaraPsiImplUtil.getConceptContainerOf(context));
+					if (concept == null) return false;
+					Node node = TaraUtil.findNode(concept, TaraLanguage.getMetaModel(concept.getFile()));
 					if (node != null && node.getObject().is(Annotation.INTENTION))
 						return true;
 				}

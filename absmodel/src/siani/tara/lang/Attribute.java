@@ -6,15 +6,19 @@ public class Attribute extends Variable {
 	public String measureType;
 	public Integer count = 1;
 
+	public Attribute(String type, String name) {
+		this(type, name, false, false);
+	}
+
 	public Attribute(String type, String name, boolean isList) {
+		this(type, name, false, isList);
+	}
+
+	public Attribute(String type, String name, boolean inherited, boolean isList) {
+		super(inherited);
 		this.primitiveType = type;
 		this.name = name;
 		this.isList = isList;
-	}
-
-	public Attribute(String type, String name) {
-		this.primitiveType = type;
-		this.name = name;
 	}
 
 	public String getMeasureValue() {

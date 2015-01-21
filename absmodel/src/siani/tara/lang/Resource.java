@@ -6,6 +6,11 @@ public class Resource extends Variable {
 	public final String fileType;
 
 	public Resource(String fileType, String name) {
+		this(fileType, name, false);
+	}
+
+	public Resource(String fileType, String name, boolean inherited) {
+		super(inherited);
 		this.fileType = fileType;
 		this.name = name;
 	}

@@ -19,7 +19,6 @@ import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import javax.swing.*;
@@ -224,16 +223,12 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	private boolean isMetaComponent() {
-		Model metamodel = TaraLanguage.getMetaModel(this.getFile());
-		if (metamodel == null) return false;
-		Node node = metamodel.searchNode(this.getMetaQualifiedName());
+		Node node = TaraUtil.findNode((Concept) this, TaraLanguage.getMetaModel(this.getFile()));
 		return (node != null && node.getObject().is(COMPONENT));
 	}
 
 	public boolean isMetaAggregated() {
-		Model metamodel = TaraLanguage.getMetaModel(this.getFile());
-		if (metamodel == null) return false;
-		Node node = metamodel.searchNode(this.getMetaQualifiedName());
+		Node node = TaraUtil.findNode((Concept) this, TaraLanguage.getMetaModel(this.getFile()));
 		return (node != null && node.getObject().is(AGGREGATED));
 	}
 

@@ -18,6 +18,7 @@ import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
+import siani.tara.lang.FacetTarget;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -192,9 +193,9 @@ public class TaraUtil {
 		throw new RuntimeException("src directory not found");
 	}
 
-
 	public static boolean isTerminalBox(TaraBoxFileImpl boxFile) {
-		return ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(boxFile)).isTerminal();
+		ModuleConfiguration instance = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(boxFile));
+		return instance != null && instance.isTerminal();
 	}
 
 	public static Concept findConceptByQN(String qualifiedName, PsiFile file) {
@@ -211,6 +212,33 @@ public class TaraUtil {
 	}
 
 	public static Node findNode(Concept concept, Model model) {
-		return model != null ? model.searchNode(concept.getMetaQualifiedName()) : null;
+		Model.SearchNode searchTree = createSearchTree(concept);
+		return model != null ? model.searchNode(searchTree) : null;
+	}
+
+	private static Model.SearchNode createSearchTree(Concept concept) {
+		Model.SearchNode forward = null;
+		Concept forwardConcept = concept;
+		Model.SearchNode previous = new Model.SearchNode(forwardConcept.getType());
+		addProperties(concept, previous);
+		while ((forwardConcept = TaraPsiImplUtil.getConceptContainerOf(forwardConcept)) != null) {
+			forward = new Model.SearchNode(forwardConcept.getType());
+			addProperties(forwardConcept, forward);
+			forward.setNext(previous);
+			previous.setPrevious(forward);
+			previous = forward;
+		}
+		return forward != null ? forward : previous;
+	}
+
+	private static void addProperties(Concept concept, Model.SearchNode searchNode) {
+		PsiElement contextOf = TaraPsiImplUtil.getContextOf(concept);
+		if (contextOf instanceof FacetApply)
+			searchNode.setInFacetApply(((FacetApply) contextOf).getFacetName());
+		else if (contextOf instanceof FacetTarget)
+			searchNode.setInFacetApply(((FacetTarget) contextOf).getDestinyName());
+		List<String> facets = new ArrayList<>();
+		for (FacetApply apply : concept.getFacetApplies()) facets.add(apply.getFacetName());
+		searchNode.setFacets(facets);
 	}
 }

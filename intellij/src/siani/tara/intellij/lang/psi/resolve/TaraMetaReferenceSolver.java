@@ -54,14 +54,14 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		Model metaModel = TaraLanguage.getMetaModel(myElement.getContainingFile());
 		if (metaModel == null) return new Object[0];
 		if (myElement.getParent() instanceof TaraFacetApply) {
-			Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(getConceptContainerOf(myElement)));
+			Node node = TaraUtil.findNode(getConceptContainerOf(myElement), metaModel);
 			if (node == null || node.is(ABSTRACT) || node.getSubConcepts().length > 0) return PsiElement.EMPTY_ARRAY;
 			return fillFacetVariants(node.getObject().getAllowedFacets().keySet());
 		} else {
 			List<Node> nodes = new ArrayList<>();
 			Concept context = getConceptContainerOf(getConceptContainerOf(myElement));
 			if (context != null) {
-				Node node = metaModel.searchNode(TaraUtil.getMetaQualifiedName(context));
+				Node node = TaraUtil.findNode(context, metaModel);
 				if (node == null || node.is(ABSTRACT) || node.getSubConcepts().length > 0)
 					return PsiElement.EMPTY_ARRAY;
 				addChildren(nodes, node);

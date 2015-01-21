@@ -1,6 +1,7 @@
 package siani.tara.lang.util;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import siani.tara.lang.*;
 
 import java.io.File;
@@ -9,6 +10,8 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
+import java.util.Collection;
+import java.util.List;
 
 public class ModelSaver {
 
@@ -24,6 +27,9 @@ public class ModelSaver {
 			gsonBuilder.registerTypeAdapter(Variable.class, new VariableSerializer());
 			gsonBuilder.registerTypeAdapter(Node.class, new NodeAdapter());
 			gsonBuilder.registerTypeAdapter(ModelObject.class, new ObjectAdapter());
+			Type collectionType = new TypeToken<List<Variable>>() {
+			}.getType();
+			gsonBuilder.registerTypeAdapter(collectionType, new VariableListSerializer());
 			Gson gson = gsonBuilder.excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 			writer.write(gson.toJson(model));
 			writer.close();
@@ -109,4 +115,16 @@ public class ModelSaver {
 		}
 	}
 
+
+	private static class VariableListSerializer implements JsonSerializer<Collection<Variable>> {
+		@Override
+		public JsonElement serialize(Collection<Variable> variables, Type type, JsonSerializationContext context) {
+			JsonArray array = new JsonArray();
+			for (Variable variable : variables) {
+				if (!variable.inherited || variable.isTerminal())
+					array.add(context.serialize(variable));
+			}
+			return array;
+		}
+	}
 }

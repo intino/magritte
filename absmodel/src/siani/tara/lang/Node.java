@@ -127,7 +127,7 @@ public abstract class Node {
 		return instanceTypes.add(inheritedType);
 	}
 
-	public boolean isAnnonymous() {
+	public boolean isAnonymous() {
 		return getName().contains(ANONYMOUS);
 	}
 

@@ -52,7 +52,7 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 	private Concept[] getAddressedConcepts(Model model, List<Concept> allConceptsOfFile) {
 		List<Concept> concepts = new ArrayList<>();
 		for (Concept concept : allConceptsOfFile) {
-			Node node = model.searchNode(TaraUtil.getMetaQualifiedName(concept));
+			Node node = TaraUtil.findNode(concept, model);
 			if (node != null && node.getObject().is(Annotation.ADDRESSED))
 				concepts.add(concept);
 		}

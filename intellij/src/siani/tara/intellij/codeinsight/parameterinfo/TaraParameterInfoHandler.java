@@ -90,7 +90,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			if (model == null) return parameters;
 //			if (parameters.getParameters().length == 0) return parameters;
 			TaraFacetApply facet = parameters.isInFacet();
-			Node node = findNode(TaraPsiImplUtil.getConceptContainerOf(parameters), model);
+			Node node = TaraUtil.findNode(TaraPsiImplUtil.getConceptContainerOf(parameters), model);
 			if (node == null) return parameters;
 			List<siani.tara.intellij.lang.psi.Variable> attributes = new ArrayList<>();
 			TaraElementFactory instance = TaraElementFactory.getInstance(parameters.getProject());
@@ -123,10 +123,6 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	private List<Variable> getFacetVariables(String name, String context, Node node) {
 		FacetTarget target = node.getObject().getAllowedFacetByContext(name, context);
 		return target != null ? target.getVariables() : Collections.EMPTY_LIST;
-	}
-
-	protected Node findNode(Concept concept, Model model) {
-		return model.searchNode(TaraUtil.getMetaQualifiedName(concept));
 	}
 
 	private Parameters findParameters(CreateParameterInfoContext context) {

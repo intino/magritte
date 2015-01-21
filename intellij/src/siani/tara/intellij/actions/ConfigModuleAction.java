@@ -53,7 +53,7 @@ public class ConfigModuleAction extends AnAction implements DumbAware {
 		configDialog.getPeer().setTitle("Configure Module " + (module != null ? module.getName() : ""));
 		configDialog.show();
 		if (configDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
-			configDialog.saveValues();
+			configDialog.saveValues(); //TODO Refactor
 			changeFilesHeaders(module);
 		}
 	}

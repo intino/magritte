@@ -80,6 +80,7 @@ public class ParentModelDependencyResolver {
 		for (Variable variable : variables)
 			if (variable.values == null || variable.values.isEmpty()) {
 				Variable clone = variable.clone();
+				clone.setInherited(true);
 				clones.add(clone);
 				if (variable instanceof Reference && variable.isTerminal())
 					addInheritedTypes(parent.get(clone.getType()).getName(), (Reference) clone);

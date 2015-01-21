@@ -66,16 +66,10 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	}
 
 	private String extractMetaDocumentationOfConcept(Concept concept) {
-		Node node = getNode(concept);
+		Node node = TaraUtil.findNode(concept, TaraLanguage.getMetaModel(concept.getContainingFile()));
 		if (node == null) return null;
 		String doc = node.getObject().getDoc();
 		return doc != null ? doc : generateDocForNode(node, concept.getType());
-	}
-
-	private Node getNode(Concept concept) {
-		Model model = TaraLanguage.getMetaModel(concept.getContainingFile());
-		if (model == null) return null;
-		return model.searchNode(TaraUtil.getMetaQualifiedName(concept));
 	}
 
 	private String generateDocForNode(Node node, String contextNode) {

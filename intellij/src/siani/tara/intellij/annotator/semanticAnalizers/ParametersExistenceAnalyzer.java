@@ -27,10 +27,12 @@ public class ParametersExistenceAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		if(node == null) return;
-		boolean system = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(concept.getContainingFile())).isTerminal();
+		if (node == null) return;
+		ModuleConfiguration instance = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(concept.getContainingFile()));
+		if (instance == null) return;
+		boolean terminal = instance.isTerminal();
 		List<Variable> variables = node.getObject().getVariables();
-		List<String> compare = compare(collectMinimumNumberOfParameter(variables, system), collectDeclaredParameters(concept));
+		List<String> compare = compare(collectMinimumNumberOfParameter(variables, terminal), collectDeclaredParameters(concept));
 		if (!compare.isEmpty())
 			results.put(concept.getSignature(), new TaraAnnotator.AnnotateAndFix(ERROR, "parameters missed: " + parametersToString(compare)));
 	}

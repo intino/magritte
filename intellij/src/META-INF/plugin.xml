@@ -72,6 +72,14 @@
       </action>
       <add-to-group group-id="Internal"/>
     </group>
+    <action id="siani.tara.intellij.actions.BugReportAction" class="siani.tara.intellij.actions.BugReportAction"
+            text="Report Tara bug" description="You can report a bug found in the plugin">
+      <add-to-group group-id="HelpMenu" anchor="before" relative-to-action="TechnicalSupport"/>
+    </action>
+    <action id="siani.tara.intellij.actions.TriggerExceptionAction"
+            class="siani.tara.intellij.actions.TriggerExceptionAction" text="Trigger Exception">
+      <add-to-group group-id="HelpMenu" anchor="first"/>
+    </action>
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">

@@ -18,7 +18,7 @@ public abstract class FrameCreator {
 		terminal = model.isTerminal();
 	}
 
-	protected String[] getTypes(Node node) {
+	protected List<String> getTypes(Node node) {
 		List<String> types = new ArrayList<>();
 		NodeObject object = node.getObject();
 		types.add(object.getType());
@@ -26,7 +26,7 @@ public abstract class FrameCreator {
 		types.add(Node.class.getSimpleName());
 		for (Annotation annotation : node.getAnnotations())
 			types.add(annotation.getName().replace("+", "meta"));
-		return types.toArray(new String[types.size()]);
+		return types;
 	}
 
 	protected void addAnnotations(final Node node, Frame frame) {
@@ -82,8 +82,8 @@ public abstract class FrameCreator {
 		else if (variable.getDefaultValues() != null && variable.getDefaultValues().length != 0)
 			if (variable instanceof Word) {
 				Word word = (Word) variable;
-				for (Object value : word.values)
-					frame.addFrame("defaultValue", word.indexOf(value.toString()));
+				for (Object value : word.getDefaultValues())
+					frame.addFrame("variableValue", word.indexOf(value.toString()));
 			} else {
 
 				final Object value = variable.getDefaultValues()[0];
@@ -144,7 +144,7 @@ public abstract class FrameCreator {
 	Frame createVarFrame(final Variable variable) {
 		return new Frame(getTypes(variable)) {
 			{
-				addFrame("name", (variable.isTerminal() ? "!" : "") + variable.getName());
+				addFrame("name", variable.getName());
 				addFrame("type", getType());
 				if (variable instanceof Word)
 					addFrame("words", ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));

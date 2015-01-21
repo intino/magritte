@@ -8,6 +8,11 @@ public class Word extends Variable {
 	public List<String> wordTypes;
 
 	public Word(String name) {
+		this(name, false);
+	}
+
+	public Word(String name, boolean inherited) {
+		super(inherited);
 		this.name = name;
 		this.wordTypes = new ArrayList<>();
 	}

@@ -41,7 +41,8 @@ public class AnnotationsAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean isTerminalModule() {
-		return ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(annotations.getContainingFile())).isTerminal();
+		ModuleConfiguration configuration = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(annotations.getContainingFile()));
+		return configuration != null && configuration.isTerminal();
 	}
 
 	private boolean analyzeAnnotations() {

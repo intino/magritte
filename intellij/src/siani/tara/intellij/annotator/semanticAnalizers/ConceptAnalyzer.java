@@ -138,8 +138,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean shouldHaveClass(Node node, Concept concept) {
-		if (concept == null || node == null) return false;
-		return (concept.isFacet() || node.is(META_FACET)) && node.is(INTENTION);
+		return !(concept == null || node == null) && (concept.isFacet() || node.is(META_FACET)) && node.is(INTENTION);
 	}
 
 	private void analyzeMetaAnnotationConstrains(Node node) {

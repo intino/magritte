@@ -1,8 +1,6 @@
 package siani.tara.intellij.diagnostic.errorreporting;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,22 +14,23 @@ public class PivotalLoggingEventSubmitter {
 	private static final String PLUGIN_ID = "plugin.id";
 	private static final String PLUGIN_VERSION = "plugin.version";
 	private static final String PLUGIN_NAME = "plugin.name";
-	private static final String PLUGIN_ERROR_ADDITIONAL_INFO = "plugin.additionalInfo";
 	public static final String STORIES_URL = "https://www.pivotaltracker.com/services/v5/projects/1022010/stories";
 	public static final String COMMENTS = "/comments";
-	private final String description;
+	private static final String REPORT_ADDITIONAL_INFO = "report.additionalInfo";
+	private static final String REPORT_DESCRIPTION = "report.description";
+	private static final String REPORT_TITLE = "report.title";
+	private static final String REPORT_TYPE = "report.type";
 	private Properties properties;
 
-	public PivotalLoggingEventSubmitter(Properties properties, String description) {
+	public PivotalLoggingEventSubmitter(Properties properties) {
 		this.properties = properties;
-		this.description = description;
 	}
 
-	void submit() {
+	public void submit() {
 		try {
 			PivotalStory story = new PivotalStory();
-			String storyCreated = createStory(story);
-			addInfo(story, new JsonParser().parse(storyCreated));
+			String response = createStory(story);
+			addInfo(story, new JsonParser().parse(response));
 //			updateStory(story);
 			addCommentary(story);
 		} catch (IOException e) {
@@ -85,47 +84,54 @@ public class PivotalLoggingEventSubmitter {
 
 	private void sendStory(HttpURLConnection connection, PivotalStory pivotalStory) throws IOException {
 		final OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream());
-		osw.write(pivotalStory.toString());
+		osw.write(pivotalStory.asJson().toString());
 		osw.close();
 	}
 
 	private HttpURLConnection createConnection(String method, String url) throws IOException {
-		HttpURLConnection httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
-		httpcon.setDoOutput(true);
-		httpcon.setRequestProperty("Content-Type", "application/json");
-		httpcon.setRequestProperty("X-TrackerToken", "ae3d1e4d4bcb011927e2768d7aa39f3a");
-		httpcon.setRequestMethod(method);
-		httpcon.connect();
-		return httpcon;
+		HttpURLConnection connection = (HttpURLConnection) ((new URL(url).openConnection()));
+		connection.setDoOutput(true);
+		connection.setRequestProperty("Content-Type", "application/json");
+		connection.setRequestProperty("X-TrackerToken", "ae3d1e4d4bcb011927e2768d7aa39f3a");
+		connection.setRequestMethod(method);
+		connection.connect();
+		return connection;
 	}
 
 	private class PivotalStory {
 		int id;
-		int project_id;
-		String name = "Error in plugin v." + properties.get(PLUGIN_VERSION).toString().trim();
-		String description = buildDescription(PivotalLoggingEventSubmitter.this.description);
-		String story_type = "bug";
+		String name = buildName();
+		String description = buildDescription(PivotalLoggingEventSubmitter.this.properties.get(REPORT_DESCRIPTION).toString());
+		String story_type = getReportType();
 		String current_state = "unstarted";
 		String url;
-		String comment = (String) properties.get(PLUGIN_ERROR_ADDITIONAL_INFO);
+		String comment = (String) properties.get(REPORT_ADDITIONAL_INFO);
 
-		@Override
-		public String toString() {
-			return "{" +
-				"\"current_state\": \"" + current_state + '"' +
-				",\"story_type\": \"" + story_type + '"' +
-				",\"name\": \"" + name + '"' +
-				",\"description\": \"" + description + '"' +
-				'}';
+		private String buildName() {
+			Object title = properties.get(REPORT_TITLE);
+			return "Error in plugin v." + properties.get(PLUGIN_VERSION).toString().trim() + (title != null ? ": " + title.toString() : "");
 		}
-
 
 		private String buildDescription(String description) {
 			StringBuilder builder = new StringBuilder();
 			builder.append(PLUGIN_ID).append(": ").append(properties.get(PLUGIN_ID)).append("\n");
 			builder.append(PLUGIN_NAME).append(": ").append(properties.get(PLUGIN_NAME)).append("\n");
 			builder.append(PLUGIN_VERSION).append(": ").append(properties.get(PLUGIN_VERSION).toString().trim()).append("\n");
-			return builder.append(description).toString().replaceAll("'|!", "").replace("\n", "\\\\n").replace("\t", "\\\\t");
+			return builder.append(description).toString();
+		}
+
+		public String getReportType() {
+			Object reportType = properties.get(REPORT_TYPE);
+			return reportType != null ? reportType.toString().replace("apunt", "feature") : "bug";
+		}
+
+		public JsonElement asJson() {
+			JsonObject jsonObject = new JsonObject();
+			jsonObject.add("name", new JsonPrimitive(name));
+			jsonObject.add("current_state", new JsonPrimitive(current_state));
+			jsonObject.add("story_type", new JsonPrimitive(story_type));
+			jsonObject.add("description", new JsonPrimitive(description));
+			return jsonObject;
 		}
 	}
 

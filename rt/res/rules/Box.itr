@@ -29,11 +29,18 @@ public class $name extends Box {
 }
 endrule
 
-defrule type(Node) trigger(node)
-[$relation();]def(["$name"]); $nodeType...[$NL][ $facet][ $address][ $annotation...[$NL]][ $parent]$variable+set...[$NL]\
+defrule type(Node) type(inner) trigger(node)
+[$relation();] $nodeType...[ ][ $facet][ $address][ $annotation...[ ]][ $parent][ $aggregated...[ ]][ $variable+set...[ ]\]
     $reference\
     $node...[$NL]\
-[$back()]\
+[$back();]\
+endrule
+
+defrule type(Node) trigger(node)
+[$relation();]def(["$name"]); $nodeType...[ ][ $facet][ $address][ $annotation...[ ]][ $parent][ $aggregated...[ ]][ $variable+set...[ ]\]
+    $reference\
+    $node...[$NL]\
+[$back();]\
 endrule
 
 defrule trigger(import)
@@ -60,8 +67,8 @@ defrule trigger(parent)
 parent("$value");
 endrule
 
-defrule type(reference) type(aggregated) trigger(reference)
-add().def();type("$type");
+defrule trigger(aggregated)
+add("$value");
 endrule
 
 defrule type(reference) trigger(reference)
@@ -69,13 +76,36 @@ def();$parent
 
 endrule
 
-defrule type(Variable) type(target) type(measure) !type(List) slot-name(defaultValue) trigger(set)
-set("!$node:$name<$target", $measureValue.value($defaultValue));
+defrule type(Variable) type(target) type(measure) !type(List) slot-name(variableValue) trigger(set)
+set("!$node:$name<$target", $measureValue.value($variableValue));
 endrule
 
-defrule type(Variable) type(target) !type(List) slot-name(defaultValue) trigger(set)
-set("!$node:$name<$target", $defaultValue);
+defrule type(Variable) type(target) !type(List) slot-name(variableValue) trigger(set)
+set("!$node:$name<$target", $variableValue);
 endrule
+
+
+defrule type(terminal) type(Variable) type(reference) slot-name(variableValue) trigger(set)
+set("!$name", node("$variableValue"));
+endrule
+
+defrule type(terminal) type(Variable) type(string) !type(List) slot-name(variableValue) trigger(set)
+set("!$name", "$variableValue");
+endrule
+
+defrule type(terminal) type(Variable) type(resource) !type(List) slot-name(variableValue) trigger(set)
+set("!$name", resource("$variableValue"));
+endrule
+
+defrule type(terminal) type(Variable) type(List) slot-name(variableValue) trigger(set)
+set("!$name", $variableValue);
+endrule
+
+defrule type(terminal) type(Variable) slot-name(variableValue)  trigger(set)
+set("!$name", $variableValue);
+endrule
+
+
 
 defrule type(Variable) type(reference) slot-name(variableValue) trigger(set)
 set("$name", node("$variableValue"));
@@ -96,6 +126,8 @@ endrule
 defrule type(Variable) slot-name(variableValue)  trigger(set)
 set("$name", $variableValue);
 endrule
+
+
 
 defrule type(Annotation) trigger(annotation)
 [set($value+CamelCase...[, ]);]

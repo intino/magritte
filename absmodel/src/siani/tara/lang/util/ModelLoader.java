@@ -107,7 +107,7 @@ public class ModelLoader {
 			Variable variable;
 			JsonElement e;
 			JsonArray array;
-			if ((e = json.getAsJsonObject().get("node")) != null && e.isJsonPrimitive() && e.getAsString() != null) {
+			if ((e = json.getAsJsonObject().get("type")) != null && e.isJsonPrimitive() && e.getAsString() != null) {
 				variable = new Reference(e.getAsString(), name, json.getAsJsonObject().get("isList").getAsBoolean());
 				processReference(json, (Reference) variable);
 			} else if ((e = json.getAsJsonObject().get("primitiveType")) != null && e.isJsonPrimitive() && e.getAsString() != null) {

@@ -10,11 +10,16 @@ import static siani.tara.lang.Annotation.*;
 public abstract class Variable implements Cloneable {
 	public static final String EMPTY = "EMPTY_VALUE";
 	public String name;
+	public boolean inherited;
 	public String doc;
 	public Object[] defaultValues;
 	public List<Object> values;
 	public List<Annotation> annotations = new ArrayList<>();
 	public boolean isList = false;
+
+	public Variable(boolean inherited) {
+		this.inherited = inherited;
+	}
 
 	public String getName() {
 		return name;
@@ -32,6 +37,10 @@ public abstract class Variable implements Cloneable {
 		this.isList = isList;
 	}
 
+	public void setInherited(boolean inherited) {
+		this.inherited = inherited;
+	}
+
 	public boolean isTerminal() {
 		return annotations.contains(TERMINAL);
 	}
@@ -39,6 +48,7 @@ public abstract class Variable implements Cloneable {
 	public boolean isProperty() {
 		return annotations.contains(PROPERTY);
 	}
+
 	public boolean isReadOnly() {
 		return annotations.contains(READONLY);
 	}

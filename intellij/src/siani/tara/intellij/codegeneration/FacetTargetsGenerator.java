@@ -193,10 +193,8 @@ public class FacetTargetsGenerator {
 
 	private boolean isIntention(Concept facet) {
 		if (facet.isIntention()) return true;
-		Model model = TaraLanguage.getMetaModel(facet.getFile());
-		if (model == null) return false;
-		Node node = model.searchNode(facet.getMetaQualifiedName());
-		return node.getObject().is(INTENTION);
+		Node node = TaraUtil.findNode(facet, TaraLanguage.getMetaModel(facet.getFile()));
+		return node != null && node.getObject().is(INTENTION);
 	}
 
 	private Map<String, String> getOptionsForFacetClass(String type) {
@@ -223,7 +221,7 @@ public class FacetTargetsGenerator {
 
 	private boolean isMetaFacet(Model model, Concept concept) {
 		if (model == null) return false;
-		Node node = model.searchNode(concept.getMetaQualifiedName());
+		Node node = TaraUtil.findNode(concept, model);
 		return node != null && node.is(META_FACET);
 	}
 

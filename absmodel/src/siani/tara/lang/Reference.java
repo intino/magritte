@@ -8,15 +8,19 @@ public class Reference extends Variable {
 	public List<String> inheritedTypes = new ArrayList<>();
 	public boolean empty = false;
 
-	public Reference(String type, String name, boolean isMultiple) {
-		this.type = type;
-		this.name = name;
-		this.isList = isMultiple;
+	public Reference(String type, String name) {
+		this(type, name, false, false);
 	}
 
-	public Reference(String type, String name) {
+	public Reference(String type, String name, boolean isList) {
+		this(type, name, false, isList);
+	}
+
+	public Reference(String type, String name, boolean inherited, boolean isList) {
+		super(inherited);
 		this.type = type;
 		this.name = name;
+		this.isList = isList;
 	}
 
 	public String getType() {

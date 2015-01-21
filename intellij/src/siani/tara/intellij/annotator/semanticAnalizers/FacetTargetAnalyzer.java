@@ -23,18 +23,15 @@ public class FacetTargetAnalyzer extends TaraAnalyzer {
 	@Override
 	public void analyze() {
 		Concept parent = TaraPsiImplUtil.getConceptContainerOf(target);
+		PsiElement resolve = ReferenceManager.resolve(target.getIdentifierReference());
+		if (resolve == null) return;
+		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(resolve);
+		if (contextOf != null && contextOf.equals(parent))
+			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.not.allowed")));
+		if (hasErrors()) return;
 		Node metaConcept = getMetaConcept(parent);
 		if (metaConcept == null) return;
 		if (parent != null && !parent.isSub() && !parent.isFacet() && !metaConcept.getObject().is(Annotation.META_FACET))
 			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.in.nofacet.concept")));
-		else if (TaraPsiImplUtil.getContextOf(target) instanceof TaraFacetTarget)
-			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.not.allowed")));
-		else {
-			PsiElement resolve = ReferenceManager.resolve(target.getIdentifierReference());
-			if (resolve == null) return;
-			Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(resolve);
-			if (contextOf != null && contextOf.equals(parent))
-				results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.not.allowed")));
-		}
 	}
 }

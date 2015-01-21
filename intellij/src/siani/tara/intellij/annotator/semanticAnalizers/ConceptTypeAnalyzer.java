@@ -8,10 +8,7 @@ import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.MetaIdentifier;
-import siani.tara.intellij.lang.psi.TaraConceptReference;
-import siani.tara.intellij.lang.psi.TaraTypes;
+import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Annotation;
@@ -19,9 +16,11 @@ import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
+import static siani.tara.intellij.lang.psi.impl.TaraUtil.findNode;
 
 public class ConceptTypeAnalyzer extends TaraAnalyzer {
 
@@ -43,7 +42,7 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 				addError(MessageProvider.message("concept.position.key"), TaraSyntaxHighlighter.UNRESOLVED_ACCESS);
 			else if (!existsConceptTypeInMetamodel())
 				results.put(metaIdentifier, new AnnotateAndFix(ERROR, MessageProvider.message("Unknown.concept")));
-			for (TaraConceptReference incorrectInnerLink : getIncorrectInnerLinks(concept, model))
+			for (TaraConceptReference incorrectInnerLink : getIncorrectInnerLinks())
 				results.put(incorrectInnerLink, new AnnotateAndFix(ERROR, MessageProvider.message("Unknown.concept")));
 		} else {
 			if (isConceptType()) {
@@ -57,8 +56,24 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean existsConceptTypeInMetamodel() {
-		Node node = TaraUtil.findNode(concept, model);
-		return node != null && !node.is(Annotation.ABSTRACT);
+		Node node = findNode(concept, model);
+		if (node != null && !node.is(Annotation.ABSTRACT)) return true;
+		Concept container = TaraPsiImplUtil.getConceptContainerOf(concept);
+		if (container == null) return false;
+		Node containerNode = findNode(container, model);
+		return containerNode != null && hasAny(containerNode, getFacets(concept.getFacetApplies()));
+	}
+
+	private boolean hasAny(Node container, Collection<String> facets) {
+		for (Node node : container.getInnerNodes())
+			if (facets.contains(node.getName())) return true;
+		return false;
+	}
+
+	private Collection<String> getFacets(TaraFacetApply[] facetApplies) {
+		List<String> facets = new ArrayList<>();
+		for (TaraFacetApply facetApply : facetApplies) facets.add(facetApply.getMetaIdentifierList().get(0).getText());
+		return facets;
 	}
 
 	private boolean hasName() {
@@ -89,11 +104,11 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 		return prevSibling.getNode().getElementType();
 	}
 
-	private List<TaraConceptReference> getIncorrectInnerLinks(Concept concept, Model model) {
+	private List<TaraConceptReference> getIncorrectInnerLinks() {
 		List<TaraConceptReference> list = new ArrayList();
 		TaraConceptReference[] conceptLinks = concept.getConceptLinks();
 		for (TaraConceptReference conceptLink : conceptLinks) {
-			Node reference = model.searchNode(TaraUtil.getMetaQualifiedName(conceptLink));
+			Node reference = TaraUtil.findNode(concept, model);
 			if (reference == null) list.add(conceptLink);
 		}
 		return list;

@@ -75,7 +75,7 @@ public class TaraFacetLineMarkerProvider extends JavaLineMarkerProvider {
 		Concept concept = (Concept) element;
 		Model model = TaraLanguage.getMetaModel(concept.getFile());
 		if (model == null) return null;
-		Node node = model.searchNode(TaraUtil.getMetaQualifiedName(concept));
+		Node node = TaraUtil.findNode(concept, model);
 		if (node == null) return null;
 		PsiElement reference = resolveExternal(concept);
 		if (reference != null) {

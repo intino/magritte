@@ -25,7 +25,10 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 	private static final String PLUGIN_ID_PROPERTY_KEY = "plugin.id";
 	private static final String PLUGIN_NAME_PROPERTY_KEY = "plugin.name";
 	private static final String PLUGIN_VERSION_PROPERTY_KEY = "plugin.version";
-	private static final String PLUGIN_ERROR_ADDITIONAL_INFO = "plugin.additionalInfo";
+	private static final String REPORT_ADDITIONAL_INFO = "report.additionalInfo";
+	private static final String REPORT_DESCRIPTION = "report.description";
+	private static final String REPORT_TITLE = "report.title";
+
 
 	@NonNls
 
@@ -36,13 +39,12 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 	@Override
 	public boolean submit(@NotNull IdeaLoggingEvent[] events, String additionalInfo, @NotNull Component parentComponent, @NotNull Consumer<SubmittedReportInfo> consumer) {
 		PluginDescriptor pluginDescriptor = getPluginDescriptor();
-		final Properties reportingProperties = new Properties();
-		queryPluginDescriptor(pluginDescriptor, additionalInfo, reportingProperties);
+		final Properties reportingProperties = createErrorProperties(pluginDescriptor, null, processEvents(events), additionalInfo);
 		LOG.debug("Properties read from plugin descriptor: " + reportingProperties);
 		queryPropertiesFile(pluginDescriptor, reportingProperties);
 		LOG.debug("Final properties to be applied: " + reportingProperties);
 		final PivotalLoggingEventSubmitter.SubmitException[] ex = new PivotalLoggingEventSubmitter.SubmitException[]{null};
-		Runnable runnable = getRunnable(events, reportingProperties);
+		Runnable runnable = getRunnable(reportingProperties);
 		ProgressManager progressManager = ProgressManager.getInstance();
 		progressManager.runProcessWithProgressSynchronously(runnable, PluginErrorReportSubmitterBundle.message("progress.dialog.title"), false, null);
 		if (processExceptions(parentComponent, ex[0]))
@@ -63,19 +65,18 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 		return false;
 	}
 
-	private Runnable getRunnable(final IdeaLoggingEvent[] events, final Properties reportingProperties) {
+	private Runnable getRunnable(final Properties reportingProperties) {
 		return new Runnable() {
 			public void run() {
 				ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
 				indicator.setText(PluginErrorReportSubmitterBundle.message("progress.dialog.text"));
 				indicator.setIndeterminate(true);
-				String eventsProcessed = processEvents(events);
-				PivotalLoggingEventSubmitter submitter = new PivotalLoggingEventSubmitter(reportingProperties, eventsProcessed);
+
+				PivotalLoggingEventSubmitter submitter = new PivotalLoggingEventSubmitter(reportingProperties);
 				submitter.submit();
 			}
 		};
 	}
-
 
 	private String processEvents(IdeaLoggingEvent[] events) {
 		StringBuilder stream = new StringBuilder();
@@ -86,20 +87,26 @@ public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
 		return stream.toString();
 	}
 
-	private void queryPluginDescriptor(@NotNull PluginDescriptor pluginDescriptor, String additionalInfo, @NotNull Properties properties) {
+	private Properties createErrorProperties(@NotNull PluginDescriptor pluginDescriptor, String title, String description, String additionalInfo) {
+		Properties properties = new Properties();
 		PluginId descPluginId = pluginDescriptor.getPluginId();
 		if (descPluginId != null && !StringUtil.isEmptyOrSpaces(descPluginId.getIdString()))
-			properties.put(PLUGIN_ID_PROPERTY_KEY, descPluginId.getIdString());
+			properties.put(PLUGIN_ID_PROPERTY_KEY, descPluginId.getIdString().trim());
 		if (pluginDescriptor instanceof IdeaPluginDescriptor) {
 			IdeaPluginDescriptor ideaPluginDescriptor = (IdeaPluginDescriptor) pluginDescriptor;
 			if (!StringUtil.isEmptyOrSpaces(ideaPluginDescriptor.getName()))
-				properties.put(PLUGIN_NAME_PROPERTY_KEY, ideaPluginDescriptor.getName());
+				properties.put(PLUGIN_NAME_PROPERTY_KEY, ideaPluginDescriptor.getName().trim());
 			String descVersion = ideaPluginDescriptor.getVersion();
 			if (!StringUtil.isEmptyOrSpaces(descVersion))
-				properties.put(PLUGIN_VERSION_PROPERTY_KEY, descVersion);
+				properties.put(PLUGIN_VERSION_PROPERTY_KEY, descVersion.trim());
+			if (description != null)
+				properties.put(REPORT_DESCRIPTION, description);
+			if (title != null)
+				properties.put(REPORT_TITLE, title);
 			if (additionalInfo != null)
-				properties.put(PLUGIN_ERROR_ADDITIONAL_INFO, additionalInfo);
+				properties.put(REPORT_ADDITIONAL_INFO, additionalInfo);
 		}
+		return properties;
 	}
 
 	private void queryPropertiesFile(@NotNull PluginDescriptor pluginDescriptor, @NotNull Properties properties) {

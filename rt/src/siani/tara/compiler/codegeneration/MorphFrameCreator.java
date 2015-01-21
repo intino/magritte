@@ -10,7 +10,7 @@ import static siani.tara.compiler.codegeneration.InflectorProvider.getInflector;
 import static siani.tara.compiler.codegeneration.NameFormatter.camelCase;
 import static siani.tara.compiler.codegeneration.NameFormatter.composeMorphPackagePath;
 
-public class MorphFrameCreator extends FrameCreator{
+public class MorphFrameCreator extends FrameCreator {
 
 	private static final String SEPARATOR = ".";
 	private Node initNode;
@@ -30,11 +30,10 @@ public class MorphFrameCreator extends FrameCreator{
 		return new AbstractMap.SimpleEntry<>(packagePath + SEPARATOR + node.getName(), frame);
 	}
 
-
-
 	private void nodeToFrame(final Node node, Frame frame) {
 		if (node.is(DeclaredNode.class)) {
-			final Frame newFrame = new Frame(getTypes(node));
+			List<String> types = getTypes(node);
+			final Frame newFrame = new Frame(types.toArray(new String[types.size()]));
 			frame.addFrame("node", newFrame);
 			addAnnotations(node, newFrame);
 			addNodeInfo(node, newFrame);
