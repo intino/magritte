@@ -24,6 +24,6 @@ UTF-8
 models
 /Users/oroncal/workspace/sandbox/plugins/tara_models/tafat/
 outputpath
-/Users/oroncal/workspace/sandbox/system/compile-server/tafat_8c395247/taraStubs/siani/java-production
+/Users/oroncal/workspace/sandbox/terminal/compile-server/tafat_8c395247/taraStubs/siani/java-production
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat/siani/gen

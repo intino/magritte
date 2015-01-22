@@ -76,11 +76,13 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			if (finalOutputs == null) return ExitCode.ABORT;
 			start = System.currentTimeMillis();
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
-			final boolean isSystem = isSystem(getModuleConfigurationFile(chunk.getModules().iterator().next()));
+			Element moduleConfiguration = getModuleConfiguration(getModuleConfigurationFile(chunk.getModules().iterator().next()));
+			final boolean isTerminal = isTerminal(moduleConfiguration);
+			final String language = getLanguage(moduleConfiguration);
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 			List<String> paths = collectPaths(chunk, context, finalOutputs);
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(),
-				isSystem, toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
+				isTerminal, language, toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
 			context.setDone(1);
@@ -232,27 +234,40 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return file;
 	}
 
-	public boolean isSystem(File moduleFile) {
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+	public boolean isTerminal(Element moduleConfiguration) {
+		return Boolean.valueOf(getValueOf(moduleConfiguration, "terminal"));
+	}
+
+	public String getLanguage(Element moduleConfiguration) {
+		return getValueOf(moduleConfiguration, "language");
+	}
+
+	private String getValueOf(Element moduleConfiguration, String value) {
+		NodeList componentChildren = moduleConfiguration.getElementsByTagName("option");
+		for (int j = 0; j < componentChildren.getLength(); j++)
+			if (componentChildren.item(j).getNodeType() == Node.ELEMENT_NODE) {
+				Element option = (Element) componentChildren.item(j);
+				if (option.getAttribute("name").equals(value))
+					return option.getAttribute("value");
+			}
+		return null;
+	}
+
+	private Element getModuleConfiguration(File moduleFile) {
 		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(moduleFile);
 			NodeList nList = doc.getElementsByTagName("component");
 			for (int i = 0; i < nList.getLength(); i++)
 				if (nList.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					Element element = (Element) nList.item(i);
-					if (!element.getAttribute("name").equals("ModuleConfiguration")) continue;
-					NodeList componentChildren = element.getElementsByTagName("option");
-					for (int j = 0; j < componentChildren.getLength(); j++)
-						if (componentChildren.item(j).getNodeType() == Node.ELEMENT_NODE) {
-							Element option = (Element) componentChildren.item(j);
-							if (option.getAttribute("name").equals("system"))
-								return Boolean.valueOf(option.getAttribute("value"));
-						}
+					if (element.getAttribute("name").equals("ModuleConfiguration")) return element;
 				}
-		} catch (SAXException | ParserConfigurationException | IOException e) {
+			return null;
+		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
+			return null;
 		}
-		return false;
 	}
 }

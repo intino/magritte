@@ -15,6 +15,7 @@ public class Model {
 	private Set<String> identifiers = new HashSet<>();
 	private Map<String, List<SimpleEntry<String, String>>> metrics = new HashMap<>();
 	private boolean terminal;
+	private Locale language;
 
 	public Model(String name) {
 		this.name = name;
@@ -157,6 +158,14 @@ public class Model {
 
 	public Node searchNode(SearchNode searchTree) {
 		return modelHelper.searchNode(searchTree);
+	}
+
+	public Locale getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(Locale language) {
+		this.language = language;
 	}
 
 	public static class SearchNode {

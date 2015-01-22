@@ -106,7 +106,7 @@ public class MorphFrameCreator extends FrameCreator {
 		if (node.getObject().getFacetTargets().isEmpty()) return;
 		Frame targetFrame = new Frame("target", node.is(Annotation.INTENTION) ? "intention" : "");
 		targetFrame.addFrame("target", projectName + ".extensions." + camelCase(node.getName()) + node.getType() + ".class");
-		Inflector inflector = getInflector(Locale.getDefault());
+		Inflector inflector = getInflector(model.getLanguage());
 		for (FacetTarget target : node.getObject().getFacetTargets()) {
 			targetFrame.addFrame("target", projectName + ".extensions." + inflector.plural(node.getType()).toLowerCase() + "." +
 				inflector.plural(node.getName()).toLowerCase() + "." + camelCase(target.getDestinyName()) + node.getType() + ".class");

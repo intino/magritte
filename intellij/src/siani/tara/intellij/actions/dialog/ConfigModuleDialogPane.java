@@ -24,6 +24,7 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 	private JPanel dialogContents;
 	private JComboBox metamodelBox;
 	private JLabel metamodelField;
+	private JComboBox language;
 	private Module[] candidates;
 
 	public ConfigModuleDialogPane(final Project project, Module module) {
@@ -49,11 +50,17 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 		}
 		if (metamodelBox.getSelectedItem() == null) metamodelBox.setSelectedItem(NO_PARENT);
 		terminalCheckBox.setSelected(ModuleConfiguration.getInstance(module).isTerminal());
+		language.setSelectedItem(ModuleConfiguration.getInstance(module).getLanguage());
 	}
 
 	public void saveValues() {
 		setParent(!metamodelBox.getSelectedItem().equals(NO_PARENT) ? searchParent((String) metamodelBox.getSelectedItem()) : null);
 		setTerminal(terminalCheckBox.isSelected());
+		setLanguage(language.getSelectedItem().toString());
+	}
+
+	private void setLanguage(String language) {
+		ModuleConfiguration.getInstance(module).setLanguage(language);
 	}
 
 	private void setTerminal(boolean selected) {
@@ -131,4 +138,6 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 	public String toString() {
 		return "ConfigANTLRPerGrammar{" + '}';
 	}
+
+
 }

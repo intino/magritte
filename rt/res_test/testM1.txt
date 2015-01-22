@@ -5,7 +5,7 @@ project
 test
 module
 m1
-system
+terminal
 false
 encoding
 UTF-8

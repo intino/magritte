@@ -125,7 +125,6 @@ public class TaraUtil {
 		return taraFiles;
 	}
 
-
 	@NotNull
 	public static List<Concept> getAllConceptsOfFile(TaraBoxFile taraBoxFile) {
 		List<Concept> collection = new ArrayList<>();

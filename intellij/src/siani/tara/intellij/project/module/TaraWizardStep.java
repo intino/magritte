@@ -23,6 +23,7 @@ public class TaraWizardStep extends ModuleWizardStep {
 	private JPanel mainPanel;
 	private JComboBox metamodelBox;
 	private JPanel MyPanel;
+	private JComboBox language;
 
 
 	public TaraWizardStep(TaraModuleBuilder builder, WizardContext context, Project project) {
@@ -62,7 +63,8 @@ public class TaraWizardStep extends ModuleWizardStep {
 	public void updateDataModel() {
 		context.setProjectBuilder(builder);
 		builder.setMetamodelModule(metamodel);
-		builder.setSystem(terminal);
+		builder.setLanguage(language.getSelectedItem().toString());
+		builder.setTerminal(terminal);
 	}
 
 }

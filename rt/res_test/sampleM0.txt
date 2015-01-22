@@ -5,7 +5,7 @@ project
 SmartCities
 module
 tafat
-system
+terminal
 false
 build_number
 1418984929258

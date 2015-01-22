@@ -5,6 +5,10 @@ project
 tafat
 module
 engine
+terminal
+false
+language
+English
 encoding
 UTF-8
 models
@@ -14,7 +18,7 @@ itrules
 icons
 /Users/oroncal/workspace/sandbox/Tafat/engine/res/icons
 outputpath
-/Users/oroncal/workspace/sandbox/system/compile-server/tafat_8c395247/taraStubs/engine/java-production
+/Users/oroncal/workspace/sandbox/terminal/compile-server/tafat_8c395247/taraStubs/engine/java-production
 final_outputpath
 /Users/oroncal/workspace/sandbox/Tafat/out/production/engine/
 classpath

@@ -42,7 +42,8 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	private static final String SRC = "src";
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
 	private Module metamodelModule;
-	private boolean system = false;
+	private String language;
+	private boolean terminal = false;
 	private File configFile;
 	private String myCompilerOutputPath;
 	private List<Pair<String, String>> mySourcePaths = new ArrayList<>();
@@ -127,7 +128,8 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			FileWriter writer = new FileWriter(configFile);
 			writer.write(((metamodelModule != null) ? metamodelModule.getName() : "null") + "\n");
 			writer.write(((metamodelModule != null) ? metamodelModule.getModuleFilePath() : "null") + "\n");
-			writer.write(system + "\n");
+			writer.write(language + "\n");
+			writer.write(terminal + "\n");
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -138,8 +140,12 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		metamodelModule = module;
 	}
 
-	public void setSystem(boolean system) {
-		this.system = system;
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public void setTerminal(boolean terminal) {
+		this.terminal = terminal;
 	}
 
 	private void createResources(String parentPath) {

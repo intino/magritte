@@ -6,6 +6,8 @@ millener
 module
 ontology
 terminal
+language
+English
 false
 encoding
 UTF-8

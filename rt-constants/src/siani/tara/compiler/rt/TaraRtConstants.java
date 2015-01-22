@@ -28,6 +28,7 @@ public class TaraRtConstants {
 	public static final String TERMINAL = "terminal";
 	public static final String TDK_HOME = "jdk_home";
 	public static final String BUILD_NUMBER = "build_number";
+	public static final String LANGUAGE = "language";
 
 	private TaraRtConstants() {
 	}

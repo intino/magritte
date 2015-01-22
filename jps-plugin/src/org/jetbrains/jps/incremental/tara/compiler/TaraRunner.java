@@ -25,7 +25,7 @@ public class TaraRunner {
 	private static final String GSON = "gson-2.2.4.jar";
 	private static File argsFile;
 
-	protected TaraRunner(final String projectName, final String moduleName, final boolean system, final Collection<String> sources,
+	protected TaraRunner(final String projectName, final String moduleName, final boolean terminal, final String language, final Collection<String> sources,
 	                     final String encoding,
 	                     String[] iconPaths,
 	                     List<String> paths) throws IOException {
@@ -37,7 +37,8 @@ public class TaraRunner {
 			writer.write("\n");
 			writer.write(TaraRtConstants.PROJECT + "\n" + projectName + "\n");
 			writer.write(TaraRtConstants.MODULE + "\n" + moduleName + "\n");
-			writer.write(TaraRtConstants.TERMINAL + "\n" + system + "\n");
+			writer.write(TaraRtConstants.TERMINAL + "\n" + terminal + "\n");
+			writer.write(TaraRtConstants.LANGUAGE + "\n" + language + "\n");
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
 			String tara_models = PathManager.getPluginsPath() + File.separator + "tara_models" + File.separator;
 			writer.write(TaraRtConstants.MODELS_PATH + "\n" + tara_models + projectName + File.separator + "\n");

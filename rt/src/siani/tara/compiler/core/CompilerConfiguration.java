@@ -17,6 +17,7 @@ public class CompilerConfiguration {
 	private boolean debug;
 	private String tdkHome;
 	private String projectIcon;
+	private String languageForCodeGeneration;
 	private String version = "1.0";
 	private String description = "";
 	private ArrayList<String> icons = new ArrayList<>();
@@ -214,5 +215,13 @@ public class CompilerConfiguration {
 
 	public File getMetricsDirectory() {
 		return metricsDirectory;
+	}
+
+	public String getLanguageForCodeGeneration() {
+		return languageForCodeGeneration;
+	}
+
+	public void setLanguageForCodeGeneration(String languageForCodeGeneration) {
+		this.languageForCodeGeneration = languageForCodeGeneration;
 	}
 }

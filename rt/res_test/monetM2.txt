@@ -8,6 +8,8 @@ module
 engine
 terminal
 false
+language
+English
 encoding
 UTF-8
 models

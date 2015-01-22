@@ -7,6 +7,8 @@ module
 adeje
 terminal
 true
+language
+English
 encoding
 UTF-8
 models

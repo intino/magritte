@@ -15,6 +15,7 @@ import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.util.Locale;
 
 
 public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable {
@@ -76,6 +77,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 				configuration.metamodelName = ((aux = br.readLine()).equals("null")) ? "" : aux;
 				configuration.metamodelFilePath = ((aux = br.readLine()).equals("null")) ? "" : aux;
+				configuration.language = ((aux = br.readLine()).equals("null")) ? "" : aux;
 				configuration.terminal = Boolean.parseBoolean(br.readLine());
 				file.delete();
 				file.getParentFile().delete();
@@ -98,6 +100,15 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 
 	public String getMetamodelName() {
 		return configuration.getMetamodelName();
+	}
+
+	public Locale getLanguage() {
+		if (configuration.language.equals("English")) return Locale.ENGLISH;
+		return new Locale("Spanish", "Spain", "es_ES");
+	}
+
+	public void setLanguage(String language) {
+		configuration.language = language;
 	}
 
 	public void setMetamodelName(String parent) {
@@ -131,6 +142,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	class Configuration implements JDOMExternalizable {
 		public String metamodelName = "";
 		public String metamodelFilePath = "";
+		public String language = "";
 		public boolean terminal = false;
 
 		@Override
@@ -149,6 +161,10 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 
 		public String getMetamodelFilePath() {
 			return metamodelFilePath;
+		}
+
+		public String getLanguage() {
+			return language;
 		}
 
 		public boolean isTerminal() {
