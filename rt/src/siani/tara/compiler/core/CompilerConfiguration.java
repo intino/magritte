@@ -201,11 +201,11 @@ public class CompilerConfiguration {
 		this.rulesDirectory = rulesDirectory;
 	}
 
-	public void setSystem(boolean system) {
+	public void setTerminal(boolean system) {
 		this.system = system;
 	}
 
-	public boolean isSystemModel() {
+	public boolean isTerminal() {
 		return system;
 	}
 

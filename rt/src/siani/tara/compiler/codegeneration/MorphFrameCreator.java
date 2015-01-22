@@ -22,7 +22,7 @@ public class MorphFrameCreator extends FrameCreator {
 	public Map.Entry<String, Frame> create(Node node) {
 		this.initNode = node;
 		final Frame frame = new Frame("Morph");
-		String packagePath = composeMorphPackagePath(node);
+		String packagePath = composeMorphPackagePath(model, node);
 		if (!packagePath.isEmpty())
 			frame.addFrame("package", packagePath);
 		nodeToFrame(node, frame);

@@ -10,14 +10,20 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
+import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
-import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraFacetTarget;
+import siani.tara.intellij.lang.psi.TaraIdentifier;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.intellij.psi.JavaPsiFacade.getElementFactory;
 import static com.intellij.psi.JavaPsiFacade.getInstance;
@@ -136,7 +142,7 @@ public class IntentionsGenerator {
 		if (target.getIdentifierReference() == null) return null;
 		List<TaraIdentifier> identifierList = target.getIdentifierReference().getIdentifierList();
 		String name = identifierList.get(identifierList.size() - 1).getName() + concept.getName() + INTENTION;
-		return INTENTIONS + "." + InflectorFactory.getInflector(Locale.getDefault()).plural(concept.getName()) + "." + name;
+		return INTENTIONS + "." + getInflector().plural(concept.getName()) + "." + name;
 	}
 
 	private void setParent(String parent, PsiClass aClass) {
@@ -177,7 +183,7 @@ public class IntentionsGenerator {
 
 	private PsiDirectory findTargetDestiny(String name) {
 		final PsiDirectory intentionsDir = findIntentionsDestiny();
-		final String pluralName = InflectorFactory.getInflector(Locale.getDefault()).plural(name);
+		final String pluralName = getInflector().plural(name);
 		PsiDirectory subdirectory = intentionsDir.findSubdirectory(pluralName);
 		if (subdirectory != null) return subdirectory;
 		final PsiDirectory[] destiny = new PsiDirectory[1];
@@ -189,6 +195,10 @@ public class IntentionsGenerator {
 		};
 		action.execute();
 		return destiny[0];
+	}
+
+	private Inflector getInflector() {
+		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
 	}
 
 	private PsiDirectory findIntentionsDestiny() {

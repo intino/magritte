@@ -19,6 +19,7 @@ import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import java.util.*;
@@ -42,7 +43,7 @@ public class FacetApplyGenerator {
 		srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), src);
 		FACETS_PATH = new String[]{project.getName().toLowerCase(), "extensions"};
 		facetsHome = findFacetsDestiny();
-		inflector = InflectorFactory.getInflector(Locale.getDefault());
+		inflector = InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
 	}
 
 	public void generate() {
