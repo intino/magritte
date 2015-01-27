@@ -100,7 +100,9 @@
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraMetricLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="JAVA"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaToTaraLineMarkerProvider"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaIntentionToTaraLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="JAVA"
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaFacetToTaraLineMarkerProvider"/>
     <gotoRelatedProvider implementation="siani.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
     <projectConfigurable instance="siani.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"

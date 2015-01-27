@@ -41,7 +41,7 @@ public class FacetApplyGenerator {
 	private final Module module;
 	private final String[] FACETS_PATH;
 	private final TaraBoxFile taraBoxFile;
-	private final PsiDirectory facetsHome;
+	private PsiDirectory facetsHome;
 	private final PsiDirectory srcDirectory;
 	private final Inflector inflector;
 
@@ -52,7 +52,6 @@ public class FacetApplyGenerator {
 		VirtualFile src = getSrcDirectory(TaraUtil.getSourceRoots(taraBoxFile));
 		srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), src);
 		FACETS_PATH = new String[]{project.getName().toLowerCase(), "extensions"};
-		facetsHome = findFacetsDestiny();
 		inflector = InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
 	}
 
@@ -63,8 +62,9 @@ public class FacetApplyGenerator {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
 				try {
-					pathsToRefresh.add(facetsHome.getVirtualFile());
 					classes.addAll(processFile());
+					if (!classes.isEmpty() && facetsHome != null)
+						pathsToRefresh.add(facetsHome.getVirtualFile());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -89,6 +89,7 @@ public class FacetApplyGenerator {
 	private Set<PsiClass> processFile() {
 		Set<PsiClass> psiClasses = new LinkedHashSet<>();
 		final Concept[] facetedConcepts = getFacets(taraBoxFile);
+		if (facetedConcepts.length > 0) facetsHome = findFacetsDestiny();
 		for (Concept concept : facetedConcepts)
 			if (concept.getName() != null)
 				psiClasses.addAll(createFacetApplyClasses(concept));

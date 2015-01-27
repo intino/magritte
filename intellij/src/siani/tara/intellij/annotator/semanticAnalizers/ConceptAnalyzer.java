@@ -255,7 +255,22 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean isFacetApplyClassCreated(Concept concept, TaraFacetApply apply) {
-		return resolveJavaClassReference(concept.getProject(), getFacetApplyPackage(concept, apply) + "." + concept.getName() + concept.getType() + apply.getFacetName()) != null;
+		return resolveJavaClassReference(concept.getProject(), buildQN(concept, apply)) != null;
+	}
+
+	private String buildQN(Concept facetedConcept, TaraFacetApply apply) {
+		String interfaceName = "";
+		for (Concept concept : TaraUtil.buildConceptCompositionPathOf(facetedConcept))
+			interfaceName += "." + (hasFacet(concept, apply.getFacetName()) ?
+				concept.getName() + concept.getType() + apply.getFacetName() :
+				concept.getType());
+		return getFacetApplyPackage(facetedConcept, apply) + interfaceName;
+	}
+
+	private boolean hasFacet(Concept concept, String facetName) {
+		for (TaraFacetApply apply : concept.getFacetApplies())
+			if (apply.getFacetName().equals(facetName)) return true;
+		return false;
 	}
 
 	private String getFacetApplyPackage(Concept concept, TaraFacetApply apply) {

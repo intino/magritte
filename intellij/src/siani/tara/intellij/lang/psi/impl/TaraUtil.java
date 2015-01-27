@@ -110,14 +110,15 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static Collection<Concept> getRootConceptsOfFile(TaraBoxFile taraBoxFile) {
-		List<Concept> list = new ArrayList<>();
-		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraBoxFile, Concept.class);
-		if (concepts != null)
-			for (Concept concept : concepts) {
-				list.add(concept);
-				list.addAll(concept.getSubConcepts());
-			}
+	public static Collection<Concept> getRootConceptsOfFile(TaraBoxFile file) {
+		Set<Concept> list = new HashSet<>();
+		Concept[] concepts = PsiTreeUtil.getChildrenOfType(file, Concept.class);
+		if (concepts == null) return list;
+		for (Concept concept : concepts) {
+			list.add(concept);
+			list.addAll(concept.getSubConcepts());
+		}
+		list.addAll(findAggregatedConcepts(file));
 		return list;
 	}
 
@@ -260,5 +261,11 @@ public class TaraUtil {
 
 	public static Inflector getInflector(Module module) {
 		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
+	}
+
+	public static Collection<? extends Concept> findAggregatedConcepts(TaraBoxFile file) {
+		Set<Concept> aggregated = new HashSet<>();
+		for (Concept concept : getAllConceptsOfFile(file)) if (concept.isAggregated()) aggregated.add(concept);
+		return aggregated;
 	}
 }
