@@ -17,9 +17,14 @@ import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.siani.itrules.formatter.Inflector;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.Identifier;
+import siani.tara.intellij.lang.psi.TaraFacetTarget;
+import siani.tara.intellij.lang.psi.TaraIdentifier;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleProvider;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -33,31 +38,38 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
-			if (!((element instanceof Concept && ((Concept) element).isIntention()))) return null;
-			PsiElement reference = resolveExternal((Concept) element);
+			if (!canBeMarked(element)) return null;
+			PsiElement reference;
+			reference = element instanceof Concept ? resolveExternal((Concept) element) : resolveExternal((TaraFacetTarget) element);
 			String start = "Intention declared in ";
 			@NonNls String pattern = null;
 			if (reference != null) pattern = reference.getNavigationElement().getContainingFile().getName();
 			return GutterIconTooltipHelper.composeText(new PsiElement[]{reference}, start, pattern);
 		}
-	}, new LineMarkerNavigator() {
-		@Override
-		public void browse(MouseEvent e, PsiElement element) {
-			if (!(element instanceof Concept)) return;
-			if (DumbService.isDumb(element.getProject())) {
-				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
-				return;
-			}
-			Identifier identifierNode = ((Concept) element).getIdentifierNode();
-			if (identifierNode == null) return;
-			NavigatablePsiElement reference = (NavigatablePsiElement) resolveExternal(((Concept) element));
-			if (reference == null) return;
-			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
-			MethodCellRenderer renderer = new MethodCellRenderer(false);
-			PsiElementListNavigator.openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overriding Methods of " + (reference.getName()), renderer);
-		}
+	}, getNavigator());
+
+	private boolean canBeMarked(PsiElement element) {
+		return (Concept.class.isInstance(element) && ((Concept) element).isIntention()) ||
+			TaraFacetTarget.class.isInstance(element) && TaraPsiImplUtil.getConceptContainerOf(element).isIntention();
 	}
-	);
+
+	private LineMarkerNavigator getNavigator() {
+		return new LineMarkerNavigator() {
+			@Override
+			public void browse(MouseEvent e, PsiElement element) {
+				if (!canBeMarked(element)) return;
+				if (DumbService.isDumb(element.getProject())) {
+					DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
+					return;
+				}
+				NavigatablePsiElement reference = (NavigatablePsiElement) (element instanceof Concept ? resolveExternal((Concept) element) : resolveExternal((TaraFacetTarget) element));
+				if (reference == null) return;
+				String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
+				MethodCellRenderer renderer = new MethodCellRenderer(false);
+				PsiElementListNavigator.openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overriding Methods of " + (reference.getName()), renderer);
+			}
+		};
+	}
 
 	public TaraIntentionLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
@@ -65,8 +77,8 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (element instanceof Concept && ((Concept) element).isIntention()) {
-			PsiElement reference = resolveExternal((Concept) element);
+		if (canBeMarked(element)) {
+			PsiElement reference = element instanceof Concept ? resolveExternal((Concept) element) : resolveExternal((TaraFacetTarget) element);
 			if (reference != null) {
 				final Icon icon = AllIcons.Gutter.ImplementedMethod;
 				final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;
@@ -79,6 +91,22 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 
 	private PsiElement resolveExternal(Concept concept) {
 		Project project = concept.getProject();
-		return ReferenceManager.resolveJavaClassReference(project, INTENTIONS_PATH + "." + concept.getName() + INTENTION);
+		return ReferenceManager.resolveJavaClassReference(project, project.getName().toLowerCase() + "." + INTENTIONS_PATH + "." + concept.getName() + INTENTION);
+	}
+
+	private PsiElement resolveExternal(TaraFacetTarget target) {
+		Project project = target.getProject();
+		Concept concept = TaraPsiImplUtil.getConceptContainerOf(target);
+		Inflector inflector = TaraUtil.getInflector(ModuleProvider.getModuleOf(target));
+		String facetPackage = project.getName().toLowerCase() + "." + INTENTIONS_PATH + "." + inflector.plural(concept.getName()).toLowerCase();
+		return ReferenceManager.resolveJavaClassReference(project, facetPackage + composeClassName(target, concept.getName()));
+	}
+
+	private String composeClassName(TaraFacetTarget target, String conceptName) {
+		String name = "";
+		if (target.getIdentifierReference() == null) return "";
+		for (TaraIdentifier identifier : target.getIdentifierReference().getIdentifierList())
+			name += "." + identifier.getName() + conceptName + INTENTION;
+		return name;
 	}
 }

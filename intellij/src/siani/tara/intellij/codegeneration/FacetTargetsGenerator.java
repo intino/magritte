@@ -11,19 +11,20 @@ import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.formatter.Inflector;
+import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
 import siani.tara.intellij.lang.psi.TaraIdentifier;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import java.util.*;
 
-import static org.siani.itrules.formatter.InflectorFactory.getInflector;
 import static siani.tara.intellij.project.module.ModuleProvider.getModuleOf;
 import static siani.tara.lang.Annotation.INTENTION;
 import static siani.tara.lang.Annotation.META_FACET;
@@ -65,23 +66,6 @@ public class FacetTargetsGenerator {
 		};
 		action.execute();
 		for (VirtualFile virtualFile : pathsToRefresh) virtualFile.refresh(true, true);
-		action = new WriteCommandAction(project, getFiles(classes)) {
-			@Override
-			protected void run(@NotNull Result result) throws Throwable {
-				for (PsiClass aClass : classes) {
-					if (aClass.getImplementsList() == null) return;
-					implementAbstractMethods(aClass, aClass.getImplementsList().getReferenceElements());
-				}
-			}
-		};
-		action.execute();
-		for (VirtualFile virtualFile : pathsToRefresh) virtualFile.refresh(true, true);
-	}
-
-	private PsiFile[] getFiles(List<PsiClass> classes) {
-		List<PsiFile> psiFiles = new ArrayList<>();
-		for (PsiClass aClass : classes) psiFiles.add(aClass.getContainingFile());
-		return psiFiles.toArray(new PsiFile[psiFiles.size()]);
 	}
 
 	private List<PsiClass> processFile(PsiFile psiFile) {
@@ -112,54 +96,6 @@ public class FacetTargetsGenerator {
 		return psiClasses;
 	}
 
-	private void implementAbstractMethods(PsiClass destiny, PsiJavaCodeReferenceElement[] referenceElements) {
-		for (PsiJavaCodeReferenceElement referenceElement : referenceElements) {
-			PsiClass aClass = findClassInProject(referenceElement.getQualifiedName(), getModuleOf(referenceElement));
-			if (aClass == null) continue;
-			implementMethods(destiny, getAbstractMethods(aClass));
-		}
-	}
-
-	private void implementMethods(PsiClass aClass, List<PsiMethod> abstractMethods) {
-		for (PsiMethod psiMethod : abstractMethods) {
-			if (containsMethod(aClass, psiMethod) != null) continue;
-			PsiMethod method = getElementFactory(aClass).createMethod(psiMethod.getName(), psiMethod.getReturnType());
-			for (PsiParameter psiParameter : psiMethod.getParameterList().getParameters())
-				method.getParameterList().add(getElementFactory(aClass).createParameter(psiParameter.getName(), psiParameter.getType()));
-			method.getModifierList().addAnnotation("Override");
-			aClass.add(method);
-		}
-	}
-
-	private PsiMethod containsMethod(PsiClass aClass, PsiMethod psiMethod) {
-		for (PsiMethod method : aClass.getMethods()) {
-			if (!psiMethod.getName().equals(method.getName())) continue;
-			if (psiMethod.getParameterList().getParameters().length != method.getParameterList().getParameters().length)
-				continue;
-			if (sameParameters(psiMethod, method)) return method;
-		}
-		return null;
-	}
-
-	private boolean sameParameters(PsiMethod psiMethod, PsiMethod method) {
-		for (PsiParameter parameter : psiMethod.getParameterList().getParameters())
-			for (PsiParameter param : method.getParameterList().getParameters())
-				if (param.getType().equals(parameter.getType())) return false;
-		return true;
-	}
-
-
-	private PsiElementFactory getElementFactory(PsiElement element) {
-		return JavaPsiFacade.getElementFactory(element.getProject());
-	}
-
-	private List<PsiMethod> getAbstractMethods(PsiClass aClass) {
-		List<PsiMethod> psiMethods = new ArrayList<>();
-		for (PsiMethod psiMethod : aClass.getMethods()) if (psiMethod.getBody() == null) psiMethods.add(psiMethod);
-		return psiMethods;
-	}
-
-
 	private PsiClass createTargetClass(Concept concept, TaraFacetTarget target) {
 		if (target.getIdentifierReference() == null) return null;
 		List<TaraIdentifier> identifierList = target.getIdentifierReference().getIdentifierList();
@@ -187,8 +123,12 @@ public class FacetTargetsGenerator {
 	private String makePackage(Concept concept) {
 		String path = "";
 		for (String subpath : FACETS_PATH) path += subpath + ".";
-		Inflector inflector = getInflector(Locale.getDefault());
+		Inflector inflector = getInflector();
 		return path + inflector.plural(concept.getType()).toLowerCase() + "." + inflector.plural(concept.getName()).toLowerCase();
+	}
+
+	private Inflector getInflector() {
+		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(taraBoxFile)).getLanguage());
 	}
 
 	private boolean isIntention(Concept facet) {
@@ -227,10 +167,6 @@ public class FacetTargetsGenerator {
 
 	private PsiClass findClassInModule(String qn, Module module) {
 		return JavaPsiFacade.getInstance(project).findClass(qn, GlobalSearchScope.moduleScope(module));
-	}
-
-	private PsiClass findClassInProject(String qn, Module module) {
-		return JavaPsiFacade.getInstance(project).findClass(qn, GlobalSearchScope.projectScope(module.getProject()));
 	}
 
 	private PsiDirectory findFacetsDestiny() {

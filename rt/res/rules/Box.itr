@@ -134,7 +134,7 @@ defrule type(Annotation) trigger(annotation)
 endrule
 
 defrule trigger(variableValue) slot-type(date)
-new Date($value~L)
+TimeInstant.value($value~L)
 endrule
 
 defrule trigger(variableValue) slot-type(coordinate)

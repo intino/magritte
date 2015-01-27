@@ -103,7 +103,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	}
 
 	public Locale getLanguage() {
-		if (configuration.language.equals("English")) return Locale.ENGLISH;
+		if (configuration.getLanguage().equals("English")) return Locale.ENGLISH;
 		return new Locale("Spanish", "Spain", "es_ES");
 	}
 

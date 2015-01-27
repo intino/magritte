@@ -14,6 +14,8 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
+import org.siani.itrules.formatter.Inflector;
+import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.project.module.ModuleConfiguration;
@@ -69,6 +71,21 @@ public class TaraUtil {
 			}
 		return type;
 	}
+
+	public static List<Concept> buildConceptCompositionPathOf(Concept concept) {
+		Concept aConcept = concept;
+		List<Concept> path = new ArrayList<>();
+		path.add(aConcept);
+		while (concept != null && !concept.isAggregated()) {
+			Concept parent = TaraPsiImplUtil.getConceptContainerOf(concept);
+			if (parent != null)
+				if (parent.isSub() && !concept.isSub() || !parent.isSub() && !concept.isSub())
+					path.add(0, parent);
+			concept = parent;
+		}
+		return path;
+	}
+
 
 	private static String getFacetPath(TaraFacetApply apply) {
 		PsiElement element = apply;
@@ -181,9 +198,9 @@ public class TaraUtil {
 	}
 
 
-	public static Module getModuleOfDirectory(PsiDirectory file) {
-		ProjectFileIndex fileIndex = ProjectRootManager.getInstance(file.getProject()).getFileIndex();
-		return fileIndex.getModuleForFile(file.getVirtualFile());
+	public static Module getModuleOfDirectory(PsiDirectory directory) {
+		ProjectFileIndex fileIndex = ProjectRootManager.getInstance(directory.getProject()).getFileIndex();
+		return fileIndex.getModuleForFile(directory.getVirtualFile());
 	}
 
 	public static VirtualFile getSrcRoot(Collection<VirtualFile> virtualFiles) {
@@ -239,5 +256,9 @@ public class TaraUtil {
 		List<String> facets = new ArrayList<>();
 		for (FacetApply apply : concept.getFacetApplies()) facets.add(apply.getFacetName());
 		searchNode.setFacets(facets);
+	}
+
+	public static Inflector getInflector(Module module) {
+		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
 	}
 }

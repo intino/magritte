@@ -116,12 +116,20 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public String getQualifiedName() {
-		Identifier identifierNode = getIdentifierNode();
-		String name = identifierNode != null ? identifierNode.getText() : "annonymous";
 		Concept concept = (Concept) this;
-		while ((concept = TaraPsiImplUtil.getConceptContainerOf(concept)) != null)
-			name = concept.getName() + "." + name;
+		String name = getPathName(concept);
+		while (concept != null) {
+			Concept parent = TaraPsiImplUtil.getConceptContainerOf(concept);
+			if (parent != null)
+				if (parent.isSub() && !concept.isSub() || !parent.isSub() && !concept.isSub())
+					name = parent.getName() + "." + name;
+			concept = parent;
+		}
 		return name;
+	}
+
+	private String getPathName(Concept concept) {
+		return concept.getIdentifierNode() != null ? concept.getIdentifierNode().getText() : (getType() + "@anonymous");
 	}
 
 	public String getMetaQualifiedName() {
@@ -229,7 +237,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	public boolean isMetaAggregated() {
 		Node node = TaraUtil.findNode((Concept) this, TaraLanguage.getMetaModel(this.getFile()));
-		return (node != null && node.getObject().is(AGGREGATED));
+		return (node != null && node.isAggregated());
 	}
 
 	private boolean is(siani.tara.lang.Annotation taraAnnotation) {

@@ -14,7 +14,7 @@ import java.util.Collection;
 
 public class JavaToTaraLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
-	private static final String INTENTIONS = "intentions.";
+	private static final String INTENTIONS = "intentions";
 	private static final String INTENTION = "Intention";
 
 	@Override
@@ -22,7 +22,7 @@ public class JavaToTaraLineMarkerProvider extends RelatedItemLineMarkerProvider 
 		if (element instanceof PsiClass) {
 			PsiClass psiClass = (PsiClass) element;
 			if (element.getContainingFile() == null) return;
-			Concept concept = TaraUtil.findConceptByQN(getQualifiedName(psiClass), element.getContainingFile());
+			Concept concept = TaraUtil.findConceptByQN(findCorrespondentConcept(psiClass), element.getContainingFile());
 			if (concept != null) {
 				NavigationGutterIconBuilder<PsiElement> builder =
 					NavigationGutterIconBuilder.create(TaraIcons.getIcon(TaraIcons.ICON_13)).setTarget(concept).setTooltipText("Navigate to the concept");
@@ -31,11 +31,29 @@ public class JavaToTaraLineMarkerProvider extends RelatedItemLineMarkerProvider 
 		}
 	}
 
-	private String getQualifiedName(PsiClass psiClass) {
-		String qualifiedName = psiClass.getQualifiedName();
-		if (qualifiedName == null) return "";
-		return qualifiedName.length() > INTENTIONS.length() && qualifiedName.startsWith(INTENTIONS) && qualifiedName.endsWith(INTENTION) ?
-			qualifiedName.substring(qualifiedName.indexOf(".") + 1).replaceAll(INTENTION, "")
-			: qualifiedName;
+	private String findCorrespondentConcept(PsiClass aClass) {
+		String qn = aClass.getQualifiedName();
+		if (qn == null) return "";
+		if (isFacetTargetClass(aClass)) {
+			PsiClass conceptClassOfTarget = findConceptClassOfTarget(aClass);
+			if (conceptClassOfTarget == null) return "";
+			qn = conceptClassOfTarget.getQualifiedName();
+		}
+		qn = qn.replaceFirst(aClass.getProject().getName().toLowerCase() + "." + INTENTIONS + ".", "");
+		qn = qn.replace(INTENTION, "");
+		return qn;
 	}
+
+	private PsiClass findConceptClassOfTarget(PsiClass aClass) {
+		PsiClass psiClass = aClass;
+		while (psiClass.getInterfaces().length > 0 && !"magritte.Intention".equals(psiClass.getInterfaces()[0].getQualifiedName()))
+			psiClass = psiClass.getInterfaces()[0];
+		return psiClass;
+	}
+
+	private boolean isFacetTargetClass(PsiClass aClass) {
+		return !aClass.getContainingFile().getParent().getName().equals(INTENTIONS);
+	}
+
+
 }

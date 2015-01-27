@@ -31,7 +31,7 @@ public class FacetApplyAnalyzer extends TaraAnalyzer {
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(facetApply);
 		Node node = TaraUtil.findNode(concept, getMetamodel(facetApply));
 		if (node == null) return;
- 		if (!isAllowedFacet(node, facetApply.getMetaIdentifierList().get(0).getText()))
+		if (!isAllowedFacet(node, facetApply.getMetaIdentifierList().get(0).getText()))
 			results.put(facetApply, new AnnotateAndFix(ERROR, "This facet is not allowed in this context"));
 		else if (isDuplicatedFacet(concept, facetApply))
 			results.put(facetApply, new AnnotateAndFix(ERROR, "Duplicated facet"));
@@ -70,7 +70,7 @@ public class FacetApplyAnalyzer extends TaraAnalyzer {
 	}
 
 	private List<Variable> getFacetVariables(Map<String, List<FacetTarget>> facets, String facetName) {
-//		for (String key : facets.keySet())
+//		for (String key : facets.keySet())TODO
 //			if (key.endsWith(facetName)) return facets.get(key).getVariables();
 		return Collections.EMPTY_LIST;
 	}

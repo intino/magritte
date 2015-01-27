@@ -17,31 +17,34 @@ import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
 import siani.tara.intellij.lang.psi.TaraIdentifier;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
-import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.intellij.psi.JavaPsiFacade.getElementFactory;
 import static com.intellij.psi.JavaPsiFacade.getInstance;
+import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveToConcept;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getParentOf;
 
 public class IntentionsGenerator {
 
 	private static final String INTENTIONS = "intentions";
 	private static final String INTENTION = "Intention";
-
+	private static final String DOT = ".";
+	private static final String MAGRITTE_INTENTION = "magritte.Intention";
 	private final Project project;
+	private final String basePath;
 	private final TaraBoxFile taraBoxFile;
 	private final PsiDirectory srcDirectory;
 	private PsiDirectory destiny;
 	private final Module module;
+	Map<String, PsiClass> createdClasses = new HashMap();
 
 	public IntentionsGenerator(Project project, TaraBoxFile taraBoxFile) {
 		this.project = project;
+		basePath = project.getName().toLowerCase() + DOT + INTENTIONS;
 		this.taraBoxFile = taraBoxFile;
 		VirtualFile srcDirectory = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(taraBoxFile));
 		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), srcDirectory);
@@ -74,33 +77,85 @@ public class IntentionsGenerator {
 	}
 
 	private PsiClass createIntentionClass(Concept concept) {
-		PsiClass aClass = getClass(concept);
+		PsiClass aClass = findClass(concept);
 		if (aClass == null) aClass = JavaDirectoryService.getInstance().createInterface(destiny, getClassName(concept));
 		Concept parentConcept = concept.getParentConcept() != null ? findParent(concept) : null;
-		setParent(parentConcept != null ? parentConcept.getName() : "magritte.Intention", aClass);
+		setParent(parentConcept != null ? parentConcept.getName() : MAGRITTE_INTENTION, aClass);
 		return aClass;
 	}
 
 	private void createTargetInterfaces(Concept concept) {
-		for (TaraFacetTarget facetTarget : concept.getFacetTargets())
+		Collection<TaraFacetTarget> facetTargets = concept.getFacetTargets();
+		sort(facetTargets);
+		for (TaraFacetTarget facetTarget : facetTargets)
 			createTargetInterface(concept, facetTarget);
 	}
 
-	private void createTargetInterface(Concept concept, TaraFacetTarget target) {
-		PsiDirectory targetDestiny = findTargetDestiny(concept.getName());
-		PsiClass aClass = getClass(INTENTIONS + "." + targetDestiny.getName() + "." + getClassName(concept, target));
-		if (aClass != null) return;
-		PsiClass anInterface = JavaDirectoryService.getInstance().createInterface(targetDestiny, getClassName(concept, target));
-		TaraFacetTarget parentTarget = searchParentTarget(concept, target);
-		setParent(parentTarget == null ? INTENTIONS + "." + getClassName(concept) : getTargetClassQN(concept, parentTarget), anInterface);
+	private void sort(Collection<TaraFacetTarget> facetTargets) {
+		Collections.sort((List<TaraFacetTarget>) facetTargets, new Comparator<TaraFacetTarget>() {
+			@Override
+			public int compare(TaraFacetTarget f1, TaraFacetTarget f2) {
+				Concept d1 = resolveToConcept(f1.getIdentifierReference());
+				Concept d2 = resolveToConcept(f2.getIdentifierReference());
+				if (d1 != null && d1.getParentConcept() == null) return 1;
+				if (d2 != null && d2.getParentConcept() == null) return -1;
+				return 0;
+			}
+		});
 	}
 
-	private TaraFacetTarget searchParentTarget(Concept concept, TaraFacetTarget target) {
-		Concept conceptTarget = resolveTargetDestiny(target);
-		if (conceptTarget == null) return null;
-		List<Concept> concepts = getConceptHierarchy(conceptTarget);
+	private void createTargetInterface(Concept facetConcept, TaraFacetTarget target) {
+		PsiDirectory facetDirectory = findFacetDirectory(facetConcept.getName());
+		String facetsBasePath = basePath + DOT + facetDirectory.getName().toLowerCase();
+		List<Concept> compositionRoute = TaraUtil.buildConceptCompositionPathOf(resolveToConcept(target.getIdentifierReference()));
+
+		for (int i = 0; i < compositionRoute.size(); i++) {
+			Concept targetConcept = compositionRoute.get(i);
+			PsiClass aClass = findClass(facetsBasePath + DOT + buildMiddlePath(createdClasses, subList(compositionRoute, targetConcept)) + getClassName(targetConcept, facetConcept));
+			if (aClass == null) {
+				aClass = i == 0 ? createTargetInterface(getClassName(targetConcept, facetConcept), facetDirectory) :
+					createTargetInnerInterface(getClassName(targetConcept, facetConcept), createdClasses.get(compositionRoute.get(i - 1).getName()));
+			}
+			if (targetConcept.equals(resolveToConcept(target.getIdentifierReference()))) {
+				TaraFacetTarget parentTarget = searchParentTarget(facetConcept, target, targetConcept);
+				setParent(parentTarget == null ? basePath + DOT + getClassName(facetConcept) : getTargetClassQN(facetConcept, parentTarget), aClass);
+			}
+			createdClasses.put(targetConcept.getName(), aClass);
+		}
+	}
+
+	private PsiClass createTargetInnerInterface(String className, PsiClass container) {
+		return (PsiClass) container.add(JavaPsiFacade.getElementFactory(project).createInterface(className));
+	}
+
+	private String buildMiddlePath(Map<String, PsiClass> createdClasses, List<Concept> concepts) {
+		String path = "";
+		for (Concept concept : concepts) {
+			PsiClass psiClass = createdClasses.get(concept.getName());
+			if (psiClass != null)
+				path += psiClass.getName() + DOT;
+		}
+		return path;
+	}
+
+	private List<Concept> subList(List<Concept> compositionRoute, Concept targetConcept) {
+		List<Concept> subList = new ArrayList<>();
+		for (Concept concept : compositionRoute) {
+			if (concept.equals(targetConcept)) break;
+			subList.add(concept);
+		}
+		return subList;
+	}
+
+	private PsiClass createTargetInterface(String qn, PsiDirectory facetDirectory) {
+		return JavaDirectoryService.getInstance().createInterface(facetDirectory, qn);
+	}
+
+	private TaraFacetTarget searchParentTarget(Concept facet, TaraFacetTarget facetTarget, Concept target) {
+		if (target == null) return null;
+		List<Concept> concepts = getConceptHierarchy(target);
 		if (concepts.isEmpty()) return null;
-		return searchParentTarget(concept, target, concepts);
+		return searchParentTarget(facet, facetTarget, concepts);
 	}
 
 	private TaraFacetTarget searchParentTarget(Concept concept, TaraFacetTarget target, List<Concept> hierarchy) {
@@ -118,7 +173,7 @@ public class IntentionsGenerator {
 	}
 
 	private Concept resolveTargetDestiny(TaraFacetTarget target) {
-		return TaraPsiImplUtil.getConceptContainerOf(ReferenceManager.resolve(target.getIdentifierReference()));
+		return (ReferenceManager.resolveToConcept(target.getIdentifierReference()));
 	}
 
 	private List<Concept> getConceptHierarchy(Concept conceptTarget) {
@@ -131,28 +186,25 @@ public class IntentionsGenerator {
 		return concepts;
 	}
 
-	private String getClassName(Concept concept, TaraFacetTarget target) {
-		if (target.getIdentifierReference() == null) return null;
-		List<TaraIdentifier> identifierList = target.getIdentifierReference().getIdentifierList();
-		return identifierList.get(identifierList.size() - 1).getName() + concept.getName() + INTENTION;
+	private String getClassName(Concept target, Concept facet) {
+		return target.getName() + facet.getName() + INTENTION;
 	}
-
 
 	private String getTargetClassQN(Concept concept, TaraFacetTarget target) {
 		if (target.getIdentifierReference() == null) return null;
 		List<TaraIdentifier> identifierList = target.getIdentifierReference().getIdentifierList();
 		String name = identifierList.get(identifierList.size() - 1).getName() + concept.getName() + INTENTION;
-		return INTENTIONS + "." + getInflector().plural(concept.getName()) + "." + name;
+		return basePath + DOT + getInflector().plural(concept.getName()).toLowerCase() + DOT + name;
 	}
 
 	private void setParent(String parent, PsiClass aClass) {
-		if (parent == null) return;
-		PsiClass parentClass = getClass(parent);
+		PsiClass parentClass = findClass(parent);
 		if (!isParentAdded(aClass.getExtendsList().getReferencedTypes(), parentClass))
 			setParent(aClass, parentClass);
 	}
 
 	private void setParent(final PsiClass aClass, final PsiClass parentClass) {
+		if (parentClass == null) return; //CANNOT BE POSSIBLE
 		PsiJavaCodeReferenceElement classReferenceElement = getElementFactory(project).createClassReferenceElement(parentClass);
 		if (!isParentAdded(aClass.getExtendsListTypes(), parentClass))
 			aClass.getExtendsList().add(classReferenceElement);
@@ -168,8 +220,8 @@ public class IntentionsGenerator {
 		return concept.getParentConcept();
 	}
 
-	private PsiClass getClass(Concept concept) {
-		return getInstance(project).findClass(INTENTIONS + "." + getClassName(concept),
+	private PsiClass findClass(Concept concept) {
+		return getInstance(project).findClass(basePath + DOT + getClassName(concept),
 			GlobalSearchScope.moduleScope(module));
 	}
 
@@ -177,20 +229,20 @@ public class IntentionsGenerator {
 		return concept.getName() + INTENTION;
 	}
 
-	private PsiClass getClass(String qn) {
+	private PsiClass findClass(String qn) {
 		return getInstance(project).findClass(qn, GlobalSearchScope.moduleWithLibrariesScope(module));
 	}
 
-	private PsiDirectory findTargetDestiny(String name) {
+	private PsiDirectory findFacetDirectory(String name) {
 		final PsiDirectory intentionsDir = findIntentionsDestiny();
-		final String pluralName = getInflector().plural(name);
+		final String pluralName = getInflector().plural(name).toLowerCase();
 		PsiDirectory subdirectory = intentionsDir.findSubdirectory(pluralName);
 		if (subdirectory != null) return subdirectory;
 		final PsiDirectory[] destiny = new PsiDirectory[1];
 		WriteCommandAction action = new WriteCommandAction(project, taraBoxFile) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
-				destiny[0] = DirectoryUtil.createSubdirectories(pluralName, intentionsDir, ".");
+				destiny[0] = DirectoryUtil.createSubdirectories(pluralName, intentionsDir, DOT);
 			}
 		};
 		action.execute();
@@ -202,13 +254,20 @@ public class IntentionsGenerator {
 	}
 
 	private PsiDirectory findIntentionsDestiny() {
-		PsiDirectory subdirectory = srcDirectory.findSubdirectory(INTENTIONS);
-		if (subdirectory != null) return subdirectory;
+		String[] path = new String[]{project.getName().toLowerCase(), INTENTIONS};
+		PsiDirectory basePath = srcDirectory;
+		for (String name : path)
+			basePath = basePath.findSubdirectory(name) == null ? createDirectory(basePath, name) : basePath.findSubdirectory(name);
+		return basePath;
+	}
+
+	@NotNull
+	private PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
 		final PsiDirectory[] destiny = new PsiDirectory[1];
 		WriteCommandAction action = new WriteCommandAction(project, taraBoxFile) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
-				destiny[0] = DirectoryUtil.createSubdirectories(INTENTIONS, srcDirectory, ".");
+				destiny[0] = DirectoryUtil.createSubdirectories(name, basePath, DOT);
 			}
 		};
 		action.execute();

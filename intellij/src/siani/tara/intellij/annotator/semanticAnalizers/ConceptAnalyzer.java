@@ -2,14 +2,16 @@ package siani.tara.intellij.annotator.semanticAnalizers;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
+import org.siani.itrules.formatter.Inflector;
+import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.annotator.fix.AddAddressFix;
 import siani.tara.intellij.annotator.fix.RemoveConceptFix;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
@@ -21,12 +23,13 @@ import java.util.List;
 import static siani.tara.intellij.MessageProvider.message;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.WARNING;
+import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveJavaClassReference;
 import static siani.tara.lang.Annotation.*;
 
 public class ConceptAnalyzer extends TaraAnalyzer {
 
 	private static final String FACET_PATH = "extensions";
-	private static final String INTENTION_PATH = "intentions";
+	private static final String INTENTIONS = "intentions";
 	private Concept concept;
 
 	public ConceptAnalyzer(Concept concept) {
@@ -133,12 +136,17 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	private void analyzeJavaClassCreation(Node node, Concept concept) {
 		if ((concept.isIntention()) && !isIntentionClassCreated(concept))
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class")));
-		if (shouldHaveClass(node, concept) && !isFacetClassCreated(concept))
+		if (shouldHaveFacetTargetClass(node, concept) && !isFacetTargetClassCreated(concept))
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.java.generated.class")));
+		for (TaraFacetApply apply : concept.getFacetApplies())
+			if (!isFacetApplyClassCreated(concept, apply))
+				results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.java.generated.class")));
 	}
 
-	private boolean shouldHaveClass(Node node, Concept concept) {
-		return !(concept == null || node == null) && (concept.isFacet() || node.is(META_FACET)) && node.is(INTENTION);
+	private boolean shouldHaveFacetTargetClass(Node node, Concept concept) {
+		return concept != null && node != null
+			&& (concept.isFacet() || node.is(META_FACET))
+			&& node.is(siani.tara.lang.Annotation.INTENTION);
 	}
 
 	private void analyzeMetaAnnotationConstrains(Node node) {
@@ -238,14 +246,27 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean isIntentionClassCreated(Concept concept) {
-		return ReferenceManager.resolveJavaClassReference(concept.getProject(), INTENTION_PATH + "." + concept.getName() + "Intention") != null;
+		String projectName = concept.getProject().getName().toLowerCase();
+		return resolveJavaClassReference(concept.getProject(), projectName + "." + INTENTIONS + "." + concept.getName() + "Intention") != null;
 	}
 
-	private boolean isFacetClassCreated(Concept concept) {
-		return ReferenceManager.resolveJavaClassReference(concept.getProject(), getPackage(concept) + "." + concept.getName() + concept.getType()) != null;
+	private boolean isFacetTargetClassCreated(Concept concept) {
+		return resolveJavaClassReference(concept.getProject(), getFacetPackage(concept) + "." + concept.getName() + concept.getType()) != null;
 	}
 
-	private String getPackage(Concept concept) {
-		return concept.getProject().getName() + "." + FACET_PATH;
+	private boolean isFacetApplyClassCreated(Concept concept, TaraFacetApply apply) {
+		return resolveJavaClassReference(concept.getProject(), getFacetApplyPackage(concept, apply) + "." + concept.getName() + concept.getType() + apply.getFacetName()) != null;
+	}
+
+	private String getFacetApplyPackage(Concept concept, TaraFacetApply apply) {
+		return (getFacetPackage(concept) + "." + getInflector(apply).plural(apply.getFacetName())).toLowerCase();
+	}
+
+	private Inflector getInflector(TaraFacetApply apply) {
+		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(apply)).getLanguage());
+	}
+
+	private String getFacetPackage(Concept concept) {
+		return (concept.getProject().getName() + "." + FACET_PATH).toLowerCase();
 	}
 }

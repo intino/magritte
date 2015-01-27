@@ -96,7 +96,7 @@
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraIntentionLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="Tara"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraFacetLineMarkerProvider"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraFacetApplyLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraMetricLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="JAVA"

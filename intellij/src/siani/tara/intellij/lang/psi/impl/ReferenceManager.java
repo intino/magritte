@@ -62,6 +62,14 @@ public class ReferenceManager {
 		return reference;
 	}
 
+
+	@Nullable
+	public static Concept resolveToConcept(IdentifierReference identifierReference) {
+		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
+		PsiElement reference = resolveConcept(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
+		return (Concept) reference;
+	}
+
 	private static PsiElement resolveHeaderReference(Identifier identifier) {
 		return resolveBoxPath(identifier);
 	}

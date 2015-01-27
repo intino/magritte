@@ -17,7 +17,6 @@ import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.codegeneration.AddressGenerator;
 import siani.tara.intellij.codegeneration.FacetApplyGenerator;
-import siani.tara.intellij.codegeneration.FacetTargetsGenerator;
 import siani.tara.intellij.codegeneration.IntentionsGenerator;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
@@ -41,11 +40,11 @@ public class GenerateAction extends AnAction implements DumbAware {
 		FileDocumentManager.getInstance().saveAllDocuments();
 		for (VirtualFile file : files) {
 			IntentionsGenerator intentionsGenerator = new IntentionsGenerator(project, (TaraBoxFile) PsiManager.getInstance(project).findFile(file));
-			FacetTargetsGenerator targetsGenerator = new FacetTargetsGenerator((TaraBoxFile) PsiManager.getInstance(project).findFile(file));
+//			FacetTargetsGenerator targetsGenerator = new FacetTargetsGenerator((TaraBoxFile) PsiManager.getInstance(project).findFile(file));
 			FacetApplyGenerator applyGenerator = new FacetApplyGenerator((TaraBoxFile) PsiManager.getInstance(project).findFile(file));
 			generateAddresses((TaraBoxFile) PsiManager.getInstance(project).findFile(file));
 			intentionsGenerator.generate();
-			targetsGenerator.generate();
+//			targetsGenerator.generate();
 			applyGenerator.generate();
 		}
 		String report = String.format("Facet & Intention Classes have been Generated Sucessfully");

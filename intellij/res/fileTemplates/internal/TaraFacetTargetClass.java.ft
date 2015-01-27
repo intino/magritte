@@ -1,7 +1,7 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
-import intentions.${TYPE}Intention;
-import magritte.morphs.${NAME};
+import ${PROJECT_NAME.toLowerCase()}.intentions.${TYPE}Intention;
+import magritte.morphs.*;
 
 public class ${NAME}${TYPE} extends ${NAME} implements ${TYPE}Intention {
 
