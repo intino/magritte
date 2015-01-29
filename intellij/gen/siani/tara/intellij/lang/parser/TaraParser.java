@@ -1,14 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package siani.tara.intellij.lang.parser;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import com.intellij.lang.PsiParser;
-import com.intellij.psi.tree.IElementType;
-
-import static siani.tara.intellij.lang.parser.TaraParserUtil.*;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
+import static siani.tara.intellij.lang.parser.TaraParserUtil.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.lang.PsiParser;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class TaraParser implements PsiParser {
@@ -33,9 +33,6 @@ public class TaraParser implements PsiParser {
     }
     else if (t == ANNOTATIONS) {
       r = annotations(b, 0);
-    }
-    else if (t == ANNOTATIONS_AND_FACETS) {
-      r = annotationsAndFacets(b, 0);
     }
     else if (t == ATTRIBUTE_TYPE) {
       r = attributeType(b, 0);
@@ -195,34 +192,16 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // USE_KEY headerReference (AS METAMODEL)? NEWLINE
+  // DSL headerReference NEWLINE
   public static boolean anImport(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "anImport")) return false;
-    if (!nextTokenIs(b, USE_KEY)) return false;
+    if (!nextTokenIs(b, DSL)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, USE_KEY);
+    r = consumeToken(b, DSL);
     r = r && headerReference(b, l + 1);
-    r = r && anImport_2(b, l + 1);
     r = r && consumeToken(b, NEWLINE);
     exit_section_(b, m, AN_IMPORT, r);
-    return r;
-  }
-
-  // (AS METAMODEL)?
-  private static boolean anImport_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "anImport_2")) return false;
-    anImport_2_0(b, l + 1);
-    return true;
-  }
-
-  // AS METAMODEL
-  private static boolean anImport_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "anImport_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, AS, METAMODEL);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -272,43 +251,31 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // annotation+
+  // IS annotation+
   public static boolean annotations(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotations")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<annotations>");
-    r = annotation(b, l + 1);
-    int c = current_position_(b);
-    while (r) {
-      if (!annotation(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "annotations", c)) break;
-      c = current_position_(b);
-    }
-    exit_section_(b, l, m, ANNOTATIONS, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // IS (annotations | facetApply)
-  public static boolean annotationsAndFacets(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "annotationsAndFacets")) return false;
     if (!nextTokenIs(b, IS)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeToken(b, IS);
     p = r; // pin = 1
-    r = r && annotationsAndFacets_1(b, l + 1);
-    exit_section_(b, l, m, ANNOTATIONS_AND_FACETS, r, p, null);
+    r = r && annotations_1(b, l + 1);
+    exit_section_(b, l, m, ANNOTATIONS, r, p, null);
     return r || p;
   }
 
-  // annotations | facetApply
-  private static boolean annotationsAndFacets_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "annotationsAndFacets_1")) return false;
+  // annotation+
+  private static boolean annotations_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "annotations_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = annotations(b, l + 1);
-    if (!r) r = facetApply(b, l + 1);
+    r = annotation(b, l + 1);
+    int c = current_position_(b);
+    while (r) {
+      if (!annotation(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "annotations_1", c)) break;
+      c = current_position_(b);
+    }
     exit_section_(b, m, null, r);
     return r;
   }
@@ -465,7 +432,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // signature annotationsAndFacets? body?
+  // signature annotations? body?
   public static boolean concept(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "concept")) return false;
     boolean r, p;
@@ -478,10 +445,10 @@ public class TaraParser implements PsiParser {
     return r || p;
   }
 
-  // annotationsAndFacets?
+  // annotations?
   private static boolean concept_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "concept_1")) return false;
-    annotationsAndFacets(b, l + 1);
+    annotations(b, l + 1);
     return true;
   }
 
@@ -493,7 +460,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // varInit | variable | concept | annotationsAndFacets | facetTarget | conceptReference | doc
+  // varInit | variable | concept | facetTarget | facetApply | conceptReference | doc
   static boolean conceptConstituents(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "conceptConstituents")) return false;
     boolean r;
@@ -501,8 +468,8 @@ public class TaraParser implements PsiParser {
     r = varInit(b, l + 1);
     if (!r) r = variable(b, l + 1);
     if (!r) r = concept(b, l + 1);
-    if (!r) r = annotationsAndFacets(b, l + 1);
     if (!r) r = facetTarget(b, l + 1);
+    if (!r) r = facetApply(b, l + 1);
     if (!r) r = conceptReference(b, l + 1);
     if (!r) r = doc(b, l + 1);
     exit_section_(b, m, null, r);
@@ -510,7 +477,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // HAS identifierReference (IS annotations)?
+  // HAS identifierReference annotations?
   public static boolean conceptReference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "conceptReference")) return false;
     if (!nextTokenIs(b, HAS)) return false;
@@ -524,22 +491,11 @@ public class TaraParser implements PsiParser {
     return r || p;
   }
 
-  // (IS annotations)?
+  // annotations?
   private static boolean conceptReference_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "conceptReference_2")) return false;
-    conceptReference_2_0(b, l + 1);
+    annotations(b, l + 1);
     return true;
-  }
-
-  // IS annotations
-  private static boolean conceptReference_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "conceptReference_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IS);
-    r = r && annotations(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
   }
 
   /* ********************************************************** */
@@ -826,38 +782,39 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // metaIdentifier parameters? (WITH metaIdentifier)? body?
+  // AS metaIdentifier parameters? (WITH metaIdentifier)? body?
   public static boolean facetApply(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "facetApply")) return false;
-    if (!nextTokenIs(b, "<facet apply>", IDENTIFIER_KEY, METAIDENTIFIER_KEY)) return false;
+    if (!nextTokenIs(b, AS)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, "<facet apply>");
-    r = metaIdentifier(b, l + 1);
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = consumeToken(b, AS);
     p = r; // pin = 1
-    r = r && report_error_(b, facetApply_1(b, l + 1));
+    r = r && report_error_(b, metaIdentifier(b, l + 1));
     r = p && report_error_(b, facetApply_2(b, l + 1)) && r;
-    r = p && facetApply_3(b, l + 1) && r;
+    r = p && report_error_(b, facetApply_3(b, l + 1)) && r;
+    r = p && facetApply_4(b, l + 1) && r;
     exit_section_(b, l, m, FACET_APPLY, r, p, null);
     return r || p;
   }
 
   // parameters?
-  private static boolean facetApply_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "facetApply_1")) return false;
+  private static boolean facetApply_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "facetApply_2")) return false;
     parameters(b, l + 1);
     return true;
   }
 
   // (WITH metaIdentifier)?
-  private static boolean facetApply_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "facetApply_2")) return false;
-    facetApply_2_0(b, l + 1);
+  private static boolean facetApply_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "facetApply_3")) return false;
+    facetApply_3_0(b, l + 1);
     return true;
   }
 
   // WITH metaIdentifier
-  private static boolean facetApply_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "facetApply_2_0")) return false;
+  private static boolean facetApply_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "facetApply_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, WITH);
@@ -867,8 +824,8 @@ public class TaraParser implements PsiParser {
   }
 
   // body?
-  private static boolean facetApply_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "facetApply_3")) return false;
+  private static boolean facetApply_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "facetApply_4")) return false;
     body(b, l + 1);
     return true;
   }
@@ -1029,7 +986,7 @@ public class TaraParser implements PsiParser {
   // (anImport NEWLINE*)+
   public static boolean imports(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "imports")) return false;
-    if (!nextTokenIs(b, USE_KEY)) return false;
+    if (!nextTokenIs(b, DSL)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = imports_0(b, l + 1);
@@ -2228,7 +2185,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // VAR variableType (IS annotations)?
+  // VAR variableType annotations?
   public static boolean variable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable")) return false;
     if (!nextTokenIs(b, VAR)) return false;
@@ -2242,22 +2199,11 @@ public class TaraParser implements PsiParser {
     return r || p;
   }
 
-  // (IS annotations)?
+  // annotations?
   private static boolean variable_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_2")) return false;
-    variable_2_0(b, l + 1);
+    annotations(b, l + 1);
     return true;
-  }
-
-  // IS annotations
-  private static boolean variable_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "variable_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IS);
-    r = r && annotations(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
   }
 
   /* ********************************************************** */

@@ -12,7 +12,6 @@ public interface TaraTypes {
 	IElementType ADDRESS = new TaraElementType("ADDRESS");
 	IElementType ANNOTATION = new TaraElementType("ANNOTATION");
 	IElementType ANNOTATIONS = new TaraElementType("ANNOTATIONS");
-	IElementType ANNOTATIONS_AND_FACETS = new TaraElementType("ANNOTATIONS_AND_FACETS");
 	IElementType AN_IMPORT = new TaraElementType("AN_IMPORT");
 	IElementType ATTRIBUTE_TYPE = new TaraElementType("ATTRIBUTE_TYPE");
 	IElementType BODY = new TaraElementType("BODY");
@@ -79,6 +78,7 @@ public interface TaraTypes {
 	IElementType DOT = new TaraTokenType("DOT");
 	IElementType DOUBLE_TYPE = new TaraTokenType("DOUBLE_TYPE");
 	IElementType DOUBLE_VALUE_KEY = new TaraTokenType("DOUBLE_VALUE_KEY");
+	IElementType DSL = new TaraTokenType("DSL");
 	IElementType EMPTY_REF = new TaraTokenType("EMPTY_REF");
 	IElementType EQUALS = new TaraTokenType("EQUALS");
 	IElementType EXTENDS = new TaraTokenType("EXTENDS");
@@ -96,7 +96,6 @@ public interface TaraTypes {
 	IElementType MEASURE_TYPE_KEY = new TaraTokenType("MEASURE_TYPE_KEY");
 	IElementType MEASURE_VALUE_KEY = new TaraTokenType("MEASURE_VALUE_KEY");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
-	IElementType METAMODEL = new TaraTokenType("METAMODEL");
 	IElementType NAMED = new TaraTokenType("NAMED");
 	IElementType NATURAL_TYPE = new TaraTokenType("NATURAL_TYPE");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
@@ -120,7 +119,6 @@ public interface TaraTypes {
 	IElementType STRING_VALUE_KEY = new TaraTokenType("STRING_VALUE_KEY");
 	IElementType SUB = new TaraTokenType("SUB");
 	IElementType TERMINAL = new TaraTokenType("TERMINAL");
-	IElementType USE_KEY = new TaraTokenType("USE_KEY");
 	IElementType VAR = new TaraTokenType("VAR");
 	IElementType WITH = new TaraTokenType("WITH");
 	IElementType WORD_KEY = new TaraTokenType("WORD_KEY");
@@ -134,8 +132,6 @@ public interface TaraTypes {
 				return new TaraAnnotationImpl(node);
 			} else if (type == ANNOTATIONS) {
 				return new TaraAnnotationsImpl(node);
-			} else if (type == ANNOTATIONS_AND_FACETS) {
-				return new TaraAnnotationsAndFacetsImpl(node);
 			} else if (type == AN_IMPORT) {
 				return new TaraAnImportImpl(node);
 			} else if (type == ATTRIBUTE_TYPE) {

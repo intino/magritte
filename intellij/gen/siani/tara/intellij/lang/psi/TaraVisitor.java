@@ -22,10 +22,6 @@ public class TaraVisitor extends PsiElementVisitor {
     visitAnnotations(o);
   }
 
-  public void visitAnnotationsAndFacets(@NotNull TaraAnnotationsAndFacets o) {
-    visitPsiElement(o);
-  }
-
   public void visitAttributeType(@NotNull TaraAttributeType o) {
     visitPsiElement(o);
   }

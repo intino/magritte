@@ -11,7 +11,7 @@ import siani.tara.intellij.lang.psi.TaraImports;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImportMetamodelAnnotation extends TaraAnnotator {
+public class DSLDeclarationAnnotation extends TaraAnnotator {
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {

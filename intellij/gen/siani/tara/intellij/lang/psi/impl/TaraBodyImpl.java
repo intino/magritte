@@ -23,12 +23,6 @@ public class TaraBodyImpl extends BodyMixin implements TaraBody {
 
   @Override
   @NotNull
-  public List<TaraAnnotationsAndFacets> getAnnotationsAndFacetsList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraAnnotationsAndFacets.class);
-  }
-
-  @Override
-  @NotNull
   public List<TaraConcept> getConceptList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraConcept.class);
   }
@@ -43,6 +37,12 @@ public class TaraBodyImpl extends BodyMixin implements TaraBody {
   @NotNull
   public List<TaraDoc> getDocList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraDoc.class);
+  }
+
+  @Override
+  @NotNull
+  public List<TaraFacetApply> getFacetApplyList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraFacetApply.class);
   }
 
   @Override

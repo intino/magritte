@@ -23,8 +23,8 @@ public class TaraConceptImpl extends ConceptMixin implements TaraConcept {
 
   @Override
   @Nullable
-  public TaraAnnotationsAndFacets getAnnotationsAndFacets() {
-    return findChildByClass(TaraAnnotationsAndFacets.class);
+  public TaraAnnotations getAnnotations() {
+    return findChildByClass(TaraAnnotations.class);
   }
 
   @Override

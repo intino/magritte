@@ -12,7 +12,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.actions.dialog.BugReportDialogPane;
+import siani.tara.intellij.actions.dialog.SummitFeedbackDialogPane;
 import siani.tara.intellij.diagnostic.errorreporting.PivotalLoggingEventSubmitter;
 import siani.tara.intellij.lang.TaraIcons;
 
@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import static siani.tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitterBundle.message;
 
-public class BugReportAction extends AnAction implements DumbAware {
+public class SummitFeedbackAction extends AnAction implements DumbAware {
 	public static final Logger LOG = Logger.getInstance("Config module Action");
 	private static final String PLUGIN_ID_PROPERTY_KEY = "plugin.id";
 	private static final String PLUGIN_NAME_PROPERTY_KEY = "plugin.name";
@@ -42,7 +42,7 @@ public class BugReportAction extends AnAction implements DumbAware {
 			LOG.error("actionPerformed no project for " + e);
 			return;
 		}
-		BugReportDialogPane configDialog = new BugReportDialogPane(e.getProject());
+		SummitFeedbackDialogPane configDialog = new SummitFeedbackDialogPane(e.getProject());
 		configDialog.show();
 		if (configDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
 			sendReport(configDialog.getReportType(), configDialog.getReportTitle(), configDialog.getReportDescription());

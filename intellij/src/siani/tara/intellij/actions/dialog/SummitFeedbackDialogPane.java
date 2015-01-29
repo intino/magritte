@@ -5,8 +5,9 @@ import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.*;
 
-public class BugReportDialogPane extends DialogWrapper {
+public class SummitFeedbackDialogPane extends DialogWrapper {
 
 	private JPanel dialogContents;
 	private JLabel info;
@@ -14,8 +15,17 @@ public class BugReportDialogPane extends DialogWrapper {
 	private JComboBox reportType;
 	private JTextField title;
 
-	public BugReportDialogPane(final Project project) {
+	public SummitFeedbackDialogPane(final Project project) {
 		super(project, false);
+		this.centerRelativeToParent();
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension dimension = new Dimension((int) (screenSize.getWidth() / 2), (int) (screenSize.getHeight() / 2));
+//		dialogContents.setSize((int) (screenSize.getWidth() / 2), (int) (screenSize.getHeight() / 2));
+		dialogContents.setPreferredSize(dimension);
+		dialogContents.setMinimumSize(dimension);
+		dialogContents.setMaximumSize(dimension);
+		super.setTitle("Summit Tara Feedback");
+		setOKButtonText("Summit");
 		init();
 	}
 
