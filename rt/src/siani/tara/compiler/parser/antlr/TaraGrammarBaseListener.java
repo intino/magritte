@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.4.1-dev
+// Generated from /Users/octavio/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.4.1-dev
 package siani.tara.compiler.parser.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -204,18 +204,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLinkValue(@NotNull TaraGrammar.LinkValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAnnotationsAndFacets(@NotNull TaraGrammar.AnnotationsAndFacetsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAnnotationsAndFacets(@NotNull TaraGrammar.AnnotationsAndFacetsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -564,6 +552,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFacetApply(@NotNull TaraGrammar.FacetApplyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDslDeclaration(@NotNull TaraGrammar.DslDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDslDeclaration(@NotNull TaraGrammar.DslDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

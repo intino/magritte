@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.4.1-dev
+// Generated from /Users/octavio/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.4.1-dev
 package siani.tara.compiler.parser.antlr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
@@ -168,16 +168,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLinkValue(@NotNull TaraGrammar.LinkValueContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#annotationsAndFacets}.
-	 * @param ctx the parse tree
-	 */
-	void enterAnnotationsAndFacets(@NotNull TaraGrammar.AnnotationsAndFacetsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#annotationsAndFacets}.
-	 * @param ctx the parse tree
-	 */
-	void exitAnnotationsAndFacets(@NotNull TaraGrammar.AnnotationsAndFacetsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#signature}.
 	 * @param ctx the parse tree
@@ -468,6 +458,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFacetApply(@NotNull TaraGrammar.FacetApplyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#dslDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterDslDeclaration(@NotNull TaraGrammar.DslDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#dslDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitDslDeclaration(@NotNull TaraGrammar.DslDeclarationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#address}.
 	 * @param ctx the parse tree

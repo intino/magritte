@@ -28,11 +28,15 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterAnImport(@NotNull AnImportContext ctx) {
-		String name = ctx.headerReference().getText();
-		if (ctx.IDENTIFIER() != null) {
-			model.setParentModelName(name);
-			model.setParentModel(ModelLoader.load(modelsPath, name));
-		} else imports.add(name);
+		imports.add(ctx.headerReference().getText());
+	}
+
+	@Override
+	public void enterDslDeclaration(@NotNull DslDeclarationContext ctx) {
+		if (ctx.headerReference() != null) {
+			model.setParentModelName(ctx.headerReference().getText());
+			model.setParentModel(ModelLoader.load(modelsPath, ctx.headerReference().getText()));
+		}
 	}
 
 	@Override

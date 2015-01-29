@@ -9,6 +9,7 @@ public class FacetTarget {
 	private String destinyName;
 	private transient NodeObject destiny;
 	private boolean always;
+	private boolean intention;
 	private ArrayList<Variable> variables = new ArrayList<>();
 	private List<Node> inner = new ArrayList<>();
 
@@ -86,10 +87,19 @@ public class FacetTarget {
 		target.setDestiny(this.getDestiny());
 		target.setDestinyQN(this.getDestinyQN());
 		target.setAlways(this.isAlways());
+		target.setIntention(this.isIntention());
 		for (Node node : this.getInner())
 			target.add(node.is(LinkNode.class) ? node : new LinkNode((DeclaredNode) node, null));
 		for (Variable variable : this.getVariables())
 			target.add(variable);
 		return target;
+	}
+
+	public boolean isIntention() {
+		return intention;
+	}
+
+	public void setIntention(boolean intention) {
+		this.intention = intention;
 	}
 }

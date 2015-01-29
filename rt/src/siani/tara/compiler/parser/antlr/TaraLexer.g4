@@ -81,6 +81,7 @@ METAIDENTIFIER      : 'Concept';
 SUB                 : 'sub';
 
 USE                 : 'use';
+DSL                 : 'dsl';
 
 VAR                 : 'var';
 AS                  : 'as';
@@ -106,7 +107,6 @@ ADDRESSED           : 'addressed';
 AGGREGATED          : 'aggregated';
 READONLY            : 'readonly';
 CASE                : 'case';
-ROOT                : 'root';
 
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';

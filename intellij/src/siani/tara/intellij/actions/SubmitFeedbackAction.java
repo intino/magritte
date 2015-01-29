@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import static siani.tara.intellij.diagnostic.errorreporting.PluginErrorReportSubmitterBundle.message;
 
-public class SummitFeedbackAction extends AnAction implements DumbAware {
+public class SubmitFeedbackAction extends AnAction implements DumbAware {
 	public static final Logger LOG = Logger.getInstance("Config module Action");
 	private static final String PLUGIN_ID_PROPERTY_KEY = "plugin.id";
 	private static final String PLUGIN_NAME_PROPERTY_KEY = "plugin.name";

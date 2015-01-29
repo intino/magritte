@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static siani.tara.lang.Annotation.FACET;
+import static siani.tara.lang.Annotation.INTENTION;
 
 public class FacetTargetsResolver {
 	private final Model model;
@@ -19,8 +20,14 @@ public class FacetTargetsResolver {
 	public void resolve() throws DependencyException {
 		resolveSubTargets();
 		for (Node node : model.getNodeTable().values())
-			if (node.is(DeclaredNode.class) && node.getObject().is(FACET))
+			if (node.is(DeclaredNode.class) && node.getObject().is(FACET)) {
+				if (node.is(INTENTION)) markTargetsAsIntention(node.getObject().getFacetTargets());
 				processFacetTarget((DeclaredNode) node);
+			}
+	}
+
+	private void markTargetsAsIntention(List<FacetTarget> facetTargets) {
+		for (FacetTarget target : facetTargets) target.setIntention(true);
 	}
 
 	private void resolveSubTargets() throws DependencyException {

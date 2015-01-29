@@ -39,7 +39,7 @@ public class InsideModelDependencyResolver {
 				Node node = model.get(toProcessNodes.get(i));
 				if (node instanceof LinkNode)
 					linkToDeclared((LinkNode) node, model.searchDeclaredNodeOfLink((LinkNode) node));
-				else if (resolveAsDeclared(toAddNodes, node)) continue;
+				else if (resolveAsDeclared(toAddNodes,(DeclaredNode) node)) continue;
 				toProcessNodes.remove(node.getQualifiedName());
 				i--;
 			}
@@ -49,18 +49,19 @@ public class InsideModelDependencyResolver {
 		updateKeys(list);
 	}
 
-	private boolean resolveAsDeclared(List<LinkNode> toAddNodes, Node node) throws DependencyException {
+	private boolean resolveAsDeclared(List<LinkNode> toAddNodes, DeclaredNode node) throws DependencyException {
 		NodeObject object = node.getObject();
 		if (object.getParentName() != null || node.isSub()) {
 			DeclaredNode parent = model.searchAncestry(node);
 			if (parent == null) throwError(node);
 			if (toProcessNodes.contains(parent.getQualifiedName())) return true;
 			linkDeclaredToParent(object, parent);
-			extractInfoFromParent(toAddNodes, (DeclaredNode) node, parent);
+			extractInfoFromParent(toAddNodes, node, parent);
 		}
 		resolveVariableReferences(node);
 		return false;
 	}
+
 
 	private void resolveVariableReferences(Node node) throws DependencyException {
 		List<Reference> references = node.getObject().getReferences();

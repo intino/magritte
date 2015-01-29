@@ -59,7 +59,7 @@ public class MorphFrameCreator extends FrameCreator {
 		if (object.getDoc() != null)
 			newFrame.addFrame("doc", object.getDoc());
 		if (node.getName() != null && !node.getName().isEmpty())
-			newFrame.addFrame("name", node.getName());
+			newFrame.addFrame("name", node.isAnonymous() ? node.getType() : node.getName());
 		if (node.getObject().getParent() != null)
 			newFrame.addFrame("parent", node.getObject().getParent().getName());
 		else newFrame.addFrame("parent", "Morph");

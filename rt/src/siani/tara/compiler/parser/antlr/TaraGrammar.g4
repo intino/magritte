@@ -2,13 +2,15 @@ parser grammar TaraGrammar;
 options { tokenVocab=TaraLexer; }
 
 
-root: NEWLINE* imports? (concept NEWLINE*)* EOF;
+root: NEWLINE* dslDeclaration? imports? (concept NEWLINE*)* EOF;
+
+dslDeclaration : DSL headerReference NEWLINE+;
 
 imports : anImport+;
-anImport: USE headerReference (AS IDENTIFIER)? NEWLINE;
+anImport: USE headerReference NEWLINE+;
 
 doc: DOC+;
-concept: doc? signature annotationsAndFacets? body?;
+concept: doc? signature annotations? body?;
 
 signature: ((SUB parameters? IDENTIFIER) | (metaidentifier parameters? IDENTIFIER? parent?)) address?;
 
@@ -33,14 +35,14 @@ initValue : identifierReference+
 metaWord : metaidentifier metaWordNames*;
 metaWordNames : DOT IDENTIFIER;
 
-body: NEW_LINE_INDENT ((variable | concept | varInit | annotationsAndFacets | facetTarget | conceptReference | doc) NEWLINE+)+ DEDENT;
+body: NEW_LINE_INDENT ((variable | concept | varInit | facetApply | facetTarget | conceptReference | doc) NEWLINE+)+ DEDENT;
 
-variable : VAR (naturalAttribute | integerAttribute | doubleAttribute |ratioAttribute | measureAttribute|
-    booleanAttribute | stringAttribute | dateAttribute | resource | reference | word) (IS annotations)?;
+variable : VAR (naturalAttribute | integerAttribute | doubleAttribute |ratioAttribute | measureAttribute |
+    booleanAttribute | stringAttribute | dateAttribute | resource | reference | word) annotations?;
 
-facetApply : metaidentifier parameters? (WITH metaidentifier)? body?;
+facetApply : AS metaidentifier parameters? (WITH metaidentifier)? body?;
 facetTarget : ON identifierReference ALWAYS? body?;
-conceptReference : HAS identifierReference (IS annotations)?;
+conceptReference : HAS identifierReference annotations?;
 
 word             : WORD LIST? IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
 wordNames        : IDENTIFIER STAR?;
@@ -71,11 +73,10 @@ measureValue : IDENTIFIER | MEASURE_VALUE;
 
 
 
-annotationsAndFacets: IS (annotations | facetApply);
-annotations: annotation+;
+annotations: IS annotation+;
 
 annotation: PLUS? (ABSTRACT | TERMINAL | SINGLE | REQUIRED | READONLY |
-              NAMED | FACET | INTENTION | ROOT | COMPONENT | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | CASE);
+              NAMED | FACET | INTENTION | COMPONENT | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | CASE);
 
 varInit : IDENTIFIER EQUALS initValue;
 

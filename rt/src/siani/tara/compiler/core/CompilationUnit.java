@@ -45,9 +45,9 @@ public class CompilationUnit extends ProcessingUnit {
 		}
 	};
 
-	public CompilationUnit(boolean pluginGeneration, CompilerConfiguration configuration) {
+	public CompilationUnit(boolean metamodelGeneration, CompilerConfiguration configuration) {
 		super(configuration, null);
-		this.pluginGeneration = pluginGeneration;
+		this.pluginGeneration = metamodelGeneration;
 		this.sourceUnits = new HashMap<>();
 		this.phaseOperations = new LinkedList[Phases.ALL];
 		for (int i = 0; i < this.phaseOperations.length; i++)
@@ -62,7 +62,7 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new ModelToJavaOperation(this), Phases.CLASS_GENERATION);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
-		if (pluginGeneration) addPhaseOperation(new SaveModelOperation(this), Phases.MODEL_GENERATION);
+		if (metamodelGeneration) addPhaseOperation(new SaveModelOperation(this), Phases.MODEL_GENERATION);
 		addPhaseOperation(output, Phases.OUTPUT);
 	}
 
