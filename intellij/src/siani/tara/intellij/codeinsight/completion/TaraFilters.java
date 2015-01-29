@@ -50,7 +50,7 @@ public class TaraFilters {
 	private static boolean inAnnotations(PsiElement context) {
 		PsiElement parent = context.getParent();
 		while (parent != null) {
-			if (parent instanceof TaraAnnotationsAndFacets) return true;
+			if (parent instanceof TaraAnnotations) return true;
 			parent = parent.getParent();
 		}
 		return false;
@@ -103,7 +103,7 @@ public class TaraFilters {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			TaraBoxFile file = (TaraBoxFile) (context != null ? context.getContainingFile() : null);
-			return file != null && file.getParentModel() == null;
+			return file != null && file.getDSL() == null;
 		}
 
 		@Override

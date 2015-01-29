@@ -2,8 +2,7 @@ defrule type(Morph)
 package $package+lowercase;
 
 [import $import...[;$NL]]\
-import magritte.types.Enumerate;
-import magritte.types.TimeInstant;
+import magritte.types.*;
 import magritte.wrappers.Morph;
 import magritte.morphs.*;
 
@@ -14,18 +13,19 @@ endrule
 defrule type(Word) trigger(wordInstantiation)
 public static enum $name+camelCase {$words+FirstUpperCase...[, ]}
 
+
 endrule
 
 defrule type(Word) type(List) trigger(getter)
 public $name+reference$[] get$name+camelCase() {
-	return Enumerate.cardinal(get("$name+lowerCamelCase", int$[].class), $name+CamelCase.values());
+	return Enumerate.cardinal((int) get("$name+lowerCamelCase"), $name+CamelCase.values());
 }
 
 endrule
 
 defrule type(Word) !type(List) trigger(getter)
 public $name+reference get$name+camelCase() {
-	return Enumerate.cardinal(get("$name", int.class), $name+reference.values());
+	return Enumerate.cardinal((int) get("$name"), $name+reference.values());
 }
 
 endrule
@@ -58,11 +58,24 @@ public double $name+lowerCamelCase() {
 
 endrule
 
+defrule type(Variable) type(Resource) !type(Word) trigger(getter)
+public Resource $name+lowerCamelCase() {
+    return get("$name");
+}
+
+endrule
+
 defrule type(Variable) !type(Word) trigger(getter)
 public $type+reference $name+lowerCamelCase() {
     return get("$name");
 }
 
+endrule
+
+defrule type(Variable) type(Resource) !type(list) !type(readonly) !type(Word) trigger(setter)
+public void set$name+camelCase(Resource value) {
+    set("$name", value);
+}
 
 endrule
 
@@ -100,7 +113,7 @@ extends $value
 endrule
 
 defrule type(declarednode) type(intention)  !type(metafacet) type(facet) trigger(node)
-public [$inner~static ]class $name+camelCase $parent implements intentions.$name+camelCase~Intention {
+public[$inner static] class $name+camelCase $parent implements intentions.$name+camelCase~Intention {
 
     public intentions.$name+camelCase~Intention extension() {
         return extensions(intentions.$name+camelCase~Intention.class)$[0];
@@ -108,13 +121,15 @@ public [$inner~static ]class $name+camelCase $parent implements intentions.$name
 
 	$variable+wordInstantiation...[$NL]\
     $variable+getter...[$NL]\
+
     $variable+setter...[$NL]\
     $node...[$NL]\
 }
+
 endrule
 
 defrule type(declarednode) type(intention) !type(facet) type(metafacet) trigger(node)
-public [$inner~static ]class $name+camelCase $parent implements intentions.$name+camelCase~Intention {
+public[$inner static] class $name+camelCase $parent implements intentions.$name+camelCase~Intention {
 
     public intentions.$name+camelCase~Intention$[] extensions() {
         return extensions(intentions.$name+camelCase~Intention.class);
@@ -122,18 +137,21 @@ public [$inner~static ]class $name+camelCase $parent implements intentions.$name
 
 	$variable+wordInstantiation...[$NL]\
     $variable+getter...[$NL]\
+
     $variable+setter...[$NL]\
     $node...[$NL]\
 }
+
 endrule
 
 
 defrule type(declarednode) trigger(node)
-public [$inner ]class $name+camelCase $parent {
-
+public[$inner static] class $name+camelCase $parent {
 	$variable+wordInstantiation...[$NL]\
     $variable+getter...[$NL]\
+
     $variable+setter...[$NL]\
     $node...[$NL]\
 }
+
 endrule

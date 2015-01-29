@@ -20,7 +20,7 @@ import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraFacetApply;
+import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
@@ -77,7 +77,7 @@ public class TaraFacetApplyLineMarkerProvider extends JavaLineMarkerProvider {
 
 	private List<PsiElement> getFacetClasses(Concept concept) {
 		List<PsiElement> references = new ArrayList<>();
-		for (TaraFacetApply apply : concept.getFacetApplies()) {
+		for (FacetApply apply : concept.getFacetApplies()) {
 			PsiElement reference = resolveExternal(concept, apply);
 			if (reference != null)
 				references.add(reference);
@@ -96,7 +96,7 @@ public class TaraFacetApplyLineMarkerProvider extends JavaLineMarkerProvider {
 		Concept concept = (Concept) element;
 		if (concept.getFacetApplies().length == 0) return null;
 		PsiElement reference = null;
-		for (TaraFacetApply facetApply : concept.getFacetApplies()) {
+		for (FacetApply facetApply : concept.getFacetApplies()) {
 			reference = resolveExternal(concept, facetApply);
 			if (reference != null) break;
 		}
@@ -113,15 +113,17 @@ public class TaraFacetApplyLineMarkerProvider extends JavaLineMarkerProvider {
 		return ReferenceManager.resolveJavaClassReference(project, project.getName() + "." + FACETS_PATH + "." + concept.getName());
 	}
 
-	private PsiElement resolveExternal(Concept concept, TaraFacetApply apply) {
+	private PsiElement resolveExternal(Concept concept, FacetApply apply) {
 		return resolveJavaClassReference(concept.getProject(), getFacetApplyPackage(concept, apply) + "." + concept.getName() + concept.getType() + apply.getFacetName());
 	}
 
-	private String getFacetApplyPackage(Concept concept, TaraFacetApply apply) {
-		return (getFacetPackage(concept) + "." + getInflector(apply).plural(apply.getFacetName())).toLowerCase();
+	private String getFacetApplyPackage(Concept concept, FacetApply apply) {
+		Inflector inflector = getInflector(apply);
+		if (inflector == null) return "";
+		return (getFacetPackage(concept) + "." + inflector.plural(apply.getFacetName())).toLowerCase();
 	}
 
-	private Inflector getInflector(TaraFacetApply apply) {
+	private Inflector getInflector(FacetApply apply) {
 		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(apply)).getLanguage());
 	}
 

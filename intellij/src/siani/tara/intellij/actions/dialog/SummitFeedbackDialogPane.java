@@ -20,12 +20,11 @@ public class SummitFeedbackDialogPane extends DialogWrapper {
 		this.centerRelativeToParent();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension dimension = new Dimension((int) (screenSize.getWidth() / 2), (int) (screenSize.getHeight() / 2));
-//		dialogContents.setSize((int) (screenSize.getWidth() / 2), (int) (screenSize.getHeight() / 2));
 		dialogContents.setPreferredSize(dimension);
 		dialogContents.setMinimumSize(dimension);
 		dialogContents.setMaximumSize(dimension);
-		super.setTitle("Summit Tara Feedback");
-		setOKButtonText("Summit");
+		super.setTitle("Submit Tara Feedback");
+		setOKButtonText("Submit");
 		init();
 	}
 

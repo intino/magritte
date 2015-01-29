@@ -52,6 +52,7 @@ public class JavaIntentionToTaraLineMarkerProvider extends RelatedItemLineMarker
 	}
 
 	private boolean isFacetTargetClass(PsiClass aClass) {
+		if (aClass == null || aClass.getContainingFile().getParent() == null) return false;
 		return !aClass.getContainingFile().getParent().getName().equals(INTENTIONS);
 	}
 

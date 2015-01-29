@@ -48,7 +48,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	@Override
 	public Object[] getVariants() {
 		if (!MetaIdentifier.class.isInstance(myElement)) return PsiElement.EMPTY_ARRAY;
-		String parentModel = ((TaraBoxFile) myElement.getContainingFile()).getParentModel();
+		String parentModel = ((TaraBoxFile) myElement.getContainingFile()).getDSL();
 		if (parentModel == null) return PsiElement.EMPTY_ARRAY;
 		List<Variable> variables = null;
 		Model metaModel = TaraLanguage.getMetaModel(myElement.getContainingFile());

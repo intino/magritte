@@ -8,10 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraAnnotationsAndFacets;
-import siani.tara.intellij.lang.psi.TaraConcept;
-import siani.tara.intellij.lang.psi.TaraElementFactory;
+import siani.tara.intellij.lang.psi.*;
 import siani.tara.lang.Annotation;
 
 public class AddAnnotationFix implements IntentionAction {
@@ -45,12 +42,12 @@ public class AddAnnotationFix implements IntentionAction {
 		WriteCommandAction action = new WriteCommandAction(project, file) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
-				TaraAnnotationsAndFacets annotationsAndFacets = ((TaraConcept) concept).getAnnotationsAndFacets();
-				if (annotationsAndFacets != null)
-					annotationsAndFacets.getAnnotations().add(TaraElementFactory.getInstance(concept.getProject()).createAnnotation(annotation.getName()));
+				TaraAnnotations taraAnnotations = ((TaraConcept) concept).getAnnotations();
+				if (taraAnnotations != null)
+					taraAnnotations.getAnnotationList().add((TaraAnnotation) TaraElementFactory.getInstance(concept.getProject()).createAnnotation(annotation.getName()));
 				else {
-					TaraAnnotationsAndFacets element =
-						TaraElementFactory.getInstance(concept.getProject()).createAnnotationAndFacetWith(annotation.getName());
+					TaraAnnotations element =
+						TaraElementFactory.getInstance(concept.getProject()).createAnnotations(annotation.getName());
 					concept.addAfter(element, concept.getSignature());
 				}
 			}

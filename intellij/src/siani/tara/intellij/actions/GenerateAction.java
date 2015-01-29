@@ -40,14 +40,12 @@ public class GenerateAction extends AnAction implements DumbAware {
 		FileDocumentManager.getInstance().saveAllDocuments();
 		for (VirtualFile file : files) {
 			IntentionsGenerator intentionsGenerator = new IntentionsGenerator(project, (TaraBoxFile) PsiManager.getInstance(project).findFile(file));
-//			FacetTargetsGenerator targetsGenerator = new FacetTargetsGenerator((TaraBoxFile) PsiManager.getInstance(project).findFile(file));
 			FacetApplyGenerator applyGenerator = new FacetApplyGenerator((TaraBoxFile) PsiManager.getInstance(project).findFile(file));
 			generateAddresses((TaraBoxFile) PsiManager.getInstance(project).findFile(file));
 			intentionsGenerator.generate();
-//			targetsGenerator.generate();
 			applyGenerator.generate();
 		}
-		String report = String.format("Facet & Intention Classes have been Generated Sucessfully");
+		String report = String.format("Facet & Intention Classes have been Generated Successfully");
 		Notifications.Bus.notify(new Notification("Tara Generator", "", report, NotificationType.INFORMATION), project);
 		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(e.getData(LangDataKeys.PSI_FILE)));
 		VfsUtil.markDirtyAndRefresh(true, true, true, srcDirectory);

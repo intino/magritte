@@ -39,7 +39,7 @@
 
     <group id="tara.export.group" popup="false">
       <action id="ExportModel" class="siani.tara.intellij.actions.ExportModelAction" text="Export Model"
-              description="Export the compiled model with dependencies">
+              description="Build SDK from models">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift E"/>
       </action>
       <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="Compile"/>
@@ -48,7 +48,7 @@
     </group>
 
     <group id="tara.file.group" popup="false">
-      <action id="tara.Generate" class="siani.tara.intellij.actions.GenerateAction" text="Generate Intentions Code">
+      <action id="tara.Generate" class="siani.tara.intellij.actions.GenerateAction" text="Link to Java">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>
       </action>
       <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
@@ -72,8 +72,8 @@
       </action>
       <add-to-group group-id="Internal"/>
     </group>
-    <action id="siani.tara.intellij.actions.BugReportAction" class="siani.tara.intellij.actions.BugReportAction"
-            text="Report Tara bug" description="You can report a bug found in the plugin">
+    <action id="siani.tara.intellij.actions.SubmitFeedbackAction" class="siani.tara.intellij.actions.SubmitFeedbackAction"
+            text="Summit Tara Feedback" description="You can report a bug or suggestion of plugin">
       <add-to-group group-id="HelpMenu" anchor="before" relative-to-action="TechnicalSupport"/>
     </action>
     <action id="siani.tara.intellij.actions.TriggerExceptionAction"
@@ -135,7 +135,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetTargetAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.RequiredConceptsAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VarInitAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.imports.ImportMetamodelAnnotation"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.imports.DSLDeclarationAnnotation"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.DateValueAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.MeasureAnnotator"/>
     <!--<annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AddressAnnotator"/>-->
@@ -167,7 +167,7 @@
     <!--<facetType implementation="siani.tara.intellij.project.facet.MagritteFacetType"/>-->
     <!--<referenceImporter implementation="siani.tara.intellij.annotator.imports.TaraReferenceImporter"/>-->
     <!--<lang.formatter language="Tara" implementationClass="siani.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
-    <moveFileHandler implementation="siani.tara.intellij.refactoring.move.TaraFileMoveHandler"/>
+    <!--<moveFileHandler implementation="siani.tara.intellij.refactoring.move.TaraFileMoveHandler"/>-->
     <refactoring.moveHandler implementation="siani.tara.intellij.refactoring.move.TaraMoveConcept"/>
     <lang.importOptimizer language="Tara"
                           implementationClass="siani.tara.intellij.codeinsight.imports.TaraImportOptimizer"/>

@@ -4,6 +4,7 @@ import com.intellij.codeInsight.intention.IntentionAction;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.annotator.fix.OfferCompletingFacetParameters;
 import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.TaraParameters;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
@@ -57,13 +58,12 @@ public class FacetApplyAnalyzer extends TaraAnalyzer {
 		return false;
 	}
 
-	private boolean isDuplicatedFacet(Concept concept, TaraFacetApply facetApply) {
-		TaraFacetApply[] facetApplies = concept.getFacetApplies();
+	private boolean isDuplicatedFacet(Concept concept, FacetApply facetApply) {
+		FacetApply[] facetApplies = concept.getFacetApplies();
 		int count = 0;
-		for (TaraFacetApply apply : facetApplies) {
-			if (apply == null || apply.getMetaIdentifierList().isEmpty() || facetApply.getMetaIdentifierList().isEmpty())
-				continue;
-			if (facetApply.getMetaIdentifierList().get(0).getText().equals(apply.getMetaIdentifierList().get(0).getText()))
+		for (FacetApply apply : facetApplies) {
+			if (apply == null || apply.getFacetName() == null) continue;
+			if (facetApply.getFacetName().equals(apply.getFacetName()))
 				count++;
 		}
 		return (count > 1);

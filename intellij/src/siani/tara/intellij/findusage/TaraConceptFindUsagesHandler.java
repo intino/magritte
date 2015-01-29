@@ -43,7 +43,7 @@ public class TaraConceptFindUsagesHandler extends FindUsagesHandler {
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
 			List<TaraBoxFileImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(module);
 			if (taraFilesOfModule.isEmpty()) continue;
-			if ((project.getName() + "." + moduleForFile.getName()).equals(taraFilesOfModule.get(0).getParentModel()))
+			if ((project.getName() + "." + moduleForFile.getName()).equals(taraFilesOfModule.get(0).getDSL()))
 				childModules.put(module, taraFilesOfModule);
 		}
 		for (Map.Entry<Module, List<TaraBoxFileImpl>> moduleEntry : childModules.entrySet())

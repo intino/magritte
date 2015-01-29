@@ -13,6 +13,7 @@ import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
+import siani.tara.lang.FacetTarget;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -138,9 +139,22 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class")));
 		if (shouldHaveFacetTargetClass(node, concept) && !isFacetTargetClassCreated(concept))
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.java.generated.class")));
-		for (TaraFacetApply apply : concept.getFacetApplies())
-			if (!isFacetApplyClassCreated(concept, apply))
-				results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.java.generated.class")));
+		for (FacetApply facetApply : concept.getFacetApplies()) {
+			if (node != null && isFacetIntentionImplementation(node, facetApply) && !isFacetApplyClassCreated(concept, facetApply.getFacetName()))
+				results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.intention.java.generated.class", facetApply.getFacetName())));
+		}
+	}
+
+	private boolean isFacetIntentionImplementation(Node node, FacetApply facetApply) {
+		if (!hasFacet(node, facetApply.getFacetName())) return false;
+		for (Node modelNode : getMetamodel(facetApply).getTreeModel())
+			if (facetApply.getFacetName().equals(modelNode.getName()) && modelNode.is(INTENTION))
+				return true;
+		return false;
+	}
+
+	private boolean hasFacet(Node node, String facetApply) {
+		return node.getObject().getAllowedFacets().containsKey(facetApply);
 	}
 
 	private boolean shouldHaveFacetTargetClass(Node node, Concept concept) {
@@ -155,13 +169,24 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		else if (!isFacet(node))
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Facets are no instantiable"));
 		else if (!analyzeAsNamed(node))
-			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name required", new AddAddressFix(concept)));
+			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name required"));
 		else if (!analyzeAsProperty(node))
-			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name required", new AddAddressFix(concept)));
+			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name required"));
 		else if (!analyzeAddressAdded(node))
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Address required", new AddAddressFix(concept)));
 		else if (concept.isIntention() && !analyzeAsIntention())
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, message("intention.with.children")));
+		else if ((node.is(INTENTION)) && concept.isAnonymous())
+			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name Required in Instances of an Intention"));
+		else if (concept.isAnonymous() && hasFacetIntention(node))
+			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name Required with Intention Facets"));
+	}
+
+	private boolean hasFacetIntention(Node node) {
+		for (FacetApply apply : concept.getFacetApplies())
+			for (FacetTarget facetTarget : node.getObject().getAllowedFacets().get(apply.getFacetName()))
+				if (facetTarget.isIntention()) return true;
+		return false;
 	}
 
 	private void analyzeMetaMetaAnnotationConstrains(Node node) {
@@ -254,31 +279,33 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		return resolveJavaClassReference(concept.getProject(), getFacetPackage(concept) + "." + concept.getName() + concept.getType()) != null;
 	}
 
-	private boolean isFacetApplyClassCreated(Concept concept, TaraFacetApply apply) {
-		return resolveJavaClassReference(concept.getProject(), buildQN(concept, apply)) != null;
+	private boolean isFacetApplyClassCreated(Concept concept, String facetName) {
+		return resolveJavaClassReference(concept.getProject(), buildQN(concept, facetName)) != null;
 	}
 
-	private String buildQN(Concept facetedConcept, TaraFacetApply apply) {
+	private String buildQN(Concept facetedConcept, String facetName) {
 		String interfaceName = "";
 		for (Concept concept : TaraUtil.buildConceptCompositionPathOf(facetedConcept))
-			interfaceName += "." + (hasFacet(concept, apply.getFacetName()) ?
-				concept.getName() + concept.getType() + apply.getFacetName() :
+			interfaceName += "." + (hasFacet(concept, facetName) ?
+				concept.getName() + concept.getType() + facetName :
 				concept.getType());
-		return getFacetApplyPackage(facetedConcept, apply) + interfaceName;
+		return getFacetApplyPackage(facetedConcept, facetName) + interfaceName;
 	}
 
 	private boolean hasFacet(Concept concept, String facetName) {
-		for (TaraFacetApply apply : concept.getFacetApplies())
+		for (FacetApply apply : concept.getFacetApplies())
 			if (apply.getFacetName().equals(facetName)) return true;
 		return false;
 	}
 
-	private String getFacetApplyPackage(Concept concept, TaraFacetApply apply) {
-		return (getFacetPackage(concept) + "." + getInflector(apply).plural(apply.getFacetName())).toLowerCase();
+	private String getFacetApplyPackage(Concept concept, String facetName) {
+		Inflector inflector = getInflector(concept);
+		if (inflector == null) throw new RuntimeException("Inflector not found");
+		return (getFacetPackage(concept) + "." + inflector.plural(facetName)).toLowerCase();
 	}
 
-	private Inflector getInflector(TaraFacetApply apply) {
-		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(apply)).getLanguage());
+	private Inflector getInflector(PsiElement concept) {
+		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(concept)).getLanguage());
 	}
 
 	private String getFacetPackage(Concept concept) {

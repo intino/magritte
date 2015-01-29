@@ -13,8 +13,6 @@ import com.intellij.util.Function;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.Identifier;
-import siani.tara.intellij.lang.psi.TaraElementFactory;
 import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
@@ -114,13 +112,13 @@ public class TaraModuleListener implements ProjectComponent {
 					ModuleConfiguration.getInstance(module).setMetamodelFilePath(rootModule.getModuleFilePath());
 					ModuleConfiguration.getInstance(module).setMetamodelName(rootModule.getName());
 				}
+				refreshFiles(TaraUtil.getTaraFilesOfModule(module));
 			}
+
 		}
 
-		private String extractPackage(List<? extends Identifier> boxPath) {
-			String result = "";
-			for (int i = 2; i < boxPath.size(); i++) result += "." + boxPath.get(i).getText();
-			return result.substring(1);
+		private void refreshFiles(List<TaraBoxFileImpl> files) {
+			for (TaraBoxFileImpl file : files) file.updateDSL();
 		}
 	}
 }

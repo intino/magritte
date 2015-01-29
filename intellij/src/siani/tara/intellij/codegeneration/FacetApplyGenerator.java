@@ -23,20 +23,22 @@ import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
-import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
+import siani.tara.lang.Node;
 
 import java.util.*;
 
 import static com.intellij.psi.JavaPsiFacade.getElementFactory;
+import static siani.tara.lang.Annotation.INTENTION;
 
 public class FacetApplyGenerator {
 
 	public static final String SRC = "src";
-	private static final String MAGRITTE_MORPHS = "magritte.morphs.";
+	private static final String MAGRITTE_MORPHS = "magritte.morphs";
 	private final Project project;
 	private final Module module;
 	private final String[] FACETS_PATH;
@@ -99,18 +101,32 @@ public class FacetApplyGenerator {
 
 	private Collection<PsiClass> createFacetApplyClasses(Concept concept) {
 		List<PsiClass> psiClasses = new ArrayList<>();
-		for (TaraFacetApply apply : concept.getFacetApplies()) {
+		for (FacetApply apply : concept.getFacetApplies()) {
+			if (!isIntentionImplementation(concept, apply)) continue;
 			Collections.addAll(psiClasses, createClasses(concept, apply));
 		}
 		return psiClasses;
 	}
 
-	private PsiClass[] createClasses(Concept facetedConcept, TaraFacetApply apply) {
+	private boolean isIntentionImplementation(Concept concept, FacetApply facetApply) {
+		Node node = TaraUtil.getMetaConcept(concept);
+		if (!hasFacet(node, facetApply.getFacetName())) return false;
+		for (Node modelNode : TaraUtil.getMetamodel(facetApply).getTreeModel())
+			if (facetApply.getFacetName().equals(modelNode.getName()) && modelNode.is(INTENTION))
+				return true;
+		return false;
+	}
+
+	private boolean hasFacet(Node node, String facetApply) {
+		return node.getObject().getAllowedFacets().containsKey(facetApply);
+	}
+
+	private PsiClass[] createClasses(Concept facetedConcept, FacetApply apply) {
 		if (isRootClass(facetedConcept)) return createRootFacetClass(facetedConcept, apply.getFacetName());
 		return createInnerClass(facetedConcept, apply);
 	}
 
-	private PsiClass[] createInnerClass(Concept facetedConcept, TaraFacetApply apply) {
+	private PsiClass[] createInnerClass(Concept facetedConcept, FacetApply apply) {
 		Set<PsiClass> psiClasses = new LinkedHashSet<>();
 		for (Concept concept : TaraUtil.buildConceptCompositionPathOf(facetedConcept))
 			if (isRootClass(concept)) psiClasses.add(createRootClass(concept, apply));
@@ -123,12 +139,12 @@ public class FacetApplyGenerator {
 		return array[array.length - 1];
 	}
 
-	private PsiClass createRootClass(Concept concept, TaraFacetApply apply) {
+	private PsiClass createRootClass(Concept concept, FacetApply apply) {
 		if (!hasFacet(concept, apply)) return createRootClass(concept, apply.getFacetName());
 		else return createRootFacetClass(concept, apply.getFacetName())[0];
 	}
 
-	private PsiClass createInnerClass(PsiClass container, Concept concept, TaraFacetApply apply) {
+	private PsiClass createInnerClass(PsiClass container, Concept concept, FacetApply apply) {
 		if (hasFacet(concept, apply))
 			return createInnerFacetClass(container, concept, apply.getFacetName());
 		return createInnerClass(container, concept.getName() == null ? concept.getType() : concept.getName());
@@ -150,7 +166,7 @@ public class FacetApplyGenerator {
 		if (innerClassByName != null) return innerClassByName;
 
 		PsiClass aClass = JavaPsiFacade.getElementFactory(project).createClass(name);
-		setParent(MAGRITTE_MORPHS + concept.getName(), aClass);
+		setParent(concept, aClass);
 		implementInterface(concept, facetName, aClass);
 		container.add(aClass);
 		return aClass;
@@ -167,8 +183,12 @@ public class FacetApplyGenerator {
 		aClass.getImplementsList().add(referenceElement);
 	}
 
-	private void setParent(String parent, PsiClass aClass) {
-		PsiClass parentClass = findClassInModule(parent);
+	private void setParent(Concept parent, PsiClass aClass) {
+		List<Concept> concepts = TaraUtil.buildConceptCompositionPathOf(parent);
+		String qn = MAGRITTE_MORPHS;
+		for (Concept concept : concepts)
+			qn += "." + concept.getName();//TODO QUE PASA SI NO TIENE NOMBRE
+		PsiClass parentClass = findClassInModule(qn);
 		setParent(aClass, parentClass);
 	}
 
@@ -178,8 +198,8 @@ public class FacetApplyGenerator {
 		aClass.getExtendsList().add(classReferenceElement);
 	}
 
-	private boolean hasFacet(Concept concept, TaraFacetApply apply) {
-		for (TaraFacetApply facetApply : concept.getFacetApplies())
+	private boolean hasFacet(Concept concept, FacetApply apply) {
+		for (FacetApply facetApply : concept.getFacetApplies())
 			if (facetApply.getFacetName().equals(apply.getFacetName()))
 				return true;
 		return false;

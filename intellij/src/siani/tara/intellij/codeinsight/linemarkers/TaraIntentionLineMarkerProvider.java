@@ -98,6 +98,7 @@ public class TaraIntentionLineMarkerProvider extends JavaLineMarkerProvider {
 		Project project = target.getProject();
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(target);
 		Inflector inflector = TaraUtil.getInflector(ModuleProvider.getModuleOf(target));
+		if (concept == null || concept.getName() == null) return null;
 		String facetPackage = project.getName().toLowerCase() + "." + INTENTIONS_PATH + "." + inflector.plural(concept.getName()).toLowerCase();
 		return ReferenceManager.resolveJavaClassReference(project, facetPackage + composeClassName(target, concept.getName()));
 	}

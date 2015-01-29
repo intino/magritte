@@ -58,7 +58,7 @@ public class TaraImportOptimizer implements ImportOptimizer {
 				neededReferences.add(resolve.getContainingFile().getName());
 			}
 			for (Import anImport : myImportBlock)
-				if (!neededReferences.contains(anImport.getHeaderReference().getText()) && !anImport.isMetamodelImport())
+				if (!neededReferences.contains(anImport.getHeaderReference().getText()))
 					anImport.delete();
 		}
 

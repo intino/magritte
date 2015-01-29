@@ -10,7 +10,7 @@ import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraAnnotationsAndFacets;
+import siani.tara.intellij.lang.psi.TaraAnnotations;
 import siani.tara.intellij.lang.psi.TaraTypes;
 import siani.tara.lang.Annotations;
 
@@ -49,7 +49,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 			}
 			ctx = ctx.getParent();
 			while (ctx != null && !Concept.class.isInstance(ctx)) {
-				if (ctx instanceof TaraAnnotationsAndFacets) return true;
+				if (ctx instanceof TaraAnnotations) return true;
 				ctx = ctx.getParent();
 			}
 			return false;

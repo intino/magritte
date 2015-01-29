@@ -63,7 +63,7 @@ public class ConfigModuleAction extends AnAction implements DumbAware {
 			WriteCommandAction action = new WriteCommandAction(file.getProject(), file) {
 				@Override
 				protected void run(@NotNull Result result) throws Throwable {
-					file.updateMetamodelImport();
+					file.updateDSL();
 				}
 			};
 			action.execute();

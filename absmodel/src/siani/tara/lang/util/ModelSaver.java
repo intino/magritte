@@ -115,7 +115,6 @@ public class ModelSaver {
 		}
 	}
 
-
 	private static class VariableListSerializer implements JsonSerializer<Collection<Variable>> {
 		@Override
 		public JsonElement serialize(Collection<Variable> variables, Type type, JsonSerializationContext context) {

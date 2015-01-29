@@ -31,7 +31,7 @@ public class BoxAnalyzer extends TaraAnalyzer {
 		ModuleConfiguration instance = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(file));
 		if (instance == null) return;
 		String metamodelName = instance.getMetamodelName();
-		if (file.getParentModel() == null && metamodelName != null && !metamodelName.isEmpty())
+		if (file.getDSL() == null && metamodelName != null && !metamodelName.isEmpty())
 			results.put(file, new AnnotateAndFix(ERROR, message("model.not.found"), new AddMetamodelReferenceFix(file)));
 		else if (metamodelName != null && !metamodelName.isEmpty()) {
 			Model parentModel = TaraLanguage.getMetaModel(file);

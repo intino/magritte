@@ -70,9 +70,9 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 		return false;
 	}
 
-	private Collection<String> getFacets(TaraFacetApply[] facetApplies) {
+	private Collection<String> getFacets(FacetApply[] facetApplies) {
 		List<String> facets = new ArrayList<>();
-		for (TaraFacetApply facetApply : facetApplies) facets.add(facetApply.getMetaIdentifierList().get(0).getText());
+		for (FacetApply facetApply : facetApplies) facets.add(facetApply.getFacetName());
 		return facets;
 	}
 

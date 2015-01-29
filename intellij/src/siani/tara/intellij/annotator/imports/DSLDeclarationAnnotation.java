@@ -2,28 +2,23 @@ package siani.tara.intellij.annotator.imports;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.TaraAnnotator;
-import siani.tara.intellij.lang.psi.TaraAnImport;
-import siani.tara.intellij.lang.psi.TaraImports;
-
-import java.util.ArrayList;
-import java.util.List;
+import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraDslDeclaration;
 
 public class DSLDeclarationAnnotation extends TaraAnnotator {
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
-		if (!TaraImports.class.isInstance(element)) return;
-		TaraImports header = (TaraImports) element;
-		List<TaraAnImport> imports = new ArrayList();
-		for (TaraAnImport anImport : header.getAnImportList())
-			if (anImport.isMetamodelImport())
-				imports.add(anImport);
-		if (imports.size() > 1)
-			for (TaraAnImport anImport : imports)
-				holder.createErrorAnnotation(anImport.getNode(), MessageProvider.message("duplicated.metamodel.import"));
+		if (!TaraDslDeclaration.class.isInstance(element)) return;
+		TaraBoxFile file = (TaraBoxFile) element.getContainingFile();
+		TaraDslDeclaration[] declarations = PsiTreeUtil.getChildrenOfType(file, TaraDslDeclaration.class);
+		if (declarations != null && declarations.length > 1)
+			for (TaraDslDeclaration declaration : declarations)
+				holder.createErrorAnnotation(declaration.getNode(), MessageProvider.message("duplicated.dsl.declaration"));
 	}
 }
