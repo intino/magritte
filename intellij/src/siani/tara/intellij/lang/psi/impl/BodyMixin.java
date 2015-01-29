@@ -10,8 +10,6 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class BodyMixin extends ASTWrapperPsiElement {
@@ -61,25 +59,11 @@ public class BodyMixin extends ASTWrapperPsiElement {
 		return PsiTreeUtil.getChildrenOfTypeAsList(this, Word.class);
 	}
 
-	@NotNull
-	public List<TaraFacetApply> getFacetApplies() {
-		TaraAnnotationsAndFacets[] element = PsiTreeUtil.getChildrenOfType(this, TaraAnnotationsAndFacets.class);
-		List<TaraFacetApply> facetApplies = new ArrayList();
-		if (element == null) return Collections.EMPTY_LIST;
-		for (TaraAnnotationsAndFacets facets : element)
-			facetApplies.add(facets.getFacetApply());
-		return facetApplies;
-	}
+
 
 	public TaraConceptReference[] getConceptLinks() {
 		TaraConceptReference[] references = PsiTreeUtil.getChildrenOfType(this, TaraConceptReference.class);
 		return references == null ? new TaraConceptReference[0] : references;
 	}
-
-	@NotNull
-	public List<TaraFacetTarget> getFacetTargets() {
-		return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraFacetTarget.class);
-	}
-
 
 }

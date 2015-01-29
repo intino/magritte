@@ -9,6 +9,4 @@ public interface Import extends Navigatable, Iconable, TaraPsiElement {
 	@NotNull
 	TaraHeaderReference getHeaderReference();
 
-	boolean isMetamodelImport();
-
 }

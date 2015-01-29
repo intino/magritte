@@ -61,7 +61,7 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	List<Annotation> getMetaAnnotations();
 
-	Annotation[] getAnnotations();
+	Annotations getAnnotations();
 
 	@Override
 	Icon getIcon(@IconFlags int i);
@@ -72,6 +72,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	@Nullable
 	String getName();
+
+	boolean isAnonymous();
 
 	String getQualifiedName();
 
@@ -93,7 +95,7 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	TaraConceptReference[] getConceptLinks();
 
-	TaraFacetApply[] getFacetApplies();
+	FacetApply[] getFacetApplies();
 
 	Collection<TaraFacetTarget> getFacetTargets();
 

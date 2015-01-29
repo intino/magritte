@@ -41,5 +41,5 @@ public abstract class TaraElementFactory {
 
 	public abstract Annotation createAnnotation(String name);
 
-	public abstract TaraAnnotationsAndFacets createAnnotationAndFacetWith(String name);
+	public abstract TaraAnnotations createAnnotations(String name);
 }

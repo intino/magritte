@@ -16,6 +16,7 @@ import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.project.module.ModuleConfiguration;
@@ -44,6 +45,17 @@ public class TaraUtil {
 			extractConceptsByName(identifier, result, concepts);
 		}
 		return result;
+	}
+
+	public static Model getMetamodel(PsiElement element) {
+		return TaraLanguage.getMetaModel(element.getContainingFile());
+	}
+
+
+	public static Node getMetaConcept(Concept concept) {
+		Model model = getMetamodel(concept);
+		if (model == null) return null;
+		return findNode(concept, model);
 	}
 
 	private static void extractConceptsByName(String identifier, List<Concept> result, Collection<Concept> concepts) {

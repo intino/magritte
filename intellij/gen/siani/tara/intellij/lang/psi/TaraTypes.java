@@ -26,6 +26,7 @@ public interface TaraTypes {
 	IElementType DOUBLE_ATTRIBUTE = new TaraElementType("DOUBLE_ATTRIBUTE");
 	IElementType DOUBLE_MEASURE = new TaraElementType("DOUBLE_MEASURE");
 	IElementType DOUBLE_VALUE = new TaraElementType("DOUBLE_VALUE");
+	IElementType DSL_DECLARATION = new TaraElementType("DSL_DECLARATION");
 	IElementType EMPTY_FIELD = new TaraElementType("EMPTY_FIELD");
 	IElementType EXPLICIT_PARAMETER = new TaraElementType("EXPLICIT_PARAMETER");
 	IElementType FACET_APPLY = new TaraElementType("FACET_APPLY");
@@ -119,6 +120,7 @@ public interface TaraTypes {
 	IElementType STRING_VALUE_KEY = new TaraTokenType("STRING_VALUE_KEY");
 	IElementType SUB = new TaraTokenType("SUB");
 	IElementType TERMINAL = new TaraTokenType("TERMINAL");
+	IElementType USE = new TaraTokenType("USE");
 	IElementType VAR = new TaraTokenType("VAR");
 	IElementType WITH = new TaraTokenType("WITH");
 	IElementType WORD_KEY = new TaraTokenType("WORD_KEY");
@@ -160,6 +162,8 @@ public interface TaraTypes {
 				return new TaraDoubleMeasureImpl(node);
 			} else if (type == DOUBLE_VALUE) {
 				return new TaraDoubleValueImpl(node);
+			} else if (type == DSL_DECLARATION) {
+				return new TaraDslDeclarationImpl(node);
 			} else if (type == EMPTY_FIELD) {
 				return new TaraEmptyFieldImpl(node);
 			} else if (type == EXPLICIT_PARAMETER) {

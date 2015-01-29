@@ -68,7 +68,7 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 
 			@Override
 			public Icon getIcon(final boolean open) {
-				return TaraIcons.getIcon(TaraIcons.BOX);
+				return TaraIcons.getIcon(TaraIcons.MODEL);
 			}
 		};
 	}
@@ -76,7 +76,7 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 	@Nullable
 	@Override
 	public Icon getIcon(int flags) {
-		return TaraIcons.getIcon(TaraIcons.BOX);
+		return TaraIcons.getIcon(TaraIcons.MODEL);
 	}
 
 	@NotNull
@@ -87,15 +87,10 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 
 
 	@Override
-	public String getParentModel() {
-		TaraImports[] taraImports = PsiTreeUtil.getChildrenOfType(this, TaraImports.class);
-		if (taraImports == null) return null;
-		TaraAnImport[] imports = PsiTreeUtil.getChildrenOfType(taraImports[0], TaraAnImport.class);
-		if (imports == null || imports.length == 0) return null;
-		for (TaraAnImport anImport : imports) {
-			if (anImport.isMetamodelImport()) return anImport.getHeaderReference().getText();
-		}
-		return null;
+	public String getDSL() {
+		TaraDslDeclaration dslDeclaration = getDSLDeclaration();
+		if (dslDeclaration == null) return null;
+		return dslDeclaration.getHeaderReference().getText();
 	}
 
 	@Override
@@ -156,32 +151,29 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 	}
 
 	private Import addImportToList(TaraImports psi) {
-		TaraImports taraImports = PsiTreeUtil.getChildrenOfType(this, TaraImports.class)[0];
-		return (Import) taraImports.addBefore(psi.getAnImportList().get(0), taraImports.getAnImportList().get(0));
+		TaraImports[] imports = PsiTreeUtil.getChildrenOfType(this, TaraImports.class);
+		if (imports == null || imports.length == 0) return null;
+		return (Import) imports[0].addBefore(psi.getAnImportList().get(0), imports[0].getAnImportList().get(0));
 	}
 
-	public void updateMetamodelImport() {
+	public void updateDSL() {
 		ModuleConfiguration configuration = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(this));
 		if (configuration == null) return;
 		String metaModule = configuration.getMetamodelName();
 		String metamodelName = metaModule == null || metaModule.isEmpty() ? null : this.getProject().getName() + "." + metaModule;
-		setMetamodelImport(metamodelName);
+		setDSL(metamodelName);
 	}
 
-	private void setMetamodelImport(String metamodelName) {
-		Import anImport = getMetamodelImport();
-		if (anImport != null) removeMetamodelImport();
+	private void setDSL(String metamodelName) {
+		TaraDslDeclaration dslDeclaration = getDSLDeclaration();
+		if (dslDeclaration != null) dslDeclaration.delete();
 		if (metamodelName != null && !metamodelName.isEmpty())
 			addImport(TaraElementFactory.getInstance(this.getProject()).createMetamodelImport(metamodelName));
 	}
 
-	private void removeMetamodelImport() {
-		getMetamodelImport().delete();
-	}
-
-	public Import getMetamodelImport() {
-		for (Import anImport : getImports())
-			if (anImport.isMetamodelImport()) return anImport;
-		return null;
+	@Nullable
+	public TaraDslDeclaration getDSLDeclaration() {
+		TaraDslDeclaration[] childrenOfType = PsiTreeUtil.getChildrenOfType(this, TaraDslDeclaration.class);
+		return childrenOfType != null && childrenOfType.length > 0 ? childrenOfType[0] : null;
 	}
 }

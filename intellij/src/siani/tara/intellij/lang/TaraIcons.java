@@ -10,7 +10,7 @@ public class TaraIcons {
 
 
 	public static final String ICON_13 = "ICON_13";
-	public static final String BOX = "BOX";
+	public static final String MODEL = "MODEL";
 	public static final String CONCEPT = "CONCEPT";
 	public static final String CASE_13 = "SUB_CONCEPT";
 	public static final String ICON_100 = "ICON_100";
@@ -25,7 +25,7 @@ public class TaraIcons {
 		icons.put("SUB_CONCEPT", IconLoader.getIcon("/icons/subConcept.png"));
 		icons.put("ICON_100", IconLoader.getIcon("/icons/Tara100.png"));
 		icons.put("CONCEPT", IconLoader.getIcon("/icons/Concept.png"));
-		icons.put("BOX", IconLoader.getIcon("/icons/box.png"));
+		icons.put("MODEL", IconLoader.getIcon("/icons/model.png"));
 		icons.put(ADD_SDK, IconLoader.getIcon("/icons/add_sdk.png"));
 		icons.put(SDK_CLOSED, IconLoader.getIcon("/icons/sdk_closed.png"));
 	}

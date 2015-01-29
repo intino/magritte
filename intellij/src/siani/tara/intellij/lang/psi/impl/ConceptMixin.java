@@ -109,6 +109,10 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return identifierNode != null ? identifierNode.getText() : null;
 	}
 
+	public boolean isAnonymous() {
+		return getName() == null;
+	}
+
 	@NotNull
 	public Parameter[] getParameters() {
 		if (getSignature().getParameters() == null) return new Parameter[0];
@@ -263,13 +267,12 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return subs;
 	}
 
-	public TaraFacetApply[] getFacetApplies() {
-		List<TaraFacetApply> facetApplies = new ArrayList<>();
-		if (((TaraConcept) this).getAnnotationsAndFacets() != null && ((TaraConcept) this).getAnnotationsAndFacets().getFacetApply() != null)
-			facetApplies.add(((TaraConcept) this).getAnnotationsAndFacets().getFacetApply());
-		if (this.getBody() != null)
-			facetApplies.addAll(getBody().getFacetApplies());
-		return facetApplies.toArray(new TaraFacetApply[facetApplies.size()]);
+	public FacetApply[] getFacetApplies() {
+		if (getBody() != null) {
+			List<FacetApply> facetApplies = (List<FacetApply>) getBody().getFacetApplyList();
+			return facetApplies.toArray(new FacetApply[facetApplies.size()]);
+		}
+		return new TaraFacetApply[0];
 	}
 
 	public Collection<TaraFacetTarget> getFacetTargets() {
@@ -283,39 +286,19 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public List<Annotation> getNormalAnnotations() {
-		List<Annotation> list = new ArrayList<>();
-		for (Annotation annotation : getAnnotations()) {
-			if (!annotation.isMetaAnnotation()) list.add(annotation);
-		}
-		return list;
+		Annotations annotations = ((Concept) this).getAnnotations();
+		return annotations == null ? Collections.EMPTY_LIST : (List<Annotation>) annotations.getNormalAnnotations();
 	}
 
 	@NotNull
 	public List<Annotation> getMetaAnnotations() {
-		List<Annotation> list = new ArrayList<>();
-		for (Annotation annotation : getAnnotations()) if (annotation.isMetaAnnotation()) list.add(annotation);
-		return list;
-	}
-
-	public Annotation[] getAnnotations() {
-		List<Annotation> list = new ArrayList<>();
-		TaraAnnotationsAndFacets[] annotationsAndFacets = findChildrenByClass(TaraAnnotationsAndFacets.class);
-		for (TaraAnnotationsAndFacets annotationsAndFacet : annotationsAndFacets) {
-			if (annotationsAndFacet != null && annotationsAndFacet.getAnnotations() != null)
-				list.addAll(annotationsAndFacet.getAnnotations().getAnnotationList());
-			if (this.getBody() != null)
-				for (TaraAnnotationsAndFacets inBody : getBody().getAnnotationsAndFacetsList()) {
-					Annotations annotations = inBody.getAnnotations();
-					if (annotations == null) continue;
-					list.addAll(annotations.getAnnotationList());
-				}
-		}
-		return list.toArray(new Annotation[list.size()]);
+		Annotations annotations = ((Concept) this).getAnnotations();
+		return annotations == null ? Collections.EMPTY_LIST : (List<Annotation>) annotations.getMetaAnnotations();
 	}
 
 	@NotNull
 	public Doc[] getDoc() {
-		return null;
+		return new Doc[0];
 	}
 
 	@Override

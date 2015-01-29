@@ -81,7 +81,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS = new THashMap<>();
 
 		KEYS.put(METAIDENTIFIER_KEY, META_IDENTIFIER);
-		KEYS.put(METAMODEL, KEYWORD);
+		KEYS.put(DSL, KEYWORD);
 		KEYS.put(EMPTY_REF, KEYWORD);
 		KEYS.put(HAS, KEYWORD);
 		KEYS.put(EXTENDS, KEYWORD);
@@ -96,6 +96,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(LOCAL, ANNOTATION);
 		KEYS.put(ADDRESSED, ANNOTATION);
 		KEYS.put(AGGREGATED, ANNOTATION);
+		KEYS.put(CASE, ANNOTATION);
 		KEYS.put(READONLY, ANNOTATION);
 		KEYS.put(NEW_LINE_INDENT, KEYWORD);
 
@@ -103,7 +104,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(RESOURCE_KEY, PRIMITIVE);
 		KEYS.put(IDENTIFIER_KEY, IDENTIFIER);
 		KEYS.put(SUB, KEYWORD);
-		KEYS.put(USE_KEY, KEYWORD);
+		KEYS.put(USE, KEYWORD);
 		KEYS.put(IS, KEYWORD);
 		KEYS.put(VAR, KEYWORD);
 		KEYS.put(AS, KEYWORD);

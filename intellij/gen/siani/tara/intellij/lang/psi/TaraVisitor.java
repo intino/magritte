@@ -74,6 +74,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitDslDeclaration(@NotNull TaraDslDeclaration o) {
+    visitPsiElement(o);
+  }
+
   public void visitEmptyField(@NotNull TaraEmptyField o) {
     visitPsiElement(o);
   }

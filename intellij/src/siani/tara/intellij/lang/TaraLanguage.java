@@ -57,7 +57,7 @@ public class TaraLanguage extends Language {
 
 	public static Model getMetaModel(PsiFile file) {
 		addModelFromSdk(file.getProject());
-		return getModel(((TaraBoxFile) file).getParentModel());
+		return getModel(((TaraBoxFile) file).getDSL());
 	}
 
 	private static void addModelFromSdk(Project project) {

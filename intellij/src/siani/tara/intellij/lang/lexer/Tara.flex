@@ -89,14 +89,14 @@ SUB                 = "sub"
 HAS                 = "has"
 VAR                 = "var"
 
-USE_KEY             = "use"
+USE                 = "use"
+DSL                 = "dsl"
 WITH                = "with"
 AS                  = "as"
 ON                  = "on"
 ALWAYS              = "always"
 IS                  = "is"
 EXTENDS             = "extends"
-METAMODEL           = "metamodel"
 //annotations
 ABSTRACT             = "abstract"
 SINGLE              = "single"
@@ -168,10 +168,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 <YYINITIAL> {
 
 	{METAIDENTIFIER}                {   return TaraTypes.METAIDENTIFIER_KEY; }
-
-	{METAMODEL}                     {   return TaraTypes.METAMODEL; }
-
-	{USE_KEY}                       {   return TaraTypes.USE_KEY; }
+	{USE}                           {   return TaraTypes.USE; }
+	{DSL}                           {   return TaraTypes.DSL; }
 
 	{EXTENDS}                       {   return TaraTypes.EXTENDS; }
 	{HAS}                           {   return TaraTypes.HAS; }

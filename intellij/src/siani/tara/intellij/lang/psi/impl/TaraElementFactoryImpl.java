@@ -156,10 +156,10 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	@Override
-	public TaraAnnotationsAndFacets createAnnotationAndFacetWith(String annotation) {
+	public TaraAnnotations createAnnotations(String annotation) {
 		final TaraBoxFileImpl file = createDummyFile("Form Ficha is " + annotation + "\n");
 		TaraConcept next = (TaraConcept) file.getConcepts().iterator().next();
-		return next.getAnnotationsAndFacets();
+		return next.getAnnotations();
 	}
 
 }

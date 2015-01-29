@@ -28,13 +28,10 @@ public interface Body extends TaraPsiElement {
 	List<? extends Word> getWordList();
 
 	@NotNull
-	List<TaraFacetTarget> getFacetTargets();
+	List<TaraFacetTarget> getFacetTargetList();
 
 	@NotNull
-	List<TaraFacetApply> getFacetApplies();
-
-	@NotNull
-	List<TaraAnnotationsAndFacets> getAnnotationsAndFacetsList();
+	List<? extends FacetApply> getFacetApplyList();
 
 }
 

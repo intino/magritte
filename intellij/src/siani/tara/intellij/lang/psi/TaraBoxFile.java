@@ -35,7 +35,7 @@ public interface TaraBoxFile extends PsiFile {
 
 	PsiDirectory getParent();
 
-	String getParentModel();
+	String getDSL();
 
 	@NotNull
 	Project getProject();
@@ -45,5 +45,7 @@ public interface TaraBoxFile extends PsiFile {
 	@NotNull
 	Collection<Import> getImports();
 
-	void updateMetamodelImport();
+	TaraDslDeclaration getDSLDeclaration();
+
+	void updateDSL();
 }

@@ -30,7 +30,7 @@ public class ReferenceManager {
 		if (identifier.getParent() instanceof IdentifierReference)
 			return resolveConcept(identifier, getIdentifiersOfReference(identifier));
 		if (identifier.getParent() instanceof HeaderReference)
-			return ((Import) identifier.getParent().getParent()).isMetamodelImport() ?
+			return identifier.getParent().getParent() instanceof TaraDslDeclaration ?
 				resolveMetamodelImport(identifier) : resolveHeaderReference(identifier);
 		if (identifier.getParent() instanceof Signature)
 			return identifier;

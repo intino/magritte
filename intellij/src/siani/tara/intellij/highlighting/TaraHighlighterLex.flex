@@ -23,6 +23,8 @@ import java.util.Set;
 %{
 	private Set<String> identifiers;
 	private Project project;
+	private static final String DSL = "dsl";
+	private String dsl = null;
 
 	public TaraHighlighterLex(java.io.Reader reader, Project project) {
 		this.zzReader = reader;
@@ -36,29 +38,27 @@ import java.util.Set;
 	}
 
 	private void loadHeritage() {
-		String[] uses = zzBuffer.toString().split("use");
-        String destiny = null;
-        for (String use : uses)
-            if (use.contains("as metamodel")) {
-                destiny = use.split("as metamodel")[0].trim();
-                break;
-            }
-        Model heritage = TaraLanguage.getMetaModel(destiny, project);
-        if (heritage != null)
-            identifiers = heritage.getIdentifiers();
-}
+		if (dsl == null) {
+			String source = zzBuffer.toString().trim();
+			String dslLine = source.substring(0, source.indexOf('\n')).trim();
+			if (!dslLine.startsWith(DSL)) return;
+			dsl = dslLine.split(DSL)[1].trim();
+		}
+		Model heritage = TaraLanguage.getMetaModel(dsl, project);
+		if (heritage != null) identifiers = heritage.getIdentifiers();
+	}
 %}
 
 CONCEPT             = "Concept"
 SUB                 = "sub"
 HAS                 = "has"
 EXTENDS             = "extends"
-USE_KEY             = "use"
+DSL                 = "dsl"
 AS                  = "as"
 ON                  = "on"
 IS                  = "is"
 VAR                 = "var"
-METAMODEL           = "metamodel"
+USE                 = "use"
 
 ALWAYS              = "always"
 WITH                = "with"
@@ -137,9 +137,8 @@ NEWLINE             = [\n]+
 
 	{CONCEPT}                       {   return TaraTypes.METAIDENTIFIER_KEY; }
 
-	{METAMODEL}                     {   loadHeritage(); return TaraTypes.METAMODEL; }
-
-	{USE_KEY}                       {   return TaraTypes.USE_KEY; }
+	{DSL}                           {   loadHeritage();  return TaraTypes.DSL; }
+	{USE}                           {   return TaraTypes.USE; }
 	{VAR}                           {   return TaraTypes.VAR; }
 	{HAS}                           {   return TaraTypes.HAS; }
 	{EXTENDS}                       {   return TaraTypes.EXTENDS; }
@@ -199,7 +198,7 @@ NEWLINE             = [\n]+
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {RATIO_TYPE}                    {   return TaraTypes.RATIO_TYPE; }
     {MEASURE_TYPE_KEY}              {   return TaraTypes.MEASURE_TYPE_KEY; }
-	{SEMICOLON}                     {   return TaraTypes.USE_KEY;  }
+	{SEMICOLON}                     {   return TaraTypes.DSL;  }
 
 	{LEFT_SQUARE}                   {   return TaraTypes.LEFT_SQUARE; }
 	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }

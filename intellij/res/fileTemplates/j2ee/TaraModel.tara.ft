@@ -1,1 +1,1 @@
-#if (${PARENT_MODULE_NAME.toLowerCase()} && ${PARENT_MODULE_NAME.toLowerCase()} != "")use ${PROJECT_NAME.toLowerCase()}.${PARENT_MODULE_NAME.toLowerCase()} as metamodel#end
+#if (${PARENT_MODULE_NAME} && ${PARENT_MODULE_NAME} != "")dsl ${PROJECT_NAME}.${PARENT_MODULE_NAME}#end

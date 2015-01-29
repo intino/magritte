@@ -103,7 +103,7 @@ public class TaraPsiImplUtil {
 	}
 
 	private static void getFacetTargets(Body body, List<TaraFacetTarget> targets) {
-		for (TaraFacetTarget target : body.getFacetTargets()) {
+		for (TaraFacetTarget target : body.getFacetTargetList()) {
 			targets.add(target);
 			if (target.getBody() != null) getFacetTargets(target.getBody(), targets);
 		}
