@@ -32,13 +32,13 @@
             </constraints>
             <properties/>
           </component>
-          <component id="e1f62" class="javax.swing.JCheckBox" binding="terminalCheckBox">
+          <component id="e1f62" class="javax.swing.JCheckBox" binding="generativeCheckBox">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <selected value="false"/>
-              <text value="is terminal module"/>
+              <text value="is Generative"/>
             </properties>
           </component>
           <component id="a9832" class="javax.swing.JComboBox" binding="language">
@@ -58,6 +58,17 @@
             </constraints>
             <properties>
               <text value="Language"/>
+            </properties>
+          </component>
+          <component id="6ca44" class="javax.swing.JTextField" binding="languageName">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <enabled value="false"/>
+              <toolTipText value="Name of the Generative Language"/>
             </properties>
           </component>
         </children>

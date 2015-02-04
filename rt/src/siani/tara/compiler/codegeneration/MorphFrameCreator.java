@@ -15,8 +15,8 @@ public class MorphFrameCreator extends FrameCreator {
 	private static final String SEPARATOR = ".";
 	private Node initNode;
 
-	public MorphFrameCreator(Model model) {
-		super(model);
+	public MorphFrameCreator(String project, Model model) {
+		super(project, model);
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {
@@ -31,7 +31,14 @@ public class MorphFrameCreator extends FrameCreator {
 	}
 
 	private void nodeToFrame(final Node node, Frame frame) {
-		if (node.is(DeclaredNode.class)) {
+		if (node.is(LinkNode.class) && ((LinkNode) node).isReference()) {
+			LinkNode linkNode = (LinkNode) node;
+			Frame newFrame = new Frame(getLinkNodeTypes(linkNode));
+			newFrame.addFrame("parent", linkNode.getDestinyName());
+			newFrame.addFrame("type", linkNode.getDestiny().getObject().getType());
+			newFrame.addFrame("name", linkNode.getDestiny().getObject().getName());
+			frame.addFrame("node", newFrame);
+		} else {
 			List<String> types = getTypes(node);
 			final Frame newFrame = new Frame(types.toArray(new String[types.size()]));
 			frame.addFrame("node", newFrame);
@@ -40,12 +47,6 @@ public class MorphFrameCreator extends FrameCreator {
 			addInner(node, newFrame);
 			if (!node.isSub() && !node.equals(initNode))
 				addSubs(node, frame);
-		} else if (((LinkNode) node).isReference()) {
-			LinkNode linkNode = (LinkNode) node;
-			Frame newFrame = new Frame(getReferenceTypes(linkNode));
-			newFrame.addFrame("parent", linkNode.getDestinyName());
-			newFrame.addFrame("type", linkNode.getDestiny().getObject().getType());
-			frame.addFrame("reference", newFrame);
 		}
 	}
 
@@ -60,6 +61,7 @@ public class MorphFrameCreator extends FrameCreator {
 			newFrame.addFrame("doc", object.getDoc());
 		if (node.getName() != null && !node.getName().isEmpty())
 			newFrame.addFrame("name", node.isAnonymous() ? node.getType() : node.getName());
+		newFrame.addFrame("project", project);
 		if (node.getObject().getParent() != null)
 			newFrame.addFrame("parent", node.getObject().getParent().getName());
 		else newFrame.addFrame("parent", "Morph");
@@ -90,7 +92,6 @@ public class MorphFrameCreator extends FrameCreator {
 		while (aNode.getContainer() != null) {
 			aNode = aNode.getContainer();
 			path = addToPath(name, aNode, path);
-
 		}
 		return path;
 	}
@@ -105,10 +106,10 @@ public class MorphFrameCreator extends FrameCreator {
 	private void addFacetTargets(Node node, Frame typeFrame) {
 		if (node.getObject().getFacetTargets().isEmpty()) return;
 		Frame targetFrame = new Frame("target", node.is(Annotation.INTENTION) ? "intention" : "");
-		targetFrame.addFrame("target", projectName + ".extensions." + camelCase(node.getName()) + node.getType() + ".class");
+		targetFrame.addFrame("target", project + ".extensions." + camelCase(node.getName()) + node.getType() + ".class");
 		Inflector inflector = getInflector(model.getLanguage());
 		for (FacetTarget target : node.getObject().getFacetTargets()) {
-			targetFrame.addFrame("target", projectName + ".extensions." + inflector.plural(node.getType()).toLowerCase() + "." +
+			targetFrame.addFrame("target", project + ".extensions." + inflector.plural(node.getType()).toLowerCase() + "." +
 				inflector.plural(node.getName()).toLowerCase() + "." + camelCase(target.getDestinyName()) + node.getType() + ".class");
 		}
 		typeFrame.addFrame("target", targetFrame);
@@ -134,7 +135,7 @@ public class MorphFrameCreator extends FrameCreator {
 
 	private void addInner(Node node, Frame newFrame) {
 		for (Node inner : node.getInnerNodes())
-			if (!inner.isSub())
+			if ((inner.is(LinkNode.class) && !isInherited((LinkNode) inner, node)) || (inner.is(DeclaredNode.class) && !inner.isSub()))
 				nodeToFrame(inner, newFrame);
 	}
 
@@ -170,4 +171,12 @@ public class MorphFrameCreator extends FrameCreator {
 	}
 
 
+	public boolean isInherited(LinkNode inner, Node node) {
+		NodeObject destiny = inner.getDestiny().getObject();
+		NodeObject parent = node.getObject();
+		while ((parent = parent.getParent()) != null)
+			if (((DeclaredNode) model.get(parent.getDeclaredNodeQN())).contains(destiny.getName()))
+				return true;
+		return false;
+	}
 }

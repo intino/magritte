@@ -44,13 +44,20 @@ public class ConfigModuleAction extends AnAction implements DumbAware {
 
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
-		if (e.getProject() == null) {
+		Project project = e.getProject();
+		if (project == null) {
 			LOG.error("actionPerformed no project for " + e);
 			return;
 		}
 		final Module module = e.getData(LangDataKeys.MODULE);
-		ConfigModuleDialogPane configDialog = new ConfigModuleDialogPane(e.getProject(), module);
-		configDialog.getPeer().setTitle("Configure Module " + (module != null ? module.getName() : ""));
+		if (module == null) new RuntimeException("Module not found!");
+		configureModule(module);
+	}
+
+	public void configureModule(Module module) {
+		Project project = module.getProject();
+		ConfigModuleDialogPane configDialog = new ConfigModuleDialogPane(project, module);
+		configDialog.getPeer().setTitle("Configure Module " + (module.getName()));
 		configDialog.show();
 		if (configDialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
 			configDialog.saveValues(); //TODO Refactor

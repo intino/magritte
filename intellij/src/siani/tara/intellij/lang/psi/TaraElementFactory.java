@@ -23,7 +23,7 @@ public abstract class TaraElementFactory {
 
 	public abstract TaraImports createImport(String reference);
 
-	public abstract TaraImports createMetamodelImport(String reference);
+	public abstract TaraDslDeclaration createDslDeclaration(String name);
 
 	public abstract PsiElement createNewLine();
 

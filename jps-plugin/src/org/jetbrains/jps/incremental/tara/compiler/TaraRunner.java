@@ -25,7 +25,8 @@ public class TaraRunner {
 	private static final String GSON = "gson-2.2.4.jar";
 	private static File argsFile;
 
-	protected TaraRunner(final String projectName, final String moduleName, final boolean terminal, final String language, final Collection<String> sources,
+	protected TaraRunner(final String projectName, final String moduleName, final String generatedLangName, final String language,
+	                     final Collection<String> sources,
 	                     final String encoding,
 	                     String[] iconPaths,
 	                     List<String> paths) throws IOException {
@@ -37,11 +38,13 @@ public class TaraRunner {
 			writer.write("\n");
 			writer.write(TaraRtConstants.PROJECT + "\n" + projectName + "\n");
 			writer.write(TaraRtConstants.MODULE + "\n" + moduleName + "\n");
-			writer.write(TaraRtConstants.TERMINAL + "\n" + terminal + "\n");
+			writer.write(TaraRtConstants.TERMINAL + "\n" + (generatedLangName == null ? "true" : "false") + "\n");
 			writer.write(TaraRtConstants.LANGUAGE + "\n" + language + "\n");
+			if (generatedLangName != null)
+				writer.write(TaraRtConstants.GENERATED_LANG_NAME + "\n" + generatedLangName + "\n");
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
 			String tara_models = PathManager.getPluginsPath() + File.separator + "tara_models" + File.separator;
-			writer.write(TaraRtConstants.MODELS_PATH + "\n" + tara_models + projectName + File.separator + "\n");
+			writer.write(TaraRtConstants.MODELS_PATH + "\n" + tara_models + "\n");
 			for (String iconPath : iconPaths)
 				writer.write(TaraRtConstants.ICONS_PATH + "\n" + iconPath + "\n");
 			writer.write(TaraRtConstants.OUTPUTPATH + "\n" + paths.get(0) + "\n");
@@ -50,6 +53,8 @@ public class TaraRunner {
 			if (paths.get(3) != null) writer.write(TaraRtConstants.IT_RULES + "\n" + paths.get(3) + "\n");
 			writer.write(TaraRtConstants.METRICS + "\n" + paths.get(4) + "\n");
 			writer.write(TaraRtConstants.RESOURCES + "\n" + paths.get(5) + "\n");
+			if (!paths.get(6).isEmpty())
+				writer.write(TaraRtConstants.METAMODEL_FILE + "\n" + paths.get(6) + "\n");
 			writer.write(TaraRtConstants.CLASSPATH + "\n");
 			writer.write(join(generateClasspath()));
 			writer.close();

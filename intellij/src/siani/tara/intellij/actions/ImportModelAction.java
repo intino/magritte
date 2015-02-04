@@ -7,6 +7,7 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
 
 import java.io.File;
@@ -21,7 +22,7 @@ public class ImportModelAction extends AnAction implements DumbAware {
 	private static final String JSON_EXTENSION = ".json";
 
 	@Override
-	public void actionPerformed(AnActionEvent e) {
+	public void actionPerformed(@NotNull AnActionEvent e) {
 		importModel(e.getProject());
 	}
 

@@ -5,12 +5,12 @@ import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTypeId;
-import com.intellij.openapi.roots.CompilerModuleExtension;
-import com.intellij.openapi.roots.ContentEntry;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.OrderRootType;
+import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
@@ -20,7 +20,9 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.project.sdk.TaraJdk;
 
 import javax.swing.*;
@@ -33,20 +35,24 @@ import java.util.List;
 import static java.io.File.separator;
 
 public class TaraModuleBuilder extends JavaModuleBuilder {
-	public static final String RES = "res";
-	public static final String ICONS = "icons";
-	public static final String GEN = "gen";
-	public static final String MODEL = "model";
+	private static final String MODEL_EXT = ".json";
+	private static final String RES = "res";
+	private static final String ICONS = "icons";
+	private static final String MODEL = "model";
 	private static final Logger LOG = Logger.getInstance(TaraModuleBuilder.class.getName());
 	private static final String ITRULES = "itrules";
 	private static final String SRC = "src";
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
-	private Module metamodelModule;
+	private String parentLanguage;
 	private String language;
+	private String modelName;
 	private boolean terminal = false;
 	private File configFile;
 	private String myCompilerOutputPath;
 	private List<Pair<String, String>> mySourcePaths = new ArrayList<>();
+
+	public TaraModuleBuilder() {
+	}
 
 	private static String getUrlByPath(final String path) {
 		return VfsUtil.getUrlForLibraryRoot(new File(path));
@@ -74,6 +80,47 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		compilerModuleExtension.setExcludeOutput(true);
 		rootModel.inheritSdk();
 		ContentEntry contentEntry = doAddContentEntry(rootModel);
+		addContentEntries(contentEntry);
+		setOutputPath(compilerModuleExtension);
+		updateLibraries(rootModel);
+		addParentDependency(rootModel);
+		persistTempConf(rootModel.getProject());
+	}
+
+	private void addParentDependency(ModifiableRootModel rootModel) {
+		if (parentLanguage != null) {
+			Module module = searchParentLanguageModule(rootModel.getProject());
+			if (module != null) rootModel.addModuleOrderEntry(module);
+		}
+	}
+
+	private void updateLibraries(ModifiableRootModel rootModel) {
+		LibraryTable libraryTable = rootModel.getModuleLibraryTable();
+		for (Pair<String, String> libInfo : myModuleLibraries) {
+			final String moduleLibraryPath = libInfo.first;
+			final String sourceLibraryPath = libInfo.second;
+			Library library = libraryTable.createLibrary();
+			Library.ModifiableModel modifiableModel = library.getModifiableModel();
+			modifiableModel.addRoot(getUrlByPath(moduleLibraryPath), OrderRootType.CLASSES);
+			if (sourceLibraryPath != null)
+				modifiableModel.addRoot(getUrlByPath(sourceLibraryPath), OrderRootType.SOURCES);
+			modifiableModel.commit();
+		}
+	}
+
+	private void setOutputPath(CompilerModuleExtension compilerModuleExtension) {
+		if (myCompilerOutputPath != null) {
+			String canonicalPath;
+			try {
+				canonicalPath = FileUtil.resolveShortWindowsName(myCompilerOutputPath);
+			} catch (IOException e) {
+				canonicalPath = myCompilerOutputPath;
+			}
+			compilerModuleExtension.setCompilerOutputPath(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(canonicalPath)));
+		} else compilerModuleExtension.inheritCompilerOutputPath(true);
+	}
+
+	private void addContentEntries(ContentEntry contentEntry) {
 		if (contentEntry != null) {
 			addSrcIfNotExists(getContentEntryPath());
 			mySourcePaths.add(Pair.create(getContentEntryPath() + separator + MODEL, ""));
@@ -91,44 +138,31 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 				createResources(parentPath);
 			}
 		}
-		if (myCompilerOutputPath != null) {
-			String canonicalPath;
-			try {
-				canonicalPath = FileUtil.resolveShortWindowsName(myCompilerOutputPath);
-			} catch (IOException e) {
-				canonicalPath = myCompilerOutputPath;
-			}
-			compilerModuleExtension.setCompilerOutputPath(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(canonicalPath)));
-		} else compilerModuleExtension.inheritCompilerOutputPath(true);
-		LibraryTable libraryTable = rootModel.getModuleLibraryTable();
-		for (Pair<String, String> libInfo : myModuleLibraries) {
-			final String moduleLibraryPath = libInfo.first;
-			final String sourceLibraryPath = libInfo.second;
-			Library library = libraryTable.createLibrary();
-			Library.ModifiableModel modifiableModel = library.getModifiableModel();
-			modifiableModel.addRoot(getUrlByPath(moduleLibraryPath), OrderRootType.CLASSES);
-			if (sourceLibraryPath != null)
-				modifiableModel.addRoot(getUrlByPath(sourceLibraryPath), OrderRootType.SOURCES);
-			modifiableModel.commit();
-		}
-		if (metamodelModule != null)
-			rootModel.addModuleOrderEntry(metamodelModule);
-		persistTempConf();
 	}
 
 	private void addSrcIfNotExists(String contentEntryPath) {
 		for (Pair<String, String> mySourcePath : mySourcePaths)
-			if (mySourcePath.first.endsWith(separator + "src"))
+			if (mySourcePath.first.endsWith(separator + SRC))
 				return;
 		mySourcePaths.add(Pair.create(contentEntryPath + separator + SRC, ""));
 	}
 
-	private void persistTempConf() {
+	@Nullable
+	private Module searchParentLanguageModule(Project project) {
+		ModuleManager instance = ModuleManager.getInstance(project);
+		for (Module module : instance.getModules())
+			if (ModuleConfiguration.getInstance(module).getGeneratedModelName().equals(parentLanguage))
+				return module;
+		return null;
+	}
+
+	private void persistTempConf(Project project) {
 		try {
 			FileWriter writer = new FileWriter(configFile);
-			writer.write(((metamodelModule != null) ? metamodelModule.getName() : "null") + "\n");
-			writer.write(((metamodelModule != null) ? metamodelModule.getModuleFilePath() : "null") + "\n");
+			writer.write(((parentLanguage != null) ? parentLanguage : "null") + "\n");
+			writer.write(((parentLanguage != null) ? getModelOfParentLanguage(project).getAbsolutePath() : "null") + "\n");
 			writer.write(language + "\n");
+			writer.write(modelName + "\n");
 			writer.write(terminal + "\n");
 			writer.close();
 		} catch (IOException e) {
@@ -136,12 +170,28 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		}
 	}
 
-	public void setMetamodelModule(Module module) {
-		metamodelModule = module;
+	private File getModelOfParentLanguage(Project project) {
+		Module module = searchParentLanguageModule(project);
+		if (module != null)
+			return new File(TaraLanguage.MODELS_PATH + parentLanguage + MODEL_EXT);
+		else {
+			Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
+			if (projectSdk != null && projectSdk.getSdkType().equals(TaraJdk.getInstance()))
+				return new File(projectSdk.getHomePath() + File.separator + "model" + File.separator + parentLanguage + MODEL_EXT);
+			return null;
+		}
+	}
+
+	public void setParentLanguage(String metamodel) {
+		this.parentLanguage = metamodel;
 	}
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	public void setModelName(String modelName) {
+		this.modelName = modelName;
 	}
 
 	public void setTerminal(boolean terminal) {

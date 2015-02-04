@@ -2,9 +2,13 @@ package siani.tara.intellij.actions;
 
 import com.intellij.ide.actions.CreateFileFromTemplateDialog;
 import com.intellij.ide.actions.JavaCreateTemplateInPackageAction;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
@@ -53,8 +57,19 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		list = parentName != null ? new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "PARENT_MODULE_NAME", parentName, "TYPE", "Concept"}
 			: new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "TYPE", "Concept"};
 		file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, templateName, true, list);
-		if (file instanceof TaraBoxFileImpl) return (TaraBoxFileImpl) file;
+		if (file instanceof TaraBoxFileImpl) {
+			setCaret(file);
+			return (TaraBoxFileImpl) file;
+		}
 		final String description = file.getFileType().getDescription();
 		throw new IncorrectOperationException(MessageProvider.message("tara.file.extension.is.not.mapped.to.tara.file.type", description));
+	}
+
+	public void setCaret(PsiFile file) {
+		PsiDocumentManager dm = PsiDocumentManager.getInstance(file.getProject());
+		Document doc = dm.getDocument(file);
+		if (doc == null) return;
+		Editor editor = EditorFactory.getInstance().createEditor(doc, file.getProject(), file.getFileType(), false);
+		editor.getCaretModel().moveToOffset(file.getText().length() - 1);
 	}
 }

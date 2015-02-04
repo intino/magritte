@@ -56,7 +56,7 @@ public abstract class TaraAnnotator implements Annotator {
 			this(level, message, null, IntentionAction.EMPTY_ARRAY);
 		}
 
-		public AnnotateAndFix(Level level, String message, IntentionAction actions) {
+		public AnnotateAndFix(Level level, String message, IntentionAction... actions) {
 			this(level, message, null, actions);
 		}
 

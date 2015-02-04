@@ -12,6 +12,7 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ChooseModulesDialog;
 import com.intellij.openapi.ui.Messages;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.project.module.TaraModuleType;
 
@@ -24,7 +25,7 @@ public class ExportModelAction extends ExportModelAbstractAction {
 	}
 
 	@Override
-	public void actionPerformed(AnActionEvent e) {
+	public void actionPerformed(@NotNull AnActionEvent e) {
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		if (project == null) return;
 
@@ -79,7 +80,7 @@ public class ExportModelAction extends ExportModelAbstractAction {
 	}
 
 	@Override
-	public void update(AnActionEvent e) {
+	public void update(@NotNull AnActionEvent e) {
 		int moduleCount = 0;
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		if (project != null)
@@ -95,7 +96,7 @@ public class ExportModelAction extends ExportModelAbstractAction {
 		}
 		e.getPresentation().setVisible(enabled);
 		e.getPresentation().setEnabled(enabled);
-		if (enabled) e.getPresentation().setText(MessageProvider.message("prepare.for.deployment"));
+		if (enabled) e.getPresentation().setText(MessageProvider.message("build.sdk.from.models"));
 	}
 
 }

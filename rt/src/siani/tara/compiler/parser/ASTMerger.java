@@ -8,18 +8,19 @@ import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import java.util.Collection;
-import java.util.Locale;
 
 public class ASTMerger {
 	private final Collection<SourceUnit> sources;
+	private final CompilerConfiguration conf;
 
-	public ASTMerger(Collection<SourceUnit> sources) {
+	public ASTMerger(Collection<SourceUnit> sources, CompilerConfiguration conf) {
 		this.sources = sources;
+		this.conf = conf;
 	}
 
 	public Model doMerge() throws MergeException {
-		CompilerConfiguration configuration = sources.iterator().next().getConfiguration();
-		Model model = new Model(configuration.getProject() + "." + configuration.getModule());
+		Model model = new Model(conf.getModelName() != null ? conf.getModelName() : conf.getProject() + "." + conf.getModule());
+		model.setTerminal(conf.isTerminal());
 		model.setParentModelName(sources.iterator().next().getModel().getParentModelName());
 		model.setTerminal(sources.iterator().next().getModel().isTerminal());
 		for (SourceUnit unit : sources) {
@@ -28,14 +29,14 @@ public class ASTMerger {
 			model.putAllInNodeTable(unit.getModel().getNodeTable());
 		}
 		for (Node node : model.getNodeTable().values())
-			node.setModelOwner(model.getModelName());
-		model.addMetrics(MetricsLoader.loadMetrics(configuration));
+			node.setModelOwner(model.getName());
+		model.addMetrics(MetricsLoader.loadMetrics(conf));
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");
-		addCodeGenerationLanguage(model, configuration);
+		addCodeGenerationLanguage(model, conf);
 		return model;
 	}
 
 	private void addCodeGenerationLanguage(Model model, CompilerConfiguration configuration) {
-		model.setLanguage(configuration.getLanguageForCodeGeneration().equalsIgnoreCase("Spanish") ? new Locale("Spanish", "Spain", "es_ES") : Locale.ENGLISH);
+		model.setLanguage(configuration.getLanguageForCodeGeneration());
 	}
 }

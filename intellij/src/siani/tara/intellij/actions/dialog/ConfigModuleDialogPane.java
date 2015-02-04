@@ -4,35 +4,62 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleOrderEntry;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.OrderEntry;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.*;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.ValidationInfo;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.sdk.TaraJdk;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigModuleDialogPane extends DialogWrapper {
 
 	private static final String NO_PARENT = "None";
+	private static final String MODEL_EXT = ".json";
+	private final Project project;
 	private final Module module;
-	protected JCheckBox terminalCheckBox;
+	protected JCheckBox generativeModelCheckBox;
 	private JPanel dialogContents;
 	private JComboBox metamodelBox;
 	private JLabel metamodelField;
 	private JComboBox language;
+	private JTextField languageName;
 	private Module[] candidates;
 
 	public ConfigModuleDialogPane(final Project project, Module module) {
 		super(project, false);
+		this.project = project;
 		this.module = module;
-		init();
+		initDialog();
 		candidates = getParentModulesCandidates(project, module);
 		loadValues();
+	}
+
+	@Nullable
+	@Override
+	protected ValidationInfo doValidate() {
+		if (generativeModelCheckBox.isSelected() && languageName.getText().isEmpty())
+			return new ValidationInfo("Name for the new generated Language is required", languageName);
+		return null;
+	}
+
+	void initDialog() {
+		super.init();
+		generativeModelCheckBox.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				languageName.setEnabled(((JCheckBox) e.getSource()).isSelected());
+			}
+		});
 	}
 
 	@Nullable
@@ -43,24 +70,72 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 
 	public void loadValues() {
 		metamodelBox.addItem(NO_PARENT);
-		for (Module candidate : candidates) {
-			metamodelBox.addItem(candidate.getName());
-			if (ModuleConfiguration.getInstance(module).getMetamodelName().equals(candidate.getName()))
-				metamodelBox.setSelectedItem(candidate.getName());
-		}
+		addModuleMetaModels();
+		addSdkMetamodel();
 		if (metamodelBox.getSelectedItem() == null) metamodelBox.setSelectedItem(NO_PARENT);
-		terminalCheckBox.setSelected(ModuleConfiguration.getInstance(module).isTerminal());
+		generativeModelCheckBox.setSelected(!ModuleConfiguration.getInstance(module).isTerminal());
+		languageName.setText(ModuleConfiguration.getInstance(module).getGeneratedModelName());
 		language.setSelectedItem(ModuleConfiguration.getInstance(module).getLanguage());
 	}
 
+	private void addModuleMetaModels() {
+		for (Module candidate : candidates) {
+			ModuleConfiguration candidateConf = ModuleConfiguration.getInstance(candidate);
+			metamodelBox.addItem(candidateConf.getGeneratedModelName());
+			if (ModuleConfiguration.getInstance(module).getMetamodelName().equals(candidateConf.getGeneratedModelName()))
+				metamodelBox.setSelectedItem(candidateConf.getGeneratedModelName());
+		}
+	}
+
+	private void addSdkMetamodel() {
+		Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
+		if (projectSdk == null || !projectSdk.getSdkType().equals(TaraJdk.getInstance())) return;
+		String modelRoot = projectSdk.getHomePath() + File.separator + "model" + File.separator;
+		for (File file : new File(modelRoot).listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return (name.endsWith(MODEL_EXT));
+			}
+		})) {
+			metamodelBox.addItem(file.getName().substring(0, file.getName().lastIndexOf(".")));
+		}
+	}
+
 	public void saveValues() {
-		setParent(!metamodelBox.getSelectedItem().equals(NO_PARENT) ? searchParent((String) metamodelBox.getSelectedItem()) : null);
-		setTerminal(terminalCheckBox.isSelected());
+		setParent(metamodelBox.getSelectedItem());
+		setTerminal(!generativeModelCheckBox.isSelected());
+		setGeneratedLanguageName(generativeModelCheckBox.isSelected() ? languageName.getText() : "");
 		setLanguage(language.getSelectedItem().toString());
+	}
+
+	private void setParent(Object selectedItem) {
+		Module parentModule;
+		if (selectedItem.equals(NO_PARENT)) {
+			updateDependencies(null);
+			ModuleConfiguration.getInstance(module).setMetamodelName("");
+			ModuleConfiguration.getInstance(module).setMetamodelFilePath("");
+		} else if ((parentModule = searchParent(selectedItem.toString())) != null) {
+			updateDependencies(parentModule);
+			String generatedModelName = ModuleConfiguration.getInstance(parentModule).getGeneratedModelName();
+			ModuleConfiguration.getInstance(module).setMetamodelName(generatedModelName);
+			ModuleConfiguration.getInstance(module).setMetamodelFilePath(new File(TaraLanguage.MODELS_PATH + generatedModelName + MODEL_EXT).getAbsolutePath());
+		} else {
+			updateDependencies(null);
+			ModuleConfiguration.getInstance(module).setMetamodelName(selectedItem.toString());
+			Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
+			if (projectSdk != null && projectSdk.getSdkType().equals(TaraJdk.getInstance())) {
+				File file = new File(projectSdk.getHomePath() + File.separator + "model" + File.separator + selectedItem.toString() + MODEL_EXT);
+				ModuleConfiguration.getInstance(module).setMetamodelFilePath(file.getAbsolutePath());
+			}
+		}
 	}
 
 	private void setLanguage(String language) {
 		ModuleConfiguration.getInstance(module).setLanguage(language);
+	}
+
+	private void setGeneratedLanguageName(String languageName) {
+		ModuleConfiguration.getInstance(module).setGeneratedModelName(languageName);
 	}
 
 	private void setTerminal(boolean selected) {
@@ -68,22 +143,17 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 	}
 
 	private Module searchParent(String parentName) {
-		for (Module candidate : candidates)
-			if (parentName.equals(candidate.getName()))
+		for (Module candidate : candidates) {
+			ModuleConfiguration conf = ModuleConfiguration.getInstance(candidate);
+			if (conf.getGeneratedModelName().equals(parentName))
 				return candidate;
+		}
 		return null;
 	}
 
-	private void setParent(Module parent) {
-		if (parent == null) {
-			removeParentDependency();
-			ModuleConfiguration.getInstance(module).setMetamodelName("");
-			ModuleConfiguration.getInstance(module).setMetamodelFilePath("");
-		} else {
-			addModelDependency(parent);
-			ModuleConfiguration.getInstance(module).setMetamodelName(parent.getName());
-			ModuleConfiguration.getInstance(module).setMetamodelFilePath(parent.getModuleFilePath());
-		}
+	private void updateDependencies(final Module parent) {
+		removeParentDependency();
+		if (parent != null) addModelDependency(parent);
 	}
 
 	private void addModelDependency(final Module parent) {
@@ -97,7 +167,6 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 				}
 			}
 		});
-
 	}
 
 	private void removeParentDependency() {
@@ -106,7 +175,7 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 			public void run() {
 				String parentName;
 				if ((parentName = ModuleConfiguration.getInstance(module).getMetamodelName()).isEmpty()) return;
-				Module parentModule = searchParent(parentName);
+				Module parentModule = searchParent(parentName.contains(".") ? parentName.split("\\.")[1] : parentName);
 				if (parentModule == null) return;
 				ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(module).getModifiableModel();
 				OrderEntry[] orderEntries = modifiableModel.getOrderEntries();
@@ -117,7 +186,6 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 			}
 		});
 	}
-
 
 	private OrderEntry findOrderEntry(OrderEntry[] orderEntries, Module parentModule) {
 		for (OrderEntry entry : orderEntries)
@@ -132,12 +200,4 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 			if (aModule != module && !ModuleConfiguration.getInstance(aModule).isTerminal()) candidates.add(aModule);
 		return candidates.toArray(new Module[candidates.size()]);
 	}
-
-
-	@Override
-	public String toString() {
-		return "ConfigANTLRPerGrammar{" + '}';
-	}
-
-
 }

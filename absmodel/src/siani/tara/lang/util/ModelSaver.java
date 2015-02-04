@@ -19,7 +19,7 @@ public class ModelSaver {
 
 	public static boolean save(Model model, String modelsDirectory) {
 		try {
-			File file = new File(modelsDirectory.toLowerCase(), model.getModelName().toLowerCase() + JSON_EXTENSION);
+			File file = new File(modelsDirectory, model.getName() + JSON_EXTENSION);
 			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(file);
 			GsonBuilder gsonBuilder = new GsonBuilder();
@@ -78,10 +78,9 @@ public class ModelSaver {
 			object.add("annotations", list);
 			list = new JsonArray();
 			if (variable.values != null) {
-				for (Object value : variable.values) {
+				for (Object value : variable.values)
 					list.add(new JsonPrimitive(variable instanceof Word || variable instanceof Reference ? (String) value :
 						Primitives.getConverter(variable.getType()).convert(value)[0]));
-				}
 				object.add("values", list);
 			}
 			list = new JsonArray();

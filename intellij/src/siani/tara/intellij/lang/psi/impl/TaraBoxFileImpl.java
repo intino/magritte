@@ -159,16 +159,20 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 	public void updateDSL() {
 		ModuleConfiguration configuration = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(this));
 		if (configuration == null) return;
-		String metaModule = configuration.getMetamodelName();
-		String metamodelName = metaModule == null || metaModule.isEmpty() ? null : this.getProject().getName() + "." + metaModule;
+		String metaLanguage = configuration.getMetamodelName();
+		String metamodelName = metaLanguage == null || metaLanguage.isEmpty() ? null : metaLanguage;
 		setDSL(metamodelName);
 	}
 
 	private void setDSL(String metamodelName) {
 		TaraDslDeclaration dslDeclaration = getDSLDeclaration();
 		if (dslDeclaration != null) dslDeclaration.delete();
-		if (metamodelName != null && !metamodelName.isEmpty())
-			addImport(TaraElementFactory.getInstance(this.getProject()).createMetamodelImport(metamodelName));
+		if (metamodelName != null && !metamodelName.isEmpty()) {
+			TaraDslDeclaration dsl = TaraElementFactory.getInstance(getProject()).createDslDeclaration(metamodelName);
+			final TreeElement copy = ChangeUtil.copyToElement(dsl);
+			TaraDslDeclaration psi = (TaraDslDeclaration) copy.getPsi();
+			this.addAfter(psi, getFirstChild());
+		}
 	}
 
 	@Nullable

@@ -3,12 +3,11 @@ package siani.tara.lang.util;
 import com.google.gson.*;
 import siani.tara.lang.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +25,17 @@ public class ModelLoader {
 				LOG.log(Level.SEVERE, "Model file not found");
 				return null;
 			}
+			return load(file);
+		} catch (Exception e) {
+			LOG.severe("Error loading model " + model + ": ");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static Model load(File file) {
+		if (file == null || !file.exists()) return null;
+		try {
 			InputStream heritageInputStream = new FileInputStream(file);
 			GsonBuilder gb = new GsonBuilder();
 			gb.registerTypeAdapter(Node.class, new NodeAdapter());
@@ -34,24 +44,32 @@ public class ModelLoader {
 			Model aModel = gb.create().fromJson(new InputStreamReader(heritageInputStream), Model.class);
 			restoreTreeLinks(aModel, aModel.getTreeModel());
 			return aModel;
-		} catch (Exception e) {
-			LOG.severe("Error loading model " + model + ": ");
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	private static void restoreTreeLinks(Model aModel, NodeTree tree) {
+	private static void restoreTreeLinks(Model model, NodeTree tree) {
 		Map<String, Node> nodeTable = new HashMap();
 		for (Node node : tree)
-			restoreDestinyLinks(node, aModel);
+			restoreDestinyLinks(node, model);
 		for (Node node : tree) {
 			nodeTable.put(node.getQualifiedName(), node);
-			processInnerNodes(aModel, nodeTable, node);
-			processCases(aModel, nodeTable, node);
+			processInnerNodes(model, nodeTable, node);
+			processSubs(model, nodeTable, node);
 		}
-		aModel.setNodeTable(nodeTable);
-		restoreHierarchyLinks(aModel);
+		model.setNodeTable(nodeTable);
+		restoreHierarchyLinks(model);
+		restoreFacetDestinies(model, model.getNodeTable().values());
+	}
+
+	private static void restoreFacetDestinies(Model model, Collection<Node> values) {
+		for (Node node : values) {
+			if (node.is(LinkNode.class) || node.getObject().getAllowedFacets().isEmpty()) continue;
+			for (List<FacetTarget> facetTargets : node.getObject().getAllowedFacets().values())
+				for (FacetTarget target : facetTargets) target.setDestiny(model.get(target.getDestinyQN()).getObject());
+		}
 	}
 
 	private static void restoreDestinyLinks(Node node, Model model) {
@@ -85,17 +103,17 @@ public class ModelLoader {
 				DeclaredNode destiny = (DeclaredNode) aModel.searchNode(linkNode.getDestinyQN());
 				linkNode.setDestiny(destiny);
 			} else {
-				processCases(aModel, nodeTable, inner);
+				processSubs(aModel, nodeTable, inner);
 				processInnerNodes(aModel, nodeTable, inner);
 			}
 			nodeTable.put(inner.getQualifiedName(), inner);
 		}
 	}
 
-	private static void processCases(Model aModel, Map<String, Node> nodeTable, Node node) {
-		for (DeclaredNode aCase : node.getSubConcepts()) {
-			nodeTable.put(aCase.getQualifiedName(), aCase);
-			processInnerNodes(aModel, nodeTable, aCase);
+	private static void processSubs(Model aModel, Map<String, Node> nodeTable, Node node) {
+		for (DeclaredNode sub : node.getSubConcepts()) {
+			nodeTable.put(sub.getQualifiedName(), sub);
+			processInnerNodes(aModel, nodeTable, sub);
 		}
 	}
 

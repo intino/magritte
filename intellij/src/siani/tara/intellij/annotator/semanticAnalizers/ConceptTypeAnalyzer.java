@@ -11,7 +11,7 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.Annotation;
+import siani.tara.lang.LinkNode;
 import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
@@ -21,6 +21,7 @@ import java.util.List;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 import static siani.tara.intellij.lang.psi.impl.TaraUtil.findNode;
+import static siani.tara.lang.Annotation.ABSTRACT;
 
 public class ConceptTypeAnalyzer extends TaraAnalyzer {
 
@@ -57,11 +58,17 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 
 	private boolean existsConceptTypeInMetamodel() {
 		Node node = findNode(concept, model);
-		if (node != null && !node.is(Annotation.ABSTRACT)) return true;
+		if (node == null || isAbstract(node)) return false;
+		else if(!node.is(ABSTRACT)) return true;
 		Concept container = TaraPsiImplUtil.getConceptContainerOf(concept);
 		if (container == null) return false;
 		Node containerNode = findNode(container, model);
 		return containerNode != null && hasAny(containerNode, getFacets(concept.getFacetApplies()));
+	}
+
+	private boolean isAbstract(Node node) {
+		if (node.is(LinkNode.class)) return ((LinkNode) node).getDestiny().is(ABSTRACT);
+		return node.is(ABSTRACT);
 	}
 
 	private boolean hasAny(Node container, Collection<String> facets) {

@@ -8,19 +8,20 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.MessageProvider;
-import siani.tara.intellij.actions.ImportModelAction;
+import siani.tara.intellij.actions.ConfigModuleAction;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.project.module.ModuleProvider;
 
-public class ImportMetamodelFix implements IntentionAction {
+public class ConfigureModuleFix implements IntentionAction {
 	private final TaraBoxFile file;
 
-	public ImportMetamodelFix(@NotNull final TaraBoxFile taraBoxFile) {
+	public ConfigureModuleFix(@NotNull final TaraBoxFile taraBoxFile) {
 		this.file = taraBoxFile;
 	}
 
 	@NotNull
 	public String getText() {
-		return MessageProvider.message("import.metamodel.intention.text");
+		return MessageProvider.message("configure.module");
 	}
 
 	@NotNull
@@ -34,7 +35,7 @@ public class ImportMetamodelFix implements IntentionAction {
 
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-		new ImportModelAction().importModel(project);
+		new ConfigModuleAction().configureModule(ModuleProvider.getModuleOf(file));
 	}
 
 	public boolean startInWriteAction() {

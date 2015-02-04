@@ -1,18 +1,21 @@
 src_file
 /Users/octavio/workspace/sandbox/Monet/engine/model/Main.tara
+/Users/octavio/workspace/sandbox/Monet/engine/model/Tafat.tara
 
 project
-Monet
+census
 module
 engine
 terminal
 false
 language
 English
+generated_lang_name
+MonetEngine
 encoding
 UTF-8
 models
-/Users/octavio/workspace/sandbox/tara/plugins/tara_models/Monet/
+/Users/octavio/workspace/sandbox/tara/plugins/tara_models/
 icons
 /Users/octavio/workspace/sandbox/Monet/engine/res/icons
 outputpath
@@ -20,7 +23,7 @@ outputpath
 final_outputpath
 /Users/octavio/workspace/sandbox/Monet/out/production/engine/
 jdk_home
-/Users/octavio/workspace/sandbox/tdk-0.1/lib/
+/Users/octavio/workspace/tdk-0.1/lib/
 itrules
 /Users/octavio/workspace/sandbox/Monet/engine/res/itrules
 metrics

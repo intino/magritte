@@ -105,8 +105,6 @@ defrule type(terminal) type(Variable) slot-name(variableValue)  trigger(set)
 set("!$name", $variableValue);
 endrule
 
-
-
 defrule type(Variable) type(reference) slot-name(variableValue) trigger(set)
 set("$name", node("$variableValue"));
 endrule
@@ -126,8 +124,6 @@ endrule
 defrule type(Variable) slot-name(variableValue)  trigger(set)
 set("$name", $variableValue);
 endrule
-
-
 
 defrule type(Annotation) trigger(annotation)
 [set($value+CamelCase...[, ]);]

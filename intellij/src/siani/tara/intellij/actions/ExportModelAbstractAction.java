@@ -100,7 +100,7 @@ public class ExportModelAbstractAction extends AnAction implements DumbAware {
 					errorMessages.add(e.getMessage() + "\n(" + dstPath + ")");
 				}
 			}
-		}, MessageProvider.message("prepare.for.deployment", modelName), true, module.getProject());
+		}, MessageProvider.message("build.sdk.from.models", modelName), true, module.getProject());
 	}
 
 	private void addModelRepresentation(ZipOutputStream zos, String modelName) throws IOException {

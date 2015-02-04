@@ -16,13 +16,13 @@ public class BoxFrameCreator extends FrameCreator {
 	private static final String SEPARATOR = ".";
 	private Node currentNode;
 
-	public BoxFrameCreator(Model model) {
-		super(model);
+	public BoxFrameCreator(String project, Model model) {
+		super(project, model);
 	}
 
 	public Frame create(List<Node> nodes, Collection<String> parentBoxes) {
 		Frame frame = new Frame("Box");
-		frame.addFrame("name", buildFileName(nodes.get(0).getFile(), model.getModelName()));
+		frame.addFrame("name", buildFileName(nodes.get(0).getFile(), model.getName()));
 		for (String box : parentBoxes)
 			frame.addFrame("dependency", box);
 		addMetricImports(frame);
@@ -116,10 +116,10 @@ public class BoxFrameCreator extends FrameCreator {
 	private void addFacetTargets(Node node, Frame typeFrame) {
 		if (node.getObject().getFacetTargets().isEmpty()) return;
 		Frame targetFrame = new Frame("target", node.is(Annotation.INTENTION) ? "intention" : "");
-		targetFrame.addFrame("target", projectName + ".extensions." + camelCase(node.getName()) + node.getType() + ".class");
+		targetFrame.addFrame("target", project + ".extensions." + camelCase(node.getName()) + node.getType() + ".class");
 		Inflector inflector = getInflector(model.getLanguage());
 		for (FacetTarget target : node.getObject().getFacetTargets())
-			targetFrame.addFrame("target", projectName + ".extensions." + inflector.plural(node.getType()).toLowerCase() + "." +
+			targetFrame.addFrame("target", project + ".extensions." + inflector.plural(node.getType()).toLowerCase() + "." +
 				inflector.plural(node.getName()).toLowerCase() + "." + camelCase(target.getDestinyName()) + node.getType() + ".class");
 		typeFrame.addFrame("target", targetFrame);
 	}
@@ -145,13 +145,13 @@ public class BoxFrameCreator extends FrameCreator {
 
 	private void addMetricImports(Frame frame) {
 		for (String metric : model.getMetrics().keySet())
-			frame.addFrame("importMetric", "import static " + projectName + SEPARATOR + "metrics" + SEPARATOR + metric + SEPARATOR + "*;");
+			frame.addFrame("importMetric", "import static " + project + SEPARATOR + "metrics" + SEPARATOR + metric + SEPARATOR + "*;");
 	}
 
 	private void addFacetImports(List<Node> nodes, Frame frame) {
 		Set<String> imports = searchFacets(nodes);
 		for (String anImport : imports)
-			frame.addFrame("importFacet", "import " + projectName + SEPARATOR + "extensions" + SEPARATOR + anImport.toLowerCase() + ".*;");
+			frame.addFrame("importFacet", "import " + project + SEPARATOR + "extensions" + SEPARATOR + anImport.toLowerCase() + ".*;");
 	}
 
 	private Set<String> searchFacets(List<Node> nodes) {

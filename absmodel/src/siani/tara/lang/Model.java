@@ -1,7 +1,7 @@
 package siani.tara.lang;
 
-import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.*;
 
 import static siani.tara.lang.Annotation.TERMINAL;
 
@@ -86,8 +86,12 @@ public class Model {
 		return terminals;
 	}
 
-	public String getModelName() {
+	public String getName() {
 		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public boolean addAll(NodeTree nodeTree) {

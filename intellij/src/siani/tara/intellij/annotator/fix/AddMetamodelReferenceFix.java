@@ -33,7 +33,7 @@ public class AddMetamodelReferenceFix implements IntentionAction {
 
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-//		attribute.delete();
+		((TaraBoxFile)file).updateDSL();
 	}
 
 	public boolean startInWriteAction() {

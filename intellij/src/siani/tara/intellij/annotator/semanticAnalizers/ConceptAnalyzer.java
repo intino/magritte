@@ -6,6 +6,7 @@ import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.annotator.fix.AddAddressFix;
+import siani.tara.intellij.annotator.fix.LinkToJavaFix;
 import siani.tara.intellij.annotator.fix.RemoveConceptFix;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
@@ -20,6 +21,7 @@ import siani.tara.lang.Node;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static siani.tara.intellij.MessageProvider.message;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
@@ -136,25 +138,24 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 
 	private void analyzeJavaClassCreation(Node node, Concept concept) {
 		if ((concept.isIntention()) && !isIntentionClassCreated(concept))
-			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class")));
-		if (shouldHaveFacetTargetClass(node, concept) && !isFacetTargetClassCreated(concept))
-			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.java.generated.class")));
-		for (FacetApply facetApply : concept.getFacetApplies()) {
+			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class"), new LinkToJavaFix(concept)));
+		else if (node != null && node.is(INTENTION) && !isFacetClassCreated(concept))
+			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class"), new LinkToJavaFix(concept)));
+ 		else if (shouldHaveFacetTargetClass(node, concept) && !isFacetClassCreated(concept))
+			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.java.generated.class"), new LinkToJavaFix(concept)));
+		for (FacetApply facetApply : concept.getFacetApplies())
 			if (node != null && isFacetIntentionImplementation(node, facetApply) && !isFacetApplyClassCreated(concept, facetApply.getFacetName()))
-				results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.intention.java.generated.class", facetApply.getFacetName())));
-		}
+				results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.intention.java.generated.class", facetApply.getFacetName()), new LinkToJavaFix(concept)));
 	}
 
 	private boolean isFacetIntentionImplementation(Node node, FacetApply facetApply) {
-		if (!hasFacet(node, facetApply.getFacetName())) return false;
-		for (Node modelNode : getMetamodel(facetApply).getTreeModel())
-			if (facetApply.getFacetName().equals(modelNode.getName()) && modelNode.is(INTENTION))
-				return true;
-		return false;
-	}
-
-	private boolean hasFacet(Node node, String facetApply) {
-		return node.getObject().getAllowedFacets().containsKey(facetApply);
+		List<FacetTarget> facetTargets = node.getObject().getAllowedFacets().get(facetApply.getFacetName());
+		if (facetTargets == null) return false;
+		FacetTarget target = null;
+		for (FacetTarget facetTarget : facetTargets)
+			if (facetTarget.getDestiny().equals(node.getObject()))
+				target = facetTarget;
+		return target != null && target.isIntention();
 	}
 
 	private boolean shouldHaveFacetTargetClass(Node node, Concept concept) {
@@ -165,7 +166,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 
 	private void analyzeMetaAnnotationConstrains(Node node) {
 		if (!analyzeAsComponent(node))
-			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Component cannot be declared as root"));
+			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Component Cannot be Declared as Primary"));
 		else if (!isFacet(node))
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Facets are no instantiable"));
 		else if (!analyzeAsNamed(node))
@@ -180,6 +181,25 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name Required in Instances of an Intention"));
 		else if (concept.isAnonymous() && hasFacetIntention(node))
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name Required with Intention Facets"));
+		else if (concept.isAnonymous() && hasNamedFacet(node, concept))
+			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name Required with Named Facets"));
+	}
+
+	private boolean hasNamedFacet(Node node, Concept concept) {
+		Map<String, List<FacetTarget>> allowedFacets = node.getObject().getAllowedFacets();
+		for (FacetApply facetApply : concept.getFacetApplies()) {
+			if (allowedFacets.containsKey(facetApply.getFacetName()) && isNamed(getMetamodel(facetApply), allowedFacets.get(facetApply.getFacetName())))
+				return true;
+		}
+		return false;
+	}
+
+	private boolean isNamed(Model metamodel, List<FacetTarget> facetTargets) {
+		for (FacetTarget facetTarget : facetTargets) {
+			Node facetNode = metamodel.get(facetTarget.getFacetQN());
+			if (facetNode != null && facetNode.is(NAMED)) return true;
+		}
+		return false;
 	}
 
 	private boolean hasFacetIntention(Node node) {
@@ -275,7 +295,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		return resolveJavaClassReference(concept.getProject(), projectName + "." + INTENTIONS + "." + concept.getName() + "Intention") != null;
 	}
 
-	private boolean isFacetTargetClassCreated(Concept concept) {
+	private boolean isFacetClassCreated(Concept concept) {
 		return resolveJavaClassReference(concept.getProject(), getFacetPackage(concept) + "." + concept.getName() + concept.getType()) != null;
 	}
 

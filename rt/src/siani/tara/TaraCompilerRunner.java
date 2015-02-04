@@ -13,6 +13,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 public class TaraCompilerRunner {
@@ -106,10 +107,21 @@ public class TaraCompilerRunner {
 					configuration.setTerminal(Boolean.valueOf(reader.readLine()));
 					break;
 				case TaraRtConstants.LANGUAGE:
-					configuration.setLanguageForCodeGeneration(reader.readLine());
+					String languageForCodeGeneration = reader.readLine();
+					Locale locale;
+					if (languageForCodeGeneration.equalsIgnoreCase("Spanish"))
+						locale = new Locale("Spanish", "Spain", "es_ES");
+					else locale = Locale.ENGLISH;
+					configuration.setLanguageForCodeGeneration(locale);
 					break;
 				case TaraRtConstants.MODELS_PATH:
 					configuration.setModelsDirectory(reader.readLine());
+					break;
+				case TaraRtConstants.GENERATED_LANG_NAME:
+					configuration.setModelName(reader.readLine());
+					break;
+				case TaraRtConstants.METAMODEL_FILE:
+					configuration.setMetamodelFile(reader.readLine());
 					break;
 				case TaraRtConstants.TDK_HOME:
 					configuration.setTdkHome(reader.readLine());

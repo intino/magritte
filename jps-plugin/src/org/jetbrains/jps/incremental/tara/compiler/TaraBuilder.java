@@ -17,6 +17,7 @@ import org.jetbrains.jps.model.java.JpsJavaSdkType;
 import org.jetbrains.jps.model.library.sdk.JpsSdk;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.model.module.JpsModuleSourceRoot;
+import org.jetbrains.jps.model.serialization.PathMacroUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -77,12 +78,13 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			start = System.currentTimeMillis();
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
 			Element moduleConfiguration = getModuleConfiguration(getModuleConfigurationFile(chunk.getModules().iterator().next()));
-			final boolean isTerminal = isTerminal(moduleConfiguration);
+			final String generatedLangName = getGeneratedLangName(moduleConfiguration);
 			final String language = getLanguage(moduleConfiguration);
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 			List<String> paths = collectPaths(chunk, context, finalOutputs);
+			paths.add(getParentModelPath(moduleConfiguration));
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(),
-				isTerminal, language, toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
+				generatedLangName, language, toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
 			context.setDone(1);
@@ -109,6 +111,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		list.add(finalOutput);//metrics path
 		list.add(getResourcesFile(modules.iterator().next()).getPath());
 		return list;
+	}
+
+	private String getParentModelPath(Element moduleConfiguration) {
+		String metamodelFilePath = String.valueOf(getValueOf(moduleConfiguration, "metamodelFilePath"));
+		String globalSystemMacroValue = PathMacroUtil.getGlobalSystemMacroValue(PathMacroUtil.APPLICATION_PLUGINS_DIR);
+		if (globalSystemMacroValue != null && metamodelFilePath.contains(PathMacroUtil.APPLICATION_PLUGINS_DIR))
+			metamodelFilePath = metamodelFilePath.replace("$" + PathMacroUtil.APPLICATION_PLUGINS_DIR + "$", globalSystemMacroValue);
+		return metamodelFilePath;
 	}
 
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {
@@ -234,8 +244,9 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return file;
 	}
 
-	public boolean isTerminal(Element moduleConfiguration) {
-		return Boolean.valueOf(getValueOf(moduleConfiguration, "terminal"));
+	public String getGeneratedLangName(Element moduleConfiguration) {
+		Boolean terminal = Boolean.valueOf(getValueOf(moduleConfiguration, "terminal"));
+		return terminal ? null : String.valueOf(getValueOf(moduleConfiguration, "generatedModelName"));
 	}
 
 	public String getLanguage(Element moduleConfiguration) {

@@ -3,31 +3,23 @@ package siani.tara.intellij.codegeneration;
 import com.intellij.codeInsight.generation.OverrideImplementExploreUtil;
 import com.intellij.codeInsight.generation.OverrideImplementUtil;
 import com.intellij.codeInsight.generation.PsiMethodMember;
-import com.intellij.ide.util.DirectoryUtil;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.infos.CandidateInfo;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
-import org.siani.itrules.formatter.Inflector;
-import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.intellij.project.module.ModuleConfiguration;
-import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Node;
 
 import java.util.*;
@@ -35,32 +27,19 @@ import java.util.*;
 import static com.intellij.psi.JavaPsiFacade.getElementFactory;
 import static siani.tara.lang.Annotation.INTENTION;
 
-public class FacetApplyGenerator {
+public class FacetApplyCodeGenerator extends CodeGenerator {
 
-	public static final String SRC = "src";
-	private static final String MAGRITTE_MORPHS = "magritte.morphs";
-	private final Project project;
-	private final Module module;
-	private final String[] FACETS_PATH;
-	private final TaraBoxFile taraBoxFile;
+
 	private PsiDirectory facetsHome;
-	private final PsiDirectory srcDirectory;
-	private final Inflector inflector;
 
-	public FacetApplyGenerator(TaraBoxFile file) {
-		this.taraBoxFile = file;
-		this.project = taraBoxFile.getProject();
-		module = ModuleProvider.getModuleOf(taraBoxFile);
-		VirtualFile src = getSrcDirectory(TaraUtil.getSourceRoots(taraBoxFile));
-		srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), src);
-		FACETS_PATH = new String[]{project.getName().toLowerCase(), "extensions"};
-		inflector = InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
+	public FacetApplyCodeGenerator(TaraBoxFile file) {
+		super(file);
 	}
 
 	public void generate() {
 		final Set<VirtualFile> pathsToRefresh = new HashSet<>();
 		final Set<PsiClass> classes = new LinkedHashSet<>();
-		WriteCommandAction action = new WriteCommandAction(project, taraBoxFile) {
+		WriteCommandAction action = new WriteCommandAction(project, file) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
 				try {
@@ -90,7 +69,7 @@ public class FacetApplyGenerator {
 
 	private Set<PsiClass> processFile() {
 		Set<PsiClass> psiClasses = new LinkedHashSet<>();
-		final Concept[] facetedConcepts = getFacets(taraBoxFile);
+		final Concept[] facetedConcepts = getFacets(file);
 		if (facetedConcepts.length > 0) facetsHome = findFacetsDestiny();
 		for (Concept concept : facetedConcepts)
 			if (concept.getName() != null)
@@ -175,9 +154,9 @@ public class FacetApplyGenerator {
 	private void implementInterface(Concept concept, String facetName, PsiClass aClass) {
 		String interfaceName = concept.getType() + facetName + "Intention";
 		PsiClass interfaceClass = findClassInModule(interfaceName);
-		String project = TaraLanguage.getMetaModel(concept.getFile()).getModelName().split("\\.")[0].toLowerCase();
+		String project = TaraLanguage.getMetaModel(concept.getFile()).getName().split("\\.")[0].toLowerCase();
 		if (interfaceClass == null)
-			interfaceClass = findClassInProject(project + "." + "intentions." + getInflector().plural(facetName).toLowerCase() + "." + interfaceName);
+			interfaceClass = findClassInProject(project + "." + "intentions." + getInflector(concept).plural(facetName).toLowerCase() + "." + interfaceName);
 		if (interfaceClass == null) return;
 		PsiJavaCodeReferenceElement referenceElement = getElementFactory(this.project).createClassReferenceElement(interfaceClass);
 		aClass.getImplementsList().add(referenceElement);
@@ -232,19 +211,7 @@ public class FacetApplyGenerator {
 	}
 
 
-	private PsiDirectory createPackageDirectory(final PsiDirectory parent, final String name) {
-		PsiDirectory subdirectory = parent.findSubdirectory(name);
-		if (subdirectory != null) return subdirectory;
-		final PsiDirectory[] destiny = new PsiDirectory[1];
-		WriteCommandAction action = new WriteCommandAction(project, parent.getContainingFile()) {
-			@Override
-			protected void run(@NotNull Result result) throws Throwable {
-				destiny[0] = DirectoryUtil.createSubdirectories(name, parent, ".");
-			}
-		};
-		action.execute();
-		return destiny[0];
-	}
+
 
 	private Map<String, String> options(String conceptType, String facet) {
 		Map<String, String> map = new HashMap<>();
@@ -260,13 +227,6 @@ public class FacetApplyGenerator {
 			if (concept.getFacetApplies().length > 0) facets.add(concept);
 		return facets.toArray(new Concept[facets.size()]);
 	}
-
-	private VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {
-		for (VirtualFile file : virtualFiles)
-			if (file.isDirectory() && SRC.equals(file.getName())) return file;
-		throw new RuntimeException("Src directory not found");
-	}
-
 
 	private PsiDirectory findFacetsDestiny() {
 		PsiDirectory directory = srcDirectory;
@@ -301,17 +261,6 @@ public class FacetApplyGenerator {
 		}
 	}
 
-	private Document searchDoc(PsiClass facetClass) {
-		PsiClass container = facetClass;
-		PsiDocumentManager dm = PsiDocumentManager.getInstance(project);
-		Document doc = null;
-		while (container != null && doc == null) {
-			doc = dm.getDocument(container.getContainingFile());
-			container = container.getContainingClass();
-		}
-		return doc;
-	}
-
 	private static PsiMethodMember[] convertToMethodMembers(Collection<CandidateInfo> candidates) {
 		return ContainerUtil.map2Array(candidates, PsiMethodMember.class, new Function<CandidateInfo, PsiMethodMember>() {
 			@Override
@@ -319,15 +268,5 @@ public class FacetApplyGenerator {
 				return new PsiMethodMember(s);
 			}
 		});
-	}
-
-	private Inflector getInflector() {
-		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
-	}
-
-	private PsiFile[] getFiles(Set<PsiClass> classes) {
-		Set<PsiFile> psiFiles = new HashSet<>();
-		for (PsiClass aClass : classes) psiFiles.add(aClass.getContainingFile());
-		return psiFiles.toArray(new PsiFile[psiFiles.size()]);
 	}
 }

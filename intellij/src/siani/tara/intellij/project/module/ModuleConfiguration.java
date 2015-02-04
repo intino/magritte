@@ -78,6 +78,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 				configuration.metamodelName = ((aux = br.readLine()).equals("null")) ? "" : aux;
 				configuration.metamodelFilePath = ((aux = br.readLine()).equals("null")) ? "" : aux;
 				configuration.language = ((aux = br.readLine()).equals("null")) ? "" : aux;
+				configuration.generatedModelName = ((aux = br.readLine()).equals("null")) ? "" : aux;
 				configuration.terminal = Boolean.parseBoolean(br.readLine());
 				file.delete();
 				file.getParentFile().delete();
@@ -115,6 +116,14 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 		configuration.metamodelName = parent;
 	}
 
+	public String getGeneratedModelName() {
+		return configuration.getGeneratedModelName();
+	}
+
+	public void setGeneratedModelName(String generatedModelName) {
+		configuration.generatedModelName = generatedModelName;
+	}
+
 	public boolean isTerminal() {
 		return configuration.isTerminal();
 	}
@@ -142,6 +151,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	class Configuration implements JDOMExternalizable {
 		public String metamodelName = "";
 		public String metamodelFilePath = "";
+		public String generatedModelName = "";
 		public String language = "";
 		public boolean terminal = false;
 
@@ -165,6 +175,10 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 
 		public String getLanguage() {
 			return language;
+		}
+
+		public String getGeneratedModelName() {
+			return generatedModelName;
 		}
 
 		public boolean isTerminal() {

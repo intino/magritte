@@ -83,7 +83,7 @@ public class DeclaredNode extends Node {
 
 	public boolean contains(String name) {
 		for (Node innerNode : innerNodes)
-			if (innerNode.getName().equals(name))
+			if (innerNode.getName().equals(name) && !innerNode.isSub())
 				return true;
 		return false;
 	}

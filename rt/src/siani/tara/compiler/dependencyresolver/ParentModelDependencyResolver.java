@@ -4,9 +4,7 @@ import siani.tara.lang.*;
 
 import java.util.*;
 
-import static siani.tara.lang.Annotation.AGGREGATED;
-import static siani.tara.lang.Annotation.COMPONENT;
-import static siani.tara.lang.Annotation.FACET;
+import static siani.tara.lang.Annotation.*;
 
 
 public class ParentModelDependencyResolver {
@@ -32,12 +30,11 @@ public class ParentModelDependencyResolver {
 	}
 
 	private void addParentAnnotation(Annotation[] annotations, Node instance) {
-		for (Annotation annotation : annotations) {
+		for (Annotation annotation : annotations)
 			if (annotation.isMeta() && !instance.is(Annotation.getNormalAnnotationOfMeta(annotation)))
 				instance.add(Annotation.getNormalAnnotationOfMeta(annotation));
 			else if (!instance.is(annotation) && COMPONENT.equals(annotation) || AGGREGATED.equals(annotation))
 				instance.add(annotation);
-		}
 	}
 
 	private void setValuesToNodes() {
@@ -104,7 +101,8 @@ public class ParentModelDependencyResolver {
 	}
 
 	private boolean isInstance(Node metaNode, Node instance) {
-		return parent.searchNode(instance.getMetaQN()).equals(metaNode);
+		Node node = parent.searchNode(instance.getMetaQN());
+		return (node.is(DeclaredNode.class) ? node.equals(metaNode) : ((LinkNode) node).getDestiny().equals(metaNode));
 	}
 
 	private void addTerminalNodes(Map<String, Node> terminals) {

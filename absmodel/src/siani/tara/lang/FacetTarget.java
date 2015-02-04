@@ -7,6 +7,7 @@ public class FacetTarget {
 
 	private String destinyQN;
 	private String destinyName;
+	private String facetQN;
 	private transient NodeObject destiny;
 	private boolean always;
 	private boolean intention;
@@ -88,6 +89,7 @@ public class FacetTarget {
 		target.setDestinyQN(this.getDestinyQN());
 		target.setAlways(this.isAlways());
 		target.setIntention(this.isIntention());
+		target.setFacetQN(this.getFacetQN());
 		for (Node node : this.getInner())
 			target.add(node.is(LinkNode.class) ? node : new LinkNode((DeclaredNode) node, null));
 		for (Variable variable : this.getVariables())
@@ -101,5 +103,13 @@ public class FacetTarget {
 
 	public void setIntention(boolean intention) {
 		this.intention = intention;
+	}
+
+	public String getFacetQN() {
+		return facetQN;
+	}
+
+	public void setFacetQN(String facetQN) {
+		this.facetQN = facetQN;
 	}
 }

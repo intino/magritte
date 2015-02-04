@@ -6,7 +6,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.PsiFile;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.intellij.project.sdk.TaraJdk;
 import siani.tara.lang.Model;
 import siani.tara.lang.util.ModelLoader;
@@ -34,20 +36,24 @@ public class TaraLanguage extends Language {
 		super("Tara");
 	}
 
+	public static Model getMetaModel(@NotNull PsiFile file) {
+		ModuleConfiguration configuration = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(file));
+		if (configuration == null) return null;
+		return getMetaModel(configuration.getMetamodelName(), file.getProject());
+	}
+
 	public static Model getMetaModel(String parent, Project project) {
-		addModelFromSdk(project);
+		addSdkToModelRoots(project);
 		return getModel(parent);
 	}
 
 	private static Model getModel(String parent) {
 		if (parent == null) return null;
 		Model model;
-		String[] splitName = parent.split("\\.");
 		if ((model = models.get(parent)) != null && !haveToReload(parent))
 			return model;
 		for (String modelPath : modelPaths) {
-			String basePath = modelPath + splitName[0] + separator;
-			model = ModelLoader.load(basePath, parent);
+			model = ModelLoader.load(modelPath, parent);
 			if (model == null) continue;
 			models.put(parent, model);
 			return model;
@@ -55,17 +61,11 @@ public class TaraLanguage extends Language {
 		return null;
 	}
 
-	public static Model getMetaModel(PsiFile file) {
-		addModelFromSdk(file.getProject());
-		return getModel(((TaraBoxFile) file).getDSL());
-	}
-
-	private static void addModelFromSdk(Project project) {
+	private static void addSdkToModelRoots(Project project) {
 		Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
 		if (projectSdk != null && projectSdk.getSdkType().equals(TaraJdk.getInstance()))
 			addModelRoot(projectSdk.getHomePath() + File.separator + "model" + File.separator);
 	}
-
 
 	public static void addModelRoot(String path) {
 		modelPaths.add(path);
@@ -73,8 +73,7 @@ public class TaraLanguage extends Language {
 
 	private static boolean haveToReload(String parent) {
 		for (String modelPath : modelPaths) {
-			String basePath = modelPath + parent.split("\\.")[0] + separator;
-			File reload = new File(basePath, parent + ".reload");
+			File reload = new File(modelPath, parent + ".reload");
 			if (reload.exists()) {
 				reload.delete();
 				return true;

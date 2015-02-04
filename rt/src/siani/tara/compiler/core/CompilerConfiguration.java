@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class CompilerConfiguration {
 	private int warningLevel;
@@ -17,7 +18,7 @@ public class CompilerConfiguration {
 	private boolean debug;
 	private String tdkHome;
 	private String projectIcon;
-	private String languageForCodeGeneration;
+	private Locale languageForCodeGeneration;
 	private String version = "1.0";
 	private String description = "";
 	private ArrayList<String> icons = new ArrayList<>();
@@ -25,6 +26,8 @@ public class CompilerConfiguration {
 	private boolean system;
 	private File metricsDirectory;
 	private File resourcesDirectory;
+	private String metamodelFile;
+	private String modelName;
 
 
 	public CompilerConfiguration() {
@@ -217,11 +220,27 @@ public class CompilerConfiguration {
 		return metricsDirectory;
 	}
 
-	public String getLanguageForCodeGeneration() {
+	public Locale getLanguageForCodeGeneration() {
 		return languageForCodeGeneration;
 	}
 
-	public void setLanguageForCodeGeneration(String languageForCodeGeneration) {
+	public void setLanguageForCodeGeneration(Locale languageForCodeGeneration) {
 		this.languageForCodeGeneration = languageForCodeGeneration;
+	}
+
+	public String getMetamodelFile() {
+		return metamodelFile;
+	}
+
+	public void setMetamodelFile(String metamodelFile) {
+		this.metamodelFile = metamodelFile;
+	}
+
+	public void setModelName(String modelName) {
+		this.modelName = modelName;
+	}
+
+	public String getModelName() {
+		return modelName;
 	}
 }

@@ -55,16 +55,7 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private Map<String, Document> createBoxes(List<List<Node>> groupByBox) throws TaraException {
 		File file = new File(rulesFolder, BOX_ITR);
-		InputStream stream;
-		if (!file.exists()) {
-			LOG.log(Level.INFO, "User Box.itr rules file not found. Trying use default");
-			stream = getRulesFromResources(BOX_ITR);
-		} else stream = getRulesInput(file);
-		if (stream == null) {
-			LOG.log(Level.SEVERE, "Box.itr rules file not found.");
-			throw new TaraException("Box.itr rules file not found.");
-		}
-		return processBoxes(groupByBox, stream);
+		return processBoxes(groupByBox, loadRules(file));
 	}
 
 	private Map<String, Document> createMorphs() throws TaraException {
@@ -78,14 +69,14 @@ public class ModelToJavaOperation extends ModelOperation {
 			LOG.log(Level.SEVERE, "Morph.itr rules file not found.");
 			throw new TaraException("Morph.itr rules file not found.");
 		}
-		Set<Node> set = new HashSet<>();
-		getRootNodes(model, set);
-		return processMorphs(set, stream);
+		return processMorphs(getRootNodes(model), stream);
 	}
 
-	private void getRootNodes(Model model, Set<Node> list) {
+	private Set<Node> getRootNodes(Model model) {
+		Set<Node> list = new HashSet<>();
 		addRootAndSubs(model.getTreeModel(), list);
 		addAggregated(model.getNodeTable(), list);
+		return list;
 	}
 
 	private void addAggregated(Map<String, Node> nodeTable, Set<Node> list) {
@@ -109,20 +100,35 @@ public class ModelToJavaOperation extends ModelOperation {
 		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
 		for (List<Node> nodes : groupByBox) {
 			Document document = new Document();
-			ruleEngine.render(new BoxFrameCreator(model).create(nodes, collectParentBoxes(nodes)), document);
+			String project = compilationUnit.getConfiguration().getProject();
+			ruleEngine.render(new BoxFrameCreator(project, model).create(nodes, collectParentBoxes(nodes)), document);
 			map.put(composeBoxName(nodes.get(0).getFile()), document);
 		}
 		return map;
 	}
 
+	private InputStream loadRules(File file) throws TaraException {
+		InputStream stream;
+		if (!file.exists()) {
+			LOG.log(Level.INFO, "User Box.itr rules file not found. Trying use default");
+			stream = getRulesFromResources(BOX_ITR);
+		} else stream = getRulesInput(file);
+		if (stream == null) {
+			LOG.log(Level.SEVERE, "Box.itr rules file not found.");
+			throw new TaraException("Box.itr rules file not found.");
+		}
+		return stream;
+	}
+
 	private Map<String, Document> processMorphs(Collection<Node> nodes, InputStream rulesInput) {
 		Map<String, Document> map = new HashMap();
-		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
+		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read(), model.getLanguage());
 		addReferenceFormatter(ruleEngine);
 		for (Node node : nodes) {
-			if (!node.getModelOwner().equals(model.getModelName())) continue;
+			if (!node.getModelOwner().equals(model.getName())) continue;
 			Document document = new Document();
-			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(model).create(node);
+			String project = compilationUnit.getConfiguration().getProject();
+			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(project, model).create(node);
 			ruleEngine.render(morphFrame.getValue(), document);
 			map.put(morphFrame.getKey(), document);
 		}
@@ -141,7 +147,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String composeBoxName(String file) {
-		return NameFormatter.camelCase(model.getModelName().replace(".", "_") + "_" +
+		return NameFormatter.camelCase(model.getName().replace(".", "_") + "_" +
 			file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(".")) + "Box", "_");
 	}
 
@@ -175,14 +181,13 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-
 	private Collection<String> collectParentBoxes(List<Node> nodes) {
 		Model parent = model.getParentModel();
 		if (parent == null) return Collections.EMPTY_LIST;
 		Set<String> boxes = new HashSet<>();
 		for (Node node : nodes) {
-			if (node.getObject().is(TERMINAL) && !node.getModelOwner().equals(model.getModelName())) continue;
-			boxes.add(buildFileName(parent.searchNode(node.getObject().getMetaQN()).getFile(), parent.getModelName()));
+			if (node.getObject().is(TERMINAL) && !node.getModelOwner().equals(model.getName())) continue;
+			boxes.add(buildFileName(parent.searchNode(node.getObject().getMetaQN()).getFile(), parent.getName()));
 		}
 		return boxes;
 	}
@@ -190,7 +195,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private List<List<Node>> groupByBox(NodeTree treeModel) {
 		Map<String, List<Node>> nodes = new HashMap();
 		for (Node node : treeModel) {
-			if (!model.getModelName().equals(node.getModelOwner())) continue;
+			if (!model.getName().equals(node.getModelOwner())) continue;
 			if (!nodes.containsKey(node.getFile()))
 				nodes.put(node.getFile(), new ArrayList<Node>());
 			nodes.get(node.getFile()).add(node);

@@ -3,18 +3,18 @@ package siani.tara.compiler.codegeneration;
 import org.siani.itrules.Frame;
 import siani.tara.lang.*;
 
-import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.*;
 
 public abstract class FrameCreator {
 
 	final Model model;
-	final String projectName;
+	final String project;
 	final boolean terminal;
 
-	protected FrameCreator(Model model) {
+	protected FrameCreator(String project, Model model) {
 		this.model = model;
-		projectName = model.getModelName().substring(0, model.getModelName().indexOf("."));
+		this.project = project;
 		terminal = model.isTerminal();
 	}
 
@@ -39,11 +39,12 @@ public abstract class FrameCreator {
 			}});
 	}
 
-	protected String[] getReferenceTypes(LinkNode node) {
+	protected String[] getLinkNodeTypes(LinkNode node) {
 		List<String> types = new ArrayList<>();
+		types.add("node");
 		types.add("reference");
-		if (node.isAggregated())
-			types.add(Annotation.AGGREGATED.getName());
+		for (Annotation annotation : node.getAnnotations())
+			types.add(annotation.getName());
 		return types.toArray(new String[types.size()]);
 	}
 

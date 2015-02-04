@@ -40,7 +40,8 @@ import java.util.Set;
 	private void loadHeritage() {
 		if (dsl == null) {
 			String source = zzBuffer.toString().trim();
-			String dslLine = source.substring(0, source.indexOf('\n')).trim();
+			int nl = source.indexOf('\n');
+            String dslLine = nl > 0 ? source.substring(0, nl).trim() : source;
 			if (!dslLine.startsWith(DSL)) return;
 			dsl = dslLine.split(DSL)[1].trim();
 		}

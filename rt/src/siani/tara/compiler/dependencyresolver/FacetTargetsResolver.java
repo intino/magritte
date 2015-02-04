@@ -83,6 +83,7 @@ public class FacetTargetsResolver {
 		propagateComponentsToFacets(facetNode);
 		for (FacetTarget facetTarget : facetNode.getObject().getFacetTargets()) {
 			List<Node> destinies = new ArrayList();
+			facetTarget.setFacetQN(facetNode.getQualifiedName());
 			resolveDestiniesOfTarget(facetNode, facetTarget, destinies);
 			if (facetNode.is(Annotation.ABSTRACT)) continue;
 			addAllowedFacetsToDestinies(facetNode, destinies, facetTarget);

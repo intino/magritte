@@ -112,46 +112,81 @@ defrule trigger(parent) slot-name(value)
 extends $value
 endrule
 
-defrule type(declarednode) type(intention)  !type(metafacet) type(facet) trigger(node)
-public[$inner static] class $name+camelCase $parent implements intentions.$name+camelCase~Intention {
+defrule type(node) !type(aggregated) type(single) trigger(component)
+public $name+firstUpperCase $name+firstLowerCase() {
+    return components($name+firstUpperCase.class)$[0];
+}
 
-    public intentions.$name+camelCase~Intention extension() {
-        return extensions(intentions.$name+camelCase~Intention.class)$[0];
+endrule
+
+defrule type(node) !type(aggregated) !type(single) trigger(component)
+public $name+firstUpperCase$[] $name+firstLowerCase+plural() {
+    return components($name+firstUpperCase.class);
+}
+
+endrule
+
+defrule type(node) type(aggregated) trigger(holding)
+public $name+firstUpperCase$[] $name+firstLowerCase() {
+    return holdings($name+firstUpperCase.class);
+}
+
+public $name+firstUpperCase add$name+firstUpperCase(magritte.wrappers.Definition definition) {
+    return addNode(definition.node()).with($name+firstUpperCase.class);
+}
+
+endrule
+
+defrule type(declarednode) type(intention) !type(metafacet) type(facet) trigger(node)
+public[$inner static] class $name+firstUpperCase $parent implements $project.intentions.$name+firstUpperCase~Intention {
+
+    public $project.intentions.$name+camelCase~Intention extension() {
+        return extensions($project.intentions.$name+firstUpperCase~Intention.class)$[0];
     }
 
 	$variable+wordInstantiation...[$NL]\
     $variable+getter...[$NL]\
 
     $variable+setter...[$NL]\
-    $node...[$NL]\
+
+    $node+component...[$NL]\
+    $node+holding...[$NL]\
 }
 
 endrule
 
 defrule type(declarednode) type(intention) !type(facet) type(metafacet) trigger(node)
-public[$inner static] class $name+camelCase $parent implements intentions.$name+camelCase~Intention {
+public[$inner static] class $name+firstUpperCase $parent implements $project.intentions.$name+firstUpperCase~Intention {
 
-    public intentions.$name+camelCase~Intention$[] extensions() {
-        return extensions(intentions.$name+camelCase~Intention.class);
+    public $project.intentions.$name+camelCase~Intention$[] extensions() {
+        return extensions($project.intentions.$name+firstUpperCase~Intention.class);
     }
 
 	$variable+wordInstantiation...[$NL]\
     $variable+getter...[$NL]\
 
     $variable+setter...[$NL]\
-    $node...[$NL]\
+    $node+component...[$NL]\
+    $node+holding...[$NL]\
 }
 
 endrule
 
-
 defrule type(declarednode) trigger(node)
-public[$inner static] class $name+camelCase $parent {
+public[$inner static] class $name+firstUpperCase $parent {
+
+	[$aggregable
+	public Definition$[$] aggregables() {
+        return definition().aggregables();
+    }]
+
 	$variable+wordInstantiation...[$NL]\
     $variable+getter...[$NL]\
 
     $variable+setter...[$NL]\
-    $node...[$NL]\
+    $node+component...[$NL]\
+
+    $node+holding...[$NL]\
 }
 
 endrule

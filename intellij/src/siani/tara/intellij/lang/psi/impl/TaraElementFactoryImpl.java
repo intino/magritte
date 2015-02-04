@@ -92,12 +92,12 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return PsiTreeUtil.getChildrenOfType(file, TaraImports.class)[0];
 	}
 
-	public TaraImports createMetamodelImport(String name) {
+	public TaraDslDeclaration createDslDeclaration(String name) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"use " + name + " as metamodel\n" +
+			"dsl " + name + "\n\n" +
 				"Concept Source\n"
 		);
-		return PsiTreeUtil.getChildrenOfType(file, TaraImports.class)[0];
+		return PsiTreeUtil.getChildrenOfType(file, TaraDslDeclaration.class)[0];
 	}
 
 	public PsiElement createNewLine() {

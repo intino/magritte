@@ -1,18 +1,22 @@
-<idea-plugin version="1">
+<idea-plugin version="1" url="http://tara.siani.es">
   <id>siani.dev.tara</id>
   <name>Tara</name>
   <version>
-    DP-1.0
+    RC1
   </version>
-  <vendor email="support.tara@siani.es" url="http://www.siani.es">Siani</vendor>
+  <vendor email="support.tara@siani.es" url="http://www.siani.es">Tara Modeling Language</vendor>
 
   <description>
     <![CDATA[
-      Siani development tool for the generation of model-based plugins
+        <p>Tara is a modeling language oriented to define Domain Specific Languages (DSL). It supports the Model Driven
+        Engineering methodology (MDE) to create the different abstraction levels: system, model and metamodel.
+        To get started visit <a href="http://tara.siani.es/gettingstarted">http://tara.siani.es/gettingstarted</a>.</p>
+
+        <p>Download the Tara SDK from <a href="http://tara.siani.es/downloads">http://tara.siani.es/downloads</a></p>
       ]]>
   </description>
 
-  <change-notes><![CDATA[ First Realease. Windows integration. ]]>
+  <change-notes><![CDATA[ ]]>
   </change-notes>
 
   <idea-version since-build="133.375"/>
@@ -38,7 +42,7 @@
     </group>
 
     <group id="tara.export.group" popup="false">
-      <action id="ExportModel" class="siani.tara.intellij.actions.ExportModelAction" text="Export Model"
+      <action id="ExportModel" class="siani.tara.intellij.actions.ExportModelAction" text="Build SDK from Models"
               description="Build SDK from models">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift E"/>
       </action>
@@ -72,7 +76,8 @@
       </action>
       <add-to-group group-id="Internal"/>
     </group>
-    <action id="siani.tara.intellij.actions.SubmitFeedbackAction" class="siani.tara.intellij.actions.SubmitFeedbackAction"
+    <action id="siani.tara.intellij.actions.SubmitFeedbackAction"
+            class="siani.tara.intellij.actions.SubmitFeedbackAction"
             text="Summit Tara Feedback" description="You can report a bug or suggestion of plugin">
       <add-to-group group-id="HelpMenu" anchor="before" relative-to-action="TechnicalSupport"/>
     </action>
@@ -126,7 +131,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AnnotationsAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.BoxReferenceAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.DSLDeclarationAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParameterAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParametersAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetApplyAnnotator"/>
@@ -135,7 +140,6 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetTargetAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.RequiredConceptsAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VarInitAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.imports.DSLDeclarationAnnotation"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.DateValueAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.MeasureAnnotator"/>
     <!--<annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AddressAnnotator"/>-->
