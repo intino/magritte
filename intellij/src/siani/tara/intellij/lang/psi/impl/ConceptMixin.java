@@ -298,6 +298,12 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return annotations == null ? Collections.EMPTY_LIST : (List<Annotation>) annotations.getMetaAnnotations();
 	}
 
+	public boolean contains(String type) {
+		for (Concept concept : getInnerConcepts())
+			if (type.equals(concept.getType())) return true;
+		return true;
+	}
+
 	@NotNull
 	public Doc[] getDoc() {
 		return new Doc[0];

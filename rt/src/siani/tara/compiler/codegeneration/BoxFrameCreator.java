@@ -14,10 +14,20 @@ import static siani.tara.compiler.codegeneration.NameFormatter.camelCase;
 
 public class BoxFrameCreator extends FrameCreator {
 	private static final String SEPARATOR = ".";
-	private Node currentNode;
+	private Map<String, Long> keymap = new LinkedHashMap<>();
 
 	public BoxFrameCreator(String project, Model model) {
 		super(project, model);
+		createKeyMap(model.getNodeTable());
+	}
+
+	private void createKeyMap(Map<String, Node> nodeTable) {
+		long count = 1;
+		for (Node node : nodeTable.values()) {
+			if (node.is(LinkNode.class)) continue;
+			keymap.put(node.getQualifiedName(), count);
+			count++;
+		}
 	}
 
 	public Frame create(List<Node> nodes, Collection<String> parentBoxes) {
@@ -28,62 +38,32 @@ public class BoxFrameCreator extends FrameCreator {
 		addMetricImports(frame);
 		addFacetImports(nodes, frame);
 		boxToFrame(nodes, frame);
-		this.currentNode = null;
 		return frame;
 	}
 
 	private void boxToFrame(List<Node> nodes, Frame frame) {
 		for (Node node : nodes) {
-			if (!node.is(DeclaredNode.class) || (node.isAnonymous() && node.getContainer() != null)) continue;
-			nodeToFrame(this.currentNode = node, frame);
+			if (!node.is(DeclaredNode.class)) continue;
+			nodeToFrame(node, frame);
 			boxToFrame(node.getInnerNodes(), frame);
 		}
 	}
 
 	private void nodeToFrame(final Node node, Frame boxFrame) {
 		if (node.is(DeclaredNode.class)) {
-			List<String> types = getTypes(node);
+			DeclaredNode declaredNode = (DeclaredNode) node;
+			List<String> types = getTypes(declaredNode);
 			final Frame nodeFrame = new Frame(types.toArray(new String[types.size()]));
 			boxFrame.addFrame("node", nodeFrame);
-			addAnnotations(node, nodeFrame);
-			addNodeInfo(node, nodeFrame);
-			addAggregated(node, nodeFrame);
-			addInnerToNode(node, nodeFrame);
+			addAnnotations(declaredNode, nodeFrame);
+			addNodeInfo(declaredNode, nodeFrame);
+			addAggregated(declaredNode, nodeFrame);
+			addComponents(declaredNode, nodeFrame);
 		}
 	}
 
-	private void innerToFrame(final Node node, Frame boxFrame) {
-		if (node.is(DeclaredNode.class)) {
-			List<String> types = getTypes(node);
-			types.add("inner");
-			final Frame nodeFrame = new Frame(types.toArray(new String[types.size()]));
-			boxFrame.addFrame("node", nodeFrame);
-			addAnnotations(node, nodeFrame);
-			addNodeInfo(node, nodeFrame);
-			addAggregated(node, nodeFrame);
-			addInnerToInner(node, nodeFrame);
-			nodeFrame.addFrame("back", "back");
-		}
-	}
-
-	private void addInnerToNode(Node node, Frame nodeFrame) {
-		for (Node inner : node.getInnerNodes())
-			if (inner.is(DeclaredNode.class) && !inner.isSub() && inner.isAnonymous())
-				innerToFrame(inner, nodeFrame);
-	}
-
-	private void addInnerToInner(Node node, Frame nodeFrame) {
-		for (Node inner : node.getInnerNodes())
-			if (inner.is(DeclaredNode.class) && !inner.isSub())
-				innerToFrame(inner, nodeFrame);
-	}
-
-	private void addNodeInfo(Node node, Frame newFrame) {
-		if (currentNode != null && node != currentNode) {
-			newFrame.addFrame("inner", "");
-			if (node.is(Annotation.AGGREGATED)) newFrame.addFrame("relation", "add");
-			else newFrame.addFrame("relation", "has");
-		}
+	private void addNodeInfo(DeclaredNode node, Frame newFrame) {
+		newFrame.addFrame("key", keymap.get(node.getQualifiedName()));
 		NodeObject object = node.getObject();
 		if (node.getName() != null && !node.isAnonymous())
 			newFrame.addFrame("name", node.getQualifiedName()); //TODO change for anonymous and inner facet nodes
@@ -97,7 +77,20 @@ public class BoxFrameCreator extends FrameCreator {
 
 	private void addAggregated(Node node, Frame frame) {
 		for (Node inner : node.getInnerNodes())
-			if (inner.isAggregated() && !inner.isSub()) frame.addFrame("aggregated", inner.getName());
+			if (inner.isAggregated() && !inner.isSub()) {
+				frame.addFrame("aggregated", inner.is(LinkNode.class) ?
+					keymap.get(((LinkNode) inner).getDestiny().getQualifiedName()) :
+					keymap.get(inner.getQualifiedName()));
+			}
+	}
+
+	private void addComponents(DeclaredNode node, Frame frame) {
+		for (Node inner : node.getInnerNodes())
+			if (!inner.isSub() && !inner.isAggregated()) {
+				frame.addFrame("component", inner.is(LinkNode.class) ?
+					keymap.get(((LinkNode) inner).getDestiny().getQualifiedName()) :
+					keymap.get(inner.getQualifiedName()));
+			}
 	}
 
 	private void addFacetApplies(Node node, Frame newFrame) {
@@ -159,7 +152,7 @@ public class BoxFrameCreator extends FrameCreator {
 		for (Node node : nodes) {
 			if (node.is(LinkNode.class)) continue;
 			for (Facet facet : node.getObject().getFacets())
-				imports.add(InflectorFactory.getInflector(Locale.getDefault()).plural(facet.getName()));
+				imports.add(InflectorFactory.getInflector(model.getLanguage()).plural(facet.getName()));
 			imports.addAll(searchFacets(node.getInnerNodes()));
 		}
 		return imports;

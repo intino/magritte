@@ -39,7 +39,7 @@ public class ParentModelDependencyResolver {
 
 	private void setValuesToNodes() {
 		for (Node parentNode : this.parent.getNodeTable().values())
-			for (Node instance : getInstancesOf(parentNode)) {
+			for (Node instance : getDeclaredInstancesOf(parentNode)) {
 				if (instance.is(LinkNode.class)) continue;
 				addClassVariablesToInstance(parentNode.getObject().getVariables(), instance);
 				setValuesFromParams(instance);
@@ -91,7 +91,7 @@ public class ParentModelDependencyResolver {
 				clone.addInheritedType(node.getObject().getName());
 	}
 
-	private Collection<Node> getInstancesOf(Node metaNode) {
+	private Collection<Node> getDeclaredInstancesOf(Node metaNode) {
 		if (metaNode.getName() == null) return Collections.EMPTY_LIST;
 		List<Node> instances = new ArrayList<>();
 		for (Node instance : model.getNodeTable().values())
@@ -103,6 +103,15 @@ public class ParentModelDependencyResolver {
 	private boolean isInstance(Node metaNode, Node instance) {
 		Node node = parent.searchNode(instance.getMetaQN());
 		return (node.is(DeclaredNode.class) ? node.equals(metaNode) : ((LinkNode) node).getDestiny().equals(metaNode));
+	}
+
+	private Collection<Node> getInstancesOf(Node metaNode) {
+		if (metaNode.getName() == null) return Collections.EMPTY_LIST;
+		List<Node> instances = new ArrayList<>();
+		for (Node instance : model.getNodeTable().values())
+			if (instance.getObject().getType().equals(metaNode.getName()) && parent.searchNode(instance.getMetaQN()).equals(metaNode))
+				instances.add(instance);
+		return instances;
 	}
 
 	private void addTerminalNodes(Map<String, Node> terminals) {

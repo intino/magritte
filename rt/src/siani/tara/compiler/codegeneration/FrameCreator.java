@@ -4,7 +4,10 @@ import org.siani.itrules.Frame;
 import siani.tara.lang.*;
 
 import java.util.AbstractMap.SimpleEntry;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public abstract class FrameCreator {
 
@@ -70,30 +73,16 @@ public abstract class FrameCreator {
 				Word word = (Word) variable;
 				for (Object value : word.values)
 					frame.addFrame("variableValue", word.indexOf(value.toString()));
-			} else {
-				final Object value = variable.getValues()[0];
-				Frame innerFrame = new Frame(variable.getType()) {{
-					if (value instanceof Date)
-						addFrame("value", ((Date) value).getTime());
-					else
-						addFrame("value", value);
-				}};
-				frame.addFrame("variableValue", innerFrame);
-			}
+			} else
+				frame.addFrame("variableValue", new Frame(variable.getType()).addFrame("value", variable.getValues()[0]));
 		else if (variable.getDefaultValues() != null && variable.getDefaultValues().length != 0)
 			if (variable instanceof Word) {
 				Word word = (Word) variable;
 				for (Object value : word.getDefaultValues())
 					frame.addFrame("variableValue", word.indexOf(value.toString()));
 			} else {
-
 				final Object value = variable.getDefaultValues()[0];
-				Frame innerFrame = new Frame(variable.getType()) {{
-					if (value instanceof Date)
-						addFrame("value", ((Date) value).getTime());
-					else
-						addFrame("value", value);
-				}};
+				Frame innerFrame = new Frame(variable.getType()).addFrame("value", value);
 				frame.addFrame("variableValue", innerFrame);
 			}
 	}

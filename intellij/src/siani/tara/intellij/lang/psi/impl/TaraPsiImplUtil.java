@@ -121,6 +121,14 @@ public class TaraPsiImplUtil {
 		return aElement.getParent();
 	}
 
+	public static Body getBodyContextOf(PsiElement element) {
+		PsiElement aElement = element;
+		while ((aElement.getParent() != null)
+			&& !(aElement.getParent() instanceof Body))
+			aElement = aElement.getParent();
+		return (Body) aElement.getParent();
+	}
+
 	public static Concept getParentOf(Concept concept) {
 		if (concept.isSub()) {
 			Concept parent = concept;

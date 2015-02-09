@@ -29,18 +29,10 @@ public class $name extends Box {
 }
 endrule
 
-defrule type(Node) type(inner) trigger(node)
-[$relation();] $nodeType...[ ][ $facet][ $address][ $annotation...[ ]][ $parent][ $aggregated...[ ]][ $variable+set...[ ]\]
-    $reference\
-    $node...[$NL]\
-[$back();]\
-endrule
-
 defrule type(Node) trigger(node)
-[$relation();]def(["$name"]); $nodeType...[ ][ $facet][ $address][ $annotation...[ ]][ $parent][ $aggregated...[ ]][ $variable+set...[ ]\]
-    $reference\
-    $node...[$NL]\
-[$back();]\
+def($key);[ name("$name");] $nodeType...[ ][ $facet][ $address][ $annotation...[ ]][ $parent][ $variable+set...[ ]\]
+	[ $aggregated...[ ]]\
+	[ $component...[ ]]\
 endrule
 
 defrule trigger(import)
@@ -68,12 +60,11 @@ parent("$value");
 endrule
 
 defrule trigger(aggregated)
-add("$value");
+add($value);
 endrule
 
-defrule type(reference) trigger(reference)
-def();$parent
-
+defrule trigger(component)
+has($value);
 endrule
 
 defrule type(Variable) type(target) type(measure) !type(List) slot-name(variableValue) trigger(set)
@@ -130,9 +121,9 @@ defrule type(Annotation) trigger(annotation)
 endrule
 
 defrule trigger(variableValue) slot-type(date)
-TimeInstant.value($value~L)
+magritte.types.TimeInstant.value($value+date)
 endrule
 
 defrule trigger(variableValue) slot-type(coordinate)
-Coordinate.of($value)
+magritte.types.Coordinate.of($value)
 endrule

@@ -63,6 +63,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	Annotations getAnnotations();
 
+	boolean contains(String type);
+
 	@Override
 	Icon getIcon(@IconFlags int i);
 

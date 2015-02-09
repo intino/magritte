@@ -28,6 +28,8 @@ public class TaraFilters {
 		.and(new FilterPattern(new AfterEqualsFilter()));
 	protected static PsiElementPattern.Capture<PsiElement> AfterNewLineNoMetamodel = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLinePrimalFilter())).and(new FilterPattern(new NoModelFilter()));
+	protected static PsiElementPattern.Capture<PsiElement> AfterNewLineWithMetamodel = psiElement().withLanguage(TaraLanguage.INSTANCE)
+		.and(new FilterPattern(new AfterNewLinePrimalFilter())).and(new FilterPattern(new ModelFilter()));
 	protected static PsiElementPattern.Capture<PsiElement> afterIdentifier = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.IDENTIFIER_KEY)));
@@ -104,6 +106,19 @@ public class TaraFilters {
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			TaraBoxFile file = (TaraBoxFile) (context != null ? context.getContainingFile() : null);
 			return file != null && file.getDSL() == null;
+		}
+
+		@Override
+		public boolean isClassAcceptable(Class hintClass) {
+			return true;
+		}
+	}
+
+	private static class ModelFilter implements ElementFilter {
+		@Override
+		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
+			TaraBoxFile file = (TaraBoxFile) (context != null ? context.getContainingFile() : null);
+			return file != null && file.getDSL() != null;
 		}
 
 		@Override

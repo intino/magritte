@@ -42,4 +42,18 @@ public abstract class TaraElementFactory {
 	public abstract Annotation createAnnotation(String name);
 
 	public abstract TaraAnnotations createAnnotations(String name);
+
+	public abstract PsiElement createNewLineIndent();
+
+	public abstract PsiElement createNewLineIndent(int level);
+
+	public abstract PsiElement createInlineNewLineIndent();
+
+	public abstract PsiElement createWhiteSpace();
+
+	public abstract PsiElement createBodyNewLine();
+
+	public abstract PsiElement createBodyNewLine(int level);
+
+	public abstract PsiElement createInlineNewLine();
 }

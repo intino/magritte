@@ -2,6 +2,7 @@ package siani.tara.intellij.codeinsight.parameterinfo;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.*;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -92,25 +93,32 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			TaraFacetApply facet = parameters.isInFacet();
 			Node node = TaraUtil.findNode(TaraPsiImplUtil.getConceptContainerOf(parameters), model);
 			if (node == null) return parameters;
-			List<siani.tara.intellij.lang.psi.Variable> attributes = new ArrayList<>();
-			TaraElementFactory instance = TaraElementFactory.getInstance(parameters.getProject());
-			List<Variable> variables = (facet != null) ? getFacetVariables(facet.getMetaIdentifierList().get(0).getText(), getContextNameOf(facet), node) : node.getObject().getVariables();
+			List<Variable> variables = (facet != null) ?
+				getFacetVariables(facet.getMetaIdentifierList().get(0).getText(), getContextNameOf(facet), node) :
+				node.getObject().getVariables();
 			if (variables.isEmpty()) return parameters;
-			for (Variable variable : variables) {
-				siani.tara.intellij.lang.psi.Variable attribute = null;
-				if (variable instanceof Attribute || variable instanceof Reference) {
-					String[] ref = variable.getType().split("\\.");
-					attribute = instance.createAttribute(variable.getName(), ref[ref.length - 1] + ((variable.isList()) ? "..." : ""));
-				} else if (variable instanceof Word) {
-					List<String> wordTypes = ((Word) variable).getWordTypes();
-					attribute = instance.createWord(variable.getName(), wordTypes.toArray(new String[wordTypes.size()]));
-				} else if (variable instanceof Resource)
-					attribute = instance.createResource(variable.getName(), ((Resource) variable).fileType);
-				if (attribute != null) attributes.add(attribute);
-			}
-			parameterInfoContext.setItemsToShow(new Object[]{attributes});
+			parameterInfoContext.setItemsToShow(new Object[]{buildParameterInfo(parameters.getProject(), variables)});
 		}
 		return parameters;
+	}
+
+	private List<siani.tara.intellij.lang.psi.Variable> buildParameterInfo(Project project, List<Variable> variables) {
+		TaraElementFactory instance = TaraElementFactory.getInstance(project);
+		List<siani.tara.intellij.lang.psi.Variable> attributes = new ArrayList<>();
+		for (Variable variable : variables) {
+			if (variable.getDefaultValues() != null && variable.getDefaultValues().length > 0) continue;
+			siani.tara.intellij.lang.psi.Variable attribute = null;
+			if (variable instanceof Attribute || variable instanceof Reference) {
+				String[] ref = variable.getType().split("\\.");
+				attribute = instance.createAttribute(variable.getName(), ref[ref.length - 1] + ((variable.isList()) ? "..." : ""));
+			} else if (variable instanceof Word) {
+				List<String> wordTypes = ((Word) variable).getWordTypes();
+				attribute = instance.createWord(variable.getName(), wordTypes.toArray(new String[wordTypes.size()]));
+			} else if (variable instanceof Resource)
+				attribute = instance.createResource(variable.getName(), ((Resource) variable).fileType);
+			if (attribute != null) attributes.add(attribute);
+		}
+		return attributes;
 	}
 
 	private String getContextNameOf(TaraFacetApply facetApply) {
@@ -151,6 +159,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		int index = ParameterInfoUtils.getCurrentParameterIndex(parameters.getNode(), context.getOffset(), getActualParameterDelimiterType());
 		context.setCurrentParameter(index);
 		final Object[] objectsToView = context.getObjectsToView();
+		if (objectsToView.length == 0 || ((List) objectsToView[0]).isEmpty()) return;
 		context.setHighlightedParameter(index < objectsToView.length && index >= 0 ? ((List) objectsToView[0]).get(index) : null);
 	}
 
@@ -173,7 +182,8 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		for (siani.tara.intellij.lang.psi.Variable variable : psiVariable)
 			builder.append(", ").append(variable.getText().substring(4));
 		int highlightEndOffset = builder.toString().length();
-		context.setupUIComponentPresentation(builder.toString().substring(2), 0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
+		context.setupUIComponentPresentation(builder.length() == 0 ? "" : builder.toString().substring(2),
+			0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
 	}
 
 }

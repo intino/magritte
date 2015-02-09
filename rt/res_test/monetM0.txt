@@ -27,5 +27,7 @@ metrics
 /Users/octavio/workspace/sandbox/Monet/out/production/adeje/
 resources
 /Users/octavio/workspace/sandbox/Monet/adeje/res
+metamodel_file
+/Users/octavio/workspace/sandbox/tara/plugins/tara_models/Census.json
 classpath
 /Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara.jar

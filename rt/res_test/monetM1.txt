@@ -10,6 +10,8 @@ terminal
 false
 language
 English
+generated_lang_name
+Census
 encoding
 UTF-8
 models
@@ -29,6 +31,6 @@ metrics
 resources
 /Users/octavio/workspace/sandbox/Monet/service/res
 metamodel_file
-/Users/octavio/workspace/sandbox/tara/plugins/tara_models/census.engine.json
+/Users/octavio/workspace/sandbox/tara/plugins/tara_models/MonetEngine.json
 classpath
 /Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara.jar

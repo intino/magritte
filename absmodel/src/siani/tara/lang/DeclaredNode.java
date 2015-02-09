@@ -56,6 +56,11 @@ public class DeclaredNode extends Node {
 	}
 
 	@Override
+	public boolean isAbstract() {
+		return getObject().is(Annotation.ABSTRACT);
+	}
+
+	@Override
 	protected String getNodePath() {
 		String name = getName();
 		if (container != null && !getObject().isSub())

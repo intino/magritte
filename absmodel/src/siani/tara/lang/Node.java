@@ -108,6 +108,7 @@ public abstract class Node {
 	}
 
 	public abstract boolean isAggregated();
+	public abstract boolean isAbstract();
 
 	protected abstract String getNodePath();
 

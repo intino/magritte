@@ -177,7 +177,16 @@
                           implementationClass="siani.tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
     <findUsagesHandlerFactory implementation="siani.tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara"
                               order="last, before default"/>
-
+    <intentionAction>
+      <className>siani.tara.intellij.codeinsight.intention.InlineToIndentConverter</className>
+      <category>Indent Operator</category>
+      <descriptionDirectoryName>InlineToIndentConverter</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
+      <className>siani.tara.intellij.codeinsight.intention.IndentToInlineConverter</className>
+      <category>Indent Operator</category>
+      <descriptionDirectoryName>IndentToInlineConverter</descriptionDirectoryName>
+    </intentionAction>
   </extensions>
 
   <application-components>

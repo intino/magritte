@@ -25,9 +25,8 @@ public class ParametersAnalyzer extends TaraAnalyzer {
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(parameters);
 		Node node = getMetaConcept(concept);
 		if (node == null) return;
-		boolean terminal = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(parameters.getContainingFile())).isTerminal();
 		List<Variable> variables = node.getObject().getVariables();
-		List<String> compare = compare(collectMinimumNumberOfParameter(variables, terminal), collectDeclaredParameters(concept, variables));
+		List<String> compare = compare(collectMinimumParametersNeeded(variables), collectDeclaredParameters(concept, variables));
 		if (!compare.isEmpty())
 			results.put(parameters, new AnnotateAndFix(ERROR, "parameters missed: " + parametersToString(compare)));
 	}
@@ -57,7 +56,8 @@ public class ParametersAnalyzer extends TaraAnalyzer {
 		}
 	}
 
-	private List<String> collectMinimumNumberOfParameter(List<Variable> variables, boolean terminal) {
+	private List<String> collectMinimumParametersNeeded(List<Variable> variables) {
+		boolean terminal = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(parameters.getContainingFile())).isTerminal();
 		List<String> result = new ArrayList<>();
 		for (Variable variable : variables) {
 			if (hasDefaultValue(variable) || isTerminalVariable(terminal, variable))

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static siani.tara.lang.Annotation.ABSTRACT;
 import static siani.tara.lang.Annotation.AGGREGATED;
 
 public class LinkNode extends Node {
@@ -96,6 +97,17 @@ public class LinkNode extends Node {
 	@Override
 	public String getName() {
 		return destiny.getName();
+	}
+
+	public boolean isAbstract() {
+		return destiny.is(ABSTRACT);
+	}
+
+	@Override
+	public boolean is(Annotation annotation) {
+		for (Annotation linkAnnotation : annotations)
+			if (linkAnnotation.equals(annotation)) return true;
+		return destiny.is(annotation);
 	}
 
 	public String getType() {

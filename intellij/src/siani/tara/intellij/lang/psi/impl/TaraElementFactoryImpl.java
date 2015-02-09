@@ -3,6 +3,7 @@ package siani.tara.intellij.lang.psi.impl;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
@@ -160,6 +161,62 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		final TaraBoxFileImpl file = createDummyFile("Form Ficha is " + annotation + "\n");
 		TaraConcept next = (TaraConcept) file.getConcepts().iterator().next();
 		return next.getAnnotations();
+	}
+
+	@Override
+	public PsiElement createNewLineIndent() {
+		final TaraBoxFileImpl file = createDummyFile("Form Ficha\n\t\tForm Ficha2");
+		TaraConcept next = (TaraConcept) file.getConcepts().iterator().next();
+		return next.getBody().getFirstChild();
+	}
+
+	@Override
+	public PsiElement createNewLineIndent(int level) {
+		String indents = "";
+		for (int i = 0; i < level; i++) indents += "\t";
+		final TaraBoxFileImpl file = createDummyFile("Form Ficha\n" + indents + "Form Ficha2");
+		TaraConcept next = (TaraConcept) file.getConcepts().iterator().next();
+		return next.getBody().getFirstChild();
+	}
+
+	@Override
+	public PsiElement createInlineNewLineIndent() {
+		final TaraBoxFileImpl file = createDummyFile("Form Ficha > Form Ficha2");
+		TaraConcept next = (TaraConcept) file.getConcepts().iterator().next();
+		return next.getBody().getFirstChild();
+	}
+
+	@Override
+	public PsiElement createWhiteSpace() {
+		final TaraBoxFileImpl file = createDummyFile(" Form Ficha > Form Ficha2");
+		return file.getFirstChild();
+	}
+
+	public PsiElement createBodyNewLine() {
+		final TaraBoxFileImpl file = createDummyFile("Form Ficha\n" +
+			"\tForm Ficha2\n" +
+			"\tForm Ficha3");
+		Concept concept = file.getConcepts().iterator().next();
+		LeafPsiElement[] childrenOfType = PsiTreeUtil.getChildrenOfType(concept.getBody(), LeafPsiElement.class);
+		return childrenOfType[1];
+	}
+
+	public PsiElement createBodyNewLine(int level) {
+		String indents = "";
+		for (int i = 0; i < level; i++) indents += "\t";
+		final TaraBoxFileImpl file = createDummyFile("Form Ficha\n" +
+			indents+"Form Ficha2\n" +
+			indents +"Form Ficha3");
+		Concept concept = file.getConcepts().iterator().next();
+		LeafPsiElement[] childrenOfType = PsiTreeUtil.getChildrenOfType(concept.getBody(), LeafPsiElement.class);
+		return childrenOfType[1];
+	}
+
+	public PsiElement createInlineNewLine() {
+		final TaraBoxFileImpl file = createDummyFile("Form Ficha >" + "Form Ficha2; Form Ficha3");
+		Concept concept = file.getConcepts().iterator().next();
+		LeafPsiElement[] childrenOfType = PsiTreeUtil.getChildrenOfType(concept.getBody(), LeafPsiElement.class);
+		return childrenOfType[1];
 	}
 
 }

@@ -58,6 +58,19 @@ public class ModelToJavaOperation extends ModelOperation {
 		return processBoxes(groupByBox, loadRules(file));
 	}
 
+	private InputStream loadRules(File file) throws TaraException {
+		InputStream stream;
+		if (!file.exists()) {
+			LOG.log(Level.INFO, "User Box.itr rules file not found. Trying use default");
+			stream = getRulesFromResources(BOX_ITR);
+		} else stream = getRulesInput(file);
+		if (stream == null) {
+			LOG.log(Level.SEVERE, "Box.itr rules file not found.");
+			throw new TaraException("Box.itr rules file not found.");
+		}
+		return stream;
+	}
+
 	private Map<String, Document> createMorphs() throws TaraException {
 		File file = new File(rulesFolder, MORPH_ITR);
 		InputStream stream;
@@ -98,6 +111,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private Map<String, Document> processBoxes(List<List<Node>> groupByBox, InputStream rulesInput) {
 		Map<String, Document> map = new HashMap();
 		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
+		ruleEngine.register("date", buildDateFormatter());
 		for (List<Node> nodes : groupByBox) {
 			Document document = new Document();
 			String project = compilationUnit.getConfiguration().getProject();
@@ -107,23 +121,10 @@ public class ModelToJavaOperation extends ModelOperation {
 		return map;
 	}
 
-	private InputStream loadRules(File file) throws TaraException {
-		InputStream stream;
-		if (!file.exists()) {
-			LOG.log(Level.INFO, "User Box.itr rules file not found. Trying use default");
-			stream = getRulesFromResources(BOX_ITR);
-		} else stream = getRulesInput(file);
-		if (stream == null) {
-			LOG.log(Level.SEVERE, "Box.itr rules file not found.");
-			throw new TaraException("Box.itr rules file not found.");
-		}
-		return stream;
-	}
-
 	private Map<String, Document> processMorphs(Collection<Node> nodes, InputStream rulesInput) {
 		Map<String, Document> map = new HashMap();
 		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read(), model.getLanguage());
-		addReferenceFormatter(ruleEngine);
+		ruleEngine.register("reference", buildReferenceFormatter());
 		for (Node node : nodes) {
 			if (!node.getModelOwner().equals(model.getName())) continue;
 			Document document = new Document();
@@ -135,15 +136,26 @@ public class ModelToJavaOperation extends ModelOperation {
 		return map;
 	}
 
-	private void addReferenceFormatter(RuleEngine ruleEngine) {
-		ruleEngine.register("reference", new Formatter() {
+	private Formatter buildReferenceFormatter() {
+		return new Formatter() {
 			@Override
 			public Object format(Object value) {
 				String val = value.toString();
 				if (!val.contains(".")) return val.substring(0, 1).toUpperCase() + val.substring(1);
 				return getMorphPath(".") + "." + buildMorphPath(val);
 			}
-		});
+		};
+	}
+
+	private Formatter buildDateFormatter() {
+		return new Formatter() {
+			@Override
+			public Object format(Object value) {
+				String val = value.toString();
+				if (!val.contains("/")) return value;
+				return val.replace("/", ", ");
+			}
+		};
 	}
 
 	private String composeBoxName(String file) {

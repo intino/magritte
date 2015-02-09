@@ -5,4 +5,5 @@ import com.intellij.pom.Navigatable;
 public interface FacetApply extends Navigatable, TaraPsiElement {
 
 	String getFacetName();
+	Body getBody();
 }

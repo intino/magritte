@@ -24,12 +24,9 @@ public class LinkToParentModelOperation extends ModelOperation {
 	public void call(Model model) {
 		String parent = model.getParentModelName();
 		if (parent == null) return;
-		String[] split = parent.split("\\.");
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Catching info from metamodel");
-			if (split.length != 2) throw new TaraException("Error finding metamodel.", true);
-			String pathname = compilationUnit.getConfiguration().getMetamodelFile();
-			Model parentModel = ModelLoader.load(new File(pathname));
+			Model parentModel = ModelLoader.load(new File(compilationUnit.getConfiguration().getMetamodelFile()));
 			if (parentModel == null) throw new TaraException("Error finding metamodel.", true);
 			new ParentModelDependencyResolver(model, parentModel).resolve();
 		} catch (TaraException e) {
