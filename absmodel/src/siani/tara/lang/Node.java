@@ -30,7 +30,7 @@ public abstract class Node {
 
 	public abstract NodeObject getObject();
 
-	public abstract List<Node> getInnerNodes();
+	public abstract NodeTree getInnerNodes();
 
 	public abstract Annotation[] getAnnotations();
 
@@ -42,11 +42,21 @@ public abstract class Node {
 
 	public abstract boolean isSub();
 
-	public DeclaredNode[] getSubConcepts() {
+	public DeclaredNode[] getSubNodes() {
 		List<DeclaredNode> subs = new ArrayList<>();
 		for (Node child : getInnerNodes())
 			if (child instanceof DeclaredNode && child.getObject().isSub()) subs.add((DeclaredNode) child);
 		return subs.toArray(new DeclaredNode[subs.size()]);
+	}
+
+	public Collection<DeclaredNode> getDeepSubNodes() {
+		List<DeclaredNode> subs = new ArrayList<>();
+		for (Node child : getInnerNodes())
+			if (child.is(DeclaredNode.class) && child.isSub()) {
+				subs.add((DeclaredNode) child);
+				subs.addAll(child.getDeepSubNodes());
+			}
+		return subs;
 	}
 
 	public String getQualifiedName() {
@@ -108,6 +118,7 @@ public abstract class Node {
 	}
 
 	public abstract boolean isAggregated();
+
 	public abstract boolean isAbstract();
 
 	protected abstract String getNodePath();

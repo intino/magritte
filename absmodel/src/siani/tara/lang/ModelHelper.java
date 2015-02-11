@@ -78,7 +78,7 @@ public class ModelHelper {
 			if (!entry.getKey().equals(facet)) continue;
 			for (FacetTarget target : entry.getValue()) {
 				if (target.getDestinyName().equals(searchNode.name))
-					return target;//TODO solve Target which destiny is parent of nodeToSearch so, search also in hierarchy of searchNode.
+					return target;//TODO solve Target whose destiny is parent of nodeToSearch, so, search also in hierarchy of searchNode.
 			}
 		}
 		return null;
@@ -202,8 +202,8 @@ public class ModelHelper {
 	private List<DeclaredNode> collectSubs(Node node) {
 		List<DeclaredNode> list = new ArrayList<>();
 		if (node == null) return Collections.EMPTY_LIST;
-		Collections.addAll(list, node.getSubConcepts());
-		for (DeclaredNode aSub : node.getSubConcepts())
+		Collections.addAll(list, node.getSubNodes());
+		for (DeclaredNode aSub : node.getSubNodes())
 			list.addAll(collectSubs(aSub));
 		return list;
 	}

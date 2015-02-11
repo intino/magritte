@@ -7,13 +7,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.VariantsManager;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.HeaderReference;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.IdentifierReference;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.impl.VariantsManager;
 
 import java.util.*;
 
@@ -39,7 +39,7 @@ public class TaraInternalReferenceSolver extends TaraReferenceSolver {
 	@NotNull
 	@Override
 	public Object[] getVariants() {
-		final Set<Concept> variants = new HashSet();
+		final Set<Concept> variants = new LinkedHashSet();
 		if (myElement.getParent() instanceof IdentifierReference || myElement.getParent() instanceof HeaderReference)
 			new VariantsManager(variants, myElement).resolveVariants();
 		return fillVariants(variants);

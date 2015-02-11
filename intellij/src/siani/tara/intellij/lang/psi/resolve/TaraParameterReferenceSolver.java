@@ -6,12 +6,12 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.VariantsManager;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.IdentifierReference;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.impl.VariantsManager;
 
 import java.util.*;
 
@@ -43,7 +43,7 @@ public class TaraParameterReferenceSolver extends PsiReferenceBase<PsiElement> i
 	@NotNull
 	@Override
 	public Object[] getVariants() {
-		Set<Concept> variants = new HashSet();
+		Set<Concept> variants = new LinkedHashSet();
 		PsiElement reference = myElement.getFirstChild();
 		if (reference instanceof IdentifierReference)
 			new VariantsManager(variants, reference.getLastChild()).resolveVariants();

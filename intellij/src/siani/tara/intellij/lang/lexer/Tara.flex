@@ -105,10 +105,11 @@ NAMED               = "named"
 TERMINAL            = "terminal"
 PROPERTY            = "property"
 AGGREGATED          = "aggregated"
+ASSOCIATED          = "associated"
 COMPONENT           = "component"
 READONLY            = "readonly"
 ROOT                = "root"
-LOCAL               = "local"
+ENCLOSED            = "enclosed"
 INTENTION           = "intention"
 FACET               = "facet"
 ADDRESSED           = "addressed"
@@ -194,9 +195,10 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
 	{FACET}                         {   return TaraTypes.FACET; }
 	{INTENTION}                     {   return TaraTypes.INTENTION; }
-	{LOCAL}                         {   return TaraTypes.LOCAL; }
+	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
     {AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
+    {ASSOCIATED}                    {   return TaraTypes.ASSOCIATED; }
     {CASE}                          {   return TaraTypes.CASE; }
 	{READONLY}                      {   return TaraTypes.READONLY; }
     {ROOT}                          {   return TaraTypes.ROOT; }

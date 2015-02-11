@@ -71,7 +71,7 @@ public class UsageAnalyzer {
 	}
 
 	private boolean isAbstract(Node node) {
-		return node.getSubConcepts().length > 0;
+		return node.getSubNodes().length > 0;
 	}
 
 	private void addToList(Node node) {

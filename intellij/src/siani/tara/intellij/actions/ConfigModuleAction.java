@@ -75,8 +75,5 @@ public class ConfigModuleAction extends AnAction implements DumbAware {
 			};
 			action.execute();
 		}
-
-
 	}
-
 }

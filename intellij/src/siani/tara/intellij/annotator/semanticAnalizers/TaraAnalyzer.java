@@ -34,7 +34,7 @@ public abstract class TaraAnalyzer {
 		return TaraUtil.getMetamodel(element);
 	}
 
-	protected Node getMetaConcept(Concept concept) {
+	protected Node findMetaConcept(Concept concept) {
 		return TaraUtil.getMetaConcept(concept);
 	}
 }

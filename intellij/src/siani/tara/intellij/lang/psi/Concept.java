@@ -38,6 +38,8 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	Collection<Concept> getSubConcepts();
 
+	Concept getContainer();
+
 	boolean isIntention();
 
 	boolean isFacet();

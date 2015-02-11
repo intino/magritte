@@ -45,16 +45,16 @@ public class FacetTargetsResolver {
 	}
 
 	private void addFacetTargetToSubs(DeclaredNode declaredNode, FacetTarget target) {
-		for (DeclaredNode sub : declaredNode.getSubConcepts()) {
+		for (DeclaredNode sub : declaredNode.getSubNodes()) {
 			sub.getObject().addFacetTarget(composeTarget(target, sub));
 			cleanNode(declaredNode);
-			for (DeclaredNode innerSub : declaredNode.getSubConcepts())
+			for (DeclaredNode innerSub : declaredNode.getSubNodes())
 				addFacetTargetToSubs(innerSub, target);
 		}
 	}
 
 	private void cleanNode(DeclaredNode node) {
-		DeclaredNode[] subConcepts = node.getSubConcepts();
+		DeclaredNode[] subConcepts = node.getSubNodes();
 		node.getInnerNodes().clear();
 		Collections.addAll(node.getInnerNodes(), subConcepts);
 	}

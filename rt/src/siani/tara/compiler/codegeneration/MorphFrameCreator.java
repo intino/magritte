@@ -117,7 +117,7 @@ public class MorphFrameCreator extends FrameCreator {
 
 	private void addSubs(Node node, Frame frame) {
 		Set<Node> subs = new HashSet<>();
-		collectSubs(node.getSubConcepts(), subs);
+		collectSubs(node.getSubNodes(), subs);
 		for (Node sub : subs)
 			nodeToFrame(sub, frame);
 	}
@@ -125,7 +125,7 @@ public class MorphFrameCreator extends FrameCreator {
 	private void collectSubs(Node[] subs, Collection<Node> list) {
 		for (Node sub : subs) {
 			list.add(sub);
-			Node[] innerSubs = sub.getSubConcepts();
+			Node[] innerSubs = sub.getSubNodes();
 			if (innerSubs.length > 0) {
 				Collections.addAll(list, innerSubs);
 				collectSubs(innerSubs, list);

@@ -3,8 +3,8 @@ package siani.tara.lang;
 
 public enum Annotation {
 	NAMED("named"), COMPONENT("component"), TERMINAL("terminal"), SINGLE("single"), REQUIRED("required"),
-	ABSTRACT("abstract"), PROPERTY("property"), FACET("facet"), INTENTION("intention"), LOCAL("local"),
-	ADDRESSED("addressed"), AGGREGATED("aggregated"), CASE("case"), READONLY("readonly"),
+	ABSTRACT("abstract"), PROPERTY("property"), FACET("facet"), INTENTION("intention"), ENCLOSED("enclosed"),
+	ADDRESSED("addressed"), AGGREGATED("aggregated"), CASE("case"), READONLY("readonly"), ASSOCIATED("associated"), TACIT("tacit"),
 
 	META_NAMED("+named"), META_COMPONENT("+component"), META_SINGLE("+single"), META_REQUIRED("+required"),
 	META_PROPERTY("+property"), META_FACET("+facet"), META_INTENTION("+intention"), META_LOCAL("+local"),

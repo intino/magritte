@@ -126,7 +126,7 @@ public class ParentModelDependencyResolver {
 		model.addIdentifier(terminal.getName());
 		for (Node node : terminal.getInnerNodes())
 			if (node.is(DeclaredNode.class)) addIdentifiers(node);
-		for (Node node : terminal.getSubConcepts())
+		for (Node node : terminal.getSubNodes())
 			addIdentifiers(node);
 	}
 
@@ -156,7 +156,7 @@ public class ParentModelDependencyResolver {
 		for (Node node : model.getNodeTable().values())
 			if (node.is(DeclaredNode.class) && node.getObject().getType().equals(type)) {
 				nodes.add(node);
-				Collections.addAll(nodes, node.getSubConcepts());
+				Collections.addAll(nodes, node.getSubNodes());
 			}
 		return nodes;
 	}

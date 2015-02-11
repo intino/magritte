@@ -81,8 +81,10 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 		if (is(element, NEW_LINE_INDENT) || (is(element, TaraTypes.NEWLINE) && element.getParent().getParent() instanceof Body))
 			return element;
 		PsiElement previous = element.getPrevSibling() != null ? element.getPrevSibling() : element.getParent().getPrevSibling();
-		if (previous == null)
-			previous = TaraPsiImplUtil.getContextOf(element).getPrevSibling();
+		if (previous == null) {
+			PsiElement contextOf = TaraPsiImplUtil.getContextOf(element);
+			if (contextOf != null) previous = contextOf.getPrevSibling();
+		}
 		if (is(previous, NEW_LINE_INDENT) || (is(previous, TaraTypes.NEWLINE) && element.getParent().getParent() instanceof Body))
 			return previous;
 		return null;

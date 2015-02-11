@@ -47,7 +47,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 			results.put(concept.getSignature().getParentReference(), addError(message("invalid.extension.concept")));
 		if (hasErrors()) return;
 		analyzeAnnotationsConstrains();
-		Node node = getMetaConcept(concept);
+		Node node = findMetaConcept(concept);
 		if (node != null) {
 			if (!hasErrors()) analyzeMetaAnnotationConstrains(node);
 			if (!hasErrors()) analyzeMetaMetaAnnotationConstrains(node);

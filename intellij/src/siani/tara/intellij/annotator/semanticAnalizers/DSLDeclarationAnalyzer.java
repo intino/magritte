@@ -36,7 +36,7 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 			results.put(file, new AnnotateAndFix(ERROR, message("model.not.found"), new AddMetamodelReferenceFix(file)));
 		else if (dslName != null && !dslName.isEmpty()) {
 			Model dsl = TaraUtil.getMetamodel(file);
-			if ((dsl == null && !dslName.isEmpty()) || (!dslName.equals(file.getDSL())))
+			if ((dsl == null && !dslName.isEmpty() && !dslName.equals("Proteo")) || (!dslName.equals(file.getDSL())))
 				results.put(file, new AnnotateAndFix(ERROR, message("parent.model.file.found"), new ImportMetamodelFix(file), new ConfigureModuleFix(file)));
 		}
 		if (hasErrors()) return;

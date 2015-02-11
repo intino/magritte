@@ -32,6 +32,8 @@ public class TaraLanguage extends Language {
 		modelPaths.add(MODELS_PATH);
 	}
 
+	private static final String PROTEO = "Proteo";
+
 	private TaraLanguage() {
 		super("Tara");
 	}
@@ -44,6 +46,7 @@ public class TaraLanguage extends Language {
 
 	public static Model getMetaModel(String parent, Project project) {
 		addSdkToModelRoots(project);
+		if (parent.equals(PROTEO)) return null;
 		return getModel(parent);
 	}
 

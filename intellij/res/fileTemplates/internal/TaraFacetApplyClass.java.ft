@@ -3,6 +3,6 @@
 import ${PROJECT_NAME.toLowerCase()}.intentions.${FACET_PLURAL.toLowerCase()}.${TYPE}${FACET}Intention;
 import magritte.morphs.*;
 
-public class ${NAME}${TYPE}${FACET} extends ${NAME} implements ${TYPE}${FACET}Intention {
+public class ${NAME}${FACET} extends ${NAME} implements ${TYPE}${FACET}Intention {
 
 }

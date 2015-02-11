@@ -18,7 +18,7 @@
 
 root ::= NEWLINE* dslDeclaration? imports? (concept NEWLINE+)*
 
-dslDeclaration ::= DSL headerReference NEWLINE+
+dslDeclaration ::= DSL (PROTEO | headerReference) NEWLINE+
 
 imports ::= (anImport NEWLINE*)+
 
@@ -169,7 +169,7 @@ annotations ::= IS annotation+ {
 }
 
 annotation ::= PLUS? (ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED
-	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | READONLY | CASE) {
+	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | ENCLOSED | ADDRESSED | AGGREGATED | ASSOCIATED | READONLY | CASE) {
 	pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotation'

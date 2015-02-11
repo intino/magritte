@@ -269,6 +269,10 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return subs;
 	}
 
+	public Concept getContainer() {
+		return TaraPsiImplUtil.getConceptContainerOf(this);
+	}
+
 	public FacetApply[] getFacetApplies() {
 		if (getBody() != null) {
 			List<FacetApply> facetApplies = (List<FacetApply>) getBody().getFacetApplyList();

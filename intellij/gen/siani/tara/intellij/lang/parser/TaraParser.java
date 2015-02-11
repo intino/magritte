@@ -210,7 +210,7 @@ public class TaraParser implements PsiParser {
 
   /* ********************************************************** */
   // PLUS? (ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED
-  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | READONLY | CASE)
+  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | ENCLOSED | ADDRESSED | AGGREGATED | ASSOCIATED | READONLY | CASE)
   public static boolean annotation(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotation")) return false;
     boolean r;
@@ -229,7 +229,7 @@ public class TaraParser implements PsiParser {
   }
 
   // ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED
-  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | LOCAL | ADDRESSED | AGGREGATED | READONLY | CASE
+  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | ENCLOSED | ADDRESSED | AGGREGATED | ASSOCIATED | READONLY | CASE
   private static boolean annotation_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotation_1")) return false;
     boolean r;
@@ -244,9 +244,10 @@ public class TaraParser implements PsiParser {
     if (!r) r = consumeToken(b, FACET);
     if (!r) r = consumeToken(b, INTENTION);
     if (!r) r = consumeToken(b, PROPERTY);
-    if (!r) r = consumeToken(b, LOCAL);
+    if (!r) r = consumeToken(b, ENCLOSED);
     if (!r) r = consumeToken(b, ADDRESSED);
     if (!r) r = consumeToken(b, AGGREGATED);
+    if (!r) r = consumeToken(b, ASSOCIATED);
     if (!r) r = consumeToken(b, READONLY);
     if (!r) r = consumeToken(b, CASE);
     exit_section_(b, m, null, r);
@@ -722,16 +723,27 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // DSL headerReference NEWLINE+
+  // DSL (PROTEO | headerReference) NEWLINE+
   public static boolean dslDeclaration(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dslDeclaration")) return false;
     if (!nextTokenIs(b, DSL)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, DSL);
-    r = r && headerReference(b, l + 1);
+    r = r && dslDeclaration_1(b, l + 1);
     r = r && dslDeclaration_2(b, l + 1);
     exit_section_(b, m, DSL_DECLARATION, r);
+    return r;
+  }
+
+  // PROTEO | headerReference
+  private static boolean dslDeclaration_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dslDeclaration_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PROTEO);
+    if (!r) r = headerReference(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

@@ -1,14 +1,13 @@
-package siani.tara.intellij;
+package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
-import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContainerOf;
 
 public class VariantsManager {
 
@@ -23,17 +22,36 @@ public class VariantsManager {
 	}
 
 	public void resolveVariants() {
-		addContextVariants();
+		addContextVariants((Identifier) myElement);
 		addInBoxVariants();
 		addImportVariants();
+		if (isParameterReference()) filterByContext();
 	}
 
-	private void addContextVariants() {
-		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(TaraPsiImplUtil.getConceptContainerOf(myElement));
-		if (contextOf == null) return;
-		for (Concept concept : TaraPsiImplUtil.getInnerConceptsOf(contextOf))
-			resolvePathFor(concept, context);
+	private void filterByContext() {
+
 	}
+
+	private void addContextVariants(Identifier identifier) {
+		Concept container = getConceptContainerOf(identifier);
+		if (container != null && !isExtendsReference((IdentifierReference) identifier.getParent()) &&
+			namesAreEqual(identifier, container))
+			variants.add(container);
+		while (container != null) {
+			for (Concept sibling : container.getConceptSiblings())
+				variants.add(sibling);
+			container = container.getContainer();
+		}
+	}
+
+	private static boolean isExtendsReference(IdentifierReference reference) {
+		return (reference.getParent() instanceof Signature);
+	}
+
+	private static boolean namesAreEqual(Identifier identifier, Concept concept) {
+		return identifier.getText().equals(concept.getName());
+	}
+
 
 	private void addInBoxVariants() {
 		TaraBoxFile box = ((TaraBoxFile) myElement.getContainingFile());
@@ -86,5 +104,9 @@ public class VariantsManager {
 			return (List<Identifier>) list.subList(0, list.size() - 1);
 		}
 		return null;
+	}
+
+	public boolean isParameterReference() {
+		return myElement.getParent().getParent() instanceof TaraParameterValue;
 	}
 }

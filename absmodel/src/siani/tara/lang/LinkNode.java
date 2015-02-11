@@ -57,7 +57,7 @@ public class LinkNode extends Node {
 	}
 
 	@Override
-	public List<Node> getInnerNodes() {
+	public NodeTree getInnerNodes() {
 		return destiny.getInnerNodes();
 	}
 

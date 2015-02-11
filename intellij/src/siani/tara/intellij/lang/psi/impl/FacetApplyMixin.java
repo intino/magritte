@@ -11,9 +11,10 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
+	@NotNull
 	public String getFacetName() {
 		if (!((TaraFacetApply) this).getMetaIdentifierList().isEmpty())
 			return ((TaraFacetApply) this).getMetaIdentifierList().get(0).getText();
-		return null;
+		return "";
 	}
 }

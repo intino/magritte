@@ -23,7 +23,7 @@ public class AggregatedAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		Node node = getMetaConcept(concept);
+		Node node = findMetaConcept(concept);
 		if (node == null) return;
 		ModuleConfiguration configuration = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(concept.getContainingFile()));
 		if (configuration == null) return;

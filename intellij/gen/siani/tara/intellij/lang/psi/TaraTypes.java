@@ -66,6 +66,7 @@ public interface TaraTypes {
 	IElementType AGGREGATED = new TaraTokenType("AGGREGATED");
 	IElementType ALWAYS = new TaraTokenType("ALWAYS");
 	IElementType AS = new TaraTokenType("AS");
+	IElementType ASSOCIATED = new TaraTokenType("ASSOCIATED");
 	IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
 	IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
 	IElementType CASE = new TaraTokenType("CASE");
@@ -81,6 +82,7 @@ public interface TaraTypes {
 	IElementType DOUBLE_VALUE_KEY = new TaraTokenType("DOUBLE_VALUE_KEY");
 	IElementType DSL = new TaraTokenType("DSL");
 	IElementType EMPTY_REF = new TaraTokenType("EMPTY_REF");
+	IElementType ENCLOSED = new TaraTokenType("ENCLOSED");
 	IElementType EQUALS = new TaraTokenType("EQUALS");
 	IElementType EXTENDS = new TaraTokenType("EXTENDS");
 	IElementType FACET = new TaraTokenType("FACET");
@@ -93,7 +95,6 @@ public interface TaraTypes {
 	IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
 	IElementType LEFT_SQUARE = new TaraTokenType("LEFT_SQUARE");
 	IElementType LIST = new TaraTokenType("LIST");
-	IElementType LOCAL = new TaraTokenType("LOCAL");
 	IElementType MEASURE_TYPE_KEY = new TaraTokenType("MEASURE_TYPE_KEY");
 	IElementType MEASURE_VALUE_KEY = new TaraTokenType("MEASURE_VALUE_KEY");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
@@ -106,6 +107,7 @@ public interface TaraTypes {
 	IElementType ON = new TaraTokenType("ON");
 	IElementType PLUS = new TaraTokenType("PLUS");
 	IElementType PROPERTY = new TaraTokenType("PROPERTY");
+	IElementType PROTEO = new TaraTokenType("PROTEO");
 	IElementType RATIO_TYPE = new TaraTokenType("RATIO_TYPE");
 	IElementType READONLY = new TaraTokenType("READONLY");
 	IElementType REQUIRED = new TaraTokenType("REQUIRED");

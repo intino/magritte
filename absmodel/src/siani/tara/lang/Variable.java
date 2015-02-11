@@ -54,7 +54,7 @@ public abstract class Variable implements Cloneable {
 	}
 
 	public boolean isLocal() {
-		return annotations.contains(LOCAL);
+		return annotations.contains(ENCLOSED);
 	}
 
 	public boolean addAll(Collection<? extends Annotation> annotations) {

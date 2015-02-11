@@ -22,7 +22,7 @@ public class ParametersExistenceAnalyzer extends TaraAnalyzer {
 
 	public ParametersExistenceAnalyzer(Concept concept) {
 		this.concept = concept;
-		node = getMetaConcept(concept);
+		node = findMetaConcept(concept);
 	}
 
 	@Override

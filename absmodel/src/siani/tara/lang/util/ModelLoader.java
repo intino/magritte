@@ -5,7 +5,6 @@ import siani.tara.lang.*;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,11 +60,31 @@ public class ModelLoader {
 		}
 		model.setNodeTable(nodeTable);
 		restoreHierarchyLinks(model);
-		restoreFacetDestinies(model, model.getNodeTable().values());
+		restoreFacetDestinies(model);
+		restoreContainerReferences(model.getTreeModel());
 	}
 
-	private static void restoreFacetDestinies(Model model, Collection<Node> values) {
-		for (Node node : values) {
+	private static void restoreContainerReferences(NodeTree tree) {
+		for (Node node : tree) {
+			if (node.is(LinkNode.class)) continue;
+			for (Node inner : node.getInnerNodes()) {
+				if (!inner.isSub())
+					inner.setContainer((DeclaredNode) node);
+				setContainerToSubs((DeclaredNode) node, inner);
+				restoreContainerReferences(node.getInnerNodes());
+			}
+		}
+	}
+
+	private static void setContainerToSubs(DeclaredNode node, Node inner) {
+		if (node.isSub()) return;
+		for (DeclaredNode sub : inner.getDeepSubNodes())
+			if (sub.getContainer() == null)
+				sub.setContainer(node);
+	}
+
+	private static void restoreFacetDestinies(Model model) {
+		for (Node node : model.getNodeTable().values()) {
 			if (node.is(LinkNode.class) || node.getObject().getAllowedFacets().isEmpty()) continue;
 			for (List<FacetTarget> facetTargets : node.getObject().getAllowedFacets().values())
 				for (FacetTarget target : facetTargets) target.setDestiny(model.get(target.getDestinyQN()).getObject());
@@ -111,7 +130,7 @@ public class ModelLoader {
 	}
 
 	private static void processSubs(Model aModel, Map<String, Node> nodeTable, Node node) {
-		for (DeclaredNode sub : node.getSubConcepts()) {
+		for (DeclaredNode sub : node.getSubNodes()) {
 			nodeTable.put(sub.getQualifiedName(), sub);
 			processInnerNodes(aModel, nodeTable, sub);
 		}

@@ -23,7 +23,7 @@ public class ParametersAnalyzer extends TaraAnalyzer {
 	@Override
 	public void analyze() {
 		Concept concept = TaraPsiImplUtil.getConceptContainerOf(parameters);
-		Node node = getMetaConcept(concept);
+		Node node = findMetaConcept(concept);
 		if (node == null) return;
 		List<Variable> variables = node.getObject().getVariables();
 		List<String> compare = compare(collectMinimumParametersNeeded(variables), collectDeclaredParameters(concept, variables));

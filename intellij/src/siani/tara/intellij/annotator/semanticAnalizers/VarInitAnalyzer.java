@@ -27,7 +27,7 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 		super();
 		this.varInit = varInit;
 		metamodel = getMetamodel(varInit);
-		Node node = getMetaConcept(TaraPsiImplUtil.getConceptContainerOf(varInit));
+		Node node = findMetaConcept(TaraPsiImplUtil.getConceptContainerOf(varInit));
 		if (node != null) variable = searchVariable(node);
 	}
 

@@ -62,7 +62,6 @@ public class ReferenceManager {
 		return reference;
 	}
 
-
 	@Nullable
 	public static Concept resolveToConcept(IdentifierReference identifierReference) {
 		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
@@ -100,8 +99,8 @@ public class ReferenceManager {
 		return null;
 	}
 
-	private static Concept[] getPossibleRoots(TaraBoxFile file, Identifier identifier) {
-		Set<Concept> set = new HashSet<>();
+	protected static Concept[] getPossibleRoots(TaraBoxFile file, Identifier identifier) {
+		Set<Concept> set = new LinkedHashSet<>();
 		addConceptsInContext(identifier, set);
 		addRootConcepts(file, identifier, set);
 		addAggregated(file, identifier, set, toArrayList(set));
@@ -139,7 +138,7 @@ public class ReferenceManager {
 			for (Concept sibling : container.getConceptSiblings())
 				if (namesAreEqual(identifier, sibling) && !sibling.equals(getConceptContainerOf(identifier)))
 					set.add(sibling);
-			container = getConceptContainerOf(container);
+			container = container.getContainer();
 		}
 	}
 

@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 public class LinkToParentModelOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(ModelDependencyResolutionOperation.class.getName());
+	private static final String PROTEO = "Proteo";
 	private CompilationUnit compilationUnit;
 
 	public LinkToParentModelOperation(CompilationUnit compilationUnit) {
@@ -23,7 +24,7 @@ public class LinkToParentModelOperation extends ModelOperation {
 	@Override
 	public void call(Model model) {
 		String parent = model.getParentModelName();
-		if (parent == null) return;
+		if (parent == null || parent.equals(PROTEO)) return;
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Catching info from metamodel");
 			Model parentModel = ModelLoader.load(new File(compilationUnit.getConfiguration().getMetamodelFile()));

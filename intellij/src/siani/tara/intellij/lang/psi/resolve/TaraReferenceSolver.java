@@ -10,7 +10,6 @@ import java.util.List;
 
 public abstract class TaraReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
-
 	public TaraReferenceSolver(@NotNull PsiElement element, TextRange textRange) {
 		super(element, textRange);
 	}

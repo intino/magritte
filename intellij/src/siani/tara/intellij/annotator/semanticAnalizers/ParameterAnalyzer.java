@@ -5,11 +5,12 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraParameterValueImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.intellij.lang.psi.resolve.TaraInternalReferenceSolver;
 import siani.tara.intellij.project.module.ModuleProvider;
+import siani.tara.lang.Annotation;
 import siani.tara.lang.*;
 import siani.tara.lang.Variable;
 import siani.tara.lang.Word;
@@ -88,7 +89,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 				results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
 		} else if (variable instanceof Reference) {
 			if (parameter.getParameterValue() != null)
-				checkReferences(parameter.getParameterValue().getChildren(), (Reference) variable);
+				checkAsReference(parameter.getParameterValue().getChildren(), (Reference) variable);
 		} else if (!areCompatibleTypes(variable, parameter) || (parameter.isList() && !variable.isList()) || checkAsTuple(parameter.getValuesLength(), variable))
 			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
 		else if (variable.getType().equals(MEASURE))
@@ -135,7 +136,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		else if (!areCompatibleTypes(variable, parameter) || (parameter.isList() && !variable.isList()))
 			results.put(parameter, new AnnotateAndFix(ERROR, "Incorrect type. Expected " + variable.getType()));
 		else if (variable instanceof Resource) analyzeAsResource(variable);
-		else if  (mustBeMeasured((Attribute) variable) && parameter.getMeasure() == null)
+		else if (mustBeMeasured((Attribute) variable) && parameter.getMeasure() == null)
 			results.put(parameter, new AnnotateAndFix(ERROR, "Measure missed. Expected " + ((Attribute) variable).getMeasureType()));
 	}
 
@@ -165,7 +166,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 			if (!isCorrectWord(((Word) variable), parameterValue.getFirstChild().getText()))
 				results.put(parameterValue, new AnnotateAndFix(ERROR, "Parameter type error. Expected " + variable.getType()));
 		} else if (variable instanceof Reference)
-			checkReferences(parameterValue.getChildren(), (Reference) variable);
+			checkAsReference(parameterValue.getChildren(), (Reference) variable);
 		else
 			results.put(parameterValue, new AnnotateAndFix(ERROR, "Parameter type error. Expected " + variable.getType()));
 	}
@@ -174,7 +175,8 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		return word.contains(value);
 	}
 
-	private void checkReferences(PsiElement[] parameterValues, Reference reference) {
+	private void checkAsReference(PsiElement[] parameterValues, Reference reference) {
+		Concept scope = findScope();
 		if (parameterValues.length > 1 && !reference.isList())
 			results.put(parameterValues[0].getParent(), new AnnotateAndFix(ERROR, "Only one item is expected"));
 		for (PsiElement value : parameterValues) {
@@ -185,14 +187,27 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 			}
 			Concept conceptContextOf = getConceptContainerOf(value);
 			if (getConceptContainerOf(conceptContextOf) != null)
-				if (value instanceof TaraIdentifierReference && reference.isLocal() && !inSameContext((TaraIdentifierReference) value))
-					results.put(value, new AnnotateAndFix(ERROR, "Bad referenced. The reference has to be in the same context"));
+				if (value instanceof TaraIdentifierReference && scope != null && !inScope((TaraIdentifierReference) value, scope))
+					results.put(value, new AnnotateAndFix(ERROR, "Bad referenced. The reference has to be in the scope: " + scope.getName()));
 		}
 	}
 
+	private Concept findScope() {
+		Node currentNode = node.getContainer();
+		while (currentNode != null)
+			if (currentNode.is(Annotation.ENCLOSED))
+				break;
+			else currentNode = currentNode.getContainer();
+		if (currentNode == null) return null;
+		Concept container = concept.getContainer();
+		while (container != null)
+			if (currentNode.getName().equals(container.getType())) return container;
+			else container = container.getContainer();
+		return null;
+	}
+
 	private boolean checkWellReference(TaraIdentifierReference reference, Reference variable) {
-		TaraInternalReferenceSolver solver = new TaraInternalReferenceSolver(getLastElementOf(reference), reference.getTextRange());
-		Concept destiny = getConceptContainerOf(solver.resolve());
+		Concept destiny = getConceptContainerOf(ReferenceManager.resolveToConcept(reference));
 		if (destiny != null) {
 			MetaIdentifier metaIdentifier = destiny.getMetaIdentifier();
 			if ((metaIdentifier != null))
@@ -215,16 +230,9 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		return false;
 	}
 
-	private boolean inSameContext(TaraIdentifierReference reference) {
-		TaraInternalReferenceSolver solver = new TaraInternalReferenceSolver(getLastElementOf(reference), reference.getTextRange());
-		Concept resolve = getConceptContainerOf(solver.resolve());
-		PsiElement referenceContext = reference;
-		PsiElement resolveContext = resolve;
-		while ((getConceptContainerOf(referenceContext)) != null)
-			referenceContext = getConceptContainerOf(referenceContext);
-		while ((getConceptContainerOf(resolveContext)) != null)
-			resolveContext = getConceptContainerOf(resolveContext);
-		return resolveContext == referenceContext;
+	private boolean inScope(TaraIdentifierReference reference, Concept scope) {
+		Concept conceptReference = ReferenceManager.resolveToConcept(reference);
+		return conceptReference.getQualifiedName().startsWith(scope.getQualifiedName() + ".");
 	}
 
 	private boolean checkInHierarchy(String name, String type) {

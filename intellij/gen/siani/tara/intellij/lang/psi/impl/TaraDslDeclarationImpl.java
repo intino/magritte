@@ -23,9 +23,9 @@ public class TaraDslDeclarationImpl extends ASTWrapperPsiElement implements Tara
   }
 
   @Override
-  @NotNull
+  @Nullable
   public TaraHeaderReference getHeaderReference() {
-    return findNotNullChildByClass(TaraHeaderReference.class);
+    return findChildByClass(TaraHeaderReference.class);
   }
 
 }

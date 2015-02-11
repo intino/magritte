@@ -100,7 +100,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private void addRootAndSubs(Collection<Node> treeModel, Set<Node> list) {
 		for (Node node : treeModel) {
 			list.add(node);
-			Node[] concepts = node.getSubConcepts();
+			Node[] concepts = node.getSubNodes();
 			if (concepts.length > 0) {
 				Collections.addAll(list, concepts);
 				addRootAndSubs(Arrays.asList(concepts), list);

@@ -52,7 +52,7 @@ public class SemanticAnalyzer {
 
 	private boolean existInstanceOf(Node requiredNode, Collection<Node> childrenOf) {
 		for (Node node : childrenOf)
-			if (requiredNode.getName().equals(node.getObject().getType()) || checkInSubs(requiredNode.getSubConcepts(), node))
+			if (requiredNode.getName().equals(node.getObject().getType()) || checkInSubs(requiredNode.getSubNodes(), node))
 				return true;
 		return false;
 	}

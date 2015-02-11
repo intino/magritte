@@ -40,7 +40,7 @@ public class RequiredConceptsAnnotator extends TaraAnnotator {
 
 	private boolean existInstanceOf(Node requiredNode, Collection<Concept> childrenOf) {
 		for (Concept concept : childrenOf)
-			if (requiredNode.getName().equals(concept.getType()) || checkInSubs(requiredNode.getSubConcepts(), concept))
+			if (requiredNode.getName().equals(concept.getType()) || checkInSubs(requiredNode.getSubNodes(), concept))
 				return true;
 		return false;
 	}

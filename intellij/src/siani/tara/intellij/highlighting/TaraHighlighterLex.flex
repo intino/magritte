@@ -55,6 +55,7 @@ SUB                 = "sub"
 HAS                 = "has"
 EXTENDS             = "extends"
 DSL                 = "dsl"
+PROTEO              = "Proteo"
 AS                  = "as"
 ON                  = "on"
 IS                  = "is"
@@ -71,11 +72,12 @@ NAMED               = "named"
 TERMINAL            = "terminal"
 PROPERTY            = "property"
 INTENTION           = "intention"
-LOCAL               = "local"
+ENCLOSED            = "enclosed"
 FACET               = "facet"
 ADDRESSED           = "addressed"
 COMPONENT           = "component"
 AGGREGATED          = "aggregated"
+ASSOCIATED          = "associated"
 READONLY            = "readonly"
 CASE                = "case"
 ROOT                = "root"
@@ -112,7 +114,7 @@ DOUBLE_TYPE         = "double"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
 RATIO_TYPE          = "ratio"
-MEASURE_TYPE_KEY        = "measure"
+MEASURE_TYPE_KEY    = "measure"
 DATE_TYPE           = "date"
 BOOLEAN_VALUE_KEY   = "true" | "false"
 EMPTY_REF           = "empty"
@@ -139,6 +141,7 @@ NEWLINE             = [\n]+
 	{CONCEPT}                       {   return TaraTypes.METAIDENTIFIER_KEY; }
 
 	{DSL}                           {   loadHeritage();  return TaraTypes.DSL; }
+	{PROTEO}                        {   return TaraTypes.PROTEO; }
 	{USE}                           {   return TaraTypes.USE; }
 	{VAR}                           {   return TaraTypes.VAR; }
 	{HAS}                           {   return TaraTypes.HAS; }
@@ -157,13 +160,14 @@ NEWLINE             = [\n]+
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 	{NAMED}                         {   return TaraTypes.NAMED; }
 	{INTENTION}                     {   return TaraTypes.INTENTION; }
-	{LOCAL}                         {   return TaraTypes.LOCAL; }
+	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
 	{FACET}                         {   return TaraTypes.FACET; }
 	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
 	{AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
+	{ASSOCIATED}                    {   return TaraTypes.ASSOCIATED; }
 	{READONLY}                      {   return TaraTypes.READONLY; }
 	{CASE}                          {   return TaraTypes.CASE; }
     {ROOT}                          {   return TaraTypes.ROOT; }

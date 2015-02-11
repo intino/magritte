@@ -55,14 +55,14 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		if (metaModel == null) return new Object[0];
 		if (myElement.getParent() instanceof TaraFacetApply) {
 			Node node = TaraUtil.findNode(getConceptContainerOf(myElement), metaModel);
-			if (node == null || node.is(ABSTRACT) || node.getSubConcepts().length > 0) return PsiElement.EMPTY_ARRAY;
+			if (node == null || node.is(ABSTRACT) || node.getSubNodes().length > 0) return PsiElement.EMPTY_ARRAY;
 			return fillFacetVariants(node.getObject().getAllowedFacets().keySet());
 		} else {
 			List<Node> nodes = new ArrayList<>();
 			Concept context = getConceptContainerOf(getConceptContainerOf(myElement));
 			if (context != null) {
 				Node node = TaraUtil.findNode(context, metaModel);
-				if (node == null || node.is(ABSTRACT) || node.getSubConcepts().length > 0)
+				if (node == null || node.is(ABSTRACT) || node.getSubNodes().length > 0)
 					return PsiElement.EMPTY_ARRAY;
 				addChildren(nodes, node);
 				variables = node.getObject().getVariables();
@@ -111,7 +111,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	}
 
 	private void addSubs(List<Node> nodeList, Node child) {
-		for (DeclaredNode sub : child.getSubConcepts()) {
+		for (DeclaredNode sub : child.getSubNodes()) {
 			nodeList.add(sub);
 			addSubNodes(nodeList, sub);
 		}

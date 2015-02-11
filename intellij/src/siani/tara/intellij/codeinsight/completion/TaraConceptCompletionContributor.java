@@ -38,8 +38,9 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 					Concept container = getConceptContainerOf(concept);
 					if (container == null) return;
 					Node node = TaraUtil.getMetaConcept(container);
+					if (node == null) return;
 					if (container.isFacet() || node.is(Annotation.META_FACET)) resultSet.addElement(create("on "));
-					if (node != null && !node.getObject().getAllowedFacets().isEmpty() && !areAlreadyApplied(node.getObject().getAllowedFacets(), container))
+					if (!node.getObject().getAllowedFacets().isEmpty() && !areAlreadyApplied(node.getObject().getAllowedFacets(), container))
 						resultSet.addElement(create("as "));
 				}
 			}
@@ -124,7 +125,7 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 			if (node.isAnonymous() || node.is(Annotation.PROPERTY) || node.getName() == null) continue;
 			if (node.is(Annotation.REQUIRED) && container.contains(node.getName())) continue;
 			if (node.isAbstract())
-				for (DeclaredNode declaredNode : node.getSubConcepts())
+				for (DeclaredNode declaredNode : node.getSubNodes())
 					candidates.put(declaredNode, createElement(declaredNode));
 			else candidates.put(node, createElement(node));
 		}

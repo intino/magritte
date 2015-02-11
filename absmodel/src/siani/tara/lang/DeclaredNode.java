@@ -4,7 +4,7 @@ import java.util.List;
 
 public class DeclaredNode extends Node {
 
-	private List<Node> innerNodes = new NodeTree();
+	private NodeTree innerNodes = new NodeTree();
 	private transient FacetTarget inFacetTargetParent = null;
 
 	public DeclaredNode() {
@@ -15,7 +15,7 @@ public class DeclaredNode extends Node {
 		this.container = container;
 	}
 
-	public List<Node> getInnerNodes() {
+	public NodeTree getInnerNodes() {
 		return innerNodes;
 	}
 
