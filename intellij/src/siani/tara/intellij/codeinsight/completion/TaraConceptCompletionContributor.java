@@ -122,7 +122,7 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 		if (metaConcept == null) return;
 		for (Node node : metaConcept.getInnerNodes()) {
 			if (node.is(DeclaredNode.class) && node.isSub()) continue;
-			if (node.isAnonymous() || node.is(Annotation.PROPERTY) || node.getName() == null) continue;
+			if (node.isAnonymous() || node.getName() == null) continue;
 			if (node.is(Annotation.REQUIRED) && container.contains(node.getName())) continue;
 			if (node.isAbstract())
 				for (DeclaredNode declaredNode : node.getSubNodes())

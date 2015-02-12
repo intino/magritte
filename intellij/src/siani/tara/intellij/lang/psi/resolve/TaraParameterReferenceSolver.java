@@ -3,14 +3,15 @@ package siani.tara.intellij.lang.psi.resolve;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.IdentifierReference;
-import siani.tara.intellij.lang.psi.TaraExplicitParameter;
+import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.lang.psi.impl.VariantsManager;
 import siani.tara.lang.Node;
@@ -19,7 +20,7 @@ import siani.tara.lang.Variable;
 
 import java.util.*;
 
-public class TaraParameterReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
+public class TaraParameterReferenceSolver extends TaraReferenceSolver {
 
 	private final Variable variable;
 	private final Concept scope;
@@ -30,21 +31,16 @@ public class TaraParameterReferenceSolver extends PsiReferenceBase<PsiElement> i
 		scope = TaraUtil.findScope(node, concept);
 	}
 
-	@NotNull
-	@Override
-	public ResolveResult[] multiResolve(boolean incompleteCode) {
-		List<ResolveResult> results = new ArrayList<>();
-		PsiElement reference = myElement.getLastChild().getLastChild();
-		if (reference != null) results.add(new PsiElementResolveResult(reference));
-		return results.toArray(new ResolveResult[results.size()]);
-	}
-
 	@Nullable
 	@Override
 	public PsiElement resolve() {
-		if (!IdentifierReference.class.isInstance(myElement.getFirstChild())) return null;
 		ResolveResult[] resolveResults = multiResolve(false);
 		return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
+	}
+
+	@Override
+	protected PsiElement doMultiResolve() {
+		return ReferenceManager.resolve((Identifier) myElement);
 	}
 
 	@NotNull
@@ -62,7 +58,7 @@ public class TaraParameterReferenceSolver extends PsiReferenceBase<PsiElement> i
 	private void filterVariants(Set<Concept> variants) {
 		List<Concept> toRemove = new ArrayList<>();
 		for (Concept variant : variants)
-			if (!areCompatibles(variant) || !inScope(variant)) toRemove.add(variant);
+			if (!areCompatibles(variant) || !inScope(variant) || variant.isAnonymous()) toRemove.add(variant);
 		variants.removeAll(toRemove);
 	}
 
@@ -88,18 +84,8 @@ public class TaraParameterReferenceSolver extends PsiReferenceBase<PsiElement> i
 		for (final Concept concept : variants) {
 			if (concept == null || concept.getName() == null || concept.getName().length() == 0) continue;
 			lookupElements.add(LookupElementBuilder.create(concept.getIdentifierNode()).
-				withIcon(TaraIcons.getIcon(TaraIcons.ICON_13)).withTypeText(getFileName(concept)));
+				withIcon(TaraIcons.getIcon(TaraIcons.CONCEPT)).withTypeText(concept.getType()));
 		}
 		return lookupElements.toArray();
-	}
-
-	private String getFileName(PsiElement concept) {
-		String name = concept.getContainingFile().getName();
-		return name.substring(0, name.lastIndexOf("."));
-	}
-
-	private boolean isExplicitParameterSearch() {
-		return myElement.getParent() instanceof TaraExplicitParameter ||
-			myElement.getParent().getParent().getParent() instanceof TaraExplicitParameter;
 	}
 }

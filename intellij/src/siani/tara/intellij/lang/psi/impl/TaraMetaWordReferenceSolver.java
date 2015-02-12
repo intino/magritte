@@ -4,59 +4,52 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
+import siani.tara.intellij.lang.psi.Identifier;
+import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
 import siani.tara.lang.Node;
-import siani.tara.lang.Variable;
+import siani.tara.lang.Word;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaraMetaWordReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
+public class TaraMetaWordReferenceSolver extends TaraReferenceSolver {
 
 	private final Node node;
-	private final Variable variable;
+	private final Word word;
 
-	public TaraMetaWordReferenceSolver(PsiElement element, TextRange range, Node node, Variable variable) {
+	public TaraMetaWordReferenceSolver(PsiElement element, TextRange range, Node node, Word word) {
 		super(element, range);
 		this.node = node;
-		this.variable = variable;
+		this.word = word;
 	}
 
-	@NotNull
-	@Override
-	public ResolveResult[] multiResolve(boolean incompleteCode) {
-		return new ResolveResult[0];
-	}
 
 	@Nullable
 	@Override
 	public PsiElement resolve() {
-		return null;
+		ResolveResult[] resolveResults = multiResolve(false);
+		return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
+	}
+
+	@Override
+	protected PsiElement doMultiResolve() {
+		return ReferenceManager.resolve((Identifier) myElement);
 	}
 
 	@NotNull
 	@Override
 	public Object[] getVariants() {
-		List<String> variants = new ArrayList<>();
-		int children = myElement.getText().length() - myElement.getText().replace(".", "").length();
-//		if (children == 0)
-//			variants.add(node.getName());
-//		else if (children == 1 && myElement.getChildren()[0].getChildren()[0].getText().equals(node.getName()))
-//			variants.add(variable.getName());
-//		else if (children == 2)
-//			variants = ((NodeWord) variable).getWordTypes();
-		return fillVariants(variants);
+		return fillVariants(word.getWordTypes());
 	}
 
 	public Object[] fillVariants(List<String> variants) {
 		List<LookupElement> lookupElements = new ArrayList<>();
-		Icon icon = TaraIcons.getIcon(TaraIcons.ICON_13);
+		Icon icon = TaraIcons.getIcon(TaraIcons.CONCEPT);
 		for (final String variant : variants)
 			lookupElements.add(LookupElementBuilder.create(variant).withIcon(icon));
 		return lookupElements.toArray();

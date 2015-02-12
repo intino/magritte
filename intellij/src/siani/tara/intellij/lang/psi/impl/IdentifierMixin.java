@@ -9,6 +9,7 @@ import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
+import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.Parameter;
 import siani.tara.intellij.lang.psi.resolve.TaraInternalReferenceSolver;
@@ -16,6 +17,7 @@ import siani.tara.intellij.lang.psi.resolve.TaraParameterReferenceSolver;
 import siani.tara.lang.Node;
 import siani.tara.lang.Reference;
 import siani.tara.lang.Variable;
+import siani.tara.lang.Word;
 
 import javax.swing.*;
 import java.util.List;
@@ -43,22 +45,27 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		Parameter parameter;
 		references = (parameter = isParameterReference()) != null ?
 			createResolverForParameter(parameter) :
-			new PsiReference[]{new TaraInternalReferenceSolver(this, new TextRange(0, getIdentifier().length()))};
-		return references.length == 0 ? null : references[0];
+			new PsiReference[]{new TaraInternalReferenceSolver(this, getRange())};
+		return references.length == 0 ? new TaraInternalReferenceSolver(this, getRange()) : references[0];
 	}
 
 	private PsiReference[] createResolverForParameter(Parameter parameter) {
-		Node node = TaraUtil.getMetaConcept(TaraPsiImplUtil.getConceptContainerOf(this));
+		Concept container = TaraPsiImplUtil.getConceptContainerOf(this);
+		Node node = TaraUtil.getMetaConcept(container);
 		if (node == null) return new PsiReference[0];
 		List<Variable> variables = node.getObject().getVariables();
-		if (variables.isEmpty() || variables.size() <= parameter.getIndexInParent()) return new PsiReference[]{};
+		if (variables.isEmpty() || variables.size() <= parameter.getIndexInParent()) return new PsiReference[0];
 		Variable variable = parameter.isExplicit() ? findVar(variables, parameter.getExplicitName()) : variables.get(parameter.getIndexInParent());
 		if (variable == null) return new PsiReference[0];
 		if (variable instanceof siani.tara.lang.Word)
-			return new PsiReference[]{new TaraMetaWordReferenceSolver(this, new TextRange(0, parameter.getText().length()), node, variable)};
+			return new PsiReference[]{new TaraMetaWordReferenceSolver(this, getRange(), node, (Word) variable)};
 		else if (variable instanceof Reference)
-			return new PsiReference[]{new TaraParameterReferenceSolver(this, new TextRange(0, parameter.getText().length()), TaraPsiImplUtil.getConceptContainerOf(this), node, variable)};
+			return new PsiReference[]{new TaraParameterReferenceSolver(this, getRange(), container, node, variable)};
 		return new PsiReference[0];
+	}
+
+	private TextRange getRange() {
+		return new TextRange(0, getIdentifier().length());
 	}
 
 	@NotNull

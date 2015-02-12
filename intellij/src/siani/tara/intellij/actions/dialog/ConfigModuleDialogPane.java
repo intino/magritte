@@ -81,6 +81,7 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 	private void addModuleMetaModels() {
 		for (Module candidate : candidates) {
 			ModuleConfiguration candidateConf = ModuleConfiguration.getInstance(candidate);
+			if (candidateConf.isTerminal()) continue;
 			metamodelBox.addItem(candidateConf.getGeneratedModelName());
 			if (ModuleConfiguration.getInstance(module).getMetamodelName().equals(candidateConf.getGeneratedModelName()))
 				metamodelBox.setSelectedItem(candidateConf.getGeneratedModelName());

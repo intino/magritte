@@ -2,17 +2,9 @@ package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.resolve.TaraParameterReferenceSolver;
-import siani.tara.lang.Node;
-import siani.tara.lang.Reference;
-import siani.tara.lang.Variable;
-import siani.tara.lang.Word;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,42 +20,8 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return this.getText();
 	}
 
-	@NotNull
-	@Override
-	public PsiReference[] getReferences() {
-		return getPsiReferences();
-	}
-
-	@Nullable
-	@Override
-	public PsiReference getReference() {
-		PsiReference[] references = getPsiReferences();
-		return references.length == 0 ? null : references[0];
-	}
-
-	private PsiReference[] getPsiReferences() {
-		Node node = TaraUtil.getMetaConcept(TaraPsiImplUtil.getConceptContainerOf(this));
-		if (node == null) return new PsiReference[0];
-		List<Variable> variables = node.getObject().getVariables();
-		if (variables.isEmpty() || variables.size() <= getIndexInParent()) return new PsiReference[]{};
-		Variable variable = isExplicit() ? findVar(variables, getExplicitName()) : variables.get(getIndexInParent());
-		if (variable == null) return new PsiReference[0];
-		if (variable instanceof Word)
-			return new PsiReference[]{new TaraMetaWordReferenceSolver(this, new TextRange(0, getParameter().length()), node, variable)};
-		else if (variable instanceof Reference)
-			return new PsiReference[]{new TaraParameterReferenceSolver(this, new TextRange(0, getParameter().length()), TaraPsiImplUtil.getConceptContainerOf(this),  node, variable)};
-		return new PsiReference[0];
-	}
-
 	public int getIndexInParent() {
 		return Arrays.asList(((Parameters) this.getParent()).getParameters()).indexOf(this);
-	}
-
-	private Variable findVar(List<Variable> variables, String name) {
-		for (Variable variable : variables)
-			if (variable.getName().equals(name))
-				return variable;
-		return null;
 	}
 
 	public boolean isExplicit() {

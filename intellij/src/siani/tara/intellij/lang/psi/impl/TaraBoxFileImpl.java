@@ -46,7 +46,7 @@ public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
 
 	@NotNull
 	public String getPresentableName() {
-		return getName().substring(0, getName().lastIndexOf("."));
+		return getName().contains(".") ? getName().substring(0, getName().lastIndexOf(".")) : getName();
 	}
 
 	@Override

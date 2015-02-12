@@ -10,6 +10,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraElementFactoryImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
@@ -91,7 +92,8 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 	}
 
 	private boolean is(PsiElement element, IElementType type) {
-		return element != null && element.getNode().getElementType().equals(type);
+		if (element == null || !element.getLanguage().is(TaraLanguage.INSTANCE)) return false;
+		return element.getNode().getElementType().equals(type);
 	}
 
 	@Override

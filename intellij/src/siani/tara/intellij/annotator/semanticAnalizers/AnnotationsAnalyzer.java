@@ -48,9 +48,11 @@ public class AnnotationsAnalyzer extends TaraAnalyzer {
 	private boolean analyzeAnnotations() {
 		if (annotations.getParent() instanceof ConceptReference)
 			for (PsiElement psiElement : getConceptReferenceIncorrectAnnotations(annotations))
-				this.results.put(psiElement,
-					new AnnotateAndFix(ERROR, MessageProvider.message("annotation.concept")));
-		else {
+				this.results.put(psiElement, new AnnotateAndFix(ERROR, MessageProvider.message("annotation.concept")));
+		else if (annotations.getParent() instanceof Variable) {
+			for (PsiElement psiElement : getVariableIncorrectAnnotations(annotations))
+				this.results.put(psiElement, new AnnotateAndFix(ERROR, MessageProvider.message("annotation.concept")));
+		} else {
 			Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(annotations);
 			if (contextOf == null) return true;
 			for (PsiElement psiElement : getConceptIncorrectAnnotations(contextOf, contextOf.getNormalAnnotations()))
@@ -85,6 +87,9 @@ public class AnnotationsAnalyzer extends TaraAnalyzer {
 		return analyzeAnnotationList(element.getNormalAnnotations(), siani.tara.lang.Annotations.HAS_ANNOTATIONS);
 	}
 
+	private Collection<PsiElement> getVariableIncorrectAnnotations(Annotations element) {
+		return analyzeAnnotationList(element.getNormalAnnotations(), siani.tara.lang.Annotations.VARIABLE_ANNOTATIONS);
+	}
 
 	private PsiElement[] getConceptIncorrectAnnotations(Concept concept, Collection<? extends Annotation> annotationList) {
 		List<PsiElement> incorrects;

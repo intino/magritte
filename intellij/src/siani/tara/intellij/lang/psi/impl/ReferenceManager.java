@@ -205,8 +205,8 @@ public class ReferenceManager {
 	}
 
 	public static TaraBoxFileImpl resolveBoxPath(Identifier identifier) {
-		TaraBoxFile containingFile = (TaraBoxFile) identifier.getContainingFile();
-		if (containingFile == null || containingFile.getVirtualFile() == null) return null;
+		TaraBoxFile containingFile = (TaraBoxFile) identifier.getContainingFile().getOriginalFile();
+		if (containingFile.getVirtualFile() == null) return null;
 		Module moduleOfDocument = ModuleProvider.getModuleOf(containingFile);
 		List<TaraBoxFileImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(moduleOfDocument);
 		for (TaraBoxFileImpl taraBoxFile : taraFilesOfModule)

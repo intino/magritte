@@ -5,6 +5,7 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.ModuleAdapter;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
@@ -70,11 +71,15 @@ public class TaraModuleListener implements ProjectComponent {
 
 		private final Map<Module, String> myModulesNames = new HashMap<>();
 
-		public MyModuleListener(Project project) {
+		public MyModuleListener(final Project project) {
+			for (Module module : ModuleManager.getInstance(project).getModules())
+				myModulesNames.put(module, module.getName());
 			Disposer.register(project, new Disposable() {
 				@Override
 				public void dispose() {
 					myModulesNames.clear();
+					for (Module module : ModuleManager.getInstance(project).getModules())
+						myModulesNames.put(module, module.getName());
 				}
 			});
 		}
@@ -99,17 +104,14 @@ public class TaraModuleListener implements ProjectComponent {
 			for (Module module : modules) {
 				String newName = module.getName();
 				String oldName = myModulesNames.put(module, newName);
-				if (!newName.equals(oldName)) {
+				if (!newName.equals(oldName))
 					changeDependentModules(modules, module, oldName);
-				}
-
 			}
 		}
 
 		private void changeDependentModules(List<Module> modules, Module rootModule, String oldName) {
 			for (Module module : modules) {
 				if (ModuleConfiguration.getInstance(module).getMetamodelName().equals(oldName)) {
-					ModuleConfiguration.getInstance(module).setMetamodelFilePath(rootModule.getModuleFilePath());
 					ModuleConfiguration.getInstance(module).setMetamodelName(rootModule.getName());
 				}
 				refreshFiles(TaraUtil.getTaraFilesOfModule(module));
