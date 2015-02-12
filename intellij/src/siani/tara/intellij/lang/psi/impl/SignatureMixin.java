@@ -2,7 +2,6 @@ package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
@@ -52,12 +51,7 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 	public Concept getParentConcept() {
 		IdentifierReference parentReference = findChildByClass(IdentifierReference.class);
 		if (parentReference == null) return null;
-		PsiElement resolve = ReferenceManager.resolve(parentReference);
-		if (resolve instanceof Identifier) {
-			Identifier identifier = (Identifier) resolve;
-			return TaraPsiImplUtil.getConceptContainerOf(identifier);
-		}
-		return null;
+		return ReferenceManager.resolveToConcept(parentReference);
 	}
 
 

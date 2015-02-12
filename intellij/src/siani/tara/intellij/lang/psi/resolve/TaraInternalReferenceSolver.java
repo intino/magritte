@@ -8,11 +8,8 @@ import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.HeaderReference;
-import siani.tara.intellij.lang.psi.Identifier;
-import siani.tara.intellij.lang.psi.IdentifierReference;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.VariantsManager;
 
 import java.util.*;
@@ -22,11 +19,6 @@ public class TaraInternalReferenceSolver extends TaraReferenceSolver {
 
 	public TaraInternalReferenceSolver(@NotNull PsiElement element, TextRange textRange) {
 		super(element, textRange);
-	}
-
-	@Override
-	protected PsiElement doMultiResolve() {
-		return ReferenceManager.resolve((Identifier) myElement);
 	}
 
 	@Nullable
@@ -40,9 +32,18 @@ public class TaraInternalReferenceSolver extends TaraReferenceSolver {
 	@Override
 	public Object[] getVariants() {
 		final Set<Concept> variants = new LinkedHashSet();
-		if (myElement.getParent() instanceof IdentifierReference || myElement.getParent() instanceof HeaderReference)
-			new VariantsManager(variants, myElement).resolveVariants();
+		if (isConceptReference()) {
+			VariantsManager manager = new VariantsManager(variants, myElement);
+			manager.resolveVariants();
+			if (isParameterReference()) filterParamsByContext();
+		}
 		return fillVariants(variants);
+	}
+
+
+	@Override
+	protected PsiElement doMultiResolve() {
+		return myElement;
 	}
 
 	public Object[] fillVariants(Collection<Concept> variants) {
@@ -58,5 +59,17 @@ public class TaraInternalReferenceSolver extends TaraReferenceSolver {
 	private String getFileName(PsiElement concept) {
 		String name = concept.getContainingFile().getName();
 		return name.substring(0, name.lastIndexOf("."));
+	}
+
+	private boolean isConceptReference() {
+		return myElement.getParent() instanceof IdentifierReference || myElement.getParent() instanceof HeaderReference;
+	}
+
+	public boolean isParameterReference() {
+		return myElement.getParent().getParent() instanceof TaraParameterValue;
+	}
+
+	private void filterParamsByContext() {//TODO filter in implicit parameters mode
+		Concept concept = TaraPsiImplUtil.getConceptContainerOf(myElement);
 	}
 }

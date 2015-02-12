@@ -19,4 +19,6 @@ public interface Parameter extends Navigatable, TaraPsiElement {
 	public int getValuesLength();
 
 	public TaraFacetApply isInFacet();
+
+	public String getExplicitName();
 }

@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContainerOf;
-
 public class VariantsManager {
 
 	private final Set<Concept> variants;
@@ -25,15 +23,11 @@ public class VariantsManager {
 		addContextVariants((Identifier) myElement);
 		addInBoxVariants();
 		addImportVariants();
-		if (isParameterReference()) filterByContext();
-	}
-
-	private void filterByContext() {
 
 	}
 
 	private void addContextVariants(Identifier identifier) {
-		Concept container = getConceptContainerOf(identifier);
+		Concept container = TaraPsiImplUtil.getConceptContainerOf(identifier);
 		if (container != null && !isExtendsReference((IdentifierReference) identifier.getParent()) &&
 			namesAreEqual(identifier, container))
 			variants.add(container);
@@ -51,7 +45,6 @@ public class VariantsManager {
 	private static boolean namesAreEqual(Identifier identifier, Concept concept) {
 		return identifier.getText().equals(concept.getName());
 	}
-
 
 	private void addInBoxVariants() {
 		TaraBoxFile box = ((TaraBoxFile) myElement.getContainingFile());
@@ -104,9 +97,5 @@ public class VariantsManager {
 			return (List<Identifier>) list.subList(0, list.size() - 1);
 		}
 		return null;
-	}
-
-	public boolean isParameterReference() {
-		return myElement.getParent().getParent() instanceof TaraParameterValue;
 	}
 }

@@ -96,7 +96,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public Concept getParentConcept() {
-		return this.getSignature().getParentConcept();
+		return TaraPsiImplUtil.getParentOf((Concept) this);
 	}
 
 	public MetaIdentifier getMetaIdentifier() {

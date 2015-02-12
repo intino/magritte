@@ -21,9 +21,7 @@ import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
-import siani.tara.lang.FacetTarget;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
+import siani.tara.lang.*;
 
 import java.util.*;
 
@@ -119,6 +117,20 @@ public class TaraUtil {
 		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(resolve);
 		String type = contextOf.getType();
 		return metaQualifiedName + "." + type;
+	}
+
+	public static Concept findScope(Node node, Concept concept) {
+		Node currentNode = node.getContainer();
+		while (currentNode != null)
+			if (currentNode.is(siani.tara.lang.Annotation.ENCLOSED))
+				break;
+			else currentNode = currentNode.getContainer();
+		if (currentNode == null) return null;
+		Concept container = concept.getContainer();
+		while (container != null)
+			if (currentNode.getName().equals(container.getType())) return container;
+			else container = container.getContainer();
+		return null;
 	}
 
 	@NotNull

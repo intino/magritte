@@ -10,7 +10,6 @@ import siani.tara.intellij.lang.psi.impl.TaraParameterValueImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
-import siani.tara.lang.Annotation;
 import siani.tara.lang.*;
 import siani.tara.lang.Variable;
 import siani.tara.lang.Word;
@@ -176,7 +175,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 	}
 
 	private void checkAsReference(PsiElement[] parameterValues, Reference reference) {
-		Concept scope = findScope();
+		Concept scope = TaraUtil.findScope(node, concept);
 		if (parameterValues.length > 1 && !reference.isList())
 			results.put(parameterValues[0].getParent(), new AnnotateAndFix(ERROR, "Only one item is expected"));
 		for (PsiElement value : parameterValues) {
@@ -192,22 +191,14 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		}
 	}
 
-	private Concept findScope() {
-		Node currentNode = node.getContainer();
-		while (currentNode != null)
-			if (currentNode.is(Annotation.ENCLOSED))
-				break;
-			else currentNode = currentNode.getContainer();
-		if (currentNode == null) return null;
-		Concept container = concept.getContainer();
-		while (container != null)
-			if (currentNode.getName().equals(container.getType())) return container;
-			else container = container.getContainer();
-		return null;
+	private boolean inScope(TaraIdentifierReference reference, Concept scope) {
+		Concept conceptReference = ReferenceManager.resolveToConcept(reference);
+		return conceptReference.getQualifiedName().startsWith(scope.getQualifiedName() + ".");
 	}
 
+
 	private boolean checkWellReference(TaraIdentifierReference reference, Reference variable) {
-		Concept destiny = getConceptContainerOf(ReferenceManager.resolveToConcept(reference));
+		Concept destiny = ReferenceManager.resolveToConcept(reference);
 		if (destiny != null) {
 			MetaIdentifier metaIdentifier = destiny.getMetaIdentifier();
 			if ((metaIdentifier != null))
@@ -228,11 +219,6 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 			if (facetApply.getFacetName().equals(facet))
 				return true;
 		return false;
-	}
-
-	private boolean inScope(TaraIdentifierReference reference, Concept scope) {
-		Concept conceptReference = ReferenceManager.resolveToConcept(reference);
-		return conceptReference.getQualifiedName().startsWith(scope.getQualifiedName() + ".");
 	}
 
 	private boolean checkInHierarchy(String name, String type) {
