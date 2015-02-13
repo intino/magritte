@@ -46,22 +46,24 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		else if (!analyzeIfExtendedFromSameType(concept))
 			results.put(concept.getSignature().getParentReference(), addError(message("invalid.extension.concept")));
 		if (hasErrors()) return;
-		analyzeAnnotationsConstrains();
 		Node node = findMetaConcept(concept);
 		if (node != null) {
 			if (!hasErrors()) analyzeMetaAnnotationConstrains(node);
-			if (!hasErrors()) analyzeMetaMetaAnnotationConstrains(node);
+			if (!hasErrors()) analyzeFacetConstrains(node);
 			if (!hasErrors()) analyzeAddressAdded(node);
 			if (!hasErrors()) analyzeConceptName(concept, TaraUtil.isTerminalBox(concept.getFile()));
 		}
 		if (!hasErrors()) analyzeJavaClassCreation(node, concept);
 	}
 
-	private void analyzeAnnotationsConstrains() {
-		if (concept.isFacet() && concept.getFacetTargets().isEmpty())
+	private void analyzeFacetConstrains(Node node) {
+		if ((concept.isFacet() || node.is(META_FACET))) {
+			if (!concept.getSubConcepts().isEmpty() && !concept.getFacetTargets().isEmpty())
+				results.put(concept.getSignature(), addError(message("abstract.facet.has.no.targets")));
+		}
+		Concept parent = concept.getParentConcept();
+		if (concept.isSub() && concept.getFacetTargets().isEmpty() && (parent.isFacet() || findMetaConcept(parent).is(META_FACET)))
 			results.put(concept.getSignature(), addError(message("facet.target.missed")));
-		else if (concept.isSub() && !concept.getFacetTargets().isEmpty())
-			results.put(concept.getSignature(), addError(message("facets.not.allowed")));
 	}
 
 	private AnnotateAndFix addError(String message) {
@@ -141,7 +143,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class"), new LinkToJavaFix(concept)));
 		else if (node != null && node.is(INTENTION) && !isFacetClassCreated(concept))
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class"), new LinkToJavaFix(concept)));
- 		else if (shouldHaveFacetTargetClass(node, concept) && !isFacetClassCreated(concept))
+		else if (shouldHaveFacetTargetClass(node, concept) && !isFacetClassCreated(concept))
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.java.generated.class"), new LinkToJavaFix(concept)));
 		for (FacetApply facetApply : concept.getFacetApplies())
 			if (node != null && isFacetIntentionImplementation(node, facetApply) && !isFacetApplyClassCreated(concept, facetApply.getFacetName()))
@@ -207,15 +209,6 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 			for (FacetTarget facetTarget : node.getObject().getAllowedFacets().get(apply.getFacetName()))
 				if (facetTarget.isIntention()) return true;
 		return false;
-	}
-
-	private void analyzeMetaMetaAnnotationConstrains(Node node) {
-		if (node.getObject().is(META_FACET)) {
-			if (concept.getSubConcepts().isEmpty() && concept.getFacetTargets().isEmpty())
-				results.put(concept.getSignature(), addError(message("facet.target.missed")));
-			else if (!concept.getSubConcepts().isEmpty() && !concept.getFacetTargets().isEmpty())
-				results.put(concept.getSignature(), addError(message("abstract.facet.has.no.targets")));
-		}
 	}
 
 	private boolean analyzeAsProperty(Node node) {

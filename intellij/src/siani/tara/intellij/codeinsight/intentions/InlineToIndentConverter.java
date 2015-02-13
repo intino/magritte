@@ -1,4 +1,4 @@
-package siani.tara.intellij.codeinsight.intention;
+package siani.tara.intellij.codeinsight.intentions;
 
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;

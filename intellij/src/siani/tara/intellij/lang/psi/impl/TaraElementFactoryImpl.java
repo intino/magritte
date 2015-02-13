@@ -8,6 +8,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 
+import java.util.Map;
+
 public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	private final Project project;
@@ -107,9 +109,9 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	@Override
-	public Parameters createParameters(boolean string) {
+	public Parameters createParameters(boolean stringValue) {
 		final TaraBoxFileImpl file = createDummyFile(
-			"Form(" + (string ? "\"\"" : "") + ")" + "Ficha\n"
+			"Form(" + (stringValue ? "\"\"" : "") + ")" + "Ficha\n"
 		);
 		return file.getConcepts().iterator().next().getSignature().getParameters();
 	}
@@ -126,8 +128,25 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	private String buildParameters(String[] names) {
 		String parms = "";
 		String separator = ", ";
-		for (String name : names) parms += name + " = " + separator;
-		return parms.substring(0, parms.length() - separator.length());
+		for (String name : names) parms += separator + name;
+		return parms.substring(separator.length());
+	}
+
+	@Override
+	public Parameters createExplicitParameters(Map<String, String> parameters) {
+		String assigns = buildExplicitParameters(parameters);
+		final TaraBoxFileImpl file = createDummyFile(
+			"Form(" + assigns + ")" + " Ficha\n"
+		);
+		return file.getConcepts().iterator().next().getSignature().getParameters();
+	}
+
+	private String buildExplicitParameters(Map<String, String> parameters) {
+		String params = "";
+		String separator = ", ";
+		for (Map.Entry<String, String> name : parameters.entrySet())
+			params += separator + name.getKey() + " = " + name.getValue();
+		return params.substring(separator.length());
 	}
 
 	public TaraAddress createAddress(long value) {
@@ -205,8 +224,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		String indents = "";
 		for (int i = 0; i < level; i++) indents += "\t";
 		final TaraBoxFileImpl file = createDummyFile("Form Ficha\n" +
-			indents+"Form Ficha2\n" +
-			indents +"Form Ficha3");
+			indents + "Form Ficha2\n" +
+			indents + "Form Ficha3");
 		Concept concept = file.getConcepts().iterator().next();
 		LeafPsiElement[] childrenOfType = PsiTreeUtil.getChildrenOfType(concept.getBody(), LeafPsiElement.class);
 		return childrenOfType[1];

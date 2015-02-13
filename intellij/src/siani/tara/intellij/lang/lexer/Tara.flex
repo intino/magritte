@@ -162,7 +162,7 @@ PLUS                = "+"
 DIGIT               = [:digit:]
 STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
 STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
-
+//"(\\.|[^\\"])*\"  string literal
 IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 %%

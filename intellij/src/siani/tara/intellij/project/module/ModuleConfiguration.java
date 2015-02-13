@@ -128,8 +128,8 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 		return configuration.isTerminal();
 	}
 
-	public void setTerminal(boolean system) {
-		configuration.terminal = system;
+	public void setTerminal(boolean terminal) {
+		configuration.terminal = terminal;
 	}
 
 	public String getMetamodelFilePath() {
@@ -153,7 +153,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 		public String metamodelFilePath = "";
 		public String generatedModelName = "";
 		public String language = "";
-		public boolean terminal = false;
+		public boolean terminal;
 
 		@Override
 		public void readExternal(Element element) throws InvalidDataException {
@@ -182,7 +182,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 		}
 
 		public boolean isTerminal() {
-			return terminal;
+			return terminal || generatedModelName.isEmpty();
 		}
 	}
 }

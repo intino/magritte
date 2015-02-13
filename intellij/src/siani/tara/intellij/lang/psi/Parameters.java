@@ -8,5 +8,7 @@ public interface Parameters extends Navigatable, TaraPsiElement {
 	@NotNull
 	Parameter[] getParameters();
 
+	boolean areExplicit();
+
 	TaraFacetApply isInFacet();
 }

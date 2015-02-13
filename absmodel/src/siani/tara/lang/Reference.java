@@ -31,13 +31,8 @@ public class Reference extends Variable {
 		this.type = type;
 	}
 
-	@Override
-	public String[] getDefaultValues() {
-		return (empty) ? new String[]{EMPTY} : new String[0];
-	}
-
 	public boolean isEmpty() {
-		return empty;
+		return empty || getDefaultValues().length > 0;
 	}
 
 	public void setEmpty(boolean empty) {

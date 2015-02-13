@@ -5,6 +5,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
 
+import java.util.Map;
+
 public abstract class TaraElementFactory {
 
 	public static TaraElementFactory getInstance(Project project) {
@@ -30,6 +32,8 @@ public abstract class TaraElementFactory {
 	public abstract Parameters createParameters(boolean string);
 
 	public abstract Parameters createParameters(String... string);
+
+	public abstract Parameters createExplicitParameters(Map<String, String> parameters);
 
 	public abstract Variable createWord(String name, String[] types);
 

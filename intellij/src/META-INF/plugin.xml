@@ -178,14 +178,24 @@
     <findUsagesHandlerFactory implementation="siani.tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara"
                               order="last, before default"/>
     <intentionAction>
-      <className>siani.tara.intellij.codeinsight.intention.InlineToIndentConverter</className>
+      <className>siani.tara.intellij.codeinsight.intentions.InlineToIndentConverter</className>
       <category>Indent Operator</category>
       <descriptionDirectoryName>InlineToIndentConverter</descriptionDirectoryName>
     </intentionAction>
     <intentionAction>
-      <className>siani.tara.intellij.codeinsight.intention.IndentToInlineConverter</className>
+      <className>siani.tara.intellij.codeinsight.intentions.IndentToInlineConverter</className>
       <category>Indent Operator</category>
       <descriptionDirectoryName>IndentToInlineConverter</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
+      <className>siani.tara.intellij.codeinsight.intentions.ImplicitToExplicitParameters</className>
+      <category>Parameter View Operator</category>
+      <descriptionDirectoryName>ImplicitToExplicitParameters</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
+      <className>siani.tara.intellij.codeinsight.intentions.ExplicitToImplicitParameters</className>
+      <category>Parameter View Operator</category>
+      <descriptionDirectoryName>ImplicitToExplicitParameters</descriptionDirectoryName>
     </intentionAction>
   </extensions>
 
@@ -197,10 +207,4 @@
       <implementation-class>siani.tara.intellij.project.module.ModuleConfiguration</implementation-class>
     </component>
   </module-components>
-
-  <project-components>
-    <component>
-      <implementation-class>siani.tara.intellij.project.module.TaraModuleListener</implementation-class>
-    </component>
-  </project-components>
 </idea-plugin>

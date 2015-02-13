@@ -20,6 +20,11 @@ public class ParametersMixin extends ASTWrapperPsiElement {
 		return childrenOfType == null ? new Parameter[0] : childrenOfType;
 	}
 
+	public boolean areExplicit() {
+		Parameter[] parameters = getParameters();
+		return parameters.length != 0 && parameters[0].isExplicit();
+	}
+
 	public TaraFacetApply isInFacet() {
 		PsiElement aElement = this;
 		while (!(aElement.getParent() instanceof Concept) && !(aElement.getParent() instanceof TaraFacetApply))

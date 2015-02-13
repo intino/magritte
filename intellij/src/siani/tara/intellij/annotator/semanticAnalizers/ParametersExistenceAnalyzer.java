@@ -7,7 +7,6 @@ import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.lang.Node;
 import siani.tara.lang.Variable;
-import siani.tara.lang.Word;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ public class ParametersExistenceAnalyzer extends TaraAnalyzer {
 	private List<String> collectMinimumNumberOfParameter(List<Variable> variables, boolean terminal) {
 		List<String> result = new ArrayList<>();
 		for (Variable variable : variables)
-			if (!((variable.getDefaultValues() != null && variable.getDefaultValues().length > 0) || (!terminal && variable.isTerminal()) || (variable instanceof Word)))
+			if ((!terminal && variable.isTerminal()) || variable.getDefaultValues() == null || variable.getDefaultValues().length == 0)
 				result.add(variable.getName());
 		return result;
 	}
@@ -65,5 +64,4 @@ public class ParametersExistenceAnalyzer extends TaraAnalyzer {
 		for (String p : parameterList) params += ", " + p;
 		return params.substring(2);
 	}
-
 }

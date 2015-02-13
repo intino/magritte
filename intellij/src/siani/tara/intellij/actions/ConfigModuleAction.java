@@ -50,7 +50,7 @@ public class ConfigModuleAction extends AnAction implements DumbAware {
 			return;
 		}
 		final Module module = e.getData(LangDataKeys.MODULE);
-		if (module == null) new RuntimeException("Module not found!");
+		if (module == null) throw new RuntimeException("Module not found!");
 		configureModule(module);
 	}
 

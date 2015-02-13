@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ConfigModuleDialogPane extends DialogWrapper {
 
@@ -75,7 +76,7 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 		if (metamodelBox.getSelectedItem() == null) metamodelBox.setSelectedItem(NO_PARENT);
 		generativeModelCheckBox.setSelected(!ModuleConfiguration.getInstance(module).isTerminal());
 		languageName.setText(ModuleConfiguration.getInstance(module).getGeneratedModelName());
-		language.setSelectedItem(ModuleConfiguration.getInstance(module).getLanguage());
+		language.setSelectedItem(ModuleConfiguration.getInstance(module).getLanguage().equals(Locale.ENGLISH) ? "English" : "Español");
 	}
 
 	private void addModuleMetaModels() {

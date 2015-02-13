@@ -35,6 +35,6 @@ public abstract class TaraAnalyzer {
 	}
 
 	protected Node findMetaConcept(Concept concept) {
-		return TaraUtil.getMetaConcept(concept);
+		return TaraUtil.getMetaConcept(concept.isSub() ? concept.getParentConcept() : concept);
 	}
 }
