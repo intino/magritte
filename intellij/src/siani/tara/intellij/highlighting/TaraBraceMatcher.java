@@ -6,11 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.TaraTypes;
-
-import static com.intellij.psi.TokenType.WHITE_SPACE;
-import static siani.tara.intellij.lang.psi.TaraTypes.IDENTIFIER_KEY;
 
 public class TaraBraceMatcher implements PairedBraceMatcher {
 	private final BracePair[] PAIRS;
@@ -18,6 +14,7 @@ public class TaraBraceMatcher implements PairedBraceMatcher {
 	public TaraBraceMatcher() {
 		PAIRS = new BracePair[]{
 			new BracePair(TaraTypes.LEFT_PARENTHESIS, TaraTypes.RIGHT_PARENTHESIS, false),
+			new BracePair(TaraTypes.QUOTE_BEGIN, TaraTypes.QUOTE_END, false),
 		};
 	}
 
@@ -26,10 +23,7 @@ public class TaraBraceMatcher implements PairedBraceMatcher {
 	}
 
 	public boolean isPairedBracesAllowedBeforeType(@NotNull IElementType braceType, @Nullable IElementType tokenType) {
-		return tokenType == null
-			|| tokenType == WHITE_SPACE
-			|| tokenType == IDENTIFIER_KEY
-			|| tokenType.getLanguage() != TaraFileType.INSTANCE.getLanguage();
+		return true;
 	}
 
 	public int getCodeConstructStart(final PsiFile file, int openingBraceOffset) {

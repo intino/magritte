@@ -128,6 +128,7 @@
                                    implementationClass="siani.tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="siani.tara.intellij.highlighting.TaraColorSettingPage"/>
     <lang.braceMatcher language="Tara" implementationClass="siani.tara.intellij.highlighting.TaraBraceMatcher"/>
+    <quoteHandler fileType="Tara" className="siani.tara.intellij.codeinsight.TaraQuoteHandler"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AnnotationsAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptAnnotator"/>

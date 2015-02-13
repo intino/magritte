@@ -120,7 +120,7 @@ RIGHT_PARENTHESIS   = ")"
 LEFT_SQUARE         = "["
 RIGHT_SQUARE        = "]"
 LIST                = "..."
-APOSTROPHE          = "\""
+QUOTE          = "\""
 DASH                = "-"
 UNDERDASH           = "_"
 DASHES              = {DASH} {DASH}+
@@ -161,9 +161,12 @@ DOC_LINE            = "def" ~[\n]
 PLUS                = "+"
 DIGIT               = [:digit:]
 STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
-STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
+STRING_VALUE_KEY    = {QUOTE} ~ {QUOTE}
 //"(\\.|[^\\"])*\"  string literal
 IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
+
+ANY=.|\n
+%xstate QUOTED
 
 %%
 <YYINITIAL> {
@@ -204,8 +207,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
     {ROOT}                          {   return TaraTypes.ROOT; }
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
-
-	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE_KEY; }
+	{QUOTE}                         { yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
+//	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE_KEY; }
 	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
 
 	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
@@ -245,10 +248,12 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{SPACES}                        {   return TokenType.WHITE_SPACE; }
 
 	{SP}                            {   return TokenType.WHITE_SPACE; }
+	<<EOF>>                         {   return eof(); }
+}
 
-	<<EOF>>                         {
-                                        return eof();
-                                    }
+<QUOTED> {
+  {QUOTE}                           { yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
+  {ANY}                             { return TaraTypes.CHARACTER; }
 }
 
 .                                   {  return TokenType.BAD_CHARACTER;}

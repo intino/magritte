@@ -48,6 +48,7 @@ public interface TaraTypes {
 	IElementType NATURAL_VALUE = new TaraElementType("NATURAL_VALUE");
 	IElementType PARAMETERS = new TaraElementType("PARAMETERS");
 	IElementType PARAMETER_VALUE = new TaraElementType("PARAMETER_VALUE");
+	IElementType QUOTES = new TaraElementType("QUOTES");
 	IElementType RATIO_ATTRIBUTE = new TaraElementType("RATIO_ATTRIBUTE");
 	IElementType REFERENCE_ATTRIBUTE = new TaraElementType("REFERENCE_ATTRIBUTE");
 	IElementType RESOURCE = new TaraElementType("RESOURCE");
@@ -70,6 +71,7 @@ public interface TaraTypes {
 	IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
 	IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
 	IElementType CASE = new TaraTokenType("CASE");
+	IElementType CHARACTER = new TaraTokenType("CHARACTER");
 	IElementType COLON = new TaraTokenType("COLON");
 	IElementType COMMA = new TaraTokenType("COMMA");
 	IElementType COMPONENT = new TaraTokenType("COMPONENT");
@@ -108,6 +110,8 @@ public interface TaraTypes {
 	IElementType PLUS = new TaraTokenType("PLUS");
 	IElementType PROPERTY = new TaraTokenType("PROPERTY");
 	IElementType PROTEO = new TaraTokenType("PROTEO");
+	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
+	IElementType QUOTE_END = new TaraTokenType("QUOTE_END");
 	IElementType RATIO_TYPE = new TaraTokenType("RATIO_TYPE");
 	IElementType READONLY = new TaraTokenType("READONLY");
 	IElementType REQUIRED = new TaraTokenType("REQUIRED");
@@ -119,7 +123,6 @@ public interface TaraTypes {
 	IElementType STAR = new TaraTokenType("STAR");
 	IElementType STRING_MULTILINE_VALUE_KEY = new TaraTokenType("STRING_MULTILINE_VALUE_KEY");
 	IElementType STRING_TYPE = new TaraTokenType("STRING_TYPE");
-	IElementType STRING_VALUE_KEY = new TaraTokenType("STRING_VALUE_KEY");
 	IElementType SUB = new TaraTokenType("SUB");
 	IElementType TERMINAL = new TaraTokenType("TERMINAL");
 	IElementType USE = new TaraTokenType("USE");
@@ -208,6 +211,8 @@ public interface TaraTypes {
 				return new TaraParametersImpl(node);
 			} else if (type == PARAMETER_VALUE) {
 				return new TaraParameterValueImpl(node);
+			} else if (type == QUOTES) {
+				return new TaraQuotesImpl(node);
 			} else if (type == RATIO_ATTRIBUTE) {
 				return new TaraRatioAttributeImpl(node);
 			} else if (type == REFERENCE_ATTRIBUTE) {

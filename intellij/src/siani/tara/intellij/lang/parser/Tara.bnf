@@ -142,7 +142,7 @@ measureType     ::= IDENTIFIER_KEY {
 	implements = 'siani.tara.intellij.lang.psi.MeasureType'
 }
 
-stringValue     ::= STRING_VALUE_KEY  | (NEWLINE? STRING_MULTILINE_VALUE_KEY)
+stringValue     ::= (QUOTE_BEGIN CHARACTER* QUOTE_END) | (NEWLINE? STRING_MULTILINE_VALUE_KEY)
 booleanValue    ::= BOOLEAN_VALUE_KEY
 naturalValue    ::= NATURAL_VALUE_KEY
 integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
@@ -216,3 +216,5 @@ metaIdentifier ::= METAIDENTIFIER_KEY | IDENTIFIER_KEY {
 	mixin = 'siani.tara.intellij.lang.psi.impl.MetaIdentifierMixin'
 	implements = 'siani.tara.intellij.lang.psi.MetaIdentifier'
 }
+
+quotes::= QUOTE_BEGIN | QUOTE_END | CHARACTER

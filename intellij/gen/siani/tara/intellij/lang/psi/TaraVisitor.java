@@ -162,6 +162,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitParameters(o);
   }
 
+  public void visitQuotes(@NotNull TaraQuotes o) {
+    visitPsiElement(o);
+  }
+
   public void visitRatioAttribute(@NotNull TaraRatioAttribute o) {
     visitPsiElement(o);
   }

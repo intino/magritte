@@ -140,7 +140,9 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(NATURAL_VALUE_KEY, NUMBER);
 		KEYS.put(NEGATIVE_VALUE_KEY, NUMBER);
 		KEYS.put(BOOLEAN_VALUE_KEY, KEYWORD);
-		KEYS.put(STRING_VALUE_KEY, STRING);
+		KEYS.put(QUOTE_BEGIN, STRING);
+		KEYS.put(QUOTE_END, STRING);
+		KEYS.put(CHARACTER, STRING);
 		KEYS.put(STRING_MULTILINE_VALUE_KEY, STRING);
 		KEYS.put(DATE_VALUE_KEY, NUMBER);
 		KEYS.put(TokenType.WHITE_SPACE, null);

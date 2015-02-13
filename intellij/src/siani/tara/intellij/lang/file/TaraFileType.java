@@ -16,7 +16,7 @@ public class TaraFileType extends LanguageFileType {
 	@NotNull
 	@Override
 	public String getName() {
-		return "Tara file";
+		return "Tara";
 	}
 
 	@NotNull

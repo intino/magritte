@@ -139,6 +139,9 @@ public class TaraParser implements PsiParser {
     else if (t == PARAMETERS) {
       r = parameters(b, 0);
     }
+    else if (t == QUOTES) {
+      r = quotes(b, 0);
+    }
     else if (t == RATIO_ATTRIBUTE) {
       r = ratioAttribute(b, 0);
     }
@@ -1648,6 +1651,19 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // QUOTE_BEGIN | QUOTE_END | CHARACTER
+  public static boolean quotes(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "quotes")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, "<quotes>");
+    r = consumeToken(b, QUOTE_BEGIN);
+    if (!r) r = consumeToken(b, QUOTE_END);
+    if (!r) r = consumeToken(b, CHARACTER);
+    exit_section_(b, l, m, QUOTES, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
   // RATIO_TYPE   LIST? IDENTIFIER_KEY (EQUALS doubleValue+)?
   public static boolean ratioAttribute(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ratioAttribute")) return false;
@@ -1981,15 +1997,39 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // STRING_VALUE_KEY  | (NEWLINE? STRING_MULTILINE_VALUE_KEY)
+  // (QUOTE_BEGIN CHARACTER* QUOTE_END) | (NEWLINE? STRING_MULTILINE_VALUE_KEY)
   public static boolean stringValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stringValue")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<string value>");
-    r = consumeToken(b, STRING_VALUE_KEY);
+    r = stringValue_0(b, l + 1);
     if (!r) r = stringValue_1(b, l + 1);
     exit_section_(b, l, m, STRING_VALUE, r, false, null);
     return r;
+  }
+
+  // QUOTE_BEGIN CHARACTER* QUOTE_END
+  private static boolean stringValue_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stringValue_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, QUOTE_BEGIN);
+    r = r && stringValue_0_1(b, l + 1);
+    r = r && consumeToken(b, QUOTE_END);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // CHARACTER*
+  private static boolean stringValue_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stringValue_0_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!consumeToken(b, CHARACTER)) break;
+      if (!empty_element_parsed_guard_(b, "stringValue_0_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
   }
 
   // NEWLINE? STRING_MULTILINE_VALUE_KEY

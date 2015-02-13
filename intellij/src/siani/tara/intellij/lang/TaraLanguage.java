@@ -46,7 +46,7 @@ public class TaraLanguage extends Language {
 
 	public static Model getMetaModel(String parent, Project project) {
 		addSdkToModelRoots(project);
-		if (parent.equals(PROTEO)) return null;
+		if (parent.equals(PROTEO) || parent.isEmpty()) return null;
 		return getModel(parent);
 	}
 

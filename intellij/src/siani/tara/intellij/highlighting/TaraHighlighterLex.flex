@@ -99,7 +99,7 @@ COMMA               = ","
 COLON               = ":"
 EQUALS              = "="
 SEMICOLON           = ";"
-APOSTROPHE          = "\""
+QUOTE          = "\""
 DASH                = "-"
 UNDERDASH           = "_"
 DASHES              = {DASH} {DASH}+
@@ -122,7 +122,7 @@ NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
 NOT_CIENTIFICA      = "E" ({PLUS} | {DASH})? {DIGIT}+
 DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {NOT_CIENTIFICA}?
-STRING_VALUE_KEY    = {APOSTROPHE} ~ {APOSTROPHE}
+STRING_VALUE_KEY    = {QUOTE} ~ {QUOTE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
 MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
@@ -134,6 +134,9 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 SP                  = ([ ]+ | [\t]+) | ">"
 SPACES              = {SP}+
 NEWLINE             = [\n]+
+
+ANY=.|\n
+%xstate QUOTED
 
 %%
 <YYINITIAL> {
@@ -175,7 +178,8 @@ NEWLINE             = [\n]+
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 
 	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
-	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE_KEY; }
+	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
+//	{STRING_VALUE_KEY}              {   return TaraTypes.QUOTE_BEGIN; }
 	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
 	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
 	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }
@@ -218,6 +222,11 @@ NEWLINE             = [\n]+
     {NEWLINE}                       {   return TokenType.WHITE_SPACE; }
 
     .                               {   return TokenType.BAD_CHARACTER; }
+}
+
+<QUOTED> {
+  {QUOTE}                           { yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
+  {ANY}                             { return TaraTypes.CHARACTER; }
 }
 
 .                                   {  return TokenType.BAD_CHARACTER; }
