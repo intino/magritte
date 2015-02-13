@@ -135,7 +135,8 @@ SP                  = ([ ]+ | [\t]+) | ">"
 SPACES              = {SP}+
 NEWLINE             = [\n]+
 
-ANY=.|\n
+ANY=.|\n|\"
+
 %xstate QUOTED
 
 %%
@@ -218,15 +219,18 @@ ANY=.|\n
 
 	{IDENTIFIER_KEY}                {   return evaluateIdentifier();  }
 
-    {MEASURE_VALUE_KEY}            {   return TaraTypes.MEASURE_VALUE; }
+    {MEASURE_VALUE_KEY}             {   return TaraTypes.MEASURE_VALUE; }
     {NEWLINE}                       {   return TokenType.WHITE_SPACE; }
-
-    .                               {   return TokenType.BAD_CHARACTER; }
 }
 
 <QUOTED> {
   {QUOTE}                           { yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
-  {ANY}                             { return TaraTypes.CHARACTER; }
+  [^\n\r\"\\]                       { return TaraTypes.CHARACTER; }
+  \\t                               { return TaraTypes.CHARACTER; }
+  \\n                               { return TaraTypes.CHARACTER; }
+  \\r                               { return TaraTypes.CHARACTER; }
+  \\\"                              { return TaraTypes.CHARACTER; }
+  \\                                { return TaraTypes.CHARACTER; }
 }
 
-.                                   {  return TokenType.BAD_CHARACTER; }
+[^]                                  {  return TokenType.BAD_CHARACTER; }

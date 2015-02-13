@@ -161,11 +161,9 @@ DOC_LINE            = "def" ~[\n]
 PLUS                = "+"
 DIGIT               = [:digit:]
 STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
-STRING_VALUE_KEY    = {QUOTE} ~ {QUOTE}
 //"(\\.|[^\\"])*\"  string literal
 IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
-ANY=.|\n
 %xstate QUOTED
 
 %%
@@ -252,8 +250,13 @@ ANY=.|\n
 }
 
 <QUOTED> {
-  {QUOTE}                           { yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
-  {ANY}                             { return TaraTypes.CHARACTER; }
+    {QUOTE}                         { yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
+    [^\n\r\"\\]                     { return TaraTypes.CHARACTER; }
+    \\t                             { return TaraTypes.CHARACTER; }
+    \\n                             { return TaraTypes.CHARACTER; }
+    \\r                             { return TaraTypes.CHARACTER; }
+    \\\"                            { return TaraTypes.CHARACTER; }
+    \\                              { return TaraTypes.CHARACTER; }
 }
 
-.                                   {  return TokenType.BAD_CHARACTER;}
+[^]                                   { return TokenType.BAD_CHARACTER;}
