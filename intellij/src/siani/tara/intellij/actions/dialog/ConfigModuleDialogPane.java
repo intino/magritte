@@ -24,7 +24,7 @@ import java.util.Locale;
 
 public class ConfigModuleDialogPane extends DialogWrapper {
 
-	private static final String NO_PARENT = "None";
+	private static final String PROTEO = "Proteo";
 	private static final String MODEL_EXT = ".json";
 	private final Project project;
 	private final Module module;
@@ -70,10 +70,10 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 	}
 
 	public void loadValues() {
-		metamodelBox.addItem(NO_PARENT);
+		metamodelBox.addItem(PROTEO);
 		addModuleMetaModels();
 		addSdkMetamodel();
-		if (metamodelBox.getSelectedItem() == null) metamodelBox.setSelectedItem(NO_PARENT);
+		if (metamodelBox.getSelectedItem() == null) metamodelBox.setSelectedItem(PROTEO);
 		generativeModelCheckBox.setSelected(!ModuleConfiguration.getInstance(module).isTerminal());
 		languageName.setText(ModuleConfiguration.getInstance(module).getGeneratedModelName());
 		language.setSelectedItem(ModuleConfiguration.getInstance(module).getLanguage().equals(Locale.ENGLISH) ? "English" : "Español");
@@ -92,8 +92,10 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 	private void addSdkMetamodel() {
 		Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
 		if (projectSdk == null || !projectSdk.getSdkType().equals(TaraJdk.getInstance())) return;
-		String modelRoot = projectSdk.getHomePath() + File.separator + "model" + File.separator;
-		for (File file : new File(modelRoot).listFiles(new FilenameFilter() {
+		String modelRoot = projectSdk.getHomePath() + File.separator + TaraLanguage.DSL + File.separator;
+		File tdkDir = new File(modelRoot);
+		if (!tdkDir.exists()) return;
+		for (File file : tdkDir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
 				return (name.endsWith(MODEL_EXT));
@@ -112,7 +114,7 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 
 	private void setParent(Object selectedItem) {
 		Module parentModule;
-		if (selectedItem.equals(NO_PARENT)) {
+		if (selectedItem.equals(PROTEO)) {
 			updateDependencies(null);
 			ModuleConfiguration.getInstance(module).setMetamodelName("");
 			ModuleConfiguration.getInstance(module).setMetamodelFilePath("");
@@ -126,7 +128,7 @@ public class ConfigModuleDialogPane extends DialogWrapper {
 			ModuleConfiguration.getInstance(module).setMetamodelName(selectedItem.toString());
 			Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
 			if (projectSdk != null && projectSdk.getSdkType().equals(TaraJdk.getInstance())) {
-				File file = new File(projectSdk.getHomePath() + File.separator + "model" + File.separator + selectedItem.toString() + MODEL_EXT);
+				File file = new File(projectSdk.getHomePath() + File.separator + TaraLanguage.DSL + File.separator + selectedItem.toString() + MODEL_EXT);
 				ModuleConfiguration.getInstance(module).setMetamodelFilePath(file.getAbsolutePath());
 			}
 		}

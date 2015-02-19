@@ -72,6 +72,47 @@ public class ModelHelper {
 		return null;
 	}
 
+	public Model.SearchNode createSearchTree(Node node) {
+		Model.SearchNode forward = null;
+		Node forwardConcept = node.isSub() ? getParentOfSub(node) : node;
+		Model.SearchNode previous = new Model.SearchNode(forwardConcept.getType());
+		addProperties(forwardConcept, previous);
+		while ((forwardConcept = forwardConcept.getContainer()) != null) {
+			forward = new Model.SearchNode(forwardConcept.getType());
+			addProperties(forwardConcept, forward);
+			forward.setNext(previous);
+			previous.setPrevious(forward);
+			previous = forward;
+		}
+		return forward != null ? forward : previous;
+	}
+
+	private static Node getParentOfSub(Node node) {
+		Node container = node;
+		while ((container = container.getContainer()) != null) if (!container.isSub()) return container;
+		return null;
+	}
+
+	private static void addProperties(Node node, Model.SearchNode searchNode) {
+		addGeneralProperties(node, searchNode);
+		List<String> facets = new ArrayList<>();
+		for (Facet facet : node.getObject().getFacets()) facets.add(facet.getName());
+		searchNode.setFacets(facets);
+	}
+
+	private static void addGeneralProperties(Node element, Model.SearchNode searchNode) {
+		if (element.getQualifiedName().contains(Node.IN_FACET_TARGET))
+			searchNode.setInFacetTarget(getFacetTargetContainer(element));
+	}
+
+	private static String getFacetTargetContainer(Node node) {
+		Node container = node;
+		while ((container = container.getContainer()) != null)
+			if (((DeclaredNode) container).getFacetTargetParent() != null)
+				return ((DeclaredNode) container).getFacetTargetParent().getDestinyName();
+		return null;
+	}
+
 	private FacetTarget searchFacetApply(SearchNode searchNode, Node nodeToSearch) {
 		String facet = searchNode.next.getFacet();
 		for (Map.Entry<String, List<FacetTarget>> entry : nodeToSearch.getObject().getAllowedFacets().entrySet()) {

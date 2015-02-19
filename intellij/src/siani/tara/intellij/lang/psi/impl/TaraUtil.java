@@ -25,6 +25,7 @@ import siani.tara.lang.*;
 
 import java.util.*;
 
+import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveToConcept;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContainerOf;
 
 public class TaraUtil {
@@ -45,8 +46,9 @@ public class TaraUtil {
 		return result;
 	}
 
-	public static Model getMetamodel(PsiElement element) {
-		return TaraLanguage.getMetaModel(element.getContainingFile().getOriginalFile());
+	public static Model getMetamodel(PsiElement pfile) {
+		PsiFile file = pfile.getContainingFile();
+		return TaraLanguage.getMetaModel(file.getVirtualFile() == null ? (PsiFile) file.getOriginalElement() : file);
 	}
 
 
@@ -257,11 +259,16 @@ public class TaraUtil {
 		return model != null ? model.searchNode(searchTree) : null;
 	}
 
+	public static Node findNode(ConceptReference reference, Model model) {
+		Model.SearchNode searchTree = createSearchTree(reference);
+		return model != null ? model.searchNode(searchTree) : null;
+	}
+
 	private static Model.SearchNode createSearchTree(Concept concept) {
 		Model.SearchNode forward = null;
-		Concept forwardConcept = concept;
+		Concept forwardConcept = concept.isSub() ? concept.getParentConcept() : concept;
 		Model.SearchNode previous = new Model.SearchNode(forwardConcept.getType());
-		addProperties(concept, previous);
+		addProperties(forwardConcept, previous);
 		while ((forwardConcept = TaraPsiImplUtil.getConceptContainerOf(forwardConcept)) != null) {
 			forward = new Model.SearchNode(forwardConcept.getType());
 			addProperties(forwardConcept, forward);
@@ -272,15 +279,45 @@ public class TaraUtil {
 		return forward != null ? forward : previous;
 	}
 
+	private static Model.SearchNode createSearchTree(ConceptReference reference) {
+		Model.SearchNode forward = null;
+		PsiElement forwardConcept = reference;
+		Concept destiny = resolveToConcept(reference.getIdentifierReference());
+		if (destiny == null) return null;
+		Model.SearchNode previous = new Model.SearchNode(destiny.getType());
+		addProperties(reference, previous);
+		while ((forwardConcept = TaraPsiImplUtil.getConceptContainerOf(forwardConcept)) != null) {
+			forward = new Model.SearchNode(((Concept) forwardConcept).getType());
+			addProperties((Concept) forwardConcept, forward);
+			forward.setNext(previous);
+			previous.setPrevious(forward);
+			previous = forward;
+		}
+		return forward != null ? forward : previous;
+	}
+
 	private static void addProperties(Concept concept, Model.SearchNode searchNode) {
-		PsiElement contextOf = TaraPsiImplUtil.getContextOf(concept);
-		if (contextOf instanceof FacetApply)
-			searchNode.setInFacetApply(((FacetApply) contextOf).getFacetName());
-		else if (contextOf instanceof FacetTarget)
-			searchNode.setInFacetApply(((FacetTarget) contextOf).getDestinyName());
+		addGeneralProperties(concept, searchNode);
 		List<String> facets = new ArrayList<>();
 		for (FacetApply apply : concept.getFacetApplies()) facets.add(apply.getFacetName());
 		searchNode.setFacets(facets);
+	}
+
+	private static void addProperties(ConceptReference reference, Model.SearchNode searchNode) {
+		addGeneralProperties(reference, searchNode);
+		Concept resolve = ReferenceManager.resolveToConcept(reference.getIdentifierReference());
+		if (resolve == null) return;
+		List<String> facets = new ArrayList<>();
+		for (FacetApply apply : resolve.getFacetApplies()) facets.add(apply.getFacetName());
+		searchNode.setFacets(facets);
+	}
+
+	private static void addGeneralProperties(PsiElement element, Model.SearchNode searchNode) {
+		PsiElement contextOf = TaraPsiImplUtil.getContextOf(element);
+		if (contextOf instanceof FacetApply)
+			searchNode.setInFacetApply(((FacetApply) contextOf).getFacetName());
+		else if (contextOf instanceof FacetTarget)
+			searchNode.setInFacetTarget(((FacetTarget) contextOf).getDestinyName());
 	}
 
 	public static Inflector getInflector(Module module) {
@@ -289,7 +326,8 @@ public class TaraUtil {
 
 	public static Collection<? extends Concept> findAggregatedConcepts(TaraBoxFile file) {
 		Set<Concept> aggregated = new HashSet<>();
-		for (Concept concept : getAllConceptsOfFile(file)) if (concept.isAggregated()) aggregated.add(concept);
+		for (Concept concept : getAllConceptsOfFile(file))
+			if (concept.isAnnotatedAsAggregated() || concept.isMetaAggregated()) aggregated.add(concept);
 		return aggregated;
 	}
 }

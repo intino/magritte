@@ -14,6 +14,8 @@ public class MorphFrameCreator extends FrameCreator {
 
 	private static final String SEPARATOR = ".";
 	private Node initNode;
+	private String packagePath;
+	Set<String> imports = new HashSet<>();
 
 	public MorphFrameCreator(String project, Model model) {
 		super(project, model);
@@ -22,10 +24,10 @@ public class MorphFrameCreator extends FrameCreator {
 	public Map.Entry<String, Frame> create(Node node) {
 		this.initNode = node;
 		final Frame frame = new Frame("Morph");
-		String packagePath = composeMorphPackagePath(model, node);
-		if (!packagePath.isEmpty())
-			frame.addFrame("package", packagePath);
+		packagePath = composeMorphPackagePath(model, node);
+		if (!packagePath.isEmpty()) frame.addFrame("package", packagePath);
 		nodeToFrame(node, frame);
+		addImports(frame);
 		initNode = null;
 		return new AbstractMap.SimpleEntry<>(packagePath + SEPARATOR + node.getName(), frame);
 	}
@@ -36,8 +38,15 @@ public class MorphFrameCreator extends FrameCreator {
 			Frame newFrame = new Frame(getLinkNodeTypes(linkNode));
 			newFrame.addFrame("parent", linkNode.getDestinyName());
 			newFrame.addFrame("type", linkNode.getDestiny().getObject().getType());
+			newFrame.addFrame("qn", linkNode.getDestiny().getObject().getDeclaredNodeQN());
 			newFrame.addFrame("name", linkNode.getDestiny().getObject().getName());
 			frame.addFrame("node", newFrame);
+			DeclaredNode container = linkNode.getDestiny().getContainer();
+			if (container != null) {
+				String containerPackage = composeMorphPackagePath(model, container);
+				if (!containerPackage.equals("magritte.morphs"))
+					imports.add(containerPackage + "." + container.getName());
+			}
 		} else {
 			List<String> types = getTypes(node);
 			final Frame newFrame = new Frame(types.toArray(new String[types.size()]));
@@ -48,6 +57,12 @@ public class MorphFrameCreator extends FrameCreator {
 			if (!node.isSub() && !node.equals(initNode))
 				addSubs(node, frame);
 		}
+
+	}
+
+	private void addImports(Frame frame) {
+		for (String anImport : imports)
+			frame.addFrame("imports", "import " + anImport + ";");
 	}
 
 	private void addNodeInfo(Node node, Frame newFrame) {
@@ -61,9 +76,10 @@ public class MorphFrameCreator extends FrameCreator {
 			newFrame.addFrame("doc", object.getDoc());
 		if (node.getName() != null && !node.getName().isEmpty())
 			newFrame.addFrame("name", node.isAnonymous() ? node.getType() : node.getName());
+		newFrame.addFrame("qn", node.getQualifiedName());
 		newFrame.addFrame("project", project);
 		if (node.getObject().getParent() != null)
-			newFrame.addFrame("parent", node.getObject().getParent().getName());
+			newFrame.addFrame("parent", node.getObject().getParent().getDeclaredNodeQN());
 		else newFrame.addFrame("parent", "Morph");
 		if (node.getObject().getType() != null) {
 			Frame typeFrame = new Frame("nodeType").addFrame("name", node.getObject().getType());
@@ -74,7 +90,7 @@ public class MorphFrameCreator extends FrameCreator {
 			Frame facetFrame = new Frame("facet").addFrame("name", facet.getName()).addFrame("facet", getFacetDestinies(node));
 			newFrame.addFrame("facet", facetFrame);
 		}
-		if (object.getAddress() != null) newFrame.addFrame("address", object.getAddress().replace(".", ""));
+		if (object.getAddress() != null) newFrame.addFrame("address", object.getAddress().replace(SEPARATOR, ""));
 		addVariables(node, newFrame);
 		addTargets(node, newFrame);
 		addFacets(node, newFrame);
@@ -99,18 +115,18 @@ public class MorphFrameCreator extends FrameCreator {
 	private String addToPath(String name, Node aNode, String path) {
 		for (Facet facet : aNode.getObject().getFacets())
 			if (facet.getName().equals(name))
-				path = aNode.getName() + aNode.getType() + name + "." + path;
+				path = aNode.getName() + aNode.getType() + name + SEPARATOR + path;
 		return path;
 	}
 
 	private void addFacetTargets(Node node, Frame typeFrame) {
 		if (node.getObject().getFacetTargets().isEmpty()) return;
 		Frame targetFrame = new Frame("target", node.is(Annotation.INTENTION) ? "intention" : "");
-		targetFrame.addFrame("target", project + ".extensions." + camelCase(node.getName()) + node.getType() + ".class");
+		targetFrame.addFrame("target", project.toLowerCase() + ".extensions." + camelCase(node.getName()) + node.getType() + ".class");
 		Inflector inflector = getInflector(model.getLanguage());
 		for (FacetTarget target : node.getObject().getFacetTargets()) {
-			targetFrame.addFrame("target", project + ".extensions." + inflector.plural(node.getType()).toLowerCase() + "." +
-				inflector.plural(node.getName()).toLowerCase() + "." + camelCase(target.getDestinyName()) + node.getType() + ".class");
+			targetFrame.addFrame("target", project.toLowerCase() + ".extensions." + inflector.plural(node.getType()).toLowerCase() + SEPARATOR +
+				inflector.plural(node.getName()).toLowerCase() + SEPARATOR + camelCase(target.getDestinyName()) + node.getType() + ".class");
 		}
 		typeFrame.addFrame("target", targetFrame);
 	}

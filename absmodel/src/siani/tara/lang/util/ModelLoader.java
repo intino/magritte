@@ -21,7 +21,7 @@ public class ModelLoader {
 		try {
 			File file = new File(modelsDirectory.toLowerCase(), model.toLowerCase() + JSON);
 			if (!file.exists()) {
-				LOG.log(Level.SEVERE, "Model file not found: " + model +" in "+ modelsDirectory);
+				LOG.log(Level.SEVERE, "Model file not found: " + model + " in " + modelsDirectory);
 				return null;
 			}
 			return load(file);

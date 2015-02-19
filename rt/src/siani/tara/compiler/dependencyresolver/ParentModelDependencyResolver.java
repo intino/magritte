@@ -1,5 +1,6 @@
 package siani.tara.compiler.dependencyresolver;
 
+import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.lang.*;
 
 import java.util.*;
@@ -17,7 +18,7 @@ public class ParentModelDependencyResolver {
 		model.setParentModel(parentModel);
 	}
 
-	public void resolve() {
+	public void resolve() throws TaraException {
 		addTerminalNodes(parent.getTerminalNodes());
 		setValuesToNodes();
 		addAnnotationsToInstances();
@@ -37,7 +38,7 @@ public class ParentModelDependencyResolver {
 				instance.add(annotation);
 	}
 
-	private void setValuesToNodes() {
+	private void setValuesToNodes() throws TaraException {
 		for (Node parentNode : this.parent.getNodeTable().values())
 			for (Node instance : getDeclaredInstancesOf(parentNode)) {
 				if (instance.is(LinkNode.class)) continue;
@@ -91,7 +92,7 @@ public class ParentModelDependencyResolver {
 				clone.addInheritedType(node.getObject().getName());
 	}
 
-	private Collection<Node> getDeclaredInstancesOf(Node metaNode) {
+	private Collection<Node> getDeclaredInstancesOf(Node metaNode) throws TaraException {
 		if (metaNode.getName() == null) return Collections.EMPTY_LIST;
 		List<Node> instances = new ArrayList<>();
 		for (Node instance : model.getNodeTable().values())
@@ -100,8 +101,10 @@ public class ParentModelDependencyResolver {
 		return instances;
 	}
 
-	private boolean isInstance(Node metaNode, Node instance) {
-		Node node = parent.searchNode(instance.getMetaQN());
+	private boolean isInstance(Node metaNode, Node instance) throws TaraException {
+		Node node = parent.searchNodeClass(instance);
+		if (node == null)
+			throw new TaraException("Node in parent not found: " + instance.getMetaQN());
 		return (node.is(DeclaredNode.class) ? node.equals(metaNode) : ((LinkNode) node).getDestiny().equals(metaNode));
 	}
 
@@ -109,7 +112,7 @@ public class ParentModelDependencyResolver {
 		if (metaNode.getName() == null) return Collections.EMPTY_LIST;
 		List<Node> instances = new ArrayList<>();
 		for (Node instance : model.getNodeTable().values())
-			if (instance.getObject().getType().equals(metaNode.getName()) && parent.searchNode(instance.getMetaQN()).equals(metaNode))
+			if (instance.getObject().getType().equals(metaNode.getName()) && parent.searchNodeClass(instance).equals(metaNode))
 				instances.add(instance);
 		return instances;
 	}
@@ -135,7 +138,6 @@ public class ParentModelDependencyResolver {
 		if (terminal.getObject().getFacetTargets().isEmpty()) return;
 		for (FacetTarget facetTarget : terminal.getObject().getFacetTargets())
 			createFacetTargets(terminal, newFacets, findInstancesOf(facetTarget.getDestinyName()), facetTarget);
-		terminal.getObject().getFacetTargets().clear();
 		terminal.getObject().getFacetTargets().addAll(newFacets);
 	}
 

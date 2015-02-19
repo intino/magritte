@@ -59,7 +59,7 @@ public class ModelSaver {
 				if (attribute.count != null) object.addProperty("count", attribute.count);
 			} else if (variable instanceof Reference) {
 				Reference reference = (Reference) variable;
-				object.addProperty("node", reference.type);
+				object.addProperty("type", reference.type);
 				object.addProperty("isList", reference.isList);
 				object.addProperty("empty", reference.empty);
 				if (!reference.getInheritedTypes().isEmpty()) {

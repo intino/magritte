@@ -112,6 +112,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		Map<String, Document> map = new HashMap();
 		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
 		ruleEngine.register("date", buildDateFormatter());
+		ruleEngine.register("string", buildStringFormatter());
 		for (List<Node> nodes : groupByBox) {
 			Document document = new Document();
 			String project = compilationUnit.getConfiguration().getProject();
@@ -142,7 +143,9 @@ public class ModelToJavaOperation extends ModelOperation {
 			public Object format(Object value) {
 				String val = value.toString();
 				if (!val.contains(".")) return val.substring(0, 1).toUpperCase() + val.substring(1);
-				return getMorphPath(".") + "." + buildMorphPath(val);
+				return buildMorphPath(getMorphPath(".") + "." + val)
+					.replace("[", "").replace("]", "").replaceAll(Node.LINK, "")
+					.replaceAll(Node.IN_FACET_TARGET, "").replaceAll(Node.ANONYMOUS, "");
 			}
 		};
 	}
@@ -154,6 +157,30 @@ public class ModelToJavaOperation extends ModelOperation {
 				String val = value.toString();
 				if (!val.contains("/")) return value;
 				return val.replace("/", ", ");
+			}
+		};
+	}
+
+	private Formatter buildStringFormatter() {
+		return new Formatter() {
+			@Override
+			public Object format(Object value) {
+				String val = value.toString();
+				if (val.isEmpty()) return val;
+				if (val.startsWith("\n")) return transformMultiLineString(val);
+				return val;
+			}
+
+			private String transformMultiLineString(String value) {
+				String val = value.replace("\r", "");
+				int i = value.indexOf("-");
+				String indent = value.substring(0, i).replace("\t", "    ").replace("\r", "");
+				val = val.replace(indent, "\n").trim().replace("\n", "\" +\n\"");
+				if (val.startsWith("---")) {
+					val = val.substring(val.indexOf("+") + 2);
+					val = val.substring(0, val.lastIndexOf("+") - 1);
+				}
+				return val.replaceFirst("\"", "").substring(0, val.lastIndexOf("\"") - 1);
 			}
 		};
 	}

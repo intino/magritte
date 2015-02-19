@@ -45,6 +45,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		else if (isDuplicated()) results.put(concept.getSignature(), addError(message("duplicate.concept")));
 		else if (!analyzeIfExtendedFromSameType(concept))
 			results.put(concept.getSignature().getParentReference(), addError(message("invalid.extension.concept")));
+		analyzeFacetConstrains();
 		if (hasErrors()) return;
 		Node node = findMetaConcept(concept);
 		if (node != null) {
@@ -57,12 +58,18 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private void analyzeFacetConstrains(Node node) {
-		if ((concept.isFacet() || node.is(META_FACET))) {
-			if (!concept.getSubConcepts().isEmpty() && !concept.getFacetTargets().isEmpty())
-				results.put(concept.getSignature(), addError(message("abstract.facet.has.no.targets")));
-		}
+		if ((node.is(META_FACET)) && !concept.getSubConcepts().isEmpty() && !concept.getFacetTargets().isEmpty())
+			results.put(concept.getSignature(), addError(message("abstract.facet.has.no.targets")));
 		Concept parent = concept.getParentConcept();
-		if (concept.isSub() && concept.getFacetTargets().isEmpty() && (parent.isFacet() || findMetaConcept(parent).is(META_FACET)))
+		if (concept.isSub() && concept.getFacetTargets().isEmpty() && findMetaConcept(parent).is(META_FACET))
+			results.put(concept.getSignature(), addError(message("facet.target.missed")));
+	}
+
+	private void analyzeFacetConstrains() {
+		if (concept.isFacet() && !concept.getSubConcepts().isEmpty() && !concept.getFacetTargets().isEmpty())
+			results.put(concept.getSignature(), addError(message("abstract.facet.has.no.targets")));
+		Concept parent = concept.getParentConcept();
+		if (concept.isSub() && concept.getFacetTargets().isEmpty() && parent.isFacet())
 			results.put(concept.getSignature(), addError(message("facet.target.missed")));
 	}
 
@@ -293,14 +300,14 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean isFacetApplyClassCreated(Concept concept, String facetName) {
-		return resolveJavaClassReference(concept.getProject(), buildQN(concept, facetName)) != null;
+		return resolveJavaClassReference(concept.getProject(), buildFacetApplyClassQN(concept, facetName)) != null;
 	}
 
-	private String buildQN(Concept facetedConcept, String facetName) {
+	private String buildFacetApplyClassQN(Concept facetedConcept, String facetName) {
 		String interfaceName = "";
 		for (Concept concept : TaraUtil.buildConceptCompositionPathOf(facetedConcept))
 			interfaceName += "." + (hasFacet(concept, facetName) ?
-				concept.getName() + concept.getType() + facetName :
+				concept.getName() + facetName :
 				concept.getType());
 		return getFacetApplyPackage(facetedConcept, facetName) + interfaceName;
 	}

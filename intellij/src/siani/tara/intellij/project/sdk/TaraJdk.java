@@ -122,7 +122,7 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 	}
 
 	private static void addModel(File sdkHome) {
-		TaraLanguage.addModelRoot(new File(sdkHome, "model").getAbsolutePath());
+		TaraLanguage.addModelRoot(new File(sdkHome, TaraLanguage.DSL).getAbsolutePath());
 	}
 
 	static String getDefaultTdk() {

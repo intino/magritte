@@ -8,7 +8,6 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.ui.ClassCellRenderer;
@@ -21,7 +20,6 @@ import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.FacetApply;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 
@@ -108,13 +106,8 @@ public class TaraFacetApplyLineMarkerProvider extends JavaLineMarkerProvider {
 		} else return super.getLineMarkerInfo(element);
 	}
 
-	private PsiElement resolveExternal(Concept concept) {
-		Project project = concept.getProject();
-		return ReferenceManager.resolveJavaClassReference(project, project.getName() + "." + FACETS_PATH + "." + concept.getName());
-	}
-
 	private PsiElement resolveExternal(Concept concept, FacetApply apply) {
-		return resolveJavaClassReference(concept.getProject(), getFacetApplyPackage(concept, apply) + "." + concept.getName() + concept.getType() + apply.getFacetName());
+		return resolveJavaClassReference(concept.getProject(), getFacetApplyPackage(concept, apply) + "." + concept.getName() + apply.getFacetName());
 	}
 
 	private String getFacetApplyPackage(Concept concept, FacetApply apply) {

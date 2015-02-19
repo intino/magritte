@@ -140,10 +140,9 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 	}
 
 	private PsiClass createInnerFacetClass(PsiClass container, Concept concept, String facetName) {
-		String name = concept.getName() + concept.getType() + facetName;
+		String name = concept.getName() + facetName;
 		PsiClass innerClassByName = container.findInnerClassByName(name, false);
 		if (innerClassByName != null) return innerClassByName;
-
 		PsiClass aClass = JavaPsiFacade.getElementFactory(project).createClass(name);
 		setParent(concept, aClass);
 		implementInterface(concept, facetName, aClass);
@@ -199,7 +198,7 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 		JavaDirectoryService instance = JavaDirectoryService.getInstance();
 		String className = concept.getName();
 		String packageName = getDestinyPackage(facetName).toLowerCase();
-		String qn = packageName + "." + className + concept.getType() + facetName;
+		String qn = packageName + "." + className + facetName;
 		PsiClass aClass = findClassInModule(qn);
 		return (aClass != null) ? new PsiClass[]{aClass} :
 			new PsiClass[]{instance.createClass(createPackageDirectory(facetsHome, inflector.plural(facetName.toLowerCase())),
@@ -209,8 +208,6 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 	private String getDestinyPackage(String facetName) {
 		return project.getName() + "." + facetsHome.getName() + "." + inflector.plural(facetName.toLowerCase());
 	}
-
-
 
 
 	private Map<String, String> options(String conceptType, String facet) {

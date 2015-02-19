@@ -45,7 +45,7 @@ public class ExportModelAbstractAction extends AnAction implements DumbAware {
 	@NonNls
 	private static final String MIDDLE_LIB_DIR = "lib";
 	private static final String MIDDLE_BIN_DIR = "bin";
-	private static final String MIDDLE_MODEL_DIR = "model";
+	private static final String MIDDLE_MODEL_DIR = TaraLanguage.DSL;
 
 	public static void getDependencies(Module module, final Set<Module> modules) {
 		productionRuntimeDependencies(module).forEachModule(new Processor<Module>() {

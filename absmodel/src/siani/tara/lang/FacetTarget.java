@@ -12,7 +12,7 @@ public class FacetTarget {
 	private boolean always;
 	private boolean intention;
 	private ArrayList<Variable> variables = new ArrayList<>();
-	private List<Node> inner = new ArrayList<>();
+	private NodeTree inner = new NodeTree();
 
 	public FacetTarget(String destiny) {
 		this.destinyName = destiny;
@@ -70,7 +70,7 @@ public class FacetTarget {
 		return result;
 	}
 
-	public List<Node> getInner() {
+	public NodeTree getInner() {
 		return inner;
 	}
 

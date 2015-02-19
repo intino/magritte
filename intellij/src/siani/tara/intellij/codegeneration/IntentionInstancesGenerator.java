@@ -37,8 +37,9 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
 				try {
-					pathsToRefresh.add(facetsHome.getVirtualFile());
 					classes.addAll(processFile(file));
+					if (!classes.isEmpty() && facetsHome != null)
+						pathsToRefresh.add(facetsHome.getVirtualFile());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

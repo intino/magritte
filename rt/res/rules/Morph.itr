@@ -5,6 +5,7 @@ package $package+lowercase;
 import magritte.types.*;
 import magritte.wrappers.Morph;
 import magritte.morphs.*;
+$imports...[$NL]
 
 $node
 endrule
@@ -65,6 +66,13 @@ public Resource $name+lowerCamelCase() {
 
 endrule
 
+defrule type(Variable) type(Attribute) trigger(getter)
+public java.lang.$type+CamelCase $name+lowerCamelCase() {
+    return get("$name");
+}
+
+endrule
+
 defrule type(Variable) !type(Word) trigger(getter)
 public $type+reference $name+lowerCamelCase() {
     return get("$name");
@@ -94,12 +102,18 @@ public void set$name+camelCase(double $name+lowerCamelCase) {
 endrule
 
 defrule type(Variable) !type(readonly) !type(Word) type(List) trigger(setter)
-public void set$name+camelCase($type+camelCase $name+camelCase) {
-    set("$name", $type+camelCase);
+public void set$name+camelCase($type+reference$[] $name+lowerCamelCase) {
+    set("$name", $name+lowerCamelCase);
 }
 
 endrule
 
+defrule type(Variable) type(Attribute) !type(readonly) !type(Word) !type(List) trigger(setter)
+public void set$name+camelCase(java.lang.$type+CamelCase value) {
+    set("$name", value);
+}
+
+endrule
 
 defrule type(Variable) !type(readonly) !type(Word) !type(List) trigger(setter)
 public void set$name+camelCase($type+reference value) {
@@ -109,19 +123,19 @@ public void set$name+camelCase($type+reference value) {
 endrule
 
 defrule trigger(parent) slot-name(value)
-extends $value
+extends $value+reference
 endrule
 
 defrule type(node) !type(aggregated) type(single) trigger(component)
-public $name+firstUpperCase $name+firstLowerCase() {
-    return components($name+firstUpperCase.class)$[0];
+public $name+reference $name+firstLowerCase() {
+    return components($name+reference.class)$[0];
 }
 
 endrule
 
 defrule type(node) !type(aggregated) !type(single) trigger(component)
-public $name+firstUpperCase$[] $name+firstLowerCase+plural() {
-    return components($name+firstUpperCase.class);
+public $qn+reference$[] $name+firstLowerCase+plural() {
+    return components($qn+reference.class);
 }
 
 endrule
@@ -138,12 +152,12 @@ public $name+firstUpperCase add$name+firstUpperCase(magritte.wrappers.Definition
 endrule
 
 defrule type(declarednode) type(intention) !type(metafacet) type(facet) trigger(node)
-public[$inner static] class $name+firstUpperCase $parent implements $project.intentions.$name+firstUpperCase~Intention {
-
-    public $project.intentions.$name+camelCase~Intention extension() {
-        return extensions($project.intentions.$name+firstUpperCase~Intention.class)$[0];
+public[$inner static] class $name+firstUpperCase $parent implements $project+lowercase.intentions.$name+firstUpperCase~Intention {
+\
+    public $project+lowercase.intentions.$name+camelCase~Intention extension() {
+        return extensions($project+lowercase.intentions.$name+firstUpperCase~Intention.class)$[0];
     }
-
+\
 	$variable+wordInstantiation...[$NL]\
     $variable+getter...[$NL]\
 
@@ -156,17 +170,19 @@ public[$inner static] class $name+firstUpperCase $parent implements $project.int
 endrule
 
 defrule type(declarednode) type(intention) !type(facet) type(metafacet) trigger(node)
-public[$inner static] class $name+firstUpperCase $parent implements $project.intentions.$name+firstUpperCase~Intention {
-
-    public $project.intentions.$name+camelCase~Intention$[] extensions() {
-        return extensions($project.intentions.$name+firstUpperCase~Intention.class);
+public[$inner static] class $name+firstUpperCase $parent implements $project+lowercase.intentions.$name+firstUpperCase~Intention {
+\
+    public $project+lowercase.intentions.$name+camelCase~Intention$[] extensions() {
+        return extensions($project+lowercase.intentions.$name+firstUpperCase~Intention.class);
     }
-
+\
 	$variable+wordInstantiation...[$NL]\
     $variable+getter...[$NL]\
 
     $variable+setter...[$NL]\
+
     $node+component...[$NL]\
+\
     $node+holding...[$NL]\
 }
 
@@ -174,16 +190,17 @@ endrule
 
 defrule type(declarednode) trigger(node)
 public[$inner static] class $name+firstUpperCase $parent {
-
+\
 	[$aggregable
 	public Definition$[$] aggregables() {
         return definition().aggregables();
     }]
-
+\
 	$variable+wordInstantiation...[$NL]\
     $variable+getter...[$NL]\
 
     $variable+setter...[$NL]\
+
     $node+component...[$NL]\
 
     $node+holding...[$NL]\

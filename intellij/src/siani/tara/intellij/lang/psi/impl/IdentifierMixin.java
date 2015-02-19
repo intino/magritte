@@ -14,10 +14,7 @@ import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.Parameter;
 import siani.tara.intellij.lang.psi.resolve.TaraInternalReferenceSolver;
 import siani.tara.intellij.lang.psi.resolve.TaraParameterReferenceSolver;
-import siani.tara.lang.Node;
-import siani.tara.lang.Reference;
-import siani.tara.lang.Variable;
-import siani.tara.lang.Word;
+import siani.tara.lang.*;
 
 import javax.swing.*;
 import java.util.List;
@@ -45,8 +42,14 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		Parameter parameter;
 		references = (parameter = isParameterReference()) != null ?
 			createResolverForParameter(parameter) :
-			new PsiReference[]{new TaraInternalReferenceSolver(this, getRange())};
-		return references.length == 0 ? new TaraInternalReferenceSolver(this, getRange()) : references[0];
+			new PsiReference[]{createInternalResolver()};
+		return references.length == 0 ? createInternalResolver() : references[0];
+	}
+
+	private TaraInternalReferenceSolver createInternalResolver() {
+		Concept container = TaraPsiImplUtil.getConceptContainerOf(this);
+		Node node = TaraUtil.getMetaConcept(container);
+		return new TaraInternalReferenceSolver(this, getRange(), container, node);
 	}
 
 	private PsiReference[] createResolverForParameter(Parameter parameter) {

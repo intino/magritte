@@ -13,6 +13,7 @@ import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.Locale;
@@ -30,6 +31,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 		}
 	}
 
+	@Nullable
 	public static ModuleConfiguration getInstance(Module module) {
 		if (module != null && TaraModuleType.isOfType(module))
 			return module.getComponent(ModuleConfiguration.class);

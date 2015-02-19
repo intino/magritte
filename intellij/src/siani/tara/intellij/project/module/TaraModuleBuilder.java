@@ -177,7 +177,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		else {
 			Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
 			if (projectSdk != null && projectSdk.getSdkType().equals(TaraJdk.getInstance()))
-				return new File(projectSdk.getHomePath() + File.separator + "model" + File.separator + parentLanguage + MODEL_EXT);
+				return new File(projectSdk.getHomePath() + File.separator + TaraLanguage.DSL + File.separator + parentLanguage + MODEL_EXT);
 			return null;
 		}
 	}

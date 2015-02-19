@@ -32,8 +32,8 @@ public class NameFormatter {
 		return getMorphPath(DOT) + DOT + aPackage.toLowerCase();
 	}
 
-	public static String buildMorphPath(String box) {
-		String[] split = box.split("\\.");
+	public static String buildMorphPath(String morph) {
+		String[] split = morph.split("\\.");
 		if (split.length <= 3) return "";
 		List<String> list = new ArrayList<>();
 		list.addAll(Arrays.asList(split).subList(2, split.length - 1));

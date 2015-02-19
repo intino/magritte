@@ -13,15 +13,24 @@ import siani.tara.intellij.lang.psi.HeaderReference;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.IdentifierReference;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.lang.psi.impl.VariantsManager;
+import siani.tara.lang.LinkNode;
+import siani.tara.lang.Node;
+import siani.tara.lang.NodeObject;
 
 import java.util.*;
 
 public class TaraInternalReferenceSolver extends TaraReferenceSolver {
 
 
-	public TaraInternalReferenceSolver(@NotNull PsiElement element, TextRange textRange) {
-		super(element, textRange);
+	private final Node node;
+	private final Concept scope;
+
+	public TaraInternalReferenceSolver(@NotNull PsiElement element, TextRange range, Concept concept, Node node) {
+		super(element, range);
+		this.node = node;
+		scope = node != null ? TaraUtil.findScope(node, concept) : null;
 	}
 
 	@Nullable
@@ -39,7 +48,32 @@ public class TaraInternalReferenceSolver extends TaraReferenceSolver {
 			VariantsManager manager = new VariantsManager(variants, myElement);
 			manager.resolveVariants();
 		}
+		if (!variants.isEmpty()) filterVariants(variants);
 		return fillVariants(variants);
+	}
+
+	private void filterVariants(Set<Concept> variants) {
+		if (node == null) return;
+		List<Concept> toRemove = new ArrayList<>();
+		for (Concept variant : variants)
+			if (!areCompatibles(variant) || !inScope(variant) || variant.isAnonymous()) toRemove.add(variant);
+		variants.removeAll(toRemove);
+	}
+
+	private boolean areCompatibles(Concept variant) {
+		Node metaConcept = TaraUtil.getMetaConcept(variant);
+		return compare(getNodeCandidates(), metaConcept.getObject());
+	}
+
+	private boolean compare(Collection<String> types, NodeObject object) {
+		if (object == null) return false;
+		for (String type : types)
+			if (type.equals(object.getDeclaredNodeQN())) return true;
+		return compare(types, object.getParent());
+	}
+
+	private boolean inScope(Concept variant) {
+		return scope == null || variant.getQualifiedName().startsWith(scope.getQualifiedName() + ".");
 	}
 
 	@Override
@@ -59,5 +93,12 @@ public class TaraInternalReferenceSolver extends TaraReferenceSolver {
 
 	private boolean isConceptReference() {
 		return myElement.getParent() instanceof IdentifierReference || myElement.getParent() instanceof HeaderReference;
+	}
+
+	public Collection<String> getNodeCandidates() {
+		List<String> names = new ArrayList<>();
+		for (Node inner : node.getInnerNodes())
+			names.add(inner.is(LinkNode.class) ? ((LinkNode) inner).getDestiny().getQualifiedName() : inner.getQualifiedName());
+		return names;
 	}
 }

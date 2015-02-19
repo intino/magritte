@@ -81,7 +81,7 @@ set("!$name", node("$variableValue"));
 endrule
 
 defrule type(terminal) type(Variable) type(string) !type(List) slot-name(variableValue) trigger(set)
-set("!$name", "$variableValue");
+set("!$name", "$variableValue+string");
 endrule
 
 defrule type(terminal) type(Variable) type(resource) !type(List) slot-name(variableValue) trigger(set)
@@ -101,7 +101,7 @@ set("$name", node("$variableValue"));
 endrule
 
 defrule type(Variable) type(string) !type(List) slot-name(variableValue) trigger(set)
-set("$name", "$variableValue");
+set("$name", "$variableValue+string");
 endrule
 
 defrule type(Variable) type(resource) !type(List) slot-name(variableValue) trigger(set)

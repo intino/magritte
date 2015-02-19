@@ -37,8 +37,7 @@ public abstract class FrameCreator {
 			frame.addFrame("annotation", new Frame("Annotation") {{
 				for (Annotation annotation : node.getAnnotations())
 					if (!annotation.isMeta()) addFrame("value", annotation);
-				if (terminal)
-					addFrame("value", "case");
+				if (terminal) addFrame("value", "case");
 			}});
 	}
 
@@ -146,7 +145,7 @@ public abstract class FrameCreator {
 			}
 
 			private String getType() {
-				if (variable.getType().equals("Natural")) return "Integer";
+				if (variable.getType().equalsIgnoreCase(Primitives.NATURAL)) return Primitives.INTEGER;
 				else return variable.getType();
 			}
 		};

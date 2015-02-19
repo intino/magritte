@@ -42,7 +42,7 @@ import java.util.Set;
 			String source = zzBuffer.toString().trim();
 			int nl = source.indexOf('\n');
             String dslLine = nl > 0 ? source.substring(0, nl).trim() : source;
-			if (!dslLine.startsWith(DSL)) return;
+			if (!dslLine.startsWith(DSL) || dslLine.length() < 2) return;
 			dsl = dslLine.split(DSL)[1].trim();
 		}
 		Model heritage = TaraLanguage.getMetaModel(dsl, project);
@@ -180,7 +180,6 @@ ANY=.|\n|\"
 
 	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
-//	{STRING_VALUE_KEY}              {   return TaraTypes.QUOTE_BEGIN; }
 	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
 	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
 	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }

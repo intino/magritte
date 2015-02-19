@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ProjectRootManager;
 import siani.tara.intellij.MessageProvider;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.project.sdk.TaraJdk;
 
 import javax.swing.*;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaraWizardStep extends ModuleWizardStep {
-	private static final String NO_PARENT = "None";
+	private static final String PROTEO = "Proteo";
 	private static final String MODEL_EXT = ".json";
 	private final TaraModuleBuilder builder;
 	private final WizardContext context;
@@ -49,7 +50,7 @@ public class TaraWizardStep extends ModuleWizardStep {
 		});
 		if (project == null) metamodelBox.setEnabled(false);
 		else {
-			metamodelBox.addItem(NO_PARENT);
+			metamodelBox.addItem(PROTEO);
 			addModuleMetaModels();
 			addSdkMetamodel();
 			metamodelBox.addItemListener(new ItemListener() {
@@ -66,13 +67,13 @@ public class TaraWizardStep extends ModuleWizardStep {
 			ModuleConfiguration candidateConf = ModuleConfiguration.getInstance(candidate);
 			metamodelBox.addItem(candidateConf.getGeneratedModelName());
 		}
-		metamodelBox.setSelectedItem(NO_PARENT);
+		metamodelBox.setSelectedItem(PROTEO);
 	}
 
 	private void addSdkMetamodel() {
 		Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
 		if (projectSdk == null || !projectSdk.getSdkType().equals(TaraJdk.getInstance())) return;
-		String modelRoot = projectSdk.getHomePath() + File.separator + "model" + File.separator;
+		String modelRoot = projectSdk.getHomePath() + File.separator + TaraLanguage.DSL + File.separator;
 		for (File file : new File(modelRoot).listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {

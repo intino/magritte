@@ -47,7 +47,7 @@ public class ParametersExistenceAnalyzer extends TaraAnalyzer {
 	private List<String> collectMinimumNumberOfParameter(List<Variable> variables, boolean terminal) {
 		List<String> result = new ArrayList<>();
 		for (Variable variable : variables)
-			if ((!terminal && variable.isTerminal()) || variable.getDefaultValues() == null || variable.getDefaultValues().length == 0)
+			if ((terminal && variable.isTerminal()) || (terminal && (variable.getDefaultValues() == null || variable.getDefaultValues().length == 0)))
 				result.add(variable.getName());
 		return result;
 	}

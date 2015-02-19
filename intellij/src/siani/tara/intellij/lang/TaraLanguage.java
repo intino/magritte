@@ -33,6 +33,7 @@ public class TaraLanguage extends Language {
 	}
 
 	private static final String PROTEO = "Proteo";
+	public static final String DSL = "dsl";
 
 	private TaraLanguage() {
 		super("Tara");
@@ -67,7 +68,7 @@ public class TaraLanguage extends Language {
 	private static void addSdkToModelRoots(Project project) {
 		Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
 		if (projectSdk != null && projectSdk.getSdkType().equals(TaraJdk.getInstance()))
-			addModelRoot(projectSdk.getHomePath() + File.separator + "model" + File.separator);
+			addModelRoot(projectSdk.getHomePath() + File.separator + DSL + File.separator);
 	}
 
 	public static void addModelRoot(String path) {

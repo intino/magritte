@@ -129,6 +129,10 @@ public class Model {
 		return modelHelper.searchNode(qn);
 	}
 
+	public Node searchNodeClass(Node instance) {
+		return modelHelper.searchNode(modelHelper.createSearchTree(instance));
+	}
+
 	public void sortNodeTable(Comparator<String> comparator) {
 		Map<String, Node> newMap;
 		newMap = comparator == null ? new HashMap<String, Node>() : new TreeMap<String, Node>(comparator);
