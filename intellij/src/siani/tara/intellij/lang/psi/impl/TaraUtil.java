@@ -47,6 +47,7 @@ public class TaraUtil {
 	}
 
 	public static Model getMetamodel(PsiElement pfile) {
+		if (pfile == null) return null;
 		PsiFile file = pfile.getContainingFile();
 		return TaraLanguage.getMetaModel(file.getVirtualFile() == null ? (PsiFile) file.getOriginalElement() : file);
 	}

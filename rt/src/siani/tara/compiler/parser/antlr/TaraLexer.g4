@@ -104,6 +104,7 @@ PROPERTY            : 'property';
 ENCLOSED            : 'enclosed';
 ALWAYS              : 'always';
 ASSOCIATED          : 'associated';
+TACIT               : 'tacit';
 ADDRESSED           : 'addressed';
 AGGREGATED          : 'aggregated';
 READONLY            : 'readonly';

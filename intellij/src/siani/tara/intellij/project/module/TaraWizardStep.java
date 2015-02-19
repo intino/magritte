@@ -74,7 +74,9 @@ public class TaraWizardStep extends ModuleWizardStep {
 		Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
 		if (projectSdk == null || !projectSdk.getSdkType().equals(TaraJdk.getInstance())) return;
 		String modelRoot = projectSdk.getHomePath() + File.separator + TaraLanguage.DSL + File.separator;
-		for (File file : new File(modelRoot).listFiles(new FilenameFilter() {
+		File sdkFile = new File(modelRoot);
+		if (!sdkFile.exists()) return;
+		for (File file : sdkFile.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
 				return (name.endsWith(MODEL_EXT));

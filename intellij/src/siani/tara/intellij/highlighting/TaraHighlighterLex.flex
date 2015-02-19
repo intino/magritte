@@ -78,6 +78,7 @@ ADDRESSED           = "addressed"
 COMPONENT           = "component"
 AGGREGATED          = "aggregated"
 ASSOCIATED          = "associated"
+TACIT               = "tacit"
 READONLY            = "readonly"
 CASE                = "case"
 ROOT                = "root"
@@ -171,6 +172,7 @@ ANY=.|\n|\"
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
 	{AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
+	{TACIT}                         {   return TaraTypes.TACIT; }
 	{ASSOCIATED}                    {   return TaraTypes.ASSOCIATED; }
 	{READONLY}                      {   return TaraTypes.READONLY; }
 	{CASE}                          {   return TaraTypes.CASE; }

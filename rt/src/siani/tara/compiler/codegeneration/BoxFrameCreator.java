@@ -101,6 +101,7 @@ public class BoxFrameCreator extends FrameCreator {
 				if (!extractedNodes.containsKey(qn))
 					extractedNodes.put(qn, new ArrayList<>(keymap.get(qn)));
 				List<Long> keys = extractedNodes.get(qn);
+				if (keys.isEmpty()) continue;//TODO
 				frame.addFrame("component", keys.get(0));
 				keys.remove(0);
 			}

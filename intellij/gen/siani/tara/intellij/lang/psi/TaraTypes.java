@@ -124,6 +124,7 @@ public interface TaraTypes {
 	IElementType STRING_MULTILINE_VALUE_KEY = new TaraTokenType("STRING_MULTILINE_VALUE_KEY");
 	IElementType STRING_TYPE = new TaraTokenType("STRING_TYPE");
 	IElementType SUB = new TaraTokenType("SUB");
+	IElementType TACIT = new TaraTokenType("TACIT");
 	IElementType TERMINAL = new TaraTokenType("TERMINAL");
 	IElementType USE = new TaraTokenType("USE");
 	IElementType VAR = new TaraTokenType("VAR");
