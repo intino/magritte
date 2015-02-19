@@ -115,7 +115,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean searchDuplicatesInAllModule(Concept concept) {
-		Module moduleOfFile = ModuleProvider.getModuleOf(concept.getContainingFile());
+		Module moduleOfFile = ModuleProvider.getModuleOf(concept);
 		int size = 0;
 		for (TaraBoxFileImpl file : TaraUtil.getTaraFilesOfModule(moduleOfFile))
 			size += searchConceptInFile(concept, file).size();

@@ -77,10 +77,10 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 			try {
 				String aux;
 				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-				configuration.metamodelName = ((aux = br.readLine()).equals("null")) ? "" : aux;
-				configuration.metamodelFilePath = ((aux = br.readLine()).equals("null")) ? "" : aux;
-				configuration.language = ((aux = br.readLine()).equals("null")) ? "" : aux;
-				configuration.generatedModelName = ((aux = br.readLine()).equals("null")) ? "" : aux;
+				configuration.dslName = ((aux = br.readLine()).equals("null")) ? "" : aux;
+				configuration.dslFilePath = ((aux = br.readLine()).equals("null")) ? "" : aux;
+				configuration.dictionary = ((aux = br.readLine()).equals("null")) ? "" : aux;
+				configuration.generatedDslName = ((aux = br.readLine()).equals("null")) ? "" : aux;
 				configuration.terminal = Boolean.parseBoolean(br.readLine());
 				file.delete();
 				file.getParentFile().delete();
@@ -102,28 +102,28 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	}
 
 	public String getMetamodelName() {
-		return configuration.getMetamodelName();
+		return configuration.getDslName();
 	}
 
 	public Locale getLanguage() {
-		if (configuration.getLanguage().equals("English")) return Locale.ENGLISH;
+		if (configuration.getDictionary().equals("English")) return Locale.ENGLISH;
 		return new Locale("Spanish", "Spain", "es_ES");
 	}
 
 	public void setLanguage(String language) {
-		configuration.language = language;
+		configuration.dictionary = language;
 	}
 
 	public void setMetamodelName(String parent) {
-		configuration.metamodelName = parent;
+		configuration.dslName = parent;
 	}
 
 	public String getGeneratedModelName() {
-		return configuration.getGeneratedModelName();
+		return configuration.getGeneratedDslName();
 	}
 
 	public void setGeneratedModelName(String generatedModelName) {
-		configuration.generatedModelName = generatedModelName;
+		configuration.generatedDslName = generatedModelName;
 	}
 
 	public boolean isTerminal() {
@@ -135,11 +135,11 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	}
 
 	public String getMetamodelFilePath() {
-		return configuration.getMetamodelFilePath();
+		return configuration.getDslFilePath();
 	}
 
 	public void setMetamodelFilePath(String path) {
-		configuration.metamodelFilePath = path;
+		configuration.dslFilePath = path;
 	}
 
 	public void loadState(ModuleConfiguration state) {
@@ -151,10 +151,10 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	}
 
 	class Configuration implements JDOMExternalizable {
-		public String metamodelName = "";
-		public String metamodelFilePath = "";
-		public String generatedModelName = "";
-		public String language = "";
+		public String dslName = "";
+		public String dslFilePath = "";
+		public String generatedDslName = "";
+		public String dictionary = "";
 		public boolean terminal;
 
 		@Override
@@ -167,24 +167,24 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 			DefaultJDOMExternalizer.writeExternal(this, element);
 		}
 
-		public String getMetamodelName() {
-			return metamodelName;
+		public String getDslName() {
+			return dslName;
 		}
 
-		public String getMetamodelFilePath() {
-			return metamodelFilePath;
+		public String getDslFilePath() {
+			return dslFilePath;
 		}
 
-		public String getLanguage() {
-			return language;
+		public String getDictionary() {
+			return dictionary;
 		}
 
-		public String getGeneratedModelName() {
-			return generatedModelName;
+		public String getGeneratedDslName() {
+			return generatedDslName;
 		}
 
 		public boolean isTerminal() {
-			return terminal || generatedModelName.isEmpty();
+			return terminal || generatedDslName.isEmpty();
 		}
 	}
 }

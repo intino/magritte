@@ -21,7 +21,9 @@ import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
-import siani.tara.lang.*;
+import siani.tara.lang.FacetTarget;
+import siani.tara.lang.Model;
+import siani.tara.lang.Node;
 
 import java.util.*;
 
@@ -138,14 +140,18 @@ public class TaraUtil {
 
 	@NotNull
 	public static Collection<Concept> getRootConceptsOfFile(TaraBoxFile file) {
-		Set<Concept> list = new HashSet<>();
+		List<Concept> list = new ArrayList<>();
 		Concept[] concepts = PsiTreeUtil.getChildrenOfType(file, Concept.class);
 		if (concepts == null) return list;
 		for (Concept concept : concepts) {
 			list.add(concept);
 			list.addAll(concept.getSubConcepts());
 		}
-		list.addAll(findAggregatedConcepts(file));
+		Collection<? extends Concept> aggregatedConcepts = findAggregatedConcepts(file);
+		for (Concept aggregated : aggregatedConcepts) {
+			if (list.contains(aggregated)) continue;
+			list.add(aggregated);
+		}
 		return list;
 	}
 
@@ -271,6 +277,7 @@ public class TaraUtil {
 		Model.SearchNode previous = new Model.SearchNode(forwardConcept.getType());
 		addProperties(forwardConcept, previous);
 		while ((forwardConcept = TaraPsiImplUtil.getConceptContainerOf(forwardConcept)) != null) {
+			if (forwardConcept.isSub()) continue;
 			forward = new Model.SearchNode(forwardConcept.getType());
 			addProperties(forwardConcept, forward);
 			forward.setNext(previous);
@@ -288,6 +295,7 @@ public class TaraUtil {
 		Model.SearchNode previous = new Model.SearchNode(destiny.getType());
 		addProperties(reference, previous);
 		while ((forwardConcept = TaraPsiImplUtil.getConceptContainerOf(forwardConcept)) != null) {
+			if (((Concept) forwardConcept).isSub()) continue;
 			forward = new Model.SearchNode(((Concept) forwardConcept).getType());
 			addProperties((Concept) forwardConcept, forward);
 			forward.setNext(previous);
