@@ -82,6 +82,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 				configuration.dictionary = ((aux = br.readLine()).equals("null")) ? "" : aux;
 				configuration.generatedDslName = ((aux = br.readLine()).equals("null")) ? "" : aux;
 				configuration.terminal = Boolean.parseBoolean(br.readLine());
+				br.close();
 				file.delete();
 				file.getParentFile().delete();
 			} catch (IOException e) {
