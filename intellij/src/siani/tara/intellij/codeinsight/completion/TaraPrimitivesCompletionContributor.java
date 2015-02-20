@@ -10,9 +10,7 @@ import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraTypes;
-import siani.tara.intellij.lang.psi.Variable;
+import siani.tara.intellij.lang.psi.*;
 import siani.tara.lang.Primitives;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
@@ -31,7 +29,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
 					for (String primitive : Primitives.getPrimitives())
-						resultSet.addElement(LookupElementBuilder.create(primitive + " "));
+						resultSet.addElement(LookupElementBuilder.create(primitive + " ").withTypeText("Primitive"));
 					resultSet.addElement(LookupElementBuilder.create("word" + " "));
 				}
 			}
@@ -51,7 +49,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 	private static class AfterVarFitFilter implements ElementFilter {
 		public boolean isAcceptable(Object element, PsiElement context) {
 			if (element instanceof PsiElement && isInAttribute(context)) {
-				PsiElement parent = context.getParent().getParent();
+				PsiElement parent = getVariableType(context);
 				if (parent == null) return false;
 				if (parent.getPrevSibling() == null || parent.getPrevSibling().getPrevSibling() == null) return false;
 
@@ -71,9 +69,19 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 			return false;
 		}
 
+		public TaraVariableType getVariableType(PsiElement element) {
+			PsiElement parent = element.getParent();
+			while (parent != null && !(parent instanceof Concept)) {
+				if (parent instanceof TaraVariableType) return (TaraVariableType) parent;
+				parent = parent.getParent();
+			}
+			return null;
+		}
+
 		public boolean isClassAcceptable(Class hintClass) {
 			return true;
 		}
 
 	}
+
 }

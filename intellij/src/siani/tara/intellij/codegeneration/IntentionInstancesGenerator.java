@@ -65,7 +65,7 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 	}
 
 	private PsiClass createFacetClass(Concept concept) {
-		PsiClass aClass = findClassInModule(concept.getName() + concept.getType(), getModuleOf(concept.getContainingFile()));
+		PsiClass aClass = findClassInModule(makeConceptPackage(concept), getModuleOf(concept.getContainingFile()));
 		return (aClass != null) ? aClass :
 			JavaDirectoryService.getInstance().
 				createClass(facetsHome, concept.getName(), "TaraFacetTargetClass", false, getOptionsForFacetClass(concept.getType()));
@@ -84,7 +84,7 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 		String name = identifierList.get(identifierList.size() - 1).getName();
 		if (name == null) return null;
 		String fullName = name + concept.getType();
-		String aPackage = makePackage(concept);
+		String aPackage = makeFacetPackage(concept);
 		PsiClass aClass = findClassInModule(aPackage + "." + fullName, getModuleOf(concept.getContainingFile()));
 		return (aClass != null) ? aClass : JavaDirectoryService.getInstance().
 			createClass(createTargetDestiny(aPackage), name, "TaraFacetTargetClass", false, getOptionsForFacetClass(concept.getType()));
@@ -102,10 +102,16 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 		return directory;
 	}
 
-	private String makePackage(Concept concept) {
+	private String makeConceptPackage(Concept concept) {
 		String path = "";
 		for (String subpath : FACETS_PATH) path += subpath + ".";
-		return path + inflector.plural(concept.getType()).toLowerCase() + "." + inflector.plural(concept.getName()).toLowerCase();
+		return path + concept.getName() + concept.getType();
+	}
+
+	private String makeFacetPackage(Concept facetedConcept) {
+		String path = "";
+		for (String subpath : FACETS_PATH) path += subpath + ".";
+		return path + inflector.plural(facetedConcept.getType()).toLowerCase() + "." + inflector.plural(facetedConcept.getName()).toLowerCase();
 	}
 
 	private boolean isIntention(Concept facet) {
@@ -125,8 +131,10 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(taraBoxFile);
 		Model model = TaraLanguage.getMetaModel(taraBoxFile);
 		for (Concept concept : allConceptsOfFile)
-			if ((concept.isFacet() || isMetaFacet(model, concept)) && !concept.isIntention())
+			if ((concept.isFacet() || isMetaFacet(model, concept)) && !concept.isIntention()) {
 				facets.add(concept);
+				facets.addAll(concept.getSubConcepts());
+			}
 		return facets.toArray(new Concept[facets.size()]);
 	}
 

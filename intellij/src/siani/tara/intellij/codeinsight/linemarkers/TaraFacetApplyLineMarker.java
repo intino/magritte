@@ -30,7 +30,7 @@ import java.util.List;
 
 import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveJavaClassReference;
 
-public class TaraFacetApplyLineMarkerProvider extends JavaLineMarkerProvider {
+public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 
 	private static final String FACETS_PATH = "extensions";
 	private final MarkerType OVERRIDDEN_PROPERTY_TYPE = new MarkerType(new Function<PsiElement, String>() {
@@ -84,7 +84,7 @@ public class TaraFacetApplyLineMarkerProvider extends JavaLineMarkerProvider {
 	}
 
 
-	public TaraFacetApplyLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+	public TaraFacetApplyLineMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
 

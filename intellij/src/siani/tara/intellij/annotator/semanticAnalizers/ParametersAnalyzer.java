@@ -1,15 +1,16 @@
 package siani.tara.intellij.annotator.semanticAnalizers;
 
+import com.intellij.psi.PsiElement;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
+import siani.tara.lang.FacetTarget;
 import siani.tara.lang.Node;
 import siani.tara.lang.Variable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 
@@ -22,13 +23,29 @@ public class ParametersAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		Concept concept = TaraPsiImplUtil.getConceptContainerOf(parameters);
-		Node node = findMetaConcept(concept);
-		if (node == null) return;
-		List<Variable> variables = node.getObject().getVariables();
-		List<String> compare = compare(collectMinimumParametersNeeded(variables), collectDeclaredParameters(concept, variables));
+		PsiElement element = TaraPsiImplUtil.getContextOf(parameters);
+		List<Variable> variables;
+		if (element instanceof FacetApply) {
+			variables = findFacetVariables((FacetApply) element);
+			if (variables == null) return;
+		} else {
+			Node node = findMetaConcept((Concept) element);
+			if (node == null) return;
+			variables = node.getObject().getVariables();
+		}
+		List<String> compare = compare(collectMinimumParametersNeeded(variables), collectDeclaredParameters(element, variables));
 		if (!compare.isEmpty())
 			results.put(parameters, new AnnotateAndFix(ERROR, "parameters missed: " + parametersToString(compare)));
+	}
+
+	private List<Variable> findFacetVariables(FacetApply facetApply) {
+		Node node = findMetaConcept(TaraPsiImplUtil.getConceptContainerOf(facetApply));
+		if (node == null) return null;
+		for (Map.Entry<String, List<FacetTarget>> entry : node.getObject().getAllowedFacets().entrySet()) {
+			if (entry.getKey().equals(facetApply.getFacetName()))
+				return entry.getValue().get(0).getVariables();
+		}
+		return null;
 	}
 
 	private List<String> compare(List<String> minimum, List<String> declared) {
@@ -38,12 +55,22 @@ public class ParametersAnalyzer extends TaraAnalyzer {
 		return list;
 	}
 
-	private List<String> collectDeclaredParameters(Concept concept, List<Variable> variables) {
+	private List<String> collectDeclaredParameters(PsiElement element, List<Variable> variables) {
 		List<String> collected = new ArrayList<>();
-		for (VarInit varInit : concept.getVarInits())
+		for (VarInit varInit : getVarInits(element))
 			collected.add(varInit.getName());
 		collectParametersNames(collected, variables);
 		return collected;
+	}
+
+	private Collection<? extends VarInit> getVarInits(PsiElement element) {
+		if (element instanceof Concept)
+			return ((Concept) element).getVarInits();
+		else {
+			FacetApply apply = (FacetApply) element;
+			if (apply.getBody() == null) return Collections.EMPTY_LIST;
+			return apply.getBody().getVarInitList();
+		}
 	}
 
 	private void collectParametersNames(List<String> collected, List<Variable> variables) {

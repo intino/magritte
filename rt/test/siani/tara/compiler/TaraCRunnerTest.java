@@ -92,6 +92,11 @@ public class TaraCRunnerTest {
 	}
 
 	@Test
+	public void EVM1() {
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/EVM1.txt"});
+	}
+
+	@Test
 	public void SampleM1() {
 		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/sampleM1.txt"});
 	}

@@ -75,6 +75,7 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 					if (parameters.getPosition().getContext() instanceof MetaIdentifier) {
 						Concept concept = getConceptContainerOf(parameters.getPosition());
 						Model model = TaraUtil.getMetamodel(concept);
+						if (model == null) return;
 						for (Node node : model.getTreeModel()) {
 							if (node.getName() == null) continue;
 							LookupElementBuilder element = create(node.getName()).withIcon(TaraIcons.getIcon(TaraIcons.CONCEPT)).withCaseSensitivity(false);

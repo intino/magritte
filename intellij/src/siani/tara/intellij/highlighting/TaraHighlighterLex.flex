@@ -42,7 +42,7 @@ import java.util.Set;
 			String source = zzBuffer.toString().trim();
 			int nl = source.indexOf('\n');
             String dslLine = nl > 0 ? source.substring(0, nl).trim() : source;
-			if (!dslLine.startsWith(DSL) || dslLine.length() < 2) return;
+			if (!dslLine.startsWith(DSL) || dslLine.split(DSL).length < 2) return;
 			dsl = dslLine.split(DSL)[1].trim();
 		}
 		Model heritage = TaraLanguage.getMetaModel(dsl, project);

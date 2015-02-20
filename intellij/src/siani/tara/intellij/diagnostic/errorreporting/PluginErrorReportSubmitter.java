@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PluginErrorReportSubmitter extends ErrorReportSubmitter {
-	private static final Logger LOG = Logger.getInstance(MailLoggingEventSubmitter.class.getName());
+	private static final Logger LOG = Logger.getInstance(PluginErrorReportSubmitter.class.getName());
 	private static final String ERROR_SUBMITTER_PROPERTIES_PATH = "messages/errorReporter.properties";
 	private static final String PLUGIN_ID_PROPERTY_KEY = "plugin.id";
 	private static final String PLUGIN_NAME_PROPERTY_KEY = "plugin.name";

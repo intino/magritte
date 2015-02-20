@@ -24,7 +24,7 @@ import java.awt.event.MouseEvent;
 
 import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveMeasure;
 
-public class TaraMetricLineMarkerProvider extends JavaLineMarkerProvider {
+public class TaraMetricLineMarker extends JavaLineMarkerProvider {
 
 	private final MarkerType OVERRIDDEN_PROPERTY_TYPE = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
@@ -56,7 +56,7 @@ public class TaraMetricLineMarkerProvider extends JavaLineMarkerProvider {
 	);
 
 
-	public TaraMetricLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+	public TaraMetricLineMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
 

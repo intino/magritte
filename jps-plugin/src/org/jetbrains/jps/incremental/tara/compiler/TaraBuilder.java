@@ -78,13 +78,13 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			start = System.currentTimeMillis();
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
 			Element moduleConfiguration = getModuleConfiguration(getModuleConfigurationFile(chunk.getModules().iterator().next()));
-			final String generatedLangName = getGeneratedLangName(moduleConfiguration);
-			final String language = getLanguage(moduleConfiguration);
+			final String generatedDSLName = getGeneratedDSLName(moduleConfiguration);
+			final String dictionary = getDictionary(moduleConfiguration);
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 			List<String> paths = collectPaths(chunk, context, finalOutputs);
 			paths.add(getParentModelPath(moduleConfiguration));
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(),
-				generatedLangName, language, toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
+				generatedDSLName, dictionary, toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
 			context.setDone(1);
@@ -114,11 +114,11 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 	private String getParentModelPath(Element moduleConfiguration) {
-		String metamodelFilePath = String.valueOf(getValueOf(moduleConfiguration, "metamodelFilePath"));
+		String dslFilePath = String.valueOf(getValueOf(moduleConfiguration, "dslFilePath"));
 		String globalSystemMacroValue = PathMacroUtil.getGlobalSystemMacroValue(PathMacroUtil.APPLICATION_PLUGINS_DIR);
-		if (globalSystemMacroValue != null && metamodelFilePath.contains(PathMacroUtil.APPLICATION_PLUGINS_DIR))
-			metamodelFilePath = metamodelFilePath.replace("$" + PathMacroUtil.APPLICATION_PLUGINS_DIR + "$", globalSystemMacroValue);
-		return metamodelFilePath;
+		if (globalSystemMacroValue != null && dslFilePath.contains(PathMacroUtil.APPLICATION_PLUGINS_DIR))
+			dslFilePath = dslFilePath.replace("$" + PathMacroUtil.APPLICATION_PLUGINS_DIR + "$", globalSystemMacroValue);
+		return dslFilePath;
 	}
 
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {
@@ -244,13 +244,13 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return file;
 	}
 
-	public String getGeneratedLangName(Element moduleConfiguration) {
+	public String getGeneratedDSLName(Element moduleConfiguration) {
 		Boolean terminal = Boolean.valueOf(getValueOf(moduleConfiguration, "terminal"));
-		return terminal ? null : String.valueOf(getValueOf(moduleConfiguration, "generatedModelName"));
+		return terminal ? null : String.valueOf(getValueOf(moduleConfiguration, "generatedDslName"));
 	}
 
-	public String getLanguage(Element moduleConfiguration) {
-		return getValueOf(moduleConfiguration, "language");
+	public String getDictionary(Element moduleConfiguration) {
+		return getValueOf(moduleConfiguration, "dictionary");
 	}
 
 	private String getValueOf(Element moduleConfiguration, String value) {

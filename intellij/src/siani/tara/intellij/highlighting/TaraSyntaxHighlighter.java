@@ -82,7 +82,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 
 		KEYS.put(METAIDENTIFIER_KEY, META_IDENTIFIER);
 		KEYS.put(DSL, KEYWORD);
-		KEYS.put(PROTEO, KEYWORD);
 		KEYS.put(EMPTY_REF, KEYWORD);
 		KEYS.put(HAS, KEYWORD);
 		KEYS.put(EXTENDS, KEYWORD);
@@ -122,11 +121,9 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(LIST, OPERATOR);
 		KEYS.put(LEFT_SQUARE, OPERATOR);
 		KEYS.put(RIGHT_SQUARE, OPERATOR);
-		KEYS.put(MEASURE_VALUE, PRIMITIVE);
 		KEYS.put(NEW_LINE_INDENT, KEYWORD);
 		KEYS.put(WORD_KEY, PRIMITIVE);
 		KEYS.put(RATIO_TYPE, PRIMITIVE);
-		KEYS.put(MEASURE_TYPE_KEY, PRIMITIVE);
 		KEYS.put(STRING_TYPE, PRIMITIVE);
 		KEYS.put(DOUBLE_TYPE, PRIMITIVE);
 		KEYS.put(INT_TYPE, PRIMITIVE);

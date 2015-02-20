@@ -63,6 +63,7 @@
     <group id="tara.module.group" popup="false">
       <action id="configModule" class="siani.tara.intellij.actions.ConfigModuleAction" text="Configure tara module"
               description="Set parent and level of module">
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift M"/>
       </action>
       <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="Compile"/>
     </group>
@@ -99,15 +100,17 @@
     <treeStructureProvider implementation="siani.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="siani.tara.intellij.actions.TaraTemplatesFactory"/>
     <codeInsight.lineMarkerProvider language="Tara"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraIntentionLineMarkerProvider"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraIntentionLineMarker"/>
     <codeInsight.lineMarkerProvider language="Tara"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraFacetApplyLineMarkerProvider"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraIntentionInstanceLineMarker"/>
     <codeInsight.lineMarkerProvider language="Tara"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraMetricLineMarkerProvider"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraFacetApplyLineMarker"/>
+    <codeInsight.lineMarkerProvider language="Tara"
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraMetricLineMarker"/>
     <codeInsight.lineMarkerProvider language="JAVA"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaIntentionToTaraLineMarkerProvider"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaIntentionToTaraLineMarker"/>
     <codeInsight.lineMarkerProvider language="JAVA"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaFacetToTaraLineMarkerProvider"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaFacetToTaraLineMarker"/>
     <gotoRelatedProvider implementation="siani.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
     <projectConfigurable instance="siani.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"

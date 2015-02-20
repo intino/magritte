@@ -78,6 +78,7 @@ public class ModelHelper {
 		Model.SearchNode previous = new Model.SearchNode(forwardConcept.getType());
 		addProperties(forwardConcept, previous);
 		while ((forwardConcept = forwardConcept.getContainer()) != null) {
+			if (forwardConcept.isSub()) continue;
 			forward = new Model.SearchNode(forwardConcept.getType());
 			addProperties(forwardConcept, forward);
 			forward.setNext(previous);
