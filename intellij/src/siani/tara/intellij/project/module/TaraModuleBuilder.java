@@ -21,6 +21,10 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.jps.model.java.JavaResourceRootType;
+import org.jetbrains.jps.model.java.JavaSourceRootProperties;
+import org.jetbrains.jps.model.java.JavaSourceRootType;
+import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.project.sdk.TaraJdk;
@@ -42,6 +46,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	private static final Logger LOG = Logger.getInstance(TaraModuleBuilder.class.getName());
 	private static final String ITRULES = "itrules";
 	private static final String SRC = "src";
+	private static final String GEN = "gen";
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
 	private String parentLanguage;
 	private String language;
@@ -127,16 +132,28 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			String parentPath = "";
 			if (mySourcePaths != null) {
 				for (final Pair<String, String> sourcePath : mySourcePaths) {
-					String first = sourcePath.first;
-					new File(first).mkdirs();
-					final VirtualFile sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(FileUtil.toSystemIndependentName(first));
+					new File(sourcePath.first).mkdirs();
+					final VirtualFile sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(FileUtil.toSystemIndependentName(sourcePath.first));
 					if (sourceRoot != null) {
 						parentPath = sourceRoot.getParent().getPath();
 						contentEntry.addSourceFolder(sourceRoot, false, sourcePath.second);
 					}
 				}
-				createResources(parentPath);
+				createResources(contentEntry, parentPath);
+				createGen(contentEntry);
+				createConfigDir(contentEntry);
 			}
+		}
+	}
+
+	private void createConfigDir(ContentEntry contentEntry) {
+		try {
+			String modulePath = contentEntry.getFile().getPath();
+			VfsUtil.createDirectories(modulePath + separator + ".config");
+			configFile = new File(modulePath + separator + ".config", "tara.conf");
+			configFile.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -182,6 +199,17 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		}
 	}
 
+	private void createGen(ContentEntry contentEntry) {
+		Pair<String, String> resPath = Pair.create(getContentEntryPath() + separator + GEN, "");
+		mySourcePaths.add(resPath);
+		new File(resPath.first).mkdirs();
+		final VirtualFile sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(FileUtil.toSystemIndependentName(resPath.first));
+		if (sourceRoot != null) {
+			JavaSourceRootProperties properties = JpsJavaExtensionService.getInstance().createSourceRootProperties("", true);
+			contentEntry.addSourceFolder(sourceRoot, JavaSourceRootType.SOURCE, properties);
+		}
+	}
+
 	public void setParentLanguage(String metamodel) {
 		this.parentLanguage = metamodel;
 	}
@@ -198,15 +226,20 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		this.terminal = terminal;
 	}
 
-	private void createResources(String parentPath) {
+	private void createResources(ContentEntry contentEntry, String parentPath) {
 		try {
+			Pair<String, String> resPath = Pair.create(getContentEntryPath() + separator + RES, "");
+			mySourcePaths.add(resPath);
+			new File(resPath.first).mkdirs();
+			final VirtualFile sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(FileUtil.toSystemIndependentName(resPath.first));
+			if (sourceRoot != null) {
+				parentPath = sourceRoot.getParent().getPath();
+				contentEntry.addSourceFolder(sourceRoot, JavaResourceRootType.RESOURCE);
+			}
 			VfsUtil.createDirectories(parentPath + separator + RES);
 			VfsUtil.createDirectories(parentPath + separator + RES + separator + ITRULES);
 			VfsUtil.createDirectories(parentPath + separator + RES + separator + ICONS);
 			VfsUtil.createDirectories(parentPath + separator + RES + separator + ICONS + separator + "definitions");
-			VfsUtil.createDirectories(parentPath + separator + ".config");
-			configFile = new File(parentPath + separator + ".config", "tara.conf");
-			configFile.createNewFile();
 		} catch (IOException e) {
 			LOG.error(e.getMessage());
 		}

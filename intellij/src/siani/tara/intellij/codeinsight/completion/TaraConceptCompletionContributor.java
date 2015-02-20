@@ -2,9 +2,11 @@ package siani.tara.intellij.codeinsight.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraIcons;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
@@ -31,7 +33,7 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 				                           @NotNull CompletionResultSet resultSet) {
 					Concept concept = getConceptContainerOf(parameters.getPosition());
 					if (parameters.getPosition().getContext() instanceof MetaIdentifier && concept != null)
-						addMetaIdentifiers(concept, resultSet);
+						addMetaIdentifiers(parameters.getOriginalFile(), (Concept) concept.getOriginalElement(), resultSet);
 					resultSet.addElement(create("has "));
 					resultSet.addElement(create("sub "));
 					resultSet.addElement(create("var "));
@@ -73,8 +75,7 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 				                           @NotNull CompletionResultSet resultSet) {
 					List<LookupElementBuilder> elementBuilders = new ArrayList<>();
 					if (parameters.getPosition().getContext() instanceof MetaIdentifier) {
-						Concept concept = getConceptContainerOf(parameters.getPosition());
-						Model model = TaraUtil.getMetamodel(concept);
+						Model model = TaraUtil.getMetamodel(parameters.getOriginalFile());
 						if (model == null) return;
 						for (Node node : model.getTreeModel()) {
 							if (node.getName() == null) continue;
@@ -115,10 +116,11 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 		return true;
 	}
 
-	private void addMetaIdentifiers(Concept concept, CompletionResultSet resultSet) {
+	private void addMetaIdentifiers(PsiFile originalFile, Concept concept, CompletionResultSet resultSet) {
 		Concept container = getConceptContainerOf(concept);
 		if (container == null) return;
-		Node metaConcept = TaraUtil.getMetaConcept(container);
+		Model metaModel = TaraLanguage.getMetaModel(originalFile);
+		Node metaConcept = TaraUtil.findNode(container, metaModel);
 		Map<Node, LookupElementBuilder> candidates = new LinkedHashMap<>();
 		if (metaConcept == null) return;
 		for (Node node : metaConcept.getInnerNodes()) {
@@ -130,12 +132,11 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 					candidates.put(declaredNode, createElement(declaredNode));
 			else candidates.put(node, createElement(node));
 		}
-		Model model = TaraUtil.getMetamodel(container);
 		for (Map.Entry<Node, LookupElementBuilder> entry : candidates.entrySet()) {
 			LookupElementBuilder element = entry.getValue().withIcon(TaraIcons.getIcon(TaraIcons.CONCEPT)).withCaseSensitivity(false);
 			String parentName = entry.getKey().getObject().getParentName();
 			if (parentName != null) element = element.appendTailText(":" + parentName, true);
-			resultSet.addElement(element.withTypeText(model.getName()));
+			resultSet.addElement(element.withTypeText(metaModel.getName()));
 		}
 	}
 

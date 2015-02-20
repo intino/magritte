@@ -87,7 +87,9 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 	String getType();
 
 	@NotNull
-	Parameter[] getParameters();
+	Parameter[] getParameterList();
+
+	Parameters getParameters();
 
 	Collection<Concept> getConceptSiblings();
 

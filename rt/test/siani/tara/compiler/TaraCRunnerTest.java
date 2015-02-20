@@ -77,11 +77,6 @@ public class TaraCRunnerTest {
 	}
 
 	@Test
-	public void TeselaM1() {
-		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/teselaM1.txt"});
-	}
-
-	@Test
 	public void MonetM0() {
 		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/monetM0.txt"});
 	}
@@ -94,6 +89,11 @@ public class TaraCRunnerTest {
 	@Test
 	public void EVM1() {
 		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/EVM1.txt"});
+	}
+
+	@Test
+	public void TeselaM1() {
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/teselaM1.txt"});
 	}
 
 	@Test

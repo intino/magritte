@@ -48,17 +48,17 @@ public class TaraUtil {
 		return result;
 	}
 
-	public static Model getMetamodel(PsiElement pfile) {
-		if (pfile == null) return null;
-		PsiFile file = pfile.getContainingFile();
-		return TaraLanguage.getMetaModel(file.getVirtualFile() == null ? (PsiFile) file.getOriginalElement() : file);
-	}
-
-
 	public static Node getMetaConcept(Concept concept) {
 		Model model = getMetamodel(concept);
 		if (model == null) return null;
 		return findNode(concept, model);
+	}
+
+
+	public static Model getMetamodel(PsiElement pfile) {
+		if (pfile == null) return null;
+		PsiFile file = pfile.getContainingFile();
+		return TaraLanguage.getMetaModel(file.getVirtualFile() == null ? (PsiFile) file.getOriginalElement() : file);
 	}
 
 	private static void extractConceptsByName(String identifier, List<Concept> result, Collection<Concept> concepts) {

@@ -1,15 +1,16 @@
 package siani.tara.intellij.annotator.semanticAnalizers;
 
+import com.intellij.psi.PsiElement;
 import siani.tara.intellij.annotator.TaraAnnotator;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.VarInit;
+import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
+import siani.tara.lang.FacetTarget;
 import siani.tara.lang.Node;
 import siani.tara.lang.Variable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 
@@ -18,9 +19,13 @@ public class ParametersExistenceAnalyzer extends TaraAnalyzer {
 
 	private final Concept concept;
 	private final Node node;
+	private final PsiElement element;
 
-	public ParametersExistenceAnalyzer(Concept concept) {
-		this.concept = concept;
+	public ParametersExistenceAnalyzer(PsiElement element) {
+		this.element = element;
+		if (element instanceof Concept)
+			this.concept = (Concept) element;
+		else this.concept = TaraPsiImplUtil.getConceptContainerOf(element);
 		node = findMetaConcept(concept);
 	}
 
@@ -30,10 +35,32 @@ public class ParametersExistenceAnalyzer extends TaraAnalyzer {
 		ModuleConfiguration instance = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(concept.getContainingFile()));
 		if (instance == null) return;
 		boolean terminal = instance.isTerminal();
-		List<Variable> variables = node.getObject().getVariables();
-		List<String> compare = compare(collectMinimumNumberOfParameter(variables, terminal), collectDeclaredParameters(concept));
+		List<Variable> variables = findVariables();
+		List<String> compare = compare(collectMinimumNumberOfParameter(variables, terminal), collectDeclaredParameters(element, variables));
 		if (!compare.isEmpty())
-			results.put(concept.getSignature(), new TaraAnnotator.AnnotateAndFix(ERROR, "parameters missed: " + parametersToString(compare)));
+			results.put(element instanceof Concept ? concept.getSignature() : element, new TaraAnnotator.AnnotateAndFix(ERROR, "parameters missed: " + parametersToString(compare)));
+	}
+
+	private List<Variable> findVariables() {
+		List<Variable> variables;
+		if (element instanceof FacetApply) {
+			variables = findFacetVariables((FacetApply) element);
+		} else {
+			Node node = findMetaConcept((Concept) element);
+			if (node == null) return null;
+			variables = node.getObject().getVariables();
+		}
+		return variables;
+	}
+
+	private List<Variable> findFacetVariables(FacetApply facetApply) {
+		Node node = findMetaConcept(TaraPsiImplUtil.getConceptContainerOf(facetApply));
+		if (node == null) return null;
+		for (Map.Entry<String, List<FacetTarget>> entry : node.getObject().getAllowedFacets().entrySet()) {
+			if (entry.getKey().equals(facetApply.getFacetName()))
+				return entry.getValue().get(0).getVariables();
+		}
+		return null;
 	}
 
 	private List<String> compare(List<String> minimum, List<String> declared) {
@@ -52,11 +79,35 @@ public class ParametersExistenceAnalyzer extends TaraAnalyzer {
 		return result;
 	}
 
-	private List<String> collectDeclaredParameters(Concept concept) {
+	private List<String> collectDeclaredParameters(PsiElement element, List<Variable> variables) {
 		List<String> collected = new ArrayList<>();
-		for (VarInit varInit : concept.getVarInits())
+		for (VarInit varInit : getVarInits(element))
 			collected.add(varInit.getName());
+		collected.addAll(collectParametersNames(variables));
 		return collected;
+	}
+
+	private Collection<? extends VarInit> getVarInits(PsiElement element) {
+		if (element instanceof Concept)
+			return ((Concept) element).getVarInits();
+		else {
+			FacetApply apply = (FacetApply) element;
+			if (apply.getBody() == null) return Collections.EMPTY_LIST;
+			return apply.getBody().getVarInitList();
+		}
+	}
+
+	private List<String> collectParametersNames(List<Variable> variables) {
+		List<String> names = new ArrayList<>();
+		Parameters parameters = element instanceof Concept ? concept.getParameters() : ((FacetApply) element).getParameters();
+		if (parameters == null) return names;
+		if (parameters.getParameters().length == 0 || variables.isEmpty()) return names;
+		for (Parameter parameter : parameters.getParameters()) {
+			names.add(parameter.isExplicit() ?
+				((TaraExplicitParameter) parameter).getIdentifier().getText() :
+				variables.get(parameter.getIndexInParent()).getName());
+		}
+		return names;
 	}
 
 	private String parametersToString(List<String> parameterList) {

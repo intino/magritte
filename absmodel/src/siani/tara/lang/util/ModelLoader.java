@@ -109,6 +109,9 @@ public class ModelLoader {
 				String parent = declaredNode.getObject().getParentName();
 				if (parent != null) {
 					Node parentNode = aModel.get(parent);
+					if (parentNode == null && declaredNode.is(Annotation.TERMINAL)) continue;
+					if (parentNode == null)
+						throw new RuntimeException("Error loading language definition. Parent of node " + parent + "not found");
 					parentNode.getObject().addChild(node.getObject());
 					node.getObject().setParentObject(parentNode.getObject());
 				}

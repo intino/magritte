@@ -114,9 +114,15 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public Parameter[] getParameters() {
+	public Parameter[] getParameterList() {
 		if (getSignature().getParameters() == null) return new Parameter[0];
 		return getSignature().getParameters().getParameters();
+	}
+
+	@Nullable
+	public Parameters getParameters() {
+		if (getSignature().getParameters() == null) return null;
+		return getSignature().getParameters();
 	}
 
 	public String getQualifiedName() {
