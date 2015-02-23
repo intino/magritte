@@ -1,15 +1,126 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="all" name="tara :: intellij">
-
-  <property name="src.dir" defaultValue="src"/>
-  <property name="test.dir" defaultValue="test"/>
-  <property name="sonar.source" defaultValue="1.7"/>
-  <path id="classpath">
+<project basedir="." default="build-jar">
+  <property name="debuglevel" value="source,lines,vars" />
+  <property name="target" value="1.7" />
+  <property name="source" value="1.7" />
+  <property name="file.jar" value="tara.jar" />
+	
+  <path id="library.classpath">
+    <pathelement location="../lib" />
+    <fileset dir="../lib">
+      <include name="**/*.jar" />
+    </fileset>
   </path>
 
-  <target name="clean">
+  <path id="intellij.classpath">
+    <pathelement location="../intellij/lib" />
+    <fileset dir="../intellij/lib">
+      <include name="**/*.jar" />
+    </fileset>
+  </path>
+
+  <path id="rt.classpath">
+    <pathelement location="../rt/lib" />
+    <fileset dir="../rt/lib">
+      <include name="**/*.jar" />
+    </fileset>
+  </path>
+
+  <path id="rt-constants.classpath">
+    <pathelement location="../rt-constants/dist" />
+    <fileset dir="../rt-constants/dist">
+      <include name="**/*.*" />
+    </fileset>
+  </path>
+
+  <path id="jps-plugin.classpath">
+    <pathelement location="../jps-plugin/build" />
+    <fileset dir="../jps-plugin/build">
+      <include name="**/*.*" />
+    </fileset>
+  </path>
+
+  <target name="init">
+    <mkdir dir="build" />
+    <mkdir dir="dist" />
+    <mkdir dir="dist/META-INF" />
+    <mkdir dir="../rt-constants/dist" />
   </target>
 
-  <target name="all" depends="clean"/>
+  <target name="clean">
+    <delete dir="build"/>
+    <delete dir="dist" />
+    <delete dir="../rt-constants/dist" />
+  </target>
 
+  <target depends="clean" name="cleanall" />
+  <target depends="build-subprojects,build-project" name="build" />
+  <target name="build-subprojects" />
+  
+  <target depends="init" name="build-project">
+    <ant dir="../jps-plugin" target="build-jar"/>
+
+    <echo message="${ant.project.name}: ${ant.file}" />
+
+    <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}" includeantruntime="false">     
+      <src path="../rt-constants/src" />
+      <classpath refid="library.classpath" />
+    </javac>
+
+    <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}" includeantruntime="false">     
+      <src path="../absmodel/src" />
+      <classpath refid="library.classpath" />
+    </javac>
+
+    <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}" includeantruntime="false">     
+      <src path="../rt/src" />
+      <classpath refid="rt.classpath" />
+      <classpath refid="library.classpath" />
+    </javac>
+
+   <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}" includeantruntime="false">     
+      <src path="gen" />
+      <src path="src" />
+      <classpath refid="intellij.classpath" />
+      <classpath refid="library.classpath" />
+      <classpath refid="jps-plugin.classpath" />
+      <classpath refid="rt.classpath" />
+    </javac>
+  </target>
+  
+  <target name="dist" depends="cleanall,build-project">
+    <copy includeemptydirs="false" todir="dist">
+      <fileset dir="lib">
+      </fileset>
+    </copy>    
+
+    <copy includeemptydirs="false" todir="dist">
+      <fileset dir="../rt/lib">
+      </fileset>
+    </copy>    
+
+    <copy includeemptydirs="false" todir="dist">
+      <fileset dir="../rt/res">
+      </fileset>
+    </copy>    
+
+    <copy includeemptydirs="false" todir="dist">
+      <fileset dir="res">
+      </fileset>
+    </copy>    
+
+    <copy file="src/META-INF/plugin.xml" tofile="dist/META-INF/plugin.xml"/>
+  </target>  
+
+  <target name="build-jar" depends="dist">
+    <fileset dir="dist">
+      <include name="**/*" />
+    </fileset>
+    <jar destfile="${file.jar}">
+      <zipfileset dir="dist">
+      </zipfileset>
+    </jar>
+    <echo>Copying ${file.jar}...</echo>
+    <move file="${file.jar}" todir="build" />
+  </target>
 </project>
