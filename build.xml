@@ -31,6 +31,11 @@
     <copy includeemptydirs="false" todir="dist/tara/lib">
       <fileset dir="jps-plugin/build">
       </fileset>
+    </copy>
+
+    <copy includeemptydirs="false" todir="dist/tara/lib">
+      <fileset dir="rt/lib">
+      </fileset>
     </copy>    
   </target>  
 
