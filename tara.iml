@@ -3,7 +3,9 @@
   <component name="DevKit.ModuleBuildProperties" url="file://$MODULE_DIR$/intellij/src/META-INF/plugin.xml" />
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/lib" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="tara-jps-plugin" />
     <orderEntry type="module" module-name="tara-runtime" />

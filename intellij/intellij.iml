@@ -11,11 +11,11 @@
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" generated="true" />
     </content>
     <orderEntry type="jdk" jdkName="IDEA IC-139.225.3" jdkType="IDEA JDK" />
-    <orderEntry type="module" module-name="tara-jps-plugin" />
-    <orderEntry type="module" module-name="abstract-model-representation" />
     <orderEntry type="library" name="markdown4j-2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="junit" level="application" />
     <orderEntry type="library" name="itrules" level="project" />
+    <orderEntry type="module" module-name="tara-jps-plugin" />
+    <orderEntry type="module" module-name="abstract-model-representation" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
