@@ -56,6 +56,11 @@ public class MorphFrameCreator extends FrameCreator {
 			addInner(node, newFrame);
 			if (!node.isSub() && !node.equals(initNode))
 				addSubs(node, frame);
+			if (node.getContainer() != null) {
+				String containerPackage = composeMorphPackagePath(model, node.getContainer());
+				if (!containerPackage.equals("magritte.morphs"))
+					imports.add(containerPackage + "." + node.getContainer().getName());
+			}
 		}
 
 	}

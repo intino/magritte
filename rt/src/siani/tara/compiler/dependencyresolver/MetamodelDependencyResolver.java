@@ -8,11 +8,11 @@ import java.util.*;
 import static siani.tara.lang.Annotation.*;
 
 
-public class ParentModelDependencyResolver {
+public class MetamodelDependencyResolver {
 	private final Model model;
 	private final Model parent;
 
-	public ParentModelDependencyResolver(Model model, Model parentModel) {
+	public MetamodelDependencyResolver(Model model, Model parentModel) {
 		this.model = model;
 		this.parent = parentModel;
 		model.setParentModel(parentModel);
@@ -104,7 +104,7 @@ public class ParentModelDependencyResolver {
 	private boolean isInstance(Node metaNode, Node instance) throws TaraException {
 		Node node = parent.searchNodeClass(instance);
 		if (node == null)
-			throw new TaraException("Node in parent not found: " + instance.getMetaQN());
+			throw new TaraException("Node in metamodel not found: " + instance.getMetaQN());
 		return (node.is(DeclaredNode.class) ? node.equals(metaNode) : ((LinkNode) node).getDestiny().equals(metaNode));
 	}
 
@@ -117,11 +117,35 @@ public class ParentModelDependencyResolver {
 		return instances;
 	}
 
-	private void addTerminalNodes(Map<String, Node> terminals) {
-		for (Node terminal : terminals.values()) {
+	private void addTerminalNodes(Map<String, DeclaredNode> terminals) throws TaraException {
+		for (DeclaredNode terminal : terminals.values()) {
 			if (terminal.getObject().is(FACET)) resolveTargets(terminal);
 			model.add(terminal);
 			addIdentifiers(terminal);
+			propagateLinks(findLinksOfTerminal(terminal), terminal);
+		}
+	}
+
+	private List<LinkNode> findLinksOfTerminal(DeclaredNode terminal) {
+		List<LinkNode> linkNodes = new ArrayList<>();
+		for (Node node : parent.getNodeTable().values()) {
+			if (node.is(DeclaredNode.class)) continue;
+			LinkNode linkNode = (LinkNode) node;
+			if (!linkNode.getDestiny().equals(terminal) || !linkNode.isReference()) continue;
+			linkNodes.add(linkNode);
+		}
+		return linkNodes;
+	}
+
+	private void propagateLinks(List<LinkNode> linkNodes, DeclaredNode terminal) throws TaraException {
+		for (LinkNode linkNode : linkNodes) {
+			Collection<Node> instancesOf = getDeclaredInstancesOf(linkNode.getContainer());
+			for (Node container : instancesOf)
+				if (container.is(DeclaredNode.class)) {
+					LinkNode node = new LinkNode(terminal, (DeclaredNode) container);
+					node.setReference(true);
+					((DeclaredNode) container).add(node);
+				}
 		}
 	}
 

@@ -78,11 +78,11 @@ public class Model {
 		return metrics;
 	}
 
-	public Map<String, Node> getTerminalNodes() {
-		Map<String, Node> terminals = new HashMap<>();
+	public Map<String, DeclaredNode> getTerminalNodes() {
+		Map<String, DeclaredNode> terminals = new HashMap<>();
 		for (Node node : getNodeTable().values())
 			if (node.is(DeclaredNode.class) && node.getObject().is(TERMINAL))
-				terminals.put(node.getName(), node);
+				terminals.put(node.getName(), (DeclaredNode) node);
 		return terminals;
 	}
 

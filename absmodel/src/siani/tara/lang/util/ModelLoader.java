@@ -68,7 +68,7 @@ public class ModelLoader {
 		for (Node node : tree) {
 			if (node.is(LinkNode.class)) continue;
 			for (Node inner : node.getInnerNodes()) {
-				if (!inner.isSub())
+				if (inner.is(LinkNode.class) && ((LinkNode) inner).isReference())
 					inner.setContainer((DeclaredNode) node);
 				setContainerToSubs((DeclaredNode) node, inner);
 				restoreContainerReferences(node.getInnerNodes());

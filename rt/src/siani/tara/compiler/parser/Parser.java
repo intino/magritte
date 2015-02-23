@@ -23,7 +23,7 @@ public class Parser {
 	public Parser(File file, CompilerConfiguration configuration) throws IOException {
 		this.file = file;
 		this.configuration = configuration;
-		ANTLRInputStream input = new ANTLRFileStream(file.getAbsolutePath());
+		ANTLRInputStream input = new ANTLRFileStream(file.getAbsolutePath(), "UTF-8");
 		TaraLexer lexer = new TaraLexer(input);
 		lexer.reset();
 		CommonTokenStream tokens = new CommonTokenStream(lexer);

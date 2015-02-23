@@ -57,7 +57,7 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
 		addPhaseOperation(new SemanticPreAnalysisOperation(this), Phases.SEMANTIC_PRE_ANALYSIS);
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
-		addPhaseOperation(new LinkToParentModelOperation(this), Phases.DEPENDENCY_RESOLUTION);
+		addPhaseOperation(new LinkToMetamodelOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new FacetResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new ModelToJavaOperation(this), Phases.CLASS_GENERATION);

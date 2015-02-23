@@ -30,7 +30,7 @@ public class $name extends Box {
 endrule
 
 defrule type(Node) trigger(node)
-def($key);[ name("$name");] $nodeType...[ ][ $facet][ $address][ $annotation...[ ]][ $parent][ $variable+set...[ ]\]
+def($key);[ name("$name");][ $nodeType...[ ]][ $facet][ $address][ $annotation...[ ]][ $parent][ $variable+set...[ ]\]
 	[ $aggregated...[ ]]\
 	[ $component...[ ]]\
 endrule

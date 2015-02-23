@@ -76,7 +76,7 @@ public class BoxFrameCreator extends FrameCreator {
 			newFrame.addFrame("name", node.getQualifiedName()); //TODO change for anonymous and inner facet nodes
 		if (node.getObject().getParent() != null)
 			newFrame.addFrame("parent", node.getObject().getParent().getName());
-		addType(node, newFrame);
+		if (node.is(Annotation.INTENTION)) addType(node, newFrame);
 		addFacetApplies(node, newFrame);
 		if (object.getAddress() != null) newFrame.addFrame("address", object.getAddress().replace(".", ""));
 		addVariables(node, newFrame);
