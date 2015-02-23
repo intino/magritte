@@ -2,7 +2,6 @@ package siani.tara.intellij.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -11,8 +10,6 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.actions.dialog.ConfigModuleDialogPane;
 import siani.tara.intellij.lang.TaraIcons;
@@ -22,16 +19,12 @@ import siani.tara.intellij.lang.psi.impl.TaraUtil;
 public class ConfigModuleAction extends AnAction implements DumbAware {
 	public static final Logger LOG = Logger.getInstance("Config module Action");
 
+	public ConfigModuleAction() {
+		super(TaraIcons.getIcon(TaraIcons.ICON_13));
+	}
+
 	private static boolean isEnabled(AnActionEvent e) {
-		Project project = e.getData(CommonDataKeys.PROJECT);
-		final Module module = e.getData(LangDataKeys.MODULE);
-		if (project == null || module == null)
-			return false;
-		final PsiElement dir = e.getData(LangDataKeys.PSI_ELEMENT);
-		if (dir instanceof PsiDirectory) {
-			PsiDirectory psiDirectory = (PsiDirectory) dir;
-			return module.getModuleFile() != null && psiDirectory.getVirtualFile().getPath().equals(module.getModuleFile().getParent().getPath());
-		} else return false;
+		return true;
 	}
 
 	@Override
@@ -76,4 +69,6 @@ public class ConfigModuleAction extends AnAction implements DumbAware {
 			action.execute();
 		}
 	}
+
+
 }
