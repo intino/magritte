@@ -22,6 +22,7 @@
   <target name="init">
     <mkdir dir="build" />
     <mkdir dir="dist" />
+    <mkdir dir="dist/META-INF" />
     <mkdir dir="../rt-constants/dist" />
   </target>
 
@@ -51,6 +52,13 @@
   </target>
   
   <target name="dist" depends="cleanall,build-project">
+
+    <copy includeemptydirs="false" todir="dist/META-INF">
+      <fileset dir="src/META-INF">
+      </fileset>
+    </copy>    
+
+
   </target>  
 
   <target name="build-jar" depends="dist">
@@ -61,7 +69,7 @@
       <zipfileset dir="dist">
       </zipfileset>
     </jar>
-    <echo>Copying ${file.jar}...</echo>
+    <echo>Copying ${file.plugin.jar}...</echo>
     <move file="${file.plugin.jar}" todir="build" />
   </target>
 </project>
