@@ -35,7 +35,7 @@
   <property name="processor_manager.sonar.projectName" defaultValue="jps-plugin"/>
 
 
-  <property name="sonar.jdbc.url" defaultValue="jdbc:mysql://192.168.200.88:3306/sonar_40?characterEncoding=utf8"/>
+  <property name="sonar.jdbc.url" defaultValue="jdbc:mysql://192.168.200.88:3306/sonar_45?characterEncoding=utf8"/>
   <property name="sonar.jdbc.username" defaultValue="sonar"/>
   <loadfile property="sonar_mysql_password" srcfile="mysql.password"/>
   <property name="sonar.jdbc.password" defaultValue="${sonar_mysql_password}"/>
