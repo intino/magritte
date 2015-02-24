@@ -35,11 +35,6 @@
   <property name="processor_manager.sonar.projectName" defaultValue="jps-plugin"/>
 
 
-  <!-- The following properties are required to use JaCoCo: -->
-  <property name="sonar.dynamicAnalysis" defaultValue="true"/>
-  <property name="sonar.java.coveragePlugin" defaultValue="jacoco"/>
-  <property name="sonar.jacoco.reportPath" defaultValue="target/jacoco.exec"/>
-
   <property name="sonar.jdbc.url" defaultValue="jdbc:mysql://192.168.200.88:3306/sonar_40?characterEncoding=utf8"/>
   <property name="sonar.jdbc.username" defaultValue="sonar"/>
   <loadfile property="sonar_mysql_password" srcfile="mysql.password"/>
@@ -62,7 +57,7 @@
     </taskdef>
 
     <!-- Execute SonarQube -->
-    <sonar:sonar/>
+    <sonar:sonesperaar/>
   </target>
 
   <!-- ========= The main target "all" ========= -->

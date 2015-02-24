@@ -26,6 +26,26 @@ public class ReferenceManager {
 		return reference instanceof Concept ? ((Concept) reference).getIdentifierNode() : reference;
 	}
 
+	@Nullable
+	public static Concept resolveToConcept(IdentifierReference identifierReference) {
+		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
+		PsiElement reference = resolveConcept(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
+		return (Concept) reference;
+	}
+
+	@Nullable
+	public static PsiElement resolve(IdentifierReference identifierReference) {
+		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
+		PsiElement reference = resolveConcept(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
+		if (reference instanceof Concept) reference = ((Concept) reference).getIdentifierNode();
+		return reference;
+	}
+
+	@Nullable
+	public static PsiElement resolveJavaClassReference(Project project, String path) {
+		return JavaHelper.getJavaHelper(project).findClass(path);
+	}
+
 	private static PsiElement resolveInternal(Identifier identifier) {
 		if (identifier.getParent() instanceof IdentifierReference)
 			return resolveConcept(identifier, getIdentifiersOfReference(identifier));
@@ -52,21 +72,6 @@ public class ReferenceManager {
 
 	private static PsiElement getPsiFile(VirtualFile file, Project project) {
 		return PsiManager.getInstance(project).findFile(file);
-	}
-
-	@Nullable
-	public static PsiElement resolve(IdentifierReference identifierReference) {
-		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
-		PsiElement reference = resolveConcept(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
-		if (reference instanceof Concept) reference = ((Concept) reference).getIdentifierNode();
-		return reference;
-	}
-
-	@Nullable
-	public static Concept resolveToConcept(IdentifierReference identifierReference) {
-		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
-		PsiElement reference = resolveConcept(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
-		return (Concept) reference;
 	}
 
 	private static PsiElement resolveHeaderReference(Identifier identifier) {
@@ -196,15 +201,7 @@ public class ReferenceManager {
 		return reference;
 	}
 
-	private static PsiElement resolvePackageReference(Project project, String path) {
-		return (PsiElement) JavaHelper.getJavaHelper(project).findPackage(path);
-	}
-
-	public static PsiElement resolveJavaClassReference(Project project, String path) {
-		return JavaHelper.getJavaHelper(project).findClass(path);
-	}
-
-	public static TaraBoxFileImpl resolveBoxPath(Identifier identifier) {
+	private static TaraBoxFileImpl resolveBoxPath(Identifier identifier) {
 		TaraBoxFile containingFile = (TaraBoxFile) identifier.getContainingFile().getOriginalFile();
 		if (containingFile.getVirtualFile() == null) return null;
 		Module moduleOfDocument = ModuleProvider.getModuleOf(containingFile);
@@ -231,7 +228,7 @@ public class ReferenceManager {
 		return null;
 	}
 
-	public static Concept resolvePathInBox(TaraBoxFile containingFile, List<Identifier> path) {
+	private static Concept resolvePathInBox(TaraBoxFile containingFile, List<Identifier> path) {
 		Set<Concept> concepts = new HashSet<>();
 		concepts.addAll(containingFile.getConcepts());
 		addAggregated(containingFile, path.get(0), concepts, toArrayList(concepts));

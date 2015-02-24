@@ -108,6 +108,7 @@ public class BoxFrameCreator extends FrameCreator {
 	}
 
 	private void addFacetApplies(Node node, Frame newFrame) {
+		if (!node.is(Annotation.INTENTION)) return;
 		for (Facet facet : node.getObject().getFacets()) {
 			Frame facetFrame = new Frame("facetApply").addFrame("name", facet.getName()).addFrame("apply", buildFacetPath(node, facet.getName()));
 			newFrame.addFrame("facet", facetFrame);

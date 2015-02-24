@@ -22,6 +22,18 @@ public class MetamodelDependencyResolver {
 		addTerminalNodes(parent.getTerminalNodes());
 		setValuesToNodes();
 		addAnnotationsToInstances();
+		completeFacetsInformation();
+	}
+
+	private void completeFacetsInformation() {
+		for (Node node : model.getNodeTable().values()) {
+			if (node.is(LinkNode.class)) continue;
+			DeclaredNode declaredNode = (DeclaredNode) node;
+			for (Facet facet : declaredNode.getObject().getFacets()) {
+				Node parentNode = parent.searchNode(facet.getName());
+				if (parentNode != null) facet.setIntention(parentNode.is(INTENTION));
+			}
+		}
 	}
 
 	private void addAnnotationsToInstances() {

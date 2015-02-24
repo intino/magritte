@@ -226,7 +226,7 @@ public class TaraModuleBuildConfEditor implements ModuleConfigurationEditor {
 	}
 
 	public String getDisplayName() {
-		return "Tara configuration";
+		return "Tara Settings";
 	}
 
 	public String getHelpTopic() {
