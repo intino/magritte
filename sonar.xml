@@ -57,7 +57,7 @@
     </taskdef>
 
     <!-- Execute SonarQube -->
-    <sonar:sonesperaar/>
+    <sonar:sonar/>
   </target>
 
   <!-- ========= The main target "all" ========= -->
