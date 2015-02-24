@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="all" name="tara :: tara_runtime">
 
-  <property name="src.dir" defaultValue="src"/>
-  <property name="test.dir" defaultValue="test"/>
-  <property name="sonar.java.source" defaultValue="1.7"/>
-  <property name="sonar.target" defaultValue="1.7"/>
+  <property name="src.dir" value="src"/>
+  <property name="test.dir" value="test"/>
+  <property name="sonar.java.source" value="1.7"/>
+  <property name="sonar.target" value="1.7"/>
   <path id="classpath">
   </path>
 

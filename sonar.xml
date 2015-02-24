@@ -2,58 +2,73 @@
 <project name="Tara" default="all" basedir="." xmlns:sonar="antlib:org.sonar.ant">
 
   <!-- ========= Define the main properties of this project ========= -->
-  <property name="src.dir" defaultValue="src"/>
-  <property name="test.dir" defaultValue="test"/>
-  <property name="build.dir" defaultValue="out"/>
-  <property name="classes.dir" defaultValue="${build.dir}"/>
-  <property name="reports.dir" defaultValue="${build.dir}/reports"/>
-  <property name="reports.junit.xml.dir" defaultValue="${reports.dir}/junit"/>
+  <property name="src.dir" Value="src"/>
+  <property name="test.dir" value="test"/>
+  <property name="build.dir" value="dist"/>
+  <property name="classes.dir" value="${build.dir}"/>
+  <property name="reports.dir" value="${build.dir}/reports"/>
+  <property name="reports.junit.xml.dir" value="${reports.dir}/junit"/>
+
+  <path id="library.classpath">
+    <pathelement location="lib" />
+    <fileset dir="lib">
+      <include name="**/*.jar" />
+    </fileset>
+  </path>
 
   <!-- Define the SonarQube properties -->
-  <property name="sonar.sourceEncoding" defaultValue="UTF-8"/>
-  <property name="sonar.host.url" defaultValue="http://192.168.200.88:9000"/>
-  <property name="sonar.login" defaultValue="application_hudson"/>
+  <property name="sonar.sourceEncoding" value="UTF-8"/>
+  <property name="sonar.host.url" value="http://10.13.13.37:9000"/>
+  <property name="sonar.login" value="application_jenkins"/>
   <loadfile property="sonar_web_password" srcfile="web.password"/>
-  <property name="sonar.password" defaultValue="${sonar_web_password}"/>
-  <property name="sonar.projectKey" defaultValue="tara"/>
-  <property name="sonar.projectName" defaultValue="tara"/>
-  <property name="sonar.projectVersion" defaultValue="1.0"/>
-  <property name="sonar.language" defaultValue="java"/>
-  <property name="sonar.java.source" defaultValue="1.7"/>
-  <property name="sonar.java.source" defaultValue="1.7"/>
-  <property name="sonar.sources" defaultValue="${src.dir}"/>
-  <property name="sonar.tests" defaultValue="${test.dir}"/>
-  <property name="sonar.binaries" defaultValue="${classes.dir}"/>
-  <property name="sonar.surefire.reportsPath" defaultValue="${reports.junit.xml.dir}"/>
-  <property name="sonar.modules" defaultValue="intellij,jps-plugin,rt,rt-constants"/>
-  <property name="sonar.sourceEncoding" defaultValue="UTF-8"/>
+  <property name="sonar.password" value="${sonar_web_password}"/>
+  <property name="sonar.projectKey" value="Tara"/>
+  <property name="sonar.projectName" value="Tara"/>
+  <property name="sonar.projectVersion" value="1.0"/>
+  <property name="sonar.language" value="java"/>
+  <property name="sonar.java.source" value="1.7"/>
+  <property name="sonar.java.source" value="1.7"/>
+  <property name="sonar.sources" value="${src.dir}"/>
+  <property name="sonar.tests" value="${test.dir}"/>
+<!--  <property name="sonar.binaries" value="${classes.dir}"/>-->
+  <property name="sonar.surefire.reportsPath" value="${reports.junit.xml.dir}"/>
+  <property name="sonar.modules" value="intellij"/>
+  <property name="sonar.sourceEncoding" value="UTF-8"/>
+  <property name="sonar.java.libraries" value="${classes.dir},../lib,../jps-plugin/dist"/>
+
 
   <!-- Override some properties at module level -->
-  <property name="intellij.sonar.projectName" defaultValue="intellij"/>
-  <property name="tara_runtime.sonar.projectName" defaultValue="rt"/>
-  <property name="tara_runtime_constants.sonar.projectName" defaultValue="rt-constants"/>
-  <property name="processor_manager.sonar.projectName" defaultValue="jps-plugin"/>
+  <property name="intellij.sonar.projectName" value="intellij"/>
+<!--  <property name="tara_runtime.sonar.projectName" value="rt"/>
+  <property name="tara_runtime_constants.sonar.projectName" value="rt-constants"/>
+  <property name="processor_manager.sonar.projectName" value="jps-plugin"/>-->
 
 
-  <property name="sonar.jdbc.url" defaultValue="jdbc:mysql://192.168.200.88:3306/sonar_45?characterEncoding=utf8"/>
-  <property name="sonar.jdbc.username" defaultValue="sonar"/>
+  <loadfile property="sonar_mysql_domain" srcfile="mysql.domain"/>
+  <property name="sonar.jdbc.url" value="jdbc:mysql://${sonar_mysql_domain}/sonar_45?characterEncoding=utf8"/>
+  <property name="sonar.jdbc.username" value="sonar"/>
   <loadfile property="sonar_mysql_password" srcfile="mysql.password"/>
-  <property name="sonar.jdbc.password" defaultValue="${sonar_mysql_password}"/>
+  <property name="sonar.jdbc.password" value="${sonar_mysql_password}"/>
 
   <!-- ========= Define "regular" targets: clean, compile, test, ... ========= -->
   <target name="clean">
     <delete dir=".sonar"/>
     <ant dir="intellij" target="clean"/>
-    <ant dir="rt" target="clean"/>
+<!--    <ant dir="rt" target="clean"/>
     <ant dir="rt-constants" target="clean"/>
-    <ant dir="jps-plugin" target="clean"/>
+    <ant dir="jps-plugin" target="clean"/>-->
+  </target>
+
+  <target name="compile">
+    <ant dir="intellij" target="build-jar"/>
   </target>
 
   <!-- ========= Define SonarQube target ========= -->
   <target name="sonar">
     <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
       <!-- Update the following line, or put the "sonar-ant-task-*.jar" file in your "$HOME/.ant/lib" folder -->
-      <!--<classpath path="/Applications/libraries/sonar-ant-task-2.1.jar"/>-->
+      <!--<classpath path="sonar/sonar-ant-task-*.jar"/>-->
+      <!--<classpath refid="library.classpath" />-->
     </taskdef>
 
     <!-- Execute SonarQube -->
@@ -61,6 +76,6 @@
   </target>
 
   <!-- ========= The main target "all" ========= -->
-  <target name="all" depends="clean, sonar"/>
+  <target name="all" depends="clean, compile, sonar"/>
 
 </project>
