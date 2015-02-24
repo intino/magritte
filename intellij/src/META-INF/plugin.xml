@@ -16,16 +16,6 @@
       ]]>
   </description>
 
-  <change-notes><![CDATA[ ]]>
-  </change-notes>
-
-  <idea-version since-build="133.375"/>
-
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends> -->
-
   <actions>
     <action id="NewTaraFile" class="siani.tara.intellij.actions.CreateTaraFileAction">
       <add-to-group group-id="NewGroup" anchor="first"/>
@@ -60,15 +50,6 @@
       <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
     </group>
 
-      <action id="configModule" class="siani.tara.intellij.actions.ConfigModuleAction" text="Configure Tara"
-              description="Set parent and level of module">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift M"/>
-        <add-to-group group-id="MainToolBar"/>
-        <add-to-group group-id="NavBarToolbar" anchor="before" relative-to-action="SearchEverywhere"/>
-      </action>
-      <!--<add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="Compile"/>-->
-
-
     <group id="Internal.Tara" text="Tara" popup="true" internal="true">
       <action id="ExcludeFromCodeGeneration"
               class="siani.tara.intellij.compiler.ExcludeFromStubGenerationAction"
@@ -78,16 +59,28 @@
       </action>
       <add-to-group group-id="Internal"/>
     </group>
+
     <action id="siani.tara.intellij.actions.SubmitFeedbackAction"
             class="siani.tara.intellij.actions.SubmitFeedbackAction"
             text="Summit Tara Feedback" description="You can report a bug or suggestion of plugin">
       <add-to-group group-id="HelpMenu" anchor="before" relative-to-action="TechnicalSupport"/>
     </action>
+
     <action id="siani.tara.intellij.actions.TriggerExceptionAction"
             class="siani.tara.intellij.actions.TriggerExceptionAction" text="Trigger Exception">
       <add-to-group group-id="HelpMenu" anchor="first"/>
     </action>
   </actions>
+
+  <change-notes><![CDATA[ ]]>
+  </change-notes>
+
+  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends> -->
+
+  <idea-version since-build="133.375"/>
 
   <extensions defaultExtensionNs="com.intellij">
     <!--<fileDocumentManagerListener implementation="siani.tara.intellij.codegeneration.TaraFileDocumentManagerListener"/>-->
@@ -131,8 +124,10 @@
     <lang.syntaxHighlighterFactory key="Tara"
                                    implementationClass="siani.tara.intellij.highlighting.TaraSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="siani.tara.intellij.highlighting.TaraColorSettingPage"/>
+
     <lang.braceMatcher language="Tara" implementationClass="siani.tara.intellij.highlighting.TaraBraceMatcher"/>
     <quoteHandler fileType="Tara" className="siani.tara.intellij.codeinsight.TaraQuoteHandler"/>
+
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AnnotationsAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptAnnotator"/>
@@ -149,6 +144,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.MeasureAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AggregatedConceptAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VariableAnnotator"/>
+
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraConceptCompletionContributor"/>
     <completion.contributor language="Tara"
@@ -163,7 +159,7 @@
                              implementationClass="siani.tara.intellij.lang.psi.impl.IdentifierManipulator"/>
     <codeInsight.parameterInfo language="Tara"
                                implementationClass="siani.tara.intellij.codeinsight.parameterinfo.TaraParameterInfoHandler"/>
-    <moduleConfigurationEditorProvider implementation="siani.tara.intellij.module.PluginModuleEditorsProvider"/>
+    <moduleConfigurationEditorProvider implementation="siani.tara.intellij.project.module.PluginModuleEditorsProvider"/>
     <lang.refactoringSupport language="Tara"
                              implementationClass="siani.tara.intellij.TaraRefactoringSupportProvider"/>
     <renameHandler implementation="siani.tara.intellij.refactoring.rename.RenameHandler"/>
@@ -172,7 +168,6 @@
     <lang.foldingBuilder language="Tara" implementationClass="siani.tara.intellij.TaraFoldingBuilder"/>
     <projectService serviceInterface="siani.tara.intellij.codeinsight.JavaHelper"
                     serviceImplementation="siani.tara.intellij.codeinsight.JavaHelper$Impl"/>
-    <!--<facetType implementation="siani.tara.intellij.project.facet.MagritteFacetType"/>-->
     <!--<referenceImporter implementation="siani.tara.intellij.annotator.imports.TaraReferenceImporter"/>-->
     <!--<lang.formatter language="Tara" implementationClass="siani.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
     <!--<moveFileHandler implementation="siani.tara.intellij.refactoring.move.TaraFileMoveHandler"/>-->

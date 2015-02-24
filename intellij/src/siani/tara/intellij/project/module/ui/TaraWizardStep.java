@@ -1,4 +1,4 @@
-package siani.tara.intellij.project.module;
+package siani.tara.intellij.project.module.ui;
 
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.WizardContext;
@@ -10,6 +10,8 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ProjectRootManager;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.TaraLanguage;
+import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.module.TaraModuleBuilder;
 import siani.tara.intellij.project.sdk.TaraJdk;
 
 import javax.swing.*;

@@ -8,9 +8,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.MessageProvider;
-import siani.tara.intellij.actions.ConfigModuleAction;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
-import siani.tara.intellij.project.module.ModuleProvider;
 
 public class ConfigureModuleFix implements IntentionAction {
 	private final TaraBoxFile file;
@@ -35,7 +33,6 @@ public class ConfigureModuleFix implements IntentionAction {
 
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-		new ConfigModuleAction().configureModule(ModuleProvider.getModuleOf(file));
 	}
 
 	public boolean startInWriteAction() {

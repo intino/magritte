@@ -27,6 +27,7 @@ import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
+import siani.tara.intellij.project.module.ui.TaraWizardStep;
 import siani.tara.intellij.project.sdk.TaraJdk;
 
 import javax.swing.*;
