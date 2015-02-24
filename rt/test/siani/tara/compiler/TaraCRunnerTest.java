@@ -72,7 +72,7 @@ public class TaraCRunnerTest {
 	}
 
 	@Test
-	public void MonextM1() {
+	public void MonetM1() {
 		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/monetM1.txt"});
 	}
 

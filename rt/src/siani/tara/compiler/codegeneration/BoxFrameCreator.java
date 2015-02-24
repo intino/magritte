@@ -108,8 +108,8 @@ public class BoxFrameCreator extends FrameCreator {
 	}
 
 	private void addFacetApplies(Node node, Frame newFrame) {
-		if (!node.is(Annotation.INTENTION)) return;
 		for (Facet facet : node.getObject().getFacets()) {
+			if (!facet.isIntention()) continue;
 			Frame facetFrame = new Frame("facetApply").addFrame("name", facet.getName()).addFrame("apply", buildFacetPath(node, facet.getName()));
 			newFrame.addFrame("facet", facetFrame);
 		}
@@ -144,9 +144,13 @@ public class BoxFrameCreator extends FrameCreator {
 	}
 
 	private String addToPath(String facetName, Node aNode, String path) {
+		boolean faceted = false;
 		for (Facet facet : aNode.getObject().getFacets())
-			if (facet.getName().equals(facetName))
+			if (facet.getName().equals(facetName)) {
 				path = aNode.getName() + facetName + "." + path;
+				faceted = true;
+			}
+		if (!faceted) path = aNode.getType() + "." + path;
 		return path;
 	}
 
@@ -166,8 +170,10 @@ public class BoxFrameCreator extends FrameCreator {
 		Set<String> imports = new HashSet<>();
 		for (Node node : nodes) {
 			if (node.is(LinkNode.class)) continue;
-			for (Facet facet : node.getObject().getFacets())
+			for (Facet facet : node.getObject().getFacets()) {
+				if (!facet.isIntention()) continue;
 				imports.add(InflectorFactory.getInflector(model.getLanguage()).plural(facet.getName()));
+			}
 			imports.addAll(searchFacets(node.getInnerNodes()));
 		}
 		return imports;

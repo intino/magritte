@@ -9,7 +9,7 @@ Census
 terminal
 false
 language
-English
+Spanish
 generated_lang_name
 Census
 encoding

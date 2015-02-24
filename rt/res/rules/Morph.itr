@@ -12,111 +12,111 @@ endrule
 
 
 defrule type(Word) trigger(wordInstantiation)
-public static enum $name+camelCase {$words+FirstUpperCase...[, ]}
+public static enum $name+firstUpperCase {$words+FirstUpperCase...[, ]}
 
 
 endrule
 
 defrule type(Word) type(List) trigger(getter)
-public $name+reference$[] get$name+camelCase() {
-	return Enumerate.cardinal((int) get("$name+lowerCamelCase"), $name+CamelCase.values());
+public $name+reference$[] get$name+firstUpperCase() {
+	return Enumerate.cardinal((int) get("$name+firstLowerCase"), $name+firstUpperCase.values());
 }
 
 endrule
 
 defrule type(Word) !type(List) trigger(getter)
-public $name+reference get$name+camelCase() {
+public $name+reference get$name+firstUpperCase() {
 	return Enumerate.cardinal((int) get("$name"), $name+reference.values());
 }
 
 endrule
 
 defrule type(Word) type(List) trigger(setter)
-public void set$name+camelCase($name+camelCase~... values) {
+public void set$name+firstUpperCase($name+firstUpperCase~... values) {
     set("$name", Enumerate.ordinal(values));
 }
 
 endrule
 
 defrule type(Word) !type(List) trigger(setter)
-public void set$name+camelCase($name+camelCase value) {
+public void set$name+firstUpperCase($name+firstUpperCase value) {
     set("$name", Enumerate.ordinal(value));
 }
 
 endrule
 
 defrule type(Variable) type(Date) !type(Word) trigger(getter)
-public TimeInstant $name+lowerCamelCase() {
+public TimeInstant $name+firstLowerCase() {
     return TimeInstant.value((long) get("$name"));
 }
 
 endrule
 
 defrule type(Variable) type(Measure) !type(Word) trigger(getter)
-public double $name+lowerCamelCase() {
+public double $name+firstLowerCase() {
     return get("$name");
 }
 
 endrule
 
 defrule type(Variable) type(Resource) !type(Word) trigger(getter)
-public Resource $name+lowerCamelCase() {
+public Resource $name+firstLowerCase() {
     return get("$name");
 }
 
 endrule
 
 defrule type(Variable) type(Attribute) trigger(getter)
-public java.lang.$type+CamelCase $name+lowerCamelCase() {
+public java.lang.$type+firstUpperCase $name+firstLowerCase() {
     return get("$name");
 }
 
 endrule
 
 defrule type(Variable) !type(Word) trigger(getter)
-public $type+reference $name+lowerCamelCase() {
+public $type+reference $name+firstLowerCase() {
     return get("$name");
 }
 
 endrule
 
 defrule type(Variable) type(Resource) !type(list) !type(readonly) !type(Word) trigger(setter)
-public void set$name+camelCase(Resource value) {
+public void set$name+firstUpperCase(Resource value) {
     set("$name", value);
 }
 
 endrule
 
 defrule type(Variable) type(Date) !type(readonly) !type(Word) trigger(setter)
-public void set$name+camelCase(TimeInstant value) {
+public void set$name+firstUpperCase(TimeInstant value) {
     set("$name", value);
 }
 
 endrule
 
 defrule type(Variable) type(Measure) !type(readonly) !type(Word) trigger(setter)
-public void set$name+camelCase(double $name+lowerCamelCase) {
-    set("$name", $name+lowerCamelCase);
+public void set$name+firstUpperCase(double $name+firstLowerCase) {
+    set("$name", $name+firstLowerCase);
 }
 
 endrule
 
 defrule type(Variable) !type(readonly) !type(Word) type(List) trigger(setter)
-public void set$name+camelCase($type+reference$[] $name+lowerCamelCase) {
-    set("$name", $name+lowerCamelCase);
+public void set$name+firstUpperCase($type+reference$[] $name+firstLowerCase) {
+    set("$name", $name+firstLowerCase);
 }
 
 endrule
 
 defrule type(Variable) type(Attribute) !type(readonly) !type(Word) !type(List) trigger(setter)
-public void set$name+camelCase(java.lang.$type+CamelCase value) {
+public void set$name+firstUpperCase(java.lang.$type+firstUpperCase value) {
     set("$name", value);
 }
 
 endrule
 
 defrule type(Variable) !type(readonly) !type(Word) !type(List) trigger(setter)
-public void set$name+camelCase($type+reference value) {
+public void set$name+firstUpperCase($type+reference value) {
     set("$name", value);
 }
 
@@ -154,7 +154,7 @@ endrule
 defrule type(declarednode) type(intention) !type(metafacet) type(facet) trigger(node)
 public[$inner static] class $name+firstUpperCase $parent implements $project+lowercase.intentions.$name+firstUpperCase~Intention {
 \
-    public $project+lowercase.intentions.$name+camelCase~Intention extension() {
+    public $project+lowercase.intentions.$name+firstUpperCase~Intention extension() {
         return extensions($project+lowercase.intentions.$name+firstUpperCase~Intention.class)$[0];
     }
 \
@@ -172,7 +172,7 @@ endrule
 defrule type(declarednode) type(intention) !type(facet) type(metafacet) trigger(node)
 public[$inner static] class $name+firstUpperCase $parent implements $project+lowercase.intentions.$name+firstUpperCase~Intention {
 \
-    public $project+lowercase.intentions.$name+camelCase~Intention$[] extensions() {
+    public $project+lowercase.intentions.$name+firstUpperCase~Intention$[] extensions() {
         return extensions($project+lowercase.intentions.$name+firstUpperCase~Intention.class);
     }
 \
