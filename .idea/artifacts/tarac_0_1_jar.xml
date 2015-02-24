@@ -5,9 +5,9 @@
       <element id="module-output" name="tara-runtime-constants" />
       <element id="module-output" name="abstract-model-representation" />
       <element id="module-output" name="tara-runtime" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/rt/lib/gson-2.2.4.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/rt/lib/itrules.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/rt/lib/antlr-4.4-complete.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/gson-2.3.1.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
