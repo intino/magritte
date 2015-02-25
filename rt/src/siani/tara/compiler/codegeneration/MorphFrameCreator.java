@@ -33,7 +33,7 @@ public class MorphFrameCreator extends FrameCreator {
 	}
 
 	private void nodeToFrame(final Node node, Frame frame) {
-		if (node.is(Annotation.TERMINAL) || node.is(Annotation.CASE)) return;
+		if (node.is(Annotation.CASE)) return;
 		if (node.is(LinkNode.class) && ((LinkNode) node).isReference()) {
 			LinkNode linkNode = (LinkNode) node;
 			Frame newFrame = new Frame(getLinkNodeTypes(linkNode));
@@ -156,23 +156,32 @@ public class MorphFrameCreator extends FrameCreator {
 	}
 
 	private void addInner(Node node, Frame newFrame) {
+		for (Node inner : filterMorphCandidates(node))
+			nodeToFrame(inner, newFrame);
+	}
+
+	private NodeTree filterMorphCandidates(Node node) {
+		NodeTree tree = new NodeTree();
 		for (Node inner : node.getInnerNodes())
-			if ((inner.is(LinkNode.class) && !isInherited((LinkNode) inner, node)) || (inner.is(DeclaredNode.class) && !inner.isSub()))
-				nodeToFrame(inner, newFrame);
+			if ((inner.is(LinkNode.class) && !isInherited((LinkNode) inner, node)) || (inner.is(DeclaredNode.class) && !inner.isSub()) && !isIncluded(tree, inner))
+				tree.add(inner);
+		return tree;
+	}
+
+	private boolean isIncluded(NodeTree tree, Node inner) {
+		for (Node node : tree)
+			if (node.getType().equals(inner.getType()) && node.getName().equals(inner.getName())) return true;
+		return false;
 	}
 
 	private void addFacets(Node node, Frame newFrame) {
 		for (final Facet facet : node.getObject().getFacets())
-			newFrame.addFrame("facets", new Frame(getTypes(facet)) {{
-				addFrame("name", facet.getName());
-			}});
+			newFrame.addFrame("facets", new Frame(getTypes(facet)).addFrame("name", facet.getName()));
 	}
 
 	private void addTargets(Node node, Frame newFrame) {
 		for (final FacetTarget target : node.getObject().getFacetTargets())
-			newFrame.addFrame("targets", new Frame(getTypes(target)) {{
-				addFrame("name", target.getDestinyName());
-			}});
+			newFrame.addFrame("targets", new Frame(getTypes(target)).addFrame("name", target.getDestinyName()));
 	}
 
 	private String[] getTypes(Facet facet) {

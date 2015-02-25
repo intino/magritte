@@ -12,12 +12,13 @@ public class Annotations {
 
 	public static final Annotation[] SUB_ANNOTATIONS = join(new Annotation[]{PROPERTY, NAMED, ABSTRACT, TERMINAL,
 		ADDRESSED, AGGREGATED, CASE, ENCLOSED}, META_ANNOTATIONS);
+
 	public static final Annotation[] HAS_ANNOTATIONS = new Annotation[]{AGGREGATED, SINGLE, REQUIRED, ENCLOSED};
 
 	public static final Annotation[] COMPONENT_ANNOTATIONS = join(new Annotation[]{ABSTRACT, TERMINAL, REQUIRED, SINGLE,
 		PROPERTY, NAMED, INTENTION, ADDRESSED, AGGREGATED, ASSOCIATED, FACET, ENCLOSED}, META_ANNOTATIONS);
 
-	public static final Annotation[] VARIABLE_ANNOTATIONS = new Annotation[]{TERMINAL};
+	public static final Annotation[] VARIABLE_ANNOTATIONS = new Annotation[]{TERMINAL, READONLY};
 
 	public static final Annotation[] PRIME_ANNOTATIONS = join(new Annotation[]{ABSTRACT, COMPONENT, ASSOCIATED, SINGLE, NAMED, TERMINAL,
 		PROPERTY, REQUIRED, INTENTION, FACET, ADDRESSED, AGGREGATED, CASE}, META_ANNOTATIONS);
@@ -31,6 +32,7 @@ public class Annotations {
 		for (Annotation annotation : values()) list.add(annotation.getName());
 		return list.toArray(new String[list.size()]);
 	}
+
 
 	private static Annotation[] join(Annotation[] Annotations1, Annotation[] Annotations2) {
 		Annotation[] AnnotationsAll = new Annotation[Annotations1.length + Annotations2.length];

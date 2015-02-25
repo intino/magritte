@@ -42,10 +42,6 @@ public class Model {
 		return nodeTable;
 	}
 
-	public void setNodeTable(List<Node> nodeTable) {
-		this.nodeTable = nodeTable;
-	}
-
 	public boolean add(Node node) {
 		return nodeTree.add(node) && register(node);
 	}
@@ -59,7 +55,9 @@ public class Model {
 	}
 
 	public boolean register(Node... nodes) {
-		Collections.addAll(nodeTable, nodes);
+		for (Node node : nodes)
+			if (!nodeTable.contains(node))
+				nodeTable.add(node);
 		return true;
 	}
 

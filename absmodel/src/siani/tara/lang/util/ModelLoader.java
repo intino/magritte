@@ -57,7 +57,7 @@ public class ModelLoader {
 			processInnerNodes(model, nodeTable, node);
 			processSubs(model, nodeTable, node);
 		}
-		model.setNodeTable(nodeTable);
+		model.register(nodeTable.toArray(new Node[nodeTable.size()]));
 		restoreHierarchyLinks(model);
 		restoreFacetDestinies(model);
 		restoreContainerReferences(model.getTreeModel());

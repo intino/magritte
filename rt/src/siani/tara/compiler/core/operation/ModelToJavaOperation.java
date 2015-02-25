@@ -128,7 +128,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read(), model.getLanguage());
 		ruleEngine.register("reference", buildReferenceFormatter());
 		for (Node node : nodes) {
-			if (!node.getModelOwner().equals(model.getName()) || node.is(TERMINAL) || node.is(CASE)) continue;
+			if (!node.getModelOwner().equals(model.getName()) || node.is(CASE)) continue;
 			Document document = new Document();
 			String project = compilationUnit.getConfiguration().getProject();
 			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(project, model).create(node);
