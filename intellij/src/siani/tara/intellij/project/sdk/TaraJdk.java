@@ -34,10 +34,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
-	private static final Icon ADD_SDK = TaraIcons.getIcon(TaraIcons.ADD_SDK);
-	private static final Icon SDK_CLOSED = TaraIcons.getIcon(TaraIcons.SDK_CLOSED);
 
-	private static final Logger LOG = Logger.getInstance("#org.jetbrains.idea.devkit.projectRoots.TaraJdk");
+	private static final Logger LOG = Logger.getInstance(TaraJdk.class.getName());
+
+	private static final Icon ADD_SDK = TaraIcons.getIcon(TaraIcons.ADD_SDK);
+
+	private static final Icon SDK_CLOSED = TaraIcons.getIcon(TaraIcons.SDK_CLOSED);
 	@NonNls
 	private static final String LIB_DIR_NAME = "lib";
 	@NonNls
@@ -61,6 +63,7 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 			@NonNls final String buildTxt = "/build.txt";
 			return FileUtil.loadFile(new File(ideaHome + buildTxt)).trim();
 		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}
@@ -130,7 +133,7 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 		try {
 			defaultTdk = new File(PathManager.getSystemPath()).getCanonicalPath() + File.separator + "plugins-sandbox";
 		} catch (IOException e) {
-			//can't be on running instance
+			LOG.error(e.getMessage(), e);
 		}
 		return defaultTdk;
 	}

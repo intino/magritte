@@ -1,6 +1,7 @@
 package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class TaraPsiImplUtil {
+
+	private static final Logger LOG = Logger.getInstance(TaraPsiImplUtil.class.getName());
 
 	private TaraPsiImplUtil() {
 	}
@@ -90,6 +93,7 @@ public class TaraPsiImplUtil {
 				aElement = aElement.getParent();
 			return (aElement.getParent() instanceof Concept) ? (Concept) aElement.getParent() : null;
 		} catch (NullPointerException e) {
+			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}

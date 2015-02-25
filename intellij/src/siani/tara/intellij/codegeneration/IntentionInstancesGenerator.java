@@ -2,6 +2,7 @@ package siani.tara.intellij.codegeneration;
 
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
@@ -24,6 +25,7 @@ import static siani.tara.lang.Annotation.META_FACET;
 
 public class IntentionInstancesGenerator extends CodeGenerator {
 
+	private static final Logger LOG = Logger.getInstance(IntentionInstancesGenerator.class.getName());
 	private PsiDirectory facetsHome;
 
 	public IntentionInstancesGenerator(TaraBoxFile taraBoxFile) {
@@ -41,7 +43,7 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 					if (!classes.isEmpty() && facetsHome != null)
 						pathsToRefresh.add(facetsHome.getVirtualFile());
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOG.error(e.getMessage(), e);
 				}
 			}
 		};

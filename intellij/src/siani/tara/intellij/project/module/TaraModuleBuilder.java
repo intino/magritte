@@ -40,11 +40,12 @@ import java.util.List;
 import static java.io.File.separator;
 
 public class TaraModuleBuilder extends JavaModuleBuilder {
+
+	private static final Logger LOG = Logger.getInstance(TaraModuleBuilder.class.getName());
 	private static final String MODEL_EXT = ".json";
 	private static final String RES = "res";
 	private static final String ICONS = "icons";
 	private static final String MODEL = "model";
-	private static final Logger LOG = Logger.getInstance(TaraModuleBuilder.class.getName());
 	private static final String ITRULES = "itrules";
 	private static final String SRC = "src";
 	private static final String GEN = "gen";
@@ -121,6 +122,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 				canonicalPath = FileUtil.resolveShortWindowsName(myCompilerOutputPath);
 			} catch (IOException e) {
 				canonicalPath = myCompilerOutputPath;
+				LOG.error(e.getMessage(), e);
 			}
 			compilerModuleExtension.setCompilerOutputPath(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(canonicalPath)));
 		} else compilerModuleExtension.inheritCompilerOutputPath(true);
@@ -154,7 +156,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			configFile = new File(modulePath + separator + ".config", "tara.conf");
 			configFile.createNewFile();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage());
 		}
 	}
 
@@ -184,7 +186,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			writer.write(terminal + "\n");
 			writer.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 	}
 

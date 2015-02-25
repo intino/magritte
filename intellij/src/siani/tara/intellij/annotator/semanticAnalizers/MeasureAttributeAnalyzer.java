@@ -1,5 +1,6 @@
 package siani.tara.intellij.annotator.semanticAnalizers;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -27,6 +28,9 @@ import static java.io.File.separator;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.WARNING;
 
 public class MeasureAttributeAnalyzer extends TaraAnalyzer {
+
+	private static final Logger LOG = Logger.getInstance(MeasureAttributeAnalyzer.class.getName());
+
 	private final String metricsPackage;
 	private final TaraMeasureType measure;
 	private final TaraAttributeType attribute;
@@ -72,7 +76,7 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 			task.call();
 			fileManager.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
@@ -121,6 +125,7 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 		try {
 			return loadClass(getOutDir(module).getAbsolutePath(), getJdkHome(module), metricsPackage.toLowerCase() + "." + className);
 		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}
@@ -130,7 +135,8 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 		try {
 			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL(), new File(sdk, "tdk.jar").toURI().toURL()});
 			return cl.loadClass(className);
-		} catch (MalformedURLException | ClassNotFoundException ignored) {
+		} catch (MalformedURLException | ClassNotFoundException e) {
+			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}

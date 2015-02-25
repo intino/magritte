@@ -2,6 +2,7 @@ package siani.tara.intellij.codeinsight;
 
 import com.intellij.navigation.GotoRelatedItem;
 import com.intellij.navigation.GotoRelatedProvider;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
@@ -17,6 +18,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class TaraRelatedFilesProvider extends GotoRelatedProvider {
+
+	private static final Logger LOG = Logger.getInstance(TaraRelatedFilesProvider.class.getName());
+
 
 	@NotNull
 	@Override
@@ -39,7 +43,8 @@ public class TaraRelatedFilesProvider extends GotoRelatedProvider {
 					PsiClass aClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project));
 					if (aClass != null) return Collections.singletonList(new GotoRelatedItem(aClass, "Java"));
 				}
-			} catch (Exception ignore) {
+			} catch (Exception e) {
+				LOG.info(e.getMessage(), e);
 			}
 		}
 		return Collections.emptyList();

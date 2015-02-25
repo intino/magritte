@@ -43,7 +43,7 @@ public class TaraDocumentationFormatter {
 			String cleanText = text.replaceAll("'", "").replaceAll(" \\s+", " ").trim();
 			html = new Markdown4jProcessor().process(cleanText);
 		} catch (IOException e) {
-			LOG.error(e.getMessage());
+			LOG.error(e.getMessage(), e);
 		}
 		return html;
 	}

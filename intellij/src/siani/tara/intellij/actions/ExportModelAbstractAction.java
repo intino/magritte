@@ -182,7 +182,8 @@ public class ExportModelAbstractAction extends AnAction implements DumbAware {
 			final Set<String> writtenItemRelativePaths = new HashSet<>();
 			for (Module module : modules) {
 				final VirtualFile compilerOutputPath = CompilerModuleExtension.getInstance(module).getCompilerOutputPath();
-				if (compilerOutputPath == null) continue; //pre-condition: output dirs for all modules are up-to-date
+				//pre-condition: output dirs for all modules are up-to-date
+				if (compilerOutputPath == null) continue;
 				ZipUtil.addDirToZipRecursively(jarModel, jarFile, new File(compilerOutputPath.getPath()), "",
 					createFilter(progressIndicator, FileTypeManager.getInstance()), writtenItemRelativePaths);
 			}

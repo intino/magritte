@@ -1,6 +1,10 @@
 package siani.tara.intellij.diagnostic.errorreporting;
 
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.intellij.openapi.diagnostic.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +15,10 @@ import java.net.URL;
 import java.util.Properties;
 
 public class PivotalLoggingEventSubmitter {
+
+	private static final Logger LOG = Logger.getInstance(PivotalLoggingEventSubmitter.class.getName());
+
+
 	private static final String PLUGIN_ID = "plugin.id";
 	private static final String PLUGIN_VERSION = "plugin.version";
 	private static final String PLUGIN_NAME = "plugin.name";
@@ -34,7 +42,7 @@ public class PivotalLoggingEventSubmitter {
 //			updateStory(story);
 			addCommentary(story);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 	}
 

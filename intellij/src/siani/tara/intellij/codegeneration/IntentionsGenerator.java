@@ -3,6 +3,7 @@ package siani.tara.intellij.codegeneration;
 import com.intellij.ide.util.DirectoryUtil;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -30,6 +31,7 @@ import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getParentOf;
 
 public class IntentionsGenerator {
 
+	private static final Logger LOG = Logger.getInstance(IntentionsGenerator.class.getName());
 	private static final String INTENTIONS = "intentions";
 	private static final String INTENTION = "Intention";
 	private static final String DOT = ".";
@@ -58,7 +60,7 @@ public class IntentionsGenerator {
 				try {
 					processFile(taraBoxFile);
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOG.error(e.getMessage(), e);
 				}
 			}
 		};

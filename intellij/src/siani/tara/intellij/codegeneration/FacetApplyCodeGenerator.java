@@ -5,6 +5,7 @@ import com.intellij.codeInsight.generation.OverrideImplementUtil;
 import com.intellij.codeInsight.generation.PsiMethodMember;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
@@ -29,7 +30,7 @@ import static siani.tara.lang.Annotation.INTENTION;
 
 public class FacetApplyCodeGenerator extends CodeGenerator {
 
-
+	private static final Logger LOG = Logger.getInstance(FacetApplyCodeGenerator.class.getName());
 	private PsiDirectory facetsHome;
 
 	public FacetApplyCodeGenerator(TaraBoxFile file) {
@@ -47,7 +48,7 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 					if (!classes.isEmpty() && facetsHome != null)
 						pathsToRefresh.add(facetsHome.getVirtualFile());
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOG.error(e.getMessage(), e);
 				}
 			}
 		};
@@ -59,7 +60,7 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 				try {
 					implementMethods(classes.toArray(new PsiClass[classes.size()]));
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOG.error(e.getMessage(), e);
 				}
 			}
 		};

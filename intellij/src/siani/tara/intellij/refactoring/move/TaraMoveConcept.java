@@ -1,6 +1,7 @@
 package siani.tara.intellij.refactoring.move;
 
 import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
@@ -19,6 +20,9 @@ import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 public class TaraMoveConcept extends MoveHandlerDelegate {
+
+	private static final Logger LOG = Logger.getInstance(TaraMoveConcept.class.getName());
+
 
 	@Nullable
 	public static PsiNamedElement getElementToMove(@NotNull PsiElement element) {
@@ -60,8 +64,8 @@ public class TaraMoveConcept extends MoveHandlerDelegate {
 			final BaseRefactoringProcessor processor = new TaraMoveConceptProcessor(project, elementsToMove, destination, previewUsages);
 			processor.run();
 		} catch (IncorrectOperationException e) {
-			CommonRefactoringUtil.showErrorMessage(RefactoringBundle.message("error.title"), e.getMessage(),
-				null, project);
+			LOG.error(e.getMessage(), e);
+			CommonRefactoringUtil.showErrorMessage(RefactoringBundle.message("error.title"), e.getMessage(), null, project);
 		}
 	}
 

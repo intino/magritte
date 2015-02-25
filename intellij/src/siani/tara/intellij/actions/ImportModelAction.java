@@ -2,6 +2,7 @@ package siani.tara.intellij.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.DumbAware;
@@ -19,6 +20,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class ImportModelAction extends AnAction implements DumbAware {
+
+	private static final Logger LOG = Logger.getInstance(ImportModelAction.class.getName());
+
 	private static final String JSON_EXTENSION = ".json";
 
 	@Override
@@ -40,7 +44,8 @@ public class ImportModelAction extends AnAction implements DumbAware {
 				if (entry.getName().toLowerCase().endsWith(JSON_EXTENSION))
 					extractModel(entry, zipFile.getInputStream(entry));
 			}
-		} catch (IOException ignored) {
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
