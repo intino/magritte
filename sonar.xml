@@ -54,9 +54,9 @@
   <target name="clean">
     <delete dir=".sonar"/>
     <ant dir="intellij" target="clean"/>
-<!--    <ant dir="rt" target="clean"/>
+    <ant dir="rt" target="clean"/>
     <ant dir="rt-constants" target="clean"/>
-    <ant dir="jps-plugin" target="clean"/>-->
+    <ant dir="jps-plugin" target="clean"/>
   </target>
 
   <target name="compile">

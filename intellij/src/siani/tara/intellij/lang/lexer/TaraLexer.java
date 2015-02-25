@@ -712,7 +712,7 @@ class TaraLexer implements FlexLexer {
 
 
   TaraLexer(java.io.Reader in) {
-    this.zzReader = in;
+    zzReader = in;
   }
 
   /**

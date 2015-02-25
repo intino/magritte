@@ -75,7 +75,6 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 					return PsiUtilCore.compareElementsByPosition(e1, e2);
 				}
 
-				;
 			});
 			final PsiElement firstUsage = topLevelAtDestination.get(0);
 			return (PsiNamedElement) destination.addBefore(element, firstUsage);

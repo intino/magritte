@@ -710,7 +710,7 @@ class TaraHighlighterLex implements FlexLexer {
 	private String dsl = null;
 
 	public TaraHighlighterLex(java.io.Reader reader, Project project) {
-		this.zzReader = reader;
+		zzReader = reader;
 		this.project = project;
 	}
 
@@ -734,7 +734,7 @@ class TaraHighlighterLex implements FlexLexer {
 
 
   TaraHighlighterLex(java.io.Reader in) {
-    this.zzReader = in;
+    zzReader = in;
   }
 
   /**
