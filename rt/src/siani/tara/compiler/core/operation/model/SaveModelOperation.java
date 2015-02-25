@@ -12,7 +12,6 @@ import siani.tara.lang.Node;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class SaveModelOperation extends ModelOperation {
@@ -38,11 +37,11 @@ public class SaveModelOperation extends ModelOperation {
 	}
 
 	private void cleanCaseNodesFromModel(Model model) {
-		List<String> toRemove = new ArrayList<>();
-		for (Map.Entry<String, Node> entry : model.getNodeTable().entrySet())
-			if (entry.getValue().is(Annotation.CASE))
-				toRemove.add(entry.getKey());
-		for (String node : toRemove)
+		List<Node> toRemove = new ArrayList<>();
+		for (Node entry : model.getNodeTable())
+			if (entry.is(Annotation.CASE))
+				toRemove.add(entry);
+		for (Node node : toRemove)
 			model.getNodeTable().remove(node);
 	}
 }

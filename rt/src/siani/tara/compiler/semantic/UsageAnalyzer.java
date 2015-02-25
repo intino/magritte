@@ -52,7 +52,7 @@ public class UsageAnalyzer {
 	}
 
 	private boolean isReferenced(String qn) {
-		for (Node node : model.getNodeTable().values()) {
+		for (Node node : model.getNodeTable()) {
 			if (node.is(DeclaredNode.class) && isReferencedInVar(node, qn))
 				return true;
 			else if (node.is(LinkNode.class) && isReferencedAsLink((LinkNode) node, qn)) return true;

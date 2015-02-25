@@ -133,7 +133,7 @@ public class NodeObject extends ModelObject {
 		List<FacetTarget> targets = allowedFacets.get(name);
 		if (targets == null) return null;
 		if (targets.size() == 1) return targets.get(0);
-		if(context == null) return null;
+		if (context == null) return null;
 		for (FacetTarget target : targets)
 			if (context.equals(target.getDestinyName()))
 				return target;

@@ -24,8 +24,10 @@ public class DuplicateDetector {
 
 	public boolean detectDuplicateNode(Node node, NodeTree treeModel) {
 		int count = 0;
-		for (Node n : treeModel)
-			if (node.getName().equals(n.getName())) count++;
+		for (Node node1 : treeModel) {
+			if (node1.is(LinkNode.class)) continue;
+			if (node.getName().equals(node1.getName())) count++;
+		}
 		return (count > 1);
 	}
 

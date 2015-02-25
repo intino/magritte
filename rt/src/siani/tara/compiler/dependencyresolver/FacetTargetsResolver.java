@@ -19,7 +19,7 @@ public class FacetTargetsResolver {
 
 	public void resolve() throws DependencyException {
 		resolveSubTargets();
-		for (Node node : model.getNodeTable().values())
+		for (Node node : model.getNodeTable())
 			if (node.is(DeclaredNode.class) && node.getObject().is(FACET)) {
 				if (node.is(INTENTION)) markTargetsAsIntention(node.getObject().getFacetTargets());
 				processFacetTarget((DeclaredNode) node);
@@ -31,7 +31,7 @@ public class FacetTargetsResolver {
 	}
 
 	private void resolveSubTargets() throws DependencyException {
-		for (Node node : model.getNodeTable().values())
+		for (Node node : model.getNodeTable())
 			if (node.is(DeclaredNode.class) && node.getObject().is(FACET) && !node.isSub()) {
 				DeclaredNode declaredNode = (DeclaredNode) node;
 				if (declaredNode.hasSubs())

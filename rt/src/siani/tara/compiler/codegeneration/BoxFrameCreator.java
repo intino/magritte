@@ -73,7 +73,7 @@ public class BoxFrameCreator extends FrameCreator {
 		keys.remove(0);
 		NodeObject object = node.getObject();
 		if (node.getName() != null && !node.isAnonymous())
-			newFrame.addFrame("name", node.getQualifiedName()); //TODO change for anonymous and inner facet nodes
+			newFrame.addFrame("name", clean(node.getQualifiedName())); //TODO change for anonymous and inner facet nodes
 		if (node.getObject().getParent() != null)
 			newFrame.addFrame("parent", node.getObject().getParent().getName());
 		if (node.is(Annotation.INTENTION)) addType(node, newFrame);
@@ -81,6 +81,11 @@ public class BoxFrameCreator extends FrameCreator {
 		if (object.getAddress() != null) newFrame.addFrame("address", object.getAddress().replace(".", ""));
 		addVariables(node, newFrame);
 	}
+
+	private String clean(String name) {
+		return name.replace("[", "").replace("]", "").replaceAll(Node.ANONYMOUS, "").replaceAll(Node.IN_FACET_TARGET, "");
+	}
+
 
 	private void addAggregated(Node node, Frame frame) {
 		for (Node inner : node.getInnerNodes())

@@ -5,9 +5,8 @@ import siani.tara.lang.*;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,11 +49,11 @@ public class ModelLoader {
 	}
 
 	private static void restoreTreeLinks(Model model, NodeTree tree) {
-		Map<String, Node> nodeTable = new HashMap();
+		List<Node> nodeTable = new ArrayList<>();
 		for (Node node : tree)
 			restoreDestinyLinks(node, model);
 		for (Node node : tree) {
-			nodeTable.put(node.getQualifiedName(), node);
+			nodeTable.add(node);
 			processInnerNodes(model, nodeTable, node);
 			processSubs(model, nodeTable, node);
 		}
@@ -84,7 +83,7 @@ public class ModelLoader {
 	}
 
 	private static void restoreFacetDestinies(Model model) {
-		for (Node node : model.getNodeTable().values()) {
+		for (Node node : model.getNodeTable()) {
 			if (node.is(LinkNode.class) || node.getObject().getAllowedFacets().isEmpty()) continue;
 			for (List<FacetTarget> facetTargets : node.getObject().getAllowedFacets().values())
 				for (FacetTarget target : facetTargets) target.setDestiny(model.get(target.getDestinyQN()).getObject());
@@ -97,13 +96,13 @@ public class ModelLoader {
 				LinkNode linkNode = (LinkNode) inner;
 				Node destiny = model.searchNode(linkNode.getDestinyQN());
 				if (destiny == null)
-					throw new RuntimeException("Destiny of LinkNode " + node.getQualifiedName() + ", not found");
+					throw new RuntimeException("Destiny of LinkNode " + linkNode.getQualifiedName() + ", not found");
 				linkNode.setDestiny((DeclaredNode) destiny);
 			} else restoreDestinyLinks(inner, model);
 	}
 
 	private static void restoreHierarchyLinks(Model aModel) {
-		for (Node node : aModel.getNodeTable().values())
+		for (Node node : aModel.getNodeTable())
 			if (node instanceof DeclaredNode) {
 				DeclaredNode declaredNode = (DeclaredNode) node;
 				String parent = declaredNode.getObject().getParentName();
@@ -118,7 +117,7 @@ public class ModelLoader {
 			}
 	}
 
-	private static void processInnerNodes(Model aModel, Map<String, Node> nodeTable, Node node) {
+	private static void processInnerNodes(Model aModel, List<Node> nodeTable, Node node) {
 		for (Node inner : node.getInnerNodes()) {
 			if (inner instanceof LinkNode) {
 				LinkNode linkNode = (LinkNode) inner;
@@ -128,13 +127,13 @@ public class ModelLoader {
 				processSubs(aModel, nodeTable, inner);
 				processInnerNodes(aModel, nodeTable, inner);
 			}
-			nodeTable.put(inner.getQualifiedName(), inner);
+			nodeTable.add(inner);
 		}
 	}
 
-	private static void processSubs(Model aModel, Map<String, Node> nodeTable, Node node) {
+	private static void processSubs(Model aModel, List<Node> nodeTable, Node node) {
 		for (DeclaredNode sub : node.getSubNodes()) {
-			nodeTable.put(sub.getQualifiedName(), sub);
+			nodeTable.add(sub);
 			processInnerNodes(aModel, nodeTable, sub);
 		}
 	}

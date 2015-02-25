@@ -10,7 +10,7 @@ public class Model {
 	private String name;
 	private String parentModelName;
 	private transient Model parentModel;
-	private transient Map<String, Node> nodeTable = new HashMap<>();
+	private transient List<Node> nodeTable = new ArrayList<>();
 	private NodeTree nodeTree = new NodeTree();
 	private Set<String> identifiers = new HashSet<>();
 	private Map<String, List<SimpleEntry<String, String>>> metrics = new HashMap<>();
@@ -38,36 +38,29 @@ public class Model {
 		return identifiers;
 	}
 
-	public Map<String, Node> getNodeTable() {
+	public List<Node> getNodeTable() {
 		return nodeTable;
 	}
 
-	public void setNodeTable(Map<String, Node> nodeTable) {
+	public void setNodeTable(List<Node> nodeTable) {
 		this.nodeTable = nodeTable;
 	}
 
 	public boolean add(Node node) {
-		return nodeTree.add(node) && add(node.getQualifiedName(), node);
+		return nodeTree.add(node) && register(node);
 	}
 
 	public void putAllIdentifiers(Set<String> set) {
 		identifiers.addAll(set);
 	}
 
-	public void putAllInNodeTable(Map<String, Node> m) {
-		for (Map.Entry<String, Node> entry : m.entrySet())
-			if (!nodeTable.containsKey(entry.getKey()))
-				nodeTable.put(entry.getKey(), entry.getValue());
+	public Node get(String qn) {
+		return modelHelper.searchNode(qn);
 	}
 
-	public boolean add(String name, Node node) {
-		nodeTable.put(name, node);
+	public boolean register(Node... nodes) {
+		Collections.addAll(nodeTable, nodes);
 		return true;
-	}
-
-	public Node get(String qualifiedName) {
-		if (nodeTable == null || !nodeTable.containsKey(qualifiedName)) return null;
-		return nodeTable.get(qualifiedName);
 	}
 
 	public void addMetrics(Map<String, List<SimpleEntry<String, String>>> metrics) {
@@ -78,11 +71,11 @@ public class Model {
 		return metrics;
 	}
 
-	public Map<String, DeclaredNode> getTerminalNodes() {
-		Map<String, DeclaredNode> terminals = new HashMap<>();
-		for (Node node : getNodeTable().values())
+	public List<DeclaredNode> getTerminalNodes() {
+		List<DeclaredNode> terminals = new ArrayList<>();
+		for (Node node : getNodeTable())
 			if (node.is(DeclaredNode.class) && node.getObject().is(TERMINAL))
-				terminals.put(node.getName(), (DeclaredNode) node);
+				terminals.add((DeclaredNode) node);
 		return terminals;
 	}
 
@@ -111,10 +104,7 @@ public class Model {
 		DeclaredNode result = modelHelper.relativeSearch(node.getDestinyQN(), node);
 		if (result != null) return result;
 		result = modelHelper.searchInImportReferences(node.getDestinyQN(), node);
-		if (result != null) return result;
-		if (get(node.getDestinyQN()) != null && get(node.getDestinyQN()).is(DeclaredNode.class))
-			return (DeclaredNode) get(node.getDestinyQN());
-		return null;
+		return result;
 	}
 
 	public DeclaredNode searchDeclarationOfReference(String referenceName, Node context) {
@@ -133,11 +123,8 @@ public class Model {
 		return modelHelper.searchNode(modelHelper.createSearchTree(instance));
 	}
 
-	public void sortNodeTable(Comparator<String> comparator) {
-		Map<String, Node> newMap;
-		newMap = comparator == null ? new HashMap<String, Node>() : new TreeMap<String, Node>(comparator);
-		newMap.putAll(nodeTable);
-		nodeTable = newMap;
+	public void sortNodeTable(Comparator<Node> comparator) {
+		Collections.sort(nodeTable, comparator);
 	}
 
 	public String getParentModelName() {
@@ -183,6 +170,10 @@ public class Model {
 		String inFacetTarget;
 		SearchNode next;
 		SearchNode previous;
+
+		public String getName() {
+			return name;
+		}
 
 		public SearchNode(String name) {
 			this.name = name;

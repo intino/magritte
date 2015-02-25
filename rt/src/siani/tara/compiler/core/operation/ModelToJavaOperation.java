@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static siani.tara.compiler.codegeneration.NameFormatter.*;
+import static siani.tara.lang.Annotation.CASE;
 import static siani.tara.lang.Annotation.TERMINAL;
 
 public class ModelToJavaOperation extends ModelOperation {
@@ -92,8 +93,8 @@ public class ModelToJavaOperation extends ModelOperation {
 		return list;
 	}
 
-	private void addAggregated(Map<String, Node> nodeTable, Set<Node> list) {
-		for (Node node : nodeTable.values())
+	private void addAggregated(List<Node> nodeTable, Set<Node> list) {
+		for (Node node : nodeTable)
 			if (node.is(DeclaredNode.class) && node.isAggregated()) list.add(node);
 	}
 
@@ -127,7 +128,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read(), model.getLanguage());
 		ruleEngine.register("reference", buildReferenceFormatter());
 		for (Node node : nodes) {
-			if (!node.getModelOwner().equals(model.getName())) continue;
+			if (!node.getModelOwner().equals(model.getName()) || node.is(TERMINAL) || node.is(CASE)) continue;
 			Document document = new Document();
 			String project = compilationUnit.getConfiguration().getProject();
 			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(project, model).create(node);

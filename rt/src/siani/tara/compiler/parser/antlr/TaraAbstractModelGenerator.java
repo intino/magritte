@@ -92,7 +92,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			if (hasSubs(node)) node.add(Annotation.ABSTRACT);
 			else if (!node.is(Annotation.ABSTRACT)) model.addIdentifier(node.getObject().getName());
 		}
-		model.add(node.getQualifiedName(), node);
+		model.register(node);
 		conceptStack.pop();
 	}
 
@@ -174,7 +174,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		List<Node> innerNodes = conceptStack.peek().getInnerNodes();
 		Node node = innerNodes.get(innerNodes.size() - 1);
 		node.calculateQualifiedName();
-		model.add(node.getQualifiedName(), node);
+		model.register(node);
 	}
 
 	@Override

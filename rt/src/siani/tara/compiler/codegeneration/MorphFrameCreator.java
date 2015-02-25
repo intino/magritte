@@ -33,6 +33,7 @@ public class MorphFrameCreator extends FrameCreator {
 	}
 
 	private void nodeToFrame(final Node node, Frame frame) {
+		if (node.is(Annotation.TERMINAL) || node.is(Annotation.CASE)) return;
 		if (node.is(LinkNode.class) && ((LinkNode) node).isReference()) {
 			LinkNode linkNode = (LinkNode) node;
 			Frame newFrame = new Frame(getLinkNodeTypes(linkNode));

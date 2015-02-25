@@ -26,9 +26,9 @@ public class ASTMerger {
 		for (SourceUnit unit : sources) {
 			model.addAll(unit.getModel().getTreeModel());
 			model.putAllIdentifiers(unit.getModel().getIdentifiers());
-			model.putAllInNodeTable(unit.getModel().getNodeTable());
+			model.register(unit.getModel().getNodeTable().toArray(new Node[unit.getModel().getNodeTable().size()]));
 		}
-		for (Node node : model.getNodeTable().values())
+		for (Node node : model.getNodeTable())
 			node.setModelOwner(model.getName());
 		model.addMetrics(MetricsLoader.loadMetrics(conf));
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");

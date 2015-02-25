@@ -112,7 +112,6 @@ public abstract class Node {
 		return false;
 	}
 
-
 	public boolean isPrime() {
 		return getContainer() == null;
 	}

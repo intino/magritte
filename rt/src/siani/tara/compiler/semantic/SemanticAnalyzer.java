@@ -35,13 +35,13 @@ public class SemanticAnalyzer {
 
 	private void usageAnalysis() throws SemanticException {
 		UsageAnalyzer usageAnalyzer = new UsageAnalyzer(model, errors);
-		usageAnalyzer.checkNoConceptExistence(model.getNodeTable().values());
+		usageAnalyzer.checkNoConceptExistence(model.getNodeTable());
 		if (!errors.isEmpty()) throwError();
 		usageAnalyzer.checkUsage();
 	}
 
 	private void parentModelCoherenceAnalysis() throws SemanticException {
-		for (Node node : model.getNodeTable().values()) {
+		for (Node node : model.getNodeTable()) {
 			Collection<Node> requiredNodes = getRequiredInnerNodes(node);
 			for (Node requiredNode : requiredNodes) {
 				if (!existInstanceOf(requiredNode, getInnerNodes(node)))

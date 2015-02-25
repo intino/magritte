@@ -23,7 +23,7 @@ public class SemanticPreAnalyzer {
 	public void analyze() throws SemanticException {
 		startDuplicatesAnalysis(model.getTreeModel());
 		if (!errors.isEmpty()) throwError();
-		startAnnotationsAnalysis(model.getNodeTable().values());
+		startAnnotationsAnalysis(model.getNodeTable());
 		if (!errors.isEmpty()) throwError();
 	}
 

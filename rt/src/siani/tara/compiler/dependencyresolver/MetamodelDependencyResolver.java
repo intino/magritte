@@ -26,7 +26,7 @@ public class MetamodelDependencyResolver {
 	}
 
 	private void completeFacetsInformation() {
-		for (Node node : model.getNodeTable().values()) {
+		for (Node node : model.getNodeTable()) {
 			if (node.is(LinkNode.class)) continue;
 			DeclaredNode declaredNode = (DeclaredNode) node;
 			for (Facet facet : declaredNode.getObject().getFacets()) {
@@ -37,7 +37,7 @@ public class MetamodelDependencyResolver {
 	}
 
 	private void addAnnotationsToInstances() {
-		for (Node parentNode : this.parent.getNodeTable().values())
+		for (Node parentNode : this.parent.getNodeTable())
 			for (Node instance : getInstancesOf(parentNode))
 				addParentAnnotation(parentNode.getAnnotations(), instance);
 	}
@@ -51,7 +51,7 @@ public class MetamodelDependencyResolver {
 	}
 
 	private void setValuesToNodes() throws TaraException {
-		for (Node parentNode : this.parent.getNodeTable().values())
+		for (Node parentNode : this.parent.getNodeTable())
 			for (Node instance : getDeclaredInstancesOf(parentNode)) {
 				if (instance.is(LinkNode.class)) continue;
 				addClassVariablesToInstance(parentNode.getObject().getVariables(), instance);
@@ -99,7 +99,7 @@ public class MetamodelDependencyResolver {
 	}
 
 	private void addInheritedTypes(String nodeType, Reference clone) {
-		for (Node node : model.getNodeTable().values())
+		for (Node node : model.getNodeTable())
 			if (node.getObject().getType().equals(nodeType))
 				clone.addInheritedType(node.getObject().getName());
 	}
@@ -107,7 +107,7 @@ public class MetamodelDependencyResolver {
 	private Collection<Node> getDeclaredInstancesOf(Node metaNode) throws TaraException {
 		if (metaNode.getName() == null) return Collections.EMPTY_LIST;
 		List<Node> instances = new ArrayList<>();
-		for (Node instance : model.getNodeTable().values())
+		for (Node instance : model.getNodeTable())
 			if (instance.getObject().getType().equals(metaNode.getName()) && isInstance(metaNode, instance))
 				instances.add(instance);
 		return instances;
@@ -123,14 +123,14 @@ public class MetamodelDependencyResolver {
 	private Collection<Node> getInstancesOf(Node metaNode) {
 		if (metaNode.getName() == null) return Collections.EMPTY_LIST;
 		List<Node> instances = new ArrayList<>();
-		for (Node instance : model.getNodeTable().values())
+		for (Node instance : model.getNodeTable())
 			if (instance.getObject().getType().equals(metaNode.getName()) && parent.searchNodeClass(instance).equals(metaNode))
 				instances.add(instance);
 		return instances;
 	}
 
-	private void addTerminalNodes(Map<String, DeclaredNode> terminals) throws TaraException {
-		for (DeclaredNode terminal : terminals.values()) {
+	private void addTerminalNodes(List<DeclaredNode> terminals) throws TaraException {
+		for (DeclaredNode terminal : terminals) {
 			if (terminal.getObject().is(FACET)) resolveTargets(terminal);
 			model.add(terminal);
 			addIdentifiers(terminal);
@@ -140,7 +140,7 @@ public class MetamodelDependencyResolver {
 
 	private List<LinkNode> findLinksOfTerminal(DeclaredNode terminal) {
 		List<LinkNode> linkNodes = new ArrayList<>();
-		for (Node node : parent.getNodeTable().values()) {
+		for (Node node : parent.getNodeTable()) {
 			if (node.is(DeclaredNode.class)) continue;
 			LinkNode linkNode = (LinkNode) node;
 			if (!linkNode.getDestiny().equals(terminal) || !linkNode.isReference()) continue;
@@ -191,7 +191,7 @@ public class MetamodelDependencyResolver {
 
 	private Collection<Node> findInstancesOf(String type) {
 		Set<Node> nodes = new HashSet<>();
-		for (Node node : model.getNodeTable().values())
+		for (Node node : model.getNodeTable())
 			if (node.is(DeclaredNode.class) && node.getObject().getType().equals(type)) {
 				nodes.add(node);
 				Collections.addAll(nodes, node.getSubNodes());
