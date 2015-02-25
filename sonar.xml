@@ -39,9 +39,9 @@
 
   <!-- Override some properties at module level -->
   <property name="intellij.sonar.projectName" value="intellij"/>
-<!--  <property name="tara_runtime.sonar.projectName" value="rt"/>
+  <property name="tara_runtime.sonar.projectName" value="rt"/>
   <property name="tara_runtime_constants.sonar.projectName" value="rt-constants"/>
-  <property name="processor_manager.sonar.projectName" value="jps-plugin"/>-->
+  <property name="processor_manager.sonar.projectName" value="jps-plugin"/>
 
 
   <loadfile property="sonar_mysql_domain" srcfile="mysql.domain"/>
