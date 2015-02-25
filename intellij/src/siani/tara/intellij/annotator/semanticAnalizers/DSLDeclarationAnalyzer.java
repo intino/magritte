@@ -25,21 +25,29 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		if (!hasErrors()) analyzeMetamodelExistence();
+		if (!hasErrors()) analyzeDslExistence();
 	}
 
-	private void analyzeMetamodelExistence() {
+	private void analyzeDslExistence() {
 		ModuleConfiguration instance = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(file));
 		if (instance == null) return;
 		String dslName = instance.getMetamodelName();
 		if (dslName != null && !dslName.isEmpty() && file.getDSL() == null)
 			results.put(file, new AnnotateAndFix(ERROR, message("model.not.found"), new AddMetamodelReferenceFix(file)));
-		else if (dslName != null && !dslName.isEmpty()) {
+		else checkDslExistence(dslName);
+		if (hasErrors()) return;
+		findDuplicates();
+	}
+
+	private void checkDslExistence(String dslName) {
+		if (dslName != null && !dslName.isEmpty()) {
 			Model dsl = TaraUtil.getMetamodel(file);
 			if ((dsl == null && !dslName.isEmpty() && !dslName.equals("Proteo")) || (!dslName.equals(file.getDSL())))
 				results.put(file, new AnnotateAndFix(ERROR, message("parent.model.file.found"), new ImportMetamodelFix(file), new ConfigureModuleFix(file)));
 		}
-		if (hasErrors()) return;
+	}
+
+	private void findDuplicates() {
 		TaraDslDeclaration[] declarations = PsiTreeUtil.getChildrenOfType(file, TaraDslDeclaration.class);
 		if (declarations != null && declarations.length > 1)
 			for (TaraDslDeclaration declaration : declarations)

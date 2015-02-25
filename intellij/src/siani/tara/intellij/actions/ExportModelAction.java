@@ -28,21 +28,25 @@ public class ExportModelAction extends ExportModelAbstractAction {
 	public void actionPerformed(@NotNull AnActionEvent e) {
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		if (project == null) return;
+		List<Module> taraModules = loadModules(project);
+		ChooseModulesDialog dialog = createDialog(project, taraModules);
+		dialog.show();
+		if (dialog.isOK()) doPrepare(dialog.getChosenElements(), project);
+	}
 
-		List<Module> taraModules = new ArrayList<>();
-		for (Module aModule : ModuleManager.getInstance(project).getModules()) {
-			if (TaraModuleType.isOfType(aModule)) {
-				taraModules.add(aModule);
-			}
-		}
-		ChooseModulesDialog dialog = new ChooseModulesDialog(project,
+	private ChooseModulesDialog createDialog(Project project, List<Module> taraModules) {
+		return new ChooseModulesDialog(project,
 			taraModules,
 			MessageProvider.message("select.tara.module.title"),
 			MessageProvider.message("select.tara.module.description"));
-		dialog.show();
-		if (dialog.isOK()) {
-			doPrepare(dialog.getChosenElements(), project);
-		}
+	}
+
+	private List<Module> loadModules(Project project) {
+		List<Module> taraModules = new ArrayList<>();
+		for (Module aModule : ModuleManager.getInstance(project).getModules())
+			if (TaraModuleType.isOfType(aModule))
+				taraModules.add(aModule);
+		return taraModules;
 	}
 
 	public void doPrepare(final List<Module> modules, Project project) {
@@ -50,33 +54,37 @@ public class ExportModelAction extends ExportModelAbstractAction {
 		final List<String> successMessages = new ArrayList<>();
 		final CompilerManager compilerManager = CompilerManager.getInstance(project);
 		compilerManager.make(compilerManager.createModulesCompileScope(modules.toArray(new Module[modules.size()]), true),
-			new CompileStatusNotification() {
-				public void finished(final boolean aborted,
-				                     final int errors,
-				                     final int warnings,
-				                     final CompileContext compileContext) {
-					if (aborted || errors != 0) return;
-					ApplicationManager.getApplication().invokeLater(new Runnable() {
-						public void run() {
-							for (Module aModule : modules)
-								if (!doPrepare(aModule, errorMessages, successMessages)) return;
-							if (!errorMessages.isEmpty())
-								Messages.showErrorDialog(errorMessages.iterator().next(), MessageProvider.message("error.occurred"));
-							else if (!successMessages.isEmpty()) {
-								StringBuilder messageBuf = new StringBuilder();
-								for (String message : successMessages) {
-									if (messageBuf.length() != 0) messageBuf.append('\n');
-									messageBuf.append(message);
-								}
-								Messages.showInfoMessage(messageBuf.toString(),
-									modules.size() == 1
-										? MessageProvider.message("success.deployment.message", modules.get(0).getName())
-										: MessageProvider.message("success.deployment.message.all"));
+			buildPostCompileAction(modules, errorMessages, successMessages));
+	}
+
+	private CompileStatusNotification buildPostCompileAction(final List<Module> modules, final List<String> errorMessages, final List<String> successMessages) {
+		return new CompileStatusNotification() {
+			public void finished(final boolean aborted,
+			                     final int errors,
+			                     final int warnings,
+			                     final CompileContext compileContext) {
+				if (aborted || errors != 0) return;
+				ApplicationManager.getApplication().invokeLater(new Runnable() {
+					public void run() {
+						for (Module aModule : modules)
+							if (!doPrepare(aModule, errorMessages, successMessages)) return;
+						if (!errorMessages.isEmpty())
+							Messages.showErrorDialog(errorMessages.iterator().next(), MessageProvider.message("error.occurred"));
+						else if (!successMessages.isEmpty()) {
+							StringBuilder messageBuf = new StringBuilder();
+							for (String message : successMessages) {
+								if (messageBuf.length() != 0) messageBuf.append('\n');
+								messageBuf.append(message);
 							}
+							Messages.showInfoMessage(messageBuf.toString(),
+								modules.size() == 1
+									? MessageProvider.message("success.deployment.message", modules.get(0).getName())
+									: MessageProvider.message("success.deployment.message.all"));
 						}
-					});
-				}
-			});
+					}
+				});
+			}
+		};
 	}
 
 	@Override

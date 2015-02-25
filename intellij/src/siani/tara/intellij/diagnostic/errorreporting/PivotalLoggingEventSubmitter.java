@@ -39,7 +39,6 @@ public class PivotalLoggingEventSubmitter {
 			PivotalStory story = new PivotalStory();
 			String response = createStory(story);
 			addInfo(story, new JsonParser().parse(response));
-//			updateStory(story);
 			addCommentary(story);
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);

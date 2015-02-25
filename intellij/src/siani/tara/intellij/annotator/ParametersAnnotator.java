@@ -14,10 +14,19 @@ public class ParametersAnnotator extends TaraAnnotator {
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
-		if ((Concept.class.isInstance(element) && ((Concept) element).getParameterList().length == 0) ||
-			(FacetApply.class.isInstance(element) && (((FacetApply) element).getParameters() == null || ((FacetApply) element).getParameters().getParameters().length == 0)))
+		if (isConceptWithoutParams(element) || isFacetWithoutParams(element))
 			analyzeAndAnnotate(new ParametersExistenceAnalyzer(element));
-		if (!Parameters.class.isInstance(element)) return;
-		analyzeAndAnnotate(new ParametersAnalyzer((Parameters) element));
+
+		if (Parameters.class.isInstance(element))
+			analyzeAndAnnotate(new ParametersAnalyzer((Parameters) element));
+	}
+
+	private boolean isConceptWithoutParams(PsiElement element) {
+		return (Concept.class.isInstance(element) && ((Concept) element).getParameterList().length == 0);
+	}
+
+	private boolean isFacetWithoutParams(PsiElement element) {
+		return (FacetApply.class.isInstance(element) &&
+			(((FacetApply) element).getParameters() == null || ((FacetApply) element).getParameters().getParameters().length == 0));
 	}
 }

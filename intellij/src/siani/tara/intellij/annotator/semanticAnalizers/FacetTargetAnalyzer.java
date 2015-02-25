@@ -34,21 +34,23 @@ public class FacetTargetAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		Concept parent = TaraPsiImplUtil.getConceptContainerOf(target);
-		if (parent == null) return;
+		Concept container = TaraPsiImplUtil.getConceptContainerOf(target);
+		if (container == null) return;
+		if (!container.isFacet())
+			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.not.allowed")));
 		PsiElement resolve = ReferenceManager.resolve(target.getIdentifierReference());
 		if (resolve == null) return;
 		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(resolve);
-		if (contextOf != null && contextOf.equals(parent))
+		if (contextOf != null && contextOf.equals(container))
 			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.not.allowed")));
 		if (hasErrors()) return;
-		Node metaConcept = findMetaConcept(parent);
+		Node metaConcept = findMetaConcept(container);
 		if (metaConcept != null)
-			if (!parent.isSub() && !parent.isFacet() && !metaConcept.getObject().is(Annotation.META_FACET))
+			if (!container.isSub() && !container.isFacet() && !metaConcept.getObject().is(Annotation.META_FACET))
 				results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.in.nofacet.concept")));
 		if (hasErrors()) return;
-		if (parent.isIntention())
-			analyzeCreatedClasses(parent);
+		if (container.isIntention())
+			analyzeCreatedClasses(container);
 	}
 
 	private void analyzeCreatedClasses(Concept parent) {

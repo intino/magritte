@@ -36,6 +36,7 @@ public class ParametersExistenceAnalyzer extends TaraAnalyzer {
 		if (instance == null) return;
 		boolean terminal = instance.isTerminal();
 		List<Variable> variables = findVariables();
+		if (variables == null) return;
 		List<String> compare = compare(collectMinimumNumberOfParameter(variables, terminal), collectDeclaredParameters(element, variables));
 		if (!compare.isEmpty())
 			results.put(element instanceof Concept ? concept.getSignature() : element, new TaraAnnotator.AnnotateAndFix(ERROR, "parameters missed: " + parametersToString(compare)));

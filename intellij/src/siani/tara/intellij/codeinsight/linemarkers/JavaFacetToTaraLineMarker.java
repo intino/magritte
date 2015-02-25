@@ -26,12 +26,15 @@ public class JavaFacetToTaraLineMarker extends RelatedItemLineMarkerProvider {
 			PsiClass psiClass = (PsiClass) element;
 			if (element.getContainingFile() == null) return;
 			if (((PsiClass) element).getImplementsList() == null) return;
-			Concept concept = TaraUtil.findConceptByQN(findCorrespondentConcept(psiClass), element.getContainingFile());
-			if (concept != null) {
-				NavigationGutterIconBuilder<PsiElement> builder =
-					NavigationGutterIconBuilder.create(TaraIcons.getIcon(TaraIcons.ICON_13)).setTarget(concept).setTooltipText("Navigate to the concept");
-				result.add(builder.createLineMarkerInfo(element));
-			}
+			addNavigationMark(element, result, TaraUtil.findConceptByQN(findCorrespondentConcept(psiClass), element.getContainingFile()));
+		}
+	}
+
+	private void addNavigationMark(PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, Concept concept) {
+		if (concept != null) {
+			NavigationGutterIconBuilder<PsiElement> builder =
+				NavigationGutterIconBuilder.create(TaraIcons.getIcon(TaraIcons.ICON_13)).setTarget(concept).setTooltipText("Navigate to the concept");
+			result.add(builder.createLineMarkerInfo(element));
 		}
 	}
 
@@ -43,6 +46,10 @@ public class JavaFacetToTaraLineMarker extends RelatedItemLineMarkerProvider {
 				break;
 			}
 		if (intention.isEmpty()) return "";
+		return findConcept(aClass, intention);
+	}
+
+	private String findConcept(PsiClass aClass, String intention) {
 		List<TaraBoxFileImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(aClass));
 		for (TaraBoxFileImpl taraBoxFile : taraFilesOfModule)
 			for (Concept concept : TaraUtil.getAllConceptsOfFile(taraBoxFile))

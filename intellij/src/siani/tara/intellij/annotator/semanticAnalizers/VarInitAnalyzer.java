@@ -38,16 +38,23 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 			return;
 		}
 		String valueType = varInit.getValueType();
-		if (!valueType.equalsIgnoreCase(variable.getType())
-			&& !areCompatibleTypes(valueType) && !(valueType.equals(REFERENCE) && (variable instanceof Reference || variable instanceof Word)))
-			results.put(varInit, new AnnotateAndFix(ERROR, "Incompatible types. Found " + valueType + ". " + variable.getType() + " expected"));
-		if (!hasErrors() && variable.getType().equals(Primitives.DOUBLE))
-			analyzeAsTuple();
+		analyzeVariableType(valueType);
+		if (hasErrors()) return;
+		if (variable.getType().equals(Primitives.DOUBLE)) analyzeAsTuple();
 		if (hasErrors()) return;
 		if (variable instanceof Resource) analyzeAsResource();
 		else if (variable instanceof Word) analyzeAsWord();
-		else if (!variable.getType().equals(Primitives.MEASURE)) return;
 		if (hasErrors()) return;
+		analyzeMetric();
+	}
+
+	private void analyzeVariableType(String valueType) {
+		if (!valueType.equalsIgnoreCase(variable.getType())
+			&& !areCompatibleTypes(valueType) && !(valueType.equals(REFERENCE) && (variable instanceof Reference || variable instanceof Word)))
+			results.put(varInit, new AnnotateAndFix(ERROR, "Incompatible types. Found " + valueType + ". " + variable.getType() + " expected"));
+	}
+
+	private void analyzeMetric() {
 		String[] values = varInit.getValues();
 		if (varInit.getMeasureValue() != null) {
 			AnnotateAndFix result = new MetricAnalyzer(metamodel, variable, values, varInit.getMeasureValue()).analyze();

@@ -13,7 +13,7 @@ public class Annotations {
 	public static final Annotation[] SUB_ANNOTATIONS = join(new Annotation[]{PROPERTY, NAMED, ABSTRACT, TERMINAL,
 		ADDRESSED, AGGREGATED, CASE, ENCLOSED}, META_ANNOTATIONS);
 
-	public static final Annotation[] HAS_ANNOTATIONS = new Annotation[]{AGGREGATED, SINGLE, REQUIRED, ENCLOSED};
+	public static final Annotation[] HAS_ANNOTATIONS = new Annotation[]{AGGREGATED, SINGLE, REQUIRED, ENCLOSED, ASSOCIATED};
 
 	public static final Annotation[] COMPONENT_ANNOTATIONS = join(new Annotation[]{ABSTRACT, TERMINAL, REQUIRED, SINGLE,
 		PROPERTY, NAMED, INTENTION, ADDRESSED, AGGREGATED, ASSOCIATED, FACET, ENCLOSED}, META_ANNOTATIONS);
