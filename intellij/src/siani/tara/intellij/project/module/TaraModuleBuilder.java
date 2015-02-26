@@ -156,7 +156,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			configFile = new File(modulePath + separator + ".config", "tara.conf");
 			configFile.createNewFile();
 		} catch (IOException e) {
-			LOG.error(e.getMessage());
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
@@ -244,7 +244,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			VfsUtil.createDirectories(parentPath + separator + RES + separator + ICONS);
 			VfsUtil.createDirectories(parentPath + separator + RES + separator + ICONS + separator + "definitions");
 		} catch (IOException e) {
-			LOG.error(e.getMessage());
+			LOG.error(e.getMessage(), e);
 		}
 	}
 

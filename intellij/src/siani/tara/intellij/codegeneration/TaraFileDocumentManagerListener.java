@@ -1,6 +1,7 @@
 package siani.tara.intellij.codegeneration;
 
 import com.intellij.ide.SaveAndSyncHandlerImpl;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileDocumentManagerListener;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaraFileDocumentManagerListener implements FileDocumentManagerListener {
+
+	private static final Logger LOG = Logger.getInstance(TaraFileDocumentManagerListener.class.getName());
 
 	private Project project;
 
@@ -63,7 +66,8 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 		try {
 			ProjectManagerEx.getInstanceEx().blockReloadingProjectOnExternalChanges();
 			return true;
-		} catch (Exception ignored) {
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			return false;
 		}
 	}

@@ -92,7 +92,7 @@ public abstract class TaraAnnotator implements Annotator {
 		}
 
 		public void setActions(IntentionAction[] actions) {
-			this.actions = actions;
+			this.actions = actions.clone();
 		}
 
 		public static enum Level {INFO, WARNING, ERROR}

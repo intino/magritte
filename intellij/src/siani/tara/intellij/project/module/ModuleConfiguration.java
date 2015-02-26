@@ -4,6 +4,7 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.openapi.components.StorageScheme;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.util.DefaultJDOMExternalizer;
@@ -21,6 +22,7 @@ import java.util.Locale;
 
 public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable {
 
+	private static final Logger LOG = Logger.getInstance(ModuleConfiguration.class.getName());
 	private Module module;
 	Configuration configuration;
 
@@ -86,7 +88,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 				file.delete();
 				file.getParentFile().delete();
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.error(e.getMessage(), e);
 			}
 	}
 

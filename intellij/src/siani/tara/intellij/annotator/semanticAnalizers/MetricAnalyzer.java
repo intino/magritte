@@ -24,7 +24,7 @@ public class MetricAnalyzer {
 	public MetricAnalyzer(Model metamodel, Variable variable, String[] values, String measure) {
 		this.metamodel = metamodel;
 		this.variable = variable;
-		this.values = values;
+		this.values = values.clone();
 		this.measure = measure;
 	}
 

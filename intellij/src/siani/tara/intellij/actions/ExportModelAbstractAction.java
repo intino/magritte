@@ -2,6 +2,7 @@ package siani.tara.intellij.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
@@ -35,6 +36,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class ExportModelAbstractAction extends AnAction implements DumbAware {
+
+	private static final Logger LOG = Logger.getInstance(ExportModelAbstractAction.class.getName());
+
 	@NonNls
 	private static final String ZIP_EXTENSION = ".zip";
 	@NonNls
@@ -97,6 +101,7 @@ public class ExportModelAbstractAction extends AnAction implements DumbAware {
 					processLibrariesAndJpsModules(jarFile, dstFile, modelName, libs, progressIndicator);
 					successMessages.add(MessageProvider.message("saved.message", 1, modelName, dstPath));
 				} catch (final IOException e) {
+					LOG.info(e.getMessage(), e);
 					errorMessages.add(e.getMessage() + "\n(" + dstPath + ")");
 				}
 			}

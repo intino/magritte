@@ -92,13 +92,27 @@ public class ModelLoader {
 
 	private static void restoreDestinyLinks(Node node, Model model) {
 		for (Node inner : node.getInnerNodes())
-			if (inner instanceof LinkNode) {
-				LinkNode linkNode = (LinkNode) inner;
-				Node destiny = model.searchNode(linkNode.getDestinyQN());
-				if (destiny == null)
-					throw new RuntimeException("Destiny of LinkNode " + linkNode.getQualifiedName() + ", not found");
-				linkNode.setDestiny((DeclaredNode) destiny);
-			} else restoreDestinyLinks(inner, model);
+			restoreInnerLinks(inner, model);
+	}
+
+	private static void restoreInnerLinks(Node inner, Model model) {
+		if (inner instanceof LinkNode) {
+			LinkNode linkNode = (LinkNode) inner;
+			Node destiny = model.searchNode(linkNode.getDestinyQN());
+			if (destiny == null)
+				throw new RuntimeException("Destiny of LinkNode " + linkNode.getQualifiedName() + ", not found");
+			linkNode.setDestiny((DeclaredNode) destiny);
+		} else {
+			restoreInnersOfTargets((DeclaredNode) inner, model);
+			restoreDestinyLinks(inner, model);
+		}
+	}
+
+	private static void restoreInnersOfTargets(DeclaredNode inner, Model model) {
+		for (List<FacetTarget> target : inner.getObject().getAllowedFacets().values())
+			for (FacetTarget facetTarget : target)
+				for (Node node : facetTarget.getInner())
+					restoreInnerLinks(node, model);
 	}
 
 	private static void restoreHierarchyLinks(Model aModel) {

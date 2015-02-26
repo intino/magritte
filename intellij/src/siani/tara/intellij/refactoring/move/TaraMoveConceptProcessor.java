@@ -30,7 +30,7 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 	public TaraMoveConceptProcessor(Project project, PsiNamedElement[] elements, String destination, boolean previewUsages) {
 		super(project);
 		assert elements.length > 0;
-		myElements = elements;
+		myElements = elements.clone();
 		myDestination = destination;
 		setPreviewUsages(previewUsages);
 	}

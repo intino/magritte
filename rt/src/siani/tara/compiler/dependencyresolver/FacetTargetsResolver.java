@@ -96,11 +96,17 @@ public class FacetTargetsResolver {
 			for (Variable commonVariable : node.getObject().getVariables())
 				target.add(0, commonVariable);
 			resolveVariableReferences(node, target.getVariableReferences());
-			for (Node inner : node.getInnerNodes())
-				if (inner.is(LinkNode.class))
-					target.add(new LinkNode(((LinkNode) inner).getDestiny(), null));
-				else if (!inner.isSub())
-					target.add(new LinkNode((DeclaredNode) inner, null));
+			for (Node inner : node.getInnerNodes()) {
+				LinkNode newNode = null;
+				if (inner.is(LinkNode.class)) newNode = new LinkNode(((LinkNode) inner).getDestiny(), null);
+				else if (!inner.isSub()) newNode = new LinkNode((DeclaredNode) inner, null);
+				if (newNode != null) {
+					newNode.setModelOwner(inner.getModelOwner());
+					newNode.calculateQualifiedName();
+					target.add(newNode);
+				}
+			}
+
 		}
 	}
 
