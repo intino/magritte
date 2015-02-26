@@ -34,7 +34,7 @@ public class AnnotationsAnalyzer extends TaraAnalyzer {
 
 	private boolean analyzeMetaAnnotations() {
 		List<? extends Annotation> metaAnnotations = annotations.getMetaAnnotations();
-		if ((!metaAnnotations.isEmpty() && isTerminalModule)) {
+		if (!metaAnnotations.isEmpty() && isTerminalModule) {
 			this.results.put(annotations, new AnnotateAndFix(ERROR, MessageProvider.message("metaannotation.in.terminal")));
 			return false;
 		} else return true;

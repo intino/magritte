@@ -95,11 +95,11 @@ public class ParametersAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean isTerminalVariable(boolean terminal, Variable variable) {
-		return (!terminal && variable.isTerminal());
+		return !terminal && variable.isTerminal();
 	}
 
 	private boolean hasDefaultValue(Variable variable) {
-		return (variable.getDefaultValues() != null && variable.getDefaultValues().length > 0);
+		return variable.getDefaultValues() != null && variable.getDefaultValues().length > 0;
 	}
 
 	private String parametersToString(List<String> parameterList) {

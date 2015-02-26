@@ -148,7 +148,7 @@ public class ReferenceManager {
 	}
 
 	private static boolean isExtendsReference(IdentifierReference reference) {
-		return (reference.getParent() instanceof Signature);
+		return reference.getParent() instanceof Signature;
 	}
 
 	private static void addAggregated(TaraBoxFile file, Identifier identifier, Set<Concept> set, ArrayList<Concept> visited) {

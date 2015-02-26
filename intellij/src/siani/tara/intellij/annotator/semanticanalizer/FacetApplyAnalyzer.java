@@ -44,7 +44,7 @@ public class FacetApplyAnalyzer extends TaraAnalyzer {
 		TaraParameters parameters = facetApply.getParameters();
 		List<Variable> facetVariables = getFacetVariables(node.getObject().getAllowedFacets(), facetApply.getMetaIdentifierList().get(0).getText());
 		int minimum = collectMinimumNumberOfParameter(facetVariables);
-		if ((parameters.getParameters().length < minimum)) {
+		if (parameters.getParameters().length < minimum) {
 			AnnotateAndFix value = new AnnotateAndFix(ERROR, "Parameters missed: " + variablesToString(facetVariables));
 			if (parameters.getParameters().length == 0)
 				value.setActions(new IntentionAction[]{new OfferCompletingFacetParameters(facetApply, facetVariables)});
@@ -66,7 +66,7 @@ public class FacetApplyAnalyzer extends TaraAnalyzer {
 			if (facetApply.getFacetName().equals(apply.getFacetName()))
 				count++;
 		}
-		return (count > 1);
+		return count > 1;
 	}
 
 	private List<Variable> getFacetVariables(Map<String, List<FacetTarget>> facets, String facetName) {

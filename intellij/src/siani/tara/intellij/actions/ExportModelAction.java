@@ -59,34 +59,35 @@ public class ExportModelAction extends ExportModelAbstractAction {
 
 	private CompileStatusNotification buildPostCompileAction(final List<Module> modules, final List<String> errorMessages, final List<String> successMessages) {
 		return new CompileStatusNotification() {
-			public void finished(final boolean aborted,
-			                     final int errors,
-			                     final int warnings,
-			                     final CompileContext compileContext) {
+			public void finished(final boolean aborted, final int errors, final int warnings, final CompileContext compileContext) {
 				if (aborted || errors != 0) return;
+				finish();
+			}
+
+			private void finish() {
 				ApplicationManager.getApplication().invokeLater(new Runnable() {
 					public void run() {
 						for (Module aModule : modules)
 							if (!doPrepare(aModule, errorMessages, successMessages)) return;
 						if (!errorMessages.isEmpty())
 							Messages.showErrorDialog(errorMessages.iterator().next(), MessageProvider.message("error.occurred"));
-						else if (!successMessages.isEmpty()) processMessages();
+						else if (!successMessages.isEmpty()) processMessages(successMessages, modules);
 					}
 				});
 			}
-
-			private void processMessages() {
-				StringBuilder messageBuf = new StringBuilder();
-				for (String message : successMessages) {
-					if (messageBuf.length() != 0) messageBuf.append('\n');
-					messageBuf.append(message);
-				}
-				Messages.showInfoMessage(messageBuf.toString(),
-					modules.size() == 1
-						? MessageProvider.message("success.deployment.message", modules.get(0).getName())
-						: MessageProvider.message("success.deployment.message.all"));
-			}
 		};
+	}
+
+	private void processMessages(List<String> successMessages, List<Module> modules) {
+		StringBuilder messageBuf = new StringBuilder();
+		for (String message : successMessages) {
+			if (messageBuf.length() != 0) messageBuf.append('\n');
+			messageBuf.append(message);
+		}
+		Messages.showInfoMessage(messageBuf.toString(),
+			modules.size() == 1
+				? MessageProvider.message("success.deployment.message", modules.get(0).getName())
+				: MessageProvider.message("success.deployment.message.all"));
 	}
 
 	@Override
@@ -94,7 +95,7 @@ public class ExportModelAction extends ExportModelAbstractAction {
 		int moduleCount = 0;
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		if (project != null)
-			for (Module aModule : (ModuleManager.getInstance(project).getModules()))
+			for (Module aModule : ModuleManager.getInstance(project).getModules())
 				if (TaraModuleType.isOfType(aModule))
 					moduleCount++;
 		boolean enabled = false;

@@ -142,7 +142,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean mustBeMeasured(Attribute attribute) {
-		return ((DOUBLE.equals(attribute.getType()) && attribute.getMeasureType() != null) || MEASURE.equals(attribute.getType()));
+		return DOUBLE.equals(attribute.getType()) && attribute.getMeasureType() != null || MEASURE.equals(attribute.getType());
 	}
 
 	private boolean checkAsTuple(int parametersLength, Variable variable) {
@@ -164,7 +164,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 
 	private void processAsWordOrReference(PsiElement parameterValue, Variable variable) {
 		if (variable instanceof Word) {
-			if (!isCorrectWord(((Word) variable), parameterValue.getFirstChild().getText()))
+			if (!isCorrectWord((Word) variable, parameterValue.getFirstChild().getText()))
 				results.put(parameterValue, new AnnotateAndFix(ERROR, "Parameter type error. Expected " + variable.getType()));
 		} else if (variable instanceof Reference)
 			checkAsReference(parameterValue.getChildren(), (Reference) variable);
@@ -203,7 +203,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		Concept destiny = ReferenceManager.resolveToConcept(reference);
 		if (destiny != null) {
 			MetaIdentifier metaIdentifier = destiny.getMetaIdentifier();
-			if ((metaIdentifier != null))
+			if (metaIdentifier != null)
 				return checkInHierarchy(metaIdentifier.getText(), variable.getType())
 					|| asFacet(destiny, variable.getType())
 					|| checkTypeAsTerminal(destiny, variable);

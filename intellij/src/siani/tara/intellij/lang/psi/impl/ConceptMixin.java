@@ -243,13 +243,13 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	private boolean isMetaComponent() {
 		if (this.getFile() == null) return false;
 		Node node = TaraUtil.findNode((Concept) this, TaraLanguage.getMetaModel(this.getFile()));
-		return (node != null && node.getObject().is(COMPONENT));
+		return node != null && node.getObject().is(COMPONENT);
 	}
 
 	public boolean isMetaAggregated() {
 		if (this.getFile() == null) return false;
 		Node node = TaraUtil.findNode((Concept) this, TaraLanguage.getMetaModel(this.getFile()));
-		return (node != null && node.isAggregated());
+		return node != null && node.isAggregated();
 	}
 
 	private boolean is(siani.tara.lang.Annotation taraAnnotation) {
@@ -326,7 +326,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public boolean equals(Object obj) {
-		return (obj instanceof Concept && ((Concept) obj).getQualifiedName().equals(this.getQualifiedName()));
+		return obj instanceof Concept && ((Concept) obj).getQualifiedName().equals(this.getQualifiedName());
 	}
 
 	@Override

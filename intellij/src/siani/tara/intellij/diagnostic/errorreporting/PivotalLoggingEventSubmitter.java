@@ -73,7 +73,7 @@ public class PivotalLoggingEventSubmitter {
 	}
 
 	private String getResponse(HttpURLConnection connection) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		StringBuilder builder = new StringBuilder();
 		String output;
 		while ((output = reader.readLine()) != null)
@@ -94,7 +94,7 @@ public class PivotalLoggingEventSubmitter {
 	}
 
 	private HttpURLConnection createConnection(String method, String url) throws IOException {
-		HttpURLConnection connection = (HttpURLConnection) ((new URL(url).openConnection()));
+		HttpURLConnection connection = (HttpURLConnection) (new URL(url).openConnection());
 		connection.setDoOutput(true);
 		connection.setRequestProperty("Content-Type", "application/json");
 		connection.setRequestProperty("X-TrackerToken", "ae3d1e4d4bcb011927e2768d7aa39f3a");

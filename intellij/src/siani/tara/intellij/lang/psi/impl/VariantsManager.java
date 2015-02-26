@@ -39,7 +39,7 @@ public class VariantsManager {
 	}
 
 	private static boolean isExtendsReference(IdentifierReference reference) {
-		return (reference.getParent() instanceof Signature);
+		return reference.getParent() instanceof Signature;
 	}
 
 	private static boolean namesAreEqual(Identifier identifier, Concept concept) {
@@ -47,7 +47,7 @@ public class VariantsManager {
 	}
 
 	private void addInBoxVariants() {
-		TaraBoxFile box = ((TaraBoxFile) myElement.getContainingFile());
+		TaraBoxFile box = (TaraBoxFile) myElement.getContainingFile();
 		if (box == null) return;
 		for (Concept concept : box.getConcepts())
 			if (!concept.equals(TaraPsiImplUtil.getConceptContainerOf(myElement)))

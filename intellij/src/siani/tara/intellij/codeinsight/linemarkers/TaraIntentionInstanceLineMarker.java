@@ -92,11 +92,11 @@ public class TaraIntentionInstanceLineMarker extends JavaLineMarkerProvider {
 		Node metaConcept;
 		if (element instanceof Concept) {
 			metaConcept = TaraUtil.getMetaConcept((Concept) element);
-			return (metaConcept != null && metaConcept.is(INTENTION));
+			return metaConcept != null && metaConcept.is(INTENTION);
 		} else if (element instanceof TaraFacetTarget) {
 			Concept concept = TaraPsiImplUtil.getConceptContainerOf(element);
 			metaConcept = TaraUtil.getMetaConcept(concept);
-			return (metaConcept != null && metaConcept.is(INTENTION));
+			return metaConcept != null && metaConcept.is(INTENTION);
 		}
 		return false;
 	}

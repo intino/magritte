@@ -54,7 +54,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean isParameterName(PsiElement element) {
-		return (element.getParent() instanceof TaraExplicitParameter);
+		return element.getParent() instanceof TaraExplicitParameter;
 	}
 
 	private boolean checkAsMetaWord(Concept concept, String wordName) {
@@ -77,7 +77,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		results.put(element, new TaraAnnotator.AnnotateAndFix(ERROR, MESSAGE, TaraSyntaxHighlighter.UNRESOLVED_ACCESS, createFixes(element, fixes)));
 	}
 
-	private IntentionAction[] createFixes(Identifier element, ArrayList<LocalQuickFix> fixes) {
+	private IntentionAction[] createFixes(Identifier element, List<LocalQuickFix> fixes) {
 		List<IntentionAction> actions = new ArrayList<>();
 		for (LocalQuickFix fix : fixes)
 			actions.add(createIntention(element, fix.getName(), fix));
