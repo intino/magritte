@@ -12,7 +12,6 @@ import siani.tara.intellij.lang.psi.TaraIdentifier;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
-import siani.tara.lang.Annotation;
 import siani.tara.lang.Node;
 
 import java.util.List;
@@ -21,6 +20,7 @@ import static com.intellij.psi.JavaPsiFacade.getInstance;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.WARNING;
 import static siani.tara.intellij.lang.psi.impl.TaraUtil.getInflector;
+import static siani.tara.lang.Annotation.META_FACET;
 
 public class FacetTargetAnalyzer extends TaraAnalyzer {
 
@@ -36,8 +36,6 @@ public class FacetTargetAnalyzer extends TaraAnalyzer {
 	public void analyze() {
 		Concept container = TaraPsiImplUtil.getConceptContainerOf(target);
 		if (container == null) return;
-		if (!container.isFacet())
-			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.not.allowed")));
 		PsiElement resolve = ReferenceManager.resolve(target.getIdentifierReference());
 		if (resolve == null) return;
 		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(resolve);
@@ -45,8 +43,11 @@ public class FacetTargetAnalyzer extends TaraAnalyzer {
 			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.not.allowed")));
 		if (hasErrors()) return;
 		Node metaConcept = findMetaConcept(container);
+		if (!container.isFacet() && (metaConcept != null && !metaConcept.is(META_FACET)))
+			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.not.allowed")));
+		if (hasErrors()) return;
 		if (metaConcept != null)
-			if (!container.isSub() && !container.isFacet() && !metaConcept.getObject().is(Annotation.META_FACET))
+			if (!container.isSub() && !container.isFacet() && !metaConcept.getObject().is(META_FACET))
 				results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.in.nofacet.concept")));
 		if (hasErrors()) return;
 		if (container.isIntention())
