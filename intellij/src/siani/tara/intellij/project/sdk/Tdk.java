@@ -30,10 +30,10 @@ public class Tdk implements ValidatableSdkAdditionalData, JDOMExternalizable {
 	@NonNls
 	private static final String SDK = "sdk";
 
-	public Tdk(String MagritteHome, Sdk javaSdk, Sdk currentJdk) {
-		myTdkHome = MagritteHome;
+	public Tdk(String myTdkHome, Sdk javaSdk, Sdk currentJdk) {
+		this.myTdkHome = myTdkHome;
 		myCurrentJdk = currentJdk;
-		if (myTdkHome != null) myTDKRoot = LocalFileSystem.getInstance().addRootToWatch(myTdkHome, true);
+		if (this.myTdkHome != null) myTDKRoot = LocalFileSystem.getInstance().addRootToWatch(this.myTdkHome, true);
 		myJavaSdk = javaSdk;
 	}
 

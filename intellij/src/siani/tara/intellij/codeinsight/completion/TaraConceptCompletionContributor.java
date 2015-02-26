@@ -103,16 +103,28 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 					Concept concept = getConceptContainerOf(parameters.getPosition());
 					if (parameters.getPosition().getContext() instanceof MetaIdentifier && concept != null)
 						addMetaIdentifiers(parameters.getOriginalFile(), (Concept) concept.getOriginalElement(), resultSet);
-					resultSet.addElement(create("has "));
-					resultSet.addElement(create("sub "));
-					resultSet.addElement(create("var "));
+					addKeywords(resultSet);
 					Concept container = getConceptContainerOf(concept);
-					if (container == null) return;
-					Node node = TaraUtil.getMetaConcept(container);
+					Node node = findContainerNode(container);
 					if (node == null) return;
+					addFacetAlternatives(resultSet, container, node);
+				}
+
+				private void addFacetAlternatives(CompletionResultSet resultSet, Concept container, Node node) {
 					if (container.isFacet() || node.is(Annotation.META_FACET)) resultSet.addElement(create("on "));
 					if (!node.getObject().getAllowedFacets().isEmpty() && !areAlreadyApplied(node.getObject().getAllowedFacets(), container))
 						resultSet.addElement(create("as "));
+				}
+
+				private void addKeywords(CompletionResultSet resultSet) {
+					resultSet.addElement(create("has "));
+					resultSet.addElement(create("sub "));
+					resultSet.addElement(create("var "));
+				}
+
+				private Node findContainerNode(Concept container) {
+					if (container == null) return null;
+					return TaraUtil.getMetaConcept(container);
 				}
 			}
 		);
@@ -140,20 +152,32 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 		Map<Node, LookupElementBuilder> candidates = new LinkedHashMap<>();
 		if (metaConcept == null) return;
 		for (Node node : metaConcept.getInnerNodes()) {
-			if (node.is(DeclaredNode.class) && node.isSub()) continue;
-			if (node.isAnonymous() || node.getName() == null) continue;
-			if (node.is(Annotation.REQUIRED) && container.contains(node.getName())) continue;
+			if (isCandidate(container, node)) continue;
 			if (node.isAbstract())
-				for (DeclaredNode declaredNode : node.getSubNodes())
-					candidates.put(declaredNode, createElement(declaredNode));
+				addSubNodes(candidates, node);
 			else candidates.put(node, createElement(node));
 		}
+		buildEntries(resultSet, metaModel, candidates);
+	}
+
+	private void addSubNodes(Map<Node, LookupElementBuilder> candidates, Node node) {
+		for (DeclaredNode declaredNode : node.getSubNodes())
+			candidates.put(declaredNode, createElement(declaredNode));
+	}
+
+	private void buildEntries(CompletionResultSet resultSet, Model metaModel, Map<Node, LookupElementBuilder> candidates) {
 		for (Map.Entry<Node, LookupElementBuilder> entry : candidates.entrySet()) {
 			LookupElementBuilder element = entry.getValue().withIcon(TaraIcons.getIcon(TaraIcons.CONCEPT)).withCaseSensitivity(false);
 			String parentName = entry.getKey().getObject().getParentName();
 			if (parentName != null) element = element.appendTailText(":" + parentName, true);
 			resultSet.addElement(element.withTypeText(metaModel.getName()));
 		}
+	}
+
+	private boolean isCandidate(Concept container, Node node) {
+		if (node.is(DeclaredNode.class) && node.isSub()) return true;
+		if (node.isAnonymous() || node.getName() == null) return true;
+		return node.is(Annotation.REQUIRED) && container.contains(node.getName());
 	}
 
 	private LookupElementBuilder createElement(Node node) {

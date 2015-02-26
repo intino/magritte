@@ -51,8 +51,8 @@ public class ConceptAnnotator extends TaraAnnotator {
 	}
 
 	private void addPropertyAnnotation(Concept concept) {
-		TextAttributesKey keyword_property = createTextAttributesKey("KEYWORD_PROPERTY", DefaultLanguageHighlighterColors.STATIC_METHOD);
-		holder.createInfoAnnotation(concept.getMetaIdentifier(), "Property").setTextAttributes(keyword_property);
+		TextAttributesKey keywordProperty = createTextAttributesKey("KEYWORD_PROPERTY", DefaultLanguageHighlighterColors.STATIC_METHOD);
+		holder.createInfoAnnotation(concept.getMetaIdentifier(), "Property").setTextAttributes(keywordProperty);
 	}
 
 	private Node getNode(Concept concept) {
