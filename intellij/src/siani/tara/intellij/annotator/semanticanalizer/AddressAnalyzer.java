@@ -1,4 +1,4 @@
-package siani.tara.intellij.annotator.semanticAnalizers;
+package siani.tara.intellij.annotator.semanticanalizer;
 
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.annotator.fix.RemoveAddressFix;

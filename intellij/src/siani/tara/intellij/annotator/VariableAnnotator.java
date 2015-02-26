@@ -5,7 +5,7 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.annotator.semanticAnalizers.VariableAnalyzer;
+import siani.tara.intellij.annotator.semanticanalizer.VariableAnalyzer;
 import siani.tara.intellij.lang.psi.TaraVariable;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 

@@ -6,7 +6,7 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
-import siani.tara.intellij.annotator.semanticAnalizers.TaraAnalyzer;
+import siani.tara.intellij.annotator.semanticanalizer.TaraAnalyzer;
 
 import java.util.Map;
 

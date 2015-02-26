@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.annotator.semanticAnalizers.ConceptReferenceAnalyzer;
+import siani.tara.intellij.annotator.semanticanalizer.ConceptReferenceAnalyzer;
 import siani.tara.intellij.lang.psi.TaraConceptReference;
 import siani.tara.intellij.lang.psi.TaraIdentifierReference;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;

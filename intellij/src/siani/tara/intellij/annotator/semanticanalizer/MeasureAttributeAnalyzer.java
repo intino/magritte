@@ -1,4 +1,4 @@
-package siani.tara.intellij.annotator.semanticAnalizers;
+package siani.tara.intellij.annotator.semanticanalizer;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;

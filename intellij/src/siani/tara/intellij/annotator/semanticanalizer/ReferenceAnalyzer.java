@@ -1,4 +1,4 @@
-package siani.tara.intellij.annotator.semanticAnalizers;
+package siani.tara.intellij.annotator.semanticanalizer;
 
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInspection.CommonProblemDescriptorImpl;

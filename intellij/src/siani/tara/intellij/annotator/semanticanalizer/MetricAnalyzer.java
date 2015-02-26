@@ -1,8 +1,8 @@
-package siani.tara.intellij.annotator.semanticAnalizers;
+package siani.tara.intellij.annotator.semanticanalizer;
 
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.TaraAnnotator;
-import siani.tara.intellij.annotator.semanticAnalizers.inflectors.EnglishInflector;
+import siani.tara.intellij.annotator.semanticanalizer.inflectors.EnglishInflector;
 import siani.tara.lang.Attribute;
 import siani.tara.lang.Model;
 import siani.tara.lang.Variable;

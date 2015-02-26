@@ -3,7 +3,7 @@ package siani.tara.intellij.annotator;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.annotator.semanticAnalizers.ReferenceAnalyzer;
+import siani.tara.intellij.annotator.semanticanalizer.ReferenceAnalyzer;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.TaraFacetApply;

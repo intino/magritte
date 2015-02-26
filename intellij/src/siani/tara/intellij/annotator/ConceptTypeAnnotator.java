@@ -3,7 +3,7 @@ package siani.tara.intellij.annotator;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.annotator.semanticAnalizers.ConceptTypeAnalyzer;
+import siani.tara.intellij.annotator.semanticanalizer.ConceptTypeAnalyzer;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
 
 public class ConceptTypeAnnotator extends TaraAnnotator {

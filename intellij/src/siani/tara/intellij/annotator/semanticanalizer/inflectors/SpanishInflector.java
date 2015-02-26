@@ -20,7 +20,7 @@
  * along with itrules Library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package siani.tara.intellij.annotator.semanticAnalizers.inflectors;
+package siani.tara.intellij.annotator.semanticanalizer.inflectors;
 
 import org.siani.itrules.formatter.Inflector;
 

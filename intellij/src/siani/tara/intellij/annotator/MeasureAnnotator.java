@@ -3,7 +3,7 @@ package siani.tara.intellij.annotator;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.annotator.semanticAnalizers.MeasureAttributeAnalyzer;
+import siani.tara.intellij.annotator.semanticanalizer.MeasureAttributeAnalyzer;
 import siani.tara.intellij.lang.psi.TaraAttributeType;
 
 public class MeasureAnnotator extends TaraAnnotator {
