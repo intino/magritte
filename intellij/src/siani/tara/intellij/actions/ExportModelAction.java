@@ -70,19 +70,21 @@ public class ExportModelAction extends ExportModelAbstractAction {
 							if (!doPrepare(aModule, errorMessages, successMessages)) return;
 						if (!errorMessages.isEmpty())
 							Messages.showErrorDialog(errorMessages.iterator().next(), MessageProvider.message("error.occurred"));
-						else if (!successMessages.isEmpty()) {
-							StringBuilder messageBuf = new StringBuilder();
-							for (String message : successMessages) {
-								if (messageBuf.length() != 0) messageBuf.append('\n');
-								messageBuf.append(message);
-							}
-							Messages.showInfoMessage(messageBuf.toString(),
-								modules.size() == 1
-									? MessageProvider.message("success.deployment.message", modules.get(0).getName())
-									: MessageProvider.message("success.deployment.message.all"));
-						}
+						else if (!successMessages.isEmpty()) processMessages();
 					}
 				});
+			}
+
+			private void processMessages() {
+				StringBuilder messageBuf = new StringBuilder();
+				for (String message : successMessages) {
+					if (messageBuf.length() != 0) messageBuf.append('\n');
+					messageBuf.append(message);
+				}
+				Messages.showInfoMessage(messageBuf.toString(),
+					modules.size() == 1
+						? MessageProvider.message("success.deployment.message", modules.get(0).getName())
+						: MessageProvider.message("success.deployment.message.all"));
 			}
 		};
 	}

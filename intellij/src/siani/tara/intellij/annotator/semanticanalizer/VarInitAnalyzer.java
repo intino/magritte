@@ -33,19 +33,21 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		if (variable == null) {
-			results.put(varInit, new AnnotateAndFix(ERROR, "Variable not found"));
-			return;
-		}
-		String valueType = varInit.getValueType();
-		analyzeVariableType(valueType);
+		if (variable == null) results.put(varInit, new AnnotateAndFix(ERROR, "Variable not found"));
 		if (hasErrors()) return;
-		if (variable.getType().equals(Primitives.DOUBLE)) analyzeAsTuple();
+		analyzeVariableType(varInit.getValueType());
 		if (hasErrors()) return;
-		if (variable instanceof Resource) analyzeAsResource();
-		else if (variable instanceof Word) analyzeAsWord();
+		if (checkTypeCompliances()) return;
 		if (hasErrors()) return;
 		analyzeMetric();
+	}
+
+	private boolean checkTypeCompliances() {
+		if (variable.getType().equals(Primitives.DOUBLE)) analyzeAsTuple();
+		if (hasErrors()) return true;
+		if (variable instanceof Resource) analyzeAsResource();
+		else if (variable instanceof Word) analyzeAsWord();
+		return false;
 	}
 
 	private void analyzeVariableType(String valueType) {
@@ -102,7 +104,7 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 		return (valueType.equals(NATURAL) && (variable.getType().equals(INTEGER) || variable.getType().equals(DOUBLE)) || variable.getType().equals(MEASURE))
 			|| (valueType.equals(INTEGER) && (variable.getType().equals(DOUBLE) || variable.getType().equals(MEASURE)))
 			|| (valueType.equals(DOUBLE) && (variable.getType().equals(MEASURE)))
-			|| (valueType.equals(STRING) && (variable.getType().equals(DATE) || (variable instanceof Resource)));
+			|| (valueType.equals(STRING) && (variable.getType().equals(DATE) || variable instanceof Resource));
 	}
 
 	private void analyzeAsTuple() {

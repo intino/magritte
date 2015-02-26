@@ -79,17 +79,19 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE + ": " + name + " does not exists."));
 			return;
 		}
+		analyzeByType(parameter, variable);
+	}
+
+	private void analyzeByType(TaraExplicitParameter parameter, Variable variable) {
 		if (parameter.getValue() == null)
 			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
 		else if (variable instanceof Resource)
 			analyzeAsResource(variable);
-		else if (variable instanceof Word) {
-			if (!isCorrectWord((Word) variable, parameter.getValue().getText()))
-				results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
-		} else if (variable instanceof Reference) {
-			if (parameter.getParameterValue() != null)
-				checkAsReference(parameter.getParameterValue().getChildren(), (Reference) variable);
-		} else if (!areCompatibleTypes(variable, parameter) || (parameter.isList() && !variable.isList()) || checkAsTuple(parameter.getValuesLength(), variable))
+		else if (variable instanceof Word && !isCorrectWord((Word) variable, parameter.getValue().getText()))
+			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
+		else if (variable instanceof Reference && parameter.getParameterValue() != null)
+			checkAsReference(parameter.getParameterValue().getChildren(), (Reference) variable);
+		else if (!areCompatibleTypes(variable, parameter) || (parameter.isList() && !variable.isList()) || checkAsTuple(parameter.getValuesLength(), variable))
 			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
 		else if (variable.getType().equals(MEASURE))
 			analyzeMetric(variable, parameter);
@@ -223,9 +225,8 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 
 	private boolean checkInHierarchy(String name, String type) {
 		Node referenceNode = model.get(type);
-		if (name == null || referenceNode == null) return false;
-		if (name.equals(referenceNode.getName())) return true;
-		return search(name, referenceNode.getObject());
+		return !(name == null || referenceNode == null) && (name.equals(referenceNode.getName())
+			|| search(name, referenceNode.getObject()));
 	}
 
 	private boolean search(String name, NodeObject referenceNode) {
@@ -239,36 +240,53 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 	private boolean areCompatibleTypes(Variable variable, Parameter parameter) {
 		String varType = variable.getType();
 		if (parameter.getValue() == null) return false;
-		String parameterType = parameter.getValue().getClass().getSimpleName();
-		Types type;
-		if (parameterType.equals("TaraParameterValueImpl"))
-			type = Types.valueOf(getImplicitValueType((TaraParameterValueImpl) parameter.getValue()));
-		else type = Types.valueOf(parameterType);
+		Types type = getType(parameter);
 		switch (type) {
 			case TaraStringValueImpl:
-				return varType.equals(STRING) || varType.equals(DATE) || variable instanceof Resource;
+				return asString(variable, varType);
 			case TaraBooleanValueImpl:
 				return varType.equals(BOOLEAN);
 			case TaraNaturalValueImpl:
-				return varType.equals(NATURAL) || varType.equals(INTEGER) || varType.equals(DOUBLE) ||
-					varType.equals(MEASURE) || (varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText()));
+				return asNatural(parameter, varType);
 			case TaraIntegerValueImpl:
-				return varType.equals(INTEGER) || varType.equals(DOUBLE) || varType.equals(MEASURE) ||
-					(varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText()));
+				return asInteger(parameter, varType);
 			case TaraDoubleValueImpl:
-				return varType.equals(DOUBLE) || varType.equals(MEASURE) ||
-					(varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText()));
+				return asDouble(parameter, varType);
 			default:
 				return false;
 		}
 	}
 
-	private String getImplicitValueType(TaraParameterValueImpl value) {
-		return value.getFirstChild().getClass().getSimpleName();
+	private boolean asString(Variable variable, String varType) {
+		return varType.equals(STRING) || varType.equals(DATE) || variable instanceof Resource;
 	}
 
-	private TaraIdentifier getLastElementOf(TaraIdentifierReference reference) {
-		return reference.getIdentifierList().get(reference.getIdentifierList().size() - 1);
+	private boolean asNatural(Parameter parameter, String varType) {
+		return varType.equals(NATURAL) || varType.equals(INTEGER) || varType.equals(DOUBLE) ||
+			varType.equals(MEASURE) || (varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText()));
+	}
+
+	private boolean asInteger(Parameter parameter, String varType) {
+		return varType.equals(INTEGER) || varType.equals(DOUBLE) || varType.equals(MEASURE) ||
+			(varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText()));
+	}
+
+	private boolean asDouble(Parameter parameter, String varType) {
+		return varType.equals(DOUBLE) || varType.equals(MEASURE) ||
+			(varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText()));
+	}
+
+	private Types getType(Parameter parameter) {
+		String parameterType = parameter.getValue().getClass().getSimpleName();
+		Types type;
+		if (parameterType.equals("TaraParameterValueImpl"))
+			type = Types.valueOf(getImplicitValueType((TaraParameterValueImpl) parameter.getValue()));
+		else type = Types.valueOf(parameterType);
+		return type;
+	}
+
+	private String getImplicitValueType(TaraParameterValueImpl value) {
+		return value.getFirstChild().getClass().getSimpleName();
 	}
 
 	enum Types {

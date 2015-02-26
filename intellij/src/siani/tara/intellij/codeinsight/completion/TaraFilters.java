@@ -20,20 +20,20 @@ import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContai
 
 public class TaraFilters {
 
-	protected static PsiElementPattern.Capture<PsiElement> afterNewLineInBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
+	protected static final PsiElementPattern.Capture<PsiElement> afterNewLineInBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLineInBodyFilter()));
-	protected static PsiElementPattern.Capture<PsiElement> inFacetBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
+	protected static final PsiElementPattern.Capture<PsiElement> inFacetBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLineInBodyFilter())).and(new FilterPattern(new InFacetFilter()));
-	protected static PsiElementPattern.Capture<PsiElement> afterEquals = psiElement().withLanguage(TaraLanguage.INSTANCE)
+	protected static final PsiElementPattern.Capture<PsiElement> afterEquals = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterEqualsFilter()));
-	protected static PsiElementPattern.Capture<PsiElement> AfterNewLineNoMetamodel = psiElement().withLanguage(TaraLanguage.INSTANCE)
+	protected static final PsiElementPattern.Capture<PsiElement> AfterNewLineNoMetamodel = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLinePrimalFilter())).and(new FilterPattern(new NoModelFilter()));
-	protected static PsiElementPattern.Capture<PsiElement> AfterNewLineWithMetamodel = psiElement().withLanguage(TaraLanguage.INSTANCE)
+	protected static final PsiElementPattern.Capture<PsiElement> AfterNewLineWithMetamodel = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLinePrimalFilter())).and(new FilterPattern(new ModelFilter()));
-	protected static PsiElementPattern.Capture<PsiElement> afterIdentifier = psiElement()
+	protected static final PsiElementPattern.Capture<PsiElement> afterIdentifier = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.IDENTIFIER_KEY)));
-	public static ElementPattern<? extends PsiElement> afterSignature = psiElement()
+	protected static final ElementPattern<? extends PsiElement> afterSignature = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.SIGNATURE)));
 
@@ -66,7 +66,7 @@ public class TaraFilters {
 		}
 
 		public boolean isAcceptable(Object element, PsiElement context) {
-			PsiElement prevSibling = (context.getPrevSibling() != null ? context.getPrevSibling() : context.getParent().getPrevSibling());
+			PsiElement prevSibling = context.getPrevSibling() != null ? context.getPrevSibling() : context.getParent().getPrevSibling();
 			if (prevSibling != null && prevSibling.getPrevSibling() != null) {
 				PsiElement prevPrevSibling = prevSibling.getPrevSibling();
 				if (element instanceof PsiElement) {
@@ -87,10 +87,8 @@ public class TaraFilters {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			if (!(element instanceof PsiElement) || context == null || context.getParent() == null) return false;
-			if (context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context))
-				if (context.getPrevSibling() == null || previousNewLineIndent(context) || previousNewLine(context))
-					return true;
-			return false;
+			return context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context) &&
+				context.getPrevSibling() == null || previousNewLineIndent(context) || previousNewLine(context);
 		}
 
 		@Override
@@ -136,11 +134,12 @@ public class TaraFilters {
 	private static class AfterEqualsFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			if (element instanceof PsiElement && context != null && context.getPrevSibling() != null &&
-				context.getPrevSibling().getPrevSibling() != null)
-				if (TaraTypes.EQUALS.equals(context.getPrevSibling().getPrevSibling().getNode().getElementType()))
-					return true;
-			return false;
+			return element instanceof PsiElement && context != null && context.getPrevSibling() != null &&
+				context.getPrevSibling().getPrevSibling() != null && isPreviousEquals(context);
+		}
+
+		private boolean isPreviousEquals(PsiElement context) {
+			return TaraTypes.EQUALS.equals(context.getPrevSibling().getPrevSibling().getNode().getElementType());
 		}
 
 		@Override

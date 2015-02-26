@@ -47,22 +47,8 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 			results.put(concept.getSignature().getParentReference(), addError(message("invalid.extension.concept")));
 		analyzeFacetConstrains();
 		if (hasErrors()) return;
-		Node node = findMetaConcept(concept);
-		if (node != null) {
-			if (!hasErrors()) analyzeMetaAnnotationConstrains(node);
-			if (!hasErrors()) analyzeFacetConstrains(node);
-			if (!hasErrors()) analyzeAddressAdded(node);
-			if (!hasErrors()) analyzeConceptName(concept, TaraUtil.isTerminalBox(concept.getFile()));
-		}
+		Node node = analyzeDslConstrains();
 		if (!hasErrors()) analyzeJavaClassCreation(node, concept);
-	}
-
-	private void analyzeFacetConstrains(Node node) {
-		if ((node.is(META_FACET)) && !concept.getSubConcepts().isEmpty() && !concept.getFacetTargets().isEmpty())
-			results.put(concept.getSignature(), addError(message("abstract.facet.has.no.targets")));
-		Concept parent = concept.getParentConcept();
-		if (concept.isSub() && concept.getFacetTargets().isEmpty() && findMetaConcept(parent).is(META_FACET))
-			results.put(concept.getSignature(), addError(message("facet.target.missed")));
 	}
 
 	private void analyzeFacetConstrains() {
@@ -73,8 +59,23 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 			results.put(concept.getSignature(), addError(message("facet.target.missed")));
 	}
 
-	private AnnotateAndFix addError(String message) {
-		return new AnnotateAndFix(ERROR, message, new RemoveConceptFix(concept));
+	private Node analyzeDslConstrains() {
+		Node node = findMetaConcept(concept);
+		if (node != null) {
+			if (!hasErrors()) analyzeMetaAnnotationConstrains(node);
+			if (!hasErrors()) analyzeFacetConstrains(node);
+			if (!hasErrors()) analyzeAddressAdded(node);
+			if (!hasErrors()) analyzeConceptName(concept, TaraUtil.isTerminalBox(concept.getFile()));
+		}
+		return node;
+	}
+
+	private void analyzeFacetConstrains(Node node) {
+		if ((node.is(META_FACET)) && !concept.getSubConcepts().isEmpty() && !concept.getFacetTargets().isEmpty())
+			results.put(concept.getSignature(), addError(message("abstract.facet.has.no.targets")));
+		Concept parent = concept.getParentConcept();
+		if (concept.isSub() && concept.getFacetTargets().isEmpty() && findMetaConcept(parent).is(META_FACET))
+			results.put(concept.getSignature(), addError(message("facet.target.missed")));
 	}
 
 	private boolean isRootSub() {
@@ -122,12 +123,12 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		return size > 1;
 	}
 
-
 	private int analyzeChildDuplicates(Concept parent) {
 		Collection<Concept> innerConceptsOf = concept.isSub() ? parent.getSubConcepts() : TaraPsiImplUtil.getInnerConceptsOf(parent);
 		String name = concept.getName();
 		return countDuplicates(innerConceptsOf, name);
 	}
+
 
 	private int countDuplicates(Collection<Concept> innerConceptsOf, String name) {
 		int duplicates = 0;
@@ -146,15 +147,19 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private void analyzeJavaClassCreation(Node node, Concept concept) {
+		checkIntentionsAndFacetClasses(node, concept);
+		for (FacetApply facetApply : concept.getFacetApplies())
+			if (node != null && isFacetIntentionImplementation(node, facetApply) && !isFacetApplyClassCreated(concept, facetApply.getFacetName()))
+				results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.intention.java.generated.class", facetApply.getFacetName()), new LinkToJavaFix(concept)));
+	}
+
+	private void checkIntentionsAndFacetClasses(Node node, Concept concept) {
 		if ((concept.isIntention()) && !isIntentionClassCreated(concept))
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class"), new LinkToJavaFix(concept)));
 		else if (node != null && node.is(INTENTION) && !isFacetClassCreated(concept))
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class"), new LinkToJavaFix(concept)));
 		else if (shouldHaveFacetTargetClass(node, concept) && !isFacetClassCreated(concept))
 			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.java.generated.class"), new LinkToJavaFix(concept)));
-		for (FacetApply facetApply : concept.getFacetApplies())
-			if (node != null && isFacetIntentionImplementation(node, facetApply) && !isFacetApplyClassCreated(concept, facetApply.getFacetName()))
-				results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.intention.java.generated.class", facetApply.getFacetName()), new LinkToJavaFix(concept)));
 	}
 
 	private boolean isFacetIntentionImplementation(Node node, FacetApply facetApply) {
@@ -178,14 +183,18 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Component Cannot be Declared as Primary"));
 		else if (!isFacet(node))
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Facets are no instantiable"));
-		else if (!analyzeAsNamed(node))
-			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name required"));
-		else if (!analyzeAsProperty(node))
-			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name required"));
 		else if (!analyzeAddressAdded(node))
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Address required", new AddAddressFix(concept)));
 		else if (concept.isIntention() && !analyzeAsIntention())
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, message("intention.with.children")));
+		else checkNameRequirement(node);
+	}
+
+	private void checkNameRequirement(Node node) {
+		if (!analyzeAsNamed(node))
+			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name required"));
+		else if (!analyzeAsProperty(node))
+			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name required"));
 		else if ((node.is(INTENTION)) && concept.isAnonymous())
 			results.put(concept.getSignature(), new AnnotateAndFix(ERROR, "Name Required in Instances of an Intention"));
 		else if (concept.isAnonymous() && hasFacetIntention(node))
@@ -330,5 +339,9 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 
 	private String getFacetPackage(Concept concept) {
 		return (concept.getProject().getName() + "." + FACET_PATH).toLowerCase();
+	}
+
+	private AnnotateAndFix addError(String message) {
+		return new AnnotateAndFix(ERROR, message, new RemoveConceptFix(concept));
 	}
 }
