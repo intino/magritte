@@ -100,7 +100,7 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean analyzeModelCoherence() {
-		return (isConceptType() || model == null);
+		return isConceptType() || model == null;
 	}
 
 	private IElementType getPreviousToken(Concept concept) {

@@ -69,7 +69,7 @@ public class IntentionsGenerator {
 
 	private void processFile(PsiFile psiFile) {
 		if (psiFile instanceof TaraBoxFile) {
-			Concept[] intentions = getIntentions(((TaraBoxFile) psiFile));
+			Concept[] intentions = getIntentions((TaraBoxFile) psiFile);
 			if (intentions.length > 0) this.destiny = findIntentionsDestiny();
 			for (Concept intention : intentions) {
 				createIntentionClass(intention);
@@ -175,7 +175,7 @@ public class IntentionsGenerator {
 	}
 
 	private Concept resolveTargetDestiny(TaraFacetTarget target) {
-		return (ReferenceManager.resolveToConcept(target.getIdentifierReference()));
+		return ReferenceManager.resolveToConcept(target.getIdentifierReference());
 	}
 
 	private List<Concept> getConceptHierarchy(Concept conceptTarget) {

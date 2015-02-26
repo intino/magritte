@@ -22,11 +22,11 @@ public class ParametersAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isConceptWithoutParams(PsiElement element) {
-		return (Concept.class.isInstance(element) && ((Concept) element).getParameterList().length == 0);
+		return Concept.class.isInstance(element) && ((Concept) element).getParameterList().length == 0;
 	}
 
 	private boolean isFacetWithoutParams(PsiElement element) {
-		return (FacetApply.class.isInstance(element) &&
-			(((FacetApply) element).getParameters() == null || ((FacetApply) element).getParameters().getParameters().length == 0));
+		return FacetApply.class.isInstance(element) &&
+			(((FacetApply) element).getParameters() == null || ((FacetApply) element).getParameters().getParameters().length == 0);
 	}
 }

@@ -50,7 +50,7 @@ public class TaraPsiImplUtil {
 	}
 
 	public static List<Variable> getVariablesInBody(Body body) {
-		return (body != null) ? (List<Variable>) body.getAttributeList() : Collections.EMPTY_LIST;
+		return body != null ? (List<Variable>) body.getAttributeList() : Collections.EMPTY_LIST;
 	}
 
 
@@ -78,7 +78,7 @@ public class TaraPsiImplUtil {
 		List<Concept> subs = new ArrayList();
 		for (Concept subConcept : concept.getSubConcepts()) {
 			subs.add(subConcept);
-			subs.addAll(collectInnerSubs((subConcept)));
+			subs.addAll(collectInnerSubs(subConcept));
 		}
 		return subs;
 	}

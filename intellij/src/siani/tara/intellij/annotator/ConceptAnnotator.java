@@ -36,7 +36,7 @@ public class ConceptAnnotator extends TaraAnnotator {
 
 	private boolean isRoot(Concept concept) {
 		Collection<Concept> rootConcepts = TaraUtil.getRootConceptsOfFile(concept.getFile());
-		return (rootConcepts.contains(concept) && concept.getIdentifierNode() != null);
+		return rootConcepts.contains(concept) && concept.getIdentifierNode() != null;
 	}
 
 	private boolean isProperty(Concept concept) {

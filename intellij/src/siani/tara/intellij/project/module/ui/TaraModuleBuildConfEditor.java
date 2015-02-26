@@ -98,7 +98,7 @@ public class TaraModuleBuildConfEditor implements ModuleConfigurationEditor {
 		for (File file : tdkDir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return (name.endsWith(MODEL_EXT));
+				return name.endsWith(MODEL_EXT);
 			}
 		})) {
 			dslBox.addItem(file.getName().substring(0, file.getName().lastIndexOf(".")));

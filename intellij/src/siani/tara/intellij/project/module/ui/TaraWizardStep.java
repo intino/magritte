@@ -81,11 +81,10 @@ public class TaraWizardStep extends ModuleWizardStep {
 		for (File file : sdkFile.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return (name.endsWith(MODEL_EXT));
+				return name.endsWith(MODEL_EXT);
 			}
-		})) {
+		}))
 			metamodelBox.addItem(file.getName().substring(0, file.getName().lastIndexOf(".")));
-		}
 	}
 
 	private Module[] getParentModulesCandidates(Project project) {

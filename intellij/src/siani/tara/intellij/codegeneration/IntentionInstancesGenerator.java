@@ -54,7 +54,7 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 	private List<PsiClass> processFile(PsiFile psiFile) {
 		List<PsiClass> psiClasses = new ArrayList<>();
 		if (psiFile instanceof TaraBoxFile) {
-			final TaraBoxFile taraBoxFile = ((TaraBoxFile) psiFile);
+			final TaraBoxFile taraBoxFile = (TaraBoxFile) psiFile;
 			final Concept[] facetConcepts = getFacets(taraBoxFile);
 			if (facetConcepts.length > 0) facetsHome = findFacetsDestiny();
 			for (Concept facet : facetConcepts)

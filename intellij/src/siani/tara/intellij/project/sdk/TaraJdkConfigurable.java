@@ -81,58 +81,8 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 	public JComponent createComponent() {
 		mySandboxHome.setHistorySize(5);
 		JPanel wholePanel = new JPanel(new GridBagLayout());
-		wholePanel.add(mySandboxHomeLabel, new GridBagConstraints(0, GridBagConstraints.RELATIVE, 1, 1, 0.0, 1.0, GridBagConstraints.WEST,
-			GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		wholePanel.add(GuiUtils.constructFieldWithBrowseButton(mySandboxHome, new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
-				descriptor.setTitle(MessageProvider.message("sandbox.home.label"));
-				descriptor.setDescription(MessageProvider.message("sandbox.home.label"));
-				VirtualFile file = FileChooser.chooseFile(descriptor, mySandboxHome, null, null);
-				if (file != null) {
-					mySandboxHome.setText(FileUtil.toSystemDependentName(file.getPath()));
-				}
-				myModified = true;
-			}
-		}), new GridBagConstraints(1, GridBagConstraints.RELATIVE, 1, 1, 1.0, 1.0, GridBagConstraints.EAST,
-			GridBagConstraints.HORIZONTAL, new Insets(0, 30, 0, 0), 0, 0));
-
-		wholePanel.add(myInternalJreLabel, new GridBagConstraints(0, GridBagConstraints.RELATIVE, 1, 1, 0, 1, GridBagConstraints.WEST,
-			GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		wholePanel.add(myInternalJres, new GridBagConstraints(1, GridBagConstraints.RELATIVE, 1, 1, 1, 1, GridBagConstraints.EAST,
-			GridBagConstraints.HORIZONTAL, new Insets(0, 30, 0, 0), 0, 0));
-		myInternalJres.setRenderer(new ListCellRendererWrapper() {
-			@Override
-			public void customize(JList list, Object value, int index, boolean selected, boolean hasFocus) {
-				if (value instanceof Sdk) {
-					setText(((Sdk) value).getName());
-				}
-			}
-		});
-
-		myInternalJres.addItemListener(new ItemListener() {
-			public void itemStateChanged(final ItemEvent e) {
-				if (myFreeze) return;
-				final Sdk javaJdk = (Sdk) e.getItem();
-				for (OrderRootType type : OrderRootType.getAllTypes()) {
-					if (!((SdkType) javaJdk.getSdkType()).isRootTypeApplicable(type)) {
-						continue;
-					}
-					final VirtualFile[] internalRoots = javaJdk.getSdkModificator().getRoots(type);
-					final VirtualFile[] configuredRoots = mySdkModifier.getRoots(type);
-					for (VirtualFile file : internalRoots) {
-						if (e.getStateChange() == ItemEvent.DESELECTED) {
-							mySdkModifier.removeRoot(file, type);
-						} else {
-							if (ArrayUtil.find(configuredRoots, file) == -1) {
-								mySdkModifier.addRoot(file, type);
-							}
-						}
-					}
-				}
-			}
-		});
-
+		addItems(wholePanel);
+		addJresListener();
 		mySandboxHome.addDocumentListener(new DocumentAdapter() {
 			protected void textChanged(DocumentEvent e) {
 				myModified = true;
@@ -148,13 +98,58 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 		return wholePanel;
 	}
 
+	private void addItems(JPanel wholePanel) {
+		wholePanel.add(mySandboxHomeLabel, new GridBagConstraints(0, GridBagConstraints.RELATIVE, 1, 1, 0.0, 1.0, GridBagConstraints.WEST,
+			GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		wholePanel.add(GuiUtils.constructFieldWithBrowseButton(mySandboxHome, new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
+				descriptor.setTitle(MessageProvider.message("sandbox.home.label"));
+				descriptor.setDescription(MessageProvider.message("sandbox.home.label"));
+				VirtualFile file = FileChooser.chooseFile(descriptor, mySandboxHome, null, null);
+				if (file != null)
+					mySandboxHome.setText(FileUtil.toSystemDependentName(file.getPath()));
+				myModified = true;
+			}
+		}), new GridBagConstraints(1, GridBagConstraints.RELATIVE, 1, 1, 1.0, 1.0, GridBagConstraints.EAST,
+			GridBagConstraints.HORIZONTAL, new Insets(0, 30, 0, 0), 0, 0));
+
+		wholePanel.add(myInternalJreLabel, new GridBagConstraints(0, GridBagConstraints.RELATIVE, 1, 1, 0, 1, GridBagConstraints.WEST,
+			GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		wholePanel.add(myInternalJres, new GridBagConstraints(1, GridBagConstraints.RELATIVE, 1, 1, 1, 1, GridBagConstraints.EAST,
+			GridBagConstraints.HORIZONTAL, new Insets(0, 30, 0, 0), 0, 0));
+		myInternalJres.setRenderer(new ListCellRendererWrapper() {
+			@Override
+			public void customize(JList list, Object value, int index, boolean selected, boolean hasFocus) {
+				if (value instanceof Sdk)
+					setText(((Sdk) value).getName());
+			}
+		});
+	}
+
+	private void addJresListener() {
+		myInternalJres.addItemListener(new ItemListener() {
+			public void itemStateChanged(final ItemEvent e) {
+				if (myFreeze) return;
+				final Sdk javaJdk = (Sdk) e.getItem();
+				for (OrderRootType type : OrderRootType.getAllTypes()) {
+					if (!((SdkType) javaJdk.getSdkType()).isRootTypeApplicable(type)) continue;
+					final VirtualFile[] internalRoots = javaJdk.getSdkModificator().getRoots(type);
+					final VirtualFile[] configuredRoots = mySdkModifier.getRoots(type);
+					for (VirtualFile file : internalRoots)
+						if (e.getStateChange() == ItemEvent.DESELECTED)
+							mySdkModifier.removeRoot(file, type);
+						else if (ArrayUtil.find(configuredRoots, file) == -1)
+							mySdkModifier.addRoot(file, type);
+				}
+			}
+		});
+	}
+
 	private void internalJdkUpdate(final Sdk sdk) {
 		final Sdk javaSdk = ((Tdk) sdk.getSdkAdditionalData()).getJavaSdk();
-		if (myJdksModel.getIndexOf(javaSdk) == -1) {
-			myJdksModel.addElement(javaSdk);
-		} else {
-			myJdksModel.setSelectedItem(javaSdk);
-		}
+		if (myJdksModel.getIndexOf(javaSdk) == -1) myJdksModel.addElement(javaSdk);
+		else myJdksModel.setSelectedItem(javaSdk);
 	}
 
 	public boolean isModified() {
@@ -162,24 +157,24 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 	}
 
 	public void apply() throws ConfigurationException {
-	/*if (mySandboxHome.getText() == null || mySandboxHome.getText().length() == 0) {
-      throw new ConfigurationException(TaraBundle.message("sandbox.specification"));
-    }*/
 		mySandboxHome.addCurrentTextToHistory();
 		final Tdk additionalData = (Tdk) myTaraJdk.getSdkAdditionalData();
-		if (additionalData != null) {
+		if (additionalData != null)
 			additionalData.cleanupWatchedRoots();
-		}
 		Tdk sandbox = new Tdk(mySandboxHome.getText(), (Sdk) myInternalJres.getSelectedItem(), myTaraJdk);
-		final SdkModificator modificator = myTaraJdk.getSdkModificator();
-		modificator.setSdkAdditionalData(sandbox);
-		ApplicationManager.getApplication().runWriteAction(new Runnable() {
-			public void run() {
-				modificator.commitChanges();
-			}
-		});
+		final SdkModificator modifier = myTaraJdk.getSdkModificator();
+		modifier.setSdkAdditionalData(sandbox);
+		commit(modifier);
 		((ProjectJdkImpl) myTaraJdk).resetVersionString();
 		myModified = false;
+	}
+
+	private void commit(final SdkModificator modifier) {
+		ApplicationManager.getApplication().runWriteAction(new Runnable() {
+			public void run() {
+				modifier.commitChanges();
+			}
+		});
 	}
 
 	public void reset() {
@@ -193,18 +188,19 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 			mySandboxHome.setText(sandboxHome);
 			mySandboxHome.setSelectedItem(sandboxHome);
 			final Sdk internalJava = sandbox.getJavaSdk();
-			if (internalJava != null) {
-				for (int i = 0; i < myJdksModel.getSize(); i++) {
-					if (Comparing.strEqual(((Sdk) myJdksModel.getElementAt(i)).getName(), internalJava.getName())) {
-						myInternalJres.setSelectedIndex(i);
-						break;
-					}
-				}
-			}
+			if (internalJava != null) processInternalSdk(internalJava);
 			myModified = false;
 		} else {
 			mySandboxHome.setText(TaraJdk.getDefaultTdk());
 		}
+	}
+
+	private void processInternalSdk(Sdk internalJava) {
+		for (int i = 0; i < myJdksModel.getSize(); i++)
+			if (Comparing.strEqual(((Sdk) myJdksModel.getElementAt(i)).getName(), internalJava.getName())) {
+				myInternalJres.setSelectedIndex(i);
+				break;
+			}
 	}
 
 	public void disposeUIResources() {
