@@ -32,9 +32,9 @@
   <property name="sonar.tests" value="${test.dir}"/>
 <!--  <property name="sonar.binaries" value="${classes.dir}"/>-->
   <property name="sonar.surefire.reportsPath" value="${reports.junit.xml.dir}"/>
-  <property name="sonar.modules" value="intellij"/>
+  <property name="sonar.modules" value="intellij,jps-plugin,rt,rt-constants,absmodel"/>
   <property name="sonar.sourceEncoding" value="UTF-8"/>
-  <property name="sonar.java.libraries" value="${classes.dir},../lib,../jps-plugin/dist"/>
+  <property name="sonar.java.libraries" value="${classes.dir},../lib,../jps-plugin/dist,../absmodel/dist,../rt/dist,../rt/lib,../rt-constants/dist"/>
 
 
   <!-- Override some properties at module level -->
@@ -42,6 +42,7 @@
   <property name="tara_runtime.sonar.projectName" value="rt"/>
   <property name="tara_runtime_constants.sonar.projectName" value="rt-constants"/>
   <property name="processor_manager.sonar.projectName" value="jps-plugin"/>
+  <property name="astract_model.sonar.projectName" value="absmodel"/>
 
 
   <loadfile property="sonar_mysql_domain" srcfile="mysql.domain"/>

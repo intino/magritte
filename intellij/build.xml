@@ -26,13 +26,6 @@
     </fileset>
   </path>
 
-  <path id="rt-constants.classpath">
-    <pathelement location="../rt-constants/dist" />
-    <fileset dir="../rt-constants/dist">
-      <include name="**/*.*" />
-    </fileset>
-  </path>
-
   <path id="jps-plugin.classpath">
     <pathelement location="../jps-plugin/build" />
     <fileset dir="../jps-plugin/build">
@@ -58,31 +51,33 @@
   <target name="build-subprojects" />
   
   <target depends="init" name="build-project">
-    <ant dir="../jps-plugin" target="build-jar"/>
-
     <echo message="${ant.project.name}: ${ant.file}" />
 
-    <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}" includeantruntime="false">     
-      <src path="../rt-constants/src" />
-      <classpath refid="library.classpath" />
-    </javac>
+    <ant dir="../jps-plugin" target="build-jar"/>
 
-    <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}" includeantruntime="false">     
-      <src path="../absmodel/src" />
-      <classpath refid="library.classpath" />
-    </javac>
+    <ant dir="../rt-constants" target="dist"/>
+    <copy includeemptydirs="false" todir="dist">
+      <fileset dir="../rt-constants/dist">
+      </fileset>
+    </copy>
 
-    <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}" includeantruntime="false">     
-      <src path="../rt/src" />
-      <classpath refid="rt.classpath" />
-      <classpath refid="library.classpath" />
-    </javac>
+    <ant dir="../absmodel" target="dist"/>
+    <copy includeemptydirs="false" todir="dist">
+      <fileset dir="../absmodel/dist">
+      </fileset>
+    </copy>
+
+    <ant dir="../rt" target="dist"/>
+    <copy includeemptydirs="false" todir="dist">
+      <fileset dir="../rt/dist">
+      </fileset>
+    </copy>
 
    <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}" includeantruntime="false">     
       <src path="gen" />
       <src path="src" />
-      <classpath refid="intellij.classpath" />
       <classpath refid="library.classpath" />
+      <classpath refid="intellij.classpath" />
       <classpath refid="jps-plugin.classpath" />
       <classpath refid="rt.classpath" />
     </javac>
@@ -93,11 +88,6 @@
       <fileset dir="lib">
       </fileset>
     </copy>    
-
-<!--    <copy includeemptydirs="false" todir="dist">
-      <fileset dir="../rt/lib">
-      </fileset>
-    </copy>    -->
 
     <copy includeemptydirs="false" todir="dist">
       <fileset dir="../rt/res">

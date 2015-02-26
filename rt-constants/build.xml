@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="all" name="tara_runtime_constants">
-
-  <!-- ========= Define the main properties of this project ========= -->
-  <property name="sources.dir" value="src"/>
-  <property name="test.dir" value="test"/>
-  <property name="sonar.java.source" value="1.7"/>
-  <property name="sonar.target" value="1.7"/>
-  <path id="classpath">
-  </path>
-
-
-  <target name="clean">
+<project basedir="." default="dist" name="tara :: tara_runtime_constants">
+  <property name="debuglevel" value="source,lines,vars" />
+  <property name="target" value="1.7" />
+  <property name="source" value="1.7" />
+	
+  <target name="init">
+    <mkdir dir="dist" />
   </target>
 
-  <target name="all" depends="clean"/>
+  <target name="clean">
+    <delete dir="dist" />
+  </target>
+
+  <target depends="clean" name="cleanall" />
+  <target depends="build-subprojects,build-project" name="build" />
+  <target name="build-subprojects" />
+  
+  <target depends="init" name="build-project">
+    <echo message="${ant.project.name}: ${ant.file}" />
+
+    <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}" includeantruntime="false">     
+      <src path="src" />
+    </javac>
+  </target>
+  
+  <target name="dist" depends="cleanall,build-project">
+  </target>  
 
 </project>
