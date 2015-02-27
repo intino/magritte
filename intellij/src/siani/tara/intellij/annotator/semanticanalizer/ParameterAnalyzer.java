@@ -52,8 +52,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 
 	private String getContextNameOf(TaraFacetApply inFacet) {
 		PsiElement contextOf = TaraPsiImplUtil.getContextOf(inFacet);
-		if (contextOf instanceof TaraFacetApply)
-			return contextOf.getFirstChild().getText();
+		if (contextOf instanceof TaraFacetApply) return contextOf.getFirstChild().getText();
 		if (contextOf instanceof Concept) return ((Concept) contextOf).getType();
 		return null;
 	}
@@ -75,11 +74,9 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		TaraExplicitParameter parameter = (TaraExplicitParameter) this.parameter;
 		String name = parameter.getIdentifier().getText();
 		Variable variable = getVariableByName(variables, name);
-		if (variable == null) {
+		if (variable == null)
 			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE + ": " + name + " does not exists."));
-			return;
-		}
-		analyzeByType(parameter, variable);
+		else analyzeByType(parameter, variable);
 	}
 
 	private void analyzeByType(TaraExplicitParameter parameter, Variable variable) {

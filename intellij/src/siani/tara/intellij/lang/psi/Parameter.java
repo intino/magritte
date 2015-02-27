@@ -4,21 +4,21 @@ import com.intellij.pom.Navigatable;
 
 public interface Parameter extends Navigatable, TaraPsiElement {
 
-	public int getIndexInParent();
+	int getIndexInParent();
 
-	public boolean isExplicit();
+	boolean isExplicit();
 
-	public TaraParameterValue getValue();
+	TaraParameterValue getValue();
 
-	public String[] getValues();
+	String[] getValues();
 
-	public TaraMeasureValue getMeasure();
+	TaraMeasureValue getMeasure();
 
-	public boolean isList();
+	boolean isList();
 
-	public int getValuesLength();
+	int getValuesLength();
 
-	public TaraFacetApply isInFacet();
+	TaraFacetApply isInFacet();
 
-	public String getExplicitName();
+	String getExplicitName();
 }
