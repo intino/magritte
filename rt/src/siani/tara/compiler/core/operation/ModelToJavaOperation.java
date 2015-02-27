@@ -49,7 +49,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			writeBoxes(getBoxPath(File.separator), createBoxes(groupByBox));
 			if (!model.isTerminal()) writeMorphs(createMorphs());
 		} catch (TaraException e) {
-			LOG.severe("Error during java model generation: " + e.getMessage());
+			LOG.log(Level.SEVERE,"Error during java model generation: " + e.getMessage(),e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 	}
@@ -202,7 +202,7 @@ public class ModelToJavaOperation extends ModelOperation {
 				fileWriter.write(entry.getValue().content());
 				fileWriter.close();
 			} catch (IOException e) {
-				LOG.severe(e.getMessage());
+				LOG.log(Level.SEVERE,e.getMessage(),e);
 			}
 		}
 	}
@@ -216,7 +216,7 @@ public class ModelToJavaOperation extends ModelOperation {
 				fileWriter.write(entry.getValue().content());
 				fileWriter.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 	}
@@ -254,7 +254,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		try {
 			return new FileInputStream(ruleFile);
 		} catch (FileNotFoundException e) {
-			LOG.severe(e.getMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			return null;
 		}
 	}

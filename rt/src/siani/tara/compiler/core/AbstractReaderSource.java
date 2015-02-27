@@ -5,8 +5,12 @@ import siani.tara.compiler.core.errorcollection.TaraException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class AbstractReaderSource {
+
+	private static final Logger LOG = Logger.getLogger(AbstractReaderSource.class.getName());
 
 	protected CompilerConfiguration configuration;
 	private BufferedReader lineSource = null;
@@ -28,6 +32,7 @@ public abstract class AbstractReaderSource {
 			try {
 				this.lineSource.close();
 			} catch (IOException e) {
+				LOG.log(Level.SEVERE,e.getMessage(), e);
 				throw new TaraException("Error cleaning source");
 			}
 		}

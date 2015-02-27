@@ -46,6 +46,7 @@ public class Parser {
 		} catch (RecognitionException e) {
 			org.antlr.v4.runtime.Parser recognizer = (org.antlr.v4.runtime.Parser) e.getRecognizer();
 			Token token = recognizer.getCurrentToken();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine(), getExpectedTokens(recognizer));
 		}
 	}
@@ -65,6 +66,7 @@ public class Parser {
 		} catch (RecognitionException e) {
 			org.antlr.v4.runtime.Parser recognizer = (org.antlr.v4.runtime.Parser) e.getRecognizer();
 			Token token = recognizer.getCurrentToken();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine(), getExpectedTokens(recognizer));
 		}
 	}

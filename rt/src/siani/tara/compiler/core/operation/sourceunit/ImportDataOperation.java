@@ -7,6 +7,7 @@ import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.core.errorcollection.message.Message;
 import siani.tara.compiler.rt.TaraRtConstants;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ImportDataOperation extends SourceUnitOperation {
@@ -23,7 +24,7 @@ public class ImportDataOperation extends SourceUnitOperation {
 			source.importData();
 			errorCollector.failIfErrors();
 		} catch (TaraException e) {
-			LOG.severe("Error during conversion: " + e.getMessage());
+			LOG.log(Level.SEVERE, "Error during conversion: " + e.getMessage(), e);
 			errorCollector.addError(Message.create(e.getMessage(), source));
 		}
 	}

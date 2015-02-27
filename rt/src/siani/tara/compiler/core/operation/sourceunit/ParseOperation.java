@@ -8,6 +8,7 @@ import siani.tara.compiler.core.errorcollection.message.Message;
 import siani.tara.compiler.rt.TaraRtConstants;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ParseOperation extends SourceUnitOperation {
@@ -25,10 +26,10 @@ public class ParseOperation extends SourceUnitOperation {
 			source.parse();
 			errorCollector.failIfErrors();
 		} catch (IOException e) {
-			LOG.severe("Error during Parsing: " + e.getMessage());
+			LOG.log(Level.SEVERE, "Error during Parsing: " + e.getMessage(), e);
 			errorCollector.addError(Message.create(e.getMessage(), source));
 		} catch (SyntaxException e) {
-			LOG.severe("Syntax error during Parsing");
+			LOG.log(Level.SEVERE, "Syntax error during Parsing", e);
 			errorCollector.addError(Message.create(e, source));
 		}
 	}

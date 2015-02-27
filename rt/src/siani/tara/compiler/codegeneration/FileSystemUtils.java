@@ -109,6 +109,7 @@ public class FileSystemUtils {
 			source.close();
 			out.close();
 		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new FileSystemException("Could not copy the file");
 		}
 
@@ -229,6 +230,7 @@ public class FileSystemUtils {
 					name = source.getCanonicalPath().substring(new File(directory).getCanonicalPath().length() + 1, source.getCanonicalPath().length());
 					name = name.replace("\\", "/");
 				} catch (Exception e) {
+					LOG.log(Level.INFO, e.getMessage(), e);
 					name = "";
 				}
 				if (!name.isEmpty()) {

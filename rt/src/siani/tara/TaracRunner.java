@@ -4,6 +4,7 @@ package siani.tara;
 import siani.tara.compiler.rt.TaraRtConstants;
 
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TaracRunner {
@@ -15,14 +16,13 @@ public class TaracRunner {
 
 	public static void main(String[] args) {
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Starting compiling");
-
-		File argsFile = null;
-		if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[1])) == null)
-			System.exit(1);
 		try {
+			File argsFile = null;
+			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[1])) == null)
+				throw new Exception("Error finding agrs file");
 			TaraCompilerRunner.runTaraCompiler(argsFile, isPluginGeneration(args[0]));
 		} catch (Exception e) {
-			LOG.severe(e.getMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			System.exit(1);
 		}
 	}

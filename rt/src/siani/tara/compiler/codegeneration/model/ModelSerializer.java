@@ -7,8 +7,11 @@ import siani.tara.lang.util.ModelSaver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ModelSerializer {
+	private static final Logger LOG = Logger.getLogger(ModelSerializer.class.getName());
 
 	CompilerConfiguration conf;
 
@@ -22,6 +25,7 @@ public class ModelSerializer {
 		try {
 			new File(conf.getModelsDirectory(), model.getName() + ".reload").createNewFile();
 		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new TaraException("Error sav¡ng model.");
 		}
 	}

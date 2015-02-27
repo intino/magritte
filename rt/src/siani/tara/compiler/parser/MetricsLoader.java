@@ -8,10 +8,18 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MetricsLoader {
+
+	private static final Logger LOG = Logger.getLogger(MetricsLoader.class.getName());
+
 
 	public static Map<String, List<SimpleEntry<String, String>>> loadMetrics(CompilerConfiguration config) {
 		Map<String, List<SimpleEntry<String, String>>> map = new HashMap();
@@ -41,7 +49,7 @@ public class MetricsLoader {
 			try {
 				urls.add(file.toURI().toURL());
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 		return urls;
@@ -64,7 +72,8 @@ public class MetricsLoader {
 			urls.add(url);
 			ClassLoader cl = new URLClassLoader(urls.toArray(new URL[urls.size()]));
 			return cl.loadClass(className);
-		} catch (MalformedURLException | ClassNotFoundException ignored) {
+		} catch (MalformedURLException | ClassNotFoundException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 		return null;
 	}

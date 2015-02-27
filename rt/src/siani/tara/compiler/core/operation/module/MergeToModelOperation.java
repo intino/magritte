@@ -9,6 +9,7 @@ import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.lang.Model;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MergeToModelOperation extends ModuleUnitOperation {
@@ -26,8 +27,7 @@ public class MergeToModelOperation extends ModuleUnitOperation {
 			Model model = new ASTMerger(sources, compilationUnit.getConfiguration()).doMerge();
 			compilationUnit.setModel(model);
 		} catch (MergeException e) {
-			LOG.severe("Error merging sources representations: " + e.getMessage());
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, "Error merging sources representations: " + e.getMessage(), e);
 		}
 	}
 }
