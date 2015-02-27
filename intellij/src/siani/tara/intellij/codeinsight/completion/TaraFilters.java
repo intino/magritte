@@ -102,7 +102,7 @@ public class TaraFilters {
 	}
 
 	private static boolean previousNewLineIndent(PsiElement context) {
-		return context.getPrevSibling().getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT);
+		return context.getPrevSibling() != null && context.getPrevSibling().getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT);
 	}
 
 	private static class NoModelFilter implements ElementFilter {

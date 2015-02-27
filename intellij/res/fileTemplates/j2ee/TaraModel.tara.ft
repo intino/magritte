@@ -1,4 +1,5 @@
-#if (${PARENT_MODULE_NAME} && ${PARENT_MODULE_NAME} != "")dsl ${PARENT_MODULE_NAME} #else(dsl Proteo)
+#if (${PARENT_MODULE_NAME} && ${PARENT_MODULE_NAME} != "")dsl ${PARENT_MODULE_NAME} #else
+dsl Proteo
 #end
 
 

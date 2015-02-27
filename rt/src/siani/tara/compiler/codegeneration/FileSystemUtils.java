@@ -8,10 +8,13 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class FileSystemUtils {
+
+	private static final Logger LOG = Logger.getLogger(FileSystemUtils.class.getName());
 
 	private FileSystemUtils() {
 	}
@@ -64,8 +67,9 @@ public class FileSystemUtils {
 				}
 				return true;
 			}
-		} catch (IOException oException) {
-			throw new FileSystemException(oException.getMessage(), oSource.getName(), oException.getMessage());
+		} catch (IOException e) {
+			LOG.severe(e.getMessage());
+			throw new FileSystemException(e.getMessage(), oSource.getName(), e.getMessage());
 		}
 		return false;
 	}
@@ -78,6 +82,7 @@ public class FileSystemUtils {
 		try {
 			new File(sFilename).createNewFile();
 		} catch (IOException ex) {
+			LOG.severe(ex.getMessage());
 			return false;
 		}
 		return true;
@@ -87,7 +92,7 @@ public class FileSystemUtils {
 		try {
 			return copyFile(new FileInputStream(new File(source)), new File(destination));
 		} catch (FileNotFoundException | FileSystemException e) {
-			System.err.println("Could not copy the file: " + source);
+			LOG.severe("Could not copy the file: " + source + "\n" + e.getMessage());
 			return false;
 		}
 	}
@@ -121,6 +126,7 @@ public class FileSystemUtils {
 				oContent.append(sLine).append("\n");
 			oInputStreamReader.close();
 		} catch (IOException oException) {
+			LOG.severe(oException.getMessage());
 			throw new FileSystemException("Could not read file", sFilename, oException.getMessage());
 		}
 		return oContent.toString();
@@ -133,6 +139,7 @@ public class FileSystemUtils {
 			oWriter.write(sContent);
 			oWriter.close();
 		} catch (IOException oException) {
+			LOG.severe(oException.getMessage());
 			throw new FileSystemException("Could not write file", sFilename, oException.getMessage());
 		}
 		return true;
