@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class CodeGenerator {
@@ -34,10 +35,10 @@ public abstract class CodeGenerator {
 		error.join(3000);
 		output.join(3000);
 		if (output.getMessage() != null && !"".equals(output.getMessage()))
-			LOG.info(output.getMessage());
+			LOG.log(Level.INFO, output.getMessage(), error);
 		if (error.getMessage() != null && !"".equals(error.getMessage()))
 			if (!error.getMessage().startsWith("Note"))
-				LOG.severe(error.getMessage());
+				LOG.log(Level.SEVERE, error.getMessage(), error);
 		return error.getMessage();
 	}
 

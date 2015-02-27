@@ -50,6 +50,7 @@ public class JavaCodeGenerator extends CodeGenerator {
 				null, conf.getOutDirectory().getAbsolutePath());
 			return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new TaraException("Error compiling plugin");
 		}
 	}

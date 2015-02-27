@@ -95,6 +95,8 @@ public abstract class TaraAnnotator implements Annotator {
 			this.actions = actions.clone();
 		}
 
-		public static enum Level {INFO, WARNING, ERROR}
+		public static enum Level {
+			INFO, WARNING, ERROR
+		}
 	}
 }

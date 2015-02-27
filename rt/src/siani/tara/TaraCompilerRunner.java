@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TaraCompilerRunner {
@@ -68,13 +69,13 @@ public class TaraCompilerRunner {
 			}
 			processArgs(configuration, reader, line);
 		} catch (IOException e) {
-			LOG.severe("Error getting Args IO: " + e.getMessage());
+			LOG.log(Level.SEVERE, "Error getting Args IO: " + e.getMessage(), e);
 		} finally {
 			try {
 				assert reader != null;
 				reader.close();
 			} catch (IOException e) {
-				LOG.severe("Error getting Args IO2: " + e.getMessage());
+				LOG.log(Level.SEVERE, "Error getting Args IO2: " + e.getMessage(), e);
 			} finally {
 				//argsFile.delete();
 			}
