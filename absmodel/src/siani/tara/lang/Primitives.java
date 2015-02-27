@@ -111,8 +111,8 @@ public class Primitives {
 
 	public interface Converter {
 
-		public Object[] convert(String... value);
+		Object[] convert(String... value);
 
-		public String[] convert(Object... value);
+		String[] convert(Object... value);
 	}
 }

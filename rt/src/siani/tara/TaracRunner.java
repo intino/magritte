@@ -17,7 +17,7 @@ public class TaracRunner {
 	public static void main(String[] args) {
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Starting compiling");
 		try {
-			File argsFile = null;
+			File argsFile;
 			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[1])) == null)
 				throw new Exception("Error finding agrs file");
 			TaraCompilerRunner.runTaraCompiler(argsFile, isPluginGeneration(args[0]));

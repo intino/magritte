@@ -4,8 +4,12 @@ import siani.tara.compiler.core.SourceUnit;
 import siani.tara.compiler.core.errorcollection.SyntaxException;
 
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SyntaxErrorMessage extends Message {
+
+	private static final Logger LOG = Logger.getLogger(SyntaxErrorMessage.class.getName());
 
 	protected SyntaxException cause;
 	protected SourceUnit source;
@@ -26,6 +30,6 @@ public class SyntaxErrorMessage extends Message {
 		if (message != null) output.println(description + message);
 		else output.println(description + this.cause);
 		output.println();
-		this.cause.printStackTrace(output);
+		LOG.log(Level.SEVERE, cause.getMessage(), cause);
 	}
 }

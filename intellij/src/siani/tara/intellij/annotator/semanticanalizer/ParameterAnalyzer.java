@@ -24,8 +24,7 @@ import static siani.tara.lang.Primitives.*;
 
 public class ParameterAnalyzer extends TaraAnalyzer {
 	private final Parameter parameter;
-
-	private final String DEFAULT_MESSAGE = "erroneous parameter";
+	private static final String defaultMessage = "erroneous parameter";
 	private final Node node;
 	private final Concept concept;
 	private final Model model;
@@ -46,7 +45,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 			return;
 		List<Variable> variables = (inFacet != null) ? facetVariables : node.getObject().getVariables();
 		if (parameter.getIndexInParent() >= variables.size())
-			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
+			results.put(parameter, new AnnotateAndFix(ERROR, defaultMessage));
 		else analyzeParameter(variables, parameter.getIndexInParent());
 	}
 
@@ -71,25 +70,25 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 	}
 
 	private void processExplicit(List<Variable> variables) {
-		TaraExplicitParameter parameter = (TaraExplicitParameter) this.parameter;
-		String name = parameter.getIdentifier().getText();
+		TaraExplicitParameter explicit = (TaraExplicitParameter) this.parameter;
+		String name = explicit.getIdentifier().getText();
 		Variable variable = getVariableByName(variables, name);
 		if (variable == null)
-			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE + ": " + name + " does not exists."));
-		else analyzeByType(parameter, variable);
+			results.put(explicit, new AnnotateAndFix(ERROR, defaultMessage + ": " + name + " does not exists."));
+		else analyzeByType(explicit, variable);
 	}
 
 	private void analyzeByType(TaraExplicitParameter parameter, Variable variable) {
 		if (parameter.getValue() == null)
-			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
+			results.put(parameter, new AnnotateAndFix(ERROR, defaultMessage));
 		else if (variable instanceof Resource)
 			analyzeAsResource(variable);
 		else if (variable instanceof Word && !isCorrectWord((Word) variable, parameter.getValue().getText()))
-			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
+			results.put(parameter, new AnnotateAndFix(ERROR, defaultMessage));
 		else if (variable instanceof Reference && parameter.getParameterValue() != null)
 			checkAsReference(parameter.getParameterValue().getChildren(), (Reference) variable);
 		else if (!areCompatibleTypes(variable, parameter) || (parameter.isList() && !variable.isList()) || checkAsTuple(parameter.getValuesLength(), variable))
-			results.put(parameter, new AnnotateAndFix(ERROR, DEFAULT_MESSAGE));
+			results.put(parameter, new AnnotateAndFix(ERROR, defaultMessage));
 		else if (variable.getType().equals(MEASURE))
 			analyzeMetric(variable, parameter);
 	}
@@ -106,7 +105,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 				results.put(parameter, new AnnotateAndFix(ERROR, "Resource not found"));
 			else if (!sameType(value.getText().replace("\"", ""), variable.getType()))
 				results.put(parameter, new AnnotateAndFix(ERROR, "Incompatible types. Found " +
-					value.getText().substring(value.getText().lastIndexOf(".")) + ". " + variable.getType() + " expected"));
+					value.getText().substring(value.getText().lastIndexOf('.')) + ". " + variable.getType() + " expected"));
 		}
 	}
 
@@ -124,18 +123,18 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean sameType(String destiny, String type) {
-		return type.equals(Resource.ANY) || destiny.substring(destiny.lastIndexOf(".") + 1).equalsIgnoreCase(type);
+		return type.equals(Resource.ANY) || destiny.substring(destiny.lastIndexOf('.') + 1).equalsIgnoreCase(type);
 	}
 
 	private void processImplicit(Variable variable) {
-		TaraImplicitParameter parameter = (TaraImplicitParameter) this.parameter;
-		if (parameter.getValue().getFirstChild() instanceof TaraMetaWord || parameter.getValue().getFirstChild() instanceof TaraIdentifierReference)
-			processAsWordOrReference(parameter.getValue(), variable);
-		else if (!areCompatibleTypes(variable, parameter) || (parameter.isList() && !variable.isList()))
-			results.put(parameter, new AnnotateAndFix(ERROR, "Incorrect type. Expected " + variable.getType()));
+		TaraImplicitParameter implicit = (TaraImplicitParameter) this.parameter;
+		if (implicit.getValue().getFirstChild() instanceof TaraMetaWord || implicit.getValue().getFirstChild() instanceof TaraIdentifierReference)
+			processAsWordOrReference(implicit.getValue(), variable);
+		else if (!areCompatibleTypes(variable, implicit) || (implicit.isList() && !variable.isList()))
+			results.put(implicit, new AnnotateAndFix(ERROR, "Incorrect type. Expected " + variable.getType()));
 		else if (variable instanceof Resource) analyzeAsResource(variable);
-		else if (mustBeMeasured((Attribute) variable) && parameter.getMeasure() == null)
-			results.put(parameter, new AnnotateAndFix(ERROR, "Measure missed. Expected " + ((Attribute) variable).getMeasureType()));
+		else if (mustBeMeasured((Attribute) variable) && implicit.getMeasure() == null)
+			results.put(implicit, new AnnotateAndFix(ERROR, "Measure missed. Expected " + ((Attribute) variable).getMeasureType()));
 	}
 
 	private boolean mustBeMeasured(Attribute attribute) {
@@ -184,15 +183,14 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 				continue;
 			}
 			Concept conceptContextOf = getConceptContainerOf(value);
-			if (getConceptContainerOf(conceptContextOf) != null)
-				if (value instanceof TaraIdentifierReference && scope != null && !inScope((TaraIdentifierReference) value, scope))
-					results.put(value, new AnnotateAndFix(ERROR, "Bad referenced. The reference has to be in the scope: " + scope.getName()));
+			if (getConceptContainerOf(conceptContextOf) != null && value instanceof TaraIdentifierReference && scope != null && !inScope((TaraIdentifierReference) value, scope))
+				results.put(value, new AnnotateAndFix(ERROR, "Bad referenced. The reference has to be in the scope: " + scope.getName()));
 		}
 	}
 
 	private boolean inScope(TaraIdentifierReference reference, Concept scope) {
 		Concept conceptReference = ReferenceManager.resolveToConcept(reference);
-		return conceptReference.getQualifiedName().startsWith(scope.getQualifiedName() + ".");
+		return conceptReference.getQualifiedName().startsWith(scope.getQualifiedName() + '.');
 	}
 
 
@@ -213,7 +211,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean asFacet(Concept destiny, String reference) {
-		String facet = reference.substring(reference.lastIndexOf(".") + 1);
+		String facet = reference.substring(reference.lastIndexOf('.') + 1);
 		for (FacetApply facetApply : destiny.getFacetApplies())
 			if (facetApply.getFacetName().equals(facet))
 				return true;
@@ -236,9 +234,11 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 
 	private boolean areCompatibleTypes(Variable variable, Parameter parameter) {
 		String varType = variable.getType();
-		if (parameter.getValue() == null) return false;
-		Types type = getType(parameter);
-		switch (type) {
+		return parameter.getValue() != null && checkTypes(variable, parameter, varType);
+	}
+
+	private boolean checkTypes(Variable variable, Parameter parameter, String varType) {
+		switch (getType(parameter)) {
 			case TaraStringValueImpl:
 				return asString(variable, varType);
 			case TaraBooleanValueImpl:
@@ -259,24 +259,33 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean asNatural(Parameter parameter, String varType) {
-		return varType.equals(NATURAL) || varType.equals(INTEGER) || varType.equals(DOUBLE) ||
-			varType.equals(MEASURE) || (varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText()));
+		return isNumber(varType) || varType.equals(MEASURE) || (isRatioOrMeasure(parameter, varType));
+	}
+
+	private boolean isNumber(String varType) {
+		return varType.equals(NATURAL) || intOrDouble(varType);
+	}
+
+	private boolean intOrDouble(String varType) {
+		return varType.equals(INTEGER) || varType.equals(DOUBLE);
 	}
 
 	private boolean asInteger(Parameter parameter, String varType) {
-		return varType.equals(INTEGER) || varType.equals(DOUBLE) || varType.equals(MEASURE) ||
-			(varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText()));
+		return intOrDouble(varType) || varType.equals(MEASURE) || isRatioOrMeasure(parameter, varType);
+	}
+
+	private boolean isRatioOrMeasure(Parameter parameter, String varType) {
+		return varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText());
 	}
 
 	private boolean asDouble(Parameter parameter, String varType) {
-		return varType.equals(DOUBLE) || varType.equals(MEASURE) ||
-			(varType.equals(RATIO) && parameter.getMeasure() != null && "%".equals(parameter.getMeasure().getText()));
+		return varType.equals(DOUBLE) || varType.equals(MEASURE) || isRatioOrMeasure(parameter, varType);
 	}
 
 	private Types getType(Parameter parameter) {
 		String parameterType = parameter.getValue().getClass().getSimpleName();
 		Types type;
-		if (parameterType.equals("TaraParameterValueImpl"))
+		if ("TaraParameterValueImpl".equals(parameterType))
 			type = Types.valueOf(getImplicitValueType((TaraParameterValueImpl) parameter.getValue()));
 		else type = Types.valueOf(parameterType);
 		return type;

@@ -1,12 +1,7 @@
 package siani.tara.compiler.codegeneration;
 
 import siani.tara.compiler.core.errorcollection.StreamWrapper;
-import siani.tara.compiler.core.errorcollection.TaraException;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,16 +9,6 @@ public abstract class CodeGenerator {
 	private static final Logger LOG = Logger.getLogger(CodeGenerator.class.getName());
 
 	protected CodeGenerator() {
-	}
-
-	protected static PrintWriter getOutWriter(File file) throws TaraException {
-		try {
-			file.getParentFile().mkdirs();
-			file.createNewFile();
-			return new PrintWriter(new FileOutputStream(file));
-		} catch (IOException e) {
-			throw new TaraException("Error during plugin generation");
-		}
 	}
 
 	protected static String printResult(Process process) throws InterruptedException {

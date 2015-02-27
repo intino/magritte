@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ConceptReference extends Navigatable, TaraPsiElement {
 
-	public boolean isAggregated();
+	boolean isAggregated();
 
 	@Nullable
 	TaraAnnotations getAnnotations();

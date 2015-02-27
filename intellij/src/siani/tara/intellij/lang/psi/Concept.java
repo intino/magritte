@@ -117,6 +117,6 @@ public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean equals(Object obj);
 
-	public int hashCode();
+	int hashCode();
 }
 

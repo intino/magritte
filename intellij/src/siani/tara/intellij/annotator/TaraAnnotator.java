@@ -39,13 +39,6 @@ public abstract class TaraAnnotator implements Annotator {
 		}
 	}
 
-	@Deprecated
-	protected Annotation annotateAndFix(PsiElement element, AnnotateAndFix annotateAndFix) {
-		Annotation errorAnnotation = holder.createErrorAnnotation(element.getNode(), annotateAndFix.message());
-		for (IntentionAction action : annotateAndFix.actions()) errorAnnotation.registerFix(action);
-		return errorAnnotation;
-	}
-
 	public static class AnnotateAndFix {
 		private Level level;
 		private String message;
