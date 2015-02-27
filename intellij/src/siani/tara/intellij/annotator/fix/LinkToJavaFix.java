@@ -8,15 +8,9 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.codegeneration.LinkToJava;
-import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 public class LinkToJavaFix implements IntentionAction {
-	private final Concept concept;
-
-	public LinkToJavaFix(Concept concept) {
-		this.concept = concept;
-	}
 
 	@NotNull
 	@Override

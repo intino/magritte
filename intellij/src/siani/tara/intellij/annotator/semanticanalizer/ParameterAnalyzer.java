@@ -78,19 +78,29 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		else analyzeByType(explicit, variable);
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	private void analyzeByType(TaraExplicitParameter parameter, Variable variable) {
-		if (parameter.getValue() == null)
-			results.put(parameter, new AnnotateAndFix(ERROR, defaultMessage));
-		else if (variable instanceof Resource)
-			analyzeAsResource(variable);
-		else if (variable instanceof Word && !isCorrectWord((Word) variable, parameter.getValue().getText()))
-			results.put(parameter, new AnnotateAndFix(ERROR, defaultMessage));
-		else if (variable instanceof Reference && parameter.getParameterValue() != null)
+		if (parameter.getValue() == null) results.put(parameter, new AnnotateAndFix(ERROR, defaultMessage));
+		else if (variable instanceof Resource) analyzeAsResource(variable);
+		else if (checkAsWord(parameter, variable)) results.put(parameter, new AnnotateAndFix(ERROR, defaultMessage));
+		else if (isReference(parameter, variable))
 			checkAsReference(parameter.getParameterValue().getChildren(), (Reference) variable);
-		else if (!areCompatibleTypes(variable, parameter) || (parameter.isList() && !variable.isList()) || checkAsTuple(parameter.getValuesLength(), variable))
+		else if (checkCompatibility(parameter, variable))
 			results.put(parameter, new AnnotateAndFix(ERROR, defaultMessage));
 		else if (variable.getType().equals(MEASURE))
 			analyzeMetric(variable, parameter);
+	}
+
+	private boolean checkAsWord(TaraExplicitParameter parameter, Variable variable) {
+		return variable instanceof Word && !isCorrectWord((Word) variable, parameter.getValue().getText());
+	}
+
+	private boolean checkCompatibility(TaraExplicitParameter parameter, Variable variable) {
+		return !areCompatibleTypes(variable, parameter) || (parameter.isList() && !variable.isList()) || checkAsTuple(parameter.getValuesLength(), variable);
+	}
+
+	private boolean isReference(TaraExplicitParameter parameter, Variable variable) {
+		return variable instanceof Reference && parameter.getParameterValue() != null;
 	}
 
 	private void analyzeMetric(Variable variable, Parameter parameter) {

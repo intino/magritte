@@ -39,7 +39,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 						@Nullable
 						@Override
 						public String getPlaceholderText() {
-							return buildMultiLineStringHolderText(multiLine);
+							return buildMultiLineStringHolderText();
 						}
 					});
 				}
@@ -57,8 +57,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	private void searchMultiLineVariables(Concept concept, List<PsiElement> strings) {
 		for (Variable variable : concept.getVariables()) {
 			TaraVariableType variableType = ((TaraVariable) variable).getVariableType();
-			if (!variable.getType().equals(Primitives.STRING) ||
-				(variableType != null && variableType.getStringAttribute() != null && variableType.getStringAttribute().getStringValueList().isEmpty()))
+			if (!variable.getType().equals(Primitives.STRING) || (variableType.getStringAttribute() != null && variableType.getStringAttribute().getStringValueList().isEmpty()))
 				continue;
 			addMultiLineString((TaraVariable) variable, strings);
 		}
@@ -117,7 +116,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		return text;
 	}
 
-	private String buildMultiLineStringHolderText(PsiElement element) {
+	private String buildMultiLineStringHolderText() {
 		return " ...";
 	}
 

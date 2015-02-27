@@ -94,6 +94,7 @@ public class ConceptTypeAnalyzer extends TaraAnalyzer {
 	private boolean isWellPositioned() {
 		IElementType elementType = getPreviousToken(concept);
 		return elementType == null
+			|| TaraTypes.DSL_DECLARATION.equals(elementType)
 			|| TaraTypes.IMPORTS.equals(elementType)
 			|| TaraTypes.NEWLINE.equals(elementType)
 			|| TaraTypes.NEW_LINE_INDENT.equals(elementType);

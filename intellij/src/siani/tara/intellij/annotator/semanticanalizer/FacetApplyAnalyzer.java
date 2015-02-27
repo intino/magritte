@@ -54,7 +54,7 @@ public class FacetApplyAnalyzer extends TaraAnalyzer {
 
 	private boolean isAllowedFacet(Node node, String name) {
 		for (String key : node.getObject().getAllowedFacets().keySet())
-			if (key.substring(key.lastIndexOf(".") + 1).equals(name)) return true;
+			if (key.substring(key.lastIndexOf('.') + 1).equals(name)) return true;
 		return false;
 	}
 

@@ -9,33 +9,36 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Concept;
 
 public class RemoveAddressFix implements IntentionAction {
+	private final Concept concept;
+
 	public RemoveAddressFix(Concept concept) {
+		this.concept = concept;
 	}
 
 	@NotNull
 	@Override
 	public String getText() {
-		return null;
+		return "Remove Address";
 	}
 
 	@NotNull
 	@Override
 	public String getFamilyName() {
-		return null;
+		return "Remove address";
 	}
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-		return false;
+		return file.isValid();
 	}
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-
+		concept.getAddress().delete();
 	}
 
 	@Override
 	public boolean startInWriteAction() {
-		return false;
+		return true;
 	}
 }

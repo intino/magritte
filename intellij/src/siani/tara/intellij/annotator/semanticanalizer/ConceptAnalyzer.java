@@ -33,6 +33,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 
 	private static final String FACET_PATH = "extensions";
 	private static final String INTENTIONS = "intentions";
+	protected static final String DOT = ".";
 	private Concept concept;
 
 	public ConceptAnalyzer(Concept concept) {
@@ -150,16 +151,16 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		checkIntentionsAndFacetClasses(node, concept);
 		for (FacetApply facetApply : concept.getFacetApplies())
 			if (node != null && isFacetIntentionImplementation(node, facetApply) && !isFacetApplyClassCreated(concept, facetApply.getFacetName()))
-				results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.intention.java.generated.class", facetApply.getFacetName()), new LinkToJavaFix(concept)));
+				results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.intention.java.generated.class", facetApply.getFacetName()), new LinkToJavaFix()));
 	}
 
 	private void checkIntentionsAndFacetClasses(Node node, Concept concept) {
 		if ((concept.isIntention()) && !isIntentionClassCreated(concept))
-			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class"), new LinkToJavaFix(concept)));
+			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class"), new LinkToJavaFix()));
 		else if (node != null && node.is(INTENTION) && !isFacetClassCreated(concept))
-			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class"), new LinkToJavaFix(concept)));
+			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.java.generated.class"), new LinkToJavaFix()));
 		else if (shouldHaveFacetTargetClass(node, concept) && !isFacetClassCreated(concept))
-			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.java.generated.class"), new LinkToJavaFix(concept)));
+			results.put(concept.getSignature(), new AnnotateAndFix(WARNING, message("no.facet.java.generated.class"), new LinkToJavaFix()));
 	}
 
 	private boolean isFacetIntentionImplementation(Node node, FacetApply facetApply) {
@@ -301,11 +302,11 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 
 	private boolean isIntentionClassCreated(Concept concept) {
 		String projectName = concept.getProject().getName().toLowerCase();
-		return resolveJavaClassReference(concept.getProject(), projectName + "." + INTENTIONS + "." + concept.getName() + "Intention") != null;
+		return resolveJavaClassReference(concept.getProject(), projectName + DOT + INTENTIONS + DOT + concept.getName() + "Intention") != null;
 	}
 
 	private boolean isFacetClassCreated(Concept concept) {
-		return resolveJavaClassReference(concept.getProject(), getFacetPackage(concept) + "." + concept.getName() + concept.getType()) != null;
+		return resolveJavaClassReference(concept.getProject(), getFacetPackage(concept) + DOT + concept.getName() + concept.getType()) != null;
 	}
 
 	private boolean isFacetApplyClassCreated(Concept concept, String facetName) {
@@ -314,10 +315,10 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 
 	private String buildFacetApplyClassQN(Concept facetedConcept, String facetName) {
 		String interfaceName = "";
-		for (Concept concept : TaraUtil.buildConceptCompositionPathOf(facetedConcept))
-			interfaceName += "." + (hasFacet(concept, facetName) ?
-				concept.getName() + facetName :
-				concept.getType());
+		for (Concept conceptInPath : TaraUtil.buildConceptCompositionPathOf(facetedConcept))
+			interfaceName += DOT + (hasFacet(conceptInPath, facetName) ?
+				conceptInPath.getName() + facetName :
+				conceptInPath.getType());
 		return getFacetApplyPackage(facetedConcept, facetName) + interfaceName;
 	}
 
@@ -330,7 +331,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	private String getFacetApplyPackage(Concept concept, String facetName) {
 		Inflector inflector = getInflector(concept);
 		if (inflector == null) throw new RuntimeException("Inflector not found");
-		return (getFacetPackage(concept) + "." + inflector.plural(facetName)).toLowerCase();
+		return (getFacetPackage(concept) + DOT + inflector.plural(facetName)).toLowerCase();
 	}
 
 	private Inflector getInflector(PsiElement concept) {
@@ -338,7 +339,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private String getFacetPackage(Concept concept) {
-		return (concept.getProject().getName() + "." + FACET_PATH).toLowerCase();
+		return (concept.getProject().getName() + DOT + FACET_PATH).toLowerCase();
 	}
 
 	private AnnotateAndFix addError(String message) {

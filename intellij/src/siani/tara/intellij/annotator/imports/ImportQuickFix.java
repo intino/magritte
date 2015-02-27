@@ -16,7 +16,7 @@ public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
 	public ImportQuickFix(TaraBoxFile fileDestiny, Concept conceptToImport) {
 		this.file = fileDestiny;
 		String name = conceptToImport.getContainingFile().getName();
-		anImport = name.substring(0, name.lastIndexOf("."));
+		anImport = name.substring(0, name.lastIndexOf('.'));
 	}
 
 	@NotNull

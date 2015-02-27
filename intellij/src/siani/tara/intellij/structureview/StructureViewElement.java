@@ -45,8 +45,8 @@ public class StructureViewElement implements StructureViewTreeElement {
 			Collection<Concept> concepts = TaraUtil.getInnerConceptsOf(concept);
 			if (!concepts.isEmpty()) {
 				List<TreeElement> treeElements = new ArrayList<>(concepts.size());
-				for (Concept concept : concepts)
-					treeElements.add(new StructureViewElement(concept));
+				for (Concept inner : concepts)
+					treeElements.add(new StructureViewElement(inner));
 				return treeElements.toArray(new TreeElement[treeElements.size()]);
 			}
 		}

@@ -29,6 +29,8 @@ public class ModelToJavaOperation extends ModelOperation {
 	private static final String BOX_ITR = "Box.itr";
 	private static final String MORPH_ITR = "Morph.itr";
 	private static final String JAVA = ".java";
+	protected static final String DOT = ".";
+	protected static final char DOT_CHAR = '.';
 	private final CompilationUnit compilationUnit;
 	private Model model;
 	private File rulesFolder;
@@ -143,8 +145,8 @@ public class ModelToJavaOperation extends ModelOperation {
 			@Override
 			public Object format(Object value) {
 				String val = value.toString();
-				if (!val.contains(".")) return val.substring(0, 1).toUpperCase() + val.substring(1);
-				return buildMorphPath(getMorphPath(".") + "." + val)
+				if (!val.contains(DOT)) return val.substring(0, 1).toUpperCase() + val.substring(1);
+				return buildMorphPath(getMorphPath(DOT) + DOT + val)
 					.replace("[", "").replace("]", "").replaceAll(Node.LINK, "")
 					.replaceAll(Node.IN_FACET_TARGET, "").replaceAll(Node.ANONYMOUS, "");
 			}
@@ -174,28 +176,28 @@ public class ModelToJavaOperation extends ModelOperation {
 
 			private String transformMultiLineString(String value) {
 				String val = value.replace("\r", "");
-				int i = value.indexOf("-");
+				int i = value.indexOf('-');
 				String indent = value.substring(0, i).replace("\t", "    ").replace("\r", "");
 				val = val.replace(indent, "\n").trim().replace("\n", "\" +\n\"");
 				if (val.startsWith("---")) {
-					val = val.substring(val.indexOf("+") + 2);
-					val = val.substring(0, val.lastIndexOf("+") - 1);
+					val = val.substring(val.indexOf('+') + 2);
+					val = val.substring(0, val.lastIndexOf('+') - 1);
 				}
-				return val.replaceFirst("\"", "").substring(0, val.lastIndexOf("\"") - 1);
+				return val.replaceFirst("\"", "").substring(0, val.lastIndexOf('"') - 1);
 			}
 		};
 	}
 
 	private String composeBoxName(String file) {
-		return NameFormatter.camelCase(model.getName().replace(".", "_") + "_" +
-			file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(".")) + "Box", "_");
+		return NameFormatter.camelCase(model.getName().replace(DOT, "_") + '_' +
+			file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(DOT_CHAR)) + "Box", "_");
 	}
 
 	private void writeBoxes(String directory, Map<String, Document> documentMap) {
 		File destiny = new File(outFolder, directory);
 		destiny.mkdirs();
 		for (Map.Entry<String, Document> entry : documentMap.entrySet()) {
-			File file = new File(destiny, entry.getKey().replace(".", File.separator) + JAVA);
+			File file = new File(destiny, entry.getKey().replace(DOT, File.separator) + JAVA);
 			file.getParentFile().mkdirs();
 			try {
 				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
@@ -209,7 +211,7 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private void writeMorphs(Map<String, Document> documentMap) {
 		for (Map.Entry<String, Document> entry : documentMap.entrySet()) {
-			File file = new File(outFolder, entry.getKey().replace(".", File.separator) + JAVA);
+			File file = new File(outFolder, entry.getKey().replace(DOT, File.separator) + JAVA);
 			file.getParentFile().mkdirs();
 			try {
 				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));

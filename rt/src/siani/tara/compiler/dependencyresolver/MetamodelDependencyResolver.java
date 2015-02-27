@@ -88,7 +88,7 @@ public class MetamodelDependencyResolver {
 	private void addClassVariablesToInstance(List<Variable> variables, Node instance) {
 		List<Variable> clones = new ArrayList<>();
 		for (Variable variable : variables)
-			if (variable.values == null || variable.values.isEmpty()) {
+			if (variable.getValues() == null || variable.getValues().length == 0) {
 				Variable clone = variable.clone();
 				clone.setInherited(true);
 				clones.add(clone);

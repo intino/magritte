@@ -53,7 +53,7 @@ public class LinkNode extends Node {
 	}
 
 	public String getDestinyName() {
-		return destinyQN.substring(destinyQN.lastIndexOf(".") + 1);
+		return destinyQN.substring(destinyQN.lastIndexOf('.') + 1);
 	}
 
 	@Override
@@ -116,9 +116,9 @@ public class LinkNode extends Node {
 
 	@Override
 	protected String getNodePath() {
-		String destiny = (getDestiny() != null) ? getDestiny().getQualifiedName() : getDestinyQN();
-		String name = "[" + destiny + LINK + (isAggregated() ? "{aggregated}" : "") + "]";
-		return (container != null ? container.getQualifiedName() + "." : "") + name;
+		String destinyPath = (getDestiny() != null) ? getDestiny().getQualifiedName() : getDestinyQN();
+		String name = "[" + destinyPath + LINK + (isAggregated() ? "{aggregated}" : "") + "]";
+		return (container != null ? container.getQualifiedName() + '.' : "") + name;
 	}
 
 	public String toString() {

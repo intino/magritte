@@ -1,6 +1,7 @@
 package siani.tara;
 
 
+import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.rt.TaraRtConstants;
 
 import java.io.File;
@@ -19,7 +20,7 @@ public class TaracRunner {
 		try {
 			File argsFile;
 			if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[1])) == null)
-				throw new Exception("Error finding agrs file");
+				throw new TaraException("Error finding agrs file");
 			TaraCompilerRunner.runTaraCompiler(argsFile, isPluginGeneration(args[0]));
 		} catch (Exception e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);

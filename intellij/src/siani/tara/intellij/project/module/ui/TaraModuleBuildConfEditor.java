@@ -31,14 +31,14 @@ public class TaraModuleBuildConfEditor implements ModuleConfigurationEditor {
 	private final Project project;
 	private final ModuleConfiguration configuration;
 
-	public JPanel dialogContents;
+	private JPanel dialogContents;
 	private JComboBox dslBox;
 	private int defaultDslBox;
 	private JLabel dslLabel;
 	private JComboBox dictionary;
 	private int defaultDictionaryBox;
-	protected JCheckBox generativeModelCheckBox;
-	protected boolean defaultValueModelBox;
+	private JCheckBox generativeModelCheckBox;
+	private boolean defaultValueModelBox;
 	private JTextField genDslName;
 	private String defaultDslName;
 	private Module[] candidates;
@@ -171,8 +171,8 @@ public class TaraModuleBuildConfEditor implements ModuleConfigurationEditor {
 		ApplicationManager.getApplication().runWriteAction(new Runnable() {
 			@Override
 			public void run() {
-				String parentName;
-				if ((parentName = configuration.getMetamodelName()).isEmpty()) return;
+				String parentName = configuration.getMetamodelName();
+				if (parentName.isEmpty()) return;
 				Module parentModule = searchParent(parentName.contains(".") ? parentName.split("\\.")[1] : parentName);
 				if (parentModule == null) return;
 				ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(module).getModifiableModel();
@@ -193,10 +193,11 @@ public class TaraModuleBuildConfEditor implements ModuleConfigurationEditor {
 	}
 
 	private Module[] getParentModulesCandidates(Project project, Module module) {
-		List<Module> candidates = new ArrayList<>();
+		List<Module> moduleCandidates = new ArrayList<>();
 		for (Module aModule : ModuleManager.getInstance(project).getModules())
-			if (aModule != module && !ModuleConfiguration.getInstance(aModule).isTerminal()) candidates.add(aModule);
-		return candidates.toArray(new Module[candidates.size()]);
+			if (!aModule.equals(module) && !ModuleConfiguration.getInstance(aModule).isTerminal())
+				moduleCandidates.add(aModule);
+		return moduleCandidates.toArray(new Module[moduleCandidates.size()]);
 	}
 
 

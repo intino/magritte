@@ -116,18 +116,20 @@ public class ModelLoader {
 
 	private static void restoreHierarchyLinks(Model aModel) {
 		for (Node node : aModel.getNodeTable())
-			if (node instanceof DeclaredNode) {
-				DeclaredNode declaredNode = (DeclaredNode) node;
-				String parent = declaredNode.getObject().getParentName();
-				if (parent != null) {
-					Node parentNode = aModel.get(parent);
-					if (parentNode == null && declaredNode.is(Annotation.TERMINAL)) continue;
-					if (parentNode == null)
-						throw new RuntimeException("Error loading language definition. Parent of node " + parent + "not found");
-					parentNode.getObject().addChild(node.getObject());
-					node.getObject().setParentObject(parentNode.getObject());
-				}
-			}
+			if (node instanceof DeclaredNode) restoreParent(aModel, node);
+	}
+
+	private static void restoreParent(Model aModel, Node node) {
+		DeclaredNode declaredNode = (DeclaredNode) node;
+		String parent = declaredNode.getObject().getParentName();
+		if (parent != null) {
+			Node parentNode = aModel.get(parent);
+			if (parentNode == null && declaredNode.is(Annotation.TERMINAL)) return;
+			if (parentNode == null)
+				throw new RuntimeException("Error loading language definition. Parent of node " + parent + "not found");
+			parentNode.getObject().addChild(node.getObject());
+			node.getObject().setParentObject(parentNode.getObject());
+		}
 	}
 
 	private static void processInnerNodes(Model aModel, List<Node> nodeTable, Node node) {
@@ -190,13 +192,13 @@ public class ModelLoader {
 		private void processAttribute(JsonElement json, Attribute attribute) {
 			JsonElement measureValue = json.getAsJsonObject().get("measureValue");
 			if (measureValue != null && measureValue.isJsonPrimitive())
-				attribute.measureValue = measureValue.getAsString();
+				attribute.setMeasureValue(measureValue.getAsString());
 			JsonElement measureType = json.getAsJsonObject().get("measureType");
 			if (measureType != null && measureType.isJsonPrimitive())
-				attribute.measureType = measureType.getAsString();
+				attribute.setMeasureType(measureType.getAsString());
 			JsonElement count = json.getAsJsonObject().get("count");
 			if (count != null && count.isJsonPrimitive())
-				attribute.count = count.getAsInt();
+				attribute.setCount(count.getAsInt());
 		}
 
 		private void processReference(JsonElement json, Reference reference) {

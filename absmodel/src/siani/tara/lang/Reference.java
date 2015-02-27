@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Reference extends Variable {
-	public String type;
-	public List<String> inheritedTypes = new ArrayList<>();
-	public boolean empty = false;
+	private String type;
+	private List<String> inheritedTypes = new ArrayList<>();
+	private boolean empty = false;
 
 	public Reference(String type, String name) {
 		this(type, name, false, false);
@@ -46,6 +46,10 @@ public class Reference extends Variable {
 
 	public List<String> getInheritedTypes() {
 		return inheritedTypes;
+	}
+
+	public void setInheritedTypes(List<String> inheritedTypes) {
+		this.inheritedTypes = inheritedTypes;
 	}
 
 	public boolean addInheritedType(String c) {

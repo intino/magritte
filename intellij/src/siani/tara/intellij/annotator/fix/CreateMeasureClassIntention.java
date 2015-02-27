@@ -55,7 +55,7 @@ public class CreateMeasureClassIntention implements IntentionAction {
 		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(file));
 		PsiDirectoryImpl srcPsiDirectory = new PsiDirectoryImpl((PsiManagerImpl) file.getManager(), srcDirectory);
 		PsiDirectory destiny = findDestiny(file, srcPsiDirectory, destinyPath);
-		MetricClassCreator creator = new MetricClassCreator(project, destiny, className);
+		MetricClassCreator creator = new MetricClassCreator(destiny, className);
 		creator.createClass();
 	}
 

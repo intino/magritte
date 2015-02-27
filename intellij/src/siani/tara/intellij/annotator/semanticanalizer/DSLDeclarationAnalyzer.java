@@ -33,7 +33,7 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 		if (instance == null) return;
 		String dslName = instance.getMetamodelName();
 		if (dslName != null && !dslName.isEmpty() && file.getDSL() == null)
-			results.put(file, new AnnotateAndFix(ERROR, message("model.not.found"), new AddMetamodelReferenceFix(file)));
+			results.put(file, new AnnotateAndFix(ERROR, message("model.not.found"), new AddMetamodelReferenceFix()));
 		else checkDslExistence(dslName);
 		if (hasErrors()) return;
 		findDuplicates();
@@ -43,7 +43,7 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 		if (dslName != null && !dslName.isEmpty()) {
 			Model dsl = TaraUtil.getMetamodel(file);
 			if ((dsl == null && !dslName.isEmpty() && !dslName.equals("Proteo")) || (!dslName.equals(file.getDSL())))
-				results.put(file, new AnnotateAndFix(ERROR, message("parent.model.file.found"), new ImportMetamodelFix(file), new ConfigureModuleFix(file)));
+				results.put(file, new AnnotateAndFix(ERROR, message("parent.model.file.found"), new ImportMetamodelFix(), new ConfigureModuleFix()));
 		}
 	}
 
@@ -52,6 +52,6 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 		if (declarations != null && declarations.length > 1)
 			for (TaraDslDeclaration declaration : declarations)
 				results.put(declaration,
-					new AnnotateAndFix(ERROR, message("duplicated.dsl.declaration"), new ImportMetamodelFix(file), new ConfigureModuleFix(file)));
+					new AnnotateAndFix(ERROR, message("duplicated.dsl.declaration"), new ImportMetamodelFix(), new ConfigureModuleFix()));
 	}
 }

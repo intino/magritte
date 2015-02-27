@@ -79,7 +79,7 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 				results.put(varInit, new AnnotateAndFix(ERROR, "Resource not found"));
 			else if (!sameType(value.getText().replace("\"", ""), variable.getType()))
 				results.put(varInit, new AnnotateAndFix(ERROR, "Incompatible types. Found " +
-					value.getText().substring(value.getText().lastIndexOf(".")) + ". " + variable.getType() + " expected"));
+					value.getText().substring(value.getText().lastIndexOf('.')) + ". " + variable.getType() + " expected"));
 		}
 	}
 
@@ -97,7 +97,7 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean sameType(String destiny, String type) {
-		return type.equals(Resource.ANY) || destiny.substring(destiny.lastIndexOf(".") + 1).equalsIgnoreCase(type);
+		return type.equals(Resource.ANY) || destiny.substring(destiny.lastIndexOf('.') + 1).equalsIgnoreCase(type);
 	}
 
 	private boolean areCompatibleTypes(String valueType) {
@@ -109,7 +109,7 @@ public class VarInitAnalyzer extends TaraAnalyzer {
 
 	private void analyzeAsTuple() {
 		Integer count;
-		if ((count = ((Attribute) variable).count) <= 1) return;
+		if ((count = ((Attribute) variable).getCount()) <= 1) return;
 		if (varInit.getValue().getDoubleValueList().size() != count)
 			results.put(varInit, new AnnotateAndFix(ERROR, MessageProvider.message("tuple.restriction") + " " + count.toString()));
 	}

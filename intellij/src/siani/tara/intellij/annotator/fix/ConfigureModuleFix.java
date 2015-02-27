@@ -8,14 +8,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.MessageProvider;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
 
 public class ConfigureModuleFix implements IntentionAction {
-	private final TaraBoxFile file;
-
-	public ConfigureModuleFix(@NotNull final TaraBoxFile taraBoxFile) {
-		this.file = taraBoxFile;
-	}
 
 	@NotNull
 	public String getText() {

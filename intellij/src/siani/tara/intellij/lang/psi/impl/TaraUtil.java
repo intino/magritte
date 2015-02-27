@@ -71,13 +71,9 @@ public class TaraUtil {
 		PsiElement element = concept;
 		String type = concept != null && !concept.isSub() ? concept.getType() : "";
 		while ((element = TaraPsiImplUtil.getContextOf(element)) != null)
-			if (element instanceof Concept && !((Concept) element).isSub())
-				type = ((Concept) element).getType() + (type != null && type.length() > 0 ? "." + type : "");
-			else if (element instanceof TaraFacetApply || element instanceof TaraFacetTarget) {
-				if (element instanceof TaraFacetTarget)
-					type = FACET_TARGET + "(" + ((TaraFacetTarget) element).getIdentifierReference().getText() + ")" + "." + type;
-				else type = FACET_APPLY + "(" +
-					getFacetPath((TaraFacetApply) element) + ")" + "." + type;
+			if (isConceptNotSub(element)) type = buildType((Concept) element, type);
+			else if (isInFacet(element)) {
+				type = buildType(element, type);
 				Concept conceptContextOf = getConceptContainerOf(element);
 				if (conceptContextOf != null) {
 					type = conceptContextOf.getType() + type;
@@ -87,15 +83,33 @@ public class TaraUtil {
 		return type;
 	}
 
+	private static String buildType(Concept element, String type) {
+		return element.getType() + (type != null && type.length() > 0 ? "." + type : "");
+	}
+
+	private static boolean isInFacet(PsiElement element) {
+		return element instanceof TaraFacetApply || element instanceof TaraFacetTarget;
+	}
+
+	private static boolean isConceptNotSub(PsiElement element) {
+		return element instanceof Concept && !((Concept) element).isSub();
+	}
+
+	private static String buildType(PsiElement element, String type) {
+		type = element instanceof TaraFacetTarget ?
+			FACET_TARGET + "(" + ((TaraFacetTarget) element).getIdentifierReference().getText() + ")" + "." + type :
+			FACET_APPLY + "(" + getFacetPath((TaraFacetApply) element) + ")" + "." + type;
+		return type;
+	}
+
 	public static List<Concept> buildConceptCompositionPathOf(Concept concept) {
 		Concept aConcept = concept;
 		List<Concept> path = new ArrayList<>();
 		path.add(aConcept);
 		while (concept != null && !concept.isAggregated()) {
 			Concept parent = TaraPsiImplUtil.getConceptContainerOf(concept);
-			if (parent != null)
-				if (parent.isSub() && !concept.isSub() || !parent.isSub() && !concept.isSub())
-					path.add(0, parent);
+			if (parent != null && parent.isSub() && (!concept.isSub() || !parent.isSub() && !concept.isSub()))
+				path.add(0, parent);
 			concept = parent;
 		}
 		return path;

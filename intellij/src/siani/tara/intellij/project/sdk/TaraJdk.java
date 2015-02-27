@@ -44,17 +44,13 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 	private static final String LIB_DIR_NAME = "lib";
 	@NonNls
 	private static final String SRC_DIR_NAME = "src";
+	protected static final String JUNIT_JAR = "junit.jar";
+	protected static final String JAR = ".jar";
+	protected static final String ZIP = ".zip";
+	protected static final String SRC_ZIP = "src.zip";
 
 	public TaraJdk() {
 		super("TARA JDK");
-	}
-
-	@Nullable
-	private static Sdk getInternalJavaSdk(final Sdk sdk) {
-		final SdkAdditionalData data = sdk.getSdkAdditionalData();
-		if (data instanceof Tdk)
-			return ((Tdk) data).getJavaSdk();
-		return null;
 	}
 
 	@Nullable
@@ -68,52 +64,10 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 		}
 	}
 
-	private static VirtualFile[] getIdeaLibrary(String home) {
-		ArrayList<VirtualFile> result = new ArrayList<>();
-		appendLibrary(home, result, "junit.jar");
-		return VfsUtilCore.toVirtualFileArray(result);
-	}
-
-	private static void appendLibrary(final String libDirPath,
-	                                  final ArrayList<VirtualFile> result,
-	                                  @NonNls final String... forbidden) {
-		Arrays.sort(forbidden);
-		final String path = libDirPath + File.separator + LIB_DIR_NAME;
-		final JarFileSystem jfs = JarFileSystem.getInstance();
-		final File lib = new File(path);
-		if (lib.isDirectory()) {
-			File[] jars = lib.listFiles();
-			if (jars != null)
-				for (File jar : jars) {
-					@NonNls String name = jar.getName();
-					if (jar.isFile() && Arrays.binarySearch(forbidden, name) < 0 && (name.endsWith(".jar") || name.endsWith(".zip")))
-						result.add(jfs.findFileByPath(jar.getPath() + JarFileSystem.JAR_SEPARATOR));
-				}
-		}
-	}
-
-	public static boolean isValidInternalJdk(Sdk taraJdk, Sdk sdk) {
-		final SdkTypeId sdkType = sdk.getSdkType();
-		if (sdkType instanceof JavaSdk) {
-			final JavaSdkVersion version = JavaSdk.getInstance().getVersion(sdk);
-			JavaSdkVersion requiredVersion = getRequiredJdkVersion(taraJdk);
-			if (version != null && requiredVersion != null)
-				return version.isAtLeast(requiredVersion);
-		}
-		return false;
-	}
-
-	@Nullable
-	private static JavaSdkVersion getRequiredJdkVersion(final Sdk ideaSdk) {
-		return JavaSdkVersion.JDK_1_7;
-	}
-
 	public static void setupSdkPaths(final SdkModificator sdkModificator, final String sdkHome, final Sdk internalJava) {
-		//roots from internal jre
 		addClasses(sdkModificator, internalJava);
 		addDocs(sdkModificator, internalJava);
 		addSources(sdkModificator, internalJava);
-		//roots for openapi and other libs
 		if (isFromTARAProject(sdkHome)) {
 			final VirtualFile[] ideaLib = getIdeaLibrary(sdkHome);
 			if (ideaLib != null)
@@ -124,96 +78,29 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 		}
 	}
 
-	private static void addModel(File sdkHome) {
-		TaraLanguage.addModelRoot(new File(sdkHome, TaraLanguage.DSL).getAbsolutePath());
+	@Nullable
+	private static Sdk getInternalJavaSdk(final Sdk sdk) {
+		final SdkAdditionalData data = sdk.getSdkAdditionalData();
+		if (data instanceof Tdk)
+			return ((Tdk) data).getJavaSdk();
+		return null;
 	}
 
-	static String getDefaultTdk() {
-		@NonNls String defaultTdk = "";
-		try {
-			defaultTdk = new File(PathManager.getSystemPath()).getCanonicalPath() + File.separator + "plugins-sandbox";
-		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
+	private static VirtualFile[] getIdeaLibrary(String home) {
+		ArrayList<VirtualFile> result = new ArrayList<>();
+		appendLibrary(home, result, JUNIT_JAR);
+		return VfsUtilCore.toVirtualFileArray(result);
+	}
+
+	public static boolean isValidInternalJdk(Sdk sdk) {
+		final SdkTypeId sdkType = sdk.getSdkType();
+		if (sdkType instanceof JavaSdk) {
+			final JavaSdkVersion version = JavaSdk.getInstance().getVersion(sdk);
+			JavaSdkVersion requiredVersion = getRequiredJdkVersion();
+			if (version != null && requiredVersion != null)
+				return version.isAtLeast(requiredVersion);
 		}
-		return defaultTdk;
-	}
-
-	private static void addSources(File file, SdkModificator sdkModificator) {
-		final File src = new File(new File(file, LIB_DIR_NAME), SRC_DIR_NAME);
-		if (!src.exists()) return;
-		File[] srcs = src.listFiles(new FileFilter() {
-			public boolean accept(File pathname) {
-				@NonNls final String path = pathname.getPath();
-				//noinspection SimplifiableIfStatement
-				if (path.contains("generics")) return false;
-				return path.endsWith(".jar") || path.endsWith(".zip");
-			}
-		});
-		for (int i = 0; srcs != null && i < srcs.length; i++) {
-			File jarFile = srcs[i];
-			if (jarFile.exists()) {
-				JarFileSystem jarFileSystem = JarFileSystem.getInstance();
-				String path = jarFile.getAbsolutePath().replace(File.separatorChar, '/') + JarFileSystem.JAR_SEPARATOR;
-				jarFileSystem.setNoCopyJarForPath(path);
-				VirtualFile vFile = jarFileSystem.findFileByPath(path);
-				sdkModificator.addRoot(vFile, OrderRootType.SOURCES);
-			}
-		}
-	}
-
-	private static void addClasses(SdkModificator sdkModificator, final Sdk javaSdk) {
-		addOrderEntries(OrderRootType.CLASSES, javaSdk, sdkModificator);
-	}
-
-	private static void addDocs(SdkModificator sdkModificator, final Sdk javaSdk) {
-		if (!addOrderEntries(JavadocOrderRootType.getInstance(), javaSdk, sdkModificator) &&
-			SystemInfo.isMac) {
-			Sdk[] jdks = ProjectJdkTable.getInstance().getAllJdks();
-			for (Sdk jdk : jdks)
-				if (jdk.getSdkType() instanceof JavaSdk) {
-					addOrderEntries(JavadocOrderRootType.getInstance(), jdk, sdkModificator);
-					break;
-				}
-		}
-	}
-
-	private static void addSources(SdkModificator sdkModificator, final Sdk javaSdk) {
-		if (javaSdk != null) {
-			if (!addOrderEntries(OrderRootType.SOURCES, javaSdk, sdkModificator)) {
-				if (SystemInfo.isMac) {
-					Sdk[] jdks = ProjectJdkTable.getInstance().getAllJdks();
-					for (Sdk jdk : jdks) {
-						if (jdk.getSdkType() instanceof JavaSdk) {
-							addOrderEntries(OrderRootType.SOURCES, jdk, sdkModificator);
-							break;
-						}
-					}
-				} else {
-					final File jdkHome = new File(javaSdk.getHomePath()).getParentFile();
-					@NonNls final String srcZip = "src.zip";
-					final File jarFile = new File(jdkHome, srcZip);
-					if (jarFile.exists()) {
-						JarFileSystem jarFileSystem = JarFileSystem.getInstance();
-						String path = jarFile.getAbsolutePath().replace(File.separatorChar, '/') + JarFileSystem.JAR_SEPARATOR;
-						jarFileSystem.setNoCopyJarForPath(path);
-						sdkModificator.addRoot(jarFileSystem.findFileByPath(path), OrderRootType.SOURCES);
-					}
-				}
-			}
-		}
-	}
-
-	private static boolean addOrderEntries(OrderRootType orderRootType, Sdk sdk, SdkModificator toModificator) {
-		boolean wasSmthAdded = false;
-		final String[] entries = sdk.getRootProvider().getUrls(orderRootType);
-		for (String entry : entries) {
-			VirtualFile virtualFile = VirtualFileManager.getInstance().findFileByUrl(entry);
-			if (virtualFile != null) {
-				toModificator.addRoot(virtualFile, orderRootType);
-				wasSmthAdded = true;
-			}
-		}
-		return wasSmthAdded;
+		return false;
 	}
 
 	public static SdkType getInstance() {
@@ -278,10 +165,10 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 		final List<String> javaSdks = new ArrayList<>();
 		final Sdk[] sdks = sdkModel.getSdks();
 		for (Sdk jdk : sdks)
-			if (isValidInternalJdk(sdk, jdk))
+			if (isValidInternalJdk(jdk))
 				javaSdks.add(jdk.getName());
 		if (javaSdks.isEmpty()) {
-			JavaSdkVersion requiredVersion = getRequiredJdkVersion(sdk);
+			JavaSdkVersion requiredVersion = getRequiredJdkVersion();
 			if (requiredVersion != null)
 				Messages.showErrorDialog(MessageProvider.message("no.java.sdk.for.idea.sdk.found", requiredVersion), "No Java SDK Found");
 			else
@@ -308,7 +195,6 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 	}
 
 	public AdditionalDataConfigurable createAdditionalDataConfigurable(final SdkModel sdkModel, SdkModificator sdkModificator) {
-//		return new TaraJdkConfigurable(sdkModel, sdkModificator);
 		return null;
 	}
 
@@ -365,5 +251,114 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 
 	public String getDefaultDocumentationUrl(final @NotNull Sdk sdk) {
 		return JavaSdk.getInstance().getDefaultDocumentationUrl(sdk);
+	}
+
+	static String getDefaultTdk() {
+		@NonNls String defaultTdk = "";
+		try {
+			defaultTdk = new File(PathManager.getSystemPath()).getCanonicalPath() + File.separator + "plugins-sandbox";
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
+		}
+		return defaultTdk;
+	}
+
+	private static void appendLibrary(final String libDirPath,
+	                                  final List<VirtualFile> result,
+	                                  @NonNls final String... forbidden) {
+		Arrays.sort(forbidden);
+		final File lib = new File(libDirPath + File.separator + LIB_DIR_NAME);
+		if (lib.isDirectory()) {
+			File[] jars = lib.listFiles();
+			if (jars != null) processJars(jars, result, forbidden);
+		}
+	}
+
+	private static void processJars(File[] jars, List<VirtualFile> result, String[] forbidden) {
+		final JarFileSystem jfs = JarFileSystem.getInstance();
+		for (File jar : jars) {
+			@NonNls String name = jar.getName();
+			if (jar.isFile() && Arrays.binarySearch(forbidden, name) < 0 && (name.endsWith(JAR) || name.endsWith(ZIP)))
+				result.add(jfs.findFileByPath(jar.getPath() + JarFileSystem.JAR_SEPARATOR));
+		}
+	}
+
+	@Nullable
+	private static JavaSdkVersion getRequiredJdkVersion() {
+		return JavaSdkVersion.JDK_1_7;
+	}
+
+	private static void addModel(File sdkHome) {
+		TaraLanguage.addModelRoot(new File(sdkHome, TaraLanguage.DSL).getAbsolutePath());
+	}
+
+	private static void addSources(File file, SdkModificator sdkModificator) {
+		final File src = new File(new File(file, LIB_DIR_NAME), SRC_DIR_NAME);
+		if (!src.exists()) return;
+		File[] srcs = src.listFiles(new FileFilter() {
+			public boolean accept(File pathname) {
+				@NonNls final String path = pathname.getPath();
+				return !path.contains("generics") && (path.endsWith(JAR) || path.endsWith(ZIP));
+			}
+		});
+		for (int i = 0; srcs != null && i < srcs.length; i++) {
+			File jarFile = srcs[i];
+			if (jarFile.exists()) {
+				JarFileSystem jarFileSystem = JarFileSystem.getInstance();
+				String path = jarFile.getAbsolutePath().replace(File.separatorChar, '/') + JarFileSystem.JAR_SEPARATOR;
+				jarFileSystem.setNoCopyJarForPath(path);
+				VirtualFile vFile = jarFileSystem.findFileByPath(path);
+				sdkModificator.addRoot(vFile, OrderRootType.SOURCES);
+			}
+		}
+	}
+
+	private static void addClasses(SdkModificator sdkModificator, final Sdk javaSdk) {
+		addOrderEntries(OrderRootType.CLASSES, javaSdk, sdkModificator);
+	}
+
+	private static void addDocs(SdkModificator sdkModificator, final Sdk javaSdk) {
+		if (!addOrderEntries(JavadocOrderRootType.getInstance(), javaSdk, sdkModificator) &&
+			SystemInfo.isMac) {
+			for (Sdk jdk : ProjectJdkTable.getInstance().getAllJdks())
+				if (jdk.getSdkType() instanceof JavaSdk) {
+					addOrderEntries(JavadocOrderRootType.getInstance(), jdk, sdkModificator);
+					break;
+				}
+		}
+	}
+
+	private static void addSources(SdkModificator sdkModificator, final Sdk javaSdk) {
+		if (javaSdk != null && !addOrderEntries(OrderRootType.SOURCES, javaSdk, sdkModificator)) {
+			if (SystemInfo.isMac) {
+				for (Sdk jdk : ProjectJdkTable.getInstance().getAllJdks())
+					if (jdk.getSdkType() instanceof JavaSdk) {
+						addOrderEntries(OrderRootType.SOURCES, jdk, sdkModificator);
+						break;
+					}
+			} else {
+				final File jarFile = new File(new File(javaSdk.getHomePath()).getParentFile(), SRC_ZIP);
+				if (jarFile.exists()) {
+					JarFileSystem jarFileSystem = JarFileSystem.getInstance();
+					String path = jarFile.getAbsolutePath().replace(File.separatorChar, '/') + JarFileSystem.JAR_SEPARATOR;
+					jarFileSystem.setNoCopyJarForPath(path);
+					sdkModificator.addRoot(jarFileSystem.findFileByPath(path), OrderRootType.SOURCES);
+				}
+			}
+		}
+
+	}
+
+	private static boolean addOrderEntries(OrderRootType orderRootType, Sdk sdk, SdkModificator sdkModificator) {
+		boolean wasSmthAdded = false;
+		final String[] entries = sdk.getRootProvider().getUrls(orderRootType);
+		for (String entry : entries) {
+			VirtualFile virtualFile = VirtualFileManager.getInstance().findFileByUrl(entry);
+			if (virtualFile != null) {
+				sdkModificator.addRoot(virtualFile, orderRootType);
+				wasSmthAdded = true;
+			}
+		}
+		return wasSmthAdded;
 	}
 }

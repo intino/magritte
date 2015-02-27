@@ -6,15 +6,15 @@ import siani.tara.lang.*;
 
 import java.util.*;
 
+import static siani.tara.compiler.codegeneration.FrameTags.*;
 import static siani.tara.compiler.codegeneration.InflectorProvider.getInflector;
 import static siani.tara.compiler.codegeneration.NameFormatter.camelCase;
 import static siani.tara.compiler.codegeneration.NameFormatter.composeMorphPackagePath;
 
 public class MorphFrameCreator extends FrameCreator {
 
-	private static final String SEPARATOR = ".";
+
 	private Node initNode;
-	private String packagePath;
 	Set<String> imports = new HashSet<>();
 
 	public MorphFrameCreator(String project, Model model) {
@@ -23,13 +23,13 @@ public class MorphFrameCreator extends FrameCreator {
 
 	public Map.Entry<String, Frame> create(Node node) {
 		this.initNode = node;
-		final Frame frame = new Frame("Morph");
-		packagePath = composeMorphPackagePath(model, node);
-		if (!packagePath.isEmpty()) frame.addFrame("package", packagePath);
+		final Frame frame = new Frame(MORPH);
+		String packagePath = composeMorphPackagePath(model, node);
+		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		nodeToFrame(node, frame);
 		addImports(frame);
 		initNode = null;
-		return new AbstractMap.SimpleEntry<>(packagePath + SEPARATOR + node.getName(), frame);
+		return new AbstractMap.SimpleEntry<>(packagePath + DOT + node.getName(), frame);
 	}
 
 	private void nodeToFrame(final Node node, Frame frame) {
@@ -37,21 +37,21 @@ public class MorphFrameCreator extends FrameCreator {
 		if (node.is(LinkNode.class) && ((LinkNode) node).isReference()) {
 			LinkNode linkNode = (LinkNode) node;
 			Frame newFrame = new Frame(getLinkNodeTypes(linkNode));
-			newFrame.addFrame("parent", linkNode.getDestinyName());
-			newFrame.addFrame("type", linkNode.getDestiny().getObject().getType());
-			newFrame.addFrame("qn", linkNode.getDestiny().getObject().getDeclaredNodeQN());
-			newFrame.addFrame("name", linkNode.getDestiny().getObject().getName());
-			frame.addFrame("node", newFrame);
+			newFrame.addFrame(PARENT, linkNode.getDestinyName()).
+				addFrame(TYPE, linkNode.getDestiny().getObject().getType()).
+				addFrame(QN, linkNode.getDestiny().getObject().getDeclaredNodeQN()).
+				addFrame(NAME, linkNode.getDestiny().getObject().getName());
+			frame.addFrame(NODE, newFrame);
 			DeclaredNode container = linkNode.getDestiny().getContainer();
 			if (container != null) {
 				String containerPackage = composeMorphPackagePath(model, container);
-				if (!containerPackage.equals("magritte.morphs"))
-					imports.add(containerPackage + "." + container.getName());
+				if (!containerPackage.equals(MAGRITTE_MORPHS))
+					imports.add(containerPackage + DOT + container.getName());
 			}
 		} else {
 			List<String> types = getTypes(node);
 			final Frame newFrame = new Frame(types.toArray(new String[types.size()]));
-			frame.addFrame("node", newFrame);
+			frame.addFrame(NODE, newFrame);
 			addAnnotations(node, newFrame);
 			addNodeInfo(node, newFrame);
 			addInner(node, newFrame);
@@ -59,8 +59,8 @@ public class MorphFrameCreator extends FrameCreator {
 				addSubs(node, frame);
 			if (node.getContainer() != null) {
 				String containerPackage = composeMorphPackagePath(model, node.getContainer());
-				if (!containerPackage.equals("magritte.morphs"))
-					imports.add(containerPackage + "." + node.getContainer().getName());
+				if (!containerPackage.equals(MAGRITTE_MORPHS))
+					imports.add(containerPackage + DOT + node.getContainer().getName());
 			}
 		}
 
@@ -68,35 +68,35 @@ public class MorphFrameCreator extends FrameCreator {
 
 	private void addImports(Frame frame) {
 		for (String anImport : imports)
-			frame.addFrame("imports", "import " + anImport + ";");
+			frame.addFrame(IMPORTS, IMPORT + anImport + SEMICOLON);
 	}
 
 	private void addNodeInfo(Node node, Frame newFrame) {
 		if (initNode != null && node != initNode) {
-			newFrame.addFrame("inner", "");
-			if (node.is(Annotation.AGGREGATED)) newFrame.addFrame("relation", "add");
-			else newFrame.addFrame("relation", "has");
+			newFrame.addFrame(INNER, "");
+			if (node.is(Annotation.AGGREGATED)) newFrame.addFrame(RELATION, AGGREGATION);
+			else newFrame.addFrame(RELATION, COMPOSITION);
 		}
 		NodeObject object = node.getObject();
 		if (object.getDoc() != null)
-			newFrame.addFrame("doc", object.getDoc());
+			newFrame.addFrame(DOC, object.getDoc());
 		if (node.getName() != null && !node.getName().isEmpty())
-			newFrame.addFrame("name", node.isAnonymous() ? node.getType() : node.getName());
-		newFrame.addFrame("qn", node.getQualifiedName());
-		newFrame.addFrame("project", project);
+			newFrame.addFrame(NAME, node.isAnonymous() ? node.getType() : node.getName());
+		newFrame.addFrame(QN, node.getQualifiedName());
+		newFrame.addFrame(PROJECT, project);
 		if (node.getObject().getParent() != null)
-			newFrame.addFrame("parent", node.getObject().getParent().getDeclaredNodeQN());
-		else newFrame.addFrame("parent", "Morph");
+			newFrame.addFrame(PARENT, node.getObject().getParent().getDeclaredNodeQN());
+		else newFrame.addFrame(PARENT, MORPH);
 		if (node.getObject().getType() != null) {
-			Frame typeFrame = new Frame("nodeType").addFrame("name", node.getObject().getType());
+			Frame typeFrame = new Frame(NODE_TYPE).addFrame(NAME, node.getObject().getType());
 			addFacetTargets(node, typeFrame);
-			newFrame.addFrame("nodeType", typeFrame);
+			newFrame.addFrame(NODE_TYPE, typeFrame);
 		}
 		for (Facet facet : node.getObject().getFacets()) {
-			Frame facetFrame = new Frame("facet").addFrame("name", facet.getName()).addFrame("facet", getFacetDestinies(node));
-			newFrame.addFrame("facet", facetFrame);
+			Frame facetFrame = new Frame(FrameTags.FACET).addFrame(NAME, facet.getName()).addFrame(FrameTags.FACET, getFacetDestinies(node));
+			newFrame.addFrame(FrameTags.FACET, facetFrame);
 		}
-		if (object.getAddress() != null) newFrame.addFrame("address", object.getAddress().replace(SEPARATOR, ""));
+		if (object.getAddress() != null) newFrame.addFrame(ADDRESS, object.getAddress().replace(DOT, ""));
 		addVariables(node, newFrame);
 		addTargets(node, newFrame);
 		addFacets(node, newFrame);
@@ -110,7 +110,7 @@ public class MorphFrameCreator extends FrameCreator {
 
 	private String buildFacetPath(Node node, String name) {
 		Node aNode = node;
-		String path = node.getName() + node.getType() + name + ".class";
+		String path = node.getName() + node.getType() + name + DOT + CLASS;
 		while (aNode.getContainer() != null) {
 			aNode = aNode.getContainer();
 			path = addToPath(name, aNode, path);
@@ -121,20 +121,20 @@ public class MorphFrameCreator extends FrameCreator {
 	private String addToPath(String name, Node aNode, String path) {
 		for (Facet facet : aNode.getObject().getFacets())
 			if (facet.getName().equals(name))
-				path = aNode.getName() + aNode.getType() + name + SEPARATOR + path;
+				path = aNode.getName() + aNode.getType() + name + DOT + path;
 		return path;
 	}
 
 	private void addFacetTargets(Node node, Frame typeFrame) {
 		if (node.getObject().getFacetTargets().isEmpty()) return;
-		Frame targetFrame = new Frame("target", node.is(Annotation.INTENTION) ? "intention" : "");
-		targetFrame.addFrame("target", project.toLowerCase() + ".extensions." + camelCase(node.getName()) + node.getType() + ".class");
+		Frame targetFrame = new Frame(TARGET, node.is(Annotation.INTENTION) ? INTENTION : "");
+		targetFrame.addFrame(TARGET, project.toLowerCase() + DOT + EXTENSIONS + DOT + camelCase(node.getName()) + node.getType() + DOT + CLASS);
 		Inflector inflector = getInflector(model.getLanguage());
 		for (FacetTarget target : node.getObject().getFacetTargets()) {
-			targetFrame.addFrame("target", project.toLowerCase() + ".extensions." + inflector.plural(node.getType()).toLowerCase() + SEPARATOR +
-				inflector.plural(node.getName()).toLowerCase() + SEPARATOR + camelCase(target.getDestinyName()) + node.getType() + ".class");
+			targetFrame.addFrame(TARGET, project.toLowerCase() + DOT + EXTENSIONS + DOT + inflector.plural(node.getType()).toLowerCase() + DOT +
+				inflector.plural(node.getName()).toLowerCase() + DOT + camelCase(target.getDestinyName()) + node.getType() + DOT + CLASS);
 		}
-		typeFrame.addFrame("target", targetFrame);
+		typeFrame.addFrame(TARGET, targetFrame);
 	}
 
 	private void addSubs(Node node, Frame frame) {
@@ -176,28 +176,28 @@ public class MorphFrameCreator extends FrameCreator {
 
 	private void addFacets(Node node, Frame newFrame) {
 		for (final Facet facet : node.getObject().getFacets())
-			newFrame.addFrame("facets", new Frame(getTypes(facet)).addFrame("name", facet.getName()));
+			newFrame.addFrame(FACETS, new Frame(getTypes(facet)).addFrame(NAME, facet.getName()));
 	}
 
 	private void addTargets(Node node, Frame newFrame) {
 		for (final FacetTarget target : node.getObject().getFacetTargets())
-			newFrame.addFrame("targets", new Frame(getTypes(target)).addFrame("name", target.getDestinyName()));
+			newFrame.addFrame(TARGETS, new Frame(getTypes(target)).addFrame(NAME, target.getDestinyName()));
 	}
 
 	private String[] getTypes(Facet facet) {
 		List<String> list = new ArrayList<>();
-		list.add("Facet");
+		list.add(FACET);
 		list.add(facet.getName());
 		return list.toArray(new String[list.size()]);
 	}
 
 	private String[] getTypes(FacetTarget facetTarget) {
 		List<String> list = new ArrayList<>();
-		list.add("FacetTarget");
+		list.add(FACET_TARGET);
 		if (facetTarget.getDestinyQN() != null)
 			list.add(facetTarget.getDestinyQN());
 		if (facetTarget.isAlways())
-			list.add("always");
+			list.add(ALWAYS);
 		return list.toArray(new String[list.size()]);
 	}
 

@@ -47,17 +47,17 @@ public class ParametersExistenceAnalyzer extends TaraAnalyzer {
 		if (element instanceof FacetApply) {
 			variables = findFacetVariables((FacetApply) element);
 		} else {
-			Node node = findMetaConcept((Concept) element);
-			if (node == null) return null;
-			variables = node.getObject().getVariables();
+			Node metaConcept = findMetaConcept((Concept) element);
+			if (metaConcept == null) return null;
+			variables = metaConcept.getObject().getVariables();
 		}
 		return variables;
 	}
 
 	private List<Variable> findFacetVariables(FacetApply facetApply) {
-		Node node = findMetaConcept(TaraPsiImplUtil.getConceptContainerOf(facetApply));
-		if (node == null) return null;
-		for (Map.Entry<String, List<FacetTarget>> entry : node.getObject().getAllowedFacets().entrySet()) {
+		Node metaConcept = findMetaConcept(TaraPsiImplUtil.getConceptContainerOf(facetApply));
+		if (metaConcept == null) return null;
+		for (Map.Entry<String, List<FacetTarget>> entry : metaConcept.getObject().getAllowedFacets().entrySet()) {
 			if (entry.getKey().equals(facetApply.getFacetName()))
 				return entry.getValue().get(0).getVariables();
 		}

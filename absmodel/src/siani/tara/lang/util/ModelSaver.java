@@ -49,24 +49,25 @@ public class ModelSaver {
 		@Override
 		public JsonElement serialize(Variable variable, Type type, JsonSerializationContext jsonSerializationContext) {
 			final JsonObject object = new JsonObject();
-			object.addProperty("name", variable.name);
+			object.addProperty("name", variable.getName());
 			if (variable instanceof Word) {
 				Word word = (Word) variable;
 				final JsonArray list = new JsonArray();
-				for (String wordType : word.wordTypes) list.add(new JsonPrimitive(wordType));
+				for (String wordType : word.getWordTypes()) list.add(new JsonPrimitive(wordType));
 				object.add("wordTypes", list);
 			} else if (variable instanceof Attribute) {
 				Attribute attribute = (Attribute) variable;
-				object.addProperty("primitiveType", attribute.primitiveType);
-				object.addProperty("isList", attribute.isList);
-				if (attribute.measureValue != null) object.addProperty("measureValue", attribute.measureValue);
-				if (attribute.measureType != null) object.addProperty("measureType", attribute.measureType);
-				if (attribute.count != null) object.addProperty("count", attribute.count);
+				object.addProperty("primitiveType", attribute.getPrimitiveType());
+				object.addProperty("isList", attribute.isList());
+				if (attribute.getMeasureValue() != null)
+					object.addProperty("measureValue", attribute.getMeasureValue());
+				if (attribute.getMeasureValue() != null) object.addProperty("measureType", attribute.getMeasureType());
+				if (attribute.getCount() != null) object.addProperty("count", attribute.getCount());
 			} else if (variable instanceof Reference) {
 				Reference reference = (Reference) variable;
-				object.addProperty("type", reference.type);
-				object.addProperty("isList", reference.isList);
-				object.addProperty("empty", reference.empty);
+				object.addProperty("type", reference.getType());
+				object.addProperty("isList", reference.isList());
+				object.addProperty("empty", reference.isEmpty());
 				if (!reference.getInheritedTypes().isEmpty()) {
 					JsonArray list = new JsonArray();
 					for (String refType : reference.getInheritedTypes())
@@ -75,22 +76,22 @@ public class ModelSaver {
 				}
 			} else if (variable instanceof Resource) {
 				Resource resource = (Resource) variable;
-				object.addProperty("fileType", resource.fileType);
+				object.addProperty("fileType", resource.getType());
 			}
 			JsonArray list = new JsonArray();
-			for (Annotation value : variable.annotations)
+			for (Annotation value : variable.getAnnotations())
 				list.add(new JsonPrimitive(value.getName()));
 			object.add("annotations", list);
 			list = new JsonArray();
-			if (variable.values != null) {
-				for (Object value : variable.values)
+			if (variable.getValues() != null) {
+				for (Object value : variable.getValues())
 					list.add(new JsonPrimitive(variable instanceof Word || variable instanceof Reference ? (String) value :
 						Primitives.getConverter(variable.getType()).convert(value)[0]));
 				object.add("values", list);
 			}
 			list = new JsonArray();
-			if (variable.defaultValues != null) {
-				for (Object value : variable.defaultValues)
+			if (variable.getDefaultValues() != null) {
+				for (Object value : variable.getDefaultValues())
 					list.add(new JsonPrimitive(variable instanceof Word || variable instanceof Reference ? (String) value :
 						Primitives.getConverter(variable.getType()).convert(value)[0]));
 				object.add("defaultValues", list);
@@ -124,7 +125,7 @@ public class ModelSaver {
 		public JsonElement serialize(Collection<Variable> variables, Type type, JsonSerializationContext context) {
 			JsonArray array = new JsonArray();
 			for (Variable variable : variables) {
-				if (!variable.inherited || variable.isTerminal())
+				if (!variable.isInherited() || variable.isTerminal())
 					array.add(context.serialize(variable));
 			}
 			return array;

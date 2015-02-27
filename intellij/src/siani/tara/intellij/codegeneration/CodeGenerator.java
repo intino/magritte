@@ -23,8 +23,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CodeGenerator {
-
+public abstract class CodeGenerator {
 
 	final Project project;
 	final Module module;
@@ -32,8 +31,8 @@ public class CodeGenerator {
 	final Inflector inflector;
 	final PsiDirectory srcDirectory;
 	final String[] FACETS_PATH;
-	final String SRC = "src";
-	final String MAGRITTE_MORPHS = "magritte.morphs";
+	static final String SRC = "src";
+	static final String MAGRITTE_MORPHS = "magritte.morphs";
 
 	public CodeGenerator(TaraBoxFile file) {
 		this.file = file;
@@ -55,8 +54,8 @@ public class CodeGenerator {
 	}
 
 	private VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {
-		for (VirtualFile file : virtualFiles)
-			if (file.isDirectory() && SRC.equals(file.getName())) return file;
+		for (VirtualFile virtualFile : virtualFiles)
+			if (virtualFile.isDirectory() && SRC.equals(virtualFile.getName())) return virtualFile;
 		throw new RuntimeException("Src directory not found");
 	}
 

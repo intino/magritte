@@ -42,7 +42,7 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 		for (UsageInfo usage : usages) {
 			final PsiElement usageElement = usage.getElement();
 			if (usageElement != null) {
-				updateUsage(usageElement, element, newElement);
+//				updateUsage(usageElement, element, newElement);
 			}
 		}
 //		TaraConceptRefactoringUtil.restoreNamedReferences(newElement, element);
@@ -81,43 +81,6 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 		}
 	}
 
-	private static void updateUsage(@NotNull PsiElement usage, @NotNull PsiNamedElement oldElement, @NotNull PsiNamedElement newElement) {
-		// TODO: Respect the qualified import style
-//		if (usage instanceof TaraQualifiedExpression) {
-//			TaraQualifiedExpression expr = (TaraQualifiedExpression) usage;
-//			if (oldElement instanceof TaraClass && TaraNames.INIT.equals(expr.getName())) {
-//				return;
-//			}
-//			if (expr.isQualified()) {
-//				final TaraElementGenerator generator = TaraElementGenerator.getInstance(expr.getProject());
-//				final TaraExpression generated = generator.createExpressionFromText(LanguageLevel.forElement(expr), expr.getName());
-//				final PsiElement newExpr = expr.replace(generated);
-//				TaraClassRefactoringUtil.insertImport(newExpr, newElement, null, true);
-//			}
-//		}
-//		if (usage instanceof TaraStringLiteralExpression) {
-//			for (PsiReference ref : usage.getReferences()) {
-//				if (ref.isReferenceTo(oldElement)) {
-//					ref.bindToElement(newElement);
-//				}
-//			}
-//		} else {
-//			final TaraImportStatementBase importStmt = getImportStatementByElement(usage);
-//			if (importStmt != null) {
-//				TaraClassRefactoringUtil.updateImportOfElement(importStmt, newElement);
-//			}
-//			final PsiFile usageFile = usage.getContainingFile();
-//			if (usageFile == oldElement.getContainingFile() && !PsiTreeUtil.isAncestor(oldElement, usage, false)) {
-//				TaraClassRefactoringUtil.insertImport(oldElement, newElement);
-//			}
-//			if (resolvesToLocalStarImport(usage)) {
-//				TaraClassRefactoringUtil.insertImport(usage, newElement);
-//				if (usageFile != null) {
-//					optimizeImports(usageFile);
-//				}
-//			}
-//		}
-	}
 
 	private static void optimizeImports(@NotNull PsiFile file) {
 //		new TaraImportOptimizer().processFile(file).run();

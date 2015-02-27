@@ -28,7 +28,7 @@ public class TaraRelatedFilesProvider extends GotoRelatedProvider {
 		PsiClass psiClass = PsiTreeUtil.getParentOfType(context, PsiClass.class, false);
 		if (psiClass != null) {
 			while (psiClass != null) {
-				List<PsiFile> forms = findFormsBoundToClass(psiClass);
+				List<PsiFile> forms = Collections.EMPTY_LIST;
 				if (!forms.isEmpty()) {
 					return GotoRelatedItem.createItems(forms, "Tara");
 				}
@@ -50,7 +50,4 @@ public class TaraRelatedFilesProvider extends GotoRelatedProvider {
 		return Collections.emptyList();
 	}
 
-	private List<PsiFile> findFormsBoundToClass(PsiClass psiClass) {
-		return Collections.EMPTY_LIST;
-	}
 }

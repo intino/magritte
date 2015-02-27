@@ -7,13 +7,14 @@ import siani.tara.lang.*;
 
 import java.util.*;
 
+import static siani.tara.compiler.codegeneration.FrameTags.*;
 import static siani.tara.compiler.codegeneration.InflectorProvider.getInflector;
 import static siani.tara.compiler.codegeneration.NameFormatter.buildFileName;
 import static siani.tara.compiler.codegeneration.NameFormatter.camelCase;
 
 
 public class BoxFrameCreator extends FrameCreator {
-	private static final String SEPARATOR = ".";
+
 	private Map<String, List<Long>> keymap = new LinkedHashMap<>();
 	private long count = 1;
 
@@ -36,10 +37,10 @@ public class BoxFrameCreator extends FrameCreator {
 	}
 
 	public Frame create(List<Node> nodes, Collection<String> parentBoxes) {
-		Frame frame = new Frame("Box");
-		frame.addFrame("name", buildFileName(nodes.get(0).getFile(), model.getName()));
+		Frame frame = new Frame(BOX);
+		frame.addFrame(NAME, buildFileName(nodes.get(0).getFile(), model.getName()));
 		for (String box : parentBoxes)
-			frame.addFrame("dependency", box);
+			frame.addFrame(DEPENDENCY, box);
 		addMetricImports(frame);
 		addFacetImports(nodes, frame);
 		boxToFrame(nodes, frame);
@@ -59,7 +60,7 @@ public class BoxFrameCreator extends FrameCreator {
 			DeclaredNode declaredNode = (DeclaredNode) node;
 			List<String> types = getTypes(declaredNode);
 			final Frame nodeFrame = new Frame(types.toArray(new String[types.size()]));
-			boxFrame.addFrame("node", nodeFrame);
+			boxFrame.addFrame(NODE, nodeFrame);
 			addAnnotations(declaredNode, nodeFrame);
 			addNodeInfo(declaredNode, nodeFrame);
 			addAggregated(declaredNode, nodeFrame);
@@ -69,16 +70,16 @@ public class BoxFrameCreator extends FrameCreator {
 
 	private void addNodeInfo(DeclaredNode node, Frame newFrame) {
 		List<Long> keys = keymap.get(node.getQualifiedName());
-		newFrame.addFrame("key", keys.get(0));
+		newFrame.addFrame(KEY, keys.get(0));
 		keys.remove(0);
 		NodeObject object = node.getObject();
 		if (node.getName() != null && !node.isAnonymous())
-			newFrame.addFrame("name", clean(node.getQualifiedName())); //TODO change for anonymous and inner facet nodes
+			newFrame.addFrame(NAME, clean(node.getQualifiedName())); //TODO change for anonymous and inner facet nodes
 		if (node.getObject().getParent() != null)
-			newFrame.addFrame("parent", node.getObject().getParent().getName());
+			newFrame.addFrame(PARENT, node.getObject().getParent().getName());
 		if (node.is(Annotation.INTENTION)) addType(node, newFrame);
 		addFacetApplies(node, newFrame);
-		if (object.getAddress() != null) newFrame.addFrame("address", object.getAddress().replace(".", ""));
+		if (object.getAddress() != null) newFrame.addFrame(ADDRESS, object.getAddress().replace(".", ""));
 		addVariables(node, newFrame);
 	}
 
@@ -94,7 +95,7 @@ public class BoxFrameCreator extends FrameCreator {
 					keymap.get(((LinkNode) inner).getDestiny().getQualifiedName()) :
 					keymap.get(inner.getQualifiedName());
 				for (Long key : keys)
-					frame.addFrame("aggregated", key);
+					frame.addFrame(AGGREGATED, key);
 			}
 	}
 
@@ -107,7 +108,7 @@ public class BoxFrameCreator extends FrameCreator {
 					extractedNodes.put(qn, new ArrayList<>(keymap.get(qn)));
 				List<Long> keys = extractedNodes.get(qn);
 				if (keys.isEmpty()) continue;//TODO
-				frame.addFrame("component", keys.get(0));
+				frame.addFrame(COMPONENT, keys.get(0));
 				keys.remove(0);
 			}
 	}
@@ -115,32 +116,32 @@ public class BoxFrameCreator extends FrameCreator {
 	private void addFacetApplies(Node node, Frame newFrame) {
 		for (Facet facet : node.getObject().getFacets()) {
 			if (!facet.isIntention()) continue;
-			Frame facetFrame = new Frame("facetApply").addFrame("name", facet.getName()).addFrame("apply", buildFacetPath(node, facet.getName()));
-			newFrame.addFrame("facet", facetFrame);
+			Frame facetFrame = new Frame(FACET_APPLY).addFrame(NAME, facet.getName()).addFrame(APPLY, buildFacetPath(node, facet.getName()));
+			newFrame.addFrame(FACET, facetFrame);
 		}
 	}
 
 	private void addType(Node node, Frame newFrame) {
-		Frame typeFrame = new Frame("nodeType").addFrame("name", node.getObject().getType());
+		Frame typeFrame = new Frame(NODE_TYPE).addFrame(NAME, node.getObject().getType());
 		addFacetTargets(node, typeFrame);
-		newFrame.addFrame("nodeType", typeFrame);
+		newFrame.addFrame(NODE_TYPE, typeFrame);
 	}
 
 	private void addFacetTargets(Node node, Frame typeFrame) {
 		if (node.getObject().getFacetTargets().isEmpty()) return;
-		Frame targetFrame = new Frame("target", node.is(Annotation.INTENTION) ? "intention" : "");
-		targetFrame.addFrame("target", project.toLowerCase() + ".extensions." + camelCase(node.getName()) + node.getType() + ".class");
+		Frame targetFrame = new Frame(TARGET, node.is(Annotation.INTENTION) ? INTENTION : "");
+		targetFrame.addFrame(TARGET, project.toLowerCase() + DOT + EXTENSIONS + DOT + camelCase(node.getName()) + node.getType() + DOT + CLASS);
 		Inflector inflector = getInflector(model.getLanguage());
 		for (FacetTarget target : node.getObject().getFacetTargets())
-			targetFrame.addFrame("target", project.toLowerCase() + ".extensions." + inflector.plural(node.getType()).toLowerCase() + "." +
-				inflector.plural(node.getName()).toLowerCase() + "." + camelCase(target.getDestinyName()) + node.getType() + ".class");
-		typeFrame.addFrame("target", targetFrame);
+			targetFrame.addFrame(TARGET, project.toLowerCase() + DOT + EXTENSIONS + DOT + inflector.plural(node.getType()).toLowerCase() + DOT +
+				inflector.plural(node.getName()).toLowerCase() + DOT + camelCase(target.getDestinyName()) + node.getType() + DOT + CLASS);
+		typeFrame.addFrame(TARGET, targetFrame);
 	}
 
 
 	private String buildFacetPath(Node node, String facet) {
 		Node aNode = node;
-		String path = node.getName() + facet + ".class";
+		String path = node.getName() + facet + DOT + CLASS;
 		while (aNode.getContainer() != null) {
 			aNode = aNode.getContainer();
 			path = addToPath(facet, aNode, path);
@@ -152,23 +153,23 @@ public class BoxFrameCreator extends FrameCreator {
 		boolean faceted = false;
 		for (Facet facet : aNode.getObject().getFacets())
 			if (facet.getName().equals(facetName)) {
-				path = aNode.getName() + facetName + "." + path;
+				path = aNode.getName() + facetName + DOT + path;
 				faceted = true;
 			}
-		if (!faceted) path = aNode.getType() + "." + path;
+		if (!faceted) path = aNode.getType() + DOT + path;
 		return path;
 	}
 
 
 	private void addMetricImports(Frame frame) {
 		for (String metric : model.getMetrics().keySet())
-			frame.addFrame("importMetric", "import static " + project.toLowerCase() + SEPARATOR + "metrics" + SEPARATOR + metric + SEPARATOR + "*;");
+			frame.addFrame("importMetric", IMPORT + " " + STATIC + " " + project.toLowerCase() + DOT + METRICS + DOT + metric + DOT + STAR + SEMICOLON);
 	}
 
 	private void addFacetImports(List<Node> nodes, Frame frame) {
 		Set<String> imports = searchFacets(nodes);
 		for (String anImport : imports)
-			frame.addFrame("importFacet", "import " + project.toLowerCase() + SEPARATOR + "extensions" + SEPARATOR + anImport.toLowerCase() + ".*;");
+			frame.addFrame("importFacet", IMPORT + " " + project.toLowerCase() + DOT + EXTENSIONS + DOT + anImport.toLowerCase() + DOT + STAR + SEMICOLON);
 	}
 
 	private Set<String> searchFacets(List<Node> nodes) {

@@ -95,7 +95,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	private Object[] fillFacetVariants(Set<String> allowedFacets) {
 		List<LookupElement> variants = new ArrayList<>();
 		for (final String facet : allowedFacets) {
-			String name = facet.substring(facet.lastIndexOf(".") + 1);
+			String name = facet.substring(facet.lastIndexOf('.') + 1);
 			variants.add(LookupElementBuilder.create(name).withIcon(TaraIcons.getIcon(TaraIcons.ICON_13)).withTypeText("Facet"));
 		}
 		return variants.toArray();

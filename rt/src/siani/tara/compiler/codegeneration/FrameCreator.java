@@ -9,7 +9,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static siani.tara.compiler.codegeneration.FrameTags.*;
+
 public abstract class FrameCreator {
+
 
 	final Model model;
 	final String project;
@@ -34,17 +37,17 @@ public abstract class FrameCreator {
 
 	protected void addAnnotations(final Node node, Frame frame) {
 		if (node.getAnnotations().length > 0 || terminal)
-			frame.addFrame("annotation", new Frame("Annotation") {{
+			frame.addFrame(ANNOTATION, new Frame(ANNOTATION) {{
 				for (Annotation annotation : node.getAnnotations())
-					if (!annotation.isMeta()) addFrame("value", annotation);
-				if (terminal) addFrame("value", "case");
+					if (!annotation.isMeta()) addFrame(VALUE, annotation);
+				if (terminal) addFrame(VALUE, CASE);
 			}});
 	}
 
 	protected String[] getLinkNodeTypes(LinkNode node) {
 		List<String> types = new ArrayList<>();
-		types.add("node");
-		types.add("reference");
+		types.add(NODE);
+		types.add(REFERENCE);
 		for (Annotation annotation : node.getAnnotations())
 			types.add(annotation.getName());
 		return types.toArray(new String[types.size()]);
@@ -53,7 +56,7 @@ public abstract class FrameCreator {
 	protected void addVariables(Node node, final Frame frame) {
 		for (final Variable variable : node.getObject().getVariables()) {
 			Frame varFrame = createVarFrame(variable);
-			frame.addFrame("variable", varFrame);
+			frame.addFrame(VARIABLE, varFrame);
 			if ((variable.getValues() != null && variable.getValues().length > 0) || (variable.getDefaultValues() != null && variable.getDefaultValues().length > 0))
 				addVariableValue(varFrame, variable);
 		}
@@ -61,7 +64,7 @@ public abstract class FrameCreator {
 			for (final Variable variable : target.getVariables()) {
 				if (variable.getDefaultValues() == null) continue;
 				Frame varFrame = createTargetVarFrame(node.getName(), target.getDestinyName(), variable);
-				frame.addFrame("variable", varFrame);
+				frame.addFrame(VARIABLE, varFrame);
 				addVariableValue(varFrame, variable);//TODO terminal
 			}
 	}
@@ -70,41 +73,41 @@ public abstract class FrameCreator {
 		if (variable.getValues() != null && variable.getValues().length != 0)
 			if (variable instanceof Word) {
 				Word word = (Word) variable;
-				for (Object value : word.values)
-					frame.addFrame("variableValue", word.indexOf(value.toString()));
+				for (Object value : word.getValues())
+					frame.addFrame(VARIABLE_VALUE, word.indexOf(value.toString()));
 			} else
-				frame.addFrame("variableValue", new Frame(variable.getType()).addFrame("value", variable.getValues()[0]));
+				frame.addFrame(VARIABLE_VALUE, new Frame(variable.getType()).addFrame(VALUE, variable.getValues()[0]));
 		else if (variable.getDefaultValues() != null && variable.getDefaultValues().length != 0)
 			if (variable instanceof Word) {
 				Word word = (Word) variable;
 				for (Object value : word.getDefaultValues())
-					frame.addFrame("variableValue", word.indexOf(value.toString()));
+					frame.addFrame(VARIABLE_VALUE, word.indexOf(value.toString()));
 			} else {
 				final Object value = variable.getDefaultValues()[0];
-				Frame innerFrame = new Frame(variable.getType()).addFrame("value", value);
-				frame.addFrame("variableValue", innerFrame);
+				Frame innerFrame = new Frame(variable.getType()).addFrame(VALUE, value);
+				frame.addFrame(VARIABLE_VALUE, innerFrame);
 			}
 	}
 
 	Frame createTargetVarFrame(final String node, final String target, final Variable variable) {
 		return new Frame(getFacetTypes(variable)) {
 			{
-				addFrame("name", variable.getName());
-				addFrame("type", getTargetVarTypes());
+				addFrame(NAME, variable.getName());
+				addFrame(TYPE, getTargetVarTypes());
 				if (variable instanceof Word)
-					addFrame("words", ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));
+					addFrame(WORDS, ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));
 				else if (variable.getType().equals(Primitives.MEASURE)) {
-					addFrame("measureType", ((Attribute) variable).getMeasureType());
+					addFrame(MEASURE_TYPE, ((Attribute) variable).getMeasureType());
 					if (((Attribute) variable).getMeasureValue() != null)
-						addFrame("measureValue", resolveMetric(((Attribute) variable).getMeasureValue()));
+						addFrame(MEASURE_VALUE, resolveMetric(((Attribute) variable).getMeasureValue()));
 				}
-				addFrame("target", target);
-				addFrame("node", node);
+				addFrame(TARGET, target);
+				addFrame(NODE, node);
 			}
 
 			private String[] getTargetVarTypes() {
 				List<String> types = new ArrayList<>();
-				if (variable.getType().equals("Natural")) types.add("Integer");
+				if (variable.getType().equals(NATURAL)) types.add(INTEGER);
 				else types.add(variable.getType());
 				return types.toArray(new String[types.size()]);
 			}
@@ -114,33 +117,33 @@ public abstract class FrameCreator {
 	String[] getFacetTypes(Variable variable) {
 		List<String> types = new ArrayList<>();
 		Collections.addAll(types, getTypes(variable));
-		types.add("target");
+		types.add(TARGET);
 		return types.toArray(new String[types.size()]);
 	}
 
 	String[] getTypes(Variable variable) {
 		List<String> list = new ArrayList<>();
 		list.add(variable.getClass().getSimpleName());
-		list.add("Variable");
+		list.add(VARIABLE);
 		list.add(variable.getType());
-		if (variable.isTerminal()) list.add("terminal");
-		if (variable.isList()) list.add("List");
-		if (variable.isProperty()) list.add("property");
-		if (variable.isReadOnly()) list.add("readonly");
+		if (variable.isTerminal()) list.add(TERMINAL);
+		if (variable.isList()) list.add(LIST);
+		if (variable.isProperty()) list.add(PROPERTY);
+		if (variable.isReadOnly()) list.add(READONLY);
 		return list.toArray(new String[list.size()]);
 	}
 
 	Frame createVarFrame(final Variable variable) {
 		return new Frame(getTypes(variable)) {
 			{
-				addFrame("name", variable.getName());
-				addFrame("type", getType());
+				addFrame(NAME, variable.getName());
+				addFrame(TYPE, getType());
 				if (variable instanceof Word)
-					addFrame("words", ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));
+					addFrame(WORDS, ((Word) variable).getWordTypes().toArray(new String[((Word) variable).getWordTypes().size()]));
 				else if (variable.getType().equals(Primitives.MEASURE)) {
-					addFrame("measureType", ((Attribute) variable).getMeasureType());
+					addFrame(MEASURE_TYPE, ((Attribute) variable).getMeasureType());
 					if (((Attribute) variable).getMeasureValue() != null)
-						addFrame("measureValue", resolveMetric(((Attribute) variable).getMeasureValue()));
+						addFrame(MEASURE_VALUE, resolveMetric(((Attribute) variable).getMeasureValue()));
 				}
 			}
 

@@ -20,11 +20,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class CompilationUnit extends ProcessingUnit {
 
-	private static final Logger LOG = Logger.getLogger(CompilationUnit.class.getName());
 	private final boolean pluginGeneration;
 	protected ProgressCallback progressCallback;
 	private Map<String, SourceUnit> sourceUnits;

@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.resolve.TaraReferenceSolver;
-import siani.tara.lang.Node;
 import siani.tara.lang.Word;
 
 import javax.swing.*;
@@ -19,12 +18,10 @@ import java.util.List;
 
 public class TaraMetaWordReferenceSolver extends TaraReferenceSolver {
 
-	private final Node node;
 	private final Word word;
 
-	public TaraMetaWordReferenceSolver(PsiElement element, TextRange range, Node node, Word word) {
+	public TaraMetaWordReferenceSolver(PsiElement element, TextRange range, Word word) {
 		super(element, range);
-		this.node = node;
 		this.word = word;
 	}
 

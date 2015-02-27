@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.IdentifierReference;
 import siani.tara.intellij.lang.psi.Import;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
-import siani.tara.intellij.lang.psi.TaraElementFactory;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
 import java.util.Collection;
@@ -35,12 +34,10 @@ public class TaraImportOptimizer implements ImportOptimizer {
 	private static class ImportsOptimizer {
 		private final TaraBoxFile file;
 		private final Collection<Import> myImportBlock;
-		private final TaraElementFactory generator;
 
 		private ImportsOptimizer(TaraBoxFile file) {
 			this.file = file;
 			myImportBlock = this.file.getImports();
-			generator = TaraElementFactory.getInstance(this.file.getProject());
 		}
 
 		public void run() {

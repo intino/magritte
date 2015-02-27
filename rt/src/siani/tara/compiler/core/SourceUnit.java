@@ -8,11 +8,9 @@ import siani.tara.lang.Model;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 public class SourceUnit extends ProcessingUnit {
 
-	private static final Logger LOG = Logger.getLogger(SourceUnit.class.getName());
 	protected FileReaderSource source;
 	protected String name;
 	private Model model;

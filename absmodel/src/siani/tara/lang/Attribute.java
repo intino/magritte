@@ -1,10 +1,10 @@
 package siani.tara.lang;
 
 public class Attribute extends Variable {
-	public final String primitiveType;
-	public String measureValue;
-	public String measureType;
-	public Integer count = 1;
+	private final String primitiveType;
+	private String measureValue;
+	private String measureType;
+	private Integer count = 1;
 
 	public Attribute(String type, String name) {
 		this(type, name, false, false);
@@ -53,6 +53,14 @@ public class Attribute extends Variable {
 	@Override
 	public String getType() {
 		return primitiveType;
+	}
+
+	public String getPrimitiveType() {
+		return primitiveType;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
 	}
 
 	public String toString() {

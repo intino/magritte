@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Word extends Variable {
-	public List<String> wordTypes;
+	private List<String> wordTypes;
 
 	public Word(String name) {
 		this(name, false);
@@ -19,6 +19,10 @@ public class Word extends Variable {
 
 	public List<String> getWordTypes() {
 		return wordTypes;
+	}
+
+	public void setWordTypes(List<String> wordTypes) {
+		this.wordTypes = wordTypes;
 	}
 
 	public void add(String word) {

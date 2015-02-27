@@ -3,7 +3,7 @@ package siani.tara.lang;
 public class Resource extends Variable {
 
 	public static final String ANY = "any";
-	public final String fileType;
+	private final String fileType;
 
 	public Resource(String fileType, String name) {
 		this(fileType, name, false);

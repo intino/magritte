@@ -11,11 +11,6 @@ import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 
 public class AddMetamodelReferenceFix implements IntentionAction {
-	private final TaraBoxFile file;
-
-	public AddMetamodelReferenceFix(@NotNull final TaraBoxFile taraBoxFile) {
-		this.file = taraBoxFile;
-	}
 
 	@NotNull
 	public String getText() {

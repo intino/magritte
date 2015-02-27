@@ -88,7 +88,7 @@ public class Tdk implements ValidatableSdkAdditionalData, JDOMExternalizable {
 				myJavaSdkName = null;
 			} else {
 				for (Sdk jdk : jdkTable.getAllJdks()) {
-					if (TaraJdk.isValidInternalJdk(myCurrentJdk, jdk)) {
+					if (TaraJdk.isValidInternalJdk(jdk)) {
 						myJavaSdk = jdk;
 						break;
 					}

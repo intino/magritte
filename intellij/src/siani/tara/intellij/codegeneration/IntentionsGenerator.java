@@ -48,8 +48,8 @@ public class IntentionsGenerator {
 		this.project = project;
 		basePath = project.getName().toLowerCase() + DOT + INTENTIONS;
 		this.taraBoxFile = taraBoxFile;
-		VirtualFile srcDirectory = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(taraBoxFile));
-		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), srcDirectory);
+		VirtualFile srcVDirectory = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(taraBoxFile));
+		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), srcVDirectory);
 		this.module = ModuleProvider.getModuleOf(taraBoxFile);
 	}
 
@@ -240,15 +240,15 @@ public class IntentionsGenerator {
 		final String pluralName = getInflector().plural(name).toLowerCase();
 		PsiDirectory subdirectory = intentionsDir.findSubdirectory(pluralName);
 		if (subdirectory != null) return subdirectory;
-		final PsiDirectory[] destiny = new PsiDirectory[1];
+		final PsiDirectory[] facetDestiny = new PsiDirectory[1];
 		WriteCommandAction action = new WriteCommandAction(project, taraBoxFile) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
-				destiny[0] = DirectoryUtil.createSubdirectories(pluralName, intentionsDir, DOT);
+				facetDestiny[0] = DirectoryUtil.createSubdirectories(pluralName, intentionsDir, DOT);
 			}
 		};
 		action.execute();
-		return destiny[0];
+		return facetDestiny[0];
 	}
 
 	private Inflector getInflector() {
@@ -257,23 +257,23 @@ public class IntentionsGenerator {
 
 	private PsiDirectory findIntentionsDestiny() {
 		String[] path = new String[]{project.getName().toLowerCase(), INTENTIONS};
-		PsiDirectory basePath = srcDirectory;
+		PsiDirectory destinyDir = srcDirectory;
 		for (String name : path)
-			basePath = basePath.findSubdirectory(name) == null ? createDirectory(basePath, name) : basePath.findSubdirectory(name);
-		return basePath;
+			destinyDir = destinyDir.findSubdirectory(name) == null ? createDirectory(destinyDir, name) : destinyDir.findSubdirectory(name);
+		return destinyDir;
 	}
 
 	@NotNull
 	private PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
-		final PsiDirectory[] destiny = new PsiDirectory[1];
+		final PsiDirectory[] newDir = new PsiDirectory[1];
 		WriteCommandAction action = new WriteCommandAction(project, taraBoxFile) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
-				destiny[0] = DirectoryUtil.createSubdirectories(name, basePath, DOT);
+				newDir[0] = DirectoryUtil.createSubdirectories(name, basePath, DOT);
 			}
 		};
 		action.execute();
-		return destiny[0];
+		return newDir[0];
 	}
 
 

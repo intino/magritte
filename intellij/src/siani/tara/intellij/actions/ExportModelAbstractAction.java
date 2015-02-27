@@ -216,7 +216,7 @@ public class ExportModelAbstractAction extends AnAction implements DumbAware {
 		} else {
 			uniqueName = fileName;
 			if (usedJarNames.contains(uniqueName)) {
-				final int dotPos = uniqueName.lastIndexOf(".");
+				final int dotPos = uniqueName.lastIndexOf('.');
 				final String name = dotPos < 0 ? uniqueName : uniqueName.substring(0, dotPos);
 				final String ext = dotPos < 0 ? "" : uniqueName.substring(dotPos);
 
@@ -233,7 +233,7 @@ public class ExportModelAbstractAction extends AnAction implements DumbAware {
 	}
 
 	private void addStructure(@NonNls final String relativePath, final ZipOutputStream zos) throws IOException {
-		ZipEntry e = new ZipEntry(relativePath + "/");
+		ZipEntry e = new ZipEntry(relativePath + '/');
 		e.setMethod(ZipEntry.STORED);
 		e.setSize(0);
 		e.setCrc(0);

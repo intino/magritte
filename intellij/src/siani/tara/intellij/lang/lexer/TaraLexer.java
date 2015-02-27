@@ -869,7 +869,7 @@ class TaraLexer implements FlexLexer {
 			message = ZZ_ERROR_MSG[ZZ_UNKNOWN_ERROR];
 		}
 
-		throw new Error(message);
+//		throw new Error(message);
 	}
 
 

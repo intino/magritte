@@ -91,7 +91,7 @@ public class ModelHelper {
 	}
 
 	private String getFacetTargetContainer(String name) {
-		return name.substring(name.indexOf("("), name.indexOf(")"));
+		return name.substring(name.indexOf('('), name.indexOf(')'));
 	}
 
 	private static Node getParentOfSub(Node node) {

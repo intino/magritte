@@ -61,7 +61,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		Variable variable = parameter.isExplicit() ? findVar(variables, parameter.getExplicitName()) : variables.get(parameter.getIndexInParent());
 		if (variable == null) return new PsiReference[0];
 		if (variable instanceof siani.tara.lang.Word)
-			return new PsiReference[]{new TaraMetaWordReferenceSolver(this, getRange(), node, (Word) variable)};
+			return new PsiReference[]{new TaraMetaWordReferenceSolver(this, getRange(), (Word) variable)};
 		else if (variable instanceof Reference)
 			return new PsiReference[]{new TaraParameterReferenceSolver(this, getRange(), container, node, variable)};
 		return new PsiReference[0];

@@ -28,6 +28,9 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 		return TaraTemplatesFactoryHolder.myInstance;
 	}
 
+	private TaraTemplatesFactory() {
+	}
+
 	public static PsiFile createFromTemplate(@NotNull final PsiDirectory directory,
 	                                         @NotNull final String name,
 	                                         @NotNull String fileName,

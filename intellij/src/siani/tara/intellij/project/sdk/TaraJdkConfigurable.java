@@ -68,7 +68,7 @@ public class TaraJdkConfigurable implements AdditionalDataConfigurable {
 	private void updateJdkList() {
 		myJdksModel.removeAllElements();
 		for (Sdk sdk : mySdkModel.getSdks()) {
-			if (TaraJdk.isValidInternalJdk(myTaraJdk, sdk)) {
+			if (TaraJdk.isValidInternalJdk(sdk)) {
 				myJdksModel.addElement(sdk);
 			}
 		}

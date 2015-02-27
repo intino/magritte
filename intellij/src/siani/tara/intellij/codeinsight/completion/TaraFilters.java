@@ -86,9 +86,19 @@ public class TaraFilters {
 	private static class AfterNewLineInBodyFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			if (!(element instanceof PsiElement) || context == null || context.getParent() == null) return false;
-			return context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context) &&
-				context.getPrevSibling() == null || previousNewLineIndent(context) || previousNewLine(context);
+			return !isNotAcceptable(element, context) && inBody(context) && afterNewLine(context);
+		}
+
+		private boolean afterNewLine(PsiElement context) {
+			return context.getPrevSibling() == null || previousNewLineIndent(context) || previousNewLine(context);
+		}
+
+		private boolean inBody(PsiElement context) {
+			return context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context);
+		}
+
+		private boolean isNotAcceptable(Object element, PsiElement context) {
+			return !(element instanceof PsiElement) || context == null || context.getParent() == null;
 		}
 
 		@Override
@@ -98,11 +108,15 @@ public class TaraFilters {
 	}
 
 	private static boolean previousNewLine(PsiElement context) {
-		return context.getPrevSibling().getNode().getElementType().equals(TaraTypes.NEWLINE);
+		return context.getPrevSibling() != null && is(context, TaraTypes.NEWLINE);
 	}
 
 	private static boolean previousNewLineIndent(PsiElement context) {
-		return context.getPrevSibling() != null && context.getPrevSibling().getNode().getElementType().equals(TaraTypes.NEW_LINE_INDENT);
+		return context.getPrevSibling() != null && is(context, TaraTypes.NEW_LINE_INDENT);
+	}
+
+	private static boolean is(PsiElement context, IElementType type) {
+		return type.equals(context.getPrevSibling().getNode().getElementType());
 	}
 
 	private static class NoModelFilter implements ElementFilter {

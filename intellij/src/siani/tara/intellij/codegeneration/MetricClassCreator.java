@@ -1,17 +1,14 @@
 package siani.tara.intellij.codegeneration;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaDirectoryService;
 import com.intellij.psi.PsiDirectory;
 
 public class MetricClassCreator {
 
-	private final Project project;
 	private final String className;
 	private final PsiDirectory destiny;
 
-	public MetricClassCreator(Project project, PsiDirectory destiny, String className) {
-		this.project = project;
+	public MetricClassCreator(PsiDirectory destiny, String className) {
 		this.className = className;
 		this.destiny = destiny;
 	}
