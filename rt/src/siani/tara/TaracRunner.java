@@ -15,13 +15,14 @@ public class TaracRunner {
 
 	public static void main(String[] args) {
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Starting compiling");
-		checkArgumentsNumber(args);
-		final File argsFile = checkConfigurationFile(args[1]);
+
+		File argsFile = null;
+		if (checkArgumentsNumber(args) || (argsFile = checkConfigurationFile(args[1])) == null)
+			System.exit(1);
 		try {
 			TaraCompilerRunner.runTaraCompiler(argsFile, isPluginGeneration(args[0]));
 		} catch (Exception e) {
-			e.printStackTrace();
-			LOG.severe("Exception in TaraCRunner: " + e.toString());
+			LOG.severe(e.getMessage());
 			System.exit(1);
 		}
 	}
@@ -30,7 +31,7 @@ public class TaracRunner {
 		final File argsFile = new File(arg);
 		if (!argsFile.exists()) {
 			System.err.println("%%mArguments file for Tara compiler not found/%m");
-			System.exit(1);
+			return null;
 		}
 		return argsFile;
 	}
@@ -39,10 +40,11 @@ public class TaracRunner {
 		return "--gen-plugin".equals(arg);
 	}
 
-	private static void checkArgumentsNumber(String[] args) {
+	private static boolean checkArgumentsNumber(String[] args) {
 		if (args.length != 2) {
 			System.err.println("%%mThere is no arguments for tara compiler/%m");
-			System.exit(1);
+			return true;
 		}
+		return false;
 	}
 }

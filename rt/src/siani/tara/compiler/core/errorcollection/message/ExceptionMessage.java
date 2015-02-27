@@ -3,8 +3,12 @@ package siani.tara.compiler.core.errorcollection.message;
 import siani.tara.compiler.core.SourceUnit;
 
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ExceptionMessage extends Message {
+	private static final Logger LOG = Logger.getLogger(ExceptionMessage.class.getName());
+
 	protected boolean verbose = true;
 	SourceUnit owner = null;
 	private Exception cause = null;
@@ -26,6 +30,6 @@ public class ExceptionMessage extends Message {
 		if (message != null) output.println(description + message);
 		else output.println(description + this.cause);
 		output.println();
-		this.cause.printStackTrace(output);
+		LOG.log(Level.SEVERE, cause.getMessage(), cause);
 	}
 }

@@ -277,7 +277,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 				}
 			return null;
 		} catch (ParserConfigurationException | SAXException | IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}

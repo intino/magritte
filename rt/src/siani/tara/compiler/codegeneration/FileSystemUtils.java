@@ -8,6 +8,7 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -68,7 +69,7 @@ public class FileSystemUtils {
 				return true;
 			}
 		} catch (IOException e) {
-			LOG.severe(e.getMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new FileSystemException(e.getMessage(), oSource.getName(), e.getMessage());
 		}
 		return false;
@@ -81,8 +82,8 @@ public class FileSystemUtils {
 	public static Boolean createFile(String sFilename) {
 		try {
 			new File(sFilename).createNewFile();
-		} catch (IOException ex) {
-			LOG.severe(ex.getMessage());
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			return false;
 		}
 		return true;
@@ -92,7 +93,7 @@ public class FileSystemUtils {
 		try {
 			return copyFile(new FileInputStream(new File(source)), new File(destination));
 		} catch (FileNotFoundException | FileSystemException e) {
-			LOG.severe("Could not copy the file: " + source + "\n" + e.getMessage());
+			LOG.log(Level.SEVERE, "Could not copy the file: " + source + "\n" + e.getMessage(), e);
 			return false;
 		}
 	}
@@ -125,9 +126,9 @@ public class FileSystemUtils {
 			while ((sLine = oBufferedReader.readLine()) != null)
 				oContent.append(sLine).append("\n");
 			oInputStreamReader.close();
-		} catch (IOException oException) {
-			LOG.severe(oException.getMessage());
-			throw new FileSystemException("Could not read file", sFilename, oException.getMessage());
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
+			throw new FileSystemException("Could not read file", sFilename, e.getMessage());
 		}
 		return oContent.toString();
 	}
@@ -138,9 +139,9 @@ public class FileSystemUtils {
 			OutputStreamWriter oWriter = new OutputStreamWriter(new FileOutputStream(sFilename), "UTF-8");
 			oWriter.write(sContent);
 			oWriter.close();
-		} catch (IOException oException) {
-			LOG.severe(oException.getMessage());
-			throw new FileSystemException("Could not write file", sFilename, oException.getMessage());
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
+			throw new FileSystemException("Could not write file", sFilename, e.getMessage());
 		}
 		return true;
 	}

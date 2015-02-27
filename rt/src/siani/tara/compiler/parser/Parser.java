@@ -2,6 +2,7 @@ package siani.tara.compiler.parser;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import siani.tara.TaracRunner;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.SyntaxException;
 import siani.tara.compiler.parser.antlr.TaraAbstractModelGenerator;
@@ -12,8 +13,12 @@ import siani.tara.lang.Model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Parser {
+
+	private static final Logger LOG = Logger.getLogger(TaracRunner.class.getName());
 
 	private final File file;
 	private final CompilerConfiguration configuration;
@@ -41,7 +46,6 @@ public class Parser {
 		} catch (RecognitionException e) {
 			org.antlr.v4.runtime.Parser recognizer = (org.antlr.v4.runtime.Parser) e.getRecognizer();
 			Token token = recognizer.getCurrentToken();
-			e.printStackTrace();
 			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine(), getExpectedTokens(recognizer));
 		}
 	}
@@ -50,6 +54,7 @@ public class Parser {
 		try {
 			return recognizer.getExpectedTokens().toString(recognizer.getTokenNames());
 		} catch (Exception e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			return "";
 		}
 	}

@@ -202,7 +202,7 @@ public class ModelToJavaOperation extends ModelOperation {
 				fileWriter.write(entry.getValue().content());
 				fileWriter.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.severe(e.getMessage());
 			}
 		}
 	}
@@ -254,8 +254,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		try {
 			return new FileInputStream(ruleFile);
 		} catch (FileNotFoundException e) {
-			LOG.log(Level.SEVERE, e.getMessage());
-			e.printStackTrace();
+			LOG.severe(e.getMessage());
 			return null;
 		}
 	}

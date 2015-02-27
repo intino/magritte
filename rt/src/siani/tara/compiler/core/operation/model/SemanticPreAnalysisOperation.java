@@ -12,6 +12,7 @@ import siani.tara.lang.Model;
 import siani.tara.lang.Node;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SemanticPreAnalysisOperation extends ModelOperation {
@@ -33,7 +34,7 @@ public class SemanticPreAnalysisOperation extends ModelOperation {
 			for (SemanticError error : e.getErrors()) {
 				SourceUnit sourceFromFile = getSourceFromFile(compilationUnit.getSourceUnits().values(), error.getNode());
 				if (error instanceof SemanticError.FatalError) {
-					LOG.severe("Error during semantic analyze: " + error.getMessage());
+					LOG.log(Level.SEVERE, "Error during semantic analyze: " + error.getMessage(), e);
 					compilationUnit.getErrorCollector().addError(Message.create(error, sourceFromFile));
 				} else
 					compilationUnit.getErrorCollector().addWarning(2, error.getMessage(), sourceFromFile);

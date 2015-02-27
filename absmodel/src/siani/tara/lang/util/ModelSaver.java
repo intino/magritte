@@ -12,8 +12,13 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ModelSaver {
+
+	private static final Logger LOG = Logger.getLogger(ModelSaver.class.getName());
+
 
 	protected static final String JSON_EXTENSION = ".json";
 
@@ -35,7 +40,7 @@ public class ModelSaver {
 			writer.close();
 			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			return false;
 		}
 	}

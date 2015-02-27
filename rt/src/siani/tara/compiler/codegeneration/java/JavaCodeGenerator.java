@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class JavaCodeGenerator extends CodeGenerator {
@@ -29,7 +30,7 @@ public class JavaCodeGenerator extends CodeGenerator {
 			Process jarProcess = rt.exec(makeJarCommand(configuration.getProject()), null, getOutPath());
 			printResult(jarProcess);
 		} catch (IOException | InterruptedException e) {
-			LOG.severe(e.getMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 

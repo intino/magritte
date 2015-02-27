@@ -25,8 +25,7 @@ public class ModelLoader {
 			}
 			return load(file);
 		} catch (Exception e) {
-			LOG.severe("Error loading model " + model + ": ");
-			e.printStackTrace();
+			LOG.severe("Error loading model " + model + ": " + e.getMessage());
 			return null;
 		}
 	}
@@ -43,7 +42,7 @@ public class ModelLoader {
 			restoreTreeLinks(aModel, aModel.getTreeModel());
 			return aModel;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			LOG.severe("Error loading model " + file.getName() + ": " + e.getMessage());
 			return null;
 		}
 	}

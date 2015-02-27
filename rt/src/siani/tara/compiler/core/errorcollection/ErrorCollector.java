@@ -10,8 +10,12 @@ import siani.tara.compiler.core.errorcollection.message.WarningMessage;
 import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ErrorCollector {
+	private static final Logger LOG = Logger.getLogger(ErrorCollector.class.getName());
+
 	protected LinkedList warnings;
 	protected LinkedList errors;
 	protected CompilerConfiguration configuration;
@@ -102,7 +106,7 @@ public class ErrorCollector {
 			message.write(writer);
 			if (this.configuration.getDebug() && message instanceof SyntaxErrorMessage) {
 				SyntaxErrorMessage sem = (SyntaxErrorMessage) message;
-				sem.getCause().printStackTrace(writer);
+				LOG.log(Level.SEVERE, sem.getCause().getMessage(), sem.getCause());
 			}
 			writer.println();
 		}

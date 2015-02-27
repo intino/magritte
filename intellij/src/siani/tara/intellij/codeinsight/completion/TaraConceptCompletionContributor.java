@@ -147,8 +147,12 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 	private void addMetaIdentifiers(PsiFile originalFile, Concept concept, CompletionResultSet resultSet) {
 		Concept container = getConceptContainerOf(concept);
 		if (container == null) return;
-		Model metaModel = TaraLanguage.getMetaModel(originalFile);
-		Node metaConcept = TaraUtil.findNode(container, metaModel);
+		Model metamodel = TaraLanguage.getMetaModel(originalFile);
+		if (metamodel == null) {
+			resultSet.addElement(create("Concept "));
+			return;
+		}
+		Node metaConcept = TaraUtil.findNode(container, metamodel);
 		Map<Node, LookupElementBuilder> candidates = new LinkedHashMap<>();
 		if (metaConcept == null) return;
 		for (Node node : metaConcept.getInnerNodes()) {
@@ -157,7 +161,7 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 				addSubNodes(candidates, node);
 			else candidates.put(node, createElement(node));
 		}
-		buildEntries(resultSet, metaModel, candidates);
+		buildEntries(resultSet, metamodel, candidates);
 	}
 
 	private void addSubNodes(Map<Node, LookupElementBuilder> candidates, Node node) {

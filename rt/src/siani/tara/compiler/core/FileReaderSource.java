@@ -3,8 +3,13 @@ package siani.tara.compiler.core;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FileReaderSource extends AbstractReaderSource {
+
+	private static final Logger LOG = Logger.getLogger(FileReaderSource.class.getName());
+
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 	private File file;
 
@@ -26,7 +31,8 @@ public class FileReaderSource extends AbstractReaderSource {
 				hasBOM &= i == 187;
 				i = in.read();
 				hasBOM &= i == 255;
-			} catch (IOException ioe) {
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, e.getMessage(), e);
 				hasBOM = false;
 			}
 			if (!hasBOM) in.reset();

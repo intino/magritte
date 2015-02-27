@@ -12,6 +12,7 @@ import siani.tara.lang.Node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SaveModelOperation extends ModelOperation {
@@ -31,7 +32,7 @@ public class SaveModelOperation extends ModelOperation {
 			generator.serialize(model);
 			unit.getErrorCollector().failIfErrors();
 		} catch (TaraException e) {
-			LOG.severe("Error during model generation: " + e.getMessage() + "\n");
+			LOG.log(Level.SEVERE, "Error during model generation: " + e.getMessage() + "\n", e);
 			throw new CompilationFailedException(Phases.MODEL_GENERATION, unit);
 		}
 	}

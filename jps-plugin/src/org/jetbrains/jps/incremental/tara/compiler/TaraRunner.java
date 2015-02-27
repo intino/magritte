@@ -20,6 +20,7 @@ import java.util.concurrent.Future;
 
 public class TaraRunner {
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
+
 	private static final String ANTLR = "antlr-4.4-complete.jar";
 	private static final String ITRULES = "itrules.jar";
 	private static final String GSON = "gson-2.2.4.jar";

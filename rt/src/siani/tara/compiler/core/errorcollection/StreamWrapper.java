@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class StreamWrapper extends Thread {
@@ -37,7 +38,7 @@ public class StreamWrapper extends Thread {
 				buffer.append(line);
 			message = buffer.toString();
 		} catch (IOException e) {
-			LOG.severe(e.getMessage());
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
