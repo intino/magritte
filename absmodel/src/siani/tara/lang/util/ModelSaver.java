@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static siani.tara.lang.util.SerializingTags.*;
+
 public class ModelSaver {
 
 	private static final Logger LOG = Logger.getLogger(ModelSaver.class.getName());
@@ -46,6 +48,7 @@ public class ModelSaver {
 	}
 
 	public static class VariableSerializer implements JsonSerializer<Variable> {
+
 		@Override
 		public JsonElement serialize(Variable variable, Type type, JsonSerializationContext jsonSerializationContext) {
 			final JsonObject object = new JsonObject();
@@ -57,37 +60,37 @@ public class ModelSaver {
 				object.add("wordTypes", list);
 			} else if (variable instanceof Attribute) {
 				Attribute attribute = (Attribute) variable;
-				object.addProperty("primitiveType", attribute.getPrimitiveType());
-				object.addProperty("isList", attribute.isList());
+				object.addProperty(PRIMITIVE_TYPE, attribute.getPrimitiveType());
+				object.addProperty(IS_LIST, attribute.isList());
 				if (attribute.getMeasureValue() != null)
 					object.addProperty("measureValue", attribute.getMeasureValue());
 				if (attribute.getMeasureValue() != null) object.addProperty("measureType", attribute.getMeasureType());
 				if (attribute.getCount() != null) object.addProperty("count", attribute.getCount());
 			} else if (variable instanceof Reference) {
 				Reference reference = (Reference) variable;
-				object.addProperty("type", reference.getType());
-				object.addProperty("isList", reference.isList());
-				object.addProperty("empty", reference.isEmpty());
+				object.addProperty(SerializingTags.TYPE, reference.getType());
+				object.addProperty(IS_LIST, reference.isList());
+				object.addProperty(EMPTY, reference.isEmpty());
 				if (!reference.getInheritedTypes().isEmpty()) {
 					JsonArray list = new JsonArray();
 					for (String refType : reference.getInheritedTypes())
 						list.add(new JsonPrimitive(refType));
-					object.add("instanceTypes", list);
+					object.add(INSTANCE_TYPES, list);
 				}
 			} else if (variable instanceof Resource) {
 				Resource resource = (Resource) variable;
-				object.addProperty("fileType", resource.getType());
+				object.addProperty(FILE_TYPE, resource.getType());
 			}
 			JsonArray list = new JsonArray();
 			for (Annotation value : variable.getAnnotations())
 				list.add(new JsonPrimitive(value.getName()));
-			object.add("annotations", list);
+			object.add(ANNOTATIONS, list);
 			list = new JsonArray();
 			if (variable.getValues() != null) {
 				for (Object value : variable.getValues())
 					list.add(new JsonPrimitive(variable instanceof Word || variable instanceof Reference ? (String) value :
 						Primitives.getConverter(variable.getType()).convert(value)[0]));
-				object.add("values", list);
+				object.add(VALUES, list);
 			}
 			list = new JsonArray();
 			if (variable.getDefaultValues() != null) {
@@ -96,7 +99,7 @@ public class ModelSaver {
 						Primitives.getConverter(variable.getType()).convert(value)[0]));
 				object.add("defaultValues", list);
 			}
-			return object; // or throw an IllegalArgumentException
+			return object;
 		}
 	}
 

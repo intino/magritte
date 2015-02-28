@@ -164,7 +164,7 @@ public class IntentionsGenerator {
 		TaraFacetTarget closestParent = null;
 		int parentIndex = hierarchy.size();
 		for (TaraFacetTarget taraFacetTarget : concept.getFacetTargets()) {
-			if (taraFacetTarget == target) continue;
+			if (taraFacetTarget.equals(target)) continue;
 			int indexOf = hierarchy.indexOf(resolveTargetDestiny(taraFacetTarget));
 			if (indexOf >= 0 && indexOf < parentIndex) {
 				parentIndex = indexOf;
@@ -206,7 +206,7 @@ public class IntentionsGenerator {
 	}
 
 	private void setParent(final PsiClass aClass, final PsiClass parentClass) {
-		if (parentClass == null) return; //CANNOT BE POSSIBLE
+		if (parentClass == null) return;
 		PsiJavaCodeReferenceElement classReferenceElement = getElementFactory(project).createClassReferenceElement(parentClass);
 		if (!isParentAdded(aClass.getExtendsListTypes(), parentClass))
 			aClass.getExtendsList().add(classReferenceElement);
