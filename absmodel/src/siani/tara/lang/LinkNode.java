@@ -58,7 +58,7 @@ public class LinkNode extends Node {
 
 	@Override
 	public NodeTree getInnerNodes() {
-		return destiny.getInnerNodes();
+		return destiny != null ? destiny.getInnerNodes() : null;
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class LinkNode extends Node {
 
 	@Override
 	public String getName() {
-		return destiny.getName();
+		return destiny != null ? destiny.getName() : null;
 	}
 
 	public boolean isAbstract() {

@@ -44,9 +44,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	private static final Logger LOG = Logger.getInstance(TaraModuleBuilder.class.getName());
 	private static final String MODEL_EXT = ".json";
 	private static final String RES = "res";
-	private static final String ICONS = "icons";
 	private static final String MODEL = "model";
-	private static final String ITRULES = "itrules";
 	private static final String SRC = "src";
 	private static final String GEN = "gen";
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
@@ -240,9 +238,6 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 				contentEntry.addSourceFolder(sourceRoot, JavaResourceRootType.RESOURCE);
 			}
 			VfsUtil.createDirectories(parentPath + separator + RES);
-			VfsUtil.createDirectories(parentPath + separator + RES + separator + ITRULES);
-			VfsUtil.createDirectories(parentPath + separator + RES + separator + ICONS);
-			VfsUtil.createDirectories(parentPath + separator + RES + separator + ICONS + separator + "definitions");
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 		}

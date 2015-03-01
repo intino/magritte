@@ -51,7 +51,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			writeBoxes(getBoxPath(File.separator), createBoxes(groupByBox));
 			if (!model.isTerminal()) writeMorphs(createMorphs());
 		} catch (TaraException e) {
-			LOG.log(Level.SEVERE,"Error during java model generation: " + e.getMessage(),e);
+			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 	}
@@ -168,22 +168,22 @@ public class ModelToJavaOperation extends ModelOperation {
 		return new Formatter() {
 			@Override
 			public Object format(Object value) {
-				String val = value.toString();
+				String val = value.toString().trim();
 				if (val.isEmpty()) return val;
-				if (val.startsWith("\n")) return transformMultiLineString(val);
+				if (val.startsWith("\n") || val.startsWith("---")) return transformMultiLineString((String) value);
 				return val;
 			}
 
 			private String transformMultiLineString(String value) {
 				String val = value.replace("\r", "");
 				int i = value.indexOf('-');
-				String indent = value.substring(0, i).replace("\t", "    ").replace("\r", "");
-				val = val.replace(indent, "\n").trim().replace("\n", "\" +\n\"");
+				String indent = value.substring(0, i).replace("\t", "    ");
+				val = val.replace(indent, "\n").trim();
 				if (val.startsWith("---")) {
-					val = val.substring(val.indexOf('+') + 2);
-					val = val.substring(0, val.lastIndexOf('+') - 1);
+					val = val.replaceAll("----+", "").trim();
 				}
-				return val.replaceFirst("\"", "").substring(0, val.lastIndexOf('"') - 1);
+				return val.replaceAll("\n\n+","\n").replace("\n", "\" +\n\"").replace("\"\"","");
+
 			}
 		};
 	}
@@ -204,7 +204,7 @@ public class ModelToJavaOperation extends ModelOperation {
 				fileWriter.write(entry.getValue().content());
 				fileWriter.close();
 			} catch (IOException e) {
-				LOG.log(Level.SEVERE,e.getMessage(),e);
+				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 	}

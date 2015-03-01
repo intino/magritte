@@ -4,7 +4,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import siani.tara.lang.*;
-import siani.tara.lang.util.ModelLoader;
 
 import java.util.*;
 
@@ -14,16 +13,14 @@ import static siani.tara.lang.Primitives.*;
 public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	private final String file;
-	private final String modelsPath;
 	Model model;
 	Stack<Node> conceptStack = new Stack<>();
 	Set<String> imports = new HashSet<>();
 	String currentDocAttribute = "";
 
-	public TaraAbstractModelGenerator(Model model, String file, String modelsPath) {
+	public TaraAbstractModelGenerator(Model model, String file) {
 		this.model = model;
 		this.file = file;
-		this.modelsPath = modelsPath;
 	}
 
 	@Override
@@ -33,10 +30,8 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterDslDeclaration(@NotNull DslDeclarationContext ctx) {
-		if (ctx.headerReference() != null) {
+		if (ctx.headerReference() != null)
 			model.setParentModelName(ctx.headerReference().getText());
-			model.setParentModel(ModelLoader.load(modelsPath, ctx.headerReference().getText()));
-		}
 	}
 
 	@Override

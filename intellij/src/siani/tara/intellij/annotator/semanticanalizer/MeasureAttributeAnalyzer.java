@@ -133,7 +133,7 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 	private Class<?> loadClass(String path, File sdk, String className) {
 		File file = new File(path);
 		try {
-			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL(), new File(sdk, "tdk.jar").toURI().toURL()});
+			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL(), new File(sdk, "magritte.jar").toURI().toURL()});
 			return cl.loadClass(className);
 		} catch (MalformedURLException | ClassNotFoundException e) {
 			LOG.error(e.getMessage(), e);

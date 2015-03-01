@@ -78,28 +78,44 @@ public class MorphFrameCreator extends FrameCreator {
 			else newFrame.addFrame(RELATION, COMPOSITION);
 		}
 		NodeObject object = node.getObject();
-		if (object.getDoc() != null)
-			newFrame.addFrame(DOC, object.getDoc());
+		if (object.getDoc() != null) newFrame.addFrame(DOC, object.getDoc());
 		if (node.getName() != null && !node.getName().isEmpty())
 			newFrame.addFrame(NAME, node.isAnonymous() ? node.getType() : node.getName());
-		newFrame.addFrame(QN, node.getQualifiedName());
-		newFrame.addFrame(PROJECT, project);
-		if (node.getObject().getParent() != null)
-			newFrame.addFrame(PARENT, node.getObject().getParent().getDeclaredNodeQN());
-		else newFrame.addFrame(PARENT, MORPH);
-		if (node.getObject().getType() != null) {
-			Frame typeFrame = new Frame(NODE_TYPE).addFrame(NAME, node.getObject().getType());
-			addFacetTargets(node, typeFrame);
-			newFrame.addFrame(NODE_TYPE, typeFrame);
-		}
-		for (Facet facet : node.getObject().getFacets()) {
-			Frame facetFrame = new Frame(FrameTags.FACET).addFrame(NAME, facet.getName()).addFrame(FrameTags.FACET, getFacetDestinies(node));
-			newFrame.addFrame(FrameTags.FACET, facetFrame);
-		}
-		if (object.getAddress() != null) newFrame.addFrame(ADDRESS, object.getAddress().replace(DOT, ""));
+		newFrame.addFrame(QN, node.getQualifiedName()).addFrame(PROJECT, project);
+		addParent(node, newFrame, object);
+		addTargets(node, newFrame, object);
+		addFacets(node, newFrame, object);
+		addAddress(newFrame, object);
 		addVariables(node, newFrame);
 		addTargets(node, newFrame);
 		addFacets(node, newFrame);
+	}
+
+	private void addParent(Node node, Frame newFrame, NodeObject object) {
+		if (object.getParent() != null) {
+			newFrame.addFrame(PARENT, object.getParent().getName().equals(node.getName()) ?
+				MAGRITTE_MORPHS + DOT + object.getParent().getDeclaredNodeQN() :
+				object.getParent().getDeclaredNodeQN());
+		} else newFrame.addFrame(PARENT, MORPH);
+	}
+
+	private void addTargets(Node node, Frame newFrame, NodeObject object) {
+		if (object.getType() != null) {
+			Frame typeFrame = new Frame(NODE_TYPE).addFrame(NAME, object.getType());
+			addFacetTargets(node, typeFrame);
+			newFrame.addFrame(NODE_TYPE, typeFrame);
+		}
+	}
+
+	private void addAddress(Frame newFrame, NodeObject object) {
+		if (object.getAddress() != null) newFrame.addFrame(ADDRESS, object.getAddress().replace(DOT, ""));
+	}
+
+	private void addFacets(Node node, Frame newFrame, NodeObject object) {
+		for (Facet facet : object.getFacets()) {
+			Frame facetFrame = new Frame(FrameTags.FACET).addFrame(NAME, facet.getName()).addFrame(FrameTags.FACET, getFacetDestinies(node));
+			newFrame.addFrame(FrameTags.FACET, facetFrame);
+		}
 	}
 
 	private String[] getFacetDestinies(Node node) {

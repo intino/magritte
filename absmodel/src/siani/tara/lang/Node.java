@@ -44,6 +44,7 @@ public abstract class Node {
 
 	public DeclaredNode[] getSubNodes() {
 		List<DeclaredNode> subs = new ArrayList<>();
+		if (getInnerNodes() == null) return new DeclaredNode[0];
 		for (Node child : getInnerNodes())
 			if (child instanceof DeclaredNode && child.getObject().isSub()) subs.add((DeclaredNode) child);
 		return subs.toArray(new DeclaredNode[subs.size()]);
@@ -51,6 +52,7 @@ public abstract class Node {
 
 	public Collection<DeclaredNode> getDeepSubNodes() {
 		List<DeclaredNode> subs = new ArrayList<>();
+		if (getInnerNodes() == null) return subs;
 		for (Node child : getInnerNodes())
 			if (child.is(DeclaredNode.class) && child.isSub()) {
 				subs.add((DeclaredNode) child);

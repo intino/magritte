@@ -40,7 +40,7 @@ public class Parser {
 		try {
 			Model model = new Model(file.getName());
 			ParseTreeWalker walker = new ParseTreeWalker();
-			TaraAbstractModelGenerator extractor = new TaraAbstractModelGenerator(model, file.getPath(), configuration.getModelsDirectory());
+			TaraAbstractModelGenerator extractor = new TaraAbstractModelGenerator(model, file.getPath());
 			walker.walk(extractor, rootContext);
 			return model;
 		} catch (RecognitionException e) {

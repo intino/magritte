@@ -28,6 +28,11 @@ public class LinkToJava {
 		Project project = module.getProject();
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
 		FileDocumentManager.getInstance().saveAllDocuments();
+		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(module));
+		if (srcDirectory == null) {
+			Notifications.Bus.notify(new Notification("Tara Generator", "", "Src directory not found", NotificationType.ERROR), project);
+			return;
+		}
 		for (TaraBoxFileImpl taraBoxFile : TaraUtil.getTaraFilesOfModule(module)) {
 			generateAddresses(taraBoxFile);
 			new IntentionsGenerator(project, taraBoxFile).generate();
@@ -36,7 +41,6 @@ public class LinkToJava {
 		}
 		String report = String.format("Facet & Intention Classes have been Generated Successfully");
 		Notifications.Bus.notify(new Notification("Tara Generator", "", report, NotificationType.INFORMATION), project);
-		VirtualFile srcDirectory = getSrcDirectory(TaraUtil.getSourceRoots(module));
 		VfsUtil.markDirtyAndRefresh(true, true, true, srcDirectory);
 		srcDirectory.refresh(true, true);
 	}
@@ -63,6 +67,6 @@ public class LinkToJava {
 	private static VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {
 		for (VirtualFile file : virtualFiles)
 			if (file.isDirectory() && "src".equals(file.getName())) return file;
-		throw new RuntimeException("src directory not found");
+		return null;
 	}
 }

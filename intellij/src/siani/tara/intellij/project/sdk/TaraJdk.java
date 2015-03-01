@@ -112,7 +112,7 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 		File[] tdkFile = home.listFiles(new FileFilter() {
 			public boolean accept(File pathname) {
 				@NonNls final String name = pathname.getName();
-				return name.equals("tdk.jar") && !pathname.isDirectory();
+				return name.equals("magritte.jar") && !pathname.isDirectory();
 			}
 		});
 		return tdkFile != null && tdkFile.length != 0;
@@ -150,7 +150,7 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 
 	public String suggestSdkName(String currentSdkName, String sdkHome) {
 		@NonNls final String productName;
-		productName = "Tdk ";
+		productName = "Magritte ";
 		String buildNumber = getBuildNumber(sdkHome);
 		return productName + (buildNumber != null ? buildNumber : "");
 	}

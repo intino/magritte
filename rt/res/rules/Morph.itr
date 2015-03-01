@@ -19,14 +19,14 @@ endrule
 
 defrule type(Word) type(List) trigger(getter)
 public $name+reference$[] get$name+firstUpperCase() {
-	return Enumerate.cardinal((int) get("$name+firstLowerCase"), $name+firstUpperCase.values());
+	return Enumerate.cardinal((Integer) get("$name+firstLowerCase"), $name+firstUpperCase.values());
 }
 
 endrule
 
 defrule type(Word) !type(List) trigger(getter)
 public $name+reference get$name+firstUpperCase() {
-	return Enumerate.cardinal((int) get("$name"), $name+reference.values());
+	return Enumerate.cardinal((Integer) get("$name"), $name+reference.values());
 }
 
 endrule
@@ -47,7 +47,7 @@ endrule
 
 defrule type(Variable) type(Date) !type(Word) trigger(getter)
 public TimeInstant $name+firstLowerCase() {
-    return TimeInstant.value((long) get("$name"));
+    return TimeInstant.value((Long) get("$name"));
 }
 
 endrule
