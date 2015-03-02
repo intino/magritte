@@ -85,8 +85,8 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		else if (checkAsWord(parameter, variable)) results.put(parameter, new AnnotateAndFix(ERROR, defaultMessage));
 		else if (isReference(parameter, variable))
 			checkAsReference(parameter.getParameterValue().getChildren(), (Reference) variable);
-		else if (checkCompatibility(parameter, variable))
-			results.put(parameter, new AnnotateAndFix(ERROR, defaultMessage));
+		else if (incompatibles(parameter, variable))
+			results.put(parameter, new AnnotateAndFix(ERROR, defaultMessage + ": Incomplatible Types"));
 		else if (variable.getType().equals(MEASURE))
 			analyzeMetric(variable, parameter);
 	}
@@ -95,7 +95,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		return variable instanceof Word && !isCorrectWord((Word) variable, parameter.getValue().getText());
 	}
 
-	private boolean checkCompatibility(TaraExplicitParameter parameter, Variable variable) {
+	private boolean incompatibles(TaraExplicitParameter parameter, Variable variable) {
 		return !areCompatibleTypes(variable, parameter) || (parameter.isList() && !variable.isList()) || checkAsTuple(parameter.getValuesLength(), variable);
 	}
 
@@ -243,22 +243,23 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean areCompatibleTypes(Variable variable, Parameter parameter) {
-		String varType = variable.getType();
-		return parameter.getValue() != null && checkTypes(variable, parameter, varType);
+		return parameter.getValue() != null && checkTypes(variable, parameter);
 	}
 
-	private boolean checkTypes(Variable variable, Parameter parameter, String varType) {
+	private boolean checkTypes(Variable variable, Parameter parameter) {
 		switch (getType(parameter)) {
 			case TaraStringValueImpl:
-				return asString(variable, varType);
+				return asString(variable, variable.getType());
 			case TaraBooleanValueImpl:
-				return varType.equals(BOOLEAN);
+				return variable.getType().equals(BOOLEAN);
 			case TaraNaturalValueImpl:
-				return asNatural(parameter, varType);
+				return asNatural(parameter, variable.getType());
 			case TaraIntegerValueImpl:
-				return asInteger(parameter, varType);
+				return asInteger(parameter, variable.getType());
 			case TaraDoubleValueImpl:
-				return asDouble(parameter, varType);
+				return asDouble(parameter, variable.getType());
+			case TaraIdentifierReferenceImpl:
+				return variable instanceof Word ? asWord(parameter, (Word) variable) : asReference();
 			default:
 				return false;
 		}
@@ -292,6 +293,17 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 		return varType.equals(DOUBLE) || varType.equals(MEASURE) || isRatioOrMeasure(parameter, varType);
 	}
 
+	private boolean asWord(Parameter parameter, Word variable) {
+		for (String values : parameter.getValues())
+			if (!variable.getWordTypes().contains(values)) return false;
+		return true;
+	}
+
+	private boolean asReference() {
+		return false;
+	}
+
+
 	private Types getType(Parameter parameter) {
 		String parameterType = parameter.getValue().getClass().getSimpleName();
 		Types type;
@@ -307,7 +319,7 @@ public class ParameterAnalyzer extends TaraAnalyzer {
 
 	enum Types {
 		TaraStringValueImpl, TaraBooleanValueImpl, TaraIntegerValueImpl, TaraDoubleValueImpl, TaraNaturalValueImpl, TaraCodeValueImpl,
-		TaraCoordinateValueImpl, TaraNaturalListImpl, TaraDoubleListImpl, TaraIntegerListImpl, TaraBooleanListImpl,
-		TaraStringListImpl, TaraDateListImpl, TaraCoordinateListImpl, TaraReferenceListImpl, TaraEmptyImpl, TaraMetaWordImpl, TaraIdentifierReferenceImpl
+		TaraNaturalListImpl, TaraDoubleListImpl, TaraIntegerListImpl, TaraBooleanListImpl,
+		TaraStringListImpl, TaraDateListImpl, TaraReferenceListImpl, TaraEmptyImpl, TaraMetaWordImpl, TaraIdentifierReferenceImpl
 	}
 }

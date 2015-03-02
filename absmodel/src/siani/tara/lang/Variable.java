@@ -116,4 +116,8 @@ public abstract class Variable implements Cloneable {
 	public abstract Variable clone();
 
 	public abstract String toString();
+
+	public boolean hasValue() {
+		return (getValues() != null && getValues().length > 0) || (getDefaultValues() != null && getDefaultValues().length > 0);
+	}
 }

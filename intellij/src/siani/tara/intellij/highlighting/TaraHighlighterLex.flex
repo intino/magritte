@@ -222,6 +222,7 @@ ANY=.|\n|\"
 
     {MEASURE_VALUE_KEY}             {   return TaraTypes.MEASURE_VALUE; }
     {NEWLINE}                       {   return TokenType.WHITE_SPACE; }
+    .                               {  return TokenType.BAD_CHARACTER; }
 }
 
 <QUOTED> {
@@ -232,6 +233,10 @@ ANY=.|\n|\"
   \\r                               { return TaraTypes.CHARACTER; }
   \\\"                              { return TaraTypes.CHARACTER; }
   \\                                { return TaraTypes.CHARACTER; }
+  [^]                               {  return TokenType.BAD_CHARACTER; }
+  .                                 {  return TokenType.BAD_CHARACTER; }
+
+
 }
 
 [^]                                  {  return TokenType.BAD_CHARACTER; }

@@ -23,8 +23,8 @@ public class BoxFrameCreator extends FrameCreator {
 		createKeyMap(model.getTreeModel());
 	}
 
-	private void createKeyMap(NodeTree nodeTable) {
-		for (Node node : nodeTable) {
+	private void createKeyMap(NodeTree nodeTree) {
+		for (Node node : nodeTree) {
 			if (node.is(LinkNode.class)) continue;
 			if (!keymap.containsKey(node.getQualifiedName()))
 				keymap.put(node.getQualifiedName(), new ArrayList<Long>());
@@ -81,6 +81,21 @@ public class BoxFrameCreator extends FrameCreator {
 		addFacetApplies(node, newFrame);
 		if (object.getAddress() != null) newFrame.addFrame(ADDRESS, object.getAddress().replace(".", ""));
 		addVariables(node, newFrame);
+	}
+
+	protected void addVariables(Node node, final Frame frame) {
+		for (final Variable variable : node.getObject().getVariables()) {
+			Frame varFrame = createVarFrame(variable);
+			frame.addFrame(VARIABLE, varFrame);
+			if (variable.hasValue()) addVariableValue(varFrame, variable);
+		}
+		for (FacetTarget target : node.getObject().getFacetTargets())
+			for (final Variable variable : target.getVariables()) {
+				if (variable.getDefaultValues() == null) continue;
+				Frame varFrame = createTargetVarFrame(node.getName(), target.getDestinyName(), variable);
+				frame.addFrame(VARIABLE, varFrame);
+				addVariableValue(varFrame, variable);
+			}
 	}
 
 	private String clean(String name) {

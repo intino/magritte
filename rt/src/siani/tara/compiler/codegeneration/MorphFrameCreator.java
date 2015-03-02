@@ -33,37 +33,40 @@ public class MorphFrameCreator extends FrameCreator {
 	}
 
 	private void nodeToFrame(final Node node, Frame frame) {
-		if (node.is(Annotation.CASE)) return;
-		if (node.is(LinkNode.class) && ((LinkNode) node).isReference()) {
-			LinkNode linkNode = (LinkNode) node;
-			Frame newFrame = new Frame(getLinkNodeTypes(linkNode));
-			newFrame.addFrame(PARENT, linkNode.getDestinyName()).
-				addFrame(TYPE, linkNode.getDestiny().getObject().getType()).
-				addFrame(QN, linkNode.getDestiny().getObject().getDeclaredNodeQN()).
-				addFrame(NAME, linkNode.getDestiny().getObject().getName());
-			frame.addFrame(NODE, newFrame);
-			DeclaredNode container = linkNode.getDestiny().getContainer();
-			if (container != null) {
-				String containerPackage = composeMorphPackagePath(model, container);
-				if (!containerPackage.equals(MAGRITTE_MORPHS))
-					imports.add(containerPackage + DOT + container.getName());
-			}
-		} else {
-			List<String> types = getTypes(node);
-			final Frame newFrame = new Frame(types.toArray(new String[types.size()]));
-			frame.addFrame(NODE, newFrame);
-			addAnnotations(node, newFrame);
-			addNodeInfo(node, newFrame);
-			addInner(node, newFrame);
-			if (!node.isSub() && !node.equals(initNode))
-				addSubs(node, frame);
-			if (node.getContainer() != null) {
-				String containerPackage = composeMorphPackagePath(model, node.getContainer());
-				if (!containerPackage.equals(MAGRITTE_MORPHS))
-					imports.add(containerPackage + DOT + node.getContainer().getName());
-			}
-		}
+		if (node.is(Annotation.CASE) || node.is(Annotation.PROPERTY)) return;
+		if (node.is(LinkNode.class) && ((LinkNode) node).isReference())
+			linkNodeToFrame((LinkNode) node, frame);
+		else declaredNodeToFrame(node, frame);
+	}
 
+	private void linkNodeToFrame(LinkNode linkNode, Frame frame) {
+		Frame newFrame = new Frame(getLinkNodeTypes(linkNode));
+		newFrame.addFrame(PARENT, linkNode.getDestinyName()).
+			addFrame(TYPE, linkNode.getDestiny().getObject().getType()).
+			addFrame(QN, linkNode.getDestiny().getObject().getDeclaredNodeQN()).
+			addFrame(NAME, linkNode.getDestiny().getObject().getName());
+		frame.addFrame(NODE, newFrame);
+		addImports(linkNode.getDestiny().getContainer());
+	}
+
+	private void declaredNodeToFrame(Node node, Frame frame) {
+		List<String> types = getTypes(node);
+		final Frame newFrame = new Frame(types.toArray(new String[types.size()]));
+		frame.addFrame(NODE, newFrame);
+		addAnnotations(node, newFrame);
+		addNodeInfo(node, newFrame);
+		addInner(node, newFrame);
+		if (!node.isSub() && !node.equals(initNode))
+			addSubs(node, frame);
+		addImports(node.getContainer());
+	}
+
+	private void addImports(DeclaredNode container) {
+		if (container != null) {
+			String containerPackage = composeMorphPackagePath(model, container);
+			if (!containerPackage.equals(MAGRITTE_MORPHS))
+				imports.add(containerPackage + DOT + container.getName());
+		}
 	}
 
 	private void addImports(Frame frame) {
@@ -107,15 +110,22 @@ public class MorphFrameCreator extends FrameCreator {
 		}
 	}
 
-	private void addAddress(Frame newFrame, NodeObject object) {
-		if (object.getAddress() != null) newFrame.addFrame(ADDRESS, object.getAddress().replace(DOT, ""));
-	}
-
 	private void addFacets(Node node, Frame newFrame, NodeObject object) {
 		for (Facet facet : object.getFacets()) {
 			Frame facetFrame = new Frame(FrameTags.FACET).addFrame(NAME, facet.getName()).addFrame(FrameTags.FACET, getFacetDestinies(node));
 			newFrame.addFrame(FrameTags.FACET, facetFrame);
 		}
+	}
+
+	private void addAddress(Frame newFrame, NodeObject object) {
+		if (object.getAddress() != null) newFrame.addFrame(ADDRESS, object.getAddress().replace(DOT, ""));
+	}
+
+	protected void addVariables(Node node, final Frame frame) {
+		super.addVariables(node, frame);
+		for (final Variable variable : node.getObject().getVariables())
+			if (variable.hasValue() && variable instanceof Reference)
+				addImports((DeclaredNode) model.getParentModel().searchNode(variable.getType()));
 	}
 
 	private String[] getFacetDestinies(Node node) {

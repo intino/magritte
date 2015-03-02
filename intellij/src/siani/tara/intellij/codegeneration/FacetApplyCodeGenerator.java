@@ -27,6 +27,7 @@ import java.util.*;
 
 import static com.intellij.psi.JavaPsiFacade.getElementFactory;
 import static siani.tara.lang.Annotation.INTENTION;
+import static siani.tara.lang.Annotation.PROPERTY;
 
 public class FacetApplyCodeGenerator extends CodeGenerator {
 
@@ -165,14 +166,17 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 	private void setParent(Concept parent, PsiClass aClass) {
 		List<Concept> concepts = TaraUtil.buildConceptCompositionPathOf(parent);
 		String qn = MAGRITTE_MORPHS;
-		for (Concept concept : concepts)
-			qn += "." + concept.getName();//TODO QUE PASA SI NO TIENE NOMBRE
+		for (Concept concept : concepts) {
+			Node node = TaraUtil.getMetaConcept(concept);
+			if (concept.isProperty() || (node != null && node.is(PROPERTY))) break;
+			qn += "." + (concept.getName() == null ? concept.getType() : concept.getName());
+		}
 		PsiClass parentClass = findClassInModule(qn);
 		setParent(aClass, parentClass);
 	}
 
 	private void setParent(final PsiClass aClass, final PsiClass parentClass) {
-		if (parentClass == null) return; //CANNOT BE POSSIBLE
+		if (parentClass == null) return;
 		PsiJavaCodeReferenceElement classReferenceElement = getElementFactory(project).createClassReferenceElement(parentClass);
 		aClass.getExtendsList().add(classReferenceElement);
 	}

@@ -108,7 +108,7 @@ public class TaraUtil {
 		path.add(aConcept);
 		while (concept != null && !concept.isAggregated()) {
 			Concept parent = TaraPsiImplUtil.getConceptContainerOf(concept);
-			if (parent != null && parent.isSub() && (!concept.isSub() || !parent.isSub() && !concept.isSub()))
+			if (parent != null && !parent.isSub() && !concept.isSub())
 				path.add(0, parent);
 			concept = parent;
 		}
@@ -287,6 +287,8 @@ public class TaraUtil {
 	private static Model.SearchNode createSearchTree(Concept concept) {
 		Model.SearchNode forward = null;
 		Concept forwardConcept = concept.isSub() ? concept.getParentConcept() : concept;
+		if (forwardConcept == null)
+			throw new RuntimeException("Error building search. Concept: " + concept.getQualifiedName());
 		Model.SearchNode previous = new Model.SearchNode(forwardConcept.getType());
 		addProperties(forwardConcept, previous);
 		while ((forwardConcept = TaraPsiImplUtil.getConceptContainerOf(forwardConcept)) != null) {

@@ -99,9 +99,18 @@ public class IntentionsGenerator {
 			public int compare(TaraFacetTarget f1, TaraFacetTarget f2) {
 				Concept d1 = resolveToConcept(f1.getIdentifierReference());
 				Concept d2 = resolveToConcept(f2.getIdentifierReference());
-				if (d1 != null && d1.getParentConcept() == null) return 1;
-				if (d2 != null && d2.getParentConcept() == null) return -1;
+				if (d1 != null && !isChildOf(d1, d2) && d2 != null && !isChildOf(d2, d1)) return 0;
+				if (d1 != null && !isChildOf(d1, d2)) return -1;
+				if (d1 != null && !isChildOf(d1, d2)) return 1;
 				return 0;
+			}
+
+			private boolean isChildOf(Concept child, Concept d2) {
+				Concept parent = child.getParentConcept();
+				while (parent != null)
+					if (parent.equals(d2)) return true;
+					else parent = parent.getParentConcept();
+				return false;
 			}
 		});
 	}

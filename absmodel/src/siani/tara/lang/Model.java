@@ -69,11 +69,15 @@ public class Model {
 		return metrics;
 	}
 
-	public List<DeclaredNode> getTerminalNodes() {
+	public List<DeclaredNode> extractTerminals() {
+		return getTerminalNodes(getTreeModel());
+	}
+
+	private List<DeclaredNode> getTerminalNodes(NodeTree tree) {
 		List<DeclaredNode> terminals = new ArrayList<>();
-		for (Node node : getNodeTable())
-			if (node.is(DeclaredNode.class) && node.getObject().is(TERMINAL))
-				terminals.add((DeclaredNode) node);
+		for (Node node : tree)
+			if (node.is(DeclaredNode.class) && node.getObject().is(TERMINAL)) terminals.add((DeclaredNode) node);
+			else if (node.is(DeclaredNode.class)) terminals.addAll(getTerminalNodes(node.getInnerNodes()));
 		return terminals;
 	}
 

@@ -94,7 +94,7 @@ public class TaraFilters {
 		}
 
 		private boolean inBody(PsiElement context) {
-			return context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context);
+			return context.getParent() instanceof MetaIdentifier && TaraFilters.inBody(context) && !inAnnotations(context);
 		}
 
 		private boolean isNotAcceptable(Object element, PsiElement context) {

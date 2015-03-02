@@ -65,7 +65,7 @@ public abstract class FrameCreator {
 				if (variable.getDefaultValues() == null) continue;
 				Frame varFrame = createTargetVarFrame(node.getName(), target.getDestinyName(), variable);
 				frame.addFrame(VARIABLE, varFrame);
-				addVariableValue(varFrame, variable);//TODO terminal
+				addVariableValue(varFrame, variable);
 			}
 	}
 

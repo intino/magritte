@@ -216,5 +216,3 @@ metaIdentifier ::= METAIDENTIFIER_KEY | IDENTIFIER_KEY {
 	mixin = 'siani.tara.intellij.lang.psi.impl.MetaIdentifierMixin'
 	implements = 'siani.tara.intellij.lang.psi.MetaIdentifier'
 }
-
-quotes::= QUOTE_BEGIN | QUOTE_END | CHARACTER

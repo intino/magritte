@@ -82,7 +82,6 @@ SPACES              = {SP}+
 NEWLINE             = [\n]+ ([ ] | [\t])*
 INLINE              = ">"
 
-//Reserved words
 
 METAIDENTIFIER      = "Concept"
 SUB                 = "sub"
@@ -97,7 +96,7 @@ ON                  = "on"
 ALWAYS              = "always"
 IS                  = "is"
 EXTENDS             = "extends"
-//annotations
+
 ABSTRACT             = "abstract"
 SINGLE              = "single"
 REQUIRED            = "required"
@@ -162,7 +161,6 @@ DOC_LINE            = "def" ~[\n]
 PLUS                = "+"
 DIGIT               = [:digit:]
 STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
-//"(\\.|[^\\"])*\"  string literal
 IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 %xstate QUOTED
@@ -208,7 +206,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 	{QUOTE}                         { yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
-//	{STRING_VALUE_KEY}              {   return TaraTypes.STRING_VALUE_KEY; }
 	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
 
 	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
@@ -249,6 +246,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 	{SP}                            {   return TokenType.WHITE_SPACE; }
 	<<EOF>>                         {   return eof(); }
+	[^]                                   { return TokenType.BAD_CHARACTER;}
+    .                                   { return TokenType.BAD_CHARACTER;}
 }
 
 <QUOTED> {
@@ -259,6 +258,9 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
     \\r                             { return TaraTypes.CHARACTER; }
     \\\"                            { return TaraTypes.CHARACTER; }
     \\                              { return TaraTypes.CHARACTER; }
+    [^]                                   { return TokenType.BAD_CHARACTER;}
+    .                                   { return TokenType.BAD_CHARACTER;}
 }
 
 [^]                                   { return TokenType.BAD_CHARACTER;}
+.                                   { return TokenType.BAD_CHARACTER;}

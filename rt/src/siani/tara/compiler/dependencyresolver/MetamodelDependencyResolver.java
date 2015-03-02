@@ -19,7 +19,7 @@ public class MetamodelDependencyResolver {
 	}
 
 	public void resolve() throws TaraException {
-		addTerminalNodes(parent.getTerminalNodes());
+		addTerminalNodes(parent.extractTerminals());
 		setValuesToNodes();
 		addAnnotationsToInstances();
 		completeFacetsInformation();
