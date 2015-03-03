@@ -21,11 +21,12 @@ import java.util.List;
 public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	public static final String TARA_COMPILER_IN_OPERATION = "Tara compiler in operation...";
 	private static final Logger LOG = Logger.getInstance(TaracOSProcessHandler.class);
+	private static final String TARAC = "Tarac";
 	private final List<OutputItem> myCompiledItems = new ArrayList<>();
 	private final List<CompilerMessage> compilerMessages = new ArrayList<>();
-	private final StringBuffer stdErr = new StringBuffer();
+	private final StringBuilder stdErr = new StringBuilder();
 	private final Consumer<String> myStatusUpdater;
-	private final StringBuffer outputBuffer = new StringBuffer();
+	private final StringBuilder outputBuffer = new StringBuilder();
 
 	public TaracOSProcessHandler(Process process, Consumer<String> statusUpdater) {
 		super(process, null, null);
@@ -101,7 +102,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 			: category.equals(TaraCompilerMessageCategories.WARNING)
 			? BuildMessage.Kind.WARNING
 			: BuildMessage.Kind.INFO;
-		CompilerMessage compilerMessage = new CompilerMessage("Tarac", kind, message, url, -1, -1, -1, lineInt, columnInt);
+		CompilerMessage compilerMessage = new CompilerMessage(TARAC, kind, message, url, -1, -1, -1, lineInt, columnInt);
 		if (LOG.isDebugEnabled()) LOG.debug("Message: " + compilerMessage);
 		compilerMessages.add(compilerMessage);
 	}
@@ -134,24 +135,24 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 
 	public List<CompilerMessage> getCompilerMessages(String moduleName) {
 		List<CompilerMessage> messages = new ArrayList<>(compilerMessages);
-		final StringBuffer unParsedBuffer = getStdErr();
+		final StringBuilder unParsedBuffer = getStdErr();
 		if (unParsedBuffer.length() != 0) {
 			String msg = unParsedBuffer.toString();
 			if (msg.contains(TaraRtConstants.NO_TARA))
 				msg = "Cannot compile Tara files: no Tara library is defined for module '" + moduleName + "'";
-			messages.add(new CompilerMessage("Tarac", BuildMessage.Kind.INFO, msg));
+			messages.add(new CompilerMessage(TARAC, BuildMessage.Kind.INFO, msg));
 		}
 		final int exitValue = getProcess().exitValue();
 		if (exitValue != 0) {
 			for (CompilerMessage message : messages)
 				if (message.getKind() == BuildMessage.Kind.ERROR)
 					return messages;
-			messages.add(new CompilerMessage("Tarac", BuildMessage.Kind.ERROR, "Internal Tarac error: code " + exitValue));
+			messages.add(new CompilerMessage(TARAC, BuildMessage.Kind.ERROR, "Internal Tarac error: code " + exitValue));
 		}
 		return messages;
 	}
 
-	public StringBuffer getStdErr() {
+	public StringBuilder getStdErr() {
 		return stdErr;
 	}
 

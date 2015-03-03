@@ -180,7 +180,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		StringBuilder builder = new StringBuilder();
 		for (siani.tara.intellij.lang.psi.Variable variable : psiVariable)
 			builder.append(", ").append(variable.getText().substring(4));
-		int highlightEndOffset = builder.toString().length();
+		int highlightEndOffset = builder.length();
 		context.setupUIComponentPresentation(builder.length() == 0 ? "" : builder.toString().substring(2),
 			0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
 	}

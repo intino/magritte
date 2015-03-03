@@ -1,6 +1,7 @@
 package siani.tara.intellij.annotator.semanticanalizer;
 
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.annotator.TaraAnnotator;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
@@ -36,32 +37,33 @@ public class ParametersExistenceAnalyzer extends TaraAnalyzer {
 		if (instance == null) return;
 		boolean terminal = instance.isTerminal();
 		List<Variable> variables = findVariables();
-		if (variables == null) return;
 		List<String> compare = compare(collectMinimumNumberOfParameter(variables, terminal), collectDeclaredParameters(element, variables));
 		if (!compare.isEmpty())
 			results.put(element instanceof Concept ? concept.getSignature() : element, new TaraAnnotator.AnnotateAndFix(ERROR, "parameters missed: " + parametersToString(compare)));
 	}
 
+	@NotNull
 	private List<Variable> findVariables() {
 		List<Variable> variables;
 		if (element instanceof FacetApply) {
 			variables = findFacetVariables((FacetApply) element);
 		} else {
 			Node metaConcept = findMetaConcept((Concept) element);
-			if (metaConcept == null) return null;
+			if (metaConcept == null) return Collections.EMPTY_LIST;
 			variables = metaConcept.getObject().getVariables();
 		}
 		return variables;
 	}
 
+	@NotNull
 	private List<Variable> findFacetVariables(FacetApply facetApply) {
 		Node metaConcept = findMetaConcept(TaraPsiImplUtil.getConceptContainerOf(facetApply));
-		if (metaConcept == null) return null;
+		if (metaConcept == null) return Collections.EMPTY_LIST;
 		for (Map.Entry<String, List<FacetTarget>> entry : metaConcept.getObject().getAllowedFacets().entrySet()) {
 			if (entry.getKey().equals(facetApply.getFacetName()))
 				return entry.getValue().get(0).getVariables();
 		}
-		return null;
+		return Collections.EMPTY_LIST;
 	}
 
 	private List<String> compare(List<String> minimum, List<String> declared) {

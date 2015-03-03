@@ -61,18 +61,21 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 					node.getObject().setParentObject(container.getObject());
 					container.getObject().add((DeclaredNode) node);
 					container.add(node);
-				} else if (isInFacetTarget(concept)) {
-					List<FacetTarget> facetTargets = conceptStack.peek().getObject().getFacetTargets();
-					facetTargets.get(facetTargets.size() - 1).add(node);
-					((DeclaredNode) node).setFacetTargetParent(facetTargets.get(facetTargets.size() - 1));
-				} else container.add(node);
+				} else if (isInFacetTarget(concept)) addToFacetTarget(node);
+				else container.add(node);
 			} else model.add(node);
 			if (parent != null) node.getObject().setParentName(parent);
 		} else
 			container.add(node);
 	}
 
-	private boolean isInFacetTarget(ConceptContext ctx) {
+	private void addToFacetTarget(Node node) {
+		List<FacetTarget> facetTargets = conceptStack.peek().getObject().getFacetTargets();
+		facetTargets.get(facetTargets.size() - 1).add(node);
+		node.setFacetTargetParent(facetTargets.get(facetTargets.size() - 1));
+	}
+
+	private boolean isInFacetTarget(ParserRuleContext ctx) {
 		return ctx.getParent().getParent() instanceof FacetTargetContext;
 	}
 
@@ -160,14 +163,22 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		LinkNode node = new LinkNode(parent, (DeclaredNode) conceptStack.peek());
 		node.setReference(true);
 		addHeaderInformation(ctx, node);
-		((DeclaredNode) conceptStack.peek()).add(node);
-
+		if (isInFacetTarget(ctx)) {
+			addToFacetTarget(node);
+		}
+		else ((DeclaredNode) conceptStack.peek()).add(node);
 	}
 
 	@Override
 	public void exitConceptReference(@NotNull ConceptReferenceContext ctx) {
 		List<Node> innerNodes = conceptStack.peek().getInnerNodes();
-		Node node = innerNodes.get(innerNodes.size() - 1);
+		List<FacetTarget> facetTargets = conceptStack.peek().getObject().getFacetTargets();
+		Node node;
+		if (isInFacetTarget(ctx)) {
+			FacetTarget facetTarget = facetTargets.get(facetTargets.size() - 1);
+			node = facetTarget.getInner().get(facetTarget.getInner().size() - 1);
+		} else node = innerNodes.get(innerNodes.size() - 1);
+
 		node.calculateQualifiedName();
 		model.register(node);
 	}

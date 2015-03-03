@@ -50,7 +50,35 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		analyzeFacetConstrains();
 		if (hasErrors()) return;
 		Node node = analyzeDslConstrains();
+		if (!hasErrors())
+			checkContainsInnerWithSameName(concept);
 		if (!hasErrors()) analyzeJavaClassCreation(node, concept);
+
+	}
+
+	private void checkContainsInnerWithSameName(Concept concept) {
+		if (concept.getName() == null) return;
+		if (checkWordNames(concept)) return;
+		checkInnerNames(concept);
+	}
+
+	private boolean checkWordNames(Concept concept) {
+		for (Variable variable : concept.getVariables()) {
+			if (variable.getType().equalsIgnoreCase("word") && concept.getName().equals(variable.getName())) {
+				results.put(concept.getSignature(), addError(message("word.with.same.name")));
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void checkInnerNames(Concept concept) {
+		for (Concept inner : concept.getInnerConcepts()) {
+			if (inner.getName() != null && inner.getName().equals(concept.getName())) {
+				results.put(concept.getSignature(), addError(message("inner.with.same.name")));
+				return;
+			} else checkContainsInnerWithSameName(inner);
+		}
 	}
 
 	private void analyzeFacetConstrains() {

@@ -5,7 +5,6 @@ import java.util.List;
 public class DeclaredNode extends Node {
 
 	private NodeTree innerNodes = new NodeTree();
-	private transient FacetTarget inFacetTargetParent = null;
 
 	public DeclaredNode() {
 	}
@@ -100,15 +99,4 @@ public class DeclaredNode extends Node {
 		return false;
 	}
 
-	public FacetTarget getFacetTargetParent() {
-		return inFacetTargetParent;
-	}
-
-	public void setFacetTargetParent(FacetTarget facetTarget) {
-		this.inFacetTargetParent = facetTarget;
-	}
-
-	public boolean isInFacetTargetParent() {
-		return this.inFacetTargetParent != null;
-	}
 }

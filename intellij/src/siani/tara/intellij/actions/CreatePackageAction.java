@@ -33,15 +33,8 @@ public class CreatePackageAction extends DumbAwareAction {
 		final Project project = e.getData(CommonDataKeys.PROJECT);
 		final PsiDirectory directory = DirectoryChooserUtil.getOrChooseDirectory(view);
 		if (directory == null) return;
-		CreateDirectoryOrPackageHandler validator = new CreateDirectoryOrPackageHandler(project, directory, false, ".") {
-			@Override
-			protected void createDirectories(String subDirName) {
-				super.createDirectories(subDirName);
-			}
-		};
-		Messages.showInputDialog(project, IdeBundle.message("prompt.enter.new.package.name"),
-			IdeBundle.message("title.new.package"),
-			Messages.getQuestionIcon(), "", validator);
+		CreateDirectoryOrPackageHandler validator = new CreateDirectoryOrPackageHandler(project, directory, false, ".");
+		Messages.showInputDialog(project, IdeBundle.message("prompt.enter.new.package.name"), IdeBundle.message("title.new.package"), Messages.getQuestionIcon(), "", validator);
 		final PsiFileSystemItem result = validator.getCreatedElement();
 		if (result != null) view.selectElement(result);
 	}

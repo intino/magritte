@@ -1,6 +1,7 @@
 package siani.tara.intellij.annotator.semanticanalizer;
 
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
@@ -27,7 +28,6 @@ public class ParametersAnalyzer extends TaraAnalyzer {
 		List<Variable> variables;
 		if (element instanceof FacetApply) {
 			variables = findFacetVariables((FacetApply) element);
-			if (variables == null) return;
 		} else {
 			Node node = findMetaConcept((Concept) element);
 			if (node == null) return;
@@ -38,14 +38,15 @@ public class ParametersAnalyzer extends TaraAnalyzer {
 			results.put(parameters, new AnnotateAndFix(ERROR, "parameters missed: " + parametersToString(compare)));
 	}
 
+	@NotNull
 	private List<Variable> findFacetVariables(FacetApply facetApply) {
 		Node node = findMetaConcept(TaraPsiImplUtil.getConceptContainerOf(facetApply));
-		if (node == null) return null;
+		if (node == null) return Collections.EMPTY_LIST;
 		for (Map.Entry<String, List<FacetTarget>> entry : node.getObject().getAllowedFacets().entrySet()) {
 			if (entry.getKey().equals(facetApply.getFacetName()))
 				return entry.getValue().get(0).getVariables();
 		}
-		return null;
+		return Collections.EMPTY_LIST;
 	}
 
 	private List<String> compare(List<String> minimum, List<String> declared) {

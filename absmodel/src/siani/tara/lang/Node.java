@@ -14,6 +14,7 @@ public abstract class Node {
 	protected ModelObject object;
 	private List<String> imports = new ArrayList<>();
 	private String modelOwner;
+	private transient FacetTarget inFacetTargetParent = null;
 	public transient static final String ANONYMOUS = "@anonymous";
 	public transient static final String IN_FACET_TARGET = "@facetTarget";
 	public transient static final String LINK = "@link";
@@ -143,5 +144,17 @@ public abstract class Node {
 
 	public String getMetaQN() {
 		return container == null ? isSub() ? "" : getType() : container.getMetaQN() + (isSub() ? "" : "." + getType());
+	}
+
+	public void setFacetTargetParent(FacetTarget facetTarget) {
+		this.inFacetTargetParent = facetTarget;
+	}
+
+	public FacetTarget getFacetTargetParent() {
+		return inFacetTargetParent;
+	}
+
+	public boolean isInFacetTargetParent() {
+		return this.inFacetTargetParent != null;
 	}
 }

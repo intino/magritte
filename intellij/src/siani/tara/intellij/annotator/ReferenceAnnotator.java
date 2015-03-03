@@ -10,12 +10,11 @@ import siani.tara.intellij.lang.psi.TaraFacetApply;
 
 public class ReferenceAnnotator extends TaraAnnotator {
 
-	private Identifier identifier;
 
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		if (!Identifier.class.isInstance(element) || isInFacetApply(element)) return;
-		this.identifier = (Identifier) element;
+		Identifier identifier = (Identifier) element;
 		this.holder = holder;
 		analyzeAndAnnotate(new ReferenceAnalyzer(identifier));
 	}

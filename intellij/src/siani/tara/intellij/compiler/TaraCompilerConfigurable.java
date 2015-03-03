@@ -46,11 +46,7 @@ public class TaraCompilerConfigurable implements SearchableConfigurable, Configu
 	private ExcludedEntriesConfigurable createExcludedConfigurable(final Project project) {
 		final ExcludedEntriesConfiguration configuration = compilerConfiguration.getExcludeFromStubGeneration();
 		final ProjectFileIndex index = ProjectRootManager.getInstance(project).getFileIndex();
-		final FileChooserDescriptor descriptor = new FileChooserDescriptor(true, true, false, false, false, true) {
-			public boolean isFileVisible(VirtualFile file, boolean showHiddenFiles) {
-				return super.isFileVisible(file, showHiddenFiles);// && !index.isUnderIgnored(file);TODO
-			}
-		};
+		final FileChooserDescriptor descriptor = new FileChooserDescriptor(true, true, false, false, false, true);
 		descriptor.setRoots(ContainerUtil.concat(
 			ContainerUtil.map(ModuleManager.getInstance(project).getModules(), new Function<Module, List<VirtualFile>>() {
 				@Override

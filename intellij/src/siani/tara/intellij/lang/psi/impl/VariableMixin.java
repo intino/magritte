@@ -5,11 +5,13 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.TaraTypes;
+import siani.tara.intellij.lang.psi.TaraVariable;
+import siani.tara.intellij.lang.psi.TaraVariableType;
+import siani.tara.intellij.lang.psi.Variable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class VariableMixin extends ASTWrapperPsiElement {
@@ -47,14 +49,13 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	private String getAsWord() {
 		TaraVariableType type = ((TaraVariable) this).getVariableType();
-		if (type == null || type.getWord() == null) return "";
+		if (type.getWord() == null) return "";
 		return type.getWord().getNode().findChildByType(TaraTypes.IDENTIFIER_KEY).getText();
 	}
 
 	@NotNull
 	public String getType() {
 		TaraVariableType type = ((TaraVariable) this).getVariableType();
-		if (type == null) return "null";
 		return type.getNode().getFirstChildNode().getText();
 	}
 
@@ -62,7 +63,6 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public Collection<String> getDefaultValuesAsString() {
 		List<String> list = new ArrayList<>();
 		TaraVariableType type = ((TaraVariable) this).getVariableType();
-		if (type == null) return Collections.EMPTY_LIST;
 		if (type.getBooleanAttribute() != null)
 			list.addAll(getElementsAsString(type.getBooleanAttribute().getBooleanValueList()));
 		else if (type.getDoubleAttribute() != null)

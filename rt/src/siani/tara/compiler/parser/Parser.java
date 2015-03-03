@@ -3,7 +3,6 @@ package siani.tara.compiler.parser;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import siani.tara.TaracRunner;
-import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.SyntaxException;
 import siani.tara.compiler.parser.antlr.TaraAbstractModelGenerator;
 import siani.tara.compiler.parser.antlr.TaraErrorStrategy;
@@ -21,13 +20,11 @@ public class Parser {
 	private static final Logger LOG = Logger.getLogger(TaracRunner.class.getName());
 
 	private final File file;
-	private final CompilerConfiguration configuration;
 	TaraGrammar parser;
 	TaraGrammar.RootContext rootContext;
 
-	public Parser(File file, CompilerConfiguration configuration) throws IOException {
+	public Parser(File file) throws IOException {
 		this.file = file;
-		this.configuration = configuration;
 		ANTLRInputStream input = new ANTLRFileStream(file.getAbsolutePath(), "UTF-8");
 		TaraLexer lexer = new TaraLexer(input);
 		lexer.reset();

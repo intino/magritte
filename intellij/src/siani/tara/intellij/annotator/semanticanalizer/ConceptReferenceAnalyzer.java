@@ -4,6 +4,7 @@ import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.annotator.fix.RemoveConceptLinkFix;
 import siani.tara.intellij.lang.TaraLanguage;
+import siani.tara.intellij.lang.psi.Body;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.lang.psi.TaraConceptReference;
@@ -51,11 +52,10 @@ public class ConceptReferenceAnalyzer extends TaraAnalyzer {
 
 	private boolean isDuplicated() {
 		int count = 0;
-		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(reference);
-		if (contextOf == null) return false;
-		TaraConceptReference[] links = contextOf.getConceptLinks();
+		Body body = TaraPsiImplUtil.getBodyContextOf(reference);
+		if (body == null) return false;
+		TaraConceptReference[] links = body.getConceptLinks();
 		for (TaraConceptReference link : links) {
-			if (reference.getIdentifierReference() == null || link.getIdentifierReference() == null) continue;
 			if (reference.getIdentifierReference().getText().equals(link.getIdentifierReference().getText()) && areIncompatibles(reference, link))
 				count++;
 		}

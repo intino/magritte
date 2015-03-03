@@ -42,7 +42,7 @@ public abstract class TaraAnnotator implements Annotator {
 	public static class AnnotateAndFix {
 		private Level level;
 		private String message;
-		private IntentionAction actions[] = IntentionAction.EMPTY_ARRAY;
+		private IntentionAction[] actions = IntentionAction.EMPTY_ARRAY;
 		private TextAttributesKey attributes;
 
 		public AnnotateAndFix(Level level, String message) {

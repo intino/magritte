@@ -13,6 +13,7 @@ import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.TaraRuntimeException;
 import siani.tara.intellij.codegeneration.MetricClassCreator;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
@@ -88,7 +89,7 @@ public class CreateMeasureClassIntention implements IntentionAction {
 	private VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {
 		for (VirtualFile file : virtualFiles)
 			if (file.isDirectory() && SRC.equals(file.getName())) return file;
-		throw new RuntimeException("src directory not found");
+		throw new TaraRuntimeException("src directory not found");
 	}
 
 	@Override

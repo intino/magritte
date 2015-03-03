@@ -50,8 +50,20 @@ public class FacetTargetAnalyzer extends TaraAnalyzer {
 			if (!container.isSub() && !container.isFacet() && !metaConcept.getObject().is(META_FACET))
 				results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("target.in.nofacet.concept")));
 		if (hasErrors()) return;
+		if (isDuplicated(container))
+			results.put(target, new AnnotateAndFix(ERROR, MessageProvider.message("duplicated.target.in.facet")));
 		if (container.isIntention())
 			analyzeCreatedClasses(container);
+	}
+
+	private boolean isDuplicated(Concept container) {
+		int count = 0;
+		Concept destiny = ReferenceManager.resolveToConcept(target.getIdentifierReference());
+		if (destiny == null) return false;
+		for (TaraFacetTarget facetTarget : container.getFacetTargets())
+			if (destiny.equals(ReferenceManager.resolveToConcept(facetTarget.getIdentifierReference())))
+				count++;
+		return count > 1;
 	}
 
 	private void analyzeCreatedClasses(Concept parent) {

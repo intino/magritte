@@ -28,8 +28,6 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 
 	private static final Logger LOG = Logger.getInstance(TaraFileDocumentManagerListener.class.getName());
 
-	private Project project;
-
 	@Override
 	public void beforeAllDocumentsSaving() {
 
@@ -37,7 +35,7 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 
 	@Override
 	public void beforeDocumentSaving(@NotNull Document document) {
-		project = ProjectManager.getInstance().getOpenProjects()[0];
+		Project project = ProjectManager.getInstance().getOpenProjects()[0];
 		VirtualFile file = FileDocumentManager.getInstance().getFile(document);
 		if (!saveAndBLock()) return;
 		if (file != null) {
