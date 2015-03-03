@@ -19,6 +19,9 @@ public class NameFormatter {
 	public static final String JAVA = "java";
 	public static final String DOT = ".";
 
+	private NameFormatter() {
+	}
+
 	public static String composeMorphPackagePath(Locale locale, Node node) {
 		if (!node.isSub())
 			return getMorphPath(DOT);

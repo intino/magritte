@@ -8,7 +8,10 @@ import java.util.Locale;
 
 public class InflectorProvider {
 
+	private InflectorProvider() {
+	}
+
 	public static Inflector getInflector(Locale locale) {
-		return (locale.getCountry().equals("ES")) ? new SpanishInflector() : new EnglishInflector();
+		return "ES".equals(locale.getCountry()) ? new SpanishInflector() : new EnglishInflector();
 	}
 }

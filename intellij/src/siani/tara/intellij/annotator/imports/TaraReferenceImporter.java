@@ -12,6 +12,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class TaraReferenceImporter {
+
+	private TaraReferenceImporter() {
+	}
+
 	@NotNull
 	public static List<ImportQuickFix> proposeImportFix(final IdentifierReference node) {
 		Identifier element = node.getIdentifierList().get(0);

@@ -232,7 +232,7 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 
 	private PsiDirectory findFacetsDestiny() {
 		PsiDirectory directory = srcDirectory;
-		for (String name : FACETS_PATH) {
+		for (String name : facetsPath) {
 			if (directory.findSubdirectory(name.toLowerCase()) != null)
 				directory = directory.findSubdirectory(name.toLowerCase());
 			else directory = createPackageDirectory(directory, name);

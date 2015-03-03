@@ -34,7 +34,7 @@ public class TaraFileFindUsagesHandler extends FindUsagesHandler {
 	}
 
 	@Override
-	protected Collection<String> getStringsToSearch(PsiElement element) {
+	protected Collection<String> getStringsToSearch(@NotNull PsiElement element) {
 		return super.getStringsToSearch(element);
 	}
 }

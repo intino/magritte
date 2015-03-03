@@ -28,7 +28,7 @@ public class InlineToIndentConverter extends PsiElementBaseIntentionAction imple
 
 	private void replace(TaraElementFactoryImpl factory, PsiElement toReplace) {
 		for (LeafPsiElement leaf : PsiTreeUtil.getChildrenOfTypeAsList(TaraPsiImplUtil.getBodyContextOf(toReplace), LeafPsiElement.class))
-			if (is(leaf, TaraTypes.NEWLINE) && leaf.getText().equals(";")) {
+			if (is(leaf, TaraTypes.NEWLINE) && ";".equals(leaf.getText())) {
 				if (is(leaf.getNextSibling(), WHITE_SPACE)) leaf.getNextSibling().delete();
 				if (is(leaf.getPrevSibling(), WHITE_SPACE)) leaf.getPrevSibling().delete();
 				leaf.replace(factory.createBodyNewLine(getIndentation(toReplace) + 1));

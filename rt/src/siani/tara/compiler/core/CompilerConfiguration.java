@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class CompilerConfiguration {
@@ -21,7 +22,7 @@ public class CompilerConfiguration {
 	private Locale languageForCodeGeneration;
 	private String version = "1.0";
 	private String description = "";
-	private ArrayList<String> icons = new ArrayList<>();
+	private List<String> icons = new ArrayList<>();
 	private String modelsDirectory;
 	private boolean system;
 	private File metricsDirectory;
@@ -160,7 +161,7 @@ public class CompilerConfiguration {
 		icons.add(iconsDir);
 	}
 
-	public ArrayList<String> getIconDirectories() {
+	public List<String> getIconDirectories() {
 		return icons;
 	}
 

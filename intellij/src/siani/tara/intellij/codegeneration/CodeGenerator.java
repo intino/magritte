@@ -14,6 +14,7 @@ import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
+import siani.tara.intellij.TaraRuntimeException;
 import siani.tara.intellij.lang.psi.TaraBoxFile;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
@@ -30,7 +31,7 @@ public abstract class CodeGenerator {
 	final TaraBoxFile file;
 	final Inflector inflector;
 	final PsiDirectory srcDirectory;
-	final String[] FACETS_PATH;
+	final String[] facetsPath;
 	static final String SRC = "src";
 	static final String MAGRITTE_MORPHS = "magritte.morphs";
 
@@ -40,7 +41,7 @@ public abstract class CodeGenerator {
 		this.module = ModuleProvider.getModuleOf(file);
 		inflector = InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
 		srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) file.getManager(), getSrcDirectory(TaraUtil.getSourceRoots(file)));
-		FACETS_PATH = new String[]{project.getName().toLowerCase(), "extensions"};
+		facetsPath = new String[]{project.getName().toLowerCase(), "extensions"};
 	}
 
 	protected Inflector getInflector(PsiElement element) {
@@ -56,7 +57,7 @@ public abstract class CodeGenerator {
 	private VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {
 		for (VirtualFile virtualFile : virtualFiles)
 			if (virtualFile.isDirectory() && SRC.equals(virtualFile.getName())) return virtualFile;
-		throw new RuntimeException("Src directory not found");
+		throw new TaraRuntimeException("Src directory not found");
 	}
 
 	PsiDirectory createPackageDirectory(final PsiDirectory parent, final String name) {

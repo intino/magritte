@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NonNls;
 
 import javax.swing.*;
 import java.util.HashMap;
+import java.util.Map;
 
 public class TaraIcons {
 
@@ -18,7 +19,7 @@ public class TaraIcons {
 	public static final String SDK_CLOSED = "SDK_CLOSED";
 
 	@NonNls
-	public static HashMap<String, Icon> icons = new HashMap<>();
+	public static Map<String, Icon> icons = new HashMap<>();
 
 	static {
 		icons.put("ICON_13", IconLoader.getIcon("/icons/Tara.png"));

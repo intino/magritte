@@ -37,6 +37,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private static final String TARA_EXTENSION = "tara";
 	private static final String RES = "res";
 	private static final String ICONS = "icons";
+	private static final String GEN = "gen";
 	private static Boolean done = false;
 	private final String builderName;
 	private boolean javaGeneration;
@@ -156,10 +157,10 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	public String getOutDir(Set<JpsModule> jpsModules) {
 		JpsModule module = jpsModules.iterator().next();
 		for (JpsModuleSourceRoot moduleSourceRoot : module.getSourceRoots())
-			if (moduleSourceRoot.getFile().getName().equals("gen"))
+			if (moduleSourceRoot.getFile().getName().equals(GEN))
 				return moduleSourceRoot.getFile().getAbsolutePath();
 		File moduleFile = module.getSourceRoots().get(0).getFile().getParentFile();
-		File gen = new File(moduleFile, "gen");
+		File gen = new File(moduleFile, GEN);
 		gen.mkdir();
 		return gen.getAbsolutePath();
 	}
@@ -273,7 +274,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			for (int i = 0; i < nList.getLength(); i++)
 				if (nList.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					Element element = (Element) nList.item(i);
-					if (element.getAttribute("name").equals("ModuleConfiguration")) return element;
+					if ("ModuleConfiguration".equals(element.getAttribute("name"))) return element;
 				}
 			return null;
 		} catch (ParserConfigurationException | SAXException | IOException e) {

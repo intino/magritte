@@ -35,7 +35,7 @@ public class TaraWizardStep extends ModuleWizardStep {
 	private boolean terminal;
 	private JPanel mainPanel;
 	private JComboBox metamodelBox;
-	private JPanel MyPanel;
+	private JPanel myPanel;
 	private JComboBox language;
 	private JTextField languageName;
 

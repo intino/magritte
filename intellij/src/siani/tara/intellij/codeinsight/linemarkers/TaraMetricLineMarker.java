@@ -26,7 +26,7 @@ import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveMeasure;
 
 public class TaraMetricLineMarker extends JavaLineMarkerProvider {
 
-	private final MarkerType OVERRIDDEN_PROPERTY_TYPE = new MarkerType(new Function<PsiElement, String>() {
+	private final MarkerType markerType = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
@@ -67,7 +67,7 @@ public class TaraMetricLineMarker extends JavaLineMarkerProvider {
 		PsiElement reference = resolveMeasure(measureType);
 		if (reference != null) {
 			final Icon icon = AllIcons.Gutter.ImplementedMethod;
-			final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;
+			final MarkerType type = markerType;
 			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
 				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);

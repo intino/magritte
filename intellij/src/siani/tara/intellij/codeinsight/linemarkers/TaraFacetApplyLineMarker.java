@@ -33,7 +33,7 @@ import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveJavaClas
 public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 
 	private static final String FACETS_PATH = "extensions";
-	private final MarkerType OVERRIDDEN_PROPERTY_TYPE = new MarkerType(new Function<PsiElement, String>() {
+	private final MarkerType markerType = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
@@ -100,9 +100,8 @@ public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 		}
 		if (reference != null) {
 			final Icon icon = AllIcons.Gutter.ImplementedMethod;
-			final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;
-			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
-				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
+			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, markerType.getTooltip(),
+				markerType.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
 	}
 

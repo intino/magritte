@@ -27,7 +27,7 @@ public class CompilationUnit extends ProcessingUnit {
 	protected ProgressCallback progressCallback;
 	private Map<String, SourceUnit> sourceUnits;
 	private Model model;
-	private LinkedList<Operation>[] phaseOperations;
+	private List<Operation>[] phaseOperations;
 	private SrcToClassOperation classGeneration = new SrcToClassOperation() {
 		@Override
 		public void call() throws CompilationFailedException {

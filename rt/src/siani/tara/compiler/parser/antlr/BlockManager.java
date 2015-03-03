@@ -24,7 +24,7 @@ public class BlockManager {
 	}
 
 	public void newlineAndSpaces(String text) {
-		int newLevel = (spacesLength(text) / this.tabSize);
+		int newLevel = spacesLength(text) / this.tabSize;
 		this.tokens = indentationTokens(newLevel - level, true);
 		this.level = newLevel;
 	}
@@ -32,7 +32,7 @@ public class BlockManager {
 	private int spacesLength(String text) {
 		int value = 0;
 		for (int i = 0; i < text.length(); i++)
-			value += (text.charAt(i) == ('\t')) ? this.tabSize : 1;
+			value += text.charAt(i) == '\t' ? this.tabSize : 1;
 		return value;
 	}
 
@@ -40,7 +40,7 @@ public class BlockManager {
 		if (size > 0)
 			return create(Token.NEWLINE_INDENT);
 		else {
-			int length = (!addLastNewline) ? Math.abs(size * 2) : Math.abs(size * 2) + 1;
+			int length = !addLastNewline ? Math.abs(size * 2) : Math.abs(size * 2) + 1;
 			return createDedents(length);
 		}
 	}
@@ -48,7 +48,7 @@ public class BlockManager {
 	private Token[] createDedents(int size) {
 		Token[] actions = new Token[size];
 		for (int i = 0; i < actions.length; i++)
-			actions[i] = (i % 2 == 0) ? Token.NEWLINE : Token.DEDENT;
+			actions[i] = i % 2 == 0 ? Token.NEWLINE : Token.DEDENT;
 		return actions;
 	}
 

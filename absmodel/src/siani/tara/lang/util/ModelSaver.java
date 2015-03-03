@@ -20,9 +20,10 @@ import static siani.tara.lang.util.SerializingTags.*;
 public class ModelSaver {
 
 	private static final Logger LOG = Logger.getLogger(ModelSaver.class.getName());
-
-
 	protected static final String JSON_EXTENSION = ".json";
+
+	private ModelSaver() {
+	}
 
 	public static boolean save(Model model, String modelsDirectory) {
 		try {

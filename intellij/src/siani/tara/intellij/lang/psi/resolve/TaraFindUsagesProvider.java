@@ -50,7 +50,7 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 		} else if (element instanceof Identifier)
 			return element.getText();
 		else if (element instanceof TaraBoxFile)
-			return (((TaraBoxFile) element).getName());
+			return ((TaraBoxFile) element).getName();
 		return element.getText();
 	}
 

@@ -26,7 +26,7 @@ public class NodeObject extends ModelObject {
 	}
 
 	public boolean is(Annotation type) {
-		return (annotations.contains(type));
+		return annotations.contains(type);
 	}
 
 	public Attribute[] getAttributes() {

@@ -74,8 +74,7 @@ public class ModelHelper {
 			if (searchNode == null) {
 				searchNode = forward;
 				previous = forward;
-			}
-			else {
+			} else {
 				previous.setNext(forward);
 				forward.setPrevious(previous);
 				previous = forward;

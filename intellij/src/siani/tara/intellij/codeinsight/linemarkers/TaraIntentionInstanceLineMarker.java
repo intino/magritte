@@ -42,7 +42,7 @@ public class TaraIntentionInstanceLineMarker extends JavaLineMarkerProvider {
 		super(daemonSettings, colorsManager);
 	}
 
-	private final MarkerType OVERRIDDEN_PROPERTY_TYPE = new MarkerType(new Function<PsiElement, String>() {
+	private final MarkerType markerType = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
@@ -80,9 +80,8 @@ public class TaraIntentionInstanceLineMarker extends JavaLineMarkerProvider {
 			PsiElement reference = element instanceof Concept ? resolveExternal((Concept) element) : resolveExternal((TaraFacetTarget) element);
 			if (reference != null) {
 				final Icon icon = AllIcons.Gutter.ImplementedMethod;
-				final MarkerType type = OVERRIDDEN_PROPERTY_TYPE;
-				return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
-					type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
+				return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, markerType.getTooltip(),
+					markerType.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 			}
 		}
 		return super.getLineMarkerInfo(element);

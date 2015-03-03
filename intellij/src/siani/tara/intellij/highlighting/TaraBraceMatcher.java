@@ -9,10 +9,10 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.TaraTypes;
 
 public class TaraBraceMatcher implements PairedBraceMatcher {
-	private final BracePair[] PAIRS;
+	private final BracePair[] pairs;
 
 	public TaraBraceMatcher() {
-		PAIRS = new BracePair[]{
+		pairs = new BracePair[]{
 			new BracePair(TaraTypes.LEFT_PARENTHESIS, TaraTypes.RIGHT_PARENTHESIS, false),
 			new BracePair(TaraTypes.LEFT_SQUARE, TaraTypes.RIGHT_SQUARE, false),
 			new BracePair(TaraTypes.QUOTE_BEGIN, TaraTypes.QUOTE_END, false),
@@ -20,7 +20,7 @@ public class TaraBraceMatcher implements PairedBraceMatcher {
 	}
 
 	public BracePair[] getPairs() {
-		return PAIRS;
+		return pairs;
 	}
 
 	public boolean isPairedBracesAllowedBeforeType(@NotNull IElementType braceType, @Nullable IElementType tokenType) {

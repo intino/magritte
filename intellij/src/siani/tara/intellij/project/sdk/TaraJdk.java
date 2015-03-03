@@ -112,7 +112,7 @@ public class TaraJdk extends JavaDependentSdkType implements JavaSdkType {
 		File[] tdkFile = home.listFiles(new FileFilter() {
 			public boolean accept(File pathname) {
 				@NonNls final String name = pathname.getName();
-				return name.equals("magritte.jar") && !pathname.isDirectory();
+				return "magritte.jar".equals(name) && !pathname.isDirectory();
 			}
 		});
 		return tdkFile != null && tdkFile.length != 0;

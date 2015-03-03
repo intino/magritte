@@ -11,7 +11,7 @@ public class FacetTarget {
 	private transient NodeObject destiny;
 	private boolean always;
 	private boolean intention;
-	private ArrayList<Variable> variables = new ArrayList<>();
+	private List<Variable> variables = new ArrayList<>();
 	private NodeTree inner = new NodeTree();
 
 	public FacetTarget(String destiny) {

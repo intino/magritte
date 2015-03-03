@@ -75,8 +75,8 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 
 	@Override
 	public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull ModulesProvider modulesProvider) {
-		return (new ModuleWizardStep[]{
-			new TaraWizardStep(this, wizardContext, wizardContext.getProject())});
+		return new ModuleWizardStep[]{
+			new TaraWizardStep(this, wizardContext, wizardContext.getProject())};
 	}
 
 	@Override
@@ -132,19 +132,24 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			mySourcePaths.add(Pair.create(getContentEntryPath() + separator + MODEL, ""));
 			String parentPath = "";
 			if (mySourcePaths != null) {
-				for (final Pair<String, String> sourcePath : mySourcePaths) {
-					new File(sourcePath.first).mkdirs();
-					final VirtualFile sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(FileUtil.toSystemIndependentName(sourcePath.first));
-					if (sourceRoot != null) {
-						parentPath = sourceRoot.getParent().getPath();
-						contentEntry.addSourceFolder(sourceRoot, false, sourcePath.second);
-					}
-				}
+				parentPath = createSourcePaths(contentEntry, parentPath);
 				createResources(contentEntry, parentPath);
 				createGen(contentEntry);
 				createConfigDir(contentEntry);
 			}
 		}
+	}
+
+	private String createSourcePaths(ContentEntry contentEntry, String parentPath) {
+		for (final Pair<String, String> sourcePath : mySourcePaths) {
+			new File(sourcePath.first).mkdirs();
+			final VirtualFile sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(FileUtil.toSystemIndependentName(sourcePath.first));
+			if (sourceRoot != null) {
+				parentPath = sourceRoot.getParent().getPath();
+				contentEntry.addSourceFolder(sourceRoot, false, sourcePath.second);
+			}
+		}
+		return parentPath;
 	}
 
 	private void createConfigDir(ContentEntry contentEntry) {

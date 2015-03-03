@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.intellij.openapi.diagnostic.Logger;
+import siani.tara.intellij.TaraRuntimeException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,7 +85,7 @@ public class PivotalLoggingEventSubmitter {
 	private void checkResponse(HttpURLConnection connection) throws IOException {
 		int responseCode = connection.getResponseCode();
 		if (responseCode != 200)
-			throw new RuntimeException("Error not submitted. Code: " + responseCode + ". " + connection.getResponseMessage() + "\n");
+			throw new TaraRuntimeException("Error not submitted. Code: " + responseCode + ". " + connection.getResponseMessage() + "\n");
 	}
 
 	private void sendStory(HttpURLConnection connection, PivotalStory pivotalStory) throws IOException {
@@ -107,8 +108,8 @@ public class PivotalLoggingEventSubmitter {
 		int id;
 		String name = buildName();
 		String description = buildDescription(PivotalLoggingEventSubmitter.this.properties.get(REPORT_DESCRIPTION).toString());
-		String story_type = getReportType();
-		String current_state = "unstarted";
+		String storyType = getReportType();
+		String currentState = "unstarted";
 		String url;
 		String comment = (String) properties.get(REPORT_ADDITIONAL_INFO);
 
@@ -133,8 +134,8 @@ public class PivotalLoggingEventSubmitter {
 		public JsonElement asJson() {
 			JsonObject jsonObject = new JsonObject();
 			jsonObject.add("name", new JsonPrimitive(name));
-			jsonObject.add("current_state", new JsonPrimitive(current_state));
-			jsonObject.add("story_type", new JsonPrimitive(story_type));
+			jsonObject.add("current_state", new JsonPrimitive(currentState));
+			jsonObject.add("story_type", new JsonPrimitive(storyType));
 			jsonObject.add("description", new JsonPrimitive(description));
 			return jsonObject;
 		}

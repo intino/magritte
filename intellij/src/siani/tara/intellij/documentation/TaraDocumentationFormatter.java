@@ -15,6 +15,9 @@ import java.io.IOException;
 
 public class TaraDocumentationFormatter {
 
+	private TaraDocumentationFormatter() {
+	}
+
 	private static final Logger LOG = Logger.getInstance(TaraDocumentationFormatter.class.getName());
 
 	private static String getLocationString(PsiElement element) {

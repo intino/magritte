@@ -11,7 +11,7 @@ import java.util.Set;
 public class TaraTemplates {
 
 	@NonNls
-	public static HashMap<String, String> templates = new HashMap<>();
+	public static Map<String, String> templates = new HashMap<>();
 
 	static {
 		templates.put("MODEL", "TaraModel."+ TaraFileType.INSTANCE.getDefaultExtension());

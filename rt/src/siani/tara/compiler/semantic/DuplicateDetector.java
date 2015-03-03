@@ -28,7 +28,7 @@ public class DuplicateDetector {
 			if (node1.is(LinkNode.class)) continue;
 			if (node.getName().equals(node1.getName())) count++;
 		}
-		return (count > 1);
+		return count > 1;
 	}
 
 

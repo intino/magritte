@@ -61,7 +61,7 @@ public class UsageAnalyzer {
 	}
 
 	private boolean isReferencedAsLink(LinkNode node, String qn) {
-		return (qn.equals(node.getDestinyQN()));
+		return qn.equals(node.getDestinyQN());
 	}
 
 	private boolean isReferencedInVar(Node node, String qn) {

@@ -8,16 +8,18 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.util.IncorrectOperationException;
-import siani.tara.intellij.MessageProvider;
-import siani.tara.intellij.lang.TaraIcons;
-import siani.tara.intellij.lang.file.TaraFileType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.MessageProvider;
+import siani.tara.intellij.TaraRuntimeException;
+import siani.tara.intellij.lang.TaraIcons;
+import siani.tara.intellij.lang.file.TaraFileType;
 
 import java.util.Collection;
 import java.util.Properties;
 
 public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory {
+
 	@NonNls
 	public static final Collection<String> TEMPLATES = TaraTemplates.getTemplateValues();
 	@NonNls
@@ -49,7 +51,7 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 		try {
 			text = template.getText(properties);
 		} catch (Exception e) {
-			throw new RuntimeException("Unable to load template for " + FileTemplateManager.getInstance().internalTemplateToSubject(templateName), e);
+			throw new TaraRuntimeException("Unable to load template for " + FileTemplateManager.getInstance().internalTemplateToSubject(templateName), e);
 		}
 		final PsiFileFactory factory = PsiFileFactory.getInstance(project);
 		PsiFile file = factory.createFileFromText(fileName, TaraFileType.INSTANCE, text);
@@ -72,5 +74,8 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 
 	private static class TaraTemplatesFactoryHolder {
 		private static final TaraTemplatesFactory myInstance = new TaraTemplatesFactory();
+
+		private TaraTemplatesFactoryHolder() {
+		}
 	}
 }

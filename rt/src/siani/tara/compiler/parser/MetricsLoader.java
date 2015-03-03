@@ -20,6 +20,8 @@ public class MetricsLoader {
 
 	private static final Logger LOG = Logger.getLogger(MetricsLoader.class.getName());
 
+	private MetricsLoader() {
+	}
 
 	public static Map<String, List<SimpleEntry<String, String>>> loadMetrics(CompilerConfiguration config) {
 		Map<String, List<SimpleEntry<String, String>>> map = new HashMap();

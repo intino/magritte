@@ -16,6 +16,7 @@ import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
+import siani.tara.intellij.TaraRuntimeException;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
@@ -253,7 +254,7 @@ public class TaraUtil {
 	public static VirtualFile getSrcRoot(Collection<VirtualFile> virtualFiles) {
 		for (VirtualFile file : virtualFiles)
 			if (file.isDirectory() && "src".equals(file.getName())) return file;
-		throw new RuntimeException("src directory not found");
+		throw new TaraRuntimeException("src directory not found");
 	}
 
 	public static boolean isTerminalBox(TaraBoxFileImpl boxFile) {
@@ -288,7 +289,7 @@ public class TaraUtil {
 		Model.SearchNode forward = null;
 		Concept forwardConcept = concept.isSub() ? concept.getParentConcept() : concept;
 		if (forwardConcept == null)
-			throw new RuntimeException("Error building search. Concept: " + concept.getQualifiedName());
+			throw new TaraRuntimeException("Error building search. Concept: " + concept.getQualifiedName());
 		Model.SearchNode previous = new Model.SearchNode(forwardConcept.getType());
 		addProperties(forwardConcept, previous);
 		while ((forwardConcept = TaraPsiImplUtil.getConceptContainerOf(forwardConcept)) != null) {

@@ -24,6 +24,9 @@ import java.util.List;
 
 public class LinkToJava {
 
+	private LinkToJava() {
+	}
+
 	public static void link(Module module) {
 		Project project = module.getProject();
 		PsiDocumentManager.getInstance(project).commitAllDocuments();

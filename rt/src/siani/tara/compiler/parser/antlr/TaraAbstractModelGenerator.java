@@ -36,10 +36,10 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterConcept(@NotNull ConceptContext ctx) {
-		DeclaredNode container = (!conceptStack.isEmpty() ? (DeclaredNode) conceptStack.peek() : null);
+		DeclaredNode container = !conceptStack.isEmpty() ? (DeclaredNode) conceptStack.peek() : null;
 		Node node;
-		String name = (ctx.signature().IDENTIFIER() != null) ? ctx.signature().IDENTIFIER().getText() : "";
-		String type = (ctx.signature().metaidentifier() != null) ?
+		String name = ctx.signature().IDENTIFIER() != null ? ctx.signature().IDENTIFIER().getText() : "";
+		String type = ctx.signature().metaidentifier() != null ?
 			ctx.signature().metaidentifier().getText() : container.getObject().getType();
 		String parent = getParent(ctx);
 		node = name.isEmpty() && ctx.body() == null && parent != null ? new LinkNode(parent, container) :

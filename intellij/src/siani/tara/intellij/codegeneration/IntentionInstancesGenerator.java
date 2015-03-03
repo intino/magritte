@@ -106,13 +106,13 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 
 	private String makeConceptPackage(Concept concept) {
 		String path = "";
-		for (String subpath : FACETS_PATH) path += subpath + ".";
+		for (String subpath : facetsPath) path += subpath + ".";
 		return path + concept.getName() + concept.getType();
 	}
 
 	private String makeFacetPackage(Concept facetedConcept) {
 		String path = "";
-		for (String subpath : FACETS_PATH) path += subpath + ".";
+		for (String subpath : facetsPath) path += subpath + ".";
 		return path + inflector.plural(facetedConcept.getType()).toLowerCase() + "." + inflector.plural(facetedConcept.getName()).toLowerCase();
 	}
 
@@ -152,7 +152,7 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 
 	private PsiDirectory findFacetsDestiny() {
 		PsiDirectory directory = srcDirectory;
-		for (String name : FACETS_PATH) {
+		for (String name : facetsPath) {
 			PsiDirectory subdirectory = directory.findSubdirectory(name.toLowerCase());
 			directory = subdirectory != null ? subdirectory : createPackageDirectory(directory, name);
 		}
