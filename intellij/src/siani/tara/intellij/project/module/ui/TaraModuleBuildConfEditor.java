@@ -194,9 +194,12 @@ public class TaraModuleBuildConfEditor implements ModuleConfigurationEditor {
 
 	private Module[] getParentModulesCandidates(Project project, Module module) {
 		List<Module> moduleCandidates = new ArrayList<>();
-		for (Module aModule : ModuleManager.getInstance(project).getModules())
-			if (!aModule.equals(module) && !ModuleConfiguration.getInstance(aModule).isTerminal())
+		for (Module aModule : ModuleManager.getInstance(project).getModules()) {
+			ModuleConfiguration instance = ModuleConfiguration.getInstance(aModule);
+			if (instance == null) continue;
+			if (!aModule.equals(module) && !instance.isTerminal())
 				moduleCandidates.add(aModule);
+		}
 		return moduleCandidates.toArray(new Module[moduleCandidates.size()]);
 	}
 

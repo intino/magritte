@@ -2,6 +2,7 @@ src_file
 /Users/oroncal/workspace/Monet/Engine/model/Entities.tara
 /Users/oroncal/workspace/Monet/Engine/model/Facets.tara
 /Users/oroncal/workspace/Monet/Engine/model/Fields.tara
+/Users/oroncal/workspace/Monet/Engine/model/Properties.tara
 
 project
 Monet

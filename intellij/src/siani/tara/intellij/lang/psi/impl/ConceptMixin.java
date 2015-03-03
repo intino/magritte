@@ -130,8 +130,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		String name = getPathName(concept);
 		while (concept != null) {
 			Concept parent = TaraPsiImplUtil.getConceptContainerOf(concept);
-			if (parent != null)
-				if (parent.isSub() && !concept.isSub() || !parent.isSub() && !concept.isSub())
+			if (parent != null && (parent.isSub() && !concept.isSub() || !parent.isSub() && !concept.isSub()))
 					name = parent.getName() + "." + name;
 			concept = parent;
 		}

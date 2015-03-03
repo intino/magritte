@@ -70,9 +70,7 @@ public class MetamodelDependencyResolver {
 				else variables.get(index).setDefaultValues(values);
 			} catch (NumberFormatException ignored) {
 				for (Variable variable : variables)
-					if (variable.getName().equals(entry.getKey()))
-						if (model.isTerminal()) variable.setValues(values);
-						else variable.setDefaultValues(values);
+					setTextValues(entry, values, variable);
 			}
 		}
 	}
@@ -80,9 +78,13 @@ public class MetamodelDependencyResolver {
 	private void setValuesFromVarInits(Node instance) {
 		for (Map.Entry<String, Variable> entry : instance.getObject().getVariableInits().entrySet())
 			for (Variable variable : instance.getObject().getVariables())
-				if (variable.getName().equals(entry.getKey()))
-					if (model.isTerminal()) variable.setValues(entry.getValue().getValues());
-					else variable.setDefaultValues(entry.getValue().getValues());
+				setTextValues(entry, entry.getValue().getValues(), variable);
+	}
+
+	private void setTextValues(Map.Entry<String, Variable> entry, Object[] values, Variable variable) {
+		if (variable.getName().equals(entry.getKey()))
+			if (model.isTerminal()) variable.setValues(values);
+			else variable.setDefaultValues(values);
 	}
 
 	private void addClassVariablesToInstance(List<Variable> variables, Node instance) {
@@ -117,7 +119,7 @@ public class MetamodelDependencyResolver {
 		Node node = parent.searchNodeClass(instance);
 		if (node == null)
 			throw new TaraException("Node in metamodel not found: " + instance.getMetaQN());
-		return (node.is(DeclaredNode.class) ? node.equals(metaNode) : ((LinkNode) node).getDestiny().equals(metaNode));
+		return node.is(DeclaredNode.class) ? node.equals(metaNode) : ((LinkNode) node).getDestiny().equals(metaNode);
 	}
 
 	private Collection<Node> getInstancesOf(Node metaNode) {
@@ -141,10 +143,9 @@ public class MetamodelDependencyResolver {
 	private List<LinkNode> findLinksOfTerminal(DeclaredNode terminal) {
 		List<LinkNode> linkNodes = new ArrayList<>();
 		for (Node node : parent.getNodeTable()) {
-			if (node.is(DeclaredNode.class)) continue;
-			LinkNode linkNode = (LinkNode) node;
-			if (!linkNode.getDestiny().equals(terminal) || !linkNode.isReference()) continue;
-			linkNodes.add(linkNode);
+			if (node.is(DeclaredNode.class) || !((LinkNode) node).getDestiny().equals(terminal) || !((LinkNode) node).isReference())
+				continue;
+			linkNodes.add((LinkNode) node);
 		}
 		return linkNodes;
 	}

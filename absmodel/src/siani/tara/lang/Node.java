@@ -6,17 +6,17 @@ import java.util.List;
 
 public abstract class Node {
 
-	public transient static final String ANONYMOUS = "@anonymous";
-	public transient static final String IN_FACET_TARGET = "@facetTarget";
-	public transient static final String LINK = "@link";
 	protected String qualifiedName;
 	protected String file;
 	protected int line;
 	protected List<String> instanceTypes;
 	protected transient DeclaredNode container;
-	ModelObject object;
+	protected ModelObject object;
 	private List<String> imports = new ArrayList<>();
 	private String modelOwner;
+	public transient static final String ANONYMOUS = "@anonymous";
+	public transient static final String IN_FACET_TARGET = "@facetTarget";
+	public transient static final String LINK = "@link";
 
 	public Node() {
 		instanceTypes = new ArrayList<>();
@@ -76,7 +76,8 @@ public abstract class Node {
 	}
 
 	public String calculateQualifiedName() {
-		return qualifiedName = getNodePath();
+		qualifiedName = getNodePath();
+		return qualifiedName;
 	}
 
 	public int getLine() {
@@ -104,7 +105,7 @@ public abstract class Node {
 	}
 
 	public void addImports(Collection<String> imports) {
-		if (imports.size() > 0)
+		if (!imports.isEmpty())
 			this.imports.addAll(imports);
 	}
 
@@ -136,15 +137,11 @@ public abstract class Node {
 		return modelOwner;
 	}
 
-	public boolean addInstanceType(String inheritedType) {
-		return instanceTypes.add(inheritedType);
-	}
-
 	public boolean isAnonymous() {
 		return getName().contains(ANONYMOUS);
 	}
 
 	public String getMetaQN() {
-		return container == null ? (isSub() ? "" : getType()) : container.getMetaQN() + (isSub() ? "" : "." + getType());
+		return container == null ? isSub() ? "" : getType() : container.getMetaQN() + (isSub() ? "" : "." + getType());
 	}
 }

@@ -1,7 +1,6 @@
 package siani.tara.compiler.core;
 
 import siani.tara.compiler.core.errorcollection.ErrorCollector;
-import siani.tara.compiler.core.errorcollection.SyntaxException;
 import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.parser.Parser;
 import siani.tara.lang.Model;
@@ -40,9 +39,13 @@ public class SourceUnit extends ProcessingUnit {
 		return model;
 	}
 
-	public void parse() throws IOException, SyntaxException {
-		if (parser == null) parser = new Parser(source.getFile(), configuration);
-		parser.parse();
+	public void parse() throws TaraException {
+		if (parser == null) try {
+			parser = new Parser(source.getFile(), configuration);
+			parser.parse();
+		} catch (IOException e) {
+			throw new TaraException("Error opening source " + source.getFile().getName(), e);
+		}
 	}
 
 	public void importData() throws TaraException {

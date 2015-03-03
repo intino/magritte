@@ -62,7 +62,7 @@ public class TaraCompilerRunner {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				if (!TaraRtConstants.SRC_FILE.equals(line)) break;
-				while (!(line = reader.readLine()).equals("")) {
+				while (!"".equals(line = reader.readLine())) {
 					final File file = new File(line);
 					srcFiles.add(file);
 				}
@@ -77,7 +77,7 @@ public class TaraCompilerRunner {
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, "Error getting Args IO2: " + e.getMessage(), e);
 			} finally {
-				//argsFile.delete();
+//				argsFile.delete();
 			}
 		}
 	}
@@ -108,12 +108,7 @@ public class TaraCompilerRunner {
 					configuration.setTerminal(Boolean.valueOf(reader.readLine()));
 					break;
 				case TaraRtConstants.LANGUAGE:
-					String languageForCodeGeneration = reader.readLine();
-					Locale locale;
-					if (languageForCodeGeneration.equalsIgnoreCase("Spanish"))
-						locale = new Locale("Spanish", "Spain", "es_ES");
-					else locale = Locale.ENGLISH;
-					configuration.setLanguageForCodeGeneration(locale);
+					configuration.setLanguageForCodeGeneration(processLocale(reader));
 					break;
 				case TaraRtConstants.MODELS_PATH:
 					configuration.setModelsDirectory(reader.readLine());
@@ -139,9 +134,20 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.PROJECT_ICON:
 					configuration.setProjectIcon(reader.readLine());
 					break;
+				default:
+					break;
 			}
 			aLine = reader.readLine();
 		}
+	}
+
+	private static Locale processLocale(BufferedReader reader) throws IOException {
+		String languageForCodeGeneration = reader.readLine();
+		Locale locale;
+		if ("Spanish".equalsIgnoreCase(languageForCodeGeneration))
+			locale = new Locale("Spanish", "Spain", "es_ES");
+		else locale = Locale.ENGLISH;
+		return locale;
 	}
 
 	private static void addSources(List<File> srcFiles, final CompilationUnit unit) {

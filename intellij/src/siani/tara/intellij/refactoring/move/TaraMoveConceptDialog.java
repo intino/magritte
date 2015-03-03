@@ -37,8 +37,6 @@ public class TaraMoveConceptDialog extends RefactoringDialog {
 
 		final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor();
 		descriptor.setRoots(ProjectRootManager.getInstance(project).getContentRoots());
-//		descriptor.withTreeRootVisible(true);
-
 		myPanel.getBrowseTargetFileButton().addBrowseFolderListener(MessageProvider.message("refactoring.move.concept.choose.destination.file.title"),
 			null, project, descriptor,
 			TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT);

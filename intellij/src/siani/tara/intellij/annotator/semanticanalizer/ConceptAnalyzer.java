@@ -4,6 +4,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
+import siani.tara.intellij.TaraRuntimeException;
 import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.annotator.fix.AddAddressFix;
 import siani.tara.intellij.annotator.fix.LinkToJavaFix;
@@ -108,7 +109,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		if (parent != null) return analyzeChildDuplicates(parent) > 1;
 		else {
 			PsiElement inFacetTarget = TaraPsiImplUtil.getContextOf(concept);
-			if (inFacetTarget != null && inFacetTarget instanceof TaraFacetTarget) {
+			if (inFacetTarget instanceof TaraFacetTarget) {
 				List<Concept> innerConceptsInBody = TaraPsiImplUtil.getInnerConceptsInBody(((TaraFacetTarget) inFacetTarget).getBody());
 				return countDuplicates(innerConceptsInBody, concept.getName()) > 1;
 			}
@@ -174,9 +175,15 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean shouldHaveFacetTargetClass(Node node, Concept concept) {
-		return concept != null && node != null
-			&& (concept.isFacet() || node.is(META_FACET))
-			&& node.is(siani.tara.lang.Annotation.INTENTION);
+		return !areNull(node, concept) && isFacet(node, concept) && node.is(INTENTION);
+	}
+
+	private boolean isFacet(Node node, Concept concept) {
+		return concept.isFacet() || node.is(META_FACET);
+	}
+
+	private boolean areNull(Node node, Concept concept) {
+		return concept == null || node == null;
 	}
 
 	private void analyzeMetaAnnotationConstrains(Node node) {
@@ -230,7 +237,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 
 	private boolean analyzeAsProperty(Node node) {
 		if (concept.isProperty()) checkContainsTerminal(concept);
-		if (results.size() > 0) return false;
+		if (!results.isEmpty()) return false;
 		if (!node.getObject().is(PROPERTY)) return true;
 		if (concept.getName() != null && !concept.getName().isEmpty())
 			results.put(this.concept.getFirstChild(), new AnnotateAndFix(ERROR, "Properties are unnamed"));
@@ -330,7 +337,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 
 	private String getFacetApplyPackage(Concept concept, String facetName) {
 		Inflector inflector = getInflector(concept);
-		if (inflector == null) throw new RuntimeException("Inflector not found");
+		if (inflector == null) throw new TaraRuntimeException("Inflector not found");
 		return (getFacetPackage(concept) + DOT + inflector.plural(facetName)).toLowerCase();
 	}
 

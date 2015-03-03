@@ -18,19 +18,16 @@ public class TaraErrorStrategy extends DefaultErrorStrategy {
 
 	@Override
 	public void recover(Parser recognizer, RecognitionException e) {
-//		printParameters(recognizer);
 		throw new InputMismatchException(recognizer);
 	}
 
 	@Override
 	public Token recoverInline(Parser recognizer) throws RecognitionException {
-//		printParameters(recognizer);
 		throw new InputMismatchException(recognizer);
 	}
 
 	@Override
 	public void reportError(Parser recognizer, RecognitionException e) {
-//		printParameters(recognizer);
 		throw new InputMismatchException(recognizer);
 	}
 

@@ -89,7 +89,6 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		if (parameters != null) {
 			Model model = TaraLanguage.getMetaModel(parameters.getContainingFile());
 			if (model == null) return parameters;
-//			if (parameters.getParameterList().length == 0) return parameters;
 			TaraFacetApply facet = parameters.isInFacet();
 			Node node = TaraUtil.findNode(TaraPsiImplUtil.getConceptContainerOf(parameters), model);
 			if (node == null) return parameters;

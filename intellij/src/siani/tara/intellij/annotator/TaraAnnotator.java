@@ -20,7 +20,7 @@ public abstract class TaraAnnotator implements Annotator {
 	}
 
 	protected void annotateAndFix(Map<PsiElement, AnnotateAndFix> annotations) {
-		Annotation annotation = null;
+		Annotation annotation;
 		for (Map.Entry<PsiElement, AnnotateAndFix> entry : annotations.entrySet()) {
 			switch (entry.getValue().level()) {
 				case INFO:
@@ -29,7 +29,7 @@ public abstract class TaraAnnotator implements Annotator {
 				case WARNING:
 					annotation = holder.createWarningAnnotation(entry.getKey().getNode(), entry.getValue().message());
 					break;
-				case ERROR:
+				default:
 					annotation = holder.createErrorAnnotation(entry.getKey().getNode(), entry.getValue().message());
 					break;
 			}

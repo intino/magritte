@@ -55,7 +55,7 @@ public class TaraPsiImplUtil {
 
 
 	public static List<Concept> getInnerConceptsOf(Concept concept) {
-		if (concept != null) if (concept.getBody() != null) {
+		if (concept != null && concept.getBody() != null) {
 			List<Concept> children = getInnerConceptsInBody(concept.getBody());
 			removeSubs(children);
 			List<Concept> subConcepts = new ArrayList<>();
@@ -116,13 +116,19 @@ public class TaraPsiImplUtil {
 	@Nullable
 	public static PsiElement getContextOf(PsiElement element) {
 		PsiElement aElement = element;
-		while ((aElement.getParent() != null)
-			&& !(aElement.getParent() instanceof TaraBoxFile)
-			&& !(aElement.getParent() instanceof Concept)
-			&& !(aElement.getParent() instanceof TaraFacetTarget)
-			&& !(aElement.getParent() instanceof TaraFacetApply))
+		while (aElement.getParent() != null && isNotConceptOrFile(aElement) && isNotFacet(aElement))
 			aElement = aElement.getParent();
 		return aElement.getParent();
+	}
+
+	private static boolean isNotConceptOrFile(PsiElement aElement) {
+		return !(aElement.getParent() instanceof TaraBoxFile)
+			&& !(aElement.getParent() instanceof Concept);
+	}
+
+	private static boolean isNotFacet(PsiElement aElement) {
+		return !(aElement.getParent() instanceof TaraFacetTarget)
+			&& !(aElement.getParent() instanceof TaraFacetApply);
 	}
 
 	public static Body getBodyContextOf(PsiElement element) {

@@ -13,7 +13,6 @@ import static siani.tara.compiler.codegeneration.NameFormatter.composeMorphPacka
 
 public class MorphFrameCreator extends FrameCreator {
 
-
 	private Node initNode;
 	Set<String> imports = new HashSet<>();
 
@@ -24,7 +23,7 @@ public class MorphFrameCreator extends FrameCreator {
 	public Map.Entry<String, Frame> create(Node node) {
 		this.initNode = node;
 		final Frame frame = new Frame(MORPH);
-		String packagePath = composeMorphPackagePath(model, node);
+		String packagePath = composeMorphPackagePath(model.getLanguage(), node);
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		nodeToFrame(node, frame);
 		addImports(frame);
@@ -33,7 +32,8 @@ public class MorphFrameCreator extends FrameCreator {
 	}
 
 	private void nodeToFrame(final Node node, Frame frame) {
-		if (node.is(Annotation.CASE) || node.is(Annotation.PROPERTY)) return;
+		Node metaNode = model.getParentModel() == null ? null : model.getParentModel().searchNodeClass(node);
+		if (node.is(Annotation.CASE) || (metaNode != null && metaNode.is(Annotation.PROPERTY))) return;
 		if (node.is(LinkNode.class) && ((LinkNode) node).isReference())
 			linkNodeToFrame((LinkNode) node, frame);
 		else declaredNodeToFrame(node, frame);
@@ -46,7 +46,7 @@ public class MorphFrameCreator extends FrameCreator {
 			addFrame(QN, linkNode.getDestiny().getObject().getDeclaredNodeQN()).
 			addFrame(NAME, linkNode.getDestiny().getObject().getName());
 		frame.addFrame(NODE, newFrame);
-		addImports(linkNode.getDestiny().getContainer());
+		addImports(linkNode.getDestiny().getContainer(), model.getLanguage());
 	}
 
 	private void declaredNodeToFrame(Node node, Frame frame) {
@@ -58,12 +58,12 @@ public class MorphFrameCreator extends FrameCreator {
 		addInner(node, newFrame);
 		if (!node.isSub() && !node.equals(initNode))
 			addSubs(node, frame);
-		addImports(node.getContainer());
+		addImports(node.getContainer(), model.getLanguage());
 	}
 
-	private void addImports(DeclaredNode container) {
+	private void addImports(DeclaredNode container, Locale locale) {
 		if (container != null) {
-			String containerPackage = composeMorphPackagePath(model, container);
+			String containerPackage = composeMorphPackagePath(locale, container);
 			if (!containerPackage.equals(MAGRITTE_MORPHS))
 				imports.add(containerPackage + DOT + container.getName());
 		}
@@ -75,7 +75,7 @@ public class MorphFrameCreator extends FrameCreator {
 	}
 
 	private void addNodeInfo(Node node, Frame newFrame) {
-		if (initNode != null && node != initNode) {
+		if (initNode != null && !node.equals(initNode)) {
 			newFrame.addFrame(INNER, "");
 			if (node.is(Annotation.AGGREGATED)) newFrame.addFrame(RELATION, AGGREGATION);
 			else newFrame.addFrame(RELATION, COMPOSITION);
@@ -125,7 +125,7 @@ public class MorphFrameCreator extends FrameCreator {
 		super.addVariables(node, frame);
 		for (final Variable variable : node.getObject().getVariables())
 			if (variable.hasValue() && variable instanceof Reference)
-				addImports((DeclaredNode) model.getParentModel().searchNode(variable.getType()));
+				addImports((DeclaredNode) model.getParentModel().searchNode(variable.getType()), model.getParentModel().getLanguage());
 	}
 
 	private String[] getFacetDestinies(Node node) {

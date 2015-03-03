@@ -5,11 +5,7 @@ import siani.tara.lang.DeclaredNode;
 
 public class TaraRuntimeException extends RuntimeException {
 
-	private DeclaredNode node;
-
-	public TaraRuntimeException(String message) {
-		super(message);
-	}
+	private final DeclaredNode node;
 
 	public TaraRuntimeException(String message, DeclaredNode node) {
 		super(message);

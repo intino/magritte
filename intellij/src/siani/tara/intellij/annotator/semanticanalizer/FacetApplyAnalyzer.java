@@ -70,7 +70,7 @@ public class FacetApplyAnalyzer extends TaraAnalyzer {
 	}
 
 	private List<Variable> getFacetVariables(Map<String, List<FacetTarget>> facets, String facetName) {
-//		for (String key : facets.keySet())TODO
+//TODO		for (String key : facets.keySet())
 //			if (key.endsWith(facetName)) return facets.get(key).getVariables();
 		return Collections.EMPTY_LIST;
 	}

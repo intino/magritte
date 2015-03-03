@@ -6,6 +6,7 @@ import siani.tara.compiler.codegeneration.BoxFrameCreator;
 import siani.tara.compiler.codegeneration.MorphFrameCreator;
 import siani.tara.compiler.codegeneration.NameFormatter;
 import siani.tara.compiler.codegeneration.ResourceManager;
+import siani.tara.compiler.codegeneration.StringFormatter;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.TaraException;
@@ -115,7 +116,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		Map<String, Document> map = new HashMap();
 		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
 		ruleEngine.register("date", buildDateFormatter());
-		ruleEngine.register("string", buildStringFormatter());
+		ruleEngine.register("string", new StringFormatter());
 		for (List<Node> nodes : groupByBox) {
 			Document document = new Document();
 			String project = compilationUnit.getConfiguration().getProject();
@@ -160,30 +161,6 @@ public class ModelToJavaOperation extends ModelOperation {
 				String val = value.toString();
 				if (!val.contains("/")) return value;
 				return val.replace("/", ", ");
-			}
-		};
-	}
-
-	private Formatter buildStringFormatter() {
-		return new Formatter() {
-			@Override
-			public Object format(Object value) {
-				String val = value.toString().trim();
-				if (val.isEmpty()) return val;
-				if (val.startsWith("\n") || val.startsWith("---")) return transformMultiLineString((String) value);
-				return val;
-			}
-
-			private String transformMultiLineString(String value) {
-				String val = value.replace("\r", "");
-				int i = value.indexOf('-');
-				String indent = value.substring(0, i).replace("\t", "    ");
-				val = val.replace(indent, "\n").trim();
-				if (val.startsWith("---")) {
-					val = val.replaceAll("----+", "").trim();
-				}
-				return val.replaceAll("\n\n+","\n").replace("\n", "\" +\n\"").replace("\"\"","");
-
 			}
 		};
 	}
@@ -264,4 +241,5 @@ public class ModelToJavaOperation extends ModelOperation {
 	public InputStream getRulesFromResources(String rules) throws TaraException {
 		return ResourceManager.getStream("rules/" + rules);
 	}
+
 }

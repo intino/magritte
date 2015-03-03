@@ -29,8 +29,7 @@ public class ReferenceManager {
 	@Nullable
 	public static Concept resolveToConcept(IdentifierReference identifierReference) {
 		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
-		PsiElement reference = resolveConcept(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
-		return (Concept) reference;
+		return (Concept) resolveConcept(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
 	}
 
 	@Nullable
@@ -116,14 +115,14 @@ public class ReferenceManager {
 	private static PsiElement tryToResolveAsQN(List<Identifier> path) {
 		TaraBoxFileImpl resolve;
 		resolve = resolveBoxPath(path.get(0));
-		if (resolve == null || path.size() == 0) return null;
+		if (resolve == null || path.isEmpty()) return null;
 		List<Identifier> qn = path.subList(1, path.size());
 		if (qn.isEmpty()) return resolve;
 		return tryToResolveInBox(resolve, qn);
 	}
 
-	private static ArrayList<Concept> toArrayList(Set<Concept> set) {
-		ArrayList<Concept> visited = new ArrayList<>();
+	private static List<Concept> toArrayList(Set<Concept> set) {
+		List<Concept> visited = new ArrayList<>();
 		visited.addAll(set);
 		return visited;
 	}
@@ -152,7 +151,7 @@ public class ReferenceManager {
 		return reference.getParent() instanceof Signature;
 	}
 
-	private static void addAggregated(TaraBoxFile file, Identifier identifier, Set<Concept> set, ArrayList<Concept> visited) {
+	private static void addAggregated(TaraBoxFile file, Identifier identifier, Set<Concept> set, List<Concept> visited) {
 		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(file);
 		for (Concept concept : allConceptsOfFile)
 			if (namesAreEqual(identifier, concept) && isAggregated(file, concept, visited))
@@ -163,13 +162,15 @@ public class ReferenceManager {
 		return identifier.getText().equals(concept.getName());
 	}
 
-	private static boolean isAggregated(TaraBoxFile file, Concept concept, ArrayList<Concept> visited) {
+	private static boolean isAggregated(TaraBoxFile file, Concept concept, List<Concept> visited) {
 		if (visited.contains(concept)) return false;
 		visited.add(concept);
 		if (concept.isAnnotatedAsAggregated() || concept.isMetaAggregated()) return true;
 		IdentifierReference parentReference = concept.getSignature().getParentReference();
-		if (parentReference == null) return false;
-		Concept[] roots = getRootConcepts(file, parentReference, visited, new HashSet<Concept>());
+		return parentReference != null && checkPossibleAggregates(parentReference, getRootConcepts(file, parentReference, visited, new HashSet<Concept>()));
+	}
+
+	private static boolean checkPossibleAggregates(IdentifierReference parentReference, Concept[] roots) {
 		if (roots.length == 0) return false;
 		for (Concept possibleRoot : roots) {
 			Concept aggregated = resolvePathInConcept((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
@@ -178,7 +179,7 @@ public class ReferenceManager {
 		return false;
 	}
 
-	private static Concept[] getRootConcepts(TaraBoxFile file, IdentifierReference parentReference, ArrayList<Concept> visited, Set<Concept> roots) {
+	private static Concept[] getRootConcepts(TaraBoxFile file, IdentifierReference parentReference, List<Concept> visited, Set<Concept> roots) {
 		Identifier identifier = getIdentifier(parentReference);
 		addConceptsInContext(identifier, roots);
 		addRootConcepts(file, identifier, roots);

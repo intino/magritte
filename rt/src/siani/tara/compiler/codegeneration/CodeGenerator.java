@@ -21,9 +21,8 @@ public abstract class CodeGenerator {
 		output.join(3000);
 		if (output.getMessage() != null && !"".equals(output.getMessage()))
 			LOG.log(Level.INFO, output.getMessage(), error);
-		if (error.getMessage() != null && !"".equals(error.getMessage()))
-			if (!error.getMessage().startsWith("Note"))
-				LOG.log(Level.SEVERE, error.getMessage(), error);
+		if (error.getMessage() != null && !"".equals(error.getMessage()) && !error.getMessage().startsWith("Note"))
+			LOG.log(Level.SEVERE, error.getMessage(), error);
 		return error.getMessage();
 	}
 

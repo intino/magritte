@@ -14,7 +14,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	private final String file;
 	Model model;
-	Stack<Node> conceptStack = new Stack<>();
+	Deque<Node> conceptStack = new ArrayDeque<>();
 	Set<String> imports = new HashSet<>();
 	String currentDocAttribute = "";
 
@@ -36,7 +36,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterConcept(@NotNull ConceptContext ctx) {
-		DeclaredNode container = (!conceptStack.empty() ? (DeclaredNode) conceptStack.peek() : null);
+		DeclaredNode container = (!conceptStack.isEmpty() ? (DeclaredNode) conceptStack.peek() : null);
 		Node node;
 		String name = (ctx.signature().IDENTIFIER() != null) ? ctx.signature().IDENTIFIER().getText() : "";
 		String type = (ctx.signature().metaidentifier() != null) ?
@@ -179,8 +179,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		variable.setList(ctx.LIST() != null);
 		if (ctx.integerValue() != null)
 			variable.setDefaultValues(getTextArrayOfContextList(ctx.integerValue()));
-//		else if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
-//		if (ctx.measureValue() != null) variable.setMeasureValue(ctx.measureValue().getText());
 		addAttribute(ctx, variable);
 	}
 
@@ -237,7 +235,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterStringAttribute(@NotNull StringAttributeContext ctx) {
 		Attribute variable = new Attribute(ctx.STRING_TYPE().getText(), ctx.IDENTIFIER().getText());
 		if (ctx.stringValue() != null) variable.setDefaultValues(formatValues(ctx.stringValue()));
-//		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
 		variable.setList(ctx.LIST() != null);
 		addAttribute(ctx, variable);
 	}
@@ -265,7 +262,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		Attribute variable = new Attribute(ctx.BOOLEAN_TYPE().getText(), ctx.IDENTIFIER().getText());
 		variable.setList(ctx.LIST() != null);
 		if (ctx.booleanValue() != null) variable.setDefaultValues(getTextArrayOfContextList(ctx.booleanValue()));
-//		if (ctx.EMPTY() != null) variable.setDefaultValues(new String[]{Variable.EMPTY});
 		addAttribute(ctx, variable);
 	}
 

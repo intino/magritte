@@ -91,8 +91,8 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 
 	private boolean hasConcepts(Collection<AbstractTreeNode> children) {
 		for (AbstractTreeNode node : children)
-			if (node.getValue() instanceof PsiFile)
-				if (((PsiFile) node.getValue()).getFileType() == TaraFileType.INSTANCE) return true;
+			if (node.getValue() instanceof PsiFile && ((PsiFile) node.getValue()).getFileType() == TaraFileType.INSTANCE)
+				return true;
 		return false;
 	}
 
@@ -105,16 +105,21 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 	}
 
 	public Object getData(Collection<AbstractTreeNode> selected, String dataId) {
-		if (selected != null)
-			if (ConceptTreeView.DATA_KEY.is(dataId)) {
-				List<ConceptTreeView> result = getConceptTreeViews(selected);
-				if (!result.isEmpty())
-					return result.toArray(new ConceptTreeView[result.size()]);
-			} else if (PlatformDataKeys.DELETE_ELEMENT_PROVIDER.is(dataId))
-				for (AbstractTreeNode node : selected)
-					if (node.getValue() instanceof ConceptTreeView)
-						return new MyDeleteProvider(selected);
+		if (selected == null) return null;
+		if (ConceptTreeView.DATA_KEY.is(dataId)) {
+			List<ConceptTreeView> result = getConceptTreeViews(selected);
+			if (!result.isEmpty())
+				return result.toArray(new ConceptTreeView[result.size()]);
+		} else if (PlatformDataKeys.DELETE_ELEMENT_PROVIDER.is(dataId))
+			if (isSelected(selected)) return new MyDeleteProvider(selected);
 		return null;
+	}
+
+	private boolean isSelected(Collection<AbstractTreeNode> selected) {
+		for (AbstractTreeNode node : selected)
+			if (node.getValue() instanceof ConceptTreeView)
+				return true;
+		return false;
 	}
 
 	private List<ConceptTreeView> getConceptTreeViews(Collection<AbstractTreeNode> selected) {

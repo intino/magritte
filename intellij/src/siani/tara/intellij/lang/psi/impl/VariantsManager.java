@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.*;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -87,7 +88,7 @@ public class VariantsManager {
 				resolvePathFor(child, path.subList(1, path.size()));
 	}
 
-	public List<Identifier> solveIdentifierContext() {
+	public final List<Identifier> solveIdentifierContext() {
 		if (myElement.getParent() instanceof IdentifierReference) {
 			List<? extends Identifier> list = ((IdentifierReference) myElement.getParent()).getIdentifierList();
 			return (List<Identifier>) list.subList(0, list.size() - 1);
@@ -96,6 +97,6 @@ public class VariantsManager {
 			List<? extends Identifier> list = ((TaraHeaderReference) myElement.getParent()).getIdentifierList();
 			return (List<Identifier>) list.subList(0, list.size() - 1);
 		}
-		return null;
+		return Collections.EMPTY_LIST;
 	}
 }

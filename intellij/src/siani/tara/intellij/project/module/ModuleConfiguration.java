@@ -60,12 +60,9 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	}
 
 	public void projectOpened() {
-
-		// called when project is opened
 	}
 
 	public void projectClosed() {
-		// called when project is being closed
 	}
 
 	public void moduleAdded() {
@@ -79,10 +76,10 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 			try {
 				String aux;
 				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-				configuration.dslName = ((aux = br.readLine()).equals("null")) ? "" : aux;
-				configuration.dslFilePath = ((aux = br.readLine()).equals("null")) ? "" : aux;
-				configuration.dictionary = ((aux = br.readLine()).equals("null")) ? "" : aux;
-				configuration.generatedDslName = ((aux = br.readLine()).equals("null")) ? "" : aux;
+				configuration.dslName = "null".equals(aux = br.readLine()) ? "" : aux;
+				configuration.dslFilePath = "null".equals(aux = br.readLine()) ? "" : aux;
+				configuration.dictionary = "null".equals(aux = br.readLine()) ? "" : aux;
+				configuration.generatedDslName = "null".equals(aux = br.readLine()) ? "" : aux;
 				configuration.terminal = Boolean.parseBoolean(br.readLine());
 				br.close();
 				file.delete();
@@ -109,7 +106,7 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 	}
 
 	public Locale getLanguage() {
-		if (configuration.getDictionary().equals("English")) return Locale.ENGLISH;
+		if ("English".equals(configuration.getDictionary())) return Locale.ENGLISH;
 		return new Locale("Spanish", "Spain", "es_ES");
 	}
 

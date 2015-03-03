@@ -5,6 +5,7 @@ import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
@@ -23,7 +24,7 @@ public class ImplicitToExplicitParameters extends PsiElementBaseIntentionAction 
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		Node node = TaraUtil.getMetaConcept(TaraPsiImplUtil.getConceptContainerOf(element));
 		if (node == null) return;
-		Parameters implicit = (Parameters) element.getParent();
+		Parameters implicit = (Parameters) getParametersScope(element);
 		Map<String, String> explicit = extractParametersData(implicit, node);
 		if (explicit.size() != implicit.getParameters().length) return;
 		implicit.replace(TaraElementFactory.getInstance(project).createExplicitParameters(explicit));
@@ -65,7 +66,17 @@ public class ImplicitToExplicitParameters extends PsiElementBaseIntentionAction 
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		return element.isWritable() && (element.getParent() instanceof Parameters) && !((Parameters) element.getParent()).areExplicit();
+		PsiElement parametersScope = getParametersScope(element);
+		return element.isWritable() && parametersScope != null && !((Parameters) parametersScope).areExplicit();
+	}
+
+	private PsiElement getParametersScope(PsiElement element) {
+		PsiElement parent = element.getParent();
+		while (parent != null && !PsiFile.class.isInstance(parent) && !Concept.class.isInstance(parent)) {
+			if (parent instanceof Parameters) return parent;
+			parent = parent.getParent();
+		}
+		return null;
 	}
 
 	@Override

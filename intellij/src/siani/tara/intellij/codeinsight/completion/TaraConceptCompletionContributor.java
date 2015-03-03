@@ -23,7 +23,6 @@ import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContai
 
 public class TaraConceptCompletionContributor extends CompletionContributor {
 
-
 	public TaraConceptCompletionContributor() {
 		bodyCompletion();
 		facetCompletion();
@@ -32,13 +31,29 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 		afterIdentifier();
 	}
 
-	private void afterIdentifier() {
-		extend(CompletionType.BASIC, TaraFilters.afterIdentifier,
+	private void bodyCompletion() {
+		extend(CompletionType.BASIC, TaraFilters.afterNewLineInBody, new BodyCompletionProvider());
+	}
+
+	private void facetCompletion() {
+		extend(CompletionType.BASIC, TaraFilters.inFacetBody,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(create("extends "));
+					resultSet.addElement(create("on "));
+				}
+			}
+		);
+	}
+
+	private void newLine() {
+		extend(CompletionType.BASIC, TaraFilters.AfterNewLineNoMetamodel,
+			new CompletionProvider<CompletionParameters>() {
+				public void addCompletions(@NotNull CompletionParameters parameters,
+				                           ProcessingContext context,
+				                           @NotNull CompletionResultSet resultSet) {
+					resultSet.addElement(create("Concept "));
 				}
 			}
 		);
@@ -69,62 +84,13 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 		);
 	}
 
-	private void newLine() {
-		extend(CompletionType.BASIC, TaraFilters.AfterNewLineNoMetamodel,
+	private void afterIdentifier() {
+		extend(CompletionType.BASIC, TaraFilters.afterIdentifier,
 			new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(create("Concept "));
-				}
-			}
-		);
-	}
-
-	private void facetCompletion() {
-		extend(CompletionType.BASIC, TaraFilters.inFacetBody,
-			new CompletionProvider<CompletionParameters>() {
-				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
-					resultSet.addElement(create("on "));
-				}
-			}
-		);
-	}
-
-	private void bodyCompletion() {
-		extend(CompletionType.BASIC, TaraFilters.afterNewLineInBody,
-			new CompletionProvider<CompletionParameters>() {
-
-				public void addCompletions(@NotNull CompletionParameters parameters,
-				                           ProcessingContext context,
-				                           @NotNull CompletionResultSet resultSet) {
-					Concept concept = getConceptContainerOf(parameters.getPosition());
-					if (parameters.getPosition().getContext() instanceof MetaIdentifier && concept != null)
-						addMetaIdentifiers(parameters.getOriginalFile(), (Concept) concept.getOriginalElement(), resultSet);
-					addKeywords(resultSet);
-					Concept container = getConceptContainerOf(concept);
-					Node node = findContainerNode(container);
-					if (node == null) return;
-					addFacetAlternatives(resultSet, container, node);
-				}
-
-				private void addFacetAlternatives(CompletionResultSet resultSet, Concept container, Node node) {
-					if (container.isFacet() || node.is(Annotation.META_FACET)) resultSet.addElement(create("on "));
-					if (!node.getObject().getAllowedFacets().isEmpty() && !areAlreadyApplied(node.getObject().getAllowedFacets(), container))
-						resultSet.addElement(create("as "));
-				}
-
-				private void addKeywords(CompletionResultSet resultSet) {
-					resultSet.addElement(create("has "));
-					resultSet.addElement(create("sub "));
-					resultSet.addElement(create("var "));
-				}
-
-				private Node findContainerNode(Concept container) {
-					if (container == null) return null;
-					return TaraUtil.getMetaConcept(container);
+					resultSet.addElement(create("extends "));
 				}
 			}
 		);
@@ -165,8 +131,9 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 	}
 
 	private void addSubNodes(Map<Node, LookupElementBuilder> candidates, Node node) {
-		for (DeclaredNode declaredNode : node.getSubNodes())
-			candidates.put(declaredNode, createElement(declaredNode));
+		for (DeclaredNode declaredNode : node.getDeepSubNodes())
+			if (!declaredNode.is(Annotation.ABSTRACT))
+				candidates.put(declaredNode, createElement(declaredNode));
 	}
 
 	private void buildEntries(CompletionResultSet resultSet, Model metaModel, Map<Node, LookupElementBuilder> candidates) {
@@ -188,5 +155,38 @@ public class TaraConceptCompletionContributor extends CompletionContributor {
 		if (node.getObject().getVariables().isEmpty())
 			return create(node.getName());
 		return create(node.getName() + "()");
+	}
+
+	private class BodyCompletionProvider extends CompletionProvider<CompletionParameters> {
+
+		public void addCompletions(@NotNull CompletionParameters parameters,
+		                           ProcessingContext context,
+		                           @NotNull CompletionResultSet resultSet) {
+			Concept concept = getConceptContainerOf(parameters.getPosition());
+			if (parameters.getPosition().getContext() instanceof MetaIdentifier && concept != null)
+				addMetaIdentifiers(parameters.getOriginalFile(), (Concept) concept.getOriginalElement(), resultSet);
+			addKeywords(resultSet);
+			Concept container = getConceptContainerOf(concept);
+			Node node = findContainerNode(container);
+			if (node == null) return;
+			addFacetAlternatives(resultSet, container, node);
+		}
+
+		private void addFacetAlternatives(CompletionResultSet resultSet, Concept container, Node node) {
+			if (container.isFacet() || node.is(Annotation.META_FACET)) resultSet.addElement(create("on "));
+			if (!node.getObject().getAllowedFacets().isEmpty() && !areAlreadyApplied(node.getObject().getAllowedFacets(), container))
+				resultSet.addElement(create("as "));
+		}
+
+		private void addKeywords(CompletionResultSet resultSet) {
+			resultSet.addElement(create("has "));
+			resultSet.addElement(create("sub "));
+			resultSet.addElement(create("var "));
+		}
+
+		private Node findContainerNode(Concept container) {
+			if (container == null) return null;
+			return TaraUtil.getMetaConcept(container);
+		}
 	}
 }

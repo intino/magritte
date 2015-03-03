@@ -5,6 +5,7 @@ import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
@@ -15,14 +16,16 @@ import siani.tara.lang.Node;
 import siani.tara.lang.Variable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ExplicitToImplicitParameters extends PsiElementBaseIntentionAction implements IntentionAction {
+
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		Node node = TaraUtil.getMetaConcept(TaraPsiImplUtil.getConceptContainerOf(element));
 		if (node == null) return;
-		Parameters explicit = (Parameters) element.getParent();
+		Parameters explicit = (Parameters) getParametersScope(element);
 		List<String> implicit = extractParametersData(node, explicit);
 		if (implicit.size() != explicit.getParameters().length) return;
 		explicit.replace(TaraElementFactory.getInstance(project).createParameters(implicit.toArray(new String[implicit.size()])));
@@ -32,9 +35,9 @@ public class ExplicitToImplicitParameters extends PsiElementBaseIntentionAction 
 		List<String> parameterValues = new ArrayList<>();
 		List<Variable> variables = getVariables(node, parameters.getParameters()[0]);
 		for (Variable variable : variables) {
-			Parameter correspondantParameter = getCorrespondantParameter(parameters, variable.getName());
-			if (correspondantParameter == null) continue;
-			parameterValues.add(correspondantParameter.getValue().getText());
+			Parameter correspondentParameter = getCorrespondentParameter(parameters, variable.getName());
+			if (correspondentParameter == null) continue;
+			parameterValues.add(correspondentParameter.getValue().getText());
 		}
 		return parameterValues;
 	}
@@ -43,11 +46,11 @@ public class ExplicitToImplicitParameters extends PsiElementBaseIntentionAction 
 		TaraFacetApply inFacet = parameter.isInFacet();
 		List<Variable> facetVariables = null;
 		if (inFacet != null && (facetVariables = getAllowedFacet(node, inFacet.getFirstChild().getText(), getContextNameOf(inFacet))) == null)
-			return null;
+			return Collections.EMPTY_LIST;
 		return (inFacet != null) ? facetVariables : node.getObject().getVariables();
 	}
 
-	private Parameter getCorrespondantParameter(Parameters parameters, String name) {
+	private Parameter getCorrespondentParameter(Parameters parameters, String name) {
 		for (Parameter parameter : parameters.getParameters())
 			if (name.equals(parameter.getExplicitName())) return parameter;
 		return null;
@@ -68,7 +71,17 @@ public class ExplicitToImplicitParameters extends PsiElementBaseIntentionAction 
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		return element.isWritable() && element.getParent() instanceof Parameters && ((Parameters) element.getParent()).areExplicit();
+		PsiElement parametersScope = getParametersScope(element);
+		return element.isWritable() && parametersScope != null && ((Parameters) parametersScope).areExplicit();
+	}
+
+	private PsiElement getParametersScope(PsiElement element) {
+		PsiElement parent = element.getParent();
+		while (parent != null && !PsiFile.class.isInstance(parent) && !Concept.class.isInstance(parent)) {
+			if (parent instanceof Parameters) return parent;
+			parent = parent.getParent();
+		}
+		return null;
 	}
 
 	@Override

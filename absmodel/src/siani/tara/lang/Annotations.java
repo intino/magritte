@@ -34,11 +34,11 @@ public class Annotations {
 	}
 
 
-	private static Annotation[] join(Annotation[] Annotations1, Annotation[] Annotations2) {
-		Annotation[] AnnotationsAll = new Annotation[Annotations1.length + Annotations2.length];
-		System.arraycopy(Annotations1, 0, AnnotationsAll, 0, Annotations1.length);
-		System.arraycopy(Annotations2, 0, AnnotationsAll, Annotations1.length, Annotations2.length);
-		return AnnotationsAll;
+	private static Annotation[] join(Annotation[] annotations1, Annotation[] annotations2) {
+		Annotation[] annotationsAll = new Annotation[annotations1.length + annotations2.length];
+		System.arraycopy(annotations1, 0, annotationsAll, 0, annotations1.length);
+		System.arraycopy(annotations2, 0, annotationsAll, annotations1.length, annotations2.length);
+		return annotationsAll;
 	}
 
 
