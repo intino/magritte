@@ -17,11 +17,11 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.file.TaraFileType;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 
-public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraBoxFileImpl> {
+public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
 
 	public CreateTaraFileAction() {
 		super(MessageProvider.message("new.model.menu.action.text"), MessageProvider.message("new.model.menu.action.description"),
@@ -42,13 +42,13 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 
 	@Nullable
 	@Override
-	protected PsiElement getNavigationElement(@NotNull TaraBoxFileImpl createdElement) {
+	protected PsiElement getNavigationElement(@NotNull TaraModelImpl createdElement) {
 		return createdElement;
 	}
 
 	@Nullable
 	@Override
-	protected TaraBoxFileImpl doCreate(PsiDirectory directory, String newName, String templateName) throws IncorrectOperationException {
+	protected TaraModelImpl doCreate(PsiDirectory directory, String newName, String templateName) throws IncorrectOperationException {
 		String fileName = newName + "." + TaraFileType.INSTANCE.getDefaultExtension();
 		Module moduleOfDirectory = TaraUtil.getModuleOfDirectory(directory);
 		String parentName = ModuleConfiguration.getInstance(moduleOfDirectory).getMetamodelName();
@@ -57,9 +57,9 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		list = parentName != null ? new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "PARENT_MODULE_NAME", parentName, "TYPE", "Concept"}
 			: new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "TYPE", "Concept"};
 		file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, templateName, true, list);
-		if (file instanceof TaraBoxFileImpl) {
+		if (file instanceof TaraModelImpl) {
 			setCaret(file);
-			return (TaraBoxFileImpl) file;
+			return (TaraModelImpl) file;
 		}
 		final String description = file.getFileType().getDescription();
 		throw new IncorrectOperationException(MessageProvider.message("tara.file.extension.is.not.mapped.to.tara.file.type", description));

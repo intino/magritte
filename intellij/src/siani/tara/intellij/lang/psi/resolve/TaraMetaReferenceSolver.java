@@ -10,7 +10,7 @@ import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.*;
@@ -48,7 +48,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	@Override
 	public Object[] getVariants() {
 		if (!MetaIdentifier.class.isInstance(myElement)) return PsiElement.EMPTY_ARRAY;
-		String parentModel = ((TaraBoxFile) myElement.getContainingFile()).getDSL();
+		String parentModel = ((TaraModel) myElement.getContainingFile()).getDSL();
 		if (parentModel == null) return PsiElement.EMPTY_ARRAY;
 		List<Variable> variables = null;
 		Model metaModel = TaraLanguage.getMetaModel(myElement.getContainingFile());

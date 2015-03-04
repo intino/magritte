@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.codegeneration.LinkToJava;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 
 public class GenerateAction extends AnAction implements DumbAware {
 	@Override
@@ -29,7 +29,7 @@ public class GenerateAction extends AnAction implements DumbAware {
 			PsiManager manager = PsiManager.getInstance(project);
 			for (VirtualFile virtualFile : files) {
 				PsiFile psiFile = manager.findFile(virtualFile);
-				taraFound = psiFile instanceof TaraBoxFile;
+				taraFound = psiFile instanceof TaraModel;
 				if (taraFound) break;
 			}
 		}

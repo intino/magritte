@@ -122,7 +122,7 @@ public class TaraFilters {
 	private static class NoModelFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			TaraBoxFile file = (TaraBoxFile) (context != null ? context.getContainingFile() : null);
+			TaraModel file = (TaraModel) (context != null ? context.getContainingFile() : null);
 			return file != null && file.getDSL() == null;
 		}
 
@@ -135,7 +135,7 @@ public class TaraFilters {
 	private static class ModelFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			TaraBoxFile file = (TaraBoxFile) (context != null ? context.getContainingFile() : null);
+			TaraModel file = (TaraModel) (context != null ? context.getContainingFile() : null);
 			return file != null && file.getDSL() != null;
 		}
 

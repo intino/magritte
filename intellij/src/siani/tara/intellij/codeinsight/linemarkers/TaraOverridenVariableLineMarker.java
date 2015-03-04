@@ -16,17 +16,16 @@ import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.psi.MeasureType;
-import siani.tara.intellij.lang.psi.TaraMeasureType;
+import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Variable;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
-import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveMeasure;
+public class TaraOverridenVariableLineMarker extends JavaLineMarkerProvider {
 
-public class TaraMetricLineMarker extends JavaLineMarkerProvider {
-
-	public TaraMetricLineMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+	public TaraOverridenVariableLineMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
 
@@ -35,9 +34,9 @@ public class TaraMetricLineMarker extends JavaLineMarkerProvider {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
-			if (!MeasureType.class.isInstance(element)) return null;
-			PsiElement reference = resolveMeasure((MeasureType) element);
-			String start = "Metric declared in ";
+			if (!Variable.class.isInstance(element)) return null;
+			PsiElement reference = getOverridenVariable((Variable) element);
+			String start = "Variable overried in ";
 			@NonNls String pattern;
 			if (reference == null) return null;
 			pattern = reference.getNavigationElement().getContainingFile().getName();
@@ -46,30 +45,46 @@ public class TaraMetricLineMarker extends JavaLineMarkerProvider {
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {
-			if (!(element instanceof TaraMeasureType)) return;
+			if (!Variable.class.isInstance(element)) return;
 			if (DumbService.isDumb(element.getProject())) {
 				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
 				return;
 			}
-			NavigatablePsiElement reference = (NavigatablePsiElement) resolveMeasure((MeasureType) element);
+			NavigatablePsiElement reference = (NavigatablePsiElement) getOverridenVariable((Variable) element);
 			if (reference == null) return;
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
-			PsiElementListNavigator.openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overriding Methods of " + (reference.getName()), renderer);
+			PsiElementListNavigator.openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overrided Variable of " + (reference.getName()), renderer);
 		}
 	}
 	);
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!(element instanceof MeasureType)) return super.getLineMarkerInfo(element);
-		MeasureType measureType = (MeasureType) element;
-		PsiElement reference = resolveMeasure(measureType);
-		if (reference != null) {
-			final Icon icon = AllIcons.Gutter.ImplementedMethod;
+		if (!Variable.class.isInstance(element)) return super.getLineMarkerInfo(element);
+		Variable variable = (Variable) element;
+		if (getOverridenVariable(variable) != null) {
+			final Icon icon = AllIcons.Gutter.OverridenMethod;
 			final MarkerType type = markerType;
 			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
 				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
+	}
+
+	private Variable getOverridenVariable(Variable variable) {
+		Concept concept = TaraPsiImplUtil.getConceptContainerOf(variable);
+		if (concept == null) return null;
+		Concept parent = concept.getParentConcept();
+		while (parent != null) {
+			for (Variable parentVar : parent.getVariables())
+				if (isOverriden(variable, parentVar))
+					return parentVar;
+			parent = parent.getParentConcept();
+		}
+		return null;
+	}
+
+	private boolean isOverriden(Variable variable, Variable parentVar) {
+		return parentVar.getType().equals(variable.getType()) && parentVar.getName() != null && parentVar.getName().equals(variable.getName());
 	}
 }

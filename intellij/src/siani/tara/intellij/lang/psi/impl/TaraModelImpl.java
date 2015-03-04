@@ -27,9 +27,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-public class TaraBoxFileImpl extends PsiFileBase implements TaraBoxFile {
+public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
-	public TaraBoxFileImpl(@NotNull FileViewProvider viewProvider) {
+	public TaraModelImpl(@NotNull FileViewProvider viewProvider) {
 		super(viewProvider, TaraLanguage.INSTANCE);
 	}
 

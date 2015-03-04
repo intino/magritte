@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.intellij.TaraRuntimeException;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
@@ -28,14 +28,14 @@ public abstract class CodeGenerator {
 
 	final Project project;
 	final Module module;
-	final TaraBoxFile file;
+	final TaraModel file;
 	final Inflector inflector;
 	final PsiDirectory srcDirectory;
 	final String[] facetsPath;
 	static final String SRC = "src";
 	static final String MAGRITTE_MORPHS = "magritte.morphs";
 
-	public CodeGenerator(TaraBoxFile file) {
+	public CodeGenerator(TaraModel file) {
 		this.file = file;
 		this.project = file.getProject();
 		this.module = ModuleProvider.getModuleOf(file);

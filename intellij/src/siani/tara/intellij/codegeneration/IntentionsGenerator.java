@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
 import siani.tara.intellij.lang.psi.TaraIdentifier;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
@@ -38,27 +38,27 @@ public class IntentionsGenerator {
 	private static final String MAGRITTE_INTENTION = "magritte.Intention";
 	private final Project project;
 	private final String basePath;
-	private final TaraBoxFile taraBoxFile;
+	private final TaraModel taraModel;
 	private final PsiDirectory srcDirectory;
 	private PsiDirectory destiny;
 	private final Module module;
 	Map<String, PsiClass> createdClasses = new HashMap();
 
-	public IntentionsGenerator(Project project, TaraBoxFile taraBoxFile) {
+	public IntentionsGenerator(Project project, TaraModel taraModel) {
 		this.project = project;
 		basePath = project.getName().toLowerCase() + DOT + INTENTIONS;
-		this.taraBoxFile = taraBoxFile;
-		VirtualFile srcVDirectory = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(taraBoxFile));
-		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraBoxFile.getManager(), srcVDirectory);
-		this.module = ModuleProvider.getModuleOf(taraBoxFile);
+		this.taraModel = taraModel;
+		VirtualFile srcVDirectory = TaraUtil.getSrcRoot(TaraUtil.getSourceRoots(taraModel));
+		this.srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) taraModel.getManager(), srcVDirectory);
+		this.module = ModuleProvider.getModuleOf(taraModel);
 	}
 
 	public void generate() {
-		WriteCommandAction action = new WriteCommandAction(project, taraBoxFile) {
+		WriteCommandAction action = new WriteCommandAction(project, taraModel) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
 				try {
-					processFile(taraBoxFile);
+					processFile(taraModel);
 				} catch (Exception e) {
 					LOG.error(e.getMessage(), e);
 				}
@@ -68,8 +68,8 @@ public class IntentionsGenerator {
 	}
 
 	private void processFile(PsiFile psiFile) {
-		if (psiFile instanceof TaraBoxFile) {
-			Concept[] intentions = getIntentions((TaraBoxFile) psiFile);
+		if (psiFile instanceof TaraModel) {
+			Concept[] intentions = getIntentions((TaraModel) psiFile);
 			if (intentions.length > 0) this.destiny = findIntentionsDestiny();
 			for (Concept intention : intentions) {
 				createIntentionClass(intention);
@@ -250,7 +250,7 @@ public class IntentionsGenerator {
 		PsiDirectory subdirectory = intentionsDir.findSubdirectory(pluralName);
 		if (subdirectory != null) return subdirectory;
 		final PsiDirectory[] facetDestiny = new PsiDirectory[1];
-		WriteCommandAction action = new WriteCommandAction(project, taraBoxFile) {
+		WriteCommandAction action = new WriteCommandAction(project, taraModel) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
 				facetDestiny[0] = DirectoryUtil.createSubdirectories(pluralName, intentionsDir, DOT);
@@ -275,7 +275,7 @@ public class IntentionsGenerator {
 	@NotNull
 	private PsiDirectory createDirectory(final PsiDirectory basePath, final String name) {
 		final PsiDirectory[] newDir = new PsiDirectory[1];
-		WriteCommandAction action = new WriteCommandAction(project, taraBoxFile) {
+		WriteCommandAction action = new WriteCommandAction(project, taraModel) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
 				newDir[0] = DirectoryUtil.createSubdirectories(name, basePath, DOT);
@@ -286,9 +286,9 @@ public class IntentionsGenerator {
 	}
 
 
-	private Concept[] getIntentions(TaraBoxFile taraBoxFile) {
+	private Concept[] getIntentions(TaraModel taraModel) {
 		List<Concept> intentions = new ArrayList<>();
-		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(taraBoxFile);
+		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(taraModel);
 		for (Concept concept : allConceptsOfFile)
 			if (concept.isIntention())
 				intentions.add(concept);

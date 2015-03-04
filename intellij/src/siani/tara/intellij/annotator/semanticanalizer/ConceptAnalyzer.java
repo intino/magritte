@@ -10,7 +10,7 @@ import siani.tara.intellij.annotator.fix.AddAddressFix;
 import siani.tara.intellij.annotator.fix.LinkToJavaFix;
 import siani.tara.intellij.annotator.fix.RemoveConceptFix;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
@@ -64,7 +64,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 
 	private boolean checkWordNames(Concept concept) {
 		for (Variable variable : concept.getVariables()) {
-			if (variable.getType().equalsIgnoreCase("word") && concept.getName().equals(variable.getName())) {
+			if (variable.getType().equalsIgnoreCase("word") && variable.getName() != null && variable.getName().equals(concept.getName())) {
 				results.put(concept.getSignature(), addError(message("word.with.same.name")));
 				return true;
 			}
@@ -148,7 +148,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	private boolean searchDuplicatesInAllModule(Concept concept) {
 		Module moduleOfFile = ModuleProvider.getModuleOf(concept);
 		int size = 0;
-		for (TaraBoxFileImpl file : TaraUtil.getTaraFilesOfModule(moduleOfFile))
+		for (TaraModelImpl file : TaraUtil.getTaraFilesOfModule(moduleOfFile))
 			size += searchConceptInFile(concept, file).size();
 		return size > 1;
 	}
@@ -168,7 +168,7 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		return duplicates;
 	}
 
-	private List<Concept> searchConceptInFile(Concept concept, TaraBoxFile containingFile) {
+	private List<Concept> searchConceptInFile(Concept concept, TaraModel containingFile) {
 		List<Concept> list = new ArrayList<>();
 		for (Concept aConcept : TaraUtil.getRootConceptsOfFile(containingFile))
 			//noinspection ConstantConditions

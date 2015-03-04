@@ -101,6 +101,8 @@
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraFacetApplyLineMarker"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraMetricLineMarker"/>
+    <codeInsight.lineMarkerProvider language="Tara"
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraOverridenVariableLineMarker"/>
     <codeInsight.lineMarkerProvider language="JAVA"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaIntentionToTaraLineMarker"/>
     <codeInsight.lineMarkerProvider language="JAVA"

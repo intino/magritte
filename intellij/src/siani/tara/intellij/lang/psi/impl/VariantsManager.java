@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.*;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +47,7 @@ public class VariantsManager {
 	}
 
 	private void addInBoxVariants() {
-		TaraBoxFile box = (TaraBoxFile) myElement.getContainingFile();
+		TaraModel box = (TaraModel) myElement.getContainingFile();
 		if (box == null) return;
 		for (Concept concept : box.getConcepts())
 			if (!concept.equals(TaraPsiImplUtil.getConceptContainerOf(myElement)))
@@ -57,14 +56,14 @@ public class VariantsManager {
 	}
 
 	private void addImportVariants() {
-		Collection<Import> imports = ((TaraBoxFile) myElement.getContainingFile()).getImports();
+		Collection<Import> imports = ((TaraModel) myElement.getContainingFile()).getImports();
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
-			if (resolve == null || !TaraBoxFile.class.isInstance(resolve)) continue;
-			for (Concept concept : ((TaraBoxFile) resolve).getConcepts())
+			if (resolve == null || !TaraModel.class.isInstance(resolve)) continue;
+			for (Concept concept : ((TaraModel) resolve).getConcepts())
 				if (!concept.equals(TaraPsiImplUtil.getConceptContainerOf(myElement)))
 					resolvePathFor(concept, context);
-			addAggregatedConcepts((TaraBoxFile) resolve);
+			addAggregatedConcepts((TaraModel) resolve);
 		}
 	}
 
@@ -73,7 +72,7 @@ public class VariantsManager {
 		return ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1));
 	}
 
-	private void addAggregatedConcepts(TaraBoxFile box) {
+	private void addAggregatedConcepts(TaraModel box) {
 		for (Concept concept : TaraUtil.getAllConceptsOfFile(box))
 			if (!variants.contains(concept) && concept.isAggregated())
 				resolvePathFor(concept, context);
@@ -89,14 +88,7 @@ public class VariantsManager {
 	}
 
 	public final List<Identifier> solveIdentifierContext() {
-		if (myElement.getParent() instanceof IdentifierReference) {
-			List<? extends Identifier> list = ((IdentifierReference) myElement.getParent()).getIdentifierList();
-			return (List<Identifier>) list.subList(0, list.size() - 1);
-		}
-		if (myElement.getParent() instanceof TaraHeaderReference) {
-			List<? extends Identifier> list = ((TaraHeaderReference) myElement.getParent()).getIdentifierList();
-			return (List<Identifier>) list.subList(0, list.size() - 1);
-		}
-		return Collections.EMPTY_LIST;
+		List<? extends Identifier> list = ((IdentifierReference) myElement.getParent()).getIdentifierList();
+		return (List<Identifier>) list.subList(0, list.size() - 1);
 	}
 }

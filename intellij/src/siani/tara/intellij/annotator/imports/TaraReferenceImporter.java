@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.IdentifierReference;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class TaraReferenceImporter {
 		List<Concept> concepts = TaraUtil.findRootConcept(element, element.getText());
 		ArrayList<ImportQuickFix> quickFixes = new ArrayList<>();
 		if (concepts.isEmpty()) return Collections.EMPTY_LIST;
-		for (Concept concept : concepts) quickFixes.add(new ImportQuickFix((TaraBoxFile) node.getContainingFile(),concept));
+		for (Concept concept : concepts) quickFixes.add(new ImportQuickFix((TaraModel) node.getContainingFile(),concept));
 		return quickFixes;
 	}
 }

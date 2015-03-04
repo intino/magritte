@@ -9,12 +9,13 @@ import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.Identifier;
-import siani.tara.intellij.lang.psi.Parameter;
-import siani.tara.intellij.lang.psi.resolve.TaraInternalReferenceSolver;
+import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.resolve.TaraConceptReferenceSolver;
+import siani.tara.intellij.lang.psi.resolve.TaraFileReferenceSolver;
 import siani.tara.intellij.lang.psi.resolve.TaraParameterReferenceSolver;
 import siani.tara.lang.*;
+import siani.tara.lang.Variable;
+import siani.tara.lang.Word;
 
 import javax.swing.*;
 import java.util.List;
@@ -40,16 +41,21 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	public PsiReference getReference() {
 		PsiReference[] references;
 		Parameter parameter;
-		references = (parameter = isParameterReference()) != null ?
-			createResolverForParameter(parameter) :
-			new PsiReference[]{createInternalResolver()};
-		return references.length == 0 ? createInternalResolver() : references[0];
+		if ((parameter = isParameterReference()) != null)
+			references = createResolverForParameter(parameter);
+		else if (isFileReference()) references = creteFileResolver();
+		else references = createConceptResolver();
+		return references[0];
 	}
 
-	private TaraInternalReferenceSolver createInternalResolver() {
+	private PsiReference[] creteFileResolver() {
+		return new PsiReference[]{new TaraFileReferenceSolver((HeaderReference) this.getParent(), getRange())};
+	}
+
+	private PsiReference[] createConceptResolver() {
 		Concept container = TaraPsiImplUtil.getConceptContainerOf(this);
 		Node node = TaraUtil.getMetaConcept(container);
-		return new TaraInternalReferenceSolver(this, getRange(), container, node);
+		return new PsiReference[]{new TaraConceptReferenceSolver(this, getRange(), container, node)};
 	}
 
 	private PsiReference[] createResolverForParameter(Parameter parameter) {
@@ -108,5 +114,9 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 			if (variable.getName().equals(name))
 				return variable;
 		return null;
+	}
+
+	public boolean isFileReference() {
+		return this.getParent() instanceof TaraHeaderReference;
 	}
 }

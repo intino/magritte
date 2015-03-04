@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.FacetApply;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Node;
 
@@ -34,7 +34,7 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 	private static final Logger LOG = Logger.getInstance(FacetApplyCodeGenerator.class.getName());
 	private PsiDirectory facetsHome;
 
-	public FacetApplyCodeGenerator(TaraBoxFile file) {
+	public FacetApplyCodeGenerator(TaraModel file) {
 		super(file);
 	}
 
@@ -223,7 +223,7 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 		return map;
 	}
 
-	private Concept[] getFacets(TaraBoxFile file) {
+	private Concept[] getFacets(TaraModel file) {
 		Set<Concept> facets = new LinkedHashSet<>();
 		for (Concept concept : TaraUtil.getAllConceptsOfFile(file))
 			if (concept.getFacetApplies().length > 0) facets.add(concept);

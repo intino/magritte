@@ -15,7 +15,7 @@ import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Annotation;
 import siani.tara.lang.Model;
@@ -41,9 +41,9 @@ public class TaraFileDocumentManagerListener implements FileDocumentManagerListe
 		if (file != null) {
 			PsiFile box = PsiManager.getInstance(project).findFile(file);
 			Model model = TaraLanguage.getMetaModel(box);
-			if (model != null && box instanceof TaraBoxFile) {
-				TaraBoxFile taraBoxFile = (TaraBoxFile) box;
-				AddressGenerator generator = new AddressGenerator(getAddressedConcepts(model, TaraUtil.getAllConceptsOfFile(taraBoxFile)));
+			if (model != null && box instanceof TaraModel) {
+				TaraModel taraModel = (TaraModel) box;
+				AddressGenerator generator = new AddressGenerator(getAddressedConcepts(model, TaraUtil.getAllConceptsOfFile(taraModel)));
 				generator.generate();
 			}
 		}

@@ -42,7 +42,7 @@ public class TaraUtil {
 	@NotNull
 	public static List<Concept> findRootConcept(PsiElement element, String identifier) {
 		List<Concept> result = new ArrayList<>();
-		for (TaraBoxFileImpl taraFile : getModuleFiles(element.getContainingFile())) {
+		for (TaraModelImpl taraFile : getModuleFiles(element.getContainingFile())) {
 			Collection<Concept> concepts = taraFile.getConcepts();
 			extractConceptsByName(identifier, result, concepts);
 		}
@@ -154,7 +154,7 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static Collection<Concept> getRootConceptsOfFile(TaraBoxFile file) {
+	public static Collection<Concept> getRootConceptsOfFile(TaraModel file) {
 		List<Concept> list = new ArrayList<>();
 		Concept[] concepts = PsiTreeUtil.getChildrenOfType(file, Concept.class);
 		if (concepts == null) return list;
@@ -171,29 +171,29 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	private static TaraBoxFileImpl[] getModuleFiles(PsiFile psiFile) {
+	private static TaraModelImpl[] getModuleFiles(PsiFile psiFile) {
 		Module module = ModuleProvider.getModuleOf(psiFile);
-		if (module == null) return new TaraBoxFileImpl[0];
-		List<TaraBoxFileImpl> taraFiles = getTaraFilesOfModule(module);
-		return taraFiles.toArray(new TaraBoxFileImpl[taraFiles.size()]);
+		if (module == null) return new TaraModelImpl[0];
+		List<TaraModelImpl> taraFiles = getTaraFilesOfModule(module);
+		return taraFiles.toArray(new TaraModelImpl[taraFiles.size()]);
 	}
 
-	public static List<TaraBoxFileImpl> getTaraFilesOfModule(Module module) {
-		List<TaraBoxFileImpl> taraFiles = new ArrayList<>();
+	public static List<TaraModelImpl> getTaraFilesOfModule(Module module) {
+		List<TaraModelImpl> taraFiles = new ArrayList<>();
 		if (module == null) return taraFiles;
 		Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.moduleScope(module));
 		for (VirtualFile file : files)
 			if (file != null) {
-				TaraBoxFileImpl taraFile = (TaraBoxFileImpl) PsiManager.getInstance(module.getProject()).findFile(file);
+				TaraModelImpl taraFile = (TaraModelImpl) PsiManager.getInstance(module.getProject()).findFile(file);
 				if (taraFile != null) taraFiles.add(taraFile);
 			}
 		return taraFiles;
 	}
 
 	@NotNull
-	public static List<Concept> getAllConceptsOfFile(TaraBoxFile taraBoxFile) {
+	public static List<Concept> getAllConceptsOfFile(TaraModel taraModel) {
 		List<Concept> collection = new ArrayList<>();
-		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraBoxFile, Concept.class);
+		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraModel, Concept.class);
 		if (concepts != null) {
 			Collections.addAll(collection, concepts);
 			for (Concept concept : concepts)
@@ -222,8 +222,8 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static TaraBoxFile getOrCreateFile(String destiny, Project project) {
-		TaraBoxFileImpl boxFile = (TaraBoxFileImpl) PsiFileFactory.getInstance(project).
+	public static TaraModel getOrCreateFile(String destiny, Project project) {
+		TaraModelImpl boxFile = (TaraModelImpl) PsiFileFactory.getInstance(project).
 			createFileFromText(destiny + "." + TaraFileType.INSTANCE.getDefaultExtension(), TaraFileType.INSTANCE, "");
 		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
 		return boxFile;
@@ -257,15 +257,15 @@ public class TaraUtil {
 		throw new TaraRuntimeException("src directory not found");
 	}
 
-	public static boolean isTerminalBox(TaraBoxFileImpl boxFile) {
+	public static boolean isTerminalBox(TaraModelImpl boxFile) {
 		ModuleConfiguration instance = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(boxFile));
 		return instance != null && instance.isTerminal();
 	}
 
 	public static Concept findConceptByQN(String qualifiedName, PsiFile file) {
 		if (file == null) return null;
-		List<TaraBoxFileImpl> filesOfModule = getTaraFilesOfModule(ModuleProvider.getModuleOf(file));
-		for (TaraBoxFileImpl taraFile : filesOfModule)
+		List<TaraModelImpl> filesOfModule = getTaraFilesOfModule(ModuleProvider.getModuleOf(file));
+		for (TaraModelImpl taraFile : filesOfModule)
 			for (Concept concept : getRootConceptsOfFile(taraFile))
 				if (concept.getQualifiedName().equalsIgnoreCase(qualifiedName)) return concept;
 		return null;
@@ -349,7 +349,7 @@ public class TaraUtil {
 		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
 	}
 
-	public static Collection<? extends Concept> findAggregatedConcepts(TaraBoxFile file) {
+	public static Collection<? extends Concept> findAggregatedConcepts(TaraModel file) {
 		Set<Concept> aggregated = new HashSet<>();
 		for (Concept concept : getAllConceptsOfFile(file))
 			if (concept.isAnnotatedAsAggregated() || concept.isMetaAggregated()) aggregated.add(concept);

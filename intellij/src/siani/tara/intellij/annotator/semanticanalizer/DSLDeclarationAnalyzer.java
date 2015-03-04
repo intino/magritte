@@ -5,7 +5,7 @@ import siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix;
 import siani.tara.intellij.annotator.fix.AddMetamodelReferenceFix;
 import siani.tara.intellij.annotator.fix.ConfigureModuleFix;
 import siani.tara.intellij.annotator.fix.ImportMetamodelFix;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.TaraDslDeclaration;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleConfiguration;
@@ -17,9 +17,9 @@ import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.E
 
 public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 
-	private final TaraBoxFile file;
+	private final TaraModel file;
 
-	public DSLDeclarationAnalyzer(TaraBoxFile file) {
+	public DSLDeclarationAnalyzer(TaraModel file) {
 		this.file = file;
 	}
 

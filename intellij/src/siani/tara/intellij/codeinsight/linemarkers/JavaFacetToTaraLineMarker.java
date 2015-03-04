@@ -9,7 +9,7 @@ import com.intellij.psi.PsiJavaCodeReferenceElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
 
@@ -50,8 +50,8 @@ public class JavaFacetToTaraLineMarker extends RelatedItemLineMarkerProvider {
 	}
 
 	private String findConcept(PsiClass aClass, String intention) {
-		List<TaraBoxFileImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(aClass));
-		for (TaraBoxFileImpl taraBoxFile : taraFilesOfModule)
+		List<TaraModelImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(aClass));
+		for (TaraModelImpl taraBoxFile : taraFilesOfModule)
 			for (Concept concept : TaraUtil.getAllConceptsOfFile(taraBoxFile))
 				if (intention.equals(concept.getName()))
 					return concept.getQualifiedName();

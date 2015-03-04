@@ -86,14 +86,14 @@ public class ReferenceManager {
 
 	private static PsiElement resolveConcept(PsiElement identifier, List<Identifier> path) {
 		List<Identifier> subPath = path.subList(0, path.indexOf(identifier) + 1);
-		PsiElement element = tryToResolveInBox((TaraBoxFile) identifier.getContainingFile(), subPath);
+		PsiElement element = tryToResolveInBox((TaraModel) identifier.getContainingFile(), subPath);
 		if (element != null) return element;
 		element = tryToResolveOnImportedBoxes(subPath);
 		if (element != null) return element;
 		return tryToResolveAsQN(subPath);
 	}
 
-	private static PsiElement tryToResolveInBox(TaraBoxFile file, List<Identifier> path) {
+	private static PsiElement tryToResolveInBox(TaraModel file, List<Identifier> path) {
 		Concept[] possibleRoots = getPossibleRoots(file, path.get(0));
 		if (possibleRoots.length == 0) return null;
 		if (possibleRoots.length == 1 && path.size() == 1) return possibleRoots[0];
@@ -104,7 +104,7 @@ public class ReferenceManager {
 		return null;
 	}
 
-	protected static Concept[] getPossibleRoots(TaraBoxFile file, Identifier identifier) {
+	protected static Concept[] getPossibleRoots(TaraModel file, Identifier identifier) {
 		Set<Concept> set = new LinkedHashSet<>();
 		addConceptsInContext(identifier, set);
 		addRootConcepts(file, identifier, set);
@@ -113,7 +113,7 @@ public class ReferenceManager {
 	}
 
 	private static PsiElement tryToResolveAsQN(List<Identifier> path) {
-		TaraBoxFileImpl resolve;
+		TaraModelImpl resolve;
 		resolve = resolveBoxPath(path.get(0));
 		if (resolve == null || path.isEmpty()) return null;
 		List<Identifier> qn = path.subList(1, path.size());
@@ -127,7 +127,7 @@ public class ReferenceManager {
 		return visited;
 	}
 
-	private static void addRootConcepts(TaraBoxFile file, Identifier identifier, Set<Concept> set) {
+	private static void addRootConcepts(TaraModel file, Identifier identifier, Set<Concept> set) {
 		Collection<Concept> concepts = file.getConcepts();
 		for (Concept concept : concepts)
 			if (namesAreEqual(identifier, concept))
@@ -151,7 +151,7 @@ public class ReferenceManager {
 		return reference.getParent() instanceof Signature;
 	}
 
-	private static void addAggregated(TaraBoxFile file, Identifier identifier, Set<Concept> set, List<Concept> visited) {
+	private static void addAggregated(TaraModel file, Identifier identifier, Set<Concept> set, List<Concept> visited) {
 		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(file);
 		for (Concept concept : allConceptsOfFile)
 			if (namesAreEqual(identifier, concept) && isAggregated(file, concept, visited))
@@ -162,7 +162,7 @@ public class ReferenceManager {
 		return identifier.getText().equals(concept.getName());
 	}
 
-	private static boolean isAggregated(TaraBoxFile file, Concept concept, List<Concept> visited) {
+	private static boolean isAggregated(TaraModel file, Concept concept, List<Concept> visited) {
 		if (visited.contains(concept)) return false;
 		visited.add(concept);
 		if (concept.isAnnotatedAsAggregated() || concept.isMetaAggregated()) return true;
@@ -179,12 +179,12 @@ public class ReferenceManager {
 		return false;
 	}
 
-	private static Concept[] getRootConcepts(TaraBoxFile file, IdentifierReference parentReference, List<Concept> visited, Set<Concept> roots) {
+	private static Concept[] getRootConcepts(TaraModel file, IdentifierReference parentReference, List<Concept> visited, Set<Concept> roots) {
 		Identifier identifier = getIdentifier(parentReference);
 		addConceptsInContext(identifier, roots);
 		addRootConcepts(file, identifier, roots);
 		visited.addAll(roots);
-		addAggregated((TaraBoxFile) identifier.getContainingFile(), identifier, roots, visited);
+		addAggregated((TaraModel) identifier.getContainingFile(), identifier, roots, visited);
 		return roots.toArray(new Concept[roots.size()]);
 	}
 
@@ -203,18 +203,18 @@ public class ReferenceManager {
 		return reference;
 	}
 
-	private static TaraBoxFileImpl resolveBoxPath(Identifier identifier) {
-		TaraBoxFile containingFile = (TaraBoxFile) identifier.getContainingFile().getOriginalFile();
+	private static TaraModelImpl resolveBoxPath(Identifier identifier) {
+		TaraModel containingFile = (TaraModel) identifier.getContainingFile().getOriginalFile();
 		if (containingFile.getVirtualFile() == null) return null;
 		Module moduleOfDocument = ModuleProvider.getModuleOf(containingFile);
-		List<TaraBoxFileImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(moduleOfDocument);
-		for (TaraBoxFileImpl taraBoxFile : taraFilesOfModule)
+		List<TaraModelImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(moduleOfDocument);
+		for (TaraModelImpl taraBoxFile : taraFilesOfModule)
 			if (taraBoxFile.getPresentableName().equals(identifier.getText())) return taraBoxFile;
 		return null;
 	}
 
 	private static PsiElement tryToResolveOnImportedBoxes(List<Identifier> path) {
-		TaraBoxFile context = (TaraBoxFile) path.get(0).getContainingFile();
+		TaraModel context = (TaraModel) path.get(0).getContainingFile();
 		Collection<Import> imports = context.getImports();
 		return searchInImport(path, imports);
 	}
@@ -222,15 +222,15 @@ public class ReferenceManager {
 	private static Concept searchInImport(List<Identifier> path, Collection<Import> imports) {
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
-			if (resolve == null || !TaraBoxFile.class.isInstance(resolve.getContainingFile())) continue;
-			TaraBoxFile containingFile = (TaraBoxFile) resolve.getContainingFile();
+			if (resolve == null || !TaraModel.class.isInstance(resolve.getContainingFile())) continue;
+			TaraModel containingFile = (TaraModel) resolve.getContainingFile();
 			Concept concept = resolvePathInBox(containingFile, path);
 			if (concept != null) return concept;
 		}
 		return null;
 	}
 
-	private static Concept resolvePathInBox(TaraBoxFile containingFile, List<Identifier> path) {
+	private static Concept resolvePathInBox(TaraModel containingFile, List<Identifier> path) {
 		Set<Concept> concepts = new HashSet<>();
 		concepts.addAll(containingFile.getConcepts());
 		addAggregated(containingFile, path.get(0), concepts, toArrayList(concepts));

@@ -15,7 +15,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.TaraRuntimeException;
 import siani.tara.intellij.codegeneration.MetricClassCreator;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class CreateMeasureClassIntention implements IntentionAction {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-		return file instanceof TaraBoxFile;
+		return file instanceof TaraModel;
 	}
 
 	@Override

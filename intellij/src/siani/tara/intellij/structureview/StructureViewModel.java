@@ -5,15 +5,15 @@ import com.intellij.ide.structureView.TextEditorBasedStructureViewModel;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.psi.PsiFile;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import org.jetbrains.annotations.NotNull;
 
 public class StructureViewModel extends TextEditorBasedStructureViewModel implements com.intellij.ide.structureView.StructureViewModel.ElementInfoProvider {
 
-	private final TaraBoxFileImpl taraFile;
+	private final TaraModelImpl taraFile;
 
 
-	public StructureViewModel(TaraBoxFileImpl root) {
+	public StructureViewModel(TaraModelImpl root) {
 		super(root);
 		taraFile = root;
 	}
@@ -31,7 +31,7 @@ public class StructureViewModel extends TextEditorBasedStructureViewModel implem
 
 	@Override
 	public boolean isAlwaysLeaf(StructureViewTreeElement element) {
-		return element instanceof TaraBoxFileImpl;
+		return element instanceof TaraModelImpl;
 	}
 
 	@NotNull

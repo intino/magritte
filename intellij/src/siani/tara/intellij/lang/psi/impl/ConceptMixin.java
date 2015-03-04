@@ -68,7 +68,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 
 	public Collection<Concept> getConceptSiblings() {
 		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(this);
-		if (contextOf == null) return ((TaraBoxFile) this.getContainingFile()).getConcepts();
+		if (contextOf == null) return ((TaraModel) this.getContainingFile()).getConcepts();
 		return contextOf.getInnerConcepts();
 	}
 
@@ -145,8 +145,8 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		return TaraUtil.getMetaQualifiedName((Concept) this);
 	}
 
-	public TaraBoxFileImpl getFile() throws PsiInvalidElementAccessException {
-		return (TaraBoxFileImpl) super.getContainingFile();
+	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
+		return (TaraModelImpl) super.getContainingFile();
 	}
 
 	public void addAddress(TaraAddress address) {

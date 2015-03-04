@@ -4,7 +4,7 @@ import com.intellij.ide.structureView.TreeBasedStructureViewBuilder;
 import com.intellij.lang.PsiStructureViewFactory;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiFile;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,7 +15,7 @@ public class StructureViewFactory implements PsiStructureViewFactory {
 		return new TreeBasedStructureViewBuilder() {
 			@NotNull
 			public com.intellij.ide.structureView.StructureViewModel createStructureViewModel(Editor editor) {
-				return new StructureViewModel((TaraBoxFileImpl) psiFile);
+				return new StructureViewModel((TaraModelImpl) psiFile);
 			}
 		};
 	}

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 
 import javax.swing.*;
 import java.util.Collection;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface Concept extends Navigatable, Iconable, TaraPsiElement {
 
-	TaraBoxFileImpl getFile() throws PsiInvalidElementAccessException;
+	TaraModelImpl getFile() throws PsiInvalidElementAccessException;
 
 	@Nullable
 	String getDocCommentText();

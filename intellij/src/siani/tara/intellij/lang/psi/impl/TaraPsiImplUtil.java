@@ -88,7 +88,7 @@ public class TaraPsiImplUtil {
 		try {
 			PsiElement aElement = element;
 			while ((aElement.getParent() != null)
-				&& !(aElement.getParent() instanceof TaraBoxFile)
+				&& !(aElement.getParent() instanceof TaraModel)
 				&& !(aElement.getParent() instanceof Concept))
 				aElement = aElement.getParent();
 			return (aElement.getParent() instanceof Concept) ? (Concept) aElement.getParent() : null;
@@ -122,7 +122,7 @@ public class TaraPsiImplUtil {
 	}
 
 	private static boolean isNotConceptOrFile(PsiElement aElement) {
-		return !(aElement.getParent() instanceof TaraBoxFile)
+		return !(aElement.getParent() instanceof TaraModel)
 			&& !(aElement.getParent() instanceof Concept);
 	}
 

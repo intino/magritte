@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Primitives;
 
@@ -23,7 +23,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	                                        @NotNull PsiElement root,
 	                                        @NotNull Document document,
 	                                        boolean quick) {
-		List<Concept> concepts = TaraUtil.getAllConceptsOfFile((TaraBoxFileImpl) root);
+		List<Concept> concepts = TaraUtil.getAllConceptsOfFile((TaraModelImpl) root);
 		for (final Concept concept : concepts) {
 			if (concept.getText() != null && concept.getBody() != null)
 				descriptors.add(new FoldingDescriptor(concept.getBody().getNode(), getRange(concept)) {

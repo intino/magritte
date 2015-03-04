@@ -8,7 +8,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.MessageProvider;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 
 public class AddMetamodelReferenceFix implements IntentionAction {
 
@@ -28,7 +28,7 @@ public class AddMetamodelReferenceFix implements IntentionAction {
 
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-		((TaraBoxFile)file).updateDSL();
+		((TaraModel)file).updateDSL();
 	}
 
 	public boolean startInWriteAction() {

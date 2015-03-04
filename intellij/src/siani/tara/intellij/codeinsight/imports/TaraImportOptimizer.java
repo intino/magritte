@@ -7,7 +7,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.IdentifierReference;
 import siani.tara.intellij.lang.psi.Import;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
 import java.util.Collection;
@@ -17,7 +17,7 @@ import java.util.Set;
 public class TaraImportOptimizer implements ImportOptimizer {
 	@Override
 	public boolean supports(PsiFile file) {
-		return file instanceof TaraBoxFile;
+		return file instanceof TaraModel;
 	}
 
 	@NotNull
@@ -26,16 +26,16 @@ public class TaraImportOptimizer implements ImportOptimizer {
 		return new Runnable() {
 			@Override
 			public void run() {
-				if (file instanceof TaraBoxFile) new ImportsOptimizer((TaraBoxFile) file).run();
+				if (file instanceof TaraModel) new ImportsOptimizer((TaraModel) file).run();
 			}
 		};
 	}
 
 	private static class ImportsOptimizer {
-		private final TaraBoxFile file;
+		private final TaraModel file;
 		private final Collection<Import> myImportBlock;
 
-		private ImportsOptimizer(TaraBoxFile file) {
+		private ImportsOptimizer(TaraModel file) {
 			this.file = file;
 			myImportBlock = this.file.getImports();
 		}

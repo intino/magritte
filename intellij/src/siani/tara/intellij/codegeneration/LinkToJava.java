@@ -11,8 +11,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
+import siani.tara.intellij.lang.psi.TaraModel;
+import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.lang.Annotation;
 import siani.tara.lang.Model;
@@ -36,7 +36,7 @@ public class LinkToJava {
 			Notifications.Bus.notify(new Notification("Tara Generator", "", "Src directory not found", NotificationType.ERROR), project);
 			return;
 		}
-		for (TaraBoxFileImpl taraBoxFile : TaraUtil.getTaraFilesOfModule(module)) {
+		for (TaraModelImpl taraBoxFile : TaraUtil.getTaraFilesOfModule(module)) {
 			generateAddresses(taraBoxFile);
 			new IntentionsGenerator(project, taraBoxFile).generate();
 			new FacetApplyCodeGenerator(taraBoxFile).generate();
@@ -48,7 +48,7 @@ public class LinkToJava {
 		srcDirectory.refresh(true, true);
 	}
 
-	private static void generateAddresses(TaraBoxFile box) {
+	private static void generateAddresses(TaraModel box) {
 		Model model = TaraLanguage.getMetaModel(box);
 		if (model == null) return;
 		Concept[] addressedConcepts = getAddressedConcepts(model, TaraUtil.getAllConceptsOfFile(box));

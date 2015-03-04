@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
 import siani.tara.intellij.lang.psi.TaraIdentifier;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
@@ -28,8 +28,8 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 	private static final Logger LOG = Logger.getInstance(IntentionInstancesGenerator.class.getName());
 	private PsiDirectory facetsHome;
 
-	public IntentionInstancesGenerator(TaraBoxFile taraBoxFile) {
-		super(taraBoxFile);
+	public IntentionInstancesGenerator(TaraModel taraModel) {
+		super(taraModel);
 	}
 
 	public void generate() {
@@ -53,9 +53,9 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 
 	private List<PsiClass> processFile(PsiFile psiFile) {
 		List<PsiClass> psiClasses = new ArrayList<>();
-		if (psiFile instanceof TaraBoxFile) {
-			final TaraBoxFile taraBoxFile = (TaraBoxFile) psiFile;
-			final Concept[] facetConcepts = getFacets(taraBoxFile);
+		if (psiFile instanceof TaraModel) {
+			final TaraModel taraModel = (TaraModel) psiFile;
+			final Concept[] facetConcepts = getFacets(taraModel);
 			if (facetConcepts.length > 0) facetsHome = findFacetsDestiny();
 			for (Concept facet : facetConcepts)
 				if (facet.getName() != null && isIntention(facet)) {
@@ -128,10 +128,10 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 		return map;
 	}
 
-	private Concept[] getFacets(TaraBoxFile taraBoxFile) {
+	private Concept[] getFacets(TaraModel taraModel) {
 		List<Concept> facets = new ArrayList<>();
-		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(taraBoxFile);
-		Model model = TaraLanguage.getMetaModel(taraBoxFile);
+		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(taraModel);
+		Model model = TaraLanguage.getMetaModel(taraModel);
 		for (Concept concept : allConceptsOfFile)
 			if ((concept.isFacet() || isMetaFacet(model, concept)) && !concept.isIntention()) {
 				facets.add(concept);

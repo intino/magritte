@@ -4,15 +4,15 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.TaraElementFactory;
 
 public class CreateConceptQuickFix implements LocalQuickFix {
 	private final String name;
 	private final String type;
-	private final TaraBoxFile file;
+	private final TaraModel file;
 
-	public CreateConceptQuickFix(String name, String type, TaraBoxFile file) {
+	public CreateConceptQuickFix(String name, String type, TaraModel file) {
 		this.name = name;
 		this.type = type;
 		this.file = file;

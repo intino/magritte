@@ -3,12 +3,12 @@ package siani.tara.intellij.findusage;
 import com.intellij.find.findUsages.FindUsagesHandler;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 
 public class TaraFileFindUsagesHandler extends FindUsagesHandler {
-	private final TaraBoxFile boxFile;
+	private final TaraModel boxFile;
 
-	public TaraFileFindUsagesHandler(TaraBoxFile boxFile) {
+	public TaraFileFindUsagesHandler(TaraModel boxFile) {
 		super(boxFile);
 		this.boxFile = boxFile;
 	}

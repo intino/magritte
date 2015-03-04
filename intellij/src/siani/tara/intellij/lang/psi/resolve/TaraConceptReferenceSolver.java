@@ -8,10 +8,7 @@ import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.HeaderReference;
-import siani.tara.intellij.lang.psi.Identifier;
-import siani.tara.intellij.lang.psi.IdentifierReference;
+import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.lang.psi.impl.VariantsManager;
@@ -21,13 +18,13 @@ import siani.tara.lang.NodeObject;
 
 import java.util.*;
 
-public class TaraInternalReferenceSolver extends TaraReferenceSolver {
+public class TaraConceptReferenceSolver extends TaraReferenceSolver {
 
 
 	private final Node node;
 	private final Concept scope;
 
-	public TaraInternalReferenceSolver(@NotNull PsiElement element, TextRange range, Concept concept, Node node) {
+	public TaraConceptReferenceSolver(@NotNull PsiElement element, TextRange range, Concept concept, Node node) {
 		super(element, range);
 		this.node = node;
 		scope = node != null ? TaraUtil.findScope(node, concept) : null;
@@ -44,10 +41,7 @@ public class TaraInternalReferenceSolver extends TaraReferenceSolver {
 	@Override
 	public Object[] getVariants() {
 		final Set<Concept> variants = new LinkedHashSet();
-		if (isConceptReference()) {
-			VariantsManager manager = new VariantsManager(variants, myElement);
-			manager.resolveVariants();
-		}
+		if (isConceptReference()) new VariantsManager(variants, myElement).resolveVariants();
 		if (!variants.isEmpty()) filterVariants(variants);
 		return fillVariants(variants);
 	}

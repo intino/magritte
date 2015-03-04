@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraElementFactory;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 
 import java.util.Date;
 import java.util.Random;
@@ -15,7 +15,7 @@ import java.util.Random;
 public class AddressGenerator {
 	private final Concept[] concepts;
 	private final Project project;
-	private final TaraBoxFileImpl file;
+	private final TaraModelImpl file;
 
 	public AddressGenerator(Concept... concepts) {
 		this.concepts = concepts;

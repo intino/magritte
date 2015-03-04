@@ -103,7 +103,7 @@ public class AnnotationsAnalyzer extends TaraAnalyzer {
 	}
 
 	private boolean isPrimeConcept(Concept concept) {
-		return (concept != null) && concept.getParent() instanceof TaraBoxFile;
+		return (concept != null) && concept.getParent() instanceof TaraModel;
 	}
 
 	private List<PsiElement> analyzeAnnotationList(Collection<? extends Annotation> annotationList, siani.tara.lang.Annotation[] correctAnnotations) {

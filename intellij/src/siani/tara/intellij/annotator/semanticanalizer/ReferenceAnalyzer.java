@@ -85,7 +85,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	}
 
 	private void addCreateConceptFix(Identifier name, String type, List<LocalQuickFix> actions) {
-		actions.add(new CreateConceptQuickFix(name.getText(), type, (TaraBoxFile) name.getContainingFile()));
+		actions.add(new CreateConceptQuickFix(name.getText(), type, (TaraModel) name.getContainingFile()));
 	}
 
 	private IntentionAction createIntention(PsiElement node, String message, LocalQuickFix fix) {
@@ -101,7 +101,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 
 	private void addImportFix(Identifier node, List<LocalQuickFix> actions) {
 		final PsiFile file = InjectedLanguageManager.getInstance(node.getProject()).getTopLevelFile(node);
-		if (!(file instanceof TaraBoxFile)) return;
+		if (!(file instanceof TaraModel)) return;
 		List<ImportQuickFix> importFix = TaraReferenceImporter.proposeImportFix((IdentifierReference) node.getParent());
 		for (ImportQuickFix importQuickFix : importFix) actions.add(importQuickFix);
 	}

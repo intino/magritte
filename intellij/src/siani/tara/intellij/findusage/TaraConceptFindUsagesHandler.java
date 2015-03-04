@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
+import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
 
@@ -37,23 +37,23 @@ public class TaraConceptFindUsagesHandler extends FindUsagesHandler {
 		if (concept.getType() == null) return PsiElement.EMPTY_ARRAY;
 		Project project = concept.getProject();
 		List<? extends PsiElement> conceptList = new ArrayList();
-		Map<Module, List<TaraBoxFileImpl>> childModules = new HashMap<>();
+		Map<Module, List<TaraModelImpl>> childModules = new HashMap<>();
 		Module moduleForFile = ModuleProvider.getModuleOf(concept.getFile());
 		if (moduleForFile == null) return PsiElement.EMPTY_ARRAY;
 		for (Module module : ModuleManager.getInstance(project).getModules()) {
-			List<TaraBoxFileImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(module);
+			List<TaraModelImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(module);
 			if (taraFilesOfModule.isEmpty()) continue;
 			if ((project.getName() + "." + moduleForFile.getName()).equals(taraFilesOfModule.get(0).getDSL()))
 				childModules.put(module, taraFilesOfModule);
 		}
-		for (Map.Entry<Module, List<TaraBoxFileImpl>> moduleEntry : childModules.entrySet())
+		for (Map.Entry<Module, List<TaraModelImpl>> moduleEntry : childModules.entrySet())
 			conceptList.addAll(collectChildConceptsByType(moduleEntry.getValue()));
 		return conceptList.toArray(new PsiElement[conceptList.size()]);
 	}
 
-	private Collection collectChildConceptsByType(List<TaraBoxFileImpl> files) {
+	private Collection collectChildConceptsByType(List<TaraModelImpl> files) {
 		List<Concept> list = new ArrayList();
-		for (TaraBoxFileImpl file : files)
+		for (TaraModelImpl file : files)
 			for (Concept cpt : TaraUtil.getRootConceptsOfFile(file))
 				if (concept.getName().equals(cpt.getType()))
 					list.add(cpt);

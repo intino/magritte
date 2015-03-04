@@ -6,14 +6,14 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 
 public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
 
 	private final String anImport;
-	private final TaraBoxFile file;
+	private final TaraModel file;
 
-	public ImportQuickFix(TaraBoxFile fileDestiny, Concept conceptToImport) {
+	public ImportQuickFix(TaraModel fileDestiny, Concept conceptToImport) {
 		this.file = fileDestiny;
 		String name = conceptToImport.getContainingFile().getName();
 		anImport = name.substring(0, name.lastIndexOf('.'));

@@ -19,8 +19,8 @@ import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.containers.ContainerUtil;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.file.TaraFileType;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
-import siani.tara.intellij.lang.psi.impl.TaraBoxFileImpl;
+import siani.tara.intellij.lang.psi.TaraModel;
+import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -99,7 +99,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 	private List<PsiFile> findConceptsBoundToClass(PsiClass psiClass) {
 		List<PsiFile> files = new ArrayList<>();
 		for (PsiElement element : psiClass.getParent().getParent().getChildren())
-			if (element instanceof TaraBoxFile && ((TaraBoxFileImpl) element).getPresentableName().equals(psiClass.getName()))
+			if (element instanceof TaraModel && ((TaraModelImpl) element).getPresentableName().equals(psiClass.getName()))
 				files.add((PsiFile) element);
 		return files;
 	}

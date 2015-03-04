@@ -28,8 +28,8 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.getIdentifier((Concept) this);
 	}
 
-	public TaraBoxFileImpl getFile() throws PsiInvalidElementAccessException {
-		return (TaraBoxFileImpl) super.getContainingFile();
+	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
+		return (TaraModelImpl) super.getContainingFile();
 	}
 
 

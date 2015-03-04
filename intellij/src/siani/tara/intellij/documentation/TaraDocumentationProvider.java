@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
@@ -45,7 +45,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		}
 		if (element instanceof Concept)
 			return ((Concept) element).getDocCommentText();
-		if (element instanceof TaraBoxFile)
+		if (element instanceof TaraModel)
 			return "";
 		return renderConceptValue(TaraPsiImplUtil.getConceptContainerOf(element));
 	}

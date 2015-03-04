@@ -15,7 +15,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.TaraBoxFile;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.refactoring.TaraRefactoringUtil;
 
@@ -35,7 +35,7 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 		setPreviewUsages(previewUsages);
 	}
 
-	private static void moveElement(@NotNull PsiNamedElement element, @NotNull Collection<UsageInfo> usages, @NotNull TaraBoxFile destination) {
+	private static void moveElement(@NotNull PsiNamedElement element, @NotNull Collection<UsageInfo> usages, @NotNull TaraModel destination) {
 		final PsiFile file = element.getContainingFile();
 //		TaraConceptRefactoringUtil.rememberNamedReferences(element);
 		final PsiNamedElement newElement = addToFile(element, destination, usages);
@@ -51,7 +51,7 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 		if (file != null) optimizeImports(file);
 	}
 
-	private static PsiNamedElement addToFile(@NotNull PsiNamedElement element, @NotNull final TaraBoxFile destination, @NotNull Collection<UsageInfo> usages) {
+	private static PsiNamedElement addToFile(@NotNull PsiNamedElement element, @NotNull final TaraModel destination, @NotNull Collection<UsageInfo> usages) {
 		List<PsiElement> topLevelAtDestination = new ArrayList<>();
 		for (UsageInfo usage : usages) {
 			final PsiElement e = usage.getElement();
@@ -126,7 +126,7 @@ public class TaraMoveConceptProcessor extends BaseRefactoringProcessor {
 			public void run() {
 				ApplicationManager.getApplication().runWriteAction(new Runnable() {
 					public void run() {
-						final TaraBoxFile destination = TaraUtil.getOrCreateFile(myDestination, myProject);
+						final TaraModel destination = TaraUtil.getOrCreateFile(myDestination, myProject);
 						CommonRefactoringUtil.checkReadOnlyStatus(myProject, destination);
 						for (PsiNamedElement e : myElements) {
 							// TODO: Check for resulting circular imports

@@ -35,7 +35,6 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	@Override
 	public String getName() {
 		TaraVariableType variableType = ((TaraVariable) this).getVariableType();
-		if (variableType == null) return "unName";
 		if (variableType.getWord() != null)
 			return getAsWord();
 		ASTNode[] child = variableType.getNode().getChildren(TokenSet.create(TaraTypes.IDENTIFIER_KEY));
@@ -56,7 +55,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	@NotNull
 	public String getType() {
 		TaraVariableType type = ((TaraVariable) this).getVariableType();
-		return type.getNode().getFirstChildNode().getText();
+		return type.getNode().getFirstChildNode().getFirstChildNode().getText();
 	}
 
 	@NotNull

@@ -1,22 +1,14 @@
 package siani.tara.intellij.codeinsight.linemarkers;
 
 import com.intellij.codeHighlighting.Pass;
-import com.intellij.codeInsight.daemon.DaemonBundle;
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.daemon.impl.*;
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.util.MethodCellRenderer;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.Function;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.siani.itrules.formatter.Inflector;
 import siani.tara.intellij.lang.psi.Concept;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
@@ -27,49 +19,11 @@ import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import javax.swing.*;
-import java.awt.event.MouseEvent;
 
-public class TaraIntentionLineMarker extends JavaLineMarkerProvider {
+public final class TaraIntentionLineMarker extends IntentionLineMarker {
 
 	private static final String INTENTIONS_PATH = "intentions";
 	private static final String INTENTION = "Intention";
-
-	private final MarkerType markerType = new MarkerType(new Function<PsiElement, String>() {
-		@Nullable
-		@Override
-		public String fun(PsiElement element) {
-			if (!canBeMarked(element)) return null;
-			PsiElement reference;
-			reference = element instanceof Concept ? resolveExternal((Concept) element) : resolveExternal((TaraFacetTarget) element);
-			String start = "Intention declared in ";
-			@NonNls String pattern = null;
-			if (reference != null) pattern = reference.getNavigationElement().getContainingFile().getName();
-			return GutterIconTooltipHelper.composeText(new PsiElement[]{reference}, start, pattern);
-		}
-	}, getNavigator());
-
-	private boolean canBeMarked(PsiElement element) {
-		return (Concept.class.isInstance(element) && ((Concept) element).isIntention()) ||
-			TaraFacetTarget.class.isInstance(element) && TaraPsiImplUtil.getConceptContainerOf(element).isIntention();
-	}
-
-	private LineMarkerNavigator getNavigator() {
-		return new LineMarkerNavigator() {
-			@Override
-			public void browse(MouseEvent e, PsiElement element) {
-				if (!canBeMarked(element)) return;
-				if (DumbService.isDumb(element.getProject())) {
-					DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
-					return;
-				}
-				NavigatablePsiElement reference = (NavigatablePsiElement) (element instanceof Concept ? resolveExternal((Concept) element) : resolveExternal((TaraFacetTarget) element));
-				if (reference == null) return;
-				String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
-				MethodCellRenderer renderer = new MethodCellRenderer(false);
-				PsiElementListNavigator.openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overriding Methods of " + (reference.getName()), renderer);
-			}
-		};
-	}
 
 	public TaraIntentionLineMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
@@ -88,25 +42,31 @@ public class TaraIntentionLineMarker extends JavaLineMarkerProvider {
 		return super.getLineMarkerInfo(element);
 	}
 
-	private PsiElement resolveExternal(Concept concept) {
-		Project project = concept.getProject();
-		return ReferenceManager.resolveJavaClassReference(project, project.getName().toLowerCase() + "." + INTENTIONS_PATH + "." + concept.getName() + INTENTION);
+	protected boolean canBeMarked(PsiElement element) {
+		return (Concept.class.isInstance(element) && ((Concept) element).isIntention()) ||
+			TaraFacetTarget.class.isInstance(element) && TaraPsiImplUtil.getConceptContainerOf(element).isIntention();
 	}
 
-	private PsiElement resolveExternal(TaraFacetTarget target) {
-		Project project = target.getProject();
-		Concept concept = TaraPsiImplUtil.getConceptContainerOf(target);
-		Inflector inflector = TaraUtil.getInflector(ModuleProvider.getModuleOf(target));
-		if (concept == null || concept.getName() == null) return null;
-		String facetPackage = project.getName().toLowerCase() + "." + INTENTIONS_PATH + "." + inflector.plural(concept.getName()).toLowerCase();
-		return ReferenceManager.resolveJavaClassReference(project, facetPackage + composeClassName(target, concept.getName()));
+	protected String buildDestinyClassQN(Concept concept, Project project) {
+		return project.getName().toLowerCase() + DOT + INTENTIONS_PATH + DOT + concept.getName() + INTENTION;
 	}
 
-	private String composeClassName(TaraFacetTarget target, String conceptName) {
+	protected String getFacetPackage(Concept concept, Inflector inflector) {
+		return concept.getProject().getName().toLowerCase() + DOT + INTENTIONS_PATH + DOT + inflector.plural(concept.getName()).toLowerCase();
+	}
+
+	protected String composeClassName(TaraFacetTarget target, String conceptName) {
 		String name = "";
 		if (target.getIdentifierReference() == null) return "";
 		for (TaraIdentifier identifier : target.getIdentifierReference().getIdentifierList())
-			name += "." + identifier.getName() + conceptName + INTENTION;
+			name += DOT + identifier.getName() + conceptName + INTENTION;
 		return name;
+	}
+
+	protected PsiElement resolveExternal(TaraFacetTarget target) {
+		Concept concept = TaraPsiImplUtil.getConceptContainerOf(target);
+		if (concept == null || concept.getName() == null) return null;
+		String facetPackage = getFacetPackage(concept, TaraUtil.getInflector(ModuleProvider.getModuleOf(target)));
+		return ReferenceManager.resolveJavaClassReference(target.getProject(), facetPackage + composeClassName(target, concept.getName()));
 	}
 }

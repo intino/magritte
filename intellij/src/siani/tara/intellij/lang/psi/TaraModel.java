@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
-public interface TaraBoxFile extends PsiFile {
+public interface TaraModel extends PsiFile {
 
 	@NotNull
 	PsiFile getContainingFile();

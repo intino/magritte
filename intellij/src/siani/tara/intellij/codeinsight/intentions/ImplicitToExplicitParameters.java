@@ -1,17 +1,17 @@
 package siani.tara.intellij.codeinsight.intentions;
 
 import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.Parameter;
+import siani.tara.intellij.lang.psi.Parameters;
+import siani.tara.intellij.lang.psi.TaraElementFactory;
+import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.FacetTarget;
 import siani.tara.lang.Node;
 import siani.tara.lang.Variable;
 
@@ -19,7 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ImplicitToExplicitParameters extends PsiElementBaseIntentionAction implements IntentionAction {
+public class ImplicitToExplicitParameters extends ParametersIntentionAction implements IntentionAction {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
 		Node node = TaraUtil.getMetaConcept(TaraPsiImplUtil.getConceptContainerOf(element));
@@ -49,45 +49,6 @@ public class ImplicitToExplicitParameters extends PsiElementBaseIntentionAction 
 		int indexInParent = parameter.getIndexInParent();
 		if (indexInParent >= variables.size()) return null;
 		return variables.get(indexInParent);
-	}
-
-	private String getContextNameOf(TaraFacetApply inFacet) {
-		PsiElement contextOf = TaraPsiImplUtil.getContextOf(inFacet);
-		if (contextOf instanceof TaraFacetApply)
-			return contextOf.getFirstChild().getText();
-		if (contextOf instanceof Concept) return ((Concept) contextOf).getType();
-		return null;
-	}
-
-	private List<Variable> getAllowedFacet(Node node, String name, String context) {
-		FacetTarget target = node.getObject().getAllowedFacetByContext(name, context);
-		return target != null ? target.getVariables() : null;
-	}
-
-	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-		PsiElement parametersScope = getParametersScope(element);
-		return element.isWritable() && parametersScope != null && !((Parameters) parametersScope).areExplicit();
-	}
-
-	private PsiElement getParametersScope(PsiElement element) {
-		PsiElement parent = element.getParent();
-		while (parent != null && !PsiFile.class.isInstance(parent) && !Concept.class.isInstance(parent)) {
-			if (parent instanceof Parameters) return parent;
-			parent = parent.getParent();
-		}
-		return null;
-	}
-
-	@Override
-	public boolean startInWriteAction() {
-		return true;
-	}
-
-	@NotNull
-	@Override
-	public String getFamilyName() {
-		return getText();
 	}
 
 	@NotNull

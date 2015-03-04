@@ -132,11 +132,19 @@ public class InsideModelDependencyResolver {
 				node.add(annotation);
 	}
 
-	private void calculateInheritedVariables(NodeObject parent, DeclaredNode node) {
+	private void calculateInheritedVariables(NodeObject parent, DeclaredNode child) {
 		List<Variable> variables = new ArrayList<>();
 		for (Variable variable : parent.getVariables())
-			variables.add(variable.clone());
-		node.getObject().getVariables().addAll(0, variables);
+			if (!isOverrided(child, variable))
+				variables.add(variable.clone());
+		child.getObject().getVariables().addAll(0, variables);
+	}
+
+	private boolean isOverrided(DeclaredNode child, Variable variable) {
+		for (Variable childVar : child.getObject().getVariables())
+			if (childVar.getName().equals(variable.getName()) && childVar.getType().equals(variable.getType()))
+				return true;
+		return false;
 	}
 
 	private void collectInnerConceptsInherited(DeclaredNode parent, DeclaredNode node, List<LinkNode> toAddNodes) {
