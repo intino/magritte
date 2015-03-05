@@ -100,7 +100,8 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 	}
 
 	public MetaIdentifier getMetaIdentifier() {
-		return PsiTreeUtil.getChildrenOfType(this.getSignature(), MetaIdentifier.class)[0];
+		MetaIdentifier[] childrenOfType = PsiTreeUtil.getChildrenOfType(this.getSignature(), MetaIdentifier.class);
+		return childrenOfType == null ? null:childrenOfType[0];
 	}
 
 	@Override
@@ -131,7 +132,7 @@ public class ConceptMixin extends ASTWrapperPsiElement {
 		while (concept != null) {
 			Concept parent = TaraPsiImplUtil.getConceptContainerOf(concept);
 			if (parent != null && (parent.isSub() && !concept.isSub() || !parent.isSub() && !concept.isSub()))
-					name = parent.getName() + "." + name;
+				name = parent.getName() + "." + name;
 			concept = parent;
 		}
 		return name;
