@@ -11,8 +11,8 @@ public class TaraCRunnerTest {
 	}
 
 	@Test
-	public void TestM1() {
-		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/testM1.txt"});
+	public void SumusM1() {
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/SumusM1.txt"});
 	}
 
 	@Test
@@ -48,14 +48,9 @@ public class TaraCRunnerTest {
 
 	@Test
 	public void TestM0() {
-		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/testM1.txt"});
+		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/SumusM1.txt"});
 
 		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/testM0.txt"});
-	}
-
-	@Test
-	public void TafatM1() {
-		TaracRunner.main(new String[]{"--gen-plugin", "/Users/oroncal/workspace/tara/rt/res_test/tafatEngine.txt"});
 	}
 
 

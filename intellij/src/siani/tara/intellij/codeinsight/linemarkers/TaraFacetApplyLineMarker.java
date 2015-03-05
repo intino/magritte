@@ -33,6 +33,7 @@ import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveJavaClas
 public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 
 	private static final String FACETS_PATH = "extensions";
+	private static final String DOT = ".";
 	private final MarkerType markerType = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
 		@Override
@@ -106,13 +107,13 @@ public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 	}
 
 	private PsiElement resolveExternal(Concept concept, FacetApply apply) {
-		return resolveJavaClassReference(concept.getProject(), getFacetApplyPackage(concept, apply) + "." + concept.getName() + apply.getFacetName());
+		return resolveJavaClassReference(concept.getProject(), getFacetApplyPackage(concept, apply) + DOT + concept.getName() + apply.getFacetName());
 	}
 
 	private String getFacetApplyPackage(Concept concept, FacetApply apply) {
 		Inflector inflector = getInflector(apply);
 		if (inflector == null) return "";
-		return (getFacetPackage(concept) + "." + inflector.plural(apply.getFacetName())).toLowerCase();
+		return (getFacetPackage(concept) + DOT + inflector.plural(apply.getFacetName())).toLowerCase();
 	}
 
 	private Inflector getInflector(FacetApply apply) {
@@ -120,6 +121,6 @@ public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 	}
 
 	private String getFacetPackage(Concept concept) {
-		return (concept.getProject().getName() + "." + FACETS_PATH).toLowerCase();
+		return (concept.getProject().getName() + DOT + FACETS_PATH).toLowerCase();
 	}
 }

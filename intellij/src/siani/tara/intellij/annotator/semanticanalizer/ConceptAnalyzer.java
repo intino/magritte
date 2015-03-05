@@ -53,7 +53,6 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 		if (!hasErrors())
 			checkContainsInnerWithSameName(concept);
 		if (!hasErrors()) analyzeJavaClassCreation(node, concept);
-
 	}
 
 	private void checkContainsInnerWithSameName(Concept concept) {
@@ -73,12 +72,11 @@ public class ConceptAnalyzer extends TaraAnalyzer {
 	}
 
 	private void checkInnerNames(Concept concept) {
-		for (Concept inner : concept.getInnerConcepts()) {
+		for (Concept inner : concept.getInnerConcepts())
 			if (inner.getName() != null && inner.getName().equals(concept.getName())) {
 				results.put(concept.getSignature(), addError(message("inner.with.same.name")));
 				return;
 			} else checkContainsInnerWithSameName(inner);
-		}
 	}
 
 	private void analyzeFacetConstrains() {

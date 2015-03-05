@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="siani.tara.intellij.project.module.ui.TaraModuleBuildConfEditor">
-  <grid id="27dc6" binding="dialogContents" layout-manager="GridLayoutManager" row-count="5" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="50" vgap="20">
+  <grid id="27dc6" binding="dialogContents" layout-manager="GridLayoutManager" row-count="8" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="50" vgap="20">
     <margin top="20" left="20" bottom="20" right="20"/>
     <constraints>
-      <xy x="20" y="20" width="500" height="257"/>
+      <xy x="20" y="20" width="580" height="437"/>
     </constraints>
     <properties>
       <minimumSize width="350" height="170"/>
@@ -11,15 +11,6 @@
     </properties>
     <border type="none"/>
     <children>
-      <component id="e1f62" class="javax.swing.JCheckBox" binding="generativeModelCheckBox">
-        <constraints>
-          <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <selected value="true"/>
-          <text value="Use the model to generate a new DSL"/>
-        </properties>
-      </component>
       <component id="d92ba" class="javax.swing.JLabel" binding="dslLabel">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -30,7 +21,7 @@
       </component>
       <component id="397f2" class="javax.swing.JTextField" binding="genDslName">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="6" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -63,9 +54,102 @@
       </component>
       <vspacer id="176c8">
         <constraints>
-          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
       </vspacer>
+      <component id="80c80" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Model Addresses"/>
+        </properties>
+      </component>
+      <component id="26f22" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Label"/>
+        </properties>
+      </component>
+      <component id="764d0" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="e1f62" class="javax.swing.JCheckBox" binding="generativeModelCheckBox">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <selected value="true"/>
+          <text value="Use the model to generate a new DSL"/>
+        </properties>
+      </component>
+      <grid id="c7659" layout-manager="FlowLayout" hgap="20" vgap="5" flow-align="1">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="cb073" class="javax.swing.JTextField" default-binding="true">
+            <constraints/>
+            <properties>
+              <minimumSize width="40" height="25"/>
+              <preferredSize width="40" height="25"/>
+            </properties>
+          </component>
+          <component id="bb897" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+            <constraints/>
+            <properties>
+              <minimumSize width="40" height="25"/>
+              <preferredSize width="40" height="25"/>
+            </properties>
+          </component>
+          <component id="b2534" class="javax.swing.JTextField" default-binding="true">
+            <constraints/>
+            <properties>
+              <minimumSize width="40" height="25"/>
+              <preferredSize width="40" height="25"/>
+            </properties>
+          </component>
+          <component id="fda78" class="javax.swing.JTextField" default-binding="true">
+            <constraints/>
+            <properties>
+              <horizontalAlignment value="0"/>
+              <minimumSize width="40" height="25"/>
+              <preferredSize width="40" height="25"/>
+            </properties>
+          </component>
+          <component id="285a4" class="javax.swing.JTextField" default-binding="true">
+            <constraints/>
+            <properties>
+              <horizontalAlignment value="0"/>
+              <minimumSize width="40" height="25"/>
+              <preferredSize width="40" height="25"/>
+            </properties>
+          </component>
+          <component id="814b8" class="javax.swing.JTextField" default-binding="true">
+            <constraints/>
+            <properties>
+              <horizontalAlignment value="0"/>
+              <minimumSize width="40" height="25"/>
+              <preferredSize width="40" height="25"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <component id="b3201" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Starts with"/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>

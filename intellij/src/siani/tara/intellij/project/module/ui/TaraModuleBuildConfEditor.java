@@ -40,6 +40,8 @@ public class TaraModuleBuildConfEditor implements ModuleConfigurationEditor {
 	private JCheckBox generativeModelCheckBox;
 	private boolean defaultValueModelBox;
 	private JTextField genDslName;
+	private JComboBox comboBox1;
+	private JTextField textField1;
 	private String defaultDslName;
 	private Module[] candidates;
 
@@ -230,7 +232,7 @@ public class TaraModuleBuildConfEditor implements ModuleConfigurationEditor {
 	}
 
 	public String getDisplayName() {
-		return "Tara Settings";
+		return "Model Settings";
 	}
 
 	public String getHelpTopic() {

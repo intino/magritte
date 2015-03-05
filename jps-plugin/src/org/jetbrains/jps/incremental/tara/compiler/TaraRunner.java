@@ -44,7 +44,7 @@ public class TaraRunner {
 			if (generatedLangName != null)
 				writer.write(TaraRtConstants.GENERATED_LANG_NAME + "\n" + generatedLangName + "\n");
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
-			String taraModels = PathManager.getPluginsPath() + File.separator + "taraModels" + File.separator;
+			String taraModels = PathManager.getPluginsPath() + File.separator + "tara_models" + File.separator;
 			writer.write(TaraRtConstants.MODELS_PATH + "\n" + taraModels + "\n");
 			for (String iconPath : iconPaths)
 				writer.write(TaraRtConstants.ICONS_PATH + "\n" + iconPath + "\n");

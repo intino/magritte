@@ -46,7 +46,7 @@ public class MetamodelDependencyResolver {
 		for (Annotation annotation : annotations)
 			if (annotation.isMeta() && !instance.is(Annotation.getNormalAnnotationOfMeta(annotation)))
 				instance.add(Annotation.getNormalAnnotationOfMeta(annotation));
-			else if (!instance.is(annotation) && COMPONENT.equals(annotation) || AGGREGATED.equals(annotation))
+			else if (!instance.is(annotation) && COMPONENT.equals(annotation) || AGGREGATED.equals(annotation) || ASSOCIATED.equals(annotation))
 				instance.add(annotation);
 	}
 
@@ -136,8 +136,13 @@ public class MetamodelDependencyResolver {
 			if (terminal.getObject().is(FACET)) resolveTargets(terminal);
 			model.add(terminal);
 			addIdentifiers(terminal);
-			propagateLinks(findLinksOfTerminal(terminal), terminal);
+			addReferencesOfTerminal(findLinksOfTerminal(terminal), terminal);
+			fixInnerModelReferences(terminal);
 		}
+	}
+
+	private void fixInnerModelReferences(DeclaredNode terminal) {
+
 	}
 
 	private List<LinkNode> findLinksOfTerminal(DeclaredNode terminal) {
@@ -150,7 +155,7 @@ public class MetamodelDependencyResolver {
 		return linkNodes;
 	}
 
-	private void propagateLinks(List<LinkNode> linkNodes, DeclaredNode terminal) throws TaraException {
+	private void addReferencesOfTerminal(List<LinkNode> linkNodes, DeclaredNode terminal) throws TaraException {
 		for (LinkNode linkNode : linkNodes) {
 			Collection<Node> instancesOf = getDeclaredInstancesOf(linkNode.getContainer());
 			for (Node container : instancesOf)

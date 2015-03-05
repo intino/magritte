@@ -90,6 +90,16 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		updateLibraries(rootModel);
 		addParentDependency(rootModel);
 		persistTempConf(rootModel.getProject());
+		createFirstFile(getContentEntryPath() + separator + MODEL);
+	}
+
+	private void createFirstFile(String path) {
+		try {
+			File file = new File(path, modelName + '.' + "tara");
+			file.createNewFile();
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
+		}
 	}
 
 	private void addParentDependency(ModifiableRootModel rootModel) {

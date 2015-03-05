@@ -33,44 +33,45 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	@NotNull
 	@Override
 	public PsiReference[] getReferences() {
-		return new PsiReference[]{getReference()};
+		PsiReference reference = getReference();
+		return reference == null ? new PsiReference[0] : new PsiReference[]{reference};
 	}
 
 	@Nullable
 	@Override
 	public PsiReference getReference() {
-		PsiReference[] references;
 		Parameter parameter;
 		if ((parameter = isParameterReference()) != null)
-			references = createResolverForParameter(parameter);
-		else if (isFileReference()) references = creteFileResolver();
-		else references = createConceptResolver();
-		return references[0];
+			return createResolverForParameter(parameter);
+		else if (isFileReference()) return creteFileResolver();
+		else return createConceptResolver();
 	}
 
-	private PsiReference[] creteFileResolver() {
-		return new PsiReference[]{new TaraFileReferenceSolver((HeaderReference) this.getParent(), getRange())};
+	private PsiReference creteFileResolver() {
+		return new TaraFileReferenceSolver((HeaderReference) this.getParent(), getRange());
 	}
 
-	private PsiReference[] createConceptResolver() {
+	private PsiReference createConceptResolver() {
 		Concept container = TaraPsiImplUtil.getConceptContainerOf(this);
 		Node node = TaraUtil.getMetaConcept(container);
-		return new PsiReference[]{new TaraConceptReferenceSolver(this, getRange(), container, node)};
+		return new TaraConceptReferenceSolver(this, getRange(), container, node);
 	}
 
-	private PsiReference[] createResolverForParameter(Parameter parameter) {
+	private PsiReference createResolverForParameter(Parameter parameter) {
 		Concept container = TaraPsiImplUtil.getConceptContainerOf(this);
-		Node node = TaraUtil.getMetaConcept(container);
-		if (node == null) return new PsiReference[0];
+		Node node = TaraUtil.getMetaConcept((Concept) container.getOriginalElement());
+		if (node == null)
+			return null;
 		List<Variable> variables = node.getObject().getVariables();
-		if (variables.isEmpty() || variables.size() <= parameter.getIndexInParent()) return new PsiReference[0];
+		if (variables.isEmpty() || variables.size() <= parameter.getIndexInParent()) return null;
 		Variable variable = parameter.isExplicit() ? findVar(variables, parameter.getExplicitName()) : variables.get(parameter.getIndexInParent());
-		if (variable == null) return new PsiReference[0];
+		if (variable == null)
+			return null;
 		if (variable instanceof siani.tara.lang.Word)
-			return new PsiReference[]{new TaraMetaWordReferenceSolver(this, getRange(), (Word) variable)};
+			return new TaraMetaWordReferenceSolver(this, getRange(), (Word) variable);
 		else if (variable instanceof Reference)
-			return new PsiReference[]{new TaraParameterReferenceSolver(this, getRange(), container, node, variable)};
-		return new PsiReference[0];
+			return new TaraParameterReferenceSolver(this, getRange(), container, node, variable);
+		return null;
 	}
 
 	private TextRange getRange() {
