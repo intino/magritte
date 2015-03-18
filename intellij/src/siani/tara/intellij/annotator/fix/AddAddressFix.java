@@ -7,13 +7,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.codegeneration.AddressGenerator;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 
 public class AddAddressFix implements IntentionAction {
-	private final Concept concept;
+	private final Node node;
 
-	public AddAddressFix(Concept concept) {
-		this.concept = concept;
+	public AddAddressFix(Node node) {
+		this.node = node;
 	}
 
 	@NotNull
@@ -35,7 +35,7 @@ public class AddAddressFix implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		AddressGenerator generator = new AddressGenerator(concept);
+		AddressGenerator generator = new AddressGenerator(node);
 		generator.generate();
 	}
 

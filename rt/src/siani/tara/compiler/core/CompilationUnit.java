@@ -14,7 +14,7 @@ import siani.tara.compiler.core.operation.sourceunit.MarkOperation;
 import siani.tara.compiler.core.operation.sourceunit.ParseOperation;
 import siani.tara.compiler.core.operation.sourceunit.SourceUnitOperation;
 import siani.tara.compiler.rt.TaraRtConstants;
-import siani.tara.lang.Model;
+import siani.tara.model.Model;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -43,9 +43,9 @@ public class CompilationUnit extends ProcessingUnit {
 		}
 	};
 
-	public CompilationUnit(boolean metamodelGeneration, CompilerConfiguration configuration) {
+	public CompilationUnit(boolean languageGeneration, CompilerConfiguration configuration) {
 		super(configuration, null);
-		this.pluginGeneration = metamodelGeneration;
+		this.pluginGeneration = languageGeneration;
 		this.sourceUnits = new HashMap<>();
 		this.phaseOperations = new LinkedList[Phases.ALL];
 		for (int i = 0; i < this.phaseOperations.length; i++)
@@ -60,7 +60,7 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new ModelToJavaOperation(this), Phases.CLASS_GENERATION);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
-		if (metamodelGeneration) addPhaseOperation(new SaveModelOperation(this), Phases.MODEL_GENERATION);
+		if (languageGeneration) addPhaseOperation(new GenerateLanguageOperation(this), Phases.MODEL_GENERATION);
 		addPhaseOperation(output, Phases.OUTPUT);
 	}
 

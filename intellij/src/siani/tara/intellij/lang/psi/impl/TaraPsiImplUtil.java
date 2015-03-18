@@ -23,7 +23,7 @@ public class TaraPsiImplUtil {
 		return keyNode != null ? keyNode.getText() : null;
 	}
 
-	public static String getIdentifier(Concept element) {
+	public static String getIdentifier(Node element) {
 		if (element.getSignature().getIdentifier() != null) {
 			ASTNode valueNode = element.getSignature().getIdentifier().getNode();
 			return valueNode.getText();
@@ -31,22 +31,22 @@ public class TaraPsiImplUtil {
 		return null;
 	}
 
-	public static Identifier getIdentifierNode(Concept element) {
+	public static Identifier getIdentifierNode(Node element) {
 		return element.getSignature().getIdentifier() != null ? element.getSignature().getIdentifier() : null;
 	}
 
 	public static PsiElement setName(Signature element, String newName) {
 		ASTNode keyNode = element.getNode().findChildByType(TaraTypes.IDENTIFIER);
 		if (keyNode != null) {
-			Concept concept = TaraElementFactoryImpl.getInstance(element.getProject()).createConcept(newName);
-			ASTNode newKeyNode = concept.getIdentifierNode().getNode();
+			Node node = TaraElementFactoryImpl.getInstance(element.getProject()).createConcept(newName);
+			ASTNode newKeyNode = node.getIdentifierNode().getNode();
 			element.getNode().replaceChild(keyNode, newKeyNode);
 		}
 		return element;
 	}
 
-	public static List<Concept> getInnerConceptsInBody(Body body) {
-		return body == null ? Collections.EMPTY_LIST : (List<Concept>) body.getConceptList();
+	public static List<Node> getInnerNodesInBody(Body body) {
+		return body == null ? Collections.EMPTY_LIST : (List<Node>) body.getConceptList();
 	}
 
 	public static List<Variable> getVariablesInBody(Body body) {
@@ -54,44 +54,40 @@ public class TaraPsiImplUtil {
 	}
 
 
-	public static List<Concept> getInnerConceptsOf(Concept concept) {
-		if (concept != null && concept.getBody() != null) {
-			List<Concept> children = getInnerConceptsInBody(concept.getBody());
+	public static List<Node> getInnerNodesOf(Node node) {
+		if (node != null && node.getBody() != null) {
+			List<Node> children = getInnerNodesInBody(node.getBody());
 			removeSubs(children);
-			List<Concept> subConcepts = new ArrayList<>();
-			for (Concept child : children)
-				subConcepts.addAll(collectInnerSubs(child));
-			children.addAll(subConcepts);
 			return children;
 		}
 		return Collections.EMPTY_LIST;
 	}
 
 
-	private static void removeSubs(List<Concept> children) {
-		List<Concept> list = new ArrayList();
-		for (Concept concept : children) if (concept.isSub()) list.add(concept);
+	private static void removeSubs(List<Node> children) {
+		List<Node> list = new ArrayList();
+		for (Node node : children) if (node.isSub()) list.add(node);
 		children.removeAll(list);
 	}
 
-	private static List<Concept> collectInnerSubs(Concept concept) {
-		List<Concept> subs = new ArrayList();
-		for (Concept subConcept : concept.getSubConcepts()) {
-			subs.add(subConcept);
-			subs.addAll(collectInnerSubs(subConcept));
+	private static List<Node> collectInnerSubs(Node node) {
+		List<Node> subs = new ArrayList();
+		for (Node subNode : node.getSubNodes()) {
+			subs.add(subNode);
+			subs.addAll(collectInnerSubs(subNode));
 		}
 		return subs;
 	}
 
 	@Nullable
-	public static Concept getConceptContainerOf(PsiElement element) {
+	public static Node getContainerNodeOf(PsiElement element) {
 		try {
-			PsiElement aElement = element;
+			PsiElement aElement = element.getOriginalElement();
 			while ((aElement.getParent() != null)
 				&& !(aElement.getParent() instanceof TaraModel)
-				&& !(aElement.getParent() instanceof Concept))
+				&& !(aElement.getParent() instanceof Node))
 				aElement = aElement.getParent();
-			return (aElement.getParent() instanceof Concept) ? (Concept) aElement.getParent() : null;
+			return (aElement.getParent() instanceof Node) ? (Node) aElement.getParent() : null;
 		} catch (NullPointerException e) {
 			LOG.error(e.getMessage(), e);
 			return null;
@@ -99,10 +95,10 @@ public class TaraPsiImplUtil {
 	}
 
 	@NotNull
-	public static Collection<TaraFacetTarget> getFacetTargets(Concept concept) {
-		if (concept.getBody() == null) return Collections.EMPTY_LIST;
+	public static Collection<TaraFacetTarget> getFacetTargets(Node node) {
+		if (node.getBody() == null) return Collections.EMPTY_LIST;
 		List<TaraFacetTarget> targets = new ArrayList<>();
-		getFacetTargets(concept.getBody(), targets);
+		getFacetTargets(node.getBody(), targets);
 		return targets;
 	}
 
@@ -123,7 +119,7 @@ public class TaraPsiImplUtil {
 
 	private static boolean isNotConceptOrFile(PsiElement aElement) {
 		return !(aElement.getParent() instanceof TaraModel)
-			&& !(aElement.getParent() instanceof Concept);
+			&& !(aElement.getParent() instanceof Node);
 	}
 
 	private static boolean isNotFacet(PsiElement aElement) {
@@ -139,14 +135,14 @@ public class TaraPsiImplUtil {
 		return (Body) aElement.getParent();
 	}
 
-	public static Concept getParentOf(Concept concept) {
-		if (concept.isSub()) {
-			Concept parent = concept;
+	public static Node getParentOf(Node node) {
+		if (node.isSub()) {
+			Node parent = node;
 			while (parent != null && parent.isSub())
-				parent = getConceptContainerOf(parent);
+				parent = getContainerNodeOf(parent);
 			return parent;
 		}
-		return concept.getSignature().getParentConcept();
+		return node.getSignature().getParentConcept();
 	}
 
 }

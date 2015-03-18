@@ -29,8 +29,8 @@ public class TaraExplicitParameterImpl extends ParameterMixin implements TaraExp
 
   @Override
   @Nullable
-  public TaraParameterValue getParameterValue() {
-    return findChildByClass(TaraParameterValue.class);
+  public TaraValue getValue() {
+    return findChildByClass(TaraValue.class);
   }
 
 }

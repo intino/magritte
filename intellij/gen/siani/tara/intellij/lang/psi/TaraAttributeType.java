@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraAttributeType extends TaraPsiElement {
 
-  @NotNull
+  @Nullable
   TaraMeasureType getMeasureType();
 
 }

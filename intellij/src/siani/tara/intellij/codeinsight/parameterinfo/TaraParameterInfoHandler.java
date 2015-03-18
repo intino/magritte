@@ -9,13 +9,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.*;
-import siani.tara.lang.Variable;
-import siani.tara.lang.Word;
 
 import java.util.*;
 
@@ -86,37 +81,37 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	@Override
 	public Parameters findElementForParameterInfo(@NotNull CreateParameterInfoContext parameterInfoContext) {
 		final Parameters parameters = findParameters(parameterInfoContext);
-		if (parameters != null) {
-			Model model = TaraLanguage.getMetaModel(parameters.getContainingFile());
-			if (model == null) return parameters;
-			TaraFacetApply facet = parameters.isInFacet();
-			Node node = TaraUtil.findNode(TaraPsiImplUtil.getConceptContainerOf(parameters), model);
-			if (node == null) return parameters;
-			List<Variable> variables = (facet != null) ?
-				getFacetVariables(facet.getMetaIdentifierList().get(0).getText(), getContextNameOf(facet), node) :
-				node.getObject().getVariables();
-			if (variables.isEmpty()) return parameters;
-			parameterInfoContext.setItemsToShow(new Object[]{buildParameterInfo(parameters.getProject(), variables)});
-		}
+//		if (parameters != null) {
+//			Model model = TaraLanguage.getLanguage(parameters.getContainingFile());
+//			if (model == null) return parameters;
+//			TaraFacetApply facet = parameters.isInFacet();
+//			Node node = TaraUtil.findNode(TaraPsiImplUtil.getContainerNodeOf(parameters), model);
+//			if (node == null) return parameters;
+//			List<Variable> variables = (facet != null) ?
+//				getFacetVariables(facet.getMetaIdentifierList().get(0).getText(), getContextNameOf(facet), node) :
+//				node.getObject().getVariables();
+//			if (variables.isEmpty()) return parameters;
+//			parameterInfoContext.setItemsToShow(new Object[]{buildParameterInfo(parameters.getProject(), variables)});
+//		}
 		return parameters;
 	}
 
 	private List<siani.tara.intellij.lang.psi.Variable> buildParameterInfo(Project project, List<Variable> variables) {
 		TaraElementFactory instance = TaraElementFactory.getInstance(project);
 		List<siani.tara.intellij.lang.psi.Variable> attributes = new ArrayList<>();
-		for (Variable variable : variables) {
-			if (variable.getDefaultValues() != null && variable.getDefaultValues().length > 0) continue;
-			siani.tara.intellij.lang.psi.Variable attribute = null;
-			if (variable instanceof Attribute || variable instanceof Reference) {
-				String[] ref = variable.getType().split("\\.");
-				attribute = instance.createAttribute(variable.getName(), ref[ref.length - 1] + ((variable.isList()) ? "..." : ""));
-			} else if (variable instanceof Word) {
-				List<String> wordTypes = ((Word) variable).getWordTypes();
-				attribute = instance.createWord(variable.getName(), wordTypes.toArray(new String[wordTypes.size()]));
-			} else if (variable instanceof Resource)
-				attribute = instance.createResource(variable.getName(), variable.getType());
-			if (attribute != null) attributes.add(attribute);
-		}
+//		for (Variable variable : variables) {
+//			if (variable.getDefaultValues() != null && variable.getDefaultValues().length > 0) continue;
+//			siani.tara.intellij.model.psi.Variable attribute = null;
+//			if (variable instanceof Attribute || variable instanceof Reference) {
+//				String[] ref = variable.getType().split("\\.");
+//				attribute = instance.createAttribute(variable.getName(), ref[ref.length - 1] + ((variable.isList()) ? "..." : ""));
+//			} else if (variable instanceof Word) {
+//				List<String> wordTypes = ((Word) variable).getWordTypes();
+//				attribute = instance.createWord(variable.getName(), wordTypes.toArray(new String[wordTypes.size()]));
+//			} else if (variable instanceof Resource)
+//				attribute = instance.createResource(variable.getName(), variable.getType());
+//			if (attribute != null) attributes.add(attribute);
+//		}
 		return attributes;
 	}
 
@@ -127,10 +122,6 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		return null;
 	}
 
-	private List<Variable> getFacetVariables(String name, String context, Node node) {
-		FacetTarget target = node.getObject().getAllowedFacetByContext(name, context);
-		return target != null ? target.getVariables() : Collections.EMPTY_LIST;
-	}
 
 	private Parameters findParameters(CreateParameterInfoContext context) {
 		Parameters parameters = ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), Parameters.class);

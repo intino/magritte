@@ -45,9 +45,8 @@ public class JavaCodeGenerator extends CodeGenerator {
 
 	private String makeCompileCommand(File[] sources) throws TaraException {
 		try {
-			List<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(sources,
-				new String[]{getTaraCoreFile().getAbsolutePath() + SEP + "build" + SEP},
-				null, conf.getOutDirectory().getAbsolutePath());
+			List<String> cmd = JavaCommandHelper.buildJavaCompileCommandLine(new String[]{getTaraCoreFile().getAbsolutePath() + SEP + "build" + SEP},
+				null, conf.getOutDirectory().getAbsolutePath(), sources);
 			return JavaCommandHelper.join(cmd.toArray(new String[cmd.size()]), " ");
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);

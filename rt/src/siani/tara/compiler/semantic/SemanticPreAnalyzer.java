@@ -4,10 +4,10 @@ package siani.tara.compiler.semantic;
 import siani.tara.compiler.core.errorcollection.SemanticException;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
-import siani.tara.lang.DeclaredNode;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
-import siani.tara.lang.NodeTree;
+import siani.tara.model.DeclaredNode;
+import siani.tara.model.Model;
+import siani.tara.model.Node;
+import siani.tara.model.NodeTree;
 
 import java.util.Collection;
 
@@ -21,7 +21,7 @@ public class SemanticPreAnalyzer {
 	}
 
 	public void analyze() throws SemanticException {
-		startDuplicatesAnalysis(model.getTreeModel());
+		startDuplicatesAnalysis(model.getNodeTree());
 		if (!errors.isEmpty()) throwError();
 		startAnnotationsAnalysis(model.getNodeTable());
 		if (!errors.isEmpty()) throwError();

@@ -28,43 +28,51 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return this instanceof TaraExplicitParameter;
 	}
 
+	@NotNull
 	public String getExplicitName() {
-		if (this instanceof TaraExplicitParameter) return ((TaraExplicitParameter) this).getIdentifier().getText();
-		return null;
-	}
-
-	public TaraParameterValue getValue() {
-		if (this instanceof TaraExplicitParameter) return ((TaraExplicitParameter) this).getParameterValue();
-		else return ((TaraImplicitParameter) this).getParameterValue();
+		return this instanceof TaraExplicitParameter ? ((TaraExplicitParameter) this).getIdentifier().getText() : "";
 	}
 
 	public TaraMeasureValue getMeasure() {
-		if (this instanceof TaraExplicitParameter)
-			return ((TaraExplicitParameter) this).getParameterValue() != null ? ((TaraExplicitParameter) this).getParameterValue().getMeasureValue() : null;
-		else return ((TaraImplicitParameter) this).getParameterValue().getMeasureValue();
+		return ((Parameter) this).getValue().getMeasureValue();
 	}
 
 	public boolean isList() {
-		return getValue().getChildren().length - (getValue().getMeasureValue() != null ? 1 : 0) > 1;
+		return ((Parameter) this).getValue().getChildren().length - (((Parameter) this).getValue().getMeasureValue() != null ? 1 : 0) > 1;
 	}
 
 	public int getValuesLength() {
-		return getValue().getChildren().length - (getValue().getMeasureValue() != null ? 1 : 0);
+		return ((Parameter) this).getValue().getChildren().length - (((Parameter) this).getValue().getMeasureValue() != null ? 1 : 0);
 	}
 
-	public String[] getValues() {
-		List<String> values = new ArrayList<>();
-		for (PsiElement element : getValue().getChildren()) {
+	public Object[] getValues() {
+		List<Object> values = new ArrayList<>();
+		for (PsiElement element : ((Parameter) this).getValue().getChildren()) {
 			if (element instanceof TaraMeasureValue) continue;
-			values.add(element.getText());
+			values.add(cast(element));
 		}
-		return values.toArray(new String[values.size()]);
+		return values.toArray();
 	}
 
+	private Object cast(PsiElement element) {
+		String value = element.getText();
+		if (element instanceof TaraStringValue) return value;
+		else if (element instanceof TaraBooleanValue) return Boolean.parseBoolean(value);
+		else if (element instanceof TaraLinkValue) return value;
+		else if (element instanceof TaraNaturalValue || element instanceof TaraIntegerValue)
+			return Integer.parseInt(value);
+		else if (element instanceof TaraDoubleValue) return Double.parseDouble(value);
+		else if (element instanceof TaraEmptyField) return "$" + value;
+		else if (element instanceof IdentifierReference) {
+			Node node = ReferenceManager.resolveToNode((IdentifierReference) element);
+			return node != null ? node : value;
+		}
+		return "";
+	}
 
 	public TaraFacetApply isInFacet() {
 		PsiElement aElement = this;
-		while (!(aElement.getParent() instanceof Concept) && !(aElement.getParent() instanceof TaraFacetApply))
+		while (!(aElement.getParent() instanceof Node) && !(aElement.getParent() instanceof TaraFacetApply))
 			aElement = aElement.getParent();
 		return (aElement.getParent() instanceof TaraFacetApply) ? (TaraFacetApply) aElement.getParent() : null;
 	}

@@ -193,7 +193,7 @@ public class CompilerConfiguration {
 		this.modelsDirectory = modelsDirectory;
 	}
 
-	public String getModelsDirectory() {
+	public String getLanguageDirectory() {
 		return modelsDirectory;
 	}
 

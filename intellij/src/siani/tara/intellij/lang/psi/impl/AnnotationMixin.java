@@ -18,7 +18,7 @@ public class AnnotationMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	public boolean is(siani.tara.lang.Annotation annotation) {
+	public boolean is(siani.tara.intellij.lang.lexer.Annotation annotation) {
 		return this.getText().equals(annotation.getName());
 	}
 

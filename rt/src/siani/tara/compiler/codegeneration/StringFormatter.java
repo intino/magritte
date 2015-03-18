@@ -1,6 +1,7 @@
 package siani.tara.compiler.codegeneration;
 
-import org.siani.itrules.Formatter;
+
+import org.siani.itrules.formatter.Formatter;
 
 public class StringFormatter implements Formatter {
 	@Override

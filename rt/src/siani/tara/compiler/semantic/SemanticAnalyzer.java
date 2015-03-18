@@ -2,20 +2,20 @@ package siani.tara.compiler.semantic;
 
 
 import siani.tara.compiler.core.errorcollection.SemanticException;
-import siani.tara.compiler.core.errorcollection.semantic.RequiredConceptNotFoundError;
+import siani.tara.compiler.core.errorcollection.semantic.RequiredNodeNotFoundError;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
-import siani.tara.lang.DeclaredNode;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
+import siani.tara.model.DeclaredNode;
+import siani.tara.model.Model;
+import siani.tara.model.Node;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.lang.Annotation.REQUIRED;
-import static siani.tara.lang.Annotation.TERMINAL;
+import static siani.tara.model.Annotation.REQUIRED;
+import static siani.tara.model.Annotation.TERMINAL;
 
 
 public class SemanticAnalyzer {
@@ -45,7 +45,7 @@ public class SemanticAnalyzer {
 			Collection<Node> requiredNodes = getRequiredInnerNodes(node);
 			for (Node requiredNode : requiredNodes) {
 				if (!existInstanceOf(requiredNode, getInnerNodes(node)))
-					errors.add(new RequiredConceptNotFoundError(node.getName(), node));
+					errors.add(new RequiredNodeNotFoundError(node.getName(), node));
 			}
 		}
 	}

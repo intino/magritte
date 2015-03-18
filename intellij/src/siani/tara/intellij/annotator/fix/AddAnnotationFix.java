@@ -9,14 +9,14 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.lang.Annotation;
+import siani.tara.intellij.lang.lexer.Annotation;
 
 public class AddAnnotationFix implements IntentionAction {
-	private final Concept concept;
+	private final Node node;
 	private final Annotation annotation;
 
-	public AddAnnotationFix(Concept concept, Annotation annotation) {
-		this.concept = concept;
+	public AddAnnotationFix(Node node, Annotation annotation) {
+		this.node = node;
 		this.annotation = annotation;
 	}
 
@@ -42,14 +42,12 @@ public class AddAnnotationFix implements IntentionAction {
 		WriteCommandAction action = new WriteCommandAction(project, file) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
-				TaraAnnotations taraAnnotations = ((TaraConcept) concept).getAnnotations();
-				if (taraAnnotations != null)
-					taraAnnotations.getAnnotationList().add((TaraAnnotation) TaraElementFactory.getInstance(concept.getProject()).createAnnotation(annotation.getName()));
-				else {
-					TaraAnnotations element =
-						TaraElementFactory.getInstance(concept.getProject()).createAnnotations(annotation.getName());
-					concept.addAfter(element, concept.getSignature());
+				Annotations taraAnnotations = node.getAnnotationsNode();
+				TaraElementFactory factory = TaraElementFactory.getInstance(node.getProject());
+				if (taraAnnotations != null) {
+					taraAnnotations.getAnnotationList().add(factory.createAnnotation(annotation.getName()));
 				}
+				else node.addAfter(factory.createAnnotations(annotation.getName()), node.getSignature());
 			}
 		};
 		action.execute();

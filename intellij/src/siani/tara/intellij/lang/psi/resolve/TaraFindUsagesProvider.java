@@ -25,7 +25,7 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 
 	@Override
 	public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
-		return psiElement instanceof TaraConcept || psiElement instanceof Identifier || psiElement instanceof IdentifierReference;
+		return psiElement instanceof Node || psiElement instanceof Identifier || psiElement instanceof IdentifierReference;
 	}
 
 	@Nullable
@@ -37,15 +37,15 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	@NotNull
 	@Override
 	public String getType(@NotNull PsiElement element) {
-		Concept container = TaraPsiImplUtil.getConceptContainerOf(element);
+		Node container = TaraPsiImplUtil.getContainerNodeOf(element);
 		return container == null || container.getType() == null ? "" : container.getType();
 	}
 
 	@NotNull
 	@Override
 	public String getDescriptiveName(@NotNull PsiElement element) {
-		if (element instanceof Concept) {
-			String name = ((Concept) element).getName();
+		if (element instanceof Node) {
+			String name = ((Node) element).getName();
 			return name == null ? ANONYMOUS : name;
 		} else if (element instanceof Identifier)
 			return element.getText();

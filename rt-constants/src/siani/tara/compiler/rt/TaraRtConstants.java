@@ -31,6 +31,7 @@ public class TaraRtConstants {
 	public static final String LANGUAGE = "language";
 	public static final String METAMODEL_FILE = "metamodel_file";
 	public static final String GENERATED_LANG_NAME = "generated_lang_name";
+	public static final String LANGUAGES_DIR = "tara_languages";
 
 	private TaraRtConstants() {
 	}

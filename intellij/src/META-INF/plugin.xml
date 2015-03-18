@@ -50,16 +50,6 @@
       <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
     </group>
 
-    <group id="Internal.Tara" text="Tara" popup="true" internal="true">
-      <action id="ExcludeFromCodeGeneration"
-              class="siani.tara.intellij.compiler.ExcludeFromStubGenerationAction"
-              text="Exclude from stub generation"
-              description="Don't generate Java stubs for this Tara file on compilation">
-        <add-to-group group-id="EditorTabPopupMenu" anchor="first"/>
-      </action>
-      <add-to-group group-id="Internal"/>
-    </group>
-
     <action id="siani.tara.intellij.actions.SubmitFeedbackAction"
             class="siani.tara.intellij.actions.SubmitFeedbackAction"
             text="Summit Tara Feedback" description="You can report a bug or suggestion of plugin">
@@ -78,7 +68,7 @@
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
   <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends> -->
+  <depends>com.intellij.modules.model</depends> -->
 
   <idea-version since-build="133.375"/>
 
@@ -109,8 +99,6 @@
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaFacetToTaraLineMarker"/>
     <gotoRelatedProvider implementation="siani.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
-    <projectConfigurable instance="siani.tara.intellij.compiler.TaraCompilerConfigurable" id="Tara compiler"
-                         displayName="Tara Compiler" parentId="project.propCompiler"/>
     <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
                     serviceImplementation="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"/>
     <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerConfiguration"
@@ -131,31 +119,18 @@
     <quoteHandler fileType="Tara" className="siani.tara.intellij.codeinsight.TaraQuoteHandler"/>
 
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ReferenceAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AnnotationsAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.NodeAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.DSLDeclarationAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParameterAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ParametersAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetApplyAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptTypeAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ConceptReferenceAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.FacetTargetAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.RequiredConceptsAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VarInitAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.DateValueAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.MeasureAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AggregatedConceptAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VariableAnnotator"/>
 
     <completion.contributor language="Tara"
-                            implementationClass="siani.tara.intellij.codeinsight.completion.TaraConceptCompletionContributor"/>
+                            implementationClass="siani.tara.intellij.codeinsight.completion.TaraNodeCompletionContributor"/>
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraPrimitivesCompletionContributor"/>
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraAnnotationsCompletionContributor"/>
     <lang.psiStructureViewFactory language="Tara"
                                   implementationClass="siani.tara.intellij.structureview.StructureViewFactory"/>
-    <!--<psi.referenceContributor implementation="siani.tara.intellij.lang.psi.resolve.TaraReferenceContributor"/>-->
+    <!--<psi.referenceContributor implementation="siani.tara.intellij.model.psi.resolve.TaraReferenceContributor"/>-->
     <nameSuggestionProvider implementation="siani.tara.intellij.refactoring.NameSuggestionProvider"/>
     <lang.elementManipulator forClass="siani.tara.intellij.lang.psi.TaraIdentifier"
                              implementationClass="siani.tara.intellij.lang.psi.impl.IdentifierManipulator"/>
@@ -171,9 +146,9 @@
     <projectService serviceInterface="siani.tara.intellij.codeinsight.JavaHelper"
                     serviceImplementation="siani.tara.intellij.codeinsight.JavaHelper$Impl"/>
     <!--<referenceImporter implementation="siani.tara.intellij.annotator.imports.TaraReferenceImporter"/>-->
-    <!--<lang.formatter language="Tara" implementationClass="siani.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
+    <!--<model.formatter language="Tara" implementationClass="siani.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
     <!--<moveFileHandler implementation="siani.tara.intellij.refactoring.move.TaraFileMoveHandler"/>-->
-    <refactoring.moveHandler implementation="siani.tara.intellij.refactoring.move.TaraMoveConcept"/>
+    <refactoring.moveHandler implementation="siani.tara.intellij.refactoring.move.TaraMoveNode"/>
     <lang.importOptimizer language="Tara"
                           implementationClass="siani.tara.intellij.codeinsight.imports.TaraImportOptimizer"/>
     <findUsagesHandlerFactory implementation="siani.tara.intellij.findusage.TaraFindUsagesHandlerFactory" id="Tara"

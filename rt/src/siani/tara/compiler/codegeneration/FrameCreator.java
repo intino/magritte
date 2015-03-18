@@ -1,7 +1,7 @@
 package siani.tara.compiler.codegeneration;
 
-import org.siani.itrules.Frame;
-import siani.tara.lang.*;
+import org.siani.itrules.model.Frame;
+import siani.tara.model.*;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -9,16 +9,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static siani.tara.compiler.codegeneration.FrameTags.*;
-
-public abstract class FrameCreator {
+public abstract class FrameCreator extends FrameTags {
 
 
-	final Model model;
-	final String project;
-	final boolean terminal;
+	protected final Model model;
+	protected final String project;
+	protected final boolean terminal;
 
-	protected FrameCreator(String project, Model model) {
+	public FrameCreator(String project, Model model) {
 		this.model = model;
 		this.project = project;
 		terminal = model.isTerminal();
@@ -69,7 +67,7 @@ public abstract class FrameCreator {
 			}
 	}
 
-	void addVariableValue(Frame frame, final Variable variable) {
+	protected void addVariableValue(Frame frame, final Variable variable) {
 		if (variable.getValues() != null && variable.getValues().length != 0)
 			if (variable instanceof Word) {
 				Word word = (Word) variable;
@@ -89,7 +87,7 @@ public abstract class FrameCreator {
 			}
 	}
 
-	Frame createTargetVarFrame(final String node, final String target, final Variable variable) {
+	protected Frame createTargetVarFrame(final String node, final String target, final Variable variable) {
 		return new Frame(getFacetTypes(variable)) {
 			{
 				addFrame(NAME, variable.getName());
@@ -114,14 +112,14 @@ public abstract class FrameCreator {
 		};
 	}
 
-	String[] getFacetTypes(Variable variable) {
+	protected String[] getFacetTypes(Variable variable) {
 		List<String> types = new ArrayList<>();
 		Collections.addAll(types, getTypes(variable));
 		types.add(TARGET);
 		return types.toArray(new String[types.size()]);
 	}
 
-	String[] getTypes(Variable variable) {
+	protected String[] getTypes(Variable variable) {
 		List<String> list = new ArrayList<>();
 		list.add(variable.getClass().getSimpleName());
 		list.add(VARIABLE);
@@ -133,7 +131,7 @@ public abstract class FrameCreator {
 		return list.toArray(new String[list.size()]);
 	}
 
-	Frame createVarFrame(final Variable variable) {
+	protected Frame createVarFrame(final Variable variable) {
 		return new Frame(getTypes(variable)) {
 			{
 				addFrame(NAME, variable.getName());
@@ -154,7 +152,7 @@ public abstract class FrameCreator {
 		};
 	}
 
-	String resolveMetric(String metric) {
+	protected String resolveMetric(String metric) {
 		//TODO return correct reference to metric from the metricValue
 		Map<String, List<SimpleEntry<String, String>>> metrics = model.getMetrics();
 		for (Map.Entry<String, List<SimpleEntry<String, String>>> stringListEntry : metrics.entrySet())

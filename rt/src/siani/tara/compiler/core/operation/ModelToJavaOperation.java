@@ -1,29 +1,40 @@
 package siani.tara.compiler.core.operation;
 
-import org.siani.itrules.*;
-import org.siani.itrules.Formatter;
-import siani.tara.compiler.codegeneration.BoxFrameCreator;
-import siani.tara.compiler.codegeneration.MorphFrameCreator;
-import siani.tara.compiler.codegeneration.NameFormatter;
+import org.siani.itrules.Document;
+import org.siani.itrules.ItrRulesReader;
+import org.siani.itrules.RuleEngine;
+import org.siani.itrules.formatter.Formatter;
+import org.siani.itrules.model.Frame;
 import siani.tara.compiler.codegeneration.ResourceManager;
 import siani.tara.compiler.codegeneration.StringFormatter;
+import siani.tara.compiler.codegeneration.magritte.BoxFrameCreator;
+import siani.tara.compiler.codegeneration.magritte.MorphFrameCreator;
+import siani.tara.compiler.codegeneration.magritte.NameFormatter;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.core.operation.model.ModelOperation;
-import siani.tara.lang.DeclaredNode;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
-import siani.tara.lang.NodeTree;
+import siani.tara.model.DeclaredNode;
+import siani.tara.model.Model;
+import siani.tara.model.Node;
+import siani.tara.model.NodeTree;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static siani.tara.compiler.codegeneration.NameFormatter.*;
-import static siani.tara.lang.Annotation.CASE;
-import static siani.tara.lang.Annotation.TERMINAL;
+import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
+import static siani.tara.model.Annotation.CASE;
+import static siani.tara.model.Annotation.TERMINAL;
 
 public class ModelToJavaOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
@@ -34,20 +45,19 @@ public class ModelToJavaOperation extends ModelOperation {
 	protected static final char DOT_CHAR = '.';
 	private final CompilationUnit compilationUnit;
 	private Model model;
-	private File rulesFolder;
 	private File outFolder;
 
 	public ModelToJavaOperation(CompilationUnit compilationUnit) {
 		super();
 		this.compilationUnit = compilationUnit;
-		rulesFolder = compilationUnit.getConfiguration().getRulesDirectory();
+		compilationUnit.getConfiguration().getRulesDirectory();
 		outFolder = compilationUnit.getConfiguration().getOutDirectory();
 	}
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		this.model = model;
-		List<List<Node>> groupByBox = groupByBox(model.getTreeModel());
+		List<List<Node>> groupByBox = groupByBox(model.getNodeTree());
 		try {
 			writeBoxes(getBoxPath(File.separator), createBoxes(groupByBox));
 			if (!model.isTerminal()) writeMorphs(createMorphs());
@@ -58,40 +68,25 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private Map<String, Document> createBoxes(List<List<Node>> groupByBox) throws TaraException {
-		File file = new File(rulesFolder, BOX_ITR);
-		return processBoxes(groupByBox, loadRules(file));
+		return processBoxes(groupByBox, loadRules(BOX_ITR));
 	}
 
-	private InputStream loadRules(File file) throws TaraException {
-		InputStream stream;
-		if (!file.exists()) {
-			LOG.log(Level.INFO, "User Box.itr rules file not found. Trying use default");
-			stream = getRulesFromResources(BOX_ITR);
-		} else stream = getRulesInput(file);
+	private Map<String, Document> createMorphs() throws TaraException {
+		return processMorphs(getRootNodes(model), loadRules(MORPH_ITR));
+	}
+
+	private InputStream loadRules(String itr) throws TaraException {
+		InputStream stream = getRulesFromResources(itr);
 		if (stream == null) {
-			LOG.log(Level.SEVERE, "Box.itr rules file not found.");
-			throw new TaraException("Box.itr rules file not found.");
+			LOG.log(Level.SEVERE, itr + ".itr rules file not found.");
+			throw new TaraException(itr + ".itr rules file not found.");
 		}
 		return stream;
 	}
 
-	private Map<String, Document> createMorphs() throws TaraException {
-		File file = new File(rulesFolder, MORPH_ITR);
-		InputStream stream;
-		if (!file.exists()) {
-			LOG.log(Level.INFO, "User Morph.itr rules file not found. Trying use default");
-			stream = getRulesFromResources(MORPH_ITR);
-		} else stream = getRulesInput(file);
-		if (stream == null) {
-			LOG.log(Level.SEVERE, "Morph.itr rules file not found.");
-			throw new TaraException("Morph.itr rules file not found.");
-		}
-		return processMorphs(getRootNodes(model), stream);
-	}
-
 	private Set<Node> getRootNodes(Model model) {
 		Set<Node> list = new HashSet<>();
-		addRootAndSubs(model.getTreeModel(), list);
+		addRootAndSubs(model.getNodeTree(), list);
 		addAggregated(model.getNodeTable(), list);
 		return list;
 	}
@@ -114,7 +109,7 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private Map<String, Document> processBoxes(List<List<Node>> groupByBox, InputStream rulesInput) {
 		Map<String, Document> map = new HashMap();
-		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read());
+		RuleEngine ruleEngine = new RuleEngine(new ItrRulesReader(rulesInput).read());
 		ruleEngine.register("date", buildDateFormatter());
 		ruleEngine.register("string", new StringFormatter());
 		for (List<Node> nodes : groupByBox) {
@@ -128,7 +123,7 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private Map<String, Document> processMorphs(Collection<Node> nodes, InputStream rulesInput) {
 		Map<String, Document> map = new HashMap();
-		RuleEngine ruleEngine = new RuleEngine(new TemplateReader(rulesInput).read(), model.getLanguage());
+		RuleEngine ruleEngine = new RuleEngine(new ItrRulesReader(rulesInput).read(), model.getLanguage());
 		ruleEngine.register("reference", buildReferenceFormatter());
 		for (Node node : nodes) {
 			if (!node.getModelOwner().equals(model.getName()) || node.is(CASE)) continue;
@@ -229,14 +224,6 @@ public class ModelToJavaOperation extends ModelOperation {
 		return lists;
 	}
 
-	private FileInputStream getRulesInput(File ruleFile) {
-		try {
-			return new FileInputStream(ruleFile);
-		} catch (FileNotFoundException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-			return null;
-		}
-	}
 
 	public InputStream getRulesFromResources(String rules) throws TaraException {
 		return ResourceManager.getStream("rules/" + rules);

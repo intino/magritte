@@ -1,6 +1,6 @@
 package siani.tara.compiler.core.errorcollection.semantic;
 
-import siani.tara.lang.Node;
+import siani.tara.model.Node;
 
 public class WrongAnnotationError extends SemanticError implements SemanticError.FatalError {
 	public WrongAnnotationError(String token, Node node) {

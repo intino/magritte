@@ -8,8 +8,8 @@ import siani.tara.compiler.core.errorcollection.message.Message;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
 import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.compiler.semantic.SemanticPreAnalyzer;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
+import siani.tara.model.Model;
+import siani.tara.model.Node;
 
 import java.util.Collection;
 import java.util.logging.Level;

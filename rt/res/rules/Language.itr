@@ -1,0 +1,98 @@
+defrule type(Model)
+package siani.tara.dsls;
+
+import siani.tara.model.Tara;
+
+import static siani.tara.semantic.Relation.*;
+import static siani.tara.semantic.constraints.RuleFactory.*;
+
+public class $name extends Tara {
+	public $name() {
+		$node...[$NL]
+	}
+
+	@Override
+	public String languageName() {
+		return "$name";
+	}
+}
+
+endrule
+
+defrule type(node) trigger(node)
+in("$name"[, "$type"])[.$allows][.$requires][.$assumptions];
+endrule
+
+defrule type(allows) trigger(allows)
+allow([$allow...[, ]])
+endrule
+
+defrule type(allow) type(multiple) trigger(allow)
+multiple("$type"[, $relation])
+endrule
+
+defrule type(allow) type(single) trigger(allow)
+single("$type"[, $relation])
+endrule
+
+defrule type(allow) type(parameter) type(word) trigger(allow)
+parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position)
+endrule
+
+defrule type(allow) type(parameter) type(reference) trigger(allow)
+parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position)
+endrule
+
+defrule type(allow) type(parameter) trigger(allow)
+parameter("$name", "$type", $multiple, $position)
+endrule
+
+defrule trigger(allow)
+$value()
+endrule
+
+
+
+
+
+
+defrule type(requires) trigger(requires)
+require([$require...[, ]])
+endrule
+
+defrule type(require) type(multiple) trigger(require)
+_multiple("$type"[, $relation])
+endrule
+
+defrule type(require) type(single) trigger(require)
+_single("$type"[, $relation])
+endrule
+
+defrule type(require) type(parameter) type(word) trigger(require)
+_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position)
+endrule
+
+defrule type(require) type(parameter) type(reference) trigger(require)
+_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position)
+endrule
+
+defrule type(require) type(parameter) trigger(require)
+_parameter("$name", "$type",$multiple, $position)
+endrule
+
+defrule trigger(quoted)
+"$value"
+endrule
+
+defrule trigger(require)
+_$value()
+endrule
+
+
+defrule type(assumptions) trigger(assumptions)
+assume($assumption...[, ])
+endrule
+
+defrule trigger(assumption)
+is$value+firstUpperCase()
+endrule

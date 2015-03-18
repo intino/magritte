@@ -9,9 +9,8 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraBody;
-import siani.tara.intellij.lang.psi.TaraConcept;
 import siani.tara.intellij.lang.psi.TaraTypes;
 
 import java.util.ArrayList;
@@ -91,7 +90,7 @@ public class TaraBlock implements ASTBlock {
 		TaraBlock rightBlock = (TaraBlock) child2;
 		if (child1 == null) return null;
 		PsiElement rightPsi = rightBlock.getNode().getPsi();
-		if (rightPsi instanceof Concept) return ONELINEBREAKSPACING;
+		if (rightPsi instanceof Node) return ONELINEBREAKSPACING;
 		else if (leftBlock.getNode().getElementType() == TaraTypes.COLON)
 			return MINSPACE;
 		else if (rightBlock.getNode().getElementType() == TaraTypes.COLON)
@@ -128,7 +127,7 @@ public class TaraBlock implements ASTBlock {
 		Wrap wrap = null;
 		Indent childIndent = Indent.getNoneIndent();
 		Alignment childAlignment = null;
-		if (parentType == TaraTypes.CONCEPT && childType == TaraTypes.BODY) {
+		if (parentType == TaraTypes.NODE && childType == TaraTypes.BODY) {
 			childAlignment = getAlignmentForChildren();
 			childIndent = Indent.getNormalIndent();
 		}
@@ -146,7 +145,7 @@ public class TaraBlock implements ASTBlock {
 	}
 
 	private static boolean isIndentNext(ASTNode child) {
-		return PsiTreeUtil.getParentOfType(child.getPsi(), TaraBody.class) instanceof TaraConcept;
+		return PsiTreeUtil.getParentOfType(child.getPsi(), TaraBody.class) instanceof Node;
 	}
 
 	@Override

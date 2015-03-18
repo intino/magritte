@@ -1,6 +1,7 @@
 package siani.tara.intellij.lang.psi;
 
 import com.intellij.pom.Navigatable;
+import org.jetbrains.annotations.NotNull;
 
 public interface Parameter extends Navigatable, TaraPsiElement {
 
@@ -8,9 +9,9 @@ public interface Parameter extends Navigatable, TaraPsiElement {
 
 	boolean isExplicit();
 
-	TaraParameterValue getValue();
+	TaraValue getValue();
 
-	String[] getValues();
+	Object[] getValues();
 
 	TaraMeasureValue getMeasure();
 
@@ -20,5 +21,6 @@ public interface Parameter extends Navigatable, TaraPsiElement {
 
 	TaraFacetApply isInFacet();
 
+	@NotNull
 	String getExplicitName();
 }

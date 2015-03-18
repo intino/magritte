@@ -45,8 +45,8 @@ public class BodyMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public List<? extends Concept> getConceptList() {
-		return PsiTreeUtil.getChildrenOfTypeAsList(this, Concept.class);
+	public List<? extends Node> getConceptList() {
+		return PsiTreeUtil.getChildrenOfTypeAsList(this, Node.class);
 	}
 
 	@NotNull
@@ -61,9 +61,9 @@ public class BodyMixin extends ASTWrapperPsiElement {
 
 
 
-	public TaraConceptReference[] getConceptLinks() {
-		TaraConceptReference[] references = PsiTreeUtil.getChildrenOfType(this, TaraConceptReference.class);
-		return references == null ? new TaraConceptReference[0] : references;
+	public NodeReference[] getConceptLinks() {
+		NodeReference[] references = PsiTreeUtil.getChildrenOfType(this, NodeReference.class);
+		return references == null ? new NodeReference[0] : references;
 	}
 
 }

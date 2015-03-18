@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.annotator.TaraAnnotator;
 import siani.tara.intellij.annotator.fix.CreateMeasureClassIntention;
 import siani.tara.intellij.lang.psi.TaraAttributeType;
-import siani.tara.intellij.lang.psi.TaraMeasureAttribute;
 import siani.tara.intellij.lang.psi.TaraMeasureType;
+import siani.tara.intellij.lang.psi.Variable;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
 
@@ -43,7 +43,7 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		if (!TaraMeasureAttribute.class.isInstance(attribute.getParent())) return;
+		if (!Variable.class.isInstance(attribute.getParent())) return;
 		Module module = getModule();
 		String measureName = measure.getText();
 		File metricClassFile = getClassFile(module, measureName);

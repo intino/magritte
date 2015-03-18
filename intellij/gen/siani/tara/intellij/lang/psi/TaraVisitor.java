@@ -30,44 +30,16 @@ public class TaraVisitor extends PsiElementVisitor {
     visitBody(o);
   }
 
-  public void visitBooleanAttribute(@NotNull TaraBooleanAttribute o) {
-    visitPsiElement(o);
-  }
-
   public void visitBooleanValue(@NotNull TaraBooleanValue o) {
     visitPsiElement(o);
-  }
-
-  public void visitConcept(@NotNull TaraConcept o) {
-    visitConcept(o);
-  }
-
-  public void visitConceptReference(@NotNull TaraConceptReference o) {
-    visitConceptReference(o);
   }
 
   public void visitCount(@NotNull TaraCount o) {
     visitPsiElement(o);
   }
 
-  public void visitDateAttribute(@NotNull TaraDateAttribute o) {
-    visitPsiElement(o);
-  }
-
-  public void visitDateValue(@NotNull TaraDateValue o) {
-    visitPsiElement(o);
-  }
-
   public void visitDoc(@NotNull TaraDoc o) {
     visitDoc(o);
-  }
-
-  public void visitDoubleAttribute(@NotNull TaraDoubleAttribute o) {
-    visitPsiElement(o);
-  }
-
-  public void visitDoubleMeasure(@NotNull TaraDoubleMeasure o) {
-    visitPsiElement(o);
   }
 
   public void visitDoubleValue(@NotNull TaraDoubleValue o) {
@@ -114,19 +86,11 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitIntegerAttribute(@NotNull TaraIntegerAttribute o) {
-    visitPsiElement(o);
-  }
-
   public void visitIntegerValue(@NotNull TaraIntegerValue o) {
     visitPsiElement(o);
   }
 
   public void visitLinkValue(@NotNull TaraLinkValue o) {
-    visitPsiElement(o);
-  }
-
-  public void visitMeasureAttribute(@NotNull TaraMeasureAttribute o) {
     visitPsiElement(o);
   }
 
@@ -142,60 +106,36 @@ public class TaraVisitor extends PsiElementVisitor {
     visitMetaIdentifier(o);
   }
 
-  public void visitMetaWord(@NotNull TaraMetaWord o) {
-    visitPsiElement(o);
-  }
-
-  public void visitNaturalAttribute(@NotNull TaraNaturalAttribute o) {
-    visitPsiElement(o);
-  }
-
   public void visitNaturalValue(@NotNull TaraNaturalValue o) {
     visitPsiElement(o);
   }
 
-  public void visitParameterValue(@NotNull TaraParameterValue o) {
-    visitPsiElement(o);
+  public void visitNode(@NotNull TaraNode o) {
+    visitNode(o);
+  }
+
+  public void visitNodeReference(@NotNull TaraNodeReference o) {
+    visitNodeReference(o);
   }
 
   public void visitParameters(@NotNull TaraParameters o) {
     visitParameters(o);
   }
 
-  public void visitQuotes(@NotNull TaraQuotes o) {
-    visitPsiElement(o);
-  }
-
-  public void visitRatioAttribute(@NotNull TaraRatioAttribute o) {
-    visitPsiElement(o);
-  }
-
-  public void visitReferenceAttribute(@NotNull TaraReferenceAttribute o) {
-    visitReferenceStatement(o);
-  }
-
-  public void visitResource(@NotNull TaraResource o) {
-    visitPsiElement(o);
-  }
-
   public void visitSignature(@NotNull TaraSignature o) {
     visitSignature(o);
-  }
-
-  public void visitStringAttribute(@NotNull TaraStringAttribute o) {
-    visitPsiElement(o);
   }
 
   public void visitStringValue(@NotNull TaraStringValue o) {
     visitPsiElement(o);
   }
 
-  public void visitVarInit(@NotNull TaraVarInit o) {
-    visitVarInit(o);
+  public void visitValue(@NotNull TaraValue o) {
+    visitPsiElement(o);
   }
 
-  public void visitVarInitValue(@NotNull TaraVarInitValue o) {
-    visitPsiElement(o);
+  public void visitVarInit(@NotNull TaraVarInit o) {
+    visitVarInit(o);
   }
 
   public void visitVariable(@NotNull TaraVariable o) {
@@ -215,10 +155,6 @@ public class TaraVisitor extends PsiElementVisitor {
   }
 
   public void visitParameter(@NotNull Parameter o) {
-    visitElement(o);
-  }
-
-  public void visitReferenceStatement(@NotNull ReferenceStatement o) {
     visitElement(o);
   }
 

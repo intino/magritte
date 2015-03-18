@@ -16,7 +16,7 @@ import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.Variable;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
@@ -72,14 +72,14 @@ public class TaraOverridenVariableLineMarker extends JavaLineMarkerProvider {
 	}
 
 	private Variable getOverridenVariable(Variable variable) {
-		Concept concept = TaraPsiImplUtil.getConceptContainerOf(variable);
-		if (concept == null) return null;
-		Concept parent = concept.getParentConcept();
+		Node node = TaraPsiImplUtil.getContainerNodeOf(variable);
+		if (node == null) return null;
+		Node parent = node.getParentNode();
 		while (parent != null) {
 			for (Variable parentVar : parent.getVariables())
 				if (isOverriden(variable, parentVar))
 					return parentVar;
-			parent = parent.getParentConcept();
+			parent = parent.getParentNode();
 		}
 		return null;
 	}

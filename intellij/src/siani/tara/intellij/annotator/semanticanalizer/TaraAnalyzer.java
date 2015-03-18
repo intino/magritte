@@ -2,10 +2,6 @@ package siani.tara.intellij.annotator.semanticanalizer;
 
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.annotator.TaraAnnotator;
-import siani.tara.intellij.lang.psi.Concept;
-import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,11 +26,4 @@ public abstract class TaraAnalyzer {
 		return false;
 	}
 
-	protected Model getMetamodel(PsiElement element) {
-		return TaraUtil.getMetamodel(element);
-	}
-
-	protected Node findMetaConcept(Concept concept) {
-		return TaraUtil.getMetaConcept(concept.isSub() ? concept.getParentConcept() : concept);
-	}
 }

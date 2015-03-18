@@ -22,7 +22,7 @@ public class RunConfigurationType implements ConfigurationType {
 	}
 
 	public String getConfigurationTypeDescription() {
-		return "Tara lang";
+		return "Tara model";
 	}
 
 	public Icon getIcon() {
@@ -49,7 +49,7 @@ public class RunConfigurationType implements ConfigurationType {
 		}
 
 		public com.intellij.execution.configurations.RunConfiguration createTemplateConfiguration(Project project) {
-			return new RunConfiguration("Tara lang", project, this);
+			return new RunConfiguration("Tara model", project, this);
 		}
 
 	}

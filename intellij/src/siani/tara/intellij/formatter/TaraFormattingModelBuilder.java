@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraLanguage;
 
-import static siani.tara.intellij.lang.psi.TaraTypes.CONCEPT;
 import static siani.tara.intellij.lang.psi.TaraTypes.IMPORTS;
+import static siani.tara.intellij.lang.psi.TaraTypes.NODE;
 
 public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, CustomFormattingModelBuilder {
 	private static final boolean DUMP_FORMATTING_AST = false;
@@ -50,10 +50,10 @@ public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, Cus
 	protected SpacingBuilder createSpacingBuilder(CodeStyleSettings settings) {
 		final IFileElementType file = LanguageParserDefinitions.INSTANCE.forLanguage(TaraLanguage.INSTANCE).getFileNodeType();
 		final CommonCodeStyleSettings commonSettings = settings.getCommonSettings(TaraLanguage.INSTANCE);
-		return new SpacingBuilder(commonSettings).betweenInside(CONCEPT, CONCEPT, file).blankLines(0)
-			.between(CONCEPT, CONCEPT).blankLines(1)
+		return new SpacingBuilder(commonSettings).betweenInside(NODE, NODE, file).blankLines(0)
+			.between(NODE, NODE).blankLines(1)
 			.after(IMPORTS).blankLines(0)
-			.between(CONCEPT, CONCEPT).spacing(0, 1, 1, false, 1);
+			.between(NODE, NODE).spacing(0, 1, 1, false, 1);
 	}
 
 	private static void printAST(ASTNode node, int indent) {

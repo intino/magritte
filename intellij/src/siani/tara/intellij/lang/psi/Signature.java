@@ -19,10 +19,14 @@ public interface Signature extends TaraPsiElement {
 	@Nullable
 	MetaIdentifier getType();
 
-	Concept getParentConcept();
+	Node getParentConcept();
 
 	@Nullable
 	Parameters getParameters();
 
+	@Nullable
+	TaraAnnotations getAnnotations();
+
+	@Nullable
 	TaraAddress getAddress();
 }

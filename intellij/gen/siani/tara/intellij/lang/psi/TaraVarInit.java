@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TaraVarInit extends VarInit {
 
   @Nullable
-  TaraVarInitValue getVarInitValue();
+  TaraValue getValue();
 
 }

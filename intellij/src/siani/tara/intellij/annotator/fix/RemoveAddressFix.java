@@ -6,13 +6,13 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 
 public class RemoveAddressFix implements IntentionAction {
-	private final Concept concept;
+	private final Node node;
 
-	public RemoveAddressFix(Concept concept) {
-		this.concept = concept;
+	public RemoveAddressFix(Node node) {
+		this.node = node;
 	}
 
 	@NotNull
@@ -34,7 +34,7 @@ public class RemoveAddressFix implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		concept.getAddress().delete();
+		node.getAddress().delete();
 	}
 
 	@Override

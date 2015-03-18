@@ -6,6 +6,6 @@ public interface Annotation extends Navigatable, TaraPsiElement {
 
 	boolean isMetaAnnotation();
 
-	boolean is(siani.tara.lang.Annotation annotation);
+	boolean is(siani.tara.intellij.lang.lexer.Annotation annotation);
 
 }

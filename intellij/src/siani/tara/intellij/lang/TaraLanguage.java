@@ -1,17 +1,17 @@
 package siani.tara.intellij.lang;
 
-import com.intellij.lang.Language;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.Language;
+import siani.tara.dsls.Proteo;
+import siani.tara.intellij.lang.semantic.LanguageLoader;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.intellij.project.sdk.TaraJdk;
-import siani.tara.lang.Model;
-import siani.tara.lang.util.ModelLoader;
 
 import java.io.File;
 import java.util.HashMap;
@@ -21,48 +21,51 @@ import java.util.Set;
 
 import static java.io.File.separator;
 
-public class TaraLanguage extends Language {
+public class TaraLanguage extends com.intellij.lang.Language {
 
+	private static final String LANGUAGES_DIR = "tara_languages";
+	private static final String PROTEO = "Proteo";
 	public static final TaraLanguage INSTANCE = new TaraLanguage();
-	public static final String MODELS_PATH = PathManager.getPluginsPath() + separator + "tara_models" + separator;
-	public static final Map<String, Model> models = new HashMap<>();
-	private static final Set<String> modelPaths = new LinkedHashSet<>();
+	public static final String MODELS_PATH = PathManager.getPluginsPath() + separator + LANGUAGES_DIR + separator;
+	private static final Map<String, Language> languages = new HashMap<>();
+	public static final String DSL = "dsl";
+
+	private static final Set<String> languagesPaths = new LinkedHashSet<>();
 
 	static {
-		modelPaths.add(MODELS_PATH);
+		languagesPaths.add(MODELS_PATH);
+		languages.put(PROTEO, new Proteo());
 	}
-
-	private static final String PROTEO = "Proteo";
-	public static final String DSL = "dsl";
 
 	private TaraLanguage() {
 		super("Tara");
 	}
 
-	public static Model getMetaModel(@NotNull PsiFile file) {
+	public static Language getLanguage(@NotNull PsiFile file) {
 		ModuleConfiguration configuration = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(file));
 		if (configuration == null) return null;
-		return getMetaModel(configuration.getMetamodelName(), file.getProject());
+		return getLanguage(configuration.getMetamodelName(), file.getProject());
 	}
 
-	public static Model getMetaModel(String parent, Project project) {
+	public static Language getLanguage(String parent, Project project) {
 		addSdkToModelRoots(project);
-		if (parent.equals(PROTEO) || parent.isEmpty()) return null;
-		return getModel(parent);
+		if (parent.equals(PROTEO) || parent.isEmpty()) return languages.get(PROTEO);
+		return loadLanguage(parent);
 	}
 
-	private static Model getModel(String parent) {
-		if (parent == null) return null;
-		Model model;
-		if ((model = models.get(parent)) != null && !haveToReload(parent))
-			return model;
-		for (String modelPath : modelPaths) {
-			model = ModelLoader.load(modelPath, parent);
-			if (model == null) continue;
-			models.put(parent, model);
-			return model;
+	private static Language loadLanguage(String parent) {
+		if (isLoaded(parent)) return languages.get(parent);
+		for (String modelPath : languagesPaths) {
+			Language language = LanguageLoader.load(parent, modelPath);
+			if (language == null) continue;
+			languages.put(parent, language);
+			return language;
 		}
 		return null;
+	}
+
+	private static boolean isLoaded(String parent) {
+		return languages.get(parent) != null && !haveToReload(parent);
 	}
 
 	private static void addSdkToModelRoots(Project project) {
@@ -72,11 +75,11 @@ public class TaraLanguage extends Language {
 	}
 
 	public static void addModelRoot(String path) {
-		modelPaths.add(path);
+		languagesPaths.add(path);
 	}
 
 	private static boolean haveToReload(String parent) {
-		for (String modelPath : modelPaths) {
+		for (String modelPath : languagesPaths) {
 			File reload = new File(modelPath, parent + ".reload");
 			if (reload.exists()) {
 				reload.delete();

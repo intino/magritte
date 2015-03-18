@@ -1,13 +1,15 @@
 <component name="libraryTable">
   <library name="itrules">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/rt/lib/itrules.jar!/" />
+      <root url="jar://$PROJECT_DIR$/rt/lib/rule-engine-itr.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="file://$PROJECT_DIR$/../it-rules/gen" />
       <root url="file://$PROJECT_DIR$/../it-rules/rules-engine/src" />
-      <root url="file://$PROJECT_DIR$/../it-rules/src" />
+      <root url="file://$PROJECT_DIR$/../it-rules/rule-engine-itr/gen" />
+      <root url="file://$PROJECT_DIR$/../it-rules/rule-engine-itr/src" />
+      <root url="file://$PROJECT_DIR$/../it-rules/rule-engine-json/src" />
+      <root url="file://$PROJECT_DIR$/../it-rules/rule-engine/src" />
     </SOURCES>
   </library>
 </component>

@@ -81,7 +81,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	@NotNull
 	@Override
-	public Collection<Concept> getConcepts() {
+	public Collection<Node> getNodes() {
 		return TaraUtil.getRootConceptsOfFile(this);
 	}
 
@@ -114,16 +114,16 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	@Override
 	@NotNull
-	public PsiElement addConcept(@NotNull Concept concept) throws IncorrectOperationException {
+	public PsiElement addConcept(@NotNull Node node) throws IncorrectOperationException {
 		if (haveToAddNewLine()) insertLineBreakBefore(null);
-		final TreeElement copy = ChangeUtil.copyToElement(concept.getPsiElement());
+		final TreeElement copy = ChangeUtil.copyToElement(node.getPsiElement());
 		getNode().addChild(copy);
 		return copy.getPsi();
 	}
 
 	@Override
-	public Concept addConcept(String identifier) {
-		return (Concept) addConcept(TaraElementFactory.getInstance(getProject()).createConcept(identifier));
+	public Node addConcept(String identifier) {
+		return (Node) addConcept(TaraElementFactory.getInstance(getProject()).createConcept(identifier));
 	}
 
 	@Override
@@ -145,7 +145,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	private PsiElement findImportAnchor() {
-		Iterator<Concept> iterator = this.getConcepts().iterator();
+		Iterator<Node> iterator = this.getNodes().iterator();
 		if (iterator.hasNext()) return iterator.next();
 		return this.getFirstChild();
 	}

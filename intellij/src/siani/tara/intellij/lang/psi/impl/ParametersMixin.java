@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.Parameter;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
 
@@ -27,7 +27,7 @@ public class ParametersMixin extends ASTWrapperPsiElement {
 
 	public TaraFacetApply isInFacet() {
 		PsiElement aElement = this;
-		while (!(aElement.getParent() instanceof Concept) && !(aElement.getParent() instanceof TaraFacetApply))
+		while (!(aElement.getParent() instanceof Node) && !(aElement.getParent() instanceof TaraFacetApply))
 			aElement = aElement.getParent();
 		return (aElement.getParent() instanceof TaraFacetApply) ? (TaraFacetApply) aElement.getParent() : null;
 	}

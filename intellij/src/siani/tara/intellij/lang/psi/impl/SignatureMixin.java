@@ -25,7 +25,7 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String getName() {
-		return TaraPsiImplUtil.getIdentifier((Concept) this);
+		return TaraPsiImplUtil.getIdentifier((Node) this);
 	}
 
 	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
@@ -48,10 +48,10 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 	}
 
 	@Nullable
-	public Concept getParentConcept() {
+	public Node getParentConcept() {
 		IdentifierReference parentReference = findChildByClass(IdentifierReference.class);
 		if (parentReference == null) return null;
-		return ReferenceManager.resolveToConcept(parentReference);
+		return ReferenceManager.resolveToNode(parentReference);
 	}
 
 

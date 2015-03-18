@@ -11,6 +11,6 @@ public interface TaraExplicitParameter extends Parameter {
   TaraIdentifier getIdentifier();
 
   @Nullable
-  TaraParameterValue getParameterValue();
+  TaraValue getValue();
 
 }

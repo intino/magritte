@@ -13,9 +13,9 @@ public abstract class TaraElementFactory {
 		return ServiceManager.getService(project, TaraElementFactory.class);
 	}
 
-	public abstract Concept createConcept(String name);
+	public abstract Node createConcept(String name);
 
-	public abstract Concept createConcept(String name, String type);
+	public abstract Node createConcept(String name, String type);
 
 	public abstract TaraModelImpl createDummyFile(String text);
 
@@ -45,7 +45,7 @@ public abstract class TaraElementFactory {
 
 	public abstract Annotation createAnnotation(String name);
 
-	public abstract TaraAnnotations createAnnotations(String name);
+	public abstract Annotations createAnnotations(String name);
 
 	public abstract PsiElement createNewLineIndent();
 

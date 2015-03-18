@@ -10,10 +10,11 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.codeinsight.JavaHelper;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.project.module.ModuleProvider;
+import siani.tara.semantic.Assumption;
 
 import java.util.*;
 
-import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContainerOf;
+import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 
 public class ReferenceManager {
 
@@ -23,20 +24,20 @@ public class ReferenceManager {
 	@Nullable
 	public static PsiElement resolve(Identifier identifier) {
 		PsiElement reference = resolveInternal(identifier);
-		return reference instanceof Concept ? ((Concept) reference).getIdentifierNode() : reference;
+		return reference instanceof Node ? ((Node) reference).getIdentifierNode() : reference;
 	}
 
 	@Nullable
-	public static Concept resolveToConcept(IdentifierReference identifierReference) {
+	public static Node resolveToNode(IdentifierReference identifierReference) {
 		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
-		return (Concept) resolveConcept(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
+		return (Node) resolveConcept(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
 	}
 
 	@Nullable
 	public static PsiElement resolve(IdentifierReference identifierReference) {
 		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
 		PsiElement reference = resolveConcept(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
-		if (reference instanceof Concept) reference = ((Concept) reference).getIdentifierNode();
+		if (reference instanceof Node) reference = ((Node) reference).getIdentifierNode();
 		return reference;
 	}
 
@@ -94,22 +95,22 @@ public class ReferenceManager {
 	}
 
 	private static PsiElement tryToResolveInBox(TaraModel file, List<Identifier> path) {
-		Concept[] possibleRoots = getPossibleRoots(file, path.get(0));
+		Node[] possibleRoots = getPossibleRoots(file, path.get(0));
 		if (possibleRoots.length == 0) return null;
 		if (possibleRoots.length == 1 && path.size() == 1) return possibleRoots[0];
-		for (Concept possibleRoot : possibleRoots) {
-			Concept concept = resolvePathInConcept(path, possibleRoot);
-			if (concept != null) return concept;
+		for (Node possibleRoot : possibleRoots) {
+			Node node = resolvePathInConcept(path, possibleRoot);
+			if (node != null) return node;
 		}
 		return null;
 	}
 
-	protected static Concept[] getPossibleRoots(TaraModel file, Identifier identifier) {
-		Set<Concept> set = new LinkedHashSet<>();
+	protected static Node[] getPossibleRoots(TaraModel file, Identifier identifier) {
+		Set<Node> set = new LinkedHashSet<>();
 		addConceptsInContext(identifier, set);
 		addRootConcepts(file, identifier, set);
 		addAggregated(file, identifier, set, toArrayList(set));
-		return set.toArray(new Concept[set.size()]);
+		return set.toArray(new Node[set.size()]);
 	}
 
 	private static PsiElement tryToResolveAsQN(List<Identifier> path) {
@@ -121,27 +122,27 @@ public class ReferenceManager {
 		return tryToResolveInBox(resolve, qn);
 	}
 
-	private static List<Concept> toArrayList(Set<Concept> set) {
-		List<Concept> visited = new ArrayList<>();
+	private static List<Node> toArrayList(Set<Node> set) {
+		List<Node> visited = new ArrayList<>();
 		visited.addAll(set);
 		return visited;
 	}
 
-	private static void addRootConcepts(TaraModel file, Identifier identifier, Set<Concept> set) {
-		Collection<Concept> concepts = file.getConcepts();
-		for (Concept concept : concepts)
-			if (namesAreEqual(identifier, concept))
-				set.add(concept);
+	private static void addRootConcepts(TaraModel file, Identifier identifier, Set<Node> set) {
+		Collection<Node> nodes = file.getNodes();
+		for (Node node : nodes)
+			if (namesAreEqual(identifier, node))
+				set.add(node);
 	}
 
-	private static void addConceptsInContext(Identifier identifier, Set<Concept> set) {
-		Concept container = getConceptContainerOf(identifier);
+	private static void addConceptsInContext(Identifier identifier, Set<Node> set) {
+		Node container = getContainerNodeOf(identifier);
 		if (container != null && !isExtendsReference((IdentifierReference) identifier.getParent()) &&
 			namesAreEqual(identifier, container))
 			set.add(container);
 		while (container != null) {
-			for (Concept sibling : container.getConceptSiblings())
-				if (namesAreEqual(identifier, sibling) && !sibling.equals(getConceptContainerOf(identifier)))
+			for (Node sibling : container.getConceptSiblings())
+				if (namesAreEqual(identifier, sibling) && !sibling.equals(getContainerNodeOf(identifier)))
 					set.add(sibling);
 			container = container.getContainer();
 		}
@@ -151,41 +152,49 @@ public class ReferenceManager {
 		return reference.getParent() instanceof Signature;
 	}
 
-	private static void addAggregated(TaraModel file, Identifier identifier, Set<Concept> set, List<Concept> visited) {
-		List<Concept> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(file);
-		for (Concept concept : allConceptsOfFile)
-			if (namesAreEqual(identifier, concept) && isAggregated(file, concept, visited))
-				set.add(concept);
+	private static void addAggregated(TaraModel file, Identifier identifier, Set<Node> set, List<Node> visited) {
+		List<Node> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(file);
+		for (Node node : allConceptsOfFile)
+			if (namesAreEqual(identifier, node) && isAggregated(file, node, visited))
+				set.add(node);
 	}
 
-	private static boolean namesAreEqual(Identifier identifier, Concept concept) {
-		return identifier.getText().equals(concept.getName());
+	private static boolean namesAreEqual(Identifier identifier, Node node) {
+		return identifier.getText().equals(node.getName());
 	}
 
-	private static boolean isAggregated(TaraModel file, Concept concept, List<Concept> visited) {
-		if (visited.contains(concept)) return false;
-		visited.add(concept);
-		if (concept.isAnnotatedAsAggregated() || concept.isMetaAggregated()) return true;
-		IdentifierReference parentReference = concept.getSignature().getParentReference();
-		return parentReference != null && checkPossibleAggregates(parentReference, getRootConcepts(file, parentReference, visited, new HashSet<Concept>()));
+	private static boolean isAggregated(TaraModel file, Node node, List<Node> visited) {
+		if (visited.contains(node)) return false;
+		visited.add(node);
+		if (node.isAnnotatedAsAggregated() || isMetaAggregated(node)) return true;
+		IdentifierReference parentReference = node.getSignature().getParentReference();
+		return parentReference != null && checkPossibleAggregates(parentReference, getRootConcepts(file, parentReference, visited, new HashSet<Node>()));
 	}
 
-	private static boolean checkPossibleAggregates(IdentifierReference parentReference, Concept[] roots) {
+	private static boolean isMetaAggregated(Node node) {
+		Collection<Assumption> assumptionsOf = TaraUtil.getAssumptionsOf(node);
+		for (Assumption assumption : assumptionsOf)
+			if (assumption instanceof Assumption.Aggregated)
+				return true;
+		return false;
+	}
+
+	private static boolean checkPossibleAggregates(IdentifierReference parentReference, Node[] roots) {
 		if (roots.length == 0) return false;
-		for (Concept possibleRoot : roots) {
-			Concept aggregated = resolvePathInConcept((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
+		for (Node possibleRoot : roots) {
+			Node aggregated = resolvePathInConcept((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
 			if (aggregated != null) return aggregated.isAnnotatedAsAggregated();
 		}
 		return false;
 	}
 
-	private static Concept[] getRootConcepts(TaraModel file, IdentifierReference parentReference, List<Concept> visited, Set<Concept> roots) {
+	private static Node[] getRootConcepts(TaraModel file, IdentifierReference parentReference, List<Node> visited, Set<Node> roots) {
 		Identifier identifier = getIdentifier(parentReference);
 		addConceptsInContext(identifier, roots);
 		addRootConcepts(file, identifier, roots);
 		visited.addAll(roots);
 		addAggregated((TaraModel) identifier.getContainingFile(), identifier, roots, visited);
-		return roots.toArray(new Concept[roots.size()]);
+		return roots.toArray(new Node[roots.size()]);
 	}
 
 	private static Identifier getIdentifier(IdentifierReference reference) {
@@ -193,11 +202,11 @@ public class ReferenceManager {
 		return identifierList.get(identifierList.size() - 1);
 	}
 
-	private static Concept resolvePathInConcept(List<Identifier> path, Concept concept) {
-		Concept reference = null;
+	private static Node resolvePathInConcept(List<Identifier> path, Node node) {
+		Node reference = null;
 		for (Identifier identifier : path) {
-			reference = (reference == null) ? namesAreEqual(identifier, concept) ? concept : null :
-				TaraUtil.findChildOf(reference, identifier.getText());
+			reference = (reference == null) ? namesAreEqual(identifier, node) ? node : null :
+				TaraUtil.findInner(reference, identifier.getText());
 			if (reference == null) return null;
 		}
 		return reference;
@@ -219,23 +228,23 @@ public class ReferenceManager {
 		return searchInImport(path, imports);
 	}
 
-	private static Concept searchInImport(List<Identifier> path, Collection<Import> imports) {
+	private static Node searchInImport(List<Identifier> path, Collection<Import> imports) {
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
 			if (resolve == null || !TaraModel.class.isInstance(resolve.getContainingFile())) continue;
 			TaraModel containingFile = (TaraModel) resolve.getContainingFile();
-			Concept concept = resolvePathInBox(containingFile, path);
-			if (concept != null) return concept;
+			Node node = resolvePathInBox(containingFile, path);
+			if (node != null) return node;
 		}
 		return null;
 	}
 
-	private static Concept resolvePathInBox(TaraModel containingFile, List<Identifier> path) {
-		Set<Concept> concepts = new HashSet<>();
-		concepts.addAll(containingFile.getConcepts());
-		addAggregated(containingFile, path.get(0), concepts, toArrayList(concepts));
-		for (Concept concept : concepts) {
-			Concept solution = resolvePathInConcept(path, concept);
+	private static Node resolvePathInBox(TaraModel containingFile, List<Identifier> path) {
+		Set<Node> nodes = new HashSet<>();
+		nodes.addAll(containingFile.getNodes());
+		addAggregated(containingFile, path.get(0), nodes, toArrayList(nodes));
+		for (Node node : nodes) {
+			Node solution = resolvePathInConcept(path, node);
 			if (solution != null) return solution;
 		}
 		return null;

@@ -4,6 +4,7 @@ import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +12,12 @@ import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.TaraModel;
 
 public class AddMetamodelReferenceFix implements IntentionAction {
+
+	private final PsiFile element;
+
+	public AddMetamodelReferenceFix(PsiElement element) {
+		this.element = (PsiFile) element;
+	}
 
 	@NotNull
 	public String getText() {
@@ -28,7 +35,7 @@ public class AddMetamodelReferenceFix implements IntentionAction {
 
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-		((TaraModel)file).updateDSL();
+		((TaraModel) element).updateDSL();
 	}
 
 	public boolean startInWriteAction() {

@@ -8,7 +8,7 @@ import siani.tara.compiler.parser.antlr.TaraAbstractModelGenerator;
 import siani.tara.compiler.parser.antlr.TaraErrorStrategy;
 import siani.tara.compiler.parser.antlr.TaraGrammar;
 import siani.tara.compiler.parser.antlr.TaraLexer;
-import siani.tara.lang.Model;
+import siani.tara.model.Model;
 
 import java.io.File;
 import java.io.IOException;

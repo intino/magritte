@@ -39,8 +39,8 @@ public class IndentToInlineConverter extends PsiElementBaseIntentionAction imple
 			if (is(leaf, TaraTypes.NEW_LINE_INDENT))
 				replaced.add(leaf.replace(factory.createInlineNewLineIndent()));
 		}
-		for (Concept concept : body.getConceptList())
-			if (concept.getBody() != null) propagateIndents(replaced, factory, concept.getBody());
+		for (Node node : body.getConceptList())
+			if (node.getBody() != null) propagateIndents(replaced, factory, node.getBody());
 		for (TaraFacetTarget facetTarget : body.getFacetTargetList())
 			if (facetTarget.getBody() != null) propagateIndents(replaced, factory, facetTarget.getBody());
 		for (FacetApply apply : body.getFacetApplyList())

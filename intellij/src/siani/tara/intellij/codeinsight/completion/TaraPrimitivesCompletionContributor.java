@@ -10,8 +10,11 @@ import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.*;
-import siani.tara.lang.Primitives;
+import siani.tara.intellij.lang.lexer.TaraPrimitives;
+import siani.tara.intellij.lang.psi.Node;
+import siani.tara.intellij.lang.psi.TaraTypes;
+import siani.tara.intellij.lang.psi.TaraVariableType;
+import siani.tara.intellij.lang.psi.Variable;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -28,7 +31,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					for (String primitive : Primitives.getPrimitives())
+					for (String primitive : TaraPrimitives.getPrimitives())
 						resultSet.addElement(LookupElementBuilder.create(primitive + " ").withTypeText("Primitive"));
 					resultSet.addElement(LookupElementBuilder.create("word" + " "));
 				}
@@ -62,7 +65,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 
 		private boolean isInAttribute(PsiElement context) {
 			PsiElement parent = context.getParent();
-			while (parent != null && !(parent instanceof Concept)) {
+			while (parent != null && !(parent instanceof Node)) {
 				if (parent instanceof Variable) return true;
 				parent = parent.getParent();
 			}
@@ -71,7 +74,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 
 		public TaraVariableType getVariableType(PsiElement element) {
 			PsiElement parent = element.getParent();
-			while (parent != null && !(parent instanceof Concept)) {
+			while (parent != null && !(parent instanceof Node)) {
 				if (parent instanceof TaraVariableType) return (TaraVariableType) parent;
 				parent = parent.getParent();
 			}

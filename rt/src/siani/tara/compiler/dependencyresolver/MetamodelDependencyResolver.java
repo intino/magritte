@@ -1,11 +1,11 @@
 package siani.tara.compiler.dependencyresolver;
 
 import siani.tara.compiler.core.errorcollection.TaraException;
-import siani.tara.lang.*;
+import siani.tara.model.*;
 
 import java.util.*;
 
-import static siani.tara.lang.Annotation.*;
+import static siani.tara.model.Annotation.*;
 
 
 public class MetamodelDependencyResolver {
@@ -94,17 +94,17 @@ public class MetamodelDependencyResolver {
 				Variable clone = variable.clone();
 				clone.setInherited(true);
 				clones.add(clone);
-				if (variable instanceof Reference && variable.isTerminal())
-					addInheritedTypes(parent.get(clone.getType()).getName(), (Reference) clone);
+//				if (variable instanceof Reference && variable.isTerminal())
+//					addInheritedTypes(parent.get(clone.getType()).getName(), (Reference) clone);
 			}
 		instance.getObject().getVariables().addAll(0, clones);
 	}
 
-	private void addInheritedTypes(String nodeType, Reference clone) {
-		for (Node node : model.getNodeTable())
-			if (node.getObject().getType().equals(nodeType))
-				clone.addInheritedType(node.getObject().getName());
-	}
+//	private void addInheritedTypes(String nodeType, Reference clone) {
+//		for (Node node : model.getNodeTable())
+//			if (node.getObject().getType().equals(nodeType))
+//				clone.addInheritedType(node.getObject().getName());
+//	}
 
 	private Collection<Node> getDeclaredInstancesOf(Node metaNode) throws TaraException {
 		if (metaNode.getName() == null) return Collections.EMPTY_LIST;

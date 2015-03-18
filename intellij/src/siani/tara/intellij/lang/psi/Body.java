@@ -17,9 +17,9 @@ public interface Body extends TaraPsiElement {
 	List<? extends VarInit> getVarInitList();
 
 	@NotNull
-	List<? extends Concept> getConceptList();
+	List<? extends Node> getConceptList();
 
-	TaraConceptReference[] getConceptLinks();
+	NodeReference[] getConceptLinks();
 
 	@NotNull
 	List<? extends ReferenceStatement> getReferenceStatementList();

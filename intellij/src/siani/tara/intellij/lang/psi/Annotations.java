@@ -8,11 +8,6 @@ import java.util.List;
 public interface Annotations extends Navigatable, TaraPsiElement {
 
 	@NotNull
-	List<? extends Annotation> getAnnotationList();
+	<T extends Annotation> List<T> getAnnotationList();
 
-	@NotNull
-	List<? extends Annotation> getMetaAnnotations();
-
-	@NotNull
-	List<? extends Annotation> getNormalAnnotations();
 }

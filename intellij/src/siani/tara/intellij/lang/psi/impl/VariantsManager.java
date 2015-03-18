@@ -9,11 +9,11 @@ import java.util.Set;
 
 public class VariantsManager {
 
-	private final Set<Concept> variants;
+	private final Set<Node> variants;
 	private final PsiElement myElement;
 	private final List<Identifier> context;
 
-	public VariantsManager(Set<Concept> variants, PsiElement myElement) {
+	public VariantsManager(Set<Node> variants, PsiElement myElement) {
 		this.variants = variants;
 		this.myElement = myElement;
 		this.context = solveIdentifierContext();
@@ -27,12 +27,12 @@ public class VariantsManager {
 	}
 
 	private void addContextVariants(Identifier identifier) {
-		Concept container = TaraPsiImplUtil.getConceptContainerOf(identifier);
+		Node container = TaraPsiImplUtil.getContainerNodeOf(identifier);
 		if (container != null && !isExtendsReference((IdentifierReference) identifier.getParent()) &&
 			namesAreEqual(identifier, container))
 			variants.add(container);
 		while (container != null) {
-			for (Concept sibling : container.getConceptSiblings())
+			for (Node sibling : container.getConceptSiblings())
 				variants.add(sibling);
 			container = container.getContainer();
 		}
@@ -42,16 +42,16 @@ public class VariantsManager {
 		return reference.getParent() instanceof Signature;
 	}
 
-	private static boolean namesAreEqual(Identifier identifier, Concept concept) {
-		return identifier.getText().equals(concept.getName());
+	private static boolean namesAreEqual(Identifier identifier, Node node) {
+		return identifier.getText().equals(node.getName());
 	}
 
 	private void addInBoxVariants() {
 		TaraModel box = (TaraModel) myElement.getContainingFile();
 		if (box == null) return;
-		for (Concept concept : box.getConcepts())
-			if (!concept.equals(TaraPsiImplUtil.getConceptContainerOf(myElement)))
-				resolvePathFor(concept, context);
+		for (Node node : box.getNodes())
+			if (!node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement)))
+				resolvePathFor(node, context);
 		addAggregatedConcepts(box);
 	}
 
@@ -60,9 +60,9 @@ public class VariantsManager {
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
 			if (resolve == null || !TaraModel.class.isInstance(resolve)) continue;
-			for (Concept concept : ((TaraModel) resolve).getConcepts())
-				if (!concept.equals(TaraPsiImplUtil.getConceptContainerOf(myElement)))
-					resolvePathFor(concept, context);
+			for (Node node : ((TaraModel) resolve).getNodes())
+				if (!node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement)))
+					resolvePathFor(node, context);
 			addAggregatedConcepts((TaraModel) resolve);
 		}
 	}
@@ -73,17 +73,17 @@ public class VariantsManager {
 	}
 
 	private void addAggregatedConcepts(TaraModel box) {
-		for (Concept concept : TaraUtil.getAllConceptsOfFile(box))
-			if (!variants.contains(concept) && concept.isAggregated())
-				resolvePathFor(concept, context);
+		for (Node node : TaraUtil.getAllConceptsOfFile(box))
+			if (!variants.contains(node) && node.isAggregated())
+				resolvePathFor(node, context);
 	}
 
-	private void resolvePathFor(Concept concept, List<Identifier> path) {
-		List<Concept> childrenOf = TaraPsiImplUtil.getInnerConceptsOf(concept);
-		if (concept == null || concept.getType() == null) return;
-		if (path.isEmpty()) variants.add(concept);
-		else if (path.get(0).getText().equals(concept.getName()))
-			for (Concept child : childrenOf)
+	private void resolvePathFor(Node node, List<Identifier> path) {
+		List<Node> childrenOf = TaraPsiImplUtil.getInnerNodesOf(node);
+		if (node == null || node.getType() == null) return;
+		if (path.isEmpty()) variants.add(node);
+		else if (path.get(0).getText().equals(node.getName()))
+			for (Node child : childrenOf)
 				resolvePathFor(child, path.subList(1, path.size()));
 	}
 

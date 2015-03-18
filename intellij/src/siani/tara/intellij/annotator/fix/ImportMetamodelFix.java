@@ -4,6 +4,7 @@ import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +13,9 @@ import siani.tara.intellij.actions.ImportModelAction;
 
 public class ImportMetamodelFix implements IntentionAction {
 
+
+	public ImportMetamodelFix(PsiElement element) {
+	}
 
 	@NotNull
 	public String getText() {

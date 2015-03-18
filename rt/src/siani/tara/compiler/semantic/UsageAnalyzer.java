@@ -2,12 +2,12 @@ package siani.tara.compiler.semantic;
 
 import siani.tara.compiler.core.errorcollection.semantic.NoRootError;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
-import siani.tara.compiler.core.errorcollection.semantic.UnusedConceptError;
-import siani.tara.lang.*;
+import siani.tara.compiler.core.errorcollection.semantic.UnusedNodeError;
+import siani.tara.model.*;
 
 import java.util.*;
 
-import static siani.tara.lang.Annotation.COMPONENT;
+import static siani.tara.model.Annotation.COMPONENT;
 
 public class UsageAnalyzer {
 
@@ -34,7 +34,7 @@ public class UsageAnalyzer {
 	}
 
 	public void checkUsage() {
-		for (Node node : model.getTreeModel())
+		for (Node node : model.getNodeTree())
 			if (node.is(DeclaredNode.class)) addToList(node);
 		for (Map.Entry<String, Node> entry : toCheckNodes.entrySet())
 			removeParent(entry.getValue());
@@ -42,7 +42,7 @@ public class UsageAnalyzer {
 		for (String key : toRemove) toCheckNodes.remove(key);
 		for (Map.Entry<String, Node> node : toCheckNodes.entrySet())
 			if (!isAbstract(node.getValue()))
-				errors.add(new UnusedConceptError(node.getKey(), node.getValue()));
+				errors.add(new UnusedNodeError(node.getKey(), node.getValue()));
 	}
 
 	private void processReferences() {

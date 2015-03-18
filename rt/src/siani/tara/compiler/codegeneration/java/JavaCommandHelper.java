@@ -15,10 +15,9 @@ public class JavaCommandHelper {
 	private JavaCommandHelper() {
 	}
 
-	public static List<String> buildJavaCompileCommandLine(File[] sources,
-	                                                       String[] classpath,
+	public static List<String> buildJavaCompileCommandLine(String[] classpath,
 	                                                       String[] vmParams,
-	                                                       String buildDirectory) throws IOException {
+	                                                       String buildDirectory, File... sources) throws IOException {
 		final List<String> cmdLine = new ArrayList<>();
 		cmdLine.add(getJavacExecutable());
 		if (vmParams != null)

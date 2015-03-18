@@ -9,18 +9,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
-import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.Annotation;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class LinkToJava {
 
@@ -49,23 +43,23 @@ public class LinkToJava {
 	}
 
 	private static void generateAddresses(TaraModel box) {
-		Model model = TaraLanguage.getMetaModel(box);
-		if (model == null) return;
-		Concept[] addressedConcepts = getAddressedConcepts(model, TaraUtil.getAllConceptsOfFile(box));
-		if (addressedConcepts.length == 0) return;
-		AddressGenerator addressGenerator = new AddressGenerator(addressedConcepts);
+//		Model model = TaraLanguage.getLanguage(box);
+//		if (model == null) return;
+		Node[] addressedNodes = new Node[0];//getAddressedConcepts(model, TaraUtil.getAllConceptsOfFile(box));
+		if (addressedNodes.length == 0) return;
+		AddressGenerator addressGenerator = new AddressGenerator(addressedNodes);
 		addressGenerator.generate();
 	}
 
-	private static Concept[] getAddressedConcepts(Model model, List<Concept> allConceptsOfFile) {
-		List<Concept> concepts = new ArrayList<>();
-		for (Concept concept : allConceptsOfFile) {
-			Node node = TaraUtil.findNode(concept, model);
-			if (node != null && node.getObject().is(Annotation.ADDRESSED))
-				concepts.add(concept);
-		}
-		return concepts.toArray(new Concept[concepts.size()]);
-	}
+//	private static Concept[] getAddressedConcepts(Model model, List<Concept> allConceptsOfFile) {
+//		List<Concept> concepts = new ArrayList<>();
+//		for (Concept concept : allConceptsOfFile) {
+//			Node node = TaraUtil.findNode(concept, model);
+//			if (node != null && node.getObject().is(Annotation.ADDRESSED))
+//				concepts.add(concept);
+//		}
+//		return concepts.toArray(new Concept[concepts.size()]);
+//	}
 
 	private static VirtualFile getSrcDirectory(Collection<VirtualFile> virtualFiles) {
 		for (VirtualFile file : virtualFiles)

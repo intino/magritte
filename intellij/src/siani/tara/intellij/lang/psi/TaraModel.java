@@ -16,12 +16,12 @@ public interface TaraModel extends PsiFile {
 	PsiFile getContainingFile();
 
 	@NotNull
-	Collection<Concept> getConcepts();
+	Collection<Node> getNodes();
 
 	@NotNull
-	PsiElement addConcept(@NotNull Concept concept) throws IncorrectOperationException;
+	PsiElement addConcept(@NotNull Node node) throws IncorrectOperationException;
 
-	Concept addConcept(String identifier);
+	Node addConcept(String identifier);
 
 	Import addImport(String reference);
 

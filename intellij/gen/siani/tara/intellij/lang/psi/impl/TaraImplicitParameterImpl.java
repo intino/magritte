@@ -23,8 +23,8 @@ public class TaraImplicitParameterImpl extends ParameterMixin implements TaraImp
 
   @Override
   @NotNull
-  public TaraParameterValue getParameterValue() {
-    return findNotNullChildByClass(TaraParameterValue.class);
+  public TaraValue getValue() {
+    return findNotNullChildByClass(TaraValue.class);
   }
 
 }

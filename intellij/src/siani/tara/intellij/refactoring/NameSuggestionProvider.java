@@ -3,7 +3,7 @@ package siani.tara.intellij.refactoring;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.SuggestedNameInfo;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,8 +15,8 @@ public class NameSuggestionProvider implements com.intellij.refactoring.rename.N
 	@Nullable
 	@Override
 	public SuggestedNameInfo getSuggestedNames(PsiElement element, @Nullable PsiElement nameSuggestionContext, Set<String> result) {
-		if (!(element instanceof Concept)) return null;
-		final String name = ((Concept) element).getName();
+		if (!(element instanceof Node)) return null;
+		final String name = ((Node) element).getName();
 		if (name == null) return null;
 		if (element instanceof TaraIdentifier)
 			result.add(toCamelCase(name, true));

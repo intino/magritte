@@ -3,12 +3,12 @@ package siani.tara.compiler.parser.antlr;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import siani.tara.lang.*;
+import siani.tara.model.*;
 
 import java.util.*;
 
 import static siani.tara.compiler.parser.antlr.TaraGrammar.*;
-import static siani.tara.lang.Primitives.*;
+import static siani.tara.model.Primitives.*;
 
 public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
@@ -165,8 +165,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		addHeaderInformation(ctx, node);
 		if (isInFacetTarget(ctx)) {
 			addToFacetTarget(node);
-		}
-		else ((DeclaredNode) conceptStack.peek()).add(node);
+		} else ((DeclaredNode) conceptStack.peek()).add(node);
 	}
 
 	@Override
@@ -363,14 +362,33 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	public void enterAnnotations(@NotNull AnnotationsContext ctx) {
 		List<Annotation> annotations = getAnnotations(ctx);
 		if (ctx.getParent() instanceof VariableContext) {
-			List<Variable> variables = conceptStack.peek().getObject().getVariables();
-			Variable variable = variables.get(variables.size() - 1);
-			variable.addAll(annotations);
+			Object context = getVariableContext(ctx);
+			if (context instanceof Node) {
+				addAnnotation(((Node) context).getObject().getVariables(), annotations);
+			} else if (context instanceof FacetTarget) {
+				addAnnotation(((FacetTarget) context).getVariables(), annotations);
+			}
+
 		} else if (ctx.getParent() instanceof ConceptReferenceContext) {
 			List<Node> innerNodes = conceptStack.peek().getInnerNodes();
 			((LinkNode) innerNodes.get(innerNodes.size() - 1)).addAll(annotations);
 		} else
 			conceptStack.peek().getObject().addAll(annotations);
+	}
+
+	private void addAnnotation(List<Variable> variables, List<Annotation> annotations) {
+		variables.get(variables.size() - 1).addAll(annotations);
+	}
+
+	private Object getVariableContext(ParserRuleContext ctx) {
+		ParserRuleContext context = ctx;
+		while (!(context instanceof FacetTargetContext) && !(context instanceof ConceptContext))
+			context = context.getParent();
+		if (context instanceof FacetTargetContext) {
+			List<FacetTarget> targets = conceptStack.peek().getObject().getFacetTargets();
+			return targets.get(targets.size() - 1);
+		}
+		return conceptStack.peek();
 	}
 
 	private String[] getTextArrayOfContextList(List<? extends ParserRuleContext> ctx) {
@@ -385,4 +403,6 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 			annotations.add(Annotation.valueOf(annotation.getText().toUpperCase().replace("+", "META_")));
 		return annotations;
 	}
+
+
 }

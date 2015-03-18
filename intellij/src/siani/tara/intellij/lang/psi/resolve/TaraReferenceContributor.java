@@ -16,7 +16,7 @@ public class TaraReferenceContributor extends PsiReferenceContributor {
 				PsiLiteralExpression literalExpression = (PsiLiteralExpression) element;
 				String text = (String) literalExpression.getValue();
 				if (text != null && text.startsWith("Tara:"))
-					return new PsiReference[]{new TaraConceptReferenceSolver(element, new TextRange(6, text.length() + 1), null, null)};
+					return new PsiReference[]{new TaraNodeReferenceSolver(element, new TextRange(6, text.length() + 1), null)};
 				return new PsiReference[0];
 			}
 		});

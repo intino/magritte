@@ -10,15 +10,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.resolve.TaraConceptReferenceSolver;
+import siani.tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import siani.tara.intellij.lang.psi.resolve.TaraFileReferenceSolver;
 import siani.tara.intellij.lang.psi.resolve.TaraParameterReferenceSolver;
-import siani.tara.lang.*;
-import siani.tara.lang.Variable;
-import siani.tara.lang.Word;
+import siani.tara.semantic.Allow;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import static siani.tara.intellij.lang.lexer.TaraPrimitives.WORD;
+import static siani.tara.intellij.lang.lexer.TaraPrimitives.isPrimitive;
 
 public class IdentifierMixin extends ASTWrapperPsiElement {
 
@@ -52,26 +55,29 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	}
 
 	private PsiReference createConceptResolver() {
-		Concept container = TaraPsiImplUtil.getConceptContainerOf(this);
-		Node node = TaraUtil.getMetaConcept(container);
-		return new TaraConceptReferenceSolver(this, getRange(), container, node);
+		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
+		return new TaraNodeReferenceSolver(this, getRange(), container);
 	}
 
 	private PsiReference createResolverForParameter(Parameter parameter) {
-		Concept container = TaraPsiImplUtil.getConceptContainerOf(this);
-		Node node = TaraUtil.getMetaConcept((Concept) container.getOriginalElement());
-		if (node == null)
-			return null;
-		List<Variable> variables = node.getObject().getVariables();
-		if (variables.isEmpty() || variables.size() <= parameter.getIndexInParent()) return null;
-		Variable variable = parameter.isExplicit() ? findVar(variables, parameter.getExplicitName()) : variables.get(parameter.getIndexInParent());
-		if (variable == null)
-			return null;
-		if (variable instanceof siani.tara.lang.Word)
-			return new TaraMetaWordReferenceSolver(this, getRange(), (Word) variable);
-		else if (variable instanceof Reference)
-			return new TaraParameterReferenceSolver(this, getRange(), container, node, variable);
+		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
+		Collection<Allow> allowsOf = TaraUtil.getAllowsOf(container);
+		if (allowsOf == null) return null;
+		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
+		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.getIndexInParent()) return null;
+		Allow.Parameter parameterAllow = parameter.isExplicit() ? findParameter(parametersAllowed, parameter.getExplicitName()) : parametersAllowed.get(parameter.getIndexInParent());
+		if (parameterAllow == null) return null;
+		if (parameterAllow.type().equals(WORD) || !isPrimitive(parameterAllow.type()))
+			return new TaraParameterReferenceSolver(this, getRange(), container);
 		return null;
+	}
+
+	private List<Allow.Parameter> parametersAllowed(Collection<Allow> allowsOf) {
+		List<Allow.Parameter> parameters = new ArrayList<>();
+		for (Allow allow : allowsOf)
+			if (allow instanceof Allow.Parameter)
+				parameters.add((Allow.Parameter) allow);
+		return parameters;
 	}
 
 	private TextRange getRange() {
@@ -110,9 +116,9 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
-	private Variable findVar(List<Variable> variables, String name) {
-		for (Variable variable : variables)
-			if (variable.getName().equals(name))
+	private Allow.Parameter findParameter(List<Allow.Parameter> parameters, String name) {
+		for (Allow.Parameter variable : parameters)
+			if (variable.name().equals(name))
 				return variable;
 		return null;
 	}
@@ -120,4 +126,5 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	public boolean isFileReference() {
 		return this.getParent() instanceof TaraHeaderReference;
 	}
+
 }

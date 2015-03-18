@@ -14,22 +14,22 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
+import siani.tara.Language;
 import siani.tara.intellij.TaraRuntimeException;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
-import siani.tara.lang.FacetTarget;
-import siani.tara.lang.Model;
-import siani.tara.lang.Node;
+import siani.tara.semantic.Allow;
+import siani.tara.semantic.Assumption;
 
 import java.util.*;
 
-import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveToConcept;
-import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getConceptContainerOf;
+import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 
 public class TaraUtil {
 
@@ -40,51 +40,59 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static List<Concept> findRootConcept(PsiElement element, String identifier) {
-		List<Concept> result = new ArrayList<>();
+	public static List<Node> findRootConcept(PsiElement element, String identifier) {
+		List<Node> result = new ArrayList<>();
 		for (TaraModelImpl taraFile : getModuleFiles(element.getContainingFile())) {
-			Collection<Concept> concepts = taraFile.getConcepts();
-			extractConceptsByName(identifier, result, concepts);
+			Collection<Node> nodes = taraFile.getNodes();
+			extractConceptsByName(identifier, result, nodes);
 		}
 		return result;
 	}
 
-	public static Node getMetaConcept(Concept concept) {
-		Model model = getMetamodel(concept);
-		if (model == null) return null;
-		return findNode(concept, model);
+	@Nullable
+	public static Language getLanguage(PsiElement element) {
+		if (element == null) return null;
+		PsiFile file = element.getContainingFile();
+		return TaraLanguage.getLanguage(file.getVirtualFile() == null ? file.getOriginalFile() : file);
 	}
 
-
-	public static Model getMetamodel(PsiElement pfile) {
-		if (pfile == null) return null;
-		PsiFile file = pfile.getContainingFile();
-		return TaraLanguage.getMetaModel(file.getVirtualFile() == null ? file.getOriginalFile() : file);
+	@Nullable
+	public static Collection<Allow> getAllowsOf(Node node) {
+		Language language = getLanguage(node);
+		if (language == null) return null;
+		return language.allows(node.resolve().getFullType());
 	}
 
-	private static void extractConceptsByName(String identifier, List<Concept> result, Collection<Concept> concepts) {
-		for (Concept concept : concepts)
-			if (identifier.equals(concept.getName()))
-				result.add(concept);
+	@Nullable
+	public static Collection<Assumption> getAssumptionsOf(Node node) {
+		Language language = getLanguage(node);
+		if (language == null) return null;
+		return language.assumptions(node.resolve().getFullType());
 	}
 
-	public static String getMetaQualifiedName(Concept concept) {
-		PsiElement element = concept;
-		String type = concept != null && !concept.isSub() ? concept.getType() : "";
+	private static void extractConceptsByName(String identifier, List<Node> result, Collection<Node> nodes) {
+		for (Node node : nodes)
+			if (identifier.equals(node.getName()))
+				result.add(node);
+	}
+
+	public static String getMetaQualifiedName(Node node) {
+		PsiElement element = node;
+		String type = node != null && !node.isSub() ? node.getType() : "";
 		while ((element = TaraPsiImplUtil.getContextOf(element)) != null)
-			if (isConceptNotSub(element)) type = buildType((Concept) element, type);
+			if (isConceptNotSub(element)) type = buildType((Node) element, type);
 			else if (isInFacet(element)) {
 				type = buildType(element, type);
-				Concept conceptContextOf = getConceptContainerOf(element);
-				if (conceptContextOf != null) {
-					type = conceptContextOf.getType() + type;
-					element = conceptContextOf;
+				Node nodeContextOf = getContainerNodeOf(element);
+				if (nodeContextOf != null) {
+					type = nodeContextOf.getType() + type;
+					element = nodeContextOf;
 				}
 			}
 		return type;
 	}
 
-	private static String buildType(Concept element, String type) {
+	private static String buildType(Node element, String type) {
 		return element.getType() + (type != null && type.length() > 0 ? "." + type : "");
 	}
 
@@ -93,7 +101,7 @@ public class TaraUtil {
 	}
 
 	private static boolean isConceptNotSub(PsiElement element) {
-		return element instanceof Concept && !((Concept) element).isSub();
+		return element instanceof Node && !((Node) element).isSub();
 	}
 
 	private static String buildType(PsiElement element, String type) {
@@ -103,15 +111,15 @@ public class TaraUtil {
 		return type;
 	}
 
-	public static List<Concept> buildConceptCompositionPathOf(Concept concept) {
-		Concept aConcept = concept;
-		List<Concept> path = new ArrayList<>();
-		path.add(aConcept);
-		while (concept != null && !concept.isAggregated()) {
-			Concept parent = TaraPsiImplUtil.getConceptContainerOf(concept);
-			if (parent != null && !parent.isSub() && !concept.isSub())
+	public static List<Node> buildConceptCompositionPathOf(Node node) {
+		Node aNode = node;
+		List<Node> path = new ArrayList<>();
+		path.add(aNode);
+		while (node != null && !node.isAggregated()) {
+			Node parent = TaraPsiImplUtil.getContainerNodeOf(node);
+			if (parent != null && !parent.isSub() && !node.isSub())
 				path.add(0, parent);
-			concept = parent;
+			node = parent;
 		}
 		return path;
 	}
@@ -127,43 +135,17 @@ public class TaraUtil {
 		return path;
 	}
 
-	public static String getMetaQualifiedName(TaraConceptReference reference) {
-		Concept concept = TaraPsiImplUtil.getConceptContainerOf(reference);
-		String metaQualifiedName = getMetaQualifiedName(concept);
-		if (reference.getIdentifierReference() == null) return "";
-		List<TaraIdentifier> identifierList = reference.getIdentifierReference().getIdentifierList();
-		PsiElement resolve = ReferenceManager.resolve(identifierList.get(identifierList.size() - 1));
-		if (resolve == null || !Identifier.class.isInstance(resolve)) return null;
-		Concept contextOf = TaraPsiImplUtil.getConceptContainerOf(resolve);
-		String type = contextOf.getType();
-		return metaQualifiedName + "." + type;
-	}
-
-	public static Concept findScope(Node node, Concept concept) {
-		Node currentNode = node.getContainer();
-		while (currentNode != null)
-			if (currentNode.is(siani.tara.lang.Annotation.ENCLOSED))
-				break;
-			else currentNode = currentNode.getContainer();
-		if (currentNode == null) return null;
-		Concept container = concept.getContainer();
-		while (container != null)
-			if (currentNode.getName().equals(container.getType())) return container;
-			else container = container.getContainer();
-		return null;
-	}
-
 	@NotNull
-	public static Collection<Concept> getRootConceptsOfFile(TaraModel file) {
-		List<Concept> list = new ArrayList<>();
-		Concept[] concepts = PsiTreeUtil.getChildrenOfType(file, Concept.class);
-		if (concepts == null) return list;
-		for (Concept concept : concepts) {
-			list.add(concept);
-			list.addAll(concept.getSubConcepts());
+	public static Collection<Node> getRootConceptsOfFile(TaraModel file) {
+		List<Node> list = new ArrayList<>();
+		Node[] nodes = PsiTreeUtil.getChildrenOfType(file, Node.class);
+		if (nodes == null) return list;
+		for (Node node : nodes) {
+			list.add(node);
+			list.addAll(node.getSubNodes());
 		}
-		Collection<? extends Concept> aggregatedConcepts = findAggregatedConcepts(file);
-		for (Concept aggregated : aggregatedConcepts) {
+		Collection<? extends Node> aggregatedConcepts = findAggregatedConcepts(file);
+		for (Node aggregated : aggregatedConcepts) {
 			if (list.contains(aggregated)) continue;
 			list.add(aggregated);
 		}
@@ -191,32 +173,32 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static List<Concept> getAllConceptsOfFile(TaraModel taraModel) {
-		List<Concept> collection = new ArrayList<>();
-		Concept[] concepts = PsiTreeUtil.getChildrenOfType(taraModel, Concept.class);
-		if (concepts != null) {
-			Collections.addAll(collection, concepts);
-			for (Concept concept : concepts)
-				collectChildren(concept, collection);
+	public static List<Node> getAllConceptsOfFile(TaraModel taraModel) {
+		List<Node> collection = new ArrayList<>();
+		Node[] nodes = PsiTreeUtil.getChildrenOfType(taraModel, Node.class);
+		if (nodes != null) {
+			Collections.addAll(collection, nodes);
+			for (Node node : nodes)
+				collectChildren(node, collection);
 		}
 		return collection;
 	}
 
-	private static void collectChildren(Concept concept, List<Concept> collection) {
-		for (Concept child : TaraUtil.getInnerConceptsOf(concept)) {
+	private static void collectChildren(Node node, List<Node> collection) {
+		for (Node child : TaraUtil.getInnerNodesOf(node)) {
 			collection.add(child);
 			collectChildren(child, collection);
 		}
 	}
 
 	@NotNull
-	public static Collection<Concept> getInnerConceptsOf(Concept concept) {
-		return TaraPsiImplUtil.getInnerConceptsOf(concept);
+	public static Collection<Node> getInnerNodesOf(Node node) {
+		return TaraPsiImplUtil.getInnerNodesOf(node);
 	}
 
-	public static Concept findChildOf(Concept concept, String name) {
-		List<Concept> children = TaraPsiImplUtil.getInnerConceptsOf(concept);
-		for (Concept child : children)
+	public static Node findInner(Node node, String name) {
+		List<Node> children = TaraPsiImplUtil.getInnerNodesOf(node);
+		for (Node child : children)
 			if (child.getName() != null && child.getName().equals(name))
 				return child;
 		return null;
@@ -257,102 +239,29 @@ public class TaraUtil {
 		throw new TaraRuntimeException("src directory not found");
 	}
 
-	public static boolean isTerminalBox(TaraModelImpl boxFile) {
-		ModuleConfiguration instance = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(boxFile));
-		return instance != null && instance.isTerminal();
-	}
-
-	public static Concept findConceptByQN(String qualifiedName, PsiFile file) {
+	public static Node findConceptByQN(String qualifiedName, PsiFile file) {
 		if (file == null) return null;
 		List<TaraModelImpl> filesOfModule = getTaraFilesOfModule(ModuleProvider.getModuleOf(file));
 		for (TaraModelImpl taraFile : filesOfModule)
-			for (Concept concept : getRootConceptsOfFile(taraFile))
-				if (concept.getQualifiedName().equalsIgnoreCase(qualifiedName)) return concept;
+			for (Node node : getRootConceptsOfFile(taraFile))
+				if (node.getQualifiedName().equalsIgnoreCase(qualifiedName)) return node;
 		return null;
 	}
 
-	public static TaraConceptReference[] getLinksOf(Concept concept) {
-		return concept.getBody() == null ? new TaraConceptReference[0] : concept.getBody().getConceptLinks();
-	}
-
-	public static Node findNode(Concept concept, Model model) {
-		Model.SearchNode searchTree = createSearchTree(concept);
-		return model != null ? model.searchNode(searchTree) : null;
-	}
-
-	public static Node findNode(ConceptReference reference, Model model) {
-		Model.SearchNode searchTree = createSearchTree(reference);
-		return model != null ? model.searchNode(searchTree) : null;
-	}
-
-	private static Model.SearchNode createSearchTree(Concept concept) {
-		Model.SearchNode forward = null;
-		Concept forwardConcept = concept.isSub() ? concept.getParentConcept() : concept;
-		if (forwardConcept == null)
-			throw new TaraRuntimeException("Error building search. Concept: " + concept.getQualifiedName());
-		Model.SearchNode previous = new Model.SearchNode(forwardConcept.getType());
-		addProperties(forwardConcept, previous);
-		while ((forwardConcept = TaraPsiImplUtil.getConceptContainerOf(forwardConcept)) != null) {
-			if (forwardConcept.isSub()) continue;
-			forward = new Model.SearchNode(forwardConcept.getType());
-			addProperties(forwardConcept, forward);
-			forward.setNext(previous);
-			previous.setPrevious(forward);
-			previous = forward;
-		}
-		return forward != null ? forward : previous;
-	}
-
-	private static Model.SearchNode createSearchTree(ConceptReference reference) {
-		Model.SearchNode forward = null;
-		PsiElement forwardConcept = reference;
-		Concept destiny = resolveToConcept(reference.getIdentifierReference());
-		if (destiny == null) return null;
-		Model.SearchNode previous = new Model.SearchNode(destiny.getType());
-		addProperties(reference, previous);
-		while ((forwardConcept = TaraPsiImplUtil.getConceptContainerOf(forwardConcept)) != null) {
-			if (((Concept) forwardConcept).isSub()) continue;
-			forward = new Model.SearchNode(((Concept) forwardConcept).getType());
-			addProperties((Concept) forwardConcept, forward);
-			forward.setNext(previous);
-			previous.setPrevious(forward);
-			previous = forward;
-		}
-		return forward != null ? forward : previous;
-	}
-
-	private static void addProperties(Concept concept, Model.SearchNode searchNode) {
-		addGeneralProperties(concept, searchNode);
-		List<String> facets = new ArrayList<>();
-		for (FacetApply apply : concept.getFacetApplies()) facets.add(apply.getFacetName());
-		searchNode.setFacets(facets);
-	}
-
-	private static void addProperties(ConceptReference reference, Model.SearchNode searchNode) {
-		addGeneralProperties(reference, searchNode);
-		Concept resolve = ReferenceManager.resolveToConcept(reference.getIdentifierReference());
-		if (resolve == null) return;
-		List<String> facets = new ArrayList<>();
-		for (FacetApply apply : resolve.getFacetApplies()) facets.add(apply.getFacetName());
-		searchNode.setFacets(facets);
-	}
-
-	private static void addGeneralProperties(PsiElement element, Model.SearchNode searchNode) {
-		PsiElement contextOf = TaraPsiImplUtil.getContextOf(element);
-		if (contextOf instanceof FacetApply)
-			searchNode.setInFacetApply(((FacetApply) contextOf).getFacetName());
-		else if (contextOf instanceof FacetTarget)
-			searchNode.setInFacetTarget(((FacetTarget) contextOf).getDestinyName());
+	public static NodeReference[] getLinksOf(Node node) {
+		return node.getBody() == null ? new NodeReference[0] : node.getBody().getConceptLinks();
 	}
 
 	public static Inflector getInflector(Module module) {
 		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
 	}
 
-	public static Collection<? extends Concept> findAggregatedConcepts(TaraModel file) {
-		Set<Concept> aggregated = new HashSet<>();
-		for (Concept concept : getAllConceptsOfFile(file))
-			if (concept.isAnnotatedAsAggregated() || concept.isMetaAggregated()) aggregated.add(concept);
+	public static Collection<? extends Node> findAggregatedConcepts(TaraModel file) {
+		Set<Node> aggregated = new HashSet<>();
+		for (Node node : getAllConceptsOfFile(file))
+			if (node.isAnnotatedAsAggregated()) aggregated.add(node);
 		return aggregated;
 	}
+
+
 }

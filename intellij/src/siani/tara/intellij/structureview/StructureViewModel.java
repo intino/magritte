@@ -4,7 +4,7 @@ import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.structureView.TextEditorBasedStructureViewModel;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.psi.PsiFile;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +46,7 @@ public class StructureViewModel extends TextEditorBasedStructureViewModel implem
 
 	@NotNull
 	protected Class[] getSuitableClasses() {
-		return new Class[]{Concept.class};
+		return new Class[]{Node.class};
 	}
 
 }

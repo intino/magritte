@@ -16,7 +16,7 @@
 	psiImplUtilClass='siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil'
 }
 
-root ::= NEWLINE* dslDeclaration? imports? (concept NEWLINE+)*
+root ::= NEWLINE* dslDeclaration? imports? (node NEWLINE+)*
 
 dslDeclaration ::= DSL (PROTEO | headerReference) NEWLINE+
 
@@ -32,13 +32,13 @@ doc::= DOC_LINE+ {
 	implements='siani.tara.intellij.lang.psi.Doc'
 }
 
-concept ::= signature annotations? body? {
-	pin = 2
-	mixin= 'siani.tara.intellij.lang.psi.impl.ConceptMixin'
-	implements='siani.tara.intellij.lang.psi.Concept'
+node ::= signature body? {
+	pin = 1
+	mixin= 'siani.tara.intellij.lang.psi.impl.NodeMixin'
+	implements='siani.tara.intellij.lang.psi.Node'
 }
-//simplify
-signature::= (subConcept | metaIdentifier parameters? identifier? parent?) address? {
+
+signature::= (subNode | metaIdentifier parameters? identifier? parent?) annotations? address? {
 	pin = 1
 	mixin= 'siani.tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='siani.tara.intellij.lang.psi.Signature'
@@ -47,7 +47,7 @@ signature::= (subConcept | metaIdentifier parameters? identifier? parent?) addre
 address::= ADDRESS_VALUE
 {pin = 1}
 
-private subConcept ::= SUB parameters? identifier
+private subNode ::= SUB parameters? identifier
 {pin = 1}
 
 private parent ::= EXTENDS identifierReference
@@ -65,93 +65,83 @@ private explicitParameters ::= explicitParameter (COMMA explicitParameter)*
 private implicitParameters ::= implicitParameter (COMMA implicitParameter)*
 { pin = 1}
 
-explicitParameter ::= identifier EQUALS parameterValue {
+explicitParameter ::= identifier EQUALS value {
     pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.ParameterMixin'
 	implements = 'siani.tara.intellij.lang.psi.Parameter'
 }
 
-implicitParameter ::= parameterValue {
+implicitParameter ::= value {
     mixin = 'siani.tara.intellij.lang.psi.impl.ParameterMixin'
     implements = 'siani.tara.intellij.lang.psi.Parameter'
 }
 
-parameterValue ::= identifierReference+
-				| stringValue+
-		        | booleanValue+
-		        | naturalValue+ measureValue?
-		        | integerValue+ measureValue?
-		        | doubleValue+  measureValue?
-		        | dateValue+
-		        | metaWord
-		        | emptyField
 
-metaWord ::= metaIdentifier metaWordNames*
-{pin = 1}
-private metaWordNames ::= DOT identifier
-{pin = 1}
 
-body ::= (NEW_LINE_INDENT | INLINE) (conceptConstituents NEWLINE+)+ DEDENT {
+body ::= (NEW_LINE_INDENT | INLINE) (nodeConstituents NEWLINE+)+ DEDENT {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.BodyMixin'
 	implements = 'siani.tara.intellij.lang.psi.Body'
 }
 
-private conceptConstituents ::= varInit | variable | concept | facetTarget | facetApply | conceptReference | doc
+private nodeConstituents ::= varInit | variable | node | facetTarget | facetApply | nodeReference | doc
 
-conceptReference ::= HAS identifierReference annotations?
+nodeReference ::= HAS identifierReference annotations?
 {
 	pin = 2
-	mixin = 'siani.tara.intellij.lang.psi.impl.ConceptReferenceMixin'
-	implements = 'siani.tara.intellij.lang.psi.ConceptReference'
+	mixin = 'siani.tara.intellij.lang.psi.impl.NodeReferenceMixin'
+	implements = 'siani.tara.intellij.lang.psi.NodeReference'
 }
 
-variable ::= VAR variableType annotations? {
-	pin = 2
+variable ::= VAR variableType attributeType? (LIST | count)? IDENTIFIER_KEY (word | (EQUALS value measureValue?))? annotations? {
+	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'siani.tara.intellij.lang.psi.Variable'
 }
-variableType::= naturalAttribute | integerAttribute | ratioAttribute | measureAttribute | doubleAttribute | booleanAttribute | stringAttribute |
-		dateAttribute | resource | referenceAttribute | word
 
-naturalAttribute     ::= NATURAL_TYPE doubleMeasure? LIST? IDENTIFIER_KEY (EQUALS naturalValue+ measureValue?)?      {pin=1}
-integerAttribute     ::= INT_TYPE     doubleMeasure? LIST? IDENTIFIER_KEY (EQUALS integerValue+ measureValue?)?      {pin=1}
-resource             ::= RESOURCE_KEY attributeType IDENTIFIER_KEY (EQUALS stringValue)? {pin=1}
-booleanAttribute     ::= BOOLEAN_TYPE LIST? IDENTIFIER_KEY (EQUALS booleanValue+)?       {pin=1}
-stringAttribute      ::= STRING_TYPE  LIST? IDENTIFIER_KEY (EQUALS stringValue+)?       {pin=1}
-dateAttribute        ::= DATE_TYPE    LIST? IDENTIFIER_KEY (EQUALS stringValue+)?        {pin=1}
-ratioAttribute       ::= RATIO_TYPE   LIST? IDENTIFIER_KEY (EQUALS doubleValue+)?        {pin=1}
+variableType::= NATURAL_TYPE
+                | INT_TYPE
+                | RESOURCE_KEY
+                | BOOLEAN_TYPE
+                | STRING_TYPE
+                | DATE_TYPE
+                | RATIO_TYPE
+                | DOUBLE_TYPE
+                | MEASURE_TYPE_KEY
+                | WORD_KEY
+                | identifierReference
 
-doubleAttribute      ::= DOUBLE_TYPE  (LIST | count)? doubleMeasure? IDENTIFIER_KEY (EQUALS doubleValue+ measureValue?)?    {pin=1}
-measureAttribute     ::= MEASURE_TYPE_KEY attributeType (LIST | count)? IDENTIFIER_KEY (EQUALS doubleValue+  measureValue?)?   {pin=1}
-referenceAttribute   ::= identifierReference LIST? IDENTIFIER_KEY (EQUALS emptyField)? {
-	pin = 1
-	mixin = 'siani.tara.intellij.lang.psi.impl.ReferenceStatementMixin'
-	implements = 'siani.tara.intellij.lang.psi.ReferenceStatement'
-}
+count ::= LEFT_SQUARE NATURAL_VALUE_KEY RIGHT_SQUARE
 
-word ::= WORD_KEY LIST? IDENTIFIER_KEY NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+ DEDENT {
+word ::= NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+ DEDENT {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.WordMixin'
 	implements = 'siani.tara.intellij.lang.psi.Word'
 }
 
-attributeType   ::= COLON measureType
-doubleMeasure   ::= COLON (MEASURE_VALUE_KEY | IDENTIFIER_KEY)
-measureType     ::= IDENTIFIER_KEY {
+attributeType ::= COLON measureType
+{pin=1}
+measureType     ::= MEASURE_VALUE_KEY | IDENTIFIER_KEY {
 	implements = 'siani.tara.intellij.lang.psi.MeasureType'
 }
+
+value ::= identifierReference+
+		| stringValue+
+        | booleanValue+
+        | linkValue+
+        | naturalValue+ measureValue?
+        | integerValue+ measureValue?
+        | doubleValue+  measureValue?
+        | emptyField
+
 
 stringValue     ::= (QUOTE_BEGIN CHARACTER* QUOTE_END) | (NEWLINE? STRING_MULTILINE_VALUE_KEY)
 booleanValue    ::= BOOLEAN_VALUE_KEY
 naturalValue    ::= NATURAL_VALUE_KEY
 integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
-dateValue       ::= DATE_VALUE_KEY
 linkValue       ::= ADDRESS_VALUE | identifierReference
 measureValue    ::= IDENTIFIER_KEY | MEASURE_VALUE_KEY
-
-count           ::= LEFT_SQUARE NATURAL_VALUE_KEY RIGHT_SQUARE
 
 facetApply ::= AS metaIdentifier parameters? (WITH metaIdentifier)? body? {
 	pin = 1
@@ -175,20 +165,12 @@ annotation ::= PLUS? (ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED
 	implements = 'siani.tara.intellij.lang.psi.Annotation'
 }
 
-varInit ::= IDENTIFIER_KEY EQUALS varInitValue {
+varInit ::= IDENTIFIER_KEY EQUALS value {
     pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.VarInitMixin'
 	implements = 'siani.tara.intellij.lang.psi.VarInit'
 }
 
-varInitValue ::= emptyField
-                | identifierReference+
-                | linkValue+
-                | stringValue+
-                | booleanValue+
-                | naturalValue+ measureValue?
-                | integerValue+ measureValue?
-                | doubleValue+  measureValue?
 
 emptyField ::= EMPTY_REF
 

@@ -10,8 +10,8 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.psi.*;
-import siani.tara.lang.Annotations;
+import siani.tara.intellij.lang.psi.Node;
+import siani.tara.intellij.lang.psi.TaraAnnotations;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
@@ -32,27 +32,27 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 					PsiElement annotationContext = getContext(parameters.getPosition());
 					if (annotationContext == null) return;
 					IElementType elementType = annotationContext.getNode().getElementType();
-					if (elementType.equals(CONCEPT) || elementType.equals(SUB)) {
-						addConceptAnnotations(resultSet);
+					if (elementType.equals(NODE) || elementType.equals(SUB)) {
+						addNODEAnnotations(resultSet);
 					} else if (elementType.equals(HAS)) {
-						for (siani.tara.lang.Annotation annotation : Annotations.HAS_ANNOTATIONS)
+						for (siani.tara.intellij.lang.lexer.Annotation annotation : siani.tara.intellij.lang.lexer.Annotations.HAS_ANNOTATIONS)
 							resultSet.addElement(LookupElementBuilder.create(annotation.getName()));
-					} else for (siani.tara.lang.Annotation annotation : Annotations.VARIABLE_ANNOTATIONS)
+					} else for (siani.tara.intellij.lang.lexer.Annotation annotation : siani.tara.intellij.lang.lexer.Annotations.VARIABLE_ANNOTATIONS)
 						resultSet.addElement(LookupElementBuilder.create(annotation.getName()));
 				}
 			}
 		);
 	}
 
-	private void addConceptAnnotations(CompletionResultSet resultSet) {
-		for (siani.tara.lang.Annotation annotation : Annotations.PRIME_ANNOTATIONS)
+	private void addNODEAnnotations(CompletionResultSet resultSet) {
+		for (siani.tara.intellij.lang.lexer.Annotation annotation : siani.tara.intellij.lang.lexer.Annotations.PRIME_ANNOTATIONS)
 			resultSet.addElement(LookupElementBuilder.create(annotation.getName()));
 	}
 
 	public PsiElement getContext(PsiElement element) {
 		PsiElement context = element;
 		while ((context = context.getPrevSibling()) != null) {
-			if (is(context, VAR) || is(context, HAS) || is(context, CONCEPT) || is(context, SUB))
+			if (is(context, VAR) || is(context, HAS) || is(context, NODE) || is(context, SUB))
 				return context;
 		}
 		return null;
@@ -74,7 +74,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 				ctx = ctx.getPrevSibling();
 			}
 			ctx = ctx.getParent();
-			while (ctx != null && !Concept.class.isInstance(ctx)) {
+			while (ctx != null && !Node.class.isInstance(ctx)) {
 				if (ctx instanceof TaraAnnotations) return true;
 				ctx = ctx.getParent();
 			}

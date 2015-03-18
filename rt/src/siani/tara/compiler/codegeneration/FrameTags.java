@@ -2,9 +2,6 @@ package siani.tara.compiler.codegeneration;
 
 public class FrameTags {
 
-	private FrameTags() {
-	}
-
 	protected static final char SEMICOLON = ';';
 	protected static final String DOT = ".";
 	protected static final String EXTENSIONS = "extensions";

@@ -8,10 +8,10 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.lexer.TaraPrimitives;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.lang.Primitives;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,18 +23,18 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	                                        @NotNull PsiElement root,
 	                                        @NotNull Document document,
 	                                        boolean quick) {
-		List<Concept> concepts = TaraUtil.getAllConceptsOfFile((TaraModelImpl) root);
-		for (final Concept concept : concepts) {
-			if (concept.getText() != null && concept.getBody() != null)
-				descriptors.add(new FoldingDescriptor(concept.getBody().getNode(), getRange(concept)) {
+		List<Node> nodes = TaraUtil.getAllConceptsOfFile((TaraModelImpl) root);
+		for (final Node node : nodes) {
+			if (node.getText() != null && node.getBody() != null)
+				descriptors.add(new FoldingDescriptor(node.getBody().getNode(), getRange(node)) {
 					@Nullable
 					@Override
 					public String getPlaceholderText() {
-						return buildConceptHolderText(concept);
+						return buildConceptHolderText(node);
 					}
 				});
-			if (concept.getBody() != null)
-				for (final PsiElement multiLine : searchStringMultiLineValues(concept)) {
+			if (node.getBody() != null)
+				for (final PsiElement multiLine : searchStringMultiLineValues(node)) {
 					descriptors.add(new FoldingDescriptor(multiLine, getRange((TaraStringValue) multiLine.getParent())) {
 						@Nullable
 						@Override
@@ -47,40 +47,47 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 
 	}
 
-	private Collection<PsiElement> searchStringMultiLineValues(Concept concept) {
+	private Collection<PsiElement> searchStringMultiLineValues(Node node) {
 		List<PsiElement> strings = new ArrayList<>();
-		searchMultiLineVariables(concept, strings);
-		searchMultiLineVarInit(concept, strings);
+		searchMultiLineVariables(node, strings);
+		searchMultiLineVarInit(node, strings);
 		return strings;
 	}
 
-	private void searchMultiLineVariables(Concept concept, List<PsiElement> strings) {
-		for (Variable variable : concept.getVariables()) {
-			TaraVariableType variableType = ((TaraVariable) variable).getVariableType();
-			if (!variable.getType().equals(Primitives.STRING) || (variableType.getStringAttribute() != null && variableType.getStringAttribute().getStringValueList().isEmpty()))
+	private void searchMultiLineVariables(Node node, List<PsiElement> strings) {
+		for (Variable variable : node.getVariables()) {
+			if (isStringType(variable) || hasStringValue(variable))
 				continue;
 			addMultiLineString((TaraVariable) variable, strings);
 		}
 	}
 
-	private void searchMultiLineVarInit(Concept concept, List<PsiElement> strings) {
+	private boolean isStringType(Variable variable) {
+		return variable.getType() != null && !variable.getType().equals(TaraPrimitives.STRING);
+	}
+
+	private boolean hasStringValue(Variable variable) {
+		return variable.getValue() != null && !variable.getValue().getStringValueList().isEmpty();
+	}
+
+	private void searchMultiLineVarInit(Node node, List<PsiElement> strings) {
 		//noinspection ConstantConditions
-		for (VarInit variable : concept.getBody().getVarInitList()) {
-			TaraVarInitValue value = variable.getValue();
-			if (!variable.getValueType().equals(Primitives.STRING)) continue;
+		for (VarInit variable : node.getBody().getVarInitList()) {
+			TaraValue value = variable.getValue();
+			if (!variable.getValueType().equals(TaraPrimitives.STRING)) continue;
 			addMultiLineString(value, strings);
 		}
 	}
 
 	@SuppressWarnings("ConstantConditions")
 	private void addMultiLineString(TaraVariable variable, List<PsiElement> strings) {
-		if (variable.getVariableType() == null) return;
-		for (TaraStringValue value : variable.getVariableType().getStringAttribute().getStringValueList())
+		if (variable.getValue() == null) return;
+		for (TaraStringValue value : variable.getValue().getStringValueList())
 			if (isMultiLineValue(value))
 				strings.add(findMultiLineInValue(value));
 	}
 
-	private void addMultiLineString(TaraVarInitValue value, List<PsiElement> strings) {
+	private void addMultiLineString(TaraValue value, List<PsiElement> strings) {
 		for (TaraStringValue stringValue : value.getStringValueList())
 			if (isMultiLineValue(stringValue))
 				strings.add(findMultiLineInValue(stringValue));
@@ -105,13 +112,13 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	}
 
 	@Override
-	protected boolean isCustomFoldingRoot(ASTNode node) {
-		return node.getPsi() instanceof TaraConcept;
+	protected boolean isCustomFoldingRoot(ASTNode astNode) {
+		return astNode.getPsi() instanceof Node;
 	}
 
-	private String buildConceptHolderText(Concept concept) {
+	private String buildConceptHolderText(Node node) {
 		String text = "";
-		for (Concept inner : concept.getInnerConcepts())
+		for (Node inner : node.getInnerConcepts())
 			if (inner.getName() != null) text += " " + inner.getName();
 		return text;
 	}
@@ -120,8 +127,8 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		return " ...";
 	}
 
-	private TextRange getRange(Concept concept) {
-		return new TextRange(concept.getBody().getTextRange().getStartOffset(), concept.getTextRange().getEndOffset());
+	private TextRange getRange(Node node) {
+		return new TextRange(node.getBody().getTextRange().getStartOffset(), node.getTextRange().getEndOffset());
 	}
 
 	private TextRange getRange(TaraStringValue value) {

@@ -55,7 +55,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 
 	@NotNull
 	public Collection<AbstractTreeNode> modify(@NotNull AbstractTreeNode parent, @NotNull Collection<AbstractTreeNode> children, ViewSettings settings) {
-		if (parent.getValue() instanceof ConceptTreeView) return children;
+		if (parent.getValue() instanceof NodeTreeView) return children;
 		if (!hasConcepts(children)) return children;
 		Collection<AbstractTreeNode> result = new LinkedHashSet<>(children);
 		ProjectViewNode[] copy = children.toArray(new ProjectViewNode[children.size()]);
@@ -70,7 +70,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 				Collection<BasePsiNode<? extends PsiElement>> subNodes = new ArrayList<>();
 				subNodes.add((BasePsiNode<? extends PsiElement>) element);
 				subNodes.addAll(conceptNodes);
-				result.add(new ConceptNode(project, new ConceptTreeView(psiClass, conceptFiles), settings, TaraIcons.getIcon(TaraIcons.CONCEPT), subNodes));
+				result.add(new TreeNode(project, new NodeTreeView(psiClass, conceptFiles), settings, TaraIcons.getIcon(TaraIcons.CONCEPT), subNodes));
 				result.remove(element);
 				result.removeAll(conceptNodes);
 			}
@@ -106,10 +106,10 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 
 	public Object getData(Collection<AbstractTreeNode> selected, String dataId) {
 		if (selected == null) return null;
-		if (ConceptTreeView.DATA_KEY.is(dataId)) {
-			List<ConceptTreeView> result = getConceptTreeViews(selected);
+		if (NodeTreeView.DATA_KEY.is(dataId)) {
+			List<NodeTreeView> result = getConceptTreeViews(selected);
 			if (!result.isEmpty())
-				return result.toArray(new ConceptTreeView[result.size()]);
+				return result.toArray(new NodeTreeView[result.size()]);
 		} else if (PlatformDataKeys.DELETE_ELEMENT_PROVIDER.is(dataId))
 			if (isSelected(selected)) return new MyDeleteProvider(selected);
 		return null;
@@ -117,16 +117,16 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 
 	private boolean isSelected(Collection<AbstractTreeNode> selected) {
 		for (AbstractTreeNode node : selected)
-			if (node.getValue() instanceof ConceptTreeView)
+			if (node.getValue() instanceof NodeTreeView)
 				return true;
 		return false;
 	}
 
-	private List<ConceptTreeView> getConceptTreeViews(Collection<AbstractTreeNode> selected) {
-		List<ConceptTreeView> result = new ArrayList<>();
+	private List<NodeTreeView> getConceptTreeViews(Collection<AbstractTreeNode> selected) {
+		List<NodeTreeView> result = new ArrayList<>();
 		for (AbstractTreeNode node : selected)
-			if (node.getValue() instanceof ConceptTreeView)
-				result.add((ConceptTreeView) node.getValue());
+			if (node.getValue() instanceof NodeTreeView)
+				result.add((NodeTreeView) node.getValue());
 		return result;
 	}
 
@@ -140,8 +140,8 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 		private static PsiElement[] collectConceptPsiElements(Collection<AbstractTreeNode> selected) {
 			Set<PsiElement> result = new HashSet<>();
 			for (AbstractTreeNode node : selected) {
-				if (node.getValue() instanceof ConceptTreeView) {
-					ConceptTreeView concept = (ConceptTreeView) node.getValue();
+				if (node.getValue() instanceof NodeTreeView) {
+					NodeTreeView concept = (NodeTreeView) node.getValue();
 					result.add(concept.getClassToBind());
 					ContainerUtil.addAll(result, concept.getTaraFiles());
 				} else if (node.getValue() instanceof PsiElement)

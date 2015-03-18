@@ -17,7 +17,7 @@ Monet
 encoding
 UTF-8
 models
-/Users/oroncal/workspace/sandbox/tara/plugins/tara_models/
+/Users/oroncal/workspace/sandbox/tara/plugins/tara_languages/
 icons
 /Users/oroncal/workspace/Monet/engine/res/icons
 outputpath

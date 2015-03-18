@@ -8,12 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TaraBody extends Body {
 
   @NotNull
-  List<TaraConcept> getConceptList();
-
-  @NotNull
-  List<TaraConceptReference> getConceptReferenceList();
-
-  @NotNull
   List<TaraDoc> getDocList();
 
   @NotNull
@@ -21,6 +15,12 @@ public interface TaraBody extends Body {
 
   @NotNull
   List<TaraFacetTarget> getFacetTargetList();
+
+  @NotNull
+  List<TaraNode> getNodeList();
+
+  @NotNull
+  List<TaraNodeReference> getNodeReferenceList();
 
   @NotNull
   List<TaraVarInit> getVarInitList();

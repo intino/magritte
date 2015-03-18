@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.intellij.MessageProvider;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
@@ -38,9 +38,9 @@ public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
-			if (!Concept.class.isInstance(element)) return null;
-			Concept concept = (Concept) element;
-			List<PsiElement> references = getFacetClasses(concept);
+			if (!Node.class.isInstance(element)) return null;
+			Node node = (Node) element;
+			List<PsiElement> references = getFacetClasses(node);
 			String start = (references.size() == 1 ? "Facet" : "Facets") + " declared in ";
 			@NonNls String pattern = "";
 			if (references.isEmpty()) return "";
@@ -52,18 +52,18 @@ public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {
-			if (!(element instanceof Concept)) return;
-			Concept concept = (Concept) element;
+			if (!(element instanceof Node)) return;
+			Node node = (Node) element;
 			if (DumbService.isDumb(element.getProject())) {
 				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
 				return;
 			}
-			List<PsiElement> facetClasses = getFacetClasses(concept);
+			List<PsiElement> facetClasses = getFacetClasses(node);
 			if (facetClasses.isEmpty()) return;
-			String title = MessageProvider.message("facet.class.chooser", concept.getName(), facetClasses.size());
+			String title = MessageProvider.message("facet.class.chooser", node.getName(), facetClasses.size());
 			ClassCellRenderer renderer = new ClassCellRenderer(null);
 			PsiElementListNavigator.openTargets(e, facetClasses.toArray(toNavigatable(facetClasses)), title,
-				"Facet implementations of " + (concept.getName()), renderer);
+				"Facet implementations of " + (node.getName()), renderer);
 		}
 	}
 	);
@@ -74,10 +74,10 @@ public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 		return navigatables.toArray(new NavigatablePsiElement[navigatables.size()]);
 	}
 
-	private List<PsiElement> getFacetClasses(Concept concept) {
+	private List<PsiElement> getFacetClasses(Node node) {
 		List<PsiElement> references = new ArrayList<>();
-		for (FacetApply apply : concept.getFacetApplies()) {
-			PsiElement reference = resolveExternal(concept, apply);
+		for (FacetApply apply : node.getFacetApplies()) {
+			PsiElement reference = resolveExternal(node, apply);
 			if (reference != null)
 				references.add(reference);
 		}
@@ -91,12 +91,12 @@ public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!(element instanceof Concept)) return super.getLineMarkerInfo(element);
-		Concept concept = (Concept) element;
-		if (concept.getFacetApplies().length == 0) return null;
+		if (!(element instanceof Node)) return super.getLineMarkerInfo(element);
+		Node node = (Node) element;
+		if (node.getFacetApplies().length == 0) return null;
 		PsiElement reference = null;
-		for (FacetApply facetApply : concept.getFacetApplies()) {
-			reference = resolveExternal(concept, facetApply);
+		for (FacetApply facetApply : node.getFacetApplies()) {
+			reference = resolveExternal(node, facetApply);
 			if (reference != null) break;
 		}
 		if (reference != null) {
@@ -106,21 +106,21 @@ public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 		} else return super.getLineMarkerInfo(element);
 	}
 
-	private PsiElement resolveExternal(Concept concept, FacetApply apply) {
-		return resolveJavaClassReference(concept.getProject(), getFacetApplyPackage(concept, apply) + DOT + concept.getName() + apply.getFacetName());
+	private PsiElement resolveExternal(Node node, FacetApply apply) {
+		return resolveJavaClassReference(node.getProject(), getFacetApplyPackage(node, apply) + DOT + node.getName() + apply.getFacetName());
 	}
 
-	private String getFacetApplyPackage(Concept concept, FacetApply apply) {
+	private String getFacetApplyPackage(Node node, FacetApply apply) {
 		Inflector inflector = getInflector(apply);
 		if (inflector == null) return "";
-		return (getFacetPackage(concept) + DOT + inflector.plural(apply.getFacetName())).toLowerCase();
+		return (getFacetPackage(node) + DOT + inflector.plural(apply.getFacetName())).toLowerCase();
 	}
 
 	private Inflector getInflector(FacetApply apply) {
 		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(apply)).getLanguage());
 	}
 
-	private String getFacetPackage(Concept concept) {
-		return (concept.getProject().getName() + DOT + FACETS_PATH).toLowerCase();
+	private String getFacetPackage(Node node) {
+		return (node.getProject().getName() + DOT + FACETS_PATH).toLowerCase();
 	}
 }

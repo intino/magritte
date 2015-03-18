@@ -116,7 +116,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(PLUS, OPERATOR);
 		KEYS.put(COLON, OPERATOR);
 		KEYS.put(EQUALS, OPERATOR);
-		KEYS.put(META_WORD, OPERATOR);
 		KEYS.put(ALWAYS, ANNOTATION);
 		KEYS.put(LIST, OPERATOR);
 		KEYS.put(LEFT_SQUARE, OPERATOR);
@@ -142,7 +141,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(QUOTE_END, STRING);
 		KEYS.put(CHARACTER, STRING);
 		KEYS.put(STRING_MULTILINE_VALUE_KEY, STRING);
-		KEYS.put(DATE_VALUE_KEY, NUMBER);
 		KEYS.put(TokenType.WHITE_SPACE, null);
 		KEYS.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 	}

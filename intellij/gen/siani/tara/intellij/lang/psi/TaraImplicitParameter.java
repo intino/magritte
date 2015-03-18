@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TaraImplicitParameter extends Parameter {
 
   @NotNull
-  TaraParameterValue getParameterValue();
+  TaraValue getValue();
 
 }

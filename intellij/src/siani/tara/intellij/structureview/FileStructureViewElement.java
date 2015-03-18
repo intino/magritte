@@ -4,7 +4,7 @@ import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
 import com.intellij.navigation.ItemPresentation;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 
 import javax.swing.*;
@@ -21,9 +21,9 @@ public class FileStructureViewElement extends PsiTreeElementBase<TaraModelImpl> 
 	@NotNull
 	public Collection<StructureViewTreeElement> getChildrenBase() {
 		if (getElement() == null) return Collections.EMPTY_LIST;
-		Collection<Concept> concepts = getElement().getConcepts();
+		Collection<Node> nodes = getElement().getNodes();
 		Collection<StructureViewTreeElement> elements = new ArrayList<>(1);
-		for (Concept concept : concepts) elements.add(new StructureViewElement(concept));
+		for (Node node : nodes) elements.add(new StructureViewElement(node));
 		return elements;
 	}
 

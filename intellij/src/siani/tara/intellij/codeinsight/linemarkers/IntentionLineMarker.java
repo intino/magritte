@@ -13,7 +13,7 @@ import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 import org.siani.itrules.formatter.Inflector;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
@@ -29,7 +29,7 @@ public abstract class IntentionLineMarker extends JavaLineMarkerProvider {
 		public String fun(PsiElement element) {
 			if (!canBeMarked(element)) return null;
 			PsiElement reference;
-			reference = element instanceof Concept ? resolveExternal((Concept) element) : resolveExternal((TaraFacetTarget) element);
+			reference = element instanceof Node ? resolveExternal((Node) element) : resolveExternal((TaraFacetTarget) element);
 			String start = "Intention declared in ";
 			@NonNls String pattern = null;
 			if (reference != null) pattern = reference.getNavigationElement().getContainingFile().getName();
@@ -41,8 +41,8 @@ public abstract class IntentionLineMarker extends JavaLineMarkerProvider {
 		super(daemonSettings, colorsManager);
 	}
 
-	protected PsiElement resolveExternal(Concept concept) {
-		return ReferenceManager.resolveJavaClassReference(concept.getProject(), buildDestinyClassQN(concept, concept.getProject()));
+	protected PsiElement resolveExternal(Node node) {
+		return ReferenceManager.resolveJavaClassReference(node.getProject(), buildDestinyClassQN(node, node.getProject()));
 	}
 
 	protected LineMarkerNavigator getNavigator() {
@@ -54,7 +54,7 @@ public abstract class IntentionLineMarker extends JavaLineMarkerProvider {
 					DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
 					return;
 				}
-				NavigatablePsiElement reference = (NavigatablePsiElement) (element instanceof Concept ? resolveExternal((Concept) element) : resolveExternal((TaraFacetTarget) element));
+				NavigatablePsiElement reference = (NavigatablePsiElement) (element instanceof Node ? resolveExternal((Node) element) : resolveExternal((TaraFacetTarget) element));
 				if (reference == null) return;
 				String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 				MethodCellRenderer renderer = new MethodCellRenderer(false);
@@ -65,12 +65,12 @@ public abstract class IntentionLineMarker extends JavaLineMarkerProvider {
 
 	protected abstract PsiElement resolveExternal(TaraFacetTarget element);
 
-	protected abstract String buildDestinyClassQN(Concept concept, Project project);
+	protected abstract String buildDestinyClassQN(Node node, Project project);
 
 	protected abstract String composeClassName(TaraFacetTarget target, String conceptName);
 
 	protected abstract boolean canBeMarked(PsiElement element);
 
-	protected abstract String getFacetPackage(Concept concept, Inflector inflector);
+	protected abstract String getFacetPackage(Node node, Inflector inflector);
 
 }

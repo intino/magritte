@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraIcons;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
@@ -30,10 +30,10 @@ public class JavaFacetToTaraLineMarker extends RelatedItemLineMarkerProvider {
 		}
 	}
 
-	private void addNavigationMark(PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, Concept concept) {
-		if (concept != null) {
+	private void addNavigationMark(PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, Node node) {
+		if (node != null) {
 			NavigationGutterIconBuilder<PsiElement> builder =
-				NavigationGutterIconBuilder.create(TaraIcons.getIcon(TaraIcons.ICON_13)).setTarget(concept).setTooltipText("Navigate to the concept");
+				NavigationGutterIconBuilder.create(TaraIcons.getIcon(TaraIcons.ICON_13)).setTarget(node).setTooltipText("Navigate to the concept");
 			result.add(builder.createLineMarkerInfo(element));
 		}
 	}
@@ -52,9 +52,9 @@ public class JavaFacetToTaraLineMarker extends RelatedItemLineMarkerProvider {
 	private String findConcept(PsiClass aClass, String intention) {
 		List<TaraModelImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(aClass));
 		for (TaraModelImpl taraBoxFile : taraFilesOfModule)
-			for (Concept concept : TaraUtil.getAllConceptsOfFile(taraBoxFile))
-				if (intention.equals(concept.getName()))
-					return concept.getQualifiedName();
+			for (Node node : TaraUtil.getAllConceptsOfFile(taraBoxFile))
+				if (intention.equals(node.getName()))
+					return node.getQualifiedName();
 		return "";
 	}
 

@@ -8,8 +8,8 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.lang.Model;
-
+import siani.tara.Language;
+import java.util.HashSet;
 import java.util.Set;
 
 %%
@@ -38,6 +38,7 @@ import java.util.Set;
 	}
 
 	private void loadHeritage() {
+		if (identifiers != null) return;
 		if (dsl == null) {
 			String source = zzBuffer.toString().trim();
 			int nl = source.indexOf('\n');
@@ -45,8 +46,9 @@ import java.util.Set;
 			if (!dslLine.startsWith(DSL) || dslLine.split(DSL).length < 2) return;
 			dsl = dslLine.split(DSL)[1].trim();
 		}
-		Model heritage = TaraLanguage.getMetaModel(dsl, project);
-		if (heritage != null) identifiers = heritage.getIdentifiers();
+		identifiers = new HashSet();
+		Language heritage = TaraLanguage.getLanguage(dsl, project);
+        if (heritage != null) Collections.addAll(identifiers, heritage.lexicon());
 	}
 %}
 

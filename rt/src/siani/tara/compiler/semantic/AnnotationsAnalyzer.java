@@ -3,9 +3,9 @@ package siani.tara.compiler.semantic;
 
 import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
 import siani.tara.compiler.core.errorcollection.semantic.WrongAnnotationError;
-import siani.tara.lang.Annotation;
-import siani.tara.lang.Annotations;
-import siani.tara.lang.Node;
+import siani.tara.model.Annotation;
+import siani.tara.model.Annotations;
+import siani.tara.model.Node;
 
 import java.util.List;
 

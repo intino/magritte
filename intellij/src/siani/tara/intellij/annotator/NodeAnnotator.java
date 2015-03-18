@@ -1,0 +1,66 @@
+package siani.tara.intellij.annotator;
+
+import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
+import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.editor.markup.TextAttributes;
+import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.annotator.semanticanalizer.ModelAnalyzer;
+import siani.tara.intellij.annotator.semanticanalizer.NodeAnalyzer;
+import siani.tara.intellij.annotator.semanticanalizer.TaraAnalyzer;
+import siani.tara.intellij.lang.psi.Node;
+import siani.tara.intellij.lang.psi.TaraModel;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+
+import java.awt.*;
+import java.util.Collection;
+
+import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
+
+public class NodeAnnotator extends TaraAnnotator {
+
+	@Override
+	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
+		this.holder = holder;
+		if (element instanceof Node) {
+			asNode((Node) element);
+		} else if (element instanceof TaraModel) {
+			asModel((TaraModel) element);
+		}
+	}
+
+	private void asNode(Node node) {
+		TaraAnalyzer analyzer = new NodeAnalyzer(node);
+		analyzeAndAnnotate(analyzer);
+		if (analyzer.hasErrors()) return;
+		if (isRoot(node)) addRootAnnotation(node);
+	}
+
+	private void asModel(TaraModel model) {
+		TaraAnalyzer analyzer = new ModelAnalyzer(model);
+		analyzeAndAnnotate(analyzer);
+	}
+
+	private boolean isRoot(Node node) {
+		Collection<Node> rootNodes = TaraUtil.getRootConceptsOfFile(node.getFile());
+		return rootNodes.contains(node) && node.getIdentifierNode() != null;
+	}
+
+//	private boolean isProperty(Concept concept) {
+//		Node node = getNode(concept);
+//		return node != null && node.getObject().is(PROPERTY);
+//	}
+
+	@SuppressWarnings("deprecation")
+	private void addRootAnnotation(Node node) {
+		TextAttributesKey root = createTextAttributesKey("CONCEPT_ROOT", new TextAttributes(null, null, null, null, Font.BOLD));
+		holder.createInfoAnnotation(node.getIdentifierNode(), "Root").setTextAttributes(root);
+	}
+
+	private void addPropertyAnnotation(Node node) {
+		TextAttributesKey keywordProperty = createTextAttributesKey("KEYWORD_PROPERTY", DefaultLanguageHighlighterColors.STATIC_METHOD);
+		holder.createInfoAnnotation(node.getMetaIdentifier(), "Property").setTextAttributes(keywordProperty);
+	}
+
+}

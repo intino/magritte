@@ -6,7 +6,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/res_test" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/lib" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" generated="true" />
     </content>
@@ -15,7 +14,7 @@
     <orderEntry type="library" scope="TEST" name="junit" level="application" />
     <orderEntry type="library" name="itrules" level="project" />
     <orderEntry type="module" module-name="tara-jps-plugin" />
-    <orderEntry type="module" module-name="abstract-model-representation" />
+    <orderEntry type="library" name="tara-semantic" level="project" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

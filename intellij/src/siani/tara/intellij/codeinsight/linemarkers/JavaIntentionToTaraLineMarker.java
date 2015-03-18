@@ -7,7 +7,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraIcons;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.util.Collection;
@@ -22,10 +22,10 @@ public class JavaIntentionToTaraLineMarker extends RelatedItemLineMarkerProvider
 		if (element instanceof PsiClass) {
 			PsiClass psiClass = (PsiClass) element;
 			if (element.getContainingFile() == null) return;
-			Concept concept = TaraUtil.findConceptByQN(findCorrespondentConcept(psiClass), element.getContainingFile());
-			if (concept != null) {
+			Node node = TaraUtil.findConceptByQN(findCorrespondentConcept(psiClass), element.getContainingFile());
+			if (node != null) {
 				NavigationGutterIconBuilder<PsiElement> builder =
-					NavigationGutterIconBuilder.create(TaraIcons.getIcon(TaraIcons.ICON_13)).setTarget(concept).setTooltipText("Navigate to the concept");
+					NavigationGutterIconBuilder.create(TaraIcons.getIcon(TaraIcons.ICON_13)).setTarget(node).setTooltipText("Navigate to the concept");
 				result.add(builder.createLineMarkerInfo(element));
 			}
 		}

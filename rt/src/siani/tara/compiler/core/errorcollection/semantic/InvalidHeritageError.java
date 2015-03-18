@@ -1,6 +1,6 @@
 package siani.tara.compiler.core.errorcollection.semantic;
 
-import siani.tara.lang.DeclaredNode;
+import siani.tara.model.DeclaredNode;
 
 public class InvalidHeritageError extends SemanticError implements SemanticError.FatalError {
 	public InvalidHeritageError(String token, DeclaredNode node) {

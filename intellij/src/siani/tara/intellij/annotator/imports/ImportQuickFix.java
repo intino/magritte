@@ -5,7 +5,7 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.Concept;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraModel;
 
 public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
@@ -13,9 +13,9 @@ public class ImportQuickFix implements LocalQuickFix, HighPriorityAction {
 	private final String anImport;
 	private final TaraModel file;
 
-	public ImportQuickFix(TaraModel fileDestiny, Concept conceptToImport) {
+	public ImportQuickFix(TaraModel fileDestiny, Node nodeToImport) {
 		this.file = fileDestiny;
-		String name = conceptToImport.getContainingFile().getName();
+		String name = nodeToImport.getContainingFile().getName();
 		anImport = name.substring(0, name.lastIndexOf('.'));
 	}
 

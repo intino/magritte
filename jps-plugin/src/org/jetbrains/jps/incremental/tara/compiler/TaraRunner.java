@@ -22,7 +22,7 @@ public class TaraRunner {
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 
 	private static final String ANTLR = "antlr-4.4-complete.jar";
-	private static final String ITRULES = "itrules.jar";
+	private static final String[] ITRULES = {"rule-engine.jar", "rule-engine-itr.jar"};
 	private static final String GSON = "gson-2.2.4.jar";
 	private static File argsFile;
 
@@ -44,7 +44,7 @@ public class TaraRunner {
 			if (generatedLangName != null)
 				writer.write(TaraRtConstants.GENERATED_LANG_NAME + "\n" + generatedLangName + "\n");
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
-			String taraModels = PathManager.getPluginsPath() + File.separator + "tara_models" + File.separator;
+			String taraModels = PathManager.getPluginsPath() + File.separator + TaraRtConstants.LANGUAGES_DIR + File.separator;
 			writer.write(TaraRtConstants.MODELS_PATH + "\n" + taraModels + "\n");
 			for (String iconPath : iconPaths)
 				writer.write(TaraRtConstants.ICONS_PATH + "\n" + iconPath + "\n");
@@ -105,7 +105,7 @@ public class TaraRunner {
 		final Set<String> classPath = new LinkedHashSet<>();
 		classPath.add(getTaraRtRoot().getPath());
 		classPath.add(getAntlrLib().getPath());
-		classPath.add(getItRulesLib().getPath());
+		for (File file : getItRulesLibs()) classPath.add(file.getPath());
 		classPath.add(getGsonLib().getPath());
 		return classPath;
 	}
@@ -123,11 +123,15 @@ public class TaraRunner {
 			new File(root.getParentFile(), "lib/" + ANTLR);
 	}
 
-	private File getItRulesLib() {
+	private Collection<File> getItRulesLibs() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		root = new File(root.getParentFile(), ITRULES);
-		return (root.exists()) ? new File(root.getParentFile(), ITRULES) :
-			new File(root.getParentFile(), "lib/" + ITRULES);
+		List<File> libs = new ArrayList<>();
+		for (String lib : ITRULES) {
+			root = new File(root.getParentFile(), lib);
+			libs.add((root.exists()) ? new File(root.getParentFile(), lib) :
+				new File(root.getParentFile(), "lib/" + lib));
+		}
+		return libs;
 	}
 
 	private File getGsonLib() {
