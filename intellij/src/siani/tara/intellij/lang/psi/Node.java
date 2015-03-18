@@ -46,6 +46,8 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isAddressed();
 
+	boolean isAbstract();
+
 	boolean isAggregated();
 
 	boolean isProperty();
@@ -61,6 +63,8 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 	List<Annotation> getAnnotations();
 
 	Annotations getAnnotationsNode();
+
+	Collection<String> getInheritedAnnotations();
 
 	void addInheritedAnnotations(String... annotations);
 
@@ -97,7 +101,7 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	Parameters getParameters();
 
-	Collection<Node> getConceptSiblings();
+	Collection<Node> getNodeSiblings();
 
 	Collection<Node> getInnerConcepts();
 

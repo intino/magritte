@@ -230,7 +230,7 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 
 	private Node[] getFacets(TaraModel file) {
 		Set<Node> facets = new LinkedHashSet<>();
-		for (Node node : TaraUtil.getAllConceptsOfFile(file))
+		for (Node node : TaraUtil.getAllNodesOfFile(file))
 			if (node.getFacetApplies().length > 0) facets.add(node);
 		return facets.toArray(new Node[facets.size()]);
 	}

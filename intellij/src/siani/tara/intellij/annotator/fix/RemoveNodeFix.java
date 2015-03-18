@@ -7,15 +7,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import siani.tara.intellij.MessageProvider;
-import siani.tara.intellij.lang.psi.Node;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.MessageProvider;
 
 public class RemoveNodeFix implements IntentionAction {
-	private final Node myNode;
+	private final PsiElement myNode;
 
 	public RemoveNodeFix(@NotNull final PsiElement origNode) {
-		myNode = (Node) origNode;
+		myNode = origNode;
 	}
 
 	@NotNull

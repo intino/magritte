@@ -32,6 +32,11 @@ public class LanguageNode extends LanguageElement implements siani.tara.model.No
 	}
 
 	@Override
+	public boolean isReference() {
+		return false;
+	}
+
+	@Override
 	public void type(String type) {
 		node.setFullType(type);
 	}

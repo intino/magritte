@@ -23,7 +23,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	                                        @NotNull PsiElement root,
 	                                        @NotNull Document document,
 	                                        boolean quick) {
-		List<Node> nodes = TaraUtil.getAllConceptsOfFile((TaraModelImpl) root);
+		List<Node> nodes = TaraUtil.getAllNodesOfFile((TaraModelImpl) root);
 		for (final Node node : nodes) {
 			if (node.getText() != null && node.getBody() != null)
 				descriptors.add(new FoldingDescriptor(node.getBody().getNode(), getRange(node)) {

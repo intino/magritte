@@ -27,7 +27,7 @@ public class NodeAnalyzer extends TaraAnalyzer {
 			if (language == null) return;
 			new Checker(language).check(new LanguageNode(node));
 		} catch (SemanticException e) {
-			results.put(node.getSignature(), new TaraAnnotator.AnnotateAndFix(ERROR, e.getMessage(), FixFactory.get(e.key(), ((LanguageElement) e.getDestiny()).element())));
+			results.put(e.getDestiny() != null ? ((LanguageElement) e.getDestiny()).element() : node.getSignature(), new TaraAnnotator.AnnotateAndFix(ERROR, e.getMessage(), FixFactory.get(e.key(), ((LanguageElement) e.getDestiny()).element())));
 		}
 	}
 }

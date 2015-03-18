@@ -93,7 +93,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.getParentOf((Node) this);
 	}
 
-	public Collection<Node> getConceptSiblings() {
+	public Collection<Node> getNodeSiblings() {
 		Node contextOf = TaraPsiImplUtil.getContainerNodeOf(this);
 		if (contextOf == null) return ((TaraModel) this.getContainingFile()).getNodes();
 		return contextOf.getInnerConcepts();
@@ -247,6 +247,11 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public boolean isAddressed() {
 		return is(ADDRESSED);
 	}
+
+	public boolean isAbstract() {
+		return is(ABSTRACT) || !getSubNodes().isEmpty();
+	}
+
 
 	public boolean isAggregated() {
 		return is(AGGREGATED);

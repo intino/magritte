@@ -173,7 +173,7 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static List<Node> getAllConceptsOfFile(TaraModel taraModel) {
+	public static List<Node> getAllNodesOfFile(TaraModel taraModel) {
 		List<Node> collection = new ArrayList<>();
 		Node[] nodes = PsiTreeUtil.getChildrenOfType(taraModel, Node.class);
 		if (nodes != null) {
@@ -197,7 +197,7 @@ public class TaraUtil {
 	}
 
 	public static Node findInner(Node node, String name) {
-		List<Node> children = TaraPsiImplUtil.getInnerNodesOf(node);
+		List<Node> children = TaraPsiImplUtil.getAllInnerNodesOf(node);
 		for (Node child : children)
 			if (child.getName() != null && child.getName().equals(name))
 				return child;
@@ -258,7 +258,7 @@ public class TaraUtil {
 
 	public static Collection<? extends Node> findAggregatedConcepts(TaraModel file) {
 		Set<Node> aggregated = new HashSet<>();
-		for (Node node : getAllConceptsOfFile(file))
+		for (Node node : getAllNodesOfFile(file))
 			if (node.isAnnotatedAsAggregated()) aggregated.add(node);
 		return aggregated;
 	}

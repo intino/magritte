@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -66,13 +67,13 @@ public class LanguageCreator {
 			private void buildNode(Node node) {
 				Frame frame = new Frame("node");
 				if (!node.isAbstract()) {
-					frame.addFrame("name", node.getQualifiedName());
+					frame.addFrame("name", getName(node));
 					addAllows(node, frame);
 					addRequires(node, frame);
 					addAssumptions(node, frame);
 					root.addFrame("node", frame);
 					for (Node inner : filter(node.getInnerNodes())) {
-						if (inner.is(LinkNode.class)) continue;
+						if (inner.is(LinkNode.class) && ((LinkNode) inner).isReference()) continue;
 						buildNode(inner);
 					}
 				}
@@ -106,10 +107,16 @@ public class LanguageCreator {
 				for (int i = 0; i < node.getObject().getVariables().size(); i++) {
 					Variable variable = node.getObject().getVariables().get(i);
 					if (!variable.hasValue()) continue;
-					addVariable(allows, i, variable, ALLOW);
+					addParameter(allows, i, variable, ALLOW);
 				}
 				if (!node.is(NAMED) && !node.is(PROPERTY))
 					allows.addFrame("allow", "name");
+				addFacetAllows(node, allows);
+			}
+
+			private void addFacetAllows(Node node, Frame allows) {
+				for (Map.Entry<String, List<FacetTarget>> facet : node.getObject().getAllowedFacets().entrySet())
+					allows.addFrame("allow", new Frame("allow", "facet").addFrame("value", facet.getKey()));
 			}
 
 			private void addContextRequires(Node node, Frame requires) {
@@ -117,7 +124,7 @@ public class LanguageCreator {
 					Variable variable = node.getObject().getVariables().get(i);
 					if (variable.hasValue() ||
 						(variable.isTerminal() && !node.is(TERMINAL))) continue;
-					addVariable(requires, i, variable, REQUIRE);
+					addParameter(requires, i, variable, REQUIRE);
 				}
 				if (node.is(NAMED))
 					requires.addFrame(REQUIRE, "name");
@@ -125,7 +132,7 @@ public class LanguageCreator {
 					requires.addFrame(REQUIRE, "address");
 			}
 
-			private void addVariable(Frame allows, int i, Variable variable, String relation) {
+			private void addParameter(Frame allows, int i, Variable variable, String relation) {
 				if (variable instanceof Word)
 					allows.addFrame(relation, new Frame(relation, "parameter", "word").
 						addFrame("name", variable.getName() + ":word").
@@ -152,10 +159,10 @@ public class LanguageCreator {
 			private String[] renderReference(Reference reference) {
 				Node node = model.searchNode(reference.getType());
 				if (node == null) return new String[0];
-				if (!node.isAbstract()) return new String[]{node.getName()};
+				if (!node.isAbstract()) return new String[]{node.getQualifiedName()};
 				List<String> types = new ArrayList<>();
 				for (DeclaredNode declaredNode : node.getDeepSubNodes()) //TODO search extends too
-					types.add(declaredNode.getName());
+					types.add(declaredNode.getQualifiedName());
 				return types.toArray(new String[types.size()]);
 			}
 

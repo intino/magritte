@@ -63,20 +63,30 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
+	public static List<Node> getAllInnerNodesOf(Node node) {
+		if (node != null && node.getBody() != null) {
+			List<Node> children = getInnerNodesInBody(node.getBody());
+			removeSubs(children);
+			return collectSubsFromInner(children);
+		}
+		return Collections.EMPTY_LIST;
+	}
+
+	private static List<Node> collectSubsFromInner(List<Node> children) {
+		List<Node> nodes = new ArrayList<>();
+		for (Node child : children) {
+			if (child.isAbstract())
+				nodes.addAll(child.getSubNodes());
+			nodes.add(child);
+		}
+		return nodes;
+	}
+
 
 	private static void removeSubs(List<Node> children) {
 		List<Node> list = new ArrayList();
 		for (Node node : children) if (node.isSub()) list.add(node);
 		children.removeAll(list);
-	}
-
-	private static List<Node> collectInnerSubs(Node node) {
-		List<Node> subs = new ArrayList();
-		for (Node subNode : node.getSubNodes()) {
-			subs.add(subNode);
-			subs.addAll(collectInnerSubs(subNode));
-		}
-		return subs;
 	}
 
 	@Nullable

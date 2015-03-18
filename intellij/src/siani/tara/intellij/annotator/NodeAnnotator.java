@@ -6,12 +6,18 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.Language;
 import siani.tara.intellij.annotator.semanticanalizer.ModelAnalyzer;
 import siani.tara.intellij.annotator.semanticanalizer.NodeAnalyzer;
+import siani.tara.intellij.annotator.semanticanalizer.NodeReferenceAnalyzer;
 import siani.tara.intellij.annotator.semanticanalizer.TaraAnalyzer;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Node;
+import siani.tara.intellij.lang.psi.NodeReference;
 import siani.tara.intellij.lang.psi.TaraModel;
+import siani.tara.intellij.lang.psi.TaraNodeReference;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.semantic.Assumption;
 
 import java.awt.*;
 import java.util.Collection;
@@ -27,7 +33,8 @@ public class NodeAnnotator extends TaraAnnotator {
 			asNode((Node) element);
 		} else if (element instanceof TaraModel) {
 			asModel((TaraModel) element);
-		}
+		} else if (element instanceof NodeReference)
+			asNodeReference((TaraNodeReference) element);
 	}
 
 	private void asNode(Node node) {
@@ -35,6 +42,7 @@ public class NodeAnnotator extends TaraAnnotator {
 		analyzeAndAnnotate(analyzer);
 		if (analyzer.hasErrors()) return;
 		if (isRoot(node)) addRootAnnotation(node);
+		else if (isProperty(node)) addPropertyAnnotation(node);
 	}
 
 	private void asModel(TaraModel model) {
@@ -47,10 +55,20 @@ public class NodeAnnotator extends TaraAnnotator {
 		return rootNodes.contains(node) && node.getIdentifierNode() != null;
 	}
 
-//	private boolean isProperty(Concept concept) {
-//		Node node = getNode(concept);
-//		return node != null && node.getObject().is(PROPERTY);
-//	}
+	private void asNodeReference(TaraNodeReference nodeReference) {
+		TaraAnalyzer analyzer = new NodeReferenceAnalyzer(nodeReference);
+		analyzeAndAnnotate(analyzer);
+	}
+
+	private boolean isProperty(Node node) {
+		Language language = TaraLanguage.getLanguage(node.getFile());
+		Collection<Assumption> assumptions = language.assumptions(node.resolve().getFullType());
+		if (assumptions == null) return false;
+		for (Assumption assumption : assumptions)
+			if (assumption instanceof Assumption.Property)
+				return true;
+		return false;
+	}
 
 	@SuppressWarnings("deprecation")
 	private void addRootAnnotation(Node node) {

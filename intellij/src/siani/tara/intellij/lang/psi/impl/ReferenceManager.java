@@ -30,13 +30,13 @@ public class ReferenceManager {
 	@Nullable
 	public static Node resolveToNode(IdentifierReference identifierReference) {
 		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
-		return (Node) resolveConcept(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
+		return (Node) resolveNode(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
 	}
 
 	@Nullable
 	public static PsiElement resolve(IdentifierReference identifierReference) {
 		List<? extends Identifier> identifierList = identifierReference.getIdentifierList();
-		PsiElement reference = resolveConcept(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
+		PsiElement reference = resolveNode(identifierList.get(identifierList.size() - 1), (List<Identifier>) identifierList);
 		if (reference instanceof Node) reference = ((Node) reference).getIdentifierNode();
 		return reference;
 	}
@@ -49,7 +49,7 @@ public class ReferenceManager {
 
 	private static PsiElement resolveInternal(Identifier identifier) {
 		if (identifier.getParent() instanceof IdentifierReference)
-			return resolveConcept(identifier, getIdentifiersOfReference(identifier));
+			return resolveNode(identifier, getIdentifiersOfReference(identifier));
 		if (identifier.getParent() instanceof HeaderReference)
 			return identifier.getParent().getParent() instanceof TaraDslDeclaration ?
 				resolveMetamodelImport(identifier) : resolveHeaderReference(identifier);
@@ -85,7 +85,7 @@ public class ReferenceManager {
 		return path;
 	}
 
-	private static PsiElement resolveConcept(PsiElement identifier, List<Identifier> path) {
+	private static PsiElement resolveNode(PsiElement identifier, List<Identifier> path) {
 		List<Identifier> subPath = path.subList(0, path.indexOf(identifier) + 1);
 		PsiElement element = tryToResolveInBox((TaraModel) identifier.getContainingFile(), subPath);
 		if (element != null) return element;
@@ -99,7 +99,7 @@ public class ReferenceManager {
 		if (possibleRoots.length == 0) return null;
 		if (possibleRoots.length == 1 && path.size() == 1) return possibleRoots[0];
 		for (Node possibleRoot : possibleRoots) {
-			Node node = resolvePathInConcept(path, possibleRoot);
+			Node node = resolvePathInNode(path, possibleRoot);
 			if (node != null) return node;
 		}
 		return null;
@@ -107,8 +107,8 @@ public class ReferenceManager {
 
 	protected static Node[] getPossibleRoots(TaraModel file, Identifier identifier) {
 		Set<Node> set = new LinkedHashSet<>();
-		addConceptsInContext(identifier, set);
-		addRootConcepts(file, identifier, set);
+		addNodesInContext(identifier, set);
+		addRootNodes(file, identifier, set);
 		addAggregated(file, identifier, set, toArrayList(set));
 		return set.toArray(new Node[set.size()]);
 	}
@@ -128,24 +128,32 @@ public class ReferenceManager {
 		return visited;
 	}
 
-	private static void addRootConcepts(TaraModel file, Identifier identifier, Set<Node> set) {
+	private static void addRootNodes(TaraModel file, Identifier identifier, Set<Node> set) {
 		Collection<Node> nodes = file.getNodes();
 		for (Node node : nodes)
 			if (namesAreEqual(identifier, node))
 				set.add(node);
 	}
 
-	private static void addConceptsInContext(Identifier identifier, Set<Node> set) {
+	private static void addNodesInContext(Identifier identifier, Set<Node> set) {
 		Node container = getContainerNodeOf(identifier);
 		if (container != null && !isExtendsReference((IdentifierReference) identifier.getParent()) &&
 			namesAreEqual(identifier, container))
 			set.add(container);
 		while (container != null) {
-			for (Node sibling : container.getConceptSiblings())
+			for (Node sibling : collectCandidates(container))
 				if (namesAreEqual(identifier, sibling) && !sibling.equals(getContainerNodeOf(identifier)))
 					set.add(sibling);
 			container = container.getContainer();
 		}
+	}
+
+	private static Collection<Node> collectCandidates(Node container) {
+		List<Node> nodes = new ArrayList<>();
+		Collection<Node> siblings = container.getNodeSiblings();
+		nodes.addAll(siblings);
+		for (Node node : siblings) nodes.addAll(node.getSubNodes());
+		return nodes;
 	}
 
 	private static boolean isExtendsReference(IdentifierReference reference) {
@@ -153,8 +161,8 @@ public class ReferenceManager {
 	}
 
 	private static void addAggregated(TaraModel file, Identifier identifier, Set<Node> set, List<Node> visited) {
-		List<Node> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(file);
-		for (Node node : allConceptsOfFile)
+		List<Node> allNodesOfFile = TaraUtil.getAllNodesOfFile(file);
+		for (Node node : allNodesOfFile)
 			if (namesAreEqual(identifier, node) && isAggregated(file, node, visited))
 				set.add(node);
 	}
@@ -168,7 +176,7 @@ public class ReferenceManager {
 		visited.add(node);
 		if (node.isAnnotatedAsAggregated() || isMetaAggregated(node)) return true;
 		IdentifierReference parentReference = node.getSignature().getParentReference();
-		return parentReference != null && checkPossibleAggregates(parentReference, getRootConcepts(file, parentReference, visited, new HashSet<Node>()));
+		return parentReference != null && checkPossibleAggregates(parentReference, getRootNodes(file, parentReference, visited, new HashSet<Node>()));
 	}
 
 	private static boolean isMetaAggregated(Node node) {
@@ -182,16 +190,16 @@ public class ReferenceManager {
 	private static boolean checkPossibleAggregates(IdentifierReference parentReference, Node[] roots) {
 		if (roots.length == 0) return false;
 		for (Node possibleRoot : roots) {
-			Node aggregated = resolvePathInConcept((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
+			Node aggregated = resolvePathInNode((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
 			if (aggregated != null) return aggregated.isAnnotatedAsAggregated();
 		}
 		return false;
 	}
 
-	private static Node[] getRootConcepts(TaraModel file, IdentifierReference parentReference, List<Node> visited, Set<Node> roots) {
+	private static Node[] getRootNodes(TaraModel file, IdentifierReference parentReference, List<Node> visited, Set<Node> roots) {
 		Identifier identifier = getIdentifier(parentReference);
-		addConceptsInContext(identifier, roots);
-		addRootConcepts(file, identifier, roots);
+		addNodesInContext(identifier, roots);
+		addRootNodes(file, identifier, roots);
 		visited.addAll(roots);
 		addAggregated((TaraModel) identifier.getContainingFile(), identifier, roots, visited);
 		return roots.toArray(new Node[roots.size()]);
@@ -202,7 +210,7 @@ public class ReferenceManager {
 		return identifierList.get(identifierList.size() - 1);
 	}
 
-	private static Node resolvePathInConcept(List<Identifier> path, Node node) {
+	private static Node resolvePathInNode(List<Identifier> path, Node node) {
 		Node reference = null;
 		for (Identifier identifier : path) {
 			reference = (reference == null) ? namesAreEqual(identifier, node) ? node : null :
@@ -244,7 +252,7 @@ public class ReferenceManager {
 		nodes.addAll(containingFile.getNodes());
 		addAggregated(containingFile, path.get(0), nodes, toArrayList(nodes));
 		for (Node node : nodes) {
-			Node solution = resolvePathInConcept(path, node);
+			Node solution = resolvePathInNode(path, node);
 			if (solution != null) return solution;
 		}
 		return null;

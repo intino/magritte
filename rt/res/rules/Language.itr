@@ -47,6 +47,10 @@ defrule type(allow) type(parameter) trigger(allow)
 parameter("$name", "$type", $multiple, $position)
 endrule
 
+defrule type(allow) type(facet) trigger(allow)
+facet("$value")
+endrule
+
 defrule trigger(allow)
 $value()
 endrule

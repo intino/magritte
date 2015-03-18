@@ -52,7 +52,7 @@ public class JavaFacetToTaraLineMarker extends RelatedItemLineMarkerProvider {
 	private String findConcept(PsiClass aClass, String intention) {
 		List<TaraModelImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(aClass));
 		for (TaraModelImpl taraBoxFile : taraFilesOfModule)
-			for (Node node : TaraUtil.getAllConceptsOfFile(taraBoxFile))
+			for (Node node : TaraUtil.getAllNodesOfFile(taraBoxFile))
 				if (intention.equals(node.getName()))
 					return node.getQualifiedName();
 		return "";

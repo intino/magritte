@@ -32,7 +32,7 @@ public class VariantsManager {
 			namesAreEqual(identifier, container))
 			variants.add(container);
 		while (container != null) {
-			for (Node sibling : container.getConceptSiblings())
+			for (Node sibling : container.getNodeSiblings())
 				variants.add(sibling);
 			container = container.getContainer();
 		}
@@ -73,7 +73,7 @@ public class VariantsManager {
 	}
 
 	private void addAggregatedConcepts(TaraModel box) {
-		for (Node node : TaraUtil.getAllConceptsOfFile(box))
+		for (Node node : TaraUtil.getAllNodesOfFile(box))
 			if (!variants.contains(node) && node.isAggregated())
 				resolvePathFor(node, context);
 	}

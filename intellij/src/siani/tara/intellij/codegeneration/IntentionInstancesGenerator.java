@@ -126,7 +126,7 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 
 	private Node[] getFacets(TaraModel taraModel) {
 		List<Node> facets = new ArrayList<>();
-		List<Node> allConceptsOfFile = TaraUtil.getAllConceptsOfFile(taraModel);
+		List<Node> allConceptsOfFile = TaraUtil.getAllNodesOfFile(taraModel);
 //		Model model = TaraLanguage.getLanguage(taraModel);
 //		for (Concept concept : allConceptsOfFile)
 //			if ((concept.isFacet() || isMetaFacet(model, concept)) && !concept.isIntention()) {
