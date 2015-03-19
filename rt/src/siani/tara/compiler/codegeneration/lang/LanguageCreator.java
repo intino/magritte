@@ -12,10 +12,7 @@ import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.model.*;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,8 +45,14 @@ public class LanguageCreator {
 			public void adapt(Frame root, Model model, BuilderContext context) {
 				this.root = root;
 				root.addFrame("name", model.getName());
+				root.addFrame("terminal", Boolean.toString(model.isTerminal()));
+				root.addFrame("locale", !model.getLocale().equals(Locale.ENGLISH) ? createLocale(model.getLocale()) : "Locale.ENGLISH");
 				buildModel(model);
 				buildNodes(model.getNodeTree());
+			}
+
+			private String createLocale(Locale locale) {
+				return "new Locale(" + locale.getLanguage() + ", " + locale.getCountry() + ", " + locale.getVariant() + ")";
 			}
 
 			private void buildModel(Model model) {

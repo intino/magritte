@@ -29,7 +29,7 @@ public class SemanticAnalyzer {
 
 	public void analyze() throws SemanticException {
 		usageAnalysis();
-		if (model.getParentModel() != null)
+		if (model.getLanguage() != null)
 			parentModelCoherenceAnalysis();
 	}
 
@@ -77,7 +77,7 @@ public class SemanticAnalyzer {
 		if (node == null) return Collections.EMPTY_LIST;
 		for (Node inner : node.getInnerNodes())
 			if (inner.getObject().is(REQUIRED) &&
-				(model.getParentModel().isTerminal() && node.getObject().is(TERMINAL) ||
+				(model.getLanguage().isTerminal() && node.getObject().is(TERMINAL) ||
 					!model.isTerminal() && !node.getObject().is(TERMINAL)))
 				required.add(inner);
 		return required;

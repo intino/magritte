@@ -51,6 +51,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		Parameter parameter = asParameter();
 		if (node == null || wordName.contains(".") || parameter == null) return false;
 		Language language = TaraLanguage.getLanguage(node.getFile());
+		if (language == null) return false;
 		Collection<Allow> allows = language.allows(node.resolve().getFullType());
 		if (allows == null) return false;
 		for (Allow allow : allows) {

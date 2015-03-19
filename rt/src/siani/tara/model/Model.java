@@ -1,5 +1,7 @@
 package siani.tara.model;
 
+import siani.tara.Language;
+
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 
@@ -9,13 +11,13 @@ public class Model {
 	private transient final ModelHelper modelHelper;
 	private String name;
 	private String parentModelName;
-	private transient Model parentModel;
+	private transient Language language;
 	private transient List<Node> nodeTable = new ArrayList<>();
 	private NodeTree nodeTree = new NodeTree();
 	private Set<String> identifiers = new HashSet<>();
 	private Map<String, List<SimpleEntry<String, String>>> metrics = new HashMap<>();
 	private boolean terminal;
-	private Locale language;
+	private Locale locale;
 
 	public Model(String name) {
 		this.name = name;
@@ -137,12 +139,12 @@ public class Model {
 		this.parentModelName = parentModelName;
 	}
 
-	public Model getParentModel() {
-		return parentModel;
+	public Language getLanguage() {
+		return language;
 	}
 
-	public void setParentModel(Model parentModel) {
-		this.parentModel = parentModel;
+	public void setLanguage(Language language) {
+		this.language = language;
 	}
 
 	public boolean isTerminal() {
@@ -157,12 +159,12 @@ public class Model {
 		return modelHelper.searchNode(searchTree);
 	}
 
-	public Locale getLanguage() {
-		return language;
+	public Locale getLocale() {
+		return locale;
 	}
 
-	public void setLanguage(Locale language) {
-		this.language = language;
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 
 	public static class SearchNode {

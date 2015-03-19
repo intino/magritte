@@ -209,6 +209,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitDoubleMeasure(@NotNull TaraGrammar.DoubleMeasureContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#node}.
+	 * @param ctx the parse tree
+	 */
+	void enterNode(@NotNull TaraGrammar.NodeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#node}.
+	 * @param ctx the parse tree
+	 */
+	void exitNode(@NotNull TaraGrammar.NodeContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#explicit}.
 	 * @param ctx the parse tree
 	 */
@@ -248,16 +258,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFacetTarget(@NotNull TaraGrammar.FacetTargetContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#concept}.
-	 * @param ctx the parse tree
-	 */
-	void enterConcept(@NotNull TaraGrammar.ConceptContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#concept}.
-	 * @param ctx the parse tree
-	 */
-	void exitConcept(@NotNull TaraGrammar.ConceptContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#integerAttribute}.
 	 * @param ctx the parse tree
@@ -318,6 +318,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAnImport(@NotNull TaraGrammar.AnImportContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#nodeReference}.
+	 * @param ctx the parse tree
+	 */
+	void enterNodeReference(@NotNull TaraGrammar.NodeReferenceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#nodeReference}.
+	 * @param ctx the parse tree
+	 */
+	void exitNodeReference(@NotNull TaraGrammar.NodeReferenceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#initValue}.
 	 * @param ctx the parse tree
@@ -398,16 +408,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitWordNames(@NotNull TaraGrammar.WordNamesContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#conceptReference}.
-	 * @param ctx the parse tree
-	 */
-	void enterConceptReference(@NotNull TaraGrammar.ConceptReferenceContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#conceptReference}.
-	 * @param ctx the parse tree
-	 */
-	void exitConceptReference(@NotNull TaraGrammar.ConceptReferenceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#ratioAttribute}.
 	 * @param ctx the parse tree

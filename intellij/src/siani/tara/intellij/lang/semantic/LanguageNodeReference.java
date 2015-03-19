@@ -1,6 +1,7 @@
 package siani.tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
+import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.lang.psi.NodeReference;
 import siani.tara.intellij.lang.psi.TaraAnnotations;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
@@ -10,12 +11,16 @@ import siani.tara.model.FacetTarget;
 import siani.tara.model.Node;
 import siani.tara.model.Parameter;
 
-public class LanguageNodeReference extends LanguageElement implements Node {
+import java.util.ArrayList;
+import java.util.List;
+
+public class LanguageNodeReference extends LanguageNode implements Node {
 
 	private final NodeReference nodeReference;
 	private siani.tara.intellij.lang.psi.Node destiny;
 
 	public LanguageNodeReference(NodeReference nodeReference) {
+		super(null);
 		this.nodeReference = nodeReference;
 		destiny = ReferenceManager.resolveToNode(nodeReference.getIdentifierReference());
 	}
@@ -32,7 +37,7 @@ public class LanguageNodeReference extends LanguageElement implements Node {
 
 	@Override
 	public String type() {
-		return destiny.resolve().getType();
+		return badReference() ? null : destiny.resolve().getFullType();
 	}
 
 	@Override
@@ -42,7 +47,19 @@ public class LanguageNodeReference extends LanguageElement implements Node {
 
 	@Override
 	public void type(String type) {
+	}
 
+	@Override
+	public String[] secondaryTypes() {
+		if (badReference()) return new String[0];
+		List<String> types = new ArrayList<>();
+		for (FacetApply facetApply : destiny.getFacetApplies())
+			types.add(facetApply.getFacetName());
+		return types.toArray(new String[types.size()]);
+	}
+
+	private boolean badReference() {
+		return destiny == null;
 	}
 
 	@Override
@@ -94,5 +111,10 @@ public class LanguageNodeReference extends LanguageElement implements Node {
 	@Override
 	public Node[] includes() {
 		return new Node[0];
+	}
+
+	@Override
+	public String toString() {
+		return "reference " + destiny.getType();
 	}
 }

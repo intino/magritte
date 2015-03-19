@@ -1,5 +1,6 @@
 package siani.tara.intellij.annotator.semanticanalizer;
 
+import com.intellij.psi.PsiElement;
 import siani.tara.Checker;
 import siani.tara.Language;
 import siani.tara.intellij.annotator.TaraAnnotator;
@@ -27,7 +28,12 @@ public class NodeAnalyzer extends TaraAnalyzer {
 			if (language == null) return;
 			new Checker(language).check(new LanguageNode(node));
 		} catch (SemanticException e) {
-			results.put(e.getDestiny() != null ? ((LanguageElement) e.getDestiny()).element() : node.getSignature(), new TaraAnnotator.AnnotateAndFix(ERROR, e.getMessage(), FixFactory.get(e.key(), ((LanguageElement) e.getDestiny()).element())));
+			PsiElement destiny = e.getOrigin() != null ? ((LanguageElement) e.getOrigin()).element() : node.getSignature();
+			results.put(destiny, annotateAndFix(e, destiny));
 		}
+	}
+
+	private TaraAnnotator.AnnotateAndFix annotateAndFix(SemanticException e, PsiElement destiny) {
+		return new TaraAnnotator.AnnotateAndFix(ERROR, e.getMessage(), FixFactory.get(e.key(), destiny));
 	}
 }

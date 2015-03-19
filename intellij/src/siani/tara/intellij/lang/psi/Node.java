@@ -103,20 +103,20 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	Collection<Node> getNodeSiblings();
 
-	Collection<Node> getInnerConcepts();
+	Collection<Node> getInnerNodes();
 
 	Collection<Variable> getVariables();
 
 	Collection<VarInit> getVarInits();
 
-	NodeReference[] getConceptLinks();
+	NodeReference[] getInnerNodeReferences();
 
 	FacetApply[] getFacetApplies();
 
 	Collection<TaraFacetTarget> getFacetTargets();
 
 	@Nullable
-	String getParentConceptName();
+	String getParentName();
 
 	@Nullable
 	MetaIdentifier getMetaIdentifier();

@@ -23,12 +23,13 @@ public class CompilerConfiguration {
 	private String version = "1.0";
 	private String description = "";
 	private List<String> icons = new ArrayList<>();
-	private String modelsDirectory;
+	private String languagesDirectory;
 	private boolean system;
 	private File metricsDirectory;
 	private File resourcesDirectory;
-	private String metamodelFile;
 	private String modelName;
+	private String sematicRulesURL;
+	private String language;
 
 
 	public CompilerConfiguration() {
@@ -189,12 +190,12 @@ public class CompilerConfiguration {
 		this.module = module;
 	}
 
-	public void setModelsDirectory(String modelsDirectory) {
-		this.modelsDirectory = modelsDirectory;
+	public void setLanguagesDirectory(String languagesDirectory) {
+		this.languagesDirectory = languagesDirectory;
 	}
 
 	public String getLanguageDirectory() {
-		return modelsDirectory;
+		return languagesDirectory;
 	}
 
 	public File getRulesDirectory() {
@@ -229,19 +230,27 @@ public class CompilerConfiguration {
 		this.languageForCodeGeneration = languageForCodeGeneration;
 	}
 
-	public String getMetamodelFile() {
-		return metamodelFile;
-	}
-
-	public void setMetamodelFile(String metamodelFile) {
-		this.metamodelFile = metamodelFile;
-	}
-
 	public void setModelName(String modelName) {
 		this.modelName = modelName;
 	}
 
 	public String getModelName() {
 		return modelName;
+	}
+
+	public void setSemanticRulesURL(String semanticRulesURL) {
+		this.sematicRulesURL = semanticRulesURL;
+	}
+
+	public String getSemanticRulesURL() {
+		return sematicRulesURL;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 }

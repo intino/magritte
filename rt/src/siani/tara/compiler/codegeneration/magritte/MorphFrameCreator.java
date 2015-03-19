@@ -24,7 +24,7 @@ public class MorphFrameCreator extends FrameCreator {
 	public Map.Entry<String, Frame> create(Node node) {
 		this.initNode = node;
 		final Frame frame = new Frame(MORPH);
-		String packagePath = composeMorphPackagePath(model.getLanguage(), node);
+		String packagePath = composeMorphPackagePath(model.getLocale(), node);
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		nodeToFrame(node, frame);
 		addImports(frame);
@@ -33,11 +33,11 @@ public class MorphFrameCreator extends FrameCreator {
 	}
 
 	private void nodeToFrame(final Node node, Frame frame) {
-		Node metaNode = model.getParentModel() == null ? null : model.getParentModel().searchNodeClass(node);
-		if (node.is(Annotation.CASE) || (metaNode != null && metaNode.is(Annotation.PROPERTY))) return;
-		if (node.is(LinkNode.class) && ((LinkNode) node).isReference())
-			linkNodeToFrame((LinkNode) node, frame);
-		else declaredNodeToFrame(node, frame);
+//		Node metaNode = model.getLanguage() == null ? null : model.getLanguage().searchNodeClass(node);
+//		if (node.is(Annotation.CASE) || (metaNode != null && metaNode.is(Annotation.PROPERTY))) return;
+//		if (node.is(LinkNode.class) && ((LinkNode) node).isReference())
+//			linkNodeToFrame((LinkNode) node, frame);
+//		else declaredNodeToFrame(node, frame);
 	}
 
 	private void linkNodeToFrame(LinkNode linkNode, Frame frame) {
@@ -47,7 +47,7 @@ public class MorphFrameCreator extends FrameCreator {
 			addFrame(QN, linkNode.getDestiny().getObject().getDeclaredNodeQN()).
 			addFrame(NAME, linkNode.getDestiny().getObject().getName());
 		frame.addFrame(NODE, newFrame);
-		addImports(linkNode.getDestiny().getContainer(), model.getLanguage());
+		addImports(linkNode.getDestiny().getContainer(), model.getLocale());
 	}
 
 	private void declaredNodeToFrame(Node node, Frame frame) {
@@ -59,7 +59,7 @@ public class MorphFrameCreator extends FrameCreator {
 		addInner(node, newFrame);
 		if (!node.isSub() && !node.equals(initNode))
 			addSubs(node, frame);
-		addImports(node.getContainer(), model.getLanguage());
+		addImports(node.getContainer(), model.getLocale());
 	}
 
 	private void addImports(DeclaredNode container, Locale locale) {
@@ -123,10 +123,10 @@ public class MorphFrameCreator extends FrameCreator {
 	}
 
 	protected void addVariables(Node node, final Frame frame) {
-		super.addVariables(node, frame);
-		for (final Variable variable : node.getObject().getVariables())
-			if (variable instanceof Reference && variable.hasValue() && !((Reference) variable).isEmpty())
-				addImports((DeclaredNode) model.getParentModel().searchNode(variable.getType()), model.getParentModel().getLanguage());
+//		super.addVariables(node, frame);
+//		for (final Variable variable : node.getObject().getVariables())
+//			if (variable instanceof Reference && variable.hasValue() && !((Reference) variable).isEmpty())
+//				addImports((DeclaredNode) model.getLanguage().searchNode(variable.getType()), model.getLanguage().getLocale());
 	}
 
 	private String[] getFacetDestinies(Node node) {
@@ -156,7 +156,7 @@ public class MorphFrameCreator extends FrameCreator {
 		if (node.getObject().getFacetTargets().isEmpty()) return;
 		Frame targetFrame = new Frame(TARGET, node.is(Annotation.INTENTION) ? INTENTION : "");
 		targetFrame.addFrame(TARGET, project.toLowerCase() + DOT + EXTENSIONS + DOT + camelCase(node.getName()) + node.getType() + DOT + CLASS);
-		Inflector inflector = getInflector(model.getLanguage());
+		Inflector inflector = getInflector(model.getLocale());
 		for (FacetTarget target : node.getObject().getFacetTargets()) {
 			targetFrame.addFrame(TARGET, project.toLowerCase() + DOT + EXTENSIONS + DOT + inflector.plural(node.getType()).toLowerCase() + DOT +
 				inflector.plural(node.getName()).toLowerCase() + DOT + camelCase(target.getDestinyName()) + node.getType() + DOT + CLASS);

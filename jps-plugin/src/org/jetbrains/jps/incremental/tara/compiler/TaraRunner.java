@@ -18,15 +18,18 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.Future;
 
+import static java.io.File.separator;
+
 public class TaraRunner {
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 
 	private static final String ANTLR = "antlr-4.4-complete.jar";
 	private static final String[] ITRULES = {"rule-engine.jar", "rule-engine-itr.jar"};
-	private static final String GSON = "gson-2.2.4.jar";
+	private static final String SEMANTIC_RULES = "tara-semantic.jar";
+	private static final String LIB = "lib";
 	private static File argsFile;
 
-	protected TaraRunner(final String projectName, final String moduleName, final String generatedLangName, final String language,
+	protected TaraRunner(final String projectName, final String moduleName, final String language, final String generatedLangName, final String locale,
 	                     final Collection<String> sources,
 	                     final String encoding,
 	                     String[] iconPaths,
@@ -39,23 +42,25 @@ public class TaraRunner {
 			writer.write("\n");
 			writer.write(TaraRtConstants.PROJECT + "\n" + projectName + "\n");
 			writer.write(TaraRtConstants.MODULE + "\n" + moduleName + "\n");
+			if (!language.isEmpty()) writer.write(TaraRtConstants.LANGUAGE + "\n" + language + "\n");
 			writer.write(TaraRtConstants.TERMINAL + "\n" + (generatedLangName == null ? "true" : "false") + "\n");
-			writer.write(TaraRtConstants.LANGUAGE + "\n" + language + "\n");
+			writer.write(TaraRtConstants.LOCALE + "\n" + locale + "\n");
 			if (generatedLangName != null)
 				writer.write(TaraRtConstants.GENERATED_LANG_NAME + "\n" + generatedLangName + "\n");
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
-			String taraModels = PathManager.getPluginsPath() + File.separator + TaraRtConstants.LANGUAGES_DIR + File.separator;
-			writer.write(TaraRtConstants.MODELS_PATH + "\n" + taraModels + "\n");
+			String taraLanguages = PathManager.getPluginsPath() + separator + TaraRtConstants.LANGUAGES_DIR + separator;
+			writer.write(TaraRtConstants.LANGUAGES_PATH + "\n" + taraLanguages + "\n");
+			String semanticLib = PathManager.getPluginsPath() + separator + "tara" + separator + LIB + separator + SEMANTIC_RULES;
+			writer.write(TaraRtConstants.SEMANTIC_LIB + "\n" + semanticLib + "\n");
 			for (String iconPath : iconPaths)
 				writer.write(TaraRtConstants.ICONS_PATH + "\n" + iconPath + "\n");
 			writer.write(TaraRtConstants.OUTPUTPATH + "\n" + paths.get(0) + "\n");
 			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n" + paths.get(1) + "\n");
-			writer.write(TaraRtConstants.TDK_HOME + "\n" + paths.get(2) + File.separator + "lib" + File.separator + "\n");
+			writer.write(TaraRtConstants.TDK_HOME + "\n" + paths.get(2) + separator + LIB + separator + "\n");
 			if (paths.get(3) != null) writer.write(TaraRtConstants.IT_RULES + "\n" + paths.get(3) + "\n");
 			writer.write(TaraRtConstants.METRICS + "\n" + paths.get(4) + "\n");
 			writer.write(TaraRtConstants.RESOURCES + "\n" + paths.get(5) + "\n");
-			if (!paths.get(6).isEmpty())
-				writer.write(TaraRtConstants.METAMODEL_FILE + "\n" + paths.get(6) + "\n");
+
 			writer.write(TaraRtConstants.CLASSPATH + "\n");
 			writer.write(join(generateClasspath()));
 			writer.close();
@@ -105,8 +110,8 @@ public class TaraRunner {
 		final Set<String> classPath = new LinkedHashSet<>();
 		classPath.add(getTaraRtRoot().getPath());
 		classPath.add(getAntlrLib().getPath());
+		classPath.add(getSemanticsLib().getPath());
 		for (File file : getItRulesLibs()) classPath.add(file.getPath());
-		classPath.add(getGsonLib().getPath());
 		return classPath;
 	}
 
@@ -123,6 +128,13 @@ public class TaraRunner {
 			new File(root.getParentFile(), "lib/" + ANTLR);
 	}
 
+	private File getSemanticsLib() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		root = new File(root.getParentFile(), SEMANTIC_RULES);
+		return (root.exists()) ? new File(root.getParentFile(), ANTLR) :
+			new File(root.getParentFile(), "lib/" + ANTLR);
+	}
+
 	private Collection<File> getItRulesLibs() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		List<File> libs = new ArrayList<>();
@@ -132,13 +144,6 @@ public class TaraRunner {
 				new File(root.getParentFile(), "lib/" + lib));
 		}
 		return libs;
-	}
-
-	private File getGsonLib() {
-		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
-		root = new File(root.getParentFile(), GSON);
-		return (root.exists()) ? new File(root.getParentFile(), GSON) :
-			new File(root.getParentFile(), "lib/" + GSON);
 	}
 
 

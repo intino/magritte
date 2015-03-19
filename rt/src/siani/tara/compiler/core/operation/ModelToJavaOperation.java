@@ -5,6 +5,7 @@ import org.siani.itrules.ItrRulesReader;
 import org.siani.itrules.RuleEngine;
 import org.siani.itrules.formatter.Formatter;
 import org.siani.itrules.model.Frame;
+import siani.tara.Language;
 import siani.tara.compiler.codegeneration.ResourceManager;
 import siani.tara.compiler.codegeneration.StringFormatter;
 import siani.tara.compiler.codegeneration.magritte.BoxFrameCreator;
@@ -20,21 +21,12 @@ import siani.tara.model.Node;
 import siani.tara.model.NodeTree;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
 import static siani.tara.model.Annotation.CASE;
-import static siani.tara.model.Annotation.TERMINAL;
 
 public class ModelToJavaOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
@@ -123,7 +115,7 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private Map<String, Document> processMorphs(Collection<Node> nodes, InputStream rulesInput) {
 		Map<String, Document> map = new HashMap();
-		RuleEngine ruleEngine = new RuleEngine(new ItrRulesReader(rulesInput).read(), model.getLanguage());
+		RuleEngine ruleEngine = new RuleEngine(new ItrRulesReader(rulesInput).read(), model.getLocale());
 		ruleEngine.register("reference", buildReferenceFormatter());
 		for (Node node : nodes) {
 			if (!node.getModelOwner().equals(model.getName()) || node.is(CASE)) continue;
@@ -196,13 +188,13 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private Collection<String> collectParentBoxes(List<Node> nodes) {
-		Model parent = model.getParentModel();
+		Language parent = model.getLanguage();
 		if (parent == null) return Collections.EMPTY_LIST;
 		Set<String> boxes = new HashSet<>();
-		for (Node node : nodes) {
-			if (node.getObject().is(TERMINAL) && !node.getModelOwner().equals(model.getName())) continue;
-			boxes.add(buildFileName(parent.searchNode(node.getObject().getMetaQN()).getFile(), parent.getName()));
-		}
+//		for (Node node : nodes) {
+//			if (node.getObject().is(TERMINAL) && !node.getModelOwner().equals(model.getName())) continue;
+//			boxes.add(buildFileName(parent.searchNode(node.getObject().getMetaQN()).getFile(), parent.getName()));
+//		}
 		return boxes;
 	}
 

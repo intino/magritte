@@ -11,7 +11,6 @@ import java.util.List;
 
 public class LanguageParameter extends LanguageElement implements siani.tara.model.Parameter {
 
-
 	Parameter parameter;
 
 	public LanguageParameter(Parameter parameter) {

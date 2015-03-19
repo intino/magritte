@@ -12,13 +12,17 @@ import java.util.List;
 public class LanguageNode extends LanguageElement implements siani.tara.model.Node {
 
 	private final Node node;
-	private final FacetTarget[] facetTargets;
+	private FacetTarget[] facetTargets;
 	private List<siani.tara.model.Node> includes = new ArrayList<>();
 
 	public LanguageNode(Node node) {
 		this.node = node;
+		if (node == null) return;
 		this.facetTargets = buildFacetTargets(node.getFacetTargets());
-		for (Node inner : node.getInnerConcepts()) includes.add(new LanguageNode(inner));
+		for (Node inner : node.getInnerNodes())
+			includes.add(new LanguageNode(inner));
+		for (NodeReference nodeReference : node.getInnerNodeReferences())
+			includes.add(new LanguageNodeReference(nodeReference));
 	}
 
 	@Override
@@ -39,6 +43,14 @@ public class LanguageNode extends LanguageElement implements siani.tara.model.No
 	@Override
 	public void type(String type) {
 		node.setFullType(type);
+	}
+
+	@Override
+	public String[] secondaryTypes() {
+		List<String> types = new ArrayList<>();
+		for (FacetApply facetApply : node.getFacetApplies())
+			types.add(facetApply.getFacetName());
+		return types.toArray(new String[types.size()]);
 	}
 
 	@Override

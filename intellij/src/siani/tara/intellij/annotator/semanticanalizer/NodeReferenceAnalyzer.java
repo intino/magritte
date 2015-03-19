@@ -26,7 +26,7 @@ public class NodeReferenceAnalyzer extends TaraAnalyzer {
 			if (language == null) return;
 			new Checker(language).check(new LanguageNodeReference(nodeReference));
 		} catch (SemanticException e) {
-			results.put(nodeReference, new TaraAnnotator.AnnotateAndFix(ERROR, e.getMessage(), FixFactory.get(e.key(), ((LanguageElement) e.getDestiny()).element())));
+			results.put(nodeReference, new TaraAnnotator.AnnotateAndFix(ERROR, e.getMessage(), FixFactory.get(e.key(), ((LanguageElement) e.getOrigin()).element())));
 		}
 	}
 }

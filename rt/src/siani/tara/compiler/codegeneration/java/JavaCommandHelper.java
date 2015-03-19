@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.io.File.separator;
+
 public class JavaCommandHelper {
 
 	public static final String JAVA_HOME = System.getProperty("java.home");
@@ -62,21 +64,21 @@ public class JavaCommandHelper {
 		cmdLine.add(destinyName + ".jar");
 		cmdLine.add(join(libraries, " "));
 		cmdLine.add("-C");
-		cmdLine.add(tempPath + File.separator + "build" + File.separator);
+		cmdLine.add(tempPath + separator + "build" + separator);
 		cmdLine.add(".");
 		return cmdLine;
 	}
 
 	public static String getJavacExecutable() {
-		return JAVA_HOME.substring(0, JAVA_HOME.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator + "javac";
+		return JAVA_HOME.substring(0, JAVA_HOME.lastIndexOf(separator)) + separator + "bin" + separator + "javac";
 	}
 
 	public static String getJarExecutable() {
-		return JAVA_HOME.substring(0, JAVA_HOME.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator + "jar";
+		return JAVA_HOME.substring(0, JAVA_HOME.lastIndexOf(separator)) + separator + "bin" + separator + "jar";
 	}
 
 	public static String getJavaExecutable() {
-		return JAVA_HOME.substring(0, JAVA_HOME.lastIndexOf(File.separator)) + File.separator + "bin" + File.separator + "java";
+		return JAVA_HOME.substring(0, JAVA_HOME.lastIndexOf(separator)) + separator + "bin" + separator + "java";
 	}
 
 	public static String join(final String[] strings, final String separator) {

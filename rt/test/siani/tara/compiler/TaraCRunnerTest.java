@@ -19,6 +19,12 @@ public class TaraCRunnerTest {
 		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/magritteM2.txt"});
 	}
 
+
+	@Test
+	public void TestTafatTest() {
+		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/tafatTest.txt"});
+	}
+
 	@Test
 	public void SumusM2() {
 		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/SumusM2.txt"});

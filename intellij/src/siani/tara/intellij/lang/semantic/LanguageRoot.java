@@ -29,8 +29,18 @@ public class LanguageRoot implements Node {
 	}
 
 	@Override
+	public boolean isReference() {
+		return false;
+	}
+
+	@Override
 	public void type(String type) {
 
+	}
+
+	@Override
+	public String[] secondaryTypes() {
+		return new String[0];
 	}
 
 	@Override
@@ -41,6 +51,11 @@ public class LanguageRoot implements Node {
 	@Override
 	public Node parent() {
 		return null;
+	}
+
+	@Override
+	public boolean hasSubs() {
+		return false;
 	}
 
 	@Override

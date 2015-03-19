@@ -2,7 +2,7 @@ defrule type(Model)
 package siani.tara.dsls;
 
 import siani.tara.model.Tara;
-
+import java.util.Locale;
 import static siani.tara.semantic.Relation.*;
 import static siani.tara.semantic.constraints.RuleFactory.*;
 
@@ -15,6 +15,16 @@ public class $name extends Tara {
 	public String languageName() {
 		return "$name";
 	}
+
+	@Override
+    public Locale locale() {
+        return $locale;
+    }
+
+    @Override
+    public boolean isTerminal() {
+        return $terminal;
+    }
 }
 
 endrule

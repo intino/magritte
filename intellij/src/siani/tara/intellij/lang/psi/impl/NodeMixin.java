@@ -96,10 +96,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public Collection<Node> getNodeSiblings() {
 		Node contextOf = TaraPsiImplUtil.getContainerNodeOf(this);
 		if (contextOf == null) return ((TaraModel) this.getContainingFile()).getNodes();
-		return contextOf.getInnerConcepts();
+		return contextOf.getInnerNodes();
 	}
 
-	public Collection<Node> getInnerConcepts() {
+	public Collection<Node> getInnerNodes() {
 		return TaraUtil.getInnerNodesOf((Node) this);
 	}
 
@@ -112,12 +112,12 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return (Collection<VarInit>) this.getBody().getVarInitList();
 	}
 
-	public NodeReference[] getConceptLinks() {
+	public NodeReference[] getInnerNodeReferences() {
 		return TaraUtil.getLinksOf((Node) this);
 	}
 
 	@Nullable
-	public String getParentConceptName() {
+	public String getParentName() {
 		Signature signature = this.getSignature();
 		return signature.getParentReference() != null ? signature.getParentReference().getText() : null;
 	}
@@ -236,7 +236,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 			if (INTENTION.getName().equals(annotation.getText()))
 				return true;
 		Node parent = null;
-		if (getParentConceptName() != null) parent = getParentNode();
+		if (getParentName() != null) parent = getParentNode();
 		return parent != null && parent.isIntention();
 	}
 
@@ -276,7 +276,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		for (PsiElement annotation : getAnnotations())
 			if (taraAnnotation.getName().equals(annotation.getText()))
 				return true;
-		Node parent = getParentConceptName() != null ? getParentNode() : null;
+		Node parent = getParentName() != null ? getParentNode() : null;
 		return parent != null && ((NodeMixin) parent).is(taraAnnotation);
 	}
 
@@ -336,7 +336,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean contains(String type) {
-		for (Node node : getInnerConcepts())
+		for (Node node : getInnerNodes())
 			if (type.equals(node.getType())) return true;
 		return true;
 	}

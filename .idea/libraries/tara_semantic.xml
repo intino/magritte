@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="tara-semantic">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/intellij/lib/tara-semantic.jar!/" />
+      <root url="jar://$PROJECT_DIR$/rt/lib/tara-semantic.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

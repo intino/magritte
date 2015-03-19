@@ -31,13 +31,13 @@ public class TaraWizardStep extends ModuleWizardStep {
 	private final WizardContext context;
 	protected JCheckBox generativeCheckBox;
 	private Project project;
-	private String metamodel;
+	private String language;
 	private boolean terminal;
 	private JPanel mainPanel;
-	private JComboBox metamodelBox;
+	private JComboBox languageBox;
 	private JPanel myPanel;
-	private JComboBox language;
-	private JTextField languageName;
+	private JComboBox locale;
+	private JTextField generatedLanguage;
 
 	public TaraWizardStep(TaraModuleBuilder builder, WizardContext context, Project project) {
 		this.context = context;
@@ -47,18 +47,20 @@ public class TaraWizardStep extends ModuleWizardStep {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				terminal = !((JCheckBox) e.getSource()).isSelected();
-				languageName.setEnabled(!terminal);
+				generatedLanguage.setEnabled(!terminal);
 			}
 		});
-		if (project == null) metamodelBox.setEnabled(false);
-		else {
-			metamodelBox.addItem(PROTEO);
+		if (project == null) {
+			languageBox.addItem(PROTEO);
+			languageBox.setEnabled(false);
+		} else {
+			languageBox.addItem(PROTEO);
 			addModuleMetaModels();
 			addSdkMetamodel();
-			metamodelBox.addItemListener(new ItemListener() {
+			languageBox.addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent e) {
-					metamodel = (String) ((JComboBox) e.getSource()).getSelectedItem();
+					language = (String) ((JComboBox) e.getSource()).getSelectedItem();
 				}
 			});
 		}
@@ -67,9 +69,9 @@ public class TaraWizardStep extends ModuleWizardStep {
 	private void addModuleMetaModels() {
 		for (Module candidate : getParentModulesCandidates(project)) {
 			ModuleConfiguration candidateConf = ModuleConfiguration.getInstance(candidate);
-			metamodelBox.addItem(candidateConf.getGeneratedModelName());
+			languageBox.addItem(candidateConf.getGeneratedModelName());
 		}
-		metamodelBox.setSelectedItem(PROTEO);
+		languageBox.setSelectedItem(PROTEO);
 	}
 
 	private void addSdkMetamodel() {
@@ -84,7 +86,7 @@ public class TaraWizardStep extends ModuleWizardStep {
 				return name.endsWith(MODEL_EXT);
 			}
 		}))
-			metamodelBox.addItem(file.getName().substring(0, file.getName().lastIndexOf(".")));
+			languageBox.addItem(file.getName().substring(0, file.getName().lastIndexOf(".")));
 	}
 
 	private Module[] getParentModulesCandidates(Project project) {
@@ -96,7 +98,7 @@ public class TaraWizardStep extends ModuleWizardStep {
 
 	@Override
 	public boolean validate() throws ConfigurationException {
-		if (generativeCheckBox.isSelected() && languageName.getText().isEmpty())
+		if (generativeCheckBox.isSelected() && generatedLanguage.getText().isEmpty())
 			throw new ConfigurationException(MessageProvider.message("prompt.generative.language.name"));
 		return true;
 	}
@@ -109,10 +111,10 @@ public class TaraWizardStep extends ModuleWizardStep {
 	@Override
 	public void updateDataModel() {
 		context.setProjectBuilder(builder);
-		builder.setParentLanguage(metamodel);
-		builder.setLanguage(language.getSelectedItem().toString());
+		builder.setParentLanguage(language);
+		builder.setLanguage(locale.getSelectedItem().toString());
 		builder.setTerminal(terminal);
-		builder.setModelName(!terminal ? languageName.getText() : "");
+		builder.setModelName(!terminal ? generatedLanguage.getText() : "");
 	}
 
 }

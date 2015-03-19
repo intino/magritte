@@ -146,7 +146,7 @@ public class BoxFrameCreator extends FrameCreator {
 		if (node.getObject().getFacetTargets().isEmpty()) return;
 		Frame targetFrame = new Frame(TARGET, node.is(Annotation.INTENTION) ? INTENTION : "");
 		targetFrame.addFrame(TARGET, project.toLowerCase() + DOT + EXTENSIONS + DOT + camelCase(node.getName()) + node.getType() + DOT + CLASS);
-		Inflector inflector = getInflector(model.getLanguage());
+		Inflector inflector = getInflector(model.getLocale());
 		for (FacetTarget target : node.getObject().getFacetTargets())
 			targetFrame.addFrame(TARGET, project.toLowerCase() + DOT + EXTENSIONS + DOT + inflector.plural(node.getType()).toLowerCase() + DOT +
 				inflector.plural(node.getName()).toLowerCase() + DOT + camelCase(target.getDestinyName()) + node.getType() + DOT + CLASS);
@@ -193,7 +193,7 @@ public class BoxFrameCreator extends FrameCreator {
 			if (node.is(LinkNode.class)) continue;
 			for (Facet facet : node.getObject().getFacets()) {
 				if (!facet.isIntention()) continue;
-				imports.add(InflectorFactory.getInflector(model.getLanguage()).plural(facet.getName()));
+				imports.add(InflectorFactory.getInflector(model.getLocale()).plural(facet.getName()));
 			}
 			imports.addAll(searchFacets(node.getInnerNodes()));
 		}

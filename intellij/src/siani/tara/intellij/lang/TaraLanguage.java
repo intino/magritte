@@ -6,6 +6,7 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import siani.tara.Language;
 import siani.tara.dsls.Proteo;
 import siani.tara.intellij.lang.semantic.LanguageLoader;
@@ -41,12 +42,14 @@ public class TaraLanguage extends com.intellij.lang.Language {
 		super("Tara");
 	}
 
+	@Nullable
 	public static Language getLanguage(@NotNull PsiFile file) {
 		ModuleConfiguration configuration = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(file));
 		if (configuration == null) return null;
 		return getLanguage(configuration.getMetamodelName(), file.getProject());
 	}
 
+	@Nullable
 	public static Language getLanguage(String parent, Project project) {
 		addSdkToModelRoots(project);
 		if (parent.equals(PROTEO) || parent.isEmpty()) return languages.get(PROTEO);

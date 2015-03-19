@@ -37,6 +37,6 @@ public class ASTMerger {
 	}
 
 	private void addCodeGenerationLanguage(Model model, CompilerConfiguration configuration) {
-		model.setLanguage(configuration.getLanguageForCodeGeneration());
+		model.setLocale(configuration.getLanguageForCodeGeneration());
 	}
 }

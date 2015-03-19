@@ -107,17 +107,20 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.TERMINAL:
 					configuration.setTerminal(Boolean.valueOf(reader.readLine()));
 					break;
-				case TaraRtConstants.LANGUAGE:
+				case TaraRtConstants.LOCALE:
 					configuration.setLanguageForCodeGeneration(processLocale(reader));
 					break;
-				case TaraRtConstants.MODELS_PATH:
-					configuration.setModelsDirectory(reader.readLine());
+				case TaraRtConstants.LANGUAGES_PATH:
+					configuration.setLanguagesDirectory(reader.readLine());
+					break;
+				case TaraRtConstants.SEMANTIC_LIB:
+					configuration.setSemanticRulesURL(reader.readLine());
 					break;
 				case TaraRtConstants.GENERATED_LANG_NAME:
 					configuration.setModelName(reader.readLine());
 					break;
-				case TaraRtConstants.METAMODEL_FILE:
-					configuration.setMetamodelFile(reader.readLine());
+				case TaraRtConstants.LANGUAGE:
+					configuration.setLanguage(reader.readLine());
 					break;
 				case TaraRtConstants.TDK_HOME:
 					configuration.setTdkHome(reader.readLine());

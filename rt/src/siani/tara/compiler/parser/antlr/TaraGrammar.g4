@@ -2,7 +2,7 @@ parser grammar TaraGrammar;
 options { tokenVocab=TaraLexer; }
 
 
-root: NEWLINE* dslDeclaration? imports? (concept NEWLINE*)* EOF;
+root: NEWLINE* dslDeclaration? imports? (node NEWLINE*)* EOF;
 
 dslDeclaration : DSL headerReference NEWLINE+;
 
@@ -10,9 +10,9 @@ imports : anImport+;
 anImport: USE headerReference NEWLINE+;
 
 doc: DOC+;
-concept: doc? signature annotations? body?;
+node: signature body?;
 
-signature: ((SUB parameters? IDENTIFIER) | (metaidentifier parameters? IDENTIFIER? parent?)) address?;
+signature: ((SUB parameters? IDENTIFIER) | (metaidentifier parameters? IDENTIFIER? parent?)) annotations? address?;
 
 parent : EXTENDS identifierReference;
 address: ADDRESS_VALUE;
@@ -35,14 +35,14 @@ initValue : identifierReference+
 metaWord : metaidentifier metaWordNames*;
 metaWordNames : DOT IDENTIFIER;
 
-body: NEW_LINE_INDENT ((variable | concept | varInit | facetApply | facetTarget | conceptReference | doc) NEWLINE+)+ DEDENT;
+body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | facetTarget | nodeReference | doc) NEWLINE+)+ DEDENT;
 
 variable : VAR (naturalAttribute | integerAttribute | doubleAttribute |ratioAttribute | measureAttribute |
     booleanAttribute | stringAttribute | dateAttribute | resource | reference | word) annotations?;
 
 facetApply : AS metaidentifier parameters? (WITH metaidentifier)? body?;
 facetTarget : ON identifierReference ALWAYS? body?;
-conceptReference : HAS identifierReference annotations?;
+nodeReference : HAS identifierReference annotations?;
 
 word             : WORD LIST? IDENTIFIER NEW_LINE_INDENT (wordNames NEWLINE)+ DEDENT;
 wordNames        : IDENTIFIER STAR?;

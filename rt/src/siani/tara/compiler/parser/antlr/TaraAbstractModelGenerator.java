@@ -35,7 +35,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterConcept(@NotNull ConceptContext ctx) {
+	public void enterNode(@NotNull NodeContext ctx) {
 		DeclaredNode container = !conceptStack.isEmpty() ? (DeclaredNode) conceptStack.peek() : null;
 		Node node;
 		String name = ctx.signature().IDENTIFIER() != null ? ctx.signature().IDENTIFIER().getText() : "";
@@ -51,7 +51,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		conceptStack.push(node);
 	}
 
-	private void addNodeToModel(ConceptContext concept, Node node, String parent) {
+	private void addNodeToModel(NodeContext concept, Node node, String parent) {
 		DeclaredNode container = node.getContainer();
 		if (node.is(DeclaredNode.class)) {
 			if (container != null) {
@@ -79,12 +79,12 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		return ctx.getParent().getParent() instanceof FacetTargetContext;
 	}
 
-	private boolean isSub(ConceptContext ctx) {
+	private boolean isSub(NodeContext ctx) {
 		return ctx.signature().SUB() != null;
 	}
 
 	@Override
-	public void exitConcept(@NotNull ConceptContext ctx) {
+	public void exitNode(@NotNull NodeContext ctx) {
 		Node node = conceptStack.peek();
 		if (node instanceof DeclaredNode) {
 			if (hasSubs(node)) node.add(Annotation.ABSTRACT);
@@ -105,7 +105,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 		node.addImports(imports);
 	}
 
-	private String getParent(ConceptContext ctx) {
+	private String getParent(NodeContext ctx) {
 		if (ctx.signature().parent() == null) return null;
 		IdentifierReferenceContext identifierReference = ctx.signature().parent().identifierReference();
 		return identifierReference != null ? identifierReference.getText() : null;
@@ -158,7 +158,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void enterConceptReference(@NotNull ConceptReferenceContext ctx) {
+	public void enterNodeReference(@NotNull NodeReferenceContext ctx) {
 		String parent = ctx.identifierReference().getText();
 		LinkNode node = new LinkNode(parent, (DeclaredNode) conceptStack.peek());
 		node.setReference(true);
@@ -169,7 +169,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	@Override
-	public void exitConceptReference(@NotNull ConceptReferenceContext ctx) {
+	public void exitNodeReference(@NotNull NodeReferenceContext ctx) {
 		List<Node> innerNodes = conceptStack.peek().getInnerNodes();
 		List<FacetTarget> facetTargets = conceptStack.peek().getObject().getFacetTargets();
 		Node node;
@@ -369,7 +369,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 				addAnnotation(((FacetTarget) context).getVariables(), annotations);
 			}
 
-		} else if (ctx.getParent() instanceof ConceptReferenceContext) {
+		} else if (ctx.getParent() instanceof NodeReferenceContext) {
 			List<Node> innerNodes = conceptStack.peek().getInnerNodes();
 			((LinkNode) innerNodes.get(innerNodes.size() - 1)).addAll(annotations);
 		} else
@@ -382,7 +382,7 @@ public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 
 	private Object getVariableContext(ParserRuleContext ctx) {
 		ParserRuleContext context = ctx;
-		while (!(context instanceof FacetTargetContext) && !(context instanceof ConceptContext))
+		while (!(context instanceof FacetTargetContext) && !(context instanceof NodeContext))
 			context = context.getParent();
 		if (context instanceof FacetTargetContext) {
 			List<FacetTarget> targets = conceptStack.peek().getObject().getFacetTargets();

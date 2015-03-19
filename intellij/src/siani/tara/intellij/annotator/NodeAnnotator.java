@@ -62,6 +62,7 @@ public class NodeAnnotator extends TaraAnnotator {
 
 	private boolean isProperty(Node node) {
 		Language language = TaraLanguage.getLanguage(node.getFile());
+		if (language == null) return false;
 		Collection<Assumption> assumptions = language.assumptions(node.resolve().getFullType());
 		if (assumptions == null) return false;
 		for (Assumption assumption : assumptions)

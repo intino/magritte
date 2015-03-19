@@ -146,7 +146,7 @@
     <projectService serviceInterface="siani.tara.intellij.codeinsight.JavaHelper"
                     serviceImplementation="siani.tara.intellij.codeinsight.JavaHelper$Impl"/>
     <!--<referenceImporter implementation="siani.tara.intellij.annotator.imports.TaraReferenceImporter"/>-->
-    <!--<model.formatter language="Tara" implementationClass="siani.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
+    <!--<model.formatter locale="Tara" implementationClass="siani.tara.intellij.formatter.TaraFormattingModelBuilder"/>-->
     <!--<moveFileHandler implementation="siani.tara.intellij.refactoring.move.TaraFileMoveHandler"/>-->
     <refactoring.moveHandler implementation="siani.tara.intellij.refactoring.move.TaraMoveNode"/>
     <lang.importOptimizer language="Tara"

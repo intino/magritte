@@ -26,10 +26,9 @@ public class ModelAnalyzer extends TaraAnalyzer {
 			if (language == null) return;
 			new Checker(language).check(new LanguageRoot(model));
 		} catch (SemanticException e) {
-			Object o = e.getDestiny();
+			Object o = e.getOrigin();
 			if (o instanceof Node)
 				results.put(((Node) o).getSignature(), new TaraAnnotator.AnnotateAndFix(ERROR, e.getMessage(), FixFactory.get(e.key(), (Node) o)));
 		}
-
 	}
 }

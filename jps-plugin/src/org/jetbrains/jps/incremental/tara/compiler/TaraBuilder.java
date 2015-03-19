@@ -52,10 +52,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return path.endsWith("." + TARA_EXTENSION);
 	}
 
-	private static JpsSdk<JpsDummyElement> getMagritteJdk(Set<JpsModule> modules) {
-		return modules.iterator().next().getSdk(JpsJavaSdkType.INSTANCE);
-	}
-
 	@Override
 	public List<String> getCompilableFileExtensions() {
 		return Arrays.asList(TARA_EXTENSION);
@@ -83,8 +79,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			final String dictionary = getDictionary(moduleConfiguration);
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 			List<String> paths = collectPaths(chunk, context, finalOutputs);
-			paths.add(getParentModelPath(moduleConfiguration));
-			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(),
+			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), getLanguage(moduleConfiguration),
 				generatedDSLName, dictionary, toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
@@ -114,12 +109,16 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return list;
 	}
 
-	private String getParentModelPath(Element moduleConfiguration) {
-		String dslFilePath = String.valueOf(getValueOf(moduleConfiguration, "dslFilePath"));
+	private static JpsSdk<JpsDummyElement> getMagritteJdk(Set<JpsModule> modules) {
+		return modules.iterator().next().getSdk(JpsJavaSdkType.INSTANCE);
+	}
+
+	private String getLanguage(Element moduleConfiguration) {
+		String dsl = String.valueOf(getValueOf(moduleConfiguration, "dslName"));
 		String globalSystemMacroValue = PathMacroUtil.getGlobalSystemMacroValue(PathMacroUtil.APPLICATION_PLUGINS_DIR);
-		if (globalSystemMacroValue != null && dslFilePath.contains(PathMacroUtil.APPLICATION_PLUGINS_DIR))
-			dslFilePath = dslFilePath.replace("$" + PathMacroUtil.APPLICATION_PLUGINS_DIR + "$", globalSystemMacroValue);
-		return dslFilePath;
+		if (globalSystemMacroValue != null && dsl.contains(PathMacroUtil.APPLICATION_PLUGINS_DIR))
+			dsl = dsl.replace("$" + PathMacroUtil.APPLICATION_PLUGINS_DIR + "$", globalSystemMacroValue);
+		return dsl;
 	}
 
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {
