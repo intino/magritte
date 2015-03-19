@@ -28,10 +28,10 @@ public class LanguageSerializer extends CodeGenerator {
 	}
 
 	public void serialize(Model model) throws TaraException {
-		if (!serialize(LanguageCreator.create(model), new File(conf.getLanguageDirectory(), model.getName() + JAVA)))
+		if (!serialize(LanguageCreator.create(conf.getGeneratedLanguage(), model), new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + JAVA)))
 			throw new TaraException("Error sav¡ng model.");
 		try {
-			new File(conf.getLanguageDirectory(), model.getName() + ".reload").createNewFile();
+			new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + ".reload").createNewFile();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new TaraException("Error sav¡ng model: " + e.getMessage());

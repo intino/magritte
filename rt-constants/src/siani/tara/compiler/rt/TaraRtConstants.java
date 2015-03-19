@@ -27,7 +27,6 @@ public class TaraRtConstants {
 	public static final String LANGUAGES_PATH = "models";
 	public static final String TERMINAL = "terminal";
 	public static final String TDK_HOME = "jdk_home";
-	public static final String BUILD_NUMBER = "build_number";
 	public static final String LOCALE = "locale";
 	public static final String LANGUAGE = "language";
 	public static final String GENERATED_LANG_NAME = "generated_lang_name";

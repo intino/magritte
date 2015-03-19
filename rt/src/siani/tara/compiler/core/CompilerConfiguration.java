@@ -27,7 +27,7 @@ public class CompilerConfiguration {
 	private boolean system;
 	private File metricsDirectory;
 	private File resourcesDirectory;
-	private String modelName;
+	private String generatedLanguage;
 	private String sematicRulesURL;
 	private String language;
 
@@ -222,20 +222,20 @@ public class CompilerConfiguration {
 		return metricsDirectory;
 	}
 
-	public Locale getLanguageForCodeGeneration() {
+	public Locale getLocale() {
 		return languageForCodeGeneration;
 	}
 
-	public void setLanguageForCodeGeneration(Locale languageForCodeGeneration) {
-		this.languageForCodeGeneration = languageForCodeGeneration;
+	public void setLocale(Locale localeForCodeGeneration) {
+		this.languageForCodeGeneration = localeForCodeGeneration;
 	}
 
-	public void setModelName(String modelName) {
-		this.modelName = modelName;
+	public void setGeneratedLanguage(String language) {
+		this.generatedLanguage = language;
 	}
 
-	public String getModelName() {
-		return modelName;
+	public String getGeneratedLanguage() {
+		return generatedLanguage;
 	}
 
 	public void setSemanticRulesURL(String semanticRulesURL) {

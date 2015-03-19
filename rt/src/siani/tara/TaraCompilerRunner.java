@@ -108,7 +108,7 @@ public class TaraCompilerRunner {
 					configuration.setTerminal(Boolean.valueOf(reader.readLine()));
 					break;
 				case TaraRtConstants.LOCALE:
-					configuration.setLanguageForCodeGeneration(processLocale(reader));
+					configuration.setLocale(processLocale(reader));
 					break;
 				case TaraRtConstants.LANGUAGES_PATH:
 					configuration.setLanguagesDirectory(reader.readLine());
@@ -117,7 +117,7 @@ public class TaraCompilerRunner {
 					configuration.setSemanticRulesURL(reader.readLine());
 					break;
 				case TaraRtConstants.GENERATED_LANG_NAME:
-					configuration.setModelName(reader.readLine());
+					configuration.setGeneratedLanguage(reader.readLine());
 					break;
 				case TaraRtConstants.LANGUAGE:
 					configuration.setLanguage(reader.readLine());

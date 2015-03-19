@@ -19,7 +19,7 @@ public class ASTMerger {
 	}
 
 	public Model doMerge() throws MergeException {
-		Model model = new Model(conf.getModelName() != null ? conf.getModelName() : conf.getProject() + "." + conf.getModule());
+		Model model = new Model(conf.getProject() + "." + conf.getModule());
 		model.setTerminal(conf.isTerminal());
 		model.setParentModelName(sources.iterator().next().getModel().getParentModelName());
 		model.setTerminal(sources.iterator().next().getModel().isTerminal());
@@ -37,6 +37,6 @@ public class ASTMerger {
 	}
 
 	private void addCodeGenerationLanguage(Model model, CompilerConfiguration configuration) {
-		model.setLocale(configuration.getLanguageForCodeGeneration());
+		model.setLocale(configuration.getLocale());
 	}
 }

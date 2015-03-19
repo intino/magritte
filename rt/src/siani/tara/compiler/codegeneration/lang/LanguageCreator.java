@@ -24,11 +24,11 @@ public class LanguageCreator {
 	private static final String ALLOW = "allow";
 	private static final String REQUIRE = "require";
 
-	public static String create(Model model) {
+	public static String create(String language, Model model) {
 		try {
 			Document document = new Document();
 			RuleEngine ruleEngine = new RuleEngine(ItrRulesReader.read(loadRules(LANGUAGE_ITR)));
-			ruleEngine.render(createFrame(model), document);
+			ruleEngine.render(createFrame(language, model), document);
 			System.out.println(document.content());
 			return document.content();
 		} catch (TaraException e) {
@@ -36,7 +36,7 @@ public class LanguageCreator {
 		}
 	}
 
-	private static Frame createFrame(final Model model) {
+	private static Frame createFrame(final String language, final Model model) {
 		final FrameBuilder builder = new FrameBuilder();
 		builder.register(Model.class, new Adapter<Model>() {
 			private Frame root;
@@ -44,7 +44,7 @@ public class LanguageCreator {
 			@Override
 			public void adapt(Frame root, Model model, BuilderContext context) {
 				this.root = root;
-				root.addFrame("name", model.getName());
+				root.addFrame("name", language);
 				root.addFrame("terminal", Boolean.toString(model.isTerminal()));
 				root.addFrame("locale", !model.getLocale().equals(Locale.ENGLISH) ? createLocale(model.getLocale()) : "Locale.ENGLISH");
 				buildModel(model);

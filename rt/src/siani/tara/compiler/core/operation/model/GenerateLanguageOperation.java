@@ -26,6 +26,7 @@ public class GenerateLanguageOperation extends ModelOperation {
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		try {
+			if (unit.getConfiguration().getGeneratedLanguage() == null) return;
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating language representation");
 			cleanCaseNodesFromModel(model);
 			LanguageSerializer generator = new LanguageSerializer(unit.getConfiguration());
