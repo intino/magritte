@@ -28,9 +28,8 @@ public class LanguageSerializer extends CodeGenerator {
 	}
 
 	public void serialize(Model model) throws TaraException {
-		if (!serialize(LanguageCreator.create(conf.getGeneratedLanguage(), model), new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + JAVA)))
-			throw new TaraException("Error sav¡ng model.");
 		try {
+			serialize(LanguageCreator.create(conf.getGeneratedLanguage(), model), new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + JAVA));
 			new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + ".reload").createNewFile();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
@@ -41,6 +40,7 @@ public class LanguageSerializer extends CodeGenerator {
 	private boolean serialize(String content, File file) throws TaraException {
 		try {
 			file.getParentFile().mkdirs();
+			file.deleteOnExit();
 			FileWriter writer = new FileWriter(file);
 			writer.write(content);
 			writer.close();

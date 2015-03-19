@@ -27,7 +27,16 @@ public class LanguageNode extends LanguageElement implements siani.tara.model.No
 
 	@Override
 	public siani.tara.model.Node context() {
-		return node.getContainer() != null ? new LanguageNode(node.getContainer()) : null;
+		if (node == null) return null;
+		return node.isSub() ?
+			new LanguageNode(findRootOfSub(node.getContainer()).getContainer()) :
+			node.getContainer() == null ? null : new LanguageNode(node.getContainer());
+	}
+
+	private Node findRootOfSub(Node container) {
+		while (container != null && container.isSub())
+			container = container.getContainer();
+		return container;
 	}
 
 	@Override

@@ -18,15 +18,12 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.Language;
 import siani.tara.Resolver;
 import siani.tara.intellij.documentation.TaraDocumentationFormatter;
-import siani.tara.intellij.lang.semantic.LanguageNode;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.semantic.LanguageNode;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static siani.tara.intellij.lang.lexer.Annotation.*;
 
@@ -34,7 +31,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	private String fullType = getType();
 	private String prevType = getType();
-	private List<String> inheritedAnnotations = new ArrayList<>();
+	private Set<String> inheritedAnnotations = new HashSet<>();
 
 	public NodeMixin(@NotNull ASTNode node) {
 		super(node);
@@ -331,7 +328,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		Collections.addAll(inheritedAnnotations, annotations);
 	}
 
-	public List<String> getInheritedAnnotations() {
+	public Collection<String> getInheritedAnnotations() {
 		return inheritedAnnotations;
 	}
 
