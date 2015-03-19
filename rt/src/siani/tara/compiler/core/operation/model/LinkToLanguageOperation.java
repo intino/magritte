@@ -27,13 +27,13 @@ public class LinkToLanguageOperation extends ModelOperation {
 		String parent = model.getParentModelName();
 		if (parent == null || parent.equals(PROTEO)) return;
 		try {
-			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Catching info from metamodel");
+			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Catching info from language");
 			CompilerConfiguration conf = compilationUnit.getConfiguration();
 			Language language = LanguageLoader.load(conf.getLanguage(),conf.getLanguageDirectory());
-			if (language == null) throw new TaraException("Error finding metamodel.", true);
+			if (language == null) throw new TaraException("Error finding language.", true);
 			new LanguageDependencyResolver(model, language).resolve();
 		} catch (TaraException e) {
-			LOG.severe("Error linking with metamodel: " + e.getMessage());
+			LOG.severe("Error linking with language: " + e.getMessage());
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 	}

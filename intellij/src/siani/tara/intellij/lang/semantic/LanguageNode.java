@@ -28,20 +28,21 @@ public class LanguageNode extends LanguageElement implements siani.tara.model.No
 	@Override
 	public siani.tara.model.Node context() {
 		if (node == null) return null;
-		return node.isSub() ?
-			new LanguageNode(findRootOfSub(node.getContainer()).getContainer()) :
-			node.getContainer() == null ? null : new LanguageNode(node.getContainer());
+		if (node.isSub()) {
+			Node rootOfSub = findRootOfSub(node.getContainer());
+			return rootOfSub == null ? null : new LanguageNode(rootOfSub);
+		} else return node.getContainer() == null ? null : new LanguageNode(node.getContainer());
 	}
 
 	private Node findRootOfSub(Node container) {
 		while (container != null && container.isSub())
 			container = container.getContainer();
-		return container;
+		return container.getContainer();
 	}
 
 	@Override
 	public String type() {
-		return node.getFullType();
+		return node == null ? "" : node.getFullType();
 	}
 
 	@Override

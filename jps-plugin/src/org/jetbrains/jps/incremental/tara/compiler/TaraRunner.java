@@ -131,8 +131,8 @@ public class TaraRunner {
 	private File getSemanticsLib() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		root = new File(root.getParentFile(), SEMANTIC_RULES);
-		return (root.exists()) ? new File(root.getParentFile(), ANTLR) :
-			new File(root.getParentFile(), "lib/" + ANTLR);
+		return (root.exists()) ? new File(root.getParentFile(), SEMANTIC_RULES) :
+			new File(root.getParentFile(), "lib/" + SEMANTIC_RULES);
 	}
 
 	private Collection<File> getItRulesLibs() {

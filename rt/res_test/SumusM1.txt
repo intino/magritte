@@ -5,6 +5,8 @@ project
 Sumus
 module
 Grocery
+language
+Sumus
 terminal
 false
 locale
