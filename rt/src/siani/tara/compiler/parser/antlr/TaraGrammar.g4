@@ -16,7 +16,7 @@ signature: ((SUB parameters? IDENTIFIER) | (metaidentifier parameters? IDENTIFIE
 
 parent : EXTENDS identifierReference;
 
-parameters : LEFT_PARENTHESIS (explicitParameter (COMMA explicitParameter)*) | (implicitParameter (COMMA implicitParameter)*) RIGHT_PARENTHESIS;
+parameters : LEFT_PARENTHESIS ((explicitParameter (COMMA explicitParameter)*) | (implicitParameter (COMMA implicitParameter)*)) RIGHT_PARENTHESIS;
 explicitParameter: IDENTIFIER EQUALS value;
 implicitParameter: value;
 
@@ -53,7 +53,8 @@ variableType: NATURAL_TYPE
 metric : COLON (IDENTIFIER | MEASURE_VALUE);
 count  : LEFT_SQUARE NATURAL_VALUE RIGHT_SQUARE;
 
-word             : NEW_LINE_INDENT (IDENTIFIER STAR? NEWLINE)+ DEDENT;
+word            : NEW_LINE_INDENT (wordValue NEWLINE)+ DEDENT;
+wordValue       : IDENTIFIER STAR?;
 
 stringValue     : STRING_VALUE | (NEWLINE? STRING_MULTILINE_VALUE_KEY);
 booleanValue    : BOOLEAN_VALUE;

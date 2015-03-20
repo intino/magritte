@@ -13,6 +13,7 @@ public class VariableImpl implements Variable {
 	private boolean multiple;
 	private List<Object> allowedValues = new ArrayList<>();
 	private List<Object> defaultValues = new ArrayList<>();
+	private String extension;
 
 
 	public VariableImpl(String type, String name) {
@@ -36,6 +37,16 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
+	public String getExtension() {
+		return extension;
+	}
+
+	@Override
+	public void setExtension(String extension) {
+		this.extension = extension;
+	}
+
+	@Override
 	public void setType(String type) {
 		this.type = type;
 	}
@@ -56,7 +67,7 @@ public class VariableImpl implements Variable {
 
 	@Override
 	public void addAllowedValues(Object... values) {
-
+		Collections.addAll(this.allowedValues, values);
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import siani.tara.compiler.model.impl.NodeReference;
 
 import java.util.Collection;
 
-public class EmptyNode implements Node{
+public class EmptyNode implements Node {
 	@Override
 	public String getName() {
 		return null;
@@ -203,6 +203,11 @@ public class EmptyNode implements Node{
 	@Override
 	public void addIncludedNodes(Node... nodes) {
 
+	}
+
+	@Override
+	public Node getInclude(String name) {
+		return null;
 	}
 
 	@Override

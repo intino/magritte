@@ -1,4 +1,4 @@
-package siani.tara.compiler.dependencyresolver;
+package siani.tara.compiler.dependencyresolution;
 
 import siani.tara.compiler.core.errorcollection.DependencyException;
 import siani.tara.compiler.model.impl.Model;

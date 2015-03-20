@@ -1,33 +1,44 @@
-package siani.tara.compiler.dependencyresolver;
+package siani.tara.compiler.dependencyresolution;
 
 import siani.tara.compiler.core.errorcollection.DependencyException;
+import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
+import siani.tara.compiler.model.impl.NodeReference;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
 
-public class InsideModelDependencyResolver {
+
+public class DependencyResolver {
 	Model model;
-	List<NodeImpl> toProcessNodes = new ArrayList<>();
+	ReferenceManager manager;
 
-	public InsideModelDependencyResolver(Model model) throws DependencyException {
+	public DependencyResolver(Model model) throws DependencyException {
 		this.model = model;
+		manager = new ReferenceManager(this.model);
 	}
 
 	public void resolve() throws DependencyException {
-//		model.sortNodeTable(new NodeComparator());
-//		toProcessNodes.addAll(model.getNodeTable());
-//		Collections.sort(toProcessNodes, buildNodeComparator());
-//		resolveHierarchyDependencies();
-//		propagateTerminalAnnotations();
+		for (Node node : model.getIncludedNodes()) resolveParent(node);
+		propagateTerminalAnnotations();
 	}
 
-	private void resolveHierarchyDependencies() throws DependencyException {
+	private void resolveParent(Node node) throws DependencyException {
+		if (!(node instanceof NodeImpl)) return;
+		if (node.getParent() == null && node.getParentName() != null) {
+			Node parent = manager.resolve(node.getParentName(), (NodeImpl) node);
+			if (parent == null) throw new DependencyException("Parent not found", node);
+			else ((NodeImpl) node).setParent(parent);
+		}
+		for (Node include : node.getIncludedNodes())
+			resolveParent(include);
+	}
+
+//	private void resolveParent() throws DependencyException {
 //		List<LinkNode> toAddNodes = new ArrayList<>();
 //		while (!toProcessNodes.isEmpty()) {
 //			for (int i = 0; i < toProcessNodes.size(); i++) {
-//				NodeImpl node = toProcessNodes.get(i);
+//				Node node = toProcessNodes.get(i);
 //				if (node instanceof LinkNode)
 //					linkToDeclared((LinkNode) node, model.searchDeclaredNodeOfLink((LinkNode) node));
 //				else if (resolveAsDeclared(toAddNodes, (DeclaredNode) node)) continue;
@@ -37,21 +48,20 @@ public class InsideModelDependencyResolver {
 //		}
 //		addNewNodes(toAddNodes);
 //		updateLinks(toAddNodes);
-	}
+//	}
 
 	private void propagateTerminalAnnotations() {
 	}
 
-	private void propagateTerminal(NodeImpl node) {
+	private void propagateTerminal(Node node) {
 	}
 
-	private void setVariablesToTerminal(NodeImpl inner) {
+	private void setVariablesToTerminal(Node inner) {
 	}
 
-//	private void linkToDeclared(Node node, Node parent) throws DependencyException {
+	//	private void linkToDeclared(Node node, Node parent) throws DependencyException {
 //	}
-
-//	private boolean resolveAsDeclared(List<LinkNode> toAddNodes, DeclaredNode node) throws DependencyException {
+//		private boolean resolveAsDeclared(List<LinkNode> toAddNodes, DeclaredNode node) throws DependencyException {
 //		NodeObject object = node.getObject();
 //		if (object.getParentName() != null || node.isSub()) {
 //			DeclaredNode parent = model.searchAncestry(node);
@@ -65,11 +75,11 @@ public class InsideModelDependencyResolver {
 //	}
 //
 //
-//	private void resolveVariableReferences(NodeImpl node) throws DependencyException {
+//	private void resolveVariableReferences(Node node) throws DependencyException {
 //		List<Reference> references = node.getObject().getReferences();
 //		DeclaredNode declaredNode;
 //		for (Reference reference : references) {
-//			NodeImpl refNode = model.searchDeclarationOfReference(reference.getType(), node);
+//			Node refNode = model.searchDeclarationOfReference(reference.getType(), node);
 //			declaredNode = refNode.is(DeclaredNode.class) ? (DeclaredNode) refNode : ((LinkNode) refNode).getDestiny();
 //			if (declaredNode == null)
 //				declaredNode = model.searchDeclarationOfReference(reference.getType(), node);
@@ -79,7 +89,7 @@ public class InsideModelDependencyResolver {
 //	}
 //
 //	private void addNewNodes(List<LinkNode> toAddNodes) {
-//		for (NodeImpl toAddNode : toAddNodes) {
+//		for (Node toAddNode : toAddNodes) {
 //			toAddNode.calculateQualifiedName();
 //			model.register(toAddNode);
 //		}
@@ -88,7 +98,7 @@ public class InsideModelDependencyResolver {
 //
 //	private List<String> updateLinks(List<LinkNode> toAddNodes) {
 //		List<String> nodes = new ArrayList();
-//		for (NodeImpl node : model.getNodeTable()) {
+//		for (Node node : model.getNodeTable()) {
 //			if (node instanceof LinkNode) {
 //				node.calculateQualifiedName();
 //				if (!toAddNodes.contains(node))
@@ -104,7 +114,7 @@ public class InsideModelDependencyResolver {
 //		addInheritedAnnotations(parent, node);
 //	}
 //
-//	private void addInheritedAnnotations(NodeImpl parent, DeclaredNode node) {
+//	private void addInheritedAnnotations(Node parent, DeclaredNode node) {
 //		for (Annotation annotation : parent.getAnnotations())
 //			if (!annotation.equals(ABSTRACT))
 //				node.add(annotation);
@@ -126,7 +136,7 @@ public class InsideModelDependencyResolver {
 //	}
 //
 //	private void collectInnerConceptsInherited(DeclaredNode parent, DeclaredNode node, List<LinkNode> toAddNodes) {
-//		for (NodeImpl child : parent.getInnerNodes()) {
+//		for (Node child : parent.getInnerNodes()) {
 //			if (!child.is(LinkNode.class) && child.isSub() || node.contains(child.getType(), child.getName(), child.isAggregated()))
 //				continue;
 //			DeclaredNode destiny = (child instanceof LinkNode) ? ((LinkNode) child).getDestiny() : (DeclaredNode) child;
@@ -145,21 +155,21 @@ public class InsideModelDependencyResolver {
 //		parent.getObject().addChild(object);
 //	}
 //
-//	private Comparator<NodeImpl> buildNodeComparator() {
-//		return new Comparator<NodeImpl>() {
-//			@Override
-//			public int compare(NodeImpl o1, NodeImpl o2) {
-//				boolean i1 = o1 instanceof LinkNode;
-//				boolean i2 = o2 instanceof LinkNode;
-//				if (i1 && !i2) return -1;
-//				if (!i1 && !i2) return 0;
-//				if (!i1) return 1;
-//				return -1;
-//			}
-//		};
-//	}
+	private Comparator<Node> buildNodeComparator() {
+		return new Comparator<Node>() {
+			@Override
+			public int compare(Node o1, Node o2) {
+				boolean i1 = o1 instanceof NodeReference;
+				boolean i2 = o2 instanceof NodeReference;
+				if (i1 && !i2) return -1;
+				if (!i1 && !i2) return 0;
+				if (!i1) return 1;
+				return -1;
+			}
+		};
+	}
 //
-//	private void throwError(NodeImpl node) throws DependencyException {
+//	private void throwError(Node node) throws DependencyException {
 //		if (node.getObject() != null)
 //			throw new DependencyException("Not found reference: " + node.getObject().getParentName(), node);
 //		else if (node instanceof LinkNode)

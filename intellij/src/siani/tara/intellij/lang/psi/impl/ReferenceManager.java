@@ -95,10 +95,10 @@ public class ReferenceManager {
 	}
 
 	private static PsiElement tryToResolveInBox(TaraModel file, List<Identifier> path) {
-		Node[] possibleRoots = getPossibleRoots(file, path.get(0));
-		if (possibleRoots.length == 0) return null;
-		if (possibleRoots.length == 1 && path.size() == 1) return possibleRoots[0];
-		for (Node possibleRoot : possibleRoots) {
+		Node[] roots = getPossibleRoots(file, path.get(0));
+		if (roots.length == 0) return null;
+		if (roots.length == 1 && path.size() == 1) return roots[0];
+		for (Node possibleRoot : roots) {
 			Node node = resolvePathInNode(path, possibleRoot);
 			if (node != null) return node;
 		}

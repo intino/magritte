@@ -223,6 +223,11 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
+	public Node getInclude(String name) {
+		return null;
+	}
+
+	@Override
 	public Collection<Variable> getVariables() {
 		return null;
 	}

@@ -5,6 +5,10 @@ project
 Sumus
 module
 Grocery
+semantic_lib
+/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara-semantic.jar
+models
+/Users/oroncal/workspace/sandbox/tara/plugins/tara_languages/
 language
 Sumus
 terminal
@@ -15,10 +19,8 @@ generated_lang_name
 Grocery
 encoding
 UTF-8
-models
-/Users/oroncal/workspace/sandbox/tara/plugins/tara_languages/
-semantic_lib
-/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara-semantic.jar
+
+
 outputpath
 /Users/oroncal/workspace/sumus-engine/Grocery/gen
 final_outputpath

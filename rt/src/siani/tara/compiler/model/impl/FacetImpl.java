@@ -7,8 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public
-class FacetImpl extends Element implements Facet {
+public class FacetImpl extends Element implements Facet {
 
 	private List<Parameter> parameters = new ArrayList<>();
 	private NodeContainer container;
@@ -28,6 +27,21 @@ class FacetImpl extends Element implements Facet {
 	@Override
 	public void addIncludedNodes(Node... nodes) {
 		Collections.addAll(includes, nodes);
+	}
+
+	@Override
+	public Node getInclude(String name) {
+		for (Node include : includes)
+			if (name.equals(include.getName()))
+				return include;
+		return null;
+	}
+
+	@Override
+	public Collection<Node> getNodeSiblings() {
+		ArrayList<Node> siblings = new ArrayList<>();
+		siblings.addAll(getContainer().getIncludedNodes());
+		return siblings;
 	}
 
 	@Override
@@ -52,7 +66,7 @@ class FacetImpl extends Element implements Facet {
 
 	@Override
 	public String getQualifiedName() {
-		return null;
+		return "";
 	}
 
 	@Override

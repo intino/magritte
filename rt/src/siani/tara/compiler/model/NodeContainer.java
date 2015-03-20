@@ -8,6 +8,10 @@ public interface NodeContainer {
 
 	void addIncludedNodes(Node... nodes);
 
+	Node getInclude(String name);
+
+	Collection<Node> getNodeSiblings();
+
 	Collection<Variable> getVariables();
 
 	void addVariables(Variable... variables);

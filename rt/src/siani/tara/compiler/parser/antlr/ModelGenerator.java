@@ -169,9 +169,18 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	public void enterVariable(@NotNull VariableContext ctx) {
 		NodeContainer container = deque.peek();
 		VariableImpl variable = new VariableImpl(ctx.variableType().getText(), ctx.IDENTIFIER().getText());
-		if (ctx.value() != null)
+		variable.setMultiple(ctx.LIST() != null);
+		if (ctx.word() != null) processAsWord(variable, ctx.word());
+		else if (ctx.value() != null)
 			variable.addDefaultValues(resolveValue(ctx.value()));
 		container.addVariables(variable);
+	}
+
+	private void processAsWord(VariableImpl variable, WordContext word) {
+		for (WordValueContext value : word.wordValue()) {
+			variable.addAllowedValues(value.IDENTIFIER().getText());
+			if (value.STAR() != null) variable.addDefaultValues(value.IDENTIFIER().getText());
+		}
 	}
 
 	@Override

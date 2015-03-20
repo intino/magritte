@@ -281,6 +281,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterWordValue(@NotNull TaraGrammar.WordValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWordValue(@NotNull TaraGrammar.WordValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterIdentifierReference(@NotNull TaraGrammar.IdentifierReferenceContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -4,12 +4,15 @@ import java.util.Collection;
 
 public interface Variable {
 
-
 	String getType();
 
 	String getName();
 
 	void setName(String name);
+
+	String getExtension();
+
+	void setExtension(String extension);
 
 	void setType(String type);
 

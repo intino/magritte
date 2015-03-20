@@ -49,6 +49,19 @@ public class FacetTargetImpl implements FacetTarget {
 	}
 
 	@Override
+	public Node getInclude(String name) {
+		return null;
+	}
+
+	@Override
+	public Collection<Node> getNodeSiblings() {
+		ArrayList<Node> objects = new ArrayList<>();
+		objects.addAll(getContainer().getIncludedNodes());
+		objects.remove(this);
+		return objects;
+	}
+
+	@Override
 	public Collection<Variable> getVariables() {
 		return variables;
 	}
@@ -70,6 +83,6 @@ public class FacetTargetImpl implements FacetTarget {
 
 	@Override
 	public String getQualifiedName() {
-		return null;
+		return "";
 	}
 }

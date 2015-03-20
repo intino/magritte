@@ -224,7 +224,7 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public String getQualifiedName() {
 		String containerQN = container.getQualifiedName();
-		return isInFacet() ? "" : (containerQN.isEmpty() ? "" : ".") + (name == null ? "annonymous@" + type : name);
+		return isInFacet() ? "" : (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[annonymous@" + type + "]" : name);
 	}
 
 	private boolean isInFacet() {
@@ -285,7 +285,10 @@ public class NodeImpl extends Element implements Node {
 
 	@Override
 	public Collection<Node> getNodeSiblings() {
-		return null;
+		ArrayList<Node> siblings = new ArrayList<>();
+		siblings.addAll(getContainer().getIncludedNodes());
+		siblings.remove(this);
+		return siblings;
 	}
 
 	@Override
@@ -296,6 +299,14 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public void addIncludedNodes(Node... nodes) {
 		Collections.addAll(includes, nodes);
+	}
+
+	@Override
+	public Node getInclude(String name) {
+		for (Node include : includes)
+			if (name.equals(include.getName()))
+				return include;
+		return null;
 	}
 
 	@Override

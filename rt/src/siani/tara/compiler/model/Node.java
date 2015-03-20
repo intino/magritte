@@ -74,8 +74,6 @@ public interface Node extends NodeContainer, Parameterized {
 
 	Node resolve();
 
-	Collection<Node> getNodeSiblings();
-
 	Collection<NodeReference> getInnerNodeReferences();
 
 	Collection<Node> getChildren();
@@ -94,8 +92,6 @@ public interface Node extends NodeContainer, Parameterized {
 
 	boolean equals(Object obj);
 
+
 	int hashCode();
-
-
-
 }

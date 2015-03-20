@@ -36,7 +36,7 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public String getName() {
-		return null;
+		return destiny.getName();
 	}
 
 	@Override
@@ -255,6 +255,14 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public void addIncludedNodes(Node... nodes) {
+	}
+
+	@Override
+	public Node getInclude(String name) {
+		for (Node include : destiny.getIncludedNodes())
+			if (name.equals(include.getName()))
+				return include;
+		return null;
 	}
 
 	@Override

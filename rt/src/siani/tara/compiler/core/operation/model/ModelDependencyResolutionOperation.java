@@ -4,7 +4,7 @@ import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.DependencyException;
 import siani.tara.compiler.core.errorcollection.message.Message;
-import siani.tara.compiler.dependencyresolver.InsideModelDependencyResolver;
+import siani.tara.compiler.dependencyresolution.DependencyResolver;
 import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.compiler.model.impl.Model;
 
@@ -21,7 +21,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 	public void call(Model model) throws CompilationFailedException {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
-			new InsideModelDependencyResolver(model).resolve();
+			new DependencyResolver(model).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
 			compilationUnit.getErrorCollector().addError(Message.create(e, compilationUnit.getSourceUnits().get(e.getNode().getFile())), true);

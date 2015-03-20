@@ -1,4 +1,4 @@
-package siani.tara.compiler.dependencyresolver;
+package siani.tara.compiler.dependencyresolution;
 
 import siani.tara.Language;
 import siani.tara.compiler.core.errorcollection.TaraException;
