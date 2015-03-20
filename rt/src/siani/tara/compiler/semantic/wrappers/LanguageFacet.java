@@ -1,53 +1,55 @@
 package siani.tara.compiler.semantic.wrappers;
 
-import com.intellij.psi.PsiElement;
-import siani.tara.intellij.lang.psi.FacetApply;
-import siani.tara.intellij.lang.psi.Parameters;
-import siani.tara.semantic.model.Facet;
-import siani.tara.semantic.model.Node;
-import siani.tara.semantic.model.Parameter;
+
+import siani.tara.compiler.model.Element;
+import siani.tara.compiler.model.Facet;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.Parameter;
+import siani.tara.compiler.model.impl.NodeReference;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getInnerNodesInBody;
+public class LanguageFacet extends LanguageElement implements siani.tara.semantic.model.Facet {
 
-public class LanguageFacet extends LanguageElement implements Facet {
+	Facet facet;
 
-	FacetApply facetApply;
-
-	public LanguageFacet(FacetApply facetApply) {
-		this.facetApply = facetApply;
+	public LanguageFacet(Facet facetApply) {
+		this.facet = facetApply;
 	}
 
 	@Override
 	public String type() {
-		return facetApply.getFacetName();
+		return facet.getFacet();
 	}
 
 	@Override
-	public Parameter[] parameters() {
-		return wrapParameters(facetApply.getParameters());
+	public siani.tara.semantic.model.Parameter[] parameters() {
+		return wrapParameters(facet.getParameters());
 	}
 
 	@Override
-	public Node[] includes() {
-		List<Node> nodes = new ArrayList<>();
-		for (siani.tara.intellij.lang.psi.Node inner : getInnerNodesInBody(facetApply.getBody()))
-			nodes.add(new LanguageNode(inner));
-		return nodes.toArray(new Node[nodes.size()]);
+	public siani.tara.semantic.model.Node[] includes() {
+		List<siani.tara.semantic.model.Node> nodes = new ArrayList<>();
+		for (Node include : facet.getIncludedNodes())
+			nodes.add(include instanceof NodeReference ?
+				new LanguageNodeReference((NodeReference) include) :
+				new LanguageNode(include));
+		return nodes.toArray(new siani.tara.semantic.model.Node[nodes.size()]);
 	}
 
-	private Parameter[] wrapParameters(Parameters toWrap) {
-		if (toWrap == null) return new Parameter[0];
-		List<Parameter> parameters = new ArrayList<>();
-		for (siani.tara.intellij.lang.psi.Parameter parameter : toWrap.getParameters())
+	private siani.tara.semantic.model.Parameter[] wrapParameters(Collection<Parameter> toWrap) {
+		if (toWrap == null || toWrap.isEmpty()) return new siani.tara.semantic.model.Parameter[0];
+
+		List<siani.tara.semantic.model.Parameter> parameters = new ArrayList<>();
+		for (Parameter parameter : toWrap)
 			parameters.add(new LanguageParameter(parameter));
-		return parameters.toArray(new Parameter[parameters.size()]);
+		return parameters.toArray(new siani.tara.semantic.model.Parameter[parameters.size()]);
 	}
 
 	@Override
-	public PsiElement element() {
-		return facetApply;
+	public Element element() {
+		return (Element) facet;
 	}
 }

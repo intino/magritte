@@ -1,12 +1,10 @@
 package siani.tara.compiler.core.operation.model;
 
-import siani.tara.Language;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.TaraException;
-import siani.tara.compiler.semantic.LanguageLoader;
-import siani.tara.compiler.model.Model;
+import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.compiler.semantic.SemanticAnalyzer;
 import siani.tara.semantic.SemanticException;
@@ -25,14 +23,11 @@ public class SemanticAnalysisOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) {
-		String parent = model.getParentModelName();
-		if (parent == null || parent.equals(PROTEO)) return;
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Analyzing semantic");
 			CompilerConfiguration conf = compilationUnit.getConfiguration();
-			Language language = LanguageLoader.load(conf.getLanguage(), conf.getLanguageDirectory());
-			if (language == null) throw new TaraException("Error finding language.", true);
-			new SemanticAnalyzer(model, language).analyze();
+			if (conf.getLanguage() == null) throw new TaraException("Error finding language.", true);
+			new SemanticAnalyzer(model, conf.getLanguage()).analyze();
 		} catch (TaraException e) {
 			//throw new SemanticException(errors.toArray(new SemanticError[errors.size()]));
 			LOG.severe("Error linking with language: " + e.getMessage());

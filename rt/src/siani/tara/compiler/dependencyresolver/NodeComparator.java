@@ -1,10 +1,10 @@
 package siani.tara.compiler.dependencyresolver;
 
-import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.impl.NodeImpl;
 
 import java.util.Comparator;
 
-class NodeComparator implements Comparator<Node> {
+class NodeComparator implements Comparator<NodeImpl> {
 	private Comparator<String> levelComparator = new Comparator<String>() {
 		public int compare(String o1, String o2) {
 			String qn1 = o1.replaceAll("\\[.*\\]", "");
@@ -22,7 +22,7 @@ class NodeComparator implements Comparator<Node> {
 
 
 	@Override
-	public int compare(Node o1, Node o2) {
+	public int compare(NodeImpl o1, NodeImpl o2) {
 		int compare;
 		compare = nameComparator.compare(o1.getQualifiedName(), o2.getQualifiedName());
 		if (compare == 0) return compare;

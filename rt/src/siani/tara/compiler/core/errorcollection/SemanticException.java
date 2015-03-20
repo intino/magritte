@@ -1,7 +1,7 @@
 package siani.tara.compiler.core.errorcollection;
 
 
-import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
+import siani.tara.semantic.SemanticError;
 
 public class SemanticException extends TaraException {
 

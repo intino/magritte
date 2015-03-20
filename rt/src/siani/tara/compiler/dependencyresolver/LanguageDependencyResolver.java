@@ -2,8 +2,8 @@ package siani.tara.compiler.dependencyresolver;
 
 import siani.tara.Language;
 import siani.tara.compiler.core.errorcollection.TaraException;
-import siani.tara.compiler.model.DeclaredNode;
-import siani.tara.compiler.model.Model;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.impl.Model;
 
 import java.util.List;
 
@@ -15,7 +15,6 @@ public class LanguageDependencyResolver {
 	public LanguageDependencyResolver(Model model, Language language) {
 		this.model = model;
 		this.language = language;
-		model.setLanguage(language);
 	}
 
 	public void resolve() throws TaraException {
@@ -25,7 +24,7 @@ public class LanguageDependencyResolver {
 //		completeFacetsInformation();
 	}
 
-	private List<DeclaredNode> extractTerminals(Language language) {
+	private List<Node> extractTerminals(Language language) {
 		return null;
 	}
 

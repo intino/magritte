@@ -9,20 +9,24 @@ import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.Parameter;
 import siani.tara.intellij.lang.psi.TaraFacetApply;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
 public class ParametersMixin extends ASTWrapperPsiElement {
 	public ParametersMixin(@NotNull ASTNode node) {
 		super(node);
 	}
 
 	@NotNull
-	public Parameter[] getParameters() {
+	public Collection<Parameter> getParameters() {
 		Parameter[] childrenOfType = PsiTreeUtil.getChildrenOfType(this, Parameter.class);
-		return childrenOfType == null ? new Parameter[0] : childrenOfType;
+		return childrenOfType == null ? Collections.EMPTY_LIST : Arrays.asList(childrenOfType);
 	}
 
 	public boolean areExplicit() {
-		Parameter[] parameters = getParameters();
-		return parameters.length != 0 && parameters[0].isExplicit();
+		Collection<Parameter> parameters = getParameters();
+		return !parameters.isEmpty() && parameters.iterator().next().isExplicit();
 	}
 
 	public TaraFacetApply isInFacet() {

@@ -101,7 +101,6 @@ variable ::= VAR variableType attributeType? (LIST | count)? IDENTIFIER_KEY (wor
 
 variableType::= NATURAL_TYPE
                 | INT_TYPE
-                | RESOURCE_KEY
                 | BOOLEAN_TYPE
                 | STRING_TYPE
                 | DATE_TYPE
@@ -109,6 +108,7 @@ variableType::= NATURAL_TYPE
                 | DOUBLE_TYPE
                 | MEASURE_TYPE_KEY
                 | WORD_KEY
+                | RESOURCE_KEY
                 | identifierReference
 
 count ::= LEFT_SQUARE NATURAL_VALUE_KEY RIGHT_SQUARE

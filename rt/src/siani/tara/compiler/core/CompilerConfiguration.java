@@ -1,5 +1,10 @@
 package siani.tara.compiler.core;
 
+import siani.tara.Language;
+import siani.tara.compiler.core.errorcollection.TaraException;
+import siani.tara.compiler.core.errorcollection.TaraRuntimeException;
+import siani.tara.compiler.semantic.LanguageLoader;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -28,8 +33,9 @@ public class CompilerConfiguration {
 	private File metricsDirectory;
 	private File resourcesDirectory;
 	private String generatedLanguage;
-	private String sematicRulesURL;
-	private String language;
+	private String semanticRulesLib;
+	private Language language;
+	private String languageName = "Proteo";
 
 
 	public CompilerConfiguration() {
@@ -238,19 +244,30 @@ public class CompilerConfiguration {
 		return generatedLanguage;
 	}
 
-	public void setSemanticRulesURL(String semanticRulesURL) {
-		this.sematicRulesURL = semanticRulesURL;
+	public void setSemanticRulesLib(String semanticRulesURL) {
+		this.semanticRulesLib = semanticRulesURL;
 	}
 
-	public String getSemanticRulesURL() {
-		return sematicRulesURL;
+	public String getSemanticRulesLib() {
+		return semanticRulesLib;
 	}
 
-	public String getLanguage() {
+	public Language getLanguage() {
+		if (language == null) return loadLanguage();
 		return language;
 	}
 
 	public void setLanguage(String language) {
-		this.language = language;
+		languageName = language;
+		loadLanguage();
+	}
+
+	private Language loadLanguage() {
+		try {
+			this.language = LanguageLoader.load(languageName, languagesDirectory);
+			return language;
+		} catch (TaraException ignored) {
+			throw new TaraRuntimeException("Language cannot be loaded", null);
+		}
 	}
 }

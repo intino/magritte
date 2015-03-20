@@ -248,8 +248,8 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static NodeReference[] getLinksOf(Node node) {
-		return node.getBody() == null ? new NodeReference[0] : node.getBody().getConceptLinks();
+	public static Collection<NodeReference> getLinksOf(Node node) {
+		return node.getBody() == null ? Collections.EMPTY_LIST : node.getBody().getConceptLinks();
 	}
 
 	public static Inflector getInflector(Module module) {

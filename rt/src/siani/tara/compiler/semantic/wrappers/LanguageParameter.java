@@ -1,9 +1,9 @@
 package siani.tara.compiler.semantic.wrappers;
 
 
-import com.intellij.psi.PsiElement;
-import siani.tara.intellij.lang.psi.Node;
-import siani.tara.intellij.lang.psi.Parameter;
+import siani.tara.compiler.model.Element;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.Parameter;
 import siani.tara.semantic.model.EmptyNode;
 
 import java.util.ArrayList;
@@ -19,12 +19,12 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 
 	@Override
 	public int getPosition() {
-		return parameter.getIndexInParent();
+		return parameter.getPosition();
 	}
 
 	@Override
 	public String getName() {
-		return parameter.getExplicitName();
+		return parameter.getName();
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
-	public PsiElement element() {
-		return parameter;
+	public Element element() {
+		return (Element) parameter;
 	}
 }

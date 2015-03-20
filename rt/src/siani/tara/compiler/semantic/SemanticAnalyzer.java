@@ -2,9 +2,8 @@ package siani.tara.compiler.semantic;
 
 import siani.tara.Checker;
 import siani.tara.Language;
-import siani.tara.compiler.semantic.wrappers.LanguageNode;
-import siani.tara.compiler.model.Model;
-import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.impl.Model;
+import siani.tara.compiler.semantic.wrappers.LanguageRoot;
 import siani.tara.semantic.SemanticException;
 
 public class SemanticAnalyzer {
@@ -16,11 +15,7 @@ public class SemanticAnalyzer {
 		this.language = language;
 	}
 
-
 	public void analyze() throws SemanticException {
-		Checker checker = new Checker(language);
-		for (Node node : model.getNodeTree()) {
-			checker.check(new LanguageNode(node));
-		}
+		new Checker(language).check(new LanguageRoot(model));
 	}
 }

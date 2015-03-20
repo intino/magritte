@@ -3,9 +3,9 @@ package siani.tara.compiler.parser;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.SourceUnit;
 import siani.tara.compiler.core.errorcollection.MergeException;
-import siani.tara.compiler.rt.TaraRtConstants;
-import siani.tara.compiler.model.Model;
 import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.impl.Model;
+import siani.tara.compiler.rt.TaraRtConstants;
 
 import java.util.Collection;
 
@@ -21,22 +21,13 @@ public class ASTMerger {
 	public Model doMerge() throws MergeException {
 		Model model = new Model(conf.getProject() + "." + conf.getModule());
 		model.setTerminal(conf.isTerminal());
-		model.setParentModelName(sources.iterator().next().getModel().getParentModelName());
-		model.setTerminal(sources.iterator().next().getModel().isTerminal());
 		for (SourceUnit unit : sources) {
-			model.addAll(unit.getModel().getNodeTree());
-			model.putAllIdentifiers(unit.getModel().getIdentifiers());
-			model.register(unit.getModel().getNodeTable().toArray(new Node[unit.getModel().getNodeTable().size()]));
+			Collection<Node> includedNodes = unit.getModel().getIncludedNodes();
+			model.addIncludedNodes(includedNodes.toArray(new Node[includedNodes.size()]));
 		}
-		for (Node node : model.getNodeTable())
-			node.setModelOwner(model.getName());
-		model.addMetrics(MetricsLoader.loadMetrics(conf));
+		for (Node node : model.getIncludedNodes()) node.setContainer(model);
+//		model.addMetrics(MetricsLoader.loadMetrics(conf));
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");
-		addCodeGenerationLanguage(model, conf);
 		return model;
-	}
-
-	private void addCodeGenerationLanguage(Model model, CompilerConfiguration configuration) {
-		model.setLocale(configuration.getLocale());
 	}
 }

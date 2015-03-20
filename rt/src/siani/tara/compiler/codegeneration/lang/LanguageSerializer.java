@@ -3,7 +3,7 @@ package siani.tara.compiler.codegeneration.lang;
 import siani.tara.compiler.codegeneration.CodeGenerator;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.TaraException;
-import siani.tara.compiler.model.Model;
+import siani.tara.compiler.model.impl.Model;
 
 import javax.tools.*;
 import java.io.File;
@@ -66,7 +66,7 @@ public class LanguageSerializer extends CodeGenerator {
 		compilerOptions.add("-d");
 		compilerOptions.add(conf.getLanguageDirectory());
 		compilerOptions.add("-classpath");
-		compilerOptions.add(conf.getSemanticRulesURL());
+		compilerOptions.add(conf.getSemanticRulesLib());
 		JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, compilerOptions, null, compilationUnits);
 		if (!task.call()) {
 			String message = "";

@@ -1,13 +1,13 @@
 package siani.tara.compiler.core.errorcollection;
 
 
-import siani.tara.compiler.model.DeclaredNode;
+import siani.tara.compiler.model.Node;
 
 public class TaraRuntimeException extends RuntimeException {
 
-	private final DeclaredNode node;
+	private final Node node;
 
-	public TaraRuntimeException(String message, DeclaredNode node) {
+	public TaraRuntimeException(String message, Node node) {
 		super(message);
 		this.node = node;
 	}
@@ -16,7 +16,7 @@ public class TaraRuntimeException extends RuntimeException {
 		return getMessageWithoutLocationText() + getLocationText();
 	}
 
-	public DeclaredNode getNode() {
+	public Node getNode() {
 		return this.node;
 	}
 

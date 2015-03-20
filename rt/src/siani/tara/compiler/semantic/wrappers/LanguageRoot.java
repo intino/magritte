@@ -1,6 +1,6 @@
 package siani.tara.compiler.semantic.wrappers;
 
-import siani.tara.intellij.lang.psi.TaraModel;
+import siani.tara.compiler.model.impl.Model;
 import siani.tara.semantic.model.Facet;
 import siani.tara.semantic.model.FacetTarget;
 import siani.tara.semantic.model.Node;
@@ -12,9 +12,9 @@ import java.util.List;
 
 public class LanguageRoot implements Node {
 
-	TaraModel model;
+	Model model;
 
-	public LanguageRoot(TaraModel model) {
+	public LanguageRoot(Model model) {
 		this.model = model;
 	}
 
@@ -60,7 +60,7 @@ public class LanguageRoot implements Node {
 
 	@Override
 	public Long address() {
-		return null;
+		return Long.MIN_VALUE;
 	}
 
 	@Override
@@ -70,7 +70,6 @@ public class LanguageRoot implements Node {
 
 	@Override
 	public void annotations(String... annotations) {
-
 	}
 
 	@Override
@@ -90,12 +89,13 @@ public class LanguageRoot implements Node {
 
 	@Override
 	public Node[] includes() {
-		return wrap(model.getNodes());
+		return wrap(model.getIncludedNodes());
 	}
 
-	private Node[] wrap(Collection<siani.tara.intellij.lang.psi.Node> nodes) {
+	private Node[] wrap(Collection<siani.tara.compiler.model.Node> nodes) {
 		List<LanguageNode> languageNodes = new ArrayList<>();
-		for (siani.tara.intellij.lang.psi.Node node : nodes) languageNodes.add(new LanguageNode(node));
+		for (siani.tara.compiler.model.Node node : nodes)
+			languageNodes.add(new LanguageNode(node));
 		return languageNodes.toArray(new LanguageNode[languageNodes.size()]);
 	}
 }

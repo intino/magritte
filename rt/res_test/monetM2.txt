@@ -9,7 +9,7 @@ Monet
 module
 engine
 language
-Monet
+Proteo
 terminal
 false
 locale

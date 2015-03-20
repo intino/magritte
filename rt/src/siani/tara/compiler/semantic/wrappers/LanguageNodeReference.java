@@ -1,43 +1,30 @@
 package siani.tara.compiler.semantic.wrappers;
 
-import com.intellij.psi.PsiElement;
-import siani.tara.intellij.lang.psi.FacetApply;
-import siani.tara.intellij.lang.psi.NodeReference;
-import siani.tara.intellij.lang.psi.TaraAnnotations;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
-import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.semantic.model.Facet;
-import siani.tara.semantic.model.FacetTarget;
-import siani.tara.semantic.model.Node;
-import siani.tara.semantic.model.Parameter;
+import siani.tara.compiler.model.Annotation;
+import siani.tara.compiler.model.Element;
+import siani.tara.compiler.model.Facet;
+import siani.tara.compiler.model.impl.NodeReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LanguageNodeReference extends LanguageNode implements Node {
+public class LanguageNodeReference extends LanguageNode implements siani.tara.semantic.model.Node {
 
-	private final NodeReference nodeReference;
-	private siani.tara.intellij.lang.psi.Node destiny;
+	private final NodeReference reference;
 
-	public LanguageNodeReference(NodeReference nodeReference) {
+	public LanguageNodeReference(NodeReference reference) {
 		super(null);
-		this.nodeReference = nodeReference;
-		destiny = ReferenceManager.resolveToNode(nodeReference.getIdentifierReference());
+		this.reference = reference;
 	}
 
 	@Override
-	public PsiElement element() {
-		return nodeReference;
-	}
-
-	@Override
-	public Node context() {
-		return new LanguageNode(TaraPsiImplUtil.getContainerNodeOf(nodeReference));
+	public siani.tara.semantic.model.Node context() {
+		return new LanguageNode(reference.getContainer());
 	}
 
 	@Override
 	public String type() {
-		return badReference() ? null : destiny.resolve().getFullType();
+		return reference.getType();
 	}
 
 	@Override
@@ -51,15 +38,10 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 
 	@Override
 	public String[] secondaryTypes() {
-		if (badReference()) return new String[0];
 		List<String> types = new ArrayList<>();
-		for (FacetApply facetApply : destiny.getFacetApplies())
-			types.add(facetApply.getFacetName());
+		for (Facet facet : reference.getDestiny().getFacets())
+			types.add(facet.getFacet());
 		return types.toArray(new String[types.size()]);
-	}
-
-	private boolean badReference() {
-		return destiny == null;
 	}
 
 	@Override
@@ -68,8 +50,8 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 	}
 
 	@Override
-	public Node parent() {
-		return null;
+	public siani.tara.semantic.model.Node parent() {
+		return new LanguageNode(reference.getDestiny().getParent());
 	}
 
 	@Override
@@ -84,37 +66,43 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 
 	@Override
 	public String[] annotations() {
-		TaraAnnotations annotations = nodeReference.getAnnotations();
-		return annotations != null ? annotations.getAnnotations() : new String[0];
+		List<String> values = new ArrayList<>();
+		for (Annotation annotation : reference.getAnnotations()) values.add(annotation.getName());
+		return values.toArray(new String[values.size()]);
 	}
 
 	@Override
 	public void annotations(String... annotations) {
-		nodeReference.addInheritedAnnotations(annotations);
+		reference.addAnnotations(annotations);
 	}
 
 	@Override
-	public Facet[] facets() {
-		return new Facet[0];
+	public siani.tara.semantic.model.Facet[] facets() {
+		return new siani.tara.semantic.model.Facet[0];
 	}
 
 	@Override
-	public FacetTarget[] facetTargets() {
-		return new FacetTarget[0];
+	public siani.tara.semantic.model.FacetTarget[] facetTargets() {
+		return new siani.tara.semantic.model.FacetTarget[0];
 	}
 
 	@Override
-	public Parameter[] parameters() {
-		return new Parameter[0];
+	public siani.tara.semantic.model.Parameter[] parameters() {
+		return new siani.tara.semantic.model.Parameter[0];
 	}
 
 	@Override
-	public Node[] includes() {
-		return new Node[0];
+	public siani.tara.semantic.model.Node[] includes() {
+		return new siani.tara.semantic.model.Node[0];
 	}
 
 	@Override
 	public String toString() {
-		return "reference " + destiny.getType();
+		return "reference " + reference.getType();
+	}
+
+	@Override
+	public Element element() {
+		return reference;
 	}
 }

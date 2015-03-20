@@ -1,121 +1,28 @@
 package siani.tara.compiler.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
-public abstract class Variable extends Element implements Cloneable {
-	public static final String EMPTY = "EMPTY_VALUE";
-	protected String name;
-	protected boolean inherited;
-	protected String doc;
-	protected Object[] defaultValues;
-	protected List<Object> values;
-	protected List<Annotation> annotations = new ArrayList<>();
-	protected boolean isList = false;
+public interface Variable {
 
-	public Variable(boolean inherited) {
-		this.inherited = inherited;
-	}
 
-	public String getName() {
-		return name;
-	}
+	String getType();
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	String getName();
 
-	public boolean isList() {
-		return isList;
-	}
+	void setName(String name);
 
-	public void setList(boolean isList) {
-		this.isList = isList;
-	}
+	void setType(String type);
 
-	public void setInherited(boolean inherited) {
-		this.inherited = inherited;
-	}
+	boolean isMultiple();
 
-	public boolean isTerminal() {
-		return annotations.contains(Annotation.TERMINAL);
-	}
+	void setMultiple(boolean multiple);
 
-	public boolean isProperty() {
-		return annotations.contains(Annotation.PROPERTY);
-	}
+	Collection<Object> getAllowedValues();
 
-	public boolean isReadOnly() {
-		return annotations.contains(Annotation.READONLY);
-	}
+	void addAllowedValues(Object... values);
 
-	public boolean isLocal() {
-		return annotations.contains(Annotation.ENCLOSED);
-	}
+	Collection<Object> getDefaultValues();
 
-	public boolean addAll(Collection<? extends Annotation> annotations) {
-		return this.annotations.addAll(annotations);
-	}
+	void addDefaultValues(Object... values);
 
-	public boolean add(Annotation annotation) {
-		return annotations.add(annotation);
-	}
-
-	public String getDoc() {
-		return doc;
-	}
-
-	public void setDoc(String doc) {
-		this.doc = doc;
-	}
-
-	public abstract String getType();
-
-	public Object[] getValues() {
-		return values != null ? values.toArray(new Object[values.size()]) : new Object[0];
-	}
-
-	public void setValues(Object... values) {
-		if (this.values == null) this.values = new ArrayList<>();
-		Collections.addAll(this.values, values);
-	}
-
-	public void addValue(Object value) {
-		if (values == null) this.values = new ArrayList<>();
-		this.values.add(value);
-	}
-
-	public boolean isInherited() {
-		return inherited;
-	}
-
-	public List<Annotation> getAnnotations() {
-		return annotations;
-	}
-
-	public void setValues(List<Object> values) {
-		this.values = values;
-	}
-
-	public void setAnnotations(List<Annotation> annotations) {
-		this.annotations = annotations;
-	}
-
-	public Object[] getDefaultValues() {
-		return defaultValues;
-	}
-
-	public void setDefaultValues(Object... defaultValue) {
-		this.defaultValues = defaultValue;
-	}
-
-	public abstract Variable clone();
-
-	public abstract String toString();
-
-	public boolean hasValue() {
-		return (getValues() != null && getValues().length > 0) || (getDefaultValues() != null && getDefaultValues().length > 0);
-	}
 }

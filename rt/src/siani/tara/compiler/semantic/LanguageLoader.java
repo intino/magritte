@@ -2,6 +2,7 @@ package siani.tara.compiler.semantic;
 
 import siani.tara.Language;
 import siani.tara.compiler.core.errorcollection.TaraException;
+import siani.tara.dsls.Proteo;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -13,6 +14,7 @@ public class LanguageLoader {
 	private static final Logger LOG = Logger.getLogger(LanguageLoader.class.getName());
 
 	public static Language load(String name, String languagesDirectory) throws TaraException {
+		if (name.equalsIgnoreCase("Proteo")) return new Proteo();
 		File file = new File(languagesDirectory);
 		try {
 			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL()}, LanguageLoader.class.getClassLoader());

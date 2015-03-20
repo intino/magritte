@@ -3,7 +3,7 @@ package siani.tara.compiler.core;
 import siani.tara.compiler.core.errorcollection.ErrorCollector;
 import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.parser.Parser;
-import siani.tara.compiler.model.Model;
+import siani.tara.compiler.model.impl.Model;
 
 import java.io.File;
 import java.io.IOException;

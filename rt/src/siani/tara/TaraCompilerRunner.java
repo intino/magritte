@@ -114,7 +114,7 @@ public class TaraCompilerRunner {
 					configuration.setLanguagesDirectory(reader.readLine());
 					break;
 				case TaraRtConstants.SEMANTIC_LIB:
-					configuration.setSemanticRulesURL(reader.readLine());
+					configuration.setSemanticRulesLib(reader.readLine());
 					break;
 				case TaraRtConstants.GENERATED_LANG_NAME:
 					configuration.setGeneratedLanguage(reader.readLine());

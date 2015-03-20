@@ -1,164 +1,101 @@
 package siani.tara.compiler.model;
 
-import java.util.ArrayList;
+import siani.tara.compiler.model.impl.NodeReference;
+
 import java.util.Collection;
-import java.util.List;
 
-public abstract class Node extends Element {
+public interface Node extends NodeContainer, Parameterized {
 
-	protected String qualifiedName;
-	protected String file;
-	protected int line;
-	protected List<String> instanceTypes;
-	protected transient DeclaredNode container;
-	protected ModelObject object;
-	private List<String> imports = new ArrayList<>();
-	private String modelOwner;
-	private transient FacetTarget inFacetTargetParent = null;
-	public transient static final String ANONYMOUS = "@anonymous";
-	public transient static final String IN_FACET_TARGET = "@facetTarget";
-	public transient static final String LINK = "@link";
+	String getName();
 
-	public Node() {
-		instanceTypes = new ArrayList<>();
-	}
+	void setName(String name);
 
-	public abstract DeclaredNode getContainer();
+	String getFile();
 
-	public void setContainer(DeclaredNode container) {
-		this.container = container;
-	}
+	void setFile(String file);
 
-	public abstract NodeObject getObject();
+	int getLine();
 
-	public abstract NodeTree getInnerNodes();
+	void setLine(int line);
 
-	public abstract Annotation[] getAnnotations();
+	String getLanguage();
 
-	protected abstract List<Annotation> getAnnotationList();
+	void setLanguage(String language);
 
-	public void add(Annotation annotation) {
-		getAnnotationList().add(annotation);
-	}
+	String getDoc();
 
-	public abstract boolean isSub();
+	boolean isSub();
 
-	public DeclaredNode[] getSubNodes() {
-		List<DeclaredNode> subs = new ArrayList<>();
-		if (getInnerNodes() == null) return new DeclaredNode[0];
-		for (Node child : getInnerNodes())
-			if (child instanceof DeclaredNode && child.getObject().isSub()) subs.add((DeclaredNode) child);
-		return subs.toArray(new DeclaredNode[subs.size()]);
-	}
+	boolean isRoot();
 
-	public Collection<DeclaredNode> getDeepSubNodes() {
-		List<DeclaredNode> subs = new ArrayList<>();
-		if (getInnerNodes() == null) return subs;
-		for (Node child : getInnerNodes())
-			if (child.is(DeclaredNode.class) && child.isSub()) {
-				subs.add((DeclaredNode) child);
-				subs.addAll(child.getDeepSubNodes());
-			}
-		return subs;
-	}
+	Collection<Node> getSubNodes();
 
-	public String getQualifiedName() {
-		return qualifiedName == null ? calculateQualifiedName() : qualifiedName;
-	}
+	boolean isIntention();
 
-	public void setQualifiedName(String qualifiedName) {
-		this.qualifiedName = qualifiedName;
-	}
+	boolean isFacet();
 
-	public abstract String getName();
+	boolean isAddressed();
 
-	public String getType() {
-		return object.getType();
-	}
+	boolean isAbstract();
 
-	public String calculateQualifiedName() {
-		qualifiedName = getNodePath();
-		return qualifiedName;
-	}
+	boolean isAggregated();
 
-	public int getLine() {
-		return line;
-	}
+	boolean isProperty();
 
-	public void setLine(int line) {
-		this.line = line;
-	}
+	boolean isComponent();
 
-	public String getFile() {
-		return file;
-	}
+	boolean isCase();
 
-	public void setFile(String file) {
-		this.file = file;
-	}
+	Long getAddress();
 
-	public List<String> getImports() {
-		return imports;
-	}
+	void setAddress(Long address);
 
-	public void setImports(List<String> imports) {
-		this.imports = imports;
-	}
+	Collection<Annotation> getAnnotations();
 
-	public void addImports(Collection<String> imports) {
-		if (!imports.isEmpty())
-			this.imports.addAll(imports);
-	}
+	void addAnnotations(String... annotations);
 
-	public boolean is(Annotation annotation) {
-		for (Annotation a : getAnnotations())
-			if (annotation.equals(a)) return true;
-		return false;
-	}
+	void addImports(Collection<String> imports);
 
-	public boolean isPrime() {
-		return getContainer() == null;
-	}
+	boolean contains(String type);
 
-	public abstract boolean isAggregated();
+	Node getParent();
 
-	public abstract boolean isAssociated();
+	String getParentName();
 
-	public abstract boolean isSingle();
+	boolean isAnonymous();
 
-	public abstract boolean isAbstract();
+	String getType();
 
-	protected abstract String getNodePath();
+	void setType(String type);
 
-	public boolean is(Class type) {
-		return type.isInstance(this);
-	}
+	String getFullType();
 
-	public void setModelOwner(String modelOwner) {
-		this.modelOwner = modelOwner;
-	}
+	void setFullType(String type);
 
-	public String getModelOwner() {
-		return modelOwner;
-	}
+	Node resolve();
 
-	public boolean isAnonymous() {
-		return getName().contains(ANONYMOUS);
-	}
+	Collection<Node> getNodeSiblings();
 
-	public String getFulltype() {
-		return object.getFulltype();
-	}
+	Collection<NodeReference> getInnerNodeReferences();
 
-	public void setFacetTargetParent(FacetTarget facetTarget) {
-		this.inFacetTargetParent = facetTarget;
-	}
+	Collection<Node> getChildren();
 
-	public FacetTarget getFacetTargetParent() {
-		return inFacetTargetParent;
-	}
+	void addChild(Node node);
 
-	public boolean isInFacetTargetParent() {
-		return this.inFacetTargetParent != null;
-	}
+	Collection<Facet> getFacets();
+
+	void addFacets(Facet... facets);
+
+	Collection<FacetTarget> getFacetTargets();
+
+	void addFacetTargets(FacetTarget... targets);
+
+	String toString();
+
+	boolean equals(Object obj);
+
+	int hashCode();
+
+
+
 }
