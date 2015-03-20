@@ -1,10 +1,8 @@
-package siani.tara.model;
+package siani.tara.compiler.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static siani.tara.model.Annotation.*;
 
 public class LinkNode extends Node {
 
@@ -81,16 +79,16 @@ public class LinkNode extends Node {
 	}
 
 	public boolean isAggregated() {
-		return annotations.contains(AGGREGATED);
+		return annotations.contains(Annotation.AGGREGATED);
 	}
 
 	public boolean isAssociated() {
-		return annotations.contains(ASSOCIATED);
+		return annotations.contains(Annotation.ASSOCIATED);
 	}
 
 	@Override
 	public boolean isSingle() {
-		return annotations.contains(SINGLE);
+		return annotations.contains(Annotation.SINGLE);
 	}
 
 	public boolean addAll(Collection<? extends Annotation> c) {
@@ -108,7 +106,7 @@ public class LinkNode extends Node {
 	}
 
 	public boolean isAbstract() {
-		return destiny.is(ABSTRACT);
+		return destiny.is(Annotation.ABSTRACT);
 	}
 
 	@Override

@@ -1,11 +1,11 @@
-package siani.tara.model;
+package siani.tara.compiler.model;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Facet {
+public class Facet extends Element{
 
 	private String name;
 	private boolean isIntention = false;

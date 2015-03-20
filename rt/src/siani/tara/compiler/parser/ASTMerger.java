@@ -4,8 +4,8 @@ import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.SourceUnit;
 import siani.tara.compiler.core.errorcollection.MergeException;
 import siani.tara.compiler.rt.TaraRtConstants;
-import siani.tara.model.Model;
-import siani.tara.model.Node;
+import siani.tara.compiler.model.Model;
+import siani.tara.compiler.model.Node;
 
 import java.util.Collection;
 

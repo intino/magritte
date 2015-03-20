@@ -1,9 +1,9 @@
-package siani.tara.model;
+package siani.tara.compiler.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FacetTarget {
+public class FacetTarget extends Element {
 
 	private String destinyQN;
 	private String destinyName;

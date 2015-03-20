@@ -6,7 +6,7 @@ import siani.tara.compiler.core.errorcollection.DependencyException;
 import siani.tara.compiler.core.errorcollection.message.Message;
 import siani.tara.compiler.dependencyresolver.FacetTargetsResolver;
 import siani.tara.compiler.rt.TaraRtConstants;
-import siani.tara.model.Model;
+import siani.tara.compiler.model.Model;
 
 import java.util.logging.Logger;
 

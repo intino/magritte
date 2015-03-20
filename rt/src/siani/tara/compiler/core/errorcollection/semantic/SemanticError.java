@@ -1,7 +1,7 @@
 package siani.tara.compiler.core.errorcollection.semantic;
 
 
-import siani.tara.model.Node;
+import siani.tara.compiler.model.Node;
 
 public abstract class SemanticError {
 

@@ -1,6 +1,6 @@
 package siani.tara.compiler.core.errorcollection.semantic;
 
-import siani.tara.model.Node;
+import siani.tara.compiler.model.Node;
 
 public class UnusedNodeError extends SemanticError implements SemanticError.Warning {
 	public UnusedNodeError(String token, Node node) {

@@ -1,14 +1,15 @@
 package siani.tara.compiler.dependencyresolver;
 
 import siani.tara.compiler.core.errorcollection.DependencyException;
+import siani.tara.compiler.model.*;
 import siani.tara.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.model.Annotation.FACET;
-import static siani.tara.model.Annotation.INTENTION;
+import static siani.tara.compiler.model.Annotation.FACET;
+import static siani.tara.compiler.model.Annotation.INTENTION;
 
 public class FacetTargetsResolver {
 	private final Model model;

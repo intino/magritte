@@ -4,6 +4,7 @@ import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.codegeneration.FrameCreator;
 import siani.tara.compiler.codegeneration.FrameTags;
+import siani.tara.compiler.model.*;
 import siani.tara.model.*;
 
 import java.util.*;

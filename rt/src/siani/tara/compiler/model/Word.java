@@ -1,4 +1,4 @@
-package siani.tara.model;
+package siani.tara.compiler.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;

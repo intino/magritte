@@ -6,7 +6,7 @@ import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.MergeException;
 import siani.tara.compiler.parser.ASTMerger;
 import siani.tara.compiler.rt.TaraRtConstants;
-import siani.tara.model.Model;
+import siani.tara.compiler.model.Model;
 
 import java.util.Collection;
 import java.util.logging.Level;

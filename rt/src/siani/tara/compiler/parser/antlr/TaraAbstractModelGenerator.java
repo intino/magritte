@@ -3,12 +3,12 @@ package siani.tara.compiler.parser.antlr;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import siani.tara.model.*;
+import siani.tara.compiler.model.*;
 
 import java.util.*;
 
+import static siani.tara.compiler.model.Primitives.*;
 import static siani.tara.compiler.parser.antlr.TaraGrammar.*;
-import static siani.tara.model.Primitives.*;
 
 public class TaraAbstractModelGenerator extends TaraGrammarBaseListener {
 

@@ -1,6 +1,4 @@
-package siani.tara.model;
-
-import siani.tara.model.Model.SearchNode;
+package siani.tara.compiler.model;
 
 import java.util.*;
 
@@ -14,18 +12,18 @@ public class ModelHelper {
 	public Node searchNode(String qn) {
 		if (qn == null || qn.isEmpty()) return null;
 		String[] path = qn.split("\\.");
-		SearchNode searchTree = createSearchTree(path);
+		Model.SearchNode searchTree = createSearchTree(path);
 		return searchNode(searchTree);
 	}
 
-	public Node searchNode(SearchNode searchNode) {
+	public Node searchNode(Model.SearchNode searchNode) {
 		Node result;
 		for (Node node : model.getNodeTree())
 			if ((result = searchNode(node, searchNode)) != null) return result;
 		return null;
 	}
 
-	private Node searchNode(Node node, SearchNode searchNode) {
+	private Node searchNode(Node node, Model.SearchNode searchNode) {
 		if (node == null) return null;
 		Node nodeToSearch;
 		if ((nodeToSearch = areCompatibles(searchNode, node)) != null) {
@@ -65,11 +63,11 @@ public class ModelHelper {
 		return forward != null ? forward : previous;
 	}
 
-	private SearchNode createSearchTree(String[] qn) {
+	private Model.SearchNode createSearchTree(String[] qn) {
 		Model.SearchNode searchNode = null;
 		Model.SearchNode previous = null;
 		for (String name : qn) {
-			SearchNode forward = new SearchNode(name);
+			Model.SearchNode forward = new Model.SearchNode(name);
 			addProperties(forward);
 			if (searchNode == null) {
 				searchNode = forward;
@@ -84,7 +82,7 @@ public class ModelHelper {
 		return searchNode;
 	}
 
-	private void addProperties(SearchNode searchNode) {
+	private void addProperties(Model.SearchNode searchNode) {
 		if (searchNode.getName().contains(Node.IN_FACET_TARGET))
 			searchNode.setInFacetTarget(getFacetTargetContainer(searchNode.getName()));
 	}
@@ -119,7 +117,7 @@ public class ModelHelper {
 		return null;
 	}
 
-	private FacetTarget searchFacetApply(SearchNode searchNode, Node nodeToSearch) {
+	private FacetTarget searchFacetApply(Model.SearchNode searchNode, Node nodeToSearch) {
 		String facet = searchNode.next.getFacet();
 		for (Map.Entry<String, List<FacetTarget>> entry : nodeToSearch.getObject().getAllowedFacets().entrySet()) {
 			if (!entry.getKey().equals(facet)) continue;
@@ -131,7 +129,7 @@ public class ModelHelper {
 		return null;
 	}
 
-	private Node areCompatibles(SearchNode searchNode, Node node) {
+	private Node areCompatibles(Model.SearchNode searchNode, Node node) {
 		if (searchNode.name.equals(node.getName()))
 			return node;
 		for (DeclaredNode sub : collectSubs(node))

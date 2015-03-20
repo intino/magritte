@@ -1,4 +1,4 @@
-package siani.tara.intellij.lang.semantic;
+package siani.tara.compiler.semantic.wrappers;
 
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.FacetApply;
@@ -6,7 +6,10 @@ import siani.tara.intellij.lang.psi.NodeReference;
 import siani.tara.intellij.lang.psi.TaraAnnotations;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.semantic.model.*;
+import siani.tara.semantic.model.Facet;
+import siani.tara.semantic.model.FacetTarget;
+import siani.tara.semantic.model.Node;
+import siani.tara.semantic.model.Parameter;
 
 import java.util.ArrayList;
 import java.util.List;

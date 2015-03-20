@@ -1,7 +1,7 @@
 package siani.tara.compiler.core.errorcollection;
 
-import siani.tara.model.LinkNode;
-import siani.tara.model.Node;
+import siani.tara.compiler.model.LinkNode;
+import siani.tara.compiler.model.Node;
 
 public class DependencyException extends TaraException {
 

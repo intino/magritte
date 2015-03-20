@@ -1,4 +1,4 @@
-package siani.tara.model;
+package siani.tara.compiler.model;
 
 public abstract class ModelObject {
 
@@ -6,6 +6,9 @@ public abstract class ModelObject {
 	protected String parentName;
 	protected transient NodeObject parentObject;
 	protected String type = "Concept";
+
+	protected String fulltype = "Concept";
+
 	protected String name = "";
 
 	public String getName() {
@@ -28,11 +31,6 @@ public abstract class ModelObject {
 		return parentObject;
 	}
 
-	public void setParentObject(NodeObject parentObject) {
-		this.parentObject = parentObject;
-		if (parentObject != null) parentName = parentObject.getDeclaredNodeQN();
-	}
-
 	public String getType() {
 		return type;
 	}
@@ -41,16 +39,18 @@ public abstract class ModelObject {
 		this.type = type;
 	}
 
-	public String getMetaQN() {
-		String qn = "." + type;
-		NodeObject parent = this.getParent();
-		while (parent != null) {
-			qn += "." + parent.getType();
-			parent = parent.getParent();
-		}
-		return qn.substring(1);
+	public String getFulltype() {
+		return fulltype;
 	}
 
+	public void setFulltype(String fulltype) {
+		this.fulltype = fulltype;
+	}
+
+	public void setParentObject(NodeObject parentObject) {
+		this.parentObject = parentObject;
+		if (parentObject != null) parentName = parentObject.getDeclaredNodeQN();
+	}
 
 	public boolean is(Class type) {
 		return type.isInstance(this);

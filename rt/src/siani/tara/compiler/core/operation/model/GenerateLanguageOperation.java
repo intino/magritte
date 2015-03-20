@@ -6,9 +6,9 @@ import siani.tara.compiler.core.Phases;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.rt.TaraRtConstants;
-import siani.tara.model.Annotation;
-import siani.tara.model.Model;
-import siani.tara.model.Node;
+import siani.tara.compiler.model.Annotation;
+import siani.tara.compiler.model.Model;
+import siani.tara.compiler.model.Node;
 
 import java.util.ArrayList;
 import java.util.List;

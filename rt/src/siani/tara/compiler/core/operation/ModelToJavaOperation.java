@@ -15,10 +15,10 @@ import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.core.operation.model.ModelOperation;
-import siani.tara.model.DeclaredNode;
-import siani.tara.model.Model;
-import siani.tara.model.Node;
-import siani.tara.model.NodeTree;
+import siani.tara.compiler.model.DeclaredNode;
+import siani.tara.compiler.model.Model;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.NodeTree;
 
 import java.io.*;
 import java.util.*;
@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
-import static siani.tara.model.Annotation.CASE;
+import static siani.tara.compiler.model.Annotation.CASE;
 
 public class ModelToJavaOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
@@ -193,7 +193,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		Set<String> boxes = new HashSet<>();
 //		for (Node node : nodes) {
 //			if (node.getObject().is(TERMINAL) && !node.getModelOwner().equals(model.getName())) continue;
-//			boxes.add(buildFileName(parent.searchNode(node.getObject().getMetaQN()).getFile(), parent.getName()));
+//			boxes.add(buildFileName(parent.searchNode(node.getObject().getFulltype()).getFile(), parent.getName()));
 //		}
 		return boxes;
 	}

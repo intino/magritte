@@ -1,9 +1,6 @@
-package siani.tara.model;
+package siani.tara.compiler.model;
 
 import java.util.List;
-
-import static siani.tara.model.Annotation.AGGREGATED;
-import static siani.tara.model.Annotation.SINGLE;
 
 public class DeclaredNode extends Node {
 
@@ -54,17 +51,17 @@ public class DeclaredNode extends Node {
 
 	@Override
 	public boolean isAggregated() {
-		return is(AGGREGATED);
+		return is(Annotation.AGGREGATED);
 	}
 
 	@Override
 	public boolean isAssociated() {
-		return is(AGGREGATED);
+		return is(Annotation.AGGREGATED);
 	}
 
 	@Override
 	public boolean isSingle() {
-		return is(SINGLE);
+		return is(Annotation.SINGLE);
 	}
 
 	@Override

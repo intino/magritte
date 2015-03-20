@@ -1,6 +1,7 @@
 package siani.tara.compiler.codegeneration;
 
 import org.siani.itrules.model.Frame;
+import siani.tara.compiler.model.*;
 import siani.tara.model.*;
 
 import java.util.AbstractMap.SimpleEntry;

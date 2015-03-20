@@ -1,13 +1,11 @@
-package siani.tara.model;
+package siani.tara.compiler.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.model.Annotation.*;
-
-public abstract class Variable implements Cloneable {
+public abstract class Variable extends Element implements Cloneable {
 	public static final String EMPTY = "EMPTY_VALUE";
 	protected String name;
 	protected boolean inherited;
@@ -42,19 +40,19 @@ public abstract class Variable implements Cloneable {
 	}
 
 	public boolean isTerminal() {
-		return annotations.contains(TERMINAL);
+		return annotations.contains(Annotation.TERMINAL);
 	}
 
 	public boolean isProperty() {
-		return annotations.contains(PROPERTY);
+		return annotations.contains(Annotation.PROPERTY);
 	}
 
 	public boolean isReadOnly() {
-		return annotations.contains(READONLY);
+		return annotations.contains(Annotation.READONLY);
 	}
 
 	public boolean isLocal() {
-		return annotations.contains(ENCLOSED);
+		return annotations.contains(Annotation.ENCLOSED);
 	}
 
 	public boolean addAll(Collection<? extends Annotation> annotations) {

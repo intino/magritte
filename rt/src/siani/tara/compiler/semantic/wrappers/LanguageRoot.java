@@ -1,7 +1,10 @@
-package siani.tara.intellij.lang.semantic;
+package siani.tara.compiler.semantic.wrappers;
 
 import siani.tara.intellij.lang.psi.TaraModel;
-import siani.tara.semantic.model.*;
+import siani.tara.semantic.model.Facet;
+import siani.tara.semantic.model.FacetTarget;
+import siani.tara.semantic.model.Node;
+import siani.tara.semantic.model.Parameter;
 
 import java.util.ArrayList;
 import java.util.Collection;

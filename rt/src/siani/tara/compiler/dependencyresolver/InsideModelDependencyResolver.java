@@ -1,6 +1,7 @@
 package siani.tara.compiler.dependencyresolver;
 
 import siani.tara.compiler.core.errorcollection.DependencyException;
+import siani.tara.compiler.model.*;
 import siani.tara.model.*;
 
 import java.util.ArrayList;
@@ -8,8 +9,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static siani.tara.model.Annotation.ABSTRACT;
-import static siani.tara.model.Annotation.TERMINAL;
+import static siani.tara.compiler.model.Annotation.ABSTRACT;
+import static siani.tara.compiler.model.Annotation.TERMINAL;
 
 public class InsideModelDependencyResolver {
 	Model model;

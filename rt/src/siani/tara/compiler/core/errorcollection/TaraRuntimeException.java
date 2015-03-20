@@ -1,7 +1,7 @@
 package siani.tara.compiler.core.errorcollection;
 
 
-import siani.tara.model.DeclaredNode;
+import siani.tara.compiler.model.DeclaredNode;
 
 public class TaraRuntimeException extends RuntimeException {
 

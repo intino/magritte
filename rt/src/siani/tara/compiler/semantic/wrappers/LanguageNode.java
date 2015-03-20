@@ -1,7 +1,7 @@
-package siani.tara.intellij.lang.semantic;
+package siani.tara.compiler.semantic.wrappers;
 
-import com.intellij.psi.PsiElement;
-import siani.tara.intellij.lang.psi.*;
+import siani.tara.compiler.model.Element;
+import siani.tara.compiler.model.Node;
 import siani.tara.semantic.model.Facet;
 import siani.tara.semantic.model.FacetTarget;
 
@@ -16,11 +16,10 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	public LanguageNode(Node node) {
 		this.node = node;
 		if (node == null) return;
-		this.facetTargets = buildFacetTargets(node.getFacetTargets());
+		this.facetTargets = buildFacetTargets(node.getObject().getFacetTargets());
 		for (Node inner : node.getInnerNodes())
 			includes.add(new LanguageNode(inner));
-		for (NodeReference nodeReference : node.getInnerNodeReferences())
-			includes.add(new LanguageNodeReference(nodeReference));
+
 	}
 
 	@Override
@@ -40,7 +39,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public String type() {
-		return node == null ? "" : node.getFullType();
+		return node == null ? "" : node.getQualifiedName();
 	}
 
 	@Override
@@ -50,7 +49,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public void type(String type) {
-		node.setFullType(type);
+		node.setMeta(type);
 	}
 
 	@Override
@@ -134,9 +133,10 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 		}
 	}
 
-	private FacetTarget[] buildFacetTargets(Collection<TaraFacetTarget> facetTargets) {
+	private FacetTarget[] buildFacetTargets(Collection<siani.tara.compiler.model.FacetTarget> facetTargets) {
 		List<FacetTarget> targets = new ArrayList<>();
-		for (final TaraFacetTarget target : facetTargets) targets.add(new LanguageFacetTarget(target));
+		for (final siani.tara.compiler.model.FacetTarget target : facetTargets)
+			targets.add(new LanguageFacetTarget(target));
 		return targets.toArray(new FacetTarget[targets.size()]);
 	}
 
@@ -160,7 +160,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
-	public PsiElement element() {
+	public Element element() {
 		return node;
 	}
 }

@@ -14,7 +14,7 @@ import siani.tara.compiler.core.operation.sourceunit.MarkOperation;
 import siani.tara.compiler.core.operation.sourceunit.ParseOperation;
 import siani.tara.compiler.core.operation.sourceunit.SourceUnitOperation;
 import siani.tara.compiler.rt.TaraRtConstants;
-import siani.tara.model.Model;
+import siani.tara.compiler.model.Model;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -53,9 +53,7 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ParseOperation(this.errorCollector), Phases.PARSING);
 		addPhaseOperation(new ImportDataOperation(this.errorCollector), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
-		addPhaseOperation(new SemanticPreAnalysisOperation(this), Phases.SEMANTIC_PRE_ANALYSIS);
 		addPhaseOperation(new ModelDependencyResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
-		addPhaseOperation(new LinkToLanguageOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new FacetResolutionOperation(this), Phases.DEPENDENCY_RESOLUTION);
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new ModelToJavaOperation(this), Phases.CLASS_GENERATION);

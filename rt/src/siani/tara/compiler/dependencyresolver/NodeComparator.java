@@ -1,6 +1,6 @@
 package siani.tara.compiler.dependencyresolver;
 
-import siani.tara.model.Node;
+import siani.tara.compiler.model.Node;
 
 import java.util.Comparator;
 

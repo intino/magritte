@@ -1,6 +1,6 @@
 package siani.tara.compiler.core.errorcollection.semantic;
 
-import siani.tara.model.DeclaredNode;
+import siani.tara.compiler.model.DeclaredNode;
 
 public class PolymorphicChildlessError extends SemanticError implements SemanticError.FatalError {
 	public PolymorphicChildlessError(String token, DeclaredNode node) {

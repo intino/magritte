@@ -2,8 +2,8 @@ package siani.tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
-import siani.tara.model.Node;
-import siani.tara.model.NodeObject;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.NodeObject;
 
 import java.io.File;
 import java.util.ArrayList;

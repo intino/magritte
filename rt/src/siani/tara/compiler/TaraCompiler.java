@@ -7,7 +7,7 @@ import siani.tara.compiler.core.errorcollection.*;
 import siani.tara.compiler.core.errorcollection.message.*;
 import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
 import siani.tara.compiler.rt.TaraCompilerMessageCategories;
-import siani.tara.model.DeclaredNode;
+import siani.tara.compiler.model.DeclaredNode;
 
 import java.io.File;
 import java.io.IOException;

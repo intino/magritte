@@ -1,11 +1,9 @@
-package siani.tara.model;
+package siani.tara.compiler.model;
 
 import siani.tara.Language;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
-
-import static siani.tara.model.Annotation.TERMINAL;
 
 public class Model {
 	private transient final ModelHelper modelHelper;
@@ -78,7 +76,7 @@ public class Model {
 	private List<DeclaredNode> getTerminalNodes(NodeTree tree) {
 		List<DeclaredNode> terminals = new ArrayList<>();
 		for (Node node : tree)
-			if (node.is(DeclaredNode.class) && node.getObject().is(TERMINAL)) terminals.add((DeclaredNode) node);
+			if (node.is(DeclaredNode.class) && node.getObject().is(Annotation.TERMINAL)) terminals.add((DeclaredNode) node);
 			else if (node.is(DeclaredNode.class)) terminals.addAll(getTerminalNodes(node.getInnerNodes()));
 		return terminals;
 	}

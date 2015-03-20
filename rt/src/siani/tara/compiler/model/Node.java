@@ -1,10 +1,10 @@
-package siani.tara.model;
+package siani.tara.compiler.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class Node {
+public abstract class Node extends Element {
 
 	protected String qualifiedName;
 	protected String file;
@@ -146,8 +146,8 @@ public abstract class Node {
 		return getName().contains(ANONYMOUS);
 	}
 
-	public String getMetaQN() {
-		return container == null ? isSub() ? "" : getType() : container.getMetaQN() + (isSub() ? "" : "." + getType());
+	public String getFulltype() {
+		return object.getFulltype();
 	}
 
 	public void setFacetTargetParent(FacetTarget facetTarget) {

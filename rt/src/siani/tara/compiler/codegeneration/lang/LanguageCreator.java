@@ -9,6 +9,7 @@ import org.siani.itrules.framebuilder.FrameBuilder;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.codegeneration.ResourceManager;
 import siani.tara.compiler.core.errorcollection.TaraException;
+import siani.tara.compiler.model.*;
 import siani.tara.model.*;
 
 import java.io.InputStream;
@@ -16,7 +17,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static siani.tara.model.Annotation.*;
+import static siani.tara.compiler.model.Annotation.*;
 
 public class LanguageCreator {
 	private static final Logger LOG = Logger.getLogger(LanguageCreator.class.getName());

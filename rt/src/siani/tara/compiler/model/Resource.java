@@ -1,4 +1,4 @@
-package siani.tara.model;
+package siani.tara.compiler.model;
 
 public class Resource extends Variable {
 

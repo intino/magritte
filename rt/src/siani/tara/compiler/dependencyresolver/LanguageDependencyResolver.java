@@ -2,8 +2,8 @@ package siani.tara.compiler.dependencyresolver;
 
 import siani.tara.Language;
 import siani.tara.compiler.core.errorcollection.TaraException;
-import siani.tara.model.DeclaredNode;
-import siani.tara.model.Model;
+import siani.tara.compiler.model.DeclaredNode;
+import siani.tara.compiler.model.Model;
 
 import java.util.List;
 
@@ -122,7 +122,7 @@ public class LanguageDependencyResolver {
 //	private boolean isInstance(Node metaNode, Node instance) throws TaraException {
 //		Node node = language.searchNodeClass(instance);
 //		if (node == null)
-//			throw new TaraException("Node in metamodel not found: " + instance.getMetaQN());
+//			throw new TaraException("Node in metamodel not found: " + instance.getFulltype());
 //		return node.is(DeclaredNode.class) ? node.equals(metaNode) : ((LinkNode) node).getDestiny().equals(metaNode);
 //	}
 //

@@ -1,4 +1,4 @@
-package siani.tara.intellij.lang.semantic;
+package siani.tara.compiler.semantic.wrappers;
 
 import com.intellij.psi.PsiElement;
 import siani.tara.semantic.model.Element;

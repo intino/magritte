@@ -1,89 +1,26 @@
 package siani.tara.compiler.semantic;
 
-
-import siani.tara.compiler.core.errorcollection.SemanticException;
-import siani.tara.compiler.core.errorcollection.semantic.RequiredNodeNotFoundError;
-import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
-import siani.tara.compiler.core.errorcollection.semantic.SemanticErrorList;
-import siani.tara.model.DeclaredNode;
-import siani.tara.model.Model;
-import siani.tara.model.Node;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import static siani.tara.model.Annotation.REQUIRED;
-import static siani.tara.model.Annotation.TERMINAL;
-
+import siani.tara.Checker;
+import siani.tara.Language;
+import siani.tara.compiler.semantic.wrappers.LanguageNode;
+import siani.tara.compiler.model.Model;
+import siani.tara.compiler.model.Node;
+import siani.tara.semantic.SemanticException;
 
 public class SemanticAnalyzer {
-	private Model model;
-	private SemanticErrorList errors = new SemanticErrorList();
+	private final Model model;
+	private final Language language;
 
-
-	public SemanticAnalyzer(Model model) {
+	public SemanticAnalyzer(Model model, Language language) {
 		this.model = model;
+		this.language = language;
 	}
+
 
 	public void analyze() throws SemanticException {
-		usageAnalysis();
-		if (model.getLanguage() != null)
-			parentModelCoherenceAnalysis();
-	}
-
-	private void usageAnalysis() throws SemanticException {
-		UsageAnalyzer usageAnalyzer = new UsageAnalyzer(model, errors);
-		usageAnalyzer.checkNoConceptExistence(model.getNodeTable());
-		if (!errors.isEmpty()) throwError();
-		usageAnalyzer.checkUsage();
-	}
-
-	private void parentModelCoherenceAnalysis() throws SemanticException {
-		for (Node node : model.getNodeTable()) {
-			Collection<Node> requiredNodes = getRequiredInnerNodes(node);
-			for (Node requiredNode : requiredNodes) {
-				if (!existInstanceOf(requiredNode, getInnerNodes(node)))
-					errors.add(new RequiredNodeNotFoundError(node.getName(), node));
-			}
+		Checker checker = new Checker(language);
+		for (Node node : model.getNodeTree()) {
+			checker.check(new LanguageNode(node));
 		}
-	}
-
-	private boolean existInstanceOf(Node requiredNode, Collection<Node> childrenOf) {
-		for (Node node : childrenOf)
-			if (requiredNode.getName().equals(node.getObject().getType()) || checkInSubs(requiredNode.getSubNodes(), node))
-				return true;
-		return false;
-	}
-
-
-	private List<Node> getInnerNodes(Node node) {
-		List<Node> inners = new ArrayList<>();
-		for (Node inner : node.getInnerNodes())
-			if (!inner.isSub())
-				inners.add(inner);
-		return inners;
-	}
-
-	private boolean checkInSubs(DeclaredNode[] subConcepts, Node concept) {
-		for (DeclaredNode subConcept : subConcepts)
-			if (subConcept.getName().equals(concept.getObject().getType())) return true;
-		return false;
-	}
-
-	private Collection<Node> getRequiredInnerNodes(Node node) {
-		List<Node> required = new ArrayList<>();
-		if (node == null) return Collections.EMPTY_LIST;
-		for (Node inner : node.getInnerNodes())
-			if (inner.getObject().is(REQUIRED) &&
-				(model.getLanguage().isTerminal() && node.getObject().is(TERMINAL) ||
-					!model.isTerminal() && !node.getObject().is(TERMINAL)))
-				required.add(inner);
-		return required;
-	}
-
-	private void throwError() throws SemanticException {
-		throw new SemanticException(errors.toArray(new SemanticError[errors.size()]));
 	}
 }
