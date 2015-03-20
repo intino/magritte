@@ -113,19 +113,16 @@ public class TaraModuleBuildConfEditor implements ModuleConfigurationEditor {
 		if (selectedItem.equals(PROTEO)) {
 			updateDependencies(null);
 			configuration.setMetamodelName("");
-			configuration.setMetamodelFilePath("");
 		} else if ((parentModule = searchParent(selectedItem.toString())) != null) {
 			updateDependencies(parentModule);
 			String generatedModelName = ModuleConfiguration.getInstance(parentModule).getGeneratedModelName();
 			configuration.setMetamodelName(generatedModelName);
-			configuration.setMetamodelFilePath(new File(TaraLanguage.MODELS_PATH + generatedModelName + MODEL_EXT).getAbsolutePath());
 		} else {
 			updateDependencies(null);
 			configuration.setMetamodelName(selectedItem.toString());
 			Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
 			if (projectSdk != null && projectSdk.getSdkType().equals(TaraJdk.getInstance())) {
 				File file = new File(projectSdk.getHomePath() + File.separator + TaraLanguage.DSL + File.separator + selectedItem.toString() + MODEL_EXT);
-				configuration.setMetamodelFilePath(file.getAbsolutePath());
 			}
 		}
 	}

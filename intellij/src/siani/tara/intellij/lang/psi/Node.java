@@ -64,7 +64,7 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	Annotations getAnnotationsNode();
 
-	Collection<String> getInheritedAnnotations();
+	Collection<String> getAssumedAnnotations();
 
 	void addInheritedAnnotations(String... annotations);
 

@@ -328,7 +328,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		Collections.addAll(inheritedAnnotations, annotations);
 	}
 
-	public Collection<String> getInheritedAnnotations() {
+	public Collection<String> getAssumedAnnotations() {
 		return inheritedAnnotations;
 	}
 

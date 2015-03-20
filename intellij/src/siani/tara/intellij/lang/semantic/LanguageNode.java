@@ -5,9 +5,7 @@ import siani.tara.intellij.lang.psi.*;
 import siani.tara.model.Facet;
 import siani.tara.model.FacetTarget;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class LanguageNode extends LanguageElement implements siani.tara.model.Node {
 
@@ -86,10 +84,10 @@ public class LanguageNode extends LanguageElement implements siani.tara.model.No
 
 	@Override
 	public String[] annotations() {
-		if (node.getAnnotationsNode() == null) return new String[0];
-		List<? extends Annotation> annotationList = node.getAnnotationsNode().getAnnotationList();
-		List<String> annotations = new ArrayList<>();
-		for (Annotation annotation : annotationList) annotations.add(annotation.getText());
+		Set<String> annotations = new HashSet<>();
+		for (Annotation annotation : node.getAnnotations())
+			annotations.add(annotation.getText());
+		annotations.addAll(node.getAssumedAnnotations());
 		return annotations.toArray(new String[annotations.size()]);
 	}
 

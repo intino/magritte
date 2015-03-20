@@ -46,7 +46,7 @@ public class LanguageCreator {
 				this.root = root;
 				root.addFrame("name", language);
 				root.addFrame("terminal", Boolean.toString(model.isTerminal()));
-				root.addFrame("locale", !model.getLocale().equals(Locale.ENGLISH) ? createLocale(model.getLocale()) : "Locale.ENGLISH");
+				root.addFrame("locale", model.getLocale().equals(Locale.ENGLISH) ? "Locale.ENGLISH" : createLocale(model.getLocale()));
 				buildModel(model);
 				buildNodes(model.getNodeTree());
 			}
