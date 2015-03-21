@@ -26,7 +26,7 @@ public class FacetResolutionOperation extends ModelOperation {
 			new FacetTargetsResolver(model).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during facets resolution: " + e.getMessage());
-			compilationUnit.getErrorCollector().addError(Message.create(e, compilationUnit.getSourceUnits().get(e.getNode().getFile())), true);
+			compilationUnit.getErrorCollector().addError(Message.create(e, compilationUnit.getSourceUnits().get(e.getElement().getFile())), true);
 		}
 	}
 }

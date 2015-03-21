@@ -11,7 +11,7 @@ import static siani.tara.compiler.model.Annotation.*;
 
 public class NodeReference extends Element implements Node {
 
-	private NodeImpl container;
+	private NodeContainer container;
 	private NodeImpl destiny;
 	private String reference;
 	private String file;
@@ -30,8 +30,16 @@ public class NodeReference extends Element implements Node {
 		this.destiny = destiny;
 	}
 
+	public String getReference() {
+		return reference;
+	}
+
 	public NodeImpl getDestiny() {
 		return destiny;
+	}
+
+	public void setDestiny(NodeImpl destiny) {
+		this.destiny = destiny;
 	}
 
 	@Override
@@ -103,13 +111,13 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public Node getContainer() {
+	public NodeContainer getContainer() {
 		return container;
 	}
 
 	@Override
 	public void setContainer(NodeContainer container) {
-
+		this.container = container;
 	}
 
 	@Override
@@ -217,7 +225,9 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public String getFullType() {
-		return container.getFullType() + "." + getType();
+		if (container instanceof Node)
+			return ((Node) container).getFullType() + "." + getType();
+		else return "";
 	}
 
 	@Override
@@ -308,5 +318,10 @@ public class NodeReference extends Element implements Node {
 	@Override
 	public void addFacetTargets(FacetTarget... targets) {
 
+	}
+
+	@Override
+	public String toString() {
+		return destiny != null ? getQualifiedName() : reference;
 	}
 }

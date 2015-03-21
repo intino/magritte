@@ -16,26 +16,6 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public String getFile() {
-		return null;
-	}
-
-	@Override
-	public void setFile(String file) {
-
-	}
-
-	@Override
-	public int getLine() {
-		return 0;
-	}
-
-	@Override
-	public void setLine(int line) {
-
-	}
-
-	@Override
 	public String getLanguage() {
 		return null;
 	}

@@ -16,6 +16,7 @@ import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.core.operation.model.ModelOperation;
+import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.Model;
 
@@ -25,7 +26,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
-import static siani.tara.compiler.model.Annotation.CASE;
 
 public class ModelToJavaOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
@@ -107,7 +107,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			Document document = new Document();
 			String project = compilationUnit.getConfiguration().getProject();
 			ruleEngine.render(new BoxFrameCreator(project, model).create(nodes, collectParentBoxes(nodes)), document);
-			map.put(composeBoxName(nodes.get(0).getFile()), document);
+			map.put(composeBoxName(((Element) nodes.get(0)).getFile()), document);
 		}
 		return map;
 	}
@@ -117,7 +117,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		RuleEngine ruleEngine = new RuleEngine(new ItrRulesReader(rulesInput).read(), configuration.getLocale());
 		ruleEngine.register("reference", buildReferenceFormatter());
 		for (Node node : nodes) {
-			if (!node.getFile().equals(model.getName()) || node.isCase()) continue;
+			if (!((Element) node).getFile().equals(model.getName()) || node.isCase()) continue;
 			Document document = new Document();
 			String project = compilationUnit.getConfiguration().getProject();
 			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(project, model).create(node);
@@ -198,10 +198,10 @@ public class ModelToJavaOperation extends ModelOperation {
 	private List<List<Node>> groupByBox(Model treeModel) {
 		Map<String, List<Node>> nodes = new HashMap();
 		for (Node node : treeModel.getIncludedNodes()) {
-			if (!model.getFile().equals(node.getFile())) continue;
-			if (!nodes.containsKey(node.getFile()))
-				nodes.put(node.getFile(), new ArrayList<Node>());
-			nodes.get(node.getFile()).add(node);
+			if (!model.getFile().equals(((Element) node).getFile())) continue;
+			if (!nodes.containsKey(((Element) node).getFile()))
+				nodes.put(((Element) node).getFile(), new ArrayList<Node>());
+			nodes.get(((Element) node).getFile()).add(node);
 		}
 		return pack(nodes);
 	}

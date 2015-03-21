@@ -189,7 +189,7 @@ public class LanguageDependencyResolver {
 //	private void createFacetTargets(Node facetNode, List<FacetTarget> newFacets, Collection<Node> nodes, FacetTarget facetTarget) {
 //		for (Node node : nodes) {
 //			FacetTarget target = new FacetTarget(node.getName());
-//			target.setDestiny(node.getObject());
+//			target.setTargetNode(node.getObject());
 //			target.setDestinyQN(node.getQualifiedName());
 //			for (Node inner : facetTarget.getInner()) target.add(inner);
 //			for (Variable var : facetTarget.getVariables()) target.add(var);

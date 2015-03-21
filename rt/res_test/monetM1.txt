@@ -6,6 +6,10 @@ project
 Monet
 module
 Census
+models
+/Users/oroncal/workspace/sandbox/tara/plugins/tara_languages/
+semantic_lib
+/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara-semantic.jar
 language
 Monet
 terminal

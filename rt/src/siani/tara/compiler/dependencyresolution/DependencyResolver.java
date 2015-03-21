@@ -1,13 +1,11 @@
 package siani.tara.compiler.dependencyresolution;
 
 import siani.tara.compiler.core.errorcollection.DependencyException;
-import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
-
-import java.util.Comparator;
-
+import siani.tara.compiler.model.impl.VariableReference;
 
 public class DependencyResolver {
 	Model model;
@@ -19,160 +17,74 @@ public class DependencyResolver {
 	}
 
 	public void resolve() throws DependencyException {
-		for (Node node : model.getIncludedNodes()) resolveParent(node);
-		propagateTerminalAnnotations();
+		for (Node node : model.getIncludedNodes())
+			resolve(node);
+	}
+
+	private void resolve(Node node) throws DependencyException {
+		if (!(node instanceof NodeImpl)) return;
+		resolveParent(node);
+		resolveInnerReferenceNodes(node);
+		resolveVariableReference(node);
+		for (Node include : node.getIncludedNodes())
+			resolve(include);
+		resolveInFacets(node);
+		resolveInTargets(node);
 	}
 
 	private void resolveParent(Node node) throws DependencyException {
-		if (!(node instanceof NodeImpl)) return;
 		if (node.getParent() == null && node.getParentName() != null) {
 			Node parent = manager.resolve(node.getParentName(), (NodeImpl) node);
-			if (parent == null) throw new DependencyException("Parent not found", node);
-			else ((NodeImpl) node).setParent(parent);
-		}
-		for (Node include : node.getIncludedNodes())
-			resolveParent(include);
-	}
-
-//	private void resolveParent() throws DependencyException {
-//		List<LinkNode> toAddNodes = new ArrayList<>();
-//		while (!toProcessNodes.isEmpty()) {
-//			for (int i = 0; i < toProcessNodes.size(); i++) {
-//				Node node = toProcessNodes.get(i);
-//				if (node instanceof LinkNode)
-//					linkToDeclared((LinkNode) node, model.searchDeclaredNodeOfLink((LinkNode) node));
-//				else if (resolveAsDeclared(toAddNodes, (DeclaredNode) node)) continue;
-//				toProcessNodes.remove(node);
-//				i--;
-//			}
-//		}
-//		addNewNodes(toAddNodes);
-//		updateLinks(toAddNodes);
-//	}
-
-	private void propagateTerminalAnnotations() {
-	}
-
-	private void propagateTerminal(Node node) {
-	}
-
-	private void setVariablesToTerminal(Node inner) {
-	}
-
-	//	private void linkToDeclared(Node node, Node parent) throws DependencyException {
-//	}
-//		private boolean resolveAsDeclared(List<LinkNode> toAddNodes, DeclaredNode node) throws DependencyException {
-//		NodeObject object = node.getObject();
-//		if (object.getParentName() != null || node.isSub()) {
-//			DeclaredNode parent = model.searchAncestry(node);
-//			if (parent == null) throwError(node);
-//			if (toProcessNodes.contains(parent.getQualifiedName())) return true;
-//			linkDeclaredToParent(object, parent);
-//			extractInfoFromParent(toAddNodes, node, parent);
-//		}
-//		resolveVariableReferences(node);
-//		return false;
-//	}
-//
-//
-//	private void resolveVariableReferences(Node node) throws DependencyException {
-//		List<Reference> references = node.getObject().getReferences();
-//		DeclaredNode declaredNode;
-//		for (Reference reference : references) {
-//			Node refNode = model.searchDeclarationOfReference(reference.getType(), node);
-//			declaredNode = refNode.is(DeclaredNode.class) ? (DeclaredNode) refNode : ((LinkNode) refNode).getDestiny();
-//			if (declaredNode == null)
-//				declaredNode = model.searchDeclarationOfReference(reference.getType(), node);
-//			if (declaredNode == null) throwError(node);
-//			reference.setType(declaredNode.getQualifiedName());
-//		}
-//	}
-//
-//	private void addNewNodes(List<LinkNode> toAddNodes) {
-//		for (Node toAddNode : toAddNodes) {
-//			toAddNode.calculateQualifiedName();
-//			model.register(toAddNode);
-//		}
-//		model.sortNodeTable(new NodeComparator());
-//	}
-//
-//	private List<String> updateLinks(List<LinkNode> toAddNodes) {
-//		List<String> nodes = new ArrayList();
-//		for (Node node : model.getNodeTable()) {
-//			if (node instanceof LinkNode) {
-//				node.calculateQualifiedName();
-//				if (!toAddNodes.contains(node))
-//					nodes.add(node.getQualifiedName());
-//			}
-//		}
-//		return nodes;
-//	}
-//
-//	private void extractInfoFromParent(List<LinkNode> toAddNodes, DeclaredNode node, DeclaredNode parent) {
-//		collectInnerConceptsInherited(parent, node, toAddNodes);
-//		calculateInheritedVariables(parent.getObject(), node);
-//		addInheritedAnnotations(parent, node);
-//	}
-//
-//	private void addInheritedAnnotations(Node parent, DeclaredNode node) {
-//		for (Annotation annotation : parent.getAnnotations())
-//			if (!annotation.equals(ABSTRACT))
-//				node.add(annotation);
-//	}
-//
-//	private void calculateInheritedVariables(NodeObject parent, DeclaredNode child) {
-//		List<Variable> variables = new ArrayList<>();
-//		for (Variable variable : parent.getVariables())
-//			if (!isOverrided(child, variable))
-//				variables.add(variable.clone());
-//		child.getObject().getVariables().addAll(0, variables);
-//	}
-//
-//	private boolean isOverrided(DeclaredNode child, Variable variable) {
-//		for (Variable childVar : child.getObject().getVariables())
-//			if (childVar.getName().equals(variable.getName()) && childVar.getType().equals(variable.getType()))
-//				return true;
-//		return false;
-//	}
-//
-//	private void collectInnerConceptsInherited(DeclaredNode parent, DeclaredNode node, List<LinkNode> toAddNodes) {
-//		for (Node child : parent.getInnerNodes()) {
-//			if (!child.is(LinkNode.class) && child.isSub() || node.contains(child.getType(), child.getName(), child.isAggregated()))
-//				continue;
-//			DeclaredNode destiny = (child instanceof LinkNode) ? ((LinkNode) child).getDestiny() : (DeclaredNode) child;
-//			LinkNode element = new LinkNode(destiny, node);
-//			model.register(node);
-//			element.setDestinyQN(destiny.getQualifiedName());
-//			toAddNodes.add(element);
-//			node.add(0, element);
-//			element.calculateQualifiedName();
-//		}
-//	}
-//
-//	private void linkDeclaredToParent(NodeObject object, DeclaredNode parent) {
-//		object.setParentObject(parent.getObject());
-//		object.setParentName(parent.getQualifiedName());
-//		parent.getObject().addChild(object);
-//	}
-//
-	private Comparator<Node> buildNodeComparator() {
-		return new Comparator<Node>() {
-			@Override
-			public int compare(Node o1, Node o2) {
-				boolean i1 = o1 instanceof NodeReference;
-				boolean i2 = o2 instanceof NodeReference;
-				if (i1 && !i2) return -1;
-				if (!i1 && !i2) return 0;
-				if (!i1) return 1;
-				return -1;
+			if (parent == null) throw new DependencyException("Parent not found", (Element) node);
+			else {
+				((NodeImpl) node).setParent(parent);
+				parent.addChild(node);
 			}
-		};
+		}
 	}
-//
-//	private void throwError(Node node) throws DependencyException {
-//		if (node.getObject() != null)
-//			throw new DependencyException("Not found reference: " + node.getObject().getParentName(), node);
-//		else if (node instanceof LinkNode)
-//			throw new DependencyException("Not found reference: " + ((LinkNode) node).getDestinyName(), node);
-//	}
+
+	private void resolveInnerReferenceNodes(Node node) throws DependencyException {
+		for (NodeReference nodeReference : node.getInnerNodeReferences()) {
+			if (nodeReference.getDestiny() != null) continue;
+			NodeImpl destiny = manager.resolve(nodeReference);
+			if (destiny == null) throw new DependencyException("Reference destiny not found", nodeReference);
+			else nodeReference.setDestiny(destiny);
+		}
+	}
+
+	private void resolveInFacets(Node node) throws DependencyException {
+		for (Facet facet : node.getFacets()) {
+			resolveVariableReference(facet);
+			for (Node include : facet.getIncludedNodes())
+				resolve(include);
+		}
+	}
+
+	private void resolveInTargets(Node node) throws DependencyException {
+		for (FacetTarget facet : node.getFacetTargets()) {
+			resolveVariableReference(facet);
+			resolveFacetTarget(facet);
+			for (Node include : facet.getIncludedNodes())
+				resolve(include);
+		}
+	}
+
+	private void resolveVariableReference(NodeContainer container) throws DependencyException {
+		for (Variable variable : container.getVariables())
+			if (variable instanceof VariableReference)
+				resolveVariableReference((VariableReference) variable, container);
+	}
+
+	private void resolveFacetTarget(FacetTarget facet) throws DependencyException {
+		NodeImpl destiny = manager.resolve(facet, facet.getContainer());
+		if (destiny == null) throw new DependencyException("Facet Target not found", (Element) facet);
+		else facet.setTargetNode(destiny);
+	}
+
+	private void resolveVariableReference(VariableReference variable, NodeContainer container) throws DependencyException {
+		NodeImpl destiny = manager.resolve(variable, container);
+		if (destiny == null)
+			throw new DependencyException("variable of type " + variable.getType() + " not found", (Element) container);
+		else variable.setDestiny(destiny);
+	}
 }

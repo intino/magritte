@@ -10,14 +10,6 @@ public interface Node extends NodeContainer, Parameterized {
 
 	void setName(String name);
 
-	String getFile();
-
-	void setFile(String file);
-
-	int getLine();
-
-	void setLine(int line);
-
 	String getLanguage();
 
 	void setLanguage(String language);

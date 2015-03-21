@@ -51,6 +51,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (ctx.signature().annotations() != null)
 			node.addAnnotations(resolveAnnotations(ctx.signature().annotations()));
 		addHeaderInformation(ctx, node);
+		node.addImports(imports);
 		deque.push(node);
 	}
 
@@ -76,10 +77,9 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		return identifierReference != null ? identifierReference.getText() : null;
 	}
 
-	private void addHeaderInformation(ParserRuleContext ctx, Node node) {
-		node.setLine(ctx.getStart().getLine());
-		node.setFile(file);
-		node.addImports(imports);
+	private void addHeaderInformation(ParserRuleContext ctx, Element element) {
+		element.setLine(ctx.getStart().getLine());
+		element.setFile(file);
 	}
 
 	@Override
@@ -90,6 +90,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterFacetApply(@NotNull FacetApplyContext ctx) {
 		Facet facet = new FacetImpl(ctx.metaidentifier(0).getText());
+		addHeaderInformation(ctx, (Element) facet);
 		Node peek = (Node) deque.peek();
 		peek.addFacets(facet);
 		facet.setContainer(peek);
@@ -103,11 +104,20 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterFacetTarget(@NotNull FacetTargetContext ctx) {
-		NodeImpl node = (NodeImpl) deque.peek();
+		NodeImpl peek = getNodeContainer();
 		FacetTarget facetTarget = new FacetTargetImpl();
-		facetTarget.setDestiny(ctx.identifierReference().getText());
-		node.addFacetTargets(facetTarget);
+		addHeaderInformation(ctx, (Element) facetTarget);
+		facetTarget.setTarget(ctx.identifierReference().getText());
+		peek.addFacetTargets(facetTarget);
+		facetTarget.setContainer(peek);
 		deque.push(facetTarget);
+	}
+
+	private NodeImpl getNodeContainer() {
+		NodeContainer peek = deque.peek();
+		while (!(peek instanceof NodeImpl))
+			peek = peek.getContainer();
+		return (NodeImpl) peek;
 	}
 
 	@Override
@@ -145,6 +155,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	public void enterNodeReference(@NotNull NodeReferenceContext ctx) {
 		NodeContainer container = deque.peek();
 		NodeReference nodeReference = new NodeReference(ctx.identifierReference().getText());
+		addHeaderInformation(ctx, nodeReference);
 		nodeReference.setHas(true);
 		if (ctx.annotations() != null) nodeReference.addAnnotations(resolveAnnotations(ctx.annotations()));
 		nodeReference.setContainer(container);
@@ -168,15 +179,19 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterVariable(@NotNull VariableContext ctx) {
 		NodeContainer container = deque.peek();
-		VariableImpl variable = new VariableImpl(ctx.variableType().getText(), ctx.IDENTIFIER().getText());
+		VariableTypeContext variableType = ctx.variableType();
+		Variable variable = variableType.identifierReference() != null ?
+			new VariableReference(variableType.getText(), ctx.IDENTIFIER().getText()) :
+			new VariableImpl(variableType.getText(), ctx.IDENTIFIER().getText());
 		variable.setMultiple(ctx.LIST() != null);
 		if (ctx.word() != null) processAsWord(variable, ctx.word());
 		else if (ctx.value() != null)
 			variable.addDefaultValues(resolveValue(ctx.value()));
+		addHeaderInformation(ctx, (Element) variable);
 		container.addVariables(variable);
 	}
 
-	private void processAsWord(VariableImpl variable, WordContext word) {
+	private void processAsWord(Variable variable, WordContext word) {
 		for (WordValueContext value : word.wordValue()) {
 			variable.addAllowedValues(value.IDENTIFIER().getText());
 			if (value.STAR() != null) variable.addDefaultValues(value.IDENTIFIER().getText());

@@ -9,10 +9,11 @@ import java.util.List;
 
 public class FacetImpl extends Element implements Facet {
 
+	private String file;
+	private int line;
 	private List<Parameter> parameters = new ArrayList<>();
 	private NodeContainer container;
 	private List<Node> includes = new ArrayList<>();
-	private List<VariableImpl> variables = new ArrayList();
 	private String facet;
 
 	public FacetImpl(String facet) {
@@ -85,7 +86,27 @@ public class FacetImpl extends Element implements Facet {
 	}
 
 	@Override
-	public String getFacet() {
+	public String type() {
 		return facet;
+	}
+
+	@Override
+	public String getFile() {
+		return file;
+	}
+
+	@Override
+	public void setFile(String file) {
+		this.file = file;
+	}
+
+	@Override
+	public int getLine() {
+		return line;
+	}
+
+	@Override
+	public void setLine(int line) {
+		this.line = line;
 	}
 }

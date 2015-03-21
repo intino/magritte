@@ -33,7 +33,7 @@ public class SemanticAnalysisOperation extends ModelOperation {
 			LOG.severe("Error linking with language: " + e.getMessage());
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		} catch (SemanticException e) {
-//			SourceUnit sourceFromFile = getSourceFromFile(compilationUnit.getSourceUnits().values(), error.getNode());
+//			SourceUnit sourceFromFile = getSourceFromFile(compilationUnit.getSourceUnits().values(), error.getElement());
 //			if (error instanceof SemanticError.FatalError) {
 //				LOG.log(Level.SEVERE, "Error during semantic analyze: " + e.getMessage(), e);
 //				compilationUnit.getErrorCollector().addError(Message.create(error, sourceFromFile));

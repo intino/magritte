@@ -1,5 +1,6 @@
 package siani.tara.compiler.model.impl;
 
+import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Variable;
 
 import java.util.ArrayList;
@@ -7,13 +8,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class VariableImpl implements Variable {
+public class VariableImpl extends Element implements Variable {
 	private String type;
 	private String name;
 	private boolean multiple;
 	private List<Object> allowedValues = new ArrayList<>();
 	private List<Object> defaultValues = new ArrayList<>();
 	private String extension;
+	private String file;
+	private int line;
 
 
 	public VariableImpl(String type, String name) {
@@ -78,5 +81,25 @@ public class VariableImpl implements Variable {
 	@Override
 	public void addDefaultValues(Object... values) {
 		Collections.addAll(this.defaultValues, values);
+	}
+
+	@Override
+	public String getFile() {
+		return file;
+	}
+
+	@Override
+	public void setFile(String file) {
+		this.file = file;
+	}
+
+	@Override
+	public int getLine() {
+		return line;
+	}
+
+	@Override
+	public void setLine(int line) {
+		this.line = line;
 	}
 }

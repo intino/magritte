@@ -19,7 +19,7 @@ public class LanguageFacetTarget extends LanguageElement implements siani.tara.s
 
 	@Override
 	public String target() {
-		return target.getDestiny();
+		return target.getTarget();
 	}
 
 	@Override

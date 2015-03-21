@@ -2,11 +2,11 @@ package siani.tara.compiler.model;
 
 public interface FacetTarget extends NodeContainer {
 
-	String getDestiny();
+	String getTarget();
 
-	void setDestiny(String destiny);
+	void setTarget(String destiny);
 
-	Node getDestinyNode();
+	Node getTargetNode();
 
-	void setDestiny(Node destiny);
+	void setTargetNode(Node destiny);
 }

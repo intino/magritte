@@ -21,7 +21,7 @@ public class LanguageFacet extends LanguageElement implements siani.tara.semanti
 
 	@Override
 	public String type() {
-		return facet.getFacet();
+		return facet.type();
 	}
 
 	@Override

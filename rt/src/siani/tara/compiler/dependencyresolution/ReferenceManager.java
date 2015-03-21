@@ -1,7 +1,6 @@
 package siani.tara.compiler.dependencyresolution;
 
-import siani.tara.compiler.model.Node;
-import siani.tara.compiler.model.NodeContainer;
+import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
@@ -18,18 +17,34 @@ public class ReferenceManager {
 		this.model = model;
 	}
 
-	Node resolve(NodeReference reference) {
-		return null;
+	NodeImpl resolve(FacetTarget target, NodeContainer container) {
+		return resolve(target.getTarget(), getNodeContainer(container));
 	}
 
-	Node resolve(String reference, NodeImpl node) {
+	NodeImpl resolve(Facet facet, NodeContainer container) {
+		return resolve(facet.type(), getNodeContainer(container));
+	}
+
+	NodeImpl resolve(Variable variable, NodeContainer container) {
+		return resolve(variable.getType(), getNodeContainer(container));
+	}
+
+	NodeImpl resolve(NodeReference reference) {
+		return resolve(reference.getReference(), getNodeContainer(reference.getContainer()));
+	}
+
+	Node searchByQn(String qn) {
+		return searchByQn(model, qn);
+	}
+
+	NodeImpl resolve(String reference, NodeImpl node) {
 		String[] path = reference.split("\\.");
 		Collection<Node> roots = searchPossibleRoots(node, path[0]);
 		if (roots.isEmpty()) return null;
-		if (roots.size() == 1 && path.length == 1) return roots.iterator().next();
+		if (roots.size() == 1 && path.length == 1) return (NodeImpl) roots.iterator().next();
 		for (Node root : roots) {
 			Node candidate = resolvePathInNode(path, root);
-			if (candidate != null) return candidate;
+			if (candidate != null) return (NodeImpl) candidate;
 		}
 		return null;
 	}
@@ -38,7 +53,7 @@ public class ReferenceManager {
 		Node reference = null;
 		for (String name : path) {
 			reference = (reference == null) ? name.equals(node.getName()) ? node : null :
-				node.getInclude(name);
+				reference.getInclude(name);
 			if (reference == null) return null;
 		}
 		return reference;
@@ -46,7 +61,8 @@ public class ReferenceManager {
 
 	private Collection<Node> searchPossibleRoots(Node node, String name) {
 		Set<Node> set = new LinkedHashSet<>();
-		addInContext(name, set, node.getContainer());
+		checkName(name, set, node);
+		addInContext(name, set, node);
 		addRoots(name, set);
 		return set;
 	}
@@ -57,21 +73,26 @@ public class ReferenceManager {
 	}
 
 	private void addInContext(String name, Set<Node> set, NodeContainer node) {
+		checkSiblings(name, set, node);
 		NodeContainer container = node.getContainer();
-		if (container instanceof NodeImpl && checkName((Node) node, name))
-			set.add((Node) container);
-		for (Node sibling : node.getNodeSiblings()) {
-			if (sibling instanceof NodeImpl && checkName(sibling, name))
-				set.add(sibling);
+		while (container != null) {
+			checkName(name, set, container);
+			checkSiblings(name, set, container);
+			container = container.getContainer();
 		}
+	}
+
+	private void checkSiblings(String name, Set<Node> set, NodeContainer container) {
+		for (Node sibling : container.getNodeSiblings()) checkName(name, set, sibling);
+	}
+
+	private void checkName(String name, Set<Node> set, NodeContainer container) {
+		if (container instanceof NodeImpl && checkName((Node) container, name))
+			set.add((Node) container);
 	}
 
 	private boolean checkName(Node node, String name) {
 		return name.equals(node.getName());
-	}
-
-	public Node searchByQn(String qn) {
-		return searchByQn(model, qn);
 	}
 
 	private Node searchByQn(Node node, String qn) {
@@ -81,4 +102,10 @@ public class ReferenceManager {
 		return null;
 	}
 
+	private NodeImpl getNodeContainer(NodeContainer reference) {
+		NodeContainer container = reference;
+		while (!(container instanceof NodeImpl))
+			container = container.getContainer();
+		return (NodeImpl) container;
+	}
 }

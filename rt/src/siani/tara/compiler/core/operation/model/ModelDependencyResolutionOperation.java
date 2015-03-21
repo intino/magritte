@@ -24,7 +24,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			new DependencyResolver(model).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
-			compilationUnit.getErrorCollector().addError(Message.create(e, compilationUnit.getSourceUnits().get(e.getNode().getFile())), true);
+			compilationUnit.getErrorCollector().addError(Message.create(e, compilationUnit.getSourceUnits().get(e.getElement().getFile())), true);
 		}
 	}
 }
