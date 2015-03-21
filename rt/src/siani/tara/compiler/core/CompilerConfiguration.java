@@ -259,10 +259,9 @@ public class CompilerConfiguration {
 
 	public void setLanguage(String language) {
 		languageName = language;
-		loadLanguage();
 	}
 
-	private Language loadLanguage() {
+	public Language loadLanguage() {
 		try {
 			this.language = LanguageLoader.load(languageName, languagesDirectory);
 			return language;

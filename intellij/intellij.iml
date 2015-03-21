@@ -14,7 +14,7 @@
     <orderEntry type="library" name="itrules" level="project" />
     <orderEntry type="library" name="tara-semantic" level="project" />
     <orderEntry type="module" module-name="tara-jps-plugin" />
-    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="junit" level="application" />
+    <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

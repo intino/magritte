@@ -46,6 +46,11 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public boolean isTerminal() {
+		return false;
+	}
+
+	@Override
 	public NodeContainer getContainer() {
 		return null;
 	}
@@ -76,7 +81,27 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public boolean isRequired() {
+		return false;
+	}
+
+	@Override
+	public boolean isSingle() {
+		return false;
+	}
+
+	@Override
+	public boolean isNamed() {
+		return false;
+	}
+
+	@Override
 	public boolean isAggregated() {
+		return false;
+	}
+
+	@Override
+	public boolean isAssociated() {
 		return false;
 	}
 
@@ -201,6 +226,11 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public void moveToTheTop() {
+
+	}
+
+	@Override
 	public Collection<Variable> getVariables() {
 		return null;
 	}
@@ -233,6 +263,16 @@ public class EmptyNode implements Node {
 	@Override
 	public Collection<Facet> getFacets() {
 		return null;
+	}
+
+	@Override
+	public Collection<String> getAllowedFacets() {
+		return null;
+	}
+
+	@Override
+	public void addAllowedFacets(String... facet) {
+
 	}
 
 	@Override

@@ -65,6 +65,11 @@ public class FacetTargetImpl extends Element implements FacetTarget {
 	}
 
 	@Override
+	public void moveToTheTop() {
+
+	}
+
+	@Override
 	public Collection<Node> getNodeSiblings() {
 		ArrayList<Node> objects = new ArrayList<>();
 		objects.addAll(getContainer().getIncludedNodes());

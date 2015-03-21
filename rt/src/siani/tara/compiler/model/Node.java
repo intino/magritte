@@ -22,6 +22,8 @@ public interface Node extends NodeContainer, Parameterized {
 
 	Collection<Node> getSubNodes();
 
+	boolean isTerminal();
+
 	boolean isIntention();
 
 	boolean isFacet();
@@ -30,7 +32,15 @@ public interface Node extends NodeContainer, Parameterized {
 
 	boolean isAbstract();
 
+	boolean isRequired();
+
+	boolean isSingle();
+
+	boolean isNamed();
+
 	boolean isAggregated();
+
+	boolean isAssociated();
 
 	boolean isProperty();
 
@@ -72,6 +82,10 @@ public interface Node extends NodeContainer, Parameterized {
 
 	Collection<Facet> getFacets();
 
+	Collection<String> getAllowedFacets();
+
+	void addAllowedFacets(String... facet);
+
 	void addFacets(Facet... facets);
 
 	Collection<FacetTarget> getFacetTargets();
@@ -81,7 +95,6 @@ public interface Node extends NodeContainer, Parameterized {
 	String toString();
 
 	boolean equals(Object obj);
-
 
 	int hashCode();
 }

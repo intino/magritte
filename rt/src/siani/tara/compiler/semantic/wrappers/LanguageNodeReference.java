@@ -3,7 +3,7 @@ package siani.tara.compiler.semantic.wrappers;
 import siani.tara.compiler.model.Annotation;
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Facet;
-import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 
 	@Override
 	public siani.tara.semantic.model.Node context() {
-		return new LanguageNode((Node) reference.getContainer());
+		return new LanguageNode((NodeImpl) reference.getContainer());
 	}
 
 	@Override
@@ -70,6 +70,10 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 		List<String> values = new ArrayList<>();
 		for (Annotation annotation : reference.getAnnotations()) values.add(annotation.getName());
 		return values.toArray(new String[values.size()]);
+	}
+
+	@Override
+	public void moveToTheTop() {
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Facet;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.Parameter;
+import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class LanguageFacet extends LanguageElement implements siani.tara.semanti
 		for (Node include : facet.getIncludedNodes())
 			nodes.add(include instanceof NodeReference ?
 				new LanguageNodeReference((NodeReference) include) :
-				new LanguageNode(include));
+				new LanguageNode((NodeImpl) include));
 		return nodes.toArray(new siani.tara.semantic.model.Node[nodes.size()]);
 	}
 

@@ -1,5 +1,6 @@
 package siani.tara.compiler.model.impl;
 
+import siani.tara.compiler.model.Annotation;
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Variable;
 
@@ -7,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import static siani.tara.compiler.model.Annotation.READONLY;
+import static siani.tara.compiler.model.Annotation.TERMINAL;
 
 public class VariableImpl extends Element implements Variable {
 	private String type;
@@ -17,6 +21,7 @@ public class VariableImpl extends Element implements Variable {
 	private String extension;
 	private String file;
 	private int line;
+	private List<Annotation> annotations = new ArrayList<>();
 
 
 	public VariableImpl(String type, String name) {
@@ -42,6 +47,27 @@ public class VariableImpl extends Element implements Variable {
 	@Override
 	public String getExtension() {
 		return extension;
+	}
+
+	@Override
+	public Collection<Annotation> getAnnotations() {
+		return annotations;
+	}
+
+	@Override
+	public void addAnnotations(String... annotations) {
+		for (String annotation : annotations)
+			this.annotations.add(Annotation.valueOf(annotation.toUpperCase().replace("+", "META_")));
+	}
+
+	@Override
+	public boolean isTerminal() {
+		return annotations.contains(TERMINAL);
+	}
+
+	@Override
+	public boolean isReadOnly() {
+		return annotations.contains(READONLY);
 	}
 
 	@Override

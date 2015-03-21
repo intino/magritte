@@ -1,11 +1,13 @@
 package siani.tara.compiler.model;
 
+import java.util.Collection;
+
 public interface Parameter {
 
 	String getName();
 
 	int getPosition();
 
-	Object[] getValues();
+	Collection<Object> getValues();
 
 }

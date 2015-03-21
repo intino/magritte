@@ -4,7 +4,7 @@ import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.DependencyException;
 import siani.tara.compiler.core.errorcollection.message.Message;
-import siani.tara.compiler.dependencyresolution.FacetTargetsResolver;
+import siani.tara.compiler.dependencyresolution.FacetTargetResolver;
 import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.compiler.model.impl.Model;
 
@@ -23,7 +23,7 @@ public class FacetResolutionOperation extends ModelOperation {
 	public void call(Model model) throws CompilationFailedException {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Resolving Facets");
-			new FacetTargetsResolver(model).resolve();
+			new FacetTargetResolver(model).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during facets resolution: " + e.getMessage());
 			compilationUnit.getErrorCollector().addError(Message.create(e, compilationUnit.getSourceUnits().get(e.getElement().getFile())), true);

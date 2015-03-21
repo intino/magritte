@@ -7,6 +7,7 @@ import siani.tara.compiler.core.errorcollection.*;
 import siani.tara.compiler.core.errorcollection.message.*;
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.rt.TaraCompilerMessageCategories;
+import siani.tara.compiler.semantic.wrappers.LanguageElement;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,9 +70,9 @@ public class TaraCompiler {
 	private void processException(Message message) {
 		if (message instanceof SyntaxErrorMessage)
 			addErrorMessage(((SyntaxErrorMessage) message).getCause());
-//		if (message instanceof SemanticErrorMessage)
-//			addErrorMessage(((SemanticErrorMessage) message).getCause());
-		if (message instanceof DependencyErrorMessage)
+		else if (message instanceof SemanticErrorMessage)
+			addErrorMessage(((SemanticErrorMessage) message).getCause());
+		else if (message instanceof DependencyErrorMessage)
 			addErrorMessage(((DependencyErrorMessage) message).getCause());
 		else if (message instanceof ExceptionMessage)
 			processException(((ExceptionMessage) message).getCause());
@@ -102,18 +103,18 @@ public class TaraCompiler {
 			exception.getLine(), exception.getStartColumn()));
 	}
 
-//	private void addErrorMessage(SemanticError exception) {
-//		String message;
-//		if (exception.getElement() != null) {
-//			message = (exception.getMessage().contains(LINE_AT)) ?
-//				exception.getMessage().substring(0, exception.getMessage().lastIndexOf(LINE_AT)) : exception.getMessage();
-//			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, exception.getElement().getFile(),
-//				exception.getLine(), 1));
-//		} else {
-//			message = exception.getMessage();
-//			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, null, -1, -1));
-//		}
-//	}
+	private void addErrorMessage(SemanticException error) {
+		String message;
+		if (error.getErrors()[0].origin() != null) {
+			message = (error.getMessage().contains(LINE_AT)) ?
+				error.getMessage().substring(0, error.getMessage().lastIndexOf(LINE_AT)) : error.getMessage();
+			Element element = ((LanguageElement) error.getErrors()[0].origin()).element();
+			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, element.getFile(), element.getLine(), 1));
+		} else {
+			message = error.getMessage();
+			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, null, -1, -1));
+		}
+	}
 
 	private void addErrorMessage(DependencyException exception) {
 		String message = exception.getMessage();

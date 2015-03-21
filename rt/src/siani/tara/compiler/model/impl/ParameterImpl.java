@@ -3,11 +3,16 @@ package siani.tara.compiler.model.impl;
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Parameter;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 public class ParameterImpl extends Element implements Parameter {
 
 	private String name;
 	private int position;
-	private final Object[] values;
+	private final List<Object> values = new ArrayList<>();
 	private String file;
 	private int line;
 
@@ -15,7 +20,7 @@ public class ParameterImpl extends Element implements Parameter {
 	public ParameterImpl(String name, int position, Object... values) {
 		this.name = name;
 		this.position = position;
-		this.values = values;
+		Collections.addAll(this.values, values);
 	}
 
 	public ParameterImpl(int position, Object... values) {
@@ -33,7 +38,7 @@ public class ParameterImpl extends Element implements Parameter {
 	}
 
 	@Override
-	public Object[] getValues() {
+	public Collection<Object> getValues() {
 		return values;
 	}
 

@@ -1,7 +1,7 @@
 defrule type(Model)
 package siani.tara.dsls;
 
-import siani.tara.model.Tara;
+import siani.tara.semantic.model.Tara;
 import java.util.Locale;
 import static siani.tara.semantic.Relation.*;
 import static siani.tara.semantic.constraints.RuleFactory.*;
@@ -91,7 +91,7 @@ _parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position)
 endrule
 
 defrule type(require) type(parameter) trigger(require)
-_parameter("$name", "$type",$multiple, $position)
+_parameter("$name", "$type", $multiple, $position)
 endrule
 
 defrule trigger(quoted)

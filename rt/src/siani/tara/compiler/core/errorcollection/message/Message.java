@@ -3,6 +3,7 @@ package siani.tara.compiler.core.errorcollection.message;
 import siani.tara.compiler.core.ProcessingUnit;
 import siani.tara.compiler.core.SourceUnit;
 import siani.tara.compiler.core.errorcollection.DependencyException;
+import siani.tara.compiler.core.errorcollection.SemanticException;
 import siani.tara.compiler.core.errorcollection.SyntaxException;
 
 import java.io.PrintWriter;
@@ -22,6 +23,10 @@ public abstract class Message {
 
 	public static Message create(SyntaxException error, SourceUnit owner) {
 		return new SyntaxErrorMessage(error, owner);
+	}
+
+	public static Message create(SemanticException error, SourceUnit owner) {
+		return new SemanticErrorMessage(error, owner);
 	}
 
 	public static Message create(DependencyException exception, SourceUnit owner) {

@@ -1,6 +1,7 @@
 package siani.tara.compiler.semantic.wrappers;
 
 import siani.tara.compiler.model.impl.Model;
+import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.semantic.model.Facet;
 import siani.tara.semantic.model.FacetTarget;
 import siani.tara.semantic.model.Node;
@@ -73,6 +74,11 @@ public class LanguageRoot implements Node {
 	}
 
 	@Override
+	public void moveToTheTop() {
+
+	}
+
+	@Override
 	public Facet[] facets() {
 		return new Facet[0];
 	}
@@ -95,7 +101,7 @@ public class LanguageRoot implements Node {
 	private Node[] wrap(Collection<siani.tara.compiler.model.Node> nodes) {
 		List<LanguageNode> languageNodes = new ArrayList<>();
 		for (siani.tara.compiler.model.Node node : nodes)
-			languageNodes.add(new LanguageNode(node));
+			languageNodes.add(new LanguageNode((NodeImpl) node));
 		return languageNodes.toArray(new LanguageNode[languageNodes.size()]);
 	}
 }

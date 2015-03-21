@@ -2,10 +2,7 @@ package siani.tara.compiler.model.impl;
 
 import siani.tara.compiler.model.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static siani.tara.compiler.model.Annotation.*;
 
@@ -18,6 +15,7 @@ public class NodeReference extends Element implements Node {
 	private int line;
 	private String doc;
 	private List<Annotation> annotations = new ArrayList<>();
+	private Set<String> allowedFacets = new HashSet<>();
 
 	private List<String> imports = new ArrayList<>();
 	private boolean has;
@@ -121,8 +119,13 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
+	public boolean isTerminal() {
+		return destiny.isTerminal() || annotations.contains(TERMINAL);
+	}
+
+	@Override
 	public boolean isIntention() {
-		return destiny.isIntention() || annotations.contains(ABSTRACT);
+		return destiny.isIntention() || annotations.contains(INTENTION);
 	}
 
 	@Override
@@ -141,8 +144,28 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
+	public boolean isRequired() {
+		return destiny.isRequired() || annotations.contains(REQUIRED);
+	}
+
+	@Override
+	public boolean isSingle() {
+		return destiny.isSingle() || annotations.contains(SINGLE);
+	}
+
+	@Override
+	public boolean isNamed() {
+		return destiny.isNamed() || annotations.contains(NAMED);
+	}
+
+	@Override
 	public boolean isAggregated() {
 		return destiny.isAggregated() || annotations.contains(Annotation.AGGREGATED);
+	}
+
+	@Override
+	public boolean isAssociated() {
+		return destiny.isAssociated() || annotations.contains(Annotation.ASSOCIATED);
 	}
 
 	@Override
@@ -286,6 +309,11 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
+	public void moveToTheTop() {
+
+	}
+
+	@Override
 	public Collection<Variable> getVariables() {
 		return destiny.getVariables();
 	}
@@ -318,6 +346,16 @@ public class NodeReference extends Element implements Node {
 	@Override
 	public Collection<Facet> getFacets() {
 		return destiny.getFacets();
+	}
+
+	@Override
+	public Collection<String> getAllowedFacets() {
+		return allowedFacets;
+	}
+
+	@Override
+	public void addAllowedFacets(String... facet) {
+		Collections.addAll(allowedFacets, facet);
 	}
 
 	@Override

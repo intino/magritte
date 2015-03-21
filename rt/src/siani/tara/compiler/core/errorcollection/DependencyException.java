@@ -21,7 +21,7 @@ public class DependencyException extends TaraException {
 
 	public String getMessage() {
 		String node = element != null && element instanceof NodeImpl ? ((Node) element).getQualifiedName() : "";
-		return "Inconsistent dependency in node " + node + "; " + message + " @ line " + this.line + ", column " + 1 + ".";
+		return "Inconsistent dependency in reference " + node + "; " + message + " @ line " + this.line + ", column " + 1 + ".";
 	}
 
 	public Element getElement() {

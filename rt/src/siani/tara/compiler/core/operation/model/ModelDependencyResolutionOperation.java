@@ -5,6 +5,7 @@ import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.DependencyException;
 import siani.tara.compiler.core.errorcollection.message.Message;
 import siani.tara.compiler.dependencyresolution.DependencyResolver;
+import siani.tara.compiler.dependencyresolution.FacetTargetResolver;
 import siani.tara.compiler.dependencyresolution.InheritanceResolver;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.rt.TaraRtConstants;
@@ -23,6 +24,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Resolving dependencies");
 			new DependencyResolver(model).resolve();
+			new FacetTargetResolver(model).resolve();
 			new InheritanceResolver(model).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());

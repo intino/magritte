@@ -95,7 +95,27 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
+	public boolean isRequired() {
+		return false;
+	}
+
+	@Override
+	public boolean isSingle() {
+		return false;
+	}
+
+	@Override
+	public boolean isNamed() {
+		return false;
+	}
+
+	@Override
 	public boolean isAggregated() {
+		return false;
+	}
+
+	@Override
+	public boolean isAssociated() {
 		return false;
 	}
 
@@ -107,6 +127,10 @@ public class Model extends Element implements Node {
 	@Override
 	public boolean isComponent() {
 		return false;
+	}
+
+	public boolean isTerminal() {
+		return terminal;
 	}
 
 	@Override
@@ -126,7 +150,7 @@ public class Model extends Element implements Node {
 
 	@Override
 	public List<Annotation> getAnnotations() {
-		return null;
+		return Collections.EMPTY_LIST;
 	}
 
 	@Override
@@ -147,6 +171,11 @@ public class Model extends Element implements Node {
 	@Override
 	public boolean remove(Node node) {
 		return node != null && includes.remove(node);
+	}
+
+	@Override
+	public void moveToTheTop() {
+
 	}
 
 	@Override
@@ -266,7 +295,17 @@ public class Model extends Element implements Node {
 
 	@Override
 	public Collection<Facet> getFacets() {
-		return null;
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public Collection<String> getAllowedFacets() {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public void addAllowedFacets(String... facet) {
+
 	}
 
 	@Override
@@ -289,10 +328,6 @@ public class Model extends Element implements Node {
 
 	public void setLanguage(String language) {
 		this.language = language;
-	}
-
-	public boolean isTerminal() {
-		return terminal;
 	}
 
 	public void setTerminal(boolean terminal) {

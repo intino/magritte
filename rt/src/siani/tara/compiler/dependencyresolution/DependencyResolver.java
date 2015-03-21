@@ -7,6 +7,9 @@ import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.compiler.model.impl.VariableReference;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DependencyResolver {
 	Model model;
 	ReferenceManager manager;
@@ -26,10 +29,38 @@ public class DependencyResolver {
 		resolveParent(node);
 		resolveInnerReferenceNodes(node);
 		resolveVariableReference(node);
+		resolveParametersReference(node);
 		for (Node include : node.getIncludedNodes())
 			resolve(include);
 		resolveInFacets(node);
 		resolveInTargets(node);
+	}
+
+	private void resolveParametersReference(Node node) throws DependencyException {
+		for (Parameter parameter : node.getParameters())
+			resolveParameterValue(node, parameter);
+	}
+
+	private void resolveParameterValue(Node node, Parameter parameter) throws DependencyException {
+		if (!areReferenceValues(parameter)) return;
+		List<Node> nodes = new ArrayList<>();
+		for (Object value : parameter.getValues()) {
+			Node reference = resolveParameter(node, (String) value);
+			if (reference != null) nodes.add(reference);
+		}
+		if (!nodes.isEmpty()) {
+			parameter.getValues().clear();
+			parameter.getValues().addAll(nodes);
+		}
+	}
+
+	private Node resolveParameter(Node node, String reference) throws DependencyException {
+		return manager.resolve(reference.replace("reference:", ""), node);
+	}
+
+	private boolean areReferenceValues(Parameter parameter) {
+		Object value = parameter.getValues().iterator().next();
+		return (value instanceof String && ((String) value).startsWith("reference:"));
 	}
 
 	private void resolveParent(Node node) throws DependencyException {
@@ -76,7 +107,7 @@ public class DependencyResolver {
 	}
 
 	private void resolveFacetTarget(FacetTarget facet) throws DependencyException {
-		NodeImpl destiny = manager.resolve(facet, facet.getContainer());
+		Node destiny = manager.resolve(facet, facet.getContainer());
 		if (destiny == null) throw new DependencyException("Facet Target not found", (Element) facet);
 		else facet.setTargetNode(destiny);
 	}

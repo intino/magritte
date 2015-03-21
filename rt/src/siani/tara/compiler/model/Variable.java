@@ -12,6 +12,14 @@ public interface Variable {
 
 	String getExtension();
 
+	Collection<Annotation> getAnnotations();
+
+	void addAnnotations(String... annotations);
+
+	boolean isTerminal();
+
+	boolean isReadOnly();
+
 	void setExtension(String extension);
 
 	void setType(String type);

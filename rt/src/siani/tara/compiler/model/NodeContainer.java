@@ -16,6 +16,8 @@ public interface NodeContainer {
 
 	boolean remove(Node node);
 
+	void moveToTheTop();
+
 	Collection<Node> getNodeSiblings();
 
 	Collection<Variable> getVariables();

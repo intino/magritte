@@ -2,31 +2,31 @@ package siani.tara.compiler.semantic.wrappers;
 
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
+import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 
 import java.util.*;
 
 public class LanguageNode extends LanguageElement implements siani.tara.semantic.model.Node {
 
-	private final Node node;
+	private final NodeImpl node;
 	private siani.tara.semantic.model.FacetTarget[] facetTargets;
 	private List<siani.tara.semantic.model.Node> includes = new ArrayList<>();
 
-	public LanguageNode(Node node) {
+	public LanguageNode(NodeImpl node) {
 		this.node = node;
 		if (node == null) return;
 		this.facetTargets = buildFacetTargets(node.getFacetTargets());
 		for (Node inner : node.getIncludedNodes())
 			includes.add(inner instanceof NodeReference ?
 				new LanguageNodeReference((NodeReference) inner) :
-				new LanguageNode(inner));
-
+				new LanguageNode((NodeImpl) inner));
 	}
 
 	@Override
 	public siani.tara.semantic.model.Node context() {
 		if (node == null || node.getContainer() == null) return null;
-		return node.getContainer() instanceof Model ? null : new LanguageNode((Node) node.getContainer());
+		return node.getContainer() instanceof Model ? null : new LanguageNode((NodeImpl) node.getContainer());
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public siani.tara.semantic.model.Node parent() {
-		return node.getParent() == null ? null : new LanguageNode(node.getParent());
+		return node.getParent() == null ? null : new LanguageNode((NodeImpl) node.getParent());
 	}
 
 	@Override
@@ -84,6 +84,11 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	@Override
 	public void annotations(String... strings) {
 		node.addAnnotations(strings);
+	}
+
+	@Override
+	public void moveToTheTop() {
+		node.moveToTheTop();
 	}
 
 	@Override

@@ -51,6 +51,11 @@ public class FacetImpl extends Element implements Facet {
 	}
 
 	@Override
+	public void moveToTheTop() {
+
+	}
+
+	@Override
 	public Collection<Node> getNodeSiblings() {
 		ArrayList<Node> siblings = new ArrayList<>();
 		siblings.addAll(getContainer().getIncludedNodes());

@@ -16,7 +16,6 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private final String file;
 	private final Deque<NodeContainer> deque = new ArrayDeque<>();
 	private final Set<String> imports = new HashSet<>();
-	private final String currentDocAttribute = "";
 	private final Model model;
 
 	public ModelGenerator(String file) {
@@ -48,8 +47,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			((Node) deque.peek()).getType() :
 			ctx.signature().metaidentifier().getText());
 		resolveParent(ctx, node);
-		if (ctx.signature().annotations() != null)
-			node.addAnnotations(resolveAnnotations(ctx.signature().annotations()));
+		node.addAnnotations(resolveAnnotations(ctx.signature().annotations()));
 		addHeaderInformation(ctx, node);
 		node.addImports(imports);
 		deque.push(node);
@@ -85,18 +83,9 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void exitNode(@NotNull NodeContext ctx) {
 		NodeContainer peek = deque.peek();
-		if (((Node) peek).isAggregated()) {
-			moveToTheTop((Node) peek);
-		}
-
+		if (((Node) peek).isAggregated() || ((Node) peek).isAssociated())
+			peek.moveToTheTop();
 		deque.pop();
-	}
-
-	private void moveToTheTop(Node node) {
-		if (model.contains(node)) return;
-		node.getContainer().remove(node);
-		node.setContainer(model);
-		model.addIncludedNodes(node);
 	}
 
 	@Override
@@ -177,6 +166,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private String[] resolveAnnotations(AnnotationsContext annotations) {
 		List<String> values = new ArrayList<>();
+		if (annotations == null) return new String[0];
 		for (AnnotationContext annotationContext : annotations.annotation())
 			values.add(annotationContext.getText());
 		return values.toArray(new String[values.size()]);
@@ -200,6 +190,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		else if (ctx.value() != null)
 			variable.addDefaultValues(resolveValue(ctx.value()));
 		addHeaderInformation(ctx, (Element) variable);
+		variable.addAnnotations(resolveAnnotations(ctx.annotations()));
 		container.addVariables(variable);
 	}
 

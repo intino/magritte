@@ -1,20 +1,13 @@
 package siani.tara.compiler.model.impl;
 
-import siani.tara.Language;
-import siani.tara.Resolver;
-import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.model.*;
-import siani.tara.compiler.semantic.LanguageLoader;
-import siani.tara.compiler.semantic.wrappers.LanguageNode;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 import static siani.tara.compiler.model.Annotation.*;
 
 public class NodeImpl extends Element implements Node {
 
-	private static final Logger LOG = Logger.getLogger(NodeImpl.class.getName());
 	private String file;
 	private int line;
 	private NodeContainer container;
@@ -31,6 +24,7 @@ public class NodeImpl extends Element implements Node {
 	private Node parent;
 	private List<Parameter> parameters = new ArrayList<>();
 	private List<Variable> variables = new ArrayList();
+	private Set<String> allowedFacets = new HashSet<>();
 	private List<Facet> facets = new ArrayList<>();
 	private List<FacetTarget> facetTargets = new ArrayList<>();
 	private String language;
@@ -114,6 +108,11 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
+	public boolean isTerminal() {
+		return annotations.contains(TERMINAL);
+	}
+
+	@Override
 	public NodeContainer getContainer() {
 		return container;
 	}
@@ -139,13 +138,33 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
+	public boolean isRequired() {
+		return annotations.contains(REQUIRED);
+	}
+
+	@Override
 	public boolean isAbstract() {
 		return annotations.contains(ABSTRACT);
 	}
 
 	@Override
+	public boolean isSingle() {
+		return annotations.contains(SINGLE);
+	}
+
+	@Override
+	public boolean isNamed() {
+		return annotations.contains(NAMED);
+	}
+
+	@Override
 	public boolean isAggregated() {
 		return annotations.contains(AGGREGATED);
+	}
+
+	@Override
+	public boolean isAssociated() {
+		return annotations.contains(ASSOCIATED);
 	}
 
 	@Override
@@ -248,14 +267,7 @@ public class NodeImpl extends Element implements Node {
 
 	@Override
 	public Node resolve() {
-		try {
-			Language language = LanguageLoader.load("", "");//TODO
-			LanguageNode node = new LanguageNode(this);
-			new Resolver(language).resolve(node);
-			return this;
-		} catch (TaraException e) {
-			return this;
-		}
+		return this;
 	}
 
 	@Override
@@ -315,6 +327,32 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
+	public void moveToTheTop() {
+		Model model = searchModel();
+		if (model.contains(this)) return;
+		replaceForReference();
+		this.setContainer(model);
+		model.addIncludedNodes(this);
+	}
+
+	private void replaceForReference() {
+		NodeContainer nodeContainer = this.getContainer();
+		NodeReference nodeReference = new NodeReference(this);
+		nodeReference.setContainer(nodeContainer);
+		nodeReference.setFile(this.file);
+		nodeReference.setHas(true);
+		nodeContainer.addIncludedNodes(nodeReference);
+		nodeContainer.remove(this);
+	}
+
+	private Model searchModel() {
+		NodeContainer node = this;
+		while (node != null && !(node instanceof Model))
+			node = node.getContainer();
+		return (Model) node;
+	}
+
+	@Override
 	public Collection<Variable> getVariables() {
 		return variables;
 	}
@@ -351,6 +389,16 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public Collection<Facet> getFacets() {
 		return facets;
+	}
+
+	@Override
+	public Collection<String> getAllowedFacets() {
+		return allowedFacets;
+	}
+
+	@Override
+	public void addAllowedFacets(String... facet) {
+		Collections.addAll(allowedFacets, facet);
 	}
 
 	@Override

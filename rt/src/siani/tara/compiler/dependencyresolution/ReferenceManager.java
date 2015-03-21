@@ -17,34 +17,30 @@ public class ReferenceManager {
 		this.model = model;
 	}
 
-	NodeImpl resolve(FacetTarget target, NodeContainer container) {
+	NodeImpl resolve(NodeReference reference) {
+		return (NodeImpl) resolve(reference.getReference(), getNodeContainer(reference.getContainer()));
+	}
+
+	Node resolve(FacetTarget target, NodeContainer container) {
 		return resolve(target.getTarget(), getNodeContainer(container));
 	}
 
-	NodeImpl resolve(Facet facet, NodeContainer container) {
-		return resolve(facet.type(), getNodeContainer(container));
-	}
-
 	NodeImpl resolve(Variable variable, NodeContainer container) {
-		return resolve(variable.getType(), getNodeContainer(container));
-	}
-
-	NodeImpl resolve(NodeReference reference) {
-		return resolve(reference.getReference(), getNodeContainer(reference.getContainer()));
+		return (NodeImpl) resolve(variable.getType(), getNodeContainer(container));
 	}
 
 	Node searchByQn(String qn) {
 		return searchByQn(model, qn);
 	}
 
-	NodeImpl resolve(String reference, Node node) {
+	Node resolve(String reference, Node node) {
 		String[] path = reference.split("\\.");
 		Collection<Node> roots = searchPossibleRoots(node, path[0]);
 		if (roots.isEmpty()) return null;
-		if (roots.size() == 1 && path.length == 1) return (NodeImpl) roots.iterator().next();
+		if (roots.size() == 1 && path.length == 1) return roots.iterator().next();
 		for (Node root : roots) {
 			Node candidate = resolvePathInNode(path, root);
-			if (candidate != null) return (NodeImpl) candidate;
+			if (candidate != null) return candidate;
 		}
 		return null;
 	}
