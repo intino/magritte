@@ -2,10 +2,7 @@ package siani.tara.compiler.model.impl;
 
 import siani.tara.compiler.model.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Model extends Element implements Node {
 
@@ -143,8 +140,13 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public boolean contains(String type) {
-		return false;
+	public boolean contains(Node nodeContainer) {
+		return includes.contains(nodeContainer);
+	}
+
+	@Override
+	public boolean remove(Node node) {
+		return node != null && includes.remove(node);
 	}
 
 	@Override
@@ -223,6 +225,11 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
+	public void addIncludedNodes(int pos, Node... nodes) {
+		includes.addAll(pos, Arrays.asList(nodes));
+	}
+
+	@Override
 	public Node getInclude(String name) {
 		return null;
 	}
@@ -234,6 +241,11 @@ public class Model extends Element implements Node {
 
 	@Override
 	public void addVariables(Variable... variables) {
+
+	}
+
+	@Override
+	public void addVariables(int pos, Variable... variables) {
 
 	}
 

@@ -121,11 +121,6 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public boolean contains(String type) {
-		return false;
-	}
-
-	@Override
 	public Node getParent() {
 		return null;
 	}
@@ -186,8 +181,23 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public void addIncludedNodes(int pos, Node... nodes) {
+
+	}
+
+	@Override
 	public Node getInclude(String name) {
 		return null;
+	}
+
+	@Override
+	public boolean contains(Node nodeContainer) {
+		return false;
+	}
+
+	@Override
+	public boolean remove(Node node) {
+		return false;
 	}
 
 	@Override
@@ -197,6 +207,11 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void addVariables(Variable... variables) {
+
+	}
+
+	@Override
+	public void addVariables(int pos, Variable... variables) {
 
 	}
 

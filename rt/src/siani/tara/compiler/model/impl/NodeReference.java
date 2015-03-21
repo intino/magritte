@@ -189,11 +189,6 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public boolean contains(String type) {
-		return false;
-	}
-
-	@Override
 	public Node getParent() {
 		return null;
 	}
@@ -268,11 +263,26 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
+	public void addIncludedNodes(int pos, Node... nodes) {
+
+	}
+
+	@Override
 	public Node getInclude(String name) {
 		for (Node include : destiny.getIncludedNodes())
 			if (name.equals(include.getName()))
 				return include;
 		return null;
+	}
+
+	@Override
+	public boolean contains(Node nodeContainer) {
+		return false;
+	}
+
+	@Override
+	public boolean remove(Node node) {
+		return false;
 	}
 
 	@Override
@@ -282,6 +292,11 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public void addVariables(Variable... variables) {
+
+	}
+
+	@Override
+	public void addVariables(int pos, Variable... variables) {
 
 	}
 

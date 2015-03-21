@@ -11,7 +11,7 @@ public class LanguageLoader {
 
 	public static Language load(String name, String languagesDirectory) throws TaraException {
 //		if (name.equalsIgnoreCase("Proteo"))
-		return new Proteo();
+			return new Proteo();
 //		File file = new File(languagesDirectory);
 //		try {
 //			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL()}, LanguageLoader.class.getClassLoader());

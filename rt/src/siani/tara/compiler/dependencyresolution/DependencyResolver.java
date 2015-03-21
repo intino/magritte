@@ -34,7 +34,7 @@ public class DependencyResolver {
 
 	private void resolveParent(Node node) throws DependencyException {
 		if (node.getParent() == null && node.getParentName() != null) {
-			Node parent = manager.resolve(node.getParentName(), (NodeImpl) node);
+			Node parent = manager.resolve(node.getParentName(), getNodeContainer(node.getContainer()));
 			if (parent == null) throw new DependencyException("Parent not found", (Element) node);
 			else {
 				((NodeImpl) node).setParent(parent);
@@ -86,5 +86,14 @@ public class DependencyResolver {
 		if (destiny == null)
 			throw new DependencyException("variable of type " + variable.getType() + " not found", (Element) container);
 		else variable.setDestiny(destiny);
+	}
+
+	private Node getNodeContainer(NodeContainer reference) {
+		NodeContainer container = reference;
+		while (!(container instanceof NodeImpl)) {
+			if (container.getContainer() == null) break;
+			container = container.getContainer();
+		}
+		return (Node) container;
 	}
 }

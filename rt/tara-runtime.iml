@@ -23,8 +23,8 @@
     <orderEntry type="library" scope="TEST" name="mockito-all-local" level="application" />
     <orderEntry type="library" name="itrules" level="project" />
     <orderEntry type="library" name="antlr" level="project" />
-    <orderEntry type="module" module-name="tara-runtime-constants" exported="" />
     <orderEntry type="library" name="tara-semantic" level="project" />
+    <orderEntry type="module" module-name="tara-runtime-constants" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

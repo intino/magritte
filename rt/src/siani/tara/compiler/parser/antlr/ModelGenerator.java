@@ -84,7 +84,19 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void exitNode(@NotNull NodeContext ctx) {
+		NodeContainer peek = deque.peek();
+		if (((Node) peek).isAggregated()) {
+			moveToTheTop((Node) peek);
+		}
+
 		deque.pop();
+	}
+
+	private void moveToTheTop(Node node) {
+		if (model.contains(node)) return;
+		node.getContainer().remove(node);
+		node.setContainer(model);
+		model.addIncludedNodes(node);
 	}
 
 	@Override

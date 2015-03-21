@@ -8,13 +8,21 @@ public interface NodeContainer {
 
 	void addIncludedNodes(Node... nodes);
 
+	void addIncludedNodes(int pos, Node... nodes);
+
 	Node getInclude(String name);
+
+	boolean contains(Node node);
+
+	boolean remove(Node node);
 
 	Collection<Node> getNodeSiblings();
 
 	Collection<Variable> getVariables();
 
 	void addVariables(Variable... variables);
+
+	void addVariables(int pos, Variable... variables);
 
 	NodeContainer getContainer();
 

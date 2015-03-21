@@ -7,10 +7,7 @@ import siani.tara.compiler.model.*;
 import siani.tara.compiler.semantic.LanguageLoader;
 import siani.tara.compiler.semantic.wrappers.LanguageNode;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static siani.tara.compiler.model.Annotation.*;
@@ -193,12 +190,6 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public boolean contains(String type) {
-		for (Node include : includes) if (include.getType().equals(type)) return true;
-		return false;
-	}
-
-	@Override
 	public Node getParent() {
 		return parent;
 	}
@@ -259,7 +250,6 @@ public class NodeImpl extends Element implements Node {
 	public Node resolve() {
 		try {
 			Language language = LanguageLoader.load("", "");//TODO
-			if (language == null) return this;
 			LanguageNode node = new LanguageNode(this);
 			new Resolver(language).resolve(node);
 			return this;
@@ -302,11 +292,26 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
+	public void addIncludedNodes(int pos, Node... nodes) {
+		this.includes.addAll(pos, Arrays.asList(nodes));
+	}
+
+	@Override
 	public Node getInclude(String name) {
 		for (Node include : includes)
 			if (name.equals(include.getName()))
 				return include;
 		return null;
+	}
+
+	@Override
+	public boolean contains(Node nodeContainer) {
+		return nodeContainer != null && includes.contains(nodeContainer);
+	}
+
+	@Override
+	public boolean remove(Node node) {
+		return node != null && includes.remove(node);
 	}
 
 	@Override
@@ -317,6 +322,11 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public void addVariables(Variable... variables) {
 		Collections.addAll(this.variables, variables);
+	}
+
+	@Override
+	public void addVariables(int pos, Variable... variables) {
+		this.variables.addAll(pos, Arrays.asList(variables));
 	}
 
 	@Override

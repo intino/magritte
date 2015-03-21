@@ -37,7 +37,7 @@ public class ReferenceManager {
 		return searchByQn(model, qn);
 	}
 
-	NodeImpl resolve(String reference, NodeImpl node) {
+	NodeImpl resolve(String reference, Node node) {
 		String[] path = reference.split("\\.");
 		Collection<Node> roots = searchPossibleRoots(node, path[0]);
 		if (roots.isEmpty()) return null;

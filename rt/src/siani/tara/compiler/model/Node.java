@@ -48,8 +48,6 @@ public interface Node extends NodeContainer, Parameterized {
 
 	void addImports(Collection<String> imports);
 
-	boolean contains(String type);
-
 	Node getParent();
 
 	String getParentName();

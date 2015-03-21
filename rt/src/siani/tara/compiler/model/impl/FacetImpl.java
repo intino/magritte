@@ -2,10 +2,7 @@ package siani.tara.compiler.model.impl;
 
 import siani.tara.compiler.model.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class FacetImpl extends Element implements Facet {
 
@@ -31,11 +28,26 @@ public class FacetImpl extends Element implements Facet {
 	}
 
 	@Override
+	public void addIncludedNodes(int pos, Node... nodes) {
+		includes.addAll(pos, Arrays.asList(nodes));
+	}
+
+	@Override
 	public Node getInclude(String name) {
 		for (Node include : includes)
 			if (name.equals(include.getName()))
 				return include;
 		return null;
+	}
+
+	@Override
+	public boolean contains(Node node) {
+		return includes.contains(node);
+	}
+
+	@Override
+	public boolean remove(Node node) {
+		return includes.remove(node);
 	}
 
 	@Override
@@ -53,6 +65,10 @@ public class FacetImpl extends Element implements Facet {
 	@Override
 	public void addVariables(Variable... variables) {
 
+	}
+
+	@Override
+	public void addVariables(int pos, Variable... variables) {
 	}
 
 	@Override
