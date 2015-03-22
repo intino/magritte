@@ -9,7 +9,7 @@ public interface Parameter extends Navigatable, TaraPsiElement {
 
 	boolean isExplicit();
 
-	TaraValue getValue();
+	Value getValue();
 
 	Object[] getValues();
 

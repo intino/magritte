@@ -6,8 +6,6 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
@@ -21,7 +19,8 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public int getIndexInParent() {
-		return Arrays.asList(((Parameters) this.getParent()).getParameters()).indexOf(this);
+		List<Parameter> parameters = (List<Parameter>) ((Parameters) this.getParent()).getParameters();
+		return parameters.indexOf(this);
 	}
 
 	public boolean isExplicit() {
@@ -46,28 +45,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public Object[] getValues() {
-		List<Object> values = new ArrayList<>();
-		for (PsiElement element : ((Parameter) this).getValue().getChildren()) {
-			if (element instanceof TaraMeasureValue) continue;
-			values.add(cast(element));
-		}
-		return values.toArray();
-	}
-
-	private Object cast(PsiElement element) {
-		String value = element.getText();
-		if (element instanceof TaraStringValue) return value;
-		else if (element instanceof TaraBooleanValue) return Boolean.parseBoolean(value);
-		else if (element instanceof TaraLinkValue) return value;
-		else if (element instanceof TaraNaturalValue || element instanceof TaraIntegerValue)
-			return Integer.parseInt(value);
-		else if (element instanceof TaraDoubleValue) return Double.parseDouble(value);
-		else if (element instanceof TaraEmptyField) return "$" + value;
-		else if (element instanceof IdentifierReference) {
-			Node node = ReferenceManager.resolveToNode((IdentifierReference) element);
-			return node != null ? node : value;
-		}
-		return "";
+		return ((Parameter) this).getValue().getValues();
 	}
 
 	public TaraFacetApply isInFacet() {

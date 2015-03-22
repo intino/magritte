@@ -18,12 +18,15 @@ import siani.tara.semantic.Allow;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static siani.tara.intellij.lang.lexer.TaraPrimitives.WORD;
 import static siani.tara.intellij.lang.lexer.TaraPrimitives.isPrimitive;
 
 public class IdentifierMixin extends ASTWrapperPsiElement {
+
+	private static final String REFERENCE = "reference";
 
 	public IdentifierMixin(@NotNull ASTNode node) {
 		super(node);
@@ -61,15 +64,36 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	private PsiReference createResolverForParameter(Parameter parameter) {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
-		Collection<Allow> allowsOf = TaraUtil.getAllowsOf(container);
-		if (allowsOf == null) return null;
-		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
-		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.getIndexInParent()) return null;
-		Allow.Parameter parameterAllow = parameter.isExplicit() ? findParameter(parametersAllowed, parameter.getExplicitName()) : parametersAllowed.get(parameter.getIndexInParent());
+		Allow.Parameter parameterAllow = getCorrespondingAllow(container, parameter);
 		if (parameterAllow == null) return null;
 		if (parameterAllow.type().equals(WORD) || !isPrimitive(parameterAllow.type()))
 			return new TaraParameterReferenceSolver(this, getRange(), container);
+		if (parameterAllow.type().equals(REFERENCE))
+			return new TaraNodeReferenceSolver(this, getRange(), container);
 		return null;
+	}
+
+	private Allow.Parameter getCorrespondingAllow(Node container, Parameter parameter) {
+		FacetApply facetApply = areFacetParameters(parameter);
+		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.getFacetName()) : TaraUtil.getAllowsOf(container);
+		if (allowsOf == null) return null;
+		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
+		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.getIndexInParent()) return null;
+		return parameter.isExplicit() ? findParameter(parametersAllowed, parameter.getExplicitName()) : parametersAllowed.get(parameter.getIndexInParent());
+	}
+
+	private Collection<Allow> getAllows(Node container, String facetApply) {
+		Collection<Allow> allowsOf = TaraUtil.getAllowsOf(container);
+		if (allowsOf == null) return Collections.EMPTY_LIST;
+		for (Allow allow : allowsOf)
+			if (allow instanceof Allow.Facet && ((Allow.Facet) allow).type().equals(facetApply))
+				return TaraUtil.getAllowsOf(container, ((Allow.Facet) allow).type());
+		return Collections.EMPTY_LIST;
+	}
+
+	private FacetApply areFacetParameters(Parameter parameter) {
+		PsiElement contextOf = TaraPsiImplUtil.getContextOf(parameter);
+		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
 	}
 
 	private List<Allow.Parameter> parametersAllowed(Collection<Allow> allowsOf) {

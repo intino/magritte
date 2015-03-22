@@ -29,7 +29,8 @@ public class LanguageSerializer extends CodeGenerator {
 
 	public void serialize(Model model) throws TaraException {
 		try {
-			serialize(LanguageCreator.create(conf, model), new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + JAVA));
+			LanguageCreator creator = new LanguageCreator(conf, model);
+			serialize(creator.create(), new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + JAVA));
 			new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + ".reload").createNewFile();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);

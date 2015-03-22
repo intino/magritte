@@ -45,6 +45,11 @@ public class LanguageRoot implements Node {
 	}
 
 	@Override
+	public String[] types() {
+		return new String[0];
+	}
+
+	@Override
 	public String name() {
 		return null;
 	}

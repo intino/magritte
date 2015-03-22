@@ -103,7 +103,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 		List<String> parameters = new ArrayList<>();
 		for (Constraint.Require.Parameter require : requires) {
 			String parameter = require.type().equals("reference") || require.type().equals("word") ?
-				Arrays.toString(require.values()) + (require.multiple() ? "... " : " ") + require.name() :
+				Arrays.toString(require.allowedValues()) + (require.multiple() ? "... " : " ") + require.name() :
 				require.type() + (require.multiple() ? "... " : " ") + require.name();
 			parameters.add(parameter);
 		}

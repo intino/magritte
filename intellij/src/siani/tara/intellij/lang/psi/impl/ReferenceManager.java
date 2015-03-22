@@ -109,7 +109,7 @@ public class ReferenceManager {
 		Set<Node> set = new LinkedHashSet<>();
 		addNodesInContext(identifier, set);
 		addRootNodes(file, identifier, set);
-		addAggregated(file, identifier, set, toArrayList(set));
+		addAggregatedAndAssociated(file, identifier, set, toArrayList(set));
 		return set.toArray(new Node[set.size()]);
 	}
 
@@ -160,10 +160,10 @@ public class ReferenceManager {
 		return reference.getParent() instanceof Signature;
 	}
 
-	private static void addAggregated(TaraModel file, Identifier identifier, Set<Node> set, List<Node> visited) {
+	private static void addAggregatedAndAssociated(TaraModel file, Identifier identifier, Set<Node> set, List<Node> visited) {
 		List<Node> allNodesOfFile = TaraUtil.getAllNodesOfFile(file);
 		for (Node node : allNodesOfFile)
-			if (namesAreEqual(identifier, node) && isAggregated(file, node, visited))
+			if (namesAreEqual(identifier, node) && isAggregatedOrAssociated(file, node, visited))
 				set.add(node);
 	}
 
@@ -171,27 +171,29 @@ public class ReferenceManager {
 		return identifier.getText().equals(node.getName());
 	}
 
-	private static boolean isAggregated(TaraModel file, Node node, List<Node> visited) {
+	private static boolean isAggregatedOrAssociated(TaraModel file, Node node, List<Node> visited) {
 		if (visited.contains(node)) return false;
 		visited.add(node);
-		if (node.isAnnotatedAsAggregated() || isMetaAggregated(node)) return true;
+		if (node.isAnnotatedAsAggregated() || node.isAnnotatedAsAssociated() || isMetaAggregatedOrAssociated(node))
+			return true;
 		IdentifierReference parentReference = node.getSignature().getParentReference();
-		return parentReference != null && checkPossibleAggregates(parentReference, getRootNodes(file, parentReference, visited, new HashSet<Node>()));
+		return parentReference != null && checkPossibleAggregatesAndAssociates(parentReference, getRootNodes(file, parentReference, visited, new HashSet<Node>()));
 	}
 
-	private static boolean isMetaAggregated(Node node) {
+	private static boolean isMetaAggregatedOrAssociated(Node node) {
 		Collection<Assumption> assumptionsOf = TaraUtil.getAssumptionsOf(node);
+		if (assumptionsOf == null) return false;
 		for (Assumption assumption : assumptionsOf)
-			if (assumption instanceof Assumption.Aggregated)
+			if (assumption instanceof Assumption.Aggregated || assumption instanceof Assumption.Associated)
 				return true;
 		return false;
 	}
 
-	private static boolean checkPossibleAggregates(IdentifierReference parentReference, Node[] roots) {
+	private static boolean checkPossibleAggregatesAndAssociates(IdentifierReference parentReference, Node[] roots) {
 		if (roots.length == 0) return false;
 		for (Node possibleRoot : roots) {
-			Node aggregated = resolvePathInNode((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
-			if (aggregated != null) return aggregated.isAnnotatedAsAggregated();
+			Node node = resolvePathInNode((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
+			if (node != null) return node.isAnnotatedAsAggregated() || node.isAnnotatedAsAssociated();
 		}
 		return false;
 	}
@@ -201,7 +203,7 @@ public class ReferenceManager {
 		addNodesInContext(identifier, roots);
 		addRootNodes(file, identifier, roots);
 		visited.addAll(roots);
-		addAggregated((TaraModel) identifier.getContainingFile(), identifier, roots, visited);
+		addAggregatedAndAssociated((TaraModel) identifier.getContainingFile(), identifier, roots, visited);
 		return roots.toArray(new Node[roots.size()]);
 	}
 
@@ -250,7 +252,7 @@ public class ReferenceManager {
 	private static Node resolvePathInBox(TaraModel containingFile, List<Identifier> path) {
 		Set<Node> nodes = new HashSet<>();
 		nodes.addAll(containingFile.getNodes());
-		addAggregated(containingFile, path.get(0), nodes, toArrayList(nodes));
+		addAggregatedAndAssociated(containingFile, path.get(0), nodes, toArrayList(nodes));
 		for (Node node : nodes) {
 			Node solution = resolvePathInNode(path, node);
 			if (solution != null) return solution;

@@ -1,20 +1,22 @@
 package siani.tara.compiler.core;
 
 import siani.tara.compiler.codegeneration.FileSystemUtils;
-import siani.tara.compiler.codegeneration.java.JavaCodeGenerator;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.operation.ModelToJavaOperation;
 import siani.tara.compiler.core.operation.Operation;
 import siani.tara.compiler.core.operation.SrcToClassOperation;
-import siani.tara.compiler.core.operation.model.*;
+import siani.tara.compiler.core.operation.model.GenerateLanguageOperation;
+import siani.tara.compiler.core.operation.model.ModelDependencyResolutionOperation;
+import siani.tara.compiler.core.operation.model.ModelOperation;
+import siani.tara.compiler.core.operation.model.SemanticAnalysisOperation;
 import siani.tara.compiler.core.operation.module.MergeToModelOperation;
 import siani.tara.compiler.core.operation.module.ModuleUnitOperation;
 import siani.tara.compiler.core.operation.sourceunit.ImportDataOperation;
 import siani.tara.compiler.core.operation.sourceunit.MarkOperation;
 import siani.tara.compiler.core.operation.sourceunit.ParseOperation;
 import siani.tara.compiler.core.operation.sourceunit.SourceUnitOperation;
-import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.compiler.model.impl.Model;
+import siani.tara.compiler.rt.TaraRtConstants;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,7 +34,6 @@ public class CompilationUnit extends ProcessingUnit {
 		@Override
 		public void call() throws CompilationFailedException {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating classes");
-			JavaCodeGenerator generator = new JavaCodeGenerator(configuration);
 			//generator.generate();
 		}
 	};

@@ -34,6 +34,11 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 		return wrapValues(parameter.getValues());
 	}
 
+	@Override
+	public String getExtension() {
+		return parameter.getExtension();
+	}
+
 	private static Object[] wrapValues(Collection<Object> values) {
 		List<Object> objects = new ArrayList<>();
 		for (Object value : values)

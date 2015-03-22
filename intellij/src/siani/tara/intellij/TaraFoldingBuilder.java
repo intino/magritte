@@ -73,7 +73,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	private void searchMultiLineVarInit(Node node, List<PsiElement> strings) {
 		//noinspection ConstantConditions
 		for (VarInit variable : node.getBody().getVarInitList()) {
-			TaraValue value = variable.getValue();
+			Value value = variable.getValue();
 			if (!variable.getValueType().equals(TaraPrimitives.STRING)) continue;
 			addMultiLineString(value, strings);
 		}
@@ -87,8 +87,8 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 				strings.add(findMultiLineInValue(value));
 	}
 
-	private void addMultiLineString(TaraValue value, List<PsiElement> strings) {
-		for (TaraStringValue stringValue : value.getStringValueList())
+	private void addMultiLineString(Value value, List<PsiElement> strings) {
+		for (TaraStringValue stringValue : ((TaraValue) value).getStringValueList())
 			if (isMultiLineValue(stringValue))
 				strings.add(findMultiLineInValue(stringValue));
 	}

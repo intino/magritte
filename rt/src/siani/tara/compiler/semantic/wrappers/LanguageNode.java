@@ -53,6 +53,14 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
+	public String[] types() {
+		List<String> types = new ArrayList<>();
+		types.add(type());
+		Collections.addAll(types, secondaryTypes());
+		return types.toArray(new String[types.size()]); //TODO Add language types
+	}
+
+	@Override
 	public String name() {
 		return node.getName() == null ? "" : node.getName();
 	}

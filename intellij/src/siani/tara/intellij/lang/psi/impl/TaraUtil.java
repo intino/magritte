@@ -64,6 +64,20 @@ public class TaraUtil {
 	}
 
 	@Nullable
+	public static Collection<String> getTypesOf(Node node) {
+		Language language = getLanguage(node);
+		if (language == null) return null;
+		return language.types(node.resolve().getFullType());
+	}
+
+	@Nullable
+	public static Collection<Allow> getAllowsOf(Node context, String fullType) {
+		Language language = getLanguage(context);
+		if (language == null) return null;
+		return language.allows(fullType);
+	}
+
+	@Nullable
 	public static Collection<Assumption> getAssumptionsOf(Node node) {
 		Language language = getLanguage(node);
 		if (language == null) return null;

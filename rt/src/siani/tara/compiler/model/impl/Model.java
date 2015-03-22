@@ -229,12 +229,12 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public void addParameter(String name, int position, Object... values) {
+	public void addParameter(String name, int position, String extension, Object... values) {
 
 	}
 
 	@Override
-	public void addParameter(int position, Object... values) {
+	public void addParameter(int position, String extension, Object... values) {
 
 	}
 

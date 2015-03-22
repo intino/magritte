@@ -10,4 +10,5 @@ public interface Parameter {
 
 	Collection<Object> getValues();
 
+	String getExtension();
 }

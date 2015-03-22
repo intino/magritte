@@ -2,12 +2,8 @@ package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static siani.tara.intellij.lang.lexer.TaraPrimitives.*;
 
@@ -39,20 +35,13 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		return "null";
 	}
 
-	public String[] getValues() {
-		TaraValue value = ((TaraVarInit) this).getValue();
-		if (value == null) return new String[0];
-		List<String> values = new ArrayList<>();
-		for (PsiElement element : value.getChildren()) {
-			if (element instanceof TaraMeasureValue) continue;
-			values.add(element.getText());
-		}
-		return values.toArray(new String[values.size()]);
+	public Object[] getValues() {
+		return ((VarInit) this).getValue().getValues();
 	}
 
 
 	public String getMeasureValue() {
-		TaraMeasureValue measureValue = ((TaraVarInit) this).getValue().getMeasureValue();
+		TaraMeasureValue measureValue = ((VarInit) this).getValue().getMeasureValue();
 		return measureValue == null ? null : measureValue.getText();
 	}
 }

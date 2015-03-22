@@ -2,6 +2,7 @@ package siani.tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.semantic.model.Facet;
 import siani.tara.semantic.model.FacetTarget;
 
@@ -62,6 +63,16 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
+	public String[] types() {
+		List<String> types = new ArrayList<>();
+		types.add(type());
+		Collections.addAll(types, secondaryTypes());
+		Collection<String> typesOf = TaraUtil.getTypesOf(node);
+		if (typesOf != null) types.addAll(typesOf);
+		return types.toArray(new String[types.size()]); //TODO Add language types
+	}
+
+	@Override
 	public String name() {
 		return node.getName() == null ? "" : node.getName();
 	}
@@ -97,6 +108,11 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
+	public void moveToTheTop() {
+
+	}
+
+	@Override
 	public Facet[] facets() {
 		List<Facet> facets = new ArrayList<>();
 		for (final FacetApply facetApply : node.getFacetApplies()) facets.add(new LanguageFacet(facetApply));
@@ -110,15 +126,25 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public siani.tara.semantic.model.Parameter[] parameters() {
-		return wrapParameters(node.getParameters());
+		List<siani.tara.semantic.model.Parameter> parameters = wrapParameters(node.getParameters());
+		parameters.addAll(wrapParameters(node.getVarInits()));
+		return parameters.toArray(new siani.tara.semantic.model.Parameter[parameters.size()]);
 	}
 
-	private siani.tara.semantic.model.Parameter[] wrapParameters(Parameters toWrap) {
-		if (toWrap == null) return new siani.tara.semantic.model.Parameter[0];
+	private List<siani.tara.semantic.model.Parameter> wrapParameters(Parameters toWrap) {
+		if (toWrap == null || toWrap.getParameters().isEmpty()) return new ArrayList<>();
 		List<siani.tara.semantic.model.Parameter> parameters = new ArrayList<>();
 		for (siani.tara.intellij.lang.psi.Parameter parameter : toWrap.getParameters())
 			parameters.add(new LanguageParameter(parameter));
-		return parameters.toArray(new siani.tara.semantic.model.Parameter[parameters.size()]);
+		return parameters;
+	}
+
+	private List<siani.tara.semantic.model.Parameter> wrapParameters(Collection<VarInit> toWrap) {
+		if (toWrap == null || toWrap.isEmpty()) return new ArrayList<>();
+		List<siani.tara.semantic.model.Parameter> parameters = new ArrayList<>();
+		for (VarInit varInit : toWrap)
+			parameters.add(new LanguageVarParameter(varInit));
+		return parameters;
 	}
 
 	@Override

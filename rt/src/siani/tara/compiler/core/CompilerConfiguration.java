@@ -263,6 +263,7 @@ public class CompilerConfiguration {
 
 	public Language loadLanguage() {
 		try {
+			if (language != null) return language;
 			this.language = LanguageLoader.load(languageName, languagesDirectory);
 			return language;
 		} catch (TaraException ignored) {

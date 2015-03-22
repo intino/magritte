@@ -261,6 +261,13 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
+	public boolean isAnnotatedAsAssociated() {
+		for (PsiElement annotation : getAnnotations())
+			if (ASSOCIATED.getName().equals(annotation.getText()))
+				return true;
+		return false;
+	}
+
 	public boolean isProperty() {
 		return is(PROPERTY);
 	}

@@ -41,6 +41,11 @@ public class LanguageRoot implements Node {
 	}
 
 	@Override
+	public String[] types() {
+		return new String[0];
+	}
+
+	@Override
 	public String name() {
 		return null;
 	}
@@ -67,6 +72,11 @@ public class LanguageRoot implements Node {
 
 	@Override
 	public void annotations(String... annotations) {
+
+	}
+
+	@Override
+	public void moveToTheTop() {
 
 	}
 

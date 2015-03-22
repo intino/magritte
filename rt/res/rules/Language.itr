@@ -30,7 +30,11 @@ public class $name extends Tara {
 endrule
 
 defrule type(node) trigger(node)
-in("$name"[, "$type"])[.$allows][.$requires][.$assumptions];
+in("$name"[, $nodeType])[.$allows][.$requires][.$assumptions];
+endrule
+
+defrule type(nodeType) trigger(nodeType)
+$type+quoted...[, ]
 endrule
 
 defrule type(allows) trigger(allows)
@@ -46,15 +50,15 @@ single("$type"[, $relation])
 endrule
 
 defrule type(allow) type(parameter) type(word) trigger(allow)
-parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position)
+parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, null)
 endrule
 
 defrule type(allow) type(parameter) type(reference) trigger(allow)
-parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position)
+parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, null)
 endrule
 
 defrule type(allow) type(parameter) trigger(allow)
-parameter("$name", "$type", $multiple, $position)
+parameter("$name", "$type", $multiple, $position, null)
 endrule
 
 defrule type(allow) type(facet) trigger(allow)
@@ -64,8 +68,6 @@ endrule
 defrule trigger(allow)
 $value()
 endrule
-
-
 
 
 
@@ -83,15 +85,15 @@ _single("$type"[, $relation])
 endrule
 
 defrule type(require) type(parameter) type(word) trigger(require)
-_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position)
+_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, null)
 endrule
 
 defrule type(require) type(parameter) type(reference) trigger(require)
-_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position)
+_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, null)
 endrule
 
 defrule type(require) type(parameter) trigger(require)
-_parameter("$name", "$type", $multiple, $position)
+_parameter("$name", "$type", $multiple, $position,null)
 endrule
 
 defrule trigger(quoted)

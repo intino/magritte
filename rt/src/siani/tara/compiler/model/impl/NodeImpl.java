@@ -276,13 +276,13 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public void addParameter(String name, int position, Object... values) {
-		parameters.add(new ParameterImpl(name, position, values));
+	public void addParameter(String name, int position, String extension, Object... values) {
+		parameters.add(new ParameterImpl(name, position, extension, values));
 	}
 
 	@Override
-	public void addParameter(int position, Object... values) {
-		addParameter("", position, values);
+	public void addParameter(int position, String extension, Object... values) {
+		addParameter("", position, extension, values);
 	}
 
 	@Override

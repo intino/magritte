@@ -56,6 +56,8 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isAnnotatedAsAggregated();
 
+	boolean isAnnotatedAsAssociated();
+
 	@Nullable
 	TaraAddress getAddress();
 

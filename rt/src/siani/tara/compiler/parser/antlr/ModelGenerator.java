@@ -138,18 +138,20 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterExplicitParameter(@NotNull ExplicitParameterContext ctx) {
 		int position = ((ParametersContext) ctx.getParent()).explicitParameter().indexOf(ctx);
-		addParameter(ctx.IDENTIFIER().getText(), position, resolveValue(ctx.value()));
+		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
+		addParameter(ctx.IDENTIFIER().getText(), position, extension, resolveValue(ctx.value()));
 	}
 
 	@Override
 	public void enterImplicitParameter(@NotNull ImplicitParameterContext ctx) {
 		int position = ((ParametersContext) ctx.getParent()).implicitParameter().indexOf(ctx);
-		addParameter("", position, resolveValue(ctx.value()));
+		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
+		addParameter("", position, extension, resolveValue(ctx.value()));
 	}
 
-	public void addParameter(String name, int position, Object[] values) {
+	public void addParameter(String name, int position, String extension, Object[] values) {
 		Parameterized object = (Parameterized) deque.peek();
-		object.addParameter(name, position, values);
+		object.addParameter(name, position, extension, values);
 	}
 
 	@Override
@@ -203,7 +205,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterVarInit(@NotNull VarInitContext ctx) {
-		addParameter(ctx.IDENTIFIER().getText(), -1, resolveValue(ctx.value()));
+		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
+		addParameter(ctx.IDENTIFIER().getText(), -1, extension, resolveValue(ctx.value()));
 	}
 
 	private Object[] resolveValue(ValueContext ctx) {

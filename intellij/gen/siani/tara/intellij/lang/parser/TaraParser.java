@@ -1434,7 +1434,6 @@ public class TaraParser implements PsiParser {
   /* ********************************************************** */
   // NATURAL_TYPE
   //                 | INT_TYPE
-  //                 | RESOURCE_KEY
   //                 | BOOLEAN_TYPE
   //                 | STRING_TYPE
   //                 | DATE_TYPE
@@ -1442,6 +1441,7 @@ public class TaraParser implements PsiParser {
   //                 | DOUBLE_TYPE
   //                 | MEASURE_TYPE_KEY
   //                 | WORD_KEY
+  //                 | RESOURCE_KEY
   //                 | identifierReference
   public static boolean variableType(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variableType")) return false;
@@ -1449,7 +1449,6 @@ public class TaraParser implements PsiParser {
     Marker m = enter_section_(b, l, _NONE_, "<variable type>");
     r = consumeToken(b, NATURAL_TYPE);
     if (!r) r = consumeToken(b, INT_TYPE);
-    if (!r) r = consumeToken(b, RESOURCE_KEY);
     if (!r) r = consumeToken(b, BOOLEAN_TYPE);
     if (!r) r = consumeToken(b, STRING_TYPE);
     if (!r) r = consumeToken(b, DATE_TYPE);
@@ -1457,6 +1456,7 @@ public class TaraParser implements PsiParser {
     if (!r) r = consumeToken(b, DOUBLE_TYPE);
     if (!r) r = consumeToken(b, MEASURE_TYPE_KEY);
     if (!r) r = consumeToken(b, WORD_KEY);
+    if (!r) r = consumeToken(b, RESOURCE_KEY);
     if (!r) r = identifierReference(b, l + 1);
     exit_section_(b, l, m, VARIABLE_TYPE, r, false, null);
     return r;

@@ -7,7 +7,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/lib" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="IDEA IC-139.225.3" jdkType="IDEA JDK" />
     <orderEntry type="module" module-name="tara-jps-plugin" />
     <orderEntry type="module" module-name="tara-runtime" />
     <orderEntry type="module" module-name="intellij" />

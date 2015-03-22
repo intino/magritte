@@ -2,14 +2,13 @@ package siani.tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.codegeneration.FrameCreator;
+import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.impl.Model;
+import siani.tara.compiler.model.impl.NodeReference;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 
 
 public class BoxFrameCreator extends FrameCreator {
@@ -19,22 +18,22 @@ public class BoxFrameCreator extends FrameCreator {
 
 	public BoxFrameCreator(String project, Model model) {
 		super(project, model);
-//		createKeyMap(model.getNodeTree());
+		createKeyMap(model);
 	}
 
-//	private void createKeyMap(NodeTree nodeTree) {
-//		for (Node node : nodeTree) {
-//			if (node.is(LinkNode.class)) continue;
-//			if (!keymap.containsKey(node.getQualifiedName()))
-//				keymap.put(node.getQualifiedName(), new ArrayList<Long>());
-//			keymap.get(node.getQualifiedName()).add(count);
-//			count++;
-//			createKeyMap(node.getInnerNodes());
-//			for (FacetTarget facetTarget : node.getObject().getFacetTargets())
-//				createKeyMap(facetTarget.getInner());
-//		}
-//	}
-//
+	private void createKeyMap(NodeContainer node) {
+		for (Node include : node.getIncludedNodes()) {
+			if (include instanceof NodeReference && ((NodeReference) include).isHas()) continue;
+			if (!keymap.containsKey(include.getQualifiedName()))
+				keymap.put(include.getQualifiedName(), new ArrayList<Long>());
+			keymap.get(include.getQualifiedName()).add(count);
+			count++;
+			createKeyMap(include);
+			for (FacetTarget facetTarget : include.getFacetTargets())
+				createKeyMap(facetTarget);
+		}
+	}
+
 	public Frame create(List<Node> nodes, Collection<String> parentBoxes) {
 //		Frame frame = new Frame(BOX);
 //		frame.addFrame(NAME, buildFileName(nodes.get(0).getFile(), model.getName()));

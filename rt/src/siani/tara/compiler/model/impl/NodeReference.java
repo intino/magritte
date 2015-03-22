@@ -223,7 +223,7 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public boolean isAnonymous() {
-		return true;
+		return destiny.isAnonymous();
 	}
 
 	@Override
@@ -264,11 +264,13 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public void addParameter(String name, int position, Object... values) {
+	public void addParameter(String name, int position, String extension, Object... values) {
+
 	}
 
 	@Override
-	public void addParameter(int position, Object... values) {
+	public void addParameter(int position, String extension, Object... values) {
+
 	}
 
 	@Override
@@ -335,7 +337,7 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public Collection<Node> getChildren() {
-		return Collections.EMPTY_LIST;
+		return destiny.getChildren();
 	}
 
 	@Override

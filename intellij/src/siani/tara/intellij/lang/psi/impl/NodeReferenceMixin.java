@@ -27,6 +27,16 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
+	public boolean isAssociated() {
+		NodeReference reference = (NodeReference) this;
+		Annotations annotations = reference.getAnnotations();
+		if (annotations == null) return false;
+		for (Annotation annotation : annotations.getAnnotationList())
+			if (siani.tara.intellij.lang.lexer.Annotation.ASSOCIATED.getName().equals(annotation.getText()))
+				return true;
+		return false;
+	}
+
 
 	public void addInheritedAnnotations(String... annotations) {
 		Collections.addAll(inheritedAnnotations, annotations);

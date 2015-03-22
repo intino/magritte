@@ -133,7 +133,10 @@ value ::= identifierReference+
         | integerValue+ measureValue?
         | doubleValue+  measureValue?
         | emptyField
-
+{
+mixin = 'siani.tara.intellij.lang.psi.impl.ValueMixin'
+    implements = 'siani.tara.intellij.lang.psi.Value'
+}
 
 stringValue     ::= (QUOTE_BEGIN CHARACTER* QUOTE_END) | (NEWLINE? STRING_MULTILINE_VALUE_KEY)
 booleanValue    ::= BOOLEAN_VALUE_KEY

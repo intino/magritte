@@ -20,7 +20,6 @@ public class LanguageDependencyResolver {
 	public void resolve() throws TaraException {
 //		addTerminalNodes(extractTerminals(language));
 //		setValuesToNodes();
-//		addAnnotationsToInstances();
 //		completeFacetsInformation();
 	}
 
