@@ -50,15 +50,15 @@ single("$type"[, $relation])
 endrule
 
 defrule type(allow) type(parameter) type(word) trigger(allow)
-parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, null)
+parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, $extension+quoted)
 endrule
 
 defrule type(allow) type(parameter) type(reference) trigger(allow)
-parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, null)
+parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, $extension+quoted)
 endrule
 
 defrule type(allow) type(parameter) trigger(allow)
-parameter("$name", "$type", $multiple, $position, null)
+parameter("$name", "$type", $multiple, $position, $extension+quoted)
 endrule
 
 defrule type(allow) type(facet) trigger(allow)
@@ -85,15 +85,15 @@ _single("$type"[, $relation])
 endrule
 
 defrule type(require) type(parameter) type(word) trigger(require)
-_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, null)
+_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, $extension+quoted)
 endrule
 
 defrule type(require) type(parameter) type(reference) trigger(require)
-_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, null)
+_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, $extension+quoted)
 endrule
 
 defrule type(require) type(parameter) trigger(require)
-_parameter("$name", "$type", $multiple, $position,null)
+_parameter("$name", "$type", $multiple, $position, $extension+quoted)
 endrule
 
 defrule trigger(quoted)
@@ -103,7 +103,6 @@ endrule
 defrule trigger(require)
 _$value()
 endrule
-
 
 defrule type(assumptions) trigger(assumptions)
 assume($assumption...[, ])

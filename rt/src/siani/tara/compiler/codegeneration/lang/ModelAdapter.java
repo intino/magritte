@@ -160,18 +160,21 @@ class ModelAdapter implements Adapter<Model> {
 				addFrame("name", variable.getName() + ":word").
 				addFrame("words", renderWord(variable)).
 				addFrame("multiple", variable.isMultiple()).
-				addFrame("position", i));
+				addFrame("position", i).
+				addFrame("extension", variable.getExtension() == null ? "" : variable.getExtension()));
 		else if (variable instanceof VariableReference)
 			frame.addFrame(relation, new Frame(relation, "parameter", "reference").
 				addFrame("name", variable.getName()).
 				addFrame("types", renderReference((VariableReference) variable)).
 				addFrame("multiple", variable.isMultiple()).
-				addFrame("position", i));
+				addFrame("position", i).
+				addFrame("extension", variable.getExtension() == null ? "" : variable.getExtension()));
 		else frame.addFrame(relation, new Frame(relation, "parameter").
 				addFrame("name", variable.getName()).
 				addFrame("type", variable.getType()).
 				addFrame("multiple", variable.isMultiple()).
-				addFrame("position", i));
+				addFrame("position", i).
+				addFrame("extension", variable.getExtension() == null ? "" : variable.getExtension()));
 	}
 
 	private String[] renderWord(Variable variable) {

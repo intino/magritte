@@ -98,15 +98,19 @@ public class LanguageInheritanceFiller {
 	}
 
 	private void addParameter(Frame allowsFrame, Allow.Parameter allow, String relation) {
-		Object[] values = {allow.name(), allow.type(), allow.allowedValues(), allow.multiple(), allow.position()};
+		Object[] values = {allow.name(), allow.type(), allow.allowedValues(), allow.multiple(), allow.position(), getExtension(allow.extension())};
 		if (allow.allowedValues() != null && allow.allowedValues().length > 0)
 			if (allow.type().equals("word")) renderWord(allowsFrame, values, relation);
 			else renderReference(allowsFrame, values, relation);
 		else renderPrimitive(allowsFrame, values, relation);
 	}
 
+	private String getExtension(String extension) {
+		return extension == null || extension.isEmpty() ? "" : extension;
+	}
+
 	private void addParameter(Frame frame, Require.Parameter require) {
-		Object[] values = {require.name(), require.type(), require.allowedValues(), require.multiple(), require.position()};
+		Object[] values = {require.name(), require.type(), require.allowedValues(), require.multiple(), require.position(), getExtension(require.extension())};
 		String relation = "require";
 		if (require.allowedValues() != null && require.allowedValues().length > 0)
 			if (require.type().equals("word")) renderWord(frame, values, relation);
@@ -120,7 +124,8 @@ public class LanguageInheritanceFiller {
 			addFrame("name", values[0]).
 			addFrame("type", values[1]).
 			addFrame("multiple", values[3]).
-			addFrame("position", values[4]));
+			addFrame("position", values[4]).
+			addFrame("extension", values[5]));
 	}
 
 	private void renderWord(Frame allowsFrame, Object[] values, String relation) {
@@ -128,7 +133,8 @@ public class LanguageInheritanceFiller {
 			addFrame("name", values[0] + ":word").
 			addFrame("words", (String[]) values[2]).
 			addFrame("multiple", values[3]).
-			addFrame("position", values[4]));
+			addFrame("position", values[4]).
+			addFrame("extension", values[5]));
 	}
 
 	private void renderReference(Frame allowsFrame, Object[] values, String relation) {
@@ -136,7 +142,8 @@ public class LanguageInheritanceFiller {
 			addFrame("name", values[0]).
 			addFrame("types", (String[]) values[2]).
 			addFrame("multiple", values[3]).
-			addFrame("position", values[4]));
+			addFrame("position", values[4]).
+			addFrame("extension", values[5]));
 	}
 
 	private void addMultiple(Frame frameFrame, String frameRelation, String type, Relation relation) {

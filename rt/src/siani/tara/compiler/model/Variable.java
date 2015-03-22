@@ -8,7 +8,7 @@ public interface Variable {
 
 	String getName();
 
-	void setName(String name);
+	boolean isMultiple();
 
 	String getExtension();
 
@@ -22,9 +22,9 @@ public interface Variable {
 
 	void setExtension(String extension);
 
-	void setType(String type);
+	void setName(String name);
 
-	boolean isMultiple();
+	void setType(String type);
 
 	void setMultiple(boolean multiple);
 
