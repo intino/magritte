@@ -6,10 +6,10 @@
     <JAVADOC />
     <SOURCES>
       <root url="file://$PROJECT_DIR$/../it-rules/rules-engine/src" />
-      <root url="file://$PROJECT_DIR$/../it-rules/rule-engine-itr/gen" />
-      <root url="file://$PROJECT_DIR$/../it-rules/rule-engine-itr/src" />
-      <root url="file://$PROJECT_DIR$/../it-rules/rule-engine-json/src" />
-      <root url="file://$PROJECT_DIR$/../it-rules/rule-engine/src" />
+      <root url="file://$PROJECT_DIR$/../it-rules/engine-itr/gen" />
+      <root url="file://$PROJECT_DIR$/../it-rules/engine-itr/src" />
+      <root url="file://$PROJECT_DIR$/../it-rules/engine-json/src" />
+      <root url="file://$PROJECT_DIR$/../it-rules/engine/src" />
     </SOURCES>
   </library>
 </component>

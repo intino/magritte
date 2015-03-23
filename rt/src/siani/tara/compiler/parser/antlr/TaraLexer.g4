@@ -155,7 +155,7 @@ NEWLINE: NL+ SP* { newlinesAndSpaces(); };
 
 SPACES: SP+ EOF? -> channel(HIDDEN);
 
-DOC : 'def' .*? NL {emitToken(DOC);emitToken(NEWLINE);};
+DOC : 'doc' .*? NL {emitToken(DOC);emitToken(NEWLINE);};
 
 SP: (' ' | '\t');
 NL: ('\r'? '\n' | '\r');
