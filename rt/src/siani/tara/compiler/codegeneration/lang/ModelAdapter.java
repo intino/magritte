@@ -74,21 +74,20 @@ class ModelAdapter implements Adapter<Model> {
 		Frame frame = new Frame("node");
 		if (!node.isAbstract() && !node.isAnonymous() && !node.isCase()) {
 			frame.addFrame("name", getName(node));
-			if (node.getType() != null) {
-				addTypes(node, frame);
-			}
+			addTypes(node, frame);
 			addAllows(node, frame);
 			addRequires(node, frame);
 			addAssumptions(node, frame);
 			root.addFrame("node", frame);
-			for (Node inner : node.getIncludedNodes()) {
-				if (inner instanceof NodeReference && ((NodeReference) inner).isHas()) continue;
-				buildNode(inner);
-			}
+		}
+		for (Node inner : node.getIncludedNodes()) {
+			if (inner instanceof NodeReference && ((NodeReference) inner).isHas()) continue;
+			buildNode(inner);
 		}
 	}
 
 	private void addTypes(Node node, Frame frame) {
+		if (node.getType() == null) return;
 		Frame typesFrame = new Frame("nodeType");
 		Set<String> typeSet = new LinkedHashSet<>();
 		typeSet.add(node.getType());

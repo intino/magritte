@@ -2,6 +2,7 @@ package siani.tara.compiler.model.impl;
 
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Parameter;
+import siani.tara.compiler.model.Variable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +17,7 @@ public class ParameterImpl extends Element implements Parameter {
 	private String file;
 	private int line;
 	private String extension;
+	private Variable inferredVariable;
 
 
 	public ParameterImpl(String name, int position, String extension, Object... values) {
@@ -27,6 +29,16 @@ public class ParameterImpl extends Element implements Parameter {
 
 	public ParameterImpl(int position, String extension, Object... values) {
 		this("", position, extension, values);
+	}
+
+	@Override
+	public Variable inferredVariable() {
+		return inferredVariable;
+	}
+
+	@Override
+	public void setInferredVariable(Variable variable) {
+		this.inferredVariable = variable;
 	}
 
 	@Override

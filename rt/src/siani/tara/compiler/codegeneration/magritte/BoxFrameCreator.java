@@ -2,6 +2,7 @@ package siani.tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.framebuilder.FrameBuilder;
 import org.siani.itrules.model.Frame;
+import siani.tara.Language;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
@@ -12,17 +13,19 @@ import java.util.*;
 
 public class BoxFrameCreator extends FrameCreator {
 
+	private final String project;
+	private final Language language;
 	private final Model model;
 	private final Locale locale;
 	private final boolean terminal;
 	private Map<String, List<Long>> keymap = new LinkedHashMap<>();
 	private long count = 1;
-	private final String project;
 	private String languageName;
 
-	private BoxFrameCreator(String project, String languageName, Model model, Locale locale, boolean terminal) {
+	private BoxFrameCreator(String project, Language language, String languageName, Model model, Locale locale, boolean terminal) {
 		super(project, model);
 		this.project = project;
+		this.language = language;
 		this.languageName = languageName;
 		this.model = model;
 		this.locale = locale;
@@ -31,7 +34,7 @@ public class BoxFrameCreator extends FrameCreator {
 	}
 
 	public BoxFrameCreator(CompilerConfiguration conf, Model model) {
-		this(conf.getProject(), conf.getGeneratedLanguage(), model, conf.getLocale(), conf.isTerminal());
+		this(conf.getProject(), conf.getLanguage(), conf.getGeneratedLanguage(), model, conf.getLocale(), conf.isTerminal());
 	}
 
 	private void createKeyMap(NodeContainer node) {
@@ -53,7 +56,7 @@ public class BoxFrameCreator extends FrameCreator {
 		boxModel.addIncludedNodes(nodes.toArray(new Node[nodes.size()]));
 		final FrameBuilder builder = new FrameBuilder();
 		builder.register(Model.class, new BoxModelAdapter(project, languageName, boxModel, dependencies, locale));
-		builder.register(Node.class, new BoxNodeAdapter(project, boxModel, terminal, keymap));
+		builder.register(Node.class, new BoxNodeAdapter(project, language, terminal, keymap));
 		builder.register(Variable.class, new BoxVariableAdapter(project, boxModel, terminal));
 		return builder.createFrame(boxModel);
 	}

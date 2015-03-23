@@ -82,11 +82,17 @@ public class LanguageInheritanceFiller {
 	private void addAssumptions(Frame frame, Collection<Assumption> assumptions) {
 		Frame assumptionsFrame = new Frame("assumptions");
 		for (Assumption assumption : assumptions) {
-			String name = assumption.getClass().getInterfaces()[0].getName();
-			assumptionsFrame.addFrame("assumption", name.substring(name.lastIndexOf("$") + 1));
+			assumptionsFrame.addFrame("assumption", getAssumptionValue(assumption));
 		}
 		if (assumptionsFrame.getSlots().length != 0)
 			frame.addFrame("assumptions", assumptionsFrame);
+	}
+
+	private Object getAssumptionValue(Assumption assumption) {
+		String name = assumption.getClass().getInterfaces()[0].getName();
+		if (assumption instanceof Assumption.BoxName)
+			return new Frame("assumption", "boxName").addFrame("value", ((Assumption.BoxName) assumption).name());
+		else return name.substring(name.lastIndexOf("$") + 1);
 	}
 
 	private void addName(Frame allows, String relation) {

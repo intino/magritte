@@ -27,7 +27,5 @@ metrics
 /Users/oroncal/workspace/sandbox/Monet/out/production/adeje/
 resources
 /Users/oroncal/workspace/sandbox/Monet/adeje/res
-metamodel_file
-/Users/oroncal/workspace/sandbox/tara/plugins/tara_models/Census.json
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

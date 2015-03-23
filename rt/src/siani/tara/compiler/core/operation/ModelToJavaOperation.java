@@ -182,7 +182,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			if (node.isTerminal() && !((Element) node).getFile().equals(model.getFile())) continue;
 			String boxName = node.getParentBox();
 			if (boxName == null) throw new TaraException("parent box name not found");
-			boxes.add(buildFileName(boxName));
+			boxes.add(boxName);
 		}
 		return boxes;
 	}

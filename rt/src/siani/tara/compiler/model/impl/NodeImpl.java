@@ -289,7 +289,10 @@ public class NodeImpl extends Element implements Node {
 
 	@Override
 	public void addParameter(String name, int position, String extension, Object... values) {
-		parameters.add(new ParameterImpl(name, position, extension, values));
+		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
+		parameter.setFile(file);
+		parameter.setLine(line);
+		parameters.add(parameter);
 	}
 
 	@Override

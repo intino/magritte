@@ -35,16 +35,16 @@ def($key);[ name("$name");][ $nodeType...[ ]][ $facet][ $address][ $annotation..
 	[ $include...[ ]]\
 endrule
 
-defrule trigger(address)
-address($value);
-endrule
-
 defrule type(nodeType) trigger(nodeType)
 type("$name"[,$NL$target]);
 endrule
 
-defrule type(target) !type(intention) trigger(target)
+defrule type(target) type(intention) trigger(target)
 $target...[, $NL]
+endrule
+
+defrule trigger(address)
+address($value);
 endrule
 
 defrule type(facetApply) trigger(facet)
@@ -99,7 +99,7 @@ defrule type(Variable) type(reference) slot-name(variableValue) trigger(set)
 set("$name", node("$variableValue"));
 endrule
 
-defrule type(terminal) type(Variable) type(word) !type(List) slot-name(variableValue) trigger(set)
+defrule type(Variable) type(word) !type(List) slot-name(variableValue) trigger(set)
 set("!$name", "$variableValue+string");
 endrule
 

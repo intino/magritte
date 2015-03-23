@@ -4,6 +4,10 @@ import java.util.Collection;
 
 public interface Parameter {
 
+	Variable inferredVariable();
+
+	void setInferredVariable(Variable type);
+
 	String getName();
 
 	int getPosition();

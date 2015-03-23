@@ -3,12 +3,12 @@ package siani.tara.compiler.codegeneration.magritte;
 import org.siani.itrules.framebuilder.Adapter;
 import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
-import siani.tara.compiler.model.Annotation;
-import siani.tara.compiler.model.Primitives;
-import siani.tara.compiler.model.Variable;
+import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
+import siani.tara.compiler.model.impl.VariableReference;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
@@ -42,7 +42,6 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 			if (variable.getExtension() != null)
 				frame.addFrame(EXTENSION_VALUE, resolveMetric(variable.getDefaultExtension()));
 		}
-
 	}
 
 	private String getType(Variable variable) {
@@ -54,6 +53,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 		List<String> list = new ArrayList<>();
 		list.add(variable.getClass().getSimpleName());
 		list.add(VARIABLE);
+		if (variable instanceof VariableReference) list.add("reference");
 		list.add(variable.getType());
 		if (variable.isTerminal()) list.add(TERMINAL);
 		if (variable.isMultiple()) list.add(MULTIPLE);
@@ -62,7 +62,21 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 	}
 
 	protected void addVariableValue(Frame frame, final Variable variable) {
-		frame.addFrame(VARIABLE_VALUE, variable.getDefaultValues().toArray(new Object[variable.getDefaultValues().size()]));
+		Object[] values;
+		Collection<Object> defaultValues = variable.getDefaultValues();
+		if (defaultValues.iterator().next() instanceof Node)
+			if (defaultValues.iterator().next() instanceof EmptyNode) values = new Object[]{"null"};
+			else values = collectQualifiedNames(defaultValues);
+		else values = defaultValues.toArray(new Object[defaultValues.size()]);
+		frame.addFrame(VARIABLE_VALUE, values);
+	}
+
+	private Object[] collectQualifiedNames(Collection<Object> defaultValues) {
+		Object[] values;
+		List<String> nodeNames = new ArrayList<>();
+		for (Object value : defaultValues) nodeNames.add(((Node) value).getQualifiedName());
+		values = nodeNames.toArray(new Object[nodeNames.size()]);
+		return values;
 	}
 
 //
