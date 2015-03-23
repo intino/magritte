@@ -330,6 +330,16 @@ public class Model extends Element implements Node {
 		this.language = language;
 	}
 
+	@Override
+	public void setParentBox(String name) {
+
+	}
+
+	@Override
+	public String getParentBox() {
+		return null;
+	}
+
 	public void setTerminal(boolean terminal) {
 		this.terminal = terminal;
 	}

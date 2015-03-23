@@ -22,7 +22,7 @@ public class VariableImpl extends Element implements Variable {
 	private String file;
 	private int line;
 	private List<Annotation> annotations = new ArrayList<>();
-
+	private String defaultExtension;
 
 	public VariableImpl(String type, String name) {
 		this.type = type;
@@ -107,6 +107,16 @@ public class VariableImpl extends Element implements Variable {
 	@Override
 	public void addDefaultValues(Object... values) {
 		Collections.addAll(this.defaultValues, values);
+	}
+
+	@Override
+	public String getDefaultExtension() {
+		return defaultExtension;
+	}
+
+	@Override
+	public void setDefaultExtension(String defaultExtension) {
+		this.defaultExtension = defaultExtension;
 	}
 
 	@Override

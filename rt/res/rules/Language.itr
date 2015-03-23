@@ -108,6 +108,10 @@ defrule type(assumptions) trigger(assumptions)
 assume($assumption...[, ])
 endrule
 
+defrule type(assumption) type(boxName) trigger(assumption)
+boxName("$value")
+endrule
+
 defrule trigger(assumption)
 is$value+firstUpperCase()
 endrule

@@ -130,6 +130,16 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 		return includes.toArray(new siani.tara.semantic.model.Node[includes.size()]);
 	}
 
+	@Override
+	public void parentBox(String name) {
+		node.setParentBox(name);
+	}
+
+	@Override
+	public String parentBox() {
+		return node.getParentBox();
+	}
+
 	private siani.tara.semantic.model.FacetTarget[] buildFacetTargets(Collection<FacetTarget> facetTargets) {
 		List<siani.tara.semantic.model.FacetTarget> targets = new ArrayList<>();
 		for (final FacetTarget target : facetTargets)

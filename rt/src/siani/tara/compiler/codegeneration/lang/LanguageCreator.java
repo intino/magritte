@@ -30,7 +30,6 @@ public class LanguageCreator {
 			Document document = new Document();
 			RuleEngine ruleEngine = new RuleEngine(ItrRulesReader.read(loadRules(LANGUAGE_ITR)));
 			ruleEngine.render(createFrame(model), document);
-			System.out.println(document.content());
 			return document.content().replace("$","");
 		} catch (TaraException e) {
 			return null;

@@ -36,7 +36,7 @@ facetApply : AS metaidentifier parameters? (WITH metaidentifier)? body?;
 facetTarget : ON identifierReference ALWAYS? body?;
 nodeReference : HAS identifierReference annotations?;
 
-variable : VAR variableType metric? (LIST | count)? IDENTIFIER (word | (EQUALS value measureValue?))? annotations?;
+variable : VAR variableType metric? (LIST | count)? IDENTIFIER (word | (EQUALS value))? annotations?;
 
 variableType: NATURAL_TYPE
                 | INT_TYPE

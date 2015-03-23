@@ -9,7 +9,7 @@ public class NameFormatter {
 
 	public static final String MAGRITTE_PATH = "magritte";
 	public static final String MORPH_PATH = "morphs";
-	public static final String BOX_PATH = "editors";
+	public static final String BOX_PATH = "store";
 	public static final String JAVA = "java";
 	public static final String DOT = ".";
 
@@ -64,8 +64,7 @@ public class NameFormatter {
 		return MAGRITTE_PATH + separator + BOX_PATH;
 	}
 
-	public static String buildFileName(String file, String model) {
-		return camelCase(model.replace(DOT, "_") + "_" +
-			file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(DOT)), "_") + "Box";
+	public static String buildFileName(String file) {
+		return camelCase(file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(DOT)), "_");
 	}
 }

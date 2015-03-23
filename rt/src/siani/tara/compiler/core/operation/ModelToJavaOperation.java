@@ -19,6 +19,7 @@ import siani.tara.compiler.core.operation.model.ModelOperation;
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.Model;
+import siani.tara.dsls.Proteo;
 
 import java.io.*;
 import java.util.*;
@@ -29,21 +30,20 @@ import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
 
 public class ModelToJavaOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
-	private static final String BOX_ITR = "Box.itr";
+	private static final String BOX_ITR = "BoxUnit.itr";
 	private static final String MORPH_ITR = "Morph.itr";
 	private static final String JAVA = ".java";
 	protected static final String DOT = ".";
-	protected static final char DOT_CHAR = '.';
 	private final CompilationUnit compilationUnit;
 	private Model model;
 	private File outFolder;
-	private final CompilerConfiguration configuration;
+	private final CompilerConfiguration conf;
 
 	public ModelToJavaOperation(CompilationUnit compilationUnit) {
 		super();
 		this.compilationUnit = compilationUnit;
-		configuration = compilationUnit.getConfiguration();
-		outFolder = configuration.getOutDirectory();
+		conf = compilationUnit.getConfiguration();
+		outFolder = conf.getOutDirectory();
 	}
 
 	@Override
@@ -82,11 +82,6 @@ public class ModelToJavaOperation extends ModelOperation {
 		return list;
 	}
 
-//	private void addAggregated(List<Node> nodeTable, Set<Node> list) {
-//		for (Node node : nodeTable)
-//			if (node instanceof Node && node.isAggregated()) list.add(node);
-//	}
-
 	private void addRootAndSubs(Collection<Node> treeModel, Set<Node> list) {
 		for (Node node : treeModel) {
 			list.add(node);
@@ -98,23 +93,23 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-	private Map<String, Document> processBoxes(List<List<Node>> groupByBox, InputStream rulesInput) {
+	private Map<String, Document> processBoxes(List<List<Node>> groupByBox, InputStream rulesInput) throws TaraException {
 		Map<String, Document> map = new HashMap();
 		RuleEngine ruleEngine = new RuleEngine(new ItrRulesReader(rulesInput).read());
 		ruleEngine.register("date", buildDateFormatter());
 		ruleEngine.register("string", new StringFormatter());
 		for (List<Node> nodes : groupByBox) {
 			Document document = new Document();
-			String project = compilationUnit.getConfiguration().getProject();
-			ruleEngine.render(new BoxFrameCreator(project, model).create(nodes, collectParentBoxes(nodes)), document);
-			map.put(composeBoxName(((Element) nodes.get(0)).getFile()), document);
+			ruleEngine.render(new BoxFrameCreator(conf, model).
+				create(nodes, collectDependingBoxes(nodes)), document);
+			map.put(NameFormatter.buildFileName(((Element) nodes.get(0)).getFile()), document);
 		}
 		return map;
 	}
 
 	private Map<String, Document> processMorphs(Collection<Node> nodes, InputStream rulesInput) {
 		Map<String, Document> map = new HashMap();
-		RuleEngine ruleEngine = new RuleEngine(new ItrRulesReader(rulesInput).read(), configuration.getLocale());
+		RuleEngine ruleEngine = new RuleEngine(new ItrRulesReader(rulesInput).read(), conf.getLocale());
 		ruleEngine.register("reference", buildReferenceFormatter());
 		for (Node node : nodes) {
 			if (!((Element) node).getFile().equals(model.getName()) || node.isCase()) continue;
@@ -149,11 +144,6 @@ public class ModelToJavaOperation extends ModelOperation {
 		};
 	}
 
-	private String composeBoxName(String file) {
-		return NameFormatter.camelCase(model.getName().replace(DOT, "_") + '_' +
-			file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(DOT_CHAR)) + "Box", "_");
-	}
-
 	private void writeBoxes(String directory, Map<String, Document> documentMap) {
 		File destiny = new File(outFolder, directory);
 		destiny.mkdirs();
@@ -184,21 +174,22 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-	private Collection<String> collectParentBoxes(List<Node> nodes) {
-		Language parent = configuration.getLanguage();
-		if (parent == null) return Collections.EMPTY_LIST;
+	private Collection<String> collectDependingBoxes(List<Node> nodes) throws TaraException {
+		Language language = conf.getLanguage();
+		if (language instanceof Proteo) return Collections.EMPTY_LIST;
 		Set<String> boxes = new HashSet<>();
-//		for (Node node : nodes) {
-//			if (node.getObject().is(TERMINAL) && !node.getModelOwner().equals(model.getName())) continue;
-//			boxes.add(buildFileName(parent.searchNode(node.getObject().getFulltype()).getFile(), parent.getName()));
-//		}
+		for (Node node : nodes) {
+			if (node.isTerminal() && !((Element) node).getFile().equals(model.getFile())) continue;
+			String boxName = node.getParentBox();
+			if (boxName == null) throw new TaraException("parent box name not found");
+			boxes.add(buildFileName(boxName));
+		}
 		return boxes;
 	}
 
-	private List<List<Node>> groupByBox(Model treeModel) {
+	private List<List<Node>> groupByBox(Model model) {
 		Map<String, List<Node>> nodes = new HashMap();
-		for (Node node : treeModel.getIncludedNodes()) {
-			if (!model.getFile().equals(((Element) node).getFile())) continue;
+		for (Node node : model.getIncludedNodes()) {
 			if (!nodes.containsKey(((Element) node).getFile()))
 				nodes.put(((Element) node).getFile(), new ArrayList<Node>());
 			nodes.get(((Element) node).getFile()).add(node);

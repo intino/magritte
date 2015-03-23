@@ -5,6 +5,7 @@ import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.compiler.model.Annotation;
+import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.Model;
@@ -14,6 +15,7 @@ import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.Assumption;
 import siani.tara.semantic.model.Rules;
 
+import java.io.File;
 import java.util.*;
 
 import static siani.tara.compiler.model.Annotation.*;
@@ -199,7 +201,16 @@ class ModelAdapter implements Adapter<Model> {
 	private Frame buildAssumptions(Node node) {
 		Frame assumptions = new Frame("assumptions");
 		addAnnotationAssumptions(node, assumptions);
+		addBoxNameAssumption(node, assumptions);
 		return assumptions;
+	}
+
+	private void addBoxNameAssumption(Node node, Frame assumptions) {
+		if (node instanceof Model) return;
+		String file = ((Element) node).getFile();
+		if (file == null) return;
+		String name = file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf('.'));
+		assumptions.addFrame("assumption", new Frame("assumption", "boxName").addFrame("value", name));
 	}
 
 	private void addAnnotationAssumptions(Node node, Frame assumptions) {

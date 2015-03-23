@@ -26,6 +26,16 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public String getParentBox() {
+		return null;
+	}
+
+	@Override
+	public void setParentBox(String name) {
+
+	}
+
+	@Override
 	public String getDoc() {
 		return null;
 	}

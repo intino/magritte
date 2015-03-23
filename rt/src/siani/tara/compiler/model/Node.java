@@ -6,6 +6,8 @@ import java.util.Collection;
 
 public interface Node extends NodeContainer, Parameterized {
 
+	static final String ANNONYMOUS = "annonymous@";
+
 	String getName();
 
 	void setName(String name);
@@ -13,6 +15,10 @@ public interface Node extends NodeContainer, Parameterized {
 	String getLanguage();
 
 	void setLanguage(String language);
+
+	String getParentBox();
+
+	void setParentBox(String name);
 
 	String getDoc();
 

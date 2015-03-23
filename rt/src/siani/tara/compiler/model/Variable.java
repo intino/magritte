@@ -36,4 +36,8 @@ public interface Variable {
 
 	void addDefaultValues(Object... values);
 
+	String getDefaultExtension();
+
+	void setDefaultExtension(String defaultExtension);
+
 }

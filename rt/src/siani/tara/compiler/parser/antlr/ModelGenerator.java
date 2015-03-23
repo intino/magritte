@@ -189,9 +189,14 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			new VariableImpl(variableType.getText(), ctx.IDENTIFIER().getText());
 		variable.setMultiple(ctx.LIST() != null);
 		if (ctx.word() != null) processAsWord(variable, ctx.word());
-		else if (ctx.value() != null) variable.addDefaultValues(resolveValue(ctx.value()));
+		else if (ctx.value() != null) {
+			variable.addDefaultValues(resolveValue(ctx.value()));
+			if (ctx.value().measureValue() != null)
+				variable.setDefaultExtension(ctx.value().measureValue().getText());
+		}
 		if (ctx.metric() != null)
 			variable.setExtension(ctx.metric().getText().substring(1));
+
 		addHeaderInformation(ctx, (Element) variable);
 		variable.addAnnotations(resolveAnnotations(ctx.annotations()));
 		container.addVariables(variable);

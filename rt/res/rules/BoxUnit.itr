@@ -30,7 +30,7 @@ public class $name extends Box.Unit {
 }
 endrule
 
-defrule type(node) trigger(node)
+defrule type(Node) trigger(node)
 def($key);[ name("$name");][ $nodeType...[ ]][ $facet][ $address][ $annotation...[ ]][ $parent][ $variable+set...[ ]\]
 	[ $include...[ ]]\
 endrule
@@ -71,9 +71,12 @@ defrule type(Variable) type(target) !type(List) slot-name(variableValue) trigger
 set("!$node:$name<$target", $variableValue);
 endrule
 
-
 defrule type(terminal) type(Variable) type(reference) slot-name(variableValue) trigger(set)
 set("!$name", node("$variableValue"));
+endrule
+
+defrule type(terminal) type(Variable) type(word) !type(List) slot-name(variableValue) trigger(set)
+set("!$name", "$variableValue+string");
 endrule
 
 defrule type(terminal) type(Variable) type(string) !type(List) slot-name(variableValue) trigger(set)
@@ -94,6 +97,10 @@ endrule
 
 defrule type(Variable) type(reference) slot-name(variableValue) trigger(set)
 set("$name", node("$variableValue"));
+endrule
+
+defrule type(terminal) type(Variable) type(word) !type(List) slot-name(variableValue) trigger(set)
+set("!$name", "$variableValue+string");
 endrule
 
 defrule type(Variable) type(string) !type(List) slot-name(variableValue) trigger(set)

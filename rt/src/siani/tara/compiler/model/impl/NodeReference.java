@@ -19,6 +19,7 @@ public class NodeReference extends Element implements Node {
 
 	private List<String> imports = new ArrayList<>();
 	private boolean has;
+	private String parentBox;
 
 	public NodeReference(String reference) {
 		this.reference = reference;
@@ -68,6 +69,16 @@ public class NodeReference extends Element implements Node {
 	@Override
 	public void setLanguage(String language) {
 
+	}
+
+	@Override
+	public void setParentBox(String name) {
+		this.parentBox = name;
+	}
+
+	@Override
+	public String getParentBox() {
+		return parentBox;
 	}
 
 	@Override

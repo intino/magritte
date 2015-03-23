@@ -8,6 +8,7 @@ import static siani.tara.compiler.model.Annotation.*;
 
 public class NodeImpl extends Element implements Node {
 
+
 	private String file;
 	private int line;
 	private NodeContainer container;
@@ -29,6 +30,7 @@ public class NodeImpl extends Element implements Node {
 	private List<FacetTarget> facetTargets = new ArrayList<>();
 	private String language;
 	private List<Node> children = new ArrayList<>();
+	private String parentBox;
 
 
 	@Override
@@ -58,6 +60,16 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	@Override
+	public void setParentBox(String name) {
+		this.parentBox = name;
+	}
+
+	@Override
+	public String getParentBox() {
+		return parentBox;
 	}
 
 	@Override
@@ -234,7 +246,7 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public String getQualifiedName() {
 		String containerQN = container.getQualifiedName();
-		return isInFacet() ? "" : (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[annonymous@" + type + "]" : name);
+		return isInFacet() ? "" : (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + type + "]" : name);
 	}
 
 	private boolean isInFacet() {

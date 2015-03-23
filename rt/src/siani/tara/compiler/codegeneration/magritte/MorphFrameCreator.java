@@ -1,7 +1,6 @@
 package siani.tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.model.Frame;
-import siani.tara.compiler.codegeneration.FrameCreator;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.Model;
 

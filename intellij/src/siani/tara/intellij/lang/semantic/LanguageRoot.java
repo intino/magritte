@@ -100,6 +100,16 @@ public class LanguageRoot implements Node {
 		return wrap(model.getNodes());
 	}
 
+	@Override
+	public void parentBox(String name) {
+
+	}
+
+	@Override
+	public String parentBox() {
+		return null;
+	}
+
 	private Node[] wrap(Collection<siani.tara.intellij.lang.psi.Node> nodes) {
 		List<LanguageNode> languageNodes = new ArrayList<>();
 		for (siani.tara.intellij.lang.psi.Node node : nodes) languageNodes.add(new LanguageNode(node));
