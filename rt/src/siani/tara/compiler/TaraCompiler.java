@@ -5,15 +5,18 @@ import siani.tara.compiler.core.CompilerMessage;
 import siani.tara.compiler.core.SourceUnit;
 import siani.tara.compiler.core.errorcollection.*;
 import siani.tara.compiler.core.errorcollection.message.*;
-import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
+import siani.tara.compiler.model.Element;
 import siani.tara.compiler.rt.TaraCompilerMessageCategories;
-import siani.tara.model.DeclaredNode;
+import siani.tara.compiler.semantic.wrappers.LanguageElement;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static siani.tara.compiler.core.CompilerMessage.ERROR;
+import static siani.tara.compiler.core.CompilerMessage.WARNING;
 
 public class TaraCompiler {
 	public static final String LINE_AT = " @ line ";
@@ -51,7 +54,7 @@ public class TaraCompiler {
 	private void addWarnings(ErrorCollector errorCollector, List collector) {
 		for (int i = 0; i < errorCollector.getWarningCount(); i++) {
 			WarningMessage warning = errorCollector.getWarning(i);
-			collector.add(new CompilerMessage(CompilerMessage.WARNING, warning.getMessage(), ((SourceUnit) warning.getOwner()).getName(), -1, -1));
+			collector.add(new CompilerMessage(WARNING, warning.getMessage(), ((SourceUnit) warning.getOwner()).getName(), -1, -1));
 		}
 	}
 
@@ -67,9 +70,9 @@ public class TaraCompiler {
 	private void processException(Message message) {
 		if (message instanceof SyntaxErrorMessage)
 			addErrorMessage(((SyntaxErrorMessage) message).getCause());
-		if (message instanceof SemanticErrorMessage)
+		else if (message instanceof SemanticErrorMessage)
 			addErrorMessage(((SemanticErrorMessage) message).getCause());
-		if (message instanceof DependencyErrorMessage)
+		else if (message instanceof DependencyErrorMessage)
 			addErrorMessage(((DependencyErrorMessage) message).getCause());
 		else if (message instanceof ExceptionMessage)
 			processException(((ExceptionMessage) message).getCause());
@@ -90,7 +93,7 @@ public class TaraCompiler {
 	}
 
 	private void addMessageWithoutLocation(List collector, String message, boolean error) {
-		collector.add(new CompilerMessage(error ? CompilerMessage.ERROR : CompilerMessage.WARNING, message, null, -1, -1));
+		collector.add(new CompilerMessage(error ? ERROR : WARNING, message, null, -1, -1));
 	}
 
 	private void addErrorMessage(SyntaxException exception) {
@@ -100,15 +103,15 @@ public class TaraCompiler {
 			exception.getLine(), exception.getStartColumn()));
 	}
 
-	private void addErrorMessage(SemanticError exception) {
+	private void addErrorMessage(SemanticException error) {
 		String message;
-		if (exception.getNode() != null) {
-			message = (exception.getMessage().contains(LINE_AT)) ?
-				exception.getMessage().substring(0, exception.getMessage().lastIndexOf(LINE_AT)) : exception.getMessage();
-			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, exception.getNode().getFile(),
-				exception.getLine(), 1));
+		if (error.getErrors()[0].origin() != null) {
+			message = (error.getMessage().contains(LINE_AT)) ?
+				error.getMessage().substring(0, error.getMessage().lastIndexOf(LINE_AT)) : error.getMessage();
+			Element element = ((LanguageElement) error.getErrors()[0].origin()).element();
+			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, element.getFile(), element.getLine(), 1));
 		} else {
-			message = exception.getMessage();
+			message = error.getMessage();
 			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, null, -1, -1));
 		}
 	}
@@ -116,17 +119,15 @@ public class TaraCompiler {
 	private void addErrorMessage(DependencyException exception) {
 		String message = exception.getMessage();
 		String justMessage = message.substring(0, message.lastIndexOf(LINE_AT));
-		collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, justMessage, exception.getNode().getFile(),
+		collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, justMessage, exception.getElement().getFile(),
 			exception.getLine(), 1));
 	}
 
 	private void addErrorMessage(TaraRuntimeException exception) {
-		DeclaredNode node = exception.getNode();
-		if (node != null)
-			collector.add(new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(),
-				node.getFile(), node.getLine(), -1));
-		else
-			collector.add(new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(), "null", -1, -1));
+		Element element = exception.getElement();
+		collector.add(element != null ?
+			new CompilerMessage(ERROR, exception.getMessageWithoutLocationText(), element.getFile(), element.getLine(), -1) :
+			new CompilerMessage(ERROR, exception.getMessageWithoutLocationText(), "null", -1, -1));
 	}
 
 	private void addErrorMessage(SimpleMessage message, List collector) {

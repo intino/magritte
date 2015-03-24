@@ -64,6 +64,20 @@ public class TaraUtil {
 	}
 
 	@Nullable
+	public static Collection<String> getTypesOf(Node node) {
+		Language language = getLanguage(node);
+		if (language == null) return null;
+		return language.types(node.resolve().getFullType());
+	}
+
+	@Nullable
+	public static Collection<Allow> getAllowsOf(Node context, String fullType) {
+		Language language = getLanguage(context);
+		if (language == null) return null;
+		return language.allows(fullType);
+	}
+
+	@Nullable
 	public static Collection<Assumption> getAssumptionsOf(Node node) {
 		Language language = getLanguage(node);
 		if (language == null) return null;
@@ -248,8 +262,8 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static NodeReference[] getLinksOf(Node node) {
-		return node.getBody() == null ? new NodeReference[0] : node.getBody().getConceptLinks();
+	public static Collection<NodeReference> getLinksOf(Node node) {
+		return node.getBody() == null ? Collections.EMPTY_LIST : node.getBody().getConceptLinks();
 	}
 
 	public static Inflector getInflector(Module module) {

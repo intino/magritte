@@ -4,11 +4,11 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import siani.tara.TaracRunner;
 import siani.tara.compiler.core.errorcollection.SyntaxException;
-import siani.tara.compiler.parser.antlr.TaraAbstractModelGenerator;
+import siani.tara.compiler.parser.antlr.ModelGenerator;
 import siani.tara.compiler.parser.antlr.TaraErrorStrategy;
 import siani.tara.compiler.parser.antlr.TaraGrammar;
 import siani.tara.compiler.parser.antlr.TaraLexer;
-import siani.tara.model.Model;
+import siani.tara.compiler.model.impl.Model;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,11 +35,10 @@ public class Parser {
 
 	public Model convert() throws SyntaxException {
 		try {
-			Model model = new Model(file.getName());
 			ParseTreeWalker walker = new ParseTreeWalker();
-			TaraAbstractModelGenerator extractor = new TaraAbstractModelGenerator(model, file.getPath());
+			ModelGenerator extractor = new ModelGenerator(file.getPath());
 			walker.walk(extractor, rootContext);
-			return model;
+			return extractor.getModel();
 		} catch (RecognitionException e) {
 			org.antlr.v4.runtime.Parser recognizer = (org.antlr.v4.runtime.Parser) e.getRecognizer();
 			Token token = recognizer.getCurrentToken();

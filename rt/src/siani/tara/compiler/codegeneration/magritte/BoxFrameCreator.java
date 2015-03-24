@@ -1,202 +1,64 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.formatter.Inflector;
-import org.siani.itrules.formatter.InflectorFactory;
+import org.siani.itrules.framebuilder.FrameBuilder;
 import org.siani.itrules.model.Frame;
-import siani.tara.compiler.codegeneration.FrameCreator;
-import siani.tara.model.*;
+import siani.tara.Language;
+import siani.tara.compiler.core.CompilerConfiguration;
+import siani.tara.compiler.model.*;
+import siani.tara.compiler.model.impl.Model;
+import siani.tara.compiler.model.impl.NodeReference;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
 
-import static siani.tara.compiler.codegeneration.InflectorProvider.getInflector;
-import static siani.tara.compiler.codegeneration.magritte.NameFormatter.buildFileName;
-import static siani.tara.compiler.codegeneration.magritte.NameFormatter.camelCase;
 
+public class BoxFrameCreator {
 
-public class BoxFrameCreator extends FrameCreator {
-
-	private Map<String, List<Long>> keymap = new LinkedHashMap<>();
+	private final String project;
+	private final Language language;
+	private final Model model;
+	private final Locale locale;
+	private final boolean terminal;
+	private Map<Node, Long> keymap = new LinkedHashMap<>();
 	private long count = 1;
 
-	public BoxFrameCreator(String project, Model model) {
-		super(project, model);
-		createKeyMap(model.getNodeTree());
+	private BoxFrameCreator(String project, Language language, Model model, Locale locale, boolean terminal) {
+		this.project = project;
+		this.language = language;
+		this.model = model;
+		this.locale = locale;
+		this.terminal = terminal;
+		createKeyMap(model);
 	}
 
-	private void createKeyMap(NodeTree nodeTree) {
-		for (Node node : nodeTree) {
-			if (node.is(LinkNode.class)) continue;
-			if (!keymap.containsKey(node.getQualifiedName()))
-				keymap.put(node.getQualifiedName(), new ArrayList<Long>());
-			keymap.get(node.getQualifiedName()).add(count);
+	public BoxFrameCreator(CompilerConfiguration conf, Model model) {
+		this(conf.getProject(), conf.getLanguage(), model, conf.getLocale(), conf.isTerminal());
+	}
+
+	private void createKeyMap(NodeContainer node) {
+		for (Node include : node.getIncludedNodes()) {
+			keymap.put(include, count);
 			count++;
-			createKeyMap(node.getInnerNodes());
-			for (FacetTarget facetTarget : node.getObject().getFacetTargets())
-				createKeyMap(facetTarget.getInner());
+			if (include instanceof NodeReference && ((NodeReference) include).isHas()) continue;
+			createKeyMap(include);
+			for (FacetTarget facetTarget : include.getFacetTargets())
+				createKeyMap(facetTarget);
+			for (Facet facet : include.getFacets())
+				createKeyMap(facet);
 		}
 	}
 
-	public Frame create(List<Node> nodes, Collection<String> parentBoxes) {
-		Frame frame = new Frame(BOX);
-		frame.addFrame(NAME, buildFileName(nodes.get(0).getFile(), model.getName()));
-		for (String box : parentBoxes)
-			frame.addFrame(DEPENDENCY, box);
-		addMetricImports(frame);
-		addFacetImports(nodes, frame);
-		boxToFrame(nodes, frame);
-		return frame;
-	}
-
-	private void boxToFrame(List<Node> nodes, Frame frame) {
-		for (Node node : nodes) {
-			if (!node.is(DeclaredNode.class)) continue;
-			nodeToFrame(node, frame);
-			boxToFrame(node.getInnerNodes(), frame);
-		}
-	}
-
-	private void nodeToFrame(final Node node, Frame boxFrame) {
-		if (node.is(DeclaredNode.class)) {
-			DeclaredNode declaredNode = (DeclaredNode) node;
-			List<String> types = getTypes(declaredNode);
-			final Frame nodeFrame = new Frame(types.toArray(new String[types.size()]));
-			boxFrame.addFrame(NODE, nodeFrame);
-			addAnnotations(declaredNode, nodeFrame);
-			addNodeInfo(declaredNode, nodeFrame);
-			addAggregated(declaredNode, nodeFrame);
-			addComponents(declaredNode, nodeFrame);
-		}
-	}
-
-	private void addNodeInfo(DeclaredNode node, Frame newFrame) {
-		List<Long> keys = keymap.get(node.getQualifiedName());
-		newFrame.addFrame(KEY, keys.get(0));
-		keys.remove(0);
-		NodeObject object = node.getObject();
-		if (node.getName() != null && !node.isAnonymous())
-			newFrame.addFrame(NAME, clean(node.getQualifiedName())); //TODO change for anonymous and inner facet nodes
-		if (node.getObject().getParent() != null)
-			newFrame.addFrame(PARENT, node.getObject().getParent().getName());
-		if (node.is(Annotation.INTENTION)) addType(node, newFrame);
-		addFacetApplies(node, newFrame);
-		if (object.getAddress() != null) newFrame.addFrame(ADDRESS, object.getAddress().replace(".", ""));
-		addVariables(node, newFrame);
-	}
-
-	protected void addVariables(Node node, final Frame frame) {
-		for (final Variable variable : node.getObject().getVariables()) {
-			Frame varFrame = createVarFrame(variable);
-			frame.addFrame(VARIABLE, varFrame);
-			if (variable.hasValue()) addVariableValue(varFrame, variable);
-		}
-		for (FacetTarget target : node.getObject().getFacetTargets())
-			for (final Variable variable : target.getVariables()) {
-				if (variable.getDefaultValues() == null) continue;
-				Frame varFrame = createTargetVarFrame(node.getName(), target.getDestinyName(), variable);
-				frame.addFrame(VARIABLE, varFrame);
-				addVariableValue(varFrame, variable);
-			}
-	}
-
-	private String clean(String name) {
-		return name.replace("[", "").replace("]", "").replaceAll(Node.ANONYMOUS, "").replaceAll(Node.IN_FACET_TARGET, "");
-	}
-
-
-	private void addAggregated(Node node, Frame frame) {
-		for (Node inner : node.getInnerNodes())
-			if (inner.isAggregated() && !inner.isSub()) {
-				List<Long> keys = inner.is(LinkNode.class) ?
-					keymap.get(((LinkNode) inner).getDestiny().getQualifiedName()) :
-					keymap.get(inner.getQualifiedName());
-				for (Long key : keys)
-					frame.addFrame(AGGREGATED, key);
-			}
-	}
-
-	private void addComponents(DeclaredNode node, Frame frame) {
-		Map<String, List<Long>> extractedNodes = new LinkedHashMap<>();
-		for (Node inner : node.getInnerNodes())
-			if (!inner.isSub() && !inner.isAggregated()) {
-				String qn = (inner.is(LinkNode.class)) ? ((LinkNode) inner).getDestiny().getQualifiedName() : inner.getQualifiedName();
-				if (!extractedNodes.containsKey(qn))
-					extractedNodes.put(qn, new ArrayList<>(keymap.get(qn)));
-				List<Long> keys = extractedNodes.get(qn);
-				if (keys.isEmpty()) continue;//TODO
-				frame.addFrame(COMPONENT, keys.get(0));
-				keys.remove(0);
-			}
-	}
-
-	private void addFacetApplies(Node node, Frame newFrame) {
-		for (Facet facet : node.getObject().getFacets()) {
-			if (!facet.isIntention()) continue;
-			Frame facetFrame = new Frame(FACET_APPLY).addFrame(NAME, facet.getName()).addFrame(APPLY, buildFacetPath(node, facet.getName()));
-			newFrame.addFrame(FACET, facetFrame);
-		}
-	}
-
-	private void addType(Node node, Frame newFrame) {
-		Frame typeFrame = new Frame(NODE_TYPE).addFrame(NAME, node.getObject().getType());
-		addFacetTargets(node, typeFrame);
-		newFrame.addFrame(NODE_TYPE, typeFrame);
-	}
-
-	private void addFacetTargets(Node node, Frame typeFrame) {
-		if (node.getObject().getFacetTargets().isEmpty()) return;
-		Frame targetFrame = new Frame(TARGET, node.is(Annotation.INTENTION) ? INTENTION : "");
-		targetFrame.addFrame(TARGET, project.toLowerCase() + DOT + EXTENSIONS + DOT + camelCase(node.getName()) + node.getType() + DOT + CLASS);
-		Inflector inflector = getInflector(model.getLocale());
-		for (FacetTarget target : node.getObject().getFacetTargets())
-			targetFrame.addFrame(TARGET, project.toLowerCase() + DOT + EXTENSIONS + DOT + inflector.plural(node.getType()).toLowerCase() + DOT +
-				inflector.plural(node.getName()).toLowerCase() + DOT + camelCase(target.getDestinyName()) + node.getType() + DOT + CLASS);
-		typeFrame.addFrame(TARGET, targetFrame);
-	}
-
-
-	private String buildFacetPath(Node node, String facet) {
-		Node aNode = node;
-		String path = node.getName() + facet + DOT + CLASS;
-		while (aNode.getContainer() != null) {
-			aNode = aNode.getContainer();
-			path = addToPath(facet, aNode, path);
-		}
-		return path;
-	}
-
-	private String addToPath(String facetName, Node aNode, String path) {
-		boolean faceted = false;
-		for (Facet facet : aNode.getObject().getFacets())
-			if (facet.getName().equals(facetName)) {
-				path = aNode.getName() + facetName + DOT + path;
-				faceted = true;
-			}
-		if (!faceted) path = aNode.getType() + DOT + path;
-		return path;
-	}
-
-
-	private void addMetricImports(Frame frame) {
-		for (String metric : model.getMetrics().keySet())
-			frame.addFrame("importMetric", IMPORT + " " + STATIC + " " + project.toLowerCase() + DOT + METRICS + DOT + metric + DOT + STAR + SEMICOLON);
-	}
-
-	private void addFacetImports(List<Node> nodes, Frame frame) {
-		Set<String> imports = searchFacets(nodes);
-		for (String anImport : imports)
-			frame.addFrame("importFacet", IMPORT + " " + project.toLowerCase() + DOT + EXTENSIONS + DOT + anImport.toLowerCase() + DOT + STAR + SEMICOLON);
-	}
-
-	private Set<String> searchFacets(List<Node> nodes) {
-		Set<String> imports = new HashSet<>();
-		for (Node node : nodes) {
-			if (node.is(LinkNode.class)) continue;
-			for (Facet facet : node.getObject().getFacets()) {
-				if (!facet.isIntention()) continue;
-				imports.add(InflectorFactory.getInflector(model.getLocale()).plural(facet.getName()));
-			}
-			imports.addAll(searchFacets(node.getInnerNodes()));
-		}
-		return imports;
+	public Frame create(Collection<Node> nodes) {
+		Model boxModel = new Model(((Element) nodes.iterator().next()).getFile());
+		boxModel.setName(model.getName());
+		boxModel.addIncludedNodes(nodes.toArray(new Node[nodes.size()]));
+		final FrameBuilder builder = new FrameBuilder();
+		builder.register(Model.class, new BoxModelAdapter(project, language, boxModel, locale));
+		builder.register(Node.class, new BoxNodeAdapter(project, language, terminal, keymap));
+		builder.register(Variable.class, new BoxVariableAdapter());
+		builder.register(Parameter.class, new BoxParameterAdapter());
+		return builder.createFrame(boxModel);
 	}
 }

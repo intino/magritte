@@ -1,23 +1,23 @@
 package siani.tara.compiler.core.errorcollection;
 
 
-import siani.tara.model.DeclaredNode;
+import siani.tara.compiler.model.Element;
 
 public class TaraRuntimeException extends RuntimeException {
 
-	private final DeclaredNode node;
+	private final Element element;
 
-	public TaraRuntimeException(String message, DeclaredNode node) {
+	public TaraRuntimeException(String message, Element element) {
 		super(message);
-		this.node = node;
+		this.element = element;
 	}
 
 	public String getMessage() {
 		return getMessageWithoutLocationText() + getLocationText();
 	}
 
-	public DeclaredNode getNode() {
-		return this.node;
+	public Element getElement() {
+		return this.element;
 	}
 
 	public String getMessageWithoutLocationText() {
@@ -26,7 +26,7 @@ public class TaraRuntimeException extends RuntimeException {
 
 	protected String getLocationText() {
 		String answer = ". ";
-		if (this.node != null) answer = answer + "At [" + this.node.getLine() + "] ";
+		if (this.element != null) answer = answer + "At [" + this.element.getLine() + "] ";
 		if (". ".equals(answer)) return "";
 		return answer;
 	}

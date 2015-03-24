@@ -109,7 +109,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return (Collection<VarInit>) this.getBody().getVarInitList();
 	}
 
-	public NodeReference[] getInnerNodeReferences() {
+	public Collection<NodeReference> getInnerNodeReferences() {
 		return TaraUtil.getLinksOf((Node) this);
 	}
 
@@ -139,8 +139,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public Parameter[] getParameterList() {
-		if (getSignature().getParameters() == null) return new Parameter[0];
+	public Collection<Parameter> getParameterList() {
+		if (getSignature().getParameters() == null) return Collections.EMPTY_LIST;
 		return getSignature().getParameters().getParameters();
 	}
 
@@ -185,7 +185,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	@Nullable
 	public String getDocCommentText() {
 		StringBuilder text = new StringBuilder();
-		Doc[] docs = this.getDoc();
+		Collection<Doc> docs = this.getDoc();
 		String comment;
 		for (Doc doc : docs) {
 			comment = doc.getText();
@@ -261,6 +261,13 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
+	public boolean isAnnotatedAsAssociated() {
+		for (PsiElement annotation : getAnnotations())
+			if (ASSOCIATED.getName().equals(annotation.getText()))
+				return true;
+		return false;
+	}
+
 	public boolean isProperty() {
 		return is(PROPERTY);
 	}
@@ -296,12 +303,9 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 
-	public FacetApply[] getFacetApplies() {
-		if (getBody() != null) {
-			List<FacetApply> facetApplies = (List<FacetApply>) getBody().getFacetApplyList();
-			return facetApplies.toArray(new FacetApply[facetApplies.size()]);
-		}
-		return new TaraFacetApply[0];
+	public Collection<FacetApply> getFacetApplies() {
+		if (getBody() != null) return (List<FacetApply>) getBody().getFacetApplyList();
+		return Collections.EMPTY_LIST;
 	}
 
 	public Collection<TaraFacetTarget> getFacetTargets() {
@@ -316,7 +320,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	@NotNull
 	public List<Annotation> getAnnotations() {
 		Annotations annotations = ((Node) this).getAnnotationsNode();
-		return annotations == null ? Collections.EMPTY_LIST : (List<Annotation>) annotations.getAnnotationList();
+		return annotations == null ? Collections.EMPTY_LIST : annotations.getAnnotationList();
 	}
 
 	@Nullable
@@ -328,7 +332,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		Collections.addAll(inheritedAnnotations, annotations);
 	}
 
-	public Collection<String> getInheritedAnnotations() {
+	public Collection<String> getAssumedAnnotations() {
 		return inheritedAnnotations;
 	}
 
@@ -339,8 +343,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public Doc[] getDoc() {
-		return new Doc[0];
+	public Collection<Doc> getDoc() {
+		return Collections.EMPTY_LIST;
 	}
 
 	@Override

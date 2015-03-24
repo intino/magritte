@@ -93,7 +93,7 @@ public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
 		if (!(element instanceof Node)) return super.getLineMarkerInfo(element);
 		Node node = (Node) element;
-		if (node.getFacetApplies().length == 0) return null;
+		if (node.getFacetApplies().isEmpty()) return null;
 		PsiElement reference = null;
 		for (FacetApply facetApply : node.getFacetApplies()) {
 			reference = resolveExternal(node, facetApply);

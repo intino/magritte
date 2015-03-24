@@ -10,9 +10,9 @@ import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
 import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.model.FacetTarget;
 import siani.tara.semantic.Allow;
 import siani.tara.semantic.Assumption;
+import siani.tara.semantic.model.FacetTarget;
 
 import java.util.*;
 

@@ -1,17 +1,16 @@
-// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraLexer.g4 by ANTLR 4.4.1-dev
+// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraLexer.g4 by ANTLR 4.5
 package siani.tara.compiler.parser.antlr;
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.LexerATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.misc.*;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class TaraLexer extends Lexer {
-	static { RuntimeMetaData.checkVersion("4.4.1-dev", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.5", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -34,18 +33,6 @@ public class TaraLexer extends Lexer {
 		"DEFAULT_MODE"
 	};
 
-	public static final String[] tokenNames = {
-		"'\\u0000'", "'\\u0001'", "'\\u0002'", "'\\u0003'", "'\\u0004'", "'\\u0005'", 
-		"'\\u0006'", "'\\u0007'", "'\b'", "'\t'", "'\n'", "'\\u000B'", "'\f'", 
-		"'\r'", "'\\u000E'", "'\\u000F'", "'\\u0010'", "'\\u0011'", "'\\u0012'", 
-		"'\\u0013'", "'\\u0014'", "'\\u0015'", "'\\u0016'", "'\\u0017'", "'\\u0018'", 
-		"'\\u0019'", "'\\u001A'", "'\\u001B'", "'\\u001C'", "'\\u001D'", "'\\u001E'", 
-		"'\\u001F'", "' '", "'!'", "'\"'", "'#'", "'$'", "'%'", "'&'", "'''", 
-		"'('", "')'", "'*'", "'+'", "','", "'-'", "'.'", "'/'", "'0'", "'1'", 
-		"'2'", "'3'", "'4'", "'5'", "'6'", "'7'", "'8'", "'9'", "':'", "';'", 
-		"'<'", "'='", "'>'", "'?'", "'@'", "'A'", "'B'", "'C'", "'D'", "'E'", 
-		"'F'", "'G'", "'H'", "'I'"
-	};
 	public static final String[] ruleNames = {
 		"METAIDENTIFIER", "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", "IS", 
 		"WITH", "EXTENDS", "ABSTRACT", "SINGLE", "REQUIRED", "COMPONENT", "FACET", 
@@ -62,6 +49,65 @@ public class TaraLexer extends Lexer {
 		"PERCENTAGE", "GRADE", "BY", "DIVIDED_BY", "DASH", "DASHES", "UNDERDASH", 
 		"DIGIT", "LETTER"
 	};
+
+	private static final String[] _LITERAL_NAMES = {
+		null, "'Concept'", "'sub'", "'use'", "'dsl'", "'var'", "'as'", "'has'", 
+		"'on'", "'is'", "'with'", "'extends'", "'abstract'", "'single'", "'required'", 
+		"'component'", "'facet'", "'intention'", "'terminal'", "'named'", "'property'", 
+		"'enclosed'", "'always'", "'associated'", "'tacit'", "'addressed'", "'aggregated'", 
+		"'readonly'", "'case'", "'('", "')'", "'['", "']'", "'...'", "'>'", "'<'", 
+		"'&'", "':'", "','", "'.'", "'='", "'\"'", null, "'*'", "'+'", "'word'", 
+		"'file'", "'integer'", "'natural'", "'double'", "'string'", "'boolean'", 
+		"'measure'", "'ratio'", "'date'", "'empty'", null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, "'indent'", 
+		"'dedent'"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, "METAIDENTIFIER", "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", 
+		"IS", "WITH", "EXTENDS", "ABSTRACT", "SINGLE", "REQUIRED", "COMPONENT", 
+		"FACET", "INTENTION", "TERMINAL", "NAMED", "PROPERTY", "ENCLOSED", "ALWAYS", 
+		"ASSOCIATED", "TACIT", "ADDRESSED", "AGGREGATED", "READONLY", "CASE", 
+		"LEFT_PARENTHESIS", "RIGHT_PARENTHESIS", "LEFT_SQUARE", "RIGHT_SQUARE", 
+		"LIST", "INLINE", "CLOSE_INLINE", "AMPERSAND", "COLON", "COMMA", "DOT", 
+		"EQUALS", "APHOSTROPHE", "SEMICOLON", "STAR", "PLUS", "WORD", "RESOURCE", 
+		"INT_TYPE", "NATURAL_TYPE", "DOUBLE_TYPE", "STRING_TYPE", "BOOLEAN_TYPE", 
+		"MEASURE_TYPE", "RATIO_TYPE", "DATE_TYPE", "EMPTY", "SCIENCE_NOT", "BOOLEAN_VALUE", 
+		"NATURAL_VALUE", "NEGATIVE_VALUE", "DOUBLE_VALUE", "STRING_VALUE", "STRING_MULTILINE_VALUE_KEY", 
+		"ADDRESS_VALUE", "IDENTIFIER", "MEASURE_VALUE", "NEWLINE", "SPACES", "DOC", 
+		"SP", "NL", "NEW_LINE_INDENT", "DEDENT", "UNKNOWN_TOKEN"
+	};
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+	/**
+	 * @deprecated Use {@link #VOCABULARY} instead.
+	 */
+	@Deprecated
+	public static final String[] tokenNames;
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
+	}
+
+	@Override
+	@Deprecated
+	public String[] getTokenNames() {
+		return tokenNames;
+	}
+
+	@Override
+	@NotNull
+	public Vocabulary getVocabulary() {
+		return VOCABULARY;
+	}
 
 
 	    BlockManager blockManager = new BlockManager();
@@ -149,9 +195,6 @@ public class TaraLexer extends Lexer {
 	public String getGrammarFileName() { return "TaraLexer.g4"; }
 
 	@Override
-	public String[] getTokenNames() { return tokenNames; }
-
-	@Override
 	public String[] getRuleNames() { return ruleNames; }
 
 	@Override
@@ -166,30 +209,49 @@ public class TaraLexer extends Lexer {
 	@Override
 	public void action(RuleContext _localctx, int ruleIndex, int actionIndex) {
 		switch (ruleIndex) {
-		case 33: INLINE_action((RuleContext)_localctx, actionIndex); break;
-		case 41: SEMICOLON_action((RuleContext)_localctx, actionIndex); break;
-		case 65: NEWLINE_action((RuleContext)_localctx, actionIndex); break;
-		case 67: DOC_action((RuleContext)_localctx, actionIndex); break;
-		}
-	}
-	private void SEMICOLON_action(RuleContext _localctx, int actionIndex) {
-		switch (actionIndex) {
-		case 1:  semicolon();  break;
+		case 33: 
+			INLINE_action((RuleContext)_localctx, actionIndex); 
+			break;
+
+		case 41: 
+			SEMICOLON_action((RuleContext)_localctx, actionIndex); 
+			break;
+
+		case 65: 
+			NEWLINE_action((RuleContext)_localctx, actionIndex); 
+			break;
+
+		case 67: 
+			DOC_action((RuleContext)_localctx, actionIndex); 
+			break;
 		}
 	}
 	private void INLINE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 0:  inline();  break;
+		case 0: 
+			 inline();  
+			break;
+		}
+	}
+	private void SEMICOLON_action(RuleContext _localctx, int actionIndex) {
+		switch (actionIndex) {
+		case 1: 
+			 semicolon();  
+			break;
 		}
 	}
 	private void NEWLINE_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 2:  newlinesAndSpaces();  break;
+		case 2: 
+			 newlinesAndSpaces();  
+			break;
 		}
 	}
 	private void DOC_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
-		case 3: emitToken(DOC);emitToken(NEWLINE); break;
+		case 3: 
+			emitToken(DOC);emitToken(NEWLINE); 
+			break;
 		}
 	}
 
@@ -404,8 +466,8 @@ public class TaraLexer extends Lexer {
 		"\u025c\5\u008bF\2\u025b\u025a\3\2\2\2\u025c\u025d\3\2\2\2\u025d\u025b"+
 		"\3\2\2\2\u025d\u025e\3\2\2\2\u025e\u0260\3\2\2\2\u025f\u0261\7\2\2\3\u0260"+
 		"\u025f\3\2\2\2\u0260\u0261\3\2\2\2\u0261\u0262\3\2\2\2\u0262\u0263\bD"+
-		"\5\2\u0263\u0088\3\2\2\2\u0264\u0265\7f\2\2\u0265\u0266\7g\2\2\u0266\u0267"+
-		"\7h\2\2\u0267\u026b\3\2\2\2\u0268\u026a\13\2\2\2\u0269\u0268\3\2\2\2\u026a"+
+		"\5\2\u0263\u0088\3\2\2\2\u0264\u0265\7f\2\2\u0265\u0266\7q\2\2\u0266\u0267"+
+		"\7e\2\2\u0267\u026b\3\2\2\2\u0268\u026a\13\2\2\2\u0269\u0268\3\2\2\2\u026a"+
 		"\u026d\3\2\2\2\u026b\u026c\3\2\2\2\u026b\u0269\3\2\2\2\u026c\u026e\3\2"+
 		"\2\2\u026d\u026b\3\2\2\2\u026e\u026f\5\u008dG\2\u026f\u0270\bE\6\2\u0270"+
 		"\u008a\3\2\2\2\u0271\u0272\t\4\2\2\u0272\u008c\3\2\2\2\u0273\u0275\7\17"+

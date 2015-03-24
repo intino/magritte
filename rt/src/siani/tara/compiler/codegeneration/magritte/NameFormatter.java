@@ -1,39 +1,33 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.formatter.Inflector;
-import org.siani.itrules.formatter.InflectorFactory;
-import siani.tara.model.Node;
-import siani.tara.model.NodeObject;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public class NameFormatter {
 
 	public static final String MAGRITTE_PATH = "magritte";
 	public static final String MORPH_PATH = "morphs";
-	public static final String BOX_PATH = "editors";
+	public static final String BOX_PATH = "store";
 	public static final String JAVA = "java";
 	public static final String DOT = ".";
 
 	private NameFormatter() {
 	}
-
-	public static String composeMorphPackagePath(Locale locale, Node node) {
-		if (!node.isSub())
-			return getMorphPath(DOT);
-		String aPackage = "";
-		NodeObject parent = node.getObject().getParent();
-		Inflector inflector = InflectorFactory.getInflector(locale);
-		while (parent != null) {
-			aPackage = inflector.plural(parent.getName()) + aPackage;
-			parent = parent.isSub() ? parent.getParent() : null;
-		}
-		return getMorphPath(DOT) + DOT + aPackage.toLowerCase();
-	}
+//
+//	public static String composeMorphPackagePath(Locale locale, NodeImpl node) {
+////		if (!node.isSub())
+////			return getMorphPath(DOT);
+////		String aPackage = "";
+////		NodeObject parent = node.getObject().getParent();
+////		Inflector inflector = InflectorFactory.getInflector(locale);
+////		while (parent != null) {
+////			aPackage = inflector.plural(parent.getName()) + aPackage;
+////			parent = parent.isSub() ? parent.getParent() : null;
+////		}
+////		return getMorphPath(DOT) + DOT + aPackage.toLowerCase();
+//	}
 
 	public static String buildMorphPath(String morph) {
 		String[] split = morph.split("\\.");
@@ -70,8 +64,7 @@ public class NameFormatter {
 		return MAGRITTE_PATH + separator + BOX_PATH;
 	}
 
-	public static String buildFileName(String file, String model) {
-		return camelCase(model.replace(DOT, "_") + "_" +
-			file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(DOT)), "_") + "Box";
+	public static String buildFileName(String file) {
+		return camelCase(file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(DOT)), "_");
 	}
 }

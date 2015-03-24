@@ -2,18 +2,17 @@ package siani.tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.model.Facet;
-import siani.tara.model.FacetTarget;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.semantic.model.Facet;
+import siani.tara.semantic.model.FacetTarget;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-public class LanguageNode extends LanguageElement implements siani.tara.model.Node {
+public class LanguageNode extends LanguageElement implements siani.tara.semantic.model.Node {
 
 	private final Node node;
 	private FacetTarget[] facetTargets;
-	private List<siani.tara.model.Node> includes = new ArrayList<>();
+	private List<siani.tara.semantic.model.Node> includes = new ArrayList<>();
 
 	public LanguageNode(Node node) {
 		this.node = node;
@@ -26,7 +25,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.model.No
 	}
 
 	@Override
-	public siani.tara.model.Node context() {
+	public siani.tara.semantic.model.Node context() {
 		if (node == null) return null;
 		if (node.isSub()) {
 			Node rootOfSub = findRootOfSub(node.getContainer());
@@ -64,12 +63,22 @@ public class LanguageNode extends LanguageElement implements siani.tara.model.No
 	}
 
 	@Override
+	public String[] types() {
+		List<String> types = new ArrayList<>();
+		types.add(type());
+		Collections.addAll(types, secondaryTypes());
+		Collection<String> typesOf = TaraUtil.getTypesOf(node);
+		if (typesOf != null) types.addAll(typesOf);
+		return types.toArray(new String[types.size()]); //TODO Add language types
+	}
+
+	@Override
 	public String name() {
 		return node.getName() == null ? "" : node.getName();
 	}
 
 	@Override
-	public siani.tara.model.Node parent() {
+	public siani.tara.semantic.model.Node parent() {
 		return node.getParentNode() == null ? null : new LanguageNode(node.getParentNode());
 	}
 
@@ -86,16 +95,21 @@ public class LanguageNode extends LanguageElement implements siani.tara.model.No
 
 	@Override
 	public String[] annotations() {
-		if (node.getAnnotationsNode() == null) return new String[0];
-		List<? extends Annotation> annotationList = node.getAnnotationsNode().getAnnotationList();
-		List<String> annotations = new ArrayList<>();
-		for (Annotation annotation : annotationList) annotations.add(annotation.getText());
+		Set<String> annotations = new HashSet<>();
+		for (Annotation annotation : node.getAnnotations())
+			annotations.add(annotation.getText());
+		annotations.addAll(node.getAssumedAnnotations());
 		return annotations.toArray(new String[annotations.size()]);
 	}
 
 	@Override
 	public void annotations(String... strings) {
 		node.addInheritedAnnotations(strings);
+	}
+
+	@Override
+	public void moveToTheTop() {
+
 	}
 
 	@Override
@@ -111,21 +125,31 @@ public class LanguageNode extends LanguageElement implements siani.tara.model.No
 	}
 
 	@Override
-	public siani.tara.model.Parameter[] parameters() {
-		return wrapParameters(node.getParameters());
+	public siani.tara.semantic.model.Parameter[] parameters() {
+		List<siani.tara.semantic.model.Parameter> parameters = wrapParameters(node.getParameters());
+		parameters.addAll(wrapParameters(node.getVarInits()));
+		return parameters.toArray(new siani.tara.semantic.model.Parameter[parameters.size()]);
 	}
 
-	private siani.tara.model.Parameter[] wrapParameters(Parameters toWrap) {
-		if (toWrap == null) return new siani.tara.model.Parameter[0];
-		List<siani.tara.model.Parameter> parameters = new ArrayList<>();
+	private List<siani.tara.semantic.model.Parameter> wrapParameters(Parameters toWrap) {
+		if (toWrap == null || toWrap.getParameters().isEmpty()) return new ArrayList<>();
+		List<siani.tara.semantic.model.Parameter> parameters = new ArrayList<>();
 		for (siani.tara.intellij.lang.psi.Parameter parameter : toWrap.getParameters())
 			parameters.add(new LanguageParameter(parameter));
-		return parameters.toArray(new siani.tara.model.Parameter[parameters.size()]);
+		return parameters;
+	}
+
+	private List<siani.tara.semantic.model.Parameter> wrapParameters(Collection<VarInit> toWrap) {
+		if (toWrap == null || toWrap.isEmpty()) return new ArrayList<>();
+		List<siani.tara.semantic.model.Parameter> parameters = new ArrayList<>();
+		for (VarInit varInit : toWrap)
+			parameters.add(new LanguageVarParameter(varInit));
+		return parameters;
 	}
 
 	@Override
-	public siani.tara.model.Node[] includes() {
-		return includes.toArray(new siani.tara.model.Node[includes.size()]);
+	public siani.tara.semantic.model.Node[] includes() {
+		return includes.toArray(new siani.tara.semantic.model.Node[includes.size()]);
 	}
 
 	private Long toLong(String address) {

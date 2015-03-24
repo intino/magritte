@@ -3,7 +3,7 @@ package siani.tara.compiler.codegeneration.lang;
 import siani.tara.compiler.codegeneration.CodeGenerator;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.TaraException;
-import siani.tara.model.Model;
+import siani.tara.compiler.model.impl.Model;
 
 import javax.tools.*;
 import java.io.File;
@@ -29,7 +29,8 @@ public class LanguageSerializer extends CodeGenerator {
 
 	public void serialize(Model model) throws TaraException {
 		try {
-			serialize(LanguageCreator.create(conf.getGeneratedLanguage(), model), new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + JAVA));
+			LanguageCreator creator = new LanguageCreator(conf, model);
+			serialize(creator.create(), new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + JAVA));
 			new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + ".reload").createNewFile();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
@@ -40,7 +41,7 @@ public class LanguageSerializer extends CodeGenerator {
 	private boolean serialize(String content, File file) throws TaraException {
 		try {
 			file.getParentFile().mkdirs();
-			file.deleteOnExit();
+//			file.deleteOnExit();
 			FileWriter writer = new FileWriter(file);
 			writer.write(content);
 			writer.close();
@@ -66,7 +67,7 @@ public class LanguageSerializer extends CodeGenerator {
 		compilerOptions.add("-d");
 		compilerOptions.add(conf.getLanguageDirectory());
 		compilerOptions.add("-classpath");
-		compilerOptions.add(conf.getSemanticRulesURL());
+		compilerOptions.add(conf.getSemanticRulesLib());
 		JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, compilerOptions, null, compilationUnits);
 		if (!task.call()) {
 			String message = "";

@@ -1,28 +1,31 @@
 package siani.tara.compiler.core.errorcollection;
 
-import siani.tara.model.LinkNode;
-import siani.tara.model.Node;
+
+import siani.tara.compiler.model.Element;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.impl.NodeImpl;
 
 public class DependencyException extends TaraException {
 
 	private final String message;
-	private final Node node;
+	private final Element element;
 	private final int line;
 
-	public DependencyException(String message, Node node) {
+	public DependencyException(String message, Element element) {
 		this.message = message;
-		this.node = node;
-		if (node != null)
-			this.line = node.getLine();
+		this.element = element;
+		if (element != null)
+			this.line = element.getLine();
 		else this.line = -1;
 	}
 
 	public String getMessage() {
-		return "Inconsistent dependency in concept " + (node instanceof LinkNode ? ((LinkNode) node).getDestinyName() : node.getName())+ "; " + message + " @ line " + this.line + ", column " + 1 + ".";
+		String node = element != null && element instanceof NodeImpl ? ((Node) element).getQualifiedName() : "";
+		return "Inconsistent dependency in reference " + node + "; " + message + " @ line " + this.line + ", column " + 1 + ".";
 	}
 
-	public Node getNode() {
-		return node;
+	public Element getElement() {
+		return element;
 	}
 
 	public int getLine() {

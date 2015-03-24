@@ -19,14 +19,19 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
 import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
+import siani.tara.intellij.actions.TaraTemplates;
+import siani.tara.intellij.actions.TaraTemplatesFactory;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
+import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.project.module.ui.TaraWizardStep;
 import siani.tara.intellij.project.sdk.TaraJdk;
 
@@ -49,8 +54,8 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	private static final String GEN = "gen";
 	private final List<Pair<String, String>> myModuleLibraries = new ArrayList<>();
 	private String parentLanguage;
-	private String language;
-	private String modelName;
+	private String locale;
+	private String generatedLanguage;
 	private boolean terminal = false;
 	private File configFile;
 	private String myCompilerOutputPath;
@@ -84,22 +89,29 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		final CompilerModuleExtension compilerModuleExtension = rootModel.getModuleExtension(CompilerModuleExtension.class);
 		compilerModuleExtension.setExcludeOutput(true);
 		rootModel.inheritSdk();
-		ContentEntry contentEntry = doAddContentEntry(rootModel);
-		addContentEntries(contentEntry);
+		ContentEntry contentEntry = doAddContentEntry(rootModel);addContentEntries(contentEntry);
 		setOutputPath(compilerModuleExtension);
 		updateLibraries(rootModel);
 		addParentDependency(rootModel);
 		persistTempConf(rootModel.getProject());
-		createFirstFile(getContentEntryPath() + separator + MODEL);
+		createFirstFile(rootModel);
 	}
 
-	private void createFirstFile(String path) {
-		try {
-			File file = new File(path, modelName + '.' + "tara");
-			file.createNewFile();
-		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
-		}
+	private void createFirstFile(ModifiableRootModel rootModel) {
+		String module = rootModel.getModule().getName();
+		String[] list = new String[]{"MODULE_NAME", module, "PARENT_MODULE_NAME", parentLanguage};
+		String name = generatedLanguage.isEmpty() ? "Main" : generatedLanguage;
+		String fileName = name + "." + TaraFileType.INSTANCE.getDefaultExtension();
+		PsiDirectory directory = getModelSourceRoot(rootModel.getProject(), rootModel.getSourceRoots());
+		if (directory == null) return;
+		TaraTemplatesFactory.createFromTemplate(directory, name, fileName, TaraTemplates.getTemplate("MODEL"), false, list);
+	}
+
+	private PsiDirectory getModelSourceRoot(Project project, VirtualFile[] sourceRoots) {
+		for (VirtualFile sourceRoot : sourceRoots)
+			if (sourceRoot.getName().equals("model") && sourceRoot.isDirectory())
+				return PsiManager.getInstance(project).findDirectory(sourceRoot);
+		return null;
 	}
 
 	private void addParentDependency(ModifiableRootModel rootModel) {
@@ -194,8 +206,8 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			FileWriter writer = new FileWriter(configFile);
 			writer.write(((parentLanguage != null) ? parentLanguage : "null") + "\n");
 			writer.write(((parentLanguage != null) ? getModelOfParentLanguage(project).getAbsolutePath() : "null") + "\n");
-			writer.write(language + "\n");
-			writer.write(modelName + "\n");
+			writer.write(locale + "\n");
+			writer.write(generatedLanguage + "\n");
 			writer.write(terminal + "\n");
 			writer.close();
 		} catch (IOException e) {
@@ -230,12 +242,12 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		this.parentLanguage = metamodel;
 	}
 
-	public void setLanguage(String language) {
-		this.language = language;
+	public void setLocale(String locale) {
+		this.locale = locale;
 	}
 
-	public void setModelName(String modelName) {
-		this.modelName = modelName;
+	public void setGeneratedLanguage(String generatedLanguage) {
+		this.generatedLanguage = generatedLanguage;
 	}
 
 	public void setTerminal(boolean terminal) {

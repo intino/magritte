@@ -54,8 +54,8 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		String parentName = ModuleConfiguration.getInstance(moduleOfDirectory).getMetamodelName();
 		PsiFile file;
 		String[] list;
-		list = parentName != null ? new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "PARENT_MODULE_NAME", parentName, "TYPE", "Concept"}
-			: new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "TYPE", "Concept"};
+		list = parentName != null ? new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "PARENT_MODULE_NAME", parentName}
+			: new String[]{"MODULE_NAME", moduleOfDirectory.getName()};
 		file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, templateName, true, list);
 		if (file instanceof TaraModelImpl) {
 			setCaret(file);

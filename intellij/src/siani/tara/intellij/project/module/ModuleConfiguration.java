@@ -77,7 +77,6 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 				String aux;
 				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 				configuration.dslName = "null".equals(aux = br.readLine()) ? "" : aux;
-				configuration.dslFilePath = "null".equals(aux = br.readLine()) ? "" : aux;
 				configuration.dictionary = "null".equals(aux = br.readLine()) ? "" : aux;
 				configuration.generatedDslName = "null".equals(aux = br.readLine()) ? "" : aux;
 				configuration.terminal = Boolean.parseBoolean(br.readLine());
@@ -134,14 +133,6 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 		configuration.terminal = terminal;
 	}
 
-	public String getMetamodelFilePath() {
-		return configuration.getDslFilePath();
-	}
-
-	public void setMetamodelFilePath(String path) {
-		configuration.dslFilePath = path;
-	}
-
 	public void loadState(ModuleConfiguration state) {
 		XmlSerializerUtil.copyBean(state, this);
 	}
@@ -152,7 +143,6 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 
 	class Configuration implements JDOMExternalizable {
 		public String dslName = "";
-		public String dslFilePath = "";
 		public String generatedDslName = "";
 		public String dictionary = "";
 		public boolean terminal;
@@ -169,10 +159,6 @@ public class ModuleConfiguration implements ModuleComponent, JDOMExternalizable 
 
 		public String getDslName() {
 			return dslName;
-		}
-
-		public String getDslFilePath() {
-			return dslFilePath;
 		}
 
 		public String getDictionary() {

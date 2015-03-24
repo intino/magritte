@@ -2,7 +2,6 @@ package siani.tara.intellij.lang.semantic;
 
 import com.intellij.openapi.diagnostic.Logger;
 import siani.tara.Language;
-import siani.tara.intellij.TaraRuntimeException;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -18,11 +17,11 @@ public class LanguageLoader {
 			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL()}, LanguageLoader.class.getClassLoader());
 			Class cls = cl.loadClass("siani.tara.dsls." + name);
 			return (Language) cls.newInstance();
-		} catch (MalformedURLException | ClassNotFoundException e1) {
+		} catch (MalformedURLException | ClassNotFoundException | NoClassDefFoundError e1 ) {
 			LOG.info(e1.getMessage());
 			return null;
 		} catch (InstantiationException | IllegalAccessException e2) {
-			throw new TaraRuntimeException("Impossible to create a language instance based in " + name);
+			return null;
 		}
 	}
 }

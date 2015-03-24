@@ -6,10 +6,7 @@ import siani.tara.intellij.lang.psi.NodeReference;
 import siani.tara.intellij.lang.psi.TaraAnnotations;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.model.Facet;
-import siani.tara.model.FacetTarget;
-import siani.tara.model.Node;
-import siani.tara.model.Parameter;
+import siani.tara.semantic.model.*;
 
 import java.util.ArrayList;
 import java.util.List;

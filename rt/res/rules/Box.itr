@@ -1,42 +1,38 @@
-defrule type(Box)
-package magritte.editors;
+defrule type(Model)
+package magritte.store;
 
 import magritte.Model;
+import magritte.editors.Box;
+import magritte.store.*;
+import magritte.editors.ModelEditor;
 $importFacet...[$NL]
 
 import static magritte.Annotation.*;
 $importMetric...[$NL]
 
-public class $name extends Box {
+public class $name extends Box.Unit {
+    public static final Box box = new $name();
 
-    public static void load(Model model) {
-        new $name(model).load();
-    }
-
-    private $name(Model model) {
-        super(model);
+    @Override
+    public Box$[] links() {
+        return new Box$[]{[$dependency...[, ]]};
     }
 
     @Override
-    protected void loadDependencies() {
-        [$dependency...[$NL].load(model());]
-    }
-
-    @Override
-    protected void loadNodes() {
-        $node...[$NL]
+    protected ModelEditor modelEditor(Model model) {
+        return new ModelEditor(model) {
+            @Override
+            public void write() {
+                $node...[$NL]
+            }
+        };
     }
 }
 endrule
 
-defrule type(Node) trigger(node)
+defrule type(node) trigger(node)
 def($key);[ name("$name");][ $nodeType...[ ]][ $facet][ $address][ $annotation...[ ]][ $parent][ $variable+set...[ ]\]
-	[ $aggregated...[ ]]\
-	[ $component...[ ]]\
-endrule
-
-defrule trigger(import)
-$value.load(model());
+	[ $include...[ ]]\
 endrule
 
 defrule trigger(address)
@@ -59,11 +55,11 @@ defrule trigger(parent)
 parent("$value");
 endrule
 
-defrule trigger(aggregated)
+defrule type(aggregated) trigger(include)
 add($value);
 endrule
 
-defrule trigger(component)
+defrule type(composed) trigger(include)
 has($value);
 endrule
 

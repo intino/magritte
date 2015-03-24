@@ -10,6 +10,9 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class BodyMixin extends ASTWrapperPsiElement {
@@ -60,10 +63,9 @@ public class BodyMixin extends ASTWrapperPsiElement {
 	}
 
 
-
-	public NodeReference[] getConceptLinks() {
+	public Collection<NodeReference> getConceptLinks() {
 		NodeReference[] references = PsiTreeUtil.getChildrenOfType(this, NodeReference.class);
-		return references == null ? new NodeReference[0] : references;
+		return references == null ? Collections.EMPTY_LIST : Arrays.asList(references);
 	}
 
 }

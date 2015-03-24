@@ -17,9 +17,6 @@ public class JavaCodeGenerator extends CodeGenerator {
 	private static final String SEP = File.separator;
 	CompilerConfiguration conf;
 
-	public JavaCodeGenerator(CompilerConfiguration conf) {
-		this.conf = conf;
-	}
 
 	public void generate(CompilerConfiguration configuration) throws TaraException {
 		Runtime rt = Runtime.getRuntime();

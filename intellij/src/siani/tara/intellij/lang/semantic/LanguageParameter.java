@@ -4,17 +4,37 @@ package siani.tara.intellij.lang.semantic;
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.Parameter;
-import siani.tara.model.EmptyNode;
+import siani.tara.semantic.model.EmptyNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LanguageParameter extends LanguageElement implements siani.tara.model.Parameter {
+public class LanguageParameter extends LanguageElement implements siani.tara.semantic.model.Parameter {
 
 	Parameter parameter;
 
 	public LanguageParameter(Parameter parameter) {
 		this.parameter = parameter;
+	}
+
+	@Override
+	public String inferredType() {
+		return null;
+	}
+
+	@Override
+	public void setInferredType(String s) {
+
+	}
+
+	@Override
+	public String[] getAnnotations() {
+		return new String[0];
+	}
+
+	@Override
+	public void setAnnotations(String[] strings) {
+
 	}
 
 	@Override
@@ -28,8 +48,18 @@ public class LanguageParameter extends LanguageElement implements siani.tara.mod
 	}
 
 	@Override
+	public void setName(String name) {
+
+	}
+
+	@Override
 	public Object[] getValues() {
 		return wrapValues(parameter.getValues());
+	}
+
+	@Override
+	public String getExtension() {
+		return parameter.getMeasure().getText();
 	}
 
 	private static Object[] wrapValues(Object[] values) {

@@ -10,6 +10,8 @@ public interface NodeReference extends Navigatable, TaraPsiElement {
 
 	boolean isAggregated();
 
+	boolean isAssociated();
+
 	@Nullable
 	TaraAnnotations getAnnotations();
 

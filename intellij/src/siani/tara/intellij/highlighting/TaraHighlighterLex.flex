@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.Language;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -129,7 +130,7 @@ STRING_VALUE_KEY    = {QUOTE} ~ {QUOTE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
 MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
-DOC_LINE            = "def" ~[\n]
+DOC_LINE            = "doc" ~[\n]
 
 DIGIT               = [:digit:]
 IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*

@@ -1,7 +1,7 @@
 defrule type(Model)
 package siani.tara.dsls;
 
-import siani.tara.model.Tara;
+import siani.tara.semantic.model.Tara;
 import java.util.Locale;
 import static siani.tara.semantic.Relation.*;
 import static siani.tara.semantic.constraints.RuleFactory.*;
@@ -30,7 +30,11 @@ public class $name extends Tara {
 endrule
 
 defrule type(node) trigger(node)
-in("$name"[, "$type"])[.$allows][.$requires][.$assumptions];
+in("$name"[, $nodeType])[.$allows][.$requires][.$assumptions];
+endrule
+
+defrule type(nodeType) trigger(nodeType)
+$type+quoted...[, ]
 endrule
 
 defrule type(allows) trigger(allows)
@@ -46,15 +50,15 @@ single("$type"[, $relation])
 endrule
 
 defrule type(allow) type(parameter) type(word) trigger(allow)
-parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position)
+parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(allow) type(parameter) type(reference) trigger(allow)
-parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position)
+parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(allow) type(parameter) trigger(allow)
-parameter("$name", "$type", $multiple, $position)
+parameter("$name", "$type", $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(allow) type(facet) trigger(allow)
@@ -64,10 +68,6 @@ endrule
 defrule trigger(allow)
 $value()
 endrule
-
-
-
-
 
 
 defrule type(requires) trigger(requires)
@@ -83,15 +83,15 @@ _single("$type"[, $relation])
 endrule
 
 defrule type(require) type(parameter) type(word) trigger(require)
-_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position)
+_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(require) type(parameter) type(reference) trigger(require)
-_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position)
+_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(require) type(parameter) trigger(require)
-_parameter("$name", "$type",$multiple, $position)
+_parameter("$name", "$type", $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
 endrule
 
 defrule trigger(quoted)
@@ -101,7 +101,6 @@ endrule
 defrule trigger(require)
 _$value()
 endrule
-
 
 defrule type(assumptions) trigger(assumptions)
 assume($assumption...[, ])

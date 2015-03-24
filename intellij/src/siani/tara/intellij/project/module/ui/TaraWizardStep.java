@@ -112,9 +112,9 @@ public class TaraWizardStep extends ModuleWizardStep {
 	public void updateDataModel() {
 		context.setProjectBuilder(builder);
 		builder.setParentLanguage(language);
-		builder.setLanguage(locale.getSelectedItem().toString());
+		builder.setLocale(locale.getSelectedItem().toString());
 		builder.setTerminal(terminal);
-		builder.setModelName(!terminal ? generatedLanguage.getText() : "");
+		builder.setGeneratedLanguage(!terminal ? generatedLanguage.getText() : "");
 	}
 
 }

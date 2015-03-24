@@ -9,7 +9,7 @@ Monet
 module
 engine
 language
-Monet
+Proteo
 terminal
 false
 locale
@@ -23,14 +23,14 @@ models
 semantic_lib
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara-semantic.jar
 outputpath
-/Users/oroncal/workspace/monet/Census/gen
+/Users/oroncal/workspace/monet/Engine/gen
 final_outputpath
-/Users/oroncal/workspace/monet/out/production/Census/
+/Users/oroncal/workspace/monet/out/production/Engine/
 jdk_home
 /Users/oroncal/workspace/sandbox/magritte/lib/
 metrics
-/Users/oroncal/workspace/monet/out/production/Census/
+/Users/oroncal/workspace/monet/out/production/Engine/
 resources
-/Users/oroncal/workspace/monet/Census/res
+/Users/oroncal/workspace/monet/Engine/res
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

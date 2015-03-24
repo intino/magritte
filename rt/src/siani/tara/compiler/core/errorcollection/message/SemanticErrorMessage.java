@@ -1,30 +1,26 @@
 package siani.tara.compiler.core.errorcollection.message;
 
 import siani.tara.compiler.core.SourceUnit;
-import siani.tara.compiler.core.errorcollection.semantic.SemanticError;
+import siani.tara.compiler.core.errorcollection.SemanticException;
 
 import java.io.PrintWriter;
 
 public class SemanticErrorMessage extends Message {
 
-	protected SemanticError cause;
-	protected SourceUnit source;
+	private final SemanticException cause;
+	private final SourceUnit owner;
 
-	public SemanticErrorMessage(SemanticError cause, SourceUnit source) {
-		this.cause = cause;
-		this.source = source;
+	public SemanticErrorMessage(SemanticException error, SourceUnit owner) {
+		this.cause = error;
+		this.owner = owner;
 	}
 
-	public SemanticError getCause() {
+	public SemanticException getCause() {
 		return this.cause;
 	}
 
 	@Override
-	public void write(PrintWriter output) {
-		String description = "Dependency error: ";
-		String message = this.cause.getMessage();
-		if (message != null) output.println(description + message);
-		else output.println(description + this.cause);
-		output.println();
+	public void write(PrintWriter paramPrintWriter) {
+
 	}
 }

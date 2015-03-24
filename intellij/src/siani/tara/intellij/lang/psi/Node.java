@@ -27,7 +27,7 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 	Body getBody();
 
 	@NotNull
-	Doc[] getDoc();
+	Collection<Doc> getDoc();
 
 	@NotNull
 	Signature getSignature();
@@ -56,6 +56,8 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isAnnotatedAsAggregated();
 
+	boolean isAnnotatedAsAssociated();
+
 	@Nullable
 	TaraAddress getAddress();
 
@@ -64,7 +66,7 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	Annotations getAnnotationsNode();
 
-	Collection<String> getInheritedAnnotations();
+	Collection<String> getAssumedAnnotations();
 
 	void addInheritedAnnotations(String... annotations);
 
@@ -97,7 +99,7 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 	void setFullType(String type);
 
 	@NotNull
-	Parameter[] getParameterList();
+	Collection<Parameter> getParameterList();
 
 	Parameters getParameters();
 
@@ -109,9 +111,9 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	Collection<VarInit> getVarInits();
 
-	NodeReference[] getInnerNodeReferences();
+	Collection<NodeReference> getInnerNodeReferences();
 
-	FacetApply[] getFacetApplies();
+	Collection<FacetApply> getFacetApplies();
 
 	Collection<TaraFacetTarget> getFacetTargets();
 

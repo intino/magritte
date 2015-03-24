@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class TaraElementFactoryImpl extends TaraElementFactory {
@@ -66,8 +67,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		final TaraModelImpl file = createDummyFile(
 			node + "(" + node + "." + name + ")" + " Dummy" + "\n"
 		);
-		Parameter[] parameters = PsiTreeUtil.getChildOfType(file, Node.class).getSignature().getParameters().getParameters();
-		return parameters[0].getLastChild().getLastChild();
+		Collection<Parameter> parameters = PsiTreeUtil.getChildOfType(file, Node.class).getSignature().getParameters().getParameters();
+		return parameters.iterator().next().getLastChild().getLastChild();
 	}
 
 	@Override

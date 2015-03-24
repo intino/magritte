@@ -1,10 +1,7 @@
 package siani.tara.intellij.lang.semantic;
 
 import siani.tara.intellij.lang.psi.TaraModel;
-import siani.tara.model.Facet;
-import siani.tara.model.FacetTarget;
-import siani.tara.model.Node;
-import siani.tara.model.Parameter;
+import siani.tara.semantic.model.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,6 +41,11 @@ public class LanguageRoot implements Node {
 	}
 
 	@Override
+	public String[] types() {
+		return new String[0];
+	}
+
+	@Override
 	public String name() {
 		return null;
 	}
@@ -70,6 +72,11 @@ public class LanguageRoot implements Node {
 
 	@Override
 	public void annotations(String... annotations) {
+
+	}
+
+	@Override
+	public void moveToTheTop() {
 
 	}
 
