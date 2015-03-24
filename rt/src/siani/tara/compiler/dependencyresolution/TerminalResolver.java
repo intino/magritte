@@ -1,4 +1,4 @@
-package siani.tara.compiler.core.operation.model;
+package siani.tara.compiler.dependencyresolution;
 
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.Variable;
@@ -28,9 +28,11 @@ public class TerminalResolver {
 	private void propagateTerminalToInside(Node node) {
 		for (Node include : node.getIncludedNodes()) {
 			if (include instanceof NodeReference) continue;
-			include.addAnnotations("terminal");
+			if (!include.isTerminal()) include.addAnnotations("terminal");
 			propagateTerminalToInside(include);
 		}
-		for (Variable variable : node.getVariables()) variable.addAnnotations("terminal");
+		for (Variable variable : node.getVariables())
+			if (!variable.isTerminal())
+				variable.addAnnotations("terminal");
 	}
 }

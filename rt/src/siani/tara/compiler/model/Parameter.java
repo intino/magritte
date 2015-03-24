@@ -4,11 +4,17 @@ import java.util.Collection;
 
 public interface Parameter {
 
-	Variable inferredVariable();
+	String getInferredType();
 
-	void setInferredVariable(Variable type);
+	void setInferredType(String type);
+
+	String[] getAnnotations();
+
+	void setAnnotations(String[] annotations);
 
 	String getName();
+
+	void setName(String name);
 
 	int getPosition();
 

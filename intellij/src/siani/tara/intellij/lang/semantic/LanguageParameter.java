@@ -18,6 +18,26 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
+	public String inferredType() {
+		return null;
+	}
+
+	@Override
+	public void setInferredType(String s) {
+
+	}
+
+	@Override
+	public String[] getAnnotations() {
+		return new String[0];
+	}
+
+	@Override
+	public void setAnnotations(String[] strings) {
+
+	}
+
+	@Override
 	public int getPosition() {
 		return parameter.getIndexInParent();
 	}
@@ -25,6 +45,11 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	@Override
 	public String getName() {
 		return parameter.getExplicitName();
+	}
+
+	@Override
+	public void setName(String name) {
+
 	}
 
 	@Override

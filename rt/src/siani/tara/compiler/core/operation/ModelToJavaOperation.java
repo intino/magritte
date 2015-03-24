@@ -5,7 +5,6 @@ import org.siani.itrules.ItrRulesReader;
 import org.siani.itrules.RuleEngine;
 import org.siani.itrules.formatter.Formatter;
 import org.siani.itrules.model.Frame;
-import siani.tara.Language;
 import siani.tara.compiler.codegeneration.ResourceManager;
 import siani.tara.compiler.codegeneration.StringFormatter;
 import siani.tara.compiler.codegeneration.magritte.BoxFrameCreator;
@@ -19,7 +18,6 @@ import siani.tara.compiler.core.operation.model.ModelOperation;
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.Model;
-import siani.tara.dsls.Proteo;
 
 import java.io.*;
 import java.util.*;
@@ -100,8 +98,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		ruleEngine.register("string", new StringFormatter());
 		for (List<Node> nodes : groupByBox) {
 			Document document = new Document();
-			ruleEngine.render(new BoxFrameCreator(conf, model).
-				create(nodes, collectDependingBoxes(nodes)), document);
+			ruleEngine.render(new BoxFrameCreator(conf, model).create(nodes), document);
 			map.put(NameFormatter.buildFileName(((Element) nodes.get(0)).getFile()), document);
 		}
 		return map;
@@ -174,18 +171,6 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-	private Collection<String> collectDependingBoxes(List<Node> nodes) throws TaraException {
-		Language language = conf.getLanguage();
-		if (language instanceof Proteo) return Collections.EMPTY_LIST;
-		Set<String> boxes = new HashSet<>();
-		for (Node node : nodes) {
-			if (node.isTerminal() && !((Element) node).getFile().equals(model.getFile())) continue;
-			String boxName = node.getParentBox();
-			if (boxName == null) throw new TaraException("parent box name not found");
-			boxes.add(boxName);
-		}
-		return boxes;
-	}
 
 	private List<List<Node>> groupByBox(Model model) {
 		Map<String, List<Node>> nodes = new HashMap();

@@ -5,7 +5,6 @@ import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.compiler.model.Annotation;
-import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.Model;
@@ -15,7 +14,6 @@ import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.Assumption;
 import siani.tara.semantic.model.Rules;
 
-import java.io.File;
 import java.util.*;
 
 import static siani.tara.compiler.model.Annotation.*;
@@ -129,8 +127,7 @@ class ModelAdapter implements Adapter<Model> {
 				addParameter(allows, i, variable, ALLOW);
 			}
 		}
-		if (!node.isNamed() && !node.isProperty())
-			allows.addFrame("allow", "name");
+		if (!node.isNamed() && !node.isProperty()) allows.addFrame("allow", "name");
 		addFacetAllows(node, allows);
 	}
 
@@ -149,10 +146,8 @@ class ModelAdapter implements Adapter<Model> {
 				addParameter(requires, i, variable, REQUIRE);
 			}
 		}
-		if (node.isNamed())
-			requires.addFrame(REQUIRE, "name");
-		if (node.isAddressed())
-			requires.addFrame(REQUIRE, "address");
+		if (node.isNamed()) requires.addFrame(REQUIRE, "name");
+		if (node.isAddressed()) requires.addFrame(REQUIRE, "address");
 	}
 
 	private void addParameter(Frame frame, int i, Variable variable, String relation) {
@@ -162,6 +157,7 @@ class ModelAdapter implements Adapter<Model> {
 				addFrame("words", renderWord(variable)).
 				addFrame("multiple", variable.isMultiple()).
 				addFrame("position", i).
+				addFrame("annotations", getAnnotations(variable)).
 				addFrame("extension", variable.getExtension() == null ? "" : variable.getExtension()));
 		else if (variable instanceof VariableReference)
 			frame.addFrame(relation, new Frame(relation, "parameter", "reference").
@@ -169,13 +165,21 @@ class ModelAdapter implements Adapter<Model> {
 				addFrame("types", renderReference((VariableReference) variable)).
 				addFrame("multiple", variable.isMultiple()).
 				addFrame("position", i).
+				addFrame("annotations", getAnnotations(variable)).
 				addFrame("extension", variable.getExtension() == null ? "" : variable.getExtension()));
 		else frame.addFrame(relation, new Frame(relation, "parameter").
 				addFrame("name", variable.getName()).
 				addFrame("type", variable.getType()).
 				addFrame("multiple", variable.isMultiple()).
 				addFrame("position", i).
+				addFrame("annotations", getAnnotations(variable)).
 				addFrame("extension", variable.getExtension() == null ? "" : variable.getExtension()));
+	}
+
+	private String[] getAnnotations(Variable variable) {
+		List<String> annotations = new ArrayList<>();
+		for (Annotation annotation : variable.getAnnotations()) annotations.add(annotation.getName());
+		return annotations.toArray(new String[annotations.size()]);
 	}
 
 	private String[] renderWord(Variable variable) {
@@ -200,16 +204,7 @@ class ModelAdapter implements Adapter<Model> {
 	private Frame buildAssumptions(Node node) {
 		Frame assumptions = new Frame("assumptions");
 		addAnnotationAssumptions(node, assumptions);
-		addBoxNameAssumption(node, assumptions);
 		return assumptions;
-	}
-
-	private void addBoxNameAssumption(Node node, Frame assumptions) {
-		if (node instanceof Model) return;
-		String file = ((Element) node).getFile();
-		if (file == null) return;
-		String name = file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf('.'));
-		assumptions.addFrame("assumption", new Frame("assumption", "boxName").addFrame("value", name));
 	}
 
 	private void addAnnotationAssumptions(Node node, Frame assumptions) {

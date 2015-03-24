@@ -30,7 +30,6 @@ public class NodeImpl extends Element implements Node {
 	private List<FacetTarget> facetTargets = new ArrayList<>();
 	private String language;
 	private List<Node> children = new ArrayList<>();
-	private String parentBox;
 
 
 	@Override
@@ -60,16 +59,6 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public void setLanguage(String language) {
 		this.language = language;
-	}
-
-	@Override
-	public void setParentBox(String name) {
-		this.parentBox = name;
-	}
-
-	@Override
-	public String getParentBox() {
-		return parentBox;
 	}
 
 	@Override

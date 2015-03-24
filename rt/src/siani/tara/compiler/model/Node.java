@@ -16,9 +16,6 @@ public interface Node extends NodeContainer, Parameterized {
 
 	void setLanguage(String language);
 
-	String getParentBox();
-
-	void setParentBox(String name);
 
 	String getDoc();
 

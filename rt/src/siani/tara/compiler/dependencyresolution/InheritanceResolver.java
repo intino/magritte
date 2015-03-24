@@ -34,6 +34,7 @@ public class InheritanceResolver {
 			resolveAllowedFacets(parent, child);
 			resolve(child);
 		}
+		if (parent.isAbstract()) parent.getVariables().clear();
 	}
 
 	private void resolveAllowedFacets(NodeImpl parent, NodeImpl child) {
@@ -92,6 +93,10 @@ public class InheritanceResolver {
 	}
 
 	private void resolveVariables(NodeImpl parent, NodeImpl child) {
+		resolveToChild(parent, child);
+	}
+
+	private void resolveToChild(NodeImpl parent, NodeImpl child) {
 		List<Variable> variables = new ArrayList<>();
 		for (Variable variable : parent.getVariables())
 			if (!isOverrided(child, variable))
@@ -99,7 +104,7 @@ public class InheritanceResolver {
 		child.addVariables(0, variables.toArray(new Variable[variables.size()]));
 	}
 
-	private boolean isOverrided(NodeImpl child, Node node) {
+	private boolean isOverrided(NodeContainer child, Node node) {
 		for (Node include : child.getIncludedNodes())
 			if (include.getName().equals(node.getName()) && include.getType().equals(node.getType()))
 				return true;
@@ -107,7 +112,7 @@ public class InheritanceResolver {
 	}
 
 
-	private boolean isOverrided(NodeImpl child, Variable variable) {
+	private boolean isOverrided(NodeContainer child, Variable variable) {
 		for (Variable childVar : child.getVariables())
 			if (childVar.getName().equals(variable.getName()) && childVar.getType().equals(variable.getType()))
 				return true;

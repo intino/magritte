@@ -6,6 +6,7 @@
     <JAVADOC />
     <SOURCES>
       <root url="file://$PROJECT_DIR$/../tara-semantic/src" />
+      <root url="file://$PROJECT_DIR$/../TaraSemantic/src" />
     </SOURCES>
   </library>
 </component>

@@ -4,10 +4,12 @@ import org.siani.itrules.formatter.InflectorFactory;
 import org.siani.itrules.framebuilder.Adapter;
 import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
+import siani.tara.Language;
 import siani.tara.compiler.model.Facet;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeReference;
+import siani.tara.semantic.Assumption;
 
 import java.util.*;
 
@@ -16,24 +18,22 @@ import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 
 public class BoxModelAdapter implements Adapter<Model> {
 	private final String project;
-	private final String languageName;
+	private final Language language;
 	private final Model boxModel;
-	private final Collection<String> dependencies;
 	private final Locale locale;
 
-	public BoxModelAdapter(String project, String languageName, Model boxModel, Collection<String> dependencies, Locale locale) {
+	public BoxModelAdapter(String project, Language language, Model boxModel, Locale locale) {
 		this.project = project;
-		this.languageName = languageName;
+		this.language = language;
 		this.boxModel = boxModel;
-		this.dependencies = dependencies;
 		this.locale = locale;
 	}
 
 	@Override
 	public void adapt(Frame frame, Model boxModel, BuilderContext context) {
 		frame.addFrame(NAME, buildFileName(boxModel.getFile()));
-		for (String box : dependencies)
-			frame.addFrame(DEPENDENCY, box);
+		if (!Objects.equals(language.languageName(), "Proteo"))
+			frame.addFrame(LANGUAGE, language.languageName());
 		addMetricImports(frame);
 		addFacetImports(boxModel.getIncludedNodes(), frame);
 		collectAllNodes(frame, boxModel, context);
@@ -45,6 +45,11 @@ public class BoxModelAdapter implements Adapter<Model> {
 			frame.addFrame("node", context.build(node));
 			collectAllNodes(frame, node, context);
 		}
+		for (Facet facet : nodeContainer.getFacets())
+			for (Node node : facet.getIncludedNodes()) {
+				frame.addFrame("node", context.build(node));
+				collectAllNodes(frame, node, context);
+			}
 	}
 
 	private void addMetricImports(Frame frame) {
@@ -62,12 +67,18 @@ public class BoxModelAdapter implements Adapter<Model> {
 		Set<String> imports = new HashSet<>();
 		for (Node node : nodes) {
 			if (node instanceof NodeReference) continue;
-
-			for (Facet facet : node.getFacets()) //				if (!facet.isIntention()) continue;
-				imports.add(InflectorFactory.getInflector(locale).plural(facet.type()));
+			for (Facet facet : node.getFacets())
+				if (isIntentionInstance(facet.type()))
+					imports.add(InflectorFactory.getInflector(locale).plural(facet.type()));
 			imports.addAll(searchFacets(node.getIncludedNodes()));
 		}
 		return imports;
+	}
+
+	private boolean isIntentionInstance(String type) {
+		Collection<Assumption> assumptions = language.assumptions(type);
+		for (Assumption assumption : assumptions) if (assumption instanceof Assumption.IntentionInstance) return true;
+		return false;
 	}
 
 }

@@ -77,16 +77,6 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 	}
 
 	@Override
-	public String parentBox() {
-		return reference.getParentBox();
-	}
-
-	@Override
-	public void parentBox(String name) {
-		reference.setParentBox(name);
-	}
-
-	@Override
 	public void annotations(String... annotations) {
 		reference.addAnnotations(annotations);
 	}

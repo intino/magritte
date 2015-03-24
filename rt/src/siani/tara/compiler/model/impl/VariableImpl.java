@@ -2,6 +2,7 @@ package siani.tara.compiler.model.impl;
 
 import siani.tara.compiler.model.Annotation;
 import siani.tara.compiler.model.Element;
+import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.Variable;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import static siani.tara.compiler.model.Annotation.READONLY;
 import static siani.tara.compiler.model.Annotation.TERMINAL;
 
 public class VariableImpl extends Element implements Variable {
+	private NodeContainer container;
 	private String type;
 	private String name;
 	private boolean multiple;
@@ -24,7 +26,11 @@ public class VariableImpl extends Element implements Variable {
 	private List<Annotation> annotations = new ArrayList<>();
 	private String defaultExtension;
 
-	public VariableImpl(String type, String name) {
+	public VariableImpl() {
+	}
+
+	public VariableImpl(NodeContainer container, String type, String name) {
+		this.container = container;
 		this.type = type;
 		this.name = name;
 	}
@@ -37,6 +43,16 @@ public class VariableImpl extends Element implements Variable {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public NodeContainer getContainer() {
+		return container;
+	}
+
+	@Override
+	public void setContainer(NodeContainer container) {
+		this.container = container;
 	}
 
 	@Override
@@ -137,5 +153,23 @@ public class VariableImpl extends Element implements Variable {
 	@Override
 	public void setLine(int line) {
 		this.line = line;
+	}
+
+	@Override
+	public Variable clone() throws CloneNotSupportedException {
+		super.clone();
+		Variable variable = new VariableImpl(container, type, name);
+		variable.setMultiple(multiple);
+		variable.setDefaultExtension(extension);
+		for (Annotation annotation : annotations) variable.addAnnotations(annotation.getName());
+		variable.addAllowedValues(allowedValues.toArray(new Object[allowedValues.size()]));
+		variable.addDefaultValues(defaultValues.toArray(new Object[defaultValues.size()]));
+		return variable;
+	}
+
+	public Variable cloneIt(NodeContainer container) throws CloneNotSupportedException {
+		Variable clone = this.clone();
+		clone.setContainer(container);
+		return clone;
 	}
 }

@@ -25,6 +25,7 @@ public interface TemplateTags {
 	static final String IMPORTS = "imports";
 	static final String IMPORT = "import ";
 	static final String INCLUDE = "include";
+	static final String LANGUAGE = "language";
 	static final String RELATION = "relation";
 	static final String AGGREGATION = "add";
 	static final String COMPOSITION = "has";

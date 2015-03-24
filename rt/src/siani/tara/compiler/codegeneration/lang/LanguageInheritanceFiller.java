@@ -89,10 +89,8 @@ public class LanguageInheritanceFiller {
 	}
 
 	private Object getAssumptionValue(Assumption assumption) {
-		String name = assumption.getClass().getInterfaces()[0].getName();
-		if (assumption instanceof Assumption.BoxName)
-			return new Frame("assumption", "boxName").addFrame("value", ((Assumption.BoxName) assumption).name());
-		else return name.substring(name.lastIndexOf("$") + 1);
+		return assumption.getClass().getInterfaces()[0].getName().
+			substring(assumption.getClass().getInterfaces()[0].getName().lastIndexOf("$") + 1);
 	}
 
 	private void addName(Frame allows, String relation) {

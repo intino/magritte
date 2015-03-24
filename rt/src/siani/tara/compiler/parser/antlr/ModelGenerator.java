@@ -185,8 +185,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		NodeContainer container = deque.peek();
 		VariableTypeContext variableType = ctx.variableType();
 		Variable variable = variableType.identifierReference() != null ?
-			new VariableReference(variableType.getText(), ctx.IDENTIFIER().getText()) :
-			new VariableImpl(variableType.getText(), ctx.IDENTIFIER().getText());
+			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText()) :
+			new VariableImpl(container, variableType.getText(), ctx.IDENTIFIER().getText());
 		variable.setMultiple(ctx.LIST() != null);
 		if (ctx.word() != null) processAsWord(variable, ctx.word());
 		else if (ctx.value() != null) {
@@ -240,16 +240,16 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		return values.toArray(new Object[values.size()]);
 	}
 
-	private String formatText(String text) {
-		if (!text.startsWith("---")) return text.substring(1, text.length() - 1);
-		String s = text.replaceAll("---(-*)\\n", "").replaceAll("---(-*)", "");
-		String[] splits = s.split("[\t]+|[ ]+");
-		char l = 0;
-		for (String split : splits) if (!split.isEmpty()) l = split.charAt(0);
-		if (l == 0) return s;
-		String prefix = s.substring(0, s.indexOf(l) - 1);
-		s = s.replaceAll(prefix, "");
-		return s.trim();
+	private String formatText(String value) {
+		if (!value.trim().startsWith("---")) return value.substring(1, value.length() - 1);
+		String text = value.replace("\t", "    ");
+		if (value.startsWith("\n")) text = text.substring(1);
+		String pattern = text.substring(0, text.indexOf("\n")).replace("-", "");
+		text = value.trim().replaceAll("---(-*)\\n", "").replaceAll("---(-*)", "");
+		String result = "";
+		for (String line : text.split("\\n")) result += line.replaceFirst(pattern, "") + "\n";
+		while (result.endsWith("\n")) result = result.substring(0, result.length() - 1);
+		return result;
 	}
 
 	public Model getModel() {

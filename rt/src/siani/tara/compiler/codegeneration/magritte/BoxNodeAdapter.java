@@ -1,22 +1,19 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.framebuilder.Adapter;
 import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.compiler.model.*;
+import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.Assumption;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static siani.tara.compiler.codegeneration.InflectorProvider.getInflector;
-import static siani.tara.compiler.codegeneration.magritte.NameFormatter.camelCase;
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 
 public class BoxNodeAdapter implements Adapter<Node> {
@@ -24,9 +21,9 @@ public class BoxNodeAdapter implements Adapter<Node> {
 	private final Language language;
 	private final boolean terminal;
 	private Locale locale = Locale.ENGLISH;
-	private final Map<String, List<Long>> keys;
+	private final Map<Node, Long> keys;
 
-	public BoxNodeAdapter(String project, Language language, boolean terminal, Map<String, List<Long>> keys) {
+	public BoxNodeAdapter(String project, Language language, boolean terminal, Map<Node, Long> keys) {
 		this.project = project;
 		this.language = language;
 		this.terminal = terminal;
@@ -40,13 +37,13 @@ public class BoxNodeAdapter implements Adapter<Node> {
 			addAnnotations(node, frame);
 			addVariables(node, frame, context);
 			addParameters(node, frame, context);
+			addFacetVariables(node, frame, context);
 			includes(node, frame);
 		}
 	}
 
 	private void addNodeInfo(Node node, Frame newFrame) {
-		List<Long> keys = this.keys.get(node.getQualifiedName());
-		newFrame.addFrame(KEY, keys.get(0));
+		newFrame.addFrame(KEY, this.keys.get(node));
 		if (node.getName() != null && !node.isAnonymous())
 			newFrame.addFrame(NAME, clean(node.getQualifiedName()));
 		addTypes(node, newFrame);
@@ -58,20 +55,7 @@ public class BoxNodeAdapter implements Adapter<Node> {
 
 	private void addTypes(Node node, Frame newFrame) {
 		Frame typeFrame = new Frame(NODE_TYPE).addFrame(NAME, node.getType());
-		facetTargetTypes(node, typeFrame);
 		newFrame.addFrame(NODE_TYPE, typeFrame);
-	}
-
-	private void facetTargetTypes(Node node, Frame typeFrame) {
-		if (!node.isIntention() || node.getFacetTargets().isEmpty()) return;
-		Frame targetFrame = new Frame(TARGET, INTENTION);
-		targetFrame.addFrame(TARGET, project.toLowerCase() + DOT + EXTENSIONS + DOT + camelCase(node.getName()) + node.getType() + DOT + CLASS);
-		Inflector inflector = getInflector(locale);
-		for (FacetTarget target : node.getFacetTargets())
-			targetFrame.addFrame(TARGET, project.toLowerCase() + DOT + EXTENSIONS + DOT + inflector.plural(node.getType()).toLowerCase() + DOT +
-				inflector.plural(node.getName()).toLowerCase() + DOT + camelCase(target.getTargetNode().getQualifiedName()) + node.getType() + DOT + CLASS);
-		typeFrame.addFrame(TARGET, targetFrame);
-
 	}
 
 	private void addAnnotations(final Node node, Frame frame) {
@@ -87,10 +71,15 @@ public class BoxNodeAdapter implements Adapter<Node> {
 			frame.addFrame("variable", context.build(variable));
 	}
 
+	private void addFacetVariables(Node node, final Frame frame, BuilderContext context) {
+		for (FacetTarget facetTarget : node.getFacetTargets())
+			for (final Variable variable : facetTarget.getVariables())
+				frame.addFrame("variable", context.build(variable));
+	}
 
 	private void addParameters(Node node, Frame frame, BuilderContext context) {
-//		for (final Parameter parameter : node.getParameters())
-//			frame.addFrame("variable", context.build(parameter));
+		for (final Parameter parameter : node.getParameters())
+			frame.addFrame("variable", context.build(parameter));
 	}
 
 	private void includes(Node node, Frame frame) {
@@ -101,16 +90,13 @@ public class BoxNodeAdapter implements Adapter<Node> {
 
 
 	private void addAggregated(Frame frame, Node inner) {
-		List<Long> key = inner instanceof NodeReference ?
-			keys.get(((NodeReference) inner).getDestiny().getQualifiedName()) :
-			keys.get(inner.getQualifiedName());
+		Long key = inner instanceof NodeReference ? keys.get(((NodeReference) inner).getDestiny()) : keys.get(inner);
 		if (keys.isEmpty()) return;
-		frame.addFrame(INCLUDE, new Frame("aggregated", "include").addFrame("value", key.get(0)));
+		frame.addFrame(INCLUDE, new Frame("aggregated", "include").addFrame("value", key));
 	}
 
 	private void addComponent(Frame frame, Node inner) {
-		String qn = (inner instanceof NodeReference) ? ((NodeReference) inner).getDestiny().getQualifiedName() : inner.getQualifiedName();
-		frame.addFrame(INCLUDE, new Frame("composed", "include").addFrame("value", keys.get(qn).get(0)));
+		frame.addFrame(INCLUDE, new Frame("composed", "include").addFrame("value", keys.get(inner)));
 	}
 
 	private String clean(String name) {
@@ -120,10 +106,9 @@ public class BoxNodeAdapter implements Adapter<Node> {
 
 	private void addFacetApplies(Node node, Frame newFrame) {
 		for (Facet facet : node.getFacets()) {
-
-			if (isIntentionInstance(facet.type())) continue;
-			Frame facetFrame = new Frame(FACET_APPLY).
-				addFrame(NAME, facet.type()).addFrame(APPLY, buildFacetPath(node, facet.type()));
+			Frame facetFrame = new Frame(FACET_APPLY).addFrame(NAME, facet.type());
+			if (isIntentionInstance(facet.type()))
+				facetFrame.addFrame(APPLY, buildFacetPath(node, facet.type()));
 			newFrame.addFrame(FACET, facetFrame);
 		}
 	}
@@ -137,7 +122,7 @@ public class BoxNodeAdapter implements Adapter<Node> {
 	private String buildFacetPath(Node node, String facet) {
 		NodeContainer aNode = node;
 		String path = node.getName() + facet + DOT + CLASS;
-		while (aNode.getContainer() != null) {
+		while (aNode.getContainer() != null && !(aNode.getContainer() instanceof Model)) {
 			aNode = aNode.getContainer();
 			path = addToPath(facet, aNode, path);
 		}
@@ -145,7 +130,6 @@ public class BoxNodeAdapter implements Adapter<Node> {
 	}
 
 	private String addToPath(String facetName, NodeContainer node, String path) {
-		if (!(node instanceof NodeImpl)) return "";
 		boolean faceted = false;
 		for (Facet facet : ((Node) node).getFacets())
 			if (facet.type().equals(facetName)) {

@@ -17,6 +17,26 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 	}
 
 	@Override
+	public String inferredType() {
+		return null;
+	}
+
+	@Override
+	public void setInferredType(String s) {
+
+	}
+
+	@Override
+	public String[] getAnnotations() {
+		return new String[0];
+	}
+
+	@Override
+	public void setAnnotations(String[] strings) {
+
+	}
+
+	@Override
 	public int getPosition() {
 		return -1;
 	}
@@ -24,6 +44,11 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 	@Override
 	public String getName() {
 		return varInit.getName();
+	}
+
+	@Override
+	public void setName(String name) {
+
 	}
 
 	@Override

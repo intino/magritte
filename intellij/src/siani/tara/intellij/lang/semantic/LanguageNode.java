@@ -152,16 +152,6 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 		return includes.toArray(new siani.tara.semantic.model.Node[includes.size()]);
 	}
 
-	@Override
-	public void parentBox(String name) {
-
-	}
-
-	@Override
-	public String parentBox() {
-		return "";
-	}
-
 	private Long toLong(String address) {
 		try {
 			return Long.parseLong(address.replace(".", "").replace("&", ""));

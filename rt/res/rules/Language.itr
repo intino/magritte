@@ -50,15 +50,15 @@ single("$type"[, $relation])
 endrule
 
 defrule type(allow) type(parameter) type(word) trigger(allow)
-parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, $extension+quoted)
+parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(allow) type(parameter) type(reference) trigger(allow)
-parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, $extension+quoted)
+parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(allow) type(parameter) trigger(allow)
-parameter("$name", "$type", $multiple, $position, $extension+quoted)
+parameter("$name", "$type", $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(allow) type(facet) trigger(allow)
@@ -68,8 +68,6 @@ endrule
 defrule trigger(allow)
 $value()
 endrule
-
-
 
 
 defrule type(requires) trigger(requires)
@@ -85,15 +83,15 @@ _single("$type"[, $relation])
 endrule
 
 defrule type(require) type(parameter) type(word) trigger(require)
-_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, $extension+quoted)
+_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(require) type(parameter) type(reference) trigger(require)
-_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, $extension+quoted)
+_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(require) type(parameter) trigger(require)
-_parameter("$name", "$type", $multiple, $position, $extension+quoted)
+_parameter("$name", "$type", $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
 endrule
 
 defrule trigger(quoted)
@@ -106,10 +104,6 @@ endrule
 
 defrule type(assumptions) trigger(assumptions)
 assume($assumption...[, ])
-endrule
-
-defrule type(assumption) type(boxName) trigger(assumption)
-boxName("$value")
 endrule
 
 defrule trigger(assumption)

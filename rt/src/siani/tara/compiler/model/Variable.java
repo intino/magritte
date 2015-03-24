@@ -2,11 +2,15 @@ package siani.tara.compiler.model;
 
 import java.util.Collection;
 
-public interface Variable {
-
-	String getType();
+public interface Variable extends Cloneable{
 
 	String getName();
+
+	NodeContainer getContainer();
+
+	void setContainer(NodeContainer container);
+
+	String getType();
 
 	boolean isMultiple();
 
@@ -40,4 +44,5 @@ public interface Variable {
 
 	void setDefaultExtension(String defaultExtension);
 
+	Variable cloneIt(NodeContainer container) throws CloneNotSupportedException;
 }

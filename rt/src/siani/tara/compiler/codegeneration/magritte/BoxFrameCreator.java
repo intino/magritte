@@ -8,25 +8,25 @@ import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeReference;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
 
 
-public class BoxFrameCreator extends FrameCreator {
+public class BoxFrameCreator {
 
 	private final String project;
 	private final Language language;
 	private final Model model;
 	private final Locale locale;
 	private final boolean terminal;
-	private Map<String, List<Long>> keymap = new LinkedHashMap<>();
+	private Map<Node, Long> keymap = new LinkedHashMap<>();
 	private long count = 1;
-	private String languageName;
 
-	private BoxFrameCreator(String project, Language language, String languageName, Model model, Locale locale, boolean terminal) {
-		super(project, model);
+	private BoxFrameCreator(String project, Language language, Model model, Locale locale, boolean terminal) {
 		this.project = project;
 		this.language = language;
-		this.languageName = languageName;
 		this.model = model;
 		this.locale = locale;
 		this.terminal = terminal;
@@ -34,30 +34,31 @@ public class BoxFrameCreator extends FrameCreator {
 	}
 
 	public BoxFrameCreator(CompilerConfiguration conf, Model model) {
-		this(conf.getProject(), conf.getLanguage(), conf.getGeneratedLanguage(), model, conf.getLocale(), conf.isTerminal());
+		this(conf.getProject(), conf.getLanguage(), model, conf.getLocale(), conf.isTerminal());
 	}
 
 	private void createKeyMap(NodeContainer node) {
 		for (Node include : node.getIncludedNodes()) {
-			if (include instanceof NodeReference && ((NodeReference) include).isHas()) continue;
-			if (!keymap.containsKey(include.getQualifiedName()))
-				keymap.put(include.getQualifiedName(), new ArrayList<Long>());
-			keymap.get(include.getQualifiedName()).add(count);
+			keymap.put(include, count);
 			count++;
+			if (include instanceof NodeReference && ((NodeReference) include).isHas()) continue;
 			createKeyMap(include);
 			for (FacetTarget facetTarget : include.getFacetTargets())
 				createKeyMap(facetTarget);
+			for (Facet facet : include.getFacets())
+				createKeyMap(facet);
 		}
 	}
 
-	public Frame create(Collection<Node> nodes, Collection<String> dependencies) {
+	public Frame create(Collection<Node> nodes) {
 		Model boxModel = new Model(((Element) nodes.iterator().next()).getFile());
 		boxModel.setName(model.getName());
 		boxModel.addIncludedNodes(nodes.toArray(new Node[nodes.size()]));
 		final FrameBuilder builder = new FrameBuilder();
-		builder.register(Model.class, new BoxModelAdapter(project, languageName, boxModel, dependencies, locale));
+		builder.register(Model.class, new BoxModelAdapter(project, language, boxModel, locale));
 		builder.register(Node.class, new BoxNodeAdapter(project, language, terminal, keymap));
-		builder.register(Variable.class, new BoxVariableAdapter(project, boxModel, terminal));
+		builder.register(Variable.class, new BoxVariableAdapter());
+		builder.register(Parameter.class, new BoxParameterAdapter());
 		return builder.createFrame(boxModel);
 	}
 }
