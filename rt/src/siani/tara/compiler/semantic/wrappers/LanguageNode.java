@@ -25,8 +25,15 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public siani.tara.semantic.model.Node context() {
-		if (node == null || node.getContainer() == null) return null;
-		return node.getContainer() instanceof Model ? null : new LanguageNode((NodeImpl) node.getContainer());
+		if (node == null || node.getContainer() == null || node.getContainer() instanceof Model) return null;
+		return getContainerNode();
+	}
+
+	public siani.tara.semantic.model.Node getContainerNode() {
+		NodeContainer container = node.getContainer();
+		while (!(container instanceof Node))
+			container = container.getContainer();
+		return new LanguageNode((NodeImpl) container);
 	}
 
 	@Override
@@ -40,16 +47,16 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
-	public void type(String type) {
-		node.setType(type);
-	}
-
-	@Override
 	public String[] secondaryTypes() {
 		List<String> types = new ArrayList<>();
 		for (Facet facet : node.getFacets())
 			types.add(facet.type());
 		return types.toArray(new String[types.size()]);
+	}
+
+	@Override
+	public void type(String type) {
+		node.setType(type);
 	}
 
 	@Override
@@ -130,13 +137,13 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 		return includes.toArray(new siani.tara.semantic.model.Node[includes.size()]);
 	}
 
+
 	private siani.tara.semantic.model.FacetTarget[] buildFacetTargets(Collection<FacetTarget> facetTargets) {
 		List<siani.tara.semantic.model.FacetTarget> targets = new ArrayList<>();
 		for (final FacetTarget target : facetTargets)
 			targets.add(new LanguageFacetTarget(target));
 		return targets.toArray(new siani.tara.semantic.model.FacetTarget[targets.size()]);
 	}
-
 
 	@Override
 	public boolean equals(Object object) {
@@ -158,6 +165,6 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public Element element() {
-		return (Element) node;
+		return node;
 	}
 }

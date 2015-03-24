@@ -3,6 +3,8 @@ package siani.tara.compiler.semantic;
 import siani.tara.Checker;
 import siani.tara.Language;
 import siani.tara.Resolver;
+import siani.tara.compiler.model.Facet;
+import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
@@ -33,6 +35,22 @@ public class SemanticAnalyzer {
 			resolver.resolve(wrap(include));
 			if (include instanceof NodeImpl)
 				resolveTypes(include);
+		}
+		if (node instanceof NodeImpl) {
+			for (FacetTarget facetTarget : node.getFacetTargets()) {
+				for (Node include : facetTarget.getIncludedNodes()) {
+					resolver.resolve(wrap(include));
+					if (include instanceof NodeImpl)
+						resolveTypes(include);
+				}
+			}
+			for (Facet facet : node.getFacets()) {
+				for (Node include : facet.getIncludedNodes()) {
+					resolver.resolve(wrap(include));
+					if (include instanceof NodeImpl)
+						resolveTypes(include);
+				}
+			}
 		}
 	}
 
