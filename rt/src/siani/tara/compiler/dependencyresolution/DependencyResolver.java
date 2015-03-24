@@ -75,12 +75,15 @@ public class DependencyResolver {
 	}
 
 	private void resolveInnerReferenceNodes(Node node) throws DependencyException {
-		for (NodeReference nodeReference : node.getInnerNodeReferences()) {
-			if (nodeReference.getDestiny() != null) continue;
-			NodeImpl destiny = manager.resolve(nodeReference);
-			if (destiny == null) throw new DependencyException("Reference destiny not found", nodeReference);
-			else nodeReference.setDestiny(destiny);
-		}
+		for (NodeReference nodeReference : node.getInnerNodeReferences())
+			resolveNodeReference(nodeReference);
+	}
+
+	private void resolveNodeReference(NodeReference nodeReference) throws DependencyException {
+		if (nodeReference.getDestiny() != null) return;
+		NodeImpl destiny = manager.resolve(nodeReference);
+		if (destiny == null) throw new DependencyException("Reference destiny not found", nodeReference);
+		else nodeReference.setDestiny(destiny);
 	}
 
 	private void resolveInFacets(Node node) throws DependencyException {
@@ -95,8 +98,10 @@ public class DependencyResolver {
 		for (FacetTarget facet : node.getFacetTargets()) {
 			resolveVariableReference(facet);
 			resolveFacetTarget(facet);
-			for (Node include : facet.getIncludedNodes())
-				resolve(include);
+			for (Node include : facet.getIncludedNodes()) {
+				if (include instanceof NodeImpl) resolve(include);
+				else resolveNodeReference((NodeReference) include);
+			}
 		}
 	}
 

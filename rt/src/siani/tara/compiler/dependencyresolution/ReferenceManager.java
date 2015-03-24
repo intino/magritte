@@ -1,6 +1,9 @@
 package siani.tara.compiler.dependencyresolution;
 
-import siani.tara.compiler.model.*;
+import siani.tara.compiler.model.FacetTarget;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.NodeContainer;
+import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
@@ -22,11 +25,13 @@ public class ReferenceManager {
 	}
 
 	Node resolve(FacetTarget target, NodeContainer container) {
-		return resolve(target.getTarget(), getNodeContainer(container));
+		Node result = resolve(target.getTarget(), getNodeContainer(container));
+		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : result;
 	}
 
 	NodeImpl resolve(Variable variable, NodeContainer container) {
-		return (NodeImpl) resolve(variable.getType(), getNodeContainer(container));
+		Node result = resolve(variable.getType(), getNodeContainer(container));
+		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : (NodeImpl) result;
 	}
 
 	Node searchByQn(String qn) {
