@@ -18,6 +18,7 @@ import siani.tara.compiler.core.operation.model.ModelOperation;
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.Model;
+import siani.tara.compiler.rt.TaraRtConstants;
 
 import java.io.*;
 import java.util.*;
@@ -46,6 +47,7 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
+		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating code representation");
 		this.model = model;
 		List<List<Node>> groupByBox = groupByBox(model);
 		try {

@@ -56,7 +56,7 @@ public class BoxFrameCreator {
 		boxModel.addIncludedNodes(nodes.toArray(new Node[nodes.size()]));
 		final FrameBuilder builder = new FrameBuilder();
 		builder.register(Model.class, new BoxModelAdapter(project, language, boxModel, locale));
-		builder.register(Node.class, new BoxNodeAdapter(project, language, terminal, keymap));
+		builder.register(Node.class, new BoxNodeAdapter(language, keymap));
 		builder.register(Variable.class, new BoxVariableAdapter());
 		builder.register(Parameter.class, new BoxParameterAdapter());
 		return builder.createFrame(boxModel);

@@ -11,22 +11,16 @@ import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.Assumption;
 
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Map;
 
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 
 public class BoxNodeAdapter implements Adapter<Node> {
-	private final String project;
 	private final Language language;
-	private final boolean terminal;
-	private Locale locale = Locale.ENGLISH;
 	private final Map<Node, Long> keys;
 
-	public BoxNodeAdapter(String project, Language language, boolean terminal, Map<Node, Long> keys) {
-		this.project = project;
+	public BoxNodeAdapter(Language language, Map<Node, Long> keys) {
 		this.language = language;
-		this.terminal = terminal;
 		this.keys = keys;
 	}
 

@@ -23,7 +23,7 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 		frame.addFrame(NAME, parameter.getName());
 		if (isTerminal(parameter))
 			frame.addFrame(TERMINAL, "!");
-		if (Primitives.MEASURE.equals(parameter.getInferredType())) {
+		if (parameter.getInferredType().equals(Primitives.MEASURE)) {
 			frame.addFrame(EXTENSION_TYPE, parameter.getExtension());
 			if (parameter.getExtension() != null)
 				frame.addFrame(EXTENSION_VALUE, resolveMetric(parameter.getExtension()));

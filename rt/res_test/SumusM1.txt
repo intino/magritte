@@ -1,5 +1,5 @@
 src_file
-/Users/oroncal/workspace/sumus-engine/Grocery/model/Grocery.tara
+/Users/octavio/workspace/sumus-engine/Grocery/model/Grocery.tara
 
 project
 Sumus
@@ -16,18 +16,18 @@ GroceryShop
 encoding
 UTF-8
 semantic_lib
-/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara-semantic.jar
+/Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara-semantic.jar
 models
-/Users/oroncal/workspace/sandbox/tara/plugins/tara_languages/
+/Users/octavio/workspace/sandbox/tara/plugins/tara_languages/
 outputpath
-/Users/oroncal/workspace/sumus-engine/Grocery/gen
+/Users/octavio/workspace/sumus-engine/Grocery/gen
 final_outputpath
-/Users/oroncal/workspace/sumus-engine/out/production/Grocery/
+/Users/octavio/workspace/sumus-engine/out/production/Grocery/
 jdk_home
-/Users/oroncal/workspace/sandbox/magritte/lib/
+/Users/octavio/workspace/sandbox/magritte/lib/
 metrics
-/Users/oroncal/workspace/sumus-engine/out/production/Grocery/
+/Users/octavio/workspace/sumus-engine/out/production/Grocery/
 resources
-/Users/oroncal/workspace/sumus-engine/Grocery/res
+/Users/octavio/workspace/sumus-engine/Grocery/res
 classpath
-/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
+/Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara.jar
