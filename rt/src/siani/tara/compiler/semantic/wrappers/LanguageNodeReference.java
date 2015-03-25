@@ -1,8 +1,7 @@
 package siani.tara.compiler.semantic.wrappers;
 
-import siani.tara.compiler.model.Annotation;
-import siani.tara.compiler.model.Element;
-import siani.tara.compiler.model.Facet;
+import siani.tara.compiler.model.*;
+import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 
@@ -20,7 +19,16 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 
 	@Override
 	public siani.tara.semantic.model.Node context() {
-		return new LanguageNode((NodeImpl) reference.getContainer());
+		if (reference == null || reference.getContainer() == null || reference.getContainer() instanceof Model)
+			return null;
+		return getContainerNode();
+	}
+
+	public siani.tara.semantic.model.Node getContainerNode() {
+		NodeContainer container = reference.getContainer();
+		while (!(container instanceof Node))
+			container = container.getContainer();
+		return new LanguageNode((NodeImpl) container);
 	}
 
 	@Override

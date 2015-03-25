@@ -11,47 +11,56 @@ import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.compiler.semantic.wrappers.LanguageNode;
 import siani.tara.compiler.semantic.wrappers.LanguageNodeReference;
-import siani.tara.compiler.semantic.wrappers.LanguageRoot;
 import siani.tara.semantic.SemanticException;
 
 public class SemanticAnalyzer {
 	private final Model model;
 	private final Language language;
 	private final Resolver resolver;
+	private Checker checker;
 
 	public SemanticAnalyzer(Model model, Language language) {
 		this.model = model;
 		this.language = language;
 		resolver = new Resolver(language);
+		checker = new Checker(language);
 	}
 
 	public void analyze() throws SemanticException {
 		resolveTypes(model);
-		new Checker(language).check(new LanguageRoot(model));
+		check(model);
 	}
 
 	private void resolveTypes(Node node) {
-		for (Node include : node.getIncludedNodes()) {
-			resolver.resolve(wrap(include));
-			if (include instanceof NodeImpl)
-				resolveTypes(include);
-		}
+		for (Node include : node.getIncludedNodes()) resolveNode(include);
 		if (node instanceof NodeImpl) {
-			for (FacetTarget facetTarget : node.getFacetTargets()) {
-				for (Node include : facetTarget.getIncludedNodes()) {
-					resolver.resolve(wrap(include));
-					if (include instanceof NodeImpl)
-						resolveTypes(include);
-				}
-			}
-			for (Facet facet : node.getFacets()) {
-				for (Node include : facet.getIncludedNodes()) {
-					resolver.resolve(wrap(include));
-					if (include instanceof NodeImpl)
-						resolveTypes(include);
-				}
-			}
+			for (FacetTarget facetTarget : node.getFacetTargets())
+				for (Node include : facetTarget.getIncludedNodes()) resolveNode(include);
+			for (Facet facet : node.getFacets())
+				for (Node include : facet.getIncludedNodes()) resolveNode(include);
 		}
+	}
+
+	private void check(Node node) throws SemanticException {
+		for (Node include : node.getIncludedNodes()) checkNode(include);
+		if (node instanceof NodeImpl) {
+			for (FacetTarget facetTarget : node.getFacetTargets())
+				for (Node include : facetTarget.getIncludedNodes()) checkNode(include);
+			for (Facet facet : node.getFacets())
+				for (Node include : facet.getIncludedNodes()) checkNode(include);
+		}
+	}
+
+	private void resolveNode(Node include) {
+		resolver.resolve(wrap(include));
+		if (include instanceof NodeImpl)
+			resolveTypes(include);
+	}
+
+	private void checkNode(Node include) throws SemanticException {
+		checker.check(wrap(include));
+		if (include instanceof NodeImpl)
+			check(include);
 	}
 
 	private LanguageNode wrap(Node node) {

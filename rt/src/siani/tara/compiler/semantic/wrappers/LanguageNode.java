@@ -57,6 +57,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	@Override
 	public void type(String type) {
 		node.setType(type);
+		node.setFullType(type);
 	}
 
 	@Override

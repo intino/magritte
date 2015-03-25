@@ -49,7 +49,8 @@ public class Parser {
 
 	private String getExpectedTokens(org.antlr.v4.runtime.Parser recognizer) {
 		try {
-			return recognizer.getExpectedTokens().toString(recognizer.getTokenNames());
+
+			return recognizer.getExpectedTokens().toString(VocabularyImpl.fromTokenNames(recognizer.getTokenNames()));
 		} catch (Exception e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			return "";

@@ -163,7 +163,6 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (ctx.annotations() != null) nodeReference.addAnnotations(resolveAnnotations(ctx.annotations()));
 		nodeReference.setContainer(container);
 		container.addIncludedNodes(nodeReference);
-		addHeaderInformation(ctx, nodeReference);
 	}
 
 	private String[] resolveAnnotations(AnnotationsContext annotations) {

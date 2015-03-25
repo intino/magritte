@@ -1,7 +1,7 @@
 src_file
-/Users/oroncal/workspace/sumus-engine/Sumus/model/Dashboard.tara
-/Users/oroncal/workspace/sumus-engine/Sumus/model/Query.tara
-/Users/oroncal/workspace/sumus-engine/Sumus/model/Sumus.tara
+/Users/octavio/workspace/sumus-engine/Sumus/model/Dashboard.tara
+/Users/octavio/workspace/sumus-engine/Sumus/model/Query.tara
+/Users/octavio/workspace/sumus-engine/Sumus/model/Sumus.tara
 
 project
 Sumus
@@ -18,18 +18,18 @@ Sumus
 encoding
 UTF-8
 models
-/Users/oroncal/workspace/sandbox/tara/plugins/tara_languages/
+/Users/octavio/workspace/sandbox/tara/plugins/tara_languages/
 semantic_lib
-/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara-semantic.jar
+/Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara-semantic.jar
 outputpath
-/Users/oroncal/workspace/sumus-engine/Sumus/gen
+/Users/octavio/workspace/sumus-engine/Sumus/gen
 final_outputpath
-/Users/oroncal/workspace/sumus-engine/out/production/Sumus/
+/Users/octavio/workspace/sumus-engine/out/production/Sumus/
 jdk_home
-/Users/oroncal/workspace/tdk-0.1/lib/
+/Users/octavio/workspace/tdk-0.1/lib/
 metrics
-/Users/oroncal/workspace/sumus-engine/out/production/Sumus/
+/Users/octavio/workspace/sumus-engine/out/production/Sumus/
 resources
-/Users/oroncal/workspace/sumus-engine/Sumus/res
+/Users/octavio/workspace/sumus-engine/Sumus/res
 classpath
-/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
+/Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara.jar

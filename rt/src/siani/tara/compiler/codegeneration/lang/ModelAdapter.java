@@ -113,9 +113,17 @@ class ModelAdapter implements Adapter<Model> {
 	}
 
 	private void addRequires(Node node, Frame frame) {
-		Frame requires = buildRequiredNodes(node.getIncludedNodes());
+		Frame requires = (node.getIncludedNodes().isEmpty()) ?
+			buildNoneIncludesRequirement() :
+			buildRequiredNodes(node.getIncludedNodes());
 		addContextRequires(node, requires);
-		if (requires.getSlots().length != 0) frame.addFrame("requires", requires);
+		frame.addFrame("requires", requires);
+	}
+
+	private Frame buildNoneIncludesRequirement() {
+		Frame requires = new Frame("requires");
+		requires.addFrame("require", new Frame("require", "none"));
+		return requires;
 	}
 
 	private void addContextAllows(Node node, Frame allows) {
@@ -139,15 +147,24 @@ class ModelAdapter implements Adapter<Model> {
 	private void addContextRequires(Node node, Frame requires) {
 		if (node instanceof NodeImpl) {
 			List<Variable> variables = (List<Variable>) node.getVariables();
-			for (int i = 0; i < variables.size(); i++) {
-				Variable variable = variables.get(i);
-				if (!variable.getDefaultValues().isEmpty() ||
-					(variable.isTerminal() && !node.isTerminal())) continue;
-				addParameter(requires, i, variable, REQUIRE);
-			}
+			if (variables.isEmpty()) addNoneParameterRequire(requires);
+			else addParameterRequires(node, requires, variables);
 		}
 		if (node.isNamed()) requires.addFrame(REQUIRE, "name");
 		if (node.isAddressed()) requires.addFrame(REQUIRE, "address");
+	}
+
+	private void addNoneParameterRequire(Frame requires) {
+		requires.addFrame("require", new Frame("require", "none", "parameter"));
+	}
+
+	private void addParameterRequires(Node node, Frame requires, List<Variable> variables) {
+		for (int i = 0; i < variables.size(); i++) {
+			Variable variable = variables.get(i);
+			if (!variable.getDefaultValues().isEmpty() ||
+				(variable.isTerminal() && !node.isTerminal())) continue;
+			addParameter(requires, i, variable, REQUIRE);
+		}
 	}
 
 	private void addParameter(Frame frame, int i, Variable variable, String relation) {
@@ -224,9 +241,10 @@ class ModelAdapter implements Adapter<Model> {
 		return requires;
 	}
 
-	private Frame buildAllowedNodes(Collection<Node> tree) {
+	private Frame buildAllowedNodes(Collection<Node> nodes) {
 		Frame allows = new Frame("allows");
-		addAllowedInnerNodes(allows, tree);
+		if (!nodes.isEmpty())
+			addAllowedInnerNodes(allows, nodes);
 		return allows;
 	}
 
