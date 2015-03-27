@@ -5,7 +5,7 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="file://$PROJECT_DIR$/../tarasemantic/src" />
+      <root url="file://$PROJECT_DIR$/../TaraSemantic/src" />
     </SOURCES>
   </library>
 </component>

@@ -43,7 +43,6 @@ public class MorphFrameCreator implements TemplateTags {
 	private void createMorph(Frame frame) {
 		FrameBuilder builder = new FrameBuilder();
 		builder.register(NodeImpl.class, new MorphNodeAdapter(project, language, imports, locale, initNode));
-		builder.register(NodeReference.class, new MorphNodeReferenceAdapter(imports, locale));
 		for (Node node : model.getIncludedNodes()) {
 			if (node instanceof NodeReference || node.isCase() || isPropertyInstance(node)) continue;
 			frame.addFrame("node", builder.build(node));
