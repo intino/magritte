@@ -36,19 +36,19 @@ public class BoxModelAdapter implements Adapter<Model> {
 			frame.addFrame(LANGUAGE, language.languageName());
 		addMetricImports(frame);
 		addFacetImports(boxModel.getIncludedNodes(), frame);
-		collectAllNodes(frame, boxModel, context);
+		parserAllNodes(frame, boxModel, context);
 	}
 
-	private void collectAllNodes(Frame frame, Node nodeContainer, BuilderContext context) {
+	private void parserAllNodes(Frame frame, Node nodeContainer, BuilderContext context) {
 		for (Node node : nodeContainer.getIncludedNodes()) {
 			if (node instanceof NodeReference) continue;
 			frame.addFrame("node", context.build(node));
-			collectAllNodes(frame, node, context);
+			parserAllNodes(frame, node, context);
 		}
 		for (Facet facet : nodeContainer.getFacets())
 			for (Node node : facet.getIncludedNodes()) {
 				frame.addFrame("node", context.build(node));
-				collectAllNodes(frame, node, context);
+				parserAllNodes(frame, node, context);
 			}
 	}
 

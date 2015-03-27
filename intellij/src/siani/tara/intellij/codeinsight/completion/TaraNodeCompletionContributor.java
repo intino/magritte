@@ -125,7 +125,7 @@ public class TaraNodeCompletionContributor extends CompletionContributor {
 			for (String facet : allowedFacets.keySet()) {
 				found = false;
 				for (FacetApply facetApply : container.getFacetApplies())
-					if (facet.equals(facetApply.getFacetName())) {
+					if (facet.equals(facetApply.getType())) {
 						found = true;
 						break;
 					}

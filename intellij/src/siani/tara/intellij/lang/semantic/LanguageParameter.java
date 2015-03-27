@@ -64,9 +64,9 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 
 	private static Object[] wrapValues(Object[] values) {
 		List<Object> objects = new ArrayList<>();
-		for (Object value : values)
+		if ("$empty".equals(values[0])) objects.add(new EmptyNode());
+		else for (Object value : values)
 			if (value instanceof Node) objects.add(new LanguageNode((Node) value));
-			else if (values[0].equals("$empty")) objects.add(new EmptyNode());
 			else objects.add(value);
 		return objects.toArray();
 	}

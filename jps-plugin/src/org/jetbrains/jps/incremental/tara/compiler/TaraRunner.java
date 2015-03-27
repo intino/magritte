@@ -23,10 +23,11 @@ import static java.io.File.separator;
 public class TaraRunner {
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 
-	private static final String ANTLR = "antlr-4.4-complete.jar";
+	private static final String ANTLR = "antlr-4.5-complete.jar";
 	private static final String[] ITRULES = {"rule-engine.jar", "rule-engine-itr.jar"};
 	private static final String SEMANTIC_RULES = "tara-semantic.jar";
 	private static final String LIB = "lib";
+	public static final char NL = '\n';
 	private static File argsFile;
 
 	protected TaraRunner(final String projectName, final String moduleName, final String language, final String generatedLangName, final String locale,
@@ -36,35 +37,38 @@ public class TaraRunner {
 	                     List<String> paths) throws IOException {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
-			writer.write(TaraRtConstants.SRC_FILE + "\n");
+			writer.write(TaraRtConstants.SRC_FILE + NL);
 			for (String file : sources)
-				writer.write(file + "\n");
-			writer.write("\n");
-			writer.write(TaraRtConstants.PROJECT + "\n" + projectName + "\n");
-			writer.write(TaraRtConstants.MODULE + "\n" + moduleName + "\n");
-			if (!language.isEmpty()) writer.write(TaraRtConstants.LANGUAGE + "\n" + language + "\n");
-			writer.write(TaraRtConstants.TERMINAL + "\n" + (generatedLangName == null ? "true" : "false") + "\n");
-			writer.write(TaraRtConstants.LOCALE + "\n" + locale + "\n");
+				writer.write(file + NL);
+			writer.write(NL);
+			writer.write(TaraRtConstants.PROJECT + NL + projectName + NL);
+			writer.write(TaraRtConstants.MODULE + NL + moduleName + NL);
+			if (!language.isEmpty()) writer.write(TaraRtConstants.LANGUAGE + NL + language + NL);
+			writer.write(TaraRtConstants.TERMINAL + NL + (generatedLangName == null ? "true" : "false") + NL);
+			writer.write(TaraRtConstants.LOCALE + NL + locale + NL);
 			if (generatedLangName != null)
-				writer.write(TaraRtConstants.GENERATED_LANG_NAME + "\n" + generatedLangName + "\n");
-			if (encoding != null) writer.write(TaraRtConstants.ENCODING + "\n" + encoding + "\n");
-			String taraLanguages = PathManager.getPluginsPath() + separator + TaraRtConstants.LANGUAGES_DIR + separator;
-			writer.write(TaraRtConstants.LANGUAGES_PATH + "\n" + taraLanguages + "\n");
-			String semanticLib = PathManager.getPluginsPath() + separator + "tara" + separator + LIB + separator + SEMANTIC_RULES;
-			writer.write(TaraRtConstants.SEMANTIC_LIB + "\n" + semanticLib + "\n");
+				writer.write(TaraRtConstants.GENERATED_LANG_NAME + NL + generatedLangName + NL);
+			if (encoding != null) writer.write(TaraRtConstants.ENCODING + NL + encoding + NL);
 			for (String iconPath : iconPaths)
-				writer.write(TaraRtConstants.ICONS_PATH + "\n" + iconPath + "\n");
-			writer.write(TaraRtConstants.OUTPUTPATH + "\n" + paths.get(0) + "\n");
-			writer.write(TaraRtConstants.FINAL_OUTPUTPATH + "\n" + paths.get(1) + "\n");
-			writer.write(TaraRtConstants.TDK_HOME + "\n" + paths.get(2) + separator + LIB + separator + "\n");
-			if (paths.get(3) != null) writer.write(TaraRtConstants.IT_RULES + "\n" + paths.get(3) + "\n");
-			writer.write(TaraRtConstants.METRICS + "\n" + paths.get(4) + "\n");
-			writer.write(TaraRtConstants.RESOURCES + "\n" + paths.get(5) + "\n");
-
-			writer.write(TaraRtConstants.CLASSPATH + "\n");
+				writer.write(TaraRtConstants.ICONS_PATH + NL + iconPath + NL);
+			writePaths(paths, writer);
+			writer.write(TaraRtConstants.CLASSPATH + NL);
 			writer.write(join(generateClasspath()));
 			writer.close();
 		}
+	}
+
+	private void writePaths(List<String> paths, Writer writer) throws IOException {
+		String taraLanguages = PathManager.getPluginsPath() + separator + TaraRtConstants.LANGUAGES_DIR + separator;
+		writer.write(TaraRtConstants.LANGUAGES_PATH + NL + taraLanguages + NL);
+		String semanticLib = PathManager.getPluginsPath() + separator + "tara" + separator + LIB + separator + SEMANTIC_RULES;
+		writer.write(TaraRtConstants.SEMANTIC_LIB + NL + semanticLib + NL);
+		writer.write(TaraRtConstants.OUTPUTPATH + NL + paths.get(0) + NL);
+		writer.write(TaraRtConstants.FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
+		writer.write(TaraRtConstants.TDK_HOME + NL + paths.get(2) + separator + LIB + separator + NL);
+		if (paths.get(3) != null) writer.write(TaraRtConstants.IT_RULES + NL + paths.get(3) + NL);
+		writer.write(TaraRtConstants.METRICS + NL + paths.get(4) + NL);
+		writer.write(TaraRtConstants.RESOURCES + NL + paths.get(5) + NL);
 	}
 
 	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,
@@ -96,9 +100,7 @@ public class TaraRunner {
 
 	private String join(Collection<String> array) {
 		String message = "";
-		for (String s : array) {
-			message += s + "\n";
-		}
+		for (String s : array) message += s + NL;
 		return message;
 	}
 

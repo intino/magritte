@@ -40,11 +40,11 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static List<Node> findRootConcept(PsiElement element, String identifier) {
+	public static List<Node> findRootNode(PsiElement element, String identifier) {
 		List<Node> result = new ArrayList<>();
 		for (TaraModelImpl taraFile : getModuleFiles(element.getContainingFile())) {
 			Collection<Node> nodes = taraFile.getNodes();
-			extractConceptsByName(identifier, result, nodes);
+			extractNodesByName(identifier, result, nodes);
 		}
 		return result;
 	}
@@ -84,7 +84,7 @@ public class TaraUtil {
 		return language.assumptions(node.resolve().getFullType());
 	}
 
-	private static void extractConceptsByName(String identifier, List<Node> result, Collection<Node> nodes) {
+	private static void extractNodesByName(String identifier, List<Node> result, Collection<Node> nodes) {
 		for (Node node : nodes)
 			if (identifier.equals(node.getName()))
 				result.add(node);
@@ -94,7 +94,7 @@ public class TaraUtil {
 		PsiElement element = node;
 		String type = node != null && !node.isSub() ? node.getType() : "";
 		while ((element = TaraPsiImplUtil.getContextOf(element)) != null)
-			if (isConceptNotSub(element)) type = buildType((Node) element, type);
+			if (isNodeNotSub(element)) type = buildType((Node) element, type);
 			else if (isInFacet(element)) {
 				type = buildType(element, type);
 				Node nodeContextOf = getContainerNodeOf(element);
@@ -114,7 +114,7 @@ public class TaraUtil {
 		return element instanceof TaraFacetApply || element instanceof TaraFacetTarget;
 	}
 
-	private static boolean isConceptNotSub(PsiElement element) {
+	private static boolean isNodeNotSub(PsiElement element) {
 		return element instanceof Node && !((Node) element).isSub();
 	}
 
@@ -125,7 +125,7 @@ public class TaraUtil {
 		return type;
 	}
 
-	public static List<Node> buildConceptCompositionPathOf(Node node) {
+	public static List<Node> buildNodeCompositionPathOf(Node node) {
 		Node aNode = node;
 		List<Node> path = new ArrayList<>();
 		path.add(aNode);
@@ -150,7 +150,7 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static Collection<Node> getRootConceptsOfFile(TaraModel file) {
+	public static Collection<Node> getRootNodesOfFile(TaraModel file) {
 		List<Node> list = new ArrayList<>();
 		Node[] nodes = PsiTreeUtil.getChildrenOfType(file, Node.class);
 		if (nodes == null) return list;
@@ -158,8 +158,8 @@ public class TaraUtil {
 			list.add(node);
 			list.addAll(node.getSubNodes());
 		}
-		Collection<? extends Node> aggregatedConcepts = findAggregatedConcepts(file);
-		for (Node aggregated : aggregatedConcepts) {
+		Collection<? extends Node> aggregatedNodes = findAggregatedNodes(file);
+		for (Node aggregated : aggregatedNodes) {
 			if (list.contains(aggregated)) continue;
 			list.add(aggregated);
 		}
@@ -253,24 +253,24 @@ public class TaraUtil {
 		throw new TaraRuntimeException("src directory not found");
 	}
 
-	public static Node findConceptByQN(String qualifiedName, PsiFile file) {
+	public static Node findNodeByQN(String qualifiedName, PsiFile file) {
 		if (file == null) return null;
 		List<TaraModelImpl> filesOfModule = getTaraFilesOfModule(ModuleProvider.getModuleOf(file));
 		for (TaraModelImpl taraFile : filesOfModule)
-			for (Node node : getRootConceptsOfFile(taraFile))
+			for (Node node : getRootNodesOfFile(taraFile))
 				if (node.getQualifiedName().equalsIgnoreCase(qualifiedName)) return node;
 		return null;
 	}
 
 	public static Collection<NodeReference> getLinksOf(Node node) {
-		return node.getBody() == null ? Collections.EMPTY_LIST : node.getBody().getConceptLinks();
+		return node.getBody() == null ? Collections.EMPTY_LIST : node.getBody().getNodeLinks();
 	}
 
 	public static Inflector getInflector(Module module) {
 		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
 	}
 
-	public static Collection<? extends Node> findAggregatedConcepts(TaraModel file) {
+	public static Collection<? extends Node> findAggregatedNodes(TaraModel file) {
 		Set<Node> aggregated = new HashSet<>();
 		for (Node node : getAllNodesOfFile(file))
 			if (node.isAnnotatedAsAggregated()) aggregated.add(node);

@@ -82,7 +82,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	@NotNull
 	@Override
 	public Collection<Node> getNodes() {
-		return TaraUtil.getRootConceptsOfFile(this);
+		return TaraUtil.getRootNodesOfFile(this);
 	}
 
 

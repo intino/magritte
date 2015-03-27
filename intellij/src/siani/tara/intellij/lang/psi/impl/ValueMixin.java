@@ -34,7 +34,7 @@ public class ValueMixin extends ASTWrapperPsiElement {
 		else if (element instanceof TaraEmptyField) return "$" + value;
 		else if (element instanceof IdentifierReference) {
 			Node node = ReferenceManager.resolveToNode((IdentifierReference) element);
-			return node != null ? node : value;
+			return node != null ? node : (Node) null;
 		}
 		return "";
 	}

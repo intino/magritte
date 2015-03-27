@@ -107,13 +107,13 @@ public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 	}
 
 	private PsiElement resolveExternal(Node node, FacetApply apply) {
-		return resolveJavaClassReference(node.getProject(), getFacetApplyPackage(node, apply) + DOT + node.getName() + apply.getFacetName());
+		return resolveJavaClassReference(node.getProject(), getFacetApplyPackage(node, apply) + DOT + node.getName() + apply.getType());
 	}
 
 	private String getFacetApplyPackage(Node node, FacetApply apply) {
 		Inflector inflector = getInflector(apply);
 		if (inflector == null) return "";
-		return (getFacetPackage(node) + DOT + inflector.plural(apply.getFacetName())).toLowerCase();
+		return (getFacetPackage(node) + DOT + inflector.plural(apply.getType())).toLowerCase();
 	}
 
 	private Inflector getInflector(FacetApply apply) {

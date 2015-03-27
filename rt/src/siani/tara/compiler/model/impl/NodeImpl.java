@@ -235,7 +235,11 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public String getQualifiedName() {
 		String containerQN = container.getQualifiedName();
-		return isInFacet() ? "" : (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + type + "]" : name);
+		return isInFacet() ? "" : (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + shortType() + "]" : name);
+	}
+
+	private String shortType() {
+		return type.contains(".") ? type.substring(type.lastIndexOf(".") + 1) : type;
 	}
 
 	private boolean isInFacet() {

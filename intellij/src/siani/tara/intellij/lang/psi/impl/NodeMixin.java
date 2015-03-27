@@ -21,11 +21,14 @@ import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.semantic.LanguageNode;
+import siani.tara.semantic.Assumption;
 
 import javax.swing.*;
 import java.util.*;
 
 import static siani.tara.intellij.lang.lexer.Annotation.*;
+import static siani.tara.semantic.Assumption.FacetInstance;
+import static siani.tara.semantic.Assumption.IntentionInstance;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 
@@ -229,12 +232,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isIntention() {
-		for (PsiElement annotation : getAnnotations())
-			if (INTENTION.getName().equals(annotation.getText()))
-				return true;
-		Node parent = null;
-		if (getParentName() != null) parent = getParentNode();
-		return parent != null && parent.isIntention();
+		return is(INTENTION);
 	}
 
 	public boolean isFacet() {
@@ -249,10 +247,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return is(ABSTRACT) || !getSubNodes().isEmpty();
 	}
 
-
 	public boolean isAggregated() {
 		return is(AGGREGATED);
 	}
+
 
 	public boolean isAnnotatedAsAggregated() {
 		for (PsiElement annotation : getAnnotations())
@@ -272,6 +270,14 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return is(PROPERTY);
 	}
 
+	public boolean isPropertyInstance() {
+		Collection<Assumption> assumptionsOf = TaraUtil.getAssumptionsOf((Node) this);
+		for (Assumption assumption : assumptionsOf)
+			if (assumption instanceof Assumption.PropertyInstance)
+				return true;
+		return false;
+	}
+
 	public boolean isComponent() {
 		return is(COMPONENT);
 	}
@@ -281,7 +287,29 @@ public class NodeMixin extends ASTWrapperPsiElement {
 			if (taraAnnotation.getName().equals(annotation.getText()))
 				return true;
 		Node parent = getParentName() != null ? getParentNode() : null;
-		return parent != null && ((NodeMixin) parent).is(taraAnnotation);
+		return hasInheritedAnnotation(taraAnnotation) || (parent != null && ((NodeMixin) parent).is(taraAnnotation));
+	}
+
+	private boolean hasInheritedAnnotation(siani.tara.intellij.lang.lexer.Annotation annotation) {
+		for (String a : inheritedAnnotations)
+			if (a.equals(annotation.getName())) return true;
+		return false;
+	}
+
+	public boolean isIntentionInstance() {
+		return is(IntentionInstance.class);
+	}
+
+	public boolean isFacetInstance() {
+		return is(FacetInstance.class);
+	}
+
+	public boolean is(Class<? extends Assumption> assumptionType) {
+		Collection<Assumption> assumptions = TaraUtil.getAssumptionsOf((Node) this);
+		if (assumptions == null) return false;
+		for (Assumption assumption : assumptions)
+			if (assumptionType.getClass().isInstance(assumption)) return true;
+		return false;
 	}
 
 	public TaraAddress getAddress() {

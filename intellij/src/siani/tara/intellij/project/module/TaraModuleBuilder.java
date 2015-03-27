@@ -94,7 +94,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		updateLibraries(rootModel);
 		addParentDependency(rootModel);
 		persistTempConf(rootModel.getProject());
-		createFirstFile(rootModel);
+//		createFirstFile(rootModel);
 	}
 
 	private void createFirstFile(ModifiableRootModel rootModel) {
@@ -110,7 +110,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	private PsiDirectory getModelSourceRoot(Project project, VirtualFile[] sourceRoots) {
 		for (VirtualFile sourceRoot : sourceRoots)
 			if (sourceRoot.getName().equals("model") && sourceRoot.isDirectory())
-				return PsiManager.getInstance(project).findDirectory(sourceRoot);
+				return PsiManager.getInstance(project).findDirectory(sourceRoot);//TODO crear fichero cutremente.
 		return null;
 	}
 

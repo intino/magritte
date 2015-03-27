@@ -151,7 +151,7 @@ public $name+firstUpperCase add$name+firstUpperCase(magritte.wrappers.Definition
 
 endrule
 
-defrule type(declarednode) type(intention) !type(metafacet) type(facet) trigger(node)
+defrule type(nodeimpl) type(intention) !type(facet) type(facetInstance) trigger(node)
 public[$inner static] class $name+firstUpperCase $parent implements $project+lowercase.intentions.$name+firstUpperCase~Intention {
 \
     public $project+lowercase.intentions.$name+firstUpperCase~Intention extension() {
@@ -169,7 +169,7 @@ public[$inner static] class $name+firstUpperCase $parent implements $project+low
 
 endrule
 
-defrule type(declarednode) type(intention) !type(facet) type(metafacet) trigger(node)
+defrule type(nodeimpl) type(intention) !type(facetInstance) type(facet) trigger(node)
 public[$inner static] class $name+firstUpperCase $parent implements $project+lowercase.intentions.$name+firstUpperCase~Intention {
 \
     public $project+lowercase.intentions.$name+firstUpperCase~Intention$[] extensions() {
@@ -188,7 +188,7 @@ public[$inner static] class $name+firstUpperCase $parent implements $project+low
 
 endrule
 
-defrule type(declarednode) trigger(node)
+defrule type(nodeimpl) trigger(node)
 public[$inner static] class $name+firstUpperCase $parent {
 \
 	[$aggregable

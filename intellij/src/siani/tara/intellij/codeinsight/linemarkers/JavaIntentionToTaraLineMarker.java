@@ -22,7 +22,7 @@ public class JavaIntentionToTaraLineMarker extends RelatedItemLineMarkerProvider
 		if (element instanceof PsiClass) {
 			PsiClass psiClass = (PsiClass) element;
 			if (element.getContainingFile() == null) return;
-			Node node = TaraUtil.findConceptByQN(findCorrespondentConcept(psiClass), element.getContainingFile());
+			Node node = TaraUtil.findNodeByQN(findCorrespondentConcept(psiClass), element.getContainingFile());
 			if (node != null) {
 				NavigationGutterIconBuilder<PsiElement> builder =
 					NavigationGutterIconBuilder.create(TaraIcons.getIcon(TaraIcons.ICON_13)).setTarget(node).setTooltipText("Navigate to the concept");

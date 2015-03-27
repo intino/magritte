@@ -75,7 +75,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	private Allow.Parameter getCorrespondingAllow(Node container, Parameter parameter) {
 		FacetApply facetApply = areFacetParameters(parameter);
-		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.getFacetName()) : TaraUtil.getAllowsOf(container);
+		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.getType()) : TaraUtil.getAllowsOf(container);
 		if (allowsOf == null) return null;
 		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
 		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.getIndexInParent()) return null;

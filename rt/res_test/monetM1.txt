@@ -6,10 +6,6 @@ project
 Monet
 module
 Census
-models
-/Users/octavio/workspace/sandbox/tara/plugins/tara_languages/
-semantic_lib
-/Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara-semantic.jar
 language
 Monet
 terminal
@@ -21,9 +17,9 @@ Census
 encoding
 UTF-8
 models
-/Users/octavio/workspace/sandbox/tara/plugins/tara_languages/
+/Users/octavio/workspace/sandbox/plugins/tara_languages/
 semantic_lib
-/Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara-semantic.jar
+/Users/octavio/workspace/sandbox/plugins/tara/lib/tara-semantic.jar
 outputpath
 /Users/octavio/workspace/monet/Census/gen
 final_outputpath

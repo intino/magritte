@@ -51,7 +51,7 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 		if (badReference()) return new String[0];
 		List<String> types = new ArrayList<>();
 		for (FacetApply facetApply : destiny.getFacetApplies())
-			types.add(facetApply.getFacetName());
+			types.add(facetApply.getType());
 		return types.toArray(new String[types.size()]);
 	}
 

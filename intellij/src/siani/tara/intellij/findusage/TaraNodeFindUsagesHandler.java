@@ -54,7 +54,7 @@ public class TaraNodeFindUsagesHandler extends FindUsagesHandler {
 	private Collection collectChildConceptsByType(List<TaraModelImpl> files) {
 		List<Node> list = new ArrayList();
 		for (TaraModelImpl file : files)
-			for (Node cpt : TaraUtil.getRootConceptsOfFile(file))
+			for (Node cpt : TaraUtil.getRootNodesOfFile(file))
 				if (node.getName().equals(cpt.getType()))
 					list.add(cpt);
 		return list;

@@ -205,7 +205,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
     {ROOT}                          {   return TaraTypes.ROOT; }
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
-	{QUOTE}                         { yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
+	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
 	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
 
 	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
@@ -246,8 +246,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 	{SP}                            {   return TokenType.WHITE_SPACE; }
 	<<EOF>>                         {   return eof(); }
-	[^]                                   { return TokenType.BAD_CHARACTER;}
-    .                                   { return TokenType.BAD_CHARACTER;}
+	[^]                             {   return TokenType.BAD_CHARACTER;}
+    .                               {   return TokenType.BAD_CHARACTER;}
 }
 
 <QUOTED> {

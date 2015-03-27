@@ -67,7 +67,6 @@ public class TaraCRunnerTest {
 		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/testM0.txt"});
 	}
 
-
 	@Test
 	public void TafatM0() {
 		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/tafatEngine.txt"});

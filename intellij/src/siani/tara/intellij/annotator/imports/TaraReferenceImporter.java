@@ -19,7 +19,7 @@ public class TaraReferenceImporter {
 	@NotNull
 	public static List<ImportQuickFix> proposeImportFix(final IdentifierReference node) {
 		Identifier element = node.getIdentifierList().get(0);
-		List<Node> nodes = TaraUtil.findRootConcept(element, element.getText());
+		List<Node> nodes = TaraUtil.findRootNode(element, element.getText());
 		ArrayList<ImportQuickFix> quickFixes = new ArrayList<>();
 		if (nodes.isEmpty()) return Collections.EMPTY_LIST;
 		for (Node concept : nodes) quickFixes.add(new ImportQuickFix((TaraModel) node.getContainingFile(),concept));

@@ -20,7 +20,7 @@ public interface Body extends TaraPsiElement {
 	@NotNull
 	List<? extends Node> getConceptList();
 
-	Collection<NodeReference> getConceptLinks();
+	Collection<NodeReference> getNodeLinks();
 
 	@NotNull
 	List<? extends ReferenceStatement> getReferenceStatementList();

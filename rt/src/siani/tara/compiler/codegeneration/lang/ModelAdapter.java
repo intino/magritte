@@ -12,7 +12,7 @@ import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.Assumption;
-import siani.tara.semantic.model.Rules;
+import siani.tara.semantic.model.Context;
 
 import java.util.*;
 
@@ -52,12 +52,12 @@ class ModelAdapter implements Adapter<Model> {
 
 	private List<String> collectCaseRules() {
 		List<String> cases = new ArrayList<>();
-		for (Map.Entry<String, Rules> entry : language.catalog().entrySet())
+		for (Map.Entry<String, Context> entry : language.catalog().entrySet())
 			if (isCase(entry.getValue())) cases.add(entry.getKey());
 		return cases;
 	}
 
-	private boolean isCase(Rules value) {
+	private boolean isCase(Context value) {
 		for (Assumption assumption : value.assumptions())
 			if (assumption instanceof Assumption.Case) return true;
 		return false;
@@ -113,17 +113,9 @@ class ModelAdapter implements Adapter<Model> {
 	}
 
 	private void addRequires(Node node, Frame frame) {
-		Frame requires = (node.getIncludedNodes().isEmpty()) ?
-			buildNoneIncludesRequirement() :
-			buildRequiredNodes(node.getIncludedNodes());
+		Frame requires = buildRequiredNodes(node.getIncludedNodes());
 		addContextRequires(node, requires);
 		frame.addFrame("requires", requires);
-	}
-
-	private Frame buildNoneIncludesRequirement() {
-		Frame requires = new Frame("requires");
-		requires.addFrame("require", new Frame("require", "none"));
-		return requires;
 	}
 
 	private void addContextAllows(Node node, Frame allows) {
@@ -147,16 +139,12 @@ class ModelAdapter implements Adapter<Model> {
 	private void addContextRequires(Node node, Frame requires) {
 		if (node instanceof NodeImpl) {
 			List<Variable> variables = (List<Variable>) node.getVariables();
-			if (variables.isEmpty()) addNoneParameterRequire(requires);
-			else addParameterRequires(node, requires, variables);
+			addParameterRequires(node, requires, variables);
 		}
 		if (node.isNamed()) requires.addFrame(REQUIRE, "name");
 		if (node.isAddressed()) requires.addFrame(REQUIRE, "address");
 	}
 
-	private void addNoneParameterRequire(Frame requires) {
-		requires.addFrame("require", new Frame("require", "none", "parameter"));
-	}
 
 	private void addParameterRequires(Node node, Frame requires, List<Variable> variables) {
 		for (int i = 0; i < variables.size(); i++) {

@@ -114,7 +114,8 @@ public class ModelToJavaOperation extends ModelOperation {
 			if (!((Element) node).getFile().equals(model.getName()) || node.isCase()) continue;
 			Document document = new Document();
 			String project = compilationUnit.getConfiguration().getProject();
-			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(project, model).create(node);
+			Map.Entry<String, Frame> morphFrame =
+				new MorphFrameCreator(project, model, conf.getLanguage(), conf.getLocale()).create(node);
 			ruleEngine.render(morphFrame.getValue(), document);
 			map.put(morphFrame.getKey(), document);
 		}

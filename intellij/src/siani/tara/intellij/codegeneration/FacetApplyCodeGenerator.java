@@ -16,15 +16,19 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.Node;
+import siani.tara.Language;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.FacetApply;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.semantic.Allow;
 import siani.tara.semantic.Assumption;
 
 import java.util.*;
 
 import static com.intellij.psi.JavaPsiFacade.getElementFactory;
+import static siani.tara.intellij.lang.psi.impl.TaraUtil.getAllowsOf;
 
 public class FacetApplyCodeGenerator extends CodeGenerator {
 
@@ -87,27 +91,23 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 	}
 
 	private boolean isIntentionImplementation(Node node, FacetApply facetApply) {
-		//TODO
-//		Node node = TaraUtil.getMetaConcept(concept);
-//		if (!hasFacet(node, facetApply.getFacetName())) return false;
-//		for (Node modelNode : TaraUtil.getLanguage(facetApply).getTreeModel())
-//			if (facetApply.getFacetName().equals(modelNode.getName()) && modelNode.is(INTENTION))
-//				return true;
+		if (!hasFacet(getAllowsOf(node.resolve(), node.getFullType()), facetApply.getType()))
+			return false;
+		Language language = TaraLanguage.getLanguage(node.getFile());
+		if (language == null) return false;
+		for (Assumption assumption : language.assumptions(facetApply.getType()))
+			if (assumption instanceof Assumption.IntentionInstance) return true;
 		return false;
 	}
 
-//	private boolean hasFacet(Node node, String facetApply) {
-//		return node.getObject().getAllowedFacets().containsKey(facetApply);
-//	}
-
 	private PsiClass[] createClasses(Node facetedNode, FacetApply apply) {
-		if (isRootClass(facetedNode)) return createRootFacetClass(facetedNode, apply.getFacetName());
+		if (isRootClass(facetedNode)) return createRootFacetClass(facetedNode, apply.getType());
 		return createInnerClass(facetedNode, apply);
 	}
 
 	private PsiClass[] createInnerClass(Node facetedNode, FacetApply apply) {
 		Set<PsiClass> psiClasses = new LinkedHashSet<>();
-		for (Node node : TaraUtil.buildConceptCompositionPathOf(facetedNode))
+		for (Node node : TaraUtil.buildNodeCompositionPathOf(facetedNode))
 			if (isRootClass(node)) psiClasses.add(createRootClass(node, apply));
 			else psiClasses.add(createInnerClass(getLast(psiClasses), node, apply));
 		return psiClasses.toArray(new PsiClass[psiClasses.size()]);
@@ -119,13 +119,14 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 	}
 
 	private PsiClass createRootClass(Node node, FacetApply apply) {
-		if (!hasFacet(node, apply)) return createRootClass(node, apply.getFacetName());
-		else return createRootFacetClass(node, apply.getFacetName())[0];
+		if (!hasFacet(getAllowsOf(node.resolve(), node.getFullType()), apply.getType()))
+			return createRootClass(node, apply.getType());
+		else return createRootFacetClass(node, apply.getType())[0];
 	}
 
 	private PsiClass createInnerClass(PsiClass container, Node node, FacetApply apply) {
-		if (hasFacet(node, apply))
-			return createInnerFacetClass(container, node, apply.getFacetName());
+		if (hasFacet(getAllowsOf(node.resolve(), node.getFullType()), apply.getType()))
+			return createInnerFacetClass(container, node, apply.getType());
 		return createInnerClass(container, node.getName() == null ? node.getType() : node.getName());
 	}
 
@@ -153,7 +154,9 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 	private void implementInterface(Node node, String facetName, PsiClass aClass) {
 		String interfaceName = node.getType() + facetName + "Intention";
 		PsiClass interfaceClass = findClassInModule(interfaceName);
-		String project = "";//TaraLanguage.getLanguage(concept.getFile()).getName().split("\\.")[0].toLowerCase();
+		Language language = TaraLanguage.getLanguage(node.getFile());
+		if ( language == null) return;
+		String project = language.languageName().toLowerCase();
 		if (interfaceClass == null)
 			interfaceClass = findClassInProject(project + "." + "intentions." + getInflector(node).plural(facetName).toLowerCase() + "." + interfaceName);
 		if (interfaceClass == null) return;
@@ -162,22 +165,14 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 	}
 
 	private void setParent(Node parent, PsiClass aClass) {
-		List<Node> nodes = TaraUtil.buildConceptCompositionPathOf(parent);
+		List<Node> nodes = TaraUtil.buildNodeCompositionPathOf(parent);
 		String qn = MAGRITTE_MORPHS;
 		for (Node node : nodes) {
-			if (node.isProperty() || isPropertyInstance(node)) break;
+			if (node.isProperty() || node.isPropertyInstance()) break;
 			qn += "." + (node.getName() == null ? node.getType() : node.getName());
 		}
 		PsiClass parentClass = findClassInModule(qn);
 		setParent(aClass, parentClass);
-	}
-
-	private boolean isPropertyInstance(Node node) {
-		Collection<Assumption> assumptionsOf = TaraUtil.getAssumptionsOf(node);
-		for (Assumption assumption : assumptionsOf)
-			if (assumption instanceof Assumption.PropertyInstance)
-				return true;
-		return false;
 	}
 
 	private void setParent(final PsiClass aClass, final PsiClass parentClass) {
@@ -186,10 +181,10 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 		aClass.getExtendsList().add(classReferenceElement);
 	}
 
-	private boolean hasFacet(Node node, FacetApply apply) {
-		for (FacetApply facetApply : node.getFacetApplies())
-			if (facetApply.getFacetName().equals(apply.getFacetName()))
-				return true;
+	private boolean hasFacet(Collection<Allow> allows, String apply) {
+		if (allows == null) return false;
+		for (Allow allow : allows)
+			if (allow instanceof Allow.Facet && ((Allow.Facet) allow).type().equals(apply)) return true;
 		return false;
 	}
 

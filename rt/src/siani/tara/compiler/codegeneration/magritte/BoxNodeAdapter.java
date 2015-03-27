@@ -13,9 +13,7 @@ import siani.tara.semantic.Assumption;
 import java.util.Collection;
 import java.util.Map;
 
-import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
-
-public class BoxNodeAdapter implements Adapter<Node> {
+public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private final Language language;
 	private final Map<Node, Long> keys;
 
@@ -114,11 +112,11 @@ public class BoxNodeAdapter implements Adapter<Node> {
 	}
 
 	private String buildFacetPath(Node node, String facet) {
-		NodeContainer aNode = node;
+		NodeContainer aNode = node.getContainer();
 		String path = node.getName() + facet + DOT + CLASS;
-		while (aNode.getContainer() != null && !(aNode.getContainer() instanceof Model)) {
-			aNode = aNode.getContainer();
+		while (aNode != null && !(aNode instanceof Model)) {
 			path = addToPath(facet, aNode, path);
+			aNode = aNode.getContainer();
 		}
 		return path;
 	}
@@ -130,8 +128,12 @@ public class BoxNodeAdapter implements Adapter<Node> {
 				path = ((Node) node).getName() + facetName + DOT + path;
 				faceted = true;
 			}
-		if (!faceted) path = ((Node) node).getType() + DOT + path;
+		if (!faceted) path = shortType(((Node) node).getType()) + DOT + path;
 		return path;
+	}
+
+	private String shortType(String type) {
+		return type.contains(".") ? type.substring(type.lastIndexOf(".") + 1) : type;
 	}
 
 }

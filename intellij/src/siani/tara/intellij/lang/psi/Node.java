@@ -52,7 +52,13 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isProperty();
 
+	boolean isPropertyInstance();
+
 	boolean isComponent();
+
+	boolean isIntentionInstance();
+
+	boolean isFacetInstance();
 
 	boolean isAnnotatedAsAggregated();
 

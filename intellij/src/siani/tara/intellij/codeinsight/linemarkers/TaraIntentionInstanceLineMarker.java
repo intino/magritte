@@ -25,7 +25,7 @@ import java.util.List;
 
 public final class TaraIntentionInstanceLineMarker extends IntentionLineMarker {
 
-	private static final String EXTENSIONS_PATH = "extensions";
+	private static final String EXTENSIONS = "extensions";
 
 	public TaraIntentionInstanceLineMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
@@ -55,11 +55,11 @@ public final class TaraIntentionInstanceLineMarker extends IntentionLineMarker {
 	}
 
 	protected final String buildDestinyClassQN(Node node, Project project) {
-		return project.getName().toLowerCase() + DOT + EXTENSIONS_PATH + DOT + node.getName() + node.getType();
+		return project.getName().toLowerCase() + DOT + EXTENSIONS + DOT + node.getName() + node.getType();
 	}
 
 	protected final String getFacetPackage(Node node, Inflector inflector) {
-		return node.getProject().getName().toLowerCase() + DOT + EXTENSIONS_PATH + DOT +
+		return node.getProject().getName().toLowerCase() + DOT + EXTENSIONS + DOT +
 			inflector.plural(node.getType()).toLowerCase() + DOT + inflector.plural(node.getName()).toLowerCase();
 	}
 

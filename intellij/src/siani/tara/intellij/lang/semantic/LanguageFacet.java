@@ -20,7 +20,7 @@ public class LanguageFacet extends LanguageElement implements Facet {
 
 	@Override
 	public String type() {
-		return facetApply.getFacetName();
+		return facetApply.getType();
 	}
 
 	@Override

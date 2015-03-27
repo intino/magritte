@@ -16,9 +16,9 @@ GroceryShop
 encoding
 UTF-8
 semantic_lib
-/Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara-semantic.jar
+/Users/octavio/workspace/sandbox/plugins/tara/lib/tara-semantic.jar
 models
-/Users/octavio/workspace/sandbox/tara/plugins/tara_languages/
+/Users/octavio/workspace/sandbox/plugins/tara_languages/
 outputpath
 /Users/octavio/workspace/sumus-engine/Grocery/gen
 final_outputpath

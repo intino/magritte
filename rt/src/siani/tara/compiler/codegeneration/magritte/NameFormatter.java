@@ -1,9 +1,14 @@
 package siani.tara.compiler.codegeneration.magritte;
 
+import org.siani.itrules.formatter.Inflector;
+import org.siani.itrules.formatter.InflectorFactory;
+import siani.tara.compiler.model.Node;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class NameFormatter {
 
@@ -15,19 +20,19 @@ public class NameFormatter {
 
 	private NameFormatter() {
 	}
-//
-//	public static String composeMorphPackagePath(Locale locale, NodeImpl node) {
-////		if (!node.isSub())
-////			return getMorphPath(DOT);
-////		String aPackage = "";
-////		NodeObject parent = node.getObject().getParent();
-////		Inflector inflector = InflectorFactory.getInflector(locale);
-////		while (parent != null) {
-////			aPackage = inflector.plural(parent.getName()) + aPackage;
-////			parent = parent.isSub() ? parent.getParent() : null;
-////		}
-////		return getMorphPath(DOT) + DOT + aPackage.toLowerCase();
-//	}
+
+	public static String composeMorphPackagePath(Node node, Locale locale) {
+		if (!node.isSub())
+			return getMorphPath(DOT);
+		String aPackage = "";
+		Node parent = node.getParent();
+		Inflector inflector = InflectorFactory.getInflector(locale);
+		while (parent != null) {
+			aPackage = inflector.plural(parent.getName()) + aPackage;
+			parent = parent.isSub() ? parent.getParent() : null;
+		}
+		return getMorphPath(DOT) + DOT + aPackage.toLowerCase();
+	}
 
 	public static String buildMorphPath(String morph) {
 		String[] split = morph.split("\\.");

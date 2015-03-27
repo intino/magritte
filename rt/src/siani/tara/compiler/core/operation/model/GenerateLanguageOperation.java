@@ -32,13 +32,4 @@ public class GenerateLanguageOperation extends ModelOperation {
 			throw new CompilationFailedException(Phases.MODEL_GENERATION, unit);
 		}
 	}
-
-//	private void cleanCaseNodesFromModel(Model model) {
-//		List<NodeImpl> toRemove = new ArrayList<>();
-//		for (NodeImpl entry : model.getNodeTable())
-//			if (entry.is(Annotation.CASE))
-//				toRemove.add(entry);
-//		for (NodeImpl node : toRemove)
-//			model.getNodeTable().remove(node);
-//	}
 }

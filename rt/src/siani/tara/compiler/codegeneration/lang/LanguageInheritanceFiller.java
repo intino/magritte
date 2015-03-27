@@ -7,7 +7,7 @@ import siani.tara.semantic.Assumption;
 import siani.tara.semantic.Constraint;
 import siani.tara.semantic.Constraint.Require;
 import siani.tara.semantic.Relation;
-import siani.tara.semantic.model.Rules;
+import siani.tara.semantic.model.Context;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,8 +35,8 @@ public class LanguageInheritanceFiller {
 	}
 
 	private void fillRuleInfo(Frame frame, String aCase) {
-		Rules rules = language.catalog().get(aCase);
-		frame.addFrame("name", rules.getQualifiedName());
+		Context rules = language.catalog().get(aCase);
+		frame.addFrame("name", aCase);
 		addTypes(rules.types(), frame);
 	}
 

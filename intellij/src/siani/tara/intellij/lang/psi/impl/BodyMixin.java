@@ -63,7 +63,7 @@ public class BodyMixin extends ASTWrapperPsiElement {
 	}
 
 
-	public Collection<NodeReference> getConceptLinks() {
+	public Collection<NodeReference> getNodeLinks() {
 		NodeReference[] references = PsiTreeUtil.getChildrenOfType(this, NodeReference.class);
 		return references == null ? Collections.EMPTY_LIST : Arrays.asList(references);
 	}

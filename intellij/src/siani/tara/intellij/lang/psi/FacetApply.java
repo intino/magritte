@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 public interface FacetApply extends Navigatable, TaraPsiElement {
 
 	@NotNull
-	String getFacetName();
+	String getType();
 
 	Body getBody();
 

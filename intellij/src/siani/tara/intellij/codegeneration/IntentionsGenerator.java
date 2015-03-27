@@ -118,7 +118,7 @@ public class IntentionsGenerator {
 	private void createTargetInterface(Node facetNode, TaraFacetTarget target) {
 		PsiDirectory facetDirectory = findFacetDirectory(facetNode.getName());
 		String facetsBasePath = basePath + DOT + facetDirectory.getName().toLowerCase();
-		List<Node> compositionRoute = TaraUtil.buildConceptCompositionPathOf(resolveToNode(target.getIdentifierReference()));
+		List<Node> compositionRoute = TaraUtil.buildNodeCompositionPathOf(resolveToNode(target.getIdentifierReference()));
 
 		for (int i = 0; i < compositionRoute.size(); i++) {
 			Node targetNode = compositionRoute.get(i);
@@ -232,8 +232,7 @@ public class IntentionsGenerator {
 	}
 
 	private PsiClass findClass(Node node) {
-		return getInstance(project).findClass(basePath + DOT + getClassName(node),
-			GlobalSearchScope.moduleScope(module));
+		return getInstance(project).findClass(basePath + DOT + getClassName(node), GlobalSearchScope.moduleScope(module));
 	}
 
 	private String getClassName(Node node) {

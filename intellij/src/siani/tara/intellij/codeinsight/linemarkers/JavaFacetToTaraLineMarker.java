@@ -26,7 +26,7 @@ public class JavaFacetToTaraLineMarker extends RelatedItemLineMarkerProvider {
 			PsiClass psiClass = (PsiClass) element;
 			if (element.getContainingFile() == null) return;
 			if (((PsiClass) element).getImplementsList() == null) return;
-			addNavigationMark(element, result, TaraUtil.findConceptByQN(findCorrespondentConcept(psiClass), element.getContainingFile()));
+			addNavigationMark(element, result, TaraUtil.findNodeByQN(findCorrespondentConcept(psiClass), element.getContainingFile()));
 		}
 	}
 

@@ -30,7 +30,7 @@ public class $name extends Tara {
 endrule
 
 defrule type(node) trigger(node)
-in("$name"[, $nodeType])[.$allows][.$requires][.$assumptions];
+in("$name").def(context([$nodeType])[.$allows][.$requires][.$assumptions]);
 endrule
 
 defrule type(nodeType) trigger(nodeType)

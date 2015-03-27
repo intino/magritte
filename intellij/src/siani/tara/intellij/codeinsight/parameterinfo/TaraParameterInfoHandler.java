@@ -86,7 +86,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			Language language = TaraLanguage.getLanguage(parameters.getContainingFile());
 			if (language == null) return parameters;
 			TaraFacetApply facet = parameters.isInFacet();
-			Collection<Constraint> constraints = language.constraints(facet != null ? facet.getFacetName() : TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().getFullType());
+			Collection<Constraint> constraints = language.constraints(facet != null ? facet.getType() : TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().getFullType());
 			if (constraints == null) return parameters;
 			List<Constraint.Require.Parameter> requiredParameters = new ArrayList<>();
 			for (Constraint require : constraints) {

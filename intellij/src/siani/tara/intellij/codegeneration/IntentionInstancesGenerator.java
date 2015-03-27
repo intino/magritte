@@ -111,11 +111,8 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 		return path + inflector.plural(facetedNode.getType()).toLowerCase() + "." + inflector.plural(facetedNode.getName()).toLowerCase();
 	}
 
-	private boolean isIntention(Node facet) {
-//		if (facet.isIntention()) return true;
-//		Node node = TaraUtil.findNode(facet, TaraLanguage.getLanguage(facet.getFile()));
-//		return node != null && node.getObject().is(INTENTION);
-		return false;
+	private boolean isIntention(Node facetNode) {
+		return (facetNode.isIntention() || facetNode.isIntentionInstance());
 	}
 
 	private Map<String, String> getOptionsForFacetClass(String type) {
@@ -124,23 +121,16 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 		return map;
 	}
 
-	private Node[] getFacets(TaraModel taraModel) {
+	private Node[] getFacets(TaraModel model) {
 		List<Node> facets = new ArrayList<>();
-		List<Node> allConceptsOfFile = TaraUtil.getAllNodesOfFile(taraModel);
-//		Model model = TaraLanguage.getLanguage(taraModel);
-//		for (Concept concept : allConceptsOfFile)
-//			if ((concept.isFacet() || isMetaFacet(model, concept)) && !concept.isIntention()) {
-//				facets.add(concept);
-//				facets.addAll(concept.getSubNodes());
-//			}
+		List<Node> allConceptsOfFile = TaraUtil.getAllNodesOfFile(model);
+		for (Node node : allConceptsOfFile)
+			if (node.isFacet() && !node.isIntention()) {
+				facets.add(node);
+				facets.addAll(node.getSubNodes());
+			}
 		return facets.toArray(new Node[facets.size()]);
 	}
-
-//	private boolean isMetaFacet(Model model, Concept concept) {
-//		if (model == null) return false;
-//		Node node = TaraUtil.findNode(concept, model);
-//		return node != null && node.is(META_FACET);
-//	}
 
 	private PsiClass findClassInModule(String qn, Module module) {
 		return JavaPsiFacade.getInstance(project).findClass(qn, GlobalSearchScope.moduleScope(module));
