@@ -1,10 +1,7 @@
 package siani.tara.compiler.codegeneration.magritte;
 
 import siani.tara.Language;
-import siani.tara.compiler.model.Annotation;
-import siani.tara.compiler.model.Facet;
-import siani.tara.compiler.model.FacetTarget;
-import siani.tara.compiler.model.NodeContainer;
+import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.semantic.Assumption;
 
@@ -58,6 +55,16 @@ public final class MorphCreatorHelper implements TemplateTags {
 			if (name.endsWith("Instance")) instances.add(name);
 		}
 		return instances;
+	}
+
+	public static String[] getTypes(Variable variable) {
+		List<String> list = new ArrayList<>();
+		list.add(variable.getClass().getSimpleName());
+		list.add(VARIABLE);
+		list.add(variable.getType());
+		if (variable.isMultiple()) list.add(MULTIPLE);
+		for (Annotation annotation : variable.getAnnotations()) list.add(annotation.getName());
+		return list.toArray(new String[list.size()]);
 	}
 
 }

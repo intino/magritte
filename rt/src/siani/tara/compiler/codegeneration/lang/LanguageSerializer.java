@@ -9,10 +9,7 @@ import javax.tools.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Locale;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,7 +55,7 @@ public class LanguageSerializer extends CodeGenerator {
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
-		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromStrings(Arrays.asList(file.getAbsolutePath()));
+		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromStrings(Collections.singletonList(file.getAbsolutePath()));
 		final Collection<String> compilerOptions = new ArrayList<>();
 		compilerOptions.add("-source");
 		compilerOptions.add("1.7");

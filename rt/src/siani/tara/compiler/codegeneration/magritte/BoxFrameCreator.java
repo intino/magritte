@@ -17,6 +17,7 @@ import java.util.Map;
 public class BoxFrameCreator {
 
 	private final String project;
+	private final String module;
 	private final Language language;
 	private final Model model;
 	private final Locale locale;
@@ -24,8 +25,9 @@ public class BoxFrameCreator {
 	private Map<Node, Long> keymap = new LinkedHashMap<>();
 	private long count = 1;
 
-	private BoxFrameCreator(String project, Language language, Model model, Locale locale, boolean terminal) {
+	private BoxFrameCreator(String project, String module, Language language, Model model, Locale locale, boolean terminal) {
 		this.project = project;
+		this.module = module;
 		this.language = language;
 		this.model = model;
 		this.locale = locale;
@@ -34,7 +36,7 @@ public class BoxFrameCreator {
 	}
 
 	public BoxFrameCreator(CompilerConfiguration conf, Model model) {
-		this(conf.getProject(), conf.getLanguage(), model, conf.getLocale(), conf.isTerminal());
+		this(conf.getProject(), conf.getModule(), conf.getLanguage(), model, conf.getLocale(), conf.isTerminal());
 	}
 
 	private void createKeyMap(NodeContainer node) {
@@ -55,7 +57,7 @@ public class BoxFrameCreator {
 		boxModel.setName(model.getName());
 		boxModel.addIncludedNodes(nodes.toArray(new Node[nodes.size()]));
 		final FrameBuilder builder = new FrameBuilder();
-		builder.register(Model.class, new BoxModelAdapter(project, language, boxModel, locale));
+		builder.register(Model.class, new BoxModelAdapter(project, module, language, locale));
 		builder.register(Node.class, new BoxNodeAdapter(language, keymap));
 		builder.register(Variable.class, new BoxVariableAdapter());
 		builder.register(Parameter.class, new BoxParameterAdapter());

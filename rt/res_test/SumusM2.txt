@@ -8,7 +8,7 @@ Sumus
 module
 Sumus
 terminal
-true
+false
 language
 Proteo
 locale

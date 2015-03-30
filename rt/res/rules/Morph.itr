@@ -126,21 +126,21 @@ defrule trigger(parent) slot-name(value)
 extends $value+reference
 endrule
 
-defrule type(node) !type(aggregated) type(single) trigger(component)
+defrule type(nodeReference) !type(aggregated) type(single) trigger(component)
 public $name+reference $name+firstLowerCase() {
     return components($name+reference.class)$[0];
 }
 
 endrule
 
-defrule type(node) !type(aggregated) !type(single) trigger(component)
+defrule type(nodeReference) !type(aggregated) !type(single) trigger(component)
 public $qn+reference$[] $name+firstLowerCase+plural() {
     return components($qn+reference.class);
 }
 
 endrule
 
-defrule type(node) type(aggregated) trigger(holding)
+defrule type(nodeReference) type(aggregated) trigger(component)
 public $name+firstUpperCase$[] $name+firstLowerCase() {
     return holdings($name+firstUpperCase.class);
 }
@@ -151,7 +151,7 @@ public $name+firstUpperCase add$name+firstUpperCase(magritte.wrappers.Definition
 
 endrule
 
-defrule type(nodeimpl) type(intention) !type(facet) type(facetInstance) trigger(node)
+defrule type(nodeimpl) type(intention) !type(facetInstance) type(facet) trigger(node)
 public[$inner static] class $name+firstUpperCase $parent implements $project+lowercase.intentions.$name+firstUpperCase~Intention {
 \
     public $project+lowercase.intentions.$name+firstUpperCase~Intention extension() {
@@ -159,17 +159,19 @@ public[$inner static] class $name+firstUpperCase $parent implements $project+low
     }
 \
 	$variable+wordInstantiation...[$NL]\
+\
     $variable+getter...[$NL]\
-
+\
     $variable+setter...[$NL]\
+\
+    $component...[$NL]\
 
-    $node+component...[$NL]\
-    $node+holding...[$NL]\
+    $node...[$NL]\
 }
 
 endrule
 
-defrule type(nodeimpl) type(intention) !type(facetInstance) type(facet) trigger(node)
+defrule type(nodeimpl) type(intention) !type(facet) type(facetInstance) trigger(node)
 public[$inner static] class $name+firstUpperCase $parent implements $project+lowercase.intentions.$name+firstUpperCase~Intention {
 \
     public $project+lowercase.intentions.$name+firstUpperCase~Intention$[] extensions() {
@@ -177,13 +179,14 @@ public[$inner static] class $name+firstUpperCase $parent implements $project+low
     }
 \
 	$variable+wordInstantiation...[$NL]\
-    $variable+getter...[$NL]\
-
-    $variable+setter...[$NL]\
-
-    $node+component...[$NL]\
 \
-    $node+holding...[$NL]\
+    $variable+getter...[$NL]\
+\
+    $variable+setter...[$NL]\
+\
+    $component...[$NL]\
+
+    $node...[$NL]\
 }
 
 endrule
@@ -197,13 +200,14 @@ public[$inner static] class $name+firstUpperCase $parent {
     }]
 \
 	$variable+wordInstantiation...[$NL]\
+\
     $variable+getter...[$NL]\
-
+\
     $variable+setter...[$NL]\
+\
+    $component...[$NL]\
 
-    $node+component...[$NL]\
-
-    $node+holding...[$NL]\
+    $node...[$NL]\
 }
 
 endrule

@@ -2,6 +2,7 @@ package siani.tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
+import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 
 import java.io.File;
@@ -15,7 +16,7 @@ public class NameFormatter {
 	public static final String MAGRITTE_PATH = "magritte";
 	public static final String MORPH_PATH = "morphs";
 	public static final String BOX_PATH = "store";
-	public static final String JAVA = "java";
+	private static final String METAMODEL = "metamodel";
 	public static final String DOT = ".";
 
 	private NameFormatter() {
@@ -34,6 +35,19 @@ public class NameFormatter {
 		return getMorphPath(DOT) + DOT + aPackage.toLowerCase();
 	}
 
+	public static String composeMorphPackagePath(FacetTarget node, Locale locale) {
+//		if (!node.isSub())
+//			return getMorphPath(DOT);
+//		String aPackage = "";
+//		Node parent = node.getParent();
+//		Inflector inflector = InflectorFactory.getInflector(locale);
+//		while (parent != null) {
+//			aPackage = inflector.plural(parent.getName()) + aPackage;
+//			parent = parent.isSub() ? parent.getParent() : null;
+//		}
+		return getMorphPath(DOT);//+ DOT + aPackage.toLowerCase();
+	}
+
 	public static String buildMorphPath(String morph) {
 		String[] split = morph.split("\\.");
 		if (split.length <= 3) return "";
@@ -45,9 +59,6 @@ public class NameFormatter {
 		return aPackage.substring(1);
 	}
 
-	public static String camelCase(String value) {
-		return camelCase(value, "_");
-	}
 
 	public static String camelCase(String value, String c) {
 		String[] parts = value.split(c);
@@ -65,9 +76,14 @@ public class NameFormatter {
 		return MAGRITTE_PATH + separator + MORPH_PATH;
 	}
 
-	public static String getBoxPath(String separator) {
+	public static String getBoxUnitPath(String separator) {
 		return MAGRITTE_PATH + separator + BOX_PATH;
 	}
+
+	public static String getBoxPath(String separator) {
+		return MAGRITTE_PATH + separator + BOX_PATH + separator + METAMODEL;
+	}
+
 
 	public static String buildFileName(String file) {
 		return camelCase(file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(DOT)), "_");

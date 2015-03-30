@@ -1,125 +1,19 @@
-defrule type(Model)
-package magritte.store;
+defrule type(Box)
+package magritte.store.metamodel;
 
 import magritte.Model;
 import magritte.editors.Box;
-import magritte.store.*;
-import magritte.editors.ModelEditor;
-$importFacet...[$NL]
 
-import static magritte.Annotation.*;
-$importMetric...[$NL]
+public class $name+firstUppercase extends Box {
+    public static final Box box = new $name+firstUppercase();
 
-public class $name extends Box.Unit {
-    public static final Box box = new $name();
+    private Box$[] includes = {
+        $boxName...[,$NL]
+    };
 
     @Override
-    public Box$[] links() {
-        return new Box$[]{[$dependency...[, ]]};
-    }
-
-    @Override
-    protected ModelEditor modelEditor(Model model) {
-        return new ModelEditor(model) {
-            @Override
-            public void write() {
-                $node...[$NL]
-            }
-        };
+    protected void doWrite(Model model) {
+        for (Box include : includes) include.write(model);
     }
 }
-endrule
-
-defrule type(node) trigger(node)
-def($key);[ name("$name");][ $nodeType...[ ]][ $facet][ $address][ $annotation...[ ]][ $parent][ $variable+set...[ ]\]
-	[ $include...[ ]]\
-endrule
-
-defrule trigger(address)
-address($value);
-endrule
-
-defrule type(nodeType) trigger(nodeType)
-type("$name"[,$NL$target]);
-endrule
-
-defrule type(target) !type(intention) trigger(target)
-$target...[, $NL]
-endrule
-
-defrule type(facetApply) trigger(facet)
-type("$name"[, $apply]);
-endrule
-
-defrule trigger(parent)
-parent("$value");
-endrule
-
-defrule type(aggregated) trigger(include)
-add($value);
-endrule
-
-defrule type(composed) trigger(include)
-has($value);
-endrule
-
-defrule type(Variable) type(target) type(measure) !type(List) slot-name(variableValue) trigger(set)
-set("!$node:$name<$target", $measureValue.value($variableValue));
-endrule
-
-defrule type(Variable) type(target) !type(List) slot-name(variableValue) trigger(set)
-set("!$node:$name<$target", $variableValue);
-endrule
-
-
-defrule type(terminal) type(Variable) type(reference) slot-name(variableValue) trigger(set)
-set("!$name", node("$variableValue"));
-endrule
-
-defrule type(terminal) type(Variable) type(string) !type(List) slot-name(variableValue) trigger(set)
-set("!$name", "$variableValue+string");
-endrule
-
-defrule type(terminal) type(Variable) type(resource) !type(List) slot-name(variableValue) trigger(set)
-set("!$name", resource("$variableValue"));
-endrule
-
-defrule type(terminal) type(Variable) type(List) slot-name(variableValue) trigger(set)
-set("!$name", $variableValue);
-endrule
-
-defrule type(terminal) type(Variable) slot-name(variableValue)  trigger(set)
-set("!$name", $variableValue);
-endrule
-
-defrule type(Variable) type(reference) slot-name(variableValue) trigger(set)
-set("$name", node("$variableValue"));
-endrule
-
-defrule type(Variable) type(string) !type(List) slot-name(variableValue) trigger(set)
-set("$name", "$variableValue+string");
-endrule
-
-defrule type(Variable) type(resource) !type(List) slot-name(variableValue) trigger(set)
-set("$name", resource("$variableValue"));
-endrule
-
-defrule type(Variable) type(List) slot-name(variableValue) trigger(set)
-set("$name", $variableValue);
-endrule
-
-defrule type(Variable) slot-name(variableValue)  trigger(set)
-set("$name", $variableValue);
-endrule
-
-defrule type(Annotation) trigger(annotation)
-[set($value+CamelCase...[, ]);]
-endrule
-
-defrule trigger(variableValue) slot-type(date)
-magritte.types.TimeInstant.value($value+date)
-endrule
-
-defrule trigger(variableValue) slot-type(coordinate)
-magritte.types.Coordinate.of($value)
 endrule

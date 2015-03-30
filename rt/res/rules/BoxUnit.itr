@@ -1,5 +1,5 @@
 defrule type(Model)
-package magritte.store;
+package magritte.store.$project+lowercase.$module+lowercase;
 
 import magritte.Model;
 import magritte.Node;
@@ -16,7 +16,7 @@ public class $name extends Box.Unit {
 
     @Override
     public Box$[] links() {
-        return new Box$[]{[magritte.store.metamodel.$language.Box]};
+        return new Box$[]{[magritte.store.metamodel.$language+firstUpperCase.box]};
     }
 
     @Override
@@ -32,70 +32,70 @@ public class $name extends Box.Unit {
 endrule
 
 defrule type(Node) trigger(node)
-def($key);[ name("$name");][ $nodeType...[ ]][ $facet][ $address][ $annotation...[ ]][ $parent][ $variable+set...[ ]\][ $include...[ ]]\
+def($key)[.name("$name")][$nodeType...[]][$facet...[]][$address][$annotation...[]][.$parent][$variable+set...[]\][$include...[]];\
 endrule
 
 defrule type(facetapply) trigger(facet)
-type("$name"[, $apply]);
+.type("$name"[, $apply])
 endrule
 
 defrule trigger(address)
-address($value);
+.address($value)
 endrule
 
 defrule trigger(parent)
-parent("$value");
+parent("$value")
 endrule
 
 defrule type(aggregated) trigger(include)
-add($value);
+.add($value)
 endrule
 
 defrule type(composed) trigger(include)
-has($value);
+.has($value)
 endrule
 
 defrule type(variable) type(target) type(measure) !type(List) slot-name(variableValue) trigger(set)
-set("!$node:$name<$target", $measureValue.value($variableValue));
+.set("!$node:$name<$target", $measureValue.value($variableValue))
 endrule
 
 defrule type(variable) type(target) type(string) slot-name(variableValue) trigger(set)
-set("!$node:$name<$target", $variableValue+quoted...[, ]);
+.set("!$node:$name<$target", $variableValue+quoted...[, ])
 endrule
 defrule type(variable) type(target) type(word) slot-name(variableValue) trigger(set)
-set("!$node:$name<$target", $variableValue+quoted...[, ]);
+.set("!$node:$name<$target", $variableValue+quoted...[, ])
 endrule
 
 defrule type(variable) type(target) type(reference) slot-name(variableValue) trigger(set)
-set("!$node:$name<$target", node($variableValue...[, ]));
+.set("!$node:$name<$target", node($variableValue...[, ]))
 endrule
 
 defrule type(variable) type(target) slot-name(variableValue) trigger(set)
-set("!$node:$name<$target", $variableValue...[, ]);
+.set("!$node:$name<$target", $variableValue...[, ])
 endrule
 
 defrule type(variable) type(reference) slot-name(variableValue) trigger(set)
-set("$terminal$name", node($variableValue+quoted...[, ]));
+.set("$terminal$name", node($variableValue+quoted...[, ]))
 endrule
 
 defrule type(Variable) type(resource) slot-name(variableValue) trigger(set)
-set("$terminal$name", resource($variableValue+quoted...[, ]));
+.set("$terminal$name", resource($variableValue+quoted...[, ]))
 endrule
 
 defrule type(variable) type(word) slot-name(variableValue) trigger(set)
-set("$terminal$name", $variableValue+quoted...[, ]);
+.set("$terminal$name", $variableValue+quoted...[, ])
 endrule
 
 defrule type(Variable) type(string) slot-name(variableValue) trigger(set)
-set("$terminal$name", $variableValue+quoted...[, ]);
+.set("$terminal$name", $variableValue+quoted...[, ])
 endrule
 
 defrule type(Variable) slot-name(variableValue) trigger(set)
-set("$terminal$name", $variableValue...[, ]);
+.set("$terminal$name", $variableValue...[, ])
 endrule
 
 defrule type(Annotation) trigger(annotation)
-[set($value+CamelCase...[, ]);]
+.set($value+CamelCase...[, ])
 endrule
 
 defrule trigger(variableValue) slot-type(date)

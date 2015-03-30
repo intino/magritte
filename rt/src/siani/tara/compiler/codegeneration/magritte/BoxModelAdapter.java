@@ -18,14 +18,14 @@ import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 
 public class BoxModelAdapter implements Adapter<Model> {
 	private final String project;
+	private final String module;
 	private final Language language;
-	private final Model boxModel;
 	private final Locale locale;
 
-	public BoxModelAdapter(String project, Language language, Model boxModel, Locale locale) {
+	public BoxModelAdapter(String project, String module, Language language, Locale locale) {
 		this.project = project;
+		this.module = module;
 		this.language = language;
-		this.boxModel = boxModel;
 		this.locale = locale;
 	}
 
@@ -34,6 +34,7 @@ public class BoxModelAdapter implements Adapter<Model> {
 		frame.addFrame(NAME, buildFileName(boxModel.getFile()));
 		if (!Objects.equals(language.languageName(), "Proteo"))
 			frame.addFrame(LANGUAGE, language.languageName());
+		frame.addFrame("project", project).addFrame("module", module);
 		addMetricImports(frame);
 		addFacetImports(boxModel.getIncludedNodes(), frame);
 		parserAllNodes(frame, boxModel, context);

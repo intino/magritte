@@ -4,6 +4,8 @@ import java.util.Collection;
 
 public interface Variable extends Cloneable{
 
+	public static String WORD = "word";
+
 	String getName();
 
 	NodeContainer getContainer();

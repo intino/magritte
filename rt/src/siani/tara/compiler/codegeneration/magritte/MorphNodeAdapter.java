@@ -6,8 +6,11 @@ import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.NodeImpl;
+import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.compiler.model.impl.VariableReference;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -31,10 +34,11 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	}
 
 	@Override
-	public void adapt(Frame frame, NodeImpl node, BuilderContext builderContext) {
+	public void adapt(Frame frame, NodeImpl node, BuilderContext context) {
 		frame.add(getTypes(node, language));
 		addNodeInfo(node, frame);
 		addImports(getNodeContainer(node), locale);
+		addInner(node, frame, context);
 	}
 
 	private void addImports(Node container, Locale locale) {
@@ -46,23 +50,29 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	}
 
 	private void addNodeInfo(Node node, Frame frame) {
-		if (initNode != null && !node.equals(initNode)) {
-			frame.addFrame(INNER, "");
-			if (node.isAggregated()) frame.addFrame(RELATION, AGGREGATION);
-			else frame.addFrame(RELATION, COMPOSITION);
-		}
+		if (initNode != null && !node.equals(initNode)) frame.addFrame(INNER, "");
 		if (node.getDoc() != null) frame.addFrame(DOC, node.getDoc());
-		if (node.getName() != null && !node.getName().isEmpty())
-			frame.addFrame(NAME, node.isAnonymous() ? node.getType() : node.getName());
-		frame.addFrame(QN, node.getQualifiedName()).addFrame(PROJECT, project);
+		addName(node, frame);
 		addParent(node, frame);
 		addTargets(node, frame);
 		addFacets(node, frame);
 		addVariables(node, frame);
 		addTargets(node, frame);
 		addFacets(node, frame);
-		addHolding(node, frame);
 		addComponents(node, frame);
+	}
+
+	private void addName(Node node, Frame frame) {
+		if (node.getName() != null && !node.getName().isEmpty())
+			frame.addFrame(NAME, node.isAnonymous() ? node.getType() : node.getName());
+		frame.addFrame(QN, node.getQualifiedName()).addFrame(PROJECT, project);
+	}
+
+	private void addInner(Node node, Frame frame, BuilderContext context) {
+		for (Node inner : node.getIncludedNodes()) {
+			if (inner instanceof NodeReference || inner.isAnonymous()) continue;
+			frame.addFrame("node", context.build(inner));
+		}
 	}
 
 	private void addParent(Node node, Frame newFrame) {
@@ -79,11 +89,31 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	}
 
 	private void addComponents(Node node, Frame frame) {
-
+		for (Node include : node.getIncludedNodes()) {
+			if (include.isAnonymous()) continue;
+			Frame includeFrame = new Frame(collectReferenceTypes(include));
+			if (include instanceof NodeReference) {
+				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
+				addNodeReferenceName((NodeReference) include, includeFrame);
+			}
+			if (include instanceof NodeImpl)
+				addName(include, includeFrame);
+			frame.addFrame("component", includeFrame);
+		}
 	}
 
-	private void addHolding(Node node, Frame frame) {
+	private void addNodeReferenceName(NodeReference node, Frame frame) {
+		NodeImpl reference = node.getDestiny();
+		frame.addFrame(NAME, reference.getName());
+		frame.addFrame(QN, reference.getQualifiedName()).addFrame(PROJECT, project);
+	}
 
+	private String[] collectReferenceTypes(Node node) {
+		List<String> types = new ArrayList<>();
+		types.add("nodeReference");
+		if (node.isSingle()) types.add("single");
+		if (node.isAggregated()) types.add("aggregated");
+		return types.toArray(new String[types.size()]);
 	}
 
 	private void addTargets(Node node, Frame newFrame) {
@@ -91,12 +121,36 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 			newFrame.addFrame(TARGETS, new Frame(getTypes(target)).addFrame(NAME, target.getTarget()));
 	}
 
-
 	protected void addVariables(Node node, final Frame frame) {
-		for (final Variable variable : node.getVariables())
-			if (variable instanceof VariableReference && !variable.getDefaultExtension().isEmpty()) {
-//				addImports(, locale);
+		for (final Variable variable : node.getVariables()) {
+			Frame varFrame = createVarFrame(variable);
+			frame.addFrame(VARIABLE, varFrame);
+			if (variable instanceof VariableReference && !variable.getDefaultValues().isEmpty()) {
+				addImports(((VariableReference) variable).getDestiny(), locale);
 			}
+		}
+	}
+
+
+	protected Frame createVarFrame(final Variable variable) {
+		return new Frame(MorphCreatorHelper.getTypes(variable)) {
+			{
+				addFrame(NAME, variable.getName());
+				addFrame(TYPE, getType());
+				if (variable.getType().equals(Variable.WORD))
+					addFrame(WORDS, variable.getAllowedValues().toArray(new String[(variable.getAllowedValues().size())]));
+				else if (variable.getType().equals(Primitives.MEASURE)) {
+//					addFrame(MEASURE_TYPE, ((Attribute) variable).getMeasureType());
+//					if (((Attribute) variable).getMeasureValue() != null)
+//						addFrame(MEASURE_VALUE, resolveMetric(((Attribute) variable).getMeasureValue()));
+				}
+			}
+
+			private String getType() {
+				if (variable.getType().equalsIgnoreCase(Primitives.NATURAL)) return Primitives.INTEGER;
+				else return variable.getType();
+			}
+		};
 	}
 
 }

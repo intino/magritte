@@ -54,9 +54,9 @@ public class NodeAnnotator extends TaraAnnotator {
 
 	private void analyzeJavaClassCreation(Node node) {
 		if (node.isIntention() && !isCreated(intentionClass(node), node))
-			holder.createWarningAnnotation(node.getSignature(), message("no.java.generated.class"));
+			holder.createErrorAnnotation(node.getSignature(), message("no.java.generated.class"));
 		if ((node.isFacet() && node.isIntentionInstance() && !isCreated(extensionClass(node), node)))
-			holder.createWarningAnnotation(node.getSignature(), message("no.java.generated.class"));
+			holder.createErrorAnnotation(node.getSignature(), message("no.java.generated.class"));
 
 	}
 
