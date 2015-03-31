@@ -3,10 +3,7 @@ package siani.tara.compiler.codegeneration.magritte;
 import org.siani.itrules.framebuilder.Adapter;
 import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
-import siani.tara.compiler.model.EmptyNode;
-import siani.tara.compiler.model.Node;
-import siani.tara.compiler.model.Parameter;
-import siani.tara.compiler.model.Primitives;
+import siani.tara.compiler.model.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,9 +15,9 @@ import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 public class BoxParameterAdapter implements Adapter<Parameter> {
 
 	@Override
-	public void adapt(Frame frame, Parameter parameter, BuilderContext builderContext) {
+	public void adapt(Frame frame, Parameter parameter, BuilderContext context) {
 		frame.add(getTypes(parameter));
-		frame.addFrame(NAME, parameter.getName());
+		frame.addFrame(NAME, buildNme(parameter));
 		if (isTerminal(parameter))
 			frame.addFrame(TERMINAL, "!");
 		if (parameter.getInferredType().equals(Primitives.MEASURE)) {
@@ -29,6 +26,12 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 				frame.addFrame(EXTENSION_VALUE, resolveMetric(parameter.getExtension()));
 		}
 		addParameterValue(frame, parameter);
+	}
+
+	private String buildNme(Parameter parameter) {
+		if (parameter.getOwner() instanceof Facet)
+			return (((Facet) parameter.getOwner()).getType()) + ":" + parameter.getName();
+		else return parameter.getName();
 	}
 
 	private boolean isTerminal(Parameter parameter) {

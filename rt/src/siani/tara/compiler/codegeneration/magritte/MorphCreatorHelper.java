@@ -14,7 +14,7 @@ public final class MorphCreatorHelper implements TemplateTags {
 	private MorphCreatorHelper() {
 	}
 
-	public static NodeImpl getNodeContainer(NodeImpl node) {
+	public static NodeImpl getNodeContainer(NodeContainer node) {
 		NodeContainer container = node.getContainer();
 		while (container != null && !(container instanceof NodeImpl)) {
 			container = container.getContainer();
@@ -32,7 +32,7 @@ public final class MorphCreatorHelper implements TemplateTags {
 	public static String[] getTypes(Facet facet) {
 		List<String> list = new ArrayList<>();
 		list.add(FACET);
-		list.add(facet.type());
+		list.add(facet.getType());
 		return list.toArray(new String[list.size()]);
 	}
 

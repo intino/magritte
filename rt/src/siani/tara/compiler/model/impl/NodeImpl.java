@@ -285,6 +285,7 @@ public class NodeImpl extends Element implements Node {
 		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
 		parameter.setFile(file);
 		parameter.setLine(line);
+		parameter.setOwner(this);
 		parameters.add(parameter);
 	}
 

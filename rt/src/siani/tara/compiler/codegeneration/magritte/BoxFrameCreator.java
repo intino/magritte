@@ -21,22 +21,20 @@ public class BoxFrameCreator {
 	private final Language language;
 	private final Model model;
 	private final Locale locale;
-	private final boolean terminal;
 	private Map<Node, Long> keymap = new LinkedHashMap<>();
 	private long count = 1;
 
-	private BoxFrameCreator(String project, String module, Language language, Model model, Locale locale, boolean terminal) {
+	private BoxFrameCreator(String project, String module, Language language, Model model, Locale locale) {
 		this.project = project;
 		this.module = module;
 		this.language = language;
 		this.model = model;
 		this.locale = locale;
-		this.terminal = terminal;
 		createKeyMap(model);
 	}
 
 	public BoxFrameCreator(CompilerConfiguration conf, Model model) {
-		this(conf.getProject(), conf.getModule(), conf.getLanguage(), model, conf.getLocale(), conf.isTerminal());
+		this(conf.getProject(), conf.getModule(), conf.getLanguage(), model, conf.getLocale());
 	}
 
 	private void createKeyMap(NodeContainer node) {

@@ -29,23 +29,15 @@ public class NameFormatter {
 		Node parent = node.getParent();
 		Inflector inflector = InflectorFactory.getInflector(locale);
 		while (parent != null) {
-			aPackage = inflector.plural(parent.getName()) + aPackage;
+			aPackage = inflector.plural(parent.getName()) + (!aPackage.isEmpty() ? DOT + aPackage : "");
 			parent = parent.isSub() ? parent.getParent() : null;
 		}
 		return getMorphPath(DOT) + DOT + aPackage.toLowerCase();
 	}
 
-	public static String composeMorphPackagePath(FacetTarget node, Locale locale) {
-//		if (!node.isSub())
-//			return getMorphPath(DOT);
-//		String aPackage = "";
-//		Node parent = node.getParent();
-//		Inflector inflector = InflectorFactory.getInflector(locale);
-//		while (parent != null) {
-//			aPackage = inflector.plural(parent.getName()) + aPackage;
-//			parent = parent.isSub() ? parent.getParent() : null;
-//		}
-		return getMorphPath(DOT);//+ DOT + aPackage.toLowerCase();
+	public static String composeMorphPackagePath(FacetTarget target, Locale locale) {
+		Inflector inflector = InflectorFactory.getInflector(locale);
+		return (getMorphPath(DOT) + DOT + inflector.plural(((Node) target.getContainer()).getName())).toLowerCase();
 	}
 
 	public static String buildMorphPath(String morph) {

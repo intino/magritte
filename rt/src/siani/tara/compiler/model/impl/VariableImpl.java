@@ -160,7 +160,8 @@ public class VariableImpl extends Element implements Variable {
 		super.clone();
 		Variable variable = new VariableImpl(container, type, name);
 		variable.setMultiple(multiple);
-		variable.setDefaultExtension(extension);
+		variable.setDefaultExtension(defaultExtension);
+		variable.setExtension(extension);
 		for (Annotation annotation : annotations) variable.addAnnotations(annotation.getName());
 		variable.addAllowedValues(allowedValues.toArray(new Object[allowedValues.size()]));
 		variable.addDefaultValues(defaultValues.toArray(new Object[defaultValues.size()]));

@@ -1,6 +1,7 @@
 package siani.tara.compiler.model.impl;
 
 import siani.tara.compiler.model.Element;
+import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.Parameter;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class ParameterImpl extends Element implements Parameter {
 	private String extension;
 	private String inferredType;
 	private String[] annotations = new String[0];
+	private NodeContainer owner;
 
 
 	public ParameterImpl(String name, int position, String extension, Object... values) {
@@ -31,6 +33,15 @@ public class ParameterImpl extends Element implements Parameter {
 		this("", position, extension, values);
 	}
 
+
+	@Override
+	public NodeContainer getOwner() {
+		return owner;
+	}
+
+	public void setOwner(NodeContainer owner) {
+		this.owner = owner;
+	}
 
 	@Override
 	public String getInferredType() {

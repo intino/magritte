@@ -85,7 +85,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 
 	private void addFacets(Node node, Frame newFrame) {
 		for (final Facet facet : node.getFacets())
-			newFrame.addFrame(FACETS, new Frame(getTypes(facet)).addFrame(NAME, facet.type()));
+			newFrame.addFrame(FACETS, new Frame(getTypes(facet)).addFrame(NAME, facet.getType()));
 	}
 
 	private void addComponents(Node node, Frame frame) {

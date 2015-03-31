@@ -15,11 +15,6 @@ public class TaraCRunnerTest {
 	}
 
 	@Test
-	public void TestMagritteM2() {
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/magritteM2.txt"});
-	}
-
-	@Test
 	public void SumusM2() {
 		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/SumusM2.txt"});
 	}
@@ -30,48 +25,24 @@ public class TaraCRunnerTest {
 	}
 
 	@Test
-	public void TestTafat2M2() {
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/tafat2M2.txt"});
-	}
-
-	@Test
-	public void TestMagritteTafat2M2() {
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/magritteTafatM2.txt"});
-	}
-
-	@Test
-	public void TestMagritteTafat2M1() {
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/magritteTafatM1.txt"});
-	}
-
-	@Test
-	public void TestTafat2M1() {
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/tafat2M1.txt"});
+	public void SumusM0() {
+		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/SumusM0.txt"});
 	}
 
 
 	@Test
-	public void TestSmartCitiesM2() {
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/smartM2.txt"});
+	public void TafatM2() {
+		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/TafatM2.txt"});
 	}
 
 	@Test
-	public void TestSmartCitiesM1() {
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/smartM1.txt"});
-	}
-
-	@Test
-	public void TestM0() {
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/SumusM1.txt"});
-
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/testM0.txt"});
+	public void TafatM1() {
+		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/TafatM1.txt"});
 	}
 
 	@Test
 	public void TafatM0() {
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/tafatEngine.txt"});
-
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/tafatM1.txt"});
+		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/TafatM0.txt"});
 	}
 
 	@Test
@@ -90,16 +61,6 @@ public class TaraCRunnerTest {
 	}
 
 	@Test
-	public void SampleM0() {
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/sampleM0.txt"});
-	}
-
-	@Test
-	public void EVM1() {
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/EVM1.txt"});
-	}
-
-	@Test
 	public void TeselaM2() {
 		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/teselaM2.txt"});
 	}
@@ -114,8 +75,4 @@ public class TaraCRunnerTest {
 		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/teselaM0.txt"});
 	}
 
-	@Test
-	public void SampleM1() {
-		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/sampleM1.txt"});
-	}
 }

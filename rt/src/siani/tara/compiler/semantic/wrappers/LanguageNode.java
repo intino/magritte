@@ -50,7 +50,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	public String[] secondaryTypes() {
 		List<String> types = new ArrayList<>();
 		for (Facet facet : node.getFacets())
-			types.add(facet.type());
+			types.add(facet.getType());
 		return types.toArray(new String[types.size()]);
 	}
 

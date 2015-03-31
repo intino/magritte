@@ -93,7 +93,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		setOutputPath(compilerModuleExtension);
 		updateLibraries(rootModel);
 		addParentDependency(rootModel);
-		persistTempConf(rootModel.getProject());
+		persistTempConf();
 //		createFirstFile(rootModel);
 	}
 
@@ -201,11 +201,10 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		return null;
 	}
 
-	private void persistTempConf(Project project) {
+	private void persistTempConf() {
 		try {
 			FileWriter writer = new FileWriter(configFile);
 			writer.write(((parentLanguage != null) ? parentLanguage : "null") + "\n");
-			writer.write(((parentLanguage != null) ? getModelOfParentLanguage(project).getAbsolutePath() : "null") + "\n");
 			writer.write(locale + "\n");
 			writer.write(generatedLanguage + "\n");
 			writer.write(terminal + "\n");

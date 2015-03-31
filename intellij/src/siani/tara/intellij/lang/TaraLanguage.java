@@ -81,9 +81,9 @@ public class TaraLanguage extends com.intellij.lang.Language {
 		languagesPaths.add(path);
 	}
 
-	private static boolean haveToReload(String parent) {
+	private static boolean haveToReload(String language) {
 		for (String modelPath : languagesPaths) {
-			File reload = new File(modelPath, parent + ".reload");
+			File reload = new File(modelPath, language + ".reload");
 			if (reload.exists()) {
 				reload.delete();
 				return true;

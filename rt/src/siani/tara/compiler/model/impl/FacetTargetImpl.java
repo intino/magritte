@@ -125,4 +125,9 @@ public class FacetTargetImpl extends Element implements FacetTarget {
 	public void setLine(int line) {
 		this.line = line;
 	}
+
+	@Override
+	public String toString() {
+		return "on " + destiny;
+	}
 }

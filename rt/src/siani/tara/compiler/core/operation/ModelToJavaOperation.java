@@ -132,18 +132,16 @@ public class ModelToJavaOperation extends ModelOperation {
 	private void renderFacetTargets(Map<String, Document> map, RuleEngine ruleEngine, Node node) {
 		for (FacetTarget facetTarget : node.getFacetTargets()) {
 			Document document = new Document();
-			Map.Entry<String, Frame> morphFrame =
-				new MorphFrameCreator(conf.getProject(), model, conf.getLanguage(), conf.getLocale()).create(facetTarget);
-//			ruleEngine.render(morphFrame.getValue(), document);
-//			map.put(morphFrame.getKey(), document);
+			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getLanguage(), conf.getLocale()).create(facetTarget);
+			ruleEngine.render(morphFrame.getValue(), document);
+			map.put(morphFrame.getKey(), document);
 		}
-
 	}
 
 	private void renderNode(Map<String, Document> map, RuleEngine ruleEngine, Node node) {
 		Document document = new Document();
 		Map.Entry<String, Frame> morphFrame =
-			new MorphFrameCreator(conf.getProject(), model, conf.getLanguage(), conf.getLocale()).create(node);
+			new MorphFrameCreator(conf.getProject(), conf.getLanguage(), conf.getLocale()).create(node);
 		ruleEngine.render(morphFrame.getValue(), document);
 		map.put(morphFrame.getKey(), document);
 	}

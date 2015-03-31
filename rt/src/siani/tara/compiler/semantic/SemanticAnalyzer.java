@@ -15,13 +15,11 @@ import siani.tara.semantic.SemanticException;
 
 public class SemanticAnalyzer {
 	private final Model model;
-	private final Language language;
 	private final Resolver resolver;
 	private Checker checker;
 
 	public SemanticAnalyzer(Model model, Language language) {
 		this.model = model;
-		this.language = language;
 		resolver = new Resolver(language);
 		checker = new Checker(language);
 	}

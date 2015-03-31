@@ -4,6 +4,8 @@ import java.util.Collection;
 
 public interface Parameter {
 
+	NodeContainer  getOwner();
+
 	String getInferredType();
 
 	void setInferredType(String type);

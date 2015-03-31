@@ -12,7 +12,9 @@ English
 encoding
 UTF-8
 models
-/Users/oroncal/workspace/sandbox/tara/plugins/tara_models/
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
+semantic_lib
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara-semantic.jar
 icons
 /Users/oroncal/workspace/sandbox/Tesela/VPO-Lanzarote/res/icons
 outputpath

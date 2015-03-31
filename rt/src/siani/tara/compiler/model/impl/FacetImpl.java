@@ -98,7 +98,11 @@ public class FacetImpl extends Element implements Facet {
 
 	@Override
 	public void addParameter(String name, int position, String extension, Object... values) {
-		parameters.add(new ParameterImpl(name, position, extension, values));
+		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
+		parameter.setFile(file);
+		parameter.setLine(line);
+		parameter.setOwner(this);
+		parameters.add(parameter);
 	}
 
 	@Override
@@ -107,7 +111,7 @@ public class FacetImpl extends Element implements Facet {
 	}
 
 	@Override
-	public String type() {
+	public String getType() {
 		return facet;
 	}
 

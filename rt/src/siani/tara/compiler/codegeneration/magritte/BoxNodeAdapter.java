@@ -30,6 +30,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 			addVariables(node, frame, context);
 			addParameters(node, frame, context);
 			addFacetVariables(node, frame, context);
+			addFacetParameters(node, frame, context);
 			includes(node, frame);
 		}
 	}
@@ -46,8 +47,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private void addTypes(Node node, Frame newFrame) {
-		Frame typeFrame = new Frame(NODE_TYPE).addFrame(NAME, node.getType());
-		newFrame.addFrame(NODE_TYPE, typeFrame);
+		newFrame.addFrame(NODE_TYPE, node.getType());
 	}
 
 	private void addAnnotations(final Node node, Frame frame) {
@@ -60,18 +60,24 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 
 	private void addVariables(Node node, final Frame frame, BuilderContext context) {
 		for (final Variable variable : node.getVariables())
-			frame.addFrame("variable", context.build(variable));
+			context.buildIn(frame, "variable", variable);
 	}
 
 	private void addFacetVariables(Node node, final Frame frame, BuilderContext context) {
 		for (FacetTarget facetTarget : node.getFacetTargets())
 			for (final Variable variable : facetTarget.getVariables())
-				frame.addFrame("variable", context.build(variable));
+				context.buildIn(frame, "variable", variable);
 	}
 
 	private void addParameters(Node node, Frame frame, BuilderContext context) {
 		for (final Parameter parameter : node.getParameters())
-			frame.addFrame("variable", context.build(parameter));
+			context.buildIn(frame, "variable", parameter);
+	}
+
+	private void addFacetParameters(Node node, final Frame frame, BuilderContext context) {
+		for (Facet facet : node.getFacets())
+			for (final Parameter parameter : facet.getParameters())
+				context.buildIn(frame, "variable", parameter);
 	}
 
 	private void includes(Node node, Frame frame) {
@@ -98,9 +104,9 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 
 	private void addFacetApplies(Node node, Frame newFrame) {
 		for (Facet facet : node.getFacets()) {
-			Frame facetFrame = new Frame(FACET_APPLY).addFrame(NAME, facet.type());
-			if (isIntentionInstance(facet.type()))
-				facetFrame.addFrame(APPLY, buildFacetPath(node, facet.type()));
+			Frame facetFrame = new Frame(FACET_APPLY).addFrame(NAME, facet.getType());
+			if (isIntentionInstance(facet.getType()))
+				facetFrame.addFrame(APPLY, buildFacetPath(node, facet.getType()));
 			newFrame.addFrame(FACET, facetFrame);
 		}
 	}
@@ -124,7 +130,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private String addToPath(String facetName, NodeContainer node, String path) {
 		boolean faceted = false;
 		for (Facet facet : ((Node) node).getFacets())
-			if (facet.type().equals(facetName)) {
+			if (facet.getType().equals(facetName)) {
 				path = ((Node) node).getName() + facetName + DOT + path;
 				faceted = true;
 			}

@@ -49,7 +49,7 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 	public String[] secondaryTypes() {
 		List<String> types = new ArrayList<>();
 		for (Facet facet : reference.getDestiny().getFacets())
-			types.add(facet.type());
+			types.add(facet.getType());
 		return types.toArray(new String[types.size()]);
 	}
 

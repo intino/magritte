@@ -5,6 +5,7 @@ import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.compiler.model.Annotation;
+import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.Model;
@@ -23,6 +24,7 @@ class ModelAdapter implements Adapter<Model> {
 	private static final String REQUIRE = "require";
 
 	private Frame root;
+	private Model model;
 	private Set<String> processed = new HashSet<>();
 	private String languageName;
 	private Locale locale;
@@ -37,6 +39,7 @@ class ModelAdapter implements Adapter<Model> {
 	@Override
 	public void adapt(Frame root, Model model, BuilderContext context) {
 		this.root = root;
+		this.model = model;
 		root.addFrame("name", languageName);
 		root.addFrame("terminal", Boolean.toString(model.isTerminal()));
 		root.addFrame("locale", locale.equals(Locale.ENGLISH) ? "Locale.ENGLISH" : createLocale());
@@ -115,42 +118,61 @@ class ModelAdapter implements Adapter<Model> {
 	private void addRequires(Node node, Frame frame) {
 		Frame requires = buildRequiredNodes(node.getIncludedNodes());
 		addContextRequires(node, requires);
-		frame.addFrame("requires", requires);
+		if (requires.getSlots().length != 0) frame.addFrame("requires", requires);
 	}
 
 	private void addContextAllows(Node node, Frame allows) {
-		if (node instanceof NodeImpl) {
-			List<Variable> variables = (List<Variable>) node.getVariables();
-			for (int i = 0; i < node.getVariables().size(); i++) {
-				Variable variable = variables.get(i);
-				if (variable.getDefaultValues().isEmpty()) continue;
-				addParameter(allows, i, variable, ALLOW);
-			}
-		}
+		if (node instanceof NodeImpl) addParameterAllows((List<Variable>) node.getVariables(), allows);
 		if (!node.isNamed() && !node.isProperty()) allows.addFrame("allow", "name");
 		addFacetAllows(node, allows);
 	}
 
+	private void addParameterAllows(List<Variable> variables, Frame allows) {
+		for (int i = 0; i < variables.size(); i++) {
+			Variable variable = variables.get(i);
+			if (variable.getDefaultValues().isEmpty()) continue;
+			addParameter(allows, i, variable, ALLOW);
+		}
+	}
+
 	private void addFacetAllows(Node node, Frame allows) {
-		for (String facet : node.getAllowedFacets())
-			allows.addFrame("allow", new Frame("allow", "facet").addFrame("value", facet));
+		for (String facet : node.getAllowedFacets()) {
+			Frame frame = new Frame("allow", "facet").addFrame("value", facet);
+			allows.addFrame("allow", frame);
+			FacetTarget facetNode = findFacetTarget(node, facet);
+			if (facetNode == null) continue;
+			addParameterAllows((List<Variable>) facetNode.getVariables(), frame);
+			addParameterRequires((List<Variable>) facetNode.getVariables(), frame, true);//TRUE?
+		}
+
+	}
+
+	private FacetTarget findFacetTarget(Node target, String facet) {
+		for (Node node : model.getIncludedNodes())
+			if (facet.equals(node.getName())) return correspondingTarget(node, target);
+		return null;
+	}
+
+	private FacetTarget correspondingTarget(Node node, Node target) {
+		for (FacetTarget facetTarget : node.getFacetTargets())
+			if (facetTarget.getTargetNode().equals(target)) //refactor to node hierarchy
+				return facetTarget;
+		return null;
 	}
 
 	private void addContextRequires(Node node, Frame requires) {
-		if (node instanceof NodeImpl) {
-			List<Variable> variables = (List<Variable>) node.getVariables();
-			addParameterRequires(node, requires, variables);
-		}
+		if (node instanceof NodeImpl)
+			addParameterRequires((List<Variable>) node.getVariables(), requires, node.isTerminal());
 		if (node.isNamed()) requires.addFrame(REQUIRE, "name");
 		if (node.isAddressed()) requires.addFrame(REQUIRE, "address");
 	}
 
 
-	private void addParameterRequires(Node node, Frame requires, List<Variable> variables) {
+	private void addParameterRequires(List<Variable> variables, Frame requires, boolean terminal) {
 		for (int i = 0; i < variables.size(); i++) {
 			Variable variable = variables.get(i);
 			if (!variable.getDefaultValues().isEmpty() ||
-				(variable.isTerminal() && !node.isTerminal())) continue;
+				(variable.isTerminal() && !terminal)) continue;
 			addParameter(requires, i, variable, REQUIRE);
 		}
 	}
@@ -217,9 +239,9 @@ class ModelAdapter implements Adapter<Model> {
 			if (annotation.equals(SINGLE) || annotation.equals(REQUIRED)) continue;
 			if (annotation.isMeta()) assumptions.addFrame("assumption", annotation.getName().substring(1));
 			else if (annotation.equals(TERMINAL)) assumptions.addFrame("assumption", "Case");
+			else if (annotation.equals(PROPERTY)) assumptions.addFrame("assumption", "PropertyInstance");
 			else if (annotation.equals(FACET)) assumptions.addFrame("assumption", "FacetInstance");
-			else if (annotation.equals(Annotation.INTENTION))
-				assumptions.addFrame("assumption", "IntentionInstance");
+			else if (annotation.equals(Annotation.INTENTION)) assumptions.addFrame("assumption", "IntentionInstance");
 		}
 	}
 

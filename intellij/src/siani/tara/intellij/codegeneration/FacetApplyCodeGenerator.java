@@ -9,6 +9,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
+import com.intellij.openapi.editor.impl.EditorImpl;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.infos.CandidateInfo;
@@ -152,16 +153,23 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 	}
 
 	private void implementInterface(Node node, String facetName, PsiClass aClass) {
-		String interfaceName = node.getType() + facetName + "Intention";
-		PsiClass interfaceClass = findClassInModule(interfaceName);
+		PsiClass interfaceClass = findClassInModule(node.getType() + facetName + "Intention");
 		Language language = TaraLanguage.getLanguage(node.getFile());
-		if ( language == null) return;
+		if (language == null) return;
 		String project = language.languageName().toLowerCase();
 		if (interfaceClass == null)
-			interfaceClass = findClassInProject(project + "." + "intentions." + getInflector(node).plural(facetName).toLowerCase() + "." + interfaceName);
+			interfaceClass = findClassInProject(buildQn(node, facetName, project));
 		if (interfaceClass == null) return;
 		PsiJavaCodeReferenceElement referenceElement = getElementFactory(this.project).createClassReferenceElement(interfaceClass);
 		aClass.getImplementsList().add(referenceElement);
+	}
+
+	@NotNull
+	private String buildQn(Node node, String facetName, String project) {
+		String qn = project + "." + "intentions." + getInflector(node).plural(facetName).toLowerCase();
+		for (String name : node.getFullType().split("\\."))
+			qn += "." + name + facetName + "Intention";
+		return qn;
 	}
 
 	private void setParent(Node parent, PsiClass aClass) {
@@ -259,6 +267,7 @@ public class FacetApplyCodeGenerator extends CodeGenerator {
 				Editor editor = EditorFactory.getInstance().createEditor(doc, project, facetClass.getContainingFile().getFileType(), false);
 				Collection<CandidateInfo> values = OverrideImplementExploreUtil.getMapToOverrideImplement(facetClass, true, false).values();
 				OverrideImplementUtil.overrideOrImplementMethodsInRightPlace(editor, facetClass, Arrays.asList(convertToMethodMembers(values)), false, true);
+				((EditorImpl) editor).release();
 			}
 		}
 	}

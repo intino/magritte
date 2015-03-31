@@ -22,7 +22,7 @@ public class $name extends Tara {
     }
 
     @Override
-    public boolean isTerminal() {
+    public boolean isTerminalLanguage() {
         return $terminal;
     }
 }
@@ -62,7 +62,7 @@ parameter("$name", "$type", $multiple, $position, $extension+quoted[, $annotatio
 endrule
 
 defrule type(allow) type(facet) trigger(allow)
-facet("$value")
+facet("$value")[.require($require...[, ])][.allow($allow...[, ])]
 endrule
 
 defrule trigger(allow)

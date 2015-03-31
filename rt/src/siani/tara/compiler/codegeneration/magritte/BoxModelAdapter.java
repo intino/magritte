@@ -69,8 +69,8 @@ public class BoxModelAdapter implements Adapter<Model> {
 		for (Node node : nodes) {
 			if (node instanceof NodeReference) continue;
 			for (Facet facet : node.getFacets())
-				if (isIntentionInstance(facet.type()))
-					imports.add(InflectorFactory.getInflector(locale).plural(facet.type()));
+				if (isIntentionInstance(facet.getType()))
+					imports.add(InflectorFactory.getInflector(locale).plural(facet.getType()));
 			imports.addAll(searchFacets(node.getIncludedNodes()));
 		}
 		return imports;

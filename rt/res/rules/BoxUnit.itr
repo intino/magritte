@@ -35,6 +35,10 @@ defrule type(Node) trigger(node)
 def($key)[.name("$name")][$nodeType...[]][$facet...[]][$address][$annotation...[]][.$parent][$variable+set...[]\][$include...[]];\
 endrule
 
+defrule trigger(nodeType)
+.type("$value")
+endrule
+
 defrule type(facetapply) trigger(facet)
 .type("$name"[, $apply])
 endrule

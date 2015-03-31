@@ -5,7 +5,6 @@ import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
-import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.Assumption;
@@ -18,15 +17,13 @@ import static siani.tara.compiler.codegeneration.magritte.NameFormatter.composeM
 public class MorphFrameCreator implements TemplateTags {
 
 	private final String project;
-	private final Model model;
 	private final Language language;
 	private final Locale locale;
 	private Node initNode = null;
 	Set<String> imports = new HashSet<>();
 
-	public MorphFrameCreator(String project, Model model, Language language, Locale locale) {
+	public MorphFrameCreator(String project, Language language, Locale locale) {
 		this.project = project;
-		this.model = model;
 		this.language = language;
 		this.locale = locale;
 	}
@@ -45,13 +42,12 @@ public class MorphFrameCreator implements TemplateTags {
 		String packagePath = addPackage(facetTarget, frame);
 		createFacetTargetMorph(frame, facetTarget);
 		addImports(frame);
-		return new AbstractMap.SimpleEntry<>(packagePath + DOT + facetTarget.getTarget() +
-			((Node) facetTarget.getContainer()).getName(), frame);
+		return new AbstractMap.SimpleEntry<>(packagePath + DOT + facetTarget.getTargetNode().getName(), frame);
 	}
 
 	private void createFacetTargetMorph(Frame frame, FacetTarget node) {
 		FrameBuilder builder = new FrameBuilder();
-		builder.register(NodeImpl.class, new MorphFacetTargetAdapter(project, language, imports, locale));
+		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(project, language, imports, locale));
 		frame.addFrame("node", builder.build(node));
 	}
 
