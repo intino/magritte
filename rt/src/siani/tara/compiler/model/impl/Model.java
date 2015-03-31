@@ -3,12 +3,14 @@ package siani.tara.compiler.model.impl;
 import siani.tara.compiler.model.*;
 
 import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
 
 public class Model extends Element implements Node {
 
 	private String name;
 	private String file;
 	private String language;
+	private Map<String, List<SimpleEntry<String, String>>> metrics = new HashMap<>();
 	private boolean terminal;
 	private List<Node> includes = new ArrayList<>();
 
@@ -48,6 +50,15 @@ public class Model extends Element implements Node {
 	@Override
 	public String getDoc() {
 		return null;
+	}
+
+	@Override
+	public void setDoc(String doc) {
+
+	}
+
+	public void addMetrics(Map<String, List<SimpleEntry<String, String>>> metrics) {
+		this.metrics.putAll(metrics);
 	}
 
 	@Override

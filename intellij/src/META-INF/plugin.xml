@@ -121,6 +121,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.NodeAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.DSLDeclarationAnnotator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.MeasureVariableAnnotator"/>
 
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraNodeCompletionContributor"/>

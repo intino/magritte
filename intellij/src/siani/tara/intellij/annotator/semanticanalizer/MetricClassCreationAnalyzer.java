@@ -8,8 +8,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.annotator.TaraAnnotator;
 import siani.tara.intellij.annotator.fix.CreateMeasureClassIntention;
+import siani.tara.intellij.lang.psi.MeasureType;
 import siani.tara.intellij.lang.psi.TaraAttributeType;
-import siani.tara.intellij.lang.psi.TaraMeasureType;
 import siani.tara.intellij.lang.psi.Variable;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
@@ -25,17 +25,17 @@ import java.net.URLClassLoader;
 import java.util.*;
 
 import static java.io.File.separator;
-import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.WARNING;
+import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 
-public class MeasureAttributeAnalyzer extends TaraAnalyzer {
+public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 
-	private static final Logger LOG = Logger.getInstance(MeasureAttributeAnalyzer.class.getName());
+	private static final Logger LOG = Logger.getInstance(MetricClassCreationAnalyzer.class.getName());
 
 	private final String metricsPackage;
-	private final TaraMeasureType measure;
+	private final MeasureType measure;
 	private final TaraAttributeType attribute;
 
-	public MeasureAttributeAnalyzer(TaraAttributeType measure) {
+	public MetricClassCreationAnalyzer(TaraAttributeType measure) {
 		this.measure = measure.getMeasureType();
 		this.attribute = measure;
 		metricsPackage = measure.getProject().getName() + "." + "metrics";
@@ -45,14 +45,14 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 	public void analyze() {
 		if (!Variable.class.isInstance(attribute.getParent())) return;
 		Module module = getModule();
-		String measureName = measure.getText();
+		String measureName = measure.getFormmatedName();
 		File metricClassFile = getClassFile(module, measureName);
 		Map.Entry<Long, Class<?>> savedClass = Metrics.getInstance().get(measureName);
 		File javaFile = findJavaFile(module, measureName);
 		if (savedClass == null || !metricClassFile.exists() || isOld(savedClass.getKey(), javaFile)) {
 			if (!javaFile.exists()) error();
 			else {
-				if ((savedClass == null && !metricClassFile.exists()) || (savedClass != null && isOld(savedClass.getKey(), javaFile)))
+				if ((savedClass == null && !metricClassFile.exists()) || (savedClass != null && isOld(savedClass.getKey(), javaFile)) || loadCompiledMetricClass(module, measureName) == null)
 					compile(module, javaFile);
 				Class<?> metricValue = loadCompiledMetricClass(module, measureName);
 				if (metricValue != null) Metrics.getInstance().add(metricValue, metricClassFile.lastModified());
@@ -71,7 +71,7 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 			StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
 			Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromStrings(Arrays.asList(file.getAbsolutePath()));
-			Iterable<String> options = Arrays.asList("-d", getDestiny(module), "-classpath", getClassPath(module));
+			Iterable<String> options = Arrays.asList("-d", getDestiny(module), "-target", "1.7", "-classpath", getClassPath(module));
 			JavaCompiler.CompilationTask task = compiler.getTask(new PrintWriter(System.err), fileManager, diagnostics, options, null, compilationUnits);
 			task.call();
 			fileManager.close();
@@ -99,13 +99,15 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 		return classpath.trim();
 	}
 
+	@NotNull
 	private File getJdkHome(Module module) {
 		return new File(ModuleRootManager.getInstance(module).getSdk().getHomePath() + separator + "lib");
 	}
 
+	@NotNull
 	private File getClassFile(Module module, String measureName) {
 		File outDir = getOutDir(module);
-		if (outDir == null) return null;
+		if (outDir == null) return new File("");
 		return new File(outDir, (metricsPackage.toLowerCase() + "." + measureName).replace(".", separator) + ".class");
 	}
 
@@ -124,7 +126,7 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 	private Class<?> loadCompiledMetricClass(@NotNull Module module, String className) {
 		try {
 			return loadClass(getOutDir(module).getAbsolutePath(), getJdkHome(module), metricsPackage.toLowerCase() + "." + className);
-		} catch (Exception e) {
+		} catch (Exception | UnsupportedClassVersionError e) {
 			LOG.error(e.getMessage(), e);
 			return null;
 		}
@@ -143,8 +145,8 @@ public class MeasureAttributeAnalyzer extends TaraAnalyzer {
 
 	private void error() {
 		results.put(measure,
-			new TaraAnnotator.AnnotateAndFix(WARNING, "Metric Not Found. Create and Compile it.",
-				new CreateMeasureClassIntention(measure.getText(), metricsPackage.toLowerCase())));
+			new TaraAnnotator.AnnotateAndFix(ERROR, "Metric Not Found. Create and Compile it.",
+				new CreateMeasureClassIntention(measure.getFormmatedName(), metricsPackage.toLowerCase())));
 	}
 
 	private Module getModule() {

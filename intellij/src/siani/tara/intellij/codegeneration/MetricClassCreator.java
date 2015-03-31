@@ -17,4 +17,5 @@ public class MetricClassCreator {
 		if (destiny.findFile(className + ".java") != null) return;
 		JavaDirectoryService.getInstance().createClass(destiny, className, "MetricClass", false);
 	}
+
 }

@@ -31,4 +31,9 @@ public interface NodeContainer {
 	void setContainer(NodeContainer container);
 
 	String getQualifiedName();
+
+	String getDoc();
+
+	void setDoc(String doc);
+
 }

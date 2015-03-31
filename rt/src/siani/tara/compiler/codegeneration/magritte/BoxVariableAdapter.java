@@ -103,7 +103,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 	}
 
 	private String resolveMetric(String metric) {
-//		//TODO return correct reference to metric from the metricValue
+		//TODO return correct reference to metric from the metricValue
 //		Map<String, List<SimpleEntry<String, String>>> metrics = model.getMetrics();
 //		for (Map.Entry<String, List<SimpleEntry<String, String>>> stringListEntry : metrics.entrySet())
 //			for (SimpleEntry<String, String> metricValue : stringListEntry.getValue())

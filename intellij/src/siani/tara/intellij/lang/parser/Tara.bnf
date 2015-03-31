@@ -123,6 +123,7 @@ attributeType ::= COLON measureType
 {pin=1}
 measureType     ::= MEASURE_VALUE_KEY | IDENTIFIER_KEY {
 	implements = 'siani.tara.intellij.lang.psi.MeasureType'
+	mixin = 'siani.tara.intellij.lang.psi.impl.MeasureTypeMixin'
 }
 
 value ::= identifierReference+

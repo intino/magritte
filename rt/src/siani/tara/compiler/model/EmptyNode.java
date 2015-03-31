@@ -31,6 +31,11 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public void setDoc(String doc) {
+
+	}
+
+	@Override
 	public boolean isSub() {
 		return false;
 	}

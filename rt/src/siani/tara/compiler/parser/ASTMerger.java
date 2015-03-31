@@ -26,7 +26,7 @@ public class ASTMerger {
 			model.addIncludedNodes(includedNodes.toArray(new Node[includedNodes.size()]));
 		}
 		for (Node node : model.getIncludedNodes()) node.setContainer(model);
-//		model.addMetrics(MetricsLoader.loadMetrics(conf));
+		model.addMetrics(MetricsLoader.loadMetrics(conf));
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");
 		return model;
 	}

@@ -89,15 +89,17 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 		final CompilerModuleExtension compilerModuleExtension = rootModel.getModuleExtension(CompilerModuleExtension.class);
 		compilerModuleExtension.setExcludeOutput(true);
 		rootModel.inheritSdk();
-		ContentEntry contentEntry = doAddContentEntry(rootModel);addContentEntries(contentEntry);
+		ContentEntry contentEntry = doAddContentEntry(rootModel);
+		addContentEntries(contentEntry);
 		setOutputPath(compilerModuleExtension);
 		updateLibraries(rootModel);
 		addParentDependency(rootModel);
 		persistTempConf();
-//		createFirstFile(rootModel);
+		createFirstFile(rootModel);
 	}
 
 	private void createFirstFile(ModifiableRootModel rootModel) {
+		if (!rootModel.getProject().isInitialized()) return;
 		String module = rootModel.getModule().getName();
 		String[] list = new String[]{"MODULE_NAME", module, "PARENT_MODULE_NAME", parentLanguage};
 		String name = generatedLanguage.isEmpty() ? "Main" : generatedLanguage;

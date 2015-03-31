@@ -86,6 +86,11 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
+	public void setDoc(String doc) {
+		this.doc = doc;
+	}
+
+	@Override
 	public boolean isSub() {
 		return false;
 	}

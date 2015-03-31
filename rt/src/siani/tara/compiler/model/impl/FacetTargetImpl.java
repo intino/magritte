@@ -8,11 +8,12 @@ public class FacetTargetImpl extends Element implements FacetTarget {
 
 	private String file;
 	private int line;
-	String destiny;
-	Node targetNode;
-	NodeContainer container;
-	List<Node> includes = new ArrayList<>();
-	List<Variable> variables = new ArrayList<>();
+	private String doc;
+	private String destiny;
+	private Node targetNode;
+	private NodeContainer container;
+	private List<Node> includes = new ArrayList<>();
+	private List<Variable> variables = new ArrayList<>();
 
 	@Override
 	public String getTarget() {
@@ -104,6 +105,16 @@ public class FacetTargetImpl extends Element implements FacetTarget {
 	@Override
 	public String getQualifiedName() {
 		return "";
+	}
+
+	@Override
+	public String getDoc() {
+		return doc;
+	}
+
+	@Override
+	public void setDoc(String doc) {
+		this.doc = doc;
 	}
 
 	@Override

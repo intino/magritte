@@ -12,6 +12,7 @@ public class FacetImpl extends Element implements Facet {
 	private NodeContainer container;
 	private List<Node> includes = new ArrayList<>();
 	private String facet;
+	private String doc;
 
 	public FacetImpl(String facet) {
 		this.facet = facet;
@@ -89,6 +90,16 @@ public class FacetImpl extends Element implements Facet {
 	@Override
 	public String getQualifiedName() {
 		return "";
+	}
+
+	@Override
+	public String getDoc() {
+		return doc;
+	}
+
+	@Override
+	public void setDoc(String doc) {
+		this.doc = doc;
 	}
 
 	@Override

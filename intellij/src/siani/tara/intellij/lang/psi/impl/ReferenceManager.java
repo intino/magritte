@@ -265,9 +265,9 @@ public class ReferenceManager {
 		return resolve(importIdentifiers.get(importIdentifiers.size() - 1));
 	}
 
-	public static PsiElement resolveMeasure(MeasureType element) {
-		Project project = element.getProject();
-		String path = project.getName().toLowerCase() + "." + "metrics" + "." + element.getText();
+	public static PsiElement resolveMeasure(MeasureType measureType) {
+		Project project = measureType.getProject();
+		String path = project.getName().toLowerCase() + "." + "metrics" + "." + measureType.getFormmatedName();
 		return resolveJavaClassReference(project, path);
 	}
 }
