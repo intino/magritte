@@ -5,22 +5,22 @@ import com.intellij.lang.Commenter;
 public class TaraCommenter implements Commenter {
 
 	public String getLineCommentPrefix() {
-		return "#";
+		return "//";
 	}
 
 	public String getBlockCommentPrefix() {
-		return null;
+		return "/*";
 	}
 
 	public String getBlockCommentSuffix() {
-		return "";
+		return "*/";
 	}
 
 	public String getCommentedBlockCommentPrefix() {
-		return null;
+		return "/*";
 	}
 
 	public String getCommentedBlockCommentSuffix() {
-		return null;
+		return "*/";
 	}
 }

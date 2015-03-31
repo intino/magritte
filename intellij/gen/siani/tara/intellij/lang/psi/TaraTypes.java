@@ -59,6 +59,7 @@ public interface TaraTypes {
 	IElementType CHARACTER = new TaraTokenType("CHARACTER");
 	IElementType COLON = new TaraTokenType("COLON");
 	IElementType COMMA = new TaraTokenType("COMMA");
+	IElementType COMMENT = new TaraTokenType("COMMENT");
 	IElementType COMPONENT = new TaraTokenType("COMPONENT");
 	IElementType DATE_TYPE = new TaraTokenType("DATE_TYPE");
 	IElementType DEDENT = new TaraTokenType("DEDENT");

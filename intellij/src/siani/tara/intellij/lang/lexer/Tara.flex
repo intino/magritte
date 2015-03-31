@@ -79,7 +79,7 @@ import java.util.Queue;
 
 SP                  = ([ ]+ | [\t]+)
 SPACES              = {SP}+
-NEWLINE             = [\n]+ ([ ] | [\t])*
+NEWLINE             = [\r|\n|\r\n]+ ([ ] | [\t])*
 INLINE              = ">"
 
 
@@ -157,6 +157,14 @@ DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOT}?
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
 MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 
+COMMENT = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
+
+TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
+LineTerminator      = \r|\n|\r\n
+EndOfLineComment     = "//" [^\n]*
+DocumentationComment = "/**" {CommentContent} "*"+ "/"
+CommentContent       = ( [^*] | \*+ [^/*] )*
+
 DOC_LINE            = "doc" ~[\n]
 PLUS                = "+"
 DIGIT               = [:digit:]
@@ -167,7 +175,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 %%
 <YYINITIAL> {
-
+	{COMMENT}                       {  System.out.println(yytext()); }
+	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 	{METAIDENTIFIER}                {   return TaraTypes.METAIDENTIFIER_KEY; }
 	{USE}                           {   return TaraTypes.USE; }
 	{DSL}                           {   return TaraTypes.DSL; }
@@ -204,7 +213,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{READONLY}                      {   return TaraTypes.READONLY; }
     {ROOT}                          {   return TaraTypes.ROOT; }
 
-	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
 	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
 
@@ -258,9 +266,9 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
     \\r                             { return TaraTypes.CHARACTER; }
     \\\"                            { return TaraTypes.CHARACTER; }
     \\                              { return TaraTypes.CHARACTER; }
-    [^]                                   { return TokenType.BAD_CHARACTER;}
-    .                                   { return TokenType.BAD_CHARACTER;}
+    [^]                             { return TokenType.BAD_CHARACTER;}
+    .                               { return TokenType.BAD_CHARACTER;}
 }
 
-[^]                                   { return TokenType.BAD_CHARACTER;}
+[^]                                 { return TokenType.BAD_CHARACTER;}
 .                                   { return TokenType.BAD_CHARACTER;}

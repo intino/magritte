@@ -3,6 +3,7 @@ package siani.tara.intellij.highlighting;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
+import com.intellij.openapi.editor.SyntaxHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.EffectType;
 import com.intellij.openapi.editor.markup.TextAttributes;
@@ -41,6 +42,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER");
 	public static final TextAttributesKey ANNOTATION_ERROR = createTextAttributesKey("ANNOTATION_ERROR", errorTextAttributes());
 	public static final TextAttributesKey UNRESOLVED_ACCESS = createTextAttributesKey("UNRESOLVED_ACCESS", errorTextAttributes());
+	public static final TextAttributesKey LINE_COMMENT = createTextAttributesKey("TARA_COMMENT", SyntaxHighlighterColors.LINE_COMMENT);
 
 	public static final TextAttributesKey WARNING = createTextAttributesKey("WARNING",
 		new TextAttributes(null, null, JBColor.YELLOW, EffectType.WAVE_UNDERSCORE, Font.PLAIN));
@@ -101,6 +103,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(CASE, ANNOTATION);
 		KEYS.put(READONLY, ANNOTATION);
 		KEYS.put(NEW_LINE_INDENT, KEYWORD);
+		KEYS.put(COMMENT, LINE_COMMENT);
 
 		KEYS.put(NAMED, ANNOTATION);
 		KEYS.put(RESOURCE_KEY, PRIMITIVE);

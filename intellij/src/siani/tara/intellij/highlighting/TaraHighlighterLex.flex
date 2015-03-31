@@ -126,11 +126,18 @@ NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
 NOT_CIENTIFICA      = "E" ({PLUS} | {DASH})? {DIGIT}+
 DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {NOT_CIENTIFICA}?
-STRING_VALUE_KEY    = {QUOTE} ~ {QUOTE}
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
 ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
 MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 DOC_LINE            = "doc" ~[\n]
+
+COMMENT = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
+
+TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
+LineTerminator      = \r|\n|\r\n
+EndOfLineComment     = "//" [^\n]* {LineTerminator}
+DocumentationComment = "/**" {CommentContent} "*"+ "/"
+CommentContent       = ( [^*] | \*+ [^/*] )*
 
 DIGIT               = [:digit:]
 IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
@@ -139,13 +146,12 @@ SP                  = ([ ]+ | [\t]+) | ">"
 SPACES              = {SP}+
 NEWLINE             = [\n]+
 
-ANY=.|\n|\"
 
 %xstate QUOTED
 
 %%
 <YYINITIAL> {
-
+	{COMMENT}                       {   return TaraTypes.COMMENT;}
 	{CONCEPT}                       {   return TaraTypes.METAIDENTIFIER_KEY; }
 
 	{DSL}                           {   loadHeritage();  return TaraTypes.DSL; }
@@ -185,6 +191,7 @@ ANY=.|\n|\"
 
 	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
+	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
 	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
 	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
 	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }

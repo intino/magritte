@@ -258,7 +258,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (NEW_LINE_INDENT | INLINE) (nodeConstituents NEWLINE+)+ DEDENT
+  // (NEW_LINE_INDENT NEWLINE?| INLINE) (nodeConstituents NEWLINE+)+ DEDENT
   public static boolean body(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "body")) return false;
     if (!nextTokenIs(b, "<body>", INLINE, NEW_LINE_INDENT)) return false;
@@ -272,15 +272,33 @@ public class TaraParser implements PsiParser {
     return r || p;
   }
 
-  // NEW_LINE_INDENT | INLINE
+  // NEW_LINE_INDENT NEWLINE?| INLINE
   private static boolean body_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "body_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, NEW_LINE_INDENT);
+    r = body_0_0(b, l + 1);
     if (!r) r = consumeToken(b, INLINE);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // NEW_LINE_INDENT NEWLINE?
+  private static boolean body_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "body_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, NEW_LINE_INDENT);
+    r = r && body_0_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // NEWLINE?
+  private static boolean body_0_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "body_0_0_1")) return false;
+    consumeToken(b, NEWLINE);
+    return true;
   }
 
   // (nodeConstituents NEWLINE+)+
@@ -911,7 +929,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // NEWLINE* dslDeclaration? imports? (node NEWLINE+)*
+  // COMMENT? NEWLINE* dslDeclaration? imports? (node NEWLINE+)*
   static boolean root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root")) return false;
     boolean r;
@@ -920,69 +938,77 @@ public class TaraParser implements PsiParser {
     r = r && root_1(b, l + 1);
     r = r && root_2(b, l + 1);
     r = r && root_3(b, l + 1);
+    r = r && root_4(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // NEWLINE*
+  // COMMENT?
   private static boolean root_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_0")) return false;
+    consumeToken(b, COMMENT);
+    return true;
+  }
+
+  // NEWLINE*
+  private static boolean root_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_1")) return false;
     int c = current_position_(b);
     while (true) {
       if (!consumeToken(b, NEWLINE)) break;
-      if (!empty_element_parsed_guard_(b, "root_0", c)) break;
+      if (!empty_element_parsed_guard_(b, "root_1", c)) break;
       c = current_position_(b);
     }
     return true;
   }
 
   // dslDeclaration?
-  private static boolean root_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_1")) return false;
+  private static boolean root_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_2")) return false;
     dslDeclaration(b, l + 1);
     return true;
   }
 
   // imports?
-  private static boolean root_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_2")) return false;
+  private static boolean root_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_3")) return false;
     imports(b, l + 1);
     return true;
   }
 
   // (node NEWLINE+)*
-  private static boolean root_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_3")) return false;
+  private static boolean root_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_4")) return false;
     int c = current_position_(b);
     while (true) {
-      if (!root_3_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "root_3", c)) break;
+      if (!root_4_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "root_4", c)) break;
       c = current_position_(b);
     }
     return true;
   }
 
   // node NEWLINE+
-  private static boolean root_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_3_0")) return false;
+  private static boolean root_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_4_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = node(b, l + 1);
-    r = r && root_3_0_1(b, l + 1);
+    r = r && root_4_0_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // NEWLINE+
-  private static boolean root_3_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_3_0_1")) return false;
+  private static boolean root_4_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_4_0_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, NEWLINE);
     int c = current_position_(b);
     while (r) {
       if (!consumeToken(b, NEWLINE)) break;
-      if (!empty_element_parsed_guard_(b, "root_3_0_1", c)) break;
+      if (!empty_element_parsed_guard_(b, "root_4_0_1", c)) break;
       c = current_position_(b);
     }
     exit_section_(b, m, null, r);
