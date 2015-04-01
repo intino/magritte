@@ -145,4 +145,9 @@ public class FacetImpl extends Element implements Facet {
 	public void setLine(int line) {
 		this.line = line;
 	}
+
+	@Override
+	public String toString() {
+		return getType();
+	}
 }

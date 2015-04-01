@@ -19,7 +19,7 @@ import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
 import java.awt.event.MouseEvent;
 
-public abstract class IntentionLineMarker extends JavaLineMarkerProvider {
+public abstract class Intention extends JavaLineMarkerProvider {
 
 	protected static final String DOT = ".";
 
@@ -37,7 +37,7 @@ public abstract class IntentionLineMarker extends JavaLineMarkerProvider {
 		}
 	}, getNavigator());
 
-	public IntentionLineMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+	public Intention(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
 

@@ -66,7 +66,7 @@ public class TaraPsiImplUtil {
 
 	private static void removeAggregatedAndAssociated(List<Node> inner) {
 		List<Node> list = new ArrayList();
-		for (Node node : inner) if (node.isAggregated()|| node.isAnnotatedAsAssociated()) list.add(node);
+		for (Node node : inner) if (node.isAnnotatedAsAggregated() || node.isAnnotatedAsAssociated()) list.add(node);
 		inner.removeAll(list);
 
 	}
@@ -103,7 +103,6 @@ public class TaraPsiImplUtil {
 			return null;
 		}
 	}
-
 
 	@NotNull
 	public static Collection<TaraFacetTarget> getFacetTargets(Node node) {

@@ -17,15 +17,14 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.Node;
-import siani.tara.intellij.lang.psi.Variable;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
-public class TaraOverridenVariableLineMarker extends JavaLineMarkerProvider {
+public class TaraOverriddenNode extends JavaLineMarkerProvider {
 
-	public TaraOverridenVariableLineMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+	public TaraOverriddenNode(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
 
@@ -34,9 +33,9 @@ public class TaraOverridenVariableLineMarker extends JavaLineMarkerProvider {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
-			if (!Variable.class.isInstance(element)) return null;
-			PsiElement reference = getOverridenVariable((Variable) element);
-			String start = "Variable overried in ";
+			if (!Node.class.isInstance(element)) return null;
+			PsiElement reference = getOverriddenNode((Node) element);
+			String start = "Node overridden in ";
 			@NonNls String pattern;
 			if (reference == null) return null;
 			pattern = reference.getNavigationElement().getContainingFile().getName();
@@ -45,25 +44,25 @@ public class TaraOverridenVariableLineMarker extends JavaLineMarkerProvider {
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {
-			if (!Variable.class.isInstance(element)) return;
+			if (!Node.class.isInstance(element)) return;
 			if (DumbService.isDumb(element.getProject())) {
 				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
 				return;
 			}
-			NavigatablePsiElement reference = (NavigatablePsiElement) getOverridenVariable((Variable) element);
+			NavigatablePsiElement reference = (NavigatablePsiElement) getOverriddenNode((Node) element);
 			if (reference == null) return;
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
-			PsiElementListNavigator.openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overrided Variable of " + (reference.getName()), renderer);
+			PsiElementListNavigator.openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overridden node of " + (reference.getName()), renderer);
 		}
 	}
 	);
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!Variable.class.isInstance(element)) return super.getLineMarkerInfo(element);
-		Variable variable = (Variable) element;
-		if (getOverridenVariable(variable) != null) {
+		if (!Node.class.isInstance(element)) return super.getLineMarkerInfo(element);
+		Node node = (Node) element;
+		if (isOverridden(node)) {
 			final Icon icon = AllIcons.Gutter.OverridenMethod;
 			final MarkerType type = markerType;
 			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
@@ -71,20 +70,24 @@ public class TaraOverridenVariableLineMarker extends JavaLineMarkerProvider {
 		} else return super.getLineMarkerInfo(element);
 	}
 
-	private Variable getOverridenVariable(Variable variable) {
-		Node node = TaraPsiImplUtil.getContainerNodeOf(variable);
+	private Node getOverriddenNode(Node inner) {
+		Node node = TaraPsiImplUtil.getContainerNodeOf(inner);
 		if (node == null) return null;
 		Node parent = node.getParentNode();
 		while (parent != null) {
-			for (Variable parentVar : parent.getVariables())
-				if (isOverriden(variable, parentVar))
+			for (Node parentVar : parent.getInnerNodes())
+				if (isOverridden(inner, parentVar))
 					return parentVar;
 			parent = parent.getParentNode();
 		}
 		return null;
 	}
 
-	private boolean isOverriden(Variable variable, Variable parentVar) {
-		return parentVar.getType().equals(variable.getType()) && parentVar.getName() != null && parentVar.getName().equals(variable.getName());
+	private boolean isOverridden(Node node) {
+		return getOverriddenNode(node) != null;
+	}
+
+	private boolean isOverridden(Node node, Node parentNode) {
+		return parentNode.getType().equals(node.getType()) && parentNode.getName() != null && parentNode.getName().equals(node.getName());
 	}
 }

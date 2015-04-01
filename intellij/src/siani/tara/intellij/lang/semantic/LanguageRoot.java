@@ -32,7 +32,6 @@ public class LanguageRoot implements Node {
 
 	@Override
 	public void type(String type) {
-
 	}
 
 	@Override
@@ -96,6 +95,11 @@ public class LanguageRoot implements Node {
 	@Override
 	public Node[] includes() {
 		return wrap(model.getRootNodes());
+	}
+
+	@Override
+	public Variable[] variables() {
+		return new Variable[0];
 	}
 
 	private Node[] wrap(Collection<siani.tara.intellij.lang.psi.Node> nodes) {

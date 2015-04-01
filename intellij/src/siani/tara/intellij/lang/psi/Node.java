@@ -54,6 +54,8 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isComponent();
 
+	boolean isEnclosed();
+
 	boolean isIntentionInstance();
 
 	boolean isFacetInstance();

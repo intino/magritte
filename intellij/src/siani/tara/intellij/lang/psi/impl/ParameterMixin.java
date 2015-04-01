@@ -45,7 +45,8 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public Object[] getValues() {
-		return ((Parameter) this).getValue().getValues();
+		Value value = ((Parameter) this).getValue();
+		return value == null ? new Object[0] : value.getValues();
 	}
 
 	public TaraFacetApply isInFacet() {

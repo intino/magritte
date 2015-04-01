@@ -4,6 +4,7 @@ import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
+import siani.tara.semantic.model.Variable;
 
 import java.util.*;
 
@@ -11,16 +12,25 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	private final NodeImpl node;
 	private siani.tara.semantic.model.FacetTarget[] facetTargets;
+	private List<Variable> variables;
 	private List<siani.tara.semantic.model.Node> includes = new ArrayList<>();
 
 	public LanguageNode(NodeImpl node) {
 		this.node = node;
 		if (node == null) return;
-		this.facetTargets = buildFacetTargets(node.getFacetTargets());
+		this.facetTargets = collectFacetTargets(node.getFacetTargets());
+		this.variables = collectVariables(node.getVariables());
 		for (Node inner : node.getIncludedNodes())
 			includes.add(inner instanceof NodeReference ?
 				new LanguageNodeReference((NodeReference) inner) :
 				new LanguageNode((NodeImpl) inner));
+	}
+
+	private List<Variable> collectVariables(Collection<siani.tara.compiler.model.Variable> variables) {
+		List<siani.tara.semantic.model.Variable> semanticVariables = new ArrayList<>();
+		for (final siani.tara.compiler.model.Variable variable : variables)
+			semanticVariables.add(new LanguageVariable(variable));
+		return semanticVariables;
 	}
 
 	@Override
@@ -138,8 +148,13 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 		return includes.toArray(new siani.tara.semantic.model.Node[includes.size()]);
 	}
 
+	@Override
+	public siani.tara.semantic.model.Variable[] variables() {
+		return variables.toArray(new Variable[variables.size()]);
+	}
 
-	private siani.tara.semantic.model.FacetTarget[] buildFacetTargets(Collection<FacetTarget> facetTargets) {
+
+	private siani.tara.semantic.model.FacetTarget[] collectFacetTargets(Collection<FacetTarget> facetTargets) {
 		List<siani.tara.semantic.model.FacetTarget> targets = new ArrayList<>();
 		for (final FacetTarget target : facetTargets)
 			targets.add(new LanguageFacetTarget(target));

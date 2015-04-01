@@ -54,7 +54,7 @@ public class BoxModelAdapter implements Adapter<Model> {
 	}
 
 	private void addMetricImports(Frame frame) {
-//		for (String metric : boxModel.getMetrics().keySet())
+//		for (String metric : language.getMetrics().keySet())TODO
 //			frame.addFrame("importMetric", IMPORT + " " + STATIC + " " + project.toLowerCase() + DOT + METRICS + DOT + metric + DOT + STAR + SEMICOLON);
 	}
 

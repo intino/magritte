@@ -81,7 +81,7 @@ public class TaraUtil {
 	public static Collection<Assumption> getAssumptionsOf(Node node) {
 		Language language = getLanguage(node);
 		if (language == null) return null;
-		return language.assumptions(node.resolve().getFullType());
+		return language.assumptions(node.getFullType() != null ? node.getFullType() : node.resolve().getFullType());
 	}
 
 	private static void extractNodesByName(String identifier, List<Node> result, Collection<Node> nodes) {

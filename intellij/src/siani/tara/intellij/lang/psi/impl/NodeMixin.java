@@ -245,6 +245,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return is(COMPONENT);
 	}
 
+	public boolean isEnclosed() {
+		return is(ENCLOSED);
+	}
+
 	public boolean isProperty() {
 		return is(PROPERTY);
 	}
@@ -317,7 +321,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public Node container() {
-		if (isAggregated()) return null;
+		if (isAnnotatedAsAggregated()) return null;//TODO
 		if (isSub()) {
 			Node rootOfSub = containerOfSub((Node) this);
 			return rootOfSub == null ? null : rootOfSub;

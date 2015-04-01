@@ -16,17 +16,15 @@ import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.psi.MeasureType;
-import siani.tara.intellij.lang.psi.TaraMeasureType;
+import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
-import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveMeasure;
+public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
 
-public class TaraMetricLineMarker extends JavaLineMarkerProvider {
-
-	public TaraMetricLineMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+	public TaraFacetOverriddenNode(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
 
@@ -35,9 +33,9 @@ public class TaraMetricLineMarker extends JavaLineMarkerProvider {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
-			if (!MeasureType.class.isInstance(element)) return null;
-			PsiElement reference = resolveMeasure((MeasureType) element);
-			String start = "Metric declared in ";
+			if (!Node.class.isInstance(element)) return null;
+			PsiElement reference = getOverriddenNode((Node) element);
+			String start = "Node overridden by facet in ";
 			@NonNls String pattern;
 			if (reference == null) return null;
 			pattern = reference.getNavigationElement().getContainingFile().getName();
@@ -46,30 +44,47 @@ public class TaraMetricLineMarker extends JavaLineMarkerProvider {
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {
-			if (!(element instanceof TaraMeasureType)) return;
+			if (!Node.class.isInstance(element)) return;
 			if (DumbService.isDumb(element.getProject())) {
 				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
 				return;
 			}
-			NavigatablePsiElement reference = (NavigatablePsiElement) resolveMeasure((MeasureType) element);
+			NavigatablePsiElement reference = (NavigatablePsiElement) getOverriddenNode((Node) element);
 			if (reference == null) return;
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
-			PsiElementListNavigator.openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overriding Methods of " + (reference.getName()), renderer);
+			PsiElementListNavigator.openTargets(e, new NavigatablePsiElement[]{reference}, title, "Overridden Node of " + (reference.getName()), renderer);
 		}
 	}
 	);
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!(element instanceof MeasureType)) return super.getLineMarkerInfo(element);
-		MeasureType measureType = (MeasureType) element;
-		PsiElement reference = resolveMeasure(measureType);
-		if (reference != null) {
-			final Icon icon = AllIcons.Gutter.ImplementedMethod;
+		if (!Node.class.isInstance(element) || !(TaraPsiImplUtil.getContextOf(element) instanceof FacetApply))
+			return super.getLineMarkerInfo(element);
+		Node node = (Node) element;
+		if (isOverridden(node)) {
+			final Icon icon = AllIcons.Gutter.OverridenMethod;
 			final MarkerType type = markerType;
 			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
 				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
+	}
+
+	private Node getOverriddenNode(Node inner) {
+		Node container = TaraPsiImplUtil.getContainerNodeOf(inner);
+		if (container == null) return null;
+		for (Node containerNode : container.getInnerNodes())
+			if (isOverridden(inner, containerNode))
+				return containerNode;
+		return null;
+	}
+
+	private boolean isOverridden(Node node) {
+		return getOverriddenNode(node) != null;
+	}
+
+	private boolean isOverridden(Node node, Node parentNode) {
+		return parentNode.getType().equals(node.getType()) && ((parentNode.getName() == null && node.getName() == null) || (parentNode.getName() != null && parentNode.getName().equals(node.getName())));
 	}
 }
