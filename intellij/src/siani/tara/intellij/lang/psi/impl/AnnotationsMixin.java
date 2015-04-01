@@ -15,7 +15,7 @@ public class AnnotationsMixin extends ASTWrapperPsiElement {
 	}
 
 
-	public String[] getAnnotations() {
+	public String[] asStringArray() {
 		List<String> names = new ArrayList<>();
 		List<TaraAnnotation> annotationList = ((TaraAnnotations) this).getAnnotationList();
 		for (TaraAnnotation taraAnnotation : annotationList)

@@ -6,6 +6,7 @@ import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.Parameter;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.semantic.model.*;
+import siani.tara.semantic.model.Variable;
 
 import java.util.*;
 
@@ -13,12 +14,14 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	private final Node node;
 	private FacetTarget[] facetTargets;
+	private List<Variable> variables;
 	private List<siani.tara.semantic.model.Node> includes = new ArrayList<>();
 
 	public LanguageNode(Node node) {
 		this.node = node;
 		if (node == null) return;
 		this.facetTargets = buildFacetTargets(node.getFacetTargets());
+		this.variables = collectVariables(node.getVariables());
 		for (Node inner : node.getInnerNodes())
 			includes.add(new LanguageNode(inner));
 		for (NodeReference nodeReference : node.getInnerNodeReferences())
@@ -152,6 +155,18 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	@Override
 	public siani.tara.semantic.model.Node[] includes() {
 		return includes.toArray(new siani.tara.semantic.model.Node[includes.size()]);
+	}
+
+	@Override
+	public Variable[] variables() {
+		return variables.toArray(new Variable[variables.size()]);
+	}
+
+	private List<Variable> collectVariables(Collection<siani.tara.intellij.lang.psi.Variable> variables) {
+		List<Variable> semanticVariables = new ArrayList<>();
+		for (final siani.tara.intellij.lang.psi.Variable variable : variables)
+			semanticVariables.add(new LanguageVariable(variable));
+		return semanticVariables;
 	}
 
 	private Long toLong(String address) {

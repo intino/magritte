@@ -82,7 +82,7 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 	@Override
 	public String[] annotations() {
 		TaraAnnotations annotations = nodeReference.getAnnotations();
-		return annotations != null ? annotations.getAnnotations() : new String[0];
+		return annotations != null ? annotations.asStringArray() : new String[0];
 	}
 
 	@Override
@@ -103,6 +103,11 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 	@Override
 	public Parameter[] parameters() {
 		return new Parameter[0];
+	}
+
+	@Override
+	public Variable[] variables() {
+		return new Variable[0];
 	}
 
 	@Override

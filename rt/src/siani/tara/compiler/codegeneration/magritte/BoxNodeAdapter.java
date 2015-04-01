@@ -25,17 +25,17 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	@Override
 	public void adapt(Frame frame, Node node, BuilderContext context) {
 		if (node instanceof NodeImpl) {
-			addNodeInfo(node, frame);
-			addAnnotations(node, frame);
-			addVariables(node, frame, context);
-			addParameters(node, frame, context);
-			addFacetVariables(node, frame, context);
-			addFacetParameters(node, frame, context);
+			structure(node, frame);
+			annotations(node, frame);
+			variables(node, frame, context);
+			facetTargetVariables(node, frame, context);
+			parameters(node, frame, context);
+			facetParameters(node, frame, context);
 			includes(node, frame);
 		}
 	}
 
-	private void addNodeInfo(Node node, Frame newFrame) {
+	private void structure(Node node, Frame newFrame) {
 		newFrame.addFrame(KEY, this.keys.get(node));
 		if (node.getName() != null && !node.isAnonymous())
 			newFrame.addFrame(NAME, clean(node.getQualifiedName()));
@@ -50,51 +50,83 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		newFrame.addFrame(NODE_TYPE, node.getType());
 	}
 
-	private void addAnnotations(final Node node, Frame frame) {
+	private void annotations(final Node node, Frame frame) {
 		if (node.getAnnotations().isEmpty() || node.isCase()) return;
 		frame.addFrame(ANNOTATION, new Frame(ANNOTATION) {{
 			for (Annotation annotation : node.getAnnotations())
-				if (!annotation.isMeta()) addFrame(VALUE, annotation);
+				if (!annotation.isMeta()) addFrame(TemplateTags.VALUE, annotation);
 		}});
 	}
 
-	private void addVariables(Node node, final Frame frame, BuilderContext context) {
+	private void variables(Node node, final Frame frame, BuilderContext context) {
 		for (final Variable variable : node.getVariables())
-			context.buildIn(frame, "variable", variable);
+			context.buildIn(frame, VARIABLE, variable);
 	}
 
-	private void addFacetVariables(Node node, final Frame frame, BuilderContext context) {
+	private void facetTargetVariables(Node node, final Frame frame, BuilderContext context) {
 		for (FacetTarget facetTarget : node.getFacetTargets())
 			for (final Variable variable : facetTarget.getVariables())
-				context.buildIn(frame, "variable", variable);
+				context.buildIn(frame, VARIABLE, variable);
 	}
 
-	private void addParameters(Node node, Frame frame, BuilderContext context) {
+	private void parameters(Node node, Frame frame, BuilderContext context) {
 		for (final Parameter parameter : node.getParameters())
-			context.buildIn(frame, "variable", parameter);
+			if (!isOverriddenByFacets(parameter, node.getFacets()))
+				context.buildIn(frame, VARIABLE, parameter);
 	}
 
-	private void addFacetParameters(Node node, final Frame frame, BuilderContext context) {
+	private boolean isOverriddenByFacets(Parameter parameter, Collection<Facet> facets) {
+		for (Facet facet : facets)
+			for (Parameter facetParameter : facet.getParameters())
+				if (facetParameter.getName().equals(parameter.getName())) return true;
+		return false;
+	}
+
+	private void facetParameters(Node node, final Frame frame, BuilderContext context) {
 		for (Facet facet : node.getFacets())
 			for (final Parameter parameter : facet.getParameters())
-				context.buildIn(frame, "variable", parameter);
+				context.buildIn(frame, VARIABLE, parameter);
 	}
 
 	private void includes(Node node, Frame frame) {
 		for (Node inner : node.getIncludedNodes())
-			if (inner.isAggregated()) addAggregated(frame, inner);
-			else addComponent(frame, inner);
+			if (!isOverriddenByFacets(inner, node.getFacets()))
+				addNode(frame, inner);
+		addFacetNodes(node, frame);
+	}
+
+	private boolean isOverriddenByFacets(Node node, Collection<Facet> facets) {
+		for (Facet facet : facets)
+			for (Node facetNode : facet.getIncludedNodes())
+				if (facetNode.getFullType().equals(node.getFullType()) && hasSameName(node, facetNode))
+					return true;
+		return false;
+	}
+
+	private boolean hasSameName(Node node, Node facetNode) {
+		return (facetNode.getName() == null && node.getName() == null) || (facetNode.getName() != null && facetNode.getName().equals(node.getName()));
+	}
+
+	private void addFacetNodes(Node node, Frame frame) {
+		for (Facet facet : node.getFacets())
+			for (Node inner : facet.getIncludedNodes())
+				addNode(frame, inner);
+	}
+
+	private void addNode(Frame frame, Node inner) {
+		if (inner.isAggregated()) addAggregated(frame, inner);
+		else addComponent(frame, inner);
 	}
 
 
 	private void addAggregated(Frame frame, Node inner) {
 		Long key = inner instanceof NodeReference ? keys.get(((NodeReference) inner).getDestiny()) : keys.get(inner);
 		if (keys.isEmpty()) return;
-		frame.addFrame(INCLUDE, new Frame("aggregated", "include").addFrame("value", key));
+		frame.addFrame(INCLUDE, new Frame(AGGREGATED, "include").addFrame(VALUE, key));
 	}
 
 	private void addComponent(Frame frame, Node inner) {
-		frame.addFrame(INCLUDE, new Frame("composed", "include").addFrame("value", keys.get(inner)));
+		frame.addFrame(INCLUDE, new Frame("composed", "include").addFrame(VALUE, keys.get(inner)));
 	}
 
 	private String clean(String name) {

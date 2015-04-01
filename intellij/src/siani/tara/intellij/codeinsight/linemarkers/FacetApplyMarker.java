@@ -18,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 import org.siani.itrules.formatter.Inflector;
 import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.intellij.MessageProvider;
-import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.FacetApply;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 
@@ -30,7 +30,7 @@ import java.util.List;
 
 import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveJavaClassReference;
 
-public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
+public class FacetApplyMarker extends JavaLineMarkerProvider {
 
 	private static final String FACETS_PATH = "extensions";
 	private static final String DOT = ".";
@@ -85,7 +85,7 @@ public class TaraFacetApplyLineMarker extends JavaLineMarkerProvider {
 	}
 
 
-	public TaraFacetApplyLineMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+	public FacetApplyMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
 

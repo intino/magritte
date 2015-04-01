@@ -12,7 +12,7 @@ import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.util.Collection;
 
-public class JavaIntentionToTaraLineMarker extends RelatedItemLineMarkerProvider {
+public class JavaIntentionToTara extends RelatedItemLineMarkerProvider {
 
 	private static final String INTENTIONS = "intentions";
 	private static final String INTENTION = "Intention";

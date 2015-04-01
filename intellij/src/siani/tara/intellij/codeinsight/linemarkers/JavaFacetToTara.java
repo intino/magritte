@@ -15,7 +15,7 @@ import siani.tara.intellij.project.module.ModuleProvider;
 
 import java.util.Collection;
 
-public class JavaFacetToTaraLineMarker extends RelatedItemLineMarkerProvider {
+public class JavaFacetToTara extends RelatedItemLineMarkerProvider {
 
 	private static final String INTENTION = "Intention";
 

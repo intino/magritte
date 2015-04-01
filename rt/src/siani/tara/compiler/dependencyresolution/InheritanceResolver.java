@@ -76,7 +76,7 @@ public class InheritanceResolver {
 	private List<Node> resolveIncludes(NodeImpl parent, NodeImpl child) {
 		List<Node> nodes = new ArrayList<>();
 		for (Node include : parent.getIncludedNodes()) {
-			if (isOverrided(child, include)) continue;
+			if (isOverridden(child, include)) continue;
 			NodeReference reference = (include instanceof NodeImpl) ? new NodeReference((NodeImpl) include) : new NodeReference(((NodeReference) include).getDestiny());
 			nodes.add(reference);
 			reference.setContainer(child);
@@ -99,12 +99,12 @@ public class InheritanceResolver {
 	private void resolveToChild(NodeImpl parent, NodeImpl child) {
 		List<Variable> variables = new ArrayList<>();
 		for (Variable variable : parent.getVariables())
-			if (!isOverrided(child, variable))
+			if (!isOverridden(child, variable))
 				variables.add(variable);
 		child.addVariables(0, variables.toArray(new Variable[variables.size()]));
 	}
 
-	private boolean isOverrided(NodeContainer child, Node node) {
+	private boolean isOverridden(NodeContainer child, Node node) {
 		for (Node include : child.getIncludedNodes())
 			if (include.getName().equals(node.getName()) && include.getType().equals(node.getType()))
 				return true;
@@ -112,7 +112,7 @@ public class InheritanceResolver {
 	}
 
 
-	private boolean isOverrided(NodeContainer child, Variable variable) {
+	private boolean isOverridden(NodeContainer child, Variable variable) {
 		for (Variable childVar : child.getVariables())
 			if (childVar.getName().equals(variable.getName()) && childVar.getType().equals(variable.getType()))
 				return true;

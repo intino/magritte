@@ -10,5 +10,5 @@ public interface Annotations extends Navigatable, TaraPsiElement {
 	@NotNull
 	<T extends Annotation> List<T> getAnnotationList();
 
-	String[] getAnnotations();
+	String[] asStringArray();
 }

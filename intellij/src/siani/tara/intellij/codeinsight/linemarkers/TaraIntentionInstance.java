@@ -17,15 +17,17 @@ import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
+import siani.tara.semantic.Assumption;
 
 import javax.swing.*;
+import java.util.Collection;
+import java.util.List;
 
-public final class TaraIntentionLineMarker extends IntentionLineMarker {
+public final class TaraIntentionInstance extends Intention {
 
-	private static final String INTENTIONS_PATH = "intentions";
-	private static final String INTENTION = "Intention";
+	private static final String EXTENSIONS = "extensions";
 
-	public TaraIntentionLineMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+	public TaraIntentionInstance(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
 
@@ -42,31 +44,35 @@ public final class TaraIntentionLineMarker extends IntentionLineMarker {
 		return super.getLineMarkerInfo(element);
 	}
 
-	protected boolean canBeMarked(PsiElement element) {
-		return (Node.class.isInstance(element) && ((Node) element).isIntention()) ||
-			TaraFacetTarget.class.isInstance(element) && TaraPsiImplUtil.getContainerNodeOf(element).isIntention();
+	protected final boolean canBeMarked(PsiElement element) {
+		if (!(element instanceof Node) && !(element instanceof TaraFacetTarget)) return false;
+		Node node = element instanceof Node ? (Node) element : TaraPsiImplUtil.getContainerNodeOf(element);
+		Collection<Assumption> assumptions = TaraUtil.getAssumptionsOf(node);
+		if (assumptions == null) return false;
+		for (Assumption assumption : assumptions)
+			if (assumption instanceof Assumption.FacetInstance) return true;
+		return false;
 	}
 
-	protected String buildDestinyClassQN(Node node, Project project) {
-		return project.getName().toLowerCase() + DOT + INTENTIONS_PATH + DOT + node.getName() + INTENTION;
+	protected final String buildDestinyClassQN(Node node, Project project) {
+		return project.getName().toLowerCase() + DOT + EXTENSIONS + DOT + node.getName() + node.getType();
 	}
 
-	protected String getFacetPackage(Node node, Inflector inflector) {
-		return node.getProject().getName().toLowerCase() + DOT + INTENTIONS_PATH + DOT + inflector.plural(node.getName()).toLowerCase();
+	protected final String getFacetPackage(Node node, Inflector inflector) {
+		return node.getProject().getName().toLowerCase() + DOT + EXTENSIONS + DOT +
+			inflector.plural(node.getType()).toLowerCase() + DOT + inflector.plural(node.getName()).toLowerCase();
 	}
 
-	protected String composeClassName(TaraFacetTarget target, String conceptName) {
-		String name = "";
+	protected String composeClassName(TaraFacetTarget target, String intention) {
 		if (target.getIdentifierReference() == null) return "";
-		for (TaraIdentifier identifier : target.getIdentifierReference().getIdentifierList())
-			name += DOT + identifier.getName() + conceptName + INTENTION;
-		return name;
+		List<TaraIdentifier> identifiers = target.getIdentifierReference().getIdentifierList();
+		return DOT + identifiers.get(identifiers.size() - 1).getName() + intention;
 	}
 
 	protected PsiElement resolveExternal(TaraFacetTarget target) {
 		Node node = TaraPsiImplUtil.getContainerNodeOf(target);
 		if (node == null || node.getName() == null) return null;
 		String facetPackage = getFacetPackage(node, TaraUtil.getInflector(ModuleProvider.getModuleOf(target)));
-		return ReferenceManager.resolveJavaClassReference(target.getProject(), facetPackage + composeClassName(target, node.getName()));
+		return ReferenceManager.resolveJavaClassReference(target.getProject(), facetPackage + composeClassName(target, node.getType()));
 	}
 }

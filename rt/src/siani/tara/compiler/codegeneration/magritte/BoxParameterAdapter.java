@@ -17,7 +17,7 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	@Override
 	public void adapt(Frame frame, Parameter parameter, BuilderContext context) {
 		frame.add(getTypes(parameter));
-		frame.addFrame(NAME, buildNme(parameter));
+		frame.addFrame(NAME, buildName(parameter));
 		if (isTerminal(parameter))
 			frame.addFrame(TERMINAL, "!");
 		if (parameter.getInferredType().equals(Primitives.MEASURE)) {
@@ -28,7 +28,7 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 		addParameterValue(frame, parameter);
 	}
 
-	private String buildNme(Parameter parameter) {
+	private String buildName(Parameter parameter) {
 		if (parameter.getOwner() instanceof Facet)
 			return (((Facet) parameter.getOwner()).getType()) + ":" + parameter.getName();
 		else return parameter.getName();
