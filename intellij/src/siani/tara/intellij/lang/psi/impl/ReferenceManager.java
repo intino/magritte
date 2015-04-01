@@ -78,6 +78,7 @@ public class ReferenceManager {
 		if (roots.length == 0) return null;
 		if (roots.length == 1 && path.size() == 1) return roots[0];
 		for (Node possibleRoot : roots) {
+			if (possibleRoot.isEnclosed()) continue;
 			Node node = resolvePathInNode(path, possibleRoot);
 			if (node != null) return node;
 		}
@@ -188,11 +189,14 @@ public class ReferenceManager {
 	private static Node resolvePathInNode(List<Identifier> path, Node node) {
 		Node reference = null;
 		for (Identifier identifier : path) {
-			reference = (reference == null) ? namesAreEqual(identifier, node) ? node : null :
-				TaraUtil.findInner(reference, identifier.getText());
-			if (reference == null) return null;
+			reference = (reference == null) ? namesAreEqual(identifier, node) ? node : null : TaraUtil.findInner(reference, identifier.getText());
+			if (reference == null || (reference.isEnclosed() && !isLast(identifier, path))) return null;
 		}
 		return reference;
+	}
+
+	private static boolean isLast(Identifier identifier, List<Identifier> path) {
+		return path.indexOf(identifier) == path.size() - 1;
 	}
 
 	private static TaraModelImpl resolveBoxPath(Identifier identifier) {
