@@ -21,7 +21,7 @@ public class VariantsManager {
 
 	public void resolveVariants() {
 		addContextVariants((Identifier) myElement);
-		addInBoxVariants();
+		addInModelVariants();
 		addImportVariants();
 
 	}
@@ -34,7 +34,7 @@ public class VariantsManager {
 		while (container != null) {
 			for (Node sibling : container.getNodeSiblings())
 				variants.add(sibling);
-			container = container.getContainer();
+			container = container.container();
 		}
 	}
 
@@ -46,13 +46,13 @@ public class VariantsManager {
 		return identifier.getText().equals(node.getName());
 	}
 
-	private void addInBoxVariants() {
-		TaraModel box = (TaraModel) myElement.getContainingFile();
-		if (box == null) return;
-		for (Node node : box.getNodes())
+	private void addInModelVariants() {
+		TaraModel model = (TaraModel) myElement.getContainingFile();
+		if (model == null) return;
+		for (Node node : model.getRootNodes())
 			if (!node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement)))
 				resolvePathFor(node, context);
-		addAggregatedConcepts(box);
+		addAggregatedConcepts(model);
 	}
 
 	private void addImportVariants() {
@@ -60,7 +60,7 @@ public class VariantsManager {
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
 			if (resolve == null || !TaraModel.class.isInstance(resolve)) continue;
-			for (Node node : ((TaraModel) resolve).getNodes())
+			for (Node node : ((TaraModel) resolve).getRootNodes())
 				if (!node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement)))
 					resolvePathFor(node, context);
 			addAggregatedConcepts((TaraModel) resolve);
@@ -72,8 +72,8 @@ public class VariantsManager {
 		return ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1));
 	}
 
-	private void addAggregatedConcepts(TaraModel box) {
-		for (Node node : TaraUtil.getAllNodesOfFile(box))
+	private void addAggregatedConcepts(TaraModel model) {
+		for (Node node : TaraUtil.getAllNodesOfFile(model))
 			if (!variants.contains(node) && node.isAggregated())
 				resolvePathFor(node, context);
 	}

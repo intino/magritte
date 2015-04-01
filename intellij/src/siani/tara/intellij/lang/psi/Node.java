@@ -2,13 +2,11 @@ package siani.tara.intellij.lang.psi;
 
 import com.intellij.openapi.util.Iconable;
 import com.intellij.pom.Navigatable;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 
-import javax.swing.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,8 +16,6 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	@Nullable
 	String getDocCommentText();
-
-	PsiElement getPsiElement();
 
 	Identifier getIdentifierNode();
 
@@ -38,7 +34,7 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	Collection<Node> getSubNodes();
 
-	Node getContainer();
+	Node container();
 
 	boolean isIntention();
 
@@ -78,36 +74,25 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean contains(String type);
 
-	@Override
-	Icon getIcon(@IconFlags int i);
-
-	PsiElement setName(String newName);
-
 	Node getParentNode();
 
 	@Nullable
 	String getName();
 
-	boolean isAnonymous();
-
 	String getQualifiedName();
-
-	String getMetaQualifiedName();
 
 	@Nullable
 	String getType();
 
 	String getFullType();
 
-	@NotNull
-	Node resolve();
-
 	void setFullType(String type);
 
 	@NotNull
-	Collection<Parameter> getParameterList();
+	Node resolve();
 
-	Parameters getParameters();
+	@NotNull
+	Collection<Parameter> getParameters();
 
 	Collection<Node> getNodeSiblings();
 
@@ -122,9 +107,6 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 	Collection<FacetApply> getFacetApplies();
 
 	Collection<TaraFacetTarget> getFacetTargets();
-
-	@Nullable
-	String getParentName();
 
 	@Nullable
 	MetaIdentifier getMetaIdentifier();

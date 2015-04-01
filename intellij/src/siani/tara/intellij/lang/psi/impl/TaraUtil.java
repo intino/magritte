@@ -43,7 +43,7 @@ public class TaraUtil {
 	public static List<Node> findRootNode(PsiElement element, String identifier) {
 		List<Node> result = new ArrayList<>();
 		for (TaraModelImpl taraFile : getModuleFiles(element.getContainingFile())) {
-			Collection<Node> nodes = taraFile.getNodes();
+			Collection<Node> nodes = taraFile.getRootNodes();
 			extractNodesByName(identifier, result, nodes);
 		}
 		return result;
@@ -192,16 +192,15 @@ public class TaraUtil {
 		Node[] nodes = PsiTreeUtil.getChildrenOfType(taraModel, Node.class);
 		if (nodes != null) {
 			Collections.addAll(collection, nodes);
-			for (Node node : nodes)
-				collectChildren(node, collection);
+			for (Node node : nodes) collectInner(node, collection);
 		}
 		return collection;
 	}
 
-	private static void collectChildren(Node node, List<Node> collection) {
-		for (Node child : TaraUtil.getInnerNodesOf(node)) {
+	private static void collectInner(Node node, List<Node> collection) {
+		for (Node child : TaraPsiImplUtil.getAllInnerNodesOf(node)) {
 			collection.add(child);
-			collectChildren(child, collection);
+			collectInner(child, collection);
 		}
 	}
 
@@ -211,7 +210,7 @@ public class TaraUtil {
 	}
 
 	public static Node findInner(Node node, String name) {
-		List<Node> children = TaraPsiImplUtil.getAllInnerNodesOf(node);
+		List<Node> children = TaraPsiImplUtil.getInnerNodesOf(node);
 		for (Node child : children)
 			if (child.getName() != null && child.getName().equals(name))
 				return child;

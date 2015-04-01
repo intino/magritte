@@ -53,7 +53,6 @@ public class TaraPsiImplUtil {
 		return body != null ? (List<Variable>) body.getAttributeList() : Collections.EMPTY_LIST;
 	}
 
-
 	public static List<Node> getInnerNodesOf(Node node) {
 		if (node != null && node.getBody() != null) {
 			List<Node> children = getInnerNodesInBody(node.getBody());
@@ -64,24 +63,9 @@ public class TaraPsiImplUtil {
 	}
 
 	public static List<Node> getAllInnerNodesOf(Node node) {
-		if (node != null && node.getBody() != null) {
-			List<Node> children = getInnerNodesInBody(node.getBody());
-			removeSubs(children);
-			return collectSubsFromInner(children);
-		}
+		if (node != null && node.getBody() != null) return getInnerNodesInBody(node.getBody());
 		return Collections.EMPTY_LIST;
 	}
-
-	private static List<Node> collectSubsFromInner(List<Node> children) {
-		List<Node> nodes = new ArrayList<>();
-		for (Node child : children) {
-			if (child.isAbstract())
-				nodes.addAll(child.getSubNodes());
-			nodes.add(child);
-		}
-		return nodes;
-	}
-
 
 	private static void removeSubs(List<Node> children) {
 		List<Node> list = new ArrayList();
@@ -103,6 +87,8 @@ public class TaraPsiImplUtil {
 			return null;
 		}
 	}
+
+
 
 	@NotNull
 	public static Collection<TaraFacetTarget> getFacetTargets(Node node) {

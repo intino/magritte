@@ -285,10 +285,9 @@ public class IntentionsGenerator {
 	}
 
 
-	private Node[] getIntentions(TaraModel taraModel) {
+	private Node[] getIntentions(TaraModel model) {
 		List<Node> intentions = new ArrayList<>();
-		List<Node> allConceptsOfFile = TaraUtil.getAllNodesOfFile(taraModel);
-		for (Node node : allConceptsOfFile)
+		for (Node node : TaraUtil.getAllNodesOfFile(model))
 			if (node.isIntention())
 				intentions.add(node);
 		return intentions.toArray(new Node[intentions.size()]);

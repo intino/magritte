@@ -53,7 +53,7 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 			final Node[] facetNodes = getFacets(taraModel);
 			if (facetNodes.length > 0) facetsHome = findFacetsDestiny();
 			for (Node facet : facetNodes)
-				if (facet.getName() != null && isIntention(facet)) {
+				if (facet.getName() != null && facet.isIntentionInstance()) {
 					psiClasses.add(createFacetClass(facet));
 					psiClasses.addAll(createTargetClasses(facet));
 				}
@@ -109,10 +109,6 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 		String path = "";
 		for (String subpath : facetsPath) path += subpath + ".";
 		return path + inflector.plural(facetedNode.getType()).toLowerCase() + "." + inflector.plural(facetedNode.getName()).toLowerCase();
-	}
-
-	private boolean isIntention(Node facetNode) {
-		return (facetNode.isIntention() || facetNode.isIntentionInstance());
 	}
 
 	private Map<String, String> getOptionsForFacetClass(String type) {

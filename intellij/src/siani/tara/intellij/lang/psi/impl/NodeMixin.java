@@ -27,6 +27,7 @@ import javax.swing.*;
 import java.util.*;
 
 import static siani.tara.intellij.lang.lexer.Annotation.*;
+import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 import static siani.tara.semantic.Assumption.FacetInstance;
 import static siani.tara.semantic.Assumption.IntentionInstance;
 
@@ -95,7 +96,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public Collection<Node> getNodeSiblings() {
 		Node contextOf = TaraPsiImplUtil.getContainerNodeOf(this);
-		if (contextOf == null) return ((TaraModel) this.getContainingFile()).getNodes();
+		if (contextOf == null) return ((TaraModel) this.getContainingFile()).getRootNodes();
 		return contextOf.getInnerNodes();
 	}
 
@@ -137,30 +138,19 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return identifierNode != null ? identifierNode.getText() : null;
 	}
 
-	public boolean isAnonymous() {
-		return getName() == null;
-	}
-
 	@NotNull
-	public Collection<Parameter> getParameterList() {
+	public Collection<Parameter> getParameters() {
 		if (getSignature().getParameters() == null) return Collections.EMPTY_LIST;
 		return getSignature().getParameters().getParameters();
-	}
-
-	@Nullable
-	public Parameters getParameters() {
-		if (getSignature().getParameters() == null) return null;
-		return getSignature().getParameters();
 	}
 
 	public String getQualifiedName() {
 		Node node = (Node) this;
 		String name = getPathName(node);
 		while (node != null) {
-			Node parent = TaraPsiImplUtil.getContainerNodeOf(node);
-			if (parent != null && (parent.isSub() && !node.isSub() || !parent.isSub() && !node.isSub()))
-				name = parent.getName() + "." + name;
-			node = parent;
+			Node container = node.container();
+			if (container != null) name = getPathName(container) + "." + name;
+			node = container;
 		}
 		return name;
 	}
@@ -198,10 +188,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraDocumentationFormatter.doc2Html(this, text.toString());
 	}
 
-	public PsiElement getPsiElement() {
-		return this;
-	}
-
 	@Override
 	public Icon getIcon(@IconFlags int i) {
 		if (this.isSub())
@@ -228,7 +214,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isRoot() {
-		return TaraPsiImplUtil.getContainerNodeOf(this) == null;
+		return getContainerNodeOf(this) == null;
 	}
 
 	public boolean isIntention() {
@@ -252,6 +238,30 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 
+	public boolean isComponent() {
+		return is(COMPONENT);
+	}
+
+	public boolean isProperty() {
+		return is(PROPERTY);
+	}
+
+	public boolean isIntentionInstance() {
+		return is(IntentionInstance.class);
+	}
+
+	public boolean isFacetInstance() {
+		return is(FacetInstance.class);
+	}
+
+	public boolean isPropertyInstance() {
+		Collection<Assumption> assumptionsOf = TaraUtil.getAssumptionsOf((Node) this);
+		for (Assumption assumption : assumptionsOf)
+			if (assumption instanceof Assumption.PropertyInstance)
+				return true;
+		return false;
+	}
+
 	public boolean isAnnotatedAsAggregated() {
 		for (PsiElement annotation : getAnnotations())
 			if (AGGREGATED.getName().equals(annotation.getText()))
@@ -266,20 +276,12 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	public boolean isProperty() {
-		return is(PROPERTY);
-	}
-
-	public boolean isPropertyInstance() {
-		Collection<Assumption> assumptionsOf = TaraUtil.getAssumptionsOf((Node) this);
-		for (Assumption assumption : assumptionsOf)
-			if (assumption instanceof Assumption.PropertyInstance)
-				return true;
+	public boolean is(Class<? extends Assumption> assumptionType) {
+		Collection<Assumption> assumptions = TaraUtil.getAssumptionsOf((Node) this);
+		if (assumptions == null) return false;
+		for (Assumption assumption : assumptions)
+			if (assumptionType.getClass().isInstance(assumption)) return true;
 		return false;
-	}
-
-	public boolean isComponent() {
-		return is(COMPONENT);
 	}
 
 	private boolean is(siani.tara.intellij.lang.lexer.Annotation taraAnnotation) {
@@ -293,22 +295,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	private boolean hasInheritedAnnotation(siani.tara.intellij.lang.lexer.Annotation annotation) {
 		for (String a : inheritedAnnotations)
 			if (a.equals(annotation.getName())) return true;
-		return false;
-	}
-
-	public boolean isIntentionInstance() {
-		return is(IntentionInstance.class);
-	}
-
-	public boolean isFacetInstance() {
-		return is(FacetInstance.class);
-	}
-
-	public boolean is(Class<? extends Assumption> assumptionType) {
-		Collection<Assumption> assumptions = TaraUtil.getAssumptionsOf((Node) this);
-		if (assumptions == null) return false;
-		for (Assumption assumption : assumptions)
-			if (assumptionType.getClass().isInstance(assumption)) return true;
 		return false;
 	}
 
@@ -327,8 +313,18 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return subs;
 	}
 
-	public Node getContainer() {
-		return TaraPsiImplUtil.getContainerNodeOf(this);
+	public Node container() {
+		if (isAggregated()) return null;
+		if (isSub()) {
+			Node rootOfSub = containerOfSub((Node) this);
+			return rootOfSub == null ? null : rootOfSub;
+		} else return getContainerNodeOf(this);
+	}
+
+	private Node containerOfSub(Node container) {
+		while (container != null && container.isSub())
+			container = getContainerNodeOf(container);
+		return getContainerNodeOf(container);
 	}
 
 	public Collection<FacetApply> getFacetApplies() {
@@ -347,7 +343,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public List<Annotation> getAnnotations() {
-		Annotations annotations = ((Node) this).getAnnotationsNode();
+		Annotations annotations = this.getAnnotationsNode();
 		return annotations == null ? Collections.EMPTY_LIST : annotations.getAnnotationList();
 	}
 

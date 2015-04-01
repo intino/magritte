@@ -1,11 +1,8 @@
 package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.codeinsight.JavaHelper;
 import siani.tara.intellij.lang.psi.*;
@@ -52,27 +49,9 @@ public class ReferenceManager {
 			return resolveNode(identifier, getIdentifiersOfReference(identifier));
 		if (identifier.getParent() instanceof HeaderReference)
 			return identifier.getParent().getParent() instanceof TaraDslDeclaration ?
-				resolveMetamodelImport(identifier) : resolveHeaderReference(identifier);
-		if (identifier.getParent() instanceof Signature)
-			return identifier;
+				identifier : resolveHeaderReference(identifier);
+		if (identifier.getParent() instanceof Signature) return identifier;
 		return null;
-	}
-
-	private static PsiElement resolveMetamodelImport(Identifier identifier) {
-		HeaderReference reference = (HeaderReference) identifier.getParent();
-		List<? extends Identifier> identifiers = reference.getIdentifierList();
-		if (identifiers.size() > 2) return null;
-		Project project = identifier.getProject();
-		if (identifier.equals(identifiers.get(0))) return getPsiFile(project.getProjectFile(), project);
-		if (identifier.equals(identifiers.get(1))) {
-			Module moduleByName = ModuleManager.getInstance(project).findModuleByName(identifier.getName());
-			return moduleByName != null ? getPsiFile(moduleByName.getModuleFile(), project) : null;
-		}
-		return null;
-	}
-
-	private static PsiElement getPsiFile(VirtualFile file, Project project) {
-		return PsiManager.getInstance(project).findFile(file);
 	}
 
 	private static PsiElement resolveHeaderReference(Identifier identifier) {
@@ -109,7 +88,7 @@ public class ReferenceManager {
 		Set<Node> set = new LinkedHashSet<>();
 		addNodesInContext(identifier, set);
 		addRootNodes(file, identifier, set);
-		addAggregatedAndAssociated(file, identifier, set, toArrayList(set));
+		addAggregatedAndAssociated(file, identifier, set, set);
 		return set.toArray(new Node[set.size()]);
 	}
 
@@ -122,14 +101,9 @@ public class ReferenceManager {
 		return tryToResolveInBox(resolve, qn);
 	}
 
-	private static List<Node> toArrayList(Set<Node> set) {
-		List<Node> visited = new ArrayList<>();
-		visited.addAll(set);
-		return visited;
-	}
 
-	private static void addRootNodes(TaraModel file, Identifier identifier, Set<Node> set) {
-		Collection<Node> nodes = file.getNodes();
+	private static void addRootNodes(TaraModel model, Identifier identifier, Set<Node> set) {
+		Collection<Node> nodes = model.getRootNodes();
 		for (Node node : nodes)
 			if (namesAreEqual(identifier, node))
 				set.add(node);
@@ -137,14 +111,13 @@ public class ReferenceManager {
 
 	private static void addNodesInContext(Identifier identifier, Set<Node> set) {
 		Node container = getContainerNodeOf(identifier);
-		if (container != null && !isExtendsReference((IdentifierReference) identifier.getParent()) &&
-			namesAreEqual(identifier, container))
+		if (container != null && !isExtendsReference(identifier) && namesAreEqual(identifier, container))
 			set.add(container);
 		while (container != null) {
 			for (Node sibling : collectCandidates(container))
 				if (namesAreEqual(identifier, sibling) && !sibling.equals(getContainerNodeOf(identifier)))
 					set.add(sibling);
-			container = container.getContainer();
+			container = container.container();
 		}
 	}
 
@@ -156,11 +129,11 @@ public class ReferenceManager {
 		return nodes;
 	}
 
-	private static boolean isExtendsReference(IdentifierReference reference) {
-		return reference.getParent() instanceof Signature;
+	private static boolean isExtendsReference(Identifier reference) {
+		return reference.getParent().getParent() instanceof Signature;
 	}
 
-	private static void addAggregatedAndAssociated(TaraModel file, Identifier identifier, Set<Node> set, List<Node> visited) {
+	private static void addAggregatedAndAssociated(TaraModel file, Identifier identifier, Set<Node> set, Collection<Node> visited) {
 		List<Node> allNodesOfFile = TaraUtil.getAllNodesOfFile(file);
 		for (Node node : allNodesOfFile)
 			if (namesAreEqual(identifier, node) && isAggregatedOrAssociated(file, node, visited))
@@ -171,7 +144,7 @@ public class ReferenceManager {
 		return identifier.getText().equals(node.getName());
 	}
 
-	private static boolean isAggregatedOrAssociated(TaraModel file, Node node, List<Node> visited) {
+	private static boolean isAggregatedOrAssociated(TaraModel file, Node node, Collection<Node> visited) {
 		if (visited.contains(node)) return false;
 		visited.add(node);
 		if (node.isAnnotatedAsAggregated() || node.isAnnotatedAsAssociated() || isMetaAggregatedOrAssociated(node))
@@ -198,7 +171,7 @@ public class ReferenceManager {
 		return false;
 	}
 
-	private static Node[] getRootNodes(TaraModel file, IdentifierReference parentReference, List<Node> visited, Set<Node> roots) {
+	private static Node[] getRootNodes(TaraModel file, IdentifierReference parentReference, Collection<Node> visited, Set<Node> roots) {
 		Identifier identifier = getIdentifier(parentReference);
 		addNodesInContext(identifier, roots);
 		addRootNodes(file, identifier, roots);
@@ -251,8 +224,8 @@ public class ReferenceManager {
 
 	private static Node resolvePathInBox(TaraModel containingFile, List<Identifier> path) {
 		Set<Node> nodes = new HashSet<>();
-		nodes.addAll(containingFile.getNodes());
-		addAggregatedAndAssociated(containingFile, path.get(0), nodes, toArrayList(nodes));
+		nodes.addAll(containingFile.getRootNodes());
+		addAggregatedAndAssociated(containingFile, path.get(0), nodes, nodes);
 		for (Node node : nodes) {
 			Node solution = resolvePathInNode(path, node);
 			if (solution != null) return solution;

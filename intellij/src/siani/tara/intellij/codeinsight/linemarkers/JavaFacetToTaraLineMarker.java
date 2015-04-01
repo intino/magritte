@@ -14,7 +14,6 @@ import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import java.util.Collection;
-import java.util.List;
 
 public class JavaFacetToTaraLineMarker extends RelatedItemLineMarkerProvider {
 
@@ -50,12 +49,10 @@ public class JavaFacetToTaraLineMarker extends RelatedItemLineMarkerProvider {
 	}
 
 	private String findConcept(PsiClass aClass, String intention) {
-		List<TaraModelImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(aClass));
-		for (TaraModelImpl taraBoxFile : taraFilesOfModule)
+		for (TaraModelImpl taraBoxFile : TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(aClass)))
 			for (Node node : TaraUtil.getAllNodesOfFile(taraBoxFile))
 				if (intention.equals(node.getName()))
 					return node.getQualifiedName();
 		return "";
 	}
-
 }

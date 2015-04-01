@@ -43,7 +43,8 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		if (!Variable.class.isInstance(attribute.getParent())) return;
+		if (!Variable.class.isInstance(attribute.getParent()) || !"measure".equals(((Variable) attribute.getParent()).getType()))
+			return;
 		Module module = getModule();
 		String measureName = measure.getFormmatedName();
 		File metricClassFile = getClassFile(module, measureName);
@@ -145,7 +146,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 
 	private void error() {
 		results.put(measure,
-			new TaraAnnotator.AnnotateAndFix(ERROR, "Metric Not Found. Create and Compile it.",
+			new TaraAnnotator.AnnotateAndFix(ERROR, "Metric Not Found. Create an it.",
 				new CreateMeasureClassIntention(measure.getFormmatedName(), metricsPackage.toLowerCase())));
 	}
 

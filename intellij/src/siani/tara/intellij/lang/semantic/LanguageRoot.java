@@ -72,12 +72,10 @@ public class LanguageRoot implements Node {
 
 	@Override
 	public void annotations(String... annotations) {
-
 	}
 
 	@Override
 	public void moveToTheTop() {
-
 	}
 
 	@Override
@@ -97,7 +95,7 @@ public class LanguageRoot implements Node {
 
 	@Override
 	public Node[] includes() {
-		return wrap(model.getNodes());
+		return wrap(model.getRootNodes());
 	}
 
 	private Node[] wrap(Collection<siani.tara.intellij.lang.psi.Node> nodes) {

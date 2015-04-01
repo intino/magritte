@@ -66,10 +66,10 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
 		Allow.Parameter parameterAllow = getCorrespondingAllow(container, parameter);
 		if (parameterAllow == null) return null;
-		if (parameterAllow.type().equals(WORD) || !isPrimitive(parameterAllow.type()))
-			return new TaraParameterReferenceSolver(this, getRange(), container);
 		if (parameterAllow.type().equals(REFERENCE))
 			return new TaraNodeReferenceSolver(this, getRange(), container);
+		if (parameterAllow.type().equals(WORD) || !isPrimitive(parameterAllow.type()))
+			return new TaraParameterReferenceSolver(this, getRange(), container);
 		return null;
 	}
 
@@ -87,7 +87,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		if (allowsOf == null) return Collections.EMPTY_LIST;
 		for (Allow allow : allowsOf)
 			if (allow instanceof Allow.Facet && ((Allow.Facet) allow).type().equals(facetApply))
-				return TaraUtil.getAllowsOf(container, ((Allow.Facet) allow).type());
+				return ((Allow.Facet)allow).allows();
 		return Collections.EMPTY_LIST;
 	}
 

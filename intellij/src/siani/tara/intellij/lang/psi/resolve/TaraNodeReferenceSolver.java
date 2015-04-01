@@ -19,8 +19,6 @@ import java.util.*;
 
 public class TaraNodeReferenceSolver extends TaraReferenceSolver {
 
-
-
 	public TaraNodeReferenceSolver(@NotNull PsiElement element, TextRange range, Node node) {
 		super(element, range);
 	}
@@ -39,7 +37,6 @@ public class TaraNodeReferenceSolver extends TaraReferenceSolver {
 		if (isConceptReference()) new VariantsManager(variants, myElement).resolveVariants();
 		return fillVariants(variants);
 	}
-
 
 	@Override
 	protected PsiElement doMultiResolve() {
