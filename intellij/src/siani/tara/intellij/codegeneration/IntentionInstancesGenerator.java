@@ -51,9 +51,9 @@ public class IntentionInstancesGenerator extends CodeGenerator {
 		if (psiFile instanceof TaraModel) {
 			final TaraModel taraModel = (TaraModel) psiFile;
 			final Node[] facetNodes = getFacets(taraModel);
-			if (facetNodes.length > 0) facetsHome = findFacetsDestiny();
 			for (Node facet : facetNodes)
 				if (facet.getName() != null && facet.isIntentionInstance()) {
+					if (facetsHome != null) facetsHome = findFacetsDestiny();
 					psiClasses.add(createFacetClass(facet));
 					psiClasses.addAll(createTargetClasses(facet));
 				}

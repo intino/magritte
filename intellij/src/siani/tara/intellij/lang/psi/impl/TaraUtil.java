@@ -210,8 +210,8 @@ public class TaraUtil {
 	}
 
 	public static Node findInner(Node node, String name) {
-		List<Node> children = TaraPsiImplUtil.getInnerNodesOf(node);
-		for (Node child : children)
+		Collection<Node> inner = node.getInnerNodes();
+		for (Node child : inner)
 			if (child.getName() != null && child.getName().equals(name))
 				return child;
 		return null;

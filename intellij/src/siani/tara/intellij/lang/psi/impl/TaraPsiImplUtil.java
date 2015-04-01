@@ -55,12 +55,28 @@ public class TaraPsiImplUtil {
 
 	public static List<Node> getInnerNodesOf(Node node) {
 		if (node != null && node.getBody() != null) {
-			List<Node> children = getInnerNodesInBody(node.getBody());
-			removeSubs(children);
-			return children;
+			List<Node> inner = getInnerNodesInBody(node.getBody());
+			removeAggregatedAndAssociated(inner);
+			removeSubs(inner);
+			addSubsOfInner(inner);
+			return inner;
 		}
 		return Collections.EMPTY_LIST;
 	}
+
+	private static void removeAggregatedAndAssociated(List<Node> inner) {
+		List<Node> list = new ArrayList();
+		for (Node node : inner) if (node.isAggregated()|| node.isAnnotatedAsAssociated()) list.add(node);
+		inner.removeAll(list);
+
+	}
+
+	private static void addSubsOfInner(List<Node> inner) {
+		List<Node> toadd = new ArrayList<>();
+		for (Node node : inner) toadd.addAll(node.getSubNodes());
+		inner.addAll(toadd);
+	}
+
 
 	public static List<Node> getAllInnerNodesOf(Node node) {
 		if (node != null && node.getBody() != null) return getInnerNodesInBody(node.getBody());
@@ -87,7 +103,6 @@ public class TaraPsiImplUtil {
 			return null;
 		}
 	}
-
 
 
 	@NotNull

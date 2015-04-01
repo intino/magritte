@@ -237,6 +237,9 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return is(AGGREGATED);
 	}
 
+	public boolean isAssociated() {
+		return is(ASSOCIATED);
+	}
 
 	public boolean isComponent() {
 		return is(COMPONENT);
