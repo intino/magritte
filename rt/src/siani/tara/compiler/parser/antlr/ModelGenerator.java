@@ -194,7 +194,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 				variable.setDefaultExtension(ctx.value().measureValue().getText());
 		}
 		if (ctx.metric() != null)
-			variable.setExtension(ctx.metric().getText().substring(1));
+			variable.setMetric(ctx.metric().getText().substring(1));
 
 		addHeaderInformation(ctx, (Element) variable);
 		variable.addAnnotations(resolveAnnotations(ctx.annotations()));

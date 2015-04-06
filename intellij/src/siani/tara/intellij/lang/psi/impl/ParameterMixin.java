@@ -32,7 +32,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return this instanceof TaraExplicitParameter ? ((TaraExplicitParameter) this).getIdentifier().getText() : "";
 	}
 
-	public TaraMeasureValue getMeasure() {
+	public TaraMeasureValue getMetric() {
 		return ((Parameter) this).getValue().getMeasureValue();
 	}
 

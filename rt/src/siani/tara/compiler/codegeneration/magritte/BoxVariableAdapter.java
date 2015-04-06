@@ -6,16 +6,17 @@ import org.siani.itrules.model.Frame;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.VariableReference;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
 
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 
 public class BoxVariableAdapter implements Adapter<Variable> {
 
-	public BoxVariableAdapter() {
+	private final Map<String, List<SimpleEntry<String, String>>> metrics;
+
+	public BoxVariableAdapter(Map<String, List<SimpleEntry<String, String>>> metrics) {
+		this.metrics = metrics;
 	}
 
 	@Override
@@ -90,8 +91,8 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 	}
 
 	private void asMeasure(Frame frame, Variable variable) {
-		frame.addFrame(EXTENSION_TYPE, variable.getExtension());
-		if (variable.getExtension() != null)
+		frame.addFrame(EXTENSION_TYPE, variable.getMetric());
+		if (variable.getMetric() != null)
 			frame.addFrame(EXTENSION_VALUE, resolveMetric(variable.getDefaultExtension()));
 	}
 
@@ -103,11 +104,9 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 	}
 
 	private String resolveMetric(String metric) {
-		//TODO return correct reference to metric from the metricValue
-//		Map<String, List<SimpleEntry<String, String>>> metrics = model.getMetrics();
-//		for (Map.Entry<String, List<SimpleEntry<String, String>>> stringListEntry : metrics.entrySet())
-//			for (SimpleEntry<String, String> metricValue : stringListEntry.getValue())
-//				if (metricValue.getValue().equals(metric)) return metricValue.getKey();
+		for (Map.Entry<String, List<SimpleEntry<String, String>>> metrics : this.metrics.entrySet())
+			for (SimpleEntry<String, String> metricValue : metrics.getValue())
+				if (metricValue.getValue().equals(metric)) return metricValue.getKey();
 		return "";
 	}
 }

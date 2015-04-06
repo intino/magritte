@@ -12,6 +12,7 @@ import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.Assumption;
 
 import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
 
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.buildFileName;
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
@@ -21,23 +22,26 @@ public class BoxModelAdapter implements Adapter<Model> {
 	private final String module;
 	private final Language language;
 	private final Locale locale;
+	private final Map<String, List<SimpleEntry<String, String>>> metrics;
 
-	public BoxModelAdapter(String project, String module, Language language, Locale locale) {
+
+	public BoxModelAdapter(String project, String module, Language language, Locale locale, Map<String, List<SimpleEntry<String, String>>> metrics) {
 		this.project = project;
 		this.module = module;
 		this.language = language;
 		this.locale = locale;
+		this.metrics = metrics;
 	}
 
 	@Override
-	public void adapt(Frame frame, Model boxModel, BuilderContext context) {
-		frame.addFrame(NAME, buildFileName(boxModel.getFile()));
+	public void adapt(Frame frame, Model model, BuilderContext context) {
+		frame.addFrame(NAME, buildFileName(model.getFile()));
 		if (!Objects.equals(language.languageName(), "Proteo"))
 			frame.addFrame(LANGUAGE, language.languageName());
 		frame.addFrame("project", project).addFrame("module", module);
 		addMetricImports(frame);
-		addFacetImports(boxModel.getIncludedNodes(), frame);
-		parserAllNodes(frame, boxModel, context);
+		addFacetImports(model.getIncludedNodes(), frame);
+		parserAllNodes(frame, model, context);
 	}
 
 	private void parserAllNodes(Frame frame, Node nodeContainer, BuilderContext context) {
@@ -54,8 +58,8 @@ public class BoxModelAdapter implements Adapter<Model> {
 	}
 
 	private void addMetricImports(Frame frame) {
-//		for (String metric : language.getMetrics().keySet())TODO
-//			frame.addFrame("importMetric", IMPORT + " " + STATIC + " " + project.toLowerCase() + DOT + METRICS + DOT + metric + DOT + STAR + SEMICOLON);
+		for (String metric : metrics.keySet())
+			frame.addFrame("importMetric", IMPORT + " " + STATIC + " " + project.toLowerCase() + DOT + METRICS + DOT + metric + DOT + STAR + SEMICOLON);
 	}
 
 	private void addFacetImports(Collection<Node> nodes, Frame frame) {

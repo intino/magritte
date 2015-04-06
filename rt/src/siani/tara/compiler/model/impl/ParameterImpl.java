@@ -16,21 +16,21 @@ public class ParameterImpl extends Element implements Parameter {
 	private final List<Object> values = new ArrayList<>();
 	private String file;
 	private int line;
-	private String extension;
+	private String metric;
 	private String inferredType;
 	private String[] annotations = new String[0];
 	private NodeContainer owner;
 
 
-	public ParameterImpl(String name, int position, String extension, Object... values) {
+	public ParameterImpl(String name, int position, String metric, Object... values) {
 		this.name = name;
 		this.position = position;
-		this.extension = extension;
+		this.metric = metric;
 		Collections.addAll(this.values, values);
 	}
 
-	public ParameterImpl(int position, String extension, Object... values) {
-		this("", position, extension, values);
+	public ParameterImpl(int position, String metric, Object... values) {
+		this("", position, metric, values);
 	}
 
 
@@ -84,8 +84,8 @@ public class ParameterImpl extends Element implements Parameter {
 	}
 
 	@Override
-	public String getExtension() {
-		return extension;
+	public String getMetric() {
+		return metric;
 	}
 
 	@Override

@@ -60,8 +60,8 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
-	public String getExtension() {
-		return parameter.getExtension();
+	public String getMetric() {
+		return parameter.getMetric();
 	}
 
 	private static Object[] wrapValues(Collection<Object> values) {

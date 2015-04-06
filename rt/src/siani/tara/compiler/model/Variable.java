@@ -16,7 +16,7 @@ public interface Variable extends Cloneable{
 
 	boolean isMultiple();
 
-	String getExtension();
+	String getMetric();
 
 	Collection<Annotation> getAnnotations();
 
@@ -26,7 +26,7 @@ public interface Variable extends Cloneable{
 
 	boolean isReadOnly();
 
-	void setExtension(String extension);
+	void setMetric(String extension);
 
 	void setName(String name);
 

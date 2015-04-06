@@ -55,10 +55,10 @@ public class BoxFrameCreator {
 		boxModel.setName(model.getName());
 		boxModel.addIncludedNodes(nodes.toArray(new Node[nodes.size()]));
 		final FrameBuilder builder = new FrameBuilder();
-		builder.register(Model.class, new BoxModelAdapter(project, module, language, locale));
+		builder.register(Model.class, new BoxModelAdapter(project, module, language, locale, model.getMetrics()));
 		builder.register(Node.class, new BoxNodeAdapter(language, keymap));
-		builder.register(Variable.class, new BoxVariableAdapter());
-		builder.register(Parameter.class, new BoxParameterAdapter());
+		builder.register(Variable.class, new BoxVariableAdapter(model.getMetrics()));
+		builder.register(Parameter.class, new BoxParameterAdapter(model.getMetrics()));
 		return builder.createFrame(boxModel);
 	}
 }

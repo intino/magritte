@@ -20,7 +20,7 @@ public class VariableImpl extends Element implements Variable {
 	private boolean multiple;
 	private List<Object> allowedValues = new ArrayList<>();
 	private List<Object> defaultValues = new ArrayList<>();
-	private String extension;
+	private String metric;
 	private String file;
 	private int line;
 	private List<Annotation> annotations = new ArrayList<>();
@@ -61,8 +61,8 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
-	public String getExtension() {
-		return extension;
+	public String getMetric() {
+		return metric;
 	}
 
 	@Override
@@ -87,8 +87,8 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
-	public void setExtension(String extension) {
-		this.extension = extension;
+	public void setMetric(String metric) {
+		this.metric = metric;
 	}
 
 	@Override
@@ -161,7 +161,7 @@ public class VariableImpl extends Element implements Variable {
 		Variable variable = new VariableImpl(container, type, name);
 		variable.setMultiple(multiple);
 		variable.setDefaultExtension(defaultExtension);
-		variable.setExtension(extension);
+		variable.setMetric(metric);
 		for (Annotation annotation : annotations) variable.addAnnotations(annotation.getName());
 		variable.addAllowedValues(allowedValues.toArray(new Object[allowedValues.size()]));
 		variable.addDefaultValues(defaultValues.toArray(new Object[defaultValues.size()]));

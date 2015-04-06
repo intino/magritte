@@ -102,19 +102,19 @@ public class LanguageInheritanceFiller {
 	}
 
 	private void addParameter(Frame allowsFrame, Allow.Parameter allow, String relation) {
-		Object[] values = {allow.name(), allow.type(), allow.allowedValues(), allow.multiple(), allow.position(), getExtension(allow.extension())};
+		Object[] values = {allow.name(), allow.type(), allow.allowedValues(), allow.multiple(), allow.position(), getMetric(allow.metric())};
 		if (allow.allowedValues() != null && allow.allowedValues().length > 0)
 			if (allow.type().equals("word")) renderWord(allowsFrame, values, relation);
 			else renderReference(allowsFrame, values, relation);
 		else renderPrimitive(allowsFrame, values, relation);
 	}
 
-	private String getExtension(String extension) {
-		return extension == null || extension.isEmpty() ? "" : extension;
+	private String getMetric(String metric) {
+		return metric == null || metric.isEmpty() ? "" : metric;
 	}
 
 	private void addParameter(Frame frame, Require.Parameter require) {
-		Object[] values = {require.name(), require.type(), require.allowedValues(), require.multiple(), require.position(), getExtension(require.extension())};
+		Object[] values = {require.name(), require.type(), require.allowedValues(), require.multiple(), require.position(), getMetric(require.metric())};
 		String relation = "require";
 		if (require.allowedValues() != null && require.allowedValues().length > 0)
 			if (require.type().equals("word")) renderWord(frame, values, relation);

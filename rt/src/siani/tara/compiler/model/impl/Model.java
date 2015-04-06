@@ -10,14 +10,15 @@ public class Model extends Element implements Node {
 	private String name;
 	private String file;
 	private String language;
+
 	private Map<String, List<SimpleEntry<String, String>>> metrics = new HashMap<>();
+
 	private boolean terminal;
 	private List<Node> includes = new ArrayList<>();
-
-
 	public Model(String file) {
 		this.file = file;
 	}
+
 
 	public String getName() {
 		return name;
@@ -55,6 +56,10 @@ public class Model extends Element implements Node {
 	@Override
 	public void setDoc(String doc) {
 
+	}
+
+	public Map<String, List<SimpleEntry<String, String>>> getMetrics() {
+		return metrics;
 	}
 
 	public void addMetrics(Map<String, List<SimpleEntry<String, String>>> metrics) {
