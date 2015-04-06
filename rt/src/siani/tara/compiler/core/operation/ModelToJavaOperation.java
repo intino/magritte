@@ -55,6 +55,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			List<List<Node>> groupByBox = groupByBox(model);
 			Map<String, Document> boxUnits = createBoxUnits(groupByBox);
 			writeBoxUnits(buildBoxUnitDirectory(), boxUnits);
+			if (model.isTerminal()) return;
 			writeBox(getBoxPath(File.separator), createBoxes(boxUnits.keySet()));
 			writeMorphs(createMorphs());
 		} catch (TaraException e) {
@@ -198,7 +199,6 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private void writeMorphs(Map<String, Document> documentMap) {
-		if (model.isTerminal()) return;
 		for (Map.Entry<String, Document> entry : documentMap.entrySet()) {
 			File file = new File(outFolder, entry.getKey().replace(DOT, File.separator) + JAVA);
 			file.getParentFile().mkdirs();

@@ -37,15 +37,15 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	public void adapt(Frame frame, NodeImpl node, BuilderContext context) {
 		frame.add(getTypes(node, language));
 		addNodeInfo(node, frame);
-		addImports(getNodeContainer(node), locale);
+		addImport(getNodeContainer(node));
 		addInner(node, frame, context);
 	}
 
-	private void addImports(Node container, Locale locale) {
-		if (container != null) {
-			String containerPackage = composeMorphPackagePath(container, locale);
-			if (!containerPackage.equals(MAGRITTE_MORPHS))
-				imports.add(containerPackage + DOT + container.getName());
+	private void addImport(Node node) {
+		if (node != null) {
+			String nodePackage = composeMorphPackagePath(node, locale);
+			if (!nodePackage.equals(MAGRITTE_MORPHS))
+				imports.add(nodePackage + DOT + node.getName());
 		}
 	}
 
@@ -80,6 +80,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 			newFrame.addFrame(PARENT, node.getParent().getName().equals(node.getName()) ?
 				MAGRITTE_MORPHS + DOT + node.getParent().getQualifiedName() :
 				node.getParent().getQualifiedName());
+			addImport(node.getParent());
 		} else newFrame.addFrame(PARENT, MORPH);
 	}
 
@@ -126,7 +127,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 			Frame varFrame = createVarFrame(variable);
 			frame.addFrame(VARIABLE, varFrame);
 			if (variable instanceof VariableReference && !variable.getDefaultValues().isEmpty()) {
-				addImports(((VariableReference) variable).getDestiny(), locale);
+				addImport(((VariableReference) variable).getDestiny());
 			}
 		}
 	}
