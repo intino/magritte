@@ -50,15 +50,15 @@ single("$type"[, $relation])
 endrule
 
 defrule type(allow) type(parameter) type(word) trigger(allow)
-parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
+parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(allow) type(parameter) type(reference) trigger(allow)
-parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
+parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(allow) type(parameter) trigger(allow)
-parameter("$name", "$type", $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
+parameter("$name", "$type", $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(allow) type(facet) trigger(allow)
@@ -91,15 +91,15 @@ _noneParameter()
 endrule
 
 defrule type(require) type(parameter) type(word) trigger(require)
-_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
+_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(require) type(parameter) type(reference) trigger(require)
-_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
+_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
 endrule
 
 defrule type(require) type(parameter) trigger(require)
-_parameter("$name", "$type", $multiple, $position, $extension+quoted[, $annotations+quoted...[, ]])
+_parameter("$name", "$type", $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
 endrule
 
 defrule trigger(quoted)

@@ -1,4 +1,4 @@
-defrule type(Model)
+defrule type(model)
 package magritte.store.$project+lowercase.$module+lowercase;
 
 import magritte.Model;

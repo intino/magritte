@@ -13,7 +13,7 @@ public interface Parameter extends Navigatable, TaraPsiElement {
 
 	Object[] getValues();
 
-	TaraMeasureValue getMeasure();
+	TaraMeasureValue getMetric();
 
 	boolean isList();
 

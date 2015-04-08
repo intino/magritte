@@ -8,9 +8,11 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTypeId;
-import com.intellij.openapi.roots.*;
+import com.intellij.openapi.roots.CompilerModuleExtension;
+import com.intellij.openapi.roots.ContentEntry;
+import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
@@ -30,7 +32,6 @@ import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import siani.tara.intellij.actions.TaraTemplates;
 import siani.tara.intellij.actions.TaraTemplatesFactory;
 import siani.tara.intellij.lang.TaraIcons;
-import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.project.module.ui.TaraWizardStep;
 import siani.tara.intellij.project.sdk.TaraJdk;
@@ -101,7 +102,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	private void createFirstFile(ModifiableRootModel rootModel) {
 		if (!rootModel.getProject().isInitialized()) return;
 		String module = rootModel.getModule().getName();
-		String[] list = new String[]{"MODULE_NAME", module, "PARENT_MODULE_NAME", parentLanguage};
+		String[] list = new String[]{"MODULE_NAME", module, "PARENT_MODULE_NAME", parentLanguage == null ? "Proteo" : ""};
 		String name = generatedLanguage.isEmpty() ? "Main" : generatedLanguage;
 		String fileName = name + "." + TaraFileType.INSTANCE.getDefaultExtension();
 		PsiDirectory directory = getModelSourceRoot(rootModel.getProject(), rootModel.getSourceRoots());
@@ -112,7 +113,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	private PsiDirectory getModelSourceRoot(Project project, VirtualFile[] sourceRoots) {
 		for (VirtualFile sourceRoot : sourceRoots)
 			if (sourceRoot.getName().equals("model") && sourceRoot.isDirectory())
-				return PsiManager.getInstance(project).findDirectory(sourceRoot);//TODO crear fichero cutremente.
+				return PsiManager.getInstance(project).findDirectory(sourceRoot);
 		return null;
 	}
 
@@ -213,18 +214,6 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 			writer.close();
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
-		}
-	}
-
-	private File getModelOfParentLanguage(Project project) {
-		Module module = searchParentLanguageModule(project);
-		if (module != null)
-			return new File(TaraLanguage.MODELS_PATH + parentLanguage + MODEL_EXT);
-		else {
-			Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
-			if (projectSdk != null && projectSdk.getSdkType().equals(TaraJdk.getInstance()))
-				return new File(projectSdk.getHomePath() + File.separator + TaraLanguage.DSL + File.separator + parentLanguage + MODEL_EXT);
-			return null;
 		}
 	}
 

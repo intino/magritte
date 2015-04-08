@@ -66,8 +66,8 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 	}
 
 	@Override
-	public String getExtension() {
-		return varInit.getMeasureValue();
+	public String getMetric() {
+		return varInit.getMetricValue();
 	}
 
 	@Override

@@ -5,14 +5,18 @@ import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.model.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
 
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 
 public class BoxParameterAdapter implements Adapter<Parameter> {
+
+	private final Map<String, List<SimpleEntry<String, String>>> metrics;
+
+	public BoxParameterAdapter(Map<String, List<SimpleEntry<String, String>>> metrics) {
+		this.metrics = metrics;
+	}
 
 	@Override
 	public void adapt(Frame frame, Parameter parameter, BuilderContext context) {
@@ -21,9 +25,9 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 		if (isTerminal(parameter))
 			frame.addFrame(TERMINAL, "!");
 		if (parameter.getInferredType().equals(Primitives.MEASURE)) {
-			frame.addFrame(EXTENSION_TYPE, parameter.getExtension());
-			if (parameter.getExtension() != null)
-				frame.addFrame(EXTENSION_VALUE, resolveMetric(parameter.getExtension()));
+			frame.addFrame(EXTENSION_TYPE, parameter.getMetric());
+			if (parameter.getMetric() != null)
+				frame.addFrame(EXTENSION_VALUE, resolveMetric(parameter.getMetric()));
 		}
 		addParameterValue(frame, parameter);
 	}
@@ -80,10 +84,9 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	}
 
 	protected String resolveMetric(String metric) {
-//		Map<String, List<SimpleEntry<String, String>>> metrics = model.getMetrics();
-//		for (Map.Entry<String, List<SimpleEntry<String, String>>> stringListEntry : metrics.entrySet())
-//			for (SimpleEntry<String, String> metricValue : stringListEntry.getValue())
-//				if (metricValue.getValue().equals(metric)) return metricValue.getKey();
+		for (Map.Entry<String, List<SimpleEntry<String, String>>> metrics : this.metrics.entrySet())
+			for (SimpleEntry<String, String> metricValue : metrics.getValue())
+				if (metricValue.getValue().equals(metric)) return metricValue.getKey();
 		return "";
 	}
 }

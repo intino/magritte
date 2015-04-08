@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 public class SemanticAnalysisOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(SemanticAnalysisOperation.class.getName());
-	private static final String PROTEO = "Proteo";
 	private CompilationUnit compilationUnit;
 
 	public SemanticAnalysisOperation(CompilationUnit compilationUnit) {

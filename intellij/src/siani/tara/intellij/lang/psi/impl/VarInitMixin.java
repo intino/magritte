@@ -40,7 +40,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 
-	public String getMeasureValue() {
+	public String getMetricValue() {
 		TaraMeasureValue measureValue = ((VarInit) this).getValue().getMeasureValue();
 		return measureValue == null ? null : measureValue.getText();
 	}

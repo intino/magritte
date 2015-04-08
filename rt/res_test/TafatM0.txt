@@ -11,8 +11,6 @@ terminal
 true
 locale
 English
-generated_lang_name
-Millener
 encoding
 UTF-8
 models

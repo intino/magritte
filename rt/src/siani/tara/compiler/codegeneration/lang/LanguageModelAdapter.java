@@ -19,7 +19,7 @@ import java.util.*;
 
 import static siani.tara.compiler.model.Annotation.*;
 
-class ModelAdapter implements Adapter<Model> {
+class LanguageModelAdapter implements Adapter<Model> {
 	private static final String ALLOW = "allow";
 	private static final String REQUIRE = "require";
 
@@ -30,7 +30,7 @@ class ModelAdapter implements Adapter<Model> {
 	private Locale locale;
 	private siani.tara.Language language;
 
-	public ModelAdapter(String languageName, Locale locale, Language language) {
+	public LanguageModelAdapter(String languageName, Locale locale, Language language) {
 		this.languageName = languageName;
 		this.locale = locale;
 		this.language = language;
@@ -185,7 +185,7 @@ class ModelAdapter implements Adapter<Model> {
 				addFrame("multiple", variable.isMultiple()).
 				addFrame("position", i).
 				addFrame("annotations", getAnnotations(variable)).
-				addFrame("extension", variable.getExtension() == null ? "" : variable.getExtension()));
+				addFrame("metric", variable.getMetric() == null ? "" : variable.getMetric()));
 		else if (variable instanceof VariableReference)
 			frame.addFrame(relation, new Frame(relation, "parameter", "reference").
 				addFrame("name", variable.getName()).
@@ -193,14 +193,14 @@ class ModelAdapter implements Adapter<Model> {
 				addFrame("multiple", variable.isMultiple()).
 				addFrame("position", i).
 				addFrame("annotations", getAnnotations(variable)).
-				addFrame("extension", variable.getExtension() == null ? "" : variable.getExtension()));
+				addFrame("metric", variable.getMetric() == null ? "" : variable.getMetric()));
 		else frame.addFrame(relation, new Frame(relation, "parameter").
 				addFrame("name", variable.getName()).
 				addFrame("type", variable.getType()).
 				addFrame("multiple", variable.isMultiple()).
 				addFrame("position", i).
 				addFrame("annotations", getAnnotations(variable)).
-				addFrame("extension", variable.getExtension() == null ? "" : variable.getExtension()));
+				addFrame("metricBo", variable.getMetric() == null ? "" : variable.getMetric()));
 	}
 
 	private String[] getAnnotations(Variable variable) {
