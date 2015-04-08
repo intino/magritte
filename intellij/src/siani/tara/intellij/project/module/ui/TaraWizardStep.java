@@ -92,7 +92,8 @@ public class TaraWizardStep extends ModuleWizardStep {
 	private Module[] getParentModulesCandidates(Project project) {
 		List<Module> candidates = new ArrayList<>();
 		for (Module aModule : ModuleManager.getInstance(project).getModules())
-			if (!ModuleConfiguration.getInstance(aModule).isTerminal()) candidates.add(aModule);
+			if (ModuleConfiguration.getInstance(aModule) != null && !ModuleConfiguration.getInstance(aModule).isTerminal())
+				candidates.add(aModule);
 		return candidates.toArray(new Module[candidates.size()]);
 	}
 
