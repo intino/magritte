@@ -1,5 +1,5 @@
 src_file
-/Users/oroncal/workspace/sandbox/tafat/engine/model/main.tara
+/Users/oroncal/workspace/sandbox/tafat/engine/model/Tafat.tara
 
 project
 tafat

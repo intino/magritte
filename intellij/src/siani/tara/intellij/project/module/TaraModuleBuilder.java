@@ -199,7 +199,7 @@ public class TaraModuleBuilder extends JavaModuleBuilder {
 	private Module searchParentLanguageModule(Project project) {
 		ModuleManager instance = ModuleManager.getInstance(project);
 		for (Module module : instance.getModules())
-			if (ModuleConfiguration.getInstance(module).getGeneratedModelName().equals(parentLanguage))
+			if (ModuleConfiguration.getInstance(module) != null && ModuleConfiguration.getInstance(module).getGeneratedModelName().equals(parentLanguage))
 				return module;
 		return null;
 	}

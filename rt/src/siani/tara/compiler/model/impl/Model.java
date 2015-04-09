@@ -15,6 +15,7 @@ public class Model extends Element implements Node {
 
 	private boolean terminal;
 	private List<Node> includes = new ArrayList<>();
+
 	public Model(String file) {
 		this.file = file;
 	}

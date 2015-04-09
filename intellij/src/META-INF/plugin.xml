@@ -52,7 +52,7 @@
 
     <action id="siani.tara.intellij.actions.SubmitFeedbackAction"
             class="siani.tara.intellij.actions.SubmitFeedbackAction"
-            text="Summit Tara Feedback" description="You can report a bug or suggestion of plugin">
+            text="Submit Tara Feedback" description="You can report a bug or suggestion of plugin">
       <add-to-group group-id="HelpMenu" anchor="before" relative-to-action="TechnicalSupport"/>
     </action>
 

@@ -12,7 +12,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	private final NodeImpl node;
 	private siani.tara.semantic.model.FacetTarget[] facetTargets;
-	private List<Variable> variables;
+	private List<Variable> variables = new ArrayList<>();
 	private List<siani.tara.semantic.model.Node> includes = new ArrayList<>();
 
 	public LanguageNode(NodeImpl node) {
