@@ -13,6 +13,7 @@ public interface TemplateTags {
 	String MAGRITTE_MORPHS = "magritte.morphs";
 	String PROJECT = "project";
 	String NODE_TYPE = "nodeType";
+	String COMPONENT_OF = "componentOf";
 	String FACET = "facet";
 	String ADDRESS = "address";
 	String CLASS = "class";
@@ -24,6 +25,7 @@ public interface TemplateTags {
 	String INTENTION = "intention";
 	String IMPORTS = "imports";
 	String IMPORT = "import ";
+	String NATIVES = "natives";
 	String INCLUDE = "include";
 	String LANGUAGE = "language";
 	String RELATION = "relation";

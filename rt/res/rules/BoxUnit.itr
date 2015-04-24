@@ -1,5 +1,5 @@
 defrule type(model)
-package magritte.store.$project+lowercase.$module+lowercase;
+package magritte.store;
 
 import magritte.Model;
 import magritte.Node;
@@ -8,14 +8,14 @@ import magritte.store.*;
 import magritte.editors.ModelEditor;
 $importFacet...[$NL]
 
-import static magritte.Annotation.*;
+import static magritte.Tag.*;
 $importMetric...[$NL]
 
 public class $name extends Box.Unit {
     public static final Box box = new $name();
 
     @Override
-    public Box$[] links() {
+    public Box$[] dependencies() {
         return new Box$[]{[magritte.store.metamodel.$language+firstUpperCase.box]};
     }
 
@@ -32,7 +32,7 @@ public class $name extends Box.Unit {
 endrule
 
 defrule type(Node) trigger(node)
-def($key)[.name("$name")][$nodeType...[]][$facet...[]][$address][$annotation...[]][.$parent][$variable+set...[]\][$include...[]];\
+def($key)[.name("$name")][$nodeType...[]][$facet...[]][$address][$annotation...[]][.$parent][$variable+set...[]\][.componentOf($componentOf)][$include...[]];\
 endrule
 
 defrule trigger(nodeType)
@@ -48,7 +48,7 @@ defrule trigger(address)
 endrule
 
 defrule trigger(parent)
-parent("$value")
+childOf("$value")
 endrule
 
 defrule type(aggregated) trigger(include)

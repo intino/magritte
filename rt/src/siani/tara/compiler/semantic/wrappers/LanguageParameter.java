@@ -64,6 +64,11 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 		return parameter.getMetric();
 	}
 
+	@Override
+	public boolean isVariableInit() {
+		return false;
+	}
+
 	private static Object[] wrapValues(Collection<Object> values) {
 		List<Object> objects = new ArrayList<>();
 		for (Object value : values)

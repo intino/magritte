@@ -33,6 +33,6 @@ public class TerminalResolver {
 		}
 		for (Variable variable : node.getVariables())
 			if (!variable.isTerminal())
-				variable.addAnnotations("terminal");
+				variable.addFlags("terminal");
 	}
 }

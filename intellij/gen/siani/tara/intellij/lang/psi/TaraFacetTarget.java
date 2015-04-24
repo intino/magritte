@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraFacetTarget extends TaraPsiElement {
+public interface TaraFacetTarget extends FacetTarget {
 
   @Nullable
   TaraBody getBody();

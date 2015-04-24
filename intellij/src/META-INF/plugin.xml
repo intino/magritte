@@ -1,8 +1,9 @@
 <idea-plugin version="1" url="http://tara.siani.es">
   <id>siani.dev.tara</id>
+  <depends>org.jetbrains.idea.maven</depends>
   <name>Tara</name>
   <version>
-    RC1
+    ##version##
   </version>
   <vendor email="support.tara@siani.es" url="http://www.siani.es">Tara Modeling Language</vendor>
 
@@ -16,6 +17,7 @@
       ]]>
   </description>
 
+  <change-notes>##change-notes##</change-notes>
   <actions>
     <action id="NewTaraFile" class="siani.tara.intellij.actions.CreateTaraFileAction">
       <add-to-group group-id="NewGroup" anchor="first"/>
@@ -23,31 +25,18 @@
     <action id="NewPackage" class="siani.tara.intellij.actions.CreatePackageAction" text="Package"
             description="Create a new package" icon="AllIcons.Nodes.Package">
     </action>
-    <group id="tara.import.group" popup="false">
+    <group id="TaraMenu" text="Tara" description="Tara Menu">
+      <add-to-group group-id="MainMenu" anchor="last"/>
       <action id="ImportModel" class="siani.tara.intellij.actions.ImportModelAction" text="Import Model"
               description="Import model">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>
       </action>
-      <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
-    </group>
-
-    <group id="tara.export.group" popup="false">
-      <action id="ExportModel" class="siani.tara.intellij.actions.ExportModelAction" text="Build SDK from Models"
-              description="Build SDK from models">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift E"/>
-      </action>
-      <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="Compile"/>
-      <add-to-group group-id="BuildMenu" anchor="after" relative-to-action="BuildJar"/>
-      <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-    </group>
-
-    <group id="tara.file.group" popup="false">
       <action id="tara.Generate" class="siani.tara.intellij.actions.GenerateAction" text="Link to Java">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>
+        <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
+        <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
       </action>
-      <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>
-      <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-      <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
     </group>
 
     <action id="siani.tara.intellij.actions.SubmitFeedbackAction"
@@ -55,20 +44,10 @@
             text="Submit Tara Feedback" description="You can report a bug or suggestion of plugin">
       <add-to-group group-id="HelpMenu" anchor="before" relative-to-action="TechnicalSupport"/>
     </action>
-
-    <action id="siani.tara.intellij.actions.TriggerExceptionAction"
-            class="siani.tara.intellij.actions.TriggerExceptionAction" text="Trigger Exception">
-      <add-to-group group-id="HelpMenu" anchor="first"/>
-    </action>
   </actions>
 
   <change-notes><![CDATA[ ]]>
   </change-notes>
-
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.model</depends> -->
 
   <idea-version since-build="133.375"/>
 
@@ -84,13 +63,9 @@
     <treeStructureProvider implementation="siani.tara.intellij.project.view.MergerTreeStructureProvider"/>
     <fileTemplateGroup implementation="siani.tara.intellij.actions.TaraTemplatesFactory"/>
     <codeInsight.lineMarkerProvider language="Tara"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraIntention"/>
-    <codeInsight.lineMarkerProvider language="Tara"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraIntentionInstance"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraToNative"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.FacetApplyMarker"/>
-    <codeInsight.lineMarkerProvider language="Tara"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraMetric"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraOverriddenNode"/>
     <codeInsight.lineMarkerProvider language="Tara"
@@ -98,7 +73,7 @@
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraOverriddenVariable"/>
     <codeInsight.lineMarkerProvider language="JAVA"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaIntentionToTara"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaNativeToTara"/>
     <codeInsight.lineMarkerProvider language="JAVA"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaFacetToTara"/>
 

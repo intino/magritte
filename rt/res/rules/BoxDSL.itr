@@ -1,0 +1,14 @@
+defrule type(Box)
+package magritte.store;
+
+import magritte.editors.Box;
+
+public class $name+firstUppercase extends Box.Dsl {
+    public static final Box box = new $name+firstUppercase();
+
+    protected Box$[] includes() {
+        return new Box$[]{ $namebox...[,$NL]
+        };
+    }
+}
+endrule

@@ -17,13 +17,15 @@ import static siani.tara.compiler.codegeneration.magritte.NameFormatter.composeM
 public class MorphFrameCreator implements TemplateTags {
 
 	private final String project;
+	private final String module;
 	private final Language language;
 	private final Locale locale;
 	private Node initNode = null;
 	Set<String> imports = new HashSet<>();
 
-	public MorphFrameCreator(String project, Language language, Locale locale) {
+	public MorphFrameCreator(String project, String module, Language language, Locale locale) {
 		this.project = project;
+		this.module = module;
 		this.language = language;
 		this.locale = locale;
 	}
@@ -47,34 +49,34 @@ public class MorphFrameCreator implements TemplateTags {
 
 	private void createFacetTargetMorph(Frame frame, FacetTarget node) {
 		FrameBuilder builder = new FrameBuilder();
-		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(project, language, imports, locale));
+		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(project, module, imports, locale));
 		frame.addFrame("node", builder.build(node));
 	}
 
 	private void createMorph(Frame frame, Node node) {
 		FrameBuilder builder = new FrameBuilder();
-		builder.register(NodeImpl.class, new MorphNodeAdapter(project, language, imports, locale, initNode));
-		if (node instanceof NodeReference || node.isCase() || isPropertyInstance(node)) return;
+		builder.register(NodeImpl.class, new MorphNodeAdapter(project, module, language, imports, locale, initNode));
+		if (node instanceof NodeReference || node.isTerminalInstance() || isFeatureInstance(node)) return;
 		frame.addFrame("node", builder.build(node));
 	}
 
 	private String addPackage(Node node, Frame frame) {
-		String packagePath = composeMorphPackagePath(node, locale);
+		String packagePath = composeMorphPackagePath(node, locale, module);
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		return packagePath;
 	}
 
 	private String addPackage(FacetTarget target, Frame frame) {
-		String packagePath = composeMorphPackagePath(target, locale);
+		String packagePath = composeMorphPackagePath(target, locale, module);
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		return packagePath;
 	}
 
-	private boolean isPropertyInstance(Node node) {
+	private boolean isFeatureInstance(Node node) {
 		Collection<Assumption> assumptions = language.assumptions(node.getType());
 		if (assumptions == null) return false;
 		for (Assumption assumption : assumptions)
-			if (assumption instanceof Assumption.PropertyInstance)
+			if (assumption instanceof Assumption.FeatureInstance)
 				return true;
 		return false;
 	}
@@ -82,5 +84,6 @@ public class MorphFrameCreator implements TemplateTags {
 	private void addImports(Frame frame) {
 		for (String anImport : imports)
 			frame.addFrame(IMPORTS, IMPORT + anImport + SEMICOLON);
+		frame.addFrame(IMPORTS, IMPORT + module.toLowerCase() + DOT + NATIVES + DOT + STAR + SEMICOLON);
 	}
 }

@@ -2,10 +2,9 @@ package siani.tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.Node;
-import siani.tara.intellij.lang.psi.Parameter;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.semantic.model.*;
+import siani.tara.semantic.model.Facet;
+import siani.tara.semantic.model.FacetTarget;
 import siani.tara.semantic.model.Variable;
 
 import java.util.*;
@@ -103,18 +102,26 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 		Set<String> annotations = new HashSet<>();
 		for (Annotation annotation : node.getAnnotations())
 			annotations.add(annotation.getText());
-		annotations.addAll(node.getAssumedAnnotations());
+		annotations.addAll(node.getAssumedFlags());
 		return annotations.toArray(new String[annotations.size()]);
 	}
 
 	@Override
-	public void annotations(String... strings) {
-		node.addInheritedAnnotations(strings);
+	public String[] flags() {
+		Set<String> flags = new HashSet<>();
+		for (Flag flag : node.getFlags())
+			flags.add(flag.getText());
+		flags.addAll(node.getAssumedFlags());
+		return flags.toArray(new String[flags.size()]);
+	}
+
+	@Override
+	public void flags(String... flags) {
+		node.addInheritedFlags(flags);
 	}
 
 	@Override
 	public void moveToTheTop() {
-
 	}
 
 	@Override

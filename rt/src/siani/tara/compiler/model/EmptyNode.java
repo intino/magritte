@@ -3,6 +3,7 @@ package siani.tara.compiler.model;
 import siani.tara.compiler.model.impl.NodeReference;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class EmptyNode implements Node {
 	@Override
@@ -66,11 +67,6 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public boolean isIntention() {
-		return false;
-	}
-
-	@Override
 	public boolean isFacet() {
 		return false;
 	}
@@ -116,12 +112,17 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public boolean isPropertyInstance() {
+		return false;
+	}
+
+	@Override
 	public boolean isComponent() {
 		return false;
 	}
 
 	@Override
-	public boolean isCase() {
+	public boolean isTerminalInstance() {
 		return false;
 	}
 
@@ -136,12 +137,22 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Collection<Annotation> getAnnotations() {
+	public Collection<Tag> getAnnotations() {
 		return null;
 	}
 
 	@Override
+	public Collection<Tag> getFlags() {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
 	public void addAnnotations(String... annotations) {
+
+	}
+
+	@Override
+	public void addFlags(String... flags) {
 
 	}
 

@@ -155,7 +155,7 @@ public class TaraFilters {
 				Node node = getContainerNodeOf(getContainerNodeOf(context));
 				if (node == null) return false;
 //				Node node = TaraUtil.findNode(concept, TaraLanguage.getLanguage(concept.getFile())); TODO
-//				if (isIntention(node)) return true;
+//				if (isNative(node)) return true;
 			}
 			return false;
 		}
@@ -164,7 +164,7 @@ public class TaraFilters {
 			return context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context);
 		}
 
-//		private boolean isIntention(Node node) {
+//		private boolean isNative(Node node) {
 //			return node != null && node.getObject().is(Annotation.INTENTION);
 //		}
 

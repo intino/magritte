@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.*;
+import siani.tara.semantic.model.Tag;
 
 import java.util.*;
 
@@ -47,10 +48,16 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			((Node) deque.peek()).getType() :
 			ctx.signature().metaidentifier().getText());
 		resolveParent(ctx, node);
-		node.addAnnotations(resolveAnnotations(ctx.signature().annotations()));
+		addTags(ctx.signature().tags(), node);
 		addHeaderInformation(ctx, node);
 		node.addImports(imports);
 		deque.push(node);
+	}
+
+	private void addTags(@NotNull TagsContext ctx, Node node) {
+		if (ctx == null) return;
+		if (ctx.flags() != null) node.addFlags(resolveTags(ctx.flags()));
+		if (ctx.annotations() != null) node.addAnnotations(resolveTags(ctx.annotations()));
 	}
 
 	private NodeContainer resolveContainer(Node node) {
@@ -62,7 +69,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private void resolveParent(NodeContext ctx, NodeImpl node) {
 		if (node.isSub()) {
 			Node peek = (Node) deque.peek();
-			if (!peek.isAbstract()) peek.addAnnotations("abstract");
+			if (!peek.isAbstract()) peek.addFlags(Tag.ABSTRACT.getName());
 			node.setParent(peek);
 			peek.addChild(node);
 			node.setParentName(peek.getName());
@@ -160,16 +167,24 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		NodeReference nodeReference = new NodeReference(ctx.identifierReference().getText());
 		addHeaderInformation(ctx, nodeReference);
 		nodeReference.setHas(true);
-		if (ctx.annotations() != null) nodeReference.addAnnotations(resolveAnnotations(ctx.annotations()));
+		addTags(ctx.tags(), nodeReference);
 		nodeReference.setContainer(container);
 		container.addIncludedNodes(nodeReference);
 	}
 
-	private String[] resolveAnnotations(AnnotationsContext annotations) {
+	private String[] resolveTags(AnnotationsContext annotations) {
 		List<String> values = new ArrayList<>();
 		if (annotations == null) return new String[0];
 		for (AnnotationContext annotationContext : annotations.annotation())
 			values.add(annotationContext.getText());
+		return values.toArray(new String[values.size()]);
+	}
+
+	private String[] resolveTags(FlagsContext flags) {
+		List<String> values = new ArrayList<>();
+		if (flags == null) return new String[0];
+		for (FlagContext flagContext : flags.flag())
+			values.add(flagContext.getText());
 		return values.toArray(new String[values.size()]);
 	}
 
@@ -193,11 +208,10 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			if (ctx.value().measureValue() != null)
 				variable.setDefaultExtension(ctx.value().measureValue().getText());
 		}
-		if (ctx.metric() != null)
-			variable.setMetric(ctx.metric().getText().substring(1));
+		if (ctx.nativeName() != null) variable.setNativeName(ctx.nativeName().getText().substring(1));
 
 		addHeaderInformation(ctx, (Element) variable);
-		variable.addAnnotations(resolveAnnotations(ctx.annotations()));
+		variable.addFlags(resolveTags(ctx.flags()));
 		container.addVariables(variable);
 	}
 

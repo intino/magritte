@@ -12,10 +12,9 @@ import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.util.Collection;
 
-public class JavaIntentionToTara extends RelatedItemLineMarkerProvider {
+public class JavaNativeToTara extends RelatedItemLineMarkerProvider {
 
-	private static final String INTENTIONS = "intentions";
-	private static final String INTENTION = "Intention";
+	private static final String NATIVES = "natives";
 
 	@Override
 	protected void collectNavigationMarkers(@NotNull PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result) {
@@ -39,8 +38,7 @@ public class JavaIntentionToTara extends RelatedItemLineMarkerProvider {
 			if (conceptClassOfTarget == null) return "";
 			qn = conceptClassOfTarget.getQualifiedName();
 		}
-		qn = qn.replaceFirst(aClass.getProject().getName().toLowerCase() + "." + INTENTIONS + ".", "");
-		qn = qn.replace(INTENTION, "");
+		qn = qn.replaceFirst(aClass.getProject().getName().toLowerCase() + "." + NATIVES + ".", "");
 		return qn;
 	}
 
@@ -53,7 +51,7 @@ public class JavaIntentionToTara extends RelatedItemLineMarkerProvider {
 
 	private boolean isFacetTargetClass(PsiClass aClass) {
 		if (aClass == null || aClass.getContainingFile().getParent() == null) return false;
-		return !aClass.getContainingFile().getParent().getName().equals(INTENTIONS);
+		return !aClass.getContainingFile().getParent().getName().equals(NATIVES);
 	}
 
 

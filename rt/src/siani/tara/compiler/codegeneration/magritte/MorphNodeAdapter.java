@@ -20,13 +20,15 @@ import static siani.tara.compiler.codegeneration.magritte.NameFormatter.composeM
 
 public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	private final String project;
+	private final String module;
 	private final Language language;
 	private final Set<String> imports;
 	private final Locale locale;
 	private Node initNode;
 
-	public MorphNodeAdapter(String project, Language language, Set<String> imports, Locale locale, Node initNode) {
+	public MorphNodeAdapter(String project, String module, Language language, Set<String> imports, Locale locale, Node initNode) {
 		this.project = project;
+		this.module = module;
 		this.language = language;
 		this.imports = imports;
 		this.locale = locale;
@@ -43,7 +45,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 
 	private void addImport(Node node) {
 		if (node != null) {
-			String nodePackage = composeMorphPackagePath(node, locale);
+			String nodePackage = composeMorphPackagePath(node, locale, module);
 			if (!nodePackage.equals(MAGRITTE_MORPHS))
 				imports.add(nodePackage + DOT + node.getName());
 		}
@@ -114,6 +116,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		types.add("nodeReference");
 		if (node.isSingle()) types.add("single");
 		if (node.isAggregated()) types.add("aggregated");
+		for (Tag tag : node.getFlags()) types.add(tag.getName());
 		return types.toArray(new String[types.size()]);
 	}
 
@@ -145,6 +148,8 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 //					if (((Attribute) variable).getMeasureValue() != null)
 //						addFrame(MEASURE_VALUE, resolveMetric(((Attribute) variable).getMeasureValue()));
 				}
+				if (variable instanceof VariableReference)
+					imports.add(((VariableReference) variable).getDestiny().getQualifiedName());
 			}
 
 			private String getType() {

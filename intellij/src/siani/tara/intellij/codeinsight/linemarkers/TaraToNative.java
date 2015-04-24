@@ -16,17 +16,16 @@ import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.psi.MeasureType;
-import siani.tara.intellij.lang.psi.TaraMeasureType;
+import siani.tara.intellij.lang.psi.NativeName;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
-import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveMeasure;
+import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveNative;
 
-public class TaraMetric extends JavaLineMarkerProvider {
+public class TaraToNative extends JavaLineMarkerProvider {
 
-	public TaraMetric(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+	public TaraToNative(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
 		super(daemonSettings, colorsManager);
 	}
 
@@ -35,9 +34,9 @@ public class TaraMetric extends JavaLineMarkerProvider {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
-			if (!MeasureType.class.isInstance(element)) return null;
-			PsiElement reference = resolveMeasure((MeasureType) element);
-			String start = "Metric declared in ";
+			if (!NativeName.class.isInstance(element)) return null;
+			PsiElement reference = resolveNative((NativeName) element);
+			String start = "Native code declared in ";
 			@NonNls String pattern;
 			if (reference == null) return null;
 			pattern = reference.getNavigationElement().getContainingFile().getName();
@@ -46,12 +45,12 @@ public class TaraMetric extends JavaLineMarkerProvider {
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {
-			if (!(element instanceof TaraMeasureType)) return;
+			if (!NativeName.class.isInstance(element)) return;
 			if (DumbService.isDumb(element.getProject())) {
 				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
 				return;
 			}
-			NavigatablePsiElement reference = (NavigatablePsiElement) resolveMeasure((MeasureType) element);
+			NavigatablePsiElement reference = (NavigatablePsiElement) resolveNative((NativeName) element);
 			if (reference == null) return;
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
@@ -62,9 +61,9 @@ public class TaraMetric extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!(element instanceof MeasureType)) return super.getLineMarkerInfo(element);
-		MeasureType measureType = (MeasureType) element;
-		PsiElement reference = resolveMeasure(measureType);
+		if (!(element instanceof NativeName)) return super.getLineMarkerInfo(element);
+		NativeName nativeName = (NativeName) element;
+		PsiElement reference = resolveNative(nativeName);
 		if (reference != null) {
 			final Icon icon = AllIcons.Gutter.ImplementedMethod;
 			final MarkerType type = markerType;

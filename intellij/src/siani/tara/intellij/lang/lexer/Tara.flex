@@ -93,27 +93,34 @@ DSL                 = "dsl"
 WITH                = "with"
 AS                  = "as"
 ON                  = "on"
-ALWAYS              = "always"
 IS                  = "is"
+INTO                = "into"
 EXTENDS             = "extends"
 
-ABSTRACT             = "abstract"
+
+ABSTRACT            = "abstract"
+
 SINGLE              = "single"
+MULTIPLE            = "multiple"
+
+OPTIONAL            = "optional"
 REQUIRED            = "required"
-NAMED               = "named"
+
 TERMINAL            = "terminal"
+
 PROPERTY            = "property"
+FEATURE             = "feature"
+
 AGGREGATED          = "aggregated"
 ASSOCIATED          = "associated"
-TACIT               = "tacit"
 COMPONENT           = "component"
+
 READONLY            = "readonly"
-ROOT                = "root"
 ENCLOSED            = "enclosed"
-INTENTION           = "intention"
+
 FACET               = "facet"
+
 ADDRESSED           = "addressed"
-CASE                = "case"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -143,6 +150,7 @@ RESOURCE_TYPE       = "file"
 INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
 DOUBLE_TYPE         = "double"
+NATIVE_TYPE         = "native"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
 RATIO_TYPE          = "ratio"
@@ -175,7 +183,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 %%
 <YYINITIAL> {
-	{COMMENT}                       {  System.out.println(yytext()); }
+	{COMMENT}                       {   }
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 	{METAIDENTIFIER}                {   return TaraTypes.METAIDENTIFIER_KEY; }
 	{USE}                           {   return TaraTypes.USE; }
@@ -186,32 +194,36 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{VAR}                           {   return TaraTypes.VAR; }
 	{AS}                            {   return TaraTypes.AS; }
 	{IS}                            {   return TaraTypes.IS; }
+	{INTO}                          {   return TaraTypes.INTO; }
 	{ON}                            {   return TaraTypes.ON; }
 	{WITH}                          {   return TaraTypes.WITH; }
-	{ALWAYS}                        {   return TaraTypes.ALWAYS; }
 
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
 
 	{SUB}                           {   return TaraTypes.SUB; }
 
-	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
-	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
+
 	{SINGLE}                        {   return TaraTypes.SINGLE; }
-	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
-	{NAMED}                         {   return TaraTypes.NAMED; }
-	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
+	{MULTIPLE}                      {   return TaraTypes.MULTIPLE; }
+	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
+	{OPTIONAL}                      {   return TaraTypes.OPTIONAL; }
+
+	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
+	{FEATURE}                       {   return TaraTypes.FEATURE; }
+
 	{FACET}                         {   return TaraTypes.FACET; }
-	{INTENTION}                     {   return TaraTypes.INTENTION; }
+
+	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
-	{TACIT}                         {   return TaraTypes.TACIT; }
 	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
+
+	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
     {AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
     {ASSOCIATED}                    {   return TaraTypes.ASSOCIATED; }
-    {CASE}                          {   return TaraTypes.CASE; }
+
 	{READONLY}                      {   return TaraTypes.READONLY; }
-    {ROOT}                          {   return TaraTypes.ROOT; }
 
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
 	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
@@ -234,13 +246,13 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{COMMA}                         {   return TaraTypes.COMMA; }
 	{STAR}                          {   return TaraTypes.STAR;  }
 	{LIST}                          {   return TaraTypes.LIST;  }
-	{PLUS}                          {   return TaraTypes.PLUS;  }
 
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
 	{NATURAL_TYPE}                  {   return TaraTypes.NATURAL_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
+    {NATIVE_TYPE}                   {   return TaraTypes.NATIVE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {RATIO_TYPE}                    {   return TaraTypes.RATIO_TYPE; }
     {MEASURE_TYPE_KEY}              {   return TaraTypes.MEASURE_TYPE_KEY; }

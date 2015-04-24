@@ -2,7 +2,6 @@ package siani.tara.intellij.lang.psi;
 
 import com.intellij.pom.Navigatable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -12,13 +11,16 @@ public interface NodeReference extends Navigatable, TaraPsiElement {
 
 	boolean isAssociated();
 
-	@Nullable
-	TaraAnnotations getAnnotations();
+	@NotNull
+	Collection<? extends Annotation> getAnnotations();
 
 	@NotNull
-	TaraIdentifierReference getIdentifierReference();
+	Collection<? extends Flag> getFlags();
 
-	void addInheritedAnnotations(String... annotations);
+	@NotNull
+	IdentifierReference getIdentifierReference();
 
-	Collection<String> getInheritedAnnotations();
+	void addInheritedFlags(String... flags);
+
+	Collection<String> getInheritedFlags();
 }

@@ -1,7 +1,7 @@
 package siani.tara.intellij.lang.semantic;
 
 
-import siani.tara.intellij.lang.psi.TaraAnnotations;
+import siani.tara.intellij.lang.psi.Flags;
 import siani.tara.intellij.lang.psi.TaraValue;
 import siani.tara.intellij.lang.psi.Variable;
 
@@ -23,10 +23,11 @@ public class LanguageVariable implements siani.tara.semantic.model.Variable {
 	}
 
 	@Override
-	public String[] annotations() {
-		TaraAnnotations annotations = variable.getAnnotations();
-		return annotations != null ? annotations.asStringArray() : new String[0];
+	public String[] flags() {
+		Flags flags = variable.getFlags();
+		return flags != null ? flags.asStringArray() : new String[0];
 	}
+
 
 	@Override
 	public Object[] defaultValue() {

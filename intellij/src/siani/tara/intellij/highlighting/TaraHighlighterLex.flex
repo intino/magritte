@@ -62,29 +62,35 @@ PROTEO              = "Proteo"
 AS                  = "as"
 ON                  = "on"
 IS                  = "is"
+INTO                = "into"
 VAR                 = "var"
 USE                 = "use"
 
-ALWAYS              = "always"
 WITH                = "with"
 //annotations
 ABSTRACT            = "abstract"
+
 SINGLE              = "single"
+MULTIPLE            = "multiple"
+
+OPTIONAL            = "optional"
 REQUIRED            = "required"
-NAMED               = "named"
+
 TERMINAL            = "terminal"
+
 PROPERTY            = "property"
-INTENTION           = "intention"
-ENCLOSED            = "enclosed"
-FACET               = "facet"
-ADDRESSED           = "addressed"
-COMPONENT           = "component"
+FEATURE             = "feature"
+
 AGGREGATED          = "aggregated"
 ASSOCIATED          = "associated"
-TACIT               = "tacit"
+COMPONENT           = "component"
+
 READONLY            = "readonly"
-CASE                = "case"
-ROOT                = "root"
+ENCLOSED            = "enclosed"
+
+FACET               = "facet"
+
+ADDRESSED           = "addressed"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -114,6 +120,7 @@ WORD_KEY            = "word"
 RESOURCE_KEY        = "file"
 INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
+NATIVE_TYPE         = "native"
 DOUBLE_TYPE         = "double"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
@@ -163,29 +170,33 @@ NEWLINE             = [\n]+
 	{AS}                            {   return TaraTypes.AS; }
 	{ON}                            {   return TaraTypes.ON; }
 	{IS}                            {   return TaraTypes.IS; }
+	{INTO}                          {   return TaraTypes.INTO; }
 	{WITH}                          {   return TaraTypes.WITH; }
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
-	{ALWAYS}                        {   return TaraTypes.ALWAYS; }
 	{SUB}                           {   return TaraTypes.SUB; }
 
-	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
-	{SINGLE}                        {   return TaraTypes.SINGLE; }
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
-	{NAMED}                         {   return TaraTypes.NAMED; }
-	{INTENTION}                     {   return TaraTypes.INTENTION; }
-	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
-	{FACET}                         {   return TaraTypes.FACET; }
-	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
-	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
-	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
-	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
-	{AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
-	{TACIT}                         {   return TaraTypes.TACIT; }
-	{ASSOCIATED}                    {   return TaraTypes.ASSOCIATED; }
-	{READONLY}                      {   return TaraTypes.READONLY; }
-	{CASE}                          {   return TaraTypes.CASE; }
-    {ROOT}                          {   return TaraTypes.ROOT; }
+
+    {SINGLE}                        {   return TaraTypes.SINGLE; }
+    {MULTIPLE}                      {   return TaraTypes.MULTIPLE; }
+    {REQUIRED}                      {   return TaraTypes.REQUIRED; }
+    {OPTIONAL}                      {   return TaraTypes.OPTIONAL; }
+
+    {PROPERTY}                      {   return TaraTypes.PROPERTY; }
+    {FEATURE}                       {   return TaraTypes.FEATURE; }
+
+    {FACET}                         {   return TaraTypes.FACET; }
+
+    {TERMINAL}                      {   return TaraTypes.TERMINAL; }
+    {ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
+    {ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
+
+    {COMPONENT}                     {   return TaraTypes.COMPONENT; }
+    {AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
+    {ASSOCIATED}                    {   return TaraTypes.ASSOCIATED; }
+
+    {READONLY}                      {   return TaraTypes.READONLY; }
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 
@@ -206,7 +217,6 @@ NEWLINE             = [\n]+
 	{COMMA}                         {   return TaraTypes.COMMA; }
 	{STAR}                          {   return TaraTypes.STAR;     }
 	{LIST}                          {   return TaraTypes.LIST;  }
-	{PLUS}                          {   return TaraTypes.PLUS;  }
 
 	{WORD_KEY}                      {   return TaraTypes.WORD_KEY; }
 	{RESOURCE_KEY}                  {   return TaraTypes.RESOURCE_KEY; }
@@ -216,6 +226,7 @@ NEWLINE             = [\n]+
 	{NATURAL_TYPE}                  {   return TaraTypes.NATURAL_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
+    {NATIVE_TYPE}                   {   return TaraTypes.NATIVE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {RATIO_TYPE}                    {   return TaraTypes.RATIO_TYPE; }
     {MEASURE_TYPE_KEY}              {   return TaraTypes.MEASURE_TYPE_KEY; }

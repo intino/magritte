@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public interface Node extends NodeContainer, Parameterized {
 
-	static final String ANNONYMOUS = "annonymous@";
+	String ANNONYMOUS = "annonymous@";
 
 	String getName();
 
@@ -25,10 +25,6 @@ public interface Node extends NodeContainer, Parameterized {
 
 	Collection<Node> getSubNodes();
 
-	boolean isTerminal();
-
-	boolean isIntention();
-
 	boolean isFacet();
 
 	boolean isAddressed();
@@ -41,23 +37,31 @@ public interface Node extends NodeContainer, Parameterized {
 
 	boolean isNamed();
 
+	boolean isComponent();
+
 	boolean isAggregated();
 
 	boolean isAssociated();
 
 	boolean isProperty();
 
-	boolean isComponent();
+	boolean isPropertyInstance();
 
-	boolean isCase();
+	boolean isTerminal();
+
+	boolean isTerminalInstance();
 
 	Long getAddress();
 
 	void setAddress(Long address);
 
-	Collection<Annotation> getAnnotations();
+	Collection<Tag> getAnnotations();
+
+	Collection<Tag> getFlags();
 
 	void addAnnotations(String... annotations);
+
+	void addFlags(String... flags);
 
 	void addImports(Collection<String> imports);
 

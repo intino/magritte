@@ -2,9 +2,9 @@ package siani.tara.compiler.model;
 
 import java.util.Collection;
 
-public interface Variable extends Cloneable{
+public interface Variable extends Cloneable {
 
-	public static String WORD = "word";
+	String WORD = "word";
 
 	String getName();
 
@@ -16,17 +16,17 @@ public interface Variable extends Cloneable{
 
 	boolean isMultiple();
 
-	String getMetric();
+	String getNativeName();
 
-	Collection<Annotation> getAnnotations();
+	Collection<Tag> getFlags();
 
-	void addAnnotations(String... annotations);
+	void addFlags(String... flags);
 
 	boolean isTerminal();
 
 	boolean isReadOnly();
 
-	void setMetric(String extension);
+	void setNativeName(String extension);
 
 	void setName(String name);
 

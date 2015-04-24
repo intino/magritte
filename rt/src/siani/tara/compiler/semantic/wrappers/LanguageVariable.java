@@ -1,6 +1,6 @@
 package siani.tara.compiler.semantic.wrappers;
 
-import siani.tara.compiler.model.Annotation;
+import siani.tara.compiler.model.Tag;
 import siani.tara.compiler.model.Variable;
 
 import java.util.ArrayList;
@@ -24,11 +24,12 @@ public class LanguageVariable implements siani.tara.semantic.model.Variable {
 	}
 
 	@Override
-	public String[] annotations() {
-		List<String> annotations = new ArrayList<>();
-		for (Annotation annotation : variable.getAnnotations()) annotations.add(annotation.getName());
-		return annotations.toArray(new String[annotations.size()]);
+	public String[] flags() {
+		List<String> flags = new ArrayList<>();
+		for (Tag tag : variable.getFlags()) flags.add(tag.getName());
+		return flags.toArray(new String[flags.size()]);
 	}
+
 
 	@Override
 	public Object[] defaultValue() {

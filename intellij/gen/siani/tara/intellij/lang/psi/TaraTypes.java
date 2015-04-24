@@ -1,10 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package siani.tara.intellij.lang.psi;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.PsiElement;
+import com.intellij.lang.ASTNode;
 import siani.tara.intellij.lang.psi.impl.*;
 
 public interface TaraTypes {
@@ -24,6 +24,8 @@ public interface TaraTypes {
 	IElementType EXPLICIT_PARAMETER = new TaraElementType("EXPLICIT_PARAMETER");
 	IElementType FACET_APPLY = new TaraElementType("FACET_APPLY");
 	IElementType FACET_TARGET = new TaraElementType("FACET_TARGET");
+	IElementType FLAG = new TaraElementType("FLAG");
+	IElementType FLAGS = new TaraElementType("FLAGS");
 	IElementType HEADER_REFERENCE = new TaraElementType("HEADER_REFERENCE");
 	IElementType IDENTIFIER = new TaraElementType("IDENTIFIER");
 	IElementType IDENTIFIER_REFERENCE = new TaraElementType("IDENTIFIER_REFERENCE");
@@ -31,15 +33,16 @@ public interface TaraTypes {
 	IElementType IMPORTS = new TaraElementType("IMPORTS");
 	IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
 	IElementType LINK_VALUE = new TaraElementType("LINK_VALUE");
-	IElementType MEASURE_TYPE = new TaraElementType("MEASURE_TYPE");
 	IElementType MEASURE_VALUE = new TaraElementType("MEASURE_VALUE");
 	IElementType META_IDENTIFIER = new TaraElementType("META_IDENTIFIER");
+	IElementType NATIVE_NAME = new TaraElementType("NATIVE_NAME");
 	IElementType NATURAL_VALUE = new TaraElementType("NATURAL_VALUE");
 	IElementType NODE = new TaraElementType("NODE");
 	IElementType NODE_REFERENCE = new TaraElementType("NODE_REFERENCE");
 	IElementType PARAMETERS = new TaraElementType("PARAMETERS");
 	IElementType SIGNATURE = new TaraElementType("SIGNATURE");
 	IElementType STRING_VALUE = new TaraElementType("STRING_VALUE");
+	IElementType TAGS = new TaraElementType("TAGS");
 	IElementType VALUE = new TaraElementType("VALUE");
 	IElementType VARIABLE = new TaraElementType("VARIABLE");
 	IElementType VARIABLE_TYPE = new TaraElementType("VARIABLE_TYPE");
@@ -50,12 +53,10 @@ public interface TaraTypes {
 	IElementType ADDRESSED = new TaraTokenType("ADDRESSED");
 	IElementType ADDRESS_VALUE = new TaraTokenType("ADDRESS_VALUE");
 	IElementType AGGREGATED = new TaraTokenType("AGGREGATED");
-	IElementType ALWAYS = new TaraTokenType("ALWAYS");
 	IElementType AS = new TaraTokenType("AS");
 	IElementType ASSOCIATED = new TaraTokenType("ASSOCIATED");
 	IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
 	IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
-	IElementType CASE = new TaraTokenType("CASE");
 	IElementType CHARACTER = new TaraTokenType("CHARACTER");
 	IElementType COLON = new TaraTokenType("COLON");
 	IElementType COMMA = new TaraTokenType("COMMA");
@@ -73,10 +74,11 @@ public interface TaraTypes {
 	IElementType EQUALS = new TaraTokenType("EQUALS");
 	IElementType EXTENDS = new TaraTokenType("EXTENDS");
 	IElementType FACET = new TaraTokenType("FACET");
+	IElementType FEATURE = new TaraTokenType("FEATURE");
 	IElementType HAS = new TaraTokenType("HAS");
 	IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
 	IElementType INLINE = new TaraTokenType("INLINE");
-	IElementType INTENTION = new TaraTokenType("INTENTION");
+	IElementType INTO = new TaraTokenType("INTO");
 	IElementType INT_TYPE = new TaraTokenType("INT_TYPE");
 	IElementType IS = new TaraTokenType("IS");
 	IElementType LEFT_PARENTHESIS = new TaraTokenType("LEFT_PARENTHESIS");
@@ -85,14 +87,15 @@ public interface TaraTypes {
 	IElementType MEASURE_TYPE_KEY = new TaraTokenType("MEASURE_TYPE_KEY");
 	IElementType MEASURE_VALUE_KEY = new TaraTokenType("MEASURE_VALUE_KEY");
 	IElementType METAIDENTIFIER_KEY = new TaraTokenType("METAIDENTIFIER_KEY");
-	IElementType NAMED = new TaraTokenType("NAMED");
+	IElementType MULTIPLE = new TaraTokenType("MULTIPLE");
+	IElementType NATIVE_TYPE = new TaraTokenType("NATIVE_TYPE");
 	IElementType NATURAL_TYPE = new TaraTokenType("NATURAL_TYPE");
 	IElementType NATURAL_VALUE_KEY = new TaraTokenType("NATURAL_VALUE_KEY");
 	IElementType NEGATIVE_VALUE_KEY = new TaraTokenType("NEGATIVE_VALUE_KEY");
 	IElementType NEWLINE = new TaraTokenType("NEWLINE");
 	IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
 	IElementType ON = new TaraTokenType("ON");
-	IElementType PLUS = new TaraTokenType("PLUS");
+	IElementType OPTIONAL = new TaraTokenType("OPTIONAL");
 	IElementType PROPERTY = new TaraTokenType("PROPERTY");
 	IElementType PROTEO = new TaraTokenType("PROTEO");
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
@@ -103,13 +106,11 @@ public interface TaraTypes {
 	IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
 	IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");
 	IElementType RIGHT_SQUARE = new TaraTokenType("RIGHT_SQUARE");
-	IElementType ROOT = new TaraTokenType("ROOT");
 	IElementType SINGLE = new TaraTokenType("SINGLE");
 	IElementType STAR = new TaraTokenType("STAR");
 	IElementType STRING_MULTILINE_VALUE_KEY = new TaraTokenType("STRING_MULTILINE_VALUE_KEY");
 	IElementType STRING_TYPE = new TaraTokenType("STRING_TYPE");
 	IElementType SUB = new TaraTokenType("SUB");
-	IElementType TACIT = new TaraTokenType("TACIT");
 	IElementType TERMINAL = new TaraTokenType("TERMINAL");
 	IElementType USE = new TaraTokenType("USE");
 	IElementType VAR = new TaraTokenType("VAR");
@@ -149,6 +150,10 @@ public interface TaraTypes {
 				return new TaraFacetApplyImpl(node);
 			} else if (type == FACET_TARGET) {
 				return new TaraFacetTargetImpl(node);
+			} else if (type == FLAG) {
+				return new TaraFlagImpl(node);
+			} else if (type == FLAGS) {
+				return new TaraFlagsImpl(node);
 			} else if (type == HEADER_REFERENCE) {
 				return new TaraHeaderReferenceImpl(node);
 			} else if (type == IDENTIFIER) {
@@ -163,12 +168,12 @@ public interface TaraTypes {
 				return new TaraIntegerValueImpl(node);
 			} else if (type == LINK_VALUE) {
 				return new TaraLinkValueImpl(node);
-			} else if (type == MEASURE_TYPE) {
-				return new TaraMeasureTypeImpl(node);
 			} else if (type == MEASURE_VALUE) {
 				return new TaraMeasureValueImpl(node);
 			} else if (type == META_IDENTIFIER) {
 				return new TaraMetaIdentifierImpl(node);
+			} else if (type == NATIVE_NAME) {
+				return new TaraNativeNameImpl(node);
 			} else if (type == NATURAL_VALUE) {
 				return new TaraNaturalValueImpl(node);
 			} else if (type == NODE) {
@@ -181,6 +186,8 @@ public interface TaraTypes {
 				return new TaraSignatureImpl(node);
 			} else if (type == STRING_VALUE) {
 				return new TaraStringValueImpl(node);
+			} else if (type == TAGS) {
+				return new TaraTagsImpl(node);
 			} else if (type == VALUE) {
 				return new TaraValueImpl(node);
 			} else if (type == VARIABLE) {

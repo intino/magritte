@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraFacetTargetImpl extends ASTWrapperPsiElement implements TaraFacetTarget {
+public class TaraFacetTargetImpl extends FacetTargetMixin implements TaraFacetTarget {
 
   public TaraFacetTargetImpl(ASTNode node) {
     super(node);

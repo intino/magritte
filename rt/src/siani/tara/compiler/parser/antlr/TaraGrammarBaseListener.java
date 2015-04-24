@@ -233,13 +233,13 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMetric(@NotNull TaraGrammar.MetricContext ctx) { }
+	@Override public void enterNativeName(@NotNull TaraGrammar.NativeNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMetric(@NotNull TaraGrammar.MetricContext ctx) { }
+	@Override public void exitNativeName(@NotNull TaraGrammar.NativeNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -377,6 +377,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterTags(@NotNull TaraGrammar.TagsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTags(@NotNull TaraGrammar.TagsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAnnotations(@NotNull TaraGrammar.AnnotationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -396,6 +408,30 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAnnotation(@NotNull TaraGrammar.AnnotationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFlags(@NotNull TaraGrammar.FlagsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFlags(@NotNull TaraGrammar.FlagsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFlag(@NotNull TaraGrammar.FlagContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFlag(@NotNull TaraGrammar.FlagContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

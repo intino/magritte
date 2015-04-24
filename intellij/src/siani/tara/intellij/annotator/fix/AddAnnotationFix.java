@@ -9,21 +9,21 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.lexer.Annotation;
+import siani.tara.intellij.lang.lexer.Tag;
 
 public class AddAnnotationFix implements IntentionAction {
 	private final Node node;
-	private final Annotation annotation;
+	private final Tag tags;
 
-	public AddAnnotationFix(Node node, Annotation annotation) {
+	public AddAnnotationFix(Node node, Tag tags) {
 		this.node = node;
-		this.annotation = annotation;
+		this.tags = tags;
 	}
 
 	@NotNull
 	@Override
 	public String getText() {
-		return "Add " + annotation.getName() + " annotation";
+		return "Add " + tags.getName() + " annotation";
 	}
 
 	@NotNull
@@ -45,9 +45,9 @@ public class AddAnnotationFix implements IntentionAction {
 				Annotations taraAnnotations = node.getAnnotationsNode();
 				TaraElementFactory factory = TaraElementFactory.getInstance(node.getProject());
 				if (taraAnnotations != null) {
-					taraAnnotations.getAnnotationList().add(factory.createAnnotation(annotation.getName()));
+					taraAnnotations.getAnnotationList().add(factory.createAnnotation(tags.getName()));
 				}
-				else node.addAfter(factory.createAnnotations(annotation.getName()), node.getSignature());
+				else node.addAfter(factory.createAnnotations(tags.getName()), node.getSignature());
 			}
 		};
 		action.execute();

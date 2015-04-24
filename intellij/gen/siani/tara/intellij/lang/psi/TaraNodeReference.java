@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraNodeReference extends NodeReference {
 
-  @Nullable
-  TaraAnnotations getAnnotations();
-
   @NotNull
   TaraIdentifierReference getIdentifierReference();
+
+  @Nullable
+  TaraTags getTags();
 
 }

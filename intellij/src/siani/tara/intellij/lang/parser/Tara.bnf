@@ -38,7 +38,7 @@ node ::= signature body? {
 	implements='siani.tara.intellij.lang.psi.Node'
 }
 
-signature::= (subNode | metaIdentifier parameters? identifier? parent?) annotations? address? {
+signature::= (subNode | metaIdentifier parameters? identifier? parent?) tags? address? {
 	pin = 1
 	mixin= 'siani.tara.intellij.lang.psi.impl.SignatureMixin'
 	implements='siani.tara.intellij.lang.psi.Signature'
@@ -76,8 +76,6 @@ implicitParameter ::= value {
     implements = 'siani.tara.intellij.lang.psi.Parameter'
 }
 
-
-
 body ::= (NEW_LINE_INDENT NEWLINE?| INLINE) (nodeConstituents NEWLINE+)+ DEDENT {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.BodyMixin'
@@ -86,20 +84,20 @@ body ::= (NEW_LINE_INDENT NEWLINE?| INLINE) (nodeConstituents NEWLINE+)+ DEDENT 
 
 private nodeConstituents ::= varInit | variable | node | facetTarget | facetApply | nodeReference | doc
 
-nodeReference ::= HAS identifierReference annotations?
-{
+nodeReference ::= HAS identifierReference tags? {
 	pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.NodeReferenceMixin'
 	implements = 'siani.tara.intellij.lang.psi.NodeReference'
 }
 
-variable ::= VAR variableType attributeType? (LIST | count)? IDENTIFIER_KEY (word | (EQUALS value measureValue?))? annotations? {
+variable ::= VAR variableType attributeType? (LIST | count)? IDENTIFIER_KEY (word | (EQUALS value measureValue?))? flags? {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'siani.tara.intellij.lang.psi.Variable'
 }
 
 variableType::= NATURAL_TYPE
+                | NATIVE_TYPE
                 | INT_TYPE
                 | BOOLEAN_TYPE
                 | STRING_TYPE
@@ -119,11 +117,11 @@ word ::= NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+ DEDENT {
 	implements = 'siani.tara.intellij.lang.psi.Word'
 }
 
-attributeType ::= COLON measureType
+attributeType ::= COLON nativeName
 {pin=1}
-measureType     ::= MEASURE_VALUE_KEY | IDENTIFIER_KEY {
-	implements = 'siani.tara.intellij.lang.psi.MeasureType'
-	mixin = 'siani.tara.intellij.lang.psi.impl.MeasureTypeMixin'
+nativeName   ::= MEASURE_VALUE_KEY | IDENTIFIER_KEY {
+	implements = 'siani.tara.intellij.lang.psi.NativeName'
+	mixin = 'siani.tara.intellij.lang.psi.impl.NativeNameMixin'
 }
 
 value ::= identifierReference+
@@ -153,18 +151,43 @@ facetApply ::= AS metaIdentifier parameters? (WITH metaIdentifier)? body? {
     implements = 'siani.tara.intellij.lang.psi.FacetApply'
 }
 
-facetTarget ::= ON identifierReference ALWAYS? body?
-{pin = 1}
+facetTarget ::= ON identifierReference body? {
+	pin = 1
+	mixin = 'siani.tara.intellij.lang.psi.impl.FacetTargetMixin'
+	implements = 'siani.tara.intellij.lang.psi.FacetTarget'
+}
 
-annotations ::= IS annotation+ {
+tags ::= flags? annotations? {
+	pin = 1
+	mixin = 'siani.tara.intellij.lang.psi.impl.TagsMixin'
+	implements = 'siani.tara.intellij.lang.psi.Tags'
+}
+
+flags::= IS flag+ {
+	pin = 1
+	mixin = 'siani.tara.intellij.lang.psi.impl.FlagsMixin'
+	implements = 'siani.tara.intellij.lang.psi.Flags'
+}
+
+flag ::= ABSTRACT | TERMINAL
+	| SINGLE | MULTIPLE | REQUIRED | OPTIONAL
+	| FACET
+	| FEATURE | PROPERTY | ENCLOSED | ADDRESSED | READONLY |
+	COMPONENT | AGGREGATED | ASSOCIATED  {
+	mixin = 'siani.tara.intellij.lang.psi.impl.FlagMixin'
+	implements = 'siani.tara.intellij.lang.psi.Flag'
+}
+
+annotations ::= INTO annotation+ {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationsMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotations'
 }
-
-annotation ::= PLUS? (ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED
-	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | ENCLOSED | ADDRESSED | AGGREGATED | TACIT | ASSOCIATED | READONLY | CASE) {
-	pin = 2
+annotation ::= TERMINAL
+	| SINGLE | MULTIPLE | REQUIRED | OPTIONAL
+	| FACET
+	| FEATURE | PROPERTY | ENCLOSED | ADDRESSED
+	| COMPONENT | AGGREGATED | ASSOCIATED {
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotation'
 }
@@ -174,7 +197,6 @@ varInit ::= IDENTIFIER_KEY EQUALS value {
 	mixin = 'siani.tara.intellij.lang.psi.impl.VarInitMixin'
 	implements = 'siani.tara.intellij.lang.psi.VarInit'
 }
-
 
 emptyField ::= EMPTY_REF
 

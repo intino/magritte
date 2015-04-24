@@ -6,10 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.psi.TaraTypes;
-import siani.tara.intellij.lang.psi.TaraVariable;
-import siani.tara.intellij.lang.psi.TaraVariableType;
-import siani.tara.intellij.lang.psi.Variable;
+import siani.tara.intellij.lang.psi.*;
 
 public class VariableMixin extends ASTWrapperPsiElement {
 
@@ -27,6 +24,12 @@ public class VariableMixin extends ASTWrapperPsiElement {
 			this.getNode().replaceChild(keyNode, node);
 		}
 		return this;
+	}
+
+	public NativeName getNativeName(){
+		TaraAttributeType attributeType = ((TaraVariable) this).getAttributeType();
+		if (attributeType == null) return null;
+		return attributeType.getNativeName();
 	}
 
 	@Nullable

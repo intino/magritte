@@ -102,14 +102,23 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	@Override
 	public String[] annotations() {
 		Set<String> annotations = new HashSet<>();
-		for (Annotation annotation : node.getAnnotations())
-			annotations.add(annotation.getName());
+		for (Tag tag : node.getAnnotations())
+			annotations.add(tag.name());
 		return annotations.toArray(new String[annotations.size()]);
 	}
 
 	@Override
-	public void annotations(String... strings) {
-		node.addAnnotations(strings);
+	public String[] flags() {
+		Set<String> flags = new HashSet<>();
+		for (Tag flag : node.getFlags())
+			flags.add(flag.name());
+		return flags.toArray(new String[flags.size()]);
+	}
+
+
+	@Override
+	public void flags(String... flags) {
+		node.addFlags(flags);
 	}
 
 	@Override

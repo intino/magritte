@@ -19,6 +19,7 @@ import siani.tara.Language;
 import siani.tara.Resolver;
 import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
+import siani.tara.intellij.lang.lexer.Tag;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.semantic.LanguageNode;
 import siani.tara.semantic.Assumption;
@@ -26,16 +27,15 @@ import siani.tara.semantic.Assumption;
 import javax.swing.*;
 import java.util.*;
 
-import static siani.tara.intellij.lang.lexer.Annotation.*;
+import static siani.tara.intellij.lang.lexer.Tag.*;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 import static siani.tara.semantic.Assumption.FacetInstance;
-import static siani.tara.semantic.Assumption.IntentionInstance;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 
 	private String fullType = getType();
 	private String prevType = getType();
-	private Set<String> inheritedAnnotations = new HashSet<>();
+	private Set<String> inheritedFlags = new HashSet<>();
 
 	public NodeMixin(@NotNull ASTNode node) {
 		super(node);
@@ -217,10 +217,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return getContainerNodeOf(this) == null;
 	}
 
-	public boolean isIntention() {
-		return is(INTENTION);
-	}
-
 	public boolean isFacet() {
 		return is(FACET);
 	}
@@ -249,12 +245,12 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return is(ENCLOSED);
 	}
 
-	public boolean isProperty() {
-		return is(PROPERTY);
+	public boolean isFeature() {
+		return is(FEATURE);
 	}
 
-	public boolean isIntentionInstance() {
-		return is(IntentionInstance.class);
+	public boolean isProperty() {
+		return is(PROPERTY);
 	}
 
 	public boolean isFacetInstance() {
@@ -262,11 +258,11 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isPropertyInstance() {
-		Collection<Assumption> assumptionsOf = TaraUtil.getAssumptionsOf((Node) this);
-		for (Assumption assumption : assumptionsOf)
-			if (assumption instanceof Assumption.PropertyInstance)
-				return true;
-		return false;
+		return is(FacetInstance.class);
+	}
+
+	public boolean FeatureInstance() {
+		return is(Assumption.FeatureInstance.class);
 	}
 
 	public boolean isAnnotatedAsAggregated() {
@@ -291,17 +287,17 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return false;
 	}
 
-	private boolean is(siani.tara.intellij.lang.lexer.Annotation taraAnnotation) {
+	private boolean is(Tag taraTags) {
 		for (PsiElement annotation : getAnnotations())
-			if (taraAnnotation.getName().equals(annotation.getText()))
+			if (taraTags.getName().equals(annotation.getText()))
 				return true;
 		Node parent = getParentName() != null ? getParentNode() : null;
-		return hasInheritedAnnotation(taraAnnotation) || (parent != null && ((NodeMixin) parent).is(taraAnnotation));
+		return hasInheritedAnnotation(taraTags) || (parent != null && ((NodeMixin) parent).is(taraTags));
 	}
 
-	private boolean hasInheritedAnnotation(siani.tara.intellij.lang.lexer.Annotation annotation) {
-		for (String a : inheritedAnnotations)
-			if (a.equals(annotation.getName())) return true;
+	private boolean hasInheritedAnnotation(Tag tags) {
+		for (String a : inheritedFlags)
+			if (a.equals(tags.getName())) return true;
 		return false;
 	}
 
@@ -354,17 +350,28 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return annotations == null ? Collections.EMPTY_LIST : annotations.getAnnotationList();
 	}
 
+	@NotNull
+	public List<Flag> getFlags() {
+		Flags flags = this.getFlagsNode();
+		return flags == null ? Collections.EMPTY_LIST : flags.getFlagList();
+	}
+
 	@Nullable
 	public Annotations getAnnotationsNode() {
 		return this.getSignature().getAnnotations();
 	}
 
-	public void addInheritedAnnotations(String... annotations) {
-		Collections.addAll(inheritedAnnotations, annotations);
+	@Nullable
+	public Flags getFlagsNode() {
+		return this.getSignature().getFlags();
 	}
 
-	public Collection<String> getAssumedAnnotations() {
-		return inheritedAnnotations;
+	public void addInheritedFlags(String... flags) {
+		Collections.addAll(inheritedFlags, flags);
+	}
+
+	public Collection<String> getAssumedFlags() {
+		return inheritedFlags;
 	}
 
 	public boolean contains(String type) {

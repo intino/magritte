@@ -3,22 +3,19 @@ package siani.tara.compiler.codegeneration.magritte;
 import org.siani.itrules.framebuilder.Adapter;
 import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
-import siani.tara.Language;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
-import siani.tara.semantic.Assumption;
 
 import java.util.Collection;
 import java.util.Map;
 
 public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
-	private final Language language;
+	private static final String COMPONENT_OF = "componentOf";
 	private final Map<Node, Long> keys;
 
-	public BoxNodeAdapter(Language language, Map<Node, Long> keys) {
-		this.language = language;
+	public BoxNodeAdapter(Map<Node, Long> keys) {
 		this.keys = keys;
 	}
 
@@ -31,6 +28,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 			facetTargetVariables(node, frame, context);
 			parameters(node, frame, context);
 			facetParameters(node, frame, context);
+			componentOf(node.getContainer(), frame);
 			includes(node, frame);
 		}
 	}
@@ -51,10 +49,10 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private void annotations(final Node node, Frame frame) {
-		if (node.getAnnotations().isEmpty() || node.isCase()) return;
+		if (node.getAnnotations().isEmpty() || node.isTerminalInstance()) return;
 		frame.addFrame(ANNOTATION, new Frame(ANNOTATION) {{
-			for (Annotation annotation : node.getAnnotations())
-				if (!annotation.isMeta()) addFrame(TemplateTags.VALUE, annotation);
+			for (Tag tag : node.getFlags())
+				addFrame(TemplateTags.VALUE, tag);
 		}});
 	}
 
@@ -86,6 +84,12 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		for (Facet facet : node.getFacets())
 			for (final Parameter parameter : facet.getParameters())
 				context.buildIn(frame, VARIABLE, parameter);
+	}
+
+	private void componentOf(NodeContainer container, Frame frame) {
+		if (container instanceof Node && keys.get(container) != null)
+			frame.addFrame(COMPONENT_OF, keys.get(container));
+		//TODO else if FacetTarget or FacetApply
 	}
 
 	private void includes(Node node, Frame frame) {
@@ -137,16 +141,9 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private void addFacetApplies(Node node, Frame newFrame) {
 		for (Facet facet : node.getFacets()) {
 			Frame facetFrame = new Frame(FACET_APPLY).addFrame(NAME, facet.getType());
-			if (isIntentionInstance(facet.getType()))
-				facetFrame.addFrame(APPLY, buildFacetPath(node, facet.getType()));
+			facetFrame.addFrame(APPLY, buildFacetPath(node, facet.getType()));
 			newFrame.addFrame(FACET, facetFrame);
 		}
-	}
-
-	private boolean isIntentionInstance(String type) {
-		Collection<Assumption> assumptions = language.assumptions(type);
-		for (Assumption assumption : assumptions) if (assumption instanceof Assumption.IntentionInstance) return true;
-		return false;
 	}
 
 	private String buildFacetPath(Node node, String facet) {

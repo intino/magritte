@@ -76,7 +76,14 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 	@Override
 	public String[] annotations() {
 		List<String> values = new ArrayList<>();
-		for (Annotation annotation : reference.getAnnotations()) values.add(annotation.getName());
+		for (Tag tag : reference.getAnnotations()) values.add(tag.getName());
+		return values.toArray(new String[values.size()]);
+	}
+
+	@Override
+	public String[] flags() {
+		List<String> values = new ArrayList<>();
+		for (Tag tag : reference.getFlags()) values.add(tag.getName());
 		return values.toArray(new String[values.size()]);
 	}
 
@@ -85,8 +92,8 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 	}
 
 	@Override
-	public void annotations(String... annotations) {
-		reference.addAnnotations(annotations);
+	public void flags(String... flags) {
+		reference.addFlags(flags);
 	}
 
 	@Override
@@ -106,7 +113,12 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 
 	@Override
 	public siani.tara.semantic.model.Node[] includes() {
-		return new siani.tara.semantic.model.Node[0];
+		List<siani.tara.semantic.model.Node> includes = new ArrayList<>();
+		for (Node inner : reference.getIncludedNodes())
+			includes.add(inner instanceof NodeReference ?
+				new LanguageNodeReference((NodeReference) inner) :
+				new LanguageNode((NodeImpl) inner));
+		return includes.toArray(new siani.tara.semantic.model.Node[includes.size()]);
 	}
 
 	@Override

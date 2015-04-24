@@ -1,6 +1,6 @@
 package siani.tara.compiler.model.impl;
 
-import siani.tara.compiler.model.Annotation;
+import siani.tara.compiler.model.Tag;
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.Variable;
@@ -10,8 +10,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.compiler.model.Annotation.READONLY;
-import static siani.tara.compiler.model.Annotation.TERMINAL;
+import static siani.tara.compiler.model.Tag.READONLY;
+import static siani.tara.compiler.model.Tag.TERMINAL;
 
 public class VariableImpl extends Element implements Variable {
 	private NodeContainer container;
@@ -20,10 +20,10 @@ public class VariableImpl extends Element implements Variable {
 	private boolean multiple;
 	private List<Object> allowedValues = new ArrayList<>();
 	private List<Object> defaultValues = new ArrayList<>();
-	private String metric;
+	private String nativeName;
 	private String file;
 	private int line;
-	private List<Annotation> annotations = new ArrayList<>();
+	private List<Tag> flags = new ArrayList<>();
 	private String defaultExtension;
 
 	public VariableImpl() {
@@ -61,34 +61,34 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
-	public String getMetric() {
-		return metric;
+	public String getNativeName() {
+		return nativeName;
 	}
 
 	@Override
-	public Collection<Annotation> getAnnotations() {
-		return annotations;
+	public Collection<Tag> getFlags() {
+		return flags;
 	}
 
 	@Override
-	public void addAnnotations(String... annotations) {
-		for (String annotation : annotations)
-			this.annotations.add(Annotation.valueOf(annotation.toUpperCase().replace("+", "META_")));
+	public void addFlags(String... flags) {
+		for (String annotation : flags)
+			this.flags.add(Tag.valueOf(annotation.toUpperCase().replace("+", "META_")));
 	}
 
 	@Override
 	public boolean isTerminal() {
-		return annotations.contains(TERMINAL);
+		return flags.contains(TERMINAL);
 	}
 
 	@Override
 	public boolean isReadOnly() {
-		return annotations.contains(READONLY);
+		return flags.contains(READONLY);
 	}
 
 	@Override
-	public void setMetric(String metric) {
-		this.metric = metric;
+	public void setNativeName(String nativeName) {
+		this.nativeName = nativeName;
 	}
 
 	@Override
@@ -161,8 +161,8 @@ public class VariableImpl extends Element implements Variable {
 		Variable variable = new VariableImpl(container, type, name);
 		variable.setMultiple(multiple);
 		variable.setDefaultExtension(defaultExtension);
-		variable.setMetric(metric);
-		for (Annotation annotation : annotations) variable.addAnnotations(annotation.getName());
+		variable.setNativeName(nativeName);
+		for (Tag tag : flags) variable.addFlags(tag.getName());
 		variable.addAllowedValues(allowedValues.toArray(new Object[allowedValues.size()]));
 		variable.addDefaultValues(defaultValues.toArray(new Object[defaultValues.size()]));
 		return variable;

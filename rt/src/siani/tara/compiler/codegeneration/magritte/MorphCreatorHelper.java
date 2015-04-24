@@ -3,6 +3,7 @@ package siani.tara.compiler.codegeneration.magritte;
 import siani.tara.Language;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.NodeImpl;
+import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.Assumption;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public final class MorphCreatorHelper implements TemplateTags {
 
 	public static String[] getTypes(NodeImpl node, Language language) {
 		List<String> types = new ArrayList<>();
-		for (Annotation annotation : node.getAnnotations()) types.add(annotation.getName());
+		for (Tag tag : node.getAnnotations()) types.add(tag.getName());
 		types.addAll(instanceAnnotations(node, language));
 		return types.toArray(new String[types.size()]);
 	}
@@ -61,9 +62,10 @@ public final class MorphCreatorHelper implements TemplateTags {
 		List<String> list = new ArrayList<>();
 		list.add(variable.getClass().getSimpleName());
 		list.add(VARIABLE);
+		if (variable instanceof VariableReference) list.add(REFERENCE);
 		list.add(variable.getType());
 		if (variable.isMultiple()) list.add(MULTIPLE);
-		for (Annotation annotation : variable.getAnnotations()) list.add(annotation.getName());
+		for (Tag tag : variable.getFlags()) list.add(tag.getName());
 		return list.toArray(new String[list.size()]);
 	}
 

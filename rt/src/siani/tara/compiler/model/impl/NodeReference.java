@@ -4,7 +4,7 @@ import siani.tara.compiler.model.*;
 
 import java.util.*;
 
-import static siani.tara.compiler.model.Annotation.*;
+import static siani.tara.compiler.model.Tag.*;
 
 public class NodeReference extends Element implements Node {
 
@@ -14,7 +14,8 @@ public class NodeReference extends Element implements Node {
 	private String file;
 	private int line;
 	private String doc;
-	private List<Annotation> annotations = new ArrayList<>();
+	private List<Tag> flags = new ArrayList<>();
+	private List<Tag> annotations = new ArrayList<>();
 	private Set<String> allowedFacets = new HashSet<>();
 
 	private List<String> imports = new ArrayList<>();
@@ -125,67 +126,67 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public boolean isTerminal() {
-		return destiny.isTerminal() || annotations.contains(TERMINAL);
-	}
-
-	@Override
-	public boolean isIntention() {
-		return destiny.isIntention() || annotations.contains(INTENTION);
+		return destiny.isTerminal() || flags.contains(TERMINAL);
 	}
 
 	@Override
 	public boolean isFacet() {
-		return destiny.isFacet() || annotations.contains(FACET);
+		return destiny.isFacet() || flags.contains(FACET);
 	}
 
 	@Override
 	public boolean isAddressed() {
-		return destiny.isAddressed() || annotations.contains(ADDRESSED);
+		return destiny.isAddressed() || flags.contains(ADDRESSED);
 	}
 
 	@Override
 	public boolean isAbstract() {
-		return destiny.isAbstract() || annotations.contains(ABSTRACT);
+		return destiny.isAbstract() || flags.contains(ABSTRACT);
 	}
 
 	@Override
 	public boolean isRequired() {
-		return destiny.isRequired() || annotations.contains(REQUIRED);
+		return destiny.isRequired() || flags.contains(REQUIRED);
 	}
 
 	@Override
 	public boolean isSingle() {
-		return destiny.isSingle() || annotations.contains(SINGLE);
+		return destiny.isSingle() || flags.contains(SINGLE);
 	}
 
 	@Override
 	public boolean isNamed() {
-		return destiny.isNamed() || annotations.contains(NAMED);
+		return destiny.isNamed() || flags.contains(NAMED);
 	}
 
 	@Override
 	public boolean isAggregated() {
-		return destiny.isAggregated() || annotations.contains(Annotation.AGGREGATED);
+		return destiny.isAggregated() || flags.contains(Tag.AGGREGATED);
 	}
 
 	@Override
 	public boolean isAssociated() {
-		return destiny.isAssociated() || annotations.contains(Annotation.ASSOCIATED);
+		return destiny.isAssociated() || flags.contains(Tag.ASSOCIATED);
 	}
 
 	@Override
 	public boolean isProperty() {
-		return destiny.isProperty() || annotations.contains(PROPERTY);
+		return destiny.isProperty() || flags.contains(PROPERTY);
+	}
+
+	@Override
+	public boolean isPropertyInstance() {
+		return destiny.isPropertyInstance() || flags.contains(PROPERTY_INSTANCE);
 	}
 
 	@Override
 	public boolean isComponent() {
-		return destiny.isComponent() || annotations.contains(COMPONENT);
+		return destiny.isComponent() || flags.contains(COMPONENT);
 	}
 
 	@Override
-	public boolean isCase() {
-		return destiny.isCase() || annotations.contains(CASE);
+	public boolean isTerminalInstance() {
+		return destiny.isTerminalInstance() || flags.contains(TERMINAL_INSTANCE);
 	}
 
 	@Override
@@ -198,17 +199,29 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Annotation> getAnnotations() {
-		List<Annotation> annotations = new ArrayList<>();
-		annotations.addAll(destiny.getAnnotations());
-		annotations.addAll(this.annotations);
-		return annotations;
+	public Collection<Tag> getAnnotations() {
+		List<Tag> tags = new ArrayList<>(destiny.getAnnotations());
+		tags.addAll(this.annotations);
+		return tags;
+	}
+
+	@Override
+	public Collection<Tag> getFlags() {
+		List<Tag> tags = new ArrayList<>(destiny.getFlags());
+		tags.addAll(flags);
+		return tags;
 	}
 
 	@Override
 	public void addAnnotations(String... annotations) {
 		for (String annotation : annotations)
-			this.annotations.add(Annotation.valueOf(annotation.toUpperCase().replace("+", "META_")));
+			this.annotations.add(Tag.valueOf(annotation.toUpperCase()));
+	}
+
+	@Override
+	public void addFlags(String... flags) {
+		for (String flag : flags)
+			this.flags.add(Tag.valueOf(flag.toUpperCase()));
 	}
 
 	@Override

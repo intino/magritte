@@ -55,6 +55,16 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 	}
 
 
+	public Flags getFlags() {
+		TaraTags tags = ((TaraSignature) this).getTags();
+		return tags != null ? tags.getFlags() : null;
+	}
+
+	public Annotations getAnnotations() {
+		TaraTags tags = ((TaraSignature) this).getTags();
+		return tags != null ? tags.getAnnotations() : null;
+	}
+
 	@Nullable
 	public TaraIdentifierReference getParentReference() {
 		return findChildByClass(TaraIdentifierReference.class);

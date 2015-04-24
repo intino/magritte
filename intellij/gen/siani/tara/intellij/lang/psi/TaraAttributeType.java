@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TaraAttributeType extends TaraPsiElement {
 
   @Nullable
-  TaraMeasureType getMeasureType();
+  TaraNativeName getNativeName();
 
 }

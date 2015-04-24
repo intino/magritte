@@ -12,7 +12,7 @@ anImport: USE headerReference NEWLINE+;
 doc: DOC+;
 node: signature body?;
 
-signature: ((SUB parameters? IDENTIFIER) | (metaidentifier parameters? IDENTIFIER? parent?)) annotations? address?;
+signature: ((SUB parameters? IDENTIFIER) | (metaidentifier parameters? IDENTIFIER? parent?)) tags? address?;
 
 parent : EXTENDS identifierReference;
 
@@ -21,36 +21,36 @@ explicitParameter: IDENTIFIER EQUALS value;
 implicitParameter: value;
 
 value : identifierReference+
-			| stringValue+
-	        | booleanValue+
-	        | linkValue+
-	        | naturalValue+ measureValue?
-	        | integerValue+ measureValue?
-	        | doubleValue+ measureValue?
-	        | EMPTY;
+		| stringValue+
+        | booleanValue+
+        | linkValue+
+        | naturalValue+ measureValue?
+        | integerValue+ measureValue?
+        | doubleValue+ measureValue?
+        | EMPTY;
 
 body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | facetTarget | nodeReference | doc) NEWLINE+)+ DEDENT;
 
-
 facetApply : AS metaidentifier parameters? (WITH metaidentifier)? body?;
-facetTarget : ON identifierReference ALWAYS? body?;
-nodeReference : HAS identifierReference annotations?;
+facetTarget : ON identifierReference body?;
+nodeReference : HAS identifierReference tags?;
 
-variable : VAR variableType metric? (LIST | count)? IDENTIFIER (word | (EQUALS value))? annotations?;
+variable : VAR variableType nativeName? (LIST | count)? IDENTIFIER (word | (EQUALS value))? flags?;
 
 variableType: NATURAL_TYPE
-                | INT_TYPE
-                | BOOLEAN_TYPE
-                | STRING_TYPE
-                | DATE_TYPE
-                | RATIO_TYPE
-                | DOUBLE_TYPE
-                | MEASURE_TYPE
-                | WORD
-                | RESOURCE
-                | identifierReference;
+            | INT_TYPE
+            | BOOLEAN_TYPE
+            | STRING_TYPE
+            | DATE_TYPE
+            | NATIVE_TYPE
+            | RATIO_TYPE
+            | DOUBLE_TYPE
+            | MEASURE_TYPE
+            | WORD
+            | RESOURCE
+            | identifierReference;
 
-metric : COLON (IDENTIFIER | MEASURE_VALUE);
+nativeName : COLON (IDENTIFIER | MEASURE_VALUE);
 count  : LEFT_SQUARE NATURAL_VALUE RIGHT_SQUARE;
 
 word            : NEW_LINE_INDENT (wordValue NEWLINE)+ DEDENT;
@@ -65,10 +65,21 @@ linkValue       : address | identifierReference;
 address         : ADDRESS_VALUE;
 measureValue    : IDENTIFIER | MEASURE_VALUE;
 
-annotations: IS annotation+;
+tags: flags? annotations?;
 
-annotation: PLUS? (ABSTRACT | TERMINAL | SINGLE | REQUIRED | READONLY | NAMED | FACET | INTENTION |
-					COMPONENT | PROPERTY | ENCLOSED | ADDRESSED | ASSOCIATED | AGGREGATED | CASE | TACIT);
+annotations: INTO annotation+;
+annotation: TERMINAL
+            | SINGLE | MULTIPLE | REQUIRED | OPTIONAL
+            | FACET
+            | FEATURE | PROPERTY | ENCLOSED | ADDRESSED
+            | COMPONENT | AGGREGATED | ASSOCIATED;
+
+flags: IS flag+;
+flag: ABSTRACT | TERMINAL
+      	| SINGLE | MULTIPLE | REQUIRED | OPTIONAL
+      	| FACET
+      	| FEATURE | PROPERTY | ENCLOSED | ADDRESSED | READONLY
+      	| COMPONENT | AGGREGATED | ASSOCIATED;
 
 varInit : IDENTIFIER EQUALS value;
 

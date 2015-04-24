@@ -3,6 +3,7 @@ package siani.tara.dsls;
 
 import siani.tara.semantic.model.Tara;
 import java.util.Locale;
+import siani.tara.semantic.model.Tag;
 import static siani.tara.semantic.Relation.*;
 import static siani.tara.semantic.constraints.RuleFactory.*;
 
@@ -42,11 +43,11 @@ allow([$allow...[, ]])
 endrule
 
 defrule type(allow) type(multiple) trigger(allow)
-multiple("$type"[, $relation])
+multiple($type+quoted[, $relation][, $tags+quoted...[, ]])
 endrule
 
 defrule type(allow) type(single) trigger(allow)
-single("$type"[, $relation])
+single($type+quoted[, $relation][, $tags+quoted...[, ]])
 endrule
 
 defrule type(allow) type(parameter) type(word) trigger(allow)
@@ -74,12 +75,20 @@ defrule type(requires) trigger(requires)
 require([$require...[, ]])
 endrule
 
+defrule type(require) type(oneOf) trigger(require)
+oneOf([$require...[, ]])
+endrule
+
 defrule type(require) type(multiple) trigger(require)
-_multiple("$type"[, $relation])
+_multiple($type+quoted[, $relation][, $tags+quoted...[, ]])
 endrule
 
 defrule type(require) type(single) trigger(require)
-_single("$type"[, $relation])
+_single($type+quoted[, $relation][, $tags+quoted...[, ]])
+endrule
+
+defrule trigger(tags)
+Tag.$value
 endrule
 
 defrule type(require) !type(parameter) type(none) trigger(require)

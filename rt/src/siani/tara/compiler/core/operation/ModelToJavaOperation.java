@@ -7,9 +7,8 @@ import org.siani.itrules.formatter.Formatter;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.codegeneration.ResourceManager;
 import siani.tara.compiler.codegeneration.StringFormatter;
-import siani.tara.compiler.codegeneration.magritte.BoxFrameCreator;
+import siani.tara.compiler.codegeneration.magritte.BoxUnitFrameCreator;
 import siani.tara.compiler.codegeneration.magritte.MorphFrameCreator;
-import siani.tara.compiler.codegeneration.magritte.NameFormatter;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
@@ -26,12 +25,13 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.io.File.separator;
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
 
 public class ModelToJavaOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
 	private static final String BOX_UNIT_ITR = "BoxUnit.itr";
-	private static final String BOX_ITR = "Box.itr";
+	private static final String BOX_ITR = "BoxDSL.itr";
 	private static final String MORPH_ITR = "Morph.itr";
 	private static final String JAVA = ".java";
 	protected static final String DOT = ".";
@@ -54,9 +54,9 @@ public class ModelToJavaOperation extends ModelOperation {
 			this.model = model;
 			List<List<Node>> groupByBox = groupByBox(model);
 			Map<String, Document> boxUnits = createBoxUnits(groupByBox);
-			writeBoxUnits(buildBoxUnitDirectory(), boxUnits);
+			writeBoxUnits(getBoxUnitPath(separator), boxUnits);
 			if (model.isTerminal()) return;
-			writeBox(getBoxPath(File.separator), createBoxes(boxUnits.keySet()));
+			writeBox(getBoxPath(separator), createBoxes(boxUnits.keySet()));
 			writeMorphs(createMorphs());
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
@@ -90,10 +90,14 @@ public class ModelToJavaOperation extends ModelOperation {
 		RuleEngine ruleEngine = createRuleEngine(rulesInput);
 		for (List<Node> nodes : groupByBox) {
 			Document document = new Document();
-			ruleEngine.render(new BoxFrameCreator(conf, model).create(nodes), document);
-			map.put(NameFormatter.buildFileName(((Element) nodes.get(0)).getFile()), document);
+			ruleEngine.render(new BoxUnitFrameCreator(conf, model).create(nodes), document);
+			map.put(buildBoxUnitName(nodes.get(0)), document);
 		}
 		return map;
+	}
+
+	private String buildBoxUnitName(Node node) {
+		return capitalize(conf.getModule()) + buildFileName(((Element) node).getFile());
 	}
 
 	private RuleEngine createRuleEngine(InputStream rulesInput) {
@@ -110,20 +114,20 @@ public class ModelToJavaOperation extends ModelOperation {
 		Frame frame = new Frame("Box");
 		frame.addFrame("name", conf.getGeneratedLanguage());
 		for (String box : boxes)
-			frame.addFrame("boxName", buildBoxUnitName(box));
+			frame.addFrame("namebox", buildBoxUnitName(box));
 		ruleEngine.render(frame, document);
 		return document;
 	}
 
 	private String buildBoxUnitName(String box) {
-		return "magritte.store." + conf.getProject().toLowerCase() + DOT + conf.getModule().toLowerCase() + DOT + box + DOT + "box";
+		return "magritte.store." + box + DOT + "box";
 	}
 
 	private Map<String, Document> processMorphs(Collection<Node> nodes, InputStream rulesInput) {
 		Map<String, Document> map = new HashMap();
 		RuleEngine ruleEngine = createRuleEngine(rulesInput);
 		for (Node node : nodes) {
-			if (node.isCase() || node.isAnonymous()) continue;
+			if (node.isTerminalInstance() || node.isAnonymous()) continue;
 			renderNode(map, ruleEngine, node);
 			renderFacetTargets(map, ruleEngine, node);
 		}
@@ -133,7 +137,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private void renderFacetTargets(Map<String, Document> map, RuleEngine ruleEngine, Node node) {
 		for (FacetTarget facetTarget : node.getFacetTargets()) {
 			Document document = new Document();
-			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getLanguage(), conf.getLocale()).create(facetTarget);
+			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(facetTarget);
 			ruleEngine.render(morphFrame.getValue(), document);
 			map.put(morphFrame.getKey(), document);
 		}
@@ -142,7 +146,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private void renderNode(Map<String, Document> map, RuleEngine ruleEngine, Node node) {
 		Document document = new Document();
 		Map.Entry<String, Frame> morphFrame =
-			new MorphFrameCreator(conf.getProject(), conf.getLanguage(), conf.getLocale()).create(node);
+			new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(node);
 		ruleEngine.render(morphFrame.getValue(), document);
 		map.put(morphFrame.getKey(), document);
 	}
@@ -153,7 +157,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			public Object format(Object value) {
 				String val = value.toString();
 				if (!val.contains(DOT)) return val.substring(0, 1).toUpperCase() + val.substring(1);
-				return buildMorphPath(getMorphPath(DOT) + DOT + val);
+				return buildMorphPath(conf.getModule() + DOT + val);
 			}
 		};
 	}
@@ -173,7 +177,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		File destiny = new File(outFolder, directory);
 		destiny.mkdirs();
 		for (Map.Entry<String, Document> entry : documentMap.entrySet()) {
-			File file = new File(destiny, entry.getKey().replace(DOT, File.separator) + JAVA);
+			File file = new File(destiny, entry.getKey().replace(DOT, separator) + JAVA);
 			file.getParentFile().mkdirs();
 			try {
 				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
@@ -200,7 +204,7 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private void writeMorphs(Map<String, Document> documentMap) {
 		for (Map.Entry<String, Document> entry : documentMap.entrySet()) {
-			File file = new File(outFolder, entry.getKey().replace(DOT, File.separator) + JAVA);
+			File file = new File(outFolder, entry.getKey().replace(DOT, separator) + JAVA);
 			file.getParentFile().mkdirs();
 			try {
 				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
@@ -210,10 +214,6 @@ public class ModelToJavaOperation extends ModelOperation {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
-	}
-
-	private String buildBoxUnitDirectory() {
-		return getBoxUnitPath(File.separator) + File.separator + conf.getProject().toLowerCase() + File.separator + conf.getModule().toLowerCase();
 	}
 
 

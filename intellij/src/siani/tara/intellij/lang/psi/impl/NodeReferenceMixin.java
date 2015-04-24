@@ -2,9 +2,9 @@ package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import siani.tara.intellij.lang.psi.Annotation;
-import siani.tara.intellij.lang.psi.Annotations;
-import siani.tara.intellij.lang.psi.NodeReference;
+import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.lexer.Tag;
+import siani.tara.intellij.lang.psi.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,33 +16,42 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	private List<String> inheritedAnnotations = new ArrayList<>();
+	private List<String> inheritedFlags = new ArrayList<>();
 
 	public boolean isAggregated() {
 		NodeReference reference = (NodeReference) this;
-		Annotations annotations = reference.getAnnotations();
-		if (annotations == null) return false;
-		for (Annotation annotation : annotations.getAnnotationList())
-			if (siani.tara.intellij.lang.lexer.Annotation.AGGREGATED.getName().equals(annotation.getText())) return true;
+		for (Annotation annotation : reference.getAnnotations())
+			if (Tag.AGGREGATED.getName().equals(annotation.getText())) return true;
 		return false;
 	}
 
 	public boolean isAssociated() {
 		NodeReference reference = (NodeReference) this;
-		Annotations annotations = reference.getAnnotations();
-		if (annotations == null) return false;
-		for (Annotation annotation : annotations.getAnnotationList())
-			if (siani.tara.intellij.lang.lexer.Annotation.ASSOCIATED.getName().equals(annotation.getText()))
+		for (Annotation annotation : reference.getAnnotations())
+			if (Tag.ASSOCIATED.getName().equals(annotation.getText()))
 				return true;
 		return false;
 	}
 
-
-	public void addInheritedAnnotations(String... annotations) {
-		Collections.addAll(inheritedAnnotations, annotations);
+	@NotNull
+	public List<TaraAnnotation> getAnnotations() {
+		TaraTags tags = ((TaraNodeReference) this).getTags();
+		if (tags == null || tags.getAnnotations() == null) return Collections.EMPTY_LIST;
+		return tags.getAnnotations().getAnnotationList();
 	}
 
-	public List<String> getInheritedAnnotations() {
-		return inheritedAnnotations;
+	@NotNull
+	public List<TaraFlag> getFlags() {
+		TaraTags tags = ((TaraNodeReference) this).getTags();
+		if (tags == null || tags.getFlags() == null) return Collections.EMPTY_LIST;
+		return tags.getFlags().getFlagList();
+	}
+
+	public void addInheritedFlags(String... flags) {
+		Collections.addAll(inheritedFlags, flags);
+	}
+
+	public List<String> getInheritedFlags() {
+		return inheritedFlags;
 	}
 }

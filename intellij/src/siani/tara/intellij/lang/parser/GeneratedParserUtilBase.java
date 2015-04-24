@@ -892,9 +892,8 @@ public class GeneratedParserUtilBase {
 			Variant variant = (Variant) o;
 
 			if (position != variant.position) return false;
-			if (!this.object.equals(variant.object)) return false;
+			return this.object.equals(variant.object);
 
-			return true;
 		}
 
 		@Override

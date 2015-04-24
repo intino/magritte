@@ -3,8 +3,8 @@ package $package+lowercase;
 
 [import $import...[;$NL]]\
 import magritte.types.*;
-import magritte.wrappers.Morph;
-import magritte.morphs.*;
+import magritte.wraps.Morph;
+import magritte.wraps.Type;
 $imports...[$NL]
 
 $node
@@ -26,7 +26,7 @@ endrule
 
 defrule type(Word) !type(List) trigger(getter)
 public $name+reference get$name+firstUpperCase() {
-	return Enumerate.cardinal((Integer) get("$name"), $name+reference.values());
+	return Enumerate.cardinal((int) definition().get("$name+firstLowerCase"), $name+firstUpperCase.values());
 }
 
 endrule
@@ -59,30 +59,31 @@ public double $name+firstLowerCase() {
 
 endrule
 
-defrule type(Variable) type(Resource) !type(Word) trigger(getter)
-public Resource $name+firstLowerCase() {
-    return get("$name");
+defrule type(Variable) type(Native) !type(Word) trigger(getter)
+public $name+reference $name+firstLowerCase() {
+    return Type.natives($name+reference.class)$[0$];
 }
+
 
 endrule
 
-defrule type(Variable) type(Attribute) trigger(getter)
-public java.lang.$type+firstUpperCase $name+firstLowerCase() {
-    return get("$name");
+defrule type(Variable) type(file) !type(Word) trigger(getter)
+public Resource $name+firstLowerCase() {
+    return resource(get("value", int.class));
 }
 
 endrule
 
 defrule type(Variable) !type(Word) trigger(getter)
 public $type+reference $name+firstLowerCase() {
-    return get("$name");
+    return get("$name", $type+reference.class);
 }
 
 endrule
 
-defrule type(Variable) type(Resource) !type(list) !type(readonly) !type(Word) trigger(setter)
+defrule type(Variable) type(file) !type(list) !type(readonly) !type(Word) trigger(setter)
 public void set$name+firstUpperCase(Resource value) {
-    set("$name", value);
+    set("value", value.id());
 }
 
 endrule
@@ -101,21 +102,21 @@ public void set$name+firstUpperCase(double $name+firstLowerCase) {
 
 endrule
 
-defrule type(Variable) !type(readonly) !type(Word) type(List) trigger(setter)
+defrule type(Variable) !type(readonly) !type(Native) !type(Word) type(List) trigger(setter)
 public void set$name+firstUpperCase($type+reference$[] $name+firstLowerCase) {
     set("$name", $name+firstLowerCase);
 }
 
 endrule
 
-defrule type(Variable) type(Attribute) !type(readonly) !type(Word) !type(List) trigger(setter)
+defrule type(Variable) !type(Native) !type(reference) !type(readonly) !type(Word) !type(List) trigger(setter)
 public void set$name+firstUpperCase(java.lang.$type+firstUpperCase value) {
     set("$name", value);
 }
 
 endrule
 
-defrule type(Variable) !type(readonly) !type(Word) !type(List) trigger(setter)
+defrule type(Variable) !type(readonly) !type(Word) !type(Native) !type(List) trigger(setter)
 public void set$name+firstUpperCase($type+reference value) {
     set("$name", value);
 }
@@ -126,21 +127,32 @@ defrule trigger(parent) slot-name(value)
 extends $value+reference
 endrule
 
-defrule type(nodeReference) !type(aggregated) type(single) trigger(component)
+defrule type(nodeReference) type(Feature) trigger(component)
+public $name+reference $name+firstLowerCase() {
+    return definition().feature($name+reference.class);
+}
+
+endrule
+
+defrule type(nodeReference) !type(Feature) !type(aggregated) type(single) trigger(component)
 public $name+reference $name+firstLowerCase() {
     return components($name+reference.class)$[0];
 }
 
 endrule
 
-defrule type(nodeReference) !type(aggregated) !type(single) trigger(component)
-public $qn+reference$[] $name+firstLowerCase+plural() {
-    return components($qn+reference.class);
+defrule type(nodeReference) !type(Feature) !type(aggregated) !type(single) trigger(component)
+public $name+reference$[] $name+firstLowerCase+plural() {
+    return components($name+reference.class);
+}
+
+public $name+reference $name+firstLowerCase(int index) {
+    return $name+firstLowerCase+plural()$[index$];
 }
 
 endrule
 
-defrule type(nodeReference) type(aggregated) trigger(component)
+defrule type(nodeReference) !type(Feature) type(aggregated) trigger(component)
 public $name+firstUpperCase$[] $name+firstLowerCase() {
     return holdings($name+firstUpperCase.class);
 }

@@ -36,8 +36,6 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	Node container();
 
-	boolean isIntention();
-
 	boolean isFacet();
 
 	boolean isAddressed();
@@ -50,13 +48,13 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isProperty();
 
-	boolean isPropertyInstance();
+	boolean isFeature();
+
+	boolean FeatureInstance();
 
 	boolean isComponent();
 
 	boolean isEnclosed();
-
-	boolean isIntentionInstance();
 
 	boolean isFacetInstance();
 
@@ -70,11 +68,15 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 	@NotNull
 	List<Annotation> getAnnotations();
 
+	List<Flag> getFlags();
+
 	Annotations getAnnotationsNode();
 
-	Collection<String> getAssumedAnnotations();
+	Flags getFlagsNode();
 
-	void addInheritedAnnotations(String... annotations);
+	Collection<String> getAssumedFlags();
+
+	void addInheritedFlags(String... flags);
 
 	boolean contains(String type);
 

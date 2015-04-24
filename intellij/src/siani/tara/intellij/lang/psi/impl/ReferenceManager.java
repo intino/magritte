@@ -12,6 +12,7 @@ import siani.tara.semantic.Assumption;
 import java.util.*;
 
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
+import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContextOf;
 
 public class ReferenceManager {
 
@@ -112,8 +113,23 @@ public class ReferenceManager {
 
 	private static void addNodesInContext(Identifier identifier, Set<Node> set) {
 		Node container = getContainerNodeOf(identifier);
+		if (isInFacetTarget(container)) addFacetTargetNodes(set, container);
 		if (container != null && !isExtendsReference(identifier) && namesAreEqual(identifier, container))
 			set.add(container);
+		if (container != null) collectContextNodes(identifier, set, container);
+	}
+
+	private static boolean isInFacetTarget(Node node) {
+		return getContextOf(node) instanceof FacetTarget;
+	}
+
+	private static void addFacetTargetNodes(Set<Node> set, Node node) {
+		FacetTarget facetTarget = (FacetTarget) getContextOf(node);
+		for (Node inner : facetTarget.includes()) set.add(inner);
+	}
+
+	private static void collectContextNodes(Identifier identifier, Set<Node> set, Node node) {
+		Node container = node;
 		while (container != null) {
 			for (Node sibling : collectCandidates(container))
 				if (namesAreEqual(identifier, sibling) && !sibling.equals(getContainerNodeOf(identifier)))
@@ -242,9 +258,30 @@ public class ReferenceManager {
 		return resolve(importIdentifiers.get(importIdentifiers.size() - 1));
 	}
 
-	public static PsiElement resolveMeasure(MeasureType measureType) {
-		Project project = measureType.getProject();
-		String path = project.getName().toLowerCase() + "." + "metrics" + "." + measureType.getFormmatedName();
-		return resolveJavaClassReference(project, path);
+	public static PsiElement resolveNative(NativeName nativeName) {
+		if (isMeasure(nativeName))
+			return resolveMetric(nativeName, nativeName.getProject());
+		else return resolveNativeClass(nativeName, nativeName.getProject());
 	}
+
+	private static boolean isMeasure(NativeName nativeName) {
+		PsiElement parent = nativeName.getParent();
+		while (!(parent instanceof Variable)) parent = parent.getParent();
+		return ("measure".equals(((Variable) parent).getType()));
+	}
+
+	private static PsiElement resolveMetric(NativeName nativeName, Project project) {
+		return resolveJavaClassReference(project, project.getName().toLowerCase() + "." + "metrics" + "." + nativeName.getFormattedName());
+	}
+
+	private static PsiElement resolveNativeClass(NativeName nativeName, Project project) {
+		if (nativeName == null) return null;
+		String aPackage = project.getName() + '.' + "natives";
+		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(nativeName.getFormattedName()));
+	}
+
+	private static String capitalize(String name) {
+		return name.substring(0, 1).toUpperCase() + name.substring(1);
+	}
+
 }

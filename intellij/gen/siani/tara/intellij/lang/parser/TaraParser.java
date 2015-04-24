@@ -67,6 +67,12 @@ public class TaraParser implements PsiParser {
     else if (t == FACET_TARGET) {
       r = facetTarget(b, 0);
     }
+    else if (t == FLAG) {
+      r = flag(b, 0);
+    }
+    else if (t == FLAGS) {
+      r = flags(b, 0);
+    }
     else if (t == HEADER_REFERENCE) {
       r = headerReference(b, 0);
     }
@@ -88,14 +94,14 @@ public class TaraParser implements PsiParser {
     else if (t == LINK_VALUE) {
       r = linkValue(b, 0);
     }
-    else if (t == MEASURE_TYPE) {
-      r = measureType(b, 0);
-    }
     else if (t == MEASURE_VALUE) {
       r = measureValue(b, 0);
     }
     else if (t == META_IDENTIFIER) {
       r = metaIdentifier(b, 0);
+    }
+    else if (t == NATIVE_NAME) {
+      r = nativeName(b, 0);
     }
     else if (t == NATURAL_VALUE) {
       r = naturalValue(b, 0);
@@ -114,6 +120,9 @@ public class TaraParser implements PsiParser {
     }
     else if (t == STRING_VALUE) {
       r = stringValue(b, 0);
+    }
+    else if (t == TAGS) {
+      r = tags(b, 0);
     }
     else if (t == VALUE) {
       r = value(b, 0);
@@ -167,60 +176,40 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // PLUS? (ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED
-  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | ENCLOSED | ADDRESSED | AGGREGATED | TACIT | ASSOCIATED | READONLY | CASE)
+  // TERMINAL
+  // 	| SINGLE | MULTIPLE | REQUIRED | OPTIONAL
+  // 	| FACET
+  // 	| FEATURE | PROPERTY | ENCLOSED | ADDRESSED
+  // 	| COMPONENT | AGGREGATED | ASSOCIATED
   public static boolean annotation(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotation")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<annotation>");
-    r = annotation_0(b, l + 1);
-    r = r && annotation_1(b, l + 1);
+    r = consumeToken(b, TERMINAL);
+    if (!r) r = consumeToken(b, SINGLE);
+    if (!r) r = consumeToken(b, MULTIPLE);
+    if (!r) r = consumeToken(b, REQUIRED);
+    if (!r) r = consumeToken(b, OPTIONAL);
+    if (!r) r = consumeToken(b, FACET);
+    if (!r) r = consumeToken(b, FEATURE);
+    if (!r) r = consumeToken(b, PROPERTY);
+    if (!r) r = consumeToken(b, ENCLOSED);
+    if (!r) r = consumeToken(b, ADDRESSED);
+    if (!r) r = consumeToken(b, COMPONENT);
+    if (!r) r = consumeToken(b, AGGREGATED);
+    if (!r) r = consumeToken(b, ASSOCIATED);
     exit_section_(b, l, m, ANNOTATION, r, false, null);
     return r;
   }
 
-  // PLUS?
-  private static boolean annotation_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "annotation_0")) return false;
-    consumeToken(b, PLUS);
-    return true;
-  }
-
-  // ABSTRACT | TERMINAL | SINGLE | REQUIRED | NAMED
-  // 	| COMPONENT | ROOT | FACET | INTENTION | PROPERTY | ENCLOSED | ADDRESSED | AGGREGATED | TACIT | ASSOCIATED | READONLY | CASE
-  private static boolean annotation_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "annotation_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, ABSTRACT);
-    if (!r) r = consumeToken(b, TERMINAL);
-    if (!r) r = consumeToken(b, SINGLE);
-    if (!r) r = consumeToken(b, REQUIRED);
-    if (!r) r = consumeToken(b, NAMED);
-    if (!r) r = consumeToken(b, COMPONENT);
-    if (!r) r = consumeToken(b, ROOT);
-    if (!r) r = consumeToken(b, FACET);
-    if (!r) r = consumeToken(b, INTENTION);
-    if (!r) r = consumeToken(b, PROPERTY);
-    if (!r) r = consumeToken(b, ENCLOSED);
-    if (!r) r = consumeToken(b, ADDRESSED);
-    if (!r) r = consumeToken(b, AGGREGATED);
-    if (!r) r = consumeToken(b, TACIT);
-    if (!r) r = consumeToken(b, ASSOCIATED);
-    if (!r) r = consumeToken(b, READONLY);
-    if (!r) r = consumeToken(b, CASE);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
   /* ********************************************************** */
-  // IS annotation+
+  // INTO annotation+
   public static boolean annotations(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotations")) return false;
-    if (!nextTokenIs(b, IS)) return false;
+    if (!nextTokenIs(b, INTO)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, null);
-    r = consumeToken(b, IS);
+    r = consumeToken(b, INTO);
     p = r; // pin = 1
     r = r && annotations_1(b, l + 1);
     exit_section_(b, l, m, ANNOTATIONS, r, p, null);
@@ -244,7 +233,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // COLON measureType
+  // COLON nativeName
   public static boolean attributeType(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attributeType")) return false;
     if (!nextTokenIs(b, COLON)) return false;
@@ -252,7 +241,7 @@ public class TaraParser implements PsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeToken(b, COLON);
     p = r; // pin = 1
-    r = r && measureType(b, l + 1);
+    r = r && nativeName(b, l + 1);
     exit_section_(b, l, m, ATTRIBUTE_TYPE, r, p, null);
     return r || p;
   }
@@ -553,7 +542,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ON identifierReference ALWAYS? body?
+  // ON identifierReference body?
   public static boolean facetTarget(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "facetTarget")) return false;
     if (!nextTokenIs(b, ON)) return false;
@@ -562,24 +551,75 @@ public class TaraParser implements PsiParser {
     r = consumeToken(b, ON);
     p = r; // pin = 1
     r = r && report_error_(b, identifierReference(b, l + 1));
-    r = p && report_error_(b, facetTarget_2(b, l + 1)) && r;
-    r = p && facetTarget_3(b, l + 1) && r;
+    r = p && facetTarget_2(b, l + 1) && r;
     exit_section_(b, l, m, FACET_TARGET, r, p, null);
     return r || p;
   }
 
-  // ALWAYS?
+  // body?
   private static boolean facetTarget_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "facetTarget_2")) return false;
-    consumeToken(b, ALWAYS);
+    body(b, l + 1);
     return true;
   }
 
-  // body?
-  private static boolean facetTarget_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "facetTarget_3")) return false;
-    body(b, l + 1);
-    return true;
+  /* ********************************************************** */
+  // ABSTRACT | TERMINAL
+  // 	| SINGLE | MULTIPLE | REQUIRED | OPTIONAL
+  // 	| FACET
+  // 	| FEATURE | PROPERTY | ENCLOSED | ADDRESSED | READONLY |
+  // 	COMPONENT | AGGREGATED | ASSOCIATED
+  public static boolean flag(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flag")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, "<flag>");
+    r = consumeToken(b, ABSTRACT);
+    if (!r) r = consumeToken(b, TERMINAL);
+    if (!r) r = consumeToken(b, SINGLE);
+    if (!r) r = consumeToken(b, MULTIPLE);
+    if (!r) r = consumeToken(b, REQUIRED);
+    if (!r) r = consumeToken(b, OPTIONAL);
+    if (!r) r = consumeToken(b, FACET);
+    if (!r) r = consumeToken(b, FEATURE);
+    if (!r) r = consumeToken(b, PROPERTY);
+    if (!r) r = consumeToken(b, ENCLOSED);
+    if (!r) r = consumeToken(b, ADDRESSED);
+    if (!r) r = consumeToken(b, READONLY);
+    if (!r) r = consumeToken(b, COMPONENT);
+    if (!r) r = consumeToken(b, AGGREGATED);
+    if (!r) r = consumeToken(b, ASSOCIATED);
+    exit_section_(b, l, m, FLAG, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // IS flag+
+  public static boolean flags(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flags")) return false;
+    if (!nextTokenIs(b, IS)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = consumeToken(b, IS);
+    p = r; // pin = 1
+    r = r && flags_1(b, l + 1);
+    exit_section_(b, l, m, FLAGS, r, p, null);
+    return r || p;
+  }
+
+  // flag+
+  private static boolean flags_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flags_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = flag(b, l + 1);
+    int c = current_position_(b);
+    while (r) {
+      if (!flag(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "flags_1", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
@@ -772,19 +812,6 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // MEASURE_VALUE_KEY | IDENTIFIER_KEY
-  public static boolean measureType(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "measureType")) return false;
-    if (!nextTokenIs(b, "<measure type>", IDENTIFIER_KEY, MEASURE_VALUE_KEY)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<measure type>");
-    r = consumeToken(b, MEASURE_VALUE_KEY);
-    if (!r) r = consumeToken(b, IDENTIFIER_KEY);
-    exit_section_(b, l, m, MEASURE_TYPE, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
   // IDENTIFIER_KEY | MEASURE_VALUE_KEY
   public static boolean measureValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "measureValue")) return false;
@@ -807,6 +834,19 @@ public class TaraParser implements PsiParser {
     r = consumeToken(b, METAIDENTIFIER_KEY);
     if (!r) r = consumeToken(b, IDENTIFIER_KEY);
     exit_section_(b, l, m, META_IDENTIFIER, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // MEASURE_VALUE_KEY | IDENTIFIER_KEY
+  public static boolean nativeName(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "nativeName")) return false;
+    if (!nextTokenIs(b, "<native name>", IDENTIFIER_KEY, MEASURE_VALUE_KEY)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, "<native name>");
+    r = consumeToken(b, MEASURE_VALUE_KEY);
+    if (!r) r = consumeToken(b, IDENTIFIER_KEY);
+    exit_section_(b, l, m, NATIVE_NAME, r, false, null);
     return r;
   }
 
@@ -860,7 +900,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // HAS identifierReference annotations?
+  // HAS identifierReference tags?
   public static boolean nodeReference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "nodeReference")) return false;
     if (!nextTokenIs(b, HAS)) return false;
@@ -874,10 +914,10 @@ public class TaraParser implements PsiParser {
     return r || p;
   }
 
-  // annotations?
+  // tags?
   private static boolean nodeReference_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "nodeReference_2")) return false;
-    annotations(b, l + 1);
+    tags(b, l + 1);
     return true;
   }
 
@@ -1016,7 +1056,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (subNode | metaIdentifier parameters? identifier? parent?) annotations? address?
+  // (subNode | metaIdentifier parameters? identifier? parent?) tags? address?
   public static boolean signature(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "signature")) return false;
     boolean r, p;
@@ -1074,10 +1114,10 @@ public class TaraParser implements PsiParser {
     return true;
   }
 
-  // annotations?
+  // tags?
   private static boolean signature_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "signature_1")) return false;
-    annotations(b, l + 1);
+    tags(b, l + 1);
     return true;
   }
 
@@ -1161,6 +1201,33 @@ public class TaraParser implements PsiParser {
   private static boolean subNode_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "subNode_1")) return false;
     parameters(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // flags? annotations?
+  public static boolean tags(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tags")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, "<tags>");
+    r = tags_0(b, l + 1);
+    p = r; // pin = 1
+    r = r && tags_1(b, l + 1);
+    exit_section_(b, l, m, TAGS, r, p, null);
+    return r || p;
+  }
+
+  // flags?
+  private static boolean tags_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tags_0")) return false;
+    flags(b, l + 1);
+    return true;
+  }
+
+  // annotations?
+  private static boolean tags_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tags_1")) return false;
+    annotations(b, l + 1);
     return true;
   }
 
@@ -1370,7 +1437,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // VAR variableType attributeType? (LIST | count)? IDENTIFIER_KEY (word | (EQUALS value measureValue?))? annotations?
+  // VAR variableType attributeType? (LIST | count)? IDENTIFIER_KEY (word | (EQUALS value measureValue?))? flags?
   public static boolean variable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable")) return false;
     if (!nextTokenIs(b, VAR)) return false;
@@ -1450,15 +1517,16 @@ public class TaraParser implements PsiParser {
     return true;
   }
 
-  // annotations?
+  // flags?
   private static boolean variable_6(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable_6")) return false;
-    annotations(b, l + 1);
+    flags(b, l + 1);
     return true;
   }
 
   /* ********************************************************** */
   // NATURAL_TYPE
+  //                 | NATIVE_TYPE
   //                 | INT_TYPE
   //                 | BOOLEAN_TYPE
   //                 | STRING_TYPE
@@ -1474,6 +1542,7 @@ public class TaraParser implements PsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<variable type>");
     r = consumeToken(b, NATURAL_TYPE);
+    if (!r) r = consumeToken(b, NATIVE_TYPE);
     if (!r) r = consumeToken(b, INT_TYPE);
     if (!r) r = consumeToken(b, BOOLEAN_TYPE);
     if (!r) r = consumeToken(b, STRING_TYPE);

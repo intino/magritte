@@ -88,27 +88,34 @@ AS                  : 'as';
 HAS                 : 'has';
 ON                  : 'on';
 IS                  : 'is';
+INTO                : 'into';
 WITH                : 'with';
 EXTENDS             : 'extends';
 
 //annotations
 ABSTRACT            : 'abstract';
+
 SINGLE              : 'single';
+MULTIPLE            : 'multiple';
+
+OPTIONAL            : 'optional';
 REQUIRED            : 'required';
-COMPONENT           : 'component';
-FACET               : 'facet';
-INTENTION           : 'intention';
+
 TERMINAL            : 'terminal';
-NAMED               : 'named';
+
 PROPERTY            : 'property';
-ENCLOSED            : 'enclosed';
-ALWAYS              : 'always';
-ASSOCIATED          : 'associated';
-TACIT               : 'tacit';
-ADDRESSED           : 'addressed';
+FEATURE             : 'feature';
+
 AGGREGATED          : 'aggregated';
+ASSOCIATED          : 'associated';
+COMPONENT           : 'component';
+
 READONLY            : 'readonly';
-CASE                : 'case';
+ENCLOSED            : 'enclosed';
+
+FACET               : 'facet';
+
+ADDRESSED           : 'addressed';
 
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';
@@ -131,6 +138,7 @@ WORD                : 'word';
 RESOURCE            : 'file';
 INT_TYPE            : 'integer';
 NATURAL_TYPE        : 'natural';
+NATIVE_TYPE         : 'native';
 DOUBLE_TYPE         : 'double';
 STRING_TYPE         : 'string';
 BOOLEAN_TYPE        : 'boolean';
@@ -138,6 +146,9 @@ MEASURE_TYPE        : 'measure';
 RATIO_TYPE          : 'ratio';
 DATE_TYPE           : 'date';
 EMPTY               : 'empty';
+
+BLOCK_COMMENT       : '/*' .*? '*/' -> channel(HIDDEN);
+LINE_COMMENT        : '//' ~[\r\n]* -> channel(HIDDEN);
 
 SCIENCE_NOT         : 'E' (PLUS | DASH)? DIGIT+;
 BOOLEAN_VALUE       : 'true' | 'false';

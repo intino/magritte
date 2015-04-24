@@ -37,11 +37,9 @@ public class LinkToJava {
 		}
 		for (TaraModelImpl taraBoxFile : TaraUtil.getTaraFilesOfModule(module)) {
 			generateAddresses(taraBoxFile);
-			new IntentionsGenerator(project, taraBoxFile).generate();
-			new FacetApplyCodeGenerator(taraBoxFile).generate();
-			new IntentionInstancesGenerator(taraBoxFile).generate();
+			new NativesGenerator(project, taraBoxFile).generate();
 		}
-		String report = String.format("Facet & Intention Classes have been Generated Successfully");
+		String report = String.format("Native Classes have been Generated Successfully");
 		Notifications.Bus.notify(new Notification("Tara Generator", "", report, NotificationType.INFORMATION), project);
 		VfsUtil.markDirtyAndRefresh(true, true, true, srcDirectory);
 		srcDirectory.refresh(true, true);

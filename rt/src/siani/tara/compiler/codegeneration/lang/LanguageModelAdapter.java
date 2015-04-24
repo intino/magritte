@@ -4,20 +4,19 @@ import org.siani.itrules.framebuilder.Adapter;
 import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
-import siani.tara.compiler.model.Annotation;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.Tag;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
-import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.Assumption;
 import siani.tara.semantic.model.Context;
 
 import java.util.*;
 
-import static siani.tara.compiler.model.Annotation.*;
+import static siani.tara.compiler.model.Tag.*;
 
 class LanguageModelAdapter implements Adapter<Model> {
 	private static final String ALLOW = "allow";
@@ -43,26 +42,25 @@ class LanguageModelAdapter implements Adapter<Model> {
 		root.addFrame("name", languageName);
 		root.addFrame("terminal", Boolean.toString(model.isTerminal()));
 		root.addFrame("locale", locale.equals(Locale.ENGLISH) ? "Locale.ENGLISH" : createLocale());
-		addInheritedRules();
 		buildNode(model);
+		addInheritedRules();
 	}
 
 	private void addInheritedRules() {
 		List<String> cases = collectCaseRules();
-		LanguageInheritanceFiller filler = new LanguageInheritanceFiller(root, cases, language);
-		filler.fill();
+		new LanguageInheritanceFiller(root, cases, language).fill();
 	}
 
 	private List<String> collectCaseRules() {
 		List<String> cases = new ArrayList<>();
 		for (Map.Entry<String, Context> entry : language.catalog().entrySet())
-			if (isCase(entry.getValue())) cases.add(entry.getKey());
+			if (isTerminalInstance(entry.getValue())) cases.add(entry.getKey());
 		return cases;
 	}
 
-	private boolean isCase(Context value) {
+	private boolean isTerminalInstance(Context value) {
 		for (Assumption assumption : value.assumptions())
-			if (assumption instanceof Assumption.Case) return true;
+			if (assumption instanceof Assumption.TerminalInstance) return true;
 		return false;
 	}
 
@@ -73,7 +71,7 @@ class LanguageModelAdapter implements Adapter<Model> {
 	private void buildNode(Node node) {
 		if (alreadyProcessed(node)) return;
 		Frame frame = new Frame("node");
-		if (!node.isAbstract() && !node.isAnonymous() && !node.isCase()) {
+		if (!node.isAbstract() && !node.isAnonymous() && !node.isTerminalInstance()) {
 			frame.addFrame("name", getName(node));
 			addTypes(node, frame);
 			addAllows(node, frame);
@@ -111,8 +109,17 @@ class LanguageModelAdapter implements Adapter<Model> {
 
 	private void addAllows(Node node, Frame frame) {
 		Frame allows = buildAllowedNodes(node.getIncludedNodes());
+		for (Frame allowFrame : getCasesConstrains(collectCaseRules()))
+			allows.addFrame("allow", allowFrame);
 		addContextAllows(node, allows);
 		if (allows.getSlots().length != 0) frame.addFrame("allows", allows);
+	}
+
+	private Collection<Frame> getCasesConstrains(List<String> nodes) {
+		List<Frame> frames = new ArrayList<>();
+		for (String node : nodes)
+			frames.add(new Frame("multiple", ALLOW).addFrame("type", node).addFrame("relation", COMPONENT));
+		return frames;
 	}
 
 	private void addRequires(Node node, Frame frame) {
@@ -123,15 +130,15 @@ class LanguageModelAdapter implements Adapter<Model> {
 
 	private void addContextAllows(Node node, Frame allows) {
 		if (node instanceof NodeImpl) addParameterAllows((List<Variable>) node.getVariables(), allows);
-		if (!node.isNamed() && !node.isProperty()) allows.addFrame("allow", "name");
+		if (!node.isNamed() && !node.isPropertyInstance()) allows.addFrame("allow", "name");
 		addFacetAllows(node, allows);
 	}
 
 	private void addParameterAllows(List<Variable> variables, Frame allows) {
 		for (int i = 0; i < variables.size(); i++) {
 			Variable variable = variables.get(i);
-			if (variable.getDefaultValues().isEmpty()) continue;
-			addParameter(allows, i, variable, ALLOW);
+			if (variable.getDefaultValues().isEmpty() && !variable.isTerminal()) continue;
+			new LanguageParameterAdapter(language).addParameter(allows, i, variable, ALLOW);
 		}
 	}
 
@@ -142,7 +149,7 @@ class LanguageModelAdapter implements Adapter<Model> {
 			FacetTarget facetNode = findFacetTarget(node, facet);
 			if (facetNode == null) continue;
 			addParameterAllows((List<Variable>) facetNode.getVariables(), frame);
-			addParameterRequires((List<Variable>) facetNode.getVariables(), frame, true);//TRUE?
+			addParameterRequires((List<Variable>) facetNode.getVariables(), frame, true, 0);//TRUE? añadir terminales
 		}
 
 	}
@@ -161,67 +168,23 @@ class LanguageModelAdapter implements Adapter<Model> {
 	}
 
 	private void addContextRequires(Node node, Frame requires) {
-		if (node instanceof NodeImpl)
-			addParameterRequires((List<Variable>) node.getVariables(), requires, node.isTerminal());
+		if (node instanceof NodeImpl) {
+			int index = new LanguageParameterAdapter(language).addTerminalParameters(node, requires);
+			addParameterRequires((List<Variable>) node.getVariables(), requires, node.isTerminal(), index);
+		}
 		if (node.isNamed()) requires.addFrame(REQUIRE, "name");
 		if (node.isAddressed()) requires.addFrame(REQUIRE, "address");
 	}
 
-
-	private void addParameterRequires(List<Variable> variables, Frame requires, boolean terminal) {
+	private void addParameterRequires(List<Variable> variables, Frame requires, boolean terminalNode, int index) {
 		for (int i = 0; i < variables.size(); i++) {
 			Variable variable = variables.get(i);
 			if (!variable.getDefaultValues().isEmpty() ||
-				(variable.isTerminal() && !terminal)) continue;
-			addParameter(requires, i, variable, REQUIRE);
+				(variable.isTerminal() && !terminalNode)) continue;
+			new LanguageParameterAdapter(language).addParameter(requires, index + i, variable, REQUIRE);
 		}
 	}
 
-	private void addParameter(Frame frame, int i, Variable variable, String relation) {
-		if (variable.getType().equals("word"))
-			frame.addFrame(relation, new Frame(relation, "parameter", "word").
-				addFrame("name", variable.getName() + ":word").
-				addFrame("words", renderWord(variable)).
-				addFrame("multiple", variable.isMultiple()).
-				addFrame("position", i).
-				addFrame("annotations", getAnnotations(variable)).
-				addFrame("metric", variable.getMetric() == null ? "" : variable.getMetric()));
-		else if (variable instanceof VariableReference)
-			frame.addFrame(relation, new Frame(relation, "parameter", "reference").
-				addFrame("name", variable.getName()).
-				addFrame("types", renderReference((VariableReference) variable)).
-				addFrame("multiple", variable.isMultiple()).
-				addFrame("position", i).
-				addFrame("annotations", getAnnotations(variable)).
-				addFrame("metric", variable.getMetric() == null ? "" : variable.getMetric()));
-		else frame.addFrame(relation, new Frame(relation, "parameter").
-				addFrame("name", variable.getName()).
-				addFrame("type", variable.getType()).
-				addFrame("multiple", variable.isMultiple()).
-				addFrame("position", i).
-				addFrame("annotations", getAnnotations(variable)).
-				addFrame("metricBo", variable.getMetric() == null ? "" : variable.getMetric()));
-	}
-
-	private String[] getAnnotations(Variable variable) {
-		List<String> annotations = new ArrayList<>();
-		for (Annotation annotation : variable.getAnnotations()) annotations.add(annotation.getName());
-		return annotations.toArray(new String[annotations.size()]);
-	}
-
-	private String[] renderWord(Variable variable) {
-		return variable.getAllowedValues().toArray(new String[variable.getAllowedValues().size()]);
-	}
-
-	private String[] renderReference(VariableReference reference) {
-		Node node = reference.getDestiny();
-		if (node == null) return new String[0];
-		if (!node.isAbstract()) return new String[]{node.getQualifiedName()};
-		List<String> types = new ArrayList<>();
-		for (Node declaredNode : node.getChildren()) //TODO search extends too
-			types.add(declaredNode.getQualifiedName());
-		return types.toArray(new String[types.size()]);
-	}
 
 	private void addAssumptions(Node node, Frame frame) {
 		Frame assumptions = buildAssumptions(node);
@@ -235,13 +198,14 @@ class LanguageModelAdapter implements Adapter<Model> {
 	}
 
 	private void addAnnotationAssumptions(Node node, Frame assumptions) {
-		for (Annotation annotation : node.getAnnotations()) {
-			if (annotation.equals(SINGLE) || annotation.equals(REQUIRED)) continue;
-			if (annotation.isMeta()) assumptions.addFrame("assumption", annotation.getName().substring(1));
-			else if (annotation.equals(TERMINAL)) assumptions.addFrame("assumption", "Case");
-			else if (annotation.equals(PROPERTY)) assumptions.addFrame("assumption", "PropertyInstance");
-			else if (annotation.equals(FACET)) assumptions.addFrame("assumption", "FacetInstance");
-			else if (annotation.equals(Annotation.INTENTION)) assumptions.addFrame("assumption", "IntentionInstance");
+		for (Tag tag : node.getAnnotations())
+			if (!tag.equals(SINGLE) || tag.equals(REQUIRED) || tag.equals(MULTIPLE) || tag.equals(OPTIONAL))
+				assumptions.addFrame("assumption", tag.getName());
+		for (Tag tag : node.getFlags()) {
+			if (tag.equals(TERMINAL)) assumptions.addFrame("assumption", "TerminalInstance");
+			else if (tag.equals(PROPERTY)) assumptions.addFrame("assumption", "PropertyInstance");
+			else if (tag.equals(FEATURE)) assumptions.addFrame("assumption", "FeatureInstance");
+			else if (tag.equals(FACET)) assumptions.addFrame("assumption", "FacetInstance");
 		}
 	}
 
@@ -261,10 +225,11 @@ class LanguageModelAdapter implements Adapter<Model> {
 	private void addAllowedInnerNodes(Frame allows, Collection<Node> tree) {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
-		for (Node node : collectCandidates(tree)) {
+		for (Node node : tree) {
 			if (node.isRequired()) continue;
-			if (node.isSingle()) singleNodes.add(createAllowedSingle(node));
-			else multipleNodes.add(createAllowedMultiple(node));
+			for (Node candidate : collectCandidates(node))
+				if (node.isSingle()) singleNodes.add(createAllowedSingle(candidate, node.getAnnotations()));
+				else multipleNodes.add(createAllowedMultiple(candidate, node.getAnnotations()));
 		}
 		addAllowedNodes(allows, multipleNodes, singleNodes);
 	}
@@ -272,23 +237,23 @@ class LanguageModelAdapter implements Adapter<Model> {
 	private void addRequiredInnerNodes(Frame requires, Collection<Node> tree) {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
-		for (Node node : collectCandidates(tree)) {
+		for (Node node : tree) {
 			if (!node.isRequired()) continue;
-			if (node.isSingle()) singleNodes.add(createRequiredSingle(node));
-			else multipleNodes.add(createRequiredMultiple(node));
+			Collection<Node> candidates = collectCandidates(node);
+			if (candidates.size() > 1 && node.isSingle())
+				requires.addFrame("require", createOneOf(candidates, node.getAnnotations()));
+			else for (Node candidate : candidates)
+				if (node.isSingle()) singleNodes.add(createRequiredSingle(candidate, node.getAnnotations()));
+				else multipleNodes.add(createRequiredMultiple(candidate, node.getAnnotations()));
 		}
 		addRequiredNodes(requires, multipleNodes, singleNodes);
 	}
 
-	private Collection<Node> collectCandidates(Collection<Node> tree) {
+	private Collection<Node> collectCandidates(Node node) {
 		List<Node> nodes = new ArrayList<>();
-		for (Node node : tree) {
-			if (node.isAnonymous() || node.isCase()) continue;
-			if (node.isAbstract())
-				getNonAbstractChildren(node, nodes);
-			else nodes.add(node);
-		}
-
+		if (node.isAnonymous() || node.isTerminalInstance()) return nodes;
+		if (node.isAbstract()) getNonAbstractChildren(node, nodes);
+		else nodes.add(node);
 		return nodes;
 	}
 
@@ -314,29 +279,45 @@ class LanguageModelAdapter implements Adapter<Model> {
 			allows.addFrame(REQUIRE, singleNodes.toArray(new Frame[singleNodes.size()]));
 	}
 
-	private Frame createAllowedSingle(Node node) {
-		return new Frame("single", ALLOW).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
+	private Frame createAllowedSingle(Node node, Collection<Tag> annotations) {
+		Frame frame = new Frame("single", ALLOW).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
+		for (Tag tag : annotations)
+			frame.addFrame("tags", tag.name());
+		return frame;
 	}
 
-	private Frame createAllowedMultiple(Node node) {
-		return new Frame("multiple", ALLOW).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
+	private Frame createAllowedMultiple(Node node, Collection<Tag> annotations) {
+		Frame frame = new Frame("multiple", ALLOW).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
+		for (Tag tag : annotations)
+			frame.addFrame("tags", tag.name());
+		return frame;
 	}
 
 	private String getName(Node node) {
 		return node instanceof NodeReference ? ((NodeReference) node).getDestiny().getQualifiedName() : node.getQualifiedName();
 	}
 
-	private Frame createRequiredSingle(Node node) {
-		return new Frame("single", REQUIRE).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
+	private Frame createOneOf(Collection<Node> candidates, Collection<Tag> annotations) {
+		Frame frame = new Frame("oneOf", REQUIRE);
+		for (Node candidate : candidates) frame.addFrame("require", createRequiredSingle(candidate, annotations));
+		return frame;
 	}
 
-	private Frame createRequiredMultiple(Node node) {
-		return new Frame("multiple", REQUIRE).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
+	private Frame createRequiredSingle(Node node, Collection<Tag> annotations) {
+		Frame frame = new Frame("single", REQUIRE).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
+		for (Tag tag : annotations) frame.addFrame("tags", tag.name());
+		return frame;
+	}
+
+	private Frame createRequiredMultiple(Node node, Collection<Tag> annotations) {
+		Frame frame = new Frame("multiple", REQUIRE).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
+		for (Tag tag : annotations) frame.addFrame("tags", tag.name());
+		return frame;
 	}
 
 	private String getRelation(Node node) {
 		if (node.isAggregated()) return "AGGREGATED";
 		if (node.isAssociated()) return "ASSOCIATED";
-		return "COMPOSED";
+		return "COMPONENT";
 	}
 }

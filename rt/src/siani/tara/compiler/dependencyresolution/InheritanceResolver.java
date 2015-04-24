@@ -21,14 +21,14 @@ public class InheritanceResolver {
 		List<NodeImpl> nodes = new ArrayList<>();
 		nodes.addAll(collectNodes(model));
 		sort(nodes);
-		for (NodeImpl node : nodes)
-			resolve(node);
+		for (NodeImpl node : nodes) resolve(node);
 	}
 
 	private void resolve(NodeImpl parent) {
 		List<NodeImpl> children = getChildrenSorted(parent);
 		for (NodeImpl child : children) {
 			resolveIncludes(parent, child);
+			resolveFlags(parent, child);
 			resolveAnnotations(parent, child);
 			resolveVariables(parent, child);
 			resolveAllowedFacets(parent, child);
@@ -86,10 +86,16 @@ public class InheritanceResolver {
 		return nodes;
 	}
 
+	private void resolveFlags(NodeImpl parent, NodeImpl child) {
+		for (Tag tag : parent.getFlags())
+			if (!tag.equals(Tag.ABSTRACT) && !child.getFlags().contains(tag))
+				child.addFlags(tag.getName());
+	}
+
 	private void resolveAnnotations(NodeImpl parent, NodeImpl child) {
-		for (Annotation annotation : parent.getAnnotations())
-			if (!annotation.equals(Annotation.ABSTRACT) && !child.getAnnotations().contains(annotation))
-				child.addAnnotations(annotation.getName());
+		for (Tag tag : parent.getAnnotations())
+			if (!tag.equals(Tag.ABSTRACT) && !child.getAnnotations().contains(tag))
+				child.addAnnotations(tag.getName());
 	}
 
 	private void resolveVariables(NodeImpl parent, NodeImpl child) {

@@ -77,7 +77,7 @@ public class TaraOverriddenVariable extends JavaLineMarkerProvider {
 		Node parent = node.getParentNode();
 		while (parent != null) {
 			for (Variable parentVar : parent.getVariables())
-				if (isOverriden(variable, parentVar))
+				if (isOverridden(variable, parentVar))
 					return parentVar;
 			parent = parent.getParentNode();
 		}
@@ -88,7 +88,7 @@ public class TaraOverriddenVariable extends JavaLineMarkerProvider {
 		return getOverriddenVariable(variable) != null;
 	}
 
-	private boolean isOverriden(Variable variable, Variable parentVar) {
-		return parentVar.getType().equals(variable.getType()) && parentVar.getName() != null && parentVar.getName().equals(variable.getName());
+	private boolean isOverridden(Variable variable, Variable parentVar) {
+		return parentVar.getType() != null && parentVar.getType().equals(variable.getType()) && parentVar.getName() != null && parentVar.getName().equals(variable.getName());
 	}
 }

@@ -22,15 +22,15 @@ public class TaraNodeReferenceImpl extends NodeReferenceMixin implements TaraNod
   }
 
   @Override
-  @Nullable
-  public TaraAnnotations getAnnotations() {
-    return findChildByClass(TaraAnnotations.class);
-  }
-
-  @Override
   @NotNull
   public TaraIdentifierReference getIdentifierReference() {
     return findNotNullChildByClass(TaraIdentifierReference.class);
+  }
+
+  @Override
+  @Nullable
+  public TaraTags getTags() {
+    return findChildByClass(TaraTags.class);
   }
 
 }

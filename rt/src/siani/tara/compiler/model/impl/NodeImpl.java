@@ -4,10 +4,9 @@ import siani.tara.compiler.model.*;
 
 import java.util.*;
 
-import static siani.tara.compiler.model.Annotation.*;
+import static siani.tara.compiler.model.Tag.*;
 
 public class NodeImpl extends Element implements Node {
-
 
 	private String file;
 	private int line;
@@ -18,7 +17,8 @@ public class NodeImpl extends Element implements Node {
 	private String doc;
 	private boolean sub;
 	private List<Node> includes = new ArrayList<>();
-	private List<Annotation> annotations = new ArrayList<>();
+	private List<Tag> flags = new ArrayList<>();
+	private List<Tag> annotations = new ArrayList<>();
 	private Long address;
 	private String name;
 	private String parentName;
@@ -124,63 +124,63 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public boolean isIntention() {
-		return annotations.contains(INTENTION);
-	}
-
-	@Override
 	public boolean isFacet() {
-		return annotations.contains(FACET);
+		return flags.contains(FACET);
 	}
 
 	@Override
 	public boolean isAddressed() {
-		return annotations.contains(ADDRESSED);
+		return flags.contains(ADDRESSED);
 	}
 
 	@Override
 	public boolean isRequired() {
-		return annotations.contains(REQUIRED);
+		return flags.contains(REQUIRED);
 	}
 
 	@Override
 	public boolean isAbstract() {
-		return annotations.contains(ABSTRACT);
+		return flags.contains(ABSTRACT);
 	}
 
 	@Override
 	public boolean isSingle() {
-		return annotations.contains(SINGLE);
+		return flags.contains(SINGLE);
 	}
 
 	@Override
 	public boolean isNamed() {
-		return annotations.contains(NAMED);
+		return flags.contains(NAMED);
 	}
 
 	@Override
 	public boolean isAggregated() {
-		return annotations.contains(AGGREGATED);
+		return flags.contains(AGGREGATED);
 	}
 
 	@Override
 	public boolean isAssociated() {
-		return annotations.contains(ASSOCIATED);
+		return flags.contains(ASSOCIATED);
 	}
 
 	@Override
 	public boolean isProperty() {
-		return annotations.contains(PROPERTY);
+		return flags.contains(PROPERTY);
+	}
+
+	@Override
+	public boolean isPropertyInstance() {
+		return flags.contains(PROPERTY_INSTANCE);
 	}
 
 	@Override
 	public boolean isComponent() {
-		return annotations.contains(COMPONENT);
+		return flags.contains(COMPONENT);
 	}
 
 	@Override
-	public boolean isCase() {
-		return annotations.contains(CASE);
+	public boolean isTerminalInstance() {
+		return flags.contains(TERMINAL_INSTANCE);
 	}
 
 	@Override
@@ -194,19 +194,34 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Annotation> getAnnotations() {
+	public Collection<Tag> getAnnotations() {
 		return annotations;
+	}
+
+	@Override
+	public Collection<Tag> getFlags() {
+		return flags;
 	}
 
 	@Override
 	public void addAnnotations(String... annotations) {
 		for (String annotation : annotations)
-			this.annotations.add(Annotation.valueOf(annotation.toUpperCase().replace("+", "META_")));
+			this.annotations.add(Tag.valueOf(annotation.toUpperCase()));
+	}
+
+	@Override
+	public void addFlags(String... flags) {
+		for (String flag : flags)
+			this.flags.add(Tag.valueOf(flag.toUpperCase()));
 	}
 
 	@Override
 	public void addImports(Collection<String> imports) {
 		this.imports.addAll(imports);
+	}
+
+	public Collection<String> getImports() {
+		return this.imports;
 	}
 
 	@Override
@@ -257,7 +272,6 @@ public class NodeImpl extends Element implements Node {
 	public String setType() {
 		return type;
 	}
-
 
 	@Override
 	public String getFullType() {

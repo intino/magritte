@@ -3,7 +3,6 @@ package siani.tara.compiler.codegeneration.magritte;
 import org.siani.itrules.framebuilder.Adapter;
 import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
-import siani.tara.Language;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.Primitives;
@@ -22,13 +21,13 @@ import static siani.tara.compiler.codegeneration.magritte.NameFormatter.composeM
 
 public class MorphFacetTargetAdapter implements Adapter<FacetTarget>, TemplateTags {
 	private final String project;
-	private final Language language;
+	private final String module;
 	private final Set<String> imports;
 	private final Locale locale;
 
-	public MorphFacetTargetAdapter(String project, Language language, Set<String> imports, Locale locale) {
+	public MorphFacetTargetAdapter(String project, String module, Set<String> imports, Locale locale) {
 		this.project = project;
-		this.language = language;
+		this.module = module;
 		this.imports = imports;
 		this.locale = locale;
 	}
@@ -50,7 +49,7 @@ public class MorphFacetTargetAdapter implements Adapter<FacetTarget>, TemplateTa
 
 	private void addImports(Node container, Locale locale) {
 		if (container != null) {
-			String containerPackage = composeMorphPackagePath(container, locale);
+			String containerPackage = composeMorphPackagePath(container, locale, module);
 			if (!containerPackage.equals(MAGRITTE_MORPHS))
 				imports.add(containerPackage + DOT + container.getName());
 		}

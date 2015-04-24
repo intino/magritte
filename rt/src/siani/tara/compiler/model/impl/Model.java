@@ -92,11 +92,6 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public boolean isIntention() {
-		return false;
-	}
-
-	@Override
 	public boolean isFacet() {
 		return false;
 	}
@@ -142,17 +137,22 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
+	public boolean isPropertyInstance() {
+		return false;
+	}
+
+	@Override
 	public boolean isComponent() {
+		return false;
+	}
+
+	@Override
+	public boolean isTerminalInstance() {
 		return false;
 	}
 
 	public boolean isTerminal() {
 		return terminal;
-	}
-
-	@Override
-	public boolean isCase() {
-		return false;
 	}
 
 	@Override
@@ -166,12 +166,22 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public List<Annotation> getAnnotations() {
+	public List<Tag> getAnnotations() {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public Collection<Tag> getFlags() {
 		return Collections.EMPTY_LIST;
 	}
 
 	@Override
 	public void addAnnotations(String... annotations) {
+
+	}
+
+	@Override
+	public void addFlags(String... flags) {
 
 	}
 

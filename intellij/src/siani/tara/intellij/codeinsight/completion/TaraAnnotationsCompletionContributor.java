@@ -10,6 +10,8 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
+import siani.tara.intellij.lang.lexer.Flags;
+import siani.tara.intellij.lang.lexer.Tag;
 import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraAnnotations;
 
@@ -33,20 +35,20 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 					if (annotationContext == null) return;
 					IElementType elementType = annotationContext.getNode().getElementType();
 					if (elementType.equals(NODE) || elementType.equals(SUB)) {
-						addNODEAnnotations(resultSet);
+						addNodeAnnotations(resultSet);
 					} else if (elementType.equals(HAS)) {
-						for (siani.tara.intellij.lang.lexer.Annotation annotation : siani.tara.intellij.lang.lexer.Annotations.HAS_ANNOTATIONS)
+						for (Tag annotation : Flags.HAS_ANNOTATIONS)
 							resultSet.addElement(LookupElementBuilder.create(annotation.getName()));
-					} else for (siani.tara.intellij.lang.lexer.Annotation annotation : siani.tara.intellij.lang.lexer.Annotations.VARIABLE_ANNOTATIONS)
+					} else for (Tag annotation : Flags.VARIABLE_ANNOTATIONS)
 						resultSet.addElement(LookupElementBuilder.create(annotation.getName()));
 				}
 			}
 		);
 	}
 
-	private void addNODEAnnotations(CompletionResultSet resultSet) {
-		for (siani.tara.intellij.lang.lexer.Annotation annotation : siani.tara.intellij.lang.lexer.Annotations.PRIME_ANNOTATIONS)
-			resultSet.addElement(LookupElementBuilder.create(annotation.getName()));
+	private void addNodeAnnotations(CompletionResultSet resultSet) {
+		for (Tag tags : Flags.PRIME_ANNOTATIONS)
+			resultSet.addElement(LookupElementBuilder.create(tags.getName()));
 	}
 
 	public PsiElement getContext(PsiElement element) {

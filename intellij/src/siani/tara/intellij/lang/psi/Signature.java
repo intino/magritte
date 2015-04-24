@@ -25,7 +25,12 @@ public interface Signature extends TaraPsiElement {
 	Parameters getParameters();
 
 	@Nullable
-	TaraAnnotations getAnnotations();
+	Tags getTags();
+
+	Flags getFlags();
+
+	@Nullable
+	Annotations getAnnotations();
 
 	@Nullable
 	TaraAddress getAddress();

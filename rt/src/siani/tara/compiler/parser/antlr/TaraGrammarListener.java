@@ -189,15 +189,15 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitVariableType(@NotNull TaraGrammar.VariableTypeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#metric}.
+	 * Enter a parse tree produced by {@link TaraGrammar#nativeName}.
 	 * @param ctx the parse tree
 	 */
-	void enterMetric(@NotNull TaraGrammar.MetricContext ctx);
+	void enterNativeName(@NotNull TaraGrammar.NativeNameContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#metric}.
+	 * Exit a parse tree produced by {@link TaraGrammar#nativeName}.
 	 * @param ctx the parse tree
 	 */
-	void exitMetric(@NotNull TaraGrammar.MetricContext ctx);
+	void exitNativeName(@NotNull TaraGrammar.NativeNameContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#count}.
 	 * @param ctx the parse tree
@@ -309,6 +309,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitMeasureValue(@NotNull TaraGrammar.MeasureValueContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#tags}.
+	 * @param ctx the parse tree
+	 */
+	void enterTags(@NotNull TaraGrammar.TagsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#tags}.
+	 * @param ctx the parse tree
+	 */
+	void exitTags(@NotNull TaraGrammar.TagsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#annotations}.
 	 * @param ctx the parse tree
 	 */
@@ -328,6 +338,26 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAnnotation(@NotNull TaraGrammar.AnnotationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#flags}.
+	 * @param ctx the parse tree
+	 */
+	void enterFlags(@NotNull TaraGrammar.FlagsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#flags}.
+	 * @param ctx the parse tree
+	 */
+	void exitFlags(@NotNull TaraGrammar.FlagsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#flag}.
+	 * @param ctx the parse tree
+	 */
+	void enterFlag(@NotNull TaraGrammar.FlagContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#flag}.
+	 * @param ctx the parse tree
+	 */
+	void exitFlag(@NotNull TaraGrammar.FlagContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#varInit}.
 	 * @param ctx the parse tree

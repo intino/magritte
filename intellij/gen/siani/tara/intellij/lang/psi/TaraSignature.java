@@ -11,9 +11,6 @@ public interface TaraSignature extends Signature {
   TaraAddress getAddress();
 
   @Nullable
-  TaraAnnotations getAnnotations();
-
-  @Nullable
   TaraIdentifier getIdentifier();
 
   @Nullable
@@ -24,5 +21,8 @@ public interface TaraSignature extends Signature {
 
   @Nullable
   TaraParameters getParameters();
+
+  @Nullable
+  TaraTags getTags();
 
 }

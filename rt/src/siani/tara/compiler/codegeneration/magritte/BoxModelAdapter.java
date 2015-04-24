@@ -9,12 +9,12 @@ import siani.tara.compiler.model.Facet;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeReference;
-import siani.tara.semantic.Assumption;
 
-import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.*;
 
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.buildFileName;
+import static siani.tara.compiler.codegeneration.magritte.NameFormatter.capitalize;
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 
 public class BoxModelAdapter implements Adapter<Model> {
@@ -35,7 +35,7 @@ public class BoxModelAdapter implements Adapter<Model> {
 
 	@Override
 	public void adapt(Frame frame, Model model, BuilderContext context) {
-		frame.addFrame(NAME, buildFileName(model.getFile()));
+		frame.addFrame(NAME, capitalize(module) + buildFileName(model.getFile()));
 		if (!Objects.equals(language.languageName(), "Proteo"))
 			frame.addFrame(LANGUAGE, language.languageName());
 		frame.addFrame("project", project).addFrame("module", module);
@@ -43,6 +43,7 @@ public class BoxModelAdapter implements Adapter<Model> {
 		addFacetImports(model.getIncludedNodes(), frame);
 		parserAllNodes(frame, model, context);
 	}
+
 
 	private void parserAllNodes(Frame frame, Node nodeContainer, BuilderContext context) {
 		for (Node node : nodeContainer.getIncludedNodes()) {
@@ -73,17 +74,10 @@ public class BoxModelAdapter implements Adapter<Model> {
 		for (Node node : nodes) {
 			if (node instanceof NodeReference) continue;
 			for (Facet facet : node.getFacets())
-				if (isIntentionInstance(facet.getType()))
-					imports.add(InflectorFactory.getInflector(locale).plural(facet.getType()));
+				imports.add(InflectorFactory.getInflector(locale).plural(facet.getType()));//TODO
 			imports.addAll(searchFacets(node.getIncludedNodes()));
 		}
 		return imports;
-	}
-
-	private boolean isIntentionInstance(String type) {
-		Collection<Assumption> assumptions = language.assumptions(type);
-		for (Assumption assumption : assumptions) if (assumption instanceof Assumption.IntentionInstance) return true;
-		return false;
 	}
 
 }

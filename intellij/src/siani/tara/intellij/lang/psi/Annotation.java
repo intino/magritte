@@ -1,11 +1,10 @@
 package siani.tara.intellij.lang.psi;
 
 import com.intellij.pom.Navigatable;
+import siani.tara.intellij.lang.lexer.Tag;
 
 public interface Annotation extends Navigatable, TaraPsiElement {
 
-	boolean isMetaAnnotation();
-
-	boolean is(siani.tara.intellij.lang.lexer.Annotation annotation);
+	boolean is(Tag tag);
 
 }

@@ -58,16 +58,23 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 
 	private static Object[] wrapValues(Object[] values) {
 		List<Object> objects = new ArrayList<>();
-		for (Object value : values)
+		for (Object value : values) {
+			if (value == null) continue;
 			if (value instanceof Node) objects.add(new LanguageNode((Node) value));
 			else if (values[0].equals("$empty")) objects.add(new EmptyNode());
 			else objects.add(value);
+		}
 		return objects.toArray();
 	}
 
 	@Override
 	public String getMetric() {
 		return varInit.getMetricValue();
+	}
+
+	@Override
+	public boolean isVariableInit() {
+		return true;
 	}
 
 	@Override
