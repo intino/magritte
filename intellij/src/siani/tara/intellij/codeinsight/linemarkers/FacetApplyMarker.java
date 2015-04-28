@@ -15,12 +15,11 @@ import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.siani.itrules.formatter.Inflector;
-import org.siani.itrules.formatter.InflectorFactory;
+import org.siani.itrules.engine.formatters.PluralFormatter;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.lang.psi.Node;
-import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import javax.swing.*;
@@ -111,13 +110,15 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	}
 
 	private String getFacetApplyPackage(Node node, FacetApply apply) {
-		Inflector inflector = getInflector(apply);
+		PluralFormatter.Inflector inflector = getInflector(apply);
 		if (inflector == null) return "";
 		return (getFacetPackage(node) + DOT + inflector.plural(apply.getType())).toLowerCase();
 	}
 
-	private Inflector getInflector(FacetApply apply) {
-		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(apply)).getLanguage());
+	private PluralFormatter.Inflector getInflector(FacetApply apply) {
+		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(apply));
+		if (facet == null) return null;
+		return new PluralFormatter(facet.getConfiguration().getDictionaryAsLocale()).getInflector();
 	}
 
 	private String getFacetPackage(Node node) {

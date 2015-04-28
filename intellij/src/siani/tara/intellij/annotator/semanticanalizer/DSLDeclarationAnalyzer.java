@@ -7,7 +7,8 @@ import siani.tara.intellij.annotator.fix.FixFactory;
 import siani.tara.intellij.lang.psi.TaraDslDeclaration;
 import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.facet.TaraFacet;
+import siani.tara.intellij.project.facet.TaraFacetConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import static siani.tara.intellij.MessageProvider.message;
@@ -28,9 +29,10 @@ public class DSLDeclarationAnalyzer extends TaraAnalyzer {
 	}
 
 	private void analyzeDslExistence() {
-		ModuleConfiguration instance = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(file));
-		if (instance == null) return;
-		String dslName = instance.getMetamodelName();
+		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(file));
+		if (facet == null) return;
+		TaraFacetConfiguration configuration = facet.getConfiguration();
+		String dslName = configuration.getDsl();
 		if (dslName != null && !dslName.isEmpty() && file.getDSL() == null)
 			results.put(file, new AnnotateAndFix(ERROR, message("dsl.not.found"), FixFactory.get("parent.model.file.found", file)));
 		else checkDslExistence(dslName);

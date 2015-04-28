@@ -1,7 +1,6 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.framebuilder.Adapter;
-import org.siani.itrules.framebuilder.BuilderContext;
+import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.compiler.model.*;
@@ -36,8 +35,8 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	}
 
 	@Override
-	public void adapt(Frame frame, NodeImpl node, BuilderContext context) {
-		frame.add(getTypes(node, language));
+	public void execute(Frame frame, NodeImpl node, FrameContext context) {
+		frame.addTypes(getTypes(node, language));
 		addNodeInfo(node, frame);
 		addImport(getNodeContainer(node));
 		addInner(node, frame, context);
@@ -70,7 +69,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		frame.addFrame(QN, node.getQualifiedName()).addFrame(PROJECT, project);
 	}
 
-	private void addInner(Node node, Frame frame, BuilderContext context) {
+	private void addInner(Node node, Frame frame, FrameContext context) {
 		for (Node inner : node.getIncludedNodes()) {
 			if (inner instanceof NodeReference || inner.isAnonymous()) continue;
 			frame.addFrame("node", context.build(inner));
@@ -88,13 +87,13 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 
 	private void addFacets(Node node, Frame newFrame) {
 		for (final Facet facet : node.getFacets())
-			newFrame.addFrame(FACETS, new Frame(getTypes(facet)).addFrame(NAME, facet.getType()));
+			newFrame.addFrame(FACETS, new Frame(null).addTypes(getTypes(facet)).addFrame(NAME, facet.getType()));
 	}
 
 	private void addComponents(Node node, Frame frame) {
 		for (Node include : node.getIncludedNodes()) {
 			if (include.isAnonymous()) continue;
-			Frame includeFrame = new Frame(collectReferenceTypes(include));
+			Frame includeFrame = new Frame(null).addTypes(collectReferenceTypes(include));
 			if (include instanceof NodeReference) {
 				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
 				addNodeReferenceName((NodeReference) include, includeFrame);
@@ -122,7 +121,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 
 	private void addTargets(Node node, Frame newFrame) {
 		for (final FacetTarget target : node.getFacetTargets())
-			newFrame.addFrame(TARGETS, new Frame(getTypes(target)).addFrame(NAME, target.getTarget()));
+			newFrame.addFrame(TARGETS, new Frame(null).addTypes(getTypes(target)).addFrame(NAME, target.getTarget()));
 	}
 
 	protected void addVariables(Node node, final Frame frame) {
@@ -137,7 +136,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 
 
 	protected Frame createVarFrame(final Variable variable) {
-		return new Frame(MorphCreatorHelper.getTypes(variable)) {
+		Frame frame = new Frame(null) {
 			{
 				addFrame(NAME, variable.getName());
 				addFrame(TYPE, getType());
@@ -157,6 +156,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 				else return variable.getType();
 			}
 		};
+		return frame.addTypes(MorphCreatorHelper.getTypes(variable));
 	}
 
 }

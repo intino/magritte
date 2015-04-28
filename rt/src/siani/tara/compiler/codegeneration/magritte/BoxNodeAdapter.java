@@ -1,7 +1,6 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.framebuilder.Adapter;
-import org.siani.itrules.framebuilder.BuilderContext;
+import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
@@ -20,27 +19,27 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	@Override
-	public void adapt(Frame frame, Node node, BuilderContext context) {
+	public void execute(Frame frame, Node node, FrameContext<Node> FrameContext) {
 		if (node instanceof NodeImpl) {
 			structure(node, frame);
 			annotations(node, frame);
-			variables(node, frame, context);
-			facetTargetVariables(node, frame, context);
-			parameters(node, frame, context);
-			facetParameters(node, frame, context);
+			variables(node, frame, FrameContext);
+			facetTargetVariables(node, frame, FrameContext);
+			parameters(node, frame, FrameContext);
+			facetParameters(node, frame, FrameContext);
 			componentOf(node.getContainer(), frame);
 			includes(node, frame);
 		}
 	}
 
 	private void structure(Node node, Frame newFrame) {
-		newFrame.addFrame(KEY, this.keys.get(node));
+		newFrame.addFrame(KEY, String.valueOf(this.keys.get(node)));
 		if (node.getName() != null && !node.isAnonymous())
 			newFrame.addFrame(NAME, clean(node.getQualifiedName()));
 		addTypes(node, newFrame);
 		if (node.getParent() != null)
 			newFrame.addFrame(PARENT, node.getParent().getName());
-		if (node.getAddress() != null) newFrame.addFrame(ADDRESS, node.getAddress());
+		if (node.getAddress() != null) newFrame.addFrame(ADDRESS, String.valueOf(node.getAddress()));
 		addFacetApplies(node, newFrame);
 	}
 
@@ -50,27 +49,29 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 
 	private void annotations(final Node node, Frame frame) {
 		if (node.getAnnotations().isEmpty() || node.isTerminalInstance()) return;
-		frame.addFrame(ANNOTATION, new Frame(ANNOTATION) {{
+		Frame annotationFrame = new Frame(frame) {{
 			for (Tag tag : node.getFlags())
-				addFrame(TemplateTags.VALUE, tag);
-		}});
+				addFrame(TemplateTags.VALUE, tag.getName());
+		}};
+		annotationFrame.addTypes(ANNOTATION);
+		frame.addFrame(ANNOTATION, annotationFrame);
 	}
 
-	private void variables(Node node, final Frame frame, BuilderContext context) {
+	private void variables(Node node, final Frame frame, FrameContext<Node> FrameContext) {
 		for (final Variable variable : node.getVariables())
-			context.buildIn(frame, VARIABLE, variable);
+			frame.addFrame(VARIABLE, FrameContext.build(variable));
 	}
 
-	private void facetTargetVariables(Node node, final Frame frame, BuilderContext context) {
+	private void facetTargetVariables(Node node, final Frame frame, FrameContext<Node> FrameContext) {
 		for (FacetTarget facetTarget : node.getFacetTargets())
 			for (final Variable variable : facetTarget.getVariables())
-				context.buildIn(frame, VARIABLE, variable);
+				frame.addFrame(VARIABLE, FrameContext.build(variable));
 	}
 
-	private void parameters(Node node, Frame frame, BuilderContext context) {
+	private void parameters(Node node, Frame frame, FrameContext<Node> FrameContext) {
 		for (final Parameter parameter : node.getParameters())
 			if (!isOverriddenByFacets(parameter, node.getFacets()))
-				context.buildIn(frame, VARIABLE, parameter);
+				frame.addFrame(VARIABLE, FrameContext.build(parameter));
 	}
 
 	private boolean isOverriddenByFacets(Parameter parameter, Collection<Facet> facets) {
@@ -80,15 +81,15 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		return false;
 	}
 
-	private void facetParameters(Node node, final Frame frame, BuilderContext context) {
+	private void facetParameters(Node node, final Frame frame, FrameContext<Node> FrameContext) {
 		for (Facet facet : node.getFacets())
 			for (final Parameter parameter : facet.getParameters())
-				context.buildIn(frame, VARIABLE, parameter);
+				frame.addFrame(VARIABLE, FrameContext.build(parameter));
 	}
 
 	private void componentOf(NodeContainer container, Frame frame) {
 		if (container instanceof Node && keys.get(container) != null)
-			frame.addFrame(COMPONENT_OF, keys.get(container));
+			frame.addFrame(COMPONENT_OF, String.valueOf(keys.get(container)));
 		//TODO else if FacetTarget or FacetApply
 	}
 
@@ -126,11 +127,13 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private void addAggregated(Frame frame, Node inner) {
 		Long key = inner instanceof NodeReference ? keys.get(((NodeReference) inner).getDestiny()) : keys.get(inner);
 		if (keys.isEmpty()) return;
-		frame.addFrame(INCLUDE, new Frame(AGGREGATED, "include").addFrame(VALUE, key));
+		Frame include = new Frame(frame).addTypes(AGGREGATED, "include").addFrame(VALUE, String.valueOf(key));
+		frame.addFrame(INCLUDE, include);
 	}
 
 	private void addComponent(Frame frame, Node inner) {
-		frame.addFrame(INCLUDE, new Frame("composed", "include").addFrame(VALUE, keys.get(inner)));
+		Frame include = new Frame(frame).addTypes("composed", "include").addFrame(VALUE, String.valueOf(keys.get(inner)));
+		frame.addFrame(INCLUDE, include);
 	}
 
 	private String clean(String name) {
@@ -140,7 +143,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 
 	private void addFacetApplies(Node node, Frame newFrame) {
 		for (Facet facet : node.getFacets()) {
-			Frame facetFrame = new Frame(FACET_APPLY).addFrame(NAME, facet.getType());
+			Frame facetFrame = new Frame(newFrame).addTypes(FACET_APPLY).addFrame(NAME, facet.getType());
 			facetFrame.addFrame(APPLY, buildFacetPath(node, facet.getType()));
 			newFrame.addFrame(FACET, facetFrame);
 		}

@@ -1,6 +1,6 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.framebuilder.FrameBuilder;
+import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.compiler.model.FacetTarget;
@@ -32,7 +32,7 @@ public class MorphFrameCreator implements TemplateTags {
 
 	public Map.Entry<String, Frame> create(Node node) {
 		this.initNode = node;
-		final Frame frame = new Frame(MORPH);
+		final Frame frame = new Frame(null).addTypes(MORPH);
 		String packagePath = addPackage(node, frame);
 		createMorph(frame, node);
 		addImports(frame);
@@ -40,7 +40,7 @@ public class MorphFrameCreator implements TemplateTags {
 	}
 
 	public Map.Entry<String, Frame> create(FacetTarget facetTarget) {
-		final Frame frame = new Frame(MORPH);
+		final Frame frame = new Frame(null).addTypes(MORPH);
 		String packagePath = addPackage(facetTarget, frame);
 		createFacetTargetMorph(frame, facetTarget);
 		addImports(frame);

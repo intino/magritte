@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="itrules">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/rt/lib/rule-engine-itr.jar!/" />
+      <root url="jar://$PROJECT_DIR$/rt/lib/engine.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -1,18 +1,15 @@
 package siani.tara.intellij.lang;
 
 import com.intellij.openapi.application.PathManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.Language;
 import siani.tara.dsls.Proteo;
 import siani.tara.intellij.lang.semantic.LanguageLoader;
-import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.facet.TaraFacet;
+import siani.tara.intellij.project.facet.TaraFacetConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
-import siani.tara.intellij.project.sdk.TaraJdk;
 
 import java.io.File;
 import java.util.HashMap;
@@ -44,14 +41,14 @@ public class TaraLanguage extends com.intellij.lang.Language {
 
 	@Nullable
 	public static Language getLanguage(@NotNull PsiFile file) {
-		ModuleConfiguration configuration = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(file));
-		if (configuration == null) return null;
-		return getLanguage(configuration.getMetamodelName(), file.getProject());
+		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(file));
+		if (facet == null) return null;
+		TaraFacetConfiguration configuration = facet.getConfiguration();
+		return getLanguage(configuration.getDsl());
 	}
 
 	@Nullable
-	public static Language getLanguage(String parent, Project project) {
-		addSdkToModelRoots(project);
+	public static Language getLanguage(String parent) {
 		if (parent.equals(PROTEO) || parent.isEmpty()) return languages.get(PROTEO);
 		return loadLanguage(parent);
 	}
@@ -71,15 +68,6 @@ public class TaraLanguage extends com.intellij.lang.Language {
 		return languages.get(parent) != null && !haveToReload(parent);
 	}
 
-	private static void addSdkToModelRoots(Project project) {
-		Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
-		if (projectSdk != null && projectSdk.getSdkType().equals(TaraJdk.getInstance()))
-			addModelRoot(projectSdk.getHomePath() + File.separator + DSL + File.separator);
-	}
-
-	public static void addModelRoot(String path) {
-		languagesPaths.add(path);
-	}
 
 	private static boolean haveToReload(String language) {
 		for (String modelPath : languagesPaths) {

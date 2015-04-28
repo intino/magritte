@@ -15,14 +15,11 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.siani.itrules.formatter.Inflector;
-import org.siani.itrules.formatter.InflectorFactory;
 import siani.tara.Language;
 import siani.tara.intellij.TaraRuntimeException;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.project.module.ModuleConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.semantic.Allow;
 import siani.tara.semantic.Assumption;
@@ -263,10 +260,6 @@ public class TaraUtil {
 
 	public static Collection<NodeReference> getLinksOf(Node node) {
 		return node.getBody() == null ? Collections.EMPTY_LIST : node.getBody().getNodeLinks();
-	}
-
-	public static Inflector getInflector(Module module) {
-		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
 	}
 
 	public static Collection<? extends Node> findAggregatedNodes(TaraModel file) {

@@ -19,20 +19,19 @@ import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.facet.TaraFacet;
 
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
 
 	public CreateTaraFileAction() {
-		super(MessageProvider.message("new.model.menu.action.text"), MessageProvider.message("new.model.menu.action.description"),
-			TaraIcons.getIcon(TaraIcons.MODEL), true);
+		super(MessageProvider.message("new.model.menu.action.text"), MessageProvider.message("new.model.menu.action.description"), TaraIcons.MODEL, true);
 	}
 
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
 		builder.setTitle(MessageProvider.message("new.model.dlg.prompt"));
 		String model = TaraTemplates.getTemplate("MODEL");
-		builder.addKind("Model", TaraIcons.getIcon(TaraIcons.MODEL), model);
+		builder.addKind("Model", TaraIcons.MODEL, model);
 	}
 
 	@Override
@@ -51,10 +50,13 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	protected TaraModelImpl doCreate(PsiDirectory directory, String newName, String templateName) throws IncorrectOperationException {
 		String fileName = newName + "." + TaraFileType.INSTANCE.getDefaultExtension();
 		Module moduleOfDirectory = TaraUtil.getModuleOfDirectory(directory);
-		String parentName = ModuleConfiguration.getInstance(moduleOfDirectory).getMetamodelName();
+		TaraFacet facet = TaraFacet.getTaraFacetByModule(moduleOfDirectory);
+		if (facet == null)
+			throw new IncorrectOperationException(MessageProvider.message("tara.file.error"));
+		String dsl = facet.getConfiguration().getDsl();
 		PsiFile file;
 		String[] list;
-		list = parentName != null ? new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "PARENT_MODULE_NAME", parentName}
+		list = dsl != null ? new String[]{"MODULE_NAME", moduleOfDirectory.getName(), "PARENT_MODULE_NAME", dsl}
 			: new String[]{"MODULE_NAME", moduleOfDirectory.getName()};
 		file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, templateName, true, list);
 		if (file instanceof TaraModelImpl) {

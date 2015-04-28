@@ -32,7 +32,7 @@ public class JavaFacetToTara extends RelatedItemLineMarkerProvider {
 	private void addNavigationMark(PsiElement element, Collection<? super RelatedItemLineMarkerInfo> result, Node node) {
 		if (node != null) {
 			NavigationGutterIconBuilder<PsiElement> builder =
-				NavigationGutterIconBuilder.create(TaraIcons.getIcon(TaraIcons.ICON_13)).setTarget(node).setTooltipText("Navigate to the concept");
+				NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTarget(node).setTooltipText("Navigate to the concept");
 			result.add(builder.createLineMarkerInfo(element));
 		}
 	}

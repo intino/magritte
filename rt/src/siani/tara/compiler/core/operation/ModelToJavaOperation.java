@@ -1,11 +1,7 @@
 package siani.tara.compiler.core.operation;
 
-import org.siani.itrules.Document;
-import org.siani.itrules.ItrRulesReader;
-import org.siani.itrules.RuleEngine;
-import org.siani.itrules.formatter.Formatter;
+import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
-import siani.tara.compiler.codegeneration.ResourceManager;
 import siani.tara.compiler.codegeneration.StringFormatter;
 import siani.tara.compiler.codegeneration.magritte.BoxUnitFrameCreator;
 import siani.tara.compiler.codegeneration.magritte.MorphFrameCreator;
@@ -19,8 +15,15 @@ import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.rt.TaraRtConstants;
+import siani.tara.templates.BoxDSLTemplate;
+import siani.tara.templates.BoxUnitTemplate;
+import siani.tara.templates.MorphTemplate;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,9 +33,6 @@ import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
 
 public class ModelToJavaOperation extends ModelOperation {
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
-	private static final String BOX_UNIT_ITR = "BoxUnit.itr";
-	private static final String BOX_ITR = "BoxDSL.itr";
-	private static final String MORPH_ITR = "Morph.itr";
 	private static final String JAVA = ".java";
 	protected static final String DOT = ".";
 	private final CompilationUnit compilationUnit;
@@ -53,7 +53,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating code representation");
 			this.model = model;
 			List<List<Node>> groupByBox = groupByBox(model);
-			Map<String, Document> boxUnits = createBoxUnits(groupByBox);
+			Map<String, String> boxUnits = createBoxUnits(groupByBox);
 			writeBoxUnits(getBoxUnitPath(separator), boxUnits);
 			if (model.isTerminal()) return;
 			writeBox(getBoxPath(separator), createBoxes(boxUnits.keySet()));
@@ -64,35 +64,23 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-	private Map<String, Document> createBoxUnits(List<List<Node>> groupByBox) throws TaraException {
-		return processBoxUnits(groupByBox, loadRules(BOX_UNIT_ITR));
+	private Map<String, String> createBoxUnits(List<List<Node>> groupByBox) throws TaraException {
+		return processBoxUnits(groupByBox);
 	}
 
-	private Document createBoxes(Set<String> boxes) throws TaraException {
-		return processBoxes(boxes, loadRules(BOX_ITR));
+	private String createBoxes(Set<String> boxes) throws TaraException {
+		return processBoxes(boxes);
 	}
 
-	private Map<String, Document> createMorphs() throws TaraException {
-		return processMorphs(model.getIncludedNodes(), loadRules(MORPH_ITR));
+	private Map<String, String> createMorphs() throws TaraException {
+		return processMorphs(model.getIncludedNodes());
 	}
 
-	private InputStream loadRules(String itr) throws TaraException {
-		InputStream stream = getRulesFromResources(itr);
-		if (stream == null) {
-			LOG.log(Level.SEVERE, itr + ".itr rules file not found.");
-			throw new TaraException(itr + ".itr rules file not found.");
-		}
-		return stream;
-	}
-
-	private Map<String, Document> processBoxUnits(List<List<Node>> groupByBox, InputStream rulesInput) throws TaraException {
-		Map<String, Document> map = new HashMap();
-		RuleEngine ruleEngine = createRuleEngine(rulesInput);
-		for (List<Node> nodes : groupByBox) {
-			Document document = new Document();
-			ruleEngine.render(new BoxUnitFrameCreator(conf, model).create(nodes), document);
-			map.put(buildBoxUnitName(nodes.get(0)), document);
-		}
+	private Map<String, String> processBoxUnits(List<List<Node>> groupByBox) throws TaraException {
+		Map<String, String> map = new HashMap();
+		Template template = createTemplate(BoxUnitTemplate.class);
+		for (List<Node> nodes : groupByBox)
+			map.put(buildBoxUnitName(nodes.get(0)), template.render(new BoxUnitFrameCreator(conf, model).create(nodes)));
 		return map;
 	}
 
@@ -100,32 +88,22 @@ public class ModelToJavaOperation extends ModelOperation {
 		return capitalize(conf.getModule()) + buildFileName(((Element) node).getFile());
 	}
 
-	private RuleEngine createRuleEngine(InputStream rulesInput) {
-		RuleEngine ruleEngine = new RuleEngine(new ItrRulesReader(rulesInput).read(), conf.getLocale());
-		ruleEngine.register("date", buildDateFormatter());
-		ruleEngine.register("string", new StringFormatter());
-		ruleEngine.register("reference", buildReferenceFormatter());
-		return ruleEngine;
-	}
-
-	private Document processBoxes(Set<String> boxes, InputStream rulesInput) throws TaraException {
-		RuleEngine ruleEngine = createRuleEngine(rulesInput);
-		Document document = new Document();
-		Frame frame = new Frame("Box");
+	private String processBoxes(Set<String> boxes) throws TaraException {
+		Template ruleEngine = createTemplate(BoxDSLTemplate.class);
+		Frame frame = new Frame(null).addTypes("Box");
 		frame.addFrame("name", conf.getGeneratedLanguage());
 		for (String box : boxes)
 			frame.addFrame("namebox", buildBoxUnitName(box));
-		ruleEngine.render(frame, document);
-		return document;
+		return ruleEngine.render(frame);
 	}
 
 	private String buildBoxUnitName(String box) {
 		return "magritte.store." + box + DOT + "box";
 	}
 
-	private Map<String, Document> processMorphs(Collection<Node> nodes, InputStream rulesInput) {
-		Map<String, Document> map = new HashMap();
-		RuleEngine ruleEngine = createRuleEngine(rulesInput);
+	private Map<String, String> processMorphs(Collection<Node> nodes) {
+		Map<String, String> map = new HashMap();
+		Template ruleEngine = createTemplate(MorphTemplate.class);
 		for (Node node : nodes) {
 			if (node.isTerminalInstance() || node.isAnonymous()) continue;
 			renderNode(map, ruleEngine, node);
@@ -134,25 +112,34 @@ public class ModelToJavaOperation extends ModelOperation {
 		return map;
 	}
 
-	private void renderFacetTargets(Map<String, Document> map, RuleEngine ruleEngine, Node node) {
+	private Template createTemplate(Class<? extends Template> aClass) {
+		try {
+			Template template = (Template) aClass.getMethod("template").invoke(null);
+			template.add("date", buildDateFormatter());
+			template.add("string", new StringFormatter());
+			template.add("reference", buildReferenceFormatter());
+			return template;
+		} catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
+			ignored.printStackTrace();
+		}
+		return null;
+	}
+
+	private void renderFacetTargets(Map<String, String> map, Template template, Node node) {
 		for (FacetTarget facetTarget : node.getFacetTargets()) {
-			Document document = new Document();
 			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(facetTarget);
-			ruleEngine.render(morphFrame.getValue(), document);
-			map.put(morphFrame.getKey(), document);
+			map.put(morphFrame.getKey(), template.render(morphFrame.getValue()));
 		}
 	}
 
-	private void renderNode(Map<String, Document> map, RuleEngine ruleEngine, Node node) {
-		Document document = new Document();
+	private void renderNode(Map<String, String> map, Template template, Node node) {
 		Map.Entry<String, Frame> morphFrame =
 			new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(node);
-		ruleEngine.render(morphFrame.getValue(), document);
-		map.put(morphFrame.getKey(), document);
+		map.put(morphFrame.getKey(), template.render(morphFrame.getValue()));
 	}
 
-	private Formatter buildReferenceFormatter() {
-		return new Formatter() {
+	private org.siani.itrules.Formatter buildReferenceFormatter() {
+		return new org.siani.itrules.Formatter() {
 			@Override
 			public Object format(Object value) {
 				String val = value.toString();
@@ -162,8 +149,8 @@ public class ModelToJavaOperation extends ModelOperation {
 		};
 	}
 
-	private Formatter buildDateFormatter() {
-		return new Formatter() {
+	private org.siani.itrules.Formatter buildDateFormatter() {
+		return new org.siani.itrules.Formatter() {
 			@Override
 			public Object format(Object value) {
 				String val = value.toString();
@@ -173,15 +160,15 @@ public class ModelToJavaOperation extends ModelOperation {
 		};
 	}
 
-	private void writeBoxUnits(String directory, Map<String, Document> documentMap) {
+	private void writeBoxUnits(String directory, Map<String, String> documentMap) {
 		File destiny = new File(outFolder, directory);
 		destiny.mkdirs();
-		for (Map.Entry<String, Document> entry : documentMap.entrySet()) {
+		for (Map.Entry<String, String> entry : documentMap.entrySet()) {
 			File file = new File(destiny, entry.getKey().replace(DOT, separator) + JAVA);
 			file.getParentFile().mkdirs();
 			try {
 				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-				fileWriter.write(entry.getValue().content());
+				fileWriter.write(entry.getValue());
 				fileWriter.close();
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
@@ -189,26 +176,26 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-	private void writeBox(String boxPath, Document document) {
+	private void writeBox(String boxPath, String document) {
 		File destiny = new File(outFolder, boxPath);
 		destiny.mkdirs();
 		try {
 			File file = new File(destiny, conf.getGeneratedLanguage() + JAVA);
 			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-			fileWriter.write(document.content());
+			fileWriter.write(document);
 			fileWriter.close();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
-	private void writeMorphs(Map<String, Document> documentMap) {
-		for (Map.Entry<String, Document> entry : documentMap.entrySet()) {
+	private void writeMorphs(Map<String, String> documentMap) {
+		for (Map.Entry<String, String> entry : documentMap.entrySet()) {
 			File file = new File(outFolder, entry.getKey().replace(DOT, separator) + JAVA);
 			file.getParentFile().mkdirs();
 			try {
 				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-				fileWriter.write(entry.getValue().content());
+				fileWriter.write(entry.getValue());
 				fileWriter.close();
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
@@ -233,10 +220,4 @@ public class ModelToJavaOperation extends ModelOperation {
 			lists.add(nodeList);
 		return lists;
 	}
-
-
-	public InputStream getRulesFromResources(String rules) throws TaraException {
-		return ResourceManager.getStream("rules/" + rules);
-	}
-
 }

@@ -18,7 +18,8 @@ import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.facet.TaraFacet;
+import siani.tara.intellij.project.facet.TaraFacetConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import javax.swing.*;
@@ -68,7 +69,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 			@Override
 			public Icon getIcon(final boolean open) {
-				return TaraIcons.getIcon(TaraIcons.MODEL);
+				return TaraIcons.MODEL;
 			}
 		};
 	}
@@ -76,7 +77,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	@Nullable
 	@Override
 	public Icon getIcon(int flags) {
-		return TaraIcons.getIcon(TaraIcons.MODEL);
+		return TaraIcons.MODEL;
 	}
 
 	@NotNull
@@ -156,11 +157,11 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	public void updateDSL() {
-		ModuleConfiguration configuration = ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(this));
-		if (configuration == null) return;
-		String metaLanguage = configuration.getMetamodelName();
-		String metamodelName = metaLanguage == null || metaLanguage.isEmpty() ? null : metaLanguage;
-		setDSL(metamodelName);
+		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(this));
+		if (facet == null) return;
+		TaraFacetConfiguration configuration = facet.getConfiguration();
+		String dsl = configuration.getDsl();
+		setDSL(dsl == null || dsl.isEmpty() ? null : dsl);
 	}
 
 	private void setDSL(String metamodelName) {

@@ -1,7 +1,7 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.framebuilder.FrameBuilder;
-import org.siani.itrules.model.Frame;
+import org.siani.itrules.engine.FrameBuilder;
+import org.siani.itrules.model.AbstractFrame;
 import siani.tara.Language;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.model.*;
@@ -50,7 +50,7 @@ public class BoxUnitFrameCreator {
 		}
 	}
 
-	public Frame create(Collection<Node> nodes) {
+	public AbstractFrame create(Collection<Node> nodes) {
 		Model boxModel = new Model(((Element) nodes.iterator().next()).getFile());
 		boxModel.setName(model.getName());
 		boxModel.addIncludedNodes(nodes.toArray(new Node[nodes.size()]));
@@ -59,6 +59,6 @@ public class BoxUnitFrameCreator {
 		builder.register(Node.class, new BoxNodeAdapter(keymap));
 		builder.register(Variable.class, new BoxVariableAdapter(model.getMetrics()));
 		builder.register(Parameter.class, new BoxParameterAdapter(model.getMetrics()));
-		return builder.createFrame(boxModel);
+		return builder.build(boxModel);
 	}
 }

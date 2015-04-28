@@ -8,16 +8,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import org.jetbrains.annotations.NotNull;
-import org.siani.itrules.formatter.Inflector;
-import org.siani.itrules.formatter.InflectorFactory;
+import org.siani.itrules.engine.formatters.PluralFormatter;
 import siani.tara.intellij.TaraRuntimeException;
 import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
-import siani.tara.intellij.project.module.ModuleConfiguration;
+import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import java.util.Collection;
@@ -29,7 +27,7 @@ public abstract class CodeGenerator {
 	final Project project;
 	final Module module;
 	final TaraModel file;
-	final Inflector inflector;
+	PluralFormatter.Inflector inflector;
 	final PsiDirectory srcDirectory;
 	final String[] facetsPath;
 	static final String SRC = "src";
@@ -39,14 +37,13 @@ public abstract class CodeGenerator {
 		this.file = file;
 		this.project = file.getProject();
 		this.module = ModuleProvider.getModuleOf(file);
-		inflector = InflectorFactory.getInflector(ModuleConfiguration.getInstance(module).getLanguage());
+		TaraFacet taraFacet = TaraFacet.getTaraFacetByModule(module);
+		if (taraFacet != null)
+			inflector = new PluralFormatter(taraFacet.getConfiguration().getDictionaryAsLocale()).getInflector();
 		srcDirectory = new PsiDirectoryImpl((com.intellij.psi.impl.PsiManagerImpl) file.getManager(), getSrcDirectory(TaraUtil.getSourceRoots(file)));
 		facetsPath = new String[]{project.getName().toLowerCase(), "extensions"};
 	}
 
-	protected Inflector getInflector(PsiElement element) {
-		return InflectorFactory.getInflector(ModuleConfiguration.getInstance(ModuleProvider.getModuleOf(element)).getLanguage());
-	}
 
 	protected PsiFile[] getFiles(Set<PsiClass> classes) {
 		Set<PsiFile> psiFiles = new HashSet<>();
