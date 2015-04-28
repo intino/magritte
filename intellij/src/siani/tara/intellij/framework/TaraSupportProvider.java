@@ -73,7 +73,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	                        String... parameters) {
 		createTemplateDirectory(rootModel.getContentEntries()[0]);
 		if (rootModel.getProject().isInitialized()) addMavenToProject(module);
-		startWithMaven(module);
+		else startWithMaven(module);
 		FacetType<TaraFacet, TaraFacetConfiguration> facetType = TaraFacet.getFacetType();
 		TaraFacet taraFacet = FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
 		final TaraFacetConfiguration facetConfiguration = taraFacet.getConfiguration();
@@ -202,10 +202,20 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		ApplicationManager.getApplication().runWriteAction(new Runnable() {
 			@Override
 			public void run() {
-				PsiDirectory root = PsiManager.getInstance(module.getProject()).findDirectory(module.getModuleFile().getParent());
+				PsiDirectory root = getModuleRoot();
 				file[0] = findPom(root);
 				if (file[0] == null) file[0] = root.createFile("pom.xml");
 				createPom(file[0].getVirtualFile().getPath(), new ModulePomTemplate().render(createModuleFrame(module)));
+			}
+
+			private PsiDirectory getModuleRoot() {
+				VirtualFile moduleFile = module.getModuleFile();
+				if (moduleFile != null)
+					return PsiManager.getInstance(module.getProject()).findDirectory(moduleFile.getParent());
+				else {
+					VirtualFile baseDir = module.getProject().getBaseDir();
+					return PsiManager.getInstance(module.getProject()).findDirectory(baseDir).findSubdirectory(module.getName());
+				}
 			}
 		});
 		return file[0].getVirtualFile();
@@ -254,7 +264,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private Frame createModuleFrame(Module module) {
 		Frame frame = new Frame(null).addTypes("pom");
 		frame.addFrame("project", module.getProject().getName());
-		if (!module.getModuleFile().getParent().equals(module.getProject().getBaseDir()))
+		if (!new File(module.getModuleFilePath()).getParent().equals(module.getProject().getBasePath()))
 			frame.addFrame("parent", new Frame(frame).addTypes("parent").addFrame("project", module.getProject().getName()).addFrame("module", module.getName()));
 		frame.addFrame("module", module.getName());
 		return frame;
