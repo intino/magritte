@@ -1,22 +1,21 @@
 package siani.tara.intellij.framework.maven;
 
-import org.siani.itrules.Encoding;
+import org.siani.itrules.LineSeparator;
 import org.siani.itrules.Template;
 
 import java.util.Locale;
 
 public class ProjectPomTemplate extends Template {
 
-	public ProjectPomTemplate(Locale locale, Encoding encoding) {
-		super(locale, encoding);
+	protected ProjectPomTemplate(Locale locale, LineSeparator separator) {
+		super(locale, separator);
 	}
 
-	public ProjectPomTemplate() {
-		super(Locale.getDefault(), Encoding.getDefault());
+	public static Template create() {
+		return new ProjectPomTemplate(Locale.ENGLISH, LineSeparator.LF).define();
 	}
 
-	@Override
-	protected void definition() {
+	protected Template define() {
 		add(
 			rule().add(condition("type", "pom")).add(literal("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 				"<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
@@ -24,6 +23,7 @@ public class ProjectPomTemplate extends Template {
 				"         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
 				"  <modelVersion>4.0.0</modelVersion>\n" +
 				"\n" +
+				"<!--project-->\n" +
 				"  <groupId>org.")).add(mark("project")).
 				add(literal("</groupId>\n" + "  <artifactId>")).add(mark("project")).add(literal("</artifactId>\n" +
 				"  <packaging>pom</packaging>\n" +
@@ -35,10 +35,8 @@ public class ProjectPomTemplate extends Template {
 				"    <maven.compiler.target>1.7</maven.compiler.target>\n" +
 				"  </properties>\n" +
 				"\n" +
-				"  <modules>\n" +
-				"    ")).add(mark("module").multiple("\n")).add(literal("\n" +
-				"  </modules>\n" +
 				"</project>"))
 		);
+		return this;
 	}
 }

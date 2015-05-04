@@ -14,7 +14,7 @@ public class TaraFrameworkType extends FrameworkTypeEx {
 		super(ID);
 	}
 
-	static TaraFrameworkType getFrameworkType() {
+	public static TaraFrameworkType getFrameworkType() {
 		return EP_NAME.findExtension(TaraFrameworkType.class);
 	}
 

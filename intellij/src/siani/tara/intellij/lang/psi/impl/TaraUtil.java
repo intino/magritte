@@ -258,6 +258,33 @@ public class TaraUtil {
 		return null;
 	}
 
+	public static Variable findNativeVariable(String name, PsiFile file) {
+		if (file == null) return null;
+		List<TaraModelImpl> filesOfModule = getTaraFilesOfModule(ModuleProvider.getModuleOf(file));
+		for (TaraModelImpl taraFile : filesOfModule) {
+			Variable variable = searchNativeInFile(name, taraFile);
+			if (variable != null) return variable;
+		}
+		return null;
+	}
+
+	@Nullable
+	private static Variable searchNativeInFile(String name, TaraModelImpl taraFile) {
+		for (Node node : getAllNodesOfFile(taraFile)) {
+			Variable variable = searchNativeInNode(name, node);
+			if (variable != null) return variable;
+		}
+		return null;
+	}
+
+	@Nullable
+	private static Variable searchNativeInNode(String name, Node node) {
+		for (Variable variable : node.getVariables())
+			if (variable.getNativeName() != null && name.equals(variable.getNativeName().getFormattedName()))
+				return variable;
+		return null;
+	}
+
 	public static Collection<NodeReference> getLinksOf(Node node) {
 		return node.getBody() == null ? Collections.EMPTY_LIST : node.getBody().getNodeLinks();
 	}

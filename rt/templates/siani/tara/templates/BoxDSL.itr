@@ -1,7 +1,7 @@
 defrule type(Box)
 package magritte.store;
 
-import magritte.editors.Box;
+import magritte.handlers.Box;
 
 public class $name+firstUppercase extends Box.Dsl {
     public static final Box box = new $name+firstUppercase();

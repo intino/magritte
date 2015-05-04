@@ -111,10 +111,6 @@ defrule type(require) type(parameter) trigger(require)
 _parameter("$name", "$type", $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
 endrule
 
-defrule trigger(quoted)
-"$value"
-endrule
-
 defrule trigger(require)
 _$value()
 endrule
@@ -125,4 +121,8 @@ endrule
 
 defrule trigger(assumption)
 is$value+firstUpperCase()
+endrule
+
+defrule trigger(quoted)
+"$value"
 endrule

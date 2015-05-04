@@ -19,7 +19,7 @@ public class LanguageCreator {
 	}
 
 	public String create() {
-		return LanguageTemplate.format(createFrame(model)).replace("$", "");
+		return LanguageTemplate.create().format(createFrame(model)).replace("$", "");
 	}
 
 	private AbstractFrame createFrame(final Model model) {

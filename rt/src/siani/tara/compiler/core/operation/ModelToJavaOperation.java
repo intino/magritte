@@ -32,6 +32,7 @@ import static java.io.File.separator;
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
 
 public class ModelToJavaOperation extends ModelOperation {
+	private static final Class[] TEMPLATES = new Class[]{BoxUnitTemplate.class, BoxDSLTemplate.class, MorphTemplate.class};
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
 	private static final String JAVA = ".java";
 	protected static final String DOT = ".";
@@ -50,6 +51,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		try {
+			createTemplates();
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating code representation");
 			this.model = model;
 			List<List<Node>> groupByBox = groupByBox(model);
@@ -61,6 +63,19 @@ public class ModelToJavaOperation extends ModelOperation {
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
+		}
+	}
+
+	private void createTemplates() {
+		try {
+			for (Class templateClass : TEMPLATES) {
+				Template template = (Template) templateClass.getMethod("create").invoke(null);
+				template.add("date", buildDateFormatter());
+				template.add("string", new StringFormatter());
+				template.add("reference", buildReferenceFormatter());
+			}
+		} catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
+			ignored.printStackTrace();
 		}
 	}
 
@@ -78,9 +93,8 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private Map<String, String> processBoxUnits(List<List<Node>> groupByBox) throws TaraException {
 		Map<String, String> map = new HashMap();
-		Template template = createTemplate(BoxUnitTemplate.class);
 		for (List<Node> nodes : groupByBox)
-			map.put(buildBoxUnitName(nodes.get(0)), template.render(new BoxUnitFrameCreator(conf, model).create(nodes)));
+			map.put(buildBoxUnitName(nodes.get(0)), BoxUnitTemplate.create().format(new BoxUnitFrameCreator(conf, model).create(nodes)));
 		return map;
 	}
 
@@ -89,12 +103,11 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String processBoxes(Set<String> boxes) throws TaraException {
-		Template ruleEngine = createTemplate(BoxDSLTemplate.class);
 		Frame frame = new Frame(null).addTypes("Box");
 		frame.addFrame("name", conf.getGeneratedLanguage());
 		for (String box : boxes)
 			frame.addFrame("namebox", buildBoxUnitName(box));
-		return ruleEngine.render(frame);
+		return BoxDSLTemplate.create().format(frame);
 	}
 
 	private String buildBoxUnitName(String box) {
@@ -103,39 +116,25 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private Map<String, String> processMorphs(Collection<Node> nodes) {
 		Map<String, String> map = new HashMap();
-		Template ruleEngine = createTemplate(MorphTemplate.class);
 		for (Node node : nodes) {
 			if (node.isTerminalInstance() || node.isAnonymous()) continue;
-			renderNode(map, ruleEngine, node);
-			renderFacetTargets(map, ruleEngine, node);
+			renderNode(map, node);
+			renderFacetTargets(map, node);
 		}
 		return map;
 	}
 
-	private Template createTemplate(Class<? extends Template> aClass) {
-		try {
-			Template template = (Template) aClass.getMethod("template").invoke(null);
-			template.add("date", buildDateFormatter());
-			template.add("string", new StringFormatter());
-			template.add("reference", buildReferenceFormatter());
-			return template;
-		} catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
-			ignored.printStackTrace();
-		}
-		return null;
-	}
-
-	private void renderFacetTargets(Map<String, String> map, Template template, Node node) {
+	private void renderFacetTargets(Map<String, String> map, Node node) {
 		for (FacetTarget facetTarget : node.getFacetTargets()) {
 			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(facetTarget);
-			map.put(morphFrame.getKey(), template.render(morphFrame.getValue()));
+			map.put(morphFrame.getKey(), MorphTemplate.create().format(morphFrame.getValue()));
 		}
 	}
 
-	private void renderNode(Map<String, String> map, Template template, Node node) {
+	private void renderNode(Map<String, String> map, Node node) {
 		Map.Entry<String, Frame> morphFrame =
 			new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(node);
-		map.put(morphFrame.getKey(), template.render(morphFrame.getValue()));
+		map.put(morphFrame.getKey(), MorphTemplate.create().format(morphFrame.getValue()));
 	}
 
 	private org.siani.itrules.Formatter buildReferenceFormatter() {

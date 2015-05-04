@@ -44,11 +44,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static java.io.File.separator;
 
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
+
 	private static final String PROTEO = "Proteo";
 	private static final String POM_XML = "pom.xml";
 
@@ -70,33 +72,33 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private void addSupport(final Module module,
 	                        final ModifiableRootModel rootModel,
-	                        String... parameters) {
-		createTemplateDirectory(rootModel.getContentEntries()[0]);
+	                        String dsl, String dictionary, String dslGenerate) {
+		createModelDirectory(rootModel.getContentEntries()[0]);
 		if (rootModel.getProject().isInitialized()) addMavenToProject(module);
 		else startWithMaven(module);
 		FacetType<TaraFacet, TaraFacetConfiguration> facetType = TaraFacet.getFacetType();
-		TaraFacet taraFacet = FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
-		final TaraFacetConfiguration facetConfiguration = taraFacet.getConfiguration();
-		setParent(facetConfiguration, parameters[0], module);
+		TaraFacet TaraFacet = FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
+		final TaraFacetConfiguration facetConfiguration = TaraFacet.getConfiguration();
+		setParent(facetConfiguration, dsl, module);
 		createResources(rootModel.getContentEntries()[0]);
 		createGen(rootModel.getContentEntries()[0]);
-		facetConfiguration.setDsl(parameters[0]);
-		facetConfiguration.setDictionary(parameters[1]);
-		facetConfiguration.setGeneratedDslName(parameters[2]);
+		facetConfiguration.setDsl(dsl);
+		facetConfiguration.setDictionary(dictionary);
+		facetConfiguration.setGeneratedDslName(dslGenerate);
 	}
 
-	private void setParent(TaraFacetConfiguration facetConfiguration, String selectedItem, Module module) {
-		Module parentModule;
-		if (selectedItem.equals(PROTEO)) {
-			updateDependencies(facetConfiguration, null, module);
-			facetConfiguration.setDsl("");
-		} else if ((parentModule = searchParent(module.getProject(), selectedItem)) != null) {
-			updateDependencies(facetConfiguration, parentModule, module);
-			facetConfiguration.setDsl(TaraFacet.getTaraFacetByModule(parentModule).getConfiguration().getGeneratedDslName());
-		} else {
-			updateDependencies(facetConfiguration, null, module);
-			facetConfiguration.setDsl(selectedItem);
-		}
+	private void startWithMaven(final Module module) {
+		StartupManager.getInstance(module.getProject()).registerPostStartupActivity(new Runnable() {
+			@Override
+			public void run() {
+				addMavenToProject(module);
+			}
+		});
+	}
+
+	private void setParent(TaraFacetConfiguration facetConfiguration, String name, Module module) {
+		Module parentModule = searchParent(module.getProject(), name);
+		updateDependencies(facetConfiguration, name.equals(PROTEO) ? null : parentModule, module);
 	}
 
 	private void updateDependencies(TaraFacetConfiguration configuration, final Module parent, Module module) {
@@ -123,7 +125,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			public void run() {
 				String dsl = configuration.getDsl();
 				if (dsl.isEmpty()) return;
-				Module parentModule = searchParent(module.getProject(), dsl.contains(".") ? dsl.split("\\.")[1] : dsl);
+				Module parentModule = searchParent(module.getProject(), dsl);
 				if (parentModule == null) return;
 				ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(module).getModifiableModel();
 				OrderEntry[] orderEntries = modifiableModel.getOrderEntries();
@@ -172,16 +174,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		}
 	}
 
-
-	private void startWithMaven(final Module module) {
-		StartupManager.getInstance(module.getProject()).registerPostStartupActivity(new Runnable() {
-			@Override
-			public void run() {
-				addMavenToProject(module);
-			}
-		});
-	}
-
 	private void addMavenToProject(final Module module) {
 		List<VirtualFile> pomFiles = createPoms(module);
 		MavenProjectsManager manager = MavenProjectsManager.getInstance(module.getProject());
@@ -192,33 +184,84 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private List<VirtualFile> createPoms(Module module) {
 		List<VirtualFile> files = new ArrayList<>();
-		files.add(projectPom(module));
-		files.add(modulePom(module));
+		files.addAll(isProjectModule(module) ? projectModulePom(module) : modulePom(module));
 		return files;
 	}
 
-	private VirtualFile modulePom(final Module module) {
+	private Collection<VirtualFile> modulePom(final Module module) {
+		final PsiFile[] files = new PsiFile[2];
+		ApplicationManager.getApplication().runWriteAction(new Runnable() {
+			@Override
+			public void run() {
+				PsiDirectory root = getModuleRoot(module);
+				files[0] = findPom(root);
+				if (files[0] == null) createPoms(root);
+				else updateModulePom(files[0]);
+			}
+
+			private void createPoms(PsiDirectory root) {
+				files[0] = root.createFile("pom.xml");
+				createPom(files[0].getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
+				if (!getProjectPom(module).exists())
+					files[1] = createProjectPom(module);
+			}
+		});
+		return toVirtual(files);
+	}
+
+	private Collection<VirtualFile> toVirtual(PsiFile[] files) {
+		List<VirtualFile> vFiles = new ArrayList<>();
+		for (PsiFile file : files)
+			if (file != null) vFiles.add(file.getVirtualFile());
+		return vFiles;
+	}
+
+	private PsiFile createProjectPom(Module module) {
+		VirtualFile pom = projectPom(module);
+		return PsiManager.getInstance(module.getProject()).findFile(pom);
+	}
+
+	@NotNull
+	private File getProjectPom(Module module) {
+		return new File(module.getProject().getBaseDir().getPath() + separator + POM_XML);
+	}
+
+	private Collection<VirtualFile> projectModulePom(final Module module) {
 		final PsiFile[] file = new PsiFile[1];
 		ApplicationManager.getApplication().runWriteAction(new Runnable() {
 			@Override
 			public void run() {
-				PsiDirectory root = getModuleRoot();
+				PsiDirectory root = getModuleRoot(module);
 				file[0] = findPom(root);
-				if (file[0] == null) file[0] = root.createFile("pom.xml");
-				createPom(file[0].getVirtualFile().getPath(), new ModulePomTemplate().render(createModuleFrame(module)));
-			}
-
-			private PsiDirectory getModuleRoot() {
-				VirtualFile moduleFile = module.getModuleFile();
-				if (moduleFile != null)
-					return PsiManager.getInstance(module.getProject()).findDirectory(moduleFile.getParent());
-				else {
-					VirtualFile baseDir = module.getProject().getBaseDir();
-					return PsiManager.getInstance(module.getProject()).findDirectory(baseDir).findSubdirectory(module.getName());
-				}
+				if (file[0] == null) {
+					file[0] = root.createFile("pom.xml");
+					createPom(file[0].getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
+				} else updateModulePom(file[0]);
 			}
 		});
-		return file[0].getVirtualFile();
+		return new ArrayList<VirtualFile>() {{
+			add(file[0].getVirtualFile());
+		}};
+	}
+
+
+	private void updateModulePom(PsiFile psiFile) {
+		PomHelper helper = new PomHelper(psiFile.getVirtualFile().getPath());
+		if (!helper.hasTaraDependency()) helper.addTaraDependency();
+	}
+
+	private boolean isProjectModule(Module module) {
+		return module.getProject().getBaseDir().getPath().equals(new File(module.getModuleFilePath()).getParent());
+	}
+
+	private PsiDirectory getModuleRoot(Module module) {
+		VirtualFile moduleFile = module.getModuleFile();
+		if (moduleFile != null)
+			return PsiManager.getInstance(module.getProject()).findDirectory(moduleFile.getParent());
+		else {
+			VirtualFile baseDir = module.getProject().getBaseDir();
+			return PsiManager.getInstance(module.getProject()).findDirectory(baseDir).findSubdirectory(module.getName());
+		}
 	}
 
 	private PsiFile findPom(PsiDirectory root) {
@@ -245,50 +288,40 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		ApplicationManager.getApplication().runWriteAction(new Runnable() {
 			@Override
 			public void run() {
-				File pomFile = new File(module.getProject().getBaseDir().getPath() + separator + POM_XML);
+				File pomFile = getProjectPom(module);
 				VirtualFile directory = VcsUtil.getVcsRootFor(module.getProject(), VcsUtil.getFilePath(pomFile));
 				PsiDirectory root = PsiManager.getInstance(module.getProject()).findDirectory(directory);
 				file[0] = findPom(root);
 				if (file[0] == null) file[0] = root.createFile("pom.xml");
-				createPom(file[0].getVirtualFile().getPath(), new ProjectPomTemplate().render(createProjectFrame(module, getModulesOf(module.getProject()))));
+				createPom(file[0].getVirtualFile().getPath(), ProjectPomTemplate.create().format(createProjectFrame(module)));
 			}
 		});
 		return file[0].getVirtualFile();
 	}
 
-	@NotNull
-	private Module[] getModulesOf(Project project) {
-		return ModuleManager.getInstance(project).getModules();
-	}
 
 	private Frame createModuleFrame(Module module) {
 		Frame frame = new Frame(null).addTypes("pom");
 		frame.addFrame("project", module.getProject().getName());
-		if (!new File(module.getModuleFilePath()).getParent().equals(module.getProject().getBasePath()))
-			frame.addFrame("parent", new Frame(frame).addTypes("parent").addFrame("project", module.getProject().getName()).addFrame("module", module.getName()));
 		frame.addFrame("module", module.getName());
 		return frame;
 	}
 
-	private Frame createProjectFrame(Module module, Module[] modules) {
+	private Frame createProjectFrame(Module module) {
 		Project project = module.getProject();
-		MavenProjectsManager manager = new MavenProjectsManager(project);
 		Frame frame = new Frame(null).addTypes("pom");
 		frame.addFrame("project", project.getName());
-		for (Module aModule : modules)
-			if (aModule.getName().equalsIgnoreCase(module.getProject().getName()) && (manager.isMavenizedModule(aModule) || aModule.equals(module)))
-				frame.addFrame("module", "<module>" + aModule.getName() + "</module>");
 		return frame;
 	}
 
-	private void createTemplateDirectory(ContentEntry contentEntry) {
+	private void createModelDirectory(ContentEntry contentEntry) {
 		try {
 			if (contentEntry.getFile() == null) return;
 			String modulePath = contentEntry.getFile().getPath();
-			VirtualFile models = VfsUtil.createDirectories(modulePath + separator + "model");
-			if (models != null) {
+			VirtualFile templates = VfsUtil.createDirectories(modulePath + separator + "model");
+			if (templates != null) {
 				JavaSourceRootProperties properties = JpsJavaExtensionService.getInstance().createSourceRootProperties("", false);
-				contentEntry.addSourceFolder(models, JavaSourceRootType.SOURCE, properties);
+				contentEntry.addSourceFolder(templates, JavaSourceRootType.SOURCE, properties);
 			}
 		} catch (IOException ignored) {
 		}
@@ -370,7 +403,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			dslBox.setEnabled(true);
 			dictionaryBox.setEnabled(true);
 			generateDslCheck.setEnabled(true);
-			dslGeneratedName.setEnabled(true);
+			if (generateDslCheck.isSelected()) dslGeneratedName.setEnabled(true);
 		}
 
 		@Override
@@ -396,5 +429,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		private String getDslGenerate() {
 			return generateDslCheck.isSelected() ? dslGeneratedName.getText() : "";
 		}
+
 	}
 }
