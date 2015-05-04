@@ -39,8 +39,11 @@ public class JavaNativeToTara extends RelatedItemLineMarkerProvider {
 			if (conceptClassOfTarget == null) return "";
 			qn = conceptClassOfTarget.getQualifiedName();
 		}
-		qn = qn.replaceFirst(ModuleProvider.getModuleOf(aClass).getName().toLowerCase() + "." + NATIVES + ".", "");
-		return qn;
+		if (qn != null) {
+			String moduleName = ModuleProvider.getModuleOf(aClass).getName().toLowerCase();
+			qn = qn.replaceFirst(moduleName + "." + NATIVES + ".", "");
+		}
+		return qn == null ? "" : qn;
 	}
 
 	private PsiClass findConceptClassOfTarget(PsiClass aClass) {

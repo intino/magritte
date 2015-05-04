@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.siani.itrules.engine.formatters.PluralFormatter;
+import org.siani.itrules.engine.formatters.PluralInflector;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.lang.psi.Node;
@@ -110,12 +111,12 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	}
 
 	private String getFacetApplyPackage(Node node, FacetApply apply) {
-		PluralFormatter.Inflector inflector = getInflector(apply);
+		PluralInflector inflector = getInflector(apply);
 		if (inflector == null) return "";
 		return (getFacetPackage(node) + DOT + inflector.plural(apply.getType())).toLowerCase();
 	}
 
-	private PluralFormatter.Inflector getInflector(FacetApply apply) {
+	private PluralInflector getInflector(FacetApply apply) {
 		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(apply));
 		if (facet == null) return null;
 		return new PluralFormatter(facet.getConfiguration().getDictionaryAsLocale()).getInflector();

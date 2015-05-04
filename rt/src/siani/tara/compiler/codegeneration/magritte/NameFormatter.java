@@ -1,7 +1,7 @@
 package siani.tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.engine.formatters.PluralFormatter;
-import org.siani.itrules.engine.formatters.PluralFormatter.Inflector;
+import org.siani.itrules.engine.formatters.PluralInflector;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 
@@ -26,7 +26,7 @@ public class NameFormatter {
 			return module.toLowerCase();
 		String aPackage = "";
 		Node parent = node.getParent();
-		Inflector inflector = new PluralFormatter(locale).getInflector();
+		PluralInflector inflector = new PluralFormatter(locale).getInflector();
 		while (parent != null) {
 			aPackage = inflector.plural(parent.getName()) + (!aPackage.isEmpty() ? DOT + aPackage : "");
 			parent = parent.isSub() ? parent.getParent() : null;
@@ -35,7 +35,7 @@ public class NameFormatter {
 	}
 
 	public static String composeMorphPackagePath(FacetTarget target, Locale locale, String module) {
-		Inflector inflector = new PluralFormatter(locale).getInflector();
+		PluralInflector inflector = new PluralFormatter(locale).getInflector();
 		return (module.toLowerCase() + DOT + inflector.plural(((Node) target.getContainer()).getName())).toLowerCase();
 	}
 
