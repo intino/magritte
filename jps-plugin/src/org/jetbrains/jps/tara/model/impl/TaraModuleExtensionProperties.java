@@ -1,4 +1,4 @@
-package siani.tara.intellij.project.module;
+package org.jetbrains.jps.tara.model.impl;
 
 import com.intellij.util.xmlb.annotations.Tag;
 
@@ -12,4 +12,5 @@ public class TaraModuleExtensionProperties {
 
 	@Tag("genDslName")
 	public String generatedDslName = "";
+
 }

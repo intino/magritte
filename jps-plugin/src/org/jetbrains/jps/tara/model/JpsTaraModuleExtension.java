@@ -1,13 +1,14 @@
-package siani.tara.intellij.project.module;
+package org.jetbrains.jps.tara.model;
 
 import org.jetbrains.jps.model.JpsElement;
 import org.jetbrains.jps.model.module.JpsModule;
 
-import java.util.Locale;
-
 public interface JpsTaraModuleExtension extends JpsElement {
-
 	JpsModule getModule();
 
-	Locale getLocale();
+	String getDsl();
+
+	String getDictionary();
+
+	String getGeneratedDslName();
 }

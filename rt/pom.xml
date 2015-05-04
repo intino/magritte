@@ -39,6 +39,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.siani.itrules</groupId>
+      <artifactId>itrules-itr-reader</artifactId>
+      <version>LATEST</version>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>

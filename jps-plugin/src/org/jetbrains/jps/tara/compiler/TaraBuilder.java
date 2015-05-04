@@ -1,4 +1,4 @@
-package org.jetbrains.jps.incremental.tara.compiler;
+package org.jetbrains.jps.tara.compiler;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.io.FileUtil;
@@ -6,27 +6,18 @@ import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.ModuleChunk;
+import org.jetbrains.jps.ProjectPaths;
 import org.jetbrains.jps.builders.DirtyFilesHolder;
 import org.jetbrains.jps.builders.java.JavaSourceRootDescriptor;
 import org.jetbrains.jps.incremental.*;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
-import org.jetbrains.jps.model.JpsDummyElement;
 import org.jetbrains.jps.model.JpsProject;
-import org.jetbrains.jps.model.java.JpsJavaSdkType;
-import org.jetbrains.jps.model.library.sdk.JpsSdk;
 import org.jetbrains.jps.model.module.JpsModule;
 import org.jetbrains.jps.model.module.JpsModuleSourceRoot;
-import org.jetbrains.jps.model.serialization.PathMacroUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import org.jetbrains.jps.tara.model.JpsTaraExtensionService;
+import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -54,7 +45,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	@Override
 	public List<String> getCompilableFileExtensions() {
-		return Arrays.asList(TARA_EXTENSION);
+		return Collections.singletonList(TARA_EXTENSION);
 	}
 
 	public ExitCode build(CompileContext context, ModuleChunk chunk,
@@ -66,6 +57,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			done = true;
 			JpsProject project = context.getProjectDescriptor().getProject();
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
+			JpsTaraModuleExtension extension = JpsTaraExtensionService.getInstance().getExtension(chunk.getModules().iterator().next());
+			if (extension == null) return ExitCode.ABORT;
 			javaGeneration = settings.pluginGeneration;
 			final List<File> toCompile = collectFiles(chunk.getModules().iterator().next());
 			if (toCompile.isEmpty()) return ExitCode.NOTHING_DONE;
@@ -74,13 +67,10 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			if (finalOutputs == null) return ExitCode.ABORT;
 			start = System.currentTimeMillis();
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
-			Element moduleConfiguration = getModuleConfiguration(getModuleConfigurationFile(chunk.getModules().iterator().next()));
-			final String generatedDSLName = getGeneratedDSLName(moduleConfiguration);
-			final String dictionary = getDictionary(moduleConfiguration);
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 			List<String> paths = collectPaths(chunk, context, finalOutputs);
-			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), getLanguage(moduleConfiguration),
-				generatedDSLName, dictionary, toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
+			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension.getDsl(),
+				extension.getGeneratedDslName(), extension.getDictionary(), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
 			context.setDone(1);
@@ -102,23 +92,18 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		List<String> list = new ArrayList<>();
 		list.add(getOutDir(chunk.getModules()));
 		list.add(finalOutput);
-		list.add(getMagritteJdk(modules).getHomePath());
+		list.add(getMagritteLib(chunk));
 		list.add(getRulesDir(modules));
 		list.add(finalOutput);//metrics path
 		list.add(getResourcesFile(modules.iterator().next()).getPath());
 		return list;
 	}
 
-	private static JpsSdk<JpsDummyElement> getMagritteJdk(Set<JpsModule> modules) {
-		return modules.iterator().next().getSdk(JpsJavaSdkType.INSTANCE);
-	}
-
-	private String getLanguage(Element moduleConfiguration) {
-		String dsl = String.valueOf(getValueOf(moduleConfiguration, "dslName"));
-		String globalSystemMacroValue = PathMacroUtil.getGlobalSystemMacroValue(PathMacroUtil.APPLICATION_PLUGINS_DIR);
-		if (globalSystemMacroValue != null && dsl.contains(PathMacroUtil.APPLICATION_PLUGINS_DIR))
-			dsl = dsl.replace("$" + PathMacroUtil.APPLICATION_PLUGINS_DIR + "$", globalSystemMacroValue);
-		return dsl;
+	private static String getMagritteLib(ModuleChunk chunk) {
+		for (File file : ProjectPaths.getCompilationClasspath(chunk, true))
+			if (file.getPath().contains("magritte"))
+				return file.getPath();
+		return "Magritte not found";
 	}
 
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {
@@ -234,51 +219,5 @@ public class TaraBuilder extends ModuleLevelBuilder {
 					list.add(file);
 		}
 		return list;
-	}
-
-	private File getModuleConfigurationFile(JpsModule module) {
-		List<String> urls = module.getContentRootsList().getUrls();
-		if (urls.isEmpty()) return null;
-		File file = new File(urls.get(0).substring(7), module.getName() + ".iml");
-		if (!file.exists()) return null;
-		return file;
-	}
-
-	public String getGeneratedDSLName(Element moduleConfiguration) {
-		Boolean terminal = Boolean.valueOf(getValueOf(moduleConfiguration, "terminal"));
-		return terminal ? null : String.valueOf(getValueOf(moduleConfiguration, "generatedDslName"));
-	}
-
-	public String getDictionary(Element moduleConfiguration) {
-		return getValueOf(moduleConfiguration, "dictionary");
-	}
-
-	private String getValueOf(Element moduleConfiguration, String value) {
-		NodeList componentChildren = moduleConfiguration.getElementsByTagName("option");
-		for (int j = 0; j < componentChildren.getLength(); j++)
-			if (componentChildren.item(j).getNodeType() == Node.ELEMENT_NODE) {
-				Element option = (Element) componentChildren.item(j);
-				if (option.getAttribute("name").equals(value))
-					return option.getAttribute("value");
-			}
-		return null;
-	}
-
-	private Element getModuleConfiguration(File moduleFile) {
-		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(moduleFile);
-			NodeList nList = doc.getElementsByTagName("component");
-			for (int i = 0; i < nList.getLength(); i++)
-				if (nList.item(i).getNodeType() == Node.ELEMENT_NODE) {
-					Element element = (Element) nList.item(i);
-					if ("ModuleConfiguration".equals(element.getAttribute("name"))) return element;
-				}
-			return null;
-		} catch (ParserConfigurationException | SAXException | IOException e) {
-			LOG.error(e.getMessage(), e);
-			return null;
-		}
 	}
 }

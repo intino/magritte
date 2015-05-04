@@ -22,12 +22,12 @@ semantic_lib
 outputpath
 /Users/oroncal/workspace/sandbox/MonetAnimales/Monet/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/MonetAnimales/out/production/Engine/
-jdk_home
-/Users/oroncal/workspace/sandbox/magritte/lib/
+/Users/oroncal/workspace/sandbox/MonetAnimales/Monet/target/classes/
+magritte
+/Users/oroncal/.m2/repository/org/siani/magritte/magritte/1.1.6/magritte-1.1.6.jar
 metrics
-/Users/oroncal/workspace/sandbox/MonetAnimales/out/production/Engine/
+/Users/oroncal/workspace/sandbox/MonetAnimales/Monet/target/classes/
 resources
 /Users/oroncal/workspace/sandbox/MonetAnimales/Monet/res
 classpath
-/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

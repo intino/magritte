@@ -1,4 +1,4 @@
-package org.jetbrains.jps.incremental.tara.compiler;
+package org.jetbrains.jps.tara.compiler;
 
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -23,8 +23,9 @@ import static java.io.File.separator;
 public class TaraRunner {
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 
-	private static final String ANTLR = "antlr-4.5-complete.jar";
-	private static final String[] ITRULES = {"rule-engine.jar", "rule-engine-itr.jar"};
+	private static final String ANTLR = "antlr4-runtime-4.5.jar";
+	private static final String ITRULES_VERSION = "1.1.14";
+	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String SEMANTIC_RULES = "tara-semantic.jar";
 	private static final String LIB = "lib";
 	public static final char NL = '\n';
@@ -65,7 +66,7 @@ public class TaraRunner {
 		writer.write(TaraRtConstants.SEMANTIC_LIB + NL + semanticLib + NL);
 		writer.write(TaraRtConstants.OUTPUTPATH + NL + paths.get(0) + NL);
 		writer.write(TaraRtConstants.FINAL_OUTPUTPATH + NL + paths.get(1) + NL);
-		writer.write(TaraRtConstants.TDK_HOME + NL + paths.get(2) + separator + LIB + separator + NL);
+		writer.write(TaraRtConstants.MAGRITTE + NL + paths.get(2) + NL);
 		if (paths.get(3) != null) writer.write(TaraRtConstants.IT_RULES + NL + paths.get(3) + NL);
 		writer.write(TaraRtConstants.METRICS + NL + paths.get(4) + NL);
 		writer.write(TaraRtConstants.RESOURCES + NL + paths.get(5) + NL);

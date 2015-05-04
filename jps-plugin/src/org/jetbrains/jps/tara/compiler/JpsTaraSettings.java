@@ -1,4 +1,4 @@
-package org.jetbrains.jps.incremental.tara.compiler;
+package org.jetbrains.jps.tara.compiler;
 
 import com.intellij.util.xmlb.annotations.Tag;
 import org.jdom.Element;

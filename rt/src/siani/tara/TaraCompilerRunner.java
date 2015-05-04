@@ -122,7 +122,7 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.LANGUAGE:
 					configuration.setLanguage(reader.readLine());
 					break;
-				case TaraRtConstants.TDK_HOME:
+				case TaraRtConstants.MAGRITTE:
 					configuration.setTdkHome(reader.readLine());
 					break;
 				case TaraRtConstants.ICONS_PATH:

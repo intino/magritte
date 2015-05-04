@@ -56,7 +56,6 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		myProperties.dictionary = dictionary;
 	}
 
-
 	public String getGeneratedDslName() {
 		return myProperties.generatedDslName;
 	}

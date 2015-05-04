@@ -1,4 +1,4 @@
-package org.jetbrains.jps.incremental.tara.compiler;
+package org.jetbrains.jps.tara.compiler;
 
 import com.intellij.execution.process.BaseOSProcessHandler;
 import com.intellij.execution.process.ProcessOutputTypes;
