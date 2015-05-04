@@ -1,7 +1,5 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.framebuilder.Adapter;
-import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
@@ -19,7 +17,7 @@ import java.util.Set;
 import static siani.tara.compiler.codegeneration.magritte.MorphCreatorHelper.getNodeContainer;
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.composeMorphPackagePath;
 
-public class MorphFacetTargetAdapter implements Adapter<FacetTarget>, TemplateTags {
+public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetTarget>, TemplateTags {
 	private final String project;
 	private final String module;
 	private final Set<String> imports;
@@ -33,8 +31,8 @@ public class MorphFacetTargetAdapter implements Adapter<FacetTarget>, TemplateTa
 	}
 
 	@Override
-	public void adapt(Frame frame, FacetTarget target, BuilderContext context) {
-		frame.add("nodeimpl");
+	public void execute(Frame frame, FacetTarget target, FrameContext<FacetTarget> context) {
+		frame.addTypes("nodeimpl");
 		addFacetTargetInfo(target, frame);
 		addImports(getNodeContainer(target), locale);
 		addInner(target, frame, context);
@@ -55,7 +53,7 @@ public class MorphFacetTargetAdapter implements Adapter<FacetTarget>, TemplateTa
 		}
 	}
 
-	private void addInner(FacetTarget target, Frame frame, BuilderContext context) {
+	private void addInner(FacetTarget target, Frame frame, FrameContext<FacetTarget> context) {
 		for (Node inner : target.getIncludedNodes()) {
 			if (inner instanceof NodeReference || inner.isAnonymous()) continue;
 			frame.addFrame("node", context.build(inner));
@@ -93,7 +91,7 @@ public class MorphFacetTargetAdapter implements Adapter<FacetTarget>, TemplateTa
 
 	protected void addVariables(FacetTarget target, final Frame frame) {
 		for (final Variable variable : target.getVariables()) {
-			Frame varFrame = createVarFrame(variable);
+			Frame varFrame = createVarFrame(frame, variable);
 			frame.addFrame(VARIABLE, varFrame);
 			if (variable instanceof VariableReference && !variable.getDefaultValues().isEmpty()) {
 				addImports(((VariableReference) variable).getDestiny(), locale);
@@ -101,8 +99,8 @@ public class MorphFacetTargetAdapter implements Adapter<FacetTarget>, TemplateTa
 		}
 	}
 
-	protected Frame createVarFrame(final Variable variable) {
-		return new Frame(MorphCreatorHelper.getTypes(variable)) {
+	protected Frame createVarFrame(Frame owner, final Variable variable) {
+		Frame frame = new Frame(owner) {
 			{
 				addFrame(NAME, variable.getName());
 				addFrame(TYPE, getType());
@@ -120,12 +118,13 @@ public class MorphFacetTargetAdapter implements Adapter<FacetTarget>, TemplateTa
 				else return variable.getType();
 			}
 		};
+		return frame.addTypes(MorphCreatorHelper.getTypes(variable));
 	}
 
 	private void addComponents(FacetTarget target, Frame frame) {
 		for (Node include : target.getIncludedNodes()) {
 			if (include.isAnonymous()) continue;
-			Frame includeFrame = new Frame(collectReferenceTypes(include));
+			Frame includeFrame = new Frame(frame).addTypes(collectReferenceTypes(include));
 			if (include instanceof NodeReference) {
 				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
 				addNodeReferenceName((NodeReference) include, includeFrame);

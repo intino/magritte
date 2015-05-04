@@ -276,7 +276,7 @@ public class ReferenceManager {
 
 	private static PsiElement resolveNativeClass(NativeName nativeName, Project project) {
 		if (nativeName == null) return null;
-		String aPackage = project.getName() + '.' + "natives";
+		String aPackage = ModuleProvider.getModuleOf(nativeName).getName() + '.' + "natives";
 		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(nativeName.getFormattedName()));
 	}
 

@@ -1,7 +1,5 @@
 package siani.tara.compiler.codegeneration.lang;
 
-import org.siani.itrules.framebuilder.Adapter;
-import org.siani.itrules.framebuilder.BuilderContext;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.compiler.model.FacetTarget;
@@ -12,13 +10,12 @@ import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.Assumption;
-import siani.tara.semantic.model.Context;
 
 import java.util.*;
 
 import static siani.tara.compiler.model.Tag.*;
 
-class LanguageModelAdapter implements Adapter<Model> {
+class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	private static final String ALLOW = "allow";
 	private static final String REQUIRE = "require";
 
@@ -36,7 +33,7 @@ class LanguageModelAdapter implements Adapter<Model> {
 	}
 
 	@Override
-	public void adapt(Frame root, Model model, BuilderContext context) {
+	public void execute(Frame root, Model model, FrameContext<Model> context) {
 		this.root = root;
 		this.model = model;
 		root.addFrame("name", languageName);
@@ -53,12 +50,12 @@ class LanguageModelAdapter implements Adapter<Model> {
 
 	private List<String> collectCaseRules() {
 		List<String> cases = new ArrayList<>();
-		for (Map.Entry<String, Context> entry : language.catalog().entrySet())
+		for (Map.Entry<String, siani.tara.semantic.model.Context> entry : language.catalog().entrySet())
 			if (isTerminalInstance(entry.getValue())) cases.add(entry.getKey());
 		return cases;
 	}
 
-	private boolean isTerminalInstance(Context value) {
+	private boolean isTerminalInstance(siani.tara.semantic.model.Context value) {
 		for (Assumption assumption : value.assumptions())
 			if (assumption instanceof Assumption.TerminalInstance) return true;
 		return false;
@@ -70,7 +67,7 @@ class LanguageModelAdapter implements Adapter<Model> {
 
 	private void buildNode(Node node) {
 		if (alreadyProcessed(node)) return;
-		Frame frame = new Frame("node");
+		Frame frame = new Frame(root).addTypes("node");
 		if (!node.isAbstract() && !node.isAnonymous() && !node.isTerminalInstance()) {
 			frame.addFrame("name", getName(node));
 			addTypes(node, frame);
@@ -87,14 +84,14 @@ class LanguageModelAdapter implements Adapter<Model> {
 
 	private void addTypes(Node node, Frame frame) {
 		if (node.getType() == null) return;
-		Frame typesFrame = new Frame("nodeType");
+		Frame typesFrame = new Frame(frame).addTypes("nodeType");
 		Set<String> typeSet = new LinkedHashSet<>();
 		typeSet.add(node.getType());
 		Collection<String> languageTypes = getLanguageTypes(node);
 		if (languageTypes != null)
 			typeSet.addAll(languageTypes);
 		for (String type : typeSet) typesFrame.addFrame("type", type);
-		if (typesFrame.getSlots().length > 0)
+		if (typesFrame.slots().length > 0)
 			frame.addFrame("nodeType", typesFrame);
 	}
 
@@ -108,24 +105,24 @@ class LanguageModelAdapter implements Adapter<Model> {
 	}
 
 	private void addAllows(Node node, Frame frame) {
-		Frame allows = buildAllowedNodes(node.getIncludedNodes());
-		for (Frame allowFrame : getCasesConstrains(collectCaseRules()))
+		Frame allows = buildAllowedNodes(frame, node.getIncludedNodes());
+		for (Frame allowFrame : getCasesConstrains(allows, collectCaseRules()))
 			allows.addFrame("allow", allowFrame);
 		addContextAllows(node, allows);
-		if (allows.getSlots().length != 0) frame.addFrame("allows", allows);
+		if (allows.slots().length != 0) frame.addFrame("allows", allows);
 	}
 
-	private Collection<Frame> getCasesConstrains(List<String> nodes) {
+	private Collection<Frame> getCasesConstrains(Frame allows, List<String> nodes) {
 		List<Frame> frames = new ArrayList<>();
 		for (String node : nodes)
-			frames.add(new Frame("multiple", ALLOW).addFrame("type", node).addFrame("relation", COMPONENT));
+			frames.add(new Frame(allows).addTypes("multiple", ALLOW).addFrame("type", node).addFrame("relation", COMPONENT.getName()));
 		return frames;
 	}
 
 	private void addRequires(Node node, Frame frame) {
-		Frame requires = buildRequiredNodes(node.getIncludedNodes());
+		Frame requires = buildRequiredNodes(frame, node.getIncludedNodes());
 		addContextRequires(node, requires);
-		if (requires.getSlots().length != 0) frame.addFrame("requires", requires);
+		if (requires.slots().length != 0) frame.addFrame("requires", requires);
 	}
 
 	private void addContextAllows(Node node, Frame allows) {
@@ -144,7 +141,7 @@ class LanguageModelAdapter implements Adapter<Model> {
 
 	private void addFacetAllows(Node node, Frame allows) {
 		for (String facet : node.getAllowedFacets()) {
-			Frame frame = new Frame("allow", "facet").addFrame("value", facet);
+			Frame frame = new Frame(allows).addTypes("allow", "facet").addFrame("value", facet);
 			allows.addFrame("allow", frame);
 			FacetTarget facetNode = findFacetTarget(node, facet);
 			if (facetNode == null) continue;
@@ -187,12 +184,12 @@ class LanguageModelAdapter implements Adapter<Model> {
 
 
 	private void addAssumptions(Node node, Frame frame) {
-		Frame assumptions = buildAssumptions(node);
-		if (assumptions.getSlots().length != 0) frame.addFrame("assumptions", assumptions);
+		Frame assumptions = buildAssumptions(frame, node);
+		if (assumptions.slots().length != 0) frame.addFrame("assumptions", assumptions);
 	}
 
-	private Frame buildAssumptions(Node node) {
-		Frame assumptions = new Frame("assumptions");
+	private Frame buildAssumptions(Frame frame, Node node) {
+		Frame assumptions = new Frame(frame).addTypes("assumptions");
 		addAnnotationAssumptions(node, assumptions);
 		return assumptions;
 	}
@@ -209,14 +206,14 @@ class LanguageModelAdapter implements Adapter<Model> {
 		}
 	}
 
-	private Frame buildRequiredNodes(Collection<Node> nodeTree) {
-		Frame requires = new Frame("requires");
+	private Frame buildRequiredNodes(Frame frame, Collection<Node> nodeTree) {
+		Frame requires = new Frame(frame).addTypes("requires");
 		addRequiredInnerNodes(requires, nodeTree);
 		return requires;
 	}
 
-	private Frame buildAllowedNodes(Collection<Node> nodes) {
-		Frame allows = new Frame("allows");
+	private Frame buildAllowedNodes(Frame frame, Collection<Node> nodes) {
+		Frame allows = new Frame(frame).addTypes("allows");
 		if (!nodes.isEmpty())
 			addAllowedInnerNodes(allows, nodes);
 		return allows;
@@ -228,8 +225,8 @@ class LanguageModelAdapter implements Adapter<Model> {
 		for (Node node : tree) {
 			if (node.isRequired()) continue;
 			for (Node candidate : collectCandidates(node))
-				if (node.isSingle()) singleNodes.add(createAllowedSingle(candidate, node.getAnnotations()));
-				else multipleNodes.add(createAllowedMultiple(candidate, node.getAnnotations()));
+				if (node.isSingle()) singleNodes.add(createAllowedSingle(allows, candidate, node.getAnnotations()));
+				else multipleNodes.add(createAllowedMultiple(allows, candidate, node.getAnnotations()));
 		}
 		addAllowedNodes(allows, multipleNodes, singleNodes);
 	}
@@ -241,10 +238,10 @@ class LanguageModelAdapter implements Adapter<Model> {
 			if (!node.isRequired()) continue;
 			Collection<Node> candidates = collectCandidates(node);
 			if (candidates.size() > 1 && node.isSingle())
-				requires.addFrame("require", createOneOf(candidates, node.getAnnotations()));
+				requires.addFrame("require", createOneOf(requires, candidates, node.getAnnotations()));
 			else for (Node candidate : candidates)
-				if (node.isSingle()) singleNodes.add(createRequiredSingle(candidate, node.getAnnotations()));
-				else multipleNodes.add(createRequiredMultiple(candidate, node.getAnnotations()));
+				if (node.isSingle()) singleNodes.add(createRequiredSingle(requires, candidate, node.getAnnotations()));
+				else multipleNodes.add(createRequiredMultiple(requires, candidate, node.getAnnotations()));
 		}
 		addRequiredNodes(requires, multipleNodes, singleNodes);
 	}
@@ -265,9 +262,9 @@ class LanguageModelAdapter implements Adapter<Model> {
 		}
 	}
 
-	private void addAllowedNodes(Frame allows, List<Frame> multipleNodes, List<Frame> singleNodes) {
-		if (!multipleNodes.isEmpty())
-			allows.addFrame(ALLOW, multipleNodes.toArray(new Frame[multipleNodes.size()]));
+	private void addAllowedNodes(Frame allows, List<Frame> multipleNodeFrames, List<Frame> singleNodes) {
+		if (!multipleNodeFrames.isEmpty())
+			allows.addFrame(ALLOW, multipleNodeFrames.toArray(new Frame[multipleNodeFrames.size()]));
 		if (!singleNodes.isEmpty())
 			allows.addFrame(ALLOW, singleNodes.toArray(new Frame[singleNodes.size()]));
 	}
@@ -279,15 +276,15 @@ class LanguageModelAdapter implements Adapter<Model> {
 			allows.addFrame(REQUIRE, singleNodes.toArray(new Frame[singleNodes.size()]));
 	}
 
-	private Frame createAllowedSingle(Node node, Collection<Tag> annotations) {
-		Frame frame = new Frame("single", ALLOW).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
+	private Frame createAllowedSingle(Frame owner, Node node, Collection<Tag> annotations) {
+		Frame frame = new Frame(owner).addTypes("single", ALLOW).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
 		for (Tag tag : annotations)
 			frame.addFrame("tags", tag.name());
 		return frame;
 	}
 
-	private Frame createAllowedMultiple(Node node, Collection<Tag> annotations) {
-		Frame frame = new Frame("multiple", ALLOW).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
+	private Frame createAllowedMultiple(Frame owner, Node node, Collection<Tag> annotations) {
+		Frame frame = new Frame(owner).addTypes("multiple", ALLOW).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
 		for (Tag tag : annotations)
 			frame.addFrame("tags", tag.name());
 		return frame;
@@ -297,20 +294,21 @@ class LanguageModelAdapter implements Adapter<Model> {
 		return node instanceof NodeReference ? ((NodeReference) node).getDestiny().getQualifiedName() : node.getQualifiedName();
 	}
 
-	private Frame createOneOf(Collection<Node> candidates, Collection<Tag> annotations) {
-		Frame frame = new Frame("oneOf", REQUIRE);
-		for (Node candidate : candidates) frame.addFrame("require", createRequiredSingle(candidate, annotations));
+	private Frame createOneOf(Frame owner, Collection<Node> candidates, Collection<Tag> annotations) {
+		Frame frame = new Frame(owner).addTypes("oneOf", REQUIRE);
+		for (Node candidate : candidates)
+			frame.addFrame("require", createRequiredSingle(frame, candidate, annotations));
 		return frame;
 	}
 
-	private Frame createRequiredSingle(Node node, Collection<Tag> annotations) {
-		Frame frame = new Frame("single", REQUIRE).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
+	private Frame createRequiredSingle(Frame owner, Node node, Collection<Tag> annotations) {
+		Frame frame = new Frame(owner).addTypes("single", REQUIRE).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
 		for (Tag tag : annotations) frame.addFrame("tags", tag.name());
 		return frame;
 	}
 
-	private Frame createRequiredMultiple(Node node, Collection<Tag> annotations) {
-		Frame frame = new Frame("multiple", REQUIRE).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
+	private Frame createRequiredMultiple(Frame owner, Node node, Collection<Tag> annotations) {
+		Frame frame = new Frame(owner).addTypes("multiple", REQUIRE).addFrame("type", getName(node)).addFrame("relation", getRelation(node));
 		for (Tag tag : annotations) frame.addFrame("tags", tag.name());
 		return frame;
 	}
@@ -320,4 +318,6 @@ class LanguageModelAdapter implements Adapter<Model> {
 		if (node.isAssociated()) return "ASSOCIATED";
 		return "COMPONENT";
 	}
+
+
 }

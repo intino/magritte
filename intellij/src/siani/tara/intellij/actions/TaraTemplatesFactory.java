@@ -39,9 +39,10 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 	                                         @NotNull String templateName,
 	                                         boolean allowReformatting,
 	                                         @NonNls String... parameters) throws IncorrectOperationException {
-		final FileTemplate template = FileTemplateManager.getInstance().getJ2eeTemplate(templateName);
+		final FileTemplate template = FileTemplateManager.getDefaultInstance().getJ2eeTemplate(templateName);
 		Project project = directory.getProject();
-		Properties properties = new Properties(FileTemplateManager.getInstance().getDefaultProperties(project));
+		Properties properties = new Properties(FileTemplateManager.getDefaultInstance().getDefaultProperties());
+		properties.setProperty("PROJECT_NAME", project.getName());
 		JavaTemplateUtil.setPackageNameAttribute(properties, directory);
 		properties.setProperty(NAME_TEMPLATE_PROPERTY, name);
 		properties.setProperty(LOW_CASE_NAME_TEMPLATE_PROPERTY, name.substring(0, 1).toLowerCase() + name.substring(1));
@@ -51,7 +52,7 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 		try {
 			text = template.getText(properties);
 		} catch (Exception e) {
-			throw new TaraRuntimeException("Unable to load template for " + FileTemplateManager.getInstance().internalTemplateToSubject(templateName), e);
+			throw new TaraRuntimeException("Unable to load template for " + FileTemplateManager.getDefaultInstance().internalTemplateToSubject(templateName), e);
 		}
 		final PsiFileFactory factory = PsiFileFactory.getInstance(project);
 		PsiFile file = factory.createFileFromText(fileName, TaraFileType.INSTANCE, text);
@@ -63,14 +64,13 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 
 
 	public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
-		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(MessageProvider.message("file.template.group.title.tara"), TaraIcons.getIcon(TaraIcons.ICON_100));
+		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(MessageProvider.message("file.template.group.title.tara"), TaraIcons.ICON_100);
 		final FileTypeManager fileTypeManager = FileTypeManager.getInstance();
 		for (String template : TEMPLATES) {
 			group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template).getIcon()));
 		}
 		return group;
 	}
-
 
 	private static class TaraTemplatesFactoryHolder {
 		private static final TaraTemplatesFactory myInstance = new TaraTemplatesFactory();

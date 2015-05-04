@@ -1,12 +1,11 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.framebuilder.Adapter;
-import org.siani.itrules.framebuilder.BuilderContext;
+import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.model.*;
 
-import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.*;
 
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 
@@ -19,8 +18,8 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	}
 
 	@Override
-	public void adapt(Frame frame, Parameter parameter, BuilderContext context) {
-		frame.add(getTypes(parameter));
+	public void execute(Frame frame, Parameter parameter, FrameContext context) {
+		frame.addTypes(getTypes(parameter));
 		frame.addFrame(NAME, buildName(parameter));
 		if (isTerminal(parameter))
 			frame.addFrame(TERMINAL, "!");

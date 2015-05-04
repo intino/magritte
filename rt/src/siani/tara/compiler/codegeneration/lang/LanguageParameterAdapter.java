@@ -53,7 +53,7 @@ public class LanguageParameterAdapter {
 	}
 
 	private Frame wordParameter(int i, Variable variable, String relation) {
-		Frame frame = new Frame(relation, "parameter", "word").
+		Frame frame = new Frame(null).addTypes(relation, "parameter", "word").
 			addFrame("name", variable.getName() + ":word").
 			addFrame("words", renderWord(variable));
 		addDefaultInfo(i, variable, frame);
@@ -68,7 +68,7 @@ public class LanguageParameterAdapter {
 	}
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
-		Frame frame = new Frame(relation, "parameter", "reference").
+		Frame frame = new Frame(null).addTypes(relation, "parameter", "reference").
 			addFrame("name", variable.getName()).
 			addFrame("types", renderReference((VariableReference) variable));
 		addDefaultInfo(i, variable, frame);
@@ -76,7 +76,7 @@ public class LanguageParameterAdapter {
 	}
 
 	private Frame primitiveParameter(int i, Variable variable, String relation) {
-		Frame frame = new Frame(relation, "parameter").
+		Frame frame = new Frame(null).addTypes(relation, "parameter").
 			addFrame("name", variable.getName()).
 			addFrame("type", variable.getType());
 		addDefaultInfo(i, variable, frame);
@@ -92,7 +92,7 @@ public class LanguageParameterAdapter {
 	}
 
 	private Frame wordParameter(Allow.Parameter parameter, int position) {
-		Frame frame = new Frame(REQUIRE, "parameter", "word").
+		Frame frame = new Frame(null).addTypes(REQUIRE, "parameter", "word").
 			addFrame("name", parameter.name() + ":word").
 			addFrame("words", parameter.allowedValues());
 		addDefaultInfo(parameter, frame, position);
@@ -100,7 +100,7 @@ public class LanguageParameterAdapter {
 	}
 
 	private Frame referenceParameter(ReferenceParameterAllow parameter, int position) {
-		Frame frame = new Frame(REQUIRE, "parameter", "reference").
+		Frame frame = new Frame(null).addTypes(REQUIRE, "parameter", "reference").
 			addFrame("name", parameter.name()).
 			addFrame("types", parameter.allowedValues());
 		addDefaultInfo(parameter, frame, position);
@@ -108,7 +108,7 @@ public class LanguageParameterAdapter {
 	}
 
 	private Frame primitiveParameter(Allow.Parameter parameter, int position) {
-		Frame frame = new Frame(REQUIRE, "parameter").
+		Frame frame = new Frame(null).addTypes(REQUIRE, "parameter").
 			addFrame("name", parameter.name()).
 			addFrame("type", parameter.type());
 		addDefaultInfo(parameter, frame, position);

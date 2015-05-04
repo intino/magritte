@@ -99,7 +99,7 @@
       </fileset>
     </copy>    
 
-    <copy file="src/META-INF/plugin.xml" tofile="dist/META-INF/plugin.xml"/>
+    <copy file="META-INF/plugin.xml" tofile="dist/META-INF/plugin.xml"/>
   </target>  
 
   <target name="build-jar" depends="dist">

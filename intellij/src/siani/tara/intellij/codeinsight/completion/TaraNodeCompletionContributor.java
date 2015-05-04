@@ -75,7 +75,7 @@ public class TaraNodeCompletionContributor extends CompletionContributor {
 	}
 
 	private LookupElementBuilder createElement(String language, Allow.Include allow) {
-		return create(allow.type() + " ").withIcon(TaraIcons.getIcon(TaraIcons.CONCEPT)).withCaseSensitivity(false).withTypeText(language);
+		return create(allow.type() + " ").withIcon(TaraIcons.CONCEPT).withCaseSensitivity(false).withTypeText(language);
 	}
 
 	private void afterIdentifier() {

@@ -29,7 +29,6 @@ public class TaraToNative extends JavaLineMarkerProvider {
 		super(daemonSettings, colorsManager);
 	}
 
-
 	private final MarkerType markerType = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
 		@Override

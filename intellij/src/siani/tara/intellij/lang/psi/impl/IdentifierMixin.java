@@ -118,7 +118,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public Icon getIcon(@IconFlags int i) {
-		return TaraIcons.getIcon(TaraIcons.CONCEPT);
+		return TaraIcons.CONCEPT;
 	}
 
 	@Override

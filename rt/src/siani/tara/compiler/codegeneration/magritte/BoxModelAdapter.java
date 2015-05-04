@@ -1,8 +1,7 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.formatter.InflectorFactory;
-import org.siani.itrules.framebuilder.Adapter;
-import org.siani.itrules.framebuilder.BuilderContext;
+import org.siani.itrules.Adapter;
+import org.siani.itrules.engine.formatters.PluralFormatter;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.compiler.model.Facet;
@@ -34,27 +33,27 @@ public class BoxModelAdapter implements Adapter<Model> {
 	}
 
 	@Override
-	public void adapt(Frame frame, Model model, BuilderContext context) {
+	public void execute(Frame frame, Model model, FrameContext FrameContext) {
 		frame.addFrame(NAME, capitalize(module) + buildFileName(model.getFile()));
 		if (!Objects.equals(language.languageName(), "Proteo"))
 			frame.addFrame(LANGUAGE, language.languageName());
 		frame.addFrame("project", project).addFrame("module", module);
 		addMetricImports(frame);
 		addFacetImports(model.getIncludedNodes(), frame);
-		parserAllNodes(frame, model, context);
+		parserAllNodes(frame, model, FrameContext);
 	}
 
 
-	private void parserAllNodes(Frame frame, Node nodeContainer, BuilderContext context) {
+	private void parserAllNodes(Frame frame, Node nodeContainer, FrameContext FrameContext) {
 		for (Node node : nodeContainer.getIncludedNodes()) {
 			if (node instanceof NodeReference) continue;
-			frame.addFrame("node", context.build(node));
-			parserAllNodes(frame, node, context);
+			frame.addFrame("node", FrameContext.build(node));
+			parserAllNodes(frame, node, FrameContext);
 		}
 		for (Facet facet : nodeContainer.getFacets())
 			for (Node node : facet.getIncludedNodes()) {
-				frame.addFrame("node", context.build(node));
-				parserAllNodes(frame, node, context);
+				frame.addFrame("node", FrameContext.build(node));
+				parserAllNodes(frame, node, FrameContext);
 			}
 	}
 
@@ -74,7 +73,7 @@ public class BoxModelAdapter implements Adapter<Model> {
 		for (Node node : nodes) {
 			if (node instanceof NodeReference) continue;
 			for (Facet facet : node.getFacets())
-				imports.add(InflectorFactory.getInflector(locale).plural(facet.getType()));//TODO
+				imports.add(new PluralFormatter(locale).getInflector().plural(facet.getType()));
 			imports.addAll(searchFacets(node.getIncludedNodes()));
 		}
 		return imports;

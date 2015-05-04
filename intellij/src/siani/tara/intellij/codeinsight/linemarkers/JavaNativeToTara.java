@@ -7,8 +7,9 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraIcons;
-import siani.tara.intellij.lang.psi.Node;
+import siani.tara.intellij.lang.psi.Variable;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.module.ModuleProvider;
 
 import java.util.Collection;
 
@@ -21,10 +22,10 @@ public class JavaNativeToTara extends RelatedItemLineMarkerProvider {
 		if (element instanceof PsiClass) {
 			PsiClass psiClass = (PsiClass) element;
 			if (element.getContainingFile() == null) return;
-			Node node = TaraUtil.findNodeByQN(findCorrespondentConcept(psiClass), element.getContainingFile());
-			if (node != null) {
+			Variable variable = TaraUtil.findNativeVariable(findCorrespondentConcept(psiClass), element.getContainingFile());
+			if (variable != null) {
 				NavigationGutterIconBuilder<PsiElement> builder =
-					NavigationGutterIconBuilder.create(TaraIcons.getIcon(TaraIcons.ICON_13)).setTarget(node).setTooltipText("Navigate to the concept");
+					NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTarget(variable).setTooltipText("Navigate to the native Variable");
 				result.add(builder.createLineMarkerInfo(element));
 			}
 		}
@@ -38,8 +39,11 @@ public class JavaNativeToTara extends RelatedItemLineMarkerProvider {
 			if (conceptClassOfTarget == null) return "";
 			qn = conceptClassOfTarget.getQualifiedName();
 		}
-		qn = qn.replaceFirst(aClass.getProject().getName().toLowerCase() + "." + NATIVES + ".", "");
-		return qn;
+		if (qn != null) {
+			String moduleName = ModuleProvider.getModuleOf(aClass).getName().toLowerCase();
+			qn = qn.replaceFirst(moduleName + "." + NATIVES + ".", "");
+		}
+		return qn == null ? "" : qn;
 	}
 
 	private PsiClass findConceptClassOfTarget(PsiClass aClass) {

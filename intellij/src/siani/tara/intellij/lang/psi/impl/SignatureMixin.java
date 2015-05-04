@@ -35,7 +35,7 @@ public class SignatureMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public Icon getIcon(@IconFlags int i) {
-		return TaraIcons.getIcon(TaraIcons.CONCEPT);
+		return TaraIcons.CONCEPT;
 	}
 
 	public boolean isSub() {

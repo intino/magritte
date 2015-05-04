@@ -1,13 +1,12 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.framebuilder.Adapter;
-import org.siani.itrules.framebuilder.BuilderContext;
+import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.VariableReference;
 
-import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.*;
 
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 
@@ -20,14 +19,14 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 	}
 
 	@Override
-	public void adapt(Frame frame, Variable variable, BuilderContext context) {
+	public void execute(Frame frame, Variable variable, FrameContext<Variable> context) {
 		if (variable.getDefaultValues().isEmpty()) return;
 		if (variable.getContainer() instanceof FacetTarget) {
 			createTargetVarFrame(frame, variable);
 			addVariableValue(frame, variable);
 			return;
 		}
-		frame.add(getTypes(variable));
+		frame.addTypes(getTypes(variable));
 		fill(frame, variable);
 		addVariableValue(frame, variable);
 	}
@@ -55,7 +54,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 		Object[] values;
 		Collection<Object> defaultValues = variable.getDefaultValues();
 		if (defaultValues.iterator().next() instanceof Node)
-			if (defaultValues.iterator().next() instanceof EmptyNode) values = new Object[]{"(Node) null"};
+			if (defaultValues.iterator().next() instanceof EmptyNode) values = new String[]{"(Node) null"};
 			else values = collectQualifiedNames(defaultValues);
 		else values = format(defaultValues);
 		frame.addFrame(VARIABLE_VALUE, values);
@@ -83,7 +82,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 
 	private void createTargetVarFrame(Frame frame, final Variable variable) {
 		FacetTarget container = (FacetTarget) variable.getContainer();
-		frame.add(getFacetTypes(variable));
+		frame.addTypes(getFacetTypes(variable));
 		frame.addFrame(NAME, variable.getName());
 		if (variable.getType().equals(Primitives.MEASURE)) asMeasure(frame, variable);
 		frame.addFrame(TARGET, container.getTarget());
