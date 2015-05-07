@@ -44,13 +44,9 @@ public class FacetTargetResolver {
 	}
 
 	private Variable[] cloneVariables(NodeContainer container, Collection<Variable> variables) {
-		try {
-			List<Variable> clones = new ArrayList<>();
-			for (Variable variable : variables)
-				clones.add(variable.cloneIt(container));
-			return clones.toArray(new Variable[clones.size()]);
-		} catch (CloneNotSupportedException e) {
-			return new Variable[0];
-		}
+		List<Variable> clones = new ArrayList<>();
+		for (Variable variable : variables)
+			clones.add(variable.cloneIt(container));
+		return clones.toArray(new Variable[clones.size()]);
 	}
 }

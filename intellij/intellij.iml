@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="ItRules" name="ItRules">
+      <configuration>
+        <encoding>LF</encoding>
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/../dist/production/intellij" />
     <output-test url="file://$MODULE_DIR$/../dist/test/intellij" />
@@ -9,15 +16,17 @@
       <sourceFolder url="file://$MODULE_DIR$/res_test" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/templates" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/${alt.build.dir}" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="tara-jps-plugin" />
     <orderEntry type="library" name="tara-semantic" level="project" />
+    <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.siani.itrules:itrules:1.1.14" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.commonjava.googlecode.markdown4j:markdown4j:2.2-cj-1.0" level="project" />
-    <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

@@ -34,7 +34,6 @@ public class InheritanceResolver {
 			resolveAllowedFacets(parent, child);
 			resolve(child);
 		}
-		if (parent.isAbstract()) parent.getVariables().clear();
 	}
 
 	private void resolveAllowedFacets(NodeImpl parent, NodeImpl child) {
@@ -87,9 +86,10 @@ public class InheritanceResolver {
 	}
 
 	private void resolveFlags(NodeImpl parent, NodeImpl child) {
-		for (Tag tag : parent.getFlags())
+		for (Tag tag : parent.getFlags()) {
 			if (!tag.equals(Tag.ABSTRACT) && !child.getFlags().contains(tag))
 				child.addFlags(tag.getName());
+		}
 	}
 
 	private void resolveAnnotations(NodeImpl parent, NodeImpl child) {
@@ -99,14 +99,10 @@ public class InheritanceResolver {
 	}
 
 	private void resolveVariables(NodeImpl parent, NodeImpl child) {
-		resolveToChild(parent, child);
-	}
-
-	private void resolveToChild(NodeImpl parent, NodeImpl child) {
 		List<Variable> variables = new ArrayList<>();
 		for (Variable variable : parent.getVariables())
 			if (!isOverridden(child, variable))
-				variables.add(variable);
+				variables.add(variable.cloneIt(child));
 		child.addVariables(0, variables.toArray(new Variable[variables.size()]));
 	}
 

@@ -98,8 +98,13 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 	}
 
 	@Override
-	public void flags(String... annotations) {
-		nodeReference.addInheritedFlags(annotations);
+	public void flags(String... flags) {
+		nodeReference.addInheritedFlags(flags);
+	}
+
+	@Override
+	public void annotations(String... annotations) {
+//		TODO nodeReference.addInheritedAnnotations(annotations);
 	}
 
 	@Override

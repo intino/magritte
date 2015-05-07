@@ -132,6 +132,16 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
+	public boolean isFeature() {
+		return false;
+	}
+
+	@Override
+	public boolean isFeatureInstance() {
+		return false;
+	}
+
+	@Override
 	public boolean isProperty() {
 		return false;
 	}

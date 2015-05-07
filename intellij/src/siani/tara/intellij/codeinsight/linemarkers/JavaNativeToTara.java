@@ -3,6 +3,7 @@ package siani.tara.intellij.codeinsight.linemarkers;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
+import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +41,9 @@ public class JavaNativeToTara extends RelatedItemLineMarkerProvider {
 			qn = conceptClassOfTarget.getQualifiedName();
 		}
 		if (qn != null) {
-			String moduleName = ModuleProvider.getModuleOf(aClass).getName().toLowerCase();
+			Module moduleOf = ModuleProvider.getModuleOf(aClass);
+			if (moduleOf == null) return "";
+			String moduleName = moduleOf.getName().toLowerCase();
 			qn = qn.replaceFirst(moduleName + "." + NATIVES + ".", "");
 		}
 		return qn == null ? "" : qn;

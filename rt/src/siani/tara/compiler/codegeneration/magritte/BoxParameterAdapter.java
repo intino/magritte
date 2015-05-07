@@ -22,7 +22,7 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 		frame.addTypes(getTypes(parameter));
 		frame.addFrame(NAME, buildName(parameter));
 		if (isTerminal(parameter))
-			frame.addFrame(TERMINAL, "!");
+			frame.addFrame(TERMINAL, TERMINAL_KEY);
 		if (parameter.getInferredType().equals(Primitives.MEASURE)) {
 			frame.addFrame(EXTENSION_TYPE, parameter.getMetric());
 			if (parameter.getMetric() != null)
@@ -46,17 +46,26 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 		Object[] values;
 		Collection<Object> parameterValues = parameter.getValues();
 		if (parameterValues.iterator().next() instanceof Node)
-			if (parameterValues.iterator().next() instanceof EmptyNode) values = new Object[]{"null"};
+			if (parameterValues.iterator().next() instanceof EmptyNode)
+				values = new Object[]{"null"};
 			else values = collectQualifiedNames(parameterValues);
+		else if (parameter.getInferredType().equals("native")) values = formatNative(parameterValues);
 		else values = format(parameterValues);
 		frame.addFrame(VARIABLE_VALUE, values);
 	}
 
+	private Object[] formatNative(Collection<Object> parameterValues) {
+		List<Object> objects = new ArrayList<>();
+		for (Object value : parameterValues)
+			objects.add(value.toString() + ".class");
+		return objects.toArray(new Object[objects.size()]);
+	}
+
+
 	private Object[] format(Collection<Object> parameterValues) {
 		List<Object> objects = new ArrayList<>();
-		for (Object value : parameterValues) {
+		for (Object value : parameterValues)
 			objects.add(value instanceof String && ((String) value).contains("\n") ? formatText((String) value) : value);
-		}
 		return objects.toArray(new Object[objects.size()]);
 	}
 

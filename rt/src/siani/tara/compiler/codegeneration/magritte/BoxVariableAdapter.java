@@ -20,7 +20,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 
 	@Override
 	public void execute(Frame frame, Variable variable, FrameContext<Variable> context) {
-		if (variable.getDefaultValues().isEmpty()) return;
+		if (variable.getDefaultValues().isEmpty() || variable.isInherited()) return;
 		if (variable.getContainer() instanceof FacetTarget) {
 			createTargetVarFrame(frame, variable);
 			addVariableValue(frame, variable);
@@ -33,8 +33,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 
 	protected void fill(Frame frame, Variable variable) {
 		frame.addFrame(NAME, variable.getName());
-		if (variable.isTerminal())
-			frame.addFrame(TERMINAL, "!");
+		frame.addFrame(TERMINAL, TERMINAL_KEY);
 		if (variable.getType().equals(Primitives.MEASURE)) asMeasure(frame, variable);
 	}
 
@@ -54,7 +53,8 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 		Object[] values;
 		Collection<Object> defaultValues = variable.getDefaultValues();
 		if (defaultValues.iterator().next() instanceof Node)
-			if (defaultValues.iterator().next() instanceof EmptyNode) values = new String[]{"(Node) null"};
+			if (defaultValues.iterator().next() instanceof EmptyNode)
+				values = new String[]{(variable.getType().equals("native") ? "" : "(Node)") + " null"};
 			else values = collectQualifiedNames(defaultValues);
 		else values = format(defaultValues);
 		frame.addFrame(VARIABLE_VALUE, values);

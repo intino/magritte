@@ -1,4 +1,4 @@
-defrule type(model)
+def type(model)
     package magritte.store;
 
     import magritte.Model;
@@ -9,109 +9,114 @@ defrule type(model)
     import static magritte.Tag.*;
     $importMetric...[$NL]
 
-    public class $name extends Box.Unit {
+    public class $name extends Box.$terminal {
         public static final Box box = new $name();
 
         @Override
         public Box$[] dependencies() {
-            return new Box$[]{[magritte.store.metamodel.$language+firstUpperCase.box]};
+            return new Box$[]{[magritte.store.$language+firstUpperCase.box]};
         }
 
         @Override
-        protected ModelEditor modelEditor(Model model) {
-            return new ModelEditor(model) {
-                @Override
-                public void write() {
-                    $node...[$NL]
-                }
-            };
+        public void doWrite() {
+            $node...[$NL]
         }
     }
-endrule
+end
 
-defrule type(Node) trigger(node)
+def trigger(terminal) value(true)
+	Terminal
+end
+def trigger(terminal) value(false)
+	Unit
+end
+
+def type(Node) trigger(node)
     edit($key)[.name("$name")][$nodeType...[]][$facet...[]][$address][$annotation...[]][.$parent][$variable...[]][.owner($componentOf)][$include...[]];
-endrule
+end
 
-defrule trigger(nodeType)
+def trigger(nodeType)
     .type("$value")
-endrule
+end
 
-defrule type(facetapply) trigger(facet)
+def type(facetapply) trigger(facet)
     .type("$name"[, $apply])
-endrule
+end
 
-defrule trigger(address)
+def trigger(address)
     .address($value)
-endrule
+end
 
-defrule trigger(parent)
+def trigger(parent)
     childOf("$value")
-endrule
+end
 
-defrule type(aggregated) trigger(include)
-    .add($value)
-endrule
+def type(aggregated) trigger(include)
+    .hasHoldings($value)
+end
 
-defrule type(composed) trigger(include)
+def type(composed) trigger(include)
     .hasComponents($value)
-endrule
+end
 
-defrule type(variable) type(target) type(measure) !type(List) slot(variableValue) trigger(variable)
+def type(variable) type(target) type(measure) !type(List) slot(variableValue) trigger(variable)
     .set("!$node:$name<$target", $measureValue.value($variableValue))
-endrule
+end
 
-defrule type(variable) type(target) type(string) slot(variableValue) trigger(variable)
+def type(variable) type(target) type(string) slot(variableValue) trigger(variable)
     .set("!$node:$name<$target", $variableValue+quoted...[, ])
-endrule
-defrule type(variable) type(target) type(word) slot(variableValue) trigger(variable)
+end
+def type(variable) type(target) type(word) slot(variableValue) trigger(variable)
     .set("!$node:$name<$target", $variableValue+quoted...[, ])
-endrule
+end
 
-defrule type(variable) type(target) type(reference) slot(variableValue) trigger(variable)
+def type(variable) type(target) type(reference) slot(variableValue) trigger(variable)
     .set("!$node:$name<$target", node($variableValue...[, ]))
-endrule
+end
 
-defrule type(variable) type(target) slot(variableValue) trigger(variable)
+def type(variable) type(target) slot(variableValue) trigger(variable)
     .set("!$node:$name<$target", $variableValue...[, ])
-endrule
+end
 
-defrule type(variable) type(reference) slot(variableValue) trigger(variable)
-    .set("$terminal$name", node($variableValue+quoted...[, ]))
-endrule
+def type(variable) type(reference) slot(variableValue) trigger(variable)
+    .set("$terminal$name", node($variableValue...[, ]))
+end
 
-defrule type(Variable) type(resource) slot(variableValue) trigger(variable)
+def type(variable) type(native) slot(variableValue) trigger(variable)
+    .set("$terminal$name", (Class<NativeContainer>) $variableValue)
+end
+
+def type(Variable) type(resource) slot(variableValue) trigger(variable)
     .set("$terminal$name", resource($variableValue+quoted...[, ]))
-endrule
+end
 
-defrule type(variable) type(word) slot(variableValue) trigger(variable)
+def type(variable) type(word) slot(variableValue) trigger(variable)
     .set("$terminal$name", $variableValue+quoted...[, ])
-endrule
+end
 
-defrule type(Variable) type(string) slot(variableValue) trigger(variable)
+def type(Variable) type(string) slot(variableValue) trigger(variable)
     .set("$terminal$name", $variableValue+quoted...[, ])
-endrule
+end
 
-defrule type(Variable) slot(variableValue) trigger(variable)
+def type(Variable) slot(variableValue) trigger(variable)
     .set("$terminal$name", $variableValue+quoted...[, ])
-endrule
+end
 
-defrule type(Variable) trigger(variable)
+def type(Variable) trigger(variable)
+end
 
-endrule
-
-defrule type(Annotation) trigger(annotation)
+def type(Annotation) trigger(annotation)
     .set($value+CamelCase...[, ])
-endrule
+end
 
-defrule trigger(variableValue) slot(date)
+def trigger(variableValue) slot(date)
     magritte.types.TimeInstant.value($value+date)
-endrule
+end
 
-defrule trigger(variableValue) slot(coordinate)
+def trigger(variableValue) slot(coordinate)
     magritte.types.Coordinate.of($value)
-endrule
+end
 
-defrule trigger(quoted)
+def trigger(quoted)
     "$value"
-endrule
+end

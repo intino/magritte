@@ -4,12 +4,14 @@ public interface TemplateTags {
 
 	char SEMICOLON = ';';
 	String DOT = ".";
+	String TERMINAL_KEY = "*";
 	String EXTENSIONS = "extensions";
 	String PARENT = "parent";
 	String TYPE = "type";
 	String QN = "qn";
 	String NAME = "name";
 	String NODE = "node";
+	String DEFINITION = "Definition";
 	String MAGRITTE_MORPHS = "magritte.morphs";
 	String PROJECT = "project";
 	String NODE_TYPE = "nodeType";

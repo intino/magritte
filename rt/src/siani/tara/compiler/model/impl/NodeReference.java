@@ -170,6 +170,16 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
+	public boolean isFeature() {
+		return destiny.isFeature() || flags.contains(Tag.FEATURE);
+	}
+
+	@Override
+	public boolean isFeatureInstance() {
+		return destiny.isFeatureInstance() || flags.contains(Tag.FEATURE);
+	}
+
+	@Override
 	public boolean isProperty() {
 		return destiny.isProperty() || flags.contains(PROPERTY);
 	}

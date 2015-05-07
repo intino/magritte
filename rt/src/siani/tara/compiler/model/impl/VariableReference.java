@@ -21,7 +21,7 @@ public class VariableReference extends VariableImpl {
 	}
 
 	@Override
-	public Variable cloneIt(NodeContainer container) throws CloneNotSupportedException {
+	public Variable cloneIt(NodeContainer container) {
 		VariableReference reference = new VariableReference(container, getType(), getName());
 		reference.setDestiny(destiny);
 		return reference;

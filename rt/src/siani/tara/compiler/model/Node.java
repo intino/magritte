@@ -43,6 +43,10 @@ public interface Node extends NodeContainer, Parameterized {
 
 	boolean isAssociated();
 
+	boolean isFeature();
+
+	boolean isFeatureInstance();
+
 	boolean isProperty();
 
 	boolean isPropertyInstance();

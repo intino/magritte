@@ -1,225 +1,234 @@
-defrule type(Morph)
+def type(Morph)
     package $package+lowercase;
 
-    [import $import...[;$NL]]\
+    [import $import...[;$NL]]
     import magritte.types.*;
     import magritte.wraps.Morph;
-    import magritte.wraps.Type;
+    import magritte.wraps.Definition;
     $imports...[$NL]
 
     $node
-endrule
+end
 
+-------- WORDS ---------
 
-defrule type(Word) trigger(wordInstantiation)
-    public static enum $name+firstUpperCase {$words+FirstUpperCase...[, ]}
+def type(Word) trigger(wordInstantiation)
+    public static enum $name+firstUpperCase {
+        $words+FirstUpperCase...[, ]
+    }
+end
 
-
-endrule
-
-defrule type(Word) type(List) trigger(getter)
+def type(Word) type(List) trigger(getter)
     public $name+reference$[] get$name+firstUpperCase() {
         return Enumerate.cardinal((Integer) get("$name+firstLowerCase"), $name+firstUpperCase.values());
     }
+end
 
-endrule
-
-defrule type(Word) !type(List) trigger(getter)
+def type(Word) !type(List) trigger(getter)
     public $name+reference get$name+firstUpperCase() {
         return Enumerate.cardinal((int) definition().get("$name+firstLowerCase"), $name+firstUpperCase.values());
     }
+end
 
-endrule
-
-defrule type(Word) type(List) trigger(setter)
+def type(Word) type(List) trigger(setter)
     public void set$name+firstUpperCase($name+firstUpperCase~... values) {
         set("$name", Enumerate.ordinal(values));
     }
+end
 
-endrule
-
-defrule type(Word) !type(List) trigger(setter)
+def type(Word) !type(List) trigger(setter)
     public void set$name+firstUpperCase($name+firstUpperCase value) {
         set("$name", Enumerate.ordinal(value));
     }
+end
 
-endrule
+-------- VARIABLES ---------
 
-defrule type(Variable) type(Date) !type(Word) trigger(getter)
-    public TimeInstant $name+firstLowerCase() {
-        return TimeInstant.value((Long) get("$name"));
+def type(variable) type(Date) trigger(getter)
+    public Instant $name+firstLowerCase() {
+        return instant(get("$name", long.class));
     }
+end
 
-endrule
-
-defrule type(Variable) type(Measure) !type(Word) trigger(getter)
+def type(variable) type(Measure) trigger(getter)
     public double $name+firstLowerCase() {
         return get("$name");
     }
+end
 
-endrule
-
-defrule type(Variable) type(Native) !type(Word) trigger(getter)
+def type(variable) type(definition) type(native) trigger(getter)
     public $name+reference $name+firstLowerCase() {
-        return Type.natives($name+reference.class)$[0$];
+        return nativeOf("$name");
     }
+end
 
+def type(variable) type(native) trigger(getter)
+    public $name+reference $name+firstLowerCase() {
+        return definition().nativeOf("$name");
+    }
+end
 
-endrule
-
-defrule type(Variable) type(file) !type(Word) trigger(getter)
+def type(variable) type(file) trigger(getter)
     public Resource $name+firstLowerCase() {
         return resource(get("value", int.class));
     }
+end
 
-endrule
-
-defrule type(Variable) !type(Word) trigger(getter)
-    public $type+reference $name+firstLowerCase() {
-        return get("$name", $type+reference.class);
+def type(variable) type(definition) !type(word) trigger(getter)
+    public $type+firstUpperCase $name+firstLowerCase() {
+        return get("$name");
     }
+end
 
-endrule
+def type(variableReference) !type(word) trigger(getter)
+    public $type+reference $name+firstLowerCase() {
+        return morph(get("$name", magritte.Node.class), $type+reference.class);
+    }
+end
 
-defrule type(Variable) type(file) !type(list) !type(readonly) !type(Word) trigger(setter)
+def type(variable) !type(word) trigger(getter)
+    public $type+reference $name+firstLowerCase() {
+        return definition().get("$name");
+    }
+end
+
+-------- SETTERS ---------
+
+def type(variable) type(file) !type(list) !type(readonly) trigger(setter)
     public void set$name+firstUpperCase(Resource value) {
         set("value", value.id());
     }
+end
 
-endrule
-
-defrule type(Variable) type(Date) !type(readonly) !type(Word) trigger(setter)
-    public void set$name+firstUpperCase(TimeInstant value) {
-        set("$name", value);
+def type(variable) type(Date) !type(readonly) trigger(setter)
+    public void set$name+firstUpperCase(Instant value) {
+        set("$name", value.timestamp());
     }
+end
 
-endrule
-
-defrule type(Variable) type(Measure) !type(readonly) !type(Word) trigger(setter)
+def type(variable) type(Measure) !type(readonly) trigger(setter)
     public void set$name+firstUpperCase(double $name+firstLowerCase) {
         set("$name", $name+firstLowerCase);
     }
+end
 
-endrule
-
-defrule type(Variable) !type(readonly) !type(Native) !type(Word) type(List) trigger(setter)
+def type(variable) !type(readonly) !type(native) type(List) trigger(setter)
     public void set$name+firstUpperCase($type+reference$[] $name+firstLowerCase) {
         set("$name", $name+firstLowerCase);
     }
+end
 
-endrule
-
-defrule type(Variable) !type(Native) !type(reference) !type(readonly) !type(Word) !type(List) trigger(setter)
+def type(variable) !type(native) !type(reference) !type(readonly) !type(List) trigger(setter)
     public void set$name+firstUpperCase(java.lang.$type+firstUpperCase value) {
         set("$name", value);
     }
+end
 
-endrule
+def type(variableReference) !type(readonly) !type(native) !type(List) trigger(setter)
+    public void set$name+firstUpperCase($type+reference value) {
+        set("$name", value.node());
+    }
+end
 
-defrule type(Variable) !type(readonly) !type(Word) !type(Native) !type(List) trigger(setter)
+def type(variable) !type(readonly) !type(native) !type(List) trigger(setter)
     public void set$name+firstUpperCase($type+reference value) {
         set("$name", value);
     }
+end
 
-endrule
+--------------- COMPONENTS -------------------
 
-defrule trigger(parent) slot(value)
+def trigger(parent) slot(value)
     extends $value+reference
-endrule
+end
 
-defrule type(nodeReference) type(Feature) trigger(component)
-    public $name+reference $name+firstLowerCase() {
-        return definition().feature($name+reference.class);
+def type(nodeReference) type(Feature) trigger(component)
+    public $qn+reference $name+firstLowerCase() {
+        return definition().feature($qn+reference.class);
+    }
+end
+
+def type(nodeReference) !type(aggregated) type(single) trigger(component)
+    public $qn+reference $name+firstLowerCase() {
+        return components($qn+reference.class)$[0];
+    }
+end
+
+def type(nodeReference) !type(aggregated) !type(single) trigger(component)
+    public $qn+reference$[] $name+firstLowerCase+plural() {
+        return components($qn+reference.class);
     }
 
-endrule
-
-defrule type(nodeReference) !type(Feature) !type(aggregated) type(single) trigger(component)
-    public $name+reference $name+firstLowerCase() {
-        return components($name+reference.class)$[0];
-    }
-
-endrule
-
-defrule type(nodeReference) !type(Feature) !type(aggregated) !type(single) trigger(component)
-    public $name+reference$[] $name+firstLowerCase+plural() {
-        return components($name+reference.class);
-    }
-
-    public $name+reference $name+firstLowerCase(int index) {
+    public $qn+reference $name+firstLowerCase(int index) {
         return $name+firstLowerCase+plural()$[index$];
     }
+end
 
-endrule
-
-defrule type(nodeReference) !type(Feature) type(aggregated) trigger(component)
-    public $name+firstUpperCase$[] $name+firstLowerCase() {
-        return holdings($name+firstUpperCase.class);
+def type(nodeReference) type(aggregated) trigger(component)
+    public $qn+reference$[] $name+firstLowerCase() {
+        return holdings($qn+reference.class);
     }
 
-    public $name+firstUpperCase add$name+firstUpperCase(magritte.wrappers.Definition definition) {
-        return addNode(definition.node()).with($name+firstUpperCase.class);
+    public $qn+reference add$name+firstUpperCase(magritte.wraps.Definition definition) {
+        return addNode(definition.node()).with($qn+reference.class);
     }
+end
 
-endrule
-
-defrule type(nodeimpl) type(intention) !type(facetInstance) type(facet) trigger(node)
+def type(nodeimpl) type(intention) !type(facetInstance) type(facet) trigger(node)
     public[$inner static] class $name+firstUpperCase $parent implements $project+lowercase.intentions.$name+firstUpperCase~Intention {
-    \
         public $project+lowercase.intentions.$name+firstUpperCase~Intention extension() {
             return extensions($project+lowercase.intentions.$name+firstUpperCase~Intention.class)$[0];
         }
-    \
-        $variable+wordInstantiation...[$NL]\
-    \
-        $variable+getter...[$NL]\
-    \
-        $variable+setter...[$NL]\
-    \
-        $component...[$NL]\
+        $variable+wordInstantiation...[$NL]
+        $variable+getter...[$NL]
+        $variable+setter...[$NL]
+        $component...[$NL]
 
-        $node...[$NL]\
+        $node...[$NL]
     }
 
-endrule
+end
 
-defrule type(nodeimpl) type(intention) !type(facet) type(facetInstance) trigger(node)
+def type(nodeimpl) type(intention) !type(facet) type(facetInstance) trigger(node)
     public[$inner static] class $name+firstUpperCase $parent implements $project+lowercase.intentions.$name+firstUpperCase~Intention {
-    \
         public $project+lowercase.intentions.$name+firstUpperCase~Intention$[] extensions() {
             return extensions($project+lowercase.intentions.$name+firstUpperCase~Intention.class);
         }
-    \
-        $variable+wordInstantiation...[$NL]\
-    \
-        $variable+getter...[$NL]\
-    \
-        $variable+setter...[$NL]\
-    \
-        $component...[$NL]\
+        $variable+wordInstantiation...[$NL]
+        $variable+getter...[$NL]
+        $variable+setter...[$NL]
+        $component...[$NL]
 
-        $node...[$NL]\
+        $node...[$NL]
     }
 
-endrule
+end
 
-defrule type(nodeimpl) trigger(node)
+def type(nodeimpl) trigger(node)
     public[$inner static] class $name+firstUpperCase $parent {
-    \
         [$aggregable
         public Definition$[$] aggregables() {
             return definition().aggregables();
         }]
-    \
-        $variable+wordInstantiation...[$NL]\
-    \
-        $variable+getter...[$NL]\
-    \
-        $variable+setter...[$NL]\
-    \
-        $component...[$NL]\
+        $variable+wordInstantiation...[$NL]
+        $variable+getter...[$NL]
+        $variable+setter...[$NL]
+        $component...[$NL]
 
-        $node...[$NL]\
+        $node...[$NL]
     }
 
-endrule
+end
+
+
+def type(variable) trigger(wordInstantiation)
+end
+
+def type(variable) trigger(setter)
+end
+
+def type(variable) trigger(getter)
+end
+
+def trigger(component)
+end

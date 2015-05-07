@@ -1,8 +1,9 @@
 package siani.tara.compiler.core.operation;
 
+import de.hunsicker.jalopy.Jalopy;
 import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
-import siani.tara.compiler.codegeneration.StringFormatter;
+import siani.tara.compiler.codegeneration.Format;
 import siani.tara.compiler.codegeneration.magritte.BoxUnitFrameCreator;
 import siani.tara.compiler.codegeneration.magritte.MorphFrameCreator;
 import siani.tara.compiler.core.CompilationUnit;
@@ -19,11 +20,7 @@ import siani.tara.templates.BoxDSLTemplate;
 import siani.tara.templates.BoxUnitTemplate;
 import siani.tara.templates.MorphTemplate;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +29,6 @@ import static java.io.File.separator;
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
 
 public class ModelToJavaOperation extends ModelOperation {
-	private static final Class[] TEMPLATES = new Class[]{BoxUnitTemplate.class, BoxDSLTemplate.class, MorphTemplate.class};
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
 	private static final String JAVA = ".java";
 	protected static final String DOT = ".";
@@ -51,7 +47,6 @@ public class ModelToJavaOperation extends ModelOperation {
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		try {
-			createTemplates();
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating code representation");
 			this.model = model;
 			List<List<Node>> groupByBox = groupByBox(model);
@@ -66,17 +61,11 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-	private void createTemplates() {
-		try {
-			for (Class templateClass : TEMPLATES) {
-				Template template = (Template) templateClass.getMethod("create").invoke(null);
-				template.add("date", buildDateFormatter());
-				template.add("string", new StringFormatter());
-				template.add("reference", buildReferenceFormatter());
-			}
-		} catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
-			ignored.printStackTrace();
-		}
+	private Template customize(Template template) {
+		template.add("date", Format.date());
+		template.add("string", Format.string());
+		template.add("reference", Format.reference());
+		return template;
 	}
 
 	private Map<String, String> createBoxUnits(List<List<Node>> groupByBox) throws TaraException {
@@ -94,7 +83,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private Map<String, String> processBoxUnits(List<List<Node>> groupByBox) throws TaraException {
 		Map<String, String> map = new HashMap();
 		for (List<Node> nodes : groupByBox)
-			map.put(buildBoxUnitName(nodes.get(0)), BoxUnitTemplate.create().format(new BoxUnitFrameCreator(conf, model).create(nodes)));
+			map.put(buildBoxUnitName(nodes.get(0)), customize(BoxUnitTemplate.create()).format(new BoxUnitFrameCreator(conf, model).create(nodes)));
 		return map;
 	}
 
@@ -107,7 +96,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		frame.addFrame("name", conf.getGeneratedLanguage());
 		for (String box : boxes)
 			frame.addFrame("namebox", buildBoxUnitName(box));
-		return BoxDSLTemplate.create().format(frame);
+		return customize(BoxDSLTemplate.create()).format(frame);
 	}
 
 	private String buildBoxUnitName(String box) {
@@ -127,36 +116,13 @@ public class ModelToJavaOperation extends ModelOperation {
 	private void renderFacetTargets(Map<String, String> map, Node node) {
 		for (FacetTarget facetTarget : node.getFacetTargets()) {
 			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(facetTarget);
-			map.put(morphFrame.getKey(), MorphTemplate.create().format(morphFrame.getValue()));
+			map.put(morphFrame.getKey(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
 		}
 	}
 
 	private void renderNode(Map<String, String> map, Node node) {
-		Map.Entry<String, Frame> morphFrame =
-			new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(node);
-		map.put(morphFrame.getKey(), MorphTemplate.create().format(morphFrame.getValue()));
-	}
-
-	private org.siani.itrules.Formatter buildReferenceFormatter() {
-		return new org.siani.itrules.Formatter() {
-			@Override
-			public Object format(Object value) {
-				String val = value.toString();
-				if (!val.contains(DOT)) return val.substring(0, 1).toUpperCase() + val.substring(1);
-				return buildMorphPath(conf.getModule() + DOT + val);
-			}
-		};
-	}
-
-	private org.siani.itrules.Formatter buildDateFormatter() {
-		return new org.siani.itrules.Formatter() {
-			@Override
-			public Object format(Object value) {
-				String val = value.toString();
-				if (!val.contains("/")) return value;
-				return val.replace("/", ", ");
-			}
-		};
+		Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(node);
+		map.put(morphFrame.getKey(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
 	}
 
 	private void writeBoxUnits(String directory, Map<String, String> documentMap) {
@@ -199,9 +165,20 @@ public class ModelToJavaOperation extends ModelOperation {
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
+			prettyPrint(file);
 		}
 	}
 
+	private void prettyPrint(File file) {
+		try {
+			org.apache.log4j.BasicConfigurator.configure(new org.apache.log4j.varia.NullAppender());
+			Jalopy jalopy = new Jalopy();
+			jalopy.setInput(file);
+			jalopy.setOutput(file);
+			jalopy.format();
+		} catch (FileNotFoundException ignored) {
+		}
+	}
 
 	private List<List<Node>> groupByBox(Model model) {
 		Map<String, List<Node>> nodes = new HashMap();

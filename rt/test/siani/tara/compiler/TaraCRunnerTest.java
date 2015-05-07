@@ -46,6 +46,11 @@ public class TaraCRunnerTest {
 	}
 
 	@Test
+	public void MonetAnimalesM0() {
+		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/monetTestM0.txt"});
+	}
+
+	@Test
 	public void MonetAnimalesM1() {
 		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/monetTestM1.txt"});
 	}

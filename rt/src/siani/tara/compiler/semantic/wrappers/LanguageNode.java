@@ -122,6 +122,11 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
+	public void annotations(String... annotations) {
+		node.addAnnotations(annotations);
+	}
+
+	@Override
 	public void moveToTheTop() {
 		node.moveToTheTop();
 	}

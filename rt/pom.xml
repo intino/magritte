@@ -16,6 +16,7 @@
   <build>
     <outputDirectory>../dist/production/tara-runtime</outputDirectory>
     <testOutputDirectory>../dist/test/tara-runtime</testOutputDirectory>
+    <directory>../dist/build/tara-runtime</directory>
   </build>
 
   <repositories>
@@ -62,6 +63,12 @@
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
       <version>4.5</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.rotty3000</groupId>
+      <artifactId>jalopy</artifactId>
+      <version>3000.0.0</version>
     </dependency>
   </dependencies>
 

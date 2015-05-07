@@ -22,14 +22,16 @@ public class BoxModelAdapter implements Adapter<Model> {
 	private final Language language;
 	private final Locale locale;
 	private final Map<String, List<SimpleEntry<String, String>>> metrics;
+	private final boolean terminal;
 
 
-	public BoxModelAdapter(String project, String module, Language language, Locale locale, Map<String, List<SimpleEntry<String, String>>> metrics) {
+	public BoxModelAdapter(String project, String module, Language language, Locale locale, Map<String, List<SimpleEntry<String, String>>> metrics, boolean terminal) {
 		this.project = project;
 		this.module = module;
 		this.language = language;
 		this.locale = locale;
 		this.metrics = metrics;
+		this.terminal = terminal;
 	}
 
 	@Override
@@ -38,6 +40,7 @@ public class BoxModelAdapter implements Adapter<Model> {
 		if (!Objects.equals(language.languageName(), "Proteo"))
 			frame.addFrame(LANGUAGE, language.languageName());
 		frame.addFrame("project", project).addFrame("module", module);
+		frame.addFrame("terminal", terminal);
 		addMetricImports(frame);
 		addFacetImports(model.getIncludedNodes(), frame);
 		parserAllNodes(frame, model, FrameContext);

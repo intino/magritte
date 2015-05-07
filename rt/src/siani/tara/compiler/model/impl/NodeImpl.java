@@ -94,7 +94,7 @@ public class NodeImpl extends Element implements Node {
 
 	@Override
 	public boolean isRoot() {
-		return container == null;
+		return container instanceof Model;
 	}
 
 	@Override
@@ -161,6 +161,16 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public boolean isAssociated() {
 		return flags.contains(ASSOCIATED);
+	}
+
+	@Override
+	public boolean isFeature() {
+		return flags.contains(FEATURE);
+	}
+
+	@Override
+	public boolean isFeatureInstance() {
+		return flags.contains(FEATURE_INSTANCE);
 	}
 
 	@Override

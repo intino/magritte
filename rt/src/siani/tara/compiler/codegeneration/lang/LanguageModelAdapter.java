@@ -62,7 +62,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	}
 
 	private String createLocale() {
-		return "new Locale(" + locale.getLanguage() + ", " + locale.getCountry() + ", " + locale.getVariant() + ")";
+		return "new Locale(\"" + locale.getLanguage() + "\", \"" + locale.getCountry() + "\", \"" + locale.getVariant() + "\")";
 	}
 
 	private void buildNode(Node node) {
@@ -115,7 +115,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	private Collection<Frame> getCasesConstrains(Frame allows, List<String> nodes) {
 		List<Frame> frames = new ArrayList<>();
 		for (String node : nodes)
-			frames.add(new Frame(allows).addTypes("multiple", ALLOW).addFrame("type", node).addFrame("relation", COMPONENT.getName()));
+			frames.add(new Frame(allows).addTypes("multiple", ALLOW).addFrame("type", node).addFrame("relation", "COMPONENT"));
 		return frames;
 	}
 

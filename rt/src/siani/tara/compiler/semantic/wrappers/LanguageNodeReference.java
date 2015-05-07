@@ -97,6 +97,11 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 	}
 
 	@Override
+	public void annotations(String... annotations) {
+		reference.addAnnotations(annotations);
+	}
+
+	@Override
 	public siani.tara.semantic.model.Facet[] facets() {
 		return new siani.tara.semantic.model.Facet[0];
 	}

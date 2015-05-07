@@ -10,7 +10,7 @@ Monet
 terminal
 false
 locale
-English
+Spanish
 generated_lang_name
 Census
 encoding

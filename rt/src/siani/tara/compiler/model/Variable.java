@@ -26,6 +26,8 @@ public interface Variable extends Cloneable {
 
 	boolean isReadOnly();
 
+	boolean isInherited();
+
 	void setNativeName(String extension);
 
 	void setName(String name);
@@ -46,5 +48,5 @@ public interface Variable extends Cloneable {
 
 	void setDefaultExtension(String defaultExtension);
 
-	Variable cloneIt(NodeContainer container) throws CloneNotSupportedException;
+	Variable cloneIt(NodeContainer container);
 }

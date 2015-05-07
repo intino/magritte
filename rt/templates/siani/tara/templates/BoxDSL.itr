@@ -1,4 +1,4 @@
-defrule type(Box)
+def type(Box)
 package magritte.store;
 
 import magritte.handlers.Box;
@@ -11,4 +11,4 @@ public class $name+firstUppercase extends Box.Dsl {
         };
     }
 }
-endrule
+end

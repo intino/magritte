@@ -1,128 +1,128 @@
-defrule type(Model)
-package siani.tara.dsls;
+def type(Model)
+	package siani.tara.dsls;
 
-import siani.tara.semantic.model.Tara;
-import java.util.Locale;
-import siani.tara.semantic.model.Tag;
-import static siani.tara.semantic.Relation.*;
-import static siani.tara.semantic.constraints.RuleFactory.*;
+	import siani.tara.semantic.model.Tara;
+	import java.util.Locale;
+	import siani.tara.semantic.model.Tag;
+	import static siani.tara.semantic.Relation.*;
+	import static siani.tara.semantic.constraints.RuleFactory.*;
 
-public class $name extends Tara {
-	public $name() {
-		$node...[$NL]
+	public class $name extends Tara {
+		public $name() {
+			$node...[$NL]
+		}
+
+		@Override
+		public String languageName() {
+			return "$name";
+		}
+
+		@Override
+	    public Locale locale() {
+	        return $locale;
+	    }
+
+	    @Override
+	    public boolean isTerminalLanguage() {
+	        return $terminal;
+	    }
 	}
 
-	@Override
-	public String languageName() {
-		return "$name";
-	}
+end
 
-	@Override
-    public Locale locale() {
-        return $locale;
-    }
+def type(node) trigger(node)
+	in("$name").def(context([$nodeType])[.$allows][.$requires][.$assumptions]);
+end
 
-    @Override
-    public boolean isTerminalLanguage() {
-        return $terminal;
-    }
-}
+def type(nodeType) trigger(nodeType)
+	$type+quoted...[, ]
+end
 
-endrule
+def type(allows) trigger(allows)
+	allow([$allow...[, ]])
+end
 
-defrule type(node) trigger(node)
-in("$name").def(context([$nodeType])[.$allows][.$requires][.$assumptions]);
-endrule
+def type(allow) type(multiple) trigger(allow)
+	multiple($type+quoted[, $relation][, $tags+quoted...[, ]])
+end
 
-defrule type(nodeType) trigger(nodeType)
-$type+quoted...[, ]
-endrule
+def type(allow) type(single) trigger(allow)
+	single($type+quoted[, $relation][, $tags+quoted...[, ]])
+end
 
-defrule type(allows) trigger(allows)
-allow([$allow...[, ]])
-endrule
+def type(allow) type(parameter) type(word) trigger(allow)
+	parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
+end
 
-defrule type(allow) type(multiple) trigger(allow)
-multiple($type+quoted[, $relation][, $tags+quoted...[, ]])
-endrule
+def type(allow) type(parameter) type(reference) trigger(allow)
+	parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
+end
 
-defrule type(allow) type(single) trigger(allow)
-single($type+quoted[, $relation][, $tags+quoted...[, ]])
-endrule
+def type(allow) type(parameter) trigger(allow)
+	parameter("$name", "$type", $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
+end
 
-defrule type(allow) type(parameter) type(word) trigger(allow)
-parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
-endrule
+def type(allow) type(facet) trigger(allow)
+	facet("$value")[.require($require...[, ])][.allow($allow...[, ])]
+end
 
-defrule type(allow) type(parameter) type(reference) trigger(allow)
-parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
-endrule
-
-defrule type(allow) type(parameter) trigger(allow)
-parameter("$name", "$type", $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
-endrule
-
-defrule type(allow) type(facet) trigger(allow)
-facet("$value")[.require($require...[, ])][.allow($allow...[, ])]
-endrule
-
-defrule trigger(allow)
-$value()
-endrule
+def trigger(allow)
+	$value()
+end
 
 
-defrule type(requires) trigger(requires)
+def type(requires) trigger(requires)
 require([$require...[, ]])
-endrule
+end
 
-defrule type(require) type(oneOf) trigger(require)
+def type(require) type(oneOf) trigger(require)
 oneOf([$require...[, ]])
-endrule
+end
 
-defrule type(require) type(multiple) trigger(require)
+def type(require) type(multiple) trigger(require)
 _multiple($type+quoted[, $relation][, $tags+quoted...[, ]])
-endrule
+end
 
-defrule type(require) type(single) trigger(require)
+def type(require) type(single) trigger(require)
 _single($type+quoted[, $relation][, $tags+quoted...[, ]])
-endrule
+end
 
-defrule trigger(tags)
+def trigger(tags)
 Tag.$value
-endrule
+end
 
-defrule type(require) !type(parameter) type(none) trigger(require)
+def type(require) !type(parameter) type(none) trigger(require)
 _noneIncludes()
-endrule
+end
 
-defrule type(require) type(parameter) type(none) trigger(require)
+def type(require) type(parameter) type(none) trigger(require)
 _noneParameter()
-endrule
+end
 
-defrule type(require) type(parameter) type(word) trigger(require)
+def type(require) type(parameter) type(word) trigger(require)
 _parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
-endrule
+end
 
-defrule type(require) type(parameter) type(reference) trigger(require)
+def type(require) type(parameter) type(reference) trigger(require)
 _parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
-endrule
+end
 
-defrule type(require) type(parameter) trigger(require)
+def type(require) type(parameter) trigger(require)
 _parameter("$name", "$type", $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
-endrule
+end
 
-defrule trigger(require)
+def trigger(require)
 _$value()
-endrule
+end
 
-defrule type(assumptions) trigger(assumptions)
+def type(assumptions) trigger(assumptions)
 assume($assumption...[, ])
-endrule
+end
 
-defrule trigger(assumption)
+def trigger(assumption)
 is$value+firstUpperCase()
-endrule
+end
 
-defrule trigger(quoted)
+def trigger(quoted)
 "$value"
-endrule
+end

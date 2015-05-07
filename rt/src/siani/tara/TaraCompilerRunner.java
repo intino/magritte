@@ -148,7 +148,7 @@ public class TaraCompilerRunner {
 		String languageForCodeGeneration = reader.readLine();
 		Locale locale;
 		if ("Spanish".equalsIgnoreCase(languageForCodeGeneration))
-			locale = new Locale("Spanish", "Spain", "es_ES");
+			locale = new Locale("es", "Spain", "es_ES");
 		else locale = Locale.ENGLISH;
 		return locale;
 	}

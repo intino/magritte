@@ -39,9 +39,9 @@ public class BoxUnitFrameCreator {
 
 	private void createKeyMap(NodeContainer node) {
 		for (Node include : node.getIncludedNodes()) {
+			if (include instanceof NodeReference) continue;
 			keymap.put(include, count);
 			count++;
-			if (include instanceof NodeReference && ((NodeReference) include).isHas()) continue;
 			createKeyMap(include);
 			for (FacetTarget facetTarget : include.getFacetTargets())
 				createKeyMap(facetTarget);
@@ -55,8 +55,8 @@ public class BoxUnitFrameCreator {
 		boxModel.setName(model.getName());
 		boxModel.addIncludedNodes(nodes.toArray(new Node[nodes.size()]));
 		final FrameBuilder builder = new FrameBuilder();
-		builder.register(Model.class, new BoxModelAdapter(project, module, language, locale, model.getMetrics()));
-		builder.register(Node.class, new BoxNodeAdapter(keymap));
+		builder.register(Model.class, new BoxModelAdapter(project, module, language, locale, model.getMetrics(), model.isTerminal()));
+		builder.register(Node.class, new BoxNodeAdapter(keymap, model.isTerminal()));
 		builder.register(Variable.class, new BoxVariableAdapter(model.getMetrics()));
 		builder.register(Parameter.class, new BoxParameterAdapter(model.getMetrics()));
 		return builder.build(boxModel);

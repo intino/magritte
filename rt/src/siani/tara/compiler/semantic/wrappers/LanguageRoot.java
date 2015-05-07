@@ -78,12 +78,14 @@ public class LanguageRoot implements Node {
 
 	@Override
 	public void flags(String... flags) {
+	}
 
+	@Override
+	public void annotations(String... annotations) {
 	}
 
 	@Override
 	public void moveToTheTop() {
-
 	}
 
 	@Override

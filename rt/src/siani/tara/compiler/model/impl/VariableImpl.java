@@ -25,6 +25,7 @@ public class VariableImpl extends Element implements Variable {
 	private int line;
 	private List<Tag> flags = new ArrayList<>();
 	private String defaultExtension;
+	private boolean inherited;
 
 	public VariableImpl() {
 	}
@@ -84,6 +85,15 @@ public class VariableImpl extends Element implements Variable {
 	@Override
 	public boolean isReadOnly() {
 		return flags.contains(READONLY);
+	}
+
+	@Override
+	public boolean isInherited() {
+		return inherited;
+	}
+
+	private void setInherited(boolean inherited) {
+		this.inherited = inherited;
 	}
 
 	@Override
@@ -158,19 +168,29 @@ public class VariableImpl extends Element implements Variable {
 	@Override
 	public Variable clone() throws CloneNotSupportedException {
 		super.clone();
-		Variable variable = new VariableImpl(container, type, name);
+		VariableImpl variable = new VariableImpl(container, type, name);
 		variable.setMultiple(multiple);
 		variable.setDefaultExtension(defaultExtension);
 		variable.setNativeName(nativeName);
 		for (Tag tag : flags) variable.addFlags(tag.getName());
 		variable.addAllowedValues(allowedValues.toArray(new Object[allowedValues.size()]));
 		variable.addDefaultValues(defaultValues.toArray(new Object[defaultValues.size()]));
+		variable.setInherited(true);
 		return variable;
 	}
 
-	public Variable cloneIt(NodeContainer container) throws CloneNotSupportedException {
-		Variable clone = this.clone();
-		clone.setContainer(container);
-		return clone;
+	public Variable cloneIt(NodeContainer container) {
+		try {
+			Variable clone = this.clone();
+			clone.setContainer(container);
+			return clone;
+		} catch (CloneNotSupportedException ignored) {
+			return null;
+		}
+	}
+
+	@Override
+	public String toString() {
+		return type + ":" + name;
 	}
 }
