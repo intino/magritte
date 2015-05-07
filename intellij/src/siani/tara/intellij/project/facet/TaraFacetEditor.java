@@ -1,15 +1,12 @@
 package siani.tara.intellij.project.facet;
 
 import com.intellij.facet.ui.FacetEditorTab;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleOrderEntry;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.OrderEntry;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.idea.maven.project.MavenProjectsManager;
+import siani.tara.intellij.framework.MavenHelper;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -17,9 +14,12 @@ import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static siani.tara.intellij.project.facet.TaraFacet.getTaraFacetByModule;
+
 public class TaraFacetEditor extends FacetEditorTab {
 
 	private static final String PROTEO = "Proteo";
+	private static final String NONE = "";
 
 	private final TaraFacetConfiguration facetConfiguration;
 	private final Module module;
@@ -54,8 +54,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	private void addModuleDsls() {
 		for (Module candidate : candidates) {
-			if (TaraFacet.getTaraFacetByModule(candidate) == null) continue;
-			TaraFacetConfiguration configuration = TaraFacet.getTaraFacetByModule(candidate).getConfiguration();
+			if (getTaraFacetByModule(candidate) == null) continue;
+			TaraFacetConfiguration configuration = getTaraFacetByModule(candidate).getConfiguration();
 			if (configuration.isCase()) continue;
 			dslBox.addItem(configuration.getGeneratedDslName());
 			if (facetConfiguration.getDsl().equals(configuration.getGeneratedDslName()))
@@ -92,80 +92,35 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	public void apply() {
-		setParent(dslBox.getSelectedItem().toString());
+		updateDependencies(searchParentByDslGeneration(dslBox.getSelectedItem().toString()));
 		facetConfiguration.setDsl((String) dslBox.getSelectedItem());
 		facetConfiguration.setDictionary((String) dictionaryBox.getSelectedItem());
 		facetConfiguration.setGeneratedDslName(getDslGeneratedName());
 	}
 
 	private String getDslGeneratedName() {
-		return generateDslCheck.isSelected() ? dslGeneratedName.getText() : "";
+		return generateDslCheck.isSelected() ? dslGeneratedName.getText() : NONE;
 	}
 
 
-	private void setParent(String selectedItem) {
-		Module parentModule;
-		if (selectedItem.equals(PROTEO)) {
-			updateDependencies(null);
-			facetConfiguration.setDsl("");
-		} else if ((parentModule = searchParent(selectedItem)) != null) {
-			updateDependencies(parentModule);
-			facetConfiguration.setDsl(TaraFacet.getTaraFacetByModule(parentModule).getConfiguration().getGeneratedDslName());
-		} else {
-			updateDependencies(null);
-			facetConfiguration.setDsl(selectedItem);
-		}
+	private void updateDependencies(final Module newParent) {
+		MavenHelper helper = new MavenHelper(module, MavenProjectsManager.getInstance(module.getProject()).findProject(module));
+		Module parent = getSavedParentModule();
+		if (parent != null) helper.remove(parent);
+		if (newParent != null) helper.add(newParent);
 	}
 
-	private void updateDependencies(final Module parent) {
-		removeParentDependency();
-		if (parent != null) addModelDependency(parent);
+
+	private Module getSavedParentModule() {
+		String dsl = facetConfiguration.getDsl();
+		if (dsl.isEmpty()) return null;
+		return searchParentByDslGeneration(dsl);
 	}
 
-	private void addModelDependency(final Module parent) {
-		ApplicationManager.getApplication().runWriteAction(new Runnable() {
-			@Override
-			public void run() {
-				if (!ModuleRootManager.getInstance(module).isDependsOn(parent)) {
-					ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(module).getModifiableModel();
-					modifiableModel.addModuleOrderEntry(parent);
-					modifiableModel.commit();
-				}
-			}
-		});
-	}
-
-	private void removeParentDependency() {
-		ApplicationManager.getApplication().runWriteAction(new Runnable() {
-			@Override
-			public void run() {
-				String dsl = facetConfiguration.getDsl();
-				if (dsl.isEmpty()) return;
-				Module parentModule = searchParent(dsl.contains(".") ? dsl.split("\\.")[1] : dsl);
-				if (parentModule == null) return;
-				ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(module).getModifiableModel();
-				OrderEntry[] orderEntries = modifiableModel.getOrderEntries();
-				OrderEntry orderEntry = findOrderEntry(orderEntries, parentModule);
-				if (orderEntry != null)
-					modifiableModel.removeOrderEntry(orderEntry);
-				modifiableModel.commit();
-			}
-		});
-	}
-
-	private Module searchParent(String parentName) {
-		for (Module candidate : getParentModulesCandidates()) {
-			TaraFacetConfiguration configuration = TaraFacet.getTaraFacetByModule(candidate).getConfiguration();
-			if (configuration.getGeneratedDslName().equals(parentName))
+	private Module searchParentByDslGeneration(String dsl) {
+		for (Module candidate : getParentModulesCandidates())
+			if (getTaraFacetByModule(candidate).getConfiguration().getGeneratedDslName().equals(dsl))
 				return candidate;
-		}
-		return null;
-	}
-
-	private OrderEntry findOrderEntry(OrderEntry[] orderEntries, Module parentModule) {
-		for (OrderEntry entry : orderEntries)
-			if (entry instanceof ModuleOrderEntry && parentModule.equals(((ModuleOrderEntry) entry).getModule()))
-				return entry;
 		return null;
 	}
 
@@ -179,7 +134,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	private Module[] getParentModulesCandidates() {
 		List<Module> moduleCandidates = new ArrayList<>();
 		for (Module aModule : ModuleManager.getInstance(module.getProject()).getModules()) {
-			TaraFacet taraFacet = TaraFacet.getTaraFacetByModule(aModule);
+			TaraFacet taraFacet = getTaraFacetByModule(aModule);
 			if (taraFacet == null) continue;
 			if (!aModule.equals(module) && !taraFacet.getConfiguration().isCase()) moduleCandidates.add(aModule);
 		}

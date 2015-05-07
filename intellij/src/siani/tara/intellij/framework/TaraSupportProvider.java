@@ -136,6 +136,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	private class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
+		private static final String NONE = "";
 		private final Project project;
 
 		private JPanel myMainPanel;
@@ -215,7 +216,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
 			TaraSupportProvider.this.dsl = dslBox.getSelectedItem().toString();
 			TaraSupportProvider.this.dictionary = dictionaryBox.getSelectedItem().toString();
-			TaraSupportProvider.this.dslGenerate = generateDslCheck.isSelected() ? dslGeneratedName.getText() : "";
+			TaraSupportProvider.this.dslGenerate = generateDslCheck.isSelected() ? dslGeneratedName.getText() : NONE;
 			TaraSupportProvider.this.addSupport(module, rootModel);
 		}
 

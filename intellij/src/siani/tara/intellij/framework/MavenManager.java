@@ -115,8 +115,8 @@ public class MavenManager {
 
 
 	private void updateModulePom(MavenProject mavenProject) {
-		PomHelper helper = new PomHelper(mavenProject);
-		if (!helper.hasMagritteDependency()) helper.addMagritteDependency();
+		MavenHelper helper = new MavenHelper(module, mavenProject);
+		if (!helper.hasMagritteDependency()) helper.addMagritte();
 	}
 
 	private boolean isProjectModule(Module module) {
@@ -184,7 +184,7 @@ public class MavenManager {
 		MavenProjectsManager manager = MavenProjectsManager.getInstance(module.getProject());
 		if (parentModule == null || !manager.isMavenizedModule(parentModule)) return null;
 		Frame frame = new Frame().addTypes("parent");
-		MavenProject project = manager.findProject(module);
+		MavenProject project = manager.findProject(parentModule);
 		if (project == null) return null;
 		frame.addFrame("groupId", project.getMavenId().getGroupId());
 		frame.addFrame("artifactId", project.getMavenId().getArtifactId());
