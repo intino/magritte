@@ -1,11 +1,12 @@
 package siani.tara.intellij.lang.semantic;
 
 
+import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.Flags;
 import siani.tara.intellij.lang.psi.TaraValue;
 import siani.tara.intellij.lang.psi.Variable;
 
-public class LanguageVariable implements siani.tara.semantic.model.Variable {
+public class LanguageVariable extends LanguageElement implements siani.tara.semantic.model.Variable {
 	private final Variable variable;
 
 	public LanguageVariable(Variable variable) {
@@ -33,5 +34,10 @@ public class LanguageVariable implements siani.tara.semantic.model.Variable {
 	public Object[] defaultValue() {
 		TaraValue value = variable.getValue();
 		return value != null ? value.getValues() : new Object[0];
+	}
+
+	@Override
+	public PsiElement element() {
+		return variable;
 	}
 }

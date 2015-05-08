@@ -1,20 +1,16 @@
 def type(model)
     package magritte.store;
 
-    import magritte.Model;
-    import magritte.Node;
-    import magritte.handlers.*;
-    import magritte.store.*;
     $importFacet...[$NL]
     import static magritte.Tag.*;
     $importMetric...[$NL]
 
-    public class $name extends Box.$terminal {
-        public static final Box box = new $name();
+    public class $name extends magritte.handlers.Box.$terminal {
+        public static final magritte.handlers.Box box = new $name();
 
         @Override
-        public Box$[] dependencies() {
-            return new Box$[]{[magritte.store.$language+firstUpperCase.box]};
+        public magritte.handlers.Box$[] dependencies() {
+            return new magritte.handlers.Box$[]{[magritte.store.$language+firstUpperCase.box]};
         }
 
         @Override
@@ -83,7 +79,7 @@ def type(variable) type(reference) slot(variableValue) trigger(variable)
 end
 
 def type(variable) type(native) slot(variableValue) trigger(variable)
-    .set("$terminal$name", (Class<NativeContainer>) $variableValue)
+    .set("$terminal$name", (Class<magritte.handlers.NativeContainer>) $variableValue)
 end
 
 def type(Variable) type(resource) slot(variableValue) trigger(variable)

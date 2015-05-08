@@ -1,14 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package siani.tara.intellij.lang.parser;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static siani.tara.intellij.lang.psi.TaraTypes.*;
-import static siani.tara.intellij.lang.parser.TaraParserUtil.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
+import com.intellij.psi.tree.IElementType;
+
+import static siani.tara.intellij.lang.parser.TaraParserUtil.*;
+import static siani.tara.intellij.lang.psi.TaraTypes.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class TaraParser implements PsiParser {
@@ -812,13 +812,13 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER_KEY | MEASURE_VALUE_KEY
+  // identifier | MEASURE_VALUE_KEY
   public static boolean measureValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "measureValue")) return false;
     if (!nextTokenIs(b, "<measure value>", IDENTIFIER_KEY, MEASURE_VALUE_KEY)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<measure value>");
-    r = consumeToken(b, IDENTIFIER_KEY);
+    r = identifier(b, l + 1);
     if (!r) r = consumeToken(b, MEASURE_VALUE_KEY);
     exit_section_(b, l, m, MEASURE_VALUE, r, false, null);
     return r;
@@ -838,14 +838,14 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // MEASURE_VALUE_KEY | IDENTIFIER_KEY
+  // MEASURE_VALUE_KEY | identifier
   public static boolean nativeName(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "nativeName")) return false;
     if (!nextTokenIs(b, "<native name>", IDENTIFIER_KEY, MEASURE_VALUE_KEY)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<native name>");
     r = consumeToken(b, MEASURE_VALUE_KEY);
-    if (!r) r = consumeToken(b, IDENTIFIER_KEY);
+    if (!r) r = identifier(b, l + 1);
     exit_section_(b, l, m, NATIVE_NAME, r, false, null);
     return r;
   }
@@ -1423,13 +1423,14 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER_KEY EQUALS value
+  // identifier EQUALS value
   public static boolean varInit(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "varInit")) return false;
     if (!nextTokenIs(b, IDENTIFIER_KEY)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, null);
-    r = consumeTokens(b, 2, IDENTIFIER_KEY, EQUALS);
+    r = identifier(b, l + 1);
+    r = r && consumeToken(b, EQUALS);
     p = r; // pin = 2
     r = r && value(b, l + 1);
     exit_section_(b, l, m, VAR_INIT, r, p, null);
@@ -1437,7 +1438,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // VAR variableType attributeType? (LIST | count)? IDENTIFIER_KEY (word | (EQUALS value measureValue?))? flags?
+  // VAR variableType attributeType? (LIST | count)? identifier (word | (EQUALS value measureValue?))? flags?
   public static boolean variable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable")) return false;
     if (!nextTokenIs(b, VAR)) return false;
@@ -1448,7 +1449,7 @@ public class TaraParser implements PsiParser {
     r = r && report_error_(b, variableType(b, l + 1));
     r = p && report_error_(b, variable_2(b, l + 1)) && r;
     r = p && report_error_(b, variable_3(b, l + 1)) && r;
-    r = p && report_error_(b, consumeToken(b, IDENTIFIER_KEY)) && r;
+    r = p && report_error_(b, identifier(b, l + 1)) && r;
     r = p && report_error_(b, variable_5(b, l + 1)) && r;
     r = p && variable_6(b, l + 1) && r;
     exit_section_(b, l, m, VARIABLE, r, p, null);
@@ -1558,7 +1559,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+ DEDENT
+  // NEW_LINE_INDENT (identifier STAR? NEWLINE)+ DEDENT
   public static boolean word(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "word")) return false;
     if (!nextTokenIs(b, NEW_LINE_INDENT)) return false;
@@ -1572,7 +1573,7 @@ public class TaraParser implements PsiParser {
     return r || p;
   }
 
-  // (IDENTIFIER_KEY STAR? NEWLINE)+
+  // (identifier STAR? NEWLINE)+
   private static boolean word_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "word_1")) return false;
     boolean r;
@@ -1588,12 +1589,12 @@ public class TaraParser implements PsiParser {
     return r;
   }
 
-  // IDENTIFIER_KEY STAR? NEWLINE
+  // identifier STAR? NEWLINE
   private static boolean word_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "word_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, IDENTIFIER_KEY);
+    r = identifier(b, l + 1);
     r = r && word_1_0_1(b, l + 1);
     r = r && consumeToken(b, NEWLINE);
     exit_section_(b, m, null, r);

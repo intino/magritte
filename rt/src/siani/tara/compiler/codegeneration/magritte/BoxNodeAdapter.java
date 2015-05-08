@@ -63,7 +63,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private boolean isRoot(Node node) {
-		return node.isRoot() || node.isAggregated() && (node.getContainer() instanceof Node && isRoot((Node) node.getContainer()));
+		return node.isRoot() || (node.isAggregated() && (node.getContainer() instanceof Node && isRoot((Node) node.getContainer())));
 	}
 
 	private void variables(Node node, final Frame frame, FrameContext<Node> FrameContext) {

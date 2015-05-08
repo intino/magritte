@@ -61,8 +61,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		return !facetsProvider.getFacetsByType(module, TaraFacet.ID).isEmpty();
 	}
 
-	private void addSupport(final Module module,
-	                        final ModifiableRootModel rootModel) {
+	private void addSupport(final Module module, final ModifiableRootModel rootModel) {
 		mavenize(module, rootModel);
 		createModel(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);

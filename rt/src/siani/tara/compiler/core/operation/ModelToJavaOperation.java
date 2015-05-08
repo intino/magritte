@@ -6,6 +6,7 @@ import org.siani.itrules.model.Frame;
 import siani.tara.compiler.codegeneration.Format;
 import siani.tara.compiler.codegeneration.magritte.BoxUnitFrameCreator;
 import siani.tara.compiler.codegeneration.magritte.MorphFrameCreator;
+import siani.tara.compiler.codegeneration.magritte.NameFormatter;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
@@ -19,6 +20,7 @@ import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.templates.BoxDSLTemplate;
 import siani.tara.templates.BoxUnitTemplate;
 import siani.tara.templates.MorphTemplate;
+import siani.tara.templates.SceneTemplate;
 
 import java.io.*;
 import java.util.*;
@@ -55,10 +57,35 @@ public class ModelToJavaOperation extends ModelOperation {
 			if (model.isTerminal()) return;
 			writeBox(getBoxPath(separator), createBoxes(boxUnits.keySet()));
 			writeMorphs(createMorphs());
+			writeScene(createScene());
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
+	}
+
+	private String createScene() {
+		Frame frame = new Frame(null).addTypes("scene");
+		frame.addFrame("name", conf.getModule());
+		for (Node node : collectRootNodes())
+			frame.addFrame("root", createRootFrame(node));
+		return customize(SceneTemplate.create()).format(frame);
+	}
+
+	private Frame createRootFrame(Node node) {
+		Frame frame = new Frame();
+		frame.addTypes("root");
+		frame.addFrame("qn", getQn(node));
+		frame.addFrame("name", node.getName());
+		return frame;
+	}
+
+	private String getQn(Node node) {
+		return NameFormatter.composeMorphPackagePath(node, conf.getLocale(), conf.getModule()) + DOT + node.getQualifiedName();
+	}
+
+	private Collection<Node> collectRootNodes() {
+		return model.getIncludedNodes();
 	}
 
 	private Template customize(Template template) {
@@ -73,11 +100,21 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String createBoxes(Set<String> boxes) throws TaraException {
-		return processBoxes(boxes);
+		Frame frame = new Frame(null).addTypes("Box");
+		frame.addFrame("name", conf.getGeneratedLanguage());
+		for (String box : boxes)
+			frame.addFrame("namebox", buildBoxUnitName(box));
+		return customize(BoxDSLTemplate.create()).format(frame);
 	}
 
 	private Map<String, String> createMorphs() throws TaraException {
-		return processMorphs(model.getIncludedNodes());
+		Map<String, String> map = new HashMap();
+		for (Node node : model.getIncludedNodes()) {
+			if (node.isTerminalInstance() || node.isAnonymous()) continue;
+			renderNode(map, node);
+			renderFacetTargets(map, node);
+		}
+		return map;
 	}
 
 	private Map<String, String> processBoxUnits(List<List<Node>> groupByBox) throws TaraException {
@@ -91,26 +128,8 @@ public class ModelToJavaOperation extends ModelOperation {
 		return capitalize(conf.getModule()) + buildFileName(((Element) node).getFile());
 	}
 
-	private String processBoxes(Set<String> boxes) throws TaraException {
-		Frame frame = new Frame(null).addTypes("Box");
-		frame.addFrame("name", conf.getGeneratedLanguage());
-		for (String box : boxes)
-			frame.addFrame("namebox", buildBoxUnitName(box));
-		return customize(BoxDSLTemplate.create()).format(frame);
-	}
-
 	private String buildBoxUnitName(String box) {
 		return "magritte.store." + box + DOT + "box";
-	}
-
-	private Map<String, String> processMorphs(Collection<Node> nodes) {
-		Map<String, String> map = new HashMap();
-		for (Node node : nodes) {
-			if (node.isTerminalInstance() || node.isAnonymous()) continue;
-			renderNode(map, node);
-			renderFacetTargets(map, node);
-		}
-		return map;
 	}
 
 	private void renderFacetTargets(Map<String, String> map, Node node) {
@@ -123,6 +142,19 @@ public class ModelToJavaOperation extends ModelOperation {
 	private void renderNode(Map<String, String> map, Node node) {
 		Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(node);
 		map.put(morphFrame.getKey(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
+	}
+
+	private void writeScene(String scene) {
+		File destiny = new File(outFolder, conf.getModule().toLowerCase());
+		destiny.mkdirs();
+		try {
+			File file = new File(destiny, capitalize(conf.getModule()) + JAVA);
+			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
+			fileWriter.write(scene);
+			fileWriter.close();
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
+		}
 	}
 
 	private void writeBoxUnits(String directory, Map<String, String> documentMap) {

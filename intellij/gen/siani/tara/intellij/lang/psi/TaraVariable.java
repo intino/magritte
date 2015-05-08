@@ -17,6 +17,9 @@ public interface TaraVariable extends Variable {
   TaraFlags getFlags();
 
   @Nullable
+  TaraIdentifier getIdentifier();
+
+  @Nullable
   TaraMeasureValue getMeasureValue();
 
   @Nullable

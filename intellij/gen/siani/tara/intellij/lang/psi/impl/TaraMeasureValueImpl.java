@@ -22,4 +22,10 @@ public class TaraMeasureValueImpl extends ASTWrapperPsiElement implements TaraMe
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public TaraIdentifier getIdentifier() {
+    return findChildByClass(TaraIdentifier.class);
+  }
+
 }

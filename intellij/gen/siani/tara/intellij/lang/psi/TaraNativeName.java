@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraNativeName extends NativeName {
 
+  @Nullable
+  TaraIdentifier getIdentifier();
+
 }

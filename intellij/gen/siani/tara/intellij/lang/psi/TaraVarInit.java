@@ -7,6 +7,9 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraVarInit extends VarInit {
 
+  @NotNull
+  TaraIdentifier getIdentifier();
+
   @Nullable
   TaraValue getValue();
 

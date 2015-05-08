@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraMeasureValue extends TaraPsiElement {
 
+  @Nullable
+  TaraIdentifier getIdentifier();
+
 }

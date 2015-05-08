@@ -22,6 +22,12 @@ public class TaraVarInitImpl extends VarInitMixin implements TaraVarInit {
   }
 
   @Override
+  @NotNull
+  public TaraIdentifier getIdentifier() {
+    return findNotNullChildByClass(TaraIdentifier.class);
+  }
+
+  @Override
   @Nullable
   public TaraValue getValue() {
     return findChildByClass(TaraValue.class);

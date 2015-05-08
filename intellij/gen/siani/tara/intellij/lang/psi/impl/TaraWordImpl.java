@@ -21,4 +21,10 @@ public class TaraWordImpl extends WordMixin implements TaraWord {
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<TaraIdentifier> getIdentifierList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifier.class);
+  }
+
 }

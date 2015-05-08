@@ -17,7 +17,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 
 
 	public String getName() {
-		ASTNode childByType = this.getNode().findChildByType(TaraTypes.IDENTIFIER_KEY);
+		ASTNode childByType = this.getNode().findChildByType(TaraTypes.IDENTIFIER);
 		return childByType != null ? childByType.getText() : null;
 	}
 
@@ -36,7 +36,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public Object[] getValues() {
-		return ((VarInit) this).getValue().getValues();
+		return ((VarInit) this).getValue() == null ? new Object[0] : ((VarInit) this).getValue().getValues();
 	}
 
 

@@ -2,7 +2,7 @@ package siani.tara.compiler.model;
 
 import java.util.Collection;
 
-public interface Variable extends Cloneable {
+public interface Variable  extends Cloneable {
 
 	String WORD = "word";
 

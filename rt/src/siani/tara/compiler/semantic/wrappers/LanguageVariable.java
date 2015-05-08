@@ -1,12 +1,13 @@
 package siani.tara.compiler.semantic.wrappers;
 
+import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Tag;
 import siani.tara.compiler.model.Variable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LanguageVariable implements siani.tara.semantic.model.Variable {
+public class LanguageVariable extends LanguageElement implements siani.tara.semantic.model.Variable {
 	private final Variable variable;
 
 	public LanguageVariable(Variable variable) {
@@ -34,5 +35,10 @@ public class LanguageVariable implements siani.tara.semantic.model.Variable {
 	@Override
 	public Object[] defaultValue() {
 		return variable.getDefaultValues().toArray(new Object[variable.getDefaultValues().size()]);
+	}
+
+	@Override
+	public Element element() {
+		return (Element) variable;
 	}
 }

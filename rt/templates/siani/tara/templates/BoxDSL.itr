@@ -1,14 +1,12 @@
 def type(Box)
-package magritte.store;
+    package magritte.store;
 
-import magritte.handlers.Box;
+    public class $name+firstUppercase extends magritte.handlers.Box.Dsl {
+        public static final magritte.handlers.Box box = new $name+firstUppercase();
 
-public class $name+firstUppercase extends Box.Dsl {
-    public static final Box box = new $name+firstUppercase();
-
-    protected Box$[] includes() {
-        return new Box$[]{ $namebox...[,$NL]
-        };
+        protected magritte.handlers.Box$[] includes() {
+            return new magritte.handlers.Box$[]{ $namebox...[,$NL]
+            };
+        }
     }
-}
 end

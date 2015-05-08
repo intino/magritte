@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface TaraWord extends Word {
 
+  @NotNull
+  List<TaraIdentifier> getIdentifierList();
+
 }

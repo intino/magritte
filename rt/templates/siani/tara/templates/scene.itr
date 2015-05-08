@@ -1,0 +1,22 @@
+def type(scene)
+	package $name+LowerCase;
+
+	public class $name+FirstCamelCase extends magritte.wraps.Scene {
+
+	    public Monet(magritte.Model model) {
+	        super(model);
+	    }
+
+		$root...[$NL$NL]
+	}
+end
+
+def type(root) trigger(root)
+	public $qn+reference$[$] $name+FirstLowerCase+plural() {
+        return roots($qn+reference.class);
+    }
+
+    public $qn+reference $name+FirstLowerCase(int index) {
+        return $name+FirstLowerCase+plural()$[index$];
+    }
+end

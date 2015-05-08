@@ -90,7 +90,7 @@ nodeReference ::= HAS identifierReference tags? {
 	implements = 'siani.tara.intellij.lang.psi.NodeReference'
 }
 
-variable ::= VAR variableType attributeType? (LIST | count)? IDENTIFIER_KEY (word | (EQUALS value measureValue?))? flags? {
+variable ::= VAR variableType attributeType? (LIST | count)? identifier (word | (EQUALS value measureValue?))? flags? {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'siani.tara.intellij.lang.psi.Variable'
@@ -111,7 +111,7 @@ variableType::= NATURAL_TYPE
 
 count ::= LEFT_SQUARE NATURAL_VALUE_KEY RIGHT_SQUARE
 
-word ::= NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+ DEDENT {
+word ::= NEW_LINE_INDENT (identifier STAR? NEWLINE)+ DEDENT {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.WordMixin'
 	implements = 'siani.tara.intellij.lang.psi.Word'
@@ -119,7 +119,7 @@ word ::= NEW_LINE_INDENT (IDENTIFIER_KEY STAR? NEWLINE)+ DEDENT {
 
 attributeType ::= COLON nativeName
 {pin=1}
-nativeName   ::= MEASURE_VALUE_KEY | IDENTIFIER_KEY {
+nativeName   ::= MEASURE_VALUE_KEY | identifier {
 	implements = 'siani.tara.intellij.lang.psi.NativeName'
 	mixin = 'siani.tara.intellij.lang.psi.impl.NativeNameMixin'
 }
@@ -143,7 +143,7 @@ naturalValue    ::= NATURAL_VALUE_KEY
 integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
 linkValue       ::= ADDRESS_VALUE | identifierReference
-measureValue    ::= IDENTIFIER_KEY | MEASURE_VALUE_KEY
+measureValue    ::= identifier | MEASURE_VALUE_KEY
 
 facetApply ::= AS metaIdentifier parameters? (WITH metaIdentifier)? body? {
 	pin = 1
@@ -192,7 +192,7 @@ annotation ::= TERMINAL
 	implements = 'siani.tara.intellij.lang.psi.Annotation'
 }
 
-varInit ::= IDENTIFIER_KEY EQUALS value {
+varInit ::= identifier EQUALS value {
     pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.VarInitMixin'
 	implements = 'siani.tara.intellij.lang.psi.VarInit'

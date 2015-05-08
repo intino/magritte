@@ -17,7 +17,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public PsiElement setName(String newName) {
-		ASTNode keyNode = getNode().findChildByType(TaraTypes.IDENTIFIER_KEY);
+		ASTNode keyNode = getNode().findChildByType(TaraTypes.IDENTIFIER);
 		if (keyNode != null) {
 			Variable variable = TaraElementFactoryImpl.getInstance(this.getProject()).createAttribute(newName, getType());
 			ASTNode node = variable.getFirstChild().getChildren()[0].getNode();
@@ -35,7 +35,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	@Nullable
 	@Override
 	public String getName() {
-		ASTNode[] child = this.getNode().getChildren(TokenSet.create(TaraTypes.IDENTIFIER_KEY));
+		ASTNode[] child = this.getNode().getChildren(TokenSet.create(TaraTypes.IDENTIFIER));
 		if (child.length == 0) return null;
 		return child[0].getText();
 	}
