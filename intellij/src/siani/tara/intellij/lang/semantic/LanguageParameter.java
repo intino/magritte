@@ -34,7 +34,17 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 
 	@Override
 	public void setAnnotations(String[] strings) {
+		//TODO?
+	}
 
+	@Override
+	public void setMultiple(boolean multiple) {
+		//TODO?
+	}
+
+	@Override
+	public boolean isMultiple() {
+		return false;
 	}
 
 	@Override

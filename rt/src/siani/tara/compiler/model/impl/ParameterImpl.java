@@ -18,6 +18,7 @@ public class ParameterImpl extends Element implements Parameter {
 	private int line;
 	private String metric;
 	private String inferredType;
+	private boolean multiple;
 	private String[] annotations = new String[0];
 	private NodeContainer owner;
 
@@ -51,6 +52,16 @@ public class ParameterImpl extends Element implements Parameter {
 	@Override
 	public void setInferredType(String type) {
 		this.inferredType = type;
+	}
+
+	@Override
+	public void setMultiple(boolean multiple) {
+		this.multiple = multiple;
+	}
+
+	@Override
+	public boolean isMultiple() {
+		return multiple;
 	}
 
 	@Override

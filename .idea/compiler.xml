@@ -31,9 +31,17 @@
         <processorPath useClasspath="true" />
         <module name="tara-runtime" />
       </profile>
+      <profile default="false" name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="semantic" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.7">
       <module name="intellij" target="1.7" />
+      <module name="semantic" target="1.7" />
       <module name="tara" target="1.7" />
       <module name="tara-runtime" target="1.7" />
     </bytecodeTargetLevel>

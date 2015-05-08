@@ -10,6 +10,7 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/rt/pom.xml" />
         <option value="$PROJECT_DIR$/intellij/pom.xml" />
+        <option value="$PROJECT_DIR$/semantic/pom.xml" />
       </list>
     </option>
   </component>

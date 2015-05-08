@@ -55,47 +55,47 @@ def type(composed) trigger(include)
     .hasComponents($value)
 end
 
-def type(variable) type(target) type(measure) !type(List) slot(variableValue) trigger(variable)
+def type(variable) type(target) type(measure) slot(variableValue) trigger(variable)
     .set("!$node:$name<$target", $measureValue.value($variableValue))
 end
 
 def type(variable) type(target) type(string) slot(variableValue) trigger(variable)
-    .set("!$node:$name<$target", $variableValue+quoted...[, ])
+    .set("!$node:$name<$target", $multiple($variableValue+quoted...[, ]))
 end
 def type(variable) type(target) type(word) slot(variableValue) trigger(variable)
-    .set("!$node:$name<$target", $variableValue+quoted...[, ])
+    .set("!$node:$name<$target", $multiple($variableValue+quoted...[, ]))
 end
 
 def type(variable) type(target) type(reference) slot(variableValue) trigger(variable)
-    .set("!$node:$name<$target", node($variableValue...[, ]))
+    .set("!$node:$name<$target", $multiple(node($variableValue...[, ])))
 end
 
 def type(variable) type(target) slot(variableValue) trigger(variable)
-    .set("!$node:$name<$target", $variableValue...[, ])
+    .set("!$node:$name<$target", $multiple($variableValue...[, ]))
 end
 
 def type(variable) type(reference) slot(variableValue) trigger(variable)
-    .set("$terminal$name", node($variableValue...[, ]))
+    .set("$terminal$name", $multiple(node($variableValue...[, ])))
 end
 
 def type(variable) type(native) slot(variableValue) trigger(variable)
-    .set("$terminal$name", (Class<magritte.handlers.NativeContainer>) $variableValue)
+    .set("$terminal$name", $multiple((Class<magritte.handlers.NativeContainer>) $variableValue))
 end
 
 def type(Variable) type(resource) slot(variableValue) trigger(variable)
-    .set("$terminal$name", resource($variableValue+quoted...[, ]))
+    .set("$terminal$name", $multiple(resource($variableValue+quoted...[, ])))
 end
 
 def type(variable) type(word) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $variableValue+quoted...[, ])
+    .set("$terminal$name", $multiple($variableValue+quoted...[, ]))
 end
 
 def type(Variable) type(string) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $variableValue+quoted...[, ])
+    .set("$terminal$name", $multiple($variableValue+quoted...[, ]))
 end
 
 def type(Variable) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $variableValue+quoted...[, ])
+    .set("$terminal$name", $multiple($variableValue+quoted...[, ]))
 end
 
 def type(Variable) trigger(variable)
@@ -115,4 +115,11 @@ end
 
 def trigger(quoted)
     "$value"
+end
+
+def trigger(multiple) value(true)
+    multiple
+end
+
+def trigger(multiple) value(false)
 end

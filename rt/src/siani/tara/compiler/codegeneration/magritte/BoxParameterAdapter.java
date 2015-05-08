@@ -21,6 +21,7 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	public void execute(Frame frame, Parameter parameter, FrameContext context) {
 		frame.addTypes(getTypes(parameter));
 		frame.addFrame(NAME, buildName(parameter));
+		frame.addFrame(MULTIPLE, parameter.isMultiple());
 		if (isTerminal(parameter))
 			frame.addFrame(TERMINAL, TERMINAL_KEY);
 		if (parameter.getInferredType().equals(Primitives.MEASURE)) {

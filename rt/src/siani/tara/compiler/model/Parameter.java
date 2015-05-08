@@ -4,11 +4,15 @@ import java.util.Collection;
 
 public interface Parameter {
 
-	NodeContainer  getOwner();
+	NodeContainer getOwner();
 
 	String getInferredType();
 
 	void setInferredType(String type);
+
+	void setMultiple(boolean multiple);
+
+	boolean isMultiple();
 
 	String[] getAnnotations();
 

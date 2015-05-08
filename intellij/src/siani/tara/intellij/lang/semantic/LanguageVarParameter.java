@@ -37,6 +37,16 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 	}
 
 	@Override
+	public void setMultiple(boolean multiple) {
+
+	}
+
+	@Override
+	public boolean isMultiple() {
+		return false;
+	}
+
+	@Override
 	public int getPosition() {
 		return -1;
 	}

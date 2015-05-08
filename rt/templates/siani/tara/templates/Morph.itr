@@ -18,25 +18,25 @@ def type(Word) trigger(wordInstantiation)
     }
 end
 
-def type(Word) type(List) trigger(getter)
+def type(Word) type(multiple) trigger(getter)
     public $name+reference$[] get$name+firstUpperCase() {
         return Enumerate.cardinal((Integer) get("$name+firstLowerCase"), $name+firstUpperCase.values());
     }
 end
 
-def type(Word) !type(List) trigger(getter)
+def type(Word) !type(multiple) trigger(getter)
     public $name+reference get$name+firstUpperCase() {
         return Enumerate.cardinal((int) definition().get("$name+firstLowerCase"), $name+firstUpperCase.values());
     }
 end
 
-def type(Word) type(List) trigger(setter)
+def type(Word) type(multiple) trigger(setter)
     public void set$name+firstUpperCase($name+firstUpperCase~... values) {
         set("$name", Enumerate.ordinal(values));
     }
 end
 
-def type(Word) !type(List) trigger(setter)
+def type(Word) !type(multiple) trigger(setter)
     public void set$name+firstUpperCase($name+firstUpperCase value) {
         set("$name", Enumerate.ordinal(value));
     }
@@ -94,7 +94,7 @@ end
 
 -------- SETTERS ---------
 
-def type(variable) type(file) !type(list) !type(readonly) trigger(setter)
+def type(variable) type(file) !type(multiple) !type(readonly) trigger(setter)
     public void set$name+firstUpperCase(Resource value) {
         set("value", value.id());
     }
@@ -112,25 +112,25 @@ def type(variable) type(Measure) !type(readonly) trigger(setter)
     }
 end
 
-def type(variable) !type(readonly) !type(native) type(List) trigger(setter)
+def type(variable) !type(readonly) !type(native) type(multiple) trigger(setter)
     public void set$name+firstUpperCase($type+reference$[] $name+firstLowerCase) {
         set("$name", $name+firstLowerCase);
     }
 end
 
-def type(variable) !type(native) !type(reference) !type(readonly) !type(List) trigger(setter)
+def type(variable) !type(native) !type(reference) !type(readonly) !type(multiple) trigger(setter)
     public void set$name+firstUpperCase(java.lang.$type+firstUpperCase value) {
         set("$name", value);
     }
 end
 
-def type(variableReference) !type(readonly) !type(native) !type(List) trigger(setter)
+def type(variableReference) !type(readonly) !type(native) !type(multiple) trigger(setter)
     public void set$name+firstUpperCase($type+reference value) {
         set("$name", value.node());
     }
 end
 
-def type(variable) !type(readonly) !type(native) !type(List) trigger(setter)
+def type(variable) !type(readonly) !type(native) !type(multiple) trigger(setter)
     public void set$name+firstUpperCase($type+reference value) {
         set("$name", value);
     }

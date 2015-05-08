@@ -58,7 +58,7 @@ public interface TemplateTags {
 	String TERMINAL = "terminal";
 	String PROPERTY = "property";
 	String READONLY = "readonly";
-	String MULTIPLE = "List";
+	String MULTIPLE = "multiple";
 	String INTEGER = "Integer";
 	String NATURAL = "Natural";
 	String INNER = "inner";

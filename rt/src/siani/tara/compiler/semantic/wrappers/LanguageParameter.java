@@ -40,6 +40,16 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
+	public void setMultiple(boolean multiple) {
+		parameter.setMultiple(multiple);
+	}
+
+	@Override
+	public boolean isMultiple() {
+		return parameter.isMultiple();
+	}
+
+	@Override
 	public int getPosition() {
 		return parameter.getPosition();
 	}
