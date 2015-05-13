@@ -26,7 +26,7 @@ public class TaraRunner {
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
 	private static final String ITRULES_VERSION = "1.1.14";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
-	private static final String SEMANTIC_RULES = "tara-semantic.jar";
+	private static final String SEMANTIC_RULES = "tara.jar";
 	private static final String LIB = "lib";
 	public static final char NL = '\n';
 	private static File argsFile;

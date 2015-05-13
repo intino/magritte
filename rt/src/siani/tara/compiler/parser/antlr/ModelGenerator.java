@@ -90,7 +90,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void exitNode(@NotNull NodeContext ctx) {
 		NodeContainer peek = deque.peek();
-		if (((Node) peek).isAggregated() || ((Node) peek).isAssociated())
+		if (((Node) peek).isRoot())
 			peek.moveToTheTop();
 		deque.pop();
 	}
@@ -211,7 +211,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (ctx.nativeName() != null) variable.setNativeName(ctx.nativeName().getText().substring(1));
 
 		addHeaderInformation(ctx, (Element) variable);
-		variable.addFlags(resolveTags(ctx.flags()));
+		for (FlagsContext flagsContext : ctx.flags()) variable.addFlags(resolveTags(flagsContext));
 		container.addVariables(variable);
 	}
 

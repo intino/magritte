@@ -85,6 +85,7 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 
 	private boolean checkParameter(Rejectable.Parameter rejectable) {
 		Object[] values = rejectable.getParameter().getValues();
+		if (values.length == 0) return true;
 		String inferredType = inferType(values[0]);
 		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType);
 	}

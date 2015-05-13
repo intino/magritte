@@ -1,11 +1,11 @@
 lexer grammar TaraLexer;
 
-@lexer::members{
+@lexer::members {
     BlockManager blockManager = new BlockManager();
     private static java.util.Queue<Token> queue = new java.util.LinkedList<>();
 
     @Override
-    public void reset(){
+    public void reset() {
         super.reset();
         queue.clear();
         blockManager.reset();
@@ -98,7 +98,6 @@ ABSTRACT            : 'abstract';
 SINGLE              : 'single';
 MULTIPLE            : 'multiple';
 
-OPTIONAL            : 'optional';
 REQUIRED            : 'required';
 
 TERMINAL            : 'terminal';
@@ -106,16 +105,10 @@ TERMINAL            : 'terminal';
 PROPERTY            : 'property';
 FEATURE             : 'feature';
 
-AGGREGATED          : 'aggregated';
-ASSOCIATED          : 'associated';
-COMPONENT           : 'component';
-
 READONLY            : 'readonly';
 ENCLOSED            : 'enclosed';
 
 FACET               : 'facet';
-
-ADDRESSED           : 'addressed';
 
 LEFT_PARENTHESIS    : '(';
 RIGHT_PARENTHESIS   : ')';
@@ -125,7 +118,7 @@ LIST                : '...';
 INLINE              : '>'       { inline(); };
 CLOSE_INLINE        : '<';
 
-AMPERSAND           : '&';
+HASHTAG             : '#';
 COLON               : ':';
 COMMA               : ',';
 DOT                 : '.';
@@ -155,9 +148,9 @@ BOOLEAN_VALUE       : 'true' | 'false';
 NATURAL_VALUE       : PLUS? DIGIT+;
 NEGATIVE_VALUE      : DASH DIGIT+ ;
 DOUBLE_VALUE        : (PLUS | DASH)? DIGIT+ DOT DIGIT+;
-STRING_VALUE        : APHOSTROPHE (~'"')* APHOSTROPHE;
+STRING_VALUE        : APHOSTROPHE (~('"' | '\\' | '\r' | '\n') | '\\' ('"' | '\\'))* APHOSTROPHE;
 STRING_MULTILINE_VALUE_KEY   : DASHES  (~'-')* DASHES;
-ADDRESS_VALUE       : AMPERSAND DIGIT DIGIT DIGIT (DOT DIGIT DIGIT DIGIT)+;
+ADDRESS_VALUE       : HASHTAG LETTER+;
 IDENTIFIER          : LETTER (DIGIT | LETTER | DASH | UNDERDASH)*;
 
 MEASURE_VALUE       : (LETTER| PERCENTAGE | DOLLAR | EURO | GRADE) (UNDERDASH | BY | DIVIDED_BY | PERCENTAGE | DOLLAR | EURO | GRADE | LETTER | DIGIT)*;

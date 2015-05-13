@@ -9,10 +9,12 @@ import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
+import siani.tara.intellij.lang.lexer.TaraPrimitives;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import siani.tara.intellij.lang.psi.resolve.TaraFileReferenceSolver;
-import siani.tara.intellij.lang.psi.resolve.TaraParameterReferenceSolver;
+import siani.tara.intellij.lang.psi.resolve.TaraNativeReferenceSolver;
+import siani.tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
+import siani.tara.intellij.lang.psi.resolve.TaraWordReferenceSolver;
 import siani.tara.semantic.Allow;
 
 import javax.swing.*;
@@ -46,9 +48,9 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	@Nullable
 	@Override
 	public PsiReference getReference() {
-		Parameter parameter;
-		if ((parameter = isParameterReference()) != null)
-			return createResolverForParameter(parameter);
+		PsiElement element = asParameterReference();
+		if (element != null) return createResolverForParameter((Parameter) element);
+		if ((element = asVarInitReference()) != null) return createResolverForVarInit((VarInit) element);
 		else if (isFileReference()) return creteFileResolver();
 		else return createConceptResolver();
 	}
@@ -66,10 +68,25 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
 		Allow.Parameter parameterAllow = getCorrespondingAllow(container, parameter);
 		if (parameterAllow == null) return null;
-		if (parameterAllow.type().equals(REFERENCE))
+		if (parameterAllow.type().equalsIgnoreCase(REFERENCE))
 			return new TaraNodeReferenceSolver(this, getRange(), container);
-		if (parameterAllow.type().equals(WORD) || !isPrimitive(parameterAllow.type()))
-			return new TaraParameterReferenceSolver(this, getRange(), container);
+		if (parameterAllow.type().equalsIgnoreCase(WORD) || !isPrimitive(parameterAllow.type()))
+			return new TaraWordReferenceSolver(this, getRange(), parameterAllow);
+		if (parameterAllow.type().equalsIgnoreCase(TaraPrimitives.NATIVE) || !isPrimitive(parameterAllow.type()))
+			return new TaraNativeReferenceSolver(this, getRange(), parameterAllow);
+		return null;
+	}
+
+	private PsiReference createResolverForVarInit(VarInit varInit) {
+		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
+		Allow.Parameter parameterAllow = getCorrespondingAllow(container, varInit);
+		if (parameterAllow == null) return null;
+		if (parameterAllow.type().equalsIgnoreCase(REFERENCE))
+			return new TaraNodeReferenceSolver(this, getRange(), container);
+		if (parameterAllow.type().equalsIgnoreCase(WORD) || !isPrimitive(parameterAllow.type()))
+			return new TaraWordReferenceSolver(this, getRange(), parameterAllow);
+		if (parameterAllow.type().equalsIgnoreCase(TaraPrimitives.NATIVE) || !isPrimitive(parameterAllow.type()))
+			return new TaraNativeReferenceSolver(this, getRange(), parameterAllow);
 		return null;
 	}
 
@@ -82,17 +99,30 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return parameter.isExplicit() ? findParameter(parametersAllowed, parameter.getExplicitName()) : parametersAllowed.get(parameter.getIndexInParent());
 	}
 
+	private Allow.Parameter getCorrespondingAllow(Node container, VarInit varInit) {
+		FacetApply facetApply = areFacetVarInit(varInit);
+		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.getType()) : TaraUtil.getAllowsOf(container);
+		if (allowsOf == null) return null;
+		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
+		return findParameter(parametersAllowed, varInit.getName());
+	}
+
 	private Collection<Allow> getAllows(Node container, String facetApply) {
 		Collection<Allow> allowsOf = TaraUtil.getAllowsOf(container);
 		if (allowsOf == null) return Collections.EMPTY_LIST;
 		for (Allow allow : allowsOf)
 			if (allow instanceof Allow.Facet && ((Allow.Facet) allow).type().equals(facetApply))
-				return ((Allow.Facet)allow).allows();
+				return ((Allow.Facet) allow).allows();
 		return Collections.EMPTY_LIST;
 	}
 
 	private FacetApply areFacetParameters(Parameter parameter) {
 		PsiElement contextOf = TaraPsiImplUtil.getContextOf(parameter);
+		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
+	}
+
+	private FacetApply areFacetVarInit(VarInit varInit) {
+		PsiElement contextOf = TaraPsiImplUtil.getContextOf(varInit);
 		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
 	}
 
@@ -130,13 +160,21 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return this.getName();
 	}
 
-	public Parameter isParameterReference() {
+	public Parameter asParameterReference() {
 		PsiElement parent = this.getParent();
 		while (!PsiFile.class.isInstance(parent)) {
 			if (parent instanceof Parameter) return (Parameter) parent;
 			parent = parent.getParent();
 		}
+		return null;
+	}
 
+	public VarInit asVarInitReference() {
+		PsiElement parent = this.getParent();
+		while (!PsiFile.class.isInstance(parent)) {
+			if (parent instanceof VarInit) return (VarInit) parent;
+			parent = parent.getParent();
+		}
 		return null;
 	}
 

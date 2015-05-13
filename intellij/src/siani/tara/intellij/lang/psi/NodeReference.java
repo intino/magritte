@@ -7,10 +7,6 @@ import java.util.Collection;
 
 public interface NodeReference extends Navigatable, TaraPsiElement {
 
-	boolean isAggregated();
-
-	boolean isAssociated();
-
 	@NotNull
 	Collection<? extends Annotation> getAnnotations();
 

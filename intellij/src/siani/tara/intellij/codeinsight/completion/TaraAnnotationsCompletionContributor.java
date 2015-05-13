@@ -10,10 +10,10 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraLanguage;
-import siani.tara.intellij.lang.lexer.Flags;
-import siani.tara.intellij.lang.lexer.Tag;
+import siani.tara.semantic.model.Flags;
 import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraAnnotations;
+import siani.tara.semantic.model.Tag;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;

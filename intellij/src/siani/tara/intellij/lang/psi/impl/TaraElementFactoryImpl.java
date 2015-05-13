@@ -150,21 +150,11 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return params.substring(separator.length());
 	}
 
-	public TaraAddress createAddress(long value) {
-		String addr = value + "";
-		if (addr.length() < 9)
-			addr = format(addr);
+	public TaraAddress createAddress(String value) {
 		final TaraModelImpl file = createDummyFile(
-			"Dummy Ficha &" + addr.substring(0, 3) + "." + addr.substring(3, 6) + "." + addr.substring(6, 9) + "\n"
+			"Dummy Ficha #" + value + "\n"
 		);
 		return file.getRootNodes().iterator().next().getAddress();
-	}
-
-	private String format(String address) {
-		String newAddress = address;
-		for (int i = address.length(); i <= 9; i++)
-			newAddress = "0" + newAddress;
-		return newAddress;
 	}
 
 	@Override

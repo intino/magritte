@@ -28,6 +28,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	private JCheckBox generateDslCheck;
 	private JTextField dslGeneratedName;
 	private JPanel myMainPanel;
+	private JCheckBox addressRequired;
 	private Module[] candidates;
 
 	public TaraFacetEditor(TaraFacetConfiguration facetConfiguration, Module module) {
@@ -87,7 +88,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 	public boolean isModified() {
 		return !getDslGeneratedName().equals(facetConfiguration.getGeneratedDslName()) ||
 			!dictionaryBox.getSelectedItem().equals(facetConfiguration.getDictionary()) ||
-			!dslBox.getSelectedItem().equals(facetConfiguration.getDsl());
+			!dslBox.getSelectedItem().equals(facetConfiguration.getDsl()) ||
+			!addressRequired.isSelected() == (facetConfiguration.isAddressRequired());
 
 	}
 
@@ -96,6 +98,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		facetConfiguration.setDsl((String) dslBox.getSelectedItem());
 		facetConfiguration.setDictionary((String) dictionaryBox.getSelectedItem());
 		facetConfiguration.setGeneratedDslName(getDslGeneratedName());
+		facetConfiguration.setAddressRequired(addressRequired.isSelected());
 	}
 
 	private String getDslGeneratedName() {
@@ -129,6 +132,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		dictionaryBox.setSelectedItem(facetConfiguration.getDictionary());
 		generateDslCheck.setSelected(!facetConfiguration.isCase());
 		dslGeneratedName.setText(facetConfiguration.getGeneratedDslName());
+		addressRequired.setSelected(facetConfiguration.isAddressRequired());
 	}
 
 	private Module[] getParentModulesCandidates() {

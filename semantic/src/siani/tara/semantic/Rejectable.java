@@ -109,15 +109,15 @@ public abstract class Rejectable {
 			return node;
 		}
 
+		public void multiple() {
+			cause = Cause.NOT_SINGLE;
+		}
+
 		@Override
 		public SemanticError error() {
 			return cause.equals(Cause.NOT_ALLOWED) ?
 				new SemanticError("reject.unknown.type.in.context", node, new Object[]{node.type(), node.name()}) :
 				new SemanticError("reject.multiple.node.in.context", node, new Object[]{node.type(), node.name()});
-		}
-
-		public void multiple() {
-			cause = Cause.NOT_SINGLE;
 		}
 	}
 

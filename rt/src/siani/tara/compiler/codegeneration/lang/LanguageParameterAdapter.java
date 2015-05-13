@@ -3,18 +3,17 @@ package siani.tara.compiler.codegeneration.lang;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.compiler.model.Node;
-import siani.tara.compiler.model.Tag;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.Allow;
 import siani.tara.semantic.constraints.ReferenceParameterAllow;
+import siani.tara.semantic.model.Tag;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static siani.tara.compiler.model.Tag.TERMINAL;
-import static siani.tara.compiler.model.Tag.TERMINAL_INSTANCE;
+import static siani.tara.semantic.model.Tag.*;
 
 public class LanguageParameterAdapter {
 	private static final String REQUIRE = "require";

@@ -1,6 +1,9 @@
 package siani.tara.semantic.model;
 
 import siani.tara.semantic.*;
+import siani.tara.semantic.Constraint.Require.Multiple;
+import siani.tara.semantic.Constraint.Require.OneOf;
+import siani.tara.semantic.Constraint.Require.Single;
 
 import java.util.*;
 
@@ -65,19 +68,19 @@ public class Context {
 				allow(name());
 			else if (constraint instanceof Constraint.Require.Parameter)
 				addAllowParameter((Constraint.Require.Parameter) constraint);
-			else if (constraint instanceof Constraint.Require.Single)
-				addAllowIncludeSingle((Constraint.Require.Single) constraint);
-			else if (constraint instanceof Constraint.Require.Multiple)
-				addAllowIncludeMultiple((Constraint.Require.Multiple) constraint);
-			else if (constraint instanceof Constraint.Require.OneOf)
-				addAllowIncludeOneOf((Constraint.Require.OneOf) constraint);
+			else if (constraint instanceof Single)
+				addAllowIncludeSingle((Single) constraint);
+			else if (constraint instanceof Multiple)
+				addAllowIncludeMultiple((Multiple) constraint);
+			else if (constraint instanceof OneOf)
+				addAllowIncludeOneOf((OneOf) constraint);
 	}
 
-	private void addAllowIncludeSingle(Constraint.Require.Single constraint) {
+	private void addAllowIncludeSingle(Single constraint) {
 		allows.add(single(constraint.type()));
 	}
 
-	private void addAllowIncludeMultiple(Constraint.Require.Multiple constraint) {
+	private void addAllowIncludeMultiple(Multiple constraint) {
 		allow(multiple(constraint.type()));
 	}
 
@@ -88,13 +91,14 @@ public class Context {
 			allow(parameter(parameter.name(), parameter.type(), parameter.multiple(), parameter.position(), parameter.metric(), parameter.annotations()));
 	}
 
-	private void addAllowIncludeOneOf(Constraint.Require.OneOf constraint) {
-		List<Allow> singles = new ArrayList<>();
-		for (Constraint.Require require : constraint.requires()) {
-			final Constraint.Require.Single single = (Constraint.Require.Single) require;
-			singles.add(single(single.type(), single.relation(), single.annotations()));
-		}
-		allow(oneOf(singles.toArray(new Allow[singles.size()])));
+	private void addAllowIncludeOneOf(OneOf constraint) {
+		List<Allow> allows = new ArrayList<>();
+		for (Constraint.Require require : constraint.requires())
+			if (require instanceof Single)
+				allows.add(single(((Single) require).type(), ((Single) require).annotations()));
+			else
+				allows.add(multiple(((Multiple) require).type(), ((Multiple) require).annotations()));
+		allow(oneOf(allows.toArray(new Allow[allows.size()])));
 	}
 
 	private boolean isWordOrReference(Constraint.Require.Parameter parameter) {

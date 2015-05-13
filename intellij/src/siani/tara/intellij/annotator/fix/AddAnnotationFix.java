@@ -8,8 +8,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.lexer.Tag;
+import siani.tara.intellij.lang.psi.Annotations;
+import siani.tara.intellij.lang.psi.Node;
+import siani.tara.intellij.lang.psi.TaraElementFactory;
+import siani.tara.semantic.model.Tag;
 
 public class AddAnnotationFix implements IntentionAction {
 	private final Node node;

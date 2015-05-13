@@ -67,4 +67,12 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	public boolean isCase() {
 		return myProperties.generatedDslName.isEmpty();
 	}
+
+	public boolean isAddressRequired() {
+		return myProperties.addressRequired;
+	}
+
+	public void setAddressRequired(boolean addressRequired) {
+		myProperties.addressRequired = addressRequired;
+	}
 }

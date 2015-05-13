@@ -11,21 +11,17 @@ import com.intellij.lang.injection.InjectedLanguageManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import siani.tara.Language;
+import com.intellij.psi.PsiReference;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.annotator.TaraAnnotator;
 import siani.tara.intellij.annotator.imports.CreateNodeQuickFix;
 import siani.tara.intellij.annotator.imports.ImportQuickFix;
 import siani.tara.intellij.annotator.imports.TaraReferenceImporter;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import siani.tara.semantic.Allow;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
@@ -41,36 +37,10 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		if (isWordValueParameter(TaraPsiImplUtil.getContainerNodeOf(reference), reference.getText())) return;
-		PsiElement destiny = ReferenceManager.resolve(reference);
-		if (destiny == null)
-			addImportAlternatives(reference.getIdentifierList().get(reference.getIdentifierList().size() - 1));
-	}
-
-	private boolean isWordValueParameter(Node node, String wordName) {
-		Parameter parameter = asParameter();
-		if (node == null || wordName.contains(".") || parameter == null) return false;
-		Language language = TaraLanguage.getLanguage(node.getFile());
-		if (language == null) return false;
-		Collection<Allow> allows = language.allows(node.resolve().getFullType());
-		if (allows == null) return false;
-		for (Allow allow : allows) {
-			if (allow instanceof Allow.Parameter) {
-				Allow.Parameter allowParameter = (Allow.Parameter) allow;
-				if (allowParameter.name().equals(parameter.getExplicitName()) || allowParameter.position() == parameter.getIndexInParent())
-					return true;
-			}
-		}
-		return false;
-	}
-
-	private Parameter asParameter() {
-		PsiElement element = reference.getParent();
-		while (element != null && !(element instanceof PsiFile)) {
-			if (element instanceof Parameter) return (Parameter) element;
-			element = element.getParent();
-		}
-		return null;
+		List<? extends Identifier> identifierList = reference.getIdentifierList();
+		Identifier element = identifierList.get(identifierList.size() - 1);
+		PsiReference reference = element.getReference();
+		if (reference == null || reference.resolve() == null) addImportAlternatives(element);
 	}
 
 	private void addImportAlternatives(Identifier element) {

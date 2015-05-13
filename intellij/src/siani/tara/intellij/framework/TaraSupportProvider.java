@@ -44,6 +44,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private String dsl;
 	private String dictionary;
 	private String dslGenerate;
+	private boolean addressRequired;
 
 	@NotNull
 	@Override
@@ -91,6 +92,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		facetConfiguration.setDsl(dsl);
 		facetConfiguration.setDictionary(dictionary);
 		facetConfiguration.setGeneratedDslName(dslGenerate);
+		facetConfiguration.setAddressRequired(addressRequired);
 	}
 
 	private void createResources(ContentEntry contentEntry) {
@@ -143,6 +145,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		private JComboBox<String> dslBox;
 		private JCheckBox generateDslCheck;
 		private JTextField dslGeneratedName;
+		private JCheckBox addressRequired;
 
 		private Module[] candidates;
 
@@ -187,6 +190,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			});
 			generateDslCheck.setSelected(false);
 			dslGeneratedName.setEnabled(false);
+			addressRequired.setEnabled(false);
 		}
 
 		@Override
@@ -194,7 +198,10 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			dslBox.setEnabled(true);
 			dictionaryBox.setEnabled(true);
 			generateDslCheck.setEnabled(true);
-			if (generateDslCheck.isSelected()) dslGeneratedName.setEnabled(true);
+			if (generateDslCheck.isSelected()) {
+				dslGeneratedName.setEnabled(true);
+				addressRequired.setEnabled(true);
+			}
 		}
 
 		@Override
@@ -203,6 +210,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			dictionaryBox.setEnabled(false);
 			generateDslCheck.setEnabled(false);
 			dslGeneratedName.setEnabled(false);
+			addressRequired.setEnabled(false);
 		}
 
 		@Override
@@ -216,6 +224,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			TaraSupportProvider.this.dsl = dslBox.getSelectedItem().toString();
 			TaraSupportProvider.this.dictionary = dictionaryBox.getSelectedItem().toString();
 			TaraSupportProvider.this.dslGenerate = generateDslCheck.isSelected() ? dslGeneratedName.getText() : NONE;
+			TaraSupportProvider.this.addressRequired = generateDslCheck.isSelected() && addressRequired.isSelected();
 			TaraSupportProvider.this.addSupport(module, rootModel);
 		}
 

@@ -13,14 +13,23 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	private final Node node;
 	private FacetTarget[] facetTargets;
-	private List<Variable> variables;
+	private List<Variable> variables = new ArrayList<>();
 	private List<siani.tara.semantic.model.Node> includes = new ArrayList<>();
 
 	public LanguageNode(Node node) {
 		this.node = node;
 		if (node == null) return;
 		this.facetTargets = buildFacetTargets(node.getFacetTargets());
-		this.variables = collectVariables(node.getVariables());
+		variables.addAll(collectVariables(node.getVariables()));
+		addIncludes(node);
+		Node parent = node.getParentNode();
+		if (parent != null) {
+			variables.addAll(collectVariables(parent.getVariables()));
+			addIncludes(parent);
+		}
+	}
+
+	private void addIncludes(Node node) {
 		for (Node inner : node.getInnerNodes())
 			includes.add(new LanguageNode(inner));
 		for (NodeReference nodeReference : node.getInnerNodeReferences())

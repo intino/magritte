@@ -18,7 +18,7 @@ public class LanguageTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "Model"))).add(literal("package siani.tara.dsls;\n\nimport siani.tara.semantic.model.Tara;\nimport java.util.Locale;\nimport siani.tara.semantic.model.Tag;\nimport static siani.tara.semantic.Relation.*;\nimport static siani.tara.semantic.constraints.RuleFactory.*;\n\npublic class ")).add(mark("name")).add(literal(" extends Tara {\n\tpublic ")).add(mark("name")).add(literal("() {\n\t\t")).add(mark("node").multiple("\n")).add(literal("\n\t}\n\n\t@Override\n\tpublic String languageName() {\n\t\treturn \"")).add(mark("name")).add(literal("\";\n\t}\n\n\t@Override\n    public Locale locale() {\n        return ")).add(mark("locale")).add(literal(";\n    }\n\n    @Override\n    public boolean isTerminalLanguage() {\n        return ")).add(mark("terminal")).add(literal(";\n    }\n}\n")),
+			rule().add((condition("type", "Model"))).add(literal("package siani.tara.dsls;\n\nimport siani.tara.semantic.model.Tara;\nimport java.util.Locale;\nimport siani.tara.semantic.model.Tag;\nimport static siani.tara.semantic.constraints.RuleFactory.*;\n\npublic class ")).add(mark("name")).add(literal(" extends Tara {\n\tpublic ")).add(mark("name")).add(literal("() {\n\t\t")).add(mark("node").multiple("\n")).add(literal("\n\t}\n\n\t@Override\n\tpublic String languageName() {\n\t\treturn \"")).add(mark("name")).add(literal("\";\n\t}\n\n\t@Override\n    public Locale locale() {\n        return ")).add(mark("locale")).add(literal(";\n    }\n\n    @Override\n    public boolean isTerminalLanguage() {\n        return ")).add(mark("terminal")).add(literal(";\n    }\n}\n")),
 			rule().add((condition("type", "node")), (condition("trigger", "node"))).add(literal("in(\"")).add(mark("name")).add(literal("\").def(context(")).add(expression().add(mark("nodeType"))).add(literal(")")).add(expression().add(literal(".")).add(mark("allows"))).add(expression().add(literal(".")).add(mark("requires"))).add(expression().add(literal(".")).add(mark("assumptions"))).add(literal(");")),
 			rule().add((condition("type", "nodeType")), (condition("trigger", "nodeType"))).add(mark("type", "quoted").multiple(", ")),
 			rule().add((condition("type", "allows")), (condition("trigger", "allows"))).add(literal("allow(")).add(expression().add(mark("allow").multiple(", "))).add(literal(")")),
@@ -42,7 +42,9 @@ public class LanguageTemplate extends Template {
 			rule().add((condition("trigger", "require"))).add(literal("_")).add(mark("value")).add(literal("()")),
 			rule().add((condition("type", "assumptions")), (condition("trigger", "assumptions"))).add(literal("assume(")).add(mark("assumption").multiple(", ")).add(literal(")")),
 			rule().add((condition("trigger", "assumption"))).add(literal("is")).add(mark("value", "firstUpperCase")).add(literal("()")),
-			rule().add((condition("trigger", "quoted"))).add(literal("\"")).add(mark("value")).add(literal("\""))
+			rule().add((condition("trigger", "quoted"))).add(literal("\"")).add(mark("value")).add(literal("\"")),
+			rule().add((condition("trigger", "locale")), (condition("value", "es"))).add(literal("new Locale(\"es\", \"Spain\", \"es_ES\")")),
+			rule().add((condition("trigger", "locale")), (condition("value", "en"))).add(literal("Locale.ENGLISH"))
 		);
 		return this;
 	}

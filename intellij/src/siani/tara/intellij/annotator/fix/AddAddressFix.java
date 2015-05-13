@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.codegeneration.AddressGenerator;
+import siani.tara.intellij.codegeneration.Mbroller;
 import siani.tara.intellij.lang.psi.Node;
 
 public class AddAddressFix implements IntentionAction {
@@ -35,7 +35,7 @@ public class AddAddressFix implements IntentionAction {
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-		AddressGenerator generator = new AddressGenerator(node);
+		Mbroller generator = new Mbroller(node);
 		generator.generate();
 	}
 

@@ -1,6 +1,7 @@
 package siani.tara.compiler.model;
 
 import siani.tara.compiler.model.impl.NodeReference;
+import siani.tara.semantic.model.Tag;
 
 import java.util.Collection;
 
@@ -27,8 +28,6 @@ public interface Node extends NodeContainer, Parameterized {
 
 	boolean isFacet();
 
-	boolean isAddressed();
-
 	boolean isAbstract();
 
 	boolean isRequired();
@@ -36,12 +35,6 @@ public interface Node extends NodeContainer, Parameterized {
 	boolean isSingle();
 
 	boolean isNamed();
-
-	boolean isComponent();
-
-	boolean isAggregated();
-
-	boolean isAssociated();
 
 	boolean isFeature();
 

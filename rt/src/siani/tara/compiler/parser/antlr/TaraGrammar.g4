@@ -35,7 +35,7 @@ facetApply : AS metaidentifier parameters? (WITH metaidentifier)? body?;
 facetTarget : ON identifierReference body?;
 nodeReference : HAS identifierReference tags?;
 
-variable : VAR variableType nativeName? (LIST | count)? IDENTIFIER (word | (EQUALS value))? flags?;
+variable : VAR variableType nativeName? (LIST | count)? IDENTIFIER (flags? word | (EQUALS value))? flags?;
 
 variableType: NATURAL_TYPE
             | INT_TYPE
@@ -68,18 +68,13 @@ measureValue    : IDENTIFIER | MEASURE_VALUE;
 tags: flags? annotations?;
 
 annotations: INTO annotation+;
-annotation: TERMINAL
-            | SINGLE | MULTIPLE | REQUIRED | OPTIONAL
-            | FACET
-            | FEATURE | PROPERTY | ENCLOSED | ADDRESSED
-            | COMPONENT | AGGREGATED | ASSOCIATED;
+annotation: TERMINAL | SINGLE | MULTIPLE | REQUIRED
+            | FACET | FEATURE | PROPERTY | ENCLOSED;
 
 flags: IS flag+;
 flag: ABSTRACT | TERMINAL
-      	| SINGLE | MULTIPLE | REQUIRED | OPTIONAL
-      	| FACET
-      	| FEATURE | PROPERTY | ENCLOSED | ADDRESSED | READONLY
-      	| COMPONENT | AGGREGATED | ASSOCIATED;
+      	| SINGLE | MULTIPLE | REQUIRED
+      	| FACET | FEATURE | PROPERTY | ENCLOSED  | READONLY;
 
 varInit : IDENTIFIER EQUALS value;
 

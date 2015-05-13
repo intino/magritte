@@ -1,9 +1,13 @@
 package siani.tara.compiler.semantic.wrappers;
 
-import siani.tara.compiler.model.*;
+import siani.tara.compiler.model.Element;
+import siani.tara.compiler.model.Facet;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
+import siani.tara.semantic.model.Tag;
 
 import java.util.ArrayList;
 import java.util.List;

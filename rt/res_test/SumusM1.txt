@@ -16,7 +16,7 @@ GroceryShop
 encoding
 UTF-8
 semantic_lib
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara-semantic.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 models
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
 outputpath

@@ -5,6 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraStringValue extends TaraPsiElement {
+public interface TaraStringValue extends StringValue {
 
 }

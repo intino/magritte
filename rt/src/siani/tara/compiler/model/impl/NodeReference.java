@@ -1,10 +1,11 @@
 package siani.tara.compiler.model.impl;
 
 import siani.tara.compiler.model.*;
+import siani.tara.semantic.model.Tag;
 
 import java.util.*;
 
-import static siani.tara.compiler.model.Tag.*;
+import static siani.tara.semantic.model.Tag.*;
 
 public class NodeReference extends Element implements Node {
 
@@ -135,11 +136,6 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public boolean isAddressed() {
-		return destiny.isAddressed() || flags.contains(ADDRESSED);
-	}
-
-	@Override
 	public boolean isAbstract() {
 		return destiny.isAbstract() || flags.contains(ABSTRACT);
 	}
@@ -157,16 +153,6 @@ public class NodeReference extends Element implements Node {
 	@Override
 	public boolean isNamed() {
 		return destiny.isNamed() || flags.contains(NAMED);
-	}
-
-	@Override
-	public boolean isAggregated() {
-		return destiny.isAggregated() || flags.contains(Tag.AGGREGATED);
-	}
-
-	@Override
-	public boolean isAssociated() {
-		return destiny.isAssociated() || flags.contains(Tag.ASSOCIATED);
 	}
 
 	@Override
@@ -190,11 +176,6 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public boolean isComponent() {
-		return destiny.isComponent() || flags.contains(COMPONENT);
-	}
-
-	@Override
 	public boolean isTerminalInstance() {
 		return destiny.isTerminalInstance() || flags.contains(TERMINAL_INSTANCE);
 	}
@@ -210,14 +191,14 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public Collection<Tag> getAnnotations() {
-		List<Tag> tags = new ArrayList<>(destiny.getAnnotations());
+		List<Tag> tags = new ArrayList<Tag>(destiny.getAnnotations());
 		tags.addAll(this.annotations);
 		return tags;
 	}
 
 	@Override
 	public Collection<Tag> getFlags() {
-		List<Tag> tags = new ArrayList<>(destiny.getFlags());
+		List<Tag> tags = new ArrayList<Tag>(destiny.getFlags());
 		tags.addAll(flags);
 		return tags;
 	}

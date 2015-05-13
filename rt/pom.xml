@@ -70,6 +70,13 @@
       <artifactId>jalopy</artifactId>
       <version>3000.0.0</version>
     </dependency>
+
+    <dependency>
+      <groupId>siani.tara</groupId>
+      <artifactId>semantic</artifactId>
+      <type>jar</type>
+      <version>1.0</version>
+    </dependency>
   </dependencies>
 
 </project>

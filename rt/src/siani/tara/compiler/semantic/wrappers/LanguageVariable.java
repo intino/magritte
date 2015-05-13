@@ -1,8 +1,8 @@
 package siani.tara.compiler.semantic.wrappers;
 
 import siani.tara.compiler.model.Element;
-import siani.tara.compiler.model.Tag;
 import siani.tara.compiler.model.Variable;
+import siani.tara.semantic.model.Tag;
 
 import java.util.ArrayList;
 import java.util.List;

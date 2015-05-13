@@ -27,8 +27,6 @@ public interface Allow {
 	interface Include extends Allow {
 		String type();
 
-		Relation relation();
-
 		Tag[] annotations();
 	}
 

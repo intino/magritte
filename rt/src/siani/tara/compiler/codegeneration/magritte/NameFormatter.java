@@ -11,7 +11,7 @@ import java.util.Locale;
 public class NameFormatter {
 
 	public static final String MAGRITTE_PATH = "magritte";
-	public static final String BOX_PATH = "store";
+	public static final String BOX_PATH = "boxes";
 	private static final String DSL = "dsl";
 	public static final String DOT = ".";
 

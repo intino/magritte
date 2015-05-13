@@ -5,6 +5,7 @@ import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
+import siani.tara.semantic.model.Tag;
 
 import java.util.*;
 

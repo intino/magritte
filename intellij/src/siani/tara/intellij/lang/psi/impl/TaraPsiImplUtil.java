@@ -56,7 +56,7 @@ public class TaraPsiImplUtil {
 	public static List<Node> getInnerNodesOf(Node node) {
 		if (node != null && node.getBody() != null) {
 			List<Node> inner = getInnerNodesInBody(node.getBody());
-			removeAggregatedAndAssociated(inner);
+			removeRoots(inner);
 			removeSubs(inner);
 			addSubsOfInner(inner);
 			return inner;
@@ -64,9 +64,9 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	private static void removeAggregatedAndAssociated(List<Node> inner) {
+	private static void removeRoots(List<Node> inner) {
 		List<Node> list = new ArrayList();
-		for (Node node : inner) if (node.isAnnotatedAsAggregated() || node.isAnnotatedAsAssociated()) list.add(node);
+		for (Node node : inner) if (node.isAnnotatedAsRoot()) list.add(node);
 		inner.removeAll(list);
 
 	}

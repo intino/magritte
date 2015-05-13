@@ -1,17 +1,17 @@
 package siani.tara.compiler.model.impl;
 
-import siani.tara.compiler.model.Tag;
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.Variable;
+import siani.tara.semantic.model.Tag;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.compiler.model.Tag.READONLY;
-import static siani.tara.compiler.model.Tag.TERMINAL;
+import static siani.tara.semantic.model.Tag.READONLY;
+import static siani.tara.semantic.model.Tag.TERMINAL;
 
 public class VariableImpl extends Element implements Variable {
 	private NodeContainer container;

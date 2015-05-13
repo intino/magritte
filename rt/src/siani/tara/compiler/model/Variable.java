@@ -1,5 +1,7 @@
 package siani.tara.compiler.model;
 
+import siani.tara.semantic.model.Tag;
+
 import java.util.Collection;
 
 public interface Variable  extends Cloneable {

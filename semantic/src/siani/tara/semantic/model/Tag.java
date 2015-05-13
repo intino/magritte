@@ -2,13 +2,11 @@ package siani.tara.semantic.model;
 
 
 public enum Tag {
-	ABSTRACT("abstract"), TERMINAL("terminal"),
-	SINGLE("single"), MULTIPLE("multiple"), REQUIRED("required"), OPTIONAL("optional"),
+	ABSTRACT("abstract"), TERMINAL("terminal"), ROOT("root"), READONLY("readonly"),
+	SINGLE("single"), MULTIPLE("multiple"), REQUIRED("required"),
 	FEATURE("feature"), PROPERTY("property"),
-	FACET("facet"),
-	ADDRESSED("addressed"), ENCLOSED("enclosed"),
-	COMPONENT("component"), AGGREGATED("aggregated"), ASSOCIATED("associated"),
-	READONLY("readonly"),
+	FACET("facet"), ENCLOSED("enclosed"),
+
 	NAMED("named"),
 	TERMINAL_INSTANCE("terminal_instance"),
 	FACET_INSTANCE("facet_instance"),

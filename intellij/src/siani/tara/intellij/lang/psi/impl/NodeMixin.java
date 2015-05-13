@@ -19,17 +19,17 @@ import siani.tara.Language;
 import siani.tara.Resolver;
 import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
-import siani.tara.intellij.lang.lexer.Tag;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.semantic.LanguageNode;
 import siani.tara.semantic.Assumption;
+import siani.tara.semantic.model.Tag;
 
 import javax.swing.*;
 import java.util.*;
 
-import static siani.tara.intellij.lang.lexer.Tag.*;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 import static siani.tara.semantic.Assumption.FacetInstance;
+import static siani.tara.semantic.model.Tag.*;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 
@@ -214,31 +214,16 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isRoot() {
-		return getContainerNodeOf(this) == null;
+		return is(ROOT);
 	}
 
 	public boolean isFacet() {
 		return is(FACET);
 	}
 
-	public boolean isAddressed() {
-		return is(ADDRESSED);
-	}
 
 	public boolean isAbstract() {
 		return is(ABSTRACT) || !getSubNodes().isEmpty();
-	}
-
-	public boolean isAggregated() {
-		return is(AGGREGATED);
-	}
-
-	public boolean isAssociated() {
-		return is(ASSOCIATED);
-	}
-
-	public boolean isComponent() {
-		return is(COMPONENT);
 	}
 
 	public boolean isEnclosed() {
@@ -265,16 +250,9 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return is(Assumption.FeatureInstance.class);
 	}
 
-	public boolean isAnnotatedAsAggregated() {
+	public boolean isAnnotatedAsRoot() {
 		for (PsiElement annotation : getAnnotations())
-			if (AGGREGATED.getName().equals(annotation.getText()))
-				return true;
-		return false;
-	}
-
-	public boolean isAnnotatedAsAssociated() {
-		for (PsiElement annotation : getAnnotations())
-			if (ASSOCIATED.getName().equals(annotation.getText()))
+			if (ROOT.getName().equals(annotation.getText()))
 				return true;
 		return false;
 	}
@@ -317,7 +295,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public Node container() {
-		if (isAnnotatedAsAggregated()) return null;//TODO
+		if (isAnnotatedAsRoot()) return null;//TODO
 		if (isSub()) {
 			Node rootOfSub = containerOfSub((Node) this);
 			return rootOfSub == null ? null : rootOfSub;

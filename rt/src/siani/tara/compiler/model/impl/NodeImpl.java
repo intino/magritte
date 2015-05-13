@@ -1,10 +1,11 @@
 package siani.tara.compiler.model.impl;
 
 import siani.tara.compiler.model.*;
+import siani.tara.semantic.model.Tag;
 
 import java.util.*;
 
-import static siani.tara.compiler.model.Tag.*;
+import static siani.tara.semantic.model.Tag.*;
 
 public class NodeImpl extends Element implements Node {
 
@@ -129,11 +130,6 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public boolean isAddressed() {
-		return flags.contains(ADDRESSED);
-	}
-
-	@Override
 	public boolean isRequired() {
 		return flags.contains(REQUIRED);
 	}
@@ -154,16 +150,6 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public boolean isAggregated() {
-		return flags.contains(AGGREGATED);
-	}
-
-	@Override
-	public boolean isAssociated() {
-		return flags.contains(ASSOCIATED);
-	}
-
-	@Override
 	public boolean isFeature() {
 		return flags.contains(FEATURE);
 	}
@@ -181,11 +167,6 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public boolean isPropertyInstance() {
 		return flags.contains(PROPERTY_INSTANCE);
-	}
-
-	@Override
-	public boolean isComponent() {
-		return flags.contains(COMPONENT);
 	}
 
 	@Override

@@ -120,7 +120,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private Map<String, String> processBoxUnits(List<List<Node>> groupByBox) throws TaraException {
 		Map<String, String> map = new HashMap();
 		for (List<Node> nodes : groupByBox)
-			map.put(buildBoxUnitName(nodes.get(0)), customize(BoxUnitTemplate.create()).format(new BoxUnitFrameCreator(conf, model).create(nodes)));
+			map.put(buildBoxUnitName(nodes.get(0)), customize(BoxUnitTemplate.create()).format(new BoxUnitFrameCreator(conf, model, nodes).create()));
 		return map;
 	}
 

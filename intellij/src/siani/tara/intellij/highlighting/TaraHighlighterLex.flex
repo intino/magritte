@@ -48,7 +48,7 @@ import java.util.Set;
 			dsl = dslLine.split(DSL)[1].trim();
 		}
 		identifiers = new HashSet();
-		Language heritage = TaraLanguage.getLanguage(dsl, project);
+		Language heritage = TaraLanguage.getLanguage(dsl);
         if (heritage != null) Collections.addAll(identifiers, heritage.lexicon());
 	}
 %}
@@ -73,24 +73,18 @@ ABSTRACT            = "abstract"
 SINGLE              = "single"
 MULTIPLE            = "multiple"
 
-OPTIONAL            = "optional"
 REQUIRED            = "required"
 
 TERMINAL            = "terminal"
 
+ROOT                = "root"
 PROPERTY            = "property"
 FEATURE             = "feature"
-
-AGGREGATED          = "aggregated"
-ASSOCIATED          = "associated"
-COMPONENT           = "component"
 
 READONLY            = "readonly"
 ENCLOSED            = "enclosed"
 
 FACET               = "facet"
-
-ADDRESSED           = "addressed"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -109,12 +103,12 @@ COMMA               = ","
 COLON               = ":"
 EQUALS              = "="
 SEMICOLON           = ";"
-QUOTE          = "\""
+QUOTE               = "\""
 DASH                = "-"
 UNDERDASH           = "_"
 DASHES              = {DASH} {DASH}+
 PLUS                = "+"
-AMPERSAND           = "&"
+HASHTAG             = "#"
 
 WORD_KEY            = "word"
 RESOURCE_KEY        = "file"
@@ -134,7 +128,7 @@ NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
 NOT_CIENTIFICA      = "E" ({PLUS} | {DASH})? {DIGIT}+
 DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {NOT_CIENTIFICA}?
 STRING_MULTILINE_VALUE_KEY   = {DASHES} ~ {DASHES}
-ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
+ADDRESS_VALUE       = {HASHTAG} [:jletter:]+
 MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 DOC_LINE            = "doc" ~[\n]
 
@@ -181,7 +175,7 @@ NEWLINE             = [\n]+
     {SINGLE}                        {   return TaraTypes.SINGLE; }
     {MULTIPLE}                      {   return TaraTypes.MULTIPLE; }
     {REQUIRED}                      {   return TaraTypes.REQUIRED; }
-    {OPTIONAL}                      {   return TaraTypes.OPTIONAL; }
+    {ROOT}                          {   return TaraTypes.ROOT; }
 
     {PROPERTY}                      {   return TaraTypes.PROPERTY; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
@@ -190,11 +184,6 @@ NEWLINE             = [\n]+
 
     {TERMINAL}                      {   return TaraTypes.TERMINAL; }
     {ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
-    {ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
-
-    {COMPONENT}                     {   return TaraTypes.COMPONENT; }
-    {AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
-    {ASSOCIATED}                    {   return TaraTypes.ASSOCIATED; }
 
     {READONLY}                      {   return TaraTypes.READONLY; }
 

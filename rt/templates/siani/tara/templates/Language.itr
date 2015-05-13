@@ -4,7 +4,6 @@ def type(Model)
 	import siani.tara.semantic.model.Tara;
 	import java.util.Locale;
 	import siani.tara.semantic.model.Tag;
-	import static siani.tara.semantic.Relation.*;
 	import static siani.tara.semantic.constraints.RuleFactory.*;
 
 	public class $name extends Tara {
@@ -72,57 +71,65 @@ end
 
 
 def type(requires) trigger(requires)
-require([$require...[, ]])
+	require([$require...[, ]])
 end
 
 def type(require) type(oneOf) trigger(require)
-oneOf([$require...[, ]])
+	oneOf([$require...[, ]])
 end
 
 def type(require) type(multiple) trigger(require)
-_multiple($type+quoted[, $relation][, $tags+quoted...[, ]])
+	_multiple($type+quoted[, $relation][, $tags+quoted...[, ]])
 end
 
 def type(require) type(single) trigger(require)
-_single($type+quoted[, $relation][, $tags+quoted...[, ]])
+	_single($type+quoted[, $relation][, $tags+quoted...[, ]])
 end
 
 def trigger(tags)
-Tag.$value
+	Tag.$value
 end
 
 def type(require) !type(parameter) type(none) trigger(require)
-_noneIncludes()
+	_noneIncludes()
 end
 
 def type(require) type(parameter) type(none) trigger(require)
-_noneParameter()
+	_noneParameter()
 end
 
 def type(require) type(parameter) type(word) trigger(require)
-_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
+	_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
 end
 
 def type(require) type(parameter) type(reference) trigger(require)
-_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
+	_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
 end
 
 def type(require) type(parameter) trigger(require)
-_parameter("$name", "$type", $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
+	_parameter("$name", "$type", $multiple, $position, "$metric"[, $annotations+quoted...[, ]])
 end
 
 def trigger(require)
-_$value()
+	_$value()
 end
 
 def type(assumptions) trigger(assumptions)
-assume($assumption...[, ])
+	assume($assumption...[, ])
 end
 
 def trigger(assumption)
-is$value+firstUpperCase()
+	is$value+firstUpperCase()
 end
 
 def trigger(quoted)
-"$value"
+	"$value"
+end
+
+def trigger(locale) value(es)
+	new Locale("es", "Spain", "es_ES")
+end
+
+def trigger(locale) value(en)
+	Locale.ENGLISH
 end

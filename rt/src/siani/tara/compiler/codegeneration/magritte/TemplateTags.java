@@ -40,6 +40,7 @@ public interface TemplateTags {
 	String DEPENDENCY = "dependency";
 	String KEY = "key";
 	String AGGREGATED = "aggregated";
+	String FEATURE = "feature";
 	String COMPONENT = "component";
 	String APPLY = "apply";
 	char STAR = '*';

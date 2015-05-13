@@ -3,14 +3,15 @@ def type(model)
 
     $importFacet...[$NL]
     import static magritte.Tag.*;
+    import static magritte.editors.NodeEditor.Cardinality.*;
     $importMetric...[$NL]
 
-    public class $name extends magritte.handlers.Box.$terminal {
-        public static final magritte.handlers.Box box = new $name();
+    public class $name extends magritte.editors.Box.$terminal {
+        public static final magritte.editors.Box box = new $name();
 
         @Override
-        public magritte.handlers.Box$[] dependencies() {
-            return new magritte.handlers.Box$[]{[magritte.store.$language+firstUpperCase.box]};
+        public magritte.editors.Box$[] dependencies() {
+            return new magritte.editors.Box$[]{[magritte.store.$language+firstUpperCase.box]};
         }
 
         @Override
@@ -28,7 +29,7 @@ def trigger(terminal) value(false)
 end
 
 def type(Node) trigger(node)
-    edit($key)[.name("$name")][$nodeType...[]][$facet...[]][$address][$annotation...[]][.$parent][$variable...[]][.owner($componentOf)][$include...[]];
+    edit($key)[.name("$name$address")][$nodeType...[]][$facet...[]][$annotation...[]][.$parent][$variable...[]][$include...[]];
 end
 
 def trigger(nodeType)
@@ -39,20 +40,23 @@ def type(facetapply) trigger(facet)
     .type("$name"[, $apply])
 end
 
-def trigger(address)
-    .address($value)
-end
-
 def trigger(parent)
-    childOf("$value")
-end
-
-def type(aggregated) trigger(include)
-    .hasHoldings($value)
+    parent("$value")
 end
 
 def type(composed) trigger(include)
-    .hasComponents($value)
+    .has($inbox($value)[, $tag+firstUpperCase...[, ]])
+end
+
+def type(feature) trigger(include)
+    .features($inbox($value))
+end
+
+def trigger(inbox) value(true)
+    $$
+end
+def trigger(inbox) value(false)
+	node
 end
 
 def type(variable) type(target) type(measure) slot(variableValue) trigger(variable)
@@ -79,10 +83,10 @@ def type(variable) type(reference) slot(variableValue) trigger(variable)
 end
 
 def type(variable) type(native) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple((Class<magritte.handlers.NativeContainer>) $variableValue))
+    .set("$terminal$name", $multiple((Class<magritte.NativeContainer>) $variableValue))
 end
 
-def type(Variable) type(resource) slot(variableValue) trigger(variable)
+def type(Variable) type(file) slot(variableValue) trigger(variable)
     .set("$terminal$name", $multiple(resource($variableValue+quoted...[, ])))
 end
 

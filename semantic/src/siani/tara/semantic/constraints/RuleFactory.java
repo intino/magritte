@@ -5,7 +5,6 @@ import siani.tara.semantic.model.*;
 
 import java.util.*;
 
-import static siani.tara.semantic.Relation.COMPONENT;
 import static siani.tara.semantic.model.Tag.*;
 
 
@@ -26,19 +25,14 @@ public class RuleFactory {
 	}
 
 	public static Allow.Multiple multiple(final String type) {
-		return multiple(type, COMPONENT);
+		return multiple(type, new Tag[0]);
 	}
 
-	public static Allow.Multiple multiple(final String type, final Relation relation, final Tag... annotations) {
+	public static Allow.Multiple multiple(final String type, final Tag... annotations) {
 		return new Allow.Multiple() {
 			@Override
 			public String type() {
 				return type;
-			}
-
-			@Override
-			public Relation relation() {
-				return relation;
 			}
 
 			@Override
@@ -66,17 +60,6 @@ public class RuleFactory {
 			if (!flags.contains(flag.toUpperCase()))
 				node.flags(flag.toUpperCase());
 			flags.add(flag.toUpperCase());
-			if (flag.equals(Tag.AGGREGATED.name()) || flag.equals(Tag.COMPONENT.name()) || flag.equals(Tag.ASSOCIATED.name()))
-				addAnnotations(node, Tag.valueOf(flag.toUpperCase()));
-		}
-	}
-
-	private static void addAnnotations(Node node, Tag... tags) {
-		List<String> annotations = createList(node.annotations());
-		for (String annotation : names(tags)) {
-			if (!annotations.contains(annotation.toUpperCase()))
-				node.annotations(annotation.toUpperCase());
-			annotations.add(annotation.toUpperCase());
 		}
 	}
 
@@ -93,19 +76,14 @@ public class RuleFactory {
 	}
 
 	public static Allow.Single single(final String type) {
-		return single(type, COMPONENT);
+		return single(type, new Tag[0]);
 	}
 
-	public static Allow.Single single(final String type, final Relation relation, final Tag... annotations) {
+	public static Allow.Single single(final String type, final Tag... annotations) {
 		return new Allow.Single() {
 			@Override
 			public String type() {
 				return type;
-			}
-
-			@Override
-			public Relation relation() {
-				return relation;
 			}
 
 			@Override
@@ -122,7 +100,8 @@ public class RuleFactory {
 			}
 
 			private void setCauseToRejectables(List<Rejectable.Include> rejectableIncludesBy) {
-				for (Rejectable.Include include : rejectableIncludesBy) include.multiple();
+				for (Rejectable.Include include : rejectableIncludesBy)
+					include.multiple();
 			}
 		};
 	}
@@ -158,11 +137,9 @@ public class RuleFactory {
 		return new Allow.OneOf() {
 			@Override
 			public void check(Element element, List<? extends Rejectable> rejectables) {
-				int size = rejectables.size();
 				for (Allow allow : allows) {
 					try {
 						allow.check(element, rejectables);
-						if (size > rejectables.size()) return;
 					} catch (SemanticException ignored) {
 					}
 				}
@@ -171,11 +148,6 @@ public class RuleFactory {
 			@Override
 			public String type() {
 				return "";
-			}
-
-			@Override
-			public Relation relation() {
-				return null;
 			}
 
 			@Override
@@ -194,10 +166,10 @@ public class RuleFactory {
 	}
 
 	public static Constraint.Require _multiple(final String type) {
-		return _multiple(type, Relation.COMPONENT);
+		return _multiple(type, new Tag[0]);
 	}
 
-	public static Constraint.Require _multiple(final String type, final Relation relation, final Tag... annotations) {
+	public static Constraint.Require _multiple(final String type, final Tag... annotations) {
 		return new Constraint.Require.Multiple() {
 			@Override
 			public String type() {
@@ -205,11 +177,6 @@ public class RuleFactory {
 			}
 
 			@Override
-			public Relation relation() {
-				return relation;
-			}
-
-			@Override
 			public Tag[] annotations() {
 				return annotations;
 			}
@@ -218,20 +185,20 @@ public class RuleFactory {
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
 				for (Node inner : node.includes())
-					if (inner.type().equals(type) && is(inner, relation)) {
+					if (inner.type().equals(type)) {
 						addFlags(inner, annotations);
 						return;
 					}
-				throw new SemanticException(new SemanticError("required.type.in.context", relation.name().toLowerCase(), type, node.type()));
+				throw new SemanticException(new SemanticError("required.type.in.context", type, node.type()));
 			}
 		};
 	}
 
 	public static Constraint.Require _single(final String type) {
-		return _multiple(type, Relation.COMPONENT);
+		return _multiple(type, new Tag[0]);
 	}
 
-	public static Constraint.Require.Single _single(final String type, final Relation relation, final Tag... annotations) {
+	public static Constraint.Require.Single _single(final String type, final Tag... annotations) {
 		return new Constraint.Require.Single() {
 			@Override
 			public String type() {
@@ -239,11 +206,6 @@ public class RuleFactory {
 			}
 
 			@Override
-			public Relation relation() {
-				return relation;
-			}
-
-			@Override
 			public Tag[] annotations() {
 				return annotations;
 			}
@@ -252,11 +214,11 @@ public class RuleFactory {
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
 				for (Node inner : node.includes())
-					if (inner.type().equals(type) && is(inner, relation)) {
+					if (inner.type().equals(type)) {
 						addFlags(inner, annotations);
 						return;
 					}
-				throw new SemanticException(new SemanticError("required.type.in.context", relation.name().toLowerCase(), type, node.type()));
+				throw new SemanticException(new SemanticError("required.type.in.context", type, node.type()));
 			}
 		};
 	}
@@ -288,21 +250,10 @@ public class RuleFactory {
 			}
 
 			@Override
-			public Relation relation() {
-				return null;
-			}
-
-			@Override
 			public Tag[] annotations() {
 				return new Tag[0];
 			}
 		};
-	}
-
-	private static boolean is(Node inner, Relation relation) {
-		for (String annotation : inner.annotations())
-			if (annotation.equalsIgnoreCase(relation.name())) return true;
-		return relation.equals(Relation.COMPONENT);
 	}
 
 	public static Constraint.Require.Parameter _parameter(final String name, final String type, final boolean multiple, final int position, final String metric, final String... annotations) {
@@ -527,15 +478,6 @@ public class RuleFactory {
 		};
 	}
 
-	public static Assumption isAddressed() {
-		return new Assumption.Addressed() {
-			@Override
-			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(ADDRESSED.name())) node.flags(ADDRESSED.name());
-			}
-		};
-	}
-
 	public static Assumption isSingle() {
 		return new Assumption.Single() {
 			@Override
@@ -554,31 +496,11 @@ public class RuleFactory {
 		};
 	}
 
-	public static Assumption isComponent() {
-		return new Assumption.Component() {
+	public static Assumption isRoot() {
+		return new Assumption.Root() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(Tag.COMPONENT.getName()))
-					node.flags(Tag.COMPONENT.getName());
-			}
-		};
-	}
-
-	public static Assumption isAggregated() {
-		return new Assumption.Aggregated() {
-			@Override
-			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(AGGREGATED.getName())) node.flags(AGGREGATED.name());
-				node.moveToTheTop();
-			}
-		};
-	}
-
-	public static Assumption isAssociated() {
-		return new Assumption.Associated() {
-			@Override
-			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(ASSOCIATED.getName())) node.flags(ASSOCIATED.getName());
+				if (!Arrays.asList(node.flags()).contains(ROOT.getName())) node.flags(ROOT.getName());
 				node.moveToTheTop();
 			}
 		};

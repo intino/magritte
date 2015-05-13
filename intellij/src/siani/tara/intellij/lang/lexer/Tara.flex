@@ -103,7 +103,7 @@ ABSTRACT            = "abstract"
 SINGLE              = "single"
 MULTIPLE            = "multiple"
 
-OPTIONAL            = "optional"
+ROOT                = "root"
 REQUIRED            = "required"
 
 TERMINAL            = "terminal"
@@ -111,16 +111,10 @@ TERMINAL            = "terminal"
 PROPERTY            = "property"
 FEATURE             = "feature"
 
-AGGREGATED          = "aggregated"
-ASSOCIATED          = "associated"
-COMPONENT           = "component"
-
 READONLY            = "readonly"
 ENCLOSED            = "enclosed"
 
 FACET               = "facet"
-
-ADDRESSED           = "addressed"
 
 LEFT_PARENTHESIS    = "("
 RIGHT_PARENTHESIS   = ")"
@@ -143,7 +137,7 @@ EURO                = "€"
 PERCENTAGE          = "%"
 GRADE               = "º" | "°"
 SEMICOLON           = ";"+
-AMPERSAND           = "&"
+HASHTAG             = "#"
 
 WORD_TYPE           = "word"
 RESOURCE_TYPE       = "file"
@@ -162,7 +156,7 @@ BOOLEAN_VALUE_KEY   = "true" | "false"
 NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
 DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOT}?
-ADDRESS_VALUE       = {AMPERSAND} {DIGIT} {DIGIT} {DIGIT} ({DOT} {DIGIT} {DIGIT} {DIGIT})+
+ADDRESS_VALUE       = {HASHTAG} [:jletter:]+
 MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 
 COMMENT = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
@@ -208,7 +202,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{SINGLE}                        {   return TaraTypes.SINGLE; }
 	{MULTIPLE}                      {   return TaraTypes.MULTIPLE; }
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
-	{OPTIONAL}                      {   return TaraTypes.OPTIONAL; }
+	{ROOT}                          {   return TaraTypes.ROOT; }
 
 	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
 	{FEATURE}                       {   return TaraTypes.FEATURE; }
@@ -217,11 +211,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
-	{ADDRESSED}                     {   return TaraTypes.ADDRESSED; }
-
-	{COMPONENT}                     {   return TaraTypes.COMPONENT; }
-    {AGGREGATED}                    {   return TaraTypes.AGGREGATED; }
-    {ASSOCIATED}                    {   return TaraTypes.ASSOCIATED; }
 
 	{READONLY}                      {   return TaraTypes.READONLY; }
 

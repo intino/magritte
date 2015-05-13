@@ -126,7 +126,7 @@ public class TaraUtil {
 		Node aNode = node;
 		List<Node> path = new ArrayList<>();
 		path.add(aNode);
-		while (node != null && !node.isAggregated()) {
+		while (node != null && !node.isRoot()) {
 			Node parent = TaraPsiImplUtil.getContainerNodeOf(node);
 			if (parent != null && !parent.isSub() && !node.isSub())
 				path.add(0, parent);
@@ -292,7 +292,7 @@ public class TaraUtil {
 	public static Collection<? extends Node> findAggregatedNodes(TaraModel file) {
 		Set<Node> aggregated = new HashSet<>();
 		for (Node node : getAllNodesOfFile(file))
-			if (node.isAnnotatedAsAggregated()) aggregated.add(node);
+			if (node.isAnnotatedAsRoot()) aggregated.add(node);
 		return aggregated;
 	}
 

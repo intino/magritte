@@ -4,6 +4,7 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.VariableReference;
+import siani.tara.semantic.model.Tag;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
@@ -54,7 +55,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 		Collection<Object> defaultValues = variable.getDefaultValues();
 		if (defaultValues.iterator().next() instanceof Node)
 			if (defaultValues.iterator().next() instanceof EmptyNode)
-				values = new String[]{(variable.getType().equals("native") ? "" : "(Node)") + " null"};
+				values = new String[]{(variable.getType().equals("native") ? "" : "(Node)") + "null"};
 			else values = collectQualifiedNames(defaultValues);
 		else values = format(defaultValues);
 		frame.addFrame(VARIABLE_VALUE, values);

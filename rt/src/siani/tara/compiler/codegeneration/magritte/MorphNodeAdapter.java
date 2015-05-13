@@ -7,6 +7,7 @@ import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.compiler.model.impl.VariableReference;
+import siani.tara.semantic.model.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +115,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		List<String> types = new ArrayList<>();
 		types.add("nodeReference");
 		if (node.isSingle()) types.add("single");
-		if (node.isAggregated()) types.add("aggregated");
+		if (node.isRequired()) types.add("required");
 		for (Tag tag : node.getFlags()) types.add(tag.getName());
 		return types.toArray(new String[types.size()]);
 	}

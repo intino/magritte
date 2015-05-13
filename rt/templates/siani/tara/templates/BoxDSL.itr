@@ -1,11 +1,12 @@
 def type(Box)
     package magritte.store;
 
-    public class $name+firstUppercase extends magritte.handlers.Box.Dsl {
-        public static final magritte.handlers.Box box = new $name+firstUppercase();
+    public class $name+firstUppercase extends magritte.editors.Box.Dsl {
+        public static final magritte.editors.Box box = new $name+firstUppercase();
 
-        protected magritte.handlers.Box$[] includes() {
-            return new magritte.handlers.Box$[]{ $namebox...[,$NL]
+        protected magritte.editors.Box$[$] includes() {
+            return new magritte.editors.Box$[$]{
+                $namebox...[,$NL]
             };
         }
     }

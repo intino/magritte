@@ -6,7 +6,6 @@ import siani.tara.semantic.Allow;
 import siani.tara.semantic.Assumption;
 import siani.tara.semantic.Constraint;
 import siani.tara.semantic.Constraint.Require;
-import siani.tara.semantic.Relation;
 import siani.tara.semantic.model.Context;
 
 import java.util.Collection;
@@ -53,9 +52,9 @@ public class LanguageInheritanceFiller {
 		for (Allow allow : allows) {
 			if (allow instanceof Allow.Name) addName(allowsFrame, "allow");
 			if (allow instanceof Allow.Multiple)
-				addMultiple(allowsFrame, "allow", ((Allow.Multiple) allow).type(), ((Allow.Multiple) allow).relation());
+				addMultiple(allowsFrame, "allow", ((Allow.Multiple) allow).type());
 			if (allow instanceof Allow.Single)
-				addSingle(allowsFrame, "allow", ((Allow.Single) allow).type(), ((Allow.Single) allow).relation());
+				addSingle(allowsFrame, "allow", ((Allow.Single) allow).type());
 			if (allow instanceof Allow.Parameter) addParameter(allowsFrame, (Allow.Parameter) allow, "allow");
 			if (allow instanceof Allow.Facet) addFacet(allowsFrame, ((Allow.Facet) allow).type());
 		}
@@ -67,9 +66,9 @@ public class LanguageInheritanceFiller {
 		for (Constraint require : requires) {
 			if (require instanceof Require.Name) addName(requireFrame, "require");
 			if (require instanceof Require.Multiple)
-				addMultiple(requireFrame, "require", ((Require.Multiple) require).type(), ((Require.Multiple) require).relation());
+				addMultiple(requireFrame, "require", ((Require.Multiple) require).type());
 			if (require instanceof Require.Single)
-				addSingle(requireFrame, "require", ((Require.Single) require).type(), ((Require.Single) require).relation());
+				addSingle(requireFrame, "require", ((Require.Single) require).type());
 			if (require instanceof Require.Parameter)
 				addParameter(requireFrame, (Require.Parameter) require);
 			if (require instanceof Require.Address) addAddress(requireFrame);
@@ -150,14 +149,14 @@ public class LanguageInheritanceFiller {
 			addFrame("extension", values[5]));
 	}
 
-	private void addMultiple(Frame frameFrame, String frameRelation, String type, Relation relation) {
+	private void addMultiple(Frame frameFrame, String frameRelation, String type) {
 		frameFrame.addFrame(frameRelation, new Frame(null).addTypes("multiple", frameRelation).
-			addFrame("type", type).addFrame("relation", relation.toString()));
+			addFrame("type", type));
 	}
 
-	private void addSingle(Frame frame, String frameRelation, String type, Relation relation) {
+	private void addSingle(Frame frame, String frameRelation, String type) {
 		frame.addFrame(frameRelation, new Frame(null).addTypes("single", frameRelation).
-			addFrame("type", type).addFrame("relation", relation.toString()));
+			addFrame("type", type));
 	}
 
 	private void addAddress(Frame requireFrame) {

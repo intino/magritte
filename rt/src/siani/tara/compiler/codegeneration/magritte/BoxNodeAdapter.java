@@ -6,6 +6,7 @@ import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
+import siani.tara.semantic.model.Tag;
 
 import java.util.Collection;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		addTypes(node, newFrame);
 		if (node.getParent() != null)
 			newFrame.addFrame(PARENT, node.getParent().getName());
-		if (node.getAddress() != null) newFrame.addFrame(ADDRESS, String.valueOf(node.getAddress()));
+		if (node.getAddress() != null) newFrame.addFrame(ADDRESS, "#" + String.valueOf(node.getAddress()));
 		addFacetApplies(node, newFrame);
 	}
 
@@ -63,7 +64,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private boolean isRoot(Node node) {
-		return node.isRoot() || (node.isAggregated() && (node.getContainer() instanceof Node && isRoot((Node) node.getContainer())));
+		return node.isRoot() || (node.getContainer() != null && (node.getContainer() instanceof Node && isRoot((Node) node.getContainer())));
 	}
 
 	private void variables(Node node, final Frame frame, FrameContext<Node> FrameContext) {
@@ -136,21 +137,37 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private void addNode(Frame frame, Node inner) {
-		if (inner.isAggregated()) addAggregated(frame, inner);
+		if (inner.isFeature()) addFeature(frame, inner);
 		else addComponent(frame, inner);
 	}
 
 
-	private void addAggregated(Frame frame, Node inner) {
-		Long key = inner instanceof NodeReference ? keys.get(((NodeReference) inner).getDestiny()) : keys.get(inner);
+	private Long getKey(Node inner) {
+		return inner instanceof NodeReference ? keys.get(((NodeReference) inner).getDestiny()) : keys.get(inner);
+	}
+
+	private void addFeature(Frame frame, Node inner) {
+		Long key = getKey(inner);
 		if (keys.isEmpty()) return;
-		Frame include = new Frame(frame).addTypes(AGGREGATED, "include").addFrame(VALUE, String.valueOf(key));
+		Frame include = new Frame(frame).addTypes(FEATURE, "include").addFrame(VALUE, String.valueOf(key));
+		if (inner.isRequired()) include.addFrame("tag", Tag.REQUIRED.getName());
+		if (inner.isSingle()) include.addFrame("tag", Tag.SINGLE.getName());
+		include.addFrame("inbox", key != null);
 		frame.addFrame(INCLUDE, include);
 	}
 
 	private void addComponent(Frame frame, Node inner) {
-		Frame include = new Frame(frame).addTypes("composed", "include").addFrame(VALUE, String.valueOf(keys.get(inner instanceof NodeReference ? ((NodeReference) inner).getDestiny() : inner)));
+		Long key = getKey(inner);
+		Frame include = new Frame(frame).addTypes("composed", "include").addFrame(VALUE, key == null ? searchNode(inner) : key);
+		include.addFrame("inbox", key != null);
+		if (inner.isRequired()) include.addFrame("tag", Tag.REQUIRED.getName());
+		if (inner.isSingle()) include.addFrame("tag", Tag.SINGLE.getName());
 		frame.addFrame(INCLUDE, include);
+	}
+
+	private String searchNode(Node inner) {
+		Node node = inner instanceof NodeReference ? ((NodeReference) inner).getDestiny() : inner;
+		return '"' + node.getQualifiedName() + '"';
 	}
 
 	private String clean(String name) {

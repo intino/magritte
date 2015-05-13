@@ -1,9 +1,10 @@
 package siani.tara.compiler.model.impl;
 
 import siani.tara.compiler.model.*;
+import siani.tara.semantic.model.Tag;
 
-import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.*;
 
 public class Model extends Element implements Node {
 
@@ -97,11 +98,6 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public boolean isAddressed() {
-		return false;
-	}
-
-	@Override
 	public boolean isAbstract() {
 		return false;
 	}
@@ -122,16 +118,6 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public boolean isAggregated() {
-		return false;
-	}
-
-	@Override
-	public boolean isAssociated() {
-		return false;
-	}
-
-	@Override
 	public boolean isFeature() {
 		return false;
 	}
@@ -148,11 +134,6 @@ public class Model extends Element implements Node {
 
 	@Override
 	public boolean isPropertyInstance() {
-		return false;
-	}
-
-	@Override
-	public boolean isComponent() {
 		return false;
 	}
 

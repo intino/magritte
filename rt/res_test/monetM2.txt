@@ -21,7 +21,7 @@ UTF-8
 models
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
 semantic_lib
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara-semantic.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/semantic.jar
 outputpath
 /Users/oroncal/workspace/monet/Engine/gen
 final_outputpath

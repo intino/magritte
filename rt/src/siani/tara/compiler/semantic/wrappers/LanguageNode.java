@@ -4,6 +4,7 @@ import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
+import siani.tara.semantic.model.Tag;
 import siani.tara.semantic.model.Variable;
 
 import java.util.*;
@@ -19,8 +20,17 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 		this.node = node;
 		if (node == null) return;
 		this.facetTargets = collectFacetTargets(node.getFacetTargets());
-		this.variables = collectVariables(node.getVariables());
-		for (Node inner : node.getIncludedNodes())
+		variables.addAll(collectVariables(node.getVariables()));
+		addIncludes(node.getIncludedNodes());
+		Node parent = node.getParent();
+		if (parent != null) {
+			variables.addAll(collectVariables(parent.getVariables()));
+			addIncludes(parent.getIncludedNodes());
+		}
+	}
+
+	private void addIncludes(Collection<Node> inners) {
+		for (Node inner : inners)
 			includes.add(inner instanceof NodeReference ?
 				new LanguageNodeReference((NodeReference) inner) :
 				new LanguageNode((NodeImpl) inner));

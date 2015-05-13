@@ -1,6 +1,7 @@
 package siani.tara.compiler.model;
 
 import siani.tara.compiler.model.impl.NodeReference;
+import siani.tara.semantic.model.Tag;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -72,11 +73,6 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public boolean isAddressed() {
-		return false;
-	}
-
-	@Override
 	public boolean isAbstract() {
 		return false;
 	}
@@ -97,16 +93,6 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public boolean isAggregated() {
-		return false;
-	}
-
-	@Override
-	public boolean isAssociated() {
-		return false;
-	}
-
-	@Override
 	public boolean isFeature() {
 		return false;
 	}
@@ -123,11 +109,6 @@ public class EmptyNode implements Node {
 
 	@Override
 	public boolean isPropertyInstance() {
-		return false;
-	}
-
-	@Override
-	public boolean isComponent() {
 		return false;
 	}
 

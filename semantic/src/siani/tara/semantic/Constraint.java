@@ -14,8 +14,6 @@ public interface Constraint {
 		interface Include extends Require {
 			String type();
 
-			Relation relation();
-
 			Tag[] annotations();
 
 			interface None extends Include {

@@ -8,10 +8,7 @@ import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeReference;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 
 public class BoxUnitFrameCreator {
@@ -21,23 +18,34 @@ public class BoxUnitFrameCreator {
 	private final Language language;
 	private final Model model;
 	private final Locale locale;
+	private final List<Node> nodes;
 	private Map<Node, Long> keymap = new LinkedHashMap<>();
 	private long count = 1;
 
-	private BoxUnitFrameCreator(String project, String module, Language language, Model model, Locale locale) {
+	private BoxUnitFrameCreator(String project, String module, Language language, Model model, Locale locale, List<Node> nodes) {
 		this.project = project;
 		this.module = module;
 		this.language = language;
 		this.model = model;
 		this.locale = locale;
-		createKeyMap(model);
+		createKeyMap(this.nodes = nodes);
 	}
 
-	public BoxUnitFrameCreator(CompilerConfiguration conf, Model model) {
-		this(conf.getProject(), conf.getModule(), conf.getLanguage(), model, conf.getLocale());
+	private void createKeyMap(List<Node> nodes) {
+		for (Node node : nodes)
+			createKeyMap(node);
+	}
+
+	public BoxUnitFrameCreator(CompilerConfiguration conf, Model model, List<Node> nodes) {
+		this(conf.getProject(), conf.getModule(), conf.getLanguage(), model, conf.getLocale(), nodes);
 	}
 
 	private void createKeyMap(NodeContainer node) {
+		if (node instanceof Node) {
+			keymap.put((Node) node, count);
+			count++;
+		}
+
 		for (Node include : node.getIncludedNodes()) {
 			if (include instanceof NodeReference) continue;
 			keymap.put(include, count);
@@ -50,7 +58,7 @@ public class BoxUnitFrameCreator {
 		}
 	}
 
-	public AbstractFrame create(Collection<Node> nodes) {
+	public AbstractFrame create() {
 		Model boxModel = new Model(((Element) nodes.iterator().next()).getFile());
 		boxModel.setName(model.getName());
 		boxModel.addIncludedNodes(nodes.toArray(new Node[nodes.size()]));

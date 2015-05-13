@@ -6,10 +6,7 @@ import siani.tara.semantic.SemanticError;
 import siani.tara.semantic.SemanticException;
 import siani.tara.semantic.constraints.flags.AnnotationChecker;
 import siani.tara.semantic.constraints.flags.FlagCheckerFactory;
-import siani.tara.semantic.model.Context;
-import siani.tara.semantic.model.Element;
-import siani.tara.semantic.model.Node;
-import siani.tara.semantic.model.Variable;
+import siani.tara.semantic.model.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -162,7 +159,8 @@ public class GlobalConstraints {
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
 				if (isFacet(node)) checkTargetExists(node);
-				else checkTargetNotExist(node);
+				else
+					checkTargetNotExist(node);
 			}
 
 			private boolean isFacet(Node node) {
@@ -180,7 +178,8 @@ public class GlobalConstraints {
 			}
 
 			private boolean isFacet(String[] flags) {
-				return Arrays.asList(flags).contains("facet");
+				for (String flag : flags) if (flag.equalsIgnoreCase(Tag.FACET.name())) return true;
+				return false;
 			}
 
 			private boolean isFacetInherited(Node node) {

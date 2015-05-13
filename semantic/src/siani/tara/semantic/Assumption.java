@@ -32,12 +32,8 @@ public interface Assumption {
 
 	}
 
-	interface Aggregated extends Assumption {
+	interface Root extends Assumption {
 	}
-
-	interface Associated extends Assumption {
-	}
-
 
 	interface Single extends Assumption {
 
@@ -46,14 +42,7 @@ public interface Assumption {
 	interface Multiple extends Assumption {
 	}
 
-	interface Optional extends Assumption {
-	}
-
 	interface Required extends Assumption {
-	}
-
-	interface Component extends Assumption {
-
 	}
 
 	interface Enclosed extends Assumption {

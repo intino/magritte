@@ -50,7 +50,7 @@ public class LinkToJava {
 		if (language == null) return;
 		Node[] addressedNodes = new Node[0];//= getAddressedConcepts(language, TaraUtil.getAllNodesOfFile(box));
 		if (addressedNodes.length == 0) return;
-		AddressGenerator addressGenerator = new AddressGenerator(addressedNodes);
+		Mbroller addressGenerator = new Mbroller(addressedNodes);
 		addressGenerator.generate();
 	}
 //TODO

@@ -1,10 +1,14 @@
 package siani.tara.compiler.codegeneration.magritte;
 
 import siani.tara.Language;
-import siani.tara.compiler.model.*;
+import siani.tara.compiler.model.Facet;
+import siani.tara.compiler.model.FacetTarget;
+import siani.tara.compiler.model.NodeContainer;
+import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.Assumption;
+import siani.tara.semantic.model.Tag;
 
 import java.util.ArrayList;
 import java.util.Collection;

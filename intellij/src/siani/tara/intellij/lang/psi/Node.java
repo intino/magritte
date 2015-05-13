@@ -38,13 +38,7 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isFacet();
 
-	boolean isAddressed();
-
 	boolean isAbstract();
-
-	boolean isAggregated();
-
-	boolean isAssociated();
 
 	boolean isProperty();
 
@@ -52,15 +46,11 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean FeatureInstance();
 
-	boolean isComponent();
-
 	boolean isEnclosed();
 
 	boolean isFacetInstance();
 
-	boolean isAnnotatedAsAggregated();
-
-	boolean isAnnotatedAsAssociated();
+	boolean isAnnotatedAsRoot();
 
 	@Nullable
 	TaraAddress getAddress();
