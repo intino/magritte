@@ -1118,56 +1118,46 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (QUOTE_BEGIN CHARACTER* QUOTE_END) | (NEWLINE? STRING_MULTILINE_VALUE_KEY)
+  // NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END)
   public static boolean stringValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stringValue")) return false;
+    if (!nextTokenIs(b, "<string value>", NEWLINE, QUOTE_BEGIN)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<string value>");
     r = stringValue_0(b, l + 1);
-    if (!r) r = stringValue_1(b, l + 1);
+    r = r && stringValue_1(b, l + 1);
     exit_section_(b, l, m, STRING_VALUE, r, false, null);
     return r;
   }
 
-  // QUOTE_BEGIN CHARACTER* QUOTE_END
+  // NEWLINE?
   private static boolean stringValue_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stringValue_0")) return false;
+    consumeToken(b, NEWLINE);
+    return true;
+  }
+
+  // QUOTE_BEGIN CHARACTER* QUOTE_END
+  private static boolean stringValue_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stringValue_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, QUOTE_BEGIN);
-    r = r && stringValue_0_1(b, l + 1);
+    r = r && stringValue_1_1(b, l + 1);
     r = r && consumeToken(b, QUOTE_END);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // CHARACTER*
-  private static boolean stringValue_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "stringValue_0_1")) return false;
+  private static boolean stringValue_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stringValue_1_1")) return false;
     int c = current_position_(b);
     while (true) {
       if (!consumeToken(b, CHARACTER)) break;
-      if (!empty_element_parsed_guard_(b, "stringValue_0_1", c)) break;
+      if (!empty_element_parsed_guard_(b, "stringValue_1_1", c)) break;
       c = current_position_(b);
     }
-    return true;
-  }
-
-  // NEWLINE? STRING_MULTILINE_VALUE_KEY
-  private static boolean stringValue_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "stringValue_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = stringValue_1_0(b, l + 1);
-    r = r && consumeToken(b, STRING_MULTILINE_VALUE_KEY);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // NEWLINE?
-  private static boolean stringValue_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "stringValue_1_0")) return false;
-    consumeToken(b, NEWLINE);
     return true;
   }
 

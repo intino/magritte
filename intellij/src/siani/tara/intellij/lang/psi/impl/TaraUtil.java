@@ -19,6 +19,7 @@ import siani.tara.Language;
 import siani.tara.intellij.TaraRuntimeException;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.file.TaraFileType;
+import siani.tara.intellij.lang.lexer.TaraPrimitives;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.semantic.Allow;
@@ -27,6 +28,7 @@ import siani.tara.semantic.Assumption;
 import java.util.*;
 
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
+import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getParentByType;
 
 public class TaraUtil {
 
@@ -115,6 +117,24 @@ public class TaraUtil {
 		return element instanceof Node && !((Node) element).isSub();
 	}
 
+	public static boolean isNativeValue(StringValue stringValue) {
+		VarInit variable = getVariable(stringValue);
+		if (variable == null) return false;
+		Node node = getContainerNode(variable);
+		if (node == null) return false;
+		Allow.Parameter allow = TaraUtil.getCorrespondingAllow(node, variable);
+		return allow != null && TaraPrimitives.NATIVE.equalsIgnoreCase(allow.type());
+	}
+
+	private static Node getContainerNode(VarInit varInit) {
+		return (Node) getParentByType(varInit, Node.class);
+	}
+
+	private static VarInit getVariable(StringValue stringValue) {
+		PsiElement element = getParentByType(stringValue, VarInit.class);
+		return element instanceof VarInit ? (VarInit) element : null;
+	}
+
 	private static String buildType(PsiElement element, String type) {
 		type = element instanceof TaraFacetTarget ?
 			FACET_TARGET + "(" + ((TaraFacetTarget) element).getIdentifierReference().getText() + ")" + "." + type :
@@ -135,6 +155,57 @@ public class TaraUtil {
 		return path;
 	}
 
+	public static Allow.Parameter getCorrespondingAllow(Node container, VarInit varInit) {
+		FacetApply facetApply = areFacetVarInit(varInit);
+		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.getType()) : TaraUtil.getAllowsOf(container);
+		if (allowsOf == null) return null;
+		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
+		return findParameter(parametersAllowed, varInit.getName());
+	}
+
+	public static Allow.Parameter getCorrespondingAllow(Node container, Parameter parameter) {
+		FacetApply facetApply = areFacetParameters(parameter);
+		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.getType()) : TaraUtil.getAllowsOf(container);
+		if (allowsOf == null) return null;
+		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
+		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.getIndexInParent()) return null;
+		return parameter.isExplicit() ? findParameter(parametersAllowed, parameter.getExplicitName()) : parametersAllowed.get(parameter.getIndexInParent());
+	}
+
+
+	private static Collection<Allow> getAllows(Node container, String facetApply) {
+		Collection<Allow> allowsOf = TaraUtil.getAllowsOf(container);
+		if (allowsOf == null) return Collections.EMPTY_LIST;
+		for (Allow allow : allowsOf)
+			if (allow instanceof Allow.Facet && ((Allow.Facet) allow).type().equals(facetApply))
+				return ((Allow.Facet) allow).allows();
+		return Collections.EMPTY_LIST;
+	}
+
+	private static FacetApply areFacetParameters(Parameter parameter) {
+		PsiElement contextOf = TaraPsiImplUtil.getContextOf(parameter);
+		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
+	}
+
+	private static FacetApply areFacetVarInit(VarInit varInit) {
+		PsiElement contextOf = TaraPsiImplUtil.getContextOf(varInit);
+		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
+	}
+
+	private static List<Allow.Parameter> parametersAllowed(Collection<Allow> allowsOf) {
+		List<Allow.Parameter> parameters = new ArrayList<>();
+		for (Allow allow : allowsOf)
+			if (allow instanceof Allow.Parameter)
+				parameters.add((Allow.Parameter) allow);
+		return parameters;
+	}
+
+	private static Allow.Parameter findParameter(List<Allow.Parameter> parameters, String name) {
+		for (Allow.Parameter variable : parameters)
+			if (variable.name().equals(name))
+				return variable;
+		return null;
+	}
 
 	private static String getFacetPath(TaraFacetApply apply) {
 		PsiElement element = apply;

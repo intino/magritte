@@ -21,12 +21,13 @@
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="library" name="Maven: org.siani.itrules:itrules:1.1.14" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
-    <orderEntry type="library" name="Maven: org.commonjava.googlecode.markdown4j:markdown4j:2.2-cj-1.0" level="project" />
     <orderEntry type="module" module-name="tara-jps-plugin" />
     <orderEntry type="module" module-name="semantic" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.siani.itrules:itrules:1.2.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.commonjava.googlecode.markdown4j:markdown4j:2.2-cj-1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.javaparser:javaparser-core:2.0.0" level="project" />
   </component>
 </module>

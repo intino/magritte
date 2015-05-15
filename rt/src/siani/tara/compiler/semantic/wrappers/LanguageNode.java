@@ -22,11 +22,6 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 		this.facetTargets = collectFacetTargets(node.getFacetTargets());
 		variables.addAll(collectVariables(node.getVariables()));
 		addIncludes(node.getIncludedNodes());
-		Node parent = node.getParent();
-		if (parent != null) {
-			variables.addAll(collectVariables(parent.getVariables()));
-			addIncludes(parent.getIncludedNodes());
-		}
 	}
 
 	private void addIncludes(Collection<Node> inners) {

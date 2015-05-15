@@ -164,7 +164,7 @@ public class TaraFilters {
 			return context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context);
 		}
 
-//		private boolean isNative(Node node) {
+//		private boolean isNativeValue(Node node) {
 //			return node != null && node.getObject().is(Annotation.INTENTION);
 //		}
 

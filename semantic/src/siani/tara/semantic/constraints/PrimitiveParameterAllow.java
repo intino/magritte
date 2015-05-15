@@ -62,7 +62,7 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public String metric() {
+	public String contract() {
 		return metric;
 	}
 

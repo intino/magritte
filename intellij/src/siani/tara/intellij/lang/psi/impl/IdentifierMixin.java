@@ -18,10 +18,6 @@ import siani.tara.intellij.lang.psi.resolve.TaraWordReferenceSolver;
 import siani.tara.semantic.Allow;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import static siani.tara.intellij.lang.lexer.TaraPrimitives.WORD;
 import static siani.tara.intellij.lang.lexer.TaraPrimitives.isPrimitive;
@@ -66,7 +62,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	private PsiReference createResolverForParameter(Parameter parameter) {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
-		Allow.Parameter parameterAllow = getCorrespondingAllow(container, parameter);
+		Allow.Parameter parameterAllow = TaraUtil.getCorrespondingAllow(container, parameter);
 		if (parameterAllow == null) return null;
 		if (parameterAllow.type().equalsIgnoreCase(REFERENCE))
 			return new TaraNodeReferenceSolver(this, getRange(), container);
@@ -79,7 +75,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	private PsiReference createResolverForVarInit(VarInit varInit) {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
-		Allow.Parameter parameterAllow = getCorrespondingAllow(container, varInit);
+		Allow.Parameter parameterAllow = TaraUtil.getCorrespondingAllow(container, varInit);
 		if (parameterAllow == null) return null;
 		if (parameterAllow.type().equalsIgnoreCase(REFERENCE))
 			return new TaraNodeReferenceSolver(this, getRange(), container);
@@ -90,49 +86,10 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
-	private Allow.Parameter getCorrespondingAllow(Node container, Parameter parameter) {
-		FacetApply facetApply = areFacetParameters(parameter);
-		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.getType()) : TaraUtil.getAllowsOf(container);
-		if (allowsOf == null) return null;
-		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
-		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.getIndexInParent()) return null;
-		return parameter.isExplicit() ? findParameter(parametersAllowed, parameter.getExplicitName()) : parametersAllowed.get(parameter.getIndexInParent());
-	}
 
-	private Allow.Parameter getCorrespondingAllow(Node container, VarInit varInit) {
-		FacetApply facetApply = areFacetVarInit(varInit);
-		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.getType()) : TaraUtil.getAllowsOf(container);
-		if (allowsOf == null) return null;
-		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
-		return findParameter(parametersAllowed, varInit.getName());
-	}
 
-	private Collection<Allow> getAllows(Node container, String facetApply) {
-		Collection<Allow> allowsOf = TaraUtil.getAllowsOf(container);
-		if (allowsOf == null) return Collections.EMPTY_LIST;
-		for (Allow allow : allowsOf)
-			if (allow instanceof Allow.Facet && ((Allow.Facet) allow).type().equals(facetApply))
-				return ((Allow.Facet) allow).allows();
-		return Collections.EMPTY_LIST;
-	}
 
-	private FacetApply areFacetParameters(Parameter parameter) {
-		PsiElement contextOf = TaraPsiImplUtil.getContextOf(parameter);
-		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
-	}
 
-	private FacetApply areFacetVarInit(VarInit varInit) {
-		PsiElement contextOf = TaraPsiImplUtil.getContextOf(varInit);
-		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
-	}
-
-	private List<Allow.Parameter> parametersAllowed(Collection<Allow> allowsOf) {
-		List<Allow.Parameter> parameters = new ArrayList<>();
-		for (Allow allow : allowsOf)
-			if (allow instanceof Allow.Parameter)
-				parameters.add((Allow.Parameter) allow);
-		return parameters;
-	}
 
 	private TextRange getRange() {
 		return new TextRange(0, getIdentifier().length());
@@ -178,15 +135,12 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
-	private Allow.Parameter findParameter(List<Allow.Parameter> parameters, String name) {
-		for (Allow.Parameter variable : parameters)
-			if (variable.name().equals(name))
-				return variable;
-		return null;
-	}
-
 	public boolean isFileReference() {
 		return this.getParent() instanceof TaraHeaderReference;
 	}
 
+	@Nullable
+	public PsiElement getNameIdentifier() {
+		return this;
+	}
 }

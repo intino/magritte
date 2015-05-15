@@ -21,7 +21,7 @@ public abstract class TaraElementFactory {
 
 	public abstract Identifier createNameIdentifier(String name);
 
-	public abstract Variable createAttribute(String name, String type);
+	public abstract Variable createVariable(String name, String type);
 
 	public abstract TaraImports createImport(String reference);
 
@@ -60,4 +60,8 @@ public abstract class TaraElementFactory {
 	public abstract PsiElement createBodyNewLine(int level);
 
 	public abstract PsiElement createInlineNewLine();
+
+	public abstract PsiElement createString(String text);
+
+	public abstract PsiElement createMultiLineString(String text, String indent, String quote);
 }

@@ -42,7 +42,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		return PsiTreeUtil.getChildOfType(createConcept(name).getSignature(), Identifier.class);
 	}
 
-	public Variable createAttribute(String name, String type) {
+	public Variable createVariable(String name, String type) {
 		final TaraModelImpl file = createDummyFile(
 			"Concept Dummy\n" +
 				"\tvar " + type + " " + name + "\n" +
@@ -226,7 +226,42 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		final TaraModelImpl file = createDummyFile("Dummy Ficha >" + "Dummy Ficha2; Dummy Ficha3");
 		Node node = file.getRootNodes().iterator().next();
 		LeafPsiElement[] childrenOfType = PsiTreeUtil.getChildrenOfType(node.getBody(), LeafPsiElement.class);
-		return childrenOfType[1];
+		return childrenOfType != null ? childrenOfType[1] : null;
+	}
+
+	public PsiElement createString(String text) {
+		char quote = '"';
+		final TaraModelImpl file = createDummyFile(
+			"Concept Dummy\n" +
+				"\tvar string dummy " + "= " + quote + formatted(text) + quote + "\n");
+		Node node = PsiTreeUtil.getChildOfType(file, Node.class);
+		if (node == null) return null;
+		Body body = node.getBody();
+		if (body == null) return null;
+		Variable variable = (Variable) body.getFirstChild().getNextSibling();
+		return variable.getValue().getStringValueList().get(0);
+	}
+
+	public PsiElement createMultiLineString(String text, String indent, String quote) {
+		final TaraModelImpl file = createDummyFile(
+			"Concept Dummy\n" +
+				"\tvar string dummy " + "= \n" +
+				"\t" + quote + "\n" + indent + formatted(text, indent) + "\n" +
+				indent + quote + "\n");
+		Node node = PsiTreeUtil.getChildOfType(file, Node.class);
+		if (node == null) return null;
+		Body body = node.getBody();
+		if (body == null) return null;
+		Variable variable = (Variable) body.getFirstChild().getNextSibling();
+		return variable.getValue().getStringValueList().get(0);
+	}
+
+	private String formatted(String text) {
+		return text.replace("\n", "\\n").replace("\"", "\\\"");
+	}
+
+	private String formatted(String text, String indent) {
+		return text.replaceAll("(\n|\r\n)\t\t", "\n" + indent);
 	}
 
 }

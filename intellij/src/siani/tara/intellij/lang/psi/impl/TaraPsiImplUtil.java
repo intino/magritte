@@ -3,6 +3,7 @@ package siani.tara.intellij.lang.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.*;
@@ -77,6 +78,12 @@ public class TaraPsiImplUtil {
 		inner.addAll(toadd);
 	}
 
+	public static PsiElement getParentByType(PsiElement psiElement, Class<? extends PsiElement> aClass) {
+		PsiElement element = psiElement.getParent();
+		while (element != null && !PsiFile.class.isInstance(element) && !aClass.isInstance(element))
+			element = element.getParent();
+		return element;
+	}
 
 	public static List<Node> getAllInnerNodesOf(Node node) {
 		if (node != null && node.getBody() != null) return getInnerNodesInBody(node.getBody());

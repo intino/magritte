@@ -148,7 +148,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(QUOTE_BEGIN, STRING);
 		KEYS.put(QUOTE_END, STRING);
 		KEYS.put(CHARACTER, STRING);
-		KEYS.put(STRING_MULTILINE_VALUE_KEY, STRING);
 		KEYS.put(TokenType.WHITE_SPACE, null);
 		KEYS.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
 	}
