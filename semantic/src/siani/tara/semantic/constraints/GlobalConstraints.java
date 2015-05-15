@@ -174,7 +174,7 @@ public class GlobalConstraints {
 
 			private boolean isFeature(Node context) {
 				for (String flag : context.flags())
-					if (flag.equalsIgnoreCase(Tag.FEATURE.getName()) || flag.equalsIgnoreCase(Tag.FEATURE_INSTANCE.getName()))
+					if (flag.equalsIgnoreCase(Tag.FEATURE_INSTANCE.getName()))
 						return true;
 				return false;
 			}
