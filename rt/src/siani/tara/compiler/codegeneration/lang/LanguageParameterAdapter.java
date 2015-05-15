@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static siani.tara.semantic.model.Tag.*;
+import static siani.tara.semantic.model.Tag.TERMINAL;
+import static siani.tara.semantic.model.Tag.TERMINAL_INSTANCE;
 
 public class LanguageParameterAdapter {
 	private static final String REQUIRE = "require";
@@ -63,7 +64,7 @@ public class LanguageParameterAdapter {
 		frame.addFrame("multiple", variable.isMultiple()).
 			addFrame("position", i).
 			addFrame("annotations", getFlags(variable)).
-			addFrame("metric", variable.getNativeName() == null ? "" : variable.getNativeName());
+			addFrame("contract", variable.getNativeName() == null ? "" : variable.getNativeName());
 	}
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
@@ -118,7 +119,7 @@ public class LanguageParameterAdapter {
 		frame.addFrame("multiple", parameter.multiple()).
 			addFrame("position", position).
 			addFrame("annotations", getFlags(parameter)).
-			addFrame("metric", parameter.metric());
+			addFrame("contract", parameter.contract());
 	}
 
 	private String[] getFlags(Variable variable) {

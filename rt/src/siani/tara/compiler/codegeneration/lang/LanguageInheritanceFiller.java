@@ -101,7 +101,7 @@ public class LanguageInheritanceFiller {
 	}
 
 	private void addParameter(Frame allowsFrame, Allow.Parameter allow, String relation) {
-		Object[] values = {allow.name(), allow.type(), allow.allowedValues(), allow.multiple(), allow.position(), getMetric(allow.metric())};
+		Object[] values = {allow.name(), allow.type(), allow.allowedValues(), allow.multiple(), allow.position(), getMetric(allow.contract())};
 		if (allow.allowedValues() != null && allow.allowedValues().length > 0)
 			if (allow.type().equals("word")) renderWord(allowsFrame, values, relation);
 			else renderReference(allowsFrame, values, relation);

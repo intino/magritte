@@ -146,17 +146,16 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public String getQualifiedName() {
 		Node node = (Node) this;
-		String name = getPathName(node);
+		String name = "";
 		while (node != null) {
-			Node container = node.container();
-			if (container != null) name = getPathName(container) + "." + name;
-			node = container;
+			name = getPathName(node) + "." + name;
+			node = node.container();
 		}
-		return name;
+		return name.substring(0, name.length() - 1);
 	}
 
 	private String getPathName(Node node) {
-		return node.getIdentifierNode() != null ? node.getIdentifierNode().getText() : (getType() + "@anonymous");
+		return node.getIdentifierNode() != null ? node.getIdentifierNode().getText() : (node.getType() + "@anonymous");
 	}
 
 	public String getMetaQualifiedName() {

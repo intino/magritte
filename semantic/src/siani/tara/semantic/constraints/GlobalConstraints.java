@@ -32,6 +32,7 @@ public class GlobalConstraints {
 			duplicateVariable(),
 			invalidValueTypeInVariable(),
 			facetDeclaration(),
+			namedInsideFeature(),
 			facetInstantiation()};
 	}
 
@@ -123,7 +124,7 @@ public class GlobalConstraints {
 				Node node = (Node) element;
 				for (Variable variable : node.variables())
 					if (variable.defaultValue().length != 0 && !compatibleTypes(variable))
-						throw new SemanticException(new SemanticError("reject.invalid.variable.type", (Element) variable, new String[]{variable.type()}));
+						throw new SemanticException(new SemanticError("reject.invalid.variable.type", (Element) variable, new Object[]{variable.type()}));
 			}
 
 			private boolean compatibleTypes(Variable variable) {
@@ -149,6 +150,33 @@ public class GlobalConstraints {
 					if (varNames.add(variable.name())) continue;
 					throw new SemanticException(new SemanticError("reject.duplicate.variable", variable.name(), node.name()));
 				}
+			}
+		};
+	}
+
+	private Constraint namedInsideFeature() {
+		return new Constraint.Require() {
+			@Override
+			public void check(Element element) throws SemanticException {
+				Node node = (Node) element;
+				if (isInFeature(node) && !node.name().isEmpty())
+					throw new SemanticException(new SemanticError("reject.named.node.in.feature", (Element) node));
+			}
+
+			private boolean isInFeature(Node node) {
+				Node context = node.context();
+				while (context != null) {
+					if (isFeature(context)) return true;
+					context = context.context();
+				}
+				return false;
+			}
+
+			private boolean isFeature(Node context) {
+				for (String flag : context.flags())
+					if (flag.equalsIgnoreCase(Tag.FEATURE_INSTANCE.getName()))
+						return true;
+				return false;
 			}
 		};
 	}

@@ -52,7 +52,7 @@ public interface Allow {
 
 		int position();
 
-		String metric();
+		String contract();
 
 		String[] flags();
 	}

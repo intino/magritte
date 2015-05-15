@@ -1,0 +1,13 @@
+def type(native)
+	package $module;
+
+	import $language.natives.$intention;
+
+	public class $qn_$variable extends $parent implements $intention {
+
+		@Override
+		public void execute() {
+			$body
+		}
+	}
+end

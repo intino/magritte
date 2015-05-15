@@ -170,10 +170,10 @@ CommentContent       = ( [^*] | \*+ [^/*] )*
 DOC_LINE            = "doc" ~[\n]
 PLUS                = "+"
 DIGIT               = [:digit:]
-STRING_MULTILINE_VALUE_KEY = {DASHES} ~ {DASHES}
+STRING_MULTILINE    = {DASHES}
 IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
-%xstate QUOTED
+%xstate QUOTED, MULTILINE
 
 %%
 <YYINITIAL> {
@@ -215,7 +215,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{READONLY}                      {   return TaraTypes.READONLY; }
 
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
-	{STRING_MULTILINE_VALUE_KEY}    {   return TaraTypes.STRING_MULTILINE_VALUE_KEY; }
+	{STRING_MULTILINE}              {   yybegin(MULTILINE); return TaraTypes.QUOTE_BEGIN; }
 
 	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
 	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
@@ -260,16 +260,30 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 }
 
 <QUOTED> {
-    {QUOTE}                         { yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
-    [^\n\r\"\\]                     { return TaraTypes.CHARACTER; }
-    \\t                             { return TaraTypes.CHARACTER; }
-    \\n                             { return TaraTypes.CHARACTER; }
-    \\r                             { return TaraTypes.CHARACTER; }
-    \\\"                            { return TaraTypes.CHARACTER; }
-    \\                              { return TaraTypes.CHARACTER; }
-    [^]                             { return TokenType.BAD_CHARACTER;}
-    .                               { return TokenType.BAD_CHARACTER;}
+    {QUOTE}                         {   yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
+    [^\n\r\"\\]                     {   return TaraTypes.CHARACTER; }
+    \\t                             {   return TaraTypes.CHARACTER; }
+    \\n                             {   return TaraTypes.CHARACTER; }
+    \\r                             {   return TaraTypes.CHARACTER; }
+    \\\"                            {   return TaraTypes.CHARACTER; }
+    \\                              {   return TaraTypes.CHARACTER; }
+    [^]                             {   return TokenType.BAD_CHARACTER;}
+    .                               {   return TokenType.BAD_CHARACTER;}
 }
 
-[^]                                 { return TokenType.BAD_CHARACTER;}
-.                                   { return TokenType.BAD_CHARACTER;}
+<MULTILINE> {
+  {STRING_MULTILINE}                {   yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
+  [^\n\r\\]                         {   return TaraTypes.CHARACTER; }
+  \n | \r                           {   return TaraTypes.CHARACTER; }
+  \t                                {   return TaraTypes.CHARACTER; }
+  \\t                               {   return TaraTypes.CHARACTER; }
+  \\n                               {   return TaraTypes.CHARACTER; }
+  \\r                               {   return TaraTypes.CHARACTER; }
+  \\\"                              {   return TaraTypes.CHARACTER; }
+  \\                                {   return TaraTypes.CHARACTER; }
+  [^]                               {   return TokenType.BAD_CHARACTER; }
+  .                                 {   return TokenType.BAD_CHARACTER; }
+}
+
+[^]                                 {   return TokenType.BAD_CHARACTER;}
+.                                   {   return TokenType.BAD_CHARACTER;}

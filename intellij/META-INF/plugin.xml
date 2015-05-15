@@ -101,6 +101,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.DSLDeclarationAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.MeasureVariableAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.NameIdentifierValidator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.NativeAnnotator"/>
 
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraNodeCompletionContributor"/>
@@ -152,6 +153,17 @@
       <category>Parameter View Operator</category>
       <descriptionDirectoryName>ImplicitToExplicitParameters</descriptionDirectoryName>
     </intentionAction>
+    <intentionAction>
+      <className>siani.tara.intellij.codeinsight.intentions.TaraQuickEditAction</className>
+      <category>Declaration</category>
+    </intentionAction>
+    <spellchecker.support language="Tara"
+                          implementationClass="siani.tara.intellij.codeinsight.TaraSpellcheckerStrategy"/>
+
+    <extendWordSelectionHandler implementation="siani.tara.intellij.lang.psi.TaraStringLiteralSelectionHandler"/>
+    <!--<basicWordSelectionFilter implementation="siani.tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>-->
+    <lang.elementManipulator forClass="siani.tara.intellij.lang.psi.StringValue"
+                             implementationClass="siani.tara.intellij.lang.psi.TaraStringLiteralManipulator"/>
   </extensions>
 
   <application-components>

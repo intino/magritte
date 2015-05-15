@@ -65,7 +65,7 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public String metric() {
+	public String contract() {
 		return nativeName;
 	}
 

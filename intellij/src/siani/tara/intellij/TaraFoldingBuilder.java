@@ -35,7 +35,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 				});
 			if (node.getBody() != null)
 				for (final PsiElement multiLine : searchStringMultiLineValues(node)) {
-					descriptors.add(new FoldingDescriptor(multiLine, getRange((TaraStringValue) multiLine.getParent())) {
+					descriptors.add(new FoldingDescriptor(multiLine, getRange((TaraStringValue) multiLine)) {
 						@Nullable
 						@Override
 						public String getPlaceholderText() {
@@ -82,23 +82,15 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	@SuppressWarnings("ConstantConditions")
 	private void addMultiLineString(TaraVariable variable, List<PsiElement> strings) {
 		if (variable.getValue() == null) return;
-		for (TaraStringValue value : variable.getValue().getStringValueList())
-			if (isMultiLineValue(value))
-				strings.add(findMultiLineInValue(value));
+		for (StringValue value : variable.getValue().getStringValueList())
+			if (value.isMultiLine())
+				strings.add(value);
 	}
 
 	private void addMultiLineString(Value value, List<PsiElement> strings) {
-		for (TaraStringValue stringValue : ((TaraValue) value).getStringValueList())
-			if (isMultiLineValue(stringValue))
-				strings.add(findMultiLineInValue(stringValue));
-	}
-
-	private boolean isMultiLineValue(TaraStringValue value) {
-		return value.getLastChild().getNode().getElementType().equals(TaraTypes.STRING_MULTILINE_VALUE_KEY);
-	}
-
-	private PsiElement findMultiLineInValue(TaraStringValue value) {
-		return value.getLastChild();
+		for (StringValue stringValue : ((TaraValue) value).getStringValueList())
+			if (stringValue.isMultiLine())
+				strings.add(stringValue);
 	}
 
 	@Override
