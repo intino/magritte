@@ -75,13 +75,13 @@ public class AcceptedGlobalConstrains {
 	@Test
 	public void should_accept_concept_with_address() throws Exception {
 		taraCheck(root().include(
-			define().type("Concept").name("Entity").address(1l).node()));
+			define().type("Concept").name("Entity").plate("1l").node()));
 	}
 
 	@Test
 	public void should_reject_concept_with_two_has_of_the_same_component_type() throws Exception {
 		thrown.expectMessage(message("reject.duplicate.entries", "Feature", "Entity"));
-		Node feature = define().type("Concept").name("Feature").address(1l).node();
+		Node feature = define().type("Concept").name("Feature").plate("1l").node();
 		taraCheck(root().include(
 				define().type("Concept").name("Entity").has(feature).has(feature).node()));
 	}

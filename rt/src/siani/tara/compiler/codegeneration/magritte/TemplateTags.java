@@ -17,7 +17,7 @@ public interface TemplateTags {
 	String NODE_TYPE = "nodeType";
 	String COMPONENT_OF = "componentOf";
 	String FACET = "facet";
-	String ADDRESS = "address";
+	String PLATE = "plate";
 	String CLASS = "class";
 	String FACET_TARGET = "FacetTarget";
 	String ALWAYS = "always";

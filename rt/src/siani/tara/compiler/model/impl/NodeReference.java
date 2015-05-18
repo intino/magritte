@@ -181,12 +181,12 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public Long getAddress() {
-		return destiny.getAddress();
+	public String getPlate() {
+		return destiny.getPlate();
 	}
 
 	@Override
-	public void setAddress(Long address) {
+	public void setPlate(String address) {
 	}
 
 	@Override

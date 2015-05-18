@@ -3,6 +3,7 @@ package siani.tara.compiler.codegeneration.magritte;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.model.*;
+import siani.tara.semantic.model.Tag;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
@@ -25,9 +26,9 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 		if (isTerminal(parameter))
 			frame.addFrame(TERMINAL, TERMINAL_KEY);
 		if (parameter.getInferredType().equals(Primitives.MEASURE)) {
-			frame.addFrame(EXTENSION_TYPE, parameter.getMetric());
-			if (parameter.getMetric() != null)
-				frame.addFrame(EXTENSION_VALUE, resolveMetric(parameter.getMetric()));
+			frame.addFrame(EXTENSION_TYPE, parameter.getContract());
+			if (parameter.getContract() != null)
+				frame.addFrame(EXTENSION_VALUE, resolveMetric(parameter.getContract()));
 		}
 		addParameterValue(frame, parameter);
 	}
@@ -39,7 +40,8 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	}
 
 	private boolean isTerminal(Parameter parameter) {
-		for (String annotation : parameter.getAnnotations()) if ("terminal".equals(annotation)) return true;
+		for (String annotation : parameter.getAnnotations())
+			if (Tag.TERMINAL.name().equalsIgnoreCase(annotation)) return true;
 		return false;
 	}
 
@@ -50,16 +52,14 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 			if (parameterValues.iterator().next() instanceof EmptyNode)
 				values = new Object[]{"null"};
 			else values = collectQualifiedNames(parameterValues);
-		else if (parameter.getInferredType().equals("native")) values = formatNative(parameterValues);
+		else if (Primitives.NATIVE.equals(parameter.getInferredType())) values = createNativeReference(parameter);
 		else values = format(parameterValues);
 		frame.addFrame(VARIABLE_VALUE, values);
 	}
 
-	private Object[] formatNative(Collection<Object> parameterValues) {
-		List<Object> objects = new ArrayList<>();
-		for (Object value : parameterValues)
-			objects.add(value.toString() + ".class");
-		return objects.toArray(new Object[objects.size()]);
+	private String[] createNativeReference(Parameter parameter) {
+		final String qualifiedName = parameter.getOwner().getQualifiedName();
+		return new String[]{NameFormatter.createNativeReference(qualifiedName, parameter.getName()) + ".class"};
 	}
 
 

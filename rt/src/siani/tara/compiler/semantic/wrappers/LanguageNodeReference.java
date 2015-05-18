@@ -73,21 +73,21 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 	}
 
 	@Override
-	public Long address() {
-		return Long.MIN_VALUE;
+	public String plate() {
+		return "";
 	}
 
 	@Override
 	public String[] annotations() {
 		List<String> values = new ArrayList<>();
-		for (Tag tag : reference.getAnnotations()) values.add(tag.getName());
+		for (Tag tag : reference.getAnnotations()) values.add(tag.name());
 		return values.toArray(new String[values.size()]);
 	}
 
 	@Override
 	public String[] flags() {
 		List<String> values = new ArrayList<>();
-		for (Tag tag : reference.getFlags()) values.add(tag.getName());
+		for (Tag tag : reference.getFlags()) values.add(tag.name());
 		return values.toArray(new String[values.size()]);
 	}
 

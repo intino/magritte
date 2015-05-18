@@ -41,21 +41,22 @@ public class BoxUnitFrameCreator {
 	}
 
 	private void createKeyMap(NodeContainer node) {
-		if (node instanceof Node) {
-			keymap.put((Node) node, count);
-			count++;
-		}
-
+		if (node instanceof Node) addKey((Node) node);
 		for (Node include : node.getIncludedNodes()) {
 			if (include instanceof NodeReference) continue;
-			keymap.put(include, count);
-			count++;
+			addKey(include);
 			createKeyMap(include);
 			for (FacetTarget facetTarget : include.getFacetTargets())
 				createKeyMap(facetTarget);
 			for (Facet facet : include.getFacets())
 				createKeyMap(facet);
 		}
+	}
+
+	private void addKey(Node node) {
+		if (keymap.containsKey(node)) return;
+		keymap.put(node, count);
+		count++;
 	}
 
 	public AbstractFrame create() {

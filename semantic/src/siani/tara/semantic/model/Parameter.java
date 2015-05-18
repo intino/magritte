@@ -14,7 +14,6 @@ public interface Parameter extends Element {
 
 	boolean isMultiple();
 
-
 	int getPosition();
 
 	String getName();
@@ -23,7 +22,11 @@ public interface Parameter extends Element {
 
 	Object[] getValues();
 
+	String getContract();
+
 	String getMetric();
+
+	void setContract(String contract);
 
 	boolean isVariableInit();
 

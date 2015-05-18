@@ -186,6 +186,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 				@Override
 				public void stateChanged(ChangeEvent e) {
 					dslGeneratedName.setEnabled(((JCheckBox) e.getSource()).isSelected());
+					addressRequired.setEnabled(((JCheckBox) e.getSource()).isSelected());
 				}
 			});
 			generateDslCheck.setSelected(false);
@@ -201,6 +202,9 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			if (generateDslCheck.isSelected()) {
 				dslGeneratedName.setEnabled(true);
 				addressRequired.setEnabled(true);
+			} else {
+				dslGeneratedName.setEnabled(false);
+				addressRequired.setEnabled(false);
 			}
 		}
 

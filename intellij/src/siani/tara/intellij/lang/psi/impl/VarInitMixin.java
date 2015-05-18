@@ -11,6 +11,8 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 
 	private static final String EMPTY = "empty";
 
+	private String contract = "";
+
 	public VarInitMixin(@NotNull ASTNode node) {
 		super(node);
 	}
@@ -40,8 +42,16 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 
-	public String getMetricValue() {
+	public String getMetric() {
 		TaraMeasureValue measureValue = ((VarInit) this).getValue().getMeasureValue();
 		return measureValue == null ? null : measureValue.getText();
+	}
+
+	public String getContract() {
+		return contract;
+	}
+
+	public void setContract(String contract) {
+		this.contract = contract;
 	}
 }

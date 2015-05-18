@@ -20,7 +20,7 @@ public class VariableImpl extends Element implements Variable {
 	private boolean multiple;
 	private List<Object> allowedValues = new ArrayList<>();
 	private List<Object> defaultValues = new ArrayList<>();
-	private String nativeName;
+	private String contract;
 	private String file;
 	private int line;
 	private List<Tag> flags = new ArrayList<>();
@@ -62,8 +62,8 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
-	public String getNativeName() {
-		return nativeName;
+	public String getContract() {
+		return contract;
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class VariableImpl extends Element implements Variable {
 	@Override
 	public void addFlags(String... flags) {
 		for (String annotation : flags)
-			this.flags.add(Tag.valueOf(annotation.toUpperCase().replace("+", "META_")));
+			this.flags.add(Tag.valueOf(annotation.toUpperCase()));
 	}
 
 	@Override
@@ -97,8 +97,8 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
-	public void setNativeName(String nativeName) {
-		this.nativeName = nativeName;
+	public void setContract(String contract) {
+		this.contract = contract;
 	}
 
 	@Override
@@ -171,8 +171,8 @@ public class VariableImpl extends Element implements Variable {
 		VariableImpl variable = new VariableImpl(container, type, name);
 		variable.setMultiple(multiple);
 		variable.setDefaultExtension(defaultExtension);
-		variable.setNativeName(nativeName);
-		for (Tag tag : flags) variable.addFlags(tag.getName());
+		variable.setContract(contract);
+		for (Tag tag : flags) variable.addFlags(tag.name());
 		variable.addAllowedValues(allowedValues.toArray(new Object[allowedValues.size()]));
 		variable.addDefaultValues(defaultValues.toArray(new Object[defaultValues.size()]));
 		variable.setInherited(true);

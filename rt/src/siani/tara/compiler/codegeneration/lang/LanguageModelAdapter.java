@@ -8,6 +8,7 @@ import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
+import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.Assumption;
 import siani.tara.semantic.model.Tag;
 
@@ -25,11 +26,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	private String languageName;
 	private Locale locale;
 	private siani.tara.Language language;
+	private final boolean plateRequired;
 
-	public LanguageModelAdapter(String languageName, Locale locale, Language language) {
+	public LanguageModelAdapter(String languageName, Locale locale, Language language, boolean plateRequired) {
 		this.languageName = languageName;
 		this.locale = locale;
 		this.language = language;
+		this.plateRequired = plateRequired;
 	}
 
 	@Override
@@ -163,8 +166,18 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 		if (node instanceof NodeImpl) {
 			int index = new LanguageParameterAdapter(language).addTerminalParameters(node, requires);
 			addParameterRequires((List<Variable>) node.getVariables(), requires, node.isTerminal(), index);
+			addRequiredVariableRedefines(requires, node);
 		}
 		if (node.isNamed()) requires.addFrame(REQUIRE, "name");
+		if (plateRequired && !(node instanceof Model)) requires.addFrame(REQUIRE, "plate");
+	}
+
+	private void addRequiredVariableRedefines(Frame requires, Node node) {
+		for (Variable variable : node.getVariables()) {
+			if (variable.isTerminal() && variable instanceof VariableReference)
+				requires.addFrame("require", new Frame().addTypes("redefine", "require").
+					addFrame("name", variable.getName()).addFrame("supertype", variable.getType()));
+		}
 	}
 
 	private void addParameterRequires(List<Variable> variables, Frame requires, boolean terminalNode, int index) {
@@ -175,7 +188,6 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 			new LanguageParameterAdapter(language).addParameter(requires, index + i, variable, REQUIRE);
 		}
 	}
-
 
 	private void addAssumptions(Node node, Frame frame) {
 		Frame assumptions = buildAssumptions(frame, node);
@@ -191,12 +203,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	private void addAnnotationAssumptions(Node node, Frame assumptions) {
 		for (Tag tag : node.getAnnotations())
 			if (!tag.equals(SINGLE) || tag.equals(REQUIRED) || tag.equals(MULTIPLE))
-				assumptions.addFrame("assumption", tag.getName());
+				assumptions.addFrame("assumption", tag.name().toLowerCase());
 		for (Tag tag : node.getFlags()) {
-			if (tag.equals(TERMINAL)) assumptions.addFrame("assumption", "TerminalInstance");
-			else if (tag.equals(PROPERTY)) assumptions.addFrame("assumption", "PropertyInstance");
-			else if (tag.equals(FEATURE)) assumptions.addFrame("assumption", "FeatureInstance");
-			else if (tag.equals(FACET)) assumptions.addFrame("assumption", "FacetInstance");
+			if (tag.equals(TERMINAL))
+				assumptions.addFrame("assumption", Tag.TERMINAL_INSTANCE);
+			else if (tag.equals(PROPERTY)) assumptions.addFrame("assumption", Tag.PROPERTY_INSTANCE);
+			else if (tag.equals(FEATURE)) assumptions.addFrame("assumption", Tag.FEATURE_INSTANCE);
+			else if (tag.equals(FACET)) assumptions.addFrame("assumption", Tag.FACET_INSTANCE);
 		}
 	}
 

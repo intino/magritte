@@ -70,8 +70,18 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
+	public String getContract() {
+		return parameter.getContract();
+	}
+
+	@Override
 	public String getMetric() {
 		return parameter.getMetric();
+	}
+
+	@Override
+	public void setContract(String contract) {
+		parameter.setContract(contract);
 	}
 
 	@Override

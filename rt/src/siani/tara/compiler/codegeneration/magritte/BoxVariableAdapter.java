@@ -46,7 +46,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 		list.add(variable.getType());
 		if (variable.isTerminal()) list.add(TERMINAL);
 		if (variable.isMultiple()) list.add(MULTIPLE);
-		for (Tag tag : variable.getFlags()) list.add(tag.getName());
+		for (Tag tag : variable.getFlags()) list.add(tag.name());
 		return list.toArray(new String[list.size()]);
 	}
 
@@ -63,9 +63,8 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 
 	private Object[] format(Collection<Object> parameterValues) {
 		List<Object> objects = new ArrayList<>();
-		for (Object value : parameterValues) {
+		for (Object value : parameterValues)
 			objects.add(value instanceof String && ((String) value).contains("\n") ? formatText((String) value) : value);
-		}
 		return objects.toArray(new Object[objects.size()]);
 	}
 
@@ -91,8 +90,8 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 	}
 
 	private void asMeasure(Frame frame, Variable variable) {
-		frame.addFrame(EXTENSION_TYPE, variable.getNativeName());
-		if (variable.getNativeName() != null)
+		frame.addFrame(EXTENSION_TYPE, variable.getContract());
+		if (variable.getContract() != null)
 			frame.addFrame(EXTENSION_VALUE, resolveMetric(variable.getDefaultExtension()));
 	}
 

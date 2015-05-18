@@ -116,7 +116,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		types.add("nodeReference");
 		if (node.isSingle()) types.add("single");
 		if (node.isRequired()) types.add("required");
-		for (Tag tag : node.getFlags()) types.add(tag.getName());
+		for (Tag tag : node.getFlags()) types.add(tag.name());
 		return types.toArray(new String[types.size()]);
 	}
 
@@ -144,7 +144,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 				if (variable.getType().equals(Variable.WORD))
 					addFrame(WORDS, variable.getAllowedValues().toArray(new String[(variable.getAllowedValues().size())]));
 				else if (variable.getType().equals(Primitives.MEASURE)) {
-//					TODO addFrame(MEASURE, variable.getNativeName());
+//					TODO addFrame(MEASURE, variable.getContract());
 //					if (((Attribute) variable).getMeasureValue() != null)
 //						addFrame(MEASURE_VALUE, resolveMetric(((Attribute) variable).getMeasureValue()));
 				}

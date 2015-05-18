@@ -23,4 +23,8 @@ public interface Parameter extends Navigatable, TaraPsiElement {
 
 	@NotNull
 	String getExplicitName();
+
+	String getContract();
+
+	void setContract(String contract);
 }

@@ -55,8 +55,8 @@ public class ModelToJavaOperation extends ModelOperation {
 			Map<String, String> boxUnits = createBoxUnits(groupByBox);
 			writeBoxUnits(getBoxUnitPath(separator), boxUnits);
 			if (model.isTerminal()) return;
-			writeBox(getBoxPath(separator), createBoxes(boxUnits.keySet()));
 			writeMorphs(createMorphs());
+			writeBox(getBoxPath(separator), createBoxes(boxUnits.keySet()));
 			writeScene(createScene());
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
@@ -92,11 +92,15 @@ public class ModelToJavaOperation extends ModelOperation {
 		template.add("date", Format.date());
 		template.add("string", Format.string());
 		template.add("reference", Format.reference());
+		template.add("toCamelCase", Format.toCamelCase());
 		return template;
 	}
 
 	private Map<String, String> createBoxUnits(List<List<Node>> groupByBox) throws TaraException {
-		return processBoxUnits(groupByBox);
+		Map<String, String> map = new HashMap();
+		for (List<Node> nodes : groupByBox)
+			map.put(buildBoxUnitName(nodes.get(0)), customize(BoxUnitTemplate.create()).format(new BoxUnitFrameCreator(conf, model, nodes).create()));
+		return map;
 	}
 
 	private String createBoxes(Set<String> boxes) throws TaraException {
@@ -117,19 +121,12 @@ public class ModelToJavaOperation extends ModelOperation {
 		return map;
 	}
 
-	private Map<String, String> processBoxUnits(List<List<Node>> groupByBox) throws TaraException {
-		Map<String, String> map = new HashMap();
-		for (List<Node> nodes : groupByBox)
-			map.put(buildBoxUnitName(nodes.get(0)), customize(BoxUnitTemplate.create()).format(new BoxUnitFrameCreator(conf, model, nodes).create()));
-		return map;
-	}
-
 	private String buildBoxUnitName(Node node) {
 		return capitalize(conf.getModule()) + buildFileName(((Element) node).getFile());
 	}
 
 	private String buildBoxUnitName(String box) {
-		return "magritte.store." + box + DOT + "box";
+		return "magritte.boxes." + box + DOT + "box";
 	}
 
 	private void renderFacetTargets(Map<String, String> map, Node node) {
@@ -142,19 +139,6 @@ public class ModelToJavaOperation extends ModelOperation {
 	private void renderNode(Map<String, String> map, Node node) {
 		Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(node);
 		map.put(morphFrame.getKey(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
-	}
-
-	private void writeScene(String scene) {
-		File destiny = new File(outFolder, conf.getModule().toLowerCase());
-		destiny.mkdirs();
-		try {
-			File file = new File(destiny, capitalize(conf.getModule()) + JAVA);
-			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-			fileWriter.write(scene);
-			fileWriter.close();
-		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-		}
 	}
 
 	private void writeBoxUnits(String directory, Map<String, String> documentMap) {
@@ -173,6 +157,21 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
+	private void writeMorphs(Map<String, String> documentMap) {
+		for (Map.Entry<String, String> entry : documentMap.entrySet()) {
+			File file = new File(outFolder, entry.getKey().replace(DOT, separator) + JAVA);
+			file.getParentFile().mkdirs();
+			try {
+				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
+				fileWriter.write(entry.getValue());
+				fileWriter.close();
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, e.getMessage(), e);
+			}
+			prettyPrint(file);
+		}
+	}
+
 	private void writeBox(String boxPath, String document) {
 		File destiny = new File(outFolder, boxPath);
 		destiny.mkdirs();
@@ -186,18 +185,16 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-	private void writeMorphs(Map<String, String> documentMap) {
-		for (Map.Entry<String, String> entry : documentMap.entrySet()) {
-			File file = new File(outFolder, entry.getKey().replace(DOT, separator) + JAVA);
-			file.getParentFile().mkdirs();
-			try {
-				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-				fileWriter.write(entry.getValue());
-				fileWriter.close();
-			} catch (IOException e) {
-				LOG.log(Level.SEVERE, e.getMessage(), e);
-			}
-			prettyPrint(file);
+	private void writeScene(String scene) {
+		File destiny = new File(outFolder, conf.getModule().toLowerCase());
+		destiny.mkdirs();
+		try {
+			File file = new File(destiny, capitalize(conf.getModule()) + JAVA);
+			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
+			fileWriter.write(scene);
+			fileWriter.close();
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 

@@ -48,7 +48,7 @@ public class LanguageParameterAdapter {
 
 	private boolean isTerminal(Allow.Parameter allow) {
 		for (String flag : allow.flags())
-			if (flag.equalsIgnoreCase(TERMINAL.getName())) return true;
+			if (flag.equalsIgnoreCase(TERMINAL.name())) return true;
 		return false;
 	}
 
@@ -64,7 +64,7 @@ public class LanguageParameterAdapter {
 		frame.addFrame("multiple", variable.isMultiple()).
 			addFrame("position", i).
 			addFrame("annotations", getFlags(variable)).
-			addFrame("contract", variable.getNativeName() == null ? "" : variable.getNativeName());
+			addFrame("contract", variable.getContract() == null ? "" : variable.getContract());
 	}
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
@@ -124,14 +124,14 @@ public class LanguageParameterAdapter {
 
 	private String[] getFlags(Variable variable) {
 		List<String> flags = new ArrayList<>();
-		for (Tag tag : variable.getFlags()) flags.add(tag.getName());
+		for (Tag tag : variable.getFlags()) flags.add(tag.name());
 		return flags.toArray(new String[flags.size()]);
 	}
 
 	private String[] getFlags(Allow.Parameter variable) {
 		List<String> flags = new ArrayList<>();
 		for (String tag : variable.flags())
-			if (tag.equalsIgnoreCase(TERMINAL.getName())) flags.add(TERMINAL_INSTANCE.getName());
+			if (tag.equalsIgnoreCase(TERMINAL.name())) flags.add(TERMINAL_INSTANCE.name());
 			else flags.add(tag);
 		return flags.toArray(new String[flags.size()]);
 	}

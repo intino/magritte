@@ -157,12 +157,12 @@ public class RuleFactory {
 		};
 	}
 
-	public static Allow.Parameter parameter(final String name, final String type, final boolean multiple, final int position, String nativeName, String... annotations) {
-		return new PrimitiveParameterAllow(name, type, multiple, position, nativeName, annotations);
+	public static Allow.Parameter parameter(final String name, final String type, final boolean multiple, final int position, String contract, String... tags) {
+		return new PrimitiveParameterAllow(name, type, multiple, position, contract, tags);
 	}
 
-	public static Allow.Parameter parameter(final String name, final String[] values, final boolean multiple, final int position, String nativeName, String... annotations) {
-		return new ReferenceParameterAllow(name, values, multiple, position, nativeName, annotations);
+	public static Allow.Parameter parameter(final String name, final String[] values, final boolean multiple, final int position, String contract, String... tags) {
+		return new ReferenceParameterAllow(name, values, multiple, position, contract, tags);
 	}
 
 	public static Constraint.Require _multiple(final String type) {
@@ -256,7 +256,7 @@ public class RuleFactory {
 		};
 	}
 
-	public static Constraint.Require.Parameter _parameter(final String name, final String type, final boolean multiple, final int position, final String metric, final String... annotations) {
+	public static Constraint.Require.Parameter _parameter(final String name, final String type, final boolean multiple, final int position, final String contract, final String... annotations) {
 		return new Constraint.Require.Parameter() {
 			@Override
 			public String name() {
@@ -285,7 +285,7 @@ public class RuleFactory {
 
 			@Override
 			public String metric() {
-				return metric;
+				return contract;
 			}
 
 			@Override
@@ -467,13 +467,33 @@ public class RuleFactory {
 		};
 	}
 
-	public static Constraint.Require _address() {
-		return new Constraint.Require.Address() {
+	public static Constraint.Require redefine(final String name, String supertype) {
+		return new Constraint.Require.TerminalVariableRedefinition() {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
-				if (!node.isReference() && node.address() == Long.MIN_VALUE)
-					throw new SemanticException(new SemanticError("required.address", node.type()));
+				if (!isTerminalInstance(node))
+					for (Variable variable : node.variables())
+						if (name.equals(variable.name())) return;
+				throw new SemanticException(new SemanticError("required.terminal.variable.redefine",node, new Object[]{name}));
+			}
+
+			private boolean isTerminalInstance(Node node) {
+				for (String flag : node.flags())
+					if (flag.equalsIgnoreCase(Tag.TERMINAL_INSTANCE.name())) return true;
+				return false;
+
+			}
+		};
+	}
+
+	public static Constraint.Require _plate() {
+		return new Constraint.Require.Plate() {
+			@Override
+			public void check(Element element) throws SemanticException {
+				Node node = (Node) element;
+				if (!node.isReference() && node.plate().isEmpty())
+					throw new SemanticException(new SemanticError("required.plate", node.type()));
 			}
 		};
 	}
@@ -482,7 +502,7 @@ public class RuleFactory {
 		return new Assumption.Single() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(SINGLE.getName())) node.flags(SINGLE.getName());
+				if (!Arrays.asList(node.flags()).contains(SINGLE.name())) node.flags(SINGLE.name());
 			}
 		};
 	}
@@ -491,7 +511,7 @@ public class RuleFactory {
 		return new Assumption.Required() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(REQUIRED.getName())) node.flags(REQUIRED.getName());
+				if (!Arrays.asList(node.flags()).contains(REQUIRED.name())) node.flags(REQUIRED.name());
 			}
 		};
 	}
@@ -500,7 +520,7 @@ public class RuleFactory {
 		return new Assumption.Root() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(ROOT.getName())) node.flags(ROOT.getName());
+				if (!Arrays.asList(node.flags()).contains(ROOT.name())) node.flags(ROOT.name());
 				node.moveToTheTop();
 			}
 		};
@@ -510,8 +530,8 @@ public class RuleFactory {
 		return new Assumption.Facet() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(FACET.getName())) node.flags(FACET.getName());
-				node.flags(NAMED.getName());
+				if (!Arrays.asList(node.flags()).contains(FACET.name())) node.flags(FACET.name());
+				node.flags(NAMED.name());
 			}
 		};
 	}
@@ -520,9 +540,9 @@ public class RuleFactory {
 		return new Assumption.FacetInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(FACET_INSTANCE.getName()))
-					node.flags(FACET_INSTANCE.getName());
-				node.flags(NAMED.getName());
+				if (!Arrays.asList(node.flags()).contains(FACET_INSTANCE.name()))
+					node.flags(FACET_INSTANCE.name());
+				node.flags(NAMED.name());
 			}
 		};
 	}
@@ -531,7 +551,7 @@ public class RuleFactory {
 		return new Assumption.Property() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(PROPERTY.getName())) node.flags(PROPERTY.getName());
+				if (!Arrays.asList(node.flags()).contains(PROPERTY.name())) node.flags(PROPERTY.name());
 			}
 		};
 	}
@@ -540,8 +560,8 @@ public class RuleFactory {
 		return new Assumption.PropertyInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(PROPERTY_INSTANCE.getName()))
-					node.flags(PROPERTY_INSTANCE.getName());
+				if (!Arrays.asList(node.flags()).contains(PROPERTY_INSTANCE.name()))
+					node.flags(PROPERTY_INSTANCE.name());
 			}
 		};
 	}
@@ -550,17 +570,17 @@ public class RuleFactory {
 		return new Assumption.Feature() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(FEATURE.getName())) node.flags(FEATURE.getName());
+				if (!Arrays.asList(node.flags()).contains(FEATURE.name())) node.flags(FEATURE.name());
 			}
 		};
 	}
 
 	public static Assumption isFeatureInstance() {
-		return new Assumption.FeatureInstance() {
+		return new Assumption.Featureinstance() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(FEATURE_INSTANCE.getName()))
-					node.flags(FEATURE_INSTANCE.getName());
+				if (!Arrays.asList(node.flags()).contains(FEATURE_INSTANCE.name()))
+					node.flags(FEATURE_INSTANCE.name());
 			}
 		};
 	}
@@ -569,7 +589,7 @@ public class RuleFactory {
 		return new Assumption.Terminal() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(TERMINAL.getName())) node.flags(TERMINAL.getName());
+				if (!Arrays.asList(node.flags()).contains(TERMINAL.name())) node.flags(TERMINAL.name());
 			}
 		};
 	}
@@ -578,8 +598,8 @@ public class RuleFactory {
 		return new Assumption.TerminalInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(TERMINAL_INSTANCE.getName()))
-					node.flags(TERMINAL_INSTANCE.getName());
+				if (!Arrays.asList(node.flags()).contains(TERMINAL_INSTANCE.name()))
+					node.flags(TERMINAL_INSTANCE.name());
 			}
 		};
 	}

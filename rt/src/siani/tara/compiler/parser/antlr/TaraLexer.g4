@@ -101,6 +101,7 @@ MULTIPLE            : 'multiple';
 REQUIRED            : 'required';
 
 TERMINAL            : 'terminal';
+ROOT                : 'root';
 
 PROPERTY            : 'property';
 FEATURE             : 'feature';
@@ -123,7 +124,7 @@ COLON               : ':';
 COMMA               : ',';
 DOT                 : '.';
 EQUALS              : '=';
-APHOSTROPHE         : '"';
+
 SEMICOLON           : ';'+      { semicolon(); };
 STAR                : '*';
 PLUS                : '+';
@@ -148,9 +149,11 @@ BOOLEAN_VALUE       : 'true' | 'false';
 NATURAL_VALUE       : PLUS? DIGIT+;
 NEGATIVE_VALUE      : DASH DIGIT+ ;
 DOUBLE_VALUE        : (PLUS | DASH)? DIGIT+ DOT DIGIT+;
-STRING_VALUE        : APHOSTROPHE (~('"' | '\\' | '\r' | '\n') | '\\' ('"' | '\\'))* APHOSTROPHE;
-STRING_MULTILINE_VALUE_KEY   : DASHES  (~'-')* DASHES;
-ADDRESS_VALUE       : HASHTAG LETTER+;
+
+APHOSTROPHE         : '"' {setType(QUOTE_BEGIN);} -> mode(QUOTED);
+STRING_MULTILINE    : DASH DASH+  {setType(QUOTE_BEGIN);} -> mode(MULTILINE);
+
+PLATE_VALUE       : HASHTAG LETTER+;
 IDENTIFIER          : LETTER (DIGIT | LETTER | DASH | UNDERDASH)*;
 
 MEASURE_VALUE       : (LETTER| PERCENTAGE | DOLLAR | EURO | GRADE) (UNDERDASH | BY | DIVIDED_BY | PERCENTAGE | DOLLAR | EURO | GRADE | LETTER | DIGIT)*;
@@ -169,6 +172,23 @@ DEDENT         : 'dedent';
 
 UNKNOWN_TOKEN: . ;
 
+
+mode MULTILINE;
+	M_STRING_MULTILINE: DASH DASH+  {   setType(QUOTE_END); } -> mode(DEFAULT_MODE);
+	M_CHARACTER:.                   {   setType(CHARACTER); };
+
+mode QUOTED;
+	QUOTE:'"'                       {   setType(QUOTE_END); } -> mode(DEFAULT_MODE);
+    Q:'\"'                          {   setType(CHARACTER); };
+    SLASH_Q:'\\\"'                  {   setType(CHARACTER); };
+    SLASH:'\\'                      {   setType(CHARACTER); };
+    CHARACTER:.                     {   setType(CHARACTER); };
+
+
+
+QUOTE_END           :'t53647656ext';
+QUOTE_BEGIN         : 'te245656786xt';
+
 fragment DOLLAR              : '$';
 fragment EURO                : '€';
 fragment PERCENTAGE          : '%';
@@ -176,7 +196,7 @@ fragment GRADE               : 'º'| '°';
 fragment BY                  : '·';
 fragment DIVIDED_BY          : '/';
 fragment DASH                : '-';
-fragment DASHES              : DASH DASH+;
+
 fragment UNDERDASH           : '_';
 fragment DIGIT               : [0-9];
 fragment LETTER              : 'a'..'z' | 'A'..'Z' | 'ñ' | 'Ñ';

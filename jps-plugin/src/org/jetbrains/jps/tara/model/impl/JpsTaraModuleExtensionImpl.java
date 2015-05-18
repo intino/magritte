@@ -45,6 +45,11 @@ public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExte
 		return myProperties.generatedDslName;
 	}
 
+	@Override
+	public boolean isPlateRequired() {
+		return myProperties.plateRequired;
+	}
+
 	@NotNull
 	@Override
 	public JpsTaraModuleExtensionImpl createCopy() {

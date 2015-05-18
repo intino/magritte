@@ -19,7 +19,7 @@ public interface Node extends Element {
 
 	boolean hasSubs();
 
-	Long address();
+	String plate();
 
 	String[] annotations();
 

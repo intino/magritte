@@ -99,6 +99,7 @@ public class TaraPsiImplUtil {
 	@Nullable
 	public static Node getContainerNodeOf(PsiElement element) {
 		try {
+			if (element == null) return null;
 			PsiElement aElement = element.getOriginalElement();
 			while ((aElement.getParent() != null)
 				&& !(aElement.getParent() instanceof TaraModel)

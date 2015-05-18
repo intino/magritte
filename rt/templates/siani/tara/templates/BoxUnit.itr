@@ -1,9 +1,8 @@
 def type(model)
-    package magritte.store;
+    package magritte.boxes;
 
-    $importFacet...[$NL]
+    import static magritte.editors.BoxCore.*;
     import static magritte.Tag.*;
-    import static magritte.editors.NodeEditor.Cardinality.*;
     $importMetric...[$NL]
 
     public class $name extends magritte.editors.Box.$terminal {
@@ -11,13 +10,15 @@ def type(model)
 
         @Override
         public magritte.editors.Box$[] dependencies() {
-            return new magritte.editors.Box$[]{[magritte.store.$language+firstUpperCase.box]};
+            return new magritte.editors.Box$[]{[magritte.dsl.$language+firstUpperCase.box]};
         }
 
         @Override
         public void doWrite() {
             $node...[$NL]
         }
+
+        $intention...[$NL$NL]
     }
 end
 
@@ -29,7 +30,16 @@ def trigger(terminal) value(false)
 end
 
 def type(Node) trigger(node)
-    edit($key)[.name("$name$address")][$nodeType...[]][$facet...[]][$annotation...[]][.$parent][$variable...[]][$include...[]];
+    [def("$name$plate")][def("$key")][.name()][$nodeType...[]][$facet...[]][$annotation...[]][.$parent][$variable...[]][$include...[]];
+end
+
+def type(intention) trigger(intention)
+    public static class $path [extends $module+lowerCase.$container] implements $parentIntention+lowercase.natives.$interface+FirstUppercase {
+        @Override
+        public void execute() {
+            $body
+        }
+    }
 end
 
 def trigger(nodeType)
@@ -44,19 +54,24 @@ def trigger(parent)
     parent("$value")
 end
 
-def type(composed) trigger(include)
-    .has($inbox($value)[, $tag+firstUpperCase...[, ]])
+def type(include) type(required) !type(single) trigger(include)
+    .requires($value).holds($value)
 end
 
-def type(feature) trigger(include)
-    .features($inbox($value))
+def type(include) type(single) !type(required) trigger(include)
+    .allows($value)
 end
 
-def trigger(inbox) value(true)
-    $$
+def type(include) type(required) trigger(include)
+    .requires($value)
 end
-def trigger(inbox) value(false)
-	node
+
+def type(include) !type(single) !type(required) trigger(include)
+    .holds($value)
+end
+
+def type(include) type(terminal) trigger(include)
+    .has($value)
 end
 
 def type(variable) type(target) type(measure) slot(variableValue) trigger(variable)
@@ -71,7 +86,7 @@ def type(variable) type(target) type(word) slot(variableValue) trigger(variable)
 end
 
 def type(variable) type(target) type(reference) slot(variableValue) trigger(variable)
-    .set("!$node:$name<$target", $multiple(node($variableValue...[, ])))
+    .set("!$node:$name<$target", $multiple(ref($variableValue...[, ])))
 end
 
 def type(variable) type(target) slot(variableValue) trigger(variable)
@@ -79,15 +94,27 @@ def type(variable) type(target) slot(variableValue) trigger(variable)
 end
 
 def type(variable) type(reference) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple(node($variableValue...[, ])))
+    .set("$terminal$name", $multiple(ref($variableValue...[, ])))
+end
+
+def type(variable) type(file) slot(variableValue) trigger(variable)
+    .set("$terminal$name", $multiple(resource(($variableValue+file...[, ]))))
+end
+
+def trigger(file)
+	in("$value")
 end
 
 def type(variable) type(native) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple((Class<magritte.NativeContainer>) $variableValue))
+    .set("$terminal$name", $multiple($variableValue))
 end
 
-def type(Variable) type(file) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple(resource($variableValue+quoted...[, ])))
+def type(variable) type(native) slot(variableValue) trigger(variable)
+    .set("$terminal$name", $multiple($variableValue))
+end
+
+def trigger(intention) value(null)
+    nullBehavior()
 end
 
 def type(variable) type(word) slot(variableValue) trigger(variable)
@@ -96,6 +123,10 @@ end
 
 def type(Variable) type(string) slot(variableValue) trigger(variable)
     .set("$terminal$name", $multiple($variableValue+quoted...[, ]))
+end
+
+def type(Variable) type(boolean) slot(variableValue) trigger(variable)
+    .set("$terminal$name", $multiple($variableValue...[, ]))
 end
 
 def type(Variable) slot(variableValue) trigger(variable)
@@ -110,11 +141,7 @@ def type(Annotation) trigger(annotation)
 end
 
 def trigger(variableValue) slot(date)
-    magritte.types.TimeInstant.value($value+date)
-end
-
-def trigger(variableValue) slot(coordinate)
-    magritte.types.Coordinate.of($value)
+    date($value+date)
 end
 
 def trigger(quoted)

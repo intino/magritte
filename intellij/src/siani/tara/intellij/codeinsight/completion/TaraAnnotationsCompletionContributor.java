@@ -38,9 +38,9 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 						addNodeAnnotations(resultSet);
 					} else if (elementType.equals(HAS)) {
 						for (Tag annotation : Flags.HAS_ANNOTATIONS)
-							resultSet.addElement(LookupElementBuilder.create(annotation.getName()));
+							resultSet.addElement(LookupElementBuilder.create(annotation.name().toLowerCase()));
 					} else for (Tag annotation : Flags.VARIABLE_ANNOTATIONS)
-						resultSet.addElement(LookupElementBuilder.create(annotation.getName()));
+						resultSet.addElement(LookupElementBuilder.create(annotation.name().toLowerCase()));
 				}
 			}
 		);
@@ -48,7 +48,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 
 	private void addNodeAnnotations(CompletionResultSet resultSet) {
 		for (Tag tags : Flags.PRIME_ANNOTATIONS)
-			resultSet.addElement(LookupElementBuilder.create(tags.getName()));
+			resultSet.addElement(LookupElementBuilder.create(tags.name().toLowerCase()));
 	}
 
 	public PsiElement getContext(PsiElement element) {

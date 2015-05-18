@@ -8,10 +8,7 @@ import siani.tara.semantic.constraints.flags.AnnotationChecker;
 import siani.tara.semantic.constraints.flags.FlagCheckerFactory;
 import siani.tara.semantic.model.*;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static siani.tara.semantic.constraints.PrimitiveTypeCompatibility.inferType;
 
@@ -174,7 +171,7 @@ public class GlobalConstraints {
 
 			private boolean isFeature(Node context) {
 				for (String flag : context.flags())
-					if (flag.equalsIgnoreCase(Tag.FEATURE_INSTANCE.getName()))
+					if (flag.equalsIgnoreCase(Tag.FEATURE_INSTANCE.name()))
 						return true;
 				return false;
 			}

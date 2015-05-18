@@ -107,7 +107,7 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.TERMINAL:
 					configuration.setTerminal(Boolean.valueOf(reader.readLine()));
 					break;
-				case TaraRtConstants.LOCALE:
+				case TaraRtConstants.DICTIONARY:
 					configuration.setLocale(processLocale(reader));
 					break;
 				case TaraRtConstants.LANGUAGES_PATH:
@@ -118,6 +118,9 @@ public class TaraCompilerRunner {
 					break;
 				case TaraRtConstants.GENERATED_LANG_NAME:
 					configuration.setGeneratedLanguage(reader.readLine());
+					break;
+				case TaraRtConstants.REQUIRED_PLATE:
+					configuration.setPlateRequired(Boolean.valueOf(reader.readLine()));
 					break;
 				case TaraRtConstants.LANGUAGE:
 					configuration.setLanguage(reader.readLine());

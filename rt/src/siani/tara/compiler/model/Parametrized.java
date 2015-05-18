@@ -2,7 +2,7 @@ package siani.tara.compiler.model;
 
 import java.util.Collection;
 
-public interface Parameterized {
+public interface Parametrized {
 
 	Collection<Parameter> getParameters();
 

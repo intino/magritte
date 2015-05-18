@@ -29,7 +29,7 @@ public final class MorphCreatorHelper implements TemplateTags {
 
 	public static String[] getTypes(NodeImpl node, Language language) {
 		List<String> types = new ArrayList<>();
-		for (Tag tag : node.getAnnotations()) types.add(tag.getName());
+		for (Tag tag : node.getAnnotations()) types.add(tag.name());
 		types.addAll(instanceAnnotations(node, language));
 		return types.toArray(new String[types.size()]);
 	}
@@ -69,7 +69,7 @@ public final class MorphCreatorHelper implements TemplateTags {
 		if (variable instanceof VariableReference) list.add(REFERENCE);
 		list.add(variable.getType());
 		if (variable.isMultiple()) list.add(MULTIPLE);
-		for (Tag tag : variable.getFlags()) list.add(tag.getName());
+		for (Tag tag : variable.getFlags()) list.add(tag.name());
 		return list.toArray(new String[list.size()]);
 	}
 

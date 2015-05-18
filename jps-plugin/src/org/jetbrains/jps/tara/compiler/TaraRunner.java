@@ -7,6 +7,7 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.SystemProperties;
 import com.intellij.util.containers.ContainerUtilRt;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.cmdline.ClasspathBootstrap;
 import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ExternalProcessUtil;
@@ -24,14 +25,16 @@ public class TaraRunner {
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
-	private static final String ITRULES_VERSION = "1.1.14";
+	private static final String ITRULES_VERSION = "1.2.0";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String SEMANTIC_RULES = "tara.jar";
+	private static final String[] JALOPY = {"jalopy-3000.0.0.jar", "antlr-2.7.7.jar", "log4j-1.2.17.jar"};
 	private static final String LIB = "lib";
 	public static final char NL = '\n';
 	private static File argsFile;
 
-	protected TaraRunner(final String projectName, final String moduleName, final String language, final String generatedLangName, final String locale,
+	protected TaraRunner(final String projectName, final String moduleName, final String language,
+	                     final String generatedLangName, final String dictionary, boolean plateRequired,
 	                     final Collection<String> sources,
 	                     final String encoding,
 	                     String[] iconPaths,
@@ -46,7 +49,8 @@ public class TaraRunner {
 			writer.write(TaraRtConstants.MODULE + NL + moduleName + NL);
 			if (!language.isEmpty()) writer.write(TaraRtConstants.LANGUAGE + NL + language + NL);
 			writer.write(TaraRtConstants.TERMINAL + NL + (generatedLangName == null ? "true" : "false") + NL);
-			writer.write(TaraRtConstants.LOCALE + NL + locale + NL);
+			writer.write(TaraRtConstants.DICTIONARY + NL + dictionary + NL);
+			writer.write(TaraRtConstants.REQUIRED_PLATE + NL + plateRequired + NL);
 			if (generatedLangName != null)
 				writer.write(TaraRtConstants.GENERATED_LANG_NAME + NL + generatedLangName + NL);
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + NL + encoding + NL);
@@ -115,6 +119,7 @@ public class TaraRunner {
 		classPath.add(getAntlrLib().getPath());
 		classPath.add(getSemanticsLib().getPath());
 		for (File file : getItRulesLibs()) classPath.add(file.getPath());
+		for (File file : getJalopyLibs()) classPath.add(file.getPath());
 		return classPath;
 	}
 
@@ -138,15 +143,26 @@ public class TaraRunner {
 			new File(root.getParentFile(), "lib/" + SEMANTIC_RULES);
 	}
 
+	private Collection<File> getJalopyLibs() {
+		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
+		List<File> libs = new ArrayList<>();
+		for (String lib : JALOPY) root = createLib(root, libs, lib);
+		return libs;
+	}
+
 	private Collection<File> getItRulesLibs() {
 		File root = ClasspathBootstrap.getResourceFile(TaraBuilder.class);
 		List<File> libs = new ArrayList<>();
-		for (String lib : ITRULES) {
-			root = new File(root.getParentFile(), lib);
-			libs.add((root.exists()) ? new File(root.getParentFile(), lib) :
-				new File(root.getParentFile(), "lib/" + lib));
-		}
+		for (String lib : ITRULES) root = createLib(root, libs, lib);
 		return libs;
+	}
+
+	@NotNull
+	private File createLib(File root, List<File> libs, String lib) {
+		root = new File(root.getParentFile(), lib);
+		libs.add((root.exists()) ? new File(root.getParentFile(), lib) :
+			new File(root.getParentFile(), "lib/" + lib));
+		return root;
 	}
 
 

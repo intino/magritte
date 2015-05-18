@@ -12,5 +12,9 @@ public interface VarInit extends Navigatable, TaraPsiElement {
 
 	Value getValue();
 
-	String getMetricValue();
+	String getMetric();
+
+	String getContract();
+
+	void setContract(String contract);
 }

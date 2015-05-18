@@ -23,6 +23,26 @@ public class Format {
 		};
 	}
 
+
+	public static Formatter toCamelCase() {
+		return new Formatter() {
+			@Override
+			public Object format(Object s) {
+				final String value = s.toString();
+				String[] parts = value.split("_");
+				if (parts.length == 1) return value.substring(0, 1).toUpperCase() + value.substring(1);
+				String caseString = "";
+				for (String part : parts)
+					caseString = caseString + toProperCase(part);
+				return caseString;
+			}
+		};
+	}
+
+	static String toProperCase(String s) {
+		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+	}
+
 	public static Formatter date() {
 		return new Formatter() {
 			@Override

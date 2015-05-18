@@ -16,20 +16,20 @@ public class AcceptedMonetLanguageInstance {
 
 	@Test
 	public void should_allow_facet_application() throws Exception {
-		Definition animal = define().type("Container").address(220696291L).name("Animal").facet(facetDefine().as("Collectable").
+		Definition animal = define().type("Container").plate("220696291L").name("Animal").facet(facetDefine().as("Collectable").
 			include(
 				define().type("Display").parameter(0, "fields", "FichaAnimal.Archivo").node()).facet());
 
 		monetChecks(
 			root().include(
-				define().type("Collection").name("RegistroAnimales").annotations("single").address(220696291L).include(animal.node()).node(),
+				define().type("Collection").name("RegistroAnimales").annotations("single").plate("220696291L").include(animal.node()).node(),
 				animal.node()));
 	}
 
 	@Test
 	public void should_reject_unknown_facet_application() throws Exception {
 		thrown.expectMessage(message("reject.unknown.facet.in.context", "Element"));
-		Definition animal = define().type("Container").address(220696291L).name("Animal").facet(facetDefine().as("Element").
+		Definition animal = define().type("Container").plate("220696291L").name("Animal").facet(facetDefine().as("Element").
 			include(
 				define().type("Display").parameter(0, "fields", "FichaAnimal.Archivo").node()).facet());
 
@@ -39,14 +39,14 @@ public class AcceptedMonetLanguageInstance {
 	}
 
 	@Test
-	public void should_allow_Role_withAddress() throws Exception {
+	public void should_allow_Role_withplate() throws Exception {
 		monetChecks(root().include(
-			define().type("Role").name("Gestor").address(613602067L).node()));
+			define().type("Role").name("Gestor").plate("613602067L").node()));
 	}
 
 	@Test
-	public void should_reject_Role_withOutAddress() throws Exception {
-		thrown.expectMessage(message("required.address", "Role", "Gestor"));
+	public void should_reject_Role_withOutplate() throws Exception {
+		thrown.expectMessage(message("required.plate", "Role", "Gestor"));
 		monetChecks(root().include(
 			define().type("Role").name("Gestor").node()));
 	}

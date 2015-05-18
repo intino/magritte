@@ -28,7 +28,7 @@ public interface Assumption {
 
 	}
 
-	interface FeatureInstance extends Assumption {
+	interface Featureinstance extends Assumption {
 
 	}
 

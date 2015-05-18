@@ -9,6 +9,9 @@ import siani.tara.intellij.lang.psi.*;
 import java.util.List;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
+
+	private String contract = "";
+
 	public ParameterMixin(@NotNull ASTNode node) {
 		super(node);
 	}
@@ -54,5 +57,13 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		while (!(aElement.getParent() instanceof Node) && !(aElement.getParent() instanceof TaraFacetApply))
 			aElement = aElement.getParent();
 		return (aElement.getParent() instanceof TaraFacetApply) ? (TaraFacetApply) aElement.getParent() : null;
+	}
+
+	public String getContract() {
+		return contract;
+	}
+
+	public void setContract(String contract) {
+		this.contract = contract;
 	}
 }

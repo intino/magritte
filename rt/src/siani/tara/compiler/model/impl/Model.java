@@ -147,12 +147,12 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public Long getAddress() {
+	public String getPlate() {
 		return null;
 	}
 
 	@Override
-	public void setAddress(Long address) {
+	public void setPlate(String address) {
 
 	}
 

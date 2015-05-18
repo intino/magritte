@@ -4,8 +4,7 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.engine.formatters.PluralFormatter;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
-import siani.tara.compiler.model.Facet;
-import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeReference;
 
@@ -51,6 +50,7 @@ public class BoxModelAdapter implements Adapter<Model> {
 		for (Node node : nodeContainer.getIncludedNodes()) {
 			if (node instanceof NodeReference) continue;
 			frame.addFrame("node", FrameContext.build(node));
+			crateIntentionFrames(frame, extractNativeParameters(node));
 			parserAllNodes(frame, node, FrameContext);
 		}
 		for (Facet facet : nodeContainer.getFacets())
@@ -58,6 +58,46 @@ public class BoxModelAdapter implements Adapter<Model> {
 				frame.addFrame("node", FrameContext.build(node));
 				parserAllNodes(frame, node, FrameContext);
 			}
+	}
+
+	private void crateIntentionFrames(Frame frame, Collection<Parameter> parameters) {
+		for (Parameter parameter : parameters) {
+			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", parameter.getValues().iterator().next());
+			intentionFrame.addFrame("module", module);
+			intentionFrame.addFrame("varName", parameter.getName());
+			intentionFrame.addFrame("container", buildContainerPath(parameter.getOwner()));
+			intentionFrame.addFrame("parentIntention", language.languageName());
+			intentionFrame.addFrame("interface", parameter.getContract());
+			intentionFrame.addFrame("path", NameFormatter.createNativeReference(parameter.getOwner().getQualifiedName(), parameter.getName()));
+			frame.addFrame("intention", intentionFrame);
+		}
+	}
+
+	private String buildContainerPath(NodeContainer owner) {
+		if (owner instanceof Node && !((Node) owner).isAnonymous()) return format(owner.getQualifiedName());
+		return format(getFirstNamed(owner));
+	}
+
+	private String getFirstNamed(NodeContainer owner) {
+		if (!(owner instanceof Node)) return "";
+		NodeContainer container = owner.getContainer();
+		while (container != null)
+			if (container instanceof Node && !((Node) container).isAnonymous()) {
+				return container.getQualifiedName();
+			} else container = container.getContainer();
+		return "";
+	}
+
+	private String format(String qualifiedName) {
+		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
+	}
+
+	private Collection<Parameter> extractNativeParameters(Node node) {
+		List<Parameter> parameters = new ArrayList<>();
+		for (Parameter parameter : node.getParameters())
+			if (parameter.getInferredType().equals(Primitives.NATIVE))
+				parameters.add(parameter);
+		return parameters;
 	}
 
 	private void addMetricImports(Frame frame) {

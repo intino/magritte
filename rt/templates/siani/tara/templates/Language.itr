@@ -78,6 +78,10 @@ def type(require) type(oneOf) trigger(require)
 	oneOf([$require...[, ]])
 end
 
+def type(require) type(redefine) trigger(require)
+	redefine($name+quoted, $supertype+quoted)
+end
+
 def type(require) type(multiple) trigger(require)
 	_multiple($type+quoted[, $relation][, $tags+quoted...[, ]])
 end
@@ -119,7 +123,7 @@ def type(assumptions) trigger(assumptions)
 end
 
 def trigger(assumption)
-	is$value+firstUpperCase()
+	is$value+toCamelCase()
 end
 
 def trigger(quoted)

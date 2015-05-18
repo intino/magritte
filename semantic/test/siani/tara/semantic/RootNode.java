@@ -28,8 +28,8 @@ class RootNode extends ScriptNode {
 	}
 
 	@Override
-	public Long address() {
-		return Long.MIN_VALUE;
+	public String plate() {
+		return "";
 	}
 
 	@Override

@@ -26,5 +26,11 @@ public interface Parameter {
 
 	Collection<Object> getValues();
 
+	String getContract();
+
 	String getMetric();
+
+	void setMetric(String metric);
+
+	void setContract(String contract);
 }

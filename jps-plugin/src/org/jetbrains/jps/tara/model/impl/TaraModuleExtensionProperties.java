@@ -13,4 +13,7 @@ public class TaraModuleExtensionProperties {
 	@Tag("genDslName")
 	public String generatedDslName = "";
 
+	@Tag("plateRequired")
+	public boolean plateRequired = false;
+
 }

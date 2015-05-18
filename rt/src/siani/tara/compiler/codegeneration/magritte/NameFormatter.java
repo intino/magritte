@@ -59,4 +59,9 @@ public class NameFormatter {
 	public static String buildFileName(String file) {
 		return camelCase(file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(DOT)), "_");
 	}
+
+	public static String createNativeReference(String qualifiedName, String variable) {
+		qualifiedName = qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "").replace(".", "_");
+		return qualifiedName + "_" + variable;
+	}
 }

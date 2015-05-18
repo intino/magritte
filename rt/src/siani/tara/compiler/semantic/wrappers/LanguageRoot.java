@@ -62,8 +62,8 @@ public class LanguageRoot implements Node {
 	}
 
 	@Override
-	public Long address() {
-		return Long.MIN_VALUE;
+	public String plate() {
+		return "";
 	}
 
 	@Override

@@ -26,17 +26,25 @@ public class Checker {
 	}
 
 	private void checkConstraints(Node node) throws SemanticException {
-		Collection<Assumption> assumptions = language.assumptions(node.type());
-		if (assumptions != null) assume(node, assumptions);
+		assume(node);
 		if (!node.type().equals(Root)) checkNodeConstrains(node);
 	}
 
 	private void checkConstraintsDeep(Node node) throws SemanticException {
-		Collection<Assumption> assumptions = language.assumptions(node.type());
-		if (assumptions != null) assume(node, assumptions);
+		assume(node);
 		if (!node.isReference())
 			for (Node content : node.includes()) check(content);
 		if (node.type() != null) checkNodeConstrains(node);
+	}
+
+	private void assume(Node node) {
+		Collection<Assumption> assumptions = language.assumptions(node.type());
+		if (assumptions != null) assume(node, assumptions);
+		for (String type : node.secondaryTypes()) {
+			assumptions = language.assumptions(type);
+			if (assumptions != null)
+				assume(node, assumptions);
+		}
 	}
 
 	private void assume(Node node, Collection<Assumption> assumptions) {

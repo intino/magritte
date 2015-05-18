@@ -12,7 +12,7 @@ anImport: USE headerReference NEWLINE+;
 doc: DOC+;
 node: signature body?;
 
-signature: ((SUB parameters? IDENTIFIER) | (metaidentifier parameters? IDENTIFIER? parent?)) tags? address?;
+signature: ((SUB parameters? IDENTIFIER) | (metaidentifier parameters? IDENTIFIER? parent?)) tags? plate?;
 
 parent : EXTENDS identifierReference;
 
@@ -56,23 +56,23 @@ count  : LEFT_SQUARE NATURAL_VALUE RIGHT_SQUARE;
 word            : NEW_LINE_INDENT (wordValue NEWLINE)+ DEDENT;
 wordValue       : IDENTIFIER STAR?;
 
-stringValue     : STRING_VALUE | (NEWLINE? STRING_MULTILINE_VALUE_KEY);
+stringValue     : NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END);
 booleanValue    : BOOLEAN_VALUE;
 naturalValue    : NATURAL_VALUE;
 integerValue    : NATURAL_VALUE | NEGATIVE_VALUE;
 doubleValue     : (NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE) SCIENCE_NOT?;
-linkValue       : address | identifierReference;
-address         : ADDRESS_VALUE;
+linkValue       : plate | identifierReference;
+plate         : PLATE_VALUE;
 measureValue    : IDENTIFIER | MEASURE_VALUE;
 
 tags: flags? annotations?;
 
 annotations: INTO annotation+;
-annotation: TERMINAL | SINGLE | MULTIPLE | REQUIRED
+annotation: TERMINAL | ROOT | SINGLE | MULTIPLE | REQUIRED
             | FACET | FEATURE | PROPERTY | ENCLOSED;
 
 flags: IS flag+;
-flag: ABSTRACT | TERMINAL
+flag: ABSTRACT | TERMINAL | ROOT
       	| SINGLE | MULTIPLE | REQUIRED
       	| FACET | FEATURE | PROPERTY | ENCLOSED  | READONLY;
 

@@ -28,7 +28,7 @@ public class NativesGenerator {
 	private static final Logger LOG = Logger.getInstance(NativesGenerator.class.getName());
 	private static final String NATIVES = "natives";
 	private static final String DOT = ".";
-	private static final String MAGRITTE_NATIVE = "magritte.Native";
+	private static final String MAGRITTE_NATIVE = "magritte.Intention";
 	private final Project project;
 	private final TaraModel taraModel;
 	private final PsiDirectory srcDirectory;

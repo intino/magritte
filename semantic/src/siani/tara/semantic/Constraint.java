@@ -11,6 +11,10 @@ public interface Constraint {
 		interface Name extends Require {
 		}
 
+		interface TerminalVariableRedefinition extends Require {
+
+		}
+
 		interface Include extends Require {
 			String type();
 
@@ -50,7 +54,7 @@ public interface Constraint {
 			}
 		}
 
-		interface Address extends Require {
+		interface Plate extends Require {
 		}
 	}
 

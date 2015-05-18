@@ -72,8 +72,18 @@ class ScriptFacetDefinition implements FacetDefinition {
 			}
 
 			@Override
+			public String getContract() {
+				return null;
+			}
+
+			@Override
 			public String getMetric() {
 				return null;
+			}
+
+			@Override
+			public void setContract(String contract) {
+
 			}
 
 			@Override
@@ -138,8 +148,18 @@ class ScriptFacetDefinition implements FacetDefinition {
 			}
 
 			@Override
+			public String getContract() {
+				return null;
+			}
+
+			@Override
 			public String getMetric() {
 				return null;
+			}
+
+			@Override
+			public void setContract(String contract) {
+
 			}
 
 			@Override

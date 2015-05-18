@@ -76,7 +76,7 @@ public class MorphFrameCreator implements TemplateTags {
 		Collection<Assumption> assumptions = language.assumptions(node.getType());
 		if (assumptions == null) return false;
 		for (Assumption assumption : assumptions)
-			if (assumption instanceof Assumption.FeatureInstance)
+			if (assumption instanceof Assumption.Featureinstance)
 				return true;
 		return false;
 	}

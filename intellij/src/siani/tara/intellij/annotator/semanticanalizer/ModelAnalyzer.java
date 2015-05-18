@@ -28,6 +28,7 @@ public class ModelAnalyzer extends TaraAnalyzer {
 			if (language == null) return;
 			new Checker(language).check(new LanguageRoot(model));
 		} catch (SemanticException e) {
+			if (e.getOrigin() == null) throw new RuntimeException("origin = null:" + e.getMessage());
 			PsiElement destiny = ((LanguageElement) e.getOrigin()).element();
 			if (destiny instanceof Node) destiny = ((Node) destiny).getSignature();
 			results.put(destiny, annotateAndFix(e, destiny));

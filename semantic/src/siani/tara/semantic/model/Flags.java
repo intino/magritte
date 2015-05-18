@@ -25,7 +25,7 @@ public class Flags {
 
 	public static String[] all() {
 		List<String> list = new ArrayList();
-		for (Tag tags : values()) list.add(tags.getName());
+		for (Tag tags : values()) list.add(tags.name());
 		return list.toArray(new String[list.size()]);
 	}
 }

@@ -8,7 +8,9 @@ import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.model.Tag;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
@@ -24,7 +26,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	public void execute(Frame frame, Node node, FrameContext<Node> FrameContext) {
 		if (node instanceof NodeImpl) {
 			structure(node, frame);
-			annotations(node, frame);
+			flags(node, frame);
 			variables(node, frame, FrameContext);
 			facetTargetVariables(node, frame, FrameContext);
 			parameters(node, frame, FrameContext);
@@ -35,13 +37,15 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private void structure(Node node, Frame newFrame) {
-		newFrame.addFrame(KEY, String.valueOf(this.keys.get(node)));
-		if (node.getName() != null && !node.isAnonymous())
+		if (node.isAnonymous() && node.getPlate() == null)
+			newFrame.addFrame(KEY, String.valueOf(this.keys.get(node)));
+		else {
 			newFrame.addFrame(NAME, clean(node.getQualifiedName()));
+			if (node.getPlate() != null) newFrame.addFrame(PLATE, "#" + String.valueOf(node.getPlate()));
+		}
 		addTypes(node, newFrame);
 		if (node.getParent() != null)
 			newFrame.addFrame(PARENT, node.getParent().getName());
-		if (node.getAddress() != null) newFrame.addFrame(ADDRESS, "#" + String.valueOf(node.getAddress()));
 		addFacetApplies(node, newFrame);
 	}
 
@@ -49,22 +53,22 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		newFrame.addFrame(NODE_TYPE, node.getType());
 	}
 
-	private void annotations(final Node node, Frame frame) {
-		Frame annotationFrame = new Frame(frame) {{
-			for (Tag tag : node.getFlags()) {
-				if (!tag.equals(Tag.ABSTRACT) && !tag.equals(Tag.TERMINAL_INSTANCE)) continue;
-				if (terminal && tag.equals(Tag.TERMINAL_INSTANCE)) continue;
-				addFrame(VALUE, tag.getName());
-			}
-		}};
-		if (terminal && (isRoot(node))) annotationFrame.addFrame(VALUE, Tag.ROOT.getName());
-		annotationFrame.addTypes(ANNOTATION);
-		if (annotationFrame.slots().length != 0)
-			frame.addFrame(ANNOTATION, annotationFrame);
+	private void flags(final Node node, Frame frame) {
+		Frame tagsFrame = new Frame(frame);
+		for (Tag tag : node.getFlags()) {
+			if (!tag.equals(Tag.ABSTRACT) && !tag.equals(Tag.TERMINAL_INSTANCE) && !tag.equals(Tag.ROOT)) continue;
+			if (terminal && tag.equals(Tag.TERMINAL_INSTANCE)) continue;
+			tagsFrame.addFrame(VALUE, tag.name());
+		}
+		if (terminal && (isRoot(node))) tagsFrame.addFrame(VALUE, Tag.ROOT.name());
+		tagsFrame.addTypes(ANNOTATION);
+		if (tagsFrame.slots().length != 0)
+			frame.addFrame(ANNOTATION, tagsFrame);
 	}
 
 	private boolean isRoot(Node node) {
-		return node.isRoot() || (node.getContainer() != null && (node.getContainer() instanceof Node && isRoot((Node) node.getContainer())));
+		return node.isRoot() || (node.getContainer() != null && (
+			node.getContainer() instanceof Node && isRoot((Node) node.getContainer())));
 	}
 
 	private void variables(Node node, final Frame frame, FrameContext<Node> FrameContext) {
@@ -80,9 +84,10 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 
 	private void parameters(Node node, Frame frame, FrameContext<Node> FrameContext) {
 		for (final Parameter parameter : node.getParameters())
-			if (!isOverriddenByFacets(parameter, node.getFacets()))
+			if (!isOverriddenByFacets(parameter, node.getFacets())) {
 				frame.addFrame(VARIABLE, FrameContext.build(parameter));
-	}
+			}
+		}
 
 	private boolean isOverriddenByFacets(Parameter parameter, Collection<Facet> facets) {
 		for (Facet facet : facets)
@@ -106,7 +111,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private void includes(Node node, Frame frame) {
 		for (Node inner : node.getIncludedNodes())
 			if (!inherited(inner) && !isOverriddenByFacets(inner, node.getFacets()))
-				addNode(frame, inner);
+				addComponent(frame, inner);
 		addFacetNodes(node, frame);
 	}
 
@@ -133,47 +138,30 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private void addFacetNodes(Node node, Frame frame) {
 		for (Facet facet : node.getFacets())
 			for (Node inner : facet.getIncludedNodes())
-				addNode(frame, inner);
+				addComponent(frame, inner);
 	}
-
-	private void addNode(Frame frame, Node inner) {
-		if (inner.isFeature()) addFeature(frame, inner);
-		else addComponent(frame, inner);
-	}
-
 
 	private Long getKey(Node inner) {
 		return inner instanceof NodeReference ? keys.get(((NodeReference) inner).getDestiny()) : keys.get(inner);
 	}
 
-	private void addFeature(Frame frame, Node inner) {
-		Long key = getKey(inner);
-		if (keys.isEmpty()) return;
-		Frame include = new Frame(frame).addTypes(FEATURE, "include").addFrame(VALUE, String.valueOf(key));
-		if (inner.isRequired()) include.addFrame("tag", Tag.REQUIRED.getName());
-		if (inner.isSingle()) include.addFrame("tag", Tag.SINGLE.getName());
-		include.addFrame("inbox", key != null);
-		frame.addFrame(INCLUDE, include);
-	}
-
 	private void addComponent(Frame frame, Node inner) {
 		Long key = getKey(inner);
-		Frame include = new Frame(frame).addTypes("composed", "include").addFrame(VALUE, key == null ? searchNode(inner) : key);
-		include.addFrame("inbox", key != null);
-		if (inner.isRequired()) include.addFrame("tag", Tag.REQUIRED.getName());
-		if (inner.isSingle()) include.addFrame("tag", Tag.SINGLE.getName());
+		Frame include = new Frame(frame).addTypes("include").addTypes(asString(inner.getFlags()));
+		include.addFrame(VALUE, inner.isAnonymous() && inner.getPlate() == null ? key : searchNode(inner));
+		if (terminal) include.addTypes(TERMINAL);
+		if (inner.isFeature()) include.addTypes(Tag.SINGLE.name());
 		frame.addFrame(INCLUDE, include);
 	}
 
 	private String searchNode(Node inner) {
 		Node node = inner instanceof NodeReference ? ((NodeReference) inner).getDestiny() : inner;
-		return '"' + node.getQualifiedName() + '"';
+		return '"' + (node.isAnonymous() ? node.getPlate() : node.getQualifiedName()) + '"';
 	}
 
 	private String clean(String name) {
 		return name.replace("[", "").replace("]", "").replaceAll(Node.ANNONYMOUS, "");
 	}
-
 
 	private void addFacetApplies(Node node, Frame newFrame) {
 		for (Facet facet : node.getFacets()) {
@@ -206,6 +194,12 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 
 	private String shortType(String type) {
 		return type.contains(".") ? type.substring(type.lastIndexOf(".") + 1) : type;
+	}
+
+	private String[] asString(Collection<Tag> flags) {
+		List<String> list = new ArrayList<>();
+		for (Tag flag : flags) list.add(flag.name());
+		return list.toArray(new String[list.size()]);
 	}
 
 }

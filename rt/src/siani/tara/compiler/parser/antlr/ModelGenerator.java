@@ -69,7 +69,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private void resolveParent(NodeContext ctx, NodeImpl node) {
 		if (node.isSub()) {
 			Node peek = (Node) deque.peek();
-			if (!peek.isAbstract()) peek.addFlags(Tag.ABSTRACT.getName());
+			if (!peek.isAbstract()) peek.addFlags(Tag.ABSTRACT.name());
 			node.setParent(peek);
 			peek.addChild(node);
 			node.setParentName(peek.getName());
@@ -152,13 +152,13 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterImplicitParameter(@NotNull ImplicitParameterContext ctx) {
 		int position = ((ParametersContext) ctx.getParent()).implicitParameter().indexOf(ctx);
-		String extension = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
-		addParameter("", position, extension, resolveValue(ctx.value()));
+		String contract = ctx.value().measureValue() != null ? ctx.value().measureValue().getText() : null;
+		addParameter("", position, contract, resolveValue(ctx.value()));
 	}
 
-	public void addParameter(String name, int position, String extension, Object[] values) {
-		Parameterized object = (Parameterized) deque.peek();
-		object.addParameter(name, position, extension, values);
+	public void addParameter(String name, int position, String measureValue, Object[] values) {
+		Parametrized object = (Parametrized) deque.peek();
+		object.addParameter(name, position, measureValue, values);
 	}
 
 	@Override
@@ -190,8 +190,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 
 	@Override
-	public void enterAddress(@NotNull AddressContext ctx) {
-		((Node) deque.peek()).setAddress(Long.parseLong(ctx.getText().substring(1).replace(".", "")));
+	public void enterPlate(@NotNull PlateContext ctx) {
+		((Node) deque.peek()).setPlate(ctx.getText().substring(1));
 	}
 
 	@Override
@@ -208,7 +208,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			if (ctx.value().measureValue() != null)
 				variable.setDefaultExtension(ctx.value().measureValue().getText());
 		}
-		if (ctx.nativeName() != null) variable.setNativeName(ctx.nativeName().getText().substring(1));
+		if (ctx.nativeName() != null) variable.setContract(ctx.nativeName().getText().substring(1));
 
 		addHeaderInformation(ctx, (Element) variable);
 		for (FlagsContext flagsContext : ctx.flags()) variable.addFlags(resolveTags(flagsContext));
@@ -254,11 +254,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private String formatText(String value) {
-		if (!value.trim().startsWith("---")) return value.substring(1, value.length() - 1);
+		if (!value.trim().startsWith("--")) return value.substring(1, value.length() - 1).replace("\\\"","\"");
 		String text = value.replace("\t", "    ");
 		if (value.startsWith("\n")) text = text.substring(1);
 		String pattern = text.substring(0, text.indexOf("\n")).replace("-", "");
-		text = value.trim().replaceAll("---(-*)\\n", "").replaceAll("---(-*)", "");
+		text = value.trim().replaceAll("--(-*)\\n", "").replaceAll("--(-*)", "");
 		String result = "";
 		for (String line : text.split("\\n")) result += line.replaceFirst(pattern, "") + "\n";
 		while (result.endsWith("\n")) result = result.substring(0, result.length() - 1);

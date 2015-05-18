@@ -16,7 +16,7 @@ public interface Definition {
 
 	Definition flags(String... annotation);
 
-	Definition address(Long address);
+	Definition plate(String address);
 
 	Definition facetTarget(FacetTarget target);
 

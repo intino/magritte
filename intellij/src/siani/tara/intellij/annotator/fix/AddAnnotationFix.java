@@ -25,7 +25,7 @@ public class AddAnnotationFix implements IntentionAction {
 	@NotNull
 	@Override
 	public String getText() {
-		return "Add " + tags.getName() + " annotation";
+		return "Add " + tags.name().toLowerCase() + " annotation";
 	}
 
 	@NotNull
@@ -47,9 +47,8 @@ public class AddAnnotationFix implements IntentionAction {
 				Annotations taraAnnotations = node.getAnnotationsNode();
 				TaraElementFactory factory = TaraElementFactory.getInstance(node.getProject());
 				if (taraAnnotations != null) {
-					taraAnnotations.getAnnotationList().add(factory.createAnnotation(tags.getName()));
-				}
-				else node.addAfter(factory.createAnnotations(tags.getName()), node.getSignature());
+					taraAnnotations.getAnnotationList().add(factory.createAnnotation(tags.name().toLowerCase()));
+				} else node.addAfter(factory.createAnnotations(tags.name().toLowerCase()), node.getSignature());
 			}
 		};
 		action.execute();

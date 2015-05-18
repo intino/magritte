@@ -14,6 +14,8 @@ locale
 English
 generated_lang_name
 Monet
+required_plate
+true
 encoding
 UTF-8
 models

@@ -18,7 +18,7 @@ public interface Variable  extends Cloneable {
 
 	boolean isMultiple();
 
-	String getNativeName();
+	String getContract();
 
 	Collection<Tag> getFlags();
 
@@ -30,7 +30,7 @@ public interface Variable  extends Cloneable {
 
 	boolean isInherited();
 
-	void setNativeName(String extension);
+	void setContract(String extension);
 
 	void setName(String name);
 

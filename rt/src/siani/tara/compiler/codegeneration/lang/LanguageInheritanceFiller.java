@@ -71,7 +71,7 @@ public class LanguageInheritanceFiller {
 				addSingle(requireFrame, "require", ((Require.Single) require).type());
 			if (require instanceof Require.Parameter)
 				addParameter(requireFrame, (Require.Parameter) require);
-			if (require instanceof Require.Address) addAddress(requireFrame);
+			if (require instanceof Require.Plate) addAddress(requireFrame);
 
 		}
 		if (requireFrame.slots().length != 0)

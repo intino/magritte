@@ -17,6 +17,7 @@ public class CompilerConfiguration {
 	private String sourceEncoding;
 	private String project;
 	private String module;
+	private boolean plateRequired;
 	private PrintWriter output;
 	private File tempDirectory;
 	private File rulesDirectory;
@@ -269,5 +270,13 @@ public class CompilerConfiguration {
 		} catch (TaraException ignored) {
 			throw new TaraRuntimeException("Language cannot be loaded", null);
 		}
+	}
+
+	public boolean isPlateRequired() {
+		return plateRequired;
+	}
+
+	public void setPlateRequired(boolean plateRequired) {
+		this.plateRequired = plateRequired;
 	}
 }

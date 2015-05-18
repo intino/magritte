@@ -13,7 +13,7 @@ class ScriptDefinition implements Definition {
 	public Set<String> flags = new HashSet<>();
 	public List<FacetTarget> facetTargets = new ArrayList<>();
 	public List<Facet> facets = new ArrayList<>();
-	private Long address = Long.MIN_VALUE;
+	private String plate = "";
 	private List<ScriptNode> includes = new ArrayList<>();
 
 	@Override
@@ -76,8 +76,18 @@ class ScriptDefinition implements Definition {
 			}
 
 			@Override
-			public String getMetric() {
+			public String getContract() {
 				return null;//TODO
+			}
+
+			@Override
+			public String getMetric() {
+				return null;
+			}
+
+			@Override
+			public void setContract(String contract) {
+
 			}
 
 			@Override
@@ -102,8 +112,8 @@ class ScriptDefinition implements Definition {
 
 
 	@Override
-	public Definition address(Long address) {
-		this.address = address;
+	public Definition plate(String address) {
+		this.plate = address;
 		return this;
 	}
 
@@ -188,8 +198,8 @@ class ScriptDefinition implements Definition {
 				}
 
 				@Override
-				public Long address() {
-					return node.address();
+				public String plate() {
+					return node.plate();
 				}
 
 				@Override
@@ -275,8 +285,8 @@ class ScriptDefinition implements Definition {
 			}
 
 			@Override
-			public Long address() {
-				return address;
+			public String plate() {
+				return plate;
 			}
 
 			@Override

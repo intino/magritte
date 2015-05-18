@@ -353,13 +353,13 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAddress(@NotNull TaraGrammar.AddressContext ctx) { }
+	@Override public void enterPlate(@NotNull TaraGrammar.PlateContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAddress(@NotNull TaraGrammar.AddressContext ctx) { }
+	@Override public void exitPlate(@NotNull TaraGrammar.PlateContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

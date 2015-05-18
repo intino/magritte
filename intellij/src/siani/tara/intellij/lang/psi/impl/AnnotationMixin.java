@@ -11,7 +11,7 @@ public class AnnotationMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean is(Tag tag) {
-		return this.getText().equals(tag.getName());
+		return this.getText().equalsIgnoreCase(tag.name());
 	}
 
 	@Override

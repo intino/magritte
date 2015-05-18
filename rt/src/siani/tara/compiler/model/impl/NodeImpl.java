@@ -20,7 +20,7 @@ public class NodeImpl extends Element implements Node {
 	private List<Node> includes = new ArrayList<>();
 	private List<Tag> flags = new ArrayList<>();
 	private List<Tag> annotations = new ArrayList<>();
-	private Long address;
+	private String plate;
 	private String name;
 	private String parentName;
 	private Node parent;
@@ -175,13 +175,13 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public Long getAddress() {
-		return address;
+	public String getPlate() {
+		return plate;
 	}
 
 	@Override
-	public void setAddress(Long address) {
-		this.address = address;
+	public void setPlate(String plate) {
+		this.plate = plate;
 	}
 
 	@Override
@@ -235,7 +235,7 @@ public class NodeImpl extends Element implements Node {
 
 	@Override
 	public boolean isAnonymous() {
-		return name == null;
+		return name == null || name.isEmpty();
 	}
 
 	@Override

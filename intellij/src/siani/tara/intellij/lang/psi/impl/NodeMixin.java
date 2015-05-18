@@ -246,12 +246,12 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean FeatureInstance() {
-		return is(Assumption.FeatureInstance.class);
+		return is(Assumption.Featureinstance.class);
 	}
 
 	public boolean isAnnotatedAsRoot() {
 		for (PsiElement annotation : getAnnotations())
-			if (ROOT.getName().equals(annotation.getText()))
+			if (ROOT.name().equalsIgnoreCase(annotation.getText()))
 				return true;
 		return false;
 	}
@@ -266,7 +266,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	private boolean is(Tag taraTags) {
 		for (PsiElement annotation : getAnnotations())
-			if (taraTags.getName().equals(annotation.getText()))
+			if (taraTags.name().equalsIgnoreCase(annotation.getText()))
 				return true;
 		Node parent = getParentName() != null ? getParentNode() : null;
 		return hasInheritedAnnotation(taraTags) || (parent != null && ((NodeMixin) parent).is(taraTags));
@@ -274,7 +274,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	private boolean hasInheritedAnnotation(Tag tags) {
 		for (String a : inheritedFlags)
-			if (a.equals(tags.getName())) return true;
+			if (a.equals(tags.name())) return true;
 		return false;
 	}
 

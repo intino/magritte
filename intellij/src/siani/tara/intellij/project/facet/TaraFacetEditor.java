@@ -79,6 +79,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				dslGeneratedName.setEnabled(((JCheckBox) e.getSource()).isSelected());
+				addressRequired.setEnabled(((JCheckBox) e.getSource()).isSelected());
 			}
 		});
 		dslGeneratedName.setEnabled(generateDslCheck.isSelected());

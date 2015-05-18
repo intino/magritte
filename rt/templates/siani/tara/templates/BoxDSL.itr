@@ -1,5 +1,5 @@
 def type(Box)
-    package magritte.store;
+    package magritte.dsl;
 
     public class $name+firstUppercase extends magritte.editors.Box.Dsl {
         public static final magritte.editors.Box box = new $name+firstUppercase();

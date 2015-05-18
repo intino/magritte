@@ -27,7 +27,7 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 	@Override
 	public String[] flags() {
 		List<String> flags = new ArrayList<>();
-		for (Tag tag : variable.getFlags()) flags.add(tag.getName());
+		for (Tag tag : variable.getFlags()) flags.add(tag.name());
 		return flags.toArray(new String[flags.size()]);
 	}
 

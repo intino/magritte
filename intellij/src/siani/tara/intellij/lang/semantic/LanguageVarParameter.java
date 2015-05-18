@@ -78,8 +78,18 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 	}
 
 	@Override
+	public String getContract() {
+		return varInit.getContract();
+	}
+
+	@Override
 	public String getMetric() {
-		return varInit.getMetricValue();
+		return varInit.getMetric();
+	}
+
+	@Override
+	public void setContract(String contract) {
+
 	}
 
 	@Override

@@ -60,7 +60,7 @@ public class LanguageRoot implements Node {
 	}
 
 	@Override
-	public Long address() {
+	public String plate() {
 		return null;
 	}
 

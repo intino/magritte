@@ -16,16 +16,16 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	private final String type;
 	private final boolean multiple;
 	private final int position;
-	private final String metric;
+	private final String contract;
 	private final String[] flags;
 
 
-	public PrimitiveParameterAllow(String name, String type, boolean multiple, int position, String metric, String[] flags) {
+	public PrimitiveParameterAllow(String name, String type, boolean multiple, int position, String contract, String[] flags) {
 		this.name = name;
 		this.type = type;
 		this.multiple = multiple;
 		this.position = position;
-		this.metric = metric;
+		this.contract = contract;
 		this.flags = flags;
 	}
 
@@ -63,7 +63,7 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 
 	@Override
 	public String contract() {
-		return metric;
+		return contract;
 	}
 
 	@Override
@@ -80,6 +80,7 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 			parameter.getParameter().setInferredType(type());
 			parameter.getParameter().setAnnotations(flags);
 			parameter.getParameter().setMultiple(multiple());
+			parameter.getParameter().setContract(contract());
 		} else parameter.invalidType(type);
 	}
 

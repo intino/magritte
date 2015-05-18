@@ -69,10 +69,10 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 	}
 
 	public boolean isAddressRequired() {
-		return myProperties.addressRequired;
+		return myProperties.plateRequired;
 	}
 
 	public void setAddressRequired(boolean addressRequired) {
-		myProperties.addressRequired = addressRequired;
+		myProperties.plateRequired = addressRequired;
 	}
 }

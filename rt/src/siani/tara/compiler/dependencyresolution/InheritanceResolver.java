@@ -89,14 +89,14 @@ public class InheritanceResolver {
 	private void resolveFlags(NodeImpl parent, NodeImpl child) {
 		for (Tag tag : parent.getFlags()) {
 			if (!tag.equals(Tag.ABSTRACT) && !child.getFlags().contains(tag))
-				child.addFlags(tag.getName());
+				child.addFlags(tag.name());
 		}
 	}
 
 	private void resolveAnnotations(NodeImpl parent, NodeImpl child) {
 		for (Tag tag : parent.getAnnotations())
 			if (!tag.equals(Tag.ABSTRACT) && !child.getAnnotations().contains(tag))
-				child.addAnnotations(tag.getName());
+				child.addAnnotations(tag.name());
 	}
 
 	private void resolveVariables(NodeImpl parent, NodeImpl child) {

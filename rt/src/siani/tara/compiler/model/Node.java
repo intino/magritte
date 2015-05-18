@@ -5,7 +5,7 @@ import siani.tara.semantic.model.Tag;
 
 import java.util.Collection;
 
-public interface Node extends NodeContainer, Parameterized {
+public interface Node extends NodeContainer, Parametrized {
 
 	String ANNONYMOUS = "annonymous@";
 
@@ -48,9 +48,9 @@ public interface Node extends NodeContainer, Parameterized {
 
 	boolean isTerminalInstance();
 
-	Long getAddress();
+	String getPlate();
 
-	void setAddress(Long address);
+	void setPlate(String address);
 
 	Collection<Tag> getAnnotations();
 

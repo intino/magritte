@@ -17,6 +17,7 @@ public class ParameterImpl extends Element implements Parameter {
 	private String file;
 	private int line;
 	private String metric;
+	private String contract;
 	private String inferredType;
 	private boolean multiple;
 	private String[] annotations = new String[0];
@@ -95,8 +96,8 @@ public class ParameterImpl extends Element implements Parameter {
 	}
 
 	@Override
-	public String getMetric() {
-		return metric;
+	public String getContract() {
+		return contract;
 	}
 
 	@Override
@@ -117,5 +118,18 @@ public class ParameterImpl extends Element implements Parameter {
 	@Override
 	public void setLine(int line) {
 		this.line = line;
+	}
+
+	public String getMetric() {
+		return metric;
+	}
+
+	public void setMetric(String metric) {
+		this.metric = metric;
+	}
+
+	@Override
+	public void setContract(String contract) {
+		this.contract = contract;
 	}
 }

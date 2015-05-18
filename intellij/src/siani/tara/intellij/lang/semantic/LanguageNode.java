@@ -101,9 +101,9 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
-	public Long address() {
-		if (node.getAddress() == null) return Long.MIN_VALUE;
-		return toLong(node.getAddress().getText());
+	public String plate() {
+		if (node.getAddress() == null) return "";
+		return node.getAddress().getText().substring(1);
 	}
 
 	@Override
