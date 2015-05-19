@@ -90,6 +90,11 @@ class ScriptFacetDefinition implements FacetDefinition {
 			public boolean isVariableInit() {
 				return false;
 			}
+
+			@Override
+			public void addAllowedParameters(String[] values) {
+
+			}
 		});
 		return this;
 	}
@@ -165,6 +170,11 @@ class ScriptFacetDefinition implements FacetDefinition {
 			@Override
 			public boolean isVariableInit() {
 				return false;
+			}
+
+			@Override
+			public void addAllowedParameters(String[] values) {
+
 			}
 		});
 

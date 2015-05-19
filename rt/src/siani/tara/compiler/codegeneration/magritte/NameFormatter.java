@@ -18,9 +18,8 @@ public class NameFormatter {
 	private NameFormatter() {
 	}
 
-	public static String composeMorphPackagePath(Node node, Locale locale, String module) {
-		if (!node.isSub())
-			return module.toLowerCase();
+	public static String composeMorphPackagePath(Node node, Locale locale, String generatedLanguage) {
+		if (!node.isSub()) return generatedLanguage.toLowerCase();
 		String aPackage = "";
 		Node parent = node.getParent();
 		PluralInflector inflector = new PluralFormatter(locale).getInflector();
@@ -28,7 +27,7 @@ public class NameFormatter {
 			aPackage = inflector.plural(parent.getName()) + (!aPackage.isEmpty() ? DOT + aPackage : "");
 			parent = parent.isSub() ? parent.getParent() : null;
 		}
-		return module.toLowerCase() + DOT + aPackage.toLowerCase();
+		return generatedLanguage.toLowerCase() + DOT + aPackage.toLowerCase();
 	}
 
 	public static String composeMorphPackagePath(FacetTarget target, Locale locale, String module) {

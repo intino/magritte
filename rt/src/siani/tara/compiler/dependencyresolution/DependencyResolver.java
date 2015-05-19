@@ -55,12 +55,12 @@ public class DependencyResolver {
 	}
 
 	private Node resolveParameter(Node node, String reference) throws DependencyException {
-		return manager.resolve(reference.replace("reference:", ""), node);
+		return manager.resolve(reference, node);
 	}
 
 	private boolean areReferenceValues(Parameter parameter) {
 		Object value = parameter.getValues().iterator().next();
-		return (value instanceof String && ((String) value).startsWith("reference:"));
+		return (value instanceof String && parameter.hasReferenceValue());
 	}
 
 	private void resolveParent(Node node) throws DependencyException {

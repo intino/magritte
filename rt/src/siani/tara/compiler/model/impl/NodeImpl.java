@@ -110,11 +110,6 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public boolean isTerminal() {
-		return annotations.contains(TERMINAL);
-	}
-
-	@Override
 	public NodeContainer getContainer() {
 		return container;
 	}
@@ -122,6 +117,11 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public void setContainer(NodeContainer container) {
 		this.container = container;
+	}
+
+	@Override
+	public boolean isTerminal() {
+		return flags.contains(TERMINAL);
 	}
 
 	@Override

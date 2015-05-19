@@ -82,7 +82,7 @@ def type(variable) type(target) type(string) slot(variableValue) trigger(variabl
     .set("!$node:$name<$target", $multiple($variableValue+quoted...[, ]))
 end
 def type(variable) type(target) type(word) slot(variableValue) trigger(variable)
-    .set("!$node:$name<$target", $multiple($variableValue+quoted...[, ]))
+    .set("!$node:$name<$target", $multiple($variableValue...[, ]))
 end
 
 def type(variable) type(target) type(reference) slot(variableValue) trigger(variable)

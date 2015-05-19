@@ -25,16 +25,29 @@ public class InheritanceResolver {
 		for (NodeImpl node : nodes) resolve(node);
 	}
 
-	private void resolve(NodeImpl parent) {
-		List<NodeImpl> children = getChildrenSorted(parent);
+	private void resolve(NodeImpl node) {
+		propagateTerminalFlag(node);
+		List<NodeImpl> children = getChildrenSorted(node);
 		for (NodeImpl child : children) {
-			resolveIncludes(parent, child);
-			resolveFlags(parent, child);
-			resolveAnnotations(parent, child);
-			resolveVariables(parent, child);
-			resolveAllowedFacets(parent, child);
+			resolveIncludes(node, child);
+			resolveFlags(node, child);
+			resolveAnnotations(node, child);
+			resolveVariables(node, child);
+			resolveAllowedFacets(node, child);
 			resolve(child);
 		}
+	}
+
+	private void propagateTerminalFlag(NodeImpl node) {
+		if (!node.isTerminal()) return;
+		propagate(node);
+	}
+
+	private void propagate(Node node) {
+		if (!node.isTerminal()) node.addFlags(Tag.TERMINAL.name());
+		if (node instanceof NodeReference) return;
+		for (Node include : node.getIncludedNodes())
+			propagate(include);
 	}
 
 	private void resolveAllowedFacets(NodeImpl parent, NodeImpl child) {

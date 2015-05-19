@@ -47,8 +47,17 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		PsiElement element = asParameterReference();
 		if (element != null) return createResolverForParameter((Parameter) element);
 		if ((element = asVarInitReference()) != null) return createResolverForVarInit((VarInit) element);
+		if (isWordDefaultValue()) return null;
 		else if (isFileReference()) return creteFileResolver();
 		else return createConceptResolver();
+	}
+
+	private boolean isWordDefaultValue() {
+		PsiElement parent = this.getParent();
+		while (!PsiFile.class.isInstance(parent))
+			if (parent instanceof Variable && "word".equals(((Variable) parent).getType())) return true;
+			else parent = parent.getParent();
+		return false;
 	}
 
 	private PsiReference creteFileResolver() {
@@ -85,10 +94,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 			return new TaraNativeReferenceSolver(this, getRange(), parameterAllow);
 		return null;
 	}
-
-
-
-
 
 
 	private TextRange getRange() {
@@ -143,4 +148,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	public PsiElement getNameIdentifier() {
 		return this;
 	}
+
+
 }

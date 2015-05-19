@@ -5,8 +5,10 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import siani.tara.intellij.framework.MavenHelper;
+import siani.tara.intellij.framework.MavenManager;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -83,7 +85,6 @@ public class TaraFacetEditor extends FacetEditorTab {
 			}
 		});
 		dslGeneratedName.setEnabled(generateDslCheck.isSelected());
-
 	}
 
 	public boolean isModified() {
@@ -106,14 +107,20 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return generateDslCheck.isSelected() ? dslGeneratedName.getText() : NONE;
 	}
 
-
 	private void updateDependencies(final Module newParent) {
-		MavenHelper helper = new MavenHelper(module, MavenProjectsManager.getInstance(module.getProject()).findProject(module));
-		Module parent = getSavedParentModule();
-		if (parent != null) helper.remove(parent);
-		if (newParent != null) helper.add(newParent);
+		final MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+		if (project == null) mavenize();
+		else {
+			MavenHelper helper = new MavenHelper(module, project);
+			Module parent = getSavedParentModule();
+			if (parent != null) helper.remove(parent);
+			if (newParent != null) helper.add(newParent);
+		}
 	}
 
+	private void mavenize() {
+		new MavenManager(dslBox.getSelectedItem().toString(), module).mavenize();
+	}
 
 	private Module getSavedParentModule() {
 		String dsl = facetConfiguration.getDsl();

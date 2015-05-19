@@ -94,6 +94,11 @@ class ScriptDefinition implements Definition {
 			public boolean isVariableInit() {
 				return false;
 			}
+
+			@Override
+			public void addAllowedParameters(String[] values) {
+
+			}
 		});
 		return this;
 	}

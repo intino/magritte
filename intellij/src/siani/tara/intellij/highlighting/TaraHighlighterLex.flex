@@ -235,6 +235,8 @@ NEWLINE             = [\n]+
 <QUOTED> {
 	{QUOTE}                         {   yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
 	[^\n\r\"\\]                     {   return TaraTypes.CHARACTER; }
+	\n | \r                         {   return TaraTypes.CHARACTER; }
+    \t                              {   return TaraTypes.CHARACTER; }
 	\\t                             {   return TaraTypes.CHARACTER; }
 	\\n                             {   return TaraTypes.CHARACTER; }
 	\\r                             {   return TaraTypes.CHARACTER; }
@@ -249,7 +251,6 @@ NEWLINE             = [\n]+
     [^\n\r\\]                       {   return TaraTypes.CHARACTER; }
 	\n | \r                         {   return TaraTypes.CHARACTER; }
 	\t                              {   return TaraTypes.CHARACTER; }
-
 	\\t                             {   return TaraTypes.CHARACTER; }
     \\n                             {   return TaraTypes.CHARACTER; }
     \\r                             {   return TaraTypes.CHARACTER; }

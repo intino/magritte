@@ -1,8 +1,10 @@
 package siani.tara.compiler.model;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface Parameter {
+
+	String REFERENCE = "ref:";
 
 	NodeContainer getOwner();
 
@@ -24,7 +26,7 @@ public interface Parameter {
 
 	int getPosition();
 
-	Collection<Object> getValues();
+	List<Object> getValues();
 
 	String getContract();
 
@@ -33,4 +35,10 @@ public interface Parameter {
 	void setMetric(String metric);
 
 	void setContract(String contract);
+
+	boolean hasReferenceValue();
+
+	List<String> getAllowedValues();
+
+	void addAllowedValues(String[] allowedValues);
 }

@@ -17,15 +17,15 @@ import static siani.tara.compiler.codegeneration.magritte.NameFormatter.composeM
 public class MorphFrameCreator implements TemplateTags {
 
 	private final String project;
-	private final String module;
+	private final String generatedLanguage;
 	private final Language language;
 	private final Locale locale;
 	private Node initNode = null;
 	Set<String> imports = new HashSet<>();
 
-	public MorphFrameCreator(String project, String module, Language language, Locale locale) {
+	public MorphFrameCreator(String project, String generatedLanguage, Language language, Locale locale) {
 		this.project = project;
-		this.module = module;
+		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 		this.locale = locale;
 	}
@@ -49,25 +49,25 @@ public class MorphFrameCreator implements TemplateTags {
 
 	private void createFacetTargetMorph(Frame frame, FacetTarget node) {
 		FrameBuilder builder = new FrameBuilder();
-		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(project, module, imports, locale));
+		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(project, generatedLanguage, imports, locale));
 		frame.addFrame("node", builder.build(node));
 	}
 
 	private void createMorph(Frame frame, Node node) {
 		FrameBuilder builder = new FrameBuilder();
-		builder.register(NodeImpl.class, new MorphNodeAdapter(project, module, language, locale, initNode));
+		builder.register(NodeImpl.class, new MorphNodeAdapter(project, generatedLanguage, language, locale, initNode));
 		if (node instanceof NodeReference || node.isTerminalInstance() || isFeatureInstance(node)) return;
 		frame.addFrame("node", builder.build(node));
 	}
 
 	private String addPackage(Node node, Frame frame) {
-		String packagePath = composeMorphPackagePath(node, locale, module);
+		String packagePath = composeMorphPackagePath(node, locale, generatedLanguage);
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		return packagePath;
 	}
 
 	private String addPackage(FacetTarget target, Frame frame) {
-		String packagePath = composeMorphPackagePath(target, locale, module);
+		String packagePath = composeMorphPackagePath(target, locale, generatedLanguage);
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		return packagePath;
 	}
@@ -84,6 +84,6 @@ public class MorphFrameCreator implements TemplateTags {
 	private void addImports(Frame frame) {
 		for (String anImport : imports)
 			frame.addFrame(IMPORTS, IMPORT + anImport + SEMICOLON);
-		frame.addFrame(IMPORTS, IMPORT + module.toLowerCase() + DOT + NATIVES + DOT + STAR + SEMICOLON);
+		frame.addFrame(IMPORTS, IMPORT + generatedLanguage.toLowerCase() + DOT + NATIVES + DOT + STAR + SEMICOLON);
 	}
 }

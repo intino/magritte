@@ -98,6 +98,11 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 	}
 
 	@Override
+	public void addAllowedParameters(String[] values) {
+
+	}
+
+	@Override
 	public PsiElement element() {
 		return varInit;
 	}

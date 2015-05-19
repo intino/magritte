@@ -41,16 +41,16 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 			newFrame.addFrame(KEY, String.valueOf(this.keys.get(node)));
 		else {
 			newFrame.addFrame(NAME, clean(node.getQualifiedName()));
-			if (node.getPlate() != null) newFrame.addFrame(PLATE, "#" + String.valueOf(node.getPlate()));
+			if (node.getPlate() != null) newFrame.addFrame(PLATE, "|" + String.valueOf(node.getPlate()));
 		}
 		addTypes(node, newFrame);
 		if (node.getParent() != null)
 			newFrame.addFrame(PARENT, node.getParent().getName());
-		addFacetApplies(node, newFrame);
 	}
 
 	private void addTypes(Node node, Frame newFrame) {
 		newFrame.addFrame(NODE_TYPE, node.getType());
+		for (Facet facet : node.getFacets()) newFrame.addFrame(NODE_TYPE, facet.getType());
 	}
 
 	private void flags(final Node node, Frame frame) {
@@ -87,7 +87,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 			if (!isOverriddenByFacets(parameter, node.getFacets())) {
 				frame.addFrame(VARIABLE, FrameContext.build(parameter));
 			}
-		}
+	}
 
 	private boolean isOverriddenByFacets(Parameter parameter, Collection<Facet> facets) {
 		for (Facet facet : facets)
@@ -161,14 +161,6 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 
 	private String clean(String name) {
 		return name.replace("[", "").replace("]", "").replaceAll(Node.ANNONYMOUS, "");
-	}
-
-	private void addFacetApplies(Node node, Frame newFrame) {
-		for (Facet facet : node.getFacets()) {
-			Frame facetFrame = new Frame(newFrame).addTypes(FACET_APPLY).addFrame(NAME, facet.getType());
-			facetFrame.addFrame(APPLY, buildFacetPath(node, facet.getType()));
-			newFrame.addFrame(FACET, facetFrame);
-		}
 	}
 
 	private String buildFacetPath(Node node, String facet) {

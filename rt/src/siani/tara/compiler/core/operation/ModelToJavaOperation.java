@@ -66,7 +66,7 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private String createScene() {
 		Frame frame = new Frame(null).addTypes("scene");
-		frame.addFrame("name", conf.getModule());
+		frame.addFrame("name", conf.getGeneratedLanguage());
 		for (Node node : collectRootNodes())
 			frame.addFrame("root", createRootFrame(node));
 		return customize(SceneTemplate.create()).format(frame);
@@ -81,7 +81,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String getQn(Node node) {
-		return NameFormatter.composeMorphPackagePath(node, conf.getLocale(), conf.getModule()) + DOT + node.getQualifiedName();
+		return NameFormatter.composeMorphPackagePath(node, conf.getLocale(), conf.getGeneratedLanguage()) + DOT + node.getQualifiedName();
 	}
 
 	private Collection<Node> collectRootNodes() {
@@ -122,7 +122,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String buildBoxUnitName(Node node) {
-		return capitalize(conf.getModule()) + buildFileName(((Element) node).getFile());
+		return capitalize(conf.getGeneratedLanguage()) + buildFileName(((Element) node).getFile());
 	}
 
 	private String buildBoxUnitName(String box) {
@@ -131,13 +131,13 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private void renderFacetTargets(Map<String, String> map, Node node) {
 		for (FacetTarget facetTarget : node.getFacetTargets()) {
-			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(facetTarget);
+			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getGeneratedLanguage(), conf.getLanguage(), conf.getLocale()).create(facetTarget);
 			map.put(morphFrame.getKey(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
 		}
 	}
 
 	private void renderNode(Map<String, String> map, Node node) {
-		Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getModule(), conf.getLanguage(), conf.getLocale()).create(node);
+		Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf.getProject(), conf.getGeneratedLanguage(), conf.getLanguage(), conf.getLocale()).create(node);
 		map.put(morphFrame.getKey(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
 	}
 
@@ -186,10 +186,10 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private void writeScene(String scene) {
-		File destiny = new File(outFolder, conf.getModule().toLowerCase());
+		File destiny = new File(outFolder, conf.getGeneratedLanguage().toLowerCase());
 		destiny.mkdirs();
 		try {
-			File file = new File(destiny, capitalize(conf.getModule()) + JAVA);
+			File file = new File(destiny, capitalize(conf.getGeneratedLanguage()) + JAVA);
 			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
 			fileWriter.write(scene);
 			fileWriter.close();

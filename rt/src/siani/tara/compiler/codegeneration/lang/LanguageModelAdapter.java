@@ -174,7 +174,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 
 	private void addRequiredVariableRedefines(Frame requires, Node node) {
 		for (Variable variable : node.getVariables()) {
-			if (variable.isTerminal() && variable instanceof VariableReference)
+			if (variable.isTerminal() && variable instanceof VariableReference && !((VariableReference) variable).getDestiny().isTerminal())
 				requires.addFrame("require", new Frame().addTypes("redefine", "require").
 					addFrame("name", variable.getName()).addFrame("supertype", variable.getType()));
 		}

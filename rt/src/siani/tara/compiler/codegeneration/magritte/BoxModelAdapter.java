@@ -17,16 +17,16 @@ import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 
 public class BoxModelAdapter implements Adapter<Model> {
 	private final String project;
-	private final String module;
+	private final String generatedLanguage;
 	private final Language language;
 	private final Locale locale;
 	private final Map<String, List<SimpleEntry<String, String>>> metrics;
 	private final boolean terminal;
 
 
-	public BoxModelAdapter(String project, String module, Language language, Locale locale, Map<String, List<SimpleEntry<String, String>>> metrics, boolean terminal) {
+	public BoxModelAdapter(String project, String generatedLanguage, Language language, Locale locale, Map<String, List<SimpleEntry<String, String>>> metrics, boolean terminal) {
 		this.project = project;
-		this.module = module;
+		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 		this.locale = locale;
 		this.metrics = metrics;
@@ -35,10 +35,10 @@ public class BoxModelAdapter implements Adapter<Model> {
 
 	@Override
 	public void execute(Frame frame, Model model, FrameContext FrameContext) {
-		frame.addFrame(NAME, capitalize(module) + buildFileName(model.getFile()));
+		frame.addFrame(NAME, capitalize(generatedLanguage) + buildFileName(model.getFile()));
 		if (!Objects.equals(language.languageName(), "Proteo"))
 			frame.addFrame(LANGUAGE, language.languageName());
-		frame.addFrame("project", project).addFrame("module", module);
+		frame.addFrame("project", project).addFrame("module", generatedLanguage);
 		frame.addFrame("terminal", terminal);
 		addMetricImports(frame);
 		addFacetImports(model.getIncludedNodes(), frame);
@@ -63,7 +63,7 @@ public class BoxModelAdapter implements Adapter<Model> {
 	private void crateIntentionFrames(Frame frame, Collection<Parameter> parameters) {
 		for (Parameter parameter : parameters) {
 			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", parameter.getValues().iterator().next());
-			intentionFrame.addFrame("module", module);
+			intentionFrame.addFrame("module", generatedLanguage);
 			intentionFrame.addFrame("varName", parameter.getName());
 			intentionFrame.addFrame("container", buildContainerPath(parameter.getOwner()));
 			intentionFrame.addFrame("parentIntention", language.languageName());

@@ -86,6 +86,11 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 		return false;
 	}
 
+	@Override
+	public void addAllowedParameters(String[] values) {
+
+	}
+
 	private static Object[] wrapValues(Object[] values) {
 		List<Object> objects = new ArrayList<>();
 		if ("$empty".equals(values[0])) objects.add(new EmptyNode());

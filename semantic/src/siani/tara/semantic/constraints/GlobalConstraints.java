@@ -119,9 +119,11 @@ public class GlobalConstraints {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
-				for (Variable variable : node.variables())
+				for (Variable variable : node.variables()) {
+					if ("word".equals(variable.type())) continue;
 					if (variable.defaultValue().length != 0 && !compatibleTypes(variable))
 						throw new SemanticException(new SemanticError("reject.invalid.variable.type", (Element) variable, new Object[]{variable.type()}));
+				}
 			}
 
 			private boolean compatibleTypes(Variable variable) {

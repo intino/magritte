@@ -260,6 +260,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 <QUOTED> {
     {QUOTE}                         {   yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
     [^\n\r\"\\]                     {   return TaraTypes.CHARACTER; }
+    \n | \r                         {   return TaraTypes.CHARACTER; }
+    \t                              {   return TaraTypes.CHARACTER; }
     \\t                             {   return TaraTypes.CHARACTER; }
     \\n                             {   return TaraTypes.CHARACTER; }
     \\r                             {   return TaraTypes.CHARACTER; }
@@ -270,17 +272,17 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 }
 
 <MULTILINE> {
-  {STRING_MULTILINE}                {   yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
-  [^\n\r\\]                         {   return TaraTypes.CHARACTER; }
-  \n | \r                           {   return TaraTypes.CHARACTER; }
-  \t                                {   return TaraTypes.CHARACTER; }
-  \\t                               {   return TaraTypes.CHARACTER; }
-  \\n                               {   return TaraTypes.CHARACTER; }
-  \\r                               {   return TaraTypes.CHARACTER; }
-  \\\"                              {   return TaraTypes.CHARACTER; }
-  \\                                {   return TaraTypes.CHARACTER; }
-  [^]                               {   return TokenType.BAD_CHARACTER; }
-  .                                 {   return TokenType.BAD_CHARACTER; }
+    {STRING_MULTILINE}              {   yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
+    [^\n\r\\]                       {   return TaraTypes.CHARACTER; }
+    \n | \r                         {   return TaraTypes.CHARACTER; }
+    \t                              {   return TaraTypes.CHARACTER; }
+    \\t                             {   return TaraTypes.CHARACTER; }
+    \\n                             {   return TaraTypes.CHARACTER; }
+    \\r                             {   return TaraTypes.CHARACTER; }
+    \\\"                            {   return TaraTypes.CHARACTER; }
+    \\                              {   return TaraTypes.CHARACTER; }
+    [^]                             {   return TokenType.BAD_CHARACTER; }
+    .                               {   return TokenType.BAD_CHARACTER; }
 }
 
 [^]                                 {   return TokenType.BAD_CHARACTER;}

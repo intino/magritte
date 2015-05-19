@@ -82,6 +82,7 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 			parameter.getParameter().setInferredType(type());
 			parameter.getParameter().setAnnotations(flags);
 			parameter.getParameter().setMultiple(multiple());
+			parameter.getParameter().addAllowedParameters(allowedValues());
 			toRemove.add(parameter);
 		} else parameter.invalidValue(values);
 	}

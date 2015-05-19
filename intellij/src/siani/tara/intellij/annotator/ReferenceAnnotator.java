@@ -13,7 +13,8 @@ public class ReferenceAnnotator extends TaraAnnotator {
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		if (!IdentifierReference.class.isInstance(element)) return;
 		this.holder = holder;
-		IdentifierReference identifier = (IdentifierReference) element;
-		analyzeAndAnnotate(new ReferenceAnalyzer(identifier));
+		IdentifierReference reference = (IdentifierReference) element;
+		if (reference.getIdentifierList().get(0).getReference() == null) return;
+		analyzeAndAnnotate(new ReferenceAnalyzer(reference));
 	}
 }

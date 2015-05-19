@@ -60,6 +60,7 @@ public class TaraNodeCompletionContributor extends CompletionContributor {
 	private void collectAllowedTypes(CompletionParameters parameters, CompletionResultSet resultSet) {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = getContainerNodeOf(getContainerNodeOf(parameters.getPosition()));
+		if (language == null) return;
 		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().getFullType());
 		List<LookupElementBuilder> elementBuilders = getLookupElementBuilders(language.languageName(), allows);
 		resultSet.addAllElements(elementBuilders);

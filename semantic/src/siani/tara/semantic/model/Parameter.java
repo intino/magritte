@@ -30,4 +30,5 @@ public interface Parameter extends Element {
 
 	boolean isVariableInit();
 
+	void addAllowedParameters(String[] values);
 }

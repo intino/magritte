@@ -257,7 +257,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 				values.add(formatText(context.getText()));
 		else if (!ctx.identifierReference().isEmpty())
 			for (IdentifierReferenceContext context : ctx.identifierReference())
-				values.add("reference:" + context.getText());
+				values.add(Parameter.REFERENCE + context.getText());
 		else if (ctx.EMPTY() != null)
 			values.add(new EmptyNode());
 		return values.toArray(new Object[values.size()]);

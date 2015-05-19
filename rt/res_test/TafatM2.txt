@@ -3,14 +3,16 @@ src_file
 
 project
 tafat
-module
-engine
+language
+Proteo
 terminal
 false
 locale
 English
 generated_lang_name
 Tafat
+required_plate
+false
 encoding
 UTF-8
 models
@@ -21,8 +23,8 @@ outputpath
 /Users/oroncal/workspace/sandbox/tafat/engine/gen
 final_outputpath
 /Users/oroncal/workspace/sandbox/tafat/out/production/engine/
-jdk_home
-/Users/oroncal/workspace/sandbox/magritte/lib/
+magritte
+/Users/oroncal/.m2/repository/org/siani/magritte/magritte/1.1.6/magritte-1.1.6.jar
 metrics
 /Users/oroncal/workspace/sandbox/tafat/out/production/engine/
 resources

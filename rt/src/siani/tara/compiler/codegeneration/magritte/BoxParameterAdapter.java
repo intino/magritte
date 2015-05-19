@@ -20,7 +20,8 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 
 	@Override
 	public void execute(Frame frame, Parameter parameter, FrameContext context) {
-		frame.addTypes(getTypes(parameter));
+		final List<String> types = getTypes(parameter);
+		frame.addTypes(types.toArray(new String[types.size()]));
 		frame.addFrame(NAME, buildName(parameter));
 		frame.addFrame(MULTIPLE, parameter.isMultiple());
 		if (isTerminal(parameter))
@@ -46,28 +47,43 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	}
 
 	protected void addParameterValue(Frame frame, final Parameter parameter) {
-		Object[] values;
-		Collection<Object> parameterValues = parameter.getValues();
-		if (parameterValues.iterator().next() instanceof Node)
-			if (parameterValues.iterator().next() instanceof EmptyNode)
-				values = new Object[]{"null"};
-			else values = collectQualifiedNames(parameterValues);
-		else if (Primitives.NATIVE.equals(parameter.getInferredType())) values = createNativeReference(parameter);
-		else values = format(parameterValues);
+		Collection<Object> values = prepareValues(parameter, parameter.getValues());
 		frame.addFrame(VARIABLE_VALUE, values);
 	}
 
-	private String[] createNativeReference(Parameter parameter) {
+	private Collection<Object> prepareValues(Parameter parameter, List<Object> parameterValues) {
+		List<Object> values;
+		final Object first = parameterValues.iterator().next();
+		if (first instanceof Node)
+			if (first instanceof EmptyNode)
+				values = Collections.emptyList();
+			else values = collectQualifiedNames(parameterValues);
+		else if (Primitives.NATIVE.equals(parameter.getInferredType())) values = createNativeReference(parameter);
+		else if ("word".equals(parameter.getInferredType())) values = createWordReference(parameter);
+		else values = format(parameterValues);
+		return values;
+	}
+
+	private List<Object> createWordReference(Parameter parameter) {
+		List<Object> indexs = new ArrayList<>();
+		final List<String> allowedValues = parameter.getAllowedValues();
+		for (Object value : parameter.getValues())
+			indexs.add(allowedValues.indexOf(value.toString()));
+		return indexs;
+	}
+
+	private List<Object> createNativeReference(Parameter parameter) {
 		final String qualifiedName = parameter.getOwner().getQualifiedName();
-		return new String[]{NameFormatter.createNativeReference(qualifiedName, parameter.getName()) + ".class"};
+		final String s = NameFormatter.createNativeReference(qualifiedName, parameter.getName()) + ".class";
+		return Collections.singletonList((Object) s);
 	}
 
 
-	private Object[] format(Collection<Object> parameterValues) {
-		List<Object> objects = new ArrayList<>();
+	private List<Object> format(List<Object> parameterValues) {
+		ArrayList<Object> objects = new ArrayList<>();
 		for (Object value : parameterValues)
 			objects.add(value instanceof String && ((String) value).contains("\n") ? formatText((String) value) : value);
-		return objects.toArray(new Object[objects.size()]);
+		return objects;
 	}
 
 	private Object formatText(String value) {
@@ -75,21 +91,19 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	}
 
 
-	private Object[] collectQualifiedNames(Collection<Object> defaultValues) {
-		Object[] values;
-		List<String> nodeNames = new ArrayList<>();
+	private List<Object> collectQualifiedNames(List<Object> defaultValues) {
+		List<Object> nodeNames = new ArrayList<>();
 		for (Object value : defaultValues) nodeNames.add(((Node) value).getQualifiedName());
-		values = nodeNames.toArray(new Object[nodeNames.size()]);
-		return values;
+		return nodeNames;
 	}
 
-	protected String[] getTypes(Parameter parameter) {
+	protected List<String> getTypes(Parameter parameter) {
 		List<String> list = new ArrayList<>();
 		list.add(parameter.getClass().getSimpleName());
 		list.add(VARIABLE);
 		list.add(parameter.getInferredType());
 		Collections.addAll(list, parameter.getAnnotations());
-		return list.toArray(new String[list.size()]);
+		return list;
 	}
 
 	protected String resolveMetric(String metric) {

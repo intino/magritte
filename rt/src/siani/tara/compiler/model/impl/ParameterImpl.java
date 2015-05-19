@@ -5,7 +5,6 @@ import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.Parameter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,12 +13,14 @@ public class ParameterImpl extends Element implements Parameter {
 	private String name;
 	private int position;
 	private final List<Object> values = new ArrayList<>();
+	private List<String> allowedValues = new ArrayList<>();
 	private String file;
 	private int line;
 	private String metric;
 	private String contract;
 	private String inferredType;
 	private boolean multiple;
+	private boolean hasReferenceValue = false;
 	private String[] annotations = new String[0];
 	private NodeContainer owner;
 
@@ -28,7 +29,14 @@ public class ParameterImpl extends Element implements Parameter {
 		this.name = name;
 		this.position = position;
 		this.metric = metric;
-		Collections.addAll(this.values, values);
+		addValues(values);
+	}
+
+	private void addValues(Object[] values) {
+		if (values[0].toString().startsWith(REFERENCE)) {
+			hasReferenceValue = true;
+			for (Object value : values) this.values.add(value.toString().replace(REFERENCE, ""));
+		} else Collections.addAll(this.values, values);
 	}
 
 	public ParameterImpl(int position, String metric, Object... values) {
@@ -91,8 +99,8 @@ public class ParameterImpl extends Element implements Parameter {
 	}
 
 	@Override
-	public Collection<Object> getValues() {
-		return values;
+	public List<Object> getValues() {
+		return Collections.unmodifiableList(values);
 	}
 
 	@Override
@@ -131,5 +139,23 @@ public class ParameterImpl extends Element implements Parameter {
 	@Override
 	public void setContract(String contract) {
 		this.contract = contract;
+	}
+
+	@Override
+	public boolean hasReferenceValue() {
+		return hasReferenceValue;
+	}
+
+	@Override
+	public String toString() {
+		return name + ":" + position + ":" + values;
+	}
+
+	public List<String> getAllowedValues() {
+		return allowedValues;
+	}
+
+	public void addAllowedValues(String[] allowedValues) {
+		Collections.addAll(this.allowedValues, allowedValues);
 	}
 }
