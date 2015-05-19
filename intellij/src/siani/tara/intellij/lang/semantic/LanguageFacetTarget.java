@@ -27,7 +27,7 @@ public class LanguageFacetTarget extends LanguageElement implements FacetTarget 
 	public Node[] includes() {
 		Body body = target.getBody();
 		if (body == null) return new siani.tara.semantic.model.Node[0];
-		List<siani.tara.intellij.lang.psi.Node> concepts = (List<siani.tara.intellij.lang.psi.Node>) body.getConceptList();
+		List<siani.tara.intellij.lang.psi.Node> concepts = (List<siani.tara.intellij.lang.psi.Node>) body.getNodeList();
 		List<siani.tara.semantic.model.Node> nodes = new ArrayList<>();
 		for (siani.tara.intellij.lang.psi.Node inner : concepts)
 			nodes.add(new LanguageNode(inner));

@@ -1,5 +1,5 @@
 src_file
-/Users/oroncal/workspace/sandbox/MonetAnimales/Census/model/Main.tara
+/Users/octavio/workspace/sandbox/MonetAnimales/Census/model/Main.tara
 
 project
 MonetAnimales
@@ -16,18 +16,18 @@ Census
 encoding
 UTF-8
 models
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
+/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
 semantic_lib
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/MonetAnimales/Census/gen
+/Users/octavio/workspace/sandbox/MonetAnimales/Census/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/MonetAnimales/out/production/Engine/
+/Users/octavio/workspace/sandbox/MonetAnimales/out/production/Engine/
 jdk_home
-/Users/oroncal/workspace/sandbox/magritte/lib/
+/Users/octavio/workspace/sandbox/magritte/lib/
 metrics
-/Users/oroncal/workspace/sandbox/MonetAnimales/out/production/Engine/
+/Users/octavio/workspace/sandbox/MonetAnimales/out/production/Engine/
 resources
-/Users/oroncal/workspace/sandbox/MonetAnimales/Census/res
+/Users/octavio/workspace/sandbox/MonetAnimales/Census/res
 classpath
-/Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar
+/Users/octavio/workspace/sandbox/tara/plugins/tara/lib/tara.jar

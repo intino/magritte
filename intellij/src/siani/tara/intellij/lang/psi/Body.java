@@ -12,13 +12,13 @@ public interface Body extends TaraPsiElement {
 	TaraModelImpl getFile() throws PsiInvalidElementAccessException;
 
 	@NotNull
-	List<? extends Variable> getAttributeList();
+	List<? extends Variable> getVariableList();
 
 	@NotNull
 	List<? extends VarInit> getVarInitList();
 
 	@NotNull
-	List<? extends Node> getConceptList();
+	List<? extends Node> getNodeList();
 
 	Collection<NodeReference> getNodeLinks();
 

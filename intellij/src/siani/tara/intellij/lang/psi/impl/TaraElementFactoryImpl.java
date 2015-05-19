@@ -78,7 +78,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 				"\tvar word " + name + "\n" +
 				getWordTypesToString(types));
 		Body body = PsiTreeUtil.getChildOfType(file, Node.class).getBody();
-		return body != null ? body.getAttributeList().get(0) : null;
+		return body != null ? body.getVariableList().get(0) : null;
 	}
 
 	private String getWordTypesToString(String[] types) {

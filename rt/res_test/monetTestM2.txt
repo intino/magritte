@@ -1,6 +1,6 @@
 src_file
-/Users/oroncal/workspace/sandbox/MonetAnimales/Monet/model/Main.tara
-/Users/oroncal/workspace/sandbox/MonetAnimales/Monet/model/Main2.tara
+/Users/octavio/workspace/sandbox/MonetAnimales/Monet/model/Main.tara
+/Users/octavio/workspace/sandbox/MonetAnimales/Monet/model/Main2.tara
 
 project
 MonetAnimales
@@ -19,18 +19,18 @@ true
 encoding
 UTF-8
 models
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
+/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
 semantic_lib
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/MonetAnimales/Monet/gen
+/Users/octavio/workspace/sandbox/MonetAnimales/Monet/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/MonetAnimales/Monet/target/classes/
+/Users/octavio/workspace/sandbox/MonetAnimales/Monet/target/classes/
 magritte
-/Users/oroncal/.m2/repository/org/siani/magritte/magritte/1.1.6/magritte-1.1.6.jar
+/Users/octavio/.m2/repository/org/siani/magritte/magritte/1.1.6/magritte-1.1.6.jar
 metrics
-/Users/oroncal/workspace/sandbox/MonetAnimales/Monet/target/classes/
+/Users/octavio/workspace/sandbox/MonetAnimales/Monet/target/classes/
 resources
-/Users/oroncal/workspace/sandbox/MonetAnimales/Monet/res
+/Users/octavio/workspace/sandbox/MonetAnimales/Monet/res
 classpath
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

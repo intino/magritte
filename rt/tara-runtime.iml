@@ -7,7 +7,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/../dist/production/tara-runtime" />
     <output-test url="file://$MODULE_DIR$/../dist/test/tara-runtime" />
     <content url="file://$MODULE_DIR$">
@@ -18,7 +18,7 @@
       <sourceFolder url="file://$MODULE_DIR$/templates" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="module" module-name="tara-runtime-constants" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.siani.itrules:itrules:1.2.0" level="project" />

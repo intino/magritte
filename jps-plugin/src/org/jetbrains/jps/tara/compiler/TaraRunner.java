@@ -74,6 +74,7 @@ public class TaraRunner {
 		if (paths.get(3) != null) writer.write(TaraRtConstants.IT_RULES + NL + paths.get(3) + NL);
 		writer.write(TaraRtConstants.METRICS + NL + paths.get(4) + NL);
 		writer.write(TaraRtConstants.RESOURCES + NL + paths.get(5) + NL);
+		if (paths.get(6) != null) writer.write(TaraRtConstants.NATIVES_PATH + NL + paths.get(6) + NL);
 	}
 
 	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,

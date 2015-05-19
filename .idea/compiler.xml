@@ -40,10 +40,12 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.7">
-      <module name="intellij" target="1.7" />
-      <module name="semantic" target="1.7" />
-      <module name="tara" target="1.7" />
-      <module name="tara-runtime" target="1.7" />
+      <module name="intellij" target="1.8" />
+      <module name="semantic" target="1.8" />
+      <module name="tara" target="1.8" />
+      <module name="tara-jps-plugin" target="" />
+      <module name="tara-runtime" target="1.8" />
+      <module name="tara-runtime-constants" target="" />
     </bytecodeTargetLevel>
   </component>
 </project>

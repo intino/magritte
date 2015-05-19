@@ -2,13 +2,13 @@ package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import siani.tara.intellij.lang.psi.Body;
 import siani.tara.intellij.lang.psi.Node;
-import siani.tara.intellij.lang.psi.TaraBody;
 import siani.tara.intellij.lang.psi.TaraFacetTarget;
 import siani.tara.intellij.lang.psi.TaraIdentifierReference;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class FacetTargetMixin extends ASTWrapperPsiElement {
 
@@ -16,9 +16,9 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	public Collection<Node> includes() {
-		TaraBody body = ((TaraFacetTarget) this).getBody();
-		return (body == null) ? Collections.EMPTY_LIST : body.getNodeList();
+	public List<Node> includes() {
+		Body body = ((TaraFacetTarget) this).getBody();
+		return (body == null) ? Collections.EMPTY_LIST : (List<Node>) body.getNodeList();
 	}
 
 	public String target() {

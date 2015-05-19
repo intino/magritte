@@ -43,18 +43,12 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return path.endsWith("." + TARA_EXTENSION);
 	}
 
-	@Override
-	public List<String> getCompilableFileExtensions() {
-		return Collections.singletonList(TARA_EXTENSION);
-	}
-
 	public ExitCode build(CompileContext context, ModuleChunk chunk,
 	                      DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder,
 	                      OutputConsumer outputConsumer) throws ProjectBuildException, IOException {
 		long start = 0;
 		try {
 			if (done) return ExitCode.NOTHING_DONE;
-			done = true;
 			JpsProject project = context.getProjectDescriptor().getProject();
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
 			JpsTaraModuleExtension extension = JpsTaraExtensionService.getInstance().getExtension(chunk.getModules().iterator().next());
@@ -69,11 +63,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 			List<String> paths = collectPaths(chunk, context, finalOutputs);
+			String nativeInterfacesDir = getNativeInterfacesDir(chunk.getModules(), extension.getGeneratedDslName());
+			paths.add(nativeInterfacesDir);
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension.getDsl(),
 				extension.getGeneratedDslName(), extension.getDictionary(), extension.isPlateRequired(), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
 			context.setDone(1);
+			done = true;
 			return ExitCode.OK;
 		} catch (Exception e) {
 			throw new ProjectBuildException(e);
@@ -82,6 +79,11 @@ public class TaraBuilder extends ModuleLevelBuilder {
 				LOG.debug(builderName + " took " + (System.currentTimeMillis() - start) + " on " + chunk.getName());
 			}
 		}
+	}
+
+	@Override
+	public List<String> getCompilableFileExtensions() {
+		return Collections.singletonList(TARA_EXTENSION);
 	}
 
 	private List<String> collectPaths(ModuleChunk chunk, CompileContext context, Map<ModuleBuildTarget, String> finalOutputs) throws IOException {
@@ -109,6 +111,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {
 		for (CompilerMessage message : handler.getCompilerMessages(chunk.getName()))
 			context.processMessage(message);
+	}
+
+	private String getNativeInterfacesDir(Set<JpsModule> modules, String generatedDslName) {
+		JpsModule module = modules.iterator().next();
+		for (JpsModuleSourceRoot root : module.getSourceRoots())
+			if (root.getFile().getName().equals("src") && new File(root.getFile(), generatedDslName + "/natives").exists())
+				return new File(root.getFile(), generatedDslName + "/natives").getPath();
+		return null;
 	}
 
 	private String[] collectIconDirectories(Set<JpsModule> jpsModules) {

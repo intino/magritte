@@ -48,15 +48,14 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 
 	protected void addParameterValue(Frame frame, final Parameter parameter) {
 		Collection<Object> values = prepareValues(parameter, parameter.getValues());
-		frame.addFrame(VARIABLE_VALUE, values);
+		for (Object value : values) frame.addFrame(VARIABLE_VALUE, value);
 	}
 
 	private Collection<Object> prepareValues(Parameter parameter, List<Object> parameterValues) {
 		List<Object> values;
 		final Object first = parameterValues.iterator().next();
 		if (first instanceof Node)
-			if (first instanceof EmptyNode)
-				values = Collections.emptyList();
+			if (first instanceof EmptyNode) values = Collections.emptyList();
 			else values = collectQualifiedNames(parameterValues);
 		else if (Primitives.NATIVE.equals(parameter.getInferredType())) values = createNativeReference(parameter);
 		else if ("word".equals(parameter.getInferredType())) values = createWordReference(parameter);
