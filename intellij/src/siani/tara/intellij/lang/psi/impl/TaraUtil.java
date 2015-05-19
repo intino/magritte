@@ -351,7 +351,7 @@ public class TaraUtil {
 	@Nullable
 	private static Variable searchNativeInNode(String name, Node node) {
 		for (Variable variable : node.getVariables())
-			if (variable.getNativeName() != null && name.equals(variable.getNativeName().getFormattedName()))
+			if (variable.getContract() != null && name.equals(variable.getContract().getFormattedName()))
 				return variable;
 		return null;
 	}

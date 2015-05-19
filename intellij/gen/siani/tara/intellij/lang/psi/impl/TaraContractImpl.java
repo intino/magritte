@@ -10,21 +10,21 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraNativeNameImpl extends NativeNameMixin implements TaraNativeName {
+public class TaraContractImpl extends ContractMixin implements TaraContract {
 
-  public TaraNativeNameImpl(ASTNode node) {
+  public TaraContractImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitNativeName(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitContract(this);
     else super.accept(visitor);
   }
 
   @Override
-  @Nullable
-  public TaraIdentifier getIdentifier() {
-    return findChildByClass(TaraIdentifier.class);
+  @NotNull
+  public List<TaraIdentifier> getIdentifierList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifier.class);
   }
 
 }

@@ -96,7 +96,6 @@ EURO                = "€"
 GRADE               = "º" | "°"
 PERCENTAGE          = "%"
 DOT                 = "."
-STAR                = "*"
 BY                  = "·"
 DIVIDED_BY          = "/"
 COMMA               = ","
@@ -203,7 +202,6 @@ NEWLINE             = [\n]+
 
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
-	{STAR}                          {   return TaraTypes.STAR;     }
 	{LIST}                          {   return TaraTypes.LIST;  }
 
 	{WORD_KEY}                      {   return TaraTypes.WORD_KEY; }

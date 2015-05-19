@@ -28,7 +28,4 @@ public interface TaraVariable extends Variable {
   @Nullable
   TaraVariableType getVariableType();
 
-  @Nullable
-  TaraWord getWord();
-
 }

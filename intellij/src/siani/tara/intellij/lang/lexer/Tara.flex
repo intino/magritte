@@ -126,7 +126,6 @@ DASH                = "-"
 UNDERDASH           = "_"
 DASHES              = {DASH} {DASH}+
 DOT                 = "."
-STAR                = "*"
 BY                  = "·"
 DIVIDED_BY          = "/"
 COMMA               = ","
@@ -233,7 +232,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{RIGHT_SQUARE}                  {   return TaraTypes.RIGHT_SQUARE; }
 	{DOT}                           {   return TaraTypes.DOT; }
 	{COMMA}                         {   return TaraTypes.COMMA; }
-	{STAR}                          {   return TaraTypes.STAR;  }
 	{LIST}                          {   return TaraTypes.LIST;  }
 
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }

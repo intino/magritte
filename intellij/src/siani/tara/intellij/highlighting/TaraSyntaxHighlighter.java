@@ -117,7 +117,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(AS, KEYWORD);
 		KEYS.put(ON, KEYWORD);
 		KEYS.put(WITH, KEYWORD);
-		KEYS.put(STAR, OPERATOR);
 		KEYS.put(COLON, OPERATOR);
 		KEYS.put(EQUALS, OPERATOR);
 		KEYS.put(LIST, OPERATOR);

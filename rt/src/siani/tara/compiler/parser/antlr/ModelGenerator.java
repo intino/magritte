@@ -197,29 +197,39 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterVariable(@NotNull VariableContext ctx) {
 		NodeContainer container = deque.peek();
+		Variable variable = createVariable(ctx, container);
+		if ("word".equals(ctx.variableType().getText()))
+			processAsWord(variable, ctx);
+		else {
+			addValue(variable, ctx);
+			if (ctx.contract() != null) variable.setContract(ctx.contract().getText().substring(1));
+		}
+
+		addHeaderInformation(ctx, (Element) variable);
+		variable.addFlags(resolveTags(ctx.flags()));
+		container.addVariables(variable);
+	}
+
+	private Variable createVariable(@NotNull VariableContext ctx, NodeContainer container) {
 		VariableTypeContext variableType = ctx.variableType();
 		Variable variable = variableType.identifierReference() != null ?
 			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText()) :
 			new VariableImpl(container, variableType.getText(), ctx.IDENTIFIER().getText());
 		variable.setMultiple(ctx.LIST() != null);
-		if (ctx.word() != null) processAsWord(variable, ctx.word());
-		else if (ctx.value() != null) {
-			variable.addDefaultValues(resolveValue(ctx.value()));
-			if (ctx.value().measureValue() != null)
-				variable.setDefaultExtension(ctx.value().measureValue().getText());
-		}
-		if (ctx.nativeName() != null) variable.setContract(ctx.nativeName().getText().substring(1));
-
-		addHeaderInformation(ctx, (Element) variable);
-		for (FlagsContext flagsContext : ctx.flags()) variable.addFlags(resolveTags(flagsContext));
-		container.addVariables(variable);
+		return variable;
 	}
 
-	private void processAsWord(Variable variable, WordContext word) {
-		for (WordValueContext value : word.wordValue()) {
-			variable.addAllowedValues(value.IDENTIFIER().getText());
-			if (value.STAR() != null) variable.addDefaultValues(value.IDENTIFIER().getText());
-		}
+	private void addValue(Variable variable, @NotNull VariableContext ctx) {
+		if (ctx.value() == null) return;
+		variable.addDefaultValues(resolveValue(ctx.value()));
+		if (ctx.value().measureValue() != null) variable.setDefaultExtension(ctx.value().measureValue().getText());
+	}
+
+	private void processAsWord(Variable variable, VariableContext context) {
+		for (TerminalNode value : context.contract().contractValue().IDENTIFIER()) variable.addAllowedValues(value.getText());
+		if (context.value() == null) return;
+		for (IdentifierReferenceContext id : context.value().identifierReference())
+			variable.addDefaultValues(id.getText());
 	}
 
 	@Override
@@ -254,7 +264,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private String formatText(String value) {
-		if (!value.trim().startsWith("--")) return value.substring(1, value.length() - 1).replace("\\\"","\"");
+		if (!value.trim().startsWith("--")) return value.substring(1, value.length() - 1).replace("\\\"", "\"");
 		String text = value.replace("\t", "    ");
 		if (value.startsWith("\n")) text = text.substring(1);
 		String pattern = text.substring(0, text.indexOf("\n")).replace("-", "");

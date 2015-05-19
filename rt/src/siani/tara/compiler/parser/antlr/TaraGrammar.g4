@@ -35,7 +35,7 @@ facetApply : AS metaidentifier parameters? (WITH metaidentifier)? body?;
 facetTarget : ON identifierReference body?;
 nodeReference : HAS identifierReference tags?;
 
-variable : VAR variableType nativeName? (LIST | count)? IDENTIFIER (flags? word | (EQUALS value))? flags?;
+variable : VAR variableType contract? (LIST | count)? IDENTIFIER (EQUALS value MEASURE_VALUE?)? flags?;
 
 variableType: NATURAL_TYPE
             | INT_TYPE
@@ -50,11 +50,11 @@ variableType: NATURAL_TYPE
             | RESOURCE
             | identifierReference;
 
-nativeName : COLON (IDENTIFIER | MEASURE_VALUE);
-count  : LEFT_SQUARE NATURAL_VALUE RIGHT_SQUARE;
+contract : COLON contractValue;
 
-word            : NEW_LINE_INDENT (wordValue NEWLINE)+ DEDENT;
-wordValue       : IDENTIFIER STAR?;
+contractValue :(LEFT_SQUARE (MEASURE_VALUE | IDENTIFIER)+ RIGHT_SQUARE) | (MEASURE_VALUE | IDENTIFIER);
+
+count  : LEFT_SQUARE NATURAL_VALUE RIGHT_SQUARE;
 
 stringValue     : NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END);
 booleanValue    : BOOLEAN_VALUE;

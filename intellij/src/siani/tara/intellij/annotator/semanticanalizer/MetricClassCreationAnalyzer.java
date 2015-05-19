@@ -11,7 +11,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.annotator.TaraAnnotator;
 import siani.tara.intellij.annotator.fix.CreateMeasureClassIntention;
-import siani.tara.intellij.lang.psi.NativeName;
+import siani.tara.intellij.lang.psi.Contract;
 import siani.tara.intellij.lang.psi.TaraAttributeType;
 import siani.tara.intellij.lang.psi.Variable;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
@@ -36,21 +36,21 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 	private static final Logger LOG = Logger.getInstance(MetricClassCreationAnalyzer.class.getName());
 
 	private final String metricsPackage;
-	private final NativeName measure;
+	private final Contract contract;
 	private final TaraAttributeType attribute;
 
-	public MetricClassCreationAnalyzer(TaraAttributeType measure) {
-		this.measure = measure.getNativeName();
-		this.attribute = measure;
-		metricsPackage = measure.getProject().getName() + "." + "metrics";
+	public MetricClassCreationAnalyzer(TaraAttributeType contract) {
+		this.contract = contract.getContract();
+		this.attribute = contract;
+		metricsPackage = contract.getProject().getName() + "." + "metrics";
 	}
 
 	@Override
 	public void analyze() {
-		if (!Variable.class.isInstance(attribute.getParent()) || !"measure".equals(((Variable) attribute.getParent()).getType()))
+		if (!Variable.class.isInstance(attribute.getParent()) || !"contract".equals(((Variable) attribute.getParent()).getType()))
 			return;
 		Module module = getModule();
-		String measureName = measure.getFormattedName();
+		String measureName = contract.getFormattedName();
 		File metricClassFile = getClassFile(module, measureName);
 		Map.Entry<Long, Class<?>> savedClass = Metrics.getInstance().get(measureName);
 		File javaFile = findJavaFile(module, measureName);
@@ -169,13 +169,13 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 	}
 
 	private void error() {
-		results.put(measure,
+		results.put(contract,
 			new TaraAnnotator.AnnotateAndFix(ERROR, "Metric Not Found. Create it.",
-				new CreateMeasureClassIntention(measure.getFormattedName(), metricsPackage.toLowerCase())));
+				new CreateMeasureClassIntention(contract.getFormattedName(), metricsPackage.toLowerCase())));
 	}
 
 	private Module getModule() {
-		return ModuleProvider.getModuleOf(measure.getContainingFile());
+		return ModuleProvider.getModuleOf(contract.getContainingFile());
 	}
 
 	private static class Metrics {

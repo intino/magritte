@@ -233,13 +233,25 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNativeName(@NotNull TaraGrammar.NativeNameContext ctx) { }
+	@Override public void enterContract(@NotNull TaraGrammar.ContractContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNativeName(@NotNull TaraGrammar.NativeNameContext ctx) { }
+	@Override public void exitContract(@NotNull TaraGrammar.ContractContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterContractValue(@NotNull TaraGrammar.ContractValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitContractValue(@NotNull TaraGrammar.ContractValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -252,30 +264,6 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCount(@NotNull TaraGrammar.CountContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterWord(@NotNull TaraGrammar.WordContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitWord(@NotNull TaraGrammar.WordContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterWordValue(@NotNull TaraGrammar.WordValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitWordValue(@NotNull TaraGrammar.WordValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -26,10 +26,10 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return this;
 	}
 
-	public NativeName getNativeName(){
+	public Contract getContract(){
 		TaraAttributeType attributeType = ((TaraVariable) this).getAttributeType();
 		if (attributeType == null) return null;
-		return attributeType.getNativeName();
+		return attributeType.getContract();
 	}
 
 	@Nullable

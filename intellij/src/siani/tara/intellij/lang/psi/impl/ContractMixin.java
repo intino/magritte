@@ -3,9 +3,9 @@ package siani.tara.intellij.lang.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 
-public class NativeNameMixin extends ASTWrapperPsiElement {
+public class ContractMixin extends ASTWrapperPsiElement {
 
-	public NativeNameMixin(ASTNode node) {
+	public ContractMixin(ASTNode node) {
 		super(node);
 	}
 

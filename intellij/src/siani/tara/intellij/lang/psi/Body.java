@@ -26,9 +26,6 @@ public interface Body extends TaraPsiElement {
 	List<? extends ReferenceStatement> getReferenceStatementList();
 
 	@NotNull
-	List<? extends Word> getWordList();
-
-	@NotNull
 	List<TaraFacetTarget> getFacetTargetList();
 
 	@NotNull

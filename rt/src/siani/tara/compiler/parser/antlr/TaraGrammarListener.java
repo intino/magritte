@@ -189,15 +189,25 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitVariableType(@NotNull TaraGrammar.VariableTypeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#nativeName}.
+	 * Enter a parse tree produced by {@link TaraGrammar#contract}.
 	 * @param ctx the parse tree
 	 */
-	void enterNativeName(@NotNull TaraGrammar.NativeNameContext ctx);
+	void enterContract(@NotNull TaraGrammar.ContractContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#nativeName}.
+	 * Exit a parse tree produced by {@link TaraGrammar#contract}.
 	 * @param ctx the parse tree
 	 */
-	void exitNativeName(@NotNull TaraGrammar.NativeNameContext ctx);
+	void exitContract(@NotNull TaraGrammar.ContractContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#contractValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterContractValue(@NotNull TaraGrammar.ContractValueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#contractValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitContractValue(@NotNull TaraGrammar.ContractValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#count}.
 	 * @param ctx the parse tree
@@ -208,26 +218,6 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCount(@NotNull TaraGrammar.CountContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#word}.
-	 * @param ctx the parse tree
-	 */
-	void enterWord(@NotNull TaraGrammar.WordContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#word}.
-	 * @param ctx the parse tree
-	 */
-	void exitWord(@NotNull TaraGrammar.WordContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TaraGrammar#wordValue}.
-	 * @param ctx the parse tree
-	 */
-	void enterWordValue(@NotNull TaraGrammar.WordValueContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TaraGrammar#wordValue}.
-	 * @param ctx the parse tree
-	 */
-	void exitWordValue(@NotNull TaraGrammar.WordValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#stringValue}.
 	 * @param ctx the parse tree

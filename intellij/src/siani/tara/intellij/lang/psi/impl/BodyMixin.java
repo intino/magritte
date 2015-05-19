@@ -57,12 +57,6 @@ public class BodyMixin extends ASTWrapperPsiElement {
 		return PsiTreeUtil.getChildrenOfTypeAsList(this, ReferenceStatement.class);
 	}
 
-	@NotNull
-	public List<? extends Word> getWordList() {
-		return PsiTreeUtil.getChildrenOfTypeAsList(this, Word.class);
-	}
-
-
 	public Collection<NodeReference> getNodeLinks() {
 		NodeReference[] references = PsiTreeUtil.getChildrenOfType(this, NodeReference.class);
 		return references == null ? Collections.EMPTY_LIST : Arrays.asList(references);

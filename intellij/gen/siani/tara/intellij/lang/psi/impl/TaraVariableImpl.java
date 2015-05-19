@@ -63,10 +63,4 @@ public class TaraVariableImpl extends VariableMixin implements TaraVariable {
     return findChildByClass(TaraVariableType.class);
   }
 
-  @Override
-  @Nullable
-  public TaraWord getWord() {
-    return findChildByClass(TaraWord.class);
-  }
-
 }

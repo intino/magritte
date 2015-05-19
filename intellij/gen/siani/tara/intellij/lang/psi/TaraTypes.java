@@ -16,6 +16,7 @@ public interface TaraTypes {
 	IElementType ATTRIBUTE_TYPE = new TaraElementType("ATTRIBUTE_TYPE");
 	IElementType BODY = new TaraElementType("BODY");
 	IElementType BOOLEAN_VALUE = new TaraElementType("BOOLEAN_VALUE");
+	IElementType CONTRACT = new TaraElementType("CONTRACT");
 	IElementType COUNT = new TaraElementType("COUNT");
 	IElementType DOC = new TaraElementType("DOC");
 	IElementType DOUBLE_VALUE = new TaraElementType("DOUBLE_VALUE");
@@ -35,7 +36,6 @@ public interface TaraTypes {
 	IElementType LINK_VALUE = new TaraElementType("LINK_VALUE");
 	IElementType MEASURE_VALUE = new TaraElementType("MEASURE_VALUE");
 	IElementType META_IDENTIFIER = new TaraElementType("META_IDENTIFIER");
-	IElementType NATIVE_NAME = new TaraElementType("NATIVE_NAME");
 	IElementType NATURAL_VALUE = new TaraElementType("NATURAL_VALUE");
 	IElementType NODE = new TaraElementType("NODE");
 	IElementType NODE_REFERENCE = new TaraElementType("NODE_REFERENCE");
@@ -47,7 +47,6 @@ public interface TaraTypes {
 	IElementType VARIABLE = new TaraElementType("VARIABLE");
 	IElementType VARIABLE_TYPE = new TaraElementType("VARIABLE_TYPE");
 	IElementType VAR_INIT = new TaraElementType("VAR_INIT");
-	IElementType WORD = new TaraElementType("WORD");
 
 	IElementType ABSTRACT = new TaraTokenType("ABSTRACT");
 	IElementType ADDRESS_VALUE = new TaraTokenType("ADDRESS_VALUE");
@@ -104,7 +103,6 @@ public interface TaraTypes {
 	IElementType RIGHT_SQUARE = new TaraTokenType("RIGHT_SQUARE");
 	IElementType ROOT = new TaraTokenType("ROOT");
 	IElementType SINGLE = new TaraTokenType("SINGLE");
-	IElementType STAR = new TaraTokenType("STAR");
 	IElementType STRING_TYPE = new TaraTokenType("STRING_TYPE");
 	IElementType SUB = new TaraTokenType("SUB");
 	IElementType TERMINAL = new TaraTokenType("TERMINAL");
@@ -130,6 +128,8 @@ public interface TaraTypes {
 				return new TaraBodyImpl(node);
 			} else if (type == BOOLEAN_VALUE) {
 				return new TaraBooleanValueImpl(node);
+			} else if (type == CONTRACT) {
+				return new TaraContractImpl(node);
 			} else if (type == COUNT) {
 				return new TaraCountImpl(node);
 			} else if (type == DOC) {
@@ -168,8 +168,6 @@ public interface TaraTypes {
 				return new TaraMeasureValueImpl(node);
 			} else if (type == META_IDENTIFIER) {
 				return new TaraMetaIdentifierImpl(node);
-			} else if (type == NATIVE_NAME) {
-				return new TaraNativeNameImpl(node);
 			} else if (type == NATURAL_VALUE) {
 				return new TaraNaturalValueImpl(node);
 			} else if (type == NODE) {
@@ -192,8 +190,6 @@ public interface TaraTypes {
 				return new TaraVariableTypeImpl(node);
 			} else if (type == VAR_INIT) {
 				return new TaraVarInitImpl(node);
-			} else if (type == WORD) {
-				return new TaraWordImpl(node);
 			}
 			throw new AssertionError("Unknown element type: " + type);
 		}

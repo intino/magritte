@@ -16,12 +16,12 @@ import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.psi.NativeName;
+import siani.tara.intellij.lang.psi.Contract;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
-import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveNative;
+import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveContract;
 
 public class TaraToNative extends JavaLineMarkerProvider {
 
@@ -33,8 +33,8 @@ public class TaraToNative extends JavaLineMarkerProvider {
 		@Nullable
 		@Override
 		public String fun(PsiElement element) {
-			if (!NativeName.class.isInstance(element)) return null;
-			PsiElement reference = resolveNative((NativeName) element);
+			if (!Contract.class.isInstance(element)) return null;
+			PsiElement reference = resolveContract((Contract) element);
 			String start = "Native code declared in ";
 			@NonNls String pattern;
 			if (reference == null) return null;
@@ -44,12 +44,12 @@ public class TaraToNative extends JavaLineMarkerProvider {
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {
-			if (!NativeName.class.isInstance(element)) return;
+			if (!Contract.class.isInstance(element)) return;
 			if (DumbService.isDumb(element.getProject())) {
 				DumbService.getInstance(element.getProject()).showDumbModeNotification("Navigation to implementation classes is not possible during index update");
 				return;
 			}
-			NavigatablePsiElement reference = (NavigatablePsiElement) resolveNative((NativeName) element);
+			NavigatablePsiElement reference = (NavigatablePsiElement) resolveContract((Contract) element);
 			if (reference == null) return;
 			String title = DaemonBundle.message("navigation.title.overrider.method", element.getText(), 1);
 			MethodCellRenderer renderer = new MethodCellRenderer(false);
@@ -60,9 +60,9 @@ public class TaraToNative extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!(element instanceof NativeName)) return super.getLineMarkerInfo(element);
-		NativeName nativeName = (NativeName) element;
-		PsiElement reference = resolveNative(nativeName);
+		if (!(element instanceof Contract)) return super.getLineMarkerInfo(element);
+		Contract contract = (Contract) element;
+		PsiElement reference = resolveContract(contract);
 		if (reference != null) {
 			final Icon icon = AllIcons.Gutter.ImplementedMethod;
 			final MarkerType type = markerType;

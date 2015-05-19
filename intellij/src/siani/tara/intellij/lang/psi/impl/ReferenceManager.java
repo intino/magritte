@@ -258,26 +258,26 @@ public class ReferenceManager {
 		return resolve(importIdentifiers.get(importIdentifiers.size() - 1));
 	}
 
-	public static PsiElement resolveNative(NativeName nativeName) {
-		if (isMeasure(nativeName))
-			return resolveMetric(nativeName, nativeName.getProject());
-		else return resolveNativeClass(nativeName, nativeName.getProject());
+	public static PsiElement resolveContract(Contract contract) {
+		if (isMeasure(contract))
+			return resolveMetric(contract, contract.getProject());
+		else return resolveNativeClass(contract, contract.getProject());
 	}
 
-	private static boolean isMeasure(NativeName nativeName) {
-		PsiElement parent = nativeName.getParent();
+	private static boolean isMeasure(Contract contract) {
+		PsiElement parent = contract.getParent();
 		while (!(parent instanceof Variable)) parent = parent.getParent();
 		return ("measure".equals(((Variable) parent).getType()));
 	}
 
-	private static PsiElement resolveMetric(NativeName nativeName, Project project) {
-		return resolveJavaClassReference(project, project.getName().toLowerCase() + "." + "metrics" + "." + nativeName.getFormattedName());
+	private static PsiElement resolveMetric(Contract contract, Project project) {
+		return resolveJavaClassReference(project, project.getName().toLowerCase() + "." + "metrics" + "." + contract.getFormattedName());
 	}
 
-	private static PsiElement resolveNativeClass(NativeName nativeName, Project project) {
-		if (nativeName == null) return null;
-		String aPackage = ModuleProvider.getModuleOf(nativeName).getName() + '.' + "natives";
-		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(nativeName.getFormattedName()));
+	private static PsiElement resolveNativeClass(Contract contract, Project project) {
+		if (contract == null) return null;
+		String aPackage = ModuleProvider.getModuleOf(contract).getName() + '.' + "natives";
+		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(contract.getFormattedName()));
 	}
 
 	private static String capitalize(String name) {

@@ -10,7 +10,7 @@ public interface Variable extends Navigatable, Iconable, PsiNamedElement {
 	@Nullable
 	String getType();
 
-	NativeName getNativeName();
+	Contract getContract();
 
 	@Nullable
 	TaraValue getValue();

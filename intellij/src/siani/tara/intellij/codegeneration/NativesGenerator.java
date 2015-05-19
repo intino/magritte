@@ -66,9 +66,9 @@ public class NativesGenerator {
 	}
 
 	private PsiClass createNativeClass(Variable variable) {
-		PsiClass aClass = (PsiClass) ReferenceManager.resolveNative(variable.getNativeName());
+		PsiClass aClass = (PsiClass) ReferenceManager.resolveContract(variable.getContract());
 		if (aClass == null) {
-			aClass = JavaDirectoryService.getInstance().createInterface(destiny, variable.getNativeName().getFormattedName());
+			aClass = JavaDirectoryService.getInstance().createInterface(destiny, variable.getContract().getFormattedName());
 			setParent(MAGRITTE_NATIVE, aClass);
 		}
 		return aClass;

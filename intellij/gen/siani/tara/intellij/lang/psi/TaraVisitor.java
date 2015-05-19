@@ -34,6 +34,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitContract(@NotNull TaraContract o) {
+    visitContract(o);
+  }
+
   public void visitCount(@NotNull TaraCount o) {
     visitPsiElement(o);
   }
@@ -110,10 +114,6 @@ public class TaraVisitor extends PsiElementVisitor {
     visitMetaIdentifier(o);
   }
 
-  public void visitNativeName(@NotNull TaraNativeName o) {
-    visitNativeName(o);
-  }
-
   public void visitNaturalValue(@NotNull TaraNaturalValue o) {
     visitPsiElement(o);
   }
@@ -156,10 +156,6 @@ public class TaraVisitor extends PsiElementVisitor {
 
   public void visitVariableType(@NotNull TaraVariableType o) {
     visitPsiElement(o);
-  }
-
-  public void visitWord(@NotNull TaraWord o) {
-    visitWord(o);
   }
 
   public void visitImport(@NotNull Import o) {

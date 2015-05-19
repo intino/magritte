@@ -106,14 +106,14 @@ def trigger(file)
 end
 
 def type(variable) type(native) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple($variableValue))
+    .set("$terminal$name", $multiple($variableValue+native))
 end
 
 def type(variable) type(native) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple($variableValue))
+    .set("$terminal$name", $multiple($variableValue+native))
 end
 
-def trigger(intention) value(null)
+def trigger(native) value(null)
     nullBehavior()
 end
 

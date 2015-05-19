@@ -90,7 +90,7 @@ nodeReference ::= HAS identifierReference tags? {
 	implements = 'siani.tara.intellij.lang.psi.NodeReference'
 }
 
-variable ::= VAR variableType attributeType? (LIST | count)? identifier ((flags? word) | (EQUALS value measureValue?)? flags?)? {
+variable ::= VAR variableType attributeType? (LIST | count)? identifier (EQUALS value measureValue?)? flags? {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'siani.tara.intellij.lang.psi.Variable'
@@ -111,17 +111,12 @@ variableType::= NATURAL_TYPE
 
 count ::= LEFT_SQUARE NATURAL_VALUE_KEY RIGHT_SQUARE
 
-word ::= NEW_LINE_INDENT (identifier STAR? NEWLINE)+ DEDENT {
-	pin = 1
-	mixin = 'siani.tara.intellij.lang.psi.impl.WordMixin'
-	implements = 'siani.tara.intellij.lang.psi.Word'
-}
-
-attributeType ::= COLON nativeName
+attributeType ::= COLON contract
 {pin=1}
-nativeName   ::= MEASURE_VALUE_KEY | identifier {
-	implements = 'siani.tara.intellij.lang.psi.NativeName'
-	mixin = 'siani.tara.intellij.lang.psi.impl.NativeNameMixin'
+
+contract   ::= (LEFT_SQUARE (MEASURE_VALUE_KEY | identifier)+ RIGHT_SQUARE) | (MEASURE_VALUE_KEY | identifier) {
+	implements = 'siani.tara.intellij.lang.psi.Contract'
+	mixin = 'siani.tara.intellij.lang.psi.impl.ContractMixin'
 }
 
 value ::= identifierReference+

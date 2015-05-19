@@ -24,8 +24,8 @@ public class TaraAttributeTypeImpl extends ASTWrapperPsiElement implements TaraA
 
   @Override
   @Nullable
-  public TaraNativeName getNativeName() {
-    return findChildByClass(TaraNativeName.class);
+  public TaraContract getContract() {
+    return findChildByClass(TaraContract.class);
   }
 
 }

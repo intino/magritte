@@ -126,7 +126,6 @@ DOT                 : '.';
 EQUALS              : '=';
 
 SEMICOLON           : ';'+      { semicolon(); };
-STAR                : '*';
 PLUS                : '+';
 WORD                : 'word';
 RESOURCE            : 'file';
