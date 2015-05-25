@@ -10,5 +10,7 @@ public interface Variable extends Element {
 
 	String[] flags();
 
+	boolean isReference();
+
 	Object[] defaultValue();
 }

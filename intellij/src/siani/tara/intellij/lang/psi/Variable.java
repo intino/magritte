@@ -18,4 +18,6 @@ public interface Variable extends Navigatable, Iconable, PsiNamedElement {
 	@Nullable
 	Flags getFlags();
 
+	boolean isReference();
+
 }

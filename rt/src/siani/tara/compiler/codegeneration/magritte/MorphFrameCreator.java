@@ -16,7 +16,7 @@ import static siani.tara.compiler.codegeneration.magritte.NameFormatter.composeM
 
 public class MorphFrameCreator implements TemplateTags {
 
-	private final String project;
+	private final FrameBuilder builder = new FrameBuilder();
 	private final String generatedLanguage;
 	private final Language language;
 	private final Locale locale;
@@ -24,10 +24,11 @@ public class MorphFrameCreator implements TemplateTags {
 	Set<String> imports = new HashSet<>();
 
 	public MorphFrameCreator(String project, String generatedLanguage, Language language, Locale locale) {
-		this.project = project;
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 		this.locale = locale;
+		builder.register(NodeImpl.class, new MorphNodeAdapter(project, generatedLanguage, language, locale, initNode));
+		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(project, generatedLanguage, imports, locale));
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {
@@ -48,14 +49,10 @@ public class MorphFrameCreator implements TemplateTags {
 	}
 
 	private void createFacetTargetMorph(Frame frame, FacetTarget node) {
-		FrameBuilder builder = new FrameBuilder();
-		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(project, generatedLanguage, imports, locale));
 		frame.addFrame("node", builder.build(node));
 	}
 
 	private void createMorph(Frame frame, Node node) {
-		FrameBuilder builder = new FrameBuilder();
-		builder.register(NodeImpl.class, new MorphNodeAdapter(project, generatedLanguage, language, locale, initNode));
 		if (node instanceof NodeReference || node.isTerminalInstance() || isFeatureInstance(node)) return;
 		frame.addFrame("node", builder.build(node));
 	}

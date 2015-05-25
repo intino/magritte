@@ -26,7 +26,7 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return this;
 	}
 
-	public Contract getContract(){
+	public Contract getContract() {
 		TaraAttributeType attributeType = ((TaraVariable) this).getAttributeType();
 		if (attributeType == null) return null;
 		return attributeType.getContract();
@@ -45,6 +45,12 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		TaraVariableType type = ((TaraVariable) this).getVariableType();
 		return type == null ? null : type.getText();
 	}
+
+	public boolean isReference() {
+		TaraVariableType type = ((TaraVariable) this).getVariableType();
+		return type != null && type.getIdentifierReference() != null;
+	}
+
 
 	@Override
 	public String toString() {

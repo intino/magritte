@@ -115,7 +115,7 @@ public class GlobalConstraints {
 	private boolean compatibleTypes(Variable variable) {
 		Object[] values = variable.defaultValue();
 		String inferredType = inferType(values[0]);
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.type(), inferredType);
+		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? "reference" : variable.type(), inferredType);
 	}
 
 	private Constraint.Require duplicateVariable() {

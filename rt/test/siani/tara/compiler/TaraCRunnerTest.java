@@ -29,7 +29,6 @@ public class TaraCRunnerTest {
 		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/SumusM0.txt"});
 	}
 
-
 	@Test
 	public void TafatM2() {
 		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/TafatM2.txt"});

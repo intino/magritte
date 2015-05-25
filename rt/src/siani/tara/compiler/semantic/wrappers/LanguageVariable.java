@@ -2,6 +2,7 @@ package siani.tara.compiler.semantic.wrappers;
 
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.Variable;
+import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.model.Tag;
 
 import java.util.ArrayList;
@@ -31,6 +32,10 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 		return flags.toArray(new String[flags.size()]);
 	}
 
+	@Override
+	public boolean isReference() {
+		return variable instanceof VariableReference;
+	}
 
 	@Override
 	public Object[] defaultValue() {

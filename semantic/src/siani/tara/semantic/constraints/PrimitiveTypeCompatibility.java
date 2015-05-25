@@ -6,39 +6,44 @@ public class PrimitiveTypeCompatibility {
 
 	public static boolean checkCompatiblePrimitives(String type, String inferredType) {
 		return type.equals(inferredType)
-			|| integerInferNatural(type, inferredType)
-			|| doubleInfersIntegerOrNatural(type, inferredType)
-			|| measureInfersDoubleNaturalInteger(type, inferredType)
-			|| dateInfersString(type, inferredType) || ratioInfersIntegerNaturalDouble(type, inferredType)
-			|| nativeInfersStringOrEmpty(type, inferredType)
-			|| fileInfersString(type, inferredType);
+			|| naturalInfersInteger(type, inferredType)
+			|| integerOrNaturalInfersDouble(type, inferredType)
+			|| doubleNaturalIntegerInfersMeasure(type, inferredType)
+			|| stringInfersDate(type, inferredType) || integerNaturalDoubleInfersRatio(type, inferredType)
+			|| stringOrEmptyInfersNative(type, inferredType)
+			|| stringOrEmptyInfersReference(type, inferredType)
+			|| stringInfersFile(type, inferredType);
 	}
 
-	private static boolean fileInfersString(String type, String inferredType) {
+	private static boolean stringInfersFile(String type, String inferredType) {
 		return type.equalsIgnoreCase("file") && inferredType.equalsIgnoreCase("string");
 	}
 
-	private static boolean nativeInfersStringOrEmpty(String type, String inferredType) {
+	private static boolean stringOrEmptyInfersNative(String type, String inferredType) {
 		return type.equalsIgnoreCase("native") && (inferredType.equalsIgnoreCase("string") || inferredType.equalsIgnoreCase(EMPTY_NODE));
 	}
 
-	private static boolean ratioInfersIntegerNaturalDouble(String type, String inferredType) {
+	private static boolean stringOrEmptyInfersReference(String type, String inferredType) {
+		return type.equalsIgnoreCase("reference") && (inferredType.equalsIgnoreCase("string") || inferredType.equalsIgnoreCase(EMPTY_NODE));
+	}
+
+	private static boolean integerNaturalDoubleInfersRatio(String type, String inferredType) {
 		return type.equalsIgnoreCase("ratio") && (inferredType.equalsIgnoreCase("integer") || inferredType.equalsIgnoreCase("natural") || inferredType.equalsIgnoreCase("double"));
 	}
 
-	private static boolean dateInfersString(String type, String inferredType) {
+	private static boolean stringInfersDate(String type, String inferredType) {
 		return type.equalsIgnoreCase("date") && inferredType.equalsIgnoreCase("string");
 	}
 
-	private static boolean measureInfersDoubleNaturalInteger(String type, String inferredType) {
+	private static boolean doubleNaturalIntegerInfersMeasure(String type, String inferredType) {
 		return type.equalsIgnoreCase("measure") && (inferredType.equalsIgnoreCase("double") || inferredType.equalsIgnoreCase("integer") || inferredType.equalsIgnoreCase("natural"));
 	}
 
-	private static boolean doubleInfersIntegerOrNatural(String type, String inferredType) {
+	private static boolean integerOrNaturalInfersDouble(String type, String inferredType) {
 		return type.equalsIgnoreCase("double") && (inferredType.equalsIgnoreCase("integer") || inferredType.equalsIgnoreCase("natural"));
 	}
 
-	private static boolean integerInferNatural(String type, String inferredType) {
+	private static boolean naturalInfersInteger(String type, String inferredType) {
 		return type.equalsIgnoreCase("integer") && (inferredType.equalsIgnoreCase("natural") || inferredType.equalsIgnoreCase("integer"));
 	}
 
