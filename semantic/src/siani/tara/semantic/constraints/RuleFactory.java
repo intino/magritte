@@ -4,23 +4,23 @@ import siani.tara.semantic.*;
 import siani.tara.semantic.model.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static siani.tara.semantic.model.Tag.*;
 
 
 public class RuleFactory {
 
 	public static Allow.Name name() {
-		return new Allow.Name() {
-			@Override
-			public void check(Element element, List<? extends Rejectable> rejectables) {
-				List<Rejectable> toRemove = new ArrayList<>();
-				for (Rejectable rejectable : rejectables) {
-					if (!(rejectable instanceof Rejectable.Name)) continue;
-					toRemove.add(rejectable);
-				}
-				rejectables.removeAll(toRemove);
+		return (element, rejectables) -> {
+			List<Rejectable> toRemove = new ArrayList<>();
+			for (Rejectable rejectable : rejectables) {
+				if (!(rejectable instanceof Rejectable.Name)) continue;
+				toRemove.add(rejectable);
 			}
+			rejectables.removeAll(toRemove);
 		};
 	}
 
@@ -100,8 +100,7 @@ public class RuleFactory {
 			}
 
 			private void setCauseToRejectables(List<Rejectable.Include> rejectableIncludesBy) {
-				for (Rejectable.Include include : rejectableIncludesBy)
-					include.multiple();
+				rejectableIncludesBy.forEach(Rejectable.Include::multiple);
 			}
 		};
 	}
@@ -158,11 +157,11 @@ public class RuleFactory {
 	}
 
 	public static Allow.Parameter parameter(final String name, final String type, final boolean multiple, final int position, String contract, String... tags) {
-		return new PrimitiveParameterAllow(name, type, multiple, position, contract, tags);
+		return new PrimitiveParameterAllow(name, type, multiple, position, contract, asList(tags));
 	}
 
 	public static Allow.Parameter parameter(final String name, final String[] values, final boolean multiple, final int position, String contract, String... tags) {
-		return new ReferenceParameterAllow(name, values, multiple, position, contract, tags);
+		return new ReferenceParameterAllow(name, asList(values), multiple, position, contract, asList(tags));
 	}
 
 	public static Constraint.Require _multiple(final String type) {
@@ -189,16 +188,16 @@ public class RuleFactory {
 						addFlags(inner, annotations);
 						return;
 					}
-				throw new SemanticException(new SemanticError("required.type.in.context", type, node.type()));
+				throw new SemanticException(new SemanticError("required.type.in.context", node, asList(type, node.type().isEmpty() ? "Root" : node.type())));
 			}
 		};
 	}
 
 	public static Constraint.Require _single(final String type) {
-		return _multiple(type, new Tag[0]);
+		return _single(type, new Tag[0]);
 	}
 
-	public static Constraint.Require.Single _single(final String type, final Tag... annotations) {
+	public static Constraint.Require _single(final String type, final Tag... annotations) {
 		return new Constraint.Require.Single() {
 			@Override
 			public String type() {
@@ -218,12 +217,12 @@ public class RuleFactory {
 						addFlags(inner, annotations);
 						return;
 					}
-				throw new SemanticException(new SemanticError("required.type.in.context", type, node.type()));
+				throw new SemanticException(new SemanticError("required.type.in.context", node, asList(type, node.type())));
 			}
 		};
 	}
 
-	public static Constraint.Require oneOf(final Constraint.Require... requires) {
+	public static Constraint.Require.OneOf oneOf(final Constraint.Require... requires) {
 		return new Constraint.Require.OneOf() {
 			@Override
 			public void check(Element element) throws SemanticException {
@@ -236,7 +235,7 @@ public class RuleFactory {
 					} catch (SemanticException ignored) {
 					}
 				}
-				throw new SemanticException(new SemanticError("required.any.type.in.context", Arrays.toString(requireTypes.toArray(new String[requireTypes.size()]))));
+				throw new SemanticException(new SemanticError("required.any.type.in.context", element, singletonList(String.join(", ", requireTypes))));
 			}
 
 			@Override
@@ -299,7 +298,7 @@ public class RuleFactory {
 				siani.tara.semantic.model.Parameter[] parameters = (element instanceof Facet) ? ((Facet) element).parameters() : ((Node) element).parameters();
 				if (checkParameterExists(parameters, name(), position)) return;
 				String elementType = (element instanceof Facet) ? ((Facet) element).type() : ((Node) element).type();
-				throw new SemanticException(new SemanticError("required.parameter", element, new String[]{elementType, type, name}));
+				throw new SemanticException(new SemanticError("required.parameter", element, Arrays.asList(elementType, type, name)));
 			}
 		};
 	}
@@ -348,7 +347,7 @@ public class RuleFactory {
 				siani.tara.semantic.model.Parameter[] parameters = (element instanceof Facet) ? ((Facet) element).parameters() : ((Node) element).parameters();
 				if (checkParameterExists(parameters, name(), position)) return;
 				String type = (element instanceof Facet) ? ((Facet) element).type() : ((Node) element).type();
-				throw new SemanticException(new SemanticError("required.parameter", element, new String[]{type, "word", name}));
+				throw new SemanticException(new SemanticError("required.parameter", element, asList(type, "word", name)));
 			}
 		};
 	}
@@ -363,10 +362,7 @@ public class RuleFactory {
 	}
 
 	private static void removeNamedCandidates(List<Parameter> signatureParameters) {
-		List<Parameter> toRemove = new ArrayList<>();
-		for (Parameter parameter : signatureParameters)
-			if (parameter.getName() != null && !parameter.getName().isEmpty())
-				toRemove.add(parameter);
+		List<Parameter> toRemove = signatureParameters.stream().filter(parameter -> parameter.getName() != null && !parameter.getName().isEmpty()).collect(Collectors.toList());
 		remove(signatureParameters, toRemove);
 	}
 
@@ -404,7 +400,7 @@ public class RuleFactory {
 
 			@Override
 			public Facet allow(Parameter... parameter) {
-				this.allows.addAll(Arrays.asList(parameter));
+				this.allows.addAll(asList(parameter));
 				return add(new Constraint.Reject() {
 					@Override
 					public void check(Element element) throws SemanticException {
@@ -428,7 +424,7 @@ public class RuleFactory {
 			}
 
 			private Facet add(Constraint... constraints) {
-				this.constraints.addAll(Arrays.asList(constraints));
+				this.constraints.addAll(asList(constraints));
 				return this;
 			}
 
@@ -462,12 +458,12 @@ public class RuleFactory {
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
 				if (node.name().isEmpty() && !node.isReference())
-					throw new SemanticException(new SemanticError("required.name"));
+					throw new SemanticException(new SemanticError("required.name", element, Collections.emptyList()));
 			}
 		};
 	}
 
-	public static Constraint.Require redefine(final String name, String supertype) {
+	public static Constraint.Require.TerminalVariableRedefinition redefine(final String name, String supertype) {
 		return new Constraint.Require.TerminalVariableRedefinition() {
 			@Override
 			public void check(Element element) throws SemanticException {
@@ -475,7 +471,7 @@ public class RuleFactory {
 				if (!isTerminalInstance(node))
 					for (Variable variable : node.variables())
 						if (name.equals(variable.name())) return;
-				throw new SemanticException(new SemanticError("required.terminal.variable.redefine",node, new Object[]{name}));
+				throw new SemanticException(new SemanticError("required.terminal.variable.redefine", node, singletonList(name)));
 			}
 
 			private boolean isTerminalInstance(Node node) {
@@ -493,7 +489,7 @@ public class RuleFactory {
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
 				if (!node.isReference() && node.plate().isEmpty())
-					throw new SemanticException(new SemanticError("required.plate", node.type()));
+					throw new SemanticException(new SemanticError("required.plate", null, singletonList(node.type())));
 			}
 		};
 	}

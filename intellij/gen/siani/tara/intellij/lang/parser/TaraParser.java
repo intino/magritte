@@ -174,7 +174,7 @@ public class TaraParser implements PsiParser {
 
   /* ********************************************************** */
   // TERMINAL
-  // 	| SINGLE | MULTIPLE | REQUIRED | OPTIONAL
+  // 	| SINGLE | REQUIRED | OPTIONAL
   // 	| FACET | FEATURE | PROPERTY | ENCLOSED | ROOT
   public static boolean annotation(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotation")) return false;
@@ -182,7 +182,6 @@ public class TaraParser implements PsiParser {
     Marker m = enter_section_(b, l, _NONE_, "<annotation>");
     r = consumeToken(b, TERMINAL);
     if (!r) r = consumeToken(b, SINGLE);
-    if (!r) r = consumeToken(b, MULTIPLE);
     if (!r) r = consumeToken(b, REQUIRED);
     if (!r) r = consumeToken(b, OPTIONAL);
     if (!r) r = consumeToken(b, FACET);
@@ -619,7 +618,7 @@ public class TaraParser implements PsiParser {
 
   /* ********************************************************** */
   // ABSTRACT | TERMINAL | ROOT
-  // 	| SINGLE | MULTIPLE | REQUIRED
+  // 	| SINGLE | REQUIRED
   // 	| FACET | FEATURE | PROPERTY | ENCLOSED | READONLY
   public static boolean flag(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flag")) return false;
@@ -629,7 +628,6 @@ public class TaraParser implements PsiParser {
     if (!r) r = consumeToken(b, TERMINAL);
     if (!r) r = consumeToken(b, ROOT);
     if (!r) r = consumeToken(b, SINGLE);
-    if (!r) r = consumeToken(b, MULTIPLE);
     if (!r) r = consumeToken(b, REQUIRED);
     if (!r) r = consumeToken(b, FACET);
     if (!r) r = consumeToken(b, FEATURE);

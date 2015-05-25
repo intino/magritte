@@ -10,9 +10,11 @@ import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.Assumption;
+import siani.tara.semantic.model.Context;
 import siani.tara.semantic.model.Tag;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static siani.tara.semantic.model.Tag.*;
 
@@ -52,13 +54,12 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	}
 
 	private List<String> collectCaseRules() {
-		List<String> cases = new ArrayList<>();
-		for (Map.Entry<String, siani.tara.semantic.model.Context> entry : language.catalog().entrySet())
-			if (isTerminalInstance(entry.getValue())) cases.add(entry.getKey());
-		return cases;
+		return language.catalog().entrySet().stream().
+			filter(entry -> isTerminalInstance(entry.getValue())).
+			map(Map.Entry::getKey).collect(Collectors.toList());
 	}
 
-	private boolean isTerminalInstance(siani.tara.semantic.model.Context value) {
+	private boolean isTerminalInstance(Context value) {
 		for (Assumption assumption : value.assumptions())
 			if (assumption instanceof Assumption.TerminalInstance) return true;
 		return false;
@@ -112,10 +113,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	}
 
 	private Collection<Frame> getCasesConstrains(Frame allows, List<String> nodes) {
-		List<Frame> frames = new ArrayList<>();
-		for (String node : nodes)
-			frames.add(new Frame(allows).addTypes("multiple", ALLOW).addFrame("type", node));
-		return frames;
+		return nodes.stream().map(node ->
+			new Frame(allows).addTypes("multiple", ALLOW).addFrame("type", node)).
+			collect(Collectors.toList());
 	}
 
 	private void addRequires(Node node, Frame frame) {
@@ -173,11 +173,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	}
 
 	private void addRequiredVariableRedefines(Frame requires, Node node) {
-		for (Variable variable : node.getVariables()) {
-			if (variable.isTerminal() && variable instanceof VariableReference && !((VariableReference) variable).getDestiny().isTerminal())
-				requires.addFrame("require", new Frame().addTypes("redefine", "require").
-					addFrame("name", variable.getName()).addFrame("supertype", variable.getType()));
-		}
+		node.getVariables().stream().
+			filter(variable -> variable.isTerminal() && variable instanceof VariableReference && !((VariableReference) variable).getDestiny().isTerminal()).
+			forEach(variable -> requires.addFrame("require", new Frame().addTypes("redefine", "require").
+				addFrame("name", variable.getName()).addFrame("supertype", variable.getType())));
 	}
 
 	private void addParameterRequires(List<Variable> variables, Frame requires, boolean terminalNode, int index) {
@@ -201,9 +200,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	}
 
 	private void addAnnotationAssumptions(Node node, Frame assumptions) {
-		for (Tag tag : node.getAnnotations())
-			if (!tag.equals(SINGLE) || tag.equals(REQUIRED) || tag.equals(MULTIPLE))
-				assumptions.addFrame("assumption", tag.name().toLowerCase());
+		node.getAnnotations().stream().filter(tag -> !tag.equals(SINGLE) || tag.equals(REQUIRED)).forEach(tag -> assumptions.addFrame("assumption", tag.name().toLowerCase()));
 		for (Tag tag : node.getFlags()) {
 			if (tag.equals(TERMINAL))
 				assumptions.addFrame("assumption", Tag.TERMINAL_INSTANCE);

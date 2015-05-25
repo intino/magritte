@@ -122,6 +122,9 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.REQUIRED_PLATE:
 					configuration.setPlateRequired(Boolean.valueOf(reader.readLine()));
 					break;
+				case TaraRtConstants.NATIVES_PATH:
+					configuration.setNativePath(new File(reader.readLine()));
+					break;
 				case TaraRtConstants.LANGUAGE:
 					configuration.setLanguage(reader.readLine());
 					break;

@@ -142,12 +142,12 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public boolean isRequired() {
-		return destiny.isRequired() || flags.contains(REQUIRED);
+		return flags.contains(REQUIRED);
 	}
 
 	@Override
 	public boolean isSingle() {
-		return destiny.isSingle() || flags.contains(SINGLE);
+		return flags.contains(SINGLE);
 	}
 
 	@Override
@@ -178,6 +178,16 @@ public class NodeReference extends Element implements Node {
 	@Override
 	public boolean isTerminalInstance() {
 		return destiny.isTerminalInstance() || flags.contains(TERMINAL_INSTANCE);
+	}
+
+	@Override
+	public boolean intoSingle() {
+		return flags.contains(SINGLE);
+	}
+
+	@Override
+	public boolean intoRequired() {
+		return flags.contains(REQUIRED);
 	}
 
 	@Override

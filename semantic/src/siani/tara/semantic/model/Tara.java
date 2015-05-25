@@ -18,12 +18,9 @@ public abstract class Tara implements Language {
 	}
 
 	protected Transaction in(final String qualifiedName) {
-		return new Transaction() {
-			@Override
-			public void def(Context context) {
-				context.commit();
-				rulesCatalog.put(qualifiedName, context);
-			}
+		return context -> {
+			context.commit();
+			rulesCatalog.put(qualifiedName, context);
 		};
 	}
 

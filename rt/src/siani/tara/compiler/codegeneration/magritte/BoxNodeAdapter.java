@@ -15,11 +15,11 @@ import java.util.Map;
 
 public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private final Map<Node, Long> keys;
-	private final boolean terminal;
+	private final boolean terminalInstance;
 
-	public BoxNodeAdapter(Map<Node, Long> keys, boolean terminal) {
+	public BoxNodeAdapter(Map<Node, Long> keys, boolean terminalInstance) {
 		this.keys = keys;
-		this.terminal = terminal;
+		this.terminalInstance = terminalInstance;
 	}
 
 	@Override
@@ -57,18 +57,17 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		Frame tagsFrame = new Frame(frame);
 		for (Tag tag : node.getFlags()) {
 			if (!tag.equals(Tag.ABSTRACT) && !tag.equals(Tag.TERMINAL_INSTANCE) && !tag.equals(Tag.ROOT)) continue;
-			if (terminal && tag.equals(Tag.TERMINAL_INSTANCE)) continue;
+			if (terminalInstance && tag.equals(Tag.TERMINAL_INSTANCE)) continue;
 			tagsFrame.addFrame(VALUE, tag.name());
 		}
-		if (terminal && (isRoot(node))) tagsFrame.addFrame(VALUE, Tag.ROOT.name());
+		if (terminalInstance && isRoot(node)) tagsFrame.addFrame(VALUE, Tag.ROOT.name());
 		tagsFrame.addTypes(ANNOTATION);
 		if (tagsFrame.slots().length != 0)
 			frame.addFrame(ANNOTATION, tagsFrame);
 	}
 
 	private boolean isRoot(Node node) {
-		return node.isRoot() || (node.getContainer() != null && (
-			node.getContainer() instanceof Node && isRoot((Node) node.getContainer())));
+		return node.isRoot() || (node.getContainer() instanceof Model);
 	}
 
 	private void variables(Node node, final Frame frame, FrameContext<Node> FrameContext) {
@@ -83,10 +82,9 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private void parameters(Node node, Frame frame, FrameContext<Node> FrameContext) {
-		for (final Parameter parameter : node.getParameters())
-			if (!isOverriddenByFacets(parameter, node.getFacets())) {
-				frame.addFrame(VARIABLE, FrameContext.build(parameter));
-			}
+		node.getParameters().stream().filter(parameter -> !isOverriddenByFacets(parameter, node.getFacets())).forEach(parameter -> {
+			frame.addFrame(VARIABLE, FrameContext.build(parameter));
+		});
 	}
 
 	private boolean isOverriddenByFacets(Parameter parameter, Collection<Facet> facets) {
@@ -109,9 +107,9 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private void includes(Node node, Frame frame) {
-		for (Node inner : node.getIncludedNodes())
-			if (!inherited(inner) && !isOverriddenByFacets(inner, node.getFacets()))
-				addComponent(frame, inner);
+		node.getIncludedNodes().stream().
+			filter(inner -> !inherited(inner) && !isOverriddenByFacets(inner, node.getFacets())).
+			forEach(inner -> addComponent(frame, inner));
 		addFacetNodes(node, frame);
 	}
 
@@ -148,8 +146,10 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private void addComponent(Frame frame, Node inner) {
 		Long key = getKey(inner);
 		Frame include = new Frame(frame).addTypes("include").addTypes(asString(inner.getFlags()));
-		include.addFrame(VALUE, inner.isAnonymous() && inner.getPlate() == null ? key : searchNode(inner));
-		if (terminal) include.addTypes(TERMINAL);
+		final boolean withKey = inner.isAnonymous() && inner.getPlate() == null;
+		include.addFrame(VALUE, withKey ? key : searchNode(inner));
+		if (terminalInstance) include.addTypes(TERMINAL);
+		if (withKey) include.addTypes(KEY);
 		if (inner.isFeature()) include.addTypes(Tag.SINGLE.name());
 		frame.addFrame(INCLUDE, include);
 	}

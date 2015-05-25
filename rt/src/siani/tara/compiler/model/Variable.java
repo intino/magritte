@@ -6,6 +6,7 @@ import java.util.Collection;
 
 public interface Variable  extends Cloneable {
 
+	String NATIVE_SEPARATOR = "#";
 	String WORD = "word";
 
 	String getName();

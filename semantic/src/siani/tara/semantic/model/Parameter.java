@@ -1,14 +1,16 @@
 package siani.tara.semantic.model;
 
+import java.util.List;
+
 public interface Parameter extends Element {
 
 	String inferredType();
 
 	void setInferredType(String type);
 
-	String[] getAnnotations();
+	List<String> getAnnotations();
 
-	void setAnnotations(String[] annotations);
+	void setAnnotations(List<String> annotations);
 
 	void setMultiple(boolean multiple);
 
@@ -20,7 +22,7 @@ public interface Parameter extends Element {
 
 	void setName(String name);
 
-	Object[] getValues();
+	List<Object> getValues();
 
 	String getContract();
 
@@ -30,5 +32,5 @@ public interface Parameter extends Element {
 
 	boolean isVariableInit();
 
-	void addAllowedParameters(String[] values);
+	void addAllowedParameters(List<String> values);
 }

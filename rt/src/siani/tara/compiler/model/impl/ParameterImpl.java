@@ -21,7 +21,7 @@ public class ParameterImpl extends Element implements Parameter {
 	private String inferredType;
 	private boolean multiple;
 	private boolean hasReferenceValue = false;
-	private String[] annotations = new String[0];
+	private List<String> annotations = new ArrayList<>();
 	private NodeContainer owner;
 
 
@@ -74,12 +74,12 @@ public class ParameterImpl extends Element implements Parameter {
 	}
 
 	@Override
-	public String[] getAnnotations() {
-		return annotations;
+	public List<String> getAnnotations() {
+		return Collections.unmodifiableList(annotations);
 	}
 
 	@Override
-	public void setAnnotations(String[] annotations) {
+	public void setAnnotations(List<String> annotations) {
 		this.annotations = annotations;
 	}
 
@@ -155,7 +155,13 @@ public class ParameterImpl extends Element implements Parameter {
 		return allowedValues;
 	}
 
-	public void addAllowedValues(String[] allowedValues) {
-		Collections.addAll(this.allowedValues, allowedValues);
+	public void addAllowedValues(List<String> allowedValues) {
+		this.allowedValues.addAll(allowedValues);
+	}
+
+	@Override
+	public void substituteValues(List<?> newValues) {
+		this.values.clear();
+		this.values.addAll(newValues);
 	}
 }

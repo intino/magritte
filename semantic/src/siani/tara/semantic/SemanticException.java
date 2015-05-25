@@ -16,7 +16,7 @@ public class SemanticException extends Exception {
 
 	@Override
 	public String getMessage() {
-		return MessageProvider.message(error.key(), error.parameters());
+		return MessageProvider.message(error.key(), error.parameters().toArray(new Object[error.parameters().size()]));
 	}
 
 	public String key() {

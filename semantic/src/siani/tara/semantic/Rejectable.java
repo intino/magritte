@@ -2,9 +2,10 @@ package siani.tara.semantic;
 
 import siani.tara.semantic.model.Node;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public abstract class Rejectable {
 
@@ -37,7 +38,7 @@ public abstract class Rejectable {
 
 		@Override
 		public SemanticError error() {
-			return new SemanticError("reject.name");
+			return new SemanticError("reject.name", null, Collections.EMPTY_LIST);
 		}
 	}
 
@@ -46,14 +47,14 @@ public abstract class Rejectable {
 		private final siani.tara.semantic.model.Parameter parameter;
 		private Cause cause = Cause.NAME;
 		private String expectedType;
-		private String[] expectedValues;
+		private List<String> expectedValues;
 
 		public void invalidType(String expectedType) {
 			this.cause = Cause.TYPE;
 			this.expectedType = expectedType;
 		}
 
-		public void invalidValue(String[] expectedValues) {
+		public void invalidValue(List<String> expectedValues) {
 			this.cause = Cause.VALUE;
 			this.expectedValues = expectedValues;
 		}
@@ -69,12 +70,13 @@ public abstract class Rejectable {
 		@Override
 		public SemanticError error() {
 			if (cause.equals(Cause.NAME))
-				return new SemanticError("reject.parameter.in.context", parameter, new Object[]{parameter.getName()});
+				return new SemanticError("reject.parameter.in.context", parameter, singletonList(parameter.getName()));
 			if (cause.equals(Cause.MIXED_TYPE))
-				return new SemanticError("reject.mixed.type.parameter", parameter, new Object[]{Arrays.toString(parameter.getValues()), expectedType});
+				return new SemanticError("reject.mixed.type.parameter", parameter, asList(parameter.getValues(), expectedType));
 			if (cause.equals(Cause.VALUE))
-				return new SemanticError("reject.parameter.word.allowed.value.in.context", parameter, new Object[]{Arrays.toString(expectedValues)});
-			else return new SemanticError("reject.parameter.type.in.context", parameter, new Object[]{expectedType});
+				return new SemanticError("reject.parameter.word.allowed.value.in.context", parameter, singletonList(String.join(", ", expectedValues)));
+			else
+				return new SemanticError("reject.parameter.type.in.context", parameter, singletonList(expectedType));
 		}
 
 		public void mixedTypesInArray(String type) {
@@ -116,8 +118,8 @@ public abstract class Rejectable {
 		@Override
 		public SemanticError error() {
 			return cause.equals(Cause.NOT_ALLOWED) ?
-				new SemanticError("reject.unknown.type.in.context", node, new Object[]{node.type(), node.name()}) :
-				new SemanticError("reject.multiple.node.in.context", node, new Object[]{node.type(), node.name()});
+				new SemanticError("reject.unknown.type.in.context", node, asList(node.type(), node.name())) :
+				new SemanticError("reject.multiple.node.in.context", node, asList(node.type(), node.name()));
 		}
 	}
 
@@ -141,8 +143,8 @@ public abstract class Rejectable {
 		@Override
 		public SemanticError error() {
 			return cause.equals(Cause.NOT_ALLOWED) ?
-				new SemanticError("reject.unknown.facet.in.context", facet, new Object[]{facet.type()}) :
-				new SemanticError("reject.parameter.in.contex", facet, new Object[]{facet.type()});
+				new SemanticError("reject.unknown.facet.in.context", facet, singletonList(facet.type())) :
+				new SemanticError("reject.parameter.in.contex", facet, singletonList(facet.type()));
 		}
 	}
 

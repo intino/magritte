@@ -7,6 +7,7 @@ import siani.tara.semantic.SemanticException;
 import siani.tara.semantic.model.Node;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import static siani.tara.semantic.model.Tara.Root;
 
@@ -61,6 +62,6 @@ public class Checker {
 
 	private void finish(Node node) throws SemanticException {
 		if (!node.isReference())
-			throw new SemanticException(new SemanticError("reject.type.not.exists", node, new Object[]{node.type()}));
+			throw new SemanticException(new SemanticError("reject.type.not.exists", node, Collections.singletonList(node.type())));
 	}
 }

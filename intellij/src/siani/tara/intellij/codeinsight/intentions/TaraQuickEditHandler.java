@@ -35,10 +35,7 @@ import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.PsiMethod;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.source.PsiJavaFileImpl;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.ObjectUtils;
@@ -47,11 +44,13 @@ import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.model.Frame;
 import siani.tara.intellij.framework.maven.NativeTemplate;
 import siani.tara.intellij.lang.psi.Node;
+import siani.tara.intellij.lang.psi.Parameter;
 import siani.tara.intellij.lang.psi.StringValue;
 import siani.tara.intellij.lang.psi.VarInit;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.semantic.Allow;
+import siani.tara.semantic.model.Variable;
 
 import javax.swing.*;
 
@@ -120,33 +119,53 @@ public class TaraQuickEditHandler extends DocumentAdapter implements Disposable 
 	@NotNull
 	private Frame createFrame(StringValue stringValue) {
 		Frame frame = new Frame().addTypes("native");
-		VarInit variable = getVariable(stringValue);
-		Node node = getContainerNode(variable);
+		PsiElement element = getVariable(stringValue);
+		if (element == null) element = getParameter(stringValue);
+		Node node = getContainerNode(element);
 		frame.addFrame("module", ModuleProvider.getModuleOf(stringValue).getName().toLowerCase());
 		frame.addFrame("language", languageName.toLowerCase());
-		Allow.Parameter correspondingAllow = TaraUtil.getCorrespondingAllow(node, variable);
-		if (correspondingAllow != null) frame.addFrame("intention", correspondingAllow.contract());
-
-		frame.addFrame("variable", variable.getName()).
+		Allow.Parameter allow = TaraUtil.getCorrespondingAllow(node, element);
+		if (allow != null) frame.addFrame("intention", intention(allow.contract()));
+		final String replace = stringValue.getValue().replace("\\n", "\n").replace("\\\"", "\"");
+		frame.addFrame("variable", getName(element)).
 			addFrame("qn", node.getQualifiedName().replace("@anonymous", "").replace(".", "_")).
 			addFrame("parent", firstNamedNode(node).replace(".", "_")).
-			addFrame("body", stringValue.getValue().replace("\\n", "\n").replace("\\\"", "\""));
+			addFrame("signature", getSignature(allow.contract())).
+			addFrame("body", replace.endsWith(";") ? replace : replace + ";");
 		return frame;
+	}
+
+	private String getSignature(String contract) {
+		return contract.substring(contract.indexOf(Variable.NATIVE_SEPARATOR) + 1);
+	}
+
+	private String intention(String contract) {
+		return contract.substring(0, contract.indexOf(Variable.NATIVE_SEPARATOR));
 	}
 
 	private String firstNamedNode(Node node) {
 		if (node.getName() != null) return node.getQualifiedName();
 		Node candidate = node;
-		while (candidate != null && candidate.getName() == null) candidate = candidate.container();
-		return candidate == null ? "" : candidate.getQualifiedName();
+		while (candidate.container() != null)
+			candidate = candidate.container();
+		return candidate.getQualifiedName();
 	}
 
-	private Node getContainerNode(VarInit varInit) {
-		return (Node) getParentByType(varInit, Node.class);
+	private static Parameter getParameter(StringValue stringValue) {
+		PsiElement element = getParentByType(stringValue, Parameter.class);
+		return element instanceof Parameter ? (Parameter) element : null;
 	}
 
-	private VarInit getVariable(StringValue stringValue) {
-		return (VarInit) getParentByType(stringValue, VarInit.class);
+	private Node getContainerNode(PsiElement element) {
+		return (Node) getParentByType(element, Node.class);
+	}
+
+	private PsiElement getVariable(StringValue stringValue) {
+		return getParentByType(stringValue, VarInit.class);
+	}
+
+	private String getName(PsiElement element) {
+		return element instanceof Parameter ? ((Parameter) element).getExplicitName() : ((VarInit) element).getName();
 	}
 
 
@@ -164,24 +183,16 @@ public class TaraQuickEditHandler extends DocumentAdapter implements Disposable 
 		if (editor != null) {
 			editor.putUserData(QUICK_EDIT_HANDLER, this);
 			final FoldingModel foldingModel = editor.getFoldingModel();
-			foldingModel.runBatchFoldingOperation(new Runnable() {
-				@Override
-				public void run() {
-					for (RangeMarker o : ContainerUtil.reverse(((DocumentEx) myNewDocument).getGuardedBlocks())) {
-						String replacement = o.getUserData(REPLACEMENT_KEY);
-						if (StringUtil.isEmpty(replacement)) continue;
-						FoldRegion region = foldingModel.addFoldRegion(o.getStartOffset(), o.getEndOffset(), replacement);
-						if (region != null) region.setExpanded(false);
-					}
+			foldingModel.runBatchFoldingOperation(() -> {
+				for (RangeMarker o : ContainerUtil.reverse(((DocumentEx) myNewDocument).getGuardedBlocks())) {
+					String replacement = o.getUserData(REPLACEMENT_KEY);
+					if (StringUtil.isEmpty(replacement)) continue;
+					FoldRegion region = foldingModel.addFoldRegion(o.getStartOffset(), o.getEndOffset(), replacement);
+					if (region != null) region.setExpanded(false);
 				}
 			});
 		}
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				myEditor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
-			}
-		});
+		SwingUtilities.invokeLater(() -> myEditor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE));
 
 	}
 
@@ -244,11 +255,7 @@ public class TaraQuickEditHandler extends DocumentAdapter implements Disposable 
 	}
 
 	private PsiMethod getExecuteMethod() {
-		PsiMethod[] methods = ((PsiJavaFileImpl) myNewFile).getClasses()[0].getMethods();
-		for (PsiMethod method : methods)
-			if ("execute".equals(method.getName()))
-				return method;
-		return null;
+		return ((PsiJavaFileImpl) myNewFile).getClasses()[0].getMethods()[0];
 	}
 
 	private void closeEditor() {

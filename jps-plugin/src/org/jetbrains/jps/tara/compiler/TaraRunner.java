@@ -88,11 +88,7 @@ public class TaraRunner {
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
 			getJavaExecutable(), "siani.tara.TaracRunner", Collections.<String>emptyList(), classpath, vmParams, programParams);
 		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
-		final Consumer<String> updater = new Consumer<String>() {
-			public void consume(String s) {
-				context.processMessage(new ProgressMessage(s));
-			}
-		};
+		final Consumer<String> updater = s -> context.processMessage(new ProgressMessage(s));
 		final TaracOSProcessHandler handler = new TaracOSProcessHandler(process, updater) {
 			@Override
 			protected Future<?> executeOnPooledThread(Runnable task) {

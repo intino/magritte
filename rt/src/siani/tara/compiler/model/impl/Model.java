@@ -142,6 +142,16 @@ public class Model extends Element implements Node {
 		return false;
 	}
 
+	@Override
+	public boolean intoSingle() {
+		return false;
+	}
+
+	@Override
+	public boolean intoRequired() {
+		return false;
+	}
+
 	public boolean isTerminal() {
 		return terminal;
 	}

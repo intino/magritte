@@ -3,7 +3,7 @@ def type(scene)
 
 	public class $name+FirstCamelCase extends magritte.wraps.Scene {
 
-	    public Monet(magritte.Model model) {
+	    public $name+FirstCamelCase(magritte.Model model) {
 	        super(model);
 	    }
 
@@ -13,7 +13,7 @@ end
 
 def type(root) trigger(root)
 	public $qn+reference$[$] $name+FirstLowerCase+plural() {
-        return roots($qn+reference.class);
+        return get($qn+reference.class);
     }
 
     public $qn+reference $name+FirstLowerCase(int index) {

@@ -71,8 +71,6 @@ WITH                = "with"
 ABSTRACT            = "abstract"
 
 SINGLE              = "single"
-MULTIPLE            = "multiple"
-
 REQUIRED            = "required"
 
 TERMINAL            = "terminal"
@@ -172,7 +170,6 @@ NEWLINE             = [\n]+
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 
     {SINGLE}                        {   return TaraTypes.SINGLE; }
-    {MULTIPLE}                      {   return TaraTypes.MULTIPLE; }
     {REQUIRED}                      {   return TaraTypes.REQUIRED; }
     {ROOT}                          {   return TaraTypes.ROOT; }
 

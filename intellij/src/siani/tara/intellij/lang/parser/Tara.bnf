@@ -168,7 +168,7 @@ flags::= IS flag+ {
 }
 
 flag ::= ABSTRACT | TERMINAL | ROOT
-	| SINGLE | MULTIPLE | REQUIRED
+	| SINGLE | REQUIRED
 	| FACET | FEATURE | PROPERTY | ENCLOSED | READONLY {
 	mixin = 'siani.tara.intellij.lang.psi.impl.FlagMixin'
 	implements = 'siani.tara.intellij.lang.psi.Flag'
@@ -180,7 +180,7 @@ annotations ::= INTO annotation+ {
 	implements = 'siani.tara.intellij.lang.psi.Annotations'
 }
 annotation ::= TERMINAL
-	| SINGLE | MULTIPLE | REQUIRED | OPTIONAL
+	| SINGLE | REQUIRED | OPTIONAL
 	| FACET | FEATURE | PROPERTY | ENCLOSED | ROOT {
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotation'

@@ -118,21 +118,27 @@ public class TaraUtil {
 	}
 
 	public static boolean isNativeValue(StringValue stringValue) {
-		VarInit variable = getVariable(stringValue);
-		if (variable == null) return false;
-		Node node = getContainerNode(variable);
+		PsiElement element = asVariable(stringValue);
+		if (element == null) element = asParameter(stringValue);
+		if (element == null) return false;
+		Node node = getContainerNode(element);
 		if (node == null) return false;
-		Allow.Parameter allow = TaraUtil.getCorrespondingAllow(node, variable);
+		Allow.Parameter allow = getCorrespondingAllow(node, element);
 		return allow != null && TaraPrimitives.NATIVE.equalsIgnoreCase(allow.type());
 	}
 
-	private static Node getContainerNode(VarInit varInit) {
+	private static Node getContainerNode(PsiElement varInit) {
 		return (Node) getParentByType(varInit, Node.class);
 	}
 
-	private static VarInit getVariable(StringValue stringValue) {
+	private static PsiElement asVariable(StringValue stringValue) {
 		PsiElement element = getParentByType(stringValue, VarInit.class);
 		return element instanceof VarInit ? (VarInit) element : null;
+	}
+
+	private static PsiElement asParameter(StringValue stringValue) {
+		PsiElement element = getParentByType(stringValue, Parameter.class);
+		return element instanceof Parameter ? (Parameter) element : null;
 	}
 
 	private static String buildType(PsiElement element, String type) {
@@ -155,12 +161,17 @@ public class TaraUtil {
 		return path;
 	}
 
-	public static Allow.Parameter getCorrespondingAllow(Node container, VarInit varInit) {
-		FacetApply facetApply = areFacetVarInit(varInit);
+	public static Allow.Parameter getCorrespondingAllow(Node container, PsiElement element) {
+		return element instanceof VarInit ? getCorrespondingAllow(container, (VarInit) element) :
+			getCorrespondingAllow(container, (Parameter) element);
+	}
+
+	public static Allow.Parameter getCorrespondingAllow(Node container, VarInit element) {
+		FacetApply facetApply = areFacetVarInit(element);
 		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.getType()) : TaraUtil.getAllowsOf(container);
 		if (allowsOf == null) return null;
 		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
-		return findParameter(parametersAllowed, varInit.getName());
+		return findParameter(parametersAllowed, element.getName());
 	}
 
 	public static Allow.Parameter getCorrespondingAllow(Node container, Parameter parameter) {

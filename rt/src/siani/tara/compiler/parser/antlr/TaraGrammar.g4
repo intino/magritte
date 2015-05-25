@@ -68,12 +68,12 @@ measureValue    : IDENTIFIER | MEASURE_VALUE;
 tags: flags? annotations?;
 
 annotations: INTO annotation+;
-annotation: TERMINAL | ROOT | SINGLE | MULTIPLE | REQUIRED
+annotation: TERMINAL | ROOT | SINGLE | REQUIRED
             | FACET | FEATURE | PROPERTY | ENCLOSED;
 
 flags: IS flag+;
 flag: ABSTRACT | TERMINAL | ROOT
-      	| SINGLE | MULTIPLE | REQUIRED
+      	| SINGLE  | REQUIRED
       	| FACET | FEATURE | PROPERTY | ENCLOSED  | READONLY;
 
 varInit : IDENTIFIER EQUALS value;

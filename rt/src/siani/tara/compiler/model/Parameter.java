@@ -16,9 +16,9 @@ public interface Parameter {
 
 	boolean isMultiple();
 
-	String[] getAnnotations();
+	List<String> getAnnotations();
 
-	void setAnnotations(String[] annotations);
+	void setAnnotations(List<String> annotations);
 
 	String getName();
 
@@ -40,5 +40,7 @@ public interface Parameter {
 
 	List<String> getAllowedValues();
 
-	void addAllowedValues(String[] allowedValues);
+	void addAllowedValues(List<String> allowedValues);
+
+	void substituteValues(List<? extends Object> newValues);
 }

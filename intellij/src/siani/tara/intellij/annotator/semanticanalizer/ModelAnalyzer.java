@@ -30,8 +30,10 @@ public class ModelAnalyzer extends TaraAnalyzer {
 		} catch (SemanticException e) {
 			if (e.getOrigin() == null) throw new RuntimeException("origin = null:" + e.getMessage());
 			PsiElement destiny = ((LanguageElement) e.getOrigin()).element();
-			if (destiny instanceof Node) destiny = ((Node) destiny).getSignature();
-			results.put(destiny, annotateAndFix(e, destiny));
+			if (destiny instanceof Node) {
+				destiny = ((Node) destiny).getSignature();
+				results.put(destiny, annotateAndFix(e, destiny));
+			}
 		}
 	}
 

@@ -23,7 +23,7 @@ class ScriptDefinition implements Definition {
 	}
 
 	@Override
-	public Definition parameter(final int position, final String name, final Object... value) {
+	public Definition parameter(final int position, final String name, final Object... values) {
 		parameters.add(new Parameter() {
 			@Override
 			public String inferredType() {
@@ -36,13 +36,13 @@ class ScriptDefinition implements Definition {
 			}
 
 			@Override
-			public String[] getAnnotations() {
-				return new String[0];
+			public List<String> getAnnotations() {
+				return null;
 			}
 
-
 			@Override
-			public void setAnnotations(String[] annotations) {
+			public void setAnnotations(List<String> annotations) {
+
 			}
 
 			@Override
@@ -71,8 +71,8 @@ class ScriptDefinition implements Definition {
 			}
 
 			@Override
-			public Object[] getValues() {
-				return new Object[]{value};
+			public List<Object> getValues() {
+				return Arrays.asList(values);
 			}
 
 			@Override
@@ -96,9 +96,10 @@ class ScriptDefinition implements Definition {
 			}
 
 			@Override
-			public void addAllowedParameters(String[] values) {
+			public void addAllowedParameters(List<String> values) {
 
 			}
+
 		});
 		return this;
 	}

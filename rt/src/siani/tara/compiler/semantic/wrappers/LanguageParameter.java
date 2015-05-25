@@ -9,6 +9,7 @@ import siani.tara.semantic.model.EmptyNode;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class LanguageParameter extends LanguageElement implements siani.tara.semantic.model.Parameter {
@@ -30,12 +31,12 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
-	public String[] getAnnotations() {
+	public List<String> getAnnotations() {
 		return parameter.getAnnotations();
 	}
 
 	@Override
-	public void setAnnotations(String[] annotations) {
+	public void setAnnotations(List<String> annotations) {
 		parameter.setAnnotations(annotations);
 	}
 
@@ -65,8 +66,8 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
-	public Object[] getValues() {
-		return wrapValues(parameter.getValues());
+	public List<Object> getValues() {
+		return Collections.unmodifiableList(wrapValues(parameter.getValues()));
 	}
 
 	@Override
@@ -90,18 +91,18 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
-	public void addAllowedParameters(String[] values) {
+	public void addAllowedParameters(List<String> values) {
 		parameter.addAllowedValues(values);
 	}
 
-	private static Object[] wrapValues(Collection<Object> values) {
+	private static List<Object> wrapValues(Collection<Object> values) {
 		List<Object> objects = new ArrayList<>();
 		for (Object value : values)
 			if (value instanceof Node) objects.add(new LanguageNode((NodeImpl) value));
 			else if (values.iterator().next() instanceof siani.tara.compiler.model.EmptyNode)
 				objects.add(new EmptyNode());
 			else objects.add(value);
-		return objects.toArray();
+		return objects;
 	}
 
 	@Override

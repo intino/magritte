@@ -21,6 +21,8 @@ import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class TaraBuilder extends ModuleLevelBuilder {
 
@@ -63,8 +65,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 			List<String> paths = collectPaths(chunk, context, finalOutputs);
-			String nativeInterfacesDir = getNativeInterfacesDir(chunk.getModules(), extension.getGeneratedDslName());
-			paths.add(nativeInterfacesDir);
+			paths.add(getNativeInterfacesDir(chunk.getModules(), extension.getGeneratedDslName()));
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension.getDsl(),
 				extension.getGeneratedDslName(), extension.getDictionary(), extension.isPlateRequired(), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
@@ -102,23 +103,31 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	}
 
 	private static String getMagritteLib(ModuleChunk chunk) {
-		for (File file : ProjectPaths.getCompilationClasspath(chunk, true))
-			if (file.getPath().contains("magritte"))
-				return file.getPath();
-		return "Magritte not found";
+		return ProjectPaths.getCompilationClasspath(chunk, true).stream().
+			filter(file -> file.getPath().contains("magritte")).findFirst().
+			map(File::getPath).orElse("Magritte not found");
 	}
 
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {
-		for (CompilerMessage message : handler.getCompilerMessages(chunk.getName()))
-			context.processMessage(message);
+		handler.getCompilerMessages(chunk.getName()).forEach(context::processMessage);
 	}
 
-	private String getNativeInterfacesDir(Set<JpsModule> modules, String generatedDslName) {
+	private String getNativeInterfacesDir(Set<JpsModule> modules, String dsl) {
 		JpsModule module = modules.iterator().next();
-		for (JpsModuleSourceRoot root : module.getSourceRoots())
-			if (root.getFile().getName().equals("src") && new File(root.getFile(), generatedDslName + "/natives").exists())
-				return new File(root.getFile(), generatedDslName + "/natives").getPath();
-		return null;
+		if (module == null) return null;
+		return module.getSourceRoots().stream().
+			filter(new Predicate<JpsModuleSourceRoot>() {
+				@Override
+				public boolean test(JpsModuleSourceRoot root) {
+					return root.getFile().getName().equals("src") && new File(root.getFile(), dsl.toLowerCase() + "/natives").exists();
+				}
+			}).findFirst().
+			map(new Function<JpsModuleSourceRoot, String>() {
+				@Override
+				public String apply(JpsModuleSourceRoot root) {
+					return new File(root.getFile(), dsl.toLowerCase() + "/natives").getPath();
+				}
+			}).orElse(null);
 	}
 
 	private String[] collectIconDirectories(Set<JpsModule> jpsModules) {

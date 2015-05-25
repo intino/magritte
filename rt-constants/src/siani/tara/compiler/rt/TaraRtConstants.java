@@ -33,7 +33,7 @@ public class TaraRtConstants {
 	public static final String LANGUAGES_DIR = "tara_languages";
 	public static final String SEMANTIC_LIB = "semantic_lib";
 	public static final String REQUIRED_PLATE = "required_plate";
-	public static final String NATIVES_PATH = "required_plate";
+	public static final String NATIVES_PATH = "native_path";
 
 	private TaraRtConstants() {
 	}

@@ -7,11 +7,12 @@ import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.compiler.model.impl.VariableReference;
+import siani.tara.semantic.Allow;
+import siani.tara.semantic.constraints.ReferenceParameterAllow;
 import siani.tara.semantic.model.Tag;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static siani.tara.compiler.codegeneration.magritte.MorphCreatorHelper.getTypes;
 
@@ -57,15 +58,15 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	}
 
 	private void addInner(Node node, Frame frame, FrameContext context) {
-		for (Node inner : node.getIncludedNodes())
-			if (!(inner instanceof NodeReference) && !inner.isAnonymous())
-				frame.addFrame("node", context.build(inner));
+		node.getIncludedNodes().stream().
+			filter(inner -> !(inner instanceof NodeReference) && !inner.isAnonymous()).
+			forEach(inner -> frame.addFrame("node", context.build(inner)));
 	}
 
 	private void addParent(Node node, Frame newFrame) {
-		if (node.getParent() != null)
-			newFrame.addFrame(PARENT, getQn(node.getParent()));
-		else newFrame.addFrame(PARENT, isDefinition(node) ? DEFINITION : MORPH);
+		newFrame.addFrame(PARENT, node.getParent() != null ?
+			getQn(node.getParent()) :
+			isDefinition(node) ? DEFINITION : MORPH);
 	}
 
 	private boolean isDefinition(Node node) {//TODO si no va a llegar a M0. saber además si la Feature no es de M1
@@ -115,8 +116,9 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		List<String> types = new ArrayList<>();
 		types.add("nodeReference");
 		if (node.isSingle()) types.add("single");
+		if (node.intoSingle()) types.add("into_single");
 		if (node.isRequired()) types.add("required");
-		for (Tag tag : node.getFlags()) types.add(tag.name());
+		types.addAll(node.getFlags().stream().map(Tag::name).collect(Collectors.toList()));
 		return types.toArray(new String[types.size()]);
 	}
 
@@ -126,13 +128,34 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	}
 
 	protected void addVariables(Node node, final Frame frame) {
-		boolean definition = isDefinition(node);
-		for (final Variable variable : node.getVariables())
-			if (!variable.isInherited()) {
-				Frame varFrame = createVarFrame(variable);
-				if (definition) varFrame.addTypes("definition");
-				frame.addFrame(VARIABLE, varFrame);
-			}
+		node.getVariables().stream().
+			filter(variable -> !variable.isInherited()).
+			forEach(variable -> addVariable(frame, variable, isDefinition(node)));
+		addTerminalVariables(node, frame, isDefinition(node));
+
+	}
+
+	private void addTerminalVariables(Node node, final Frame frame, boolean definition) {
+		final Collection<Allow> allows = language.allows(node.getType());
+		if (allows == null) return;
+		allows.stream().
+			filter(allow -> allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(Tag.TERMINAL.name()) && !isRedefined(((Allow.Parameter) allow), node.getVariables())).
+			forEach(allow -> addVariable(frame, (Allow.Parameter) allow, definition));
+	}
+
+	private boolean isRedefined(Allow.Parameter allow, Collection<Variable> variables) {
+		for (Variable variable : variables) if (variable.getName().equals(allow.name())) return true;
+		return false;
+	}
+
+	private void addVariable(Frame frame, Variable variable, boolean definition) {
+		Frame varFrame = createVarFrame(variable);
+		frame.addFrame(VARIABLE, definition ? varFrame.addTypes("definition") : varFrame);
+	}
+
+	private void addVariable(Frame frame, Allow.Parameter variable, boolean definition) {
+		Frame varFrame = createVarFrame(variable);
+		frame.addFrame(VARIABLE, definition ? varFrame.addTypes("definition") : varFrame);
 	}
 
 
@@ -153,6 +176,29 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 			private String getType() {
 				if (variable.getType().equalsIgnoreCase(Primitives.NATURAL)) return Primitives.INTEGER;
 				else return variable.getType();
+			}
+		};
+
+		return frame.addTypes(MorphCreatorHelper.getTypes(variable));
+	}
+
+	protected Frame createVarFrame(final Allow.Parameter variable) {
+		Frame frame = new Frame(null) {
+			{
+				addFrame(NAME, variable.name());
+				addFrame(TYPE, variable instanceof ReferenceParameterAllow ? variable.allowedValues().get(0) : getType());//TODO QN completo
+				if (variable.type().equals(Variable.WORD))
+					addFrame(WORDS, variable.allowedValues().toArray(new String[(variable.allowedValues().size())]));
+				else if (variable.type().equals(Primitives.MEASURE)) {
+//					TODO addFrame(MEASURE, variable.getContract());
+//					if (((Attribute) variable).getMeasureValue() != null)
+//						addFrame(MEASURE_VALUE, resolveMetric(((Attribute) variable).getMeasureValue()));
+				}
+			}
+
+			private String getType() {
+				if (variable.type().equalsIgnoreCase(Primitives.NATURAL)) return Primitives.INTEGER;
+				else return variable.type();
 			}
 		};
 

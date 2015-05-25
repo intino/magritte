@@ -7,7 +7,7 @@ import siani.tara.semantic.model.EmptyNode;
 import siani.tara.semantic.model.Node;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ReferenceParameterAllow extends ParameterAllow implements Allow.Parameter {
@@ -17,13 +17,13 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	private static final String WORD_TYPE = ":word";
 	private final String name;
 	private final boolean multiple;
-	private final String[] values;
+	private final List<String> values;
 	private final int position;
 	private String nativeName;
-	private final String[] flags;
+	private final List<String> flags;
 
 
-	public ReferenceParameterAllow(String name, String[] values, boolean multiple, int position, String nativeName, String[] flags) {
+	public ReferenceParameterAllow(String name, List<String> values, boolean multiple, int position, String nativeName, List<String> flags) {
 		this.name = name;
 		this.multiple = multiple;
 		this.values = values;
@@ -55,8 +55,8 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public String[] allowedValues() {
-		return values;
+	public List<String> allowedValues() {
+		return Collections.unmodifiableList(values);
 	}
 
 	@Override
@@ -70,8 +70,8 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public String[] flags() {
-		return flags;
+	public List<String> flags() {
+		return Collections.unmodifiableList(flags);
 	}
 
 	private void checkParameter(List<? extends Rejectable> rejectables, List<Rejectable> toRemove) {
@@ -87,20 +87,19 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 		} else parameter.invalidValue(values);
 	}
 
-	private boolean checkAsReferenceOrWord(Object[] values) {
+	private boolean checkAsReferenceOrWord(List<Object> values) {
 		if (type().equals(WORD)) return checkWords(values);
 		else return checkReferences(values);
 	}
 
-	private boolean checkWords(Object[] rejectableValues) {
-		List<String> allowedValues = Arrays.asList(values);
+	private boolean checkWords(List<Object> rejectableValues) {
 		for (Object value : rejectableValues)
-			if (value != null && !allowedValues.contains(value.toString().replace(REFERENCE + ":", ""))) return false;
+			if (value != null && !values.contains(value.toString().replace(REFERENCE + ":", ""))) return false;
 		return true;
 	}
 
-	private boolean checkReferences(Object[] values) {
-		if (values[0] instanceof EmptyNode) return values.length == 1;
+	private boolean checkReferences(List<Object> values) {
+		if (values.get(0) instanceof EmptyNode) return values.size() == 1;
 		for (Object value : values) {
 			if (!(value instanceof Node)) return false;
 			if (!areCompatibleReference((Node) value)) return false;
@@ -109,9 +108,8 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	private boolean areCompatibleReference(Node node) {
-		List<String> allowed = Arrays.asList(values);
 		for (String type : node.types())
-			if (allowed.contains(type)) return true;
+			if (values.contains(type)) return true;
 		return false;
 	}
 }

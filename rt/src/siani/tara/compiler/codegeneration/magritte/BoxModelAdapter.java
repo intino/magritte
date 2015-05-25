@@ -10,10 +10,12 @@ import siani.tara.compiler.model.impl.NodeReference;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.buildFileName;
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.capitalize;
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
+import static siani.tara.compiler.model.Variable.NATIVE_SEPARATOR;
 
 public class BoxModelAdapter implements Adapter<Model> {
 	private final String project;
@@ -67,10 +69,19 @@ public class BoxModelAdapter implements Adapter<Model> {
 			intentionFrame.addFrame("varName", parameter.getName());
 			intentionFrame.addFrame("container", buildContainerPath(parameter.getOwner()));
 			intentionFrame.addFrame("parentIntention", language.languageName());
-			intentionFrame.addFrame("interface", parameter.getContract());
+			intentionFrame.addFrame("interface", getInterface(parameter));
+			intentionFrame.addFrame("signature", getSignature(parameter));
 			intentionFrame.addFrame("path", NameFormatter.createNativeReference(parameter.getOwner().getQualifiedName(), parameter.getName()));
 			frame.addFrame("intention", intentionFrame);
 		}
+	}
+
+	private String getInterface(Parameter parameter) {
+		return parameter.getContract().substring(0, parameter.getContract().indexOf("#"));
+	}
+
+	private String getSignature(Parameter parameter) {
+		return parameter.getContract().substring(parameter.getContract().indexOf(NATIVE_SEPARATOR) + 1);
 	}
 
 	private String buildContainerPath(NodeContainer owner) {
@@ -93,11 +104,9 @@ public class BoxModelAdapter implements Adapter<Model> {
 	}
 
 	private Collection<Parameter> extractNativeParameters(Node node) {
-		List<Parameter> parameters = new ArrayList<>();
-		for (Parameter parameter : node.getParameters())
-			if (parameter.getInferredType().equals(Primitives.NATIVE))
-				parameters.add(parameter);
-		return parameters;
+		return node.getParameters().stream().
+			filter(parameter -> parameter.getInferredType().equals(Primitives.NATIVE)).
+			collect(Collectors.toList());
 	}
 
 	private void addMetricImports(Frame frame) {
@@ -115,8 +124,9 @@ public class BoxModelAdapter implements Adapter<Model> {
 		Set<String> imports = new HashSet<>();
 		for (Node node : nodes) {
 			if (node instanceof NodeReference) continue;
-			for (Facet facet : node.getFacets())
-				imports.add(new PluralFormatter(locale).getInflector().plural(facet.getType()));
+			imports.addAll(node.getFacets().stream().
+				map(facet -> new PluralFormatter(locale).getInflector().plural(facet.getType())).
+				collect(Collectors.toList()));
 			imports.addAll(searchFacets(node.getIncludedNodes()));
 		}
 		return imports;

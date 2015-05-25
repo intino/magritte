@@ -48,10 +48,7 @@ public class DependencyResolver {
 			Node reference = resolveParameter(node, (String) value);
 			if (reference != null) nodes.add(reference);
 		}
-		if (!nodes.isEmpty()) {
-			parameter.getValues().clear();
-			parameter.getValues().addAll(nodes);
-		}
+		if (!nodes.isEmpty()) parameter.substituteValues(nodes);
 	}
 
 	private Node resolveParameter(Node node, String reference) throws DependencyException {

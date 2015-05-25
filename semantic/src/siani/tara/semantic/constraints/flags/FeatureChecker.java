@@ -4,6 +4,8 @@ import siani.tara.semantic.SemanticError;
 import siani.tara.semantic.SemanticException;
 import siani.tara.semantic.model.Node;
 
+import java.util.Arrays;
+
 public class FeatureChecker implements AnnotationChecker {
 	@Override
 	public void check(Node node) throws SemanticException {
@@ -11,6 +13,6 @@ public class FeatureChecker implements AnnotationChecker {
 			if (flag.equals("component") || flag.equals("aggregated") || flag.equals("associated")
 				|| flag.equals("composable") || flag.equals("aggregable") || flag.equals("associable")
 				|| flag.equals("property") || flag.equals("multiple"))
-				throw new SemanticException(new SemanticError("reject.flag", node, new String[]{flag, node.type()}));
+				throw new SemanticException(new SemanticError("reject.flag", node, Arrays.asList(flag, node.type())));
 	}
 }

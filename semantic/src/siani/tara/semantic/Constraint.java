@@ -34,6 +34,9 @@ public interface Constraint {
 			Require[] requires();
 		}
 
+		interface Plate extends Require {
+		}
+
 		interface Parameter extends Require {
 
 			String name();
@@ -52,9 +55,7 @@ public interface Constraint {
 
 			interface None extends Require {
 			}
-		}
 
-		interface Plate extends Require {
 		}
 	}
 

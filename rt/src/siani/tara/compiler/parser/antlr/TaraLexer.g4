@@ -96,7 +96,6 @@ EXTENDS             : 'extends';
 ABSTRACT            : 'abstract';
 
 SINGLE              : 'single';
-MULTIPLE            : 'multiple';
 
 REQUIRED            : 'required';
 

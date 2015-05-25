@@ -5,6 +5,7 @@ import siani.tara.semantic.model.Node;
 import siani.tara.semantic.model.Parameter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 class ScriptFacetDefinition implements FacetDefinition {
@@ -32,14 +33,15 @@ class ScriptFacetDefinition implements FacetDefinition {
 			}
 
 			@Override
-			public String[] getAnnotations() {
-				return new String[0];
+			public List<String> getAnnotations() {
+				return null;
 			}
 
 			@Override
-			public void setAnnotations(String[] annotations) {
+			public void setAnnotations(List<String> annotations) {
 
 			}
+
 
 			@Override
 			public void setMultiple(boolean multiple) {
@@ -67,8 +69,8 @@ class ScriptFacetDefinition implements FacetDefinition {
 			}
 
 			@Override
-			public Object[] getValues() {
-				return values;
+			public List<Object> getValues() {
+				return Arrays.asList(values);
 			}
 
 			@Override
@@ -92,9 +94,10 @@ class ScriptFacetDefinition implements FacetDefinition {
 			}
 
 			@Override
-			public void addAllowedParameters(String[] values) {
+			public void addAllowedParameters(List<String> values) {
 
 			}
+
 		});
 		return this;
 	}
@@ -113,12 +116,12 @@ class ScriptFacetDefinition implements FacetDefinition {
 			}
 
 			@Override
-			public String[] getAnnotations() {
-				return new String[0];
+			public List<String> getAnnotations() {
+				return null;
 			}
 
 			@Override
-			public void setAnnotations(String[] annotations) {
+			public void setAnnotations(List<String> annotations) {
 
 			}
 
@@ -148,8 +151,8 @@ class ScriptFacetDefinition implements FacetDefinition {
 			}
 
 			@Override
-			public Object[] getValues() {
-				return values;
+			public List<Object> getValues() {
+				return null;
 			}
 
 			@Override
@@ -173,9 +176,10 @@ class ScriptFacetDefinition implements FacetDefinition {
 			}
 
 			@Override
-			public void addAllowedParameters(String[] values) {
+			public void addAllowedParameters(List<String> values) {
 
 			}
+
 		});
 
 		return null;

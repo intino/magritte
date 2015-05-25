@@ -118,6 +118,16 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public boolean intoSingle() {
+		return false;
+	}
+
+	@Override
+	public boolean intoRequired() {
+		return false;
+	}
+
+	@Override
 	public String getPlate() {
 		return null;
 	}

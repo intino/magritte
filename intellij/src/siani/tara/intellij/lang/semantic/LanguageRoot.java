@@ -1,5 +1,6 @@
 package siani.tara.intellij.lang.semantic;
 
+import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.semantic.model.*;
 
@@ -7,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class LanguageRoot implements Node {
+public class LanguageRoot extends LanguageElement implements Node {
 
 	TaraModel model;
 
@@ -117,5 +118,10 @@ public class LanguageRoot implements Node {
 		List<LanguageNode> languageNodes = new ArrayList<>();
 		for (siani.tara.intellij.lang.psi.Node node : nodes) languageNodes.add(new LanguageNode(node));
 		return languageNodes.toArray(new LanguageNode[languageNodes.size()]);
+	}
+
+	@Override
+	public PsiElement element() {
+		return model;
 	}
 }

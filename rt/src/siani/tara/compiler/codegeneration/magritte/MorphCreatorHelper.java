@@ -7,12 +7,15 @@ import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.VariableReference;
+import siani.tara.semantic.Allow;
 import siani.tara.semantic.Assumption;
+import siani.tara.semantic.constraints.ReferenceParameterAllow;
 import siani.tara.semantic.model.Tag;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class MorphCreatorHelper implements TemplateTags {
 
@@ -69,7 +72,18 @@ public final class MorphCreatorHelper implements TemplateTags {
 		if (variable instanceof VariableReference) list.add(REFERENCE);
 		list.add(variable.getType());
 		if (variable.isMultiple()) list.add(MULTIPLE);
-		for (Tag tag : variable.getFlags()) list.add(tag.name());
+		list.addAll(variable.getFlags().stream().map(Tag::name).collect(Collectors.toList()));
+		return list.toArray(new String[list.size()]);
+	}
+
+	public static String[] getTypes(Allow.Parameter variable) {
+		List<String> list = new ArrayList<>();
+		list.add(variable.getClass().getSimpleName());
+		list.add(VARIABLE);
+		if (variable instanceof ReferenceParameterAllow && !variable.type().equals(Variable.WORD)) list.add(REFERENCE);
+		list.add(variable.type());
+		if (variable.multiple()) list.add(MULTIPLE);
+		list.addAll(variable.flags().stream().collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);
 	}
 

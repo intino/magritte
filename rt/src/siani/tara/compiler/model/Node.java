@@ -17,7 +17,6 @@ public interface Node extends NodeContainer, Parametrized {
 
 	void setLanguage(String language);
 
-
 	String getDoc();
 
 	boolean isSub();
@@ -47,6 +46,10 @@ public interface Node extends NodeContainer, Parametrized {
 	boolean isTerminal();
 
 	boolean isTerminalInstance();
+
+	boolean intoSingle();
+
+	boolean intoRequired();
 
 	String getPlate();
 

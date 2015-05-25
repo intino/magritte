@@ -4,6 +4,7 @@ import siani.tara.compiler.model.*;
 import siani.tara.semantic.model.Tag;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static siani.tara.semantic.model.Tag.*;
 
@@ -95,17 +96,16 @@ public class NodeImpl extends Element implements Node {
 
 	@Override
 	public boolean isRoot() {
-		return container instanceof Model;
+		return flags.contains(ROOT);
 	}
 
 	@Override
 	public Collection<Node> getSubNodes() {
 		List<Node> nodes = new ArrayList<>();
-		for (Node include : includes)
-			if (include.isSub()) {
-				nodes.add(include);
-				nodes.addAll(include.getSubNodes());
-			}
+		includes.stream().filter(Node::isSub).forEach(include -> {
+			nodes.add(include);
+			nodes.addAll(include.getSubNodes());
+		});
 		return nodes;
 	}
 
@@ -172,6 +172,16 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public boolean isTerminalInstance() {
 		return flags.contains(TERMINAL_INSTANCE);
+	}
+
+	@Override
+	public boolean intoSingle() {
+		return annotations.contains(SINGLE);
+	}
+
+	@Override
+	public boolean intoRequired() {
+		return annotations.contains(REQUIRED);
 	}
 
 	@Override
@@ -383,11 +393,7 @@ public class NodeImpl extends Element implements Node {
 
 	@Override
 	public Collection<NodeReference> getInnerNodeReferences() {
-		List<NodeReference> nodes = new ArrayList<>();
-		for (Node include : includes)
-			if (include instanceof NodeReference)
-				nodes.add((NodeReference) include);
-		return nodes;
+		return includes.stream().filter(include -> include instanceof NodeReference).map(include -> (NodeReference) include).collect(Collectors.toList());
 	}
 
 	@Override

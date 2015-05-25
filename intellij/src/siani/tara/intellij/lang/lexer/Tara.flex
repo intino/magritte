@@ -101,7 +101,6 @@ EXTENDS             = "extends"
 ABSTRACT            = "abstract"
 
 SINGLE              = "single"
-MULTIPLE            = "multiple"
 
 ROOT                = "root"
 REQUIRED            = "required"
@@ -199,7 +198,6 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{ABSTRACT}                      {   return TaraTypes.ABSTRACT; }
 
 	{SINGLE}                        {   return TaraTypes.SINGLE; }
-	{MULTIPLE}                      {   return TaraTypes.MULTIPLE; }
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
 	{ROOT}                          {   return TaraTypes.ROOT; }
 

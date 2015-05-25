@@ -7,6 +7,7 @@ import siani.tara.intellij.lang.psi.Parameter;
 import siani.tara.semantic.model.EmptyNode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LanguageParameter extends LanguageElement implements siani.tara.semantic.model.Parameter {
@@ -28,14 +29,15 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
-	public String[] getAnnotations() {
-		return new String[0];
+	public List<String> getAnnotations() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public void setAnnotations(String[] strings) {
-		//TODO?
+	public void setAnnotations(List<String> annotations) {
+
 	}
+
 
 	@Override
 	public void setMultiple(boolean multiple) {
@@ -62,8 +64,8 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
-	public Object[] getValues() {
-		return wrapValues(parameter.getValues());
+	public List<Object> getValues() {
+		return Collections.unmodifiableList(wrapValues(parameter.getValues()));
 	}
 
 	@Override
@@ -87,17 +89,17 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
-	public void addAllowedParameters(String[] values) {
+	public void addAllowedParameters(List<String> values) {
 
 	}
 
-	private static Object[] wrapValues(Object[] values) {
+	private static List<Object> wrapValues(Object[] values) {
 		List<Object> objects = new ArrayList<>();
 		if ("$empty".equals(values[0])) objects.add(new EmptyNode());
 		else for (Object value : values)
 			if (value instanceof Node) objects.add(new LanguageNode((Node) value));
 			else objects.add(value);
-		return objects.toArray();
+		return objects;
 	}
 
 	@Override

@@ -48,12 +48,12 @@ public interface Allow {
 
 		boolean multiple();
 
-		String[] allowedValues();
+		List<String> allowedValues();
 
 		int position();
 
 		String contract();
 
-		String[] flags();
+		List<String> flags();
 	}
 }

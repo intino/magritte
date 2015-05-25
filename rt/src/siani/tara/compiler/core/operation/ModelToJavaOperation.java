@@ -26,6 +26,7 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static java.io.File.separator;
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
@@ -85,7 +86,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private Collection<Node> collectRootNodes() {
-		return model.getIncludedNodes();
+		return model.getIncludedNodes().stream().filter(Node::isRoot).collect(Collectors.toList());
 	}
 
 	private Template customize(Template template) {

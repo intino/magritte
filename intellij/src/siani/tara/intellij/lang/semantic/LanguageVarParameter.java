@@ -7,6 +7,7 @@ import siani.tara.semantic.model.EmptyNode;
 import siani.tara.semantic.model.Parameter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LanguageVarParameter extends LanguageElement implements Parameter {
@@ -27,14 +28,15 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 	}
 
 	@Override
-	public String[] getAnnotations() {
-		return new String[0];
+	public List<String> getAnnotations() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public void setAnnotations(String[] strings) {
+	public void setAnnotations(List<String> annotations) {
 
 	}
+
 
 	@Override
 	public void setMultiple(boolean multiple) {
@@ -62,11 +64,11 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 	}
 
 	@Override
-	public Object[] getValues() {
-		return wrapValues(varInit.getValues());
+	public List<Object> getValues() {
+		return Collections.unmodifiableList(wrapValues(varInit.getValues()));
 	}
 
-	private static Object[] wrapValues(Object[] values) {
+	private static List<Object> wrapValues(Object[] values) {
 		List<Object> objects = new ArrayList<>();
 		for (Object value : values) {
 			if (value == null) continue;
@@ -74,7 +76,7 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 			else if (values[0].equals("$empty")) objects.add(new EmptyNode());
 			else objects.add(value);
 		}
-		return objects.toArray();
+		return objects;
 	}
 
 	@Override
@@ -98,7 +100,7 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 	}
 
 	@Override
-	public void addAllowedParameters(String[] values) {
+	public void addAllowedParameters(List<String> values) {
 
 	}
 

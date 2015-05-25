@@ -16,6 +16,8 @@ import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.Variable;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.facet.TaraFacet;
+import siani.tara.intellij.project.facet.TaraFacetConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import java.util.ArrayList;
@@ -98,7 +100,8 @@ public class NativesGenerator {
 	}
 
 	private PsiDirectory findNativesDirectory() {
-		String[] path = new String[]{module.getName().toLowerCase(), NATIVES};
+		final TaraFacetConfiguration configuration = TaraFacet.getTaraFacetByModule(module).getConfiguration();
+		String[] path = new String[]{configuration.getGeneratedDslName().toLowerCase(), NATIVES};
 		PsiDirectory destinyDir = srcDirectory;
 		for (String name : path)
 			destinyDir = destinyDir.findSubdirectory(name) == null ? createDirectory(destinyDir, name) : destinyDir.findSubdirectory(name);

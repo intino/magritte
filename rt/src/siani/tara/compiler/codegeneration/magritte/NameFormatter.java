@@ -4,6 +4,7 @@ import org.siani.itrules.engine.formatters.PluralFormatter;
 import org.siani.itrules.engine.formatters.PluralInflector;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.NodeContainer;
 
 import java.io.File;
 import java.util.Locale;
@@ -18,16 +19,27 @@ public class NameFormatter {
 	private NameFormatter() {
 	}
 
-	public static String composeMorphPackagePath(Node node, Locale locale, String generatedLanguage) {
-		if (!node.isSub()) return generatedLanguage.toLowerCase();
+	public static String composeMorphPackagePath(Node node, Locale locale, String language) {
+		final Node sub = getSub(node);
+		if (sub == null) return language.toLowerCase();
 		String aPackage = "";
-		Node parent = node.getParent();
+		Node parent = sub.getParent();
 		PluralInflector inflector = new PluralFormatter(locale).getInflector();
 		while (parent != null) {
 			aPackage = inflector.plural(parent.getName()) + (!aPackage.isEmpty() ? DOT + aPackage : "");
 			parent = parent.isSub() ? parent.getParent() : null;
 		}
-		return generatedLanguage.toLowerCase() + DOT + aPackage.toLowerCase();
+		return language.toLowerCase() + DOT + aPackage.toLowerCase();
+	}
+
+	private static Node getSub(Node node) {
+		if (node.isSub()) return node;
+		NodeContainer container = node.getContainer();
+		while (container != null && container instanceof Node) {
+			if (((Node) container).isSub()) return (Node) container;
+			else container = container.getContainer();
+		}
+		return null;
 	}
 
 	public static String composeMorphPackagePath(FacetTarget target, Locale locale, String module) {

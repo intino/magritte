@@ -82,7 +82,7 @@ public class TaraPsiImplUtil {
 		PsiElement element = psiElement.getParent();
 		while (element != null && !PsiFile.class.isInstance(element) && !aClass.isInstance(element))
 			element = element.getParent();
-		return element;
+		return aClass.isInstance(element) ? element : null;
 	}
 
 	public static List<Node> getAllInnerNodesOf(Node node) {

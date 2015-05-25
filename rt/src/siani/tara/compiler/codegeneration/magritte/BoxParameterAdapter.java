@@ -8,6 +8,7 @@ import siani.tara.semantic.model.Tag;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 
+import static java.util.stream.Collectors.toList;
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 
 public class BoxParameterAdapter implements Adapter<Parameter> {
@@ -41,9 +42,7 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	}
 
 	private boolean isTerminal(Parameter parameter) {
-		for (String annotation : parameter.getAnnotations())
-			if (Tag.TERMINAL.name().equalsIgnoreCase(annotation)) return true;
-		return false;
+		return parameter.getAnnotations().stream().filter(a -> Tag.TERMINAL.name().equalsIgnoreCase(a)).findFirst().isPresent();
 	}
 
 	protected void addParameterValue(Frame frame, final Parameter parameter) {
@@ -64,36 +63,31 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	}
 
 	private List<Object> createWordReference(Parameter parameter) {
-		List<Object> indexs = new ArrayList<>();
 		final List<String> allowedValues = parameter.getAllowedValues();
-		for (Object value : parameter.getValues())
-			indexs.add(allowedValues.indexOf(value.toString()));
-		return indexs;
+		return parameter.getValues().stream().map(v -> allowedValues.indexOf(v.toString())).collect(toList());
 	}
 
 	private List<Object> createNativeReference(Parameter parameter) {
 		final String qualifiedName = parameter.getOwner().getQualifiedName();
-		final String s = NameFormatter.createNativeReference(qualifiedName, parameter.getName()) + ".class";
-		return Collections.singletonList((Object) s);
+		return Collections.singletonList(NameFormatter.createNativeReference(qualifiedName, parameter.getName()) + ".class");
 	}
 
 
 	private List<Object> format(List<Object> parameterValues) {
-		ArrayList<Object> objects = new ArrayList<>();
-		for (Object value : parameterValues)
-			objects.add(value instanceof String && ((String) value).contains("\n") ? formatText((String) value) : value);
-		return objects;
+		return parameterValues.stream().map(p -> isMultiLineString(p) ? format((String) p) : p).collect(toList());
 	}
 
-	private Object formatText(String value) {
+	private boolean isMultiLineString(Object p) {
+		return p instanceof String && ((String) p).contains("\n");
+	}
+
+	private Object format(String value) {
 		return value.replace("\n", '"' + " + \"");
 	}
 
 
 	private List<Object> collectQualifiedNames(List<Object> defaultValues) {
-		List<Object> nodeNames = new ArrayList<>();
-		for (Object value : defaultValues) nodeNames.add(((Node) value).getQualifiedName());
-		return nodeNames;
+		return defaultValues.stream().map(v -> ((Node) v).getQualifiedName()).collect(toList());
 	}
 
 	protected List<String> getTypes(Parameter parameter) {
@@ -101,7 +95,7 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 		list.add(parameter.getClass().getSimpleName());
 		list.add(VARIABLE);
 		list.add(parameter.getInferredType());
-		Collections.addAll(list, parameter.getAnnotations());
+		list.addAll(parameter.getAnnotations());
 		return list;
 	}
 

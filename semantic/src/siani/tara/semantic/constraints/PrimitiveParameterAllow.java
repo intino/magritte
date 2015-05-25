@@ -6,6 +6,7 @@ import siani.tara.semantic.SemanticException;
 import siani.tara.semantic.model.Element;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static siani.tara.semantic.constraints.PrimitiveTypeCompatibility.inferType;
@@ -17,10 +18,10 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	private final boolean multiple;
 	private final int position;
 	private final String contract;
-	private final String[] flags;
+	private final List<String> flags;
 
 
-	public PrimitiveParameterAllow(String name, String type, boolean multiple, int position, String contract, String[] flags) {
+	public PrimitiveParameterAllow(String name, String type, boolean multiple, int position, String contract, List<String> flags) {
 		this.name = name;
 		this.type = type;
 		this.multiple = multiple;
@@ -47,8 +48,8 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public String[] allowedValues() {
-		return new String[0];
+	public List<String> allowedValues() {
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -67,7 +68,7 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	@Override
-	public String[] flags() {
+	public List<String> flags() {
 		return flags;
 	}
 
@@ -85,9 +86,9 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	private boolean checkParameter(Rejectable.Parameter rejectable) {
-		Object[] values = rejectable.getParameter().getValues();
-		if (values.length == 0) return true;
-		String inferredType = inferType(values[0]);
+		List<Object> values = rejectable.getParameter().getValues();
+		if (values.isEmpty()) return true;
+		String inferredType = inferType(values.get(0));
 		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType);
 	}
 

@@ -12,6 +12,7 @@ import siani.tara.semantic.model.Tag;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static siani.tara.semantic.model.Tag.TERMINAL;
 import static siani.tara.semantic.model.Tag.TERMINAL_INSTANCE;
@@ -38,12 +39,17 @@ public class LanguageParameterAdapter {
 		Collection<Allow> allows = language.allows(node.getType());
 		if (allows == null) return 0;
 		for (Allow allow : allows)
-			if (allow instanceof Allow.Parameter && isTerminal((Allow.Parameter) allow)) {
+			if (allow instanceof Allow.Parameter && isTerminal((Allow.Parameter) allow) && !isRedefined((Allow.Parameter) allow, node.getVariables())) {
 				Allow.Parameter parameter = (Allow.Parameter) allow;
 				addParameter(requires, parameter, index);
 				index++;
 			}
 		return index;
+	}
+
+	private boolean isRedefined(Allow.Parameter allow, Collection<Variable> variables) {
+		for (Variable variable : variables) if (variable.getName().equals(allow.name())) return true;
+		return false;
 	}
 
 	private boolean isTerminal(Allow.Parameter allow) {
@@ -101,8 +107,8 @@ public class LanguageParameterAdapter {
 
 	private Frame referenceParameter(ReferenceParameterAllow parameter, int position) {
 		Frame frame = new Frame(null).addTypes(REQUIRE, "parameter", "reference").
-			addFrame("name", parameter.name()).
-			addFrame("types", parameter.allowedValues());
+			addFrame("name", parameter.name());
+		for (String allowedType : parameter.allowedValues()) frame.addFrame("types", allowedType);
 		addDefaultInfo(parameter, frame, position);
 		return frame;
 	}
@@ -123,8 +129,7 @@ public class LanguageParameterAdapter {
 	}
 
 	private String[] getFlags(Variable variable) {
-		List<String> flags = new ArrayList<>();
-		for (Tag tag : variable.getFlags()) flags.add(tag.name());
+		List<String> flags = variable.getFlags().stream().map(Tag::name).collect(Collectors.toList());
 		return flags.toArray(new String[flags.size()]);
 	}
 

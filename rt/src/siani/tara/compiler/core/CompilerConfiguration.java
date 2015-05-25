@@ -37,6 +37,7 @@ public class CompilerConfiguration {
 	private String semanticRulesLib;
 	private Language language;
 	private String languageName = "Proteo";
+	private File nativePath;
 
 
 	public CompilerConfiguration() {
@@ -278,5 +279,13 @@ public class CompilerConfiguration {
 
 	public void setPlateRequired(boolean plateRequired) {
 		this.plateRequired = plateRequired;
+	}
+
+	public void setNativePath(File nativePath) {
+		this.nativePath = nativePath;
+	}
+
+	public File getNativePath() {
+		return nativePath;
 	}
 }

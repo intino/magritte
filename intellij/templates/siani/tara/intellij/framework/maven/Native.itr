@@ -6,7 +6,7 @@ def type(native)
 	public class $qn_$variable extends $parent implements $intention {
 
 		@Override
-		public void execute() {
+		$signature {
 			$body
 		}
 	}
