@@ -43,17 +43,18 @@ public class NativeResolver {
 	}
 
 	private String findNativeSignature(String name) {
-		for (File nativeFile : nativePath.listFiles((dir, filename) -> filename.endsWith(".java") && filename.substring(0, filename.lastIndexOf(".")).equalsIgnoreCase(name))) {
-			try {
-				String text = new String(Files.readAllBytes(nativeFile.toPath()));
-				text = text.substring(text.indexOf("{") + 1, text.indexOf(";", text.indexOf("{") + 1)).trim();
-				if (!text.startsWith("public")) text = "public " + text;
-				return text;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		if (nativePath == null || !nativePath.exists()) return "";
+		File[] files = nativePath.listFiles((dir, filename) ->
+			filename.endsWith(".java") && filename.substring(0, filename.lastIndexOf(".")).equalsIgnoreCase(name));
+		if (files.length == 0) return "";
+		try {
+			String text = new String(Files.readAllBytes(files[0].toPath()));
+			text = text.substring(text.indexOf("{") + 1, text.indexOf(";", text.indexOf("{") + 1)).trim();
+			if (!text.startsWith("public")) text = "public " + text;
+			return text;
+		} catch (Exception e) {
+			return "";
 		}
-		return null;
 	}
 
 }

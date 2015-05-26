@@ -21,8 +21,6 @@ import org.jetbrains.jps.tara.model.JpsTaraModuleExtension;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class TaraBuilder extends ModuleLevelBuilder {
 
@@ -116,18 +114,8 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		JpsModule module = modules.iterator().next();
 		if (module == null) return null;
 		return module.getSourceRoots().stream().
-			filter(new Predicate<JpsModuleSourceRoot>() {
-				@Override
-				public boolean test(JpsModuleSourceRoot root) {
-					return root.getFile().getName().equals("src") && new File(root.getFile(), dsl.toLowerCase() + "/natives").exists();
-				}
-			}).findFirst().
-			map(new Function<JpsModuleSourceRoot, String>() {
-				@Override
-				public String apply(JpsModuleSourceRoot root) {
-					return new File(root.getFile(), dsl.toLowerCase() + "/natives").getPath();
-				}
-			}).orElse(null);
+			filter(root -> root.getFile().getName().equals("src") && new File(root.getFile(), dsl.toLowerCase() + "/natives").exists()).findFirst().
+			map(root -> new File(root.getFile(), dsl.toLowerCase() + "/natives").getPath()).orElse(null);
 	}
 
 	private String[] collectIconDirectories(Set<JpsModule> jpsModules) {
