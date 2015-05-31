@@ -4,6 +4,7 @@ import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.model.Tag;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface Node extends NodeContainer, Parametrized {
 
@@ -23,7 +24,7 @@ public interface Node extends NodeContainer, Parametrized {
 
 	boolean isRoot();
 
-	Collection<Node> getSubNodes();
+	List<Node> getSubNodes();
 
 	boolean isFacet();
 
@@ -55,9 +56,9 @@ public interface Node extends NodeContainer, Parametrized {
 
 	void setPlate(String address);
 
-	Collection<Tag> getAnnotations();
+	List<Tag> getAnnotations();
 
-	Collection<Tag> getFlags();
+	List<Tag> getFlags();
 
 	void addAnnotations(String... annotations);
 
@@ -81,21 +82,21 @@ public interface Node extends NodeContainer, Parametrized {
 
 	Node resolve();
 
-	Collection<NodeReference> getInnerNodeReferences();
+	List<NodeReference> getInnerNodeReferences();
 
-	Collection<Node> getChildren();
+	List<Node> getChildren();
 
 	void addChild(Node node);
 
-	Collection<Facet> getFacets();
+	List<Facet> getFacets();
 
-	Collection<String> getAllowedFacets();
+	List<String> getAllowedFacets();
 
 	void addAllowedFacets(String... facet);
 
 	void addFacets(Facet... facets);
 
-	Collection<FacetTarget> getFacetTargets();
+	List<FacetTarget> getFacetTargets();
 
 	void addFacetTargets(FacetTarget... targets);
 

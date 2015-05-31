@@ -36,8 +36,8 @@ public class FacetTargetImpl extends Element implements FacetTarget {
 	}
 
 	@Override
-	public Collection<Node> getIncludedNodes() {
-		return includes;
+	public List<Node> getIncludedNodes() {
+		return Collections.unmodifiableList(includes);
 	}
 
 	@Override

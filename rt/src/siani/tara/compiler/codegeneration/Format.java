@@ -13,29 +13,23 @@ public class Format {
 	}
 
 	public static Formatter reference() {
-		return new Formatter() {
-			@Override
-			public Object format(Object value) {
-				java.lang.String val = value.toString();
-				if (!val.contains(DOT)) return val.substring(0, 1).toUpperCase() + val.substring(1);
-				return val;
-			}
+		return value -> {
+			String val = value.toString();
+			if (!val.contains(DOT)) return val.substring(0, 1).toUpperCase() + val.substring(1);
+			return val;
 		};
 	}
 
 
 	public static Formatter toCamelCase() {
-		return new Formatter() {
-			@Override
-			public Object format(Object s) {
-				final String value = s.toString();
-				String[] parts = value.split("_");
-				if (parts.length == 1) return value.substring(0, 1).toUpperCase() + value.substring(1);
-				String caseString = "";
-				for (String part : parts)
-					caseString = caseString + toProperCase(part);
-				return caseString;
-			}
+		return s -> {
+			final String value = s.toString();
+			String[] parts = value.split("_");
+			if (parts.length == 1) return value.substring(0, 1).toUpperCase() + value.substring(1);
+			String caseString = "";
+			for (String part : parts)
+				caseString = caseString + toProperCase(part);
+			return caseString;
 		};
 	}
 
@@ -44,13 +38,10 @@ public class Format {
 	}
 
 	public static Formatter date() {
-		return new Formatter() {
-			@Override
-			public Object format(Object value) {
-				java.lang.String val = value.toString();
-				if (!val.contains("/")) return value;
-				return val.replace("/", ", ");
-			}
+		return value -> {
+			String val = value.toString();
+			if (!val.contains("/")) return value;
+			return val.replace("/", ", ");
 		};
 	}
 

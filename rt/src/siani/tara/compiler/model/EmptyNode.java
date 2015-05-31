@@ -5,6 +5,7 @@ import siani.tara.semantic.model.Tag;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class EmptyNode implements Node {
 	@Override
@@ -48,7 +49,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Collection<Node> getSubNodes() {
+	public List<Node> getSubNodes() {
 		return null;
 	}
 
@@ -138,12 +139,12 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Collection<Tag> getAnnotations() {
+	public List<Tag> getAnnotations() {
 		return null;
 	}
 
 	@Override
-	public Collection<Tag> getFlags() {
+	public List<Tag> getFlags() {
 		return Collections.EMPTY_LIST;
 	}
 
@@ -263,12 +264,12 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Collection<NodeReference> getInnerNodeReferences() {
+	public List<NodeReference> getInnerNodeReferences() {
 		return null;
 	}
 
 	@Override
-	public Collection<Node> getChildren() {
+	public List<Node> getChildren() {
 		return null;
 	}
 
@@ -278,12 +279,12 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Collection<Facet> getFacets() {
+	public List<Facet> getFacets() {
 		return null;
 	}
 
 	@Override
-	public Collection<String> getAllowedFacets() {
+	public List<String> getAllowedFacets() {
 		return null;
 	}
 
@@ -298,7 +299,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Collection<FacetTarget> getFacetTargets() {
+	public List<FacetTarget> getFacetTargets() {
 		return null;
 	}
 

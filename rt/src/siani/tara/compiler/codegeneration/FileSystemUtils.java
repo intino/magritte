@@ -20,10 +20,6 @@ public class FileSystemUtils {
 	private FileSystemUtils() {
 	}
 
-	public static Boolean createDir(String sDirname) {
-		return forceDir(sDirname);
-	}
-
 	public static Boolean removeDir(String sDirname) {
 		File oFile = new File(sDirname);
 		return removeDir(oFile);
@@ -116,24 +112,6 @@ public class FileSystemUtils {
 		return true;
 	}
 
-	public static String readFile(String sFilename) throws FileSystemException {
-		StringBuilder oContent = new StringBuilder();
-		InputStreamReader oInputStreamReader;
-		BufferedReader oBufferedReader;
-		String sLine;
-		try {
-			oInputStreamReader = new InputStreamReader(new FileInputStream(sFilename), "UTF-8");
-			oBufferedReader = new BufferedReader(oInputStreamReader);
-			while ((sLine = oBufferedReader.readLine()) != null)
-				oContent.append(sLine).append("\n");
-			oInputStreamReader.close();
-		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-			throw new FileSystemException("Could not read file", sFilename, e.getMessage());
-		}
-		return oContent.toString();
-	}
-
 	public static Boolean writeFile(String sFilename, String sContent) throws FileSystemException {
 
 		try {
@@ -145,18 +123,6 @@ public class FileSystemUtils {
 			throw new FileSystemException("Could not write file", sFilename, e.getMessage());
 		}
 		return true;
-	}
-
-	public static File[] listFiles(String path, FileFilter fileFilter) {
-		List<File> javaFiles = new ArrayList<>();
-		listFilesRecursive(new File(path), javaFiles, fileFilter);
-		return javaFiles.toArray(new File[javaFiles.size()]);
-	}
-
-	private static void listFilesRecursive(File path, List<File> javaFiles, FileFilter filter) {
-		for (File file : path.listFiles(filter))
-			if (file.isDirectory()) listFilesRecursive(file, javaFiles, filter);
-			else javaFiles.add(file);
 	}
 
 	public static void writeInputStream(InputStream in, File outFile) throws IOException {

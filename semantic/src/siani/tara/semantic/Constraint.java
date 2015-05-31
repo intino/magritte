@@ -52,10 +52,6 @@ public interface Constraint {
 			String metric();
 
 			String[] annotations();
-
-			interface None extends Require {
-			}
-
 		}
 	}
 

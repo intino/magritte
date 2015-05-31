@@ -6,6 +6,7 @@ import siani.tara.semantic.model.Tag;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.unmodifiableList;
 import static siani.tara.semantic.model.Tag.*;
 
 public class NodeImpl extends Element implements Node {
@@ -100,13 +101,13 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Node> getSubNodes() {
+	public List<Node> getSubNodes() {
 		List<Node> nodes = new ArrayList<>();
 		includes.stream().filter(Node::isSub).forEach(include -> {
 			nodes.add(include);
 			nodes.addAll(include.getSubNodes());
 		});
-		return nodes;
+		return unmodifiableList(nodes);
 	}
 
 	@Override
@@ -195,13 +196,13 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Tag> getAnnotations() {
-		return annotations;
+	public List<Tag> getAnnotations() {
+		return unmodifiableList(annotations);
 	}
 
 	@Override
-	public Collection<Tag> getFlags() {
-		return flags;
+	public List<Tag> getFlags() {
+		return unmodifiableList(flags);
 	}
 
 	@Override
@@ -392,13 +393,14 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public Collection<NodeReference> getInnerNodeReferences() {
-		return includes.stream().filter(include -> include instanceof NodeReference).map(include -> (NodeReference) include).collect(Collectors.toList());
+	public List<NodeReference> getInnerNodeReferences() {
+		List<NodeReference> collect = includes.stream().filter(include -> include instanceof NodeReference).map(include -> (NodeReference) include).collect(Collectors.toList());
+		return unmodifiableList(collect);
 	}
 
 	@Override
-	public Collection<Node> getChildren() {
-		return this.children;
+	public List<Node> getChildren() {
+		return unmodifiableList(this.children);
 	}
 
 	@Override
@@ -407,13 +409,15 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Facet> getFacets() {
-		return facets;
+	public List<Facet> getFacets() {
+		return unmodifiableList(facets);
 	}
 
 	@Override
-	public Collection<String> getAllowedFacets() {
-		return allowedFacets;
+	public List<String> getAllowedFacets() {
+		ArrayList<String> objects = new ArrayList<>();
+		objects.addAll(allowedFacets);
+		return unmodifiableList(objects);
 	}
 
 	@Override
@@ -427,8 +431,8 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public Collection<FacetTarget> getFacetTargets() {
-		return facetTargets;
+	public List<FacetTarget> getFacetTargets() {
+		return unmodifiableList(facetTargets);
 	}
 
 	@Override

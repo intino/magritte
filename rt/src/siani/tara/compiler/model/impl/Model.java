@@ -79,7 +79,7 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Node> getSubNodes() {
+	public List<Node> getSubNodes() {
 		return null;
 	}
 
@@ -172,7 +172,7 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Tag> getFlags() {
+	public List<Tag> getFlags() {
 		return Collections.EMPTY_LIST;
 	}
 
@@ -307,12 +307,12 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public Collection<NodeReference> getInnerNodeReferences() {
+	public List<NodeReference> getInnerNodeReferences() {
 		return Collections.EMPTY_LIST;
 	}
 
 	@Override
-	public Collection<Node> getChildren() {
+	public List<Node> getChildren() {
 		return Collections.EMPTY_LIST;
 	}
 
@@ -322,12 +322,12 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Facet> getFacets() {
+	public List<Facet> getFacets() {
 		return Collections.EMPTY_LIST;
 	}
 
 	@Override
-	public Collection<String> getAllowedFacets() {
+	public List<String> getAllowedFacets() {
 		return Collections.EMPTY_LIST;
 	}
 
@@ -341,7 +341,7 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public Collection<FacetTarget> getFacetTargets() {
+	public List<FacetTarget> getFacetTargets() {
 		return null;
 	}
 
