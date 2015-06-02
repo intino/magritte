@@ -15,7 +15,7 @@ import java.util.Locale;
 import java.util.Map;
 
 
-public class BoxUnitsFrameCreator {
+public class BoxUnitFrameCreator {
 
 	private final String project;
 	private final String generatedLanguage;
@@ -27,7 +27,7 @@ public class BoxUnitsFrameCreator {
 	private Map<Node, Long> keymap = new LinkedHashMap<>();
 	private long count = 1;
 
-	private BoxUnitsFrameCreator(String project, String generatedLanguage, Language language, Model model, Locale locale, List<Node> nodes, File nativePath) {
+	private BoxUnitFrameCreator(String project, String generatedLanguage, Language language, Model model, Locale locale, List<Node> nodes, File nativePath) {
 		this.project = project;
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
@@ -41,7 +41,7 @@ public class BoxUnitsFrameCreator {
 		nodes.forEach(this::createKeyMap);
 	}
 
-	public BoxUnitsFrameCreator(CompilerConfiguration conf, Model model, List<Node> nodes) {
+	public BoxUnitFrameCreator(CompilerConfiguration conf, Model model, List<Node> nodes) {
 		this(conf.getProject(), conf.getGeneratedLanguage(), conf.getLanguage(), model, conf.getLocale(), nodes, conf.getNativePath());
 	}
 
