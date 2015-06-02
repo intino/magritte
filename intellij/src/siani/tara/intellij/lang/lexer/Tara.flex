@@ -107,7 +107,7 @@ REQUIRED            = "required"
 
 TERMINAL            = "terminal"
 
-PROPERTY            = "property"
+IMPLICIT            = "implicit"
 FEATURE             = "feature"
 
 READONLY            = "readonly"
@@ -201,7 +201,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
 	{ROOT}                          {   return TaraTypes.ROOT; }
 
-	{PROPERTY}                      {   return TaraTypes.PROPERTY; }
+	{IMPLICIT}                      {   return TaraTypes.IMPLICIT; }
 	{FEATURE}                       {   return TaraTypes.FEATURE; }
 
 	{FACET}                         {   return TaraTypes.FACET; }

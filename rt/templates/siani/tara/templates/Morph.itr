@@ -12,14 +12,14 @@ end
 -------- WORDS ---------
 
 def type(Word) trigger(wordInstantiation)
-    public static enum $name+firstUpperCase {
+    public enum $name+firstUpperCase {
         $words+FirstUpperCase...[, ]
     }
 end
 
 def type(Word) type(multiple) trigger(getter)
     public $name+reference$[] $name+firstLowerCase() {
-        return Enumerate.cardinal((Integer) get("$name+firstLowerCase"), $name+firstUpperCase.values());
+        return Enumerate.cardinal(get(Grip.multiple("$name+firstLowerCase")).asInteger(), $name+firstUpperCase.values());
     }
 end
 
@@ -51,7 +51,7 @@ end
 
 def type(variable) type(Measure) trigger(getter)
     public double $name+firstLowerCase() {
-        return get("$name");
+        return get("$name").asDouble();
     }
 end
 
@@ -62,7 +62,7 @@ def type(variable) type(definition) type(native) trigger(getter)
 end
 
 def type(variable) type(native) trigger(getter)
-    public $name+reference $name+firstLowerCase() {
+    public $contract+reference $name+firstLowerCase() {
         return definition().get("$name").asNativeOf(node);
     }
 end
@@ -96,9 +96,17 @@ def type(variable) type(definition) !type(reference) type(multiple) !type(word) 
 end
 
 def type(variable) !type(reference) type(multiple) !type(word) trigger(getter)
-    public $type+reference$[] $name+firstLowerCase() {
+    public $type+reference+primitiveType$[] $name+firstLowerCase() {
         return get(Grip.multiple("$name")).as$type+reference();
     }
+end
+
+def value(Integer) trigger(primitiveType)
+	int
+end
+
+def value(Double) trigger(primitiveType)
+	double
 end
 
 def type(variable) !type(reference) !type(word) trigger(getter)
@@ -123,12 +131,12 @@ end
 
 def type(variable) type(Measure) !type(readonly) trigger(setter)
     public void set$name+firstUpperCase(double $name+firstLowerCase) {
-        set("$name", $name+firstLowerCase);
+        edit().set("$name", $name+firstLowerCase);
     }
 end
 
 def type(variable) !type(readonly) !type(native) type(multiple) trigger(setter)
-    public void set$name+firstUpperCase($type+reference~... $name+firstLowerCase) {
+    public void set$name+firstUpperCase($type+reference+primitiveType~... $name+firstLowerCase) {
         edit().set("$name", $name+firstLowerCase);
     }
 end
@@ -172,7 +180,7 @@ def type(nodeReference) trigger(component)
         return $name+firstLowerCase+plural()$[index$];
     }
 end
-
+##REMOVE
 def type(nodeimpl) type(intention) !type(facetInstance) type(facet) trigger(node)
     public[$inner static] class $name+firstUpperCase $parent implements $project+lowercase.intentions.$name+firstUpperCase~Intention {
         public $project+lowercase.intentions.$name+firstUpperCase~Intention extension() {
@@ -187,7 +195,7 @@ def type(nodeimpl) type(intention) !type(facetInstance) type(facet) trigger(node
     }
 
 end
-
+##REMOVE
 def type(nodeimpl) type(intention) !type(facet) type(facetInstance) trigger(node)
     public[$inner static] class $name+firstUpperCase $parent implements $project+lowercase.intentions.$name+firstUpperCase~Intention {
         public $project+lowercase.intentions.$name+firstUpperCase~Intention$[] extensions() {

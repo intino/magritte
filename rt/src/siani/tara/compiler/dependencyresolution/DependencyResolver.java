@@ -30,8 +30,7 @@ public class DependencyResolver {
 		resolveInnerReferenceNodes(node);
 		resolveVariableReference(node);
 		resolveParametersReference(node);
-		for (Node include : node.getIncludedNodes())
-			resolve(include);
+		for (Node include : node.getIncludedNodes()) resolve(include);
 		resolveInFacets(node);
 		resolveInTargets(node);
 	}

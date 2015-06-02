@@ -47,7 +47,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 //			builder.append("\t\t").append(inner.toString()).append("\n");
 //			if (inner.getDoc() != null) builder.append(inner.getDoc()).append("\n");
 //		}
-//		for (Node inner : node.getInnerNodes()) {
+//		for (Node inner : node.getIncludes()) {
 //			builder.append("\t\t").append(inner.getObject().getType()).append(" ").append(inner.getObject().getName()).append("\n");
 //			if (inner.getObject().getDoc() != null) builder.append(inner.getObject().getDoc()).append("\n");
 //		}

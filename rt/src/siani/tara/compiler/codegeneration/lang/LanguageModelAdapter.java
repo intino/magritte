@@ -24,7 +24,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 
 	private Frame root;
 	private Model model;
-	private Set<String> processed = new HashSet<>();
+	private Set<Node> processed = new HashSet<>();
 	private String languageName;
 	private Locale locale;
 	private siani.tara.Language language;
@@ -100,8 +100,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	}
 
 	private boolean alreadyProcessed(Node node) {
-		String qn = node instanceof NodeReference ? ((NodeReference) node).getDestiny().getQualifiedName() : node.getQualifiedName();
-		return !processed.add(qn);
+		return !processed.add(node);
 	}
 
 	private void addAllows(Node node, Frame frame) {
@@ -204,7 +203,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 		for (Tag tag : node.getFlags()) {
 			if (tag.equals(TERMINAL))
 				assumptions.addFrame("assumption", Tag.TERMINAL_INSTANCE);
-			else if (tag.equals(PROPERTY)) assumptions.addFrame("assumption", Tag.PROPERTY_INSTANCE);
+			else if (tag.equals(IMPLICIT)) assumptions.addFrame("assumption", Tag.IMPLICIT_INSTANCE);
 			else if (tag.equals(FEATURE)) assumptions.addFrame("assumption", Tag.FEATURE_INSTANCE);
 			else if (tag.equals(FACET)) assumptions.addFrame("assumption", Tag.FACET_INSTANCE);
 		}

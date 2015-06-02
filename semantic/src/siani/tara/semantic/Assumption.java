@@ -16,7 +16,7 @@ public interface Assumption {
 	interface FacetInstance extends Assumption {
 	}
 
-	interface Property extends Assumption {
+	interface Implicit extends Assumption {
 
 	}
 

@@ -12,16 +12,14 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.Variable;
-import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
+
+import static siani.tara.intellij.lang.psi.impl.TaraUtil.getOverriddenVariable;
 
 public class TaraOverriddenVariable extends JavaLineMarkerProvider {
 
@@ -30,18 +28,14 @@ public class TaraOverriddenVariable extends JavaLineMarkerProvider {
 	}
 
 
-	private final MarkerType markerType = new MarkerType(new Function<PsiElement, String>() {
-		@Nullable
-		@Override
-		public String fun(PsiElement element) {
-			if (!Variable.class.isInstance(element)) return null;
-			PsiElement reference = getOverriddenVariable((Variable) element);
-			String start = "Variable overridden in ";
-			@NonNls String pattern;
-			if (reference == null) return null;
-			pattern = reference.getNavigationElement().getContainingFile().getName();
-			return GutterIconTooltipHelper.composeText(new PsiElement[]{reference}, start, pattern);
-		}
+	private final MarkerType markerType = new MarkerType(element -> {
+		if (!Variable.class.isInstance(element)) return null;
+		PsiElement reference = getOverriddenVariable((Variable) element);
+		String start = "Variable overridden in ";
+		@NonNls String pattern;
+		if (reference == null) return null;
+		pattern = reference.getNavigationElement().getContainingFile().getName();
+		return GutterIconTooltipHelper.composeText(new PsiElement[]{reference}, start, pattern);
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {
@@ -71,24 +65,9 @@ public class TaraOverriddenVariable extends JavaLineMarkerProvider {
 		} else return super.getLineMarkerInfo(element);
 	}
 
-	private Variable getOverriddenVariable(Variable variable) {
-		Node node = TaraPsiImplUtil.getContainerNodeOf(variable);
-		if (node == null) return null;
-		Node parent = node.getParentNode();
-		while (parent != null) {
-			for (Variable parentVar : parent.getVariables())
-				if (isOverridden(variable, parentVar))
-					return parentVar;
-			parent = parent.getParentNode();
-		}
-		return null;
-	}
 
 	private boolean isOverridden(Variable variable) {
 		return getOverriddenVariable(variable) != null;
 	}
 
-	private boolean isOverridden(Variable variable, Variable parentVar) {
-		return parentVar.getType() != null && parentVar.getType().equals(variable.getType()) && parentVar.getName() != null && parentVar.getName().equals(variable.getName());
-	}
 }

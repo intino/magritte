@@ -8,7 +8,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface TaraModel extends PsiFile {
 
@@ -16,7 +16,7 @@ public interface TaraModel extends PsiFile {
 	PsiFile getContainingFile();
 
 	@NotNull
-	Collection<Node> getRootNodes();
+	List<Node> getRootNodes();
 
 	@NotNull
 	PsiElement addConcept(@NotNull Node node) throws IncorrectOperationException;
@@ -43,7 +43,7 @@ public interface TaraModel extends PsiFile {
 	String getText();
 
 	@NotNull
-	Collection<Import> getImports();
+	List<Import> getImports();
 
 	TaraDslDeclaration getDSLDeclaration();
 

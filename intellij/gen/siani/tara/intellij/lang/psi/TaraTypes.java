@@ -72,6 +72,7 @@ public interface TaraTypes {
 	IElementType FEATURE = new TaraTokenType("FEATURE");
 	IElementType HAS = new TaraTokenType("HAS");
 	IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
+	IElementType IMPLICIT = new TaraTokenType("IMPLICIT");
 	IElementType INLINE = new TaraTokenType("INLINE");
 	IElementType INTO = new TaraTokenType("INTO");
 	IElementType INT_TYPE = new TaraTokenType("INT_TYPE");
@@ -89,8 +90,6 @@ public interface TaraTypes {
 	IElementType NEWLINE = new TaraTokenType("NEWLINE");
 	IElementType NEW_LINE_INDENT = TokenType.NEW_LINE_INDENT;
 	IElementType ON = new TaraTokenType("ON");
-	IElementType OPTIONAL = new TaraTokenType("OPTIONAL");
-	IElementType PROPERTY = new TaraTokenType("PROPERTY");
 	IElementType PROTEO = new TaraTokenType("PROTEO");
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
 	IElementType QUOTE_END = new TaraTokenType("QUOTE_END");

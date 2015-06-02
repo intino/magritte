@@ -11,23 +11,24 @@ import siani.tara.semantic.Allow;
 import siani.tara.semantic.constraints.ReferenceParameterAllow;
 import siani.tara.semantic.model.Tag;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static siani.tara.compiler.codegeneration.magritte.MorphCreatorHelper.getTypes;
+import static siani.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 
 public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	private final String project;
-	private final String module;
+	private final String generatedLanguage;
 	private final Language language;
-	private final Locale locale;
 	private Node initNode;
 
-	public MorphNodeAdapter(String project, String module, Language language, Locale locale, Node initNode) {
+	public MorphNodeAdapter(String project, String generatedLanguage, Language language, Node initNode) {
 		this.project = project;
-		this.module = module;
+		this.generatedLanguage = generatedLanguage;
 		this.language = language;
-		this.locale = locale;
 		this.initNode = initNode;
 	}
 
@@ -54,7 +55,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	private void addName(Node node, Frame frame) {
 		if (node.getName() != null && !node.getName().isEmpty())
 			frame.addFrame(NAME, node.isAnonymous() ? node.getType() : node.getName());
-		frame.addFrame(QN, getQn(node)).addFrame(PROJECT, project);
+		frame.addFrame(QN, getQn(node, generatedLanguage)).addFrame(PROJECT, project);
 	}
 
 	private void addInner(Node node, Frame frame, FrameContext context) {
@@ -64,8 +65,9 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	}
 
 	private void addParent(Node node, Frame newFrame) {
-		newFrame.addFrame(PARENT, node.getParent() != null ?
-			getQn(node.getParent()) :
+		final Node parent = node.getParent();
+		newFrame.addFrame(PARENT, parent != null ?
+			getQn(parent, generatedLanguage) :
 			isDefinition(node) ? DEFINITION : MORPH);
 	}
 
@@ -82,10 +84,6 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 			if (((Node) nodeContainer).isFeature()) return true;
 			else nodeContainer = nodeContainer.getContainer();
 		return false;
-	}
-
-	private String getQn(Node node) {
-		return NameFormatter.composeMorphPackagePath(node, locale, module) + DOT + node.getQualifiedName();
 	}
 
 	private void addFacets(Node node, Frame newFrame) {
@@ -109,7 +107,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	private void addNodeReferenceName(NodeReference node, Frame frame) {
 		NodeImpl reference = node.getDestiny();
 		frame.addFrame(NAME, reference.getName());
-		frame.addFrame(QN, getQn(reference)).addFrame(PROJECT, project);
+		frame.addFrame(QN, getQn(reference, generatedLanguage)).addFrame(PROJECT, project);
 	}
 
 	private String[] collectReferenceTypes(Node node) {
@@ -163,7 +161,8 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		Frame frame = new Frame(null) {
 			{
 				addFrame(NAME, variable.getName());
-				addFrame(TYPE, variable instanceof VariableReference ? getQn(((VariableReference) variable).getDestiny()) : getType());
+				addFrame(CONTRACT, format(variable.getContract()));
+				addFrame(TYPE, variable instanceof VariableReference ? getQn(((VariableReference) variable).getDestiny(), generatedLanguage) : getType());
 				if (variable.getType().equals(Variable.WORD))
 					addFrame(WORDS, variable.getAllowedValues().toArray(new String[(variable.getAllowedValues().size())]));
 				else if (variable.getType().equals(Primitives.MEASURE)) {
@@ -171,6 +170,12 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 //					if (((Attribute) variable).getMeasureValue() != null)
 //						addFrame(MEASURE_VALUE, resolveMetric(((Attribute) variable).getMeasureValue()));
 				}
+			}
+
+			private String format(String contract) {
+				if (contract == null) return "";
+				final int i = contract.indexOf(siani.tara.semantic.model.Variable.NATIVE_SEPARATOR);
+				return (i >= 0) ? contract.substring(0, i) : contract;
 			}
 
 			private String getType() {
@@ -205,4 +210,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		return frame.addTypes(MorphCreatorHelper.getTypes(variable));
 	}
 
+	public void setInitNode(Node initNode) {
+		this.initNode = initNode;
+	}
 }

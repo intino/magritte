@@ -26,7 +26,11 @@ public class BoxModelAdapter implements Adapter<Model> {
 	private final boolean terminal;
 
 
-	public BoxModelAdapter(String project, String generatedLanguage, Language language, Locale locale, Map<String, List<SimpleEntry<String, String>>> metrics, boolean terminal) {
+	public BoxModelAdapter(String project,
+	                       String generatedLanguage,
+	                       Language language,
+	                       Locale locale, Map<String, List<SimpleEntry<String, String>>> metrics,
+	                       boolean terminal) {
 		this.project = project;
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
@@ -38,10 +42,8 @@ public class BoxModelAdapter implements Adapter<Model> {
 	@Override
 	public void execute(Frame frame, Model model, FrameContext FrameContext) {
 		frame.addFrame(NAME, capitalize(generatedLanguage) + buildFileName(model.getFile()));
-		if (!Objects.equals(language.languageName(), "Proteo"))
-			frame.addFrame(LANGUAGE, language.languageName());
-		frame.addFrame("project", project).addFrame("module", generatedLanguage);
-		frame.addFrame("terminal", terminal);
+		if (!Objects.equals(language.languageName(), "Proteo")) frame.addFrame(LANGUAGE, language.languageName());
+		frame.addFrame("project", project).addFrame("generatedLanguage", generatedLanguage).addFrame("terminal", terminal);
 		addMetricImports(frame);
 		addFacetImports(model.getIncludedNodes(), frame);
 		parserAllNodes(frame, model, FrameContext);
@@ -52,7 +54,8 @@ public class BoxModelAdapter implements Adapter<Model> {
 		for (Node node : nodeContainer.getIncludedNodes()) {
 			if (node instanceof NodeReference) continue;
 			frame.addFrame("node", FrameContext.build(node));
-			crateIntentionFrames(frame, extractNativeParameters(node));
+			createIntentionFrames(frame, extractNativeParameters(node));
+			createDefaultIntentionFrames(frame, extractNativeVariables(node));
 			parserAllNodes(frame, node, FrameContext);
 		}
 		for (Facet facet : nodeContainer.getFacets())
@@ -62,10 +65,12 @@ public class BoxModelAdapter implements Adapter<Model> {
 			}
 	}
 
-	private void crateIntentionFrames(Frame frame, Collection<Parameter> parameters) {
+	private void createIntentionFrames(Frame frame, List<Parameter> parameters) {
 		for (Parameter parameter : parameters) {
-			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", parameter.getValues().iterator().next());
-			intentionFrame.addFrame("module", generatedLanguage);
+			if (!parameter.getInferredType().equals(Primitives.NATIVE)) continue;
+			final String body = (String) parameter.getValues().get(0);
+			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", body.endsWith(";") ? body : body + ";");
+			intentionFrame.addFrame("generatedLanguage", generatedLanguage);
 			intentionFrame.addFrame("varName", parameter.getName());
 			intentionFrame.addFrame("container", buildContainerPath(parameter.getOwner()));
 			intentionFrame.addFrame("parentIntention", language.languageName());
@@ -76,12 +81,38 @@ public class BoxModelAdapter implements Adapter<Model> {
 		}
 	}
 
+	private void createDefaultIntentionFrames(Frame frame, List<Variable> variables) {
+		for (Variable variable : variables) {
+			if (!variable.getType().equals(Primitives.NATIVE) || variable.getDefaultValues().isEmpty()) continue;
+			final Object next = variable.getDefaultValues().get(0);
+			if (next instanceof EmptyNode) return;
+			final String body = String.valueOf(next);
+			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", body.endsWith(";") ? body : body + ";");
+			intentionFrame.addFrame("generatedLanguage", generatedLanguage);
+			intentionFrame.addFrame("varName", variable.getName());
+			intentionFrame.addFrame("container", buildContainerPath(variable.getContainer()));
+			intentionFrame.addFrame("parentIntention", generatedLanguage);
+			intentionFrame.addFrame("interface", getInterface(variable));
+			intentionFrame.addFrame("signature", getSignature(variable));
+			intentionFrame.addFrame("path", NameFormatter.createNativeReference(variable.getContainer().getQualifiedName(), variable.getName()));
+			frame.addFrame("intention", intentionFrame);
+		}
+	}
+
+	private String getInterface(Variable variable) {
+		return variable.getContract().substring(0, variable.getContract().indexOf(NATIVE_SEPARATOR));
+	}
+
 	private String getInterface(Parameter parameter) {
-		return parameter.getContract().substring(0, parameter.getContract().indexOf("#"));
+		return parameter.getContract().substring(0, parameter.getContract().indexOf(NATIVE_SEPARATOR));
 	}
 
 	private String getSignature(Parameter parameter) {
 		return parameter.getContract().substring(parameter.getContract().indexOf(NATIVE_SEPARATOR) + 1);
+	}
+
+	private String getSignature(Variable variable) {
+		return variable.getContract().substring(variable.getContract().indexOf(NATIVE_SEPARATOR) + 1);
 	}
 
 	private String buildContainerPath(NodeContainer owner) {
@@ -103,10 +134,16 @@ public class BoxModelAdapter implements Adapter<Model> {
 		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
 	}
 
-	private Collection<Parameter> extractNativeParameters(Node node) {
-		return node.getParameters().stream().
+	private List<Parameter> extractNativeParameters(Node node) {
+		return Collections.unmodifiableList(node.getParameters().stream().
 			filter(parameter -> parameter.getInferredType().equals(Primitives.NATIVE)).
-			collect(Collectors.toList());
+			collect(Collectors.toList()));
+	}
+
+	private List<Variable> extractNativeVariables(Node node) {
+		return Collections.unmodifiableList(node.getVariables().stream().
+			filter(variable -> variable.getType().equals(Primitives.NATIVE)).
+			collect(Collectors.toList()));
 	}
 
 	private void addMetricImports(Frame frame) {

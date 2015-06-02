@@ -89,4 +89,14 @@ public class TaraCRunnerTest {
 		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/teselaM0.txt"});
 	}
 
+	@Test
+	public void MonopolyM2() {
+		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/MonopolyM2.txt"});
+	}
+
+
+	@Test
+	public void MonopolyM1() {
+		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/MonopolyM1.txt"});
+	}
 }

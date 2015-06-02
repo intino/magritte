@@ -6,10 +6,12 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.codeinsight.JavaHelper;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.semantic.Assumption;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContextOf;
@@ -106,34 +108,36 @@ public class ReferenceManager {
 
 	private static void addRootNodes(TaraModel model, Identifier identifier, Set<Node> set) {
 		Collection<Node> nodes = model.getRootNodes();
-		for (Node node : nodes)
-			if (namesAreEqual(identifier, node))
-				set.add(node);
+		set.addAll(nodes.stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
 	}
 
 	private static void addNodesInContext(Identifier identifier, Set<Node> set) {
 		Node container = getContainerNodeOf(identifier);
-		if (isInFacetTarget(container)) addFacetTargetNodes(set, container);
-		if (container != null && !isExtendsReference(identifier) && namesAreEqual(identifier, container))
+		if (isInFacetTarget(identifier)) addFacetTargetNodes(set, identifier);
+		if (container != null && !isExtendsReference(identifier) && areNamesake(identifier, container))
 			set.add(container);
 		if (container != null) collectContextNodes(identifier, set, container);
 	}
 
-	private static boolean isInFacetTarget(Node node) {
+	private static boolean isInFacetTarget(Identifier node) {
 		return getContextOf(node) instanceof FacetTarget;
 	}
 
-	private static void addFacetTargetNodes(Set<Node> set, Node node) {
-		FacetTarget facetTarget = (FacetTarget) getContextOf(node);
-		for (Node inner : facetTarget.includes()) set.add(inner);
+	private static void addFacetTargetNodes(Set<Node> set, Identifier identifier) {
+		FacetTarget facetTarget = (FacetTarget) getContextOf(identifier);
+		if (facetTarget == null) return;
+		for (Node node : facetTarget.includes()) {
+			set.add(node);
+			if (node.isAbstract()) set.addAll(node.getSubNodes());
+		}
 	}
 
 	private static void collectContextNodes(Identifier identifier, Set<Node> set, Node node) {
 		Node container = node;
 		while (container != null) {
-			for (Node sibling : collectCandidates(container))
-				if (namesAreEqual(identifier, sibling) && !sibling.equals(getContainerNodeOf(identifier)))
-					set.add(sibling);
+			set.addAll(collectCandidates(container).stream().
+				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(getContainerNodeOf(identifier))).
+				collect(Collectors.toList()));
 			container = container.container();
 		}
 	}
@@ -152,22 +156,21 @@ public class ReferenceManager {
 
 	private static void addRoots(TaraModel file, Identifier identifier, Set<Node> set, Collection<Node> visited) {
 		List<Node> allNodesOfFile = TaraUtil.getAllNodesOfFile(file);
-		for (Node node : allNodesOfFile)
-			if (namesAreEqual(identifier, node) && isRoot(file, node, visited))
-				set.add(node);
+		set.addAll(allNodesOfFile.stream().
+			filter(node -> areNamesake(identifier, node) && isRoot(file, node, visited)).
+			collect(Collectors.toList()));
 	}
 
-	private static boolean namesAreEqual(Identifier identifier, Node node) {
+	private static boolean areNamesake(Identifier identifier, Node node) {
 		return identifier.getText().equals(node.getName());
 	}
 
 	private static boolean isRoot(TaraModel file, Node node, Collection<Node> visited) {
 		if (visited.contains(node)) return false;
 		visited.add(node);
-		if (node.isAnnotatedAsRoot() || isMetaRoot(node))
-			return true;
+		if (node.isAnnotatedAsRoot() || isMetaRoot(node)) return true;
 		IdentifierReference parentReference = node.getSignature().getParentReference();
-		return parentReference != null && checkPossibleRoots(parentReference, getRootNodes(file, parentReference, visited, new HashSet<Node>()));
+		return parentReference != null && checkPossibleRoots(parentReference, getRootNodes(file, parentReference, visited, new HashSet<>()));
 	}
 
 	private static boolean isMetaRoot(Node node) {
@@ -205,7 +208,7 @@ public class ReferenceManager {
 	private static Node resolvePathInNode(List<Identifier> path, Node node) {
 		Node reference = null;
 		for (Identifier identifier : path) {
-			reference = (reference == null) ? namesAreEqual(identifier, node) ? node : null : TaraUtil.findInner(reference, identifier.getText());
+			reference = (reference == null) ? areNamesake(identifier, node) ? node : null : TaraUtil.findInner(reference, identifier.getText());
 			if (reference == null || (reference.isEnclosed() && !isLast(identifier, path))) return null;
 		}
 		return reference;
@@ -276,7 +279,9 @@ public class ReferenceManager {
 
 	private static PsiElement resolveNativeClass(Contract contract, Project project) {
 		if (contract == null) return null;
-		String aPackage = ModuleProvider.getModuleOf(contract).getName() + '.' + "natives";
+		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(contract));
+		if (taraFacetByModule == null) return null;
+		String aPackage = taraFacetByModule.getConfiguration().getGeneratedDslName().toLowerCase() + '.' + "natives";
 		return resolveJavaClassReference(project, aPackage.toLowerCase() + '.' + capitalize(contract.getFormattedName()));
 	}
 

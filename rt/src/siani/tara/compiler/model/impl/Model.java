@@ -128,7 +128,7 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public boolean isProperty() {
+	public boolean isImplicit() {
 		return false;
 	}
 

@@ -9,9 +9,9 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TaraPsiImplUtil {
 
@@ -73,9 +73,9 @@ public class TaraPsiImplUtil {
 	}
 
 	private static void addSubsOfInner(List<Node> inner) {
-		List<Node> toadd = new ArrayList<>();
-		for (Node node : inner) toadd.addAll(node.getSubNodes());
-		inner.addAll(toadd);
+		List<Node> toAdd = new ArrayList<>();
+		for (Node node : inner) toAdd.addAll(node.getSubNodes());
+		inner.addAll(toAdd);
 	}
 
 	public static PsiElement getParentByType(PsiElement psiElement, Class<? extends PsiElement> aClass) {
@@ -91,8 +91,7 @@ public class TaraPsiImplUtil {
 	}
 
 	private static void removeSubs(List<Node> children) {
-		List<Node> list = new ArrayList();
-		for (Node node : children) if (node.isSub()) list.add(node);
+		List<Node> list = children.stream().filter(Node::isSub).collect(Collectors.toList());
 		children.removeAll(list);
 	}
 
@@ -113,14 +112,14 @@ public class TaraPsiImplUtil {
 	}
 
 	@NotNull
-	public static Collection<TaraFacetTarget> getFacetTargets(Node node) {
+	public static List<FacetTarget> getFacetTargets(Node node) {
 		if (node.getBody() == null) return Collections.EMPTY_LIST;
-		List<TaraFacetTarget> targets = new ArrayList<>();
+		List<FacetTarget> targets = new ArrayList<>();
 		getFacetTargets(node.getBody(), targets);
 		return targets;
 	}
 
-	private static void getFacetTargets(Body body, List<TaraFacetTarget> targets) {
+	private static void getFacetTargets(Body body, List<FacetTarget> targets) {
 		for (TaraFacetTarget target : body.getFacetTargetList()) {
 			targets.add(target);
 			if (target.getBody() != null) getFacetTargets(target.getBody(), targets);

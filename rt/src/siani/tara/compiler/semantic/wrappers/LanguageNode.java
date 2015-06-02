@@ -8,6 +8,7 @@ import siani.tara.semantic.model.Tag;
 import siani.tara.semantic.model.Variable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LanguageNode extends LanguageElement implements siani.tara.semantic.model.Node {
 
@@ -106,17 +107,13 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public String[] annotations() {
-		Set<String> annotations = new HashSet<>();
-		for (Tag tag : node.getAnnotations())
-			annotations.add(tag.name());
+		Set<String> annotations = node.getAnnotations().stream().map(Tag::name).collect(Collectors.toSet());
 		return annotations.toArray(new String[annotations.size()]);
 	}
 
 	@Override
 	public String[] flags() {
-		Set<String> flags = new HashSet<>();
-		for (Tag flag : node.getFlags())
-			flags.add(flag.name());
+		Set<String> flags = node.getFlags().stream().map(Tag::name).collect(Collectors.toSet());
 		return flags.toArray(new String[flags.size()]);
 	}
 

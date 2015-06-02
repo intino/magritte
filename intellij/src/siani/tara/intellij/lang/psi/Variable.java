@@ -20,4 +20,5 @@ public interface Variable extends Navigatable, Iconable, PsiNamedElement {
 
 	boolean isReference();
 
+	boolean isOverriden();
 }

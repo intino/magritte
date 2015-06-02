@@ -34,7 +34,7 @@ def type(Node) trigger(node)
 end
 
 def type(intention) trigger(intention)
-    public static class $path [extends $module+lowerCase.$container] implements $parentIntention+lowercase.natives.$interface+FirstUppercase {
+    public static class $path [extends $generatedLanguage+lowerCase.$container] implements $parentIntention+lowercase.natives.$interface+FirstUppercase {
         @Override
         $signature {
             $body
@@ -110,11 +110,7 @@ def trigger(file)
 end
 
 def type(variable) type(native) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple($variableValue+native))
-end
-
-def type(variable) type(native) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple($variableValue+native))
+    .set("$terminal$name", $variableValue+native)
 end
 
 def trigger(native) value(null)
@@ -122,11 +118,19 @@ def trigger(native) value(null)
 end
 
 def type(variable) type(word) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple($variableValue+quoted...[, ]))
+    .set("$terminal$name", $multiple(new String$[]{$variableValue+quoted...[, ]}))
 end
 
 def type(Variable) type(string) slot(variableValue) trigger(variable)
     .set("$terminal$name", $multiple($variableValue+quoted...[, ]))
+end
+
+def type(Variable) type(integer) slot(variableValue) trigger(variable)
+    .set("$terminal$name", $multiple($variableValue...[, ]))
+end
+
+def type(Variable) type(double) slot(variableValue) trigger(variable)
+    .set("$terminal$name", $multiple($variableValue...[, ]))
 end
 
 def type(Variable) type(boolean) slot(variableValue) trigger(variable)

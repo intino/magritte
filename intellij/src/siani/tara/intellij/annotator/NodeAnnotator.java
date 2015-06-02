@@ -64,7 +64,7 @@ public class NodeAnnotator extends TaraAnnotator {
 		Collection<Assumption> assumptions = language.assumptions(node.resolve().getFullType());
 		if (assumptions == null) return false;
 		for (Assumption assumption : assumptions)
-			if (assumption instanceof Assumption.Property)
+			if (assumption instanceof Assumption.Implicit)
 				return true;
 		return false;
 	}

@@ -7,6 +7,7 @@ public interface TemplateTags {
 	String TERMINAL_KEY = "*";
 	String EXTENSIONS = "extensions";
 	String PARENT = "parent";
+	String CONTRACT = "contract";
 	String TYPE = "type";
 	String QN = "qn";
 	String NAME = "name";

@@ -8,6 +8,7 @@ import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.model.Tag;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InheritanceResolver {
 
@@ -22,7 +23,7 @@ public class InheritanceResolver {
 		List<NodeImpl> nodes = new ArrayList<>();
 		nodes.addAll(collectNodes(model));
 		sort(nodes);
-		for (NodeImpl node : nodes) resolve(node);
+		nodes.forEach(this::resolve);
 	}
 
 	private void resolve(NodeImpl node) {
@@ -46,8 +47,7 @@ public class InheritanceResolver {
 	private void propagate(Node node) {
 		if (!node.isTerminal()) node.addFlags(Tag.TERMINAL.name());
 		if (node instanceof NodeReference) return;
-		for (Node include : node.getIncludedNodes())
-			propagate(include);
+		node.getIncludedNodes().forEach(this::propagate);
 	}
 
 	private void resolveAllowedFacets(NodeImpl parent, NodeImpl child) {
@@ -73,10 +73,9 @@ public class InheritanceResolver {
 	}
 
 	private void collectInFacets(Node node, Set<NodeImpl> collection) {
-		for (Facet facet : node.getFacets()) {
+		for (Facet facet : node.getFacets())
 			for (Node include : facet.getIncludedNodes())
 				collect(include, collection);
-		}
 	}
 
 	private void collectInTargets(Node node, Set<NodeImpl> collection) {
@@ -100,16 +99,13 @@ public class InheritanceResolver {
 	}
 
 	private void resolveFlags(NodeImpl parent, NodeImpl child) {
-		for (Tag tag : parent.getFlags()) {
-			if (!tag.equals(Tag.ABSTRACT) && !child.getFlags().contains(tag))
-				child.addFlags(tag.name());
-		}
+		parent.getFlags().stream().
+			filter(tag -> !tag.equals(Tag.ABSTRACT) && !child.getFlags().contains(tag)).
+			forEach(tag -> child.addFlags(tag.name()));
 	}
 
 	private void resolveAnnotations(NodeImpl parent, NodeImpl child) {
-		for (Tag tag : parent.getAnnotations())
-			if (!tag.equals(Tag.ABSTRACT) && !child.getAnnotations().contains(tag))
-				child.addAnnotations(tag.name());
+		parent.getAnnotations().stream().filter(tag -> !tag.equals(Tag.ABSTRACT) && !child.getAnnotations().contains(tag)).forEach(tag -> child.addAnnotations(tag.name()));
 	}
 
 	private void resolveVariables(NodeImpl parent, NodeImpl child) {
@@ -117,6 +113,7 @@ public class InheritanceResolver {
 		for (Variable variable : parent.getVariables())
 			if (!isOverridden(child, variable))
 				variables.add(variable.cloneIt(child));
+			else variable.setOverriden(true);
 		child.addVariables(0, variables.toArray(new Variable[variables.size()]));
 	}
 
@@ -136,8 +133,8 @@ public class InheritanceResolver {
 	}
 
 	private List<NodeImpl> getChildrenSorted(NodeImpl parent) {
-		List<NodeImpl> children = new ArrayList<>();
-		for (Node node : parent.getChildren()) children.add((NodeImpl) node);
+		List<NodeImpl> children = parent.getChildren().stream().
+			map(node -> (NodeImpl) node).collect(Collectors.toList());
 		sort(children);
 		return children;
 	}
@@ -158,8 +155,8 @@ public class InheritanceResolver {
 			private int maxLevel(NodeImpl node) {
 				List<Integer> levels = new ArrayList<>();
 				levels.add(0);
-				for (Node child : node.getChildren())
-					levels.add(maxLevel((NodeImpl) child));
+				levels.addAll(node.getChildren().stream().
+					map(child -> maxLevel((NodeImpl) child)).collect(Collectors.toList()));
 				Collections.sort(levels, Collections.reverseOrder());
 				return 1 + levels.get(0);
 			}

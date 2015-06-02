@@ -1,5 +1,5 @@
 src_file
-/Users/oroncal/workspace/sandbox/monopoly2/tafat/model/Tafat.tara
+/Users/oroncal/workspace/sandbox/monopoly/tafat/model/Tafat.tara
 
 project
 Monopoly
@@ -20,18 +20,18 @@ UTF-8
 models
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
 native_path
-/Users/oroncal/workspace/sandbox/monopoly2/tafat/src/tafat/natives/
+/Users/oroncal/workspace/sandbox/monopoly/tafat/src/tafat/natives/
 semantic_lib
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/monopoly2/tafat/gen
+/Users/oroncal/workspace/sandbox/monopoly/tafat/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/monopoly2/tafat/target/classes/
+/Users/oroncal/workspace/sandbox/monopoly/tafat/target/classes/
 magritte
 /Users/oroncal/.m2/repository/org/siani/magritte/magritte/1.1.6/magritte-1.1.6.jar
 metrics
-/Users/oroncal/workspace/sandbox/monopoly2/tafat/target/classes/
+/Users/oroncal/workspace/sandbox/monopoly/tafat/target/classes/
 resources
-/Users/oroncal/workspace/sandbox/monopoly2/tafat/res
+/Users/oroncal/workspace/sandbox/monopoly/tafat/res
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

@@ -27,7 +27,9 @@ import siani.tara.semantic.model.Tag;
 import javax.swing.*;
 import java.util.*;
 
+import static java.util.Collections.*;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
+import static siani.tara.intellij.lang.psi.impl.TaraUtil.getInnerNodesOf;
 import static siani.tara.semantic.Assumption.FacetInstance;
 import static siani.tara.semantic.model.Tag.*;
 
@@ -94,27 +96,27 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.getParentOf((Node) this);
 	}
 
-	public Collection<Node> getNodeSiblings() {
+	public List<Node> getNodeSiblings() {
 		Node contextOf = TaraPsiImplUtil.getContainerNodeOf(this);
-		if (contextOf == null) return ((TaraModel) this.getContainingFile()).getRootNodes();
-		return contextOf.getInnerNodes();
+		if (contextOf == null) return unmodifiableList(((TaraModel) this.getContainingFile()).getRootNodes());
+		return unmodifiableList(contextOf.getIncludes());
 	}
 
-	public Collection<Node> getInnerNodes() {
-		return TaraUtil.getInnerNodesOf((Node) this);
+	public List<Node> getIncludes() {
+		return unmodifiableList(getInnerNodesOf((Node) this));
 	}
 
-	public Collection<Variable> getVariables() {
+	public List<Variable> getVariables() {
 		return TaraPsiImplUtil.getVariablesInBody(this.getBody());
 	}
 
-	public Collection<VarInit> getVarInits() {
-		if (this.getBody() == null) return Collections.EMPTY_LIST;
-		return (Collection<VarInit>) this.getBody().getVarInitList();
+	public List<VarInit> getVarInits() {
+		if (this.getBody() == null) return EMPTY_LIST;
+		return unmodifiableList(this.getBody().getVarInitList());
 	}
 
-	public Collection<NodeReference> getInnerNodeReferences() {
-		return TaraUtil.getLinksOf((Node) this);
+	public List<NodeReference> getInnerNodeReferences() {
+		return unmodifiableList(TaraUtil.getLinksOf((Node) this));
 	}
 
 	@Nullable
@@ -139,9 +141,9 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public Collection<Parameter> getParameters() {
-		if (getSignature().getParameters() == null) return Collections.EMPTY_LIST;
-		return getSignature().getParameters().getParameters();
+	public List<Parameter> getParameters() {
+		if (getSignature().getParameters() == null) return EMPTY_LIST;
+		return unmodifiableList(getSignature().getParameters().getParameters());
 	}
 
 	public String getQualifiedName() {
@@ -234,7 +236,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isProperty() {
-		return is(PROPERTY);
+		return is(IMPLICIT);
 	}
 
 	public boolean isFacetInstance() {
@@ -282,7 +284,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return getSignature().getAddress();
 	}
 
-	public Collection<Node> getSubNodes() {
+	public List<Node> getSubNodes() {
 		ArrayList<Node> subs = new ArrayList<>();
 		List<Node> children = TaraPsiImplUtil.getInnerNodesInBody(this.getBody());
 		for (Node child : children)
@@ -290,7 +292,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 				subs.add(child);
 				subs.addAll(child.getSubNodes());
 			}
-		return subs;
+		return unmodifiableList(subs);
 	}
 
 	public Node container() {
@@ -307,13 +309,13 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return getContainerNodeOf(container);
 	}
 
-	public Collection<FacetApply> getFacetApplies() {
-		if (getBody() != null) return (List<FacetApply>) getBody().getFacetApplyList();
-		return Collections.EMPTY_LIST;
+	public List<FacetApply> getFacetApplies() {
+		if (getBody() != null) return unmodifiableList(getBody().getFacetApplyList());
+		return EMPTY_LIST;
 	}
 
-	public Collection<TaraFacetTarget> getFacetTargets() {
-		return TaraPsiImplUtil.getFacetTargets((Node) this);
+	public List<FacetTarget> getFacetTargets() {
+		return unmodifiableList(TaraPsiImplUtil.getFacetTargets((Node) this));
 	}
 
 	@NotNull
@@ -324,13 +326,13 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	@NotNull
 	public List<Annotation> getAnnotations() {
 		Annotations annotations = this.getAnnotationsNode();
-		return annotations == null ? Collections.EMPTY_LIST : annotations.getAnnotationList();
+		return annotations == null ? EMPTY_LIST : unmodifiableList(annotations.getAnnotationList());
 	}
 
 	@NotNull
 	public List<Flag> getFlags() {
 		Flags flags = this.getFlagsNode();
-		return flags == null ? Collections.EMPTY_LIST : flags.getFlagList();
+		return flags == null ? EMPTY_LIST : flags.getFlagList();
 	}
 
 	@Nullable
@@ -348,18 +350,18 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public Collection<String> getAssumedFlags() {
-		return inheritedFlags;
+		return unmodifiableSet(inheritedFlags);
 	}
 
 	public boolean contains(String type) {
-		for (Node node : getInnerNodes())
+		for (Node node : getIncludes())
 			if (type.equals(node.getType())) return true;
 		return true;
 	}
 
 	@NotNull
 	public Collection<Doc> getDoc() {
-		return Collections.EMPTY_LIST;
+		return EMPTY_LIST;
 	}
 
 	@Override

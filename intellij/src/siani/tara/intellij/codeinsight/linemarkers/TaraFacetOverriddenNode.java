@@ -74,7 +74,7 @@ public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
 	private Node getOverriddenNode(Node inner) {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(inner);
 		if (container == null) return null;
-		for (Node containerNode : container.getInnerNodes())
+		for (Node containerNode : container.getIncludes())
 			if (isOverridden(inner, containerNode))
 				return containerNode;
 		return null;

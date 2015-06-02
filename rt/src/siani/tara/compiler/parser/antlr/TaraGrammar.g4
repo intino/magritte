@@ -69,12 +69,12 @@ tags: flags? annotations?;
 
 annotations: INTO annotation+;
 annotation: TERMINAL | ROOT | SINGLE | REQUIRED
-            | FACET | FEATURE | PROPERTY | ENCLOSED;
+            | FACET | FEATURE | IMPLICIT | ENCLOSED;
 
 flags: IS flag+;
 flag: ABSTRACT | TERMINAL | ROOT
       	| SINGLE  | REQUIRED
-      	| FACET | FEATURE | PROPERTY | ENCLOSED  | READONLY;
+      	| FACET | FEATURE | IMPLICIT | ENCLOSED | READONLY;
 
 varInit : IDENTIFIER EQUALS value;
 

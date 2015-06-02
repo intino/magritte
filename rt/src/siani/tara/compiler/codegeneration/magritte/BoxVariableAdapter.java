@@ -3,11 +3,13 @@ package siani.tara.compiler.codegeneration.magritte;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.model.*;
+import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.model.Tag;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 
@@ -35,6 +37,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 	protected void fill(Frame frame, Variable variable) {
 		frame.addFrame(NAME, variable.getName());
 		frame.addFrame(TERMINAL, TERMINAL_KEY);
+		frame.addFrame(MULTIPLE, variable.isMultiple());
 		if (variable.getType().equals(Primitives.MEASURE)) asMeasure(frame, variable);
 	}
 
@@ -57,14 +60,28 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 			if (defaultValues.iterator().next() instanceof EmptyNode)
 				values = new String[]{(variable.getType().equals("native") ? "" : "(Node)") + "null"};
 			else values = collectQualifiedNames(defaultValues);
-		else values = format(defaultValues);
+		else values = variable.getType().equals("native") ? buildNativeReference(variable) : format(defaultValues);
 		frame.addFrame(VARIABLE_VALUE, values);
 	}
 
+	private Object[] buildNativeReference(Variable variable) {
+		final String rootContainer = getRootContainer(variable);
+		return new Object[]{rootContainer +
+			(variable.getContainer() instanceof Node && !rootContainer.equals(((Node) variable.getContainer()).getName()) ?
+				"_" + ((Node) variable.getContainer()).getName() : "") + "_" +
+			variable.getName() + ".class"};
+	}
+
+	private String getRootContainer(Variable variable) {
+		NodeContainer container = variable.getContainer();
+		while (!(container.getContainer() instanceof Model)) container = container.getContainer();
+		return ((Node) container).getName();
+	}
+
 	private Object[] format(Collection<Object> parameterValues) {
-		List<Object> objects = new ArrayList<>();
-		for (Object value : parameterValues)
-			objects.add(value instanceof String && ((String) value).contains("\n") ? formatText((String) value) : value);
+		List<Object> objects = parameterValues.stream().
+			map(value -> value instanceof String && ((String) value).contains("\n") ? formatText((String) value) : value).
+			collect(Collectors.toList());
 		return objects.toArray(new Object[objects.size()]);
 	}
 
@@ -73,11 +90,8 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 	}
 
 	private Object[] collectQualifiedNames(Collection<Object> defaultValues) {
-		Object[] values;
-		List<String> nodeNames = new ArrayList<>();
-		for (Object value : defaultValues) nodeNames.add(((Node) value).getQualifiedName());
-		values = nodeNames.toArray(new Object[nodeNames.size()]);
-		return values;
+		List<String> nodeNames = defaultValues.stream().map(value -> ((Node) value).getQualifiedName()).collect(Collectors.toList());
+		return nodeNames.toArray(new Object[nodeNames.size()]);
 	}
 
 	private void createTargetVarFrame(Frame frame, final Variable variable) {

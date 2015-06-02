@@ -26,6 +26,7 @@ import siani.tara.semantic.Allow;
 import siani.tara.semantic.Assumption;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getParentByType;
@@ -84,9 +85,8 @@ public class TaraUtil {
 	}
 
 	private static void extractNodesByName(String identifier, List<Node> result, Collection<Node> nodes) {
-		for (Node node : nodes)
-			if (identifier.equals(node.getName()))
-				result.add(node);
+		result.addAll(nodes.stream().
+			filter(node -> identifier.equals(node.getName())).collect(Collectors.toList()));
 	}
 
 	public static String getMetaQualifiedName(Node node) {
@@ -105,6 +105,23 @@ public class TaraUtil {
 		return type;
 	}
 
+	public static Variable getOverriddenVariable(Variable variable) {
+		Node node = TaraPsiImplUtil.getContainerNodeOf(variable);
+		if (node == null) return null;
+		Node parent = node.getParentNode();
+		while (parent != null) {
+			for (Variable parentVar : parent.getVariables())
+				if (isOverridden(variable, parentVar))
+					return parentVar;
+			parent = parent.getParentNode();
+		}
+		return null;
+	}
+
+	private static boolean isOverridden(Variable variable, Variable parentVar) {
+		return parentVar.getType() != null && parentVar.getType().equals(variable.getType()) && parentVar.getName() != null && parentVar.getName().equals(variable.getName());
+	}
+
 	private static String buildType(Node element, String type) {
 		return element.getType() + (type != null && type.length() > 0 ? "." + type : "");
 	}
@@ -118,20 +135,27 @@ public class TaraUtil {
 	}
 
 	public static boolean isNativeValue(StringValue stringValue) {
-		PsiElement element = asVariable(stringValue);
+		PsiElement element = asVarInit(stringValue);
 		if (element == null) element = asParameter(stringValue);
+		if (element == null) element = asVariable(stringValue);
 		if (element == null) return false;
+		else if (element instanceof Variable) return true;
 		Node node = getContainerNode(element);
 		if (node == null) return false;
 		Allow.Parameter allow = getCorrespondingAllow(node, element);
 		return allow != null && TaraPrimitives.NATIVE.equalsIgnoreCase(allow.type());
 	}
 
+	private static PsiElement asVariable(StringValue stringValue) {
+		PsiElement element = getParentByType(stringValue, Variable.class);
+		return element instanceof Variable ? (Variable) element : null;
+	}
+
 	private static Node getContainerNode(PsiElement varInit) {
 		return (Node) getParentByType(varInit, Node.class);
 	}
 
-	private static PsiElement asVariable(StringValue stringValue) {
+	private static PsiElement asVarInit(StringValue stringValue) {
 		PsiElement element = getParentByType(stringValue, VarInit.class);
 		return element instanceof VarInit ? (VarInit) element : null;
 	}
@@ -162,6 +186,7 @@ public class TaraUtil {
 	}
 
 	public static Allow.Parameter getCorrespondingAllow(Node container, PsiElement element) {
+		if (element instanceof Variable) return null;
 		return element instanceof VarInit ? getCorrespondingAllow(container, (VarInit) element) :
 			getCorrespondingAllow(container, (Parameter) element);
 	}
@@ -204,11 +229,7 @@ public class TaraUtil {
 	}
 
 	private static List<Allow.Parameter> parametersAllowed(Collection<Allow> allowsOf) {
-		List<Allow.Parameter> parameters = new ArrayList<>();
-		for (Allow allow : allowsOf)
-			if (allow instanceof Allow.Parameter)
-				parameters.add((Allow.Parameter) allow);
-		return parameters;
+		return allowsOf.stream().filter(allow -> allow instanceof Allow.Parameter).map(allow -> (Allow.Parameter) allow).collect(Collectors.toList());
 	}
 
 	private static Allow.Parameter findParameter(List<Allow.Parameter> parameters, String name) {
@@ -229,7 +250,7 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static Collection<Node> getRootNodesOfFile(TaraModel file) {
+	public static List<Node> getRootNodesOfFile(TaraModel file) {
 		List<Node> list = new ArrayList<>();
 		Node[] nodes = PsiTreeUtil.getChildrenOfType(file, Node.class);
 		if (nodes == null) return list;
@@ -242,7 +263,7 @@ public class TaraUtil {
 			if (list.contains(aggregated)) continue;
 			list.add(aggregated);
 		}
-		return list;
+		return Collections.unmodifiableList(list);
 	}
 
 	@NotNull
@@ -257,11 +278,10 @@ public class TaraUtil {
 		List<TaraModelImpl> taraFiles = new ArrayList<>();
 		if (module == null) return taraFiles;
 		Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.moduleScope(module));
-		for (VirtualFile file : files)
-			if (file != null) {
-				TaraModelImpl taraFile = (TaraModelImpl) PsiManager.getInstance(module.getProject()).findFile(file);
-				if (taraFile != null) taraFiles.add(taraFile);
-			}
+		files.stream().filter(file -> file != null).forEach(file -> {
+			TaraModelImpl taraFile = (TaraModelImpl) PsiManager.getInstance(module.getProject()).findFile(file);
+			if (taraFile != null) taraFiles.add(taraFile);
+		});
 		return taraFiles;
 	}
 
@@ -284,12 +304,12 @@ public class TaraUtil {
 	}
 
 	@NotNull
-	public static Collection<Node> getInnerNodesOf(Node node) {
+	public static List<Node> getInnerNodesOf(Node node) {
 		return TaraPsiImplUtil.getInnerNodesOf(node);
 	}
 
 	public static Node findInner(Node node, String name) {
-		Collection<Node> inner = node.getInnerNodes();
+		Collection<Node> inner = node.getIncludes();
 		for (Node child : inner)
 			if (child.getName() != null && child.getName().equals(name))
 				return child;
@@ -367,16 +387,11 @@ public class TaraUtil {
 		return null;
 	}
 
-	public static Collection<NodeReference> getLinksOf(Node node) {
+	public static List<NodeReference> getLinksOf(Node node) {
 		return node.getBody() == null ? Collections.EMPTY_LIST : node.getBody().getNodeLinks();
 	}
 
-	public static Collection<? extends Node> findAggregatedNodes(TaraModel file) {
-		Set<Node> aggregated = new HashSet<>();
-		for (Node node : getAllNodesOfFile(file))
-			if (node.isAnnotatedAsRoot()) aggregated.add(node);
-		return aggregated;
+	public static List<? extends Node> findAggregatedNodes(TaraModel file) {
+		return getAllNodesOfFile(file).stream().filter(Node::isAnnotatedAsRoot).collect(Collectors.toList());
 	}
-
-
 }

@@ -12,10 +12,8 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.Contract;
 
 import javax.swing.*;
@@ -29,18 +27,14 @@ public class TaraToNative extends JavaLineMarkerProvider {
 		super(daemonSettings, colorsManager);
 	}
 
-	private final MarkerType markerType = new MarkerType(new Function<PsiElement, String>() {
-		@Nullable
-		@Override
-		public String fun(PsiElement element) {
-			if (!Contract.class.isInstance(element)) return null;
-			PsiElement reference = resolveContract((Contract) element);
-			String start = "Native code declared in ";
-			@NonNls String pattern;
-			if (reference == null) return null;
-			pattern = reference.getNavigationElement().getContainingFile().getName();
-			return GutterIconTooltipHelper.composeText(new PsiElement[]{reference}, start, pattern);
-		}
+	private final MarkerType markerType = new MarkerType(element -> {
+		if (!Contract.class.isInstance(element)) return null;
+		PsiElement reference = resolveContract((Contract) element);
+		String start = "Native code declared in ";
+		@NonNls String pattern;
+		if (reference == null) return null;
+		pattern = reference.getNavigationElement().getContainingFile().getName();
+		return GutterIconTooltipHelper.composeText(new PsiElement[]{reference}, start, pattern);
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {

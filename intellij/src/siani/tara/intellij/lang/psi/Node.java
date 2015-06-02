@@ -88,21 +88,21 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 	Node resolve();
 
 	@NotNull
-	Collection<Parameter> getParameters();
+	List<Parameter> getParameters();
 
-	Collection<Node> getNodeSiblings();
+	List<Node> getNodeSiblings();
 
-	Collection<Node> getInnerNodes();
+	List<Node> getIncludes();
 
-	Collection<Variable> getVariables();
+	List<Variable> getVariables();
 
-	Collection<VarInit> getVarInits();
+	List<VarInit> getVarInits();
 
-	Collection<NodeReference> getInnerNodeReferences();
+	List<NodeReference> getInnerNodeReferences();
 
-	Collection<FacetApply> getFacetApplies();
+	List<FacetApply> getFacetApplies();
 
-	Collection<TaraFacetTarget> getFacetTargets();
+	List<FacetTarget> getFacetTargets();
 
 	@Nullable
 	MetaIdentifier getMetaIdentifier();

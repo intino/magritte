@@ -1,13 +1,11 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import org.siani.itrules.engine.formatters.PluralFormatter;
-import org.siani.itrules.engine.formatters.PluralInflector;
+import siani.tara.compiler.codegeneration.Format;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.NodeContainer;
 
 import java.io.File;
-import java.util.Locale;
 
 public class NameFormatter {
 
@@ -19,33 +17,34 @@ public class NameFormatter {
 	private NameFormatter() {
 	}
 
-	public static String composeMorphPackagePath(Node node, Locale locale, String language) {
-		final Node sub = getSub(node);
-		if (sub == null) return language.toLowerCase();
-		String aPackage = "";
-		Node parent = sub.getParent();
-		PluralInflector inflector = new PluralFormatter(locale).getInflector();
-		while (parent != null) {
-			aPackage = inflector.plural(parent.getName()) + (!aPackage.isEmpty() ? DOT + aPackage : "");
-			parent = parent.isSub() ? parent.getParent() : null;
-		}
-		return language.toLowerCase() + DOT + aPackage.toLowerCase();
+	public static String composeMorphPackagePath(String language) {
+		return language.toLowerCase();
 	}
 
-	private static Node getSub(Node node) {
-		if (node.isSub()) return node;
+	public static String composeMorphPackagePath(FacetTarget target, String generatedLanguage) {
+		return (generatedLanguage.toLowerCase() + DOT + ((Node) target.getContainer()).getName()).toLowerCase();
+	}
+
+	public static String getQn(Node node, String generatedLanguage) {
+		final FacetTarget facetTarget = facetTargetContainer(node);
+		return composeMorphPackagePath(generatedLanguage) + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
+	}
+
+	private static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
+		return ((Node) facetTarget.getContainer()).getName().toLowerCase() + DOT + Format.reference().format(facetTarget.getTarget()) + DOT + node.getQualifiedName();
+	}
+
+	private static FacetTarget facetTargetContainer(Node node) {
 		NodeContainer container = node.getContainer();
-		while (container != null && container instanceof Node) {
-			if (((Node) container).isSub()) return (Node) container;
-			else container = container.getContainer();
-		}
+		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
+		else container = container.getContainer();
 		return null;
 	}
 
-	public static String composeMorphPackagePath(FacetTarget target, Locale locale, String module) {
-		PluralInflector inflector = new PluralFormatter(locale).getInflector();
-		return (module.toLowerCase() + DOT + inflector.plural(((Node) target.getContainer()).getName())).toLowerCase();
+	public static String getQn(FacetTarget target, String generatedLanguage) {
+		return composeMorphPackagePath(generatedLanguage) + DOT + target.getTargetNode().getQualifiedName();
 	}
+
 
 	public static String camelCase(String value, String c) {
 		String[] parts = value.split(c);

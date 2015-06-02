@@ -34,10 +34,10 @@ public class ImplicitToExplicitParameters extends ParametersIntentionAction impl
 ////		List<Variable> facetVariables = null;
 ////		if (inFacet != null && (facetVariables = getAllowedFacet(node, inFacet.getFirstChild().getText(), getContextNameOf(inFacet))) == null)
 ////			return null;
-////		List<Variable> variables = (inFacet != null) ? facetVariables : node.getObject().getVariables();
+////		List<Variable> getVariables = (inFacet != null) ? facetVariables : node.getObject().getVariables();
 ////		int indexInParent = parameter.getIndexInParent();
-////		if (indexInParent >= variables.size()) return null;
-////		return variables.get(indexInParent);
+////		if (indexInParent >= getVariables.size()) return null;
+////		return getVariables.get(indexInParent);
 //	}
 
 	@NotNull

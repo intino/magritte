@@ -51,6 +51,9 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return type != null && type.getIdentifierReference() != null;
 	}
 
+	public boolean isOverriden() {
+		return TaraUtil.getOverriddenVariable((Variable) this) != null;
+	}
 
 	@Override
 	public String toString() {

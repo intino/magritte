@@ -19,7 +19,7 @@ public class TaraLexer extends Lexer {
 	public static final int
 		METAIDENTIFIER=1, SUB=2, USE=3, DSL=4, VAR=5, AS=6, HAS=7, ON=8, IS=9, 
 		INTO=10, WITH=11, EXTENDS=12, ABSTRACT=13, SINGLE=14, REQUIRED=15, TERMINAL=16, 
-		ROOT=17, PROPERTY=18, FEATURE=19, READONLY=20, ENCLOSED=21, FACET=22, 
+		ROOT=17, IMPLICIT=18, FEATURE=19, READONLY=20, ENCLOSED=21, FACET=22, 
 		LEFT_PARENTHESIS=23, RIGHT_PARENTHESIS=24, LEFT_SQUARE=25, RIGHT_SQUARE=26, 
 		LIST=27, INLINE=28, CLOSE_INLINE=29, HASHTAG=30, COLON=31, COMMA=32, DOT=33, 
 		EQUALS=34, SEMICOLON=35, PLUS=36, WORD=37, RESOURCE=38, INT_TYPE=39, NATURAL_TYPE=40, 
@@ -40,7 +40,7 @@ public class TaraLexer extends Lexer {
 	public static final String[] ruleNames = {
 		"METAIDENTIFIER", "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", "IS", 
 		"INTO", "WITH", "EXTENDS", "ABSTRACT", "SINGLE", "REQUIRED", "TERMINAL", 
-		"ROOT", "PROPERTY", "FEATURE", "READONLY", "ENCLOSED", "FACET", "LEFT_PARENTHESIS", 
+		"ROOT", "IMPLICIT", "FEATURE", "READONLY", "ENCLOSED", "FACET", "LEFT_PARENTHESIS", 
 		"RIGHT_PARENTHESIS", "LEFT_SQUARE", "RIGHT_SQUARE", "LIST", "INLINE", 
 		"CLOSE_INLINE", "HASHTAG", "COLON", "COMMA", "DOT", "EQUALS", "SEMICOLON", 
 		"PLUS", "WORD", "RESOURCE", "INT_TYPE", "NATURAL_TYPE", "NATIVE_TYPE", 
@@ -57,7 +57,7 @@ public class TaraLexer extends Lexer {
 	private static final String[] _LITERAL_NAMES = {
 		null, "'Concept'", "'sub'", "'use'", "'dsl'", "'var'", "'as'", "'has'", 
 		"'on'", "'is'", "'into'", "'with'", "'extends'", "'abstract'", "'single'", 
-		"'required'", "'terminal'", "'root'", "'property'", "'feature'", "'readonly'", 
+		"'required'", "'terminal'", "'root'", "'implicit'", "'feature'", "'readonly'", 
 		"'enclosed'", "'facet'", "'('", "')'", "'['", "']'", "'...'", "'>'", "'<'", 
 		"'#'", "':'", "','", "'.'", "'='", null, "'+'", "'word'", "'file'", "'integer'", 
 		"'natural'", "'native'", "'double'", "'string'", "'boolean'", "'measure'", 
@@ -69,7 +69,7 @@ public class TaraLexer extends Lexer {
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, "METAIDENTIFIER", "SUB", "USE", "DSL", "VAR", "AS", "HAS", "ON", 
 		"IS", "INTO", "WITH", "EXTENDS", "ABSTRACT", "SINGLE", "REQUIRED", "TERMINAL", 
-		"ROOT", "PROPERTY", "FEATURE", "READONLY", "ENCLOSED", "FACET", "LEFT_PARENTHESIS", 
+		"ROOT", "IMPLICIT", "FEATURE", "READONLY", "ENCLOSED", "FACET", "LEFT_PARENTHESIS", 
 		"RIGHT_PARENTHESIS", "LEFT_SQUARE", "RIGHT_SQUARE", "LIST", "INLINE", 
 		"CLOSE_INLINE", "HASHTAG", "COLON", "COMMA", "DOT", "EQUALS", "SEMICOLON", 
 		"PLUS", "WORD", "RESOURCE", "INT_TYPE", "NATURAL_TYPE", "NATIVE_TYPE", 
@@ -469,8 +469,8 @@ public class TaraLexer extends Lexer {
 		"\2\2\u0106\u0107\7o\2\2\u0107\u0108\7k\2\2\u0108\u0109\7p\2\2\u0109\u010a"+
 		"\7c\2\2\u010a\u010b\7n\2\2\u010b$\3\2\2\2\u010c\u010d\7t\2\2\u010d\u010e"+
 		"\7q\2\2\u010e\u010f\7q\2\2\u010f\u0110\7v\2\2\u0110&\3\2\2\2\u0111\u0112"+
-		"\7r\2\2\u0112\u0113\7t\2\2\u0113\u0114\7q\2\2\u0114\u0115\7r\2\2\u0115"+
-		"\u0116\7g\2\2\u0116\u0117\7t\2\2\u0117\u0118\7v\2\2\u0118\u0119\7{\2\2"+
+		"\7k\2\2\u0112\u0113\7o\2\2\u0113\u0114\7r\2\2\u0114\u0115\7n\2\2\u0115"+
+		"\u0116\7k\2\2\u0116\u0117\7e\2\2\u0117\u0118\7k\2\2\u0118\u0119\7v\2\2"+
 		"\u0119(\3\2\2\2\u011a\u011b\7h\2\2\u011b\u011c\7g\2\2\u011c\u011d\7c\2"+
 		"\2\u011d\u011e\7v\2\2\u011e\u011f\7w\2\2\u011f\u0120\7t\2\2\u0120\u0121"+
 		"\7g\2\2\u0121*\3\2\2\2\u0122\u0123\7t\2\2\u0123\u0124\7g\2\2\u0124\u0125"+

@@ -2,18 +2,18 @@ package siani.tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.Body;
-import siani.tara.intellij.lang.psi.TaraFacetTarget;
 import siani.tara.intellij.lang.psi.TaraIdentifierReference;
-import siani.tara.semantic.model.*;
+import siani.tara.semantic.model.FacetTarget;
+import siani.tara.semantic.model.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LanguageFacetTarget extends LanguageElement implements FacetTarget {
 
-	TaraFacetTarget target;
+	siani.tara.intellij.lang.psi.FacetTarget target;
 
-	public LanguageFacetTarget(TaraFacetTarget target) {
+	public LanguageFacetTarget(siani.tara.intellij.lang.psi.FacetTarget target) {
 		this.target = target;
 	}
 

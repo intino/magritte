@@ -8,10 +8,10 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.NodeReference;
+import siani.tara.intellij.lang.psi.ReferenceStatement;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,9 +47,9 @@ public class BodyMixin extends ASTWrapperPsiElement {
 		return PsiTreeUtil.getChildrenOfTypeAsList(this, ReferenceStatement.class);
 	}
 
-	public Collection<NodeReference> getNodeLinks() {
+	public List<NodeReference> getNodeLinks() {
 		NodeReference[] references = PsiTreeUtil.getChildrenOfType(this, NodeReference.class);
-		return references == null ? Collections.EMPTY_LIST : Arrays.asList(references);
+		return references == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(Arrays.asList(references));
 	}
 
 }

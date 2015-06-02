@@ -26,6 +26,8 @@ public class VariableImpl extends Element implements Variable {
 	private List<Tag> flags = new ArrayList<>();
 	private String defaultExtension;
 	private boolean inherited;
+	private boolean overriden;
+	private int tupleSize;
 
 	public VariableImpl() {
 	}
@@ -116,8 +118,8 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
-	public Collection<Object> getAllowedValues() {
-		return allowedValues;
+	public List<Object> getAllowedValues() {
+		return Collections.unmodifiableList(allowedValues);
 	}
 
 	@Override
@@ -126,8 +128,8 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
-	public Collection<Object> getDefaultValues() {
-		return defaultValues;
+	public List<Object> getDefaultValues() {
+		return Collections.unmodifiableList(defaultValues);
 	}
 
 	@Override
@@ -190,7 +192,24 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
+	public void setOverriden(boolean overriden) {
+		this.overriden = overriden;
+	}
+
+	@Override
 	public String toString() {
 		return type + ":" + name;
+	}
+
+	public boolean isOverriden() {
+		return overriden;
+	}
+
+	public void setTupleSize(int tupleSize) {
+		this.tupleSize = tupleSize;
+	}
+
+	public int getTupleSize() {
+		return tupleSize;
 	}
 }

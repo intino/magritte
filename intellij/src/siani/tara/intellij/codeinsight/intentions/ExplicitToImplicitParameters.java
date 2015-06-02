@@ -20,8 +20,8 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 
 //	private List<String> extractParametersData(Parameters parameters, Node node) {
 //		List<String> parameterValues = new ArrayList<>();
-//		List<Variable> variables = getVariables(node, parameters.getParameters()[0]);
-//		for (Variable variable : variables) {
+//		List<Variable> getVariables = getVariables(node, parameters.getParameters()[0]);
+//		for (Variable variable : getVariables) {
 //			Parameter correspondentParameter = getCorrespondentParameter(parameters, variable.getName());
 //			if (correspondentParameter == null) continue;
 //			parameterValues.add(correspondentParameter.getValue().getText());

@@ -43,10 +43,8 @@ import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.model.Frame;
 import siani.tara.intellij.framework.maven.NativeTemplate;
-import siani.tara.intellij.lang.psi.Node;
-import siani.tara.intellij.lang.psi.Parameter;
-import siani.tara.intellij.lang.psi.StringValue;
-import siani.tara.intellij.lang.psi.VarInit;
+import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.semantic.Allow;
@@ -119,20 +117,32 @@ public class TaraQuickEditHandler extends DocumentAdapter implements Disposable 
 	@NotNull
 	private Frame createFrame(StringValue stringValue) {
 		Frame frame = new Frame().addTypes("native");
-		PsiElement element = getVariable(stringValue);
+		PsiElement element = getVarInit(stringValue);
 		if (element == null) element = getParameter(stringValue);
+		if (element == null) element = getVariable(stringValue);
 		Node node = getContainerNode(element);
 		frame.addFrame("module", ModuleProvider.getModuleOf(stringValue).getName().toLowerCase());
 		frame.addFrame("language", languageName.toLowerCase());
 		Allow.Parameter allow = TaraUtil.getCorrespondingAllow(node, element);
 		if (allow != null) frame.addFrame("intention", intention(allow.contract()));
+		else frame.addFrame("intention", ((siani.tara.intellij.lang.psi.Variable) element).getContract().getText());
 		final String replace = stringValue.getValue().replace("\\n", "\n").replace("\\\"", "\"");
 		frame.addFrame("variable", getName(element)).
 			addFrame("qn", node.getQualifiedName().replace("@anonymous", "").replace(".", "_")).
 			addFrame("parent", firstNamedNode(node).replace(".", "_")).
-			addFrame("signature", getSignature(allow.contract())).
+			addFrame("signature", getSignature(allow != null ? allow.contract() : findNativeInterface(((siani.tara.intellij.lang.psi.Variable) element).getContract()))).
 			addFrame("body", replace.endsWith(";") ? replace : replace + ";");
 		return frame;
+	}
+
+	private String findNativeInterface(Contract contract) {
+		final PsiElement element = ReferenceManager.resolveContract(contract);
+		if (element == null || !(element instanceof PsiClass)) return "";
+		PsiClass aClass = (PsiClass) element;
+		if (aClass.getMethods().length == 0) return "";
+		final PsiMethod psiMethod = aClass.getMethods()[0];
+		return psiMethod.getText().replace(";", "");
+
 	}
 
 	private String getSignature(String contract) {
@@ -151,21 +161,29 @@ public class TaraQuickEditHandler extends DocumentAdapter implements Disposable 
 		return candidate.getQualifiedName();
 	}
 
+	private Node getContainerNode(PsiElement element) {
+		return (Node) getParentByType(element, Node.class);
+	}
+
 	private static Parameter getParameter(StringValue stringValue) {
 		PsiElement element = getParentByType(stringValue, Parameter.class);
 		return element instanceof Parameter ? (Parameter) element : null;
 	}
 
-	private Node getContainerNode(PsiElement element) {
-		return (Node) getParentByType(element, Node.class);
-	}
-
-	private PsiElement getVariable(StringValue stringValue) {
+	private PsiElement getVarInit(StringValue stringValue) {
 		return getParentByType(stringValue, VarInit.class);
 	}
 
+	private PsiElement getVariable(StringValue stringValue) {
+		PsiElement element = getParentByType(stringValue, siani.tara.intellij.lang.psi.Variable.class);
+		return element instanceof siani.tara.intellij.lang.psi.Variable ? (siani.tara.intellij.lang.psi.Variable) element : null;
+	}
+
+
 	private String getName(PsiElement element) {
-		return element instanceof Parameter ? ((Parameter) element).getExplicitName() : ((VarInit) element).getName();
+		if (element instanceof Parameter) return ((Parameter) element).getExplicitName();
+		else if (element instanceof VarInit) return ((VarInit) element).getName();
+		return ((siani.tara.intellij.lang.psi.Variable) element).getName();
 	}
 
 
@@ -177,7 +195,7 @@ public class TaraQuickEditHandler extends DocumentAdapter implements Disposable 
 			final EditorWindow curWindow = fileEditorManager.getCurrentWindow();
 			mySplittedWindow = curWindow.split(SwingConstants.HORIZONTAL, false, myNewVirtualFile, true);
 		}
-		PsiMethod executeMethod = getExecuteMethod();
+		PsiMethod executeMethod = getMethod();
 		int offset = isWellBuilt(executeMethod) ? 0 : executeMethod.getBody().getFirstBodyElement().getTextOffset();
 		Editor editor = fileEditorManager.openTextEditor(new OpenFileDescriptor(myProject, myNewVirtualFile, offset + 2), true);
 		if (editor != null) {
@@ -249,13 +267,14 @@ public class TaraQuickEditHandler extends DocumentAdapter implements Disposable 
 	}
 
 	private String obtainBodyText() {
-		PsiMethod method = getExecuteMethod();
+		PsiMethod method = getMethod();
 		if (method == null || method.getBody() == null) return "";
 		return method.getBody().getText().substring(1, method.getBody().getText().length() - 1).trim();
 	}
 
-	private PsiMethod getExecuteMethod() {
-		return ((PsiJavaFileImpl) myNewFile).getClasses()[0].getMethods()[0];
+	private PsiMethod getMethod() {
+		final PsiMethod[] methods = ((PsiJavaFileImpl) myNewFile).getClasses()[0].getMethods();
+		return methods.length == 0 ? null : methods[0];
 	}
 
 	private void closeEditor() {

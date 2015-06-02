@@ -111,8 +111,8 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Node> getSubNodes() {
-		return destiny.getSubNodes();
+	public List<Node> getSubNodes() {
+		return Collections.unmodifiableList(destiny.getSubNodes());
 	}
 
 	@Override
@@ -166,13 +166,13 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public boolean isProperty() {
-		return destiny.isProperty() || flags.contains(PROPERTY);
+	public boolean isImplicit() {
+		return destiny.isImplicit() || flags.contains(IMPLICIT);
 	}
 
 	@Override
 	public boolean isPropertyInstance() {
-		return destiny.isPropertyInstance() || flags.contains(PROPERTY_INSTANCE);
+		return destiny.isPropertyInstance() || flags.contains(IMPLICIT_INSTANCE);
 	}
 
 	@Override
@@ -200,17 +200,17 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Tag> getAnnotations() {
-		List<Tag> tags = new ArrayList<Tag>(destiny.getAnnotations());
+	public List<Tag> getAnnotations() {
+		List<Tag> tags = new ArrayList<>(destiny.getAnnotations());
 		tags.addAll(this.annotations);
-		return tags;
+		return Collections.unmodifiableList(tags);
 	}
 
 	@Override
-	public Collection<Tag> getFlags() {
-		List<Tag> tags = new ArrayList<Tag>(destiny.getFlags());
+	public List<Tag> getFlags() {
+		List<Tag> tags = new ArrayList<>(destiny.getFlags());
 		tags.addAll(flags);
-		return tags;
+		return Collections.unmodifiableList(tags);
 	}
 
 	@Override
@@ -350,13 +350,13 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public Collection<NodeReference> getInnerNodeReferences() {
-		return destiny.getInnerNodeReferences();
+	public List<NodeReference> getInnerNodeReferences() {
+		return Collections.unmodifiableList(destiny.getInnerNodeReferences());
 	}
 
 	@Override
-	public Collection<Node> getChildren() {
-		return destiny.getChildren();
+	public List<Node> getChildren() {
+		return Collections.unmodifiableList(destiny.getChildren());
 	}
 
 	@Override
@@ -365,13 +365,13 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Facet> getFacets() {
-		return destiny.getFacets();
+	public List<Facet> getFacets() {
+		return Collections.unmodifiableList(destiny.getFacets());
 	}
 
 	@Override
 	public Collection<String> getAllowedFacets() {
-		return allowedFacets;
+		return Collections.unmodifiableCollection(allowedFacets);
 	}
 
 	@Override
@@ -385,8 +385,8 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public Collection<FacetTarget> getFacetTargets() {
-		return destiny.getFacetTargets();
+	public List<FacetTarget> getFacetTargets() {
+		return Collections.unmodifiableList(destiny.getFacetTargets());
 	}
 
 	@Override

@@ -102,7 +102,7 @@ REQUIRED            : 'required';
 TERMINAL            : 'terminal';
 ROOT                : 'root';
 
-PROPERTY            : 'property';
+IMPLICIT            : 'implicit';
 FEATURE             : 'feature';
 
 READONLY            : 'readonly';

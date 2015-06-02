@@ -40,7 +40,7 @@ public interface Node extends NodeContainer, Parametrized {
 
 	boolean isFeatureInstance();
 
-	boolean isProperty();
+	boolean isImplicit();
 
 	boolean isPropertyInstance();
 
@@ -90,7 +90,7 @@ public interface Node extends NodeContainer, Parametrized {
 
 	List<Facet> getFacets();
 
-	List<String> getAllowedFacets();
+	Collection<String> getAllowedFacets();
 
 	void addAllowedFacets(String... facet);
 

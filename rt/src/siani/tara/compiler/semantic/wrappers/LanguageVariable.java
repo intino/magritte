@@ -5,8 +5,8 @@ import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.model.Tag;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LanguageVariable extends LanguageElement implements siani.tara.semantic.model.Variable {
 	private final Variable variable;
@@ -27,14 +27,18 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 
 	@Override
 	public String[] flags() {
-		List<String> flags = new ArrayList<>();
-		for (Tag tag : variable.getFlags()) flags.add(tag.name());
+		List<String> flags = variable.getFlags().stream().map(Tag::name).collect(Collectors.toList());
 		return flags.toArray(new String[flags.size()]);
 	}
 
 	@Override
 	public boolean isReference() {
 		return variable instanceof VariableReference;
+	}
+
+	@Override
+	public boolean isOverriden() {
+		return variable.isOverriden();
 	}
 
 	@Override

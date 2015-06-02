@@ -11,6 +11,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.psi.FacetTarget;
 import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.Variable;
@@ -22,6 +23,7 @@ import siani.tara.intellij.project.module.ModuleProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.intellij.psi.JavaPsiFacade.getElementFactory;
 
@@ -61,8 +63,8 @@ public class NativesGenerator {
 
 	private void processFile(PsiFile psiFile) {
 		if (psiFile instanceof TaraModel) {
-			Variable[] natives = getNativeVariables((TaraModel) psiFile);
-			if (natives.length > 0) this.destiny = findNativesDirectory();
+			List<Variable> natives = getNativeVariables((TaraModel) psiFile);
+			if (!natives.isEmpty()) this.destiny = findNativesDirectory();
 			for (Variable aNative : natives) createNativeClass(aNative);
 		}
 	}
@@ -122,11 +124,28 @@ public class NativesGenerator {
 	}
 
 
-	private Variable[] getNativeVariables(TaraModel model) {
+	private List<Variable> getNativeVariables(TaraModel model) {
 		List<Variable> natives = new ArrayList<>();
-		for (Node node : TaraUtil.getAllNodesOfFile(model))
-			for (Variable variable : node.getVariables())
-				if ("native".equals(variable.getType())) natives.add(variable);
-		return natives.toArray(new Variable[natives.size()]);
+		getNativeVariablesOfNodes(TaraUtil.getRootNodesOfFile(model), natives);
+		return natives;
+	}
+
+	private void getNativeVariablesOfNodes(List<Node> nodesOfFile, List<Variable> natives) {
+		for (Node node : nodesOfFile) {
+			getNativeVariablesOfNode(node, natives);
+			getNativeVariables(node.getFacetTargets(), natives);
+		}
+	}
+
+	private void getNativeVariablesOfNode(Node node, List<Variable> natives) {
+		natives.addAll(node.getVariables().stream().filter(variable -> "native".equals(variable.getType())).collect(Collectors.toList()));
+		getNativeVariablesOfNodes(node.getIncludes(), natives);
+	}
+
+	private void getNativeVariables(List<FacetTarget> facetTargets, List<Variable> natives) {
+		for (FacetTarget facetTarget : facetTargets) {
+			natives.addAll(facetTarget.getVariables().stream().filter(variable -> "native".equals(variable.getType())).collect(Collectors.toList()));
+			getNativeVariablesOfNodes(facetTarget.includes(), natives);
+		}
 	}
 }

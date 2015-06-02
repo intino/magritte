@@ -104,7 +104,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public boolean isProperty() {
+	public boolean isImplicit() {
 		return false;
 	}
 

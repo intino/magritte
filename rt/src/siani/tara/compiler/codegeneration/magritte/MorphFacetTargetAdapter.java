@@ -7,34 +7,25 @@ import siani.tara.compiler.model.Primitives;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
-import siani.tara.compiler.model.impl.VariableReference;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
-import static siani.tara.compiler.codegeneration.magritte.MorphCreatorHelper.getNodeContainer;
-import static siani.tara.compiler.codegeneration.magritte.NameFormatter.composeMorphPackagePath;
+import static siani.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 
 public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetTarget>, TemplateTags {
 	private final String project;
 	private final String generatedLanguage;
-	private final Set<String> imports;
-	private final Locale locale;
 
-	public MorphFacetTargetAdapter(String project, String generatedLanguage, Set<String> imports, Locale locale) {
+	public MorphFacetTargetAdapter(String project, String generatedLanguage) {
 		this.project = project;
 		this.generatedLanguage = generatedLanguage;
-		this.imports = imports;
-		this.locale = locale;
 	}
 
 	@Override
 	public void execute(Frame frame, FacetTarget target, FrameContext<FacetTarget> context) {
 		frame.addTypes("nodeimpl");
 		addFacetTargetInfo(target, frame);
-		addImports(getNodeContainer(target), locale);
 		addInner(target, frame, context);
 	}
 
@@ -43,14 +34,6 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 		addParent(target, frame);
 		addVariables(target, frame);
 		addComponents(target, frame);
-	}
-
-	private void addImports(Node container, Locale locale) {
-		if (container != null) {
-			String containerPackage = composeMorphPackagePath(container, locale, generatedLanguage);
-			if (!containerPackage.equals(MAGRITTE_MORPHS))
-				imports.add(containerPackage + DOT + container.getName());
-		}
 	}
 
 	private void addInner(FacetTarget target, Frame frame, FrameContext<FacetTarget> context) {
@@ -67,7 +50,7 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 
 	private void addParent(FacetTarget target, Frame newFrame) {
 		Node parent = findParentTargetInContext(target);
-		newFrame.addFrame(PARENT, parent == null ? ((Node) target.getContainer()).getName() : parent.getName());
+		newFrame.addFrame(PARENT, parent == null ? getQn(target, generatedLanguage) : parent.getName());
 	}
 
 	private Node findParentTargetInContext(FacetTarget target) {
@@ -93,9 +76,6 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 		for (final Variable variable : target.getVariables()) {
 			Frame varFrame = createVarFrame(frame, variable);
 			frame.addFrame(VARIABLE, varFrame);
-			if (variable instanceof VariableReference && !variable.getDefaultValues().isEmpty()) {
-				addImports(((VariableReference) variable).getDestiny(), locale);
-			}
 		}
 	}
 
@@ -103,6 +83,7 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 		Frame frame = new Frame(owner) {
 			{
 				addFrame(NAME, variable.getName());
+				addFrame(CONTRACT, format(variable.getContract()));
 				addFrame(TYPE, getType());
 				if (variable.getType().equals(Variable.WORD))
 					addFrame(WORDS, variable.getAllowedValues().toArray(new String[(variable.getAllowedValues().size())]));
@@ -111,6 +92,12 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 //					if (((Attribute) variable).getMeasureValue() != null)
 //						addFrame(MEASURE_VALUE, resolveMetric(((Attribute) variable).getMeasureValue()));
 				}
+			}
+
+			private String format(String contract) {
+				if (contract == null) return "";
+				final int i = contract.indexOf(siani.tara.semantic.model.Variable.NATIVE_SEPARATOR);
+				return (i >= 0) ? contract.substring(0, i) : contract;
 			}
 
 			private String getType() {

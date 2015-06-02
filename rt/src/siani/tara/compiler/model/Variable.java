@@ -3,8 +3,9 @@ package siani.tara.compiler.model;
 import siani.tara.semantic.model.Tag;
 
 import java.util.Collection;
+import java.util.List;
 
-public interface Variable  extends Cloneable {
+public interface Variable extends Cloneable {
 
 	String NATIVE_SEPARATOR = "#";
 	String WORD = "word";
@@ -19,6 +20,8 @@ public interface Variable  extends Cloneable {
 
 	boolean isMultiple();
 
+	int getTupleSize();
+
 	String getContract();
 
 	Collection<Tag> getFlags();
@@ -31,6 +34,10 @@ public interface Variable  extends Cloneable {
 
 	boolean isInherited();
 
+	void setOverriden(boolean overriden);
+
+	boolean isOverriden();
+
 	void setContract(String extension);
 
 	void setName(String name);
@@ -39,11 +46,13 @@ public interface Variable  extends Cloneable {
 
 	void setMultiple(boolean multiple);
 
-	Collection<Object> getAllowedValues();
+	void setTupleSize(int tupleSize);
+
+	List<Object> getAllowedValues();
 
 	void addAllowedValues(Object... values);
 
-	Collection<Object> getDefaultValues();
+	List<Object> getDefaultValues();
 
 	void addDefaultValues(Object... values);
 
@@ -52,4 +61,6 @@ public interface Variable  extends Cloneable {
 	void setDefaultExtension(String defaultExtension);
 
 	Variable cloneIt(NodeContainer container);
+
+
 }

@@ -6,7 +6,6 @@ import java.util.Locale;
 
 public class Tafat extends Tara {
 
-
 	public Tafat() {
 	}
 

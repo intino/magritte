@@ -4,7 +4,6 @@ import com.intellij.psi.PsiInvalidElementAccessException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface Body extends TaraPsiElement {
@@ -20,7 +19,7 @@ public interface Body extends TaraPsiElement {
 	@NotNull
 	List<? extends Node> getNodeList();
 
-	Collection<NodeReference> getNodeLinks();
+	List<NodeReference> getNodeLinks();
 
 	@NotNull
 	List<? extends ReferenceStatement> getReferenceStatementList();

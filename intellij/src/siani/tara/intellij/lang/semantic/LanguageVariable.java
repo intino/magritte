@@ -2,6 +2,8 @@ package siani.tara.intellij.lang.semantic;
 
 
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NonNls;
 import siani.tara.intellij.lang.psi.Flags;
 import siani.tara.intellij.lang.psi.TaraValue;
 import siani.tara.intellij.lang.psi.Variable;
@@ -34,6 +36,10 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 		return variable.isReference();
 	}
 
+	@Override
+	public boolean isOverriden() {
+		return variable.isOverriden();
+	}
 
 	@Override
 	public Object[] defaultValue() {
@@ -44,5 +50,14 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 	@Override
 	public PsiElement element() {
 		return variable;
+	}
+
+	@Override
+	@NonNls
+	@Contract(
+	    pure = true
+	)
+	public String toString() {
+		return variable.toString();
 	}
 }

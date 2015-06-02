@@ -76,7 +76,7 @@ REQUIRED            = "required"
 TERMINAL            = "terminal"
 
 ROOT                = "root"
-PROPERTY            = "property"
+IMPLICIT            = "implicit"
 FEATURE             = "feature"
 
 READONLY            = "readonly"
@@ -173,7 +173,7 @@ NEWLINE             = [\n]+
     {REQUIRED}                      {   return TaraTypes.REQUIRED; }
     {ROOT}                          {   return TaraTypes.ROOT; }
 
-    {PROPERTY}                      {   return TaraTypes.PROPERTY; }
+    {IMPLICIT}                      {   return TaraTypes.IMPLICIT; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
 
     {FACET}                         {   return TaraTypes.FACET; }

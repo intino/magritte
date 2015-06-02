@@ -8,7 +8,9 @@ import siani.tara.semantic.constraints.flags.AnnotationChecker;
 import siani.tara.semantic.constraints.flags.FlagCheckerFactory;
 import siani.tara.semantic.model.*;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -128,7 +130,7 @@ public class GlobalConstraints {
 				}
 			};
 			for (Variable variable : node.variables()) {
-				if (varNames.add(variable.name())) continue;
+				if (variable.isOverriden() || varNames.add(variable.name())) continue;
 				throw new SemanticException(new SemanticError("reject.duplicate.variable", element, asList(variable.name(), node.name())));
 			}
 		};
@@ -200,7 +202,7 @@ public class GlobalConstraints {
 			}
 
 			private boolean isAbstract(Node node) {
-				return asList(node.flags()).contains("abstract");
+				return asList(node.flags()).contains("abstract") || node.hasSubs();
 			}
 		};
 	}
@@ -210,10 +212,9 @@ public class GlobalConstraints {
 			Node node = (Node) element;
 			Context context = rulesCatalog.get(node.type());
 			if (context == null) return;
-			for (Assumption assumption : context.assumptions()) {
+			for (Assumption assumption : context.assumptions())
 				if (assumption instanceof Assumption.FacetInstance)
 					throw new SemanticException(new SemanticError("reject.facet.as.primary", node));
-			}
 		};
 	}
 }

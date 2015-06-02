@@ -8,11 +8,12 @@ import siani.tara.semantic.model.FacetTarget;
 import siani.tara.semantic.model.Variable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LanguageNode extends LanguageElement implements siani.tara.semantic.model.Node {
 
 	private final Node node;
-	private FacetTarget[] facetTargets;
+	private List<FacetTarget> facetTargets;
 	private List<Variable> variables = new ArrayList<>();
 	private List<siani.tara.semantic.model.Node> includes = new ArrayList<>();
 
@@ -30,10 +31,8 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	private void addIncludes(Node node) {
-		for (Node inner : node.getInnerNodes())
-			includes.add(new LanguageNode(inner));
-		for (NodeReference nodeReference : node.getInnerNodeReferences())
-			includes.add(new LanguageNodeReference(nodeReference));
+		includes.addAll(node.getIncludes().stream().map(LanguageNode::new).collect(Collectors.toList()));
+		includes.addAll(node.getInnerNodeReferences().stream().map(LanguageNodeReference::new).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -69,9 +68,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public String[] secondaryTypes() {
-		List<String> types = new ArrayList<>();
-		for (FacetApply facetApply : node.getFacetApplies())
-			types.add(facetApply.getType());
+		List<String> types = node.getFacetApplies().stream().map(FacetApply::getType).collect(Collectors.toList());
 		return types.toArray(new String[types.size()]);
 	}
 
@@ -108,18 +105,14 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public String[] annotations() {
-		Set<String> annotations = new HashSet<>();
-		for (Annotation annotation : node.getAnnotations())
-			annotations.add(annotation.getText());
+		Set<String> annotations = node.getAnnotations().stream().map(Annotation::getText).collect(Collectors.toSet());
 		annotations.addAll(node.getAssumedFlags());
 		return annotations.toArray(new String[annotations.size()]);
 	}
 
 	@Override
 	public String[] flags() {
-		Set<String> flags = new HashSet<>();
-		for (Flag flag : node.getFlags())
-			flags.add(flag.getText());
+		Set<String> flags = node.getFlags().stream().map(Flag::getText).collect(Collectors.toSet());
 		flags.addAll(node.getAssumedFlags());
 		return flags.toArray(new String[flags.size()]);
 	}
@@ -140,14 +133,13 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public Facet[] facets() {
-		List<Facet> facets = new ArrayList<>();
-		for (final FacetApply facetApply : node.getFacetApplies()) facets.add(new LanguageFacet(facetApply));
+		List<Facet> facets = node.getFacetApplies().stream().map(LanguageFacet::new).collect(Collectors.toList());
 		return facets.toArray(new Facet[facets.size()]);
 	}
 
 	@Override
 	public FacetTarget[] facetTargets() {
-		return this.facetTargets;
+		return facetTargets.toArray(new FacetTarget[facetTargets.size()]);
 	}
 
 	@Override
@@ -159,18 +151,12 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	private List<siani.tara.semantic.model.Parameter> wrapParameters(Collection<Parameter> toWrap) {
 		if (toWrap == null || toWrap.isEmpty()) return new ArrayList<>();
-		List<siani.tara.semantic.model.Parameter> parameters = new ArrayList<>();
-		for (siani.tara.intellij.lang.psi.Parameter parameter : toWrap)
-			parameters.add(new LanguageParameter(parameter));
-		return parameters;
+		return toWrap.stream().map(LanguageParameter::new).collect(Collectors.toList());
 	}
 
 	private List<siani.tara.semantic.model.Parameter> wrapVarInits(Collection<VarInit> toWrap) {
 		if (toWrap == null || toWrap.isEmpty()) return new ArrayList<>();
-		List<siani.tara.semantic.model.Parameter> parameters = new ArrayList<>();
-		for (VarInit varInit : toWrap)
-			parameters.add(new LanguageVarParameter(varInit));
-		return parameters;
+		return toWrap.stream().map(LanguageVarParameter::new).collect(Collectors.toList());
 	}
 
 	@Override
@@ -184,26 +170,12 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	private List<Variable> collectVariables(Collection<siani.tara.intellij.lang.psi.Variable> variables) {
-		List<Variable> semanticVariables = new ArrayList<>();
-		for (final siani.tara.intellij.lang.psi.Variable variable : variables)
-			semanticVariables.add(new LanguageVariable(variable));
-		return semanticVariables;
+		return variables.stream().map(LanguageVariable::new).collect(Collectors.toList());
 	}
 
-	private Long toLong(String address) {
-		try {
-			return Long.parseLong(address.replace(".", "").replace("&", ""));
-		} catch (NumberFormatException e) {
-			return null;
-		}
+	private List<FacetTarget> buildFacetTargets(List<siani.tara.intellij.lang.psi.FacetTarget> facetTargets) {
+		return facetTargets.stream().map(LanguageFacetTarget::new).collect(Collectors.toList());
 	}
-
-	private FacetTarget[] buildFacetTargets(Collection<TaraFacetTarget> facetTargets) {
-		List<FacetTarget> targets = new ArrayList<>();
-		for (final TaraFacetTarget target : facetTargets) targets.add(new LanguageFacetTarget(target));
-		return targets.toArray(new FacetTarget[targets.size()]);
-	}
-
 
 	@Override
 	public boolean equals(Object object) {

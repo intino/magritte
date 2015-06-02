@@ -1,9 +1,6 @@
 package siani.tara.compiler.dependencyresolution;
 
-import siani.tara.compiler.model.FacetTarget;
-import siani.tara.compiler.model.Node;
-import siani.tara.compiler.model.NodeContainer;
-import siani.tara.compiler.model.Variable;
+import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
@@ -11,6 +8,7 @@ import siani.tara.compiler.model.impl.NodeReference;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ReferenceManager {
 
@@ -21,16 +19,16 @@ public class ReferenceManager {
 	}
 
 	NodeImpl resolve(NodeReference reference) {
-		return (NodeImpl) resolve(reference.getReference(), getNodeContainer(reference.getContainer()));
+		return (NodeImpl) resolve(reference.getReference(), reference.getContainer());
 	}
 
-	Node resolve(FacetTarget target, NodeContainer container) {
-		Node result = resolve(target.getTarget(), getNodeContainer(container));
+	Node resolve(FacetTarget target, NodeContainer node) {
+		Node result = resolve(target.getTarget(), node);
 		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : result;
 	}
 
 	NodeImpl resolve(Variable variable, NodeContainer container) {
-		Node result = resolve(variable.getType(), getNodeContainer(container));
+		Node result = resolve(variable.getType(), container);
 		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : (NodeImpl) result;
 	}
 
@@ -38,7 +36,7 @@ public class ReferenceManager {
 		return searchByQn(model, qn);
 	}
 
-	Node resolve(String reference, Node node) {
+	Node resolve(String reference, NodeContainer node) {
 		String[] path = reference.split("\\.");
 		Collection<Node> roots = searchPossibleRoots(node, path[0]);
 		if (roots.isEmpty()) return null;
@@ -60,39 +58,44 @@ public class ReferenceManager {
 		return reference;
 	}
 
-	private Collection<Node> searchPossibleRoots(Node node, String name) {
+	private Collection<Node> searchPossibleRoots(NodeContainer node, String name) {
 		Set<Node> set = new LinkedHashSet<>();
-		checkName(name, set, node);
+		namesake(name, set, node);
 		addInContext(name, set, node);
+		if (node instanceof FacetTarget) addFacetRoots((FacetTarget) node, set);
 		addRoots(name, set);
 		return set;
 	}
 
+	private void addFacetRoots(FacetTarget facetTarget, Set<Node> set) {
+		set.addAll(facetTarget.getIncludedNodes());
+	}
+
 	private void addRoots(String name, Set<Node> set) {
-		for (Node node : model.getIncludedNodes())
-			if (name.equals(node.getName())) set.add(node);
+		set.addAll(model.getIncludedNodes().stream().
+			filter(node -> name.equals(node.getName())).
+			collect(Collectors.toList()));
 	}
 
 	private void addInContext(String name, Set<Node> set, NodeContainer node) {
 		checkSiblings(name, set, node);
 		NodeContainer container = node.getContainer();
 		while (container != null) {
-			checkName(name, set, container);
+			namesake(name, set, container);
 			checkSiblings(name, set, container);
 			container = container.getContainer();
 		}
 	}
 
 	private void checkSiblings(String name, Set<Node> set, NodeContainer container) {
-		for (Node sibling : container.getNodeSiblings()) checkName(name, set, sibling);
+		for (Node sibling : container.getNodeSiblings()) namesake(name, set, sibling);
 	}
 
-	private void checkName(String name, Set<Node> set, NodeContainer container) {
-		if (container instanceof NodeImpl && checkName((Node) container, name))
-			set.add((Node) container);
+	private void namesake(String name, Set<Node> set, NodeContainer container) {
+		if (container instanceof NodeImpl && namesake((Node) container, name)) set.add((Node) container);
 	}
 
-	private boolean checkName(Node node, String name) {
+	private boolean namesake(Node node, String name) {
 		return name.equals(node.getName());
 	}
 
@@ -103,10 +106,4 @@ public class ReferenceManager {
 		return null;
 	}
 
-	private NodeImpl getNodeContainer(NodeContainer reference) {
-		NodeContainer container = reference;
-		while (!(container instanceof NodeImpl))
-			container = container.getContainer();
-		return (NodeImpl) container;
-	}
 }

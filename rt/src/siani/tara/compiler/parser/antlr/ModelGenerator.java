@@ -215,7 +215,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		Variable variable = variableType.identifierReference() != null ?
 			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText()) :
 			new VariableImpl(container, variableType.getText(), ctx.IDENTIFIER().getText());
-		variable.setMultiple(ctx.LIST() != null);
+		variable.setMultiple(ctx.LIST() != null || ctx.count() != null);
+		if (ctx.count() != null) variable.setTupleSize(Integer.parseInt(ctx.count().NATURAL_VALUE().getText()));
 		return variable;
 	}
 
@@ -226,7 +227,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private void processAsWord(Variable variable, VariableContext context) {
-		for (TerminalNode value : context.contract().contractValue().IDENTIFIER()) variable.addAllowedValues(value.getText());
+		for (TerminalNode value : context.contract().contractValue().IDENTIFIER())
+			variable.addAllowedValues(value.getText());
 		if (context.value() == null) return;
 		for (IdentifierReferenceContext id : context.value().identifierReference())
 			variable.addDefaultValues(id.getText());

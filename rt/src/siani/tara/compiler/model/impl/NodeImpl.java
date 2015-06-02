@@ -103,9 +103,9 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public List<Node> getSubNodes() {
 		List<Node> nodes = new ArrayList<>();
-		includes.stream().filter(Node::isSub).forEach(include -> {
-			nodes.add(include);
-			nodes.addAll(include.getSubNodes());
+		getChildren().stream().filter(Node::isSub).forEach(children -> {
+			nodes.add(children);
+			nodes.addAll(children.getSubNodes());
 		});
 		return unmodifiableList(nodes);
 	}
@@ -161,13 +161,13 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public boolean isProperty() {
-		return flags.contains(PROPERTY);
+	public boolean isImplicit() {
+		return flags.contains(IMPLICIT);
 	}
 
 	@Override
 	public boolean isPropertyInstance() {
-		return flags.contains(PROPERTY_INSTANCE);
+		return flags.contains(IMPLICIT_INSTANCE);
 	}
 
 	@Override

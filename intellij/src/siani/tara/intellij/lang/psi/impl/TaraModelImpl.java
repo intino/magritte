@@ -23,10 +23,9 @@ import siani.tara.intellij.project.facet.TaraFacetConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import javax.swing.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
+
+import static java.util.Collections.unmodifiableList;
 
 public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
@@ -82,8 +81,8 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	@NotNull
 	@Override
-	public Collection<Node> getRootNodes() {
-		return TaraUtil.getRootNodesOfFile(this);
+	public List<Node> getRootNodes() {
+		return unmodifiableList(TaraUtil.getRootNodesOfFile(this));
 	}
 
 	@Override
@@ -95,11 +94,11 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	@Override
 	@NotNull
-	public Collection<Import> getImports() {
+	public List<Import> getImports() {
 		TaraImports[] taraImports = PsiTreeUtil.getChildrenOfType(this, TaraImports.class);
 		if (taraImports == null) return Collections.EMPTY_LIST;
 		Import[] imports = PsiTreeUtil.getChildrenOfType(taraImports[0], Import.class);
-		return imports != null ? Arrays.asList(imports) : Collections.EMPTY_LIST;
+		return imports != null ? unmodifiableList(Arrays.asList(imports)) : Collections.EMPTY_LIST;
 	}
 
 	private void insertLineBreakBefore(final ASTNode anchorBefore) {

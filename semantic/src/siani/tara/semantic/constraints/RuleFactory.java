@@ -543,11 +543,11 @@ public class RuleFactory {
 		};
 	}
 
-	public static Assumption isProperty() {
-		return new Assumption.Property() {
+	public static Assumption isImplicit() {
+		return new Assumption.Implicit() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(PROPERTY.name())) node.flags(PROPERTY.name());
+				if (!Arrays.asList(node.flags()).contains(IMPLICIT.name())) node.flags(IMPLICIT.name());
 			}
 		};
 	}
@@ -556,8 +556,8 @@ public class RuleFactory {
 		return new Assumption.PropertyInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(PROPERTY_INSTANCE.name()))
-					node.flags(PROPERTY_INSTANCE.name());
+				if (!Arrays.asList(node.flags()).contains(IMPLICIT_INSTANCE.name()))
+					node.flags(IMPLICIT_INSTANCE.name());
 			}
 		};
 	}

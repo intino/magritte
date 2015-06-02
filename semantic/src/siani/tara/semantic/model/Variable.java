@@ -12,5 +12,7 @@ public interface Variable extends Element {
 
 	boolean isReference();
 
+	boolean isOverriden();
+
 	Object[] defaultValue();
 }
