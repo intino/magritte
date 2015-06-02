@@ -311,16 +311,16 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Node> getNodeSiblings() {
+	public List<Node> getNodeSiblings() {
 		ArrayList<Node> siblings = new ArrayList<>();
 		siblings.addAll(getContainer().getIncludedNodes());
 		siblings.remove(this);
-		return siblings;
+		return unmodifiableList(siblings);
 	}
 
 	@Override
-	public Collection<Node> getIncludedNodes() {
-		return includes;
+	public List<Node> getIncludedNodes() {
+		return unmodifiableList(includes);
 	}
 
 	@Override
@@ -378,8 +378,8 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Variable> getVariables() {
-		return variables;
+	public List<Variable> getVariables() {
+		return unmodifiableList(variables);
 	}
 
 	@Override

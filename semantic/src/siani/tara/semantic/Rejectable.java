@@ -144,7 +144,7 @@ public abstract class Rejectable {
 		public SemanticError error() {
 			return cause.equals(Cause.NOT_ALLOWED) ?
 				new SemanticError("reject.unknown.facet.in.context", facet, singletonList(facet.type())) :
-				new SemanticError("reject.parameter.in.contex", facet, singletonList(facet.type()));
+				new SemanticError("reject.parameter.in.context", facet, singletonList(facet.type()));
 		}
 	}
 

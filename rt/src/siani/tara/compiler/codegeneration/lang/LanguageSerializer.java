@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 
 public class LanguageSerializer extends CodeGenerator {
 	private static final Logger LOG = Logger.getLogger(LanguageSerializer.class.getName());
-
 	private static final String JAVA = ".java";
 
 	CompilerConfiguration conf;
@@ -58,9 +57,9 @@ public class LanguageSerializer extends CodeGenerator {
 		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromStrings(Collections.singletonList(file.getAbsolutePath()));
 		final Collection<String> compilerOptions = new ArrayList<>();
 		compilerOptions.add("-source");
-		compilerOptions.add("1.7");
+		compilerOptions.add("1.8");
 		compilerOptions.add("-target");
-		compilerOptions.add("1.7");
+		compilerOptions.add("1.8");
 		compilerOptions.add("-d");
 		compilerOptions.add(conf.getLanguageDirectory());
 		compilerOptions.add("-classpath");

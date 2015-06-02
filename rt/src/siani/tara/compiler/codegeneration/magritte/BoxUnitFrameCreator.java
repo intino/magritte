@@ -8,7 +8,6 @@ import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeReference;
 
-import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -22,18 +21,16 @@ public class BoxUnitFrameCreator {
 	private final Language language;
 	private final Model model;
 	private final Locale locale;
-	private final File nativePath;
 	private final List<Node> nodes;
 	private Map<Node, Long> keymap = new LinkedHashMap<>();
 	private long count = 1;
 
-	private BoxUnitFrameCreator(String project, String generatedLanguage, Language language, Model model, Locale locale, List<Node> nodes, File nativePath) {
+	private BoxUnitFrameCreator(String project, String generatedLanguage, Language language, Model model, Locale locale, List<Node> nodes) {
 		this.project = project;
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 		this.model = model;
 		this.locale = locale;
-		this.nativePath = nativePath;
 		createKeyMap(this.nodes = nodes);
 	}
 
@@ -42,7 +39,7 @@ public class BoxUnitFrameCreator {
 	}
 
 	public BoxUnitFrameCreator(CompilerConfiguration conf, Model model, List<Node> nodes) {
-		this(conf.getProject(), conf.getGeneratedLanguage(), conf.getLanguage(), model, conf.getLocale(), nodes, conf.getNativePath());
+		this(conf.getProject(), conf.getGeneratedLanguage(), conf.getLanguage(), model, conf.getLocale(), nodes);
 	}
 
 	private void createKeyMap(NodeContainer node) {
@@ -51,10 +48,8 @@ public class BoxUnitFrameCreator {
 			if (include instanceof NodeReference) continue;
 			addKey(include);
 			createKeyMap(include);
-			for (FacetTarget facetTarget : include.getFacetTargets())
-				createKeyMap(facetTarget);
-			for (Facet facet : include.getFacets())
-				createKeyMap(facet);
+			include.getFacetTargets().forEach(this::createKeyMap);
+			include.getFacets().forEach(this::createKeyMap);
 		}
 	}
 

@@ -4,6 +4,8 @@ import siani.tara.compiler.model.*;
 
 import java.util.*;
 
+import static java.util.Collections.unmodifiableList;
+
 public class FacetImpl extends Element implements Facet {
 
 	private String file;
@@ -19,8 +21,8 @@ public class FacetImpl extends Element implements Facet {
 	}
 
 	@Override
-	public Collection<Node> getIncludedNodes() {
-		return includes;
+	public List<Node> getIncludedNodes() {
+		return unmodifiableList(includes);
 	}
 
 	@Override
@@ -57,14 +59,14 @@ public class FacetImpl extends Element implements Facet {
 	}
 
 	@Override
-	public Collection<Node> getNodeSiblings() {
+	public List<Node> getNodeSiblings() {
 		ArrayList<Node> siblings = new ArrayList<>();
 		siblings.addAll(getContainer().getIncludedNodes());
-		return siblings;
+		return unmodifiableList(siblings);
 	}
 
 	@Override
-	public Collection<Variable> getVariables() {
+	public List<Variable> getVariables() {
 		return Collections.EMPTY_LIST;
 	}
 

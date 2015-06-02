@@ -1,7 +1,7 @@
 package siani.tara;
 
-import siani.tara.semantic.model.Node;
 import siani.tara.semantic.Allow;
+import siani.tara.semantic.model.Node;
 
 import java.util.Collection;
 
@@ -19,10 +19,31 @@ public class Resolver {
 
 	private void checkAllowsInclude(Node node) {
 		resolve(node.context());
-		Collection<Allow> allows = language.allows(node.context().type());
+		Collection<Allow> allows = getContextAllows(node);
 		if (allows == null) return;
-		for (Allow allow : allows)
-			if (checkAllowInclude(node, allow)) return;
+		for (Allow allow : allows) if (checkAllowInclude(node, allow)) return;
+	}
+
+	private Collection<Allow> getContextAllows(Node node) {
+		Collection<Allow> allows = language.allows(node.context().type());
+		if (allows != null && contextAllowsNode(allows, node)) return allows;
+		allows = findInFacets(node);
+		return allows;
+	}
+
+	private boolean contextAllowsNode(Collection<Allow> context, Node node) {
+		for (Allow allow : context)
+			if (allow instanceof Allow.Include && ((Allow.Include) allow).type().endsWith("." + node.type()))
+				return true;
+		return false;
+	}
+
+	private Collection<Allow> findInFacets(Node node) {
+		for (String type : node.context().secondaryTypes()) {
+			Collection<Allow> allows = language.allows(type);
+			if (allows != null) return allows;
+		}
+		return null;
 	}
 
 	private boolean checkAllowInclude(Node node, Allow allow) {

@@ -1,10 +1,10 @@
 package siani.tara.compiler.model;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface NodeContainer {
 
-	Collection<Node> getIncludedNodes();
+	List<Node> getIncludedNodes();
 
 	void addIncludedNodes(Node... nodes);
 
@@ -18,9 +18,9 @@ public interface NodeContainer {
 
 	void moveToTheTop();
 
-	Collection<Node> getNodeSiblings();
+	List<Node> getNodeSiblings();
 
-	Collection<Variable> getVariables();
+	List<Variable> getVariables();
 
 	void addVariables(Variable... variables);
 

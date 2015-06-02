@@ -209,12 +209,12 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Collection<Node> getNodeSiblings() {
+	public List<Node> getNodeSiblings() {
 		return null;
 	}
 
 	@Override
-	public Collection<Node> getIncludedNodes() {
+	public List<Node> getIncludedNodes() {
 		return null;
 	}
 
@@ -249,7 +249,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Collection<Variable> getVariables() {
+	public List<Variable> getVariables() {
 		return null;
 	}
 

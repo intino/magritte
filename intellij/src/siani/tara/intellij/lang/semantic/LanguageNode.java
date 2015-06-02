@@ -2,9 +2,11 @@ package siani.tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.semantic.model.Facet;
 import siani.tara.semantic.model.FacetTarget;
+import siani.tara.semantic.model.Tara;
 import siani.tara.semantic.model.Variable;
 
 import java.util.*;

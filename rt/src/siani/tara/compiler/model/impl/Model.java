@@ -267,13 +267,13 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Node> getNodeSiblings() {
+	public List<Node> getNodeSiblings() {
 		return Collections.EMPTY_LIST;
 	}
 
 	@Override
-	public Collection<Node> getIncludedNodes() {
-		return includes;
+	public List<Node> getIncludedNodes() {
+		return Collections.unmodifiableList(includes);
 	}
 
 	@Override
@@ -292,7 +292,7 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Variable> getVariables() {
+	public List<Variable> getVariables() {
 		return null;
 	}
 

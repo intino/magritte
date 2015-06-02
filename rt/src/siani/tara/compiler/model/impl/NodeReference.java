@@ -5,6 +5,7 @@ import siani.tara.semantic.model.Tag;
 
 import java.util.*;
 
+import static java.util.Collections.unmodifiableList;
 import static siani.tara.semantic.model.Tag.*;
 
 public class NodeReference extends Element implements Node {
@@ -112,7 +113,7 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public List<Node> getSubNodes() {
-		return Collections.unmodifiableList(destiny.getSubNodes());
+		return unmodifiableList(destiny.getSubNodes());
 	}
 
 	@Override
@@ -203,14 +204,14 @@ public class NodeReference extends Element implements Node {
 	public List<Tag> getAnnotations() {
 		List<Tag> tags = new ArrayList<>(destiny.getAnnotations());
 		tags.addAll(this.annotations);
-		return Collections.unmodifiableList(tags);
+		return unmodifiableList(tags);
 	}
 
 	@Override
 	public List<Tag> getFlags() {
 		List<Tag> tags = new ArrayList<>(destiny.getFlags());
 		tags.addAll(flags);
-		return Collections.unmodifiableList(tags);
+		return unmodifiableList(tags);
 	}
 
 	@Override
@@ -293,13 +294,13 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Node> getNodeSiblings() {
-		return container.getIncludedNodes(); //TODO Remove me
+	public List<Node> getNodeSiblings() {
+		return unmodifiableList(container.getIncludedNodes()); //TODO Remove me
 	}
 
 	@Override
-	public Collection<Node> getIncludedNodes() {
-		return destiny.getIncludedNodes();
+	public List<Node> getIncludedNodes() {
+		return unmodifiableList(destiny.getIncludedNodes());
 	}
 
 	@Override
@@ -335,8 +336,8 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Variable> getVariables() {
-		return destiny.getVariables();
+	public List<Variable> getVariables() {
+		return unmodifiableList(destiny.getVariables());
 	}
 
 	@Override
@@ -351,12 +352,12 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public List<NodeReference> getInnerNodeReferences() {
-		return Collections.unmodifiableList(destiny.getInnerNodeReferences());
+		return unmodifiableList(destiny.getInnerNodeReferences());
 	}
 
 	@Override
 	public List<Node> getChildren() {
-		return Collections.unmodifiableList(destiny.getChildren());
+		return unmodifiableList(destiny.getChildren());
 	}
 
 	@Override
@@ -366,7 +367,7 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public List<Facet> getFacets() {
-		return Collections.unmodifiableList(destiny.getFacets());
+		return unmodifiableList(destiny.getFacets());
 	}
 
 	@Override
@@ -386,7 +387,7 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public List<FacetTarget> getFacetTargets() {
-		return Collections.unmodifiableList(destiny.getFacetTargets());
+		return unmodifiableList(destiny.getFacetTargets());
 	}
 
 	@Override

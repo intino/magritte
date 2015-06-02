@@ -139,7 +139,8 @@ public class TaraUtil {
 		if (element == null) element = asParameter(stringValue);
 		if (element == null) element = asVariable(stringValue);
 		if (element == null) return false;
-		else if (element instanceof Variable) return true;
+		else if (element instanceof Variable && ((Variable) element).getType().equals(TaraPrimitives.NATIVE))
+			return true;
 		Node node = getContainerNode(element);
 		if (node == null) return false;
 		Allow.Parameter allow = getCorrespondingAllow(node, element);
@@ -205,7 +206,16 @@ public class TaraUtil {
 		if (allowsOf == null) return null;
 		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
 		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.getIndexInParent()) return null;
-		return parameter.isExplicit() ? findParameter(parametersAllowed, parameter.getExplicitName()) : parametersAllowed.get(parameter.getIndexInParent());
+		return parameter.isExplicit() ? findParameter(parametersAllowed, parameter.getExplicitName()) : getParameterByIndex(parameter, parametersAllowed);
+	}
+
+	private static Allow.Parameter getParameterByIndex(Parameter parameter, List<Allow.Parameter> parametersAllowed) {
+		for (Allow.Parameter allow : parametersAllowed) if (allow.position() == getIndexInParent(parameter)) return allow;
+		return null;
+	}
+
+	private static int getIndexInParent(Parameter parameter) {
+		return parameter.getIndexInParent();
 	}
 
 

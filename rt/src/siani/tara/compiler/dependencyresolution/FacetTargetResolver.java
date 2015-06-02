@@ -8,9 +8,9 @@ import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FacetTargetResolver {
 	private final Model model;
@@ -24,29 +24,32 @@ public class FacetTargetResolver {
 	}
 
 	private void resolve(Node node) {
-		for (Node include : node.getIncludedNodes())
-			if (include instanceof NodeImpl) {
-				resolveFacetTarget((NodeImpl) include);
-				resolve(include);
-				resolveVarsToFacetTargets((NodeImpl) include);
-			}
+		node.getIncludedNodes().stream().
+			filter(include -> include instanceof NodeImpl).forEach(include -> {
+			resolveFacetTarget((NodeImpl) include);
+			resolve(include);
+			resolveVarsToFacetTargets((NodeImpl) include);
+		});
 	}
 
 	private void resolveFacetTarget(NodeImpl node) {
-		for (FacetTarget target : node.getFacetTargets())
+		for (FacetTarget target : node.getFacetTargets()) {
 			target.getTargetNode().addAllowedFacets(node.getName());
+			addToChildren(node, target);
+		}
+	}
+
+	private void addToChildren(NodeImpl node, FacetTarget target) {
+		for (Node children : target.getTargetNode().getChildren()) children.addAllowedFacets(node.getName());
 	}
 
 	private void resolveVarsToFacetTargets(NodeImpl node) {
 		for (FacetTarget facetTarget : node.getFacetTargets())
 			facetTarget.addVariables(cloneVariables(facetTarget, node.getVariables()));
-		if (node.isFacet()) node.getVariables().clear();
 	}
 
 	private Variable[] cloneVariables(NodeContainer container, Collection<Variable> variables) {
-		List<Variable> clones = new ArrayList<>();
-		for (Variable variable : variables)
-			clones.add(variable.cloneIt(container));
+		List<Variable> clones = variables.stream().map(variable -> variable.cloneIt(container)).collect(Collectors.toList());
 		return clones.toArray(new Variable[clones.size()]);
 	}
 }

@@ -183,6 +183,7 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
+				if (node.isReference()) return;
 				for (Node inner : node.includes())
 					if (inner.type().equals(type)) {
 						addFlags(inner, annotations);
@@ -212,6 +213,7 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
+				if (node.isReference()) return;
 				for (Node inner : node.includes())
 					if (inner.type().equals(type)) {
 						addFlags(inner, annotations);
@@ -367,7 +369,7 @@ public class RuleFactory {
 	}
 
 	private static void remove(List<Parameter> signatureParameters, List<Parameter> toRemove) {
-		for (Parameter parameter : toRemove) signatureParameters.remove(parameter);
+		toRemove.forEach(signatureParameters::remove);
 	}
 
 	public static Allow.Facet facet(final String type) {
@@ -489,7 +491,7 @@ public class RuleFactory {
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
 				if (!node.isReference() && node.plate().isEmpty())
-					throw new SemanticException(new SemanticError("required.plate", null, singletonList(node.type())));
+					throw new SemanticException(new SemanticError("required.plate", node, singletonList(node.type())));
 			}
 		};
 	}
