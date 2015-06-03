@@ -21,6 +21,8 @@ import static siani.tara.semantic.model.Tag.*;
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	private static final String ALLOW = "allow";
 	private static final String REQUIRE = "require";
+	private static final String ASSUMPTION = "assumption";
+	private static final String NODE = "node";
 
 	private Frame root;
 	private Model model;
@@ -67,24 +69,24 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 
 	private void buildNode(Node node) {
 		if (alreadyProcessed(node)) return;
-		Frame frame = new Frame(root).addTypes("node");
+		Frame frame = new Frame().addTypes(NODE);
 		if (!node.isAbstract() && !node.isAnonymous() && !node.isTerminalInstance()) {
 			frame.addFrame("name", getName(node));
 			addTypes(node, frame);
 			addAllows(node, frame);
 			addRequires(node, frame);
 			addAssumptions(node, frame);
-			root.addFrame("node", frame);
+			root.addFrame(NODE, frame);
 		}
 		for (Node inner : node.getIncludedNodes()) {
-			if (inner instanceof NodeReference && ((NodeReference) inner).isHas()) continue;
+			if (inner instanceof NodeReference) continue;
 			buildNode(inner);
 		}
 	}
 
 	private void addTypes(Node node, Frame frame) {
 		if (node.getType() == null) return;
-		Frame typesFrame = new Frame(frame).addTypes("nodeType");
+		Frame typesFrame = new Frame().addTypes("nodeType");
 		Set<String> typeSet = new LinkedHashSet<>();
 		typeSet.add(node.getType());
 		Collection<String> languageTypes = getLanguageTypes(node);
@@ -104,27 +106,27 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	}
 
 	private void addAllows(Node node, Frame frame) {
-		Frame allows = buildAllowedNodes(frame, node.getIncludedNodes());
-		for (Frame allowFrame : getCasesConstrains(allows, collectCaseRules()))
+		Frame allows = buildAllowedNodes(node.getIncludedNodes());
+		for (Frame allowFrame : getCasesConstrains(collectCaseRules()))
 			allows.addFrame("allow", allowFrame);
 		addContextAllows(node, allows);
 		if (allows.slots().length != 0) frame.addFrame("allows", allows);
 	}
 
-	private Collection<Frame> getCasesConstrains(Frame allows, List<String> nodes) {
+	private Collection<Frame> getCasesConstrains(List<String> nodes) {
 		return nodes.stream().map(node ->
-			new Frame(allows).addTypes("multiple", ALLOW).addFrame("type", node)).
+			new Frame().addTypes("multiple", ALLOW).addFrame("type", node)).
 			collect(Collectors.toList());
 	}
 
 	private void addRequires(Node node, Frame frame) {
-		Frame requires = buildRequiredNodes(frame, node.getIncludedNodes());
+		Frame requires = buildRequiredNodes(node.getIncludedNodes());
 		addContextRequires(node, requires);
 		if (requires.slots().length != 0) frame.addFrame("requires", requires);
 	}
 
 	private void addContextAllows(Node node, Frame allows) {
-		if (node instanceof NodeImpl) addParameterAllows((List<Variable>) node.getVariables(), allows);
+		if (node instanceof NodeImpl) addParameterAllows(node.getVariables(), allows);
 		if (!node.isNamed() && !node.isPropertyInstance()) allows.addFrame("allow", "name");
 		addFacetAllows(node, allows);
 	}
@@ -139,12 +141,12 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 
 	private void addFacetAllows(Node node, Frame allows) {
 		for (String facet : node.getAllowedFacets()) {
-			Frame frame = new Frame(allows).addTypes("allow", "facet").addFrame("value", facet);
+			Frame frame = new Frame().addTypes("allow", "facet").addFrame("value", facet);
 			allows.addFrame("allow", frame);
 			FacetTarget facetNode = findFacetTarget(node, facet);
 			if (facetNode == null) continue;
-			addParameterAllows((List<Variable>) facetNode.getVariables(), frame);
-			addParameterRequires((List<Variable>) facetNode.getVariables(), frame, true, 0);//TRUE? añadir terminales
+			addParameterAllows(facetNode.getVariables(), frame);
+			addParameterRequires(facetNode.getVariables(), frame, true, 0);//TRUE? añadir terminales
 		}
 	}
 
@@ -164,7 +166,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	private void addContextRequires(Node node, Frame requires) {
 		if (node instanceof NodeImpl) {
 			int index = new LanguageParameterAdapter(language).addTerminalParameters(node, requires);
-			addParameterRequires((List<Variable>) node.getVariables(), requires, node.isTerminal(), index);
+			addParameterRequires(node.getVariables(), requires, node.isTerminal(), index);
 			addRequiredVariableRedefines(requires, node);
 		}
 		if (node.isNamed()) requires.addFrame(REQUIRE, "name");
@@ -188,48 +190,47 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	}
 
 	private void addAssumptions(Node node, Frame frame) {
-		Frame assumptions = buildAssumptions(frame, node);
+		Frame assumptions = buildAssumptions(node);
 		if (assumptions.slots().length != 0) frame.addFrame("assumptions", assumptions);
 	}
 
-	private Frame buildAssumptions(Frame frame, Node node) {
-		Frame assumptions = new Frame(frame).addTypes("assumptions");
+	private Frame buildAssumptions(Node node) {
+		Frame assumptions = new Frame().addTypes("assumptions");
 		addAnnotationAssumptions(node, assumptions);
 		return assumptions;
 	}
 
 	private void addAnnotationAssumptions(Node node, Frame assumptions) {
-		node.getAnnotations().stream().filter(tag -> !tag.equals(SINGLE) || tag.equals(REQUIRED)).forEach(tag -> assumptions.addFrame("assumption", tag.name().toLowerCase()));
+		node.getAnnotations().stream().filter(tag -> !tag.equals(SINGLE) || tag.equals(REQUIRED)).forEach(tag -> assumptions.addFrame(ASSUMPTION, tag.name().toLowerCase()));
 		for (Tag tag : node.getFlags()) {
 			if (tag.equals(TERMINAL))
-				assumptions.addFrame("assumption", Tag.TERMINAL_INSTANCE);
-			else if (tag.equals(IMPLICIT)) assumptions.addFrame("assumption", Tag.IMPLICIT_INSTANCE);
-			else if (tag.equals(FEATURE)) assumptions.addFrame("assumption", Tag.FEATURE_INSTANCE);
-			else if (tag.equals(FACET)) assumptions.addFrame("assumption", Tag.FACET_INSTANCE);
+				assumptions.addFrame(ASSUMPTION, Tag.TERMINAL_INSTANCE);
+			else if (tag.equals(IMPLICIT)) assumptions.addFrame(ASSUMPTION, Tag.IMPLICIT_INSTANCE);
+			else if (tag.equals(FEATURE)) assumptions.addFrame(ASSUMPTION, Tag.FEATURE_INSTANCE);
+			else if (tag.equals(FACET)) assumptions.addFrame(ASSUMPTION, Tag.FACET_INSTANCE);
 		}
 	}
 
-	private Frame buildRequiredNodes(Frame frame, Collection<Node> nodeTree) {
-		Frame requires = new Frame(frame).addTypes("requires");
+	private Frame buildRequiredNodes(List<Node> nodeTree) {
+		Frame requires = new Frame().addTypes("requires");
 		addRequiredInnerNodes(requires, nodeTree);
 		return requires;
 	}
 
-	private Frame buildAllowedNodes(Frame frame, Collection<Node> nodes) {
-		Frame allows = new Frame(frame).addTypes("allows");
-		if (!nodes.isEmpty())
-			addAllowedInnerNodes(allows, nodes);
+	private Frame buildAllowedNodes(List<Node> nodes) {
+		Frame allows = new Frame().addTypes("allows");
+		if (!nodes.isEmpty()) addAllowedInnerNodes(allows, nodes);
 		return allows;
 	}
 
-	private void addAllowedInnerNodes(Frame allows, Collection<Node> tree) {
+	private void addAllowedInnerNodes(Frame allows, List<Node> tree) {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
 		for (Node node : tree) {
 			if (node.isRequired()) continue;
 			for (Node candidate : collectCandidates(node))
-				if (node.isSingle()) singleNodes.add(createAllowedSingle(allows, candidate, node.getAnnotations()));
-				else multipleNodes.add(createAllowedMultiple(allows, candidate, node.getAnnotations()));
+				if (node.isSingle()) singleNodes.add(createAllowedSingle(candidate, node.getAnnotations()));
+				else multipleNodes.add(createAllowedMultiple(candidate, node.getAnnotations()));
 		}
 		addAllowedNodes(allows, multipleNodes, singleNodes);
 	}
@@ -241,10 +242,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 			if (!node.isRequired()) continue;
 			Collection<Node> candidates = collectCandidates(node);
 			if (node.isAbstract() && candidates.size() > 1) {
-				requires.addFrame("require", createOneOf(requires, candidates, node));
+				requires.addFrame("require", createOneOf(candidates, node));
 			} else for (Node candidate : candidates)
-				if (node.isSingle()) singleNodes.add(createRequiredSingle(requires, candidate, node.getAnnotations()));
-				else multipleNodes.add(createRequiredMultiple(requires, candidate, node.getAnnotations()));
+				if (node.isSingle()) singleNodes.add(createRequiredSingle(candidate, node.getAnnotations()));
+				else multipleNodes.add(createRequiredMultiple(candidate, node.getAnnotations()));
 		}
 		addRequiredNodes(requires, multipleNodes, singleNodes);
 	}
@@ -279,15 +280,15 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 			allows.addFrame(REQUIRE, singleNodes.toArray(new Frame[singleNodes.size()]));
 	}
 
-	private Frame createAllowedSingle(Frame owner, Node node, Collection<Tag> annotations) {
-		Frame frame = new Frame(owner).addTypes("single", ALLOW).addFrame("type", getName(node));
+	private Frame createAllowedSingle(Node node, List<Tag> annotations) {
+		Frame frame = new Frame().addTypes("single", ALLOW).addFrame("type", getName(node));
 		for (Tag tag : annotations)
 			frame.addFrame("tags", tag.name());
 		return frame;
 	}
 
-	private Frame createAllowedMultiple(Frame owner, Node node, Collection<Tag> annotations) {
-		Frame frame = new Frame(owner).addTypes("multiple", ALLOW).addFrame("type", getName(node));
+	private Frame createAllowedMultiple(Node node, List<Tag> annotations) {
+		Frame frame = new Frame().addTypes("multiple", ALLOW).addFrame("type", getName(node));
 		for (Tag tag : annotations)
 			frame.addFrame("tags", tag.name());
 		return frame;
@@ -297,23 +298,23 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 		return node instanceof NodeReference ? ((NodeReference) node).getDestiny().getQualifiedName() : node.getQualifiedName();
 	}
 
-	private Frame createOneOf(Frame owner, Collection<Node> candidates, Node node) {
-		Frame frame = new Frame(owner).addTypes("oneOf", REQUIRE);
+	private Frame createOneOf(Collection<Node> candidates, Node node) {
+		Frame frame = new Frame().addTypes("oneOf", REQUIRE);
 		for (Node candidate : candidates)
 			frame.addFrame("require", node.isSingle() ?
-				createRequiredSingle(frame, candidate, node.getAnnotations()) :
-				createRequiredMultiple(frame, candidate, node.getAnnotations()));
+				createRequiredSingle(candidate, node.getAnnotations()) :
+				createRequiredMultiple(candidate, node.getAnnotations()));
 		return frame;
 	}
 
-	private Frame createRequiredSingle(Frame owner, Node node, Collection<Tag> annotations) {
-		Frame frame = new Frame(owner).addTypes("single", REQUIRE).addFrame("type", getName(node));
+	private Frame createRequiredSingle(Node node, Collection<Tag> annotations) {
+		Frame frame = new Frame().addTypes("single", REQUIRE).addFrame("type", getName(node));
 		for (Tag tag : annotations) frame.addFrame("tags", tag.name());
 		return frame;
 	}
 
-	private Frame createRequiredMultiple(Frame owner, Node node, Collection<Tag> annotations) {
-		Frame frame = new Frame(owner).addTypes("multiple", REQUIRE).addFrame("type", getName(node));
+	private Frame createRequiredMultiple(Node node, Collection<Tag> annotations) {
+		Frame frame = new Frame().addTypes("multiple", REQUIRE).addFrame("type", getName(node));
 		for (Tag tag : annotations) frame.addFrame("tags", tag.name());
 		return frame;
 	}

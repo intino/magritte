@@ -4,6 +4,7 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.engine.formatters.PluralFormatter;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
+import siani.tara.compiler.codegeneration.Format;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeReference;
@@ -12,8 +13,8 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static siani.tara.compiler.codegeneration.magritte.NameFormatter.buildFileName;
-import static siani.tara.compiler.codegeneration.magritte.NameFormatter.capitalize;
+import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
+import static siani.tara.compiler.codegeneration.magritte.TemplateTags.DOT;
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 import static siani.tara.compiler.model.Variable.NATIVE_SEPARATOR;
 
@@ -53,16 +54,27 @@ public class BoxModelAdapter implements Adapter<Model> {
 	private void parserAllNodes(Frame frame, Node nodeContainer, FrameContext FrameContext) {
 		for (Node node : nodeContainer.getIncludedNodes()) {
 			if (node instanceof NodeReference) continue;
-			frame.addFrame("node", FrameContext.build(node));
-			createIntentionFrames(frame, extractNativeParameters(node));
-			createDefaultIntentionFrames(frame, extractNativeVariables(node));
-			parserAllNodes(frame, node, FrameContext);
+			fill(frame, node, FrameContext);
 		}
 		for (Facet facet : nodeContainer.getFacets())
 			for (Node node : facet.getIncludedNodes()) {
 				frame.addFrame("node", FrameContext.build(node));
 				parserAllNodes(frame, node, FrameContext);
 			}
+		if (nodeContainer.getFacetTargets() == null) return;
+		for (FacetTarget facet : nodeContainer.getFacetTargets())
+			for (Node node : facet.getIncludedNodes()) {
+				fill(frame, node, FrameContext);
+			}
+	}
+
+	private void fill(Frame frame, Node node, FrameContext FrameContext) {
+		frame.addFrame("node", FrameContext.build(node));
+		if (!node.isAbstract()) {
+			createIntentionFrames(frame, extractNativeParameters(node));
+			createDefaultIntentionFrames(frame, extractNativeVariables(node));
+		}
+		parserAllNodes(frame, node, FrameContext);
 	}
 
 	private void createIntentionFrames(Frame frame, List<Parameter> parameters) {
@@ -116,22 +128,35 @@ public class BoxModelAdapter implements Adapter<Model> {
 	}
 
 	private String buildContainerPath(NodeContainer owner) {
-		if (owner instanceof Node && !((Node) owner).isAnonymous()) return format(owner.getQualifiedName());
-		return format(getFirstNamed(owner));
+		if (owner instanceof Node) return getQn(firstNoFeatureAndUnnamed(owner), (Node) owner, generatedLanguage);
+		return NameFormatter.getQn((FacetTarget) owner, generatedLanguage);
+//		if (owner instanceof Node && !((Node) owner).isAnonymous()) return format(owner.getQualifiedName());
+//		return format(getFirstNamed(owner));
 	}
 
-	private String getFirstNamed(NodeContainer owner) {
-		if (!(owner instanceof Node)) return "";
-		NodeContainer container = owner.getContainer();
-		while (container != null)
-			if (container instanceof Node && !((Node) container).isAnonymous()) {
-				return container.getQualifiedName();
-			} else container = container.getContainer();
-		return "";
+	public static String getQn(Node owner, Node node, String generatedLanguage) {
+		final FacetTarget facetTarget = facetTargetContainer(node);
+		if (owner.isFacet())
+			return composeMorphPackagePath(generatedLanguage) + DOT + owner.getName().toLowerCase() + DOT + Format.reference().format(facetTarget.getTarget());
+		else
+			return composeMorphPackagePath(generatedLanguage) + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
 	}
 
-	private String format(String qualifiedName) {
-		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
+	private static FacetTarget facetTargetContainer(Node node) {
+		NodeContainer container = node.getContainer();
+		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
+		else container = container.getContainer();
+		return null;
+	}
+
+	private Node firstNoFeatureAndUnnamed(NodeContainer owner) {
+		NodeContainer container = owner;
+		while (container != null) {
+			if (container instanceof Node && !((Node) container).isFeature() && !((Node) container).isAnonymous())
+				return (Node) container;
+			container = container.getContainer();
+		}
+		return null;
 	}
 
 	private List<Parameter> extractNativeParameters(Node node) {

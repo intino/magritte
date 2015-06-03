@@ -2,6 +2,7 @@ package siani.tara.compiler.codegeneration.lang;
 
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
+import siani.tara.compiler.codegeneration.magritte.TemplateTags;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.VariableReference;
@@ -14,12 +15,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static siani.tara.semantic.model.Tag.TERMINAL;
 import static siani.tara.semantic.model.Tag.TERMINAL_INSTANCE;
 
-public class LanguageParameterAdapter {
-	private static final String REQUIRE = "require";
-
+public class LanguageParameterAdapter implements TemplateTags {
 	private final Language language;
 
 	LanguageParameterAdapter(Language language) {
@@ -54,12 +52,12 @@ public class LanguageParameterAdapter {
 
 	private boolean isTerminal(Allow.Parameter allow) {
 		for (String flag : allow.flags())
-			if (flag.equalsIgnoreCase(TERMINAL.name())) return true;
+			if (flag.equalsIgnoreCase(Tag.TERMINAL.name())) return true;
 		return false;
 	}
 
 	private Frame wordParameter(int i, Variable variable, String relation) {
-		Frame frame = new Frame(null).addTypes(relation, "parameter", "word").
+		Frame frame = new Frame().addTypes(relation, "parameter", "word").
 			addFrame("name", variable.getName() + ":word").
 			addFrame("words", renderWord(variable));
 		addDefaultInfo(i, variable, frame);
@@ -74,7 +72,7 @@ public class LanguageParameterAdapter {
 	}
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
-		Frame frame = new Frame(null).addTypes(relation, "parameter", "reference").
+		Frame frame = new Frame().addTypes(relation, "parameter", "reference").
 			addFrame("name", variable.getName()).
 			addFrame("types", renderReference((VariableReference) variable));
 		addDefaultInfo(i, variable, frame);
@@ -82,7 +80,7 @@ public class LanguageParameterAdapter {
 	}
 
 	private Frame primitiveParameter(int i, Variable variable, String relation) {
-		Frame frame = new Frame(null).addTypes(relation, "parameter").
+		Frame frame = new Frame().addTypes(relation, "parameter").
 			addFrame("name", variable.getName()).
 			addFrame("type", variable.getType());
 		addDefaultInfo(i, variable, frame);
@@ -98,7 +96,7 @@ public class LanguageParameterAdapter {
 	}
 
 	private Frame wordParameter(Allow.Parameter parameter, int position) {
-		Frame frame = new Frame(null).addTypes(REQUIRE, "parameter", "word").
+		Frame frame = new Frame().addTypes(REQUIRE, "parameter", "word").
 			addFrame("name", parameter.name() + ":word").
 			addFrame("words", parameter.allowedValues());
 		addDefaultInfo(parameter, frame, position);
@@ -106,7 +104,7 @@ public class LanguageParameterAdapter {
 	}
 
 	private Frame referenceParameter(ReferenceParameterAllow parameter, int position) {
-		Frame frame = new Frame(null).addTypes(REQUIRE, "parameter", "reference").
+		Frame frame = new Frame().addTypes(REQUIRE, "parameter", "reference").
 			addFrame("name", parameter.name());
 		for (String allowedType : parameter.allowedValues()) frame.addFrame("types", allowedType);
 		addDefaultInfo(parameter, frame, position);
@@ -114,7 +112,7 @@ public class LanguageParameterAdapter {
 	}
 
 	private Frame primitiveParameter(Allow.Parameter parameter, int position) {
-		Frame frame = new Frame(null).addTypes(REQUIRE, "parameter").
+		Frame frame = new Frame().addTypes(REQUIRE, "parameter").
 			addFrame("name", parameter.name()).
 			addFrame("type", parameter.type());
 		addDefaultInfo(parameter, frame, position);
@@ -136,7 +134,7 @@ public class LanguageParameterAdapter {
 	private String[] getFlags(Allow.Parameter variable) {
 		List<String> flags = new ArrayList<>();
 		for (String tag : variable.flags())
-			if (tag.equalsIgnoreCase(TERMINAL.name())) flags.add(TERMINAL_INSTANCE.name());
+			if (tag.equalsIgnoreCase(Tag.TERMINAL.name())) flags.add(TERMINAL_INSTANCE.name());
 			else flags.add(tag);
 		return flags.toArray(new String[flags.size()]);
 	}
@@ -149,9 +147,7 @@ public class LanguageParameterAdapter {
 		Node node = reference.getDestiny();
 		if (node == null) return new String[0];
 		if (!node.isAbstract()) return new String[]{node.getQualifiedName()};
-		List<String> types = new ArrayList<>();
-		for (Node declaredNode : node.getChildren()) //TODO search extends too
-			types.add(declaredNode.getQualifiedName());
+		List<String> types = node.getChildren().stream().map(Node::getQualifiedName).collect(Collectors.toList());
 		return types.toArray(new String[types.size()]);
 	}
 

@@ -7,19 +7,22 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.OrderEntry;
+import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.annotator.TaraAnnotator;
 import siani.tara.intellij.annotator.fix.CreateMeasureClassIntention;
+import siani.tara.intellij.lang.lexer.TaraPrimitives;
 import siani.tara.intellij.lang.psi.Contract;
 import siani.tara.intellij.lang.psi.TaraAttributeType;
 import siani.tara.intellij.lang.psi.Variable;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import javax.tools.*;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
@@ -42,12 +45,13 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 	public MetricClassCreationAnalyzer(TaraAttributeType contract) {
 		this.contract = contract.getContract();
 		this.attribute = contract;
-		metricsPackage = contract.getProject().getName() + "." + "metrics";
+		final String generatedDslName = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(contract)).getConfiguration().getGeneratedDslName();
+		metricsPackage = generatedDslName + "." + "metrics";
 	}
 
 	@Override
 	public void analyze() {
-		if (!Variable.class.isInstance(attribute.getParent()) || !"contract".equals(((Variable) attribute.getParent()).getType()))
+		if (!Variable.class.isInstance(attribute.getParent()) || !TaraPrimitives.MEASURE.equals(((Variable) attribute.getParent()).getType()))
 			return;
 		Module module = getModule();
 		String measureName = contract.getFormattedName();
@@ -65,7 +69,6 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 			compile(module, javaFile);
 			metricValue = loadCompiledMetricClass(module, measureName);
 		}
-
 		if (metricValue != null) Metrics.getInstance().add(metricValue, metricClassFile.lastModified());
 		else error();
 	}
@@ -79,8 +82,8 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 			StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
-			Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromStrings(Arrays.asList(file.getAbsolutePath()));
-			Iterable<String> options = Arrays.asList("-d", getDestiny(module), "-target", "1.7", "-classpath", getClassPath(module));
+			Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromStrings(Collections.singletonList(file.getAbsolutePath()));
+			Iterable<String> options = Arrays.asList("-d", getDestiny(module), "-source", "1.8", "-target", "1.8", "-classpath", getClassPath());
 			JavaCompiler.CompilationTask task = compiler.getTask(new PrintWriter(System.err), fileManager, diagnostics, options, null, compilationUnits);
 			task.call();
 			fileManager.close();
@@ -95,22 +98,9 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 		return destiny;
 	}
 
-	private String getClassPath(Module module) {
-		String classpath = "";
-		for (File file : getJdkHome(module).listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".jar");
-			}
-		})) {
-			classpath += file.getAbsolutePath() + " ";
-		}
-		return classpath.trim();
-	}
-
-	@NotNull
-	private File getJdkHome(Module module) {
-		return new File(ModuleRootManager.getInstance(module).getSdk().getHomePath() + separator + "lib");
+	private String getClassPath() {
+		final File magritteLibrary = findMagritteLibrary();
+		return magritteLibrary != null && magritteLibrary.exists() ? magritteLibrary.getAbsolutePath() : "";
 	}
 
 	@NotNull
@@ -141,7 +131,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 		if (module == null) return null;
 		Collection<VirtualFile> sourceRoots = TaraUtil.getSourceRoots(module);
 		VirtualFile srcRoot = TaraUtil.getSrcRoot(sourceRoots);
-		return new File(new File(srcRoot.getPath()), separator + (metricsPackage + "." + metricName).replace(".", separator) + ".java");
+		return new File(new File(srcRoot.getPath()), separator + (metricsPackage.toLowerCase() + "." + metricName).replace(".", separator) + ".java");
 	}
 
 	private Class<?> loadCompiledMetricClass(@NotNull Module module, String className) {
@@ -150,22 +140,39 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 				Notifications.Bus.notify(new Notification("Tara", "Metric Class Generation", "Out-Directory of Module " + module.getName() + " not found", NotificationType.ERROR), module.getProject());
 				throw new Exception("Null Out directory of Module");
 			} else
-				return loadClass(getOutDir(module).getAbsolutePath(), getJdkHome(module), metricsPackage.toLowerCase() + "." + className);
+				return loadClass(getOutDir(module).getAbsolutePath(), metricsPackage.toLowerCase() + "." + className);
 		} catch (Exception | UnsupportedClassVersionError e) {
 			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}
 
-	private Class<?> loadClass(String path, File sdk, String className) {
+	private Class<?> loadClass(String path, String className) {
 		File file = new File(path);
 		try {
-			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL(), new File(sdk, "magritte.jar").toURI().toURL()});
+			final File magritteLibrary = findMagritteLibrary();
+			if (magritteLibrary == null || !magritteLibrary.exists()) return null;
+			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL(), magritteLibrary.toURI().toURL()});
 			return cl.loadClass(className);
 		} catch (MalformedURLException | ClassNotFoundException e) {
 			LOG.error(e.getMessage(), e);
 			return null;
 		}
+	}
+
+	private File findMagritteLibrary() {
+		final Module moduleOf = ModuleProvider.getModuleOf(contract);
+		final ModuleRootManager instance = ModuleRootManager.getInstance(moduleOf);
+		for (OrderEntry library : instance.getOrderEntries())
+			if (isMagritteLibrary(library))
+				return new File(library.getFiles(OrderRootType.CLASSES)[0].getPath().replace("!", ""));
+		return null;
+	}
+
+	private boolean isMagritteLibrary(OrderEntry library) {
+		for (VirtualFile virtualFile : library.getFiles(OrderRootType.CLASSES))
+			if (virtualFile.getName().contains("magritte")) return true;
+		return false;
 	}
 
 	private void error() {
@@ -196,7 +203,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 		}
 
 		public Map.Entry<Long, Class<?>> add(Class<?> metric, Long date) {
-			return metrics.put(metric.getSimpleName(), new AbstractMap.SimpleEntry<Long, Class<?>>(date, metric));
+			return metrics.put(metric.getSimpleName(), new AbstractMap.SimpleEntry<>(date, metric));
 		}
 
 		public Map.Entry<Long, Class<?>> get(String measure) {

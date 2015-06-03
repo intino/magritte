@@ -12,8 +12,10 @@ public interface TemplateTags {
 	String QN = "qn";
 	String NAME = "name";
 	String NODE = "node";
+	String REQUIRE = "require";
 	String DEFINITION = "Definition";
 	String MAGRITTE_MORPHS = "magritte.morphs";
+	String GENERATED_LANGUAGE = "generatedLanguage";
 	String PROJECT = "project";
 	String NODE_TYPE = "nodeType";
 	String COMPONENT_OF = "componentOf";

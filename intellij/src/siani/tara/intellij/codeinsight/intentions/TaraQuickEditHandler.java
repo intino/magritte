@@ -48,11 +48,11 @@ import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.semantic.Allow;
-import siani.tara.semantic.model.Variable;
 
 import javax.swing.*;
 
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getParentByType;
+import static siani.tara.semantic.model.Variable.NATIVE_SEPARATOR;
 
 public class TaraQuickEditHandler extends DocumentAdapter implements Disposable {
 	private final Project myProject;
@@ -146,11 +146,11 @@ public class TaraQuickEditHandler extends DocumentAdapter implements Disposable 
 	}
 
 	private String getSignature(String contract) {
-		return contract.substring(contract.indexOf(Variable.NATIVE_SEPARATOR) + 1);
+		return contract.substring(contract.indexOf(NATIVE_SEPARATOR) + 1);
 	}
 
 	private String intention(String contract) {
-		return contract.substring(0, contract.indexOf(Variable.NATIVE_SEPARATOR));
+		return contract.contains(NATIVE_SEPARATOR) ? contract.substring(0, contract.indexOf(NATIVE_SEPARATOR)) : "";
 	}
 
 	private String firstNamedNode(Node node) {

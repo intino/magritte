@@ -96,17 +96,14 @@ public class MavenManager {
 
 	private Collection<VirtualFile> projectModulePom(final Module module) {
 		final PsiFile[] file = new PsiFile[1];
-		ApplicationManager.getApplication().runWriteAction(new Runnable() {
-			@Override
-			public void run() {
-				MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
-				if (project == null) {
-					PsiDirectory root = getModuleRoot(module);
-					file[0] = findPom(root);
-					file[0] = root.createFile(POM_XML);
-					createPom(file[0].getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
-				} else updateModulePom(project);
-			}
+		ApplicationManager.getApplication().runWriteAction(() -> {
+			MavenProject project = MavenProjectsManager.getInstance(module.getProject()).findProject(module);
+			if (project == null) {
+				PsiDirectory root = getModuleRoot(module);
+				file[0] = findPom(root);
+				file[0] = root.createFile(POM_XML);
+				createPom(file[0].getVirtualFile().getPath(), ModulePomTemplate.create().format(createModuleFrame(module)));
+			} else updateModulePom(project);
 		});
 		return new ArrayList<VirtualFile>() {{
 			add(file[0].getVirtualFile());
@@ -170,7 +167,7 @@ public class MavenManager {
 
 
 	private Frame createModuleFrame(Module module) {
-		Frame frame = new Frame(null).addTypes("pom");
+		Frame frame = new Frame().addTypes("pom");
 		frame.addFrame("project", module.getProject().getName());
 		frame.addFrame("name", module.getName());
 		frame.addFrame("version", "1.0");
@@ -202,10 +199,9 @@ public class MavenManager {
 		return null;
 	}
 
-
 	private Frame createProjectFrame(Module module) {
 		Project project = module.getProject();
-		Frame frame = new Frame(null).addTypes("pom");
+		Frame frame = new Frame().addTypes("pom");
 		frame.addFrame("name", project.getName());
 		frame.addFrame("version", "1.0");
 		return frame;

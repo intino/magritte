@@ -14,7 +14,7 @@ public abstract class Tara implements Language {
 	protected List<String> lexicon = new ArrayList<>();
 
 	protected Context context(String... type) {
-		return new Context(type, new GlobalConstraints(rulesCatalog).all());
+		return new Context(type, new GlobalConstraints(rulesCatalog, locale()).all());
 	}
 
 	protected Transaction in(final String qualifiedName) {

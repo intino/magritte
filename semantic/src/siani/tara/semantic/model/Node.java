@@ -35,6 +35,10 @@ public interface Node extends Element {
 
 	FacetTarget[] facetTargets();
 
+//	boolean isInFacetTarget();
+//
+//	boolean isInFacet();
+
 	Parameter[] parameters();
 
 	Node[] includes();

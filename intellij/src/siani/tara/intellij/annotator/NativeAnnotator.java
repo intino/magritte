@@ -76,7 +76,6 @@ public class NativeAnnotator extends TaraAnnotator {
 		if (aClass.getMethods().length == 0) return "";
 		final PsiMethod psiMethod = aClass.getMethods()[0];
 		return psiMethod.getText().replace(";", "");
-
 	}
 
 	private String getSignature(String contract) {
@@ -84,7 +83,7 @@ public class NativeAnnotator extends TaraAnnotator {
 	}
 
 	private String intention(String contract) {
-		return contract.substring(0, contract.indexOf(NATIVE_SEPARATOR));
+		return contract.contains(NATIVE_SEPARATOR) ? contract.substring(0, contract.indexOf(NATIVE_SEPARATOR)) : "";
 	}
 
 	private String getName(PsiElement element) {

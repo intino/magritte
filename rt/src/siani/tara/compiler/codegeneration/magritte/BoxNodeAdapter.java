@@ -8,10 +8,10 @@ import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.model.Tag;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private final Map<Node, Long> keys;
@@ -54,7 +54,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private void flags(final Node node, Frame frame) {
-		Frame tagsFrame = new Frame(frame);
+		Frame tagsFrame = new Frame();
 		for (Tag tag : node.getFlags()) {
 			if (!tag.equals(Tag.ABSTRACT) && !tag.equals(Tag.TERMINAL_INSTANCE) && !tag.equals(Tag.ROOT)) continue;
 			if (terminalInstance && tag.equals(Tag.TERMINAL_INSTANCE)) continue;
@@ -145,7 +145,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 
 	private void addComponent(Frame frame, Node inner) {
 		Long key = getKey(inner);
-		Frame include = new Frame(frame).addTypes("include").addTypes(asString(inner.getFlags()));
+		Frame include = new Frame().addTypes("include").addTypes(asString(inner.getFlags()));
 		final boolean withKey = inner.isAnonymous() && inner.getPlate() == null;
 		include.addFrame(VALUE, withKey ? key : searchNode(inner));
 		if (terminalInstance) include.addTypes(TERMINAL);
@@ -163,35 +163,8 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		return name.replace("[", "").replace("]", "").replaceAll(Node.ANNONYMOUS, "");
 	}
 
-	private String buildFacetPath(Node node, String facet) {
-		NodeContainer aNode = node.getContainer();
-		String path = node.getName() + facet + DOT + CLASS;
-		while (aNode != null && !(aNode instanceof Model)) {
-			path = addToPath(facet, aNode, path);
-			aNode = aNode.getContainer();
-		}
-		return path;
-	}
-
-	private String addToPath(String facetName, NodeContainer node, String path) {
-		boolean faceted = false;
-		for (Facet facet : ((Node) node).getFacets())
-			if (facet.getType().equals(facetName)) {
-				path = ((Node) node).getName() + facetName + DOT + path;
-				faceted = true;
-			}
-		if (!faceted) path = shortType(((Node) node).getType()) + DOT + path;
-		return path;
-	}
-
-	private String shortType(String type) {
-		return type.contains(".") ? type.substring(type.lastIndexOf(".") + 1) : type;
-	}
-
 	private String[] asString(Collection<Tag> flags) {
-		List<String> list = new ArrayList<>();
-		for (Tag flag : flags) list.add(flag.name());
+		List<String> list = flags.stream().map(Tag::name).collect(Collectors.toList());
 		return list.toArray(new String[list.size()]);
 	}
-
 }

@@ -62,7 +62,7 @@ def type(variable) type(definition) type(native) trigger(getter)
 end
 
 def type(variable) type(native) trigger(getter)
-    public $contract+reference $name+firstLowerCase() {
+    public $generatedlanguage.natives.$contract+reference $name+firstLowerCase() {
         return definition().get("$name").asNativeOf(node);
     }
 end

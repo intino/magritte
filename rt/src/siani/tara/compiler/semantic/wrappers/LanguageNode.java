@@ -23,20 +23,22 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 		this.facetTargets = collectFacetTargets(node.getFacetTargets());
 		variables.addAll(collectVariables(node.getVariables()));
 		addIncludes(node.getIncludedNodes());
+		addFacetTargetIncludes();
+	}
+
+	private void addFacetTargetIncludes() {
+		for (FacetTarget facetTarget : node.getFacetTargets())
+			addIncludes(facetTarget.getIncludedNodes());
 	}
 
 	private void addIncludes(Collection<Node> inners) {
-		for (Node inner : inners)
-			includes.add(inner instanceof NodeReference ?
-				new LanguageNodeReference((NodeReference) inner) :
-				new LanguageNode((NodeImpl) inner));
+		includes.addAll(inners.stream().map(inner -> inner instanceof NodeReference ?
+			new LanguageNodeReference((NodeReference) inner) :
+			new LanguageNode((NodeImpl) inner)).collect(Collectors.toList()));
 	}
 
 	private List<Variable> collectVariables(Collection<siani.tara.compiler.model.Variable> variables) {
-		List<siani.tara.semantic.model.Variable> semanticVariables = new ArrayList<>();
-		for (final siani.tara.compiler.model.Variable variable : variables)
-			semanticVariables.add(new LanguageVariable(variable));
-		return semanticVariables;
+		return variables.stream().map(LanguageVariable::new).collect(Collectors.toList());
 	}
 
 	@Override

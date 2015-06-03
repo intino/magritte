@@ -39,17 +39,18 @@ public class BoxUnitFrameCreator {
 	}
 
 	public BoxUnitFrameCreator(CompilerConfiguration conf, Model model, List<Node> nodes) {
-		this(conf.getProject(), conf.getGeneratedLanguage(), conf.getLanguage(), model, conf.getLocale(), nodes);
+		this(conf.getProject(), conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule(), conf.getLanguage(), model, conf.getLocale(), nodes);
 	}
 
 	private void createKeyMap(NodeContainer node) {
-		if (node instanceof Node) addKey((Node) node);
+		if (node instanceof Node) {
+			addKey((Node) node);
+			((Node) node).getFacetTargets().forEach(this::createKeyMap);
+			((Node) node).getFacets().forEach(this::createKeyMap);
+		}
 		for (Node include : node.getIncludedNodes()) {
 			if (include instanceof NodeReference) continue;
-			addKey(include);
 			createKeyMap(include);
-			include.getFacetTargets().forEach(this::createKeyMap);
-			include.getFacets().forEach(this::createKeyMap);
 		}
 	}
 

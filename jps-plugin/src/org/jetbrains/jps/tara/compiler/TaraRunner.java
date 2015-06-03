@@ -48,10 +48,10 @@ public class TaraRunner {
 			writer.write(TaraRtConstants.PROJECT + NL + projectName + NL);
 			writer.write(TaraRtConstants.MODULE + NL + moduleName + NL);
 			if (!language.isEmpty()) writer.write(TaraRtConstants.LANGUAGE + NL + language + NL);
-			writer.write(TaraRtConstants.TERMINAL + NL + (generatedLangName == null ? "true" : "false") + NL);
+			writer.write(TaraRtConstants.TERMINAL + NL + (generatedLangName == null || generatedLangName.isEmpty() ? "true" : "false") + NL);
 			writer.write(TaraRtConstants.DICTIONARY + NL + dictionary + NL);
 			writer.write(TaraRtConstants.REQUIRED_PLATE + NL + plateRequired + NL);
-			if (generatedLangName != null)
+			if (generatedLangName != null && !generatedLangName.isEmpty())
 				writer.write(TaraRtConstants.GENERATED_LANG_NAME + NL + generatedLangName + NL);
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + NL + encoding + NL);
 			for (String iconPath : iconPaths)

@@ -2,11 +2,9 @@ package siani.tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.semantic.model.Facet;
 import siani.tara.semantic.model.FacetTarget;
-import siani.tara.semantic.model.Tara;
 import siani.tara.semantic.model.Variable;
 
 import java.util.*;
@@ -35,6 +33,12 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	private void addIncludes(Node node) {
 		includes.addAll(node.getIncludes().stream().map(LanguageNode::new).collect(Collectors.toList()));
 		includes.addAll(node.getInnerNodeReferences().stream().map(LanguageNodeReference::new).collect(Collectors.toList()));
+		addFacetTargetIncludes(node);
+	}
+
+	private void addFacetTargetIncludes(Node node) {
+		for (siani.tara.intellij.lang.psi.FacetTarget facetTarget : node.getFacetTargets())
+			includes.addAll(facetTarget.includes().stream().map(LanguageNode::new).collect(Collectors.toList()));
 	}
 
 	@Override

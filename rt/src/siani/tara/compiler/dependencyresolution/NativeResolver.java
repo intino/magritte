@@ -1,6 +1,8 @@
 package siani.tara.compiler.dependencyresolution;
 
 import siani.tara.compiler.core.errorcollection.DependencyException;
+import siani.tara.compiler.model.Facet;
+import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.Model;
@@ -9,6 +11,7 @@ import siani.tara.compiler.model.impl.NodeImpl;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.Collection;
+import java.util.List;
 
 import static siani.tara.compiler.model.Variable.NATIVE_SEPARATOR;
 
@@ -30,7 +33,20 @@ public class NativeResolver {
 		if (!(node instanceof NodeImpl)) return;
 		resolveNative(node.getVariables());
 		for (Node include : node.getIncludedNodes()) resolve(include);
+		resolveInFacetTargets(node.getFacetTargets());
+		resolveInFacets(node.getFacets());
 	}
+
+	private void resolveInFacetTargets(List<FacetTarget> facetTargets) throws DependencyException {
+		for (FacetTarget facet : facetTargets)
+			for (Node node : facet.getIncludedNodes()) resolve(node);
+	}
+
+	private void resolveInFacets(List<Facet> facets) throws DependencyException {
+		for (Facet facet : facets)
+			for (Node node : facet.getIncludedNodes()) resolve(node);
+	}
+
 
 	private void resolveNative(Collection<Variable> parameters) {
 		parameters.stream().

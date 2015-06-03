@@ -16,6 +16,7 @@ public class VariableAnnotator extends TaraAnnotator {
 
 	private static final char DOT = '.';
 	private static final String NATIVES = "natives";
+	private static final String METRICS = "metrics";
 
 	@Override
 	public void annotate(@NotNull PsiElement psiElement, @NotNull AnnotationHolder annotationHolder) {
@@ -30,16 +31,16 @@ public class VariableAnnotator extends TaraAnnotator {
 	}
 
 	private boolean analyzeJavaClassCreation(Variable variable) {
-		return !isCreated(nativeClass(variable.getContract()), variable.getProject());
+		return !isCreated(nativeClass(variable.getContract(), variable.getType()), variable.getProject());
 	}
 
 	private boolean isCreated(String qn, Project project) {
 		return ReferenceManager.resolveJavaClassReference(project, qn) != null;
 	}
 
-	private String nativeClass(Contract contract) {
+	private String nativeClass(Contract contract, String type) {
 		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(contract));
 		return taraFacetByModule == null ? "" :
-			taraFacetByModule.getConfiguration().getGeneratedDslName().toLowerCase() + DOT + NATIVES + DOT + contract.getFormattedName();
+			taraFacetByModule.getConfiguration().getGeneratedDslName().toLowerCase() + DOT + (type.equals(TaraPrimitives.NATIVE) ? NATIVES : METRICS) + DOT + contract.getFormattedName();
 	}
 }

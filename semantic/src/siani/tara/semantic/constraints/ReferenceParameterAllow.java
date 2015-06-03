@@ -102,9 +102,9 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 		if (values.get(0) instanceof EmptyNode) return values.size() == 1;
 		for (Object value : values) {
 			if (!(value instanceof Node)) return false;
-			if (!areCompatibleReference((Node) value)) return false;
+			if (areCompatibleReference((Node) value)) return true;
 		}
-		return true;
+		return false;
 	}
 
 	private boolean areCompatibleReference(Node node) {

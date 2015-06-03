@@ -66,7 +66,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String createScene() {
-		Frame frame = new Frame(null).addTypes("scene");
+		Frame frame = new Frame().addTypes("scene");
 		frame.addFrame("name", conf.getGeneratedLanguage());
 		for (Node node : collectRootNodes())
 			frame.addFrame("root", createRootFrame(node));
@@ -105,9 +105,9 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String createBoxes(Set<String> boxes) throws TaraException {
-		Frame frame = new Frame(null).addTypes("Box");
+		Frame frame = new Frame().addTypes("Box");
 		frame.addFrame("name", conf.getGeneratedLanguage());
-		for (String box : boxes)frame.addFrame("namebox", buildBoxUnitName(box));
+		for (String box : boxes) frame.addFrame("namebox", buildBoxUnitName(box));
 		return customize(BoxDSLTemplate.create()).format(frame);
 	}
 
@@ -122,7 +122,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String buildBoxUnitName(Node node) {
-		return capitalize(conf.getGeneratedLanguage()) + buildFileName(((Element) node).getFile());
+		return capitalize(conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule()) + buildFileName(((Element) node).getFile());
 	}
 
 	private String buildBoxUnitName(String box) {
@@ -213,16 +213,13 @@ public class ModelToJavaOperation extends ModelOperation {
 		Map<String, List<Node>> nodes = new HashMap();
 		for (Node node : model.getIncludedNodes()) {
 			if (!nodes.containsKey(((Element) node).getFile()))
-				nodes.put(((Element) node).getFile(), new ArrayList<Node>());
+				nodes.put(((Element) node).getFile(), new ArrayList<>());
 			nodes.get(((Element) node).getFile()).add(node);
 		}
 		return pack(nodes);
 	}
 
 	private List<List<Node>> pack(Map<String, List<Node>> nodes) {
-		List<List<Node>> lists = new ArrayList<>();
-		for (List<Node> nodeList : nodes.values())
-			lists.add(nodeList);
-		return lists;
+		return nodes.values().stream().collect(Collectors.toList());
 	}
 }

@@ -96,7 +96,7 @@ public class RuleFactory {
 				List<Rejectable.Include> rejectableIncludes = getRejectableIncludesBy(type, rejectables);
 				addFlagsAndAnnotations(rejectableIncludes, annotations);
 				if (rejectableIncludes.size() > 1) setCauseToRejectables(rejectableIncludes);
-				rejectables.removeAll(rejectableIncludes);
+				else rejectables.removeAll(rejectableIncludes);
 			}
 
 			private void setCauseToRejectables(List<Rejectable.Include> rejectableIncludesBy) {

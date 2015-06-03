@@ -24,7 +24,7 @@ public class LanguageInheritanceFiller {
 
 	public void fill() {
 		for (String aCase : cases) {
-			Frame nodeFrame = new Frame(null).addTypes("node");
+			Frame nodeFrame = new Frame().addTypes("node");
 			fillRuleInfo(nodeFrame, aCase);
 			addAllows(nodeFrame, language.allows(aCase));
 			addRequires(nodeFrame, language.constraints(aCase));
@@ -41,14 +41,14 @@ public class LanguageInheritanceFiller {
 
 	private void addTypes(String[] types, Frame frame) {
 		if (types == null) return;
-		Frame typesFrame = new Frame(null).addTypes("nodeType");
+		Frame typesFrame = new Frame().addTypes("nodeType");
 		for (String type : types) typesFrame.addFrame("type", type);
 		if (typesFrame.slots().length > 0)
 			frame.addFrame("nodeType", typesFrame);
 	}
 
 	private void addAllows(Frame frame, Collection<Allow> allows) {
-		Frame allowsFrame = new Frame(null).addTypes("allows");
+		Frame allowsFrame = new Frame().addTypes("allows");
 		for (Allow allow : allows) {
 			if (allow instanceof Allow.Name) addName(allowsFrame, "allow");
 			if (allow instanceof Allow.Multiple)
@@ -62,7 +62,7 @@ public class LanguageInheritanceFiller {
 	}
 
 	private void addRequires(Frame frame, Collection<Constraint> requires) {
-		Frame requireFrame = new Frame(null).addTypes("requires");
+		Frame requireFrame = new Frame().addTypes("requires");
 		for (Constraint require : requires) {
 			if (require instanceof Require.Name) addName(requireFrame, "require");
 			if (require instanceof Require.Multiple)
@@ -79,7 +79,7 @@ public class LanguageInheritanceFiller {
 	}
 
 	private void addAssumptions(Frame frame, Collection<Assumption> assumptions) {
-		Frame assumptionsFrame = new Frame(null).addTypes("assumptions");
+		Frame assumptionsFrame = new Frame().addTypes("assumptions");
 		for (Assumption assumption : assumptions) {
 			assumptionsFrame.addFrame("assumption", getAssumptionValue(assumption));
 		}
@@ -97,7 +97,7 @@ public class LanguageInheritanceFiller {
 	}
 
 	private void addFacet(Frame allows, String facet) {
-		allows.addFrame("allow", new Frame(null).addTypes("allow", "facet").addFrame("value", facet));
+		allows.addFrame("allow", new Frame().addTypes("allow", "facet").addFrame("value", facet));
 	}
 
 	private void addParameter(Frame allowsFrame, Allow.Parameter allow, String relation) {
@@ -124,7 +124,7 @@ public class LanguageInheritanceFiller {
 
 
 	private void renderPrimitive(Frame allowsFrame, Object[] values, String relation) {
-		allowsFrame.addFrame(relation, new Frame(null).addTypes(relation, "parameter").
+		allowsFrame.addFrame(relation, new Frame().addTypes(relation, "parameter").
 			addFrame("name", values[0]).
 			addFrame("type", values[1]).
 			addFrame("multiple", values[3]).
@@ -133,7 +133,7 @@ public class LanguageInheritanceFiller {
 	}
 
 	private void renderWord(Frame allowsFrame, Object[] values, String relation) {
-		allowsFrame.addFrame(relation, new Frame(null).addTypes(relation, "parameter", "word").
+		allowsFrame.addFrame(relation, new Frame().addTypes(relation, "parameter", "word").
 			addFrame("name", values[0] + ":word").
 			addFrame("words", (String[]) values[2]).
 			addFrame("multiple", values[3]).
@@ -142,7 +142,7 @@ public class LanguageInheritanceFiller {
 	}
 
 	private void renderReference(Frame allowsFrame, Object[] values, String relation) {
-		allowsFrame.addFrame(relation, new Frame(null).addTypes(relation, "parameter", "reference").
+		allowsFrame.addFrame(relation, new Frame().addTypes(relation, "parameter", "reference").
 			addFrame("name", values[0]).
 			addFrame("types", (String[]) values[2]).
 			addFrame("multiple", values[3]).
@@ -151,12 +151,12 @@ public class LanguageInheritanceFiller {
 	}
 
 	private void addMultiple(Frame frameFrame, String frameRelation, String type) {
-		frameFrame.addFrame(frameRelation, new Frame(null).addTypes("multiple", frameRelation).
+		frameFrame.addFrame(frameRelation, new Frame().addTypes("multiple", frameRelation).
 			addFrame("type", type));
 	}
 
 	private void addSingle(Frame frame, String frameRelation, String type) {
-		frame.addFrame(frameRelation, new Frame(null).addTypes("single", frameRelation).
+		frame.addFrame(frameRelation, new Frame().addTypes("single", frameRelation).
 			addFrame("type", type));
 	}
 

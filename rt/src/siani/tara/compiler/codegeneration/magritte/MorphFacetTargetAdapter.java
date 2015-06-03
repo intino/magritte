@@ -74,13 +74,13 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 
 	protected void addVariables(FacetTarget target, final Frame frame) {
 		for (final Variable variable : target.getVariables()) {
-			Frame varFrame = createVarFrame(frame, variable);
+			Frame varFrame = createVarFrame(variable);
 			frame.addFrame(VARIABLE, varFrame);
 		}
 	}
 
-	protected Frame createVarFrame(Frame owner, final Variable variable) {
-		Frame frame = new Frame(owner) {
+	protected Frame createVarFrame(final Variable variable) {
+		Frame frame = new Frame() {
 			{
 				addFrame(NAME, variable.getName());
 				addFrame(CONTRACT, format(variable.getContract()));
@@ -111,7 +111,7 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 	private void addComponents(FacetTarget target, Frame frame) {
 		for (Node include : target.getIncludedNodes()) {
 			if (include.isAnonymous()) continue;
-			Frame includeFrame = new Frame(frame).addTypes(collectReferenceTypes(include));
+			Frame includeFrame = new Frame().addTypes(collectReferenceTypes(include));
 			if (include instanceof NodeReference) {
 				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
 				addNodeReferenceName((NodeReference) include, includeFrame);

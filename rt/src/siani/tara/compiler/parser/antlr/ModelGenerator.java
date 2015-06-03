@@ -8,6 +8,7 @@ import siani.tara.compiler.model.impl.*;
 import siani.tara.semantic.model.Tag;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static siani.tara.compiler.model.Primitives.*;
 import static siani.tara.compiler.parser.antlr.TaraGrammar.*;
@@ -175,16 +176,14 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private String[] resolveTags(AnnotationsContext annotations) {
 		List<String> values = new ArrayList<>();
 		if (annotations == null) return new String[0];
-		for (AnnotationContext annotationContext : annotations.annotation())
-			values.add(annotationContext.getText());
+		values.addAll(annotations.annotation().stream().map(AnnotationContext::getText).collect(Collectors.toList()));
 		return values.toArray(new String[values.size()]);
 	}
 
 	private String[] resolveTags(FlagsContext flags) {
 		List<String> values = new ArrayList<>();
 		if (flags == null) return new String[0];
-		for (FlagContext flagContext : flags.flag())
-			values.add(flagContext.getText());
+		values.addAll(flags.flag().stream().map(FlagContext::getText).collect(Collectors.toList()));
 		return values.toArray(new String[values.size()]);
 	}
 
@@ -243,23 +242,23 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private Object[] resolveValue(ValueContext ctx) {
 		List<Object> values = new ArrayList<>();
 		if (!ctx.booleanValue().isEmpty())
-			for (BooleanValueContext context : ctx.booleanValue())
-				values.add(getConverter(BOOLEAN).convert(context.getText())[0]);
+			values.addAll(ctx.booleanValue().stream().
+				map(context -> getConverter(BOOLEAN).convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.integerValue().isEmpty())
-			for (IntegerValueContext context : ctx.integerValue())
-				values.add(getConverter(INTEGER).convert(context.getText())[0]);
+			values.addAll(ctx.integerValue().stream().
+				map(context -> getConverter(INTEGER).convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.doubleValue().isEmpty())
-			for (DoubleValueContext context : ctx.doubleValue())
-				values.add(getConverter(DOUBLE).convert(context.getText())[0]);
+			values.addAll(ctx.doubleValue().stream().
+				map(context -> getConverter(DOUBLE).convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.naturalValue().isEmpty())
-			for (NaturalValueContext context : ctx.naturalValue())
-				values.add(getConverter(NATURAL).convert(context.getText())[0]);
+			values.addAll(ctx.naturalValue().stream().
+				map(context -> getConverter(NATURAL).convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.stringValue().isEmpty())
-			for (StringValueContext context : ctx.stringValue())
-				values.add(formatText(context.getText()));
+			values.addAll(ctx.stringValue().stream().
+				map(context -> formatText(context.getText())).collect(Collectors.toList()));
 		else if (!ctx.identifierReference().isEmpty())
-			for (IdentifierReferenceContext context : ctx.identifierReference())
-				values.add(Parameter.REFERENCE + context.getText());
+			values.addAll(ctx.identifierReference().stream().
+				map(context -> Parameter.REFERENCE + context.getText()).collect(Collectors.toList()));
 		else if (ctx.EMPTY() != null)
 			values.add(new EmptyNode());
 		return values.toArray(new Object[values.size()]);

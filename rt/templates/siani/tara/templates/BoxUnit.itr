@@ -1,8 +1,15 @@
 def type(model)
     package magritte.boxes;
 
+	import java.text.SimpleDateFormat;
+	import java.text.ParseException;
+	import java.util.Arrays;
+
     import static magritte.editors.BoxCore.*;
     import static magritte.Tag.*;
+	import magritte.primitives.Date;
+    import $generatedLanguage+lowercase.*;
+
     $importMetric...[$NL]
 
     public class $name extends magritte.editors.Box.$terminal {
@@ -16,6 +23,14 @@ def type(model)
         @Override
         public void doWrite() {
             $node...[$NL]
+        }
+
+        private Date asDate(String date){
+            try {
+                return Date.date(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(date).getTime());
+            } catch (ParseException e) {
+                return null;
+            }
         }
 
         $intention...[$NL$NL]
@@ -34,7 +49,7 @@ def type(Node) trigger(node)
 end
 
 def type(intention) trigger(intention)
-    public static class $path [extends $generatedLanguage+lowerCase.$container] implements $parentIntention+lowercase.natives.$interface+FirstUppercase {
+    public static class $path [extends $container] implements $parentIntention+lowercase.natives.$interface+FirstUppercase {
         @Override
         $signature {
             $body
@@ -133,6 +148,14 @@ def type(Variable) type(double) slot(variableValue) trigger(variable)
     .set("$terminal$name", $multiple($variableValue...[, ]))
 end
 
+def type(Variable) type(date) slot(variableValue) trigger(variable)
+    .set("$terminal$name", $multiple($variableValue+date...[, ]))
+end
+
+def trigger(date)
+    asDate("$value")
+end
+
 def type(Variable) type(boolean) slot(variableValue) trigger(variable)
     .set("$terminal$name", $multiple($variableValue...[, ]))
 end
@@ -148,9 +171,6 @@ def type(Annotation) trigger(annotation)
     .set($value+CamelCase...[, ])
 end
 
-def trigger(variableValue) slot(date)
-    date($value+date)
-end
 
 def trigger(quoted)
     "$value"

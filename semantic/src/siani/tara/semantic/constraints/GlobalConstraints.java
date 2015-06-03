@@ -1,5 +1,6 @@
 package siani.tara.semantic.constraints;
 
+import org.siani.itrules.engine.formatters.PluralFormatter;
 import siani.tara.semantic.Assumption;
 import siani.tara.semantic.Constraint;
 import siani.tara.semantic.SemanticError;
@@ -9,6 +10,7 @@ import siani.tara.semantic.constraints.flags.FlagCheckerFactory;
 import siani.tara.semantic.model.*;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,9 +21,11 @@ import static siani.tara.semantic.constraints.PrimitiveTypeCompatibility.inferTy
 public class GlobalConstraints {
 
 	private final Map<String, Context> rulesCatalog;
+	private final Locale locale;
 
-	public GlobalConstraints(Map<String, Context> rulesCatalog) {
+	public GlobalConstraints(Map<String, Context> rulesCatalog, Locale locale) {
 		this.rulesCatalog = rulesCatalog;
+		this.locale = locale;
 	}
 
 	public Constraint[] all() {
@@ -29,8 +33,7 @@ public class GlobalConstraints {
 			duplicatedAnnotations(),
 			duplicatedFlags(),
 			flagsCoherence(),
-			duplicateNode(),
-			duplicateVariable(),
+			duplicatedNames(),
 			invalidValueTypeInVariable(),
 			facetDeclaration(),
 			namedInsideFeature(),
@@ -87,22 +90,6 @@ public class GlobalConstraints {
 
 	}
 
-	private Constraint.Require duplicateNode() {
-		return element -> {
-			Node node = (Node) element;
-			Set<String> nodeNames = new HashSet<String>() {
-				@Override
-				public boolean add(String name) {
-					return name.isEmpty() || super.add(name);
-				}
-			};
-			for (Node include : node.includes()) {
-				if (nodeNames.add(include.name())) continue;
-				throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.name())));
-			}
-		};
-	}
-
 	private Constraint.Require invalidValueTypeInVariable() {
 		return element -> {
 			Node node = (Node) element;
@@ -120,20 +107,30 @@ public class GlobalConstraints {
 		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? "reference" : variable.type(), inferredType);
 	}
 
-	private Constraint.Require duplicateVariable() {
+	private Constraint.Require duplicatedNames() {
 		return element -> {
 			Node node = (Node) element;
-			Set<String> varNames = new HashSet<String>() {
+			Set<String> names = new HashSet<String>() {
 				@Override
 				public boolean add(String name) {
 					return name == null || name.isEmpty() || super.add(name);
 				}
 			};
 			for (Variable variable : node.variables()) {
-				if (variable.isOverriden() || varNames.add(variable.name())) continue;
+				if (variable.isOverriden() || names.add(variable.name()) || names.add(plural(variable.name())))
+					continue;
 				throw new SemanticException(new SemanticError("reject.duplicate.variable", element, asList(variable.name(), node.name())));
 			}
+
+			for (Node include : node.includes()) {
+				if (names.add(include.name()) || names.add(plural(include.name()))) continue;
+				throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.name())));
+			}
 		};
+	}
+
+	private String plural(String name) {
+		return String.valueOf(new PluralFormatter(locale).format(name));
 	}
 
 	private Constraint.Require namedInsideFeature() {

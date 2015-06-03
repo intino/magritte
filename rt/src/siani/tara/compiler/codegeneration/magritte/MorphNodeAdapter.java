@@ -88,13 +88,13 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 
 	private void addFacets(Node node, Frame newFrame) {
 		for (final Facet facet : node.getFacets())
-			newFrame.addFrame(FACETS, new Frame(null).addTypes(getTypes(facet)).addFrame(NAME, facet.getType()));
+			newFrame.addFrame(FACETS, new Frame().addTypes(getTypes(facet)).addFrame(NAME, facet.getType()));
 	}
 
 	private void addComponents(Node node, Frame frame) {
 		for (Node include : node.getIncludedNodes()) {
 			if (include.isAnonymous()) continue;
-			Frame includeFrame = new Frame(null).addTypes(collectReferenceTypes(include));
+			Frame includeFrame = new Frame().addTypes(collectReferenceTypes(include));
 			if (include instanceof NodeReference) {
 				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
 				addNodeReferenceName((NodeReference) include, includeFrame);
@@ -122,7 +122,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 
 	private void addTargets(Node node, Frame newFrame) {
 		for (final FacetTarget target : node.getFacetTargets())
-			newFrame.addFrame(TARGETS, new Frame(null).addTypes(getTypes(target)).addFrame(NAME, target.getTarget()));
+			newFrame.addFrame(TARGETS, new Frame().addTypes(getTypes(target)).addFrame(NAME, target.getTarget()));
 	}
 
 	protected void addVariables(Node node, final Frame frame) {
@@ -158,9 +158,10 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 
 
 	protected Frame createVarFrame(final Variable variable) {
-		Frame frame = new Frame(null) {
+		Frame frame = new Frame() {
 			{
 				addFrame(NAME, variable.getName());
+				addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 				addFrame(CONTRACT, format(variable.getContract()));
 				addFrame(TYPE, variable instanceof VariableReference ? getQn(((VariableReference) variable).getDestiny(), generatedLanguage) : getType());
 				if (variable.getType().equals(Variable.WORD))
@@ -188,7 +189,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	}
 
 	protected Frame createVarFrame(final Allow.Parameter variable) {
-		Frame frame = new Frame(null) {
+		Frame frame = new Frame() {
 			{
 				addFrame(NAME, variable.name());
 				addFrame(TYPE, variable instanceof ReferenceParameterAllow ? variable.allowedValues().get(0) : getType());//TODO QN completo

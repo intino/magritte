@@ -90,12 +90,18 @@ public class InheritanceResolver {
 		for (Node include : parent.getIncludedNodes()) {
 			if (isOverridden(child, include)) continue;
 			NodeReference reference = (include instanceof NodeImpl) ? new NodeReference((NodeImpl) include) : new NodeReference(((NodeReference) include).getDestiny());
+			addTags(reference, include);
 			nodes.add(reference);
 			reference.setContainer(child);
 		}
 		child.addIncludedNodes(0, nodes.toArray(new Node[nodes.size()]));
 
 		return nodes;
+	}
+
+	private void addTags(NodeReference reference, Node include) {
+		for (Tag tag : include.getAnnotations()) reference.addAnnotations(tag.name());
+		for (Tag tag : include.getFlags()) reference.addFlags(tag.name());
 	}
 
 	private void resolveFlags(NodeImpl parent, NodeImpl child) {

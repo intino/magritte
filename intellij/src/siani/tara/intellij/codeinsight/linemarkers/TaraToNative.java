@@ -54,7 +54,8 @@ public class TaraToNative extends JavaLineMarkerProvider {
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
-		if (!(element instanceof Contract)) return super.getLineMarkerInfo(element);
+		if (!(element instanceof Contract))
+			return super.getLineMarkerInfo(element);
 		Contract contract = (Contract) element;
 		PsiElement reference = resolveContract(contract);
 		if (reference != null) {
@@ -64,4 +65,5 @@ public class TaraToNative extends JavaLineMarkerProvider {
 				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 		} else return super.getLineMarkerInfo(element);
 	}
+
 }

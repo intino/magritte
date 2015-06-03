@@ -30,7 +30,7 @@ public class NameFormatter {
 		return composeMorphPackagePath(generatedLanguage) + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
 	}
 
-	private static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
+	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
 		return ((Node) facetTarget.getContainer()).getName().toLowerCase() + DOT + Format.reference().format(facetTarget.getTarget()) + DOT + node.getQualifiedName();
 	}
 
