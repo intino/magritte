@@ -617,7 +617,7 @@ public class TaraParser implements PsiParser {
 
   /* ********************************************************** */
   // ABSTRACT | TERMINAL | ROOT
-  // 	| SINGLE | REQUIRED
+  // 	| SINGLE | REQUIRED | PRIVATE
   // 	| FACET | FEATURE | IMPLICIT | ENCLOSED | FINAL
   public static boolean flag(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flag")) return false;
@@ -628,6 +628,7 @@ public class TaraParser implements PsiParser {
     if (!r) r = consumeToken(b, ROOT);
     if (!r) r = consumeToken(b, SINGLE);
     if (!r) r = consumeToken(b, REQUIRED);
+    if (!r) r = consumeToken(b, PRIVATE);
     if (!r) r = consumeToken(b, FACET);
     if (!r) r = consumeToken(b, FEATURE);
     if (!r) r = consumeToken(b, IMPLICIT);

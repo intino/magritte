@@ -81,6 +81,7 @@ FEATURE             = "feature"
 
 FINAL               = "final"
 ENCLOSED            = "enclosed"
+PRIVATE             = "private"
 
 FACET               = "facet"
 
@@ -180,6 +181,7 @@ NEWLINE             = [\n]+
 
     {TERMINAL}                      {   return TaraTypes.TERMINAL; }
     {ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
+	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
 
     {FINAL}                         {   return TaraTypes.FINAL; }
 

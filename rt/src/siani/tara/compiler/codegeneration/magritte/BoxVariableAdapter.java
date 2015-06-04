@@ -49,7 +49,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 		list.add(variable.getType());
 		if (variable.isTerminal()) list.add(TERMINAL);
 		if (variable.isMultiple()) list.add(MULTIPLE);
-		for (Tag tag : variable.getFlags()) list.add(tag.name());
+		list.addAll(variable.getFlags().stream().map(Tag::name).collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);
 	}
 
@@ -97,7 +97,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 	private void createTargetVarFrame(Frame frame, final Variable variable) {
 		FacetTarget container = (FacetTarget) variable.getContainer();
 		frame.addTypes(getFacetTypes(variable));
-		frame.addFrame(NAME, variable.getName());
+		frame.addFrame(NAME, (variable.isFinal() ? NameFormatter.clean(variable.getContainer().getQualifiedName()) : "") + variable.getName());
 		if (variable.getType().equals(Primitives.MEASURE)) asMeasure(frame, variable);
 		frame.addFrame(TARGET, container.getTarget());
 		frame.addFrame(NODE, container.getContainer().getQualifiedName());

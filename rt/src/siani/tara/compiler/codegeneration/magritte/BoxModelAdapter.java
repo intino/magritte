@@ -51,21 +51,21 @@ public class BoxModelAdapter implements Adapter<Model> {
 	}
 
 
-	private void parserAllNodes(Frame frame, Node nodeContainer, FrameContext FrameContext) {
+	private void parserAllNodes(Frame frame, Node nodeContainer, FrameContext context) {
 		for (Node node : nodeContainer.getIncludedNodes()) {
 			if (node instanceof NodeReference) continue;
-			fill(frame, node, FrameContext);
+			fill(frame, node, context);
 		}
 		for (Facet facet : nodeContainer.getFacets())
 			for (Node node : facet.getIncludedNodes()) {
-				frame.addFrame("node", FrameContext.build(node));
-				parserAllNodes(frame, node, FrameContext);
+				frame.addFrame(NODE, context.build(node));
+				parserAllNodes(frame, node, context);
 			}
 		if (nodeContainer.getFacetTargets() == null) return;
-		for (FacetTarget facet : nodeContainer.getFacetTargets())
-			for (Node node : facet.getIncludedNodes()) {
-				fill(frame, node, FrameContext);
-			}
+		for (FacetTarget facet : nodeContainer.getFacetTargets()) {
+			frame.addFrame(NODE, context.build(facet));
+			for (Node node : facet.getIncludedNodes()) fill(frame, node, context);
+		}
 	}
 
 	private void fill(Frame frame, Node node, FrameContext FrameContext) {
@@ -88,7 +88,7 @@ public class BoxModelAdapter implements Adapter<Model> {
 			intentionFrame.addFrame("parentIntention", language.languageName());
 			intentionFrame.addFrame("interface", getInterface(parameter));
 			intentionFrame.addFrame("signature", getSignature(parameter));
-			intentionFrame.addFrame("path", NameFormatter.createNativeReference(parameter.getOwner().getQualifiedName(), parameter.getName()));
+			intentionFrame.addFrame("path", NameFormatter.createNativeClassReference(parameter.getOwner(), parameter.getName()));
 			frame.addFrame("intention", intentionFrame);
 		}
 	}
@@ -106,7 +106,7 @@ public class BoxModelAdapter implements Adapter<Model> {
 			intentionFrame.addFrame("parentIntention", generatedLanguage);
 			intentionFrame.addFrame("interface", getInterface(variable));
 			intentionFrame.addFrame("signature", getSignature(variable));
-			intentionFrame.addFrame("path", NameFormatter.createNativeReference(variable.getContainer().getQualifiedName(), variable.getName()));
+			intentionFrame.addFrame("path", NameFormatter.createNativeClassReference(variable.getContainer(), variable.getName()));
 			frame.addFrame("intention", intentionFrame);
 		}
 	}

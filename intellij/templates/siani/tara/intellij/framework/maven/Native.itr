@@ -1,13 +1,12 @@
 def type(native)
-	package $module;
+	package $languageGenerated;
 
-	import $language.natives.$intention;
+	import $language.natives.*;
+	import java.util.*;
 
 	public class $qn_$variable extends $parent implements $intention {
 
 		@Override
-		$signature {
-			$body
-		}
-	}
+		$signature {$NL$TAB$TAB
+
 end

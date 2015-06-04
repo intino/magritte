@@ -11,9 +11,11 @@ import java.util.stream.Collectors;
 public class LanguageRoot implements Node {
 
 	Model model;
+	private Node[] includes;
 
 	public LanguageRoot(Model model) {
 		this.model = model;
+		includes = wrap(model.getIncludedNodes());
 	}
 
 	@Override
@@ -104,7 +106,7 @@ public class LanguageRoot implements Node {
 
 	@Override
 	public Node[] includes() {
-		return wrap(model.getIncludedNodes());
+		return includes;
 	}
 
 	@Override

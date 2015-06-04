@@ -168,7 +168,7 @@ flags::= IS flag+ {
 }
 
 flag ::= ABSTRACT | TERMINAL | ROOT
-	| SINGLE | REQUIRED
+	| SINGLE | REQUIRED | PRIVATE
 	| FACET | FEATURE | IMPLICIT | ENCLOSED | FINAL {
 	mixin = 'siani.tara.intellij.lang.psi.impl.FlagMixin'
 	implements = 'siani.tara.intellij.lang.psi.Flag'

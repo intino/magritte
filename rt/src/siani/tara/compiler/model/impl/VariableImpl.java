@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static siani.tara.semantic.model.Tag.FINAL;
+import static siani.tara.semantic.model.Tag.PRIVATE;
 import static siani.tara.semantic.model.Tag.TERMINAL;
 
 public class VariableImpl extends Element implements Variable {
@@ -85,8 +86,13 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
-	public boolean isReadOnly() {
+	public boolean isFinal() {
 		return flags.contains(FINAL);
+	}
+
+	@Override
+	public boolean isPrivate() {
+		return flags.contains(PRIVATE);
 	}
 
 	@Override

@@ -239,7 +239,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
 		for (Node node : tree) {
-			if (!node.isRequired() || !node.isImplicit()) continue;
+			if (!node.isRequired() && !node.isImplicit()) continue;
 			Collection<Node> candidates = collectCandidates(node);
 			if (node.isAbstract() && candidates.size() > 1) {
 				requires.addFrame("require", createOneOf(candidates, node));

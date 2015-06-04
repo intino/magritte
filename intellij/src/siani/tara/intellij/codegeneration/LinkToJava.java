@@ -23,10 +23,7 @@ import java.util.Collection;
 
 public class LinkToJava {
 
-	private LinkToJava() {
-	}
-
-	public static void link(Module module) {
+	public void link(Module module) {
 		Project project = module.getProject();
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
 		FileDocumentManager.getInstance().saveAllDocuments();
@@ -40,7 +37,8 @@ public class LinkToJava {
 			new NativesGenerator(project, taraBoxFile).generate();
 		}
 		String report = "Native Classes have been Generated Successfully";
-		Notifications.Bus.notify(new Notification("Tara Generator", "", report, NotificationType.INFORMATION), project);
+		final Notification notification = new Notification("Tara Generator", "", report, NotificationType.INFORMATION);
+		Notifications.Bus.notify(notification, project);
 		VfsUtil.markDirtyAndRefresh(true, true, true, srcDirectory);
 		srcDirectory.refresh(true, true);
 	}

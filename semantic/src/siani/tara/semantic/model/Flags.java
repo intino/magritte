@@ -15,7 +15,7 @@ public class Flags {
 	public static final Tag[] COMPONENT_ANNOTATIONS = new Tag[]{ABSTRACT, TERMINAL, REQUIRED, SINGLE,
 		IMPLICIT, FACET, ENCLOSED, FINAL};
 
-	public static final Tag[] VARIABLE_ANNOTATIONS = new Tag[]{TERMINAL, FINAL};
+	public static final Tag[] VARIABLE_ANNOTATIONS = new Tag[]{TERMINAL, FINAL, PRIVATE};
 
 	public static final Tag[] PRIME_ANNOTATIONS = new Tag[]{ABSTRACT, SINGLE, TERMINAL,
 		IMPLICIT, REQUIRED, FACET, FINAL};

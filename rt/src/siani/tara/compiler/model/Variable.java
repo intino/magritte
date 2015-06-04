@@ -30,7 +30,9 @@ public interface Variable extends Cloneable {
 
 	boolean isTerminal();
 
-	boolean isReadOnly();
+	boolean isFinal();
+
+	boolean isPrivate();
 
 	boolean isInherited();
 

@@ -23,29 +23,41 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	@Override
-	public void execute(Frame frame, Node node, FrameContext<Node> FrameContext) {
+	public void execute(Frame frame, Node node, FrameContext<Node> context) {
 		if (node instanceof NodeImpl) {
 			structure(node, frame);
 			flags(node, frame);
-			variables(node, frame, FrameContext);
-			facetTargetVariables(node, frame, FrameContext);
-			parameters(node, frame, FrameContext);
-			facetParameters(node, frame, FrameContext);
+			variables(node, frame, context);
+			parameters(node, frame, context);
+			facetParameters(node, frame, context);
 			componentOf(node.getContainer(), frame);
 			includes(node, frame);
 		}
 	}
 
 	private void structure(Node node, Frame newFrame) {
-		if (node.isAnonymous() && node.getPlate() == null)
-			newFrame.addFrame(KEY, String.valueOf(this.keys.get(node)));
+		if (node.isAnonymous() && node.getPlate() == null) newFrame.addFrame(KEY, String.valueOf(this.keys.get(node)));
 		else {
-			newFrame.addFrame(NAME, clean(node.getQualifiedName()));
+			newFrame.addFrame(NAME, facetPrefix(node) + clean(node.getQualifiedName()));
 			if (node.getPlate() != null) newFrame.addFrame(PLATE, "|" + String.valueOf(node.getPlate()));
 		}
 		addTypes(node, newFrame);
-		if (node.getParent() != null)
-			newFrame.addFrame(PARENT, node.getParent().getName());
+		if (node.getParent() != null) newFrame.addFrame(PARENT, clean(node.getParent().getQualifiedName()));
+	}
+
+	private String facetPrefix(Node node) {
+		FacetTarget target = inFacetTarget(node);
+		if (target == null) return "";
+		final Node container = (Node) target.getContainer();
+		return clean(container.getQualifiedName()) + "+" + clean(target.getTargetNode().getQualifiedName() + ".");
+	}
+
+	private FacetTarget inFacetTarget(Node node) {
+		NodeContainer container = node.getContainer();
+		while (container != null)
+			if (container instanceof FacetTarget) return (FacetTarget) container;
+			else container = container.getContainer();
+		return null;
 	}
 
 	private void addTypes(Node node, Frame newFrame) {
@@ -70,20 +82,14 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		return node.isRoot() || (node.getContainer() instanceof Model);
 	}
 
-	private void variables(Node node, final Frame frame, FrameContext<Node> FrameContext) {
+	private void variables(Node node, final Frame frame, FrameContext<Node> context) {
 		for (final Variable variable : node.getVariables())
-			frame.addFrame(VARIABLE, FrameContext.build(variable));
+			frame.addFrame(VARIABLE, context.build(variable));
 	}
 
-	private void facetTargetVariables(Node node, final Frame frame, FrameContext<Node> FrameContext) {
-		for (FacetTarget facetTarget : node.getFacetTargets())
-			for (final Variable variable : facetTarget.getVariables())
-				frame.addFrame(VARIABLE, FrameContext.build(variable));
-	}
-
-	private void parameters(Node node, Frame frame, FrameContext<Node> FrameContext) {
+	private void parameters(Node node, Frame frame, FrameContext<Node> context) {
 		node.getParameters().stream().filter(parameter -> !isOverriddenByFacets(parameter, node.getFacets())).forEach(parameter -> {
-			frame.addFrame(VARIABLE, FrameContext.build(parameter));
+			frame.addFrame(VARIABLE, context.build(parameter));
 		});
 	}
 
@@ -94,10 +100,10 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		return false;
 	}
 
-	private void facetParameters(Node node, final Frame frame, FrameContext<Node> FrameContext) {
+	private void facetParameters(Node node, final Frame frame, FrameContext<Node> context) {
 		for (Facet facet : node.getFacets())
 			for (final Parameter parameter : facet.getParameters())
-				frame.addFrame(VARIABLE, FrameContext.build(parameter));
+				frame.addFrame(VARIABLE, context.build(parameter));
 	}
 
 	private void componentOf(NodeContainer container, Frame frame) {
@@ -159,7 +165,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		return '"' + (node.isAnonymous() ? node.getPlate() : node.getQualifiedName()) + '"';
 	}
 
-	private String clean(String name) {
+	public static String clean(String name) {
 		return name.replace("[", "").replace("]", "").replaceAll(Node.ANNONYMOUS, "");
 	}
 

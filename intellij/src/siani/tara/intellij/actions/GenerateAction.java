@@ -17,7 +17,7 @@ public class GenerateAction extends AnAction implements DumbAware {
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
 		final Module module = LangDataKeys.MODULE.getData(e.getDataContext());
-		if (module != null) LinkToJava.link(module);
+		if (module != null) new LinkToJava().link(module);
 	}
 
 	@Override

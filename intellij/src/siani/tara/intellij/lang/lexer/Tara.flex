@@ -108,6 +108,7 @@ REQUIRED            = "required"
 TERMINAL            = "terminal"
 
 IMPLICIT            = "implicit"
+PRIVATE             = "private"
 FEATURE             = "feature"
 
 FINAL               = "final"
@@ -208,6 +209,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
+	{PRIVATE}                       {   return TaraTypes.PRIVATE; }
 
 	{FINAL}                         {   return TaraTypes.FINAL; }
 

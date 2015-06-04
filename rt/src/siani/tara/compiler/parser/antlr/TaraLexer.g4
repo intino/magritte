@@ -107,6 +107,7 @@ FEATURE             : 'feature';
 
 FINAL               : 'final';
 ENCLOSED            : 'enclosed';
+PRIVATE             : 'private';
 
 FACET               : 'facet';
 

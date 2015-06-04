@@ -11,6 +11,8 @@ public interface StringValue extends NavigatablePsiElement, TaraPsiElement, PsiL
 
 	PsiLanguageInjectionHost updateText(@NotNull String text);
 
+	boolean isValidHost();
+
 	boolean isMultiLine();
 
 	@NotNull

@@ -10,6 +10,7 @@ public enum Tag {
 	FEATURE,
 	IMPLICIT,
 	FACET,
+	PRIVATE,
 	ENCLOSED,
 	FINAL,
 

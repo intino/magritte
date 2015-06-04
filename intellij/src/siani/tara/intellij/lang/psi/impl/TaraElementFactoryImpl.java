@@ -243,11 +243,14 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	public PsiElement createMultiLineString(String text, String indent, String quote) {
-		final TaraModelImpl file = createDummyFile(
+		final TaraModelImpl file = (text.trim().startsWith("--")) ? createDummyFile(
 			"Concept Dummy\n" +
 				"\tvar string dummy " + "= \n" +
-				"\t" + quote + "\n" + indent + formatted(text, indent) + "\n" +
-				indent + quote + "\n");
+				"\t" + formatted(text, indent).trim() + "\n") :
+			createDummyFile(
+				"Concept Dummy\n" +
+					"\tvar string dummy " + "= \n" +
+					"\t" + quote + "\n" + indent + formatted(text, indent) + "\n" + indent + quote + "\n");
 		Node node = PsiTreeUtil.getChildOfType(file, Node.class);
 		if (node == null) return null;
 		Body body = node.getBody();

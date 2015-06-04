@@ -40,7 +40,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	}
 
 	private void addNodeInfo(Node node, Frame frame) {
-		if (initNode != null && !node.equals(initNode)) frame.addFrame(INNER, "");
+		if ((initNode != null && !node.equals(initNode)) || inFacetTarget(node) != null) frame.addFrame(INNER, "");
 		if (node.getDoc() != null) frame.addFrame(DOC, node.getDoc());
 		addName(node, frame);
 		addParent(node, frame);
@@ -50,6 +50,14 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		addTargets(node, frame);
 		addFacets(node, frame);
 		addComponents(node, frame);
+	}
+
+	private FacetTarget inFacetTarget(Node node) {
+		NodeContainer container = node.getContainer();
+		while (container != null)
+			if (container instanceof FacetTarget) return (FacetTarget) container;
+			else container = container.getContainer();
+		return null;
 	}
 
 	private void addName(Node node, Frame frame) {

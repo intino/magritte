@@ -74,7 +74,7 @@ def type(variable) type(file) trigger(getter)
 end
 
 def type(variable) type(definition) !type(word) trigger(getter)
-	public $type+firstUpperCase $name+firstLowerCase() {
+	public $type+firstUpperCase+primitiveType $name+firstLowerCase() {
 		return get("$name").as$type+firstUpperCase();
 	}
 end
@@ -109,8 +109,12 @@ def value(Double) trigger(primitiveType)
 	double
 end
 
+def value(Natural) trigger(primitiveType)
+	int
+end
+
 def type(variable) !type(reference) !type(word) trigger(getter)
-	public $type+reference $name+firstLowerCase() {
+	public $type+reference+primitiveType $name+firstLowerCase() {
 		return definition().get("$name").as$type+reference();
 	}
 end

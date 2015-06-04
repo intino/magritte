@@ -44,11 +44,9 @@ public class Context {
 			public void check(Element element) throws SemanticException {
 				Node node = (Node) element;
 				List<Rejectable> rejectables = Rejectable.build(node);
-				for (Allow allow : Context.this.allows)
-					allow.check(node, rejectables);
+				for (Allow allow : Context.this.allows) allow.check(node, rejectables);
 				if (!rejectables.isEmpty()) throw new SemanticException(rejectables.get(0).error());
 			}
-
 		});
 	}
 

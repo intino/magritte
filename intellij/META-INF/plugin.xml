@@ -86,6 +86,9 @@
     <facetType implementation="siani.tara.intellij.project.facet.TaraFacetType"/>
     <framework.type implementation="siani.tara.intellij.framework.TaraFrameworkType"/>
     <lang.commenter language="Tara" implementationClass="siani.tara.intellij.TaraCommenter"/>
+
+    <languageInjector implementation="siani.tara.intellij.codeinsight.TaraLanguageInjector"/>
+
     <lang.documentationProvider language="Tara"
                                 implementationClass="siani.tara.intellij.documentation.TaraDocumentationProvider"/>
     <fileTypeFactory implementation="siani.tara.intellij.lang.file.TaraFileTypeFactory"/>
@@ -104,7 +107,6 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.MeasureVariableAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VariableAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.NameIdentifierValidator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.NativeAnnotator"/>
 
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraNodeCompletionContributor"/>
@@ -155,10 +157,6 @@
       <className>siani.tara.intellij.codeinsight.intentions.ExplicitToImplicitParameters</className>
       <category>Parameter View Operator</category>
       <descriptionDirectoryName>ImplicitToExplicitParameters</descriptionDirectoryName>
-    </intentionAction>
-    <intentionAction>
-      <className>siani.tara.intellij.codeinsight.intentions.TaraQuickEditAction</className>
-      <category>Declaration</category>
     </intentionAction>
     <spellchecker.support language="Tara"
                           implementationClass="siani.tara.intellij.codeinsight.TaraSpellcheckerStrategy"/>

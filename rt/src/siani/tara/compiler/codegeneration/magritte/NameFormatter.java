@@ -4,6 +4,7 @@ import siani.tara.compiler.codegeneration.Format;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.NodeContainer;
+import siani.tara.compiler.model.impl.Model;
 
 import java.io.File;
 
@@ -70,8 +71,21 @@ public class NameFormatter {
 		return camelCase(file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(DOT)), "_");
 	}
 
-	public static String createNativeReference(String qualifiedName, String variable) {
-		qualifiedName = qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "").replace(".", "_");
+	public static String createNativeClassReference(NodeContainer container, String variable) {
+		final NodeContainer root = findRoot(container);
+		final String containerPath = clean(container.getQualifiedName());
+		String qualifiedName = (!root.getQualifiedName().equals(containerPath) ? root.getQualifiedName() + "_" : "") + containerPath;
 		return qualifiedName + "_" + variable;
+	}
+
+	public static String clean(String qualifiedName) {
+		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "").replace(".", "_");
+	}
+
+	private static NodeContainer findRoot(NodeContainer container) {
+		NodeContainer aContainer = container;
+		while (!(aContainer.getContainer() instanceof Model))
+			aContainer = aContainer.getContainer();
+		return aContainer;
 	}
 }

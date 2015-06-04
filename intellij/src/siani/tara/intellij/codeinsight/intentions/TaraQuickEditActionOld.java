@@ -1,23 +1,21 @@
 package siani.tara.intellij.codeinsight.intentions;
 
-import com.intellij.codeInsight.intention.impl.QuickEditAction;
+import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.codeInsight.intention.LowPriorityAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.StringValue;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
-import javax.swing.*;
 
-
-public class TaraQuickEditAction extends QuickEditAction implements Iconable {
+public class TaraQuickEditActionOld implements IntentionAction, LowPriorityAction {
 
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
@@ -39,18 +37,20 @@ public class TaraQuickEditAction extends QuickEditAction implements Iconable {
 	}
 
 	@Override
-	public boolean startInWriteAction() {
-		return false;
-	}
-
-	@Override
-	public Icon getIcon(@IconFlags int flags) {
-		return TaraIcons.ICON_13;
+	public void invoke(@NotNull final Project project, final Editor editor, PsiFile file) throws IncorrectOperationException {
+		StringValue stringValue = PsiTreeUtil.getParentOfType(getElementInCaret(editor, file), StringValue.class, false);
+		TaraQuickEditHandler handler = new TaraQuickEditHandler(project, file, stringValue, editor);
+		handler.navigate();
 	}
 
 	@Nullable
 	private PsiElement getElementInCaret(Editor editor, PsiFile file) {
 		int offset = editor.getCaretModel().getOffset();
 		return file.findElementAt(offset);
+	}
+
+	@Override
+	public boolean startInWriteAction() {
+		return false;
 	}
 }

@@ -48,10 +48,7 @@ public class BoxUnitFrameCreator {
 			((Node) node).getFacetTargets().forEach(this::createKeyMap);
 			((Node) node).getFacets().forEach(this::createKeyMap);
 		}
-		for (Node include : node.getIncludedNodes()) {
-			if (include instanceof NodeReference) continue;
-			createKeyMap(include);
-		}
+		node.getIncludedNodes().stream().filter(include -> !(include instanceof NodeReference)).forEach(this::createKeyMap);
 	}
 
 	private void addKey(Node node) {
@@ -67,6 +64,7 @@ public class BoxUnitFrameCreator {
 		final FrameBuilder builder = new FrameBuilder();
 		builder.register(Model.class, new BoxModelAdapter(project, generatedLanguage, language, locale, model.getMetrics(), model.isTerminal()));
 		builder.register(Node.class, new BoxNodeAdapter(keymap, model.isTerminal()));
+		builder.register(FacetTarget.class, new BoxFacetTargetAdapter());
 		builder.register(Variable.class, new BoxVariableAdapter(model.getMetrics()));
 		builder.register(Parameter.class, new BoxParameterAdapter(model.getMetrics()));
 		return builder.build(boxModel);

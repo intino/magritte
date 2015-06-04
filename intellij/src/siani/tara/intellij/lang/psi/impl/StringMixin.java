@@ -6,10 +6,10 @@ import com.intellij.psi.LiteralTextEscaper;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.StringValue;
-import siani.tara.intellij.lang.psi.TaraElementFactory;
-import siani.tara.intellij.lang.psi.TaraStringLiteralScaper;
-import siani.tara.intellij.lang.psi.TaraTypes;
+import siani.tara.intellij.lang.psi.*;
+
+import static siani.tara.intellij.lang.lexer.TaraPrimitives.NATIVE;
+import static siani.tara.intellij.lang.psi.impl.TaraUtil.getCorrespondingAllow;
 
 public class StringMixin extends ASTWrapperPsiElement {
 
@@ -41,7 +41,22 @@ public class StringMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isValidHost() {
-		return true;
+		return isNativeValue();
+	}
+
+	private boolean isNativeValue() {
+		PsiElement element = this;
+		while (element != null) {
+			if (element instanceof Variable || element instanceof VarInit || element instanceof Parameter) break;
+			element = element.getContext();
+		}
+		return element != null && isNative(element);
+	}
+
+	private boolean isNative(PsiElement element) {
+		return element instanceof Parameter && NATIVE.equals(getCorrespondingAllow(TaraPsiImplUtil.getContainerNodeOf(element), ((Parameter) element)).type()) ||
+			element instanceof VarInit && NATIVE.equals(getCorrespondingAllow(TaraPsiImplUtil.getContainerNodeOf(element), ((VarInit) element)).type()) ||
+			element instanceof Variable && NATIVE.equals(((Variable) element).getType());
 	}
 
 	public boolean isMultiLine() {
@@ -52,11 +67,10 @@ public class StringMixin extends ASTWrapperPsiElement {
 	public PsiLanguageInjectionHost updateText(@NotNull String text) {
 		TaraElementFactory factory = TaraElementFactory.getInstance(getProject());
 		String replace = text.startsWith("\"") ? text.substring(1, text.length() - 1) : text;
-		String quote = isMultiLine() ? getQuote() : "";
 		final String indent = getIndent();
 		final StringValue string = (StringValue) (isMultiLine() ?
-			factory.createMultiLineString(replace, indent, quote) :
-			factory.createString(text));
+			factory.createMultiLineString(replace, indent, getQuote()) :
+			factory.createString(replace));
 		if (isMultiLine()) {
 			string.getFirstChild().replace(this.getFirstChild().copy());
 			string.getLastChild().getPrevSibling().replace(this.getLastChild().getPrevSibling().copy());

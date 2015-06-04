@@ -84,7 +84,7 @@ public class TaraQuickEditHandler extends DocumentAdapter implements Disposable 
 		FileType fileType = JavaFileType.INSTANCE;
 		Language language = JavaLanguage.INSTANCE;
 		PsiFileFactory factory = PsiFileFactory.getInstance(project);
-		String text = createTextFromTemplate(stringValue);
+		String text =createTextFromTemplate(stringValue);
 		String newFileName = buildFileName(origFile, fileType, language);
 		myNewFile = factory.createFileFromText(newFileName, language, text, true, false);
 		AbstractLayoutCodeProcessor processor = new ReformatCodeProcessor(myProject, myNewFile, null, false);

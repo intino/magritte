@@ -9,16 +9,15 @@ import org.jetbrains.annotations.NotNull;
 public abstract class TaraStringLiteralScaper<T extends PsiLanguageInjectionHost> extends LiteralTextEscaper<T> {
 	private int[] outSourceOffsets;
 
-
-	public TaraStringLiteralScaper(T element) {
-		super(element);
+	public TaraStringLiteralScaper(T host) {
+		super(host);
 	}
 
 	public boolean decode(@NotNull final TextRange rangeInsideHost, @NotNull StringBuilder outChars) {
 		String subText = rangeInsideHost.substring(myHost.getText());
 
 		Ref<int[]> sourceOffsetsRef = new Ref<>();
-		boolean result = parseStringCharacters(subText, outChars, sourceOffsetsRef);
+		boolean result = parseStringCharacters(subText, outChars, sourceOffsetsRef, false);
 		outSourceOffsets = sourceOffsetsRef.get();
 		return result;
 	}
@@ -30,10 +29,10 @@ public abstract class TaraStringLiteralScaper<T extends PsiLanguageInjectionHost
 	}
 
 	public boolean isOneLine() {
-		return !myHost.getText().contains("\n");
+		return true;
 	}
 
-	public static boolean parseStringCharacters(String chars, StringBuilder outChars, Ref<int[]> sourceOffsetsRef) {
+	public static boolean parseStringCharacters(String chars, StringBuilder outChars, Ref<int[]> sourceOffsetsRef, boolean regExp) {
 		int[] sourceOffsets = new int[chars.length() + 1];
 		sourceOffsetsRef.set(sourceOffsets);
 
@@ -44,13 +43,14 @@ public abstract class TaraStringLiteralScaper<T extends PsiLanguageInjectionHost
 			}
 			return true;
 		}
-		int index = 0;
 
+		int index = 0;
+		final int outOffset = outChars.length();
 		while (index < chars.length()) {
 			char c = chars.charAt(index++);
 
-			sourceOffsets[outChars.length()] = index - 1;
-			sourceOffsets[outChars.length() + 1] = index;
+			sourceOffsets[outChars.length() - outOffset] = index - 1;
+			sourceOffsets[outChars.length() + 1 - outOffset] = index;
 
 			if (c != '\\') {
 				outChars.append(c);
@@ -58,113 +58,120 @@ public abstract class TaraStringLiteralScaper<T extends PsiLanguageInjectionHost
 			}
 			if (index == chars.length()) return false;
 			c = chars.charAt(index++);
-			switch (c) {
-				case 'b':
-					outChars.append('\b');
-					break;
-
-				case 't':
-					outChars.append('\t');
-					break;
-
-				case 'n':
-					outChars.append('\n');
-					break;
-
-				case 'f':
-					outChars.append('\f');
-					break;
-
-				case 'r':
-					outChars.append('\r');
-					break;
-
-				case '"':
-					outChars.append('"');
-					break;
-
-				case '/':
-					outChars.append('/');
-					break;
-
-				case '\n':
-					outChars.append("\\\n");
-					break;
-				case '\'':
-					outChars.append('\'');
-					break;
-
-				case '\\':
+			if (regExp) {
+				if (c != '/') {
 					outChars.append('\\');
-					break;
+				}
+				outChars.append(c);
+			} else {
+				switch (c) {
+					case 'b':
+						outChars.append('\b');
+						break;
 
-				case '0':
-				case '1':
-				case '2':
-				case '3':
-				case '4':
-				case '5':
-				case '6':
-				case '7': {
-					char startC = c;
-					int v = (int) c - '0';
-					if (index < chars.length()) {
-						c = chars.charAt(index++);
-						if ('0' <= c && c <= '7') {
-							v <<= 3;
-							v += c - '0';
-							if (startC <= '3' && index < chars.length()) {
-								c = chars.charAt(index++);
-								if ('0' <= c && c <= '7') {
-									v <<= 3;
-									v += c - '0';
-								} else {
-									index--;
+					case 't':
+						outChars.append('\t');
+						break;
+
+					case 'n':
+						outChars.append('\n');
+						break;
+
+					case 'f':
+						outChars.append('\f');
+						break;
+
+					case 'r':
+						outChars.append('\r');
+						break;
+
+					case '"':
+						outChars.append('"');
+						break;
+
+					case '/':
+						outChars.append('/');
+						break;
+
+					case '\n':
+						outChars.append('\n');
+						break;
+					case '\'':
+						outChars.append('\'');
+						break;
+
+					case '\\':
+						outChars.append('\\');
+						break;
+
+					case '0':
+					case '1':
+					case '2':
+					case '3':
+					case '4':
+					case '5':
+					case '6':
+					case '7': {
+						char startC = c;
+						int v = (int) c - '0';
+						if (index < chars.length()) {
+							c = chars.charAt(index++);
+							if ('0' <= c && c <= '7') {
+								v <<= 3;
+								v += c - '0';
+								if (startC <= '3' && index < chars.length()) {
+									c = chars.charAt(index++);
+									if ('0' <= c && c <= '7') {
+										v <<= 3;
+										v += c - '0';
+									} else {
+										index--;
+									}
 								}
+							} else {
+								index--;
+							}
+						}
+						outChars.append((char) v);
+					}
+					break;
+					case 'x':
+						if (index + 2 <= chars.length()) {
+							try {
+								int v = Integer.parseInt(chars.substring(index, index + 2), 16);
+								outChars.append((char) v);
+								index += 2;
+							} catch (Exception e) {
+								return false;
 							}
 						} else {
-							index--;
-						}
-					}
-					outChars.append((char) v);
-				}
-				break;
-				case 'x':
-					if (index + 2 <= chars.length()) {
-						try {
-							int v = Integer.parseInt(chars.substring(index, index + 2), 16);
-							outChars.append((char) v);
-							index += 2;
-						} catch (Exception e) {
 							return false;
 						}
-					} else {
-						return false;
-					}
-					break;
-				case 'u':
-					if (index + 4 <= chars.length()) {
-						try {
-							int v = Integer.parseInt(chars.substring(index, index + 4), 16);
-							//line separators are invalid here
-							if (v == 0x000a || v == 0x000d) return false;
-							c = chars.charAt(index);
-							if (c == '+' || c == '-') return false;
-							outChars.append((char) v);
-							index += 4;
-						} catch (Exception e) {
+						break;
+					case 'u':
+						if (index + 4 <= chars.length()) {
+							try {
+								int v = Integer.parseInt(chars.substring(index, index + 4), 16);
+								//line separators are invalid here
+								if (v == 0x000a || v == 0x000d) return false;
+								c = chars.charAt(index);
+								if (c == '+' || c == '-') return false;
+								outChars.append((char) v);
+								index += 4;
+							} catch (Exception e) {
+								return false;
+							}
+						} else {
 							return false;
 						}
-					} else {
-						return false;
-					}
-					break;
+						break;
 
-				default:
-					return false;
+					default:
+						return false;
+				}
 			}
 
-			sourceOffsets[outChars.length()] = index;
+			sourceOffsets[outChars.length() - outOffset] = index;
 		}
 		return true;
 	}

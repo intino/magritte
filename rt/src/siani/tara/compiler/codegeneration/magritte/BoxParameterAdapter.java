@@ -68,8 +68,7 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	}
 
 	private List<Object> createNativeReference(Parameter parameter) {
-		final String qualifiedName = parameter.getOwner().getQualifiedName();
-		return Collections.singletonList(NameFormatter.createNativeReference(qualifiedName, parameter.getName()) + ".class");
+		return Collections.singletonList(NameFormatter.createNativeClassReference(parameter.getOwner(), parameter.getName()) + ".class");
 	}
 
 

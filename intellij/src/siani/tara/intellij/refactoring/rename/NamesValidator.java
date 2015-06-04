@@ -63,10 +63,10 @@ public class NamesValidator implements com.intellij.lang.refactoring.NamesValida
 	}
 
 	public boolean isKeyword(@NotNull final String name, final Project project) {
-		return javaKeywords.contains(name.toLowerCase());
+		return javaKeywords.contains(name);
 	}
 
 	public boolean isIdentifier(@NotNull final String name, final Project project) {
-		return !javaKeywords.contains(name.toLowerCase());
+		return !javaKeywords.contains(name);
 	}
 }

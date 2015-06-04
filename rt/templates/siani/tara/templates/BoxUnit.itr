@@ -1,40 +1,40 @@
 def type(model)
-    package magritte.boxes;
+	package magritte.boxes;
 
 	import java.text.SimpleDateFormat;
 	import java.text.ParseException;
 	import java.util.Arrays;
 
-    import static magritte.editors.BoxCore.*;
-    import static magritte.Tag.*;
+	import static magritte.editors.BoxCore.*;
+	import static magritte.Tag.*;
 	import magritte.primitives.Date;
-    import $generatedLanguage+lowercase.*;
+	import $generatedLanguage+lowercase.*;
 
-    $importMetric...[$NL]
+	$importMetric...[$NL]
 
-    public class $name extends magritte.editors.Box.$terminal {
-        public static final magritte.editors.Box box = new $name();
+	public class $name extends magritte.editors.Box.$terminal {
+		public static final magritte.editors.Box box = new $name();
 
-        @Override
-        public magritte.editors.Box$[] dependencies() {
-            return new magritte.editors.Box$[]{[magritte.dsl.$language+firstUpperCase.box]};
-        }
+		@Override
+		public magritte.editors.Box$[] dependencies() {
+			return new magritte.editors.Box$[]{[magritte.dsl.$language+firstUpperCase.box]};
+		}
 
-        @Override
-        public void doWrite() {
-            $node...[$NL]
-        }
+		@Override
+		public void doWrite() {
+			$node...[$NL]
+		}
 
-        private Date asDate(String date){
-            try {
-                return Date.date(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(date).getTime());
-            } catch (ParseException e) {
-                return null;
-            }
-        }
+		private Date asDate(String date){
+			try {
+				return Date.date(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(date).getTime());
+			} catch (ParseException e) {
+				return null;
+			}
+		}
 
-        $intention...[$NL$NL]
-    }
+		$intention...[$NL$NL]
+	}
 end
 
 def trigger(terminal) value(true)
@@ -44,80 +44,62 @@ def trigger(terminal) value(false)
 	Unit
 end
 
-def type(Node) trigger(node)
-    [def("$name$plate")][def($key)][.name()][$nodeType...[]][$facet...[]][$annotation...[]][.$parent][$variable...[]][$include...[]];
+def type(nodecontainer) trigger(node)
+	[def("$name$plate")][def($key)][.name()][$nodeType...[]][$facet...[]][$annotation...[]][.$parent][$variable...[]][$include...[]];
 end
 
 def type(intention) trigger(intention)
-    public static class $path [extends $container] implements $parentIntention+lowercase.natives.$interface+FirstUppercase {
-        @Override
-        $signature {
-            $body
-        }
-    }
+	public static class $path [extends $container] implements $parentIntention+lowercase.natives.$interface+FirstUppercase {
+		@Override
+		$signature {
+			$body
+		}
+	}
 end
 
 def trigger(nodeType)
-    .type("$value")
+	.type("$value")
 end
 
 def type(facetapply) trigger(facet)
-    .type("$name"[, $apply])
+	.type("$name"[, $apply])
 end
 
 def trigger(parent)
-    parent("$value")
+	parent("$value")
 end
 
 def type(include) type(key) type(terminal) trigger(include)
-    .has($$($value))
+	.has($$($value))
 end
 
 def type(include) !type(key) type(terminal) trigger(include)
-    .has($value)
+	.has($value)
 end
 
 def type(include) type(required) !type(single) trigger(include)
-    .requires($value).holds($value)
+	.requires($value).holds($value)
 end
 
 def type(include) type(single) !type(required) trigger(include)
-    .allows($value)
+	.allows($value)
 end
 
 def type(include) type(required) trigger(include)
-    .requires($value)
+	.requires($value)
 end
 
 def type(include) !type(single) !type(required) trigger(include)
-    .holds($value)
+	.holds($value)
 end
 
-def type(variable) type(target) type(measure) slot(variableValue) trigger(variable)
-    .set("!$node:$name<$target", $measureValue.value($variableValue))
-end
-
-def type(variable) type(target) type(string) slot(variableValue) trigger(variable)
-    .set("!$node:$name<$target", $multiple($variableValue+quoted...[, ]))
-end
-def type(variable) type(target) type(word) slot(variableValue) trigger(variable)
-    .set("!$node:$name<$target", $multiple($variableValue...[, ]))
-end
-
-def type(variable) type(target) type(reference) slot(variableValue) trigger(variable)
-    .set("!$node:$name<$target", $multiple(ref($variableValue+quoted...[, ])))
-end
-
-def type(variable) type(target) slot(variableValue) trigger(variable)
-    .set("!$node:$name<$target", $multiple($variableValue+quoted...[, ]))
-end
-
+---------------------- NODE SETTERS ----------------------
 def type(variable) type(reference) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple(ref($variableValue+quoted...[, ])))
+	.set("$terminal$private$name", $multiple(ref($variableValue+quoted...[, ])))
 end
 
 def type(variable) type(file) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple(resource(($variableValue+file...[, ]))))
+	.set("$terminal$private$name", $multiple(resource(($variableValue+file...[, ]))))
 end
 
 def trigger(file)
@@ -125,59 +107,58 @@ def trigger(file)
 end
 
 def type(variable) type(native) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $variableValue+native)
+	.set("$terminal$private$name", $variableValue+native)
 end
 
 def trigger(native) value(null)
-    nullBehavior()
+	nullBehavior()
 end
 
 def type(variable) type(word) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple(new String$[]{$variableValue+quoted...[, ]}))
+	.set("$terminal$private$name", $multiple(new String$[]{$variableValue+quoted...[, ]}))
 end
 
 def type(Variable) type(string) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple($variableValue+quoted...[, ]))
+	.set("$terminal$private$name", $multiple($variableValue+quoted...[, ]))
 end
 
 def type(Variable) type(integer) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple($variableValue...[, ]))
+	.set("$terminal$private$name", $multiple($variableValue...[, ]))
 end
 
 def type(Variable) type(double) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple($variableValue...[, ]))
+	.set("$terminal$private$name", $multiple($variableValue...[, ]))
 end
 
 def type(Variable) type(date) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple($variableValue+date...[, ]))
+	.set("$terminal$private$name", $multiple($variableValue+date...[, ]))
 end
 
 def trigger(date)
-    asDate("$value")
+	asDate("$value")
 end
 
 def type(Variable) type(boolean) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple($variableValue...[, ]))
+	.set("$terminal$private$name", $multiple($variableValue...[, ]))
 end
 
 def type(Variable) slot(variableValue) trigger(variable)
-    .set("$terminal$name", $multiple($variableValue+quoted...[, ]))
+	.set("$terminal$private$name", $multiple($variableValue+quoted...[, ]))
 end
 
 def type(Variable) trigger(variable)
 end
 
 def type(Annotation) trigger(annotation)
-    .set($value+CamelCase...[, ])
+	.set($value+CamelCase...[, ])
 end
 
-
 def trigger(quoted)
-    "$value"
+	"$value"
 end
 
 def trigger(multiple) value(true)
-    multiple
+	multiple
 end
 
 def trigger(multiple) value(false)

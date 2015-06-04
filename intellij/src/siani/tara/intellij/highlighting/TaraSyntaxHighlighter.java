@@ -1,9 +1,11 @@
 package siani.tara.intellij.highlighting;
 
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.SyntaxHighlighterColors;
+import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.EffectType;
 import com.intellij.openapi.editor.markup.TextAttributes;
@@ -51,6 +53,9 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	private static final Map<IElementType, TextAttributesKey> KEYS;
 
 	public TaraSyntaxHighlighter() {
+		EditorColors.INJECTED_LANGUAGE_FRAGMENT.getDefaultAttributes().setBackgroundColor(JBColor.BLACK);
+		HighlightInfoType.INJECTED_LANGUAGE_FRAGMENT.getAttributesKey().getDefaultAttributes().setBackgroundColor(JBColor.BLACK);
+		HighlightInfoType.INJECTED_LANGUAGE_BACKGROUND.getAttributesKey().getDefaultAttributes().setBackgroundColor(JBColor.BLACK);
 		BAD_CHARACTER.getDefaultAttributes().setForegroundColor(JBColor.RED);
 		BAD_CHARACTER.getDefaultAttributes().setFontType(Font.BOLD);
 	}
@@ -60,16 +65,16 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	}
 
 	static {
-		DISPLAY_NAMES.put(IDENTIFIER, new Pair<String, HighlightSeverity>(MessageProvider.message("options.tara.concept.identifier"), null));
-		DISPLAY_NAMES.put(KEYWORD, new Pair<String, HighlightSeverity>(MessageProvider.message("options.tara.concept.keyword"), null));
-		DISPLAY_NAMES.put(PRIMITIVE, new Pair<String, HighlightSeverity>(MessageProvider.message("options.tara.concept.primitive"), null));
-		DISPLAY_NAMES.put(STRING, new Pair<String, HighlightSeverity>(MessageProvider.message("options.tara.types.string"), null));
-		DISPLAY_NAMES.put(DOCUMENTATION, new Pair<String, HighlightSeverity>(MessageProvider.message("options.tara.concept.comment"), null));
-		DISPLAY_NAMES.put(SEMICOLON_KEY, new Pair<String, HighlightSeverity>(MessageProvider.message("options.tara.concept.semicolon"), null));
-		DISPLAY_NAMES.put(OPERATOR, new Pair<String, HighlightSeverity>(MessageProvider.message("options.tara.concept.operator"), null));
-		DISPLAY_NAMES.put(ANNOTATION, new Pair<String, HighlightSeverity>(MessageProvider.message("options.tara.concept.annotation"), null));
-		DISPLAY_NAMES.put(NUMBER, new Pair<String, HighlightSeverity>(MessageProvider.message("options.tara.number"), null));
-		DISPLAY_NAMES.put(BRACKETS, new Pair<String, HighlightSeverity>(MessageProvider.message("options.tara.concept.annotation"), null));
+		DISPLAY_NAMES.put(IDENTIFIER, new Pair<>(MessageProvider.message("options.tara.concept.identifier"), null));
+		DISPLAY_NAMES.put(KEYWORD, new Pair<>(MessageProvider.message("options.tara.concept.keyword"), null));
+		DISPLAY_NAMES.put(PRIMITIVE, new Pair<>(MessageProvider.message("options.tara.concept.primitive"), null));
+		DISPLAY_NAMES.put(STRING, new Pair<>(MessageProvider.message("options.tara.types.string"), null));
+		DISPLAY_NAMES.put(DOCUMENTATION, new Pair<>(MessageProvider.message("options.tara.concept.comment"), null));
+		DISPLAY_NAMES.put(SEMICOLON_KEY, new Pair<>(MessageProvider.message("options.tara.concept.semicolon"), null));
+		DISPLAY_NAMES.put(OPERATOR, new Pair<>(MessageProvider.message("options.tara.concept.operator"), null));
+		DISPLAY_NAMES.put(ANNOTATION, new Pair<>(MessageProvider.message("options.tara.concept.annotation"), null));
+		DISPLAY_NAMES.put(NUMBER, new Pair<>(MessageProvider.message("options.tara.number"), null));
+		DISPLAY_NAMES.put(BRACKETS, new Pair<>(MessageProvider.message("options.tara.concept.annotation"), null));
 		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<>(MessageProvider.message("invalid.tara.concept.character"), HighlightSeverity.ERROR));
 	}
 

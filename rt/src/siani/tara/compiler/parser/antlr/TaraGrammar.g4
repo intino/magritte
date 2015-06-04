@@ -73,7 +73,7 @@ annotation: TERMINAL | ROOT | SINGLE | REQUIRED
 
 flags: IS flag+;
 flag: ABSTRACT | TERMINAL | ROOT
-      	| SINGLE  | REQUIRED
+      	| SINGLE  | REQUIRED | PRIVATE
       	| FACET | FEATURE | IMPLICIT | ENCLOSED | FINAL;
 
 varInit : IDENTIFIER EQUALS value;
