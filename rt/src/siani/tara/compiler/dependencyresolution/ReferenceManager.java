@@ -14,11 +14,11 @@ public class ReferenceManager {
 
 	Model model;
 
-	ReferenceManager(Model model) {
+	public ReferenceManager(Model model) {
 		this.model = model;
 	}
 
-	NodeImpl resolve(NodeReference reference) {
+	public NodeImpl resolve(NodeReference reference) {
 		return (NodeImpl) resolve(reference.getReference(), reference.getContainer());
 	}
 

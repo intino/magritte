@@ -4,9 +4,9 @@ import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.semantic.model.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LanguageRoot extends LanguageElement implements Node {
 
@@ -115,8 +115,7 @@ public class LanguageRoot extends LanguageElement implements Node {
 	}
 
 	private Node[] wrap(Collection<siani.tara.intellij.lang.psi.Node> nodes) {
-		List<LanguageNode> languageNodes = new ArrayList<>();
-		for (siani.tara.intellij.lang.psi.Node node : nodes) languageNodes.add(new LanguageNode(node));
+		List<LanguageNode> languageNodes = nodes.stream().map(LanguageNode::new).collect(Collectors.toList());
 		return languageNodes.toArray(new LanguageNode[languageNodes.size()]);
 	}
 

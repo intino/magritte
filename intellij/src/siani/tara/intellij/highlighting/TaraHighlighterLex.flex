@@ -79,7 +79,7 @@ ROOT                = "root"
 IMPLICIT            = "implicit"
 FEATURE             = "feature"
 
-READONLY            = "readonly"
+FINAL               = "final"
 ENCLOSED            = "enclosed"
 
 FACET               = "facet"
@@ -122,8 +122,8 @@ BOOLEAN_VALUE_KEY   = "true" | "false"
 EMPTY_REF           = "empty"
 NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
-NOT_CIENTIFICA      = "E" ({PLUS} | {DASH})? {DIGIT}+
-DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {NOT_CIENTIFICA}?
+SCIENCE_NOTATION    = "E" ({PLUS} | {DASH})? {DIGIT}+
+DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOTATION}?
 STRING_MULTILINE    = {DASHES}
 ADDRESS_VALUE       = {HASHTAG} [:jletter:]+
 MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
@@ -181,7 +181,7 @@ NEWLINE             = [\n]+
     {TERMINAL}                      {   return TaraTypes.TERMINAL; }
     {ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
 
-    {READONLY}                      {   return TaraTypes.READONLY; }
+    {FINAL}                         {   return TaraTypes.FINAL; }
 
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 

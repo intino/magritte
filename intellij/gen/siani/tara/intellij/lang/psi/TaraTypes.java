@@ -70,6 +70,7 @@ public interface TaraTypes {
 	IElementType EXTENDS = new TaraTokenType("EXTENDS");
 	IElementType FACET = new TaraTokenType("FACET");
 	IElementType FEATURE = new TaraTokenType("FEATURE");
+	IElementType FINAL = new TaraTokenType("FINAL");
 	IElementType HAS = new TaraTokenType("HAS");
 	IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
 	IElementType IMPLICIT = new TaraTokenType("IMPLICIT");
@@ -94,7 +95,6 @@ public interface TaraTypes {
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
 	IElementType QUOTE_END = new TaraTokenType("QUOTE_END");
 	IElementType RATIO_TYPE = new TaraTokenType("RATIO_TYPE");
-	IElementType READONLY = new TaraTokenType("READONLY");
 	IElementType REQUIRED = new TaraTokenType("REQUIRED");
 	IElementType RESOURCE_KEY = new TaraTokenType("RESOURCE_KEY");
 	IElementType RIGHT_PARENTHESIS = new TaraTokenType("RIGHT_PARENTHESIS");

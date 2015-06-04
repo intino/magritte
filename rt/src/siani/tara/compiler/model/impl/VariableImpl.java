@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.semantic.model.Tag.READONLY;
+import static siani.tara.semantic.model.Tag.FINAL;
 import static siani.tara.semantic.model.Tag.TERMINAL;
 
 public class VariableImpl extends Element implements Variable {
@@ -86,7 +86,7 @@ public class VariableImpl extends Element implements Variable {
 
 	@Override
 	public boolean isReadOnly() {
-		return flags.contains(READONLY);
+		return flags.contains(FINAL);
 	}
 
 	@Override

@@ -39,13 +39,10 @@ public interface Assumption {
 
 	}
 
-	interface Multiple extends Assumption {
-	}
-
 	interface Required extends Assumption {
 	}
 
-	interface Enclosed extends Assumption {
+	interface Local extends Assumption {
 
 	}
 
@@ -56,5 +53,4 @@ public interface Assumption {
 	interface TerminalInstance extends Assumption {
 
 	}
-
 }

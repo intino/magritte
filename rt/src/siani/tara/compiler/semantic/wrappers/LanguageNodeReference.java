@@ -9,8 +9,8 @@ import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.model.Tag;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LanguageNodeReference extends LanguageNode implements siani.tara.semantic.model.Node {
 
@@ -51,9 +51,7 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 
 	@Override
 	public String[] secondaryTypes() {
-		List<String> types = new ArrayList<>();
-		for (Facet facet : reference.getDestiny().getFacets())
-			types.add(facet.getType());
+		List<String> types = reference.getDestiny().getFacets().stream().map(Facet::getType).collect(Collectors.toList());
 		return types.toArray(new String[types.size()]);
 	}
 
@@ -79,15 +77,13 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 
 	@Override
 	public String[] annotations() {
-		List<String> values = new ArrayList<>();
-		for (Tag tag : reference.getAnnotations()) values.add(tag.name());
+		List<String> values = reference.getAnnotations().stream().map(Tag::name).collect(Collectors.toList());
 		return values.toArray(new String[values.size()]);
 	}
 
 	@Override
 	public String[] flags() {
-		List<String> values = new ArrayList<>();
-		for (Tag tag : reference.getFlags()) values.add(tag.name());
+		List<String> values = reference.getFlags().stream().map(Tag::name).collect(Collectors.toList());
 		return values.toArray(new String[values.size()]);
 	}
 
@@ -122,11 +118,9 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 
 	@Override
 	public siani.tara.semantic.model.Node[] includes() {
-		List<siani.tara.semantic.model.Node> includes = new ArrayList<>();
-		for (Node inner : reference.getIncludedNodes())
-			includes.add(inner instanceof NodeReference ?
-				new LanguageNodeReference((NodeReference) inner) :
-				new LanguageNode((NodeImpl) inner));
+		List<siani.tara.semantic.model.Node> includes = reference.getIncludedNodes().stream().map(inner -> inner instanceof NodeReference ?
+			new LanguageNodeReference((NodeReference) inner) :
+			new LanguageNode((NodeImpl) inner)).collect(Collectors.toList());
 		return includes.toArray(new siani.tara.semantic.model.Node[includes.size()]);
 	}
 

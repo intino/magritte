@@ -66,9 +66,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public String[] secondaryTypes() {
-		List<String> types = new ArrayList<>();
-		for (Facet facet : node.getFacets())
-			types.add(facet.getType());
+		List<String> types = node.getFacets().stream().map(Facet::getType).collect(Collectors.toList());
 		return types.toArray(new String[types.size()]);
 	}
 
@@ -137,9 +135,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public siani.tara.semantic.model.Facet[] facets() {
-		List<siani.tara.semantic.model.Facet> facets = new ArrayList<>();
-		for (final Facet facet : node.getFacets())
-			facets.add(new LanguageFacet(facet));
+		List<siani.tara.semantic.model.Facet> facets = node.getFacets().stream().map(LanguageFacet::new).collect(Collectors.toList());
 		return facets.toArray(new siani.tara.semantic.model.Facet[facets.size()]);
 	}
 
@@ -155,9 +151,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	private siani.tara.semantic.model.Parameter[] wrapParameters(Collection<Parameter> toWrap) {
 		if (toWrap == null) return new siani.tara.semantic.model.Parameter[0];
-		List<siani.tara.semantic.model.Parameter> parameters = new ArrayList<>();
-		for (Parameter parameter : toWrap)
-			parameters.add(new LanguageParameter(parameter));
+		List<siani.tara.semantic.model.Parameter> parameters = toWrap.stream().map(LanguageParameter::new).collect(Collectors.toList());
 		return parameters.toArray(new siani.tara.semantic.model.Parameter[parameters.size()]);
 	}
 
@@ -173,9 +167,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 
 	private siani.tara.semantic.model.FacetTarget[] collectFacetTargets(Collection<FacetTarget> facetTargets) {
-		List<siani.tara.semantic.model.FacetTarget> targets = new ArrayList<>();
-		for (final FacetTarget target : facetTargets)
-			targets.add(new LanguageFacetTarget(target));
+		List<siani.tara.semantic.model.FacetTarget> targets = facetTargets.stream().map(LanguageFacetTarget::new).collect(Collectors.toList());
 		return targets.toArray(new siani.tara.semantic.model.FacetTarget[targets.size()]);
 	}
 

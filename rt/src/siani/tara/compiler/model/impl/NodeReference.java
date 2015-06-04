@@ -29,6 +29,7 @@ public class NodeReference extends Element implements Node {
 
 	public NodeReference(NodeImpl destiny) {
 		this.destiny = destiny;
+		reference = destiny.getQualifiedName();
 	}
 
 	public String getReference() {

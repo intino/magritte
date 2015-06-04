@@ -11,6 +11,7 @@ import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.compiler.semantic.wrappers.LanguageNode;
 import siani.tara.compiler.semantic.wrappers.LanguageNodeReference;
+import siani.tara.compiler.semantic.wrappers.LanguageRoot;
 import siani.tara.semantic.SemanticException;
 
 public class SemanticAnalyzer {
@@ -26,16 +27,17 @@ public class SemanticAnalyzer {
 
 	public void analyze() throws SemanticException {
 		resolveTypes(model);
+		checker.check(wrap(model));
 		check(model);
 	}
 
 	private void resolveTypes(Node node) {
-		for (Node include : node.getIncludedNodes()) resolveNode(include);
+		node.getIncludedNodes().forEach(this::resolveNode);
 		if (node instanceof NodeImpl) {
 			for (FacetTarget facetTarget : node.getFacetTargets())
-				for (Node include : facetTarget.getIncludedNodes()) resolveNode(include);
+				facetTarget.getIncludedNodes().forEach(this::resolveNode);
 			for (Facet facet : node.getFacets())
-				for (Node include : facet.getIncludedNodes()) resolveNode(include);
+				facet.getIncludedNodes().forEach(this::resolveNode);
 		}
 	}
 
@@ -63,5 +65,9 @@ public class SemanticAnalyzer {
 
 	private LanguageNode wrap(Node node) {
 		return node instanceof NodeImpl ? new LanguageNode((NodeImpl) node) : new LanguageNodeReference((NodeReference) node);
+	}
+
+	private LanguageRoot wrap(Model model) {
+		return new LanguageRoot(model);
 	}
 }

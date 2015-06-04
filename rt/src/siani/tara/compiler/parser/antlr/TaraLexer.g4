@@ -105,7 +105,7 @@ ROOT                : 'root';
 IMPLICIT            : 'implicit';
 FEATURE             : 'feature';
 
-READONLY            : 'readonly';
+FINAL               : 'final';
 ENCLOSED            : 'enclosed';
 
 FACET               : 'facet';

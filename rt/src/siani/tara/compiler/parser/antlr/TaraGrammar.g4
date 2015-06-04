@@ -56,14 +56,14 @@ contractValue :(LEFT_SQUARE (MEASURE_VALUE | IDENTIFIER)+ RIGHT_SQUARE) | (MEASU
 
 count  : LEFT_SQUARE NATURAL_VALUE RIGHT_SQUARE;
 
-stringValue     : NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END);
-booleanValue    : BOOLEAN_VALUE;
-naturalValue    : NATURAL_VALUE;
-integerValue    : NATURAL_VALUE | NEGATIVE_VALUE;
-doubleValue     : (NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE) SCIENCE_NOT?;
-linkValue       : plate | identifierReference;
-plate         : PLATE_VALUE;
-measureValue    : IDENTIFIER | MEASURE_VALUE;
+stringValue  : NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END);
+booleanValue : BOOLEAN_VALUE;
+naturalValue : NATURAL_VALUE;
+integerValue : NATURAL_VALUE | NEGATIVE_VALUE;
+doubleValue  : (NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE) SCIENCE_NOT?;
+linkValue    : plate | identifierReference;
+plate        : PLATE_VALUE;
+measureValue : IDENTIFIER | MEASURE_VALUE;
 
 tags: flags? annotations?;
 
@@ -74,7 +74,7 @@ annotation: TERMINAL | ROOT | SINGLE | REQUIRED
 flags: IS flag+;
 flag: ABSTRACT | TERMINAL | ROOT
       	| SINGLE  | REQUIRED
-      	| FACET | FEATURE | IMPLICIT | ENCLOSED | READONLY;
+      	| FACET | FEATURE | IMPLICIT | ENCLOSED | FINAL;
 
 varInit : IDENTIFIER EQUALS value;
 

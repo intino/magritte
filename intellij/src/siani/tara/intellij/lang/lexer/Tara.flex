@@ -110,7 +110,7 @@ TERMINAL            = "terminal"
 IMPLICIT            = "implicit"
 FEATURE             = "feature"
 
-READONLY            = "readonly"
+FINAL               = "final"
 ENCLOSED            = "enclosed"
 
 FACET               = "facet"
@@ -209,7 +209,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 	{TERMINAL}                      {   return TaraTypes.TERMINAL; }
 	{ENCLOSED}                      {   return TaraTypes.ENCLOSED; }
 
-	{READONLY}                      {   return TaraTypes.READONLY; }
+	{FINAL}                         {   return TaraTypes.FINAL; }
 
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
 	{STRING_MULTILINE}              {   yybegin(MULTILINE); return TaraTypes.QUOTE_BEGIN; }
