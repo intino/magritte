@@ -213,7 +213,7 @@ public class MavenManager {
 		for (Module aModule : ModuleManager.getInstance(project).getModules()) {
 			TaraFacet taraFacet = TaraFacet.getTaraFacetByModule(aModule);
 			if (taraFacet == null) continue;
-			if (!taraFacet.getConfiguration().isCase()) moduleCandidates.add(aModule);
+			if (!taraFacet.getConfiguration().isM0()) moduleCandidates.add(aModule);
 		}
 		return moduleCandidates.toArray(new Module[moduleCandidates.size()]);
 	}

@@ -3,9 +3,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import siani.tara.Checker;
 import siani.tara.dsls.Proteo;
-import siani.tara.semantic.model.Node;
 import siani.tara.semantic.Definition;
 import siani.tara.semantic.SemanticException;
+import siani.tara.semantic.model.Node;
 
 import static siani.tara.semantic.MessageProvider.message;
 import static siani.tara.semantic.Script.*;
@@ -83,7 +83,7 @@ public class AcceptedGlobalConstrains {
 		thrown.expectMessage(message("reject.duplicate.entries", "Feature", "Entity"));
 		Node feature = define().type("Concept").name("Feature").plate("1l").node();
 		taraCheck(root().include(
-				define().type("Concept").name("Entity").has(feature).has(feature).node()));
+			define().type("Concept").name("Entity").has(feature).has(feature).node()));
 	}
 
 	private void taraCheck(Definition definition) throws SemanticException {

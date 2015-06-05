@@ -13,4 +13,6 @@ public interface JpsTaraModuleExtension extends JpsElement {
 	String getGeneratedDslName();
 
 	boolean isPlateRequired();
+
+	int getLevel();
 }

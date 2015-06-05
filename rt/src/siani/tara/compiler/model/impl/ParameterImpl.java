@@ -10,9 +10,9 @@ import java.util.List;
 
 public class ParameterImpl extends Element implements Parameter {
 
+	private final List<Object> values = new ArrayList<>();
 	private String name;
 	private int position;
-	private final List<Object> values = new ArrayList<>();
 	private List<String> allowedValues = new ArrayList<>();
 	private String file;
 	private int line;
@@ -32,17 +32,16 @@ public class ParameterImpl extends Element implements Parameter {
 		addValues(values);
 	}
 
+	public ParameterImpl(int position, String metric, Object... values) {
+		this("", position, metric, values);
+	}
+
 	private void addValues(Object[] values) {
 		if (values[0].toString().startsWith(REFERENCE)) {
 			hasReferenceValue = true;
 			for (Object value : values) this.values.add(value.toString().replace(REFERENCE, ""));
 		} else Collections.addAll(this.values, values);
 	}
-
-	public ParameterImpl(int position, String metric, Object... values) {
-		this("", position, metric, values);
-	}
-
 
 	@Override
 	public NodeContainer getOwner() {
@@ -64,13 +63,13 @@ public class ParameterImpl extends Element implements Parameter {
 	}
 
 	@Override
-	public void setMultiple(boolean multiple) {
-		this.multiple = multiple;
+	public boolean isMultiple() {
+		return multiple;
 	}
 
 	@Override
-	public boolean isMultiple() {
-		return multiple;
+	public void setMultiple(boolean multiple) {
+		this.multiple = multiple;
 	}
 
 	@Override
@@ -109,6 +108,11 @@ public class ParameterImpl extends Element implements Parameter {
 	}
 
 	@Override
+	public void setContract(String contract) {
+		this.contract = contract;
+	}
+
+	@Override
 	public String getFile() {
 		return file;
 	}
@@ -134,11 +138,6 @@ public class ParameterImpl extends Element implements Parameter {
 
 	public void setMetric(String metric) {
 		this.metric = metric;
-	}
-
-	@Override
-	public void setContract(String contract) {
-		this.contract = contract;
 	}
 
 	@Override

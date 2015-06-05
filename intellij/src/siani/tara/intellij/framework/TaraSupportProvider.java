@@ -30,13 +30,11 @@ import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.facet.TaraFacetConfiguration;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static java.io.File.separator;
+import static siani.tara.intellij.project.facet.TaraFacet.getTaraFacetByModule;
 
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
@@ -44,7 +42,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private String dsl;
 	private String dictionary;
 	private String dslGenerate;
-	private boolean addressRequired;
+	private boolean plateRequired;
+	private int level;
 
 	@NotNull
 	@Override
@@ -77,12 +76,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	private void startWithMaven(final MavenManager mavenizer, Project project) {
-		StartupManager.getInstance(project).registerPostStartupActivity(new Runnable() {
-			@Override
-			public void run() {
-				mavenizer.mavenize();
-			}
-		});
+		StartupManager.getInstance(project).registerPostStartupActivity(mavenizer::mavenize);
 	}
 
 	private void updateFacetConfiguration(Module module) {
@@ -92,7 +86,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		facetConfiguration.setDsl(dsl);
 		facetConfiguration.setDictionary(dictionary);
 		facetConfiguration.setGeneratedDslName(dslGenerate);
-		facetConfiguration.setAddressRequired(addressRequired);
+		facetConfiguration.setPlateRequired(plateRequired);
+		facetConfiguration.setLevel(level);
 	}
 
 	private void createResources(ContentEntry contentEntry) {
@@ -139,41 +134,39 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
 		private static final String NONE = "";
 		private final Project project;
-
+		private final Map<Module, AbstractMap.SimpleEntry<String, Integer>> moduleInfo;
 		private JPanel myMainPanel;
 		private JComboBox<String> dictionaryBox;
 		private JComboBox<String> dslBox;
-		private JCheckBox generateDslCheck;
 		private JTextField dslGeneratedName;
-		private JCheckBox addressRequired;
-
+		private JCheckBox plateRequired;
+		private JLabel generativeLabel;
+		private JSpinner level;
 		private Module[] candidates;
 
 
 		private TaraSupportConfigurable(FrameworkSupportModel model) {
 			model.addFrameworkListener(this);
 			this.project = model.getProject();
+			candidates = getParentModulesCandidates(project);
+			moduleInfo = collectModulesInfo();
 		}
 
 		@Nullable
 		@Override
 		public JComponent createComponent() {
 			dslBox.addItem(PROTEO);
-			candidates = getParentModulesCandidates(project);
+			level.setValue(2);
 			addModuleDsls();
 			addDictionaries();
-			addCheckListener();
+			addListeners();
 			return myMainPanel;
 		}
 
 		private void addModuleDsls() {
-			for (Module candidate : candidates) {
-				if (TaraFacet.getTaraFacetByModule(candidate) == null) continue;
-				TaraFacetConfiguration configuration = TaraFacet.getTaraFacetByModule(candidate).getConfiguration();
-				if (configuration.isCase()) continue;
-				dslBox.addItem(configuration.getGeneratedDslName());
-			}
-			dslBox.setSelectedIndex(0);
+			moduleInfo.entrySet().stream().
+				filter(entry -> !entry.getValue().getValue().equals(0)).
+				forEach(entry -> dslBox.addItem(entry.getValue().getKey()));
 		}
 
 		private void addDictionaries() {
@@ -181,40 +174,42 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			dictionaryBox.addItem("Español");
 		}
 
-		private void addCheckListener() {
-			generateDslCheck.addChangeListener(new ChangeListener() {
-				@Override
-				public void stateChanged(ChangeEvent e) {
-					dslGeneratedName.setEnabled(((JCheckBox) e.getSource()).isSelected());
-					addressRequired.setEnabled(((JCheckBox) e.getSource()).isSelected());
-				}
+		private void addListeners() {
+			dslBox.addItemListener(e -> {
+				if (e.getItem().toString().equals(PROTEO))
+					setLevel(2, true);
+				else moduleInfo.values().stream().
+					filter(entry -> entry.getKey().equals(e.getItem().toString())).
+					forEach(entry -> setLevel(entry.getValue() - 1, false));
 			});
-			generateDslCheck.setSelected(false);
-			dslGeneratedName.setEnabled(false);
-			addressRequired.setEnabled(false);
+			level.addChangeListener(e -> visibilityOfGenerativeLanguage((Integer) ((JSpinner) e.getSource()).getValue() != 0));
+		}
+
+		private void visibilityOfGenerativeLanguage(boolean visibility) {
+			generativeLabel.setEnabled(visibility);
+			plateRequired.setEnabled(visibility);
+			dslGeneratedName.setEnabled(visibility);
+		}
+
+		private void setLevel(int level, boolean enabled) {
+			this.level.setValue(level);
+			this.level.setEnabled(enabled);
 		}
 
 		@Override
 		public void frameworkSelected(@NotNull FrameworkSupportProvider frameworkSupportProvider) {
 			dslBox.setEnabled(true);
 			dictionaryBox.setEnabled(true);
-			generateDslCheck.setEnabled(true);
-			if (generateDslCheck.isSelected()) {
-				dslGeneratedName.setEnabled(true);
-				addressRequired.setEnabled(true);
-			} else {
-				dslGeneratedName.setEnabled(false);
-				addressRequired.setEnabled(false);
-			}
+			dslGeneratedName.setEnabled(true);
+			plateRequired.setEnabled(true);
 		}
 
 		@Override
 		public void frameworkUnselected(@NotNull FrameworkSupportProvider frameworkSupportProvider) {
 			dslBox.setEnabled(false);
 			dictionaryBox.setEnabled(false);
-			generateDslCheck.setEnabled(false);
 			dslGeneratedName.setEnabled(false);
-			addressRequired.setEnabled(false);
+			plateRequired.setEnabled(false);
 		}
 
 		@Override
@@ -227,8 +222,9 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		                       @NotNull ModifiableModelsProvider modifiableModelsProvider) {
 			TaraSupportProvider.this.dsl = dslBox.getSelectedItem().toString();
 			TaraSupportProvider.this.dictionary = dictionaryBox.getSelectedItem().toString();
-			TaraSupportProvider.this.dslGenerate = generateDslCheck.isSelected() ? dslGeneratedName.getText() : NONE;
-			TaraSupportProvider.this.addressRequired = generateDslCheck.isSelected() && addressRequired.isSelected();
+			TaraSupportProvider.this.dslGenerate = level.getValue().equals(0) ? NONE : dslGeneratedName.getText();
+			TaraSupportProvider.this.plateRequired = !level.getValue().equals(0) && plateRequired.isSelected();
+			TaraSupportProvider.this.level = (int) level.getValue();
 			TaraSupportProvider.this.addSupport(module, rootModel);
 		}
 
@@ -238,10 +234,20 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			for (Module aModule : ModuleManager.getInstance(project).getModules()) {
 				TaraFacet taraFacet = TaraFacet.getTaraFacetByModule(aModule);
 				if (taraFacet == null) continue;
-				if (!taraFacet.getConfiguration().isCase()) moduleCandidates.add(aModule);
+				if (!taraFacet.getConfiguration().isM0()) moduleCandidates.add(aModule);
 			}
 			return moduleCandidates.toArray(new Module[moduleCandidates.size()]);
 		}
 
+		private Map<Module, AbstractMap.SimpleEntry<String, Integer>> collectModulesInfo() {
+			Map<Module, AbstractMap.SimpleEntry<String, Integer>> map = new HashMap<>();
+			for (Module candidate : candidates) {
+				final TaraFacet facet = getTaraFacetByModule(candidate);
+				if (facet == null) continue;
+				TaraFacetConfiguration configuration = facet.getConfiguration();
+				map.put(candidate, new AbstractMap.SimpleEntry<>(configuration.getGeneratedDslName(), configuration.getLevel()));
+			}
+			return map;
+		}
 	}
 }

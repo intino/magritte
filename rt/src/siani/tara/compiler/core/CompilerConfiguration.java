@@ -38,6 +38,7 @@ public class CompilerConfiguration {
 	private Language language;
 	private String languageName = "Proteo";
 	private File nativePath;
+	private int level;
 
 
 	public CompilerConfiguration() {
@@ -110,15 +111,15 @@ public class CompilerConfiguration {
 		return targetDirectory;
 	}
 
+	public void setTargetDirectory(File targetDirectory) {
+		this.targetDirectory = targetDirectory;
+	}
+
 	public void setTargetDirectory(String directory) {
 		if ((directory != null) && (directory.length() > 0))
 			this.targetDirectory = new File(directory);
 		else
 			this.tempDirectory = null;
-	}
-
-	public void setTargetDirectory(File targetDirectory) {
-		this.targetDirectory = targetDirectory;
 	}
 
 	public String getProject() {
@@ -154,7 +155,7 @@ public class CompilerConfiguration {
 		return tdkHome;
 	}
 
-	public void setTdkHome(String tdkHome) {
+	public void setMagritteHome(String tdkHome) {
 		this.tdkHome = tdkHome;
 	}
 
@@ -214,20 +215,20 @@ public class CompilerConfiguration {
 		this.rulesDirectory = rulesDirectory;
 	}
 
-	public void setTerminal(boolean system) {
-		this.system = system;
-	}
-
 	public boolean isTerminal() {
 		return system;
 	}
 
-	public void setMetricsDirectory(File metricsDirectory) {
-		this.metricsDirectory = metricsDirectory;
+	public void setTerminal(boolean system) {
+		this.system = system;
 	}
 
 	public File getMetricsDirectory() {
 		return metricsDirectory;
+	}
+
+	public void setMetricsDirectory(File metricsDirectory) {
+		this.metricsDirectory = metricsDirectory;
 	}
 
 	public Locale getLocale() {
@@ -238,20 +239,20 @@ public class CompilerConfiguration {
 		this.languageForCodeGeneration = localeForCodeGeneration;
 	}
 
-	public void setGeneratedLanguage(String language) {
-		this.generatedLanguage = language;
-	}
-
 	public String getGeneratedLanguage() {
 		return generatedLanguage;
 	}
 
-	public void setSemanticRulesLib(String semanticRulesURL) {
-		this.semanticRulesLib = semanticRulesURL;
+	public void setGeneratedLanguage(String language) {
+		this.generatedLanguage = language;
 	}
 
 	public String getSemanticRulesLib() {
 		return semanticRulesLib;
+	}
+
+	public void setSemanticRulesLib(String semanticRulesURL) {
+		this.semanticRulesLib = semanticRulesURL;
 	}
 
 	public Language getLanguage() {
@@ -281,11 +282,19 @@ public class CompilerConfiguration {
 		this.plateRequired = plateRequired;
 	}
 
+	public File getNativePath() {
+		return nativePath;
+	}
+
 	public void setNativePath(File nativePath) {
 		this.nativePath = nativePath;
 	}
 
-	public File getNativePath() {
-		return nativePath;
+	public int getLevel() {
+		return level;
+	}
+
+	public void setModelLevel(Integer level) {
+		this.level = level;
 	}
 }

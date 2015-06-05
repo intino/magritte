@@ -26,11 +26,11 @@ public class TaraTemplatesFactory implements FileTemplateGroupDescriptorFactory 
 	static final String NAME_TEMPLATE_PROPERTY = "NAME";
 	static final String LOW_CASE_NAME_TEMPLATE_PROPERTY = "lowCaseName";
 
-	public static TaraTemplatesFactory getInstance() {
-		return TaraTemplatesFactoryHolder.myInstance;
+	private TaraTemplatesFactory() {
 	}
 
-	private TaraTemplatesFactory() {
+	public static TaraTemplatesFactory getInstance() {
+		return TaraTemplatesFactoryHolder.myInstance;
 	}
 
 	public static PsiFile createFromTemplate(@NotNull final PsiDirectory directory,

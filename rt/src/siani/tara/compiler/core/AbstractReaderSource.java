@@ -32,7 +32,7 @@ public abstract class AbstractReaderSource {
 			try {
 				this.lineSource.close();
 			} catch (IOException e) {
-				LOG.log(Level.SEVERE,e.getMessage(), e);
+				LOG.log(Level.SEVERE, e.getMessage(), e);
 				throw new TaraException("Error cleaning source");
 			}
 		}

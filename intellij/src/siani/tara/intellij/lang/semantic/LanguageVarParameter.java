@@ -17,6 +17,17 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 		this.varInit = varInit;
 	}
 
+	private static List<Object> wrapValues(Object[] values) {
+		List<Object> objects = new ArrayList<>();
+		for (Object value : values) {
+			if (value == null) continue;
+			if (value instanceof Node) objects.add(new LanguageNode((Node) value));
+			else if (values[0].equals("$empty")) objects.add(new EmptyNode());
+			else objects.add(value);
+		}
+		return objects;
+	}
+
 	@Override
 	public String inferredType() {
 		return null;
@@ -37,15 +48,14 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 
 	}
 
+	@Override
+	public boolean isMultiple() {
+		return false;
+	}
 
 	@Override
 	public void setMultiple(boolean multiple) {
 
-	}
-
-	@Override
-	public boolean isMultiple() {
-		return false;
 	}
 
 	@Override
@@ -68,30 +78,19 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 		return Collections.unmodifiableList(wrapValues(varInit.getValues()));
 	}
 
-	private static List<Object> wrapValues(Object[] values) {
-		List<Object> objects = new ArrayList<>();
-		for (Object value : values) {
-			if (value == null) continue;
-			if (value instanceof Node) objects.add(new LanguageNode((Node) value));
-			else if (values[0].equals("$empty")) objects.add(new EmptyNode());
-			else objects.add(value);
-		}
-		return objects;
-	}
-
 	@Override
 	public String getContract() {
 		return varInit.getContract();
 	}
 
 	@Override
-	public String getMetric() {
-		return varInit.getMetric();
+	public void setContract(String contract) {
+
 	}
 
 	@Override
-	public void setContract(String contract) {
-
+	public String getMetric() {
+		return varInit.getMetric();
 	}
 
 	@Override

@@ -14,11 +14,11 @@ import java.util.List;
 
 
 public class NodeReferenceMixin extends ASTWrapperPsiElement {
+	private List<String> inheritedFlags = new ArrayList<>();
+
 	public NodeReferenceMixin(ASTNode node) {
 		super(node);
 	}
-
-	private List<String> inheritedFlags = new ArrayList<>();
 
 	@NotNull
 	public List<TaraAnnotation> getAnnotations() {

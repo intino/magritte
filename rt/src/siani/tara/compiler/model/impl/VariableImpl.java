@@ -10,9 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static siani.tara.semantic.model.Tag.FINAL;
-import static siani.tara.semantic.model.Tag.PRIVATE;
-import static siani.tara.semantic.model.Tag.TERMINAL;
+import static siani.tara.semantic.model.Tag.*;
 
 public class VariableImpl extends Element implements Variable {
 	private NodeContainer container;
@@ -45,8 +43,18 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override
@@ -60,13 +68,13 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
-	public void setName(String name) {
-		this.name = name;
+	public String getContract() {
+		return contract;
 	}
 
 	@Override
-	public String getContract() {
-		return contract;
+	public void setContract(String contract) {
+		this.contract = contract;
 	}
 
 	@Override
@@ -102,16 +110,6 @@ public class VariableImpl extends Element implements Variable {
 
 	private void setInherited(boolean inherited) {
 		this.inherited = inherited;
-	}
-
-	@Override
-	public void setContract(String contract) {
-		this.contract = contract;
-	}
-
-	@Override
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	@Override
@@ -198,11 +196,6 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
-	public void setOverriden(boolean overriden) {
-		this.overriden = overriden;
-	}
-
-	@Override
 	public String toString() {
 		return type + ":" + name;
 	}
@@ -211,11 +204,16 @@ public class VariableImpl extends Element implements Variable {
 		return overriden;
 	}
 
-	public void setTupleSize(int tupleSize) {
-		this.tupleSize = tupleSize;
+	@Override
+	public void setOverriden(boolean overriden) {
+		this.overriden = overriden;
 	}
 
 	public int getTupleSize() {
 		return tupleSize;
+	}
+
+	public void setTupleSize(int tupleSize) {
+		this.tupleSize = tupleSize;
 	}
 }

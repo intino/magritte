@@ -34,12 +34,12 @@ public class BoxUnitFrameCreator {
 		createKeyMap(this.nodes = nodes);
 	}
 
-	private void createKeyMap(List<Node> nodes) {
-		nodes.forEach(this::createKeyMap);
-	}
-
 	public BoxUnitFrameCreator(CompilerConfiguration conf, Model model, List<Node> nodes) {
 		this(conf.getProject(), conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule(), conf.getLanguage(), model, conf.getLocale(), nodes);
+	}
+
+	private void createKeyMap(List<Node> nodes) {
+		nodes.forEach(this::createKeyMap);
 	}
 
 	private void createKeyMap(NodeContainer node) {

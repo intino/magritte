@@ -68,6 +68,10 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	}
 	);
 
+	public FacetApplyMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+		super(daemonSettings, colorsManager);
+	}
+
 	private NavigatablePsiElement[] toNavigatable(List<PsiElement> facetClasses) {
 		List<NavigatablePsiElement> navigatables = new ArrayList<>();
 		for (PsiElement facetClass : facetClasses) navigatables.add((NavigatablePsiElement) facetClass);
@@ -82,11 +86,6 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 				references.add(reference);
 		}
 		return references;
-	}
-
-
-	public FacetApplyMarker(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
-		super(daemonSettings, colorsManager);
 	}
 
 	@Override

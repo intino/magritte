@@ -1,14 +1,14 @@
 package siani.tara.compiler.core;
 
 public class CompilerMessage {
+	public static final String ERROR = "error";
+	public static final String WARNING = "warning";
+	public static final String INFORMATION = "information";
 	private final String category;
 	private final String message;
 	private final String url;
 	private final int lineNum;
 	private final int columnNum;
-	public static final String ERROR = "error";
-	public static final String WARNING = "warning";
-	public static final String INFORMATION = "information";
 
 	public CompilerMessage(String category, String message, String url, int lineNum, int columnNum) {
 		this.category = category;

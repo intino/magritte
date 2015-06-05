@@ -21,7 +21,6 @@ public class TaraCodeInsightTest extends LightCodeInsightFixtureTestCase {
 	}
 
 
-
 	public void testFolding() {
 		myFixture.testFolding(getTestDataPath() + FOLDING + SEPARATOR + "FoldingTest.mb");
 	}

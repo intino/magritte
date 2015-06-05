@@ -113,7 +113,9 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 	private File getOutDir(Module module) {
 		try {
 			if (module == null || getCompilerOutputPath(module) == null) return null;
-			return new File(getCompilerOutputPath(module).toURI());
+			final URL compilerOutputPath = getCompilerOutputPath(module);
+			if (compilerOutputPath == null) return null;
+			return new File(compilerOutputPath.toURI());
 		} catch (URISyntaxException e) {
 			return null;
 		}

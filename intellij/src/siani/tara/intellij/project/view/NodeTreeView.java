@@ -30,7 +30,6 @@ public class NodeTreeView implements Navigatable {
 	}
 
 
-
 	public int hashCode() {
 		return taraFiles.hashCode() ^ myClassToBind.hashCode();
 	}

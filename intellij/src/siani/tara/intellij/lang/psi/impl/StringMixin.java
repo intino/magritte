@@ -7,8 +7,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.semantic.Allow;
 
 import static siani.tara.intellij.lang.lexer.TaraPrimitives.NATIVE;
+import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 import static siani.tara.intellij.lang.psi.impl.TaraUtil.getCorrespondingAllow;
 
 public class StringMixin extends ASTWrapperPsiElement {
@@ -54,9 +56,19 @@ public class StringMixin extends ASTWrapperPsiElement {
 	}
 
 	private boolean isNative(PsiElement element) {
-		return element instanceof Parameter && NATIVE.equals(getCorrespondingAllow(TaraPsiImplUtil.getContainerNodeOf(element), ((Parameter) element)).type()) ||
-			element instanceof VarInit && NATIVE.equals(getCorrespondingAllow(TaraPsiImplUtil.getContainerNodeOf(element), ((VarInit) element)).type()) ||
+		return element instanceof Parameter && NATIVE.equals(parameterAllow(element)) ||
+			element instanceof VarInit && NATIVE.equals(varInitAllow(element)) ||
 			element instanceof Variable && NATIVE.equals(((Variable) element).getType());
+	}
+
+	private String varInitAllow(PsiElement element) {
+		final Allow.Parameter correspondingAllow = getCorrespondingAllow(getContainerNodeOf(element), ((VarInit) element));
+		return correspondingAllow!= null?correspondingAllow.type():null;
+	}
+
+	private String parameterAllow(PsiElement element) {
+		final Allow.Parameter correspondingAllow = getCorrespondingAllow(getContainerNodeOf(element), ((Parameter) element));
+		return correspondingAllow != null ? correspondingAllow.type() : null;
 	}
 
 	public boolean isMultiLine() {

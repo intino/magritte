@@ -11,10 +11,12 @@ import siani.tara.intellij.framework.MavenHelper;
 import siani.tara.intellij.framework.MavenManager;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import static siani.tara.intellij.project.facet.TaraFacet.getTaraFacetByModule;
 
@@ -25,18 +27,21 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	private final TaraFacetConfiguration facetConfiguration;
 	private final Module module;
+	private final Map<Module, SimpleEntry<String, Integer>> moduleInfo;
 	private JComboBox<String> dictionaryBox;
 	private JComboBox<String> dslBox;
-	private JCheckBox generateDslCheck;
 	private JTextField dslGeneratedName;
 	private JPanel myMainPanel;
-	private JCheckBox addressRequired;
+	private JCheckBox plateRequired;
+	private JLabel generativeLabel;
+	private JSpinner level;
 	private Module[] candidates;
 
 	public TaraFacetEditor(TaraFacetConfiguration facetConfiguration, Module module) {
 		this.module = module;
 		candidates = getParentModulesCandidates();
 		this.facetConfiguration = facetConfiguration;
+		moduleInfo = collectModulesInfo();
 	}
 
 	@Nls
@@ -44,26 +49,35 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return "Tara Framework";
 	}
 
-
 	@NotNull
 	public JComponent createComponent() {
 		dslBox.addItem(PROTEO);
+		level.setValue(2);
 		addModuleDsls();
 		addDictionaries();
 		addGeneratedLanguageName();
-		addCheckListener();
+		addListeners();
 		return myMainPanel;
 	}
 
 	private void addModuleDsls() {
-		for (Module candidate : candidates) {
-			if (getTaraFacetByModule(candidate) == null) continue;
-			TaraFacetConfiguration configuration = getTaraFacetByModule(candidate).getConfiguration();
-			if (configuration.isCase()) continue;
-			dslBox.addItem(configuration.getGeneratedDslName());
-			if (facetConfiguration.getDsl().equals(configuration.getGeneratedDslName()))
-				dslBox.setSelectedItem(configuration.getGeneratedDslName());
+		for (Entry<Module, SimpleEntry<String, Integer>> entry : moduleInfo.entrySet()) {
+			if (entry.getValue().getValue().equals(0)) continue;
+			dslBox.addItem(entry.getValue().getKey());
+			if (facetConfiguration.getDsl().equals(entry.getValue().getKey()))
+				dslBox.setSelectedItem(entry.getValue().getKey());
 		}
+	}
+
+	private Map<Module, SimpleEntry<String, Integer>> collectModulesInfo() {
+		Map<Module, SimpleEntry<String, Integer>> map = new HashMap<>();
+		for (Module candidate : candidates) {
+			final TaraFacet facet = getTaraFacetByModule(candidate);
+			if (facet == null) continue;
+			TaraFacetConfiguration configuration = facet.getConfiguration();
+			map.put(candidate, new SimpleEntry<>(configuration.getGeneratedDslName(), configuration.getLevel()));
+		}
+		return map;
 	}
 
 	private void addDictionaries() {
@@ -71,28 +85,37 @@ public class TaraFacetEditor extends FacetEditorTab {
 		dictionaryBox.addItem("Español");
 	}
 
-
 	private void addGeneratedLanguageName() {
 		dslGeneratedName.setText(facetConfiguration.getGeneratedDslName());
 	}
 
-	private void addCheckListener() {
-		generateDslCheck.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				dslGeneratedName.setEnabled(((JCheckBox) e.getSource()).isSelected());
-				addressRequired.setEnabled(((JCheckBox) e.getSource()).isSelected());
-			}
+	private void addListeners() {
+		dslBox.addItemListener(e -> {
+			if (e.getItem().toString().equals(PROTEO))
+				setLevel(2, true);
+			else moduleInfo.values().stream().
+				filter(entry -> entry.getKey().equals(e.getItem().toString())).
+				forEach(entry -> setLevel(entry.getValue() - 1, false));
 		});
-		dslGeneratedName.setEnabled(generateDslCheck.isSelected());
+		level.addChangeListener(e -> visibilityOfGenerativeLanguage((Integer) ((JSpinner) e.getSource()).getValue() != 0));
+	}
+
+	private void visibilityOfGenerativeLanguage(boolean visibility) {
+		generativeLabel.setEnabled(visibility);
+		plateRequired.setEnabled(visibility);
+		dslGeneratedName.setEnabled(visibility);
+	}
+
+	private void setLevel(int level, boolean enabled) {
+		this.level.setValue(level);
+		this.level.setEnabled(enabled);
 	}
 
 	public boolean isModified() {
 		return !getDslGeneratedName().equals(facetConfiguration.getGeneratedDslName()) ||
 			!dictionaryBox.getSelectedItem().equals(facetConfiguration.getDictionary()) ||
 			!dslBox.getSelectedItem().equals(facetConfiguration.getDsl()) ||
-			!addressRequired.isSelected() == (facetConfiguration.isAddressRequired());
-
+			!plateRequired.isSelected() == (facetConfiguration.isPlateRequired());
 	}
 
 	public void apply() {
@@ -100,11 +123,12 @@ public class TaraFacetEditor extends FacetEditorTab {
 		facetConfiguration.setDsl((String) dslBox.getSelectedItem());
 		facetConfiguration.setDictionary((String) dictionaryBox.getSelectedItem());
 		facetConfiguration.setGeneratedDslName(getDslGeneratedName());
-		facetConfiguration.setAddressRequired(addressRequired.isSelected());
+		facetConfiguration.setPlateRequired(plateRequired.isSelected());
+		facetConfiguration.setLevel((Integer) level.getValue());
 	}
 
 	private String getDslGeneratedName() {
-		return generateDslCheck.isSelected() ? dslGeneratedName.getText() : NONE;
+		return dslGeneratedName.isEnabled() ? dslGeneratedName.getText() : NONE;
 	}
 
 	private void updateDependencies(final Module newParent) {
@@ -138,9 +162,9 @@ public class TaraFacetEditor extends FacetEditorTab {
 	public void reset() {
 		dslBox.setSelectedItem(facetConfiguration.getDsl());
 		dictionaryBox.setSelectedItem(facetConfiguration.getDictionary());
-		generateDslCheck.setSelected(!facetConfiguration.isCase());
+		setLevel(facetConfiguration.getLevel(), facetConfiguration.getDsl().equals(PROTEO));
 		dslGeneratedName.setText(facetConfiguration.getGeneratedDslName());
-		addressRequired.setSelected(facetConfiguration.isAddressRequired());
+		plateRequired.setSelected(facetConfiguration.isPlateRequired());
 	}
 
 	private Module[] getParentModulesCandidates() {
@@ -148,7 +172,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		for (Module aModule : ModuleManager.getInstance(module.getProject()).getModules()) {
 			TaraFacet taraFacet = getTaraFacetByModule(aModule);
 			if (taraFacet == null) continue;
-			if (!aModule.equals(module) && !taraFacet.getConfiguration().isCase()) moduleCandidates.add(aModule);
+			if (!aModule.equals(module) && !taraFacet.getConfiguration().isM0()) moduleCandidates.add(aModule);
 		}
 		return moduleCandidates.toArray(new Module[moduleCandidates.size()]);
 	}
@@ -160,5 +184,4 @@ public class TaraFacetEditor extends FacetEditorTab {
 	public String getHelpTopic() {
 		return "tara_facet";
 	}
-
 }

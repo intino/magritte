@@ -2,6 +2,7 @@ package siani.tara.compiler.codegeneration.lang;
 
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
+import siani.tara.compiler.codegeneration.magritte.TemplateTags;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.Variable;
@@ -9,6 +10,7 @@ import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.compiler.model.impl.VariableReference;
+import siani.tara.semantic.Allow;
 import siani.tara.semantic.Assumption;
 import siani.tara.semantic.model.Context;
 import siani.tara.semantic.model.Tag;
@@ -16,46 +18,44 @@ import siani.tara.semantic.model.Tag;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static siani.tara.semantic.model.Tag.*;
+import static siani.tara.semantic.model.Tag.IMPLICIT;
+import static siani.tara.semantic.model.Tag.REQUIRED;
 
-class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
-	private static final String ALLOW = "allow";
-	private static final String REQUIRE = "require";
-	private static final String ASSUMPTION = "assumption";
-	private static final String NODE = "node";
-
+class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
+	private final boolean plateRequired;
+	private final int level;
 	private Frame root;
 	private Model model;
 	private Set<Node> processed = new HashSet<>();
 	private String languageName;
 	private Locale locale;
 	private siani.tara.Language language;
-	private final boolean plateRequired;
 
-	public LanguageModelAdapter(String languageName, Locale locale, Language language, boolean plateRequired) {
+	public LanguageModelAdapter(String languageName, Locale locale, Language language, boolean plateRequired, int level) {
 		this.languageName = languageName;
 		this.locale = locale;
 		this.language = language;
 		this.plateRequired = plateRequired;
+		this.level = level;
 	}
 
 	@Override
 	public void execute(Frame root, Model model, FrameContext<Model> context) {
 		this.root = root;
 		this.model = model;
-		root.addFrame("name", languageName);
-		root.addFrame("terminal", Boolean.toString(model.isTerminal()));
-		root.addFrame("locale", locale.getLanguage());
+		root.addFrame(NAME, languageName);
+		root.addFrame(TERMINAL, level == 1);
+		root.addFrame(LOCALE, locale.getLanguage());
 		buildNode(model);
 		addInheritedRules();
 	}
 
 	private void addInheritedRules() {
-		List<String> cases = collectCaseRules();
+		List<String> cases = collectAllTerminalRules();
 		new LanguageInheritanceFiller(root, cases, language).fill();
 	}
 
-	private List<String> collectCaseRules() {
+	private List<String> collectAllTerminalRules() {
 		return language.catalog().entrySet().stream().
 			filter(entry -> isTerminalInstance(entry.getValue())).
 			map(Map.Entry::getKey).collect(Collectors.toList());
@@ -71,7 +71,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 		if (alreadyProcessed(node)) return;
 		Frame frame = new Frame().addTypes(NODE);
 		if (!node.isAbstract() && !node.isAnonymous() && !node.isTerminalInstance()) {
-			frame.addFrame("name", getName(node));
+			frame.addFrame(NAME, getName(node));
 			addTypes(node, frame);
 			addAllows(node, frame);
 			addRequires(node, frame);
@@ -92,7 +92,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 		Collection<String> languageTypes = getLanguageTypes(node);
 		if (languageTypes != null)
 			typeSet.addAll(languageTypes);
-		for (String type : typeSet) typesFrame.addFrame("type", type);
+		for (String type : typeSet) typesFrame.addFrame(TYPE, type);
 		if (typesFrame.slots().length > 0)
 			frame.addFrame("nodeType", typesFrame);
 	}
@@ -107,16 +107,18 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 
 	private void addAllows(Node node, Frame frame) {
 		Frame allows = buildAllowedNodes(node.getIncludedNodes());
-		for (Frame allowFrame : getCasesConstrains(collectCaseRules()))
-			allows.addFrame("allow", allowFrame);
+		for (Frame allowFrame : getContextTerminalConstrains(collectAllTerminalRules(), node))
+			allows.addFrame(ALLOW, allowFrame);
 		addContextAllows(node, allows);
 		if (allows.slots().length != 0) frame.addFrame("allows", allows);
 	}
 
-	private Collection<Frame> getCasesConstrains(List<String> nodes) {
-		return nodes.stream().map(node ->
-			new Frame().addTypes("multiple", ALLOW).addFrame("type", node)).
-			collect(Collectors.toList());
+	private Collection<Frame> getContextTerminalConstrains(List<String> types, Node node) {
+		final Collection<Allow> allows = language.allows(node.getType());
+		return types.stream().
+			filter(type -> allows.stream().
+				filter(allow -> allow instanceof Allow.Include && ((Allow.Include) allow).type().equals(type)).findFirst().isPresent()).
+			map(type -> new Frame().addTypes(MULTIPLE, ALLOW).addFrame(TYPE, type)).collect(Collectors.toList());
 	}
 
 	private void addRequires(Node node, Frame frame) {
@@ -127,7 +129,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 
 	private void addContextAllows(Node node, Frame allows) {
 		if (node instanceof NodeImpl) addParameterAllows(node.getVariables(), allows);
-		if (!node.isNamed() && !node.isPropertyInstance()) allows.addFrame("allow", "name");
+		if (!node.isNamed() && !node.isPropertyInstance()) allows.addFrame("allow", NAME);
 		addFacetAllows(node, allows);
 	}
 
@@ -141,8 +143,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 
 	private void addFacetAllows(Node node, Frame allows) {
 		for (String facet : node.getAllowedFacets()) {
-			Frame frame = new Frame().addTypes("allow", "facet").addFrame("value", facet);
-			allows.addFrame("allow", frame);
+			Frame frame = new Frame().addTypes(ALLOW, "facet").addFrame("value", facet);
+			allows.addFrame(ALLOW, frame);
 			FacetTarget facetNode = findFacetTarget(node, facet);
 			if (facetNode == null) continue;
 			addParameterAllows(facetNode.getVariables(), frame);
@@ -169,15 +171,15 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 			addParameterRequires(node.getVariables(), requires, node.isTerminal(), index);
 			addRequiredVariableRedefines(requires, node);
 		}
-		if (node.isNamed()) requires.addFrame(REQUIRE, "name");
+		if (node.isNamed()) requires.addFrame(REQUIRE, NAME);
 		if (plateRequired && !(node instanceof Model)) requires.addFrame(REQUIRE, "plate");
 	}
 
 	private void addRequiredVariableRedefines(Frame requires, Node node) {
 		node.getVariables().stream().
 			filter(variable -> variable.isTerminal() && variable instanceof VariableReference && !((VariableReference) variable).getDestiny().isTerminal()).
-			forEach(variable -> requires.addFrame("require", new Frame().addTypes("redefine", "require").
-				addFrame("name", variable.getName()).addFrame("supertype", variable.getType())));
+			forEach(variable -> requires.addFrame(REQUIRE, new Frame().addTypes("redefine", REQUIRE).
+				addFrame(NAME, variable.getName()).addFrame("supertype", variable.getType())));
 	}
 
 	private void addParameterRequires(List<Variable> variables, Frame requires, boolean terminalNode, int index) {
@@ -201,13 +203,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	}
 
 	private void addAnnotationAssumptions(Node node, Frame assumptions) {
-		node.getAnnotations().stream().filter(tag -> !tag.equals(SINGLE) || tag.equals(REQUIRED)).forEach(tag -> assumptions.addFrame(ASSUMPTION, tag.name().toLowerCase()));
+		node.getAnnotations().stream().filter(tag -> !tag.equals(Tag.SINGLE) || tag.equals(REQUIRED)).forEach(tag -> assumptions.addFrame(ASSUMPTION, tag.name().toLowerCase()));
 		for (Tag tag : node.getFlags()) {
-			if (tag.equals(TERMINAL))
+			if (tag.name().toLowerCase().equals(TERMINAL))
 				assumptions.addFrame(ASSUMPTION, Tag.TERMINAL_INSTANCE);
 			else if (tag.equals(IMPLICIT)) assumptions.addFrame(ASSUMPTION, Tag.IMPLICIT_INSTANCE);
-			else if (tag.equals(FEATURE)) assumptions.addFrame(ASSUMPTION, Tag.FEATURE_INSTANCE);
-			else if (tag.equals(FACET)) assumptions.addFrame(ASSUMPTION, Tag.FACET_INSTANCE);
+			else if (tag.equals(Tag.FEATURE)) assumptions.addFrame(ASSUMPTION, Tag.FEATURE_INSTANCE);
+			else if (tag.equals(Tag.FACET)) assumptions.addFrame(ASSUMPTION, Tag.FACET_INSTANCE);
 		}
 	}
 
@@ -227,7 +229,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
 		for (Node node : tree) {
-			if (node.isRequired()) continue;
+			if (node.isRequired() && !node.isTerminal()) continue;
 			for (Node candidate : collectCandidates(node))
 				if (node.isSingle()) singleNodes.add(createAllowedSingle(candidate, node.getAnnotations()));
 				else multipleNodes.add(createAllowedMultiple(candidate, node.getAnnotations()));
@@ -239,15 +241,19 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
 		for (Node node : tree) {
-			if (!node.isRequired() && !node.isImplicit()) continue;
+			if ((!node.isRequired() && !node.isImplicit()) || (node.isTerminal() && !isGenerative())) continue;
 			Collection<Node> candidates = collectCandidates(node);
 			if (node.isAbstract() && candidates.size() > 1) {
-				requires.addFrame("require", createOneOf(candidates, node));
+				requires.addFrame(REQUIRE, createOneOf(candidates, node));
 			} else for (Node candidate : candidates)
 				if (node.isSingle()) singleNodes.add(createRequiredSingle(candidate, node.getAnnotations()));
 				else multipleNodes.add(createRequiredMultiple(candidate, node.getAnnotations()));
 		}
 		addRequiredNodes(requires, multipleNodes, singleNodes);
+	}
+
+	private boolean isGenerative() {
+		return level > 1;
 	}
 
 	private Collection<Node> collectCandidates(Node node) {
@@ -281,14 +287,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	}
 
 	private Frame createAllowedSingle(Node node, List<Tag> annotations) {
-		Frame frame = new Frame().addTypes("single", ALLOW).addFrame("type", getName(node));
+		Frame frame = new Frame().addTypes(SINGLE, ALLOW).addFrame(TYPE, getName(node));
 		for (Tag tag : annotations)
 			frame.addFrame("tags", tag.name());
 		return frame;
 	}
 
 	private Frame createAllowedMultiple(Node node, List<Tag> annotations) {
-		Frame frame = new Frame().addTypes("multiple", ALLOW).addFrame("type", getName(node));
+		Frame frame = new Frame().addTypes(MULTIPLE, ALLOW).addFrame(TYPE, getName(node));
 		for (Tag tag : annotations)
 			frame.addFrame("tags", tag.name());
 		return frame;
@@ -301,20 +307,20 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model> {
 	private Frame createOneOf(Collection<Node> candidates, Node node) {
 		Frame frame = new Frame().addTypes("oneOf", REQUIRE);
 		for (Node candidate : candidates)
-			frame.addFrame("require", node.isSingle() ?
+			frame.addFrame(REQUIRE, node.isSingle() ?
 				createRequiredSingle(candidate, node.getAnnotations()) :
 				createRequiredMultiple(candidate, node.getAnnotations()));
 		return frame;
 	}
 
 	private Frame createRequiredSingle(Node node, Collection<Tag> annotations) {
-		Frame frame = new Frame().addTypes("single", REQUIRE).addFrame("type", getName(node));
+		Frame frame = new Frame().addTypes(SINGLE, REQUIRE).addFrame(TYPE, getName(node));
 		for (Tag tag : annotations) frame.addFrame("tags", tag.name());
 		return frame;
 	}
 
 	private Frame createRequiredMultiple(Node node, Collection<Tag> annotations) {
-		Frame frame = new Frame().addTypes("multiple", REQUIRE).addFrame("type", getName(node));
+		Frame frame = new Frame().addTypes(MULTIPLE, REQUIRE).addFrame(TYPE, getName(node));
 		for (Tag tag : annotations) frame.addFrame("tags", tag.name());
 		return frame;
 	}

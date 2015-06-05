@@ -23,10 +23,6 @@ import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveContract
 
 public class TaraToNative extends JavaLineMarkerProvider {
 
-	public TaraToNative(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
-		super(daemonSettings, colorsManager);
-	}
-
 	private final MarkerType markerType = new MarkerType(element -> {
 		if (!Contract.class.isInstance(element)) return null;
 		PsiElement reference = resolveContract((Contract) element);
@@ -51,6 +47,10 @@ public class TaraToNative extends JavaLineMarkerProvider {
 		}
 	}
 	);
+
+	public TaraToNative(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+		super(daemonSettings, colorsManager);
+	}
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {

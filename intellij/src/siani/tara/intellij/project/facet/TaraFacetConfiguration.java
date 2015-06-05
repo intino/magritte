@@ -48,12 +48,12 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		return myProperties.dictionary;
 	}
 
-	public Locale getDictionaryAsLocale() {
-		return myProperties.dictionary.equals("English") ? Locale.ENGLISH : new Locale("es", "Spain", "es_ES");
-	}
-
 	public void setDictionary(String dictionary) {
 		myProperties.dictionary = dictionary;
+	}
+
+	public Locale getDictionaryAsLocale() {
+		return myProperties.dictionary.equals("English") ? Locale.ENGLISH : new Locale("es", "Spain", "es_ES");
 	}
 
 	public String getGeneratedDslName() {
@@ -64,15 +64,24 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		myProperties.generatedDslName = generatedDslName;
 	}
 
-	public boolean isCase() {
-		return myProperties.generatedDslName.isEmpty();
+	public boolean isM0() {
+		return getLevel() == 0;
 	}
 
-	public boolean isAddressRequired() {
+	public boolean isPlateRequired() {
 		return myProperties.plateRequired;
 	}
 
-	public void setAddressRequired(boolean addressRequired) {
-		myProperties.plateRequired = addressRequired;
+	public void setPlateRequired(boolean plateRequired) {
+		myProperties.plateRequired = plateRequired;
 	}
+
+	public int getLevel() {
+		return myProperties.level;
+	}
+
+	public void setLevel(int level) {
+		myProperties.level = level;
+	}
+
 }

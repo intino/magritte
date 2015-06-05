@@ -20,12 +20,16 @@ import static siani.tara.semantic.model.Variable.NATIVE_SEPARATOR;
 
 public class TaraLanguageInjector implements LanguageInjector {
 
+	private static Parameter getParameter(StringValue stringValue) {
+		PsiElement element = getParentByType(stringValue, Parameter.class);
+		return element instanceof Parameter ? (Parameter) element : null;
+	}
+
 	@Override
 	public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host, @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
 		if (!StringValue.class.isInstance(host) || !host.isValidHost()) return;
 		injectionPlacesRegistrar.addPlace(JavaLanguage.INSTANCE, getRangeInsideHost((StringValue) host), createPrefix((StringValue) host), createSuffix());
 	}
-
 
 	@NotNull
 	private TextRange getRangeInsideHost(@NotNull StringValue host) {
@@ -108,11 +112,6 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private Node getContainerNode(PsiElement element) {
 		return (Node) getParentByType(element, Node.class);
-	}
-
-	private static Parameter getParameter(StringValue stringValue) {
-		PsiElement element = getParentByType(stringValue, Parameter.class);
-		return element instanceof Parameter ? (Parameter) element : null;
 	}
 
 	private PsiElement getVarInit(StringValue stringValue) {

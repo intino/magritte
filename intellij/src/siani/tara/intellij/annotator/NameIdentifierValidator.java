@@ -14,7 +14,7 @@ public class NameIdentifierValidator extends TaraAnnotator {
 	@Override
 	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
 		this.holder = holder;
-		if (element instanceof Identifier){
+		if (element instanceof Identifier) {
 			final NamesValidator namesValidator = LanguageNamesValidation.INSTANCE.forLanguage(TaraLanguage.INSTANCE);
 			if (namesValidator != null && namesValidator.isKeyword(element.getText(), element.getProject()))
 				holder.createErrorAnnotation(element, MessageProvider.message("invalid.name"));

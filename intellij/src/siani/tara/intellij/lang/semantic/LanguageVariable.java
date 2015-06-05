@@ -55,7 +55,7 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 	@Override
 	@NonNls
 	@Contract(
-	    pure = true
+		pure = true
 	)
 	public String toString() {
 		return variable.toString();

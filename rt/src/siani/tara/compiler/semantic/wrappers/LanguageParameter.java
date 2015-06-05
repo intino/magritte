@@ -20,6 +20,16 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 		this.parameter = parameter;
 	}
 
+	private static List<Object> wrapValues(Collection<Object> values) {
+		List<Object> objects = new ArrayList<>();
+		for (Object value : values)
+			if (value instanceof Node) objects.add(new LanguageNode((NodeImpl) value));
+			else if (values.iterator().next() instanceof siani.tara.compiler.model.EmptyNode)
+				objects.add(new EmptyNode());
+			else objects.add(value);
+		return objects;
+	}
+
 	@Override
 	public String inferredType() {
 		return parameter.getInferredType();
@@ -41,13 +51,13 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
-	public void setMultiple(boolean multiple) {
-		parameter.setMultiple(multiple);
+	public boolean isMultiple() {
+		return parameter.isMultiple();
 	}
 
 	@Override
-	public boolean isMultiple() {
-		return parameter.isMultiple();
+	public void setMultiple(boolean multiple) {
+		parameter.setMultiple(multiple);
 	}
 
 	@Override
@@ -76,13 +86,13 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
-	public String getMetric() {
-		return parameter.getMetric();
+	public void setContract(String contract) {
+		parameter.setContract(contract);
 	}
 
 	@Override
-	public void setContract(String contract) {
-		parameter.setContract(contract);
+	public String getMetric() {
+		return parameter.getMetric();
 	}
 
 	@Override
@@ -93,16 +103,6 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	@Override
 	public void addAllowedParameters(List<String> values) {
 		parameter.addAllowedValues(values);
-	}
-
-	private static List<Object> wrapValues(Collection<Object> values) {
-		List<Object> objects = new ArrayList<>();
-		for (Object value : values)
-			if (value instanceof Node) objects.add(new LanguageNode((NodeImpl) value));
-			else if (values.iterator().next() instanceof siani.tara.compiler.model.EmptyNode)
-				objects.add(new EmptyNode());
-			else objects.add(value);
-		return objects;
 	}
 
 	@Override

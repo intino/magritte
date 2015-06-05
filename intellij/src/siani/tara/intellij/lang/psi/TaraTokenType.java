@@ -1,9 +1,9 @@
 package siani.tara.intellij.lang.psi;
 
 import com.intellij.psi.tree.IElementType;
-import siani.tara.intellij.lang.TaraLanguage;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.TaraLanguage;
 
 public class TaraTokenType extends IElementType {
 	public TaraTokenType(@NotNull @NonNls String debugName) {

@@ -156,6 +156,10 @@ public class Model extends Element implements Node {
 		return terminal;
 	}
 
+	public void setTerminal(boolean terminal) {
+		this.terminal = terminal;
+	}
+
 	@Override
 	public String getPlate() {
 		return null;
@@ -228,7 +232,7 @@ public class Model extends Element implements Node {
 
 	@Override
 	public String getType() {
-		return null;
+		return "";
 	}
 
 	@Override
@@ -356,9 +360,5 @@ public class Model extends Element implements Node {
 
 	public void setLanguage(String language) {
 		this.language = language;
-	}
-
-	public void setTerminal(boolean terminal) {
-		this.terminal = terminal;
 	}
 }

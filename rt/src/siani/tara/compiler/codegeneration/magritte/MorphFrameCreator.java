@@ -22,8 +22,8 @@ public class MorphFrameCreator implements TemplateTags {
 	private final String generatedLanguage;
 	private final Language language;
 	private final File nativePath;
-	private Node initNode = null;
 	Set<String> imports = new HashSet<>();
+	private Node initNode = null;
 	private MorphNodeAdapter morphNodeAdapter;
 
 	public MorphFrameCreator(String project, String generatedLanguage, Language language, Locale locale, File nativePath) {

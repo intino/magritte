@@ -17,7 +17,7 @@ public class LanguageLoader {
 			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL()}, LanguageLoader.class.getClassLoader());
 			Class cls = cl.loadClass("siani.tara.dsls." + name);
 			return (Language) cls.newInstance();
-		} catch (MalformedURLException | ClassNotFoundException | NoClassDefFoundError e1 ) {
+		} catch (MalformedURLException | ClassNotFoundException | NoClassDefFoundError e1) {
 			LOG.info(e1.getMessage());
 			return null;
 		} catch (InstantiationException | IllegalAccessException e2) {

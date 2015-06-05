@@ -23,12 +23,12 @@ public class TaraBlock implements ASTBlock {
 	private static final Spacing MINSPACE = Spacing.createSpacing(1, 1, 0, false, 1);
 	private final TaraBlock myParent;
 	private final Alignment alignment;
-	private Alignment myChildAlignment;
 	private final Indent indent;
 	private final ASTNode node;
 	private final Wrap wrap;
-	private List<TaraBlock> subBlocks = null;
 	private final TaraBlockContext myContext;
+	private Alignment myChildAlignment;
+	private List<TaraBlock> subBlocks = null;
 
 
 	public TaraBlock(final TaraBlock parent,
@@ -43,6 +43,10 @@ public class TaraBlock implements ASTBlock {
 		this.node = node;
 		this.wrap = wrap;
 		this.myContext = context;
+	}
+
+	private static boolean isIndentNext(ASTNode child) {
+		return PsiTreeUtil.getParentOfType(child.getPsi(), TaraBody.class) instanceof Node;
 	}
 
 	@NotNull
@@ -120,7 +124,6 @@ public class TaraBlock implements ASTBlock {
 		return Collections.unmodifiableList(blocks);
 	}
 
-
 	private TaraBlock buildSubBlock(ASTNode child) {
 		IElementType parentType = node.getElementType();
 		IElementType childType = child.getElementType();
@@ -142,10 +145,6 @@ public class TaraBlock implements ASTBlock {
 			prev = prev.getTreePrev();
 		}
 		return new TaraBlock(this, child, childAlignment, childIndent, wrap, myContext);
-	}
-
-	private static boolean isIndentNext(ASTNode child) {
-		return PsiTreeUtil.getParentOfType(child.getPsi(), TaraBody.class) instanceof Node;
 	}
 
 	@Override

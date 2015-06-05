@@ -1,5 +1,6 @@
 package siani.tara.compiler.semantic.wrappers;
 
+import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.semantic.model.*;
@@ -8,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LanguageRoot implements Node {
+public class LanguageRoot extends LanguageElement implements Node {
 
 	Model model;
 	private Node[] includes;
@@ -117,5 +118,10 @@ public class LanguageRoot implements Node {
 	private Node[] wrap(Collection<siani.tara.compiler.model.Node> nodes) {
 		List<LanguageNode> languageNodes = nodes.stream().map(node -> new LanguageNode((NodeImpl) node)).collect(Collectors.toList());
 		return languageNodes.toArray(new LanguageNode[languageNodes.size()]);
+	}
+
+	@Override
+	public Element element() {
+		return model;
 	}
 }

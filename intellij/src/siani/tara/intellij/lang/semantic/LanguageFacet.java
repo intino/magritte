@@ -3,7 +3,9 @@ package siani.tara.intellij.lang.semantic;
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.lang.psi.Parameters;
-import siani.tara.semantic.model.*;
+import siani.tara.semantic.model.Facet;
+import siani.tara.semantic.model.Node;
+import siani.tara.semantic.model.Parameter;
 
 import java.util.ArrayList;
 import java.util.List;

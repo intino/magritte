@@ -13,6 +13,8 @@ locale
 English
 generated_lang_name
 Monopoly
+level
+1
 required_plate
 false
 encoding

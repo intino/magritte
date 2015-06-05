@@ -24,9 +24,9 @@ import java.util.List;
 
 public class CreateMeasureClassIntention implements IntentionAction {
 
+	public static final String SRC = "src";
 	private final String className;
 	private final String destinyPath;
-	public static final String SRC = "src";
 
 
 	public CreateMeasureClassIntention(String className, String destinyPath) {

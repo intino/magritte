@@ -16,6 +16,19 @@ public abstract class TaraFix implements LocalQuickFix {
 
 	public static final TaraFix[] EMPTY_ARRAY = new TaraFix[0];
 
+	protected static boolean isQuickFixOnReadOnlyFile(PsiElement problemElement) {
+		final PsiFile containingPsiFile = problemElement.getContainingFile();
+		if (containingPsiFile == null) {
+			return false;
+		}
+		final VirtualFile virtualFile = containingPsiFile.getVirtualFile();
+		final JavaPsiFacade facade = JavaPsiFacade.getInstance(problemElement.getProject());
+		final Project project = facade.getProject();
+		final ReadonlyStatusHandler handler = ReadonlyStatusHandler.getInstance(project);
+		final ReadonlyStatusHandler.OperationStatus status = handler.ensureFilesWritable(virtualFile);
+		return status.hasReadonlyFiles();
+	}
+
 	@NotNull
 	public String getFamilyName() {
 		return "";
@@ -38,19 +51,6 @@ public abstract class TaraFix implements LocalQuickFix {
 
 	protected abstract void doFix(Project project, ProblemDescriptor descriptor)
 		throws IncorrectOperationException;
-
-	protected static boolean isQuickFixOnReadOnlyFile(PsiElement problemElement) {
-		final PsiFile containingPsiFile = problemElement.getContainingFile();
-		if (containingPsiFile == null) {
-			return false;
-		}
-		final VirtualFile virtualFile = containingPsiFile.getVirtualFile();
-		final JavaPsiFacade facade = JavaPsiFacade.getInstance(problemElement.getProject());
-		final Project project = facade.getProject();
-		final ReadonlyStatusHandler handler = ReadonlyStatusHandler.getInstance(project);
-		final ReadonlyStatusHandler.OperationStatus status = handler.ensureFilesWritable(virtualFile);
-		return status.hasReadonlyFiles();
-	}
 
 
 }

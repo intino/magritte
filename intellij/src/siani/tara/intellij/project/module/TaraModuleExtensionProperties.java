@@ -15,4 +15,7 @@ public class TaraModuleExtensionProperties {
 
 	@Tag("plateRequired")
 	public boolean plateRequired = false;
+
+	@Tag("level")
+	public int level = 2;
 }

@@ -17,14 +17,12 @@ import java.util.Properties;
 
 public class PivotalLoggingEventSubmitter {
 
+	public static final String STORIES_URL = "https://www.pivotaltracker.com/services/v5/projects/1022010/stories";
+	public static final String COMMENTS = "/comments";
 	private static final Logger LOG = Logger.getInstance(PivotalLoggingEventSubmitter.class.getName());
-
-
 	private static final String PLUGIN_ID = "plugin.id";
 	private static final String PLUGIN_VERSION = "plugin.version";
 	private static final String PLUGIN_NAME = "plugin.name";
-	public static final String STORIES_URL = "https://www.pivotaltracker.com/services/v5/projects/1022010/stories";
-	public static final String COMMENTS = "/comments";
 	private static final String REPORT_ADDITIONAL_INFO = "report.additionalInfo";
 	private static final String REPORT_DESCRIPTION = "report.description";
 	private static final String REPORT_TITLE = "report.title";
@@ -104,6 +102,13 @@ public class PivotalLoggingEventSubmitter {
 		return connection;
 	}
 
+	public static class SubmitException extends Throwable {
+		public SubmitException(String message, Throwable cause) {
+			super(message, cause);
+		}
+
+	}
+
 	private class PivotalStory {
 		int id;
 		String name = buildName();
@@ -139,13 +144,6 @@ public class PivotalLoggingEventSubmitter {
 			jsonObject.add("description", new JsonPrimitive(description));
 			return jsonObject;
 		}
-	}
-
-	public static class SubmitException extends Throwable {
-		public SubmitException(String message, Throwable cause) {
-			super(message, cause);
-		}
-
 	}
 
 }

@@ -1,8 +1,8 @@
-import siani.tara.dsls.Monet;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import siani.tara.Checker;
+import siani.tara.dsls.Monet;
 import siani.tara.semantic.Definition;
 import siani.tara.semantic.SemanticException;
 

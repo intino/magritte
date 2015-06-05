@@ -8,11 +8,8 @@ public interface TemplateTags {
 	String EXTENSIONS = "extensions";
 	String PARENT = "parent";
 	String CONTRACT = "contract";
-	String TYPE = "type";
+	String LOCALE = "locale";
 	String QN = "qn";
-	String NAME = "name";
-	String NODE = "node";
-	String REQUIRE = "require";
 	String DEFINITION = "Definition";
 	String MAGRITTE_MORPHS = "magritte.morphs";
 	String GENERATED_LANGUAGE = "generatedLanguage";
@@ -46,6 +43,13 @@ public interface TemplateTags {
 	String FEATURE = "feature";
 	String COMPONENT = "component";
 	String APPLY = "apply";
+	String ALLOW = "allow";
+	String REQUIRE = "require";
+	String ASSUMPTION = "assumption";
+	String NODE = "node";
+	String NAME = "name";
+	String SINGLE = "single";
+	String TYPE = "type";
 	char STAR = '*';
 	String FACET_APPLY = "facetApply";
 	String METRICS = "metrics";

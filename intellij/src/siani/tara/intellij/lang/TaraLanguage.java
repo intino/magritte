@@ -21,13 +21,12 @@ import static java.io.File.separator;
 
 public class TaraLanguage extends com.intellij.lang.Language {
 
-	private static final String LANGUAGES_DIR = "tara_languages";
-	private static final String PROTEO = "Proteo";
 	public static final TaraLanguage INSTANCE = new TaraLanguage();
-	public static final String MODELS_PATH = PathManager.getPluginsPath() + separator + LANGUAGES_DIR + separator;
-	private static final Map<String, Language> languages = new HashMap<>();
 	public static final String DSL = "dsl";
-
+	private static final String LANGUAGES_DIR = "tara_languages";
+	public static final String MODELS_PATH = PathManager.getPluginsPath() + separator + LANGUAGES_DIR + separator;
+	private static final String PROTEO = "Proteo";
+	private static final Map<String, Language> languages = new HashMap<>();
 	private static final Set<String> languagesPaths = new LinkedHashSet<>();
 
 	static {

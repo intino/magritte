@@ -2,17 +2,17 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import siani.tara.Checker;
-import siani.tara.semantic.model.Node;
-import siani.tara.semantic.model.Tara;
 import siani.tara.semantic.Definition;
 import siani.tara.semantic.SemanticException;
+import siani.tara.semantic.model.Node;
+import siani.tara.semantic.model.Tara;
 
 import java.util.Locale;
 
 import static siani.tara.semantic.MessageProvider.message;
-import static siani.tara.semantic.constraints.RuleFactory.*;
 import static siani.tara.semantic.Script.define;
 import static siani.tara.semantic.Script.root;
+import static siani.tara.semantic.constraints.RuleFactory.*;
 
 public class AcceptedTestLanguageInstance {
 
@@ -53,6 +53,10 @@ public class AcceptedTestLanguageInstance {
 			).node()));
 	}
 
+	private void testCheck(Definition definition) throws SemanticException {
+		new Checker(new TestLanguage()).check(definition.node());
+	}
+
 	public class TestLanguage extends Tara {
 
 		private static final String CONCEPT = "Concept";
@@ -80,10 +84,6 @@ public class AcceptedTestLanguageInstance {
 		public boolean isTerminalLanguage() {
 			return false;
 		}
-	}
-
-	private void testCheck(Definition definition) throws SemanticException {
-		new Checker(new TestLanguage()).check(definition.node());
 	}
 
 }

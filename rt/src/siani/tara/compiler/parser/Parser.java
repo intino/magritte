@@ -4,11 +4,11 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import siani.tara.TaracRunner;
 import siani.tara.compiler.core.errorcollection.SyntaxException;
+import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.parser.antlr.ModelGenerator;
 import siani.tara.compiler.parser.antlr.TaraErrorStrategy;
 import siani.tara.compiler.parser.antlr.TaraGrammar;
 import siani.tara.compiler.parser.antlr.TaraLexer;
-import siani.tara.compiler.model.impl.Model;
 
 import java.io.File;
 import java.io.IOException;

@@ -11,8 +11,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.uiDesigner.compiler.Utils;
-import siani.tara.intellij.lang.file.TaraFileType;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.file.TaraFileType;
 
 import java.util.Collections;
 import java.util.List;

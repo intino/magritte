@@ -22,6 +22,10 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		this.terminalInstance = terminalInstance;
 	}
 
+	public static String clean(String name) {
+		return name.replace("[", "").replace("]", "").replaceAll(Node.ANNONYMOUS, "");
+	}
+
 	@Override
 	public void execute(Frame frame, Node node, FrameContext<Node> context) {
 		if (node instanceof NodeImpl) {
@@ -163,10 +167,6 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private String searchNode(Node inner) {
 		Node node = inner instanceof NodeReference ? ((NodeReference) inner).getDestiny() : inner;
 		return '"' + (node.isAnonymous() ? node.getPlate() : node.getQualifiedName()) + '"';
-	}
-
-	public static String clean(String name) {
-		return name.replace("[", "").replace("]", "").replaceAll(Node.ANNONYMOUS, "");
 	}
 
 	private String[] asString(Collection<Tag> flags) {

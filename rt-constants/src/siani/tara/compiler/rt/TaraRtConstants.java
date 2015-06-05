@@ -34,6 +34,7 @@ public class TaraRtConstants {
 	public static final String SEMANTIC_LIB = "semantic_lib";
 	public static final String REQUIRED_PLATE = "required_plate";
 	public static final String NATIVES_PATH = "native_path";
+	public static final String MODEL_LEVEL = "is_generative_language";
 
 	private TaraRtConstants() {
 	}

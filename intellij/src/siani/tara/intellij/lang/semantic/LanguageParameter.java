@@ -18,6 +18,15 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 		this.parameter = parameter;
 	}
 
+	private static List<Object> wrapValues(Object[] values) {
+		List<Object> objects = new ArrayList<>();
+		if ("$empty".equals(values[0])) objects.add(new EmptyNode());
+		else for (Object value : values)
+			if (value instanceof Node) objects.add(new LanguageNode((Node) value));
+			else objects.add(value);
+		return objects;
+	}
+
 	@Override
 	public String inferredType() {
 		return null;
@@ -38,15 +47,14 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 
 	}
 
+	@Override
+	public boolean isMultiple() {
+		return false;
+	}
 
 	@Override
 	public void setMultiple(boolean multiple) {
 		//TODO?
-	}
-
-	@Override
-	public boolean isMultiple() {
-		return false;
 	}
 
 	@Override
@@ -74,13 +82,13 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
-	public String getMetric() {
-		return parameter.getMetric() != null ? parameter.getMetric().getIdentifier().getText() : "";
+	public void setContract(String contract) {
+		parameter.setContract(contract);
 	}
 
 	@Override
-	public void setContract(String contract) {
-		parameter.setContract(contract);
+	public String getMetric() {
+		return parameter.getMetric() != null ? parameter.getMetric().getIdentifier().getText() : "";
 	}
 
 	@Override
@@ -91,15 +99,6 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	@Override
 	public void addAllowedParameters(List<String> values) {
 
-	}
-
-	private static List<Object> wrapValues(Object[] values) {
-		List<Object> objects = new ArrayList<>();
-		if ("$empty".equals(values[0])) objects.add(new EmptyNode());
-		else for (Object value : values)
-			if (value instanceof Node) objects.add(new LanguageNode((Node) value));
-			else objects.add(value);
-		return objects;
 	}
 
 	@Override

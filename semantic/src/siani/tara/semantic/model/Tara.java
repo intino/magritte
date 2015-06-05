@@ -24,10 +24,6 @@ public abstract class Tara implements Language {
 		};
 	}
 
-	public interface Transaction {
-		void def(Context context);
-	}
-
 	public Map<String, Context> catalog() {
 		return rulesCatalog;
 	}
@@ -67,6 +63,10 @@ public abstract class Tara implements Language {
 
 	private String shortType(String qn) {
 		return !qn.contains(".") ? qn : qn.substring(qn.lastIndexOf(".") + 1);
+	}
+
+	public interface Transaction {
+		void def(Context context);
 	}
 
 

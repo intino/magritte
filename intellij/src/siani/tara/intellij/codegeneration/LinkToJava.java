@@ -23,6 +23,38 @@ import java.util.Collection;
 
 public class LinkToJava {
 
+	private static void generateAddresses(TaraModel box) {
+		Language language = TaraLanguage.getLanguage(box);
+		if (language == null) return;
+		Node[] addressedNodes = new Node[0];//= getAddressedConcepts(language, TaraUtil.getAllNodesOfFile(box));
+		if (addressedNodes.length == 0) return;
+		Mbroller addressGenerator = new Mbroller(addressedNodes);
+		addressGenerator.generate();
+	}
+
+	private static VirtualFile getSrcDirectory(Module module) {
+		Collection<VirtualFile> sourceRoots = TaraUtil.getSourceRoots(module);
+		for (VirtualFile file : sourceRoots)
+			if (file.isDirectory() && "src".equals(file.getName())) return file;
+		if (sourceRoots.size() > 0) {
+			VirtualFile parent = sourceRoots.iterator().next().getParent();
+			File src = new File(parent.getPath(), "src");
+			src.mkdir();
+			return LocalFileSystem.getInstance().refreshAndFindFileByPath(FileUtil.toSystemIndependentName(src.getPath()));
+		}
+		return null;
+	}
+//TODO
+//	private static Concept[] getAddressedConcepts(Model model, List<Concept> allConceptsOfFile) {
+//		List<Concept> concepts = new ArrayList<>();
+//		for (Concept concept : allConceptsOfFile) {
+//			Node node = TaraUtil.findNode(concept, model);
+//			if (node != null && node.getObject().is(Annotation.ADDRESSED))
+//				concepts.add(concept);
+//		}
+//		return concepts.toArray(new Concept[concepts.size()]);
+//	}
+
 	public void link(Module module) {
 		Project project = module.getProject();
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
@@ -41,37 +73,5 @@ public class LinkToJava {
 		Notifications.Bus.notify(notification, project);
 		VfsUtil.markDirtyAndRefresh(true, true, true, srcDirectory);
 		srcDirectory.refresh(true, true);
-	}
-
-	private static void generateAddresses(TaraModel box) {
-		Language language = TaraLanguage.getLanguage(box);
-		if (language == null) return;
-		Node[] addressedNodes = new Node[0];//= getAddressedConcepts(language, TaraUtil.getAllNodesOfFile(box));
-		if (addressedNodes.length == 0) return;
-		Mbroller addressGenerator = new Mbroller(addressedNodes);
-		addressGenerator.generate();
-	}
-//TODO
-//	private static Concept[] getAddressedConcepts(Model model, List<Concept> allConceptsOfFile) {
-//		List<Concept> concepts = new ArrayList<>();
-//		for (Concept concept : allConceptsOfFile) {
-//			Node node = TaraUtil.findNode(concept, model);
-//			if (node != null && node.getObject().is(Annotation.ADDRESSED))
-//				concepts.add(concept);
-//		}
-//		return concepts.toArray(new Concept[concepts.size()]);
-//	}
-
-	private static VirtualFile getSrcDirectory(Module module) {
-		Collection<VirtualFile> sourceRoots = TaraUtil.getSourceRoots(module);
-		for (VirtualFile file : sourceRoots)
-			if (file.isDirectory() && "src".equals(file.getName())) return file;
-		if (sourceRoots.size() > 0) {
-			VirtualFile parent = sourceRoots.iterator().next().getParent();
-			File src = new File(parent.getPath(), "src");
-			src.mkdir();
-			return LocalFileSystem.getInstance().refreshAndFindFileByPath(FileUtil.toSystemIndependentName(src.getPath()));
-		}
-		return null;
 	}
 }

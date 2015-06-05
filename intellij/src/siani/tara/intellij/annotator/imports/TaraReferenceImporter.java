@@ -1,9 +1,9 @@
 package siani.tara.intellij.annotator.imports;
 
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.IdentifierReference;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
@@ -22,7 +22,7 @@ public class TaraReferenceImporter {
 		List<Node> nodes = TaraUtil.findRootNode(element, element.getText());
 		ArrayList<ImportQuickFix> quickFixes = new ArrayList<>();
 		if (nodes.isEmpty()) return Collections.EMPTY_LIST;
-		for (Node concept : nodes) quickFixes.add(new ImportQuickFix((TaraModel) node.getContainingFile(),concept));
+		for (Node concept : nodes) quickFixes.add(new ImportQuickFix((TaraModel) node.getContainingFile(), concept));
 		return quickFixes;
 	}
 }

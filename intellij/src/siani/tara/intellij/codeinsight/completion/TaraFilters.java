@@ -49,6 +49,18 @@ public class TaraFilters {
 		return false;
 	}
 
+	private static boolean previousNewLine(PsiElement context) {
+		return context.getPrevSibling() != null && (is(context, TaraTypes.NEWLINE) || is(context, TaraTypes.IMPORTS));
+	}
+
+	private static boolean previousNewLineIndent(PsiElement context) {
+		return context.getPrevSibling() != null && is(context, TaraTypes.NEW_LINE_INDENT);
+	}
+
+	private static boolean is(PsiElement context, IElementType type) {
+		return type.equals(context.getPrevSibling().getNode().getElementType());
+	}
+
 	private static class AfterElementTypeFitFilter implements ElementFilter {
 		IElementType type;
 
@@ -97,19 +109,6 @@ public class TaraFilters {
 			return true;
 		}
 	}
-
-	private static boolean previousNewLine(PsiElement context) {
-		return context.getPrevSibling() != null && (is(context, TaraTypes.NEWLINE) || is(context, TaraTypes.IMPORTS));
-	}
-
-	private static boolean previousNewLineIndent(PsiElement context) {
-		return context.getPrevSibling() != null && is(context, TaraTypes.NEW_LINE_INDENT);
-	}
-
-	private static boolean is(PsiElement context, IElementType type) {
-		return type.equals(context.getPrevSibling().getNode().getElementType());
-	}
-
 
 	private static class AfterEqualsFilter implements ElementFilter {
 		@Override

@@ -23,11 +23,6 @@ import static siani.tara.intellij.lang.psi.impl.TaraUtil.getOverriddenVariable;
 
 public class TaraOverriddenVariable extends JavaLineMarkerProvider {
 
-	public TaraOverriddenVariable(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
-		super(daemonSettings, colorsManager);
-	}
-
-
 	private final MarkerType markerType = new MarkerType(element -> {
 		if (!Variable.class.isInstance(element)) return null;
 		PsiElement reference = getOverriddenVariable((Variable) element);
@@ -52,6 +47,11 @@ public class TaraOverriddenVariable extends JavaLineMarkerProvider {
 		}
 	}
 	);
+
+
+	public TaraOverriddenVariable(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+		super(daemonSettings, colorsManager);
+	}
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {

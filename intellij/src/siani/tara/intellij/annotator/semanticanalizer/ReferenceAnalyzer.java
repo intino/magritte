@@ -18,7 +18,10 @@ import siani.tara.intellij.annotator.imports.CreateNodeQuickFix;
 import siani.tara.intellij.annotator.imports.ImportQuickFix;
 import siani.tara.intellij.annotator.imports.TaraReferenceImporter;
 import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
-import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.Identifier;
+import siani.tara.intellij.lang.psi.IdentifierReference;
+import siani.tara.intellij.lang.psi.Node;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import java.util.ArrayList;

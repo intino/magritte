@@ -2,8 +2,8 @@ package siani.tara.intellij;
 
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;
-import siani.tara.intellij.lang.psi.Node;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.psi.Node;
 
 public class TaraRefactoringSupportProvider extends RefactoringSupportProvider {
 	@Override

@@ -1,6 +1,9 @@
 package siani.tara.compiler.dependencyresolution;
 
-import siani.tara.compiler.model.*;
+import siani.tara.compiler.model.FacetTarget;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.NodeContainer;
+import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;

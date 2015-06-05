@@ -10,10 +10,10 @@ import org.jetbrains.jps.model.ex.JpsElementChildRoleBase;
 
 public class JpsTaraSettings extends JpsElementBase<JpsTaraSettings> {
 	public static final String DEFAULT_HEAP_SIZE = "400";
-	public String heapSize = DEFAULT_HEAP_SIZE;
 	public static final boolean DEFAULT_PLUGIN_GENERATION = true;
-	public boolean pluginGeneration = DEFAULT_PLUGIN_GENERATION;
 	public static final JpsElementChildRole<JpsTaraSettings> ROLE = JpsElementChildRoleBase.create("Tara Compiler Configuration");
+	public String heapSize = DEFAULT_HEAP_SIZE;
+	public boolean pluginGeneration = DEFAULT_PLUGIN_GENERATION;
 	public String version = "0.1";
 	public String commentaries = "";
 	@Tag("excludes")

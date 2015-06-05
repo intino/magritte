@@ -703,6 +703,26 @@ public class GeneratedParserUtilBase {
 
 	public static class ErrorState {
 		public final LinkedList<Frame> frameStack = new LinkedList<Frame>();
+		final LimitedPool<Variant> VARIANTS = new LimitedPool<Variant>(VARIANTS_POOL_SIZE, new LimitedPool.ObjectFactory<Variant>() {
+			@Override
+			public Variant create() {
+				return new Variant();
+			}
+
+			@Override
+			public void cleanup(final Variant o) {
+			}
+		});
+		final LimitedPool<Frame> FRAMES = new LimitedPool<Frame>(FRAMES_POOL_SIZE, new LimitedPool.ObjectFactory<Frame>() {
+			@Override
+			public Frame create() {
+				return new Frame();
+			}
+
+			@Override
+			public void cleanup(final Frame o) {
+			}
+		});
 		public PairProcessor<IElementType, IElementType> altExtendsChecker;
 		public CompletionState completionState;
 		public BracePair[] braces;
@@ -712,13 +732,13 @@ public class GeneratedParserUtilBase {
 		boolean predicateSign = true;
 		boolean suppressErrors;
 		int lastExpectedVariantPos = -1;
+		MyList<Variant> variants = new MyList<Variant>(INITIAL_VARIANTS_SIZE);
+		MyList<Variant> unexpected = new MyList<Variant>(INITIAL_VARIANTS_SIZE / 10);
 		private boolean caseSensitive;
 
 		public static ErrorState get(PsiBuilder builder) {
 			return ((Builder) builder).state;
 		}
-
-		MyList<Variant> variants = new MyList<Variant>(INITIAL_VARIANTS_SIZE);
 
 		public static void initState(ErrorState state, PsiBuilder builder, IElementType root, TokenSet[] extendsSets) {
 			state.extendsSets = extendsSets;
@@ -731,8 +751,6 @@ public class GeneratedParserUtilBase {
 			if (state.braces != null && state.braces.length == 0) state.braces = null;
 		}
 
-		MyList<Variant> unexpected = new MyList<Variant>(INITIAL_VARIANTS_SIZE / 10);
-
 		public String getExpectedText(PsiBuilder builder_) {
 			int position = builder_.rawTokenIndex();
 			StringBuilder sb = new StringBuilder();
@@ -741,17 +759,6 @@ public class GeneratedParserUtilBase {
 			} else if (addExpected(sb, position, false)) sb.append(" unexpected, ");
 			return sb.toString();
 		}
-
-		final LimitedPool<Variant> VARIANTS = new LimitedPool<Variant>(VARIANTS_POOL_SIZE, new LimitedPool.ObjectFactory<Variant>() {
-			@Override
-			public Variant create() {
-				return new Variant();
-			}
-
-			@Override
-			public void cleanup(final Variant o) {
-			}
-		});
 
 		private boolean addExpected(StringBuilder sb, int position, boolean expected) {
 			MyList<Variant> list = expected ? variants : unexpected;
@@ -794,17 +801,6 @@ public class GeneratedParserUtilBase {
 			}
 			return count > 0;
 		}
-
-		final LimitedPool<Frame> FRAMES = new LimitedPool<Frame>(FRAMES_POOL_SIZE, new LimitedPool.ObjectFactory<Frame>() {
-			@Override
-			public Frame create() {
-				return new Frame();
-			}
-
-			@Override
-			public void cleanup(final Frame o) {
-			}
-		});
 
 		public void clearVariants(boolean expected, int start) {
 			MyList<Variant> list = expected ? variants : unexpected;

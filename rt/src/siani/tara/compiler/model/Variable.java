@@ -12,17 +12,27 @@ public interface Variable extends Cloneable {
 
 	String getName();
 
+	void setName(String name);
+
 	NodeContainer getContainer();
 
 	void setContainer(NodeContainer container);
 
 	String getType();
 
+	void setType(String type);
+
 	boolean isMultiple();
+
+	void setMultiple(boolean multiple);
 
 	int getTupleSize();
 
+	void setTupleSize(int tupleSize);
+
 	String getContract();
+
+	void setContract(String extension);
 
 	Collection<Tag> getFlags();
 
@@ -36,19 +46,9 @@ public interface Variable extends Cloneable {
 
 	boolean isInherited();
 
-	void setOverriden(boolean overriden);
-
 	boolean isOverriden();
 
-	void setContract(String extension);
-
-	void setName(String name);
-
-	void setType(String type);
-
-	void setMultiple(boolean multiple);
-
-	void setTupleSize(int tupleSize);
+	void setOverriden(boolean overriden);
 
 	List<Object> getAllowedValues();
 

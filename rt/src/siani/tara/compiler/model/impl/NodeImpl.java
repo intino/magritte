@@ -73,26 +73,22 @@ public class NodeImpl extends Element implements Node {
 		this.line = line;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	@Override
+	public String getDoc() {
+		return doc;
 	}
 
 	public void setDoc(String doc) {
 		this.doc = doc;
 	}
 
-	public void setSub(boolean sub) {
-		this.sub = sub;
-	}
-
-	@Override
-	public String getDoc() {
-		return doc;
-	}
-
 	@Override
 	public boolean isSub() {
 		return sub;
+	}
+
+	public void setSub(boolean sub) {
+		this.sub = sub;
 	}
 
 	@Override
@@ -269,6 +265,10 @@ public class NodeImpl extends Element implements Node {
 	@Override
 	public String getType() {
 		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String setType() {

@@ -43,6 +43,12 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		return path.endsWith("." + TARA_EXTENSION);
 	}
 
+	private static String getMagritteLib(ModuleChunk chunk) {
+		return ProjectPaths.getCompilationClasspath(chunk, true).stream().
+			filter(file -> file.getPath().contains("magritte")).findFirst().
+			map(File::getPath).orElse("Magritte not found");
+	}
+
 	public ExitCode build(CompileContext context, ModuleChunk chunk,
 	                      DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder,
 	                      OutputConsumer outputConsumer) throws ProjectBuildException, IOException {
@@ -65,7 +71,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			List<String> paths = collectPaths(chunk, context, finalOutputs);
 			paths.add(getNativeInterfacesDir(chunk.getModules(), extension.getGeneratedDslName()));
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension.getDsl(),
-				extension.getGeneratedDslName(), extension.getDictionary(), extension.isPlateRequired(), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
+				extension.getGeneratedDslName(), extension.getLevel(), extension.getDictionary(), extension.isPlateRequired(), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
 			context.setDone(1);
@@ -98,12 +104,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		list.add(finalOutput);//metrics path
 		list.add(getResourcesFile(modules.iterator().next()).getPath());
 		return list;
-	}
-
-	private static String getMagritteLib(ModuleChunk chunk) {
-		return ProjectPaths.getCompilationClasspath(chunk, true).stream().
-			filter(file -> file.getPath().contains("magritte")).findFirst().
-			map(File::getPath).orElse("Magritte not found");
 	}
 
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {

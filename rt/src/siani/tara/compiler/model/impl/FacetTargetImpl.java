@@ -2,9 +2,12 @@ package siani.tara.compiler.model.impl;
 
 import siani.tara.compiler.model.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static java.util.Collections.*;
+import static java.util.Collections.addAll;
+import static java.util.Collections.unmodifiableList;
 
 public class FacetTargetImpl extends Element implements FacetTarget {
 

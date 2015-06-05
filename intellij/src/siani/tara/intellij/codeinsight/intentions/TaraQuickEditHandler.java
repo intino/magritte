@@ -55,6 +55,8 @@ import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getParentByType;
 import static siani.tara.semantic.model.Variable.NATIVE_SEPARATOR;
 
 public class TaraQuickEditHandler extends DocumentAdapter implements Disposable {
+	public static final Key<TaraQuickEditHandler> QUICK_EDIT_HANDLER = Key.create("QUICK_EDIT_HANDLER");
+	private static final Key<String> REPLACEMENT_KEY = Key.create("REPLACEMENT_KEY");
 	private final Project myProject;
 	private final PsiFile origFile;
 	private final StringValue stringValue;
@@ -64,11 +66,7 @@ public class TaraQuickEditHandler extends DocumentAdapter implements Disposable 
 	private Document myNewDocument;
 	private PsiFile myNewFile;
 	private LightVirtualFile myNewVirtualFile;
-
 	private EditorWindow mySplittedWindow;
-
-	private static final Key<String> REPLACEMENT_KEY = Key.create("REPLACEMENT_KEY");
-	public static final Key<TaraQuickEditHandler> QUICK_EDIT_HANDLER = Key.create("QUICK_EDIT_HANDLER");
 
 	TaraQuickEditHandler(Project project, final PsiFile origFile, StringValue stringValue, Editor editor) {
 		this.myProject = project;
@@ -78,6 +76,11 @@ public class TaraQuickEditHandler extends DocumentAdapter implements Disposable 
 		this.myEditor = editor;
 		this.myOrigDocument = editor.getDocument();
 		init(project, origFile, stringValue);
+	}
+
+	private static Parameter getParameter(StringValue stringValue) {
+		PsiElement element = getParentByType(stringValue, Parameter.class);
+		return element instanceof Parameter ? (Parameter) element : null;
 	}
 
 	private void init(Project project, PsiFile origFile, StringValue stringValue) {
@@ -163,11 +166,6 @@ public class TaraQuickEditHandler extends DocumentAdapter implements Disposable 
 
 	private Node getContainerNode(PsiElement element) {
 		return (Node) getParentByType(element, Node.class);
-	}
-
-	private static Parameter getParameter(StringValue stringValue) {
-		PsiElement element = getParentByType(stringValue, Parameter.class);
-		return element instanceof Parameter ? (Parameter) element : null;
 	}
 
 	private PsiElement getVarInit(StringValue stringValue) {

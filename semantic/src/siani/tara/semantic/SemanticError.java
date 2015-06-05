@@ -8,8 +8,8 @@ import java.util.List;
 public class SemanticError {
 
 	private final String key;
-	private Element origin;
 	private final List<Object> parameters;
+	private Element origin;
 
 	public SemanticError(String key, Element origin) {
 		this(key, origin, Collections.emptyList());

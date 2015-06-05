@@ -24,11 +24,6 @@ import java.awt.event.MouseEvent;
 
 public class TaraOverriddenNode extends JavaLineMarkerProvider {
 
-	public TaraOverriddenNode(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
-		super(daemonSettings, colorsManager);
-	}
-
-
 	private final MarkerType markerType = new MarkerType(new Function<PsiElement, String>() {
 		@Nullable
 		@Override
@@ -57,6 +52,11 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 		}
 	}
 	);
+
+
+	public TaraOverriddenNode(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+		super(daemonSettings, colorsManager);
+	}
 
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {

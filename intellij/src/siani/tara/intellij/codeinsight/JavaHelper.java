@@ -75,6 +75,23 @@ public class JavaHelper {
 			myFacade = facade;
 		}
 
+		private static boolean isAssignable(PsiMethod method, String[] paramTypes) {
+			PsiParameterList parameterList = method.getParameterList();
+			if (parameterList.getParametersCount() < paramTypes.length) return false;
+			PsiElementFactory elementFactory = JavaPsiFacade.getElementFactory(method.getProject());
+			PsiParameter[] psiParameters = parameterList.getParameters();
+			boolean result = false;
+			for (int i = 0; i < paramTypes.length; i++) {
+				String paramType = paramTypes[i];
+				PsiParameter parameter = psiParameters[i];
+				PsiType psiType = parameter.getType();
+				PsiType typeFromText = elementFactory.createTypeFromText(paramType, parameter);
+				result = psiType.isAssignableFrom(typeFromText);
+				if (!result) break;
+			}
+			return result;
+		}
+
 		@Override
 		public PsiReferenceProvider getClassReferenceProvider() {
 			JavaClassReferenceProvider provider = new JavaClassReferenceProvider();
@@ -106,23 +123,6 @@ public class JavaHelper {
 				}
 			}
 			return ArrayUtil.getFirstElement(methods);
-		}
-
-		private static boolean isAssignable(PsiMethod method, String[] paramTypes) {
-			PsiParameterList parameterList = method.getParameterList();
-			if (parameterList.getParametersCount() < paramTypes.length) return false;
-			PsiElementFactory elementFactory = JavaPsiFacade.getElementFactory(method.getProject());
-			PsiParameter[] psiParameters = parameterList.getParameters();
-			boolean result = false;
-			for (int i = 0; i < paramTypes.length; i++) {
-				String paramType = paramTypes[i];
-				PsiParameter parameter = psiParameters[i];
-				PsiType psiType = parameter.getType();
-				PsiType typeFromText = elementFactory.createTypeFromText(paramType, parameter);
-				result = psiType.isAssignableFrom(typeFromText);
-				if (!result) break;
-			}
-			return result;
 		}
 
 		@NotNull

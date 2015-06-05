@@ -6,19 +6,19 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.ui.GuiUtils;
-import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 import org.jetbrains.annotations.NonNls;
 import org.markdown4j.Markdown4jProcessor;
+import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 
 import java.awt.*;
 import java.io.IOException;
 
 public class TaraDocumentationFormatter {
 
+	private static final Logger LOG = Logger.getInstance(TaraDocumentationFormatter.class.getName());
+
 	private TaraDocumentationFormatter() {
 	}
-
-	private static final Logger LOG = Logger.getInstance(TaraDocumentationFormatter.class.getName());
 
 	private static String getLocationString(PsiElement element) {
 		PsiFile file = element.getContainingFile();

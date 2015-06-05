@@ -19,6 +19,14 @@ public class VariantsManager {
 		this.context = solveIdentifierContext();
 	}
 
+	private static boolean isExtendsReference(IdentifierReference reference) {
+		return reference.getParent() instanceof Signature;
+	}
+
+	private static boolean namesAreEqual(Identifier identifier, Node node) {
+		return identifier.getText().equals(node.getName());
+	}
+
 	public void resolveVariants() {
 		addContextVariants((Identifier) myElement);
 		addInModelVariants();
@@ -36,14 +44,6 @@ public class VariantsManager {
 				variants.add(sibling);
 			container = container.container();
 		}
-	}
-
-	private static boolean isExtendsReference(IdentifierReference reference) {
-		return reference.getParent() instanceof Signature;
-	}
-
-	private static boolean namesAreEqual(Identifier identifier, Node node) {
-		return identifier.getText().equals(node.getName());
 	}
 
 	private void addInModelVariants() {

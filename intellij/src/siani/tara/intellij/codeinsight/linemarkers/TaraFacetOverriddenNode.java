@@ -12,11 +12,10 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.FacetApply;
+import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import javax.swing.*;
@@ -28,19 +27,14 @@ public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
 		super(daemonSettings, colorsManager);
 	}
 
-
-	private final MarkerType markerType = new MarkerType(new Function<PsiElement, String>() {
-		@Nullable
-		@Override
-		public String fun(PsiElement element) {
-			if (!Node.class.isInstance(element)) return null;
-			PsiElement reference = getOverriddenNode((Node) element);
-			String start = "Node overridden by facet in ";
-			@NonNls String pattern;
-			if (reference == null) return null;
-			pattern = reference.getNavigationElement().getContainingFile().getName();
-			return GutterIconTooltipHelper.composeText(new PsiElement[]{reference}, start, pattern);
-		}
+	private final MarkerType markerType = new MarkerType(element -> {
+		if (!Node.class.isInstance(element)) return null;
+		PsiElement reference = getOverriddenNode((Node) element);
+		String start = "Node overridden by facet in ";
+		@NonNls String pattern;
+		if (reference == null) return null;
+		pattern = reference.getNavigationElement().getContainingFile().getName();
+		return GutterIconTooltipHelper.composeText(new PsiElement[]{reference}, start, pattern);
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {

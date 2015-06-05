@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="dist" name="tara :: tara_runtime_constants">
-  <property name="debuglevel" value="source,lines,vars" />
-  <property name="target" value="1.7" />
-  <property name="source" value="1.7" />
-	
+  <property name="debuglevel" value="source,lines,vars"/>
+  <property name="target" value="1.7"/>
+  <property name="source" value="1.7"/>
+
   <target name="init">
-    <mkdir dir="dist" />
+    <mkdir dir="dist"/>
   </target>
 
   <target name="clean">
-    <delete dir="dist" />
+    <delete dir="dist"/>
   </target>
 
-  <target depends="clean" name="cleanall" />
-  <target depends="build-subprojects,build-project" name="build" />
-  <target name="build-subprojects" />
-  
-  <target depends="init" name="build-project">
-    <echo message="${ant.project.name}: ${ant.file}" />
+  <target depends="clean" name="cleanall"/>
+  <target depends="build-subprojects,build-project" name="build"/>
+  <target name="build-subprojects"/>
 
-    <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}" includeantruntime="false">     
-      <src path="src" />
+  <target depends="init" name="build-project">
+    <echo message="${ant.project.name}: ${ant.file}"/>
+
+    <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}"
+           includeantruntime="false">
+      <src path="src"/>
     </javac>
   </target>
-  
+
   <target name="dist" depends="cleanall,build-project">
-  </target>  
+  </target>
 
 </project>

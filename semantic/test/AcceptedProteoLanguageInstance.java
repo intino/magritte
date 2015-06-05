@@ -88,9 +88,9 @@ public class AcceptedProteoLanguageInstance {
 		thrown.expectMessage(message("required.name"));
 		proteoCheck(root().include(
 			define().type("Concept").name("Thesaurus")
-					.include(define().type("Concept").name("Term")
-							.include(define().type("Concept").node()).node())
-					.node()));
+				.include(define().type("Concept").name("Term")
+					.include(define().type("Concept").node()).node())
+				.node()));
 	}
 
 	@Test

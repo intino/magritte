@@ -50,6 +50,11 @@ public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExte
 		return myProperties.plateRequired;
 	}
 
+	@Override
+	public int getLevel() {
+		return myProperties.level;
+	}
+
 	@NotNull
 	@Override
 	public JpsTaraModuleExtensionImpl createCopy() {

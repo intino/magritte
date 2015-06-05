@@ -1,7 +1,7 @@
 package siani.tara.intellij.actions;
 
-import siani.tara.intellij.lang.file.TaraFileType;
 import org.jetbrains.annotations.NonNls;
+import siani.tara.intellij.lang.file.TaraFileType;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ public class TaraTemplates {
 	public static Map<String, String> templates = new HashMap<>();
 
 	static {
-		templates.put("MODEL", "TaraModel."+ TaraFileType.INSTANCE.getDefaultExtension());
+		templates.put("MODEL", "TaraModel." + TaraFileType.INSTANCE.getDefaultExtension());
 	}
 
 	private TaraTemplates() {

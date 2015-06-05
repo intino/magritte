@@ -19,6 +19,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TaraFoldingBuilder extends CustomFoldingBuilder {
+	private static boolean isStringOrNativeType(Variable variable) {
+		return variable.getType() != null && (variable.getType().equals(TaraPrimitives.STRING) || variable.getType().equals(TaraPrimitives.NATIVE));
+	}
+
+	private static boolean hasStringValue(Variable variable) {
+		return variable.getValue() != null && !variable.getValue().getStringValueList().isEmpty();
+	}
+
 	@Override
 	protected void buildLanguageFoldRegions(@NotNull List<FoldingDescriptor> descriptors,
 	                                        @NotNull PsiElement root,
@@ -88,14 +96,6 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		node.getVariables().stream().
 			filter(variable -> isStringOrNativeType(variable) && hasStringValue(variable)).
 			forEach(variable -> TaraFoldingBuilder.this.addMultiLineString((TaraVariable) variable, strings));
-	}
-
-	private static boolean isStringOrNativeType(Variable variable) {
-		return variable.getType() != null && (variable.getType().equals(TaraPrimitives.STRING) || variable.getType().equals(TaraPrimitives.NATIVE));
-	}
-
-	private static boolean hasStringValue(Variable variable) {
-		return variable.getValue() != null && !variable.getValue().getStringValueList().isEmpty();
 	}
 
 	private void searchMultiLineVarInit(Node node, List<PsiElement> strings) {

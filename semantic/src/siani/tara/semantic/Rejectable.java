@@ -2,14 +2,14 @@ package siani.tara.semantic;
 
 import siani.tara.semantic.model.Node;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 public abstract class Rejectable {
-
-	public abstract SemanticError error();
 
 	public static List<Rejectable> build(Node node) {
 		List<Rejectable> rejectables = new ArrayList<>();
@@ -32,6 +32,7 @@ public abstract class Rejectable {
 		return rejectables;
 	}
 
+	public abstract SemanticError error();
 
 	public static class Name extends Rejectable {
 		public static final Name instance = new Name();
@@ -49,6 +50,10 @@ public abstract class Rejectable {
 		private String expectedType;
 		private List<String> expectedValues;
 
+		public Parameter(siani.tara.semantic.model.Parameter parameter) {
+			this.parameter = parameter;
+		}
+
 		public void invalidType(String expectedType) {
 			this.cause = Cause.TYPE;
 			this.expectedType = expectedType;
@@ -57,10 +62,6 @@ public abstract class Rejectable {
 		public void invalidValue(List<String> expectedValues) {
 			this.cause = Cause.VALUE;
 			this.expectedValues = expectedValues;
-		}
-
-		public Parameter(siani.tara.semantic.model.Parameter parameter) {
-			this.parameter = parameter;
 		}
 
 		public siani.tara.semantic.model.Parameter getParameter() {
@@ -99,10 +100,6 @@ public abstract class Rejectable {
 		private final Node node;
 		private Cause cause = Cause.NOT_ALLOWED;
 
-		public enum Cause {
-			NOT_ALLOWED, NOT_SINGLE
-		}
-
 		public Include(Node node) {
 			this.node = node;
 		}
@@ -121,16 +118,16 @@ public abstract class Rejectable {
 				new SemanticError("reject.unknown.type.in.context", node, asList(node.type(), node.name())) :
 				new SemanticError("reject.multiple.node.in.context", node, asList(node.type(), node.name()));
 		}
+
+		public enum Cause {
+			NOT_ALLOWED, NOT_SINGLE
+		}
 	}
 
 	public static class Facet extends Rejectable {
 
 		private final siani.tara.semantic.model.Facet facet;
 		private Cause cause = Cause.NOT_ALLOWED;
-
-		public enum Cause {
-			NOT_ALLOWED, ERRONEUS_PARAMETER
-		}
 
 		public Facet(siani.tara.semantic.model.Facet facet) {
 			this.facet = facet;
@@ -145,6 +142,10 @@ public abstract class Rejectable {
 			return cause.equals(Cause.NOT_ALLOWED) ?
 				new SemanticError("reject.unknown.facet.in.context", facet, singletonList(facet.type())) :
 				new SemanticError("reject.parameter.in.context", facet, singletonList(facet.type()));
+		}
+
+		public enum Cause {
+			NOT_ALLOWED, ERRONEUS_PARAMETER
 		}
 	}
 

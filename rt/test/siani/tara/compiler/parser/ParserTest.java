@@ -15,32 +15,18 @@ public class ParserTest {
 
 	String TEST1 =
 		"\t\t--\n" +
-		"\t\tnumeroChip().setValue(\"X-ll210s0\");\n" +
-		"\t\tAnimal animal = new Animal();\n" +
-		"\t\tfor (Morph morph : animal.referees()) {\n" +
-		"\t\t\tfor (Morph morph1 : morph.referees()) {\n" +
-		"\t\t\t\tSystem.out.println(\"morph1.toString()\");" +
-		"\t\t\t}\n" +
-		"\t\t}\n" +
-		"\t\t--";
+			"\t\tnumeroChip().setValue(\"X-ll210s0\");\n" +
+			"\t\tAnimal animal = new Animal();\n" +
+			"\t\tfor (Morph morph : animal.referees()) {\n" +
+			"\t\t\tfor (Morph morph1 : morph.referees()) {\n" +
+			"\t\t\t\tSystem.out.println(\"morph1.toString()\");" +
+			"\t\t\t}\n" +
+			"\t\t}\n" +
+			"\t\t--";
 
 	String TEST2 =
 		"Operation(\"Cambiar chip\")\n" +
-		"\taction1 =\"setValue(\\\"Toby\\\");\"";
-
-	@Test
-	public void accept_multi_line_strings() {
-		String[] expectedTypes = new String[]{};
-		String[] receivedTypes = lexerTest(TEST1);
-		Assert.assertArrayEquals(expectedTypes, receivedTypes);
-	}
-
-	@Test
-	public void accept_quotes_in_strings() {
-		String[] expectedTypes = new String[]{};
-		String[] receivedTypes = lexerTest(TEST2);
-		Assert.assertArrayEquals(expectedTypes, receivedTypes);
-	}
+			"\taction1 =\"setValue(\\\"Toby\\\");\"";
 
 	public static String[] lexerTest(String query) {
 		try {
@@ -69,5 +55,19 @@ public class ParserTest {
 
 	public static String getRulesNameList(int index) {
 		return ruleNamesList[index];
+	}
+
+	@Test
+	public void accept_multi_line_strings() {
+		String[] expectedTypes = new String[]{};
+		String[] receivedTypes = lexerTest(TEST1);
+		Assert.assertArrayEquals(expectedTypes, receivedTypes);
+	}
+
+	@Test
+	public void accept_quotes_in_strings() {
+		String[] expectedTypes = new String[]{};
+		String[] receivedTypes = lexerTest(TEST2);
+		Assert.assertArrayEquals(expectedTypes, receivedTypes);
 	}
 }

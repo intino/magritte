@@ -12,11 +12,11 @@ import java.util.logging.Logger;
 
 public class LanguageCreator {
 	private static final Logger LOG = Logger.getLogger(LanguageCreator.class.getName());
-	private final CompilerConfiguration configuration;
+	private final CompilerConfiguration conf;
 	private Model model;
 
-	public LanguageCreator(CompilerConfiguration configuration, Model model) {
-		this.configuration = configuration;
+	public LanguageCreator(CompilerConfiguration conf, Model model) {
+		this.conf = conf;
 		this.model = model;
 	}
 
@@ -31,7 +31,7 @@ public class LanguageCreator {
 
 	private AbstractFrame createFrame(final Model model) {
 		final FrameBuilder builder = new FrameBuilder();
-		builder.register(Model.class, new LanguageModelAdapter(configuration.getGeneratedLanguage(), configuration.getLocale(), configuration.loadLanguage(), configuration.isPlateRequired()));
+		builder.register(Model.class, new LanguageModelAdapter(conf.getGeneratedLanguage(), conf.getLocale(), conf.loadLanguage(), conf.isPlateRequired(), conf.getLevel()));
 		return builder.build(model);
 	}
 }

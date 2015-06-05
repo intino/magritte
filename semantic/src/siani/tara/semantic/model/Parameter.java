@@ -12,9 +12,9 @@ public interface Parameter extends Element {
 
 	void setAnnotations(List<String> annotations);
 
-	void setMultiple(boolean multiple);
-
 	boolean isMultiple();
+
+	void setMultiple(boolean multiple);
 
 	int getPosition();
 
@@ -26,9 +26,9 @@ public interface Parameter extends Element {
 
 	String getContract();
 
-	String getMetric();
-
 	void setContract(String contract);
+
+	String getMetric();
 
 	boolean isVariableInit();
 

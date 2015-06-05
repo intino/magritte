@@ -7,10 +7,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.psi.Import;
 import siani.tara.intellij.lang.psi.TaraPsiElement;
-import org.jetbrains.annotations.NotNull;
 
 public class RemoveImportFix implements IntentionAction {
 	private final TaraPsiElement identifier;

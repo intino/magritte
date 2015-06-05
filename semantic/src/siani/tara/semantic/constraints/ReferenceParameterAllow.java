@@ -19,8 +19,8 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	private final boolean multiple;
 	private final List<String> values;
 	private final int position;
-	private String nativeName;
 	private final List<String> flags;
+	private String nativeName;
 
 
 	public ReferenceParameterAllow(String name, List<String> values, boolean multiple, int position, String nativeName, List<String> flags) {

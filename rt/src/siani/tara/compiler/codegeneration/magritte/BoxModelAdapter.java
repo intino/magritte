@@ -40,6 +40,21 @@ public class BoxModelAdapter implements Adapter<Model> {
 		this.terminal = terminal;
 	}
 
+	public static String getQn(Node owner, Node node, String generatedLanguage) {
+		final FacetTarget facetTarget = facetTargetContainer(node);
+		if (owner.isFacet())
+			return composeMorphPackagePath(generatedLanguage) + DOT + owner.getName().toLowerCase() + DOT + Format.reference().format(facetTarget.getTarget());
+		else
+			return composeMorphPackagePath(generatedLanguage) + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
+	}
+
+	private static FacetTarget facetTargetContainer(Node node) {
+		NodeContainer container = node.getContainer();
+		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
+		else container = container.getContainer();
+		return null;
+	}
+
 	@Override
 	public void execute(Frame frame, Model model, FrameContext FrameContext) {
 		frame.addFrame(NAME, capitalize(generatedLanguage) + buildFileName(model.getFile()));
@@ -49,7 +64,6 @@ public class BoxModelAdapter implements Adapter<Model> {
 		addFacetImports(model.getIncludedNodes(), frame);
 		parserAllNodes(frame, model, FrameContext);
 	}
-
 
 	private void parserAllNodes(Frame frame, Node nodeContainer, FrameContext context) {
 		for (Node node : nodeContainer.getIncludedNodes()) {
@@ -132,21 +146,6 @@ public class BoxModelAdapter implements Adapter<Model> {
 		return NameFormatter.getQn((FacetTarget) owner, generatedLanguage);
 //		if (owner instanceof Node && !((Node) owner).isAnonymous()) return format(owner.getQualifiedName());
 //		return format(getFirstNamed(owner));
-	}
-
-	public static String getQn(Node owner, Node node, String generatedLanguage) {
-		final FacetTarget facetTarget = facetTargetContainer(node);
-		if (owner.isFacet())
-			return composeMorphPackagePath(generatedLanguage) + DOT + owner.getName().toLowerCase() + DOT + Format.reference().format(facetTarget.getTarget());
-		else
-			return composeMorphPackagePath(generatedLanguage) + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
-	}
-
-	private static FacetTarget facetTargetContainer(Node node) {
-		NodeContainer container = node.getContainer();
-		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
-		else container = container.getContainer();
-		return null;
 	}
 
 	private Node firstNoFeatureAndUnnamed(NodeContainer owner) {

@@ -19,6 +19,16 @@ import static siani.tara.intellij.lang.psi.TaraTypes.NODE;
 public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, CustomFormattingModelBuilder {
 	private static final boolean DUMP_FORMATTING_AST = false;
 
+	private static void printAST(ASTNode node, int indent) {
+		while (node != null) {
+			for (int i = 0; i < indent; i++) {
+				System.out.print(" ");
+			}
+			System.out.println(node.toString() + " " + node.getTextRange().toString());
+			printAST(node.getFirstChildNode(), indent + 1);
+			node = node.getTreeNext();
+		}
+	}
 
 	@NotNull
 	@Override
@@ -54,17 +64,6 @@ public class TaraFormattingModelBuilder implements FormattingModelBuilderEx, Cus
 			.between(NODE, NODE).blankLines(1)
 			.after(IMPORTS).blankLines(0)
 			.between(NODE, NODE).spacing(0, 1, 1, false, 1);
-	}
-
-	private static void printAST(ASTNode node, int indent) {
-		while (node != null) {
-			for (int i = 0; i < indent; i++) {
-				System.out.print(" ");
-			}
-			System.out.println(node.toString() + " " + node.getTextRange().toString());
-			printAST(node.getFirstChildNode(), indent + 1);
-			node = node.getTreeNext();
-		}
 	}
 
 	@Nullable

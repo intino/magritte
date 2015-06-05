@@ -32,13 +32,13 @@ import static java.io.File.separator;
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
 
 public class ModelToJavaOperation extends ModelOperation {
+	protected static final String DOT = ".";
 	private static final Logger LOG = Logger.getLogger(ModelToJavaOperation.class.getName());
 	private static final String JAVA = ".java";
-	protected static final String DOT = ".";
 	private final CompilationUnit compilationUnit;
+	private final CompilerConfiguration conf;
 	private Model model;
 	private File outFolder;
-	private final CompilerConfiguration conf;
 
 	public ModelToJavaOperation(CompilationUnit compilationUnit) {
 		super();

@@ -22,19 +22,18 @@ import java.util.concurrent.Future;
 import static java.io.File.separator;
 
 public class TaraRunner {
+	public static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
-
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
 	private static final String ITRULES_VERSION = "1.2.0";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String SEMANTIC_RULES = "tara.jar";
 	private static final String[] JALOPY = {"jalopy-3000.0.0.jar", "antlr-2.7.7.jar", "log4j-1.2.17.jar"};
 	private static final String LIB = "lib";
-	public static final char NL = '\n';
 	private static File argsFile;
 
 	protected TaraRunner(final String projectName, final String moduleName, final String language,
-	                     final String generatedLangName, final String dictionary, boolean plateRequired,
+	                     final String generatedLangName, final int level, final String dictionary, boolean plateRequired,
 	                     final Collection<String> sources,
 	                     final String encoding,
 	                     String[] iconPaths,
@@ -51,8 +50,10 @@ public class TaraRunner {
 			writer.write(TaraRtConstants.TERMINAL + NL + (generatedLangName == null || generatedLangName.isEmpty() ? "true" : "false") + NL);
 			writer.write(TaraRtConstants.DICTIONARY + NL + dictionary + NL);
 			writer.write(TaraRtConstants.REQUIRED_PLATE + NL + plateRequired + NL);
-			if (generatedLangName != null && !generatedLangName.isEmpty())
+			if (generatedLangName != null && !generatedLangName.isEmpty()) {
 				writer.write(TaraRtConstants.GENERATED_LANG_NAME + NL + generatedLangName + NL);
+				writer.write(TaraRtConstants.MODEL_LEVEL + NL + level + NL);
+			}
 			if (encoding != null) writer.write(TaraRtConstants.ENCODING + NL + encoding + NL);
 			for (String iconPath : iconPaths)
 				writer.write(TaraRtConstants.ICONS_PATH + NL + iconPath + NL);

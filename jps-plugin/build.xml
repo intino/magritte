@@ -1,75 +1,77 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build-jar">
-  <property name="debuglevel" value="source,lines,vars" />
-  <property name="target" value="1.7" />
-  <property name="source" value="1.7" />
-  <property name="file.plugin.jar" value="tara-jps-plugin.jar" />
-	
+  <property name="debuglevel" value="source,lines,vars"/>
+  <property name="target" value="1.7"/>
+  <property name="source" value="1.7"/>
+  <property name="file.plugin.jar" value="tara-jps-plugin.jar"/>
+
   <path id="library.classpath">
-    <pathelement location="../lib" />
+    <pathelement location="../lib"/>
     <fileset dir="../lib">
-      <include name="**/*.jar" />
+      <include name="**/*.jar"/>
     </fileset>
   </path>
 
   <path id="rt-constants.classpath">
-    <pathelement location="../rt-constants/dist" />
+    <pathelement location="../rt-constants/dist"/>
     <fileset dir="../rt-constants/dist">
-      <include name="**/*.*" />
+      <include name="**/*.*"/>
     </fileset>
   </path>
 
   <target name="init">
-    <mkdir dir="build" />
-    <mkdir dir="dist" />
-    <mkdir dir="dist/META-INF" />
-    <mkdir dir="../rt-constants/dist" />
+    <mkdir dir="build"/>
+    <mkdir dir="dist"/>
+    <mkdir dir="dist/META-INF"/>
+    <mkdir dir="../rt-constants/dist"/>
   </target>
 
   <target name="clean">
     <delete dir="build"/>
-    <delete dir="dist" />
-    <delete dir="../rt-constants/dist" />
+    <delete dir="dist"/>
+    <delete dir="../rt-constants/dist"/>
   </target>
 
-  <target depends="clean" name="cleanall" />
-  <target depends="build-subprojects,build-project" name="build" />
-  <target name="build-subprojects" />
-  
+  <target depends="clean" name="cleanall"/>
+  <target depends="build-subprojects,build-project" name="build"/>
+  <target name="build-subprojects"/>
+
   <target depends="init" name="build-project">
-    <echo message="${ant.project.name}: ${ant.file}" />
+    <echo message="${ant.project.name}: ${ant.file}"/>
 
-    <javac debug="true" debuglevel="${debuglevel}" destdir="../rt-constants/dist" source="${source}" target="${target}" includeantruntime="false">     
-      <src path="../rt-constants/src" />
-      <classpath refid="library.classpath" />
+    <javac debug="true" debuglevel="${debuglevel}" destdir="../rt-constants/dist" source="${source}" target="${target}"
+           includeantruntime="false">
+      <src path="../rt-constants/src"/>
+      <classpath refid="library.classpath"/>
     </javac>
 
-    <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}" includeantruntime="false">     
-      <src path="src" />
-      <classpath refid="rt-constants.classpath" />
-      <classpath refid="library.classpath" />
+    <javac debug="true" debuglevel="${debuglevel}" destdir="dist" source="${source}" target="${target}"
+           includeantruntime="false">
+      <src path="src"/>
+      <classpath refid="rt-constants.classpath"/>
+      <classpath refid="library.classpath"/>
     </javac>
   </target>
-  
+
   <target name="dist" depends="cleanall,build-project">
 
     <copy includeemptydirs="false" todir="dist/META-INF">
       <fileset dir="src/META-INF">
       </fileset>
-    </copy>    
+    </copy>
 
 
-  </target>  
+  </target>
 
   <target name="build-jar" depends="dist">
     <fileset dir="dist">
-      <include name="**/*" />
+      <include name="**/*"/>
     </fileset>
     <jar destfile="${file.plugin.jar}">
       <zipfileset dir="dist">
       </zipfileset>
     </jar>
     <echo>Copying ${file.plugin.jar}...</echo>
-    <move file="${file.plugin.jar}" todir="build" />
+    <move file="${file.plugin.jar}" todir="build"/>
   </target>
 </project>

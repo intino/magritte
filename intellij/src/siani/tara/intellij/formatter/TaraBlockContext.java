@@ -9,7 +9,7 @@ import siani.tara.intellij.lang.TaraLanguage;
 public class TaraBlockContext {
 
 	private final CommonCodeStyleSettings mySettings;
-//	private final TaraCodeStyleSettings myPySettings;
+	//	private final TaraCodeStyleSettings myPySettings;
 	private final SpacingBuilder mySpacingBuilder;
 	private final FormattingMode myMode;
 

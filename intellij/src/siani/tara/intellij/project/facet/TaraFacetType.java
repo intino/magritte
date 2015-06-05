@@ -24,9 +24,9 @@ public class TaraFacetType extends FacetType<TaraFacet, TaraFacetConfiguration> 
 	}
 
 	public TaraFacet createFacet(@NotNull Module module,
-	                                String name,
-	                                @NotNull TaraFacetConfiguration configuration,
-	                                @Nullable Facet underlyingFacet) {
+	                             String name,
+	                             @NotNull TaraFacetConfiguration configuration,
+	                             @Nullable Facet underlyingFacet) {
 		return new TaraFacet(this, module, name, configuration);
 	}
 

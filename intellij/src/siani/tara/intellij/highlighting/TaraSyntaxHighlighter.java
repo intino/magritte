@@ -52,18 +52,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<>();
 	private static final Map<IElementType, TextAttributesKey> KEYS;
 
-	public TaraSyntaxHighlighter() {
-		EditorColors.INJECTED_LANGUAGE_FRAGMENT.getDefaultAttributes().setBackgroundColor(JBColor.BLACK);
-		HighlightInfoType.INJECTED_LANGUAGE_FRAGMENT.getAttributesKey().getDefaultAttributes().setBackgroundColor(JBColor.BLACK);
-		HighlightInfoType.INJECTED_LANGUAGE_BACKGROUND.getAttributesKey().getDefaultAttributes().setBackgroundColor(JBColor.BLACK);
-		BAD_CHARACTER.getDefaultAttributes().setForegroundColor(JBColor.RED);
-		BAD_CHARACTER.getDefaultAttributes().setFontType(Font.BOLD);
-	}
-
-	private static TextAttributes errorTextAttributes() {
-		return new TextAttributes(JBColor.RED, null, null, null, Font.BOLD);
-	}
-
 	static {
 		DISPLAY_NAMES.put(IDENTIFIER, new Pair<>(MessageProvider.message("options.tara.concept.identifier"), null));
 		DISPLAY_NAMES.put(KEYWORD, new Pair<>(MessageProvider.message("options.tara.concept.keyword"), null));
@@ -76,12 +64,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		DISPLAY_NAMES.put(NUMBER, new Pair<>(MessageProvider.message("options.tara.number"), null));
 		DISPLAY_NAMES.put(BRACKETS, new Pair<>(MessageProvider.message("options.tara.concept.annotation"), null));
 		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<>(MessageProvider.message("invalid.tara.concept.character"), HighlightSeverity.ERROR));
-	}
-
-	@NotNull
-	@Override
-	public Lexer getHighlightingLexer() {
-		return new TaraHighlighterLexAdapter(ProjectManager.getInstance().getDefaultProject());
 	}
 
 	static {
@@ -153,6 +135,24 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		KEYS.put(CHARACTER, STRING);
 		KEYS.put(TokenType.WHITE_SPACE, null);
 		KEYS.put(TokenType.BAD_CHARACTER, BAD_CHARACTER);
+	}
+
+	public TaraSyntaxHighlighter() {
+		EditorColors.INJECTED_LANGUAGE_FRAGMENT.getDefaultAttributes().setBackgroundColor(JBColor.BLACK);
+		HighlightInfoType.INJECTED_LANGUAGE_FRAGMENT.getAttributesKey().getDefaultAttributes().setBackgroundColor(JBColor.BLACK);
+		HighlightInfoType.INJECTED_LANGUAGE_BACKGROUND.getAttributesKey().getDefaultAttributes().setBackgroundColor(JBColor.BLACK);
+		BAD_CHARACTER.getDefaultAttributes().setForegroundColor(JBColor.RED);
+		BAD_CHARACTER.getDefaultAttributes().setFontType(Font.BOLD);
+	}
+
+	private static TextAttributes errorTextAttributes() {
+		return new TextAttributes(JBColor.RED, null, null, null, Font.BOLD);
+	}
+
+	@NotNull
+	@Override
+	public Lexer getHighlightingLexer() {
+		return new TaraHighlighterLexAdapter(ProjectManager.getInstance().getDefaultProject());
 	}
 
 	@NotNull

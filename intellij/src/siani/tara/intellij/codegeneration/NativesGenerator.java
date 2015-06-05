@@ -36,8 +36,8 @@ public class NativesGenerator {
 	private final Project project;
 	private final TaraModel taraModel;
 	private final PsiDirectory srcDirectory;
-	private PsiDirectory destiny;
 	private final Module module;
+	private PsiDirectory destiny;
 
 	public NativesGenerator(Project project, TaraModel taraModel) {
 		this.project = project;

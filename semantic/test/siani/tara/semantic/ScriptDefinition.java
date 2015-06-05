@@ -5,14 +5,14 @@ import siani.tara.semantic.model.*;
 import java.util.*;
 
 class ScriptDefinition implements Definition {
-	private String type = "";
-	private String name = "";
-	private List<Parameter> parameters = new ArrayList<>();
-	private Node parent = null;
 	public Set<String> annotations = new HashSet<>();
 	public Set<String> flags = new HashSet<>();
 	public List<FacetTarget> facetTargets = new ArrayList<>();
 	public List<Facet> facets = new ArrayList<>();
+	private String type = "";
+	private String name = "";
+	private List<Parameter> parameters = new ArrayList<>();
+	private Node parent = null;
 	private String plate = "";
 	private List<ScriptNode> includes = new ArrayList<>();
 
@@ -46,13 +46,13 @@ class ScriptDefinition implements Definition {
 			}
 
 			@Override
-			public void setMultiple(boolean multiple) {
-
+			public boolean isMultiple() {
+				return false;
 			}
 
 			@Override
-			public boolean isMultiple() {
-				return false;
+			public void setMultiple(boolean multiple) {
+
 			}
 
 			@Override
@@ -81,13 +81,13 @@ class ScriptDefinition implements Definition {
 			}
 
 			@Override
-			public String getMetric() {
-				return null;
+			public void setContract(String contract) {
+
 			}
 
 			@Override
-			public void setContract(String contract) {
-
+			public String getMetric() {
+				return null;
 			}
 
 			@Override

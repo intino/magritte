@@ -126,13 +126,13 @@ class ScriptFacetDefinition implements FacetDefinition {
 			}
 
 			@Override
-			public void setMultiple(boolean multiple) {
-
+			public boolean isMultiple() {
+				return false;
 			}
 
 			@Override
-			public boolean isMultiple() {
-				return false;
+			public void setMultiple(boolean multiple) {
+
 			}
 
 			@Override
@@ -161,13 +161,13 @@ class ScriptFacetDefinition implements FacetDefinition {
 			}
 
 			@Override
-			public String getMetric() {
-				return null;
+			public void setContract(String contract) {
+
 			}
 
 			@Override
-			public void setContract(String contract) {
-
+			public String getMetric() {
+				return null;
 			}
 
 			@Override

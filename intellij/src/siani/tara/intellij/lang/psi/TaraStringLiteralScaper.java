@@ -13,25 +13,6 @@ public abstract class TaraStringLiteralScaper<T extends PsiLanguageInjectionHost
 		super(host);
 	}
 
-	public boolean decode(@NotNull final TextRange rangeInsideHost, @NotNull StringBuilder outChars) {
-		String subText = rangeInsideHost.substring(myHost.getText());
-
-		Ref<int[]> sourceOffsetsRef = new Ref<>();
-		boolean result = parseStringCharacters(subText, outChars, sourceOffsetsRef, false);
-		outSourceOffsets = sourceOffsetsRef.get();
-		return result;
-	}
-
-	public int getOffsetInHost(int offsetInDecoded, @NotNull final TextRange rangeInsideHost) {
-		int result = offsetInDecoded < outSourceOffsets.length ? outSourceOffsets[offsetInDecoded] : -1;
-		if (result == -1) return -1;
-		return (result <= rangeInsideHost.getLength() ? result : rangeInsideHost.getLength()) + rangeInsideHost.getStartOffset();
-	}
-
-	public boolean isOneLine() {
-		return true;
-	}
-
 	public static boolean parseStringCharacters(String chars, StringBuilder outChars, Ref<int[]> sourceOffsetsRef, boolean regExp) {
 		int[] sourceOffsets = new int[chars.length() + 1];
 		sourceOffsetsRef.set(sourceOffsets);
@@ -173,6 +154,25 @@ public abstract class TaraStringLiteralScaper<T extends PsiLanguageInjectionHost
 
 			sourceOffsets[outChars.length() - outOffset] = index;
 		}
+		return true;
+	}
+
+	public boolean decode(@NotNull final TextRange rangeInsideHost, @NotNull StringBuilder outChars) {
+		String subText = rangeInsideHost.substring(myHost.getText());
+
+		Ref<int[]> sourceOffsetsRef = new Ref<>();
+		boolean result = parseStringCharacters(subText, outChars, sourceOffsetsRef, false);
+		outSourceOffsets = sourceOffsetsRef.get();
+		return result;
+	}
+
+	public int getOffsetInHost(int offsetInDecoded, @NotNull final TextRange rangeInsideHost) {
+		int result = offsetInDecoded < outSourceOffsets.length ? outSourceOffsets[offsetInDecoded] : -1;
+		if (result == -1) return -1;
+		return (result <= rangeInsideHost.getLength() ? result : rangeInsideHost.getLength()) + rangeInsideHost.getStartOffset();
+	}
+
+	public boolean isOneLine() {
 		return true;
 	}
 }

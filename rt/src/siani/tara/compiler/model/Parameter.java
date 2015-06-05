@@ -12,9 +12,9 @@ public interface Parameter {
 
 	void setInferredType(String type);
 
-	void setMultiple(boolean multiple);
-
 	boolean isMultiple();
+
+	void setMultiple(boolean multiple);
 
 	List<String> getAnnotations();
 
@@ -30,11 +30,11 @@ public interface Parameter {
 
 	String getContract();
 
+	void setContract(String contract);
+
 	String getMetric();
 
 	void setMetric(String metric);
-
-	void setContract(String contract);
 
 	boolean hasReferenceValue();
 

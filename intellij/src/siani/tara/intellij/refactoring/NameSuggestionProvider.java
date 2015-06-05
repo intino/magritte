@@ -3,10 +3,10 @@ package siani.tara.intellij.refactoring;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.SuggestedNameInfo;
-import siani.tara.intellij.lang.psi.Node;
-import siani.tara.intellij.lang.psi.TaraIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.lang.psi.Node;
+import siani.tara.intellij.lang.psi.TaraIdentifier;
 
 import java.util.List;
 import java.util.Set;

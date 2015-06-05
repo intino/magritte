@@ -110,6 +110,9 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.DICTIONARY:
 					configuration.setLocale(processLocale(reader));
 					break;
+				case TaraRtConstants.MODEL_LEVEL:
+					configuration.setModelLevel(Integer.valueOf(reader.readLine()));
+					break;
 				case TaraRtConstants.LANGUAGES_PATH:
 					configuration.setLanguagesDirectory(reader.readLine());
 					break;
@@ -129,7 +132,7 @@ public class TaraCompilerRunner {
 					configuration.setLanguage(reader.readLine());
 					break;
 				case TaraRtConstants.MAGRITTE:
-					configuration.setTdkHome(reader.readLine());
+					configuration.setMagritteHome(reader.readLine());
 					break;
 				case TaraRtConstants.ICONS_PATH:
 					configuration.addIconPath(reader.readLine());
