@@ -117,8 +117,7 @@ public class CompilationUnit extends ProcessingUnit {
 
 	private void processPhaseOperations(int ph) {
 		List<Operation> ops = this.phaseOperations[ph];
-		for (Operation next : ops)
-			doPhaseOperation(next);
+		ops.forEach(this::doPhaseOperation);
 	}
 
 	private void doPhaseOperation(Operation operation) {

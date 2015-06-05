@@ -215,13 +215,6 @@ public class CompilerConfiguration {
 		this.rulesDirectory = rulesDirectory;
 	}
 
-	public boolean isTerminal() {
-		return system;
-	}
-
-	public void setTerminal(boolean system) {
-		this.system = system;
-	}
 
 	public File getMetricsDirectory() {
 		return metricsDirectory;
@@ -294,7 +287,7 @@ public class CompilerConfiguration {
 		return level;
 	}
 
-	public void setModelLevel(Integer level) {
+	public void setLevel(Integer level) {
 		this.level = level;
 	}
 }

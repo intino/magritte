@@ -3,7 +3,7 @@ package siani.tara.semantic.model;
 
 public enum Tag {
 	ABSTRACT,
-	ROOT,
+	MAIN,
 	TERMINAL,
 	SINGLE,
 	REQUIRED,

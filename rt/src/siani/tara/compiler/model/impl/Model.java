@@ -11,10 +11,8 @@ public class Model extends Element implements Node {
 	private String name;
 	private String file;
 	private String language;
-
 	private Map<String, List<SimpleEntry<String, String>>> metrics = new HashMap<>();
-
-	private boolean terminal;
+	private int level;
 	private List<Node> includes = new ArrayList<>();
 
 	public Model(String file) {
@@ -74,7 +72,7 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public boolean isRoot() {
+	public boolean isMain() {
 		return false;
 	}
 
@@ -138,6 +136,11 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
+	public boolean isTerminal() {
+		return false;
+	}
+
+	@Override
 	public boolean isTerminalInstance() {
 		return false;
 	}
@@ -152,12 +155,12 @@ public class Model extends Element implements Node {
 		return false;
 	}
 
-	public boolean isTerminal() {
-		return terminal;
+	public int getLevel() {
+		return level;
 	}
 
-	public void setTerminal(boolean terminal) {
-		this.terminal = terminal;
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 	@Override

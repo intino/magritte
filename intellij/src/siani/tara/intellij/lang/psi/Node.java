@@ -30,7 +30,7 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	boolean isSub();
 
-	boolean isRoot();
+	boolean isMain();
 
 	Collection<Node> getSubNodes();
 

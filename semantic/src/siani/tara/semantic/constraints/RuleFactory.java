@@ -518,7 +518,7 @@ public class RuleFactory {
 		return new Assumption.Root() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(ROOT.name())) node.flags(ROOT.name());
+				if (!Arrays.asList(node.flags()).contains(MAIN.name())) node.flags(MAIN.name());
 				node.moveToTheTop();
 			}
 		};

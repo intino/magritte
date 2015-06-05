@@ -9,8 +9,6 @@ language
 Monopoly
 level
 0
-terminal
-false
 locale
 English
 required_plate

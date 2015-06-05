@@ -74,7 +74,7 @@ public class VariantsManager {
 
 	private void addAggregatedConcepts(TaraModel model) {
 		for (Node node : TaraUtil.getAllNodesOfFile(model))
-			if (!variants.contains(node) && node.isRoot())
+			if (!variants.contains(node) && node.isMain())
 				resolvePathFor(node, context);
 	}
 

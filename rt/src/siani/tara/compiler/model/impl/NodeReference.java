@@ -108,7 +108,7 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public boolean isRoot() {
+	public boolean isMain() {
 		return false;
 	}
 

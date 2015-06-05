@@ -55,7 +55,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			List<List<Node>> groupByBox = groupByBox(model);
 			Map<String, String> boxUnits = createBoxUnits(groupByBox);
 			writeBoxUnits(getBoxUnitPath(separator), boxUnits);
-			if (model.isTerminal()) return;
+			if (model.getLevel() == 0) return;
 			writeMorphs(createMorphs());
 			writeBox(getBoxPath(separator), createBoxes(boxUnits.keySet()));
 			writeScene(createScene());
@@ -86,7 +86,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private Collection<Node> collectRootNodes() {
-		return model.getIncludedNodes().stream().filter(Node::isRoot).collect(Collectors.toList());
+		return model.getIncludedNodes().stream().filter(Node::isMain).collect(Collectors.toList());
 	}
 
 	private Template customize(Template template) {

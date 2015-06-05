@@ -167,7 +167,7 @@ flags::= IS flag+ {
 	implements = 'siani.tara.intellij.lang.psi.Flags'
 }
 
-flag ::= ABSTRACT | TERMINAL | ROOT
+flag ::= ABSTRACT | TERMINAL | MAIN
 	| SINGLE | REQUIRED | PRIVATE
 	| FACET | FEATURE | IMPLICIT | ENCLOSED | FINAL {
 	mixin = 'siani.tara.intellij.lang.psi.impl.FlagMixin'
@@ -181,7 +181,7 @@ annotations ::= INTO annotation+ {
 }
 annotation ::= TERMINAL
 	| SINGLE | REQUIRED
-	| FACET | FEATURE | IMPLICIT | ENCLOSED | ROOT {
+	| FACET | FEATURE | IMPLICIT | ENCLOSED | MAIN {
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotation'
 }

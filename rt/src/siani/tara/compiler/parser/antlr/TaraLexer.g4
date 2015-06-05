@@ -100,7 +100,7 @@ SINGLE              : 'single';
 REQUIRED            : 'required';
 
 TERMINAL            : 'terminal';
-ROOT                : 'root';
+MAIN                : 'main';
 
 IMPLICIT            : 'implicit';
 FEATURE             : 'feature';

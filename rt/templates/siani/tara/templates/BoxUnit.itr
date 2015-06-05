@@ -150,7 +150,11 @@ def type(Variable) trigger(variable)
 end
 
 def type(Annotation) trigger(annotation)
-	.set($value+CamelCase...[, ])
+	.set($value+CamelCase+Main...[, ])
+end
+
+def value(Main) trigger(Main)
+	Root
 end
 
 def trigger(quoted)

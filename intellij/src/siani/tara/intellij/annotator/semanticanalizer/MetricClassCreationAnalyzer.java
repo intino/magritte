@@ -115,7 +115,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 			if (module == null || getCompilerOutputPath(module) == null) return null;
 			final URL compilerOutputPath = getCompilerOutputPath(module);
 			if (compilerOutputPath == null) return null;
-			return new File(compilerOutputPath.toURI());
+			return new File(compilerOutputPath.toURI().getPath());
 		} catch (URISyntaxException e) {
 			return null;
 		}
@@ -123,7 +123,9 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 
 	private URL getCompilerOutputPath(Module module) {
 		try {
-			return new URL(CompilerModuleExtension.getInstance(module).getCompilerOutputUrl());
+			final CompilerModuleExtension instance = CompilerModuleExtension.getInstance(module);
+			if (instance == null || instance.getCompilerOutputUrl() == null) return null;
+			return new URL(instance.getCompilerOutputUrl());
 		} catch (MalformedURLException e) {
 			return null;
 		}

@@ -214,8 +214,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return this.getSignature().isSub();
 	}
 
-	public boolean isRoot() {
-		return is(ROOT);
+	public boolean isMain() {
+		return is(MAIN);
 	}
 
 	public boolean isFacet() {
@@ -253,7 +253,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public boolean isAnnotatedAsRoot() {
 		for (PsiElement annotation : getAnnotations())
-			if (ROOT.name().equalsIgnoreCase(annotation.getText()))
+			if (MAIN.name().equalsIgnoreCase(annotation.getText()))
 				return true;
 		return false;
 	}

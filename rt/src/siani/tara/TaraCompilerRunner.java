@@ -104,14 +104,11 @@ public class TaraCompilerRunner {
 				case TaraRtConstants.MODULE:
 					configuration.setModule(reader.readLine());
 					break;
-				case TaraRtConstants.TERMINAL:
-					configuration.setTerminal(Boolean.valueOf(reader.readLine()));
-					break;
 				case TaraRtConstants.DICTIONARY:
 					configuration.setLocale(processLocale(reader));
 					break;
 				case TaraRtConstants.MODEL_LEVEL:
-					configuration.setModelLevel(Integer.valueOf(reader.readLine()));
+					configuration.setLevel(Integer.valueOf(reader.readLine()));
 					break;
 				case TaraRtConstants.LANGUAGES_PATH:
 					configuration.setLanguagesDirectory(reader.readLine());

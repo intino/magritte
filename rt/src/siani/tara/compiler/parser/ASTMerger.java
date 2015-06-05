@@ -20,7 +20,7 @@ public class ASTMerger {
 
 	public Model doMerge() throws MergeException {
 		Model model = new Model(conf.getProject() + "." + conf.getGeneratedLanguage());
-		model.setTerminal(conf.isTerminal());
+		model.setLevel(conf.getLevel());
 		for (SourceUnit unit : sources) {
 			Collection<Node> includedNodes = unit.getModel().getIncludedNodes();
 			model.addIncludedNodes(includedNodes.toArray(new Node[includedNodes.size()]));

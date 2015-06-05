@@ -44,7 +44,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public boolean isRoot() {
+	public boolean isMain() {
 		return false;
 	}
 

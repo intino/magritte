@@ -92,8 +92,8 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public boolean isRoot() {
-		return flags.contains(ROOT);
+	public boolean isMain() {
+		return flags.contains(MAIN);
 	}
 
 	@Override

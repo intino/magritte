@@ -75,7 +75,7 @@ REQUIRED            = "required"
 
 TERMINAL            = "terminal"
 
-ROOT                = "root"
+MAIN                = "main"
 IMPLICIT            = "implicit"
 FEATURE             = "feature"
 
@@ -102,6 +102,7 @@ COLON               = ":"
 EQUALS              = "="
 SEMICOLON           = ";"
 QUOTE               = "\""
+SINGLE_QUOTE        = "'"
 DASH                = "-"
 UNDERDASH           = "_"
 DASHES              = {DASH} {DASH}+
@@ -125,7 +126,10 @@ NATURAL_VALUE_KEY   = {PLUS}? {DIGIT}+
 NEGATIVE_VALUE_KEY  = {DASH} {DIGIT}+
 SCIENCE_NOTATION    = "E" ({PLUS} | {DASH})? {DIGIT}+
 DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOTATION}?
-STRING_MULTILINE    = {DASHES}
+
+STRING_MULTILINE    	= {EQUALS} {EQUALS}+
+NATIVE_MULTILINE_VALUE  = {DASHES}
+
 ADDRESS_VALUE       = {HASHTAG} [:jletter:]+
 MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 DOC_LINE            = "doc" ~[\n]
@@ -146,7 +150,7 @@ SPACES              = {SP}+
 NEWLINE             = [\n]+
 
 
-%xstate QUOTED, MULTILINE
+%xstate QUOTED, MULTILINE, NATIVE, NATIVE_MULTILINE
 
 %%
 <YYINITIAL> {
@@ -172,7 +176,7 @@ NEWLINE             = [\n]+
 
     {SINGLE}                        {   return TaraTypes.SINGLE; }
     {REQUIRED}                      {   return TaraTypes.REQUIRED; }
-    {ROOT}                          {   return TaraTypes.ROOT; }
+    {MAIN}                          {   return TaraTypes.MAIN; }
 
     {IMPLICIT}                      {   return TaraTypes.IMPLICIT; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
@@ -254,6 +258,34 @@ NEWLINE             = [\n]+
     \\n                             {   return TaraTypes.CHARACTER; }
     \\r                             {   return TaraTypes.CHARACTER; }
     \\\"                            {   return TaraTypes.CHARACTER; }
+    \\                              {   return TaraTypes.CHARACTER; }
+    [^]                             {   return TokenType.BAD_CHARACTER; }
+    .                               {   return TokenType.BAD_CHARACTER; }
+}
+
+<NATIVE> {
+    {QUOTE}                         {   yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
+    [^\n\r\'\\]                     {   return TaraTypes.CHARACTER; }
+    \n | \r                         {   return TaraTypes.CHARACTER; }
+    \t                              {   return TaraTypes.CHARACTER; }
+    \\t                             {   return TaraTypes.CHARACTER; }
+    \\n                             {   return TaraTypes.CHARACTER; }
+    \\r                             {   return TaraTypes.CHARACTER; }
+    \\\'                            {   return TaraTypes.CHARACTER; }
+    \\                              {   return TaraTypes.CHARACTER; }
+    [^]                             {   return TokenType.BAD_CHARACTER;}
+    .                               {   return TokenType.BAD_CHARACTER;}
+}
+
+
+<NATIVE_MULTILINE> {
+    {NATIVE_MULTILINE_VALUE}        {   yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
+    [^\n\r\\]                       {   return TaraTypes.CHARACTER; }
+    \n | \r                         {   return TaraTypes.CHARACTER; }
+    \t                              {   return TaraTypes.CHARACTER; }
+    \\t                             {   return TaraTypes.CHARACTER; }
+    \\n                             {   return TaraTypes.CHARACTER; }
+    \\r                             {   return TaraTypes.CHARACTER; }
     \\                              {   return TaraTypes.CHARACTER; }
     [^]                             {   return TokenType.BAD_CHARACTER; }
     .                               {   return TokenType.BAD_CHARACTER; }

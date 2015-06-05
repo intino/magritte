@@ -22,7 +22,7 @@ public interface Node extends NodeContainer, Parametrized {
 
 	boolean isSub();
 
-	boolean isRoot();
+	boolean isMain();
 
 	List<Node> getSubNodes();
 

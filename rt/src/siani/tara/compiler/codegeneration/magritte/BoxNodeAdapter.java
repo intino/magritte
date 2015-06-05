@@ -72,18 +72,18 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private void flags(final Node node, Frame frame) {
 		Frame tagsFrame = new Frame();
 		for (Tag tag : node.getFlags()) {
-			if (!tag.equals(Tag.ABSTRACT) && !tag.equals(Tag.TERMINAL_INSTANCE) && !tag.equals(Tag.ROOT)) continue;
+			if (!tag.equals(Tag.ABSTRACT) && !tag.equals(Tag.TERMINAL_INSTANCE) && !tag.equals(Tag.MAIN)) continue;
 			if (terminalInstance && tag.equals(Tag.TERMINAL_INSTANCE)) continue;
 			tagsFrame.addFrame(VALUE, tag.name());
 		}
-		if (terminalInstance && isRoot(node)) tagsFrame.addFrame(VALUE, Tag.ROOT.name());
+		if (terminalInstance && isRoot(node)) tagsFrame.addFrame(VALUE, Tag.MAIN.name());
 		tagsFrame.addTypes(ANNOTATION);
 		if (tagsFrame.slots().length != 0)
 			frame.addFrame(ANNOTATION, tagsFrame);
 	}
 
 	private boolean isRoot(Node node) {
-		return node.isRoot() || (node.getContainer() instanceof Model);
+		return node.isMain() || (node.getContainer() instanceof Model);
 	}
 
 	private void variables(Node node, final Frame frame, FrameContext<Node> context) {

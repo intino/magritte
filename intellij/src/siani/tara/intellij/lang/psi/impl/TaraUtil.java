@@ -177,7 +177,7 @@ public class TaraUtil {
 		Node aNode = node;
 		List<Node> path = new ArrayList<>();
 		path.add(aNode);
-		while (node != null && !node.isRoot()) {
+		while (node != null && !node.isMain()) {
 			Node parent = TaraPsiImplUtil.getContainerNodeOf(node);
 			if (parent != null && !parent.isSub() && !node.isSub())
 				path.add(0, parent);

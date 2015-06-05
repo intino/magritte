@@ -46,7 +46,8 @@ public class BoxUnitTemplate extends Template {
 			rule().add((condition("type", "Variable")), (condition("type", "boolean")), (condition("slot", "variableValue")), (condition("trigger", "variable"))).add(literal(".set(\"")).add(mark("terminal")).add(mark("private")).add(mark("name")).add(literal("\", ")).add(mark("multiple")).add(literal("(")).add(mark("variableValue").multiple(", ")).add(literal("))")),
 			rule().add((condition("type", "Variable")), (condition("slot", "variableValue")), (condition("trigger", "variable"))).add(literal(".set(\"")).add(mark("terminal")).add(mark("private")).add(mark("name")).add(literal("\", ")).add(mark("multiple")).add(literal("(")).add(mark("variableValue", "quoted").multiple(", ")).add(literal("))")),
 			rule().add((condition("type", "Variable")), (condition("trigger", "variable"))),
-			rule().add((condition("type", "Annotation")), (condition("trigger", "annotation"))).add(literal(".set(")).add(mark("value", "CamelCase").multiple(", ")).add(literal(")")),
+			rule().add((condition("type", "Annotation")), (condition("trigger", "annotation"))).add(literal(".set(")).add(mark("value", "CamelCase", "Main").multiple(", ")).add(literal(")")),
+			rule().add((condition("value", "Main")), (condition("trigger", "Main"))).add(literal("Root")),
 			rule().add((condition("trigger", "quoted"))).add(literal("\"")).add(mark("value")).add(literal("\"")),
 			rule().add((condition("trigger", "multiple")), (condition("value", "true"))).add(literal("multiple")),
 			rule().add((condition("trigger", "multiple")), (condition("value", "false")))
