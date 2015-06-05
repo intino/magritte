@@ -6,7 +6,6 @@ import siani.tara.intellij.lang.psi.TaraTypes;
 public class TaraQuoteHandler extends SimpleTokenSetQuoteHandler {
 
 	public TaraQuoteHandler() {
-		super(TaraTypes.QUOTE_BEGIN, TaraTypes.QUOTE_END);
+		super(TaraTypes.QUOTE_BEGIN, TaraTypes.QUOTE_END, TaraTypes.EXPRESSION_BEGIN, TaraTypes.EXPRESSION_END);
 	}
-
 }

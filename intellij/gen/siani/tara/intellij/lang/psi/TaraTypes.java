@@ -23,6 +23,7 @@ public interface TaraTypes {
 	IElementType DSL_DECLARATION = new TaraElementType("DSL_DECLARATION");
 	IElementType EMPTY_FIELD = new TaraElementType("EMPTY_FIELD");
 	IElementType EXPLICIT_PARAMETER = new TaraElementType("EXPLICIT_PARAMETER");
+	IElementType EXPRESSION = new TaraElementType("EXPRESSION");
 	IElementType FACET_APPLY = new TaraElementType("FACET_APPLY");
 	IElementType FACET_TARGET = new TaraElementType("FACET_TARGET");
 	IElementType FLAG = new TaraElementType("FLAG");
@@ -67,6 +68,8 @@ public interface TaraTypes {
 	IElementType EMPTY_REF = new TaraTokenType("EMPTY_REF");
 	IElementType ENCLOSED = new TaraTokenType("ENCLOSED");
 	IElementType EQUALS = new TaraTokenType("EQUALS");
+	IElementType EXPRESSION_BEGIN = new TaraTokenType("EXPRESSION_BEGIN");
+	IElementType EXPRESSION_END = new TaraTokenType("EXPRESSION_END");
 	IElementType EXTENDS = new TaraTokenType("EXTENDS");
 	IElementType FACET = new TaraTokenType("FACET");
 	IElementType FEATURE = new TaraTokenType("FEATURE");
@@ -141,6 +144,8 @@ public interface TaraTypes {
 				return new TaraEmptyFieldImpl(node);
 			} else if (type == EXPLICIT_PARAMETER) {
 				return new TaraExplicitParameterImpl(node);
+			} else if (type == EXPRESSION) {
+				return new TaraExpressionImpl(node);
 			} else if (type == FACET_APPLY) {
 				return new TaraFacetApplyImpl(node);
 			} else if (type == FACET_TARGET) {

@@ -64,6 +64,9 @@ public class TaraParser implements PsiParser {
     else if (t == EXPLICIT_PARAMETER) {
       r = explicitParameter(b, 0);
     }
+    else if (t == EXPRESSION) {
+      r = expression(b, 0);
+    }
     else if (t == FACET_APPLY) {
       r = facetApply(b, 0);
     }
@@ -542,6 +545,50 @@ public class TaraParser implements PsiParser {
     r = r && explicitParameter(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // NEWLINE? (EXPRESSION_BEGIN CHARACTER* EXPRESSION_END)
+  public static boolean expression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "expression")) return false;
+    if (!nextTokenIs(b, "<expression>", EXPRESSION_BEGIN, NEWLINE)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, "<expression>");
+    r = expression_0(b, l + 1);
+    r = r && expression_1(b, l + 1);
+    exit_section_(b, l, m, EXPRESSION, r, false, null);
+    return r;
+  }
+
+  // NEWLINE?
+  private static boolean expression_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "expression_0")) return false;
+    consumeToken(b, NEWLINE);
+    return true;
+  }
+
+  // EXPRESSION_BEGIN CHARACTER* EXPRESSION_END
+  private static boolean expression_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "expression_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, EXPRESSION_BEGIN);
+    r = r && expression_1_1(b, l + 1);
+    r = r && consumeToken(b, EXPRESSION_END);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // CHARACTER*
+  private static boolean expression_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "expression_1_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!consumeToken(b, CHARACTER)) break;
+      if (!empty_element_parsed_guard_(b, "expression_1_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
   }
 
   /* ********************************************************** */
@@ -1262,6 +1309,7 @@ public class TaraParser implements PsiParser {
   //         | naturalValue+ measureValue?
   //         | integerValue+ measureValue?
   //         | doubleValue+  measureValue?
+  //         | expression+
   //         | emptyField
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
@@ -1274,6 +1322,7 @@ public class TaraParser implements PsiParser {
     if (!r) r = value_4(b, l + 1);
     if (!r) r = value_5(b, l + 1);
     if (!r) r = value_6(b, l + 1);
+    if (!r) r = value_7(b, l + 1);
     if (!r) r = emptyField(b, l + 1);
     exit_section_(b, l, m, VALUE, r, false, null);
     return r;
@@ -1443,6 +1492,22 @@ public class TaraParser implements PsiParser {
     if (!recursion_guard_(b, l, "value_6_1")) return false;
     measureValue(b, l + 1);
     return true;
+  }
+
+  // expression+
+  private static boolean value_7(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_7")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = expression(b, l + 1);
+    int c = current_position_(b);
+    while (r) {
+      if (!expression(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "value_7", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */

@@ -62,6 +62,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitParameter(o);
   }
 
+  public void visitExpression(@NotNull TaraExpression o) {
+    visitExpression(o);
+  }
+
   public void visitFacetApply(@NotNull TaraFacetApply o) {
     visitFacetApply(o);
   }

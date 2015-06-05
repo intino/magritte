@@ -165,6 +165,8 @@
     <!--<basicWordSelectionFilter implementation="siani.tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>-->
     <lang.elementManipulator forClass="siani.tara.intellij.lang.psi.StringValue"
                              implementationClass="siani.tara.intellij.lang.psi.TaraStringLiteralManipulator"/>
+    <lang.elementManipulator forClass="siani.tara.intellij.lang.psi.Expression"
+                             implementationClass="siani.tara.intellij.lang.psi.TaraExpressionManipulator"/>
   </extensions>
 
   <application-components>

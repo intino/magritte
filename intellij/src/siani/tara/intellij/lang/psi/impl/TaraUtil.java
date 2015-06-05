@@ -134,36 +134,8 @@ public class TaraUtil {
 		return element instanceof Node && !((Node) element).isSub();
 	}
 
-	public static boolean isNativeValue(StringValue stringValue) {
-		PsiElement element = asVarInit(stringValue);
-		if (element == null) element = asParameter(stringValue);
-		if (element == null) element = asVariable(stringValue);
-		if (element == null) return false;
-		else if (element instanceof Variable && ((Variable) element).getType().equals(TaraPrimitives.NATIVE))
-			return true;
-		Node node = getContainerNode(element);
-		if (node == null) return false;
-		Allow.Parameter allow = getCorrespondingAllow(node, element);
-		return allow != null && TaraPrimitives.NATIVE.equalsIgnoreCase(allow.type());
-	}
-
-	private static PsiElement asVariable(StringValue stringValue) {
-		PsiElement element = getParentByType(stringValue, Variable.class);
-		return element instanceof Variable ? (Variable) element : null;
-	}
-
 	private static Node getContainerNode(PsiElement varInit) {
 		return (Node) getParentByType(varInit, Node.class);
-	}
-
-	private static PsiElement asVarInit(StringValue stringValue) {
-		PsiElement element = getParentByType(stringValue, VarInit.class);
-		return element instanceof VarInit ? (VarInit) element : null;
-	}
-
-	private static PsiElement asParameter(StringValue stringValue) {
-		PsiElement element = getParentByType(stringValue, Parameter.class);
-		return element instanceof Parameter ? (Parameter) element : null;
 	}
 
 	private static String buildType(PsiElement element, String type) {

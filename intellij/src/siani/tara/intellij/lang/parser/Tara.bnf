@@ -126,6 +126,7 @@ value ::= identifierReference+
         | naturalValue+ measureValue?
         | integerValue+ measureValue?
         | doubleValue+  measureValue?
+        | expression+
         | emptyField
 {
 mixin = 'siani.tara.intellij.lang.psi.impl.ValueMixin'
@@ -136,6 +137,12 @@ stringValue     ::= NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END) {
 	mixin = 'siani.tara.intellij.lang.psi.impl.StringMixin'
     implements = 'siani.tara.intellij.lang.psi.StringValue'
 }
+
+expression     ::= NEWLINE? (EXPRESSION_BEGIN CHARACTER* EXPRESSION_END) {
+	mixin = 'siani.tara.intellij.lang.psi.impl.ExpressionMixin'
+    implements = 'siani.tara.intellij.lang.psi.Expression'
+}
+
 booleanValue    ::= BOOLEAN_VALUE_KEY
 naturalValue    ::= NATURAL_VALUE_KEY
 integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY

@@ -17,6 +17,9 @@ public interface TaraValue extends Value {
   TaraEmptyField getEmptyField();
 
   @NotNull
+  List<TaraExpression> getExpressionList();
+
+  @NotNull
   List<TaraIdentifierReference> getIdentifierReferenceList();
 
   @NotNull

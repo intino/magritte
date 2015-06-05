@@ -27,6 +27,7 @@ value : identifierReference+
         | naturalValue+ measureValue?
         | integerValue+ measureValue?
         | doubleValue+ measureValue?
+        | expression+
         | EMPTY;
 
 body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | facetTarget | nodeReference | doc) NEWLINE+)+ DEDENT;
@@ -64,6 +65,8 @@ doubleValue  : (NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE) SCIENCE_NOT?;
 linkValue    : plate | identifierReference;
 plate        : PLATE_VALUE;
 measureValue : IDENTIFIER | MEASURE_VALUE;
+
+expression  : NEWLINE? (EXPRESSION_BEGIN CHARACTER* EXPRESSION_END);
 
 tags: flags? annotations?;
 

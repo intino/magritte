@@ -299,6 +299,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 */
 	void exitMeasureValue(@NotNull TaraGrammar.MeasureValueContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpression(@NotNull TaraGrammar.ExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpression(@NotNull TaraGrammar.ExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#tags}.
 	 * @param ctx the parse tree
 	 */

@@ -25,7 +25,6 @@ public class TaraRtConstants {
 	public static final String CLASSPATH = "classpath";
 	public static final String MODULE = "module";
 	public static final String LANGUAGES_PATH = "models";
-	public static final String TERMINAL = "terminal";
 	public static final String MAGRITTE = "magritte";
 	public static final String DICTIONARY = "locale";
 	public static final String LANGUAGE = "language";
