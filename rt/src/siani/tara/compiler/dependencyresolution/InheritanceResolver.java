@@ -92,6 +92,8 @@ public class InheritanceResolver {
 			NodeReference reference = (include instanceof NodeImpl) ? new NodeReference((NodeImpl) include) : new NodeReference(((NodeReference) include).getDestiny());
 			addTags(reference, include);
 			nodes.add(reference);
+			reference.setFile(((Element) include).getFile());
+			reference.setLine(child.getLine());
 			reference.setContainer(child);
 		}
 		child.addIncludedNodes(0, nodes.toArray(new Node[nodes.size()]));

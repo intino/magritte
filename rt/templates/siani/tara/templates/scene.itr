@@ -11,12 +11,18 @@ def type(scene)
 	}
 end
 
-def type(root) trigger(root)
+def type(root) !type(single) trigger(root)
 	public $qn+reference$[$] $name+FirstLowerCase+plural() {
         return get($qn+reference.class);
     }
 
     public $qn+reference $name+FirstLowerCase(int index) {
         return $name+FirstLowerCase+plural()$[index$];
+    }
+end
+
+def type(root) type(single) trigger(root)
+	public $qn+reference $name+FirstLowerCase() {
+        return get($qn+reference.class)$[0$];
     }
 end

@@ -249,7 +249,13 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public String getQualifiedName() {
-		return container.getQualifiedName() + "." + destiny.getName();
+		return getNodeQualifiedName() + "." + destiny.getName();
+	}
+
+	private String getNodeQualifiedName() {
+		NodeContainer nodeContainer = container;
+		while (!(nodeContainer instanceof Node)) nodeContainer = nodeContainer.getContainer();
+		return nodeContainer.getQualifiedName();
 	}
 
 	@Override

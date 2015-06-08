@@ -5,8 +5,8 @@ project
 census
 module
 adeje
-terminal
-true
+level
+0
 language
 English
 encoding

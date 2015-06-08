@@ -8,7 +8,8 @@ def type(model)
 	import static magritte.editors.BoxCore.*;
 	import static magritte.Tag.*;
 	import magritte.primitives.Date;
-	import $generatedLanguage+lowercase.*;
+
+	[import $generatedLanguage+lowercase.*;]
 
 	$importMetric...[$NL]
 
@@ -150,11 +151,15 @@ def type(Variable) trigger(variable)
 end
 
 def type(Annotation) trigger(annotation)
-	.set($value+CamelCase+Main...[, ])
+	.set($value+CamelCase+AnnotationFormat...[, ])
 end
 
-def value(Main) trigger(Main)
+def value(Main) trigger(AnnotationFormat)
 	Root
+end
+
+def value(Terminal_instance) trigger(AnnotationFormat)
+	Case
 end
 
 def trigger(quoted)

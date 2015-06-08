@@ -13,6 +13,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.unmodifiableList;
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.DOT;
 import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
@@ -24,20 +25,20 @@ public class BoxModelAdapter implements Adapter<Model> {
 	private final Language language;
 	private final Locale locale;
 	private final Map<String, List<SimpleEntry<String, String>>> metrics;
-	private final boolean terminal;
+	private final boolean terminalBox;
 
 
 	public BoxModelAdapter(String project,
 	                       String generatedLanguage,
 	                       Language language,
 	                       Locale locale, Map<String, List<SimpleEntry<String, String>>> metrics,
-	                       boolean terminal) {
+	                       boolean terminalBox) {
 		this.project = project;
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 		this.locale = locale;
 		this.metrics = metrics;
-		this.terminal = terminal;
+		this.terminalBox = terminalBox;
 	}
 
 	public static String getQn(Node owner, Node node, String generatedLanguage) {
@@ -59,7 +60,8 @@ public class BoxModelAdapter implements Adapter<Model> {
 	public void execute(Frame frame, Model model, FrameContext FrameContext) {
 		frame.addFrame(NAME, capitalize(generatedLanguage) + buildFileName(model.getFile()));
 		if (!Objects.equals(language.languageName(), "Proteo")) frame.addFrame(LANGUAGE, language.languageName());
-		frame.addFrame("project", project).addFrame("generatedLanguage", generatedLanguage).addFrame("terminal", terminal);
+		frame.addFrame(PROJECT, project).addFrame(TERMINAL, terminalBox);
+		if (!terminalBox) frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		addMetricImports(frame);
 		addFacetImports(model.getIncludedNodes(), frame);
 		parserAllNodes(frame, model, FrameContext);
@@ -84,10 +86,8 @@ public class BoxModelAdapter implements Adapter<Model> {
 
 	private void fill(Frame frame, Node node, FrameContext FrameContext) {
 		frame.addFrame("node", FrameContext.build(node));
-		if (!node.isAbstract()) {
-			createIntentionFrames(frame, extractNativeParameters(node));
-			createDefaultIntentionFrames(frame, extractNativeVariables(node));
-		}
+		createIntentionFrames(frame, extractNativeParameters(node));
+		createDefaultValueIntentionFrames(frame, extractNativeVariables(node));
 		parserAllNodes(frame, node, FrameContext);
 	}
 
@@ -107,7 +107,7 @@ public class BoxModelAdapter implements Adapter<Model> {
 		}
 	}
 
-	private void createDefaultIntentionFrames(Frame frame, List<Variable> variables) {
+	private void createDefaultValueIntentionFrames(Frame frame, List<Variable> variables) {
 		for (Variable variable : variables) {
 			if (!variable.getType().equals(Primitives.NATIVE) || variable.getDefaultValues().isEmpty()) continue;
 			final Object next = variable.getDefaultValues().get(0);
@@ -144,8 +144,6 @@ public class BoxModelAdapter implements Adapter<Model> {
 	private String buildContainerPath(NodeContainer owner) {
 		if (owner instanceof Node) return getQn(firstNoFeatureAndUnnamed(owner), (Node) owner, generatedLanguage);
 		return NameFormatter.getQn((FacetTarget) owner, generatedLanguage);
-//		if (owner instanceof Node && !((Node) owner).isAnonymous()) return format(owner.getQualifiedName());
-//		return format(getFirstNamed(owner));
 	}
 
 	private Node firstNoFeatureAndUnnamed(NodeContainer owner) {
@@ -159,14 +157,14 @@ public class BoxModelAdapter implements Adapter<Model> {
 	}
 
 	private List<Parameter> extractNativeParameters(Node node) {
-		return Collections.unmodifiableList(node.getParameters().stream().
+		return unmodifiableList(node.getParameters().stream().
 			filter(parameter -> parameter.getInferredType().equals(Primitives.NATIVE)).
 			collect(Collectors.toList()));
 	}
 
 	private List<Variable> extractNativeVariables(Node node) {
-		return Collections.unmodifiableList(node.getVariables().stream().
-			filter(variable -> variable.getType().equals(Primitives.NATIVE)).
+		return unmodifiableList(node.getVariables().stream().
+			filter(variable -> variable.getType().equals(Primitives.NATIVE) && !variable.isInherited()).
 			collect(Collectors.toList()));
 	}
 

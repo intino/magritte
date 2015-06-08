@@ -17,9 +17,9 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private final Map<Node, Long> keys;
 	private final boolean terminalInstance;
 
-	public BoxNodeAdapter(Map<Node, Long> keys, boolean terminalInstance) {
+	public BoxNodeAdapter(Map<Node, Long> keys, boolean terminalBox) {
 		this.keys = keys;
-		this.terminalInstance = terminalInstance;
+		this.terminalInstance = terminalBox;
 	}
 
 	public static String clean(String name) {
@@ -157,7 +157,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		Long key = getKey(inner);
 		Frame include = new Frame().addTypes("include").addTypes(asString(inner.getFlags()));
 		final boolean withKey = inner.isAnonymous() && inner.getPlate() == null;
-		include.addFrame(VALUE, withKey ? key : searchNode(inner));
+		include.addFrame(VALUE, withKey ? key : NameFormatter.cleanQn(searchNode(inner)));
 		if (terminalInstance) include.addTypes(TERMINAL);
 		if (withKey) include.addTypes(KEY);
 		if (inner.isFeature()) include.addTypes(Tag.SINGLE.name());

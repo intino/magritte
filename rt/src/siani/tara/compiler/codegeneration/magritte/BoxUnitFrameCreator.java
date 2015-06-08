@@ -19,23 +19,25 @@ public class BoxUnitFrameCreator {
 	private final String project;
 	private final String generatedLanguage;
 	private final Language language;
+	private final int level;
 	private final Model model;
 	private final Locale locale;
 	private final List<Node> nodes;
 	private Map<Node, Long> keymap = new LinkedHashMap<>();
 	private long count = 1;
 
-	private BoxUnitFrameCreator(String project, String generatedLanguage, Language language, Model model, Locale locale, List<Node> nodes) {
+	private BoxUnitFrameCreator(String project, String generatedLanguage, Language language, int level, Model model, Locale locale, List<Node> nodes) {
 		this.project = project;
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
+		this.level = level;
 		this.model = model;
 		this.locale = locale;
 		createKeyMap(this.nodes = nodes);
 	}
 
 	public BoxUnitFrameCreator(CompilerConfiguration conf, Model model, List<Node> nodes) {
-		this(conf.getProject(), conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule(), conf.getLanguage(), model, conf.getLocale(), nodes);
+		this(conf.getProject(), conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule(), conf.getLanguage(), conf.getLevel(), model, conf.getLocale(), nodes);
 	}
 
 	private void createKeyMap(List<Node> nodes) {
@@ -62,8 +64,8 @@ public class BoxUnitFrameCreator {
 		boxModel.setName(model.getName());
 		boxModel.addIncludedNodes(nodes.toArray(new Node[nodes.size()]));
 		final FrameBuilder builder = new FrameBuilder();
-		builder.register(Model.class, new BoxModelAdapter(project, generatedLanguage, language, locale, model.getMetrics(), model.isTerminal()));
-		builder.register(Node.class, new BoxNodeAdapter(keymap, model.isTerminal()));
+		builder.register(Model.class, new BoxModelAdapter(project, generatedLanguage, language, locale, model.getMetrics(), level == 0));
+		builder.register(Node.class, new BoxNodeAdapter(keymap, level == 0));
 		builder.register(FacetTarget.class, new BoxFacetTargetAdapter());
 		builder.register(Variable.class, new BoxVariableAdapter(model.getMetrics()));
 		builder.register(Parameter.class, new BoxParameterAdapter(model.getMetrics()));

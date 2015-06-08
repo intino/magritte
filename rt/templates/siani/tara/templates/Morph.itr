@@ -56,7 +56,7 @@ def type(variable) type(Measure) trigger(getter)
 end
 
 def type(variable) type(definition) type(native) trigger(getter)
-	public $name+reference $name+firstLowerCase() {
+	public $generatedlanguage.natives.$name+reference $name+firstLowerCase() {
 		return get("$name").asNativeOf(scope);
 	}
 end

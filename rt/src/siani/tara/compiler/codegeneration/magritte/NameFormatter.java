@@ -73,13 +73,17 @@ public class NameFormatter {
 
 	public static String createNativeClassReference(NodeContainer container, String variable) {
 		final NodeContainer root = findRoot(container);
-		final String containerPath = clean(container.getQualifiedName());
+		final String containerPath = cleanNativeReference(container.getQualifiedName());
 		String qualifiedName = (!root.getQualifiedName().equals(containerPath) ? root.getQualifiedName() + "_" : "") + containerPath;
 		return qualifiedName + "_" + variable;
 	}
 
-	public static String clean(String qualifiedName) {
+	public static String cleanNativeReference(String qualifiedName) {
 		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "").replace(".", "_");
+	}
+
+	public static String cleanQn(String qualifiedName) {
+		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
 	}
 
 	private static NodeContainer findRoot(NodeContainer container) {

@@ -76,6 +76,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private Frame createRootFrame(Node node) {
 		Frame frame = new Frame();
 		frame.addTypes("root");
+		if (node.isSingle()) frame.addTypes("single");
 		frame.addFrame("qn", getQn(node));
 		frame.addFrame("name", node.getName());
 		return frame;
@@ -86,7 +87,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private Collection<Node> collectRootNodes() {
-		return model.getIncludedNodes().stream().filter(Node::isMain).collect(Collectors.toList());
+		return model.getIncludedNodes().stream().filter((node) -> node.isMain() && !node.isAbstract()).collect(Collectors.toList());
 	}
 
 	private Template customize(Template template) {
