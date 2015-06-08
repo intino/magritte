@@ -349,7 +349,7 @@ public class Model extends Element implements Node {
 
 	@Override
 	public List<FacetTarget> getFacetTargets() {
-		return null;
+		return Collections.EMPTY_LIST;
 	}
 
 	@Override

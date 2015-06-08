@@ -146,6 +146,7 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 		types.add("nodeReference");
 		if (node.isSingle()) types.add("single");
 		if (node.isRequired()) types.add("required");
+		if (node.isFeature()) types.add("feature");
 		return types.toArray(new String[types.size()]);
 	}
 

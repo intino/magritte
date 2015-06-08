@@ -9,7 +9,6 @@ import siani.tara.intellij.lang.lexer.TaraPrimitives;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.module.ModuleProvider;
-import siani.tara.semantic.Assumption;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,7 +23,7 @@ public class ReferenceManager {
 
 	@Nullable
 	public static PsiElement resolve(Identifier identifier) {
-		PsiElement reference = resolveInternal(identifier);
+		PsiElement reference = internalResolve(identifier);
 		return reference instanceof Node ? ((Node) reference).getIdentifierNode() : reference;
 	}
 
@@ -48,7 +47,7 @@ public class ReferenceManager {
 		return JavaHelper.getJavaHelper(project).findClass(path);
 	}
 
-	private static PsiElement resolveInternal(Identifier identifier) {
+	private static PsiElement internalResolve(Identifier identifier) {
 		if (identifier.getParent() instanceof IdentifierReference)
 			return resolveNode(identifier, getIdentifiersOfReference(identifier));
 		if (identifier.getParent() instanceof HeaderReference)
@@ -93,7 +92,7 @@ public class ReferenceManager {
 		Set<Node> set = new LinkedHashSet<>();
 		addNodesInContext(identifier, set);
 		addRootNodes(file, identifier, set);
-		addRoots(file, identifier, set, set);
+//		addRoots(file, identifier, set, set);
 		return set.toArray(new Node[set.size()]);
 	}
 
@@ -154,52 +153,53 @@ public class ReferenceManager {
 	private static boolean isExtendsReference(Identifier reference) {
 		return reference.getParent().getParent() instanceof Signature;
 	}
-
-	private static void addRoots(TaraModel file, Identifier identifier, Set<Node> set, Collection<Node> visited) {
-		List<Node> allNodesOfFile = TaraUtil.getAllNodesOfFile(file);
-		set.addAll(allNodesOfFile.stream().
-			filter(node -> areNamesake(identifier, node) && isRoot(file, node, visited)).
-			collect(Collectors.toList()));
-	}
-
+//
+//	private static void addRoots(TaraModel file, Identifier identifier, Set<Node> set, Collection<Node> visited) {
+//		List<Node> allNodesOfFile = TaraUtil.getAllNodesOfFile(file);
+//		final List<Node> collect = allNodesOfFile.stream().
+//			filter(node -> areNamesake(identifier, node) && isRoot(file, node, visited)).
+//			collect(Collectors.toList());
+//		set.addAll(collect);
+//	}
+//
 	private static boolean areNamesake(Identifier identifier, Node node) {
 		return identifier.getText().equals(node.getName());
 	}
-
-	private static boolean isRoot(TaraModel file, Node node, Collection<Node> visited) {
-		if (visited.contains(node)) return false;
-		visited.add(node);
-		if (node.isAnnotatedAsRoot() || isMetaRoot(node)) return true;
-		IdentifierReference parentReference = node.getSignature().getParentReference();
-		return parentReference != null && checkPossibleRoots(parentReference, getRootNodes(file, parentReference, visited, new HashSet<>()));
-	}
-
-	private static boolean isMetaRoot(Node node) {
-		Collection<Assumption> assumptionsOf = TaraUtil.getAssumptionsOf(node);
-		if (assumptionsOf == null) return false;
-		for (Assumption assumption : assumptionsOf)
-			if (assumption instanceof Assumption.Root)
-				return true;
-		return false;
-	}
-
-	private static boolean checkPossibleRoots(IdentifierReference parentReference, Node[] roots) {
-		if (roots.length == 0) return false;
-		for (Node possibleRoot : roots) {
-			Node node = resolvePathInNode((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
-			if (node != null) return node.isAnnotatedAsRoot();
-		}
-		return false;
-	}
-
-	private static Node[] getRootNodes(TaraModel file, IdentifierReference parentReference, Collection<Node> visited, Set<Node> roots) {
-		Identifier identifier = getIdentifier(parentReference);
-		addNodesInContext(identifier, roots);
-		addRootNodes(file, identifier, roots);
-		visited.addAll(roots);
-		addRoots((TaraModel) identifier.getContainingFile(), identifier, roots, visited);
-		return roots.toArray(new Node[roots.size()]);
-	}
+//
+//	private static boolean isRoot(TaraModel file, Node node, Collection<Node> visited) {
+//		if (visited.contains(node)) return false;
+//		visited.add(node);
+//		if (node.isAnnotatedAsRoot() || isMetaRoot(node)) return true;
+//		IdentifierReference parentReference = node.getSignature().getParentReference();
+//		return parentReference != null && checkPossibleRoots(parentReference, getRootNodes(file, parentReference, visited, new HashSet<>()));
+//	}
+//
+//	private static boolean isMetaRoot(Node node) {
+//		Collection<Assumption> assumptionsOf = TaraUtil.getAssumptionsOf(node);
+//		if (assumptionsOf == null) return false;
+//		for (Assumption assumption : assumptionsOf)
+//			if (assumption instanceof Assumption.Root)
+//				return true;
+//		return false;
+//	}
+//
+//	private static boolean checkPossibleRoots(IdentifierReference parentReference, Node[] roots) {
+//		if (roots.length == 0) return false;
+//		for (Node possibleRoot : roots) {
+//			Node node = resolvePathInNode((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
+//			if (node != null) return node.isAnnotatedAsRoot();
+//		}
+//		return false;
+//	}
+//
+//	private static Node[] getRootNodes(TaraModel file, IdentifierReference parentReference, Collection<Node> visited, Set<Node> roots) {
+//		Identifier identifier = getIdentifier(parentReference);
+//		addNodesInContext(identifier, roots);
+//		addRootNodes(file, identifier, roots);
+//		visited.addAll(roots);
+//		addRoots((TaraModel) identifier.getContainingFile(), identifier, roots, visited);
+//		return roots.toArray(new Node[roots.size()]);
+//	}
 
 	private static Identifier getIdentifier(IdentifierReference reference) {
 		List<? extends Identifier> identifierList = reference.getIdentifierList();
@@ -209,7 +209,7 @@ public class ReferenceManager {
 	private static Node resolvePathInNode(List<Identifier> path, Node node) {
 		Node reference = null;
 		for (Identifier identifier : path) {
-			reference = (reference == null) ? areNamesake(identifier, node) ? node : null : TaraUtil.findInner(reference, identifier.getText());
+			reference = (reference == null) ? (areNamesake(identifier, node) ? node : null) : TaraUtil.findInner(reference, identifier.getText());
 			if (reference == null || (reference.isEnclosed() && !isLast(identifier, path))) return null;
 		}
 		return reference;
@@ -249,7 +249,7 @@ public class ReferenceManager {
 	private static Node resolvePathInBox(TaraModel containingFile, List<Identifier> path) {
 		Set<Node> nodes = new HashSet<>();
 		nodes.addAll(containingFile.getRootNodes());
-		addRoots(containingFile, path.get(0), nodes, nodes);
+//		addRoots(containingFile, path.get(0), nodes, nodes);
 		for (Node node : nodes) {
 			Node solution = resolvePathInNode(path, node);
 			if (solution != null) return solution;

@@ -20,8 +20,19 @@ public class DependencyResolver {
 	}
 
 	public void resolve() throws DependencyException {
-		for (Node node : model.getIncludedNodes())
-			resolve(node);
+		resolveInNodes(model);
+		resolveFacets(model);
+	}
+
+	private void resolveInNodes(Node node) throws DependencyException {
+		for (Node inner : node.getIncludedNodes())
+			resolve(inner);
+	}
+
+	private void resolveFacets(Node node) throws DependencyException {
+		if (node instanceof NodeReference) return;
+		resolveInFacets(node);
+		resolveInTargets(node);
 	}
 
 	private void resolve(Node node) throws DependencyException {
@@ -30,27 +41,31 @@ public class DependencyResolver {
 		resolveInnerReferenceNodes(node);
 		resolveVariableReference(node);
 		resolveParametersReference(node);
-		for (Node include : node.getIncludedNodes()) resolve(include);
-		resolveInFacets(node);
-		resolveInTargets(node);
+		for (Node include : node.getIncludedNodes())
+			resolve(include);
 	}
 
-	private void resolveParametersReference(Node node) throws DependencyException {
-		for (Parameter parameter : node.getParameters())
-			resolveParameterValue(node, parameter);
+	private void resolveParametersReference(Parametrized parametrized) throws DependencyException {
+		for (Parameter parameter : parametrized.getParameters())
+			resolveParameterValue((NodeContainer) parametrized, parameter);
 	}
 
-	private void resolveParameterValue(Node node, Parameter parameter) throws DependencyException {
+	private void resolveParameterValue(NodeContainer node, Parameter parameter) throws DependencyException {
 		if (!areReferenceValues(parameter)) return;
 		List<Node> nodes = new ArrayList<>();
 		for (Object value : parameter.getValues()) {
 			Node reference = resolveParameter(node, (String) value);
 			if (reference != null) nodes.add(reference);
+			else
+				throw new DependencyException("Parameter reference " + value.toString() + " not found", (Element) node);
 		}
-		if (!nodes.isEmpty()) parameter.substituteValues(nodes);
+		if (!nodes.isEmpty()) {
+			parameter.setInferredType(Parameter.REFERENCE);
+			parameter.substituteValues(nodes);
+		}
 	}
 
-	private Node resolveParameter(Node node, String reference) throws DependencyException {
+	private Node resolveParameter(NodeContainer node, String reference) throws DependencyException {
 		return manager.resolve(reference, node);
 	}
 
@@ -83,10 +98,15 @@ public class DependencyResolver {
 	}
 
 	private void resolveInFacets(Node node) throws DependencyException {
+		facets(node);
+		for (Node inner : node.getIncludedNodes()) resolveFacets(inner);
+	}
+
+	private void facets(Node node) throws DependencyException {
 		for (Facet facet : node.getFacets()) {
 			resolveVariableReference(facet);
-			for (Node include : facet.getIncludedNodes())
-				resolve(include);
+			resolveParametersReference(facet);
+			for (Node include : facet.getIncludedNodes()) resolve(include);
 		}
 	}
 
@@ -98,7 +118,10 @@ public class DependencyResolver {
 				if (include instanceof NodeImpl) resolve(include);
 				else resolveNodeReference((NodeReference) include);
 			}
+			for (Node inner : node.getIncludedNodes()) resolveFacets(inner);
 		}
+		for (Node inner : node.getIncludedNodes()) resolveFacets(inner);
+
 	}
 
 	private void resolveVariableReference(NodeContainer container) throws DependencyException {

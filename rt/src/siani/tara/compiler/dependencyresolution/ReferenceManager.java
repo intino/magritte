@@ -54,11 +54,20 @@ public class ReferenceManager {
 	private Node resolvePathInNode(String[] path, Node node) {
 		Node reference = null;
 		for (String name : path) {
-			reference = (reference == null) ? name.equals(node.getName()) ? node : null :
-				reference.getInclude(name);
+			if (reference == null) {
+				reference = areNamesake(node, name) ? node : null;
+				continue;
+			}
+			if (reference.getInclude(name) == null)
+				reference = reference.getParent().getInclude(name);
+			else reference = reference.getInclude(name);
 			if (reference == null) return null;
 		}
 		return reference;
+	}
+
+	private boolean areNamesake(Node node, String name) {
+		return name.equals(node.getName());
 	}
 
 	private Collection<Node> searchPossibleRoots(NodeContainer node, String name) {
@@ -76,7 +85,7 @@ public class ReferenceManager {
 
 	private void addRoots(String name, Set<Node> set) {
 		set.addAll(model.getIncludedNodes().stream().
-			filter(node -> name.equals(node.getName())).
+			filter(node -> areNamesake(node, name)).
 			collect(Collectors.toList()));
 	}
 
@@ -99,7 +108,7 @@ public class ReferenceManager {
 	}
 
 	private boolean namesake(Node node, String name) {
-		return name.equals(node.getName());
+		return areNamesake(node, name);
 	}
 
 	private Node searchByQn(Node node, String qn) {

@@ -82,6 +82,12 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (inner instanceof NodeReference) continue;
 			buildNode(inner);
 		}
+		for (FacetTarget target : node.getFacetTargets())
+			for (Node inner : target.getIncludedNodes()) {
+				if (inner instanceof NodeReference) continue;
+				buildNode(inner);
+			}
+
 	}
 
 	private void addTypes(Node node, Frame frame) {
@@ -242,7 +248,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
 		for (Node include : node.getIncludedNodes()) {
-			if ((!include.isRequired() && !include.isImplicit()) || (include.isTerminal() && isGenerativeLanguage())) continue;
+			if ((!include.isRequired() && !include.isImplicit()) || (include.isTerminal() && isGenerativeLanguage()))
+				continue;
 			Collection<Node> candidates = collectCandidates(include);
 			if (include.isAbstract() && candidates.size() > 1) {
 				requires.addFrame(REQUIRE, createOneOf(candidates, include));

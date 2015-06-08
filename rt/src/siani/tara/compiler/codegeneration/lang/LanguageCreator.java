@@ -22,7 +22,6 @@ public class LanguageCreator {
 
 	public String create() {
 		final Template template = LanguageTemplate.create();
-		template.add("date", Format.date());
 		template.add("string", Format.string());
 		template.add("reference", Format.reference());
 		template.add("toCamelCase", Format.toCamelCase());

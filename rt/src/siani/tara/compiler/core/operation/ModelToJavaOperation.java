@@ -1,7 +1,7 @@
 package siani.tara.compiler.core.operation;
 
 import de.hunsicker.jalopy.Jalopy;
-import org.siani.itrules.Template;
+import org.siani.itrules.*;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.codegeneration.Format;
 import siani.tara.compiler.codegeneration.magritte.BoxUnitFrameCreator;
@@ -91,10 +91,10 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private Template customize(Template template) {
-		template.add("date", Format.date());
 		template.add("string", Format.string());
 		template.add("reference", Format.reference());
 		template.add("toCamelCase", Format.toCamelCase());
+		template.add("key", Format.key());
 		return template;
 	}
 
@@ -169,7 +169,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
-//			prettyPrint(file);
+			prettyPrint(file);
 		}
 	}
 

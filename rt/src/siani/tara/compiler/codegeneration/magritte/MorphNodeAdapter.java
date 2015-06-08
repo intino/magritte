@@ -125,6 +125,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		if (node.isSingle()) types.add("single");
 		if (node.intoSingle()) types.add("into_single");
 		if (node.isRequired()) types.add("required");
+		if (node.isFeature()) types.add("feature");
 		types.addAll(node.getFlags().stream().map(Tag::name).collect(Collectors.toList()));
 		return types.toArray(new String[types.size()]);
 	}

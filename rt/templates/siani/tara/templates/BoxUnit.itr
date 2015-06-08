@@ -3,7 +3,7 @@ def type(model)
 
 	import java.text.SimpleDateFormat;
 	import java.text.ParseException;
-	import java.util.Arrays;
+	import java.util.*;
 
 	import static magritte.editors.BoxCore.*;
 	import static magritte.Tag.*;
@@ -46,7 +46,7 @@ def trigger(terminal) value(false)
 end
 
 def type(nodecontainer) trigger(node)
-	[def("$name$plate")][def($key)][.name()][$nodeType...[]][$facet...[]][$annotation...[]][.$parent][$variable...[]][$include...[]];
+	[def("$name$plate")][def($key)][.name()][$nodeType...[]][$facet...[]][$annotation...[]][.$parent][$include...[]][$variable...[]];
 end
 
 def type(intention) trigger(intention)
@@ -75,23 +75,23 @@ def type(include) type(key) type(terminal) trigger(include)
 end
 
 def type(include) !type(key) type(terminal) trigger(include)
-	.has($value)
+	.has($value+key)
 end
 
 def type(include) type(required) !type(single) trigger(include)
-	.requires($value).holds($value)
+	.requires($value+key).holds($value+key)
 end
 
 def type(include) type(single) !type(required) trigger(include)
-	.allows($value)
+	.allows($value+key)
 end
 
 def type(include) type(required) trigger(include)
-	.requires($value)
+	.requires($value+key)
 end
 
 def type(include) !type(single) !type(required) trigger(include)
-	.holds($value)
+	.holds($value+key)
 end
 
 ---------------------- NODE SETTERS ----------------------

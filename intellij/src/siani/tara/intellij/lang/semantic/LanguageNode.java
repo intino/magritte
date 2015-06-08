@@ -15,46 +15,20 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	private final Node node;
 	private List<FacetTarget> facetTargets;
 	private List<Variable> variables = new ArrayList<>();
-	private List<siani.tara.semantic.model.Node> includes = new ArrayList<>();
+	private List<siani.tara.semantic.model.Node> includes = null;
 
 	public LanguageNode(Node node) {
 		this.node = node;
 		if (node == null) return;
 		this.facetTargets = buildFacetTargets(node.getFacetTargets());
 		variables.addAll(collectVariables(node.getVariables()));
-		addIncludes(node);
-		Node parent = node.getParentNode();
-		if (parent != null) {
-			variables.addAll(collectVariables(parent.getVariables()));
-			addIncludes(parent);
-		}
-	}
-
-	private void addIncludes(Node node) {
-		includes.addAll(node.getIncludes().stream().map(LanguageNode::new).collect(Collectors.toList()));
-		includes.addAll(node.getInnerNodeReferences().stream().map(LanguageNodeReference::new).collect(Collectors.toList()));
-		addFacetTargetIncludes(node);
-	}
-
-	private void addFacetTargetIncludes(Node node) {
-		for (siani.tara.intellij.lang.psi.FacetTarget facetTarget : node.getFacetTargets())
-			includes.addAll(facetTarget.includes().stream().map(LanguageNode::new).collect(Collectors.toList()));
+		if (node.getParentNode() != null) variables.addAll(collectVariables(node.getParentNode().getVariables()));
 	}
 
 	@Override
 	public siani.tara.semantic.model.Node context() {
 		if (node == null) return null;
-		if (node.isSub()) {
-			Node rootOfSub = findRootOfSub(node);
-			return rootOfSub == null ? null : new LanguageNode(rootOfSub);
-		} else return node.container() == null ? null : new LanguageNode(node.container());
-	}
-
-	private Node findRootOfSub(Node node) {
-		Node container = node.container();
-		while (container != null && container.isSub())
-			container = container.container();
-		return container == null ? null : container.container();
+		return node.container() == null ? null : new LanguageNode(node.container());
 	}
 
 	@Override
@@ -130,7 +104,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public void annotations(String... annotations) {
-//		TODO node.addInheritedAnnotations(flags);
+//		TODO node.addInheritedAnnotations(annotations);
 	}
 
 	@Override
@@ -167,7 +141,23 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public siani.tara.semantic.model.Node[] includes() {
+		if (includes == null) {
+			includes = new ArrayList<>();
+			collectIncludes(node);
+			if (node.getParentNode() != null) collectIncludes(node.getParentNode());
+		}
 		return includes.toArray(new siani.tara.semantic.model.Node[includes.size()]);
+	}
+
+	private void collectIncludes(Node node) {
+		includes.addAll(node.getIncludes().stream().map(LanguageNode::new).collect(Collectors.toList()));
+		includes.addAll(node.getInnerNodeReferences().stream().map(LanguageNodeReference::new).collect(Collectors.toList()));
+		addFacetTargetIncludes(node);
+	}
+
+	private void addFacetTargetIncludes(Node node) {
+		for (siani.tara.intellij.lang.psi.FacetTarget facetTarget : node.getFacetTargets())
+			includes.addAll(facetTarget.includes().stream().map(LanguageNode::new).collect(Collectors.toList()));
 	}
 
 	@Override

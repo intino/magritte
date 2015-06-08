@@ -22,7 +22,6 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	private final List<String> flags;
 	private String nativeName;
 
-
 	public ReferenceParameterAllow(String name, List<String> values, boolean multiple, int position, String nativeName, List<String> flags) {
 		this.name = name;
 		this.multiple = multiple;

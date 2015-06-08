@@ -66,7 +66,8 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public String[] secondaryTypes() {
-		List<String> types = node.getFacets().stream().map(Facet::getType).collect(Collectors.toList());
+		Set<String> types = node.getFacets().stream().map(Facet::getType).collect(Collectors.toSet());
+		if (parent() != null) Collections.addAll(types, parent().types());
 		return types.toArray(new String[types.size()]);
 	}
 
@@ -116,7 +117,6 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 		Set<String> flags = node.getFlags().stream().map(Tag::name).collect(Collectors.toSet());
 		return flags.toArray(new String[flags.size()]);
 	}
-
 
 	@Override
 	public void flags(String... flags) {

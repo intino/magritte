@@ -71,7 +71,6 @@ public class NodeReference extends Element implements Node {
 
 	@Override
 	public void setLanguage(String language) {
-
 	}
 
 	@Override

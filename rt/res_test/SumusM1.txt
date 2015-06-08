@@ -12,7 +12,7 @@ level
 locale
 English
 generated_lang_name
-GroceryShop
+Grocery
 encoding
 UTF-8
 semantic_lib

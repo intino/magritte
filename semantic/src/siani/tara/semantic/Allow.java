@@ -19,6 +19,10 @@ public interface Allow {
 
 		Facet allow(Parameter... parameter);
 
+		Facet require(Constraint.Require.Include... parameter);
+
+		Facet allow(Include... parameter);
+
 		Collection<Allow> allows();
 
 		Collection<Constraint> constraints();

@@ -169,9 +169,19 @@ def trigger(parent) slot(value)
 	extends $value+reference
 end
 
-def type(nodeReference) type(Feature) trigger(component)
+def type(nodeReference) type(single) type(Feature) trigger(component)
 	public $qn+reference $name+firstLowerCase() {
 		return definition().component($qn+reference.class);
+	}
+end
+
+def type(nodeReference) !type(single) type(Feature) trigger(component)
+	public $qn+reference$[] $name+firstLowerCase+plural() {
+		return definition().components($qn+reference.class);
+	}
+
+	public $qn+reference $name+firstLowerCase+plural(int index) {
+    		return $name+firstLowerCase+plural()$[index$];
 	}
 end
 

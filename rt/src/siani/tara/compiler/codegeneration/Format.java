@@ -37,13 +37,17 @@ public class Format {
 		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
 	}
 
-	public static Formatter date() {
+	public static Formatter key() {
 		return value -> {
-			String val = value.toString();
-			if (!val.contains("/")) return value;
-			return val.replace("/", ", ");
+			try {
+				Long.parseLong(String.valueOf(value));
+				return "$(" + value.toString() + ")";
+			} catch (NumberFormatException e) {
+				return value;
+			}
 		};
 	}
+
 
 	private static class StringFormatter implements Formatter {
 		@Override

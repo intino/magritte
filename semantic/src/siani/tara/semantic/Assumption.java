@@ -17,18 +17,18 @@ public interface Assumption {
 	}
 
 	interface Implicit extends Assumption {
-
 	}
 
 	interface Feature extends Assumption {
-
 	}
 
 	interface PropertyInstance extends Assumption {
-
 	}
 
 	interface Featureinstance extends Assumption {
+	}
+
+	interface ImplicitInstance extends Assumption {
 
 	}
 

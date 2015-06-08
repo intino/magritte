@@ -416,6 +416,16 @@ public class RuleFactory {
 			}
 
 			@Override
+			public Facet require(Constraint.Require.Include... parameter) {
+				return null;//TODO
+			}
+
+			@Override
+			public Facet allow(Include... parameter) {
+				return null;//TODO
+			}
+
+			@Override
 			public Collection<Allow> allows() {
 				return allows;
 			}
@@ -449,7 +459,6 @@ public class RuleFactory {
 				} catch (SemanticException ignored) {
 				}
 				return true;
-
 			}
 		};
 	}
@@ -529,7 +538,8 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (!Arrays.asList(node.flags()).contains(FACET.name())) node.flags(FACET.name());
-				node.flags(NAMED.name());
+				if ((!Arrays.asList(node.flags()).contains(NAMED.name())))
+					node.flags(NAMED.name());
 			}
 		};
 	}
@@ -538,9 +548,8 @@ public class RuleFactory {
 		return new Assumption.FacetInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(FACET_INSTANCE.name()))
-					node.flags(FACET_INSTANCE.name());
-				node.flags(NAMED.name());
+				if (!Arrays.asList(node.flags()).contains(FACET_INSTANCE.name())) node.flags(FACET_INSTANCE.name());
+				if ((!Arrays.asList(node.flags()).contains(NAMED.name()))) node.flags(NAMED.name());
 			}
 		};
 	}
@@ -588,6 +597,16 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (!Arrays.asList(node.flags()).contains(TERMINAL.name())) node.flags(TERMINAL.name());
+			}
+		};
+	}
+
+	public static Assumption isImplicitInstance() {
+		return new Assumption.ImplicitInstance() {
+			@Override
+			public void assume(Node node) {
+				if (!Arrays.asList(node.flags()).contains(IMPLICIT_INSTANCE.name()))
+					node.flags(IMPLICIT_INSTANCE.name());
 			}
 		};
 	}

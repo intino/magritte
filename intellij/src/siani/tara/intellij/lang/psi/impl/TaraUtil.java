@@ -210,7 +210,8 @@ public class TaraUtil {
 	}
 
 	private static Allow.Parameter getParameterByIndex(Parameter parameter, List<Allow.Parameter> parametersAllowed) {
-		for (Allow.Parameter allow : parametersAllowed) if (allow.position() == getIndexInParent(parameter)) return allow;
+		for (Allow.Parameter allow : parametersAllowed)
+			if (allow.position() == getIndexInParent(parameter)) return allow;
 		return null;
 	}
 
@@ -319,10 +320,13 @@ public class TaraUtil {
 	}
 
 	public static Node findInner(Node node, String name) {
-		Collection<Node> inner = node.getIncludes();
-		for (Node child : inner)
-			if (child.getName() != null && child.getName().equals(name))
-				return child;
+		for (Node include : node.getIncludes())
+			if (include.getName() != null && include.getName().equals(name))
+				return include;
+		if (node.getParentNode() == null) return null;
+		for (Node include : node.getParentNode().getIncludes())
+			if (include.getName() != null && include.getName().equals(name))
+				return include;
 		return null;
 	}
 
