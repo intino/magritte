@@ -105,7 +105,7 @@ public class RuleFactory {
 		};
 	}
 
-	private static List<Rejectable.Include> getRejectableIncludesBy(String type, List<? extends Rejectable> rejectables) {
+	static List<Rejectable.Include> getRejectableIncludesBy(String type, List<? extends Rejectable> rejectables) {
 		List<Rejectable.Include> rejectableIncludes = new ArrayList<>();
 		for (Rejectable rejectable : rejectables) {
 			if (!(rejectable instanceof Rejectable.Include)) continue;
@@ -373,94 +373,7 @@ public class RuleFactory {
 	}
 
 	public static Allow.Facet facet(final String type) {
-		return new Allow.Facet() {
-			List<Constraint> constraints = new ArrayList<>();
-			List<Allow> allows = new ArrayList<>();
-
-			@Override
-			public String type() {
-				return type;
-			}
-
-			@Override
-			public Facet require(Constraint.Require.Parameter... parameter) {
-				Collections.addAll(constraints, parameter);
-				for (Constraint.Require.Parameter require : parameter) addParameter(require);
-				return this;
-			}
-
-			private void addParameter(Constraint.Require.Parameter parameter) {
-				if (isWordOrReference(parameter))
-					allow(parameter(parameter.name() + (parameter.type().equals("word") ? ":word" : ""), parameter.allowedValues(), parameter.multiple(), parameter.position(), parameter.metric(), parameter.annotations()));
-				else
-					allow(parameter(parameter.name(), parameter.type(), parameter.multiple(), parameter.position(), parameter.metric(), parameter.annotations()));
-			}
-
-			private boolean isWordOrReference(Constraint.Require.Parameter parameter) {
-				return parameter.type().equals("word") || parameter.type().equals("reference");
-			}
-
-			@Override
-			public Facet allow(Parameter... parameter) {
-				this.allows.addAll(asList(parameter));
-				return add(new Constraint.Reject() {
-					@Override
-					public void check(Element element) throws SemanticException {
-						siani.tara.semantic.model.Facet facet = (siani.tara.semantic.model.Facet) element;
-						List<Rejectable> rejectables = Rejectable.build(facet);
-						for (Allow allow : allows)
-							allow.check(facet, rejectables);
-						if (!rejectables.isEmpty()) throw new SemanticException(rejectables.get(0).error());
-					}
-				});
-			}
-
-			@Override
-			public Facet require(Constraint.Require.Include... parameter) {
-				return null;//TODO
-			}
-
-			@Override
-			public Facet allow(Include... parameter) {
-				return null;//TODO
-			}
-
-			@Override
-			public Collection<Allow> allows() {
-				return allows;
-			}
-
-			@Override
-			public Collection<Constraint> constraints() {
-				return constraints;
-			}
-
-			private Facet add(Constraint... constraints) {
-				this.constraints.addAll(asList(constraints));
-				return this;
-			}
-
-			@Override
-			public void check(Element element, List<? extends Rejectable> rejectables) {
-				List<Rejectable> toRemove = new ArrayList<>();
-				for (Rejectable rejectable : rejectables) {
-					if (!(rejectable instanceof Rejectable.Facet)) continue;
-					siani.tara.semantic.model.Facet facet = ((Rejectable.Facet) rejectable).getFacet();
-					if (facet.type().equals(shortType(type)) && checkParameters(facet))
-						toRemove.add(rejectable);
-				}
-				rejectables.removeAll(toRemove);
-			}
-
-			private boolean checkParameters(siani.tara.semantic.model.Facet facet) {
-				try {
-					for (Constraint require : constraints)
-						require.check(facet);
-				} catch (SemanticException ignored) {
-				}
-				return true;
-			}
-		};
+		return new FacetAllow(type);
 	}
 
 	public static Constraint.Require _name() {
@@ -621,7 +534,7 @@ public class RuleFactory {
 		};
 	}
 
-	private static String shortType(String absoluteType) {
+	public static String shortType(String absoluteType) {
 		return absoluteType.contains(".") ? absoluteType.substring(absoluteType.lastIndexOf(".") + 1) : absoluteType;
 	}
 

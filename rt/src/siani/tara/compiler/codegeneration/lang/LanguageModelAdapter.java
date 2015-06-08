@@ -5,6 +5,7 @@ import siani.tara.Language;
 import siani.tara.compiler.codegeneration.magritte.TemplateTags;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
@@ -78,16 +79,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addAssumptions(node, frame);
 			root.addFrame(NODE, frame);
 		}
-		for (Node inner : node.getIncludedNodes()) {
-			if (inner instanceof NodeReference) continue;
-			buildNode(inner);
-		}
-		for (FacetTarget target : node.getFacetTargets())
-			for (Node inner : target.getIncludedNodes()) {
-				if (inner instanceof NodeReference) continue;
-				buildNode(inner);
-			}
+		node.getIncludedNodes().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
+		addFacetNodes(node);
+	}
 
+	private void addFacetNodes(Node node) {
+		for (FacetTarget target : node.getFacetTargets())
+			target.getIncludedNodes().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 	}
 
 	private void addTypes(Node node, Frame frame) {
@@ -155,6 +153,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (facetNode == null) continue;
 			addParameterAllows(facetNode.getVariables(), frame);
 			addParameterRequires(facetNode.getVariables(), frame, true, 0);//TRUE? añadir terminales
+			addAllowedInnerNodes(frame, facetNode);
+			addRequiredInnerNodes(frame, facetNode);
 		}
 	}
 
@@ -231,7 +231,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return allows;
 	}
 
-	private void addAllowedInnerNodes(Frame allows, Node node) {
+	private void addAllowedInnerNodes(Frame allows, NodeContainer node) {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
 		for (Node include : node.getIncludedNodes()) {
@@ -244,11 +244,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		addAllowedNodes(allows, multipleNodes, singleNodes);
 	}
 
-	private void addRequiredInnerNodes(Frame requires, Node node) {
+	private void addRequiredInnerNodes(Frame requires, NodeContainer node) {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
 		for (Node include : node.getIncludedNodes()) {
-			if ((!include.isRequired() && !include.isImplicit()) || (include.isTerminal() && isGenerativeLanguage()))
+			if ((!include.isRequired() || include.isImplicit()) || (include.isTerminal() && isGenerativeLanguage()))
 				continue;
 			Collection<Node> candidates = collectCandidates(include);
 			if (include.isAbstract() && candidates.size() > 1) {

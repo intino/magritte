@@ -1,9 +1,6 @@
 package siani.tara.semantic.model;
 
 import siani.tara.semantic.*;
-import siani.tara.semantic.Constraint.Require.Multiple;
-import siani.tara.semantic.Constraint.Require.OneOf;
-import siani.tara.semantic.Constraint.Require.Single;
 
 import java.util.*;
 
@@ -56,52 +53,10 @@ public class Context {
 	}
 
 	public Context require(Constraint.Require... constraints) {
-		addCorrespondingAllows(constraints);
+		new ContextConstraintTransformer().transformCorrespondingAllows(constraints);
 		return add(constraints);
 	}
 
-	private void addCorrespondingAllows(Constraint.Require[] constraints) {
-		for (Constraint.Require constraint : constraints)
-			if (constraint instanceof Constraint.Require.Name)
-				allow(name());
-			else if (constraint instanceof Constraint.Require.Parameter)
-				addAllowParameter((Constraint.Require.Parameter) constraint);
-			else if (constraint instanceof Single)
-				addAllowIncludeSingle((Single) constraint);
-			else if (constraint instanceof Multiple)
-				addAllowIncludeMultiple((Multiple) constraint);
-			else if (constraint instanceof OneOf)
-				addAllowIncludeOneOf((OneOf) constraint);
-	}
-
-	private void addAllowIncludeSingle(Single constraint) {
-		allows.add(single(constraint.type()));
-	}
-
-	private void addAllowIncludeMultiple(Multiple constraint) {
-		allow(multiple(constraint.type()));
-	}
-
-	private void addAllowParameter(Constraint.Require.Parameter parameter) {
-		if (isWordOrReference(parameter))
-			allow(parameter(parameter.name() + (parameter.type().equals("word") ? ":word" : ""), parameter.allowedValues(), parameter.multiple(), parameter.position(), parameter.metric(), parameter.annotations()));
-		else
-			allow(parameter(parameter.name(), parameter.type(), parameter.multiple(), parameter.position(), parameter.metric(), parameter.annotations()));
-	}
-
-	private void addAllowIncludeOneOf(OneOf constraint) {
-		List<Allow> allows = new ArrayList<>();
-		for (Constraint.Require require : constraint.requires())
-			if (require instanceof Single)
-				allows.add(single(((Single) require).type(), ((Single) require).annotations()));
-			else
-				allows.add(multiple(((Multiple) require).type(), ((Multiple) require).annotations()));
-		allow(oneOf(allows.toArray(new Allow[allows.size()])));
-	}
-
-	private boolean isWordOrReference(Constraint.Require.Parameter parameter) {
-		return parameter.type().equals("word") || parameter.type().equals("reference");
-	}
 
 	private Context add(Constraint... constraints) {
 		this.constraints.addAll(Arrays.asList(constraints));
@@ -110,5 +65,52 @@ public class Context {
 
 	void commit() {
 		if (allows.isEmpty()) allow();
+	}
+
+
+	public class ContextConstraintTransformer {
+
+		public void transformCorrespondingAllows(Constraint.Require[] constraints) {
+			for (Constraint.Require constraint : constraints)
+				if (constraint instanceof Constraint.Require.Name)
+					allow(name());
+				else if (constraint instanceof Constraint.Require.Parameter)
+					addAllowParameter((Constraint.Require.Parameter) constraint);
+				else if (constraint instanceof Constraint.Require.Single)
+					addAllowIncludeSingle((Constraint.Require.Single) constraint);
+				else if (constraint instanceof Constraint.Require.Multiple)
+					addAllowIncludeMultiple((Constraint.Require.Multiple) constraint);
+				else if (constraint instanceof Constraint.Require.OneOf)
+					addAllowIncludeOneOf((Constraint.Require.OneOf) constraint);
+		}
+
+		private void addAllowIncludeSingle(Constraint.Require.Single constraint) {
+			allows.add(single(constraint.type()));
+		}
+
+		private void addAllowIncludeMultiple(Constraint.Require.Multiple constraint) {
+			allow(multiple(constraint.type()));
+		}
+
+		private void addAllowParameter(Constraint.Require.Parameter parameter) {
+			if (isWordOrReference(parameter))
+				allow(parameter(parameter.name() + (parameter.type().equals("word") ? ":word" : ""), parameter.allowedValues(), parameter.multiple(), parameter.position(), parameter.metric(), parameter.annotations()));
+			else
+				allow(parameter(parameter.name(), parameter.type(), parameter.multiple(), parameter.position(), parameter.metric(), parameter.annotations()));
+		}
+
+		private void addAllowIncludeOneOf(Constraint.Require.OneOf constraint) {
+			List<Allow> allows = new ArrayList<>();
+			for (Constraint.Require require : constraint.requires())
+				if (require instanceof Constraint.Require.Single)
+					allows.add(single(((Constraint.Require.Single) require).type(), ((Constraint.Require.Single) require).annotations()));
+				else
+					allows.add(multiple(((Constraint.Require.Multiple) require).type(), ((Constraint.Require.Multiple) require).annotations()));
+			allow(oneOf(allows.toArray(new Allow[allows.size()])));
+		}
+
+		private boolean isWordOrReference(Constraint.Require.Parameter parameter) {
+			return parameter.type().equals("word") || parameter.type().equals("reference");
+		}
 	}
 }

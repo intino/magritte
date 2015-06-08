@@ -47,7 +47,8 @@ public class SemanticAnalyzer {
 			for (FacetTarget facetTarget : node.getFacetTargets())
 				for (Node include : facetTarget.getIncludedNodes()) checkNode(include);
 			for (Facet facet : node.getFacets())
-				for (Node include : facet.getIncludedNodes()) checkNode(include);
+				for (Node include : facet.getIncludedNodes())
+					checkNode(include);
 		}
 	}
 
