@@ -90,7 +90,7 @@ public class InheritanceResolver {
 		for (Node include : parent.getIncludedNodes()) {
 			if (isOverridden(child, include)) continue;
 			NodeReference reference = (include instanceof NodeImpl) ? new NodeReference((NodeImpl) include) : new NodeReference(((NodeReference) include).getDestiny());
-			addTags(reference, include);
+			addTags(include, reference);
 			nodes.add(reference);
 			reference.setFile(((Element) include).getFile());
 			reference.setLine(child.getLine());
@@ -101,9 +101,9 @@ public class InheritanceResolver {
 		return nodes;
 	}
 
-	private void addTags(NodeReference reference, Node include) {
-		for (Tag tag : include.getAnnotations()) reference.addAnnotations(tag.name());
-		for (Tag tag : include.getFlags()) reference.addFlags(tag.name());
+	private void addTags(Node include, NodeReference reference) {
+		include.getFlags().stream().filter(tag -> !reference.getFlags().contains(tag)).forEach(tag -> reference.addFlags(tag.name()));
+		include.getAnnotations().stream().filter(tag -> !reference.getAnnotations().contains(tag)).forEach(tag -> reference.addAnnotations(tag.name()));
 	}
 
 	private void resolveFlags(NodeImpl parent, NodeImpl child) {

@@ -26,7 +26,7 @@ public class MorphFrameCreator implements TemplateTags {
 	private Node initNode = null;
 	private MorphNodeAdapter morphNodeAdapter;
 
-	public MorphFrameCreator(String project, String generatedLanguage, Language language, Locale locale, File nativePath) {
+	public MorphFrameCreator(String project, String generatedLanguage, Language language, File nativePath) {
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 		builder.register(NodeImpl.class, morphNodeAdapter = new MorphNodeAdapter(project, generatedLanguage, language, initNode));
@@ -35,7 +35,7 @@ public class MorphFrameCreator implements TemplateTags {
 	}
 
 	public MorphFrameCreator(CompilerConfiguration conf) {
-		this(conf.getProject(), conf.getGeneratedLanguage(), conf.getLanguage(), conf.getLocale(), conf.getNativePath());
+		this(conf.getProject(), conf.getGeneratedLanguage(), conf.getLanguage(), conf.getNativePath());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {
@@ -45,6 +45,7 @@ public class MorphFrameCreator implements TemplateTags {
 		String packagePath = addPackage(frame);
 		createMorph(frame, node);
 		addImports(frame);
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		return new AbstractMap.SimpleEntry<>(packagePath + DOT + node.getName(), frame);
 	}
 
@@ -53,6 +54,7 @@ public class MorphFrameCreator implements TemplateTags {
 		String packagePath = addPackage(facetTarget, frame);
 		createFacetTargetMorph(frame, facetTarget);
 		addImports(frame);
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		return new AbstractMap.SimpleEntry<>(packagePath + DOT + facetTarget.getTargetNode().getName(), frame);
 	}
 

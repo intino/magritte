@@ -169,7 +169,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
-			prettyPrint(file);
+//			prettyPrint(file);
 		}
 	}
 

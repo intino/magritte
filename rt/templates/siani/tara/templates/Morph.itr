@@ -56,13 +56,13 @@ def type(variable) type(Measure) trigger(getter)
 end
 
 def type(variable) type(definition) type(native) trigger(getter)
-	public $generatedlanguage.natives.$name+reference $name+firstLowerCase() {
+	public $generatedLanguage.natives.$name+reference $name+firstLowerCase() {
 		return get("$name").asNativeOf(scope);
 	}
 end
 
 def type(variable) type(native) trigger(getter)
-	public $generatedlanguage.natives.$contract+reference $name+firstLowerCase() {
+	public $generatedLanguage.natives.$contract+reference $name+firstLowerCase() {
 		return definition().get("$name").asNativeOf(node);
 	}
 end
@@ -147,6 +147,12 @@ end
 
 def type(variable) !type(native) !type(reference) !type(final) !type(multiple) trigger(setter)
 	public void $name+firstLowerCase(java.lang.$type+firstUpperCase value) {
+		edit().set("$name", value);
+	}
+end
+
+def type(variable) type(reference) !type(final) !type(native) !type(multiple) trigger(setter)
+	public void $name+firstLowerCase($type+reference value) {
 		edit().set("$name", value);
 	}
 end

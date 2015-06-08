@@ -1,5 +1,5 @@
 src_file
-/Users/oroncal/workspace/sumus-engine/Grocery/model/Grocery.tara
+/Users/oroncal/workspace/sandbox/sumus/grocery/model/Grocery.tara
 
 project
 Sumus
@@ -7,8 +7,8 @@ module
 Grocery
 language
 Sumus
-terminal
-false
+level
+1
 locale
 English
 generated_lang_name
@@ -20,14 +20,14 @@ semantic_lib
 models
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
 outputpath
-/Users/oroncal/workspace/sumus-engine/Grocery/gen
+/Users/oroncal/workspace/sandbox/sumus/Grocery/gen
 final_outputpath
-/Users/oroncal/workspace/sumus-engine/out/production/Grocery/
+/Users/oroncal/workspace/sandbox/sumus/Grocery/out/production/Grocery/
 jdk_home
 /Users/oroncal/workspace/sandbox/magritte/lib/
 metrics
-/Users/oroncal/workspace/sumus-engine/out/production/Grocery/
+/Users/oroncal/workspace/sandbox/sumus/Grocery/out/production/Grocery/
 resources
-/Users/oroncal/workspace/sumus-engine/Grocery/res
+/Users/oroncal/workspace/sandbox/sumus/Grocery/res
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

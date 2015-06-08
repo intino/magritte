@@ -103,6 +103,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		for (Node include : node.getIncludedNodes()) {
 			if (include.isAnonymous()) continue;
 			Frame includeFrame = new Frame().addTypes(collectReferenceTypes(include));
+			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 			if (include instanceof NodeReference) {
 				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
 				addNodeReferenceName((NodeReference) include, includeFrame);
@@ -156,12 +157,14 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 
 	private void addVariable(Frame frame, Variable variable, boolean definition) {
 		Frame varFrame = createVarFrame(variable);
-		frame.addFrame(VARIABLE, definition ? varFrame.addTypes("definition") : varFrame);
+		if (definition) varFrame.addTypes("definition");
+		frame.addFrame(VARIABLE, varFrame);
 	}
 
 	private void addVariable(Frame frame, Allow.Parameter variable, boolean definition) {
 		Frame varFrame = createVarFrame(variable);
-		frame.addFrame(VARIABLE, definition ? varFrame.addTypes("definition") : varFrame);
+		if (definition) varFrame.addTypes("definition");
+		frame.addFrame(VARIABLE, varFrame);
 	}
 
 
@@ -170,7 +173,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 			{
 				addFrame(NAME, variable.getName());
 				addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-				addFrame(CONTRACT, format(variable.getContract()));
+				if (variable.getContract() != null) addFrame(CONTRACT, format(variable.getContract()));
 				addFrame(TYPE, variable instanceof VariableReference ? getQn(((VariableReference) variable).getDestiny(), generatedLanguage) : getType());
 				if (variable.getType().equals(Variable.WORD))
 					addFrame(WORDS, variable.getAllowedValues().toArray(new String[(variable.getAllowedValues().size())]));
@@ -200,6 +203,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		Frame frame = new Frame() {
 			{
 				addFrame(NAME, variable.name());
+				addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 				addFrame(TYPE, variable instanceof ReferenceParameterAllow ? variable.allowedValues().get(0) : getType());//TODO QN completo
 				if (variable.type().equals(Variable.WORD))
 					addFrame(WORDS, variable.allowedValues().toArray(new String[(variable.allowedValues().size())]));

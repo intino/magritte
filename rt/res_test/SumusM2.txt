@@ -6,7 +6,7 @@ src_file
 project
 Sumus
 module
-Sumus
+engine
 language
 Proteo
 locale
@@ -22,14 +22,14 @@ models
 semantic_lib
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/sumus/engine/Sumus/gen
+/Users/oroncal/workspace/sandbox/sumus/engine/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/sumus/engine/out/production/Sumus/
+/Users/oroncal/workspace/sandbox/sumus/out/production/engine/
 jdk_home
 /Users/oroncal/workspace/tdk-0.1/lib/
 metrics
-/Users/oroncal/workspace/sandbox/sumus/engine/out/production/Sumus/
+/Users/oroncal/workspace/sandbox/sumus/out/production/engine/
 resources
-/Users/oroncal/workspace/sandbox/sumus/engine/Sumus/res
+/Users/oroncal/workspace/sandbox/sumus/engine/res
 classpath
 /Users/oroncal/workspace/sandbox/tara/plugins/tara/lib/tara.jar

@@ -7,6 +7,7 @@ import siani.tara.compiler.model.Primitives;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
+import siani.tara.compiler.model.impl.VariableReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,7 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 		Frame frame = new Frame() {
 			{
 				addFrame(NAME, variable.getName());
+				addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 				addFrame(CONTRACT, format(variable.getContract()));
 				addFrame(TYPE, getType());
 				if (variable.getType().equals(Variable.WORD))
@@ -102,6 +104,8 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 
 			private String getType() {
 				if (variable.getType().equalsIgnoreCase(Primitives.NATURAL)) return Primitives.INTEGER;
+				if (variable instanceof VariableReference)
+					return getQn(((VariableReference) variable).getDestiny(), generatedLanguage);
 				else return variable.getType();
 			}
 		};
@@ -112,6 +116,7 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 		for (Node include : target.getIncludedNodes()) {
 			if (include.isAnonymous()) continue;
 			Frame includeFrame = new Frame().addTypes(collectReferenceTypes(include));
+			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 			if (include instanceof NodeReference) {
 				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
 				addNodeReferenceName((NodeReference) include, includeFrame);
@@ -132,7 +137,8 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 	private void addNodeReferenceName(NodeReference node, Frame frame) {
 		NodeImpl reference = node.getDestiny();
 		frame.addFrame(NAME, reference.getName());
-		frame.addFrame(QN, reference.getQualifiedName()).addFrame(PROJECT, project);
+		frame.addFrame(QN, getQn(reference, generatedLanguage));
+		frame.addFrame(PROJECT, project);
 	}
 
 	private String[] collectReferenceTypes(Node node) {
