@@ -176,7 +176,7 @@ NATIVE_MULTILINE_VALUE  = {DASHES}
 
 IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
-%xstate QUOTED, MULTILINE, NATIVE, NATIVE_MULTILINE
+%xstate QUOTED, MULTILINE, EXPRESSION, EXPRESSION_MULTILINE
 
 %%
 <YYINITIAL> {
@@ -219,6 +219,9 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
 	{STRING_MULTILINE}              {   yybegin(MULTILINE); return TaraTypes.QUOTE_BEGIN; }
+
+	{SINGLE_QUOTE}					{   yybegin(EXPRESSION); return TaraTypes.EXPRESSION_BEGIN; }
+	{NATIVE_MULTILINE_VALUE}		{   yybegin(EXPRESSION_MULTILINE); return TaraTypes.EXPRESSION_BEGIN; }
 
 	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
 	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
@@ -289,8 +292,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
     .                               {   return TokenType.BAD_CHARACTER; }
 }
 
-<NATIVE> {
-    {QUOTE}                         {   yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
+<EXPRESSION> {
+    {SINGLE_QUOTE}                  {   yybegin(YYINITIAL); return TaraTypes.EXPRESSION_END; }
     [^\n\r\'\\]                     {   return TaraTypes.CHARACTER; }
     \n | \r                         {   return TaraTypes.CHARACTER; }
     \t                              {   return TaraTypes.CHARACTER; }
@@ -304,8 +307,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
 }
 
 
-<NATIVE_MULTILINE> {
-    {NATIVE_MULTILINE_VALUE}        {   yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
+<EXPRESSION_MULTILINE> {
+    {NATIVE_MULTILINE_VALUE}        {   yybegin(YYINITIAL); return TaraTypes.EXPRESSION_END; }
     [^\n\r\\]                       {   return TaraTypes.CHARACTER; }
     \n | \r                         {   return TaraTypes.CHARACTER; }
     \t                              {   return TaraTypes.CHARACTER; }

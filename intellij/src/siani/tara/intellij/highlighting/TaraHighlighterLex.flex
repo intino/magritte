@@ -150,7 +150,7 @@ SPACES              = {SP}+
 NEWLINE             = [\n]+
 
 
-%xstate QUOTED, MULTILINE, NATIVE, NATIVE_MULTILINE
+%xstate QUOTED, MULTILINE, EXPRESSION, EXPRESSION_MULTILINE
 
 %%
 <YYINITIAL> {
@@ -194,6 +194,10 @@ NEWLINE             = [\n]+
 	{ADDRESS_VALUE}                 {   return TaraTypes.ADDRESS_VALUE; }
 	{QUOTE}                         {   yybegin(QUOTED); return TaraTypes.QUOTE_BEGIN; }
 	{STRING_MULTILINE}              {   yybegin(MULTILINE); return TaraTypes.QUOTE_BEGIN; }
+
+	{SINGLE_QUOTE}					{   yybegin(EXPRESSION); return TaraTypes.EXPRESSION_BEGIN; }
+	{NATIVE_MULTILINE_VALUE}		{   yybegin(EXPRESSION_MULTILINE); return TaraTypes.EXPRESSION_BEGIN; }
+
 	{BOOLEAN_VALUE_KEY}             {   return TaraTypes.BOOLEAN_VALUE_KEY; }
 	{DOUBLE_VALUE_KEY}              {   return TaraTypes.DOUBLE_VALUE_KEY; }
 	{NEGATIVE_VALUE_KEY}            {   return TaraTypes.NEGATIVE_VALUE_KEY; }
@@ -263,8 +267,8 @@ NEWLINE             = [\n]+
     .                               {   return TokenType.BAD_CHARACTER; }
 }
 
-<NATIVE> {
-    {QUOTE}                         {   yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
+<EXPRESSION> {
+    {SINGLE_QUOTE}                  {   yybegin(YYINITIAL); return TaraTypes.EXPRESSION_END; }
     [^\n\r\'\\]                     {   return TaraTypes.CHARACTER; }
     \n | \r                         {   return TaraTypes.CHARACTER; }
     \t                              {   return TaraTypes.CHARACTER; }
@@ -278,8 +282,8 @@ NEWLINE             = [\n]+
 }
 
 
-<NATIVE_MULTILINE> {
-    {NATIVE_MULTILINE_VALUE}        {   yybegin(YYINITIAL); return TaraTypes.QUOTE_END; }
+<EXPRESSION_MULTILINE> {
+    {NATIVE_MULTILINE_VALUE}        {   yybegin(YYINITIAL); return TaraTypes.EXPRESSION_END; }
     [^\n\r\\]                       {   return TaraTypes.CHARACTER; }
     \n | \r                         {   return TaraTypes.CHARACTER; }
     \t                              {   return TaraTypes.CHARACTER; }

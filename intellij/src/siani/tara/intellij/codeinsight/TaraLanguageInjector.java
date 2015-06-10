@@ -20,31 +20,31 @@ import static siani.tara.semantic.model.Variable.NATIVE_SEPARATOR;
 
 public class TaraLanguageInjector implements LanguageInjector {
 
-	private static Parameter getParameter(StringValue stringValue) {
-		PsiElement element = getParentByType(stringValue, Parameter.class);
+	private static Parameter getParameter(Expression Expression) {
+		PsiElement element = getParentByType(Expression, Parameter.class);
 		return element instanceof Parameter ? (Parameter) element : null;
 	}
 
 	@Override
 	public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host, @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
-		if (!StringValue.class.isInstance(host) || !host.isValidHost()) return;
-		injectionPlacesRegistrar.addPlace(JavaLanguage.INSTANCE, getRangeInsideHost((StringValue) host), createPrefix((StringValue) host), createSuffix());
+		if (!Expression.class.isInstance(host) || !host.isValidHost()) return;
+		injectionPlacesRegistrar.addPlace(JavaLanguage.INSTANCE, getRangeInsideHost((Expression) host), createPrefix((Expression) host), createSuffix());
 	}
 
 	@NotNull
-	private TextRange getRangeInsideHost(@NotNull StringValue host) {
+	private TextRange getRangeInsideHost(@NotNull Expression host) {
 		return (!host.isMultiLine()) ? new TextRange(1, host.getTextLength() - 1) : getMultiLineBounds(host);
 	}
 
-	private TextRange getMultiLineBounds(StringValue host) {
+	private TextRange getMultiLineBounds(Expression host) {
 		final String value = host.getValue();
 		final int i = host.getText().indexOf(value);
 		return new TextRange(i, i + value.length());
 	}
 
-	private String createPrefix(StringValue stringValue) {
-		String languageName = TaraUtil.getLanguage(stringValue).languageName();
-		Frame frame = createFrame(stringValue, languageName);
+	private String createPrefix(Expression expression) {
+		String languageName = TaraUtil.getLanguage(expression).languageName();
+		Frame frame = createFrame(expression, languageName);
 		return NativeTemplate.create().format(frame);
 	}
 
@@ -54,7 +54,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	@NotNull
-	private Frame createFrame(StringValue stringValue, String languageName) {
+	private Frame createFrame(Expression stringValue, String languageName) {
 		Frame frame = new Frame().addTypes("native");
 		PsiElement element = getVarInit(stringValue);
 		if (element == null) element = getParameter(stringValue);
@@ -75,7 +75,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	@NotNull
-	private String getGeneratedLanguage(StringValue stringValue) {
+	private String getGeneratedLanguage(Expression stringValue) {
 		final Module module = ModuleProvider.getModuleOf(stringValue);
 		final TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
 		if (facet == null) return "";
@@ -114,11 +114,11 @@ public class TaraLanguageInjector implements LanguageInjector {
 		return (Node) getParentByType(element, Node.class);
 	}
 
-	private PsiElement getVarInit(StringValue stringValue) {
+	private PsiElement getVarInit(Expression stringValue) {
 		return getParentByType(stringValue, VarInit.class);
 	}
 
-	private PsiElement getVariable(StringValue stringValue) {
+	private PsiElement getVariable(Expression stringValue) {
 		PsiElement element = getParentByType(stringValue, Variable.class);
 		return element instanceof Variable ? (Variable) element : null;
 	}

@@ -47,7 +47,6 @@ public class TaraRunner {
 			writer.write(TaraRtConstants.PROJECT + NL + projectName + NL);
 			writer.write(TaraRtConstants.MODULE + NL + moduleName + NL);
 			if (!language.isEmpty()) writer.write(TaraRtConstants.LANGUAGE + NL + language + NL);
-			writer.write(TaraRtConstants.TERMINAL + NL + (generatedLangName == null || generatedLangName.isEmpty() ? "true" : "false") + NL);
 			writer.write(TaraRtConstants.DICTIONARY + NL + dictionary + NL);
 			writer.write(TaraRtConstants.REQUIRED_PLATE + NL + plateRequired + NL);
 			if (generatedLangName != null && !generatedLangName.isEmpty()) {

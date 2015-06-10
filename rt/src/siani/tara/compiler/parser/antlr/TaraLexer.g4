@@ -152,7 +152,10 @@ DOUBLE_VALUE        : (PLUS | DASH)? DIGIT+ DOT DIGIT+;
 APHOSTROPHE         : '"' {setType(QUOTE_BEGIN);} -> mode(QUOTED);
 STRING_MULTILINE    : DASH DASH+  {setType(QUOTE_BEGIN);} -> mode(MULTILINE);
 
-PLATE_VALUE       : HASHTAG LETTER+;
+SINGLE_QUOTE        : '\'' {setType(EXPRESSION_BEGIN);} -> mode(EXPRESSION_QUOTED);
+EXPRESSION_MULTILINE: DASH DASH+  {setType(EXPRESSION_BEGIN);} -> mode(EXPRESSION_MULTILINE_MODE);
+
+PLATE_VALUE         : HASHTAG LETTER+;
 IDENTIFIER          : LETTER (DIGIT | LETTER | DASH | UNDERDASH)*;
 
 MEASURE_VALUE       : (LETTER| PERCENTAGE | DOLLAR | EURO | GRADE) (UNDERDASH | BY | DIVIDED_BY | PERCENTAGE | DOLLAR | EURO | GRADE | LETTER | DIGIT)*;
@@ -173,20 +176,30 @@ UNKNOWN_TOKEN: . ;
 
 
 mode MULTILINE;
-	M_STRING_MULTILINE: DASH DASH+  {   setType(QUOTE_END); } -> mode(DEFAULT_MODE);
-	M_CHARACTER:.                   {   setType(CHARACTER); };
+	M_STRING_MULTILINE: EQUALS EQUALS+  {   setType(QUOTE_END); } -> mode(DEFAULT_MODE);
+	M_CHARACTER:.                       {   setType(CHARACTER); };
 
 mode QUOTED;
-	QUOTE:'"'                       {   setType(QUOTE_END); } -> mode(DEFAULT_MODE);
-    Q:'\"'                          {   setType(CHARACTER); };
-    SLASH_Q:'\\\"'                  {   setType(CHARACTER); };
-    SLASH:'\\'                      {   setType(CHARACTER); };
-    CHARACTER:.                     {   setType(CHARACTER); };
+	QUOTE:'"'                           {   setType(QUOTE_END); } -> mode(DEFAULT_MODE);
+    Q:'\"'                              {   setType(CHARACTER); };
+    SLASH_Q:'\\\"'                      {   setType(CHARACTER); };
+    SLASH:'\\'                          {   setType(CHARACTER); };
+    CHARACTER:.                         {   setType(CHARACTER); };
 
+mode EXPRESSION_MULTILINE_MODE;
+	ME_STRING_MULTILINE: DASH DASH+      {   setType(EXPRESSION_END); } -> mode(DEFAULT_MODE);
+	ME_CHARACTER:.                       {   setType(CHARACTER); };
 
+mode EXPRESSION_QUOTED;
+	E_QUOTE:'\''                          {   setType(EXPRESSION_END); } -> mode(DEFAULT_MODE);
+    E_SLASH_Q:'\\\''                      {   setType(CHARACTER); };
+    E_SLASH:'\\'                          {   setType(CHARACTER); };
+    E_CHARACTER:.                         {   setType(CHARACTER); };
 
-QUOTE_END           :'t53647656ext';
-QUOTE_BEGIN         : 'te245656786xt';
+QUOTE_BEGIN        : '%QUOTE_BEGIN%';
+QUOTE_END          : '%QUOTE_END%';
+EXPRESSION_BEGIN   : '%EXPRESSION_BEGIN%';
+EXPRESSION_END    : '%EXPRESSION_END%';
 
 fragment DOLLAR              : '$';
 fragment EURO                : '€';
