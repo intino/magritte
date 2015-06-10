@@ -7,8 +7,8 @@ module
 Census
 language
 Monet
-terminal
-false
+level
+1
 locale
 Spanish
 generated_lang_name

@@ -22,20 +22,22 @@ public class MorphFrameCreator implements TemplateTags {
 	private final String generatedLanguage;
 	private final Language language;
 	private final File nativePath;
+	private final int modelLevel;
 	Set<String> imports = new HashSet<>();
 	private Node initNode = null;
 	private MorphNodeAdapter morphNodeAdapter;
 
-	public MorphFrameCreator(String project, String generatedLanguage, Language language, File nativePath) {
+	public MorphFrameCreator(String project, String generatedLanguage, Language language, File nativePath, int modelLevel) {
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
-		builder.register(NodeImpl.class, morphNodeAdapter = new MorphNodeAdapter(project, generatedLanguage, language, initNode));
-		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(project, generatedLanguage));
+		this.modelLevel = modelLevel;
+		builder.register(NodeImpl.class, morphNodeAdapter = new MorphNodeAdapter(project, generatedLanguage, language, initNode, modelLevel));
+		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(project, generatedLanguage, modelLevel));
 		this.nativePath = nativePath;
 	}
 
 	public MorphFrameCreator(CompilerConfiguration conf) {
-		this(conf.getProject(), conf.getGeneratedLanguage(), conf.getLanguage(), conf.getNativePath());
+		this(conf.getProject(), conf.getGeneratedLanguage(), conf.getLanguage(), conf.getNativePath(), conf.getLevel());
 	}
 
 	public Map.Entry<String, Frame> create(Node node) {

@@ -28,7 +28,9 @@ public interface TemplateTags {
 	String IMPORTS = "imports";
 	String IMPORT = "import ";
 	String NATIVES = "natives";
+	String NATIVE = "native";
 	String INCLUDE = "include";
+	String FINAL = "final";
 	String LANGUAGE = "language";
 	String RELATION = "relation";
 	String AGGREGATION = "add";

@@ -476,6 +476,15 @@ public class RuleFactory {
 		};
 	}
 
+	public static Assumption isMain() {
+		return new Assumption.Main() {
+			@Override
+			public void assume(Node node) {
+				if (!Arrays.asList(node.flags()).contains(MAIN.name())) node.flags(MAIN.name());
+			}
+		};
+	}
+
 	public static Assumption isPropertyInstance() {
 		return new Assumption.PropertyInstance() {
 			@Override

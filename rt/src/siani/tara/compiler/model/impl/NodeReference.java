@@ -162,6 +162,11 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
+	public boolean isFinal() {
+		return destiny.isFinal() || flags.contains(Tag.FINAL);
+	}
+
+	@Override
 	public boolean isFeatureInstance() {
 		return destiny.isFeatureInstance() || flags.contains(Tag.FEATURE);
 	}

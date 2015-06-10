@@ -124,7 +124,7 @@ public class FacetImpl extends Element implements Facet {
 	}
 
 	@Override
-	public String getType() {
+	public String getFacetType() {
 		return facet;
 	}
 
@@ -150,6 +150,6 @@ public class FacetImpl extends Element implements Facet {
 
 	@Override
 	public String toString() {
-		return getType();
+		return getFacetType();
 	}
 }

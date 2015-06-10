@@ -1,12 +1,12 @@
 src_file
-/Users/oroncal/workspace/sandbox/tafat/engine/model/Tafat.tara
+/Users/oroncal/workspace/sandbox/tafat/Engine/model/Tafat.tara
 
 project
 tafat
 language
 Proteo
-terminal
-false
+level
+2
 locale
 English
 generated_lang_name
@@ -19,15 +19,17 @@ models
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
 semantic_lib
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+native_path
+/Users/oroncal/workspace/sandbox/tafat/Engine/src/tafat/natives
 outputpath
-/Users/oroncal/workspace/sandbox/tafat/engine/gen
+/Users/oroncal/workspace/sandbox/tafat/Engine/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/tafat/out/production/engine/
+/Users/oroncal/workspace/sandbox/tafat/out/production/Engine/
 magritte
 /Users/oroncal/.m2/repository/org/siani/magritte/magritte/1.1.6/magritte-1.1.6.jar
 metrics
-/Users/oroncal/workspace/sandbox/tafat/out/production/engine/
+/Users/oroncal/workspace/sandbox/tafat/out/production/Engine/
 resources
-/Users/oroncal/workspace/sandbox/tafat/engine/res
+/Users/oroncal/workspace/sandbox/tafat/Engine/res
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/classes

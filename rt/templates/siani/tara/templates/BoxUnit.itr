@@ -96,23 +96,28 @@ end
 
 ---------------------- NODE SETTERS ----------------------
 def type(variable) type(reference) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple(ref($variableValue+quoted...[, ])))
+	.set("$terminal$private$name", $multiple(new magritte.Reference$[]{$variableValue+ref...[, ]}))
+end
+
+def trigger(ref)
+	ref("$variableValue")
 end
 
 def type(variable) type(file) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple(resource(($variableValue+file...[, ]))))
+	.set("$terminal$private$name", $multiple(new magritte.primitives.Resource$[]{$variableValue+file...[, ]}))
 end
 
 def trigger(file)
-	in("$value")
+	resource(in("$value"))
 end
 
 def type(variable) type(native) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $variableValue+native)
+	.let("$terminal$private$name", $variableValue+native)
 end
 
-def trigger(native) value(null)
-	nullBehavior()
+
+def trigger(native) !value(null)
+	new $value()
 end
 
 def type(variable) type(word) slot(variableValue) trigger(variable)
@@ -120,19 +125,19 @@ def type(variable) type(word) slot(variableValue) trigger(variable)
 end
 
 def type(Variable) type(string) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue+quoted...[, ]))
+	.set("$terminal$private$name", $multiple(new String$[]{$variableValue+quoted...[, ]}))
 end
 
 def type(Variable) type(integer) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue...[, ]))
+	.set("$terminal$private$name", $multiple(new int$[]{$variableValue...[, ]}))
 end
 
 def type(Variable) type(double) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue...[, ]))
+	.set("$terminal$private$name", $multiple(new double$[]{$variableValue...[, ]}))
 end
 
 def type(Variable) type(date) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue+date...[, ]))
+	.set("$terminal$private$name", $multiple(new Date$[]{$variableValue+date...[, ]}))
 end
 
 def trigger(date)
@@ -140,7 +145,7 @@ def trigger(date)
 end
 
 def type(Variable) type(boolean) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue...[, ]))
+	.set("$terminal$private$name", $multiple(new boolean$[]{$variableValue...[, ]}))
 end
 
 def type(Variable) slot(variableValue) trigger(variable)

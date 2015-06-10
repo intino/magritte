@@ -1,12 +1,13 @@
 package siani.tara.compiler.core.operation;
 
 import de.hunsicker.jalopy.Jalopy;
-import org.siani.itrules.*;
+import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.codegeneration.Format;
 import siani.tara.compiler.codegeneration.magritte.BoxUnitFrameCreator;
 import siani.tara.compiler.codegeneration.magritte.MorphFrameCreator;
 import siani.tara.compiler.codegeneration.magritte.NameFormatter;
+import siani.tara.compiler.codegeneration.magritte.ParameterFormatter;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
@@ -19,8 +20,8 @@ import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.rt.TaraRtConstants;
 import siani.tara.templates.BoxDSLTemplate;
 import siani.tara.templates.BoxUnitTemplate;
+import siani.tara.templates.ModelTemplate;
 import siani.tara.templates.MorphTemplate;
-import siani.tara.templates.SceneTemplate;
 
 import java.io.*;
 import java.util.*;
@@ -70,7 +71,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		frame.addFrame("name", conf.getGeneratedLanguage());
 		for (Node node : collectRootNodes())
 			frame.addFrame("root", createRootFrame(node));
-		return customize(SceneTemplate.create()).format(frame);
+		return customize(ModelTemplate.create()).format(frame);
 	}
 
 	private Frame createRootFrame(Node node) {
@@ -95,6 +96,8 @@ public class ModelToJavaOperation extends ModelOperation {
 		template.add("reference", Format.reference());
 		template.add("toCamelCase", Format.toCamelCase());
 		template.add("key", Format.key());
+		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
+		template.add("WithoutType", object -> ParameterFormatter.format(object.toString()));
 		return template;
 	}
 

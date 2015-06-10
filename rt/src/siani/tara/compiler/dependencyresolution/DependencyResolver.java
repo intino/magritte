@@ -56,8 +56,8 @@ public class DependencyResolver {
 		for (Object value : parameter.getValues()) {
 			Node reference = resolveParameter(node, (String) value);
 			if (reference != null) nodes.add(reference);
-			else
-				throw new DependencyException("Parameter reference " + value.toString() + " not found", (Element) node);
+//			else //TODO WORDS
+//				throw new DependencyException("Parameter reference " + value.toString() + " not found", (Element) node);
 		}
 		if (!nodes.isEmpty()) {
 			parameter.setInferredType(Parameter.REFERENCE);
@@ -114,10 +114,9 @@ public class DependencyResolver {
 		for (FacetTarget facet : node.getFacetTargets()) {
 			resolveVariableReference(facet);
 			resolveFacetTarget(facet);
-			for (Node include : facet.getIncludedNodes()) {
+			for (Node include : facet.getIncludedNodes())
 				if (include instanceof NodeImpl) resolve(include);
 				else resolveNodeReference((NodeReference) include);
-			}
 			for (Node inner : node.getIncludedNodes()) resolveFacets(inner);
 		}
 		for (Node inner : node.getIncludedNodes()) resolveFacets(inner);

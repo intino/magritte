@@ -51,7 +51,7 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 
 	@Override
 	public String[] secondaryTypes() {
-		List<String> types = reference.getDestiny().getFacets().stream().map(Facet::getType).collect(Collectors.toList());
+		List<String> types = reference.getDestiny().getFacets().stream().map(Facet::getFacetType).collect(Collectors.toList());
 		return types.toArray(new String[types.size()]);
 	}
 

@@ -119,14 +119,17 @@ public class ReferenceManager {
 		if (container != null) collectContextNodes(identifier, set, container);
 	}
 
-	private static boolean isInFacetTarget(Identifier node) {
-		return getContextOf(node) instanceof FacetTarget;
+	private static boolean isInFacetTarget(Identifier identifier) {
+		final PsiElement contextOf = getContextOf(identifier);
+		return contextOf instanceof FacetTarget && ((FacetTarget) contextOf).getIdentifierReference() != null &&
+			!((FacetTarget) contextOf).getIdentifierReference().getIdentifierList().contains(identifier);
 	}
 
 	private static void addFacetTargetNodes(Set<Node> set, Identifier identifier) {
 		FacetTarget facetTarget = (FacetTarget) getContextOf(identifier);
 		if (facetTarget == null) return;
 		for (Node node : facetTarget.includes()) {
+			if (node.getName() == null) continue;
 			set.add(node);
 			if (node.isAbstract()) set.addAll(node.getSubNodes());
 		}
@@ -153,7 +156,8 @@ public class ReferenceManager {
 	private static boolean isExtendsReference(Identifier reference) {
 		return reference.getParent().getParent() instanceof Signature;
 	}
-//
+
+	//
 //	private static void addRoots(TaraModel file, Identifier identifier, Set<Node> set, Collection<Node> visited) {
 //		List<Node> allNodesOfFile = TaraUtil.getAllNodesOfFile(file);
 //		final List<Node> collect = allNodesOfFile.stream().

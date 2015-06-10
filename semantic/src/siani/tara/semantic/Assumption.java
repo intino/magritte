@@ -19,6 +19,9 @@ public interface Assumption {
 	interface Implicit extends Assumption {
 	}
 
+	interface Main extends Assumption {
+	}
+
 	interface Feature extends Assumption {
 	}
 

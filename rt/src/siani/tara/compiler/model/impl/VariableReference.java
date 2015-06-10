@@ -24,6 +24,7 @@ public class VariableReference extends VariableImpl {
 	public Variable cloneIt(NodeContainer container) {
 		VariableReference reference = new VariableReference(container, getType(), getName());
 		reference.setDestiny(destiny);
+		reference.setInherited(true);
 		return reference;
 	}
 }

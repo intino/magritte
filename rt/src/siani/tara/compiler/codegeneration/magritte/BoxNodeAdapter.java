@@ -40,9 +40,11 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private void structure(Node node, Frame newFrame) {
-		if (node.isAnonymous() && node.getPlate() == null) newFrame.addFrame(KEY, String.valueOf(this.keys.get(node)));
+		if (node.isAnonymous() && node.getPlate() == null && !isInFacet(node))
+			newFrame.addFrame(KEY, String.valueOf(this.keys.get(node)));
 		else {
-			newFrame.addFrame(NAME, facetPrefix(node) + clean(node.getQualifiedName()));
+			String prefix = inFacet(node) != null ? facetPrefix(node) : facetTargetPrefix(node);
+			newFrame.addFrame(NAME, prefix + clean(node.getQualifiedName()));
 			if (node.getPlate() != null) newFrame.addFrame(PLATE, "|" + String.valueOf(node.getPlate()));
 		}
 		addTypes(node, newFrame);
@@ -50,6 +52,17 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private String facetPrefix(Node node) {
+		Facet facet = inFacet(node);
+		if (facet == null) return "";
+		final Node container = (Node) facet.getContainer();
+		return clean(facet.getFacetType()) + "+" + clean(container.getType()) + ".";
+	}
+
+	private boolean isInFacet(Node node) {
+		return inFacetTarget(node) != null || inFacet(node) != null;
+	}
+
+	private String facetTargetPrefix(Node node) {
 		FacetTarget target = inFacetTarget(node);
 		if (target == null) return "";
 		final Node container = (Node) target.getContainer();
@@ -64,9 +77,17 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 		return null;
 	}
 
+	private Facet inFacet(Node node) {
+		NodeContainer container = node.getContainer();
+		while (container != null)
+			if (container instanceof Facet) return (Facet) container;
+			else container = container.getContainer();
+		return null;
+	}
+
 	private void addTypes(Node node, Frame newFrame) {
 		newFrame.addFrame(NODE_TYPE, node.getType());
-		for (Facet facet : node.getFacets()) newFrame.addFrame(NODE_TYPE, facet.getType());
+		for (Facet facet : node.getFacets()) newFrame.addFrame(NODE_TYPE, facet.getFacetType());
 	}
 
 	private void flags(final Node node, Frame frame) {

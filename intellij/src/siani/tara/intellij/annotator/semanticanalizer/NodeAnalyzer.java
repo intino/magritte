@@ -5,7 +5,10 @@ import siani.tara.Checker;
 import siani.tara.Language;
 import siani.tara.intellij.annotator.TaraAnnotator;
 import siani.tara.intellij.annotator.fix.FixFactory;
+import siani.tara.intellij.lang.psi.FacetApply;
+import siani.tara.intellij.lang.psi.FacetTarget;
 import siani.tara.intellij.lang.psi.Node;
+import siani.tara.intellij.lang.psi.TaraFacetApply;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.lang.semantic.LanguageElement;
 import siani.tara.intellij.lang.semantic.LanguageNode;
@@ -30,6 +33,8 @@ public class NodeAnalyzer extends TaraAnalyzer {
 		} catch (SemanticException e) {
 			PsiElement destiny = e.getOrigin() != null ? ((LanguageElement) e.getOrigin()).element() : node.getSignature();
 			if (destiny instanceof Node) destiny = ((Node) destiny).getSignature();
+			if (destiny instanceof FacetApply) destiny = ((TaraFacetApply) destiny).getMetaIdentifierList().get(0);
+			if (destiny instanceof FacetTarget) destiny = ((FacetTarget) destiny).getIdentifierReference();
 			results.put(destiny, annotateAndFix(e, destiny));
 		}
 	}

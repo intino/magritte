@@ -108,7 +108,7 @@ public class VariableImpl extends Element implements Variable {
 		return inherited;
 	}
 
-	private void setInherited(boolean inherited) {
+	protected void setInherited(boolean inherited) {
 		this.inherited = inherited;
 	}
 

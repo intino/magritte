@@ -60,6 +60,11 @@ public class TaraCRunnerTest {
 	}
 
 	@Test
+	public void MonetShopM2() {
+		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/monetShopM2.txt"});
+	}
+
+	@Test
 	public void MonetM2() {
 		TaracRunner.main(new String[]{"--gen-plugin", home + "/workspace/tara/rt/res_test/monetM2.txt"});
 	}

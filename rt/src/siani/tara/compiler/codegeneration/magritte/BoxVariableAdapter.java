@@ -69,7 +69,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 		return new Object[]{rootContainer +
 			(variable.getContainer() instanceof Node && !rootContainer.equals(((Node) variable.getContainer()).getName()) ?
 				"_" + ((Node) variable.getContainer()).getName() : "") + "_" +
-			variable.getName() + ".class"};
+			variable.getName()};
 	}
 
 	private String getRootContainer(Variable variable) {

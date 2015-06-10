@@ -1,10 +1,7 @@
 package siani.tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.model.Frame;
-import siani.tara.compiler.model.FacetTarget;
-import siani.tara.compiler.model.Node;
-import siani.tara.compiler.model.Primitives;
-import siani.tara.compiler.model.Variable;
+import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.compiler.model.impl.VariableReference;
@@ -17,10 +14,12 @@ import static siani.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetTarget>, TemplateTags {
 	private final String project;
 	private final String generatedLanguage;
+	private int modelLevel;
 
-	public MorphFacetTargetAdapter(String project, String generatedLanguage) {
+	public MorphFacetTargetAdapter(String project, String generatedLanguage, int modelLevel) {
 		this.project = project;
 		this.generatedLanguage = generatedLanguage;
+		this.modelLevel = modelLevel;
 	}
 
 	@Override
@@ -74,10 +73,7 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 	}
 
 	protected void addVariables(FacetTarget target, final Frame frame) {
-		for (final Variable variable : target.getVariables()) {
-			Frame varFrame = createVarFrame(variable);
-			frame.addFrame(VARIABLE, varFrame);
-		}
+		for (final Variable variable : target.getVariables()) frame.addFrame(VARIABLE, createVarFrame(variable));
 	}
 
 	protected Frame createVarFrame(final Variable variable) {
@@ -109,13 +105,14 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 				else return variable.getType();
 			}
 		};
-		return frame.addTypes(MorphCreatorHelper.getTypes(variable));
+		return frame.addTypes(MorphCreatorHelper.getTypes(variable, modelLevel));
 	}
 
 	private void addComponents(FacetTarget target, Frame frame) {
 		for (Node include : target.getIncludedNodes()) {
 			if (include.isAnonymous()) continue;
 			Frame includeFrame = new Frame().addTypes(collectReferenceTypes(include));
+			if (isInFeature(include)) includeFrame.addFrame("definition", "");
 			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 			if (include instanceof NodeReference) {
 				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
@@ -123,8 +120,16 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 			}
 			if (include instanceof NodeImpl)
 				addName(include, includeFrame);
-			frame.addFrame("component", includeFrame);
+			frame.addFrame(COMPONENT, includeFrame);
 		}
+	}
+
+	private boolean isInFeature(NodeContainer node) {
+		NodeContainer nodeContainer = node;
+		while (nodeContainer != null && nodeContainer instanceof Node)
+			if (((Node) nodeContainer).isFeature()) return true;
+			else nodeContainer = nodeContainer.getContainer();
+		return false;
 	}
 
 	private void addName(Node node, Frame frame) {

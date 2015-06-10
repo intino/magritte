@@ -121,6 +121,11 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
+	public boolean isFinal() {
+		return false;
+	}
+
+	@Override
 	public boolean isFeatureInstance() {
 		return false;
 	}

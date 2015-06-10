@@ -152,6 +152,11 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
+	public boolean isFinal() {
+		return flags.contains(FINAL);
+	}
+
+	@Override
 	public boolean isFeatureInstance() {
 		return flags.contains(FEATURE_INSTANCE);
 	}

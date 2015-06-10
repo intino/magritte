@@ -37,7 +37,7 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 
 	private String buildName(Parameter parameter) {
 		if (parameter.getOwner() instanceof Facet)
-			return (((Facet) parameter.getOwner()).getType()) + ":" + parameter.getName();
+			return (((Facet) parameter.getOwner()).getFacetType()) + ":" + parameter.getName();
 		else return parameter.getName();
 	}
 
@@ -68,9 +68,8 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	}
 
 	private List<Object> createNativeReference(Parameter parameter) {
-		return Collections.singletonList(NameFormatter.createNativeClassReference(parameter.getOwner(), parameter.getName()) + ".class");
+		return Collections.singletonList(NameFormatter.createNativeClassReference(parameter.getOwner(), parameter.getName()));
 	}
-
 
 	private List<Object> format(List<Object> parameterValues) {
 		return parameterValues.stream().map(p -> isMultiLineString(p) ? format((String) p) : p).collect(toList());

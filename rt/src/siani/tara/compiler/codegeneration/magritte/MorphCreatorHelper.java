@@ -12,9 +12,7 @@ import siani.tara.semantic.Assumption;
 import siani.tara.semantic.constraints.ReferenceParameterAllow;
 import siani.tara.semantic.model.Tag;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public final class MorphCreatorHelper implements TemplateTags {
@@ -31,8 +29,7 @@ public final class MorphCreatorHelper implements TemplateTags {
 	}
 
 	public static String[] getTypes(NodeImpl node, Language language) {
-		List<String> types = new ArrayList<>();
-		for (Tag tag : node.getAnnotations()) types.add(tag.name());
+		List<String> types = node.getAnnotations().stream().map(Tag::name).collect(Collectors.toList());
 		types.addAll(instanceAnnotations(node, language));
 		return types.toArray(new String[types.size()]);
 	}
@@ -40,7 +37,7 @@ public final class MorphCreatorHelper implements TemplateTags {
 	public static String[] getTypes(Facet facet) {
 		List<String> list = new ArrayList<>();
 		list.add(FACET);
-		list.add(facet.getType());
+		list.add(facet.getFacetType());
 		return list.toArray(new String[list.size()]);
 	}
 
@@ -65,9 +62,10 @@ public final class MorphCreatorHelper implements TemplateTags {
 		return instances;
 	}
 
-	public static String[] getTypes(Variable variable) {
-		List<String> list = new ArrayList<>();
+	public static String[] getTypes(Variable variable, int level) {
+		Set<String> list = new HashSet<>();
 		list.add(variable.getClass().getSimpleName());
+		if (level == 1) list.add(TERMINAL);
 		list.add(VARIABLE);
 		if (variable instanceof VariableReference) list.add(REFERENCE);
 		list.add(variable.getType());
@@ -77,7 +75,7 @@ public final class MorphCreatorHelper implements TemplateTags {
 	}
 
 	public static String[] getTypes(Allow.Parameter variable) {
-		List<String> list = new ArrayList<>();
+		Set<String> list = new HashSet<>();
 		list.add(variable.getClass().getSimpleName());
 		list.add(VARIABLE);
 		if (variable instanceof ReferenceParameterAllow && !variable.type().equals(Variable.WORD)) list.add(REFERENCE);

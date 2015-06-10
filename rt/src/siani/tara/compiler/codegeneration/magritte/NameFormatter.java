@@ -1,6 +1,7 @@
 package siani.tara.compiler.codegeneration.magritte;
 
 import siani.tara.compiler.codegeneration.Format;
+import siani.tara.compiler.model.Facet;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.NodeContainer;
@@ -46,6 +47,9 @@ public class NameFormatter {
 		return composeMorphPackagePath(generatedLanguage) + DOT + target.getTargetNode().getQualifiedName();
 	}
 
+	public static String getQn(Facet facet, String generatedLanguage) {
+		return composeMorphPackagePath(generatedLanguage) + DOT + facet.getFacetType();
+	}
 
 	public static String camelCase(String value, String c) {
 		String[] parts = value.split(c);

@@ -15,11 +15,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
-import static siani.tara.compiler.codegeneration.magritte.TemplateTags.DOT;
-import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 import static siani.tara.compiler.model.Variable.NATIVE_SEPARATOR;
 
-public class BoxModelAdapter implements Adapter<Model> {
+public class BoxModelAdapter implements Adapter<Model>, TemplateTags {
 	private final String project;
 	private final String generatedLanguage;
 	private final Language language;
@@ -68,24 +66,28 @@ public class BoxModelAdapter implements Adapter<Model> {
 	}
 
 	private void parserAllNodes(Frame frame, Node nodeContainer, FrameContext context) {
-		for (Node node : nodeContainer.getIncludedNodes()) {
-			if (node instanceof NodeReference) continue;
-			fill(frame, node, context);
-		}
-		for (Facet facet : nodeContainer.getFacets())
+		nodeContainer.getIncludedNodes().stream().
+			filter(node -> !(node instanceof NodeReference)).
+			forEach(node -> fill(frame, node, context));
+		for (Facet facet : nodeContainer.getFacets()) {
+			createIntentionFrames(frame, extractNativeParameters(facet));
 			for (Node node : facet.getIncludedNodes()) {
 				frame.addFrame(NODE, context.build(node));
 				parserAllNodes(frame, node, context);
+				fill(frame, node, context);
 			}
+		}
 		if (nodeContainer.getFacetTargets() == null) return;
 		for (FacetTarget facet : nodeContainer.getFacetTargets()) {
 			frame.addFrame(NODE, context.build(facet));
-			for (Node node : facet.getIncludedNodes()) fill(frame, node, context);
+			createDefaultValueIntentionFrames(frame, extractNativeVariables(facet));
+			for (Node node : facet.getIncludedNodes())
+				fill(frame, node, context);
 		}
 	}
 
 	private void fill(Frame frame, Node node, FrameContext FrameContext) {
-		frame.addFrame("node", FrameContext.build(node));
+		frame.addFrame(NODE, FrameContext.build(node));
 		createIntentionFrames(frame, extractNativeParameters(node));
 		createDefaultValueIntentionFrames(frame, extractNativeVariables(node));
 		parserAllNodes(frame, node, FrameContext);
@@ -96,14 +98,14 @@ public class BoxModelAdapter implements Adapter<Model> {
 			if (!parameter.getInferredType().equals(Primitives.NATIVE)) continue;
 			final String body = (String) parameter.getValues().get(0);
 			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", body.endsWith(";") ? body : body + ";");
-			intentionFrame.addFrame("generatedLanguage", generatedLanguage);
+			intentionFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 			intentionFrame.addFrame("varName", parameter.getName());
 			intentionFrame.addFrame("container", buildContainerPath(parameter.getOwner()));
 			intentionFrame.addFrame("parentIntention", language.languageName());
 			intentionFrame.addFrame("interface", getInterface(parameter));
 			intentionFrame.addFrame("signature", getSignature(parameter));
 			intentionFrame.addFrame("path", NameFormatter.createNativeClassReference(parameter.getOwner(), parameter.getName()));
-			frame.addFrame("intention", intentionFrame);
+			frame.addFrame(INTENTION, intentionFrame);
 		}
 	}
 
@@ -114,14 +116,14 @@ public class BoxModelAdapter implements Adapter<Model> {
 			if (next instanceof EmptyNode) return;
 			final String body = String.valueOf(next);
 			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", body.endsWith(";") ? body : body + ";");
-			intentionFrame.addFrame("generatedLanguage", generatedLanguage);
+			intentionFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 			intentionFrame.addFrame("varName", variable.getName());
 			intentionFrame.addFrame("container", buildContainerPath(variable.getContainer()));
 			intentionFrame.addFrame("parentIntention", generatedLanguage);
 			intentionFrame.addFrame("interface", getInterface(variable));
 			intentionFrame.addFrame("signature", getSignature(variable));
 			intentionFrame.addFrame("path", NameFormatter.createNativeClassReference(variable.getContainer(), variable.getName()));
-			frame.addFrame("intention", intentionFrame);
+			frame.addFrame(INTENTION, intentionFrame);
 		}
 	}
 
@@ -130,6 +132,8 @@ public class BoxModelAdapter implements Adapter<Model> {
 	}
 
 	private String getInterface(Parameter parameter) {
+		if (!parameter.getContract().contains(NATIVE_SEPARATOR))
+			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
 		return parameter.getContract().substring(0, parameter.getContract().indexOf(NATIVE_SEPARATOR));
 	}
 
@@ -142,27 +146,29 @@ public class BoxModelAdapter implements Adapter<Model> {
 	}
 
 	private String buildContainerPath(NodeContainer owner) {
-		if (owner instanceof Node) return getQn(firstNoFeatureAndUnnamed(owner), (Node) owner, generatedLanguage);
+		if (owner instanceof Node)
+			return getQn(firstNoFeatureNoImplicitAndNamed(owner), (Node) owner, generatedLanguage);
 		return NameFormatter.getQn((FacetTarget) owner, generatedLanguage);
 	}
 
-	private Node firstNoFeatureAndUnnamed(NodeContainer owner) {
+	private Node firstNoFeatureNoImplicitAndNamed(NodeContainer owner) {
 		NodeContainer container = owner;
 		while (container != null) {
-			if (container instanceof Node && !((Node) container).isFeature() && !((Node) container).isAnonymous())
+			if (container instanceof Node && !((Node) container).isAnonymous() &&
+				!((Node) container).isImplicit() && !((Node) container).isFeature())
 				return (Node) container;
 			container = container.getContainer();
 		}
 		return null;
 	}
 
-	private List<Parameter> extractNativeParameters(Node node) {
+	private List<Parameter> extractNativeParameters(Parametrized node) {
 		return unmodifiableList(node.getParameters().stream().
 			filter(parameter -> parameter.getInferredType().equals(Primitives.NATIVE)).
 			collect(Collectors.toList()));
 	}
 
-	private List<Variable> extractNativeVariables(Node node) {
+	private List<Variable> extractNativeVariables(NodeContainer node) {
 		return unmodifiableList(node.getVariables().stream().
 			filter(variable -> variable.getType().equals(Primitives.NATIVE) && !variable.isInherited()).
 			collect(Collectors.toList()));
@@ -184,7 +190,7 @@ public class BoxModelAdapter implements Adapter<Model> {
 		for (Node node : nodes) {
 			if (node instanceof NodeReference) continue;
 			imports.addAll(node.getFacets().stream().
-				map(facet -> new PluralFormatter(locale).getInflector().plural(facet.getType())).
+				map(facet -> new PluralFormatter(locale).getInflector().plural(facet.getFacetType())).
 				collect(Collectors.toList()));
 			imports.addAll(searchFacets(node.getIncludedNodes()));
 		}

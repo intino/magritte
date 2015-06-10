@@ -32,7 +32,7 @@ public class NativesGenerator {
 	private static final Logger LOG = Logger.getInstance(NativesGenerator.class.getName());
 	private static final String NATIVES = "natives";
 	private static final String DOT = ".";
-	private static final String MAGRITTE_NATIVE = "magritte.Intention";
+	private static final String MAGRITTE_NATIVE = "magritte.NativeCode";
 	private final Project project;
 	private final TaraModel taraModel;
 	private final PsiDirectory srcDirectory;
@@ -65,7 +65,7 @@ public class NativesGenerator {
 		if (psiFile instanceof TaraModel) {
 			List<Variable> natives = getNativeVariables((TaraModel) psiFile);
 			if (!natives.isEmpty()) this.destiny = findNativesDirectory();
-			for (Variable aNative : natives) createNativeClass(aNative);
+			natives.forEach(this::createNativeClass);
 		}
 	}
 

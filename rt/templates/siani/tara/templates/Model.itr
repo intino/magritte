@@ -1,10 +1,10 @@
 def type(scene)
 	package $name+LowerCase;
 
-	public class $name+FirstCamelCase extends magritte.wraps.Scene {
+	public class $name+FirstCamelCase extends magritte.wraps.Model {
 
-	    public $name+FirstCamelCase(magritte.Model model) {
-	        super(model);
+	    public $name+FirstCamelCase(magritte.Graph graph) {
+	        super(graph);
 	    }
 
 		$root...[$NL$NL]
@@ -12,17 +12,17 @@ def type(scene)
 end
 
 def type(root) !type(single) trigger(root)
-	public $qn+reference$[$] $name+FirstLowerCase+plural() {
+	public magritte.Set<$qn+reference> $name+FirstLowerCase+plural() {
         return get($qn+reference.class);
     }
 
     public $qn+reference $name+FirstLowerCase(int index) {
-        return $name+FirstLowerCase+plural()$[index$];
+        return $name+FirstLowerCase+plural().get(index);
     }
 end
 
 def type(root) type(single) trigger(root)
 	public $qn+reference $name+FirstLowerCase() {
-        return get($qn+reference.class)$[0$];
+        return get($qn+reference.class).get(0);
     }
 end

@@ -99,6 +99,11 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public boolean isFinal() {
+		return false;
+	}
+
+	@Override
 	public boolean isFeatureInstance() {
 		return false;
 	}
