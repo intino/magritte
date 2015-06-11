@@ -1,4 +1,4 @@
-package siani.tara.compiler.model;
+package siani.tara.semantic.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,9 +14,9 @@ public class Primitives {
 	public static final String RATIO = "ratio";
 	public static final String MEASURE = "measure";
 	public static final String DOUBLE = "double";
-	public static final String RESOURCE = "resource";
+	public static final String FILE = "resource";
 	public static final String NATIVE = "native";
-	public static final String REFERENCE = "identifier";
+	public static final String REFERENCE = "reference";
 	public static final String DATE = "date";
 	public static final Map<String, Converter> CONVERTER_MAP = new HashMap<>();
 
@@ -98,7 +98,7 @@ public class Primitives {
 		list.add(STRING);
 		list.add(DOUBLE);
 		list.add(DATE);
-		list.add(RESOURCE);
+		list.add(FILE);
 		list.add(MEASURE);
 		list.add(RATIO);
 		return list.toArray(new String[list.size()]);
@@ -115,5 +115,22 @@ public class Primitives {
 		Object[] convert(String... value);
 
 		String[] convert(Object... value);
+	}
+
+	public static class Expression {
+		String value;
+
+		public Expression(String value) {
+			this.value = value;
+		}
+
+		public String get() {
+			return value;
+		}
+
+		@Override
+		public String toString() {
+			return value;
+		}
 	}
 }

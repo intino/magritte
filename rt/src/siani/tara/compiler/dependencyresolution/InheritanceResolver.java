@@ -27,8 +27,8 @@ public class InheritanceResolver {
 	}
 
 	private void resolve(NodeImpl node) {
-		propagateTerminalFlag(node);
 		List<NodeImpl> children = getChildrenSorted(node);
+		if (!children.isEmpty() && !node.isAbstract()) node.addFlags(Tag.ABSTRACT.name());
 		for (NodeImpl child : children) {
 			resolveIncludes(node, child);
 			resolveFlags(node, child);
@@ -37,17 +37,6 @@ public class InheritanceResolver {
 			resolveAllowedFacets(node, child);
 			resolve(child);
 		}
-	}
-
-	private void propagateTerminalFlag(NodeImpl node) {
-		if (!node.isTerminal()) return;
-		propagate(node);
-	}
-
-	private void propagate(Node node) {
-		if (!node.isTerminal()) node.addFlags(Tag.TERMINAL.name());
-		if (node instanceof NodeReference) return;
-		node.getIncludedNodes().forEach(this::propagate);
 	}
 
 	private void resolveAllowedFacets(NodeImpl parent, NodeImpl child) {

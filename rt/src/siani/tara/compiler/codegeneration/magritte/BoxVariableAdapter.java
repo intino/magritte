@@ -5,6 +5,7 @@ import org.siani.itrules.model.Frame;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.VariableReference;
+import siani.tara.semantic.model.Primitives;
 import siani.tara.semantic.model.Tag;
 
 import java.util.AbstractMap.SimpleEntry;

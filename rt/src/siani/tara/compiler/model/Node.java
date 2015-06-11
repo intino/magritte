@@ -38,13 +38,9 @@ public interface Node extends NodeContainer, Parametrized {
 
 	boolean isFeature();
 
-	boolean isFinal();
-
 	boolean isFeatureInstance();
 
-	boolean isImplicit();
-
-	boolean isPropertyInstance();
+	boolean isFinal();
 
 	boolean isTerminal();
 

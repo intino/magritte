@@ -1,6 +1,7 @@
 package org.jetbrains.jps.tara.compiler;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.io.FileUtil;
 import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
@@ -24,12 +25,12 @@ import java.util.*;
 
 public class TaraBuilder extends ModuleLevelBuilder {
 
+	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
 	private static final Logger LOG = Logger.getInstance(TaraBuilder.class.getName());
 	private static final String TARA_EXTENSION = "tara";
 	private static final String RES = "res";
 	private static final String ICONS = "icons";
 	private static final String GEN = "gen";
-	private static Boolean done = false;
 	private final String builderName;
 	private boolean javaGeneration;
 
@@ -54,14 +55,13 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	                      OutputConsumer outputConsumer) throws ProjectBuildException, IOException {
 		long start = 0;
 		try {
-			if (done) return ExitCode.NOTHING_DONE;
 			JpsProject project = context.getProjectDescriptor().getProject();
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
 			JpsTaraModuleExtension extension = JpsTaraExtensionService.getInstance().getExtension(chunk.getModules().iterator().next());
-			if (extension == null) return ExitCode.ABORT;
+			if (extension == null) return ExitCode.NOTHING_DONE;
 			javaGeneration = settings.pluginGeneration;
 			final List<File> toCompile = collectFiles(chunk.getModules().iterator().next());
-			if (toCompile.isEmpty()) return ExitCode.NOTHING_DONE;
+			if (toCompile.isEmpty()) return ExitCode.OK;
 			if (Utils.IS_TEST_MODE || LOG.isDebugEnabled()) LOG.info("java-generation = " + javaGeneration);
 			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
 			if (finalOutputs == null) return ExitCode.ABORT;
@@ -75,7 +75,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings, javaGeneration);
 			processMessages(chunk, context, handler);
 			context.setDone(1);
-			done = true;
 			return ExitCode.OK;
 		} catch (Exception e) {
 			throw new ProjectBuildException(e);
@@ -104,6 +103,10 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		list.add(finalOutput);//metrics path
 		list.add(getResourcesFile(modules.iterator().next()).getPath());
 		return list;
+	}
+
+	private Boolean hasFilesToCompileForNextRound(CompileContext context) {
+		return FILES_MARKED_DIRTY_FOR_NEXT_ROUND.get(context, Boolean.FALSE);
 	}
 
 	private void processMessages(ModuleChunk chunk, CompileContext context, TaracOSProcessHandler handler) {

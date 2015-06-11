@@ -131,16 +131,6 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public boolean isImplicit() {
-		return false;
-	}
-
-	@Override
-	public boolean isPropertyInstance() {
-		return false;
-	}
-
-	@Override
 	public boolean isTerminal() {
 		return false;
 	}

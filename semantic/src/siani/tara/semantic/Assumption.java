@@ -28,7 +28,7 @@ public interface Assumption {
 	interface PropertyInstance extends Assumption {
 	}
 
-	interface Featureinstance extends Assumption {
+	interface FeatureInstance extends Assumption {
 	}
 
 	interface ImplicitInstance extends Assumption {

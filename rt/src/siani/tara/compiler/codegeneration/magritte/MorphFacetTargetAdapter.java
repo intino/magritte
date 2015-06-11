@@ -5,6 +5,7 @@ import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.compiler.model.impl.VariableReference;
+import siani.tara.semantic.model.Primitives;
 
 import java.util.ArrayList;
 import java.util.List;

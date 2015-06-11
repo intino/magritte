@@ -467,15 +467,6 @@ public class RuleFactory {
 		};
 	}
 
-	public static Assumption isImplicit() {
-		return new Assumption.Implicit() {
-			@Override
-			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(IMPLICIT.name())) node.flags(IMPLICIT.name());
-			}
-		};
-	}
-
 	public static Assumption isMain() {
 		return new Assumption.Main() {
 			@Override
@@ -485,15 +476,6 @@ public class RuleFactory {
 		};
 	}
 
-	public static Assumption isPropertyInstance() {
-		return new Assumption.PropertyInstance() {
-			@Override
-			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(IMPLICIT_INSTANCE.name()))
-					node.flags(IMPLICIT_INSTANCE.name());
-			}
-		};
-	}
 
 	public static Assumption isFeature() {
 		return new Assumption.Feature() {
@@ -505,7 +487,7 @@ public class RuleFactory {
 	}
 
 	public static Assumption isFeatureInstance() {
-		return new Assumption.Featureinstance() {
+		return new Assumption.FeatureInstance() {
 			@Override
 			public void assume(Node node) {
 				if (!Arrays.asList(node.flags()).contains(FEATURE_INSTANCE.name()))
@@ -523,15 +505,6 @@ public class RuleFactory {
 		};
 	}
 
-	public static Assumption isImplicitInstance() {
-		return new Assumption.ImplicitInstance() {
-			@Override
-			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(IMPLICIT_INSTANCE.name()))
-					node.flags(IMPLICIT_INSTANCE.name());
-			}
-		};
-	}
 
 	public static Assumption isTerminalInstance() {
 		return new Assumption.TerminalInstance() {

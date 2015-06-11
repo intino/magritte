@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraStringValueImpl extends StringMixin implements TaraStringValue {
+public class TaraExpressionImpl extends ExpressionMixin implements TaraExpression {
 
-  public TaraStringValueImpl(ASTNode node) {
+  public TaraExpressionImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitStringValue(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitExpression(this);
     else super.accept(visitor);
   }
 

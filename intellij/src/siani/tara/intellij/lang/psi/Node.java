@@ -1,21 +1,22 @@
 package siani.tara.intellij.lang.psi;
 
 import com.intellij.openapi.util.Iconable;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.Collections.EMPTY_LIST;
+
 public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	TaraModelImpl getFile() throws PsiInvalidElementAccessException;
-
-	@Nullable
-	String getDocCommentText();
 
 	Identifier getIdentifierNode();
 
@@ -23,7 +24,9 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 	Body getBody();
 
 	@NotNull
-	Collection<Doc> getDoc();
+	default Collection<Doc> getDoc() {
+		return EMPTY_LIST;
+	}
 
 	@NotNull
 	Signature getSignature();
@@ -34,17 +37,15 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 
 	Collection<Node> getSubNodes();
 
-	Node container();
+	Node getContainer();
 
 	boolean isFacet();
 
 	boolean isAbstract();
 
-	boolean isProperty();
-
 	boolean isFeature();
 
-	boolean FeatureInstance();
+	boolean isFeatureInstance();
 
 	boolean isEnclosed();
 
@@ -114,5 +115,19 @@ public interface Node extends Navigatable, Iconable, TaraPsiElement {
 	boolean equals(Object obj);
 
 	int hashCode();
+
+	@Nullable
+	default String getDocCommentText() {
+		StringBuilder text = new StringBuilder();
+		Collection<Doc> docs = this.getDoc();
+		String comment;
+		for (Doc doc : docs) {
+			comment = doc.getText();
+			String trimmed = StringUtil.trimStart(StringUtil.trimStart(comment, "#"), "!");
+			text.append(trimmed.trim()).append("\n");
+		}
+		return TaraDocumentationFormatter.doc2Html(this, text.toString());
+	}
+
 }
 

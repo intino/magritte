@@ -19,7 +19,7 @@ import siani.tara.semantic.model.Tag;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static siani.tara.semantic.model.Tag.IMPLICIT;
+import static siani.tara.semantic.model.Tag.FEATURE_INSTANCE;
 import static siani.tara.semantic.model.Tag.REQUIRED;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
@@ -133,7 +133,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addContextAllows(Node node, Frame allows) {
 		if (node instanceof NodeImpl) addParameterAllows(node.getVariables(), allows);
-		if (!node.isNamed() && !node.isPropertyInstance()) allows.addFrame("allow", NAME);
+		if (!node.isNamed()) allows.addFrame("allow", NAME);
 		addFacetAllows(node, allows);
 	}
 
@@ -213,7 +213,6 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (Tag tag : node.getFlags()) {
 			if (tag.name().toLowerCase().equals(TERMINAL))
 				assumptions.addFrame(ASSUMPTION, Tag.TERMINAL_INSTANCE);
-			else if (tag.equals(IMPLICIT)) assumptions.addFrame(ASSUMPTION, Tag.IMPLICIT_INSTANCE);
 			else if (tag.equals(Tag.FEATURE)) assumptions.addFrame(ASSUMPTION, Tag.FEATURE_INSTANCE);
 			else if (tag.equals(Tag.FACET)) assumptions.addFrame(ASSUMPTION, Tag.FACET_INSTANCE);
 		}
@@ -238,8 +237,9 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (include.isRequired() && !include.isTerminal()) continue;
 			if (node instanceof Model && level == 1 && !include.isMain()) continue;
 			for (Node candidate : collectCandidates(include))
-				if (include.isSingle()) singleNodes.add(createAllowedSingle(candidate, include.getAnnotations()));
-				else multipleNodes.add(createAllowedMultiple(candidate, include.getAnnotations()));
+				if (include.isSingle())
+					singleNodes.add(createAllowedSingle(candidate, include.getAnnotations(), include.getFlags()));
+				else multipleNodes.add(createAllowedMultiple(candidate, include.getAnnotations(), include.getFlags()));
 		}
 		addAllowedNodes(allows, multipleNodes, singleNodes);
 	}
@@ -248,7 +248,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
 		for (Node include : node.getIncludedNodes()) {
-			if ((!include.isRequired() || include.isImplicit()) || (include.isTerminal() && isGenerativeLanguage()))
+			if ((!include.isRequired()) || (include.isTerminal() && isGenerativeLanguage()))
 				continue;
 			Collection<Node> candidates = collectCandidates(include);
 			if (include.isAbstract() && candidates.size() > 1) {
@@ -294,17 +294,21 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			allows.addFrame(REQUIRE, singleNodes.toArray(new Frame[singleNodes.size()]));
 	}
 
-	private Frame createAllowedSingle(Node node, List<Tag> annotations) {
+	private Frame createAllowedSingle(Node node, List<Tag> annotations, List<Tag> flags) {
 		Frame frame = new Frame().addTypes(SINGLE, ALLOW).addFrame(TYPE, getName(node));
 		for (Tag tag : annotations)
 			frame.addFrame("tags", tag.name());
+		for (Tag tag : flags)
+			frame.addFrame("tags", tag.equals(Tag.FEATURE) ? FEATURE_INSTANCE.name() : tag.name());
 		return frame;
 	}
 
-	private Frame createAllowedMultiple(Node node, List<Tag> annotations) {
+	private Frame createAllowedMultiple(Node node, List<Tag> annotations, List<Tag> flags) {
 		Frame frame = new Frame().addTypes(MULTIPLE, ALLOW).addFrame(TYPE, getName(node));
 		for (Tag tag : annotations)
 			frame.addFrame("tags", tag.name());
+		for (Tag tag : flags)
+			frame.addFrame("tags", tag.equals(Tag.FEATURE) ? FEATURE_INSTANCE.name() : tag.name());
 		return frame;
 	}
 

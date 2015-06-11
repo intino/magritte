@@ -1,8 +1,10 @@
 package siani.tara.semantic.constraints;
 
-public class PrimitiveTypeCompatibility {
+import siani.tara.semantic.model.Primitives;
 
-	private static final String EMPTY_NODE = "emptyNode";
+import static siani.tara.semantic.model.Primitives.*;
+
+public class PrimitiveTypeCompatibility {
 
 	public static boolean checkCompatiblePrimitives(String type, String inferredType) {
 		return type.equals(inferredType)
@@ -16,43 +18,44 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean stringInfersFile(String type, String inferredType) {
-		return type.equalsIgnoreCase("file") && inferredType.equalsIgnoreCase("string");
+		return type.equalsIgnoreCase(Primitives.FILE) && inferredType.equalsIgnoreCase(STRING);
 	}
 
 	private static boolean stringOrEmptyInfersNative(String type, String inferredType) {
-		return type.equalsIgnoreCase("native") && (inferredType.equalsIgnoreCase("string") || inferredType.equalsIgnoreCase(EMPTY_NODE));
+		return type.equalsIgnoreCase(NATIVE) && (inferredType.equalsIgnoreCase(NATIVE) || inferredType.equalsIgnoreCase(REFERENCE));
 	}
 
 	private static boolean stringOrEmptyInfersReference(String type, String inferredType) {
-		return type.equalsIgnoreCase("reference") && (inferredType.equalsIgnoreCase("string") || inferredType.equalsIgnoreCase(EMPTY_NODE));
+		return type.equalsIgnoreCase(REFERENCE) && (inferredType.equalsIgnoreCase(STRING) || inferredType.equalsIgnoreCase(REFERENCE));
 	}
 
 	private static boolean integerNaturalDoubleInfersRatio(String type, String inferredType) {
-		return type.equalsIgnoreCase("ratio") && (inferredType.equalsIgnoreCase("integer") || inferredType.equalsIgnoreCase("natural") || inferredType.equalsIgnoreCase("double"));
+		return type.equalsIgnoreCase(RATIO) && (inferredType.equalsIgnoreCase(INTEGER) || inferredType.equalsIgnoreCase(NATURAL) || inferredType.equalsIgnoreCase(DOUBLE));
 	}
 
 	private static boolean stringInfersDate(String type, String inferredType) {
-		return type.equalsIgnoreCase("date") && inferredType.equalsIgnoreCase("string");
+		return type.equalsIgnoreCase(DATE) && inferredType.equalsIgnoreCase(STRING);
 	}
 
 	private static boolean doubleNaturalIntegerInfersMeasure(String type, String inferredType) {
-		return type.equalsIgnoreCase("measure") && (inferredType.equalsIgnoreCase("double") || inferredType.equalsIgnoreCase("integer") || inferredType.equalsIgnoreCase("natural"));
+		return type.equalsIgnoreCase(MEASURE) && (inferredType.equalsIgnoreCase(DOUBLE) || inferredType.equalsIgnoreCase(INTEGER) || inferredType.equalsIgnoreCase(NATURAL));
 	}
 
 	private static boolean integerOrNaturalInfersDouble(String type, String inferredType) {
-		return type.equalsIgnoreCase("double") && (inferredType.equalsIgnoreCase("integer") || inferredType.equalsIgnoreCase("natural"));
+		return type.equalsIgnoreCase(DOUBLE) && (inferredType.equalsIgnoreCase(INTEGER) || inferredType.equalsIgnoreCase(NATURAL));
 	}
 
 	private static boolean naturalInfersInteger(String type, String inferredType) {
-		return type.equalsIgnoreCase("integer") && (inferredType.equalsIgnoreCase("natural") || inferredType.equalsIgnoreCase("integer"));
+		return type.equalsIgnoreCase(INTEGER) && (inferredType.equalsIgnoreCase(NATURAL) || inferredType.equalsIgnoreCase(INTEGER));
 	}
 
 	public static String inferType(Object value) {
-		if (value instanceof String) return "string";
-		else if (value instanceof Double) return "double";
-		else if (value instanceof Boolean) return "boolean";
-		else if (value instanceof Integer) return (Integer) value < 0 ? "integer" : "natural";
-		else if (value != null && value.getClass().getSimpleName().equals("EmptyNode")) return EMPTY_NODE;
+		if (value instanceof String) return Primitives.STRING;
+		else if (value instanceof Double) return Primitives.DOUBLE;
+		else if (value instanceof Boolean) return Primitives.BOOLEAN;
+		else if (value instanceof Integer) return (Integer) value < 0 ? INTEGER : NATURAL;
+		else if (value instanceof Primitives.Expression) return NATIVE;
+		else if (value != null && value.getClass().getSimpleName().equals("EmptyNode")) return REFERENCE;
 		return "";
 	}
 }

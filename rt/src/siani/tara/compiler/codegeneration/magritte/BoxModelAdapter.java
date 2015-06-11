@@ -8,6 +8,7 @@ import siani.tara.compiler.codegeneration.Format;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeReference;
+import siani.tara.semantic.model.Primitives;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
@@ -96,8 +97,9 @@ public class BoxModelAdapter implements Adapter<Model>, TemplateTags {
 	private void createIntentionFrames(Frame frame, List<Parameter> parameters) {
 		for (Parameter parameter : parameters) {
 			if (!parameter.getInferredType().equals(Primitives.NATIVE)) continue;
-			final String body = (String) parameter.getValues().get(0);
-			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", body.endsWith(";") ? body : body + ";");
+			final Primitives.Expression body = (Primitives.Expression) parameter.getValues().get(0);
+			String bodyText = body.get();
+			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", bodyText.endsWith(";") ? bodyText : bodyText + ";");
 			intentionFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 			intentionFrame.addFrame("varName", parameter.getName());
 			intentionFrame.addFrame("container", buildContainerPath(parameter.getOwner()));
@@ -147,15 +149,15 @@ public class BoxModelAdapter implements Adapter<Model>, TemplateTags {
 
 	private String buildContainerPath(NodeContainer owner) {
 		if (owner instanceof Node)
-			return getQn(firstNoFeatureNoImplicitAndNamed(owner), (Node) owner, generatedLanguage);
+			return getQn(firstNoFeatureAndNamed(owner), (Node) owner, generatedLanguage);
 		return NameFormatter.getQn((FacetTarget) owner, generatedLanguage);
 	}
 
-	private Node firstNoFeatureNoImplicitAndNamed(NodeContainer owner) {
+	private Node firstNoFeatureAndNamed(NodeContainer owner) {
 		NodeContainer container = owner;
 		while (container != null) {
 			if (container instanceof Node && !((Node) container).isAnonymous() &&
-				!((Node) container).isImplicit() && !((Node) container).isFeature())
+				!((Node) container).isFeatureInstance())
 				return (Node) container;
 			container = container.getContainer();
 		}

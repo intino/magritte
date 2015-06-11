@@ -3,6 +3,7 @@ package siani.tara.compiler.dependencyresolution;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeReference;
+import siani.tara.semantic.model.Tag;
 
 public class TerminalResolver {
 
@@ -26,10 +27,10 @@ public class TerminalResolver {
 
 	private void propagateTerminalToInside(Node node) {
 		for (Node include : node.getIncludedNodes()) {
+			if (!include.isTerminal()) include.addFlags(Tag.TERMINAL.name());
 			if (include instanceof NodeReference) continue;
-			if (!include.isTerminal()) include.addAnnotations("terminal");
 			propagateTerminalToInside(include);
 		}
-		node.getVariables().stream().filter(variable -> !variable.isTerminal()).forEach(variable -> variable.addFlags("terminal"));
+		node.getVariables().stream().filter(variable -> !variable.isTerminal()).forEach(variable -> variable.addFlags(Tag.TERMINAL.name()));
 	}
 }

@@ -1,6 +1,5 @@
 package siani.tara.intellij.highlighting;
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
@@ -80,9 +79,7 @@ public class TaraColorSettingPage implements ColorSettingsPage {
 	@Nullable
 	@Override
 	public Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
-		Map<String, TextAttributesKey> map = new HashMap<>();
-		map.put("Injected language fragment", HighlightInfoType.INJECTED_LANGUAGE_FRAGMENT.getAttributesKey());
-		return map;
+		return new HashMap<>();
 	}
 
 	@NotNull

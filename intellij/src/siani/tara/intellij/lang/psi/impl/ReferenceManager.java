@@ -141,7 +141,7 @@ public class ReferenceManager {
 			set.addAll(collectCandidates(container).stream().
 				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(getContainerNodeOf(identifier))).
 				collect(Collectors.toList()));
-			container = container.container();
+			container = container.getContainer();
 		}
 	}
 

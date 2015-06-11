@@ -3,7 +3,6 @@ package siani.tara.intellij.lang.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTFactory;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.TokenType;
@@ -17,11 +16,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.Language;
 import siani.tara.Resolver;
-import siani.tara.intellij.documentation.TaraDocumentationFormatter;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.semantic.LanguageNode;
-import siani.tara.semantic.Assumption;
 import siani.tara.semantic.model.Tag;
 
 import javax.swing.*;
@@ -30,7 +27,6 @@ import java.util.*;
 import static java.util.Collections.*;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 import static siani.tara.intellij.lang.psi.impl.TaraUtil.getInnerNodesOf;
-import static siani.tara.semantic.Assumption.FacetInstance;
 import static siani.tara.semantic.model.Tag.*;
 
 public class NodeMixin extends ASTWrapperPsiElement {
@@ -152,7 +148,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		String name = "";
 		while (node != null) {
 			name = getPathName(node) + "." + name;
-			node = node.container();
+			node = node.getContainer();
 		}
 		return name.substring(0, name.length() - 1);
 	}
@@ -177,18 +173,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		taraSignature.add(psi);
 	}
 
-	@Nullable
-	public String getDocCommentText() {
-		StringBuilder text = new StringBuilder();
-		Collection<Doc> docs = this.getDoc();
-		String comment;
-		for (Doc doc : docs) {
-			comment = doc.getText();
-			String trimmed = StringUtil.trimStart(StringUtil.trimStart(comment, "#"), "!");
-			text.append(trimmed.trim()).append("\n");
-		}
-		return TaraDocumentationFormatter.doc2Html(this, text.toString());
-	}
 
 	@Override
 	public Icon getIcon(@IconFlags int i) {
@@ -236,34 +220,18 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return is(FEATURE);
 	}
 
-	public boolean isProperty() {
-		return is(IMPLICIT);
-	}
-
 	public boolean isFacetInstance() {
-		return is(FacetInstance.class);
+		return inheritedFlags.contains(FACET_INSTANCE.name());
 	}
 
-	public boolean isPropertyInstance() {
-		return is(FacetInstance.class);
-	}
-
-	public boolean FeatureInstance() {
-		return is(Assumption.Featureinstance.class);
+	public boolean isFeatureInstance() {
+		return inheritedFlags.contains(FEATURE_INSTANCE.name());
 	}
 
 	public boolean isAnnotatedAsRoot() {
 		for (PsiElement annotation : getAnnotations())
 			if (MAIN.name().equalsIgnoreCase(annotation.getText()))
 				return true;
-		return false;
-	}
-
-	public boolean is(Class<? extends Assumption> assumptionType) {
-		Collection<Assumption> assumptions = TaraUtil.getAssumptionsOf((Node) this);
-		if (assumptions == null) return false;
-		for (Assumption assumption : assumptions)
-			if (assumptionType.getClass().isInstance(assumption)) return true;
 		return false;
 	}
 
@@ -288,15 +256,14 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public List<Node> getSubNodes() {
 		ArrayList<Node> subs = new ArrayList<>();
 		List<Node> children = TaraPsiImplUtil.getInnerNodesInBody(this.getBody());
-		for (Node child : children)
-			if (child.isSub()) {
-				subs.add(child);
-				subs.addAll(child.getSubNodes());
-			}
+		children.stream().filter(Node::isSub).forEach(child -> {
+			subs.add(child);
+			subs.addAll(child.getSubNodes());
+		});
 		return unmodifiableList(subs);
 	}
 
-	public Node container() {
+	public Node getContainer() {
 		if (isAnnotatedAsRoot()) return null;//TODO
 		if (isSub()) {
 			Node rootOfSub = containerOfSub((Node) this);
@@ -358,11 +325,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		for (Node node : getIncludes())
 			if (type.equals(node.getType())) return true;
 		return true;
-	}
-
-	@NotNull
-	public Collection<Doc> getDoc() {
-		return EMPTY_LIST;
 	}
 
 	@Override

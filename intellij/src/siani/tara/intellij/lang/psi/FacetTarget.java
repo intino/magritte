@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FacetTarget extends Navigatable, TaraPsiElement {
 
-	String target();
+	String getTarget();
 
 	@NotNull
 	List<Node> includes();

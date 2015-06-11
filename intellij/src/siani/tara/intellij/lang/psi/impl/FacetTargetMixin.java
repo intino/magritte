@@ -14,7 +14,7 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	public String target() {
+	public String getTarget() {
 		TaraIdentifierReference identifierReference = ((TaraFacetTarget) this).getIdentifierReference();
 		return identifierReference == null ? "" : identifierReference.getText();
 	}
@@ -33,6 +33,6 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public String toString() {
-		return "on " + target();
+		return "on " + getTarget();
 	}
 }

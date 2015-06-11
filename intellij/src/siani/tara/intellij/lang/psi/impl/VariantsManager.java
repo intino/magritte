@@ -42,7 +42,7 @@ public class VariantsManager {
 		while (container != null) {
 			for (Node sibling : container.getNodeSiblings())
 				variants.add(sibling);
-			container = container.container();
+			container = container.getContainer();
 		}
 	}
 

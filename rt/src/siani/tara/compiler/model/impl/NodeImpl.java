@@ -162,16 +162,6 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public boolean isImplicit() {
-		return flags.contains(IMPLICIT);
-	}
-
-	@Override
-	public boolean isPropertyInstance() {
-		return flags.contains(IMPLICIT_INSTANCE);
-	}
-
-	@Override
 	public boolean isTerminalInstance() {
 		return flags.contains(TERMINAL_INSTANCE);
 	}

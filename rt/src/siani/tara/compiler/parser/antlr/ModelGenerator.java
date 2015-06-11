@@ -5,13 +5,14 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.*;
+import siani.tara.semantic.model.Primitives;
 import siani.tara.semantic.model.Tag;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static siani.tara.compiler.model.Primitives.*;
 import static siani.tara.compiler.parser.antlr.TaraGrammar.*;
+import static siani.tara.semantic.model.Primitives.*;
 
 public class ModelGenerator extends TaraGrammarBaseListener {
 
@@ -255,21 +256,37 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 				map(context -> getConverter(NATURAL).convert(context.getText())[0]).collect(Collectors.toList()));
 		else if (!ctx.stringValue().isEmpty())
 			values.addAll(ctx.stringValue().stream().
-				map(context -> formatText(context.getText())).collect(Collectors.toList()));
+				map(context -> formatString(context.getText())).collect(Collectors.toList()));
 		else if (!ctx.identifierReference().isEmpty())
 			values.addAll(ctx.identifierReference().stream().
 				map(context -> Parameter.REFERENCE + context.getText()).collect(Collectors.toList()));
+		else if (!ctx.expression().isEmpty())
+			values.addAll(ctx.expression().stream().
+				map(context -> new Primitives.Expression(formatExpression(context.getText()).trim())).collect(Collectors.toList()))
+				;
 		else if (ctx.EMPTY() != null)
 			values.add(new EmptyNode());
 		return values.toArray(new Object[values.size()]);
 	}
 
-	private String formatText(String value) {
+	private String formatExpression(String value) {
 		if (!value.trim().startsWith("--")) return value.substring(1, value.length() - 1).replace("\\\"", "\"");
 		String text = value.replace("\t", "    ");
 		if (value.startsWith("\n")) text = text.substring(1);
 		String pattern = text.substring(0, text.indexOf("\n")).replace("-", "");
 		text = value.trim().replaceAll("--(-*)\\n", "").replaceAll("--(-*)", "");
+		String result = "";
+		for (String line : text.split("\\n")) result += line.replaceFirst(pattern, "") + "\n";
+		while (result.endsWith("\n")) result = result.substring(0, result.length() - 1);
+		return result;
+	}
+
+	private String formatString(String value) {
+		if (!value.trim().startsWith("==")) return value.substring(1, value.length() - 1).replace("\\\"", "\"");
+		String text = value.replace("\t", "    ");
+		if (value.startsWith("\n")) text = text.substring(1);
+		String pattern = text.substring(0, text.indexOf("\n")).replace("-", "");
+		text = value.trim().replaceAll("==(=*)\\n", "").replaceAll("==(=*)", "");
 		String result = "";
 		for (String line : text.split("\\n")) result += line.replaceFirst(pattern, "") + "\n";
 		while (result.endsWith("\n")) result = result.substring(0, result.length() - 1);

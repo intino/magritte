@@ -28,7 +28,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	@Override
 	public siani.tara.semantic.model.Node context() {
 		if (node == null) return null;
-		return node.container() == null ? null : new LanguageNode(node.container());
+		return node.getContainer() == null ? null : new LanguageNode(node.getContainer());
 	}
 
 	@Override
@@ -158,7 +158,14 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	private void addFacetTargetIncludes(Node node) {
 		for (siani.tara.intellij.lang.psi.FacetTarget facetTarget : node.getFacetTargets())
-			includes.addAll(facetTarget.includes().stream().map(LanguageNode::new).collect(Collectors.toList()));
+			for (Node include : facetTarget.includes()) {
+				includes.add(new LanguageNode(include));
+				if (include.isAbstract()) addIncludeSubs(include.getSubNodes());
+			}
+	}
+
+	private void addIncludeSubs(Collection<Node> subNodes) {
+		includes.addAll(subNodes.stream().map(LanguageNode::new).collect(Collectors.toList()));
 	}
 
 	@Override

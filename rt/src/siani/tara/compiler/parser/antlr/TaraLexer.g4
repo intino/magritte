@@ -142,7 +142,6 @@ EMPTY               : 'empty';
 
 BLOCK_COMMENT       : '/*' .*? '*/' -> channel(HIDDEN);
 LINE_COMMENT        : '//' ~[\r\n]* -> channel(HIDDEN);
-
 SCIENCE_NOT         : 'E' (PLUS | DASH)? DIGIT+;
 BOOLEAN_VALUE       : 'true' | 'false';
 NATURAL_VALUE       : PLUS? DIGIT+;
@@ -150,7 +149,7 @@ NEGATIVE_VALUE      : DASH DIGIT+ ;
 DOUBLE_VALUE        : (PLUS | DASH)? DIGIT+ DOT DIGIT+;
 
 APHOSTROPHE         : '"' {setType(QUOTE_BEGIN);} -> mode(QUOTED);
-STRING_MULTILINE    : DASH DASH+  {setType(QUOTE_BEGIN);} -> mode(MULTILINE);
+STRING_MULTILINE    : EQUALS EQUALS+  {setType(QUOTE_BEGIN);} -> mode(MULTILINE);
 
 SINGLE_QUOTE        : '\'' {setType(EXPRESSION_BEGIN);} -> mode(EXPRESSION_QUOTED);
 EXPRESSION_MULTILINE: DASH DASH+  {setType(EXPRESSION_BEGIN);} -> mode(EXPRESSION_MULTILINE_MODE);
@@ -176,7 +175,6 @@ UNKNOWN_TOKEN: . ;
 
 
 mode MULTILINE;
-	M_STRING_MULTILINE: EQUALS EQUALS+  {   setType(QUOTE_END); } -> mode(DEFAULT_MODE);
 	M_CHARACTER:.                       {   setType(CHARACTER); };
 
 mode QUOTED;
@@ -187,19 +185,19 @@ mode QUOTED;
     CHARACTER:.                         {   setType(CHARACTER); };
 
 mode EXPRESSION_MULTILINE_MODE;
-	ME_STRING_MULTILINE: DASH DASH+      {   setType(EXPRESSION_END); } -> mode(DEFAULT_MODE);
-	ME_CHARACTER:.                       {   setType(CHARACTER); };
+	ME_STRING_MULTILINE: DASH DASH+     {   setType(EXPRESSION_END); } -> mode(DEFAULT_MODE);
+	ME_CHARACTER:.                      {   setType(CHARACTER); };
 
 mode EXPRESSION_QUOTED;
-	E_QUOTE:'\''                          {   setType(EXPRESSION_END); } -> mode(DEFAULT_MODE);
-    E_SLASH_Q:'\\\''                      {   setType(CHARACTER); };
-    E_SLASH:'\\'                          {   setType(CHARACTER); };
-    E_CHARACTER:.                         {   setType(CHARACTER); };
+	E_QUOTE:'\''                        {   setType(EXPRESSION_END); } -> mode(DEFAULT_MODE);
+    E_SLASH_Q:'\\\''                    {   setType(CHARACTER); };
+    E_SLASH:'\\'                        {   setType(CHARACTER); };
+    E_CHARACTER:.                       {   setType(CHARACTER); };
 
 QUOTE_BEGIN        : '%QUOTE_BEGIN%';
 QUOTE_END          : '%QUOTE_END%';
 EXPRESSION_BEGIN   : '%EXPRESSION_BEGIN%';
-EXPRESSION_END    : '%EXPRESSION_END%';
+EXPRESSION_END    :  '%EXPRESSION_END%';
 
 fragment DOLLAR              : '$';
 fragment EURO                : '€';

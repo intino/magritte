@@ -3,6 +3,7 @@ package siani.tara.compiler.codegeneration.magritte;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.model.*;
+import siani.tara.semantic.model.Primitives;
 import siani.tara.semantic.model.Tag;
 
 import java.util.AbstractMap.SimpleEntry;

@@ -172,16 +172,6 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public boolean isImplicit() {
-		return destiny.isImplicit() || flags.contains(IMPLICIT);
-	}
-
-	@Override
-	public boolean isPropertyInstance() {
-		return destiny.isPropertyInstance() || flags.contains(IMPLICIT_INSTANCE);
-	}
-
-	@Override
 	public boolean isTerminalInstance() {
 		return destiny.isTerminalInstance() || flags.contains(TERMINAL_INSTANCE);
 	}
@@ -208,14 +198,14 @@ public class NodeReference extends Element implements Node {
 	@Override
 	public List<Tag> getAnnotations() {
 		List<Tag> tags = new ArrayList<>(destiny.getAnnotations());
-		tags.addAll(this.annotations);
+		annotations.stream().filter(flag -> !tags.contains(flag)).forEach(tags::add);
 		return unmodifiableList(tags);
 	}
 
 	@Override
 	public List<Tag> getFlags() {
 		List<Tag> tags = new ArrayList<>(destiny.getFlags());
-		tags.addAll(flags);
+		flags.stream().filter(flag -> !tags.contains(flag)).forEach(tags::add);
 		return unmodifiableList(tags);
 	}
 

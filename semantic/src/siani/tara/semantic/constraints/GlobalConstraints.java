@@ -67,7 +67,7 @@ public class GlobalConstraints {
 			Set<String> flags = new HashSet<>();
 			for (String flag : node.flags()) {
 				if (flags.add(flag)) continue;
-				throw new SemanticException(new SemanticError("reject.duplicate.flag", node, asList(flag, node.type())));
+				throw new SemanticException(new SemanticError("reject.duplicate.flag", node, asList(flag, node.type() + " " + node.name())));
 			}
 		};
 	}
@@ -104,7 +104,7 @@ public class GlobalConstraints {
 	private boolean compatibleTypes(Variable variable) {
 		Object[] values = variable.defaultValue();
 		String inferredType = inferType(values[0]);
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? "reference" : variable.type(), inferredType);
+		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? Primitives.REFERENCE : variable.type(), inferredType);
 	}
 
 	private Constraint.Require duplicatedNames() {

@@ -1,11 +1,9 @@
 package siani.tara.intellij.highlighting;
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.SyntaxHighlighterColors;
-import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.EffectType;
 import com.intellij.openapi.editor.markup.TextAttributes;
@@ -41,10 +39,10 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	public static final TextAttributesKey REFERENCE = createTextAttributesKey("Tara_REFERENCE", DefaultLanguageHighlighterColors.CLASS_REFERENCE);
 	public static final TextAttributesKey BRACKETS = createTextAttributesKey("Tara_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS);
 	public static final TextAttributesKey SEMICOLON_KEY = createTextAttributesKey("Tara_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
-	public static final TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey("Tara_BAD_CHARACTER");
-	public static final TextAttributesKey ANNOTATION_ERROR = createTextAttributesKey("ANNOTATION_ERROR", errorTextAttributes());
-	public static final TextAttributesKey UNRESOLVED_ACCESS = createTextAttributesKey("UNRESOLVED_ACCESS", errorTextAttributes());
-	public static final TextAttributesKey LINE_COMMENT = createTextAttributesKey("TARA_COMMENT", SyntaxHighlighterColors.LINE_COMMENT);
+	public static final TextAttributesKey BAD_CHARACTER = createTextAttributesKey("Tara_BAD_CHARACTER");
+	public static final TextAttributesKey ANNOTATION_ERROR = createTextAttributesKey("Tara_ANNOTATION_ERROR", errorTextAttributes());
+	public static final TextAttributesKey UNRESOLVED_ACCESS = createTextAttributesKey("Tara_UNRESOLVED_ACCESS", errorTextAttributes());
+	public static final TextAttributesKey LINE_COMMENT = createTextAttributesKey("Tara_TARA_COMMENT", SyntaxHighlighterColors.LINE_COMMENT);
 
 	public static final TextAttributesKey WARNING = createTextAttributesKey("WARNING",
 		new TextAttributes(null, null, JBColor.YELLOW, EffectType.WAVE_UNDERSCORE, Font.PLAIN));
@@ -63,7 +61,7 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		DISPLAY_NAMES.put(ANNOTATION, new Pair<>(MessageProvider.message("options.tara.concept.annotation"), null));
 		DISPLAY_NAMES.put(NUMBER, new Pair<>(MessageProvider.message("options.tara.number"), null));
 		DISPLAY_NAMES.put(BRACKETS, new Pair<>(MessageProvider.message("options.tara.concept.annotation"), null));
-		DISPLAY_NAMES.put(BAD_CHARACTER, new Pair<>(MessageProvider.message("invalid.tara.concept.character"), HighlightSeverity.ERROR));
+		DISPLAY_NAMES.put(BAD_CHARACTER, Pair.create(MessageProvider.message("invalid.tara.concept.character"), HighlightSeverity.ERROR));
 	}
 
 	static {
@@ -138,11 +136,6 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	}
 
 	public TaraSyntaxHighlighter() {
-		EditorColors.INJECTED_LANGUAGE_FRAGMENT.getDefaultAttributes().setBackgroundColor(JBColor.BLACK);
-		HighlightInfoType.INJECTED_LANGUAGE_FRAGMENT.getAttributesKey().getDefaultAttributes().setBackgroundColor(JBColor.BLACK);
-		HighlightInfoType.INJECTED_LANGUAGE_BACKGROUND.getAttributesKey().getDefaultAttributes().setBackgroundColor(JBColor.BLACK);
-		BAD_CHARACTER.getDefaultAttributes().setForegroundColor(JBColor.RED);
-		BAD_CHARACTER.getDefaultAttributes().setFontType(Font.BOLD);
 	}
 
 	private static TextAttributes errorTextAttributes() {

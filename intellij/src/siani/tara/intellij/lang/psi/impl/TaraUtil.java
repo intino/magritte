@@ -19,7 +19,6 @@ import siani.tara.Language;
 import siani.tara.intellij.TaraRuntimeException;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.file.TaraFileType;
-import siani.tara.intellij.lang.lexer.TaraPrimitives;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.semantic.Allow;
