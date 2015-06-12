@@ -2,6 +2,7 @@ package siani.tara.intellij.lang.semantic;
 
 import com.intellij.openapi.diagnostic.Logger;
 import siani.tara.Language;
+import siani.tara.intellij.lang.TaraLanguage;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -15,7 +16,7 @@ public class LanguageLoader {
 		File file = new File(languagesDirectory);
 		try {
 			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL()}, LanguageLoader.class.getClassLoader());
-			Class cls = cl.loadClass("siani.tara.dsls." + name);
+			Class cls = cl.loadClass(TaraLanguage.LANGUAGES_PACKAGE + "." + name);
 			return (Language) cls.newInstance();
 		} catch (MalformedURLException | ClassNotFoundException | NoClassDefFoundError e1) {
 			LOG.info(e1.getMessage());

@@ -113,7 +113,8 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 		for (Node include : target.getIncludedNodes()) {
 			if (include.isAnonymous()) continue;
 			Frame includeFrame = new Frame().addTypes(collectReferenceTypes(include));
-			if (isInFeature(include)) includeFrame.addFrame("definition", "");
+			if (!isInFeature(include)) includeFrame.addFrame(DEFINITION, "");
+			if (!isInFeature(include)) includeFrame.addFrame(DEFINITION_AGGREGABLE, "");
 			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 			if (include instanceof NodeReference) {
 				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;

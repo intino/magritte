@@ -24,13 +24,14 @@ public class TaraLanguage extends com.intellij.lang.Language {
 	public static final TaraLanguage INSTANCE = new TaraLanguage();
 	public static final String DSL = "dsl";
 	private static final String LANGUAGES_DIR = "tara_languages";
-	public static final String MODELS_PATH = PathManager.getPluginsPath() + separator + LANGUAGES_DIR + separator;
+	public static final String LANGUAGES_PACKAGE = "siani.tara.dsls";
+	public static final String LANGUAGES_PATH = PathManager.getPluginsPath() + separator + LANGUAGES_DIR + separator;
 	private static final String PROTEO = "Proteo";
 	private static final Map<String, Language> languages = new HashMap<>();
 	private static final Set<String> languagesPaths = new LinkedHashSet<>();
 
 	static {
-		languagesPaths.add(MODELS_PATH);
+		languagesPaths.add(LANGUAGES_PATH);
 		languages.put(PROTEO, new Proteo());
 	}
 
@@ -54,8 +55,8 @@ public class TaraLanguage extends com.intellij.lang.Language {
 
 	private static Language loadLanguage(String parent) {
 		if (isLoaded(parent)) return languages.get(parent);
-		for (String modelPath : languagesPaths) {
-			Language language = LanguageLoader.load(parent, modelPath);
+		for (String languagePath : languagesPaths) {
+			Language language = LanguageLoader.load(parent, languagePath);
 			if (language == null) continue;
 			languages.put(parent, language);
 			return language;

@@ -66,7 +66,7 @@ public class BoxUnitFrameCreator {
 		final FrameBuilder builder = new FrameBuilder();
 		builder.register(Model.class, new BoxModelAdapter(project, generatedLanguage, language, locale, model.getMetrics(), level == 0));
 		builder.register(Node.class, new BoxNodeAdapter(keymap, level == 0));
-		builder.register(FacetTarget.class, new BoxFacetTargetAdapter());
+		builder.register(FacetTarget.class, new BoxFacetTargetAdapter(keymap, level == 0));
 		builder.register(Variable.class, new BoxVariableAdapter(model.getMetrics()));
 		builder.register(Parameter.class, new BoxParameterAdapter(model.getMetrics()));
 		return builder.build(boxModel);

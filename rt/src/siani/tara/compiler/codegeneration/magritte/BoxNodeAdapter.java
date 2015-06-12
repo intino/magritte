@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 
 public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private final Map<Node, Long> keys;
-	private final boolean terminalInstance;
+	private final boolean m0;
 
 	public BoxNodeAdapter(Map<Node, Long> keys, boolean terminalBox) {
 		this.keys = keys;
-		this.terminalInstance = terminalBox;
+		this.m0 = terminalBox;
 	}
 
 	public static String clean(String name) {
@@ -93,11 +93,12 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	private void flags(final Node node, Frame frame) {
 		Frame tagsFrame = new Frame();
 		for (Tag tag : node.getFlags()) {
-			if (!tag.equals(Tag.ABSTRACT) && !tag.equals(Tag.TERMINAL_INSTANCE) && !tag.equals(Tag.MAIN)) continue;
-			if (terminalInstance && tag.equals(Tag.TERMINAL_INSTANCE)) continue;
-			tagsFrame.addFrame(VALUE, tag.name());
+			if (!tag.equals(Tag.ABSTRACT) && !tag.equals(Tag.TERMINAL) && !tag.equals(Tag.TERMINAL_INSTANCE) && !tag.equals(Tag.MAIN))
+				continue;
+			if (m0 && tag.equals(Tag.TERMINAL_INSTANCE)) continue;
+			tagsFrame.addFrame(VALUE, tag.equals(Tag.TERMINAL) ? PROTOTYPE : tag.name());
 		}
-		if (terminalInstance && isRoot(node)) tagsFrame.addFrame(VALUE, Tag.MAIN.name());
+		if (m0 && isRoot(node)) tagsFrame.addFrame(VALUE, Tag.MAIN.name());
 		tagsFrame.addTypes(ANNOTATION);
 		if (tagsFrame.slots().length != 0)
 			frame.addFrame(ANNOTATION, tagsFrame);
@@ -139,7 +140,7 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 
 	private void includes(Node node, Frame frame) {
 		node.getIncludedNodes().stream().
-			filter(inner -> !inherited(inner) && !isOverriddenByFacets(inner, node.getFacets())).
+			filter(inner -> !isOverriddenByFacets(inner, node.getFacets())).
 			forEach(inner -> addComponent(frame, inner));
 		addFacetNodes(node, frame);
 	}
@@ -176,10 +177,10 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 
 	private void addComponent(Frame frame, Node inner) {
 		Long key = getKey(inner);
-		Frame include = new Frame().addTypes("include").addTypes(asString(inner.getFlags()));
+		Frame include = new Frame().addTypes(INCLUDE).addTypes(asString(inner.getFlags()));
 		final boolean withKey = inner.isAnonymous() && inner.getPlate() == null;
 		include.addFrame(VALUE, withKey ? key : NameFormatter.cleanQn(searchNode(inner)));
-		if (terminalInstance) include.addTypes(TERMINAL);
+		if (m0) include.addTypes(TERMINAL);
 		if (withKey) include.addTypes(KEY);
 		if (inner.isFeature()) include.addTypes(Tag.SINGLE.name());
 		frame.addFrame(INCLUDE, include);

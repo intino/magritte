@@ -25,4 +25,7 @@ public class TaraFacet extends Facet<TaraFacetConfiguration> {
 		return FacetManager.getInstance(module).getFacetByType(ID);
 	}
 
+	public static boolean isOfType(Module aModule) {
+		return aModule != null && FacetManager.getInstance(aModule).getFacetByType(ID) != null;
+	}
 }

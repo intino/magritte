@@ -10,10 +10,13 @@ public interface TemplateTags {
 	String CONTRACT = "contract";
 	String LOCALE = "locale";
 	String QN = "qn";
-	String DEFINITION = "Definition";
+	String DEFINITION_PATH = "magritte.wraps.Definition";
 	String MAGRITTE_MORPHS = "magritte.morphs";
 	String GENERATED_LANGUAGE = "generatedLanguage";
+	String DEFINITION = "DEFINITION";
+	String DEFINITION_AGGREGABLE = "definitionAggregable";
 	String PROJECT = "project";
+	String PROTOTYPE = "PROTOTYPE";
 	String NODE_TYPE = "nodeType";
 	String COMPONENT_OF = "componentOf";
 	String FACET = "facet";
@@ -37,6 +40,7 @@ public interface TemplateTags {
 	String COMPOSITION = "has";
 	String DOC = "doc";
 	String MORPH = "Morph";
+	String MORPH_PATH = "magritte.wraps.Morph";
 	String PACKAGE = "package";
 	String MODEL = "Model";
 	String DEPENDENCY = "dependency";

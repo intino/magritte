@@ -64,12 +64,10 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 			creates.addFrame("name", include.getName());
 			frame.addFrame("create", creates);
 		});
-
 	}
 
 	private boolean isInherited(Node include) {
 		return !(include instanceof NodeImpl) && !((NodeReference) include).isHas();
-
 	}
 
 	private void addAggregables(Frame frame, Node node) {
@@ -109,19 +107,17 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		final Node parent = node.getParent();
 		newFrame.addFrame(PARENT, parent != null ?
 			getQn(parent, generatedLanguage) :
-			isDefinition(node) ? DEFINITION : MORPH);
+			isDefinition(node) ? DEFINITION_PATH : MORPH_PATH);
 	}
 
 	private boolean isDefinition(Node node) {//TODO si no va a llegar a M0. saber además si la Feature no es de M1
-		for (Tag tag : node.getFlags())
-			if (tag.equals(Tag.FEATURE)) return true;
-		return isInFeature(node.getContainer());
+		return !node.isTerminal() && (node.isFeature() || isInFeature(node.getContainer()));
 	}
 
 	private boolean isInFeature(NodeContainer node) {
 		NodeContainer nodeContainer = node;
 		while (nodeContainer != null && nodeContainer instanceof Node)
-			if (((Node) nodeContainer).isFeature()) return true;
+			if (((Node) nodeContainer).isFeature() || ((Node) nodeContainer).isTerminal()) return true;
 			else nodeContainer = nodeContainer.getContainer();
 		return false;
 	}
@@ -135,7 +131,8 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		for (Node include : node.getIncludedNodes()) {
 			if (include.isAnonymous()) continue;
 			Frame includeFrame = new Frame().addTypes(collectReferenceTypes(include));
-			if (isInFeature(include)) includeFrame.addFrame("definition", "");
+			if (isDefinition(include) && !isDefinition(node)) includeFrame.addFrame(DEFINITION, "");
+			if (!isDefinition(node)) includeFrame.addFrame(DEFINITION_AGGREGABLE, "");
 			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 			if (include instanceof NodeReference) {
 				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;

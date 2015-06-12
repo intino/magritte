@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.MessageProvider;
-import siani.tara.intellij.actions.ImportModelAction;
+import siani.tara.intellij.actions.ImportLanguage;
 
 public class ImportMetamodelFix implements IntentionAction {
 
@@ -33,7 +33,7 @@ public class ImportMetamodelFix implements IntentionAction {
 
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-		new ImportModelAction().importModel(project);
+		new ImportLanguage().importLanguage(project);
 	}
 
 	public boolean startInWriteAction() {

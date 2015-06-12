@@ -22,7 +22,7 @@
     <orderEntry type="module" module-name="tara-runtime-constants" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.siani.itrules:itrules:1.2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.siani.itrules:itrules-itr-reader:1.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.siani.itrules:itrules-itr-reader:1.2.2" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4:4.5" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr-runtime:3.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:ST4:4.0.8" level="project" />

@@ -26,6 +26,7 @@ import org.jetbrains.jps.model.java.JavaResourceRootType;
 import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
+import siani.tara.intellij.actions.ImportLanguage;
 import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.facet.TaraFacetConfiguration;
 
@@ -142,6 +143,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		private JCheckBox plateRequired;
 		private JLabel generativeLabel;
 		private JSpinner level;
+		private JButton importButton;
 		private Module[] candidates;
 
 
@@ -160,7 +162,12 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			addModuleDsls();
 			addDictionaries();
 			addListeners();
+			addImportAction();
 			return myMainPanel;
+		}
+
+		private void addImportAction() {
+			importButton.addActionListener(e -> new ImportLanguage().importLanguage());
 		}
 
 		private void addModuleDsls() {

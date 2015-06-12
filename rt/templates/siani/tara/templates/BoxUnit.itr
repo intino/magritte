@@ -96,7 +96,7 @@ end
 
 ---------------------- NODE SETTERS ----------------------
 def type(variable) type(reference) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue+ref...[, ]))
+	._set("$terminal$private$name", $multiple($variableValue+ref...[, ]))
 end
 
 def trigger(ref)
@@ -104,7 +104,7 @@ def trigger(ref)
 end
 
 def type(variable) type(file) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue+file...[, ]))
+	._set("$terminal$private$name", $multiple($variableValue+file...[, ]))
 end
 
 def trigger(file)
@@ -121,23 +121,23 @@ def trigger(native) !value(null)
 end
 
 def type(variable) type(word) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue+quoted...[, ]))
+	._set("$terminal$private$name", $multiple($variableValue+quoted...[, ]))
 end
 
 def type(Variable) type(string) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue+quoted...[, ]))
+	._set("$terminal$private$name", $multiple($variableValue+quoted...[, ]))
 end
 
 def type(Variable) type(integer) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue...[, ]))
+	._set("$terminal$private$name", $multiple($variableValue...[, ]))
 end
 
 def type(Variable) type(double) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue...[, ]))
+	._set("$terminal$private$name", $multiple($variableValue...[, ]))
 end
 
 def type(Variable) type(date) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue+date...[, ]))
+	._set("$terminal$private$name", $multiple($variableValue+date...[, ]))
 end
 
 def trigger(date)
@@ -145,7 +145,7 @@ def trigger(date)
 end
 
 def type(Variable) type(boolean) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue...[, ]))
+	._set("$terminal$private$name", $multiple($variableValue...[, ]))
 end
 
 def type(Variable) slot(variableValue) trigger(variable)
