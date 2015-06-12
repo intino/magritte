@@ -28,13 +28,13 @@
     </action>
     <group id="TaraMenu" text="Tara" description="Tara Menu">
       <add-to-group group-id="MainMenu" anchor="last"/>
-      <action id="ImportLanguage" class="siani.tara.intellij.actions.ImportLanguage" text="Import Language"
-              description="Import Language">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>
-      </action>
       <action id="ExportModel" class="siani.tara.intellij.actions.ExportLanguage" text="Export Language"
               description="Export Language">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift E"/>
+      </action>
+      <action id="ImportLanguage" class="siani.tara.intellij.actions.ImportLanguage" text="Import Language"
+              description="Import Language">
+        <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>
       </action>
       <action id="tara.Generate" class="siani.tara.intellij.actions.GenerateAction" text="Link to Java">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>

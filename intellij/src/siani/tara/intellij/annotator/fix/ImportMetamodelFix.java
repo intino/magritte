@@ -33,7 +33,10 @@ public class ImportMetamodelFix implements IntentionAction {
 
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
 		if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
-		new ImportLanguage().importLanguage(project);
+		try {
+			new ImportLanguage().importLanguage(project);
+		} catch (Exception ignored) {
+		}
 	}
 
 	public boolean startInWriteAction() {
