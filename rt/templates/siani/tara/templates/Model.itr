@@ -7,6 +7,10 @@ def type(scene)
 	        super(morph);
 	    }
 
+	    public $name+FirstCamelCase(magritte.Graph graph) {
+			super(graph);
+		}
+
 		$root...[$NL$NL]
 	}
 end

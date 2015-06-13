@@ -20,6 +20,7 @@ public interface TemplateTags {
 	String NODE_TYPE = "nodeType";
 	String COMPONENT_OF = "componentOf";
 	String FACET = "facet";
+	String ABSTRACT = "Abstract";
 	String PLATE = "plate";
 	String CLASS = "class";
 	String FACET_TARGET = "FacetTarget";
@@ -76,4 +77,6 @@ public interface TemplateTags {
 	String INTEGER = "Integer";
 	String NATURAL = "Natural";
 	String INNER = "inner";
+	String MAIN = "Main";
+	String ROOT = "Root";
 }

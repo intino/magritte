@@ -1,11 +1,13 @@
 package siani.tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.model.Frame;
-import siani.tara.semantic.model.Primitives;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.Allow;
 import siani.tara.semantic.constraints.ReferenceParameterAllow;
+import siani.tara.semantic.model.Primitives;
 
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static siani.tara.semantic.model.Variable.NATIVE_SEPARATOR;
@@ -42,6 +44,10 @@ public class VarFrameCreator implements TemplateTags {
 					addFrame("interfaceName", nativeExtractor.interfaceName());
 					addFrame("methodName", nativeExtractor.methodName());
 					addFrame("returnValue", nativeExtractor.returnValue());
+					String scope = "";
+					if (isDefinition((Node) variable.getContainer())) scope = "scope";
+					else if (!variable.isTerminal()) scope = "node";
+					addFrame("scope", scope);
 				}
 			}
 
@@ -59,6 +65,19 @@ public class VarFrameCreator implements TemplateTags {
 
 		return frame.addTypes(MorphCreatorHelper.getTypes(variable, modelLevel));
 	}
+
+	private boolean isDefinition(Node node) {
+		return !node.isTerminal() && (node.isFeature() || isInFeature(node.getContainer()));
+	}
+
+	private boolean isInFeature(NodeContainer node) {
+		NodeContainer nodeContainer = node;
+		while (nodeContainer != null && nodeContainer instanceof Node)
+			if (((Node) nodeContainer).isFeature() || ((Node) nodeContainer).isTerminal()) return true;
+			else nodeContainer = nodeContainer.getContainer();
+		return false;
+	}
+
 
 	protected Frame createVarFrame(final Allow.Parameter variable) {
 		Frame frame = new Frame() {

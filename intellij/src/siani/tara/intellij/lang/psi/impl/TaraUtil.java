@@ -42,7 +42,7 @@ public class TaraUtil {
 	public static List<Node> findRootNode(PsiElement element, String identifier) {
 		List<Node> result = new ArrayList<>();
 		for (TaraModelImpl taraFile : getModuleFiles(element.getContainingFile())) {
-			Collection<Node> nodes = taraFile.getRootNodes();
+			Collection<Node> nodes = taraFile.getIncludes();
 			extractNodesByName(identifier, result, nodes);
 		}
 		return result;
@@ -201,12 +201,12 @@ public class TaraUtil {
 	}
 
 	private static FacetApply areFacetParameters(Parameter parameter) {
-		PsiElement contextOf = TaraPsiImplUtil.getContextOf(parameter);
+		NodeContainer contextOf = TaraPsiImplUtil.getContextOf(parameter);
 		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
 	}
 
 	private static FacetApply areFacetVarInit(VarInit varInit) {
-		PsiElement contextOf = TaraPsiImplUtil.getContextOf(varInit);
+		NodeContainer contextOf = TaraPsiImplUtil.getContextOf(varInit);
 		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
 	}
 
@@ -222,7 +222,7 @@ public class TaraUtil {
 	}
 
 	private static String getFacetPath(TaraFacetApply apply) {
-		PsiElement element = apply;
+		NodeContainer element = apply;
 		String path = "";
 		while (element instanceof TaraFacetApply) {
 			path = ((TaraFacetApply) element).getMetaIdentifierList().get(0).getText() + (path.length() > 0 ? "$" + path : "");
@@ -288,6 +288,16 @@ public class TaraUtil {
 	@NotNull
 	public static List<Node> getInnerNodesOf(Node node) {
 		return TaraPsiImplUtil.getInnerNodesOf(node);
+	}
+
+	@NotNull
+	public static List<Node> getInnerNodesOf(FacetApply facetApply) {
+		return TaraPsiImplUtil.getInnerNodesOf(facetApply);
+	}
+
+	@NotNull
+	public static List<Node> getInnerNodesOf(FacetTarget facetTarget) {
+		return TaraPsiImplUtil.getInnerNodesOf(facetTarget);
 	}
 
 	public static Node findInner(Node node, String name) {

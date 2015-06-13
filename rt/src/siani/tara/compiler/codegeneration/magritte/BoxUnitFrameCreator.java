@@ -64,10 +64,10 @@ public class BoxUnitFrameCreator {
 		boxModel.setName(model.getName());
 		boxModel.addIncludedNodes(nodes.toArray(new Node[nodes.size()]));
 		final FrameBuilder builder = new FrameBuilder();
-		builder.register(Model.class, new BoxModelAdapter(project, generatedLanguage, language, locale, model.getMetrics(), level == 0));
-		builder.register(Node.class, new BoxNodeAdapter(keymap, level == 0));
+		builder.register(Model.class, new BoxUnitModelAdapter(project, generatedLanguage, language, locale, model.getMetrics(), level == 0));
+		builder.register(Node.class, new BoxUnitNodeAdapter(keymap, level == 0));
 		builder.register(FacetTarget.class, new BoxFacetTargetAdapter(keymap, level == 0));
-		builder.register(Variable.class, new BoxVariableAdapter(model.getMetrics()));
+		builder.register(Variable.class, new BoxVariableAdapter(model.getMetrics(), level));
 		builder.register(Parameter.class, new BoxParameterAdapter(model.getMetrics()));
 		return builder.build(boxModel);
 	}

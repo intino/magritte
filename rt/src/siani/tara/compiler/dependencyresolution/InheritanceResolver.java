@@ -28,7 +28,7 @@ public class InheritanceResolver {
 
 	private void resolve(NodeImpl node) {
 		List<NodeImpl> children = getChildrenSorted(node);
-		if (!children.isEmpty() && !node.isAbstract()) node.addFlags(Tag.ABSTRACT.name());
+		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlags(Tag.ABSTRACT.name());
 		for (NodeImpl child : children) {
 			resolveIncludes(node, child);
 			resolveFlags(node, child);

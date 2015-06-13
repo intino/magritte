@@ -33,7 +33,7 @@ public class ImportLanguage extends AnAction implements DumbAware {
 	}
 
 	private File importLanguage(VirtualFile file, Project project) throws Exception {
-		final String languagesPath = TaraLanguage.getLanguagesPath(project);
+		final String languagesPath = TaraLanguage.LANGUAGES_PATH;
 		final Boolean aBoolean = FileSystemUtils.copyFile(file.getPath(), languagesPath + file.getName());
 		if (!aBoolean) throw new Exception("unable import");
 		reload(file.getName(), languagesPath);

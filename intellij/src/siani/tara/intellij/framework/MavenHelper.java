@@ -81,7 +81,6 @@ public class MavenHelper {
 		dependency.appendChild(groupId(doc, project.getMavenId().getGroupId()));
 		dependency.appendChild(artifactId(doc, project.getMavenId().getArtifactId()));
 		dependency.appendChild(type(doc, "bundle"));
-		dependency.appendChild(scope(doc));
 		dependency.appendChild(version(doc, project.getMavenId().getVersion()));
 		return dependency;
 	}

@@ -1,6 +1,6 @@
 package siani.tara.intellij.codegeneration;
 
-public class NameGenerator {
+public class WordGenerator {
 	private static String[] syllabus = {"b%#$", "c%#$", "d#$", "dr#s", "f%#$", "g%#$", "j#$", "k%#$", "l#$", "m#$", "n#$", "p%#$", "ps#", "r#$", "s#$", "t%#$", "v#$", "y#$", "z#$"};
 	private static String[] vowel = {"a", "e", "i", "o", "u"};
 	private static String[] middle = {"", "r", "l"};

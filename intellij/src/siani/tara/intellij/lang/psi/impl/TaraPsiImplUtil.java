@@ -65,9 +65,30 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
+	public static List<Node> getInnerNodesOf(FacetApply facetApply) {
+		if (facetApply != null && facetApply.getBody() != null) {
+			List<Node> inner = getInnerNodesInBody(facetApply.getBody());
+			removeRoots(inner);
+			removeSubs(inner);
+			addSubsOfInner(inner);
+			return inner;
+		}
+		return Collections.EMPTY_LIST;
+	}
+
+	public static List<Node> getInnerNodesOf(FacetTarget facetApply) {
+		if (facetApply != null && facetApply.getBody() != null) {
+			List<Node> inner = getInnerNodesInBody(facetApply.getBody());
+			removeRoots(inner);
+			removeSubs(inner);
+			addSubsOfInner(inner);
+			return inner;
+		}
+		return Collections.EMPTY_LIST;
+	}
+
 	private static void removeRoots(List<Node> inner) {
-		List<Node> list = new ArrayList();
-		for (Node node : inner) if (node.isAnnotatedAsRoot()) list.add(node);
+		List<Node> list = inner.stream().filter(Node::isAnnotatedAsRoot).collect(Collectors.toList());
 		inner.removeAll(list);
 
 	}
@@ -127,11 +148,11 @@ public class TaraPsiImplUtil {
 	}
 
 	@Nullable
-	public static PsiElement getContextOf(PsiElement element) {
+	public static NodeContainer getContextOf(PsiElement element) {
 		PsiElement aElement = element;
 		while (aElement.getParent() != null && isNotConceptOrFile(aElement) && isNotFacet(aElement))
 			aElement = aElement.getParent();
-		return aElement.getParent();
+		return (NodeContainer) aElement.getParent();
 	}
 
 	private static boolean isNotConceptOrFile(PsiElement aElement) {

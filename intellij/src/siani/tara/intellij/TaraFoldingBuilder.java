@@ -66,7 +66,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		List<PsiElement> strings = new ArrayList<>();
 		for (FacetTarget facetTarget : facetTargets) {
 			searchMultiLineVariables(facetTarget, strings);
-			addAllFacetInnerNodes(facetTarget.includes(), strings);
+			addAllFacetInnerNodes(facetTarget.getIncludes(), strings);
 		}
 		return strings;
 	}

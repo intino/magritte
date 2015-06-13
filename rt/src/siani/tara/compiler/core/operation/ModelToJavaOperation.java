@@ -58,7 +58,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			writeBoxUnits(getBoxUnitPath(separator), boxUnits);
 			if (model.getLevel() == 0) return;
 			writeMorphs(createMorphs());
-			writeBox(getBoxPath(separator), createBoxes(boxUnits.keySet()));
+			writeBoxDSL(getBoxDSLPath(separator), createBoxDSL(boxUnits.keySet()));
 			writeScene(createScene());
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
@@ -108,7 +108,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		return map;
 	}
 
-	private String createBoxes(Set<String> boxes) throws TaraException {
+	private String createBoxDSL(Set<String> boxes) throws TaraException {
 		Frame frame = new Frame().addTypes("Box");
 		frame.addFrame("name", conf.getGeneratedLanguage());
 		for (String box : boxes) frame.addFrame("namebox", buildBoxUnitName(box));
@@ -130,7 +130,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String buildBoxUnitName(String box) {
-		return "magritte.boxes." + box + DOT + "box";
+		return "magritte.ontology." + box + DOT + "box";
 	}
 
 	private void renderFacetTargets(Map<String, String> map, Node node) {
@@ -176,11 +176,11 @@ public class ModelToJavaOperation extends ModelOperation {
 		}
 	}
 
-	private void writeBox(String boxPath, String document) {
+	private void writeBoxDSL(String boxPath, String document) {
 		File destiny = new File(outFolder, boxPath);
 		destiny.mkdirs();
 		try {
-			File file = new File(destiny, Format.reference().format(conf.getGeneratedLanguage()) + JAVA);
+			File file = new File(destiny, Format.reference().format(conf.getGeneratedLanguage()) + "Dsl" + JAVA);
 			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
 			fileWriter.write(document);
 			fileWriter.close();

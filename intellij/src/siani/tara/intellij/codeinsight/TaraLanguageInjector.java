@@ -33,7 +33,10 @@ public class TaraLanguageInjector implements LanguageInjector {
 	@Override
 	public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host, @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
 		if (!Expression.class.isInstance(host) || !host.isValidHost()) return;
-		injectionPlacesRegistrar.addPlace(JavaLanguage.INSTANCE, getRangeInsideHost((Expression) host), createPrefix((Expression) host), createSuffix());
+		injectionPlacesRegistrar.addPlace(JavaLanguage.INSTANCE,
+			getRangeInsideHost((Expression) host),
+			createPrefix((Expression) host),
+			createSuffix(!((Expression) host).getValue().endsWith(";")));
 	}
 
 	@NotNull
@@ -55,30 +58,30 @@ public class TaraLanguageInjector implements LanguageInjector {
 		return NativeTemplate.create().format(frame);
 	}
 
-	private String createSuffix() {
-		return "\n\t}\n" +
+	private String createSuffix(boolean withSemicolon) {
+		return (withSemicolon ? ";" : "") + "\n\t}\n" +
 			"}";
 	}
 
 	@NotNull
-	private Frame createFrame(Expression stringValue, String languageName) {
+	private Frame createFrame(Expression expression, String languageName) {
 		Frame frame = new Frame().addTypes("native");
-		PsiElement element = getVarInit(stringValue);
-		if (element == null) element = getParameter(stringValue);
-		if (element == null) element = getVariable(stringValue);
+		PsiElement element = getVarInit(expression);
+		if (element == null) element = getParameter(expression);
+		if (element == null) element = getVariable(expression);
 		Node node = getContainerNode(element);
-		final String generatedLanguage = getGeneratedLanguage(stringValue);
+		final String generatedLanguage = getGeneratedLanguage(expression);
 		frame.addFrame("languageGenerated", generatedLanguage);
 		frame.addFrame("language", languageName.toLowerCase());
 		Allow.Parameter allow = TaraUtil.getCorrespondingAllow(node, element);
-		if (allow != null) frame.addFrame("intention", intention(allow.contract()));
-		else frame.addFrame("intention", ((Variable) element).getContract().getText());
-		final String replace = stringValue.getValue().replace("\\n", "\n").replace("\\\"", "\"");
-		frame.addFrame("variable", getName(element)).
+		String contract = (allow != null) ? intention(allow.contract()) : getVariableIntention(element);
+		frame.addFrame("intention", contract);
+		final String signature = getSignature(allow != null ? allow.contract() : findNativeInterface(((Variable) element).getContract()));
+		frame.addFrame("variable", getName(element, allow)).
 			addFrame("qn", node.getQualifiedName().replace("@anonymous", "").replace(".", "_")).
-			addFrame("parent", findParent(node, generatedLanguage)).
-			addFrame("signature", getSignature(allow != null ? allow.contract() : findNativeInterface(((Variable) element).getContract()))).
-			addFrame("body", replace.endsWith(";") ? replace : replace + ";");
+			addFrame("parent", findParent(element, node, generatedLanguage)).
+			addFrame("signature", signature).
+			addFrame("return", !signature.contains(" void ") ? "return " : "");
 		return frame;
 	}
 
@@ -110,21 +113,24 @@ public class TaraLanguageInjector implements LanguageInjector {
 		return contract.contains(NATIVE_SEPARATOR) ? contract.substring(0, contract.indexOf(NATIVE_SEPARATOR)) : "";
 	}
 
-	private String findParent(Node node, String generatedLanguage) {
+	private String findParent(PsiElement element, Node node, String generatedLanguage) {
 		Node candidate = node;
 		new NodeAnalyzer(node.getContainer()).analyze();
 		while (candidate.getContainer() != null)
-			if (node.getName() != null && !node.isFeatureInstance()) return getQn(candidate, node, generatedLanguage);
+			if (node.getName() != null && !node.isFeatureInstance())
+				return getQn(candidate, element, generatedLanguage);
 			else candidate = candidate.getContainer();
-		return getQn(candidate, node, generatedLanguage);
+		return getQn(candidate, element, generatedLanguage);
 	}
 
-	private static String getQn(Node owner, Node node, String generatedLanguage) {
-		final FacetTarget facetTarget = facetTargetContainer(node);
+	private static String getQn(Node owner, PsiElement element, String generatedLanguage) {
+		final FacetTarget facetTarget = facetTargetContainer(element);
 		if (owner.isFacet())
 			return generatedLanguage.toLowerCase() + DOT + owner.getName().toLowerCase() + DOT + format(facetTarget.getTarget());
-		else
+		else {
+			final Node node = TaraPsiImplUtil.getContainerNodeOf(element);
 			return generatedLanguage.toLowerCase() + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
+		}
 	}
 
 	private static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
@@ -136,8 +142,8 @@ public class TaraLanguageInjector implements LanguageInjector {
 		return value;
 	}
 
-	private static FacetTarget facetTargetContainer(Node node) {
-		PsiElement container = TaraPsiImplUtil.getContextOf(node);
+	private static FacetTarget facetTargetContainer(PsiElement element) {
+		PsiElement container = TaraPsiImplUtil.getContextOf(element);
 		while (container != null)
 			if (container instanceof FacetTarget) return (FacetTarget) container;
 			else container = TaraPsiImplUtil.getContextOf(container);
@@ -157,9 +163,13 @@ public class TaraLanguageInjector implements LanguageInjector {
 		return element instanceof Variable ? (Variable) element : null;
 	}
 
-	private String getName(PsiElement element) {
-		if (element instanceof Parameter) return ((Parameter) element).getExplicitName();
+	private String getName(PsiElement element, Allow.Parameter allow) {
+		if (element instanceof Parameter) return allow.name();
 		else if (element instanceof VarInit) return ((VarInit) element).getName();
 		return ((Variable) element).getName();
+	}
+
+	public String getVariableIntention(PsiElement element) {
+		return element instanceof Variable ? ((Variable) element).getContract().getText() : (element instanceof VarInit ? ((VarInit) element).getContract() : "");
 	}
 }

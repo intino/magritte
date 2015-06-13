@@ -230,38 +230,49 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		return allows;
 	}
 
-	private void addAllowedInnerNodes(Frame allows, NodeContainer node) {
+	private void addAllowedInnerNodes(Frame allows, NodeContainer container) {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
-		for (Node include : node.getIncludedNodes()) {
-			if (include.isRequired() && !include.isTerminal()) continue;
-			if (node instanceof Model && level == 1 && !include.isMain()) continue;
+		collectSingleAndMultipleInnerAllows(container, multipleNodes, singleNodes);
+		addAllowedNodes(allows, multipleNodes, singleNodes);
+	}
+
+	private void collectSingleAndMultipleInnerAllows(NodeContainer container, List<Frame> multipleNodes, List<Frame> singleNodes) {
+		for (Node include : container.getIncludedNodes()) {
+			if (!isAllowedNode(container, include)) continue;
+			if (container instanceof Model && level == 1 && !include.isMain()) continue;
 			for (Node candidate : collectCandidates(include))
 				if (include.isSingle())
 					singleNodes.add(createAllowedSingle(candidate, include.getAnnotations(), include.getFlags()));
 				else multipleNodes.add(createAllowedMultiple(candidate, include.getAnnotations(), include.getFlags()));
 		}
-		addAllowedNodes(allows, multipleNodes, singleNodes);
 	}
 
-	private void addRequiredInnerNodes(Frame requires, NodeContainer node) {
+	private boolean isAllowedNode(NodeContainer container, Node include) {
+		return !include.isRequired() || !containerIsTerminal(container);
+	}
+
+	private void addRequiredInnerNodes(Frame requires, NodeContainer container) {
 		List<Frame> multipleNodes = new ArrayList<>();
 		List<Frame> singleNodes = new ArrayList<>();
-		for (Node include : node.getIncludedNodes()) {
-			if ((!include.isRequired()) || (include.isTerminal() && isGenerativeLanguage()))
-				continue;
-			Collection<Node> candidates = collectCandidates(include);
-			if (include.isAbstract() && candidates.size() > 1) {
-				requires.addFrame(REQUIRE, createOneOf(candidates, include));
-			} else for (Node candidate : candidates)
-				if (include.isSingle()) singleNodes.add(createRequiredSingle(candidate, include.getAnnotations()));
-				else multipleNodes.add(createRequiredMultiple(candidate, include.getAnnotations()));
-		}
+		collectSingleAndMultipleInnerRequires(requires, container, multipleNodes, singleNodes);
 		addRequiredNodes(requires, multipleNodes, singleNodes);
 	}
 
-	private boolean isGenerativeLanguage() {
-		return level > 1;
+	private void collectSingleAndMultipleInnerRequires(Frame requires, NodeContainer container, List<Frame> multipleNodes, List<Frame> singleNodes) {
+		for (Node include : container.getIncludedNodes()) {
+			if (isAllowedNode(container, include)) continue;
+			Collection<Node> candidates = collectCandidates(include);
+			if (include.isAbstract() && candidates.size() > 1)
+				requires.addFrame(REQUIRE, createOneOf(candidates, include));
+			else for (Node candidate : candidates)
+				if (include.isSingle()) singleNodes.add(createRequiredSingle(candidate, include.getAnnotations()));
+				else multipleNodes.add(createRequiredMultiple(candidate, include.getAnnotations()));
+		}
+	}
+
+	private boolean containerIsTerminal(NodeContainer node) {
+		return node instanceof Node && ((Node) node).isTerminal();
 	}
 
 	private Collection<Node> collectCandidates(Node node) {

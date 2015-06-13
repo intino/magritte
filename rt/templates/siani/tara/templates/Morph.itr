@@ -88,7 +88,7 @@ end
 
 def type(variable) type(definition) !type(terminal) type(reference) type(multiple) !type(word) trigger(getter)
 	public magritte.Set<$type+reference> $name+firstLowerCase() {
-		return _get(magritte.schema.Grip.multiple("$name"));
+		return _get(magritte.schema.Grip.multiple("$name")).as($type+reference.class);
 	}
 
 	public $type+reference $name+firstLowerCase(int index) {
@@ -99,13 +99,13 @@ end
 
 def type(variable) type(native) returnValue(void) trigger(getter)
 	public void $name($parameters){
-		(($generatedLanguage.natives.$interfaceName)[$definition _definition().]_get("$name").asNativeOf(node)).$methodName($parameters+WithoutType);
+		(($generatedLanguage.natives.$interfaceName)[$definition _definition().]_get("$name").asNative($scope)).$methodName($parameters+WithoutType);
 	}
 end
 
 def type(variable) type(native) trigger(getter)
 	public $returnValue $name($parameters){
-		return (($generatedLanguage.natives.$interfaceName)[$definition _definition().]_get("$name").asNativeOf(node)).$methodName($parameters+WithoutType);
+		return (($generatedLanguage.natives.$interfaceName)[$definition _definition().]_get("$name").asNative($scope)).$methodName($parameters+WithoutType);
 	}
 end
 
@@ -202,7 +202,7 @@ def type(variable) !type(final) !type(native) type(multiple) trigger(setter)
 		_edit().let("$name", value);
 	}
 
-	public void $name+firstLowerCase(magritte.wraps.Morph.Operation operation, $type+reference+primitiveType~... $name+firstLowerCase) {
+	public void $name+firstLowerCase(magritte.wraps.Operation operation, $type+reference+primitiveType~... $name+firstLowerCase) {
 		_edit(operation).set("$name+firstLowerCase", $name+firstLowerCase);
 	}
 end
@@ -234,10 +234,10 @@ def type(variable) !type(final) !type(native) !type(multiple) trigger(setter)
 end
 
 
------------------------ AGGREGABLES -----------------------
-def  type(nodeReference) trigger(aggregables)
+----------------------- MODIFIABLE NODES -----------------------
+def  type(nodeReference) !type(final) trigger(modifiable)
     public magritte.Set<Type> $name+firstLowerCase~Types() {
-        return [$definitionAggregable _definition().]_aggregables(Type.class);
+        return [$definitionAggregable _definition().]_aggregables($qn+reference.class);
     }
 
     public Type $name+firstLowerCase~Type(int index) {
@@ -245,14 +245,24 @@ def  type(nodeReference) trigger(aggregables)
     }
 end
 
-def type(nodeReference) type(single) trigger(aggregables)
+def type(nodeReference) !type(final) type(single) trigger(modifiable)
     public Type $name+firstLowerCase~Type() {
-        return [$definitionAggregable _definition().]_aggregables(Type.class).get(0);
+        return [$definitionAggregable _definition().]_aggregables($qn+reference.class).get(0);
     }
+
+	public $type+reference $name+firstLowerCase~Create() {
+		return [$definitionAggregable _definition().]_create($type+reference.class);
+	}.as(tafat.Job.class);
+
+	public $type+reference $name+firstLowerCase~Remove() {
+		return [$definitionAggregable _definition().]_remove($type+reference.class);
+	}
+end
+
+def type(nodeReference) trigger(modifiable)
 end
 
 --------------- COMPONENTS -------------------
-
 
 def type(nodeReference) !type(single) trigger(component)
 	public magritte.Set<$qn+reference> $name+firstLowerCase~Set() {
@@ -286,22 +296,14 @@ def type(nodeReference) !type(single) type(final) trigger(component)
 	}
 end
 
-
---------------- CREATE ----------------
-def	type(create) trigger(create)
-    public $type+reference $name+firstLowerCase~Create() {
-        return _create($type+reference.class);
-    }
-end
 --------------- ROOT -------------------
 def type(nodeimpl) trigger(node)
 	public[$inner static] class $name+firstUpperCase $parent {
 		$variable+wordInstantiation...[$NL]
 		$variable+getter...[$NL]
 		$variable+setter...[$NL]
+		$component+modifiable...[$NL]
 		$component...[$NL]
-		$component+aggregables...[$NL]
-		$create...[$NL]
 		$node...[$NL]
 	}
 

@@ -1,6 +1,5 @@
 package siani.tara.compiler.codegeneration.magritte;
 
-import siani.tara.compiler.codegeneration.Format;
 import siani.tara.compiler.model.Facet;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
@@ -12,7 +11,7 @@ import java.io.File;
 public class NameFormatter {
 
 	public static final String MAGRITTE_PATH = "magritte";
-	public static final String BOX_PATH = "boxes";
+	public static final String BOX_PATH = "ontology";
 	public static final String DOT = ".";
 	private static final String DSL = "dsl";
 
@@ -33,7 +32,8 @@ public class NameFormatter {
 	}
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
-		return ((Node) facetTarget.getContainer()).getName().toLowerCase() + DOT + Format.reference().format(facetTarget.getTarget()) + DOT + node.getQualifiedName();
+		final Node container = (Node) facetTarget.getContainer();
+		return container.getName().toLowerCase() + "." + capitalize(container.getName()) + "_" + capitalize(facetTarget.getTargetNode().getName()) + DOT + node.getQualifiedName();
 	}
 
 	private static FacetTarget facetTargetContainer(Node node) {
@@ -45,6 +45,10 @@ public class NameFormatter {
 
 	public static String getQn(FacetTarget target, String generatedLanguage) {
 		return composeMorphPackagePath(generatedLanguage) + DOT + target.getTargetNode().getQualifiedName();
+	}
+
+	public static String getQnOfFacet(Node node) {
+		return node.getName().toLowerCase() + DOT + capitalize(node.getName());
 	}
 
 	public static String getQn(Facet facet, String generatedLanguage) {
@@ -67,7 +71,7 @@ public class NameFormatter {
 		return MAGRITTE_PATH + separator + BOX_PATH;
 	}
 
-	public static String getBoxPath(String separator) {
+	public static String getBoxDSLPath(String separator) {
 		return MAGRITTE_PATH + separator + DSL;
 	}
 

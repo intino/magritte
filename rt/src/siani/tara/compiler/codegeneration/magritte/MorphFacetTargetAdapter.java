@@ -1,7 +1,11 @@
 package siani.tara.compiler.codegeneration.magritte;
 
+import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
-import siani.tara.compiler.model.*;
+import siani.tara.compiler.model.FacetTarget;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.NodeContainer;
+import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.compiler.model.impl.VariableReference;
@@ -11,8 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
+import static siani.tara.compiler.codegeneration.magritte.NameFormatter.getQnOfFacet;
+import static siani.tara.semantic.model.Variable.NATIVE_SEPARATOR;
 
-public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetTarget>, TemplateTags {
+public class MorphFacetTargetAdapter implements Adapter<FacetTarget>, TemplateTags {
 	private final String project;
 	private final String generatedLanguage;
 	private int modelLevel;
@@ -45,36 +51,36 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 	}
 
 	private void addName(FacetTarget node, Frame frame) {
-		frame.addFrame(NAME, node.getTargetNode().getName());
+		frame.addFrame(NAME, ((Node) node.getContainer()).getName() + "_" + node.getTargetNode().getName());
 		frame.addFrame(QN, node.getTargetNode().getQualifiedName()).addFrame(PROJECT, project);
 	}
 
 	private void addParent(FacetTarget target, Frame newFrame) {
-		Node parent = findParentTargetInContext(target);
-		newFrame.addFrame(PARENT, parent == null ? getQn(target, generatedLanguage) : parent.getName());
-	}
-
-	private Node findParentTargetInContext(FacetTarget target) {
-		Node container = (Node) target.getContainer();
-		Node targetNode = target.getTargetNode();
-		FacetTarget parentTarget = null;
-		Node parent = targetNode.getParent();
-		while (parent != null) {
-			parentTarget = findInTargets(container, parent);
-			if (parentTarget != null) break;
-			parent = parent.getParent();
-		}
-		return parentTarget == null ? null : parentTarget.getTargetNode();
-	}
-
-	private FacetTarget findInTargets(Node container, Node parent) {
-		for (FacetTarget facetTarget : container.getFacetTargets())
-			if (facetTarget.getTargetNode().equals(parent)) return facetTarget;
-		return null;
+		NodeContainer nodeContainer = target.getContainer();
+		newFrame.addFrame(PARENT, generatedLanguage.toLowerCase() + "." + getQnOfFacet((Node) nodeContainer));
 	}
 
 	protected void addVariables(FacetTarget target, final Frame frame) {
-		for (final Variable variable : target.getVariables()) frame.addFrame(VARIABLE, createVarFrame(variable));
+		target.getVariables().stream().
+			filter(variable -> !variable.isInherited()).
+			forEach(variable -> frame.addFrame(VARIABLE, createVarFrame(variable)));
+	}
+
+	private void addComponents(FacetTarget target, Frame frame) {
+		for (Node include : target.getIncludedNodes()) {
+			if (include.isAnonymous()) continue;
+			Frame includeFrame = new Frame().addTypes(collectReferenceTypes(include));
+			if (isDefinition(include) && !isDefinition(target.getTargetNode())) includeFrame.addFrame(DEFINITION, "");
+			if (!isDefinition(target.getTargetNode())) includeFrame.addFrame(DEFINITION_AGGREGABLE, "");
+			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+			if (include instanceof NodeReference) {
+				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
+				addNodeReferenceName((NodeReference) include, includeFrame);
+			}
+			if (include instanceof NodeImpl)
+				addName(include, includeFrame);
+			frame.addFrame(COMPONENT, includeFrame);
+		}
 	}
 
 	protected Frame createVarFrame(final Variable variable) {
@@ -90,6 +96,18 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 //					addFrame(MEASURE_TYPE, ((Attribute) variable).getMeasureType());
 //					if (((Attribute) variable).getMeasureValue() != null)
 //						addFrame(MEASURE_VALUE, resolveMetric(((Attribute) variable).getMeasureValue()));
+				} else if (variable.getType().equals(Primitives.NATIVE)) {
+					final NativeExtractor nativeExtractor = new
+						NativeExtractor(variable.getContract().substring(0, variable.getContract().indexOf(NATIVE_SEPARATOR)),
+						variable.getName(), variable.getContract().substring(variable.getContract().indexOf(NATIVE_SEPARATOR) + 1));
+					addFrame("parameters", nativeExtractor.parameters());
+					addFrame("interfaceName", nativeExtractor.interfaceName());
+					addFrame("methodName", nativeExtractor.methodName());
+					addFrame("returnValue", nativeExtractor.returnValue());
+					String scope = "";
+					if (isDefinition((Node) variable.getContainer())) scope = "scope";
+					else if (!variable.isTerminal()) scope = "node";
+					addFrame("scope", scope);
 				}
 			}
 
@@ -109,27 +127,14 @@ public class MorphFacetTargetAdapter implements org.siani.itrules.Adapter<FacetT
 		return frame.addTypes(MorphCreatorHelper.getTypes(variable, modelLevel));
 	}
 
-	private void addComponents(FacetTarget target, Frame frame) {
-		for (Node include : target.getIncludedNodes()) {
-			if (include.isAnonymous()) continue;
-			Frame includeFrame = new Frame().addTypes(collectReferenceTypes(include));
-			if (!isInFeature(include)) includeFrame.addFrame(DEFINITION, "");
-			if (!isInFeature(include)) includeFrame.addFrame(DEFINITION_AGGREGABLE, "");
-			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-			if (include instanceof NodeReference) {
-				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
-				addNodeReferenceName((NodeReference) include, includeFrame);
-			}
-			if (include instanceof NodeImpl)
-				addName(include, includeFrame);
-			frame.addFrame(COMPONENT, includeFrame);
-		}
+	private boolean isDefinition(Node node) {
+		return !node.isTerminal() && (node.isFeature() || isInFeature(node.getContainer()));
 	}
 
 	private boolean isInFeature(NodeContainer node) {
 		NodeContainer nodeContainer = node;
 		while (nodeContainer != null && nodeContainer instanceof Node)
-			if (((Node) nodeContainer).isFeature()) return true;
+			if (((Node) nodeContainer).isFeature() || ((Node) nodeContainer).isTerminal()) return true;
 			else nodeContainer = nodeContainer.getContainer();
 		return false;
 	}

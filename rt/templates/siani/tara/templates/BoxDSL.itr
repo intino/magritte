@@ -1,11 +1,11 @@
 def type(Box)
     package magritte.dsl;
 
-    public class $name+firstUppercase extends magritte.editors.Box.Metamodel {
-        public static final magritte.editors.Box box = new $name+firstUppercase();
+    public class $name+firstUppercase~Dsl extends magritte.schema.Box.Dsl {
+        public static final magritte.schema.Box box = new $name+firstUppercase~Dsl();
 
-        protected magritte.editors.Box$[$] includes() {
-            return new magritte.editors.Box$[$]{
+        protected magritte.schema.Box$[$] includes() {
+            return new magritte.schema.Box$[$]{
                 $namebox...[,$NL]
             };
         }

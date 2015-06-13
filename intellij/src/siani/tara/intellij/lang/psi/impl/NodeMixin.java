@@ -94,8 +94,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public List<Node> getNodeSiblings() {
 		Node node = (this.isSub()) ? getParentNode() : (Node) this;
-		Node contextOf = TaraPsiImplUtil.getContainerNodeOf(node);
-		if (contextOf == null) return unmodifiableList(((TaraModel) this.getContainingFile()).getRootNodes());
+		NodeContainer contextOf = TaraPsiImplUtil.getContextOf(node);
+		if (contextOf == null) return unmodifiableList(((TaraModel) this.getContainingFile()).getIncludes());
 		return unmodifiableList(contextOf.getIncludes());
 	}
 

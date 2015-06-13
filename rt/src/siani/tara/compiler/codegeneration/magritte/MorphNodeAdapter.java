@@ -44,6 +44,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	private void addNodeInfo(Node node, Frame frame) {
 		if ((initNode != null && !node.equals(initNode)) || inFacetTarget(node) != null) frame.addFrame(INNER, "");
 		if (node.getDoc() != null) frame.addFrame(DOC, node.getDoc());
+		if (node.isAbstract() || node.isFacet()) frame.addFrame(ABSTRACT, ABSTRACT.toLowerCase());
 		if (modelLevel == 2) addAggregables(frame, node);
 		addCreates(frame, node);
 		addName(node, frame);
@@ -110,7 +111,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 			isDefinition(node) ? DEFINITION_PATH : MORPH_PATH);
 	}
 
-	private boolean isDefinition(Node node) {//TODO si no va a llegar a M0. saber además si la Feature no es de M1
+	private boolean isDefinition(Node node) {
 		return !node.isTerminal() && (node.isFeature() || isInFeature(node.getContainer()));
 	}
 
@@ -156,6 +157,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		if (node.intoSingle()) types.add("into_single");
 		if (node.isRequired()) types.add("required");
 		if (node.isFeature()) types.add("feature");
+		if (node.isFinal()) types.add("final");
 		types.addAll(node.getFlags().stream().map((tag) -> tag.name().toLowerCase()).collect(Collectors.toList()));
 		return types.toArray(new String[types.size()]);
 	}

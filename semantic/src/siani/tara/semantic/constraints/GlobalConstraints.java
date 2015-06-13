@@ -36,7 +36,6 @@ public class GlobalConstraints {
 			duplicatedNames(),
 			invalidValueTypeInVariable(),
 			facetDeclaration(),
-			namedInsideFeature(),
 			facetInstantiation()};
 	}
 

@@ -10,13 +10,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface TaraModel extends PsiFile {
+public interface TaraModel extends NodeContainer, PsiFile {
 
 	@NotNull
 	PsiFile getContainingFile();
 
 	@NotNull
-	List<Node> getRootNodes();
+	List<Node> getIncludes();
 
 	@NotNull
 	PsiElement addConcept(@NotNull Node node) throws IncorrectOperationException;

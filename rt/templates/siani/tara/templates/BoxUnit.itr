@@ -1,11 +1,10 @@
 def type(model)
-	package magritte.boxes;
+	package magritte.ontology;
 
 	import java.text.SimpleDateFormat;
 	import java.text.ParseException;
 	import java.util.*;
 
-	import static magritte.editors.BoxCore.*;
 	import static magritte.Tag.*;
 	import magritte.primitives.Date;
 
@@ -13,16 +12,16 @@ def type(model)
 
 	$importMetric...[$NL]
 
-	public class $name extends magritte.editors.Box.$terminal {
-		public static final magritte.editors.Box box = new $name();
+	public class $name extends magritte.schema.Box.$terminal {
+		public static final magritte.schema.Box box = new $name();
 
 		@Override
-		public magritte.editors.Box$[] dependencies() {
-			return new magritte.editors.Box$[]{[magritte.dsl.$language+firstUpperCase.box]};
+		public magritte.schema.Box$[] dependencies() {
+			return new magritte.schema.Box$[]{[magritte.dsl.$language+firstUpperCase~Dsl.box]};
 		}
 
 		@Override
-		public void doWrite() {
+		public void write() {
 			$node...[$NL]
 		}
 
@@ -39,10 +38,10 @@ def type(model)
 end
 
 def trigger(terminal) value(true)
-	Terminal
+	Scene
 end
 def trigger(terminal) value(false)
-	Unit
+	Ontology
 end
 
 def type(nodecontainer) trigger(node)
@@ -96,7 +95,7 @@ end
 
 ---------------------- NODE SETTERS ----------------------
 def type(variable) type(reference) slot(variableValue) trigger(variable)
-	._set("$terminal$private$name", $multiple($variableValue+ref...[, ]))
+	.set("$terminal$name", $multiple($variableValue+ref...[, ]))
 end
 
 def trigger(ref)
@@ -104,7 +103,7 @@ def trigger(ref)
 end
 
 def type(variable) type(file) slot(variableValue) trigger(variable)
-	._set("$terminal$private$name", $multiple($variableValue+file...[, ]))
+	.set("$terminal$name", $multiple($variableValue+file...[, ]))
 end
 
 def trigger(file)
@@ -112,7 +111,7 @@ def trigger(file)
 end
 
 def type(variable) type(native) slot(variableValue) trigger(variable)
-	.let("$terminal$private$name", $variableValue+native)
+	.let("$terminal$name", $variableValue+native)
 end
 
 
@@ -121,23 +120,23 @@ def trigger(native) !value(null)
 end
 
 def type(variable) type(word) slot(variableValue) trigger(variable)
-	._set("$terminal$private$name", $multiple($variableValue+quoted...[, ]))
+	.set("$terminal$name", $multiple($variableValue+quoted...[, ]))
 end
 
 def type(Variable) type(string) slot(variableValue) trigger(variable)
-	._set("$terminal$private$name", $multiple($variableValue+quoted...[, ]))
+	.set("$terminal$name", $multiple($variableValue+quoted...[, ]))
 end
 
 def type(Variable) type(integer) slot(variableValue) trigger(variable)
-	._set("$terminal$private$name", $multiple($variableValue...[, ]))
+	.set("$terminal$name", $multiple($variableValue...[, ]))
 end
 
 def type(Variable) type(double) slot(variableValue) trigger(variable)
-	._set("$terminal$private$name", $multiple($variableValue...[, ]))
+	.set("$terminal$name", $multiple($variableValue...[, ]))
 end
 
 def type(Variable) type(date) slot(variableValue) trigger(variable)
-	._set("$terminal$private$name", $multiple($variableValue+date...[, ]))
+	.set("$terminal$name", $multiple($variableValue+date...[, ]))
 end
 
 def trigger(date)
@@ -145,11 +144,11 @@ def trigger(date)
 end
 
 def type(Variable) type(boolean) slot(variableValue) trigger(variable)
-	._set("$terminal$private$name", $multiple($variableValue...[, ]))
+	.set("$terminal$name", $multiple($variableValue...[, ]))
 end
 
 def type(Variable) slot(variableValue) trigger(variable)
-	.set("$terminal$private$name", $multiple($variableValue+quoted...[, ]))
+	.set("$terminal$name", $multiple($variableValue+quoted...[, ]))
 end
 
 def type(Variable) trigger(variable)

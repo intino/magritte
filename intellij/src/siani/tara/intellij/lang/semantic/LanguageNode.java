@@ -158,7 +158,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	private void addFacetTargetIncludes(Node node) {
 		for (siani.tara.intellij.lang.psi.FacetTarget facetTarget : node.getFacetTargets())
-			for (Node include : facetTarget.includes()) {
+			for (Node include : facetTarget.getIncludes()) {
 				includes.add(new LanguageNode(include));
 				if (include.isAbstract()) addIncludeSubs(include.getSubNodes());
 			}

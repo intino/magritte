@@ -8,6 +8,9 @@ import siani.tara.intellij.lang.psi.*;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
+import static siani.tara.intellij.lang.psi.impl.TaraUtil.getInnerNodesOf;
+
 public class FacetTargetMixin extends ASTWrapperPsiElement {
 
 	public FacetTargetMixin(ASTNode node) {
@@ -20,9 +23,8 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public List<Node> includes() {
-		Body body = ((TaraFacetTarget) this).getBody();
-		return (body == null) ? Collections.EMPTY_LIST : Collections.unmodifiableList(body.getNodeList());
+	public List<Node> getIncludes() {
+		return unmodifiableList(getInnerNodesOf((FacetTarget) this));
 	}
 
 	@NotNull

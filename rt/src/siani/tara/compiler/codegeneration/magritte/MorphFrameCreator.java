@@ -44,7 +44,7 @@ public class MorphFrameCreator implements TemplateTags {
 		this.initNode = node;
 		morphNodeAdapter.setInitNode(initNode);
 		final Frame frame = new Frame().addTypes(MORPH);
-		String packagePath = addPackage(frame);
+		String packagePath = addPackage(frame, node);
 		createMorph(frame, node);
 		addImports(frame);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
@@ -57,7 +57,7 @@ public class MorphFrameCreator implements TemplateTags {
 		createFacetTargetMorph(frame, facetTarget);
 		addImports(frame);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		return new AbstractMap.SimpleEntry<>(packagePath + DOT + facetTarget.getTargetNode().getName(), frame);
+		return new AbstractMap.SimpleEntry<>(packagePath + DOT + ((Node) facetTarget.getContainer()).getName() + "_" + facetTarget.getTargetNode().getName(), frame);
 	}
 
 	private void createFacetTargetMorph(Frame frame, FacetTarget node) {
@@ -69,8 +69,8 @@ public class MorphFrameCreator implements TemplateTags {
 		frame.addFrame("node", builder.build(node));
 	}
 
-	private String addPackage(Frame frame) {
-		String packagePath = composeMorphPackagePath(generatedLanguage);
+	private String addPackage(Frame frame, Node node) {
+		String packagePath = composeMorphPackagePath(generatedLanguage) + (node.isFacet() ? DOT + node.getName().toLowerCase() : "");
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		return packagePath;
 	}

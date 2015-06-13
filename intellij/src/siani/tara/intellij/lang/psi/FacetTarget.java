@@ -6,12 +6,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface FacetTarget extends Navigatable, TaraPsiElement {
+public interface FacetTarget extends NodeContainer, Navigatable {
 
 	String getTarget();
 
 	@NotNull
-	List<Node> includes();
+	List<Node> getIncludes();
 
 	@NotNull
 	List<Variable> getVariables();

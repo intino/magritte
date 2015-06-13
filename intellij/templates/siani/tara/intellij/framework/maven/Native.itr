@@ -4,9 +4,9 @@ def type(native)
 	import $language.natives.*;
 	import java.util.*;
 
-	public class $qn_$variable extends $parent implements $intention {
+	public class $qn[_$variable] extends $parent implements $intention {
 
 		@Override
-		$signature {$NL$TAB$TAB
-
+		$signature {
+			$return
 end

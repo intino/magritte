@@ -106,7 +106,7 @@ public class LanguageRoot extends LanguageElement implements Node {
 
 	@Override
 	public Node[] includes() {
-		return wrap(model.getRootNodes());
+		return wrap(model.getIncludes());
 	}
 
 	@Override

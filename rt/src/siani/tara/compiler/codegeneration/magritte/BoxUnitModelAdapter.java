@@ -18,32 +18,33 @@ import static java.util.Collections.unmodifiableList;
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.*;
 import static siani.tara.compiler.model.Variable.NATIVE_SEPARATOR;
 
-public class BoxModelAdapter implements Adapter<Model>, TemplateTags {
+public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 	private final String project;
 	private final String generatedLanguage;
 	private final Language language;
 	private final Locale locale;
 	private final Map<String, List<SimpleEntry<String, String>>> metrics;
-	private final boolean terminalBox;
+	private final boolean scene;
 
 
-	public BoxModelAdapter(String project,
-	                       String generatedLanguage,
-	                       Language language,
-	                       Locale locale, Map<String, List<SimpleEntry<String, String>>> metrics,
-	                       boolean terminalBox) {
+	public BoxUnitModelAdapter(String project,
+	                           String generatedLanguage,
+	                           Language language,
+	                           Locale locale, Map<String, List<SimpleEntry<String, String>>> metrics,
+	                           boolean scene) {
 		this.project = project;
 		this.generatedLanguage = generatedLanguage;
 		this.language = language;
 		this.locale = locale;
 		this.metrics = metrics;
-		this.terminalBox = terminalBox;
+		this.scene = scene;
 	}
 
 	public static String getQn(Node owner, Node node, String generatedLanguage) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
 		if (owner.isFacet())
-			return composeMorphPackagePath(generatedLanguage) + DOT + owner.getName().toLowerCase() + DOT + Format.reference().format(facetTarget.getTarget());
+			return composeMorphPackagePath(generatedLanguage) + DOT + owner.getName().toLowerCase() + DOT +
+				Format.reference().format(owner.getName()) + "_" + Format.reference().format(facetTarget.getTarget());
 		else
 			return composeMorphPackagePath(generatedLanguage) + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
 	}
@@ -59,8 +60,8 @@ public class BoxModelAdapter implements Adapter<Model>, TemplateTags {
 	public void execute(Frame frame, Model model, FrameContext FrameContext) {
 		frame.addFrame(NAME, capitalize(generatedLanguage) + buildFileName(model.getFile()));
 		if (!Objects.equals(language.languageName(), "Proteo")) frame.addFrame(LANGUAGE, language.languageName());
-		frame.addFrame(PROJECT, project).addFrame(TERMINAL, terminalBox);
-		if (!terminalBox) frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
+		frame.addFrame(PROJECT, project).addFrame(TERMINAL, scene);
+		if (!scene) frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		addMetricImports(frame);
 		addFacetImports(model.getIncludedNodes(), frame);
 		parserAllNodes(frame, model, FrameContext);

@@ -2,8 +2,8 @@ package siani.tara.semantic.constraints;
 
 import siani.tara.semantic.Rejectable;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 abstract class ParameterAllow {
 
@@ -20,10 +20,8 @@ abstract class ParameterAllow {
 
 
 	protected static List<Rejectable.Parameter> getRejectableParameters(List<? extends Rejectable> rejectables) {
-		List<Rejectable.Parameter> parameters = new ArrayList<>();
-		for (Rejectable rejectable : rejectables)
-			if (rejectable instanceof Rejectable.Parameter)
-				parameters.add((Rejectable.Parameter) rejectable);
-		return parameters;
+		return rejectables.stream().
+			filter(rejectable -> rejectable instanceof Rejectable.Parameter).
+			map(rejectable -> (Rejectable.Parameter) rejectable).collect(Collectors.toList());
 	}
 }

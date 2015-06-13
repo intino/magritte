@@ -26,7 +26,6 @@ import org.jetbrains.jps.model.java.JavaResourceRootType;
 import org.jetbrains.jps.model.java.JavaSourceRootProperties;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
-import siani.tara.intellij.actions.ImportLanguage;
 import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.facet.TaraFacetConfiguration;
 
@@ -167,7 +166,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		}
 
 		private void addImportAction() {
-			importButton.addActionListener(e -> new ImportLanguage().importLanguage());
 		}
 
 		private void addModuleDsls() {

@@ -52,8 +52,8 @@ public class BoxFacetTargetAdapter implements Adapter<FacetTarget>, TemplateTags
 		Long key = getKey(inner);
 		Frame include = new Frame().addTypes(INCLUDE).addTypes(asString(inner.getFlags()));
 		final boolean withKey = inner.isAnonymous() && inner.getPlate() == null;
-		include.addFrame(VALUE, withKey ? key : '"' + container + NameFormatter.cleanQn(searchNode(inner)) + '"');
-		if (m0) include.addTypes(TERMINAL);
+		include.addFrame(VALUE, withKey ? key : '"' + container + "." + NameFormatter.cleanQn(searchNode(inner)) + '"');
+		if (m0 || (inner.isFeatureInstance() || inner.isTerminalInstance())) include.addTypes(TERMINAL);
 		if (withKey) include.addTypes(KEY);
 		if (inner.isFeature()) include.addTypes(Tag.SINGLE.name());
 		frame.addFrame(INCLUDE, include);

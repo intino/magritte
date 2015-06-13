@@ -2,7 +2,10 @@ package siani.tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
-import siani.tara.compiler.model.*;
+import siani.tara.compiler.model.EmptyNode;
+import siani.tara.compiler.model.Facet;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.Parameter;
 import siani.tara.semantic.model.Primitives;
 import siani.tara.semantic.model.Tag;
 
@@ -38,7 +41,7 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 
 	private String buildName(Parameter parameter) {
 		if (parameter.getOwner() instanceof Facet)
-			return (((Facet) parameter.getOwner()).getFacetType()) + ":" + parameter.getName();
+			return ((Node) (parameter.getOwner().getContainer())).getName() + "+" + parameter.getName();
 		else return parameter.getName();
 	}
 

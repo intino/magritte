@@ -14,7 +14,11 @@ import siani.tara.semantic.Allow;
 import siani.tara.semantic.Assumption;
 import siani.tara.semantic.model.FacetTarget;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.intellij.codeInsight.lookup.LookupElementBuilder.create;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
@@ -68,15 +72,18 @@ public class TaraNodeCompletionContributor extends CompletionContributor {
 	}
 
 	private List<LookupElementBuilder> getLookupElementBuilders(String language, Collection<Allow> allows) {
-		List<LookupElementBuilder> elementBuilders = new ArrayList<>();
-		for (Allow allow : allows)
-			if (allow instanceof Allow.Include)
-				elementBuilders.add(createElement(language, (Allow.Include) allow));
-		return elementBuilders;
+		return allows.stream().
+			filter(allow -> allow instanceof Allow.Include).
+			map(allow -> createElement(language, (Allow.Include) allow)).
+			collect(Collectors.toList());
 	}
 
 	private LookupElementBuilder createElement(String language, Allow.Include allow) {
-		return create(allow.type() + " ").withIcon(TaraIcons.CONCEPT).withCaseSensitivity(false).withTypeText(language);
+		return create(lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.CONCEPT).withCaseSensitivity(false).withTypeText(language);
+	}
+
+	private String lastTypeOf(String type) {
+		return type.substring(type.lastIndexOf("."), type.length());
 	}
 
 	private void afterIdentifier() {

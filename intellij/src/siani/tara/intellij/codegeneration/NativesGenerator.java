@@ -74,7 +74,8 @@ public class NativesGenerator {
 		if (aClass == null) {
 			aClass = JavaDirectoryService.getInstance().createInterface(destiny, variable.getContract().getFormattedName());
 			setParent(MAGRITTE_NATIVE, aClass);
-		}
+		} else if (aClass.getExtendsList() == null || !isParentAdded(aClass.getExtendsList().getReferencedTypes(), findClass(MAGRITTE_NATIVE)))
+			setParent(MAGRITTE_NATIVE, aClass);
 		return aClass;
 	}
 
@@ -84,7 +85,7 @@ public class NativesGenerator {
 
 	private void setParent(String parent, PsiClass aClass) {
 		PsiClass parentClass = findClass(parent);
-		if (!isParentAdded(aClass.getExtendsList().getReferencedTypes(), parentClass))
+		if (aClass.getExtendsList() == null || !isParentAdded(aClass.getExtendsList().getReferencedTypes(), parentClass))
 			setParent(aClass, parentClass);
 	}
 
@@ -145,7 +146,7 @@ public class NativesGenerator {
 	private void getNativeVariables(List<FacetTarget> facetTargets, List<Variable> natives) {
 		for (FacetTarget facetTarget : facetTargets) {
 			natives.addAll(facetTarget.getVariables().stream().filter(variable -> "native".equals(variable.getType())).collect(Collectors.toList()));
-			getNativeVariablesOfNodes(facetTarget.includes(), natives);
+			getNativeVariablesOfNodes(facetTarget.getIncludes(), natives);
 		}
 	}
 }

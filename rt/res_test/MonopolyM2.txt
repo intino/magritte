@@ -28,7 +28,7 @@ outputpath
 final_outputpath
 /Users/oroncal/workspace/sandbox/monopoly/tafat/target/classes/
 magritte
-/Users/oroncal/.m2/repository/org/siani/magritte/magritte/1.1.6/magritte-1.1.6.jar
+/Users/oroncal/.m2/repository/org/siani/magritte/magritte/1.1.18/magritte-1.1.18.jar
 metrics
 /Users/oroncal/workspace/sandbox/monopoly/tafat/target/classes/
 resources

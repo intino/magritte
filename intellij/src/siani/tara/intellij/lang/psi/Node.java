@@ -14,7 +14,7 @@ import java.util.List;
 
 import static java.util.Collections.EMPTY_LIST;
 
-public interface Node extends Navigatable, Iconable, TaraPsiElement {
+public interface Node extends NodeContainer, Navigatable, Iconable {
 
 	TaraModelImpl getFile() throws PsiInvalidElementAccessException;
 

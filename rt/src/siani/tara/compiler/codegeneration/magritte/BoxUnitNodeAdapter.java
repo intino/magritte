@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
+public class BoxUnitNodeAdapter implements Adapter<Node>, TemplateTags {
 	private final Map<Node, Long> keys;
 	private final boolean m0;
 
-	public BoxNodeAdapter(Map<Node, Long> keys, boolean terminalBox) {
+	public BoxUnitNodeAdapter(Map<Node, Long> keys, boolean terminalBox) {
 		this.keys = keys;
 		this.m0 = terminalBox;
 	}
@@ -48,7 +48,17 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 			if (node.getPlate() != null) newFrame.addFrame(PLATE, "|" + String.valueOf(node.getPlate()));
 		}
 		addTypes(node, newFrame);
-		if (node.getParent() != null) newFrame.addFrame(PARENT, clean(node.getParent().getQualifiedName()));
+		if (node.getParent() != null)
+			newFrame.addFrame(PARENT, getQn(node.getParent()));
+	}
+
+	private String getQn(Node parent) {
+		if (isInFacet(parent)) {
+			final FacetTarget target = inFacetTarget(parent);
+			if (target == null) return "";
+			return clean(((Node) target.getContainer()).getName() + "+" + target.getTargetNode().getName() + DOT + parent.getQualifiedName());
+		}
+		return clean(parent.getQualifiedName());
 	}
 
 	private String facetPrefix(Node node) {
@@ -86,26 +96,24 @@ public class BoxNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private void addTypes(Node node, Frame newFrame) {
-		newFrame.addFrame(NODE_TYPE, node.getType());
-		for (Facet facet : node.getFacets()) newFrame.addFrame(NODE_TYPE, facet.getFacetType());
+		if (node.getFacets().isEmpty())
+			newFrame.addFrame(NODE_TYPE, node.getType());
+		else
+			for (Facet facet : node.getFacets())
+				newFrame.addFrame(NODE_TYPE, facet.getFacetType() + "+" + node.getType());
 	}
 
 	private void flags(final Node node, Frame frame) {
 		Frame tagsFrame = new Frame();
-		for (Tag tag : node.getFlags()) {
-			if (!tag.equals(Tag.ABSTRACT) && !tag.equals(Tag.TERMINAL) && !tag.equals(Tag.TERMINAL_INSTANCE) && !tag.equals(Tag.MAIN))
-				continue;
-			if (m0 && tag.equals(Tag.TERMINAL_INSTANCE)) continue;
-			tagsFrame.addFrame(VALUE, tag.equals(Tag.TERMINAL) ? PROTOTYPE : tag.name());
-		}
-		if (m0 && isRoot(node)) tagsFrame.addFrame(VALUE, Tag.MAIN.name());
 		tagsFrame.addTypes(ANNOTATION);
-		if (tagsFrame.slots().length != 0)
-			frame.addFrame(ANNOTATION, tagsFrame);
-	}
+		if (node.isFacet()) tagsFrame.addFrame(VALUE, FACET, ABSTRACT);
+		else if (node.isAbstract()) tagsFrame.addFrame(VALUE, ABSTRACT);
+		if (node.isTerminalInstance() && !m0) tagsFrame.addFrame(VALUE, PROTOTYPE);
+		else if ((node.isFeatureInstance() || node.isTerminalInstance()) && !m0) tagsFrame.addFrame(VALUE, CASE);
 
-	private boolean isRoot(Node node) {
-		return node.isMain() || (node.getContainer() instanceof Model);
+		if (node.isMain() && !m0) tagsFrame.addFrame(VALUE, MAIN);
+		if ((node.isMain() || node.getContainer() instanceof Model) && m0) tagsFrame.addFrame(VALUE, ROOT);
+		if (tagsFrame.slots().length != 0) frame.addFrame(ANNOTATION, tagsFrame);
 	}
 
 	private void variables(Node node, final Frame frame, FrameContext<Node> context) {

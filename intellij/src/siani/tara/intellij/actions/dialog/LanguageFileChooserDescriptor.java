@@ -2,7 +2,6 @@ package siani.tara.intellij.actions.dialog;
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.vfs.VirtualFile;
-import siani.tara.intellij.actions.ImportLanguage;
 
 public class LanguageFileChooserDescriptor extends FileChooserDescriptor {
 	public LanguageFileChooserDescriptor() {
@@ -21,7 +20,7 @@ public class LanguageFileChooserDescriptor extends FileChooserDescriptor {
 	}
 
 	private boolean isLanguageFile(VirtualFile file) {
-		return file.getName().endsWith(ImportLanguage.LANGUAGE_EXTENSION);
+		return file.getName().endsWith(".jar");
 	}
 
 

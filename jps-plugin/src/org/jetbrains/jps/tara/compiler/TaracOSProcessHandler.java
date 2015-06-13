@@ -6,14 +6,13 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.Consumer;
-import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
-import siani.tara.compiler.rt.TaraCompilerMessageCategories;
-import siani.tara.compiler.rt.TaraRtConstants;
 import org.apache.log4j.Level;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
+import siani.tara.compiler.rt.TaraCompilerMessageCategories;
+import siani.tara.compiler.rt.TaraRtConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +34,7 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	}
 
 	private List<String> splitAndTrim(String compiled) {
-		return ContainerUtil.map(StringUtil.split(compiled, TaraRtConstants.SEPARATOR), new Function<String, String>() {
-			public String fun(String s) {
-				return s.trim();
-			}
-		});
+		return ContainerUtil.map(StringUtil.split(compiled, TaraRtConstants.SEPARATOR), String::trim);
 	}
 
 	public void notifyTextAvailable(final String text, final Key outputType) {

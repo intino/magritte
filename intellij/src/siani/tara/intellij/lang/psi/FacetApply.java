@@ -4,12 +4,16 @@ import com.intellij.pom.Navigatable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface FacetApply extends Navigatable, TaraPsiElement {
+import java.util.List;
+
+public interface FacetApply extends NodeContainer, Navigatable, TaraPsiElement {
 
 	@NotNull
 	String getType();
 
 	Body getBody();
+
+	List<Node> getIncludes();
 
 	@Nullable
 	Parameters getParameters();

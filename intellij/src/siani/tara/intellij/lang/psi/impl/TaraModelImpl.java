@@ -81,7 +81,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	@NotNull
 	@Override
-	public List<Node> getRootNodes() {
+	public List<Node> getIncludes() {
 		return unmodifiableList(TaraUtil.getRootNodesOfFile(this));
 	}
 
@@ -144,7 +144,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	private PsiElement findImportAnchor() {
-		Iterator<Node> iterator = this.getRootNodes().iterator();
+		Iterator<Node> iterator = this.getIncludes().iterator();
 		if (iterator.hasNext()) return iterator.next();
 		return this.getFirstChild();
 	}

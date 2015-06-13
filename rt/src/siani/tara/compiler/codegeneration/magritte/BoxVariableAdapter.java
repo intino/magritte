@@ -17,9 +17,11 @@ import static siani.tara.compiler.codegeneration.magritte.TemplateTags.*;
 public class BoxVariableAdapter implements Adapter<Variable> {
 
 	private final Map<String, List<SimpleEntry<String, String>>> metrics;
+	private final int level;
 
-	public BoxVariableAdapter(Map<String, List<SimpleEntry<String, String>>> metrics) {
+	public BoxVariableAdapter(Map<String, List<SimpleEntry<String, String>>> metrics, int level) {
 		this.metrics = metrics;
+		this.level = level;
 	}
 
 	@Override
@@ -37,11 +39,20 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 	}
 
 	protected void fill(Frame frame, Variable variable) {
-		frame.addFrame(NAME, variable.getName());
-		frame.addFrame(TERMINAL, TERMINAL_KEY);
+		frame.addFrame(NAME, buildName(variable));
+		if (variable.isTerminal() && level == 2) frame.addFrame(TERMINAL, TERMINAL_KEY + TERMINAL_KEY);
+		else if (level >=1) frame.addFrame(TERMINAL, TERMINAL_KEY);
 		frame.addFrame(MULTIPLE, variable.isMultiple());
 		if (variable.getType().equals(Primitives.MEASURE)) asMeasure(frame, variable);
 	}
+
+
+	private String buildName(Variable parameter) {
+		if (parameter.getContainer() instanceof Facet)
+			return ((Node) (parameter.getContainer().getContainer())).getName() + "+" + parameter.getName();
+		else return parameter.getName();
+	}
+
 
 	protected String[] getTypes(Variable variable) {
 		List<String> list = new ArrayList<>();

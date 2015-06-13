@@ -49,7 +49,7 @@ public class VariantsManager {
 	private void addInModelVariants() {
 		TaraModel model = (TaraModel) myElement.getContainingFile();
 		if (model == null) return;
-		for (Node node : model.getRootNodes())
+		for (Node node : model.getIncludes())
 			if (!node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement)))
 				resolvePathFor(node, context);
 		addAggregatedConcepts(model);
@@ -60,7 +60,7 @@ public class VariantsManager {
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
 			if (resolve == null || !TaraModel.class.isInstance(resolve)) continue;
-			for (Node node : ((TaraModel) resolve).getRootNodes())
+			for (Node node : ((TaraModel) resolve).getIncludes())
 				if (!node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement)))
 					resolvePathFor(node, context);
 			addAggregatedConcepts((TaraModel) resolve);
