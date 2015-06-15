@@ -35,7 +35,6 @@ public class TaraFacetEditor extends FacetEditorTab {
 	private JCheckBox plateRequired;
 	private JLabel generativeLabel;
 	private JSpinner level;
-	private JButton importButton;
 	private Module[] candidates;
 
 	public TaraFacetEditor(TaraFacetConfiguration facetConfiguration, Module module) {

@@ -19,7 +19,6 @@ public class LanguageLoader {
 			Class cls = cl.loadClass(TaraLanguage.LANGUAGES_PACKAGE + "." + name);
 			return (Language) cls.newInstance();
 		} catch (MalformedURLException | ClassNotFoundException | NoClassDefFoundError e1) {
-			LOG.info(e1.getMessage());
 			return null;
 		} catch (InstantiationException | IllegalAccessException e2) {
 			return null;

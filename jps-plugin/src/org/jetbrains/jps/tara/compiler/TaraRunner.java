@@ -78,10 +78,10 @@ public class TaraRunner {
 	}
 
 	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,
-	                                                final JpsTaraSettings settings, boolean pluginGeneration) throws IOException {
+	                                                final JpsTaraSettings settings) throws IOException {
 		List<String> classpath = new ArrayList<>(generateRunnerClasspath());
 		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
-		List<String> programParams = ContainerUtilRt.newArrayList(pluginGeneration ? "--gen-plugin" : "tarac", argsFile.getPath());
+		List<String> programParams = ContainerUtilRt.newArrayList("tarac", argsFile.getPath());
 		List<String> vmParams = ContainerUtilRt.newArrayList();
 		vmParams.add("-Xmx" + settings.heapSize + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));

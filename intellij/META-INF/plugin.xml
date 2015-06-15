@@ -90,7 +90,6 @@
     <facetType implementation="siani.tara.intellij.project.facet.TaraFacetType"/>
     <framework.type implementation="siani.tara.intellij.framework.TaraFrameworkType"/>
     <lang.commenter language="Tara" implementationClass="siani.tara.intellij.TaraCommenter"/>
-
     <languageInjector implementation="siani.tara.intellij.codeinsight.TaraLanguageInjector"/>
 
     <lang.documentationProvider language="Tara"
