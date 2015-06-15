@@ -1,5 +1,6 @@
 package org.jetbrains.jps.tara.compiler;
 
+import com.intellij.openapi.compiler.CompilationStatusListener;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.io.FileUtil;
@@ -20,6 +21,7 @@ import org.jetbrains.jps.incremental.java.ClassPostProcessor;
 import org.jetbrains.jps.incremental.java.JavaBuilder;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
+import org.jetbrains.jps.incremental.messages.CustomBuilderMessage;
 import org.jetbrains.jps.javac.OutputFileObject;
 import org.jetbrains.jps.model.JpsProject;
 import org.jetbrains.jps.model.module.JpsModule;
@@ -32,6 +34,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static siani.tara.compiler.rt.TaraRtConstants.FILE_INVALIDATION_BUILDER_MESSAGE;
+import static siani.tara.compiler.rt.TaraRtConstants.TARAC;
+
 public class TaraBuilder extends ModuleLevelBuilder {
 
 	private static final Key<Boolean> FILES_MARKED_DIRTY_FOR_NEXT_ROUND = Key.create("SRC_MARKED_DIRTY");
@@ -41,6 +46,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private static final String RES = "res";
 	private static final String ICONS = "icons";
 	private static final String GEN = "gen";
+
 	private final String builderName;
 
 	public TaraBuilder() {
@@ -71,6 +77,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		long start = 0;
 		try {
 			JpsProject project = context.getProjectDescriptor().getProject();
+
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
 			JpsTaraModuleExtension extension = JpsTaraExtensionService.getInstance().getExtension(chunk.getModules().iterator().next());
 			if (extension == null) return ExitCode.NOTHING_DONE;
@@ -95,6 +102,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			rememberStubSources(context, compiled);
 			processMessages(chunk, context, handler);
 			updateDependencies(context, compiled);
+			context.processMessage(new CustomBuilderMessage(TARAC, FILE_INVALIDATION_BUILDER_MESSAGE, getOutDir(chunk.getModules().iterator().next())));
 			context.setDone(1);
 			return hasFilesToCompileForNextRound(context) ? ExitCode.ADDITIONAL_PASS_REQUIRED : ExitCode.OK;
 		} catch (Exception e) {
@@ -352,6 +360,19 @@ public class TaraBuilder extends ModuleLevelBuilder {
 					list.add(file);
 		}
 		return list;
+	}
+
+	private static class Updated implements CompilationStatusListener {
+
+		@Override
+		public void compilationFinished(boolean b, int i, int i1, com.intellij.openapi.compiler.CompileContext compileContext) {
+
+		}
+
+		@Override
+		public void fileGenerated(String s, String s1) {
+
+		}
 	}
 
 	private static class RecompileStubSources implements ClassPostProcessor {

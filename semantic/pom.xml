@@ -33,12 +33,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.siani.itrules</groupId>
-      <artifactId>itrules</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>

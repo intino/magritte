@@ -5,6 +5,8 @@ public class TaraRtConstants {
 	public static final String ENCODING = "encoding";
 	public static final String OUTPUTPATH = "outputpath";
 	public static final String PROJECT = "project";
+	public static final String TARAC = "Tarac";
+	public static final String FILE_INVALIDATION_BUILDER_MESSAGE = "%%refresh%%";
 	public static final String ICONS_PATH = "icons";
 	public static final String PROJECT_ICON = "project_icon";
 	public static final String FINAL_OUTPUTPATH = "final_outputpath";

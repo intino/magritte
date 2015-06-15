@@ -22,11 +22,21 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="tara-jps-plugin" />
+    <orderEntry type="module" module-name="tara-runtime-constants" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.siani.itrules:itrules:1.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.siani.itrules:itrules:1.2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.commonjava.googlecode.markdown4j:markdown4j:2.2-cj-1.0" level="project" />
     <orderEntry type="module" module-name="semantic" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/magritte.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

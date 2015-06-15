@@ -29,10 +29,15 @@ public class ImportLanguage extends AnAction implements DumbAware {
 
 	public File importLanguage(Project project) throws Exception {
 		VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), project, project.getBaseDir());
-		return importLanguage(file, project);
+		return importLanguage(file);
 	}
 
-	private File importLanguage(VirtualFile file, Project project) throws Exception {
+	public File importLanguage() throws Exception {
+		VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), null, null);
+		return importLanguage(file);
+	}
+
+	private File importLanguage(VirtualFile file) throws Exception {
 		final String languagesPath = TaraLanguage.LANGUAGES_PATH;
 		final Boolean aBoolean = FileSystemUtils.copyFile(file.getPath(), languagesPath + file.getName());
 		if (!aBoolean) throw new Exception("unable import");

@@ -17,10 +17,12 @@ import siani.tara.compiler.rt.TaraRtConstants;
 import java.util.ArrayList;
 import java.util.List;
 
+import static siani.tara.compiler.rt.TaraRtConstants.TARAC;
+
 public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	public static final String TARA_COMPILER_IN_OPERATION = "Tara compiler in operation...";
 	private static final Logger LOG = Logger.getInstance(TaracOSProcessHandler.class);
-	private static final String TARAC = "Tarac";
+
 	private final List<OutputItem> myCompiledItems = new ArrayList<>();
 	private final List<CompilerMessage> compilerMessages = new ArrayList<>();
 	private final StringBuilder stdErr = new StringBuilder();

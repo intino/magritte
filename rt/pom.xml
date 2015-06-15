@@ -36,13 +36,7 @@
     <dependency>
       <groupId>org.siani.itrules</groupId>
       <artifactId>itrules</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.siani.itrules</groupId>
-      <artifactId>itrules-itr-reader</artifactId>
-      <version>LATEST</version>
+      <version>1.2.2</version>
     </dependency>
 
     <dependency>

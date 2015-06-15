@@ -18,6 +18,7 @@ import siani.tara.compiler.rt.TaraRtConstants;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import static java.io.File.separator;
 
@@ -115,8 +116,8 @@ public class TaraRunner {
 		classPath.add(getTaraRtRoot().getPath());
 		classPath.add(getAntlrLib().getPath());
 		classPath.add(getSemanticsLib().getPath());
-		for (File file : getItRulesLibs()) classPath.add(file.getPath());
-		for (File file : getJalopyLibs()) classPath.add(file.getPath());
+		classPath.addAll(getItRulesLibs().stream().map(File::getPath).collect(Collectors.toList()));
+		classPath.addAll(getJalopyLibs().stream().map(File::getPath).collect(Collectors.toList()));
 		return classPath;
 	}
 

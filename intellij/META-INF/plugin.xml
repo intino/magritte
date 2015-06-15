@@ -169,6 +169,11 @@
     <lang.elementManipulator forClass="siani.tara.intellij.lang.psi.Expression"
                              implementationClass="siani.tara.intellij.lang.psi.TaraExpressionManipulator"/>
   </extensions>
+  <project-components>
+    <component>
+      <implementation-class>siani.tara.intellij.project.TaraCompilerListener</implementation-class>
+    </component>
+  </project-components>
 
   <application-components>
   </application-components>
