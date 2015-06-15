@@ -1,7 +1,10 @@
-package siani.tara.compiler.codegeneration.magritte;
+package siani.tara.compiler.codegeneration.magritte.box;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
+import siani.tara.compiler.codegeneration.magritte.Generator;
+import siani.tara.compiler.codegeneration.magritte.NameFormatter;
+import siani.tara.compiler.codegeneration.magritte.TemplateTags;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
@@ -13,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class BoxUnitNodeAdapter implements Adapter<Node>, TemplateTags {
+public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, TemplateTags {
 	private final Map<Node, Long> keys;
 	private final boolean m0;
 
@@ -40,7 +43,7 @@ public class BoxUnitNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private void structure(Node node, Frame newFrame) {
-		if (node.isAnonymous() && node.getPlate() == null && !isInFacet(node))
+		if (node.isAnonymous() && node.getPlate() == null)
 			newFrame.addFrame(KEY, String.valueOf(this.keys.get(node)));
 		else {
 			String prefix = inFacet(node) != null ? facetPrefix(node) : facetTargetPrefix(node);
@@ -110,7 +113,6 @@ public class BoxUnitNodeAdapter implements Adapter<Node>, TemplateTags {
 		else if (node.isAbstract()) tagsFrame.addFrame(VALUE, ABSTRACT);
 		if (node.isTerminalInstance() && !m0) tagsFrame.addFrame(VALUE, PROTOTYPE);
 		else if ((node.isFeatureInstance() || node.isTerminalInstance()) && !m0) tagsFrame.addFrame(VALUE, CASE);
-
 		if (node.isMain() && !m0) tagsFrame.addFrame(VALUE, MAIN);
 		if ((node.isMain() || node.getContainer() instanceof Model) && m0) tagsFrame.addFrame(VALUE, ROOT);
 		if (tagsFrame.slots().length != 0) frame.addFrame(ANNOTATION, tagsFrame);
@@ -122,9 +124,9 @@ public class BoxUnitNodeAdapter implements Adapter<Node>, TemplateTags {
 	}
 
 	private void parameters(Node node, Frame frame, FrameContext<Node> context) {
-		node.getParameters().stream().filter(parameter -> !isOverriddenByFacets(parameter, node.getFacets())).forEach(parameter -> {
-			frame.addFrame(VARIABLE, context.build(parameter));
-		});
+		node.getParameters().stream().
+			filter(parameter -> !isOverriddenByFacets(parameter, node.getFacets())).
+			forEach(parameter -> frame.addFrame(VARIABLE, context.build(parameter)));
 	}
 
 	private boolean isOverriddenByFacets(Parameter parameter, Collection<Facet> facets) {
@@ -151,14 +153,6 @@ public class BoxUnitNodeAdapter implements Adapter<Node>, TemplateTags {
 			filter(inner -> !isOverriddenByFacets(inner, node.getFacets())).
 			forEach(inner -> addComponent(frame, inner));
 		addFacetNodes(node, frame);
-	}
-
-	private boolean inherited(Node inner) {
-		return !(isHas(inner) || inner instanceof NodeImpl);
-	}
-
-	private boolean isHas(Node inner) {
-		return inner instanceof NodeReference && ((NodeReference) inner).isHas();
 	}
 
 	private boolean isOverriddenByFacets(Node inner, Collection<Facet> facets) {

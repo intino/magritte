@@ -19,7 +19,7 @@ end
 
 def type(Word) type(multiple) trigger(getter)
 	public $name+reference$[] $name+firstLowerCase() {
-		return magritte.primitives.Enumerate.cardinal(_get(magritte.schema.Grip.multiple("$name+firstLowerCase")).asInteger(), $name+firstUpperCase.values());
+		return magritte.primitives.Enumerate.cardinal(_getMultiple("$name+firstLowerCase").asInteger(), $name+firstUpperCase.values());
 	}
 end
 
@@ -67,9 +67,11 @@ def type(variable) !type(native) !type(reference) !type(word) trigger(getter)
 	}
 end
 
+
+--- REFERENCIAS TERMINALES ---
 def type(variable) type(reference) type(terminal) type(multiple) !type(word) trigger(getter)
 	public magritte.Set<$type+reference> $name+firstLowerCase() {
-		return _get(magritte.schema.Grip.multiple("$name")).asMorph($type+reference.class);
+		return _getMultiple("$name").asMorph($type+reference.class);
 	}
 
 	public $type+reference $name+firstLowerCase(int index) {
@@ -77,7 +79,7 @@ def type(variable) type(reference) type(terminal) type(multiple) !type(word) tri
 	}
 
 	public magritte.Set<magritte.wraps.Type> $name+firstLowerCase~TypeSet() {
-		return _definition()._get(magritte.schema.Grip.assignable("entity")).as(magritte.wraps.Type.class);
+		return _definition()._getAssignable("entity").as(magritte.wraps.Type.class);
 	}
 
 	public magritte.wraps.Type $name+firstLowerCase~Type(int index) {
@@ -86,36 +88,38 @@ def type(variable) type(reference) type(terminal) type(multiple) !type(word) tri
 
 end
 
-def type(variable) type(definition) !type(terminal) type(reference) type(multiple) !type(word) trigger(getter)
+
+def type(variable) !type(terminal) type(reference) type(multiple) !type(word) trigger(getter)
 	public magritte.Set<$type+reference> $name+firstLowerCase() {
-		return _get(magritte.schema.Grip.multiple("$name")).as($type+reference.class);
+		return _getMultiple("$name").as($type+reference.class);
 	}
 
 	public $type+reference $name+firstLowerCase(int index) {
 		return $name+firstLowerCase().get(index);
 	}
-
 end
 
 def type(variable) type(native) returnValue(void) trigger(getter)
 	public void $name($parameters){
-		(($generatedLanguage.natives.$interfaceName)[$definition _definition().]_get("$name").asNative($scope)).$methodName($parameters+WithoutType);
+		(($generatedLanguage.natives.$interfaceName)[$definition _definition().]_get("$name").asNative()).$methodName($parameters+WithoutType);
 	}
 end
 
 def type(variable) type(native) trigger(getter)
 	public $returnValue $name($parameters){
-		return (($generatedLanguage.natives.$interfaceName)[$definition _definition().]_get("$name").asNative($scope)).$methodName($parameters+WithoutType);
+		return (($generatedLanguage.natives.$interfaceName)[$definition _definition().]_get("$name").asNative()).$methodName($parameters+WithoutType);
 	}
 end
 
+-------- SINGLE --------
+
 def type(variable) type(terminal) type(reference) !type(multiple) !type(word) trigger(getter)
 	public $type+reference $name+firstLowerCase() {
-		return _get(magritte.schema.Grip.reference("$name")).as($type+reference.class);
+		return _get("$name").as($type+reference.class);
 	}
 
 	public magritte.Set<magritte.wraps.Type> $name+firstLowerCase~Types() {
-		return _definition()._get(magritte.schema.Grip.assignable("entity")).as(magritte.wraps.Type.class);
+		return _definition()._getAssignable("entity").as(magritte.wraps.Type.class);
 	}
 
 	public magritte.wraps.Type $name+firstLowerCase~Type(int index) {
@@ -125,19 +129,7 @@ end
 
 def type(variable) !type(terminal) type(reference) !type(multiple) !type(word) trigger(getter)
 	public $type+reference $name+firstLowerCase() {
-		return _get(magritte.schema.Grip.reference("$name")).as($type+reference.class);
-	}
-end
-
-def type(variable) type(definition) !type(reference) type(multiple) !type(word) trigger(getter)
-	public $type+reference$[] $name+firstLowerCase() {
-		return _get(magritte.schema.Grip.multiple("$name")).as$type+reference();
-	}
-end
-
-def type(variable) !type(native) !type(reference) type(multiple) !type(word) trigger(getter)
-	public $type+reference+primitiveType$[] $name+firstLowerCase() {
-		return _get(magritte.schema.Grip.multiple("$name")).as$type+reference();
+		return _get("$name").as($type+reference.class);
 	}
 end
 
@@ -153,7 +145,7 @@ def value(Natural) trigger(primitiveType)
 	int
 end
 
-def type(variable) !type(reference) !type(word) trigger(getter)
+def type(variable) !type(multiple) !type(reference) !type(word) trigger(getter)
 	public $type+reference+primitiveType $name+firstLowerCase() {
 		return _definition()._get("$name").as$type+reference();
 	}

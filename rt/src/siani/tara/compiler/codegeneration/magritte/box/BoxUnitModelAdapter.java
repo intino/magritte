@@ -1,10 +1,12 @@
-package siani.tara.compiler.codegeneration.magritte;
+package siani.tara.compiler.codegeneration.magritte.box;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.engine.formatters.PluralFormatter;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.compiler.codegeneration.Format;
+import siani.tara.compiler.codegeneration.magritte.NameFormatter;
+import siani.tara.compiler.codegeneration.magritte.TemplateTags;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeReference;

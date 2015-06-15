@@ -33,6 +33,17 @@ public class Format {
 		};
 	}
 
+	public static Formatter nativeParameter() {
+		return parametersWithType -> {
+			String result = "";
+			for (String parameter : parametersWithType.toString().split(",")) {
+				String[] split = parameter.trim().split(" ");
+				result += ", " + split[split.length - 1];
+			}
+			return result.isEmpty() ? result : result.substring(2);
+		};
+	}
+
 	static String toProperCase(String s) {
 		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
 	}

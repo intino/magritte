@@ -4,10 +4,9 @@ import de.hunsicker.jalopy.Jalopy;
 import org.siani.itrules.Template;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.codegeneration.Format;
-import siani.tara.compiler.codegeneration.magritte.BoxUnitFrameCreator;
-import siani.tara.compiler.codegeneration.magritte.MorphFrameCreator;
 import siani.tara.compiler.codegeneration.magritte.NameFormatter;
-import siani.tara.compiler.codegeneration.magritte.ParameterFormatter;
+import siani.tara.compiler.codegeneration.magritte.box.BoxUnitFrameCreator;
+import siani.tara.compiler.codegeneration.magritte.morph.MorphFrameCreator;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
@@ -97,7 +96,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		template.add("toCamelCase", Format.toCamelCase());
 		template.add("key", Format.key());
 		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
-		template.add("WithoutType", object -> ParameterFormatter.format(object.toString()));
+		template.add("WithoutType", Format.nativeParameter());
 		return template;
 	}
 
@@ -118,7 +117,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private Map<String, String> createMorphs() throws TaraException {
 		Map<String, String> map = new HashMap();
 		for (Node node : model.getIncludedNodes()) {
-			if (node.isTerminalInstance() || node.isAnonymous()) continue;
+			if (node.isTerminalInstance() || node.isAnonymous() || node.isFeatureInstance()) continue;
 			renderNode(map, node);
 			renderFacetTargets(map, node);
 		}

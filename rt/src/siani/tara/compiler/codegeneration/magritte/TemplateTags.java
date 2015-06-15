@@ -13,7 +13,7 @@ public interface TemplateTags {
 	String DEFINITION_PATH = "magritte.wraps.Definition";
 	String MAGRITTE_MORPHS = "magritte.morphs";
 	String GENERATED_LANGUAGE = "generatedLanguage";
-	String DEFINITION = "DEFINITION";
+	String DEFINITION = "definition";
 	String DEFINITION_AGGREGABLE = "definitionAggregable";
 	String PROJECT = "project";
 	String PROTOTYPE = "PROTOTYPE";
@@ -79,4 +79,5 @@ public interface TemplateTags {
 	String INNER = "inner";
 	String MAIN = "Main";
 	String ROOT = "Root";
+	String EMPTY = "";
 }

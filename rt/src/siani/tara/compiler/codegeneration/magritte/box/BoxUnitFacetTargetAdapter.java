@@ -1,7 +1,9 @@
-package siani.tara.compiler.codegeneration.magritte;
+package siani.tara.compiler.codegeneration.magritte.box;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
+import siani.tara.compiler.codegeneration.magritte.NameFormatter;
+import siani.tara.compiler.codegeneration.magritte.TemplateTags;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.NodeContainer;
@@ -14,12 +16,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class BoxFacetTargetAdapter implements Adapter<FacetTarget>, TemplateTags {
+public class BoxUnitFacetTargetAdapter implements Adapter<FacetTarget>, TemplateTags {
 
 	private final Map<Node, Long> keys;
 	private final boolean m0;
 
-	public BoxFacetTargetAdapter(Map<Node, Long> keys, boolean m0) {
+	public BoxUnitFacetTargetAdapter(Map<Node, Long> keys, boolean m0) {
 		this.keys = keys;
 		this.m0 = m0;
 	}

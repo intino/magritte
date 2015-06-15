@@ -1,29 +1,32 @@
-package siani.tara.compiler.codegeneration.magritte;
+package siani.tara.compiler.codegeneration.magritte.morph;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
-import siani.tara.compiler.model.*;
+import siani.tara.compiler.codegeneration.magritte.Generator;
+import siani.tara.compiler.codegeneration.magritte.NameFormatter;
+import siani.tara.compiler.codegeneration.magritte.TemplateTags;
+import siani.tara.compiler.model.Facet;
+import siani.tara.compiler.model.FacetTarget;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.Allow;
 import siani.tara.semantic.model.Tag;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import static siani.tara.compiler.codegeneration.magritte.MorphCreatorHelper.getTypes;
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
+import static siani.tara.compiler.codegeneration.magritte.morph.TypesProvider.getTypes;
 
-public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
+public class MorphNodeAdapter extends Generator implements Adapter<NodeImpl>, TemplateTags {
 	private final String project;
 	private final String generatedLanguage;
 	private final Language language;
 	private Node initNode;
 	private final int modelLevel;
-	private final VarFrameCreator varFrameCreator;
+	private FrameContext context;
 
 	public MorphNodeAdapter(String project, String generatedLanguage, Language language, Node initNode, int modelLevel) {
 		this.project = project;
@@ -31,18 +34,18 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		this.language = language;
 		this.initNode = initNode;
 		this.modelLevel = modelLevel;
-		varFrameCreator = new VarFrameCreator(generatedLanguage, modelLevel);
 	}
 
 	@Override
 	public void execute(Frame frame, NodeImpl node, FrameContext context) {
+		this.context = context;
 		frame.addTypes(getTypes(node, language));
 		addNodeInfo(node, frame);
-		addInner(node, frame, context);
+		addComponents(node, frame, context, modelLevel);
 	}
 
 	private void addNodeInfo(Node node, Frame frame) {
-		if ((initNode != null && !node.equals(initNode)) || inFacetTarget(node) != null) frame.addFrame(INNER, "");
+		if ((initNode != null && !node.equals(initNode)) || isInFacetTarget(node) != null) frame.addFrame(INNER, EMPTY);
 		if (node.getDoc() != null) frame.addFrame(DOC, node.getDoc());
 		if (node.isAbstract() || node.isFacet()) frame.addFrame(ABSTRACT, ABSTRACT.toLowerCase());
 		if (modelLevel == 2) addAggregables(frame, node);
@@ -61,8 +64,8 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		node.getIncludedNodes().stream().filter(include -> !include.isAnonymous() && !isInherited(include) && (include.isTerminal() || modelLevel == 1)).forEach(include -> {
 			final Frame creates = new Frame();
 			creates.addTypes("create");
-			creates.addFrame("type", NameFormatter.cleanQn(getQn(include instanceof NodeReference ? ((NodeReference) include).getDestiny() : include, generatedLanguage)));
-			creates.addFrame("name", include.getName());
+			creates.addFrame(TYPE, NameFormatter.cleanQn(getQn(include instanceof NodeReference ? ((NodeReference) include).getDestiny() : include, generatedLanguage)));
+			creates.addFrame(NAME, include.getName());
 			frame.addFrame("create", creates);
 		});
 	}
@@ -74,7 +77,7 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	private void addAggregables(Frame frame, Node node) {
 		if (node.isFinal() || !containsMultiple(node)) return;
 		Frame aggregables = new Frame();
-		if (isDefinition(node)) aggregables.addTypes("definition");
+		if (isDefinition(node, modelLevel)) aggregables.addTypes(DEFINITION);
 		frame.addFrame("aggregables", aggregables);
 	}
 
@@ -84,56 +87,27 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		return false;
 	}
 
-	private FacetTarget inFacetTarget(Node node) {
-		NodeContainer container = node.getContainer();
-		while (container != null)
-			if (container instanceof FacetTarget) return (FacetTarget) container;
-			else container = container.getContainer();
-		return null;
-	}
-
-	private void addName(Node node, Frame frame) {
-		if (node.getName() != null && !node.getName().isEmpty())
-			frame.addFrame(NAME, node.isAnonymous() ? node.getType() : node.getName());
-		frame.addFrame(QN, getQn(node, generatedLanguage)).addFrame(PROJECT, project);
-	}
-
-	private void addInner(Node node, Frame frame, FrameContext context) {
-		node.getIncludedNodes().stream().
-			filter(inner -> !(inner instanceof NodeReference) && !inner.isAnonymous()).
-			forEach(inner -> frame.addFrame("node", context.build(inner)));
-	}
-
 	private void addParent(Node node, Frame newFrame) {
 		final Node parent = node.getParent();
 		newFrame.addFrame(PARENT, parent != null ?
 			getQn(parent, generatedLanguage) :
-			isDefinition(node) ? DEFINITION_PATH : MORPH_PATH);
-	}
-
-	private boolean isDefinition(Node node) {
-		return !node.isTerminal() && (node.isFeature() || isInFeature(node.getContainer()));
-	}
-
-	private boolean isInFeature(NodeContainer node) {
-		NodeContainer nodeContainer = node;
-		while (nodeContainer != null && nodeContainer instanceof Node)
-			if (((Node) nodeContainer).isFeature() || ((Node) nodeContainer).isTerminal()) return true;
-			else nodeContainer = nodeContainer.getContainer();
-		return false;
+			isDefinition(node, modelLevel) ? DEFINITION_PATH : MORPH_PATH);
 	}
 
 	private void addFacets(Node node, Frame newFrame) {
 		for (final Facet facet : node.getFacets())
-			newFrame.addFrame(FACETS, new Frame().addTypes(getTypes(facet)).addFrame(NAME, facet.getFacetType()));
+			newFrame.
+				addFrame(FACETS, new Frame().addTypes(getTypes(facet)).
+					addFrame(NAME, facet.getFacetType()));
 	}
 
 	private void addComponents(Node node, Frame frame) {
 		for (Node include : node.getIncludedNodes()) {
 			if (include.isAnonymous()) continue;
-			Frame includeFrame = new Frame().addTypes(collectReferenceTypes(include));
-			if (isDefinition(include) && !isDefinition(node)) includeFrame.addFrame(DEFINITION, "");
-			if (!isDefinition(node)) includeFrame.addFrame(DEFINITION_AGGREGABLE, "");
+			Frame includeFrame = new Frame().addTypes(TypesProvider.getTypesOfReference(include));
+			if (isDefinition(include, modelLevel) && !isDefinition(node, modelLevel))
+				includeFrame.addFrame(DEFINITION, EMPTY);
+			if (!isDefinition(node, modelLevel)) includeFrame.addFrame(DEFINITION_AGGREGABLE, EMPTY);
 			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 			if (include instanceof NodeReference) {
 				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
@@ -144,22 +118,16 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		}
 	}
 
+	private void addName(Node node, Frame frame) {
+		if (node.getName() != null && !node.getName().isEmpty())
+			frame.addFrame(NAME, node.isAnonymous() ? node.getType() : node.getName());
+		frame.addFrame(QN, getQn(node, generatedLanguage)).addFrame(PROJECT, project);
+	}
+
 	private void addNodeReferenceName(NodeReference node, Frame frame) {
 		NodeImpl reference = node.getDestiny();
 		frame.addFrame(NAME, reference.getName());
 		frame.addFrame(QN, getQn(reference, generatedLanguage)).addFrame(PROJECT, project);
-	}
-
-	private String[] collectReferenceTypes(Node node) {
-		Set<String> types = new HashSet<>();
-		types.add("nodeReference");
-		if (node.isSingle()) types.add("single");
-		if (node.intoSingle()) types.add("into_single");
-		if (node.isRequired()) types.add("required");
-		if (node.isFeature()) types.add("feature");
-		if (node.isFinal()) types.add("final");
-		types.addAll(node.getFlags().stream().map((tag) -> tag.name().toLowerCase()).collect(Collectors.toList()));
-		return types.toArray(new String[types.size()]);
 	}
 
 	private void addTargets(Node node, Frame newFrame) {
@@ -170,16 +138,16 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 	protected void addVariables(Node node, final Frame frame) {
 		node.getVariables().stream().
 			filter(variable -> !variable.isInherited()).
-			forEach(variable -> addVariable(frame, variable, isDefinition(node)));
-		addTerminalVariables(node, frame, isDefinition(node));
+			forEach(variable -> addVariable(frame, variable));
+		addTerminalVariables(node, frame);
 	}
 
-	private void addTerminalVariables(Node node, final Frame frame, boolean definition) {
+	private void addTerminalVariables(Node node, final Frame frame) {
 		final Collection<Allow> allows = language.allows(node.getType());
 		if (allows == null) return;
 		allows.stream().
 			filter(allow -> allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(Tag.TERMINAL.name()) && !isRedefined(((Allow.Parameter) allow), node.getVariables())).
-			forEach(allow -> addVariable(frame, (Allow.Parameter) allow, definition));
+			forEach(allow -> addVariable(frame, (Allow.Parameter) allow));
 	}
 
 	private boolean isRedefined(Allow.Parameter allow, Collection<Variable> variables) {
@@ -187,16 +155,12 @@ public class MorphNodeAdapter implements Adapter<NodeImpl>, TemplateTags {
 		return false;
 	}
 
-	private void addVariable(Frame frame, Variable variable, boolean definition) {
-		Frame varFrame = varFrameCreator.createVarFrame(variable);
-		if (definition) varFrame.addTypes("definition");
-		frame.addFrame(VARIABLE, varFrame);
+	private void addVariable(Frame frame, Variable variable) {
+		frame.addFrame(VARIABLE, context.build(variable));
 	}
 
-	private void addVariable(Frame frame, Allow.Parameter variable, boolean definition) {
-		Frame varFrame = varFrameCreator.createVarFrame(variable);
-		if (definition) varFrame.addTypes("definition");
-		frame.addFrame(VARIABLE, varFrame);
+	private void addVariable(Frame frame, Allow.Parameter variable) {
+		frame.addFrame(VARIABLE, context.build(variable));
 	}
 
 	public void setInitNode(Node initNode) {

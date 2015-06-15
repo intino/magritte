@@ -1,7 +1,8 @@
-package siani.tara.compiler.codegeneration.magritte;
+package siani.tara.compiler.codegeneration.magritte.box;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
+import siani.tara.compiler.codegeneration.magritte.NameFormatter;
 import siani.tara.compiler.model.EmptyNode;
 import siani.tara.compiler.model.Facet;
 import siani.tara.compiler.model.Node;

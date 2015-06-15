@@ -1,9 +1,10 @@
-package siani.tara.compiler.codegeneration.magritte;
+package siani.tara.compiler.codegeneration.magritte.morph;
 
 import siani.tara.Language;
+import siani.tara.compiler.codegeneration.magritte.TemplateTags;
 import siani.tara.compiler.model.Facet;
 import siani.tara.compiler.model.FacetTarget;
-import siani.tara.compiler.model.NodeContainer;
+import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.Variable;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.VariableReference;
@@ -15,17 +16,9 @@ import siani.tara.semantic.model.Tag;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public final class MorphCreatorHelper implements TemplateTags {
+public final class TypesProvider implements TemplateTags {
 
-	private MorphCreatorHelper() {
-	}
-
-	public static NodeImpl getNodeContainer(NodeContainer node) {
-		NodeContainer container = node.getContainer();
-		while (container != null && !(container instanceof NodeImpl)) {
-			container = container.getContainer();
-		}
-		return (NodeImpl) container;
+	private TypesProvider() {
 	}
 
 	public static String[] getTypes(NodeImpl node, Language language) {
@@ -46,8 +39,6 @@ public final class MorphCreatorHelper implements TemplateTags {
 		list.add(FACET_TARGET);
 		if (facetTarget.getTargetNode().getQualifiedName() != null)
 			list.add(facetTarget.getTargetNode().getQualifiedName());
-//		if (facetTarget.isAlways())
-//			list.add(ALWAYS);
 		return list.toArray(new String[list.size()]);
 	}
 
@@ -84,5 +75,18 @@ public final class MorphCreatorHelper implements TemplateTags {
 		list.addAll(variable.flags().stream().collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);
 	}
+
+	public static String[] getTypesOfReference(Node node) {
+		Set<String> types = new HashSet<>();
+		types.add("nodeReference");
+		if (node.isSingle()) types.add("single");
+		if (node.intoSingle()) types.add("into_single");
+		if (node.isRequired()) types.add("required");
+		if (node.isFeature()) types.add("feature");
+		if (node.isFinal()) types.add("final");
+		types.addAll(node.getFlags().stream().map((tag) -> tag.name().toLowerCase()).collect(Collectors.toList()));
+		return types.toArray(new String[types.size()]);
+	}
+
 
 }
