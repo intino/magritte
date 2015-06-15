@@ -63,7 +63,6 @@ public class TaraLanguageInjector implements LanguageInjector {
 			"}";
 	}
 
-	@NotNull
 	private Frame createFrame(Expression expression, String languageName) {
 		Frame frame = new Frame().addTypes("native");
 		PsiElement element = getVarInit(expression);
@@ -76,12 +75,14 @@ public class TaraLanguageInjector implements LanguageInjector {
 		Allow.Parameter allow = TaraUtil.getCorrespondingAllow(node, element);
 		String contract = (allow != null) ? intention(allow.contract()) : getVariableIntention(element);
 		frame.addFrame("intention", contract);
+		final String body = expression.getValue().replace("\\n", "\n").replace("\\\"", "\"");
+		if (element instanceof Parameter && allow == null) return new Frame();
 		final String signature = getSignature(allow != null ? allow.contract() : findNativeInterface(((Variable) element).getContract()));
 		frame.addFrame("variable", getName(element, allow)).
 			addFrame("qn", node.getQualifiedName().replace("@anonymous", "").replace(".", "_")).
 			addFrame("parent", findParent(element, node, generatedLanguage)).
 			addFrame("signature", signature).
-			addFrame("return", !signature.contains(" void ") ? "return " : "");
+			addFrame("return", !signature.contains(" void ") && !body.contains("\n") && !body.startsWith("return ") ? "return " : "");
 		return frame;
 	}
 

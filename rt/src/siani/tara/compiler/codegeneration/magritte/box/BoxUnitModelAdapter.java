@@ -102,13 +102,14 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 			if (!parameter.getInferredType().equals(Primitives.NATIVE)) continue;
 			final Primitives.Expression body = (Primitives.Expression) parameter.getValues().get(0);
 			String bodyText = body.get();
-			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", bodyText.endsWith(";") ? bodyText : bodyText + ";");
+			final String signature = getSignature(parameter);
+			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", formatBody(bodyText, signature));
 			intentionFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 			intentionFrame.addFrame("varName", parameter.getName());
 			intentionFrame.addFrame("container", buildContainerPath(parameter.getOwner()));
 			intentionFrame.addFrame("parentIntention", language.languageName());
 			intentionFrame.addFrame("interface", getInterface(parameter));
-			intentionFrame.addFrame("signature", getSignature(parameter));
+			intentionFrame.addFrame("signature", signature);
 			intentionFrame.addFrame("path", NameFormatter.createNativeClassReference(parameter.getOwner(), parameter.getName()));
 			frame.addFrame(INTENTION, intentionFrame);
 		}
@@ -120,16 +121,25 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 			final Object next = variable.getDefaultValues().get(0);
 			if (next instanceof EmptyNode) return;
 			final String body = String.valueOf(next);
-			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", body.endsWith(";") ? body : body + ";");
+			final String signature = getSignature(variable);
+			Frame intentionFrame = new Frame().addTypes("intention").addFrame("body", formatBody(body, signature));
 			intentionFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 			intentionFrame.addFrame("varName", variable.getName());
 			intentionFrame.addFrame("container", buildContainerPath(variable.getContainer()));
 			intentionFrame.addFrame("parentIntention", generatedLanguage);
 			intentionFrame.addFrame("interface", getInterface(variable));
-			intentionFrame.addFrame("signature", getSignature(variable));
+			intentionFrame.addFrame("signature", signature);
 			intentionFrame.addFrame("path", NameFormatter.createNativeClassReference(variable.getContainer(), variable.getName()));
 			frame.addFrame(INTENTION, intentionFrame);
 		}
+	}
+
+	private String formatBody(String body, String signature) {
+		final String returnText = "return ";
+		body = body.endsWith(";") ? body : body + ";";
+		if (!signature.contains(" void ") && !body.contains("\n") && !body.startsWith(returnText))
+			return returnText + body;
+		return body;
 	}
 
 	private String getInterface(Variable variable) {

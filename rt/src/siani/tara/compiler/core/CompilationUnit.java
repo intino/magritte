@@ -18,17 +18,14 @@ import siani.tara.compiler.core.operation.sourceunit.SourceUnitOperation;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.rt.TaraRtConstants;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CompilationUnit extends ProcessingUnit {
 
-	private final boolean pluginGeneration;
 	protected ProgressCallback progressCallback;
 	private Map<String, SourceUnit> sourceUnits;
 	private Model model;
+	List<String> outputItems = new ArrayList<>();
 	private List<Operation>[] phaseOperations;
 	private SrcToClassOperation classGeneration = new SrcToClassOperation() {
 		@Override
@@ -46,7 +43,6 @@ public class CompilationUnit extends ProcessingUnit {
 
 	public CompilationUnit(boolean languageGeneration, CompilerConfiguration configuration) {
 		super(configuration, null);
-		this.pluginGeneration = languageGeneration;
 		this.sourceUnits = new HashMap<>();
 		this.phaseOperations = new LinkedList[Phases.ALL];
 		for (int i = 0; i < this.phaseOperations.length; i++)
@@ -68,8 +64,12 @@ public class CompilationUnit extends ProcessingUnit {
 		this.phaseOperations[phase].add(operation);
 	}
 
-	public boolean isPluginGeneration() {
-		return pluginGeneration;
+	public void addOutputItems(List<String> paths) {
+		outputItems.addAll(paths);
+	}
+
+	public void addOutputItem(String path) {
+		outputItems.add(path);
 	}
 
 	public SourceUnit addSource(SourceUnit source) {
@@ -137,6 +137,10 @@ public class CompilationUnit extends ProcessingUnit {
 
 	public void setModel(Model model) {
 		this.model = model;
+	}
+
+	public List<String> getOutputItems() {
+		return outputItems;
 	}
 
 	public abstract static class ProgressCallback {

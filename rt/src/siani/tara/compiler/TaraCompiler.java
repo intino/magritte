@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static siani.tara.compiler.core.CompilerMessage.ERROR;
 import static siani.tara.compiler.core.CompilerMessage.WARNING;
@@ -43,12 +44,9 @@ public class TaraCompiler {
 	}
 
 	private void addCompiledFiles(CompilationUnit compilationUnit, final List<OutputItem> compiledFiles) throws IOException {
-		File targetDirectory = compilationUnit.getConfiguration().getTargetDirectory();
+		File targetDirectory = compilationUnit.getConfiguration().getOutDirectory();
 		final String outputPath = targetDirectory.getCanonicalPath().replace(File.separatorChar, File.separator.charAt(0));
-		for (String fileName : compilationUnit.getSourceUnitNames())
-			compiledFiles.add(new OutputItem(outputPath, fileName));
-		if (compilationUnit.isPluginGeneration())
-			compiledFiles.add(new OutputItem(outputPath, compilationUnit.getConfiguration().getProject() + ".zip"));
+		compiledFiles.addAll(compilationUnit.getOutputItems().stream().map(fileName -> new OutputItem(outputPath, fileName)).collect(Collectors.toList()));
 	}
 
 	private void addWarnings(ErrorCollector errorCollector, List collector) {

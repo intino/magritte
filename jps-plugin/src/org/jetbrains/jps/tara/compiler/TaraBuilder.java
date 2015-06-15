@@ -212,7 +212,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 
 	private boolean hasBoxGenerated(File file, JpsModule module, String generatedLanguage) {
 		final String outDir = getOutDir(module);
-		final String prefix = firstUpperCase(generatedLanguage);
+		final String prefix = firstUpperCase(generatedLanguage.isEmpty()? module.getName():generatedLanguage);
 		final String name = firstUpperCase(file.getName().substring(0, file.getName().lastIndexOf(".")));
 		return new File(outDir, getBoxUnitPathOf(prefix + name) + ".java").exists();
 	}
@@ -362,14 +362,14 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			if (src == null) {
 				return;
 			}
-			String groovy = stubToSrc.get(FileUtil.toSystemIndependentName(src.getPath()));
-			if (groovy == null) {
+			String tara = stubToSrc.get(FileUtil.toSystemIndependentName(src.getPath()));
+			if (tara == null) {
 				return;
 			}
 			try {
-				final File groovyFile = new File(groovy);
-				if (!FSOperations.isMarkedDirty(context, CompilationRound.CURRENT, groovyFile)) {
-					FSOperations.markDirty(context, CompilationRound.NEXT, groovyFile);
+				final File taraFile = new File(tara);
+				if (!FSOperations.isMarkedDirty(context, CompilationRound.CURRENT, taraFile)) {
+					FSOperations.markDirty(context, CompilationRound.NEXT, taraFile);
 					FILES_MARKED_DIRTY_FOR_NEXT_ROUND.set(context, Boolean.TRUE);
 				}
 			} catch (IOException e) {

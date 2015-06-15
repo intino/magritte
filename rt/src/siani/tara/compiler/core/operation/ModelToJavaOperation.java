@@ -54,11 +54,11 @@ public class ModelToJavaOperation extends ModelOperation {
 			this.model = model;
 			List<List<Node>> groupByBox = groupByBox(model);
 			Map<String, String> boxUnits = createBoxUnits(groupByBox);
-			writeBoxUnits(getBoxUnitPath(separator), boxUnits);
+			compilationUnit.addOutputItems(writeBoxUnits(getBoxUnitPath(separator), boxUnits));
 			if (model.getLevel() == 0) return;
-			writeMorphs(createMorphs());
-			writeBoxDSL(getBoxDSLPath(separator), createBoxDSL(boxUnits.keySet()));
-			writeScene(createScene());
+			compilationUnit.addOutputItems(writeMorphs(createMorphs()));
+			compilationUnit.addOutputItem(writeBoxDSL(getBoxDSLPath(separator), createBoxDSL(boxUnits.keySet())));
+			compilationUnit.addOutputItem(writeScene(createScene()));
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
@@ -144,7 +144,8 @@ public class ModelToJavaOperation extends ModelOperation {
 		map.put(morphFrame.getKey(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
 	}
 
-	private void writeBoxUnits(String directory, Map<String, String> documentMap) {
+	private List<String> writeBoxUnits(String directory, Map<String, String> documentMap) {
+		List<String> outputs = new ArrayList<>();
 		File destiny = new File(outFolder, directory);
 		destiny.mkdirs();
 		for (Map.Entry<String, String> entry : documentMap.entrySet()) {
@@ -154,13 +155,16 @@ public class ModelToJavaOperation extends ModelOperation {
 				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
 				fileWriter.write(entry.getValue());
 				fileWriter.close();
+				outputs.add(file.getAbsolutePath());
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
+		return outputs;
 	}
 
-	private void writeMorphs(Map<String, String> documentMap) {
+	private List<String> writeMorphs(Map<String, String> documentMap) {
+		List<String> outputs = new ArrayList<>();
 		for (Map.Entry<String, String> entry : documentMap.entrySet()) {
 			File file = new File(outFolder, entry.getKey().replace(DOT, separator) + JAVA);
 			file.getParentFile().mkdirs();
@@ -172,10 +176,12 @@ public class ModelToJavaOperation extends ModelOperation {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
 			prettyPrint(file);
+			outputs.add(file.getAbsolutePath());
 		}
+		return outputs;
 	}
 
-	private void writeBoxDSL(String boxPath, String document) {
+	private String writeBoxDSL(String boxPath, String document) {
 		File destiny = new File(outFolder, boxPath);
 		destiny.mkdirs();
 		try {
@@ -183,12 +189,14 @@ public class ModelToJavaOperation extends ModelOperation {
 			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
 			fileWriter.write(document);
 			fileWriter.close();
+			return file.getAbsolutePath();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
+		return null;
 	}
 
-	private void writeScene(String scene) {
+	private String writeScene(String scene) {
 		File destiny = new File(outFolder, conf.getGeneratedLanguage().toLowerCase());
 		destiny.mkdirs();
 		try {
@@ -196,9 +204,11 @@ public class ModelToJavaOperation extends ModelOperation {
 			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
 			fileWriter.write(scene);
 			fileWriter.close();
+			return file.getAbsolutePath();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
+		return null;
 	}
 
 	private void prettyPrint(File file) {
