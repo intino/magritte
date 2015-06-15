@@ -160,6 +160,14 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 			sourcePath = sourceFileName;
 		}
 
+		public String getOutputPath() {
+			return outputPath;
+		}
+
+		public String getSourcePath() {
+			return sourcePath;
+		}
+
 		@Override
 		public String toString() {
 			return "OutputItem{" + "outputPath='" + outputPath + '\'' + ", sourcePath='" + sourcePath + '\'' + '}';
