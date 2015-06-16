@@ -20,11 +20,6 @@ public enum ${NAME} implements Metric {
 	private static final Converter[] converters = { /* Add factors here */ };
 
 	private static Converter factor(final double factor) {
-		return new Converter() {
-			@Override
-			public double convert(double value) {
-				return value*factor;
-				}
-			};
-		}
+		return value -> value * factor;
 	}
+}

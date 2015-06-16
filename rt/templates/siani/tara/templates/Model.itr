@@ -17,7 +17,7 @@ end
 
 def type(root) !type(single) trigger(root)
 	public magritte.Set<$qn+reference> $name+FirstLowerCase+plural() {
-        return _get($qn+reference.class);
+        return _get("$name+FirstLowerCase+plural", $qn+reference.class);
     }
 
     public $qn+reference $name+FirstLowerCase(int index) {
@@ -27,6 +27,6 @@ end
 
 def type(root) type(single) trigger(root)
 	public $qn+reference $name+FirstLowerCase() {
-        return _get($qn+reference.class).get(0);
+        return _get("$name+FirstLowerCase", $qn+reference.class).get(0);
     }
 end

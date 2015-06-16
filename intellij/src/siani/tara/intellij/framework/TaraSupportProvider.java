@@ -79,7 +79,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private void addSupport(final Module module, final ModifiableRootModel rootModel) {
 		createModelSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
-
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 		updateFacetConfiguration(module);
 		updateDependencies(module, rootModel);
@@ -102,8 +101,10 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private void addModuleDependency(ModifiableRootModel rootModel) {
 		ApplicationManager.getApplication().runWriteAction(() -> {
-			if (!ModuleRootManager.getInstance(rootModel.getModule()).isDependsOn(selectedModuleParent))
-				rootModel.addModuleOrderEntry(selectedModuleParent);
+			if (!ModuleRootManager.getInstance(rootModel.getModule()).isDependsOn(selectedModuleParent)) {
+				final ModuleOrderEntry moduleOrderEntry = rootModel.addModuleOrderEntry(selectedModuleParent);
+				moduleOrderEntry.setExported(true);
+			}
 		});
 	}
 
@@ -309,13 +310,13 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 					filter(entry -> entry.getKey().equals(e.getItem().toString())).
 					forEach(entry -> setLevel(entry.getValue() - 1, false));
 			});
-			level.addChangeListener(e -> visibilityOfGenerativeLanguage((Integer) ((JSpinner) e.getSource()).getValue() != 0));
+			level.addChangeListener(e -> editionOfGenerativeLanguage((Integer) ((JSpinner) e.getSource()).getValue() != 0));
 		}
 
-		private void visibilityOfGenerativeLanguage(boolean visibility) {
-			generativeLabel.setEnabled(visibility);
-			plateRequired.setEnabled(visibility);
-			dslGeneratedName.setEnabled(visibility);
+		private void editionOfGenerativeLanguage(boolean editable) {
+			generativeLabel.setEnabled(editable);
+			plateRequired.setEnabled(editable);
+			dslGeneratedName.setEnabled(editable);
 		}
 
 		private void setLevel(int level, boolean enabled) {

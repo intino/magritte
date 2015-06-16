@@ -6,13 +6,11 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.CompilerModuleExtension;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.OrderEntry;
-import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.annotator.TaraAnnotator;
 import siani.tara.intellij.annotator.fix.CreateMeasureClassIntention;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.lexer.TaraPrimitives;
 import siani.tara.intellij.lang.psi.Contract;
 import siani.tara.intellij.lang.psi.TaraAttributeType;
@@ -99,8 +97,15 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 	}
 
 	private String getClassPath() {
-		final File magritteLibrary = findMagritteLibrary();
-		return magritteLibrary != null && magritteLibrary.exists() ? magritteLibrary.getAbsolutePath() : "";
+		try {
+			String classPath = "";
+			final List<URL> magritteLibrary = findMagritteLibrary();
+			if (magritteLibrary == null) return "";
+			for (URL url : magritteLibrary) classPath = ";" + url.getPath();
+			return classPath.substring(1);
+		} catch (MalformedURLException e) {
+			return "";
+		}
 	}
 
 	@NotNull
@@ -154,28 +159,32 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 	private Class<?> loadClass(String path, String className) {
 		File file = new File(path);
 		try {
-			final File magritteLibrary = findMagritteLibrary();
-			if (magritteLibrary == null || !magritteLibrary.exists()) return null;
-			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL(), magritteLibrary.toURI().toURL()});
+			final List<URL> magritteLibrary = findMagritteLibrary();
+			if (magritteLibrary.isEmpty()) return null;
+			ClassLoader cl = new URLClassLoader(buildUrls(file, magritteLibrary));
 			return cl.loadClass(className);
 		} catch (MalformedURLException | ClassNotFoundException e) {
 			return null;
 		}
 	}
 
-	private File findMagritteLibrary() {
-		final Module moduleOf = ModuleProvider.getModuleOf(contract);
-		final ModuleRootManager instance = ModuleRootManager.getInstance(moduleOf);
-		for (OrderEntry library : instance.getOrderEntries())
-			if (isMagritteLibrary(library))
-				return new File(library.getFiles(OrderRootType.CLASSES)[0].getPath().replace("!", ""));
-		return null;
+	@NotNull
+	private URL[] buildUrls(File file, List<URL> libs) throws MalformedURLException {
+		libs.add(file.toURI().toURL());
+		return libs.toArray(new URL[libs.size()]);
 	}
 
-	private boolean isMagritteLibrary(OrderEntry library) {
-		for (VirtualFile virtualFile : library.getFiles(OrderRootType.CLASSES))
-			if (virtualFile.getName().contains("magritte")) return true;
-		return false;
+	private List<URL> findMagritteLibrary() throws MalformedURLException {
+		List<URL> libs = new ArrayList<>();
+		final Module moduleOf = ModuleProvider.getModuleOf(contract);
+		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(moduleOf);
+		final VirtualFile directory = TaraLanguage.getLanguageDirectory(taraFacetByModule.getConfiguration().getDsl(), moduleOf.getProject());
+		if (directory == null) return null;
+		final VirtualFile metamodel = directory.findChild("metamodel");
+		if (metamodel == null) return null;
+		for (VirtualFile virtualFile : metamodel.getChildren())
+			libs.add(new File(virtualFile.getPath()).toURI().toURL());
+		return libs;
 	}
 
 	private void error() {

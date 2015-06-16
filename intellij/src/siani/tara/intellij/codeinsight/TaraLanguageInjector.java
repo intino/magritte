@@ -127,15 +127,27 @@ public class TaraLanguageInjector implements LanguageInjector {
 	private static String getQn(Node owner, PsiElement element, String generatedLanguage) {
 		final FacetTarget facetTarget = facetTargetContainer(element);
 		if (owner.isFacet())
-			return generatedLanguage.toLowerCase() + DOT + owner.getName().toLowerCase() + DOT + format(facetTarget.getTarget());
+			return generatedLanguage.toLowerCase() + getName(owner) + getFacetTarget(facetTarget);
 		else {
 			final Node node = TaraPsiImplUtil.getContainerNodeOf(element);
 			return generatedLanguage.toLowerCase() + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
 		}
 	}
 
+	@NotNull
+	private static String getFacetTarget(FacetTarget facetTarget) {
+		return facetTarget != null ? DOT + format(facetTarget.getTarget()) : "";
+	}
+
+	@NotNull
+	private static String getName(Node owner) {
+		return owner.getName() != null ? DOT + owner.getName().toLowerCase() : "";
+	}
+
 	private static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
-		return (TaraPsiImplUtil.getContainerNodeOf(facetTarget).getName().toLowerCase() + DOT + format(facetTarget.getTarget()) + DOT + node.getQualifiedName());
+		final Node containerNode = TaraPsiImplUtil.getContainerNodeOf(facetTarget);
+		if (containerNode == null || containerNode.getName() == null) return "";
+		return containerNode.getName().toLowerCase() + DOT + format(facetTarget.getTarget()) + DOT + node.getQualifiedName();
 	}
 
 	private static String format(String value) {
