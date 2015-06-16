@@ -32,6 +32,11 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 	}
 
 	@Override
+	public void flags(String... flags) {
+		variable.addFlags(flags);
+	}
+
+	@Override
 	public boolean isReference() {
 		return variable.isReference();
 	}

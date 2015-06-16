@@ -129,7 +129,7 @@ public class LanguageInheritanceFiller {
 			addFrame("type", values[1]).
 			addFrame("multiple", values[3]).
 			addFrame("position", values[4]).
-			addFrame("extension", values[5]));
+			addFrame("contract", values[5]));
 	}
 
 	private void renderWord(Frame allowsFrame, Object[] values, String relation) {
@@ -138,7 +138,7 @@ public class LanguageInheritanceFiller {
 			addFrame("words", (String[]) values[2]).
 			addFrame("multiple", values[3]).
 			addFrame("position", values[4]).
-			addFrame("extension", values[5]));
+			addFrame("contract", values[5]));
 	}
 
 	private void renderReference(Frame allowsFrame, Object[] values, String relation) {
@@ -147,7 +147,7 @@ public class LanguageInheritanceFiller {
 			addFrame("types", (String[]) values[2]).
 			addFrame("multiple", values[3]).
 			addFrame("position", values[4]).
-			addFrame("extension", values[5]));
+			addFrame("contract", values[5]));
 	}
 
 	private void addMultiple(Frame frameFrame, String frameRelation, String type) {

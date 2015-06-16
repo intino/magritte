@@ -139,6 +139,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addParameterAllows(List<Variable> variables, Frame allows) {
 		for (int i = 0; i < variables.size(); i++) {
+			if (!isAllowedVariable(variables.get(i))) continue;
 			Variable variable = variables.get(i);
 			if (variable.getDefaultValues().isEmpty() && !variable.isTerminal()) continue;
 			new LanguageParameterAdapter(language).addParameter(allows, i, variable, ALLOW);
@@ -152,7 +153,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			FacetTarget facetNode = findFacetTarget(node, facet);
 			if (facetNode == null) continue;
 			addParameterAllows(facetNode.getVariables(), frame);
-			addParameterRequires(facetNode.getVariables(), frame, true, 0);//TRUE? añadir terminales
+			addParameterRequires(facetNode.getVariables(), frame, 0);//TRUE? añadir terminales
 			addAllowedInnerNodes(frame, facetNode);
 			addRequiredInnerNodes(frame, facetNode);
 		}
@@ -174,7 +175,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private void addContextRequires(Node node, Frame requires) {
 		if (node instanceof NodeImpl) {
 			int index = new LanguageParameterAdapter(language).addTerminalParameters(node, requires);
-			addParameterRequires(node.getVariables(), requires, node.isTerminal(), index);
+			addParameterRequires(node.getVariables(), requires, index);
 			addRequiredVariableRedefines(requires, node);
 		}
 		if (node.isNamed()) requires.addFrame(REQUIRE, NAME);
@@ -188,13 +189,16 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 				addFrame(NAME, variable.getName()).addFrame("supertype", variable.getType())));
 	}
 
-	private void addParameterRequires(List<Variable> variables, Frame requires, boolean terminalNode, int index) {
+	private void addParameterRequires(List<Variable> variables, Frame requires, int index) {
 		for (int i = 0; i < variables.size(); i++) {
 			Variable variable = variables.get(i);
-			if (!variable.getDefaultValues().isEmpty() ||
-				(variable.isTerminal() && !terminalNode)) continue;
+			if (isAllowedVariable(variables.get(i))) continue;
 			new LanguageParameterAdapter(language).addParameter(requires, index + i, variable, REQUIRE);
 		}
+	}
+
+	private boolean isAllowedVariable(Variable variable) {
+		return !variable.getDefaultValues().isEmpty() || variable.isTerminal();
 	}
 
 	private void addAssumptions(Node node, Frame frame) {

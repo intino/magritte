@@ -10,6 +10,8 @@ public interface Variable extends Element {
 
 	String[] flags();
 
+	void flags(String... flag);
+
 	boolean isReference();
 
 	boolean isOverriden();

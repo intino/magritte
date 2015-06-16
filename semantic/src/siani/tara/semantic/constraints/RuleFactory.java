@@ -3,7 +3,10 @@ package siani.tara.semantic.constraints;
 import siani.tara.semantic.*;
 import siani.tara.semantic.model.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -482,6 +485,10 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (!Arrays.asList(node.flags()).contains(FEATURE.name())) node.flags(FEATURE.name());
+				for (Variable variable : node.variables())
+					if (!Arrays.asList(variable.flags()).contains(FEATURE.name()))
+						variable.flags(FEATURE.name());
+				propagateFlags(node, FEATURE.name());
 			}
 		};
 	}
@@ -492,6 +499,10 @@ public class RuleFactory {
 			public void assume(Node node) {
 				if (!Arrays.asList(node.flags()).contains(FEATURE_INSTANCE.name()))
 					node.flags(FEATURE_INSTANCE.name());
+				for (Variable variable : node.variables())
+					if (!Arrays.asList(variable.flags()).contains(FEATURE_INSTANCE.name()))
+						variable.flags(FEATURE_INSTANCE.name());
+				propagateFlags(node, FEATURE_INSTANCE.name());
 			}
 		};
 	}
@@ -501,6 +512,10 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (!Arrays.asList(node.flags()).contains(TERMINAL.name())) node.flags(TERMINAL.name());
+				for (Variable variable : node.variables())
+					if (!Arrays.asList(variable.flags()).contains(TERMINAL.name()))
+						variable.flags(TERMINAL.name());
+				propagateFlags(node, TERMINAL.name());
 			}
 		};
 	}
@@ -512,8 +527,22 @@ public class RuleFactory {
 			public void assume(Node node) {
 				if (!Arrays.asList(node.flags()).contains(TERMINAL_INSTANCE.name()))
 					node.flags(TERMINAL_INSTANCE.name());
+				for (Variable variable : node.variables())
+					if (!Arrays.asList(variable.flags()).contains(TERMINAL_INSTANCE.name()))
+						variable.flags(TERMINAL_INSTANCE.name());
+				propagateFlags(node, TERMINAL_INSTANCE.name());
+
 			}
 		};
+	}
+
+	private static void propagateFlags(Node node, String flag) {
+		for (Node include : node.includes()) {
+			if (!Arrays.asList(include.flags()).contains(flag))
+				include.flags(flag);
+			if (!include.isReference()) propagateFlags(include, flag);
+		}
+
 	}
 
 	public static String shortType(String absoluteType) {

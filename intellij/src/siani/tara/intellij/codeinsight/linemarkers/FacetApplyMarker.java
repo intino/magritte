@@ -11,10 +11,8 @@ import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.ui.ClassCellRenderer;
-import com.intellij.util.Function;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.siani.itrules.engine.formatters.PluralFormatter;
 import org.siani.itrules.engine.formatters.PluralInflector;
 import siani.tara.intellij.MessageProvider;
@@ -27,6 +25,7 @@ import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveJavaClassReference;
 
@@ -34,21 +33,17 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 
 	private static final String FACETS_PATH = "extensions";
 	private static final String DOT = ".";
-	private final MarkerType markerType = new MarkerType(new Function<PsiElement, String>() {
-		@Nullable
-		@Override
-		public String fun(PsiElement element) {
-			if (!Node.class.isInstance(element)) return null;
-			Node node = (Node) element;
-			List<PsiElement> references = getFacetClasses(node);
-			String start = (references.size() == 1 ? "Facet" : "Facets") + " declared in ";
-			@NonNls String pattern = "";
-			if (references.isEmpty()) return "";
-			for (PsiElement reference : references)
-				pattern += ", " + reference.getNavigationElement().getContainingFile().getName();
-			pattern = pattern.substring(2);
-			return GutterIconTooltipHelper.composeText(references.toArray(new PsiElement[references.size()]), start, pattern);
-		}
+	private final MarkerType markerType = new MarkerType(element -> {
+		if (!Node.class.isInstance(element)) return null;
+		Node node = (Node) element;
+		List<PsiElement> references = getFacetClasses(node);
+		String start = (references.size() == 1 ? "Facet" : "Facets") + " declared in ";
+		@NonNls String pattern = "";
+		if (references.isEmpty()) return "";
+		for (PsiElement reference : references)
+			pattern += ", " + reference.getNavigationElement().getContainingFile().getName();
+		pattern = pattern.substring(2);
+		return GutterIconTooltipHelper.composeText(references.toArray(new PsiElement[references.size()]), start, pattern);
 	}, new LineMarkerNavigator() {
 		@Override
 		public void browse(MouseEvent e, PsiElement element) {
@@ -73,8 +68,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	}
 
 	private NavigatablePsiElement[] toNavigatable(List<PsiElement> facetClasses) {
-		List<NavigatablePsiElement> navigatables = new ArrayList<>();
-		for (PsiElement facetClass : facetClasses) navigatables.add((NavigatablePsiElement) facetClass);
+		List<NavigatablePsiElement> navigatables = facetClasses.stream().map(facetClass -> (NavigatablePsiElement) facetClass).collect(Collectors.toList());
 		return navigatables.toArray(new NavigatablePsiElement[navigatables.size()]);
 	}
 

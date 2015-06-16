@@ -60,7 +60,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 			: new String[]{"MODULE_NAME", moduleOfDirectory.getName()};
 		file = TaraTemplatesFactory.createFromTemplate(directory, newName, fileName, templateName, true, list);
 		if (file instanceof TaraModelImpl) {
-			setCaret(file);
+//			setCaret(file);
 			return (TaraModelImpl) file;
 		}
 		final String description = file.getFileType().getDescription();

@@ -7,9 +7,17 @@ import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.semantic.model.Tag;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class VariableMixin extends ASTWrapperPsiElement {
 
+	private Set<String> inheritedFlags = new HashSet<>();
 
 	public VariableMixin(@NotNull ASTNode node) {
 		super(node);
@@ -53,6 +61,17 @@ public class VariableMixin extends ASTWrapperPsiElement {
 
 	public boolean isOverriden() {
 		return TaraUtil.getOverriddenVariable((Variable) this) != null;
+	}
+
+	public List<Tag> getAllFlags() {
+		List<TaraFlag> flagList = ((TaraVariable) this).getFlags().getFlagList();
+		List<Tag> tags = flagList.stream().map(taraFlag -> Tag.valueOf(taraFlag.getText().toUpperCase())).collect(Collectors.toList());
+		tags.addAll(inheritedFlags.stream().map(inheritedFlag -> Tag.valueOf(inheritedFlag.toUpperCase())).collect(Collectors.toList()));
+		return Collections.unmodifiableList(tags);
+	}
+
+	public void addFlags(String... flags) {
+		Collections.addAll(inheritedFlags, flags);
 	}
 
 	@Override

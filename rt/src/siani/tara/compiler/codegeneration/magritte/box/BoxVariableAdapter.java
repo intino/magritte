@@ -42,7 +42,8 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 	protected void fill(Frame frame, Variable variable) {
 		frame.addFrame(NAME, buildName(variable));
 		if (variable.isTerminal() && level == 2) frame.addFrame(TERMINAL, TERMINAL_KEY + TERMINAL_KEY);
-		else if (level >= 1) frame.addFrame(TERMINAL, TERMINAL_KEY);
+		else if (level == 2) frame.addFrame(TERMINAL, TERMINAL_KEY);
+		else if (!variable.isTerminalInstance() && level == 1) frame.addFrame(TERMINAL, TERMINAL_KEY);
 		frame.addFrame(MULTIPLE, variable.isMultiple());
 		if (variable.getType().equals(Primitives.MEASURE)) asMeasure(frame, variable);
 	}

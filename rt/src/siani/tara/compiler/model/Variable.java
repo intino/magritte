@@ -40,6 +40,8 @@ public interface Variable extends Cloneable {
 
 	boolean isTerminal();
 
+	boolean isTerminalInstance();
+
 	boolean isFinal();
 
 	boolean isPrivate();
@@ -63,4 +65,5 @@ public interface Variable extends Cloneable {
 	void setDefaultExtension(String defaultExtension);
 
 	Variable cloneIt(NodeContainer container);
+
 }

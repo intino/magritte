@@ -22,15 +22,15 @@ public class Context {
 		return types;
 	}
 
-	public Collection<Constraint> constraints() {
+	public List<Constraint> constraints() {
 		return constraints;
 	}
 
-	public Collection<Assumption> assumptions() {
+	public List<Assumption> assumptions() {
 		return assumptions;
 	}
 
-	public Collection<Allow> allows() {
+	public List<Allow> allows() {
 		return allows;
 	}
 

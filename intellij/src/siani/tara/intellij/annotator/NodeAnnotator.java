@@ -20,7 +20,7 @@ import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.semantic.Assumption;
 
 import java.awt.*;
-import java.util.Collection;
+import java.util.List;
 
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 
@@ -49,7 +49,7 @@ public class NodeAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isRoot(Node node) {
-		Collection<Node> rootNodes = TaraUtil.getRootNodesOfFile(node.getFile());
+		List<Node> rootNodes = TaraUtil.getRootNodesOfFile(node.getFile());
 		return rootNodes.contains(node) && node.getIdentifierNode() != null;
 	}
 
@@ -61,7 +61,7 @@ public class NodeAnnotator extends TaraAnnotator {
 	private boolean isProperty(Node node) {
 		Language language = TaraLanguage.getLanguage(node.getFile());
 		if (language == null) return false;
-		Collection<Assumption> assumptions = language.assumptions(node.resolve().getFullType());
+		List<Assumption> assumptions = language.assumptions(node.resolve().getFullType());
 		if (assumptions == null) return false;
 		for (Assumption assumption : assumptions)
 			if (assumption instanceof Assumption.Implicit)

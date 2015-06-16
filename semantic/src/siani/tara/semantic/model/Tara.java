@@ -7,6 +7,7 @@ import siani.tara.semantic.Constraint;
 import siani.tara.semantic.constraints.GlobalConstraints;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Tara implements Language {
 	public static final String Root = "";
@@ -28,22 +29,22 @@ public abstract class Tara implements Language {
 		return rulesCatalog;
 	}
 
-	public Collection<Constraint> constraints(String qualifiedName) {
+	public List<Constraint> constraints(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
-		return rulesCatalog.get(qualifiedName).constraints();
+		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).constraints());
 	}
 
-	public Collection<Assumption> assumptions(String qualifiedName) {
+	public List<Assumption> assumptions(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
-		return rulesCatalog.get(qualifiedName).assumptions();
+		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).assumptions());
 	}
 
-	public Collection<Allow> allows(String qualifiedName) {
+	public List<Allow> allows(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
-		return rulesCatalog.get(qualifiedName).allows();
+		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).allows());
 	}
 
-	public Collection<String> types(String qualifiedName) {
+	public List<String> types(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
 		return Arrays.asList(rulesCatalog.get(qualifiedName).types());
 	}
@@ -55,9 +56,8 @@ public abstract class Tara implements Language {
 	}
 
 	private String[] calculateLexicon() {
-		for (String qn : rulesCatalog.keySet())
-			if (!shortType(qn).isEmpty())
-				lexicon.add(shortType(qn));
+		lexicon.addAll(rulesCatalog.keySet().stream().
+			filter(qn -> !shortType(qn).isEmpty()).map(this::shortType).collect(Collectors.toList()));
 		return lexicon.toArray(new String[lexicon.size()]);
 	}
 

@@ -107,7 +107,7 @@
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.ReferenceAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.NodeAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.DSLDeclarationAnnotator"/>
-    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.MeasureVariableAnnotator"/>
+    <!--<annotator language="Tara" implementationClass="siani.tara.intellij.annotator.MeasureVariableAnnotator"/>-->
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VariableAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.NameIdentifierValidator"/>
 

@@ -94,6 +94,11 @@ public class VariableImpl extends Element implements Variable {
 	}
 
 	@Override
+	public boolean isTerminalInstance() {
+		return flags.contains(TERMINAL_INSTANCE);
+	}
+
+	@Override
 	public boolean isFinal() {
 		return flags.contains(FINAL);
 	}

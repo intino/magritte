@@ -33,7 +33,8 @@ public class LanguageSerializer extends CodeGenerator {
 		try {
 			LanguageCreator creator = new LanguageCreator(conf, model);
 			serialize(creator.create(), getDslDestiny());
-			new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + ".reload").createNewFile();
+			File file = new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + ".reload");
+			if (!file.exists()) file.createNewFile();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new TaraException("Error sav¡ng model: " + e.getMessage());
