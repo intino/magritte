@@ -48,7 +48,7 @@ import java.util.Set;
 			dsl = dslLine.split(DSL)[1].trim();
 		}
 		identifiers = new HashSet();
-		Language heritage = TaraLanguage.getLanguage(dsl);
+		Language heritage = TaraLanguage.getLanguage(dsl, project);
         if (heritage != null) Collections.addAll(identifiers, heritage.lexicon());
 	}
 %}

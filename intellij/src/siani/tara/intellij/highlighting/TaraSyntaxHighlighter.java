@@ -1,14 +1,17 @@
 package siani.tara.intellij.highlighting;
 
+import com.intellij.ide.DataManager;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.SyntaxHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.EffectType;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
-import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
@@ -145,7 +148,9 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 	@NotNull
 	@Override
 	public Lexer getHighlightingLexer() {
-		return new TaraHighlighterLexAdapter(ProjectManager.getInstance().getDefaultProject());
+		final DataContext result = DataManager.getInstance().getDataContextFromFocus().getResult();
+		Project project = result != null ? (Project) result.getData(PlatformDataKeys.PROJECT.getName()) : null;
+		return new TaraHighlighterLexAdapter(project);
 	}
 
 	@NotNull

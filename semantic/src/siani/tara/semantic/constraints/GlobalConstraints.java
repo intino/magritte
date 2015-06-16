@@ -132,33 +132,6 @@ public class GlobalConstraints {
 		return String.valueOf(new PluralFormatter(locale).format(name));
 	}
 
-	private Constraint.Require namedInsideFeature() {
-		return new Constraint.Require() {
-			@Override
-			public void check(Element element) throws SemanticException {
-				Node node = (Node) element;
-				if (isInFeature(node) && !node.name().isEmpty())
-					throw new SemanticException(new SemanticError("reject.named.node.in.feature", node));
-			}
-
-			private boolean isInFeature(Node node) {
-				Node context = node.context();
-				while (context != null) {
-					if (isFeature(context)) return true;
-					context = context.context();
-				}
-				return false;
-			}
-
-			private boolean isFeature(Node context) {
-				for (String flag : context.flags())
-					if (flag.equalsIgnoreCase(Tag.FEATURE_INSTANCE.name()))
-						return true;
-				return false;
-			}
-		};
-	}
-
 	private Constraint.Require facetDeclaration() {
 		return new Constraint.Require() {
 			@Override

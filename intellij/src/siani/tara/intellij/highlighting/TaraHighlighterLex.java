@@ -3,14 +3,13 @@
 package siani.tara.intellij.highlighting;
 
 import com.intellij.lexer.FlexLexer;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import siani.tara.intellij.lang.psi.TaraTypes;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
-import siani.tara.intellij.project.module.ModuleProvider;
-import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.Language;
+import siani.tara.intellij.lang.TaraLanguage;
+import siani.tara.intellij.lang.psi.TaraTypes;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -671,7 +670,7 @@ class TaraHighlighterLex implements FlexLexer {
 			dsl = dslLine.split(DSL)[1].trim();
 		}
 		identifiers = new HashSet();
-		Language heritage = TaraLanguage.getLanguage(dsl);
+		Language heritage = TaraLanguage.getLanguage(dsl, project);
         if (heritage != null) Collections.addAll(identifiers, heritage.lexicon());
 	}
 

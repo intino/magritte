@@ -29,7 +29,7 @@ public class GenerateLanguageOperation extends ModelOperation {
 			unit.getErrorCollector().failIfErrors();
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during language generation: " + e.getMessage() + "\n", e);
-			throw new CompilationFailedException(Phases.MODEL_GENERATION, unit);
+			throw new CompilationFailedException(Phases.LANGUAGE_GENERATION, unit);
 		}
 	}
 }

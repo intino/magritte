@@ -83,7 +83,7 @@ public class TaraNodeCompletionContributor extends CompletionContributor {
 	}
 
 	private String lastTypeOf(String type) {
-		return type.substring(type.lastIndexOf("."), type.length());
+		return type.contains(".") ? type.substring(type.lastIndexOf("."), type.length()) : type;
 	}
 
 	private void afterIdentifier() {

@@ -23,14 +23,14 @@ public class TaraCompilerRunner {
 	private TaraCompilerRunner() {
 	}
 
-	static boolean runTaraCompiler(File argsFile, boolean pluginGeneration) {
+	static boolean runTaraCompiler(File argsFile) {
 		final CompilerConfiguration config = new CompilerConfiguration();
 		final List<File> srcFiles = new ArrayList<>();
 		final List<CompilerMessage> compilerMessages = new ArrayList<>();
 		getInfoFromArgsFile(argsFile, config, srcFiles);
 		if (srcFiles.isEmpty()) return true;
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading sources...");
-		final CompilationUnit unit = new CompilationUnit(pluginGeneration, config);
+		final CompilationUnit unit = new CompilationUnit(config);
 		addSources(srcFiles, unit);
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: compiling...");
 		final List<TaraCompiler.OutputItem> compiledFiles = new TaraCompiler(compilerMessages).compile(unit);

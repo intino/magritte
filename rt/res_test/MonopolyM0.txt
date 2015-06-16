@@ -16,7 +16,7 @@ false
 encoding
 UTF-8
 models
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
+/Users/oroncal/workspace/sandbox/monopoly/dsl
 semantic_lib
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath

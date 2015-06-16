@@ -33,7 +33,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static siani.tara.intellij.lang.TaraLanguage.LANGUAGES_PACKAGE;
-import static siani.tara.intellij.lang.TaraLanguage.LANGUAGES_PATH;
 
 public abstract class ExportLanguageAbstractAction extends AnAction implements DumbAware {
 
@@ -73,7 +72,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 
 	protected boolean doPrepare(final Module module, final List<String> errorMessages, final List<String> successMessages) {
 		final String languageName = TaraFacet.getTaraFacetByModule(module).getConfiguration().getGeneratedDslName();
-		final String defaultPath = new File(module.getModuleFilePath()).getParent() + File.separator + languageName;
+		final String defaultPath = TaraLanguage.getLanguagesDirectory(module.getProject()) + File.separator + languageName;
 		final Set<Module> modules = new HashSet<>();
 		getDependencies(module, modules);
 		modules.add(module);
@@ -90,7 +89,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			}
 			try {
 				File jarFile = jarModulesOutput(modules);
-				processLibrariesAndJpsModules(jarFile, dstFile, languageName, libs, progressIndicator);
+				processLibrariesAndJpsModules(module.getProject(), jarFile, dstFile, languageName, libs, progressIndicator);
 				successMessages.add(MessageProvider.message("saved.message", languageName, destinyPath));
 			} catch (final IOException e) {
 				LOG.info(e.getMessage(), e);
@@ -99,21 +98,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		}, MessageProvider.message("export.language", languageName), true, module.getProject());
 	}
 
-	private void addLanguage(ZipOutputStream zos, String languageName) throws IOException {
-		File file = new File(LANGUAGES_PATH + File.separator + languagePath(languageName));
-		if (!file.exists()) throw new IOException("Language file not found");
-		String entryName = languagePath(languageName);
-		final String path = "/" + languageName + "/" + MIDDLE_MODEL_DIR + "/" + entryName;
-		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
-		ZipUtil.addFileToZip(zos, file, path, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
-	}
-
-	@NotNull
-	private String languagePath(String languageName) {
-		return LANGUAGES_PACKAGE.replace(".", File.separator) + File.separator + languageName + CLASS_EXTENSION;
-	}
-
-	private void processLibrariesAndJpsModules(final File jarFile, final File zipFile, final String languageName,
+	private void processLibrariesAndJpsModules(Project project, final File jarFile, final File zipFile, final String languageName,
 	                                           final Set<Library> libs,
 	                                           final ProgressIndicator progressIndicator) throws IOException {
 		if (FileUtil.ensureCanCreateFile(zipFile)) {
@@ -125,7 +110,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 				final String entryName = languageName + JAR_EXTENSION;
 				ZipUtil.addFileToZip(zos, jarFile, getZipPath(languageName, entryName),
 					new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
-				addLanguage(zos, languageName);
+				addLanguage(project, zos, languageName);
 				Set<String> usedJarNames = new HashSet<>();
 				usedJarNames.add(entryName);
 				Set<VirtualFile> jarredVirtualFiles = new HashSet<>();
@@ -142,6 +127,20 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 				if (zos != null) zos.close();
 			}
 		}
+	}
+
+	private void addLanguage(Project project, ZipOutputStream zos, String languageName) throws IOException {
+		VirtualFile file = TaraLanguage.getLanguageDirectory(languageName, project);//TODO
+		if (file == null || !file.exists()) throw new IOException("Language file not found");
+		String entryName = languagePath(languageName);
+		final String path = "/" + languageName + "/" + MIDDLE_MODEL_DIR + "/" + entryName;
+		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
+		ZipUtil.addFileToZip(zos, new File(file.getPath()), path, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+	}
+
+	@NotNull
+	private String languagePath(String languageName) {
+		return LANGUAGES_PACKAGE.replace(".", File.separator) + File.separator + languageName + CLASS_EXTENSION;
 	}
 
 	private String getZipPath(final String modelName, final String entryName) {

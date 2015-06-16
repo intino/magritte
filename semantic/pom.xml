@@ -18,18 +18,18 @@
     <testOutputDirectory>../dist/test/TaraSemantic</testOutputDirectory>
   </build>
 
-  <repositories>
-    <repository>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <layout>default</layout>
-    </repository>
-  </repositories>
+  <!--<repositories>-->
+    <!--<repository>-->
+      <!--<snapshots>-->
+        <!--<enabled>true</enabled>-->
+        <!--<updatePolicy>never</updatePolicy>-->
+        <!--<checksumPolicy>fail</checksumPolicy>-->
+      <!--</snapshots>-->
+      <!--<id>ossrh</id>-->
+      <!--<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+      <!--<layout>default</layout>-->
+    <!--</repository>-->
+  <!--</repositories>-->
 
   <dependencies>
     <dependency>
@@ -43,8 +43,15 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
       <scope>test</scope>
-      <version>1.10.19</version>
+      <version>LATEST</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.siani.itrules</groupId>
+      <artifactId>itrules</artifactId>
+      <version>LATEST</version>
+    </dependency>
+
 
   </dependencies>
 

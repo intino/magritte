@@ -20,7 +20,7 @@ false
 encoding
 UTF-8
 models
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
+/Users/oroncal/workspace/sandbox/monopoly/dsl
 native_path
 /Users/oroncal/workspace/sandbox/monopoly/monopolytara/src/monopoly/natives/
 semantic_lib

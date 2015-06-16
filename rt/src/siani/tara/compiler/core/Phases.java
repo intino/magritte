@@ -9,7 +9,7 @@ public class Phases {
 	public static final int DEPENDENCY_RESOLUTION = 5;
 	public static final int SEMANTIC_ANALYSIS = 6;
 	public static final int CLASS_GENERATION = 7;
-	public static final int MODEL_GENERATION = 8;
+	public static final int LANGUAGE_GENERATION = 8;
 	public static final int OUTPUT = 9;
 	public static final int ALL = 10;
 	public static final int FIRST = INITIALIZATION;

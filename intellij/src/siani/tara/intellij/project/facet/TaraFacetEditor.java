@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,14 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static siani.tara.intellij.lang.TaraLanguage.PROTEO;
 import static siani.tara.intellij.project.facet.TaraFacet.getTaraFacetByModule;
 
 public class TaraFacetEditor extends FacetEditorTab {
 
-	private static final String PROTEO = "Proteo";
 	private static final String NONE = "";
 
-	private final TaraFacetConfiguration facetConfiguration;
+	private final TaraFacetConfiguration configuration;
 	private final Module module;
 	private final Map<Module, SimpleEntry<String, Integer>> moduleInfo;
 	private JComboBox<String> dictionaryBox;
@@ -33,10 +34,10 @@ public class TaraFacetEditor extends FacetEditorTab {
 	private JSpinner level;
 	private Module[] candidates;
 
-	public TaraFacetEditor(TaraFacetConfiguration facetConfiguration, Module module) {
+	public TaraFacetEditor(TaraFacetConfiguration configuration, Module module) {
 		this.module = module;
 		candidates = getParentModulesCandidates();
-		this.facetConfiguration = facetConfiguration;
+		this.configuration = configuration;
 		moduleInfo = collectModulesInfo();
 	}
 
@@ -47,8 +48,8 @@ public class TaraFacetEditor extends FacetEditorTab {
 
 	@NotNull
 	public JComponent createComponent() {
-		dslBox.addItem(PROTEO);
-		level.setValue(2);
+		if (configuration.getDsl().equals(PROTEO)) dslBox.addItem(PROTEO);
+		level.setValue(configuration.getLevel());
 		addModuleDsls();
 		addDictionaries();
 		addGeneratedLanguageName();
@@ -60,7 +61,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		for (Entry<Module, SimpleEntry<String, Integer>> entry : moduleInfo.entrySet()) {
 			if (entry.getValue().getValue().equals(0)) continue;
 			dslBox.addItem(entry.getValue().getKey());
-			if (facetConfiguration.getDsl().equals(entry.getValue().getKey()))
+			if (configuration.getDsl().equals(entry.getValue().getKey()))
 				dslBox.setSelectedItem(entry.getValue().getKey());
 		}
 	}
@@ -82,7 +83,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	private void addGeneratedLanguageName() {
-		dslGeneratedName.setText(facetConfiguration.getGeneratedDslName());
+		dslGeneratedName.setText(configuration.getGeneratedDslName());
 	}
 
 	private void addListeners() {
@@ -108,19 +109,20 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	public boolean isModified() {
-		return !getDslGeneratedName().equals(facetConfiguration.getGeneratedDslName()) ||
-			!dictionaryBox.getSelectedItem().equals(facetConfiguration.getDictionary()) ||
-			!dslBox.getSelectedItem().equals(facetConfiguration.getDsl()) ||
-			!plateRequired.isSelected() == (facetConfiguration.isPlateRequired());
+		return !getDslGeneratedName().equals(configuration.getGeneratedDslName()) ||
+			!dictionaryBox.getSelectedItem().equals(configuration.getDictionary()) ||
+			!dslBox.getSelectedItem().equals(configuration.getDsl()) ||
+			!plateRequired.isSelected() == (configuration.isPlateRequired());
 	}
 
 	public void apply() {
 //		updateDependencies(searchParentByDslGeneration(dslBox.getSelectedItem().toString()));
-		facetConfiguration.setDsl((String) dslBox.getSelectedItem());
-		facetConfiguration.setDictionary((String) dictionaryBox.getSelectedItem());
-		facetConfiguration.setGeneratedDslName(getDslGeneratedName());
-		facetConfiguration.setPlateRequired(plateRequired.isSelected());
-		facetConfiguration.setLevel((Integer) level.getValue());
+		configuration.setDsl((String) dslBox.getSelectedItem());
+		configuration.setDictionary((String) dictionaryBox.getSelectedItem());
+		configuration.setGeneratedDslName(getDslGeneratedName());
+		configuration.setPlateRequired(plateRequired.isSelected());
+		configuration.setLevel((Integer) level.getValue());
+		configuration.setDslsDirectory(module.getProject().getBasePath() + File.separator + "dsl" + File.separator);
 	}
 
 	private String getDslGeneratedName() {
@@ -128,7 +130,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	private Module getSavedParentModule() {
-		String dsl = facetConfiguration.getDsl();
+		String dsl = configuration.getDsl();
 		if (dsl.isEmpty()) return null;
 		return searchParentByDslGeneration(dsl);
 	}
@@ -141,11 +143,11 @@ public class TaraFacetEditor extends FacetEditorTab {
 	}
 
 	public void reset() {
-		dslBox.setSelectedItem(facetConfiguration.getDsl());
-		dictionaryBox.setSelectedItem(facetConfiguration.getDictionary());
-		setLevel(facetConfiguration.getLevel(), facetConfiguration.getDsl().equals(PROTEO));
-		dslGeneratedName.setText(facetConfiguration.getGeneratedDslName());
-		plateRequired.setSelected(facetConfiguration.isPlateRequired());
+		dslBox.setSelectedItem(configuration.getDsl());
+		dictionaryBox.setSelectedItem(configuration.getDictionary());
+		setLevel(configuration.getLevel(), configuration.getDsl().equals(PROTEO));
+		dslGeneratedName.setText(configuration.getGeneratedDslName());
+		plateRequired.setSelected(configuration.isPlateRequired());
 	}
 
 	private Module[] getParentModulesCandidates() {

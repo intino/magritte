@@ -41,7 +41,7 @@ public class CompilationUnit extends ProcessingUnit {
 		}
 	};
 
-	public CompilationUnit(boolean languageGeneration, CompilerConfiguration configuration) {
+	public CompilationUnit(CompilerConfiguration configuration) {
 		super(configuration, null);
 		this.sourceUnits = new HashMap<>();
 		this.phaseOperations = new LinkedList[Phases.ALL];
@@ -54,7 +54,7 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new SemanticAnalysisOperation(this), Phases.SEMANTIC_ANALYSIS);
 		addPhaseOperation(new ModelToJavaOperation(this), Phases.CLASS_GENERATION);
 		addPhaseOperation(classGeneration, Phases.CLASS_GENERATION);
-		if (languageGeneration) addPhaseOperation(new GenerateLanguageOperation(this), Phases.MODEL_GENERATION);
+		addPhaseOperation(new GenerateLanguageOperation(this), Phases.LANGUAGE_GENERATION);
 		addPhaseOperation(output, Phases.OUTPUT);
 	}
 

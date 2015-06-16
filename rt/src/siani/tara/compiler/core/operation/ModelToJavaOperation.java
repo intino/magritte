@@ -22,7 +22,10 @@ import siani.tara.templates.BoxUnitTemplate;
 import siani.tara.templates.ModelTemplate;
 import siani.tara.templates.MorphTemplate;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -218,7 +221,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			jalopy.setInput(file);
 			jalopy.setOutput(file);
 			jalopy.format();
-		} catch (FileNotFoundException ignored) {
+		} catch (Exception ignored) {
 		}
 	}
 

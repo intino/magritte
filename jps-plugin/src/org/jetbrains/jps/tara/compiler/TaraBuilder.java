@@ -50,7 +50,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 	private final String builderName;
 
 	public TaraBuilder() {
-		super(BuilderCategory.OVERWRITING_TRANSLATOR);
+		super(BuilderCategory.INITIAL);
 		LOG.setLevel(Level.ALL);
 		builderName = "Tara compiler";
 	}
@@ -81,18 +81,19 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
 			JpsTaraModuleExtension extension = JpsTaraExtensionService.getInstance().getExtension(chunk.getModules().iterator().next());
 			if (extension == null) return ExitCode.NOTHING_DONE;
+			Map<ModuleBuildTarget, String> generationOutputs = getStubGenerationOutputs(chunk);
+			String compilerOutput = generationOutputs.get(chunk.representativeTarget());
+			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
+			if (finalOutputs == null) return ExitCode.ABORT;
 			final List<File> toCompile = collectChangedFiles(dirtyFilesHolder);
 			addNoBoxGeneratedFiles(toCompile, chunk.getModules().iterator().next(), extension.getGeneratedDslName());
 			if (toCompile.isEmpty()) return ExitCode.OK;
-			Map<ModuleBuildTarget, String> finalOutputs = getCanonicalModuleOutputs(context, chunk);
-			if (finalOutputs == null) return ExitCode.ABORT;
-			Map<ModuleBuildTarget, String> generationOutputs = getStubGenerationOutputs(chunk);
-			String compilerOutput = generationOutputs.get(chunk.representativeTarget());
 			start = System.currentTimeMillis();
 			final Set<String> toCompilePaths = getPathsToCompile(toCompile);
 			final String encoding = context.getProjectDescriptor().getEncodingConfiguration().getPreferredModuleChunkEncoding(chunk);
 			List<String> paths = collectPaths(chunk, finalOutputs);
 			paths.add(getNativeInterfacesDir(chunk.getModules(), extension.getGeneratedDslName()));
+			paths.add(extension.getDslsDirectoy());
 			TaraRunner runner = new TaraRunner(project.getName(), chunk.getName(), extension.getDsl(),
 				extension.getGeneratedDslName(), extension.getLevel(), extension.getDictionary(), extension.isPlateRequired(), toCompilePaths, encoding, collectIconDirectories(chunk.getModules()), paths);
 			final TaracOSProcessHandler handler = runner.runTaraCompiler(context, settings);

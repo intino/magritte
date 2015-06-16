@@ -58,7 +58,7 @@ public class TaraOverriddenVariable extends JavaLineMarkerProvider {
 		if (!Variable.class.isInstance(element)) return super.getLineMarkerInfo(element);
 		Variable variable = (Variable) element;
 		if (isOverridden(variable)) {
-			final Icon icon = AllIcons.Gutter.OverridenMethod;
+			final Icon icon = AllIcons.Gutter.OverridingMethod;
 			final MarkerType type = markerType;
 			return new LineMarkerInfo(element, element.getTextRange(), icon, Pass.UPDATE_ALL, type.getTooltip(),
 				type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);

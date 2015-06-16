@@ -1,6 +1,7 @@
 package siani.tara.intellij.lang;
 
-import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,25 +14,17 @@ import siani.tara.intellij.project.module.ModuleProvider;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
-
-import static java.io.File.separator;
 
 public class TaraLanguage extends com.intellij.lang.Language {
 
 	public static final TaraLanguage INSTANCE = new TaraLanguage();
 	public static final String DSL = "dsl";
-	private static final String LANGUAGES_DIR = "tara_languages";
 	public static final String LANGUAGES_PACKAGE = "siani.tara.dsls";
-	public static final String LANGUAGES_PATH = PathManager.getPluginsPath() + separator + LANGUAGES_DIR + separator;
-	private static final String PROTEO = "Proteo";
+	public static final String PROTEO = "Proteo";
 	private static final Map<String, Language> languages = new HashMap<>();
-	private static final Set<String> languagesPaths = new LinkedHashSet<>();
 
 	static {
-		languagesPaths.add(LANGUAGES_PATH);
 		languages.put(PROTEO, new Proteo());
 	}
 
@@ -44,39 +37,44 @@ public class TaraLanguage extends com.intellij.lang.Language {
 		TaraFacet facet = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(file));
 		if (facet == null) return null;
 		TaraFacetConfiguration configuration = facet.getConfiguration();
-		return getLanguage(configuration.getDsl());
+		return getLanguage(configuration.getDsl(), file.getProject());
 	}
 
 	@Nullable
-	public static Language getLanguage(String parent) {
-		if (parent.equals(PROTEO) || parent.isEmpty()) return languages.get(PROTEO);
-		return loadLanguage(parent);
+	public static Language getLanguage(String dsl, Project project) {
+		if (dsl.equals(PROTEO) || dsl.isEmpty()) return languages.get(PROTEO);
+		return loadLanguage(dsl, project);
 	}
 
-	private static Language loadLanguage(String parent) {
-		if (isLoaded(parent)) return languages.get(parent);
-		for (String languagePath : languagesPaths) {
-			Language language = LanguageLoader.load(parent, languagePath);
-			if (language == null) continue;
-			languages.put(parent, language);
-			return language;
-		}
-		return null;
+	private static Language loadLanguage(String dsl, Project project) {
+		if (project == null) return null;
+		if (isLoaded(dsl, project)) return languages.get(dsl);
+		final VirtualFile languageDirectory = getLanguageDirectory(dsl, project);
+		if (languageDirectory == null) return null;
+		final VirtualFile dslDirectory = languageDirectory.findChild(DSL);
+		if (dslDirectory == null) return null;
+		Language language = LanguageLoader.load(dsl, dslDirectory.getPath());
+		if (language == null) return null;
+		languages.put(dsl, language);
+		return language;
 	}
 
-	private static boolean isLoaded(String parent) {
-		return languages.get(parent) != null && !haveToReload(parent);
+	public static VirtualFile getLanguageDirectory(String dsl, Project project) {
+		final VirtualFile languagesDirectory = getLanguagesDirectory(project);
+		if (languagesDirectory == null) return null;
+		return languagesDirectory.findChild(dsl);
 	}
 
+	public static VirtualFile getLanguagesDirectory(Project project) {
+		return project.getBaseDir().findChild(DSL);
+	}
 
-	private static boolean haveToReload(String language) {
-		for (String modelPath : languagesPaths) {
-			File reload = new File(modelPath, language + ".reload");
-			if (reload.exists()) {
-				reload.delete();
-				return true;
-			}
-		}
-		return false;
+	private static boolean isLoaded(String parent, Project project) {
+		return languages.get(parent) != null && !haveToReload(parent, project);
+	}
+
+	private static boolean haveToReload(String language, Project project) {
+		VirtualFile reload = getLanguagesDirectory(project).findChild(language + ".reload");
+		return reload != null && reload.exists() && new File(reload.getPath()).delete();
 	}
 }

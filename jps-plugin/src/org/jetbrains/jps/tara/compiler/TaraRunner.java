@@ -26,7 +26,7 @@ public class TaraRunner {
 	public static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
-	private static final String ITRULES_VERSION = "1.2.0";
+	private static final String ITRULES_VERSION = "1.2.2";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String SEMANTIC_RULES = "tara.jar";
 	private static final String[] JALOPY = {"jalopy-3000.0.0.jar", "antlr-2.7.7.jar", "log4j-1.2.17.jar"};
@@ -42,8 +42,7 @@ public class TaraRunner {
 		argsFile = FileUtil.createTempFile("ideaTaraToCompile", ".txt", true);
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(argsFile)))) {
 			writer.write(TaraRtConstants.SRC_FILE + NL);
-			for (String file : sources)
-				writer.write(file + NL);
+			for (String file : sources) writer.write(file + NL);
 			writer.write(NL);
 			writer.write(TaraRtConstants.PROJECT + NL + projectName + NL);
 			writer.write(TaraRtConstants.MODULE + NL + moduleName + NL);
@@ -65,8 +64,6 @@ public class TaraRunner {
 	}
 
 	private void writePaths(List<String> paths, Writer writer) throws IOException {
-		String taraLanguages = PathManager.getPluginsPath() + separator + TaraRtConstants.LANGUAGES_DIR + separator;
-		writer.write(TaraRtConstants.LANGUAGES_PATH + NL + taraLanguages + NL);
 		String semanticLib = PathManager.getPluginsPath() + separator + "tara" + separator + LIB + separator + SEMANTIC_RULES;
 		writer.write(TaraRtConstants.SEMANTIC_LIB + NL + semanticLib + NL);
 		writer.write(TaraRtConstants.OUTPUTPATH + NL + paths.get(0) + NL);
@@ -76,13 +73,14 @@ public class TaraRunner {
 		writer.write(TaraRtConstants.METRICS + NL + paths.get(4) + NL);
 		writer.write(TaraRtConstants.RESOURCES + NL + paths.get(5) + NL);
 		if (paths.get(6) != null) writer.write(TaraRtConstants.NATIVES_PATH + NL + paths.get(6) + NL);
+		if (paths.get(7) != null) writer.write(TaraRtConstants.LANGUAGES_PATH + NL + paths.get(7) + NL);
 	}
 
 	protected TaracOSProcessHandler runTaraCompiler(final CompileContext context,
 	                                                final JpsTaraSettings settings) throws IOException {
 		List<String> classpath = new ArrayList<>(generateRunnerClasspath());
 		if (LOG.isDebugEnabled()) LOG.debug("Tarac classpath: " + classpath);
-		List<String> programParams = ContainerUtilRt.newArrayList("tarac", argsFile.getPath());
+		List<String> programParams = ContainerUtilRt.newArrayList(argsFile.getPath());
 		List<String> vmParams = ContainerUtilRt.newArrayList();
 		vmParams.add("-Xmx" + settings.heapSize + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));

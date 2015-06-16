@@ -16,9 +16,12 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.io.File.separator;
+
 public class LanguageSerializer extends CodeGenerator {
 	private static final Logger LOG = Logger.getLogger(LanguageSerializer.class.getName());
 	private static final String JAVA = ".java";
+	public static final String DSL = "dsl";
 
 	CompilerConfiguration conf;
 
@@ -29,12 +32,18 @@ public class LanguageSerializer extends CodeGenerator {
 	public void serialize(Model model) throws TaraException {
 		try {
 			LanguageCreator creator = new LanguageCreator(conf, model);
-			serialize(creator.create(), new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + JAVA));
+			serialize(creator.create(), getDslDestiny());
 			new File(conf.getLanguageDirectory(), conf.getGeneratedLanguage() + ".reload").createNewFile();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			throw new TaraException("Error sav¡ng model: " + e.getMessage());
 		}
+	}
+
+	private File getDslDestiny() {
+		final File file = new File(conf.getLanguageDirectory() + separator + conf.getGeneratedLanguage() + separator + DSL);
+		file.mkdirs();
+		return new File(file, conf.getGeneratedLanguage() + JAVA);
 	}
 
 	private boolean serialize(String content, File file) throws TaraException {
@@ -64,7 +73,7 @@ public class LanguageSerializer extends CodeGenerator {
 		compilerOptions.add("-target");
 		compilerOptions.add("1.8");
 		compilerOptions.add("-d");
-		compilerOptions.add(conf.getLanguageDirectory());
+		compilerOptions.add(getDslDestiny().getParentFile().getAbsolutePath());
 		compilerOptions.add("-classpath");
 		compilerOptions.add(conf.getSemanticRulesLib());
 		JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, compilerOptions, null, compilationUnits);

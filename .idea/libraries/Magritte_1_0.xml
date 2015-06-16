@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Magritte-1.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/intellij/lib/Magritte-1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

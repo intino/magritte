@@ -8,6 +8,8 @@ public interface JpsTaraModuleExtension extends JpsElement {
 
 	String getDsl();
 
+	String getDslsDirectoy();
+
 	String getDictionary();
 
 	String getGeneratedDslName();
