@@ -160,7 +160,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 		File file = new File(path);
 		try {
 			final List<URL> magritteLibrary = findMagritteLibrary();
-			if (magritteLibrary.isEmpty()) return null;
+			if (magritteLibrary == null || magritteLibrary.isEmpty()) return null;
 			ClassLoader cl = new URLClassLoader(buildUrls(file, magritteLibrary));
 			return cl.loadClass(className);
 		} catch (MalformedURLException | ClassNotFoundException e) {
@@ -178,12 +178,12 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 		List<URL> libs = new ArrayList<>();
 		final Module moduleOf = ModuleProvider.getModuleOf(contract);
 		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(moduleOf);
-		final VirtualFile directory = TaraLanguage.getLanguageDirectory(taraFacetByModule.getConfiguration().getDsl(), moduleOf.getProject());
+		final File directory = TaraLanguage.getLanguageDirectory(taraFacetByModule.getConfiguration().getDsl(), moduleOf.getProject());
 		if (directory == null) return null;
-		final VirtualFile metamodel = directory.findChild("metamodel");
-		if (metamodel == null) return null;
-		for (VirtualFile virtualFile : metamodel.getChildren())
-			libs.add(new File(virtualFile.getPath()).toURI().toURL());
+		final File metamodel = new File(directory, "metamodel");
+		if (!metamodel.exists() || !metamodel.isDirectory()) return null;
+		for (File file : metamodel.listFiles())
+			libs.add(new File(file.getPath()).toURI().toURL());
 		return libs;
 	}
 

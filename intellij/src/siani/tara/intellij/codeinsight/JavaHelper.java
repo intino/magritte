@@ -101,7 +101,7 @@ public class JavaHelper {
 
 		@Override
 		public PsiClass findClass(String className) {
-			if (className == null) return null;
+			if (className == null || className.isEmpty()) return null;
 			return myFacade.findClass(className, GlobalSearchScope.allScope(myFacade.getProject()));
 		}
 

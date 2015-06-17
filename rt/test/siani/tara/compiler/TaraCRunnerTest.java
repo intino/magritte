@@ -108,4 +108,19 @@ public class TaraCRunnerTest {
 	public void MonopolyM0() {
 		TaracRunner.main(new String[]{home + "/workspace/tara/rt/res_test/MonopolyM0.txt"});
 	}
+
+	@Test
+	public void MobilityM2() {
+		TaracRunner.main(new String[]{home + "/workspace/tara/rt/res_test/CarsMobilityM2.txt"});
+	}
+
+	@Test
+	public void MobilityM1() {
+		TaracRunner.main(new String[]{home + "/workspace/tara/rt/res_test/CarsMobilityM1.txt"});
+	}
+
+	@Test
+	public void MobilityM0() {
+		TaracRunner.main(new String[]{home + "/workspace/tara/rt/res_test/CarsMobilityM0.txt"});
+	}
 }

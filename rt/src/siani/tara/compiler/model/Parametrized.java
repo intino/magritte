@@ -1,10 +1,10 @@
 package siani.tara.compiler.model;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface Parametrized {
 
-	Collection<Parameter> getParameters();
+	List<Parameter> getParameters();
 
 	void addParameter(String name, int position, String extension, Object... values);
 

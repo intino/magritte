@@ -287,8 +287,8 @@ public class NodeImpl extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Parameter> getParameters() {
-		return parameters;
+	public List<Parameter> getParameters() {
+		return Collections.unmodifiableList(parameters);
 	}
 
 	@Override

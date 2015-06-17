@@ -49,20 +49,20 @@ public class TaraLanguage extends com.intellij.lang.Language {
 	private static Language loadLanguage(String dsl, Project project) {
 		if (project == null) return null;
 		if (isLoaded(dsl, project)) return languages.get(dsl);
-		final VirtualFile languageDirectory = getLanguageDirectory(dsl, project);
+		final File languageDirectory = getLanguageDirectory(dsl, project);
 		if (languageDirectory == null) return null;
-		final VirtualFile dslDirectory = languageDirectory.findChild(DSL);
-		if (dslDirectory == null) return null;
+		final File dslDirectory = new File(languageDirectory, DSL);
+		if (!dslDirectory.exists()) return null;
 		Language language = LanguageLoader.load(dsl, dslDirectory.getPath());
 		if (language == null) return null;
 		languages.put(dsl, language);
 		return language;
 	}
 
-	public static VirtualFile getLanguageDirectory(String dsl, Project project) {
+	public static File getLanguageDirectory(String dsl, Project project) {
 		final VirtualFile languagesDirectory = getLanguagesDirectory(project);
 		if (languagesDirectory == null) return null;
-		return languagesDirectory.findChild(dsl);
+		return new File(languagesDirectory.getPath(), dsl);
 	}
 
 	public static VirtualFile getLanguagesDirectory(Project project) {

@@ -4,7 +4,7 @@
   <depends>org.intellij.intelliLang</depends>
   <name>Tara</name>
   <version>
-    ##version##
+    1.0
   </version>
   <vendor email="support.tara@siani.es" url="http://www.siani.es">Tara Modeling Language</vendor>
 
@@ -32,10 +32,10 @@
               description="Export Language">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift E"/>
       </action>
-      <action id="ImportLanguage" class="siani.tara.intellij.actions.ImportLanguage" text="Import Language"
-              description="Import Language">
-        <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>
-      </action>
+      <!--<action id="ImportLanguage" class="siani.tara.intellij.actions.ImportLanguage" text="Import Language"-->
+      <!--description="Import Language">-->
+      <!--<keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>-->
+      <!--</action>-->
       <action id="tara.Generate" class="siani.tara.intellij.actions.GenerateAction" text="Link to Java">
         <keyboard-shortcut keymap="$default" first-keystroke="control shift G"/>
         <add-to-group group-id="ToolsMenu" anchor="before" relative-to-action="com.intellij.tools.ExternalToolsGroup"/>

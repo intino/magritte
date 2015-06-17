@@ -48,12 +48,12 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		root.addFrame(TERMINAL, level == 1);
 		root.addFrame(LOCALE, locale.getLanguage());
 		buildNode(model);
-		addInheritedRules();
+		addInheritedRules(model);
 	}
 
-	private void addInheritedRules() {
+	private void addInheritedRules(Model model) {
 		List<String> cases = collectAllTerminalRules();
-		new LanguageInheritanceFiller(root, cases, language).fill();
+		new LanguageInheritanceFiller(root, cases, language, model).fill();
 	}
 
 	private List<String> collectAllTerminalRules() {

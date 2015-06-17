@@ -19,6 +19,7 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 
 	private final Map<String, List<SimpleEntry<String, String>>> metrics;
 	private final int level;
+	private static Map<NodeContainer, Integer> nativeIndex = new HashMap<>();
 
 	public BoxVariableAdapter(Map<String, List<SimpleEntry<String, String>>> metrics, int level) {
 		this.metrics = metrics;
@@ -82,10 +83,13 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 
 	private Object[] buildNativeReference(Variable variable) {
 		final String rootContainer = getRootContainer(variable);
-		return new Object[]{rootContainer +
+		return new Object[]{cleanQn(rootContainer +
 			(variable.getContainer() instanceof Node && !rootContainer.equals(((Node) variable.getContainer()).getName()) ?
-				"_" + ((Node) variable.getContainer()).getName() : "") + "_" +
-			variable.getName()};
+				"_" + ((Node) variable.getContainer()).getName() : "") + "_" + variable.getName())};
+	}
+
+	public static String cleanQn(String qualifiedName) {
+		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
 	}
 
 	private String getRootContainer(Variable variable) {

@@ -304,7 +304,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Collection<Parameter> getParameters() {
+	public List<Parameter> getParameters() {
 		return null;
 	}
 

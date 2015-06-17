@@ -28,7 +28,12 @@ public class NameFormatter {
 
 	public static String getQn(Node node, String generatedLanguage) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
-		return composeMorphPackagePath(generatedLanguage) + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
+		if (facetTarget == null && !node.isFacet())
+			return composeMorphPackagePath(generatedLanguage) + DOT + node.getQualifiedName();
+		else if (facetTarget != null) {
+			return composeMorphPackagePath(generatedLanguage) + DOT + composeInFacetTargetQN(node, facetTarget);
+		} else
+			return composeMorphPackagePath(generatedLanguage) + DOT + node.getName().toLowerCase() + DOT + node.getQualifiedName();
 	}
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
@@ -82,8 +87,11 @@ public class NameFormatter {
 	public static String createNativeClassReference(NodeContainer container, String variable) {
 		final NodeContainer root = findRoot(container);
 		final String containerPath = cleanNativeReference(container.getQualifiedName());
-		String qualifiedName = (!root.getQualifiedName().equals(containerPath) ? root.getQualifiedName() + "_" : "") + containerPath;
-		return qualifiedName + "_" + variable;
+		String qualifiedName = (!root.getQualifiedName().equals(containerPath) ? root.getQualifiedName() : "");
+		if (!containerPath.isEmpty()) qualifiedName += "_" + containerPath;
+		qualifiedName = !qualifiedName.isEmpty() ? qualifiedName + "_" + variable : variable;
+		qualifiedName = qualifiedName.startsWith("_") ? qualifiedName.substring(1) : qualifiedName;
+		return qualifiedName;
 	}
 
 	public static String cleanNativeReference(String qualifiedName) {

@@ -69,8 +69,8 @@ public class TaraLanguageInjector implements LanguageInjector {
 		if (element == null) element = getParameter(expression);
 		if (element == null) element = getVariable(expression);
 		Node node = getContainerNode(element);
-		final String generatedLanguage = getGeneratedLanguage(expression);
-		frame.addFrame("languageGenerated", generatedLanguage);
+		final String language = getGeneratedLanguage(expression);
+		frame.addFrame("languageGenerated", language);
 		frame.addFrame("language", languageName.toLowerCase());
 		Allow.Parameter allow = TaraUtil.getCorrespondingAllow(node, element);
 		String contract = (allow != null) ? intention(allow.contract()) : getVariableIntention(element);
@@ -80,10 +80,15 @@ public class TaraLanguageInjector implements LanguageInjector {
 		final String signature = getSignature(allow != null ? allow.contract() : findNativeInterface(((Variable) element).getContract()));
 		frame.addFrame("variable", getName(element, allow)).
 			addFrame("qn", node.getQualifiedName().replace("@anonymous", "").replace(".", "_")).
-			addFrame("parent", findParent(element, node, generatedLanguage)).
+			addFrame("parent", findParent(element, node, getCorrespondingLanguageName(allow, language))).
 			addFrame("signature", signature).
 			addFrame("return", !signature.contains(" void ") && !body.contains("\n") && !body.startsWith("return ") ? "return " : "");
 		return frame;
+	}
+
+	private String getCorrespondingLanguageName(Allow.Parameter allow, String language) {
+		if (allow == null) return language;
+		return allow.contract().contains(NATIVE_SEPARATOR) && allow.contract().split(NATIVE_SEPARATOR).length == 3 ? allow.contract().split(NATIVE_SEPARATOR)[2] : language;
 	}
 
 	@NotNull
@@ -92,7 +97,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		final TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
 		if (facet == null) return "";
 		final TaraFacetConfiguration configuration = facet.getConfiguration();
-		return configuration.getGeneratedDslName().toLowerCase();
+		return configuration.getGeneratedDslName().isEmpty() ? module.getName().toLowerCase() : configuration.getGeneratedDslName().toLowerCase();
 	}
 
 	private String findNativeInterface(Contract contract) {
@@ -106,28 +111,36 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private String getSignature(String contract) {
-		final String signature = contract.substring(contract.indexOf(NATIVE_SEPARATOR) + 1);
+		final String signature = contract.contains(NATIVE_SEPARATOR) ? contract.split(NATIVE_SEPARATOR)[1] : contract;
 		return signature.startsWith("public ") ? signature : "public " + signature;
 	}
 
 	private String intention(String contract) {
-		return contract.contains(NATIVE_SEPARATOR) ? contract.substring(0, contract.indexOf(NATIVE_SEPARATOR)) : "";
+		if (contract.contains(NATIVE_SEPARATOR)) {
+			final String[] split = contract.split(NATIVE_SEPARATOR);
+			if (split.length == 3) return split[2].toLowerCase() + "." + "natives" + "." + split[0];
+			else return split[0];
+		} else return "";
 	}
 
-	private String findParent(PsiElement element, Node node, String generatedLanguage) {
+	private String findParent(PsiElement element, Node node, String language) {
 		Node candidate = node;
 		new NodeAnalyzer(node.getContainer()).analyze();
 		while (candidate.getContainer() != null)
 			if (node.getName() != null && !node.isFeatureInstance())
-				return getQn(candidate, element, generatedLanguage);
+				return clean(getQn(candidate, element, language));
 			else candidate = candidate.getContainer();
-		return getQn(candidate, element, generatedLanguage);
+		return clean(getQn(candidate, element, language));
+	}
+
+	private String clean(String qn) {
+		return qn.replace("@anonymous", "");
 	}
 
 	private static String getQn(Node owner, PsiElement element, String generatedLanguage) {
 		final FacetTarget facetTarget = facetTargetContainer(element);
 		if (owner.isFacet())
-			return generatedLanguage.toLowerCase() + getName(owner) + getFacetTarget(facetTarget);
+			return generatedLanguage.toLowerCase() + getName(owner) + getFacetTarget(owner, facetTarget);
 		else {
 			final Node node = TaraPsiImplUtil.getContainerNodeOf(element);
 			return generatedLanguage.toLowerCase() + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
@@ -135,8 +148,8 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	@NotNull
-	private static String getFacetTarget(FacetTarget facetTarget) {
-		return facetTarget != null ? DOT + format(facetTarget.getTarget()) : "";
+	private static String getFacetTarget(Node owner, FacetTarget facetTarget) {
+		return facetTarget != null ? DOT + owner.getName() + "_" + format(facetTarget.getTarget()) : "";
 	}
 
 	@NotNull

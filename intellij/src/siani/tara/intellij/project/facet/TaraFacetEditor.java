@@ -31,7 +31,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	private JPanel myMainPanel;
 	private JCheckBox plateRequired;
 	private JLabel generativeLabel;
-	private JSpinner level;
+	private JLabel level;
 	private Module[] candidates;
 
 	public TaraFacetEditor(TaraFacetConfiguration configuration, Module module) {
@@ -49,11 +49,12 @@ public class TaraFacetEditor extends FacetEditorTab {
 	@NotNull
 	public JComponent createComponent() {
 		if (configuration.getDsl().equals(PROTEO)) dslBox.addItem(PROTEO);
-		level.setValue(configuration.getLevel());
+		level.setText("" + configuration.getLevel());
 		addModuleDsls();
 		addDictionaries();
 		addGeneratedLanguageName();
 		addListeners();
+		if (level.getText().equals("0")) editionOfGenerativeLanguage(false);
 		return myMainPanel;
 	}
 
@@ -89,23 +90,22 @@ public class TaraFacetEditor extends FacetEditorTab {
 	private void addListeners() {
 		dslBox.addItemListener(e -> {
 			if (e.getItem().toString().equals(PROTEO))
-				setLevel(2, true);
+				setLevel(2);
 			else moduleInfo.values().stream().
 				filter(entry -> entry.getKey().equals(e.getItem().toString())).
-				forEach(entry -> setLevel(entry.getValue() - 1, false));
+				forEach(entry -> setLevel(entry.getValue() - 1));
 		});
-		level.addChangeListener(e -> visibilityOfGenerativeLanguage((Integer) ((JSpinner) e.getSource()).getValue() != 0));
+		level.addPropertyChangeListener("text", e -> editionOfGenerativeLanguage(Integer.parseInt(e.getNewValue().toString()) != 0));
 	}
 
-	private void visibilityOfGenerativeLanguage(boolean visibility) {
-		generativeLabel.setEnabled(visibility);
-		plateRequired.setEnabled(visibility);
-		dslGeneratedName.setEnabled(visibility);
+	private void editionOfGenerativeLanguage(boolean visibility) {
+		generativeLabel.setVisible(visibility);
+		plateRequired.setVisible(visibility);
+		dslGeneratedName.setVisible(visibility);
 	}
 
-	private void setLevel(int level, boolean enabled) {
-		this.level.setValue(level);
-		this.level.setEnabled(enabled);
+	private void setLevel(int level) {
+		this.level.setText(level + "");
 	}
 
 	public boolean isModified() {
@@ -121,7 +121,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 		configuration.setDictionary((String) dictionaryBox.getSelectedItem());
 		configuration.setGeneratedDslName(getDslGeneratedName());
 		configuration.setPlateRequired(plateRequired.isSelected());
-		configuration.setLevel((Integer) level.getValue());
+		configuration.setLevel(Integer.parseInt(level.getText()));
 		configuration.setDslsDirectory(module.getProject().getBasePath() + File.separator + "dsl" + File.separator);
 	}
 
@@ -145,7 +145,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	public void reset() {
 		dslBox.setSelectedItem(configuration.getDsl());
 		dictionaryBox.setSelectedItem(configuration.getDictionary());
-		setLevel(configuration.getLevel(), configuration.getDsl().equals(PROTEO));
+		setLevel(configuration.getLevel());
 		dslGeneratedName.setText(configuration.getGeneratedDslName());
 		plateRequired.setSelected(configuration.isPlateRequired());
 	}

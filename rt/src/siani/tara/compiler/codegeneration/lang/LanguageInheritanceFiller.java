@@ -2,12 +2,20 @@ package siani.tara.compiler.codegeneration.lang;
 
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.Variable;
+import siani.tara.compiler.model.impl.Model;
+import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.Allow;
 import siani.tara.semantic.Assumption;
 import siani.tara.semantic.Constraint;
 import siani.tara.semantic.Constraint.Require;
+import siani.tara.semantic.constraints.PrimitiveParameterAllow;
+import siani.tara.semantic.constraints.ReferenceParameterAllow;
 import siani.tara.semantic.model.Context;
+import siani.tara.semantic.model.Primitives;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,11 +23,13 @@ public class LanguageInheritanceFiller {
 	private final Frame root;
 	private final List<String> cases;
 	private final Language language;
+	private final Model model;
 
-	public LanguageInheritanceFiller(Frame root, List<String> cases, Language language) {
+	public LanguageInheritanceFiller(Frame root, List<String> cases, Language language, Model model) {
 		this.root = root;
 		this.cases = cases;
 		this.language = language;
+		this.model = model;
 	}
 
 	public void fill() {
@@ -101,12 +111,47 @@ public class LanguageInheritanceFiller {
 	}
 
 	private void addParameter(Frame allowsFrame, Allow.Parameter allow, String relation) {
-		Object[] values = {allow.name(), allow.type(), allow.allowedValues().toArray(new String[allow.allowedValues().size()]),
-			allow.multiple(), allow.position(), getMetric(allow.contract())};
+		Object[] values = {allow.name(), allow.type(), getAllowedValues(allow), allow.multiple(), allow.position(), getMetric(allow.contract())};
 		if (allow.allowedValues() != null && !allow.allowedValues().isEmpty())
 			if (allow.type().equals("word")) renderWord(allowsFrame, values, relation);
 			else renderReference(allowsFrame, values, relation);
 		else renderPrimitive(allowsFrame, values, relation);
+	}
+
+	private String[] getAllowedValues(Allow.Parameter allow) {
+		if (allow instanceof PrimitiveParameterAllow) return values(allow);
+		if (allow instanceof ReferenceParameterAllow && allow.type().equals("word")) return values(allow);
+		if (allowedValuesAreTerminal(allow)) return values(allow);
+		return instancesOfNonTerminalReference(allow);
+	}
+
+	private String[] instancesOfNonTerminalReference(Allow.Parameter allow) {
+		List<String> instances = new ArrayList<>();
+		allow.allowedValues().forEach(type -> findInstancesOf(model, type, instances));
+		return instances.toArray(new String[instances.size()]);
+	}
+
+	private void findInstancesOf(Node node, String type, List<String> instances) {
+		for (Node include : node.getIncludedNodes()) {
+			if (include.getType().equals(type)) instances.add(include.getQualifiedName());
+			if (!(include instanceof NodeReference)) findInstancesOf(include, type, instances);
+		}
+	}
+
+	private boolean allowedValuesAreTerminal(Allow.Parameter allow) {
+		for (String value : allow.allowedValues())
+			if (!isTerminal(value)) return false;
+		return true;
+	}
+
+	private boolean isTerminal(String value) {
+		for (Assumption assumption : language.assumptions(value))
+			if (!(assumption instanceof Assumption.Terminal)) return true;
+		return false;
+	}
+
+	private String[] values(Allow.Parameter allow) {
+		return allow.allowedValues().toArray(new String[allow.allowedValues().size()]);
 	}
 
 	private String getMetric(String metric) {
@@ -129,7 +174,12 @@ public class LanguageInheritanceFiller {
 			addFrame("type", values[1]).
 			addFrame("multiple", values[3]).
 			addFrame("position", values[4]).
-			addFrame("contract", values[5]));
+			addFrame("contract", getContract(values[1].toString(), values[5])));
+	}
+
+	private Object getContract(String type, Object value) {
+		if (!type.equals(Primitives.NATIVE)) return value;
+		return value.toString() + Variable.NATIVE_SEPARATOR + language.languageName();
 	}
 
 	private void renderWord(Frame allowsFrame, Object[] values, String relation) {

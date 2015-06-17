@@ -10,7 +10,6 @@ import siani.tara.compiler.model.impl.NodeImpl;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.Collection;
 import java.util.List;
 
 import static siani.tara.compiler.model.Variable.NATIVE_SEPARATOR;
@@ -38,20 +37,24 @@ public class NativeResolver {
 	}
 
 	private void resolveInFacetTargets(List<FacetTarget> facetTargets) throws DependencyException {
-		for (FacetTarget facet : facetTargets)
+		for (FacetTarget facet : facetTargets) {
+			resolveNative(facet.getVariables());
 			for (Node node : facet.getIncludedNodes()) resolve(node);
+		}
 	}
 
 	private void resolveInFacets(List<Facet> facets) throws DependencyException {
-		for (Facet facet : facets)
+		for (Facet facet : facets) {
+			resolveNative(facet.getVariables());
 			for (Node node : facet.getIncludedNodes()) resolve(node);
+		}
 	}
 
 
-	private void resolveNative(Collection<Variable> parameters) {
-		parameters.stream().
-			filter(parameter -> "native".equalsIgnoreCase(parameter.getType())).
-			forEach(parameter -> parameter.setContract(updateContract(parameter)));
+	private void resolveNative(List<Variable> variables) {
+		variables.stream().
+			filter(variable -> "native".equalsIgnoreCase(variable.getType())).
+			forEach(variable -> variable.setContract(updateContract(variable)));
 	}
 
 	private String updateContract(Variable variable) {

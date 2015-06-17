@@ -73,7 +73,11 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	}
 
 	private List<Object> createNativeReference(Parameter parameter) {
-		return Collections.singletonList(NameFormatter.createNativeClassReference(parameter.getOwner(), parameter.getName()));
+		return Collections.singletonList(cleanQn(NameFormatter.createNativeClassReference(parameter.getOwner(), parameter.getName())));
+	}
+
+	public static String cleanQn(String qualifiedName) {
+		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
 	}
 
 	private List<Object> format(List<Object> parameterValues) {

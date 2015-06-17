@@ -2,7 +2,10 @@ package siani.tara.compiler.model.impl;
 
 import siani.tara.compiler.model.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -105,8 +108,8 @@ public class FacetImpl extends Element implements Facet {
 	}
 
 	@Override
-	public Collection<Parameter> getParameters() {
-		return parameters;
+	public List<Parameter> getParameters() {
+		return unmodifiableList(parameters);
 	}
 
 	@Override

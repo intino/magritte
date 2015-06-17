@@ -23,7 +23,7 @@ public class VariableAnnotator extends TaraAnnotator {
 		holder = annotationHolder;
 		if (psiElement instanceof Variable) {
 			Variable variable = (Variable) psiElement;
-			if (!TaraPrimitives.MEASURE.equals(variable.getType()) && !TaraPrimitives.NATIVE.equals(variable.getType()))
+			if (!TaraPrimitives.NATIVE.equals(variable.getType()))
 				return;
 			if (analyzeJavaClassCreation(variable))
 				holder.createErrorAnnotation(variable, MessageProvider.message("no.java.generated.class"));

@@ -7,7 +7,7 @@ def type(model)
 
 	import static magritte.Tag.*;
 	import magritte.primitives.Date;
-
+	[import $language+lowercase.*;]
 	[import $generatedLanguage+lowercase.*;]
 
 	$importMetric...[$NL]

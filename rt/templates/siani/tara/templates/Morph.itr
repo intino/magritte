@@ -71,7 +71,7 @@ end
 --- REFERENCIAS TERMINALES ---
 def type(variable) type(reference) type(terminal) type(multiple) !type(word) trigger(getter)
 	public magritte.Set<$type+reference> $name+firstLowerCase() {
-		return _getMultiple("$name").asMorph($type+reference.class);
+		return _getMultiple("$name").as($type+reference.class);
 	}
 
 	public $type+reference $name+firstLowerCase(int index) {

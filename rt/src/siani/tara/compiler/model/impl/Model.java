@@ -254,7 +254,7 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public Collection<Parameter> getParameters() {
+	public List<Parameter> getParameters() {
 		return null;
 	}
 

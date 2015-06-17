@@ -72,14 +72,13 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 
 	protected boolean doPrepare(final Module module, final List<String> errorMessages, final List<String> successMessages) {
 		final String languageName = TaraFacet.getTaraFacetByModule(module).getConfiguration().getGeneratedDslName();
-		final String defaultPath = TaraLanguage.getLanguagesDirectory(module.getProject()) + File.separator + languageName;
 		final Set<Module> modules = new HashSet<>();
 		getDependencies(module, modules);
 		modules.add(module);
 		final Set<Library> libs = new HashSet<>();
 		for (Module dep : modules)
 			getLibraries(dep, libs);
-		final String destinyPath = defaultPath + (LANGUAGE_EXTENSION);
+		final String destinyPath = module.getProject().getBasePath() + File.separator + languageName + LANGUAGE_EXTENSION;
 		final File dstFile = new File(destinyPath);
 		return clearReadOnly(module.getProject(), dstFile) && ProgressManager.getInstance().runProcessWithProgressSynchronously(() -> {
 			final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
@@ -130,7 +129,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private void addLanguage(Project project, ZipOutputStream zos, String languageName) throws IOException {
-		VirtualFile file = TaraLanguage.getLanguageDirectory(languageName, project);//TODO
+		File file = TaraLanguage.getLanguageDirectory(languageName, project);//TODO
 		if (file == null || !file.exists()) throw new IOException("Language file not found");
 		String entryName = languagePath(languageName);
 		final String path = "/" + languageName + "/" + MIDDLE_MODEL_DIR + "/" + entryName;

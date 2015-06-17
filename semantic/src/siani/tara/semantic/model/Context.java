@@ -2,7 +2,10 @@ package siani.tara.semantic.model;
 
 import siani.tara.semantic.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static siani.tara.semantic.constraints.RuleFactory.*;
 
