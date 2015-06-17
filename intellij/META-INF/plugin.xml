@@ -1,6 +1,5 @@
 <idea-plugin version="1" url="http://tara.siani.es">
   <id>siani.dev.tara</id>
-  <depends>org.jetbrains.idea.maven</depends>
   <depends>org.intellij.intelliLang</depends>
   <name>Tara</name>
   <version>
