@@ -60,8 +60,7 @@ public class SemanticAnalyzer {
 
 	private void checkNode(Node include) throws SemanticException {
 		checker.check(wrap(include));
-		if (include instanceof NodeImpl)
-			check(include);
+		if (include instanceof NodeImpl) check(include);
 	}
 
 	private LanguageNode wrap(Node node) {

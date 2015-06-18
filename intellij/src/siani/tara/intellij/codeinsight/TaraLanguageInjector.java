@@ -36,7 +36,11 @@ public class TaraLanguageInjector implements LanguageInjector {
 		injectionPlacesRegistrar.addPlace(JavaLanguage.INSTANCE,
 			getRangeInsideHost((Expression) host),
 			createPrefix((Expression) host),
-			createSuffix(!((Expression) host).getValue().endsWith(";")));
+			createSuffix(isWithSemicolon((Expression) host)));
+	}
+
+	private boolean isWithSemicolon(@NotNull Expression host) {
+		return !host.getValue().trim().endsWith(";") && !host.getValue().trim().endsWith("}");
 	}
 
 	@NotNull

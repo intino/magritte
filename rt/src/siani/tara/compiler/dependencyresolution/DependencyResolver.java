@@ -77,7 +77,8 @@ public class DependencyResolver {
 	private void resolveParent(Node node) throws DependencyException {
 		if (node.getParent() == null && node.getParentName() != null) {
 			Node parent = manager.resolve(node.getParentName(), getNodeContainer(node.getContainer()));
-			if (parent == null) throw new DependencyException("Parent not found", (Element) node);
+			if (parent == null)
+				throw new DependencyException("reject.dependency.parent.node.not.found", (Element) node);
 			else {
 				((NodeImpl) node).setParent(parent);
 				parent.addChild(node);
@@ -93,7 +94,7 @@ public class DependencyResolver {
 	private void resolveNodeReference(NodeReference nodeReference) throws DependencyException {
 		if (nodeReference.getDestiny() != null) return;
 		NodeImpl destiny = manager.resolve(nodeReference);
-		if (destiny == null) throw new DependencyException("Reference destiny not found", nodeReference);
+		if (destiny == null) throw new DependencyException("reject.dependency.reference.node.not.found", nodeReference);
 		else nodeReference.setDestiny(destiny);
 	}
 
@@ -131,14 +132,14 @@ public class DependencyResolver {
 
 	private void resolveFacetTarget(FacetTarget facet) throws DependencyException {
 		Node destiny = manager.resolve(facet, facet.getContainer());
-		if (destiny == null) throw new DependencyException("Facet Target not found", (Element) facet);
+		if (destiny == null) throw new DependencyException("reject.facet.target.not.found", (Element) facet);
 		else facet.setTargetNode(destiny);
 	}
 
 	private void resolveVariableReference(VariableReference variable, NodeContainer container) throws DependencyException {
 		NodeImpl destiny = manager.resolve(variable, container);
 		if (destiny == null)
-			throw new DependencyException("variable of type " + variable.getType() + " not found", (Element) container);
+			throw new DependencyException("reject.variable.not.found", (Element) container, variable.getType());
 		else variable.setDestiny(destiny);
 	}
 

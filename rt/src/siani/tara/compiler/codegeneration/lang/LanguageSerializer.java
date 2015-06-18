@@ -37,7 +37,7 @@ public class LanguageSerializer extends CodeGenerator {
 			if (!file.exists()) file.createNewFile();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
-			throw new TaraException("Error sav¡ng model: " + e.getMessage());
+			throw new TaraException("Error saving model: " + e.getMessage());
 		}
 	}
 

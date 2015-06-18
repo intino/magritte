@@ -13,6 +13,7 @@ public interface FacetApply extends NodeContainer, Navigatable, TaraPsiElement {
 
 	Body getBody();
 
+	@NotNull
 	List<Node> getIncludes();
 
 	@Nullable

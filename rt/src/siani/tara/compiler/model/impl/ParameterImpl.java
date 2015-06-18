@@ -23,7 +23,6 @@ public class ParameterImpl extends Element implements Parameter {
 	private boolean hasReferenceValue = false;
 	private List<String> annotations = new ArrayList<>();
 	private NodeContainer owner;
-	private int nativeIndex;
 
 
 	public ParameterImpl(String name, int position, String metric, Object... values) {
@@ -165,13 +164,4 @@ public class ParameterImpl extends Element implements Parameter {
 		this.values.addAll(newValues);
 	}
 
-	@Override
-	public void setNativeIndex(int index) {
-		this.nativeIndex = index;
-	}
-
-	@Override
-	public int getNativeIndex() {
-		return nativeIndex;
-	}
 }

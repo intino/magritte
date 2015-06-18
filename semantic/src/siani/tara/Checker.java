@@ -9,8 +9,6 @@ import siani.tara.semantic.model.Node;
 import java.util.Collection;
 import java.util.Collections;
 
-import static siani.tara.semantic.model.Tara.Root;
-
 public class Checker {
 
 	private final Resolver resolver;
@@ -28,7 +26,7 @@ public class Checker {
 
 	private void checkConstraints(Node node) throws SemanticException {
 		assume(node);
-		if (!node.type().equals(Root)) checkNodeConstrains(node);
+		checkNodeConstrains(node);
 	}
 
 	private void checkConstraintsDeep(Node node) throws SemanticException {

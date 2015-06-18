@@ -91,7 +91,7 @@ public abstract class Rejectable {
 		}
 
 		public enum Cause {
-			NAME, TYPE, VALUE, MIXED_TYPE
+			NAME, TYPE, VALUE, MIXED_TYPE, NO_NATIVE_SIGNATURE
 		}
 	}
 

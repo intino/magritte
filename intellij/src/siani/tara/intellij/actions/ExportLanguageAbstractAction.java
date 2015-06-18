@@ -47,7 +47,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	private static final String TEMP_PREFIX = "temp";
 	@NonNls
 	private static final String METAMODEL_DIR = "metamodel";
-	private static final String MIDDLE_MODEL_DIR = TaraLanguage.DSL;
+	private static final String DSL_DIR = TaraLanguage.DSL;
 
 	public static void getDependencies(Module module, final Set<Module> modules) {
 		productionRuntimeDependencies(module).forEachModule(dep -> {
@@ -131,10 +131,10 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	private void addLanguage(Project project, ZipOutputStream zos, String languageName) throws IOException {
 		File file = TaraLanguage.getLanguageDirectory(languageName, project);//TODO
 		if (file == null || !file.exists()) throw new IOException("Language file not found");
-		String entryName = languagePath(languageName);
-		final String path = "/" + languageName + "/" + MIDDLE_MODEL_DIR + "/" + entryName;
+		final String entryPath = "/" + languageName + "/" + DSL_DIR + "/" + languagePath(languageName);
 		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
-		ZipUtil.addFileToZip(zos, new File(file.getPath()), path, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+		ZipUtil.addFileToZip(zos, new File(file.getPath(), DSL_DIR + File.separator + languagePath(languageName)),
+			entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 	}
 
 	@NotNull

@@ -1,12 +1,10 @@
 package siani.tara.compiler.dependencyresolution;
 
 import siani.tara.compiler.core.errorcollection.DependencyException;
-import siani.tara.compiler.model.Facet;
-import siani.tara.compiler.model.FacetTarget;
-import siani.tara.compiler.model.Node;
-import siani.tara.compiler.model.Variable;
+import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.NodeImpl;
+import siani.tara.semantic.model.Primitives;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -50,15 +48,17 @@ public class NativeResolver {
 		}
 	}
 
-
-	private void resolveNative(List<Variable> variables) {
-		variables.stream().
-			filter(variable -> "native".equalsIgnoreCase(variable.getType())).
-			forEach(variable -> variable.setContract(updateContract(variable)));
+	private void resolveNative(List<Variable> variables) throws DependencyException {
+		for (Variable variable : variables)
+			if (Primitives.NATIVE.equalsIgnoreCase(variable.getType()))
+				variable.setContract(NativeResolver.this.updateContract(variable));
 	}
 
-	private String updateContract(Variable variable) {
-		return variable.getContract() + NATIVE_SEPARATOR + findNativeSignature(variable.getContract());
+	private String updateContract(Variable variable) throws DependencyException {
+		final String nativeSignature = findNativeSignature(variable.getContract());
+		if (nativeSignature.isEmpty())
+			throw new DependencyException("reject.native.signature.not.found", (Element) variable);
+		return variable.getContract() + NATIVE_SEPARATOR + nativeSignature;
 	}
 
 	private String findNativeSignature(String name) {

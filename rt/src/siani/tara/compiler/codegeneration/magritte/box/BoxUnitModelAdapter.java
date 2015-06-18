@@ -135,7 +135,7 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 
 	private String formatBody(String body, String signature) {
 		final String returnText = "return ";
-		body = body.endsWith(";") ? body : body + ";";
+		body = body.endsWith(";") || body.endsWith("}") ? body : body + ";";
 		if (!signature.contains(" void ") && !body.contains("\n") && !body.startsWith(returnText))
 			return returnText + body;
 		return body;

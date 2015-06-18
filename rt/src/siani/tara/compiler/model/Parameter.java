@@ -44,7 +44,4 @@ public interface Parameter {
 
 	void substituteValues(List<? extends Object> newValues);
 
-	void setNativeIndex(int index);
-
-	int getNativeIndex();
 }

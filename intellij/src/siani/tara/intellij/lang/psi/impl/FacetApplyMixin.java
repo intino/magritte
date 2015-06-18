@@ -25,6 +25,7 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		return "";
 	}
 
+	@NotNull
 	public List<Node> getIncludes() {
 		return unmodifiableList(getInnerNodesOf((FacetApply) this));
 	}

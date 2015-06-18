@@ -29,7 +29,7 @@ public class NodeAnalyzer extends TaraAnalyzer {
 		try {
 			Language language = TaraUtil.getLanguage(node);
 			if (language == null) return;
-			new Checker(language).check(new LanguageNode(node.resolve()));
+			new Checker(language).check(new LanguageNode(node));
 		} catch (SemanticException e) {
 			PsiElement destiny = e.getOrigin() != null ? ((LanguageElement) e.getOrigin()).element() : node.getSignature();
 			if (destiny instanceof Node) destiny = ((Node) destiny).getSignature();
