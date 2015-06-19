@@ -30,7 +30,7 @@ public class VariantsManager {
 	}
 
 	private boolean hasContext() {
-		return getContext().indexOf(myElement) != 0;
+		return getContext().indexOf((Identifier) myElement) != 0;
 	}
 
 	@NotNull

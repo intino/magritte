@@ -35,9 +35,6 @@ public interface Assumption {
 
 	}
 
-	interface Root extends Assumption {
-	}
-
 	interface Single extends Assumption {
 
 	}

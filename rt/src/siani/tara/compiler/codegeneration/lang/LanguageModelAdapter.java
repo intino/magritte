@@ -121,8 +121,22 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		final Collection<Allow> allows = language.allows(node.getType());
 		return types.stream().
 			filter(type -> allows.stream().
-				filter(allow -> allow instanceof Allow.Include && ((Allow.Include) allow).type().equals(type)).findFirst().isPresent()).
+				filter(allow -> allow instanceof Allow.Include && sameType(allow, type) && isAllowed((Allow.Include) allow, node)).findFirst().isPresent()).
 			map(type -> new Frame().addTypes(MULTIPLE, ALLOW).addFrame(TYPE, type)).collect(Collectors.toList());
+	}
+
+	private boolean sameType(Allow allow, String type) {
+		return ((Allow.Include) allow).type().equals(type);
+	}
+
+	private boolean isAllowed(Allow.Include allow, Node node) {
+		return !(node instanceof Model) || isMain(allow);
+	}
+
+	private boolean isMain(Allow.Include allow) {
+		for (Assumption assumption : language.assumptions(allow.type()))
+			if (assumption instanceof Assumption.Main) return true;
+		return false;
 	}
 
 	private void addRequires(Node node, Frame frame) {
@@ -219,7 +233,12 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 				assumptions.addFrame(ASSUMPTION, Tag.TERMINAL_INSTANCE);
 			else if (tag.equals(Tag.FEATURE)) assumptions.addFrame(ASSUMPTION, Tag.FEATURE_INSTANCE);
 			else if (tag.equals(Tag.FACET)) assumptions.addFrame(ASSUMPTION, Tag.FACET_INSTANCE);
+			else if (tag.equals(Tag.MAIN)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.MAIN.name()));
 		}
+	}
+
+	static String capitalize(String s) {
+		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
 	}
 
 	private Frame buildRequiredNodes(Node node) {
