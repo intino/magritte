@@ -51,7 +51,7 @@ public class TaraParameterReferenceSolver extends TaraReferenceSolver {
 		for (final Node node : variants) {
 			if (node == null || node.getName() == null || node.getName().length() == 0) continue;
 			lookupElements.add(LookupElementBuilder.create(node.getIdentifierNode()).
-				withIcon(TaraIcons.CONCEPT).withTypeText(node.getType()));
+				withIcon(TaraIcons.NODE).withTypeText(node.getType()));
 		}
 		return lookupElements.toArray();
 	}

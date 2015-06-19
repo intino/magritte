@@ -9,10 +9,8 @@ import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
-import siani.tara.intellij.lang.lexer.TaraPrimitives;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.resolve.TaraFileReferenceSolver;
-import siani.tara.intellij.lang.psi.resolve.TaraNativeReferenceSolver;
 import siani.tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import siani.tara.intellij.lang.psi.resolve.TaraWordReferenceSolver;
 import siani.tara.semantic.Allow;
@@ -77,8 +75,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 			return new TaraNodeReferenceSolver(this, getRange(), container);
 		if (parameterAllow.type().equalsIgnoreCase(WORD) || !isPrimitive(parameterAllow.type()))
 			return new TaraWordReferenceSolver(this, getRange(), parameterAllow);
-		if (parameterAllow.type().equalsIgnoreCase(TaraPrimitives.NATIVE) || !isPrimitive(parameterAllow.type()))
-			return new TaraNativeReferenceSolver(this, getRange(), parameterAllow);
 		return null;
 	}
 
@@ -90,8 +86,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 			return new TaraNodeReferenceSolver(this, getRange(), container);
 		if (parameterAllow.type().equalsIgnoreCase(WORD) || !isPrimitive(parameterAllow.type()))
 			return new TaraWordReferenceSolver(this, getRange(), parameterAllow);
-		if (parameterAllow.type().equalsIgnoreCase(TaraPrimitives.NATIVE) || !isPrimitive(parameterAllow.type()))
-			return new TaraNativeReferenceSolver(this, getRange(), parameterAllow);
 		return null;
 	}
 
@@ -110,7 +104,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 
 	@Override
 	public Icon getIcon(@IconFlags int i) {
-		return TaraIcons.CONCEPT;
+		return TaraIcons.NODE;
 	}
 
 	@Override

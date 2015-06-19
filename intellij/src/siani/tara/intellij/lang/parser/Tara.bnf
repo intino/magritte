@@ -119,15 +119,15 @@ contract   ::= (LEFT_SQUARE (MEASURE_VALUE_KEY | identifier)+ RIGHT_SQUARE) | (M
 	mixin = 'siani.tara.intellij.lang.psi.impl.ContractMixin'
 }
 
-value ::= identifierReference+
-		| stringValue+
+value ::= stringValue+
         | booleanValue+
-        | linkValue+
         | naturalValue+ measureValue?
         | integerValue+ measureValue?
         | doubleValue+  measureValue?
         | expression+
         | emptyField
+        | instanceName+
+        | identifierReference+
 {
 mixin = 'siani.tara.intellij.lang.psi.impl.ValueMixin'
     implements = 'siani.tara.intellij.lang.psi.Value'
@@ -147,7 +147,7 @@ booleanValue    ::= BOOLEAN_VALUE_KEY
 naturalValue    ::= NATURAL_VALUE_KEY
 integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY
-linkValue       ::= ADDRESS_VALUE | identifierReference
+instanceName    ::= ADDRESS_VALUE
 measureValue    ::= identifier | MEASURE_VALUE_KEY
 
 facetApply ::= AS metaIdentifier parameters? (WITH metaIdentifier)? body? {

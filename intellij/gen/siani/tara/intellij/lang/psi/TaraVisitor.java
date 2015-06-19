@@ -102,11 +102,11 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitIntegerValue(@NotNull TaraIntegerValue o) {
+  public void visitInstanceName(@NotNull TaraInstanceName o) {
     visitPsiElement(o);
   }
 
-  public void visitLinkValue(@NotNull TaraLinkValue o) {
+  public void visitIntegerValue(@NotNull TaraIntegerValue o) {
     visitPsiElement(o);
   }
 

@@ -65,7 +65,7 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 				Collection<BasePsiNode<? extends PsiElement>> subNodes = new ArrayList<>();
 				subNodes.add((BasePsiNode<? extends PsiElement>) element);
 				subNodes.addAll(conceptNodes);
-				result.add(new TreeNode(project, new NodeTreeView(psiClass, conceptFiles), settings, TaraIcons.CONCEPT, subNodes));
+				result.add(new TreeNode(project, new NodeTreeView(psiClass, conceptFiles), settings, TaraIcons.NODE, subNodes));
 				result.remove(element);
 				result.removeAll(conceptNodes);
 			}

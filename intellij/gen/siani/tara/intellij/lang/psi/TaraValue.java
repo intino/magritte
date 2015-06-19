@@ -1,41 +1,40 @@
 // This is a generated file. Not intended for manual editing.
 package siani.tara.intellij.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
 
 public interface TaraValue extends Value {
 
-	@NotNull
-	List<TaraBooleanValue> getBooleanValueList();
+  @NotNull
+  List<TaraBooleanValue> getBooleanValueList();
 
-	@NotNull
-	List<TaraDoubleValue> getDoubleValueList();
+  @NotNull
+  List<TaraDoubleValue> getDoubleValueList();
 
-	@Nullable
-	TaraEmptyField getEmptyField();
+  @Nullable
+  TaraEmptyField getEmptyField();
 
-	@NotNull
-	List<TaraExpression> getExpressionList();
+  @NotNull
+  List<TaraExpression> getExpressionList();
 
-	@NotNull
-	List<TaraIdentifierReference> getIdentifierReferenceList();
+  @NotNull
+  List<TaraIdentifierReference> getIdentifierReferenceList();
 
-	@NotNull
-	List<TaraIntegerValue> getIntegerValueList();
+  @NotNull
+  List<TaraInstanceName> getInstanceNameList();
 
-	@NotNull
-	List<TaraLinkValue> getLinkValueList();
+  @NotNull
+  List<TaraIntegerValue> getIntegerValueList();
 
-	@Nullable
-	TaraMeasureValue getMeasureValue();
+  @Nullable
+  TaraMeasureValue getMeasureValue();
 
-	@NotNull
-	List<TaraNaturalValue> getNaturalValueList();
+  @NotNull
+  List<TaraNaturalValue> getNaturalValueList();
 
-	@NotNull
-	List<TaraStringValue> getStringValueList();
+  @NotNull
+  List<TaraStringValue> getStringValueList();
 
 }

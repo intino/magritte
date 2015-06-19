@@ -34,7 +34,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		if (!value.getDoubleValueList().isEmpty()) return DOUBLE;
 		if (!value.getIntegerValueList().isEmpty()) return INTEGER;
 		if (!value.getNaturalValueList().isEmpty()) return NATURAL;
-		if (!value.getLinkValueList().isEmpty()
+		if (!value.getInstanceNameList().isEmpty()
 			|| !value.getIdentifierReferenceList().isEmpty()) return REFERENCE;
 		if (!value.getStringValueList().isEmpty()) return STRING;
 		if (value.getEmptyField() != null) return EMPTY;

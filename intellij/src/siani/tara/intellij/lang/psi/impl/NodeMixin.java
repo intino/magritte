@@ -175,7 +175,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public Icon getIcon(@IconFlags int i) {
 		if (this.isSub())
 			return TaraIcons.SUB_13;
-		return TaraIcons.CONCEPT;
+		return TaraIcons.NODE;
 	}
 
 	@NotNull

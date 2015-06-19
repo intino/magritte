@@ -1,12 +1,12 @@
 package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class VariantsManager {
 
@@ -20,30 +20,31 @@ public class VariantsManager {
 		this.context = solveIdentifierContext();
 	}
 
-	private static boolean isExtendsReference(IdentifierReference reference) {
-		return reference.getParent() instanceof Signature;
-	}
-
-	private static boolean namesAreEqual(Identifier identifier, Node node) {
-		return identifier.getText().equals(node.getName());
-	}
-
 	public void resolveVariants() {
-		addContextVariants((Identifier) myElement);
-		addInModelVariants();
-		addImportVariants();
+		addContextVariants();
+		if (!hasContext()) {
+			addInModelVariants();
+			addImportVariants();
+		}
 
 	}
 
-	private void addContextVariants(Identifier identifier) {
-		Node container = TaraPsiImplUtil.getContainerNodeOf(identifier);
-		if (container != null && !isExtendsReference((IdentifierReference) identifier.getParent()) &&
-			namesAreEqual(identifier, container))
-			variants.add(container);
-		while (container != null) {
-			variants.addAll(container.getNodeSiblings().stream().collect(Collectors.toList()));
-			container = container.getContainer();
-		}
+	private boolean hasContext() {
+		return getContext().indexOf(myElement) != 0;
+	}
+
+	@NotNull
+	private List<? extends Identifier> getContext() {
+		return ((IdentifierReference) myElement.getParent()).getIdentifierList();
+	}
+
+	private void addContextVariants() {
+		final List<Identifier> context = (List<Identifier>) getContext();
+		final PsiElement resolve = ReferenceManager.resolve(context.get(context.size() - 2));
+		if (resolve == null) return;
+		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(resolve);
+		if (containerNodeOf == null) return;
+		variants.addAll(containerNodeOf.getIncludes());
 	}
 
 	private void addInModelVariants() {
@@ -86,5 +87,13 @@ public class VariantsManager {
 	public final List<Identifier> solveIdentifierContext() {
 		List<? extends Identifier> list = ((IdentifierReference) myElement.getParent()).getIdentifierList();
 		return (List<Identifier>) list.subList(0, list.size() - 1);
+	}
+
+	private boolean areNamesake(Identifier identifier, Node node) {
+		return identifier.getText().equals(node.getName());
+	}
+
+	private boolean isExtendsReference(IdentifierReference reference) {
+		return reference.getParent() instanceof Signature;
 	}
 }

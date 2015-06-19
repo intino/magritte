@@ -94,11 +94,11 @@ public class TaraParser implements PsiParser {
     else if (t == IMPORTS) {
       r = imports(b, 0);
     }
+    else if (t == INSTANCE_NAME) {
+      r = instanceName(b, 0);
+    }
     else if (t == INTEGER_VALUE) {
       r = integerValue(b, 0);
-    }
-    else if (t == LINK_VALUE) {
-      r = linkValue(b, 0);
     }
     else if (t == MEASURE_VALUE) {
       r = measureValue(b, 0);
@@ -879,6 +879,18 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // ADDRESS_VALUE
+  public static boolean instanceName(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "instanceName")) return false;
+    if (!nextTokenIs(b, ADDRESS_VALUE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, ADDRESS_VALUE);
+    exit_section_(b, m, INSTANCE_NAME, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
   public static boolean integerValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "integerValue")) return false;
@@ -888,19 +900,6 @@ public class TaraParser implements PsiParser {
     r = consumeToken(b, NATURAL_VALUE_KEY);
     if (!r) r = consumeToken(b, NEGATIVE_VALUE_KEY);
     exit_section_(b, l, m, INTEGER_VALUE, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // ADDRESS_VALUE | identifierReference
-  public static boolean linkValue(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "linkValue")) return false;
-    if (!nextTokenIs(b, "<link value>", ADDRESS_VALUE, IDENTIFIER_KEY)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<link value>");
-    r = consumeToken(b, ADDRESS_VALUE);
-    if (!r) r = identifierReference(b, l + 1);
-    exit_section_(b, l, m, LINK_VALUE, r, false, null);
     return r;
   }
 
@@ -1302,15 +1301,15 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // identifierReference+
-  // 		| stringValue+
+  // stringValue+
   //         | booleanValue+
-  //         | linkValue+
   //         | naturalValue+ measureValue?
   //         | integerValue+ measureValue?
   //         | doubleValue+  measureValue?
   //         | expression+
   //         | emptyField
+  //         | instanceName+
+  //         | identifierReference+
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
@@ -1321,22 +1320,22 @@ public class TaraParser implements PsiParser {
     if (!r) r = value_3(b, l + 1);
     if (!r) r = value_4(b, l + 1);
     if (!r) r = value_5(b, l + 1);
-    if (!r) r = value_6(b, l + 1);
-    if (!r) r = value_7(b, l + 1);
     if (!r) r = emptyField(b, l + 1);
+    if (!r) r = value_7(b, l + 1);
+    if (!r) r = value_8(b, l + 1);
     exit_section_(b, l, m, VALUE, r, false, null);
     return r;
   }
 
-  // identifierReference+
+  // stringValue+
   private static boolean value_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = identifierReference(b, l + 1);
+    r = stringValue(b, l + 1);
     int c = current_position_(b);
     while (r) {
-      if (!identifierReference(b, l + 1)) break;
+      if (!stringValue(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "value_0", c)) break;
       c = current_position_(b);
     }
@@ -1344,15 +1343,15 @@ public class TaraParser implements PsiParser {
     return r;
   }
 
-  // stringValue+
+  // booleanValue+
   private static boolean value_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = stringValue(b, l + 1);
+    r = booleanValue(b, l + 1);
     int c = current_position_(b);
     while (r) {
-      if (!stringValue(b, l + 1)) break;
+      if (!booleanValue(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "value_1", c)) break;
       c = current_position_(b);
     }
@@ -1360,39 +1359,75 @@ public class TaraParser implements PsiParser {
     return r;
   }
 
-  // booleanValue+
+  // naturalValue+ measureValue?
   private static boolean value_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = booleanValue(b, l + 1);
+    r = value_2_0(b, l + 1);
+    r = r && value_2_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // naturalValue+
+  private static boolean value_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = naturalValue(b, l + 1);
     int c = current_position_(b);
     while (r) {
-      if (!booleanValue(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "value_2", c)) break;
+      if (!naturalValue(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "value_2_0", c)) break;
       c = current_position_(b);
     }
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // linkValue+
+  // measureValue?
+  private static boolean value_2_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_2_1")) return false;
+    measureValue(b, l + 1);
+    return true;
+  }
+
+  // integerValue+ measureValue?
   private static boolean value_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_3")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = linkValue(b, l + 1);
+    r = value_3_0(b, l + 1);
+    r = r && value_3_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // integerValue+
+  private static boolean value_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = integerValue(b, l + 1);
     int c = current_position_(b);
     while (r) {
-      if (!linkValue(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "value_3", c)) break;
+      if (!integerValue(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "value_3_0", c)) break;
       c = current_position_(b);
     }
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // naturalValue+ measureValue?
+  // measureValue?
+  private static boolean value_3_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_3_1")) return false;
+    measureValue(b, l + 1);
+    return true;
+  }
+
+  // doubleValue+  measureValue?
   private static boolean value_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_4")) return false;
     boolean r;
@@ -1403,15 +1438,15 @@ public class TaraParser implements PsiParser {
     return r;
   }
 
-  // naturalValue+
+  // doubleValue+
   private static boolean value_4_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_4_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = naturalValue(b, l + 1);
+    r = doubleValue(b, l + 1);
     int c = current_position_(b);
     while (r) {
-      if (!naturalValue(b, l + 1)) break;
+      if (!doubleValue(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "value_4_0", c)) break;
       c = current_position_(b);
     }
@@ -1426,84 +1461,48 @@ public class TaraParser implements PsiParser {
     return true;
   }
 
-  // integerValue+ measureValue?
+  // expression+
   private static boolean value_5(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_5")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = value_5_0(b, l + 1);
-    r = r && value_5_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // integerValue+
-  private static boolean value_5_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_5_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = integerValue(b, l + 1);
-    int c = current_position_(b);
-    while (r) {
-      if (!integerValue(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "value_5_0", c)) break;
-      c = current_position_(b);
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // measureValue?
-  private static boolean value_5_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_5_1")) return false;
-    measureValue(b, l + 1);
-    return true;
-  }
-
-  // doubleValue+  measureValue?
-  private static boolean value_6(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_6")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = value_6_0(b, l + 1);
-    r = r && value_6_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // doubleValue+
-  private static boolean value_6_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_6_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = doubleValue(b, l + 1);
-    int c = current_position_(b);
-    while (r) {
-      if (!doubleValue(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "value_6_0", c)) break;
-      c = current_position_(b);
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // measureValue?
-  private static boolean value_6_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_6_1")) return false;
-    measureValue(b, l + 1);
-    return true;
-  }
-
-  // expression+
-  private static boolean value_7(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_7")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = expression(b, l + 1);
     int c = current_position_(b);
     while (r) {
       if (!expression(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "value_5", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // instanceName+
+  private static boolean value_7(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_7")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = instanceName(b, l + 1);
+    int c = current_position_(b);
+    while (r) {
+      if (!instanceName(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "value_7", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // identifierReference+
+  private static boolean value_8(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_8")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = identifierReference(b, l + 1);
+    int c = current_position_(b);
+    while (r) {
+      if (!identifierReference(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "value_8", c)) break;
       c = current_position_(b);
     }
     exit_section_(b, m, null, r);

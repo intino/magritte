@@ -79,7 +79,7 @@ public class TaraNodeCompletionContributor extends CompletionContributor {
 	}
 
 	private LookupElementBuilder createElement(String language, Allow.Include allow) {
-		return create(lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.CONCEPT).withCaseSensitivity(false).withTypeText(language);
+		return create(lastTypeOf(allow.type()) + " ").withIcon(TaraIcons.NODE).withCaseSensitivity(false).withTypeText(language);
 	}
 
 	private String lastTypeOf(String type) {
@@ -93,6 +93,8 @@ public class TaraNodeCompletionContributor extends CompletionContributor {
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
 					resultSet.addElement(create("extends "));
+					resultSet.addElement(create("is "));
+					resultSet.addElement(create("into "));
 				}
 			}
 		);

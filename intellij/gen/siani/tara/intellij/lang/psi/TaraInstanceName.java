@@ -5,9 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TaraLinkValue extends TaraPsiElement {
-
-  @Nullable
-  TaraIdentifierReference getIdentifierReference();
+public interface TaraInstanceName extends TaraPsiElement {
 
 }

@@ -33,8 +33,8 @@ public interface TaraTypes {
 	IElementType IDENTIFIER_REFERENCE = new TaraElementType("IDENTIFIER_REFERENCE");
 	IElementType IMPLICIT_PARAMETER = new TaraElementType("IMPLICIT_PARAMETER");
 	IElementType IMPORTS = new TaraElementType("IMPORTS");
+	IElementType INSTANCE_NAME = new TaraElementType("INSTANCE_NAME");
 	IElementType INTEGER_VALUE = new TaraElementType("INTEGER_VALUE");
-	IElementType LINK_VALUE = new TaraElementType("LINK_VALUE");
 	IElementType MEASURE_VALUE = new TaraElementType("MEASURE_VALUE");
 	IElementType META_IDENTIFIER = new TaraElementType("META_IDENTIFIER");
 	IElementType NATURAL_VALUE = new TaraElementType("NATURAL_VALUE");
@@ -164,10 +164,10 @@ public interface TaraTypes {
 				return new TaraImplicitParameterImpl(node);
 			} else if (type == IMPORTS) {
 				return new TaraImportsImpl(node);
+			} else if (type == INSTANCE_NAME) {
+				return new TaraInstanceNameImpl(node);
 			} else if (type == INTEGER_VALUE) {
 				return new TaraIntegerValueImpl(node);
-			} else if (type == LINK_VALUE) {
-				return new TaraLinkValueImpl(node);
 			} else if (type == MEASURE_VALUE) {
 				return new TaraMeasureValueImpl(node);
 			} else if (type == META_IDENTIFIER) {

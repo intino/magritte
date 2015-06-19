@@ -34,7 +34,7 @@ public class TaraNodeReferenceSolver extends TaraReferenceSolver {
 	@Override
 	public Object[] getVariants() {
 		final Set<Node> variants = new LinkedHashSet();
-		if (isConceptReference()) new VariantsManager(variants, myElement).resolveVariants();
+		if (isNodeReference()) new VariantsManager(variants, myElement).resolveVariants();
 		return fillVariants(variants);
 	}
 
@@ -48,12 +48,12 @@ public class TaraNodeReferenceSolver extends TaraReferenceSolver {
 		for (final Node node : variants) {
 			if (node == null || node.getName() == null || node.getName().length() == 0) continue;
 			lookupElements.add(LookupElementBuilder.create(node.getIdentifierNode()).
-				withIcon(TaraIcons.CONCEPT).withTypeText(node.getType()));
+				withIcon(TaraIcons.NODE).withTypeText(node.getType()));
 		}
 		return lookupElements.toArray();
 	}
 
-	private boolean isConceptReference() {
+	private boolean isNodeReference() {
 		return myElement.getParent() instanceof IdentifierReference || myElement.getParent() instanceof HeaderReference;
 	}
 }

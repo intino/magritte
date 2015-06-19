@@ -190,7 +190,9 @@ public class TaraUtil {
 	@NotNull
 	public static List<Node> getAllNodesOfFile(TaraModel model) {
 		Set<Node> all = new HashSet<>();
-		final List<Node> includes = Arrays.asList(PsiTreeUtil.getChildrenOfType(model, Node.class));
+		final Node[] nodes = PsiTreeUtil.getChildrenOfType(model, Node.class);
+		if (nodes == null) return Collections.emptyList();
+		final List<Node> includes = Arrays.asList(nodes);
 		for (Node include : includes) all.addAll(include.getSubNodes());
 		for (Node root : includes) getAllInnerOf(root, all);
 		return new ArrayList<>(all);
@@ -199,7 +201,9 @@ public class TaraUtil {
 	@NotNull
 	public static List<NodeContainer> getAllNodeContainersOfFile(TaraModel model) {
 		Set<NodeContainer> all = new HashSet<>();
-		final List<Node> includes = Arrays.asList(PsiTreeUtil.getChildrenOfType(model, Node.class));
+		final Node[] nodes = PsiTreeUtil.getChildrenOfType(model, Node.class);
+		if (nodes == null) return Collections.emptyList();
+		final List<Node> includes = Arrays.asList(nodes);
 		for (Node include : includes) all.addAll(include.getSubNodes());
 		for (Node root : includes) getAllNodeContainersOf(root, all);
 		return new ArrayList<>(all);

@@ -11,20 +11,21 @@ import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
+import static siani.tara.intellij.lang.psi.TaraTypes.*;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 
 
 public class TaraFilters {
 
-	protected static final PsiElementPattern.Capture<PsiElement> AfterNewLine = psiElement().withLanguage(TaraLanguage.INSTANCE)
+	static final PsiElementPattern.Capture<PsiElement> AfterNewLine = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLinePrimalFilter()));
-	protected static final PsiElementPattern.Capture<PsiElement> afterNewLineInBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
+	static final PsiElementPattern.Capture<PsiElement> afterNewLineInBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLineInBodyFilter()));
-	protected static final PsiElementPattern.Capture<PsiElement> inFacetBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
+	static final PsiElementPattern.Capture<PsiElement> inFacetBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLineInBodyFilter())).and(new FilterPattern(new InFacetFilter()));
-	protected static final PsiElementPattern.Capture<PsiElement> afterEquals = psiElement().withLanguage(TaraLanguage.INSTANCE)
+	static final PsiElementPattern.Capture<PsiElement> afterEquals = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterEqualsFilter()));
-	protected static final PsiElementPattern.Capture<PsiElement> afterNodeIdentifier = psiElement()
+	static final PsiElementPattern.Capture<PsiElement> afterNodeIdentifier = psiElement()
 		.withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterElementTypeFitFilter(TaraTypes.IDENTIFIER_KEY)));
 
@@ -163,13 +164,50 @@ public class TaraFilters {
 			return context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context);
 		}
 
-//		private boolean isNativeValue(Node node) {
-//			return node != null && node.getObject().is(Annotation.INTENTION);
-//		}
-
 		@Override
 		public boolean isClassAcceptable(Class hintClass) {
 			return true;
 		}
 	}
+
+	public static class AfterIsFitFilter implements ElementFilter {
+		public boolean isAcceptable(Object element, PsiElement context) {
+			PsiElement ctx = (context.getPrevSibling() != null) ? context : context.getParent();
+			while (ctx.getPrevSibling() != null && !IDENTIFIER_KEY.equals(ctx.getPrevSibling().getNode().getElementType())) {
+				if (IS.equals(ctx.getNode().getElementType())) return true;
+				ctx = ctx.getPrevSibling();
+			}
+			ctx = ctx.getParent();
+			while (ctx != null && !Node.class.isInstance(ctx)) {
+				if (ctx instanceof TaraFlags) return true;
+				ctx = ctx.getParent();
+			}
+			return false;
+		}
+
+		public boolean isClassAcceptable(Class hintClass) {
+			return true;
+		}
+	}
+
+	public static class AfterIntoFitFilter implements ElementFilter {
+		public boolean isAcceptable(Object element, PsiElement context) {
+			PsiElement ctx = (context.getPrevSibling() != null) ? context : context.getParent();
+			while (ctx.getPrevSibling() != null && !IDENTIFIER_KEY.equals(ctx.getPrevSibling().getNode().getElementType())) {
+				if (INTO.equals(ctx.getNode().getElementType())) return true;
+				ctx = ctx.getPrevSibling();
+			}
+			ctx = ctx.getParent();
+			while (ctx != null && !Node.class.isInstance(ctx)) {
+				if (ctx instanceof TaraAnnotations) return true;
+				ctx = ctx.getParent();
+			}
+			return false;
+		}
+
+		public boolean isClassAcceptable(Class hintClass) {
+			return true;
+		}
+	}
+
 }
