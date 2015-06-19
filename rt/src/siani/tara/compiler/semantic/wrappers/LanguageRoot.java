@@ -6,13 +6,16 @@ import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.semantic.model.*;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.unmodifiableList;
 
 public class LanguageRoot extends LanguageElement implements Node {
 
 	Model model;
-	private Node[] includes;
+	private List<Node> includes;
 
 	public LanguageRoot(Model model) {
 		this.model = model;
@@ -39,13 +42,13 @@ public class LanguageRoot extends LanguageElement implements Node {
 	}
 
 	@Override
-	public String[] secondaryTypes() {
-		return new String[0];
+	public List<String> secondaryTypes() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public String[] types() {
-		return new String[0];
+	public List<String> types() {
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -69,13 +72,13 @@ public class LanguageRoot extends LanguageElement implements Node {
 	}
 
 	@Override
-	public String[] annotations() {
-		return new String[0];
+	public List<String> annotations() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public String[] flags() {
-		return new String[0];
+	public List<String> flags() {
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -91,33 +94,32 @@ public class LanguageRoot extends LanguageElement implements Node {
 	}
 
 	@Override
-	public Facet[] facets() {
-		return new Facet[0];
+	public List<Facet> facets() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public FacetTarget[] facetTargets() {
-		return new FacetTarget[0];
+	public List<FacetTarget> facetTargets() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public Parameter[] parameters() {
-		return new Parameter[0];
+	public List<Parameter> parameters() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public Node[] includes() {
+	public List<Node> includes() {
 		return includes;
 	}
 
 	@Override
-	public Variable[] variables() {
-		return new Variable[0];
+	public List<Variable> variables() {
+		return Collections.emptyList();
 	}
 
-	private Node[] wrap(Collection<siani.tara.compiler.model.Node> nodes) {
-		List<LanguageNode> languageNodes = nodes.stream().map(node -> new LanguageNode((NodeImpl) node)).collect(Collectors.toList());
-		return languageNodes.toArray(new LanguageNode[languageNodes.size()]);
+	private List<Node> wrap(Collection<siani.tara.compiler.model.Node> nodes) {
+		return unmodifiableList(nodes.stream().map(node -> new LanguageNode((NodeImpl) node)).collect(Collectors.toList()));
 	}
 
 	@Override

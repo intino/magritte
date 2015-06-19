@@ -4,11 +4,12 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -22,18 +23,11 @@ import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.semantic.Allow;
-import siani.tara.semantic.Assumption;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
-import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getParentByType;
-
 public class TaraUtil {
-
-	private static final String FACET_APPLY = "@facetApply";
-	private static final String FACET_TARGET = "@facetTarget";
 
 	private TaraUtil() {
 	}
@@ -41,11 +35,16 @@ public class TaraUtil {
 	@NotNull
 	public static List<Node> findRootNode(PsiElement element, String identifier) {
 		List<Node> result = new ArrayList<>();
-		for (TaraModelImpl taraFile : getModuleFiles(element.getContainingFile())) {
+		for (TaraModel taraFile : getModuleFiles(element.getContainingFile())) {
 			Collection<Node> nodes = taraFile.getIncludes();
 			extractNodesByName(identifier, result, nodes);
 		}
 		return result;
+	}
+
+	private static void extractNodesByName(String identifier, List<Node> result, Collection<Node> nodes) {
+		result.addAll(nodes.stream().
+			filter(node -> identifier.equals(node.getName())).collect(Collectors.toList()));
 	}
 
 	@Nullable
@@ -62,48 +61,14 @@ public class TaraUtil {
 		return language.allows(node.resolve().getFullType());
 	}
 
-	@Nullable
+	@NotNull
 	public static Collection<String> getTypesOf(Node node) {
 		Language language = getLanguage(node);
-		if (language == null) return null;
+		if (language == null) return Collections.emptyList();
 		return language.types(node.resolve().getFullType());
 	}
 
 	@Nullable
-	public static Collection<Allow> getAllowsOf(Node context, String fullType) {
-		Language language = getLanguage(context);
-		if (language == null) return null;
-		return language.allows(fullType);
-	}
-
-	@Nullable
-	public static Collection<Assumption> getAssumptionsOf(Node node) {
-		Language language = getLanguage(node);
-		if (language == null) return null;
-		return language.assumptions(node.getFullType() != null ? node.getFullType() : node.resolve().getFullType());
-	}
-
-	private static void extractNodesByName(String identifier, List<Node> result, Collection<Node> nodes) {
-		result.addAll(nodes.stream().
-			filter(node -> identifier.equals(node.getName())).collect(Collectors.toList()));
-	}
-
-	public static String getMetaQualifiedName(Node node) {
-		PsiElement element = node;
-		String type = node != null && !node.isSub() ? node.getType() : "";
-		while ((element = TaraPsiImplUtil.getContextOf(element)) != null)
-			if (isNodeNotSub(element)) type = buildType((Node) element, type);
-			else if (isInFacet(element)) {
-				type = buildType(element, type);
-				Node nodeContextOf = getContainerNodeOf(element);
-				if (nodeContextOf != null) {
-					type = nodeContextOf.getType() + type;
-					element = nodeContextOf;
-				}
-			}
-		return type;
-	}
-
 	public static Variable getOverriddenVariable(Variable variable) {
 		Node node = TaraPsiImplUtil.getContainerNodeOf(variable);
 		if (node == null) return null;
@@ -119,42 +84,6 @@ public class TaraUtil {
 
 	private static boolean isOverridden(Variable variable, Variable parentVar) {
 		return parentVar.getType() != null && parentVar.getType().equals(variable.getType()) && parentVar.getName() != null && parentVar.getName().equals(variable.getName());
-	}
-
-	private static String buildType(Node element, String type) {
-		return element.getType() + (type != null && type.length() > 0 ? "." + type : "");
-	}
-
-	private static boolean isInFacet(PsiElement element) {
-		return element instanceof TaraFacetApply || element instanceof TaraFacetTarget;
-	}
-
-	private static boolean isNodeNotSub(PsiElement element) {
-		return element instanceof Node && !((Node) element).isSub();
-	}
-
-	private static Node getContainerNode(PsiElement varInit) {
-		return (Node) getParentByType(varInit, Node.class);
-	}
-
-	private static String buildType(PsiElement element, String type) {
-		type = element instanceof TaraFacetTarget ?
-			FACET_TARGET + "(" + ((TaraFacetTarget) element).getIdentifierReference().getText() + ")" + "." + type :
-			FACET_APPLY + "(" + getFacetPath((TaraFacetApply) element) + ")" + "." + type;
-		return type;
-	}
-
-	public static List<Node> buildNodeCompositionPathOf(Node node) {
-		Node aNode = node;
-		List<Node> path = new ArrayList<>();
-		path.add(aNode);
-		while (node != null && !node.isMain()) {
-			Node parent = TaraPsiImplUtil.getContainerNodeOf(node);
-			if (parent != null && !parent.isSub() && !node.isSub())
-				path.add(0, parent);
-			node = parent;
-		}
-		return path;
 	}
 
 	public static Allow.Parameter getCorrespondingAllow(Node container, PsiElement element) {
@@ -221,18 +150,9 @@ public class TaraUtil {
 		return null;
 	}
 
-	private static String getFacetPath(TaraFacetApply apply) {
-		NodeContainer element = apply;
-		String path = "";
-		while (element instanceof TaraFacetApply) {
-			path = ((TaraFacetApply) element).getMetaIdentifierList().get(0).getText() + (path.length() > 0 ? "$" + path : "");
-			element = TaraPsiImplUtil.getContextOf(element);
-		}
-		return path;
-	}
 
 	@NotNull
-	public static List<Node> getRootNodesOfFile(TaraModel file) {
+	public static List<Node> getMainNodesOfFile(TaraModel file) {
 		List<Node> list = new ArrayList<>();
 		Node[] nodes = PsiTreeUtil.getChildrenOfType(file, Node.class);
 		if (nodes == null) return list;
@@ -240,50 +160,75 @@ public class TaraUtil {
 			list.add(node);
 			list.addAll(node.getSubNodes());
 		}
-		Collection<? extends Node> aggregatedNodes = findAggregatedNodes(file);
-		for (Node aggregated : aggregatedNodes) {
-			if (list.contains(aggregated)) continue;
-			list.add(aggregated);
+		Collection<? extends Node> mainNodes = findMainNodes(file);
+		for (Node main : mainNodes) {
+			if (list.contains(main)) continue;
+			list.add(main);
 		}
 		return Collections.unmodifiableList(list);
 	}
 
 	@NotNull
-	private static TaraModelImpl[] getModuleFiles(PsiFile psiFile) {
+	private static TaraModel[] getModuleFiles(PsiFile psiFile) {
 		Module module = ModuleProvider.getModuleOf(psiFile);
 		if (module == null) return new TaraModelImpl[0];
-		List<TaraModelImpl> taraFiles = getTaraFilesOfModule(module);
-		return taraFiles.toArray(new TaraModelImpl[taraFiles.size()]);
+		List<TaraModel> taraFiles = getTaraFilesOfModule(module);
+		return taraFiles.toArray(new TaraModel[taraFiles.size()]);
 	}
 
-	public static List<TaraModelImpl> getTaraFilesOfModule(Module module) {
-		List<TaraModelImpl> taraFiles = new ArrayList<>();
+	public static List<TaraModel> getTaraFilesOfModule(Module module) {
+		List<TaraModel> taraFiles = new ArrayList<>();
 		if (module == null) return taraFiles;
 		Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, TaraFileType.INSTANCE, GlobalSearchScope.moduleScope(module));
 		files.stream().filter(file -> file != null).forEach(file -> {
-			TaraModelImpl taraFile = (TaraModelImpl) PsiManager.getInstance(module.getProject()).findFile(file);
+			TaraModel taraFile = (TaraModel) PsiManager.getInstance(module.getProject()).findFile(file);
 			if (taraFile != null) taraFiles.add(taraFile);
 		});
 		return taraFiles;
 	}
 
 	@NotNull
-	public static List<Node> getAllNodesOfFile(TaraModel taraModel) {
-		List<Node> collection = new ArrayList<>();
-		Node[] nodes = PsiTreeUtil.getChildrenOfType(taraModel, Node.class);
-		if (nodes != null) {
-			Collections.addAll(collection, nodes);
-			for (Node node : nodes) collectInner(node, collection);
-		}
-		return collection;
+	public static List<Node> getAllNodesOfFile(TaraModel model) {
+		Set<Node> all = new HashSet<>();
+		final List<Node> includes = Arrays.asList(PsiTreeUtil.getChildrenOfType(model, Node.class));
+		for (Node include : includes) all.addAll(include.getSubNodes());
+		for (Node root : includes) getAllInnerOf(root, all);
+		return new ArrayList<>(all);
 	}
 
-	private static void collectInner(Node node, List<Node> collection) {
-		for (Node child : TaraPsiImplUtil.getAllInnerNodesOf(node)) {
-			collection.add(child);
-			collectInner(child, collection);
+	@NotNull
+	public static List<NodeContainer> getAllNodeContainersOfFile(TaraModel model) {
+		Set<NodeContainer> all = new HashSet<>();
+		final List<Node> includes = Arrays.asList(PsiTreeUtil.getChildrenOfType(model, Node.class));
+		for (Node include : includes) all.addAll(include.getSubNodes());
+		for (Node root : includes) getAllNodeContainersOf(root, all);
+		return new ArrayList<>(all);
+	}
+
+	private static void getAllNodeContainersOf(NodeContainer root, Set<NodeContainer> all) {
+		all.add(root);
+		for (Node include : root.getIncludes()) getAllNodeContainersOf(include, all);
+		if (root instanceof Node) {
+			for (FacetTarget facetTarget : ((Node) root).getFacetTargets()) {
+				all.add(facetTarget);
+				for (Node node : facetTarget.getIncludes()) getAllNodeContainersOf(node, all);
+			}
+			for (FacetApply facetApply : ((Node) root).getFacetApplies()) {
+				all.add(facetApply);
+				for (Node node : facetApply.getIncludes()) getAllNodeContainersOf(node, all);
+			}
 		}
 	}
+
+	private static void getAllInnerOf(Node root, Set<Node> all) {
+		all.add(root);
+		for (Node include : root.getIncludes()) getAllInnerOf(include, all);
+		for (FacetTarget facetTarget : root.getFacetTargets())
+			for (Node node : facetTarget.getIncludes()) getAllInnerOf(node, all);
+		for (FacetApply facetApply : root.getFacetApplies())
+			for (Node node : facetApply.getIncludes()) getAllInnerOf(node, all);
+	}
+
 
 	@NotNull
 	public static List<Node> getInnerNodesOf(Node node) {
@@ -300,6 +245,12 @@ public class TaraUtil {
 		return TaraPsiImplUtil.getInnerNodesOf(facetTarget);
 	}
 
+	@NotNull
+	public static List<Variable> getVariablesOf(FacetApply facetApply) {
+		return TaraPsiImplUtil.getVariablesInBody(facetApply.getBody());
+	}
+
+	@Nullable
 	public static Node findInner(Node node, String name) {
 		for (Node include : node.getIncludes())
 			if (include.getName() != null && include.getName().equals(name))
@@ -312,7 +263,7 @@ public class TaraUtil {
 	}
 
 	public static TaraModel getOrCreateFile(String destiny, Project project) {
-		TaraModelImpl boxFile = (TaraModelImpl) PsiFileFactory.getInstance(project).
+		TaraModel boxFile = (TaraModelImpl) PsiFileFactory.getInstance(project).
 			createFileFromText(destiny + "." + TaraFileType.INSTANCE.getDefaultExtension(), TaraFileType.INSTANCE, "");
 		VirtualFileManager.getInstance().refreshWithoutFileWatcher(false);
 		return boxFile;
@@ -334,59 +285,13 @@ public class TaraUtil {
 		return result;
 	}
 
-
-	public static Module getModuleOfDirectory(PsiDirectory directory) {
-		ProjectFileIndex fileIndex = ProjectRootManager.getInstance(directory.getProject()).getFileIndex();
-		return fileIndex.getModuleForFile(directory.getVirtualFile());
-	}
-
 	public static VirtualFile getSrcRoot(Collection<VirtualFile> virtualFiles) {
 		for (VirtualFile file : virtualFiles)
 			if (file.isDirectory() && "src".equals(file.getName())) return file;
 		throw new TaraRuntimeException("src directory not found");
 	}
 
-	public static Node findNodeByQN(String qualifiedName, PsiFile file) {
-		if (file == null) return null;
-		List<TaraModelImpl> filesOfModule = getTaraFilesOfModule(ModuleProvider.getModuleOf(file));
-		for (TaraModelImpl taraFile : filesOfModule)
-			for (Node node : getRootNodesOfFile(taraFile))
-				if (node.getQualifiedName().equalsIgnoreCase(qualifiedName)) return node;
-		return null;
-	}
-
-	public static Variable findNativeVariable(String name, PsiFile file) {
-		if (file == null) return null;
-		List<TaraModelImpl> filesOfModule = getTaraFilesOfModule(ModuleProvider.getModuleOf(file));
-		for (TaraModelImpl taraFile : filesOfModule) {
-			Variable variable = searchNativeInFile(name, taraFile);
-			if (variable != null) return variable;
-		}
-		return null;
-	}
-
-	@Nullable
-	private static Variable searchNativeInFile(String name, TaraModelImpl taraFile) {
-		for (Node node : getAllNodesOfFile(taraFile)) {
-			Variable variable = searchNativeInNode(name, node);
-			if (variable != null) return variable;
-		}
-		return null;
-	}
-
-	@Nullable
-	private static Variable searchNativeInNode(String name, Node node) {
-		for (Variable variable : node.getVariables())
-			if (variable.getContract() != null && name.equals(variable.getContract().getFormattedName()))
-				return variable;
-		return null;
-	}
-
-	public static List<NodeReference> getLinksOf(Node node) {
-		return node.getBody() == null ? Collections.EMPTY_LIST : node.getBody().getNodeLinks();
-	}
-
-	public static List<? extends Node> findAggregatedNodes(TaraModel file) {
-		return getAllNodesOfFile(file).stream().filter(Node::isAnnotatedAsRoot).collect(Collectors.toList());
+	public static List<? extends Node> findMainNodes(TaraModel file) {
+		return getAllNodesOfFile(file).stream().filter(Node::isAnnotatedAsMain).collect(Collectors.toList());
 	}
 }

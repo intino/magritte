@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraElementFactory;
 import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
+import siani.tara.util.WordGenerator;
 
 public class NameInstanceGenerator {
 	private final Node[] nodes;
@@ -23,9 +24,9 @@ public class NameInstanceGenerator {
 		WriteCommandAction action = new WriteCommandAction(project, file) {
 			@Override
 			protected void run(@NotNull Result result) throws Throwable {
-				for (Node concept : nodes)
-					if (concept.getAddress() == null)
-						concept.addAddress(TaraElementFactory.getInstance(concept.getProject()).createAddress(WordGenerator.generate()));
+				for (Node node : nodes)
+					if (node.getAddress() == null)
+						node.addInstanceName(TaraElementFactory.getInstance(node.getProject()).createAddress(WordGenerator.generate()));
 			}
 		};
 		action.execute();

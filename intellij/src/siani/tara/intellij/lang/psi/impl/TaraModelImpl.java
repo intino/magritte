@@ -23,7 +23,10 @@ import siani.tara.intellij.project.facet.TaraFacetConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -79,10 +82,25 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		return TaraIcons.MODEL;
 	}
 
+	@Override
+	public Node getContainer() {
+		return null;
+	}
+
 	@NotNull
 	@Override
 	public List<Node> getIncludes() {
-		return unmodifiableList(TaraUtil.getRootNodesOfFile(this));
+		return unmodifiableList(TaraUtil.getMainNodesOfFile(this));
+	}
+
+	@Override
+	public List<Variable> getVariables() {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public String getQualifiedName() {
+		return "";
 	}
 
 	@Override
@@ -113,7 +131,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	@Override
 	@NotNull
-	public PsiElement addConcept(@NotNull Node node) throws IncorrectOperationException {
+	public PsiElement addNode(@NotNull Node node) throws IncorrectOperationException {
 		if (haveToAddNewLine()) insertLineBreakBefore(null);
 		final TreeElement copy = ChangeUtil.copyToElement(node);
 		getNode().addChild(copy);
@@ -121,8 +139,8 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	@Override
-	public Node addConcept(String identifier) {
-		return (Node) addConcept(TaraElementFactory.getInstance(getProject()).createConcept(identifier));
+	public Node addNode(String identifier) {
+		return (Node) addNode(TaraElementFactory.getInstance(getProject()).createConcept(identifier));
 	}
 
 	@Override
@@ -163,10 +181,10 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		setDSL(dsl == null || dsl.isEmpty() ? null : dsl);
 	}
 
-	private void setDSL(String metamodelName) {
+	private void setDSL(String dslName) {
 		TaraDslDeclaration dslDeclaration = getDSLDeclaration();
-		if (metamodelName != null && !metamodelName.isEmpty()) {
-			TaraDslDeclaration dsl = TaraElementFactory.getInstance(getProject()).createDslDeclaration(metamodelName);
+		if (dslName != null && !dslName.isEmpty()) {
+			TaraDslDeclaration dsl = TaraElementFactory.getInstance(getProject()).createDslDeclaration(dslName);
 			final TreeElement copy = ChangeUtil.copyToElement(dsl);
 			TaraDslDeclaration psi = (TaraDslDeclaration) copy.getPsi();
 			if (dslDeclaration != null) dslDeclaration.replace(psi);

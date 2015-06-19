@@ -1,5 +1,8 @@
 package siani.tara.semantic.model;
 
+import java.util.Collections;
+import java.util.List;
+
 public class EmptyNode implements Node {
 	@Override
 	public Node context() {
@@ -21,13 +24,13 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public String[] secondaryTypes() {
-		return new String[0];
+	public List<String> secondaryTypes() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public String[] types() {
-		return new String[0];
+	public List<String> types() {
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -51,13 +54,13 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public String[] annotations() {
-		return new String[0];
+	public List<String> annotations() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public String[] flags() {
-		return new String[0];
+	public List<String> flags() {
+		return Collections.emptyList();
 	}
 
 
@@ -77,29 +80,30 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public Facet[] facets() {
-		return new Facet[0];
+	public List<Facet> facets() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public FacetTarget[] facetTargets() {
-		return new FacetTarget[0];
+	public List<FacetTarget> facetTargets() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public Parameter[] parameters() {
-		return new Parameter[0];
+	public List<Parameter> parameters() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public Node[] includes() {
-		return new Node[0];
+	public List<Node> includes() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public Variable[] variables() {
-		return new Variable[0];
+	public List<Variable> variables() {
+		return Collections.emptyList();
 	}
+
 
 	@Override
 	public String toString() {

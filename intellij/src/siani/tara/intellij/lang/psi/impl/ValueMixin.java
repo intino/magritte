@@ -3,6 +3,7 @@ package siani.tara.intellij.lang.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.semantic.model.EmptyNode;
 import siani.tara.semantic.model.Primitives;
@@ -10,19 +11,22 @@ import siani.tara.semantic.model.Primitives;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
+
 public class ValueMixin extends ASTWrapperPsiElement {
 
 	public ValueMixin(ASTNode node) {
 		super(node);
 	}
 
-	public Object[] getValues() {
+	@NotNull
+	public List<Object> getValues() {
 		List<Object> values = new ArrayList<>();
 		for (PsiElement element : getChildren()) {
 			if (element instanceof TaraMeasureValue) continue;
 			values.add(cast(element));
 		}
-		return values.toArray();
+		return unmodifiableList(values);
 	}
 
 	private Object cast(PsiElement element) {

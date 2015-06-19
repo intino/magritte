@@ -6,6 +6,7 @@ import siani.tara.intellij.lang.psi.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class VariantsManager {
 
@@ -40,8 +41,7 @@ public class VariantsManager {
 			namesAreEqual(identifier, container))
 			variants.add(container);
 		while (container != null) {
-			for (Node sibling : container.getNodeSiblings())
-				variants.add(sibling);
+			variants.addAll(container.getNodeSiblings().stream().collect(Collectors.toList()));
 			container = container.getContainer();
 		}
 	}
@@ -49,10 +49,10 @@ public class VariantsManager {
 	private void addInModelVariants() {
 		TaraModel model = (TaraModel) myElement.getContainingFile();
 		if (model == null) return;
-		for (Node node : model.getIncludes())
-			if (!node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement)))
-				resolvePathFor(node, context);
-		addAggregatedConcepts(model);
+		model.getIncludes().stream().
+			filter(node -> !node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement))).
+			forEach(node -> resolvePathFor(node, context));
+		addMainConcepts(model);
 	}
 
 	private void addImportVariants() {
@@ -60,10 +60,8 @@ public class VariantsManager {
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
 			if (resolve == null || !TaraModel.class.isInstance(resolve)) continue;
-			for (Node node : ((TaraModel) resolve).getIncludes())
-				if (!node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement)))
-					resolvePathFor(node, context);
-			addAggregatedConcepts((TaraModel) resolve);
+			((TaraModel) resolve).getIncludes().stream().filter(node -> !node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement))).forEach(node -> resolvePathFor(node, context));
+			addMainConcepts((TaraModel) resolve);
 		}
 	}
 
@@ -72,10 +70,8 @@ public class VariantsManager {
 		return ReferenceManager.resolve(importIdentifiers.get(importIdentifiers.size() - 1));
 	}
 
-	private void addAggregatedConcepts(TaraModel model) {
-		for (Node node : TaraUtil.getAllNodesOfFile(model))
-			if (!variants.contains(node) && node.isMain())
-				resolvePathFor(node, context);
+	private void addMainConcepts(TaraModel model) {
+		TaraUtil.getAllNodesOfFile(model).stream().filter(node -> !variants.contains(node) && node.isMain()).forEach(node -> resolvePathFor(node, context));
 	}
 
 	private void resolvePathFor(Node node, List<Identifier> path) {

@@ -15,7 +15,6 @@ import siani.tara.Language;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraModel;
-import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public class LinkToJava {
 			Notifications.Bus.notify(new Notification("Tara Generator", "", "Src directory not found", NotificationType.ERROR), project);
 			return;
 		}
-		for (TaraModelImpl taraBoxFile : TaraUtil.getTaraFilesOfModule(module)) {
+		for (TaraModel taraBoxFile : TaraUtil.getTaraFilesOfModule(module)) {
 			new NativesGenerator(project, taraBoxFile).generate();
 			generateAddresses(taraBoxFile);
 		}

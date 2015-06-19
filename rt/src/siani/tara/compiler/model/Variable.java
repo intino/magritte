@@ -64,6 +64,8 @@ public interface Variable extends Cloneable {
 
 	void setDefaultExtension(String defaultExtension);
 
+	String getUID();
+
 	Variable cloneIt(NodeContainer container);
 
 }

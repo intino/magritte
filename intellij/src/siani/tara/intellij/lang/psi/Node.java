@@ -14,7 +14,7 @@ import java.util.List;
 
 import static java.util.Collections.EMPTY_LIST;
 
-public interface Node extends NodeContainer, Navigatable, Iconable {
+public interface Node extends NodeContainer, Parametrized, Navigatable, Iconable {
 
 	TaraModelImpl getFile() throws PsiInvalidElementAccessException;
 
@@ -35,7 +35,7 @@ public interface Node extends NodeContainer, Navigatable, Iconable {
 
 	boolean isMain();
 
-	Collection<Node> getSubNodes();
+	List<Node> getSubNodes();
 
 	Node getContainer();
 
@@ -51,7 +51,7 @@ public interface Node extends NodeContainer, Navigatable, Iconable {
 
 	boolean isFacetInstance();
 
-	boolean isAnnotatedAsRoot();
+	boolean isAnnotatedAsMain();
 
 	@Nullable
 	TaraAddress getAddress();
@@ -63,9 +63,7 @@ public interface Node extends NodeContainer, Navigatable, Iconable {
 
 	Annotations getAnnotationsNode();
 
-	Flags getFlagsNode();
-
-	Collection<String> getAssumedFlags();
+	List<String> getInheritedFlags();
 
 	void addInheritedFlags(String... flags);
 
@@ -89,7 +87,7 @@ public interface Node extends NodeContainer, Navigatable, Iconable {
 	Node resolve();
 
 	@NotNull
-	List<Parameter> getParameters();
+	List<Parameter> getParameterList();
 
 	List<Node> getNodeSiblings();
 
@@ -108,7 +106,7 @@ public interface Node extends NodeContainer, Navigatable, Iconable {
 	@Nullable
 	MetaIdentifier getMetaIdentifier();
 
-	void addAddress(TaraAddress address);
+	void addInstanceName(TaraAddress address);
 
 	String toString();
 

@@ -2,13 +2,15 @@ package siani.tara.intellij.lang.psi;
 
 import com.intellij.pom.Navigatable;
 
+import java.util.List;
+
 public interface VarInit extends Navigatable, TaraPsiElement {
 
 	String getName();
 
 	String getValueType();
 
-	Object[] getValues();
+	List<Object> getValues();
 
 	Value getValue();
 
@@ -17,4 +19,8 @@ public interface VarInit extends Navigatable, TaraPsiElement {
 	String getContract();
 
 	void setContract(String contract);
+
+	String getInferredType();
+
+	void setInferredType(String type);
 }

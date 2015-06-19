@@ -9,8 +9,11 @@ import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 import siani.tara.semantic.model.Tag;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.unmodifiableList;
 
 public class LanguageNodeReference extends LanguageNode implements siani.tara.semantic.model.Node {
 
@@ -50,9 +53,8 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 	}
 
 	@Override
-	public String[] secondaryTypes() {
-		List<String> types = reference.getDestiny().getFacets().stream().map(Facet::getFacetType).collect(Collectors.toList());
-		return types.toArray(new String[types.size()]);
+	public List<String> secondaryTypes() {
+		return unmodifiableList(reference.getDestiny().getFacets().stream().map(Facet::getFacetType).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -76,15 +78,13 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 	}
 
 	@Override
-	public String[] annotations() {
-		List<String> values = reference.getAnnotations().stream().map(Tag::name).collect(Collectors.toList());
-		return values.toArray(new String[values.size()]);
+	public List<String> annotations() {
+		return unmodifiableList(reference.getAnnotations().stream().map(Tag::name).collect(Collectors.toList()));
 	}
 
 	@Override
-	public String[] flags() {
-		List<String> values = reference.getFlags().stream().map(Tag::name).collect(Collectors.toList());
-		return values.toArray(new String[values.size()]);
+	public List<String> flags() {
+		return unmodifiableList(reference.getFlags().stream().map(Tag::name).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -102,26 +102,26 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 	}
 
 	@Override
-	public siani.tara.semantic.model.Facet[] facets() {
-		return new siani.tara.semantic.model.Facet[0];
+	public List<siani.tara.semantic.model.Facet> facets() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public siani.tara.semantic.model.FacetTarget[] facetTargets() {
-		return new siani.tara.semantic.model.FacetTarget[0];
+	public List<siani.tara.semantic.model.FacetTarget> facetTargets() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public siani.tara.semantic.model.Parameter[] parameters() {
-		return new siani.tara.semantic.model.Parameter[0];
+	public List<siani.tara.semantic.model.Parameter> parameters() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public siani.tara.semantic.model.Node[] includes() {
+	public List<siani.tara.semantic.model.Node> includes() {
 		List<siani.tara.semantic.model.Node> includes = reference.getIncludedNodes().stream().map(inner -> inner instanceof NodeReference ?
 			new LanguageNodeReference((NodeReference) inner) :
 			new LanguageNode((NodeImpl) inner)).collect(Collectors.toList());
-		return includes.toArray(new siani.tara.semantic.model.Node[includes.size()]);
+		return unmodifiableList(includes);
 	}
 
 	@Override

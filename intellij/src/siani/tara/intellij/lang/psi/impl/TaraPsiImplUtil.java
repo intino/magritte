@@ -88,7 +88,7 @@ public class TaraPsiImplUtil {
 	}
 
 	private static void removeRoots(List<Node> inner) {
-		List<Node> list = inner.stream().filter(Node::isAnnotatedAsRoot).collect(Collectors.toList());
+		List<Node> list = inner.stream().filter(Node::isAnnotatedAsMain).collect(Collectors.toList());
 		inner.removeAll(list);
 
 	}
@@ -110,6 +110,12 @@ public class TaraPsiImplUtil {
 		if (node != null && node.getBody() != null) return getInnerNodesInBody(node.getBody());
 		return Collections.EMPTY_LIST;
 	}
+
+
+	public static List<NodeReference> getNodeReferencesOf(Node node) {
+		return node.getBody() == null ? Collections.EMPTY_LIST : node.getBody().getNodeLinks();
+	}
+
 
 	private static void removeSubs(List<Node> children) {
 		List<Node> list = children.stream().filter(Node::isSub).collect(Collectors.toList());

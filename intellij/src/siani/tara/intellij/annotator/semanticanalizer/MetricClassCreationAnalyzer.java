@@ -180,9 +180,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(moduleOf);
 		final File directory = TaraLanguage.getLanguageDirectory(taraFacetByModule.getConfiguration().getDsl(), moduleOf.getProject());
 		if (directory == null) return null;
-		final File metamodel = new File(directory, "metamodel");
-		if (!metamodel.exists() || !metamodel.isDirectory()) return null;
-		for (File file : metamodel.listFiles())
+		for (File file : directory.listFiles(f -> !f.isDirectory()))
 			libs.add(new File(file.getPath()).toURI().toURL());
 		return libs;
 	}

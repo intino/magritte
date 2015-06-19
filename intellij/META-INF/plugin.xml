@@ -58,7 +58,7 @@
                          implementationClass="siani.tara.intellij.refactoring.rename.NamesValidator"/>
     <projectService serviceInterface="siani.tara.intellij.lang.psi.TaraElementFactory"
                     serviceImplementation="siani.tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
-    <treeStructureProvider implementation="siani.tara.intellij.project.view.MergerTreeStructureProvider"/>
+    <!--<treeStructureProvider implementation="siani.tara.intellij.project.view.MergerTreeStructureProvider"/>-->
     <fileTemplateGroup implementation="siani.tara.intellij.actions.TaraTemplatesFactory"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraToNative"/>
@@ -73,9 +73,9 @@
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraMethodSeparatorProvider"/>
     <codeInsight.lineMarkerProvider language="JAVA"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaNativeToTara"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaNativeInterfaceToTara"/>
     <codeInsight.lineMarkerProvider language="JAVA"
-                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaFacetToTara"/>
+                                    implementationClass="siani.tara.intellij.codeinsight.linemarkers.JavaNativeImplementationToTara"/>
     <gotoRelatedProvider implementation="siani.tara.intellij.codeinsight.TaraRelatedFilesProvider"/>
     <compileServer.plugin classpath="tara-jps-plugin.jar"/>
     <projectService serviceInterface="siani.tara.intellij.compiler.TaraCompilerWorkspaceConfiguration"
@@ -159,6 +159,7 @@
     <spellchecker.support language="Tara"
                           implementationClass="siani.tara.intellij.codeinsight.TaraSpellcheckerStrategy"/>
 
+    <extendWordSelectionHandler implementation="siani.tara.intellij.lang.psi.TaraSelectionHandler"/>
     <basicWordSelectionFilter implementation="siani.tara.intellij.lang.psi.TaraBasicWordSelectionFilter"/>
     <lang.elementManipulator forClass="siani.tara.intellij.lang.psi.Expression"
                              implementationClass="siani.tara.intellij.lang.psi.TaraExpressionManipulator"/>

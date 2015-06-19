@@ -66,10 +66,8 @@ public class RuleFactory {
 		}
 	}
 
-	private static ArrayList<String> createList(String[] flags) {
-		ArrayList<String> tags = new ArrayList<>();
-		for (String flag : flags) tags.add(flag.toUpperCase());
-		return tags;
+	private static List<String> createList(List<String> flags) {
+		return flags.stream().map(String::toUpperCase).collect(Collectors.toList());
 	}
 
 	private static String[] names(Tag[] tags) {
@@ -300,7 +298,7 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				if (element instanceof Node && ((Node) element).isReference()) return;
-				siani.tara.semantic.model.Parameter[] parameters = (element instanceof Facet) ? ((Facet) element).parameters() : ((Node) element).parameters();
+				List<siani.tara.semantic.model.Parameter> parameters = (element instanceof Facet) ? ((Facet) element).parameters() : ((Node) element).parameters();
 				if (checkParameterExists(parameters, name(), position)) return;
 				String elementType = (element instanceof Facet) ? ((Facet) element).type() : ((Node) element).type();
 				throw new SemanticException(new SemanticError("required.parameter", element, Arrays.asList(elementType, type, name)));
@@ -349,7 +347,7 @@ public class RuleFactory {
 			public void check(Element element) throws SemanticException {
 				if (!(element instanceof Node)) return;
 				if (((Node) element).isReference()) return;
-				siani.tara.semantic.model.Parameter[] parameters = (element instanceof Facet) ? ((Facet) element).parameters() : ((Node) element).parameters();
+				List<siani.tara.semantic.model.Parameter> parameters = (element instanceof Facet) ? ((Facet) element).parameters() : ((Node) element).parameters();
 				if (checkParameterExists(parameters, name(), position)) return;
 				String type = (element instanceof Facet) ? ((Facet) element).type() : ((Node) element).type();
 				throw new SemanticException(new SemanticError("required.parameter", element, asList(type, "word", name)));
@@ -357,7 +355,7 @@ public class RuleFactory {
 		};
 	}
 
-	private static boolean checkParameterExists(Parameter[] parameters, String name, int position) {
+	private static boolean checkParameterExists(List<Parameter> parameters, String name, int position) {
 		List<Parameter> signatureParameters = new ArrayList<>();
 		for (Parameter parameter : parameters)
 			if (name.equals(parameter.getName())) return true;

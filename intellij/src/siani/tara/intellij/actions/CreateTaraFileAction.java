@@ -18,8 +18,8 @@ import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.file.TaraFileType;
 import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
-import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.facet.TaraFacet;
+import siani.tara.intellij.project.module.ModuleProvider;
 
 public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<TaraModelImpl> {
 
@@ -49,7 +49,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 	@Override
 	protected TaraModelImpl doCreate(PsiDirectory directory, String newName, String templateName) throws IncorrectOperationException {
 		String fileName = newName + "." + TaraFileType.INSTANCE.getDefaultExtension();
-		Module moduleOfDirectory = TaraUtil.getModuleOfDirectory(directory);
+		Module moduleOfDirectory = ModuleProvider.getModuleOf(directory);
 		TaraFacet facet = TaraFacet.getTaraFacetByModule(moduleOfDirectory);
 		if (facet == null)
 			throw new IncorrectOperationException(MessageProvider.message("tara.file.error"));

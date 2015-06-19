@@ -21,7 +21,6 @@ import static java.io.File.separator;
 public class LanguageSerializer extends CodeGenerator {
 	private static final Logger LOG = Logger.getLogger(LanguageSerializer.class.getName());
 	private static final String JAVA = ".java";
-	public static final String DSL = "dsl";
 
 	CompilerConfiguration conf;
 
@@ -42,7 +41,7 @@ public class LanguageSerializer extends CodeGenerator {
 	}
 
 	private File getDslDestiny() {
-		final File file = new File(conf.getLanguageDirectory() + separator + conf.getGeneratedLanguage() + separator + DSL);
+		final File file = new File(conf.getLanguageDirectory() + separator + conf.getGeneratedLanguage());
 		file.mkdirs();
 		return new File(file, conf.getGeneratedLanguage() + JAVA);
 	}

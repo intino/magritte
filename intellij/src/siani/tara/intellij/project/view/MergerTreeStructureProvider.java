@@ -24,6 +24,7 @@ import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraModelImpl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MergerTreeStructureProvider implements TreeStructureProvider {
 	private final Project project;
@@ -33,38 +34,32 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 	}
 
 	private static Collection<PsiFile> convertToFiles(Collection<BasePsiNode<? extends PsiElement>> conceptNodes) {
-		List<PsiFile> psiFiles = new ArrayList<>();
-		for (AbstractTreeNode treeNode : conceptNodes)
-			psiFiles.add((PsiFile) treeNode.getValue());
-		return psiFiles;
+		return conceptNodes.stream().map(treeNode -> (PsiFile) treeNode.getValue()).collect(Collectors.toList());
 	}
 
-	private static Collection<BasePsiNode<? extends PsiElement>> findConceptsIn(Collection<AbstractTreeNode> children, List<PsiFile> concepts) {
+	private static Collection<BasePsiNode<? extends PsiElement>> findNodesIn(Collection<AbstractTreeNode> children, List<PsiFile> concepts) {
 		if (children.isEmpty() || concepts.isEmpty()) return Collections.emptyList();
 		List<BasePsiNode<? extends PsiElement>> result = new ArrayList<>();
 		Set<PsiFile> psiFiles = new HashSet<>(concepts);
-		for (final AbstractTreeNode child : children) {
-			if (child instanceof BasePsiNode) {
-				BasePsiNode<? extends PsiElement> treeNode = (BasePsiNode<? extends PsiElement>) child;
-				//noinspection SuspiciousMethodCalls
-				if (psiFiles.contains(treeNode.getValue())) result.add(treeNode);
-			}
-		}
+		children.stream().filter(child -> child instanceof BasePsiNode).forEach(child -> {
+			BasePsiNode<? extends PsiElement> treeNode = (BasePsiNode<? extends PsiElement>) child;
+			if (psiFiles.contains(treeNode.getValue())) result.add(treeNode);
+		});
 		return result;
 	}
 
 	@NotNull
 	public Collection<AbstractTreeNode> modify(@NotNull AbstractTreeNode parent, @NotNull Collection<AbstractTreeNode> children, ViewSettings settings) {
 		if (parent.getValue() instanceof NodeTreeView) return children;
-		if (!hasConcepts(children)) return children;
+		if (!hasNodes(children)) return children;
 		Collection<AbstractTreeNode> result = new LinkedHashSet<>(children);
 		ProjectViewNode[] copy = children.toArray(new ProjectViewNode[children.size()]);
 		for (ProjectViewNode element : copy) {
 			PsiClass psiClass = getPsiClass(element);
 			if (psiClass == null || psiClass.getName() == null) continue;
 			List<PsiFile> taraFiles;
-			taraFiles = findConceptsBoundToClass(psiClass);
-			Collection<BasePsiNode<? extends PsiElement>> conceptNodes = findConceptsIn(children, taraFiles);
+			taraFiles = findNodesBoundToClass(psiClass);
+			Collection<BasePsiNode<? extends PsiElement>> conceptNodes = findNodesIn(children, taraFiles);
 			if (!conceptNodes.isEmpty()) {
 				Collection<PsiFile> conceptFiles = convertToFiles(conceptNodes);
 				Collection<BasePsiNode<? extends PsiElement>> subNodes = new ArrayList<>();
@@ -89,14 +84,14 @@ public class MergerTreeStructureProvider implements TreeStructureProvider {
 		return psiClass;
 	}
 
-	private boolean hasConcepts(Collection<AbstractTreeNode> children) {
+	private boolean hasNodes(Collection<AbstractTreeNode> children) {
 		for (AbstractTreeNode node : children)
 			if (node.getValue() instanceof PsiFile && ((PsiFile) node.getValue()).getFileType() == TaraFileType.INSTANCE)
 				return true;
 		return false;
 	}
 
-	private List<PsiFile> findConceptsBoundToClass(PsiClass psiClass) {
+	private List<PsiFile> findNodesBoundToClass(PsiClass psiClass) {
 		List<PsiFile> files = new ArrayList<>();
 		for (PsiElement element : psiClass.getParent().getParent().getChildren())
 			if (element instanceof TaraModel && ((TaraModelImpl) element).getPresentableName().equals(psiClass.getName()))

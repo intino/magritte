@@ -1,4 +1,4 @@
-package siani.tara.intellij.codegeneration;
+package siani.tara.util;
 
 public class WordGenerator {
 	private static String[] syllabus = {"b%#$", "c%#$", "d#$", "dr#s", "f%#$", "g%#$", "j#$", "k%#$", "l#$", "m#$", "n#$", "p%#$", "ps#", "r#$", "s#$", "t%#$", "v#$", "y#$", "z#$"};

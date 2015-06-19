@@ -6,11 +6,14 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
 
 	private String contract = "";
+	private String inferredType;
+	private String inferredName;
 
 	public ParameterMixin(@NotNull ASTNode node) {
 		super(node);
@@ -22,7 +25,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	public int getIndexInParent() {
-		List<Parameter> parameters = (List<Parameter>) ((Parameters) this.getParent()).getParameters();
+		List<Parameter> parameters = ((Parameters) this.getParent()).getParameters();
 		return parameters.indexOf(this);
 	}
 
@@ -47,9 +50,9 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return ((Parameter) this).getValue().getChildren().length - (((Parameter) this).getValue().getMeasureValue() != null ? 1 : 0);
 	}
 
-	public Object[] getValues() {
+	public List<Object> getValues() {
 		Value value = ((Parameter) this).getValue();
-		return value == null ? new Object[0] : value.getValues();
+		return value == null ? Collections.emptyList() : value.getValues();
 	}
 
 	public TaraFacetApply isInFacet() {
@@ -65,5 +68,23 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 
 	public void setContract(String contract) {
 		this.contract = contract;
+	}
+
+	public String getInferredType() {
+		return inferredType;
+	}
+
+	public void setInferredType(String type) {
+		this.inferredType = type;
+	}
+
+	public void setInferredName(String name) {
+		this.inferredName = name;
+	}
+
+	@Override
+	public String toString() {
+		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
+		return "Parameter in" + (contextOf != null ? contextOf.getQualifiedName() : "");
 	}
 }

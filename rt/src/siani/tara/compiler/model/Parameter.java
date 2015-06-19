@@ -44,4 +44,5 @@ public interface Parameter {
 
 	void substituteValues(List<? extends Object> newValues);
 
+	String getUID();
 }

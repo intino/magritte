@@ -4,9 +4,11 @@ import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.semantic.model.*;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 
 public class LanguageRoot extends LanguageElement implements Node {
 
@@ -36,13 +38,13 @@ public class LanguageRoot extends LanguageElement implements Node {
 	}
 
 	@Override
-	public String[] secondaryTypes() {
-		return new String[0];
+	public List<String> secondaryTypes() {
+		return emptyList();
 	}
 
 	@Override
-	public String[] types() {
-		return new String[0];
+	public List<String> types() {
+		return emptyList();
 	}
 
 	@Override
@@ -66,13 +68,13 @@ public class LanguageRoot extends LanguageElement implements Node {
 	}
 
 	@Override
-	public String[] annotations() {
-		return new String[0];
+	public List<String> annotations() {
+		return emptyList();
 	}
 
 	@Override
-	public String[] flags() {
-		return new String[0];
+	public List<String> flags() {
+		return emptyList();
 	}
 
 	@Override
@@ -90,33 +92,28 @@ public class LanguageRoot extends LanguageElement implements Node {
 	}
 
 	@Override
-	public Facet[] facets() {
-		return new Facet[0];
+	public List<Facet> facets() {
+		return emptyList();
 	}
 
 	@Override
-	public FacetTarget[] facetTargets() {
-		return new FacetTarget[0];
+	public List<FacetTarget> facetTargets() {
+		return emptyList();
 	}
 
 	@Override
-	public Parameter[] parameters() {
-		return new Parameter[0];
+	public List<Parameter> parameters() {
+		return emptyList();
 	}
 
 	@Override
-	public Node[] includes() {
-		return wrap(model.getIncludes());
+	public List<Node> includes() {
+		return unmodifiableList(model.getIncludes().stream().map(LanguageNode::new).collect(Collectors.toList()));
 	}
 
 	@Override
-	public Variable[] variables() {
-		return new Variable[0];
-	}
-
-	private Node[] wrap(Collection<siani.tara.intellij.lang.psi.Node> nodes) {
-		List<LanguageNode> languageNodes = nodes.stream().map(LanguageNode::new).collect(Collectors.toList());
-		return languageNodes.toArray(new LanguageNode[languageNodes.size()]);
+	public List<Variable> variables() {
+		return emptyList();
 	}
 
 	@Override

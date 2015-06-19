@@ -6,6 +6,7 @@ import siani.tara.semantic.model.Parameter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 class ScriptFacetDefinition implements FacetDefinition {
@@ -200,13 +201,13 @@ class ScriptFacetDefinition implements FacetDefinition {
 			}
 
 			@Override
-			public Parameter[] parameters() {
-				return parameters.toArray(new Parameter[parameters.size()]);
+			public List<Parameter> parameters() {
+				return parameters;
 			}
 
 			@Override
-			public Node[] includes() {
-				return includes.toArray(new Node[includes.size()]);
+			public List<Node> includes() {
+				return Collections.emptyList();//nodes
 			}
 		};
 	}

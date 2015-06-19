@@ -4,6 +4,7 @@ import siani.tara.semantic.model.FacetTarget;
 import siani.tara.semantic.model.Node;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 class ScriptTargetDefinition implements TargetDefinition {
@@ -31,8 +32,8 @@ class ScriptTargetDefinition implements TargetDefinition {
 			}
 
 			@Override
-			public Node[] includes() {
-				return includes.toArray(new Node[includes.size()]);
+			public List<Node> includes() {
+				return Collections.emptyList();//includes;
 			}
 		};
 	}

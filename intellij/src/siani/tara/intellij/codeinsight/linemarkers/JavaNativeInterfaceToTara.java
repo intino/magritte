@@ -6,15 +6,20 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
+import siani.tara.intellij.lang.psi.Node;
+import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.Variable;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import java.util.Collection;
+import java.util.List;
 
-public class JavaNativeToTara extends RelatedItemLineMarkerProvider {
+public class JavaNativeInterfaceToTara extends RelatedItemLineMarkerProvider {
 
 	private static final String NATIVES = "natives";
 
@@ -23,7 +28,7 @@ public class JavaNativeToTara extends RelatedItemLineMarkerProvider {
 		if (element instanceof PsiClass) {
 			PsiClass psiClass = (PsiClass) element;
 			if (element.getContainingFile() == null) return;
-			Variable variable = TaraUtil.findNativeVariable(findCorrespondentConcept(psiClass), element.getContainingFile());
+			Variable variable = findNativeVariable(findCorrespondentNode(psiClass), element.getContainingFile());
 			if (variable != null) {
 				NavigationGutterIconBuilder<PsiElement> builder =
 					NavigationGutterIconBuilder.create(TaraIcons.ICON_13).setTarget(variable).setTooltipText("Navigate to the native Variable");
@@ -32,13 +37,13 @@ public class JavaNativeToTara extends RelatedItemLineMarkerProvider {
 		}
 	}
 
-	private String findCorrespondentConcept(PsiClass aClass) {
+	private String findCorrespondentNode(PsiClass aClass) {
 		String qn = aClass.getQualifiedName();
 		if (qn == null) return "";
 		if (isFacetTargetClass(aClass)) {
-			PsiClass conceptClassOfTarget = findConceptClassOfTarget(aClass);
-			if (conceptClassOfTarget == null) return "";
-			qn = conceptClassOfTarget.getQualifiedName();
+			PsiClass nodeClassOfTarget = findNodeClassOfTarget(aClass);
+			if (nodeClassOfTarget == null) return "";
+			qn = nodeClassOfTarget.getQualifiedName();
 		}
 		if (qn != null) {
 			Module moduleOf = ModuleProvider.getModuleOf(aClass);
@@ -49,7 +54,7 @@ public class JavaNativeToTara extends RelatedItemLineMarkerProvider {
 		return qn == null ? "" : qn;
 	}
 
-	private PsiClass findConceptClassOfTarget(PsiClass aClass) {
+	private PsiClass findNodeClassOfTarget(PsiClass aClass) {
 		PsiClass psiClass = aClass;
 		while (psiClass.getInterfaces().length > 0 && !"magritte.Intention".equals(psiClass.getInterfaces()[0].getQualifiedName()))
 			psiClass = psiClass.getInterfaces()[0];
@@ -57,9 +62,35 @@ public class JavaNativeToTara extends RelatedItemLineMarkerProvider {
 	}
 
 	private boolean isFacetTargetClass(PsiClass aClass) {
-		if (aClass == null || aClass.getContainingFile().getParent() == null) return false;
-		return !aClass.getContainingFile().getParent().getName().equals(NATIVES);
+		return !(aClass == null || aClass.getContainingFile().getParent() == null) && !NATIVES.equals(aClass.getContainingFile().getParent().getName());
 	}
 
+
+	public static Variable findNativeVariable(String name, PsiFile file) {
+		if (file == null) return null;
+		List<TaraModel> filesOfModule = TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(file));
+		for (TaraModel taraFile : filesOfModule) {
+			Variable variable = searchNativeInFile(name, taraFile);
+			if (variable != null) return variable;
+		}
+		return null;
+	}
+
+	@Nullable
+	private static Variable searchNativeInFile(String name, TaraModel taraFile) {
+		for (Node node : TaraUtil.getAllNodesOfFile(taraFile)) {
+			Variable variable = searchNativeInNode(name, node);
+			if (variable != null) return variable;
+		}
+		return null;
+	}
+
+	@Nullable
+	private static Variable searchNativeInNode(String name, Node node) {
+		for (Variable variable : node.getVariables())
+			if (variable.getContract() != null && name.equals(variable.getContract().getFormattedName()))
+				return variable;
+		return null;
+	}
 
 }

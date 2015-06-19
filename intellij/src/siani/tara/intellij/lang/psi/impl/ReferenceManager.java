@@ -97,8 +97,7 @@ public class ReferenceManager {
 	}
 
 	private static PsiElement tryToResolveAsQN(List<Identifier> path) {
-		TaraModelImpl resolve;
-		resolve = resolveBoxPath(path.get(0));
+		TaraModel resolve = resolveBoxPath(path.get(0));
 		if (resolve == null || path.isEmpty()) return null;
 		List<Identifier> qn = path.subList(1, path.size());
 		if (qn.isEmpty()) return resolve;
@@ -173,7 +172,7 @@ public class ReferenceManager {
 //	private static boolean isRoot(TaraModel file, Node node, Collection<Node> visited) {
 //		if (visited.contains(node)) return false;
 //		visited.add(node);
-//		if (node.isAnnotatedAsRoot() || isMetaRoot(node)) return true;
+//		if (node.isAnnotatedAsMain() || isMetaRoot(node)) return true;
 //		IdentifierReference parentReference = node.getSignature().getParentReference();
 //		return parentReference != null && checkPossibleRoots(parentReference, getIncludes(file, parentReference, visited, new HashSet<>()));
 //	}
@@ -191,7 +190,7 @@ public class ReferenceManager {
 //		if (roots.length == 0) return false;
 //		for (Node possibleRoot : roots) {
 //			Node node = resolvePathInNode((List<Identifier>) parentReference.getIdentifierList(), possibleRoot);
-//			if (node != null) return node.isAnnotatedAsRoot();
+//			if (node != null) return node.isAnnotatedAsMain();
 //		}
 //		return false;
 //	}
@@ -223,12 +222,11 @@ public class ReferenceManager {
 		return path.indexOf(identifier) == path.size() - 1;
 	}
 
-	private static TaraModelImpl resolveBoxPath(Identifier identifier) {
+	private static TaraModel resolveBoxPath(Identifier identifier) {
 		TaraModel containingFile = (TaraModel) identifier.getContainingFile().getOriginalFile();
 		if (containingFile.getVirtualFile() == null) return null;
 		Module moduleOfDocument = ModuleProvider.getModuleOf(containingFile);
-		List<TaraModelImpl> taraFilesOfModule = TaraUtil.getTaraFilesOfModule(moduleOfDocument);
-		for (TaraModelImpl taraBoxFile : taraFilesOfModule)
+		for (TaraModel taraBoxFile : TaraUtil.getTaraFilesOfModule(moduleOfDocument))
 			if (taraBoxFile.getPresentableName().equals(identifier.getText())) return taraBoxFile;
 		return null;
 	}

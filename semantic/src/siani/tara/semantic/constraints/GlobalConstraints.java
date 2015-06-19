@@ -9,10 +9,7 @@ import siani.tara.semantic.constraints.flags.AnnotationChecker;
 import siani.tara.semantic.constraints.flags.FlagCheckerFactory;
 import siani.tara.semantic.model.*;
 
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -94,15 +91,15 @@ public class GlobalConstraints {
 			Node node = (Node) element;
 			for (Variable variable : node.variables()) {
 				if ("word".equals(variable.type())) continue;
-				if (variable.defaultValue().length != 0 && !compatibleTypes(variable))
+				if (!variable.defaultValue().isEmpty() && !compatibleTypes(variable))
 					throw new SemanticException(new SemanticError("reject.invalid.variable.type", variable, singletonList(variable.type())));
 			}
 		};
 	}
 
 	private boolean compatibleTypes(Variable variable) {
-		Object[] values = variable.defaultValue();
-		String inferredType = inferType(values[0]);
+		List<Object> values = variable.defaultValue();
+		String inferredType = inferType(values.get(0));
 		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? Primitives.REFERENCE : variable.type(), inferredType);
 	}
 
@@ -147,16 +144,16 @@ public class GlobalConstraints {
 			}
 
 			private void checkTargetExists(Node node) throws SemanticException {
-				if (node.facetTargets().length == 0 && !node.isReference() && (!node.hasSubs() && !isAbstract(node)))
+				if (node.facetTargets().isEmpty() && !node.isReference() && (!node.hasSubs() && !isAbstract(node)))
 					throw new SemanticException(new SemanticError("no.targets.in.facet", node, singletonList(node.name())));
 			}
 
 			private void checkTargetNotExist(Node node) throws SemanticException {
-				if (node.facetTargets().length > 0)
+				if (!node.facetTargets().isEmpty())
 					throw new SemanticException(new SemanticError("reject.target.without.facet", node));
 			}
 
-			private boolean isFacet(String[] flags) {
+			private boolean isFacet(List<String> flags) {
 				for (String flag : flags) if (flag.equalsIgnoreCase(Tag.FACET.name())) return true;
 				return false;
 			}
@@ -171,7 +168,7 @@ public class GlobalConstraints {
 			}
 
 			private boolean isAbstract(Node node) {
-				return asList(node.flags()).contains("abstract") || node.hasSubs();
+				return node.flags().contains("abstract") || node.hasSubs();
 			}
 		};
 	}

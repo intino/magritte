@@ -18,7 +18,7 @@ public class NativeTemplate extends Template {
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "native"))).add(literal("package ")).add(mark("languageGenerated")).add(literal(";\n\nimport ")).add(mark("language")).add(literal(".natives.*;\nimport ")).add(mark("language")).add(literal(".*;\nimport java.util.*;\n\npublic class ")).add(mark("qn")).add(expression().add(literal("_")).add(mark("variable"))).add(literal(" extends ")).add(mark("parent")).add(literal(" implements ")).add(mark("intention")).add(literal(" {\n\n\t@Override\n\t")).add(mark("signature")).add(literal(" {")).add(literal("\n")).add(mark("NL")).add(literal("\t")).add(mark("TAB")).add(literal("\t")).add(mark("TAB")).add(mark("return"))
+			rule().add((condition("type", "native"))).add(literal("package ")).add(mark("languageGenerated")).add(literal(";\n\nimport ")).add(mark("language")).add(literal(".natives.*;\nimport ")).add(mark("language")).add(literal(".*;\nimport java.util.*;\n\npublic class ")).add(mark("qn")).add(expression().add(literal("_")).add(mark("variable"))).add(literal(" ")).add(expression().add(literal("extends ")).add(mark("parent"))).add(literal(" ")).add(expression().add(literal("implements ")).add(mark("interface"))).add(literal(" {\n\n\t@Override\n\t")).add(mark("signature")).add(literal(" {")).add(literal("\n")).add(mark("NL")).add(literal("\t")).add(mark("TAB")).add(literal("\t")).add(mark("TAB")).add(mark("return"))
 		);
 		return this;
 	}

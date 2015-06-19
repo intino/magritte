@@ -49,7 +49,7 @@ public class NodeAnnotator extends TaraAnnotator {
 	}
 
 	private boolean isRoot(Node node) {
-		List<Node> rootNodes = TaraUtil.getRootNodesOfFile(node.getFile());
+		List<Node> rootNodes = TaraUtil.getMainNodesOfFile(node.getFile());
 		return rootNodes.contains(node) && node.getIdentifierNode() != null;
 	}
 

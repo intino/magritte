@@ -178,7 +178,8 @@ public class LanguageInheritanceFiller {
 	}
 
 	private Object getContract(String type, Object value) {
-		if (!type.equals(Primitives.NATIVE)) return value;
+		if (!type.equals(Primitives.NATIVE))
+			return value.toString() + Variable.NATIVE_SEPARATOR + Variable.NATIVE_SEPARATOR + language.languageName();
 		return value.toString() + Variable.NATIVE_SEPARATOR + language.languageName();
 	}
 

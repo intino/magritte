@@ -8,6 +8,8 @@ import siani.tara.semantic.model.Tag;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.unmodifiableList;
+
 public class LanguageVariable extends LanguageElement implements siani.tara.semantic.model.Variable {
 	private final Variable variable;
 
@@ -26,9 +28,8 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 	}
 
 	@Override
-	public String[] flags() {
-		List<String> flags = variable.getFlags().stream().map(Tag::name).collect(Collectors.toList());
-		return flags.toArray(new String[flags.size()]);
+	public List<String> flags() {
+		return unmodifiableList(variable.getFlags().stream().map(Tag::name).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -47,8 +48,8 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 	}
 
 	@Override
-	public Object[] defaultValue() {
-		return variable.getDefaultValues().toArray(new Object[variable.getDefaultValues().size()]);
+	public List<Object> defaultValue() {
+		return unmodifiableList(variable.getDefaultValues());
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package siani.tara.semantic.model;
 
+import java.util.List;
+
 public interface Node extends Element {
 	Node context();
 
@@ -9,9 +11,9 @@ public interface Node extends Element {
 
 	void type(String type);
 
-	String[] secondaryTypes();
+	List<String> secondaryTypes();
 
-	String[] types();
+	List<String> types();
 
 	String name();
 
@@ -21,9 +23,9 @@ public interface Node extends Element {
 
 	String plate();
 
-	String[] annotations();
+	List<String> annotations();
 
-	String[] flags();
+	List<String> flags();
 
 	void flags(String... flags);
 
@@ -31,13 +33,13 @@ public interface Node extends Element {
 
 	void moveToTheTop();
 
-	Facet[] facets();
+	List<Facet> facets();
 
-	FacetTarget[] facetTargets();
+	List<FacetTarget> facetTargets();
 
-	Parameter[] parameters();
+	List<Parameter> parameters();
 
-	Node[] includes();
+	List<Node> includes();
 
-	Variable[] variables();
+	List<Variable> variables();
 }

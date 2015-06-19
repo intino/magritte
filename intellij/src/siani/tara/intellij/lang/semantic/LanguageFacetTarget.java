@@ -6,8 +6,9 @@ import siani.tara.intellij.lang.psi.TaraIdentifierReference;
 import siani.tara.semantic.model.FacetTarget;
 import siani.tara.semantic.model.Node;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LanguageFacetTarget extends LanguageElement implements FacetTarget {
 
@@ -24,14 +25,11 @@ public class LanguageFacetTarget extends LanguageElement implements FacetTarget 
 	}
 
 	@Override
-	public Node[] includes() {
+	public List<Node> includes() {
 		Body body = target.getBody();
-		if (body == null) return new siani.tara.semantic.model.Node[0];
-		List<siani.tara.intellij.lang.psi.Node> concepts = (List<siani.tara.intellij.lang.psi.Node>) body.getNodeList();
-		List<siani.tara.semantic.model.Node> nodes = new ArrayList<>();
-		for (siani.tara.intellij.lang.psi.Node inner : concepts)
-			nodes.add(new LanguageNode(inner));
-		return nodes.toArray(new siani.tara.semantic.model.Node[nodes.size()]);
+		if (body == null) return Collections.emptyList();
+		List<siani.tara.intellij.lang.psi.Node> nodeList = (List<siani.tara.intellij.lang.psi.Node>) body.getNodeList();
+		return Collections.unmodifiableList(nodeList.stream().map(LanguageNode::new).collect(Collectors.toList()));
 	}
 
 	@Override

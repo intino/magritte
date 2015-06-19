@@ -49,8 +49,8 @@ import static siani.tara.intellij.project.facet.TaraFacet.getTaraFacetByModule;
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private static final String PROTEO = "Proteo";
-	private static final String MAGRITTE_LIB = "Magritte-1.0.jar";
-	private static final String MAGRITTE_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
+	private static final String PROTEO_LIB = "Proteo-1.0.jar";
+	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
 	private static final String TARA_PREFIX = "Tara -> ";
 	private String dsl;
 	private String dictionary;
@@ -62,7 +62,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	private Module selectedModuleParent = null;
 
 	public TaraSupportProvider() {
-		importedLanguagePaths.put(PROTEO, new AbstractMap.SimpleEntry<>(2, new File(MAGRITTE_DIRECTORY, MAGRITTE_LIB)));
+		importedLanguagePaths.put(PROTEO, new AbstractMap.SimpleEntry<>(2, new File(PROTEO_DIRECTORY, PROTEO_LIB)));
 	}
 
 	@NotNull
@@ -100,9 +100,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 			//TODO
 		} else if (importedLanguagePaths.containsKey(this.dsl))
 			addDslLibToSdk(TARA_PREFIX + dsl, rootModel, importDsl(dslDirectory));
-		else {
-			addModuleDependency(rootModel);
-		}
+		else addModuleDependency(rootModel);
 	}
 
 	private void addModuleDependency(ModifiableRootModel rootModel) {
@@ -121,11 +119,15 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	private void addDslLibToSdk(String name, ModifiableRootModel rootModel, File file) {
-		final Library library = addProjectLibrary(rootModel.getModule(), name, Collections.singletonList(file.getAbsolutePath()), VirtualFile.EMPTY_ARRAY);
+		final Library library = addProjectLibrary(rootModel.getModule(), name, getLibraryFiles(file), VirtualFile.EMPTY_ARRAY);
 		rootModel.addLibraryEntry(library);
 	}
 
-	private static Library addProjectLibrary(final Module module, final String name, final List<String> jarDirectories, final VirtualFile[] sources) {
+	private File[] getLibraryFiles(File file) {
+		return file.listFiles(f -> !f.isDirectory() && f.getName().endsWith(".jar"));
+	}
+
+	private static Library addProjectLibrary(final Module module, final String name, final File[] jars, final VirtualFile[] sources) {
 		return new WriteAction<Library>() {
 			protected void run(@NotNull final Result<Library> result) throws MalformedURLException {
 				final LibraryTable libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(module.getProject());
@@ -133,10 +135,10 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 				if (library == null) {
 					library = libraryTable.createLibrary(name);
 					final Library.ModifiableModel model = library.getModifiableModel();
-					for (String path : jarDirectories) {
-						final VirtualFile vFile = VfsUtil.findFileByURL(new File(path).toURI().toURL());
+					for (File lib : jars) {
+						final VirtualFile vFile = VfsUtil.findFileByURL(lib.toURI().toURL());
 						vFile.refresh(true, true);
-						model.addJarDirectory(vFile, true, OrderRootType.CLASSES);
+						model.addRoot(vFile, OrderRootType.CLASSES);
 					}
 					for (VirtualFile sourceRoot : sources) model.addRoot(sourceRoot, OrderRootType.SOURCES);
 					model.commit();
@@ -152,13 +154,13 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		File destiny;
 		try {
 			if (isJar(file)) {
-				destiny = new File(dslDirectory.getPath() + separator + dsl + separator + "metamodel" + separator + file.getName());
+				destiny = new File(dslDirectory.getPath() + separator + dsl + separator + file.getName());
 				FileSystemUtils.copyFile(file.getPath(), destiny.getPath());
 			} else {
 				ZipUtil.unzip(null, new File(dslDirectory.getPath()), new File(file.getPath()), null, null, false);
-				destiny = new File(dslDirectory.getPath() + separator + dsl, "metamodel" + separator);
+				destiny = new File(dslDirectory.getPath() + separator + dsl);
 			}
-			reload(file.getName(), file.getParentFile().getAbsolutePath());
+			reload(dslDirectory.getPath());
 			return destiny.isDirectory() ? destiny : destiny.getParentFile();
 		} catch (IOException e) {
 			return null;
@@ -169,8 +171,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		return file.getName().endsWith(".jar");
 	}
 
-	private void reload(String fileName, String languagesPath) {
-		File reload = new File(languagesPath + fileName.substring(0, fileName.lastIndexOf(".")) + ".reload");
+	private void reload(String languagesPath) {
+		File reload = new File(languagesPath, dsl + ".reload");
 		try {
 			reload.createNewFile();
 		} catch (IOException e) {

@@ -127,7 +127,7 @@ public class NativesGenerator {
 
 	private List<Variable> getNativeVariables(TaraModel model) {
 		List<Variable> natives = new ArrayList<>();
-		getNativeVariablesOfNodes(TaraUtil.getRootNodesOfFile(model), natives);
+		getNativeVariablesOfNodes(TaraUtil.getMainNodesOfFile(model), natives);
 		return natives;
 	}
 

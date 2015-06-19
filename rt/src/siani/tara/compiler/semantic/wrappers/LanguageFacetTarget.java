@@ -3,12 +3,12 @@ package siani.tara.compiler.semantic.wrappers;
 
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.FacetTarget;
-import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LanguageFacetTarget extends LanguageElement implements siani.tara.semantic.model.FacetTarget {
 
@@ -24,13 +24,11 @@ public class LanguageFacetTarget extends LanguageElement implements siani.tara.s
 	}
 
 	@Override
-	public siani.tara.semantic.model.Node[] includes() {
-		List<siani.tara.semantic.model.Node> nodes = new ArrayList<>();
-		for (Node include : target.getIncludedNodes())
-			nodes.add(include instanceof NodeReference ?
-				new LanguageNodeReference((NodeReference) include) :
-				new LanguageNode((NodeImpl) include));
-		return nodes.toArray(new siani.tara.semantic.model.Node[nodes.size()]);
+	public List<siani.tara.semantic.model.Node> includes() {
+		List<siani.tara.semantic.model.Node> nodes = target.getIncludedNodes().stream().
+			map(include -> include instanceof NodeReference ?
+				new LanguageNodeReference((NodeReference) include) : new LanguageNode((NodeImpl) include)).collect(Collectors.toList());
+		return Collections.unmodifiableList(nodes);
 	}
 
 	@Override

@@ -8,6 +8,9 @@ import siani.tara.intellij.lang.psi.Flags;
 import siani.tara.intellij.lang.psi.TaraValue;
 import siani.tara.intellij.lang.psi.Variable;
 
+import java.util.Collections;
+import java.util.List;
+
 public class LanguageVariable extends LanguageElement implements siani.tara.semantic.model.Variable {
 	private final Variable variable;
 
@@ -26,9 +29,9 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 	}
 
 	@Override
-	public String[] flags() {
+	public List<String> flags() {
 		Flags flags = variable.getFlags();
-		return flags != null ? flags.asStringArray() : new String[0];
+		return flags != null ? flags.asStringList() : Collections.<String>emptyList();
 	}
 
 	@Override
@@ -47,9 +50,9 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 	}
 
 	@Override
-	public Object[] defaultValue() {
+	public List<Object> defaultValue() {
 		TaraValue value = variable.getValue();
-		return value != null ? value.getValues() : new Object[0];
+		return value != null ? value.getValues() : Collections.emptyList();
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package siani.tara.semantic.model;
 
+import java.util.List;
+
 public interface Variable extends Element {
 
 	String NATIVE_SEPARATOR = "#";
@@ -8,7 +10,7 @@ public interface Variable extends Element {
 
 	String type();
 
-	String[] flags();
+	List<String> flags();
 
 	void flags(String... flag);
 
@@ -16,5 +18,5 @@ public interface Variable extends Element {
 
 	boolean isOverriden();
 
-	Object[] defaultValue();
+	List<Object> defaultValue();
 }

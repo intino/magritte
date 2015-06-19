@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface FacetApply extends NodeContainer, Navigatable, TaraPsiElement {
+public interface FacetApply extends NodeContainer, Parametrized, Navigatable, TaraPsiElement {
 
 	@NotNull
 	String getType();
@@ -18,4 +18,13 @@ public interface FacetApply extends NodeContainer, Navigatable, TaraPsiElement {
 
 	@Nullable
 	Parameters getParameters();
+
+	@NotNull
+	List<Variable> getVariables();
+
+	@NotNull
+	List<Parameter> getParameterList();
+
+	@NotNull
+	List<VarInit> getVarInits();
 }

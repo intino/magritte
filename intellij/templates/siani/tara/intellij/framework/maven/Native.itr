@@ -5,7 +5,7 @@ def type(native)
 	import $language.*;
 	import java.util.*;
 
-	public class $qn[_$variable] extends $parent implements $intention {
+	public class $qn[_$variable] [extends $parent] [implements $interface] {
 
 		@Override
 		$signature {$NL$TAB$TAB$return

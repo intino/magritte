@@ -19,9 +19,9 @@ public interface TaraModel extends NodeContainer, PsiFile {
 	List<Node> getIncludes();
 
 	@NotNull
-	PsiElement addConcept(@NotNull Node node) throws IncorrectOperationException;
+	PsiElement addNode(@NotNull Node node) throws IncorrectOperationException;
 
-	Node addConcept(String identifier);
+	Node addNode(String identifier);
 
 	Import addImport(String reference);
 

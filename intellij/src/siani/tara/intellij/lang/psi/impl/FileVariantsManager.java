@@ -5,6 +5,7 @@ import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.project.module.ModuleProvider;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class FileVariantsManager {
 
@@ -17,8 +18,6 @@ public class FileVariantsManager {
 	}
 
 	public void resolveVariants() {
-		for (TaraModelImpl taraBoxFile : TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(myElement.getContainingFile().getOriginalFile()))) {
-			variants.add(taraBoxFile);
-		}
+		variants.addAll(TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(myElement.getContainingFile().getOriginalFile())).stream().collect(Collectors.toList()));
 	}
 }

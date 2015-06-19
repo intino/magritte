@@ -18,9 +18,9 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 		this.parameter = parameter;
 	}
 
-	private static List<Object> wrapValues(Object[] values) {
+	private static List<Object> wrapValues(List<Object> values) {
 		List<Object> objects = new ArrayList<>();
-		if ("$empty".equals(values[0])) objects.add(new EmptyNode());
+		if ("$empty".equals(values.get(0))) objects.add(new EmptyNode());
 		else for (Object value : values)
 			if (value instanceof Node) objects.add(new LanguageNode((Node) value));
 			else objects.add(value);
@@ -33,8 +33,8 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 	}
 
 	@Override
-	public void setInferredType(String s) {
-
+	public void setInferredType(String type) {
+		parameter.setInferredType(type);
 	}
 
 	@Override
@@ -69,6 +69,7 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 
 	@Override
 	public void setName(String name) {
+		parameter.setInferredName(name);
 	}
 
 	@Override

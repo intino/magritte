@@ -4,11 +4,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface Flags extends TaraPsiElement {
-
+public interface Parametrized {
 
 	@NotNull
-	<T extends Flag> List<T> getFlagList();
+	List<Parameter> getParameterList();
 
-	List<String> asStringList();
+	List<VarInit> getVarInits();
 }

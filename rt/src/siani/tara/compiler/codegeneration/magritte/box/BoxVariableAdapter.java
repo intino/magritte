@@ -4,7 +4,6 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.codegeneration.magritte.NameFormatter;
 import siani.tara.compiler.model.*;
-import siani.tara.compiler.model.impl.Model;
 import siani.tara.compiler.model.impl.VariableReference;
 import siani.tara.semantic.model.Primitives;
 import siani.tara.semantic.model.Tag;
@@ -19,7 +18,6 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 
 	private final Map<String, List<SimpleEntry<String, String>>> metrics;
 	private final int level;
-	private static Map<NodeContainer, Integer> nativeIndex = new HashMap<>();
 
 	public BoxVariableAdapter(Map<String, List<SimpleEntry<String, String>>> metrics, int level) {
 		this.metrics = metrics;
@@ -59,9 +57,9 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 
 	protected String[] getTypes(Variable variable) {
 		List<String> list = new ArrayList<>();
-		list.add(variable.getClass().getSimpleName());
 		list.add(VARIABLE);
-		if (variable instanceof VariableReference) list.add("reference");
+		if (variable.getDefaultValues().get(0) instanceof Primitives.Expression) list.add(Primitives.NATIVE);
+		if (variable instanceof VariableReference) list.add(Primitives.REFERENCE);
 		list.add(variable.getType());
 		if (variable.isTerminal()) list.add(TERMINAL);
 		if (variable.isMultiple()) list.add(MULTIPLE);
@@ -77,25 +75,12 @@ public class BoxVariableAdapter implements Adapter<Variable> {
 				return;
 			else values = collectQualifiedNames(defaultValues);
 		else
-			values = variable.getType().equalsIgnoreCase(Primitives.NATIVE) ? buildNativeReference(variable) : format(defaultValues);
+			values = defaultValues.iterator().next() instanceof Primitives.Expression ? buildNativeReference(variable) : format(defaultValues);
 		frame.addFrame(VARIABLE_VALUE, values);
 	}
 
 	private Object[] buildNativeReference(Variable variable) {
-		final String rootContainer = getRootContainer(variable);
-		return new Object[]{cleanQn(rootContainer +
-			(variable.getContainer() instanceof Node && !rootContainer.equals(((Node) variable.getContainer()).getName()) ?
-				"_" + ((Node) variable.getContainer()).getName() : "") + "_" + variable.getName())};
-	}
-
-	public static String cleanQn(String qualifiedName) {
-		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
-	}
-
-	private String getRootContainer(Variable variable) {
-		NodeContainer container = variable.getContainer();
-		while (!(container.getContainer() instanceof Model)) container = container.getContainer();
-		return ((Node) container).getName();
+		return new Object[]{variable.getName() + "_" + variable.getUID()};
 	}
 
 	private Object[] format(Collection<Object> parameterValues) {

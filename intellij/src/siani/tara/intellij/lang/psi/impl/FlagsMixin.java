@@ -5,8 +5,9 @@ import com.intellij.lang.ASTNode;
 import siani.tara.intellij.lang.psi.TaraFlag;
 import siani.tara.intellij.lang.psi.TaraFlags;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FlagsMixin extends ASTWrapperPsiElement {
 
@@ -14,10 +15,7 @@ public class FlagsMixin extends ASTWrapperPsiElement {
 		super(node);
 	}
 
-	public String[] asStringArray() {
-		List<String> names = new ArrayList<>();
-		for (TaraFlag flag : ((TaraFlags) this).getFlagList())
-			names.add(flag.getText());
-		return names.toArray(new String[names.size()]);
+	public List<String> asStringList() {
+		return Collections.unmodifiableList(((TaraFlags) this).getFlagList().stream().map(TaraFlag::getText).collect(Collectors.toList()));
 	}
 }

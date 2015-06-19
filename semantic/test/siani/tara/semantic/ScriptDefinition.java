@@ -3,6 +3,7 @@ package siani.tara.semantic;
 import siani.tara.semantic.model.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 class ScriptDefinition implements Definition {
 	public Set<String> annotations = new HashSet<>();
@@ -179,13 +180,13 @@ class ScriptDefinition implements Definition {
 				}
 
 				@Override
-				public String[] secondaryTypes() {
+				public List<String> secondaryTypes() {
 					return node.secondaryTypes();
 				}
 
 				@Override
-				public String[] types() {
-					return new String[0]; //TODO
+				public List<String> types() {
+					return Collections.emptyList();
 				}
 
 				@Override
@@ -209,12 +210,12 @@ class ScriptDefinition implements Definition {
 				}
 
 				@Override
-				public String[] annotations() {
+				public List<String> annotations() {
 					return node.annotations();
 				}
 
 				@Override
-				public String[] flags() {
+				public List<String> flags() {
 					return node.flags();
 				}
 
@@ -234,28 +235,28 @@ class ScriptDefinition implements Definition {
 				}
 
 				@Override
-				public Facet[] facets() {
+				public List<Facet> facets() {
 					return node.facets();
 				}
 
 				@Override
-				public FacetTarget[] facetTargets() {
+				public List<FacetTarget> facetTargets() {
 					return node.facetTargets();
 				}
 
 				@Override
-				public Parameter[] parameters() {
+				public List<Parameter> parameters() {
 					return node.parameters();
 				}
 
 				@Override
-				public Node[] includes() {
+				public List<Node> includes() {
 					return node.includes();
 				}
 
 				@Override
-				public Variable[] variables() {
-					return new Variable[0];//TODO
+				public List<Variable> variables() {
+					return Collections.emptyList();
 				}
 
 			});
@@ -311,26 +312,26 @@ class ScriptDefinition implements Definition {
 			}
 
 			@Override
-			public String[] secondaryTypes() {
-				return new String[0]; //TODO
+			public List<String> secondaryTypes() {
+				return Collections.emptyList();
 			}
 
 			@Override
-			public String[] types() {
+			public List<String> types() {
 				List<String> types = new ArrayList<>();
 				types.add(type());
-				for (Facet facet : facets) types.add(facet.type());
-				return types.toArray(new String[types.size()]);
+				types.addAll(facets.stream().map(Facet::type).collect(Collectors.toList()));
+				return types;
 			}
 
 			@Override
-			public String[] annotations() {
-				return annotations.toArray(new String[annotations.size()]);
+			public List<String> annotations() {
+				return new ArrayList<>(annotations);
 			}
 
 			@Override
-			public String[] flags() {
-				return flags.toArray(new String[flags.size()]);
+			public List<String> flags() {
+				return new ArrayList<>(flags);
 
 			}
 
@@ -349,28 +350,28 @@ class ScriptDefinition implements Definition {
 			}
 
 			@Override
-			public Facet[] facets() {
-				return facets.toArray(new Facet[facets.size()]);
+			public List<Facet> facets() {
+				return facets;
 			}
 
 			@Override
-			public FacetTarget[] facetTargets() {
-				return facetTargets.toArray(new FacetTarget[facetTargets.size()]);
+			public List<FacetTarget> facetTargets() {
+				return facetTargets;
 			}
 
 			@Override
-			public Parameter[] parameters() {
-				return parameters.toArray(new Parameter[parameters.size()]);
+			public List<Parameter> parameters() {
+				return parameters;
 			}
 
 			@Override
-			public Node[] includes() {
-				return includes.toArray(new Node[includes.size()]);
+			public List<Node> includes() {
+				return Collections.emptyList();//includes;
 			}
 
 			@Override
-			public Variable[] variables() {
-				return new Variable[0]; //TODO
+			public List<Variable> variables() {
+				return Collections.emptyList();
 			}
 
 		};

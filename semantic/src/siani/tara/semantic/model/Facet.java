@@ -1,11 +1,13 @@
 package siani.tara.semantic.model;
 
+import java.util.List;
+
 public interface Facet extends Element {
 
 	String type();
 
-	Parameter[] parameters();
+	List<Parameter> parameters();
 
-	Node[] includes();
+	List<Node> includes();
 
 }

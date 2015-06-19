@@ -17,12 +17,12 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 		this.varInit = varInit;
 	}
 
-	private static List<Object> wrapValues(Object[] values) {
+	private static List<Object> wrapValues(List<Object> values) {
 		List<Object> objects = new ArrayList<>();
 		for (Object value : values) {
 			if (value == null) continue;
 			if (value instanceof Node) objects.add(new LanguageNode((Node) value));
-			else if (values[0].equals("$empty")) objects.add(new EmptyNode());
+			else if ("$empty".equals(values.get(0))) objects.add(new EmptyNode());
 			else objects.add(value);
 		}
 		return objects;
@@ -34,8 +34,8 @@ public class LanguageVarParameter extends LanguageElement implements Parameter {
 	}
 
 	@Override
-	public void setInferredType(String s) {
-
+	public void setInferredType(String type) {
+		varInit.setInferredType(type);
 	}
 
 	@Override

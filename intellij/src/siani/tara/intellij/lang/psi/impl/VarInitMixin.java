@@ -5,6 +5,9 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
 
+import java.util.Collections;
+import java.util.List;
+
 import static siani.tara.intellij.lang.lexer.TaraPrimitives.*;
 
 public class VarInitMixin extends ASTWrapperPsiElement {
@@ -12,6 +15,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	private static final String EMPTY = "empty";
 
 	private String contract = "";
+	private String inferredType;
 
 	public VarInitMixin(@NotNull ASTNode node) {
 		super(node);
@@ -37,8 +41,8 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 		return "null";
 	}
 
-	public Object[] getValues() {
-		return ((VarInit) this).getValue() == null ? new Object[0] : ((VarInit) this).getValue().getValues();
+	public List<Object> getValues() {
+		return ((VarInit) this).getValue() == null ? Collections.emptyList(): ((VarInit) this).getValue().getValues();
 	}
 
 
@@ -53,5 +57,19 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 
 	public void setContract(String contract) {
 		this.contract = contract;
+	}
+
+	public String getInferredType() {
+		return inferredType;
+	}
+
+	public void setInferredType(String type) {
+		this.inferredType = type;
+	}
+
+	@Override
+	public String toString() {
+		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
+		return "Parameter in" + (contextOf != null ? contextOf.getQualifiedName() : "");
 	}
 }

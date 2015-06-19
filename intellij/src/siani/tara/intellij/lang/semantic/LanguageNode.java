@@ -7,8 +7,13 @@ import siani.tara.semantic.model.Facet;
 import siani.tara.semantic.model.FacetTarget;
 import siani.tara.semantic.model.Variable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.unmodifiableList;
 
 public class LanguageNode extends LanguageElement implements siani.tara.semantic.model.Node {
 
@@ -47,20 +52,19 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
-	public String[] secondaryTypes() {
+	public List<String> secondaryTypes() {
 		Set<String> types = node.getFacetApplies().stream().map(FacetApply::getType).collect(Collectors.toSet());
-		if (node.getParentNode() != null) Collections.addAll(types, parent().types());
-		return types.toArray(new String[types.size()]);
+		if (node.getParentNode() != null) types.addAll(parent().types());
+		return new ArrayList<>(types);
 	}
 
 	@Override
-	public String[] types() {
+	public List<String> types() {
 		List<String> types = new ArrayList<>();
 		types.add(type());
-		Collections.addAll(types, secondaryTypes());
-		Collection<String> typesOf = TaraUtil.getTypesOf(node);
-		if (typesOf != null) types.addAll(typesOf);
-		return types.toArray(new String[types.size()]); //TODO Add language types
+		types.addAll(secondaryTypes());
+		types.addAll(TaraUtil.getTypesOf(node));
+		return unmodifiableList(types);
 	}
 
 	@Override
@@ -85,17 +89,17 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
-	public String[] annotations() {
+	public List<String> annotations() {
 		Set<String> annotations = node.getAnnotations().stream().map(Annotation::getText).collect(Collectors.toSet());
-		annotations.addAll(node.getAssumedFlags());
-		return annotations.toArray(new String[annotations.size()]);
+		annotations.addAll(node.getInheritedFlags());
+		return unmodifiableList(new ArrayList<>(annotations));
 	}
 
 	@Override
-	public String[] flags() {
+	public List<String> flags() {
 		Set<String> flags = node.getFlags().stream().map(Flag::getText).collect(Collectors.toSet());
-		flags.addAll(node.getAssumedFlags());
-		return flags.toArray(new String[flags.size()]);
+		flags.addAll(node.getInheritedFlags());
+		return unmodifiableList(new ArrayList<>(flags));
 	}
 
 	@Override
@@ -113,21 +117,20 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
-	public Facet[] facets() {
-		List<Facet> facets = node.getFacetApplies().stream().map(LanguageFacet::new).collect(Collectors.toList());
-		return facets.toArray(new Facet[facets.size()]);
+	public List<Facet> facets() {
+		return unmodifiableList(node.getFacetApplies().stream().map(LanguageFacet::new).collect(Collectors.toList()));
 	}
 
 	@Override
-	public FacetTarget[] facetTargets() {
-		return facetTargets.toArray(new FacetTarget[facetTargets.size()]);
+	public List<FacetTarget> facetTargets() {
+		return unmodifiableList(facetTargets);
 	}
 
 	@Override
-	public siani.tara.semantic.model.Parameter[] parameters() {
-		List<siani.tara.semantic.model.Parameter> parameters = wrapParameters(node.getParameters());
+	public List<siani.tara.semantic.model.Parameter> parameters() {
+		List<siani.tara.semantic.model.Parameter> parameters = wrapParameters(node.getParameterList());
 		parameters.addAll(wrapVarInits(node.getVarInits()));
-		return parameters.toArray(new siani.tara.semantic.model.Parameter[parameters.size()]);
+		return unmodifiableList(parameters);
 	}
 
 	private List<siani.tara.semantic.model.Parameter> wrapParameters(Collection<Parameter> toWrap) {
@@ -141,13 +144,13 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
-	public siani.tara.semantic.model.Node[] includes() {
+	public List<siani.tara.semantic.model.Node> includes() {
 		if (includes == null) {
 			includes = new ArrayList<>();
 			collectIncludes(node);
 			if (node.getParentNode() != null) collectIncludes(node.getParentNode());
 		}
-		return includes.toArray(new siani.tara.semantic.model.Node[includes.size()]);
+		return unmodifiableList(includes);
 	}
 
 	private void collectIncludes(Node node) {
@@ -169,8 +172,8 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
-	public Variable[] variables() {
-		return variables.toArray(new Variable[variables.size()]);
+	public List<Variable> variables() {
+		return unmodifiableList(variables);
 	}
 
 	private List<Variable> collectVariables(Collection<siani.tara.intellij.lang.psi.Variable> variables) {

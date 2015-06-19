@@ -3,6 +3,7 @@ package siani.tara.compiler.model.impl;
 import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.Parameter;
+import siani.tara.util.WordGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,12 +24,14 @@ public class ParameterImpl extends Element implements Parameter {
 	private boolean hasReferenceValue = false;
 	private List<String> annotations = new ArrayList<>();
 	private NodeContainer owner;
+	private final String uid;
 
 
 	public ParameterImpl(String name, int position, String metric, Object... values) {
 		this.name = name;
 		this.position = position;
 		this.metric = metric;
+		uid = WordGenerator.generate();
 		addValues(values);
 	}
 
@@ -162,6 +165,11 @@ public class ParameterImpl extends Element implements Parameter {
 	public void substituteValues(List<?> newValues) {
 		this.values.clear();
 		this.values.addAll(newValues);
+	}
+
+	@Override
+	public String getUID() {
+		return uid;
 	}
 
 }

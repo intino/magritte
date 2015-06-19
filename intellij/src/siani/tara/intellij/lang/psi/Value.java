@@ -5,10 +5,12 @@ import com.intellij.pom.Navigatable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public interface Value extends Navigatable, Iconable, TaraPsiElement {
 
 	@NotNull
-	Object[] getValues();
+	List<Object> getValues();
 
 
 	@Nullable

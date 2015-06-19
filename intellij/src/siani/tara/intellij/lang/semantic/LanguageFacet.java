@@ -2,13 +2,13 @@ package siani.tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.FacetApply;
-import siani.tara.intellij.lang.psi.Parameters;
 import siani.tara.semantic.model.Facet;
 import siani.tara.semantic.model.Node;
 import siani.tara.semantic.model.Parameter;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getInnerNodesInBody;
 
@@ -26,24 +26,18 @@ public class LanguageFacet extends LanguageElement implements Facet {
 	}
 
 	@Override
-	public Parameter[] parameters() {
-		return wrapParameters(facetApply.getParameters());
+	public List<Parameter> parameters() {
+		return wrapParameters(facetApply.getParameterList());
 	}
 
 	@Override
-	public Node[] includes() {
-		List<siani.tara.semantic.model.Node> nodes = new ArrayList<>();
-		for (siani.tara.intellij.lang.psi.Node inner : getInnerNodesInBody(facetApply.getBody()))
-			nodes.add(new LanguageNode(inner));
-		return nodes.toArray(new siani.tara.semantic.model.Node[nodes.size()]);
+	public List<Node> includes() {
+		return Collections.unmodifiableList(getInnerNodesInBody(facetApply.getBody()).stream().map(LanguageNode::new).collect(Collectors.toList()));
 	}
 
-	private siani.tara.semantic.model.Parameter[] wrapParameters(Parameters toWrap) {
-		if (toWrap == null) return new siani.tara.semantic.model.Parameter[0];
-		List<Parameter> parameters = new ArrayList<>();
-		for (siani.tara.intellij.lang.psi.Parameter parameter : toWrap.getParameters())
-			parameters.add(new LanguageParameter(parameter));
-		return parameters.toArray(new siani.tara.semantic.model.Parameter[parameters.size()]);
+	private List<siani.tara.semantic.model.Parameter> wrapParameters(List<siani.tara.intellij.lang.psi.Parameter> toWrap) {
+		if (toWrap == null) return Collections.EMPTY_LIST;
+		return Collections.unmodifiableList(toWrap.stream().map(LanguageParameter::new).collect(Collectors.toList()));
 	}
 
 	@Override

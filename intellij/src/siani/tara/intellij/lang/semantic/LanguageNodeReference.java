@@ -10,9 +10,10 @@ import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.semantic.model.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class LanguageNodeReference extends LanguageNode implements Node {
 
@@ -50,12 +51,9 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 	}
 
 	@Override
-	public String[] secondaryTypes() {
-		if (badReference()) return new String[0];
-		List<String> types = new ArrayList<>();
-		for (FacetApply facetApply : destiny.getFacetApplies())
-			types.add(facetApply.getType());
-		return types.toArray(new String[types.size()]);
+	public List<String> secondaryTypes() {
+		if (badReference()) return Collections.emptyList();
+		return Collections.unmodifiableList(destiny.getFacetApplies().stream().map(FacetApply::getType).collect(Collectors.toList()));
 	}
 
 	private boolean badReference() {
@@ -83,18 +81,15 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 	}
 
 	@Override
-	public String[] annotations() {
-		List<String> names = new ArrayList<>();
-		for (Annotation annotation : nodeReference.getAnnotations()) names.add(annotation.getText());
-		return names.toArray(new String[names.size()]);
+	public List<String> annotations() {
+		return nodeReference.getAnnotations().stream().map(Annotation::getText).collect(Collectors.toList());
 	}
 
 	@Override
-	public String[] flags() {
-		Set<String> names = new HashSet<>();
-		for (Flag flags : nodeReference.getFlags()) names.add(flags.getText());
+	public List<String> flags() {
+		Set<String> names = nodeReference.getFlags().stream().map(Flag::getText).collect(Collectors.toSet());
 		names.addAll(nodeReference.getInheritedFlags());
-		return names.toArray(new String[names.size()]);
+		return Collections.unmodifiableList(new ArrayList<>(names));
 	}
 
 	@Override
@@ -108,28 +103,28 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 	}
 
 	@Override
-	public Facet[] facets() {
-		return new Facet[0];
+	public List<Facet> facets() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public FacetTarget[] facetTargets() {
-		return new FacetTarget[0];
+	public List<FacetTarget> facetTargets() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public Parameter[] parameters() {
-		return new Parameter[0];
+	public List<Parameter> parameters() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public Variable[] variables() {
-		return new Variable[0];
+	public List<Variable> variables() {
+		return Collections.emptyList();
 	}
 
 	@Override
-	public Node[] includes() {
-		return new Node[0];
+	public List<Node> includes() {
+		return Collections.emptyList();
 	}
 
 	@Override

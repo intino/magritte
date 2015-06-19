@@ -33,7 +33,7 @@ def type(model)
 			}
 		}
 
-		$intention...[$NL$NL]
+		$native...[$NL$NL]
 	}
 end
 
@@ -49,8 +49,8 @@ def type(nodecontainer) trigger(node)
 	[def("$name$plate")][def($key)][.name()][$nodeType...[]][$facet...[]][$annotation...[]][.$parent][$include...[]][$variable...[]];
 end
 
-def type(intention) trigger(intention)
-	public static class $path [extends $container] implements $parentIntention+lowercase.natives.$interface+FirstUppercase {
+def type(native) trigger(native)
+	public static class $className [extends $container] implements [$parentIntention+lowercase.natives.]$interface {
 		@Override
 		$signature {
 			$body

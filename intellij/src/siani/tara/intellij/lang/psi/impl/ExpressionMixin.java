@@ -6,10 +6,8 @@ import com.intellij.psi.LiteralTextEscaper;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.lang.psi.Expression;
-import siani.tara.intellij.lang.psi.TaraElementFactory;
-import siani.tara.intellij.lang.psi.TaraStringLiteralScaper;
-import siani.tara.intellij.lang.psi.TaraTypes;
+import siani.tara.intellij.lang.psi.*;
+import siani.tara.semantic.model.Primitives;
 
 public class ExpressionMixin extends ASTWrapperPsiElement {
 
@@ -46,7 +44,26 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isValidHost() {
-		return true;
+		return isValidType();
+	}
+
+	private boolean isValidType() {
+		String type = getType(getContainerOfExpression());
+		return type != null && !type.equals(Primitives.REFERENCE) && !type.equals(Primitives.MEASURE) && !type.equals(Primitives.FILE) && !type.equals(Primitives.DATE);
+	}
+
+	private String getType(PsiElement element) {
+		if (element instanceof Variable) return ((Variable) element).getType();
+		if (element instanceof VarInit) return ((VarInit) element).getInferredType();
+		if (element instanceof Parameter) return ((Parameter) element).getInferredType();
+		return null;
+	}
+
+	private PsiElement getContainerOfExpression() {
+		PsiElement element = this.getParent();
+		while (element != null && !(element instanceof Variable) && !(element instanceof VarInit) && !(element instanceof Parameter))
+			element = element.getParent();
+		return element;
 	}
 
 

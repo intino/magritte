@@ -17,6 +17,7 @@ import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.facet.TaraFacetConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.semantic.Allow;
+import siani.tara.semantic.model.Primitives;
 
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getParentByType;
 import static siani.tara.semantic.model.Variable.NATIVE_SEPARATOR;
@@ -77,10 +78,35 @@ public class TaraLanguageInjector implements LanguageInjector {
 		frame.addFrame("languageGenerated", language);
 		frame.addFrame("language", languageName.toLowerCase());
 		Allow.Parameter allow = TaraUtil.getCorrespondingAllow(node, element);
-		String contract = (allow != null) ? intention(allow.contract()) : getVariableIntention(element);
-		frame.addFrame("intention", contract);
+		final String type = getType(allow, element);
+		return Primitives.NATIVE.equals(type) ?
+			fillAsNativeFrame(expression, frame, element, node, language, allow) :
+			fillAsExpression(expression, frame, element, node, language, allow, type);
+	}
+
+	@NotNull
+	private Frame fillAsExpression(Expression expression, Frame frame, PsiElement element, Node node, String language, Allow.Parameter allow, String type) {
 		final String body = expression.getValue().replace("\\n", "\n").replace("\\\"", "\"");
-		if (element instanceof Parameter && allow == null) return new Frame();
+		frame.addFrame("interface", "magritte.Expression<" + mask(type) + ">");
+		frame.addFrame("variable", getName(element, allow)).
+			addFrame("qn", node.getQualifiedName().replace("@anonymous", "").replace(".", "_")).
+			addFrame("parent", findParent(element, node, getCorrespondingLanguageName(allow, language))).
+			addFrame("signature", "public " + mask(type) + " value()").
+			addFrame("return", !body.contains("\n") && !body.startsWith("return ") ? "return " : "");
+		return frame;
+	}
+
+	private String mask(String type) {
+		return capitalize(type.equals(Primitives.NATURAL) ? Primitives.INTEGER : type);
+	}
+
+	private String capitalize(String type) {
+		return type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
+	}
+
+	private Frame fillAsNativeFrame(Expression expression, Frame frame, PsiElement element, Node node, String language, Allow.Parameter allow) {
+		frame.addFrame("interface", (allow != null ? intention(allow.contract()) : getVariableInterface(element)));
+		final String body = expression.getValue().replace("\\n", "\n").replace("\\\"", "\"");
 		final String signature = getSignature(allow != null ? allow.contract() : findNativeInterface(((Variable) element).getContract()));
 		frame.addFrame("variable", getName(element, allow)).
 			addFrame("qn", node.getQualifiedName().replace("@anonymous", "").replace(".", "_")).
@@ -88,6 +114,13 @@ public class TaraLanguageInjector implements LanguageInjector {
 			addFrame("signature", signature).
 			addFrame("return", !signature.contains(" void ") && !body.contains("\n") && !body.startsWith("return ") ? "return " : "");
 		return frame;
+	}
+
+	private String getType(Allow.Parameter allow, PsiElement element) {
+		if (allow != null) return allow.type();
+		if (element instanceof Variable) return ((Variable) element).getType();
+		if (element instanceof VarInit) ((VarInit) element).getInferredType();
+		return null;
 	}
 
 	private String getCorrespondingLanguageName(Allow.Parameter allow, String language) {
@@ -199,7 +232,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		return ((Variable) element).getName();
 	}
 
-	public String getVariableIntention(PsiElement element) {
+	public String getVariableInterface(PsiElement element) {
 		return element instanceof Variable ? ((Variable) element).getContract().getText() : (element instanceof VarInit ? ((VarInit) element).getContract() : "");
 	}
 }

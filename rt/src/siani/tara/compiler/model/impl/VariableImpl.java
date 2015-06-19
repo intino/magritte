@@ -4,6 +4,7 @@ import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.Variable;
 import siani.tara.semantic.model.Tag;
+import siani.tara.util.WordGenerator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,14 +28,13 @@ public class VariableImpl extends Element implements Variable {
 	private boolean inherited;
 	private boolean overriden;
 	private int tupleSize;
-
-	public VariableImpl() {
-	}
+	private final String uid;
 
 	public VariableImpl(NodeContainer container, String type, String name) {
 		this.container = container;
 		this.type = type;
 		this.name = name;
+		uid = WordGenerator.generate();
 	}
 
 	@Override
@@ -154,6 +154,11 @@ public class VariableImpl extends Element implements Variable {
 	@Override
 	public void setDefaultExtension(String defaultExtension) {
 		this.defaultExtension = defaultExtension;
+	}
+
+	@Override
+	public String getUID() {
+		return uid;
 	}
 
 	@Override

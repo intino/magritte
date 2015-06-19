@@ -45,9 +45,6 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	private static final String CLASS_EXTENSION = ".class";
 	@NonNls
 	private static final String TEMP_PREFIX = "temp";
-	@NonNls
-	private static final String METAMODEL_DIR = "metamodel";
-	private static final String DSL_DIR = TaraLanguage.DSL;
 
 	public static void getDependencies(Module module, final Set<Module> modules) {
 		productionRuntimeDependencies(module).forEachModule(dep -> {
@@ -105,7 +102,6 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			try {
 				zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)));
 				addStructure(languageName, zos);
-				addStructure(languageName + "/" + METAMODEL_DIR, zos);
 				final String entryName = languageName + JAR_EXTENSION;
 				ZipUtil.addFileToZip(zos, jarFile, getZipPath(languageName, entryName),
 					new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
@@ -131,9 +127,9 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	private void addLanguage(Project project, ZipOutputStream zos, String languageName) throws IOException {
 		File file = TaraLanguage.getLanguageDirectory(languageName, project);//TODO
 		if (file == null || !file.exists()) throw new IOException("Language file not found");
-		final String entryPath = "/" + languageName + "/" + DSL_DIR + "/" + languagePath(languageName);
+		final String entryPath = "/" + languageName + "/" + languagePath(languageName);
 		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
-		ZipUtil.addFileToZip(zos, new File(file.getPath(), DSL_DIR + File.separator + languagePath(languageName)),
+		ZipUtil.addFileToZip(zos, new File(file.getPath(), languagePath(languageName)),
 			entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 	}
 
@@ -143,7 +139,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private String getZipPath(final String modelName, final String entryName) {
-		return "/" + modelName + "/" + METAMODEL_DIR + "/" + entryName;
+		return "/" + modelName + "/" + entryName;
 	}
 
 	private FileFilter createFilter(final ProgressIndicator progressIndicator, @Nullable final FileTypeManager fileTypeManager) {

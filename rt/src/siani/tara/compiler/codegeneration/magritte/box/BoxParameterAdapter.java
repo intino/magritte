@@ -2,7 +2,6 @@ package siani.tara.compiler.codegeneration.magritte.box;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
-import siani.tara.compiler.codegeneration.magritte.NameFormatter;
 import siani.tara.compiler.model.EmptyNode;
 import siani.tara.compiler.model.Facet;
 import siani.tara.compiler.model.Node;
@@ -61,7 +60,8 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 		if (first instanceof Node)
 			if (first instanceof EmptyNode) values = Collections.emptyList();
 			else values = collectQualifiedNames(parameterValues);
-		else if (Primitives.NATIVE.equals(parameter.getInferredType())) values = createNativeReference(parameter);
+		else if (first instanceof Primitives.Expression)
+			values = Collections.singletonList(parameter.getName() + "_" + parameter.getUID());
 		else if ("word".equals(parameter.getInferredType())) values = createWordReference(parameter);
 		else values = format(parameterValues);
 		return values;
@@ -70,14 +70,6 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 	private List<Object> createWordReference(Parameter parameter) {
 		final List<String> allowedValues = parameter.getAllowedValues();
 		return parameter.getValues().stream().map(v -> allowedValues.indexOf(v.toString())).collect(toList());
-	}
-
-	private List<Object> createNativeReference(Parameter parameter) {
-		return Collections.singletonList(cleanQn(NameFormatter.createNativeClassReference(parameter.getOwner(), parameter.getName())));
-	}
-
-	public static String cleanQn(String qualifiedName) {
-		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
 	}
 
 	private List<Object> format(List<Object> parameterValues) {
@@ -101,6 +93,7 @@ public class BoxParameterAdapter implements Adapter<Parameter> {
 		List<String> list = new ArrayList<>();
 		list.add(parameter.getClass().getSimpleName());
 		list.add(VARIABLE);
+		if (parameter.getValues().get(0) instanceof Primitives.Expression) list.add(Primitives.NATIVE);
 		list.add(parameter.getInferredType());
 		list.addAll(parameter.getAnnotations());
 		return list;

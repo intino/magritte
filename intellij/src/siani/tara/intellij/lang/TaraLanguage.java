@@ -51,9 +51,7 @@ public class TaraLanguage extends com.intellij.lang.Language {
 		if (isLoaded(dsl, project)) return languages.get(dsl);
 		final File languageDirectory = getLanguageDirectory(dsl, project);
 		if (languageDirectory == null) return null;
-		final File dslDirectory = new File(languageDirectory, DSL);
-		if (!dslDirectory.exists()) return null;
-		Language language = LanguageLoader.load(dsl, dslDirectory.getPath());
+		Language language = LanguageLoader.load(dsl, languageDirectory.getPath());
 		if (language == null) return null;
 		languages.put(dsl, language);
 		return language;

@@ -113,7 +113,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<NodeReference> getInnerNodeReferences() {
-		return unmodifiableList(TaraUtil.getLinksOf((Node) this));
+		return unmodifiableList(TaraPsiImplUtil.getNodeReferencesOf((Node) this));
 	}
 
 	@Nullable
@@ -138,7 +138,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public List<Parameter> getParameters() {
+	public List<Parameter> getParameterList() {
 		if (getSignature().getParameters() == null) return EMPTY_LIST;
 		return unmodifiableList(getSignature().getParameters().getParameters());
 	}
@@ -157,15 +157,12 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return node.getIdentifierNode() != null ? node.getIdentifierNode().getText() : (node.getType() + "@anonymous");
 	}
 
-	public String getMetaQualifiedName() {
-		return TaraUtil.getMetaQualifiedName((Node) this);
-	}
 
 	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
 		return (TaraModelImpl) super.getContainingFile();
 	}
 
-	public void addAddress(TaraAddress address) {
+	public void addInstanceName(TaraAddress address) {
 		final TreeElement copy = ChangeUtil.copyToElement(address);
 		PsiElement psi = copy.getPsi();
 		TaraSignature taraSignature = PsiTreeUtil.getChildrenOfType(this, TaraSignature.class)[0];
@@ -228,7 +225,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return inheritedFlags.contains(FEATURE_INSTANCE.name());
 	}
 
-	public boolean isAnnotatedAsRoot() {
+	public boolean isAnnotatedAsMain() {
 		for (PsiElement annotation : getAnnotations())
 			if (MAIN.name().equalsIgnoreCase(annotation.getText()))
 				return true;
@@ -264,7 +261,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public Node getContainer() {
-		if (isAnnotatedAsRoot()) return null;//TODO
+		if (isAnnotatedAsMain()) return null;//TODO
 		if (isSub()) {
 			Node rootOfSub = containerOfSub((Node) this);
 			return rootOfSub == null ? null : rootOfSub;
@@ -299,7 +296,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public List<Flag> getFlags() {
-		Flags flags = this.getFlagsNode();
+		Flags flags = this.getFlagsElement();
 		return flags == null ? EMPTY_LIST : flags.getFlagList();
 	}
 
@@ -309,7 +306,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	@Nullable
-	public Flags getFlagsNode() {
+	public Flags getFlagsElement() {
 		return this.getSignature().getFlags();
 	}
 
@@ -317,8 +314,8 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		Collections.addAll(inheritedFlags, flags);
 	}
 
-	public Collection<String> getAssumedFlags() {
-		return unmodifiableSet(inheritedFlags);
+	public List<String> getInheritedFlags() {
+		return unmodifiableList(new ArrayList<>(inheritedFlags));
 	}
 
 	public boolean contains(String type) {
