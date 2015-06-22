@@ -35,6 +35,6 @@ public class CreateNodeQuickFix implements LocalQuickFix {
 		file.add(TaraElementFactory.getInstance(project).createNewLine());
 		file.add(TaraElementFactory.getInstance(project).createNewLine());
 		file.add(TaraElementFactory.getInstance(project).createNewLine());
-		file.addNode(TaraElementFactory.getInstance(project).createConcept(name, type));
+		file.addNode(TaraElementFactory.getInstance(project).createNode(name, type));
 	}
 }

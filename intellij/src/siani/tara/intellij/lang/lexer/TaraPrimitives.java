@@ -100,8 +100,10 @@ public class TaraPrimitives {
 		list.add(DOUBLE);
 		list.add(DATE);
 		list.add(RESOURCE);
+		list.add(WORD);
 		list.add(MEASURE);
 		list.add(RATIO);
+		list.add(NATIVE);
 		return list.toArray(new String[list.size()]);
 	}
 

@@ -49,7 +49,7 @@ import static siani.tara.intellij.project.facet.TaraFacet.getTaraFacetByModule;
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private static final String PROTEO = "Proteo";
-	private static final String PROTEO_LIB = "Proteo-1.0.jar";
+	private static final String PROTEO_LIB = "Proteo.jar";
 	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
 	private static final String TARA_PREFIX = "Tara -> ";
 	private String dsl;
@@ -222,7 +222,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		} catch (IOException ignored) {
 		}
 	}
-
 
 	private void createModelSourceRoot(ContentEntry contentEntry) {
 		try {

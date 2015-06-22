@@ -118,6 +118,8 @@
     <nameSuggestionProvider implementation="siani.tara.intellij.refactoring.NameSuggestionProvider"/>
     <lang.elementManipulator forClass="siani.tara.intellij.lang.psi.TaraIdentifier"
                              implementationClass="siani.tara.intellij.lang.psi.impl.IdentifierManipulator"/>
+    <lang.elementManipulator forClass="siani.tara.intellij.lang.psi.TaraHeaderReference"
+                             implementationClass="siani.tara.intellij.lang.psi.impl.UseReferenceManipulator"/>
     <codeInsight.parameterInfo language="Tara"
                                implementationClass="siani.tara.intellij.codeinsight.parameterinfo.TaraParameterInfoHandler"/>
     <lang.refactoringSupport language="Tara"

@@ -35,7 +35,7 @@ public interface Allow {
 	}
 
 	interface OneOf extends Include {
-
+		List<Allow> allows();
 	}
 
 	interface Single extends Include {

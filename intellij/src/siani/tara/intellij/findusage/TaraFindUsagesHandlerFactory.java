@@ -13,7 +13,7 @@ public class TaraFindUsagesHandlerFactory extends FindUsagesHandlerFactory {
 
 	@Override
 	public boolean canFindUsages(@NotNull PsiElement element) {
-		return element instanceof Node || element instanceof Identifier;
+		return element instanceof Node || element instanceof Identifier || element instanceof TaraModel;
 	}
 
 	@Nullable
@@ -21,11 +21,6 @@ public class TaraFindUsagesHandlerFactory extends FindUsagesHandlerFactory {
 	public FindUsagesHandler createFindUsagesHandler(@NotNull PsiElement element, boolean forHighlightUsages) {
 		if (element instanceof Node) return new TaraNodeFindUsagesHandler((Node) element);
 		if (element instanceof TaraModel) return new TaraFileFindUsagesHandler((TaraModel) element);
-//		else {
-//			Node contextOf = TaraPsiImplUtil.getContainerNodeOf(element);
-//			if (contextOf == null) return null;
-//			return new TaraNodeFindUsagesHandler(contextOf);
-//		} TODO
 		return null;
 	}
 }

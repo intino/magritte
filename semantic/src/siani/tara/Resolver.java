@@ -33,8 +33,16 @@ public class Resolver {
 
 	private boolean contextAllowsNode(Collection<Allow> context, Node node) {
 		for (Allow allow : context)
-			if (allow instanceof Allow.Include && ((Allow.Include) allow).type().endsWith("." + node.type()))
+			if (allow instanceof Allow.Include && ((Allow.Include) allow).type().endsWith("." + node.type()) || isOneOf(allow, node.type()))
 				return true;
+		return false;
+	}
+
+	private boolean isOneOf(Allow allow, String type) {
+		if (!(allow instanceof Allow.OneOf)) return false;
+		Allow.OneOf oneOf = (Allow.OneOf) allow;
+		for (Allow one : oneOf.allows())
+			if (((Allow.Include) one).type().endsWith("." + type)) return true;
 		return false;
 	}
 
@@ -48,10 +56,26 @@ public class Resolver {
 
 	private boolean checkAllowInclude(Node node, Allow allow) {
 		if (!(allow instanceof Allow.Include)) return false;
-		String absoluteType = ((Allow.Include) allow).type();
+		if (allow instanceof Allow.OneOf) return checkAllowOneOf(node, allow);
+		return checkAsInclude(node, (Allow.Include) allow);
+	}
+
+	private boolean checkAsInclude(Node node, Allow.Include allow) {
+		String absoluteType = allow.type();
 		if (node.type() != null && getType(node.type()).equals(getType(absoluteType))) {
 			node.type(absoluteType);
 			return true;
+		}
+		return false;
+	}
+
+	private boolean checkAllowOneOf(Node node, Allow allow) {
+		for (Allow one : ((Allow.OneOf) allow).allows()) {
+			String absoluteType = ((Allow.Include) one).type();
+			if (node.type() != null && getType(node.type()).equals(getType(absoluteType))) {
+				node.type(absoluteType);
+				return true;
+			}
 		}
 		return false;
 	}

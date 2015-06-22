@@ -6,7 +6,7 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.Language;
-import siani.tara.dsls.Proteo;
+import siani.tara.dsl.Proteo;
 import siani.tara.intellij.lang.semantic.LanguageLoader;
 import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.facet.TaraFacetConfiguration;
@@ -20,7 +20,7 @@ public class TaraLanguage extends com.intellij.lang.Language {
 
 	public static final TaraLanguage INSTANCE = new TaraLanguage();
 	public static final String DSL = "dsl";
-	public static final String LANGUAGES_PACKAGE = "siani.tara.dsls";
+	public static final String LANGUAGES_PACKAGE = "siani.tara.dsl";
 	public static final String PROTEO = "Proteo";
 	private static final Map<String, Language> languages = new HashMap<>();
 

@@ -136,6 +136,11 @@ public class RuleFactory {
 	public static Allow.OneOf oneOf(final Allow... allows) {
 		return new Allow.OneOf() {
 			@Override
+			public List<Allow> allows() {
+				return Collections.unmodifiableList(Arrays.asList(allows));
+			}
+
+			@Override
 			public void check(Element element, List<? extends Rejectable> rejectables) {
 				for (Allow allow : allows) {
 					try {

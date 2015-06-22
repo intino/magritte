@@ -113,13 +113,13 @@ public class GlobalConstraints {
 				}
 			};
 			for (Variable variable : node.variables()) {
-				if (variable.isOverriden() || names.add(variable.name()) || names.add(plural(variable.name())))
+				if (variable.isOverriden() || names.add(variable.name()))
 					continue;
 				throw new SemanticException(new SemanticError("reject.duplicate.variable", element, asList(variable.name(), node.name())));
 			}
 
 			for (Node include : node.includes()) {
-				if (names.add(include.name()) || names.add(plural(include.name()))) continue;
+				if (names.add(include.name())) continue;
 				throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.name())));
 			}
 		};

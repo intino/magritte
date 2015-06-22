@@ -2,7 +2,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import siani.tara.Checker;
-import siani.tara.dsls.Proteo;
+import siani.tara.dsl.Proteo;
 import siani.tara.semantic.Definition;
 import siani.tara.semantic.SemanticException;
 import siani.tara.semantic.model.Node;

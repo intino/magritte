@@ -19,14 +19,14 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 		this.project = project;
 	}
 
-	public Node createConcept(String name, String type) {
+	public Node createNode(String name, String type) {
 		final TaraModelImpl file = createDummyFile(
 			type + " " + name + "\n"
 		);
 		return file.getIncludes().iterator().next();
 	}
 
-	public Node createConcept(String name) {
+	public Node createNode(String name) {
 		final TaraModelImpl file = createDummyFile(
 			"Concept" + " " + name + "\n"
 		);
@@ -39,7 +39,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 	}
 
 	public Identifier createNameIdentifier(String name) {
-		return PsiTreeUtil.getChildOfType(createConcept(name).getSignature(), Identifier.class);
+		return PsiTreeUtil.getChildOfType(createNode(name).getSignature(), Identifier.class);
 	}
 
 	public Variable createVariable(String name, String type) {
@@ -90,7 +90,8 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 
 	public TaraImports createImport(String reference) {
 		final TaraModelImpl file = createDummyFile(
-			"use " + reference + "\n" +
+			"dsl Proteo\n\n" +
+				"use " + reference + "\n" +
 				"Concept Dummy\n"
 		);
 		return PsiTreeUtil.getChildrenOfType(file, TaraImports.class)[0];

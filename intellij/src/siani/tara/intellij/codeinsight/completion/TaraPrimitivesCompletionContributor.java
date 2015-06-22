@@ -33,7 +33,6 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 				                           @NotNull CompletionResultSet resultSet) {
 					for (String primitive : TaraPrimitives.getPrimitives())
 						resultSet.addElement(LookupElementBuilder.create(primitive + " ").withTypeText("Primitive"));
-					resultSet.addElement(LookupElementBuilder.create("word" + " "));
 				}
 			}
 		);

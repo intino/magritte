@@ -21,8 +21,8 @@ public class TaraFilters {
 		.and(new FilterPattern(new AfterNewLinePrimalFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterNewLineInBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLineInBodyFilter()));
-	static final PsiElementPattern.Capture<PsiElement> inFacetBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new AfterNewLineInBodyFilter())).and(new FilterPattern(new InFacetFilter()));
+	static final PsiElementPattern.Capture<PsiElement> afterAs = psiElement().withLanguage(TaraLanguage.INSTANCE)
+		.and(new FilterPattern(new AfterAsInBodyFilter())).and(new FilterPattern(new InFacetFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterEquals = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterEqualsFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterNodeIdentifier = psiElement()
@@ -51,7 +51,7 @@ public class TaraFilters {
 	}
 
 	private static boolean previousNewLine(PsiElement context) {
-		return context.getPrevSibling() != null && (is(context, TaraTypes.NEWLINE) || is(context, TaraTypes.IMPORTS));
+		return context.getPrevSibling() != null && (is(context, TaraTypes.NEWLINE) || is(context, TaraTypes.IMPORTS) || is(context, TaraTypes.DSL_DECLARATION));
 	}
 
 	private static boolean previousNewLineIndent(PsiElement context) {
@@ -94,7 +94,35 @@ public class TaraFilters {
 		}
 
 		private boolean afterNewLine(PsiElement context) {
-			return context.getPrevSibling() == null || previousNewLineIndent(context) || previousNewLine(context);
+			return context.getPrevSibling() == null && (previousNewLineIndent(context) || previousNewLine(context));
+		}
+
+		private boolean inBody(PsiElement context) {
+			return context.getParent() instanceof MetaIdentifier && TaraFilters.inBody(context) && !inAnnotations(context);
+		}
+
+		private boolean isNotAcceptable(Object element, PsiElement context) {
+			return !(element instanceof PsiElement) || context == null || context.getParent() == null;
+		}
+
+		@Override
+		public boolean isClassAcceptable(Class hintClass) {
+			return true;
+		}
+	}
+
+	private static class AfterAsInBodyFilter implements ElementFilter {
+		@Override
+		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
+			return !isNotAcceptable(element, context) && inBody(context) && afterAs(context);
+		}
+
+		private boolean afterAs(PsiElement context) {
+			return context.getPrevSibling() == null || previousIsAs(context);
+		}
+
+		private boolean previousIsAs(PsiElement context) {
+			return context.getPrevSibling() != null && is(context, TaraTypes.AS);
 		}
 
 		private boolean inBody(PsiElement context) {
@@ -151,13 +179,7 @@ public class TaraFilters {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			if (!(element instanceof PsiElement) || context == null || context.getParent() == null) return false;
-			if (facetInBody(context)) {
-				Node node = getContainerNodeOf(getContainerNodeOf(context));
-				if (node == null) return false;
-//				Node node = TaraUtil.findNode(concept, TaraLanguage.getLanguage(concept.getFile())); TODO
-//				if (isNative(node)) return true;
-			}
-			return false;
+			return !(facetInBody(context) && getContainerNodeOf(context) == null);
 		}
 
 		private boolean facetInBody(PsiElement context) {

@@ -13,9 +13,9 @@ public abstract class TaraElementFactory {
 		return ServiceManager.getService(project, TaraElementFactory.class);
 	}
 
-	public abstract Node createConcept(String name);
+	public abstract Node createNode(String name);
 
-	public abstract Node createConcept(String name, String type);
+	public abstract Node createNode(String name, String type);
 
 	public abstract TaraModelImpl createDummyFile(String text);
 

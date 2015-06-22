@@ -4,9 +4,8 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class VariantsManager {
 
@@ -21,11 +20,24 @@ public class VariantsManager {
 	}
 
 	public void resolveVariants() {
-		addContextVariants();
-		if (!hasContext()) {
+		if (hasContext()) addContextVariants();
+		else {
 			addInModelVariants();
 			addImportVariants();
 		}
+		if (isExtendsReference((IdentifierReference) myElement.getParent()))
+			variants.removeAll(collectUnacceptableNodes());
+
+	}
+
+	private List<Node> collectUnacceptableNodes() {
+		List<Node> unacceptables = new ArrayList<>();
+		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(myElement);
+		if (containerNodeOf == null) return Collections.emptyList();
+		unacceptables.addAll(variants.stream().
+			filter(variant -> variant.getType() != null && !variant.getType().equals(containerNodeOf.getType())).
+			collect(Collectors.toList()));
+		return unacceptables;
 
 	}
 
@@ -87,10 +99,6 @@ public class VariantsManager {
 	public final List<Identifier> solveIdentifierContext() {
 		List<? extends Identifier> list = ((IdentifierReference) myElement.getParent()).getIdentifierList();
 		return (List<Identifier>) list.subList(0, list.size() - 1);
-	}
-
-	private boolean areNamesake(Identifier identifier, Node node) {
-		return identifier.getText().equals(node.getName());
 	}
 
 	private boolean isExtendsReference(IdentifierReference reference) {

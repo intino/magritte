@@ -1,4 +1,4 @@
-package siani.tara.dsls;
+package siani.tara.dsl;
 
 import siani.tara.semantic.constraints.RuleFactory;
 import siani.tara.semantic.model.Tara;

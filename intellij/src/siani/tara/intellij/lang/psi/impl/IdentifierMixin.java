@@ -47,7 +47,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		if ((element = asVarInitReference()) != null) return createResolverForVarInit((VarInit) element);
 		if (isWordDefaultValue()) return null;
 		else if (isFileReference()) return creteFileResolver();
-		else return createConceptResolver();
+		else return createNodeResolver();
 	}
 
 	private boolean isWordDefaultValue() {
@@ -62,7 +62,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return new TaraFileReferenceSolver((HeaderReference) this.getParent(), getRange());
 	}
 
-	private PsiReference createConceptResolver() {
+	private PsiReference createNodeResolver() {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
 		return new TaraNodeReferenceSolver(this, getRange(), container);
 	}

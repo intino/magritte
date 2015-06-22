@@ -140,7 +140,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 
 	@Override
 	public Node addNode(String identifier) {
-		return (Node) addNode(TaraElementFactory.getInstance(getProject()).createConcept(identifier));
+		return (Node) addNode(TaraElementFactory.getInstance(getProject()).createNode(identifier));
 	}
 
 	@Override

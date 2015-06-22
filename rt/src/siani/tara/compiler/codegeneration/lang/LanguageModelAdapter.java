@@ -190,7 +190,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		if (node instanceof NodeImpl) {
 			int index = new LanguageParameterAdapter(language).addTerminalParameters(node, requires);
 			addParameterRequires(node.getVariables(), requires, index);
-			addRequiredVariableRedefines(requires, node);
+			if (!node.isTerminal()) addRequiredVariableRedefines(requires, node);
 		}
 		if (node.isNamed()) requires.addFrame(REQUIRE, NAME);
 		if (plateRequired && !(node instanceof Model)) requires.addFrame(REQUIRE, "plate");
@@ -288,9 +288,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			Collection<Node> candidates = collectCandidates(include);
 			if (include.isAbstract() && candidates.size() > 1)
 				requires.addFrame(REQUIRE, createOneOf(candidates, include));
-			else for (Node candidate : candidates)
+			else for (Node candidate : candidates) {
+				if (include.isSub()) continue;
 				if (include.isSingle()) singleNodes.add(createRequiredSingle(candidate, include.getAnnotations()));
 				else multipleNodes.add(createRequiredMultiple(candidate, include.getAnnotations()));
+			}
 		}
 	}
 

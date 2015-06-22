@@ -21,7 +21,7 @@ public class Checker {
 
 	public void check(Node node) throws SemanticException {
 		resolver.resolve(node);
-		checkConstraintsDeep(node);
+		checkConstraints(node);
 	}
 
 	private void checkConstraints(Node node) throws SemanticException {

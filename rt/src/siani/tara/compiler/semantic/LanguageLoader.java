@@ -3,7 +3,7 @@ package siani.tara.compiler.semantic;
 import siani.tara.Language;
 import siani.tara.TaraCompilerRunner;
 import siani.tara.compiler.core.errorcollection.TaraException;
-import siani.tara.dsls.Proteo;
+import siani.tara.dsl.Proteo;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -22,7 +22,7 @@ public class LanguageLoader {
 		File file = getLanguagePath(name, languagesDirectory);
 		try {
 			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL()}, TaraCompilerRunner.class.getClassLoader());
-			Class cls = cl.loadClass("siani.tara.dsls." + name);
+			Class cls = cl.loadClass("siani.tara.dsl." + name);
 			return (Language) cls.newInstance();
 		} catch (MalformedURLException | ClassNotFoundException e1) {
 			LOG.info(e1.getMessage());
