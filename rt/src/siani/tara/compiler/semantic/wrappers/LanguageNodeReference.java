@@ -39,6 +39,11 @@ public class LanguageNodeReference extends LanguageNode implements siani.tara.se
 	}
 
 	@Override
+	public siani.tara.semantic.model.Node destinyOfReference() {
+		return new LanguageNode(reference.getDestiny());
+	}
+
+	@Override
 	public String type() {
 		return reference.getType();
 	}

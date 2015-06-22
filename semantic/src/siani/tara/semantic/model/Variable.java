@@ -16,6 +16,8 @@ public interface Variable extends Element {
 
 	boolean isReference();
 
+	boolean isMultiple();
+
 	boolean isOverriden();
 
 	List<Object> defaultValue();

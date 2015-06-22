@@ -1,6 +1,5 @@
 package siani.tara.semantic.constraints;
 
-import org.siani.itrules.engine.formatters.PluralFormatter;
 import siani.tara.semantic.Assumption;
 import siani.tara.semantic.Constraint;
 import siani.tara.semantic.SemanticError;
@@ -9,7 +8,10 @@ import siani.tara.semantic.constraints.flags.AnnotationChecker;
 import siani.tara.semantic.constraints.flags.FlagCheckerFactory;
 import siani.tara.semantic.model.*;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -18,11 +20,9 @@ import static siani.tara.semantic.constraints.PrimitiveTypeCompatibility.inferTy
 public class GlobalConstraints {
 
 	private final Map<String, Context> rulesCatalog;
-	private final Locale locale;
 
-	public GlobalConstraints(Map<String, Context> rulesCatalog, Locale locale) {
+	public GlobalConstraints(Map<String, Context> rulesCatalog) {
 		this.rulesCatalog = rulesCatalog;
-		this.locale = locale;
 	}
 
 	public Constraint[] all() {
@@ -32,6 +32,7 @@ public class GlobalConstraints {
 			flagsCoherence(),
 			duplicatedNames(),
 			invalidValueTypeInVariable(),
+			cardinalityInVariable(),
 			facetDeclaration(),
 			facetInstantiation()};
 	}
@@ -97,6 +98,23 @@ public class GlobalConstraints {
 		};
 	}
 
+	private Constraint.Require cardinalityInVariable() {
+		return element -> {
+			Node node = (Node) element;
+			for (Variable variable : node.variables()) {
+				if ("word".equals(variable.type())) continue;
+				if (!variable.defaultValue().isEmpty() && !compatibleCardinality(variable))
+					throw new SemanticException(new SemanticError("reject.invalid.variable.type", variable, singletonList(variable.type())));
+			}
+		};
+
+	}
+
+	private boolean compatibleCardinality(Variable variable) {
+		List<Object> values = variable.defaultValue();
+		return values.size() <= 1 || variable.isMultiple();
+	}
+
 	private boolean compatibleTypes(Variable variable) {
 		List<Object> values = variable.defaultValue();
 		String inferredType = inferType(values.get(0));
@@ -119,14 +137,11 @@ public class GlobalConstraints {
 			}
 
 			for (Node include : node.includes()) {
-				if (names.add(include.name())) continue;
+				if (include.isReference() ? names.add(include.destinyOfReference().name()) : names.add(include.name()))
+					continue;
 				throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.name())));
 			}
 		};
-	}
-
-	private String plural(String name) {
-		return String.valueOf(new PluralFormatter(locale).format(name));
 	}
 
 	private Constraint.Require facetDeclaration() {

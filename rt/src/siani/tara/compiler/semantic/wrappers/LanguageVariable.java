@@ -43,6 +43,11 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 	}
 
 	@Override
+	public boolean isMultiple() {
+		return variable.isMultiple();
+	}
+
+	@Override
 	public boolean isOverriden() {
 		return variable.isOverriden();
 	}

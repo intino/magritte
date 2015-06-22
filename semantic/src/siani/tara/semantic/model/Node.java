@@ -9,6 +9,8 @@ public interface Node extends Element {
 
 	boolean isReference();
 
+	Node destinyOfReference();
+
 	void type(String type);
 
 	List<String> secondaryTypes();

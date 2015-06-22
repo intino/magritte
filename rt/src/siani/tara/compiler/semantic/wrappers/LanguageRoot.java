@@ -38,6 +38,11 @@ public class LanguageRoot extends LanguageElement implements Node {
 	}
 
 	@Override
+	public siani.tara.semantic.model.Node destinyOfReference() {
+		return this;
+	}
+
+	@Override
 	public void type(String type) {
 	}
 

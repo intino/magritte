@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Proteo-1.0">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/intellij/lib/Proteo-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/intellij/lib/Proteo.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

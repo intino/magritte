@@ -67,6 +67,11 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
+	public siani.tara.semantic.model.Node destinyOfReference() {
+		return this;
+	}
+
+	@Override
 	public List<String> secondaryTypes() {
 		Set<String> types = node.getFacets().stream().map(Facet::getFacetType).collect(Collectors.toSet());
 		if (parent() != null) types.addAll(parent().types());

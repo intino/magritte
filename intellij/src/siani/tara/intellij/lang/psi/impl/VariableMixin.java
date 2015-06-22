@@ -59,6 +59,11 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return type != null && type.getIdentifierReference() != null;
 	}
 
+	public boolean isMultiple() {
+		final List<PsiElement> multiple = findChildrenByType(TaraTypes.LIST);
+		return multiple != null && !multiple.isEmpty();
+	}
+
 	public boolean isOverriden() {
 		return TaraUtil.getOverriddenVariable((Variable) this) != null;
 	}

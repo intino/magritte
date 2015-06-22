@@ -175,6 +175,11 @@ class ScriptDefinition implements Definition {
 				}
 
 				@Override
+				public siani.tara.semantic.model.Node destinyOfReference() {
+					return this;
+				}
+
+				@Override
 				public void type(String type) {
 					node.type(type);
 				}
@@ -289,6 +294,12 @@ class ScriptDefinition implements Definition {
 			@Override
 			public boolean hasSubs() {
 				return false; //TODO
+			}
+
+
+			@Override
+			public siani.tara.semantic.model.Node destinyOfReference() {
+				return this;
 			}
 
 			@Override

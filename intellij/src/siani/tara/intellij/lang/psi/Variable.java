@@ -24,6 +24,8 @@ public interface Variable extends Navigatable, Iconable, PsiNamedElement {
 
 	boolean isReference();
 
+	boolean isMultiple();
+
 	boolean isOverriden();
 
 	List<Tag> getAllFlags();

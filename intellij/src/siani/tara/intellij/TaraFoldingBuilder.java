@@ -19,13 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TaraFoldingBuilder extends CustomFoldingBuilder {
-	private static boolean isStringOrNativeType(Variable variable) {
-		return variable.getType() != null && (variable.getType().equals(TaraPrimitives.STRING) || variable.getType().equals(TaraPrimitives.NATIVE));
-	}
 
-	private static boolean hasStringValue(Variable variable) {
-		return variable.getValue() != null && !variable.getValue().getStringValueList().isEmpty();
-	}
+	private static final int VALUE_MAX_SIZE = 5;
 
 	@Override
 	protected void buildLanguageFoldRegions(@NotNull List<FoldingDescriptor> descriptors,
@@ -43,23 +38,50 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 					}
 				});
 			if (node.getBody() != null) {
-				descriptors.addAll(searchStringMultiLineValues(node).stream().
-					map(multiLine -> new FoldingDescriptor(multiLine, getRange((TaraStringValue) multiLine)) {
-						public String getPlaceholderText() {
-							return buildMultiLineStringHolderText();
-						}
-					}).
-					collect(Collectors.toList()));
-				descriptors.addAll(searchStringMultiLineValues(node.getFacetTargets()).stream().
-					map(multiLine -> new FoldingDescriptor(multiLine, getRange((TaraStringValue) multiLine)) {
-						public String getPlaceholderText() {
-							return buildMultiLineStringHolderText();
-						}
-					}).
-					collect(Collectors.toList()));
+				processMultiLineValues(descriptors, node);
+				processMultiValuesParameters(descriptors, node);
 			}
+			for (FacetApply facetApply : node.getFacetApplies()) processMultiValuesParameters(descriptors, facetApply);
 		}
+	}
 
+	private void processMultiValuesParameters(@NotNull List<FoldingDescriptor> descriptors, Parametrized node) {
+		descriptors.addAll(searchMultiValuedParameters(node).stream().
+			map(multivalued -> new FoldingDescriptor(multivalued, getRange((Value) multivalued)) {
+				public String getPlaceholderText() {
+					return buildHolderText();
+				}
+			}).collect(Collectors.toList()));
+		descriptors.addAll(searchMultiValuedVarInits(node).stream().
+			map(multivalued -> new FoldingDescriptor(multivalued, getRange((Value) multivalued)) {
+				public String getPlaceholderText() {
+					return buildHolderText();
+				}
+			}).collect(Collectors.toList()));
+	}
+
+	private void processMultiLineValues(@NotNull List<FoldingDescriptor> descriptors, Node node) {
+		descriptors.addAll(searchStringMultiLineValues(node).stream().
+			map(multiLine -> new FoldingDescriptor(multiLine, getRange((TaraStringValue) multiLine)) {
+				public String getPlaceholderText() {
+					return buildHolderText();
+				}
+			}).
+			collect(Collectors.toList()));
+		descriptors.addAll(searchStringMultiLineValues(node.getFacetTargets()).stream().
+			map(multiLine -> new FoldingDescriptor(multiLine, getRange((TaraStringValue) multiLine)) {
+				public String getPlaceholderText() {
+					return buildHolderText();
+				}
+			}).collect(Collectors.toList()));
+	}
+
+	private List<Parameter> searchMultiValuedParameters(Parametrized node) {
+		return node.getParameterList().stream().filter(parameter -> parameter.getValues().size() >= VALUE_MAX_SIZE).collect(Collectors.toList());
+	}
+
+	private List<VarInit> searchMultiValuedVarInits(Parametrized node) {
+		return node.getVarInits().stream().filter(parameter -> parameter.getValues().size() >= VALUE_MAX_SIZE).collect(Collectors.toList());
 	}
 
 	private Collection<PsiElement> searchStringMultiLineValues(Collection<FacetTarget> facetTargets) {
@@ -139,7 +161,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		return text;
 	}
 
-	private String buildMultiLineStringHolderText() {
+	private String buildHolderText() {
 		return " ...";
 	}
 
@@ -149,5 +171,17 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 
 	private TextRange getRange(TaraStringValue value) {
 		return new TextRange(value.getTextRange().getStartOffset(), value.getTextRange().getEndOffset());
+	}
+
+	private TextRange getRange(Value value) {
+		return new TextRange(value.getTextRange().getStartOffset(), value.getTextRange().getEndOffset());
+	}
+
+	private boolean isStringOrNativeType(Variable variable) {
+		return variable.getType() != null && (variable.getType().equals(TaraPrimitives.STRING) || variable.getType().equals(TaraPrimitives.NATIVE));
+	}
+
+	private boolean hasStringValue(Variable variable) {
+		return variable.getValue() != null && !variable.getValue().getStringValueList().isEmpty();
 	}
 }

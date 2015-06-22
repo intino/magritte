@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static siani.tara.semantic.constraints.PrimitiveTypeCompatibility.checkCompatiblePrimitives;
 import static siani.tara.semantic.constraints.PrimitiveTypeCompatibility.inferType;
 
 public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Parameter {
@@ -89,7 +90,11 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 		List<Object> values = rejectable.getParameter().getValues();
 		if (values.isEmpty()) return true;
 		String inferredType = inferType(values.get(0));
-		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType);
+		return !inferredType.isEmpty() && checkCompatiblePrimitives(type(), inferredType) && checkCardinality(values.size());
+	}
+
+	private boolean checkCardinality(int size) {
+		return size <= 1 || multiple();
 	}
 
 

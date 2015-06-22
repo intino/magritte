@@ -20,6 +20,11 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public Node destinyOfReference() {
+		return this;
+	}
+
+	@Override
 	public void type(String type) {
 	}
 

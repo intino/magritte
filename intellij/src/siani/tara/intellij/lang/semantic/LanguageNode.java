@@ -47,6 +47,11 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	}
 
 	@Override
+	public siani.tara.semantic.model.Node destinyOfReference() {
+		return this;
+	}
+
+	@Override
 	public void type(String type) {
 		node.setFullType(type);
 	}

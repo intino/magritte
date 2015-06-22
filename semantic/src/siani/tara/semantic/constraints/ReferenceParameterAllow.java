@@ -87,8 +87,8 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	}
 
 	private boolean checkAsReferenceOrWord(List<Object> values) {
-		if (type().equals(WORD)) return checkWords(values);
-		else return checkReferences(values);
+		if (type().equals(WORD) && checkCardinality(values.size())) return checkWords(values);
+		else return checkReferences(values) && checkCardinality(values.size());
 	}
 
 	private boolean checkWords(List<Object> rejectableValues) {
@@ -110,5 +110,9 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 		for (String type : node.types())
 			if (values.contains(type)) return true;
 		return false;
+	}
+
+	private boolean checkCardinality(int size) {
+		return size <= 1 || multiple();
 	}
 }

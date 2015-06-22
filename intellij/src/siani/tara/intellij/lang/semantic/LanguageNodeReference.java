@@ -17,23 +17,23 @@ import java.util.stream.Collectors;
 
 public class LanguageNodeReference extends LanguageNode implements Node {
 
-	private final NodeReference nodeReference;
+	private final NodeReference reference;
 	private siani.tara.intellij.lang.psi.Node destiny;
 
-	public LanguageNodeReference(NodeReference nodeReference) {
+	public LanguageNodeReference(NodeReference reference) {
 		super(null);
-		this.nodeReference = nodeReference;
-		destiny = ReferenceManager.resolveToNode(nodeReference.getIdentifierReference());
+		this.reference = reference;
+		destiny = ReferenceManager.resolveToNode(reference.getIdentifierReference());
 	}
 
 	@Override
 	public PsiElement element() {
-		return nodeReference;
+		return reference;
 	}
 
 	@Override
 	public Node context() {
-		return new LanguageNode(TaraPsiImplUtil.getContainerNodeOf(nodeReference));
+		return new LanguageNode(TaraPsiImplUtil.getContainerNodeOf(reference));
 	}
 
 	@Override
@@ -44,6 +44,11 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 	@Override
 	public boolean isReference() {
 		return true;
+	}
+
+	@Override
+	public siani.tara.semantic.model.Node destinyOfReference() {
+		return new LanguageNode(destiny);
 	}
 
 	@Override
@@ -82,19 +87,19 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 
 	@Override
 	public List<String> annotations() {
-		return nodeReference.getAnnotations().stream().map(Annotation::getText).collect(Collectors.toList());
+		return reference.getAnnotations().stream().map(Annotation::getText).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<String> flags() {
-		Set<String> names = nodeReference.getFlags().stream().map(Flag::getText).collect(Collectors.toSet());
-		names.addAll(nodeReference.getInheritedFlags());
+		Set<String> names = reference.getFlags().stream().map(Flag::getText).collect(Collectors.toSet());
+		names.addAll(reference.getInheritedFlags());
 		return Collections.unmodifiableList(new ArrayList<>(names));
 	}
 
 	@Override
 	public void flags(String... flags) {
-		nodeReference.addInheritedFlags(flags);
+		reference.addInheritedFlags(flags);
 	}
 
 	@Override
