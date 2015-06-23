@@ -61,18 +61,17 @@ public class ModelToJavaOperation extends ModelOperation {
 			if (model.getLevel() == 0) return;
 			compilationUnit.addOutputItems(writeMorphs(createMorphs()));
 			compilationUnit.addOutputItem(writeBoxDSL(getBoxDSLPath(separator), createBoxDSL(boxUnits.keySet())));
-			compilationUnit.addOutputItem(writeScene(createScene()));
+			compilationUnit.addOutputItem(writeModel(createModel()));
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
 	}
 
-	private String createScene() {
+	private String createModel() {
 		Frame frame = new Frame().addTypes("scene");
 		frame.addFrame("name", conf.getGeneratedLanguage());
-		for (Node node : collectRootNodes())
-			frame.addFrame("root", createRootFrame(node));
+		collectRootNodes().stream().filter(node -> node.getName() != null && !node.isTerminalInstance()).forEach(node -> frame.addFrame("root", createRootFrame(node)));
 		return customize(ModelTemplate.create()).format(frame);
 	}
 
@@ -199,11 +198,11 @@ public class ModelToJavaOperation extends ModelOperation {
 		return null;
 	}
 
-	private String writeScene(String scene) {
+	private String writeModel(String scene) {
 		File destiny = new File(outFolder, conf.getGeneratedLanguage().toLowerCase());
 		destiny.mkdirs();
 		try {
-			File file = new File(destiny, capitalize(conf.getGeneratedLanguage()) + JAVA);
+			File file = new File(destiny, capitalize(conf.getGeneratedLanguage()) + "Model" + JAVA);
 			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
 			fileWriter.write(scene);
 			fileWriter.close();

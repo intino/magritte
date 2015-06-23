@@ -132,7 +132,7 @@ NATIVE_MULTILINE_VALUE  = {DASHES}
 
 ADDRESS_VALUE       = {HASHTAG} [:jletter:]+
 MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
-DOC_LINE            = "doc" ~[\n]
+DOC_LINE            = "!!" ~[\n]
 
 COMMENT = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
 

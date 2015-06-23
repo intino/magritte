@@ -1,13 +1,13 @@
 def type(scene)
 	package $name+LowerCase;
 
-	public class $name+FirstCamelCase extends magritte.wraps.Model {
+	public class $name+FirstCamelCase~Model extends magritte.wraps.Model {
 
-	    public $name+FirstCamelCase(magritte.wraps.Morph morph) {
+	    public $name+FirstCamelCase~Model(magritte.wraps.Morph morph) {
 	        super(morph);
 	    }
 
-	    public $name+FirstCamelCase(magritte.Graph graph) {
+	    public $name+FirstCamelCase~Model(magritte.Graph graph) {
 			super(graph);
 		}
 

@@ -42,11 +42,11 @@ def type(allows) trigger(allows)
 end
 
 def type(allow) type(multiple) trigger(allow)
-	multiple($type+quoted[, $relation][, $tags+quoted...[, ]])
+	multiple($type+quoted[, $tags...[, ]])
 end
 
 def type(allow) type(single) trigger(allow)
-	single($type+quoted[, $relation][, $tags+quoted...[, ]])
+	single($type+quoted[, $tags...[, ]])
 end
 
 def type(allow) type(parameter) type(word) trigger(allow)
@@ -83,11 +83,11 @@ def type(require) type(redefine) trigger(require)
 end
 
 def type(require) type(multiple) trigger(require)
-	_multiple($type+quoted[, $relation][, $tags+quoted...[, ]])
+	_multiple($type+quoted[, $tags+quoted...[, ]])
 end
 
 def type(require) type(single) trigger(require)
-	_single($type+quoted[, $relation][, $tags+quoted...[, ]])
+	_single($type+quoted[, $tags+quoted...[, ]])
 end
 
 def trigger(tags)

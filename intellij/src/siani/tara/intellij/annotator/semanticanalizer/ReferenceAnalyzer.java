@@ -26,6 +26,7 @@ import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static siani.tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 
@@ -55,9 +56,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 	}
 
 	private IntentionAction[] createFixes(Identifier element, List<LocalQuickFix> fixes) {
-		List<IntentionAction> actions = new ArrayList<>();
-		for (LocalQuickFix fix : fixes)
-			actions.add(createIntention(element, fix.getName(), fix));
+		List<IntentionAction> actions = fixes.stream().map(fix -> createIntention(element, fix.getName(), fix)).collect(Collectors.toList());
 		return actions.toArray(new IntentionAction[actions.size()]);
 	}
 
@@ -71,15 +70,15 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 
 	private IntentionAction createIntention(PsiElement node, TextRange range, String message, LocalQuickFix fix) {
 		LocalQuickFix[] quickFixes = {fix};
-		CommonProblemDescriptorImpl descr = new ProblemDescriptorImpl(node, node, message,
+		CommonProblemDescriptorImpl descriptor = new ProblemDescriptorImpl(node, node, message,
 			quickFixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, true, range, true);
-		return QuickFixWrapper.wrap((ProblemDescriptor) descr, 0);
+		return QuickFixWrapper.wrap((ProblemDescriptor) descriptor, 0);
 	}
 
 	private void addImportFix(Identifier node, List<LocalQuickFix> actions) {
 		final PsiFile file = InjectedLanguageManager.getInstance(node.getProject()).getTopLevelFile(node);
 		if (!(file instanceof TaraModel)) return;
 		List<ImportQuickFix> importFix = TaraReferenceImporter.proposeImportFix((IdentifierReference) node.getParent());
-		for (ImportQuickFix importQuickFix : importFix) actions.add(importQuickFix);
+		actions.addAll(importFix.stream().collect(Collectors.toList()));
 	}
 }

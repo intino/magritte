@@ -4,7 +4,6 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
@@ -23,8 +22,7 @@ public class TaraFileReferenceSolver extends TaraReferenceSolver {
 
 	@Override
 	protected PsiElement doMultiResolve() {
-		ResolveResult[] resolveResults = multiResolve(false);
-		return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
+		return ReferenceManager.resolve((Identifier) myElement.getLastChild());
 	}
 
 	@Nullable

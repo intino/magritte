@@ -447,8 +447,7 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (!node.flags().contains(FACET.name())) node.flags(FACET.name());
-				if ((!node.flags().contains(NAMED.name())))
-					node.flags(NAMED.name());
+				if ((!node.flags().contains(NAMED.name()))) node.flags(NAMED.name());
 			}
 		};
 	}
@@ -458,7 +457,6 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (!node.flags().contains(FACET_INSTANCE.name())) node.flags(FACET_INSTANCE.name());
-				if ((!node.flags().contains(NAMED.name()))) node.flags(NAMED.name());
 			}
 		};
 	}
@@ -467,7 +465,7 @@ public class RuleFactory {
 		return new Assumption.Main() {
 			@Override
 			public void assume(Node node) {
-				if (node.flags().contains(MAIN.name())) node.flags(MAIN.name());
+				if (!node.flags().contains(MAIN.name())) node.flags(MAIN.name());
 				node.moveToTheTop();
 			}
 		};
@@ -517,7 +515,6 @@ public class RuleFactory {
 					node.flags(TERMINAL_INSTANCE.name());
 				node.variables().stream().filter(variable -> !variable.flags().contains(TERMINAL_INSTANCE.name())).forEach(variable -> variable.flags(TERMINAL_INSTANCE.name()));
 				propagateFlags(node, TERMINAL_INSTANCE.name());
-
 			}
 		};
 	}

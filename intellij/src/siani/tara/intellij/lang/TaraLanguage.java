@@ -1,5 +1,8 @@
 package siani.tara.intellij.lang;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -72,7 +75,12 @@ public class TaraLanguage extends com.intellij.lang.Language {
 	}
 
 	private static boolean haveToReload(String language, Project project) {
-		VirtualFile reload = getLanguagesDirectory(project).findChild(language + ".reload");
-		return reload != null && reload.exists() && new File(reload.getPath()).delete();
+		File reload = new File(getLanguagesDirectory(project).getPath(), language + ".reload");
+		if (reload.exists()) {
+			if (!reload.delete())
+				Notifications.Bus.notify(new Notification("Model Reload", "", "Reload File cannot be deleted", NotificationType.ERROR), project);
+			return true;
+		}
+		return false;
 	}
 }

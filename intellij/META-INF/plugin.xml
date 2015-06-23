@@ -37,6 +37,8 @@
         <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
       </action>
+      <action id="siani.tara.intellij.actions.LanguageReloadAction"
+              class="siani.tara.intellij.actions.LanguageReloadAction" text="Reload Language"/>
     </group>
 
     <action id="siani.tara.intellij.actions.SubmitFeedbackAction"

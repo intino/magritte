@@ -34,26 +34,24 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 					@Nullable
 					@Override
 					public String getPlaceholderText() {
-						return buildConceptHolderText(node);
+						return buildNodeHolderText(node);
 					}
 				});
-			if (node.getBody() != null) {
-				processMultiLineValues(descriptors, node);
-				processMultiValuesParameters(descriptors, node);
-			}
+			processMultiLineValues(descriptors, node);
+			processMultiValuesParameters(descriptors, node);
 			for (FacetApply facetApply : node.getFacetApplies()) processMultiValuesParameters(descriptors, facetApply);
 		}
 	}
 
 	private void processMultiValuesParameters(@NotNull List<FoldingDescriptor> descriptors, Parametrized node) {
 		descriptors.addAll(searchMultiValuedParameters(node).stream().
-			map(multivalued -> new FoldingDescriptor(multivalued, getRange((Value) multivalued)) {
+			map(multivalued -> new FoldingDescriptor(multivalued, getRange(multivalued.getValue())) {
 				public String getPlaceholderText() {
 					return buildHolderText();
 				}
 			}).collect(Collectors.toList()));
 		descriptors.addAll(searchMultiValuedVarInits(node).stream().
-			map(multivalued -> new FoldingDescriptor(multivalued, getRange((Value) multivalued)) {
+			map(multivalued -> new FoldingDescriptor(multivalued, getRange(multivalued.getValue())) {
 				public String getPlaceholderText() {
 					return buildHolderText();
 				}
@@ -84,7 +82,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		return node.getVarInits().stream().filter(parameter -> parameter.getValues().size() >= VALUE_MAX_SIZE).collect(Collectors.toList());
 	}
 
-	private Collection<PsiElement> searchStringMultiLineValues(Collection<FacetTarget> facetTargets) {
+	private List<PsiElement> searchStringMultiLineValues(Collection<FacetTarget> facetTargets) {
 		List<PsiElement> strings = new ArrayList<>();
 		for (FacetTarget facetTarget : facetTargets) {
 			searchMultiLineVariables(facetTarget, strings);
@@ -101,7 +99,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		}
 	}
 
-	private Collection<PsiElement> searchStringMultiLineValues(Node node) {
+	private List<PsiElement> searchStringMultiLineValues(Node node) {
 		List<PsiElement> strings = new ArrayList<>();
 		searchMultiLineVariables(node, strings);
 		searchMultiLineVarInit(node, strings);
@@ -146,7 +144,8 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 
 	@Override
 	protected boolean isRegionCollapsedByDefault(@NotNull ASTNode node) {
-		return node.getPsi().getParent() instanceof TaraStringValue;
+		final PsiElement value = node.getPsi().getParent();
+		return value instanceof TaraStringValue || (value instanceof TaraValue && ((TaraValue) value).getValues().size() >= VALUE_MAX_SIZE);
 	}
 
 	@Override
@@ -154,7 +153,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		return astNode.getPsi() instanceof Node;
 	}
 
-	private String buildConceptHolderText(Node node) {
+	private String buildNodeHolderText(Node node) {
 		String text = "";
 		for (Node inner : node.getIncludes())
 			if (inner.getName() != null) text += " " + inner.getName();

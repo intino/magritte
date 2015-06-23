@@ -167,7 +167,7 @@ EndOfLineComment     = "//" [^\n]*
 DocumentationComment = "/**" {CommentContent} "*"+ "/"
 CommentContent       = ( [^*] | \*+ [^/*] )*
 
-DOC_LINE            = "doc" ~[\n]
+DOC_LINE            = "!!" ~[\n]
 PLUS                = "+"
 DIGIT               = [:digit:]
 
