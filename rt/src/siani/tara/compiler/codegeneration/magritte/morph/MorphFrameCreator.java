@@ -3,6 +3,7 @@ package siani.tara.compiler.codegeneration.magritte.morph;
 import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
+import siani.tara.compiler.codegeneration.Format;
 import siani.tara.compiler.codegeneration.magritte.MorphVariableAdapter;
 import siani.tara.compiler.codegeneration.magritte.TemplateTags;
 import siani.tara.compiler.core.CompilerConfiguration;
@@ -45,7 +46,7 @@ public class MorphFrameCreator implements TemplateTags {
 		String packagePath = addPackage(frame, node);
 		createMorph(frame, node);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		return new AbstractMap.SimpleEntry<>(packagePath + DOT + node.getName(), frame);
+		return new AbstractMap.SimpleEntry<>(packagePath + DOT + Format.javaValidName().format(node.getName()).toString(), frame);
 	}
 
 	public Map.Entry<String, Frame> create(FacetTarget facetTarget) {
@@ -53,7 +54,8 @@ public class MorphFrameCreator implements TemplateTags {
 		String packagePath = addPackage(facetTarget, frame);
 		createFacetTargetMorph(frame, facetTarget);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		return new AbstractMap.SimpleEntry<>(packagePath + DOT + ((Node) facetTarget.getContainer()).getName() + "_" + facetTarget.getTargetNode().getName(), frame);
+		return new AbstractMap.SimpleEntry<>(packagePath + DOT +
+			Format.javaValidName().format(((Node) facetTarget.getContainer()).getName() + "_" + facetTarget.getTargetNode().getName()).toString(), frame);
 	}
 
 	private void createFacetTargetMorph(Frame frame, FacetTarget node) {

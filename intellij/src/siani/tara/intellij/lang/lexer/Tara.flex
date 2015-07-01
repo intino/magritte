@@ -174,7 +174,7 @@ DIGIT               = [:digit:]
 STRING_MULTILINE    	= {EQUALS} {EQUALS}+
 NATIVE_MULTILINE_VALUE  = {DASHES}
 
-IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
+IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 
 %xstate QUOTED, MULTILINE, EXPRESSION, EXPRESSION_MULTILINE
 

@@ -12,12 +12,12 @@ def type(model)
 
 	$importMetric...[$NL]
 
-	public class $name extends magritte.schema.Box.$terminal {
+	public class $name+javaValidName extends magritte.schema.Box.$terminal {
 		public static final magritte.schema.Box box = new $name();
 
 		@Override
 		public magritte.schema.Box$[] dependencies() {
-			return new magritte.schema.Box$[]{[magritte.dsl.$language+firstUpperCase~Dsl.box]};
+			return new magritte.schema.Box$[]{[magritte.dsl.$language+javaValidName~Dsl.box]};
 		}
 
 		@Override
@@ -50,7 +50,7 @@ def type(nodecontainer) trigger(node)
 end
 
 def type(native) trigger(native)
-	public static class $className [extends $container] implements [$parentIntention+lowercase.natives.]$interface {
+	public static class $className+javaValidName [extends $container] implements [$parentIntention+lowercase.natives.]$interface {
 		@Override
 		$signature {
 			$body
@@ -117,7 +117,7 @@ end
 
 
 def trigger(native) !value(null)
-	new $value()
+	new $value+javaValidName()
 end
 
 def type(variable) type(word) slot(variableValue) trigger(variable)

@@ -15,8 +15,8 @@ public class Format {
 	public static Formatter reference() {
 		return value -> {
 			String val = value.toString();
-			if (!val.contains(DOT)) return val.substring(0, 1).toUpperCase() + val.substring(1);
-			return val;
+			if (!val.contains(DOT)) return (val.substring(0, 1).toUpperCase() + val.substring(1)).replace("-","");
+			return val.replace("-", "");
 		};
 	}
 
@@ -24,13 +24,26 @@ public class Format {
 	public static Formatter toCamelCase() {
 		return s -> {
 			final String value = s.toString();
-			String[] parts = value.split("_");
-			if (parts.length == 1) return value.substring(0, 1).toUpperCase() + value.substring(1);
-			String caseString = "";
-			for (String part : parts)
-				caseString = caseString + toProperCase(part);
-			return caseString;
+			return toCamelCase(value, "_");
 		};
+	}
+
+
+	public static Formatter javaValidName() {
+		return s -> {
+			final String value = s.toString();
+			return toCamelCase(value, "-");
+		};
+	}
+
+
+	private static String toCamelCase(String value, String regex) {
+		String[] parts = value.split(regex);
+		if (parts.length == 1) return value.substring(0, 1).toUpperCase() + value.substring(1);
+		String caseString = "";
+		for (String part : parts)
+			caseString = caseString + toProperCase(part);
+		return caseString;
 	}
 
 	public static Formatter nativeParameter() {

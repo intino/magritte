@@ -143,7 +143,7 @@ DocumentationComment = "/**" {CommentContent} "*"+ "/"
 CommentContent       = ( [^*] | \*+ [^/*] )*
 
 DIGIT               = [:digit:]
-IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {UNDERDASH} | {DASH})*
+IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 
 SP                  = ([ ]+ | [\t]+) | ">"
 SPACES              = {SP}+

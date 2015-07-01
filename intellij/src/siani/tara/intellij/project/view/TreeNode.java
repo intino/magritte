@@ -4,9 +4,6 @@ import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
-import com.intellij.ide.projectView.impl.nodes.PsiFileNode;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.navigation.NavigationItemFileStatus;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.vcs.FileStatus;
@@ -14,32 +11,32 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
+import siani.tara.intellij.lang.TaraIcons;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
-public class TreeNode extends ProjectViewNode<NodeTreeView> {
-	private final Collection<BasePsiNode<? extends PsiElement>> myChildren;
+public class TreeNode extends ProjectViewNode<NodeView> {
+
+	private final BasePsiNode<? extends PsiElement> child;
 
 	public TreeNode(Project project,
-	                NodeTreeView value,
+	                NodeView value,
 	                ViewSettings viewSettings,
 	                Icon icon,
-	                Collection<BasePsiNode<? extends PsiElement>> children) {
+	                BasePsiNode<? extends PsiElement> child) {
 		super(project, value, viewSettings);
+		this.child = child;
 		setIcon(icon);
-		myChildren = children;
 	}
 
 	@NotNull
 	public Collection<BasePsiNode<? extends PsiElement>> getChildren() {
-		return myChildren;
+		return Collections.singleton(child);
 	}
 
 	public boolean contains(@NotNull VirtualFile file) {
-		for (final AbstractTreeNode aMyChildren : myChildren)
-			if (((ProjectViewNode) aMyChildren).contains(file)) return true;
 		return false;
 	}
 
@@ -48,7 +45,7 @@ public class TreeNode extends ProjectViewNode<NodeTreeView> {
 			setValue(null);
 		else {
 			presentation.setPresentableText(getValue().getName());
-			presentation.setIcon(((PsiFileNode) ((ArrayList) myChildren).get(1)).getValue().getIcon(0));
+			presentation.setIcon(TaraIcons.MODEL);
 		}
 	}
 
@@ -57,34 +54,22 @@ public class TreeNode extends ProjectViewNode<NodeTreeView> {
 	}
 
 	public boolean canNavigate() {
-		final NodeTreeView value = getValue();
+		final NodeView value = getValue();
 		return value != null && value.canNavigate();
 	}
 
 	public boolean canNavigateToSource() {
-		final NodeTreeView value = getValue();
+		final NodeView value = getValue();
 		return value != null && value.canNavigateToSource();
 	}
 
 	@Override
 	public FileStatus getFileStatus() {
-		for (BasePsiNode<? extends PsiElement> child : myChildren) {
-			final PsiElement value = child.getValue();
-			if (value == null || !value.isValid()) continue;
-			final FileStatus fileStatus = NavigationItemFileStatus.get(child);
-			if (fileStatus != FileStatus.NOT_CHANGED)
-				return fileStatus;
-		}
 		return FileStatus.NOT_CHANGED;
 	}
 
 	@Override
 	public boolean canHaveChildrenMatching(final Condition<PsiFile> condition) {
-		for (BasePsiNode<? extends PsiElement> child : myChildren) {
-			if (condition.value(child.getValue().getContainingFile())) {
-				return true;
-			}
-		}
 		return false;
 	}
 }

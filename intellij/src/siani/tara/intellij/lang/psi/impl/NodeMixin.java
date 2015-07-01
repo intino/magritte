@@ -24,7 +24,8 @@ import siani.tara.semantic.model.Tag;
 import javax.swing.*;
 import java.util.*;
 
-import static java.util.Collections.*;
+import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.unmodifiableList;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 import static siani.tara.intellij.lang.psi.impl.TaraUtil.getInnerNodesOf;
 import static siani.tara.semantic.model.Tag.*;
@@ -219,6 +220,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	public boolean isFacetInstance() {
 		return inheritedFlags.contains(FACET_INSTANCE.name());
+	}
+
+	public boolean isTerminalInstance() {
+		return inheritedFlags.contains(TERMINAL_INSTANCE.name());
 	}
 
 	public boolean isFeatureInstance() {

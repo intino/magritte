@@ -99,6 +99,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		template.add("key", Format.key());
 		template.add("returnValue", (trigger, type) -> trigger.frame().frames("returnValue").next().value().equals(type));
 		template.add("WithoutType", Format.nativeParameter());
+		template.add("javaValidName", Format.javaValidName());
 		return template;
 	}
 
@@ -127,7 +128,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String buildBoxUnitName(Node node) {
-		return capitalize(conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule()) + buildFileName(((Element) node).getFile());
+		return (String) Format.javaValidName().format(capitalize(conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule()) + buildFileName(((Element) node).getFile()));
 	}
 
 	private String buildBoxUnitName(String box) {

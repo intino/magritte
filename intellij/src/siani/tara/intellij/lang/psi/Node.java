@@ -51,6 +51,8 @@ public interface Node extends NodeContainer, Parametrized, Navigatable, Iconable
 
 	boolean isFacetInstance();
 
+	boolean isTerminalInstance();
+
 	boolean isAnnotatedAsMain();
 
 	@Nullable
@@ -126,6 +128,5 @@ public interface Node extends NodeContainer, Parametrized, Navigatable, Iconable
 		}
 		return TaraDocumentationFormatter.doc2Html(this, text.toString());
 	}
-
 }
 

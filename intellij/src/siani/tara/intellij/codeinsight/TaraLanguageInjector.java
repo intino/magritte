@@ -7,12 +7,14 @@ import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
-import siani.tara.intellij.annotator.semanticanalizer.NodeAnalyzer;
+import siani.tara.Resolver;
 import siani.tara.intellij.framework.maven.NativeTemplate;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
 import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.lang.semantic.LanguageNode;
 import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.facet.TaraFacetConfiguration;
 import siani.tara.intellij.project.module.ModuleProvider;
@@ -162,25 +164,35 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private String findParent(PsiElement element, Node node, String language) {
 		Node candidate = node;
-		new NodeAnalyzer(node.getContainer()).analyze();
-		while (candidate.getContainer() != null)
-			if (node.getName() != null && !node.isFeatureInstance())
-				return clean(getQn(candidate, element, language));
+		ensureTypeIsResolved(element, node);
+		while (candidate != null) {
+			if (candidate.getName() != null && !candidate.isFeatureInstance())
+				return candidate.isTerminalInstance() ? getTypeAsParent(candidate) : clean(getQn(candidate, element, language));
 			else candidate = candidate.getContainer();
-		return clean(getQn(candidate, element, language));
+		}
+		return "magritte.Morph";
+	}
+
+	private String getTypeAsParent(Node candidate) {
+		final Language language = TaraLanguage.getLanguage(candidate.getContainingFile());
+		if (language == null) return "";
+		return language.languageName().toLowerCase() + DOT + clean(candidate.getType());
+	}
+
+	private void ensureTypeIsResolved(PsiElement element, Node node) {
+		new Resolver(TaraLanguage.getLanguage(element.getContainingFile())).resolve(new LanguageNode(node.getContainer()));
 	}
 
 	private String clean(String qn) {
-		return qn.replace("@anonymous", "");
+		return qn.replace("@anonymous", "").replace("[", "").replace("]", "");
 	}
 
-	private static String getQn(Node owner, PsiElement element, String generatedLanguage) {
+	private static String getQn(Node owner, PsiElement element, String language) {
 		final FacetTarget facetTarget = facetTargetContainer(element);
-		if (owner.isFacet())
-			return generatedLanguage.toLowerCase() + getName(owner) + getFacetTarget(owner, facetTarget);
+		if (owner.isFacet()) return language.toLowerCase() + getName(owner) + getFacetTarget(owner, facetTarget);
 		else {
 			final Node node = TaraPsiImplUtil.getContainerNodeOf(element);
-			return generatedLanguage.toLowerCase() + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
+			return language.toLowerCase() + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
 		}
 	}
 

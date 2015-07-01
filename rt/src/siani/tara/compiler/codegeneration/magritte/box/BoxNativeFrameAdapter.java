@@ -134,9 +134,15 @@ public class BoxNativeFrameAdapter implements TemplateTags {
 	}
 
 	private String buildContainerPath(String contract, NodeContainer owner) {
-		if (owner instanceof Node)
-			return getQn(firstNoFeatureAndNamed(owner), (Node) owner, withContract(contract, generatedLanguage), m0);
+		if (owner instanceof Node) {
+			final Node parent = firstNoFeatureAndNamed(owner);
+			return ((Node) owner).isTerminalInstance() ? getTypeAsParent(parent) : getQn(parent, (Node) owner, withContract(contract, generatedLanguage), m0);
+		}
 		return NameFormatter.getQn((FacetTarget) owner, withContract(contract, generatedLanguage));
+	}
+
+	private String getTypeAsParent(Node parent) {
+		return language.languageName().toLowerCase() + DOT + cleanQn(parent.getType());
 	}
 
 	private String withContract(String contract, String language) {
