@@ -119,15 +119,11 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	private void addDslLibToSdk(String name, ModifiableRootModel rootModel, File file) {
-		final Library library = addProjectLibrary(rootModel.getModule(), name, getLibraryFiles(file), VirtualFile.EMPTY_ARRAY);
+		final Library library = addProjectLibrary(rootModel.getModule(), name, file, VirtualFile.EMPTY_ARRAY);
 		rootModel.addLibraryEntry(library);
 	}
 
-	private File[] getLibraryFiles(File file) {
-		return file.listFiles(f -> !f.isDirectory() && f.getName().endsWith(".jar"));
-	}
-
-	private static Library addProjectLibrary(final Module module, final String name, final File[] jars, final VirtualFile[] sources) {
+	private static Library addProjectLibrary(final Module module, final String name, final File jarsDirectory, final VirtualFile[] sources) {
 		return new WriteAction<Library>() {
 			protected void run(@NotNull final Result<Library> result) throws MalformedURLException {
 				final LibraryTable libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(module.getProject());
@@ -135,11 +131,9 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 				if (library == null) {
 					library = libraryTable.createLibrary(name);
 					final Library.ModifiableModel model = library.getModifiableModel();
-					for (File lib : jars) {
-						final VirtualFile vFile = VfsUtil.findFileByURL(lib.toURI().toURL());
-						vFile.refresh(true, true);
-						model.addRoot(vFile, OrderRootType.CLASSES);
-					}
+					final VirtualFile vFile = VfsUtil.findFileByURL(jarsDirectory.toURI().toURL());
+					vFile.refresh(true, true);
+					model.addJarDirectory(vFile, false);
 					for (VirtualFile sourceRoot : sources) model.addRoot(sourceRoot, OrderRootType.SOURCES);
 					model.commit();
 				}

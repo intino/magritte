@@ -10,6 +10,8 @@ public interface Variable extends Element {
 
 	String type();
 
+	String contract();
+
 	List<String> flags();
 
 	void flags(String... flag);

@@ -75,7 +75,9 @@ public class TaraLanguage extends com.intellij.lang.Language {
 	}
 
 	private static boolean haveToReload(String language, Project project) {
-		File reload = new File(getLanguagesDirectory(project).getPath(), language + ".reload");
+		VirtualFile languagesDirectory = getLanguagesDirectory(project);
+		if (languagesDirectory == null) return false;
+		File reload = new File(languagesDirectory.getPath(), language + ".reload");
 		if (reload.exists()) {
 			if (!reload.delete())
 				Notifications.Bus.notify(new Notification("Model Reload", "", "Reload File cannot be deleted", NotificationType.ERROR), project);

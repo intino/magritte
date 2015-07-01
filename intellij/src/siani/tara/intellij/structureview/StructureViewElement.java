@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StructureViewElement implements StructureViewTreeElement {
 
@@ -39,14 +40,14 @@ public class StructureViewElement implements StructureViewTreeElement {
 	}
 
 
+	@NotNull
 	@Override
 	public TreeElement[] getChildren() {
 		if (node != null) {
 			Collection<Node> nodes = TaraUtil.getInnerNodesOf(node);
 			if (!nodes.isEmpty()) {
 				List<TreeElement> treeElements = new ArrayList<>(nodes.size());
-				for (Node inner : nodes)
-					treeElements.add(new StructureViewElement(inner));
+				treeElements.addAll(nodes.stream().map(StructureViewElement::new).collect(Collectors.toList()));
 				return treeElements.toArray(new TreeElement[treeElements.size()]);
 			}
 		}
@@ -71,7 +72,4 @@ public class StructureViewElement implements StructureViewTreeElement {
 		};
 	}
 
-	public void setPresentableName(final String presentableName) {
-		myPresentableName = presentableName;
-	}
 }

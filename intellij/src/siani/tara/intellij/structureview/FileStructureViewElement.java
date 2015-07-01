@@ -11,11 +11,12 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class FileStructureViewElement extends PsiTreeElementBase<TaraModelImpl> {
 
-	protected FileStructureViewElement(TaraModelImpl propertiesFile) {
-		super(propertiesFile);
+	protected FileStructureViewElement(TaraModelImpl taraModel) {
+		super(taraModel);
 	}
 
 	@NotNull
@@ -23,12 +24,12 @@ public class FileStructureViewElement extends PsiTreeElementBase<TaraModelImpl> 
 		if (getElement() == null) return Collections.EMPTY_LIST;
 		Collection<Node> nodes = getElement().getIncludes();
 		Collection<StructureViewTreeElement> elements = new ArrayList<>(1);
-		for (Node node : nodes) elements.add(new StructureViewElement(node));
+		elements.addAll(nodes.stream().map(StructureViewElement::new).collect(Collectors.toList()));
 		return elements;
 	}
 
 	public String getPresentableText() {
-		return getElement().getName();
+		return getElement().getPresentableName();
 	}
 
 	@NotNull

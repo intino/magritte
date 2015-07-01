@@ -51,8 +51,7 @@ public class CreateTaraFileAction extends JavaCreateTemplateInPackageAction<Tara
 		String fileName = newName + "." + TaraFileType.INSTANCE.getDefaultExtension();
 		Module moduleOfDirectory = ModuleProvider.getModuleOf(directory);
 		TaraFacet facet = TaraFacet.getTaraFacetByModule(moduleOfDirectory);
-		if (facet == null)
-			throw new IncorrectOperationException(MessageProvider.message("tara.file.error"));
+		if (facet == null) throw new IncorrectOperationException(MessageProvider.message("tara.file.error"));
 		String dsl = facet.getConfiguration().getDsl();
 		PsiFile file;
 		String[] list;

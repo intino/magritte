@@ -25,12 +25,12 @@ public class VariableAnnotator extends TaraAnnotator {
 			Variable variable = (Variable) psiElement;
 			if (!TaraPrimitives.NATIVE.equals(variable.getType()))
 				return;
-			if (analyzeJavaClassCreation(variable))
+			if (variable.getContract() != null && hasCorrespondingJavaClass(variable))
 				holder.createErrorAnnotation(variable, MessageProvider.message("no.java.generated.class"));
 		}
 	}
 
-	private boolean analyzeJavaClassCreation(Variable variable) {
+	private boolean hasCorrespondingJavaClass(Variable variable) {
 		return !isCreated(nativeClass(variable.getContract(), variable.getType()), variable.getProject());
 	}
 

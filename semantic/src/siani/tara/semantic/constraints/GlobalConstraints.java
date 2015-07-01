@@ -33,6 +33,7 @@ public class GlobalConstraints {
 			duplicatedNames(),
 			invalidValueTypeInVariable(),
 			cardinalityInVariable(),
+			contractExistence(),
 			facetDeclaration(),
 			facetInstantiation()};
 	}
@@ -119,6 +120,17 @@ public class GlobalConstraints {
 		List<Object> values = variable.defaultValue();
 		String inferredType = inferType(values.get(0));
 		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(variable.isReference() ? Primitives.REFERENCE : variable.type(), inferredType);
+	}
+
+	private Constraint.Require contractExistence() {
+		return element -> {
+			Node node = (Node) element;
+			for (Variable variable : node.variables()) {
+				if (!Primitives.NATIVE.equals(variable.type()) && !Primitives.MEASURE.equals(variable.type())) continue;
+				if (variable.contract() == null)
+					throw new SemanticException(new SemanticError("reject.unexisting.variable.contract", variable, singletonList(variable.type())));
+			}
+		};
 	}
 
 	private Constraint.Require duplicatedNames() {

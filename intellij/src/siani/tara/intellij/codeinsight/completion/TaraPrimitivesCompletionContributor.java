@@ -15,6 +15,7 @@ import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraTypes;
 import siani.tara.intellij.lang.psi.TaraVariableType;
 import siani.tara.intellij.lang.psi.Variable;
+import siani.tara.semantic.model.Primitives;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -32,7 +33,8 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
 					for (String primitive : TaraPrimitives.getPrimitives())
-						resultSet.addElement(LookupElementBuilder.create(primitive + " ").withTypeText("Primitive"));
+						resultSet.addElement(LookupElementBuilder.create(primitive + (mustHaveContract(primitive) ? ":" :
+							" ")).withTypeText("Primitive"));
 				}
 			}
 		);
@@ -46,6 +48,10 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 				}
 			}
 		);
+	}
+
+	private boolean mustHaveContract(String primitive) {
+		return primitive.equals(Primitives.NATIVE) || primitive.equals(Primitives.MEASURE);
 	}
 
 	private static class AfterVarFitFilter implements ElementFilter {

@@ -265,6 +265,7 @@ public class ReferenceManager {
 	}
 
 	public static PsiElement resolveContract(Contract contract) {
+		if (contract == null) return null;
 		if (isMeasure(contract))
 			return resolveMetric(contract);
 		else return resolveNativeClass(contract, contract.getProject());

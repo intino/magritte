@@ -61,5 +61,4 @@ public class TaraTreeStructureProvider implements com.intellij.ide.projectView.T
 			filter(node -> node.getValue() instanceof NodeView).
 			map(node -> (NodeView) node.getValue()).collect(Collectors.toList());
 	}
-
 }

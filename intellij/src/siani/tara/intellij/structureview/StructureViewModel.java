@@ -26,7 +26,7 @@ public class StructureViewModel extends TextEditorBasedStructureViewModel implem
 
 	@Override
 	public boolean isAlwaysShowsPlus(StructureViewTreeElement element) {
-		return false;
+		return true;
 	}
 
 	@Override

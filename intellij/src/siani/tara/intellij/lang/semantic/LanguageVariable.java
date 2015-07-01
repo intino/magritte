@@ -29,6 +29,12 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 	}
 
 	@Override
+	public String contract() {
+		siani.tara.intellij.lang.psi.Contract contract = variable.getContract();
+		return contract == null ? null : contract.getFormattedName();
+	}
+
+	@Override
 	public List<String> flags() {
 		Flags flags = variable.getFlags();
 		return flags != null ? flags.asStringList() : Collections.<String>emptyList();

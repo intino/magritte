@@ -28,6 +28,11 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 	}
 
 	@Override
+	public String contract() {
+		return variable.getContract();
+	}
+
+	@Override
 	public List<String> flags() {
 		return unmodifiableList(variable.getFlags().stream().map(Tag::name).collect(Collectors.toList()));
 	}
