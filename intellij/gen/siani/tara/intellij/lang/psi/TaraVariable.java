@@ -13,6 +13,9 @@ public interface TaraVariable extends Variable {
   @Nullable
   TaraCount getCount();
 
+  @NotNull
+  List<TaraDoc> getDocList();
+
   @Nullable
   TaraFlags getFlags();
 

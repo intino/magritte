@@ -9,7 +9,7 @@ import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
 
-public class FacetImpl extends Element implements Facet {
+public class FacetImpl implements Facet {
 
 	private String file;
 	private int line;
@@ -103,7 +103,7 @@ public class FacetImpl extends Element implements Facet {
 	}
 
 	@Override
-	public void setDoc(String doc) {
+	public void addDoc(String doc) {
 		this.doc = doc;
 	}
 

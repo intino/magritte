@@ -40,6 +40,11 @@ public class TaraCRunnerTest {
 	}
 
 	@Test
+	public void TafatTestM1() {
+		TaracRunner.main(new String[]{home + "/workspace/tara/rt/res_test/TafatTestM1.txt"});
+	}
+
+	@Test
 	public void TafatM0() {
 		TaracRunner.main(new String[]{home + "/workspace/tara/rt/res_test/TafatM0.txt"});
 	}

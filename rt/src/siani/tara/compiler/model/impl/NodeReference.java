@@ -8,7 +8,7 @@ import java.util.*;
 import static java.util.Collections.unmodifiableList;
 import static siani.tara.semantic.model.Tag.*;
 
-public class NodeReference extends Element implements Node {
+public class NodeReference implements Node {
 
 	private NodeContainer container;
 	private NodeImpl destiny;
@@ -89,7 +89,7 @@ public class NodeReference extends Element implements Node {
 	}
 
 	@Override
-	public void setDoc(String doc) {
+	public void addDoc(String doc) {
 		this.doc = doc;
 	}
 

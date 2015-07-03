@@ -33,6 +33,11 @@ public class LanguageFacetTarget extends LanguageElement implements FacetTarget 
 	}
 
 	@Override
+	public String type() {
+		return target();
+	}
+
+	@Override
 	public PsiElement element() {
 		return target;
 	}

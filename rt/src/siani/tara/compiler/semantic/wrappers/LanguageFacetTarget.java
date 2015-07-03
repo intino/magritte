@@ -32,7 +32,12 @@ public class LanguageFacetTarget extends LanguageElement implements siani.tara.s
 	}
 
 	@Override
+	public String type() {
+		return target();
+	}
+
+	@Override
 	public Element element() {
-		return (Element) target;
+		return target;
 	}
 }

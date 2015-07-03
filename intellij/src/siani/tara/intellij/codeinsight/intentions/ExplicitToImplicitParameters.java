@@ -39,7 +39,7 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 //
 //	private Parameter getCorrespondentParameter(Parameters parameters, String name) {
 //		for (Parameter parameter : parameters.getParameterList())
-//			if (name.equals(parameter.getExplicitName())) return parameter;
+//			if (name.equals(parameter.getName())) return parameter;
 //		return null;
 //	}
 

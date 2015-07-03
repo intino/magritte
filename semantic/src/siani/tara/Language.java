@@ -4,6 +4,7 @@ import siani.tara.semantic.Allow;
 import siani.tara.semantic.Assumption;
 import siani.tara.semantic.Constraint;
 import siani.tara.semantic.model.Context;
+import siani.tara.semantic.model.Documentation;
 
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +21,8 @@ public interface Language {
 	List<Assumption> assumptions(String qualifiedName);
 
 	List<Allow> allows(String qualifiedName);
+
+	Documentation doc(String qualifiedName);
 
 	List<String> types(String qualifiedName);
 

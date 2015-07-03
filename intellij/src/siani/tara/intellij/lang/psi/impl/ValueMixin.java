@@ -5,6 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.resolve.ReferenceManager;
 import siani.tara.semantic.model.EmptyNode;
 import siani.tara.semantic.model.Primitives;
 

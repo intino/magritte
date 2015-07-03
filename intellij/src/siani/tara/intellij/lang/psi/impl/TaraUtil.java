@@ -89,16 +89,7 @@ public class TaraUtil {
 
 	public static Allow.Parameter getCorrespondingAllow(Node container, PsiElement element) {
 		if (element instanceof Variable) return null;
-		return element instanceof VarInit ? getCorrespondingAllow(container, (VarInit) element) :
-			getCorrespondingAllow(container, (Parameter) element);
-	}
-
-	public static Allow.Parameter getCorrespondingAllow(Node container, VarInit element) {
-		FacetApply facetApply = areFacetVarInit(element);
-		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.getType()) : TaraUtil.getAllowsOf(container);
-		if (allowsOf == null) return null;
-		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
-		return findParameter(parametersAllowed, element.getName());
+		return getCorrespondingAllow(container, (Parameter) element);
 	}
 
 	public static Allow.Parameter getCorrespondingAllow(Node container, Parameter parameter) {
@@ -107,7 +98,7 @@ public class TaraUtil {
 		if (allowsOf == null) return null;
 		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
 		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.getIndexInParent()) return null;
-		return parameter.isExplicit() ? findParameter(parametersAllowed, parameter.getExplicitName()) : getParameterByIndex(parameter, parametersAllowed);
+		return parameter.isExplicit() ? findParameter(parametersAllowed, parameter.getName()) : getParameterByIndex(parameter, parametersAllowed);
 	}
 
 	private static Allow.Parameter getParameterByIndex(Parameter parameter, List<Allow.Parameter> parametersAllowed) {
@@ -132,11 +123,6 @@ public class TaraUtil {
 
 	private static FacetApply areFacetParameters(Parameter parameter) {
 		NodeContainer contextOf = TaraPsiImplUtil.getContextOf(parameter);
-		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
-	}
-
-	private static FacetApply areFacetVarInit(VarInit varInit) {
-		NodeContainer contextOf = TaraPsiImplUtil.getContextOf(varInit);
 		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
 	}
 

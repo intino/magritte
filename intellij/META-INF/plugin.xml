@@ -60,7 +60,7 @@
                          implementationClass="siani.tara.intellij.refactoring.rename.NamesValidator"/>
     <projectService serviceInterface="siani.tara.intellij.lang.psi.TaraElementFactory"
                     serviceImplementation="siani.tara.intellij.lang.psi.impl.TaraElementFactoryImpl"/>
-    <treeStructureProvider implementation="siani.tara.intellij.project.view.TaraTreeStructureProvider"/>
+    <!--<treeStructureProvider implementation="siani.tara.intellij.project.view.TaraTreeStructureProvider"/>-->
     <fileTemplateGroup implementation="siani.tara.intellij.actions.TaraTemplatesFactory"/>
     <codeInsight.lineMarkerProvider language="Tara"
                                     implementationClass="siani.tara.intellij.codeinsight.linemarkers.TaraToNative"/>

@@ -2,7 +2,7 @@ package siani.tara.compiler.model;
 
 import java.util.List;
 
-public interface Parameter {
+public interface Parameter extends Element {
 
 	String REFERENCE = "ref:";
 

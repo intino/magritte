@@ -30,7 +30,7 @@ def type(Word) !type(multiple) trigger(getter)
 end
 
 def type(Word) type(multiple) trigger(setter)
-	public void $name+javaValidName+firstUpperCase($name++javaValidNamefirstUpperCase~... values) {
+	public void $name+javaValidName+firstUpperCase($name+javaValidNamefirstUpperCase~... values) {
 		_edit().set("$name+javaValidName", magritte.primitives.Enumerate.ordinal(values));
 	}
 end
@@ -185,7 +185,7 @@ def type(variable) type(Measure) !type(final) trigger(setter)
 end
 
 def type(variable) !type(final) !type(native) type(multiple) trigger(setter)
-	public void $name+javaValidName+firstLowerCase($type+javaValidName+primitiveType~... $name+firstLowerCase) {
+	public void $name+javaValidName+firstLowerCase($type+reference+primitiveType~... $name+firstLowerCase) {
 		_edit().set("$name", $name+firstLowerCase);
 	}
 
@@ -193,7 +193,7 @@ def type(variable) !type(final) !type(native) type(multiple) trigger(setter)
 		_edit().let("$name", value);
 	}
 
-	public void $name+javaValidName+firstLowerCase(magritte.wraps.Operation operation, $type+javaValidName+primitiveType~... $name+firstLowerCase) {
+	public void $name+javaValidName+firstLowerCase(magritte.wraps.Operation operation, $type+reference+primitiveType~... $name+firstLowerCase) {
 		_edit(operation).set("$name+firstLowerCase", $name+firstLowerCase);
 	}
 end

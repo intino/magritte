@@ -1,6 +1,5 @@
 package siani.tara.compiler.model.impl;
 
-import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.Variable;
 import siani.tara.semantic.model.Tag;
@@ -13,7 +12,7 @@ import java.util.List;
 
 import static siani.tara.semantic.model.Tag.*;
 
-public class VariableImpl extends Element implements Variable {
+public class VariableImpl implements Variable {
 	private NodeContainer container;
 	private String type;
 	private String name;

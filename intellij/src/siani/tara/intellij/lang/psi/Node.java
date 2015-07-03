@@ -88,16 +88,11 @@ public interface Node extends NodeContainer, Parametrized, Navigatable, Iconable
 	@NotNull
 	Node resolve();
 
-	@NotNull
-	List<Parameter> getParameterList();
-
 	List<Node> getNodeSiblings();
 
 	List<Node> getIncludes();
 
 	List<Variable> getVariables();
-
-	List<VarInit> getVarInits();
 
 	List<NodeReference> getInnerNodeReferences();
 

@@ -11,8 +11,6 @@ import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.IdentifierReference;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
-import siani.tara.intellij.lang.psi.impl.VariantsManager;
 
 import java.util.*;
 

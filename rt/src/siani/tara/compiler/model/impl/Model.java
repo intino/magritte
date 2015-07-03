@@ -6,7 +6,7 @@ import siani.tara.semantic.model.Tag;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 
-public class Model extends Element implements Node {
+public class Model implements Node {
 
 	private String name;
 	private String file;
@@ -54,7 +54,7 @@ public class Model extends Element implements Node {
 	}
 
 	@Override
-	public void setDoc(String doc) {
+	public void addDoc(String doc) {
 
 	}
 

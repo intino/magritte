@@ -1,8 +1,10 @@
-package siani.tara.intellij.lang.psi.impl;
+package siani.tara.intellij.lang.psi.resolve;
 
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;

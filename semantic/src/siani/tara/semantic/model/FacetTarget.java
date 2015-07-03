@@ -1,11 +1,6 @@
 package siani.tara.semantic.model;
 
-import java.util.List;
-
-public interface FacetTarget extends Element {
+public interface FacetTarget extends NodeContainer {
 
 	String target();
-
-	List<? extends Node> includes();
-
 }

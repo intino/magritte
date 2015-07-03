@@ -74,7 +74,7 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 
 	@Override
 	public String name() {
-		return node.getName() == null ? "" : node.getName();
+		return node == null || node.getName() == null ? "" : node.getName();
 	}
 
 	@Override
@@ -134,18 +134,12 @@ public class LanguageNode extends LanguageElement implements siani.tara.semantic
 	@Override
 	public List<siani.tara.semantic.model.Parameter> parameters() {
 		List<siani.tara.semantic.model.Parameter> parameters = wrapParameters(node.getParameterList());
-		parameters.addAll(wrapVarInits(node.getVarInits()));
 		return unmodifiableList(parameters);
 	}
 
 	private List<siani.tara.semantic.model.Parameter> wrapParameters(Collection<Parameter> toWrap) {
 		if (toWrap == null || toWrap.isEmpty()) return new ArrayList<>();
 		return toWrap.stream().map(LanguageParameter::new).collect(Collectors.toList());
-	}
-
-	private List<siani.tara.semantic.model.Parameter> wrapVarInits(Collection<VarInit> toWrap) {
-		if (toWrap == null || toWrap.isEmpty()) return new ArrayList<>();
-		return toWrap.stream().map(LanguageVarParameter::new).collect(Collectors.toList());
 	}
 
 	@Override

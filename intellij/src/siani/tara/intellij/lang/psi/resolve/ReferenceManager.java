@@ -1,4 +1,4 @@
-package siani.tara.intellij.lang.psi.impl;
+package siani.tara.intellij.lang.psi.resolve;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.codeinsight.JavaHelper;
 import siani.tara.intellij.lang.lexer.TaraPrimitives;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.module.ModuleProvider;
 

@@ -1,6 +1,6 @@
 package siani.tara.compiler.model;
 
-public interface FacetTarget extends NodeContainer {
+public interface FacetTarget extends Element, NodeContainer {
 
 	String getTarget();
 

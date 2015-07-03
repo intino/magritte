@@ -1,11 +1,13 @@
 package siani.tara.intellij.lang.psi;
 
 import com.intellij.pom.Navigatable;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public interface Parameter extends Navigatable, TaraPsiElement {
+
+
 
 	int getIndexInParent();
 
@@ -19,16 +21,18 @@ public interface Parameter extends Navigatable, TaraPsiElement {
 
 	boolean isList();
 
-	TaraFacetApply isInFacet();
+	FacetApply isInFacet();
 
-	@NotNull
-	String getExplicitName();
+	@Nullable
+	String getName();
 
 	String getContract();
 
 	void setContract(String contract);
 
 	String getInferredType();
+
+	String getValueType();
 
 	void setInferredType(String type);
 

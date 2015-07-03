@@ -8,7 +8,7 @@ import siani.tara.intellij.MessageProvider;
 import siani.tara.intellij.lang.lexer.TaraPrimitives;
 import siani.tara.intellij.lang.psi.Contract;
 import siani.tara.intellij.lang.psi.Variable;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.resolve.ReferenceManager;
 import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.module.ModuleProvider;
 

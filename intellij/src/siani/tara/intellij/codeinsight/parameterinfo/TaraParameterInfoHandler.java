@@ -40,7 +40,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 	@NotNull
 	@Override
 	public Set<Class> getArgumentListAllowedParentClasses() {
-		return new HashSet<Class>(Arrays.asList(Signature.class));
+		return new HashSet<>(Collections.singletonList(Signature.class));
 	}
 
 	@NotNull

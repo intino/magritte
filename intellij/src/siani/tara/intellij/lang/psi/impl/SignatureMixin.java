@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.psi.*;
+import siani.tara.intellij.lang.psi.resolve.ReferenceManager;
 
 import javax.swing.*;
 

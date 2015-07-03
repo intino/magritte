@@ -44,7 +44,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	public PsiReference getReference() {
 		PsiElement element = asParameterReference();
 		if (element != null) return createResolverForParameter((Parameter) element);
-		if ((element = asVarInitReference()) != null) return createResolverForVarInit((VarInit) element);
 		if (isWordDefaultValue()) return null;
 		else if (isFileReference()) return creteFileResolver();
 		else return createNodeResolver();
@@ -78,18 +77,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		return null;
 	}
 
-	private PsiReference createResolverForVarInit(VarInit varInit) {
-		Node container = TaraPsiImplUtil.getContainerNodeOf(this);
-		Allow.Parameter parameterAllow = TaraUtil.getCorrespondingAllow(container, varInit);
-		if (parameterAllow == null) return null;
-		if (parameterAllow.type().equalsIgnoreCase(REFERENCE))
-			return new TaraNodeReferenceSolver(this, getRange(), container);
-		if (parameterAllow.type().equalsIgnoreCase(WORD) || !isPrimitive(parameterAllow.type()))
-			return new TaraWordReferenceSolver(this, getRange(), parameterAllow);
-		return null;
-	}
-
-
 	private TextRange getRange() {
 		return new TextRange(0, getIdentifier().length());
 	}
@@ -120,15 +107,6 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		PsiElement parent = this.getParent();
 		while (!PsiFile.class.isInstance(parent)) {
 			if (parent instanceof Parameter) return (Parameter) parent;
-			parent = parent.getParent();
-		}
-		return null;
-	}
-
-	public VarInit asVarInitReference() {
-		PsiElement parent = this.getParent();
-		while (!PsiFile.class.isInstance(parent)) {
-			if (parent instanceof VarInit) return (VarInit) parent;
 			parent = parent.getParent();
 		}
 		return null;

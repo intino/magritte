@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.IdentifierReference;
 import siani.tara.intellij.lang.psi.Import;
 import siani.tara.intellij.lang.psi.TaraModel;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.resolve.ReferenceManager;
 
 import java.util.Collection;
 import java.util.HashSet;

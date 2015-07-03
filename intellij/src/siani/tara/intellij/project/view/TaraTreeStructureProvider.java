@@ -27,7 +27,7 @@ public class TaraTreeStructureProvider implements com.intellij.ide.projectView.T
 		Collection<AbstractTreeNode> result = new LinkedHashSet<>();
 		for (AbstractTreeNode element : children) {
 			TaraModel taraModel = getModel(element);
-			if (taraModel == null || taraModel.getName() == null) continue;
+			if (taraModel == null) continue;
 			result.add(new NodeView(project, taraModel, settings));
 		}
 		return result;

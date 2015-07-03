@@ -2,15 +2,17 @@ package siani.tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
 
 import java.util.Collections;
 import java.util.List;
 
+import static siani.tara.intellij.lang.lexer.TaraPrimitives.*;
+
 public class ParameterMixin extends ASTWrapperPsiElement {
 
+	private static final String EMPTY = "empty";
 	private String contract = "";
 	private String inferredType;
 	private String inferredName;
@@ -34,7 +36,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public String getExplicitName() {
+	public String getName() {
 		return this instanceof TaraExplicitParameter ? ((TaraExplicitParameter) this).getIdentifier().getText() : "";
 	}
 
@@ -55,11 +57,9 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		return value == null ? Collections.emptyList() : value.getValues();
 	}
 
-	public TaraFacetApply isInFacet() {
-		PsiElement aElement = this;
-		while (!(aElement.getParent() instanceof Node) && !(aElement.getParent() instanceof TaraFacetApply))
-			aElement = aElement.getParent();
-		return (aElement.getParent() instanceof TaraFacetApply) ? (TaraFacetApply) aElement.getParent() : null;
+	public FacetApply isInFacet() {
+		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
+		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
 	}
 
 	public String getContract() {
@@ -86,5 +86,19 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	public String toString() {
 		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
 		return "Parameter in" + (contextOf != null ? contextOf.getQualifiedName() : "");
+	}
+
+	public String getValueType() {
+		TaraValue value = ((TaraVarInit) this).getValue();
+		if (value == null) return "null";
+		if (!value.getBooleanValueList().isEmpty()) return BOOLEAN;
+		if (!value.getDoubleValueList().isEmpty()) return DOUBLE;
+		if (!value.getIntegerValueList().isEmpty()) return INTEGER;
+		if (!value.getNaturalValueList().isEmpty()) return NATURAL;
+		if (!value.getInstanceNameList().isEmpty()
+			|| !value.getIdentifierReferenceList().isEmpty()) return REFERENCE;
+		if (!value.getStringValueList().isEmpty()) return STRING;
+		if (value.getEmptyField() != null) return EMPTY;
+		return "null";
 	}
 }

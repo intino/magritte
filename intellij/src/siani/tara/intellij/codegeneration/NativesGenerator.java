@@ -15,7 +15,7 @@ import siani.tara.intellij.lang.psi.FacetTarget;
 import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.Variable;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.resolve.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
 import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.facet.TaraFacetConfiguration;

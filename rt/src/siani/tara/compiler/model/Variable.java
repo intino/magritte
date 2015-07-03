@@ -5,7 +5,7 @@ import siani.tara.semantic.model.Tag;
 import java.util.Collection;
 import java.util.List;
 
-public interface Variable extends Cloneable {
+public interface Variable extends Element, Cloneable {
 
 	String NATIVE_SEPARATOR = "#";
 	String WORD = "word";

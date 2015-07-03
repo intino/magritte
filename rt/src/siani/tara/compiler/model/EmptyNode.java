@@ -34,7 +34,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public void setDoc(String doc) {
+	public void addDoc(String doc) {
 
 	}
 
@@ -315,6 +315,26 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void addParameter(int position, String extension, Object... values) {
+
+	}
+
+	@Override
+	public String getFile() {
+		return null;
+	}
+
+	@Override
+	public void setFile(String file) {
+
+	}
+
+	@Override
+	public int getLine() {
+		return 0;
+	}
+
+	@Override
+	public void setLine(int line) {
 
 	}
 }

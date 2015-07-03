@@ -19,7 +19,7 @@ import siani.tara.intellij.lang.psi.Contract;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
-import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveContract;
+import static siani.tara.intellij.lang.psi.resolve.ReferenceManager.resolveContract;
 
 public class TaraToNative extends JavaLineMarkerProvider {
 

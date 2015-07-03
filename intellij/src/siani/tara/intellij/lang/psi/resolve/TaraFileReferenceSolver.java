@@ -11,7 +11,6 @@ import siani.tara.intellij.lang.psi.HeaderReference;
 import siani.tara.intellij.lang.psi.Identifier;
 import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.FileVariantsManager;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
 
 import java.util.*;
 

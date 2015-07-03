@@ -27,7 +27,7 @@ anImport ::= USE headerReference NEWLINE {
     implements='siani.tara.intellij.lang.psi.Import'
 }
 
-doc::= DOC_LINE+ {
+doc ::= DOC_LINE+ {
 	mixin= 'siani.tara.intellij.lang.psi.impl.DocMixin'
 	implements='siani.tara.intellij.lang.psi.Doc'
 }
@@ -90,7 +90,7 @@ nodeReference ::= HAS identifierReference tags? {
 	implements = 'siani.tara.intellij.lang.psi.NodeReference'
 }
 
-variable ::= VAR variableType attributeType? (LIST | count)? identifier (EQUALS value measureValue?)? flags? {
+variable ::= VAR variableType attributeType? (LIST | count)? identifier (EQUALS value measureValue?)? flags? (NEW_LINE_INDENT (doc NEWLINE+)+ DEDENT)? {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.VariableMixin'
 	implements = 'siani.tara.intellij.lang.psi.Variable'
@@ -196,7 +196,7 @@ annotation ::= TERMINAL
 varInit ::= identifier EQUALS value {
     pin = 2
 	mixin = 'siani.tara.intellij.lang.psi.impl.VarInitMixin'
-	implements = 'siani.tara.intellij.lang.psi.VarInit'
+	implements = 'siani.tara.intellij.lang.psi.Parameter'
 }
 
 emptyField ::= EMPTY_REF

@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.psi.*;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.EMPTY_LIST;
@@ -40,12 +40,15 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public List<Parameter> getParameterList() {
+		List<Parameter> parameterList = new ArrayList<>();
 		final TaraParameters parameters = ((TaraFacetApply) this).getParameters();
-		return parameters != null ? parameters.getParameters() : Collections.EMPTY_LIST;
+		if (parameters != null) parameterList.addAll(parameters.getParameters());
+		parameterList.addAll(getVarInits());
+		return parameterList;
 	}
 
 	@NotNull
-	public List<VarInit> getVarInits() {
+	private List<Parameter> getVarInits() {
 		if (((FacetApply) this).getBody() == null) return EMPTY_LIST;
 		return unmodifiableList(((FacetApply) this).getBody().getVarInitList());
 	}

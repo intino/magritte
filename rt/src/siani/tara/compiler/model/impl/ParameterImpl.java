@@ -1,6 +1,5 @@
 package siani.tara.compiler.model.impl;
 
-import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.Parameter;
 import siani.tara.util.WordGenerator;
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ParameterImpl extends Element implements Parameter {
+public class ParameterImpl implements Parameter {
 
 	private final List<Object> values = new ArrayList<>();
 	private String name;

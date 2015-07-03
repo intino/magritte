@@ -4,7 +4,6 @@ import com.intellij.find.findUsages.FindUsagesHandler;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.usageView.UsageInfo;
-import com.intellij.util.Processor;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.findusage.TaraFindUsagesHandlerFactory;
 import siani.tara.intellij.lang.psi.TaraModel;
@@ -27,13 +26,10 @@ public class TaraRefactoringUtil {
 		elementsToProcess.addAll(Arrays.asList(handler.getPrimaryElements()));
 		elementsToProcess.addAll(Arrays.asList(handler.getSecondaryElements()));
 		for (PsiElement e : elementsToProcess)
-			handler.processElementUsages(e, new Processor<UsageInfo>() {
-				@Override
-				public boolean process(UsageInfo usageInfo) {
-					if (!usageInfo.isNonCodeUsage)
-						usages.add(usageInfo);
-					return true;
-				}
+			handler.processElementUsages(e, usageInfo -> {
+				if (!usageInfo.isNonCodeUsage)
+					usages.add(usageInfo);
+				return true;
 			}, FindUsagesHandler.createFindUsagesOptions(element.getProject(), null));
 		return usages;
 	}

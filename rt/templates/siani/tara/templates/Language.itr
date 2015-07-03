@@ -30,7 +30,7 @@ def type(Model)
 end
 
 def type(node) trigger(node)
-	in("$name").def(context([$nodeType])[.$allows][.$requires][.$assumptions]);
+	in("$name").def(context([$nodeType])[.$allows][.$requires][.$assumptions][.$doc]);
 end
 
 def type(nodeType) trigger(nodeType)
@@ -120,6 +120,10 @@ end
 
 def type(assumptions) trigger(assumptions)
 	assume($assumption...[, ])
+end
+
+def type(doc) trigger(doc)
+	doc($file+quoted, $line, $doc+quoted)
 end
 
 def trigger(assumption)

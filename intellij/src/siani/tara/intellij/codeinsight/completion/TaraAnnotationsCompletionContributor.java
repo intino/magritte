@@ -37,7 +37,7 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 		PsiElement annotationContext = getContext(parameters.getPosition());
 		if (annotationContext == null) return;
 		IElementType elementType = annotationContext.getNode().getElementType();
-		if (elementType.equals(NODE) || elementType.equals(SUB)) {
+		if (elementType.equals(IDENTIFIER_KEY) || elementType.equals(SUB)) {
 			addNodeTags(resultSet);
 		} else if (elementType.equals(HAS)) {
 			for (Tag annotation : Flags.HAS_ANNOTATIONS)
@@ -58,10 +58,14 @@ public class TaraAnnotationsCompletionContributor extends CompletionContributor 
 	public PsiElement getContext(PsiElement element) {
 		PsiElement context = element;
 		while ((context = context.getPrevSibling()) != null) {
-			if (is(context, VAR) || is(context, HAS) || is(context, NODE) || is(context, SUB))
+			if (is(context, VAR) || is(context, HAS) || is(context, SUB) || (context.getPrevSibling() != null && isAfterBreakLine(context)))
 				return context;
 		}
 		return null;
+	}
+
+	private boolean isAfterBreakLine(PsiElement context) {
+		return is(context.getPrevSibling(), DEDENT) || is(context.getPrevSibling(), NEWLINE) || is(context.getPrevSibling(), NEW_LINE_INDENT);
 	}
 
 	private boolean is(PsiElement context, IElementType type) {

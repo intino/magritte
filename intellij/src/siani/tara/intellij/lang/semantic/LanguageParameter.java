@@ -64,7 +64,7 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 
 	@Override
 	public String getName() {
-		return parameter.getExplicitName();
+		return parameter.getName();
 	}
 
 	@Override

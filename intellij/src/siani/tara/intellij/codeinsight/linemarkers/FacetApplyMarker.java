@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static siani.tara.intellij.lang.psi.impl.ReferenceManager.resolveJavaClassReference;
+import static siani.tara.intellij.lang.psi.resolve.ReferenceManager.resolveJavaClassReference;
 
 public class FacetApplyMarker extends JavaLineMarkerProvider {
 

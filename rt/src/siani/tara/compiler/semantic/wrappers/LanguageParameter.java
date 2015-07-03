@@ -107,6 +107,6 @@ public class LanguageParameter extends LanguageElement implements siani.tara.sem
 
 	@Override
 	public Element element() {
-		return (Element) parameter;
+		return parameter;
 	}
 }

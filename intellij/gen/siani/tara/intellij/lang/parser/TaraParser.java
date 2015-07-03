@@ -9,9 +9,10 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
+import com.intellij.lang.LightPsiParser;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
-public class TaraParser implements PsiParser {
+public class TaraParser implements PsiParser, LightPsiParser {
 
   public ASTNode parse(IElementType t, PsiBuilder b) {
     parseLight(t, b);
@@ -1525,7 +1526,7 @@ public class TaraParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // VAR variableType attributeType? (LIST | count)? identifier (EQUALS value measureValue?)? flags?
+  // VAR variableType attributeType? (LIST | count)? identifier (EQUALS value measureValue?)? flags? (NEW_LINE_INDENT (doc NEWLINE+)+ DEDENT)?
   public static boolean variable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "variable")) return false;
     if (!nextTokenIs(b, VAR)) return false;
@@ -1538,7 +1539,8 @@ public class TaraParser implements PsiParser {
     r = p && report_error_(b, variable_3(b, l + 1)) && r;
     r = p && report_error_(b, identifier(b, l + 1)) && r;
     r = p && report_error_(b, variable_5(b, l + 1)) && r;
-    r = p && variable_6(b, l + 1) && r;
+    r = p && report_error_(b, variable_6(b, l + 1)) && r;
+    r = p && variable_7(b, l + 1) && r;
     exit_section_(b, l, m, VARIABLE, r, p, null);
     return r || p;
   }
@@ -1599,6 +1601,68 @@ public class TaraParser implements PsiParser {
     if (!recursion_guard_(b, l, "variable_6")) return false;
     flags(b, l + 1);
     return true;
+  }
+
+  // (NEW_LINE_INDENT (doc NEWLINE+)+ DEDENT)?
+  private static boolean variable_7(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "variable_7")) return false;
+    variable_7_0(b, l + 1);
+    return true;
+  }
+
+  // NEW_LINE_INDENT (doc NEWLINE+)+ DEDENT
+  private static boolean variable_7_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "variable_7_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, NEW_LINE_INDENT);
+    r = r && variable_7_0_1(b, l + 1);
+    r = r && consumeToken(b, DEDENT);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (doc NEWLINE+)+
+  private static boolean variable_7_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "variable_7_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = variable_7_0_1_0(b, l + 1);
+    int c = current_position_(b);
+    while (r) {
+      if (!variable_7_0_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "variable_7_0_1", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // doc NEWLINE+
+  private static boolean variable_7_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "variable_7_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = doc(b, l + 1);
+    r = r && variable_7_0_1_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // NEWLINE+
+  private static boolean variable_7_0_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "variable_7_0_1_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, NEWLINE);
+    int c = current_position_(b);
+    while (r) {
+      if (!consumeToken(b, NEWLINE)) break;
+      if (!empty_element_parsed_guard_(b, "variable_7_0_1_0_1", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */

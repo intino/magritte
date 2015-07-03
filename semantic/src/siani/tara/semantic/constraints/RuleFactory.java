@@ -16,15 +16,11 @@ import static siani.tara.semantic.model.Tag.*;
 
 public class RuleFactory {
 
+	@SuppressWarnings("SuspiciousMethodCalls")
 	public static Allow.Name name() {
-		return (element, rejectables) -> {
-			List<Rejectable> toRemove = new ArrayList<>();
-			for (Rejectable rejectable : rejectables) {
-				if (!(rejectable instanceof Rejectable.Name)) continue;
-				toRemove.add(rejectable);
-			}
-			rejectables.removeAll(toRemove);
-		};
+		return (element, rejectables) -> rejectables.removeAll(rejectables.stream().
+			filter(rejectable -> (rejectable instanceof Rejectable.Name)).
+			collect(Collectors.toList()));
 	}
 
 	public static Allow.Multiple multiple(final String type) {
@@ -43,6 +39,7 @@ public class RuleFactory {
 				return annotations;
 			}
 
+			@SuppressWarnings("SuspiciousMethodCalls")
 			@Override
 			public void check(Element element, List<? extends Rejectable> rejectables) {
 				List<Rejectable.Include> rejectableIncludes = getRejectableIncludesBy(type, rejectables);
@@ -188,14 +185,14 @@ public class RuleFactory {
 
 			@Override
 			public void check(Element element) throws SemanticException {
-				Node node = (Node) element;
-				if (node.isReference()) return;
-				for (Node inner : node.includes())
-					if (inner.type().equals(type)) {
-						addFlags(inner, annotations);
+				NodeContainer container = (NodeContainer) element;
+				if (container instanceof Node && ((Node) container).isReference()) return;
+				for (Node include : container.includes())
+					if (include.type().equals(type)) {
+						addFlags(include, annotations);
 						return;
 					}
-				throw new SemanticException(new SemanticError("required.type.in.context", node, asList(type, node.type().isEmpty() ? "Root" : node.type())));
+				throw new SemanticException(new SemanticError("required.type.in.context", container, asList(type, container.type().isEmpty() ? "Root" : container.type())));
 			}
 		};
 	}
@@ -218,14 +215,14 @@ public class RuleFactory {
 
 			@Override
 			public void check(Element element) throws SemanticException {
-				Node node = (Node) element;
-				if (node.isReference()) return;
-				for (Node inner : node.includes())
+				NodeContainer container = (NodeContainer) element;
+				if (container instanceof Node && ((Node) container).isReference()) return;
+				for (Node inner : container.includes())
 					if (inner.type().equals(type)) {
 						addFlags(inner, annotations);
 						return;
 					}
-				throw new SemanticException(new SemanticError("required.type.in.context", node, asList(type, node.type())));
+				throw new SemanticException(new SemanticError("required.type.in.context", container, asList(type, container.type())));
 			}
 		};
 	}
@@ -428,7 +425,7 @@ public class RuleFactory {
 		return new Assumption.Single() {
 			@Override
 			public void assume(Node node) {
-				if (!Arrays.asList(node.flags()).contains(SINGLE.name())) node.flags(SINGLE.name());
+				if (!node.flags().contains(SINGLE.name())) node.flags(SINGLE.name());
 			}
 		};
 	}

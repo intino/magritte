@@ -1,6 +1,6 @@
 package siani.tara.compiler.model;
 
-public interface Facet extends NodeContainer, Parametrized {
+public interface Facet extends Element, NodeContainer, Parametrized {
 
 	String getFacetType();
 }

@@ -108,11 +108,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.getVariablesInBody(this.getBody());
 	}
 
-	public List<VarInit> getVarInits() {
-		if (this.getBody() == null) return EMPTY_LIST;
-		return unmodifiableList(this.getBody().getVarInitList());
-	}
-
 	public List<NodeReference> getInnerNodeReferences() {
 		return unmodifiableList(TaraPsiImplUtil.getNodeReferencesOf((Node) this));
 	}
@@ -140,8 +135,17 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	public List<Parameter> getParameterList() {
-		if (getSignature().getParameters() == null) return EMPTY_LIST;
-		return unmodifiableList(getSignature().getParameters().getParameters());
+		List<Parameter> parameterList = new ArrayList<>();
+		final Parameters parameters = getSignature().getParameters();
+		if (parameters != null) parameterList.addAll(parameters.getParameters());
+		parameterList.addAll(getVarInits());
+		return parameterList;
+	}
+
+	@NotNull
+	private List<Parameter> getVarInits() {
+		if (this.getBody() == null) return EMPTY_LIST;
+		return unmodifiableList(this.getBody().getVarInitList());
 	}
 
 	public String getQualifiedName() {

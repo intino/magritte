@@ -17,7 +17,6 @@ public class Proteo extends Tara {
 		in(CONCEPT).def(context(CONCEPT).require(RuleFactory._name()).allow(multiple(CONCEPT)));
 	}
 
-
 	@Override
 	public String languageName() {
 		return "Proteo";

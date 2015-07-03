@@ -1,12 +1,19 @@
 package siani.tara.intellij.project.view;
 
 import com.intellij.CommonBundle;
+import com.intellij.codeInsight.daemon.impl.DaemonCodeAnalyzerEx;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
+import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.actionSystem.DataKey;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.colors.CodeInsightColors;
+import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.editor.markup.EffectType;
+import com.intellij.openapi.editor.markup.TextAttributes;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.io.FileUtil;
@@ -14,14 +21,19 @@ import com.intellij.openapi.vfs.VFileProperty;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiFile;
+import com.intellij.ui.JBColor;
 import siani.tara.intellij.lang.psi.TaraModel;
 
+import java.awt.*;
 import java.util.Collection;
 import java.util.Collections;
 
+import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
+
 public class NodeView extends PsiFileNode implements Navigatable {
 	public static final DataKey<NodeView> DATA_KEY = DataKey.create("form.array");
-
+	public static final TextAttributesKey ERROR = createTextAttributesKey("ERROR",
+		new TextAttributes(null, null, JBColor.RED, EffectType.WAVE_UNDERSCORE, Font.PLAIN));
 	private final PsiFile taraFile;
 
 	public NodeView(Project project, TaraModel psiFile, ViewSettings settings) {
@@ -71,17 +83,21 @@ public class NodeView extends PsiFileNode implements Navigatable {
 			data.setPresentableText(((TaraModel) value).getPresentableName());
 		} else data.setPresentableText(value.getName());
 		data.setIcon(value.getIcon(Iconable.ICON_FLAG_READ_STATUS));
-
+		if (fileHasErrors()) data.setAttributesKey(ERROR);
 		VirtualFile file = getVirtualFile();
 		if (file != null && file.is(VFileProperty.SYMLINK)) {
 			String target = file.getCanonicalPath();
 			if (target == null) {
 				data.setAttributesKey(CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES);
 				data.setTooltip(CommonBundle.message("vfs.broken.link"));
-			} else {
-				data.setTooltip(FileUtil.toSystemDependentName(target));
-			}
+			} else data.setTooltip(FileUtil.toSystemDependentName(target));
 		}
+	}
+
+	private boolean fileHasErrors() {
+		final Document document = FileDocumentManager.getInstance().getDocument(taraFile.getVirtualFile());
+		return document != null && DaemonCodeAnalyzerEx.processHighlights(document, taraFile.getProject(), null, 0, document.getTextLength(),
+			info -> info.getSeverity() == HighlightSeverity.ERROR);
 	}
 
 	public boolean isValid() {

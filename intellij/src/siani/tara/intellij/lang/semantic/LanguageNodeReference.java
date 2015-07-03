@@ -5,7 +5,7 @@ import siani.tara.intellij.lang.psi.Annotation;
 import siani.tara.intellij.lang.psi.FacetApply;
 import siani.tara.intellij.lang.psi.Flag;
 import siani.tara.intellij.lang.psi.NodeReference;
-import siani.tara.intellij.lang.psi.impl.ReferenceManager;
+import siani.tara.intellij.lang.psi.resolve.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.semantic.model.*;
 

@@ -1,12 +1,12 @@
 package siani.tara.compiler.model;
 
-public abstract class Element {
+public interface Element {
 
-	public abstract String getFile();
+	String getFile();
 
-	public abstract void setFile(String file);
+	void setFile(String file);
 
-	public abstract int getLine();
+	int getLine();
 
-	public abstract void setLine(int line);
+	void setLine(int line);
 }

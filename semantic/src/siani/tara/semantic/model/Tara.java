@@ -44,6 +44,11 @@ public abstract class Tara implements Language {
 		return Collections.unmodifiableList(rulesCatalog.get(qualifiedName).allows());
 	}
 
+	public Documentation doc(String qualifiedName) {
+		if (!rulesCatalog.containsKey(qualifiedName)) return null;
+		return rulesCatalog.get(qualifiedName).doc();
+	}
+
 	public List<String> types(String qualifiedName) {
 		if (!rulesCatalog.containsKey(qualifiedName)) return null;
 		return Arrays.asList(rulesCatalog.get(qualifiedName).types());

@@ -100,7 +100,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	@Override
 	public void enterFacetApply(@NotNull FacetApplyContext ctx) {
 		Facet facet = new FacetImpl(ctx.metaidentifier(0).getText());
-		addHeaderInformation(ctx, (Element) facet);
+		addHeaderInformation(ctx, facet);
 		Node peek = (Node) deque.peek();
 		peek.addFacets(facet);
 		facet.setContainer(peek);
@@ -116,7 +116,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	public void enterFacetTarget(@NotNull FacetTargetContext ctx) {
 		NodeImpl peek = getNodeContainer();
 		FacetTarget facetTarget = new FacetTargetImpl();
-		addHeaderInformation(ctx, (Element) facetTarget);
+		addHeaderInformation(ctx, facetTarget);
 		facetTarget.setTarget(ctx.identifierReference().getText());
 		peek.addFacetTargets(facetTarget);
 		facetTarget.setContainer(peek);
@@ -139,9 +139,9 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	public void enterDoc(@NotNull DocContext ctx) {
 		StringBuilder builder = new StringBuilder();
 		for (TerminalNode doc : ctx.DOC())
-			builder.append(doc.getText().substring(4));
+			builder.append(doc.getText().substring(2));
 		String trim = builder.toString().trim();
-		deque.peek().setDoc(trim);
+		deque.peek().addDoc(trim);
 	}
 
 	@Override
@@ -205,7 +205,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			if (ctx.contract() != null) variable.setContract(ctx.contract().getText().substring(1));
 		}
 
-		addHeaderInformation(ctx, (Element) variable);
+		addHeaderInformation(ctx, variable);
 		variable.addFlags(resolveTags(ctx.flags()));
 		container.addVariables(variable);
 	}

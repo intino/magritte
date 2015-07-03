@@ -54,14 +54,13 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 
 	private String getType(PsiElement element) {
 		if (element instanceof Variable) return ((Variable) element).getType();
-		if (element instanceof VarInit) return ((VarInit) element).getInferredType();
 		if (element instanceof Parameter) return ((Parameter) element).getInferredType();
 		return null;
 	}
 
 	private PsiElement getContainerOfExpression() {
 		PsiElement element = this.getParent();
-		while (element != null && !(element instanceof Variable) && !(element instanceof VarInit) && !(element instanceof Parameter))
+		while (element != null && !(element instanceof Variable) && !(element instanceof Parameter))
 			element = element.getParent();
 		return element;
 	}

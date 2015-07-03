@@ -6,10 +6,14 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.Language;
+import siani.tara.dsl.Proteo;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
 import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.TaraModel;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.semantic.model.Documentation;
 
 
 public class TaraDocumentationProvider extends AbstractDocumentationProvider {
@@ -30,8 +34,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	@NonNls
 	public String generateDoc(final PsiElement element, @Nullable final PsiElement originalElement) {
 		if (originalElement instanceof MetaIdentifier) {
-			Node node = TaraPsiImplUtil.getContainerNodeOf(originalElement);
-			String doc = "";
+			String doc = findDoc(TaraPsiImplUtil.getContainerNodeOf(originalElement));
 			return TaraDocumentationFormatter.doc2Html(null, doc);
 		}
 		if (element instanceof Node)
@@ -41,38 +44,10 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 		return renderConceptValue(TaraPsiImplUtil.getContainerNodeOf(element));
 	}
 
-//	private String generateDocForNode(Node node, String contextNode) {
-//		StringBuilder builder = new StringBuilder("**" + node.getObject().getType() + " " + node.getObject().getName() + "**\n");
-//		for (Variable inner : node.getObject().getVariables()) {
-//			builder.append("\t\t").append(inner.toString()).append("\n");
-//			if (inner.getDoc() != null) builder.append(inner.getDoc()).append("\n");
-//		}
-//		for (Node inner : node.getIncludes()) {
-//			builder.append("\t\t").append(inner.getObject().getType()).append(" ").append(inner.getObject().getName()).append("\n");
-//			if (inner.getObject().getDoc() != null) builder.append(inner.getObject().getDoc()).append("\n");
-//		}
-//		if (node.getObject().is(INTENTION)) {
-//			builder.append(generateDocForFacetApply((DeclaredNode) node, contextNode));
-//		} else if (!node.getObject().getAllowedFacets().isEmpty()) {
-//			builder.append("\n\t\t").append("Allowed facets:").append("\n");
-//			for (String key : node.getObject().getAllowedFacets().keySet())
-//				builder.append("\t\t\t").append(key).append("\n");
-//		}
-//		return builder.toString();
-//	}
-//
-//	private String generateDocForFacetApply(DeclaredNode node, String contextNode) {
-//		StringBuilder builder = new StringBuilder();
-//		FacetTarget target = null;
-//		for (FacetTarget facetTarget : node.getObject().getFacetTargets())
-//			if (facetTarget.getDestinyName().equals(contextNode) || facetTarget.getDestinyName().endsWith("." + contextNode))
-//				target = facetTarget;
-//		if (target == null) return "";
-//		builder.append("\n\t\t").append("On ").append(contextNode).append(":").append("\n");
-//		for (Variable inner : target.getVariables()) {
-//			builder.append("\t\t\t").append(inner.toString()).append("\n");
-//			if (inner.getDoc() != null) builder.append(inner.getDoc()).append("\n");
-//		}
-//		return builder.toString();
-//	}
+	private String findDoc(Node node) {
+		final Language language = TaraLanguage.getLanguage(node.getContainingFile());
+		if (language == null || language instanceof Proteo) return "";
+		final Documentation doc = language.doc(node.getType());
+		return doc != null ? doc.description() : "";
+	}
 }

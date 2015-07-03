@@ -2,7 +2,7 @@ package siani.tara.semantic.model;
 
 import java.util.List;
 
-public interface Node extends Element {
+public interface Node extends NodeContainer {
 	Node context();
 
 	String type();
@@ -40,8 +40,6 @@ public interface Node extends Element {
 	List<FacetTarget> facetTargets();
 
 	List<Parameter> parameters();
-
-	List<Node> includes();
 
 	List<Variable> variables();
 }

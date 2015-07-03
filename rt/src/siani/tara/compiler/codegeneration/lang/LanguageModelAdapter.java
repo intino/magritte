@@ -76,15 +76,17 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			addAllows(node, frame);
 			addRequires(node, frame);
 			addAssumptions(node, frame);
+			addDoc(node, frame);
 			root.addFrame(NODE, frame);
 		}
 		node.getIncludedNodes().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 		addFacetNodes(node);
 	}
 
-	private void addFacetNodes(Node node) {
-		for (FacetTarget target : node.getFacetTargets())
-			target.getIncludedNodes().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
+	private void addDoc(Node node, Frame frame) {
+		final Frame docFrame = new Frame();
+		docFrame.addTypes("doc").addFrame("file", node.getFile()).addFrame("line", node.getLine()).addFrame("doc", node.getDoc() != null ? node.getDoc(): "");
+		frame.addFrame(DOC, docFrame);
 	}
 
 	private void addTypes(Node node, Frame frame) {
@@ -261,7 +263,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void collectSingleAndMultipleInnerAllows(NodeContainer container, List<Frame> multipleNodes, List<Frame> singleNodes) {
 		for (Node include : container.getIncludedNodes()) {
-			if (!isAllowedNode(container, include)) continue;
+			if (isRequiredNode(container, include)) continue;
 			if (container instanceof Model && ((level == 1 && !include.isMain()) || (level == 2 && include.isTerminal() && !include.isMain())))
 				continue;
 			for (Node candidate : collectCandidates(include))
@@ -271,8 +273,8 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		}
 	}
 
-	private boolean isAllowedNode(NodeContainer container, Node include) {
-		return !include.isRequired() || !containerIsTerminal(container);
+	private boolean isRequiredNode(NodeContainer container, Node include) {
+		return include.isRequired();//&& containerIsTerminal(container);
 	}
 
 	private void addRequiredInnerNodes(Frame requires, NodeContainer container) {
@@ -284,7 +286,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void collectSingleAndMultipleInnerRequires(Frame requires, NodeContainer container, List<Frame> multipleNodes, List<Frame> singleNodes) {
 		for (Node include : container.getIncludedNodes()) {
-			if (isAllowedNode(container, include)) continue;
+			if (!isRequiredNode(container, include)) continue;
 			Collection<Node> candidates = collectCandidates(include);
 			if (include.isAbstract() && candidates.size() > 1)
 				requires.addFrame(REQUIRE, createOneOf(candidates, include));
@@ -383,6 +385,11 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		Frame frame = new Frame().addTypes(MULTIPLE, REQUIRE).addFrame(TYPE, getName(node));
 		for (Tag tag : node.getAnnotations()) frame.addFrame("tags", tag.name());
 		return frame;
+	}
+
+	private void addFacetNodes(Node node) {
+		for (FacetTarget target : node.getFacetTargets())
+			target.getIncludedNodes().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 	}
 
 }

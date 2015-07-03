@@ -4,8 +4,8 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import siani.tara.intellij.lang.psi.Node;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
+import siani.tara.intellij.lang.psi.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +23,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
 		List<ResolveResult> results = new ArrayList<>();
 		Node contextOf = getContainerNodeOf(myElement);
-		if (contextOf != null)
-			results.add(new PsiElementResolveResult(contextOf));
+		if (contextOf != null) results.add(new PsiElementResolveResult(contextOf));
 		return results.toArray(new ResolveResult[results.size()]);
 	}
 

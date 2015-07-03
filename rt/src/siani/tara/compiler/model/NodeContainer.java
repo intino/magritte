@@ -34,6 +34,6 @@ public interface NodeContainer {
 
 	String getDoc();
 
-	void setDoc(String doc);
+	void addDoc(String doc);
 
 }

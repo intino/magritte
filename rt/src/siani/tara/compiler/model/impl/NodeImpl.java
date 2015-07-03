@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import static java.util.Collections.unmodifiableList;
 import static siani.tara.semantic.model.Tag.*;
 
-public class NodeImpl extends Element implements Node {
+public class NodeImpl implements Node {
 
 	private String file;
 	private int line;
@@ -78,8 +78,8 @@ public class NodeImpl extends Element implements Node {
 		return doc;
 	}
 
-	public void setDoc(String doc) {
-		this.doc = doc;
+	public void addDoc(String doc) {
+		this.doc = this.doc == null ? doc : this.doc + "\\n" + doc.trim();
 	}
 
 	@Override

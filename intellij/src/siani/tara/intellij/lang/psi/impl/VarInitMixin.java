@@ -3,6 +3,7 @@ package siani.tara.intellij.lang.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import siani.tara.intellij.lang.psi.*;
 
 import java.util.Collections;
@@ -16,6 +17,7 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 
 	private String contract = "";
 	private String inferredType;
+	private String name;
 
 	public VarInitMixin(@NotNull ASTNode node) {
 		super(node);
@@ -42,13 +44,11 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Object> getValues() {
-		return ((VarInit) this).getValue() == null ? Collections.emptyList(): ((VarInit) this).getValue().getValues();
+		return ((Parameter) this).getValue() == null ? Collections.emptyList() : ((Parameter) this).getValue().getValues();
 	}
 
-
-	public String getMetric() {
-		TaraMeasureValue measureValue = ((VarInit) this).getValue().getMeasureValue();
-		return measureValue == null ? null : measureValue.getText();
+	public TaraMeasureValue getMetric() {
+		return ((Parameter) this).getValue().getMeasureValue();
 	}
 
 	public String getContract() {
@@ -71,5 +71,30 @@ public class VarInitMixin extends ASTWrapperPsiElement {
 	public String toString() {
 		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
 		return "Parameter in" + (contextOf != null ? contextOf.getQualifiedName() : "");
+	}
+
+	public int getIndexInParent() {
+		return 0;
+	}
+
+	public boolean isExplicit() {
+		return true;
+	}
+
+	@Nullable
+	public TaraValue getValue() {
+		return findChildByClass(TaraValue.class);
+	}
+
+	public boolean isList() {
+		return ((Parameter) this).getValue().getChildren().length - (((Parameter) this).getValue().getMeasureValue() != null ? 1 : 0) > 1;
+	}
+
+	public FacetApply isInFacet() {
+		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
+		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
+	}
+
+	public void setInferredName(String name) {
 	}
 }

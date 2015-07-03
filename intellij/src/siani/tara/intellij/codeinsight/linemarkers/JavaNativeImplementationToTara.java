@@ -73,12 +73,8 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	@Nullable
 	private static PsiElement searchNativeInNode(String name, String contract, NodeContainer node) {
 		if (node instanceof Parametrized) {
-			for (VarInit variable : ((Parametrized) node).getVarInits())
-				if (name.equals(variable.getName()))
-					return variable;
-
 			for (Parameter parameter : ((Parametrized) node).getParameterList())
-				if (name.equals(parameter.getExplicitName()))
+				if (name.equals(parameter.getName()))
 					return parameter;
 		}
 		for (Variable variable : node.getVariables())

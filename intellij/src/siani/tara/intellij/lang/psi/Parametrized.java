@@ -9,5 +9,4 @@ public interface Parametrized {
 	@NotNull
 	List<Parameter> getParameterList();
 
-	List<VarInit> getVarInits();
 }

@@ -182,7 +182,7 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 		Frame include = new Frame().addTypes(INCLUDE).addTypes(asString(inner.getFlags()));
 		final boolean withKey = inner.isAnonymous() && inner.getPlate() == null;
 		include.addFrame(VALUE, withKey ? key : NameFormatter.cleanQn(searchNode(inner)));
-		if (m0) include.addTypes(TERMINAL);
+		if (m0 || inner.isTerminalInstance() || inner.isFeatureInstance()) include.addTypes(TERMINAL);
 		if (withKey) include.addTypes(KEY);
 		if (inner.isFeature()) include.addTypes(Tag.SINGLE.name());
 		frame.addFrame(INCLUDE, include);

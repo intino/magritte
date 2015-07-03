@@ -14,6 +14,7 @@ public class Context {
 	private final String[] types;
 	private final List<Constraint> constraints = new ArrayList<>();
 	private final List<Assumption> assumptions = new ArrayList<>();
+	private Documentation documentation;
 	private final List<Allow> allows = new ArrayList<>();
 
 	public Context(String[] types, Constraint[] globalConstrains) {
@@ -37,6 +38,10 @@ public class Context {
 		return allows;
 	}
 
+	public Documentation doc() {
+		return documentation;
+	}
+
 	public Context allow(final Allow... allows) {
 		this.allows.addAll(Arrays.asList(allows));
 		return add(new Constraint.Reject() {
@@ -50,16 +55,21 @@ public class Context {
 		});
 	}
 
+	public Context doc(String file, int line, String doc) {
+		documentation = new Documentation(file, line, doc);
+		return this;
+	}
+
 	public Context assume(Assumption... assumptions) {
 		this.assumptions.addAll(Arrays.asList(assumptions));
 		return this;
 	}
 
+
 	public Context require(Constraint.Require... constraints) {
 		new ContextConstraintTransformer().transformCorrespondingAllows(constraints);
 		return add(constraints);
 	}
-
 
 	private Context add(Constraint... constraints) {
 		this.constraints.addAll(Arrays.asList(constraints));

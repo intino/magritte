@@ -35,6 +35,11 @@ class ScriptTargetDefinition implements TargetDefinition {
 			public List<Node> includes() {
 				return Collections.emptyList();//includes;
 			}
+
+			@Override
+			public String type() {
+				return null;
+			}
 		};
 	}
 }

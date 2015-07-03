@@ -14,7 +14,7 @@ public interface Body extends TaraPsiElement {
 	List<? extends Variable> getVariableList();
 
 	@NotNull
-	List<? extends VarInit> getVarInitList();
+	List<? extends Parameter> getVarInitList();
 
 	@NotNull
 	List<? extends Node> getNodeList();

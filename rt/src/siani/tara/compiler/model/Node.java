@@ -6,7 +6,7 @@ import siani.tara.semantic.model.Tag;
 import java.util.Collection;
 import java.util.List;
 
-public interface Node extends NodeContainer, Parametrized {
+public interface Node extends Element, NodeContainer, Parametrized {
 
 	String ANNONYMOUS = "annonymous@";
 
