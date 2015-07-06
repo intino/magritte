@@ -26,6 +26,8 @@ public interface Variable extends Navigatable, Iconable, PsiNamedElement {
 
 	boolean isMultiple();
 
+	int getSize();
+
 	boolean isOverriden();
 
 	List<Tag> getAllFlags();

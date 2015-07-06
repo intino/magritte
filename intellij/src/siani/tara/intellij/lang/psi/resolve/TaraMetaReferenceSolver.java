@@ -1,16 +1,25 @@
 package siani.tara.intellij.lang.psi.resolve;
 
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import siani.tara.Language;
+import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.MetaIdentifier;
 import siani.tara.intellij.lang.psi.Node;
+import siani.tara.intellij.lang.psi.NodeContainer;
+import siani.tara.intellij.lang.psi.TaraModel;
+import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.semantic.model.Documentation;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
 
 public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
@@ -22,9 +31,39 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode) {
 		List<ResolveResult> results = new ArrayList<>();
-		Node contextOf = getContainerNodeOf(myElement);
-		if (contextOf != null) results.add(new PsiElementResolveResult(contextOf));
+		final PsiElement destiny = findDestiny();
+		if (destiny != null) results.add(new PsiElementResolveResult(destiny));
 		return results.toArray(new ResolveResult[results.size()]);
+	}
+
+	@Nullable
+	private PsiElement findDestiny() {
+		Language language = TaraLanguage.getLanguage(myElement.getContainingFile());
+		final Node node = TaraPsiImplUtil.getContainerNodeOf(myElement);
+		if (language == null || node == null) return null;
+		final Documentation doc = language.doc(node.resolve().getFullType());
+		if (doc == null) return null;
+		PsiFile file = findFile(doc.file());
+		if (file == null) return null;
+		return searchNodeIn(TaraUtil.getAllNodeContainersOfFile((TaraModel) file));
+	}
+
+	private Node searchNodeIn(List<NodeContainer> nodes) {
+		for (NodeContainer node : nodes)
+			if (node instanceof Node && myElement.getText().equals(((Node) node).getName()))
+				return (Node) node;
+		return null;
+	}
+
+	@Nullable
+	private PsiFile findFile(String file) {
+		try {
+			final VirtualFile virtualFile = VfsUtil.findFileByURL(new File(file).toURI().toURL());
+			if (virtualFile == null) return null;
+			return PsiManager.getInstance(myElement.getProject()).findFile(virtualFile);
+		} catch (MalformedURLException ignored) {
+			return null;
+		}
 	}
 
 	@Nullable

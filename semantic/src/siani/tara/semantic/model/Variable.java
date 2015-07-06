@@ -20,6 +20,8 @@ public interface Variable extends Element {
 
 	boolean isMultiple();
 
+	int getSize();
+
 	boolean isOverriden();
 
 	List<Object> defaultValue();

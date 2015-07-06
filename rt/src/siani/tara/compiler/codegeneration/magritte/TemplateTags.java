@@ -53,6 +53,7 @@ public interface TemplateTags {
 	String ALLOW = "allow";
 	String REQUIRE = "require";
 	String ASSUMPTION = "assumption";
+	String TAGS = "tags";
 	String NODE = "node";
 	String NAME = "name";
 	String SINGLE = "single";

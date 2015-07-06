@@ -1,6 +1,7 @@
 package siani.tara.intellij.project.view;
 
 import com.intellij.ide.projectView.ViewSettings;
+import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
@@ -26,6 +27,10 @@ public class TaraTreeStructureProvider implements com.intellij.ide.projectView.T
 		if (!hasModels(children)) return children;
 		Collection<AbstractTreeNode> result = new LinkedHashSet<>();
 		for (AbstractTreeNode element : children) {
+			if (element instanceof PsiDirectoryNode) {
+				result.add(element);
+				continue;
+			}
 			TaraModel taraModel = getModel(element);
 			if (taraModel == null) continue;
 			result.add(new NodeView(project, taraModel, settings));

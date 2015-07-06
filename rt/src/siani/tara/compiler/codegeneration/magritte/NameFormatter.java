@@ -4,7 +4,6 @@ import siani.tara.compiler.model.Facet;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.NodeContainer;
-import siani.tara.compiler.model.impl.Model;
 
 import java.io.File;
 
@@ -84,16 +83,6 @@ public class NameFormatter {
 		return camelCase(file.substring(file.lastIndexOf(File.separator) + 1, file.lastIndexOf(DOT)), "_");
 	}
 
-	public static String createNativeClassReference(NodeContainer container, String variable) {
-		final NodeContainer root = findRoot(container);
-		final String containerPath = cleanNativeReference(container.getQualifiedName());
-		String qualifiedName = (!root.getQualifiedName().equals(containerPath) ? root.getQualifiedName() : "");
-		if (!containerPath.isEmpty()) qualifiedName += "_" + containerPath;
-		qualifiedName = !qualifiedName.isEmpty() ? qualifiedName + "_" + variable : variable;
-		qualifiedName = qualifiedName.startsWith("_") ? qualifiedName.substring(1) : qualifiedName;
-		return qualifiedName;
-	}
-
 	public static String cleanNativeReference(String qualifiedName) {
 		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "").replace(".", "_");
 	}
@@ -102,10 +91,4 @@ public class NameFormatter {
 		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
 	}
 
-	private static NodeContainer findRoot(NodeContainer container) {
-		NodeContainer aContainer = container;
-		while (!(aContainer.getContainer() instanceof Model))
-			aContainer = aContainer.getContainer();
-		return aContainer;
-	}
 }

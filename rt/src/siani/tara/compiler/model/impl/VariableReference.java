@@ -24,7 +24,7 @@ public class VariableReference extends VariableImpl {
 	@Override
 	public Variable cloneIt(NodeContainer container) {
 		VariableReference variable = new VariableReference(container, getType(), getName());
-		variable.setMultiple(this.isMultiple());
+		variable.setSize(this.getSize());
 		variable.setDefaultExtension(getDefaultExtension());
 		variable.setContract(getContract());
 		for (Tag tag : getFlags()) variable.addFlags(tag.name());

@@ -5,15 +5,16 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.siani.itrules.model.Frame;
 import siani.tara.Language;
 import siani.tara.Resolver;
 import siani.tara.intellij.framework.maven.NativeTemplate;
 import siani.tara.intellij.lang.TaraLanguage;
 import siani.tara.intellij.lang.psi.*;
-import siani.tara.intellij.lang.psi.resolve.ReferenceManager;
 import siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import siani.tara.intellij.lang.psi.impl.TaraUtil;
+import siani.tara.intellij.lang.psi.resolve.ReferenceManager;
 import siani.tara.intellij.lang.semantic.LanguageNode;
 import siani.tara.intellij.project.facet.TaraFacet;
 import siani.tara.intellij.project.facet.TaraFacetConfiguration;
@@ -62,6 +63,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		if (language == null) return "";
 		String languageName = language.languageName();
 		Frame frame = createFrame(expression, languageName);
+		if (frame == null) return "";
 		return NativeTemplate.create().format(frame);
 	}
 
@@ -70,6 +72,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 			"}";
 	}
 
+	@Nullable
 	private Frame createFrame(Expression expression, String languageName) {
 		Frame frame = new Frame().addTypes("native");
 		PsiElement element = getParameter(expression);
@@ -80,6 +83,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		frame.addFrame("language", languageName.toLowerCase());
 		Allow.Parameter allow = TaraUtil.getCorrespondingAllow(node, element);
 		final String type = getType(allow, element);
+		if (allow == null && !TaraLanguage.PROTEO.equals(languageName) && Primitives.NATIVE.equals(type)) return null;
 		return Primitives.NATIVE.equals(type) ?
 			fillAsNativeFrame(expression, frame, element, node, language, allow) :
 			fillAsExpression(expression, frame, element, node, language, allow, type);
@@ -102,7 +106,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private String capitalize(String type) {
-		return type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
+		return type != null ? type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase() : "";
 	}
 
 	private Frame fillAsNativeFrame(Expression expression, Frame frame, PsiElement element, Node node, String language, Allow.Parameter allow) {

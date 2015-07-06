@@ -1,6 +1,6 @@
 src_file
-/Users/oroncal/workspace/sandbox/sumusnew/Base/model/Query.tara
 /Users/oroncal/workspace/sandbox/sumusnew/Base/model/Main.tara
+/Users/oroncal/workspace/sandbox/sumusnew/Base/model/Query.tara
 /Users/oroncal/workspace/sandbox/sumusnew/Base/model/Visualization.tara
 
 project

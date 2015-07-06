@@ -85,7 +85,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private void addDoc(Node node, Frame frame) {
 		final Frame docFrame = new Frame();
-		docFrame.addTypes("doc").addFrame("file", node.getFile()).addFrame("line", node.getLine()).addFrame("doc", node.getDoc() != null ? node.getDoc(): "");
+		docFrame.addTypes("doc").addFrame("file", node.getFile().replace("\\", "\\\\")).addFrame("line", node.getLine()).addFrame("doc", node.getDoc() != null ? node.getDoc() : "");
 		frame.addFrame(DOC, docFrame);
 	}
 
@@ -234,7 +234,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (tag.name().toLowerCase().equals(TERMINAL)) assumptions.addFrame(ASSUMPTION, Tag.TERMINAL_INSTANCE);
 			else if (tag.equals(Tag.FEATURE)) assumptions.addFrame(ASSUMPTION, Tag.FEATURE_INSTANCE);
 			else if (tag.equals(Tag.FACET)) assumptions.addFrame(ASSUMPTION, Tag.FACET_INSTANCE);
-			else if (tag.equals(Tag.MAIN)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.MAIN.name()));
+			else if (tag.equals(Tag.MAIN)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.MAIN_INSTANCE.name()));
 		}
 	}
 
@@ -274,7 +274,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private boolean isRequiredNode(NodeContainer container, Node include) {
-		return include.isRequired();//&& containerIsTerminal(container);
+		return include.isRequired() && containerIsTerminal(container);
 	}
 
 	private void addRequiredInnerNodes(Frame requires, NodeContainer container) {
@@ -288,9 +288,12 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (Node include : container.getIncludedNodes()) {
 			if (!isRequiredNode(container, include)) continue;
 			Collection<Node> candidates = collectCandidates(include);
-			if (include.isAbstract() && candidates.size() > 1)
-				requires.addFrame(REQUIRE, createOneOf(candidates, include));
-			else for (Node candidate : candidates) {
+			if (candidates.size() > 1) {
+				final Frame oneOf = createOneOf(candidates, include);
+				if (!include.isAbstract()) oneOf.addFrame(REQUIRE, include.isSingle() ?
+					createRequiredSingle(include) : createRequiredMultiple(include));
+				requires.addFrame(REQUIRE, oneOf);
+			} else for (Node candidate : candidates) {
 				if (include.isSub()) continue;
 				if (include.isSingle()) singleNodes.add(createRequiredSingle(candidate));
 				else multipleNodes.add(createRequiredMultiple(candidate));
@@ -335,10 +338,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Frame createAllowedSingle(Node node) {
 		Frame frame = new Frame().addTypes(SINGLE, ALLOW).addFrame(TYPE, getName(node));
 		for (Tag tag : node.getAnnotations())
-			frame.addFrame("tags", tag.name());
+			frame.addFrame(TAGS, tag.name());
 		for (Tag tag : node.getFlags()) {
 			if (tag.equals(NAMED)) continue;
-			frame.addFrame("tags", convertTag(tag));
+			frame.addFrame(TAGS, convertTag(tag));
 		}
 		return frame;
 	}
@@ -346,10 +349,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Frame createAllowedMultiple(Node node) {
 		Frame frame = new Frame().addTypes(MULTIPLE, ALLOW).addFrame(TYPE, getName(node));
 		for (Tag tag : node.getAnnotations())
-			frame.addFrame("tags", tag.name());
+			frame.addFrame(TAGS, tag.name());
 		for (Tag tag : node.getFlags()) {
 			if (tag.equals(NAMED)) continue;
-			frame.addFrame("tags", convertTag(tag));
+			frame.addFrame(TAGS, convertTag(tag));
 		}
 		return frame;
 	}
@@ -377,13 +380,13 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	private Frame createRequiredSingle(Node node) {
 		Frame frame = new Frame().addTypes(SINGLE, REQUIRE).addFrame(TYPE, getName(node));
 		for (Tag tag : node.getAnnotations())
-			frame.addFrame("tags", tag.name());
+			frame.addFrame(TAGS, tag.name());
 		return frame;
 	}
 
 	private Frame createRequiredMultiple(Node node) {
 		Frame frame = new Frame().addTypes(MULTIPLE, REQUIRE).addFrame(TYPE, getName(node));
-		for (Tag tag : node.getAnnotations()) frame.addFrame("tags", tag.name());
+		for (Tag tag : node.getAnnotations()) frame.addFrame(TAGS, tag.name());
 		return frame;
 	}
 
@@ -391,5 +394,4 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (FacetTarget target : node.getFacetTargets())
 			target.getIncludedNodes().stream().filter(inner -> !(inner instanceof NodeReference)).forEach(this::buildNode);
 	}
-
 }

@@ -3,7 +3,6 @@ package siani.tara.compiler.codegeneration.magritte.box;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import siani.tara.compiler.codegeneration.magritte.Generator;
-import siani.tara.compiler.codegeneration.magritte.NameFormatter;
 import siani.tara.compiler.codegeneration.magritte.TemplateTags;
 import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.Model;
@@ -23,10 +22,6 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 	public BoxUnitNodeAdapter(Map<Node, Long> keys, boolean terminalBox) {
 		this.keys = keys;
 		this.m0 = terminalBox;
-	}
-
-	public static String clean(String name) {
-		return name.replace("[", "").replace("]", "").replaceAll(Node.ANNONYMOUS, "");
 	}
 
 	@Override
@@ -53,15 +48,6 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 		addTypes(node, newFrame);
 		if (node.getParent() != null)
 			newFrame.addFrame(PARENT, getQn(node.getParent()));
-	}
-
-	private String getQn(Node parent) {
-		if (isInFacet(parent)) {
-			final FacetTarget target = inFacetTarget(parent);
-			if (target == null) return "";
-			return clean(((Node) target.getContainer()).getName() + "+" + target.getTargetNode().getName() + DOT + parent.getQualifiedName());
-		}
-		return clean(parent.getQualifiedName());
 	}
 
 	private String facetPrefix(Node node) {
@@ -181,20 +167,33 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 		Long key = getKey(inner);
 		Frame include = new Frame().addTypes(INCLUDE).addTypes(asString(inner.getFlags()));
 		final boolean withKey = inner.isAnonymous() && inner.getPlate() == null;
-		include.addFrame(VALUE, withKey ? key : NameFormatter.cleanQn(searchNode(inner)));
-		if (m0 || inner.isTerminalInstance() || inner.isFeatureInstance()) include.addTypes(TERMINAL);
+		if (m0 || inner.isTerminalInstance() || inner.isFeatureInstance())
+			include.addTypes(CASE);
 		if (withKey) include.addTypes(KEY);
 		if (inner.isFeature()) include.addTypes(Tag.SINGLE.name());
+		include.addFrame(VALUE, withKey ? key : '"' + getQn(inner instanceof NodeReference ? ((NodeReference) inner).getDestiny() : inner) + '"');
 		frame.addFrame(INCLUDE, include);
 	}
 
-	private String searchNode(Node inner) {
-		Node node = inner instanceof NodeReference ? ((NodeReference) inner).getDestiny() : inner;
-		return '"' + (node.isAnonymous() ? node.getPlate() : node.getQualifiedName()) + '"';
+	private String getQn(Node node) {
+		if (isInFacet(node)) {
+			final FacetTarget target = inFacetTarget(node);
+			if (target == null) return "";
+			return clean(getQn(target) + DOT + node.getQualifiedName());
+		}
+		return clean(node.getQualifiedName());
+	}
+
+	private String getQn(FacetTarget facetTarget) {
+		return clean(facetTarget.getContainer().getQualifiedName() + "+" + facetTarget.getTargetNode().getQualifiedName());
 	}
 
 	private String[] asString(Collection<Tag> flags) {
 		List<String> list = flags.stream().map(Tag::name).collect(Collectors.toList());
 		return list.toArray(new String[list.size()]);
+	}
+
+	private String clean(String name) {
+		return name.replace("[", "").replace("]", "").replaceAll(Node.ANNONYMOUS, "");
 	}
 }

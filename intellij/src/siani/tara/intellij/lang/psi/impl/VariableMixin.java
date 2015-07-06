@@ -64,6 +64,12 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return multiple != null && !multiple.isEmpty();
 	}
 
+	public int getSize() {
+		final TaraCount count = ((TaraVariable) this).getCount();
+		if (count == null) return isMultiple() ? 0 : 1;
+		return Integer.parseInt(count.getText().substring(1, count.getTextLength() - 1));
+	}
+
 	public boolean isOverriden() {
 		return TaraUtil.getOverriddenVariable((Variable) this) != null;
 	}

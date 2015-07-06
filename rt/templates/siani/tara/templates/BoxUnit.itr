@@ -70,11 +70,11 @@ def trigger(parent)
 	parent("$value")
 end
 
-def type(include) type(key) type(terminal) trigger(include)
+def type(include) type(key) type(case) trigger(include)
 	.has($$($value))
 end
 
-def type(include) !type(key) type(terminal) trigger(include)
+def type(include) !type(key) type(case) trigger(include)
 	.has($value+key)
 end
 

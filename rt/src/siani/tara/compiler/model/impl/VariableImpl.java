@@ -16,7 +16,6 @@ public class VariableImpl implements Variable {
 	private NodeContainer container;
 	private String type;
 	private String name;
-	private boolean multiple;
 	private List<Object> allowedValues = new ArrayList<>();
 	private List<Object> defaultValues = new ArrayList<>();
 	private String contract;
@@ -26,7 +25,7 @@ public class VariableImpl implements Variable {
 	private String defaultExtension;
 	private boolean inherited;
 	private boolean overriden;
-	private int tupleSize;
+	private int size = 1;
 	private final String uid;
 
 	public VariableImpl(NodeContainer container, String type, String name) {
@@ -118,12 +117,9 @@ public class VariableImpl implements Variable {
 
 	@Override
 	public boolean isMultiple() {
-		return multiple;
+		return size != 1;
 	}
 
-	public void setMultiple(boolean multiple) {
-		this.multiple = multiple;
-	}
 
 	@Override
 	public List<Object> getAllowedValues() {
@@ -184,7 +180,7 @@ public class VariableImpl implements Variable {
 	public Variable clone() throws CloneNotSupportedException {
 		super.clone();
 		VariableImpl variable = new VariableImpl(container, type, name);
-		variable.setMultiple(multiple);
+		variable.setSize(size);
 		variable.setDefaultExtension(defaultExtension);
 		variable.setContract(contract);
 		for (Tag tag : flags) variable.addFlags(tag.name());
@@ -218,11 +214,11 @@ public class VariableImpl implements Variable {
 		this.overriden = overriden;
 	}
 
-	public int getTupleSize() {
-		return tupleSize;
+	public int getSize() {
+		return size;
 	}
 
-	public void setTupleSize(int tupleSize) {
-		this.tupleSize = tupleSize;
+	public void setSize(int tupleSize) {
+		this.size = tupleSize;
 	}
 }

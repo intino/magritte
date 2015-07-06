@@ -106,7 +106,9 @@ public class LanguageParameterAdapter implements TemplateTags {
 	private Frame referenceParameter(ReferenceParameterAllow parameter, int position) {
 		Frame frame = new Frame().addTypes(REQUIRE, "parameter", "reference").
 			addFrame("name", parameter.name());
-		for (String allowedType : parameter.allowedValues()) frame.addFrame("types", allowedType);
+		for (String allowedType : parameter.allowedValues())
+
+			frame.addFrame("types", allowedType);
 		addDefaultInfo(parameter, frame, position);
 		return frame;
 	}
@@ -146,8 +148,8 @@ public class LanguageParameterAdapter implements TemplateTags {
 	private String[] renderReference(VariableReference reference) {
 		Node node = reference.getDestiny();
 		if (node == null) return new String[0];
-		if (!node.isAbstract()) return new String[]{node.getQualifiedName()};
 		List<String> types = node.getChildren().stream().map(Node::getQualifiedName).collect(Collectors.toList());
+		if (!node.isAbstract()) types.add(node.getQualifiedName());
 		return types.toArray(new String[types.size()]);
 	}
 

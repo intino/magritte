@@ -47,7 +47,11 @@ public class BoxUnitFacetTargetAdapter implements Adapter<FacetTarget>, Template
 
 	private void addComponents(FacetTarget facetTarget, Frame frame) {
 		for (Node node : facetTarget.getIncludedNodes())
-			addComponent(node, facetTarget.getContainer().getQualifiedName() + "+" + facetTarget.getTargetNode().getQualifiedName(), frame);
+			addComponent(node, getQn(facetTarget), frame);
+	}
+
+	private String getQn(FacetTarget facetTarget) {
+		return facetTarget.getContainer().getQualifiedName() + "+" + facetTarget.getTargetNode().getQualifiedName();
 	}
 
 	private void addComponent(Node inner, String container, Frame frame) {
@@ -55,7 +59,8 @@ public class BoxUnitFacetTargetAdapter implements Adapter<FacetTarget>, Template
 		Frame include = new Frame().addTypes(INCLUDE).addTypes(asString(inner.getFlags()));
 		final boolean withKey = inner.isAnonymous() && inner.getPlate() == null;
 		include.addFrame(VALUE, withKey ? key : '"' + container + "." + NameFormatter.cleanQn(searchNode(inner)) + '"');
-		if (m0 || (inner.isFeatureInstance() || inner.isTerminalInstance())) include.addTypes(TERMINAL);
+		if (m0 || (inner.isFeatureInstance() || inner.isTerminalInstance()))
+			include.addTypes(CASE);
 		if (withKey) include.addTypes(KEY);
 		if (inner.isFeature()) include.addTypes(Tag.SINGLE.name());
 		frame.addFrame(INCLUDE, include);

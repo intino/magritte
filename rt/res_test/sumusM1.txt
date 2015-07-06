@@ -1,10 +1,10 @@
 src_file
-/Users/oroncal/workspace/sandbox/sumusnew/Shop/model/Main.tara
+/Users/oroncal/workspace/sandbox/sumusnew/Dwellings/model/Main.tara
 
 project
 sumusnew
 module
-Shop
+Dwellings
 language
 Sumus
 locale
@@ -12,7 +12,7 @@ English
 required_plate
 false
 generated_lang_name
-Shop
+Dwellings
 level
 1
 encoding
@@ -20,15 +20,15 @@ UTF-8
 semantic_lib
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/sumusnew/Shop/gen
+/Users/oroncal/workspace/sandbox/sumusnew/Dwellings/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/sumusnew/out/production/Shop/
+/Users/oroncal/workspace/sandbox/sumusnew/out/production/Dwellings/
 magritte
 Magritte not found
 metrics
-/Users/oroncal/workspace/sandbox/sumusnew/out/production/Shop/
+/Users/oroncal/workspace/sandbox/sumusnew/out/production/Dwellings/
 resources
-/Users/oroncal/workspace/sandbox/sumusnew/Shop/res
+/Users/oroncal/workspace/sandbox/sumusnew/Dwellings/res
 models
 /Users/oroncal/workspace/sandbox/sumusnew/dsl/
 classpath

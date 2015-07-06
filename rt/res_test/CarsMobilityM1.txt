@@ -1,10 +1,10 @@
 src_file
-/Users/oroncal/workspace/sandbox/CarsMoving2/EvMobility/model/Main.tara
+/Users/oroncal/workspace/sandbox/Mobility/Mobility/model/Main.tara
 
 project
-CarsMoving2
+Mobility
 module
-EvMobility
+Mobility
 language
 Tafat
 locale
@@ -12,7 +12,7 @@ English
 required_plate
 false
 generated_lang_name
-EvMobility
+Mobility
 level
 1
 encoding
@@ -20,18 +20,16 @@ UTF-8
 semantic_lib
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/CarsMoving2/EvMobility/gen
+/Users/oroncal/workspace/sandbox/Mobility/Mobility/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/CarsMoving2/out/production/EvMobility/
+/Users/oroncal/workspace/sandbox/Mobility/out/production/Mobility/
 magritte
 Magritte not found
 metrics
-/Users/oroncal/workspace/sandbox/CarsMoving2/out/production/EvMobility/
+/Users/oroncal/workspace/sandbox/Mobility/out/production/Mobility/
 resources
-/Users/oroncal/workspace/sandbox/CarsMoving2/EvMobility/res
-native_path
-/Users/oroncal/workspace/sandbox/CarsMoving2/EvMobility/src/evmobility/natives
+/Users/oroncal/workspace/sandbox/Mobility/Mobility/res
 models
-/Users/oroncal/workspace/sandbox/CarsMoving2/dsl/
+/Users/oroncal/workspace/sandbox/Mobility/dsl/
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

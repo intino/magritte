@@ -24,11 +24,9 @@ public interface Variable extends Element, Cloneable {
 
 	boolean isMultiple();
 
-	void setMultiple(boolean multiple);
+	int getSize();
 
-	int getTupleSize();
-
-	void setTupleSize(int tupleSize);
+	void setSize(int tupleSize);
 
 	String getContract();
 

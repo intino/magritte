@@ -300,12 +300,10 @@ public class Model implements Node {
 
 	@Override
 	public void addVariables(Variable... variables) {
-
 	}
 
 	@Override
 	public void addVariables(int pos, Variable... variables) {
-
 	}
 
 	@Override

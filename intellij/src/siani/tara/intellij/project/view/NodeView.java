@@ -2,6 +2,8 @@ package siani.tara.intellij.project.view;
 
 import com.intellij.CommonBundle;
 import com.intellij.codeInsight.daemon.impl.DaemonCodeAnalyzerEx;
+import com.intellij.codeInsight.daemon.impl.DaemonProgressIndicator;
+import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode;
@@ -83,7 +85,11 @@ public class NodeView extends PsiFileNode implements Navigatable {
 			data.setPresentableText(((TaraModel) value).getPresentableName());
 		} else data.setPresentableText(value.getName());
 		data.setIcon(value.getIcon(Iconable.ICON_FLAG_READ_STATUS));
-		if (fileHasErrors()) data.setAttributesKey(ERROR);
+		final HighlightInfo error = fileError();
+		if (error != null) {
+			data.setAttributesKey(ERROR);
+			data.setTooltip(error.getDescription());
+		}
 		VirtualFile file = getVirtualFile();
 		if (file != null && file.is(VFileProperty.SYMLINK)) {
 			String target = file.getCanonicalPath();
@@ -94,10 +100,18 @@ public class NodeView extends PsiFileNode implements Navigatable {
 		}
 	}
 
-	private boolean fileHasErrors() {
+	private HighlightInfo fileError() {
 		final Document document = FileDocumentManager.getInstance().getDocument(taraFile.getVirtualFile());
-		return document != null && DaemonCodeAnalyzerEx.processHighlights(document, taraFile.getProject(), null, 0, document.getTextLength(),
-			info -> info.getSeverity() == HighlightSeverity.ERROR);
+		if (document == null) return null;
+		return getErrors(document);
+	}
+
+	private HighlightInfo getErrors(Document document) {
+		final java.util.List<HighlightInfo> highlightInfos = DaemonCodeAnalyzerEx.getInstanceEx(taraFile.getProject()).runMainPasses(taraFile, document, new DaemonProgressIndicator());
+		for (HighlightInfo highlightInfo : highlightInfos)
+			if (highlightInfo.getSeverity().equals(HighlightSeverity.ERROR)) return highlightInfo;
+
+		return null;
 	}
 
 	public boolean isValid() {

@@ -42,7 +42,8 @@ public class SemanticAnalyzer {
 	}
 
 	private void check(Node node) throws SemanticException {
-		for (Node include : node.getIncludedNodes()) checkNode(include);
+		for (Node include : node.getIncludedNodes())
+			checkNode(include);
 		if (node instanceof NodeImpl) {
 			for (FacetTarget facetTarget : node.getFacetTargets())
 				for (Node include : facetTarget.getIncludedNodes()) checkNode(include);

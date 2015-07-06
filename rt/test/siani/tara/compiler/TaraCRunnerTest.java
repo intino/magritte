@@ -30,13 +30,13 @@ public class TaraCRunnerTest {
 	}
 
 	@Test
-	public void TafatM2() {
-		TaracRunner.main(new String[]{home + "/workspace/tara/rt/res_test/TafatM2.txt"});
+	public void TafatM1() {
+		TaracRunner.main(new String[]{home + "/workspace/tara/rt/res_test/TafatM1.txt"});
 	}
 
 	@Test
-	public void TafatM1() {
-		TaracRunner.main(new String[]{home + "/workspace/tara/rt/res_test/TafatM1.txt"});
+	public void TafatTestM2() {
+		TaracRunner.main(new String[]{home + "/workspace/tara/rt/res_test/TafatTestM2.txt"});
 	}
 
 	@Test

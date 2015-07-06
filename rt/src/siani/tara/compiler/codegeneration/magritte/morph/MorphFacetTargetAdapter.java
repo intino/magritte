@@ -10,6 +10,8 @@ import siani.tara.compiler.model.NodeContainer;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 
+import java.util.List;
+
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static siani.tara.compiler.codegeneration.magritte.NameFormatter.getQnOfFacet;
 
@@ -38,6 +40,7 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 		addParent(target, frame);
 		addVariables(target, frame);
 		addComponents(target, frame);
+		addComponents(target.getTargetNode().getIncludedNodes(), frame);
 	}
 
 	private void addName(FacetTarget node, Frame frame) {
@@ -54,6 +57,9 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 		target.getVariables().stream().
 			filter(variable -> !variable.isInherited()).
 			forEach(variable -> frame.addFrame(VARIABLE, context.build(variable)));
+		target.getTargetNode().getVariables().stream().
+			filter(variable -> !variable.isInherited()).
+			forEach(variable -> frame.addFrame(VARIABLE, context.build(variable)));
 	}
 
 	private void addComponents(FacetTarget target, Frame frame) {
@@ -63,6 +69,23 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 			if (isDefinition(include, modelLevel) && !isDefinition(target.getTargetNode(), modelLevel))
 				includeFrame.addFrame(DEFINITION, "");
 			if (!isDefinition(target.getTargetNode(), modelLevel)) includeFrame.addFrame(DEFINITION_AGGREGABLE, "");
+			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+			if (include instanceof NodeReference) {
+				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
+				addNodeReferenceName((NodeReference) include, includeFrame);
+			} else if (include instanceof NodeImpl)
+				addName(include, includeFrame);
+			frame.addFrame(COMPONENT, includeFrame);
+		}
+	}
+
+	private void addComponents(List<Node> targetIncludes, Frame frame) {
+		for (Node include : targetIncludes) {
+			if (include.isAnonymous()) continue;
+			Frame includeFrame = new Frame().addTypes(TypesProvider.getTypesOfReference(include));
+			if (isDefinition(include, modelLevel) && !isDefinition(include, modelLevel))
+				includeFrame.addFrame(DEFINITION, "");
+			if (!isDefinition(include, modelLevel)) includeFrame.addFrame(DEFINITION_AGGREGABLE, "");
 			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 			if (include instanceof NodeReference) {
 				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;

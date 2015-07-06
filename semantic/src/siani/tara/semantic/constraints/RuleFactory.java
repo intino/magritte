@@ -463,6 +463,15 @@ public class RuleFactory {
 			@Override
 			public void assume(Node node) {
 				if (!node.flags().contains(MAIN.name())) node.flags(MAIN.name());
+			}
+		};
+	}
+
+	public static Assumption isMainInstance() {
+		return new Assumption.MainInstance() {
+			@Override
+			public void assume(Node node) {
+				if (!node.flags().contains(MAIN_INSTANCE.name())) node.flags(MAIN_INSTANCE.name());
 				node.moveToTheTop();
 			}
 		};

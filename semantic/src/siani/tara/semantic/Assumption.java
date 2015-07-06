@@ -32,8 +32,11 @@ public interface Assumption {
 	}
 
 	interface ImplicitInstance extends Assumption {
-
 	}
+
+	interface MainInstance extends Assumption {
+	}
+
 
 	interface Single extends Assumption {
 

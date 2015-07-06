@@ -103,17 +103,15 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			for (Variable variable : node.variables()) {
-				if ("word".equals(variable.type())) continue;
 				if (!variable.defaultValue().isEmpty() && !compatibleCardinality(variable))
-					throw new SemanticException(new SemanticError("reject.invalid.variable.type", variable, singletonList(variable.type())));
+					throw new SemanticException(new SemanticError("reject.invalid.variable.size", variable, singletonList(variable.getSize())));
 			}
 		};
-
 	}
 
 	private boolean compatibleCardinality(Variable variable) {
 		List<Object> values = variable.defaultValue();
-		return values.size() <= 1 || variable.isMultiple();
+		return variable.getSize() == 0 || values.size() == variable.getSize();
 	}
 
 	private boolean compatibleTypes(Variable variable) {

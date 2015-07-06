@@ -56,6 +56,11 @@ public class LanguageVariable extends LanguageElement implements siani.tara.sema
 	}
 
 	@Override
+	public int getSize() {
+		return variable.getSize();
+	}
+
+	@Override
 	public boolean isOverriden() {
 		return variable.isOverriden();
 	}

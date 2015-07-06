@@ -285,4 +285,7 @@ public class TaraUtil {
 	public static List<? extends Node> findMainNodes(TaraModel file) {
 		return getAllNodesOfFile(file).stream().filter(Node::isAnnotatedAsMain).collect(Collectors.toList());
 	}
+
+	public static void getAllNodeContainersOfFile(PsiFile file) {
+	}
 }

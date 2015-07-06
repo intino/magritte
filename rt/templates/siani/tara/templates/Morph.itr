@@ -30,7 +30,7 @@ def type(Word) !type(multiple) trigger(getter)
 end
 
 def type(Word) type(multiple) trigger(setter)
-	public void $name+javaValidName+firstUpperCase($name+javaValidNamefirstUpperCase~... values) {
+	public void $name+javaValidName+firstUpperCase($name+javaValidName+firstUpperCase~... values) {
 		_edit().set("$name+javaValidName", magritte.primitives.Enumerate.ordinal(values));
 	}
 end
@@ -42,7 +42,33 @@ def type(Word) !type(multiple) trigger(setter)
 end
 
 -------- VARIABLE GETTERS ---------
+--------      MUTIPLE     ---------
 
+def type(variable) type(multiple) !type(native) type(Date) trigger(getter)
+	public magritte.primitives.Date$[] $name+javaValidName+firstLowerCase() {
+		return _getMultiple("$name").asDate();
+	}
+end
+
+def type(variable) type(multiple) !type(native) type(Measure) trigger(getter)
+	public double$[] $name+javaValidName+firstLowerCase() {
+		return _getMultiple("$name").asDouble();
+	}
+end
+
+def type(variable) type(multiple) !type(native) type(file) trigger(getter)
+	public Resource$[] $name+javaValidName+firstLowerCase() {
+		return _getMultiple("$name").asResource();
+	}
+end
+
+def type(variable) type(multiple) !type(native) !type(reference) !type(word) trigger(getter)
+	public $type+firstUpperCase+primitiveType$[] $name+javaValidName+firstLowerCase() {
+		return _getMultiple("$name").as$type+firstUpperCase();
+	}
+end
+
+-------- SINGLE --------
 def type(variable) !type(native) type(Date) trigger(getter)
 	public magritte.primitives.Date $name+javaValidName+firstLowerCase() {
 		return _get("$name").asDate();
@@ -57,18 +83,42 @@ end
 
 def type(variable) !type(native) type(file) trigger(getter)
 	public Resource $name+javaValidName+firstLowerCase() {
-		return _get("$name").asResource();
+		return _getMultiple("$name").asResource();
 	}
 end
 
-def type(variable) !type(native) !type(reference) !type(word) trigger(getter)
-	public $type+firstUpperCase+primitiveType $name+javaValidName+firstLowerCase() {
+def type(variable) !type(multiple) !type(reference) !type(word) trigger(getter)
+	public $type+javaValidName+primitiveType $name+firstLowerCase() {
 		return _get("$name").as$type+firstUpperCase();
 	}
 end
 
+def type(variable) !type(multiple) type(reference) !type(word) trigger(getter)
+	public $type+reference $name+javaValidName+firstLowerCase() {
+		return _get("$name").as($type+reference.class);
+	}
+end
+
+
+------------------------
+def value(Integer) trigger(primitiveType)
+	int
+end
+
+def value(Double) trigger(primitiveType)
+	double
+end
+
+def value(Boolean) trigger(primitiveType)
+	boolean
+end
+
+def value(Natural) trigger(primitiveType)
+	int
+end
 
 --- REFERENCIAS TERMINALES ---
+
 def type(variable) type(reference) type(terminal) type(multiple) !type(word) trigger(getter)
 	public magritte.Set<$type+reference> $name+firstLowerCase() {
 		return _getMultiple("$name").as($type+reference.class);
@@ -110,45 +160,6 @@ def type(variable) type(native) trigger(getter)
 	}
 end
 
--------- SINGLE --------
-
-def type(variable) type(terminal) type(reference) !type(multiple) !type(word) trigger(getter)
-	public $type+reference $name+javaValidName+firstLowerCase() {
-		return _get("$name").as($type+reference.class);
-	}
-
-	public magritte.Set<magritte.wraps.Type> $name+javaValidName+firstLowerCase~Types() {
-		return _definition()._getAssignable("entity").as(magritte.wraps.Type.class);
-	}
-
-	public magritte.wraps.Type $name+javaValidName+firstLowerCase~Type(int index) {
-		return $name+javaValidName+firstLowerCase~Types().get(index);
-	}
-end
-
-def type(variable) !type(terminal) type(reference) !type(multiple) !type(word) trigger(getter)
-	public $type+reference $name+javaValidName+firstLowerCase() {
-		return _get("$name").as($type+reference.class);
-	}
-end
-
-def value(Integer) trigger(primitiveType)
-	int
-end
-
-def value(Double) trigger(primitiveType)
-	double
-end
-
-def value(Natural) trigger(primitiveType)
-	int
-end
-
-def type(variable) !type(multiple) !type(reference) !type(word) trigger(getter)
-	public $type+javaValidName+primitiveType $name+firstLowerCase() {
-		return _definition()._get("$name").as$type+reference();
-	}
-end
 
 -------- SETTERS ---------
 

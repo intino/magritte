@@ -204,7 +204,6 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			addValue(variable, ctx);
 			if (ctx.contract() != null) variable.setContract(ctx.contract().getText().substring(1));
 		}
-
 		addHeaderInformation(ctx, variable);
 		variable.addFlags(resolveTags(ctx.flags()));
 		container.addVariables(variable);
@@ -215,8 +214,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		Variable variable = variableType.identifierReference() != null ?
 			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText()) :
 			new VariableImpl(container, variableType.getText(), ctx.IDENTIFIER().getText());
-		variable.setMultiple(ctx.LIST() != null || ctx.count() != null);
-		if (ctx.count() != null) variable.setTupleSize(Integer.parseInt(ctx.count().NATURAL_VALUE().getText()));
+		if (ctx.LIST() != null) variable.setSize(0);
+		if (ctx.count() != null) variable.setSize(Integer.parseInt(ctx.count().NATURAL_VALUE().getText()));
 		return variable;
 	}
 

@@ -27,7 +27,7 @@ public class NodeImpl implements Node {
 	private String parentName;
 	private Node parent;
 	private List<Parameter> parameters = new ArrayList<>();
-	private List<Variable> variables = new ArrayList();
+	private List<Variable> variables = new ArrayList<>();
 	private Set<String> allowedFacets = new HashSet<>();
 	private List<Facet> facets = new ArrayList<>();
 	private List<FacetTarget> facetTargets = new ArrayList<>();

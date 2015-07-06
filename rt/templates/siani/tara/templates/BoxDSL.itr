@@ -6,7 +6,7 @@ def type(Box)
 
         protected magritte.schema.Box$[$] includes() {
             return new magritte.schema.Box$[$]{
-                $namebox+javaValidName...[,$NL]
+                $namebox+reference...[,$NL]
             };
         }
     }
