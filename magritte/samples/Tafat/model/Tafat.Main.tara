@@ -1,0 +1,13 @@
+dsl Proteo
+
+Concept Entity into named +into case
+    var integer[2] coordinates is readonly terminal
+
+Concept Behavior into facet +into case
+    Concept Action is intention required
+
+Concept Simulation into single case required
+    var date into is readonly
+    var date to is readonly
+
+

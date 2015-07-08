@@ -18,15 +18,15 @@
         <processorPath useClasspath="true" />
       </profile>
       <profile default="false" name="Annotation profile for intellij" enabled="true">
-        <sourceOutputDir name="../dist/build/intellij/generated-sources/annotations" />
-        <sourceTestOutputDir name="../dist/build/intellij/generated-test-sources/test-annotations" />
+        <sourceOutputDir name="../../out/build/intellij/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../out/build/intellij/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="intellij" />
       </profile>
       <profile default="false" name="Annotation profile for tara-runtime" enabled="true">
-        <sourceOutputDir name="../dist/build/tara-runtime/generated-sources/annotations" />
-        <sourceTestOutputDir name="../dist/build/tara-runtime/generated-test-sources/test-annotations" />
+        <sourceOutputDir name="../../out/build/tara-runtime/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../out/build/tara-runtime/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="tara-runtime" />
@@ -38,9 +38,25 @@
         <processorPath useClasspath="true" />
         <module name="semantic" />
       </profile>
+      <profile default="false" name="Annotation profile for magritte" enabled="true">
+        <sourceOutputDir name="../../out/build/magritte/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../out/build/magritte/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="magritte" />
+      </profile>
+      <profile default="false" name="Annotation profile for magritte-store" enabled="true">
+        <sourceOutputDir name="../../out/build/store/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../out/build/store/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="magritte-store" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="intellij" target="1.8" />
+      <module name="magritte" target="1.8" />
+      <module name="magritte-store" target="1.8" />
       <module name="semantic" target="1.8" />
       <module name="tara" target="1.8" />
       <module name="tara-jps-plugin" target="" />

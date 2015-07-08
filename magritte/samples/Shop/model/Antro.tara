@@ -1,0 +1,30 @@
+dsl Bazar
+
+People pleope(belyus brorde jarnat frelon vibur)
+
+Catalog tacalon(coffee sugar bag ball)
+
+Customer belyus
+    FullName("Mario")
+    Link(sugar coffee)
+
+Customer brorde
+    FullName("Samuel")
+    Link(sugar bag)
+
+Customer vibur
+    FullName("Nacho")
+    Link(bag)
+
+Provider frelon
+    FullName("Jose")
+    Link(coffee)
+
+Provider jarnat
+    FullName("Ruben")
+    Link(ball)
+
+Product coffee
+Product sugar
+Product bag
+Product ball

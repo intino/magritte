@@ -1,0 +1,13 @@
+dsl SmartGrid
+
+Simulation
+    into = 1/1/2014
+    to = 31/12/2014
+
+Radiator
+	as Electrical(power = 1.2KW)
+	as Thermal(temperature = 21°C)
+
+Radiator
+	as Electrical(power = 1.4KW)
+	as Thermal(temperature = 69.8°F, threshold=68°F)

@@ -11,10 +11,15 @@
         <option value="$PROJECT_DIR$/rt/pom.xml" />
         <option value="$PROJECT_DIR$/intellij/pom.xml" />
         <option value="$PROJECT_DIR$/semantic/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/Framework/pom.xml" />
+        <option value="$PROJECT_DIR$/compiler/semantic/pom.xml" />
+        <option value="$PROJECT_DIR$/compiler/rt/pom.xml" />
+        <option value="$PROJECT_DIR$/ide/intellij/pom.xml" />
+        <option value="$PROJECT_DIR$/Persistence/pom.xml" />
       </list>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="IntelliJ IDEA IU-141.713.2" project-jdk-type="IDEA JDK">
-    <output url="file://$PROJECT_DIR$/dist" />
+    <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
