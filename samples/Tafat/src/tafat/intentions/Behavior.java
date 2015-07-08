@@ -1,6 +1,6 @@
 package tafat.intentions;
 
-import magritte.NativeCode;
+import siani.tara.magritte.NativeCode;
 
 public class Behavior {
 

@@ -1,7 +1,7 @@
 package magritte.dsl;
 
-import magritte.Graph;
-import magritte.schema.Box;
+import siani.tara.magritte.Graph;
+import siani.tara.magritte.schema.Box;
 
 public class Tafat extends Box {
 	public static final Box box = new Tafat();

@@ -1,6 +1,6 @@
 package monet;
 
-import magritte.wraps.Morph;
+import siani.tara.magritte.wraps.Morph;
 import monet.natives.OnChange;
 
 public class Field extends Morph {

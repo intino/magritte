@@ -1,10 +1,10 @@
 package shop;
 
 
-import magritte.Expression;
-import magritte.Set;
-import magritte.wraps.Morph;
-import magritte.wraps.Operation;
+import siani.tara.magritte.Expression;
+import siani.tara.magritte.Set;
+import siani.tara.magritte.wraps.Morph;
+import siani.tara.magritte.wraps.Operation;
 
 public class Form extends Entity {
 

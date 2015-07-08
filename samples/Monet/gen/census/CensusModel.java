@@ -1,10 +1,10 @@
 package census;
 
-import magritte.Graph;
-import magritte.Set;
-import magritte.wraps.Model;
-import magritte.wraps.Morph;
-import magritte.wraps.Type;
+import siani.tara.magritte.Graph;
+import siani.tara.magritte.Set;
+import siani.tara.magritte.wraps.Model;
+import siani.tara.magritte.wraps.Morph;
+import siani.tara.magritte.wraps.Type;
 
 public class CensusModel extends Model {
 

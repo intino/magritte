@@ -27,7 +27,7 @@ public class TaraRtConstants {
 	public static final String CLASSPATH = "classpath";
 	public static final String MODULE = "module";
 	public static final String LANGUAGES_PATH = "models";
-	public static final String MAGRITTE = "magritte";
+	public static final String MAGRITTE = "siani/tara/magritte";
 	public static final String DICTIONARY = "locale";
 	public static final String LANGUAGE = "language";
 	public static final String GENERATED_LANG_NAME = "generated_lang_name";

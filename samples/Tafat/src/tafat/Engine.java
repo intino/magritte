@@ -1,8 +1,8 @@
 package tafat;
 
-import magritte.Graph;
+import siani.tara.magritte.Graph;
 import magritte.castings.NodeSetWrapper;
-import magritte.handlers.Casting;
+import siani.tara.magritte.handlers.Casting;
 import tafat.morphs.Entity;
 import tafat.morphs.Simulation;
 

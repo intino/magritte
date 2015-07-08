@@ -1,10 +1,10 @@
 package monet.fields;
 
-import magritte.Set;
-import magritte.wraps.Type;
+import siani.tara.magritte.Set;
+import siani.tara.magritte.wraps.Type;
 import monet.Field;
 
-import static magritte.handlers.Casting.NodeCasting;
+import static siani.tara.magritte.handlers.Casting.NodeCasting;
 
 public class Multiple extends Field {
 

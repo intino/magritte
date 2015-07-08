@@ -1,11 +1,11 @@
 def type(Box)
     package magritte.dsl;
 
-    public class $name+firstUppercase~Dsl extends magritte.schema.Box.Dsl {
-        public static final magritte.schema.Box box = new $name+firstUppercase~Dsl();
+    public class $name+firstUppercase~Dsl extends Box.Dsl {
+        public static final Box box = new $name+firstUppercase~Dsl();
 
-        protected magritte.schema.Box$[$] includes() {
-            return new magritte.schema.Box$[$]{
+        protected Box$[$] includes() {
+            return new Box$[$]{
                 $namebox+reference...[,$NL]
             };
         }

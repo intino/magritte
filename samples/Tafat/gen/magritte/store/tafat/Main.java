@@ -1,8 +1,8 @@
 package magritte.ontology.tafat;
 
-import magritte.Graph;
-import magritte.editors.GraphEditor;
-import magritte.schema.Box;
+import siani.tara.magritte.Graph;
+import siani.tara.magritte.editors.GraphEditor;
+import siani.tara.magritte.schema.Box;
 
 public class Main extends Box.Ontology {
 	public static final Box box = new Main();

@@ -1,6 +1,6 @@
 package monet.natives;
 
-import magritte.NativeCode;
+import siani.tara.magritte.NativeCode;
 
 public interface Action extends NativeCode {
 	public void execute();

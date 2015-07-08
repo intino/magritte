@@ -1,7 +1,7 @@
 package monet;
 
-import magritte.Set;
-import magritte.wraps.Morph;
+import siani.tara.magritte.Set;
+import siani.tara.magritte.wraps.Morph;
 
 public class Thesaurus extends Entity {
 

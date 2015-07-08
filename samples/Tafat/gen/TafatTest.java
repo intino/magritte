@@ -1,6 +1,6 @@
-import magritte.Graph;
-import magritte.primitives.Date;
-import magritte.schema.MemoryGraph;
+import siani.tara.magritte.Graph;
+import siani.tara.magritte.primitives.Date;
+import siani.tara.magritte.schema.MemoryGraph;
 import millener.Millener;
 import millener.src.millener.extensions.thermals.RadiatorBehavior;
 import millener.thermals.Radiator;

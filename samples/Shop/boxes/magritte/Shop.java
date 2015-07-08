@@ -1,10 +1,11 @@
 package magritte;
 
-import magritte.editors.GraphEditor;
-import magritte.schema.MemoryGraph;
+import siani.tara.magritte.Graph;
+import siani.tara.magritte.editors.GraphEditor;
+import siani.tara.magritte.schema.MemoryGraph;
 
-import static magritte.Tag.*;
-import static magritte.schema.Box.*;
+import static siani.tara.magritte.Tag.*;
+import static siani.tara.magritte.schema.Box.*;
 
 public class Shop extends GraphEditor {
 

@@ -5,19 +5,19 @@ def type(model)
 	import java.text.ParseException;
 	import java.util.*;
 
-	import static magritte.Tag.*;
-	import magritte.primitives.Date;
+	import static Tag.*;
+	import Date;
 	[import $language+lowercase.*;]
 	[import $generatedLanguage+lowercase.*;]
 
 	$importMetric...[$NL]
 
-	public class $name+javaValidName extends magritte.schema.Box.$terminal {
-		public static final magritte.schema.Box box = new $name();
+	public class $name+javaValidName extends Box.$terminal {
+		public static final Box box = new $name();
 
 		@Override
-		public magritte.schema.Box$[] dependencies() {
-			return new magritte.schema.Box$[]{[magritte.dsl.$language+javaValidName~Dsl.box]};
+		public Box$[] dependencies() {
+			return new Box$[]{[magritte.dsl.$language+javaValidName~Dsl.box]};
 		}
 
 		@Override

@@ -1,6 +1,6 @@
 package magritte.scene;
 
-import magritte.Scene;
+import siani.tara.magritte.Scene;
 
 public class SceneDefinition implements Scene {
 

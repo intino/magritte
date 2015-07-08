@@ -1,6 +1,6 @@
 package monet.fields;
 
-import magritte.Expression;
+import siani.tara.magritte.Expression;
 import monet.Field;
 
 public class Text extends Field {

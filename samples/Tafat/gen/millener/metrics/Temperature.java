@@ -1,6 +1,6 @@
 package millener.metrics;
 
-import magritte.Metric;
+import siani.tara.magritte.Metric;
 
 public enum Temperature implements Metric {
 	Celsius, Farenheit, Kelvin;

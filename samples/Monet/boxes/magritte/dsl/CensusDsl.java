@@ -1,7 +1,7 @@
 package magritte.dsl;
 
 import magritte.ontology.CensusMain;
-import magritte.schema.Box;
+import siani.tara.magritte.schema.Box;
 
 public class CensusDsl extends Box.Dsl {
 	public static final Box box = new CensusDsl();

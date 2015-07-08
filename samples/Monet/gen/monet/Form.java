@@ -1,6 +1,6 @@
 package monet;
 
-import magritte.Set;
+import siani.tara.magritte.Set;
 
 public class Form extends Entity {
 

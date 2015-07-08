@@ -1,10 +1,10 @@
 package magritte.ontology.millener;
 
-import magritte.Graph;
-import magritte.editors.GraphEditor;
-import magritte.schema.Box;
+import siani.tara.magritte.Graph;
+import siani.tara.magritte.editors.GraphEditor;
+import siani.tara.magritte.schema.Box;
 
-import static magritte.Tag.Abstract;
+import static siani.tara.magritte.Tag.Abstract;
 import static smartgrid.natives.SmartGridMain.*;
 
 public class Main extends Box.Ontology {

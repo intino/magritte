@@ -1,6 +1,6 @@
 package smartgrid.morphs;
 
-import magritte.wraps.Morph;
+import siani.tara.magritte.wraps.Morph;
 
 public class Thermal extends Morph {
 

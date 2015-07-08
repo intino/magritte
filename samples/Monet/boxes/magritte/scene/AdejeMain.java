@@ -1,9 +1,9 @@
 package magritte.scene;
 
 import magritte.dsl.CensusDsl;
-import magritte.schema.Box;
+import siani.tara.magritte.schema.Box;
 
-import static magritte.Tag.Root;
+import static siani.tara.magritte.Tag.Root;
 
 public class AdejeMain extends Box.Scene {
 	public static final Box box = new AdejeMain();

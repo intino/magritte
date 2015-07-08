@@ -1,7 +1,7 @@
 package bazar;
 
-import magritte.Set;
-import magritte.wraps.Operation;
+import siani.tara.magritte.Set;
+import siani.tara.magritte.wraps.Operation;
 
 public class People extends Person {
 

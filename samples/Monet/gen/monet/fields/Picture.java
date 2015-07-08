@@ -1,6 +1,6 @@
 package monet.fields;
 
-import magritte.primitives.Resource;
+import siani.tara.magritte.primitives.Resource;
 import monet.Field;
 
 public class Picture extends Field {

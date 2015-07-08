@@ -1,8 +1,8 @@
 package census;
 
-import magritte.Expression;
-import magritte.primitives.Date;
-import magritte.wraps.Morph;
+import siani.tara.magritte.Expression;
+import siani.tara.magritte.primitives.Date;
+import siani.tara.magritte.wraps.Morph;
 import monet.Thesaurus;
 
 public class Intervencion extends Morph {

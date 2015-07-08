@@ -1,6 +1,6 @@
 package bazar;
 
-import magritte.wraps.Morph;
+import siani.tara.magritte.wraps.Morph;
 
 public class Customer extends Person {
 

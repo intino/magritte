@@ -1,6 +1,6 @@
 package tafat.morphs;
 
-import magritte.wraps.Morph;
+import siani.tara.magritte.wraps.Morph;
 
 public class Behavior extends Morph {
 

@@ -1,10 +1,10 @@
 package shop;
 
-import magritte.Graph;
-import magritte.Set;
-import magritte.handlers.Casting.NodeCasting;
-import magritte.wraps.Model;
-import magritte.wraps.Type;
+import siani.tara.magritte.Graph;
+import siani.tara.magritte.Set;
+import siani.tara.magritte.handlers.Casting.NodeCasting;
+import siani.tara.magritte.wraps.Model;
+import siani.tara.magritte.wraps.Type;
 
 public class Shop extends Model {
 	public Shop(Graph graph) {

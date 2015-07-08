@@ -1,13 +1,13 @@
 def type(scene)
 	package $name+LowerCase;
 
-	public class $name+javaValidName~Model extends magritte.wraps.Model {
+	public class $name+javaValidName~Model extends Model {
 
-	    public $name+javaValidName~Model(magritte.wraps.Morph morph) {
+	    public $name+javaValidName~Model(Morph morph) {
 	        super(morph);
 	    }
 
-	    public $name+javaValidName~Model(magritte.Graph graph) {
+	    public $name+javaValidName~Model(Graph graph) {
 			super(graph);
 		}
 
@@ -16,7 +16,7 @@ def type(scene)
 end
 
 def type(root) !type(single) trigger(root)
-	public magritte.Set<$qn+reference> $name+javaValidName+plural+firstLowerCase() {
+	public Set<$qn+reference> $name+javaValidName+plural+firstLowerCase() {
         return _get("$name+FirstLowerCase+plural", $qn+reference.class);
     }
 

@@ -1,10 +1,10 @@
 package magritte.ontology;
 
-import magritte.Expression;
+import siani.tara.magritte.Expression;
 import magritte.dsl.MonetDsl;
-import magritte.schema.Box;
+import siani.tara.magritte.schema.Box;
 
-import static magritte.Tag.*;
+import static siani.tara.magritte.Tag.*;
 
 public class CensusMain extends Box.Ontology {
 	public static final Box box = new CensusMain();

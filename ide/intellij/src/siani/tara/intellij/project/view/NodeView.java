@@ -34,6 +34,7 @@ import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAtt
 
 public class NodeView extends PsiFileNode implements Navigatable {
 	public static final DataKey<NodeView> DATA_KEY = DataKey.create("form.array");
+	@SuppressWarnings("deprecation")
 	public static final TextAttributesKey ERROR = createTextAttributesKey("ERROR",
 		new TextAttributes(null, null, JBColor.RED, EffectType.WAVE_UNDERSCORE, Font.PLAIN));
 	private final PsiFile taraFile;

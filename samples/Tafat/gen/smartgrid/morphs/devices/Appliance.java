@@ -1,6 +1,6 @@
 package smartgrid.morphs.devices;
 
-import magritte.wraps.Morph;
+import siani.tara.magritte.wraps.Morph;
 
 public class Appliance extends Morph {
 }

@@ -1,7 +1,7 @@
 package census;
 
-import magritte.Set;
-import magritte.wraps.Morph;
+import siani.tara.magritte.Set;
+import siani.tara.magritte.wraps.Morph;
 
 public class Censo extends Morph {
 

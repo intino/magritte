@@ -1,8 +1,8 @@
 package bazar;
 
-import magritte.Graph;
-import magritte.Set;
-import magritte.wraps.Model;
+import siani.tara.magritte.Graph;
+import siani.tara.magritte.Set;
+import siani.tara.magritte.wraps.Model;
 
 
 public class Bazar extends Model {

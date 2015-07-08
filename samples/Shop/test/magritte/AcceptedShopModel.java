@@ -1,18 +1,20 @@
 package magritte;
 
 import bazar.*;
-import magritte.primitives.Resource;
+import siani.tara.magritte.Graph;
+import siani.tara.magritte.Reference;
+import siani.tara.magritte.primitives.Resource;
 import org.junit.Test;
 import shop.Collection;
 import shop.Entity;
 import shop.Form;
 import shop.UppercaseField;
 
-import static magritte.Node.Member.Component;
-import static magritte.helpers.Extract.nameOf;
-import static magritte.helpers.Selection.instancesOf;
-import static magritte.wraps.Operation.Add;
-import static magritte.wraps.Operation.Set;
+import static siani.tara.magritte.Node.Member.Component;
+import static siani.tara.magritte.helpers.Extract.nameOf;
+import static siani.tara.magritte.helpers.Selection.instancesOf;
+import static siani.tara.magritte.wraps.Operation.Add;
+import static siani.tara.magritte.wraps.Operation.Set;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 

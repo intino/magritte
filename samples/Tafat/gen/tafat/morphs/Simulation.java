@@ -1,7 +1,7 @@
 package tafat.morphs;
 
-import magritte.primitives.Date;
-import magritte.wraps.Morph;
+import siani.tara.magritte.primitives.Date;
+import siani.tara.magritte.wraps.Morph;
 
 public class Simulation extends Morph {
 

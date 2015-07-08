@@ -1,7 +1,7 @@
 package siani.tara.compiler.core.operation;
 
-import magritte.io.StashSerializer;
-import magritte.schema.Stash;
+import siani.tara.magritte.io.StashSerializer;
+import siani.tara.magritte.schema.Stash;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.TaraRtConstants;

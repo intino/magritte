@@ -1,8 +1,8 @@
 package monet;
 
-import magritte.Set;
-import magritte.wraps.Definition;
-import magritte.wraps.Morph;
+import siani.tara.magritte.Set;
+import siani.tara.magritte.wraps.Definition;
+import siani.tara.magritte.wraps.Morph;
 import monet.natives.Action;
 
 public class Entity extends Morph {

@@ -4,21 +4,21 @@ import census.Animal;
 import census.Censo;
 import census.CensusModel;
 import census.Perro;
-import magritte.*;
-import magritte.handlers.RandomNameGenerator;
-import magritte.primitives.Date;
+import siani.tara.magritte.*;
+import siani.tara.magritte.handlers.RandomNameGenerator;
+import siani.tara.magritte.primitives.Date;
 import magritte.scene.AdejeMain;
-import magritte.schema.MemoryGraph;
+import siani.tara.magritte.schema.MemoryGraph;
 import monet.editable.Editable;
 import monet.editable.Editable_Picture;
 import monet.fields.*;
 import monet.fields.Number;
 import org.junit.Test;
 
-import static magritte.Node.Member.Component;
-import static magritte.helpers.Extract.nameOf;
-import static magritte.helpers.Selection.instancesOf;
-import static magritte.schema.Box.multiple;
+import static siani.tara.magritte.Node.Member.Component;
+import static siani.tara.magritte.helpers.Extract.nameOf;
+import static siani.tara.magritte.helpers.Selection.instancesOf;
+import static siani.tara.magritte.schema.Box.multiple;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -221,7 +221,7 @@ public class AcceptedMonetModel {
 		assertThat(form.field(7).as(Multiple.class).field(1).as(Composite.class).field(0).label(), is("Fecha"));
 		assertThat(form.field(7).as(Multiple.class).field(1).as(Composite.class).field(1).label(), is("Tipo de intervención"));
 
-		assertThat(form.field(4).as(monet.fields.Date.class).value(), is(magritte.primitives.Date.date(2010, 12, 22)));
+		assertThat(form.field(4).as(monet.fields.Date.class).value(), is(Date.date(2010, 12, 22)));
 		assertThat(form.field(5).as(Check.class).value(), is(false));
 		assertThat(form.field(6).as(Number.class).value(), is(4.0));
 
@@ -292,9 +292,9 @@ public class AcceptedMonetModel {
 		assertThat(multiple.fieldSet().size(), is(4));
 		assertThat(multiple.field(3).as(Composite.class).fields().size(), is(2));
 
-		multiple.field(3).as(Composite.class).field(0).as(monet.fields.Date.class).value(magritte.primitives.Date.date(2012, 12, 10));
+		multiple.field(3).as(Composite.class).field(0).as(monet.fields.Date.class).value(Date.date(2012, 12, 10));
 		multiple.field(3).as(Composite.class).field(1).as(Select.class).value(monetModel.thesaurus(0).term(0));
-		assertThat(multiple.field(3).as(Composite.class).field(0).as(monet.fields.Date.class).value(), is(magritte.primitives.Date.date(2012, 12, 10)));
+		assertThat(multiple.field(3).as(Composite.class).field(0).as(monet.fields.Date.class).value(), is(Date.date(2012, 12, 10)));
 		assertThat(multiple.field(3).as(Composite.class).field(1).as(Select.class).value(), is(monetModel.thesaurus(0).term(0)));
 
 		assertThat(monetModel.thesaurus(0).term(0)._referees().size(), is(2));
