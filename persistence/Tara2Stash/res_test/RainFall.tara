@@ -1,0 +1,79 @@
+History 
+	doc http://www.highcharts.com/demo/column-basic
+	Entity City 
+		as Classificable
+	Entity Month 
+		as Classificable
+	Entity AverageRainfall 
+		var integer mm rainfall
+		var Month month 
+		var City city
+
+Rainfall
+	City("Tokyo") Tokyo
+	City("New York") New York
+	City("London") London 
+	City("Berlin") Berlin
+
+	Month("January") January
+	Month("February") February
+	Month("March") March
+	Month("April") April
+	Month("May") May
+	Month("June") June
+	Month("July") July
+	Month("August") August
+	Month("September") September
+	Month("October") October
+	Month("November") November
+	Month("December") December
+
+	AverageRainfall > city = Tokyo; month = January; rainfall = 49.9 mm
+	AverageRainfall > city = Tokyo; month = February; rainfall = 71.5 mm
+	AverageRainfall > city = Tokyo; month = March; rainfall = 106.4 mm
+	AverageRainfall > city = Tokyo; month = April; rainfall = 129.2 mm
+	AverageRainfall > city = Tokyo; month = May; rainfall = 144.0 mm
+	AverageRainfall > city = Tokyo; month = June; rainfall = 176.0 mm
+	AverageRainfall > city = Tokyo; month = July; rainfall = 135.6 mm
+	AverageRainfall > city = Tokyo; month = August; rainfall = 148.5 mm
+	AverageRainfall > city = Tokyo; month = September; rainfall = 216.4 mm
+	AverageRainfall > city = Tokyo; month = October; rainfall = 194.1 mm
+	AverageRainfall > city = Tokyo; month = November; rainfall = 95.6 mm
+	AverageRainfall > city = Tokyo; month = December; rainfall = 54.4 mm
+	AverageRainfall > city = New York; month = January; rainfall = 83.6 mm
+	AverageRainfall > city = New York; month = February; rainfall = 78.8 mm
+	AverageRainfall > city = New York; month = March; rainfall = 98.5 mm
+	AverageRainfall > city = New York; month = April; rainfall = 93.4 mm
+	AverageRainfall > city = New York; month = May; rainfall = 106.0 mm
+	AverageRainfall > city = New York; month = June; rainfall = 84.5 mm
+	AverageRainfall > city = New York; month = July; rainfall = 105.0 mm
+	AverageRainfall > city = New York; month = August; rainfall = 104.3 mm
+	AverageRainfall > city = New York; month = September; rainfall = 91.2 mm
+	AverageRainfall > city = New York; month = October; rainfall = 83.5 mm
+	AverageRainfall > city = New York; month = November; rainfall = 106.6 mm
+	AverageRainfall > city = New York; month = December; rainfall = 92.3 mm
+	AverageRainfall > city = London; month = January; rainfall = 48.9 mm
+	AverageRainfall > city = London; month = February; rainfall = 38.8 mm
+	AverageRainfall > city = London; month = March; rainfall = 39.3 mm
+	AverageRainfall > city = London; month = April; rainfall = 41.4 mm
+	AverageRainfall > city = London; month = May; rainfall = 47.0 mm
+	AverageRainfall > city = London; month = June; rainfall = 48.3 mm
+	AverageRainfall > city = London; month = July; rainfall = 59.0 mm
+	AverageRainfall > city = London; month = August; rainfall = 59.6 mm
+	AverageRainfall > city = London; month = September; rainfall = 52.4 mm
+	AverageRainfall > city = London; month = October; rainfall = 65.2 mm
+	AverageRainfall > city = London; month = November; rainfall = 59.3 mm
+	AverageRainfall > city = London; month = December; rainfall = 51.2 mm
+	AverageRainfall > city = Berlin; month = January; rainfall = 42.4 mm
+	AverageRainfall > city = Berlin; month = February; rainfall = 33.2 mm
+	AverageRainfall > city = Berlin; month = March; rainfall = 34.5 mm
+	AverageRainfall > city = Berlin; month = April; rainfall = 39.7 mm
+	AverageRainfall > city = Berlin; month = May; rainfall = 52.6 mm
+	AverageRainfall > city = Berlin; month = June; rainfall = 75.5 mm
+	AverageRainfall > city = Berlin; month = July; rainfall = 57.4 mm
+	AverageRainfall > city = Berlin; month = August; rainfall = 60.4 mm
+	AverageRainfall > city = Berlin; month = September; rainfall = 47.6 mm
+	AverageRainfall > city = Berlin; month = October; rainfall = 39.1 mm
+	AverageRainfall > city = Berlin; month = November; rainfall = 46.8 mm
+	AverageRainfall > city = Berlin; month = December; rainfall = 51.1 mm
+

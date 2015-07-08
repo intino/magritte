@@ -1,5 +1,5 @@
 package magritte;
 
 public interface Reference {
-    String value();
+	String value();
 }

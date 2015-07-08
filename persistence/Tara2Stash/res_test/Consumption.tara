@@ -1,0 +1,253 @@
+History FruitConsumption
+doc http://www.highcharts.com/demo/area-negative
+	Entity Person 
+		as Classificable
+	Entity Fruit
+		as Classificable
+	Entity Consumption 
+		var Person person
+		var integer quantity
+		var Fruit fruit 
+
+FruitConsumption 
+	Person ("Jhon") Jhon
+	Person ("Jane") Jane
+	Person ("Joe") Joe
+
+	fruit ("Apple") Apple
+	fruit ("Apricot") Apricot
+	fruit ("Banana") Banana
+	fruit ("Bilberry") Bilberry
+	fruit ("Blackberry") Blackberry
+	fruit ("Blackcurrant") Blackcurrant
+	fruit ("Blueberry") Blueberry
+	fruit ("Boysenberry") Boysenberry
+	fruit ("Cantaloupe") Cantaloupe
+	fruit ("Currant") Currant
+	fruit ("Cherry") Cherry
+	fruit ("Cherimoya") Cherimoya
+	fruit ("Cloudberry") Cloudberry
+	fruit ("Coconut") Coconut
+	fruit ("Cranberry") Cranberry
+	fruit ("Damson") Damson
+	fruit ("Date") Date
+	fruit ("Dragonfruit") Dragonfruit
+	fruit ("Durian") Durian
+	fruit ("Elderberry") Elderberry
+	fruit ("Feijoa") Feijoa
+	fruit ("Fig") Fig
+	fruit ("Goji berry") Goji berry
+	fruit ("Gooseberry") Gooseberry
+	fruit ("Grape") Grape
+	fruit ("Raisin") Raisin
+	fruit ("Grapefruit") Grapefruit
+	fruit ("Guava") Guava
+	fruit ("Huckleberry") Huckleberry
+	fruit ("Honeydew") Honeydew
+	fruit ("Jackfruit") Jackfruit
+	fruit ("Jambul") Jambul
+	fruit ("Jujube") Jujube
+	fruit ("Kiwi ") Kiwi 
+	fruit ("Kumquat") Kumquat
+	fruit ("Lemon") Lemon
+	fruit ("Lime") Lime
+	fruit ("Loquat") Loquat
+	fruit ("Lychee") Lychee
+	fruit ("Mango") Mango
+	fruit ("Marion berry") Marion berry
+	fruit ("Melon") Melon
+	fruit ("Cantaloupe") Cantaloupe
+	fruit ("Honeydew") Honeydew
+	fruit ("Watermelon") Watermelon
+	fruit ("Rock melon") Rock melon
+	fruit ("Miracle ") Miracle 
+	fruit ("Mulberry") Mulberry
+	fruit ("Nectarine") Nectarine
+	fruit ("Olive") Olive
+	fruit ("Orange") Orange
+	fruit ("Clementine") Clementine
+	fruit ("Mandarine") Mandarine
+	fruit ("Blood Orange") Blood Orange
+	fruit ("Tangerine") Tangerine
+	fruit ("Papaya") Papaya
+	fruit ("Passionfruit") Passionfruit
+	fruit ("Peach") Peach
+	fruit ("Pear") Pear
+	
+	Consumption > person = Jane; quantity = 9; fruit = Apple
+	Consumption > person = Jane; quantity = -2; fruit = Apricot
+	Consumption > person = Jane; quantity = 4; fruit = Banana
+	Consumption > person = Jane; quantity = -3; fruit = Bilberry
+	Consumption > person = Jane; quantity = 7; fruit = Blackberry
+	Consumption > person = Jane; quantity = 5; fruit = Blackcurrant
+	Consumption > person = Jane; quantity = 2; fruit = Blueberry
+	Consumption > person = Jane; quantity = 6; fruit = Boysenberry
+	Consumption > person = Jane; quantity = -2; fruit = Cantaloupe
+	Consumption > person = Jane; quantity = 0; fruit = Currant
+	Consumption > person = Jane; quantity = -1; fruit = Cherry
+	Consumption > person = Jane; quantity = 8; fruit = Cherimoya
+	Consumption > person = Jane; quantity = -1; fruit = Cloudberry
+	Consumption > person = Jane; quantity = -1; fruit = Coconut
+	Consumption > person = Jane; quantity = 0; fruit = Cranberry
+	Consumption > person = Jane; quantity = 5; fruit = Damson
+	Consumption > person = Jane; quantity = 6; fruit = Date
+	Consumption > person = Jane; quantity = 7; fruit = Dragonfruit
+	Consumption > person = Jane; quantity = -3; fruit = Durian
+	Consumption > person = Jane; quantity = 5; fruit = Elderberry
+	Consumption > person = Jane; quantity = -4; fruit = Feijoa
+	Consumption > person = Jane; quantity = 1; fruit = Fig
+	Consumption > person = Jane; quantity = 3; fruit = Goji berry
+	Consumption > person = Jane; quantity = -4; fruit = Gooseberry
+	Consumption > person = Jane; quantity = 7; fruit = Grape
+	Consumption > person = Jane; quantity = 0; fruit = Raisin
+	Consumption > person = Jane; quantity = 8; fruit = Grapefruit
+	Consumption > person = Jane; quantity = 10; fruit = Guava
+	Consumption > person = Jane; quantity = 4; fruit = Huckleberry
+	Consumption > person = Jane; quantity = 5; fruit = Honeydew
+	Consumption > person = Jane; quantity = 4; fruit = Jackfruit
+	Consumption > person = Jane; quantity = 7; fruit = Jambul
+	Consumption > person = Jane; quantity = 9; fruit = Jujube
+	Consumption > person = Jane; quantity = 6; fruit = Kiwi 
+	Consumption > person = Jane; quantity = 5; fruit = Kumquat
+	Consumption > person = Jane; quantity = -1; fruit = Lemon
+	Consumption > person = Jane; quantity = -4; fruit = Lime
+	Consumption > person = Jane; quantity = 8; fruit = Loquat
+	Consumption > person = Jane; quantity = 10; fruit = Lychee
+	Consumption > person = Jane; quantity = 7; fruit = Mango
+	Consumption > person = Jane; quantity = 10; fruit = Marion berry
+	Consumption > person = Jane; quantity = -3; fruit = Melon
+	Consumption > person = Jane; quantity = -1; fruit = Cantaloupe
+	Consumption > person = Jane; quantity = 7; fruit = Honeydew
+	Consumption > person = Jane; quantity = -4; fruit = Watermelon
+	Consumption > person = Jane; quantity = -1; fruit = Rock melon
+	Consumption > person = Jane; quantity = 7; fruit = Miracle 
+	Consumption > person = Jane; quantity = 7; fruit = Mulberry
+	Consumption > person = Jane; quantity = -2; fruit = Nectarine
+	Consumption > person = Jane; quantity = -3; fruit = Olive
+	Consumption > person = Jane; quantity = 6; fruit = Orange
+	Consumption > person = Jane; quantity = 6; fruit = Clementine
+	Consumption > person = Jane; quantity = 8; fruit = Mandarine
+	Consumption > person = Jane; quantity = 10; fruit = Blood Orange
+	Consumption > person = Jane; quantity = 9; fruit = Tangerine
+	Consumption > person = Jane; quantity = 7; fruit = Papaya
+	Consumption > person = Jane; quantity = 4; fruit = Passionfruit
+	Consumption > person = Jane; quantity = 6; fruit = Peach
+	Consumption > person = Jane; quantity = 2; fruit = Pear
+	Consumption > person = Jhon; quantity = 6; fruit = Apple
+	Consumption > person = Jhon; quantity = 1; fruit = Apricot
+	Consumption > person = Jhon; quantity = 9; fruit = Banana
+	Consumption > person = Jhon; quantity = -2; fruit = Bilberry
+	Consumption > person = Jhon; quantity = 7; fruit = Blackberry
+	Consumption > person = Jhon; quantity = 7; fruit = Blackcurrant
+	Consumption > person = Jhon; quantity = 5; fruit = Blueberry
+	Consumption > person = Jhon; quantity = 4; fruit = Boysenberry
+	Consumption > person = Jhon; quantity = 2; fruit = Cantaloupe
+	Consumption > person = Jhon; quantity = -4; fruit = Currant
+	Consumption > person = Jhon; quantity = 7; fruit = Cherry
+	Consumption > person = Jhon; quantity = 7; fruit = Cherimoya
+	Consumption > person = Jhon; quantity = -3; fruit = Cloudberry
+	Consumption > person = Jhon; quantity = -1; fruit = Coconut
+	Consumption > person = Jhon; quantity = 2; fruit = Cranberry
+	Consumption > person = Jhon; quantity = 9; fruit = Damson
+	Consumption > person = Jhon; quantity = 4; fruit = Date
+	Consumption > person = Jhon; quantity = 3; fruit = Dragonfruit
+	Consumption > person = Jhon; quantity = 8; fruit = Durian
+	Consumption > person = Jhon; quantity = 0; fruit = Elderberry
+	Consumption > person = Jhon; quantity = 10; fruit = Feijoa
+	Consumption > person = Jhon; quantity = 0; fruit = Fig
+	Consumption > person = Jhon; quantity = 7; fruit = Goji berry
+	Consumption > person = Jhon; quantity = 8; fruit = Gooseberry
+	Consumption > person = Jhon; quantity = 0; fruit = Grape
+	Consumption > person = Jhon; quantity = 10; fruit = Raisin
+	Consumption > person = Jhon; quantity = 0; fruit = Grapefruit
+	Consumption > person = Jhon; quantity = 4; fruit = Guava
+	Consumption > person = Jhon; quantity = 3; fruit = Huckleberry
+	Consumption > person = Jhon; quantity = 7; fruit = Honeydew
+	Consumption > person = Jhon; quantity = -1; fruit = Jackfruit
+	Consumption > person = Jhon; quantity = 0; fruit = Jambul
+	Consumption > person = Jhon; quantity = 9; fruit = Jujube
+	Consumption > person = Jhon; quantity = 1; fruit = Kiwi 
+	Consumption > person = Jhon; quantity = 3; fruit = Kumquat
+	Consumption > person = Jhon; quantity = 7; fruit = Lemon
+	Consumption > person = Jhon; quantity = 4; fruit = Lime
+	Consumption > person = Jhon; quantity = -1; fruit = Loquat
+	Consumption > person = Jhon; quantity = 1; fruit = Lychee
+	Consumption > person = Jhon; quantity = 6; fruit = Mango
+	Consumption > person = Jhon; quantity = -1; fruit = Marion berry
+	Consumption > person = Jhon; quantity = 8; fruit = Melon
+	Consumption > person = Jhon; quantity = 9; fruit = Cantaloupe
+	Consumption > person = Jhon; quantity = 9; fruit = Honeydew
+	Consumption > person = Jhon; quantity = 5; fruit = Watermelon
+	Consumption > person = Jhon; quantity = -1; fruit = Rock melon
+	Consumption > person = Jhon; quantity = -4; fruit = Miracle 
+	Consumption > person = Jhon; quantity = 2; fruit = Mulberry
+	Consumption > person = Jhon; quantity = 5; fruit = Nectarine
+	Consumption > person = Jhon; quantity = -1; fruit = Olive
+	Consumption > person = Jhon; quantity = 1; fruit = Orange
+	Consumption > person = Jhon; quantity = 6; fruit = Clementine
+	Consumption > person = Jhon; quantity = 10; fruit = Mandarine
+	Consumption > person = Jhon; quantity = 6; fruit = Blood Orange
+	Consumption > person = Jhon; quantity = -3; fruit = Tangerine
+	Consumption > person = Jhon; quantity = 2; fruit = Papaya
+	Consumption > person = Jhon; quantity = 0; fruit = Passionfruit
+	Consumption > person = Jhon; quantity = 6; fruit = Peach
+	Consumption > person = Jhon; quantity = 4; fruit = Pear
+	Consumption > person = Joe; quantity = -3; fruit = Apple
+	Consumption > person = Joe; quantity = 0; fruit = Apricot
+	Consumption > person = Joe; quantity = 7; fruit = Banana
+	Consumption > person = Joe; quantity = 4; fruit = Bilberry
+	Consumption > person = Joe; quantity = -2; fruit = Blackberry
+	Consumption > person = Joe; quantity = -2; fruit = Blackcurrant
+	Consumption > person = Joe; quantity = 10; fruit = Blueberry
+	Consumption > person = Joe; quantity = -1; fruit = Boysenberry
+	Consumption > person = Joe; quantity = -4; fruit = Cantaloupe
+	Consumption > person = Joe; quantity = -2; fruit = Currant
+	Consumption > person = Joe; quantity = 1; fruit = Cherry
+	Consumption > person = Joe; quantity = 4; fruit = Cherimoya
+	Consumption > person = Joe; quantity = -1; fruit = Cloudberry
+	Consumption > person = Joe; quantity = 8; fruit = Coconut
+	Consumption > person = Joe; quantity = 9; fruit = Cranberry
+	Consumption > person = Joe; quantity = 9; fruit = Damson
+	Consumption > person = Joe; quantity = 8; fruit = Date
+	Consumption > person = Joe; quantity = 4; fruit = Dragonfruit
+	Consumption > person = Joe; quantity = 8; fruit = Durian
+	Consumption > person = Joe; quantity = -4; fruit = Elderberry
+	Consumption > person = Joe; quantity = 0; fruit = Feijoa
+	Consumption > person = Joe; quantity = -1; fruit = Fig
+	Consumption > person = Joe; quantity = -3; fruit =Goji berry
+	Consumption > person = Joe; quantity = -4; fruit = Gooseberry
+	Consumption > person = Joe; quantity = 6; fruit = Grape
+	Consumption > person = Joe; quantity = 7; fruit = Raisin
+	Consumption > person = Joe; quantity = 1; fruit = Grapefruit
+	Consumption > person = Joe; quantity = 3; fruit = Guava
+	Consumption > person = Joe; quantity = 2; fruit = Huckleberry
+	Consumption > person = Joe; quantity = 6; fruit = Honeydew
+	Consumption > person = Joe; quantity = -4; fruit = Jackfruit
+	Consumption > person = Joe; quantity = -2; fruit = Jambul
+	Consumption > person = Joe; quantity = -3; fruit = Jujube
+	Consumption > person = Joe; quantity = 4; fruit = Kiwi 
+	Consumption > person = Joe; quantity = 0; fruit = Kumquat
+	Consumption > person = Joe; quantity = -2; fruit = Lemon
+	Consumption > person = Joe; quantity = 7; fruit = Lime
+	Consumption > person = Joe; quantity = 3; fruit = Loquat
+	Consumption > person = Joe; quantity = -4; fruit = Lychee
+	Consumption > person = Joe; quantity = 6; fruit = Mango
+	Consumption > person = Joe; quantity = 7; fruit =Marion berry
+	Consumption > person = Joe; quantity = 10; fruit = Melon
+	Consumption > person = Joe; quantity = -1; fruit = Cantaloupe
+	Consumption > person = Joe; quantity = -4; fruit = Honeydew
+	Consumption > person = Joe; quantity = -1; fruit = Watermelon
+	Consumption > person = Joe; quantity = 2; fruit =Rock melon
+	Consumption > person = Joe; quantity = -3; fruit = Miracle 
+	Consumption > person = Joe; quantity = 7; fruit = Mulberry
+	Consumption > person = Joe; quantity = -1; fruit = Nectarine
+	Consumption > person = Joe; quantity = -1; fruit = Olive
+	Consumption > person = Joe; quantity = 10; fruit = Orange
+	Consumption > person = Joe; quantity = 5; fruit = Clementine
+	Consumption > person = Joe; quantity = 2; fruit = Mandarine
+	Consumption > person = Joe; quantity = 1; fruit =Blood Orange
+	Consumption > person = Joe; quantity = 1; fruit = Tangerine
+	Consumption > person = Joe; quantity = 9; fruit = Papaya
+	Consumption > person = Joe; quantity = 2; fruit = Passionfruit
+	Consumption > person = Joe; quantity = -4; fruit = Peach
+	Consumption > person = Joe; quantity = 9; fruit = Pear

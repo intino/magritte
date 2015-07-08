@@ -1,0 +1,10 @@
+Atmosphere
+	TemperatureAtmosphere > altitude = 0 km; temperature = 15 °C
+	TemperatureAtmosphere > altitude = 10 km; temperature = -50 °C
+	TemperatureAtmosphere > altitude = 20 km; temperature = -56.5 °C
+	TemperatureAtmosphere > altitude = 30 km; temperature = -46.5 °C
+	TemperatureAtmosphere > altitude = 40 km; temperature = -22.1 °C
+	TemperatureAtmosphere > altitude = 50 km; temperature = -2.5 °C
+	TemperatureAtmosphere > altitude = 60 km; temperature = -27.7 °C
+	TemperatureAtmosphere > altitude = 70 km; temperature = -55.7 °C
+	TemperatureAtmosphere > altitude = 80 km; temperature = -76.5 °C

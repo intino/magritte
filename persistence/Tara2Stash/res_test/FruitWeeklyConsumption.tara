@@ -1,0 +1,26 @@
+FruitWeeklyConsumption
+    Person("John") John
+    Person("Jane") Jane
+
+    Day ("Monday") Monday
+    Day ("Tuesday") Tuesday
+    Day ("Wednesday") Wednesday
+    Day ("Thursday") Thursday
+    Day ("Friday") Friday
+    Day ("Saturday") Saturday
+    Day ("Sunday") Sunday
+
+    Consumption > person = Jhon; day = Monday; quantity = 3
+    Consumption > person = Jhon; day = Tuesday; quantity = 4
+    Consumption > person = Jhon; day = Wednesday; quantity = 3
+    Consumption > person = Jhon; day = Thursday; quantity = 5
+    Consumption > person = Jhon; day = Friday; quantity = 4
+    Consumption > person = Jhon; day = Saturday; quantity = 10
+    Consumption > person = Jhon; day = Sunday; quantity = 12
+    Consumption > person = Jane; day = Monday; quantity = 1
+    Consumption > person = Jane; day = Tuesday; quantity = 3
+    Consumption > person = Jane; day = Wednesday; quantity = 4
+    Consumption > person = Jane; day = Thursday; quantity = 3
+    Consumption > person = Jane; day = Friday; quantity = 3
+    Consumption > person = Jane; day = Saturday; quantity = 5
+    Consumption > person = Jane; day = Sunday; quantity = 4

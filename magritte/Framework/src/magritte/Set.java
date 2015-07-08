@@ -3,21 +3,25 @@ package magritte;
 import java.util.List;
 
 public interface Set<T> extends Iterable<T> {
-    int size();
-    T get(int index);
-    boolean contains(T item);
-    List<T> asList();
+	int size();
 
-    <M> Set<M> map(Map<T, M> map);
-    Set<T> filter(Filter<T> filter);
+	T get(int index);
 
-    interface Map<Source, Target> {
-        Target map(Source item);
-    }
+	boolean contains(T item);
 
-    interface Filter<Source> {
-        boolean filter(Source item);
-    }
+	List<T> asList();
+
+	<M> Set<M> map(Map<T, M> map);
+
+	Set<T> filter(Filter<T> filter);
+
+	interface Map<Source, Target> {
+		Target map(Source item);
+	}
+
+	interface Filter<Source> {
+		boolean filter(Source item);
+	}
 
 
 }

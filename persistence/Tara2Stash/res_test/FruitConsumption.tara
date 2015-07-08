@@ -1,0 +1,32 @@
+FoodConsumption
+	Person("John") John
+	Person("Jane") Jane
+
+	Fruit("Apple") Apple
+	Fruit("Pear") Pear
+	Fruit("Orange") Orange
+	Fruit("Grape") Grape
+	Fruit("Plum") Plum
+	Fruit("Strawberry") Strawberry
+	Fruit("Raspberry") Raspberry
+	Fruit("Mango") Mango
+
+	Consumption > instant = "02/03/2015"; person = Johh; food = Apple; quantity = 1
+	Consumption > instant = "02/03/2015"; person = Johh; food = Orange; quantity = 2
+	Consumption > instant = "03/03/2015"; person = Johh; food = Pear; quantity = 2
+	Consumption > instant = "03/03/2015"; person = Johh; food = Orange; quantity = 2
+	Consumption > instant = "04/03/2015"; person = Johh; food = Strawberry; quantity = 3
+	Consumption > instant = "05/03/2015"; person = Johh; food = Banana; quantity = 4
+	Consumption > instant = "05/03/2015"; person = Johh; food = Grape; quantity = 1
+	Consumption > instant = "05/03/2015"; person = Johh; food = Grape; quantity = 4
+	Consumption > instant = "06/03/2015"; person = Johh; food = liPum; quantity = 2
+	Consumption > instant = "06/03/2015"; person = Johh; food = Plum; quantity = 8
+	Consumption > instant = "07/03/2015"; person = Johh; food = Raspberry; quantity = 7
+	Consumption > instant = "07/03/2015"; person = Johh; food = Raspberry; quantity = 5
+	Consumption > instant = "01/03/2015"; person = Jane; food = Apple; quantity = 1
+	Consumption > instant = "01/03/2015"; person = Jane; food = Pear; quantity = 0
+	Consumption > instant = "01/03/2015"; person = Jane; food = Orange; quantity = 3
+	Consumption > instant = "01/03/2015"; person = Jane; food = Grape; quantity = 3
+	Consumption > instant = "01/03/2015"; person = Jane; food = Plum; quantity = 1
+	Consumption > instant = "01/03/2015"; person = Jane; food = Strawberry; quantity = 2
+	Consumption > instant = "01/03/2015"; person = Jane; food = Raspberry; quantity = 1

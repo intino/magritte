@@ -13,13 +13,53 @@ import magritte.sources.BoxSource;
 import java.util.ArrayList;
 import java.util.List;
 
-import static magritte.Tag.*;
+import static magritte.Tag.Case;
 
 public abstract class Box {
 
 	private static final List<String> signatures = new ArrayList<>();
 
 	protected Box() {
+	}
+
+	public static Source in(String path) {
+		return BoxSource.in(path);
+	}
+
+	public static Resource resource(Source source) {
+		return Resource.resource(source);
+	}
+
+	public static Date date(int... values) {
+		return Date.date(values);
+	}
+
+	public static int[] multiple(int... values) {
+		return values;
+	}
+
+	public static double[] multiple(double... values) {
+		return values;
+	}
+
+	public static boolean[] multiple(boolean... values) {
+		return values;
+	}
+
+	public static String[] multiple(String... values) {
+		return values;
+	}
+
+	public static Date[] multiple(Date... values) {
+		return values;
+	}
+
+	public static Resource[] multiple(Resource... values) {
+		return values;
+	}
+
+	public static Reference[] multiple(Reference... values) {
+		return values;
 	}
 
 	public final void load(Graph graph) {
@@ -38,6 +78,9 @@ public abstract class Box {
 
 	protected abstract void write(Graph graph);
 
+	protected Box[] $(Box... boxes) {
+		return boxes;
+	}
 
 	public static abstract class Dsl extends Box {
 
@@ -113,50 +156,6 @@ public abstract class Box {
 			return graphEditor.def(name).set(Case);
 		}
 
-	}
-
-	protected Box[] $(Box... boxes) {
-		return boxes;
-	}
-
-	public static Source in(String path) {
-		return BoxSource.in(path);
-	}
-
-	public static Resource resource(Source source) {
-		return Resource.resource(source);
-	}
-
-	public static Date date(int... values) {
-		return Date.date(values);
-	}
-
-	public static int[] multiple(int... values) {
-		return values;
-	}
-
-	public static double[] multiple(double... values) {
-		return values;
-	}
-
-	public static boolean[] multiple(boolean... values) {
-		return values;
-	}
-
-	public static String[] multiple(String... values) {
-		return values;
-	}
-
-	public static Date[] multiple(Date... values) {
-		return values;
-	}
-
-	public static Resource[] multiple(Resource... values) {
-		return values;
-	}
-
-	public static Reference[] multiple(Reference... values) {
-		return values;
 	}
 
 

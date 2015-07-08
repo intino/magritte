@@ -8,6 +8,10 @@ public class RandomNameGenerator implements NameGenerator {
 	private static String[] middle = {"", "r", "l"};
 	private static String[] ending = {"", "n", "r", "s", "l", "t", "c"};
 
+	private static int random(int length) {
+		return (int) (Math.random() * length);
+	}
+
 	@Override
 	public String generate() {
 		return (generateSyllab() + generate(1)).replace("cc", "c").replace("tt", "t").replace("ss", "s");
@@ -23,10 +27,6 @@ public class RandomNameGenerator implements NameGenerator {
 
 	private String random(String[] values) {
 		return values[random(values.length)];
-	}
-
-	private static int random(int length) {
-		return (int) (Math.random() * length);
 	}
 
 }

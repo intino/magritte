@@ -52,16 +52,26 @@
         <processorPath useClasspath="true" />
         <module name="magritte-store" />
       </profile>
+      <profile default="false" name="Annotation profile for rt" enabled="true">
+        <sourceOutputDir name="../out/build/tara-runtime/generated-sources/annotations" />
+        <sourceTestOutputDir name="../out/build/tara-runtime/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="rt" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="intellij" target="1.8" />
       <module name="magritte" target="1.8" />
       <module name="magritte-store" target="1.8" />
+      <module name="rt" target="1.8" />
       <module name="semantic" target="1.8" />
+      <module name="store" target="1.8" />
       <module name="tara" target="1.8" />
       <module name="tara-jps-plugin" target="" />
       <module name="tara-runtime" target="1.8" />
       <module name="tara-runtime-constants" target="" />
+      <module name="Tara2Stash" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

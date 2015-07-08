@@ -1,17 +1,19 @@
 package magritte.wraps;
 
-import magritte.*;
-import magritte.handlers.Casting.NodeCasting;
+import magritte.Graph;
+import magritte.Node;
+import magritte.NodeWrap;
+import magritte.Set;
 import magritte.editors.NodeEditor;
 import magritte.editors.VariableAddEditor;
 import magritte.editors.VariableEditor;
 import magritte.editors.VariableRemoveEditor;
+import magritte.handlers.Casting.NodeCasting;
 import magritte.handlers.NodeProducer;
 import magritte.helpers.Extract;
 import magritte.wraps.variables.Multiple;
 import magritte.wraps.variables.Single;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -28,6 +30,7 @@ import static magritte.wraps.Operation.Remove;
 
 public class Morph implements NodeWrap, Cloneable {
 
+	private static Map<String, Set> queries = new WeakHashMap<>();
 	protected Node node;
 	protected Definition definition;
 
@@ -126,14 +129,9 @@ public class Morph implements NodeWrap, Cloneable {
 		return cache(query, () -> cast(node.members(Component).filter(instancesOf(nameOf(morphClass)))).as(morphClass));
 	}
 
-	private static Map<String,Set> queries = new WeakHashMap<>();
 	private <T extends Morph> Set cache(String key, Query<T> query) {
 		if (!queries.containsKey(key)) queries.put(key, query.set());
 		return queries.get(key);
-	}
-
-	private static interface Query<T> {
-		Set<T> set();
 	}
 
 	public Set<Morph> _referees() {
@@ -216,6 +214,10 @@ public class Morph implements NodeWrap, Cloneable {
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
+	}
+
+	private static interface Query<T> {
+		Set<T> set();
 	}
 
 }

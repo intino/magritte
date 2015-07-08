@@ -1,0 +1,23 @@
+WorldwidepopulationByRegion
+    Continent("Asia") Asia
+    Continent("Europe") Europe
+    Continent("Africa") Africa
+    Continent("America") America
+    Continent("Oceania") Oceania 
+
+
+	population > year = "1800"; continent = Africa; population = 107
+	population > year = "1800"; continent = America; population = 31
+	population > year = "1800"; continent = Asia; population = 635
+	population > year = "1800"; continent = Europe; population = 203
+	population > year = "1800"; continent = Oceania; population = 2
+	population > year = "1900"; continent = Africa; population = 133
+	population > year = "1900"; continent = America; population = 156
+	population > year = "1900"; continent = Asia; population = 947
+	population > year = "1900"; continent = Europe; population = 408
+	population > year = "1900"; continent = Oceania; population = 6
+	population > year = "2008"; continent = Africa; population = 973
+	population > year = "2008"; continent = America; population = 914
+	population > year = "2008"; continent = Asia; population = 4054
+	population > year = "2008"; continent = Europe; population = 732
+	population > year = "2008"; continent = Oceania; population = 34

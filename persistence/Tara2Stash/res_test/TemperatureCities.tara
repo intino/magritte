@@ -1,0 +1,69 @@
+TemperatureFamousCapitals
+    Capital("Tokyo") Tokyo
+    Capital("New York") New York
+    Capital("Berlin") Berlin
+    Capital("London") London
+
+    Month("January") January
+    Month("Febuary") Febuary 
+    Month("March") March
+    Month("April") April
+    Month("May") May
+    Month("June") June
+    Month("July") July
+    Month("August") August
+    Month("September") September
+    Month("October") October
+    Month("November") November
+    Month("December") December
+
+    AverageTemperature  > capital = Tokyo; month = January; temperature = 7.0 °C 
+    AverageTemperature > capital = Tokyo; month = February; temperature = 6.9 °C 
+    AverageTemperature > capital = Tokyo; month = March; temperature = 9.5 °C 
+    AverageTemperature > capital = Tokyo; month = April; temperature = 14.5 °C 
+    AverageTemperature > capital = Tokyo; month = May; temperature = 18.2 °C 
+    AverageTemperature > capital = Tokyo; month = June; temperature = 21.5 °C 
+    AverageTemperature > capital = Tokyo; month = July; temperature = 25.2 °C 
+    AverageTemperature > capital = Tokyo; month = August; temperature = 26.5 °C 
+    AverageTemperature > capital = Tokyo; month = September; temperature = 23.3 °C 
+    AverageTemperature > capital = Tokyo; month = October; temperature = 18.3 °C 
+    AverageTemperature > capital = Tokyo; month = November; temperature = 13.9 °C 
+    AverageTemperature > capital = Tokyo; month = December; temperature = 9.6 °C 
+    AverageTemperature > capital = New York; month = January; temperature =-0.2 °C
+    AverageTemperature > capital = New York; month = February; temperature = 0.8 °C
+    AverageTemperature > capital = New York; month = March; temperature = 5.7 °C
+    AverageTemperature > capital = New York; month = April; temperature = 11.3 °C
+    AverageTemperature > capital = New York; month = May; temperature = 17.0 °C
+    AverageTemperature > capital = New York; month = June; temperature = 22.0 °C
+    AverageTemperature > capital = New York; month = July; temperature = 24.8 °C
+    AverageTemperature > capital = New York; month = August; temperature = 24.1 °C
+    AverageTemperature > capital = New York; month = September; temperature = 20.1 °C
+    AverageTemperature > capital = New York; month = October; temperature = 14.1 °C
+    AverageTemperature > capital = New York; month = November; temperature = 8.6 °C
+    AverageTemperature > capital = New York; month = December; temperature = 2.5 °C
+    AverageTemperature > capital = Berlin ; month = January; temperature = -0.9 °C
+    AverageTemperature > capital = Berlin ; month = February; temperature = 0. °C
+    AverageTemperature > capital = Berlin ; month = March; temperature = 3.5 °C
+    AverageTemperature > capital = Berlin ; month = April; temperature = 8.4 °C
+    AverageTemperature > capital = Berlin ; month = May; temperature = 13.5 °C
+    AverageTemperature > capital = Berlin ; month = June; temperature = 17.0 °C
+    AverageTemperature > capital = Berlin ; month = July; temperature = 18.6 °C
+    AverageTemperature > capital = Berlin ; month = August; temperature = 17.9 °C
+    AverageTemperature > capital = Berlin ; month = September; temperature = 14.3 °C
+    AverageTemperature > capital = Berlin ; month = October; temperature = 9.0 °C
+    AverageTemperature > capital = Berlin ; month = November; temperature = 3.9 °C
+    AverageTemperature > capital = Berlin ; month = December; temperature = 1.0 °C
+    AverageTemperature > capital = London; month = January; temperature = 4.2 °C
+    AverageTemperature > capital = London; month = February; temperature = 5.7 °C
+    AverageTemperature > capital = London; month = March; temperature = 3.9 °C
+    AverageTemperature > capital = London; month = April; temperature = 8.5 °C
+    AverageTemperature > capital = London; month = May; temperature = 11.9 °C
+    AverageTemperature > capital = London; month = June; temperature = 15.2 °C
+    AverageTemperature > capital = London; month = July; temperature = 17.0 °C
+    AverageTemperature > capital = London; month = August; temperature = 16.6 °C
+    AverageTemperature > capital = London; month = September; temperature = 14.2 °C
+    AverageTemperature > capital = London; month = October; temperature = 10.3 °C
+    AverageTemperature > capital = London; month = November; temperature = 6.6 °C
+    AverageTemperature > capital = London; month = December; temperature = 4.8 °C
+
+

@@ -2,13 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/magritte/samples/Monet/Monet.iml" filepath="$PROJECT_DIR$/magritte/samples/Monet/Monet.iml" />
-      <module fileurl="file://$PROJECT_DIR$/magritte/samples/Shop/Shop.iml" filepath="$PROJECT_DIR$/magritte/samples/Shop/Shop.iml" />
-      <module fileurl="file://$PROJECT_DIR$/magritte/samples/Tafat/Tafat.iml" filepath="$PROJECT_DIR$/magritte/samples/Tafat/Tafat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/samples/Monet/Monet.iml" filepath="$PROJECT_DIR$/samples/Monet/Monet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/samples/Shop/Shop.iml" filepath="$PROJECT_DIR$/samples/Shop/Shop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/samples/Tafat/Tafat.iml" filepath="$PROJECT_DIR$/samples/Tafat/Tafat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/persistence/Tara2Stash/Tara2Stash.iml" filepath="$PROJECT_DIR$/persistence/Tara2Stash/Tara2Stash.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/intellij/intellij.iml" filepath="$PROJECT_DIR$/ide/intellij/intellij.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/Framework/magritte.iml" filepath="$PROJECT_DIR$/magritte/Framework/magritte.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Persistence/magritte-store.iml" filepath="$PROJECT_DIR$/Persistence/magritte-store.iml" />
       <module fileurl="file://$PROJECT_DIR$/compiler/semantic/semantic.iml" filepath="$PROJECT_DIR$/compiler/semantic/semantic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/persistence/store/store.iml" filepath="$PROJECT_DIR$/persistence/store/store.iml" />
       <module fileurl="file://$PROJECT_DIR$/tara.iml" filepath="$PROJECT_DIR$/tara.iml" />
       <module fileurl="file://$PROJECT_DIR$/ide/jps-plugin/tara-jps-plugin.iml" filepath="$PROJECT_DIR$/ide/jps-plugin/tara-jps-plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/compiler/rt/tara-runtime.iml" filepath="$PROJECT_DIR$/compiler/rt/tara-runtime.iml" />

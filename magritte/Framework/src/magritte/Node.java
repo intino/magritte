@@ -2,57 +2,71 @@ package magritte;
 
 public interface Node {
 
-    enum Member {
-        Component(0), Required(1), Optional(2), Aggregable(3);
+	String TITLE = "-title";
+	String KEY = "-alias";
+	String FLAGS = "-flags";
 
-        public final int index;
-        Member(int index) {
-            this.index = index;
-        }
-    }
+	Reference ref();
 
+	String name();
 
-    interface LinkAction {
-        void as(Tag.Link link);
-    }
+	String title();
 
-    String TITLE = "-title";
-    String KEY = "-alias";
-    String FLAGS = "-flags";
+	String key();
 
-    Reference ref();
-    String name();
-    String title();
-    String key();
+	Tag[] tags();
 
-    Tag[] tags();
-    boolean is(Tag tag);
-    <T extends Node> T as(Class<T> class_);
+	boolean is(Tag tag);
 
-    String[] vars();
-    <T> T get(String name);
+	<T extends Node> T as(Class<T> class_);
 
-    Node type();
-    Set<Node> types();
+	String[] vars();
 
-    Node parent();
-    Set<Node> children();
+	<T> T get(String name);
 
-    Node root();
-    Node owner();
-    Set<Node> members(Member member);
+	Node type();
 
-    Set<Node> fanIn();
-    Set<Node> fanOut();
+	Set<Node> types();
 
-    void set(String name);
-    void set(Tag... tags);
-    <T> void set(String name, T value);
+	Node parent();
 
-    LinkAction link(Node node);
-    LinkAction unlink(Node node);
+	Set<Node> children();
 
-    Graph graph();
+	Node root();
+
+	Node owner();
+
+	Set<Node> members(Member member);
+
+	Set<Node> fanIn();
+
+	Set<Node> fanOut();
+
+	void set(String name);
+
+	void set(Tag... tags);
+
+	<T> void set(String name, T value);
+
+	LinkAction link(Node node);
+
+	LinkAction unlink(Node node);
+
+	Graph graph();
+
+	enum Member {
+		Component(0), Required(1), Optional(2), Aggregable(3);
+
+		public final int index;
+
+		Member(int index) {
+			this.index = index;
+		}
+	}
+
+	interface LinkAction {
+		void as(Tag.Link link);
+	}
 
 
 }

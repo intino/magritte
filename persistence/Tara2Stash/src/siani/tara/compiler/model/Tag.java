@@ -1,0 +1,22 @@
+package siani.tara.compiler.model;
+
+
+public enum Tag {
+	ABSTRACT,
+	MAIN,
+	TERMINAL,
+	SINGLE,
+	REQUIRED,
+	FEATURE,
+	FACET,
+	PRIVATE,
+	ENCLOSED,
+	FINAL,
+
+	NAMED,
+
+	TERMINAL_INSTANCE,
+	FACET_INSTANCE,
+	FEATURE_INSTANCE,
+
+}

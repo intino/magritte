@@ -1,0 +1,8 @@
+ComparativeChartBranch
+    Branch("Tokyo") Tokyo
+    Branch("San Francisco") San Francisco
+    Branch("Seattle") Seattle
+
+	EfficiencyBranch > branch= Tokyo; employees = 150; optimizedEmployes = 140; profit = 183.6 $; optimizedProfit = 203.6 $
+	EfficiencyBranch > branch= San Francisco; employees = 73; optimizedEmployes = 90; profit = 178.8 $; optimizedProfit = 198.8 $
+	EfficiencyBranch > branch= Seattle; employees = 20; optimizedEmployes = 40; profit = 198.5 $; optimizedProfit = 208.5 $

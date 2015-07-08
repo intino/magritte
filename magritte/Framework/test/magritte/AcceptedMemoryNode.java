@@ -17,86 +17,86 @@ import static org.junit.Assert.assertThat;
 
 public class AcceptedMemoryNode {
 
-    private MemoryGraph model;
+	private MemoryGraph model;
 
-    @Before
-    public void init() {
-        this.model = new MemoryGraph();
-    }
+	@Before
+	public void init() {
+		this.model = new MemoryGraph();
+	}
 
-    @Test
-    public void should_return_title_from_name() throws Exception {
-        assertThat(createType("Phone").name(), is("Phone"));
-        assertThat(createType("Phone").title(), is("Phone"));
-        assertThat(createType("Phone").key(), is("Phone"));
-        assertThat(createType("Phone|saso12").name(), is("Phone|saso12"));
-        assertThat(createType("Phone|saso12").title(), is("Phone"));
-        assertThat(createType("Phone|saso12").key(), is("saso12"));
-        assertThat(createType("saso12").name(), is("saso12"));
-        assertThat(createType("saso12").title(), is("saso12"));
-        assertThat(createType("saso12").key(), is("saso12"));
-        assertThat(create().name(), is(nullValue()));
-        assertThat(create().title(), is("?"));
-        assertThat(create().key(), is("?"));
-    }
+	@Test
+	public void should_return_title_from_name() throws Exception {
+		assertThat(createType("Phone").name(), is("Phone"));
+		assertThat(createType("Phone").title(), is("Phone"));
+		assertThat(createType("Phone").key(), is("Phone"));
+		assertThat(createType("Phone|saso12").name(), is("Phone|saso12"));
+		assertThat(createType("Phone|saso12").title(), is("Phone"));
+		assertThat(createType("Phone|saso12").key(), is("saso12"));
+		assertThat(createType("saso12").name(), is("saso12"));
+		assertThat(createType("saso12").title(), is("saso12"));
+		assertThat(createType("saso12").key(), is("saso12"));
+		assertThat(create().name(), is(nullValue()));
+		assertThat(create().title(), is("?"));
+		assertThat(create().key(), is("?"));
+	}
 
-   @Test
-    public void should_be_able_to_register_child_and_parent_links() throws Exception {
-        Node parent = createType("Parent");
-        Node child1 = createType("Child1");
-        Node child2 = createType("Child2");
+	@Test
+	public void should_be_able_to_register_child_and_parent_links() throws Exception {
+		Node parent = createType("Parent");
+		Node child1 = createType("Child1");
+		Node child2 = createType("Child2");
 
-       new NodeEditor(child1).parent(parent);
-       new NodeEditor(child2).parent(parent);
+		new NodeEditor(child1).parent(parent);
+		new NodeEditor(child2).parent(parent);
 
-        assertThat(parent.children().size(), is(2));
-        assertThat(parent.children().get(0), is(child1));
-        assertThat(parent.children().get(1), is(child2));
-        assertThat("Parent contains child", parent.children().contains(child2), is(true));
-        assertThat(child1.parent(), is(parent));
-        assertThat(child2.parent(), is(parent));
-    }
+		assertThat(parent.children().size(), is(2));
+		assertThat(parent.children().get(0), is(child1));
+		assertThat(parent.children().get(1), is(child2));
+		assertThat("Parent contains child", parent.children().contains(child2), is(true));
+		assertThat(child1.parent(), is(parent));
+		assertThat(child2.parent(), is(parent));
+	}
 
-    @Test
-    public void should_register_members() throws Exception {
-        Node owner = createType("Owner");
-        Node owned = createType("Owned");
-        Node aggregable = createType("Aggregable");
-        new NodeEditor(owner).has(owned);
-        new NodeEditor(owner).holds(aggregable);
+	@Test
+	public void should_register_members() throws Exception {
+		Node owner = createType("Owner");
+		Node owned = createType("Owned");
+		Node aggregable = createType("Aggregable");
+		new NodeEditor(owner).has(owned);
+		new NodeEditor(owner).holds(aggregable);
 
-        assertThat(owner.members(Component).size(), is(1));
-        assertThat(owner.members(Component).get(0), is(owned));
-        assertThat(owner.members(Aggregable).size(), is(1));
-        assertThat(owner.members(Aggregable).get(0), is(aggregable));
-        assertThat(owned.owner(), is(owner));
-        assertThat(aggregable.owner(), is(owner));
-    }
+		assertThat(owner.members(Component).size(), is(1));
+		assertThat(owner.members(Component).get(0), is(owned));
+		assertThat(owner.members(Aggregable).size(), is(1));
+		assertThat(owner.members(Aggregable).get(0), is(aggregable));
+		assertThat(owned.owner(), is(owner));
+		assertThat(aggregable.owner(), is(owner));
+	}
 
-    @Test
-    public void should_iterate_members() throws Exception {
-        Node owner = createType("Owner");
-        Node owned1 = createType("Owned");
-        Node owned2 = createType("Owned");
-        new NodeEditor(owner).has(owned1);
-        new NodeEditor(owner).has(owned2);
+	@Test
+	public void should_iterate_members() throws Exception {
+		Node owner = createType("Owner");
+		Node owned1 = createType("Owned");
+		Node owned2 = createType("Owned");
+		new NodeEditor(owner).has(owned1);
+		new NodeEditor(owner).has(owned2);
 
-        List<String> result = new ArrayList<>();
-        owner.members(Component).forEach(item -> result.add(item.name()));
-        assertThat(result.size(), is(2));
-    }
+		List<String> result = new ArrayList<>();
+		owner.members(Component).forEach(item -> result.add(item.name()));
+		assertThat(result.size(), is(2));
+	}
 
-    @Test
-    public void should_remove_members() throws Exception {
-        Node owner = createType("Owner");
-        Node owned = createType("Owned");
+	@Test
+	public void should_remove_members() throws Exception {
+		Node owner = createType("Owner");
+		Node owned = createType("Owned");
 
-        new NodeEditor(owner).has(owned);
-        new NodeEditor(owner).remove(owned);
+		new NodeEditor(owner).has(owned);
+		new NodeEditor(owner).remove(owned);
 
-        assertThat(owner.members(Component).size(), is(0));
-        assertNull(owned.owner());
-    }
+		assertThat(owner.members(Component).size(), is(0));
+		assertNull(owned.owner());
+	}
 
 //    @Test
 //    public void types() throws Exception {
@@ -127,23 +127,23 @@ public class AcceptedMemoryNode {
 //    }
 
 
-    public Node createType(String name) {
-        Node node = model.createNode();
-        node.set(name);
-        return node;
-    }
+	public Node createType(String name) {
+		Node node = model.createNode();
+		node.set(name);
+		return node;
+	}
 
-    public Node create(String name) {
-        Node node = model.createNode();
-        node.set(name);
-        node.set(Tag.Case);
-        return node;
-    }
+	public Node create(String name) {
+		Node node = model.createNode();
+		node.set(name);
+		node.set(Tag.Case);
+		return node;
+	}
 
-    public Node create() {
-        Node node = model.createNode();
-        node.set(Tag.Case);
-        return node;
-    }
+	public Node create() {
+		Node node = model.createNode();
+		node.set(Tag.Case);
+		return node;
+	}
 
 }

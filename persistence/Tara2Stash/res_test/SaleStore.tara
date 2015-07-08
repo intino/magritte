@@ -1,0 +1,71 @@
+dsl Sumus
+
+SaleHistory
+	Employee("Alexander") Alexander
+	Employee("Marie") Marie
+	Employee("Maximilian") Maximilian
+	Employee("Sophia") Sophia
+	Employee("Lukas") Lukas
+	Employee("Maria") Maria
+	Employee("Leon") Leon
+	Employee("Anna") Anna
+	Employee("Tim") Tim
+	Employee("Laura") Laura
+
+	Day("Monday") Monday
+	Day("Tuesday") Tuesday
+	Day("Wednesday") Wednesday
+	Day("Thursday") Thursday
+	Day("Friday") Friday
+
+	Sale > employee = Alexander; day = Monday; quantity = 10
+	Sale > employee = Alexander; day = Tuesday; quantity = 19
+	Sale > employee = Alexander; day = Wednesday; quantity = 8
+	Sale > employee = Alexander; day = Thursday; quantity = 24
+	Sale > employee = Alexander; day = Friday; quantity = 67
+	Sale > employee = Marie; day = Monday; quantity = 92
+	Sale > employee = Marie; day = Tuesday; quantity = 58
+	Sale > employee = Marie; day = Wednesday; quantity = 78
+	Sale > employee = Marie; day = Thursday; quantity = 117
+	Sale > employee = Marie; day = Friday; quantity = 48
+	Sale > employee = Maximilian; day = Monday; quantity = 35
+	Sale > employee = Maximilian; day = Tuesday; quantity = 15
+	Sale > employee = Maximilian; day = Wednesday; quantity = 123
+	Sale > employee = Maximilian; day = Thursday; quantity = 64
+	Sale > employee = Maximilian; day = Friday; quantity = 52
+	Sale > employee = Sophia; day = Monday; quantity = 72
+	Sale > employee = Sophia; day = Tuesday; quantity = 132
+	Sale > employee = Sophia; day = Wednesday; quantity = 114
+	Sale > employee = Sophia; day = Thursday; quantity = 19
+	Sale > employee = Sophia; day = Friday; quantity = 16
+	Sale > employee = Lukas; day = Monday; quantity = 38
+	Sale > employee = Lukas; day = Tuesday; quantity = 5
+	Sale > employee = Lukas; day = Wednesday; quantity = 8
+	Sale > employee = Lukas; day = Thursday; quantity = 117
+	Sale > employee = Lukas; day = Friday; quantity = 115
+	Sale > employee = Maria; day = Monday; quantity = 88
+	Sale > employee = Maria; day = Tuesday; quantity = 32
+	Sale > employee = Maria; day = Wednesday; quantity = 12
+	Sale > employee = Maria; day = Thursday; quantity = 6
+	Sale > employee = Maria; day = Friday; quantity = 120
+	Sale > employee = Leon; day = Monday; quantity = 13
+	Sale > employee = Leon; day = Tuesday; quantity = 44
+	Sale > employee = Leon; day = Wednesday; quantity = 88
+	Sale > employee = Leon; day = Thursday; quantity = 98
+	Sale > employee = Leon; day = Friday; quantity = 96
+	Sale > employee = Anna; day = Monday; quantity = 31
+	Sale > employee = Anna; day = Tuesday; quantity = 1
+	Sale > employee = Anna; day = Wednesday; quantity = 82
+	Sale > employee = Anna; day = Thursday; quantity = 32
+	Sale > employee = Anna; day = Friday; quantity = 30
+	Sale > employee = Tim; day = Monday; quantity = 85
+	Sale > employee = Tim; day = Tuesday; quantity = 97
+	Sale > employee = Tim; day = Wednesday; quantity = 123
+	Sale > employee = Tim; day = Thursday; quantity = 64
+	Sale > employee = Tim; day = Friday; quantity = 84
+	Sale > employee = Laura; day = Monday; quantity = 47
+	Sale > employee = Laura; day = Tuesday; quantity = 114
+	Sale > employee = Laura; day = Wednesday; quantity = 31
+	Sale > employee = Laura; day = Thursday; quantity = 48
+	Sale > employee = Laura; day = Friday; quantity = 91
+

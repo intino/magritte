@@ -1,6 +1,7 @@
 package magritte;
 
 public interface Source {
-    Reference uid();
-    byte[] data();
+	Reference uid();
+
+	byte[] data();
 }
