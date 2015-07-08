@@ -10,6 +10,8 @@ import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.lang.TaraIcons;
 import siani.tara.intellij.lang.TaraLanguage;
+import siani.tara.intellij.project.facet.TaraFacet;
+import siani.tara.intellij.project.module.ModuleProvider;
 import siani.tara.semantic.model.Flags;
 import siani.tara.semantic.model.Tag;
 
@@ -19,14 +21,33 @@ import static siani.tara.intellij.lang.psi.TaraTypes.*;
 
 public class TaraAnnotationsCompletionContributor extends CompletionContributor {
 
-	private PsiElementPattern.Capture<PsiElement> afterIsOrInto = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.andOr(new FilterPattern(new TaraFilters.AfterIsFitFilter()), new FilterPattern(new TaraFilters.AfterIntoFitFilter()));
+	private PsiElementPattern.Capture<PsiElement> afterIs = psiElement().withLanguage(TaraLanguage.INSTANCE)
+		.and(new FilterPattern(new TaraFilters.AfterIntoFitFilter()));
+	private PsiElementPattern.Capture<PsiElement> afterInto = psiElement().withLanguage(TaraLanguage.INSTANCE)
+		.and(new FilterPattern(new TaraFilters.AfterIntoFitFilter()));
 
 	public TaraAnnotationsCompletionContributor() {
-		extend(CompletionType.BASIC, afterIsOrInto, new CompletionProvider<CompletionParameters>() {
+		extend(CompletionType.BASIC, afterInto, new CompletionProvider<CompletionParameters>() {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
+					final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
+					if (taraFacetByModule == null) return;
+					final int level = taraFacetByModule.getConfiguration().getLevel();
+					if (level <= 1) return;
+					addTags(parameters, resultSet);
+				}
+			}
+		);
+
+		extend(CompletionType.BASIC, afterIs, new CompletionProvider<CompletionParameters>() {
+				public void addCompletions(@NotNull CompletionParameters parameters,
+				                           ProcessingContext context,
+				                           @NotNull CompletionResultSet resultSet) {
+					final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(parameters.getOriginalFile()));
+					if (taraFacetByModule == null) return;
+					final int level = taraFacetByModule.getConfiguration().getLevel();
+					if (level == 0) return;
 					addTags(parameters, resultSet);
 				}
 			}

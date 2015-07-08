@@ -24,6 +24,11 @@ public class LanguageFacetTarget extends LanguageElement implements siani.tara.s
 	}
 
 	@Override
+	public List<String> constraint() {
+		return target.getConstraints();
+	}
+
+	@Override
 	public List<siani.tara.semantic.model.Node> includes() {
 		List<siani.tara.semantic.model.Node> nodes = target.getIncludedNodes().stream().
 			map(include -> include instanceof NodeReference ?

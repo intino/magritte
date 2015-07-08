@@ -165,12 +165,14 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (String facet : node.getAllowedFacets()) {
 			Frame frame = new Frame().addTypes(ALLOW, "facet").addFrame("value", facet);
 			allows.addFrame(ALLOW, frame);
-			FacetTarget facetNode = findFacetTarget(node, facet);
-			if (facetNode == null) continue;
-			addParameterAllows(facetNode.getVariables(), frame);
-			addParameterRequires(facetNode.getVariables(), frame, 0);//TRUE? añadir terminales
-			addAllowedInnerNodes(frame, facetNode);
-			addRequiredInnerNodes(frame, facetNode);
+			FacetTarget facetTarget = findFacetTarget(node, facet);
+			if (facetTarget == null) continue;
+			if (facetTarget.getConstraints() != null && !facetTarget.getConstraints().isEmpty())
+				frame.addFrame("with", facetTarget.getConstraints().toArray(new String[facetTarget.getConstraints().size()]));
+			addParameterAllows(facetTarget.getVariables(), frame);
+			addParameterRequires(facetTarget.getVariables(), frame, 0);//TRUE? añadir terminales
+			addAllowedInnerNodes(frame, facetTarget);
+			addRequiredInnerNodes(frame, facetTarget);
 		}
 	}
 
@@ -234,7 +236,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 			if (tag.name().toLowerCase().equals(TERMINAL)) assumptions.addFrame(ASSUMPTION, Tag.TERMINAL_INSTANCE);
 			else if (tag.equals(Tag.FEATURE)) assumptions.addFrame(ASSUMPTION, Tag.FEATURE_INSTANCE);
 			else if (tag.equals(Tag.FACET)) assumptions.addFrame(ASSUMPTION, Tag.FACET_INSTANCE);
-			else if (tag.equals(Tag.MAIN)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.MAIN_INSTANCE.name()));
+			else if (tag.equals(Tag.MAIN)) assumptions.addFrame(ASSUMPTION, capitalize(Tag.MAIN.name()));
 		}
 	}
 

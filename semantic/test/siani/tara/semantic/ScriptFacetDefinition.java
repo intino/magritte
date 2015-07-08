@@ -201,6 +201,11 @@ class ScriptFacetDefinition implements FacetDefinition {
 			}
 
 			@Override
+			public List<String> nodeTypes() {
+				return Collections.emptyList();
+			}
+
+			@Override
 			public List<Parameter> parameters() {
 				return parameters;
 			}

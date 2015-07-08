@@ -8,29 +8,24 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static siani.tara.intellij.lang.psi.TaraTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import siani.tara.intellij.lang.psi.*;
 
-public class TaraVarInitImpl extends VarInitMixin implements TaraVarInit {
+public class TaraConstraintImpl extends ASTWrapperPsiElement implements TaraConstraint {
 
-  public TaraVarInitImpl(ASTNode node) {
+  public TaraConstraintImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitVarInit(this);
+    if (visitor instanceof TaraVisitor) ((TaraVisitor)visitor).visitConstraint(this);
     else super.accept(visitor);
   }
 
   @Override
   @NotNull
-  public TaraIdentifier getIdentifier() {
-    return findNotNullChildByClass(TaraIdentifier.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraValue getValue() {
-    return findChildByClass(TaraValue.class);
+  public List<TaraIdentifierReference> getIdentifierReferenceList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TaraIdentifierReference.class);
   }
 
 }

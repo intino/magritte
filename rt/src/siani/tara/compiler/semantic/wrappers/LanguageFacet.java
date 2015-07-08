@@ -1,9 +1,7 @@
 package siani.tara.compiler.semantic.wrappers;
 
 
-import siani.tara.compiler.model.Element;
-import siani.tara.compiler.model.Facet;
-import siani.tara.compiler.model.Parameter;
+import siani.tara.compiler.model.*;
 import siani.tara.compiler.model.impl.NodeImpl;
 import siani.tara.compiler.model.impl.NodeReference;
 
@@ -22,6 +20,17 @@ public class LanguageFacet extends LanguageElement implements siani.tara.semanti
 	@Override
 	public String type() {
 		return facet.getFacetType();
+	}
+
+	@Override
+	public List<String> nodeTypes() {
+		final NodeContainer container = facet.getContainer();
+		if (container instanceof Node) return Collections.unmodifiableList(collectTypes((Node) container));
+		return Collections.emptyList();
+	}
+
+	private List<String> collectTypes(Node node) {
+		return node.getFacets().stream().map(Facet::getFacetType).collect(Collectors.toList());
 	}
 
 	@Override

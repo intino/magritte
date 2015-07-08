@@ -6,6 +6,7 @@ import siani.tara.semantic.model.Facet;
 import siani.tara.semantic.model.Node;
 import siani.tara.semantic.model.Parameter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +24,15 @@ public class LanguageFacet extends LanguageElement implements Facet {
 	@Override
 	public String type() {
 		return facetApply.getType();
+	}
+
+	@Override
+	public List<String> nodeTypes() {
+		List<String> types = new ArrayList<>();
+		final siani.tara.intellij.lang.psi.Node container = facetApply.getContainer();
+		types.add(container.getType());
+		types.addAll(container.getFacetApplies().stream().map(FacetApply::getType).collect(Collectors.toList()));
+		return types;
 	}
 
 	@Override

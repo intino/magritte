@@ -67,6 +67,7 @@ VAR                 = "var"
 USE                 = "use"
 
 WITH                = "with"
+ANY                 = "any"
 //annotations
 ABSTRACT            = "abstract"
 
@@ -76,7 +77,7 @@ REQUIRED            = "required"
 TERMINAL            = "terminal"
 
 MAIN                = "main"
-IMPLICIT            = "implicit"
+PROTOTYPE           = "prototype"
 FEATURE             = "feature"
 
 FINAL               = "final"
@@ -168,6 +169,8 @@ NEWLINE             = [\n]+
 	{IS}                            {   return TaraTypes.IS; }
 	{INTO}                          {   return TaraTypes.INTO; }
 	{WITH}                          {   return TaraTypes.WITH; }
+	{ANY}                           {   return TaraTypes.ANY; }
+
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
 	{SUB}                           {   return TaraTypes.SUB; }
@@ -178,7 +181,7 @@ NEWLINE             = [\n]+
     {REQUIRED}                      {   return TaraTypes.REQUIRED; }
     {MAIN}                          {   return TaraTypes.MAIN; }
 
-    {IMPLICIT}                      {   return TaraTypes.IMPLICIT; }
+    {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
     {FEATURE}                       {   return TaraTypes.FEATURE; }
 
     {FACET}                         {   return TaraTypes.FACET; }

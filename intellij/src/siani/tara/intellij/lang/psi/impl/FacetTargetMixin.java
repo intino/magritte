@@ -7,6 +7,7 @@ import siani.tara.intellij.lang.psi.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
 import static siani.tara.intellij.lang.psi.impl.TaraPsiImplUtil.getContainerNodeOf;
@@ -21,6 +22,12 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 	public String getTarget() {
 		TaraIdentifierReference identifierReference = ((TaraFacetTarget) this).getIdentifierReference();
 		return identifierReference == null ? "" : identifierReference.getText();
+	}
+
+	public List<String> getConstraints() {
+		TaraConstraint with = ((TaraFacetTarget) this).getConstraint();
+		if (with == null) return Collections.EMPTY_LIST;
+		return with.getIdentifierReferenceList().stream().map(IdentifierReference::getText).collect(Collectors.toList());
 	}
 
 	@NotNull
@@ -41,7 +48,7 @@ public class FacetTargetMixin extends ASTWrapperPsiElement {
 
 	@NotNull
 	private String getTargetName(String target) {
-		return target.contains(".")? target.substring(0, target.lastIndexOf(".")):target;
+		return target.contains(".") ? target.substring(0, target.lastIndexOf(".")) : target;
 	}
 
 	public Node getContainer() {

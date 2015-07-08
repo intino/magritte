@@ -90,6 +90,7 @@ ON                  : 'on';
 IS                  : 'is';
 INTO                : 'into';
 WITH                : 'with';
+ANY                 : 'any';
 EXTENDS             : 'extends';
 
 //annotations
@@ -102,7 +103,7 @@ REQUIRED            : 'required';
 TERMINAL            : 'terminal';
 MAIN                : 'main';
 
-IMPLICIT            : 'implicit';
+PROTOTYPE           : 'prototype';
 FEATURE             : 'feature';
 
 FINAL               : 'final';

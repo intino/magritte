@@ -32,6 +32,11 @@ class ScriptTargetDefinition implements TargetDefinition {
 			}
 
 			@Override
+			public List<String> constraint() {
+				return null;
+			}
+
+			@Override
 			public List<Node> includes() {
 				return Collections.emptyList();//includes;
 			}

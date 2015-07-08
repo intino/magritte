@@ -77,7 +77,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		long start = 0;
 		try {
 			JpsProject project = context.getProjectDescriptor().getProject();
-
 			JpsTaraSettings settings = JpsTaraSettings.getSettings(project);
 			JpsTaraModuleExtension extension = JpsTaraExtensionService.getInstance().getExtension(chunk.getModules().iterator().next());
 			if (extension == null) return ExitCode.NOTHING_DONE;
@@ -115,7 +114,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		}
 	}
 
-
 	public static void updateDependencies(CompileContext context,
 	                                      Map<ModuleBuildTarget, Collection<TaracOSProcessHandler.OutputItem>> successfullyCompiled) throws IOException {
 		List<File> recompile = new ArrayList<>();
@@ -123,6 +121,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 			recompile.addAll(outputItems.stream().map(outputItem -> new File(outputItem.getOutputPath())).collect(Collectors.toList()));
 		JavaBuilderUtil.registerFilesToCompile(context, recompile);
 	}
+
 
 	private static void addStubRootsToJavacSourcePath(CompileContext context, Map<ModuleBuildTarget, String> generationOutputs) {
 		final BuildRootIndex rootsIndex = context.getProjectDescriptor().getBuildRootIndex();
@@ -213,6 +212,7 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		list.add(getResourcesFile(modules.iterator().next()).getPath());
 		return list;
 	}
+
 
 	static List<File> collectChangedFiles(DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder) throws IOException {
 		final List<File> toCompile = new ArrayList<>();
@@ -319,7 +319,6 @@ public class TaraBuilder extends ModuleLevelBuilder {
 		if (!FileUtil.delete(targetRoot)) throw new IOException("External make cannot clean " + targetRoot.getPath());
 		if (!targetRoot.mkdirs()) throw new IOException("External make cannot create " + targetRoot.getPath());
 		generationOutputs.put(chunk.getTargets().iterator().next(), targetRoot.getPath());
-
 		return generationOutputs;
 	}
 

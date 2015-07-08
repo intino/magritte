@@ -34,6 +34,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitConstraint(@NotNull TaraConstraint o) {
+    visitPsiElement(o);
+  }
+
   public void visitContract(@NotNull TaraContract o) {
     visitContract(o);
   }

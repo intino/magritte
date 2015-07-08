@@ -133,12 +133,12 @@ mixin = 'siani.tara.intellij.lang.psi.impl.ValueMixin'
     implements = 'siani.tara.intellij.lang.psi.Value'
 }
 
-stringValue     ::= NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END) {
+stringValue ::= NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END) {
 	mixin = 'siani.tara.intellij.lang.psi.impl.StringMixin'
     implements = 'siani.tara.intellij.lang.psi.StringValue'
 }
 
-expression     ::= NEWLINE? (EXPRESSION_BEGIN CHARACTER* EXPRESSION_END) {
+expression  ::= NEWLINE? (EXPRESSION_BEGIN CHARACTER* EXPRESSION_END) {
 	mixin = 'siani.tara.intellij.lang.psi.impl.ExpressionMixin'
     implements = 'siani.tara.intellij.lang.psi.Expression'
 }
@@ -156,11 +156,13 @@ facetApply ::= AS metaIdentifier parameters? (WITH metaIdentifier)? body? {
     implements = 'siani.tara.intellij.lang.psi.FacetApply'
 }
 
-facetTarget ::= ON identifierReference body? {
+facetTarget ::= ON (identifierReference | ANY) constraint? body? {
 	pin = 1
 	mixin = 'siani.tara.intellij.lang.psi.impl.FacetTargetMixin'
 	implements = 'siani.tara.intellij.lang.psi.FacetTarget'
 }
+constraint::= WITH identifierReference (COMMA identifierReference)*
+{pin = 1}
 
 tags ::= flags? annotations? {
 	pin = 1
@@ -176,7 +178,7 @@ flags::= IS flag+ {
 
 flag ::= ABSTRACT | TERMINAL | MAIN
 	| SINGLE | REQUIRED | PRIVATE
-	| FACET | FEATURE | IMPLICIT | ENCLOSED | FINAL {
+	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL {
 	mixin = 'siani.tara.intellij.lang.psi.impl.FlagMixin'
 	implements = 'siani.tara.intellij.lang.psi.Flag'
 }
@@ -188,7 +190,7 @@ annotations ::= INTO annotation+ {
 }
 annotation ::= TERMINAL
 	| SINGLE | REQUIRED
-	| FACET | FEATURE | IMPLICIT | ENCLOSED | MAIN {
+	| FACET | FEATURE | PROTOTYPE | ENCLOSED | MAIN {
 	mixin = 'siani.tara.intellij.lang.psi.impl.AnnotationMixin'
 	implements = 'siani.tara.intellij.lang.psi.Annotation'
 }

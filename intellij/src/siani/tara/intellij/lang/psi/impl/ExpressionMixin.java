@@ -71,7 +71,7 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 		String replace = text.startsWith("\"") ? text.substring(1, text.length() - 1) : text;
 		final String indent = getIndent();
 		final Expression expression = (Expression) (isMultiLine() ?
-			factory.createMultiLineExpression(replace, indent, getQuote()) :
+			factory.createMultiLineExpression(replace.trim(), indent, getQuote()) :
 			factory.createExpression(replace));
 		if (isMultiLine()) {
 			expression.getFirstChild().replace(this.getFirstChild().copy());

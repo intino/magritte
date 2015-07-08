@@ -15,11 +15,13 @@ import static siani.tara.semantic.constraints.RuleFactory.*;
 
 class FacetAllow implements Allow.Facet {
 	private final String type;
+	private final String[] with;
 	List<Constraint> constraints;
 	List<Allow> allows;
 
-	public FacetAllow(String type) {
+	public FacetAllow(String type, String[] with) {
 		this.type = type;
+		this.with = with;
 		constraints = new ArrayList<>();
 		allows = new ArrayList<>();
 	}
@@ -27,6 +29,11 @@ class FacetAllow implements Allow.Facet {
 	@Override
 	public String type() {
 		return type;
+	}
+
+	@Override
+	public String[] with() {
+		return with;
 	}
 
 	@Override
@@ -38,6 +45,26 @@ class FacetAllow implements Allow.Facet {
 	@Override
 	public Collection<Constraint> constraints() {
 		return constraints;
+	}
+
+	@Override
+	public void check(Element element, List<? extends Rejectable> rejectables) throws SemanticException {
+		List<Rejectable> toRemove = new ArrayList<>();
+		for (Rejectable rejectable : rejectables) {
+			if (!(rejectable instanceof Rejectable.Facet)) continue;
+			siani.tara.semantic.model.Facet facet = ((Rejectable.Facet) rejectable).getFacet();
+			if (facet.type().equals(RuleFactory.shortType(type)) && contains(facet.nodeTypes()) && checkConstrains(facet))
+				toRemove.add(rejectable);
+			else if (!contains(facet.nodeTypes())) ((Rejectable.Facet) rejectable).constrains(facet.nodeTypes());
+		}
+		rejectables.removeAll(toRemove);
+	}
+
+	private boolean contains(List<String> nodeTypes) {
+		if (with == null) return true;
+		for (String aType : with)
+			if (!nodeTypes.contains(aType)) return false;
+		return true;
 	}
 
 	@Override
@@ -60,18 +87,6 @@ class FacetAllow implements Allow.Facet {
 		final FacetConstraintTransformer facetConstraintTransformer = new FacetConstraintTransformer();
 		facetConstraintTransformer.transformCorrespondingAllows(requires);
 		return add(requires);
-	}
-
-	@Override
-	public void check(Element element, List<? extends Rejectable> rejectables) throws SemanticException {
-		List<Rejectable> toRemove = new ArrayList<>();
-		for (Rejectable rejectable : rejectables) {
-			if (!(rejectable instanceof Rejectable.Facet)) continue;
-			siani.tara.semantic.model.Facet facet = ((Rejectable.Facet) rejectable).getFacet();
-			if (facet.type().equals(RuleFactory.shortType(type)) && checkConstrains(facet))
-				toRemove.add(rejectable);
-		}
-		rejectables.removeAll(toRemove);
 	}
 
 	private boolean checkConstrains(siani.tara.semantic.model.Facet facet) throws SemanticException {

@@ -10,6 +10,8 @@ public interface FacetTarget extends NodeContainer, Navigatable {
 
 	String getTarget();
 
+	List<String> getConstraints();
+
 	@NotNull
 	List<Node> getIncludes();
 
@@ -17,7 +19,7 @@ public interface FacetTarget extends NodeContainer, Navigatable {
 	List<Variable> getVariables();
 
 	@Nullable
-	TaraIdentifierReference getIdentifierReference();
+	IdentifierReference getIdentifierReference();
 
 	@Nullable
 	TaraBody getBody();

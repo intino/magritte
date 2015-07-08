@@ -30,13 +30,13 @@ def type(Word) !type(multiple) trigger(getter)
 end
 
 def type(Word) type(multiple) trigger(setter)
-	public void $name+javaValidName+firstUpperCase($name+javaValidName+firstUpperCase~... values) {
+	public void $name+javaValidName+firstLowerCase($name+javaValidName+firstUpperCase~... values) {
 		_edit().set("$name+javaValidName", magritte.primitives.Enumerate.ordinal(values));
 	}
 end
 
 def type(Word) !type(multiple) trigger(setter)
-	public void $name+javaValidName+firstUpperCase($name+javaValidName+firstUpperCase value) {
+	public void $name+javaValidName+firstLowerCase($name+javaValidName+firstUpperCase value) {
 		_edit().set("$name+javaValidName", magritte.primitives.Enumerate.ordinal(value));
 	}
 end
@@ -87,7 +87,7 @@ def type(variable) !type(native) type(file) trigger(getter)
 	}
 end
 
-def type(variable) !type(multiple) !type(reference) !type(word) trigger(getter)
+def type(variable) !type(native) !type(multiple) !type(reference) !type(word) trigger(getter)
 	public $type+javaValidName+primitiveType $name+firstLowerCase() {
 		return _get("$name").as$type+firstUpperCase();
 	}

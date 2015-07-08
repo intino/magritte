@@ -2,7 +2,7 @@ package siani.tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
 import siani.tara.intellij.lang.psi.Body;
-import siani.tara.intellij.lang.psi.TaraIdentifierReference;
+import siani.tara.intellij.lang.psi.IdentifierReference;
 import siani.tara.semantic.model.FacetTarget;
 import siani.tara.semantic.model.Node;
 
@@ -20,8 +20,13 @@ public class LanguageFacetTarget extends LanguageElement implements FacetTarget 
 
 	@Override
 	public String target() {
-		TaraIdentifierReference reference = target.getIdentifierReference();
+		IdentifierReference reference = target.getIdentifierReference();
 		return reference != null ? reference.getText() : null;
+	}
+
+	@Override
+	public List<String> constraint() {
+		return target.getConstraints();
 	}
 
 	@Override

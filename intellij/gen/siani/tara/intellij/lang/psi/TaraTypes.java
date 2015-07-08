@@ -16,6 +16,7 @@ public interface TaraTypes {
 	IElementType ATTRIBUTE_TYPE = new TaraElementType("ATTRIBUTE_TYPE");
 	IElementType BODY = new TaraElementType("BODY");
 	IElementType BOOLEAN_VALUE = new TaraElementType("BOOLEAN_VALUE");
+	IElementType CONSTRAINT = new TaraElementType("CONSTRAINT");
 	IElementType CONTRACT = new TaraElementType("CONTRACT");
 	IElementType COUNT = new TaraElementType("COUNT");
 	IElementType DOC = new TaraElementType("DOC");
@@ -51,6 +52,7 @@ public interface TaraTypes {
 
 	IElementType ABSTRACT = new TaraTokenType("ABSTRACT");
 	IElementType ADDRESS_VALUE = new TaraTokenType("ADDRESS_VALUE");
+	IElementType ANY = new TaraTokenType("ANY");
 	IElementType AS = new TaraTokenType("AS");
 	IElementType BOOLEAN_TYPE = new TaraTokenType("BOOLEAN_TYPE");
 	IElementType BOOLEAN_VALUE_KEY = new TaraTokenType("BOOLEAN_VALUE_KEY");
@@ -76,7 +78,6 @@ public interface TaraTypes {
 	IElementType FINAL = new TaraTokenType("FINAL");
 	IElementType HAS = new TaraTokenType("HAS");
 	IElementType IDENTIFIER_KEY = new TaraTokenType("IDENTIFIER_KEY");
-	IElementType IMPLICIT = new TaraTokenType("IMPLICIT");
 	IElementType INLINE = new TaraTokenType("INLINE");
 	IElementType INTO = new TaraTokenType("INTO");
 	IElementType INT_TYPE = new TaraTokenType("INT_TYPE");
@@ -97,6 +98,7 @@ public interface TaraTypes {
 	IElementType ON = new TaraTokenType("ON");
 	IElementType PRIVATE = new TaraTokenType("PRIVATE");
 	IElementType PROTEO = new TaraTokenType("PROTEO");
+	IElementType PROTOTYPE = new TaraTokenType("PROTOTYPE");
 	IElementType QUOTE_BEGIN = new TaraTokenType("QUOTE_BEGIN");
 	IElementType QUOTE_END = new TaraTokenType("QUOTE_END");
 	IElementType RATIO_TYPE = new TaraTokenType("RATIO_TYPE");
@@ -130,6 +132,8 @@ public interface TaraTypes {
 				return new TaraBodyImpl(node);
 			} else if (type == BOOLEAN_VALUE) {
 				return new TaraBooleanValueImpl(node);
+			} else if (type == CONSTRAINT) {
+				return new TaraConstraintImpl(node);
 			} else if (type == CONTRACT) {
 				return new TaraContractImpl(node);
 			} else if (type == COUNT) {

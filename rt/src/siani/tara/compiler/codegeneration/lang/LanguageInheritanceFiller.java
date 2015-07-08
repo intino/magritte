@@ -167,7 +167,6 @@ public class LanguageInheritanceFiller {
 		else renderPrimitive(frame, values, relation);
 	}
 
-
 	private void renderPrimitive(Frame allowsFrame, Object[] values, String relation) {
 		allowsFrame.addFrame(relation, new Frame().addTypes(relation, "parameter").
 			addFrame("name", values[0]).

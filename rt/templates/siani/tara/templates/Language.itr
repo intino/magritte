@@ -62,7 +62,7 @@ def type(allow) type(parameter) trigger(allow)
 end
 
 def type(allow) type(facet) trigger(allow)
-	facet("$value")[.require($require...[, ])][.allow($allow...[, ])]
+	facet("$value"[, $with+quoted...[, ]])[.require($require...[, ])][.allow($allow...[, ])]
 end
 
 def trigger(allow)

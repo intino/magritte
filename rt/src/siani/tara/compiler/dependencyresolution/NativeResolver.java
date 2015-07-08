@@ -57,7 +57,7 @@ public class NativeResolver {
 	private String updateContract(Variable variable) throws DependencyException {
 		final String nativeSignature = findNativeSignature(variable.getContract());
 		if (nativeSignature.isEmpty())
-			throw new DependencyException("reject.native.signature.not.found", (Element) variable);
+			throw new DependencyException("reject.native.signature.not.found", variable);
 		return variable.getContract() + NATIVE_SEPARATOR + nativeSignature;
 	}
 
@@ -75,5 +75,4 @@ public class NativeResolver {
 			return "";
 		}
 	}
-
 }

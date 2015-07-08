@@ -37,6 +37,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 
 
 	private List<NodeContainer> findCandidateNodes(PsiClass aClass) {
+		if (aClass.getExtendsListTypes().length == 0) return Collections.EMPTY_LIST;
 		final PsiClass resolve = aClass.getExtendsListTypes()[0].resolve();
 		List<NodeContainer> candidates = new ArrayList<>();
 		for (TaraModel model : TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(resolve))) {

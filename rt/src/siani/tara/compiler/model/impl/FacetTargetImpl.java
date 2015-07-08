@@ -1,6 +1,9 @@
 package siani.tara.compiler.model.impl;
 
-import siani.tara.compiler.model.*;
+import siani.tara.compiler.model.FacetTarget;
+import siani.tara.compiler.model.Node;
+import siani.tara.compiler.model.NodeContainer;
+import siani.tara.compiler.model.Variable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +18,7 @@ public class FacetTargetImpl implements FacetTarget {
 	private int line;
 	private String doc;
 	private String destiny;
+	private List<String> constraint;
 	private Node targetNode;
 	private NodeContainer container;
 	private List<Node> includes = new ArrayList<>();
@@ -28,6 +32,15 @@ public class FacetTargetImpl implements FacetTarget {
 	@Override
 	public void setTarget(String destiny) {
 		this.destiny = destiny;
+	}
+
+	@Override
+	public List<String> getConstraints() {
+		return constraint;
+	}
+
+	public void setConstraint(List<String> constraints) {
+		this.constraint = constraints;
 	}
 
 	@Override

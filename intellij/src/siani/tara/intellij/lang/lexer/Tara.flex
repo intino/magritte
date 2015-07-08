@@ -91,6 +91,7 @@ VAR                 = "var"
 USE                 = "use"
 DSL                 = "dsl"
 WITH                = "with"
+ANY                 = "any"
 AS                  = "as"
 ON                  = "on"
 IS                  = "is"
@@ -107,7 +108,7 @@ REQUIRED            = "required"
 
 TERMINAL            = "terminal"
 
-IMPLICIT            = "implicit"
+PROTOTYPE           = "prototype"
 PRIVATE             = "private"
 FEATURE             = "feature"
 
@@ -194,6 +195,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{INTO}                          {   return TaraTypes.INTO; }
 	{ON}                            {   return TaraTypes.ON; }
 	{WITH}                          {   return TaraTypes.WITH; }
+	{ANY}                           {   return TaraTypes.ANY; }
 
 	{COLON}                         {   return TaraTypes.COLON; }
 	{EQUALS}                        {   return TaraTypes.EQUALS; }
@@ -206,8 +208,8 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 	{REQUIRED}                      {   return TaraTypes.REQUIRED; }
 	{MAIN}                          {   return TaraTypes.MAIN; }
 
-	{IMPLICIT}                      {   return TaraTypes.IMPLICIT; }
-	{FEATURE}                       {   return TaraTypes.FEATURE; }
+    {PROTOTYPE}                     {   return TaraTypes.PROTOTYPE; }
+    {FEATURE}                       {   return TaraTypes.FEATURE; }
 
 	{FACET}                         {   return TaraTypes.FACET; }
 

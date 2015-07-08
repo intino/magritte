@@ -37,8 +37,6 @@
         <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
       </action>
-      <action id="siani.tara.intellij.actions.LanguageReloadAction"
-              class="siani.tara.intellij.actions.LanguageReloadAction" text="Reload Language"/>
     </group>
 
     <action id="siani.tara.intellij.actions.SubmitFeedbackAction"
@@ -107,6 +105,7 @@
     <!--<annotator language="Tara" implementationClass="siani.tara.intellij.annotator.MeasureVariableAnnotator"/>-->
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.VariableAnnotator"/>
     <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.NameIdentifierValidator"/>
+    <annotator language="Tara" implementationClass="siani.tara.intellij.annotator.AnnotationsAnnotator"/>
 
     <completion.contributor language="Tara"
                             implementationClass="siani.tara.intellij.codeinsight.completion.TaraNodeCompletionContributor"/>
@@ -168,6 +167,12 @@
     <lang.elementManipulator forClass="siani.tara.intellij.lang.psi.Expression"
                              implementationClass="siani.tara.intellij.lang.psi.TaraExpressionManipulator"/>
   </extensions>
+  <module-components>
+    <component>
+      <implementation-class>siani.tara.intellij.project.DslListener</implementation-class>
+    </component>
+  </module-components>
+
   <project-components>
     <component>
       <implementation-class>siani.tara.intellij.project.TaraCompilerListener</implementation-class>

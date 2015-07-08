@@ -22,7 +22,8 @@ public class TaraFilters {
 	static final PsiElementPattern.Capture<PsiElement> afterNewLineInBody = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterNewLineInBodyFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterAs = psiElement().withLanguage(TaraLanguage.INSTANCE)
-		.and(new FilterPattern(new AfterAsInBodyFilter())).and(new FilterPattern(new InFacetFilter()));
+		.and(new FilterPattern(new AfterAsInBodyFilter()))
+		.and(new FilterPattern(new InFacetFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterEquals = psiElement().withLanguage(TaraLanguage.INSTANCE)
 		.and(new FilterPattern(new AfterEqualsFilter()));
 	static final PsiElementPattern.Capture<PsiElement> afterNodeIdentifier = psiElement()
@@ -32,10 +33,10 @@ public class TaraFilters {
 	private TaraFilters() {
 	}
 
-	private static boolean inBody(PsiElement context) {
+	private static boolean in(PsiElement context, Class<? extends PsiElement> container) {
 		PsiElement parent = context.getParent();
 		while (parent != null) {
-			if (parent instanceof Body) return true;
+			if (container.isInstance(parent)) return true;
 			parent = parent.getParent();
 		}
 		return false;
@@ -94,11 +95,11 @@ public class TaraFilters {
 		}
 
 		private boolean afterNewLine(PsiElement context) {
-			return context.getPrevSibling() == null && (previousNewLineIndent(context) || previousNewLine(context));
+			return context.getPrevSibling() == null && TaraFilters.in(context, Signature.class);
 		}
 
 		private boolean inBody(PsiElement context) {
-			return context.getParent() instanceof MetaIdentifier && TaraFilters.inBody(context) && !inAnnotations(context);
+			return context.getParent() instanceof MetaIdentifier && TaraFilters.in(context, Body.class) && !inAnnotations(context);
 		}
 
 		private boolean isNotAcceptable(Object element, PsiElement context) {
@@ -118,15 +119,12 @@ public class TaraFilters {
 		}
 
 		private boolean afterAs(PsiElement context) {
-			return context.getPrevSibling() == null || previousIsAs(context);
-		}
-
-		private boolean previousIsAs(PsiElement context) {
-			return context.getPrevSibling() != null && is(context, TaraTypes.AS);
+			return (context.getParent().getPrevSibling() != null && is(context.getParent().getPrevSibling(), TaraTypes.AS)) ||
+				(context.getPrevSibling() != null && is(context.getPrevSibling(), TaraTypes.AS));
 		}
 
 		private boolean inBody(PsiElement context) {
-			return context.getParent() instanceof MetaIdentifier && TaraFilters.inBody(context) && !inAnnotations(context);
+			return context.getParent() instanceof MetaIdentifier && TaraFilters.in(context, Body.class) && !inAnnotations(context);
 		}
 
 		private boolean isNotAcceptable(Object element, PsiElement context) {
@@ -160,7 +158,7 @@ public class TaraFilters {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
 			if (!(element instanceof PsiElement) || context == null || context.getParent() == null) return false;
-			if (context.getParent() instanceof MetaIdentifier && !inBody(context) && !inAnnotations(context)) {
+			if (context.getParent() instanceof MetaIdentifier && !in(context, Body.class) && !inAnnotations(context)) {
 				Node contextOf = getContainerNodeOf(context);
 				if (contextOf == null || contextOf.getPrevSibling() == null) return false;
 				if (previousNewLine(contextOf) || previousNewLineIndent(contextOf))
@@ -178,12 +176,11 @@ public class TaraFilters {
 	private static class InFacetFilter implements ElementFilter {
 		@Override
 		public boolean isAcceptable(Object element, @Nullable PsiElement context) {
-			if (!(element instanceof PsiElement) || context == null || context.getParent() == null) return false;
-			return !(facetInBody(context) && getContainerNodeOf(context) == null);
+			return !(!(element instanceof PsiElement) || context == null || context.getParent() == null) && !(facetInBody(context) && getContainerNodeOf(context) == null);
 		}
 
 		private boolean facetInBody(PsiElement context) {
-			return context.getParent() instanceof MetaIdentifier && inBody(context) && !inAnnotations(context);
+			return context.getParent() instanceof MetaIdentifier && in(context, Body.class) && !inAnnotations(context);
 		}
 
 		@Override

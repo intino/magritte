@@ -16,17 +16,17 @@ def type(scene)
 end
 
 def type(root) !type(single) trigger(root)
-	public magritte.Set<$qn+reference> $name+javaValidName+plural() {
+	public magritte.Set<$qn+reference> $name+javaValidName+plural+firstLowerCase() {
         return _get("$name+FirstLowerCase+plural", $qn+reference.class);
     }
 
-    public $qn+reference $name+javaValidName(int index) {
-        return $name+javaValidName+plural().get(index);
+    public $qn+reference $name+javaValidName+firstLowerCase(int index) {
+        return $name+javaValidName+plural+firstLowerCase().get(index);
     }
 end
 
 def type(root) type(single) trigger(root)
-	public $qn+reference $name+javaValidName() {
+	public $qn+reference $name+javaValidName+firstLowerCase() {
         return _get("$name+FirstLowerCase", $qn+reference.class).get(0);
     }
 end

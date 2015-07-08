@@ -41,7 +41,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 			return ((Node) element).getDocCommentText();
 		if (element instanceof TaraModel)
 			return "";
-		return renderConceptValue(TaraPsiImplUtil.getContainerNodeOf(element));
+		return "";
 	}
 
 	private String findDoc(Node node) {

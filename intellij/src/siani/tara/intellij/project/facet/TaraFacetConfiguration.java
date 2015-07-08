@@ -18,7 +18,7 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 
 	public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
 		return new FacetEditorTab[]{
-			new TaraFacetEditor(this, editorContext.getModule())
+			new TaraFacetEditor(this, editorContext)
 		};
 	}
 

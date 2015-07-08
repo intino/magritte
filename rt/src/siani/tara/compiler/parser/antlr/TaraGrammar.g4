@@ -32,10 +32,10 @@ value : identifierReference+
 
 body: NEW_LINE_INDENT ((variable | node | varInit | facetApply | facetTarget | nodeReference | doc) NEWLINE+)+ DEDENT;
 
-facetApply : AS metaidentifier parameters? (WITH metaidentifier)? body?;
-facetTarget : ON identifierReference body?;
+facetApply : AS metaidentifier parameters? with? body?;
+facetTarget : ON (identifierReference | ANY) with? body?;
 nodeReference : HAS identifierReference tags?;
-
+with: WITH identifierReference (COMMA identifierReference)*;
 variable : VAR variableType contract? (LIST | count)? IDENTIFIER (EQUALS value MEASURE_VALUE?)? flags?;
 
 variableType: NATURAL_TYPE
@@ -72,12 +72,12 @@ tags: flags? annotations?;
 
 annotations: INTO annotation+;
 annotation: TERMINAL | MAIN | SINGLE | REQUIRED
-            | FACET | FEATURE | ENCLOSED;
+            | FACET | FEATURE | PROTOTYPE | ENCLOSED;
 
 flags: IS flag+;
 flag: ABSTRACT | TERMINAL | MAIN
       	| SINGLE  | REQUIRED | PRIVATE
-      	| FACET | FEATURE | ENCLOSED | FINAL;
+      	| FACET | FEATURE | PROTOTYPE | ENCLOSED | FINAL;
 
 varInit : IDENTIFIER EQUALS value;
 

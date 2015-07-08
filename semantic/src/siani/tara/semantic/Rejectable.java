@@ -128,6 +128,7 @@ public abstract class Rejectable {
 
 		private final siani.tara.semantic.model.Facet facet;
 		private Cause cause = Cause.NOT_ALLOWED;
+		private List<String> neededTypes;
 
 		public Facet(siani.tara.semantic.model.Facet facet) {
 			this.facet = facet;
@@ -137,15 +138,28 @@ public abstract class Rejectable {
 			return facet;
 		}
 
+		public void constrains(List<String> types) {
+			cause = Cause.CONSTRAINS_NOT_FOUND;
+			this.neededTypes = types;
+		}
+
 		@Override
 		public SemanticError error() {
-			return cause.equals(Cause.NOT_ALLOWED) ?
-				new SemanticError("reject.unknown.facet.in.context", facet, singletonList(facet.type())) :
-				new SemanticError("reject.parameter.in.context", facet, singletonList(facet.type()));
+			if (cause.equals(Cause.NOT_ALLOWED))
+				return new SemanticError("reject.unknown.facet.in.context", facet, singletonList(facet.type()));
+			if (cause.equals(Cause.CONSTRAINS_NOT_FOUND))
+				return new SemanticError("reject.facet.with.no.constrains.in.context", facet, singletonList(toString(neededTypes)));
+			else return new SemanticError("reject.parameter.in.context", facet, singletonList(facet.type()));
+		}
+
+		private String toString(List<String> neededTypes) {
+			String types = "";
+			for (String neededType : neededTypes) types += ", " + neededType;
+			return types.substring(2);
 		}
 
 		public enum Cause {
-			NOT_ALLOWED, ERRONEUS_PARAMETER
+			NOT_ALLOWED, CONSTRAINS_NOT_FOUND, ERRONEUS_PARAMETER
 		}
 	}
 

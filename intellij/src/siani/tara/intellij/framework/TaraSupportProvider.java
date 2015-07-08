@@ -132,6 +132,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 					library = libraryTable.createLibrary(name);
 					final Library.ModifiableModel model = library.getModifiableModel();
 					final VirtualFile vFile = VfsUtil.findFileByURL(jarsDirectory.toURI().toURL());
+					if (vFile == null) return;
 					vFile.refresh(true, true);
 					model.addJarDirectory(vFile, false);
 					for (VirtualFile sourceRoot : sources) model.addRoot(sourceRoot, OrderRootType.SOURCES);
@@ -183,7 +184,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		facetConfiguration.setGeneratedDslName(dslGenerate);
 		facetConfiguration.setPlateRequired(plateRequired);
 		facetConfiguration.setLevel(level);
-		facetConfiguration.setDslsDirectory(module.getProject().getBasePath() + separator + "dsl" + separator);
+//		facetConfiguration.setDslsDirectory(module.getProject().getBasePath() + separator + "dsl" + separator);
 	}
 
 	private void createResources(ContentEntry contentEntry) {
@@ -280,8 +281,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		}
 
 		private void addImportAction() {
-			if (project != null) importButton.setVisible(false);
-			else importButton.addActionListener(e -> {
+			importButton.addActionListener(e -> {
 				try {
 					VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), null, null);
 					if (file == null) return;

@@ -35,7 +35,8 @@ public class GlobalConstraints {
 			cardinalityInVariable(),
 			contractExistence(),
 			facetDeclaration(),
-			facetInstantiation()};
+			facetInstantiation(),
+			duplicatedFacets()};
 	}
 
 	private Constraint.Require parentConstraint() {
@@ -206,6 +207,17 @@ public class GlobalConstraints {
 			for (Assumption assumption : context.assumptions())
 				if (assumption instanceof Assumption.FacetInstance)
 					throw new SemanticException(new SemanticError("reject.facet.as.primary", node));
+		};
+	}
+
+	private Constraint.Require duplicatedFacets() {
+		return element -> {
+			Node node = (Node) element;
+			Set<String> facets = new HashSet<>();
+			for (Facet facet : node.facets()) {
+				if (!facets.add(facet.type()))
+					throw new SemanticException(new SemanticError("reject.duplicated.facet", node));
+			}
 		};
 	}
 }

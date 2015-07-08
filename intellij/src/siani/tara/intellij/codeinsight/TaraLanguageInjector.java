@@ -83,14 +83,13 @@ public class TaraLanguageInjector implements LanguageInjector {
 		frame.addFrame("language", languageName.toLowerCase());
 		Allow.Parameter allow = TaraUtil.getCorrespondingAllow(node, element);
 		final String type = getType(allow, element);
-		if (allow == null && !TaraLanguage.PROTEO.equals(languageName) && Primitives.NATIVE.equals(type)) return null;
 		return Primitives.NATIVE.equals(type) ?
 			fillAsNativeFrame(expression, frame, element, node, language, allow) :
 			fillAsExpression(expression, frame, element, node, language, allow, type);
 	}
 
 	@NotNull
-	private Frame fillAsExpression(Expression expression, Frame frame, PsiElement element, Node node, String language, Allow.Parameter allow, String type) {
+	private Frame fillAsExpression(Expression expression, Frame frame, PsiElement element, Node node, String language, @Nullable Allow.Parameter allow, String type) {
 		final String body = expression.getValue().replace("\\n", "\n").replace("\\\"", "\"");
 		frame.addFrame("interface", "magritte.Expression<" + mask(type) + ">");
 		frame.addFrame("variable", getName(element)).

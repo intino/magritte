@@ -15,6 +15,8 @@ public interface Allow {
 	interface Facet extends Allow {
 		String type();
 
+		String[] with();
+
 		Facet allow(Allow... parameter);
 
 		Facet require(Constraint.Require... require);
