@@ -13,9 +13,9 @@ public class LanguageLoader {
 	private static final Logger LOG = Logger.getInstance(LanguageLoader.class.getName());
 
 	public static Language load(String name, String languagesDirectory) {
-		File file = new File(languagesDirectory);
 		try {
-			ClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL()}, LanguageLoader.class.getClassLoader());
+			File jar = new File(languagesDirectory, name + ".jar");
+			ClassLoader cl = new URLClassLoader(new URL[]{new URL("jar:" + jar.toURI().toURL() + "!/")}, LanguageLoader.class.getClassLoader());
 			Class cls = cl.loadClass(TaraLanguage.LANGUAGES_PACKAGE + "." + name);
 			return (Language) cls.newInstance();
 		} catch (MalformedURLException | ClassNotFoundException | NoClassDefFoundError e1) {

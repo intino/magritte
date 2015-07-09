@@ -29,15 +29,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.JarOutputStream;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import static siani.tara.intellij.lang.TaraLanguage.LANGUAGES_PACKAGE;
 
 public abstract class ExportLanguageAbstractAction extends AnAction implements DumbAware {
 
 	private static final Logger LOG = Logger.getInstance(ExportLanguageAbstractAction.class.getName());
-
+	@NonNls
+	private static final String FRAMEWORK = "framework";
+	private static final String DSL = "dsl";
 	@NonNls
 	private static final String LANGUAGE_EXTENSION = ".language";
 	@NonNls
@@ -101,10 +100,8 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 			ZipOutputStream zos = null;
 			try {
 				zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)));
-				addStructure(languageName, zos);
 				final String entryName = languageName + JAR_EXTENSION;
-				ZipUtil.addFileToZip(zos, jarFile, getZipPath(languageName, entryName),
-					new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+				ZipUtil.addFileToZip(zos, jarFile, getZipPath(languageName, entryName), new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 				addLanguage(project, zos, languageName);
 				Set<String> usedJarNames = new HashSet<>();
 				usedJarNames.add(entryName);
@@ -125,21 +122,15 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private void addLanguage(Project project, ZipOutputStream zos, String languageName) throws IOException {
-		File file = TaraLanguage.getLanguageDirectory(languageName, project);//TODO
+		File file = TaraLanguage.getLanguageDirectory(languageName, project);
 		if (file == null || !file.exists()) throw new IOException("Language file not found");
-		final String entryPath = "/" + languageName + "/" + languagePath(languageName);
+		final String entryPath = "/" + DSL + "/" + languageName + "/" + languageName + JAR_EXTENSION;
 		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
-		ZipUtil.addFileToZip(zos, new File(file.getPath(), languagePath(languageName)),
-			entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
+		ZipUtil.addFileToZip(zos, new File(file.getPath(), languageName + JAR_EXTENSION), entryPath, new HashSet<>(), createFilter(progressIndicator, FileTypeManager.getInstance()));
 	}
 
-	@NotNull
-	private String languagePath(String languageName) {
-		return LANGUAGES_PACKAGE.replace(".", File.separator) + File.separator + languageName + CLASS_EXTENSION;
-	}
-
-	private String getZipPath(final String modelName, final String entryName) {
-		return "/" + modelName + "/" + entryName;
+	private String getZipPath(final String langName, final String entryName) {
+		return "/" + FRAMEWORK + "/" + langName + "/" + entryName;
 	}
 
 	private FileFilter createFilter(final ProgressIndicator progressIndicator, @Nullable final FileTypeManager fileTypeManager) {
@@ -202,15 +193,6 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 		}
 		usedJarNames.add(uniqueName);
 		return uniqueName;
-	}
-
-	private void addStructure(@NonNls final String relativePath, final ZipOutputStream zos) throws IOException {
-		ZipEntry e = new ZipEntry(relativePath + '/');
-		e.setMethod(ZipEntry.STORED);
-		e.setSize(0);
-		e.setCrc(0);
-		zos.putNextEntry(e);
-		zos.closeEntry();
 	}
 
 	private void makeAndAddLibraryJar(final VirtualFile virtualFile,

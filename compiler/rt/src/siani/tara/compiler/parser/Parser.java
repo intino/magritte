@@ -23,9 +23,9 @@ public class Parser {
 	TaraGrammar parser;
 	TaraGrammar.RootContext rootContext;
 
-	public Parser(File file) throws IOException {
+	public Parser(File file, String sourceEncoding) throws IOException {
 		this.file = file;
-		ANTLRInputStream input = new ANTLRFileStream(file.getAbsolutePath(), "UTF-8");
+		ANTLRInputStream input = new ANTLRFileStream(file.getAbsolutePath(), sourceEncoding);
 		TaraLexer lexer = new TaraLexer(input);
 		lexer.reset();
 		CommonTokenStream tokens = new CommonTokenStream(lexer);

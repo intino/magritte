@@ -49,20 +49,22 @@ import static siani.tara.intellij.project.facet.TaraFacet.getTaraFacetByModule;
 public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private static final String PROTEO = "Proteo";
+	private static final String FRAMEWORK = "framework";
 	private static final String PROTEO_LIB = "Proteo.jar";
 	private static final String PROTEO_DIRECTORY = PathManager.getPluginsPath() + separator + "tara" + separator + "lib";
 	private static final String TARA_PREFIX = "Tara -> ";
+	public static final String DSL = "dsl";
 	private String dsl;
 	private String dictionary;
 	private String dslGenerate;
 	private boolean plateRequired;
 	private int level;
 
-	private Map<String, AbstractMap.SimpleEntry<Integer, File>> importedLanguagePaths = new HashMap<>();
+	private Map<String, AbstractMap.SimpleEntry<Integer, File>> languages = new HashMap<>();
 	private Module selectedModuleParent = null;
 
 	public TaraSupportProvider() {
-		importedLanguagePaths.put(PROTEO, new AbstractMap.SimpleEntry<>(2, new File(PROTEO_DIRECTORY, PROTEO_LIB)));
+		languages.put(PROTEO, new AbstractMap.SimpleEntry<>(2, new File(PROTEO_DIRECTORY, PROTEO_LIB)));
 	}
 
 	@NotNull
@@ -82,25 +84,25 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	}
 
 	private void addSupport(final Module module, final ModifiableRootModel rootModel) {
+		createDSL(rootModel.getProject().getBaseDir());
 		createModelSourceRoot(rootModel.getContentEntries()[0]);
 		createResources(rootModel.getContentEntries()[0]);
 		createGenSourceRoot(rootModel.getContentEntries()[0]);
 		updateFacetConfiguration(module);
-		updateDependencies(module, rootModel);
+		updateDependencies(rootModel);
 	}
 
-	private void updateDependencies(Module module, ModifiableRootModel rootModel) {
+	private void updateDependencies(ModifiableRootModel rootModel) {
 		ApplicationManager.getApplication().runWriteAction(() -> {
-			setMagritteDependency(module, rootModel, createDSL(module.getProject().getBaseDir()));
+			setMagritteDependency(rootModel, rootModel.getProject().getBaseDir());
 		});
 	}
 
-	private void setMagritteDependency(Module module, ModifiableRootModel rootModel, VirtualFile dslDirectory) {
-		if (module.getName().equals(PROTEO)) {
-			//TODO
-		} else if (importedLanguagePaths.containsKey(this.dsl))
-			addDslLibToSdk(TARA_PREFIX + dsl, rootModel, importDsl(dslDirectory));
-		else addModuleDependency(rootModel);
+	private void setMagritteDependency(ModifiableRootModel rootModel, VirtualFile projectDir) {
+		if (languages.containsKey(this.dsl)) {
+			importDslAndFramework(projectDir);
+			addDslLibToProject(rootModel);
+		} else addModuleDependency(rootModel);
 	}
 
 	private void addModuleDependency(ModifiableRootModel rootModel) {
@@ -118,9 +120,15 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		});
 	}
 
-	private void addDslLibToSdk(String name, ModifiableRootModel rootModel, File file) {
-		final Library library = addProjectLibrary(rootModel.getModule(), name, file, VirtualFile.EMPTY_ARRAY);
+	private void addDslLibToProject(ModifiableRootModel rootModel) {
+		final Library library = addProjectLibrary(rootModel.getModule(), TARA_PREFIX + dsl, getLibDirectory(rootModel.getProject().getBaseDir()), VirtualFile.EMPTY_ARRAY);
 		rootModel.addLibraryEntry(library);
+	}
+
+	private File getLibDirectory(VirtualFile baseDir) {
+		final File framework = new File(baseDir.getPath() + separator + FRAMEWORK, dsl);
+		framework.mkdir();
+		return framework;
 	}
 
 	private static Library addProjectLibrary(final Module module, final String name, final File jarsDirectory, final VirtualFile[] sources) {
@@ -143,19 +151,19 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		}.execute().getResultObject();
 	}
 
-	private File importDsl(VirtualFile dslDirectory) {
-		final AbstractMap.SimpleEntry<Integer, File> entry = importedLanguagePaths.get(this.dsl);
+	private File importDslAndFramework(VirtualFile projectDirectory) {
+		final AbstractMap.SimpleEntry<Integer, File> entry = languages.get(this.dsl);
 		final File file = entry.getValue();
 		File destiny;
 		try {
 			if (isJar(file)) {
-				destiny = new File(dslDirectory.getPath() + separator + dsl + separator + file.getName());
+				destiny = new File(projectDirectory.getPath() + separator + FRAMEWORK + separator + dsl, file.getName());
 				FileSystemUtils.copyFile(file.getPath(), destiny.getPath());
 			} else {
-				ZipUtil.unzip(null, new File(dslDirectory.getPath()), new File(file.getPath()), null, null, false);
-				destiny = new File(dslDirectory.getPath() + separator + dsl);
+				ZipUtil.unzip(null, new File(projectDirectory.getPath()), new File(file.getPath()), null, null, false);
+				destiny = new File(projectDirectory.getPath() + separator + dsl);
 			}
-			reload(dslDirectory.getPath());
+			if (!PROTEO.equals(dsl)) reload(new File(projectDirectory.getPath(), DSL).getPath());
 			return destiny.isDirectory() ? destiny : destiny.getParentFile();
 		} catch (IOException e) {
 			return null;
@@ -184,7 +192,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		facetConfiguration.setGeneratedDslName(dslGenerate);
 		facetConfiguration.setPlateRequired(plateRequired);
 		facetConfiguration.setLevel(level);
-//		facetConfiguration.setDslsDirectory(module.getProject().getBasePath() + separator + "dsl" + separator);
+		facetConfiguration.setDslsDirectory(module.getProject().getBasePath() + separator + DSL + separator);
 	}
 
 	private void createResources(ContentEntry contentEntry) {
@@ -199,8 +207,8 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 
 	private VirtualFile createDSL(VirtualFile projectDir) {
 		try {
-			final VirtualFile dsl = projectDir.findChild("dsl");
-			return dsl != null ? dsl : projectDir.createChildDirectory(null, "dsl");
+			final VirtualFile dsl = projectDir.findChild(DSL);
+			return dsl != null ? dsl : projectDir.createChildDirectory(null, DSL);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -236,6 +244,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 	public FrameworkSupportInModuleConfigurable createConfigurable(@NotNull FrameworkSupportModel model) {
 		return new TaraSupportConfigurable(model);
 	}
+
 
 	private class TaraSupportConfigurable extends FrameworkSupportInModuleConfigurable implements FrameworkSupportModelListener {
 		private static final String NONE = "";
@@ -286,7 +295,7 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 					VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), null, null);
 					if (file == null) return;
 					String newLang = getPresentableName(file);
-					importedLanguagePaths.put(newLang, new AbstractMap.SimpleEntry<>(1, new File(file.getPath())));
+					languages.put(newLang, new AbstractMap.SimpleEntry<>(1, new File(file.getPath())));
 					dslBox.addItem(newLang);
 					dslBox.setSelectedItem(newLang);
 					level.setText("1");

@@ -5,10 +5,13 @@ import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.platform.templates.github.ZipUtil;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.actions.dialog.LanguageFileChooserDescriptor;
+import siani.tara.intellij.actions.utils.FileSystemUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import static java.io.File.separator;
@@ -28,7 +31,7 @@ public class FacetEditorCreator {
 		this.configuration = configuration;
 		this.candidates = getParentModulesCandidates();
 		editor.moduleInfo = collectModulesInfo();
-		editor.importedLanguagePaths.put(PROTEO, new AbstractMap.SimpleEntry<>(2, new File(PROTEO_DIRECTORY, PROTEO_LIB)));
+		editor.languages.put(PROTEO, new AbstractMap.SimpleEntry<>(2, new File(PROTEO_DIRECTORY, PROTEO_LIB)));
 	}
 
 	public void createUI() {
@@ -39,7 +42,7 @@ public class FacetEditorCreator {
 		addGeneratedLanguageName();
 		addListeners();
 		addImportAction();
-		if (editor.level.getText().equals("0")) editionOfGenerativeLanguage(false);
+		if ("0".equals(editor.level.getText())) editionOfGenerativeLanguage(false);
 	}
 
 
@@ -99,14 +102,50 @@ public class FacetEditorCreator {
 				VirtualFile file = FileChooser.chooseFile(new LanguageFileChooserDescriptor(), null, null);
 				if (file == null) return;
 				String newLang = getPresentableName(file);
-				editor.importedLanguagePaths.put(newLang, new AbstractMap.SimpleEntry<>(1, new File(file.getPath())));
+				editor.languages.put(newLang, new AbstractMap.SimpleEntry<>(1, new File(file.getPath())));
 				editor.dslBox.addItem(newLang);
 				editor.dslBox.setSelectedItem(newLang);
 				editor.level.setText("1");
+				importDslAndFrameWork();
 			} catch (Exception ignored) {
 			}
 		});
 	}
+
+	private File importDslAndFrameWork() {
+		final VirtualFile projectDirectory = editor.context.getProject().getBaseDir();
+		final String dsl = (String) editor.dslBox.getSelectedItem();
+		final AbstractMap.SimpleEntry<Integer, File> entry = editor.languages.get(dsl);
+		final File file = entry.getValue();
+		File destiny;
+		try {
+			if (isJar(file)) {
+				destiny = new File(projectDirectory.getPath() + separator + dsl + separator + file.getName());
+				FileSystemUtils.copyFile(file.getPath(), destiny.getPath());
+			} else {
+				ZipUtil.unzip(null, new File(projectDirectory.getPath()), new File(file.getPath()), null, null, false);
+				destiny = new File(projectDirectory.getPath() + separator + dsl);
+			}
+			reload(projectDirectory.getPath());
+			return destiny.isDirectory() ? destiny : destiny.getParentFile();
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
+	private boolean isJar(File file) {
+		return file.getName().endsWith(".jar");
+	}
+
+	private void reload(String languagesPath) {
+		final String dsl = (String) editor.dslBox.getSelectedItem();
+		File reload = new File(languagesPath, dsl + ".reload");
+		try {
+			reload.createNewFile();
+		} catch (IOException ignored) {
+		}
+	}
+
 
 	@NotNull
 	private String getPresentableName(VirtualFile file) {

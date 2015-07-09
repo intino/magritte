@@ -17,7 +17,6 @@ import com.intellij.platform.templates.github.ZipUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import siani.tara.intellij.actions.utils.FileSystemUtils;
-import siani.tara.intellij.lang.TaraLanguage;
 
 import javax.swing.*;
 import java.io.File;
@@ -26,10 +25,13 @@ import java.net.MalformedURLException;
 import java.util.*;
 
 import static java.io.File.separator;
+import static siani.tara.intellij.lang.TaraLanguage.PROTEO;
+
 
 public class TaraFacetEditor extends FacetEditorTab {
 
 	private static final String TARA_PREFIX = "Tara -> ";
+	private static final String FRAMEWORK = "framework";
 	private static final String NONE = "";
 	private final TaraFacetConfiguration configuration;
 	final FacetEditorContext context;
@@ -43,7 +45,7 @@ public class TaraFacetEditor extends FacetEditorTab {
 	JButton importButton;
 	private Module selectedModuleParent = null;
 	Map<Module, AbstractMap.SimpleEntry<String, Integer>> moduleInfo;
-	Map<String, AbstractMap.SimpleEntry<Integer, File>> importedLanguagePaths = new HashMap<>();
+	Map<String, AbstractMap.SimpleEntry<Integer, File>> languages = new HashMap<>();
 
 	public TaraFacetEditor(TaraFacetConfiguration configuration, FacetEditorContext context) {
 		this.configuration = configuration;
@@ -98,26 +100,33 @@ public class TaraFacetEditor extends FacetEditorTab {
 		});
 	}
 
-	private void setMagritteDependency(VirtualFile dslDirectory) {
-		if (context.getModule().getName().equals(TaraLanguage.PROTEO)) {
-			//TODO
-		} else {
-			final String dsl = (String) dslBox.getSelectedItem();
-			if (importedLanguagePaths.containsKey(dsl)) applyDslToModule(TARA_PREFIX + dsl, importDsl(dslDirectory));
-			else if (selectedModuleParent != null) addModuleDependency();
-		}
+
+	private void setMagritteDependency(VirtualFile projectDirectory) {
+		if (languages.containsKey(dslBox.getSelectedItem().toString())) {
+			if (dslBox.getSelectedItem().equals(PROTEO)) importDslAndFrameWork(projectDirectory);
+			applyDslToModule();
+		} else if (selectedModuleParent != null) addModuleDependency();
 	}
 
-	private void applyDslToModule(String name, File file) {
+	private void applyDslToModule() {
 		try {
+			String name = TARA_PREFIX + dslBox.getSelectedItem();
 			removeOldModuleLibrary();
 			Library library = context.findLibrary(name);
-			if (library == null)
+			if (library == null) {
+				File file = findLibDirectory(context.getProject().getBaseDir());
 				library = context.createProjectLibrary(name, new VirtualFile[]{VfsUtil.findFileByURL(file.toURI().toURL())}, VirtualFile.EMPTY_ARRAY);
+			}
 			context.getModifiableRootModel().addLibraryEntry(library);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private File findLibDirectory(VirtualFile baseDir) {
+		final File framework = new File(baseDir.getPath() + separator + FRAMEWORK, dslBox.getSelectedItem().toString());
+		framework.mkdir();
+		return framework;
 	}
 
 	private void removeOldModuleLibrary() {
@@ -155,9 +164,9 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return null;
 	}
 
-	private File importDsl(VirtualFile dslDirectory) {
+	private File importDslAndFrameWork(VirtualFile dslDirectory) {
 		final String dsl = (String) dslBox.getSelectedItem();
-		final AbstractMap.SimpleEntry<Integer, File> entry = importedLanguagePaths.get(dsl);
+		final AbstractMap.SimpleEntry<Integer, File> entry = languages.get(dsl);
 		final File file = entry.getValue();
 		File destiny;
 		try {
