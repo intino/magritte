@@ -18,6 +18,7 @@ public class LanguageLoader {
 		if (name.equalsIgnoreCase("Proteo")) return new Proteo();
 		try {
 			File jar = getLanguagePath(name, languagesDirectory);
+			if (!jar.exists()) return null;
 			ClassLoader cl = new URLClassLoader(new URL[]{new URL("jar:" + jar.toURI().toURL() + "!/")}, LanguageLoader.class.getClassLoader());
 			Class cls = cl.loadClass(LANGUAGE_PACKAGE + "." + name);
 			return (Language) cls.newInstance();

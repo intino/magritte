@@ -1,10 +1,7 @@
 package siani.tara.intellij.highlighting;
 
-import com.intellij.ide.DataManager;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.SyntaxHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
@@ -145,11 +142,11 @@ public class TaraSyntaxHighlighter extends SyntaxHighlighterBase implements Tara
 		return new TextAttributes(JBColor.RED, null, null, null, Font.BOLD);
 	}
 
+	public static Project project;
+
 	@NotNull
 	@Override
 	public Lexer getHighlightingLexer() {
-		final DataContext result = DataManager.getInstance().getDataContextFromFocus().getResult();
-		Project project = result != null ? (Project) result.getData(PlatformDataKeys.PROJECT.getName()) : null;
 		return new TaraHighlighterLexAdapter(project);
 	}
 

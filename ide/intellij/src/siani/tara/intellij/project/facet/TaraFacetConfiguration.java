@@ -72,14 +72,6 @@ public class TaraFacetConfiguration implements FacetConfiguration, PersistentSta
 		return myProperties.plateRequired;
 	}
 
-	public String getDslsDirectoy() {
-		return myProperties.dslsDirectory;
-	}
-
-	public void setDslsDirectory(String directory) {
-		myProperties.dslsDirectory = directory;
-	}
-
 	public void setPlateRequired(boolean plateRequired) {
 		myProperties.plateRequired = plateRequired;
 	}

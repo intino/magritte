@@ -1,12 +1,8 @@
 package siani.tara.intellij.project;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import siani.tara.intellij.project.facet.TaraFacet;
-
-import java.io.File;
+import siani.tara.intellij.highlighting.TaraSyntaxHighlighter;
 
 public class DslListener implements com.intellij.openapi.module.ModuleComponent {
 
@@ -18,11 +14,7 @@ public class DslListener implements com.intellij.openapi.module.ModuleComponent 
 
 	@Override
 	public void projectOpened() {
-		for (Module module : ModuleManager.getInstance(project).getModules()) {
-			final TaraFacet facet = TaraFacet.getTaraFacetByModule(module);
-			if (facet == null) continue;
-			facet.getConfiguration().setDslsDirectory(project.getBasePath() + File.separator + "dsl" + File.separator);
-		}
+		TaraSyntaxHighlighter.project = this.project;
 	}
 
 	@Override

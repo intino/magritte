@@ -122,7 +122,7 @@ public abstract class ExportLanguageAbstractAction extends AnAction implements D
 	}
 
 	private void addLanguage(Project project, ZipOutputStream zos, String languageName) throws IOException {
-		File file = TaraLanguage.getLanguageDirectory(languageName, project);
+		File file = TaraLanguage.getLanguageDirectory(languageName, project.getBaseDir().getPath());
 		if (file == null || !file.exists()) throw new IOException("Language file not found");
 		final String entryPath = "/" + DSL + "/" + languageName + "/" + languageName + JAR_EXTENSION;
 		final ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();

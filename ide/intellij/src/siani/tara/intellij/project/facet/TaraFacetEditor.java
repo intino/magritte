@@ -27,7 +27,6 @@ import java.util.*;
 import static java.io.File.separator;
 import static siani.tara.intellij.lang.TaraLanguage.PROTEO;
 
-
 public class TaraFacetEditor extends FacetEditorTab {
 
 	private static final String TARA_PREFIX = "Tara -> ";
@@ -84,14 +83,12 @@ public class TaraFacetEditor extends FacetEditorTab {
 		return null;
 	}
 
-
 	private void updateFacetConfiguration() {
 		configuration.setDsl((String) dslBox.getSelectedItem());
 		configuration.setDictionary((String) dictionaryBox.getSelectedItem());
 		configuration.setGeneratedDslName(getDslGeneratedName());
 		configuration.setPlateRequired(plateRequired.isSelected());
 		configuration.setLevel(Integer.parseInt(level.getText()));
-		configuration.setDslsDirectory(context.getProject().getBasePath() + File.separator + "dsl" + File.separator);
 	}
 
 	private void updateDependencies() {

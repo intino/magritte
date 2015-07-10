@@ -192,7 +192,6 @@ public class TaraSupportProvider extends FrameworkSupportInModuleProvider {
 		facetConfiguration.setGeneratedDslName(dslGenerate);
 		facetConfiguration.setPlateRequired(plateRequired);
 		facetConfiguration.setLevel(level);
-		facetConfiguration.setDslsDirectory(module.getProject().getBasePath() + separator + DSL + separator);
 	}
 
 	private void createResources(ContentEntry contentEntry) {

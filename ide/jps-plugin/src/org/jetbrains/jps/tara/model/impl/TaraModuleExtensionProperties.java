@@ -18,7 +18,4 @@ public class TaraModuleExtensionProperties {
 
 	@Tag("level")
 	public int level = 2;
-
-	@Tag("dslsDirectory")
-	public String dslsDirectory = "";
 }

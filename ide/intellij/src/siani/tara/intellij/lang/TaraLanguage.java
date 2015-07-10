@@ -4,7 +4,6 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,13 +45,14 @@ public class TaraLanguage extends com.intellij.lang.Language {
 	@Nullable
 	public static Language getLanguage(String dsl, Project project) {
 		if (dsl.equals(PROTEO) || dsl.isEmpty()) return languages.get(PROTEO);
-		return loadLanguage(dsl, project);
+		if (project == null) return null;
+		return loadLanguage(dsl, project.getBaseDir().getPath());
 	}
 
-	private static Language loadLanguage(String dsl, Project project) {
-		if (project == null) return null;
-		if (isLoaded(dsl, project)) return languages.get(dsl);
-		final File languageDirectory = getLanguageDirectory(dsl, project);
+	private static Language loadLanguage(String dsl, String projectPath) {
+		if (projectPath == null) return null;
+		if (isLoaded(dsl, projectPath)) return languages.get(dsl);
+		final File languageDirectory = getLanguageDirectory(dsl, projectPath);
 		if (languageDirectory == null) return null;
 		Language language = LanguageLoader.load(dsl, languageDirectory.getPath());
 		if (language == null) return null;
@@ -60,27 +60,26 @@ public class TaraLanguage extends com.intellij.lang.Language {
 		return language;
 	}
 
-	public static File getLanguageDirectory(String dsl, Project project) {
-		final VirtualFile languagesDirectory = getLanguagesDirectory(project);
-		if (languagesDirectory == null) return null;
+	public static File getLanguageDirectory(String dsl, String project) {
+		final File languagesDirectory = getLanguagesDirectory(project);
 		return new File(languagesDirectory.getPath(), dsl);
 	}
 
-	public static VirtualFile getLanguagesDirectory(Project project) {
-		return project.getBaseDir().findChild(DSL);
+	public static File getLanguagesDirectory(String project) {
+		return new File(project, DSL);
 	}
 
-	private static boolean isLoaded(String parent, Project project) {
-		return languages.get(parent) != null && !haveToReload(parent, project);
+	private static boolean isLoaded(String parent, String projectPath) {
+		return languages.get(parent) != null && !haveToReload(parent, projectPath);
 	}
 
-	private static boolean haveToReload(String language, Project project) {
-		VirtualFile languagesDirectory = getLanguagesDirectory(project);
+	private static boolean haveToReload(String language, String projectPath) {
+		File languagesDirectory = getLanguagesDirectory(projectPath);
 		if (languagesDirectory == null) return false;
 		File reload = new File(languagesDirectory.getPath(), language + ".reload");
 		if (reload.exists()) {
 			if (!reload.delete())
-				Notifications.Bus.notify(new Notification("Model Reload", "", "Reload File cannot be deleted", NotificationType.ERROR), project);
+				Notifications.Bus.notify(new Notification("Model Reload", "", "Reload File cannot be deleted", NotificationType.ERROR), null);
 			return true;
 		}
 		return false;

@@ -36,11 +36,6 @@ public class JpsTaraModuleExtensionImpl extends JpsElementBase<JpsTaraModuleExte
 	}
 
 	@Override
-	public String getDslsDirectoy() {
-		return myProperties.dslsDirectory;
-	}
-
-	@Override
 	public String getDictionary() {
 		return myProperties.dictionary;
 	}
