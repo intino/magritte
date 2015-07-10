@@ -116,6 +116,7 @@ INT_TYPE            = "integer"
 NATURAL_TYPE        = "natural"
 NATIVE_TYPE         = "native"
 DOUBLE_TYPE         = "double"
+TUPLE_TYPE          = "tuple"
 STRING_TYPE         = "string"
 BOOLEAN_TYPE        = "boolean"
 RATIO_TYPE          = "ratio"
@@ -218,11 +219,12 @@ NEWLINE             = [\n]+
 	{RESOURCE_KEY}                  {   return TaraTypes.RESOURCE_KEY; }
 
 	{INT_TYPE}                      {   return TaraTypes.INT_TYPE; }
+    {NATIVE_TYPE}                   {   return TaraTypes.NATIVE_TYPE; }
+    {TUPLE_TYPE}                    {   return TaraTypes.TUPLE_TYPE; }
 	{BOOLEAN_TYPE}                  {   return TaraTypes.BOOLEAN_TYPE; }
 	{NATURAL_TYPE}                  {   return TaraTypes.NATURAL_TYPE; }
     {STRING_TYPE}                   {   return TaraTypes.STRING_TYPE; }
     {DOUBLE_TYPE}                   {   return TaraTypes.DOUBLE_TYPE; }
-    {NATIVE_TYPE}                   {   return TaraTypes.NATIVE_TYPE; }
     {DATE_TYPE}                     {   return TaraTypes.DATE_TYPE; }
     {RATIO_TYPE}                    {   return TaraTypes.RATIO_TYPE; }
     {MEASURE_TYPE_KEY}              {   return TaraTypes.MEASURE_TYPE_KEY; }

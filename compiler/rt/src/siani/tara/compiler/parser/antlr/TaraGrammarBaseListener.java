@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.5
+// Generated from /Users/oroncal/workspace/tara/compiler/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.5
 package siani.tara.compiler.parser.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -300,6 +300,18 @@ public class TaraGrammarBaseListener implements TaraGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBooleanValue(@NotNull TaraGrammar.BooleanValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTupleValue(@NotNull TaraGrammar.TupleValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTupleValue(@NotNull TaraGrammar.TupleValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

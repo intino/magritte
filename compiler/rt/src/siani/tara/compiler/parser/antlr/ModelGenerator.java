@@ -260,6 +260,9 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		else if (!ctx.naturalValue().isEmpty())
 			values.addAll(ctx.naturalValue().stream().
 				map(context -> getConverter(NATURAL).convert(context.getText())[0]).collect(Collectors.toList()));
+		else if (!ctx.tupleValue().isEmpty())
+			values.addAll(ctx.tupleValue().stream().
+				map(context -> new AbstractMap.SimpleEntry<>(context.stringValue().getText(), getConverter(DOUBLE).convert(context.doubleValue().getText())[0])).collect(Collectors.toList()));
 		else if (!ctx.stringValue().isEmpty())
 			values.addAll(ctx.stringValue().stream().
 				map(context -> formatString(context.getText())).collect(Collectors.toList()));

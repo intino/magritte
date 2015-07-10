@@ -37,4 +37,7 @@ public interface TaraValue extends Value {
   @NotNull
   List<TaraStringValue> getStringValueList();
 
+  @NotNull
+  List<TaraTupleValue> getTupleValueList();
+
 }

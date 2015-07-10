@@ -24,7 +24,7 @@ public class LanguageFacetTarget extends LanguageElement implements siani.tara.s
 	}
 
 	@Override
-	public List<String> constraint() {
+	public List<String> constraints() {
 		return target.getConstraints();
 	}
 

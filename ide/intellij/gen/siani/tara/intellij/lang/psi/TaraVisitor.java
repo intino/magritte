@@ -150,6 +150,10 @@ public class TaraVisitor extends PsiElementVisitor {
     visitTags(o);
   }
 
+  public void visitTupleValue(@NotNull TaraTupleValue o) {
+    visitPsiElement(o);
+  }
+
   public void visitValue(@NotNull TaraValue o) {
     visitValue(o);
   }

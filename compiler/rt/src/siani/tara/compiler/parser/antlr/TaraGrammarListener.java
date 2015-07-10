@@ -1,4 +1,4 @@
-// Generated from /Users/oroncal/workspace/tara/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.5
+// Generated from /Users/oroncal/workspace/tara/compiler/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.5
 package siani.tara.compiler.parser.antlr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
@@ -248,6 +248,16 @@ public interface TaraGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBooleanValue(@NotNull TaraGrammar.BooleanValueContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TaraGrammar#tupleValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterTupleValue(@NotNull TaraGrammar.TupleValueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TaraGrammar#tupleValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitTupleValue(@NotNull TaraGrammar.TupleValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TaraGrammar#naturalValue}.
 	 * @param ctx the parse tree

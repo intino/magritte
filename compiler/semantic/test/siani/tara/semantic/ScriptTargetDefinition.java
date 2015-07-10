@@ -32,7 +32,7 @@ class ScriptTargetDefinition implements TargetDefinition {
 			}
 
 			@Override
-			public List<String> constraint() {
+			public List<String> constraints() {
 				return null;
 			}
 

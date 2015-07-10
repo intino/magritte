@@ -17,6 +17,7 @@ public class Primitives {
 	public static final String FILE = "resource";
 	public static final String NATIVE = "native";
 	public static final String REFERENCE = "reference";
+	public static final String TUPLE = "tuple";
 	public static final String DATE = "date";
 	public static final Map<String, Converter> CONVERTER_MAP = new HashMap<>();
 
@@ -54,7 +55,6 @@ public class Primitives {
 		};
 		CONVERTER_MAP.put(NATURAL, numberConverter);
 		CONVERTER_MAP.put(INTEGER, numberConverter);
-
 		CONVERTER_MAP.put(DOUBLE, new Converter() {
 			@Override
 			public Double[] convert(String... value) {

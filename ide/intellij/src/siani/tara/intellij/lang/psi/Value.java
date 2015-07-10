@@ -12,7 +12,6 @@ public interface Value extends Navigatable, Iconable, TaraPsiElement {
 	@NotNull
 	List<Object> getValues();
 
-
 	@Nullable
 	TaraMeasureValue getMeasureValue();
 }

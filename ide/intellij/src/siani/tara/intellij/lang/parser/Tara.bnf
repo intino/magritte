@@ -98,6 +98,7 @@ variable ::= VAR variableType attributeType? (LIST | count)? identifier (EQUALS 
 
 variableType::= NATURAL_TYPE
                 | NATIVE_TYPE
+                | TUPLE_TYPE
                 | INT_TYPE
                 | BOOLEAN_TYPE
                 | STRING_TYPE
@@ -121,6 +122,7 @@ contract   ::= (LEFT_SQUARE (MEASURE_VALUE_KEY | identifier)+ RIGHT_SQUARE) | (M
 
 value ::= stringValue+
         | booleanValue+
+        | tupleValue+
         | naturalValue+ measureValue?
         | integerValue+ measureValue?
         | doubleValue+  measureValue?
@@ -144,6 +146,7 @@ expression  ::= NEWLINE? (EXPRESSION_BEGIN CHARACTER* EXPRESSION_END) {
 }
 
 booleanValue    ::= BOOLEAN_VALUE_KEY
+tupleValue      ::= stringValue COLON doubleValue
 naturalValue    ::= NATURAL_VALUE_KEY
 integerValue    ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY
 doubleValue     ::= NATURAL_VALUE_KEY | NEGATIVE_VALUE_KEY | DOUBLE_VALUE_KEY

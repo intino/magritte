@@ -36,7 +36,8 @@ public class GlobalConstraints {
 			contractExistence(),
 			facetDeclaration(),
 			facetInstantiation(),
-			duplicatedFacets()};
+			duplicatedFacets(),
+			anyFacetWithoutConstrains()};
 	}
 
 	private Constraint.Require parentConstraint() {
@@ -214,10 +215,18 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			Set<String> facets = new HashSet<>();
-			for (Facet facet : node.facets()) {
+			for (Facet facet : node.facets())
 				if (!facets.add(facet.type()))
 					throw new SemanticException(new SemanticError("reject.duplicated.facet", node));
-			}
+		};
+	}
+
+	private Constraint.Require anyFacetWithoutConstrains() {
+		return element -> {
+			Node node = (Node) element;
+			for (FacetTarget facet : node.facetTargets())
+				if (facet.target().equals(FacetTarget.ANY) && facet.constraints().isEmpty())
+					throw new SemanticException(new SemanticError("reject.facet.target.any.without.constrains", facet));
 		};
 	}
 }

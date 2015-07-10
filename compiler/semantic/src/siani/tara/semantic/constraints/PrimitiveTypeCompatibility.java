@@ -2,6 +2,8 @@ package siani.tara.semantic.constraints;
 
 import siani.tara.semantic.model.Primitives;
 
+import java.util.AbstractMap;
+
 import static siani.tara.semantic.model.Primitives.*;
 
 public class PrimitiveTypeCompatibility {
@@ -24,7 +26,7 @@ public class PrimitiveTypeCompatibility {
 	}
 
 	private static boolean nativeOrEmptyInfersNative(String type, String inferredType) {
-		return type.equalsIgnoreCase(NATIVE) && (inferredType.equalsIgnoreCase(NATIVE)|| inferredType.equalsIgnoreCase(REFERENCE)) ;
+		return type.equalsIgnoreCase(NATIVE) && (inferredType.equalsIgnoreCase(NATIVE) || inferredType.equalsIgnoreCase(REFERENCE));
 	}
 
 	private static boolean stringInfersString(String type, String inferredType) {
@@ -65,6 +67,7 @@ public class PrimitiveTypeCompatibility {
 		else if (value instanceof Boolean) return Primitives.BOOLEAN;
 		else if (value instanceof Integer) return (Integer) value < 0 ? INTEGER : NATURAL;
 		else if (value instanceof Primitives.Expression) return NATIVE;
+		else if (value instanceof AbstractMap.SimpleEntry) return TUPLE;
 		else if (value != null && value.getClass().getSimpleName().equals("EmptyNode")) return REFERENCE;
 		return "";
 	}

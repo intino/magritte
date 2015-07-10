@@ -45,6 +45,7 @@ public interface TaraTypes {
 	IElementType SIGNATURE = new TaraElementType("SIGNATURE");
 	IElementType STRING_VALUE = new TaraElementType("STRING_VALUE");
 	IElementType TAGS = new TaraElementType("TAGS");
+	IElementType TUPLE_VALUE = new TaraElementType("TUPLE_VALUE");
 	IElementType VALUE = new TaraElementType("VALUE");
 	IElementType VARIABLE = new TaraElementType("VARIABLE");
 	IElementType VARIABLE_TYPE = new TaraElementType("VARIABLE_TYPE");
@@ -110,6 +111,7 @@ public interface TaraTypes {
 	IElementType STRING_TYPE = new TaraTokenType("STRING_TYPE");
 	IElementType SUB = new TaraTokenType("SUB");
 	IElementType TERMINAL = new TaraTokenType("TERMINAL");
+	IElementType TUPLE_TYPE = new TaraTokenType("TUPLE_TYPE");
 	IElementType USE = new TaraTokenType("USE");
 	IElementType VAR = new TaraTokenType("VAR");
 	IElementType WITH = new TaraTokenType("WITH");
@@ -190,6 +192,8 @@ public interface TaraTypes {
 				return new TaraStringValueImpl(node);
 			} else if (type == TAGS) {
 				return new TaraTagsImpl(node);
+			} else if (type == TUPLE_VALUE) {
+				return new TaraTupleValueImpl(node);
 			} else if (type == VALUE) {
 				return new TaraValueImpl(node);
 			} else if (type == VARIABLE) {

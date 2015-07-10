@@ -22,6 +22,7 @@ implicitParameter: value;
 
 value : identifierReference+
 		| stringValue+
+		| tupleValue+
         | booleanValue+
         | linkValue+
         | naturalValue+ measureValue?
@@ -41,6 +42,7 @@ variable : VAR variableType contract? (LIST | count)? IDENTIFIER (EQUALS value M
 variableType: NATURAL_TYPE
             | INT_TYPE
             | BOOLEAN_TYPE
+            | TUPLE_TYPE
             | STRING_TYPE
             | DATE_TYPE
             | NATIVE_TYPE
@@ -59,6 +61,7 @@ count  : LEFT_SQUARE NATURAL_VALUE RIGHT_SQUARE;
 
 stringValue  : NEWLINE? (QUOTE_BEGIN CHARACTER* QUOTE_END);
 booleanValue : BOOLEAN_VALUE;
+tupleValue   : stringValue COLON doubleValue;
 naturalValue : NATURAL_VALUE;
 integerValue : NATURAL_VALUE | NEGATIVE_VALUE;
 doubleValue  : (NATURAL_VALUE | NEGATIVE_VALUE | DOUBLE_VALUE) SCIENCE_NOT?;

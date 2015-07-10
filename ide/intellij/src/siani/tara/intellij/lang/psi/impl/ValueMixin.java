@@ -9,6 +9,7 @@ import siani.tara.intellij.lang.psi.resolve.ReferenceManager;
 import siani.tara.semantic.model.EmptyNode;
 import siani.tara.semantic.model.Primitives;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,10 @@ public class ValueMixin extends ASTWrapperPsiElement {
 		else if (element instanceof TaraNaturalValue || element instanceof TaraIntegerValue)
 			return Integer.parseInt(value);
 		else if (element instanceof TaraDoubleValue) return Double.parseDouble(value);
+		else if (element instanceof TaraTupleValue) {
+			final TaraTupleValue tuple = (TaraTupleValue) element;
+			return new AbstractMap.SimpleEntry<>(tuple.getStringValue().getValue(), Double.parseDouble(tuple.getDoubleValue().getText()));
+		}
 		else if (element instanceof TaraEmptyField) return new EmptyNode();
 		else if (element instanceof TaraExpression)
 			return new Primitives.Expression(value.substring(1, value.length() - 1));

@@ -5,6 +5,7 @@ import siani.tara.semantic.Constraint;
 import siani.tara.semantic.Rejectable;
 import siani.tara.semantic.SemanticException;
 import siani.tara.semantic.model.Element;
+import siani.tara.semantic.model.FacetTarget;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,14 +54,15 @@ class FacetAllow implements Allow.Facet {
 		for (Rejectable rejectable : rejectables) {
 			if (!(rejectable instanceof Rejectable.Facet)) continue;
 			siani.tara.semantic.model.Facet facet = ((Rejectable.Facet) rejectable).getFacet();
-			if (facet.type().equals(RuleFactory.shortType(type)) && contains(facet.nodeTypes()) && checkConstrains(facet))
+			final boolean hasType = is(facet.nodeTypes());
+			if ((facet.type().equals(RuleFactory.shortType(type)) || FacetTarget.ANY.equals(facet.type())) && hasType && checkFacetConstrains(facet))
 				toRemove.add(rejectable);
-			else if (!contains(facet.nodeTypes())) ((Rejectable.Facet) rejectable).constrains(facet.nodeTypes());
+			else if (!hasType) ((Rejectable.Facet) rejectable).constrains(facet.nodeTypes());
 		}
 		rejectables.removeAll(toRemove);
 	}
 
-	private boolean contains(List<String> nodeTypes) {
+	private boolean is(List<String> nodeTypes) {
 		if (with == null) return true;
 		for (String aType : with)
 			if (!nodeTypes.contains(aType)) return false;
@@ -89,7 +91,7 @@ class FacetAllow implements Allow.Facet {
 		return add(requires);
 	}
 
-	private boolean checkConstrains(siani.tara.semantic.model.Facet facet) throws SemanticException {
+	private boolean checkFacetConstrains(siani.tara.semantic.model.Facet facet) throws SemanticException {
 		for (Constraint require : constraints) require.check(facet);
 		return true;
 	}

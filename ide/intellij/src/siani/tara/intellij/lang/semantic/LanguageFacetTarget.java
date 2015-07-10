@@ -25,7 +25,7 @@ public class LanguageFacetTarget extends LanguageElement implements FacetTarget 
 	}
 
 	@Override
-	public List<String> constraint() {
+	public List<String> constraints() {
 		return target.getConstraints();
 	}
 

@@ -131,6 +131,7 @@ PLUS                : '+';
 WORD                : 'word';
 RESOURCE            : 'file';
 INT_TYPE            : 'integer';
+TUPLE_TYPE          : 'tuple';
 NATURAL_TYPE        : 'natural';
 NATIVE_TYPE         : 'native';
 DOUBLE_TYPE         : 'double';
