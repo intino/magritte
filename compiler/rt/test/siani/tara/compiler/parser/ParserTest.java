@@ -28,6 +28,22 @@ public class ParserTest {
 		"Operation(\"Cambiar chip\")\n" +
 			"\taction1 =\"setValue(\\\"Toby\\\");\"";
 
+	String TEST3 = "dsl Proteo\n" +
+		"\n" +
+		"use Query\n" +
+		"\n" +
+		"Concept Dashboard is terminal main\n" +
+		"\tvar string label\n" +
+		"//\tvar string layout = \"\"\n" +
+		"//\n" +
+		"//\tConcept Timeline is single final\n" +
+		"//\t\tvar word:[Year Quarter Season Month Week Day Hour Minute Second]... scales\n" +
+		"\tConcept Chart is final\n" +
+		"\t\tvar Indicator selection\n" +
+		"//\n" +
+		"//\t\thas Chart\n" +
+		"//\t\tConcept Display";
+
 	public static String[] lexerTest(String query) {
 		try {
 			String receivedToken;
@@ -61,6 +77,13 @@ public class ParserTest {
 	public void accept_multi_line_strings() {
 		String[] expectedTypes = new String[]{};
 		String[] receivedTypes = lexerTest(TEST1);
+		Assert.assertArrayEquals(expectedTypes, receivedTypes);
+	}
+
+	@Test
+	public void accept_line_comments() {
+		String[] expectedTypes = new String[]{};
+		String[] receivedTypes = lexerTest(TEST3);
 		Assert.assertArrayEquals(expectedTypes, receivedTypes);
 	}
 

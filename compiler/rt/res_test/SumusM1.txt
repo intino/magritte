@@ -29,7 +29,7 @@ metrics
 /Users/oroncal/workspace/sandbox/sumusnew/out/production/Dwellings/
 resources
 /Users/oroncal/workspace/sandbox/sumusnew/Dwellings/res
-models
+dsl_path
 /Users/oroncal/workspace/sandbox/sumusnew/dsl/
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

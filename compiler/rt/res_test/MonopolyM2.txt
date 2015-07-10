@@ -31,7 +31,7 @@ resources
 /Users/oroncal/workspace/sandbox/monopoly/tafat/res
 native_path
 /Users/oroncal/workspace/sandbox/monopoly/tafat/src/tafat/natives
-models
+dsl_path
 /Users/oroncal/workspace/sandbox/monopoly/dsl/
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

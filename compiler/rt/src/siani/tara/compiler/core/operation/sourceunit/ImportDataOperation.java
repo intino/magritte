@@ -24,7 +24,7 @@ public class ImportDataOperation extends SourceUnitOperation {
 			source.importData();
 			errorCollector.failIfErrors();
 		} catch (TaraException e) {
-			LOG.log(Level.SEVERE, "Error during conversion: " + e.getMessage(), e);
+			LOG.log(Level.SEVERE, "Error during conversion: " + e.getMessage());
 			errorCollector.addError(Message.create(e.getMessage(), source));
 		}
 	}

@@ -33,7 +33,7 @@ resources
 /Users/oroncal/workspace/sandbox/sumusnew/Base/res
 native_path
 /Users/oroncal/workspace/sandbox/sumusnew/Base/src/sumus/natives
-models
+dsl_path
 /Users/oroncal/workspace/sandbox/sumusnew/dsl/
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

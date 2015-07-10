@@ -142,8 +142,8 @@ RATIO_TYPE          : 'ratio';
 DATE_TYPE           : 'date';
 EMPTY               : 'empty';
 
-BLOCK_COMMENT       : '/*' .*? '*/' -> channel(HIDDEN);
-LINE_COMMENT        : '//' ~[\r\n]* -> channel(HIDDEN);
+BLOCK_COMMENT       : '/*' .*? '*/' -> skip;
+LINE_COMMENT        : ('\r' | '\n')* ([ ] | [\t])* '//'  ~('\r' | '\n')* -> skip;
 SCIENCE_NOT         : 'E' (PLUS | DASH)? DIGIT+;
 BOOLEAN_VALUE       : 'true' | 'false';
 NATURAL_VALUE       : PLUS? DIGIT+;

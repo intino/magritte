@@ -26,7 +26,7 @@ public class TaraRtConstants {
 	public static final String NO_TARA = "Cannot compile Tara files: No Tara generator is defined";
 	public static final String CLASSPATH = "classpath";
 	public static final String MODULE = "module";
-	public static final String LANGUAGES_PATH = "models";
+	public static final String LANGUAGES_PATH = "dsl_path";
 	public static final String MAGRITTE = "magritte";
 	public static final String DICTIONARY = "locale";
 	public static final String LANGUAGE = "language";

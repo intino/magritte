@@ -27,10 +27,10 @@ public class ParseOperation extends SourceUnitOperation {
 			errorCollector.failIfErrors();
 		} catch (TaraException e) {
 			if (e.getCause() instanceof SyntaxException) {
-				LOG.log(Level.SEVERE, "Syntax error during Parsing", e);
+				LOG.log(Level.SEVERE, "Syntax error during Parsing: " + e.getMessage());
 				errorCollector.addError(Message.create((SyntaxException) e.getCause(), source));
 			} else {
-				LOG.log(Level.SEVERE, "Error during Parsing: " + e.getMessage(), e);
+				LOG.log(Level.SEVERE, "Error during Parsing: " + e.getMessage());
 				errorCollector.addError(Message.create(e.getMessage(), source));
 			}
 		}

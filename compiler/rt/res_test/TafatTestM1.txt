@@ -19,7 +19,7 @@ required_plate
 false
 encoding
 UTF-8
-models
+dsl_path
 /Users/oroncal/workspace/sandbox/tafat/dsl
 native_path
 /Users/oroncal/workspace/sandbox/tafat/BaseTest/src/tafat/natives/

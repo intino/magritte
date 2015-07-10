@@ -11,7 +11,7 @@ language
 English
 encoding
 UTF-8
-models
+dsl_path
 /Users/oroncal/workspace/sandbox/tara/plugins/tara_languages/
 icons
 /Users/oroncal/workspace/sandbox/Monet/adeje/res/icons

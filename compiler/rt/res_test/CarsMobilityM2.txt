@@ -31,7 +31,7 @@ resources
 /Users/oroncal/workspace/sandbox/CarsMoving2/Base/res
 native_path
 /Users/oroncal/workspace/sandbox/CarsMoving2/Base/src/tafat/natives
-models
+dsl_path
 /Users/oroncal/workspace/sandbox/CarsMoving2/dsl/
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

@@ -15,7 +15,7 @@ generated_lang_name
 Census
 encoding
 UTF-8
-models
+dsl_path
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara_languages/
 native_path
 /Users/oroncal/workspace/sandbox/MonetAnimales/Census/src/census/natives

@@ -29,7 +29,7 @@ metrics
 /Users/oroncal/workspace/sandbox/Mobility/out/production/Mobility/
 resources
 /Users/oroncal/workspace/sandbox/Mobility/Mobility/res
-models
+dsl_path
 /Users/oroncal/workspace/sandbox/Mobility/dsl/
 classpath
 /Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
