@@ -161,11 +161,10 @@ DOUBLE_VALUE_KEY    = ({PLUS} | {DASH})? {DIGIT}+ {DOT} {DIGIT}+ {SCIENCE_NOT}?
 ADDRESS_VALUE       = {HASHTAG} [:jletter:]+
 MEASURE_VALUE_KEY   = ([:jletter:] | {PERCENTAGE} | {DOLLAR}| {EURO} | {GRADE}) ([:jletterdigit:] | {UNDERDASH} | {DASH}| {BY} | {DIVIDED_BY})*
 
-COMMENT = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
+COMMENT = {TraditionalComment} | {LINE_COMMENT} | {DocumentationComment}
 
 TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
-LineTerminator      = \r|\n|\r\n
-EndOfLineComment     = "//" [^\n]*
+LINE_COMMENT         = {NEWLINE}? "//" [^\n]*
 DocumentationComment = "/**" {CommentContent} "*"+ "/"
 CommentContent       = ( [^*] | \*+ [^/*] )*
 
@@ -182,7 +181,7 @@ IDENTIFIER_KEY      = [:jletter:] ([:jletterdigit:] | {DASH})*
 
 %%
 <YYINITIAL> {
-	{COMMENT}                       {   }
+	{LINE_COMMENT}                  {   }
 	{DOC_LINE}                      {   yypushback(1); return TaraTypes.DOC_LINE; }
 	{METAIDENTIFIER}                {   return TaraTypes.METAIDENTIFIER_KEY; }
 	{USE}                           {   return TaraTypes.USE; }
