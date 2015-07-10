@@ -9,10 +9,10 @@ import siani.tara.compiler.model.Element;
 import siani.tara.compiler.rt.TaraCompilerMessageCategories;
 import siani.tara.compiler.semantic.wrappers.LanguageElement;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -44,9 +44,8 @@ public class TaraCompiler {
 	}
 
 	private void addCompiledFiles(CompilationUnit compilationUnit, final List<OutputItem> compiledFiles) throws IOException {
-		File targetDirectory = compilationUnit.getConfiguration().getOutDirectory();
-		final String outputPath = targetDirectory.getCanonicalPath().replace(File.separatorChar, File.separator.charAt(0));
-		compiledFiles.addAll(compilationUnit.getOutputItems().stream().map(fileName -> new OutputItem(outputPath, fileName)).collect(Collectors.toList()));
+		for (Map.Entry<String, List<String>> entry : compilationUnit.getOutputItems().entrySet())
+			compiledFiles.addAll(entry.getValue().stream().map(outFile -> new OutputItem(entry.getKey(), outFile)).collect(Collectors.toList()));
 	}
 
 	private void addWarnings(ErrorCollector errorCollector, List collector) {
@@ -136,8 +135,8 @@ public class TaraCompiler {
 		private final String myOutputPath;
 		private final String mySourceFileName;
 
-		public OutputItem(String outputPath, String sourceFileName) {
-			myOutputPath = outputPath;
+		public OutputItem(String sourceFileName, String outputFilePath) {
+			myOutputPath = outputFilePath;
 			mySourceFileName = sourceFileName;
 		}
 

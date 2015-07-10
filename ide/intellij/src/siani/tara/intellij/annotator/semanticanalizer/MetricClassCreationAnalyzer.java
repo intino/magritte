@@ -51,6 +51,10 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 	public void analyze() {
 		if (!Variable.class.isInstance(attribute.getParent()) || !TaraPrimitives.MEASURE.equals(((Variable) attribute.getParent()).getType()))
 			return;
+		((Runnable) this::checkMeasureVariable).run();
+	}
+
+	private void checkMeasureVariable() {
 		Module module = getModule();
 		String measureName = contract.getFormattedName();
 		File metricClassFile = getClassFile(module, measureName);
@@ -178,7 +182,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 		List<URL> libs = new ArrayList<>();
 		final Module moduleOf = ModuleProvider.getModuleOf(contract);
 		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(moduleOf);
-		final File directory = TaraLanguage.getLanguageDirectory(taraFacetByModule.getConfiguration().getDsl(), moduleOf.getProject());
+		final File directory = TaraLanguage.getLanguageDirectory(taraFacetByModule.getConfiguration().getDsl(), moduleOf.getProject().getBaseDir().getPath());
 		if (directory == null) return null;
 		for (File file : directory.listFiles(f -> !f.isDirectory()))
 			libs.add(new File(file.getPath()).toURI().toURL());
@@ -206,10 +210,6 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 		public static Metrics getInstance() {
 			if (instance == null) instance = new Metrics();
 			return instance;
-		}
-
-		public static Map<String, Map.Entry<Long, Class<?>>> getMetrics() {
-			return metrics;
 		}
 
 		public Map.Entry<Long, Class<?>> add(Class<?> metric, Long date) {

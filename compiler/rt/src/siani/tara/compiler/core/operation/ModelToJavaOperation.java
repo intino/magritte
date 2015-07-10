@@ -12,7 +12,6 @@ import siani.tara.compiler.core.CompilerConfiguration;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.TaraException;
 import siani.tara.compiler.core.operation.model.ModelOperation;
-import siani.tara.compiler.model.Element;
 import siani.tara.compiler.model.FacetTarget;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.impl.Model;
@@ -26,6 +25,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +42,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private final CompilerConfiguration conf;
 	private Model model;
 	private File outFolder;
+	private Map<String, List<String>> outMap = new LinkedHashMap<>();
 
 	public ModelToJavaOperation(CompilationUnit compilationUnit) {
 		super();
@@ -55,17 +56,37 @@ public class ModelToJavaOperation extends ModelOperation {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating code representation");
 			this.model = model;
-			List<List<Node>> groupByBox = groupByBox(model);
-			Map<String, String> boxUnits = createBoxUnits(groupByBox);
-			compilationUnit.addOutputItems(writeBoxUnits(getBoxUnitPath(separator), boxUnits));
+			Map<String, SimpleEntry<String, String>> boxUnits = createBoxUnits(groupByBox(model));
+			writeBoxUnits(boxUnits);
+			fillBoxesInOutMap(boxUnits);
 			if (model.getLevel() == 0) return;
-			compilationUnit.addOutputItems(writeMorphs(createMorphs()));
-			compilationUnit.addOutputItem(writeBoxDSL(getBoxDSLPath(separator), createBoxDSL(boxUnits.keySet())));
-			compilationUnit.addOutputItem(writeModel(createModel()));
+			final Map<String, Map<String, String>> morphs = createMorphs();
+			morphs.values().forEach(this::writeMorphs);
+			fillMorphsInOutMap(morphs);
+			final String boxDslPath = writeBoxDSL(getBoxDSLPath(separator), createBoxDSL(boxUnits.keySet()));
+			final String modelPath = writeModel(createModel());
+			for (String boxUnit : boxUnits.keySet()) put(boxUnit, boxDslPath);
+			for (String boxUnit : boxUnits.keySet()) put(boxUnit, modelPath);
+			compilationUnit.addOutputItems(outMap);
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
 			throw new CompilationFailedException(compilationUnit.getPhase(), compilationUnit, e);
 		}
+	}
+
+	private void fillBoxesInOutMap(Map<String, SimpleEntry<String, String>> map) {
+		for (Map.Entry<String, SimpleEntry<String, String>> entry : map.entrySet())
+			put(entry.getKey(), entry.getValue().getKey());
+	}
+
+	private void fillMorphsInOutMap(Map<String, Map<String, String>> map) {
+		for (Map.Entry<String, Map<String, String>> entry : map.entrySet())
+			for (String out : entry.getValue().keySet()) put(entry.getKey(), out);
+	}
+
+	private void put(String key, String value) {
+		if (!outMap.containsKey(key)) outMap.put(key, new ArrayList<>());
+		outMap.get(key).add(value);
 	}
 
 	private String createModel() {
@@ -103,22 +124,27 @@ public class ModelToJavaOperation extends ModelOperation {
 		return template;
 	}
 
-	private Map<String, String> createBoxUnits(List<List<Node>> groupByBox) throws TaraException {
-		Map<String, String> map = new HashMap();
+	private Map<String, SimpleEntry<String, String>> createBoxUnits(List<List<Node>> groupByBox) throws TaraException {
+		Map<String, SimpleEntry<String, String>> map = new HashMap();
+		File destiny = new File(outFolder, getBoxUnitPath(separator));
 		for (List<Node> nodes : groupByBox)
-			map.put(buildBoxUnitName(nodes.get(0)), customize(BoxUnitTemplate.create()).format(new BoxUnitFrameCreator(conf, model, nodes).create()));
+			map.put(nodes.get(0).getFile(),
+				new SimpleEntry<>(new File(destiny, buildBoxUnitName(nodes.get(0)).replace(DOT, separator) + JAVA).getAbsolutePath(),
+					customize(BoxUnitTemplate.create()).format(new BoxUnitFrameCreator(conf, model, nodes).create())));
 		return map;
 	}
 
 	private String createBoxDSL(Set<String> boxes) throws TaraException {
 		Frame frame = new Frame().addTypes("Box");
 		frame.addFrame("name", conf.getGeneratedLanguage());
-		for (String box : boxes) frame.addFrame("namebox", buildBoxUnitName(box));
+		for (String box : boxes) {
+			frame.addFrame("namebox", buildBoxUnitName(box));
+		}
 		return customize(BoxDSLTemplate.create()).format(frame);
 	}
 
-	private Map<String, String> createMorphs() throws TaraException {
-		Map<String, String> map = new HashMap();
+	private Map<String, Map<String, String>> createMorphs() throws TaraException {
+		Map<String, Map<String, String>> map = new HashMap();
 		for (Node node : model.getIncludedNodes()) {
 			if (node.isTerminalInstance() || node.isAnonymous() || node.isFeatureInstance()) continue;
 			renderNode(map, node);
@@ -128,31 +154,35 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String buildBoxUnitName(Node node) {
-		return (String) Format.javaValidName().format(capitalize(conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule()) + buildFileName(((Element) node).getFile()));
+		return (String) Format.javaValidName().format(capitalize(conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule()) + buildFileName(node.getFile()));
 	}
 
-	private String buildBoxUnitName(String box) {
+	private String buildBoxUnitName(String taraPath) {
+		String box = taraPath.substring(taraPath.lastIndexOf(separator) + 1);
+		box = conf.getGeneratedLanguage() + box.substring(0, box.lastIndexOf("."));
 		return "magritte.ontology." + box + DOT + "box";
 	}
 
-	private void renderFacetTargets(Map<String, String> map, Node node) {
+	private void renderFacetTargets(Map<String, Map<String, String>> map, Node node) {
 		for (FacetTarget facetTarget : node.getFacetTargets()) {
 			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf).create(facetTarget);
-			map.put(morphFrame.getKey(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
+			if (!map.containsKey(node.getFile())) map.put(node.getFile(), new LinkedHashMap<>());
+			map.get(node.getFile()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
 		}
 	}
 
-	private void renderNode(Map<String, String> map, Node node) {
+	private void renderNode(Map<String, Map<String, String>> map, Node node) {
 		Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf).create(node);
-		map.put(morphFrame.getKey(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
+		if (!map.containsKey(node.getFile())) map.put(node.getFile(), new LinkedHashMap<>());
+		map.get(node.getFile()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
 	}
 
-	private List<String> writeBoxUnits(String directory, Map<String, String> documentMap) {
+
+	private List<String> writeBoxUnits(Map<String, SimpleEntry<String, String>> documentMap) {
 		List<String> outputs = new ArrayList<>();
-		File destiny = new File(outFolder, directory);
-		destiny.mkdirs();
-		for (Map.Entry<String, String> entry : documentMap.entrySet()) {
-			File file = new File(destiny, entry.getKey().replace(DOT, separator) + JAVA);
+
+		for (SimpleEntry<String, String> entry : documentMap.values()) {
+			File file = new File(entry.getKey());
 			file.getParentFile().mkdirs();
 			try {
 				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
@@ -169,7 +199,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private List<String> writeMorphs(Map<String, String> documentMap) {
 		List<String> outputs = new ArrayList<>();
 		for (Map.Entry<String, String> entry : documentMap.entrySet()) {
-			File file = new File(outFolder, entry.getKey().replace(DOT, separator) + JAVA);
+			File file = new File(entry.getKey());
 			file.getParentFile().mkdirs();
 			try {
 				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
@@ -228,9 +258,9 @@ public class ModelToJavaOperation extends ModelOperation {
 	private List<List<Node>> groupByBox(Model model) {
 		Map<String, List<Node>> nodes = new HashMap();
 		for (Node node : model.getIncludedNodes()) {
-			if (!nodes.containsKey(((Element) node).getFile()))
-				nodes.put(((Element) node).getFile(), new ArrayList<>());
-			nodes.get(((Element) node).getFile()).add(node);
+			if (!nodes.containsKey(node.getFile()))
+				nodes.put(node.getFile(), new ArrayList<>());
+			nodes.get(node.getFile()).add(node);
 		}
 		return pack(nodes);
 	}

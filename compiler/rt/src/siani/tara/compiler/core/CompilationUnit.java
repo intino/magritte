@@ -25,7 +25,7 @@ public class CompilationUnit extends ProcessingUnit {
 	protected ProgressCallback progressCallback;
 	private Map<String, SourceUnit> sourceUnits;
 	private Model model;
-	List<String> outputItems = new ArrayList<>();
+	Map<String, List<String>> outputItems = new HashMap<>();
 	private List<Operation>[] phaseOperations;
 	private SrcToClassOperation classGeneration = new SrcToClassOperation() {
 		@Override
@@ -64,12 +64,8 @@ public class CompilationUnit extends ProcessingUnit {
 		this.phaseOperations[phase].add(operation);
 	}
 
-	public void addOutputItems(List<String> paths) {
-		outputItems.addAll(paths);
-	}
-
-	public void addOutputItem(String path) {
-		outputItems.add(path);
+	public void addOutputItems(Map<String, List<String>> paths) {
+		outputItems.putAll(paths);
 	}
 
 	public SourceUnit addSource(SourceUnit source) {
@@ -139,7 +135,7 @@ public class CompilationUnit extends ProcessingUnit {
 		this.model = model;
 	}
 
-	public List<String> getOutputItems() {
+	public Map<String, List<String>> getOutputItems() {
 		return outputItems;
 	}
 

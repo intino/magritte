@@ -108,10 +108,10 @@ public class TaracOSProcessHandler extends BaseOSProcessHandler {
 		if (outputBuffer.indexOf(TaraRtConstants.COMPILED_END) == -1) return;
 		final String compiled = handleOutputBuffer(TaraRtConstants.COMPILED_START, TaraRtConstants.COMPILED_END);
 		final List<String> list = splitAndTrim(compiled);
-		String outputPath = list.get(0);
+		String outputFile = list.get(0);
 		String sourceFile = list.get(1);
 
-		OutputItem item = new OutputItem(outputPath, sourceFile);
+		OutputItem item = new OutputItem(outputFile, sourceFile);
 		if (LOG.isDebugEnabled()) LOG.debug("Output: " + item);
 		myCompiledItems.add(item);
 	}
