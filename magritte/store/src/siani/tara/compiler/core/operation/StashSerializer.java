@@ -2,8 +2,8 @@ package siani.tara.compiler.core.operation;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
-import siani.tara.builder.Stash;
 import siani.tara.builder.StashException;
+import siani.tara.compiler.model.impl.Stash;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

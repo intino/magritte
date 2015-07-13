@@ -29,7 +29,7 @@ public class ModelToStashOperation extends ModelOperation {
 	@Override
 	public void call(Model model) throws CompilationFailedException {
 		for (Node node : model.getIncludedNodes())
-			write(model.getFile(), createRootStash(node, new Stash.Root()));
+			write(model.getFile(), createRo otStash(node, new Stash.Root()));
 	}
 
 	private Stash.Root createRootStash(Node node, Stash.Root root) {
