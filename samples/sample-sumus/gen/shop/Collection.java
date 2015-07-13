@@ -1,7 +1,7 @@
 package shop;
 
-import siani.tara.magritte.Set;
-import siani.tara.magritte.wraps.Operation;
+import tara.magritte.Set;
+import tara.magritte.wraps.Operation;
 
 
 public class Collection extends Entity {

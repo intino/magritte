@@ -5,7 +5,7 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <version>1.0</version>
-  <groupId>siani.tara</groupId>
+  <groupId>tara</groupId>
   <artifactId>semantic</artifactId>
 
   <properties>
@@ -17,19 +17,6 @@
     <outputDirectory>../../out/production/TaraSemantic</outputDirectory>
     <testOutputDirectory>../../out/test/TaraSemantic</testOutputDirectory>
   </build>
-
-  <!--<repositories>-->
-  <!--<repository>-->
-  <!--<snapshots>-->
-  <!--<enabled>true</enabled>-->
-  <!--<updatePolicy>never</updatePolicy>-->
-  <!--<checksumPolicy>fail</checksumPolicy>-->
-  <!--</snapshots>-->
-  <!--<id>ossrh</id>-->
-  <!--<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
-  <!--<layout>default</layout>-->
-  <!--</repository>-->
-  <!--</repositories>-->
 
   <dependencies>
     <dependency>
@@ -51,8 +38,6 @@
       <artifactId>itrules</artifactId>
       <version>LATEST</version>
     </dependency>
-
-
   </dependencies>
 
 </project>

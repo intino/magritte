@@ -1,0 +1,143 @@
+def type(Model)
+	package tara.dsl;
+
+	import tara.semantic.model.Tara;
+	import java.util.Locale;
+	import tara.semantic.model.Tag;
+	import static tara.semantic.constraints.RuleFactory.*;
+
+	public class $name extends Tara {
+		public $name() {
+			$node...[$NL]
+		}
+
+		@Override
+		public String languageName() {
+			return "$name";
+		}
+
+		@Override
+	    public Locale locale() {
+	        return $locale;
+	    }
+
+	    @Override
+	    public boolean isTerminalLanguage() {
+	        return $terminal;
+	    }
+	}
+
+end
+
+def type(node) trigger(node)
+	in("$name").def(context([$nodeType])[.$allows][.$requires][.$assumptions][.$doc]);
+end
+
+def type(nodeType) trigger(nodeType)
+	$type+quoted...[, ]
+end
+
+def type(allows) trigger(allows)
+	allow([$allow...[, ]])
+end
+
+def type(allow) type(multiple) trigger(allow)
+	multiple($type+quoted[, $tags...[, ]])
+end
+
+def type(allow) type(single) trigger(allow)
+	single($type+quoted[, $tags...[, ]])
+end
+
+def type(allow) type(parameter) type(word) trigger(allow)
+	parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, "$contract"[, $annotations+quoted...[, ]])
+end
+
+def type(allow) type(parameter) type(reference) trigger(allow)
+	parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, "$contract"[, $annotations+quoted...[, ]])
+end
+
+def type(allow) type(parameter) trigger(allow)
+	parameter("$name", "$type", $multiple, $position, "$contract"[, $annotations+quoted...[, ]])
+end
+
+def type(allow) type(facet) trigger(allow)
+	facet("$value"[, $with+quoted...[, ]])[.require($require...[, ])][.allow($allow...[, ])]
+end
+
+def trigger(allow)
+	$value()
+end
+
+
+def type(requires) trigger(requires)
+	require([$require...[, ]])
+end
+
+def type(require) type(oneOf) trigger(require)
+	oneOf([$require...[, ]])
+end
+
+def type(require) type(redefine) trigger(require)
+	redefine($name+quoted, $supertype+quoted)
+end
+
+def type(require) type(multiple) trigger(require)
+	_multiple($type+quoted[, $tags+quoted...[, ]])
+end
+
+def type(require) type(single) trigger(require)
+	_single($type+quoted[, $tags+quoted...[, ]])
+end
+
+def trigger(tags)
+	Tag.$value
+end
+
+def type(require) !type(parameter) type(none) trigger(require)
+	_noneIncludes()
+end
+
+def type(require) type(parameter) type(none) trigger(require)
+	_noneParameter()
+end
+
+def type(require) type(parameter) type(word) trigger(require)
+	_parameter("$name", new String$[]{$words+quoted...[, ]}, $multiple, $position, "$contract"[, $annotations+quoted...[, ]])
+end
+
+def type(require) type(parameter) type(reference) trigger(require)
+	_parameter("$name", new String$[]{$types+quoted...[, ]}, $multiple, $position, "$contract"[, $annotations+quoted...[, ]])
+end
+
+def type(require) type(parameter) trigger(require)
+	_parameter("$name", "$type", $multiple, $position, "$contract"[, $annotations+quoted...[, ]])
+end
+
+def trigger(require)
+	_$value()
+end
+
+def type(assumptions) trigger(assumptions)
+	assume($assumption...[, ])
+end
+
+def type(doc) trigger(doc)
+	doc($file+quoted, $line, $doc+quoted)
+end
+
+def trigger(assumption)
+	is$value+toCamelCase()
+end
+
+def trigger(quoted)
+	"$value"
+end
+
+def trigger(locale) value(es)
+	new Locale("es", "Spain", "es_ES")
+end
+
+def trigger(locale) value(en)
+	Locale.ENGLISH
+end

@@ -1,8 +1,8 @@
 package monopoly.tafat;
 
 
-import siani.tara.magritte.Morph;
-import siani.tara.magritte.Node;
+import tara.magritte.Morph;
+import tara.magritte.Node;
 
 public class Facet extends Morph {
     public Facet(Node node) {

@@ -1,11 +1,13 @@
 package monopoly.monopoly;
 
-import siani.tara.magritte.Node;
+import tara.magritte.Morph;
+import tara.magritte.NativeCode;
+import tara.magritte.Node;
 import monopoly.monopoly.natives.Count;
 
 public class FreeParking extends Square {
     protected int count = 0;
-    protected Count increment = () -> count++;
+    protected Count increment = new increment_meme();
 
     public FreeParking(Node node) {
         super(node);
@@ -39,4 +41,22 @@ public class FreeParking extends Square {
     protected void set(String name, Object object) {
     }
 
+    public static class increment_meme implements Count, NativeCode {
+        Luck $;
+
+        @Override
+        public void increment() {
+            $.count++;
+        }
+
+        @Override
+        public void set(Morph context) {
+
+        }
+
+        @Override
+        public Class<? extends Morph> $Class() {
+            return null;
+        }
+    }
 }

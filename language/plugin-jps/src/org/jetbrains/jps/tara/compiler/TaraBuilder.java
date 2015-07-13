@@ -34,8 +34,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static siani.tara.compiler.rt.TaraRtConstants.FILE_INVALIDATION_BUILDER_MESSAGE;
-import static siani.tara.compiler.rt.TaraRtConstants.TARAC;
+import static tara.compiler.rt.TaraRtConstants.FILE_INVALIDATION_BUILDER_MESSAGE;
+import static tara.compiler.rt.TaraRtConstants.TARAC;
 
 public class TaraBuilder extends ModuleLevelBuilder {
 

@@ -1,7 +1,7 @@
 package smartgrid.morphs;
 
 
-import siani.tara.magritte.wraps.Morph;
+import tara.magritte.wraps.Morph;
 
 public class Electrical extends Morph {
 

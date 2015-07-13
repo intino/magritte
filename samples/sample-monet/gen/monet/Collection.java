@@ -1,11 +1,11 @@
 package monet;
 
-import siani.tara.magritte.NativeCode;
-import siani.tara.magritte.Set;
-import siani.tara.magritte.handlers.Casting.NodeCasting;
-import siani.tara.magritte.wraps.Morph;
-import siani.tara.magritte.wraps.Operation;
-import siani.tara.magritte.wraps.Type;
+import tara.magritte.NativeCode;
+import tara.magritte.Set;
+import tara.magritte.handlers.Casting.NodeCasting;
+import tara.magritte.wraps.Morph;
+import tara.magritte.wraps.Operation;
+import tara.magritte.wraps.Type;
 
 public class Collection extends Entity implements NativeCode {
 

@@ -1,8 +1,8 @@
 package monopoly.monopoly.mover;
 
-import siani.tara.magritte.Expression;
-import siani.tara.magritte.Morph;
-import siani.tara.magritte.Node;
+import tara.magritte.Expression;
+import tara.magritte.Morph;
+import tara.magritte.Node;
 
 public abstract class Mover extends Morph {
 

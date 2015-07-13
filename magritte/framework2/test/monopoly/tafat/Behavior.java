@@ -1,8 +1,7 @@
 package monopoly.tafat;
 
-import siani.tara.magritte.Morph;
-import siani.tara.magritte.Node;
-import wata._magritte.lite.Patch;
+import tara.magritte.Morph;
+import tara.magritte.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,8 +94,9 @@ public class Behavior extends Facet {
 
         @Override
         protected void set(String name, Object object) {
-            if (name.equalsIgnoreCase("start"))
-                start = (monopoly.tafat.natives.Action) link((Patch) object);
+            //TODO
+//            if (name.equalsIgnoreCase("start"))
+//                start = (monopoly.tafat.natives.Action) link((Patch) object);
         }
     }
 

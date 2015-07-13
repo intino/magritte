@@ -58,14 +58,8 @@
         <processorPath useClasspath="true" />
       </profile>
       <profile default="false" name="Annotation profile for plugin" enabled="true">
-        <sourceOutputDir name="../../out/build/intellij/generated-sources/annotations" />
-        <sourceTestOutputDir name="../../out/build/intellij/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-      </profile>
-      <profile default="false" name="Annotation profile for semantic" enabled="true">
-        <sourceOutputDir name="../../compiler/semantic/target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../../compiler/semantic/target/generated-test-sources/test-annotations" />
+        <sourceOutputDir name="../../out/build/plugin/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../out/build/plugin/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
       </profile>
@@ -75,6 +69,20 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="framework" />
+      </profile>
+      <profile default="false" name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="semantic" />
+      </profile>
+      <profile default="false" name="Annotation profile for tara-runtime-constants" enabled="true">
+        <sourceOutputDir name="../../out/build/tara-runtime-constants/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../out/build/tara-runtime-constants/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="tara-runtime-constants" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
@@ -89,7 +97,7 @@
       <module name="tara" target="1.8" />
       <module name="tara-jps-plugin" target="" />
       <module name="tara-runtime" target="1.8" />
-      <module name="tara-runtime-constants" target="" />
+      <module name="tara-runtime-constants" target="1.8" />
       <module name="Tara2Stash" target="1.8" />
     </bytecodeTargetLevel>
   </component>

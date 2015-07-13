@@ -1,9 +1,9 @@
 package magritte.ontology;
 
-import siani.tara.magritte.schema.Box;
+import tara.magritte.schema.Box;
 
-import static siani.tara.magritte.Tag.Abstract;
-import static siani.tara.magritte.Tag.Facet;
+import static tara.magritte.Tag.Abstract;
+import static tara.magritte.Tag.Facet;
 
 public class MonetMain extends Box.Ontology {
 	public static final Box box = new MonetMain();

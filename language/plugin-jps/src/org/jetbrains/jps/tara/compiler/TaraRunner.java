@@ -13,7 +13,7 @@ import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ExternalProcessUtil;
 import org.jetbrains.jps.incremental.messages.ProgressMessage;
 import org.jetbrains.jps.service.SharedThreadPool;
-import siani.tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraRtConstants;
 
 import java.io.*;
 import java.util.*;
@@ -26,7 +26,7 @@ public class TaraRunner {
 	public static final char NL = '\n';
 	private static final Logger LOG = Logger.getInstance(TaraRunner.class.getName());
 	private static final String ANTLR = "antlr4-runtime-4.5.jar";
-	private static final String ITRULES_VERSION = "1.2.3";
+	private static final String ITRULES_VERSION = "1.2.4";
 	private static final String[] ITRULES = {"itrules-" + ITRULES_VERSION + ".jar", "itrules-itr-reader-" + ITRULES_VERSION + ".jar"};
 	private static final String SEMANTIC_RULES = "tara.jar";
 	private static final String[] JALOPY = {"jalopy-3000.0.0.jar", "antlr-2.7.7.jar", "log4j-1.2.17.jar"};
@@ -85,7 +85,7 @@ public class TaraRunner {
 		vmParams.add("-Xmx" + settings.heapSize + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
-			getJavaExecutable(), "siani.tara.TaracRunner", Collections.<String>emptyList(), classpath, vmParams, programParams);
+			getJavaExecutable(), "tara.TaracRunner", Collections.<String>emptyList(), classpath, vmParams, programParams);
 		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
 		final Consumer<String> updater = s -> context.processMessage(new ProgressMessage(s));
 		final TaracOSProcessHandler handler = new TaracOSProcessHandler(process, updater) {

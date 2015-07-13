@@ -1,9 +1,9 @@
 package monopoly.monopoly;
 
 import monopoly.monopoly.natives.Movement;
-import siani.tara.magritte.Morph;
-import siani.tara.magritte.NativeCode;
-import siani.tara.magritte.Node;
+import tara.magritte.Morph;
+import tara.magritte.NativeCode;
+import tara.magritte.Node;
 
 public class Card extends Morph {
 

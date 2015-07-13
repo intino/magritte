@@ -1,6 +1,6 @@
 package monopoly.boxes;
 
-import siani.tara.magritte.Box;
+import tara.magritte.Box;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

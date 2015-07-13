@@ -1,8 +1,8 @@
 package millener;
 
-import siani.tara.magritte.Graph;
+import tara.magritte.Graph;
 import magritte.castings.NodeSetWrapper;
-import siani.tara.magritte.wraps.Morph;
+import tara.magritte.wraps.Morph;
 import millener.devices.Appliance;
 import millener.devices.appliances.Radiator;
 import smartgrid.morphs.Device;

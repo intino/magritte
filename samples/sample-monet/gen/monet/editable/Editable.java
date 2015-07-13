@@ -1,7 +1,7 @@
 package monet.editable;
 
-import siani.tara.magritte.Set;
-import siani.tara.magritte.wraps.Morph;
+import tara.magritte.Set;
+import tara.magritte.wraps.Morph;
 
 public class Editable extends Morph {
 

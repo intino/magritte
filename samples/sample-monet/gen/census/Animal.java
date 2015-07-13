@@ -1,10 +1,10 @@
 package census;
 
-import siani.tara.magritte.Expression;
-import siani.tara.magritte.Set;
-import siani.tara.magritte.primitives.Date;
-import siani.tara.magritte.primitives.Resource;
-import siani.tara.magritte.wraps.Morph;
+import tara.magritte.Expression;
+import tara.magritte.Set;
+import tara.magritte.primitives.Date;
+import tara.magritte.primitives.Resource;
+import tara.magritte.wraps.Morph;
 
 public class Animal extends Morph {
 

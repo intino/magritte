@@ -1,14 +1,16 @@
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import siani.tara.Checker;
-import siani.tara.dsl.Proteo;
-import siani.tara.semantic.Definition;
-import siani.tara.semantic.SemanticException;
-import siani.tara.semantic.model.Node;
+import tara.Checker;
+import tara.dsl.Proteo;
+import tara.semantic.Definition;
+import tara.semantic.SemanticException;
+import tara.semantic.model.Node;
 
-import static siani.tara.semantic.MessageProvider.message;
-import static siani.tara.semantic.Script.*;
+import static tara.semantic.MessageProvider.message;
+import static tara.semantic.Script.define;
+import static tara.semantic.Script.root;
+import static tara.semantic.Script.targetDefine;
 
 public class AcceptedGlobalConstrains {
 

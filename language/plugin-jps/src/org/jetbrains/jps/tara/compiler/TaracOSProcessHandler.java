@@ -11,13 +11,13 @@ import org.apache.log4j.Level;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.incremental.messages.BuildMessage;
 import org.jetbrains.jps.incremental.messages.CompilerMessage;
-import siani.tara.compiler.rt.TaraCompilerMessageCategories;
-import siani.tara.compiler.rt.TaraRtConstants;
+import tara.compiler.rt.TaraCompilerMessageCategories;
+import tara.compiler.rt.TaraRtConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static siani.tara.compiler.rt.TaraRtConstants.TARAC;
+import static tara.compiler.rt.TaraRtConstants.TARAC;
 
 public class TaracOSProcessHandler extends BaseOSProcessHandler {
 	public static final String TARA_COMPILER_IN_OPERATION = "Tara compiler in operation...";

@@ -1,7 +1,7 @@
 package monopoly.tafat;
 
-import siani.tara.magritte.Morph;
-import siani.tara.magritte.Node;
+import tara.magritte.Morph;
+import tara.magritte.Node;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package bazar;
 
-import siani.tara.magritte.wraps.Morph;
+import tara.magritte.wraps.Morph;
 
 public class Product extends Morph {
 }

@@ -1,6 +1,6 @@
 package monopoly.tafat.natives;
 
-import siani.tara.magritte.NativeCode;
+import tara.magritte.NativeCode;
 
 public interface Check extends NativeCode {
 

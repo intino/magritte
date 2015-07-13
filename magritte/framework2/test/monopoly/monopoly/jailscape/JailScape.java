@@ -1,8 +1,8 @@
 package monopoly.monopoly.jailscape;
 
-import siani.tara.magritte.Expression;
-import siani.tara.magritte.Morph;
-import siani.tara.magritte.Node;
+import tara.magritte.Expression;
+import tara.magritte.Morph;
+import tara.magritte.Node;
 
 public class JailScape extends Morph {
     public JailScape(Node node) {
@@ -41,6 +41,6 @@ public class JailScape extends Morph {
 
     public enum Modes {
         Card,
-        Money;
+        Money
     }
 }

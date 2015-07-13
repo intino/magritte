@@ -1,7 +1,7 @@
 package monopoly.monopoly.natives;
 
 
-import siani.tara.magritte.NativeCode;
+import tara.magritte.NativeCode;
 
 /**
  * Created by jevora on 16/06/2015.

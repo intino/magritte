@@ -1,14 +1,12 @@
 package monopoly.monopoly;
 
-import siani.tara.magritte.Morph;
-import siani.tara.magritte.Node;
-import sun.awt.motif.X11CNS11643;
+import tara.magritte.Morph;
+import tara.magritte.Node;
 
 public class Player extends Morph {
 
     protected String id;
     protected Square square = null;
-    protected Engine x;
 
     public Player(Node node) {
         super(node);
@@ -42,8 +40,6 @@ public class Player extends Morph {
     protected void set(String name, Object object) {
         if(name.equalsIgnoreCase("id"))
             id = (String) object;
-        if(name)
-            x = ((Node)object).morph(Engine.class);
         // TODO como no se setean no est� hecho
     }
 }

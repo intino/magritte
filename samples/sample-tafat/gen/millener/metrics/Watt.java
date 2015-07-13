@@ -1,6 +1,6 @@
 package millener.metrics;
 
-import siani.tara.magritte.Metric;
+import tara.magritte.Metric;
 
 public enum Watt implements Metric {
 	mW, W, KW, MW, GW, TW;

@@ -5,16 +5,16 @@ import monopoly.monopoly.mover.Mover_Player;
 import monopoly.monopoly.natives.Check;
 import monopoly.tafat.Behavior;
 import monopoly.tafat.natives.Action;
-import siani.tara.magritte.Box;
-import siani.tara.magritte.Morph;
-import siani.tara.magritte.NativeCode;
+import tara.magritte.Box;
+import tara.magritte.Morph;
+import tara.magritte.NativeCode;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static siani.tara.magritte.MorphFactory.register;
-import static siani.tara.magritte.MorphFactory.registerAbstract;
+import static tara.magritte.MorphFactory.register;
+import static tara.magritte.MorphFactory.registerAbstract;
 
 
 public class MonopolyMain extends Box {

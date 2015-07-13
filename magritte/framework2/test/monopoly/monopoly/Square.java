@@ -1,7 +1,7 @@
 package monopoly.monopoly;
 
-import siani.tara.magritte.Morph;
-import siani.tara.magritte.Node;
+import tara.magritte.Morph;
+import tara.magritte.Node;
 import monopoly.monopoly.natives.Count;
 
 public abstract class Square extends Morph {

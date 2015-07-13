@@ -1,8 +1,8 @@
 package monet.fields;
 
-import siani.tara.magritte.Set;
-import siani.tara.magritte.handlers.Casting.NodeCasting;
-import siani.tara.magritte.wraps.Type;
+import tara.magritte.Set;
+import tara.magritte.handlers.Casting.NodeCasting;
+import tara.magritte.wraps.Type;
 import monet.Field;
 
 public class Composite extends Field {

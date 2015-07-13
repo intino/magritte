@@ -1,8 +1,8 @@
 package bazar;
 
-import siani.tara.magritte.Set;
-import siani.tara.magritte.wraps.Morph;
-import siani.tara.magritte.wraps.Operation;
+import tara.magritte.Set;
+import tara.magritte.wraps.Morph;
+import tara.magritte.wraps.Operation;
 
 public class Catalog extends Morph {
 

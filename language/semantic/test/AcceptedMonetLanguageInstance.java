@@ -1,13 +1,15 @@
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import siani.tara.Checker;
-import siani.tara.dsls.Monet;
-import siani.tara.semantic.Definition;
-import siani.tara.semantic.SemanticException;
+import tara.Checker;
+import tara.dsl.Monet;
+import tara.semantic.Definition;
+import tara.semantic.SemanticException;
 
-import static siani.tara.semantic.MessageProvider.message;
-import static siani.tara.semantic.Script.*;
+import static tara.semantic.MessageProvider.message;
+import static tara.semantic.Script.define;
+import static tara.semantic.Script.facetDefine;
+import static tara.semantic.Script.root;
 
 public class AcceptedMonetLanguageInstance {
 

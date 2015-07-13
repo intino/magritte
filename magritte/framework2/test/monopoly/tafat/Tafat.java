@@ -1,6 +1,6 @@
 package monopoly.tafat;
 
-import siani.tara.magritte.Node;
+import tara.magritte.Node;
 
 public class Tafat {
 

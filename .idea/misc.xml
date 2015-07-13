@@ -19,6 +19,10 @@
         <option value="$PROJECT_DIR$/persistence/TaraToStash/pom.xml" />
         <option value="$PROJECT_DIR$/persistence/store/pom.xml" />
         <option value="$PROJECT_DIR$/magritte/store/pom.xml" />
+        <option value="$PROJECT_DIR$/language/plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/language/semantic/pom.xml" />
+        <option value="$PROJECT_DIR$/language/rt/pom.xml" />
+        <option value="$PROJECT_DIR$/language/rt-constants/pom.xml" />
       </list>
     </option>
   </component>

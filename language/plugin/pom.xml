@@ -6,8 +6,8 @@
   <modelVersion>4.0.0</modelVersion>
   <version>1.0</version>
 
-  <groupId>siani.tara</groupId>
-  <artifactId>intellij</artifactId>
+  <groupId>tara</groupId>
+  <artifactId>plugin</artifactId>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -15,9 +15,9 @@
   </properties>
 
   <build>
-    <outputDirectory>../../out/production/intellij</outputDirectory>
-    <testOutputDirectory>../../out/test/intellij</testOutputDirectory>
-    <directory>../../out/build/intellij</directory>
+    <outputDirectory>../../out/production/plugin</outputDirectory>
+    <testOutputDirectory>../../out/test/plugin</testOutputDirectory>
+    <directory>../../out/build/plugin</directory>
   </build>
 
   <!--<repositories>-->
@@ -54,9 +54,16 @@
     </dependency>
 
     <dependency>
-      <groupId>siani.tara</groupId>
+      <groupId>tara</groupId>
       <artifactId>semantic</artifactId>
       <type>jar</type>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tara</groupId>
+      <artifactId>tara-runtime-constants</artifactId>
+      <type>bundle</type>
       <version>1.0</version>
     </dependency>
   </dependencies>

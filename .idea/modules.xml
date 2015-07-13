@@ -4,12 +4,15 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/magritte/framework/framework.iml" filepath="$PROJECT_DIR$/magritte/framework/framework.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/framework2/framework2.iml" filepath="$PROJECT_DIR$/magritte/framework2/framework2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/language/plugin/plugin.iml" filepath="$PROJECT_DIR$/language/plugin/plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/language/plugin-jps/plugin-jps.iml" filepath="$PROJECT_DIR$/language/plugin-jps/plugin-jps.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/sample-monet/sample-monet.iml" filepath="$PROJECT_DIR$/samples/sample-monet/sample-monet.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/sample-sumus/sample-sumus.iml" filepath="$PROJECT_DIR$/samples/sample-sumus/sample-sumus.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/sample-tafat/sample-tafat.iml" filepath="$PROJECT_DIR$/samples/sample-tafat/sample-tafat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/language/semantic/semantic.iml" filepath="$PROJECT_DIR$/language/semantic/semantic.iml" />
       <module fileurl="file://$PROJECT_DIR$/magritte/store/store.iml" filepath="$PROJECT_DIR$/magritte/store/store.iml" />
       <module fileurl="file://$PROJECT_DIR$/tara.iml" filepath="$PROJECT_DIR$/tara.iml" />
+      <module fileurl="file://$PROJECT_DIR$/language/rt/tara-runtime.iml" filepath="$PROJECT_DIR$/language/rt/tara-runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/language/rt-constants/tara-runtime-constants.iml" filepath="$PROJECT_DIR$/language/rt-constants/tara-runtime-constants.iml" />
     </modules>
   </component>

@@ -1,8 +1,8 @@
 package monopoly.tafat;
 
-import siani.tara.magritte.Expression;
-import siani.tara.magritte.Morph;
-import siani.tara.magritte.Node;
+import tara.magritte.Expression;
+import tara.magritte.Morph;
+import tara.magritte.Node;
 
 import java.time.LocalDateTime;
 

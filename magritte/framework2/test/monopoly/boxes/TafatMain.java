@@ -1,9 +1,9 @@
 package monopoly.boxes;
 
 import monopoly.tafat.*;
-import siani.tara.magritte.Box;
-import siani.tara.magritte.MorphFactory;
-import siani.tara.magritte.RootMorph;
+import tara.magritte.Box;
+import tara.magritte.MorphFactory;
+import tara.magritte.RootMorph;
 
 import java.util.Collections;
 import java.util.List;

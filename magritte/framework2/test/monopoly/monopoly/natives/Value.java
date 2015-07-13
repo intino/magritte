@@ -1,6 +1,6 @@
 package monopoly.monopoly.natives;
 
-import siani.tara.magritte.NativeCode;
+import tara.magritte.NativeCode;
 
 public interface Value extends NativeCode {
 

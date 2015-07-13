@@ -1,6 +1,6 @@
 package monopoly.boxes;
 
-import siani.tara.magritte.Box;
+import tara.magritte.Box;
 
 import java.util.Arrays;
 import java.util.List;
