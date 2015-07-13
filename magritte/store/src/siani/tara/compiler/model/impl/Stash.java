@@ -1,13 +1,10 @@
-package siani.tara.magritte.schema;
-
-import siani.tara.magritte.primitives.Resource;
+package siani.tara.compiler.model.impl;
 
 import java.io.Serializable;
 
 public class Stash {
 
-    public Root root;
-    public Resource[] resources;
+    public Root[] roots;
 
     public abstract static class Content implements Serializable {
 
@@ -68,11 +65,6 @@ public class Stash {
         public String toString() {
             return "blob[" + uid + "]";
         }
-    }
-
-    @Override
-    public String toString() {
-        return "stash" + "[" + titleOf(root.name) + ":" + titleOf(root.types[0]) + "]";
     }
 
     public static String titleOf(String name) {

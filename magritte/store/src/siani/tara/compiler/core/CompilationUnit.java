@@ -20,7 +20,6 @@ public class CompilationUnit extends ProcessingUnit {
 	protected ProgressCallback progressCallback;
 	private Map<String, SourceUnit> sourceUnits;
 	private Model model;
-	List<String> outputItems = new ArrayList<>();
 	private List<Operation>[] phaseOperations;
 
 	public CompilationUnit(CompilerConfiguration configuration) {
@@ -32,7 +31,7 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ParseOperation(this.errorCollector), Phases.PARSING);
 		addPhaseOperation(new ImportDataOperation(this.errorCollector), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
-		addPhaseOperation(new ModelToStashOperation(this), Phases.CLASS_GENERATION);
+		addPhaseOperation(new ModelToStashOperation(this), Phases.STASH_GENERATION);
 	}
 
 	public void addPhaseOperation(Operation operation, int phase) {
@@ -41,28 +40,12 @@ public class CompilationUnit extends ProcessingUnit {
 		this.phaseOperations[phase].add(operation);
 	}
 
-	public void addOutputItems(List<String> paths) {
-		outputItems.addAll(paths);
-	}
-
-	public void addOutputItem(String path) {
-		outputItems.add(path);
-	}
-
 	public SourceUnit addSource(SourceUnit source) {
 		String name = source.getName();
 		for (SourceUnit su : sourceUnits.values())
 			if (name.equals(su.getName())) return su;
 		this.sourceUnits.put(name, source);
 		return source;
-	}
-
-	public String[] getSourceUnitNames() {
-		return sourceUnits.keySet().toArray(new String[sourceUnits.keySet().size()]);
-	}
-
-	public Map<String, SourceUnit> getSourceUnits() {
-		return sourceUnits;
 	}
 
 	public void compile() throws CompilationFailedException {
@@ -115,8 +98,8 @@ public class CompilationUnit extends ProcessingUnit {
 		this.model = model;
 	}
 
-	public List<String> getOutputItems() {
-		return outputItems;
+	public Model getOutput() {
+		return null;
 	}
 
 	public abstract static class ProgressCallback {

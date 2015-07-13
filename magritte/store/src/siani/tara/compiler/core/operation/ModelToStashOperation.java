@@ -1,7 +1,5 @@
 package siani.tara.compiler.core.operation;
 
-import siani.tara.magritte.io.StashSerializer;
-import siani.tara.magritte.schema.Stash;
 import siani.tara.compiler.core.CompilationUnit;
 import siani.tara.compiler.core.errorcollection.CompilationFailedException;
 import siani.tara.compiler.core.errorcollection.TaraRtConstants;
@@ -10,18 +8,17 @@ import siani.tara.compiler.model.Facet;
 import siani.tara.compiler.model.Node;
 import siani.tara.compiler.model.Parameter;
 import siani.tara.compiler.model.impl.Model;
+import siani.tara.compiler.model.impl.Stash;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class ModelToStashOperation extends ModelOperation {
-	private static final Logger LOG = Logger.getLogger(ModelToStashOperation.class.getName());
-	private static final String MNODE = ".mnode";
+	private static final String STASH = ".stash";
 	private File outFolder;
 
 	public ModelToStashOperation(CompilationUnit compilationUnit) {
@@ -31,7 +28,6 @@ public class ModelToStashOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
-		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating code representation");
 		for (Node node : model.getIncludedNodes())
 			write(model.getFile(), createRootStash(node, new Stash.Root()));
 	}
@@ -81,7 +77,7 @@ public class ModelToStashOperation extends ModelOperation {
 	private void write(String name, Stash.Root content) {
 		try {
 			final byte[] bytes = StashSerializer.serialize(content);
-			try (FileOutputStream stream = new FileOutputStream(new File(outFolder, name + MNODE))) {
+			try (FileOutputStream stream = new FileOutputStream(new File(outFolder, name + STASH))) {
 				stream.write(bytes);
 				stream.close();
 			}

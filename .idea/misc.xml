@@ -18,6 +18,7 @@
         <option value="$PROJECT_DIR$/Persistence/pom.xml" />
         <option value="$PROJECT_DIR$/persistence/TaraToStash/pom.xml" />
         <option value="$PROJECT_DIR$/persistence/store/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/store/pom.xml" />
       </list>
     </option>
   </component>
