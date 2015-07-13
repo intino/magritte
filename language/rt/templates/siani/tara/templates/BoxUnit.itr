@@ -1,0 +1,88 @@
+def type(model)
+	package magritte.boxes;
+
+	import siani.tara.magritte.Box;
+	import siani.tara.magritte.Morph;
+	import siani.tara.magritte.NativeCode;
+	import java.time.LocalDateTime;
+    import java.time.format.DateTimeFormatter;
+	import java.util.*;
+	[import $language+lowercase.*;]
+	[import $generatedLanguage+lowercase.*;]
+
+	$importMetric...[$NL]
+
+	public class $name+javaValidName extends Box {
+		public static final Box box = new $name+javaValidName();
+
+		@Override
+		public List<Box> dependencies() {
+			return magritte.dsl.$language+javaValidName~Dsl.boxes;
+		}
+
+		@Override
+		public void write() {
+			registerTypes();
+			$node...[$NL]
+		}
+
+		private LocalDateTime asDate(String date) {
+			return LocalDateTime.from(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss").parse(date));
+		}
+
+		private void registerTypes() {
+			$register
+		}
+
+		$native...[$NL$NL]
+	}
+end
+
+def type(nodecontainer) trigger(register)
+	register$Abstract($type+quoted, $class.class);
+end
+
+def type(nodecontainer) type(prototype) trigger(node)
+	[proto("$name$plate")][.$root()][$type...[]][$has...[]][$parameter...[]];
+end
+
+def type(nodecontainer) type(terminal_instance) trigger(node)
+	[thing("$name$plate")][.$root()][$type...[]][$has...[]][$parameter...[]];
+end
+def type(nodecontainer) trigger(node)
+	[def("$name$plate")][.$root()][$type...[]][$has...[]][$parameter...[]];
+end
+
+def trigger(type)
+	.type("$value")
+end
+
+def type() trigger(parameter)
+	.type("$name", $value)
+end
+
+def trigger(has)
+	.has($value+key)
+end
+
+def type(native) trigger(native)
+	public static class $className+javaValidName implements [$parentIntention+lowercase.natives.]$interface, NativeCode {
+		$container $$;
+
+		$signature {
+			$body
+		}
+
+		public void set(Morph context) {
+			$$ = ($container) context;
+		}
+
+		public Class<? extends Morph> $Class() {
+			return $container.class;
+		}
+	}
+end
+
+def trigger(quoted)
+	"$value"
+end

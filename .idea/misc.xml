@@ -17,7 +17,6 @@
         <option value="$PROJECT_DIR$/ide/intellij/pom.xml" />
         <option value="$PROJECT_DIR$/Persistence/pom.xml" />
         <option value="$PROJECT_DIR$/persistence/TaraToStash/pom.xml" />
-        <option value="$PROJECT_DIR$/persistence/Tara2Stash/pom.xml" />
         <option value="$PROJECT_DIR$/persistence/store/pom.xml" />
       </list>
     </option>

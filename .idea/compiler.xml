@@ -59,6 +59,13 @@
         <processorPath useClasspath="true" />
         <module name="rt" />
       </profile>
+      <profile default="false" name="Annotation profile for store" enabled="true">
+        <sourceOutputDir name="../../out/build/store/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../out/build/store/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="store" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="intellij" target="1.8" />
