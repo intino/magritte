@@ -1,0 +1,8 @@
+package wata._magritte.lite;
+
+public interface NativeCode {
+
+	void set(Morph context);
+
+	Class<? extends Morph> $Class();
+}

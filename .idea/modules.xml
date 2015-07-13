@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/magritte/MagritteLiteV2/MagritteLiteV2.iml" filepath="$PROJECT_DIR$/magritte/MagritteLiteV2/MagritteLiteV2.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/Monet/Monet.iml" filepath="$PROJECT_DIR$/samples/Monet/Monet.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/Shop/Shop.iml" filepath="$PROJECT_DIR$/samples/Shop/Shop.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/Tafat/Tafat.iml" filepath="$PROJECT_DIR$/samples/Tafat/Tafat.iml" />

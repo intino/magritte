@@ -26,4 +26,3 @@ public class TaraErrorStrategy extends DefaultErrorStrategy {
 	public void sync(Parser recognizer) {
 	}
 }
-
