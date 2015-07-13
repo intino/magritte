@@ -1,8 +1,8 @@
 package monopoly.monopoly;
 
 import monopoly.monopoly.natives.Doubles;
-import wata._magritte.lite.Morph;
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Morph;
+import siani.tara.magritte.Node;
 import monopoly.monopoly.natives.Roll;
 import monopoly.monopoly.natives.Value;
 

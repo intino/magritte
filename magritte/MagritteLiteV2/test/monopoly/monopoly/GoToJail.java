@@ -1,7 +1,7 @@
 package monopoly.monopoly;
 
 import monopoly.monopoly.natives.Count;
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Node;
 
 public class GoToJail extends Square {
     protected int count = 0;

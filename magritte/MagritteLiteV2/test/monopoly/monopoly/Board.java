@@ -3,9 +3,9 @@ package monopoly.monopoly;
 import monopoly.monopoly.natives.Position;
 import monopoly.monopoly.natives.SquareAt;
 import monopoly.monopoly.natives.SquareOf;
-import wata._magritte.lite.Morph;
-import wata._magritte.lite.NativeCode;
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Morph;
+import siani.tara.magritte.NativeCode;
+import siani.tara.magritte.Node;
 
 import java.util.ArrayList;
 import java.util.List;

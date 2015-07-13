@@ -1,6 +1,6 @@
 package monopoly.monopoly.natives;
 
-import wata._magritte.lite.NativeCode;
+import siani.tara.magritte.NativeCode;
 import monopoly.monopoly.Card;
 
 public interface Get extends NativeCode {

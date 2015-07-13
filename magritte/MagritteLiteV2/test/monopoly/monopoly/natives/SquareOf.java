@@ -1,7 +1,7 @@
 package monopoly.monopoly.natives;
 
 import monopoly.monopoly.Square;
-import wata._magritte.lite.NativeCode;
+import siani.tara.magritte.NativeCode;
 
 public interface SquareOf extends NativeCode {
 

@@ -1,4 +1,4 @@
-package wata._magritte.lite;
+package siani.tara.magritte;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;

@@ -1,7 +1,6 @@
 package monopoly.monopoly;
 
-import monopoly.monopoly.Square;
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Node;
 import monopoly.monopoly.natives.Count;
 
 public class Terrain extends Square {

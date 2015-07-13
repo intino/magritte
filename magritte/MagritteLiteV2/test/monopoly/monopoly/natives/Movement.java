@@ -1,6 +1,6 @@
 package monopoly.monopoly.natives;
 
-import wata._magritte.lite.NativeCode;
+import siani.tara.magritte.NativeCode;
 
 public interface Movement extends NativeCode {
 

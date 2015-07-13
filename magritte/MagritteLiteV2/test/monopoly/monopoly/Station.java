@@ -1,7 +1,7 @@
 package monopoly.monopoly;
 
 import monopoly.monopoly.natives.Count;
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Node;
 
 public class Station extends Square {
     protected int count = 0;

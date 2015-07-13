@@ -1,11 +1,13 @@
 package monopoly.tafat;
 
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Expression;
+import siani.tara.magritte.Morph;
+import siani.tara.magritte.Node;
 
 import java.time.LocalDateTime;
 
 
-public class Simulation extends wata._magritte.lite.Morph {
+public class Simulation extends Morph {
 
     LocalDateTime from;
     LocalDateTime to;
@@ -26,7 +28,7 @@ public class Simulation extends wata._magritte.lite.Morph {
         from = value;
     }
 
-    public void from(wata._magritte.lite.Expression<Double> value) {
+    public void from(Expression<Double> value) {
         node.set("from", value);
     }
 
@@ -34,7 +36,7 @@ public class Simulation extends wata._magritte.lite.Morph {
         to = value;
     }
 
-    public void to(wata._magritte.lite.Expression<Double> value) {
+    public void to(Expression<Double> value) {
         node.set("to", value);
     }
 

@@ -1,12 +1,12 @@
 package monopoly.tafat;
 
 
-import wata._magritte.lite.Morph;
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Morph;
+import siani.tara.magritte.Node;
 import wata._magritte.lite.Patch;
 import monopoly.tafat.natives.Check;
 
-public class Action extends wata._magritte.lite.Morph {
+public class Action extends Morph {
 
     protected Check check = () -> true;
     protected monopoly.tafat.natives.Action action;

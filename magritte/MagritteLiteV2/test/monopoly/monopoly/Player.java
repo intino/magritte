@@ -1,7 +1,7 @@
 package monopoly.monopoly;
 
-import wata._magritte.lite.Morph;
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Morph;
+import siani.tara.magritte.Node;
 
 public class Player extends Morph {
 

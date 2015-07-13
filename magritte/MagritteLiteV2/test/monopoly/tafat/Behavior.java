@@ -1,7 +1,7 @@
 package monopoly.tafat;
 
-import wata._magritte.lite.Morph;
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Morph;
+import siani.tara.magritte.Node;
 import wata._magritte.lite.Patch;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class Behavior extends Facet {
         step = value;
     }
 
-//    public void step(wata._magritte.lite.Expression<Integer> value) {
+//    public void step(Expression<Integer> value) {
 //        node.set("step", value);
 //    }
 
@@ -68,7 +68,7 @@ public class Behavior extends Facet {
 
     }
 
-    public static class Start extends wata._magritte.lite.Morph {
+    public static class Start extends Morph {
         protected monopoly.tafat.natives.Action start;
 
         public Start(Node node) {
@@ -100,7 +100,7 @@ public class Behavior extends Facet {
         }
     }
 
-    public static class Knol extends wata._magritte.lite.Morph {
+    public static class Knol extends Morph {
         public Knol(Node node) {
             super(node);
         }

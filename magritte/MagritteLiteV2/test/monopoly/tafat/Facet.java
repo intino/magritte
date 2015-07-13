@@ -1,9 +1,10 @@
 package monopoly.tafat;
 
 
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Morph;
+import siani.tara.magritte.Node;
 
-public class Facet extends wata._magritte.lite.Morph {
+public class Facet extends Morph {
     public Facet(Node node) {
         super(node);
     }

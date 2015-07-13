@@ -1,4 +1,4 @@
-package wata._magritte.lite;
+package siani.tara.magritte;
 
 public interface NativeCode {
 

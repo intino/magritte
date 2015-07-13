@@ -1,8 +1,8 @@
 package monopoly.monopoly;
 
 import monopoly.monopoly.natives.Movement;
-import wata._magritte.lite.Morph;
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Morph;
+import siani.tara.magritte.Node;
 
 public class Card extends Morph {
 

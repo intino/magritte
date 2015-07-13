@@ -1,12 +1,13 @@
 package monopoly.tafat;
 
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Morph;
+import siani.tara.magritte.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Entity extends wata._magritte.lite.Morph {
+public class Entity extends Morph {
     private ArrayList<Entity> entitySet = new ArrayList<>(0);
     private ArrayList<Feature> featureSet = new ArrayList<>(0);
 
@@ -43,7 +44,7 @@ public class Entity extends wata._magritte.lite.Morph {
 
     }
 
-    public static class Feature extends wata._magritte.lite.Morph {
+    public static class Feature extends Morph {
         public Feature(Node node) {
             super(node);
         }

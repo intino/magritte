@@ -1,6 +1,6 @@
 package monopoly.monopoly;
 
-import wata._magritte.lite.Node;
+import siani.tara.magritte.Node;
 
 import java.util.List;
 
