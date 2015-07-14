@@ -1,13 +1,11 @@
 package tara.magritte.wraps.variables;
 
-import siani.tara.magritte.*;
 import tara.magritte.*;
+import tara.magritte.handlers.Casting;
 import tara.magritte.primitives.Date;
 import tara.magritte.primitives.Enumerate;
 import tara.magritte.primitives.Resource;
-import tara.magritte.handlers.Casting;
 
-import static tara.magritte.handlers.Casting.cast;
 import static tara.magritte.handlers.NativeCodeHandler.init;
 
 public class Single {
@@ -85,7 +83,6 @@ public class Single {
     private <T> T evaluate() {
         return (value instanceof Expression) ? ((Expression<T>) value).value() : (T) value;
     }
-
 
 
 }

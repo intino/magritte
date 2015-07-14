@@ -5,6 +5,10 @@ import tara.magritte.editors.GraphEditor;
 import tara.magritte.schema.MemoryGraph;
 
 import static tara.magritte.Tag.*;
+import static tara.magritte.primitives.Date.date;
+import static tara.magritte.primitives.Resource.resource;
+import static tara.magritte.schema.Box.in;
+import static tara.magritte.schema.Box.multiple;
 
 public class Shop extends GraphEditor {
 

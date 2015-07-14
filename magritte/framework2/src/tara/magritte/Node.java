@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class Node {
 
     protected final String name;
-    final List<String> abstractTypes = new ArrayList<>();
+    final Set<String> types = new HashSet<>();
     final List<Morph> morphs = new ArrayList<>(1);
     Node owner;
 
@@ -25,7 +25,7 @@ public class Node {
     public Node(Node node, Node owner) {
         this.name = node.name;
         this.owner = owner;
-        node.abstractTypes.forEach(abstractTypes::add);
+        node.types.forEach(types::add);
         node.morphs.forEach(m -> {
             try {
                 morphs.add(m.getClass().getDeclaredConstructor(Morph.class, Node.class).newInstance(m, this));
@@ -45,7 +45,7 @@ public class Node {
     public void add(String type) {
         if(is(type)) return;
         if (MorphFactory.isAbstract(type)) {
-            abstractTypes.add(type);
+            types.add(type);
             return;
         }
         this.morphs.add(MorphFactory.newInstance(type, this));
@@ -84,7 +84,7 @@ public class Node {
         for (Morph morph : morphs)
             if (morph.type.equalsIgnoreCase(type))
                 return true;
-        for (String abstractType : abstractTypes)
+        for (String abstractType : types)
             if (abstractType.equalsIgnoreCase(type)) {
                 return true;
             }

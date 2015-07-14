@@ -1,6 +1,5 @@
 package tara.magritte.schema;
 
-import siani.tara.magritte.*;
 import tara.magritte.*;
 
 public class MemoryNode implements Node {

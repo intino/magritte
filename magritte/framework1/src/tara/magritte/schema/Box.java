@@ -9,7 +9,6 @@ import tara.magritte.editors.NodeEditor;
 import tara.magritte.primitives.Date;
 import tara.magritte.primitives.Resource;
 import tara.magritte.sources.BoxSource;
-import siani.tara.magritte.*;
 import tara.magritte.Tag;
 
 import java.util.ArrayList;

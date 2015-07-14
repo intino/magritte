@@ -1,6 +1,5 @@
 package tara.magritte.editors;
 
-import siani.tara.magritte.*;
 import tara.magritte.*;
 import tara.magritte.primitives.Date;
 import tara.magritte.primitives.Resource;

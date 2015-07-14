@@ -24,6 +24,10 @@
         <option value="$PROJECT_DIR$/language/rt/pom.xml" />
         <option value="$PROJECT_DIR$/language/rt-constants/pom.xml" />
         <option value="$PROJECT_DIR$/magritte/framework1/pom.xml" />
+        <option value="$PROJECT_DIR$/samples/sample-sumus/pom.xml" />
+        <option value="$PROJECT_DIR$/samples/sample-monet/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/framework2/pom.xml" />
+        <option value="$PROJECT_DIR$/samples/sample-tafat/pom.xml" />
       </list>
     </option>
   </component>

@@ -18,7 +18,7 @@ public class MonetModel extends Model {
 	}
 
 	public Set<Entity> entitySet() {
-		return _get(Entity.class);
+		return _get("",Entity.class);
 	}
 
 	public Entity entity(int index) {
@@ -26,7 +26,7 @@ public class MonetModel extends Model {
 	}
 
 	public Set<Collection> collectionSet() {
-		return _get(Collection.class);
+		return _get("",Collection.class);
 	}
 
 	public Collection collection(int index) {
@@ -34,7 +34,7 @@ public class MonetModel extends Model {
 	}
 
 	public Set<Thesaurus> thesaurusSet() {
-		return _get(Thesaurus.class);
+		return _get("",Thesaurus.class);
 	}
 
 	public Thesaurus thesaurus(int index) {
@@ -42,7 +42,7 @@ public class MonetModel extends Model {
 	}
 
 	public Set<Form> formSet() {
-		return _get(Form.class);
+		return _get("",Form.class);
 	}
 
 	public Form form(int index) {

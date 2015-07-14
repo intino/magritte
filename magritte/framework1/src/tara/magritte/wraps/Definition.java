@@ -1,6 +1,5 @@
 package tara.magritte.wraps;
 
-import siani.tara.magritte.*;
 import tara.magritte.*;
 import tara.magritte.editors.NodeEditor;
 import tara.magritte.editors.VariableAddEditor;
