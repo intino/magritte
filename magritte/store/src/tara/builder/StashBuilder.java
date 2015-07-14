@@ -1,6 +1,5 @@
 package tara.builder;
 
-import org.jetbrains.annotations.NotNull;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.CompilerMessage;
@@ -30,7 +29,6 @@ public class StashBuilder {
 		processErrors(compilationMessages);
 	}
 
-	@NotNull
 	private static CompilationUnit buildCompilationUnit(File file, Charset charset) {
 		final CompilationUnit unit = new CompilationUnit(buildConfiguration(file, charset));
 		unit.addSource(new SourceUnit(file, unit.getConfiguration(), unit.getErrorCollector()));

@@ -6,6 +6,7 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Facet;
 import tara.compiler.model.Node;
 import tara.compiler.model.Parameter;
+import tara.compiler.model.Primitives;
 import tara.compiler.model.impl.Model;
 import tara.compiler.model.impl.Stash;
 
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 
 public class ModelToStashOperation extends ModelOperation {
 	private static final String STASH = ".stash";
+	public static final String PASS_KEY = "!";
+	private static final String BLOB_KEY = "%";
 	private File outFolder;
 
 	public ModelToStashOperation(CompilationUnit compilationUnit) {
@@ -27,11 +30,16 @@ public class ModelToStashOperation extends ModelOperation {
 
 	@Override
 	public void call(Model model) throws CompilationFailedException {
-		for (Node node : model.getIncludedNodes())
-			write(model.getFile(), createRootStash(node, new Stash.Root()));
+		List<Stash> stashs = new ArrayList<>();
+		for (Node node : model.getIncludedNodes()) {
+			final Stash root = new Stash();
+			createStash(node, root);
+			stashs.add(root);
+		}
+		write(model.getFile(), stashs);
 	}
 
-	private Stash createRootStash(Node node, Stash.Root root) {
+	private Stash createStash(Node node, Stash root) {
 		root.name = node.getName();
 		root.types = collectTypes(node);
 		root.variables = collectVariables(node);
@@ -39,17 +47,9 @@ public class ModelToStashOperation extends ModelOperation {
 		return null;
 	}
 
-	private Stash.Case createCaseStash(Node node, Stash.Case aCase) {
-		aCase.name = node.getName();
-		aCase.types = collectTypes(node);
-		aCase.variables = collectVariables(node);
-		aCase.components = collectComponents(node.getIncludedNodes());
-		return aCase;
-	}
-
-	private Stash.Case[] collectComponents(List<Node> components) {
-		final List<Stash.Case> cases = components.stream().map(component -> createCaseStash(component, new Stash.Case())).collect(Collectors.toList());
-		return cases.toArray(new Stash.Case[cases.size()]);
+	private Stash[] collectComponents(List<Node> components) {
+		final List<Stash> cases = components.stream().map(component -> createStash(component, new Stash())).collect(Collectors.toList());
+		return cases.toArray(new Stash[cases.size()]);
 	}
 
 	private Stash.Variable[] collectVariables(Node node) {
@@ -62,8 +62,24 @@ public class ModelToStashOperation extends ModelOperation {
 	private void createVariable(List<Stash.Variable> variables, Parameter parameter) {
 		final Stash.Variable v = new Stash.Variable();
 		v.name = parameter.getName();
-		v.value = parameter.getValues().toArray();
+		if (parameter.hasReferenceValue()) v.value = buildReferenceValues(parameter);
+		if (Primitives.FILE.equals(parameter.getInferredType())) v.value = buildResourceValue(parameter);
+		else v.value = parameter.getValues().toArray();
 		variables.add(v);
+	}
+
+	private Object[] buildResourceValue(Parameter parameter) {
+		List<Object> values = parameter.getValues().stream().
+			map(v -> BLOB_KEY + ((Node) v).getFile() + "$" + v.toString()).
+			collect(Collectors.toList());
+		return values.toArray();
+	}
+
+	private Object[] buildReferenceValues(Parameter parameter) {
+		List<Object> values = parameter.getValues().stream().
+			map(v -> PASS_KEY + ((Node) v).getFile() + "#" + ((Node) v).getQualifiedName()).
+			collect(Collectors.toList());
+		return values.toArray();
 	}
 
 	private String[] collectTypes(Node node) {
@@ -73,9 +89,11 @@ public class ModelToStashOperation extends ModelOperation {
 		return types.toArray(new String[types.size()]);
 	}
 
-	private void write(String name, Stash content) {
+	private void write(String name, List<Stash> content) {
 		try {
-			final byte[] bytes = StashSerializer.serialize(content);
+			final Stash root = new Stash();
+			root.components = content.toArray(new Stash[content.size()]);
+			final byte[] bytes = StashSerializer.serialize(root);
 			try (FileOutputStream stream = new FileOutputStream(new File(outFolder, name + STASH))) {
 				stream.write(bytes);
 				stream.close();
