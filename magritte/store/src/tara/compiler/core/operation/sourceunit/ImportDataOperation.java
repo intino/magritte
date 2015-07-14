@@ -19,7 +19,6 @@ public class ImportDataOperation extends SourceUnitOperation {
 
 	public void call(SourceUnit source) throws CompilationFailedException {
 		try {
-			System.out.println("Converting " + source.getName());
 			source.importData();
 			errorCollector.failIfErrors();
 		} catch (TaraException e) {

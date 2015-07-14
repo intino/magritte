@@ -1,5 +1,5 @@
-Asia
+Continent Asia
 	City(label = "Tokyo", picture = "$1") Tokyo
 
-Europe
+Continent Europe
 	City(label = "London", picture = "$2") London

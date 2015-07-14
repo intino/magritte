@@ -44,8 +44,15 @@ public class AcceptedStashBuilder {
 	@Test
 	public void should_build_stash_with_components_and_blobs() {
 		new StashBuilder(new File(home), "World.tara", Charset.forName("UTF-8")).build();
-		assertThat("World.stash exists", new File(home, "World.stash").exists());
-		assertThat(stashFrom(new File(home, "World.stash")).components.length, is(2));
+		final File stashFile = new File(home, "World.stash");
+		assertThat("World.stash exists", stashFile.exists());
+		final Stash stash = stashFrom(stashFile);
+		assertThat(stash.components.length, is(2));
+		assertThat("Asia has 1 component", stash.components[0].components.length, is(1));
+		assertThat("Asia has City component", stash.components[0].components[0].types[0], is("City"));
+		assertThat("Asia has City component named Tokyo", stash.components[0].components[0].name, is("Tokyo"));
+		assertThat("Blob variable has size 1", stash.components[0].components[0].variables[1].values.length, is(1));
+		assertThat("Blob variable has right value", stash.components[0].components[0].variables[1].values[0], is("%World$1"));
 	}
 
 	@Test
@@ -63,13 +70,15 @@ public class AcceptedStashBuilder {
 		assertThat(root.components.length, is(24));
 		for (Stash component : root.components)
 			assertThat("Root is Temperature", Arrays.asList(component.types).contains("Temperature"));
-		assertThat("Temperature has city variable", root.components[0].variables[0].name.equals("city"));
-		assertThat("Temperature has month variable", root.components[0].variables[1].name.equals("month"));
-		assertThat("Temperature has temperature variable", root.components[0].variables[2].name.equals("temperature"));
+		assertThat("Temperature has city variable", root.components[0].variables[0].name, is("city"));
+		assertThat("Temperature has month variable", root.components[0].variables[1].name, is("month"));
+		assertThat("Temperature has temperature variable", root.components[0].variables[2].name, is("temperature"));
 		assertThat("temperature variable has right value", Arrays.equals(root.components[0].variables[2].values, new Double[]{7.0}));
-		assertThat(root.components[1].components, is(0));
-		assertThat(root.components[2], is(24));
-		assertThat(root.components[3], is(24));
+		assertThat("Root has not components", root.components[1].components.length, is(0));
+		assertThat("city variable of 1º element has correct size", root.components[0].variables[0].values.length, is(1));
+		assertThat("city variable of 1º element has correct reference", root.components[0].variables[0].values[0], is("!World.tara#Asia.Tokyo"));
+		assertThat("city variable of 15º element has correct reference", root.components[15].variables[0].values[0], is("!World.tara#Europe.London"));
+		assertThat(root.components[1].components.length, is(0));
 
 	}
 

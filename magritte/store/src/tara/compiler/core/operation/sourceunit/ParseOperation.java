@@ -21,7 +21,6 @@ public class ParseOperation extends SourceUnitOperation {
 
 	public void call(SourceUnit source) throws CompilationFailedException {
 		try {
-			System.out.println("Parsing " + source.getName());
 			source.parse();
 			errorCollector.failIfErrors();
 		} catch (TaraException e) {

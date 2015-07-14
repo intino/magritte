@@ -6,7 +6,6 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Facet;
 import tara.compiler.model.Node;
 import tara.compiler.model.Parameter;
-import tara.compiler.model.Primitives;
 import tara.compiler.model.impl.Model;
 import tara.compiler.model.impl.Stash;
 
@@ -39,23 +38,23 @@ public class ModelToStashOperation extends ModelOperation {
 		List<Stash> stashs = new ArrayList<>();
 		for (Node node : model.getIncludedNodes()) {
 			final Stash root = new Stash();
-			createStash(node, root);
+			fillStash(node, root);
 			stashs.add(root);
 		}
 		write(model.getFile(), stashs);
 	}
 
-	private Stash createStash(Node node, Stash root) {
+	private Stash fillStash(Node node, Stash root) {
 		root.name = node.getName();
 		root.types = collectTypes(node);
 		root.variables = collectVariables(node);
 		root.components = collectComponents(node.getIncludedNodes());
-		return null;
+		return root;
 	}
 
 	private Stash[] collectComponents(List<Node> components) {
-		final List<Stash> cases = components.stream().map(component -> createStash(component, new Stash())).collect(Collectors.toList());
-		return cases.toArray(new Stash[cases.size()]);
+		final List<Stash> stashes = components.stream().map(component -> fillStash(component, new Stash())).collect(Collectors.toList());
+		return stashes.toArray(new Stash[stashes.size()]);
 	}
 
 	private Stash.Variable[] collectVariables(Node node) {
@@ -69,14 +68,14 @@ public class ModelToStashOperation extends ModelOperation {
 		final Stash.Variable v = new Stash.Variable();
 		v.name = parameter.getName();
 		if (parameter.hasReferenceValue()) v.values = buildReferenceValues(parameter);
-		if (Primitives.FILE.equals(parameter.getInferredType())) v.values = buildResourceValue(parameter);
+		else if (parameter.getValues().get(0).toString().startsWith("$")) v.values = buildResourceValue(parameter);
 		else v.values = parameter.getValues().toArray();
 		variables.add(v);
 	}
 
 	private Object[] buildResourceValue(Parameter parameter) {
 		List<Object> values = parameter.getValues().stream().
-			map(v -> BLOB_KEY + parameter.getFile() + "$" + v.toString()).
+			map(v -> BLOB_KEY + getPresentableName(new File(parameter.getFile()).getName()) + v.toString()).
 			collect(Collectors.toList());
 		return values.toArray();
 	}

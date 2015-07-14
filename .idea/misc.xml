@@ -23,6 +23,7 @@
         <option value="$PROJECT_DIR$/language/semantic/pom.xml" />
         <option value="$PROJECT_DIR$/language/rt/pom.xml" />
         <option value="$PROJECT_DIR$/language/rt-constants/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/framework1/pom.xml" />
       </list>
     </option>
   </component>
