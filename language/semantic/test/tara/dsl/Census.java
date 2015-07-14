@@ -1,10 +1,8 @@
 package tara.dsl;
 
-import tara.semantic.model.Tara;
-
 import java.util.Locale;
 
-import static tara.semantic.constraints.RuleFactory.*;
+import static tara.language.semantics.constraints.RuleFactory.*;
 
 public class Census extends Tara {
 	public Census() {

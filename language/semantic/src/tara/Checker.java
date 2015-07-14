@@ -1,10 +1,10 @@
 package tara;
 
-import tara.semantic.Assumption;
-import tara.semantic.Constraint;
-import tara.semantic.SemanticError;
-import tara.semantic.SemanticException;
-import tara.semantic.model.Node;
+import tara.language.semantics.Assumption;
+import tara.language.semantics.Constraint;
+import tara.language.semantics.SemanticError;
+import tara.language.semantics.SemanticException;
+import tara.language.model.Node;
 
 import java.util.Collection;
 import java.util.Collections;

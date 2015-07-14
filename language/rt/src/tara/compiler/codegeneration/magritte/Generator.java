@@ -2,10 +2,10 @@ package tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.impl.NodeReference;
+import tara.compiler.model.NodeReference;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
+import tara.language.model.NodeContainer;
 
 public class Generator implements TemplateTags {
 

@@ -1,11 +1,10 @@
 package tara.dsl;
 
-import tara.semantic.constraints.RuleFactory;
-import tara.semantic.model.Tara;
+import tara.language.semantics.constraints.RuleFactory;
 
 import java.util.Locale;
 
-import static tara.semantic.constraints.RuleFactory.multiple;
+import static tara.language.semantics.constraints.RuleFactory.multiple;
 
 
 public class Proteo extends Tara {

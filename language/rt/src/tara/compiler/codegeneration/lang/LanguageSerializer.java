@@ -4,7 +4,7 @@ import tara.compiler.codegeneration.CodeGenerator;
 import tara.compiler.codegeneration.FileSystemUtils;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.TaraException;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
 
 import javax.tools.*;
 import java.io.*;

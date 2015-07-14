@@ -3,14 +3,14 @@ package tara.compiler.codegeneration.magritte;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.morph.TypesProvider;
-import tara.compiler.model.Node;
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.VariableReference;
-import tara.semantic.model.Primitives;
+import tara.compiler.model.VariableReference;
+import tara.language.model.Node;
+import tara.language.model.NodeContainer;
+import tara.language.model.Primitives;
+import tara.language.model.Variable;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
-import static tara.semantic.model.Variable.NATIVE_SEPARATOR;
+import static tara.language.model.Variable.NATIVE_SEPARATOR;
 
 public class MorphVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 

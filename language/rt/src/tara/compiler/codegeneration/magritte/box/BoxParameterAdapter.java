@@ -3,12 +3,7 @@ package tara.compiler.codegeneration.magritte.box;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.impl.EmptyNode;
-import tara.compiler.model.Facet;
-import tara.compiler.model.Node;
-import tara.compiler.model.Parameter;
-import tara.semantic.model.Primitives;
-import tara.semantic.model.Tag;
+import tara.language.model.*;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;

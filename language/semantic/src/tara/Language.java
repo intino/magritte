@@ -1,10 +1,10 @@
 package tara;
 
-import tara.semantic.Allow;
-import tara.semantic.Assumption;
-import tara.semantic.Constraint;
-import tara.semantic.model.Context;
-import tara.semantic.model.Documentation;
+import tara.language.semantics.Allow;
+import tara.language.semantics.Assumption;
+import tara.language.semantics.Constraint;
+import tara.language.semantics.Context;
+import tara.language.model.Documentation;
 
 import java.util.List;
 import java.util.Locale;

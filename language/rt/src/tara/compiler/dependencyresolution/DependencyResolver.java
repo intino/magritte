@@ -1,8 +1,11 @@
 package tara.compiler.dependencyresolution;
 
 import tara.compiler.core.errorcollection.DependencyException;
-import tara.compiler.model.*;
-import tara.compiler.model.impl.*;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.compiler.model.VariableReference;
+import tara.language.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +46,7 @@ public class DependencyResolver {
 	}
 
 	private void resolveParametersReference(Parametrized parametrized) throws DependencyException {
-		for (Parameter parameter : parametrized.getParameters())
+		for (Parameter parameter : parametrized.parameters())
 			resolveParameterValue((NodeContainer) parametrized, parameter);
 	}
 
@@ -72,8 +75,8 @@ public class DependencyResolver {
 	}
 
 	private void resolveParent(Node node) throws DependencyException {
-		if (node.getParent() == null && node.getParentName() != null) {
-			Node parent = manager.resolve(node.getParentName(), getNodeContainer(node.container()));
+		if (node.parent() == null && node.parentName() != null) {
+			Node parent = manager.resolve(node.parentName(), getNodeContainer(node.container()));
 			if (parent == null)
 				throw new DependencyException("reject.dependency.parent.node.not.found", node);
 			else {
@@ -84,8 +87,8 @@ public class DependencyResolver {
 	}
 
 	private void resolveInnerReferenceNodes(Node node) throws DependencyException {
-		for (NodeReference nodeReference : node.getReferenceComponents())
-			resolveNodeReference(nodeReference);
+		for (Node nodeReference : node.getReferenceComponents())
+			resolveNodeReference((NodeReference) nodeReference);
 	}
 
 	private void resolveNodeReference(NodeReference nodeReference) throws DependencyException {
@@ -136,7 +139,7 @@ public class DependencyResolver {
 	private void resolveVariableReference(VariableReference variable, NodeContainer container) throws DependencyException {
 		NodeImpl destiny = manager.resolve(variable, container);
 		if (destiny == null)
-			throw new DependencyException("reject.variable.not.found", (Element) container, variable.type());
+			throw new DependencyException("reject.variable.not.found", container, variable.type());
 		else variable.setDestiny(destiny);
 	}
 

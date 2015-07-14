@@ -1,9 +1,9 @@
 package tara.compiler.codegeneration.magritte;
 
-import tara.compiler.model.Facet;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.NodeContainer;
+import tara.language.model.Facet;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
+import tara.language.model.NodeContainer;
 
 import java.io.File;
 
@@ -56,7 +56,7 @@ public class NameFormatter {
 	}
 
 	public static String getQn(Facet facet, String generatedLanguage) {
-		return composeMorphPackagePath(generatedLanguage) + DOT + facet.getFacetType();
+		return composeMorphPackagePath(generatedLanguage) + DOT + facet.type();
 	}
 
 	public static String camelCase(String value, String c) {

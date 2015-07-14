@@ -2,16 +2,12 @@ package tara.compiler.codegeneration.magritte.morph;
 
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.Facet;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.NodeImpl;
-import tara.compiler.model.impl.VariableReference;
-import tara.semantic.Allow;
-import tara.semantic.Assumption;
-import tara.semantic.constraints.ReferenceParameterAllow;
-import tara.semantic.model.Tag;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.VariableReference;
+import tara.language.semantics.Allow;
+import tara.language.semantics.Assumption;
+import tara.language.semantics.constraints.ReferenceParameterAllow;
+import tara.language.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,7 +26,7 @@ public final class TypesProvider implements TemplateTags {
 	public static String[] getTypes(Facet facet) {
 		List<String> list = new ArrayList<>();
 		list.add(FACET);
-		list.add(facet.getFacetType());
+		list.add(facet.type());
 		return list.toArray(new String[list.size()]);
 	}
 

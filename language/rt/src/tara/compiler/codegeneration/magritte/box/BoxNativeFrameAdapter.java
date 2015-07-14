@@ -5,8 +5,7 @@ import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.*;
-import tara.semantic.model.Primitives;
+import tara.language.model.*;
 
 public class BoxNativeFrameAdapter implements TemplateTags {
 
@@ -72,8 +71,8 @@ public class BoxNativeFrameAdapter implements TemplateTags {
 	}
 
 	private String getScope(Parameter parameter) {
-		if (parameter.contract().contains(tara.semantic.model.Variable.NATIVE_SEPARATOR)) {
-			final String[] split = parameter.contract().split(tara.semantic.model.Variable.NATIVE_SEPARATOR);
+		if (parameter.contract().contains(tara.language.model.Variable.NATIVE_SEPARATOR)) {
+			final String[] split = parameter.contract().split(tara.language.model.Variable.NATIVE_SEPARATOR);
 			if (split.length == 3) return split[2].toLowerCase();
 			else return language.languageName();
 		} else return language.languageName();
@@ -86,7 +85,7 @@ public class BoxNativeFrameAdapter implements TemplateTags {
 				Format.reference().format(owner.name()) + "_" + Format.reference().format(facetTarget.target());
 		else
 			return !m0 ? NameFormatter.composeMorphPackagePath(language) + NameFormatter.DOT + (facetTarget == null ? node.qualifiedName() : NameFormatter.composeInFacetTargetQN(node, facetTarget)) :
-				language.toLowerCase() + NameFormatter.DOT + node.getType();
+				language.toLowerCase() + NameFormatter.DOT + node.type();
 	}
 
 	private String buildContainerPathOfExpression(NodeContainer owner) {
@@ -140,12 +139,12 @@ public class BoxNativeFrameAdapter implements TemplateTags {
 	}
 
 	private String getTypeAsParent(Node parent) {
-		return language.languageName().toLowerCase() + NameFormatter.DOT + NameFormatter.cleanQn(parent.getType());
+		return language.languageName().toLowerCase() + NameFormatter.DOT + NameFormatter.cleanQn(parent.type());
 	}
 
 	private String withContract(String contract, String language) {
-		if (contract.contains(tara.semantic.model.Variable.NATIVE_SEPARATOR)) {
-			final String[] split = contract.split(tara.semantic.model.Variable.NATIVE_SEPARATOR);
+		if (contract.contains(tara.language.model.Variable.NATIVE_SEPARATOR)) {
+			final String[] split = contract.split(tara.language.model.Variable.NATIVE_SEPARATOR);
 			if (split.length == 3) return split[2].toLowerCase();
 			else return language;
 		} else return language;

@@ -2,7 +2,7 @@ package tara.compiler.core;
 
 import tara.compiler.core.errorcollection.ErrorCollector;
 import tara.compiler.core.errorcollection.TaraException;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
 import tara.compiler.parser.Parser;
 
 import java.io.File;

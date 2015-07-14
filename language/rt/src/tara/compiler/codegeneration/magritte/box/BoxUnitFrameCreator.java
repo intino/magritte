@@ -4,9 +4,9 @@ import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.AbstractFrame;
 import tara.Language;
 import tara.compiler.core.CompilerConfiguration;
-import tara.compiler.model.*;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.impl.NodeReference;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeReference;
+import tara.language.model.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;

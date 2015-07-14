@@ -1,11 +1,10 @@
 package tara.compiler.dependencyresolution;
 
 import tara.compiler.core.errorcollection.DependencyException;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.impl.NodeImpl;
-import tara.compiler.model.impl.NodeReference;
-import tara.compiler.model.*;
-import tara.semantic.model.Tag;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.language.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,7 +27,7 @@ public class InheritanceResolver {
 
 	private void resolve(NodeImpl node) {
 		List<NodeImpl> children = getChildrenSorted(node);
-		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlags(Tag.ABSTRACT.name());
+		if (!children.isEmpty() && !node.isAbstract() && node.isSub()) node.addFlags(Tag.ABSTRACT);
 		for (NodeImpl child : children) {
 			resolveIncludes(node, child);
 			resolveFlags(node, child);
@@ -91,18 +90,18 @@ public class InheritanceResolver {
 	}
 
 	private void addTags(Node include, NodeReference reference) {
-		include.flags().stream().filter(tag -> !reference.flags().contains(tag)).forEach(tag -> reference.addFlags(tag.name()));
-		include.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(tag -> reference.addAnnotations(tag.name()));
+		include.flags().stream().filter(tag -> !reference.flags().contains(tag)).forEach(reference::addFlags);
+		include.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(reference::addAnnotations);
 	}
 
 	private void resolveFlags(NodeImpl parent, NodeImpl child) {
 		parent.flags().stream().
 			filter(tag -> !tag.equals(Tag.ABSTRACT) && !child.flags().contains(tag)).
-			forEach(tag -> child.addFlags(tag.name()));
+			forEach(child::addFlags);
 	}
 
 	private void resolveAnnotations(NodeImpl parent, NodeImpl child) {
-		parent.annotations().stream().filter(tag -> !tag.equals(Tag.ABSTRACT) && !child.annotations().contains(tag)).forEach(tag -> child.addAnnotations(tag.name()));
+		parent.annotations().stream().filter(tag -> !tag.equals(Tag.ABSTRACT) && !child.annotations().contains(tag)).forEach(child::addAnnotations);
 	}
 
 	private void resolveVariables(NodeImpl parent, NodeImpl child) {
@@ -115,11 +114,10 @@ public class InheritanceResolver {
 
 	private boolean isOverridden(NodeContainer child, Node node) {
 		for (Node include : child.components())
-			if (include.name().equals(node.name()) && include.getType().equals(node.getType()))
+			if (include.name().equals(node.name()) && include.type().equals(node.type()))
 				return true;
 		return false;
 	}
-
 
 	private boolean isOverridden(NodeContainer child, Variable variable) {
 		for (Variable childVar : child.variables())

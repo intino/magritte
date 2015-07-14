@@ -6,14 +6,10 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.Facet;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.NodeImpl;
-import tara.compiler.model.impl.NodeReference;
-import tara.semantic.Allow;
-import tara.semantic.model.Tag;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.language.semantics.Allow;
+import tara.language.model.*;
 
 import java.util.Collection;
 
@@ -65,7 +61,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<NodeImpl>, Te
 			final Frame creates = new Frame();
 			creates.addTypes("create");
 			creates.addFrame(TYPE, NameFormatter.cleanQn(NameFormatter.getQn(include instanceof NodeReference ? ((NodeReference) include).getDestiny() : include, generatedLanguage)));
-			creates.addFrame(NAME, include.getName());
+			creates.addFrame(NAME, include.name());
 			frame.addFrame("create", creates);
 		});
 	}
@@ -88,7 +84,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<NodeImpl>, Te
 	}
 
 	private void addParent(Node node, Frame newFrame) {
-		final Node parent = node.getParent();
+		final Node parent = node.parent();
 		newFrame.addFrame(PARENT, parent != null ?
 			NameFormatter.getQn(parent, generatedLanguage) :
 			isDefinition(node, modelLevel) ? DEFINITION_PATH : MORPH_PATH);
@@ -98,7 +94,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<NodeImpl>, Te
 		for (final Facet facet : node.facets())
 			newFrame.
 				addFrame(FACETS, new Frame().addTypes(getTypes(facet)).
-					addFrame(NAME, facet.getFacetType()));
+					addFrame(NAME, facet.type()));
 	}
 
 	private void addComponents(Node node, Frame frame) {
@@ -120,7 +116,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<NodeImpl>, Te
 
 	private void addName(Node node, Frame frame) {
 		if (node.name() != null && !node.name().isEmpty())
-			frame.addFrame(NAME, node.isAnonymous() ? node.getType() : node.name());
+			frame.addFrame(NAME, node.isAnonymous() ? node.type() : node.name());
 		frame.addFrame(QN, NameFormatter.getQn(node, generatedLanguage)).addFrame(PROJECT, project);
 	}
 
@@ -143,7 +139,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<NodeImpl>, Te
 	}
 
 	private void addTerminalVariables(Node node, final Frame frame) {
-		final Collection<Allow> allows = language.allows(node.getType());
+		final Collection<Allow> allows = language.allows(node.type());
 		if (allows == null) return;
 		allows.stream().
 			filter(allow -> allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(Tag.TERMINAL.name()) && !isRedefined(((Allow.Parameter) allow), node.variables())).

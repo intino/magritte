@@ -1,12 +1,12 @@
 package tara.compiler.dependencyresolution;
 
 import tara.compiler.core.errorcollection.DependencyException;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.impl.NodeImpl;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
+import tara.language.model.NodeContainer;
+import tara.language.model.Variable;
 
 import java.util.Collection;
 import java.util.List;

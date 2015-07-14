@@ -2,18 +2,18 @@ package tara.compiler.codegeneration.lang;
 
 import org.siani.itrules.model.Frame;
 import tara.Language;
-import tara.compiler.model.Node;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.impl.NodeReference;
-import tara.semantic.Allow;
-import tara.semantic.Assumption;
-import tara.semantic.Constraint;
-import tara.semantic.Constraint.Require;
-import tara.semantic.constraints.PrimitiveParameterAllow;
-import tara.semantic.constraints.ReferenceParameterAllow;
-import tara.semantic.model.Context;
-import tara.semantic.model.Primitives;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeReference;
+import tara.language.model.Node;
+import tara.language.model.Primitives;
+import tara.language.model.Variable;
+import tara.language.semantics.Allow;
+import tara.language.semantics.Assumption;
+import tara.language.semantics.Constraint;
+import tara.language.semantics.Constraint.Require;
+import tara.language.semantics.Context;
+import tara.language.semantics.constraints.PrimitiveParameterAllow;
+import tara.language.semantics.constraints.ReferenceParameterAllow;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -133,7 +133,7 @@ public class LanguageInheritanceFiller {
 
 	private void findInstancesOf(Node node, String type, List<String> instances) {
 		for (Node include : node.components()) {
-			if (include.getType().equals(type)) instances.add(include.qualifiedName());
+			if (include.type().equals(type)) instances.add(include.qualifiedName());
 			if (!(include instanceof NodeReference)) findInstancesOf(include, type, instances);
 		}
 	}

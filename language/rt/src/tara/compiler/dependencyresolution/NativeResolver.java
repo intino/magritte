@@ -1,16 +1,14 @@
 package tara.compiler.dependencyresolution;
 
 import tara.compiler.core.errorcollection.DependencyException;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.*;
-import tara.compiler.model.impl.NodeImpl;
-import tara.semantic.model.Primitives;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
+import tara.language.model.*;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
 
-import static tara.compiler.model.Variable.NATIVE_SEPARATOR;
 
 public class NativeResolver {
 	private final Model model;
@@ -58,7 +56,7 @@ public class NativeResolver {
 		final String nativeSignature = findNativeSignature(variable.contract());
 		if (nativeSignature.isEmpty())
 			throw new DependencyException("reject.native.signature.not.found", variable);
-		return variable.contract() + NATIVE_SEPARATOR + nativeSignature;
+		return variable.contract() + Variable.NATIVE_SEPARATOR + nativeSignature;
 	}
 
 	private String findNativeSignature(String name) {

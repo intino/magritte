@@ -5,20 +5,18 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.MorphVariableAdapter;
+import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.CompilerConfiguration;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.NodeImpl;
-import tara.compiler.model.impl.NodeReference;
-import tara.semantic.Allow;
-import tara.compiler.codegeneration.magritte.NameFormatter;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.language.semantics.Allow;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
+import tara.language.model.Variable;
 
 import java.util.AbstractMap;
 import java.util.Map;
-
-import static tara.compiler.codegeneration.magritte.NameFormatter.composeMorphPackagePath;
 
 
 public class MorphFrameCreator implements TemplateTags {

@@ -4,10 +4,10 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.Variable;
-import tara.semantic.Allow;
-import tara.semantic.constraints.ReferenceParameterAllow;
-import tara.semantic.model.Primitives;
+import tara.language.model.Primitives;
+import tara.language.model.Variable;
+import tara.language.semantics.Allow;
+import tara.language.semantics.constraints.ReferenceParameterAllow;
 
 public class MorphParameterAdapter extends Generator implements Adapter<Allow.Parameter>, TemplateTags {
 

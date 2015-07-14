@@ -3,16 +3,12 @@ package tara.compiler.semantic;
 import tara.Checker;
 import tara.Language;
 import tara.Resolver;
-import tara.compiler.model.Facet;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.impl.NodeImpl;
-import tara.compiler.model.impl.NodeReference;
-import tara.compiler.semantic.wrappers.LanguageNode;
-import tara.compiler.semantic.wrappers.LanguageNodeReference;
-import tara.compiler.semantic.wrappers.LanguageRoot;
-import tara.semantic.SemanticException;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
+import tara.language.semantics.SemanticException;
+import tara.language.model.Facet;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
 
 public class SemanticAnalyzer {
 	private final Model model;
@@ -27,7 +23,7 @@ public class SemanticAnalyzer {
 
 	public void analyze() throws SemanticException {
 		resolveTypes(model);
-		checker.check(wrap(model));
+		checker.check(model);
 		check(model);
 	}
 
@@ -54,21 +50,14 @@ public class SemanticAnalyzer {
 	}
 
 	private void resolveNode(Node include) {
-		resolver.resolve(wrap(include));
+		resolver.resolve(include);
 		if (include instanceof NodeImpl)
 			resolveTypes(include);
 	}
 
 	private void checkNode(Node include) throws SemanticException {
-		checker.check(wrap(include));
+		checker.check(include);
 		if (include instanceof NodeImpl) check(include);
 	}
 
-	private LanguageNode wrap(Node node) {
-		return node instanceof NodeImpl ? new LanguageNode((NodeImpl) node) : new LanguageNodeReference((NodeReference) node);
-	}
-
-	private LanguageRoot wrap(Model model) {
-		return new LanguageRoot(model);
-	}
 }

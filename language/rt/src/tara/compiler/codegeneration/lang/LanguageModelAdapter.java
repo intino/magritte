@@ -3,23 +3,19 @@ package tara.compiler.codegeneration.lang;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.impl.NodeImpl;
-import tara.compiler.model.impl.NodeReference;
-import tara.compiler.model.impl.VariableReference;
-import tara.semantic.Allow;
-import tara.semantic.Assumption;
-import tara.semantic.model.Context;
-import tara.semantic.model.Tag;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.compiler.model.VariableReference;
+import tara.language.model.*;
+import tara.language.semantics.Allow;
+import tara.language.semantics.Assumption;
+import tara.language.semantics.Context;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static tara.semantic.model.Tag.*;
+import static tara.language.model.Tag.*;
 
 class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, TemplateTags {
 	private final boolean plateRequired;
@@ -90,10 +86,10 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private void addTypes(Node node, Frame frame) {
-		if (node.getType() == null) return;
+		if (node.type() == null) return;
 		Frame typesFrame = new Frame().addTypes(NODE_TYPE);
 		Set<String> typeSet = new LinkedHashSet<>();
-		typeSet.add(node.getType());
+		typeSet.add(node.type());
 		Collection<String> languageTypes = getLanguageTypes(node);
 		if (languageTypes != null)
 			typeSet.addAll(languageTypes);
@@ -103,7 +99,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private Collection<String> getLanguageTypes(Node node) {
-		return language.types(node.getType());
+		return language.types(node.type());
 	}
 
 	private boolean alreadyProcessed(Node node) {
@@ -119,7 +115,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 	}
 
 	private Collection<Frame> getContextTerminalConstrains(List<String> types, Node node) {
-		final Collection<Allow> allows = language.allows(node.getType());
+		final Collection<Allow> allows = language.allows(node.type());
 		return types.stream().
 			filter(type -> allows.stream().
 				filter(allow -> allow instanceof Allow.Include && sameType(allow, type) && isAllowed((Allow.Include) allow, node)).findFirst().isPresent()).
@@ -156,7 +152,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		for (int i = 0; i < variables.size(); i++) {
 			if (!isAllowedVariable(variables.get(i))) continue;
 			Variable variable = variables.get(i);
-			if (variable.getDefaultValues().isEmpty() && !variable.isTerminal()) continue;
+			if (variable.defaultValues().isEmpty() && !variable.isTerminal()) continue;
 			new LanguageParameterAdapter(language).addParameter(allows, i, variable, ALLOW);
 		}
 	}
@@ -203,7 +199,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		node.variables().stream().
 			filter(variable -> variable.isTerminal() && variable instanceof VariableReference && !((VariableReference) variable).getDestiny().isTerminal()).
 			forEach(variable -> requires.addFrame(REQUIRE, new Frame().addTypes("redefine", REQUIRE).
-				addFrame(NAME, variable.getName()).addFrame("supertype", variable.getType())));
+				addFrame(NAME, variable.name()).addFrame("supertype", variable.type())));
 	}
 
 	private void addParameterRequires(List<Variable> variables, Frame requires, int index) {
@@ -216,7 +212,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 
 	private boolean isAllowedVariable(Variable variable) {
 		final NodeContainer container = variable.container();
-		return !variable.getDefaultValues().isEmpty() || ((container instanceof Node) && !((Node) container).isTerminal() && variable.isTerminal());
+		return !variable.defaultValues().isEmpty() || ((container instanceof Node) && !((Node) container).isTerminal() && variable.isTerminal());
 	}
 
 	private void addAssumptions(Node node, Frame frame) {

@@ -1,8 +1,9 @@
 package tara.compiler.dependencyresolution;
 
-import tara.compiler.model.Node;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.impl.NodeReference;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeReference;
+import tara.language.model.Node;
+import tara.language.model.Tag;
 
 public class FinalResolver {
 
@@ -25,6 +26,6 @@ public class FinalResolver {
 	}
 
 	private void propagateFinalToVariables(Node node) {
-		node.variables().stream().filter(variable -> !variable.isFinal()).forEach(variable -> variable.addFlags("final"));
+		node.variables().stream().filter(variable -> !variable.isFinal()).forEach(variable -> variable.addFlags(Tag.FINAL));
 	}
 }

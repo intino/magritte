@@ -1,12 +1,12 @@
 package tara.compiler.core.errorcollection;
 
 
-import tara.compiler.model.Element;
-import tara.compiler.model.Node;
-import tara.compiler.model.Parameter;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.NodeImpl;
-import tara.semantic.MessageProvider;
+import tara.compiler.model.NodeImpl;
+import tara.language.semantics.MessageProvider;
+import tara.language.model.Element;
+import tara.language.model.Node;
+import tara.language.model.Parameter;
+import tara.language.model.Variable;
 
 public class DependencyException extends TaraException {
 
@@ -20,7 +20,7 @@ public class DependencyException extends TaraException {
 		this.element = element;
 		this.parameters = parameters;
 		if (element != null)
-			this.line = element.getLine();
+			this.line = element.line();
 		else this.line = -1;
 	}
 

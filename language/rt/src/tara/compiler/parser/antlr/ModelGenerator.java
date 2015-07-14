@@ -3,16 +3,14 @@ package tara.compiler.parser.antlr;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import tara.semantic.model.Primitives;
-import tara.semantic.model.Tag;
-import tara.compiler.model.impl.*;
+import tara.compiler.model.*;
 import tara.compiler.parser.antlr.TaraGrammar.*;
+import tara.language.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static tara.semantic.model.Primitives.*;
-import static tara.semantic.model.Primitives.getConverter;
+import static tara.language.model.Primitives.*;
 
 public class ModelGenerator extends TaraGrammarBaseListener {
 
@@ -47,7 +45,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		if (ctx.signature().IDENTIFIER() != null)
 			node.name(ctx.signature().IDENTIFIER().getText());
 		node.type(node.isSub() ?
-			((Node) deque.peek()).getType() :
+			deque.peek().type() :
 			ctx.signature().metaidentifier().getText());
 		resolveParent(ctx, node);
 		addTags(ctx.signature().tags(), node);
@@ -71,7 +69,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private void resolveParent(NodeContext ctx, NodeImpl node) {
 		if (node.isSub()) {
 			Node peek = (Node) deque.peek();
-			if (!peek.isAbstract()) peek.addFlags(Tag.ABSTRACT.name());
+			if (!peek.isAbstract()) peek.addFlags(Tag.ABSTRACT);
 			node.setParent(peek);
 			peek.addChild(node);
 			node.setParentName(peek.name());
@@ -85,8 +83,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	}
 
 	private void addHeaderInformation(ParserRuleContext ctx, Element element) {
-		element.setLine(ctx.getStart().getLine());
-		element.setFile(file);
+		element.line(ctx.getStart().getLine());
+		element.file(file);
 	}
 
 	@Override
@@ -181,18 +179,18 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		container.add(nodeReference);
 	}
 
-	private String[] resolveTags(AnnotationsContext annotations) {
-		List<String> values = new ArrayList<>();
-		if (annotations == null) return new String[0];
-		values.addAll(annotations.annotation().stream().map(AnnotationContext::getText).collect(Collectors.toList()));
-		return values.toArray(new String[values.size()]);
+	private Tag[] resolveTags(AnnotationsContext annotations) {
+		List<Tag> values = new ArrayList<>();
+		if (annotations == null) return new Tag[0];
+		values.addAll(annotations.annotation().stream().map(a -> Tag.valueOf(a.getText().toUpperCase())).collect(Collectors.toList()));
+		return values.toArray(new Tag[values.size()]);
 	}
 
-	private String[] resolveTags(FlagsContext flags) {
-		List<String> values = new ArrayList<>();
-		if (flags == null) return new String[0];
-		values.addAll(flags.flag().stream().map(FlagContext::getText).collect(Collectors.toList()));
-		return values.toArray(new String[values.size()]);
+	private Tag[] resolveTags(FlagsContext flags) {
+		List<Tag> values = new ArrayList<>();
+		if (flags == null) return new Tag[0];
+		values.addAll(flags.flag().stream().map(f -> Tag.valueOf(f.getText().toUpperCase())).collect(Collectors.toList()));
+		return values.toArray(new Tag[values.size()]);
 	}
 
 

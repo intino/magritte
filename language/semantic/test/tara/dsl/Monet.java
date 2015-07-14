@@ -1,11 +1,10 @@
 package tara.dsl;
 
-import tara.semantic.model.Tag;
-import tara.semantic.model.Tara;
+import tara.language.model.Tag;
 
 import java.util.Locale;
 
-import static tara.semantic.constraints.RuleFactory.*;
+import static tara.language.semantics.constraints.RuleFactory.*;
 
 public class Monet extends Tara {
 	public Monet() {

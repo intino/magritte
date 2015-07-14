@@ -1,8 +1,7 @@
 package tara.compiler.core.errorcollection;
 
 
-import tara.compiler.semantic.wrappers.LanguageElement;
-import tara.semantic.SemanticError;
+import tara.language.semantics.SemanticError;
 
 public class SemanticException extends TaraException {
 
@@ -19,7 +18,7 @@ public class SemanticException extends TaraException {
 	}
 
 	public String getMessage() {
-		int line = this.errors[0].origin() == null ? 0 : ((LanguageElement) this.errors[0].origin()).element().getLine();
+		int line = this.errors[0].origin() == null ? 0 : this.errors[0].origin().line();
 		return message + " @ line " + line + ".";
 	}
 }

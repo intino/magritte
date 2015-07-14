@@ -6,11 +6,9 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.Parametrized;
-import tara.compiler.model.*;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.impl.NodeReference;
-import tara.semantic.model.Primitives;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeReference;
+import tara.language.model.*;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
@@ -102,9 +100,9 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 	private void createDefaultValueNativeFrames(Frame frame, List<Variable> variables) {
 		final BoxNativeFrameAdapter adapter = new BoxNativeFrameAdapter(generatedLanguage, language, m0);
 		for (Variable variable : variables) {
-			if (variable.getDefaultValues().isEmpty() || !(variable.getDefaultValues().get(0) instanceof Primitives.Expression))
+			if (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitives.Expression))
 				continue;
-			final Object next = variable.getDefaultValues().get(0);
+			final Object next = variable.defaultValues().get(0);
 			if (Primitives.NATIVE.equals(variable.type()))
 				adapter.fillFrameForNativeVariable(frame, variable, next);
 			else adapter.fillFrameExpressionVariable(frame, variable, next);
@@ -112,14 +110,14 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 	}
 
 	private List<Parameter> extractNativeParameters(Parametrized node) {
-		return unmodifiableList(node.getParameters().stream().
-			filter(parameter -> parameter.getValues().get(0) instanceof Primitives.Expression).
+		return unmodifiableList(node.parameters().stream().
+			filter(parameter -> parameter.values().get(0) instanceof Primitives.Expression).
 			collect(Collectors.toList()));
 	}
 
 	private List<Variable> extractNativeVariables(NodeContainer node) {
 		return unmodifiableList(node.variables().stream().
-			filter(variable -> !variable.getDefaultValues().isEmpty() && variable.getDefaultValues().get(0) instanceof Primitives.Expression && !variable.isInherited()).
+			filter(variable -> !variable.defaultValues().isEmpty() && variable.defaultValues().get(0) instanceof Primitives.Expression && !variable.isInherited()).
 			collect(Collectors.toList()));
 	}
 
@@ -139,7 +137,7 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 		for (Node node : nodes) {
 			if (node instanceof NodeReference) continue;
 			imports.addAll(node.facets().stream().
-				map(facet -> new PluralFormatter(locale).getInflector().plural(facet.getFacetType())).
+				map(facet -> new PluralFormatter(locale).getInflector().plural(facet.type())).
 				collect(Collectors.toList()));
 			imports.addAll(searchFacets(node.components()));
 		}

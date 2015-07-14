@@ -4,10 +4,8 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.impl.EmptyNode;
-import tara.compiler.model.impl.VariableReference;
-import tara.semantic.model.Primitives;
-import tara.semantic.model.Tag;
+import tara.compiler.model.VariableReference;
+import tara.language.model.*;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
@@ -25,7 +23,7 @@ public class BoxVariableAdapter implements Adapter<Variable>, TemplateTags {
 
 	@Override
 	public void execute(Frame frame, Variable variable, FrameContext<Variable> context) {
-		if (variable.getDefaultValues().isEmpty() || variable.getDefaultValues().get(0) instanceof EmptyNode || variable.isInherited())
+		if (variable.defaultValues().isEmpty() || variable.defaultValues().get(0) instanceof EmptyNode || variable.isInherited())
 			return;
 		if (variable.container() instanceof FacetTarget) {
 			createTargetVarFrame(frame, variable);
@@ -57,7 +55,7 @@ public class BoxVariableAdapter implements Adapter<Variable>, TemplateTags {
 	protected String[] getTypes(Variable variable) {
 		List<String> list = new ArrayList<>();
 		list.add(VARIABLE);
-		if (variable.getDefaultValues().get(0) instanceof Primitives.Expression) list.add(Primitives.NATIVE);
+		if (variable.defaultValues().get(0) instanceof Primitives.Expression) list.add(Primitives.NATIVE);
 		if (variable instanceof VariableReference) list.add(Primitives.REFERENCE);
 		list.add(variable.type());
 		if (variable.isTerminal()) list.add(TERMINAL);
@@ -68,7 +66,7 @@ public class BoxVariableAdapter implements Adapter<Variable>, TemplateTags {
 
 	protected void addVariableValue(Frame frame, final Variable variable) {
 		Object[] values;
-		Collection<Object> defaultValues = variable.getDefaultValues();
+		Collection<Object> defaultValues = variable.defaultValues();
 		if (defaultValues.iterator().next() instanceof Node)
 			if (defaultValues.iterator().next() instanceof EmptyNode)
 				return;

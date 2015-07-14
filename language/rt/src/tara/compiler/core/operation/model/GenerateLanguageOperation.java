@@ -5,7 +5,7 @@ import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.Phases;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
 import tara.compiler.rt.TaraRtConstants;
 
 import java.util.logging.Level;

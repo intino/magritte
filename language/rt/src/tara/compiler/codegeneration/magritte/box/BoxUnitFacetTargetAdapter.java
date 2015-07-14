@@ -4,12 +4,8 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.NodeReference;
-import tara.semantic.model.Tag;
+import tara.compiler.model.NodeReference;
+import tara.language.model.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -85,6 +81,6 @@ public class BoxUnitFacetTargetAdapter implements Adapter<FacetTarget>, Template
 	}
 
 	private void addTypes(FacetTarget facetTarget, Frame newFrame) {
-		newFrame.addFrame(NODE_TYPE, ((Node) facetTarget.container()).getType());
+		newFrame.addFrame(NODE_TYPE, facetTarget.container().type());
 	}
 }

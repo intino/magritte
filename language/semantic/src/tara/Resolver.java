@@ -1,8 +1,8 @@
 package tara;
 
-import tara.semantic.Allow;
-import tara.semantic.model.Node;
-import tara.semantic.model.NodeContainer;
+import tara.language.model.Node;
+import tara.language.model.NodeContainer;
+import tara.language.semantics.Allow;
 
 import java.util.Collection;
 
@@ -87,6 +87,7 @@ public class Resolver {
 
 	private Node getContext(Node node) {
 		NodeContainer container = node.container();
+		if (container == null) return null;
 		while (!(container instanceof Node))
 			container = container.container();
 		return (Node) container;

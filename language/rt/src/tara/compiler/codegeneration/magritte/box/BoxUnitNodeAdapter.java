@@ -4,9 +4,10 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.*;
-import tara.compiler.model.impl.*;
-import tara.semantic.model.Tag;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.language.model.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -44,15 +45,15 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 			if (node.plate() != null) newFrame.addFrame(PLATE, "|" + String.valueOf(node.plate()));
 		}
 		addTypes(node, newFrame);
-		if (node.getParent() != null)
-			newFrame.addFrame(PARENT, getQn(node.getParent()));
+		if (node.parent() != null)
+			newFrame.addFrame(PARENT, getQn(node.parent()));
 	}
 
 	private String facetPrefix(Node node) {
 		Facet facet = inFacet(node);
 		if (facet == null) return "";
 		final Node container = (Node) facet.container();
-		return clean(facet.getFacetType()) + "+" + clean(container.getType()) + ".";
+		return clean(facet.type()) + "+" + clean(container.type()) + ".";
 	}
 
 	private boolean isInFacet(Node node) {
@@ -84,10 +85,10 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 
 	private void addTypes(Node node, Frame newFrame) {
 		if (node.facets().isEmpty())
-			newFrame.addFrame(NODE_TYPE, node.getType());
+			newFrame.addFrame(NODE_TYPE, node.type());
 		else
 			for (Facet facet : node.facets())
-				newFrame.addFrame(NODE_TYPE, facet.getFacetType() + "+" + node.getType());
+				newFrame.addFrame(NODE_TYPE, facet.type() + "+" + node.type());
 	}
 
 	private void flags(final Node node, Frame frame) {
@@ -108,21 +109,21 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 	}
 
 	private void parameters(Node node, Frame frame, FrameContext<Node> context) {
-		node.getParameters().stream().
+		node.parameters().stream().
 			filter(parameter -> !isOverriddenByFacets(parameter, node.facets())).
 			forEach(parameter -> frame.addFrame(VARIABLE, context.build(parameter)));
 	}
 
 	private boolean isOverriddenByFacets(Parameter parameter, Collection<Facet> facets) {
 		for (Facet facet : facets)
-			for (Parameter facetParameter : facet.getParameters())
+			for (Parameter facetParameter : facet.parameters())
 				if (facetParameter.name().equals(parameter.name())) return true;
 		return false;
 	}
 
 	private void facetParameters(Node node, final Frame frame, FrameContext<Node> context) {
 		for (Facet facet : node.facets())
-			for (final Parameter parameter : facet.getParameters())
+			for (final Parameter parameter : facet.parameters())
 				frame.addFrame(VARIABLE, context.build(parameter));
 	}
 

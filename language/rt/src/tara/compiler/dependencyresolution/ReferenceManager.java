@@ -1,12 +1,12 @@
 package tara.compiler.dependencyresolution;
 
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.impl.NodeImpl;
-import tara.compiler.model.impl.NodeReference;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
+import tara.language.model.NodeContainer;
+import tara.language.model.Variable;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -59,7 +59,7 @@ public class ReferenceManager {
 				continue;
 			}
 			if (reference.components(name) == null)
-				reference = reference.getParent().components(name);
+				reference = reference.parent().components(name);
 			else reference = reference.components(name);
 			if (reference == null) return null;
 		}

@@ -3,19 +3,19 @@ package tara.compiler.codegeneration.lang;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.Node;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.VariableReference;
-import tara.semantic.Allow;
-import tara.semantic.constraints.ReferenceParameterAllow;
-import tara.semantic.model.Tag;
+import tara.compiler.model.VariableReference;
+import tara.language.model.Node;
+import tara.language.model.Tag;
+import tara.language.model.Variable;
+import tara.language.semantics.Allow;
+import tara.language.semantics.constraints.ReferenceParameterAllow;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static tara.semantic.model.Tag.TERMINAL_INSTANCE;
+import static tara.language.model.Tag.TERMINAL_INSTANCE;
 
 public class LanguageParameterAdapter implements TemplateTags {
 	private final Language language;
@@ -34,7 +34,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 
 	int addTerminalParameters(Node node, Frame requires) {
 		int index = 0;
-		Collection<Allow> allows = language.allows(node.getType());
+		Collection<Allow> allows = language.allows(node.type());
 		if (allows == null) return 0;
 		for (Allow allow : allows)
 			if (allow instanceof Allow.Parameter && isTerminal((Allow.Parameter) allow) && !isRedefined((Allow.Parameter) allow, node.variables())) {

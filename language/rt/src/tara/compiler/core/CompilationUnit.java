@@ -15,7 +15,7 @@ import tara.compiler.core.operation.sourceunit.ImportDataOperation;
 import tara.compiler.core.operation.sourceunit.MarkOperation;
 import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.core.operation.sourceunit.SourceUnitOperation;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
 import tara.compiler.rt.TaraRtConstants;
 
 import java.util.HashMap;

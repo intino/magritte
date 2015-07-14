@@ -3,9 +3,9 @@ package tara.compiler.parser;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
-import tara.compiler.model.Node;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
 import tara.compiler.rt.TaraRtConstants;
+import tara.language.model.Node;
 
 import java.util.Collection;
 

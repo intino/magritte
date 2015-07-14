@@ -4,11 +4,11 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.impl.NodeImpl;
-import tara.compiler.model.impl.NodeReference;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
+import tara.language.model.NodeContainer;
 
 import java.util.List;
 
@@ -98,7 +98,7 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 
 	private void addName(Node node, Frame frame) {
 		if (node.name() != null && !node.name().isEmpty())
-			frame.addFrame(NAME, node.isAnonymous() ? node.getType() : node.name());
+			frame.addFrame(NAME, node.isAnonymous() ? node.type() : node.name());
 		frame.addFrame(QN, node.qualifiedName()).addFrame(PROJECT, project);
 	}
 
