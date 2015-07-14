@@ -22,7 +22,7 @@ public class MergeToModelOperation extends ModuleUnitOperation {
 
 	public void call(Collection<SourceUnit> sources) throws CompilationFailedException {
 		try {
-			Model model = new ASTMerger(sources, compilationUnit.getConfiguration()).doMerge();
+			Model model = new ASTMerger(sources).doMerge();
 			compilationUnit.setModel(model);
 		} catch (MergeException e) {
 			LOG.log(Level.SEVERE, "Error merging sources representations: " + e.getMessage(), e);

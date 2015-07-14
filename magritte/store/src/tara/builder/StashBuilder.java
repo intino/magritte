@@ -12,15 +12,17 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StashBuilder {
 	private final CompilationUnit compilationUnit;
 	private final List<CompilerMessage> compilationMessages;
 	private static final String LINE_AT = " @ line ";
 
-	public StashBuilder(File file, Charset charset) {
-		this.compilationUnit = file.exists() ? buildCompilationUnit(file, charset) : null;
+	public StashBuilder(File root, String src, Charset charset) {
+		this.compilationUnit = root.exists() ? buildCompilationUnit(root, src, charset) : null;
 		this.compilationMessages = new ArrayList<>();
 	}
 
@@ -29,17 +31,41 @@ public class StashBuilder {
 		processErrors(compilationMessages);
 	}
 
-	private static CompilationUnit buildCompilationUnit(File file, Charset charset) {
-		final CompilationUnit unit = new CompilationUnit(buildConfiguration(file, charset));
-		unit.addSource(new SourceUnit(file, unit.getConfiguration(), unit.getErrorCollector()));
+	private static CompilationUnit buildCompilationUnit(File root, String src, Charset charset) {
+		final Map<String, File> fileMap = buildFileMap(root);
+		final CompilationUnit unit = new CompilationUnit(buildConfiguration(root, fileMap, new File(root, src), charset));
+		unit.addSource(new SourceUnit(new File(root, src), unit.getConfiguration(), unit.getErrorCollector()));
 		return unit;
 	}
 
-	private static CompilerConfiguration buildConfiguration(File src, Charset charset) {
+	private static Map<String, File> buildFileMap(File root) {
+		List<File> files = new ArrayList<>();
+		getAllFiles(root, files);
+		Map<String, File> map = new HashMap();
+		files.stream().filter(file -> file.getName().endsWith(".tara")).forEach(f -> map.put(getPresentableName(f.getName()), f));
+		return map;
+	}
+
+	private static String getPresentableName(String name) {
+		return name.substring(0, name.lastIndexOf("."));
+	}
+
+	public static void getAllFiles(File dir, List<File> fileList) {
+		File[] files = dir.listFiles();
+		for (File file : files != null ? files : new File[0]) {
+			fileList.add(file);
+			if (file.isDirectory())
+				getAllFiles(file, fileList);
+		}
+	}
+
+	private static CompilerConfiguration buildConfiguration(File root, Map<String, File> fileMap, File src, Charset charset) {
 		final CompilerConfiguration configuration = new CompilerConfiguration();
 		configuration.setOutput(new PrintWriter(System.err));
 		configuration.setWarningLevel(WarningMessage.PARANOIA);
 		configuration.setSourceEncoding(charset.name());
+		configuration.setStoreDirectory(root.getAbsolutePath());
+		configuration.setClassPath(fileMap);
 		configuration.setOutDirectory(src.getParent());
 		return configuration;
 	}

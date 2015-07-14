@@ -1,6 +1,5 @@
 package tara.compiler.parser;
 
-import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
 import tara.compiler.model.Node;
@@ -11,11 +10,9 @@ import java.util.Collection;
 
 public class ASTMerger {
 	private final Collection<SourceUnit> sources;
-	private final CompilerConfiguration conf;
 
-	public ASTMerger(Collection<SourceUnit> sources, CompilerConfiguration conf) {
+	public ASTMerger(Collection<SourceUnit> sources) {
 		this.sources = sources;
-		this.conf = conf;
 	}
 
 	public Model doMerge() throws MergeException {
@@ -26,8 +23,6 @@ public class ASTMerger {
 			model.addIncludedNodes(includedNodes.toArray(new Node[includedNodes.size()]));
 		}
 		for (Node node : model.getIncludedNodes()) node.setContainer(model);
-//		model.addMetrics(MetricsLoader.loadMetrics(conf));
-		System.out.println("Tarac: loading metrics...");
 		return model;
 	}
 
