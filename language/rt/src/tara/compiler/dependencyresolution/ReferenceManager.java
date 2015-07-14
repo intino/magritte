@@ -22,16 +22,16 @@ public class ReferenceManager {
 	}
 
 	public NodeImpl resolve(NodeReference reference) {
-		return (NodeImpl) resolve(reference.getReference(), reference.getContainer());
+		return (NodeImpl) resolve(reference.getReference(), reference.container());
 	}
 
 	Node resolve(FacetTarget target, NodeContainer node) {
-		Node result = resolve(target.getTarget(), node);
+		Node result = resolve(target.target(), node);
 		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : result;
 	}
 
 	NodeImpl resolve(Variable variable, NodeContainer container) {
-		Node result = resolve(variable.getType(), container);
+		Node result = resolve(variable.type(), container);
 		return result instanceof NodeReference ? ((NodeReference) result).getDestiny() : (NodeImpl) result;
 	}
 
@@ -58,16 +58,16 @@ public class ReferenceManager {
 				reference = areNamesake(node, name) ? node : null;
 				continue;
 			}
-			if (reference.getInclude(name) == null)
-				reference = reference.getParent().getInclude(name);
-			else reference = reference.getInclude(name);
+			if (reference.components(name) == null)
+				reference = reference.getParent().components(name);
+			else reference = reference.components(name);
 			if (reference == null) return null;
 		}
 		return reference;
 	}
 
 	private boolean areNamesake(Node node, String name) {
-		return name.equals(node.getName());
+		return name.equals(node.name());
 	}
 
 	private Collection<Node> searchPossibleRoots(NodeContainer node, String name) {
@@ -80,27 +80,27 @@ public class ReferenceManager {
 	}
 
 	private void addFacetRoots(FacetTarget facetTarget, Set<Node> set) {
-		set.addAll(facetTarget.getIncludedNodes());
+		set.addAll(facetTarget.components());
 	}
 
 	private void addRoots(String name, Set<Node> set) {
-		set.addAll(model.getIncludedNodes().stream().
+		set.addAll(model.components().stream().
 			filter(node -> areNamesake(node, name)).
 			collect(Collectors.toList()));
 	}
 
 	private void addInContext(String name, Set<Node> set, NodeContainer node) {
 		checkSiblings(name, set, node);
-		NodeContainer container = node.getContainer();
+		NodeContainer container = node.container();
 		while (container != null) {
 			namesake(name, set, container);
 			checkSiblings(name, set, container);
-			container = container.getContainer();
+			container = container.container();
 		}
 	}
 
 	private void checkSiblings(String name, Set<Node> set, NodeContainer container) {
-		for (Node sibling : container.getNodeSiblings()) namesake(name, set, sibling);
+		for (Node sibling : container.siblings()) namesake(name, set, sibling);
 	}
 
 	private void namesake(String name, Set<Node> set, NodeContainer container) {
@@ -112,8 +112,8 @@ public class ReferenceManager {
 	}
 
 	private Node searchByQn(Node node, String qn) {
-		for (Node inner : node.getIncludedNodes())
-			if (node.getQualifiedName().equals(qn)) return inner;
+		for (Node inner : node.components())
+			if (node.qualifiedName().equals(qn)) return inner;
 			else searchByQn(inner, qn);
 		return null;
 	}

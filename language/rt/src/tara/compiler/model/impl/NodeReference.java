@@ -1,7 +1,7 @@
 package tara.compiler.model.impl;
 
-import tara.semantic.model.Tag;
-import tara.compiler.model.*;
+
+import tara.semantic.model.*;
 
 import java.util.*;
 
@@ -29,7 +29,7 @@ public class NodeReference implements Node {
 
 	public NodeReference(NodeImpl destiny) {
 		this.destiny = destiny;
-		reference = destiny.getQualifiedName();
+		reference = destiny.qualifiedName();
 	}
 
 	public String getReference() {
@@ -45,46 +45,46 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public String getName() {
-		return destiny.getName();
+	public String name() {
+		return destiny.name();
 	}
 
 	@Override
-	public void setName(String name) {
+	public void name(String name) {
 
 	}
 
 	@Override
-	public String getFile() {
+	public String file() {
 		return file;
 	}
 
 	@Override
-	public void setFile(String file) {
+	public void file(String file) {
 		this.file = file;
 	}
 
 	@Override
-	public String getLanguage() {
+	public String language() {
 		return null;
 	}
 
 	@Override
-	public void setLanguage(String language) {
+	public void language(String language) {
 	}
 
 	@Override
-	public int getLine() {
+	public int line() {
 		return line;
 	}
 
 	@Override
-	public void setLine(int line) {
+	public void line(int line) {
 		this.line = line;
 	}
 
 	@Override
-	public String getDoc() {
+	public String doc() {
 		return doc;
 	}
 
@@ -112,17 +112,17 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public List<Node> getSubNodes() {
-		return unmodifiableList(destiny.getSubNodes());
+	public List<Node> subs() {
+		return unmodifiableList(destiny.subs());
 	}
 
 	@Override
-	public NodeContainer getContainer() {
+	public NodeContainer container() {
 		return container;
 	}
 
 	@Override
-	public void setContainer(NodeContainer container) {
+	public void container(NodeContainer container) {
 		this.container = container;
 	}
 
@@ -187,24 +187,24 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public String getPlate() {
-		return destiny.getPlate();
+	public String plate() {
+		return destiny.plate();
 	}
 
 	@Override
-	public void setPlate(String address) {
+	public void plate(String address) {
 	}
 
 	@Override
-	public List<Tag> getAnnotations() {
-		List<Tag> tags = new ArrayList<>(destiny.getAnnotations());
+	public List<Tag> annotations() {
+		List<Tag> tags = new ArrayList<>(destiny.annotations());
 		annotations.stream().filter(flag -> !tags.contains(flag)).forEach(tags::add);
 		return unmodifiableList(tags);
 	}
 
 	@Override
-	public List<Tag> getFlags() {
-		List<Tag> tags = new ArrayList<>(destiny.getFlags());
+	public List<Tag> flags() {
+		List<Tag> tags = new ArrayList<>(destiny.flags());
 		flags.stream().filter(flag -> !tags.contains(flag)).forEach(tags::add);
 		return unmodifiableList(tags);
 	}
@@ -227,12 +227,12 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public Node getParent() {
+	public Node parent() {
 		return null;
 	}
 
 	@Override
-	public String getParentName() {
+	public String parentName() {
 		return null;
 	}
 
@@ -242,36 +242,44 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public String getQualifiedName() {
-		return getNodeQualifiedName() + "." + destiny.getName();
+	public String qualifiedName() {
+		return getNodeQualifiedName() + "." + destiny.name();
 	}
 
 	private String getNodeQualifiedName() {
 		NodeContainer nodeContainer = container;
-		while (!(nodeContainer instanceof Node)) nodeContainer = nodeContainer.getContainer();
-		return nodeContainer.getQualifiedName();
+		while (!(nodeContainer instanceof Node)) nodeContainer = nodeContainer.container();
+		return nodeContainer.qualifiedName();
 	}
 
 	@Override
-	public String getType() {
-		return destiny.getType();
+	public String type() {
+		return destiny.type();
 	}
 
 	@Override
-	public void setType(String type) {
+	public List<String> types() {
+		return destiny.types();
+	}
 
+	@Override
+	public List<String> secondaryTypes() {
+		return destiny.secondaryTypes();
+	}
+
+	@Override
+	public void type(String type) {
 	}
 
 	@Override
 	public String getFullType() {
 		if (container instanceof Node)
-			return ((Node) container).getFullType() + "." + getType();
+			return ((Node) container).getFullType() + "." + type();
 		else return "";
 	}
 
 	@Override
 	public void setFullType(String type) {
-
 	}
 
 	@Override
@@ -280,7 +288,12 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public List<Parameter> getParameters() {
+	public boolean isReference() {
+		return true;
+	}
+
+	@Override
+	public List<Parameter> parameters() {
 		return Collections.EMPTY_LIST;
 	}
 
@@ -295,28 +308,28 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public List<Node> getNodeSiblings() {
-		return unmodifiableList(container.getIncludedNodes()); //TODO Remove me
+	public List<Node> siblings() {
+		return unmodifiableList(container.components()); //TODO Remove me
 	}
 
 	@Override
-	public List<Node> getIncludedNodes() {
-		return unmodifiableList(destiny.getIncludedNodes());
+	public List<Node> components() {
+		return unmodifiableList(destiny.components());
 	}
 
 	@Override
-	public void addIncludedNodes(Node... nodes) {
+	public void add(Node... nodes) {
 	}
 
 	@Override
-	public void addIncludedNodes(int pos, Node... nodes) {
+	public void add(int pos, Node... nodes) {
 
 	}
 
 	@Override
-	public Node getInclude(String name) {
-		for (Node include : destiny.getIncludedNodes())
-			if (name.equals(include.getName()))
+	public Node components(String name) {
+		for (Node include : destiny.components())
+			if (name.equals(include.name()))
 				return include;
 		return null;
 	}
@@ -337,28 +350,34 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public List<Variable> getVariables() {
-		return unmodifiableList(destiny.getVariables());
+	public List<Variable> variables() {
+		return unmodifiableList(destiny.variables());
 	}
 
 	@Override
-	public void addVariables(Variable... variables) {
-
-	}
-
-	@Override
-	public void addVariables(int pos, Variable... variables) {
+	public void add(tara.semantic.model.Variable... variables) {
 
 	}
 
 	@Override
-	public List<NodeReference> getInnerNodeReferences() {
-		return unmodifiableList(destiny.getInnerNodeReferences());
+	public void add(int pos, tara.semantic.model.Variable... variables) {
+
+	}
+
+
+	@Override
+	public List<Node> getReferenceComponents() {
+		return unmodifiableList(destiny.getReferenceComponents());
 	}
 
 	@Override
-	public List<Node> getChildren() {
-		return unmodifiableList(destiny.getChildren());
+	public Node destinyOfReference() {
+		return destiny;
+	}
+
+	@Override
+	public List<Node> children() {
+		return unmodifiableList(destiny.children());
 	}
 
 	@Override
@@ -367,12 +386,12 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public List<Facet> getFacets() {
-		return unmodifiableList(destiny.getFacets());
+	public List<Facet> facets() {
+		return unmodifiableList(destiny.facets());
 	}
 
 	@Override
-	public Collection<String> getAllowedFacets() {
+	public Collection<String> allowedFacets() {
 		return Collections.unmodifiableCollection(allowedFacets);
 	}
 
@@ -387,8 +406,8 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public List<FacetTarget> getFacetTargets() {
-		return unmodifiableList(destiny.getFacetTargets());
+	public List<FacetTarget> facetTargets() {
+		return unmodifiableList(destiny.facetTargets());
 	}
 
 	@Override
@@ -398,6 +417,6 @@ public class NodeReference implements Node {
 
 	@Override
 	public String toString() {
-		return destiny != null ? getQualifiedName() : reference;
+		return destiny != null ? qualifiedName() : reference;
 	}
 }

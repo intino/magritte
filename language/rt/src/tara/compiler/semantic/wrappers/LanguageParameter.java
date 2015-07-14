@@ -24,7 +24,7 @@ public class LanguageParameter extends LanguageElement implements tara.semantic.
 		List<Object> objects = new ArrayList<>();
 		for (Object value : values)
 			if (value instanceof Node) objects.add(new LanguageNode((NodeImpl) value));
-			else if (values.iterator().next() instanceof tara.compiler.model.EmptyNode)
+			else if (values.iterator().next() instanceof tara.compiler.model.impl.EmptyNode)
 				objects.add(new EmptyNode());
 			else objects.add(value);
 		return objects;
@@ -32,22 +32,22 @@ public class LanguageParameter extends LanguageElement implements tara.semantic.
 
 	@Override
 	public String inferredType() {
-		return parameter.getInferredType();
+		return parameter.inferredType();
 	}
 
 	@Override
-	public void setInferredType(String inferredType) {
-		parameter.setInferredType(inferredType);
+	public void inferredType(String inferredType) {
+		parameter.inferredType(inferredType);
 	}
 
 	@Override
-	public List<String> getAnnotations() {
-		return parameter.getAnnotations();
+	public List<String> annotations() {
+		return parameter.annotations();
 	}
 
 	@Override
-	public void setAnnotations(List<String> annotations) {
-		parameter.setAnnotations(annotations);
+	public void annotations(List<String> annotations) {
+		parameter.annotations(annotations);
 	}
 
 	@Override
@@ -56,43 +56,43 @@ public class LanguageParameter extends LanguageElement implements tara.semantic.
 	}
 
 	@Override
-	public void setMultiple(boolean multiple) {
-		parameter.setMultiple(multiple);
+	public void multiple(boolean multiple) {
+		parameter.multiple(multiple);
 	}
 
 	@Override
-	public int getPosition() {
-		return parameter.getPosition();
+	public int position() {
+		return parameter.position();
 	}
 
 	@Override
-	public String getName() {
-		return parameter.getName();
+	public String name() {
+		return parameter.name();
 	}
 
 	@Override
-	public void setName(String name) {
-		parameter.setName(name);
+	public void name(String name) {
+		parameter.name(name);
 	}
 
 	@Override
-	public List<Object> getValues() {
-		return Collections.unmodifiableList(wrapValues(parameter.getValues()));
+	public List<Object> values() {
+		return Collections.unmodifiableList(wrapValues(parameter.values()));
 	}
 
 	@Override
-	public String getContract() {
-		return parameter.getContract();
+	public String contract() {
+		return parameter.contract();
 	}
 
 	@Override
-	public void setContract(String contract) {
-		parameter.setContract(contract);
+	public void contract(String contract) {
+		parameter.contract(contract);
 	}
 
 	@Override
-	public String getMetric() {
-		return parameter.getMetric();
+	public String metric() {
+		return parameter.metric();
 	}
 
 	@Override

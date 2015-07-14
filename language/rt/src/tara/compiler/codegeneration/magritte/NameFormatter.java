@@ -22,37 +22,37 @@ public class NameFormatter {
 	}
 
 	public static String composeMorphPackagePath(FacetTarget target, String generatedLanguage) {
-		return (generatedLanguage.toLowerCase() + DOT + ((Node) target.getContainer()).getName()).toLowerCase();
+		return (generatedLanguage.toLowerCase() + DOT + ((Node) target.container()).name()).toLowerCase();
 	}
 
 	public static String getQn(Node node, String generatedLanguage) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
 		if (facetTarget == null && !node.isFacet())
-			return composeMorphPackagePath(generatedLanguage) + DOT + node.getQualifiedName();
+			return composeMorphPackagePath(generatedLanguage) + DOT + node.qualifiedName();
 		else if (facetTarget != null) {
 			return composeMorphPackagePath(generatedLanguage) + DOT + composeInFacetTargetQN(node, facetTarget);
 		} else
-			return composeMorphPackagePath(generatedLanguage) + DOT + node.getName().toLowerCase() + DOT + node.getQualifiedName();
+			return composeMorphPackagePath(generatedLanguage) + DOT + node.name().toLowerCase() + DOT + node.qualifiedName();
 	}
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
-		final Node container = (Node) facetTarget.getContainer();
-		return container.getName().toLowerCase() + "." + capitalize(container.getName()) + "_" + capitalize(facetTarget.getTargetNode().getName()) + DOT + node.getQualifiedName();
+		final Node container = (Node) facetTarget.container();
+		return container.name().toLowerCase() + "." + capitalize(container.name()) + "_" + capitalize(facetTarget.targetNode().name()) + DOT + node.qualifiedName();
 	}
 
 	private static FacetTarget facetTargetContainer(Node node) {
-		NodeContainer container = node.getContainer();
+		NodeContainer container = node.container();
 		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
-		else container = container.getContainer();
+		else container = container.container();
 		return null;
 	}
 
 	public static String getQn(FacetTarget target, String generatedLanguage) {
-		return composeMorphPackagePath(generatedLanguage) + DOT + target.getTargetNode().getQualifiedName();
+		return composeMorphPackagePath(generatedLanguage) + DOT + target.targetNode().qualifiedName();
 	}
 
 	public static String getQnOfFacet(Node node) {
-		return node.getName().toLowerCase() + DOT + capitalize(node.getName());
+		return node.name().toLowerCase() + DOT + capitalize(node.name());
 	}
 
 	public static String getQn(Facet facet, String generatedLanguage) {

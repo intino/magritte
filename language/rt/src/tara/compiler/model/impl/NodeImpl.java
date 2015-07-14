@@ -1,7 +1,6 @@
 package tara.compiler.model.impl;
 
-import tara.semantic.model.Tag;
-import tara.compiler.model.*;
+import tara.semantic.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,45 +35,45 @@ public class NodeImpl implements Node {
 
 
 	@Override
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
 	@Override
-	public void setName(String name) {
+	public void name(String name) {
 		this.name = name;
 	}
 
 	@Override
-	public String getFile() {
+	public String file() {
 		return file;
 	}
 
-	public void setFile(String file) {
+	public void file(String file) {
 		this.file = file;
 	}
 
 	@Override
-	public String getLanguage() {
+	public String language() {
 		return language;
 	}
 
 	@Override
-	public void setLanguage(String language) {
+	public void language(String language) {
 		this.language = language;
 	}
 
 	@Override
-	public int getLine() {
+	public int line() {
 		return line;
 	}
 
-	public void setLine(int line) {
+	public void line(int line) {
 		this.line = line;
 	}
 
 	@Override
-	public String getDoc() {
+	public String doc() {
 		return doc;
 	}
 
@@ -97,22 +96,22 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public List<Node> getSubNodes() {
+	public List<Node> subs() {
 		List<Node> nodes = new ArrayList<>();
-		getChildren().stream().filter(Node::isSub).forEach(children -> {
+		children().stream().filter(Node::isSub).forEach(children -> {
 			nodes.add(children);
-			nodes.addAll(children.getSubNodes());
+			nodes.addAll(children.subs());
 		});
 		return unmodifiableList(nodes);
 	}
 
 	@Override
-	public NodeContainer getContainer() {
+	public NodeContainer container() {
 		return container;
 	}
 
 	@Override
-	public void setContainer(NodeContainer container) {
+	public void container(NodeContainer container) {
 		this.container = container;
 	}
 
@@ -177,22 +176,22 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public String getPlate() {
+	public String plate() {
 		return plate;
 	}
 
 	@Override
-	public void setPlate(String plate) {
+	public void plate(String plate) {
 		this.plate = plate;
 	}
 
 	@Override
-	public List<Tag> getAnnotations() {
+	public List<Tag> annotations() {
 		return unmodifiableList(annotations);
 	}
 
 	@Override
-	public List<Tag> getFlags() {
+	public List<Tag> flags() {
 		return unmodifiableList(flags);
 	}
 
@@ -218,7 +217,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public Node getParent() {
+	public Node parent() {
 		return parent;
 	}
 
@@ -227,7 +226,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public String getParentName() {
+	public String parentName() {
 		return parentName;
 	}
 
@@ -241,8 +240,8 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public String getQualifiedName() {
-		String containerQN = container.getQualifiedName();
+	public String qualifiedName() {
+		String containerQN = container.qualifiedName();
 		return isInFacet() ? "" : (containerQN.isEmpty() ? "" : containerQN + ".") + (name == null ? "[" + ANNONYMOUS + shortType() + "]" : name);
 	}
 
@@ -253,16 +252,30 @@ public class NodeImpl implements Node {
 	private boolean isInFacet() {
 		NodeContainer context = this.container;
 		while (context != null && (!(context instanceof Facet) || !(context instanceof FacetTarget)))
-			context = context.getContainer();
+			context = context.container();
 		return context != null;
 	}
 
 	@Override
-	public String getType() {
+	public String type() {
 		return type;
 	}
 
-	public void setType(String type) {
+	@Override
+	public List<String> types() {
+		List<String> types = new ArrayList<>();
+		types.add(type());
+		types.addAll(secondaryTypes());
+		return unmodifiableList(types); //TODO Add language types
+	}
+
+	public List<String> secondaryTypes() {
+		Set<String> types = facets().stream().map(Facet::type).collect(Collectors.toSet());
+		if (parent != null) types.addAll(parent.types());
+		return unmodifiableList(new ArrayList(types));
+	}
+
+	public void type(String type) {
 		this.type = type;
 	}
 
@@ -287,16 +300,21 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public List<Parameter> getParameters() {
+	public boolean isReference() {
+		return false;
+	}
+
+	@Override
+	public List<Parameter> parameters() {
 		return Collections.unmodifiableList(parameters);
 	}
 
 	@Override
 	public void addParameter(String name, int position, String extension, Object... values) {
 		ParameterImpl parameter = new ParameterImpl(name, position, extension, values);
-		parameter.setFile(file);
-		parameter.setLine(line);
-		parameter.setOwner(this);
+		parameter.file(file);
+		parameter.line(line);
+		parameter.owner(this);
 		parameters.add(parameter);
 	}
 
@@ -306,32 +324,32 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public List<Node> getNodeSiblings() {
+	public List<Node> siblings() {
 		ArrayList<Node> siblings = new ArrayList<>();
-		siblings.addAll(getContainer().getIncludedNodes());
+		siblings.addAll(container().components());
 		siblings.remove(this);
 		return unmodifiableList(siblings);
 	}
 
 	@Override
-	public List<Node> getIncludedNodes() {
+	public List<Node> components() {
 		return unmodifiableList(includes);
 	}
 
 	@Override
-	public void addIncludedNodes(Node... nodes) {
+	public void add(Node... nodes) {
 		Collections.addAll(includes, nodes);
 	}
 
 	@Override
-	public void addIncludedNodes(int pos, Node... nodes) {
+	public void add(int pos, Node... nodes) {
 		this.includes.addAll(pos, Arrays.asList(nodes));
 	}
 
 	@Override
-	public Node getInclude(String name) {
+	public Node components(String name) {
 		for (Node include : includes)
-			if (name.equals(include.getName()))
+			if (name.equals(include.name()))
 				return include;
 		return null;
 	}
@@ -351,50 +369,55 @@ public class NodeImpl implements Node {
 		Model model = searchModel();
 		if (model.contains(this)) return;
 		replaceForReference();
-		this.setContainer(model);
-		model.addIncludedNodes(this);
+		this.container(model);
+		model.add(this);
 	}
 
 	private void replaceForReference() {
-		NodeContainer nodeContainer = this.getContainer();
+		NodeContainer nodeContainer = this.container();
 		NodeReference nodeReference = new NodeReference(this);
-		nodeReference.setContainer(nodeContainer);
-		nodeReference.setFile(this.file);
+		nodeReference.container(nodeContainer);
+		nodeReference.file(this.file);
 		nodeReference.setHas(true);
-		nodeContainer.addIncludedNodes(nodeReference);
+		nodeContainer.add(nodeReference);
 		nodeContainer.remove(this);
 	}
 
 	private Model searchModel() {
 		NodeContainer node = this;
 		while (node != null && !(node instanceof Model))
-			node = node.getContainer();
+			node = node.container();
 		return (Model) node;
 	}
 
 	@Override
-	public List<Variable> getVariables() {
+	public List<Variable> variables() {
 		return unmodifiableList(variables);
 	}
 
 	@Override
-	public void addVariables(Variable... variables) {
+	public void add(Variable... variables) {
 		Collections.addAll(this.variables, variables);
 	}
 
 	@Override
-	public void addVariables(int pos, Variable... variables) {
+	public void add(int pos, Variable... variables) {
 		this.variables.addAll(pos, Arrays.asList(variables));
 	}
 
 	@Override
-	public List<NodeReference> getInnerNodeReferences() {
+	public List<Node> getReferenceComponents() {
 		List<NodeReference> collect = includes.stream().filter(include -> include instanceof NodeReference).map(include -> (NodeReference) include).collect(Collectors.toList());
 		return unmodifiableList(collect);
 	}
 
 	@Override
-	public List<Node> getChildren() {
+	public Node destinyOfReference() {
+		return this;
+	}
+
+	@Override
+	public List<Node> children() {
 		return unmodifiableList(this.children);
 	}
 
@@ -404,12 +427,12 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public List<Facet> getFacets() {
+	public List<Facet> facets() {
 		return unmodifiableList(facets);
 	}
 
 	@Override
-	public List<String> getAllowedFacets() {
+	public List<String> allowedFacets() {
 		ArrayList<String> objects = new ArrayList<>();
 		objects.addAll(allowedFacets);
 		return unmodifiableList(objects);
@@ -426,7 +449,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public List<FacetTarget> getFacetTargets() {
+	public List<FacetTarget> facetTargets() {
 		return unmodifiableList(facetTargets);
 	}
 
@@ -437,6 +460,6 @@ public class NodeImpl implements Node {
 
 	@Override
 	public String toString() {
-		return getQualifiedName() + "@" + type;
+		return qualifiedName() + "@" + type;
 	}
 }

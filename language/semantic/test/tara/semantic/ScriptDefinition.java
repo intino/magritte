@@ -32,17 +32,17 @@ class ScriptDefinition implements Definition {
 			}
 
 			@Override
-			public void setInferredType(String type) {
+			public void inferredType(String type) {
 
 			}
 
 			@Override
-			public List<String> getAnnotations() {
+			public List<String> annotations() {
 				return null;
 			}
 
 			@Override
-			public void setAnnotations(List<String> annotations) {
+			public void annotations(List<String> annotations) {
 
 			}
 
@@ -52,42 +52,42 @@ class ScriptDefinition implements Definition {
 			}
 
 			@Override
-			public void setMultiple(boolean multiple) {
+			public void multiple(boolean multiple) {
 
 			}
 
 			@Override
-			public int getPosition() {
+			public int position() {
 				return position;
 			}
 
 			@Override
-			public String getName() {
+			public String name() {
 				return name;
 			}
 
 			@Override
-			public void setName(String name) {
+			public void name(String name) {
 
 			}
 
 			@Override
-			public List<Object> getValues() {
+			public List<Object> values() {
 				return Arrays.asList(values);
 			}
 
 			@Override
-			public String getContract() {
+			public String contract() {
 				return null;//TODO
 			}
 
 			@Override
-			public void setContract(String contract) {
+			public void contract(String contract) {
 
 			}
 
 			@Override
-			public String getMetric() {
+			public String metric() {
 				return null;
 			}
 
@@ -255,8 +255,8 @@ class ScriptDefinition implements Definition {
 				}
 
 				@Override
-				public List<Node> includes() {
-					return node.includes();
+				public List<Node> components() {
+					return node.components();
 				}
 
 				@Override
@@ -376,8 +376,8 @@ class ScriptDefinition implements Definition {
 			}
 
 			@Override
-			public List<Node> includes() {
-				return Collections.emptyList();//includes;
+			public List<Node> components() {
+				return Collections.emptyList();//components;
 			}
 
 			@Override

@@ -32,23 +32,23 @@ public class SemanticAnalyzer {
 	}
 
 	private void resolveTypes(Node node) {
-		node.getIncludedNodes().forEach(this::resolveNode);
+		node.components().forEach(this::resolveNode);
 		if (node instanceof NodeImpl) {
-			for (FacetTarget facetTarget : node.getFacetTargets())
-				facetTarget.getIncludedNodes().forEach(this::resolveNode);
-			for (Facet facet : node.getFacets())
-				facet.getIncludedNodes().forEach(this::resolveNode);
+			for (FacetTarget facetTarget : node.facetTargets())
+				facetTarget.components().forEach(this::resolveNode);
+			for (Facet facet : node.facets())
+				facet.components().forEach(this::resolveNode);
 		}
 	}
 
 	private void check(Node node) throws SemanticException {
-		for (Node include : node.getIncludedNodes())
+		for (Node include : node.components())
 			checkNode(include);
 		if (node instanceof NodeImpl) {
-			for (FacetTarget facetTarget : node.getFacetTargets())
-				for (Node include : facetTarget.getIncludedNodes()) checkNode(include);
-			for (Facet facet : node.getFacets())
-				for (Node include : facet.getIncludedNodes())
+			for (FacetTarget facetTarget : node.facetTargets())
+				for (Node include : facetTarget.components()) checkNode(include);
+			for (Facet facet : node.facets())
+				for (Node include : facet.components())
 					checkNode(include);
 		}
 	}

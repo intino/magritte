@@ -19,22 +19,22 @@ public class LanguageVariable extends LanguageElement implements tara.semantic.m
 
 	@Override
 	public String name() {
-		return variable.getName();
+		return variable.name();
 	}
 
 	@Override
 	public String type() {
-		return variable.getType();
+		return variable.type();
 	}
 
 	@Override
 	public String contract() {
-		return variable.getContract();
+		return variable.contract();
 	}
 
 	@Override
 	public List<String> flags() {
-		return unmodifiableList(variable.getFlags().stream().map(Tag::name).collect(Collectors.toList()));
+		return unmodifiableList(variable.flags().stream().map(Tag::name).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class LanguageVariable extends LanguageElement implements tara.semantic.m
 
 	@Override
 	public int getSize() {
-		return variable.getSize();
+		return variable.size();
 	}
 
 	@Override

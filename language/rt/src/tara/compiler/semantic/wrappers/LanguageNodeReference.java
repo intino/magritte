@@ -28,15 +28,15 @@ public class LanguageNodeReference extends LanguageNode implements tara.semantic
 
 	@Override
 	public tara.semantic.model.Node context() {
-		if (reference == null || reference.getContainer() == null || reference.getContainer() instanceof Model)
+		if (reference == null || reference.container() == null || reference.container() instanceof Model)
 			return null;
 		return getContainerNode();
 	}
 
 	public tara.semantic.model.Node getContainerNode() {
-		NodeContainer container = reference.getContainer();
+		NodeContainer container = reference.container();
 		while (!(container instanceof Node))
-			container = container.getContainer();
+			container = container.container();
 		return new LanguageNode((NodeImpl) container);
 	}
 
@@ -47,7 +47,7 @@ public class LanguageNodeReference extends LanguageNode implements tara.semantic
 
 	@Override
 	public String type() {
-		return reference.getType();
+		return reference.type();
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class LanguageNodeReference extends LanguageNode implements tara.semantic
 
 	@Override
 	public List<String> secondaryTypes() {
-		return unmodifiableList(reference.getDestiny().getFacets().stream().map(Facet::getFacetType).collect(Collectors.toList()));
+		return unmodifiableList(reference.getDestiny().facets().stream().map(Facet::getFacetType).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -86,12 +86,12 @@ public class LanguageNodeReference extends LanguageNode implements tara.semantic
 
 	@Override
 	public List<String> annotations() {
-		return unmodifiableList(reference.getAnnotations().stream().map(Tag::name).collect(Collectors.toList()));
+		return unmodifiableList(reference.annotations().stream().map(Tag::name).collect(Collectors.toList()));
 	}
 
 	@Override
 	public List<String> flags() {
-		return unmodifiableList(reference.getFlags().stream().map(Tag::name).collect(Collectors.toList()));
+		return unmodifiableList(reference.flags().stream().map(Tag::name).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -124,8 +124,8 @@ public class LanguageNodeReference extends LanguageNode implements tara.semantic
 	}
 
 	@Override
-	public List<tara.semantic.model.Node> includes() {
-		List<tara.semantic.model.Node> includes = reference.getIncludedNodes().stream().map(inner -> inner instanceof NodeReference ?
+	public List<tara.semantic.model.Node> components() {
+		List<tara.semantic.model.Node> includes = reference.components().stream().map(inner -> inner instanceof NodeReference ?
 			new LanguageNodeReference((NodeReference) inner) :
 			new LanguageNode((NodeImpl) inner)).collect(Collectors.toList());
 		return unmodifiableList(includes);
@@ -133,7 +133,7 @@ public class LanguageNodeReference extends LanguageNode implements tara.semantic
 
 	@Override
 	public String toString() {
-		return "reference " + reference.getType();
+		return "reference " + reference.type();
 	}
 
 	@Override

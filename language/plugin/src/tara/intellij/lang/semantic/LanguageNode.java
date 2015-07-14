@@ -143,7 +143,7 @@ public class LanguageNode extends LanguageElement implements tara.semantic.model
 	}
 
 	@Override
-	public List<tara.semantic.model.Node> includes() {
+	public List<tara.semantic.model.Node> components() {
 		if (includes == null) {
 			includes = new ArrayList<>();
 			collectIncludes(node);

@@ -5,7 +5,6 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import tara.semantic.model.Primitives;
 import tara.semantic.model.Tag;
-import tara.compiler.model.*;
 import tara.compiler.model.impl.*;
 import tara.compiler.parser.antlr.TaraGrammar.*;
 
@@ -43,11 +42,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		NodeImpl node = new NodeImpl();
 		node.setSub(ctx.signature().SUB() != null);
 		NodeContainer container = resolveContainer(node);
-		container.addIncludedNodes(node);
-		node.setContainer(container);
+		container.add(node);
+		node.container(container);
 		if (ctx.signature().IDENTIFIER() != null)
-			node.setName(ctx.signature().IDENTIFIER().getText());
-		node.setType(node.isSub() ?
+			node.name(ctx.signature().IDENTIFIER().getText());
+		node.type(node.isSub() ?
 			((Node) deque.peek()).getType() :
 			ctx.signature().metaidentifier().getText());
 		resolveParent(ctx, node);
@@ -65,7 +64,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	private NodeContainer resolveContainer(Node node) {
 		NodeContainer context = deque.peek();
-		if (node.isSub()) return context.getContainer();
+		if (node.isSub()) return context.container();
 		else return context;
 	}
 
@@ -75,7 +74,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			if (!peek.isAbstract()) peek.addFlags(Tag.ABSTRACT.name());
 			node.setParent(peek);
 			peek.addChild(node);
-			node.setParentName(peek.getName());
+			node.setParentName(peek.name());
 		} else node.setParentName(getParent(ctx));
 	}
 
@@ -104,7 +103,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		addHeaderInformation(ctx, facet);
 		Node peek = (Node) deque.peek();
 		peek.addFacets(facet);
-		facet.setContainer(peek);
+		facet.container(peek);
 		deque.push(facet);
 	}
 
@@ -118,12 +117,12 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		NodeImpl peek = getNodeContainer();
 		FacetTarget facetTarget = new FacetTargetImpl();
 		addHeaderInformation(ctx, facetTarget);
-		facetTarget.setTarget(ctx.identifierReference().getText());
+		facetTarget.target(ctx.identifierReference().getText());
 		if (ctx.with() != null)
 
-			facetTarget.setConstraint(collectConstrains(ctx.with().identifierReference()));
+			facetTarget.constraints(collectConstrains(ctx.with().identifierReference()));
 		peek.addFacetTargets(facetTarget);
-		facetTarget.setContainer(peek);
+		facetTarget.container(peek);
 		deque.push(facetTarget);
 	}
 
@@ -134,7 +133,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 	private NodeImpl getNodeContainer() {
 		NodeContainer peek = deque.peek();
 		while (!(peek instanceof NodeImpl))
-			peek = peek.getContainer();
+			peek = peek.container();
 		return (NodeImpl) peek;
 	}
 
@@ -178,8 +177,8 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		addHeaderInformation(ctx, nodeReference);
 		nodeReference.setHas(true);
 		addTags(ctx.tags(), nodeReference);
-		nodeReference.setContainer(container);
-		container.addIncludedNodes(nodeReference);
+		nodeReference.container(container);
+		container.add(nodeReference);
 	}
 
 	private String[] resolveTags(AnnotationsContext annotations) {
@@ -199,7 +198,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterPlate(@NotNull PlateContext ctx) {
-		((Node) deque.peek()).setPlate(ctx.getText().substring(1));
+		((Node) deque.peek()).plate(ctx.getText().substring(1));
 	}
 
 	@Override
@@ -210,11 +209,11 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 			processAsWord(variable, ctx);
 		else {
 			addValue(variable, ctx);
-			if (ctx.contract() != null) variable.setContract(ctx.contract().getText().substring(1));
+			if (ctx.contract() != null) variable.contract(ctx.contract().getText().substring(1));
 		}
 		addHeaderInformation(ctx, variable);
 		variable.addFlags(resolveTags(ctx.flags()));
-		container.addVariables(variable);
+		container.add(variable);
 	}
 
 	private Variable createVariable(@NotNull VariableContext ctx, NodeContainer container) {
@@ -222,15 +221,15 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		Variable variable = variableType.identifierReference() != null ?
 			new VariableReference(container, variableType.getText(), ctx.IDENTIFIER().getText()) :
 			new VariableImpl(container, variableType.getText(), ctx.IDENTIFIER().getText());
-		if (ctx.LIST() != null) variable.setSize(0);
-		if (ctx.count() != null) variable.setSize(Integer.parseInt(ctx.count().NATURAL_VALUE().getText()));
+		if (ctx.LIST() != null) variable.size(0);
+		if (ctx.count() != null) variable.size(Integer.parseInt(ctx.count().NATURAL_VALUE().getText()));
 		return variable;
 	}
 
 	private void addValue(Variable variable, @NotNull VariableContext ctx) {
 		if (ctx.value() == null) return;
 		variable.addDefaultValues(resolveValue(ctx.value()));
-		if (ctx.value().measureValue() != null) variable.setDefaultExtension(ctx.value().measureValue().getText());
+		if (ctx.value().measureValue() != null) variable.defaultExtension(ctx.value().measureValue().getText());
 	}
 
 	private void processAsWord(Variable variable, VariableContext context) {

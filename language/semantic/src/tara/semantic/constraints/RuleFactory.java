@@ -55,22 +55,12 @@ public class RuleFactory {
 	}
 
 	private static void addFlags(Node node, Tag[] tags) {
-		List<String> flags = createList(node.flags());
-		for (String flag : names(tags)) {
-			if (!flags.contains(flag.toUpperCase()))
-				node.flags(flag.toUpperCase());
-			flags.add(flag.toUpperCase());
+		List<Tag> flags = new ArrayList<>(node.flags());
+		for (Tag flag : tags) {
+			if (!flags.contains(flag))
+				node.addFlags(flag);
+			flags.add(flag);
 		}
-	}
-
-	private static List<String> createList(List<String> flags) {
-		return flags.stream().map(String::toUpperCase).collect(Collectors.toList());
-	}
-
-	private static String[] names(Tag[] tags) {
-		List<String> annotations = new ArrayList<>();
-		for (Tag tag : tags) annotations.add(tag.name());
-		return annotations.toArray(new String[annotations.size()]);
 	}
 
 	public static Allow.Single single(final String type) {
@@ -187,7 +177,7 @@ public class RuleFactory {
 			public void check(Element element) throws SemanticException {
 				NodeContainer container = (NodeContainer) element;
 				if (container instanceof Node && ((Node) container).isReference()) return;
-				for (Node include : container.includes())
+				for (Node include : container.components())
 					if (include.type().equals(type)) {
 						addFlags(include, annotations);
 						return;
@@ -217,7 +207,7 @@ public class RuleFactory {
 			public void check(Element element) throws SemanticException {
 				NodeContainer container = (NodeContainer) element;
 				if (container instanceof Node && ((Node) container).isReference()) return;
-				for (Node inner : container.includes())
+				for (Node inner : container.components())
 					if (inner.type().equals(type)) {
 						addFlags(inner, annotations);
 						return;
@@ -360,14 +350,14 @@ public class RuleFactory {
 	private static boolean checkParameterExists(List<Parameter> parameters, String name, int position) {
 		List<Parameter> signatureParameters = new ArrayList<>();
 		for (Parameter parameter : parameters)
-			if (name.equals(parameter.getName())) return true;
+			if (name.equals(parameter.name())) return true;
 			else if (!parameter.isVariableInit()) signatureParameters.add(parameter);
 		removeNamedCandidates(signatureParameters);
 		return signatureParameters.size() > position;
 	}
 
 	private static void removeNamedCandidates(List<Parameter> signatureParameters) {
-		List<Parameter> toRemove = signatureParameters.stream().filter(parameter -> parameter.getName() != null && !parameter.getName().isEmpty()).collect(Collectors.toList());
+		List<Parameter> toRemove = signatureParameters.stream().filter(parameter -> parameter.name() != null && !parameter.name().isEmpty()).collect(Collectors.toList());
 		remove(signatureParameters, toRemove);
 	}
 
@@ -402,8 +392,8 @@ public class RuleFactory {
 			}
 
 			private boolean isTerminalInstance(Node node) {
-				for (String flag : node.flags())
-					if (flag.equalsIgnoreCase(Tag.TERMINAL_INSTANCE.name())) return true;
+				for (Tag flag : node.flags())
+					if (flag.equals(Tag.TERMINAL_INSTANCE)) return true;
 				return false;
 
 			}
@@ -425,7 +415,7 @@ public class RuleFactory {
 		return new Assumption.Single() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(SINGLE.name())) node.flags(SINGLE.name());
+				if (!node.flags().contains(SINGLE)) node.addFlags(SINGLE);
 			}
 		};
 	}
@@ -434,7 +424,7 @@ public class RuleFactory {
 		return new Assumption.Required() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(REQUIRED.name())) node.flags(REQUIRED.name());
+				if (!node.flags().contains(REQUIRED)) node.addFlags(REQUIRED);
 			}
 		};
 	}
@@ -443,8 +433,8 @@ public class RuleFactory {
 		return new Assumption.Facet() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(FACET.name())) node.flags(FACET.name());
-				if ((!node.flags().contains(NAMED.name()))) node.flags(NAMED.name());
+				if (!node.flags().contains(FACET)) node.addFlags(FACET);
+				if ((!node.flags().contains(NAMED))) node.addFlags(NAMED);
 			}
 		};
 	}
@@ -453,7 +443,7 @@ public class RuleFactory {
 		return new Assumption.FacetInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(FACET_INSTANCE.name())) node.flags(FACET_INSTANCE.name());
+				if (!node.flags().contains(FACET_INSTANCE)) node.addFlags(FACET_INSTANCE);
 			}
 		};
 	}
@@ -462,7 +452,7 @@ public class RuleFactory {
 		return new Assumption.Main() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(MAIN.name())) node.flags(MAIN.name());
+				if (!node.flags().contains(MAIN)) node.addFlags(MAIN);
 				node.moveToTheTop();
 			}
 		};
@@ -473,9 +463,9 @@ public class RuleFactory {
 		return new Assumption.Feature() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(FEATURE.name())) node.flags(FEATURE.name());
-				node.variables().stream().filter(variable -> !variable.flags().contains(FEATURE.name())).forEach(variable -> variable.flags(FEATURE.name()));
-				propagateFlags(node, FEATURE.name());
+				if (!node.flags().contains(FEATURE)) node.addFlags(FEATURE);
+				node.variables().stream().filter(variable -> !variable.flags().contains(FEATURE)).forEach(variable -> variable.addFlags(FEATURE));
+				propagateFlags(node, FEATURE);
 			}
 		};
 	}
@@ -484,10 +474,10 @@ public class RuleFactory {
 		return new Assumption.FeatureInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(FEATURE_INSTANCE.name()))
-					node.flags(FEATURE_INSTANCE.name());
-				node.variables().stream().filter(variable -> !variable.flags().contains(FEATURE_INSTANCE.name())).forEach(variable -> variable.flags(FEATURE_INSTANCE.name()));
-				propagateFlags(node, FEATURE_INSTANCE.name());
+				if (!node.flags().contains(FEATURE_INSTANCE))
+					node.addFlags(FEATURE_INSTANCE);
+				node.variables().stream().filter(variable -> !variable.flags().contains(FEATURE_INSTANCE)).forEach(variable -> variable.addFlags(FEATURE_INSTANCE));
+				propagateFlags(node, FEATURE_INSTANCE);
 			}
 		};
 	}
@@ -496,9 +486,9 @@ public class RuleFactory {
 		return new Assumption.Terminal() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(TERMINAL.name())) node.flags(TERMINAL.name());
-				node.variables().stream().filter(variable -> !variable.flags().contains(TERMINAL.name())).forEach(variable -> variable.flags(TERMINAL.name()));
-				propagateFlags(node, TERMINAL.name());
+				if (!node.flags().contains(TERMINAL)) node.addFlags(TERMINAL);
+				node.variables().stream().filter(variable -> !variable.flags().contains(TERMINAL)).forEach(variable -> variable.addFlags(TERMINAL));
+				propagateFlags(node, TERMINAL);
 			}
 		};
 	}
@@ -508,18 +498,18 @@ public class RuleFactory {
 		return new Assumption.TerminalInstance() {
 			@Override
 			public void assume(Node node) {
-				if (!node.flags().contains(TERMINAL_INSTANCE.name()))
-					node.flags(TERMINAL_INSTANCE.name());
-				node.variables().stream().filter(variable -> !variable.flags().contains(TERMINAL_INSTANCE.name())).forEach(variable -> variable.flags(TERMINAL_INSTANCE.name()));
-				propagateFlags(node, TERMINAL_INSTANCE.name());
+				if (!node.flags().contains(TERMINAL_INSTANCE))
+					node.addFlags(TERMINAL_INSTANCE);
+				node.variables().stream().filter(variable -> !variable.flags().contains(TERMINAL_INSTANCE)).forEach(variable -> variable.addFlags(TERMINAL_INSTANCE));
+				propagateFlags(node, TERMINAL_INSTANCE);
 			}
 		};
 	}
 
-	private static void propagateFlags(Node node, String flag) {
-		for (Node include : node.includes()) {
+	private static void propagateFlags(Node node, Tag flag) {
+		for (Node include : node.components()) {
 			if (!include.flags().contains(flag))
-				include.flags(flag);
+				include.addFlags(flag);
 			if (!include.isReference()) propagateFlags(include, flag);
 		}
 
@@ -528,5 +518,4 @@ public class RuleFactory {
 	public static String shortType(String absoluteType) {
 		return absoluteType.contains(".") ? absoluteType.substring(absoluteType.lastIndexOf(".") + 1) : absoluteType;
 	}
-
 }

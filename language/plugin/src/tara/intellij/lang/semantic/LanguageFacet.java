@@ -40,7 +40,7 @@ public class LanguageFacet extends LanguageElement implements Facet {
 	}
 
 	@Override
-	public List<Node> includes() {
+	public List<Node> components() {
 		return Collections.unmodifiableList(TaraPsiImplUtil.getInnerNodesInBody(facetApply.getBody()).stream().map(LanguageNode::new).collect(Collectors.toList()));
 	}
 

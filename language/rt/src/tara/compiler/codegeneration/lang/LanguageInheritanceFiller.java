@@ -132,8 +132,8 @@ public class LanguageInheritanceFiller {
 	}
 
 	private void findInstancesOf(Node node, String type, List<String> instances) {
-		for (Node include : node.getIncludedNodes()) {
-			if (include.getType().equals(type)) instances.add(include.getQualifiedName());
+		for (Node include : node.components()) {
+			if (include.getType().equals(type)) instances.add(include.qualifiedName());
 			if (!(include instanceof NodeReference)) findInstancesOf(include, type, instances);
 		}
 	}

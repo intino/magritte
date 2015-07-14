@@ -25,51 +25,51 @@ public class FacetTargetImpl implements FacetTarget {
 	private List<Variable> variables = new ArrayList<>();
 
 	@Override
-	public String getTarget() {
+	public String target() {
 		return destiny;
 	}
 
 	@Override
-	public void setTarget(String destiny) {
+	public void target(String destiny) {
 		this.destiny = destiny;
 	}
 
 	@Override
-	public List<String> getConstraints() {
+	public List<String> constraints() {
 		return constraint;
 	}
 
-	public void setConstraint(List<String> constraints) {
+	public void constraints(List<String> constraints) {
 		this.constraint = constraints;
 	}
 
 	@Override
-	public Node getTargetNode() {
+	public Node targetNode() {
 		return targetNode;
 	}
 
 	@Override
-	public void setTargetNode(Node destiny) {
+	public void targetNode(Node destiny) {
 		this.targetNode = destiny;
 	}
 
 	@Override
-	public List<Node> getIncludedNodes() {
+	public List<Node> components() {
 		return unmodifiableList(includes);
 	}
 
 	@Override
-	public void addIncludedNodes(Node... nodes) {
+	public void add(Node... nodes) {
 		addAll(includes, nodes);
 	}
 
 	@Override
-	public void addIncludedNodes(int pos, Node... nodes) {
+	public void add(int pos, Node... nodes) {
 		includes.addAll(pos, Arrays.asList(nodes));
 	}
 
 	@Override
-	public Node getInclude(String name) {
+	public Node components(String name) {
 		return null;
 	}
 
@@ -89,44 +89,44 @@ public class FacetTargetImpl implements FacetTarget {
 	}
 
 	@Override
-	public List<Node> getNodeSiblings() {
+	public List<Node> siblings() {
 		ArrayList<Node> objects = new ArrayList<>();
-		objects.addAll(getContainer().getIncludedNodes());
+		objects.addAll(container().components());
 		return unmodifiableList(objects);
 	}
 
 	@Override
-	public List<Variable> getVariables() {
+	public List<Variable> variables() {
 		return unmodifiableList(variables);
 	}
 
 	@Override
-	public void addVariables(Variable... variables) {
+	public void add(Variable... variables) {
 		addAll(this.variables, variables);
 	}
 
 	@Override
-	public void addVariables(int pos, Variable... variables) {
+	public void add(int pos, Variable... variables) {
 		this.variables.addAll(pos, Arrays.asList(variables));
 	}
 
 	@Override
-	public NodeContainer getContainer() {
+	public NodeContainer container() {
 		return container;
 	}
 
 	@Override
-	public void setContainer(NodeContainer container) {
+	public void container(NodeContainer container) {
 		this.container = container;
 	}
 
 	@Override
-	public String getQualifiedName() {
+	public String qualifiedName() {
 		return "";
 	}
 
 	@Override
-	public String getDoc() {
+	public String doc() {
 		return doc;
 	}
 

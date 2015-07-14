@@ -112,7 +112,7 @@ public class LanguageRoot extends LanguageElement implements Node {
 	}
 
 	@Override
-	public List<Node> includes() {
+	public List<Node> components() {
 		return unmodifiableList(model.getIncludes().stream().map(LanguageNode::new).collect(Collectors.toList()));
 	}
 

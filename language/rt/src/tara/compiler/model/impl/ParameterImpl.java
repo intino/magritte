@@ -1,7 +1,7 @@
 package tara.compiler.model.impl;
 
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.Parameter;
+import tara.semantic.model.NodeContainer;
+import tara.semantic.model.Parameter;
 import tara.util.WordGenerator;
 
 import java.util.ArrayList;
@@ -46,21 +46,21 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public NodeContainer getOwner() {
+	public NodeContainer owner() {
 		return owner;
 	}
 
-	public void setOwner(NodeContainer owner) {
+	public void owner(NodeContainer owner) {
 		this.owner = owner;
 	}
 
 	@Override
-	public String getInferredType() {
+	public String inferredType() {
 		return inferredType;
 	}
 
 	@Override
-	public void setInferredType(String type) {
+	public void inferredType(String type) {
 		this.inferredType = type;
 	}
 
@@ -70,76 +70,86 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public void setMultiple(boolean multiple) {
+	public void multiple(boolean multiple) {
 		this.multiple = multiple;
 	}
 
 	@Override
-	public List<String> getAnnotations() {
+	public List<String> annotations() {
 		return Collections.unmodifiableList(annotations);
 	}
 
 	@Override
-	public void setAnnotations(List<String> annotations) {
+	public void annotations(List<String> annotations) {
 		this.annotations = annotations;
 	}
 
 	@Override
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
 	@Override
-	public void setName(String name) {
+	public void name(String name) {
 		this.name = name;
 	}
 
 	@Override
-	public int getPosition() {
+	public int position() {
 		return position;
 	}
 
 	@Override
-	public List<Object> getValues() {
+	public List<Object> values() {
 		return Collections.unmodifiableList(values);
 	}
 
 	@Override
-	public String getContract() {
+	public String contract() {
 		return contract;
 	}
 
 	@Override
-	public void setContract(String contract) {
+	public void contract(String contract) {
 		this.contract = contract;
 	}
 
 	@Override
-	public String getFile() {
+	public String file() {
 		return file;
 	}
 
 	@Override
-	public void setFile(String file) {
+	public void file(String file) {
 		this.file = file;
 	}
 
 	@Override
-	public int getLine() {
+	public int line() {
 		return line;
 	}
 
 	@Override
-	public void setLine(int line) {
+	public void line(int line) {
 		this.line = line;
 	}
 
-	public String getMetric() {
+	public String metric() {
 		return metric;
 	}
 
-	public void setMetric(String metric) {
+	public void metric(String metric) {
 		this.metric = metric;
+	}
+
+	@Override
+	public boolean isVariableInit() {
+		return false;
+	}
+
+	@Override
+	public void addAllowedParameters(List<String> values) {
+
 	}
 
 	@Override

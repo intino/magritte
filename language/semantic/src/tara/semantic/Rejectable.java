@@ -18,7 +18,7 @@ public abstract class Rejectable {
 			rejectables.add(new Parameter(parameter));
 		for (tara.semantic.model.Facet facet : node.facets())
 			rejectables.add(new Facet(facet));
-		for (Node content : node.includes())
+		for (Node content : node.components())
 			rejectables.add(new Include(content));
 		return rejectables;
 	}
@@ -27,7 +27,7 @@ public abstract class Rejectable {
 		List<Rejectable> rejectables = new ArrayList<>();
 		for (tara.semantic.model.Parameter parameter : facet.parameters())
 			rejectables.add(new Parameter(parameter));
-		for (Node content : facet.includes())
+		for (Node content : facet.components())
 			rejectables.add(new Include(content));
 		return rejectables;
 	}
@@ -71,9 +71,9 @@ public abstract class Rejectable {
 		@Override
 		public SemanticError error() {
 			if (cause.equals(Cause.NAME))
-				return new SemanticError("reject.parameter.in.context", parameter, singletonList(parameter.getName()));
+				return new SemanticError("reject.parameter.in.context", parameter, singletonList(parameter.name()));
 			if (cause.equals(Cause.MIXED_TYPE))
-				return new SemanticError("reject.mixed.type.parameter", parameter, asList(parameter.getValues(), expectedType));
+				return new SemanticError("reject.mixed.type.parameter", parameter, asList(parameter.values(), expectedType));
 			if (cause.equals(Cause.VALUE))
 				return new SemanticError("reject.parameter.word.allowed.value.in.context", parameter, singletonList(String.join(", ", expectedValues)));
 			else
@@ -87,7 +87,7 @@ public abstract class Rejectable {
 
 		@Override
 		public String toString() {
-			return parameter.getName();
+			return parameter.name();
 		}
 
 		public enum Cause {

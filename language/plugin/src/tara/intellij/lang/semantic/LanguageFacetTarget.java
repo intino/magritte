@@ -30,7 +30,7 @@ public class LanguageFacetTarget extends LanguageElement implements FacetTarget 
 	}
 
 	@Override
-	public List<Node> includes() {
+	public List<Node> components() {
 		Body body = target.getBody();
 		if (body == null) return Collections.emptyList();
 		List<tara.intellij.lang.psi.Node> nodeList = (List<tara.intellij.lang.psi.Node>) body.getNodeList();

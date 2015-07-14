@@ -37,8 +37,8 @@ class ScriptTargetDefinition implements TargetDefinition {
 			}
 
 			@Override
-			public List<Node> includes() {
-				return Collections.emptyList();//includes;
+			public List<Node> components() {
+				return Collections.emptyList();//components;
 			}
 
 			@Override

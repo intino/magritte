@@ -33,17 +33,17 @@ public class LanguageParameter extends LanguageElement implements tara.semantic.
 	}
 
 	@Override
-	public void setInferredType(String type) {
+	public void inferredType(String type) {
 		parameter.setInferredType(type);
 	}
 
 	@Override
-	public List<String> getAnnotations() {
+	public List<String> annotations() {
 		return Collections.emptyList();
 	}
 
 	@Override
-	public void setAnnotations(List<String> annotations) {
+	public void annotations(List<String> annotations) {
 
 	}
 
@@ -53,42 +53,42 @@ public class LanguageParameter extends LanguageElement implements tara.semantic.
 	}
 
 	@Override
-	public void setMultiple(boolean multiple) {
+	public void multiple(boolean multiple) {
 		//TODO?
 	}
 
 	@Override
-	public int getPosition() {
+	public int position() {
 		return parameter.getIndexInParent();
 	}
 
 	@Override
-	public String getName() {
+	public String name() {
 		return parameter.getName();
 	}
 
 	@Override
-	public void setName(String name) {
+	public void name(String name) {
 		parameter.setInferredName(name);
 	}
 
 	@Override
-	public List<Object> getValues() {
+	public List<Object> values() {
 		return Collections.unmodifiableList(wrapValues(parameter.getValues()));
 	}
 
 	@Override
-	public String getContract() {
+	public String contract() {
 		return parameter.getContract();
 	}
 
 	@Override
-	public void setContract(String contract) {
+	public void contract(String contract) {
 		parameter.setContract(contract);
 	}
 
 	@Override
-	public String getMetric() {
+	public String metric() {
 		return parameter.getMetric() != null ? parameter.getMetric().getIdentifier().getText() : "";
 	}
 

@@ -1,7 +1,6 @@
 package tara.compiler.model.impl;
 
-import tara.semantic.model.Tag;
-import tara.compiler.model.*;
+import tara.semantic.model.*;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
@@ -20,36 +19,36 @@ public class Model implements Node {
 	}
 
 
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void name(String name) {
 		this.name = name;
 	}
 
 	@Override
-	public String getFile() {
+	public String file() {
 		return file;
 	}
 
 	@Override
-	public void setFile(String file) {
+	public void file(String file) {
 		this.file = file;
 	}
 
 	@Override
-	public int getLine() {
+	public int line() {
 		return 0;
 	}
 
 	@Override
-	public void setLine(int line) {
+	public void line(int line) {
 
 	}
 
 	@Override
-	public String getDoc() {
+	public String doc() {
 		return null;
 	}
 
@@ -77,17 +76,17 @@ public class Model implements Node {
 	}
 
 	@Override
-	public List<Node> getSubNodes() {
+	public List<Node> subs() {
 		return null;
 	}
 
 	@Override
-	public Node getContainer() {
+	public Node container() {
 		return null;
 	}
 
 	@Override
-	public void setContainer(NodeContainer container) {
+	public void container(NodeContainer container) {
 	}
 
 	@Override
@@ -159,22 +158,22 @@ public class Model implements Node {
 	}
 
 	@Override
-	public String getPlate() {
+	public String plate() {
 		return null;
 	}
 
 	@Override
-	public void setPlate(String address) {
+	public void plate(String address) {
 
 	}
 
 	@Override
-	public List<Tag> getAnnotations() {
+	public List<Tag> annotations() {
 		return Collections.EMPTY_LIST;
 	}
 
 	@Override
-	public List<Tag> getFlags() {
+	public List<Tag> flags() {
 		return Collections.EMPTY_LIST;
 	}
 
@@ -209,12 +208,12 @@ public class Model implements Node {
 	}
 
 	@Override
-	public Node getParent() {
+	public Node parent() {
 		return null;
 	}
 
 	@Override
-	public String getParentName() {
+	public String parentName() {
 		return null;
 	}
 
@@ -224,17 +223,17 @@ public class Model implements Node {
 	}
 
 	@Override
-	public String getQualifiedName() {
+	public String qualifiedName() {
 		return "";
 	}
 
 	@Override
-	public String getType() {
+	public String type() {
 		return "";
 	}
 
 	@Override
-	public void setType(String type) {
+	public void type(String type) {
 
 	}
 
@@ -253,8 +252,7 @@ public class Model implements Node {
 		return null;
 	}
 
-	@Override
-	public List<Parameter> getParameters() {
+	public List<Parameter> parameters() {
 		return null;
 	}
 
@@ -269,50 +267,55 @@ public class Model implements Node {
 	}
 
 	@Override
-	public List<Node> getNodeSiblings() {
+	public List<Node> siblings() {
 		return Collections.EMPTY_LIST;
 	}
 
 	@Override
-	public List<Node> getIncludedNodes() {
+	public List<Node> components() {
 		return Collections.unmodifiableList(includes);
 	}
 
 	@Override
-	public void addIncludedNodes(Node... nodes) {
+	public String type() {
+		return null;
+	}
+
+	@Override
+	public void add(Node... nodes) {
 		Collections.addAll(includes, nodes);
 	}
 
 	@Override
-	public void addIncludedNodes(int pos, Node... nodes) {
+	public void add(int pos, Node... nodes) {
 		includes.addAll(pos, Arrays.asList(nodes));
 	}
 
 	@Override
-	public Node getInclude(String name) {
+	public Node components(String name) {
 		return null;
 	}
 
 	@Override
-	public List<Variable> getVariables() {
+	public List<Variable> variables() {
 		return null;
 	}
 
 	@Override
-	public void addVariables(Variable... variables) {
+	public void add(Variable... variables) {
 	}
 
 	@Override
-	public void addVariables(int pos, Variable... variables) {
+	public void add(int pos, Variable... variables) {
 	}
 
 	@Override
-	public List<NodeReference> getInnerNodeReferences() {
+	public List<Node> getReferenceComponents() {
 		return Collections.EMPTY_LIST;
 	}
 
 	@Override
-	public List<Node> getChildren() {
+	public List<Node> children() {
 		return Collections.EMPTY_LIST;
 	}
 
@@ -322,12 +325,12 @@ public class Model implements Node {
 	}
 
 	@Override
-	public List<Facet> getFacets() {
+	public List<Facet> facets() {
 		return Collections.EMPTY_LIST;
 	}
 
 	@Override
-	public List<String> getAllowedFacets() {
+	public List<String> allowedFacets() {
 		return Collections.EMPTY_LIST;
 	}
 
@@ -341,7 +344,7 @@ public class Model implements Node {
 	}
 
 	@Override
-	public List<FacetTarget> getFacetTargets() {
+	public List<FacetTarget> facetTargets() {
 		return Collections.EMPTY_LIST;
 	}
 
@@ -350,8 +353,13 @@ public class Model implements Node {
 
 	}
 
-	public String getLanguage() {
+	public String language() {
 		return language;
+	}
+
+	@Override
+	public void language(String language) {
+
 	}
 
 	public void setLanguage(String language) {

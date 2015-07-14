@@ -23,12 +23,12 @@ public class VariableReference extends VariableImpl {
 
 	@Override
 	public Variable cloneIt(NodeContainer container) {
-		VariableReference variable = new VariableReference(container, getType(), getName());
-		variable.setSize(this.getSize());
-		variable.setDefaultExtension(getDefaultExtension());
-		variable.setContract(getContract());
-		for (Tag tag : getFlags()) variable.addFlags(tag.name());
-		variable.addAllowedValues(getAllowedValues().toArray(new Object[getAllowedValues().size()]));
+		VariableReference variable = new VariableReference(container, type(), name());
+		variable.size(this.size());
+		variable.defaultExtension(defaultExtension());
+		variable.contract(contract());
+		for (Tag tag : flags()) variable.addFlags(tag.name());
+		variable.addAllowedValues(allowedValues().toArray(new Object[allowedValues().size()]));
 		variable.addDefaultValues(getDefaultValues().toArray(new Object[getDefaultValues().size()]));
 		variable.setDestiny(destiny);
 		variable.setInherited(true);

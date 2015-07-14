@@ -24,7 +24,7 @@ public class FacetTargetResolver {
 	}
 
 	private void resolve(Node node) {
-		node.getIncludedNodes().stream().
+		node.components().stream().
 			filter(include -> include instanceof NodeImpl).forEach(include -> {
 			resolveFacetTarget((NodeImpl) include);
 			resolve(include);
@@ -33,19 +33,19 @@ public class FacetTargetResolver {
 	}
 
 	private void resolveFacetTarget(NodeImpl node) {
-		for (FacetTarget target : node.getFacetTargets()) {
-			target.getTargetNode().addAllowedFacets(node.getName());
+		for (FacetTarget target : node.facetTargets()) {
+			target.targetNode().addAllowedFacets(node.name());
 			addToChildren(node, target);
 		}
 	}
 
 	private void addToChildren(NodeImpl node, FacetTarget target) {
-		for (Node children : target.getTargetNode().getChildren()) children.addAllowedFacets(node.getName());
+		for (Node children : target.targetNode().children()) children.addAllowedFacets(node.name());
 	}
 
 	private void resolveVarsToFacetTargets(NodeImpl node) {
-		for (FacetTarget facetTarget : node.getFacetTargets())
-			facetTarget.addVariables(cloneVariables(facetTarget, node.getVariables()));
+		for (FacetTarget facetTarget : node.facetTargets())
+			facetTarget.add(cloneVariables(facetTarget, node.variables()));
 	}
 
 	private Variable[] cloneVariables(NodeContainer container, Collection<Variable> variables) {

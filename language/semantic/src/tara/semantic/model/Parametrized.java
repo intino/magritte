@@ -1,10 +1,10 @@
-package tara.compiler.model;
+package tara.semantic.model;
 
 import java.util.List;
 
 public interface Parametrized {
 
-	List<Parameter> getParameters();
+	List<Parameter> parameters();
 
 	void addParameter(String name, int position, String extension, Object... values);
 

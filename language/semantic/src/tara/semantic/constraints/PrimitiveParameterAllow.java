@@ -75,16 +75,16 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 		if (parameter == null) return;
 		if (checkParameter(parameter)) {
 			toRemove.add(parameter);
-			parameter.getParameter().setName(name());
-			parameter.getParameter().setInferredType(type());
-			parameter.getParameter().setAnnotations(flags);
-			parameter.getParameter().setMultiple(multiple());
-			parameter.getParameter().setContract(contract());
+			parameter.getParameter().name(name());
+			parameter.getParameter().inferredType(type());
+			parameter.getParameter().annotations(flags);
+			parameter.getParameter().multiple(multiple());
+			parameter.getParameter().contract(contract());
 		} else parameter.invalidType(type);
 	}
 
 	private boolean checkParameter(Rejectable.Parameter rejectable) {
-		List<Object> values = rejectable.getParameter().getValues();
+		List<Object> values = rejectable.getParameter().values();
 		if (values.isEmpty()) return true;
 		String inferredType = PrimitiveTypeCompatibility.inferType(values.get(0));
 		return !inferredType.isEmpty() && PrimitiveTypeCompatibility.checkCompatiblePrimitives(type(), inferredType) && checkCardinality(values.size());

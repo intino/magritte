@@ -32,7 +32,7 @@ public class Checker {
 	private void checkConstraintsDeep(Node node) throws SemanticException {
 		assume(node);
 		if (!node.isReference())
-			for (Node content : node.includes()) check(content);
+			for (Node content : node.components()) check(content);
 		if (node.type() != null) checkNodeConstrains(node);
 	}
 

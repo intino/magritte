@@ -100,7 +100,7 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
-	public List<Node> includes() {
+	public List<Node> components() {
 		return Collections.emptyList();
 	}
 

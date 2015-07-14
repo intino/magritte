@@ -40,35 +40,35 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 		addParent(target, frame);
 		addVariables(target, frame);
 		addComponents(target, frame);
-		addComponents(target.getTargetNode().getIncludedNodes(), frame);
+		addComponents(target.targetNode().components(), frame);
 	}
 
 	private void addName(FacetTarget node, Frame frame) {
-		frame.addFrame(NAME, ((Node) node.getContainer()).getName() + "_" + node.getTargetNode().getName());
-		frame.addFrame(QN, node.getTargetNode().getQualifiedName()).addFrame(PROJECT, project);
+		frame.addFrame(NAME, ((Node) node.container()).name() + "_" + node.targetNode().name());
+		frame.addFrame(QN, node.targetNode().qualifiedName()).addFrame(PROJECT, project);
 	}
 
 	private void addParent(FacetTarget target, Frame newFrame) {
-		NodeContainer nodeContainer = target.getContainer();
+		NodeContainer nodeContainer = target.container();
 		newFrame.addFrame(PARENT, generatedLanguage.toLowerCase() + "." + getQnOfFacet((Node) nodeContainer));
 	}
 
 	protected void addVariables(FacetTarget target, final Frame frame) {
-		target.getVariables().stream().
+		target.variables().stream().
 			filter(variable -> !variable.isInherited()).
 			forEach(variable -> frame.addFrame(VARIABLE, context.build(variable)));
-		target.getTargetNode().getVariables().stream().
+		target.targetNode().variables().stream().
 			filter(variable -> !variable.isInherited()).
 			forEach(variable -> frame.addFrame(VARIABLE, context.build(variable)));
 	}
 
 	private void addComponents(FacetTarget target, Frame frame) {
-		for (Node include : target.getIncludedNodes()) {
+		for (Node include : target.components()) {
 			if (include.isAnonymous()) continue;
 			Frame includeFrame = new Frame().addTypes(TypesProvider.getTypesOfReference(include));
-			if (isDefinition(include, modelLevel) && !isDefinition(target.getTargetNode(), modelLevel))
+			if (isDefinition(include, modelLevel) && !isDefinition(target.targetNode(), modelLevel))
 				includeFrame.addFrame(DEFINITION, "");
-			if (!isDefinition(target.getTargetNode(), modelLevel)) includeFrame.addFrame(DEFINITION_AGGREGABLE, "");
+			if (!isDefinition(target.targetNode(), modelLevel)) includeFrame.addFrame(DEFINITION_AGGREGABLE, "");
 			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 			if (include instanceof NodeReference) {
 				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
@@ -97,14 +97,14 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 	}
 
 	private void addName(Node node, Frame frame) {
-		if (node.getName() != null && !node.getName().isEmpty())
-			frame.addFrame(NAME, node.isAnonymous() ? node.getType() : node.getName());
-		frame.addFrame(QN, node.getQualifiedName()).addFrame(PROJECT, project);
+		if (node.name() != null && !node.name().isEmpty())
+			frame.addFrame(NAME, node.isAnonymous() ? node.getType() : node.name());
+		frame.addFrame(QN, node.qualifiedName()).addFrame(PROJECT, project);
 	}
 
 	private void addNodeReferenceName(NodeReference node, Frame frame) {
 		NodeImpl reference = node.getDestiny();
-		frame.addFrame(NAME, reference.getName());
+		frame.addFrame(NAME, reference.name());
 		frame.addFrame(QN, getQn(reference, generatedLanguage));
 		frame.addFrame(PROJECT, project);
 	}

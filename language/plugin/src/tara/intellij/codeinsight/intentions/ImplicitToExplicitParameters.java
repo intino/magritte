@@ -24,7 +24,7 @@ public class ImplicitToExplicitParameters extends ParametersIntentionAction impl
 //		for (Parameter parameter : parameters.getParameterList()) {
 //			Variable variable = findVariable(node, parameter);
 //			if (variable == null) continue;
-//			map.put(variable.getName(), parameter.getValue().getText());
+//			map.put(variable.name(), parameter.getValue().getText());
 //		}
 //		return map;
 //	}

@@ -108,7 +108,7 @@ class RootNode extends ScriptNode {
 	}
 
 	@Override
-	public List<Node> includes() {
+	public List<Node> components() {
 		return Collections.unmodifiableList(includes);
 	}
 

@@ -4,33 +4,49 @@ import java.util.List;
 
 public interface Parameter extends Element {
 
+	String REFERENCE = "ref:";
+
+	NodeContainer owner();
+
 	String inferredType();
 
-	void setInferredType(String type);
+	void inferredType(String type);
 
-	List<String> getAnnotations();
+	List<String> annotations();
 
-	void setAnnotations(List<String> annotations);
+	void annotations(List<String> annotations);
 
 	boolean isMultiple();
 
-	void setMultiple(boolean multiple);
+	void multiple(boolean multiple);
 
-	int getPosition();
+	int position();
 
-	String getName();
+	String name();
 
-	void setName(String name);
+	void name(String name);
 
-	List<Object> getValues();
+	List<Object> values();
 
-	String getContract();
+	String contract();
 
-	void setContract(String contract);
+	void contract(String contract);
 
-	String getMetric();
+	String metric();
+
+	void metric(String metric);
 
 	boolean isVariableInit();
 
 	void addAllowedParameters(List<String> values);
+
+	boolean hasReferenceValue();
+
+	List<String> getAllowedValues();
+
+	void addAllowedValues(List<String> allowedValues);
+
+	void substituteValues(List<? extends Object> newValues);
+
+	String getUID();
 }

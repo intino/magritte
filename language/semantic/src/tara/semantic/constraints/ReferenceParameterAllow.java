@@ -76,11 +76,11 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 	private void checkParameter(List<? extends Rejectable> rejectables, List<Rejectable> toRemove) {
 		Rejectable.Parameter parameter = findParameter(rejectables, name(), position);
 		if (parameter == null) return;
-		if (checkAsReferenceOrWord(parameter.getParameter().getValues())) {
-			parameter.getParameter().setName(name());
-			parameter.getParameter().setInferredType(type());
-			parameter.getParameter().setAnnotations(flags);
-			parameter.getParameter().setMultiple(multiple());
+		if (checkAsReferenceOrWord(parameter.getParameter().values())) {
+			parameter.getParameter().name(name());
+			parameter.getParameter().inferredType(type());
+			parameter.getParameter().annotations(flags);
+			parameter.getParameter().multiple(multiple());
 			parameter.getParameter().addAllowedParameters(allowedValues());
 			toRemove.add(parameter);
 		} else parameter.invalidValue(values);

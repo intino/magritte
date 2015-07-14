@@ -21,17 +21,17 @@ public class LanguageFacetTarget extends LanguageElement implements tara.semanti
 
 	@Override
 	public String target() {
-		return target.getTarget();
+		return target.target();
 	}
 
 	@Override
 	public List<String> constraints() {
-		return target.getConstraints();
+		return target.constraints();
 	}
 
 	@Override
-	public List<Node> includes() {
-		List<Node> nodes = target.getIncludedNodes().stream().
+	public List<Node> components() {
+		List<Node> nodes = target.components().stream().
 			map(include -> include instanceof NodeReference ?
 				new LanguageNodeReference((NodeReference) include) : new LanguageNode((NodeImpl) include)).collect(Collectors.toList());
 		return Collections.unmodifiableList(nodes);

@@ -128,7 +128,7 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 	}
 
 	@Override
-	public List<Node> includes() {
+	public List<Node> components() {
 		return Collections.emptyList();
 	}
 

@@ -36,27 +36,27 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public String getType() {
+	public String type() {
 		return type;
 	}
 
 	@Override
-	public void setType(String type) {
+	public void type(String type) {
 		this.type = type;
 	}
 
 	@Override
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
 	@Override
-	public void setName(String name) {
+	public void name(String name) {
 		this.name = name;
 	}
 
 	@Override
-	public NodeContainer getContainer() {
+	public NodeContainer container() {
 		return container;
 	}
 
@@ -66,17 +66,17 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public String getContract() {
+	public String contract() {
 		return contract;
 	}
 
 	@Override
-	public void setContract(String contract) {
+	public void contract(String contract) {
 		this.contract = contract;
 	}
 
 	@Override
-	public Collection<Tag> getFlags() {
+	public Collection<Tag> flags() {
 		return flags;
 	}
 
@@ -122,7 +122,7 @@ public class VariableImpl implements Variable {
 
 
 	@Override
-	public List<Object> getAllowedValues() {
+	public List<Object> allowedValues() {
 		return Collections.unmodifiableList(allowedValues);
 	}
 
@@ -142,12 +142,12 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public String getDefaultExtension() {
+	public String defaultExtension() {
 		return defaultExtension;
 	}
 
 	@Override
-	public void setDefaultExtension(String defaultExtension) {
+	public void defaultExtension(String defaultExtension) {
 		this.defaultExtension = defaultExtension;
 	}
 
@@ -180,9 +180,9 @@ public class VariableImpl implements Variable {
 	public Variable clone() throws CloneNotSupportedException {
 		super.clone();
 		VariableImpl variable = new VariableImpl(container, type, name);
-		variable.setSize(size);
-		variable.setDefaultExtension(defaultExtension);
-		variable.setContract(contract);
+		variable.size(size);
+		variable.defaultExtension(defaultExtension);
+		variable.contract(contract);
 		for (Tag tag : flags) variable.addFlags(tag.name());
 		variable.addAllowedValues(allowedValues.toArray(new Object[allowedValues.size()]));
 		variable.addDefaultValues(defaultValues.toArray(new Object[defaultValues.size()]));
@@ -193,7 +193,7 @@ public class VariableImpl implements Variable {
 	public Variable cloneIt(NodeContainer container) {
 		try {
 			Variable clone = this.clone();
-			clone.setContainer(container);
+			clone.container(container);
 			return clone;
 		} catch (CloneNotSupportedException ignored) {
 			return null;
@@ -210,15 +210,15 @@ public class VariableImpl implements Variable {
 	}
 
 	@Override
-	public void setOverriden(boolean overriden) {
+	public void overriden(boolean overriden) {
 		this.overriden = overriden;
 	}
 
-	public int getSize() {
+	public int size() {
 		return size;
 	}
 
-	public void setSize(int tupleSize) {
+	public void size(int tupleSize) {
 		this.size = tupleSize;
 	}
 }

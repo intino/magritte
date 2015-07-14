@@ -1,45 +1,111 @@
 package tara.semantic.model;
 
+import java.util.Collection;
 import java.util.List;
 
-public interface Node extends NodeContainer {
-	Node context();
+public interface Node extends Parametrized, NodeContainer, Element {
 
-	String type();
-
-	boolean isReference();
-
-	Node destinyOfReference();
-
-	void type(String type);
-
-	List<String> secondaryTypes();
-
-	List<String> types();
+	String ANNONYMOUS = "annonymous@";
 
 	String name();
 
-	Node parent();
+	void name(String name);
 
-	boolean hasSubs();
+	String language();
+
+	void language(String language);
+
+	String doc();
+
+	boolean isSub();
+
+	boolean isMain();
+
+	List<Node> subs();
+
+	boolean isFacet();
+
+	boolean isAbstract();
+
+	boolean isRequired();
+
+	boolean isSingle();
+
+	boolean isNamed();
+
+	boolean isFeature();
+
+	boolean isFeatureInstance();
+
+	boolean isFinal();
+
+	boolean isTerminal();
+
+	boolean isTerminalInstance();
+
+	boolean intoSingle();
+
+	boolean intoRequired();
 
 	String plate();
 
-	List<String> annotations();
+	void plate(String address);
 
-	List<String> flags();
+	List<Tag> annotations();
 
-	void flags(String... flags);
+	List<Tag> flags();
 
-	void annotations(String... annotations);
+	void addAnnotations(String... annotations);
 
-	void moveToTheTop();
+	void addFlags(Tag... flags);
+
+	void addImports(Collection<String> imports);
+
+	Node parent();
+
+	String parentName();
+
+	boolean isAnonymous();
+
+	String type();
+
+	List<String> types();
+
+	List<String> secondaryTypes();
+
+	void type(String type);
+
+	String getFullType();
+
+	void setFullType(String type);
+
+	Node resolve();
+
+	boolean isReference();
+
+	List<Node> getReferenceComponents();
+
+	Node destinyOfReference();
+
+	List<Node> children();
+
+	void addChild(Node node);
 
 	List<Facet> facets();
 
+	Collection<String> allowedFacets();
+
+	void addAllowedFacets(String... facet);
+
+	void addFacets(Facet... facets);
+
 	List<FacetTarget> facetTargets();
 
-	List<Parameter> parameters();
+	void addFacetTargets(FacetTarget... targets);
 
-	List<Variable> variables();
+	String toString();
+
+	boolean equals(Object obj);
+
+	int hashCode();
 }

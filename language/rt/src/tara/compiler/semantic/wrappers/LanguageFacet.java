@@ -28,13 +28,13 @@ public class LanguageFacet extends LanguageElement implements tara.semantic.mode
 
 	@Override
 	public List<String> nodeTypes() {
-		final NodeContainer container = facet.getContainer();
+		final NodeContainer container = facet.container();
 		if (container instanceof Node) return Collections.unmodifiableList(collectTypes((Node) container));
 		return Collections.emptyList();
 	}
 
 	private List<String> collectTypes(Node node) {
-		return node.getFacets().stream().map(Facet::getFacetType).collect(Collectors.toList());
+		return node.facets().stream().map(Facet::getFacetType).collect(Collectors.toList());
 	}
 
 	@Override
@@ -43,8 +43,8 @@ public class LanguageFacet extends LanguageElement implements tara.semantic.mode
 	}
 
 	@Override
-	public List<tara.semantic.model.Node> includes() {
-		List<tara.semantic.model.Node> nodes = facet.getIncludedNodes().stream().map(include -> include instanceof NodeReference ?
+	public List<tara.semantic.model.Node> components() {
+		List<tara.semantic.model.Node> nodes = facet.components().stream().map(include -> include instanceof NodeReference ?
 			new LanguageNodeReference((NodeReference) include) :
 			new LanguageNode((NodeImpl) include)).collect(Collectors.toList());
 		return Collections.unmodifiableList(nodes);

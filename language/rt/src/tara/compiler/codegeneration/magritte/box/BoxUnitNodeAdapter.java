@@ -30,18 +30,18 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 			variables(node, frame, context);
 			parameters(node, frame, context);
 			facetParameters(node, frame, context);
-			componentOf(node.getContainer(), frame);
+			componentOf(node.container(), frame);
 			includes(node, frame);
 		}
 	}
 
 	private void structure(Node node, Frame newFrame) {
-		if (node.isAnonymous() && node.getPlate() == null)
+		if (node.isAnonymous() && node.plate() == null)
 			newFrame.addFrame(KEY, String.valueOf(this.keys.get(node)));
 		else {
 			String prefix = inFacet(node) != null ? facetPrefix(node) : facetTargetPrefix(node);
-			newFrame.addFrame(NAME, prefix + clean(node.getQualifiedName()));
-			if (node.getPlate() != null) newFrame.addFrame(PLATE, "|" + String.valueOf(node.getPlate()));
+			newFrame.addFrame(NAME, prefix + clean(node.qualifiedName()));
+			if (node.plate() != null) newFrame.addFrame(PLATE, "|" + String.valueOf(node.plate()));
 		}
 		addTypes(node, newFrame);
 		if (node.getParent() != null)
@@ -51,7 +51,7 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 	private String facetPrefix(Node node) {
 		Facet facet = inFacet(node);
 		if (facet == null) return "";
-		final Node container = (Node) facet.getContainer();
+		final Node container = (Node) facet.container();
 		return clean(facet.getFacetType()) + "+" + clean(container.getType()) + ".";
 	}
 
@@ -62,31 +62,31 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 	private String facetTargetPrefix(Node node) {
 		FacetTarget target = inFacetTarget(node);
 		if (target == null) return "";
-		final Node container = (Node) target.getContainer();
-		return clean(container.getQualifiedName()) + "+" + clean(target.getTargetNode().getQualifiedName() + ".");
+		final Node container = (Node) target.container();
+		return clean(container.qualifiedName()) + "+" + clean(target.targetNode().qualifiedName() + ".");
 	}
 
 	private FacetTarget inFacetTarget(Node node) {
-		NodeContainer container = node.getContainer();
+		NodeContainer container = node.container();
 		while (container != null)
 			if (container instanceof FacetTarget) return (FacetTarget) container;
-			else container = container.getContainer();
+			else container = container.container();
 		return null;
 	}
 
 	private Facet inFacet(Node node) {
-		NodeContainer container = node.getContainer();
+		NodeContainer container = node.container();
 		while (container != null)
 			if (container instanceof Facet) return (Facet) container;
-			else container = container.getContainer();
+			else container = container.container();
 		return null;
 	}
 
 	private void addTypes(Node node, Frame newFrame) {
-		if (node.getFacets().isEmpty())
+		if (node.facets().isEmpty())
 			newFrame.addFrame(NODE_TYPE, node.getType());
 		else
-			for (Facet facet : node.getFacets())
+			for (Facet facet : node.facets())
 				newFrame.addFrame(NODE_TYPE, facet.getFacetType() + "+" + node.getType());
 	}
 
@@ -98,30 +98,30 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 		if (node.isTerminalInstance() && !m0) tagsFrame.addFrame(VALUE, PROTOTYPE);
 		else if ((node.isFeatureInstance() || node.isTerminalInstance()) && !m0) tagsFrame.addFrame(VALUE, CASE);
 		if (node.isMain() && !m0) tagsFrame.addFrame(VALUE, MAIN);
-		if ((node.isMain() || node.getContainer() instanceof Model) && m0) tagsFrame.addFrame(VALUE, ROOT);
+		if ((node.isMain() || node.container() instanceof Model) && m0) tagsFrame.addFrame(VALUE, ROOT);
 		if (tagsFrame.slots().length != 0) frame.addFrame(ANNOTATION, tagsFrame);
 	}
 
 	private void variables(Node node, final Frame frame, FrameContext<Node> context) {
-		for (final Variable variable : node.getVariables())
+		for (final Variable variable : node.variables())
 			frame.addFrame(VARIABLE, context.build(variable));
 	}
 
 	private void parameters(Node node, Frame frame, FrameContext<Node> context) {
 		node.getParameters().stream().
-			filter(parameter -> !isOverriddenByFacets(parameter, node.getFacets())).
+			filter(parameter -> !isOverriddenByFacets(parameter, node.facets())).
 			forEach(parameter -> frame.addFrame(VARIABLE, context.build(parameter)));
 	}
 
 	private boolean isOverriddenByFacets(Parameter parameter, Collection<Facet> facets) {
 		for (Facet facet : facets)
 			for (Parameter facetParameter : facet.getParameters())
-				if (facetParameter.getName().equals(parameter.getName())) return true;
+				if (facetParameter.name().equals(parameter.name())) return true;
 		return false;
 	}
 
 	private void facetParameters(Node node, final Frame frame, FrameContext<Node> context) {
-		for (Facet facet : node.getFacets())
+		for (Facet facet : node.facets())
 			for (final Parameter parameter : facet.getParameters())
 				frame.addFrame(VARIABLE, context.build(parameter));
 	}
@@ -133,27 +133,27 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 	}
 
 	private void includes(Node node, Frame frame) {
-		node.getIncludedNodes().stream().
-			filter(inner -> !isOverriddenByFacets(inner, node.getFacets())).
+		node.components().stream().
+			filter(inner -> !isOverriddenByFacets(inner, node.facets())).
 			forEach(inner -> addComponent(frame, inner));
 		addFacetNodes(node, frame);
 	}
 
 	private boolean isOverriddenByFacets(Node inner, Collection<Facet> facets) {
 		for (Facet facet : facets)
-			for (Node facetNode : facet.getIncludedNodes())
+			for (Node facetNode : facet.components())
 				if (facetNode.getFullType().equals(inner.getFullType()) && hasSameName(inner, facetNode))
 					return true;
 		return false;
 	}
 
 	private boolean hasSameName(Node node, Node facetNode) {
-		return (facetNode.getName() == null && node.getName() == null) || (facetNode.getName() != null && facetNode.getName().equals(node.getName()));
+		return (facetNode.name() == null && node.name() == null) || (facetNode.name() != null && facetNode.name().equals(node.name()));
 	}
 
 	private void addFacetNodes(Node node, Frame frame) {
-		for (Facet facet : node.getFacets())
-			for (Node inner : facet.getIncludedNodes())
+		for (Facet facet : node.facets())
+			for (Node inner : facet.components())
 				addComponent(frame, inner);
 	}
 
@@ -163,8 +163,8 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 
 	private void addComponent(Frame frame, Node inner) {
 		Long key = getKey(inner);
-		Frame include = new Frame().addTypes(INCLUDE).addTypes(asString(inner.getFlags()));
-		final boolean withKey = inner.isAnonymous() && inner.getPlate() == null;
+		Frame include = new Frame().addTypes(INCLUDE).addTypes(asString(inner.flags()));
+		final boolean withKey = inner.isAnonymous() && inner.plate() == null;
 		if (m0 || inner.isTerminalInstance() || inner.isFeatureInstance())
 			include.addTypes(CASE);
 		if (withKey) include.addTypes(KEY);
@@ -177,13 +177,13 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 		if (isInFacet(node)) {
 			final FacetTarget target = inFacetTarget(node);
 			if (target == null) return "";
-			return clean(getQn(target) + DOT + node.getQualifiedName());
+			return clean(getQn(target) + DOT + node.qualifiedName());
 		}
-		return clean(node.getQualifiedName());
+		return clean(node.qualifiedName());
 	}
 
 	private String getQn(FacetTarget facetTarget) {
-		return clean(facetTarget.getContainer().getQualifiedName() + "+" + facetTarget.getTargetNode().getQualifiedName());
+		return clean(facetTarget.container().qualifiedName() + "+" + facetTarget.targetNode().qualifiedName());
 	}
 
 	private String[] asString(Collection<Tag> flags) {

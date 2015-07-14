@@ -3,7 +3,7 @@ package tara.compiler.codegeneration.magritte.box;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.EmptyNode;
+import tara.compiler.model.impl.EmptyNode;
 import tara.compiler.model.Facet;
 import tara.compiler.model.Node;
 import tara.compiler.model.Parameter;
@@ -31,26 +31,26 @@ public class BoxParameterAdapter implements Adapter<Parameter>, TemplateTags {
 		frame.addFrame(MULTIPLE, parameter.isMultiple());
 		if (isTerminal(parameter))
 			frame.addFrame(TERMINAL, TERMINAL_KEY);
-		if (parameter.getInferredType().equals(Primitives.MEASURE)) {
-			frame.addFrame(EXTENSION_TYPE, parameter.getContract());
-			if (parameter.getContract() != null)
-				frame.addFrame(EXTENSION_VALUE, resolveMetric(parameter.getContract()));
+		if (parameter.inferredType().equals(Primitives.MEASURE)) {
+			frame.addFrame(EXTENSION_TYPE, parameter.contract());
+			if (parameter.contract() != null)
+				frame.addFrame(EXTENSION_VALUE, resolveMetric(parameter.contract()));
 		}
 		addParameterValue(frame, parameter);
 	}
 
 	private String buildName(Parameter parameter) {
-		if (parameter.getOwner() instanceof Facet)
-			return ((Node) (parameter.getOwner().getContainer())).getName() + "+" + parameter.getName();
-		else return parameter.getName();
+		if (parameter.owner() instanceof Facet)
+			return ((Node) (parameter.owner().container())).name() + "+" + parameter.name();
+		else return parameter.name();
 	}
 
 	private boolean isTerminal(Parameter parameter) {
-		return parameter.getAnnotations().stream().filter(a -> Tag.TERMINAL.name().equalsIgnoreCase(a)).findFirst().isPresent();
+		return parameter.annotations().stream().filter(a -> Tag.TERMINAL.name().equalsIgnoreCase(a)).findFirst().isPresent();
 	}
 
 	protected void addParameterValue(Frame frame, final Parameter parameter) {
-		Collection<Object> values = prepareValues(parameter, parameter.getValues());
+		Collection<Object> values = prepareValues(parameter, parameter.values());
 		for (Object value : values) frame.addFrame(VARIABLE_VALUE, value);
 	}
 
@@ -61,15 +61,15 @@ public class BoxParameterAdapter implements Adapter<Parameter>, TemplateTags {
 			if (first instanceof EmptyNode) values = Collections.emptyList();
 			else values = collectQualifiedNames(parameterValues);
 		else if (first instanceof Primitives.Expression)
-			values = Collections.singletonList(parameter.getName() + "_" + parameter.getUID());
-		else if ("word".equals(parameter.getInferredType())) values = createWordReference(parameter);
+			values = Collections.singletonList(parameter.name() + "_" + parameter.getUID());
+		else if ("word".equals(parameter.inferredType())) values = createWordReference(parameter);
 		else values = format(parameterValues);
 		return values;
 	}
 
 	private List<Object> createWordReference(Parameter parameter) {
 		final List<String> allowedValues = parameter.getAllowedValues();
-		return parameter.getValues().stream().map(v -> allowedValues.indexOf(v.toString())).collect(toList());
+		return parameter.values().stream().map(v -> allowedValues.indexOf(v.toString())).collect(toList());
 	}
 
 	private List<Object> format(List<Object> parameterValues) {
@@ -86,16 +86,16 @@ public class BoxParameterAdapter implements Adapter<Parameter>, TemplateTags {
 
 
 	private List<Object> collectQualifiedNames(List<Object> defaultValues) {
-		return defaultValues.stream().map(v -> ((Node) v).getQualifiedName()).collect(toList());
+		return defaultValues.stream().map(v -> ((Node) v).qualifiedName()).collect(toList());
 	}
 
 	protected List<String> getTypes(Parameter parameter) {
 		List<String> list = new ArrayList<>();
 		list.add(parameter.getClass().getSimpleName());
 		list.add(VARIABLE);
-		if (parameter.getValues().get(0) instanceof Primitives.Expression) list.add(Primitives.NATIVE);
-		list.add(parameter.getInferredType());
-		list.addAll(parameter.getAnnotations());
+		if (parameter.values().get(0) instanceof Primitives.Expression) list.add(Primitives.NATIVE);
+		list.add(parameter.inferredType());
+		list.addAll(parameter.annotations());
 		return list;
 	}
 

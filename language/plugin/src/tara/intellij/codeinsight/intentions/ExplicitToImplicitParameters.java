@@ -22,7 +22,7 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 //		List<String> parameterValues = new ArrayList<>();
 //		List<Variable> getVariables = getVariables(node, parameters.getParameterList()[0]);
 //		for (Variable variable : getVariables) {
-//			Parameter correspondentParameter = getCorrespondentParameter(parameters, variable.getName());
+//			Parameter correspondentParameter = getCorrespondentParameter(parameters, variable.name());
 //			if (correspondentParameter == null) continue;
 //			parameterValues.add(correspondentParameter.getValue().getText());
 //		}
@@ -39,7 +39,7 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 //
 //	private Parameter getCorrespondentParameter(Parameters parameters, String name) {
 //		for (Parameter parameter : parameters.getParameterList())
-//			if (name.equals(parameter.getName())) return parameter;
+//			if (name.equals(parameter.name())) return parameter;
 //		return null;
 //	}
 

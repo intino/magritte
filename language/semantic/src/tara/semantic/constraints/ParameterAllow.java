@@ -10,10 +10,10 @@ abstract class ParameterAllow {
 	protected static Rejectable.Parameter findParameter(List<? extends Rejectable> rejectables, String name, int position) {
 		List<Rejectable.Parameter> parameters = getRejectableParameters(rejectables);
 		for (Rejectable.Parameter parameter : parameters)
-			if (!parameter.getParameter().getName().isEmpty() && parameter.getParameter().getName().equals(name))
+			if (!parameter.getParameter().name().isEmpty() && parameter.getParameter().name().equals(name))
 				return parameter;
 		for (Rejectable.Parameter parameter : parameters)
-			if (parameter.getParameter().getPosition() == position && parameter.getParameter().getName().isEmpty())
+			if (parameter.getParameter().position() == position && parameter.getParameter().name().isEmpty())
 				return parameter;
 		return null;
 	}

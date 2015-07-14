@@ -22,7 +22,7 @@ public class LanguageRoot extends LanguageElement implements Node {
 
 	public LanguageRoot(Model model) {
 		this.model = model;
-		includes = wrap(model.getIncludedNodes());
+		includes = wrap(model.components());
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class LanguageRoot extends LanguageElement implements Node {
 	}
 
 	@Override
-	public List<Node> includes() {
+	public List<Node> components() {
 		return includes;
 	}
 

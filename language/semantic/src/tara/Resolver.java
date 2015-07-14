@@ -2,6 +2,7 @@ package tara;
 
 import tara.semantic.Allow;
 import tara.semantic.model.Node;
+import tara.semantic.model.NodeContainer;
 
 import java.util.Collection;
 
@@ -13,19 +14,19 @@ public class Resolver {
 	}
 
 	public void resolve(Node node) {
-		if (node.context() == null) return; //TODO add resolved flag to nodes to improve resolve process
+		if (getContext(node) == null) return; //TODO add resolved flag to nodes to improve resolve process
 		checkAllowsInclude(node);
 	}
 
 	private void checkAllowsInclude(Node node) {
-		resolve(node.context());
+		resolve(getContext(node));
 		Collection<Allow> allows = getContextAllows(node);
 		if (allows == null) return;
 		for (Allow allow : allows) if (checkAllowInclude(node, allow)) return;
 	}
 
 	private Collection<Allow> getContextAllows(Node node) {
-		Collection<Allow> allows = language.allows(node.context().type());
+		Collection<Allow> allows = language.allows(getContext(node).type());
 		if (allows != null && contextAllowsNode(allows, node)) return allows;
 		allows = findInFacets(node);
 		return allows;
@@ -47,7 +48,7 @@ public class Resolver {
 	}
 
 	private Collection<Allow> findInFacets(Node node) {
-		for (String type : node.context().secondaryTypes()) {
+		for (String type : getContext(node).secondaryTypes()) {
 			Collection<Allow> allows = language.allows(type);
 			if (allows != null) return allows;
 		}
@@ -82,5 +83,13 @@ public class Resolver {
 
 	private String getType(String allowedType) {
 		return allowedType.contains(".") ? allowedType.substring(allowedType.lastIndexOf(".") + 1) : allowedType;
+	}
+
+	private Node getContext(Node node) {
+		NodeContainer container = node.container();
+		while (!(container instanceof Node))
+			container = container.container();
+		return (Node) container;
+
 	}
 }

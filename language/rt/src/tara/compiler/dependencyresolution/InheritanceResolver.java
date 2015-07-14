@@ -40,13 +40,13 @@ public class InheritanceResolver {
 	}
 
 	private void resolveAllowedFacets(NodeImpl parent, NodeImpl child) {
-		child.addAllowedFacets(parent.getAllowedFacets().toArray(new String[parent.getAllowedFacets().size()]));
+		child.addAllowedFacets(parent.allowedFacets().toArray(new String[parent.allowedFacets().size()]));
 	}
 
 	private Set<NodeImpl> collectNodes(Model model) {
 		Set<NodeImpl> collection = new HashSet<>();
-		for (Node node : model.getIncludedNodes()) {
-			if (!node.getChildren().isEmpty()) collection.add((NodeImpl) node);
+		for (Node node : model.components()) {
+			if (!node.children().isEmpty()) collection.add((NodeImpl) node);
 			collect(node, collection);
 		}
 		return collection;
@@ -54,82 +54,82 @@ public class InheritanceResolver {
 
 	private void collect(Node node, Set<NodeImpl> collection) {
 		if (!(node instanceof NodeImpl)) return;
-		if (!node.getChildren().isEmpty()) collection.add((NodeImpl) node);
-		for (Node include : node.getIncludedNodes())
+		if (!node.children().isEmpty()) collection.add((NodeImpl) node);
+		for (Node include : node.components())
 			collect(include, collection);
 		collectInFacets(node, collection);
 		collectInTargets(node, collection);
 	}
 
 	private void collectInFacets(Node node, Set<NodeImpl> collection) {
-		for (Facet facet : node.getFacets())
-			for (Node include : facet.getIncludedNodes())
+		for (Facet facet : node.facets())
+			for (Node include : facet.components())
 				collect(include, collection);
 	}
 
 	private void collectInTargets(Node node, Set<NodeImpl> collection) {
-		for (FacetTarget facet : node.getFacetTargets()) {
-			for (Node include : facet.getIncludedNodes())
+		for (FacetTarget facet : node.facetTargets()) {
+			for (Node include : facet.components())
 				collect(include, collection);
 		}
 	}
 
 	private List<Node> resolveIncludes(NodeImpl parent, NodeImpl child) {
 		List<Node> nodes = new ArrayList<>();
-		for (Node include : parent.getIncludedNodes()) {
+		for (Node include : parent.components()) {
 			if (isOverridden(child, include)) continue;
 			NodeReference reference = (include instanceof NodeImpl) ? new NodeReference((NodeImpl) include) : new NodeReference(((NodeReference) include).getDestiny());
 			addTags(include, reference);
 			nodes.add(reference);
-			reference.setFile(include.getFile());
-			reference.setLine(child.getLine());
-			reference.setContainer(child);
+			reference.file(include.file());
+			reference.line(child.line());
+			reference.container(child);
 		}
-		child.addIncludedNodes(0, nodes.toArray(new Node[nodes.size()]));
+		child.add(0, nodes.toArray(new Node[nodes.size()]));
 
 		return nodes;
 	}
 
 	private void addTags(Node include, NodeReference reference) {
-		include.getFlags().stream().filter(tag -> !reference.getFlags().contains(tag)).forEach(tag -> reference.addFlags(tag.name()));
-		include.getAnnotations().stream().filter(tag -> !reference.getAnnotations().contains(tag)).forEach(tag -> reference.addAnnotations(tag.name()));
+		include.flags().stream().filter(tag -> !reference.flags().contains(tag)).forEach(tag -> reference.addFlags(tag.name()));
+		include.annotations().stream().filter(tag -> !reference.annotations().contains(tag)).forEach(tag -> reference.addAnnotations(tag.name()));
 	}
 
 	private void resolveFlags(NodeImpl parent, NodeImpl child) {
-		parent.getFlags().stream().
-			filter(tag -> !tag.equals(Tag.ABSTRACT) && !child.getFlags().contains(tag)).
+		parent.flags().stream().
+			filter(tag -> !tag.equals(Tag.ABSTRACT) && !child.flags().contains(tag)).
 			forEach(tag -> child.addFlags(tag.name()));
 	}
 
 	private void resolveAnnotations(NodeImpl parent, NodeImpl child) {
-		parent.getAnnotations().stream().filter(tag -> !tag.equals(Tag.ABSTRACT) && !child.getAnnotations().contains(tag)).forEach(tag -> child.addAnnotations(tag.name()));
+		parent.annotations().stream().filter(tag -> !tag.equals(Tag.ABSTRACT) && !child.annotations().contains(tag)).forEach(tag -> child.addAnnotations(tag.name()));
 	}
 
 	private void resolveVariables(NodeImpl parent, NodeImpl child) {
 		List<Variable> variables = new ArrayList<>();
-		for (Variable variable : parent.getVariables())
+		for (Variable variable : parent.variables())
 			if (!isOverridden(child, variable)) variables.add(variable.cloneIt(child));
-			else variable.setOverriden(true);
-		child.addVariables(0, variables.toArray(new Variable[variables.size()]));
+			else variable.overriden(true);
+		child.add(0, variables.toArray(new Variable[variables.size()]));
 	}
 
 	private boolean isOverridden(NodeContainer child, Node node) {
-		for (Node include : child.getIncludedNodes())
-			if (include.getName().equals(node.getName()) && include.getType().equals(node.getType()))
+		for (Node include : child.components())
+			if (include.name().equals(node.name()) && include.getType().equals(node.getType()))
 				return true;
 		return false;
 	}
 
 
 	private boolean isOverridden(NodeContainer child, Variable variable) {
-		for (Variable childVar : child.getVariables())
-			if (childVar.getName().equals(variable.getName()) && childVar.getType().equals(variable.getType()))
+		for (Variable childVar : child.variables())
+			if (childVar.name().equals(variable.name()) && childVar.type().equals(variable.type()))
 				return true;
 		return false;
 	}
 
 	private List<NodeImpl> getChildrenSorted(NodeImpl parent) {
-		List<NodeImpl> children = parent.getChildren().stream().
+		List<NodeImpl> children = parent.children().stream().
 			map(node -> (NodeImpl) node).collect(Collectors.toList());
 		sort(children);
 		return children;
@@ -151,7 +151,7 @@ public class InheritanceResolver {
 			private int maxLevel(NodeImpl node) {
 				List<Integer> levels = new ArrayList<>();
 				levels.add(0);
-				levels.addAll(node.getChildren().stream().
+				levels.addAll(node.children().stream().
 					map(child -> maxLevel((NodeImpl) child)).collect(Collectors.toList()));
 				Collections.sort(levels, Collections.reverseOrder());
 				return 1 + levels.get(0);

@@ -53,8 +53,8 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			Set<String> annotations = new HashSet<>();
-			for (String annotation : node.annotations()) {
-				if (annotations.add(annotation)) continue;
+			for (Tag annotation : node.annotations()) {
+				if (annotations.add(annotation.name())) continue;
 				throw new SemanticException(new SemanticError("reject.duplicate.annotation", node, asList(annotation, node.type())));
 			}
 		};
@@ -64,8 +64,8 @@ public class GlobalConstraints {
 		return element -> {
 			Node node = (Node) element;
 			Set<String> flags = new HashSet<>();
-			for (String flag : node.flags()) {
-				if (flags.add(flag)) continue;
+			for (Tag flag : node.flags()) {
+				if (flags.add(flag.name())) continue;
 				throw new SemanticException(new SemanticError("reject.duplicate.flag", node, asList(flag, node.type() + " " + node.name())));
 			}
 		};
@@ -74,8 +74,8 @@ public class GlobalConstraints {
 	private Constraint.Require flagsCoherence() {
 		return element -> {
 			Node node = (Node) element;
-			for (String flags : node.flags())
-				checkFlagConstrains(flags, node);
+			for (Tag flags : node.flags())
+				checkFlagConstrains(flags.name(), node);
 		};
 	}
 
@@ -147,7 +147,7 @@ public class GlobalConstraints {
 				throw new SemanticException(new SemanticError("reject.duplicate.variable", element, asList(variable.name(), node.name())));
 			}
 
-			for (Node include : node.includes()) {
+			for (Node include : node.components()) {
 				if (include.isReference() ? names.add(include.destinyOfReference().name()) : names.add(include.name()))
 					continue;
 				throw new SemanticException(new SemanticError("reject.duplicate.entries", include, asList(include.name(), node.type().isEmpty() ? "model" : node.name())));
@@ -170,7 +170,7 @@ public class GlobalConstraints {
 			}
 
 			private void checkTargetExists(Node node) throws SemanticException {
-				if (node.facetTargets().isEmpty() && !node.isReference() && (!node.hasSubs() && !isAbstract(node)))
+				if (node.facetTargets().isEmpty() && !node.isReference() && (!node.subs().isEmpty() && !isAbstract(node)))
 					throw new SemanticException(new SemanticError("no.targets.in.facet", node, singletonList(node.name())));
 			}
 
@@ -179,8 +179,8 @@ public class GlobalConstraints {
 					throw new SemanticException(new SemanticError("reject.target.without.facet", node));
 			}
 
-			private boolean isFacet(List<String> flags) {
-				for (String flag : flags) if (flag.equalsIgnoreCase(Tag.FACET.name())) return true;
+			private boolean isFacet(List<Tag> flags) {
+				for (Tag flag : flags) if (flag.equals(Tag.FACET)) return true;
 				return false;
 			}
 
@@ -194,7 +194,7 @@ public class GlobalConstraints {
 			}
 
 			private boolean isAbstract(Node node) {
-				return node.flags().contains("abstract") || node.hasSubs();
+				return node.flags().contains(Tag.ABSTRACT) || !node.subs().isEmpty();
 			}
 		};
 	}

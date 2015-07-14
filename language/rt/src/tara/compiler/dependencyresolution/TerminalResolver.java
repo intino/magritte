@@ -18,7 +18,7 @@ public class TerminalResolver {
 	}
 
 	private void resolveTerminals(Node node) {
-		for (Node include : node.getIncludedNodes()) {
+		for (Node include : node.components()) {
 			if (include instanceof NodeReference) continue;
 			if (!include.isTerminal()) resolveTerminals(include);
 			else propagateTerminalToInside(include);
@@ -26,11 +26,11 @@ public class TerminalResolver {
 	}
 
 	private void propagateTerminalToInside(Node node) {
-		for (Node include : node.getIncludedNodes()) {
+		for (Node include : node.components()) {
 			if (include instanceof NodeReference) continue;
 			if (!include.isTerminal()) include.addFlags(Tag.TERMINAL.name());
 			propagateTerminalToInside(include);
 		}
-		node.getVariables().stream().filter(variable -> !variable.isTerminal()).forEach(variable -> variable.addFlags(Tag.TERMINAL.name()));
+		node.variables().stream().filter(variable -> !variable.isTerminal()).forEach(variable -> variable.addFlags(Tag.TERMINAL.name()));
 	}
 }
