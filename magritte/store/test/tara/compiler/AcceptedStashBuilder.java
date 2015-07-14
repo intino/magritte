@@ -29,21 +29,21 @@ public class AcceptedStashBuilder {
 
 	@Test
 	public void should_build_empty_stash() {
-		new StashBuilder(new File(home), "Empty.tara", Charset.forName("UTF-8")).build();
+		new StashBuilder(new File(home)).build("Empty", Charset.forName("UTF-8"));
 		assertThat("Empty.stash exists", new File(home, "Empty.stash").exists());
 		assertThat(stashFrom(new File(home, "Empty.stash")).components.length, is(0));
 	}
 
 	@Test
 	public void should_build_stash_with_roots() {
-		new StashBuilder(new File(home), "Months.tara", Charset.forName("UTF-8")).build();
+		new StashBuilder(new File(home)).build("Months", Charset.forName("UTF-8"));
 		assertThat("Months.stash exists", new File(home, "Months.stash").exists());
 		assertThat(stashFrom(new File(home, "Months.stash")).components.length, is(12));
 	}
 
 	@Test
 	public void should_build_stash_with_components_and_blobs() {
-		new StashBuilder(new File(home), "World.tara", Charset.forName("UTF-8")).build();
+		new StashBuilder(new File(home)).build("World", Charset.forName("UTF-8"));
 		final File stashFile = new File(home, "World.stash");
 		assertThat("World.stash exists", stashFile.exists());
 		final Stash stash = stashFrom(stashFile);
@@ -57,14 +57,14 @@ public class AcceptedStashBuilder {
 
 	@Test
 	public void should_build_stash_with_facets() {
-		new StashBuilder(new File(home), "Temperature.tara", Charset.forName("UTF-8")).build();
+		new StashBuilder(new File(home)).build("Temperature", Charset.forName("UTF-8"));
 		assertThat("Temperature.stash exists", new File(home, "Temperature.stash").exists());
 		assertThat(stashFrom(new File(home, "Temperature.stash")).components.length, is(9));
 	}
 
 	@Test
 	public void should_build_stash_with_passes() {
-		new StashBuilder(new File(home), "Weather.tara", Charset.forName("UTF-8")).build();
+		new StashBuilder(new File(home)).build("Weather", Charset.forName("UTF-8"));
 		assertThat("Weather.stash exists", new File(home, "Weather.stash").exists());
 		final Stash root = stashFrom(new File(home, "Weather.stash"));
 		assertThat(root.components.length, is(24));

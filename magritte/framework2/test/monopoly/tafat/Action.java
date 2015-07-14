@@ -6,8 +6,6 @@ import tara.magritte.Morph;
 import tara.magritte.NativeCode;
 import tara.magritte.Node;
 
-import javax.sound.midi.Patch;
-
 public class Action extends Morph {
 
 	protected Check check = new Check_meme();

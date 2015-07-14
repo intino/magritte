@@ -3,7 +3,6 @@ package tara.builder;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.CompilerMessage;
-import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.*;
 import tara.compiler.core.errorcollection.message.*;
 import tara.compiler.model.Element;
@@ -11,62 +10,77 @@ import tara.compiler.model.Element;
 import java.io.File;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StashBuilder {
-	private final CompilationUnit compilationUnit;
-	private final List<CompilerMessage> compilationMessages;
 	private static final String LINE_AT = " @ line ";
+	private final File root;
+	private final Set<String> files;
+	private final List<CompilerMessage> compilationMessages;
 
-	public StashBuilder(File root, String src, Charset charset) {
-		this.compilationUnit = root.exists() ? buildCompilationUnit(root, src, charset) : null;
+	public StashBuilder(File root) {
+		this.root = root;
+		this.files = buildFileSet(root);
 		this.compilationMessages = new ArrayList<>();
 	}
 
-	public void build() {
+	public void buildAll(Charset charset) {
+		for (String src : files)
+			build(src, charset);
+	}
+
+	public void build(String unit, Charset charset) {
+		CompilationUnit compilationUnit = buildCompilationUnit(unit, charset);
 		compile(compilationUnit);
 		processErrors(compilationMessages);
 	}
 
-	private static CompilationUnit buildCompilationUnit(File root, String src, Charset charset) {
-		final Map<String, File> fileMap = buildFileMap(root);
-		final CompilationUnit unit = new CompilationUnit(buildConfiguration(root, fileMap, new File(root, src), charset));
-		unit.addSource(new SourceUnit(new File(root, src), unit.getConfiguration(), unit.getErrorCollector()));
+	private CompilationUnit buildCompilationUnit(String src, Charset charset) {
+		CompilationUnit unit = new CompilationUnit(buildConfiguration(fileOf(src).getParentFile(), charset));
+		unit.addSource(fileOf(src));
 		return unit;
 	}
 
-	private static Map<String, File> buildFileMap(File root) {
-		List<File> files = new ArrayList<>();
-		getAllFiles(root, files);
-		Map<String, File> map = new HashMap();
-		files.stream().filter(file -> file.getName().endsWith(".tara")).forEach(f -> map.put(getPresentableName(f.getName()), f));
-		return map;
+    private File fileOf(String src) {
+        return new File(root, src.replace(".",File.separator) + ".tara");
+    }
+
+    private Set<String> buildFileSet(File root) {
+		return getTaraFiles(root);
 	}
 
-	private static String getPresentableName(String name) {
-		return name.substring(0, name.lastIndexOf("."));
+	private String getNameSpace(File file) {
+		return file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1).replace(".tara", "").replace(File.separator,".");
 	}
 
-	public static void getAllFiles(File dir, List<File> fileList) {
-		File[] files = dir.listFiles();
-		for (File file : files != null ? files : new File[0]) {
-			fileList.add(file);
-			if (file.isDirectory())
-				getAllFiles(file, fileList);
-		}
+	private Set<String> getTaraFiles(File folder) {
+		Set<String> files = taraFilesIn(folder);
+		for (File file : folder.listFiles(File::isDirectory))
+			files.addAll(getTaraFiles(file));
+		return files;
 	}
 
-	private static CompilerConfiguration buildConfiguration(File root, Map<String, File> fileMap, File src, Charset charset) {
+	private Set<String> taraFilesIn(File folder) {
+		File[] files = folder.listFiles(this::taraFile);
+		Set<String> result = new HashSet<>(files.length);
+        for (File file : files) {
+            result.add(getNameSpace(file));
+        }
+        return result;
+	}
+
+	private boolean taraFile(File dir, String name) {
+		return name.endsWith(".tara");
+	}
+
+	private CompilerConfiguration buildConfiguration(File out, Charset charset) {
 		final CompilerConfiguration configuration = new CompilerConfiguration();
+		configuration.setClassPath(files);
 		configuration.setOutput(new PrintWriter(System.err));
 		configuration.setWarningLevel(WarningMessage.PARANOIA);
 		configuration.setSourceEncoding(charset.name());
-		configuration.setStoreDirectory(root.getAbsolutePath());
-		configuration.setClassPath(fileMap);
-		configuration.setOutDirectory(src.getParent());
+		configuration.setRootFolder(root.getAbsolutePath());
+		configuration.setOutDirectory(out.getAbsolutePath());
 		return configuration;
 	}
 
@@ -81,8 +95,7 @@ public class StashBuilder {
 		}
 	}
 
-
-	void compile(CompilationUnit unit) {
+	private void compile(CompilationUnit unit) {
 		try {
 			if (unit == null) return;
 			unit.compile();

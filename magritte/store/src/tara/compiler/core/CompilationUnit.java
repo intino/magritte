@@ -13,6 +13,7 @@ import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.core.operation.sourceunit.SourceUnitOperation;
 import tara.compiler.model.impl.Model;
 
+import java.io.File;
 import java.util.*;
 
 public class CompilationUnit extends ProcessingUnit {
@@ -40,7 +41,11 @@ public class CompilationUnit extends ProcessingUnit {
 		this.phaseOperations[phase].add(operation);
 	}
 
-	public SourceUnit addSource(SourceUnit source) {
+	public SourceUnit addSource(File source) {
+		return addSource(new SourceUnit(source, this.configuration, this.errorCollector));
+	}
+
+	private SourceUnit addSource(SourceUnit source) {
 		String name = source.getName();
 		for (SourceUnit su : sourceUnits.values())
 			if (name.equals(su.getName())) return su;

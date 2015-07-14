@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Locale;
-import java.util.Map;
+import java.util.Set;
 
 public class CompilerConfiguration {
 	private int warningLevel;
@@ -20,8 +20,8 @@ public class CompilerConfiguration {
 	private File resourcesDirectory;
 	private File nativePath;
 	private int level;
-	private String storeDirectory;
-	private Map<String, File> classPath;
+	private String rootFolder;
+	private Set<String> classPath;
 
 
 	public CompilerConfiguration() {
@@ -66,7 +66,7 @@ public class CompilerConfiguration {
 			this.output = output;
 	}
 
-	public File getOutDirectory() {
+	public File getOutFolder() {
 		return this.tempDirectory;
 	}
 
@@ -175,19 +175,19 @@ public class CompilerConfiguration {
 		this.level = level;
 	}
 
-	public void setStoreDirectory(String storeDirectory) {
-		this.storeDirectory = storeDirectory;
+	public void setRootFolder(String rootFolder) {
+		this.rootFolder = rootFolder;
 	}
 
-	public String getStoreDirectory() {
-		return storeDirectory;
+	public String getRootFolder() {
+		return rootFolder;
 	}
 
-	public void setClassPath(Map<String, File> classPath) {
+	public void setClassPath(Set<String> classPath) {
 		this.classPath = classPath;
 	}
 
-	public Map<String, File> getClassPath() {
+	public Set<String> getClassPath() {
 		return classPath;
 	}
 }
