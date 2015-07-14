@@ -1,5 +1,7 @@
 package tara.magritte;
 
+import java.util.List;
+
 public abstract class Morph {
 
     protected final Node node;
@@ -39,7 +41,16 @@ public abstract class Morph {
     protected abstract void set(String name, Object object);
 
     protected Object link(NativeCode value) {
-        value.set(node.search(value.$Class()));
+        if(value == null) return null;
+        Node context = node.search(value.$Class());
+        if(context instanceof Type) return value;
+        value.set(context == null ? this : context.morph(value.$Class()));
         return value;
+    }
+
+    public abstract List<Node> components();
+
+    public Node node() {
+        return node;
     }
 }

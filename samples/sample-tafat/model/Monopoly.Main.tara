@@ -1,0 +1,144 @@
+dsl Tafat
+
+Entity Board is main single required
+	var native:SquareAt squareAt = 'square(position < 0 ? position + 40 : position % 40);'
+	var native:SquareOf squareOf = 'squareSet().asList().stream().filter(s -> s.is(aClass)).findFirst().get();'
+	var native:Position positionOf = 'squareSet().asList().indexOf(square);'
+	has Square is final
+
+Entity Dices is main single required
+	var integer value1 = 0
+	var integer value2 = 0
+	var native:Roll roll =
+	----
+	value1(new Random().nextInt(6) + 1);
+	value2(new Random().nextInt(6) + 1);
+	----
+	var native:Doubles doubles = 'value1() == value2();'
+	var native:Value v = 'value1() + value2();';
+
+
+Entity Cards is main single required
+	var native:Get get = 'card(new Random().nextInt(cardSet().size()));'
+	has Card
+	sub LuckyCards
+	sub CommunityCards
+
+Entity Card
+	var integer moveTo = -1000 is final
+	var native:Movement transport = 'return moveTo() != -1000;'
+
+Entity Square
+ 	var integer count = 0
+	var native:Count increment = 'count(count() + 1)'
+	sub Init
+	sub Terrain
+	sub Community
+	sub Taxes
+	sub Station
+	sub Luck
+	sub Jail
+	sub Company
+	sub FreeParking
+	sub GoToJail
+
+Entity Player is main required
+	var string id
+	var Square square = empty
+
+Behavior JailScape
+	var word:[Card Money]... modes = Card Money
+	on Player
+
+Behavior Mover
+	on Player
+		Start('as(Player.class).square(new MonopolyModel(this).board().squareAt(0))')
+		var integer turnsToBeInJail = 0
+		var integer numberOfRolls = 0
+		Action > action =
+			--------------
+			numberOfRolls(0);
+			turnsToBeInJail(turnsToBeInJail() - 1);
+			do {
+				new MonopolyModel(this).dices().roll();
+				numberOfRolls(numberOfRolls() + 1);
+				for (Rule rule : ruleSet())
+					if (!rule.check()) return;
+			} while (true);
+			--------------
+		Knol Rule
+			var native:Check check
+			sub PlayerIsJailed > var native:Check check =
+				------------
+				if(turnsToBeInJail() > 0)
+					if(new MonopolyModel(this).dices().doubles()) turnsToBeInJail(0);
+					else return false;
+				return true;
+				------------
+			sub JailAfterThreeDoubles > var native:Check check =
+				------------
+				if (numberOfRolls() == 3 && new MonopolyModel(this).dices().doubles()) {
+					turnsToBeInJail(3);
+					as(Player.class).square(new MonopolyModel(this).board().squareOf(Jail.class));
+					as(Player.class).square().increment();
+					return false;
+				}
+				return true;
+				------------
+			sub Advance > var native:Check check =
+				------------
+				MonopolyModel monopoly = new MonopolyModel(this);
+				as(Player.class).square(monopoly.board().squareAt(monopoly.board().positionOf(as(Player.class).square()) + monopoly.dices().v()));
+				as(Player.class).square().increment();
+				return true;
+				------------
+			sub ToJailWhenInGoToJailSquare > var native:Check check =
+				------------
+				if (as(Player.class).square().is(GoToJail.class)) {
+					turnsToBeInJail(3);
+					as(Player.class).square(new MonopolyModel(this).board().squareOf(Jail.class));
+					as(Player.class).square().increment();
+					return false;
+				}
+				return true;
+				------------
+			sub CheckCard > var native:Check check =
+				------------
+				Card card = null;
+				MonopolyModel monopoly = new MonopolyModel(this);
+				if (as(Player.class).square().is(Luck.class))
+					card = monopoly.luckyCards().get();
+				if (as(Player.class).square().is(Community.class))
+					card = monopoly.communityCards().get();
+
+				if (card == null || !card.transport()) return true;
+
+				if (monopoly.board().squareAt(card.moveTo()).is(Jail.class)) {
+					turnsToBeInJail(3);
+					as(Player.class).square(monopoly.board().squareOf(Jail.class));
+					as(Player.class).square().increment();
+					return false;
+				}
+
+				if (card.moveTo() >= 0) {
+					as(Player.class).square(monopoly.board().squareAt(card.moveTo()));
+					as(Player.class).square().increment();
+					return true;
+				}
+
+				if (card.moveTo() == -3) {
+					as(Player.class).square(monopoly.board().squareAt(monopoly.board().positionOf(as(Player.class).square()) + card.moveTo()));
+					as(Player.class).square().increment();
+					if (as(Player.class).square().is(GoToJail.class)) {
+						turnsToBeInJail(3);
+						as(Player.class).square(monopoly.board().squareOf(Jail.class));
+						as(Player.class).square().increment();
+						return false;
+					}
+					return true;
+				}
+
+				return true;
+				------------
+			sub Doubles > var native:Check check = 'return new MonopolyModel(this).dices().doubles()'
+

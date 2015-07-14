@@ -1,13 +1,18 @@
-dsl Proteo
+dsl Proteo 
 
-Concept Entity into named +into case
-    var integer[2] coordinates is readonly terminal
+Concept Simulation is required single terminal main > var date from; var date to
 
-Concept Behavior into facet +into case
-    Concept Action is intention required
+Concept Entity
+	has Entity
+	Concept Feature into feature
 
-Concept Simulation into single case required
-    var date into is readonly
-    var date to is readonly
+Concept Facet into facet
+	sub Behavior
+		var integer step = 1 is terminal
+		Concept Start is feature > var native:Action start
+        Concept Knol is feature terminal final
+        has Action is final
 
-
+Concept Action is feature
+	var native:Check condition = 'true'
+	var native:Action action
