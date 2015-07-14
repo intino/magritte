@@ -9,7 +9,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.NodeReference;
-import tara.intellij.lang.psi.ReferenceStatement;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,11 +39,6 @@ public class BodyMixin extends ASTWrapperPsiElement {
 
 	public PsiElement getPsiElement() {
 		return this;
-	}
-
-	@NotNull
-	public List<? extends ReferenceStatement> getReferenceStatementList() {
-		return PsiTreeUtil.getChildrenOfTypeAsList(this, ReferenceStatement.class);
 	}
 
 	public List<NodeReference> getNodeLinks() {

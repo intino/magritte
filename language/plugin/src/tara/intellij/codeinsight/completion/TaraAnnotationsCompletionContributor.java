@@ -12,8 +12,8 @@ import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.semantic.model.Flags;
-import tara.semantic.model.Tag;
+import tara.language.model.Flags;
+import tara.language.model.Tag;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static tara.intellij.lang.psi.TaraTypes.*;

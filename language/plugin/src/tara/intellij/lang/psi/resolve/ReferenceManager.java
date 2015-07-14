@@ -105,7 +105,7 @@ public class ReferenceManager {
 
 
 	private static void addRootNodes(TaraModel model, Identifier identifier, Set<Node> set) {
-		Collection<Node> nodes = model.getIncludes();
+		Collection<Node> nodes = model.components();
 		set.addAll(nodes.stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
 	}
 
@@ -126,7 +126,7 @@ public class ReferenceManager {
 	private static void addFacetTargetNodes(Set<Node> set, Identifier identifier) {
 		FacetTarget facetTarget = (FacetTarget) TaraPsiImplUtil.getContextOf(identifier);
 		if (facetTarget == null) return;
-		for (Node node : facetTarget.getIncludes()) {
+		for (Node node : facetTarget.components()) {
 			if (node.getName() == null) continue;
 			set.add(node);
 			if (node.isAbstract()) set.addAll(node.getSubNodes());
@@ -139,7 +139,7 @@ public class ReferenceManager {
 			set.addAll(collectCandidates(container).stream().
 				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(TaraPsiImplUtil.getContainerNodeOf(identifier))).
 				collect(Collectors.toList()));
-			container = container.getContainer();
+			container = container.container();
 		}
 	}
 
@@ -173,7 +173,7 @@ public class ReferenceManager {
 //		visited.add(node);
 //		if (node.isAnnotatedAsMain() || isMetaRoot(node)) return true;
 //		IdentifierReference parentReference = node.getSignature().getParentReference();
-//		return parentReference != null && checkPossibleRoots(parentReference, getIncludes(file, parentReference, visited, new HashSet<>()));
+//		return parentReference != null && checkPossibleRoots(parentReference, components(file, parentReference, visited, new HashSet<>()));
 //	}
 //
 //	private static boolean isMetaRoot(Node node) {
@@ -194,7 +194,7 @@ public class ReferenceManager {
 //		return false;
 //	}
 //
-//	private static Node[] getIncludes(TaraModel file, IdentifierReference parentReference, Collection<Node> visited, Set<Node> roots) {
+//	private static Node[] components(TaraModel file, IdentifierReference parentReference, Collection<Node> visited, Set<Node> roots) {
 //		Identifier identifier = getIdentifier(parentReference);
 //		addNodesInContext(identifier, roots);
 //		addRootNodes(file, identifier, roots);
@@ -249,7 +249,7 @@ public class ReferenceManager {
 
 	private static Node resolvePathInBox(TaraModel containingFile, List<Identifier> path) {
 		Set<Node> nodes = new HashSet<>();
-		nodes.addAll(containingFile.getIncludes());
+		nodes.addAll(containingFile.components());
 //		addRoots(containingFile, path.get(0), nodes, nodes);
 		for (Node node : nodes) {
 			Node solution = resolvePathInNode(path, node);

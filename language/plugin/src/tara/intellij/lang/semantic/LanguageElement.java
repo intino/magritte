@@ -1,7 +1,7 @@
 package tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
-import tara.semantic.model.Element;
+import tara.language.model.Element;
 
 public abstract class LanguageElement implements Element {
 

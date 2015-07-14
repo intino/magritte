@@ -20,9 +20,9 @@ import tara.Language;
 import tara.intellij.TaraRuntimeException;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.file.TaraFileType;
-import tara.intellij.project.module.ModuleProvider;
-import tara.semantic.Allow;
 import tara.intellij.lang.psi.*;
+import tara.intellij.project.module.ModuleProvider;
+import tara.language.semantics.Allow;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,7 +36,7 @@ public class TaraUtil {
 	public static List<Node> findRootNode(PsiElement element, String identifier) {
 		List<Node> result = new ArrayList<>();
 		for (TaraModel taraFile : getModuleFiles(element.getContainingFile())) {
-			Collection<Node> nodes = taraFile.getIncludes();
+			Collection<Node> nodes = taraFile.components();
 			extractNodesByName(identifier, result, nodes);
 		}
 		return result;
@@ -73,12 +73,12 @@ public class TaraUtil {
 	public static Variable getOverriddenVariable(Variable variable) {
 		Node node = TaraPsiImplUtil.getContainerNodeOf(variable);
 		if (node == null) return null;
-		Node parent = node.getParentNode();
+		Node parent = node.parent();
 		while (parent != null) {
-			for (Variable parentVar : parent.getVariables())
+			for (Variable parentVar : parent.variables())
 				if (isOverridden(variable, parentVar))
 					return parentVar;
-			parent = parent.getParentNode();
+			parent = parent.parent();
 		}
 		return null;
 	}
@@ -198,26 +198,26 @@ public class TaraUtil {
 
 	private static void getAllNodeContainersOf(NodeContainer root, Set<NodeContainer> all) {
 		all.add(root);
-		for (Node include : root.getIncludes()) getAllNodeContainersOf(include, all);
+		for (Node include : root.components()) getAllNodeContainersOf(include, all);
 		if (root instanceof Node) {
 			for (FacetTarget facetTarget : ((Node) root).getFacetTargets()) {
 				all.add(facetTarget);
-				for (Node node : facetTarget.getIncludes()) getAllNodeContainersOf(node, all);
+				for (Node node : facetTarget.components()) getAllNodeContainersOf(node, all);
 			}
 			for (FacetApply facetApply : ((Node) root).getFacetApplies()) {
 				all.add(facetApply);
-				for (Node node : facetApply.getIncludes()) getAllNodeContainersOf(node, all);
+				for (Node node : facetApply.components()) getAllNodeContainersOf(node, all);
 			}
 		}
 	}
 
 	private static void getAllInnerOf(Node root, Set<Node> all) {
 		all.add(root);
-		for (Node include : root.getIncludes()) getAllInnerOf(include, all);
+		for (Node include : root.components()) getAllInnerOf(include, all);
 		for (FacetTarget facetTarget : root.getFacetTargets())
-			for (Node node : facetTarget.getIncludes()) getAllInnerOf(node, all);
+			for (Node node : facetTarget.components()) getAllInnerOf(node, all);
 		for (FacetApply facetApply : root.getFacetApplies())
-			for (Node node : facetApply.getIncludes()) getAllInnerOf(node, all);
+			for (Node node : facetApply.components()) getAllInnerOf(node, all);
 	}
 
 
@@ -242,12 +242,12 @@ public class TaraUtil {
 	}
 
 	@Nullable
-	public static Node findInner(Node node, String name) {
-		for (Node include : node.getIncludes())
+	public static Node findInner(NodeContainer node, String name) {
+		for (Node include : node.components())
 			if (include.getName() != null && include.getName().equals(name))
 				return include;
-		if (node.getParentNode() == null) return null;
-		for (Node include : node.getParentNode().getIncludes())
+		if (!(node instanceof Node) || ((Node) node).parent() == null) return null;
+		for (Node include : ((Node) node).parent().components())
 			if (include.getName() != null && include.getName().equals(name))
 				return include;
 		return null;
@@ -286,6 +286,4 @@ public class TaraUtil {
 		return getAllNodesOfFile(file).stream().filter(Node::isAnnotatedAsMain).collect(Collectors.toList());
 	}
 
-	public static void getAllNodeContainersOfFile(PsiFile file) {
-	}
 }

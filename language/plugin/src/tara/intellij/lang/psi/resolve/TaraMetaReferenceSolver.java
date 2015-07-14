@@ -14,7 +14,7 @@ import tara.intellij.lang.psi.NodeContainer;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.semantic.model.Documentation;
+import tara.language.model.Documentation;
 
 import java.io.File;
 import java.net.MalformedURLException;

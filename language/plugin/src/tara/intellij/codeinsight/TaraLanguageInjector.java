@@ -19,11 +19,11 @@ import tara.intellij.lang.semantic.LanguageNode;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
-import tara.semantic.Allow;
-import tara.semantic.model.Primitives;
+import tara.language.semantics.Allow;
+import tara.language.model.Primitives;
 
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getParentByType;
-import static tara.semantic.model.Variable.NATIVE_SEPARATOR;
+import static tara.language.model.Variable.NATIVE_SEPARATOR;
 
 public class TaraLanguageInjector implements LanguageInjector {
 
@@ -170,7 +170,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		while (candidate != null) {
 			if (candidate.getName() != null && !candidate.isFeatureInstance())
 				return candidate.isTerminalInstance() ? getTypeAsParent(candidate) : clean(getQn(candidate, element, language));
-			else candidate = candidate.getContainer();
+			else candidate = candidate.container();
 		}
 		return "magritte.Morph";
 	}
@@ -182,7 +182,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private void ensureTypeIsResolved(PsiElement element, Node node) {
-		new Resolver(TaraLanguage.getLanguage(element.getContainingFile())).resolve(new LanguageNode(node.getContainer()));
+		new Resolver(TaraLanguage.getLanguage(element.getContainingFile())).resolve(new LanguageNode(node.container()));
 	}
 
 	private String clean(String qn) {

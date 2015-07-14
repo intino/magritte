@@ -12,7 +12,7 @@ import tara.intellij.lang.psi.MetaIdentifier;
 import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.semantic.Allow;
+import tara.language.semantics.Allow;
 
 import java.util.List;
 

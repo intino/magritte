@@ -6,5 +6,5 @@ public interface Facet extends NodeContainer, Parametrized {
 
 	String type();
 
-	List<Parameter> parameters();
+	List<? extends Parameter> parameters();
 }

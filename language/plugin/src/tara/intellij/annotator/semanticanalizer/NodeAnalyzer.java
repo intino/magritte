@@ -12,7 +12,7 @@ import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.semantic.LanguageElement;
 import tara.intellij.lang.semantic.LanguageNode;
-import tara.semantic.SemanticException;
+import tara.language.semantics.SemanticException;
 
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
 

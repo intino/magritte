@@ -16,7 +16,7 @@ public interface TaraModel extends NodeContainer, PsiFile {
 	PsiFile getContainingFile();
 
 	@NotNull
-	List<Node> getIncludes();
+	List<Node> components();
 
 	@NotNull
 	PsiElement addNode(@NotNull Node node) throws IncorrectOperationException;

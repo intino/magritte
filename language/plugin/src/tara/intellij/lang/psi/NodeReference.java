@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
-public interface NodeReference extends Navigatable, TaraPsiElement {
+public interface NodeReference extends tara.language.model.Node, Navigatable, TaraPsiElement {
 
 	@NotNull
 	Collection<? extends Annotation> getAnnotations();

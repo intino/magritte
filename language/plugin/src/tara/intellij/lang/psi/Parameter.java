@@ -5,9 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface Parameter extends Navigatable, TaraPsiElement {
-
-
+public interface Parameter extends tara.language.model.Parameter, Navigatable, TaraPsiElement {
 
 	int getIndexInParent();
 

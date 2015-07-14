@@ -87,7 +87,7 @@ public class JavaNativeInterfaceToTara extends RelatedItemLineMarkerProvider {
 
 	@Nullable
 	private static Variable searchNativeInNode(String name, Node node) {
-		for (Variable variable : node.getVariables())
+		for (Variable variable : node.variables())
 			if (variable.getContract() != null && name.equals(variable.getContract().getFormattedName()))
 				return variable;
 		return null;

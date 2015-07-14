@@ -39,7 +39,7 @@ public abstract class ParametersIntentionAction extends PsiElementBaseIntentionA
 
 //	List<Variable> getAllowedFacet(Node node, String name, String context) {
 //		FacetTarget target = node.getObject().getAllowedFacetByContext(name, context);
-//		return target != null ? target.getVariables() : null;
+//		return target != null ? target.variables() : null;
 //	}
 
 

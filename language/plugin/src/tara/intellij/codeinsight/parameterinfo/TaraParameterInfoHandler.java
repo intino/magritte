@@ -11,7 +11,7 @@ import tara.Language;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.semantic.Constraint;
+import tara.language.semantics.Constraint;
 
 import java.util.*;
 

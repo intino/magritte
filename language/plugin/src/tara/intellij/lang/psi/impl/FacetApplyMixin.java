@@ -27,12 +27,12 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public List<Node> getIncludes() {
+	public List<Node> components() {
 		return unmodifiableList(getInnerNodesOf((FacetApply) this));
 	}
 
 	@NotNull
-	public List<Variable> getVariables() {
+	public List<Variable> variables() {
 		return unmodifiableList(getVariablesOf((FacetApply) this));
 	}
 
@@ -53,10 +53,10 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 	}
 
 	public String getQualifiedName() {
-		return getContainer().getQualifiedName() + "." + getContainer().getName() + "_" + getType();
+		return container().getQualifiedName() + "." + container().getName() + "_" + getType();
 	}
 
-	public Node getContainer() {
+	public Node container() {
 		return TaraPsiImplUtil.getContainerNodeOf(this);
 	}
 

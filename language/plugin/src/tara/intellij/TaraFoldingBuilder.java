@@ -76,7 +76,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		List<PsiElement> strings = new ArrayList<>();
 		for (FacetTarget facetTarget : facetTargets) {
 			searchMultiLineVariables(facetTarget, strings);
-			addAllFacetInnerNodes(facetTarget.getIncludes(), strings);
+			addAllFacetInnerNodes(facetTarget.components(), strings);
 		}
 		return strings;
 	}
@@ -84,7 +84,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	private void addAllFacetInnerNodes(Collection<Node> nodes, List<PsiElement> strings) {
 		for (Node node : nodes) {
 			strings.addAll(searchStringMultiLineValues(node));
-			addAllFacetInnerNodes(node.getIncludes(), strings);
+			addAllFacetInnerNodes(node.components(), strings);
 			addAllFacetInnerNodes(node.getSubNodes(), strings);
 		}
 	}
@@ -97,13 +97,13 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	}
 
 	private void searchMultiLineVariables(Node node, List<PsiElement> strings) {
-		node.getVariables().stream().
+		node.variables().stream().
 			filter(variable -> isStringOrNativeType(variable) && hasStringValue(variable)).
 			forEach(variable -> TaraFoldingBuilder.this.addMultiLineString((TaraVariable) variable, strings));
 	}
 
 	private void searchMultiLineVariables(FacetTarget node, List<PsiElement> strings) {
-		node.getVariables().stream().
+		node.variables().stream().
 			filter(variable -> isStringOrNativeType(variable) && hasStringValue(variable)).
 			forEach(variable -> TaraFoldingBuilder.this.addMultiLineString((TaraVariable) variable, strings));
 	}
@@ -145,7 +145,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 
 	private String buildNodeHolderText(Node node) {
 		String text = "";
-		for (Node inner : node.getIncludes())
+		for (Node inner : node.components())
 			if (inner.getName() != null) text += " " + inner.getName();
 		return text;
 	}

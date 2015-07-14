@@ -139,14 +139,14 @@ public class NativesGenerator {
 	}
 
 	private void getNativeVariablesOfNode(Node node, List<Variable> natives) {
-		natives.addAll(node.getVariables().stream().filter(variable -> "native".equals(variable.getType())).collect(Collectors.toList()));
-		getNativeVariablesOfNodes(node.getIncludes(), natives);
+		natives.addAll(node.variables().stream().filter(variable -> "native".equals(variable.getType())).collect(Collectors.toList()));
+		getNativeVariablesOfNodes(node.components(), natives);
 	}
 
 	private void getNativeVariables(List<FacetTarget> facetTargets, List<Variable> natives) {
 		for (FacetTarget facetTarget : facetTargets) {
-			natives.addAll(facetTarget.getVariables().stream().filter(variable -> "native".equals(variable.getType())).collect(Collectors.toList()));
-			getNativeVariablesOfNodes(facetTarget.getIncludes(), natives);
+			natives.addAll(facetTarget.variables().stream().filter(variable -> "native".equals(variable.getType())).collect(Collectors.toList()));
+			getNativeVariablesOfNodes(facetTarget.components(), natives);
 		}
 	}
 }

@@ -2,9 +2,9 @@ package tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
 import tara.intellij.lang.psi.FacetApply;
-import tara.semantic.model.Facet;
-import tara.semantic.model.Node;
-import tara.semantic.model.Parameter;
+import tara.language.model.Facet;
+import tara.language.model.Node;
+import tara.language.model.Parameter;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class LanguageFacet extends LanguageElement implements Facet {
 	@Override
 	public List<String> nodeTypes() {
 		List<String> types = new ArrayList<>();
-		final tara.intellij.lang.psi.Node container = facetApply.getContainer();
+		final tara.intellij.lang.psi.Node container = facetApply.container();
 		types.add(container.getType());
 		types.addAll(container.getFacetApplies().stream().map(FacetApply::getType).collect(Collectors.toList()));
 		return types;

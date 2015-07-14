@@ -5,7 +5,7 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.Parameter;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.semantic.model.*;
+import tara.language.model.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,25 +15,25 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
 
-public class LanguageNode extends LanguageElement implements tara.semantic.model.Node {
+public class LanguageNode extends LanguageElement implements tara.language.model.Node {
 
 	private final Node node;
-	private List<tara.semantic.model.FacetTarget> facetTargets;
-	private List<tara.semantic.model.Variable> variables = new ArrayList<>();
-	private List<tara.semantic.model.Node> includes = null;
+	private List<tara.language.model.FacetTarget> facetTargets;
+	private List<tara.language.model.Variable> variables = new ArrayList<>();
+	private List<tara.language.model.Node> includes = null;
 
 	public LanguageNode(Node node) {
 		this.node = node;
 		if (node == null) return;
 		this.facetTargets = buildFacetTargets(node.getFacetTargets());
-		variables.addAll(collectVariables(node.getVariables()));
-		if (node.getParentNode() != null) variables.addAll(collectVariables(node.getParentNode().getVariables()));
+		variables.addAll(collectVariables(node.variables()));
+		if (node.parent() != null) variables.addAll(collectVariables(node.parent().variables()));
 	}
 
 	@Override
-	public tara.semantic.model.Node context() {
+	public tara.language.model.Node context() {
 		if (node == null) return null;
-		return node.getContainer() == null ? null : new LanguageNode(node.getContainer());
+		return node.container() == null ? null : new LanguageNode(node.container());
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class LanguageNode extends LanguageElement implements tara.semantic.model
 	}
 
 	@Override
-	public tara.semantic.model.Node destinyOfReference() {
+	public tara.language.model.Node destinyOfReference() {
 		return this;
 	}
 
@@ -59,7 +59,7 @@ public class LanguageNode extends LanguageElement implements tara.semantic.model
 	@Override
 	public List<String> secondaryTypes() {
 		Set<String> types = node.getFacetApplies().stream().map(FacetApply::getType).collect(Collectors.toSet());
-		if (node.getParentNode() != null && !parent().equals(node)) types.addAll(parent().types());
+		if (node.parent() != null && !parent().equals(node)) types.addAll(parent().types());
 		return new ArrayList<>(types);
 	}
 
@@ -78,8 +78,8 @@ public class LanguageNode extends LanguageElement implements tara.semantic.model
 	}
 
 	@Override
-	public tara.semantic.model.Node parent() {
-		return node.getParentNode() == null ? null : new LanguageNode(node.getParentNode());
+	public tara.language.model.Node parent() {
+		return node.parent() == null ? null : new LanguageNode(node.parent());
 	}
 
 	@Override
@@ -127,52 +127,52 @@ public class LanguageNode extends LanguageElement implements tara.semantic.model
 	}
 
 	@Override
-	public List<tara.semantic.model.FacetTarget> facetTargets() {
+	public List<tara.language.model.FacetTarget> facetTargets() {
 		return unmodifiableList(facetTargets);
 	}
 
 	@Override
-	public List<tara.semantic.model.Parameter> parameters() {
-		List<tara.semantic.model.Parameter> parameters = wrapParameters(node.getParameterList());
+	public List<tara.language.model.Parameter> parameters() {
+		List<tara.language.model.Parameter> parameters = wrapParameters(node.getParameterList());
 		return unmodifiableList(parameters);
 	}
 
-	private List<tara.semantic.model.Parameter> wrapParameters(Collection<Parameter> toWrap) {
+	private List<tara.language.model.Parameter> wrapParameters(Collection<Parameter> toWrap) {
 		if (toWrap == null || toWrap.isEmpty()) return new ArrayList<>();
 		return toWrap.stream().map(LanguageParameter::new).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<tara.semantic.model.Node> components() {
+	public List<tara.language.model.Node> components() {
 		if (includes == null) {
 			includes = new ArrayList<>();
 			collectIncludes(node);
-			if (node.getParentNode() != null) collectIncludes(node.getParentNode());
+			if (node.parent() != null) collectIncludes(node.parent());
 		}
 		return unmodifiableList(includes);
 	}
 
 	private void collectIncludes(Node node) {
-		includes.addAll(node.getIncludes().stream().map(LanguageNode::new).collect(Collectors.toList()));
+		includes.addAll(node.components().stream().map(LanguageNode::new).collect(Collectors.toList()));
 		includes.addAll(node.getInnerNodeReferences().stream().map(LanguageNodeReference::new).collect(Collectors.toList()));
 		addFacetTargetIncludes(node);
 	}
 
 	private void addFacetTargetIncludes(Node node) {
 		for (tara.intellij.lang.psi.FacetTarget facetTarget : node.getFacetTargets())
-			includes.addAll(facetTarget.getIncludes().stream().map(LanguageNode::new).collect(Collectors.toList()));
+			includes.addAll(facetTarget.components().stream().map(LanguageNode::new).collect(Collectors.toList()));
 	}
 
 	@Override
-	public List<tara.semantic.model.Variable> variables() {
+	public List<tara.language.model.Variable> variables() {
 		return unmodifiableList(variables);
 	}
 
-	private List<tara.semantic.model.Variable> collectVariables(Collection<tara.intellij.lang.psi.Variable> variables) {
+	private List<tara.language.model.Variable> collectVariables(Collection<tara.intellij.lang.psi.Variable> variables) {
 		return variables.stream().map(LanguageVariable::new).collect(Collectors.toList());
 	}
 
-	private List<tara.semantic.model.FacetTarget> buildFacetTargets(List<tara.intellij.lang.psi.FacetTarget> facetTargets) {
+	private List<tara.language.model.FacetTarget> buildFacetTargets(List<tara.intellij.lang.psi.FacetTarget> facetTargets) {
 		return facetTargets.stream().map(LanguageFacetTarget::new).collect(Collectors.toList());
 	}
 

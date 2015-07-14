@@ -83,15 +83,15 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isReference();
 
-	List<Node> getReferenceComponents();
+	List<? extends Node> getReferenceComponents();
 
 	Node destinyOfReference();
 
-	List<Node> children();
+	List<? extends Node> children();
 
 	void addChild(Node node);
 
-	List<Facet> facets();
+	List<? extends Facet> facets();
 
 	Collection<String> allowedFacets();
 
@@ -99,7 +99,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	void addFacets(Facet... facets);
 
-	List<FacetTarget> facetTargets();
+	List<? extends FacetTarget> facetTargets();
 
 	void addFacetTargets(FacetTarget... targets);
 

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.semantic.model.Tag;
+import tara.language.model.Tag;
 import tara.intellij.lang.psi.*;
 
 import java.util.Collections;

@@ -7,7 +7,7 @@ import tara.intellij.lang.psi.Flag;
 import tara.intellij.lang.psi.NodeReference;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.semantic.model.*;
+import tara.language.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

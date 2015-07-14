@@ -2,10 +2,11 @@ package tara.intellij.lang.psi;
 
 import com.intellij.pom.Navigatable;
 import org.jetbrains.annotations.NotNull;
+import tara.language.model.Facet;
 
 import java.util.List;
 
-public interface FacetApply extends NodeContainer, Parametrized, Navigatable, TaraPsiElement {
+public interface FacetApply extends Facet, NodeContainer, Parametrized, Navigatable, TaraPsiElement {
 
 	@NotNull
 	String getType();
@@ -13,8 +14,8 @@ public interface FacetApply extends NodeContainer, Parametrized, Navigatable, Ta
 	Body getBody();
 
 	@NotNull
-	List<Node> getIncludes();
+	List<Node> components();
 
 	@NotNull
-	List<Variable> getVariables();
+	List<Variable> variables();
 }

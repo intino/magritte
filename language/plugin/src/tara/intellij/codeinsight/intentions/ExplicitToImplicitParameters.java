@@ -20,8 +20,8 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 
 //	private List<String> extractParametersData(Parameters parameters, Node node) {
 //		List<String> parameterValues = new ArrayList<>();
-//		List<Variable> getVariables = getVariables(node, parameters.getParameterList()[0]);
-//		for (Variable variable : getVariables) {
+//		List<Variable> variables = variables(node, parameters.getParameterList()[0]);
+//		for (Variable variable : variables) {
 //			Parameter correspondentParameter = getCorrespondentParameter(parameters, variable.name());
 //			if (correspondentParameter == null) continue;
 //			parameterValues.add(correspondentParameter.getValue().getText());
@@ -29,12 +29,12 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 //		return parameterValues;
 //	}
 //
-//	private List<Variable> getVariables(Node node, Parameter parameter) {
+//	private List<Variable> variables(Node node, Parameter parameter) {
 //		TaraFacetApply inFacet = parameter.isInFacet();
 //		List<Variable> facetVariables = null;
 //		if (inFacet != null && (facetVariables = getAllowedFacet(node, inFacet.getFirstChild().getText(), getContextNameOf(inFacet))) == null)
 //			return Collections.EMPTY_LIST;
-//		return (inFacet != null) ? facetVariables : node.getObject().getVariables();
+//		return (inFacet != null) ? facetVariables : node.getObject().variables();
 //	}
 //
 //	private Parameter getCorrespondentParameter(Parameters parameters, String name) {

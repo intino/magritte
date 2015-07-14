@@ -13,7 +13,7 @@ import tara.intellij.lang.psi.MetaIdentifier;
 import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.semantic.model.Documentation;
+import tara.language.model.Documentation;
 
 
 public class TaraDocumentationProvider extends AbstractDocumentationProvider {

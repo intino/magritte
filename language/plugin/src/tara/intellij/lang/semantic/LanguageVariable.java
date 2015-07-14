@@ -11,7 +11,7 @@ import tara.intellij.lang.psi.Variable;
 import java.util.Collections;
 import java.util.List;
 
-public class LanguageVariable extends LanguageElement implements tara.semantic.model.Variable {
+public class LanguageVariable extends LanguageElement implements tara.language.model.Variable {
 	private final Variable variable;
 
 	public LanguageVariable(Variable variable) {
@@ -66,7 +66,7 @@ public class LanguageVariable extends LanguageElement implements tara.semantic.m
 	}
 
 	@Override
-	public List<Object> defaultValue() {
+	public List<Object> defaultValues() {
 		TaraValue value = variable.getValue();
 		return value != null ? value.getValues() : Collections.emptyList();
 	}

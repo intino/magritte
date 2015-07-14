@@ -4,33 +4,33 @@ import java.util.List;
 
 public interface NodeContainer extends Element {
 
-	List<Node> components();
+	List<? extends Node> components();
 
 	String type();
 
-	void add(Node... nodes);
+	<T extends Node> void add(T... nodes);
 
-	void add(int pos, Node... nodes);
+	<T extends Node> void add(int pos, T... nodes);
 
 	Node components(String name);
 
-	boolean contains(Node node);
+	<T extends Node> boolean contains(T node);
 
-	boolean remove(Node node);
+	<T extends Node> boolean remove(T node);
 
 	void moveToTheTop();
 
-	List<Node> siblings();
+	List<? extends Node> siblings();
 
-	List<Variable> variables();
+	List<? extends Variable> variables();
 
-	void add(Variable... variables);
+	<T extends Variable> void add(T... variables);
 
-	void add(int pos, Variable... variables);
+	<T extends Variable> void add(int pos, T... variables);
 
 	NodeContainer container();
 
-	void container(NodeContainer container);
+	<T extends tara.language.model.NodeContainer> void container(T container);
 
 	String qualifiedName();
 

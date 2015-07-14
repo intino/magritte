@@ -8,7 +8,7 @@ import tara.intellij.lang.psi.*;
 import java.util.Collections;
 import java.util.List;
 
-import static tara.semantic.model.Primitives.*;
+import static tara.language.model.Primitives.*;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
 

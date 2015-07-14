@@ -58,13 +58,13 @@ public class VariantsManager {
 		if (resolve == null) return;
 		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(resolve);
 		if (containerNodeOf == null) return;
-		variants.addAll(containerNodeOf.getIncludes());
+		variants.addAll(containerNodeOf.components());
 	}
 
 	private void addInModelVariants() {
 		TaraModel model = (TaraModel) myElement.getContainingFile();
 		if (model == null) return;
-		model.getIncludes().stream().
+		model.components().stream().
 			filter(node -> !node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement))).
 			forEach(node -> resolvePathFor(node, context));
 		addMainConcepts(model);
@@ -75,7 +75,7 @@ public class VariantsManager {
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
 			if (resolve == null || !TaraModel.class.isInstance(resolve)) continue;
-			((TaraModel) resolve).getIncludes().stream().filter(node -> !node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement))).forEach(node -> resolvePathFor(node, context));
+			((TaraModel) resolve).components().stream().filter(node -> !node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement))).forEach(node -> resolvePathFor(node, context));
 			addMainConcepts((TaraModel) resolve);
 		}
 	}

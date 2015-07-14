@@ -1,10 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi.impl;
 
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
-import tara.intellij.lang.psi.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import tara.intellij.lang.psi.TaraBody;
+import tara.intellij.lang.psi.TaraFacetTarget;
+import tara.intellij.lang.psi.TaraVisitor;
 
 public class TaraFacetTargetImpl extends FacetTargetMixin implements TaraFacetTarget {
 
@@ -21,18 +24,6 @@ public class TaraFacetTargetImpl extends FacetTargetMixin implements TaraFacetTa
   @Nullable
   public TaraBody getBody() {
     return findChildByClass(TaraBody.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraConstraint getConstraint() {
-    return findChildByClass(TaraConstraint.class);
-  }
-
-  @Override
-  @Nullable
-  public TaraIdentifierReference getIdentifierReference() {
-    return findChildByClass(TaraIdentifierReference.class);
   }
 
 }

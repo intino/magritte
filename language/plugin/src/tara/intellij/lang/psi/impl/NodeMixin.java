@@ -19,14 +19,14 @@ import tara.Resolver;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.semantic.LanguageNode;
-import tara.semantic.model.Tag;
+import tara.language.model.Tag;
 
 import javax.swing.*;
 import java.util.*;
 
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.unmodifiableList;
-import static tara.semantic.model.Tag.*;
+import static tara.language.model.Tag.*;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 
@@ -92,17 +92,17 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public List<Node> getNodeSiblings() {
-		Node node = (this.isSub()) ? getParentNode() : (Node) this;
+		Node node = (this.isSub()) ? parent() : (Node) this;
 		NodeContainer contextOf = TaraPsiImplUtil.getContextOf(node);
-		if (contextOf == null) return unmodifiableList(((TaraModel) this.getContainingFile()).getIncludes());
-		return unmodifiableList(contextOf.getIncludes());
+		if (contextOf == null) return unmodifiableList(((TaraModel) this.getContainingFile()).components());
+		return unmodifiableList(contextOf.components());
 	}
 
-	public List<Node> getIncludes() {
+	public List<Node> components() {
 		return unmodifiableList(TaraUtil.getInnerNodesOf((Node) this));
 	}
 
-	public List<Variable> getVariables() {
+	public List<Variable> variables() {
 		return TaraPsiImplUtil.getVariablesInBody(this.getBody());
 	}
 
@@ -116,7 +116,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return signature.getParentReference() != null ? signature.getParentReference().getText() : null;
 	}
 
-	public Node getParentNode() {
+	public Node parent() {
 		return TaraPsiImplUtil.getParentOf((Node) this);
 	}
 
@@ -151,7 +151,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		String name = "";
 		while (node != null) {
 			name = getPathName(node) + "." + name;
-			node = node.getContainer();
+			node = node.container();
 		}
 		return name.substring(0, name.length() - 1);
 	}
@@ -243,7 +243,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		for (PsiElement annotation : getAnnotations())
 			if (taraTags.name().equalsIgnoreCase(annotation.getText()))
 				return true;
-		Node parent = getParentName() != null ? getParentNode() : null;
+		Node parent = getParentName() != null ? parent() : null;
 		return hasInheritedAnnotation(taraTags) || (parent != null && ((NodeMixin) parent).is(taraTags));
 	}
 
@@ -267,7 +267,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return unmodifiableList(subs);
 	}
 
-	public Node getContainer() {
+	public Node container() {
 		if (isAnnotatedAsMain()) return null;//TODO
 		if (isSub()) {
 			Node rootOfSub = containerOfSub((Node) this);
@@ -326,7 +326,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean contains(String type) {
-		for (Node node : getIncludes())
+		for (Node node : components())
 			if (type.equals(node.getType())) return true;
 		return true;
 	}

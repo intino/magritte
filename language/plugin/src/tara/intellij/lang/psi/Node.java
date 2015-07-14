@@ -14,7 +14,7 @@ import java.util.List;
 
 import static java.util.Collections.EMPTY_LIST;
 
-public interface Node extends NodeContainer, Parametrized, Navigatable, Iconable {
+public interface Node extends tara.language.model.Node, NodeContainer, Parametrized, Navigatable, Iconable {
 
 	TaraModelImpl getFile() throws PsiInvalidElementAccessException;
 
@@ -35,9 +35,9 @@ public interface Node extends NodeContainer, Parametrized, Navigatable, Iconable
 
 	boolean isMain();
 
-	List<Node> getSubNodes();
+	List<? extends Node> getSubNodes();
 
-	Node getContainer();
+	Node container();
 
 	boolean isFacet();
 
@@ -71,7 +71,7 @@ public interface Node extends NodeContainer, Parametrized, Navigatable, Iconable
 
 	boolean contains(String type);
 
-	Node getParentNode();
+	Node parent();
 
 	@Nullable
 	String getName();
@@ -90,15 +90,15 @@ public interface Node extends NodeContainer, Parametrized, Navigatable, Iconable
 
 	List<Node> getNodeSiblings();
 
-	List<Node> getIncludes();
+	List<? extends Node> components();
 
-	List<Variable> getVariables();
+	List<? extends Variable> variables();
 
-	List<NodeReference> getInnerNodeReferences();
+	List<? extends NodeReference> getInnerNodeReferences();
 
-	List<FacetApply> getFacetApplies();
+	List<? extends FacetApply> getFacetApplies();
 
-	List<FacetTarget> getFacetTargets();
+	List<? extends FacetTarget> getFacetTargets();
 
 	@Nullable
 	MetaIdentifier getMetaIdentifier();

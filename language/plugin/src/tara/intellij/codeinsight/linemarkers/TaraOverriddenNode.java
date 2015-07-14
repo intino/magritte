@@ -67,12 +67,12 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 	private Node getOverriddenNode(Node inner) {
 		Node node = TaraPsiImplUtil.getContainerNodeOf(inner);
 		if (node == null) return null;
-		Node parent = node.getParentNode();
+		Node parent = node.parent();
 		while (parent != null) {
-			for (Node parentVar : parent.getIncludes())
+			for (Node parentVar : parent.components())
 				if (isOverridden(inner, parentVar))
 					return parentVar;
-			parent = parent.getParentNode();
+			parent = parent.parent();
 		}
 		return null;
 	}

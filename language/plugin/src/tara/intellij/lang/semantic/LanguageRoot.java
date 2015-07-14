@@ -2,7 +2,7 @@ package tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
 import tara.intellij.lang.psi.TaraModel;
-import tara.semantic.model.*;
+import tara.language.model.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -113,7 +113,7 @@ public class LanguageRoot extends LanguageElement implements Node {
 
 	@Override
 	public List<Node> components() {
-		return unmodifiableList(model.getIncludes().stream().map(LanguageNode::new).collect(Collectors.toList()));
+		return unmodifiableList(model.components().stream().map(LanguageNode::new).collect(Collectors.toList()));
 	}
 
 	@Override

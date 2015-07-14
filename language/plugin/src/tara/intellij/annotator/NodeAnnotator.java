@@ -17,7 +17,7 @@ import tara.intellij.lang.psi.NodeReference;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNodeReference;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.semantic.Assumption;
+import tara.language.semantics.Assumption;
 
 import java.awt.*;
 import java.util.List;

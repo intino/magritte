@@ -13,7 +13,7 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.TaraFileReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraWordReferenceSolver;
-import tara.semantic.Allow;
+import tara.language.semantics.Allow;
 import tara.intellij.lang.lexer.TaraPrimitives;
 
 import javax.swing.*;

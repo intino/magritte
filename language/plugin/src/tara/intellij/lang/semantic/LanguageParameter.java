@@ -4,13 +4,13 @@ package tara.intellij.lang.semantic;
 import com.intellij.psi.PsiElement;
 import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.Parameter;
-import tara.semantic.model.EmptyNode;
+import tara.language.model.EmptyNode;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class LanguageParameter extends LanguageElement implements tara.semantic.model.Parameter {
+public class LanguageParameter extends LanguageElement implements tara.language.model.Parameter {
 
 	Parameter parameter;
 

@@ -15,7 +15,7 @@ import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.TaraVariableType;
 import tara.intellij.lang.psi.Variable;
-import tara.semantic.model.Primitives;
+import tara.language.model.Primitives;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 

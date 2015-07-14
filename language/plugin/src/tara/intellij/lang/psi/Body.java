@@ -22,9 +22,6 @@ public interface Body extends TaraPsiElement {
 	List<NodeReference> getNodeLinks();
 
 	@NotNull
-	List<? extends ReferenceStatement> getReferenceStatementList();
-
-	@NotNull
 	List<TaraFacetTarget> getFacetTargetList();
 
 	@NotNull

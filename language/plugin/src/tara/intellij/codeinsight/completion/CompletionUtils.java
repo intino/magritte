@@ -9,7 +9,7 @@ import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.Parameter;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.semantic.Allow;
+import tara.language.semantics.Allow;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import java.util.Collection;

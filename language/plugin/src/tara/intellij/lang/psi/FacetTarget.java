@@ -1,26 +1,15 @@
 package tara.intellij.lang.psi;
 
 import com.intellij.pom.Navigatable;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
-public interface FacetTarget extends NodeContainer, Navigatable {
-
-	String getTarget();
-
-	List<String> getConstraints();
-
-	@NotNull
-	List<Node> getIncludes();
-
-	@NotNull
-	List<Variable> getVariables();
+public interface FacetTarget extends tara.language.model.FacetTarget, NodeContainer, Navigatable {
 
 	@Nullable
 	IdentifierReference getIdentifierReference();
 
 	@Nullable
 	TaraBody getBody();
+
+	<T extends tara.language.model.Node> void targetNode(T destiny);
 }

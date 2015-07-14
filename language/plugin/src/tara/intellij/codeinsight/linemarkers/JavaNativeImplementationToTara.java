@@ -68,7 +68,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	private void searchInScope(NodeContainer candidateNode, PsiClass psiClass, Set<PsiElement> nativeCandidates) {
 		final PsiElement element = searchNativeInNode(getSimpleName(psiClass), getContract(psiClass.getInterfaces()[0]), candidateNode);
 		if (element != null) nativeCandidates.add(element);
-		searchInScope(candidateNode.getIncludes(), psiClass, nativeCandidates);
+		searchInScope(candidateNode.components(), psiClass, nativeCandidates);
 	}
 
 	@Nullable
@@ -78,7 +78,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 				if (name.equals(parameter.getName()))
 					return parameter;
 		}
-		for (Variable variable : node.getVariables())
+		for (Variable variable : node.variables())
 			if (variable.getContract() != null && contract.equals(variable.getContract().getFormattedName()) && name.equals(variable.getName()))
 				return variable;
 		return null;

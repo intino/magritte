@@ -3,8 +3,8 @@ package tara.intellij.lang.semantic;
 import com.intellij.psi.PsiElement;
 import tara.intellij.lang.psi.Body;
 import tara.intellij.lang.psi.IdentifierReference;
-import tara.semantic.model.FacetTarget;
-import tara.semantic.model.Node;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +26,7 @@ public class LanguageFacetTarget extends LanguageElement implements FacetTarget 
 
 	@Override
 	public List<String> constraints() {
-		return target.getConstraints();
+		return target.constraints();
 	}
 
 	@Override

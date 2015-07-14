@@ -2,7 +2,7 @@ package tara.intellij.lang.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import tara.semantic.model.Tag;
+import tara.language.model.Tag;
 
 public class AnnotationMixin extends ASTWrapperPsiElement {
 
