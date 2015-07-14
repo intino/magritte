@@ -70,13 +70,6 @@
         <processorPath useClasspath="true" />
         <module name="framework" />
       </profile>
-      <profile default="false" name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-        <module name="semantic" />
-      </profile>
       <profile default="false" name="Annotation profile for tara-runtime-constants" enabled="true">
         <sourceOutputDir name="../../out/build/tara-runtime-constants/generated-sources/annotations" />
         <sourceTestOutputDir name="../../out/build/tara-runtime-constants/generated-test-sources/test-annotations" />
@@ -84,9 +77,24 @@
         <processorPath useClasspath="true" />
         <module name="tara-runtime-constants" />
       </profile>
+      <profile default="false" name="Annotation profile for semantic" enabled="true">
+        <sourceOutputDir name="../../out/build/semantic/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../out/build/semantic/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="semantic" />
+      </profile>
+      <profile default="false" name="Annotation profile for framework1" enabled="true">
+        <sourceOutputDir name="../../out/build/magritte/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../out/build/magritte/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="framework1" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="framework" target="1.8" />
+      <module name="framework1" target="1.8" />
       <module name="intellij" target="1.8" />
       <module name="magritte" target="1.8" />
       <module name="magritte-store" target="1.8" />

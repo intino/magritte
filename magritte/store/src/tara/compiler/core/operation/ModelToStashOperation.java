@@ -6,7 +6,6 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Facet;
 import tara.compiler.model.Node;
 import tara.compiler.model.Parameter;
-import tara.compiler.model.Primitives;
 import tara.compiler.model.impl.Model;
 import tara.compiler.model.impl.Stash;
 
@@ -14,18 +13,24 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ModelToStashOperation extends ModelOperation {
 	private static final String STASH = ".stash";
 	public static final String PASS_KEY = "!";
 	private static final String BLOB_KEY = "%";
+	private final Map<String, File> fileMap;
 	private File outFolder;
+	private final String storeDirectory;
 
 	public ModelToStashOperation(CompilationUnit compilationUnit) {
 		super();
 		outFolder = compilationUnit.getConfiguration().getOutDirectory();
+		fileMap = compilationUnit.getConfiguration().getClassPath();
+		storeDirectory = compilationUnit.getConfiguration().getStoreDirectory();
 	}
 
 	@Override
@@ -33,23 +38,23 @@ public class ModelToStashOperation extends ModelOperation {
 		List<Stash> stashs = new ArrayList<>();
 		for (Node node : model.getIncludedNodes()) {
 			final Stash root = new Stash();
-			createStash(node, root);
+			fillStash(node, root);
 			stashs.add(root);
 		}
 		write(model.getFile(), stashs);
 	}
 
-	private Stash createStash(Node node, Stash root) {
+	private Stash fillStash(Node node, Stash root) {
 		root.name = node.getName();
 		root.types = collectTypes(node);
 		root.variables = collectVariables(node);
 		root.components = collectComponents(node.getIncludedNodes());
-		return null;
+		return root;
 	}
 
 	private Stash[] collectComponents(List<Node> components) {
-		final List<Stash> cases = components.stream().map(component -> createStash(component, new Stash())).collect(Collectors.toList());
-		return cases.toArray(new Stash[cases.size()]);
+		final List<Stash> stashes = components.stream().map(component -> fillStash(component, new Stash())).collect(Collectors.toList());
+		return stashes.toArray(new Stash[stashes.size()]);
 	}
 
 	private Stash.Variable[] collectVariables(Node node) {
@@ -62,25 +67,53 @@ public class ModelToStashOperation extends ModelOperation {
 	private void createVariable(List<Stash.Variable> variables, Parameter parameter) {
 		final Stash.Variable v = new Stash.Variable();
 		v.name = parameter.getName();
-		if (parameter.hasReferenceValue()) v.value = buildReferenceValues(parameter);
-		if (Primitives.FILE.equals(parameter.getInferredType())) v.value = buildResourceValue(parameter);
-		else v.value = parameter.getValues().toArray();
+		if (parameter.hasReferenceValue()) v.values = buildReferenceValues(parameter);
+		else if (parameter.getValues().get(0).toString().startsWith("$")) v.values = buildResourceValue(parameter);
+		else v.values = parameter.getValues().toArray();
 		variables.add(v);
 	}
 
 	private Object[] buildResourceValue(Parameter parameter) {
 		List<Object> values = parameter.getValues().stream().
-			map(v -> BLOB_KEY + ((Node) v).getFile() + "$" + v.toString()).
+			map(v -> BLOB_KEY + getPresentableName(new File(parameter.getFile()).getName()) + v.toString()).
 			collect(Collectors.toList());
 		return values.toArray();
 	}
 
 	private Object[] buildReferenceValues(Parameter parameter) {
 		List<Object> values = parameter.getValues().stream().
-			map(v -> PASS_KEY + ((Node) v).getFile() + "#" + ((Node) v).getQualifiedName()).
-			collect(Collectors.toList());
+			map(v -> {
+				File file = searchFile(v.toString());
+				if (file == null) return null; //TODO Throw an exception
+				return PASS_KEY + file.getPath().replaceFirst(storeDirectory + File.separator, "") + "#" + getQn(file, v.toString());
+			}).collect(Collectors.toList());
 		return values.toArray();
 	}
+
+	private File searchFile(String value) {
+		final List<String> split = Arrays.asList(value.split("\\."));
+		String name;
+		for (int i = 0; i < split.size() - 1; i++) {
+			name = joinByDot(split.subList(0, i + 1));
+			if (fileMap.containsKey(name)) return fileMap.get(name);
+		}
+		return null;
+	}
+
+	private String joinByDot(List<String> names) {
+		String result = "";
+		for (String name : names) result += "." + name;
+		return result.substring(1);
+	}
+
+	private String getQn(File prefix, String value) {
+		return value.replaceFirst(getPresentableName(prefix.getName()) + '.', "");
+	}
+
+	private static String getPresentableName(String name) {
+		return name.substring(0, name.lastIndexOf("."));
+	}
+
 
 	private String[] collectTypes(Node node) {
 		List<String> types = new ArrayList<>();
@@ -102,6 +135,4 @@ public class ModelToStashOperation extends ModelOperation {
 			ignored.printStackTrace();
 		}
 	}
-
-
 }

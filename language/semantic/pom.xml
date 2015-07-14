@@ -14,21 +14,16 @@
   </properties>
 
   <build>
-    <outputDirectory>../../out/production/TaraSemantic</outputDirectory>
-    <testOutputDirectory>../../out/test/TaraSemantic</testOutputDirectory>
+    <outputDirectory>../../out/production/semantic</outputDirectory>
+    <testOutputDirectory>../../out/test/semantic</testOutputDirectory>
+    <directory>../../out/build/semantic</directory>
+
   </build>
 
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
-      <version>LATEST</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
       <scope>test</scope>
       <version>LATEST</version>
     </dependency>

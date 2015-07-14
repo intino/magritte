@@ -3,34 +3,25 @@ package tara.compiler.core;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class CompilerConfiguration {
 	private int warningLevel;
 	private String sourceEncoding;
-	private String project;
-	private String module;
-	private boolean plateRequired;
 	private PrintWriter output;
 	private File tempDirectory;
-	private File rulesDirectory;
 	private File targetDirectory;
 	private boolean debug;
 	private String tdkHome;
-	private String projectIcon;
 	private Locale languageForCodeGeneration;
-	private String version = "1.0";
-	private String description = "";
-	private List<String> icons = new ArrayList<>();
 	private String languagesDirectory;
 	private File metricsDirectory;
 	private File resourcesDirectory;
-	private String generatedLanguage;
-	private String semanticRulesLib;
 	private File nativePath;
 	private int level;
+	private String storeDirectory;
+	private Map<String, File> classPath;
 
 
 	public CompilerConfiguration() {
@@ -114,14 +105,6 @@ public class CompilerConfiguration {
 			this.tempDirectory = null;
 	}
 
-	public String getProject() {
-		return project;
-	}
-
-	public void setProject(String project) {
-		this.project = project;
-	}
-
 	public File getResourcesDirectory() {
 		return resourcesDirectory;
 	}
@@ -151,60 +134,12 @@ public class CompilerConfiguration {
 		this.tdkHome = tdkHome;
 	}
 
-	public String getProjectIcon() {
-		return projectIcon;
-	}
-
-	public void setProjectIcon(String projectIcon) {
-		this.projectIcon = projectIcon;
-	}
-
-	public void addIconPath(String iconsDir) {
-		icons.add(iconsDir);
-	}
-
-	public List<String> getIconDirectories() {
-		return icons;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getModule() {
-		return module;
-	}
-
-	public void setModule(String module) {
-		this.module = module;
-	}
-
 	public void setLanguagesDirectory(String languagesDirectory) {
 		this.languagesDirectory = languagesDirectory;
 	}
 
 	public String getLanguageDirectory() {
 		return languagesDirectory;
-	}
-
-	public File getRulesDirectory() {
-		return rulesDirectory;
-	}
-
-	public void setRulesDirectory(File rulesDirectory) {
-		this.rulesDirectory = rulesDirectory;
 	}
 
 
@@ -224,30 +159,6 @@ public class CompilerConfiguration {
 		this.languageForCodeGeneration = localeForCodeGeneration;
 	}
 
-	public String getGeneratedLanguage() {
-		return generatedLanguage;
-	}
-
-	public void setGeneratedLanguage(String language) {
-		this.generatedLanguage = language;
-	}
-
-	public String getSemanticRulesLib() {
-		return semanticRulesLib;
-	}
-
-	public void setSemanticRulesLib(String semanticRulesURL) {
-		this.semanticRulesLib = semanticRulesURL;
-	}
-
-	public boolean isPlateRequired() {
-		return plateRequired;
-	}
-
-	public void setPlateRequired(boolean plateRequired) {
-		this.plateRequired = plateRequired;
-	}
-
 	public File getNativePath() {
 		return nativePath;
 	}
@@ -262,5 +173,21 @@ public class CompilerConfiguration {
 
 	public void setLevel(Integer level) {
 		this.level = level;
+	}
+
+	public void setStoreDirectory(String storeDirectory) {
+		this.storeDirectory = storeDirectory;
+	}
+
+	public String getStoreDirectory() {
+		return storeDirectory;
+	}
+
+	public void setClassPath(Map<String, File> classPath) {
+		this.classPath = classPath;
+	}
+
+	public Map<String, File> getClassPath() {
+		return classPath;
 	}
 }

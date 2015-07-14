@@ -11,7 +11,7 @@ public class Stash implements Serializable {
 
 	public static class Variable implements Serializable {
 		public String name;
-		public Object value;
+		public Object[] values;
 	}
 
 }

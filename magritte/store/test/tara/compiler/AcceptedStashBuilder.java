@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,42 +24,61 @@ public class AcceptedStashBuilder {
 
 	@Before
 	public void setUp() throws Exception {
-		home = new File("./test.res").getAbsolutePath();
+		home = new File("test.res").getAbsolutePath();
 	}
 
 	@Test
 	public void should_build_empty_stash() {
-		new StashBuilder(new File(home + "Empty.tara"), Charset.forName("UTF-8")).build();
-		assertThat("Empty.stash exists", new File(home + "Empty.stash").exists());
-		assertThat(stashFrom(new File(home + "Empty.stash")).components.length, is(0));
+		new StashBuilder(new File(home), "Empty.tara", Charset.forName("UTF-8")).build();
+		assertThat("Empty.stash exists", new File(home, "Empty.stash").exists());
+		assertThat(stashFrom(new File(home, "Empty.stash")).components.length, is(0));
 	}
 
 	@Test
 	public void should_build_stash_with_roots() {
-		new StashBuilder(new File(home + "Months.tara"), Charset.forName("UTF-8")).build();
-		assertThat("Months.stash exists", new File(home + "Months.stash").exists());
-		assertThat(stashFrom(new File(home + "Months.stash")).components.length, is(12));
+		new StashBuilder(new File(home), "Months.tara", Charset.forName("UTF-8")).build();
+		assertThat("Months.stash exists", new File(home, "Months.stash").exists());
+		assertThat(stashFrom(new File(home, "Months.stash")).components.length, is(12));
 	}
 
 	@Test
 	public void should_build_stash_with_components_and_blobs() {
-		new StashBuilder(new File(home + "World.tara"), Charset.forName("UTF-8")).build();
-		assertThat("World.stash exists", new File(home + "World.stash").exists());
-		assertThat(stashFrom(new File(home + "World.stash")).components.length, is(2));
+		new StashBuilder(new File(home), "World.tara", Charset.forName("UTF-8")).build();
+		final File stashFile = new File(home, "World.stash");
+		assertThat("World.stash exists", stashFile.exists());
+		final Stash stash = stashFrom(stashFile);
+		assertThat(stash.components.length, is(2));
+		assertThat("Asia has 1 component", stash.components[0].components.length, is(1));
+		assertThat("Asia has City component", stash.components[0].components[0].types[0], is("City"));
+		assertThat("Asia has City component named Tokyo", stash.components[0].components[0].name, is("Tokyo"));
+		assertThat("Blob variable has size 1", stash.components[0].components[0].variables[1].values.length, is(1));
+		assertThat("Blob variable has right value", stash.components[0].components[0].variables[1].values[0], is("%World$1"));
 	}
 
 	@Test
 	public void should_build_stash_with_facets() {
-		new StashBuilder(new File(home + "Temperature.tara"), Charset.forName("UTF-8")).build();
-		assertThat("Temperature.stash exists", new File(home + "Temperature.stash").exists());
-		assertThat(stashFrom(new File(home + "Temperature.stash")).components.length, is(9));
+		new StashBuilder(new File(home), "Temperature.tara", Charset.forName("UTF-8")).build();
+		assertThat("Temperature.stash exists", new File(home, "Temperature.stash").exists());
+		assertThat(stashFrom(new File(home, "Temperature.stash")).components.length, is(9));
 	}
 
 	@Test
 	public void should_build_stash_with_passes() {
-		new StashBuilder(new File(home + "Weather.tara"), Charset.forName("UTF-8")).build();
-		assertThat("Weather.stash exists", new File(home + "Weather.stash").exists());
-		assertThat(stashFrom(new File(home + "Weather.stash")).components.length, is(24));
+		new StashBuilder(new File(home), "Weather.tara", Charset.forName("UTF-8")).build();
+		assertThat("Weather.stash exists", new File(home, "Weather.stash").exists());
+		final Stash root = stashFrom(new File(home, "Weather.stash"));
+		assertThat(root.components.length, is(24));
+		for (Stash component : root.components)
+			assertThat("Root is Temperature", Arrays.asList(component.types).contains("Temperature"));
+		assertThat("Temperature has city variable", root.components[0].variables[0].name, is("city"));
+		assertThat("Temperature has month variable", root.components[0].variables[1].name, is("month"));
+		assertThat("Temperature has temperature variable", root.components[0].variables[2].name, is("temperature"));
+		assertThat("temperature variable has right value", Arrays.equals(root.components[0].variables[2].values, new Double[]{7.0}));
+		assertThat("Root has not components", root.components[1].components.length, is(0));
+		assertThat("city variable of 1º element has correct size", root.components[0].variables[0].values.length, is(1));
+		assertThat("city variable of 1º element has correct reference", root.components[0].variables[0].values[0], is("!World.tara#Asia.Tokyo"));
+		assertThat("city variable of 15º element has correct reference", root.components[15].variables[0].values[0], is("!World.tara#Europe.London"));
+		assertThat(root.components[1].components.length, is(0));
 
 	}
 

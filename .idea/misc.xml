@@ -23,10 +23,11 @@
         <option value="$PROJECT_DIR$/language/semantic/pom.xml" />
         <option value="$PROJECT_DIR$/language/rt/pom.xml" />
         <option value="$PROJECT_DIR$/language/rt-constants/pom.xml" />
+        <option value="$PROJECT_DIR$/magritte/framework1/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="IntelliJ IDEA IU-141.713.2" project-jdk-type="IDEA JDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
