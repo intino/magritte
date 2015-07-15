@@ -12,25 +12,22 @@ import tara.compiler.model.impl.Stash;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ModelToStashOperation extends ModelOperation {
 	private static final String STASH = ".stash";
 	public static final String PASS_KEY = "!";
 	private static final String BLOB_KEY = "%";
-	private final Map<String, File> fileMap;
-	private File outFolder;
-	private final String storeDirectory;
+	private final String rootFolder;
+	private final File outFolder;
+	private final Set<String> classPath;
 
 	public ModelToStashOperation(CompilationUnit compilationUnit) {
 		super();
-		outFolder = compilationUnit.getConfiguration().getOutDirectory();
-		fileMap = compilationUnit.getConfiguration().getClassPath();
-		storeDirectory = compilationUnit.getConfiguration().getStoreDirectory();
+		rootFolder = compilationUnit.getConfiguration().getRootFolder();
+		outFolder = compilationUnit.getConfiguration().getOutFolder();
+		classPath = compilationUnit.getConfiguration().getClassPath();
 	}
 
 	@Override
@@ -85,7 +82,7 @@ public class ModelToStashOperation extends ModelOperation {
 			map(v -> {
 				File file = searchFile(v.toString());
 				if (file == null) return null; //TODO Throw an exception
-				return PASS_KEY + file.getPath().replaceFirst(storeDirectory + File.separator, "") + "#" + getQn(file, v.toString());
+				return PASS_KEY + file.getPath().replaceFirst(rootFolder + File.separator, "") + "#" + getQn(file, v.toString());
 			}).collect(Collectors.toList());
 		return values.toArray();
 	}
@@ -95,9 +92,13 @@ public class ModelToStashOperation extends ModelOperation {
 		String name;
 		for (int i = 0; i < split.size() - 1; i++) {
 			name = joinByDot(split.subList(0, i + 1));
-			if (fileMap.containsKey(name)) return fileMap.get(name);
+			if (classPath.contains(name)) return fileOf(name);
 		}
 		return null;
+	}
+
+	private File fileOf(String name) {
+		return new File(rootFolder, name.replace(".",File.separator) + ".tara");
 	}
 
 	private String joinByDot(List<String> names) {
