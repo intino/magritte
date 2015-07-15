@@ -126,13 +126,13 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 			frame.addFrame("importMetric", IMPORT + " " + STATIC + " " + project.toLowerCase() + DOT + METRICS + DOT + metric + DOT + STAR + SEMICOLON);
 	}
 
-	private void addFacetImports(Collection<Node> nodes, Frame frame) {
+	private void addFacetImports(List<? extends Node> nodes, Frame frame) {
 		Set<String> imports = searchFacets(nodes);
 		for (String anImport : imports)
 			frame.addFrame("importFacet", IMPORT + " " + project.toLowerCase() + DOT + EXTENSIONS + DOT + anImport.toLowerCase() + DOT + STAR + SEMICOLON);
 	}
 
-	private Set<String> searchFacets(Collection<Node> nodes) {
+	private Set<String> searchFacets(List<? extends Node> nodes) {
 		Set<String> imports = new HashSet<>();
 		for (Node node : nodes) {
 			if (node instanceof NodeReference) continue;

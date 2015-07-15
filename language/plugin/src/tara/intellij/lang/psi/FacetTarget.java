@@ -15,6 +15,8 @@ public interface FacetTarget extends tara.language.model.FacetTarget, NodeContai
 	@Nullable
 	TaraBody getBody();
 
+	@Nullable
+	TaraIdentifierReference getIdentifierReference();
 
 	default List<String> constraints() {
 		TaraConstraint with = ((TaraFacetTargetImpl) this).getConstraint();
@@ -51,18 +53,10 @@ public interface FacetTarget extends tara.language.model.FacetTarget, NodeContai
 	default void constraints(List<String> constraints) {
 	}
 
-	default void add(tara.intellij.lang.psi.Node... nodes) {
-	}
-
-	default void add(int pos, tara.intellij.lang.psi.Node... nodes) {
-	}
 
 	default String type() {
 		return target();
 	}
 
-	default <T extends tara.intellij.lang.psi.Variable> void add(T... variables) {
-
-	}
 
 }

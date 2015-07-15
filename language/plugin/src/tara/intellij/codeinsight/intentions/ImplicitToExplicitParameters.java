@@ -35,7 +35,7 @@ public class ImplicitToExplicitParameters extends ParametersIntentionAction impl
 ////		if (inFacet != null && (facetVariables = getAllowedFacet(node, inFacet.getFirstChild().getText(), getContextNameOf(inFacet))) == null)
 ////			return null;
 ////		List<Variable> variables = (inFacet != null) ? facetVariables : node.getObject().variables();
-////		int indexInParent = parameter.getIndexInParent();
+////		int indexInParent = parameter.position();
 ////		if (indexInParent >= variables.size()) return null;
 ////		return variables.get(indexInParent);
 //	}

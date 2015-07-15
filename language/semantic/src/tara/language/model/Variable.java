@@ -27,7 +27,8 @@ public interface Variable extends Element, Cloneable {
 
 	NodeContainer container();
 
-	void container(NodeContainer container);
+	default void container(NodeContainer container) {
+	}
 
 	void type(String type);
 
@@ -53,11 +54,13 @@ public interface Variable extends Element, Cloneable {
 
 	List<Object> allowedValues();
 
-	void addAllowedValues(Object... values);
+	default void addAllowedValues(Object... values) {
+	}
 
 	List<Object> defaultValues();
 
-	void addDefaultValues(Object... values);
+	default void addDefaultValues(Object... values) {
+	}
 
 	String defaultExtension();
 
@@ -65,5 +68,7 @@ public interface Variable extends Element, Cloneable {
 
 	String getUID();
 
-	Variable cloneIt(NodeContainer container);
+	default Variable cloneIt(NodeContainer container) {
+		return null;
+	}
 }

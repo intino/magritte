@@ -160,6 +160,11 @@ public class EmptyNode implements Node {
 	}
 
 	@Override
+	public String simpleType() {
+		return null;
+	}
+
+	@Override
 	public List<Node> components() {
 		return null;
 	}
@@ -246,16 +251,6 @@ public class EmptyNode implements Node {
 
 	@Override
 	public void type(String type) {
-
-	}
-
-	@Override
-	public String fullType() {
-		return null;
-	}
-
-	@Override
-	public void fullType(String type) {
 
 	}
 

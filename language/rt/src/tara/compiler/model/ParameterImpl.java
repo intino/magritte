@@ -46,7 +46,7 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public NodeContainer owner() {
+	public NodeContainer container() {
 		return owner;
 	}
 
@@ -75,12 +75,12 @@ public class ParameterImpl implements Parameter {
 	}
 
 	@Override
-	public List<String> annotations() {
+	public List<String> flags() {
 		return Collections.unmodifiableList(annotations);
 	}
 
 	@Override
-	public void annotations(List<String> annotations) {
+	public void flags(List<String> annotations) {
 		this.annotations = annotations;
 	}
 

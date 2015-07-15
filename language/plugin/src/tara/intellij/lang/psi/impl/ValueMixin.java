@@ -22,7 +22,7 @@ public class ValueMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public List<Object> getValues() {
+	public List<Object> values() {
 		List<Object> values = new ArrayList<>();
 		for (PsiElement element : getChildren()) {
 			if (element instanceof TaraMeasureValue) continue;

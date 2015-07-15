@@ -1,12 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.psi.*;
+
+import java.util.List;
 
 public class TaraVariableImpl extends VariableMixin implements TaraVariable {
 
@@ -39,7 +41,7 @@ public class TaraVariableImpl extends VariableMixin implements TaraVariable {
 
   @Override
   @Nullable
-  public TaraFlags getFlags() {
+  public TaraFlags getFlagsNode() {
     return findChildByClass(TaraFlags.class);
   }
 

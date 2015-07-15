@@ -20,10 +20,11 @@ public interface NodeContainer extends Element {
 
 	<T extends Node> boolean contains(T node);
 
-	<T extends Node> boolean remove(T node);
+	default <T extends Node> boolean remove(T node) {
+		return false;
+	}
 
-	default void moveToTheTop(){
-
+	default void moveToTheTop() {
 	}
 
 	List<? extends Node> siblings();
@@ -31,20 +32,21 @@ public interface NodeContainer extends Element {
 	List<? extends Variable> variables();
 
 	default <T extends Variable> void add(T... variables) {
-
 	}
 
 	default <T extends Variable> void add(int pos, T... variables) {
-
 	}
 
 	NodeContainer container();
 
-	<T extends tara.language.model.NodeContainer> void container(T container);
+	default <T extends tara.language.model.NodeContainer> void container(T container) {
+	}
 
 	String qualifiedName();
 
 	String doc();
 
-	void addDoc(String doc);
+	default void addDoc(String doc) {
+
+	}
 }

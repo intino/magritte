@@ -1,8 +1,7 @@
-package tara.intellij.lang.semantic;
+package tara.intellij.lang;
 
 import com.intellij.openapi.diagnostic.Logger;
 import tara.Language;
-import tara.intellij.lang.TaraLanguage;
 
 import java.io.File;
 import java.net.MalformedURLException;

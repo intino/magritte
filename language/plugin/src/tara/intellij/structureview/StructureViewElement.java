@@ -44,7 +44,7 @@ public class StructureViewElement implements StructureViewTreeElement {
 	@Override
 	public TreeElement[] getChildren() {
 		if (node != null) {
-			Collection<Node> nodes = TaraUtil.getInnerNodesOf(node);
+			Collection<Node> nodes = TaraUtil.getComponentsOf(node);
 			if (!nodes.isEmpty()) {
 				List<TreeElement> treeElements = new ArrayList<>(nodes.size());
 				treeElements.addAll(nodes.stream().map(StructureViewElement::new).collect(Collectors.toList()));

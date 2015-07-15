@@ -19,7 +19,9 @@ public class Primitives {
 	public static final String REFERENCE = "reference";
 	public static final String TUPLE = "tuple";
 	public static final String DATE = "date";
+	public static final String WORD = "word";
 	public static final Map<String, Converter> CONVERTER_MAP = new HashMap<>();
+
 
 	static {
 		final Converter stringConverter = new Converter() {
@@ -115,6 +117,12 @@ public class Primitives {
 		Object[] convert(String... value);
 
 		String[] convert(Object... value);
+	}
+
+
+	public static boolean isPrimitive(String value) {
+		for (String primitive : getPrimitives()) if (primitive.equals(value)) return true;
+		return false;
 	}
 
 	public static class Expression {

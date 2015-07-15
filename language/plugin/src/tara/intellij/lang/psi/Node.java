@@ -20,16 +20,6 @@ public interface Node extends tara.language.model.Node, NodeContainer, Parametri
 
 	String qualifiedName();
 
-	default void type(String type) {
-		fullType(type);
-	}
-
-	@Override
-	List<String> types();
-
-	String fullType();
-
-	void fullType(String type);
 
 	@Override
 	void name(String name);
@@ -52,7 +42,7 @@ public interface Node extends tara.language.model.Node, NodeContainer, Parametri
 
 	boolean isMain();
 
-	List<? extends Node> subs();
+	List<Node> subs();
 
 	Node container();
 
@@ -107,11 +97,11 @@ public interface Node extends tara.language.model.Node, NodeContainer, Parametri
 	@NotNull
 	Node resolve();
 
-	List<? extends NodeReference> referenceComponents();
+	List<NodeReference> referenceComponents();
 
-	List<? extends FacetApply> facets();
+	List<FacetApply> facets();
 
-	List<? extends FacetTarget> facetTargets();
+	List<FacetTarget> facetTargets();
 
 	@Nullable
 	MetaIdentifier getMetaIdentifier();

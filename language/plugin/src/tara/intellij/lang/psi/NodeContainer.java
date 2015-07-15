@@ -14,7 +14,7 @@ public interface NodeContainer extends tara.language.model.NodeContainer, TaraPs
 
 	String type();
 
-	List<? extends Variable> variables();
+	List<Variable> variables();
 
 	default Node container() {
 		return TaraPsiImplUtil.getContainerNodeOf(this);
@@ -25,14 +25,12 @@ public interface NodeContainer extends tara.language.model.NodeContainer, TaraPs
 		return unmodifiableList(TaraUtil.getComponentsOf(this));
 	}
 
-	default tara.intellij.lang.psi.Node component(String name) {
-		for (Node node : components()) {
-			if (name.equals(node.name())) return node;
-		}
+	default Node component(String name) {
+		for (Node node : components()) if (name.equals(node.name())) return node;
 		return null;
 	}
 
-	default List<? extends tara.intellij.lang.psi.Node> siblings() {
+	default List<Node> siblings() {
 		return null;
 	}
 
@@ -43,33 +41,13 @@ public interface NodeContainer extends tara.language.model.NodeContainer, TaraPs
 	default <T extends tara.language.model.NodeContainer> void container(T container) {
 	}
 
-	default void moveToTheTop() {
-	}
-
-
-	default void add(tara.language.model.Node... nodes) {
-	}
-
-	default <T extends tara.language.model.Node> void add(int pos, T... nodes) {
-	}
-
-	default <T extends tara.language.model.Variable> void add(T... variables) {
-	}
-
-	default <T extends tara.language.model.Variable> void add(int pos, T... variables) {
-	}
-
-	default <T extends tara.language.model.Node> boolean remove(T node) {
-		return false;
+	default String file() {
+		return this.getContainingFile().getVirtualFile().getPath();
 	}
 
 	@Override
 	default String doc() {
 		return null;
-	}
-
-	@Override
-	default void addDoc(String doc) {
 	}
 
 }

@@ -79,7 +79,7 @@ public class ReferenceParameterAllow extends ParameterAllow implements Allow.Par
 		if (checkAsReferenceOrWord(parameter.getParameter().values())) {
 			parameter.getParameter().name(name());
 			parameter.getParameter().inferredType(type());
-			parameter.getParameter().annotations(flags);
+			parameter.getParameter().flags(flags);
 			parameter.getParameter().multiple(multiple());
 			parameter.getParameter().addAllowedParameters(allowedValues());
 			toRemove.add(parameter);

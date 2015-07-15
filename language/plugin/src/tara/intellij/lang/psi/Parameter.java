@@ -1,38 +1,24 @@
 package tara.intellij.lang.psi;
 
 import com.intellij.pom.Navigatable;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 public interface Parameter extends tara.language.model.Parameter, Navigatable, TaraPsiElement {
 
-	int getIndexInParent();
 
 	boolean isExplicit();
 
 	Value getValue();
 
-	List<Object> getValues();
-
 	TaraMeasureValue getMetric();
-
-	boolean isList();
-
-	FacetApply isInFacet();
-
-	@Nullable
-	String getName();
-
-	String getContract();
-
-	void setContract(String contract);
-
-	String getInferredType();
 
 	String getValueType();
 
-	void setInferredType(String type);
+	default NodeContainer container() {
+		return TaraPsiImplUtil.getContainerNodeOf(this);
+	}
 
-	void setInferredName(String name);
+	default String file() {
+		return this.getContainingFile().getVirtualFile().getPath();
+	}
 }

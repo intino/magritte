@@ -77,7 +77,7 @@ public class PrimitiveParameterAllow extends ParameterAllow implements Allow.Par
 			toRemove.add(parameter);
 			parameter.getParameter().name(name());
 			parameter.getParameter().inferredType(type());
-			parameter.getParameter().annotations(flags);
+			parameter.getParameter().flags(flags);
 			parameter.getParameter().multiple(multiple());
 			parameter.getParameter().contract(contract());
 		} else parameter.invalidType(type);

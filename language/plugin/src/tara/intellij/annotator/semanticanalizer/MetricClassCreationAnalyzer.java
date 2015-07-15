@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 import tara.intellij.annotator.TaraAnnotator;
 import tara.intellij.annotator.fix.CreateMeasureClassIntention;
 import tara.intellij.lang.TaraLanguage;
-import tara.intellij.lang.lexer.TaraPrimitives;
 import tara.intellij.lang.psi.Contract;
 import tara.intellij.lang.psi.TaraAttributeType;
 import tara.intellij.lang.psi.Variable;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
+import tara.language.model.Primitives;
 
 import javax.tools.*;
 import java.io.File;
@@ -49,7 +49,7 @@ public class MetricClassCreationAnalyzer extends TaraAnalyzer {
 
 	@Override
 	public void analyze() {
-		if (!Variable.class.isInstance(attribute.getParent()) || !TaraPrimitives.MEASURE.equals(((Variable) attribute.getParent()).getType()))
+		if (!Variable.class.isInstance(attribute.getParent()) || !Primitives.MEASURE.equals(((Variable) attribute.getParent()).type()))
 			return;
 		((Runnable) this::checkMeasureVariable).run();
 	}

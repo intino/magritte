@@ -18,7 +18,6 @@ import tara.Language;
 import tara.Resolver;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
-import tara.intellij.lang.semantic.LanguageNode;
 import tara.language.model.Tag;
 
 import javax.swing.*;
@@ -31,8 +30,8 @@ import static tara.language.model.Tag.*;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 
-	private String fullType = type();
-	private String prevType = type();
+	private String fullType = simpleType();
+	private String prevType = simpleType();
 	private Set<Tag> inheritedFlags = new HashSet<>();
 
 	public NodeMixin(@NotNull ASTNode node) {
@@ -57,7 +56,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		}
 	}
 
-	public String type() {
+	public String simpleType() {
 		MetaIdentifier type = getSignature().getType();
 		if (type == null && this.isSub()) {
 			Node baseNode = getBaseConcept();
@@ -67,15 +66,15 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public String fullType() {
-		if (!prevType.equals(type())) {
-			fullType = type();
-			prevType = type();
+	public String type() {
+		if (!prevType.equals(simpleType())) {
+			fullType = simpleType();
+			prevType = simpleType();
 		}
 		return fullType;
 	}
 
-	public void fullType(String fullType) {
+	public void type(String fullType) {
 		this.fullType = fullType;
 	}
 
@@ -83,8 +82,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public Node resolve() {
 		Language language = TaraUtil.getLanguage(this.getOriginalElement());
 		if (language == null) return (Node) this;
-		LanguageNode node = new LanguageNode((Node) this);
-		new Resolver(language).resolve(node);
+		new Resolver(language).resolve((Node) this);
 		return (Node) this;
 	}
 
@@ -92,7 +90,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.getParentOf((Node) this);
 	}
 
-	public List<Node> getNodeSiblings() {
+	public List<Node> siblings() {
 		Node node = (this.isSub()) ? parent() : (Node) this;
 		NodeContainer contextOf = TaraPsiImplUtil.getContextOf(node);
 		if (contextOf == null) return unmodifiableList(((TaraModel) this.getContainingFile()).components());
@@ -127,9 +125,10 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return childrenOfType == null ? null : childrenOfType[0];
 	}
 
+	@NotNull
 	public String name() {
 		Identifier identifierNode = getIdentifierNode();
-		return identifierNode != null ? identifierNode.getText() : null;
+		return identifierNode != null ? identifierNode.getText() : "";
 	}
 
 	@NotNull
@@ -253,15 +252,15 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	public boolean isFacetInstance() {
-		return inheritedFlags.contains(FACET_INSTANCE.name());
+		return inheritedFlags.contains(FACET_INSTANCE);
 	}
 
 	public boolean isTerminalInstance() {
-		return inheritedFlags.contains(TERMINAL_INSTANCE.name());
+		return inheritedFlags.contains(TERMINAL_INSTANCE);
 	}
 
 	public boolean isFeatureInstance() {
-		return inheritedFlags.contains(FEATURE_INSTANCE.name());
+		return inheritedFlags.contains(FEATURE_INSTANCE);
 	}
 
 	public boolean isAnnotatedAsMain() {
@@ -400,10 +399,6 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 	}
 
-	public String file() {
-		return this.getContainingFile().getVirtualFile().getPath();
-	}
-
 	public boolean contains(String type) {
 		for (Node node : components())
 			if (type.equals(node.type())) return true;
@@ -435,7 +430,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 
 	public String toString() {
-		return name() != null ? name() : "unNamed";
+		return (name() != null ? name() : "unNamed") + "@" + type();
 	}
 
 	public boolean equals(Object obj) {

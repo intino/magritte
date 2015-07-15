@@ -114,7 +114,7 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 			forEach(parameter -> frame.addFrame(VARIABLE, context.build(parameter)));
 	}
 
-	private boolean isOverriddenByFacets(Parameter parameter, Collection<Facet> facets) {
+	private boolean isOverriddenByFacets(Parameter parameter, List<? extends Facet> facets) {
 		for (Facet facet : facets)
 			for (Parameter facetParameter : facet.parameters())
 				if (facetParameter.name().equals(parameter.name())) return true;
@@ -140,10 +140,10 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 		addFacetNodes(node, frame);
 	}
 
-	private boolean isOverriddenByFacets(Node inner, Collection<Facet> facets) {
+	private boolean isOverriddenByFacets(Node inner, List<? extends Facet> facets) {
 		for (Facet facet : facets)
 			for (Node facetNode : facet.components())
-				if (facetNode.fullType().equals(inner.fullType()) && hasSameName(inner, facetNode))
+				if (facetNode.type().equals(inner.type()) && hasSameName(inner, facetNode))
 					return true;
 		return false;
 	}

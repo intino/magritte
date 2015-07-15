@@ -79,7 +79,7 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 		}
 	}
 
-	private void addComponents(List<Node> targetIncludes, Frame frame) {
+	private void addComponents(List<? extends Node> targetIncludes, Frame frame) {
 		for (Node include : targetIncludes) {
 			if (include.isAnonymous()) continue;
 			Frame includeFrame = new Frame().addTypes(TypesProvider.getTypesOfReference(include));

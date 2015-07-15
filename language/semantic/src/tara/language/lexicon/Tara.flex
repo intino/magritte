@@ -1,4 +1,4 @@
-package siani.tara.intellij.lang.lexer;
+package tara.intellij.lang.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;

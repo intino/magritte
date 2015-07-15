@@ -15,7 +15,6 @@ public class NodeImpl implements Node {
 	private NodeContainer container;
 	private List<String> imports = new ArrayList<>();
 	private String type;
-	private String fullType;
 	private String doc;
 	private boolean sub;
 	private List<Node> includes = new ArrayList<>();
@@ -279,17 +278,6 @@ public class NodeImpl implements Node {
 
 	public String setType() {
 		return type;
-	}
-
-	@Override
-	public String fullType() {
-		return fullType;
-	}
-
-	@Override
-	public void fullType(String fullType) {
-		this.type = fullType;
-		this.fullType = fullType;
 	}
 
 	@Override

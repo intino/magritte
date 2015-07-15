@@ -14,19 +14,19 @@ public class Resolver {
 	}
 
 	public void resolve(Node node) {
-		if (getContext(node) == null) return; //TODO add resolved flag to nodes to improve resolve process
+		if (context(node) == null) return; //TODO add resolved flag to nodes to improve resolve process
 		checkAllowsInclude(node);
 	}
 
 	private void checkAllowsInclude(Node node) {
-		resolve(getContext(node));
+		resolve(context(node));
 		Collection<Allow> allows = getContextAllows(node);
 		if (allows == null) return;
 		for (Allow allow : allows) if (checkAllowInclude(node, allow)) return;
 	}
 
 	private Collection<Allow> getContextAllows(Node node) {
-		Collection<Allow> allows = language.allows(getContext(node).type());
+		Collection<Allow> allows = language.allows(context(node).type());
 		if (allows != null && contextAllowsNode(allows, node)) return allows;
 		allows = findInFacets(node);
 		return allows;
@@ -48,7 +48,7 @@ public class Resolver {
 	}
 
 	private Collection<Allow> findInFacets(Node node) {
-		for (String type : getContext(node).secondaryTypes()) {
+		for (String type : context(node).secondaryTypes()) {
 			Collection<Allow> allows = language.allows(type);
 			if (allows != null) return allows;
 		}
@@ -85,12 +85,16 @@ public class Resolver {
 		return allowedType.contains(".") ? allowedType.substring(allowedType.lastIndexOf(".") + 1) : allowedType;
 	}
 
-	private Node getContext(Node node) {
+	public Node context(Node node) {
+		if (node == null || node.container() == null) return null;
+		return getContainerNode(node);
+	}
+
+	public Node getContainerNode(Node node) {
 		NodeContainer container = node.container();
-		if (container == null) return null;
 		while (!(container instanceof Node))
 			container = container.container();
 		return (Node) container;
-
 	}
+
 }

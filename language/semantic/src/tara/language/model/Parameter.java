@@ -6,25 +6,25 @@ public interface Parameter extends Element {
 
 	String REFERENCE = "ref:";
 
-	NodeContainer owner();
+	String name();
+
+	void name(String name);
+
+	NodeContainer container();
 
 	String inferredType();
 
 	void inferredType(String type);
 
-	List<String> annotations();
+	List<String> flags();
 
-	void annotations(List<String> annotations);
+	void flags(List<String> annotations);
 
 	boolean isMultiple();
 
 	void multiple(boolean multiple);
 
 	int position();
-
-	String name();
-
-	void name(String name);
 
 	List<Object> values();
 

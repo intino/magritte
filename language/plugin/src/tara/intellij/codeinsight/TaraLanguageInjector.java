@@ -15,7 +15,6 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.intellij.lang.semantic.LanguageNode;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
@@ -122,8 +121,8 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private String getType(Allow.Parameter allow, PsiElement element) {
 		if (allow != null) return allow.type();
-		if (element instanceof Variable) return ((Variable) element).getType();
-		if (element instanceof Parameter) ((Parameter) element).getInferredType();
+		if (element instanceof Variable) return ((Variable) element).type();
+		if (element instanceof Parameter) ((Parameter) element).inferredType();
 		return null;
 	}
 
@@ -182,7 +181,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private void ensureTypeIsResolved(PsiElement element, Node node) {
-		new Resolver(TaraLanguage.getLanguage(element.getContainingFile())).resolve(new LanguageNode(node.container()));
+		new Resolver(TaraLanguage.getLanguage(element.getContainingFile())).resolve(node.container());
 	}
 
 	private String clean(String qn) {
@@ -200,7 +199,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	@NotNull
 	private static String getFacetTarget(Node owner, FacetTarget facetTarget) {
-		return facetTarget != null ? DOT + owner.name() + "_" + format(facetTarget.getTarget()) : "";
+		return facetTarget != null ? DOT + owner.name() + "_" + format(facetTarget.target()) : "";
 	}
 
 	@NotNull
@@ -211,7 +210,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	private static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
 		final Node containerNode = TaraPsiImplUtil.getContainerNodeOf(facetTarget);
 		if (containerNode == null || containerNode.name() == null) return "";
-		return containerNode.name().toLowerCase() + DOT + format(facetTarget.getTarget()) + DOT + node.qualifiedName();
+		return containerNode.name().toLowerCase() + DOT + format(facetTarget.target()) + DOT + node.qualifiedName();
 	}
 
 	private static String format(String value) {
@@ -237,11 +236,11 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private String getName(PsiElement element) {
-		if (element instanceof Parameter) return ((Parameter) element).getName();
-		return ((Variable) element).getName();
+		if (element instanceof Parameter) return ((Parameter) element).name();
+		return ((Variable) element).name();
 	}
 
 	public String getVariableInterface(PsiElement element) {
-		return element instanceof Variable ? ((Variable) element).getContract().getText() : (element instanceof Parameter ? ((Parameter) element).getContract() : "");
+		return element instanceof Variable ? ((Variable) element).getContract().getText() : (element instanceof Parameter ? ((Parameter) element).contract() : "");
 	}
 }

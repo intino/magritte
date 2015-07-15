@@ -148,7 +148,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 		addFacetAllows(node, allows);
 	}
 
-	private void addParameterAllows(List<Variable> variables, Frame allows) {
+	private void addParameterAllows(List<? extends Variable> variables, Frame allows) {
 		for (int i = 0; i < variables.size(); i++) {
 			if (!isAllowedVariable(variables.get(i))) continue;
 			Variable variable = variables.get(i);
@@ -202,7 +202,7 @@ class LanguageModelAdapter implements org.siani.itrules.Adapter<Model>, Template
 				addFrame(NAME, variable.name()).addFrame("supertype", variable.type())));
 	}
 
-	private void addParameterRequires(List<Variable> variables, Frame requires, int index) {
+	private void addParameterRequires(List<? extends Variable> variables, Frame requires, int index) {
 		for (int i = 0; i < variables.size(); i++) {
 			Variable variable = variables.get(i);
 			if (isAllowedVariable(variables.get(i))) continue;

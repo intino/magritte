@@ -10,8 +10,6 @@ import tara.intellij.lang.psi.FacetTarget;
 import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraFacetApply;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.lang.semantic.LanguageElement;
-import tara.intellij.lang.semantic.LanguageNode;
 import tara.language.semantics.SemanticException;
 
 import static tara.intellij.annotator.TaraAnnotator.AnnotateAndFix.Level.ERROR;
@@ -29,9 +27,9 @@ public class NodeAnalyzer extends TaraAnalyzer {
 		try {
 			Language language = TaraUtil.getLanguage(node);
 			if (language == null) return;
-			new Checker(language).check(new LanguageNode(node));
+			new Checker(language).check(node);
 		} catch (SemanticException e) {
-			PsiElement destiny = e.getOrigin() != null ? ((LanguageElement) e.getOrigin()).element() : node.getSignature();
+			PsiElement destiny = e.getOrigin() != null ? (PsiElement) e.getOrigin() : node.getSignature();
 			if (destiny instanceof Node) destiny = ((Node) destiny).getSignature();
 			if (destiny instanceof FacetApply) destiny = ((TaraFacetApply) destiny).getMetaIdentifierList().get(0);
 			if (destiny instanceof FacetTarget) destiny = ((FacetTarget) destiny).getIdentifierReference();

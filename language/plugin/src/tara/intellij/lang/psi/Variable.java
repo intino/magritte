@@ -6,12 +6,7 @@ import com.intellij.psi.PsiNamedElement;
 import org.jetbrains.annotations.Nullable;
 import tara.language.model.Tag;
 
-import java.util.List;
-
 public interface Variable extends tara.language.model.Variable, Navigatable, Iconable, PsiNamedElement {
-
-	@Nullable
-	String getType();
 
 	@Nullable
 	Contract getContract();
@@ -20,7 +15,7 @@ public interface Variable extends tara.language.model.Variable, Navigatable, Ico
 	TaraValue getValue();
 
 	@Nullable
-	Flags getFlags();
+	Flags getFlagsNode();
 
 	boolean isReference();
 
@@ -30,7 +25,5 @@ public interface Variable extends tara.language.model.Variable, Navigatable, Ico
 
 	boolean isOverriden();
 
-	List<Tag> getAllFlags();
-
-	void addFlags(String... flags);
+	void addFlags(Tag... flags);
 }

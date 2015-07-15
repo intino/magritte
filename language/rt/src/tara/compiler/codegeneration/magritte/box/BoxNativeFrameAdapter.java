@@ -24,7 +24,7 @@ public class BoxNativeFrameAdapter implements TemplateTags {
 		Frame nativeFrame = new Frame().addTypes("native").addFrame("body", formatBody(bodyText, signature));
 		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		nativeFrame.addFrame("varName", parameter.name());
-		nativeFrame.addFrame("container", NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.owner())));
+		nativeFrame.addFrame("container", NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.container())));
 		nativeFrame.addFrame("parentIntention", getScope(parameter));
 		nativeFrame.addFrame("interface", NameFormatter.cleanQn(getInterface(parameter)));
 		nativeFrame.addFrame("signature", signature);
@@ -63,7 +63,7 @@ public class BoxNativeFrameAdapter implements TemplateTags {
 		final String signature = "public " + type + " value()";
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
 		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name()).
-			addFrame("container", NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.owner()))).
+			addFrame("container", NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.container()))).
 			addFrame("interface", "magritte.Expression<" + type + ">").
 			addFrame("signature", signature).
 			addFrame("className", parameter.name() + "_" + parameter.getUID());

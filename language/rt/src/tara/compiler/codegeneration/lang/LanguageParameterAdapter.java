@@ -45,7 +45,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 		return index;
 	}
 
-	private boolean isRedefined(Allow.Parameter allow, Collection<Variable> variables) {
+	private boolean isRedefined(Allow.Parameter allow, List<? extends Variable> variables) {
 		for (Variable variable : variables) if (variable.name().equals(allow.name())) return true;
 		return false;
 	}

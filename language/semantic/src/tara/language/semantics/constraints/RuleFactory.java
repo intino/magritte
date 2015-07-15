@@ -288,7 +288,7 @@ public class RuleFactory {
 			@Override
 			public void check(Element element) throws SemanticException {
 				if (element instanceof Node && ((Node) element).isReference()) return;
-				List<tara.language.model.Parameter> parameters = (element instanceof Facet) ? ((Facet) element).parameters() : ((Node) element).parameters();
+				List<? extends tara.language.model.Parameter> parameters = (element instanceof Facet) ? ((Facet) element).parameters() : ((Node) element).parameters();
 				if (checkParameterExists(parameters, name(), position)) return;
 				String elementType = (element instanceof Facet) ? ((Facet) element).type() : ((Node) element).type();
 				throw new SemanticException(new SemanticError("required.parameter", element, Arrays.asList(elementType, type, name)));
@@ -337,7 +337,9 @@ public class RuleFactory {
 			public void check(Element element) throws SemanticException {
 				if (!(element instanceof Node)) return;
 				if (((Node) element).isReference()) return;
-				List<tara.language.model.Parameter> parameters = (element instanceof Facet) ? ((Facet) element).parameters() : ((Node) element).parameters();
+				List<? extends tara.language.model.Parameter> parameters = (element instanceof Facet) ?
+					((Facet) element).parameters() :
+					((Node) element).parameters();
 				if (checkParameterExists(parameters, name(), position)) return;
 				String type = (element instanceof Facet) ? ((Facet) element).type() : ((Node) element).type();
 				throw new SemanticException(new SemanticError("required.parameter", element, asList(type, "word", name)));
@@ -345,7 +347,7 @@ public class RuleFactory {
 		};
 	}
 
-	private static boolean checkParameterExists(List<Parameter> parameters, String name, int position) {
+	private static boolean checkParameterExists(List<? extends Parameter> parameters, String name, int position) {
 		List<Parameter> signatureParameters = new ArrayList<>();
 		for (Parameter parameter : parameters)
 			if (name.equals(parameter.name())) return true;

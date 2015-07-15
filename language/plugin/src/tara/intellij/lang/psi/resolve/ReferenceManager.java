@@ -5,12 +5,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.JavaHelper;
-import tara.intellij.lang.lexer.TaraPrimitives;
+import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.intellij.lang.psi.*;
-import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.language.model.Primitives;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -103,7 +103,6 @@ public class ReferenceManager {
 		return tryToResolveInBox(resolve, qn);
 	}
 
-
 	private static void addRootNodes(TaraModel model, Identifier identifier, Set<Node> set) {
 		Collection<Node> nodes = model.components();
 		set.addAll(nodes.stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
@@ -145,7 +144,7 @@ public class ReferenceManager {
 
 	private static Collection<Node> collectCandidates(Node container) {
 		List<Node> nodes = new ArrayList<>();
-		Collection<Node> siblings = container.getNodeSiblings();
+		List<? extends Node> siblings = container.siblings();
 		nodes.addAll(siblings);
 		for (Node node : siblings) nodes.addAll(node.subs());
 		return nodes;
@@ -273,7 +272,7 @@ public class ReferenceManager {
 	private static boolean isMeasure(Contract contract) {
 		PsiElement parent = contract.getParent();
 		while (!(parent instanceof Variable)) parent = parent.getParent();
-		return TaraPrimitives.MEASURE.equals(((Variable) parent).getType());
+		return Primitives.MEASURE.equals(((Variable) parent).type());
 	}
 
 	private static PsiElement resolveMetric(Contract contract) {

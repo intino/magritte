@@ -1,8 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
-import org.jetbrains.annotations.*;
 
 public interface TaraVariable extends Variable {
 
@@ -16,7 +18,7 @@ public interface TaraVariable extends Variable {
   List<TaraDoc> getDocList();
 
   @Nullable
-  TaraFlags getFlags();
+  TaraFlags getFlagsNode();
 
   @Nullable
   TaraIdentifier getIdentifier();

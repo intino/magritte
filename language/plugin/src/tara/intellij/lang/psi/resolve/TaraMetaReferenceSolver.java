@@ -41,7 +41,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		Language language = TaraLanguage.getLanguage(myElement.getContainingFile());
 		final Node node = TaraPsiImplUtil.getContainerNodeOf(myElement);
 		if (language == null || node == null) return null;
-		final Documentation doc = language.doc(node.resolve().fullType());
+		final Documentation doc = language.doc(node.resolve().type());
 		if (doc == null) return null;
 		PsiFile file = findFile(doc.file());
 		if (file == null) return null;

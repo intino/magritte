@@ -9,6 +9,8 @@ import tara.intellij.lang.psi.TaraValue;
 import tara.intellij.lang.psi.TaraVarInit;
 import tara.intellij.lang.psi.TaraVisitor;
 
+import java.util.List;
+
 public class TaraVarInitImpl extends VarInitMixin implements TaraVarInit {
 
   public TaraVarInitImpl(ASTNode node) {

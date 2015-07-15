@@ -32,21 +32,21 @@ public class NativeResolver {
 		resolveInFacets(node.facets());
 	}
 
-	private void resolveInFacetTargets(List<FacetTarget> facetTargets) throws DependencyException {
+	private void resolveInFacetTargets(List<? extends FacetTarget> facetTargets) throws DependencyException {
 		for (FacetTarget facet : facetTargets) {
 			resolveNative(facet.variables());
 			for (Node node : facet.components()) resolve(node);
 		}
 	}
 
-	private void resolveInFacets(List<Facet> facets) throws DependencyException {
+	private void resolveInFacets(List<? extends Facet> facets) throws DependencyException {
 		for (Facet facet : facets) {
 			resolveNative(facet.variables());
 			for (Node node : facet.components()) resolve(node);
 		}
 	}
 
-	private void resolveNative(List<Variable> variables) throws DependencyException {
+	private void resolveNative(List<? extends Variable> variables) throws DependencyException {
 		for (Variable variable : variables)
 			if (Primitives.NATIVE.equalsIgnoreCase(variable.type()))
 				variable.contract(NativeResolver.this.updateContract(variable));

@@ -66,18 +66,15 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	boolean isAnonymous();
 
-	String type();
+	default String simpleType() {
+		return null;
+	}
 
 	List<String> types();
 
 	List<String> secondaryTypes();
 
-	String fullType();
-
-	void fullType(String type);
-
-	default void type(String type) {
-	}
+	void type(String type);
 
 	Node resolve();
 

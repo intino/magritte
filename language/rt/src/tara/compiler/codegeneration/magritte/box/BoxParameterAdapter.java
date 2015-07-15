@@ -35,13 +35,13 @@ public class BoxParameterAdapter implements Adapter<Parameter>, TemplateTags {
 	}
 
 	private String buildName(Parameter parameter) {
-		if (parameter.owner() instanceof Facet)
-			return ((Node) (parameter.owner().container())).name() + "+" + parameter.name();
+		if (parameter.container() instanceof Facet)
+			return ((Node) (parameter.container().container())).name() + "+" + parameter.name();
 		else return parameter.name();
 	}
 
 	private boolean isTerminal(Parameter parameter) {
-		return parameter.annotations().stream().filter(a -> Tag.TERMINAL.name().equalsIgnoreCase(a)).findFirst().isPresent();
+		return parameter.flags().stream().filter(a -> Tag.TERMINAL.name().equalsIgnoreCase(a)).findFirst().isPresent();
 	}
 
 	protected void addParameterValue(Frame frame, final Parameter parameter) {
@@ -90,7 +90,7 @@ public class BoxParameterAdapter implements Adapter<Parameter>, TemplateTags {
 		list.add(VARIABLE);
 		if (parameter.values().get(0) instanceof Primitives.Expression) list.add(Primitives.NATIVE);
 		list.add(parameter.inferredType());
-		list.addAll(parameter.annotations());
+		list.addAll(parameter.flags());
 		return list;
 	}
 

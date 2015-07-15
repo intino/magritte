@@ -8,10 +8,11 @@ import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
-import tara.language.semantics.Allow;
 import tara.language.model.*;
+import tara.language.semantics.Allow;
 
 import java.util.Collection;
+import java.util.List;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.morph.TypesProvider.getTypes;
@@ -146,7 +147,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<NodeImpl>, Te
 			forEach(allow -> addVariable(frame, (Allow.Parameter) allow));
 	}
 
-	private boolean isRedefined(Allow.Parameter allow, Collection<Variable> variables) {
+	private boolean isRedefined(Allow.Parameter allow, List<? extends Variable> variables) {
 		for (Variable variable : variables) if (variable.name().equals(allow.name())) return true;
 		return false;
 	}

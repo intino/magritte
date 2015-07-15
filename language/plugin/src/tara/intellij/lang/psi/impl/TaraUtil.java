@@ -58,14 +58,14 @@ public class TaraUtil {
 	public static List<Allow> getAllowsOf(Node node) {
 		Language language = getLanguage(node);
 		if (language == null) return null;
-		return language.allows(node.resolve().fullType());
+		return language.allows(node.resolve().type());
 	}
 
 	@NotNull
 	public static List<String> getTypesOf(Node node) {
 		Language language = getLanguage(node);
 		if (language == null) return Collections.emptyList();
-		final List<String> types = language.types(node.resolve().fullType());
+		final List<String> types = language.types(node.resolve().type());
 		return types == null ? Collections.emptyList() : types;
 	}
 
@@ -84,7 +84,7 @@ public class TaraUtil {
 	}
 
 	private static boolean isOverridden(Variable variable, Variable parentVar) {
-		return parentVar.getType() != null && parentVar.getType().equals(variable.getType()) && parentVar.getName() != null && parentVar.getName().equals(variable.getName());
+		return parentVar.type() != null && parentVar.type().equals(variable.type()) && parentVar.getName() != null && parentVar.getName().equals(variable.getName());
 	}
 
 	public static Allow.Parameter getCorrespondingAllow(Node container, PsiElement element) {
@@ -97,8 +97,8 @@ public class TaraUtil {
 		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.type()) : TaraUtil.getAllowsOf(container);
 		if (allowsOf == null) return null;
 		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
-		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.getIndexInParent()) return null;
-		return parameter.isExplicit() ? findParameter(parametersAllowed, parameter.getName()) : getParameterByIndex(parameter, parametersAllowed);
+		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.position()) return null;
+		return parameter.isExplicit() ? findParameter(parametersAllowed, parameter.name()) : getParameterByIndex(parameter, parametersAllowed);
 	}
 
 	private static Allow.Parameter getParameterByIndex(Parameter parameter, List<Allow.Parameter> parametersAllowed) {
@@ -108,7 +108,7 @@ public class TaraUtil {
 	}
 
 	private static int getIndexInParent(Parameter parameter) {
-		return parameter.getIndexInParent();
+		return parameter.position();
 	}
 
 

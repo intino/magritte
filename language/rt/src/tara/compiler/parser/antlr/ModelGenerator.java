@@ -32,7 +32,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 
 	@Override
 	public void enterDslDeclaration(@NotNull TaraGrammar.DslDeclarationContext ctx) {
-		if (ctx.headerReference() != null) model.setLanguage(ctx.headerReference().getText());
+		if (ctx.headerReference() != null) model.language(ctx.headerReference().getText());
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class ModelGenerator extends TaraGrammarBaseListener {
 		resolveParent(ctx, node);
 		addTags(ctx.signature().tags(), node);
 		addHeaderInformation(ctx, node);
-		node.addImports(imports);
+		node.addImports(new ArrayList<>(imports));
 		deque.push(node);
 	}
 

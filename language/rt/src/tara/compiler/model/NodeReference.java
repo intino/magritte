@@ -265,19 +265,9 @@ public class NodeReference implements Node {
 		return destiny.secondaryTypes();
 	}
 
+
 	@Override
 	public void type(String type) {
-	}
-
-	@Override
-	public String fullType() {
-		if (container instanceof Node)
-			return ((Node) container).fullType() + "." + type();
-		else return "";
-	}
-
-	@Override
-	public void fullType(String type) {
 	}
 
 	@Override
