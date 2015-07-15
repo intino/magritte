@@ -143,7 +143,7 @@ public class BoxUnitNodeAdapter extends Generator implements Adapter<Node>, Temp
 	private boolean isOverriddenByFacets(Node inner, Collection<Facet> facets) {
 		for (Facet facet : facets)
 			for (Node facetNode : facet.components())
-				if (facetNode.getFullType().equals(inner.getFullType()) && hasSameName(inner, facetNode))
+				if (facetNode.fullType().equals(inner.fullType()) && hasSameName(inner, facetNode))
 					return true;
 		return false;
 	}

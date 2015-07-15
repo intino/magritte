@@ -163,7 +163,7 @@ public class Model implements Node {
 	}
 
 	@Override
-	public void plate(String address) {
+	public void plate(String plate) {
 
 	}
 
@@ -187,7 +187,7 @@ public class Model implements Node {
 	}
 
 	@Override
-	public void addImports(Collection<String> imports) {
+	public void addImports(List<String> imports) {
 
 	}
 
@@ -242,12 +242,12 @@ public class Model implements Node {
 	}
 
 	@Override
-	public String getFullType() {
+	public String fullType() {
 		return null;
 	}
 
 	@Override
-	public void setFullType(String type) {
+	public void fullType(String type) {
 
 	}
 
@@ -301,7 +301,7 @@ public class Model implements Node {
 	}
 
 	@Override
-	public Node components(String name) {
+	public Node component(String name) {
 		return null;
 	}
 
@@ -319,7 +319,7 @@ public class Model implements Node {
 	}
 
 	@Override
-	public List<Node> getReferenceComponents() {
+	public List<Node> referenceComponents() {
 		return Collections.EMPTY_LIST;
 	}
 

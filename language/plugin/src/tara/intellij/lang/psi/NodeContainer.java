@@ -1,42 +1,75 @@
 package tara.intellij.lang.psi;
 
+import org.jetbrains.annotations.NotNull;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.intellij.lang.psi.impl.TaraUtil;
+
 import java.util.List;
+
+import static java.util.Collections.unmodifiableList;
 
 public interface NodeContainer extends tara.language.model.NodeContainer, TaraPsiElement {
 
-	List<? extends Node> components();
-
-	String getQualifiedName();
+	String qualifiedName();
 
 	String type();
 
-	<T extends tara.language.model.Node> void add(T... nodes);
-
-	<T extends tara.language.model.Node> void add(int pos, T... nodes);
-
-	Node components(String name);
-
-	<T extends tara.language.model.Node> boolean contains(T node);
-
-	<T extends tara.language.model.Node> boolean remove(T node);
-
-	void moveToTheTop();
-
-	List<? extends Node> siblings();
-
 	List<? extends Variable> variables();
 
-	<T extends tara.language.model.Variable> void add(T... variables);
+	default Node container() {
+		return TaraPsiImplUtil.getContainerNodeOf(this);
+	}
 
-	<T extends tara.language.model.Variable> void add(int pos, T... variables);
+	@NotNull
+	default List<Node> components() {
+		return unmodifiableList(TaraUtil.getComponentsOf(this));
+	}
 
-	NodeContainer container();
+	default tara.intellij.lang.psi.Node component(String name) {
+		for (Node node : components()) {
+			if (name.equals(node.name())) return node;
+		}
+		return null;
+	}
 
-	<T extends tara.language.model.NodeContainer> void container(T container);
+	default List<? extends tara.intellij.lang.psi.Node> siblings() {
+		return null;
+	}
 
-	String qualifiedName();
+	default <T extends tara.language.model.Node> boolean contains(T node) {
+		return components().contains(node);
+	}
 
-	String doc();
+	default <T extends tara.language.model.NodeContainer> void container(T container) {
+	}
 
-	void addDoc(String doc);
+	default void moveToTheTop() {
+	}
+
+
+	default void add(tara.language.model.Node... nodes) {
+	}
+
+	default <T extends tara.language.model.Node> void add(int pos, T... nodes) {
+	}
+
+	default <T extends tara.language.model.Variable> void add(T... variables) {
+	}
+
+	default <T extends tara.language.model.Variable> void add(int pos, T... variables) {
+	}
+
+	default <T extends tara.language.model.Node> boolean remove(T node) {
+		return false;
+	}
+
+	@Override
+	default String doc() {
+		return null;
+	}
+
+	@Override
+	default void addDoc(String doc) {
+	}
+
 }

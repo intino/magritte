@@ -1,6 +1,5 @@
 package tara.language.model;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface Node extends Parametrized, NodeContainer, Element {
@@ -11,17 +10,19 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	void name(String name);
 
-	String language();
+	default String language() {
+		return null;
+	}
 
-	void language(String language);
+	default void language(String language) {
 
-	String doc();
+	}
 
 	boolean isSub();
 
 	boolean isMain();
 
-	List<Node> subs();
+	List<? extends Node> subs();
 
 	boolean isFacet();
 
@@ -49,7 +50,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	String plate();
 
-	void plate(String address);
+	void plate(String plate);
 
 	List<Tag> annotations();
 
@@ -58,8 +59,6 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	void addAnnotations(Tag... annotations);
 
 	void addFlags(Tag... flags);
-
-	void addImports(Collection<String> imports);
 
 	Node parent();
 
@@ -73,35 +72,50 @@ public interface Node extends Parametrized, NodeContainer, Element {
 
 	List<String> secondaryTypes();
 
-	void type(String type);
+	String fullType();
 
-	String getFullType();
+	void fullType(String type);
 
-	void setFullType(String type);
+	default void type(String type) {
+	}
 
 	Node resolve();
 
 	boolean isReference();
 
-	List<? extends Node> getReferenceComponents();
+	List<? extends Node> referenceComponents();
 
 	Node destinyOfReference();
 
 	List<? extends Node> children();
 
-	void addChild(Node node);
+	default void addImports(List<String> imports) {
+
+	}
+
+	default <T extends Node> void addChild(T node) {
+
+	}
 
 	List<? extends Facet> facets();
 
-	Collection<String> allowedFacets();
+	default List<String> allowedFacets() {
+		return null;
+	}
 
-	void addAllowedFacets(String... facet);
+	default void addAllowedFacets(String... facet) {
 
-	void addFacets(Facet... facets);
+	}
+
+	default void addFacets(Facet... facets) {
+
+	}
 
 	List<? extends FacetTarget> facetTargets();
 
-	void addFacetTargets(FacetTarget... targets);
+	default <T extends FacetTarget> void addFacetTargets(T... targets) {
+
+	}
 
 	String toString();
 

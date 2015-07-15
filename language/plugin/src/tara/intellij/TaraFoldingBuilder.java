@@ -39,7 +39,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 				});
 			processMultiLineValues(descriptors, node);
 			processMultiValuesParameters(descriptors, node);
-			for (FacetApply facetApply : node.getFacetApplies()) processMultiValuesParameters(descriptors, facetApply);
+			for (FacetApply facetApply : node.facets()) processMultiValuesParameters(descriptors, facetApply);
 		}
 	}
 
@@ -60,7 +60,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 				}
 			}).
 			collect(Collectors.toList()));
-		descriptors.addAll(searchStringMultiLineValues(node.getFacetTargets()).stream().
+		descriptors.addAll(searchStringMultiLineValues(node.facetTargets()).stream().
 			map(multiLine -> new FoldingDescriptor(multiLine, getRange((TaraStringValue) multiLine)) {
 				public String getPlaceholderText() {
 					return buildHolderText();
@@ -69,7 +69,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	}
 
 	private List<Parameter> searchMultiValuedParameters(Parametrized node) {
-		return node.getParameterList().stream().filter(parameter -> parameter.getValues().size() >= VALUE_MAX_SIZE).collect(Collectors.toList());
+		return node.parameters().stream().filter(parameter -> parameter.getValues().size() >= VALUE_MAX_SIZE).collect(Collectors.toList());
 	}
 
 	private List<PsiElement> searchStringMultiLineValues(Collection<FacetTarget> facetTargets) {
@@ -85,7 +85,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 		for (Node node : nodes) {
 			strings.addAll(searchStringMultiLineValues(node));
 			addAllFacetInnerNodes(node.components(), strings);
-			addAllFacetInnerNodes(node.getSubNodes(), strings);
+			addAllFacetInnerNodes(node.subs(), strings);
 		}
 	}
 
@@ -146,7 +146,7 @@ public class TaraFoldingBuilder extends CustomFoldingBuilder {
 	private String buildNodeHolderText(Node node) {
 		String text = "";
 		for (Node inner : node.components())
-			if (inner.getName() != null) text += " " + inner.getName();
+			if (inner.name() != null) text += " " + inner.name();
 		return text;
 	}
 

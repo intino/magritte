@@ -127,9 +127,9 @@ public class ReferenceManager {
 		FacetTarget facetTarget = (FacetTarget) TaraPsiImplUtil.getContextOf(identifier);
 		if (facetTarget == null) return;
 		for (Node node : facetTarget.components()) {
-			if (node.getName() == null) continue;
+			if (node.name() == null) continue;
 			set.add(node);
-			if (node.isAbstract()) set.addAll(node.getSubNodes());
+			if (node.isAbstract()) set.addAll(node.subs());
 		}
 	}
 
@@ -147,7 +147,7 @@ public class ReferenceManager {
 		List<Node> nodes = new ArrayList<>();
 		Collection<Node> siblings = container.getNodeSiblings();
 		nodes.addAll(siblings);
-		for (Node node : siblings) nodes.addAll(node.getSubNodes());
+		for (Node node : siblings) nodes.addAll(node.subs());
 		return nodes;
 	}
 
@@ -165,7 +165,7 @@ public class ReferenceManager {
 //	}
 //
 	private static boolean areNamesake(Identifier identifier, Node node) {
-		return identifier.getText().equals(node.getName());
+		return identifier.getText().equals(node.name());
 	}
 //
 //	private static boolean isRoot(TaraModel file, Node node, Collection<Node> visited) {
@@ -173,7 +173,7 @@ public class ReferenceManager {
 //		visited.add(node);
 //		if (node.isAnnotatedAsMain() || isMetaRoot(node)) return true;
 //		IdentifierReference parentReference = node.getSignature().getParentReference();
-//		return parentReference != null && checkPossibleRoots(parentReference, components(file, parentReference, visited, new HashSet<>()));
+//		return parentReference != null && checkPossibleRoots(parentReference, component(file, parentReference, visited, new HashSet<>()));
 //	}
 //
 //	private static boolean isMetaRoot(Node node) {
@@ -194,7 +194,7 @@ public class ReferenceManager {
 //		return false;
 //	}
 //
-//	private static Node[] components(TaraModel file, IdentifierReference parentReference, Collection<Node> visited, Set<Node> roots) {
+//	private static Node[] component(TaraModel file, IdentifierReference parentReference, Collection<Node> visited, Set<Node> roots) {
 //		Identifier identifier = getIdentifier(parentReference);
 //		addNodesInContext(identifier, roots);
 //		addRootNodes(file, identifier, roots);

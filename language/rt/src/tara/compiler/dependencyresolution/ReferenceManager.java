@@ -58,9 +58,9 @@ public class ReferenceManager {
 				reference = areNamesake(node, name) ? node : null;
 				continue;
 			}
-			if (reference.components(name) == null)
-				reference = reference.parent().components(name);
-			else reference = reference.components(name);
+			if (reference.component(name) == null)
+				reference = reference.parent().component(name);
+			else reference = reference.component(name);
 			if (reference == null) return null;
 		}
 		return reference;

@@ -44,7 +44,7 @@ public class TaraUtil {
 
 	private static void extractNodesByName(String identifier, List<Node> result, Collection<Node> nodes) {
 		result.addAll(nodes.stream().
-			filter(node -> identifier.equals(node.getName())).collect(Collectors.toList()));
+			filter(node -> identifier.equals(node.name())).collect(Collectors.toList()));
 	}
 
 	@Nullable
@@ -58,14 +58,14 @@ public class TaraUtil {
 	public static List<Allow> getAllowsOf(Node node) {
 		Language language = getLanguage(node);
 		if (language == null) return null;
-		return language.allows(node.resolve().getFullType());
+		return language.allows(node.resolve().fullType());
 	}
 
 	@NotNull
 	public static List<String> getTypesOf(Node node) {
 		Language language = getLanguage(node);
 		if (language == null) return Collections.emptyList();
-		final List<String> types = language.types(node.resolve().getFullType());
+		final List<String> types = language.types(node.resolve().fullType());
 		return types == null ? Collections.emptyList() : types;
 	}
 
@@ -94,7 +94,7 @@ public class TaraUtil {
 
 	public static Allow.Parameter getCorrespondingAllow(Node container, Parameter parameter) {
 		FacetApply facetApply = areFacetParameters(parameter);
-		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.getType()) : TaraUtil.getAllowsOf(container);
+		Collection<Allow> allowsOf = facetApply != null ? getAllows(container, facetApply.type()) : TaraUtil.getAllowsOf(container);
 		if (allowsOf == null) return null;
 		List<Allow.Parameter> parametersAllowed = parametersAllowed(allowsOf);
 		if (parametersAllowed.isEmpty() || parametersAllowed.size() <= parameter.getIndexInParent()) return null;
@@ -145,7 +145,7 @@ public class TaraUtil {
 		if (nodes == null) return list;
 		for (Node node : nodes) {
 			list.add(node);
-			list.addAll(node.getSubNodes());
+			list.addAll(node.subs());
 		}
 		Collection<? extends Node> mainNodes = findMainNodes(file);
 		for (Node main : mainNodes) {
@@ -180,7 +180,7 @@ public class TaraUtil {
 		final Node[] nodes = PsiTreeUtil.getChildrenOfType(model, Node.class);
 		if (nodes == null) return Collections.emptyList();
 		final List<Node> includes = Arrays.asList(nodes);
-		for (Node include : includes) all.addAll(include.getSubNodes());
+		for (Node include : includes) all.addAll(include.subs());
 		for (Node root : includes) getAllInnerOf(root, all);
 		return new ArrayList<>(all);
 	}
@@ -191,7 +191,7 @@ public class TaraUtil {
 		final Node[] nodes = PsiTreeUtil.getChildrenOfType(model, Node.class);
 		if (nodes == null) return Collections.emptyList();
 		final List<Node> includes = Arrays.asList(nodes);
-		for (Node include : includes) all.addAll(include.getSubNodes());
+		for (Node include : includes) all.addAll(include.subs());
 		for (Node root : includes) getAllNodeContainersOf(root, all);
 		return new ArrayList<>(all);
 	}
@@ -200,11 +200,11 @@ public class TaraUtil {
 		all.add(root);
 		for (Node include : root.components()) getAllNodeContainersOf(include, all);
 		if (root instanceof Node) {
-			for (FacetTarget facetTarget : ((Node) root).getFacetTargets()) {
+			for (FacetTarget facetTarget : ((Node) root).facetTargets()) {
 				all.add(facetTarget);
 				for (Node node : facetTarget.components()) getAllNodeContainersOf(node, all);
 			}
-			for (FacetApply facetApply : ((Node) root).getFacetApplies()) {
+			for (FacetApply facetApply : ((Node) root).facets()) {
 				all.add(facetApply);
 				for (Node node : facetApply.components()) getAllNodeContainersOf(node, all);
 			}
@@ -214,26 +214,22 @@ public class TaraUtil {
 	private static void getAllInnerOf(Node root, Set<Node> all) {
 		all.add(root);
 		for (Node include : root.components()) getAllInnerOf(include, all);
-		for (FacetTarget facetTarget : root.getFacetTargets())
+		for (FacetTarget facetTarget : root.facetTargets())
 			for (Node node : facetTarget.components()) getAllInnerOf(node, all);
-		for (FacetApply facetApply : root.getFacetApplies())
+		for (FacetApply facetApply : root.facets())
 			for (Node node : facetApply.components()) getAllInnerOf(node, all);
 	}
 
-
 	@NotNull
-	public static List<Node> getInnerNodesOf(Node node) {
-		return TaraPsiImplUtil.getInnerNodesOf(node);
+	public static List<Node> getComponentsOf(NodeContainer container) {
+		if (container instanceof Node) return TaraPsiImplUtil.getComponentsOf((Node) container);
+		else if (container instanceof FacetTarget) return TaraPsiImplUtil.getComponentsOf((FacetTarget) container);
+		else return TaraPsiImplUtil.getComponentsOf((FacetApply) container);
 	}
 
 	@NotNull
-	public static List<Node> getInnerNodesOf(FacetApply facetApply) {
-		return TaraPsiImplUtil.getInnerNodesOf(facetApply);
-	}
-
-	@NotNull
-	public static List<Node> getInnerNodesOf(FacetTarget facetTarget) {
-		return TaraPsiImplUtil.getInnerNodesOf(facetTarget);
+	public static List<Node> getComponentsOf(FacetApply facetApply) {
+		return TaraPsiImplUtil.getComponentsOf(facetApply);
 	}
 
 	@NotNull
@@ -244,11 +240,11 @@ public class TaraUtil {
 	@Nullable
 	public static Node findInner(NodeContainer node, String name) {
 		for (Node include : node.components())
-			if (include.getName() != null && include.getName().equals(name))
+			if (include.name() != null && include.name().equals(name))
 				return include;
 		if (!(node instanceof Node) || ((Node) node).parent() == null) return null;
 		for (Node include : ((Node) node).parent().components())
-			if (include.getName() != null && include.getName().equals(name))
+			if (include.name() != null && include.name().equals(name))
 				return include;
 		return null;
 	}

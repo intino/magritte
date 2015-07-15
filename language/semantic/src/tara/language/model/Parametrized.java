@@ -6,7 +6,9 @@ public interface Parametrized {
 
 	List<? extends Parameter> parameters();
 
-	void addParameter(String name, int position, String extension, Object... values);
+	default void addParameter(String name, int position, String extension, Object... values) {
+	}
 
-	void addParameter(int position, String extension, Object... values);
+	default void addParameter(int position, String extension, Object... values) {
+	}
 }

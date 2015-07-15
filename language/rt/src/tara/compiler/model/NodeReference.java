@@ -192,7 +192,7 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public void plate(String address) {
+	public void plate(String plate) {
 	}
 
 	@Override
@@ -220,7 +220,7 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public void addImports(Collection<String> imports) {
+	public void addImports(List<String> imports) {
 		this.imports.addAll(imports);
 	}
 
@@ -270,14 +270,14 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public String getFullType() {
+	public String fullType() {
 		if (container instanceof Node)
-			return ((Node) container).getFullType() + "." + type();
+			return ((Node) container).fullType() + "." + type();
 		else return "";
 	}
 
 	@Override
-	public void setFullType(String type) {
+	public void fullType(String type) {
 	}
 
 	@Override
@@ -325,7 +325,7 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public Node components(String name) {
+	public Node component(String name) {
 		for (Node include : destiny.components())
 			if (name.equals(include.name()))
 				return include;
@@ -364,8 +364,8 @@ public class NodeReference implements Node {
 
 
 	@Override
-	public List<Node> getReferenceComponents() {
-		return unmodifiableList(destiny.getReferenceComponents());
+	public List<Node> referenceComponents() {
+		return unmodifiableList(destiny.referenceComponents());
 	}
 
 	@Override
@@ -389,8 +389,8 @@ public class NodeReference implements Node {
 	}
 
 	@Override
-	public Collection<String> allowedFacets() {
-		return Collections.unmodifiableCollection(allowedFacets);
+	public List<String> allowedFacets() {
+		return Collections.unmodifiableList(new ArrayList<>(allowedFacets));
 	}
 
 	@Override

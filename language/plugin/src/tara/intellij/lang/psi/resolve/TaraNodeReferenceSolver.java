@@ -44,9 +44,9 @@ public class TaraNodeReferenceSolver extends TaraReferenceSolver {
 	public Object[] fillVariants(Collection<Node> variants) {
 		List<LookupElement> lookupElements = new ArrayList<>();
 		for (final Node node : variants) {
-			if (node == null || node.getName() == null || node.getName().length() == 0) continue;
+			if (node == null || node.name() == null || node.name().length() == 0) continue;
 			lookupElements.add(LookupElementBuilder.create(node.getIdentifierNode()).
-				withIcon(TaraIcons.NODE).withTypeText(node.getType()));
+				withIcon(TaraIcons.NODE).withTypeText(node.type()));
 		}
 		return lookupElements.toArray();
 	}

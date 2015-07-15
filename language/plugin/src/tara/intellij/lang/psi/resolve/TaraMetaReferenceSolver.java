@@ -41,7 +41,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 		Language language = TaraLanguage.getLanguage(myElement.getContainingFile());
 		final Node node = TaraPsiImplUtil.getContainerNodeOf(myElement);
 		if (language == null || node == null) return null;
-		final Documentation doc = language.doc(node.resolve().getFullType());
+		final Documentation doc = language.doc(node.resolve().fullType());
 		if (doc == null) return null;
 		PsiFile file = findFile(doc.file());
 		if (file == null) return null;
@@ -50,7 +50,7 @@ public class TaraMetaReferenceSolver extends PsiReferenceBase<PsiElement> implem
 
 	private Node searchNodeIn(List<NodeContainer> nodes) {
 		for (NodeContainer node : nodes)
-			if (node instanceof Node && myElement.getText().equals(((Node) node).getName()))
+			if (node instanceof Node && myElement.getText().equals(((Node) node).name()))
 				return (Node) node;
 		return null;
 	}

@@ -164,7 +164,7 @@ public class TaraElementFactoryImpl extends TaraElementFactory {
 			"Dummy Ficha is " + annotation + "\n"
 		);
 		Node next = file.components().iterator().next();
-		return next.getAnnotations().get(0);
+		return next.getAnnotationsNode().getAnnotationList().get(0);
 	}
 
 	@Override

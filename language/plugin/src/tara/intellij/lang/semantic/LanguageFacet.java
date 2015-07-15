@@ -22,21 +22,21 @@ public class LanguageFacet extends LanguageElement implements Facet {
 
 	@Override
 	public String type() {
-		return facetApply.getType();
+		return facetApply.type();
 	}
 
 	@Override
 	public List<String> nodeTypes() {
 		List<String> types = new ArrayList<>();
 		final tara.intellij.lang.psi.Node container = facetApply.container();
-		types.add(container.getType());
-		types.addAll(container.getFacetApplies().stream().map(FacetApply::getType).collect(Collectors.toList()));
+		types.add(container.type());
+		types.addAll(container.facets().stream().map(FacetApply::type).collect(Collectors.toList()));
 		return types;
 	}
 
 	@Override
 	public List<Parameter> parameters() {
-		return wrapParameters(facetApply.getParameterList());
+		return wrapParameters(facetApply.parameters());
 	}
 
 	@Override

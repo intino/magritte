@@ -8,25 +8,35 @@ public interface NodeContainer extends Element {
 
 	String type();
 
-	<T extends Node> void add(T... nodes);
+	default <T extends Node> void add(T... nodes) {
 
-	<T extends Node> void add(int pos, T... nodes);
+	}
 
-	Node components(String name);
+	default <T extends Node> void add(int pos, T... nodes) {
+
+	}
+
+	Node component(String name);
 
 	<T extends Node> boolean contains(T node);
 
 	<T extends Node> boolean remove(T node);
 
-	void moveToTheTop();
+	default void moveToTheTop(){
+
+	}
 
 	List<? extends Node> siblings();
 
 	List<? extends Variable> variables();
 
-	<T extends Variable> void add(T... variables);
+	default <T extends Variable> void add(T... variables) {
 
-	<T extends Variable> void add(int pos, T... variables);
+	}
+
+	default <T extends Variable> void add(int pos, T... variables) {
+
+	}
 
 	NodeContainer container();
 

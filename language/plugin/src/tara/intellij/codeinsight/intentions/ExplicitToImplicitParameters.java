@@ -14,13 +14,13 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 //		if (node == null) return;
 //		Parameters explicit = (Parameters) getParametersScope(element);
 //		List<String> implicit = extractParametersData(explicit, node);
-//		if (implicit.size() != explicit.getParameterList().length) return;
+//		if (implicit.size() != explicit.parameters().length) return;
 //		explicit.replace(TaraElementFactory.getInstance(project).createParameters(implicit.toArray(new String[implicit.size()])));
 	}
 
 //	private List<String> extractParametersData(Parameters parameters, Node node) {
 //		List<String> parameterValues = new ArrayList<>();
-//		List<Variable> variables = variables(node, parameters.getParameterList()[0]);
+//		List<Variable> variables = variables(node, parameters.parameters()[0]);
 //		for (Variable variable : variables) {
 //			Parameter correspondentParameter = getCorrespondentParameter(parameters, variable.name());
 //			if (correspondentParameter == null) continue;
@@ -38,7 +38,7 @@ public class ExplicitToImplicitParameters extends ParametersIntentionAction {
 //	}
 //
 //	private Parameter getCorrespondentParameter(Parameters parameters, String name) {
-//		for (Parameter parameter : parameters.getParameterList())
+//		for (Parameter parameter : parameters.parameters())
 //			if (name.equals(parameter.name())) return parameter;
 //		return null;
 //	}

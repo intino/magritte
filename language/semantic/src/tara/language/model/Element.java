@@ -4,9 +4,15 @@ public interface Element {
 
 	String file();
 
-	void file(String file);
+	default void file(String file) {
 
-	int line();
+	}
 
-	void line(int line);
+	default int line() {
+		return 0;
+	}
+
+	default void line(int line) {
+
+	}
 }

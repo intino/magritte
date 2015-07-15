@@ -2,10 +2,8 @@ package tara.intellij.lang.semantic;
 
 import com.intellij.psi.PsiElement;
 import tara.intellij.lang.psi.*;
-import tara.intellij.lang.psi.Node;
-import tara.intellij.lang.psi.Parameter;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.language.model.*;
+import tara.language.model.Facet;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +23,7 @@ public class LanguageNode extends LanguageElement implements tara.language.model
 	public LanguageNode(Node node) {
 		this.node = node;
 		if (node == null) return;
-		this.facetTargets = buildFacetTargets(node.getFacetTargets());
+		this.facetTargets = buildFacetTargets(node.facetTargets());
 		variables.addAll(collectVariables(node.variables()));
 		if (node.parent() != null) variables.addAll(collectVariables(node.parent().variables()));
 	}
@@ -38,7 +36,7 @@ public class LanguageNode extends LanguageElement implements tara.language.model
 
 	@Override
 	public String type() {
-		return node == null ? "" : node.getFullType();
+		return node == null ? "" : node.fullType();
 	}
 
 	@Override
@@ -53,12 +51,12 @@ public class LanguageNode extends LanguageElement implements tara.language.model
 
 	@Override
 	public void type(String type) {
-		node.setFullType(type);
+		node.fullType(type);
 	}
 
 	@Override
 	public List<String> secondaryTypes() {
-		Set<String> types = node.getFacetApplies().stream().map(FacetApply::getType).collect(Collectors.toSet());
+		Set<String> types = node.facets().stream().map(FacetApply::type).collect(Collectors.toSet());
 		if (node.parent() != null && !parent().equals(node)) types.addAll(parent().types());
 		return new ArrayList<>(types);
 	}
@@ -74,7 +72,7 @@ public class LanguageNode extends LanguageElement implements tara.language.model
 
 	@Override
 	public String name() {
-		return node == null || node.getName() == null ? "" : node.getName();
+		return node == null || node.name() == null ? "" : node.name();
 	}
 
 	@Override
@@ -84,7 +82,7 @@ public class LanguageNode extends LanguageElement implements tara.language.model
 
 	@Override
 	public boolean hasSubs() {
-		return !node.getSubNodes().isEmpty();
+		return !node.subs().isEmpty();
 	}
 
 	@Override
@@ -123,7 +121,7 @@ public class LanguageNode extends LanguageElement implements tara.language.model
 
 	@Override
 	public List<Facet> facets() {
-		return unmodifiableList(node.getFacetApplies().stream().map(LanguageFacet::new).collect(Collectors.toList()));
+		return unmodifiableList(node.facets().stream().map(LanguageFacet::new).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -133,7 +131,7 @@ public class LanguageNode extends LanguageElement implements tara.language.model
 
 	@Override
 	public List<tara.language.model.Parameter> parameters() {
-		List<tara.language.model.Parameter> parameters = wrapParameters(node.getParameterList());
+		List<tara.language.model.Parameter> parameters = wrapParameters(node.parameters());
 		return unmodifiableList(parameters);
 	}
 
@@ -154,12 +152,12 @@ public class LanguageNode extends LanguageElement implements tara.language.model
 
 	private void collectIncludes(Node node) {
 		includes.addAll(node.components().stream().map(LanguageNode::new).collect(Collectors.toList()));
-		includes.addAll(node.getInnerNodeReferences().stream().map(LanguageNodeReference::new).collect(Collectors.toList()));
+		includes.addAll(node.referenceComponents().stream().map(LanguageNodeReference::new).collect(Collectors.toList()));
 		addFacetTargetIncludes(node);
 	}
 
 	private void addFacetTargetIncludes(Node node) {
-		for (tara.intellij.lang.psi.FacetTarget facetTarget : node.getFacetTargets())
+		for (tara.intellij.lang.psi.FacetTarget facetTarget : node.facetTargets())
 			includes.addAll(facetTarget.components().stream().map(LanguageNode::new).collect(Collectors.toList()));
 	}
 
@@ -191,7 +189,7 @@ public class LanguageNode extends LanguageElement implements tara.language.model
 
 	@Override
 	public String toString() {
-		return node.getType() + " " + node.getName();
+		return node.type() + " " + node.name();
 	}
 
 	@Override

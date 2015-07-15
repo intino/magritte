@@ -87,7 +87,7 @@ public class DependencyResolver {
 	}
 
 	private void resolveInnerReferenceNodes(Node node) throws DependencyException {
-		for (Node nodeReference : node.getReferenceComponents())
+		for (Node nodeReference : node.referenceComponents())
 			resolveNodeReference((NodeReference) nodeReference);
 	}
 

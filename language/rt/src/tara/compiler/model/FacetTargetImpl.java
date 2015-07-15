@@ -74,7 +74,7 @@ public class FacetTargetImpl implements FacetTarget {
 	}
 
 	@Override
-	public Node components(String name) {
+	public Node component(String name) {
 		return null;
 	}
 

@@ -82,6 +82,6 @@ public class TaraOverriddenNode extends JavaLineMarkerProvider {
 	}
 
 	private boolean isOverridden(Node node, Node parentNode) {
-		return parentNode.getType().equals(node.getType()) && parentNode.getName() != null && parentNode.getName().equals(node.getName());
+		return parentNode.type().equals(node.type()) && parentNode.name() != null && parentNode.name().equals(node.name());
 	}
 }

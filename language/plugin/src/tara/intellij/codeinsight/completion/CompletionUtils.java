@@ -25,7 +25,7 @@ public interface CompletionUtils {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf(TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (language == null) return;
-		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().getFullType());
+		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().fullType());
 		if (allows == null) return;
 		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForIncludes(language.languageName(), allows);
 		resultSet.addAllElements(elementBuilders);
@@ -52,7 +52,7 @@ public interface CompletionUtils {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition().getContext());
 		if (language == null) return;
-		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().getFullType());
+		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().fullType());
 		if (allows == null) return;
 		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForFacets(language.languageName(), allows);
 		resultSet.addAllElements(elementBuilders);
@@ -75,9 +75,9 @@ public interface CompletionUtils {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf(TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (language == null) return;
-		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().getFullType());
+		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().fullType());
 		if (allows == null) return;
-		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForParameters(allows, node == null ? Collections.emptyList() : node.getParameterList());
+		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForParameters(allows, node == null ? Collections.emptyList() : node.parameters());
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}

@@ -15,13 +15,13 @@ public class ImplicitToExplicitParameters extends ParametersIntentionAction impl
 //		if (node == null) return;
 		Parameters implicit = (Parameters) getParametersScope(element);
 //		Map<String, String> explicit = extractParametersData(implicit, node);
-//		if (explicit.size() != implicit.getParameterList().length) return;
+//		if (explicit.size() != implicit.parameters().length) return;
 //		implicit.replace(TaraElementFactory.getInstance(project).createExplicitParameters(explicit));
 	}
 
 //	private Map<String, String> extractParametersData(Parameters parameters, Node node) {
 //		Map<String, String> map = new LinkedHashMap<>();
-//		for (Parameter parameter : parameters.getParameterList()) {
+//		for (Parameter parameter : parameters.parameters()) {
 //			Variable variable = findVariable(node, parameter);
 //			if (variable == null) continue;
 //			map.put(variable.name(), parameter.getValue().getText());

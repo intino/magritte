@@ -51,7 +51,7 @@ public class ReferenceAnalyzer extends TaraAnalyzer {
 		ArrayList<LocalQuickFix> fixes = new ArrayList<>();
 		addImportFix(element, fixes);
 		Node node = TaraPsiImplUtil.getContainerNodeOf(element);
-		addCreateNodeFix(element, node != null ? node.getType() : "Concept", fixes);
+		addCreateNodeFix(element, node != null ? node.type() : "Concept", fixes);
 		results.put(element, new TaraAnnotator.AnnotateAndFix(ERROR, MESSAGE, TaraSyntaxHighlighter.UNRESOLVED_ACCESS, createFixes(element, fixes)));
 	}
 

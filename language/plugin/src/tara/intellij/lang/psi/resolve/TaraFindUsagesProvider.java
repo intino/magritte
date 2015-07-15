@@ -38,14 +38,14 @@ public class TaraFindUsagesProvider implements FindUsagesProvider {
 	@Override
 	public String getType(@NotNull PsiElement element) {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(element);
-		return container == null || container.getType() == null ? "" : container.getType();
+		return container == null || container.type() == null ? "" : container.type();
 	}
 
 	@NotNull
 	@Override
 	public String getDescriptiveName(@NotNull PsiElement element) {
 		if (element instanceof Node) {
-			String name = ((Node) element).getName();
+			String name = ((Node) element).name();
 			return name == null ? ANONYMOUS : name;
 		} else if (element instanceof Identifier)
 			return element.getText();

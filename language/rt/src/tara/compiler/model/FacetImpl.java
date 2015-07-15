@@ -40,7 +40,7 @@ public class FacetImpl implements Facet {
 	}
 
 	@Override
-	public Node components(String name) {
+	public Node component(String name) {
 		for (Node include : includes)
 			if (name.equals(include.name()))
 				return include;

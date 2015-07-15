@@ -16,7 +16,7 @@ public class NameSuggestionProvider implements com.intellij.refactoring.rename.N
 	@Override
 	public SuggestedNameInfo getSuggestedNames(PsiElement element, @Nullable PsiElement nameSuggestionContext, Set<String> result) {
 		if (!(element instanceof Node)) return null;
-		final String name = ((Node) element).getName();
+		final String name = ((Node) element).name();
 		if (name == null) return null;
 		if (element instanceof TaraIdentifier)
 			result.add(toCamelCase(name, true));

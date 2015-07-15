@@ -55,10 +55,10 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 			}
 			List<PsiElement> facetClasses = getFacetClasses(node);
 			if (facetClasses.isEmpty()) return;
-			String title = MessageProvider.message("facet.class.chooser", node.getName(), facetClasses.size());
+			String title = MessageProvider.message("facet.class.chooser", node.name(), facetClasses.size());
 			ClassCellRenderer renderer = new ClassCellRenderer(null);
 			PsiElementListNavigator.openTargets(e, facetClasses.toArray(toNavigatable(facetClasses)), title,
-				"Facet implementations of " + (node.getName()), renderer);
+				"Facet implementations of " + (node.name()), renderer);
 		}
 	}
 	);
@@ -74,7 +74,7 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 
 	private List<PsiElement> getFacetClasses(Node node) {
 		List<PsiElement> references = new ArrayList<>();
-		for (FacetApply apply : node.getFacetApplies()) {
+		for (FacetApply apply : node.facets()) {
 			PsiElement reference = resolveExternal(node, apply);
 			if (reference != null)
 				references.add(reference);
@@ -86,9 +86,9 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element) {
 		if (!(element instanceof Node)) return super.getLineMarkerInfo(element);
 		Node node = (Node) element;
-		if (node.getFacetApplies().isEmpty()) return null;
+		if (node.facets().isEmpty()) return null;
 		PsiElement reference = null;
-		for (FacetApply facetApply : node.getFacetApplies()) {
+		for (FacetApply facetApply : node.facets()) {
 			reference = resolveExternal(node, facetApply);
 			if (reference != null) break;
 		}
@@ -100,13 +100,13 @@ public class FacetApplyMarker extends JavaLineMarkerProvider {
 	}
 
 	private PsiElement resolveExternal(Node node, FacetApply apply) {
-		return resolveJavaClassReference(node.getProject(), getFacetApplyPackage(node, apply) + DOT + node.getName() + apply.getType());
+		return resolveJavaClassReference(node.getProject(), getFacetApplyPackage(node, apply) + DOT + node.name() + apply.type());
 	}
 
 	private String getFacetApplyPackage(Node node, FacetApply apply) {
 		PluralInflector inflector = getInflector(apply);
 		if (inflector == null) return "";
-		return (getFacetPackage(node) + DOT + inflector.plural(apply.getType())).toLowerCase();
+		return (getFacetPackage(node) + DOT + inflector.plural(apply.type())).toLowerCase();
 	}
 
 	private PluralInflector getInflector(FacetApply apply) {

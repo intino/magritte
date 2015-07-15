@@ -47,7 +47,7 @@ public class TaraDocumentationProvider extends AbstractDocumentationProvider {
 	private String findDoc(Node node) {
 		final Language language = TaraLanguage.getLanguage(node.getContainingFile());
 		if (language == null || language instanceof Proteo) return "";
-		final Documentation doc = language.doc(node.getType());
+		final Documentation doc = language.doc(node.type());
 		return doc != null ? doc.description() : "";
 	}
 }

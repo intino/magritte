@@ -38,7 +38,7 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 
 	@Override
 	public String type() {
-		return badReference() ? null : destiny.resolve().getFullType();
+		return badReference() ? null : destiny.resolve().fullType();
 	}
 
 	@Override
@@ -55,10 +55,12 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 	public void type(String type) {
 	}
 
+
+
 	@Override
 	public List<String> secondaryTypes() {
 		if (badReference()) return Collections.emptyList();
-		return Collections.unmodifiableList(destiny.getFacetApplies().stream().map(FacetApply::getType).collect(Collectors.toList()));
+		return Collections.unmodifiableList(destiny.facets().stream().map(FacetApply::type).collect(Collectors.toList()));
 	}
 
 	private boolean badReference() {
@@ -87,12 +89,12 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 
 	@Override
 	public List<String> annotations() {
-		return reference.getAnnotations().stream().map(Annotation::getText).collect(Collectors.toList());
+		return reference.getAnnotationsNode().stream().map(Annotation::getText).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<String> flags() {
-		Set<String> names = reference.getFlags().stream().map(Flag::getText).collect(Collectors.toSet());
+		Set<String> names = reference.getFlagsNode().stream().map(Flag::getText).collect(Collectors.toSet());
 		names.addAll(reference.getInheritedFlags());
 		return Collections.unmodifiableList(new ArrayList<>(names));
 	}
@@ -134,6 +136,6 @@ public class LanguageNodeReference extends LanguageNode implements Node {
 
 	@Override
 	public String toString() {
-		return "reference " + destiny.getType();
+		return "reference " + destiny.type();
 	}
 }

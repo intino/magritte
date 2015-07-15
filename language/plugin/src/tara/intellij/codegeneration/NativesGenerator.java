@@ -134,7 +134,7 @@ public class NativesGenerator {
 	private void getNativeVariablesOfNodes(List<Node> nodesOfFile, List<Variable> natives) {
 		for (Node node : nodesOfFile) {
 			getNativeVariablesOfNode(node, natives);
-			getNativeVariables(node.getFacetTargets(), natives);
+			getNativeVariables(node.facetTargets(), natives);
 		}
 	}
 

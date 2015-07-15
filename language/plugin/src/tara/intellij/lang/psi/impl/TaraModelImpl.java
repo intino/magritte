@@ -99,7 +99,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	@Override
-	public String getQualifiedName() {
+	public String qualifiedName() {
 		return "";
 	}
 

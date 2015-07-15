@@ -85,7 +85,7 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 	@Override
 	public String toString() {
 		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
-		return "Parameter in" + (contextOf != null ? contextOf.getQualifiedName() : "");
+		return "Parameter in" + (contextOf != null ? contextOf.qualifiedName() : "");
 	}
 
 	public String getValueType() {

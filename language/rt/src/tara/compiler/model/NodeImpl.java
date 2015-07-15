@@ -206,11 +206,11 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public void addImports(Collection<String> imports) {
+	public void addImports(List<String> imports) {
 		this.imports.addAll(imports);
 	}
 
-	public Collection<String> getImports() {
+	public List<String> getImports() {
 		return this.imports;
 	}
 
@@ -282,12 +282,12 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public String getFullType() {
+	public String fullType() {
 		return fullType;
 	}
 
 	@Override
-	public void setFullType(String fullType) {
+	public void fullType(String fullType) {
 		this.type = fullType;
 		this.fullType = fullType;
 	}
@@ -345,7 +345,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public Node components(String name) {
+	public Node component(String name) {
 		for (Node include : includes)
 			if (name.equals(include.name()))
 				return include;
@@ -404,7 +404,7 @@ public class NodeImpl implements Node {
 	}
 
 	@Override
-	public List<Node> getReferenceComponents() {
+	public List<Node> referenceComponents() {
 		List<NodeReference> collect = includes.stream().filter(include -> include instanceof NodeReference).map(include -> (NodeReference) include).collect(Collectors.toList());
 		return unmodifiableList(collect);
 	}

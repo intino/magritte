@@ -42,7 +42,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 		List<NodeContainer> candidates = new ArrayList<>();
 		for (TaraModel model : TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(resolve))) {
 			for (NodeContainer node : TaraUtil.getAllNodeContainersOfFile(model)) {
-				if (resolve != null && !getCorrespondingQn(resolve.getQualifiedName()).equalsIgnoreCase(node.getQualifiedName()))
+				if (resolve != null && !getCorrespondingQn(resolve.getQualifiedName()).equalsIgnoreCase(node.qualifiedName()))
 					continue;
 				candidates.add(node);
 			}
@@ -74,7 +74,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	@Nullable
 	private static PsiElement searchNativeInNode(String name, String contract, NodeContainer node) {
 		if (node instanceof Parametrized) {
-			for (Parameter parameter : ((Parametrized) node).getParameterList())
+			for (Parameter parameter : ((Parametrized) node).parameters())
 				if (name.equals(parameter.getName()))
 					return parameter;
 		}
