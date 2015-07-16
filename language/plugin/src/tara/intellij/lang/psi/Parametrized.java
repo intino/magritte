@@ -1,12 +1,8 @@
 package tara.intellij.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
-public interface Parametrized {
+public interface Parametrized extends tara.language.model.Parametrized {
 
-	@NotNull
-	List<Parameter> getParameterList();
-
+	List<Parameter> parameters();
 }

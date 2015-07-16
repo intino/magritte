@@ -1,16 +1,14 @@
 package tara.compiler.dependencyresolution;
 
 import tara.compiler.core.errorcollection.DependencyException;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.*;
-import tara.compiler.model.impl.NodeImpl;
-import tara.semantic.model.Primitives;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
+import tara.language.model.*;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
 
-import static tara.compiler.model.Variable.NATIVE_SEPARATOR;
 
 public class NativeResolver {
 	private final Model model;
@@ -22,43 +20,43 @@ public class NativeResolver {
 	}
 
 	public void resolve() throws DependencyException {
-		for (Node node : model.getIncludedNodes())
+		for (Node node : model.components())
 			resolve(node);
 	}
 
 	private void resolve(Node node) throws DependencyException {
 		if (!(node instanceof NodeImpl)) return;
-		resolveNative(node.getVariables());
-		for (Node include : node.getIncludedNodes()) resolve(include);
-		resolveInFacetTargets(node.getFacetTargets());
-		resolveInFacets(node.getFacets());
+		resolveNative(node.variables());
+		for (Node include : node.components()) resolve(include);
+		resolveInFacetTargets(node.facetTargets());
+		resolveInFacets(node.facets());
 	}
 
-	private void resolveInFacetTargets(List<FacetTarget> facetTargets) throws DependencyException {
+	private void resolveInFacetTargets(List<? extends FacetTarget> facetTargets) throws DependencyException {
 		for (FacetTarget facet : facetTargets) {
-			resolveNative(facet.getVariables());
-			for (Node node : facet.getIncludedNodes()) resolve(node);
+			resolveNative(facet.variables());
+			for (Node node : facet.components()) resolve(node);
 		}
 	}
 
-	private void resolveInFacets(List<Facet> facets) throws DependencyException {
+	private void resolveInFacets(List<? extends Facet> facets) throws DependencyException {
 		for (Facet facet : facets) {
-			resolveNative(facet.getVariables());
-			for (Node node : facet.getIncludedNodes()) resolve(node);
+			resolveNative(facet.variables());
+			for (Node node : facet.components()) resolve(node);
 		}
 	}
 
-	private void resolveNative(List<Variable> variables) throws DependencyException {
+	private void resolveNative(List<? extends Variable> variables) throws DependencyException {
 		for (Variable variable : variables)
-			if (Primitives.NATIVE.equalsIgnoreCase(variable.getType()))
-				variable.setContract(NativeResolver.this.updateContract(variable));
+			if (Primitives.NATIVE.equalsIgnoreCase(variable.type()))
+				variable.contract(NativeResolver.this.updateContract(variable));
 	}
 
 	private String updateContract(Variable variable) throws DependencyException {
-		final String nativeSignature = findNativeSignature(variable.getContract());
+		final String nativeSignature = findNativeSignature(variable.contract());
 		if (nativeSignature.isEmpty())
 			throw new DependencyException("reject.native.signature.not.found", variable);
-		return variable.getContract() + NATIVE_SEPARATOR + nativeSignature;
+		return variable.contract() + Variable.NATIVE_SEPARATOR + nativeSignature;
 	}
 
 	private String findNativeSignature(String name) {

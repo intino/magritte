@@ -2,10 +2,10 @@ package tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.impl.NodeReference;
+import tara.compiler.model.NodeReference;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
+import tara.language.model.NodeContainer;
 
 public class Generator implements TemplateTags {
 
@@ -13,7 +13,7 @@ public class Generator implements TemplateTags {
 		if (level == 1)
 			return !node.isTerminal() && (node.isFeatureInstance() || isInFeatureInstance(node) || node.isTerminalInstance());
 		else if (level == 2)
-			return !node.isTerminal() && (node.isFeature() || isInFeature(node.getContainer()));
+			return !node.isTerminal() && (node.isFeature() || isInFeature(node.container()));
 		return false;
 	}
 
@@ -22,7 +22,7 @@ public class Generator implements TemplateTags {
 		while (nodeContainer != null && nodeContainer instanceof Node)
 			if (((Node) nodeContainer).isFeatureInstance() || ((Node) nodeContainer).isTerminal())
 				return true;
-			else nodeContainer = nodeContainer.getContainer();
+			else nodeContainer = nodeContainer.container();
 		return false;
 	}
 
@@ -31,21 +31,21 @@ public class Generator implements TemplateTags {
 		while (nodeContainer != null && nodeContainer instanceof Node)
 			if (((Node) nodeContainer).isFeature() || ((Node) nodeContainer).isTerminal())
 				return true;
-			else nodeContainer = nodeContainer.getContainer();
+			else nodeContainer = nodeContainer.container();
 		return false;
 	}
 
 	protected void addComponents(NodeContainer target, Frame frame, Adapter.FrameContext<FacetTarget> context, int level) {
-		target.getIncludedNodes().stream().
+		target.components().stream().
 			filter(inner -> !(inner instanceof NodeReference) && !inner.isAnonymous()).
 			forEach(inner -> frame.addFrame(NODE, context.build(inner)));
 	}
 
 	protected FacetTarget isInFacetTarget(Node node) {
-		NodeContainer container = node.getContainer();
+		NodeContainer container = node.container();
 		while (container != null)
 			if (container instanceof FacetTarget) return (FacetTarget) container;
-			else container = container.getContainer();
+			else container = container.container();
 		return null;
 	}
 }

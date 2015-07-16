@@ -13,10 +13,13 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.TaraFileReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraNodeReferenceSolver;
 import tara.intellij.lang.psi.resolve.TaraWordReferenceSolver;
-import tara.semantic.Allow;
-import tara.intellij.lang.lexer.TaraPrimitives;
+import tara.language.model.Primitives;
+import tara.language.semantics.Allow;
 
 import javax.swing.*;
+
+import static tara.language.model.Primitives.WORD;
+import static tara.language.model.Primitives.isPrimitive;
 
 public class IdentifierMixin extends ASTWrapperPsiElement {
 
@@ -50,7 +53,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 	private boolean isWordDefaultValue() {
 		PsiElement parent = this.getParent();
 		while (!PsiFile.class.isInstance(parent))
-			if (parent instanceof Variable && "word".equals(((Variable) parent).getType())) return true;
+			if (parent instanceof Variable && Primitives.WORD.equals(((Variable) parent).type())) return true;
 			else parent = parent.getParent();
 		return false;
 	}
@@ -70,7 +73,7 @@ public class IdentifierMixin extends ASTWrapperPsiElement {
 		if (parameterAllow == null) return null;
 		if (parameterAllow.type().equalsIgnoreCase(REFERENCE))
 			return new TaraNodeReferenceSolver(this, getRange(), container);
-		if (parameterAllow.type().equalsIgnoreCase(TaraPrimitives.WORD) || !TaraPrimitives.isPrimitive(parameterAllow.type()))
+		if (parameterAllow.type().equalsIgnoreCase(WORD) || !isPrimitive(parameterAllow.type()))
 			return new TaraWordReferenceSolver(this, getRange(), parameterAllow);
 		return null;
 	}

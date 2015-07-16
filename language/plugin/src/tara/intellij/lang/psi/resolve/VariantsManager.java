@@ -37,7 +37,7 @@ public class VariantsManager {
 		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(myElement);
 		if (containerNodeOf == null) return Collections.emptyList();
 		unacceptables.addAll(variants.stream().
-			filter(variant -> variant.getType() != null && !variant.getType().equals(containerNodeOf.getType())).
+			filter(variant -> variant.type() != null && !variant.type().equals(containerNodeOf.type())).
 			collect(Collectors.toList()));
 		return unacceptables;
 
@@ -58,13 +58,13 @@ public class VariantsManager {
 		if (resolve == null) return;
 		final Node containerNodeOf = TaraPsiImplUtil.getContainerNodeOf(resolve);
 		if (containerNodeOf == null) return;
-		variants.addAll(containerNodeOf.getIncludes());
+		variants.addAll(containerNodeOf.components());
 	}
 
 	private void addInModelVariants() {
 		TaraModel model = (TaraModel) myElement.getContainingFile();
 		if (model == null) return;
-		model.getIncludes().stream().
+		model.components().stream().
 			filter(node -> !node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement))).
 			forEach(node -> resolvePathFor(node, context));
 		addMainConcepts(model);
@@ -75,7 +75,7 @@ public class VariantsManager {
 		for (Import anImport : imports) {
 			PsiElement resolve = resolveImport(anImport);
 			if (resolve == null || !TaraModel.class.isInstance(resolve)) continue;
-			((TaraModel) resolve).getIncludes().stream().filter(node -> !node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement))).forEach(node -> resolvePathFor(node, context));
+			((TaraModel) resolve).components().stream().filter(node -> !node.equals(TaraPsiImplUtil.getContainerNodeOf(myElement))).forEach(node -> resolvePathFor(node, context));
 			addMainConcepts((TaraModel) resolve);
 		}
 	}
@@ -90,10 +90,10 @@ public class VariantsManager {
 	}
 
 	private void resolvePathFor(Node node, List<Identifier> path) {
-		List<Node> childrenOf = TaraPsiImplUtil.getInnerNodesOf(node);
-		if (node == null || node.getType() == null) return;
+		List<Node> childrenOf = TaraPsiImplUtil.getComponentsOf(node);
+		if (node == null || node.type() == null) return;
 		if (path.isEmpty()) variants.add(node);
-		else if (path.get(0).getText().equals(node.getName()))
+		else if (path.get(0).getText().equals(node.name()))
 			for (Node child : childrenOf)
 				resolvePathFor(child, path.subList(1, path.size()));
 	}

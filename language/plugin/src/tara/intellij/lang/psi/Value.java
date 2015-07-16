@@ -10,7 +10,7 @@ import java.util.List;
 public interface Value extends Navigatable, Iconable, TaraPsiElement {
 
 	@NotNull
-	List<Object> getValues();
+	List<Object> values();
 
 	@Nullable
 	TaraMeasureValue getMeasureValue();

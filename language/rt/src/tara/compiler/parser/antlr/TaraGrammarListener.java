@@ -1,4 +1,3 @@
-// Generated from /Users/oroncal/workspace/tara/compiler/rt/src/siani/tara/compiler/parser/antlr/TaraGrammar.g4 by ANTLR 4.5
 package tara.compiler.parser.antlr;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;

@@ -5,9 +5,8 @@ import tara.compiler.core.CompilerMessage;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.*;
 import tara.compiler.core.errorcollection.message.*;
-import tara.compiler.model.Element;
 import tara.compiler.rt.TaraCompilerMessageCategories;
-import tara.compiler.semantic.wrappers.LanguageElement;
+import tara.language.model.Element;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -102,8 +101,8 @@ public class TaraCompiler {
 		if (error.getErrors()[0].origin() != null) {
 			message = (error.getMessage().contains(LINE_AT)) ?
 				error.getMessage().substring(0, error.getMessage().lastIndexOf(LINE_AT)) : error.getMessage();
-			Element element = ((LanguageElement) error.getErrors()[0].origin()).element();
-			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, element.getFile(), element.getLine(), 1));
+			Element element = error.getErrors()[0].origin();
+			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, element.file(), element.line(), 1));
 		} else {
 			message = error.getMessage();
 			collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, message, null, -1, -1));
@@ -113,14 +112,14 @@ public class TaraCompiler {
 	private void addErrorMessage(DependencyException exception) {
 		String message = exception.getMessage();
 		String justMessage = message.substring(0, message.lastIndexOf(LINE_AT));
-		collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, justMessage, exception.getElement().getFile(),
+		collector.add(new CompilerMessage(TaraCompilerMessageCategories.ERROR, justMessage, exception.getElement().file(),
 			exception.getLine(), 1));
 	}
 
 	private void addErrorMessage(TaraRuntimeException exception) {
 		Element element = exception.getElement();
 		collector.add(element != null ?
-			new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(), element.getFile(), element.getLine(), -1) :
+			new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(), element.file(), element.line(), -1) :
 			new CompilerMessage(CompilerMessage.ERROR, exception.getMessageWithoutLocationText(), "null", -1, -1));
 	}
 

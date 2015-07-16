@@ -5,20 +5,18 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.MorphVariableAdapter;
+import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.CompilerConfiguration;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.NodeImpl;
-import tara.compiler.model.impl.NodeReference;
-import tara.semantic.Allow;
-import tara.compiler.codegeneration.magritte.NameFormatter;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.language.semantics.Allow;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
+import tara.language.model.Variable;
 
 import java.util.AbstractMap;
 import java.util.Map;
-
-import static tara.compiler.codegeneration.magritte.NameFormatter.composeMorphPackagePath;
 
 
 public class MorphFrameCreator implements TemplateTags {
@@ -47,7 +45,7 @@ public class MorphFrameCreator implements TemplateTags {
 		String packagePath = addPackage(frame, node);
 		createMorph(frame, node);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		return new AbstractMap.SimpleEntry<>(packagePath + DOT + Format.javaValidName().format(node.getName()).toString(), frame);
+		return new AbstractMap.SimpleEntry<>(packagePath + DOT + Format.javaValidName().format(node.name()).toString(), frame);
 	}
 
 	public Map.Entry<String, Frame> create(FacetTarget facetTarget) {
@@ -56,7 +54,7 @@ public class MorphFrameCreator implements TemplateTags {
 		createFacetTargetMorph(frame, facetTarget);
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		return new AbstractMap.SimpleEntry<>(packagePath + DOT +
-			Format.javaValidName().format(((Node) facetTarget.getContainer()).getName() + "_" + facetTarget.getTargetNode().getName()).toString(), frame);
+			Format.javaValidName().format(((Node) facetTarget.container()).name() + "_" + facetTarget.targetNode().name()).toString(), frame);
 	}
 
 	private void createFacetTargetMorph(Frame frame, FacetTarget node) {
@@ -69,7 +67,7 @@ public class MorphFrameCreator implements TemplateTags {
 	}
 
 	private String addPackage(Frame frame, Node node) {
-		String packagePath = NameFormatter.composeMorphPackagePath(generatedLanguage) + (node.isFacet() ? DOT + node.getName().toLowerCase() : "");
+		String packagePath = NameFormatter.composeMorphPackagePath(generatedLanguage) + (node.isFacet() ? DOT + node.name().toLowerCase() : "");
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		return packagePath;
 	}

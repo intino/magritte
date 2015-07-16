@@ -3,14 +3,14 @@ package tara.compiler.codegeneration.magritte;
 import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.morph.TypesProvider;
-import tara.compiler.model.Node;
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.VariableReference;
-import tara.semantic.model.Primitives;
+import tara.compiler.model.VariableReference;
+import tara.language.model.Node;
+import tara.language.model.NodeContainer;
+import tara.language.model.Primitives;
+import tara.language.model.Variable;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
-import static tara.semantic.model.Variable.NATIVE_SEPARATOR;
+import static tara.language.model.Variable.NATIVE_SEPARATOR;
 
 public class MorphVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
 
@@ -31,27 +31,27 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 	private Frame createVarFrame(Frame frame, final Variable variable) {
 		frame.addTypes(TypesProvider.getTypes(variable, modelLevel));
 		if (isDefinition(getNodeContainer(variable), modelLevel)) frame.addTypes(DEFINITION);
-		frame.addFrame(NAME, variable.getName());
+		frame.addFrame(NAME, variable.name());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		if (variable.getContract() != null) frame.addFrame(CONTRACT, format(variable.getContract()));
+		if (variable.contract() != null) frame.addFrame(CONTRACT, format(variable.contract()));
 		frame.addFrame(TYPE, variable instanceof VariableReference ? getQn(((VariableReference) variable).getDestiny(), generatedLanguage.toLowerCase()) : getType(variable));
-		if (variable.getType().equals(Variable.WORD))
-			frame.addFrame(WORDS, variable.getAllowedValues().toArray(new String[(variable.getAllowedValues().size())]));
-		else if (variable.getType().equals(Primitives.NATIVE)) fillNativeVariable(frame, variable);
+		if (variable.type().equals(Variable.WORD))
+			frame.addFrame(WORDS, variable.allowedValues().toArray(new String[(variable.allowedValues().size())]));
+		else if (variable.type().equals(Primitives.NATIVE)) fillNativeVariable(frame, variable);
 		return frame;
 	}
 
 	private Node getNodeContainer(Variable variable) {
-		NodeContainer container = variable.getContainer();
+		NodeContainer container = variable.container();
 		while (!(container instanceof Node))
-			container = container.getContainer();
+			container = container.container();
 		return (Node) container;
 	}
 
 	private void fillNativeVariable(Frame frame, Variable variable) {
 		final NativeExtractor nativeExtractor = new
-			NativeExtractor(variable.getContract().substring(0, variable.getContract().indexOf(NATIVE_SEPARATOR)),
-			variable.getName(), variable.getContract().substring(variable.getContract().indexOf(NATIVE_SEPARATOR) + 1));
+			NativeExtractor(variable.contract().substring(0, variable.contract().indexOf(NATIVE_SEPARATOR)),
+			variable.name(), variable.contract().substring(variable.contract().indexOf(NATIVE_SEPARATOR) + 1));
 		frame.addFrame("parameters", nativeExtractor.parameters());
 		frame.addFrame("interfaceName", nativeExtractor.interfaceName());
 		frame.addFrame("methodName", nativeExtractor.methodName());
@@ -65,7 +65,7 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 	}
 
 	private String getType(Variable variable) {
-		if (variable.getType().equalsIgnoreCase(Primitives.NATURAL)) return Primitives.INTEGER;
-		else return variable.getType();
+		if (variable.type().equalsIgnoreCase(Primitives.NATURAL)) return Primitives.INTEGER;
+		else return variable.type();
 	}
 }

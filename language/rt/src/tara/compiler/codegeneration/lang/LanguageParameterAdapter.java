@@ -3,19 +3,19 @@ package tara.compiler.codegeneration.lang;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.Node;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.VariableReference;
-import tara.semantic.Allow;
-import tara.semantic.constraints.ReferenceParameterAllow;
-import tara.semantic.model.Tag;
+import tara.compiler.model.VariableReference;
+import tara.language.model.Node;
+import tara.language.model.Tag;
+import tara.language.model.Variable;
+import tara.language.semantics.Allow;
+import tara.language.semantics.constraints.ReferenceParameterAllow;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static tara.semantic.model.Tag.TERMINAL_INSTANCE;
+import static tara.language.model.Tag.TERMINAL_INSTANCE;
 
 public class LanguageParameterAdapter implements TemplateTags {
 	private final Language language;
@@ -25,7 +25,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 	}
 
 	void addParameter(Frame frame, int i, Variable variable, String relation) {
-		if (variable.getType().equals("word"))
+		if (variable.type().equals("word"))
 			frame.addFrame(relation, wordParameter(i, variable, relation));
 		else if (variable instanceof VariableReference)
 			frame.addFrame(relation, referenceParameter(i, variable, relation));
@@ -34,10 +34,10 @@ public class LanguageParameterAdapter implements TemplateTags {
 
 	int addTerminalParameters(Node node, Frame requires) {
 		int index = 0;
-		Collection<Allow> allows = language.allows(node.getType());
+		Collection<Allow> allows = language.allows(node.type());
 		if (allows == null) return 0;
 		for (Allow allow : allows)
-			if (allow instanceof Allow.Parameter && isTerminal((Allow.Parameter) allow) && !isRedefined((Allow.Parameter) allow, node.getVariables())) {
+			if (allow instanceof Allow.Parameter && isTerminal((Allow.Parameter) allow) && !isRedefined((Allow.Parameter) allow, node.variables())) {
 				Allow.Parameter parameter = (Allow.Parameter) allow;
 				addParameter(requires, parameter, index);
 				index++;
@@ -45,8 +45,8 @@ public class LanguageParameterAdapter implements TemplateTags {
 		return index;
 	}
 
-	private boolean isRedefined(Allow.Parameter allow, Collection<Variable> variables) {
-		for (Variable variable : variables) if (variable.getName().equals(allow.name())) return true;
+	private boolean isRedefined(Allow.Parameter allow, List<? extends Variable> variables) {
+		for (Variable variable : variables) if (variable.name().equals(allow.name())) return true;
 		return false;
 	}
 
@@ -58,7 +58,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 
 	private Frame wordParameter(int i, Variable variable, String relation) {
 		Frame frame = new Frame().addTypes(relation, "parameter", "word").
-			addFrame("name", variable.getName() + ":word").
+			addFrame("name", variable.name() + ":word").
 			addFrame("words", renderWord(variable));
 		addDefaultInfo(i, variable, frame);
 		return frame;
@@ -68,12 +68,12 @@ public class LanguageParameterAdapter implements TemplateTags {
 		frame.addFrame("multiple", variable.isMultiple()).
 			addFrame("position", i).
 			addFrame("annotations", getFlags(variable)).
-			addFrame("contract", variable.getContract() == null ? "" : variable.getContract());
+			addFrame("contract", variable.contract() == null ? "" : variable.contract());
 	}
 
 	private Frame referenceParameter(int i, Variable variable, String relation) {
 		Frame frame = new Frame().addTypes(relation, "parameter", "reference").
-			addFrame("name", variable.getName()).
+			addFrame("name", variable.name()).
 			addFrame("types", renderReference((VariableReference) variable));
 		addDefaultInfo(i, variable, frame);
 		return frame;
@@ -81,8 +81,8 @@ public class LanguageParameterAdapter implements TemplateTags {
 
 	private Frame primitiveParameter(int i, Variable variable, String relation) {
 		Frame frame = new Frame().addTypes(relation, "parameter").
-			addFrame("name", variable.getName()).
-			addFrame("type", variable.getType());
+			addFrame("name", variable.name()).
+			addFrame("type", variable.type());
 		addDefaultInfo(i, variable, frame);
 		return frame;
 	}
@@ -129,7 +129,7 @@ public class LanguageParameterAdapter implements TemplateTags {
 	}
 
 	private String[] getFlags(Variable variable) {
-		List<String> flags = variable.getFlags().stream().map(Tag::name).collect(Collectors.toList());
+		List<String> flags = variable.flags().stream().map(Tag::name).collect(Collectors.toList());
 		return flags.toArray(new String[flags.size()]);
 	}
 
@@ -142,14 +142,14 @@ public class LanguageParameterAdapter implements TemplateTags {
 	}
 
 	private String[] renderWord(Variable variable) {
-		return variable.getAllowedValues().toArray(new String[variable.getAllowedValues().size()]);
+		return variable.allowedValues().toArray(new String[variable.allowedValues().size()]);
 	}
 
 	private String[] renderReference(VariableReference reference) {
 		Node node = reference.getDestiny();
 		if (node == null) return new String[0];
-		List<String> types = node.getChildren().stream().map(Node::getQualifiedName).collect(Collectors.toList());
-		if (!node.isAbstract()) types.add(node.getQualifiedName());
+		List<String> types = node.children().stream().map(Node::qualifiedName).collect(Collectors.toList());
+		if (!node.isAbstract()) types.add(node.qualifiedName());
 		return types.toArray(new String[types.size()]);
 	}
 

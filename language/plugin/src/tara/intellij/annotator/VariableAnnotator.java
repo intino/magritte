@@ -5,12 +5,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.MessageProvider;
-import tara.intellij.lang.lexer.TaraPrimitives;
 import tara.intellij.lang.psi.Contract;
 import tara.intellij.lang.psi.Variable;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
+import tara.language.model.Primitives;
 
 public class VariableAnnotator extends TaraAnnotator {
 
@@ -23,7 +23,7 @@ public class VariableAnnotator extends TaraAnnotator {
 		holder = annotationHolder;
 		if (psiElement instanceof Variable) {
 			Variable variable = (Variable) psiElement;
-			if (!TaraPrimitives.NATIVE.equals(variable.getType()))
+			if (!Primitives.NATIVE.equals(variable.type()))
 				return;
 			if (variable.getContract() != null && hasCorrespondingJavaClass(variable))
 				holder.createErrorAnnotation(variable, MessageProvider.message("no.java.generated.class"));
@@ -31,7 +31,7 @@ public class VariableAnnotator extends TaraAnnotator {
 	}
 
 	private boolean hasCorrespondingJavaClass(Variable variable) {
-		return !isCreated(nativeClass(variable.getContract(), variable.getType()), variable.getProject());
+		return !isCreated(nativeClass(variable.getContract(), variable.type()), variable.getProject());
 	}
 
 	private boolean isCreated(String qn, Project project) {
@@ -41,6 +41,6 @@ public class VariableAnnotator extends TaraAnnotator {
 	private String nativeClass(Contract contract, String type) {
 		final TaraFacet taraFacetByModule = TaraFacet.getTaraFacetByModule(ModuleProvider.getModuleOf(contract));
 		return taraFacetByModule == null ? "" :
-			taraFacetByModule.getConfiguration().getGeneratedDslName().toLowerCase() + DOT + (type.equals(TaraPrimitives.NATIVE) ? NATIVES : METRICS) + DOT + contract.getFormattedName();
+			taraFacetByModule.getConfiguration().getGeneratedDslName().toLowerCase() + DOT + (type.equals(Primitives.NATIVE) ? NATIVES : METRICS) + DOT + contract.getFormattedName();
 	}
 }

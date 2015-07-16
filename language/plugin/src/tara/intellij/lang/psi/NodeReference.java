@@ -2,21 +2,22 @@ package tara.intellij.lang.psi;
 
 import com.intellij.pom.Navigatable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.List;
 
-public interface NodeReference extends Navigatable, TaraPsiElement {
+public interface NodeReference extends tara.language.model.Node, Navigatable, TaraPsiElement {
 
-	@NotNull
-	Collection<? extends Annotation> getAnnotations();
 
-	@NotNull
-	Collection<? extends Flag> getFlags();
+	List<Node> components();
+
+	@Nullable
+	Annotations getAnnotationsNode();
+
+	@Nullable
+	Flags getFlagsNode();
 
 	@NotNull
 	IdentifierReference getIdentifierReference();
 
-	void addInheritedFlags(String... flags);
-
-	Collection<String> getInheritedFlags();
 }

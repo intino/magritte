@@ -42,7 +42,7 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 		List<NodeContainer> candidates = new ArrayList<>();
 		for (TaraModel model : TaraUtil.getTaraFilesOfModule(ModuleProvider.getModuleOf(resolve))) {
 			for (NodeContainer node : TaraUtil.getAllNodeContainersOfFile(model)) {
-				if (resolve != null && !getCorrespondingQn(resolve.getQualifiedName()).equalsIgnoreCase(node.getQualifiedName()))
+				if (resolve != null && !getCorrespondingQn(resolve.getQualifiedName()).equalsIgnoreCase(node.qualifiedName()))
 					continue;
 				candidates.add(node);
 			}
@@ -68,17 +68,17 @@ public class JavaNativeImplementationToTara extends RelatedItemLineMarkerProvide
 	private void searchInScope(NodeContainer candidateNode, PsiClass psiClass, Set<PsiElement> nativeCandidates) {
 		final PsiElement element = searchNativeInNode(getSimpleName(psiClass), getContract(psiClass.getInterfaces()[0]), candidateNode);
 		if (element != null) nativeCandidates.add(element);
-		searchInScope(candidateNode.getIncludes(), psiClass, nativeCandidates);
+		searchInScope(candidateNode.components(), psiClass, nativeCandidates);
 	}
 
 	@Nullable
 	private static PsiElement searchNativeInNode(String name, String contract, NodeContainer node) {
 		if (node instanceof Parametrized) {
-			for (Parameter parameter : ((Parametrized) node).getParameterList())
-				if (name.equals(parameter.getName()))
+			for (Parameter parameter : ((Parametrized) node).parameters())
+				if (name.equals(parameter.name()))
 					return parameter;
 		}
-		for (Variable variable : node.getVariables())
+		for (Variable variable : node.variables())
 			if (variable.getContract() != null && contract.equals(variable.getContract().getFormattedName()) && name.equals(variable.getName()))
 				return variable;
 		return null;

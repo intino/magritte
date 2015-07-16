@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.lang.TaraIcons;
-import tara.semantic.Allow;
+import tara.language.semantics.Allow;
 
 import java.util.stream.Collectors;
 

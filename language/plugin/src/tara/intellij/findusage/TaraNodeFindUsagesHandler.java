@@ -34,7 +34,7 @@ public class TaraNodeFindUsagesHandler extends FindUsagesHandler {
 	}
 
 	private PsiElement[] getInstancesOfElement() {
-		if (node.getType() == null) return PsiElement.EMPTY_ARRAY;
+		if (node.type() == null) return PsiElement.EMPTY_ARRAY;
 		Project project = node.getProject();
 		List<? extends PsiElement> conceptList = new ArrayList();
 		Map<Module, List<TaraModel>> childModules = new HashMap<>();
@@ -55,7 +55,7 @@ public class TaraNodeFindUsagesHandler extends FindUsagesHandler {
 		List<Node> list = new ArrayList();
 		for (TaraModel file : files)
 			for (Node cpt : TaraUtil.getMainNodesOfFile(file))
-				if (node.getName().equals(cpt.getType()))
+				if (node.name().equals(cpt.type()))
 					list.add(cpt);
 		return list;
 	}

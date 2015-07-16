@@ -8,6 +8,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.impl.source.tree.ChangeUtil;
 import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -37,12 +38,10 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	@NotNull
-	@Override
 	public FileType getFileType() {
 		return TaraFileType.INSTANCE;
 	}
 
-	@Override
 	public String toString() {
 		return getPresentableName();
 	}
@@ -52,15 +51,12 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		return getName().contains(".") ? getName().substring(0, getName().lastIndexOf(".")) : getName();
 	}
 
-	@Override
 	public ItemPresentation getPresentation() {
 		return new ItemPresentation() {
-			@Override
 			public String getPresentableText() {
 				return getName().substring(0, getName().lastIndexOf("."));
 			}
 
-			@Override
 			public String getLocationString() {
 				final PsiDirectory psiDirectory = getParent();
 				if (psiDirectory != null) {
@@ -69,81 +65,32 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 				return null;
 			}
 
-			@Override
 			public Icon getIcon(final boolean open) {
 				return TaraIcons.MODEL;
 			}
 		};
 	}
 
+
 	@Nullable
-	@Override
 	public Icon getIcon(int flags) {
 		return TaraIcons.MODEL;
 	}
 
-	@Override
-	public Node getContainer() {
+	public Node container() {
 		return null;
 	}
 
 	@NotNull
 	@Override
-	public List<Node> getIncludes() {
-		return unmodifiableList(TaraUtil.getMainNodesOfFile(this));
+	public List<Node> components() {
+		return TaraUtil.getMainNodesOfFile(this);
 	}
 
-	@Override
-	public List<Variable> getVariables() {
-		return Collections.EMPTY_LIST;
-	}
-
-	@Override
-	public String getQualifiedName() {
-		return "";
-	}
-
-	@Override
-	public String getDSL() {
-		TaraDslDeclaration dslDeclaration = getDSLDeclaration();
-		if (dslDeclaration == null) return null;
-		return dslDeclaration.getHeaderReference().getText();
-	}
-
-	@Override
-	@NotNull
-	public List<Import> getImports() {
-		TaraImports[] taraImports = PsiTreeUtil.getChildrenOfType(this, TaraImports.class);
-		if (taraImports == null) return Collections.EMPTY_LIST;
-		Import[] imports = PsiTreeUtil.getChildrenOfType(taraImports[0], Import.class);
-		return imports != null ? unmodifiableList(Arrays.asList(imports)) : Collections.EMPTY_LIST;
-	}
-
-	private void insertLineBreakBefore(final ASTNode anchorBefore) {
-		getNode().addChild(ASTFactory.whitespace("\n"), anchorBefore);
-	}
-
-	private boolean haveToAddNewLine() {
-		ASTNode lastChild = getNode().getLastChildNode();
-		return lastChild != null && !lastChild.getText().endsWith("\n");
-	}
-
-
-	@Override
-	@NotNull
-	public PsiElement addNode(@NotNull Node node) throws IncorrectOperationException {
-		if (haveToAddNewLine()) insertLineBreakBefore(null);
-		final TreeElement copy = ChangeUtil.copyToElement(node);
-		getNode().addChild(copy);
-		return copy.getPsi();
-	}
-
-	@Override
 	public Node addNode(String identifier) {
 		return (Node) addNode(TaraElementFactory.getInstance(getProject()).createNode(identifier));
 	}
 
-	@Override
 	public Import addImport(String reference) {
 		TaraImports imports = TaraElementFactory.getInstance(getProject()).createImport(reference);
 		return (Import) addImport(imports);
@@ -162,7 +109,7 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	}
 
 	private PsiElement findImportAnchor() {
-		Iterator<Node> iterator = this.getIncludes().iterator();
+		Iterator<Node> iterator = this.components().iterator();
 		if (iterator.hasNext()) return iterator.next();
 		return this.getFirstChild();
 	}
@@ -196,5 +143,62 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 	public TaraDslDeclaration getDSLDeclaration() {
 		TaraDslDeclaration[] childrenOfType = PsiTreeUtil.getChildrenOfType(this, TaraDslDeclaration.class);
 		return childrenOfType != null && childrenOfType.length > 0 ? childrenOfType[0] : null;
+	}
+
+
+	public TaraModelImpl getFile() throws PsiInvalidElementAccessException {
+		return this;
+	}
+
+	public List<Variable> variables() {
+		return Collections.EMPTY_LIST;
+	}
+
+	public String qualifiedName() {
+		return "";
+	}
+
+	public String getDSL() {
+		TaraDslDeclaration dslDeclaration = getDSLDeclaration();
+		if (dslDeclaration == null) return null;
+		return dslDeclaration.getHeaderReference().getText();
+	}
+
+	@NotNull
+	public List<Import> getImports() {
+		TaraImports[] taraImports = PsiTreeUtil.getChildrenOfType(this, TaraImports.class);
+		if (taraImports == null) return Collections.EMPTY_LIST;
+		Import[] imports = PsiTreeUtil.getChildrenOfType(taraImports[0], Import.class);
+		return imports != null ? unmodifiableList(Arrays.asList(imports)) : Collections.EMPTY_LIST;
+	}
+
+	private void insertLineBreakBefore(final ASTNode anchorBefore) {
+		getNode().addChild(ASTFactory.whitespace("\n"), anchorBefore);
+	}
+
+	private boolean haveToAddNewLine() {
+		ASTNode lastChild = getNode().getLastChildNode();
+		return lastChild != null && !lastChild.getText().endsWith("\n");
+	}
+
+
+	@NotNull
+	public PsiElement addNode(@NotNull Node node) throws IncorrectOperationException {
+		if (haveToAddNewLine()) insertLineBreakBefore(null);
+		final TreeElement copy = ChangeUtil.copyToElement(node);
+		getNode().addChild(copy);
+		return copy.getPsi();
+	}
+
+	public String type() {
+		return "";
+	}
+
+	public void name(String name) {
+	}
+
+	@NotNull
+	public Node resolve() {
+		return null;
 	}
 }

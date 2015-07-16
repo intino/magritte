@@ -10,7 +10,6 @@ import java.util.List;
 
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.unmodifiableList;
-import static tara.intellij.lang.psi.impl.TaraUtil.getInnerNodesOf;
 import static tara.intellij.lang.psi.impl.TaraUtil.getVariablesOf;
 
 public class FacetApplyMixin extends ASTWrapperPsiElement {
@@ -20,25 +19,17 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public String getType() {
-		if (!((TaraFacetApply) this).getMetaIdentifierList().isEmpty())
-			return ((TaraFacetApply) this).getMetaIdentifierList().get(0).getText();
-		return "";
+	public List<Node> components() {
+		return unmodifiableList(TaraUtil.getComponentsOf((FacetApply) this));
 	}
 
 	@NotNull
-	public List<Node> getIncludes() {
-		return unmodifiableList(getInnerNodesOf((FacetApply) this));
-	}
-
-	@NotNull
-	public List<Variable> getVariables() {
+	public List<Variable> variables() {
 		return unmodifiableList(getVariablesOf((FacetApply) this));
 	}
 
-
 	@NotNull
-	public List<Parameter> getParameterList() {
+	public List<Parameter> parameters() {
 		List<Parameter> parameterList = new ArrayList<>();
 		final TaraParameters parameters = ((TaraFacetApply) this).getParameters();
 		if (parameters != null) parameterList.addAll(parameters.getParameters());
@@ -52,12 +43,5 @@ public class FacetApplyMixin extends ASTWrapperPsiElement {
 		return unmodifiableList(((FacetApply) this).getBody().getVarInitList());
 	}
 
-	public String getQualifiedName() {
-		return getContainer().getQualifiedName() + "." + getContainer().getName() + "_" + getType();
-	}
-
-	public Node getContainer() {
-		return TaraPsiImplUtil.getContainerNodeOf(this);
-	}
 
 }

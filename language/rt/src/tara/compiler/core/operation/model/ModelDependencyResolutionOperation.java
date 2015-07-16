@@ -5,7 +5,7 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.DependencyException;
 import tara.compiler.core.errorcollection.message.Message;
 import tara.compiler.dependencyresolution.*;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
 import tara.compiler.rt.TaraRtConstants;
 
 import java.util.logging.Logger;
@@ -29,7 +29,7 @@ public class ModelDependencyResolutionOperation extends ModelOperation {
 			new NativeResolver(model, unit.getConfiguration().getNativePath()).resolve();
 		} catch (DependencyException e) {
 			LOG.severe("Error during dependency resolution: " + e.getMessage());
-			unit.getErrorCollector().addError(Message.create(e, unit.getSourceUnits().get(e.getElement().getFile())), true);
+			unit.getErrorCollector().addError(Message.create(e, unit.getSourceUnits().get(e.getElement().file())), true);
 		}
 	}
 }

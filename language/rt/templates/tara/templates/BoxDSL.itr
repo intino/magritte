@@ -4,7 +4,7 @@ def type(Box)
     public class $name+firstUppercase~Dsl extends Box.Dsl {
         public static final Box box = new $name+firstUppercase~Dsl();
 
-        protected Box$[$] includes() {
+        protected Box$[$] components() {
             return new Box$[$]{
                 $namebox+reference...[,$NL]
             };

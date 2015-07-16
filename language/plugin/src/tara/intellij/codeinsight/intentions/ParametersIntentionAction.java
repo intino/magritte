@@ -33,13 +33,13 @@ public abstract class ParametersIntentionAction extends PsiElementBaseIntentionA
 		PsiElement contextOf = TaraPsiImplUtil.getContextOf(inFacet);
 		if (contextOf instanceof TaraFacetApply)
 			return contextOf.getFirstChild().getText();
-		if (contextOf instanceof Node) return ((Node) contextOf).getType();
+		if (contextOf instanceof Node) return ((Node) contextOf).type();
 		return null;
 	}
 
 //	List<Variable> getAllowedFacet(Node node, String name, String context) {
 //		FacetTarget target = node.getObject().getAllowedFacetByContext(name, context);
-//		return target != null ? target.getVariables() : null;
+//		return target != null ? target.variables() : null;
 //	}
 
 

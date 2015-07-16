@@ -8,84 +8,110 @@ import tara.intellij.lang.psi.*;
 import java.util.Collections;
 import java.util.List;
 
-import static tara.semantic.model.Primitives.*;
+import static tara.language.model.Primitives.*;
 
 public class ParameterMixin extends ASTWrapperPsiElement {
 
 	private static final String EMPTY = "empty";
 	private String contract = "";
 	private String inferredType;
-	private String inferredName;
+	private String name = "";
 
 	public ParameterMixin(@NotNull ASTNode node) {
 		super(node);
 	}
 
 
+	public String name() {
+		if (this instanceof TaraExplicitParameter) return ((TaraExplicitParameter) this).getIdentifier().getText();
+		else if (this instanceof TaraVarInit) return ((TaraVarInit) this).getIdentifier().getText();
+		return name;
+	}
+
+	public void name(String name) {
+		this.name = name;
+	}
+
 	public String getParameter() {
 		return this.getText();
 	}
 
-	public int getIndexInParent() {
+	public int position() {
 		List<Parameter> parameters = ((Parameters) this.getParent()).getParameters();
 		return parameters.indexOf(this);
 	}
 
-	public boolean isExplicit() {
-		return this instanceof TaraExplicitParameter;
+	public String contract() {
+		return contract;
 	}
 
-	@NotNull
-	public String getName() {
-		return this instanceof TaraExplicitParameter ? ((TaraExplicitParameter) this).getIdentifier().getText() : "";
+	public void contract(String contract) {
+		this.contract = contract;
+	}
+
+	public String inferredType() {
+		return inferredType;
+	}
+
+	public void inferredType(String type) {
+		this.inferredType = type;
+	}
+
+	public List<Object> values() {
+		Value value = ((Parameter) this).getValue();
+		return value == null ? Collections.emptyList() : value.values();
+	}
+
+
+	public List<String> flags() {
+		return null;
+	}
+
+	public void flags(List<String> flags) {
+
+	}
+
+	public void multiple(boolean multiple) {
+
+	}
+
+	public String metric() {
+		return getMetric().getText();
+	}
+
+	public boolean isVariableInit() {
+		return this instanceof TaraVarInit;
+	}
+
+	public boolean hasReferenceValue() {
+		return REFERENCE.equals(getValueType());
 	}
 
 	public TaraMeasureValue getMetric() {
 		return ((Parameter) this).getValue().getMeasureValue();
 	}
 
-	public boolean isList() {
+	public void metric(String metric) {
+	}
+
+	public void addAllowedValues(List<String> allowedValues) {
+
+	}
+
+	public String getUID() {
+		return null;
+	}
+
+	public boolean isExplicit() {
+		return this instanceof TaraExplicitParameter;
+	}
+
+	public boolean isMultiple() {
 		return ((Parameter) this).getValue().getChildren().length - (((Parameter) this).getValue().getMeasureValue() != null ? 1 : 0) > 1;
 	}
 
-	public int getValuesLength() {
+	public int size() {
 		return ((Parameter) this).getValue().getChildren().length - (((Parameter) this).getValue().getMeasureValue() != null ? 1 : 0);
-	}
-
-	public List<Object> getValues() {
-		Value value = ((Parameter) this).getValue();
-		return value == null ? Collections.emptyList() : value.getValues();
-	}
-
-	public FacetApply isInFacet() {
-		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
-		return contextOf instanceof FacetApply ? (FacetApply) contextOf : null;
-	}
-
-	public String getContract() {
-		return contract;
-	}
-
-	public void setContract(String contract) {
-		this.contract = contract;
-	}
-
-	public String getInferredType() {
-		return inferredType;
-	}
-
-	public void setInferredType(String type) {
-		this.inferredType = type;
-	}
-
-	public void setInferredName(String name) {
-		this.inferredName = name;
-	}
-
-	@Override
-	public String toString() {
-		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
-		return "Parameter in" + (contextOf != null ? contextOf.getQualifiedName() : "");
 	}
 
 	public String getValueType() {
@@ -100,5 +126,22 @@ public class ParameterMixin extends ASTWrapperPsiElement {
 		if (!value.getStringValueList().isEmpty()) return STRING;
 		if (value.getEmptyField() != null) return EMPTY;
 		return "null";
+	}
+
+	public void addAllowedParameters(List<String> values) {
+	}
+
+	public void substituteValues(List<? extends Object> newValues) {
+
+	}
+
+	public List<String> getAllowedValues() {
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		final NodeContainer contextOf = TaraPsiImplUtil.getContextOf(this);
+		return "Parameter in" + (contextOf != null ? contextOf.qualifiedName() : "");
 	}
 }

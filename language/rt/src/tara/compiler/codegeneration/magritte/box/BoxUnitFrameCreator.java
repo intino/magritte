@@ -4,9 +4,9 @@ import org.siani.itrules.engine.FrameBuilder;
 import org.siani.itrules.model.AbstractFrame;
 import tara.Language;
 import tara.compiler.core.CompilerConfiguration;
-import tara.compiler.model.*;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.impl.NodeReference;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeReference;
+import tara.language.model.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,10 +47,10 @@ public class BoxUnitFrameCreator {
 	private void createKeyMap(NodeContainer node) {
 		if (node instanceof Node) {
 			addKey((Node) node);
-			((Node) node).getFacetTargets().forEach(this::createKeyMap);
-			((Node) node).getFacets().forEach(this::createKeyMap);
+			((Node) node).facetTargets().forEach(this::createKeyMap);
+			((Node) node).facets().forEach(this::createKeyMap);
 		}
-		node.getIncludedNodes().stream().filter(include -> !(include instanceof NodeReference)).forEach(this::createKeyMap);
+		node.components().stream().filter(include -> !(include instanceof NodeReference)).forEach(this::createKeyMap);
 	}
 
 	private void addKey(Node node) {
@@ -60,9 +60,9 @@ public class BoxUnitFrameCreator {
 	}
 
 	public AbstractFrame create() {
-		Model boxModel = new Model(nodes.iterator().next().getFile());
-		boxModel.setName(model.getName());
-		boxModel.addIncludedNodes(nodes.toArray(new Node[nodes.size()]));
+		Model boxModel = new Model(nodes.iterator().next().file());
+		boxModel.name(model.name());
+		boxModel.add(nodes.toArray(new Node[nodes.size()]));
 		final FrameBuilder builder = new FrameBuilder();
 		builder.register(Model.class, new BoxUnitModelAdapter(project, generatedLanguage, language, locale, model.getMetrics(), level == 0));
 		builder.register(Node.class, new BoxUnitNodeAdapter(keymap, level == 0));

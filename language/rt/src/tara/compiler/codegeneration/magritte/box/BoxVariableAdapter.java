@@ -4,10 +4,8 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.*;
-import tara.compiler.model.impl.VariableReference;
-import tara.semantic.model.Primitives;
-import tara.semantic.model.Tag;
+import tara.compiler.model.VariableReference;
+import tara.language.model.*;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
@@ -25,9 +23,9 @@ public class BoxVariableAdapter implements Adapter<Variable>, TemplateTags {
 
 	@Override
 	public void execute(Frame frame, Variable variable, FrameContext<Variable> context) {
-		if (variable.getDefaultValues().isEmpty() || variable.getDefaultValues().get(0) instanceof EmptyNode || variable.isInherited())
+		if (variable.defaultValues().isEmpty() || variable.defaultValues().get(0) instanceof EmptyNode || variable.isInherited())
 			return;
-		if (variable.getContainer() instanceof FacetTarget) {
+		if (variable.container() instanceof FacetTarget) {
 			createTargetVarFrame(frame, variable);
 			addVariableValue(frame, variable);
 			return;
@@ -43,32 +41,32 @@ public class BoxVariableAdapter implements Adapter<Variable>, TemplateTags {
 		else if (level == 2) frame.addFrame(TERMINAL, TERMINAL_KEY);
 		else if (!variable.isTerminalInstance() && level == 1) frame.addFrame(TERMINAL, TERMINAL_KEY);
 		frame.addFrame(MULTIPLE, variable.isMultiple());
-		if (variable.getType().equals(Primitives.MEASURE)) asMeasure(frame, variable);
+		if (variable.type().equals(Primitives.MEASURE)) asMeasure(frame, variable);
 	}
 
 
 	private String buildName(Variable parameter) {
-		if (parameter.getContainer() instanceof Facet)
-			return ((Node) (parameter.getContainer().getContainer())).getName() + "+" + parameter.getName();
-		else return parameter.getName();
+		if (parameter.container() instanceof Facet)
+			return ((Node) (parameter.container().container())).name() + "+" + parameter.name();
+		else return parameter.name();
 	}
 
 
 	protected String[] getTypes(Variable variable) {
 		List<String> list = new ArrayList<>();
 		list.add(VARIABLE);
-		if (variable.getDefaultValues().get(0) instanceof Primitives.Expression) list.add(Primitives.NATIVE);
+		if (variable.defaultValues().get(0) instanceof Primitives.Expression) list.add(Primitives.NATIVE);
 		if (variable instanceof VariableReference) list.add(Primitives.REFERENCE);
-		list.add(variable.getType());
+		list.add(variable.type());
 		if (variable.isTerminal()) list.add(TERMINAL);
 		if (variable.isMultiple()) list.add(MULTIPLE);
-		list.addAll(variable.getFlags().stream().map(Tag::name).collect(Collectors.toList()));
+		list.addAll(variable.flags().stream().map(Tag::name).collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);
 	}
 
 	protected void addVariableValue(Frame frame, final Variable variable) {
 		Object[] values;
-		Collection<Object> defaultValues = variable.getDefaultValues();
+		Collection<Object> defaultValues = variable.defaultValues();
 		if (defaultValues.iterator().next() instanceof Node)
 			if (defaultValues.iterator().next() instanceof EmptyNode)
 				return;
@@ -79,7 +77,7 @@ public class BoxVariableAdapter implements Adapter<Variable>, TemplateTags {
 	}
 
 	private Object[] buildNativeReference(Variable variable) {
-		return new Object[]{variable.getName() + "_" + variable.getUID()};
+		return new Object[]{variable.name() + "_" + variable.getUID()};
 	}
 
 	private Object[] format(Collection<Object> parameterValues) {
@@ -94,23 +92,23 @@ public class BoxVariableAdapter implements Adapter<Variable>, TemplateTags {
 	}
 
 	private Object[] collectQualifiedNames(Collection<Object> defaultValues) {
-		List<String> nodeNames = defaultValues.stream().map(value -> ((Node) value).getQualifiedName()).collect(Collectors.toList());
+		List<String> nodeNames = defaultValues.stream().map(value -> ((Node) value).qualifiedName()).collect(Collectors.toList());
 		return nodeNames.toArray(new Object[nodeNames.size()]);
 	}
 
 	private void createTargetVarFrame(Frame frame, final Variable variable) {
-		FacetTarget container = (FacetTarget) variable.getContainer();
+		FacetTarget container = (FacetTarget) variable.container();
 		frame.addTypes(getFacetTypes(variable));
-		frame.addFrame(NAME, (variable.isFinal() ? NameFormatter.cleanNativeReference(variable.getContainer().getQualifiedName()) : "") + variable.getName());
-		if (variable.getType().equals(Primitives.MEASURE)) asMeasure(frame, variable);
-		frame.addFrame(TARGET, container.getTarget());
-		frame.addFrame(NODE, container.getContainer().getQualifiedName());
+		frame.addFrame(NAME, (variable.isFinal() ? NameFormatter.cleanNativeReference(variable.container().qualifiedName()) : "") + variable.name());
+		if (variable.type().equals(Primitives.MEASURE)) asMeasure(frame, variable);
+		frame.addFrame(TARGET, container.target());
+		frame.addFrame(NODE, container.container().qualifiedName());
 	}
 
 	private void asMeasure(Frame frame, Variable variable) {
-		frame.addFrame(EXTENSION_TYPE, variable.getContract());
-		if (variable.getContract() != null)
-			frame.addFrame(EXTENSION_VALUE, resolveMetric(variable.getDefaultExtension()));
+		frame.addFrame(EXTENSION_TYPE, variable.contract());
+		if (variable.contract() != null)
+			frame.addFrame(EXTENSION_VALUE, resolveMetric(variable.defaultExtension()));
 	}
 
 	private String[] getFacetTypes(Variable variable) {

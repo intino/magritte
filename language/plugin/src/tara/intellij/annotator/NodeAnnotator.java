@@ -17,7 +17,7 @@ import tara.intellij.lang.psi.NodeReference;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.TaraNodeReference;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.semantic.Assumption;
+import tara.language.semantics.Assumption;
 
 import java.awt.*;
 import java.util.List;
@@ -61,7 +61,7 @@ public class NodeAnnotator extends TaraAnnotator {
 	private boolean isProperty(Node node) {
 		Language language = TaraLanguage.getLanguage(node.getFile());
 		if (language == null) return false;
-		List<Assumption> assumptions = language.assumptions(node.resolve().getFullType());
+		List<Assumption> assumptions = language.assumptions(node.resolve().type());
 		if (assumptions == null) return false;
 		for (Assumption assumption : assumptions)
 			if (assumption instanceof Assumption.Implicit)

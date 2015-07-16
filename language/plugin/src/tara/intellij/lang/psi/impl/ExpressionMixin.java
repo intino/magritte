@@ -6,7 +6,7 @@ import com.intellij.psi.LiteralTextEscaper;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import org.jetbrains.annotations.NotNull;
-import tara.semantic.model.Primitives;
+import tara.language.model.Primitives;
 import tara.intellij.lang.psi.*;
 
 public class ExpressionMixin extends ASTWrapperPsiElement {
@@ -53,8 +53,8 @@ public class ExpressionMixin extends ASTWrapperPsiElement {
 	}
 
 	private String getType(PsiElement element) {
-		if (element instanceof Variable) return ((Variable) element).getType();
-		if (element instanceof Parameter) return ((Parameter) element).getInferredType();
+		if (element instanceof Variable) return ((Variable) element).type();
+		if (element instanceof Parameter) return ((Parameter) element).inferredType();
 		return null;
 	}
 

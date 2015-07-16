@@ -18,21 +18,21 @@ import tara.Language;
 import tara.Resolver;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.*;
-import tara.intellij.lang.semantic.LanguageNode;
-import tara.semantic.model.Tag;
+import tara.language.model.Tag;
 
 import javax.swing.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.unmodifiableList;
-import static tara.semantic.model.Tag.*;
+import static tara.language.model.Tag.*;
 
 public class NodeMixin extends ASTWrapperPsiElement {
 
-	private String fullType = getType();
-	private String prevType = getType();
-	private Set<String> inheritedFlags = new HashSet<>();
+	private String fullType = simpleType();
+	private String prevType = simpleType();
+	private Set<Tag> inheritedFlags = new HashSet<>();
 
 	public NodeMixin(@NotNull ASTNode node) {
 		super(node);
@@ -56,25 +56,25 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		}
 	}
 
-	public String getType() {
+	public String simpleType() {
 		MetaIdentifier type = getSignature().getType();
 		if (type == null && this.isSub()) {
 			Node baseNode = getBaseConcept();
-			return baseNode != null ? baseNode.getType() : "";
+			return baseNode != null ? baseNode.type() : "";
 		} else
 			return type == null || type.getText() == null ? "" : type.getText();
 	}
 
 	@NotNull
-	public String getFullType() {
-		if (!prevType.equals(getType())) {
-			fullType = getType();
-			prevType = getType();
+	public String type() {
+		if (!prevType.equals(simpleType())) {
+			fullType = simpleType();
+			prevType = simpleType();
 		}
 		return fullType;
 	}
 
-	public void setFullType(String fullType) {
+	public void type(String fullType) {
 		this.fullType = fullType;
 	}
 
@@ -82,8 +82,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	public Node resolve() {
 		Language language = TaraUtil.getLanguage(this.getOriginalElement());
 		if (language == null) return (Node) this;
-		LanguageNode node = new LanguageNode((Node) this);
-		new Resolver(language).resolve(node);
+		new Resolver(language).resolve((Node) this);
 		return (Node) this;
 	}
 
@@ -91,32 +90,33 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.getParentOf((Node) this);
 	}
 
-	public List<Node> getNodeSiblings() {
-		Node node = (this.isSub()) ? getParentNode() : (Node) this;
+	public List<Node> siblings() {
+		Node node = (this.isSub()) ? parent() : (Node) this;
 		NodeContainer contextOf = TaraPsiImplUtil.getContextOf(node);
-		if (contextOf == null) return unmodifiableList(((TaraModel) this.getContainingFile()).getIncludes());
-		return unmodifiableList(contextOf.getIncludes());
+		if (contextOf == null) return unmodifiableList(((TaraModel) this.getContainingFile()).components());
+		return unmodifiableList(contextOf.components());
 	}
 
-	public List<Node> getIncludes() {
-		return unmodifiableList(TaraUtil.getInnerNodesOf((Node) this));
+	@NotNull
+	public List<Node> components() {
+		return unmodifiableList(TaraUtil.getComponentsOf((Node) this));
 	}
 
-	public List<Variable> getVariables() {
+	public List<Variable> variables() {
 		return TaraPsiImplUtil.getVariablesInBody(this.getBody());
 	}
 
-	public List<NodeReference> getInnerNodeReferences() {
+	public List<NodeReference> referenceComponents() {
 		return unmodifiableList(TaraPsiImplUtil.getNodeReferencesOf((Node) this));
 	}
 
 	@Nullable
-	public String getParentName() {
+	public String parentName() {
 		Signature signature = this.getSignature();
 		return signature.getParentReference() != null ? signature.getParentReference().getText() : null;
 	}
 
-	public Node getParentNode() {
+	public Node parent() {
 		return TaraPsiImplUtil.getParentOf((Node) this);
 	}
 
@@ -125,14 +125,14 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return childrenOfType == null ? null : childrenOfType[0];
 	}
 
-	@Override
-	public String getName() {
+	@NotNull
+	public String name() {
 		Identifier identifierNode = getIdentifierNode();
-		return identifierNode != null ? identifierNode.getText() : null;
+		return identifierNode != null ? identifierNode.getText() : "";
 	}
 
 	@NotNull
-	public List<Parameter> getParameterList() {
+	public List<Parameter> parameters() {
 		List<Parameter> parameterList = new ArrayList<>();
 		final Parameters parameters = getSignature().getParameters();
 		if (parameters != null) parameterList.addAll(parameters.getParameters());
@@ -146,18 +146,18 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return unmodifiableList(this.getBody().getVarInitList());
 	}
 
-	public String getQualifiedName() {
+	public String qualifiedName() {
 		Node node = (Node) this;
 		String name = "";
 		while (node != null) {
 			name = getPathName(node) + "." + name;
-			node = node.getContainer();
+			node = node.container();
 		}
 		return name.substring(0, name.length() - 1);
 	}
 
 	private String getPathName(Node node) {
-		return node.getIdentifierNode() != null ? node.getIdentifierNode().getText() : (node.getType() + "@anonymous");
+		return node.getIdentifierNode() != null ? node.getIdentifierNode().getText() : (node.type() + "@anonymous");
 	}
 
 
@@ -174,15 +174,18 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 
-	@Override
 	public Icon getIcon(@IconFlags int i) {
 		if (this.isSub())
 			return TaraIcons.SUB_13;
 		return TaraIcons.NODE;
 	}
 
+	public void name(String name) {
+		setName(name);
+	}
+
 	@NotNull
-	public PsiElement setName(String name) {
+	private PsiElement setName(String name) {
 		return TaraPsiImplUtil.setName(this.getSignature(), name);
 	}
 
@@ -209,7 +212,7 @@ public class NodeMixin extends ASTWrapperPsiElement {
 
 
 	public boolean isAbstract() {
-		return is(ABSTRACT) || !getSubNodes().isEmpty();
+		return is(ABSTRACT) || !subs().isEmpty();
 	}
 
 	public boolean isEnclosed() {
@@ -220,16 +223,44 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return is(FEATURE);
 	}
 
+	public boolean isRequired() {
+		return is(REQUIRED);
+	}
+
+	public boolean isSingle() {
+		return is(SINGLE);
+	}
+
+	public boolean isNamed() {
+		return is(NAMED);
+	}
+
+	public boolean isFinal() {
+		return is(NAMED);
+	}
+
+	public boolean isTerminal() {
+		return is(TERMINAL);
+	}
+
+	public boolean intoSingle() {
+		return into(FEATURE);
+	}
+
+	public boolean intoRequired() {
+		return into(REQUIRED);
+	}
+
 	public boolean isFacetInstance() {
-		return inheritedFlags.contains(FACET_INSTANCE.name());
+		return inheritedFlags.contains(FACET_INSTANCE);
 	}
 
 	public boolean isTerminalInstance() {
-		return inheritedFlags.contains(TERMINAL_INSTANCE.name());
+		return inheritedFlags.contains(TERMINAL_INSTANCE);
 	}
 
 	public boolean isFeatureInstance() {
-		return inheritedFlags.contains(FEATURE_INSTANCE.name());
+		return inheritedFlags.contains(FEATURE_INSTANCE);
 	}
 
 	public boolean isAnnotatedAsMain() {
@@ -240,16 +271,24 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	private boolean is(Tag taraTags) {
+		for (PsiElement annotation : getFlags())
+			if (taraTags.name().equalsIgnoreCase(annotation.getText()))
+				return true;
+		Node parent = parentName() != null ? parent() : null;
+		return hasFlag(taraTags) || (parent != null && ((NodeMixin) parent).is(taraTags));
+	}
+
+	private boolean into(Tag taraTags) {
 		for (PsiElement annotation : getAnnotations())
 			if (taraTags.name().equalsIgnoreCase(annotation.getText()))
 				return true;
-		Node parent = getParentName() != null ? getParentNode() : null;
-		return hasInheritedAnnotation(taraTags) || (parent != null && ((NodeMixin) parent).is(taraTags));
+		Node parent = parentName() != null ? parent() : null;
+		return parent != null && ((NodeMixin) parent).is(taraTags);
 	}
 
-	private boolean hasInheritedAnnotation(Tag tags) {
-		for (String a : inheritedFlags)
-			if (a.equals(tags.name())) return true;
+	private boolean hasFlag(Tag tags) {
+		for (Tag a : flags())
+			if (a.equals(tags)) return true;
 		return false;
 	}
 
@@ -257,17 +296,22 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return getSignature().getAddress();
 	}
 
-	public List<Node> getSubNodes() {
+	public String plate() {
+		final TaraAddress address = getSignature().getAddress();
+		return address != null ? address.getText() : null;
+	}
+
+	public List<Node> subs() {
 		ArrayList<Node> subs = new ArrayList<>();
 		List<Node> children = TaraPsiImplUtil.getInnerNodesInBody(this.getBody());
 		children.stream().filter(Node::isSub).forEach(child -> {
 			subs.add(child);
-			subs.addAll(child.getSubNodes());
+			subs.addAll(child.subs());
 		});
 		return unmodifiableList(subs);
 	}
 
-	public Node getContainer() {
+	public Node container() {
 		if (isAnnotatedAsMain()) return null;//TODO
 		if (isSub()) {
 			Node rootOfSub = containerOfSub((Node) this);
@@ -281,13 +325,26 @@ public class NodeMixin extends ASTWrapperPsiElement {
 		return TaraPsiImplUtil.getContainerNodeOf(container);
 	}
 
-	public List<FacetApply> getFacetApplies() {
+	public List<FacetApply> facets() {
 		if (getBody() != null) return unmodifiableList(getBody().getFacetApplyList());
 		return EMPTY_LIST;
 	}
 
-	public List<FacetTarget> getFacetTargets() {
+	public List<FacetTarget> facetTargets() {
 		return unmodifiableList(TaraPsiImplUtil.getFacetTargets((Node) this));
+	}
+
+	public List<String> types() {
+		List<String> types = new ArrayList<>();
+		types.add(type());
+		types.addAll(facets().stream().map(FacetApply::type).collect(Collectors.toList()));
+		return types;
+	}
+
+	public List<String> secondaryTypes() {
+		Set<String> types = facets().stream().map(FacetApply::type).collect(Collectors.toSet());
+		if (parent() != null && !parent().equals(this)) types.addAll(parent().types());
+		return new ArrayList<>(types);
 	}
 
 	@NotNull
@@ -296,15 +353,27 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public List<Annotation> getAnnotations() {
+	private List<Annotation> getAnnotations() {
 		Annotations annotations = this.getAnnotationsNode();
 		return annotations == null ? EMPTY_LIST : unmodifiableList(annotations.getAnnotationList());
 	}
 
 	@NotNull
-	public List<Flag> getFlags() {
+	private List<Flag> getFlags() {
 		Flags flags = this.getFlagsElement();
 		return flags == null ? EMPTY_LIST : flags.getFlagList();
+	}
+
+
+	public List<Tag> annotations() {
+		return getAnnotations().stream().map(annotation -> Tag.valueOf(annotation.getText().toUpperCase())).collect(Collectors.toList());
+	}
+
+	public List<Tag> flags() {
+		final List<Tag> tags = getAnnotations().stream().
+			map(annotation -> Tag.valueOf(annotation.getText().toUpperCase())).collect(Collectors.toList());
+		tags.addAll(inheritedFlags);
+		return tags;
 	}
 
 	@Nullable
@@ -313,36 +382,62 @@ public class NodeMixin extends ASTWrapperPsiElement {
 	}
 
 	@Nullable
+	public Flags getFlagsNode() {
+		return this.getSignature().getFlags();
+	}
+
+	@Nullable
 	public Flags getFlagsElement() {
 		return this.getSignature().getFlags();
 	}
 
-	public void addInheritedFlags(String... flags) {
+	public void addFlags(Tag... flags) {
 		Collections.addAll(inheritedFlags, flags);
 	}
 
-	public List<String> getInheritedFlags() {
-		return unmodifiableList(new ArrayList<>(inheritedFlags));
+	public void addAnnotations(Tag... annotations) {
+
 	}
 
 	public boolean contains(String type) {
-		for (Node node : getIncludes())
-			if (type.equals(node.getType())) return true;
+		for (Node node : components())
+			if (type.equals(node.type())) return true;
 		return true;
 	}
 
-	@Override
+	public boolean isReference() {
+		return false;
+	}
+
+	public Node destinyOfReference() {
+		return null;
+	}
+
+	public String language() {
+		return null;
+	}
+
+	public void language(String language) {
+	}
+
+	public void plate(String plate) {
+	}
+
+
+	public List<? extends tara.language.model.Node> children() {
+		return null;
+	}
+
+
 	public String toString() {
-		return getName() != null ? getName() : "unNamed";
+		return (name() != null ? name() : "unNamed") + "@" + type();
 	}
 
-	@Override
 	public boolean equals(Object obj) {
-		return obj instanceof Node && ((Node) obj).getQualifiedName().equals(this.getQualifiedName());
+		return obj instanceof Node && ((Node) obj).qualifiedName().equals(this.qualifiedName());
 	}
 
-	@Override
 	public int hashCode() {
-		return this.getQualifiedName().hashCode();
+		return this.qualifiedName().hashCode();
 	}
 }

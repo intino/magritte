@@ -9,7 +9,7 @@ import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.Parameter;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.semantic.Allow;
+import tara.language.semantics.Allow;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 
 import java.util.Collection;
@@ -25,7 +25,7 @@ public interface CompletionUtils {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf(TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (language == null) return;
-		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().getFullType());
+		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().type());
 		if (allows == null) return;
 		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForIncludes(language.languageName(), allows);
 		resultSet.addAllElements(elementBuilders);
@@ -52,7 +52,7 @@ public interface CompletionUtils {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition().getContext());
 		if (language == null) return;
-		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().getFullType());
+		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().type());
 		if (allows == null) return;
 		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForFacets(language.languageName(), allows);
 		resultSet.addAllElements(elementBuilders);
@@ -75,9 +75,9 @@ public interface CompletionUtils {
 		Language language = TaraUtil.getLanguage(parameters.getOriginalFile());
 		Node node = TaraPsiImplUtil.getContainerNodeOf(TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (language == null) return;
-		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().getFullType());
+		Collection<Allow> allows = language.allows(node == null ? "" : node.resolve().type());
 		if (allows == null) return;
-		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForParameters(allows, node == null ? Collections.emptyList() : node.getParameterList());
+		List<LookupElementBuilder> elementBuilders = buildLookupElementBuildersForParameters(allows, node == null ? Collections.emptyList() : node.parameters());
 		resultSet.addAllElements(elementBuilders);
 		JavaCompletionSorting.addJavaSorting(parameters, resultSet);
 	}
@@ -90,7 +90,7 @@ public interface CompletionUtils {
 	}
 
 	default boolean contains(List<Parameter> parameters, String name) {
-		for (Parameter parameter : parameters) if (name.equals(parameter.getName())) return true;
+		for (Parameter parameter : parameters) if (name.equals(parameter.name())) return true;
 		return false;
 	}
 

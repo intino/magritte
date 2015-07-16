@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import tara.TaracRunner;
 import tara.compiler.core.errorcollection.SyntaxException;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
 import tara.compiler.parser.antlr.ModelGenerator;
 import tara.compiler.parser.antlr.TaraErrorStrategy;
 import tara.compiler.parser.antlr.TaraGrammar;

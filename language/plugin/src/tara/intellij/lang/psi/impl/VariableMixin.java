@@ -6,28 +6,29 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tara.semantic.model.Tag;
 import tara.intellij.lang.psi.*;
+import tara.language.model.Tag;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class VariableMixin extends ASTWrapperPsiElement {
 
-	private Set<String> inheritedFlags = new HashSet<>();
+	private Set<Tag> inheritedFlags = new HashSet<>();
 
 	public VariableMixin(@NotNull ASTNode node) {
 		super(node);
+	}
+
+	public void name(String newName) {
+		setName(newName);
 	}
 
 	@NotNull
 	public PsiElement setName(String newName) {
 		ASTNode keyNode = getNode().findChildByType(TaraTypes.IDENTIFIER);
 		if (keyNode != null) {
-			Variable variable = TaraElementFactoryImpl.getInstance(this.getProject()).createVariable(newName, getType());
+			Variable variable = TaraElementFactoryImpl.getInstance(this.getProject()).createVariable(newName, type());
 			ASTNode node = variable.getFirstChild().getChildren()[0].getNode();
 			this.getNode().replaceChild(keyNode, node);
 		}
@@ -41,15 +42,19 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	}
 
 	@Nullable
-	@Override
-	public String getName() {
+	public String name() {
 		ASTNode[] child = this.getNode().getChildren(TokenSet.create(TaraTypes.IDENTIFIER));
 		if (child.length == 0) return null;
 		return child[0].getText();
 	}
 
 	@Nullable
-	public String getType() {
+	public String getName() {
+		return name();
+	}
+
+	@Nullable
+	public String type() {
 		TaraVariableType type = ((TaraVariable) this).getVariableType();
 		return type == null ? null : type.getText();
 	}
@@ -74,19 +79,96 @@ public class VariableMixin extends ASTWrapperPsiElement {
 		return TaraUtil.getOverriddenVariable((Variable) this) != null;
 	}
 
-	public List<Tag> getAllFlags() {
-		List<TaraFlag> flagList = ((TaraVariable) this).getFlags().getFlagList();
-		List<Tag> tags = flagList.stream().map(taraFlag -> Tag.valueOf(taraFlag.getText().toUpperCase())).collect(Collectors.toList());
-		tags.addAll(inheritedFlags.stream().map(inheritedFlag -> Tag.valueOf(inheritedFlag.toUpperCase())).collect(Collectors.toList()));
+	public List<Tag> flags() {
+		List<Tag> tags = new ArrayList<>();
+		tags.addAll(inheritedFlags);
+		if (((TaraVariable) this).getFlagsNode() != null)
+			tags.addAll(((TaraVariable) this).getFlagsNode().getFlagList().stream().
+				map(f -> Tag.valueOf(f.getText().toUpperCase())).collect(Collectors.toList()));
 		return Collections.unmodifiableList(tags);
 	}
 
-	public void addFlags(String... flags) {
+	public void addFlags(Tag... flags) {
 		Collections.addAll(inheritedFlags, flags);
+	}
+
+	public String contract() {
+		return getContract().getFormattedName();
+	}
+
+	public tara.language.model.NodeContainer container() {
+		return TaraPsiImplUtil.getContainerNodeOf(this);
+	}
+
+	public void container(tara.language.model.NodeContainer container) {
+	}
+
+	public void type(String type) {
+
+	}
+
+	public int size() {
+		return 0;
+	}
+
+	public void size(int tupleSize) {
+	}
+
+	public void contract(String extension) {
+	}
+
+	public boolean isTerminal() {
+		return flags().contains(Tag.TERMINAL);
+	}
+
+	public boolean isTerminalInstance() {
+		return flags().contains(Tag.TERMINAL_INSTANCE);
+	}
+
+	public boolean isFinal() {
+		return flags().contains(Tag.FINAL);
+	}
+
+	public boolean isPrivate() {
+		return flags().contains(Tag.PRIVATE);
+	}
+
+	public boolean isInherited() {
+		return false;
+	}
+
+	public List<Object> allowedValues() {
+		return null;
+	}
+
+	public List<Object> defaultValues() {
+		TaraValue value = ((TaraVariable) this).getValue();
+		return value != null ? value.values() : Collections.emptyList();
+	}
+
+
+	public String defaultExtension() {
+		TaraMeasureValue measureValue = ((TaraVariable) this).getMeasureValue();
+		return measureValue != null ? measureValue.getText() : "";
+	}
+
+	public void defaultExtension(String defaultExtension) {
+	}
+
+	public void overriden(boolean overriden) {
+
+	}
+
+	public String getUID() {
+		return null;
+	}
+
+	public String file() {
+		return this.getContainingFile().getVirtualFile().getPath();
 	}
 
 	@Override
 	public String toString() {
-		return getType() + " " + getName();
+		return type() + " " + name();
 	}
 }

@@ -15,15 +15,14 @@ import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.intellij.lang.semantic.LanguageNode;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.facet.TaraFacetConfiguration;
 import tara.intellij.project.module.ModuleProvider;
-import tara.semantic.Allow;
-import tara.semantic.model.Primitives;
+import tara.language.semantics.Allow;
+import tara.language.model.Primitives;
 
 import static tara.intellij.lang.psi.impl.TaraPsiImplUtil.getParentByType;
-import static tara.semantic.model.Variable.NATIVE_SEPARATOR;
+import static tara.language.model.Variable.NATIVE_SEPARATOR;
 
 public class TaraLanguageInjector implements LanguageInjector {
 
@@ -93,7 +92,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		final String body = expression.getValue().replace("\\n", "\n").replace("\\\"", "\"");
 		frame.addFrame("interface", "magritte.Expression<" + mask(type) + ">");
 		frame.addFrame("variable", getName(element)).
-			addFrame("qn", node.getQualifiedName().replace("@anonymous", "").replace(".", "_")).
+			addFrame("qn", node.qualifiedName().replace("@anonymous", "").replace(".", "_")).
 			addFrame("parent", findParent(element, node, getCorrespondingLanguageName(allow, language))).
 			addFrame("signature", "public " + mask(type) + " value()").
 			addFrame("return", !body.contains("\n") && !body.startsWith("return ") ? "return " : "");
@@ -113,7 +112,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 		final String body = expression.getValue().replace("\\n", "\n").replace("\\\"", "\"");
 		final String signature = getSignature(allow != null ? allow.contract() : findNativeInterface(((Variable) element).getContract()));
 		frame.addFrame("variable", getName(element)).
-			addFrame("qn", node.getQualifiedName().replace("@anonymous", "").replace(".", "_")).
+			addFrame("qn", node.qualifiedName().replace("@anonymous", "").replace(".", "_")).
 			addFrame("parent", findParent(element, node, getCorrespondingLanguageName(allow, language))).
 			addFrame("signature", signature).
 			addFrame("return", !signature.contains(" void ") && !body.contains("\n") && !body.startsWith("return ") ? "return " : "");
@@ -122,8 +121,8 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private String getType(Allow.Parameter allow, PsiElement element) {
 		if (allow != null) return allow.type();
-		if (element instanceof Variable) return ((Variable) element).getType();
-		if (element instanceof Parameter) ((Parameter) element).getInferredType();
+		if (element instanceof Variable) return ((Variable) element).type();
+		if (element instanceof Parameter) ((Parameter) element).inferredType();
 		return null;
 	}
 
@@ -168,9 +167,9 @@ public class TaraLanguageInjector implements LanguageInjector {
 		Node candidate = node;
 		ensureTypeIsResolved(element, node);
 		while (candidate != null) {
-			if (candidate.getName() != null && !candidate.isFeatureInstance())
+			if (candidate.name() != null && !candidate.isFeatureInstance())
 				return candidate.isTerminalInstance() ? getTypeAsParent(candidate) : clean(getQn(candidate, element, language));
-			else candidate = candidate.getContainer();
+			else candidate = candidate.container();
 		}
 		return "magritte.Morph";
 	}
@@ -178,11 +177,11 @@ public class TaraLanguageInjector implements LanguageInjector {
 	private String getTypeAsParent(Node candidate) {
 		final Language language = TaraLanguage.getLanguage(candidate.getContainingFile());
 		if (language == null) return "";
-		return language.languageName().toLowerCase() + DOT + clean(candidate.getType());
+		return language.languageName().toLowerCase() + DOT + clean(candidate.type());
 	}
 
 	private void ensureTypeIsResolved(PsiElement element, Node node) {
-		new Resolver(TaraLanguage.getLanguage(element.getContainingFile())).resolve(new LanguageNode(node.getContainer()));
+		new Resolver(TaraLanguage.getLanguage(element.getContainingFile())).resolve(node.container());
 	}
 
 	private String clean(String qn) {
@@ -194,24 +193,24 @@ public class TaraLanguageInjector implements LanguageInjector {
 		if (owner.isFacet()) return language.toLowerCase() + getName(owner) + getFacetTarget(owner, facetTarget);
 		else {
 			final Node node = TaraPsiImplUtil.getContainerNodeOf(element);
-			return language.toLowerCase() + DOT + (facetTarget == null ? node.getQualifiedName() : composeInFacetTargetQN(node, facetTarget));
+			return language.toLowerCase() + DOT + (facetTarget == null ? node.qualifiedName() : composeInFacetTargetQN(node, facetTarget));
 		}
 	}
 
 	@NotNull
 	private static String getFacetTarget(Node owner, FacetTarget facetTarget) {
-		return facetTarget != null ? DOT + owner.getName() + "_" + format(facetTarget.getTarget()) : "";
+		return facetTarget != null ? DOT + owner.name() + "_" + format(facetTarget.target()) : "";
 	}
 
 	@NotNull
 	private static String getName(Node owner) {
-		return owner.getName() != null ? DOT + owner.getName().toLowerCase() : "";
+		return owner.name() != null ? DOT + owner.name().toLowerCase() : "";
 	}
 
 	private static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
 		final Node containerNode = TaraPsiImplUtil.getContainerNodeOf(facetTarget);
-		if (containerNode == null || containerNode.getName() == null) return "";
-		return containerNode.getName().toLowerCase() + DOT + format(facetTarget.getTarget()) + DOT + node.getQualifiedName();
+		if (containerNode == null || containerNode.name() == null) return "";
+		return containerNode.name().toLowerCase() + DOT + format(facetTarget.target()) + DOT + node.qualifiedName();
 	}
 
 	private static String format(String value) {
@@ -237,11 +236,11 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private String getName(PsiElement element) {
-		if (element instanceof Parameter) return ((Parameter) element).getName();
-		return ((Variable) element).getName();
+		if (element instanceof Parameter) return ((Parameter) element).name();
+		return ((Variable) element).name();
 	}
 
 	public String getVariableInterface(PsiElement element) {
-		return element instanceof Variable ? ((Variable) element).getContract().getText() : (element instanceof Parameter ? ((Parameter) element).getContract() : "");
+		return element instanceof Variable ? ((Variable) element).getContract().getText() : (element instanceof Parameter ? ((Parameter) element).contract() : "");
 	}
 }

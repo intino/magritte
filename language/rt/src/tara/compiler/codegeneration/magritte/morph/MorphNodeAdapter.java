@@ -6,16 +6,13 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.Facet;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.NodeImpl;
-import tara.compiler.model.impl.NodeReference;
-import tara.semantic.Allow;
-import tara.semantic.model.Tag;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.language.model.*;
+import tara.language.semantics.Allow;
 
 import java.util.Collection;
+import java.util.List;
 
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.morph.TypesProvider.getTypes;
@@ -46,7 +43,7 @@ public class MorphNodeAdapter extends Generator implements Adapter<NodeImpl>, Te
 
 	private void addNodeInfo(Node node, Frame frame) {
 		if ((initNode != null && !node.equals(initNode)) || isInFacetTarget(node) != null) frame.addFrame(INNER, EMPTY);
-		if (node.getDoc() != null) frame.addFrame(DOC, node.getDoc());
+		if (node.doc() != null) frame.addFrame(DOC, node.doc());
 		if (node.isAbstract() || node.isFacet()) frame.addFrame(ABSTRACT, ABSTRACT.toLowerCase());
 		if (modelLevel == 2) addAggregables(frame, node);
 		addCreates(frame, node);
@@ -61,11 +58,11 @@ public class MorphNodeAdapter extends Generator implements Adapter<NodeImpl>, Te
 	}
 
 	private void addCreates(Frame frame, Node node) {
-		node.getIncludedNodes().stream().filter(include -> !include.isAnonymous() && !isInherited(include) && (include.isTerminal() || modelLevel == 1)).forEach(include -> {
+		node.components().stream().filter(include -> !include.isAnonymous() && !isInherited(include) && (include.isTerminal() || modelLevel == 1)).forEach(include -> {
 			final Frame creates = new Frame();
 			creates.addTypes("create");
 			creates.addFrame(TYPE, NameFormatter.cleanQn(NameFormatter.getQn(include instanceof NodeReference ? ((NodeReference) include).getDestiny() : include, generatedLanguage)));
-			creates.addFrame(NAME, include.getName());
+			creates.addFrame(NAME, include.name());
 			frame.addFrame("create", creates);
 		});
 	}
@@ -82,27 +79,27 @@ public class MorphNodeAdapter extends Generator implements Adapter<NodeImpl>, Te
 	}
 
 	private boolean containsMultiple(Node node) {
-		for (Node include : node.getIncludedNodes())
+		for (Node include : node.components())
 			if (!include.isSingle() && !include.isTerminal() && !include.isFeature()) return true;
 		return false;
 	}
 
 	private void addParent(Node node, Frame newFrame) {
-		final Node parent = node.getParent();
+		final Node parent = node.parent();
 		newFrame.addFrame(PARENT, parent != null ?
 			NameFormatter.getQn(parent, generatedLanguage) :
 			isDefinition(node, modelLevel) ? DEFINITION_PATH : MORPH_PATH);
 	}
 
 	private void addFacets(Node node, Frame newFrame) {
-		for (final Facet facet : node.getFacets())
+		for (final Facet facet : node.facets())
 			newFrame.
 				addFrame(FACETS, new Frame().addTypes(getTypes(facet)).
-					addFrame(NAME, facet.getFacetType()));
+					addFrame(NAME, facet.type()));
 	}
 
 	private void addComponents(Node node, Frame frame) {
-		for (Node include : node.getIncludedNodes()) {
+		for (Node include : node.components()) {
 			if (include.isAnonymous()) continue;
 			Frame includeFrame = new Frame().addTypes(TypesProvider.getTypesOfReference(include));
 			if (isDefinition(include, modelLevel) && !isDefinition(node, modelLevel))
@@ -119,39 +116,39 @@ public class MorphNodeAdapter extends Generator implements Adapter<NodeImpl>, Te
 	}
 
 	private void addName(Node node, Frame frame) {
-		if (node.getName() != null && !node.getName().isEmpty())
-			frame.addFrame(NAME, node.isAnonymous() ? node.getType() : node.getName());
+		if (node.name() != null && !node.name().isEmpty())
+			frame.addFrame(NAME, node.isAnonymous() ? node.type() : node.name());
 		frame.addFrame(QN, NameFormatter.getQn(node, generatedLanguage)).addFrame(PROJECT, project);
 	}
 
 	private void addNodeReferenceName(NodeReference node, Frame frame) {
 		NodeImpl reference = node.getDestiny();
-		frame.addFrame(NAME, reference.getName());
+		frame.addFrame(NAME, reference.name());
 		frame.addFrame(QN, getQn(reference, generatedLanguage)).addFrame(PROJECT, project);
 	}
 
 	private void addTargets(Node node, Frame newFrame) {
-		for (final FacetTarget target : node.getFacetTargets())
-			newFrame.addFrame(TARGETS, new Frame().addTypes(getTypes(target)).addFrame(NAME, target.getTarget()));
+		for (final FacetTarget target : node.facetTargets())
+			newFrame.addFrame(TARGETS, new Frame().addTypes(getTypes(target)).addFrame(NAME, target.target()));
 	}
 
 	protected void addVariables(Node node, final Frame frame) {
-		node.getVariables().stream().
+		node.variables().stream().
 			filter(variable -> !variable.isInherited()).
 			forEach(variable -> addVariable(frame, variable));
 		addTerminalVariables(node, frame);
 	}
 
 	private void addTerminalVariables(Node node, final Frame frame) {
-		final Collection<Allow> allows = language.allows(node.getType());
+		final Collection<Allow> allows = language.allows(node.type());
 		if (allows == null) return;
 		allows.stream().
-			filter(allow -> allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(Tag.TERMINAL.name()) && !isRedefined(((Allow.Parameter) allow), node.getVariables())).
+			filter(allow -> allow instanceof Allow.Parameter && ((Allow.Parameter) allow).flags().contains(Tag.TERMINAL.name()) && !isRedefined(((Allow.Parameter) allow), node.variables())).
 			forEach(allow -> addVariable(frame, (Allow.Parameter) allow));
 	}
 
-	private boolean isRedefined(Allow.Parameter allow, Collection<Variable> variables) {
-		for (Variable variable : variables) if (variable.getName().equals(allow.name())) return true;
+	private boolean isRedefined(Allow.Parameter allow, List<? extends Variable> variables) {
+		for (Variable variable : variables) if (variable.name().equals(allow.name())) return true;
 		return false;
 	}
 

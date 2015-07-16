@@ -5,8 +5,7 @@ import tara.Language;
 import tara.compiler.codegeneration.Format;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.*;
-import tara.semantic.model.Primitives;
+import tara.language.model.*;
 
 public class BoxNativeFrameAdapter implements TemplateTags {
 
@@ -24,12 +23,12 @@ public class BoxNativeFrameAdapter implements TemplateTags {
 		final String signature = getSignature(parameter);
 		Frame nativeFrame = new Frame().addTypes("native").addFrame("body", formatBody(bodyText, signature));
 		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
-		nativeFrame.addFrame("varName", parameter.getName());
-		nativeFrame.addFrame("container", NameFormatter.cleanQn(buildContainerPath(parameter.getContract(), parameter.getOwner())));
+		nativeFrame.addFrame("varName", parameter.name());
+		nativeFrame.addFrame("container", NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.container())));
 		nativeFrame.addFrame("parentIntention", getScope(parameter));
 		nativeFrame.addFrame("interface", NameFormatter.cleanQn(getInterface(parameter)));
 		nativeFrame.addFrame("signature", signature);
-		nativeFrame.addFrame("className", parameter.getName() + "_" + parameter.getUID());
+		nativeFrame.addFrame("className", parameter.name() + "_" + parameter.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
@@ -37,43 +36,43 @@ public class BoxNativeFrameAdapter implements TemplateTags {
 		final String body = String.valueOf(next);
 		final String signature = getSignature(variable);
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
-		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.getName()).
-			addFrame("container", NameFormatter.cleanQn(buildContainerPath(variable.getContract(), variable.getContainer()))).
+		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name()).
+			addFrame("container", NameFormatter.cleanQn(buildContainerPath(variable.contract(), variable.container()))).
 			addFrame("parentIntention", generatedLanguage).
 			addFrame("interface", NameFormatter.cleanQn(getInterface(variable))).
 			addFrame("signature", signature).
-			addFrame("className", variable.getName() + "_" + variable.getUID());
+			addFrame("className", variable.name() + "_" + variable.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
 	public void fillFrameExpressionVariable(Frame frame, Variable variable, Object next) {
 		final String body = String.valueOf(next);
-		final String type = mask(variable.getType());
+		final String type = mask(variable.type());
 		final String signature = "public " + type + " value()";
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
-		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.getName()).
-			addFrame("container", buildContainerPathOfExpression(variable.getContainer())).
+		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", variable.name()).
+			addFrame("container", buildContainerPathOfExpression(variable.container())).
 			addFrame("interface", "magritte.Expression<" + type + ">").
 			addFrame("signature", signature).
-			addFrame("className", variable.getName() + "_" + variable.getUID());
+			addFrame("className", variable.name() + "_" + variable.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
 	public void fillFrameExpressionParameter(Frame frame, Parameter parameter, String body) {
-		final String type = mask(parameter.getInferredType());
+		final String type = mask(parameter.inferredType());
 		final String signature = "public " + type + " value()";
 		Frame nativeFrame = new Frame().addTypes(NATIVE).addFrame("body", formatBody(body, signature));
-		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.getName()).
-			addFrame("container", NameFormatter.cleanQn(buildContainerPath(parameter.getContract(), parameter.getOwner()))).
+		nativeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage).addFrame("varName", parameter.name()).
+			addFrame("container", NameFormatter.cleanQn(buildContainerPath(parameter.contract(), parameter.container()))).
 			addFrame("interface", "magritte.Expression<" + type + ">").
 			addFrame("signature", signature).
-			addFrame("className", parameter.getName() + "_" + parameter.getUID());
+			addFrame("className", parameter.name() + "_" + parameter.getUID());
 		frame.addFrame(NATIVE, nativeFrame);
 	}
 
 	private String getScope(Parameter parameter) {
-		if (parameter.getContract().contains(tara.semantic.model.Variable.NATIVE_SEPARATOR)) {
-			final String[] split = parameter.getContract().split(tara.semantic.model.Variable.NATIVE_SEPARATOR);
+		if (parameter.contract().contains(tara.language.model.Variable.NATIVE_SEPARATOR)) {
+			final String[] split = parameter.contract().split(tara.language.model.Variable.NATIVE_SEPARATOR);
 			if (split.length == 3) return split[2].toLowerCase();
 			else return language.languageName();
 		} else return language.languageName();
@@ -82,11 +81,11 @@ public class BoxNativeFrameAdapter implements TemplateTags {
 	private String getQn(Node owner, Node node, String language, boolean m0) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
 		if (owner.isFacet())
-			return NameFormatter.composeMorphPackagePath(language) + NameFormatter.DOT + owner.getName().toLowerCase() + NameFormatter.DOT +
-				Format.reference().format(owner.getName()) + "_" + Format.reference().format(facetTarget.getTarget());
+			return NameFormatter.composeMorphPackagePath(language) + NameFormatter.DOT + owner.name().toLowerCase() + NameFormatter.DOT +
+				Format.reference().format(owner.name()) + "_" + Format.reference().format(facetTarget.target());
 		else
-			return !m0 ? NameFormatter.composeMorphPackagePath(language) + NameFormatter.DOT + (facetTarget == null ? node.getQualifiedName() : NameFormatter.composeInFacetTargetQN(node, facetTarget)) :
-				language.toLowerCase() + NameFormatter.DOT + node.getType();
+			return !m0 ? NameFormatter.composeMorphPackagePath(language) + NameFormatter.DOT + (facetTarget == null ? node.qualifiedName() : NameFormatter.composeInFacetTargetQN(node, facetTarget)) :
+				language.toLowerCase() + NameFormatter.DOT + node.type();
 	}
 
 	private String buildContainerPathOfExpression(NodeContainer owner) {
@@ -112,22 +111,22 @@ public class BoxNativeFrameAdapter implements TemplateTags {
 	}
 
 	private String getInterface(Variable variable) {
-		return variable.getContract().contains(Variable.NATIVE_SEPARATOR) ? variable.getContract().substring(0, variable.getContract().indexOf(Variable.NATIVE_SEPARATOR)) : variable.getContract();
+		return variable.contract().contains(Variable.NATIVE_SEPARATOR) ? variable.contract().substring(0, variable.contract().indexOf(Variable.NATIVE_SEPARATOR)) : variable.contract();
 	}
 
 	private String getInterface(Parameter parameter) {
-		if (!parameter.getContract().contains(Variable.NATIVE_SEPARATOR))
+		if (!parameter.contract().contains(Variable.NATIVE_SEPARATOR))
 			return "";//throw new SemanticException(new SemanticError("reject.native.signature.notfound", new LanguageParameter(parameter)));
-		return parameter.getContract().substring(0, parameter.getContract().indexOf(Variable.NATIVE_SEPARATOR));
+		return parameter.contract().substring(0, parameter.contract().indexOf(Variable.NATIVE_SEPARATOR));
 	}
 
 	private String getSignature(Parameter parameter) {
-		return !parameter.getContract().contains(Variable.NATIVE_SEPARATOR) ? parameter.getContract() :
-			parameter.getContract().split(Variable.NATIVE_SEPARATOR)[1];
+		return !parameter.contract().contains(Variable.NATIVE_SEPARATOR) ? parameter.contract() :
+			parameter.contract().split(Variable.NATIVE_SEPARATOR)[1];
 	}
 
 	private String getSignature(Variable variable) {
-		return variable.getContract().substring(variable.getContract().indexOf(Variable.NATIVE_SEPARATOR) + 1);
+		return variable.contract().substring(variable.contract().indexOf(Variable.NATIVE_SEPARATOR) + 1);
 	}
 
 	private String buildContainerPath(String contract, NodeContainer owner) {
@@ -140,12 +139,12 @@ public class BoxNativeFrameAdapter implements TemplateTags {
 	}
 
 	private String getTypeAsParent(Node parent) {
-		return language.languageName().toLowerCase() + NameFormatter.DOT + NameFormatter.cleanQn(parent.getType());
+		return language.languageName().toLowerCase() + NameFormatter.DOT + NameFormatter.cleanQn(parent.type());
 	}
 
 	private String withContract(String contract, String language) {
-		if (contract.contains(tara.semantic.model.Variable.NATIVE_SEPARATOR)) {
-			final String[] split = contract.split(tara.semantic.model.Variable.NATIVE_SEPARATOR);
+		if (contract.contains(tara.language.model.Variable.NATIVE_SEPARATOR)) {
+			final String[] split = contract.split(tara.language.model.Variable.NATIVE_SEPARATOR);
 			if (split.length == 3) return split[2].toLowerCase();
 			else return language;
 		} else return language;
@@ -157,15 +156,15 @@ public class BoxNativeFrameAdapter implements TemplateTags {
 			if (container instanceof Node && !((Node) container).isAnonymous() &&
 				!((Node) container).isFeatureInstance())
 				return (Node) container;
-			container = container.getContainer();
+			container = container.container();
 		}
 		return null;
 	}
 
 	private FacetTarget facetTargetContainer(Node node) {
-		NodeContainer container = node.getContainer();
+		NodeContainer container = node.container();
 		while (container != null) if (container instanceof FacetTarget) return (FacetTarget) container;
-		else container = container.getContainer();
+		else container = container.container();
 		return null;
 	}
 

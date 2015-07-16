@@ -10,12 +10,11 @@ import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.TaraLanguage;
-import tara.intellij.lang.lexer.TaraPrimitives;
 import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraTypes;
 import tara.intellij.lang.psi.TaraVariableType;
 import tara.intellij.lang.psi.Variable;
-import tara.semantic.model.Primitives;
+import tara.language.model.Primitives;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -32,7 +31,7 @@ public class TaraPrimitivesCompletionContributor extends CompletionContributor {
 				public void addCompletions(@NotNull CompletionParameters parameters,
 				                           ProcessingContext context,
 				                           @NotNull CompletionResultSet resultSet) {
-					for (String primitive : TaraPrimitives.getPrimitives())
+					for (String primitive : Primitives.getPrimitives())
 						resultSet.addElement(LookupElementBuilder.create(primitive + (mustHaveContract(primitive) ? ":" :
 							" ")).withTypeText("Primitive"));
 				}

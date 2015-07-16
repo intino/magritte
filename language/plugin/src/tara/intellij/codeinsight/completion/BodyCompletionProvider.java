@@ -12,7 +12,7 @@ import tara.intellij.lang.psi.MetaIdentifier;
 import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.semantic.Allow;
+import tara.language.semantics.Allow;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ class BodyCompletionProvider extends CompletionProvider<CompletionParameters> im
 		Node node = TaraPsiImplUtil.getContainerNodeOf(TaraPsiImplUtil.getContainerNodeOf(parameters.getPosition()));
 		if (node == null) return;
 		if (node.isFacet()) resultSet.addElement(create("on "));
-		else if (language != null && allowsFacets(language.allows(node.getType()))) resultSet.addElement(create("as "));
+		else if (language != null && allowsFacets(language.allows(node.type()))) resultSet.addElement(create("as "));
 	}
 
 	private boolean allowsFacets(List<Allow> allows) {

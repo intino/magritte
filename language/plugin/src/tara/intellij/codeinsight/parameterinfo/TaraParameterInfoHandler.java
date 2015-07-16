@@ -11,7 +11,7 @@ import tara.Language;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
-import tara.semantic.Constraint;
+import tara.language.semantics.Constraint;
 
 import java.util.*;
 
@@ -86,7 +86,7 @@ public class TaraParameterInfoHandler implements ParameterInfoHandlerWithTabActi
 			Language language = TaraLanguage.getLanguage(parameters.getContainingFile());
 			if (language == null) return parameters;
 			TaraFacetApply facet = parameters.isInFacet();
-			Collection<Constraint> constraints = language.constraints(facet != null ? facet.getType() : TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().getFullType());
+			Collection<Constraint> constraints = language.constraints(facet != null ? facet.type() : TaraPsiImplUtil.getContainerNodeOf(parameters).resolve().type());
 			if (constraints == null) return parameters;
 			List<Constraint.Require.Parameter> requiredParameters = new ArrayList<>();
 			for (Constraint require : constraints) {

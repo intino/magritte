@@ -1,4 +1,4 @@
-package siani.tara.intellij.highlighting;
+package tara.intellij.highlighting;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.TokenType;

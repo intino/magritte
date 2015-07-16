@@ -5,12 +5,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
 import tara.intellij.codeinsight.JavaHelper;
-import tara.intellij.lang.lexer.TaraPrimitives;
+import tara.intellij.lang.psi.*;
+import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
 import tara.intellij.lang.psi.impl.TaraUtil;
 import tara.intellij.project.facet.TaraFacet;
 import tara.intellij.project.module.ModuleProvider;
-import tara.intellij.lang.psi.*;
-import tara.intellij.lang.psi.impl.TaraPsiImplUtil;
+import tara.language.model.Primitives;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -103,9 +103,8 @@ public class ReferenceManager {
 		return tryToResolveInBox(resolve, qn);
 	}
 
-
 	private static void addRootNodes(TaraModel model, Identifier identifier, Set<Node> set) {
-		Collection<Node> nodes = model.getIncludes();
+		Collection<Node> nodes = model.components();
 		set.addAll(nodes.stream().filter(node -> areNamesake(identifier, node)).collect(Collectors.toList()));
 	}
 
@@ -126,10 +125,10 @@ public class ReferenceManager {
 	private static void addFacetTargetNodes(Set<Node> set, Identifier identifier) {
 		FacetTarget facetTarget = (FacetTarget) TaraPsiImplUtil.getContextOf(identifier);
 		if (facetTarget == null) return;
-		for (Node node : facetTarget.getIncludes()) {
-			if (node.getName() == null) continue;
+		for (Node node : facetTarget.components()) {
+			if (node.name() == null) continue;
 			set.add(node);
-			if (node.isAbstract()) set.addAll(node.getSubNodes());
+			if (node.isAbstract()) set.addAll(node.subs());
 		}
 	}
 
@@ -139,15 +138,15 @@ public class ReferenceManager {
 			set.addAll(collectCandidates(container).stream().
 				filter(sibling -> areNamesake(identifier, sibling) && !sibling.equals(TaraPsiImplUtil.getContainerNodeOf(identifier))).
 				collect(Collectors.toList()));
-			container = container.getContainer();
+			container = container.container();
 		}
 	}
 
 	private static Collection<Node> collectCandidates(Node container) {
 		List<Node> nodes = new ArrayList<>();
-		Collection<Node> siblings = container.getNodeSiblings();
+		List<? extends Node> siblings = container.siblings();
 		nodes.addAll(siblings);
-		for (Node node : siblings) nodes.addAll(node.getSubNodes());
+		for (Node node : siblings) nodes.addAll(node.subs());
 		return nodes;
 	}
 
@@ -165,7 +164,7 @@ public class ReferenceManager {
 //	}
 //
 	private static boolean areNamesake(Identifier identifier, Node node) {
-		return identifier.getText().equals(node.getName());
+		return identifier.getText().equals(node.name());
 	}
 //
 //	private static boolean isRoot(TaraModel file, Node node, Collection<Node> visited) {
@@ -173,7 +172,7 @@ public class ReferenceManager {
 //		visited.add(node);
 //		if (node.isAnnotatedAsMain() || isMetaRoot(node)) return true;
 //		IdentifierReference parentReference = node.getSignature().getParentReference();
-//		return parentReference != null && checkPossibleRoots(parentReference, getIncludes(file, parentReference, visited, new HashSet<>()));
+//		return parentReference != null && checkPossibleRoots(parentReference, component(file, parentReference, visited, new HashSet<>()));
 //	}
 //
 //	private static boolean isMetaRoot(Node node) {
@@ -194,7 +193,7 @@ public class ReferenceManager {
 //		return false;
 //	}
 //
-//	private static Node[] getIncludes(TaraModel file, IdentifierReference parentReference, Collection<Node> visited, Set<Node> roots) {
+//	private static Node[] component(TaraModel file, IdentifierReference parentReference, Collection<Node> visited, Set<Node> roots) {
 //		Identifier identifier = getIdentifier(parentReference);
 //		addNodesInContext(identifier, roots);
 //		addRootNodes(file, identifier, roots);
@@ -249,7 +248,7 @@ public class ReferenceManager {
 
 	private static Node resolvePathInBox(TaraModel containingFile, List<Identifier> path) {
 		Set<Node> nodes = new HashSet<>();
-		nodes.addAll(containingFile.getIncludes());
+		nodes.addAll(containingFile.components());
 //		addRoots(containingFile, path.get(0), nodes, nodes);
 		for (Node node : nodes) {
 			Node solution = resolvePathInNode(path, node);
@@ -273,7 +272,7 @@ public class ReferenceManager {
 	private static boolean isMeasure(Contract contract) {
 		PsiElement parent = contract.getParent();
 		while (!(parent instanceof Variable)) parent = parent.getParent();
-		return TaraPrimitives.MEASURE.equals(((Variable) parent).getType());
+		return Primitives.MEASURE.equals(((Variable) parent).type());
 	}
 
 	private static PsiElement resolveMetric(Contract contract) {

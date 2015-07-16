@@ -6,11 +6,9 @@ import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.Parametrized;
-import tara.compiler.model.*;
-import tara.compiler.model.impl.Model;
-import tara.compiler.model.impl.NodeReference;
-import tara.semantic.model.Primitives;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeReference;
+import tara.language.model.*;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
@@ -42,28 +40,28 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 
 	@Override
 	public void execute(Frame frame, Model model, FrameContext FrameContext) {
-		frame.addFrame(NAME, NameFormatter.capitalize(generatedLanguage) + NameFormatter.buildFileName(model.getFile()));
+		frame.addFrame(NAME, NameFormatter.capitalize(generatedLanguage) + NameFormatter.buildFileName(model.file()));
 		if (!Objects.equals(language.languageName(), "Proteo")) frame.addFrame(LANGUAGE, language.languageName());
 		frame.addFrame(PROJECT, project).addFrame(TERMINAL, m0);
 		if (!m0) frame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
 		addMetricImports(frame);
-		addFacetImports(model.getIncludedNodes(), frame);
+		addFacetImports(model.components(), frame);
 		parserNodeContainer(frame, model, FrameContext);
 	}
 
 	private void parserNodeContainer(Frame frame, Node nodeContainer, FrameContext context) {
-		nodeContainer.getIncludedNodes().stream().
+		nodeContainer.components().stream().
 			filter(node -> !(node instanceof NodeReference)).
 			forEach(node -> fill(frame, node, context));
 		parseFacets(frame, nodeContainer, context);
-		if (nodeContainer.getFacetTargets() == null) return;
+		if (nodeContainer.facetTargets() == null) return;
 		parseFacetTargets(frame, nodeContainer, context);
 	}
 
 	private void parseFacets(Frame frame, Node nodeContainer, FrameContext context) {
-		for (Facet facet : nodeContainer.getFacets()) {
+		for (Facet facet : nodeContainer.facets()) {
 			createNativeFrames(frame, extractNativeParameters(facet));
-			for (Node node : facet.getIncludedNodes()) {
+			for (Node node : facet.components()) {
 				frame.addFrame(NODE, context.build(node));
 				parserNodeContainer(frame, node, context);
 				fill(frame, node, context);
@@ -72,10 +70,10 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 	}
 
 	private void parseFacetTargets(Frame frame, Node nodeContainer, FrameContext context) {
-		for (FacetTarget facet : nodeContainer.getFacetTargets()) {
+		for (FacetTarget facet : nodeContainer.facetTargets()) {
 			frame.addFrame(NODE, context.build(facet));
 			createDefaultValueNativeFrames(frame, extractNativeVariables(facet));
-			for (Node node : facet.getIncludedNodes())
+			for (Node node : facet.components())
 				fill(frame, node, context);
 		}
 	}
@@ -90,10 +88,10 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 	private void createNativeFrames(Frame frame, List<Parameter> parameters) {
 		final BoxNativeFrameAdapter adapter = new BoxNativeFrameAdapter(generatedLanguage, language, m0);
 		for (Parameter parameter : parameters) {
-			if (!(parameter.getValues().get(0) instanceof Primitives.Expression)) continue;
-			final Primitives.Expression body = (Primitives.Expression) parameter.getValues().get(0);
+			if (!(parameter.values().get(0) instanceof Primitives.Expression)) continue;
+			final Primitives.Expression body = (Primitives.Expression) parameter.values().get(0);
 			String value = body.get();
-			if (Primitives.NATIVE.equals(parameter.getInferredType())) {
+			if (Primitives.NATIVE.equals(parameter.inferredType())) {
 				adapter.fillFrameForNativeParameter(frame, parameter, value);
 			} else adapter.fillFrameExpressionParameter(frame, parameter, value);
 		}
@@ -102,24 +100,24 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 	private void createDefaultValueNativeFrames(Frame frame, List<Variable> variables) {
 		final BoxNativeFrameAdapter adapter = new BoxNativeFrameAdapter(generatedLanguage, language, m0);
 		for (Variable variable : variables) {
-			if (variable.getDefaultValues().isEmpty() || !(variable.getDefaultValues().get(0) instanceof Primitives.Expression))
+			if (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitives.Expression))
 				continue;
-			final Object next = variable.getDefaultValues().get(0);
-			if (Primitives.NATIVE.equals(variable.getType()))
+			final Object next = variable.defaultValues().get(0);
+			if (Primitives.NATIVE.equals(variable.type()))
 				adapter.fillFrameForNativeVariable(frame, variable, next);
 			else adapter.fillFrameExpressionVariable(frame, variable, next);
 		}
 	}
 
 	private List<Parameter> extractNativeParameters(Parametrized node) {
-		return unmodifiableList(node.getParameters().stream().
-			filter(parameter -> parameter.getValues().get(0) instanceof Primitives.Expression).
+		return unmodifiableList(node.parameters().stream().
+			filter(parameter -> parameter.values().get(0) instanceof Primitives.Expression).
 			collect(Collectors.toList()));
 	}
 
 	private List<Variable> extractNativeVariables(NodeContainer node) {
-		return unmodifiableList(node.getVariables().stream().
-			filter(variable -> !variable.getDefaultValues().isEmpty() && variable.getDefaultValues().get(0) instanceof Primitives.Expression && !variable.isInherited()).
+		return unmodifiableList(node.variables().stream().
+			filter(variable -> !variable.defaultValues().isEmpty() && variable.defaultValues().get(0) instanceof Primitives.Expression && !variable.isInherited()).
 			collect(Collectors.toList()));
 	}
 
@@ -128,20 +126,20 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 			frame.addFrame("importMetric", IMPORT + " " + STATIC + " " + project.toLowerCase() + DOT + METRICS + DOT + metric + DOT + STAR + SEMICOLON);
 	}
 
-	private void addFacetImports(Collection<Node> nodes, Frame frame) {
+	private void addFacetImports(List<? extends Node> nodes, Frame frame) {
 		Set<String> imports = searchFacets(nodes);
 		for (String anImport : imports)
 			frame.addFrame("importFacet", IMPORT + " " + project.toLowerCase() + DOT + EXTENSIONS + DOT + anImport.toLowerCase() + DOT + STAR + SEMICOLON);
 	}
 
-	private Set<String> searchFacets(Collection<Node> nodes) {
+	private Set<String> searchFacets(List<? extends Node> nodes) {
 		Set<String> imports = new HashSet<>();
 		for (Node node : nodes) {
 			if (node instanceof NodeReference) continue;
-			imports.addAll(node.getFacets().stream().
-				map(facet -> new PluralFormatter(locale).getInflector().plural(facet.getFacetType())).
+			imports.addAll(node.facets().stream().
+				map(facet -> new PluralFormatter(locale).getInflector().plural(facet.type())).
 				collect(Collectors.toList()));
-			imports.addAll(searchFacets(node.getIncludedNodes()));
+			imports.addAll(searchFacets(node.components()));
 		}
 		return imports;
 	}

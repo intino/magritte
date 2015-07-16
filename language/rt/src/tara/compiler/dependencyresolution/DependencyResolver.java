@@ -1,8 +1,11 @@
 package tara.compiler.dependencyresolution;
 
 import tara.compiler.core.errorcollection.DependencyException;
-import tara.compiler.model.*;
-import tara.compiler.model.impl.*;
+import tara.compiler.model.Model;
+import tara.compiler.model.NodeImpl;
+import tara.compiler.model.NodeReference;
+import tara.compiler.model.VariableReference;
+import tara.language.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +25,7 @@ public class DependencyResolver {
 	}
 
 	private void resolveInNodes(Node node) throws DependencyException {
-		for (Node inner : node.getIncludedNodes())
+		for (Node inner : node.components())
 			resolve(inner);
 	}
 
@@ -38,26 +41,26 @@ public class DependencyResolver {
 		resolveInnerReferenceNodes(node);
 		resolveVariableReference(node);
 		resolveParametersReference(node);
-		for (Node include : node.getIncludedNodes())
+		for (Node include : node.components())
 			resolve(include);
 	}
 
 	private void resolveParametersReference(Parametrized parametrized) throws DependencyException {
-		for (Parameter parameter : parametrized.getParameters())
+		for (Parameter parameter : parametrized.parameters())
 			resolveParameterValue((NodeContainer) parametrized, parameter);
 	}
 
 	private void resolveParameterValue(NodeContainer node, Parameter parameter) throws DependencyException {
 		if (!areReferenceValues(parameter)) return;
 		List<Node> nodes = new ArrayList<>();
-		for (Object value : parameter.getValues()) {
+		for (Object value : parameter.values()) {
 			Node reference = resolveParameter(node, (String) value);
 			if (reference != null) nodes.add(reference);
 //			else //TODO WORDS
 //				throw new DependencyException("Parameter reference " + value.toString() + " not found", (Element) node);
 		}
 		if (!nodes.isEmpty()) {
-			parameter.setInferredType(Parameter.REFERENCE);
+			parameter.inferredType(Parameter.REFERENCE);
 			parameter.substituteValues(nodes);
 		}
 	}
@@ -67,13 +70,13 @@ public class DependencyResolver {
 	}
 
 	private boolean areReferenceValues(Parameter parameter) {
-		Object value = parameter.getValues().iterator().next();
+		Object value = parameter.values().iterator().next();
 		return (value instanceof String && parameter.hasReferenceValue());
 	}
 
 	private void resolveParent(Node node) throws DependencyException {
-		if (node.getParent() == null && node.getParentName() != null) {
-			Node parent = manager.resolve(node.getParentName(), getNodeContainer(node.getContainer()));
+		if (node.parent() == null && node.parentName() != null) {
+			Node parent = manager.resolve(node.parentName(), getNodeContainer(node.container()));
 			if (parent == null)
 				throw new DependencyException("reject.dependency.parent.node.not.found", node);
 			else {
@@ -84,8 +87,8 @@ public class DependencyResolver {
 	}
 
 	private void resolveInnerReferenceNodes(Node node) throws DependencyException {
-		for (NodeReference nodeReference : node.getInnerNodeReferences())
-			resolveNodeReference(nodeReference);
+		for (Node nodeReference : node.referenceComponents())
+			resolveNodeReference((NodeReference) nodeReference);
 	}
 
 	private void resolveNodeReference(NodeReference nodeReference) throws DependencyException {
@@ -97,54 +100,54 @@ public class DependencyResolver {
 
 	private void resolveInFacets(Node node) throws DependencyException {
 		facets(node);
-		for (Node inner : node.getIncludedNodes()) resolveFacets(inner);
+		for (Node inner : node.components()) resolveFacets(inner);
 	}
 
 	private void facets(Node node) throws DependencyException {
-		for (Facet facet : node.getFacets()) {
+		for (Facet facet : node.facets()) {
 			resolveVariableReference(facet);
 			resolveParametersReference(facet);
-			for (Node include : facet.getIncludedNodes()) resolve(include);
+			for (Node include : facet.components()) resolve(include);
 		}
 	}
 
 	private void resolveInTargets(Node node) throws DependencyException {
-		for (FacetTarget facet : node.getFacetTargets()) {
+		for (FacetTarget facet : node.facetTargets()) {
 			resolveVariableReference(facet);
 			resolveFacetTarget(facet);
-			for (Node include : facet.getIncludedNodes())
+			for (Node include : facet.components())
 				if (include instanceof NodeImpl) resolve(include);
 				else resolveNodeReference((NodeReference) include);
-			for (Node inner : node.getIncludedNodes()) resolveFacets(inner);
+			for (Node inner : node.components()) resolveFacets(inner);
 		}
-		for (Node inner : node.getIncludedNodes()) resolveFacets(inner);
+		for (Node inner : node.components()) resolveFacets(inner);
 
 	}
 
 	private void resolveVariableReference(NodeContainer container) throws DependencyException {
-		for (Variable variable : container.getVariables())
+		for (Variable variable : container.variables())
 			if (variable instanceof VariableReference)
 				resolveVariableReference((VariableReference) variable, container);
 	}
 
 	private void resolveFacetTarget(FacetTarget facet) throws DependencyException {
-		Node destiny = manager.resolve(facet, facet.getContainer());
+		Node destiny = manager.resolve(facet, facet.container());
 		if (destiny == null) throw new DependencyException("reject.facet.target.not.found", facet);
-		else facet.setTargetNode(destiny);
+		else facet.targetNode(destiny);
 	}
 
 	private void resolveVariableReference(VariableReference variable, NodeContainer container) throws DependencyException {
 		NodeImpl destiny = manager.resolve(variable, container);
 		if (destiny == null)
-			throw new DependencyException("reject.variable.not.found", (Element) container, variable.getType());
+			throw new DependencyException("reject.variable.not.found", container, variable.type());
 		else variable.setDestiny(destiny);
 	}
 
 	private Node getNodeContainer(NodeContainer reference) {
 		NodeContainer container = reference;
 		while (!(container instanceof NodeImpl)) {
-			if (container.getContainer() == null) break;
-			container = container.getContainer();
+			if (container.container() == null) break;
+			container = container.container();
 		}
 		return (Node) container;
 	}

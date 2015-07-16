@@ -44,7 +44,7 @@ public class StructureViewElement implements StructureViewTreeElement {
 	@Override
 	public TreeElement[] getChildren() {
 		if (node != null) {
-			Collection<Node> nodes = TaraUtil.getInnerNodesOf(node);
+			Collection<Node> nodes = TaraUtil.getComponentsOf(node);
 			if (!nodes.isEmpty()) {
 				List<TreeElement> treeElements = new ArrayList<>(nodes.size());
 				treeElements.addAll(nodes.stream().map(StructureViewElement::new).collect(Collectors.toList()));
@@ -58,7 +58,7 @@ public class StructureViewElement implements StructureViewTreeElement {
 	public ItemPresentation getPresentation() {
 		return new ItemPresentation() {
 			public String getPresentableText() {
-				if (myPresentableName == null) return node.getName() == null ? "Anonymous" : node.getName();
+				if (myPresentableName == null) return node.name() == null ? "Anonymous" : node.name();
 				else return myPresentableName;
 			}
 

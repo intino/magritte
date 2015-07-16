@@ -1,0 +1,22 @@
+package tara.language.model;
+
+
+public enum Tag {
+	ABSTRACT,
+	MAIN,
+	TERMINAL,
+	SINGLE,
+	REQUIRED,
+	FEATURE,
+	FACET,
+	PRIVATE,
+	ENCLOSED,
+	FINAL,
+	PROTOTYPE,
+	NAMED,
+
+	TERMINAL_INSTANCE,
+	FACET_INSTANCE,
+	FEATURE_INSTANCE,
+
+}

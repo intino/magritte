@@ -3,9 +3,9 @@ package tara.compiler.parser;
 import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.SourceUnit;
 import tara.compiler.core.errorcollection.MergeException;
-import tara.compiler.model.Node;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
 import tara.compiler.rt.TaraRtConstants;
+import tara.language.model.Node;
 
 import java.util.Collection;
 
@@ -22,10 +22,10 @@ public class ASTMerger {
 		Model model = new Model(conf.getProject() + "." + conf.getGeneratedLanguage());
 		model.setLevel(conf.getLevel());
 		for (SourceUnit unit : sources) {
-			Collection<Node> includedNodes = unit.getModel().getIncludedNodes();
-			model.addIncludedNodes(includedNodes.toArray(new Node[includedNodes.size()]));
+			Collection<Node> includedNodes = unit.getModel().components();
+			model.add(includedNodes.toArray(new Node[includedNodes.size()]));
 		}
-		for (Node node : model.getIncludedNodes()) node.setContainer(model);
+		for (Node node : model.components()) node.container(model);
 		model.addMetrics(MetricsLoader.loadMetrics(conf));
 		System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Tarac: loading metrics...");
 		return model;

@@ -8,9 +8,7 @@ import tara.intellij.annotator.fix.FixFactory;
 import tara.intellij.lang.psi.Node;
 import tara.intellij.lang.psi.TaraModel;
 import tara.intellij.lang.psi.impl.TaraUtil;
-import tara.intellij.lang.semantic.LanguageElement;
-import tara.intellij.lang.semantic.LanguageRoot;
-import tara.semantic.SemanticException;
+import tara.language.semantics.SemanticException;
 
 public class ModelAnalyzer extends TaraAnalyzer {
 	private TaraModel model;
@@ -24,10 +22,10 @@ public class ModelAnalyzer extends TaraAnalyzer {
 		try {
 			Language language = TaraUtil.getLanguage(model);
 			if (language == null) return;
-			new Checker(language).check(new LanguageRoot(model));
+			new Checker(language).check(model);
 		} catch (SemanticException e) {
-			if (e.getOrigin() == null) throw new RuntimeException("origin = null:" + e.getMessage());
-			PsiElement destiny = ((LanguageElement) e.getOrigin()).element();
+			if (e.getOrigin() == null) throw new RuntimeException("origin = null: " + e.getMessage());
+			PsiElement destiny = (PsiElement) e.getOrigin();
 			if (destiny instanceof Node) {
 				destiny = ((Node) destiny).getSignature();
 				results.put(destiny, annotateAndFix(e, destiny));

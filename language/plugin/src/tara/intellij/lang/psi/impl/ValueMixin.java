@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import tara.intellij.lang.psi.*;
 import tara.intellij.lang.psi.resolve.ReferenceManager;
-import tara.semantic.model.EmptyNode;
-import tara.semantic.model.Primitives;
+import tara.language.model.EmptyNode;
+import tara.language.model.Primitives;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class ValueMixin extends ASTWrapperPsiElement {
 	}
 
 	@NotNull
-	public List<Object> getValues() {
+	public List<Object> values() {
 		List<Object> values = new ArrayList<>();
 		for (PsiElement element : getChildren()) {
 			if (element instanceof TaraMeasureValue) continue;

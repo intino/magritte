@@ -12,10 +12,10 @@ import tara.compiler.core.CompilerConfiguration;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.errorcollection.TaraException;
 import tara.compiler.core.operation.model.ModelOperation;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.impl.Model;
+import tara.compiler.model.Model;
 import tara.compiler.rt.TaraRtConstants;
+import tara.language.model.FacetTarget;
+import tara.language.model.Node;
 import tara.templates.BoxDSLTemplate;
 import tara.templates.BoxUnitTemplate;
 import tara.templates.ModelTemplate;
@@ -91,7 +91,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	private String createModel() {
 		Frame frame = new Frame().addTypes("scene");
 		frame.addFrame("name", conf.getGeneratedLanguage());
-		collectRootNodes().stream().filter(node -> node.getName() != null && !node.isTerminalInstance()).forEach(node -> frame.addFrame("root", createRootFrame(node)));
+		collectRootNodes().stream().filter(node -> node.name() != null && !node.isTerminalInstance()).forEach(node -> frame.addFrame("root", createRootFrame(node)));
 		return customize(ModelTemplate.create()).format(frame);
 	}
 
@@ -100,16 +100,16 @@ public class ModelToJavaOperation extends ModelOperation {
 		frame.addTypes("root");
 		if (node.isSingle()) frame.addTypes("single");
 		frame.addFrame("qn", getQn(node));
-		frame.addFrame("name", node.getName());
+		frame.addFrame("name", node.name());
 		return frame;
 	}
 
 	private String getQn(Node node) {
-		return NameFormatter.composeMorphPackagePath(conf.getGeneratedLanguage()) + DOT + node.getQualifiedName();
+		return NameFormatter.composeMorphPackagePath(conf.getGeneratedLanguage()) + DOT + node.qualifiedName();
 	}
 
 	private Collection<Node> collectRootNodes() {
-		return model.getIncludedNodes().stream().filter((node) -> node.isMain() && !node.isAbstract()).collect(Collectors.toList());
+		return model.components().stream().filter((node) -> node.isMain() && !node.isAbstract()).collect(Collectors.toList());
 	}
 
 	private Template customize(Template template) {
@@ -127,7 +127,7 @@ public class ModelToJavaOperation extends ModelOperation {
 		Map<String, SimpleEntry<String, String>> map = new HashMap();
 		File destiny = new File(outFolder, NameFormatter.getBoxUnitPath(separator));
 		for (List<Node> nodes : groupByBox)
-			map.put(nodes.get(0).getFile(),
+			map.put(nodes.get(0).file(),
 				new SimpleEntry<>(new File(destiny, buildBoxUnitName(nodes.get(0)).replace(DOT, separator) + JAVA).getAbsolutePath(),
 					customize(BoxUnitTemplate.create()).format(new BoxUnitFrameCreator(conf, model, nodes).create())));
 		return map;
@@ -144,7 +144,7 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private Map<String, Map<String, String>> createMorphs() throws TaraException {
 		Map<String, Map<String, String>> map = new HashMap();
-		for (Node node : model.getIncludedNodes()) {
+		for (Node node : model.components()) {
 			if (node.isTerminalInstance() || node.isAnonymous() || node.isFeatureInstance()) continue;
 			renderNode(map, node);
 			renderFacetTargets(map, node);
@@ -153,7 +153,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String buildBoxUnitName(Node node) {
-		return (String) Format.javaValidName().format(NameFormatter.capitalize(conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule()) + NameFormatter.buildFileName(node.getFile()));
+		return (String) Format.javaValidName().format(NameFormatter.capitalize(conf.getGeneratedLanguage() != null ? conf.getGeneratedLanguage() : conf.getModule()) + NameFormatter.buildFileName(node.file()));
 	}
 
 	private String buildBoxUnitName(String taraPath) {
@@ -163,17 +163,17 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private void renderFacetTargets(Map<String, Map<String, String>> map, Node node) {
-		for (FacetTarget facetTarget : node.getFacetTargets()) {
+		for (FacetTarget facetTarget : node.facetTargets()) {
 			Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf).create(facetTarget);
-			if (!map.containsKey(node.getFile())) map.put(node.getFile(), new LinkedHashMap<>());
-			map.get(node.getFile()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
+			if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
+			map.get(node.file()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
 		}
 	}
 
 	private void renderNode(Map<String, Map<String, String>> map, Node node) {
 		Map.Entry<String, Frame> morphFrame = new MorphFrameCreator(conf).create(node);
-		if (!map.containsKey(node.getFile())) map.put(node.getFile(), new LinkedHashMap<>());
-		map.get(node.getFile()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
+		if (!map.containsKey(node.file())) map.put(node.file(), new LinkedHashMap<>());
+		map.get(node.file()).put(new File(outFolder, morphFrame.getKey().replace(DOT, separator) + JAVA).getAbsolutePath(), customize(MorphTemplate.create()).format(morphFrame.getValue()));
 	}
 
 
@@ -256,10 +256,10 @@ public class ModelToJavaOperation extends ModelOperation {
 
 	private List<List<Node>> groupByBox(Model model) {
 		Map<String, List<Node>> nodes = new HashMap();
-		for (Node node : model.getIncludedNodes()) {
-			if (!nodes.containsKey(node.getFile()))
-				nodes.put(node.getFile(), new ArrayList<>());
-			nodes.get(node.getFile()).add(node);
+		for (Node node : model.components()) {
+			if (!nodes.containsKey(node.file()))
+				nodes.put(node.file(), new ArrayList<>());
+			nodes.get(node.file()).add(node);
 		}
 		return pack(nodes);
 	}

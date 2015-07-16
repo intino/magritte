@@ -54,7 +54,7 @@ public class TaraPsiImplUtil {
 		return body != null ? (List<Variable>) body.getVariableList() : Collections.EMPTY_LIST;
 	}
 
-	public static List<Node> getInnerNodesOf(Node node) {
+	public static List<Node> getComponentsOf(Node node) {
 		if (node != null && node.getBody() != null) {
 			List<Node> inner = getInnerNodesInBody(node.getBody());
 			removeRoots(inner);
@@ -65,7 +65,7 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	public static List<Node> getInnerNodesOf(FacetApply facetApply) {
+	public static List<Node> getComponentsOf(FacetApply facetApply) {
 		if (facetApply != null && facetApply.getBody() != null) {
 			List<Node> inner = getInnerNodesInBody(facetApply.getBody());
 			removeRoots(inner);
@@ -76,7 +76,7 @@ public class TaraPsiImplUtil {
 		return Collections.EMPTY_LIST;
 	}
 
-	public static List<Node> getInnerNodesOf(FacetTarget facetApply) {
+	public static List<Node> getComponentsOf(FacetTarget facetApply) {
 		if (facetApply != null && facetApply.getBody() != null) {
 			List<Node> inner = getInnerNodesInBody(facetApply.getBody());
 			removeRoots(inner);
@@ -95,7 +95,7 @@ public class TaraPsiImplUtil {
 
 	private static void addSubsOfInner(List<Node> inner) {
 		List<Node> toAdd = new ArrayList<>();
-		for (Node node : inner) toAdd.addAll(node.getSubNodes());
+		for (Node node : inner) toAdd.addAll(node.subs());
 		inner.addAll(toAdd);
 	}
 

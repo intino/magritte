@@ -4,12 +4,8 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.FacetTarget;
-import tara.compiler.model.Node;
-import tara.compiler.model.NodeContainer;
-import tara.compiler.model.Variable;
-import tara.compiler.model.impl.NodeReference;
-import tara.semantic.model.Tag;
+import tara.compiler.model.NodeReference;
+import tara.language.model.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,30 +30,30 @@ public class BoxUnitFacetTargetAdapter implements Adapter<FacetTarget>, Template
 	}
 
 	private void structure(FacetTarget facetTarget, Frame newFrame) {
-		final NodeContainer container = facetTarget.getContainer();
-		newFrame.addFrame(NAME, clean(container.getQualifiedName()) + "+" + clean(facetTarget.getTargetNode().getQualifiedName()));
+		final NodeContainer container = facetTarget.container();
+		newFrame.addFrame(NAME, clean(container.qualifiedName()) + "+" + clean(facetTarget.targetNode().qualifiedName()));
 		addTypes(facetTarget, newFrame);
-		newFrame.addFrame(PARENT, clean(container.getQualifiedName()));
+		newFrame.addFrame(PARENT, clean(container.qualifiedName()));
 	}
 
 	private void facetTargetVariables(FacetTarget facetTarget, final Frame frame, FrameContext<FacetTarget> FrameContext) {
-		for (final Variable variable : facetTarget.getVariables())
+		for (final Variable variable : facetTarget.variables())
 			frame.addFrame(VARIABLE, FrameContext.build(variable));
 	}
 
 	private void addComponents(FacetTarget facetTarget, Frame frame) {
-		for (Node node : facetTarget.getIncludedNodes())
+		for (Node node : facetTarget.components())
 			addComponent(node, getQn(facetTarget), frame);
 	}
 
 	private String getQn(FacetTarget facetTarget) {
-		return facetTarget.getContainer().getQualifiedName() + "+" + facetTarget.getTargetNode().getQualifiedName();
+		return facetTarget.container().qualifiedName() + "+" + facetTarget.targetNode().qualifiedName();
 	}
 
 	private void addComponent(Node inner, String container, Frame frame) {
 		Long key = getKey(inner);
-		Frame include = new Frame().addTypes(INCLUDE).addTypes(asString(inner.getFlags()));
-		final boolean withKey = inner.isAnonymous() && inner.getPlate() == null;
+		Frame include = new Frame().addTypes(INCLUDE).addTypes(asString(inner.flags()));
+		final boolean withKey = inner.isAnonymous() && inner.plate() == null;
 		include.addFrame(VALUE, withKey ? key : '"' + container + "." + NameFormatter.cleanQn(searchNode(inner)) + '"');
 		if (m0 || (inner.isFeatureInstance() || inner.isTerminalInstance()))
 			include.addTypes(CASE);
@@ -68,7 +64,7 @@ public class BoxUnitFacetTargetAdapter implements Adapter<FacetTarget>, Template
 
 	private String searchNode(Node inner) {
 		Node node = inner instanceof NodeReference ? ((NodeReference) inner).getDestiny() : inner;
-		return (node.isAnonymous() ? node.getPlate() : node.getQualifiedName());
+		return (node.isAnonymous() ? node.plate() : node.qualifiedName());
 	}
 
 	private String[] asString(Collection<Tag> flags) {
@@ -85,6 +81,6 @@ public class BoxUnitFacetTargetAdapter implements Adapter<FacetTarget>, Template
 	}
 
 	private void addTypes(FacetTarget facetTarget, Frame newFrame) {
-		newFrame.addFrame(NODE_TYPE, ((Node) facetTarget.getContainer()).getType());
+		newFrame.addFrame(NODE_TYPE, facetTarget.container().type());
 	}
 }

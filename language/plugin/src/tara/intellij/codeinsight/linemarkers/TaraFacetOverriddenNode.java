@@ -68,7 +68,7 @@ public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
 	private Node getOverriddenNode(Node inner) {
 		Node container = TaraPsiImplUtil.getContainerNodeOf(inner);
 		if (container == null) return null;
-		for (Node containerNode : container.getIncludes())
+		for (Node containerNode : container.components())
 			if (isOverridden(inner, containerNode))
 				return containerNode;
 		return null;
@@ -79,6 +79,6 @@ public class TaraFacetOverriddenNode extends JavaLineMarkerProvider {
 	}
 
 	private boolean isOverridden(Node node, Node parentNode) {
-		return parentNode.getType().equals(node.getType()) && ((parentNode.getName() == null && node.getName() == null) || (parentNode.getName() != null && parentNode.getName().equals(node.getName())));
+		return parentNode.type().equals(node.type()) && ((parentNode.name() == null && node.name() == null) || (parentNode.name() != null && parentNode.name().equals(node.name())));
 	}
 }

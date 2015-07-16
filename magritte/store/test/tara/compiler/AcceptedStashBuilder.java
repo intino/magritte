@@ -104,7 +104,6 @@ public class AcceptedStashBuilder {
 		}
 	}
 
-
 	private static Stash stashFrom(byte[] bytes) {
 		Stash result;
 		try (ByteArrayInputStream bs = new ByteArrayInputStream(bytes); Input input = new Input(bs)) {

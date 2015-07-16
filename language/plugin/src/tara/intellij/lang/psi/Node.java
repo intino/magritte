@@ -9,24 +9,31 @@ import org.jetbrains.annotations.Nullable;
 import tara.intellij.documentation.TaraDocumentationFormatter;
 import tara.intellij.lang.psi.impl.TaraModelImpl;
 
-import java.util.Collection;
 import java.util.List;
 
 import static java.util.Collections.EMPTY_LIST;
 
-public interface Node extends NodeContainer, Parametrized, Navigatable, Iconable {
+public interface Node extends tara.language.model.Node, NodeContainer, Parametrized, Navigatable, Iconable {
 
-	TaraModelImpl getFile() throws PsiInvalidElementAccessException;
+	@Nullable
+	String name();
+
+	String qualifiedName();
+
+
+	@Override
+	void name(String name);
+
+	@Override
+	String plate();
+
+	@Override
+	List<String> secondaryTypes();
 
 	Identifier getIdentifierNode();
 
 	@Nullable
 	Body getBody();
-
-	@NotNull
-	default Collection<Doc> getDoc() {
-		return EMPTY_LIST;
-	}
 
 	@NotNull
 	Signature getSignature();
@@ -35,9 +42,9 @@ public interface Node extends NodeContainer, Parametrized, Navigatable, Iconable
 
 	boolean isMain();
 
-	List<Node> getSubNodes();
+	List<Node> subs();
 
-	Node getContainer();
+	Node container();
 
 	boolean isFacet();
 
@@ -55,66 +62,66 @@ public interface Node extends NodeContainer, Parametrized, Navigatable, Iconable
 
 	boolean isAnnotatedAsMain();
 
+	@Override
+	boolean isRequired();
+
+	@Override
+	boolean isSingle();
+
+	@Override
+	boolean isNamed();
+
+	@Override
+	boolean isFinal();
+
+	@Override
+	boolean isTerminal();
+
+	@Override
+	boolean intoSingle();
+
+	@Override
+	boolean intoRequired();
+
 	@Nullable
 	TaraAddress getAddress();
 
-	@NotNull
-	List<Annotation> getAnnotations();
-
-	List<Flag> getFlags();
-
 	Annotations getAnnotationsNode();
 
-	List<String> getInheritedFlags();
-
-	void addInheritedFlags(String... flags);
+	Flags getFlagsNode();
 
 	boolean contains(String type);
 
-	Node getParentNode();
-
-	@Nullable
-	String getName();
-
-	String getQualifiedName();
-
-	@Nullable
-	String getType();
-
-	String getFullType();
-
-	void setFullType(String type);
+	Node parent();
 
 	@NotNull
 	Node resolve();
 
-	List<Node> getNodeSiblings();
+	List<NodeReference> referenceComponents();
 
-	List<Node> getIncludes();
+	List<FacetApply> facets();
 
-	List<Variable> getVariables();
-
-	List<NodeReference> getInnerNodeReferences();
-
-	List<FacetApply> getFacetApplies();
-
-	List<FacetTarget> getFacetTargets();
+	List<FacetTarget> facetTargets();
 
 	@Nullable
 	MetaIdentifier getMetaIdentifier();
 
 	void addInstanceName(TaraAddress address);
 
-	String toString();
+	@Override
+	default boolean isAnonymous() {
+		return name() == null;
+	}
 
-	boolean equals(Object obj);
-
-	int hashCode();
+	@NotNull
+	default List<Doc> getDoc() {
+		return EMPTY_LIST;
+	}
 
 	@Nullable
 	default String getDocCommentText() {
 		StringBuilder text = new StringBuilder();
-		Collection<Doc> docs = this.getDoc();
+		List<Doc> docs = this.getDoc();
 		String comment;
 		for (Doc doc : docs) {
 			comment = doc.getText();
@@ -123,5 +130,13 @@ public interface Node extends NodeContainer, Parametrized, Navigatable, Iconable
 		}
 		return TaraDocumentationFormatter.doc2Html(this, text.toString());
 	}
+
+	TaraModelImpl getFile() throws PsiInvalidElementAccessException;
+
+	String toString();
+
+	boolean equals(Object obj);
+
+	int hashCode();
 }
 
