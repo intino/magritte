@@ -17,7 +17,7 @@ public class NodeImpl implements Node {
 	private String type;
 	private String doc;
 	private boolean sub;
-	private List<Node> includes = new ArrayList<>();
+	private List<Node> components = new ArrayList<>();
 	private List<Tag> flags = new ArrayList<>();
 	private List<Tag> annotations = new ArrayList<>();
 	private String plate;
@@ -319,22 +319,22 @@ public class NodeImpl implements Node {
 
 	@Override
 	public List<Node> components() {
-		return unmodifiableList(includes);
+		return unmodifiableList(components);
 	}
 
 	@Override
 	public void add(Node... nodes) {
-		Collections.addAll(includes, nodes);
+		Collections.addAll(components, nodes);
 	}
 
 	@Override
 	public void add(int pos, Node... nodes) {
-		this.includes.addAll(pos, Arrays.asList(nodes));
+		this.components.addAll(pos, Arrays.asList(nodes));
 	}
 
 	@Override
 	public Node component(String name) {
-		for (Node include : includes)
+		for (Node include : components)
 			if (name.equals(include.name()))
 				return include;
 		return null;
@@ -342,12 +342,12 @@ public class NodeImpl implements Node {
 
 	@Override
 	public boolean contains(Node nodeContainer) {
-		return nodeContainer != null && includes.contains(nodeContainer);
+		return nodeContainer != null && components.contains(nodeContainer);
 	}
 
 	@Override
 	public boolean remove(Node node) {
-		return node != null && includes.remove(node);
+		return node != null && components.remove(node);
 	}
 
 	@Override
@@ -393,7 +393,7 @@ public class NodeImpl implements Node {
 
 	@Override
 	public List<Node> referenceComponents() {
-		List<NodeReference> collect = includes.stream().filter(include -> include instanceof NodeReference).map(include -> (NodeReference) include).collect(Collectors.toList());
+		List<NodeReference> collect = components.stream().filter(include -> include instanceof NodeReference).map(include -> (NodeReference) include).collect(Collectors.toList());
 		return unmodifiableList(collect);
 	}
 

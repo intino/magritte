@@ -38,8 +38,10 @@ public class Format {
 
 
 	private static String toCamelCase(String value, String regex) {
+		if (value.isEmpty()) return "";
 		String[] parts = value.split(regex);
-		if (parts.length == 1) return value.substring(0, 1).toUpperCase() + value.substring(1);
+		if (parts.length == 1)
+			return value.substring(0, 1).toUpperCase() + value.substring(1);
 		String caseString = "";
 		for (String part : parts)
 			caseString = caseString + toProperCase(part);

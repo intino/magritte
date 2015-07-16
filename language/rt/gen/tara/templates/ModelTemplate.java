@@ -13,14 +13,18 @@ public class ModelTemplate extends Template {
 	}
 
 	public static Template create() {
-		return new ModelTemplate(Locale.ENGLISH, LF).define();
+		return new ModelTemplate(Locale.ENGLISH, CRLF).define();
 	}
 
 	public Template define() {
 		add(
-			rule().add((condition("type", "scene"))).add(literal("package ")).add(mark("name", "LowerCase")).add(literal(";\n\npublic class ")).add(mark("name", "javaValidName")).add(literal("Model extends magritte.wraps.Model {\n\n    public ")).add(mark("name", "javaValidName")).add(literal("Model(magritte.wraps.Morph morph) {\n        super(morph);\n    }\n\n    public ")).add(mark("name", "javaValidName")).add(literal("Model(magritte.Graph graph) {\n\t\tsuper(graph);\n\t}\n\n\t")).add(mark("root").multiple("\n\n")).add(literal("\n}")),
-			rule().add((condition("type", "root")), not(condition("type", "single")), (condition("trigger", "root"))).add(literal("public magritte.Set<")).add(mark("qn", "reference")).add(literal("> ")).add(mark("name", "javaValidName", "plural", "firstLowerCase")).add(literal("() {\n    return _get(\"")).add(mark("name", "FirstLowerCase", "plural")).add(literal("\", ")).add(mark("qn", "reference")).add(literal(".class);\n}\n\npublic ")).add(mark("qn", "reference")).add(literal(" ")).add(mark("name", "javaValidName", "firstLowerCase")).add(literal("(int index) {\n    return ")).add(mark("name", "javaValidName", "plural", "firstLowerCase")).add(literal("().get(index);\n}")),
-			rule().add((condition("type", "root")), (condition("type", "single")), (condition("trigger", "root"))).add(literal("public ")).add(mark("qn", "reference")).add(literal(" ")).add(mark("name", "javaValidName", "firstLowerCase")).add(literal("() {\n    return _get(\"")).add(mark("name", "FirstLowerCase")).add(literal("\", ")).add(mark("qn", "reference")).add(literal(".class).get(0);\n}"))
+			rule().add((condition("type", "model"))).add(literal("package ")).add(mark("name", "LowerCase")).add(literal(";\n\nimport tara.magritte.Node;\n\nimport java.util.List;\n\npublic class ")).add(mark("name", "javaValidName")).add(literal("Model {\n\n   ")).add(mark("node", "declaration").multiple("\n")).add(literal("\n\n\tpublic static void use(Node node) {\n\t    ")).add(mark("node", "assign").multiple("\n")).add(literal("\n\t}\n\n\t")).add(mark("node", "getter").multiple("\n\n")).add(literal("\n}")),
+			rule().add((condition("type", "node")), (condition("type", "single")), (condition("trigger", "declaration"))).add(literal("private static ")).add(mark("qn", "reference")).add(literal(" ")).add(mark("name", "firstLowerCase")).add(literal(";")),
+			rule().add((condition("type", "node")), (condition("trigger", "declaration"))).add(literal("private static List<")).add(mark("qn", "reference")).add(literal("> ")).add(mark("name", "firstLowerCase")).add(literal("List;")),
+			rule().add((condition("type", "node")), (condition("type", "single")), (condition("trigger", "assign"))).add(mark("name", "firstLowerCase")).add(literal(" = node.components(")).add(mark("qn", "reference")).add(literal(".class).get(0);")),
+			rule().add((condition("type", "node")), (condition("trigger", "assign"))).add(mark("name", "firstLowerCase")).add(literal("List = node.components(")).add(mark("qn", "reference")).add(literal(".class);")),
+			rule().add((condition("type", "node")), (condition("type", "single")), (condition("trigger", "getter"))).add(literal("public static ")).add(mark("qn", "reference")).add(literal(" ")).add(mark("name", "firstLoweCase")).add(literal("() {\n    return ")).add(mark("name", "firstLowerCase")).add(literal(";\n}")),
+			rule().add((condition("type", "node")), (condition("trigger", "getter"))).add(literal("public static List<")).add(mark("qn", "reference")).add(literal("> ")).add(mark("name", "firstLoweCase")).add(literal("List() {\n    return ")).add(mark("name", "firstLowerCase")).add(literal("List;\n}"))
 		);
 		return this;
 	}

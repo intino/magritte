@@ -56,7 +56,7 @@
     <dependency>
       <groupId>tara</groupId>
       <artifactId>language</artifactId>
-      <type>jar</type>
+      <type>bundle</type>
       <version>1.0</version>
     </dependency>
 

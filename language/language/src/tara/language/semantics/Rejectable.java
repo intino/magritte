@@ -14,7 +14,7 @@ public abstract class Rejectable {
 
 	public static List<Rejectable> build(Node node) {
 		List<Rejectable> rejectables = new ArrayList<>();
-		if (!node.name().isEmpty()) rejectables.add(Name.instance);
+		if (node.name() != null && !node.name().isEmpty()) rejectables.add(Name.instance);
 		rejectables.addAll(node.parameters().stream().map(Parameter::new).collect(Collectors.toList()));
 		rejectables.addAll(node.facets().stream().map(Facet::new).collect(Collectors.toList()));
 		rejectables.addAll(node.components().stream().map(Include::new).collect(Collectors.toList()));

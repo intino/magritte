@@ -32,7 +32,7 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 		this.context = context;
 		frame.addTypes("nodeimpl");
 		addFacetTargetInfo(target, frame);
-		addComponents(target, frame, context, modelLevel);
+		addComponents(target, frame, context);
 	}
 
 	private void addFacetTargetInfo(FacetTarget target, Frame frame) {

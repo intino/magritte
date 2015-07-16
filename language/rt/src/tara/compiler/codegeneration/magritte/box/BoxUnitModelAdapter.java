@@ -86,19 +86,19 @@ public class BoxUnitModelAdapter implements Adapter<Model>, TemplateTags {
 	}
 
 	private void createNativeFrames(Frame frame, List<Parameter> parameters) {
-		final BoxNativeFrameAdapter adapter = new BoxNativeFrameAdapter(generatedLanguage, language, m0);
+		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, m0);
 		for (Parameter parameter : parameters) {
 			if (!(parameter.values().get(0) instanceof Primitives.Expression)) continue;
 			final Primitives.Expression body = (Primitives.Expression) parameter.values().get(0);
 			String value = body.get();
-			if (Primitives.NATIVE.equals(parameter.inferredType())) {
-				adapter.fillFrameForNativeParameter(frame, parameter, value);
-			} else adapter.fillFrameExpressionParameter(frame, parameter, value);
+//			if (Primitives.NATIVE.equals(parameter.inferredType())) {
+//				adapter.fillFrameForNativeParameter(frame, parameter, value);
+//			} else adapter.fillFrameExpressionParameter(frame, parameter, value);
 		}
 	}
 
 	private void createDefaultValueNativeFrames(Frame frame, List<Variable> variables) {
-		final BoxNativeFrameAdapter adapter = new BoxNativeFrameAdapter(generatedLanguage, language, m0);
+		final NativeFormatter adapter = new NativeFormatter(generatedLanguage, language, m0);
 		for (Variable variable : variables) {
 			if (variable.defaultValues().isEmpty() || !(variable.defaultValues().get(0) instanceof Primitives.Expression))
 				continue;

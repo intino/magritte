@@ -8,11 +8,10 @@ import tara.compiler.codegeneration.magritte.MorphVariableAdapter;
 import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.compiler.core.CompilerConfiguration;
-import tara.compiler.model.NodeImpl;
 import tara.compiler.model.NodeReference;
-import tara.language.semantics.Allow;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
+import tara.language.model.Parameter;
 import tara.language.model.Variable;
 
 import java.util.AbstractMap;
@@ -28,10 +27,11 @@ public class MorphFrameCreator implements TemplateTags {
 
 	public MorphFrameCreator(String project, String generatedLanguage, Language language, int modelLevel) {
 		this.generatedLanguage = generatedLanguage;
-		builder.register(NodeImpl.class, morphNodeAdapter = new MorphNodeAdapter(project, generatedLanguage, language, initNode, modelLevel));
+		builder.register(Node.class, morphNodeAdapter = new MorphNodeAdapter(generatedLanguage, language, initNode));
 		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(project, generatedLanguage, modelLevel));
-		builder.register(Variable.class, new MorphVariableAdapter(generatedLanguage, modelLevel));
-		builder.register(Allow.Parameter.class, new MorphParameterAdapter(generatedLanguage));
+		builder.register(Variable.class, new MorphVariableAdapter(generatedLanguage, language, modelLevel));
+		builder.register(Parameter.class, new MorphNativeParameterAdapter(generatedLanguage, language));
+//		builder.register(Allow.Parameter.class, new MorphNativeParameterAdapter(generatedLanguage, language, modelLevel));
 	}
 
 	public MorphFrameCreator(CompilerConfiguration conf) {
@@ -48,6 +48,11 @@ public class MorphFrameCreator implements TemplateTags {
 		return new AbstractMap.SimpleEntry<>(packagePath + DOT + Format.javaValidName().format(node.name()).toString(), frame);
 	}
 
+	private void createMorph(Frame frame, Node node) {
+		if (node instanceof NodeReference || node.isTerminalInstance() || node.isFeatureInstance()) return;
+		frame.addFrame(NODE, builder.build(node));
+	}
+
 	public Map.Entry<String, Frame> create(FacetTarget facetTarget) {
 		final Frame frame = new Frame().addTypes(MORPH);
 		String packagePath = addPackage(facetTarget, frame);
@@ -58,12 +63,7 @@ public class MorphFrameCreator implements TemplateTags {
 	}
 
 	private void createFacetTargetMorph(Frame frame, FacetTarget node) {
-		frame.addFrame("node", builder.build(node));
-	}
-
-	private void createMorph(Frame frame, Node node) {
-		if (node instanceof NodeReference || node.isTerminalInstance() || node.isFeatureInstance()) return;
-		frame.addFrame("node", builder.build(node));
+		frame.addFrame(NODE, builder.build(node));
 	}
 
 	private String addPackage(Frame frame, Node node) {

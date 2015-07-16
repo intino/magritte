@@ -2,12 +2,11 @@ package tara.compiler.codegeneration.magritte.morph;
 
 import tara.Language;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.NodeImpl;
 import tara.compiler.model.VariableReference;
+import tara.language.model.*;
 import tara.language.semantics.Allow;
 import tara.language.semantics.Assumption;
 import tara.language.semantics.constraints.ReferenceParameterAllow;
-import tara.language.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,8 +16,8 @@ public final class TypesProvider implements TemplateTags {
 	private TypesProvider() {
 	}
 
-	public static String[] getTypes(NodeImpl node, Language language) {
-		List<String> types = node.annotations().stream().map(Tag::name).collect(Collectors.toList());
+	public static String[] getTypes(Node node, Language language) {
+		List<String> types = node.flags().stream().map(Tag::name).collect(Collectors.toList());
 		types.addAll(instanceAnnotations(node, language));
 		return types.toArray(new String[types.size()]);
 	}
@@ -38,7 +37,7 @@ public final class TypesProvider implements TemplateTags {
 		return list.toArray(new String[list.size()]);
 	}
 
-	private static Collection<? extends String> instanceAnnotations(NodeImpl node, Language language) {
+	private static Collection<? extends String> instanceAnnotations(Node node, Language language) {
 		List<String> instances = new ArrayList<>();
 		Collection<Assumption> assumptions = language.assumptions(node.type());
 		if (assumptions == null) return instances;
@@ -69,6 +68,17 @@ public final class TypesProvider implements TemplateTags {
 		list.add(variable.type());
 		if (variable.multiple()) list.add(MULTIPLE);
 		list.addAll(variable.flags().stream().collect(Collectors.toList()));
+		return list.toArray(new String[list.size()]);
+	}
+
+	public static String[] getTypes(Parameter parameter) {
+		Set<String> list = new HashSet<>();
+		list.add(parameter.getClass().getSimpleName());
+		list.add(VARIABLE);
+		list.add(PARAMETER);
+		list.add(parameter.inferredType());
+		if (parameter.values().size() > 1) list.add(MULTIPLE);
+		list.addAll(parameter.flags().stream().collect(Collectors.toList()));
 		return list.toArray(new String[list.size()]);
 	}
 

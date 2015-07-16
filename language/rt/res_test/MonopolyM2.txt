@@ -1,10 +1,10 @@
 src_file
-/Users/oroncal/workspace/sandbox/monopoly/tafat/model/Tafat.tara
+/Users/octavio/workspace/sandbox/monopoly/Base/model/Main.tara
 
 project
 monopoly
 module
-tafat
+Base
 language
 Proteo
 locale
@@ -18,20 +18,20 @@ level
 encoding
 UTF-8
 semantic_lib
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/monopoly/tafat/gen
+/Users/octavio/workspace/sandbox/monopoly/Base/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/monopoly/out/production/tafat/
+/Users/octavio/workspace/sandbox/monopoly/out/production/Base/
 magritte
 Magritte not found
 metrics
-/Users/oroncal/workspace/sandbox/monopoly/out/production/tafat/
+/Users/octavio/workspace/sandbox/monopoly/out/production/Base/
 resources
-/Users/oroncal/workspace/sandbox/monopoly/tafat/res
+/Users/octavio/workspace/sandbox/monopoly/Base/res
 native_path
-/Users/oroncal/workspace/sandbox/monopoly/tafat/src/tafat/natives
+/Users/octavio/workspace/sandbox/monopoly/Base/src/tafat/natives
 dsl_path
-/Users/oroncal/workspace/sandbox/monopoly/dsl/
+/Users/octavio/workspace/sandbox/monopoly/dsl/
 classpath
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

@@ -26,6 +26,13 @@ public class Generator implements TemplateTags {
 		return false;
 	}
 
+	protected void addComponents(NodeContainer target, Frame frame, Adapter.FrameContext<FacetTarget> context) {
+		if (target instanceof NodeReference) return;
+		target.components().stream().
+			filter(inner -> !inner.isAnonymous()).
+			forEach(inner -> frame.addFrame(NODE, context.build(inner)));
+	}
+
 	private static boolean isInFeature(NodeContainer node) {
 		NodeContainer nodeContainer = node;
 		while (nodeContainer != null && nodeContainer instanceof Node)
@@ -33,12 +40,6 @@ public class Generator implements TemplateTags {
 				return true;
 			else nodeContainer = nodeContainer.container();
 		return false;
-	}
-
-	protected void addComponents(NodeContainer target, Frame frame, Adapter.FrameContext<FacetTarget> context, int level) {
-		target.components().stream().
-			filter(inner -> !(inner instanceof NodeReference) && !inner.isAnonymous()).
-			forEach(inner -> frame.addFrame(NODE, context.build(inner)));
 	}
 
 	protected FacetTarget isInFacetTarget(Node node) {

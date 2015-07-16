@@ -1,6 +1,6 @@
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
 
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")import Metric;#end
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")import tara.magritte.Metric;#end
 
 public enum ${NAME} implements Metric {
 

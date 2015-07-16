@@ -1,32 +1,46 @@
-def type(scene)
+def type(model)
 	package $name+LowerCase;
 
-	public class $name+javaValidName~Model extends Model {
+	import tara.magritte.Node;
 
-	    public $name+javaValidName~Model(Morph morph) {
-	        super(morph);
-	    }
+	import java.util.List;
 
-	    public $name+javaValidName~Model(Graph graph) {
-			super(graph);
+	public class $name+javaValidName~Model {
+
+	   $node+declaration...[$NL]
+
+		public static void use(Node node) {
+		    $node+assign...[$NL]
 		}
 
-		$root...[$NL$NL]
+		$node+getter...[$NL$NL]
 	}
 end
 
-def type(root) !type(single) trigger(root)
-	public Set<$qn+reference> $name+javaValidName+plural+firstLowerCase() {
-        return _get("$name+FirstLowerCase+plural", $qn+reference.class);
-    }
+def type(node) type(single) trigger(declaration)
+    private static $qn+reference $name+firstLowerCase;
+end
 
-    public $qn+reference $name+javaValidName+firstLowerCase(int index) {
-        return $name+javaValidName+plural+firstLowerCase().get(index);
+def type(node) trigger(declaration)
+    private static List<$qn+reference> $name+firstLowerCase~List;
+end
+
+def type(node) type(single) trigger(assign)
+    $name+firstLowerCase = node.components($qn+reference.class).get(0);
+end
+
+def type(node) trigger(assign)
+    $name+firstLowerCase~List = node.components($qn+reference.class);
+end
+
+def type(node) type(single) trigger(getter)
+    public static $qn+reference $name+firstLoweCase() {
+        return $name+firstLowerCase;
     }
 end
 
-def type(root) type(single) trigger(root)
-	public $qn+reference $name+javaValidName+firstLowerCase() {
-        return _get("$name+FirstLowerCase", $qn+reference.class).get(0);
+def type(node) trigger(getter)
+    public static List<$qn+reference> $name+firstLoweCase~List() {
+        return $name+firstLowerCase~List;
     }
 end

@@ -55,17 +55,17 @@ public class ModelToJavaOperation extends ModelOperation {
 		try {
 			System.out.println(TaraRtConstants.PRESENTABLE_MESSAGE + "Generating code representation");
 			this.model = model;
-			Map<String, SimpleEntry<String, String>> boxUnits = createBoxUnits(groupByBox(model));
-			writeBoxUnits(boxUnits);
-			fillBoxesInOutMap(boxUnits);
+//			Map<String, SimpleEntry<String, String>> boxUnits = createBoxUnits(groupByBox(model));
+//			writeBoxUnits(boxUnits);
+//			fillBoxesInOutMap(boxUnits);
 			if (model.getLevel() == 0) return;
 			final Map<String, Map<String, String>> morphs = createMorphs();
 			morphs.values().forEach(this::writeMorphs);
 			fillMorphsInOutMap(morphs);
-			final String boxDslPath = writeBoxDSL(NameFormatter.getBoxDSLPath(separator), createBoxDSL(boxUnits.keySet()));
+//			final String boxDslPath = writeBoxDSL(NameFormatter.getBoxDSLPath(separator), createBoxDSL(boxUnits.keySet()));
 			final String modelPath = writeModel(createModel());
-			for (String boxUnit : boxUnits.keySet()) put(boxUnit, boxDslPath);
-			for (String boxUnit : boxUnits.keySet()) put(boxUnit, modelPath);
+//			for (String boxUnit : boxUnits.keySet()) put(boxUnit, boxDslPath);
+//			for (String boxUnit : boxUnits.keySet()) put(boxUnit, modelPath);
 			compilationUnit.addOutputItems(outMap);
 		} catch (TaraException e) {
 			LOG.log(Level.SEVERE, "Error during java model generation: " + e.getMessage(), e);
@@ -89,15 +89,16 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String createModel() {
-		Frame frame = new Frame().addTypes("scene");
+		Frame frame = new Frame().addTypes("model");
 		frame.addFrame("name", conf.getGeneratedLanguage());
-		collectRootNodes().stream().filter(node -> node.name() != null && !node.isTerminalInstance()).forEach(node -> frame.addFrame("root", createRootFrame(node)));
+		collectRootNodes().stream().filter(node -> node.name() != null && !node.isTerminalInstance()).
+			forEach(node -> frame.addFrame("node", createRootFrame(node)));
 		return customize(ModelTemplate.create()).format(frame);
 	}
 
 	private Frame createRootFrame(Node node) {
 		Frame frame = new Frame();
-		frame.addTypes("root");
+		frame.addTypes("node");
 		if (node.isSingle()) frame.addTypes("single");
 		frame.addFrame("qn", getQn(node));
 		frame.addFrame("name", node.name());
@@ -177,24 +178,6 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 
-	private List<String> writeBoxUnits(Map<String, SimpleEntry<String, String>> documentMap) {
-		List<String> outputs = new ArrayList<>();
-
-		for (SimpleEntry<String, String> entry : documentMap.values()) {
-			File file = new File(entry.getKey());
-			file.getParentFile().mkdirs();
-			try {
-				BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file));
-				fileWriter.write(entry.getValue());
-				fileWriter.close();
-				outputs.add(file.getAbsolutePath());
-			} catch (IOException e) {
-				LOG.log(Level.SEVERE, e.getMessage(), e);
-			}
-		}
-		return outputs;
-	}
-
 	private List<String> writeMorphs(Map<String, String> documentMap) {
 		List<String> outputs = new ArrayList<>();
 		for (Map.Entry<String, String> entry : documentMap.entrySet()) {
@@ -207,7 +190,7 @@ public class ModelToJavaOperation extends ModelOperation {
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}
-			prettyPrint(file);
+//			prettyPrint(file);
 			outputs.add(file.getAbsolutePath());
 		}
 		return outputs;

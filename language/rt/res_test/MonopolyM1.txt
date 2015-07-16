@@ -1,5 +1,5 @@
 src_file
-/Users/oroncal/workspace/sandbox/monopoly/Monopoly/model/Main.tara
+/Users/octavio/workspace/sandbox/monopoly/Monopoly/model/Main.tara
 
 project
 monopoly
@@ -20,20 +20,20 @@ false
 encoding
 UTF-8
 dsl_path
-/Users/oroncal/workspace/sandbox/monopoly/dsl
+/Users/octavio/workspace/sandbox/monopoly/dsl
 native_path
-/Users/oroncal/workspace/sandbox/monopoly/Monopoly/src/monopoly/natives/
+/Users/octavio/workspace/sandbox/monopoly/Monopoly/src/monopoly/natives/
 semantic_lib
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/oroncal/workspace/sandbox/monopoly/Monopoly/gen
+/Users/octavio/workspace/sandbox/monopoly/Monopoly/gen
 final_outputpath
-/Users/oroncal/workspace/sandbox/monopoly/Monopoly/target/classes/
+/Users/octavio/workspace/sandbox/monopoly/Monopoly/target/classes/
 magritte
-/Users/oroncal/.m2/repository/org/siani/magritte/magritte/1.1.6/magritte-1.1.6.jar
+/Users/octavio/.m2/repository/org/siani/magritte/magritte/1.1.6/magritte-1.1.6.jar
 metrics
-/Users/oroncal/workspace/sandbox/monopoly/Monopoly/target/classes/
+/Users/octavio/workspace/sandbox/monopoly/Monopoly/target/classes/
 resources
-/Users/oroncal/workspace/sandbox/monopoly/Monopoly/res
+/Users/octavio/workspace/sandbox/monopoly/Monopoly/res
 classpath
-/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
