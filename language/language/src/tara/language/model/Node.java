@@ -1,5 +1,6 @@
 package tara.language.model;
 
+import java.util.Collections;
 import java.util.List;
 
 public interface Node extends Parametrized, NodeContainer, Element {
@@ -15,7 +16,6 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	}
 
 	default void language(String language) {
-
 	}
 
 	boolean isSub();
@@ -97,7 +97,7 @@ public interface Node extends Parametrized, NodeContainer, Element {
 	List<? extends Facet> facets();
 
 	default List<String> allowedFacets() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	default void addAllowedFacets(String... facet) {

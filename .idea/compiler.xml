@@ -119,12 +119,20 @@
         <processorPath useClasspath="true" />
         <module name="sample-tafat" />
       </profile>
+      <profile default="false" name="Annotation profile for language" enabled="true">
+        <sourceOutputDir name="../../out/build/semantic/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../out/build/semantic/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="language" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="framework" target="1.8" />
       <module name="framework1" target="1.8" />
       <module name="framework2" target="1.8" />
       <module name="intellij" target="1.8" />
+      <module name="language" target="1.8" />
       <module name="magritte" target="1.8" />
       <module name="magritte-store" target="1.8" />
       <module name="plugin" target="1.8" />
