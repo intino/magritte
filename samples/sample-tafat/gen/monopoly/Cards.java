@@ -5,10 +5,7 @@ import tara.magritte.Morph;
 import tara.magritte.NativeCode;
 import tara.magritte.Node;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 public class Cards extends Morph {
@@ -43,6 +40,18 @@ public class Cards extends Morph {
     }
 
     @Override
+    public List<Node> _components() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Map<String, Object> _variables() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("get", get);
+        return map;
+    }
+
+    @Override
     protected void add(Node component) {
         if(component.is("Card")) cardList.add(component.morph(Card.class));
     }
@@ -50,11 +59,6 @@ public class Cards extends Morph {
     @Override
     protected void set(String name, Object object) {
         if (name.equalsIgnoreCase("get")) get = (Get) link((NativeCode) object);
-    }
-
-    @Override
-    public List<Node> components() {
-        return Collections.emptyList();
     }
 
     public static class get_meme implements Get, NativeCode {

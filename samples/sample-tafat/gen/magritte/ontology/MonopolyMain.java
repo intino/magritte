@@ -2,6 +2,9 @@ package magritte.ontology;
 
 import magritte.dsl.TafatDsl;
 import monopoly.*;
+import monopoly.jailscape.JailScape;
+import monopoly.jailscape.JailScape_Player;
+import monopoly.mover.Mover;
 import monopoly.mover.Mover_Player;
 import monopoly.natives.Check;
 import tafat.Behavior;
@@ -28,46 +31,37 @@ public class MonopolyMain extends Box {
 
 	@Override
 	public void write() {
-		registerTypes();
-		def("Mover_Player").has(21).has(22).has("Mover_Player$PlayerIsJailed").has("Mover_Player$JailAfterThreeDoubles").has("Mover_Player$Advance").has("Mover_Player$ToJailWhenInGoToJailSquare").has("Mover_Player$CheckCard").has("Mover_Player$Doubles").set("turnsToBeInJail", (0)).set("numberOfRolls", (0));
-		proto(21).type("Behavior$Start").set("start", new action_start());
-		proto(22).type("Action").set("action", new action_mecni());
-		proto("Mover_Player$PlayerIsJailed").type("Behavior$Knol").type("Mover_Player$Rule").set("check", new check_drussatjet());
-		proto("Mover_Player$JailAfterThreeDoubles").type("Mover_Player$Rule").type("Behavior$Knol").set("check", new check_plolfrumus());
-		proto("Mover_Player$Advance").type("Mover_Player$Rule").type("Behavior$Knol").set("check", new check_psilapsimin());
-		proto("Mover_Player$ToJailWhenInGoToJailSquare").type("Mover_Player$Rule").type("Behavior$Knol").set("check", new check_brutredras());
-		proto("Mover_Player$CheckCard").type("Mover_Player$Rule").type("Behavior$Knol").set("check", new check_nunpse());
-		proto("Mover_Player$Doubles").type("Mover_Player$Rule").type("Behavior$Knol").set("check", new check_natoc()).end();
-	}
-
-	private void registerTypes() {
-		register("dices", Dices.class);
-		register("board", Board.class);
-		register("init", Init.class);
-		register("terrain", Terrain.class);
-		register("community", Community.class);
-		register("taxes", Taxes.class);
-		register("station", Station.class);
-		register("luck", Luck.class);
-		register("jail", Jail.class);
-		register("company", Company.class);
-		register("freeparking", FreeParking.class);
-		register("gotojail", GoToJail.class);
-		register("luckycards", LuckyCards.class);
-		register("card", Card.class);
-		register("communitycards", CommunityCards.class);
-		register("player", Player.class);
-		register("mover_player", Mover_Player.class);
-		register("behavior", Behavior.class);
-		register("mover_player$playerisjailed", Mover_Player.PlayerIsJailed.class);
-		register("mover_player$jailafterthreedoubles", Mover_Player.JailAfterThreeDoubles.class);
-		register("mover_player$advance", Mover_Player.Advance.class);
-		register("mover_player$tojailwheningotojailsquare", Mover_Player.ToJailWhenInGoToJailSquare.class);
-		register("mover_player$checkcard", Mover_Player.CheckCard.class);
-		register("mover_player$doubles", Mover_Player.Doubles.class);
-		registerAbstract("square");
-		registerAbstract("mover_player$rule");
-		registerAbstract("cards");
+        def("Board", Board.class).type("Entity").allowsMultiple("Square").end();
+        def("Dices", Dices.class).type("Entity").end();
+        abstractDef("Cards", Cards.class).type("Entity").allowsMultiple("Card").end();
+        def("LuckyCards", LuckyCards.class).type("Entity").type("Cards").allowsMultiple("Card").end();
+        def("CommunityCards", CommunityCards.class).type("Entity").type("Cards").allowsMultiple("Card").end();
+        def("Card", Card.class).type("Entity").end();
+        abstractDef("Square", Square.class).type("Entity").end();
+        def("Init", Init.class).type("Entity").type("Square").end();
+        def("Terrain", Terrain.class).type("Entity").type("Square").end();
+        def("Community", Community.class).type("Entity").type("Square").end();
+        def("Taxes", Taxes.class).type("Entity").type("Square").end();
+        def("Station", Station.class).type("Entity").type("Square").end();
+        def("Luck", Luck.class).type("Entity").type("Square").end();
+        def("Jail", Jail.class).type("Entity").type("Square").end();
+        def("Company", Company.class).type("Entity").type("Square").end();
+        def("FreeParking", FreeParking.class).type("Entity").type("Square").end();
+        def("GoToJail", GoToJail.class).type("Entity").type("Square").end();
+        def("Player", Player.class).type("Entity").end();
+        abstractDef("JailScape", JailScape.class).type("Behavior").end();
+        def("JailScape_Player", JailScape_Player.class).type("Behavior").type("JailScape").end();
+        abstractDef("Mover", Mover.class).type("Behavior").end();
+		def("Mover_Player", Mover_Player.class).type("Mover").has(21).has(22).has("Mover_Player$PlayerIsJailed").has("Mover_Player$JailAfterThreeDoubles").has("Mover_Player$Advance").has("Mover_Player$ToJailWhenInGoToJailSquare").has("Mover_Player$CheckCard").has("Mover_Player$Doubles").end();
+		proto(21).type("Behavior$Start").set("start", new action_start()).end();
+		proto(22).type("Action").set("action", new action_mecni()).end();
+        abstractDef("Mover_Player$Rule", Mover_Player.Rule.class).type("Behavior$Knol").end();
+		proto("Mover_Player$PlayerIsJailed", Mover_Player.PlayerIsJailed.class).type("Behavior$Knol").type("Mover_Player$Rule").set("check", new check_drussatjet()).end();
+		proto("Mover_Player$JailAfterThreeDoubles", Mover_Player.JailAfterThreeDoubles.class).type("Mover_Player$Rule").type("Behavior$Knol").set("check", new check_plolfrumus()).end();
+		proto("Mover_Player$Advance", Mover_Player.Advance.class).type("Mover_Player$Rule").type("Behavior$Knol").set("check", new check_psilapsimin()).end();
+		proto("Mover_Player$ToJailWhenInGoToJailSquare", Mover_Player.ToJailWhenInGoToJailSquare.class).type("Mover_Player$Rule").type("Behavior$Knol").set("check", new check_brutredras()).end();
+		proto("Mover_Player$CheckCard", Mover_Player.CheckCard.class).type("Mover_Player$Rule").type("Behavior$Knol").set("check", new check_nunpse()).end();
+		proto("Mover_Player$Doubles", Mover_Player.Doubles.class).type("Mover_Player$Rule").type("Behavior$Knol").set("check", new check_natoc()).end();
 	}
 
 	private LocalDateTime asDate(String date){

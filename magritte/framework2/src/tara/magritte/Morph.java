@@ -1,6 +1,7 @@
 package tara.magritte;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class Morph {
 
@@ -15,30 +16,30 @@ public abstract class Morph {
         this.node = node;
     }
 
-    static <T extends Morph> String getClassName(Class<T> aClass) {
-        return aClass.getName().replace(aClass.getPackage().getName() + ".", "");
-    }
-
     public boolean is(String name) {
         return node.is(name);
     }
 
     public boolean is(Class<? extends Morph> aClass) {
-        return is(aClass.getName());
+        return is(getClassName(aClass));
     }
 
     public <T extends Morph> T as(Class<T> tClass) {
         return node.morph(tClass);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return o != null && (this.node == ((Morph) o).node);
-    }
+    public abstract List<Node> _components();
+
+    public abstract Map<String, Object> _variables();
 
     protected abstract void add(Node component);
 
     protected abstract void set(String name, Object object);
+
+    @Override
+    public boolean equals(Object o) {
+        return o != null && (this.node == ((Morph) o).node);
+    }
 
     protected Object link(NativeCode value) {
         if(value == null) return null;
@@ -48,9 +49,15 @@ public abstract class Morph {
         return value;
     }
 
-    public abstract List<Node> components();
-
     public Node node() {
         return node;
+    }
+
+    public void add(List<Node> components) {
+        components.forEach(this::add);
+    }
+
+    static <T extends Morph> String getClassName(Class<T> aClass) {
+        return aClass.getName().replace(aClass.getPackage().getName() + ".", "");
     }
 }

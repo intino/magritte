@@ -6,7 +6,9 @@ import tara.magritte.NativeCode;
 import tara.magritte.Node;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Card extends Morph {
 
@@ -37,9 +39,23 @@ public class Card extends Morph {
 		transport = value;
 	}
 
+    @Override
+    public List<Node> _components() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Map<String, Object> _variables() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("moveTo", moveTo);
+        map.put("transport", transport);
+        return map;
+    }
+
 	@Override
 	protected void add(Node component) {
 	}
+
 
 	@Override
 	protected void set(String name, Object object) {
@@ -47,15 +63,8 @@ public class Card extends Morph {
 		else if (name.equalsIgnoreCase("transport")) transport = (Movement) link((NativeCode) object);
 	}
 
-
-	@Override
-	public List<Node> components() {
-		return Collections.emptyList();
-	}
-
-	private class Transport_meme implements Movement, NativeCode {
+    private class Transport_meme implements Movement, NativeCode {
 		Card $;
-
 
 		@Override
 		public boolean involvesMovement() {

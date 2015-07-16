@@ -8,10 +8,7 @@ import tara.magritte.Morph;
 import tara.magritte.NativeCode;
 import tara.magritte.Node;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class Board extends Morph {
@@ -68,6 +65,22 @@ public class Board extends Morph {
     }
 
     @Override
+    public List<Node> _components() {
+        Set<Node> nodes = new LinkedHashSet<>();
+        squareList.stream().forEach(c -> nodes.add(c.node()));
+        return new ArrayList<>(nodes);
+    }
+
+    @Override
+    public Map<String, Object> _variables() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("squareAt", squareAt);
+        map.put("squareOf", squareOf);
+        map.put("positionOf", positionOf);
+        return map;
+    }
+
+    @Override
     protected void add(Node component) {
         if (component.is("Square")) squareList.add(component.morph(Square.class));
     }
@@ -77,13 +90,6 @@ public class Board extends Morph {
         if (name.equalsIgnoreCase("squareAt")) squareAt = (SquareAt) link((NativeCode) object);
         else if (name.equalsIgnoreCase("squareOf")) squareOf = (SquareOf) link((NativeCode) object);
         else if (name.equalsIgnoreCase("positionOf")) positionOf = (Position) link((NativeCode) object);
-    }
-
-    @Override
-    public List<Node> components() {
-        Set<Node> nodes = new HashSet<>();
-        squareList.stream().forEach(c -> nodes.add(c.node()));
-        return new ArrayList<>(nodes);
     }
 
     private static class SquareAt_meme implements SquareAt, NativeCode {

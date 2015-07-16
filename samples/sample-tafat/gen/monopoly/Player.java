@@ -4,7 +4,9 @@ import tara.magritte.Morph;
 import tara.magritte.Node;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Player extends Morph {
 
@@ -38,6 +40,19 @@ public class Player extends Morph {
     }
 
     @Override
+    public List<Node> _components() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Map<String, Object> _variables() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("id", id);
+        map.put("square", square);
+        return map;
+    }
+
+    @Override
     protected void add(Node component) {
     }
 
@@ -45,10 +60,5 @@ public class Player extends Morph {
     protected void set(String name, Object object) {
         if (name.equalsIgnoreCase("id")) id = (String) object;
         if (name.equalsIgnoreCase("square")) square = (Square) object;
-    }
-
-    @Override
-    public List<Node> components() {
-        return Collections.emptyList();
     }
 }

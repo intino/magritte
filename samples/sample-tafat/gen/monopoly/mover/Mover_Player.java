@@ -124,7 +124,30 @@ public class Mover_Player extends Mover {
     }
 
     @Override
+    public List<Node> _components() {
+        Set<Node> nodes = new LinkedHashSet<>();
+        ruleList.stream().forEach(rule -> nodes.add(rule.node()));
+        // Remove if you can find out that the type of all these lists are subs of the Rule
+        playerIsJailedList.stream().forEach(rule -> nodes.add(rule.node()));
+        jailAfterThreeDoublesList.stream().forEach(rule -> nodes.add(rule.node()));
+        advanceList.stream().forEach(rule -> nodes.add(rule.node()));
+        toJailWhenInGoToJailSquareList.stream().forEach(rule -> nodes.add(rule.node()));
+        checkCardList.stream().forEach(rule -> nodes.add(rule.node()));
+        doublesList.stream().forEach(rule -> nodes.add(rule.node()));
+        return new ArrayList<>(nodes);
+    }
+
+    @Override
+    public Map<String, Object> _variables() {
+        Map<String, Object> map = new LinkedHashMap<>(super._variables());
+        map.put("turnsToBeInJail", turnsToBeInJail);
+        map.put("numberOfRolls", numberOfRolls);
+        return map;
+    }
+
+    @Override
     protected void add(Node component) {
+        super.add(component);
         if (component.is("Mover_Player$Rule")) ruleList.add(component.morph(Rule.class));
         if (component.is("Mover_Player$PlayerIsJailed")) playerIsJailedList.add(component.morph(PlayerIsJailed.class));
         if (component.is("Mover_Player$JailAfterThreeDoubles")) jailAfterThreeDoublesList.add(component.morph(JailAfterThreeDoubles.class));
@@ -136,24 +159,9 @@ public class Mover_Player extends Mover {
 
     @Override
     protected void set(String name, Object object) {
-        if(name.equalsIgnoreCase("turnstobeinjail"))
-            turnsToBeInJail = (int) object;
-        else if(name.equalsIgnoreCase("numberofrolls"))
-            numberOfRolls = (int) object;
-    }
-
-    @Override
-    public List<Node> components() {
-        Set<Node> nodes = new HashSet<>();
-        ruleList.stream().forEach(rule -> nodes.add(rule.node()));
-        // Remove if you can find out that the type of all these lists are subs of the Rule
-        playerIsJailedList.stream().forEach(rule -> nodes.add(rule.node()));
-        jailAfterThreeDoublesList.stream().forEach(rule -> nodes.add(rule.node()));
-        advanceList.stream().forEach(rule -> nodes.add(rule.node()));
-        toJailWhenInGoToJailSquareList.stream().forEach(rule -> nodes.add(rule.node()));
-        checkCardList.stream().forEach(rule -> nodes.add(rule.node()));
-        doublesList.stream().forEach(rule -> nodes.add(rule.node()));
-        return new ArrayList<>(nodes);
+        super.set(name, object);
+        if(name.equalsIgnoreCase("turnstobeinjail")) turnsToBeInJail = (int) object;
+        else if(name.equalsIgnoreCase("numberofrolls")) numberOfRolls = (int) object;
     }
 
     public static abstract class Rule extends Morph {
@@ -169,19 +177,29 @@ public class Mover_Player extends Mover {
             set("check", ((Rule)morph).check);
         }
 
-        public abstract boolean check();
+        public boolean check() {
+            return check.check();
+        }
 
-        public abstract void check(Check value);
+        public void check(Check value) {
+            check = value;
+        }
 
         @Override
-        public List<Node> components() {
+        public List<Node> _components() {
             return Collections.emptyList();
         }
 
         @Override
+        public Map<String, Object> _variables() {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("check", check);
+            return map;
+        }
+
+        @Override
         protected void set(String name, Object object) {
-            if (name.equalsIgnoreCase("check"))
-                check = (Check) link((NativeCode) object);
+            if (name.equalsIgnoreCase("check")) check = (Check) link((NativeCode) object);
         }
 
         @Override
@@ -200,27 +218,6 @@ public class Mover_Player extends Mover {
             super(morph, node);
         }
 
-        @Override
-        protected void add(Node component) {
-        }
-
-        @Override
-        protected void set(String name, Object object) {
-            super.set(name, object);
-        }
-
-        @Override
-        public List<Node> components() {// Si tiene componentes propios, debiera añadirse al super
-            return super.components();
-        }
-
-        public boolean check() {
-            return check.check();
-        }
-
-        public void check(Check value) {
-            check = value;
-        }
     }
 
     public static class JailAfterThreeDoubles extends Rule {
@@ -233,27 +230,6 @@ public class Mover_Player extends Mover {
             super(morph, node);
         }
 
-        @Override
-        protected void add(Node component) {
-        }
-
-        @Override
-        protected void set(String name, Object object) {
-            super.set(name, object);
-        }
-
-        @Override
-        public List<Node> components() {// Si tiene componentes propios, debiera añadirse al super
-            return super.components();
-        }
-
-        public boolean check() {
-            return check.check();
-        }
-
-        public void check(Check value) {
-            check = value;
-        }
     }
 
     public static class Advance extends Rule {
@@ -265,27 +241,6 @@ public class Mover_Player extends Mover {
             super(morph, node);
         }
 
-        @Override
-        protected void add(Node component) {
-        }
-
-        @Override
-        protected void set(String name, Object object) {
-            super.set(name, object);
-        }
-
-        @Override
-        public List<Node> components() {// Si tiene componentes propios, debiera añadirse al super
-            return super.components();
-        }
-
-        public boolean check() {
-            return check.check();
-        }
-
-        public void check(Check value) {
-            check = value;
-        }
     }
 
     public static class ToJailWhenInGoToJailSquare extends Rule {
@@ -298,27 +253,6 @@ public class Mover_Player extends Mover {
             super(morph, node);
         }
 
-        @Override
-        protected void add(Node component) {
-        }
-
-        @Override
-        protected void set(String name, Object object) {
-            super.set(name, object);
-        }
-
-        @Override
-        public List<Node> components() {// Si tiene componentes propios, debiera añadirse al super
-            return super.components();
-        }
-
-        public boolean check() {
-            return check.check();
-        }
-
-        public void check(Check value) {
-            check = value;
-        }
     }
 
     public static class CheckCard extends Rule {
@@ -331,27 +265,6 @@ public class Mover_Player extends Mover {
             super(morph, node);
         }
 
-        @Override
-        protected void add(Node component) {
-        }
-
-        @Override
-        protected void set(String name, Object object) {
-            super.set(name, object);
-        }
-
-        @Override
-        public List<Node> components() {// Si tiene componentes propios, debiera añadirse al super
-            return super.components();
-        }
-
-        public boolean check() {
-            return check.check();
-        }
-
-        public void check(Check value) {
-            check = value;
-        }
     }
 
     public static class Doubles extends Rule {
@@ -364,26 +277,5 @@ public class Mover_Player extends Mover {
             super(morph, node);
         }
 
-        @Override
-        protected void add(Node component) {
-        }
-
-        @Override
-        protected void set(String name, Object object) {
-            super.set(name, object);
-        }
-
-        @Override
-        public List<Node> components() {// Si tiene componentes propios, debiera añadirse al super
-            return super.components();
-        }
-
-        public boolean check() {
-            return check.check();
-        }
-
-        public void check(Check value) {
-            check = value;
-        }
     }
 }

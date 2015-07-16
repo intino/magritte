@@ -61,7 +61,7 @@ public class TafatEngine {
     }
 
     private void run(Behavior behavior) {
-        behavior.actionList().stream().filter(Action::condition).forEach(Action::action);
+        behavior.actionList().stream().forEach(Action::action);
     }
 
     private long steps() {

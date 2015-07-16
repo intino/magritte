@@ -1,27 +1,20 @@
 package tara.magritte;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MorphFactory {
 
     private static Map<String, Class<? extends Morph>> morphMap = new HashMap<>();
-    private static List<String> abstractTypes = new ArrayList<>();
+    private static Set<String> abstractTypes = new LinkedHashSet<>();
     static{
         morphMap.put("root", Root.class);
-
-        abstractTypes.add("square");
-        abstractTypes.add("mover_player$rule");
-        abstractTypes.add("cards");
     }
 
     public static Morph newInstance(String type, Node node) {
-        if(morphMap.containsKey(type.toLowerCase()))
+        if(morphMap.containsKey(type))
             try {
-                return morphMap.get(type.toLowerCase()).getDeclaredConstructor(Node.class).newInstance(node);
+                return morphMap.get(type).getDeclaredConstructor(Node.class).newInstance(node);
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 e.printStackTrace();
             }
@@ -29,7 +22,7 @@ public class MorphFactory {
     }
 
     public static boolean isAbstract(String type){
-        return abstractTypes.contains(type.toLowerCase());
+        return abstractTypes.contains(type);
     }
 
     public static void register(String type, Class<? extends Morph> aClass) {

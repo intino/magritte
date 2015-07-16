@@ -4,9 +4,7 @@ import tara.magritte.Morph;
 import tara.magritte.NativeCode;
 import tara.magritte.Node;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 public class Behavior extends Facet {
@@ -22,7 +20,7 @@ public class Behavior extends Facet {
 
     public Behavior(Morph morph, Node node) {
         super(morph, node);
-        set("step", ((Behavior)morph).step);
+        set("step", ((Behavior) morph).step);
     }
 
     public int step() {
@@ -58,10 +56,27 @@ public class Behavior extends Facet {
     }
 
     @Override
+    public List<Node> _components() {
+        Set<Node> nodes = new LinkedHashSet<>(super._components());
+        startList.stream().forEach(rule -> nodes.add(rule.node()));
+        actionList.stream().forEach(rule -> nodes.add(rule.node()));
+        knolList.stream().forEach(rule -> nodes.add(rule.node()));
+        return new ArrayList<>(nodes);
+    }
+
+    @Override
+    public Map<String, Object> _variables() {
+        Map<String, Object> map = new LinkedHashMap<>(super._variables());
+        map.put("step", step);
+        return map;
+    }
+
+    @Override
     protected void add(Node component) {
+        super.add(component);
         if (component.is("Action")) actionList.add(component.morph(Action.class));
-        if (component.is("Start")) startList.add(component.morph(Start.class));
-        if (component.is("Knol")) knolList.add(component.morph(Knol.class));
+        if (component.is("Behavior$Start")) startList.add(component.morph(Start.class));
+        if (component.is("Behavior$Knol")) knolList.add(component.morph(Knol.class));
     }
 
     @Override
@@ -92,18 +107,24 @@ public class Behavior extends Facet {
         }
 
         @Override
+        public List<Node> _components() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public Map<String, Object> _variables() {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("start", start);
+            return map;
+        }
+
+        @Override
         protected void add(Node component) {
         }
 
         @Override
         protected void set(String name, Object object) {
-            if (name.equalsIgnoreCase("start"))
-                start = (tafat.natives.Action) link((NativeCode) object);
-        }
-
-        @Override
-        public List<Node> components() {
-            return Collections.emptyList();
+            if (name.equalsIgnoreCase("start")) start = (tafat.natives.Action) link((NativeCode) object);
         }
     }
 
@@ -117,16 +138,21 @@ public class Behavior extends Facet {
         }
 
         @Override
+        public List<Node> _components() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public Map<String, Object> _variables() {
+            return Collections.emptyMap();
+        }
+
+        @Override
         protected void add(Node component) {
         }
 
         @Override
         protected void set(String name, Object object) {
-        }
-
-        @Override
-        public List<Node> components() {
-            return Collections.emptyList();
         }
     }
 }

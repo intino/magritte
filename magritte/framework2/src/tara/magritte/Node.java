@@ -1,17 +1,14 @@
 package tara.magritte;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Node {
 
     protected final String name;
-    final Set<String> types = new HashSet<>();
-    final List<Morph> morphs = new ArrayList<>(1);
+    protected final Set<String> types = new LinkedHashSet<>();
+    protected final List<Morph> morphs = new ArrayList<>();
     Node owner;
 
     public Node() {
@@ -25,30 +22,38 @@ public class Node {
     public Node(Node node, Node owner) {
         this.name = node.name;
         this.owner = owner;
-        node.types.forEach(types::add);
-        node.morphs.forEach(m -> {
-            try {
-                morphs.add(m.getClass().getDeclaredConstructor(Morph.class, Node.class).newInstance(m, this));
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
-        components().forEach(c -> morphs.forEach(m -> m.add(new Node(c, this))));
+        this.types.addAll(node.types);
+        this.morphs.addAll(node.morphs.stream().map((morph) -> cloneMorph(morph, node)).collect(Collectors.toList()));
+        node.components().forEach(c -> morphs.forEach(m -> m.add(new Node(c, this))));
     }
 
-    private List<Node> components() {
-        Set<Node> nodes = new HashSet<>();
-        morphs.forEach(m -> m.components().forEach(nodes::add));
+    public List<String> types() {
+        List<String> types = new ArrayList<>(this.types);
+        Collections.reverse(types);
+        return types;
+    }
+
+    private Morph cloneMorph(Morph morph, Node node) {
+        try {
+            Morph instance = morph.getClass().getDeclaredConstructor(Morph.class, Node.class).newInstance(morph, this);
+            instance.add(node.components());
+            return instance;
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    List<Node> components() {
+        Set<Node> nodes = new LinkedHashSet<>();
+        morphs.forEach(m -> m._components().forEach(nodes::add));
         return new ArrayList<>(nodes);
     }
 
     public void add(String type) {
-        if(is(type)) return;
-        if (MorphFactory.isAbstract(type)) {
-            types.add(type);
-            return;
-        }
-        this.morphs.add(MorphFactory.newInstance(type, this));
+        if (is(type)) return;
+        if (!MorphFactory.isAbstract(type)) this.morphs.add(0, MorphFactory.newInstance(type, this));
+        types.add(type);
     }
 
     public void remove(Morph morph) {
@@ -81,14 +86,7 @@ public class Node {
     }
 
     public boolean is(String type) {
-        for (Morph morph : morphs)
-            if (morph.type.equalsIgnoreCase(type))
-                return true;
-        for (String abstractType : types)
-            if (abstractType.equalsIgnoreCase(type)) {
-                return true;
-            }
-        return false;
+        return types.contains(type);
     }
 
     public <T extends Morph> List<T> components(Class<T> aClass) {
@@ -105,9 +103,9 @@ public class Node {
 
     @SuppressWarnings("unchecked")
     public <T extends Morph> T morph(Class<T> morph) {
-        for (Morph morph1 : morphs)
-            if (morph.isAssignableFrom(morph1.getClass()))
-                return (T) morph1;
+        for (Morph aMorph : morphs)
+            if (morph.isAssignableFrom(aMorph.getClass()))
+                return (T) aMorph;
         return null;
     }
 

@@ -7,9 +7,7 @@ import tara.magritte.Morph;
 import tara.magritte.NativeCode;
 import tara.magritte.Node;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Dices extends Morph {
 
@@ -77,6 +75,22 @@ public class Dices extends Morph {
 		this.value = value;
 	}
 
+    @Override
+    public List<Node> _components() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Map<String, Object> _variables() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("value1", value1);
+        map.put("value2", value2);
+        map.put("roll", roll);
+        map.put("doubles", doubles);
+        map.put("value", value);
+        return map;
+    }
+
 	@Override
 	protected void add(Node component) {
 	}
@@ -90,12 +104,7 @@ public class Dices extends Morph {
 		else if (name.equalsIgnoreCase("value")) value = (Value) link((NativeCode) object);
 	}
 
-	@Override
-	public List<Node> components() {
-		return Collections.emptyList();
-	}
-
-	public static class roll_meme implements Roll, NativeCode {
+    public static class roll_meme implements Roll, NativeCode {
 		Dices $;
 
 		@Override

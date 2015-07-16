@@ -1,18 +1,19 @@
 package tafat;
 
-import tara.magritte.Expression;
 import tara.magritte.Morph;
 import tara.magritte.Node;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Simulation extends Morph {
 
-    LocalDateTime from;
-    LocalDateTime to;
+    protected LocalDateTime from;
+    protected LocalDateTime to;
 
     public Simulation(Node node) {
         super(node);
@@ -39,19 +40,25 @@ public class Simulation extends Morph {
     }
 
     @Override
+    public List<Node> _components() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Map<String, Object> _variables() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("from", from);
+        map.put("to", to);
+        return map;
+    }
+
+    @Override
     protected void add(Node component) {
     }
 
     @Override
     protected void set(String name, Object object) {
-        if(name.equalsIgnoreCase("from"))
-            from = (LocalDateTime) object;
-        else if(name.equalsIgnoreCase("to"))
-            to = (LocalDateTime) object;
-    }
-
-    @Override
-    public List<Node> components() {
-        return Collections.emptyList();
+        if (name.equalsIgnoreCase("from")) from = (LocalDateTime) object;
+        else if (name.equalsIgnoreCase("to")) to = (LocalDateTime) object;
     }
 }

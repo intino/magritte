@@ -7,27 +7,29 @@ import tara.magritte.NativeCode;
 import tara.magritte.Node;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Action extends Morph {
 
-	protected Check check;
-	protected tafat.natives.Action action;
+    protected Check check;
+    protected tafat.natives.Action action;
 
-	public Action(Node node) {
-		super(node);
+    public Action(Node node) {
+        super(node);
         set("check", new Check_meme());
     }
 
-	public Action(Morph morph, Node node) {
-		super(morph, node);
+    public Action(Morph morph, Node node) {
+        super(morph, node);
         set("check", ((Action) morph).check);
-		set("action", ((Action) morph).action);
-	}
+        set("action", ((Action) morph).action);
+    }
 
-	public boolean condition() {
-		return check.check();
-	}
+    public boolean condition() {
+        return check.check();
+    }
 
     public void condition(Check value) {
         check = value;
@@ -37,41 +39,49 @@ public class Action extends Morph {
         action.execute();
     }
 
-	public void action(tafat.natives.Action value) {
-		action = value;
-	}
+    public void action(tafat.natives.Action value) {
+        action = value;
+    }
 
-	@Override
-	protected void add(Node component) {
-	}
+    @Override
+    public List<Node> _components() {
+        return Collections.emptyList();
+    }
 
-	@Override
-	protected void set(String name, Object object) {
-		if (name.equalsIgnoreCase("check")) check = (Check) link((NativeCode) object);
-		else if (name.equalsIgnoreCase("action")) action = (tafat.natives.Action) link((NativeCode) object);
-	}
+    @Override
+    public Map<String, Object> _variables() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("check", check);
+        map.put("action", action);
+        return map;
+    }
 
-	@Override
-	public List<Node> components() {
-		return Collections.emptyList();
-	}
+    @Override
+    protected void add(Node component) {
+    }
 
-	public static class Check_meme implements Check, NativeCode {
-		Action $;
+    @Override
+    protected void set(String name, Object object) {
+        if (name.equalsIgnoreCase("check")) check = (Check) link((NativeCode) object);
+        else if (name.equalsIgnoreCase("action")) action = (tafat.natives.Action) link((NativeCode) object);
+    }
 
-		@Override
-		public boolean check() {
-			return true;
-		}
+    public static class Check_meme implements Check, NativeCode {
+        Action $;
 
-		@Override
-		public void set(Morph context) {
+        @Override
+        public boolean check() {
+            return true;
+        }
+
+        @Override
+        public void set(Morph context) {
             $ = (Action) context;
-		}
+        }
 
-		@Override
-		public Class<? extends Morph> $Class() {
-			return Action.class;
-		}
-	}
+        @Override
+        public Class<? extends Morph> $Class() {
+            return Action.class;
+        }
+    }
 }

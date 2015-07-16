@@ -2,7 +2,6 @@ package magritte.ontology;
 
 import tafat.*;
 import tara.magritte.Box;
-import tara.magritte.MorphFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,16 +17,14 @@ public class TafatMain extends Box {
 
     @Override
     public void write() {
-        registerTypes();
-    }
-
-    private void registerTypes() {
-        MorphFactory.register("facet", Facet.class);
-        MorphFactory.register("entity", Entity.class);
-        MorphFactory.register("behavior$start", Behavior.Start.class);
-        MorphFactory.register("action", Action.class);
-        MorphFactory.register("behavior$knol", Behavior.Knol.class);
-        MorphFactory.register("simulation", Simulation.class);
+        def("Simulation", Simulation.class).type("Concept").end();
+        def("Entity", Entity.class).type("Concept").allowsMultiple("Entity", "Entity$Feature").end();
+        def("Entity$Feature", Entity.Feature.class).type("Concept").end();
+        abstractDef("Facet", Facet.class).type("Concept").end();
+        def("Behavior", Behavior.class).type("Concept").type("Facet").allowsSingle("Behavior$Start", "Action", "TableFunction", "PointSet", "Job", "Map").allowsMultiple("Behavior.Knol", "EquationSystem", "StateChart", "Task").end();
+        def("Behavior$Start", Behavior.Start.class).type("Concept").end();
+        def("Behavior$Knol", Behavior.Knol.class).type("Concept").end();
+        def("Action", Action.class).type("Concept").end();
     }
 
 }

@@ -6,7 +6,9 @@ import tara.magritte.Node;
 import monopoly.natives.Count;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Square extends Morph {
 
@@ -42,6 +44,19 @@ public abstract class Square extends Morph {
     }
 
     @Override
+    public List<Node> _components() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Map<String, Object> _variables() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("count", count);
+        map.put("increment", increment);
+        return map;
+    }
+
+    @Override
     protected void add(Node component) {
     }
 
@@ -49,11 +64,6 @@ public abstract class Square extends Morph {
     protected void set(String name, Object object) {
         if (name.equalsIgnoreCase("count")) count = (int) object;
         else if (name.equalsIgnoreCase("increment")) increment = (Count) link((NativeCode) object);
-    }
-
-    @Override
-    public List<Node> components() {
-        return Collections.emptyList();
     }
 
     public static class increment_meme implements Count, NativeCode {
