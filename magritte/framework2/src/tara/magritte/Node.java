@@ -44,10 +44,16 @@ public class Node {
         return null;
     }
 
-    List<Node> components() {
+    public List<Node> components() {
         Set<Node> nodes = new LinkedHashSet<>();
-        morphs.forEach(m -> m._components().forEach(nodes::add));
+        morphs.forEach(m -> nodes.addAll(m._components()));
         return new ArrayList<>(nodes);
+    }
+
+    public Map<String, Object> variables() {
+        Map<String, Object> variables = new HashMap<>();
+        morphs.forEach(m -> variables.putAll(m._variables()));
+        return variables;
     }
 
     public void add(String type) {

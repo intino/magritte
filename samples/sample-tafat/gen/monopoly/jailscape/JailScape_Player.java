@@ -19,7 +19,7 @@ public class JailScape_Player extends JailScape {
     }
 
     public JailScape_Player(Morph morph, Node node) {
-        super(morph, node)
+        super(morph, node);
         _player = node.morph(Player.class);;
     }
 

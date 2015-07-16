@@ -2,22 +2,28 @@ package org.tafat;
 
 import magritte.ontology.PlayGameMain;
 import monopoly.*;
+import org.junit.Before;
 import tafat.Simulation;
 import tafat.Tafat;
 import tara.magritte.Node;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class Test {
-
-    @org.junit.Test
-    public void checkTypes() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         Node node = new Node();
         PlayGameMain.box.load(node);
         Tafat.use(node);
         Monopoly.use(node);
+    }
 
+    @org.junit.Test
+    public void checkTypes() throws Exception {
         Simulation simulation = Tafat.simulation();
         assertEquals(1, simulation.node().types().size());
         assertTrue(simulation.node().types().contains("Simulation"));
@@ -49,5 +55,26 @@ public class Test {
         assertTrue(player.node().types().contains("Mover"));
         assertTrue(player.node().types().contains("Behavior"));
         assertTrue(player.node().types().contains("Facet"));
+    }
+
+    @org.junit.Test
+    public void checkVariables() throws Exception {
+        Simulation simulation = Tafat.simulation();
+        assertEquals(2, simulation.node().variables().size());
+        assertEquals(asDate("01/01/2015 00:00:00"), simulation.node().variables().get("from"));
+        assertEquals(asDate("02/01/2015 00:00:00"), simulation.node().variables().get("to"));
+
+        Dices dices = Monopoly.dices();
+
+
+        Board board = Monopoly.board();
+
+        Card card = Monopoly.luckyCards().card(0);
+
+        Player player = Monopoly.player(0);
+    }
+
+    private LocalDateTime asDate(String date) {
+        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     }
 }
