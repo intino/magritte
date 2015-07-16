@@ -10,15 +10,26 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class JailScape extends Morph {
+    Behavior _type;
     Modes[] modes;
 
     public JailScape(Node node) {
         super(node);
+        _type = node.morph(Behavior.class);
     }
 
     public JailScape(Morph morph, Node node) {
         super(morph, node);
-        set("modes", ((JailScape)morph).modes);
+        _type = node.morph(Behavior.class);
+        set("modes", ((JailScape) morph).modes);
+    }
+
+    public int step() {
+        return _type.step();
+    }
+
+    public void step(Integer value) {
+        _type.step(value);
     }
 
     public Modes[] modes() {
@@ -47,7 +58,7 @@ public abstract class JailScape extends Morph {
 
     @Override
     protected void set(String name, Object object) {
-        if(name.equalsIgnoreCase("modes")) modes = (Modes[]) object;
+        if (name.equalsIgnoreCase("modes")) modes = (Modes[]) object;
     }
 
     public enum Modes {

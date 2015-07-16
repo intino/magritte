@@ -1,5 +1,6 @@
 package monopoly.mover;
 
+import tafat.Behavior;
 import tara.magritte.Morph;
 import tara.magritte.Node;
 
@@ -9,13 +10,24 @@ import java.util.Map;
 
 public abstract class Mover extends Morph {
 
+    Behavior _type;
 
     public Mover(Node node) {
         super(node);
+        _type = node.morph(Behavior.class);
     }
 
     public Mover(Morph morph, Node node) {
         super(morph, node);
+        _type = node.morph(Behavior.class);
+    }
+
+    public int step() {
+        return _type.step();
+    }
+
+    public void step(Integer value) {
+        _type.step(value);
     }
 
     @Override
