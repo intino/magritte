@@ -2,8 +2,8 @@ package tara.compiler.core.operation;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
+import tara.Stash;
 import tara.builder.StashException;
-import tara.compiler.model.impl.Stash;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

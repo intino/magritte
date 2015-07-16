@@ -9,11 +9,11 @@ import tara.compiler.core.errorcollection.message.Message;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ImportDataOperation extends SourceUnitOperation {
-	private static final Logger LOG = Logger.getLogger(ImportDataOperation.class.getName());
+public class BuildModelOperation extends SourceUnitOperation {
+	private static final Logger LOG = Logger.getLogger(BuildModelOperation.class.getName());
 	private final ErrorCollector errorCollector;
 
-	public ImportDataOperation(ErrorCollector errorCollector) {
+	public BuildModelOperation(ErrorCollector errorCollector) {
 		this.errorCollector = errorCollector;
 	}
 

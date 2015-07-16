@@ -7,7 +7,7 @@ import tara.compiler.core.operation.SrcToClassOperation;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.core.operation.module.MergeToModelOperation;
 import tara.compiler.core.operation.module.ModuleUnitOperation;
-import tara.compiler.core.operation.sourceunit.ImportDataOperation;
+import tara.compiler.core.operation.sourceunit.BuildModelOperation;
 import tara.compiler.core.operation.sourceunit.MarkOperation;
 import tara.compiler.core.operation.sourceunit.ParseOperation;
 import tara.compiler.core.operation.sourceunit.SourceUnitOperation;
@@ -30,7 +30,7 @@ public class CompilationUnit extends ProcessingUnit {
 		for (int i = 0; i < this.phaseOperations.length; i++)
 			this.phaseOperations[i] = new LinkedList();
 		addPhaseOperation(new ParseOperation(this.errorCollector), Phases.PARSING);
-		addPhaseOperation(new ImportDataOperation(this.errorCollector), Phases.CONVERSION);
+		addPhaseOperation(new BuildModelOperation(this.errorCollector), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
 		addPhaseOperation(new ModelToStashOperation(this), Phases.STASH_GENERATION);
 	}
