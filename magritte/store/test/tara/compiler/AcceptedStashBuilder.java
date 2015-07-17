@@ -84,9 +84,9 @@ public class AcceptedStashBuilder {
 
 	@Test
 	public void should_build_stash_with_many_entries() {
-		new StashBuilder(new File(home)).build("06", Charset.forName("UTF-8"));
-		assertThat("Temperature.stash exists", new File(home, "06.stash").exists());
-		assertThat(stashFrom(new File(home, "06.stash")).entries.length, is(9));
+		new StashBuilder(new File(home)).build("ManyEntries", Charset.forName("UTF-8"));
+		assertThat("Temperature.stash exists", new File(home, "Entries.stash").exists());
+		assertThat(stashFrom(new File(home, "Entries.stash")).entries.length, is(9));
 	}
 
 	@Test
