@@ -1,0 +1,9 @@
+<settings>
+  <modules>
+    <module id="framework2" dir="magritte/framework2"/>
+    <module id="store" dir="magritte/store"/>
+    <module id="plugin" dir="language/plugin"/>
+    <module id="plugin-jps" dir="language/plugin-jps"/>
+  </modules>
+</settings> 
+ 
