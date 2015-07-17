@@ -1,8 +1,8 @@
 package tara.compiler.core.operation;
 
-import tara.Entry;
-import tara.Stash;
-import tara.Var;
+import tara.io.Entry;
+import tara.io.Stash;
+import tara.io.Var;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.operation.model.ModelOperation;

@@ -3,14 +3,16 @@ package tara.compiler;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import tara.Entry;
-import tara.Stash;
+import tara.io.Entry;
+import tara.io.Stash;
 import tara.builder.StashBuilder;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -27,6 +29,13 @@ public class AcceptedStashBuilder {
 	@Before
 	public void setUp() throws Exception {
 		home = new File("test.res").getAbsolutePath();
+	}
+
+	@After
+	public void deleteStashes() throws Exception {
+		for (File file : new File(home).listFiles((dir, name) -> name.endsWith(".stash"))) {
+			file.delete();
+		}
 	}
 
 	@Test
@@ -58,9 +67,9 @@ public class AcceptedStashBuilder {
 
 	@Test
 	public void should_transform_instant_to_date() {
-		new StashBuilder(new File(home)).build("Data", Charset.forName("UTF-8"));
-		assertThat("Data.stash exists", new File(home, "Temperature.stash").exists());
-		Stash stash = stashFrom(new File(home, "Data.stash"));
+		new StashBuilder(new File(home)).build("Instant", Charset.forName("UTF-8"));
+		assertThat("Data.stash exists", new File(home, "Instant.stash").exists());
+		Stash stash = stashFrom(new File(home, "Instant.stash"));
 		assertThat(stash.entries.length, is(1));
 		assertThat(stash.entries[0].vars.length, is(4));
 		assertThat(stash.entries[0].vars[0].v, instanceOf(long.class));
@@ -71,6 +80,13 @@ public class AcceptedStashBuilder {
 		new StashBuilder(new File(home)).build("Temperature", Charset.forName("UTF-8"));
 		assertThat("Temperature.stash exists", new File(home, "Temperature.stash").exists());
 		assertThat(stashFrom(new File(home, "Temperature.stash")).entries.length, is(9));
+	}
+
+	@Test
+	public void should_build_stash_with_many_entries() {
+		new StashBuilder(new File(home)).build("06", Charset.forName("UTF-8"));
+		assertThat("Temperature.stash exists", new File(home, "06.stash").exists());
+		assertThat(stashFrom(new File(home, "06.stash")).entries.length, is(9));
 	}
 
 	@Test

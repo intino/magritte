@@ -13,14 +13,14 @@ Board board
     GoToJail s30; Terrain s31; Terrain s32; Community s33; Terrain s34; Station s35; Luck s36; Terrain s37; Taxes s38; Terrain s39
 
 LuckyCards
-    Card; Card; Card(24); Card(0); Card; Card(39); Card; Card; Card
-    Card(11); Card(15); Card; Card(10); Card(-3); Card; Card
+    Card; Card; Card(moveTo = 24); Card(moveTo = 0); Card; Card(moveTo = 39); Card; Card; Card
+    Card(moveTo = 11); Card(moveTo = 15); Card; Card(moveTo = 10); Card(moveTo = -3); Card; Card
 
 CommunityCards
-    Card; Card; Card; Card; Card; Card; Card; Card; Card(0)
-    Card(1); Card; Card; Card; Card; Card(10); Card
+    Card; Card; Card; Card; Card; Card; Card; Card; Card(moveTo = 0)
+    Card(moveTo = 1); Card; Card; Card; Card; Card(moveTo = 10); Card
 
 Player(id = "p1") p1 > as Mover
-Player("p2") > as Mover
-Player("p3") > as Mover
-Player("p4") > as Mover
+Player(id = "p2") > as Mover
+Player(id = "p3") > as Mover
+Player(id = "p4") > as Mover
