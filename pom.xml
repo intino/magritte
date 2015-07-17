@@ -16,8 +16,12 @@
   </properties>
 
   <modules>
-    <module>framework2</module>
-    <module>store</module>
+    <module>ide/language</module>
+    <module>ide/plugin</module>
+    <module>ide/rt</module>
+    <module>ide/rt-constants</module>
+    <module>magritte/false-mirror</module>
+    <module>magritte/store</module>
   </modules>
 
   <dependencies>
