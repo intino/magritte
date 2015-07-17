@@ -4,6 +4,6 @@
 /dist
 .directory
 /magritte/store/target
-/magritte/framework2/target
-/language/plugin/target
-/language/plugin-jps/target
+/magritte/false-mirror/target
+/ide/plugin/target
+/ide/plugin-jps/target
