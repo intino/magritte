@@ -34,13 +34,13 @@ def type(node) trigger(assign)
 end
 
 def type(node) type(single) trigger(getter)
-    public static $qn+reference $name+firstLoweCase() {
+    public static $qn+reference $name+firstLowerCase() {
         return $name+firstLowerCase;
     }
 end
 
 def type(node) trigger(getter)
-    public static List<$qn+reference> $name+firstLoweCase~List() {
+    public static List<$qn+reference> $name+firstLowerCase~List() {
         return $name+firstLowerCase~List;
     }
 end

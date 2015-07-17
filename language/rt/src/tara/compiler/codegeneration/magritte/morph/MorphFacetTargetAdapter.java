@@ -4,27 +4,18 @@ import org.siani.itrules.Adapter;
 import org.siani.itrules.model.Frame;
 import tara.compiler.codegeneration.magritte.Generator;
 import tara.compiler.codegeneration.magritte.TemplateTags;
-import tara.compiler.model.NodeImpl;
-import tara.compiler.model.NodeReference;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
 import tara.language.model.NodeContainer;
 
-import java.util.List;
-
-import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
 import static tara.compiler.codegeneration.magritte.NameFormatter.getQnOfFacet;
 
 public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetTarget>, TemplateTags {
-	private final String project;
 	private final String generatedLanguage;
-	private final int modelLevel;
 	private FrameContext<FacetTarget> context;
 
-	public MorphFacetTargetAdapter(String project, String generatedLanguage, int modelLevel) {
-		this.project = project;
+	public MorphFacetTargetAdapter(String generatedLanguage) {
 		this.generatedLanguage = generatedLanguage;
-		this.modelLevel = modelLevel;
 	}
 
 	@Override
@@ -32,20 +23,29 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 		this.context = context;
 		frame.addTypes("nodeimpl");
 		addFacetTargetInfo(target, frame);
-		addComponents(target, frame, context);
+		addComponents(frame, target, context);
+		addTargetComponents(target, frame, context);
 	}
 
 	private void addFacetTargetInfo(FacetTarget target, Frame frame) {
 		addName(target, frame);
 		addParent(target, frame);
+		addFacetTarget(target, frame);
 		addVariables(target, frame);
-		addComponents(target, frame);
-		addComponents(target.targetNode().components(), frame);
+	}
+
+	private void addFacetTarget(FacetTarget target, Frame frame) {
+		final Frame facetTargetFrame = new Frame();
+		facetTargetFrame.addTypes(FACET_TARGET);
+		facetTargetFrame.addFrame(NAME, target.targetNode().name());
+		facetTargetFrame.addFrame(QN, target.targetNode().qualifiedName());
+		facetTargetFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage);
+		frame.addFrame(FACET_TARGET, facetTargetFrame);
 	}
 
 	private void addName(FacetTarget node, Frame frame) {
 		frame.addFrame(NAME, ((Node) node.container()).name() + "_" + node.targetNode().name());
-		frame.addFrame(QN, node.targetNode().qualifiedName()).addFrame(PROJECT, project);
+		frame.addFrame(QN, node.targetNode().qualifiedName());
 	}
 
 	private void addParent(FacetTarget target, Frame newFrame) {
@@ -56,58 +56,27 @@ public class MorphFacetTargetAdapter extends Generator implements Adapter<FacetT
 	protected void addVariables(FacetTarget target, final Frame frame) {
 		target.variables().stream().
 			filter(variable -> !variable.isInherited()).
-			forEach(variable -> frame.addFrame(VARIABLE, context.build(variable)));
+			forEach(variable -> {
+				final Frame varFrame = (Frame) context.build(variable);
+				varFrame.addTypes("owner");
+				frame.addFrame(VARIABLE, varFrame);
+			});
 		target.targetNode().variables().stream().
 			filter(variable -> !variable.isInherited()).
-			forEach(variable -> frame.addFrame(VARIABLE, context.build(variable)));
+			forEach(variable -> {
+				final Frame varFrame = (Frame) context.build(variable);
+				varFrame.addTypes("target");
+				frame.addFrame(VARIABLE, varFrame);
+			});
 	}
 
-	private void addComponents(FacetTarget target, Frame frame) {
-		for (Node include : target.components()) {
-			if (include.isAnonymous()) continue;
-			Frame includeFrame = new Frame().addTypes(TypesProvider.getTypesOfReference(include));
-			if (isDefinition(include, modelLevel) && !isDefinition(target.targetNode(), modelLevel))
-				includeFrame.addFrame(DEFINITION, "");
-			if (!isDefinition(target.targetNode(), modelLevel)) includeFrame.addFrame(DEFINITION_AGGREGABLE, "");
-			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-			if (include instanceof NodeReference) {
-				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
-				addNodeReferenceName((NodeReference) include, includeFrame);
-			} else if (include instanceof NodeImpl)
-				addName(include, includeFrame);
-			frame.addFrame(COMPONENT, includeFrame);
-		}
+	private void addTargetComponents(FacetTarget target, Frame frame, FrameContext<FacetTarget> context) {
+		target.targetNode().components().stream().
+			forEach(node -> {
+				final Frame nodeFrame = (Frame) context.build(node);
+				nodeFrame.addTypes("target");
+				frame.addFrame(NODE, nodeFrame);
+			});
 	}
-
-	private void addComponents(List<? extends Node> targetIncludes, Frame frame) {
-		for (Node include : targetIncludes) {
-			if (include.isAnonymous()) continue;
-			Frame includeFrame = new Frame().addTypes(TypesProvider.getTypesOfReference(include));
-			if (isDefinition(include, modelLevel) && !isDefinition(include, modelLevel))
-				includeFrame.addFrame(DEFINITION, "");
-			if (!isDefinition(include, modelLevel)) includeFrame.addFrame(DEFINITION_AGGREGABLE, "");
-			includeFrame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-			if (include instanceof NodeReference) {
-				if (!((NodeReference) include).isHas() || include.isAnonymous()) continue;
-				addNodeReferenceName((NodeReference) include, includeFrame);
-			} else if (include instanceof NodeImpl)
-				addName(include, includeFrame);
-			frame.addFrame(COMPONENT, includeFrame);
-		}
-	}
-
-	private void addName(Node node, Frame frame) {
-		if (node.name() != null && !node.name().isEmpty())
-			frame.addFrame(NAME, node.isAnonymous() ? node.type() : node.name());
-		frame.addFrame(QN, node.qualifiedName()).addFrame(PROJECT, project);
-	}
-
-	private void addNodeReferenceName(NodeReference node, Frame frame) {
-		NodeImpl reference = node.getDestiny();
-		frame.addFrame(NAME, reference.name());
-		frame.addFrame(QN, getQn(reference, generatedLanguage));
-		frame.addFrame(PROJECT, project);
-	}
-
 
 }

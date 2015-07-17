@@ -4,18 +4,16 @@ import tafat.Behavior;
 import tara.magritte.Morph;
 import tara.magritte.Node;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class JailScape extends Morph {
     Behavior _type;
-    Modes[] modes;
+    List<Modes> modes;
 
     public JailScape(Node node) {
         super(node);
         _type = node.morph(Behavior.class);
+        set("modes", Arrays.asList(Modes.Card, Modes.Money));
     }
 
     public JailScape(Morph morph, Node node) {
@@ -32,12 +30,12 @@ public abstract class JailScape extends Morph {
         _type.step(value);
     }
 
-    public Modes[] modes() {
+    public List<Modes> modes() {
         return modes;
     }
 
     public void Modes(Modes... values) {
-        modes = values;
+	    modes = Arrays.asList(values);
     }
 
     @Override
@@ -58,7 +56,7 @@ public abstract class JailScape extends Morph {
 
     @Override
     protected void set(String name, Object object) {
-        if (name.equalsIgnoreCase("modes")) modes = (Modes[]) object;
+        if (name.equalsIgnoreCase("modes")) modes = (List<Modes>) object;
     }
 
     public enum Modes {

@@ -28,10 +28,9 @@ public class MorphFrameCreator implements TemplateTags {
 	public MorphFrameCreator(String project, String generatedLanguage, Language language, int modelLevel) {
 		this.generatedLanguage = generatedLanguage;
 		builder.register(Node.class, morphNodeAdapter = new MorphNodeAdapter(generatedLanguage, language, initNode));
-		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(project, generatedLanguage, modelLevel));
+		builder.register(FacetTarget.class, new MorphFacetTargetAdapter(generatedLanguage));
 		builder.register(Variable.class, new MorphVariableAdapter(generatedLanguage, language, modelLevel));
 		builder.register(Parameter.class, new MorphNativeParameterAdapter(generatedLanguage, language));
-//		builder.register(Allow.Parameter.class, new MorphNativeParameterAdapter(generatedLanguage, language, modelLevel));
 	}
 
 	public MorphFrameCreator(CompilerConfiguration conf) {
@@ -67,7 +66,7 @@ public class MorphFrameCreator implements TemplateTags {
 	}
 
 	private String addPackage(Frame frame, Node node) {
-		String packagePath = NameFormatter.composeMorphPackagePath(generatedLanguage) + (node.isFacet() ? DOT + node.name().toLowerCase() : "");
+		String packagePath = generatedLanguage.toLowerCase() + (node.isFacet() ? DOT + node.name().toLowerCase() : "");
 		if (!packagePath.isEmpty()) frame.addFrame(PACKAGE, packagePath);
 		return packagePath;
 	}

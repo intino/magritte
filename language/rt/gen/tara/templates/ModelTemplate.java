@@ -23,8 +23,8 @@ public class ModelTemplate extends Template {
 			rule().add((condition("type", "node")), (condition("trigger", "declaration"))).add(literal("private static List<")).add(mark("qn", "reference")).add(literal("> ")).add(mark("name", "firstLowerCase")).add(literal("List;")),
 			rule().add((condition("type", "node")), (condition("type", "single")), (condition("trigger", "assign"))).add(mark("name", "firstLowerCase")).add(literal(" = node.components(")).add(mark("qn", "reference")).add(literal(".class).get(0);")),
 			rule().add((condition("type", "node")), (condition("trigger", "assign"))).add(mark("name", "firstLowerCase")).add(literal("List = node.components(")).add(mark("qn", "reference")).add(literal(".class);")),
-			rule().add((condition("type", "node")), (condition("type", "single")), (condition("trigger", "getter"))).add(literal("public static ")).add(mark("qn", "reference")).add(literal(" ")).add(mark("name", "firstLoweCase")).add(literal("() {\n    return ")).add(mark("name", "firstLowerCase")).add(literal(";\n}")),
-			rule().add((condition("type", "node")), (condition("trigger", "getter"))).add(literal("public static List<")).add(mark("qn", "reference")).add(literal("> ")).add(mark("name", "firstLoweCase")).add(literal("List() {\n    return ")).add(mark("name", "firstLowerCase")).add(literal("List;\n}"))
+			rule().add((condition("type", "node")), (condition("type", "single")), (condition("trigger", "getter"))).add(literal("public static ")).add(mark("qn", "reference")).add(literal(" ")).add(mark("name", "firstLowerCase")).add(literal("() {\n    return ")).add(mark("name", "firstLowerCase")).add(literal(";\n}")),
+			rule().add((condition("type", "node")), (condition("trigger", "getter"))).add(literal("public static List<")).add(mark("qn", "reference")).add(literal("> ")).add(mark("name", "firstLowerCase")).add(literal("List() {\n    return ")).add(mark("name", "firstLowerCase")).add(literal("List;\n}"))
 		);
 		return this;
 	}

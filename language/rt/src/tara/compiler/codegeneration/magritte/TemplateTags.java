@@ -11,6 +11,7 @@ public interface TemplateTags {
 	String CONTRACT = "contract";
 	String LOCALE = "locale";
 	String QN = "qn";
+	String OWNER = "owner";
 	String CONTAINER = "container";
 	String DEFINITION_PATH = "magritte.wraps.Definition";
 	String MAGRITTE_MORPHS = "magritte.morphs";
@@ -24,9 +25,10 @@ public interface TemplateTags {
 	String COMPONENT_OF = "componentOf";
 	String FACET = "facet";
 	String ABSTRACT = "Abstract";
+	String TYPE_DECLARATION = "typeDeclaration";
 	String PLATE = "plate";
 	String CLASS = "class";
-	String FACET_TARGET = "FacetTarget";
+	String FACET_TARGET = "facetTarget";
 	String ALWAYS = "always";
 	String TARGETS = "targets";
 	String FACETS = "facets";
@@ -67,6 +69,8 @@ public interface TemplateTags {
 	String STATIC = "static";
 	String ANNOTATION = "annotation";
 	String VALUE = "value";
+	String VALUES = "values";
+	String WORD_VALUES = "wordValues";
 	String CASE = "case";
 	String REFERENCE = "reference";
 	String VARIABLE = "variable";

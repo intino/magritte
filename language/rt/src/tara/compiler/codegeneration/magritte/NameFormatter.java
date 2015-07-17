@@ -1,11 +1,13 @@
 package tara.compiler.codegeneration.magritte;
 
+import org.siani.itrules.engine.FormatterStore;
 import tara.language.model.Facet;
 import tara.language.model.FacetTarget;
 import tara.language.model.Node;
 import tara.language.model.NodeContainer;
 
 import java.io.File;
+import java.util.Locale;
 
 public class NameFormatter {
 
@@ -17,10 +19,6 @@ public class NameFormatter {
 	private NameFormatter() {
 	}
 
-	public static String composeMorphPackagePath(String language) {
-		return language.toLowerCase();
-	}
-
 	public static String composeMorphPackagePath(FacetTarget target, String generatedLanguage) {
 		return (generatedLanguage.toLowerCase() + DOT + ((Node) target.container()).name()).toLowerCase();
 	}
@@ -28,11 +26,11 @@ public class NameFormatter {
 	public static String getQn(Node node, String generatedLanguage) {
 		final FacetTarget facetTarget = facetTargetContainer(node);
 		if (facetTarget == null && !node.isFacet())
-			return composeMorphPackagePath(generatedLanguage) + DOT + node.qualifiedName();
+			return generatedLanguage.toLowerCase() + DOT + node.qualifiedName();
 		else if (facetTarget != null) {
-			return composeMorphPackagePath(generatedLanguage) + DOT + composeInFacetTargetQN(node, facetTarget);
+			return generatedLanguage.toLowerCase() + DOT + composeInFacetTargetQN(node, facetTarget);
 		} else
-			return composeMorphPackagePath(generatedLanguage) + DOT + node.name().toLowerCase() + DOT + node.qualifiedName();
+			return generatedLanguage.toLowerCase() + DOT + node.name().toLowerCase() + DOT + node.qualifiedName();
 	}
 
 	public static String composeInFacetTargetQN(Node node, FacetTarget facetTarget) {
@@ -47,8 +45,12 @@ public class NameFormatter {
 		return null;
 	}
 
+	public static Object firstUpperCase(String name) {
+		return new FormatterStore(Locale.ENGLISH).get("firstUpperCase").format(name);
+	}
+
 	public static String getQn(FacetTarget target, String generatedLanguage) {
-		return composeMorphPackagePath(generatedLanguage) + DOT + target.targetNode().qualifiedName();
+		return generatedLanguage.toLowerCase() + DOT + target.targetNode().qualifiedName();
 	}
 
 	public static String getQnOfFacet(Node node) {
@@ -56,7 +58,7 @@ public class NameFormatter {
 	}
 
 	public static String getQn(Facet facet, String generatedLanguage) {
-		return composeMorphPackagePath(generatedLanguage) + DOT + facet.type();
+		return generatedLanguage.toLowerCase() + DOT + facet.type();
 	}
 
 	public static String camelCase(String value, String c) {

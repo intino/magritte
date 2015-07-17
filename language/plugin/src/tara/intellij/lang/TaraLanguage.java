@@ -74,7 +74,7 @@ public class TaraLanguage extends com.intellij.lang.Language {
 
 	private static boolean haveToReload(String language, String projectPath) {
 		File languagesDirectory = getLanguagesDirectory(projectPath);
-		if (languagesDirectory == null) return false;
+		if (!languagesDirectory.exists()) return false;
 		File reload = new File(languagesDirectory.getPath(), language + ".reload");
 		if (reload.exists()) {
 			if (!reload.delete())

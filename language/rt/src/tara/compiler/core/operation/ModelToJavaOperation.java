@@ -106,7 +106,7 @@ public class ModelToJavaOperation extends ModelOperation {
 	}
 
 	private String getQn(Node node) {
-		return NameFormatter.composeMorphPackagePath(conf.getGeneratedLanguage()) + DOT + node.qualifiedName();
+		return conf.getGeneratedLanguage().toLowerCase() + DOT + node.qualifiedName();
 	}
 
 	private Collection<Node> collectRootNodes() {

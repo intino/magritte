@@ -1,23 +1,19 @@
 package tara.compiler.codegeneration.magritte;
 
 import org.siani.itrules.Adapter;
-import org.siani.itrules.engine.FormatterStore;
 import org.siani.itrules.model.Frame;
 import tara.Language;
 import tara.compiler.codegeneration.magritte.box.NativeFormatter;
 import tara.compiler.codegeneration.magritte.morph.TypesProvider;
-import tara.compiler.model.VariableReference;
-import tara.language.model.EmptyNode;
-import tara.language.model.Primitives;
-import tara.language.model.Variable;
+import tara.language.model.*;
 
-import java.util.Locale;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static tara.compiler.codegeneration.magritte.NameFormatter.getQn;
+import static tara.compiler.codegeneration.magritte.NameFormatter.firstUpperCase;
 import static tara.language.model.Variable.NATIVE_SEPARATOR;
 
 public class MorphVariableAdapter extends Generator implements Adapter<Variable>, TemplateTags {
-
 
 	private final Language language;
 	private final String generatedLanguage;
@@ -38,23 +34,39 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 		frame.addTypes(TypesProvider.getTypes(variable, modelLevel));
 		frame.addFrame(NAME, variable.name());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
-		frame.addFrame(CONTAINER, variable.container().qualifiedName());
+		frame.addFrame(CONTAINER, findContainer(variable));
 		if (!variable.defaultValues().isEmpty() && !(variable.defaultValues().get(0) instanceof EmptyNode))
-			frame.addFrame(VALUE, variable.defaultValues().toArray());
+			addValues(frame, variable);
 		if (variable.contract() != null) frame.addFrame(CONTRACT, format(variable.contract()));
-		frame.addFrame(TYPE, getType(variable));
+		frame.addFrame(TYPE, getType(variable, generatedLanguage));
 		if (variable.type().equals(Variable.WORD))
 			frame.addFrame(WORDS, variable.allowedValues().toArray(new String[(variable.allowedValues().size())]));
 		else if (variable.type().equals(Primitives.NATIVE)) fillNativeVariable(frame, variable);
 		return frame;
 	}
 
-	private String getType(Variable variable) {
-		if (variable instanceof VariableReference)
-			return getQn(((VariableReference) variable).getDestiny(), generatedLanguage.toLowerCase());
-		else if (variable.type().equals(Primitives.WORD))
-			return new FormatterStore(Locale.ENGLISH).get("firstUpperCase").format(variable.name()).toString();
-		else return variable.type();
+	private String findContainer(Variable variable) {
+		return variable.container() instanceof FacetTarget ?
+			asFacetTarget((FacetTarget) variable.container()) :
+			variable.container().qualifiedName();
+	}
+
+	private String asFacetTarget(FacetTarget facetTarget) {
+		final String nodeName = ((Node) facetTarget.container()).name();
+		return generatedLanguage.toLowerCase() + DOT +
+			nodeName.toLowerCase() + DOT +
+			firstUpperCase(nodeName) + "_" + firstUpperCase(facetTarget.targetNode().name());
+	}
+
+	private void addValues(Frame frame, Variable variable) {
+		if (Primitives.WORD.equals(variable.type()))
+			frame.addFrame(WORD_VALUES, getWordValues(variable.name(), variable.defaultValues()));
+		else frame.addFrame(VALUES, variable.defaultValues().toArray());
+	}
+
+	private String[] getWordValues(String name, List<Object> values) {
+		List<String> wordValues = values.stream().map(object -> firstUpperCase(name) + "." + object.toString()).collect(Collectors.toList());
+		return wordValues.toArray(new String[wordValues.size()]);
 	}
 
 	private void fillNativeVariable(Frame frame, Variable variable) {

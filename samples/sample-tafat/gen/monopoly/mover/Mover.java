@@ -40,11 +40,4 @@ public abstract class Mover extends Morph {
         return Collections.emptyMap();
     }
 
-    @Override
-    protected void add(Node component) {
-    }
-
-    @Override
-    protected void set(String name, Object object) {
-    }
 }

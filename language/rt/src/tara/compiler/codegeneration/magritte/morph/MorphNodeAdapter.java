@@ -8,9 +8,11 @@ import tara.compiler.codegeneration.magritte.NameFormatter;
 import tara.compiler.codegeneration.magritte.TemplateTags;
 import tara.language.model.*;
 import tara.language.semantics.Allow;
+import tara.language.semantics.constraints.ReferenceParameterAllow;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static tara.compiler.codegeneration.magritte.morph.TypesProvider.getTypes;
 
@@ -30,38 +32,38 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 	public void execute(Frame frame, Node node, FrameContext context) {
 		this.context = context;
 		frame.addTypes(getTypes(node, language));
-		addNodeInfo(node, frame);
-		addComponents(node, frame, context);
+		addNodeInfo(frame, node);
+		addComponents(frame, node, context);
 	}
 
-	private void addNodeInfo(Node node, Frame frame) {
+	private void addNodeInfo(Frame frame, Node node) {
 		if ((initNode != null && !node.equals(initNode)) || isInFacetTarget(node) != null) frame.addFrame(INNER, true);
 		if (node.doc() != null) frame.addFrame(DOC, node.doc());
 		if (node.isAbstract() || node.isFacet()) frame.addFrame(ABSTRACT, true);
-		addName(node, frame);
-		addParent(node, frame);
-		addVariables(node, frame);
-		addParameters(node, frame);
+		addName(frame, node);
+		addParent(frame, node);
+		addVariables(frame, node);
+		addParameters(frame, node);
 	}
 
-	private void addName(Node node, Frame frame) {
+	private void addName(Frame frame, Node node) {
 		frame.addFrame(NAME, node.name());
-		frame.addFrame(QN, NameFormatter.cleanQn(node.qualifiedName()).replace(".","$"));
+		frame.addFrame(QN, NameFormatter.cleanQn(node.qualifiedName()).replace(".", "$"));
 	}
 
-	private void addParent(Node node, Frame newFrame) {
+	private void addParent(Frame frame, Node node) {
 		final Node parent = node.parent();
-		newFrame.addFrame(PARENT, parent != null ? NameFormatter.getQn(parent, generatedLanguage) : MORPH);
+		frame.addFrame(PARENT, parent != null ? NameFormatter.getQn(parent, generatedLanguage) : MORPH);
 	}
 
-	protected void addVariables(Node node, final Frame frame) {
+	protected void addVariables(final Frame frame, Node node) {
 		node.variables().stream().
-			filter(variable -> !variable.isInherited()).
-			forEach(variable -> addVariable(frame, variable));
+			filter(v -> !v.isInherited()).
+			forEach(v -> addVariable(frame, v));
 		addTerminalVariables(node, frame);
 	}
 
-	private void addParameters(Node node, Frame frame) {
+	private void addParameters(Frame frame, Node node) {
 		node.parameters().stream().
 			filter(p -> Primitives.NATIVE.equals(p.inferredType())).
 			forEach(p -> addParameter(frame, p));
@@ -70,11 +72,13 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 	private void addTerminalVariables(Node node, final Frame frame) {
 		final Collection<Allow> allows = language.allows(node.type());
 		if (allows == null) return;
-		allows.stream().
+		final List<Allow> terminalVariables = allows.stream().
 			filter(allow -> allow instanceof Allow.Parameter &&
 				((Allow.Parameter) allow).flags().contains(Tag.TERMINAL.name()) &&
-				!isRedefined(((Allow.Parameter) allow), node.variables())).
-			forEach(allow -> addVariable(frame, (Allow.Parameter) allow));
+				!isRedefined(((Allow.Parameter) allow), node.variables())).collect(Collectors.toList());
+		if (terminalVariables.isEmpty()) return;
+		frame.addFrame(TYPE_DECLARATION, language.languageName().toLowerCase() + DOT + node.type());
+		terminalVariables.forEach(allow -> addVariable(frame, (Allow.Parameter) allow));
 	}
 
 	private boolean isRedefined(Allow.Parameter allow, List<? extends Variable> variables) {
@@ -83,14 +87,35 @@ public class MorphNodeAdapter extends Generator implements Adapter<Node>, Templa
 	}
 
 	private void addVariable(Frame frame, Variable variable) {
-		frame.addFrame(VARIABLE, context.build(variable));
-	}
-	private void addParameter(Frame frame, Parameter parameter) {
-		frame.addFrame(VARIABLE, context.build(parameter));
+		final Frame varFrame = (Frame) context.build(variable);
+		varFrame.addTypes("owner");
+		frame.addFrame(VARIABLE, varFrame);
 	}
 
-	private void addVariable(Frame frame, Allow.Parameter variable) {
-		frame.addFrame(VARIABLE, context.build(variable));
+	private void addVariable(Frame frame, Allow.Parameter parameter) {
+		frame.addFrame(VARIABLE, createFrame(parameter));
+	}
+
+	private Frame createFrame(final Allow.Parameter parameter) {
+		final Frame frame = new Frame();
+		frame.addTypes(TypesProvider.getTypes(parameter));
+		frame.addTypes(TARGET);
+		frame.addFrame(NAME, parameter.name());
+		frame.addFrame(CONTAINER, "type");
+		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
+		frame.addFrame(TYPE, parameter instanceof ReferenceParameterAllow ? parameter.allowedValues().get(0) : getType(parameter));//TODO QN completo
+		if (parameter.type().equals(Variable.WORD))
+			frame.addFrame(WORD_VALUES, parameter.allowedValues().toArray(new String[(parameter.allowedValues().size())]));
+		return frame;
+	}
+
+	private String getType(Allow.Parameter parameter) {
+		if (parameter.type().equalsIgnoreCase(Primitives.NATURAL)) return Primitives.INTEGER;
+		else return parameter.type();
+	}
+
+	private void addParameter(Frame frame, Parameter parameter) {
+		frame.addFrame(VARIABLE, context.build(parameter));
 	}
 
 	public void setInitNode(Node initNode) {
