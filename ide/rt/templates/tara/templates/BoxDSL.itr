@@ -1,0 +1,13 @@
+def type(Box)
+    package magritte.dsl;
+
+    public class $name+firstUppercase~Dsl extends Box.Dsl {
+        public static final Box box = new $name+firstUppercase~Dsl();
+
+        protected Box$[$] components() {
+            return new Box$[$]{
+                $namebox+reference...[,$NL]
+            };
+        }
+    }
+end

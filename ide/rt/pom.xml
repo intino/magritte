@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <version>1.0</version>
+  <groupId>tara</groupId>
+  <artifactId>tara-runtime</artifactId>
+
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <build>
+    <outputDirectory>../../out/production/tara-runtime</outputDirectory>
+    <testOutputDirectory>../../out/test/tara-runtime</testOutputDirectory>
+    <directory>../../out/build/tara-runtime</directory>
+  </build>
+
+  <!--<repositories>-->
+    <!--<repository>-->
+      <!--<snapshots>-->
+        <!--<enabled>true</enabled>-->
+        <!--<updatePolicy>never</updatePolicy>-->
+        <!--<checksumPolicy>fail</checksumPolicy>-->
+      <!--</snapshots>-->
+      <!--<id>ossrh</id>-->
+      <!--<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+      <!--<layout>default</layout>-->
+    <!--</repository>-->
+  <!--</repositories>-->
+
+  <dependencies>
+    <dependency>
+      <groupId>org.siani.itrules</groupId>
+      <artifactId>itrules</artifactId>
+      <version>LATEST</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+      <version>LATEST</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+      <version>LATEST</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>4.5</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.rotty3000</groupId>
+      <artifactId>jalopy</artifactId>
+      <version>3000.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tara</groupId>
+      <artifactId>language</artifactId>
+      <type>jar</type>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tara</groupId>
+      <artifactId>tara-runtime-constants</artifactId>
+      <type>bundle</type>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
+</project>
