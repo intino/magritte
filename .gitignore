@@ -2,3 +2,8 @@
 .idea/workspace.xml
 .idea/compiler.xml
 /dist
+.directory
+/magritte/store/target
+/magritte/framework2/target
+/language/plugin/target
+/language/plugin-jps/target
