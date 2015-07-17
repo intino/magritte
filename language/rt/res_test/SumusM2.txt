@@ -1,7 +1,7 @@
 src_file
-/Users/octavio/workspace/sandbox/sumusnew/Base/model/Main.tara
-/Users/octavio/workspace/sandbox/sumusnew/Base/model/Query.tara
-/Users/octavio/workspace/sandbox/sumusnew/Base/model/Visualization.tara
+/Users/oroncal/workspace/sandbox/sumusnew/Base/model/Main.tara
+/Users/oroncal/workspace/sandbox/sumusnew/Base/model/Query.tara
+/Users/oroncal/workspace/sandbox/sumusnew/Base/model/Visualization.tara
 
 project
 sumusnew
@@ -20,20 +20,20 @@ level
 encoding
 UTF-8
 semantic_lib
-/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/octavio/workspace/sandbox/sumusnew/Base/gen
+/Users/oroncal/workspace/sandbox/sumusnew/Base/gen
 final_outputpath
-/Users/octavio/workspace/sandbox/sumusnew/out/production/Base/
+/Users/oroncal/workspace/sandbox/sumusnew/out/production/Base/
 magritte
 Magritte not found
 metrics
-/Users/octavio/workspace/sandbox/sumusnew/out/production/Base/
+/Users/oroncal/workspace/sandbox/sumusnew/out/production/Base/
 resources
-/Users/octavio/workspace/sandbox/sumusnew/Base/res
+/Users/oroncal/workspace/sandbox/sumusnew/Base/res
 native_path
-/Users/octavio/workspace/sandbox/sumusnew/Base/src/sumus/natives
+/Users/oroncal/workspace/sandbox/sumusnew/Base/src/sumus/natives
 dsl_path
-/Users/octavio/workspace/sandbox/sumusnew/dsl/
+/Users/oroncal/workspace/sandbox/sumusnew/dsl/
 classpath
-/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

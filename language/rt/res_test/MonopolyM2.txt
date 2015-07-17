@@ -1,5 +1,5 @@
 src_file
-/Users/octavio/workspace/sandbox/monopoly/Base/model/Main.tara
+/Users/oroncal/workspace/sandbox/monopoly/Base/model/Main.tara
 
 project
 monopoly
@@ -18,20 +18,20 @@ level
 encoding
 UTF-8
 semantic_lib
-/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
 outputpath
-/Users/octavio/workspace/sandbox/monopoly/Base/gen
+/Users/oroncal/workspace/sandbox/monopoly/Base/gen
 final_outputpath
-/Users/octavio/workspace/sandbox/monopoly/out/production/Base/
+/Users/oroncal/workspace/sandbox/monopoly/out/production/Base/
 magritte
 Magritte not found
 metrics
-/Users/octavio/workspace/sandbox/monopoly/out/production/Base/
+/Users/oroncal/workspace/sandbox/monopoly/out/production/Base/
 resources
-/Users/octavio/workspace/sandbox/monopoly/Base/res
+/Users/oroncal/workspace/sandbox/monopoly/Base/res
 native_path
-/Users/octavio/workspace/sandbox/monopoly/Base/src/tafat/natives
+/Users/oroncal/workspace/sandbox/monopoly/Base/src/tafat/natives
 dsl_path
-/Users/octavio/workspace/sandbox/monopoly/dsl/
+/Users/oroncal/workspace/sandbox/monopoly/dsl/
 classpath
-/Users/octavio/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar
+/Users/oroncal/Library/Caches/IntelliJIdea14/plugins-sandbox/plugins/tara/lib/tara.jar

@@ -7,6 +7,7 @@ import tara.Language;
 import tara.compiler.codegeneration.magritte.box.NativeFormatter;
 import tara.compiler.codegeneration.magritte.morph.TypesProvider;
 import tara.compiler.model.VariableReference;
+import tara.language.model.EmptyNode;
 import tara.language.model.Primitives;
 import tara.language.model.Variable;
 
@@ -38,6 +39,8 @@ public class MorphVariableAdapter extends Generator implements Adapter<Variable>
 		frame.addFrame(NAME, variable.name());
 		frame.addFrame(GENERATED_LANGUAGE, generatedLanguage.toLowerCase());
 		frame.addFrame(CONTAINER, variable.container().qualifiedName());
+		if (!variable.defaultValues().isEmpty() && !(variable.defaultValues().get(0) instanceof EmptyNode))
+			frame.addFrame(VALUE, variable.defaultValues().toArray());
 		if (variable.contract() != null) frame.addFrame(CONTRACT, format(variable.contract()));
 		frame.addFrame(TYPE, getType(variable));
 		if (variable.type().equals(Variable.WORD))

@@ -46,7 +46,21 @@ end
 def trigger(declaration)
     protected java.util.List<$name+reference> $name+firstLowerCase~List;
 end
+----- INIT -----
+def type(Variable) Slot(value) type(multiple) trigger(init)
+    set("$name+firstLowerCase", java.util.Arrays.asList($value...[, ]));
+end
 
+def type(Variable) type(native) trigger(init)
+    set("$name+firstLowerCase", new $contract+javaValidName_$uid());
+end
+
+def type(Variable) Slot(value) trigger(init)
+    set("$name+firstLowerCase", $value);
+end
+
+def type(Variable) trigger(init)
+end
 ----- CONSTRUCTOR -----
 def type(Variable) type(multiple) trigger(constructor)
     set("$name+firstLowerCase", (($container+javaValidName) morph).$name+firstLowerCase~List);
@@ -192,7 +206,7 @@ def type(Node) trigger(list)
     $name+firstLowerCase~List.stream().forEach(c -> nodes.add(c.node()));
 end
 
-def type(native) value(body) trigger(native)
+def type(native) Slot(body) trigger(native)
 	public static class $contract+javaValidName_$uid implements [$generatedLanguage+lowercase.natives.]$contract+firstUpperCase, tara.magritte.NativeCode  {
 		$nativeContainer $$;
 		@Override
@@ -222,6 +236,7 @@ def type(nodeimpl) trigger(node)
 		$node+declaration...[$NL]
 		public $name+javaValidName(Node node) {
             super(node);
+            $variable+init...[$NL]|:
         }
         public $name+javaValidName(Morph morph, Node node) {
             super(morph, node);
