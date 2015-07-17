@@ -14,9 +14,9 @@
   </properties>
 
   <build>
-    <outputDirectory>../../out/production/semantic</outputDirectory>
-    <testOutputDirectory>../../out/test/semantic</testOutputDirectory>
-    <directory>../../out/build/semantic</directory>
+    <outputDirectory>../../out/production/language</outputDirectory>
+    <testOutputDirectory>../../out/test/language</testOutputDirectory>
+    <directory>../../out/build/language</directory>
 
   </build>
 
