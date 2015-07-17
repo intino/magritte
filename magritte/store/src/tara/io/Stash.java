@@ -1,12 +1,7 @@
 package tara.io;
 
-public class Stash {
-    public Entry[] entries;
+import java.io.Serializable;
 
-    public Stash() {
-    }
-
-    public Stash(Entry... entry) {
-        this.entries = entry;
-    }
+public class Stash implements Serializable {
+	public Entry[] entries;
 }

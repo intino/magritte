@@ -1,8 +1,5 @@
 package tara.compiler.core.operation;
 
-import tara.io.Entry;
-import tara.io.Stash;
-import tara.io.Var;
 import tara.compiler.core.CompilationUnit;
 import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.operation.model.ModelOperation;
@@ -10,6 +7,9 @@ import tara.compiler.model.Facet;
 import tara.compiler.model.Node;
 import tara.compiler.model.Parameter;
 import tara.compiler.model.impl.Model;
+import tara.io.Entry;
+import tara.io.Stash;
+import tara.io.Var;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,7 +59,7 @@ public class ModelToStashOperation extends ModelOperation {
 
 	private Entry[] collectComponents(List<Node> components) {
 		final List<Entry> stashes = components.stream().map(component -> fillStash(component, new Entry())).collect(Collectors.toList());
-		return stashes.toArray(new Entry[stashes.size()]);
+		return stashes.isEmpty() ? null : stashes.toArray(new Entry[stashes.size()]);
 	}
 
 	private Var[] collectVariables(Node node) {

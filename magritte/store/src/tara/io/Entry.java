@@ -8,5 +8,4 @@ public class Entry implements Serializable {
 	public String[] types;
 	public Var[] vars;
 	public Entry[] entries;
-
 }

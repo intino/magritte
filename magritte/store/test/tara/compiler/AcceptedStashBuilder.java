@@ -6,13 +6,12 @@ import com.esotericsoftware.kryo.io.Input;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import tara.builder.StashBuilder;
 import tara.io.Entry;
 import tara.io.Stash;
-import tara.builder.StashBuilder;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -85,8 +84,8 @@ public class AcceptedStashBuilder {
 	@Test
 	public void should_build_stash_with_many_entries() {
 		new StashBuilder(new File(home)).build("ManyEntries", Charset.forName("UTF-8"));
-		assertThat("Temperature.stash exists", new File(home, "Entries.stash").exists());
-		assertThat(stashFrom(new File(home, "Entries.stash")).entries.length, is(9));
+		assertThat("ManyEntries.stash exists", new File(home, "ManyEntries.stash").exists());
+		assertThat(stashFrom(new File(home, "ManyEntries.stash")).entries.length, is(9));
 	}
 
 	@Test
@@ -126,6 +125,7 @@ public class AcceptedStashBuilder {
 			result = ((Stash) new Kryo().readClassAndObject(input));
 		} catch (IOException | KryoException e) {
 			result = new Stash();
+			e.printStackTrace();
 		}
 		return result;
 	}
