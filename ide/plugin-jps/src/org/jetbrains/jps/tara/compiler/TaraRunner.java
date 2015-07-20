@@ -85,7 +85,7 @@ public class TaraRunner {
 		vmParams.add("-Xmx" + settings.heapSize + "m");
 		vmParams.add("-Dfile.encoding=" + System.getProperty("file.encoding"));
 		final List<String> cmd = ExternalProcessUtil.buildJavaCommandLine(
-			getJavaExecutable(), "tara.TaracRunner", Collections.<String>emptyList(), classpath, vmParams, programParams);
+			getJavaExecutable(), "tara.TaracRunner", Collections.emptyList(), classpath, vmParams, programParams);
 		final Process process = Runtime.getRuntime().exec(ArrayUtil.toStringArray(cmd));
 		final Consumer<String> updater = s -> context.processMessage(new ProgressMessage(s));
 		final TaracOSProcessHandler handler = new TaracOSProcessHandler(process, updater) {

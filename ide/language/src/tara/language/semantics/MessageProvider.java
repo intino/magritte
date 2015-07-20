@@ -5,7 +5,7 @@ import java.util.PropertyResourceBundle;
 
 public class MessageProvider {
 
-	private static final String BUNDLE = "messages";
+	private static final String BUNDLE = "messages.semantic";
 	private static PropertyResourceBundle resourceBundle;
 
 	private MessageProvider() {

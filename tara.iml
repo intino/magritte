@@ -9,11 +9,10 @@
       <excludeFolder url="file://$MODULE_DIR$/sonar" />
     </content>
     <orderEntry type="jdk" jdkName="IDEA" jdkType="IDEA JDK" />
-    <orderEntry type="module" module-name="plugin-jps" />
     <orderEntry type="module" module-name="plugin" />
+    <orderEntry type="module" module-name="language" />
     <orderEntry type="module" module-name="tara-runtime" />
     <orderEntry type="module" module-name="tara-runtime-constants" />
-    <orderEntry type="module" module-name="language" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
