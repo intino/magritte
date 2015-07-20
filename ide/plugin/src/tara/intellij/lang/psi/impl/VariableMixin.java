@@ -82,8 +82,8 @@ public class VariableMixin extends ASTWrapperPsiElement {
 	public List<Tag> flags() {
 		List<Tag> tags = new ArrayList<>();
 		tags.addAll(inheritedFlags);
-		if (((TaraVariable) this).getFlagsNode() != null)
-			tags.addAll(((TaraVariable) this).getFlagsNode().getFlagList().stream().
+		if (((TaraVariable) this).getFlags() != null)
+			tags.addAll(((TaraVariable) this).getFlags().getFlagList().stream().
 				map(f -> Tag.valueOf(f.getText().toUpperCase())).collect(Collectors.toList()));
 		return Collections.unmodifiableList(tags);
 	}

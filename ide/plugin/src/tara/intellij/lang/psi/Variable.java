@@ -15,7 +15,7 @@ public interface Variable extends tara.language.model.Variable, Navigatable, Ico
 	TaraValue getValue();
 
 	@Nullable
-	Flags getFlagsNode();
+	Flags getFlags();
 
 	boolean isReference();
 

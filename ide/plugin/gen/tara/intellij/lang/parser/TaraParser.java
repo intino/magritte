@@ -1,15 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.parser;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import com.intellij.lang.PsiParser;
-import com.intellij.psi.tree.IElementType;
-
-import static tara.intellij.lang.parser.TaraParserUtil.*;
 import static tara.intellij.lang.psi.TaraTypes.*;
+import static tara.intellij.lang.parser.TaraParserUtil.*;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.lang.PsiParser;
+import com.intellij.lang.LightPsiParser;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class TaraParser implements PsiParser, LightPsiParser {

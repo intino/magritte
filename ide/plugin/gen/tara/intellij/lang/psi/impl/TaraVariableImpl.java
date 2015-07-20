@@ -41,7 +41,7 @@ public class TaraVariableImpl extends VariableMixin implements TaraVariable {
 
   @Override
   @Nullable
-  public TaraFlags getFlagsNode() {
+  public TaraFlags getFlags() {
     return findChildByClass(TaraFlags.class);
   }
 

@@ -4,11 +4,11 @@ package tara.intellij.lang.psi.impl;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import tara.intellij.lang.psi.TaraHeaderReference;
-import tara.intellij.lang.psi.TaraIdentifier;
-import tara.intellij.lang.psi.TaraVisitor;
+import static tara.intellij.lang.psi.TaraTypes.*;
+import tara.intellij.lang.psi.*;
 
 public class TaraHeaderReferenceImpl extends IdentifierReferenceMixin implements TaraHeaderReference {
 

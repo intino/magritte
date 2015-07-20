@@ -18,7 +18,7 @@ public interface TaraVariable extends Variable {
   List<TaraDoc> getDocList();
 
   @Nullable
-  TaraFlags getFlagsNode();
+  TaraFlags getFlags();
 
   @Nullable
   TaraIdentifier getIdentifier();

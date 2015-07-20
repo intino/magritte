@@ -3,8 +3,9 @@ package tara.intellij.lang.psi;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
 
-public interface TaraContract extends tara.intellij.lang.psi.Contract {
+public interface TaraContract extends Contract {
 
   @NotNull
   List<TaraIdentifier> getIdentifierList();

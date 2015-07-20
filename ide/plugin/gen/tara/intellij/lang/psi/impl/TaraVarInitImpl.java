@@ -1,15 +1,14 @@
 // This is a generated file. Not intended for manual editing.
 package tara.intellij.lang.psi.impl;
 
+import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import tara.intellij.lang.psi.TaraIdentifier;
-import tara.intellij.lang.psi.TaraValue;
-import tara.intellij.lang.psi.TaraVarInit;
-import tara.intellij.lang.psi.TaraVisitor;
-
-import java.util.List;
+import com.intellij.psi.util.PsiTreeUtil;
+import static tara.intellij.lang.psi.TaraTypes.*;
+import tara.intellij.lang.psi.*;
 
 public class TaraVarInitImpl extends VarInitMixin implements TaraVarInit {
 
