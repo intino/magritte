@@ -6,6 +6,7 @@ import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.model.Facet;
 import tara.compiler.model.Node;
 import tara.compiler.model.Parameter;
+import tara.compiler.model.Primitives;
 import tara.compiler.model.impl.Model;
 import tara.io.Entry;
 import tara.io.Stash;
@@ -14,9 +15,6 @@ import tara.io.Var;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,12 +47,12 @@ public class ModelToStashOperation extends ModelOperation {
 		write(model.getFile(), stashs);
 	}
 
-	private Entry fillStash(Node node, Entry root) {
-		root.name = node.getName();
-		root.types = collectTypes(node);
-		root.vars = collectVariables(node);
-		root.entries = collectComponents(node.getIncludedNodes());
-		return root;
+	private Entry fillStash(Node node, Entry entry) {
+		entry.name = node.getName();
+		entry.types = collectTypes(node);
+		entry.vars = collectVariables(node);
+		entry.entries = collectComponents(node.getIncludedNodes());
+		return entry;
 	}
 
 	private Entry[] collectComponents(List<Node> components) {
@@ -72,16 +70,17 @@ public class ModelToStashOperation extends ModelOperation {
 	private void createVariable(List<Var> variables, Parameter parameter) {
 		final Var var = new Var();
 		var.n = parameter.getName();
-		if (parameter.getName().equals("instant")) var.v = asDate(parameter.getValues().get(0).toString());
-		else if (parameter.hasReferenceValue()) var.v = buildReferenceValues(parameter);
+		if (parameter.hasReferenceValue()) var.v = buildReferenceValues(parameter);
 		else if (parameter.getValues().get(0).toString().startsWith("$")) var.v = buildResourceValue(parameter);
-		else var.v = parameter.getValues().size() == 1 ? parameter.getValues().get(0) : parameter.getValues().toArray();
+		else var.v = getValue(parameter);
 		variables.add(var);
 	}
 
-	private long asDate(String date) {
-		LocalDateTime time = LocalDateTime.from(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").parse(date));
-		return time.toInstant(ZoneOffset.UTC).toEpochMilli();
+	private Object getValue(Parameter parameter) {
+		final Primitives.Converter converter = Primitives.getConverter(parameter.getInferredType());
+		return (parameter.getValues().get(0) instanceof String && !(parameter.getInferredType().equals(Primitives.STRING))) ?
+			converter.convert(parameter.getValues().toArray(new String[parameter.getValues().size()])) :
+			parameter.getValues().toArray();
 	}
 
 	private Object buildResourceValue(Parameter parameter) {

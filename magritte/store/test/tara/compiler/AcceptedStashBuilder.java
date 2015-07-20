@@ -122,7 +122,11 @@ public class AcceptedStashBuilder {
 	private static Stash stashFrom(byte[] bytes) {
 		Stash result;
 		try (ByteArrayInputStream bs = new ByteArrayInputStream(bytes); Input input = new Input(bs)) {
-			result = ((Stash) new Kryo().readClassAndObject(input));
+			final Kryo kryo = new Kryo();
+			kryo.register(Stash.class, 1);
+			kryo.register(Entry.class, 2);
+			kryo.register(Entry[].class, 3);
+			result = ((Stash) kryo.readClassAndObject(input));
 		} catch (IOException | KryoException e) {
 			result = new Stash();
 			e.printStackTrace();

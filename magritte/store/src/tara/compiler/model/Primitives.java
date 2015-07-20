@@ -1,5 +1,8 @@
 package tara.compiler.model;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +90,22 @@ public class Primitives {
 			}
 		});
 
-		CONVERTER_MAP.put(DATE, stringConverter);
+		CONVERTER_MAP.put(DATE, new Converter() {
+			@Override
+			public Object[] convert(String... dates) {
+				List<Long> list = new ArrayList<>();
+				for (String date : dates) {
+					LocalDateTime time = LocalDateTime.from(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").parse(date));
+					list.add(time.toInstant(ZoneOffset.UTC).toEpochMilli());
+				}
+				return list.toArray(new Long[list.size()]);
+			}
+
+			@Override
+			public String[] convert(Object... value) {
+				return new String[0];
+			}
+		});
 	}
 
 	public static String[] getPrimitives() {

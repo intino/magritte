@@ -1,22 +1,25 @@
 package tara.builder;
 
 public interface MetadataEnricher {
-    class Metadata {
-        public final Type type;
-        public final Object extra;
+	class Metadata {
+		public final String name;
+		public final Type type;
+		public final Object extra;
 
-        private Metadata(Type type) {
-            this(type, null);
-        }
-        private Metadata(Type type, Object extra) {
-            this.type = type;
-            this.extra = extra;
-        }
-    }
+		Metadata(String name, Type type) {
+			this(name, type, null);
+		}
 
-    enum Type {
-        String, Integer, Natural, Double, Word, Date, Reference
-    }
+		Metadata(String name, Type type, Object extra) {
+			this.name = name;
+			this.type = type;
+			this.extra = extra;
+		}
+	}
 
-    Metadata get(String qualifiedName);
+	enum Type {
+		String, Integer, Natural, Double, Word, Date, Reference
+	}
+
+	Metadata get(String qualifiedName);
 }

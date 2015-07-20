@@ -24,6 +24,7 @@ public class MergeToModelOperation extends ModuleUnitOperation {
 		try {
 			Model model = new ASTMerger(sources).doMerge();
 			compilationUnit.setModel(model);
+
 		} catch (MergeException e) {
 			LOG.log(Level.SEVERE, "Error merging sources representations: " + e.getMessage(), e);
 		}

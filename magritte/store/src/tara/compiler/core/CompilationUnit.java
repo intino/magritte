@@ -4,6 +4,7 @@ import tara.compiler.core.errorcollection.CompilationFailedException;
 import tara.compiler.core.operation.ModelToStashOperation;
 import tara.compiler.core.operation.Operation;
 import tara.compiler.core.operation.SrcToClassOperation;
+import tara.compiler.core.operation.model.EnrichModelOperation;
 import tara.compiler.core.operation.model.ModelOperation;
 import tara.compiler.core.operation.module.MergeToModelOperation;
 import tara.compiler.core.operation.module.ModuleUnitOperation;
@@ -32,6 +33,7 @@ public class CompilationUnit extends ProcessingUnit {
 		addPhaseOperation(new ParseOperation(this.errorCollector), Phases.PARSING);
 		addPhaseOperation(new BuildModelOperation(this.errorCollector), Phases.CONVERSION);
 		addPhaseOperation(new MergeToModelOperation(this), Phases.CONVERSION);
+		addPhaseOperation(new EnrichModelOperation(this), Phases.CONVERSION);
 		addPhaseOperation(new ModelToStashOperation(this), Phases.STASH_GENERATION);
 	}
 
