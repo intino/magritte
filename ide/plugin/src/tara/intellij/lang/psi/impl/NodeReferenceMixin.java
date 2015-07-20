@@ -44,6 +44,10 @@ public class NodeReferenceMixin extends ASTWrapperPsiElement {
 		return Collections.unmodifiableList(destiny.facets().stream().map(FacetApply::type).collect(Collectors.toList()));
 	}
 
+	public String simpleType() {
+		return destinyOfReference().simpleType();
+	}
+
 	public boolean isReference() {
 		return true;
 	}

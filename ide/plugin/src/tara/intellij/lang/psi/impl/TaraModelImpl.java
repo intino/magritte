@@ -15,6 +15,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tara.Language;
+import tara.Resolver;
 import tara.intellij.lang.TaraIcons;
 import tara.intellij.lang.TaraLanguage;
 import tara.intellij.lang.file.TaraFileType;
@@ -194,11 +196,19 @@ public class TaraModelImpl extends PsiFileBase implements TaraModel {
 		return "";
 	}
 
+	public String simpleType() {
+		return "";
+	}
+
+
 	public void name(String name) {
 	}
 
 	@NotNull
 	public Node resolve() {
-		return null;
+		Language language = TaraUtil.getLanguage(this.getOriginalElement());
+		if (language == null) return (Node) this;
+		new Resolver(language).resolve(this);
+		return (Node) this;
 	}
 }

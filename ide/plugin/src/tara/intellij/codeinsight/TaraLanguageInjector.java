@@ -165,7 +165,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 
 	private String findParent(PsiElement element, Node node, String language) {
 		Node candidate = node;
-		ensureTypeIsResolved(element, node);
+		ensureTypeIsResolved(element, candidate);
 		while (candidate != null) {
 			if (candidate.name() != null && !candidate.isFeatureInstance())
 				return candidate.isTerminalInstance() ? getTypeAsParent(candidate) : clean(getQn(candidate, element, language));
@@ -181,7 +181,7 @@ public class TaraLanguageInjector implements LanguageInjector {
 	}
 
 	private void ensureTypeIsResolved(PsiElement element, Node node) {
-		new Resolver(TaraLanguage.getLanguage(element.getContainingFile())).resolve(node.container());
+		new Resolver(TaraLanguage.getLanguage(element.getContainingFile())).resolve(node);
 	}
 
 	private String clean(String qn) {
