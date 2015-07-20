@@ -3,14 +3,15 @@ package tara.compiler;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.serializers.DeflateSerializer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import tara.builder.StashBuilder;
 import tara.io.Entry;
 import tara.io.Stash;
+import tara.io.Variable;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -32,9 +33,7 @@ public class AcceptedStashBuilder {
 
 	@After
 	public void deleteStashes() throws Exception {
-		for (File file : new File(home).listFiles((dir, name) -> name.endsWith(".stash"))) {
-			file.delete();
-		}
+		for (File file : new File(home).listFiles((dir, name) -> name.endsWith(".stash"))) file.delete();
 	}
 
 	@Test
@@ -61,7 +60,7 @@ public class AcceptedStashBuilder {
 		assertThat("Asia has 1 component", stash.entries[0].entries.length, is(1));
 		assertThat("Asia has City component", stash.entries[0].entries[0].types[0], is("City"));
 		assertThat("Asia has City component named Tokyo", stash.entries[0].entries[0].name, is("Tokyo"));
-		assertThat("Blob variable has right value", stash.entries[0].entries[0].vars[1].v, is("%World$1"));
+		assertThat("Blob variable has right value", stash.entries[0].entries[0].variables[1].v, is("%World$1"));
 	}
 
 	@Test
@@ -70,8 +69,8 @@ public class AcceptedStashBuilder {
 		assertThat("Data.stash exists", new File(home, "Instant.stash").exists());
 		Stash stash = stashFrom(new File(home, "Instant.stash"));
 		assertThat(stash.entries.length, is(1));
-		assertThat(stash.entries[0].vars.length, is(4));
-		assertThat(stash.entries[0].vars[0].v, instanceOf(long.class));
+		assertThat(stash.entries[0].variables.length, is(4));
+		assertThat(stash.entries[0].variables[0].v, instanceOf(long.class));
 	}
 
 	@Test
@@ -85,7 +84,13 @@ public class AcceptedStashBuilder {
 	public void should_build_stash_with_many_entries() {
 		new StashBuilder(new File(home)).build("ManyEntries", Charset.forName("UTF-8"));
 		assertThat("ManyEntries.stash exists", new File(home, "ManyEntries.stash").exists());
-		assertThat(stashFrom(new File(home, "ManyEntries.stash")).entries.length, is(9));
+		final Stash stash = stashFrom(new File(home, "ManyEntries.stash"));
+		assertThat(stash.entries.length, is(1380));
+		assertThat(stash.entries[10].variables.length, is(7));
+		assertThat(stash.entries[10].variables[0].n, is("instant"));
+		assertThat(stash.entries[10].variables[0].v, is(1320040860000L));
+		assertThat(stash.entries[10].variables[5].v, is(23.0));
+		assertThat(stash.entries[1000].variables[5].v, is(32.9));
 	}
 
 	@Test
@@ -96,13 +101,13 @@ public class AcceptedStashBuilder {
 		assertThat(root.entries.length, is(24));
 		for (Entry component : root.entries)
 			assertThat("Root is Temperature", Arrays.asList(component.types).contains("Temperature"));
-		assertThat("Temperature has city variable", root.entries[0].vars[0].n, is("city"));
-		assertThat("Temperature has month variable", root.entries[0].vars[1].n, is("month"));
-		assertThat("Temperature has temperature variable", root.entries[0].vars[2].n, is("temperature"));
-		assertThat("temperature variable has right value", root.entries[0].vars[2].v, is(7.0));
+		assertThat("Temperature has city variable", root.entries[0].variables[0].n, is("city"));
+		assertThat("Temperature has month variable", root.entries[0].variables[1].n, is("month"));
+		assertThat("Temperature has temperature variable", root.entries[0].variables[2].n, is("temperature"));
+		assertThat("temperature variable has right value", root.entries[0].variables[2].v, is(7.0));
 		assertThat("Root has not entry", root.entries[1].entries.length, is(0));
-		assertThat("city variable of 1º element has correct reference", root.entries[0].vars[0].v, is("!World.tara#Asia.Tokyo"));
-		assertThat("city variable of 15º element has correct reference", root.entries[15].vars[0].v, is("!World.tara#Europe.London"));
+		assertThat("city variable of 1º element has correct reference", root.entries[0].variables[0].v, is("!World.tara#Asia.Tokyo"));
+		assertThat("city variable of 15º element has correct reference", root.entries[15].variables[0].v, is("!World.tara#Europe.London"));
 		assertThat(root.entries[1].entries.length, is(0));
 
 	}
@@ -121,13 +126,17 @@ public class AcceptedStashBuilder {
 
 	private static Stash stashFrom(byte[] bytes) {
 		Stash result;
-		try (ByteArrayInputStream bs = new ByteArrayInputStream(bytes); Input input = new Input(bs)) {
+		System.out.println(bytes.length);
+		try (Input input = new Input(bytes)) {
 			final Kryo kryo = new Kryo();
+			kryo.register(Stash.class, new DeflateSerializer(kryo.getDefaultSerializer(Stash.class)));
 			kryo.register(Stash.class, 1);
 			kryo.register(Entry.class, 2);
 			kryo.register(Entry[].class, 3);
-			result = ((Stash) kryo.readClassAndObject(input));
-		} catch (IOException | KryoException e) {
+			kryo.register(Variable.class, 4);
+			kryo.register(Variable[].class, 5);
+			result = kryo.readObject(input, Stash.class);
+		} catch (KryoException e) {
 			result = new Stash();
 			e.printStackTrace();
 		}

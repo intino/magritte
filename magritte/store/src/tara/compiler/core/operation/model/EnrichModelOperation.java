@@ -30,7 +30,6 @@ public class EnrichModelOperation extends ModelOperation {
 
 	private void enrich(Node node) {
 		for (Node component : node.getIncludedNodes()) {
-			if (component.getParameters().isEmpty()) continue;
 			for (Parameter parameter : component.getParameters()) {
 				final MetadataEnricher.Metadata metadata = enricher.get(getQualifiedName(component, parameter));
 				if (metadata == null) continue;
@@ -42,6 +41,10 @@ public class EnrichModelOperation extends ModelOperation {
 	}
 
 	private String getQualifiedName(Node component, Parameter parameter) {
-		return component.getQualifiedName() + DOT + (parameter.getName() == null ? parameter.getPosition() : parameter.getName());
+		return clean(component.getQualifiedName() + DOT + (parameter.getName() == null ? parameter.getPosition() : parameter.getName()));
+	}
+
+	private static String clean(String qualifiedName) {
+		return qualifiedName.replace(Node.ANNONYMOUS, "").replace("[", "").replace("]", "");
 	}
 }

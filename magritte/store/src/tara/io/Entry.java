@@ -1,11 +1,8 @@
 package tara.io;
 
-import java.io.Serializable;
-
-public class Entry implements Serializable {
-
+public class Entry {
 	public String name;
 	public String[] types;
-	public Var[] vars;
+	public Variable[] variables;
 	public Entry[] entries;
 }

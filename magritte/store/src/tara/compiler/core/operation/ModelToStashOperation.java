@@ -10,7 +10,7 @@ import tara.compiler.model.Primitives;
 import tara.compiler.model.impl.Model;
 import tara.io.Entry;
 import tara.io.Stash;
-import tara.io.Var;
+import tara.io.Variable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,7 +50,7 @@ public class ModelToStashOperation extends ModelOperation {
 	private Entry fillStash(Node node, Entry entry) {
 		entry.name = node.getName();
 		entry.types = collectTypes(node);
-		entry.vars = collectVariables(node);
+		entry.variables = collectVariables(node);
 		entry.entries = collectComponents(node.getIncludedNodes());
 		return entry;
 	}
@@ -60,27 +60,28 @@ public class ModelToStashOperation extends ModelOperation {
 		return stashes.isEmpty() ? null : stashes.toArray(new Entry[stashes.size()]);
 	}
 
-	private Var[] collectVariables(Node node) {
-		List<Var> variables = new ArrayList<>();
+	private Variable[] collectVariables(Node node) {
+		List<Variable> variables = new ArrayList<>();
 		for (Parameter parameter : node.getParameters())
 			createVariable(variables, parameter);
-		return variables.toArray(new Var[variables.size()]);
+		return variables.toArray(new Variable[variables.size()]);
 	}
 
-	private void createVariable(List<Var> variables, Parameter parameter) {
-		final Var var = new Var();
-		var.n = parameter.getName();
-		if (parameter.hasReferenceValue()) var.v = buildReferenceValues(parameter);
-		else if (parameter.getValues().get(0).toString().startsWith("$")) var.v = buildResourceValue(parameter);
-		else var.v = getValue(parameter);
-		variables.add(var);
+	private void createVariable(List<Variable> variables, Parameter parameter) {
+		final Variable variable = new Variable();
+		variable.n = parameter.getName();
+		if (parameter.hasReferenceValue()) variable.v = buildReferenceValues(parameter);
+		else if (parameter.getValues().get(0).toString().startsWith("$")) variable.v = buildResourceValue(parameter);
+		else variable.v = getValue(parameter);
+		variables.add(variable);
 	}
 
 	private Object getValue(Parameter parameter) {
 		final Primitives.Converter converter = Primitives.getConverter(parameter.getInferredType());
-		return (parameter.getValues().get(0) instanceof String && !(parameter.getInferredType().equals(Primitives.STRING))) ?
+		final Object[] objects = (parameter.getValues().get(0) instanceof String && !(Primitives.STRING.equals(parameter.getInferredType()))) ?
 			converter.convert(parameter.getValues().toArray(new String[parameter.getValues().size()])) :
 			parameter.getValues().toArray();
+		return objects.length == 1 ? objects[0] : objects;
 	}
 
 	private Object buildResourceValue(Parameter parameter) {
