@@ -1,9 +1,9 @@
 package bazar;
 
-import tara.magritte.Expression;
-import tara.magritte.Set;
-import tara.magritte.wraps.Morph;
-import tara.magritte.wraps.Operation;
+import tara.magritte.Morph;
+
+import java.rmi.server.Operation;
+import java.util.Set;
 
 public class Person extends Morph {
 
