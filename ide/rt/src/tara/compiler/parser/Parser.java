@@ -43,7 +43,7 @@ public class Parser {
 			org.antlr.v4.runtime.Parser recognizer = (org.antlr.v4.runtime.Parser) e.getRecognizer();
 			Token token = recognizer.getCurrentToken();
 			LOG.log(Level.SEVERE, e.getMessage(), e);
-			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine(), getExpectedTokens(recognizer));
+			throw new SyntaxException("Syntax error in " + file.getPath(), token.getLine(), token.getCharPositionInLine(), getExpectedTokens(recognizer));
 		}
 	}
 
@@ -51,7 +51,6 @@ public class Parser {
 		try {
 			return recognizer.getExpectedTokens().toString(VocabularyImpl.fromTokenNames(recognizer.getTokenNames()));
 		} catch (Exception e) {
-//			LOG.log(Level.SEVERE, e.getMessage(), e);
 			return "";
 		}
 	}
@@ -62,8 +61,7 @@ public class Parser {
 		} catch (RecognitionException e) {
 			org.antlr.v4.runtime.Parser recognizer = (org.antlr.v4.runtime.Parser) e.getRecognizer();
 			Token token = recognizer.getCurrentToken();
-//			LOG.log(Level.SEVERE, e.getMessage(), e);
-			throw new SyntaxException("Syntax error in " + file.getName(), token.getLine(), token.getCharPositionInLine(), getExpectedTokens(recognizer));
+			throw new SyntaxException("Syntax error in " + file.getPath(), token.getLine(), token.getCharPositionInLine(), getExpectedTokens(recognizer));
 		}
 	}
 }
