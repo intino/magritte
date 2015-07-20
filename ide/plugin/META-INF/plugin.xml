@@ -2,9 +2,7 @@
   <id>siani.dev.tara</id>
   <depends>org.intellij.intelliLang</depends>
   <name>Tara</name>
-  <version>
-    1.0
-  </version>
+  <version>#version#</version>
   <vendor email="support.tara@siani.es" url="http://www.siani.es">Tara Modeling Language</vendor>
 
   <description>
@@ -17,7 +15,9 @@
       ]]>
   </description>
 
-  <change-notes>##change-notes##</change-notes>
+  <change-notes><![CDATA[
+      #change-notes#
+    ]]></change-notes>
   <actions>
     <action id="NewTaraFile" class="tara.intellij.actions.CreateTaraFileAction">
       <add-to-group group-id="NewGroup" anchor="first"/>
